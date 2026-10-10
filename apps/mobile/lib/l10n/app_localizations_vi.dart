@@ -4697,4 +4697,221 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get sryMore => 'Tuỳ chọn câu chuyện';
+
+  @override
+  String get shInFamily => 'Trong gia đình';
+
+  @override
+  String get shFamilyReading => 'Gia đình đang đọc';
+
+  @override
+  String get shParentsReading => 'Chỉ ba mẹ đang đọc';
+
+  @override
+  String get shTapToChange => 'Đã báo cả nhà · chạm để đổi';
+
+  @override
+  String get shTapToChangeParents => 'Chạm để đổi';
+
+  @override
+  String get shOutside => 'Ra ngoài';
+
+  @override
+  String get shCard => 'Thiệp ảnh';
+
+  @override
+  String get shCardHint => 'Đẹp để đăng Facebook, Instagram, Zalo';
+
+  @override
+  String get shLink => 'Liên kết xem riêng';
+
+  @override
+  String get shLinkHint => 'Có hạn · không cần cài app';
+
+  @override
+  String get shOutsideNote =>
+      'Chỉ ba mẹ thấy mục “Ra ngoài”. Mặc định ẩn tên thật và ngày sinh.';
+
+  @override
+  String get shPrivatePhotosNote =>
+      'Ảnh Chỉ ba mẹ không hiện khi chia sẻ ra ngoài.';
+
+  @override
+  String get cdNext => 'Tiếp';
+
+  @override
+  String get cdMoment => '1 ảnh';
+
+  @override
+  String get cdThree => '3 ảnh';
+
+  @override
+  String get cdFour => '4 ảnh';
+
+  @override
+  String get cdLetter => 'Chữ';
+
+  @override
+  String get cdNight => 'Tối';
+
+  @override
+  String get cdQuote => 'Câu trích';
+
+  @override
+  String get cdPhoto => 'Ảnh';
+
+  @override
+  String get cdCover => 'Ảnh bìa';
+
+  @override
+  String get cdShowAge => 'Hiện tuổi thay ngày sinh';
+
+  @override
+  String cdTo(String name) {
+    return 'Gửi $name,';
+  }
+
+  @override
+  String cdSigned(String who, String season) {
+    return '— $who, $season';
+  }
+
+  @override
+  String get cdSaved => 'Đã tạo thiệp';
+
+  @override
+  String get cdSize => 'Ảnh 1080 × 1350';
+
+  @override
+  String get lkExpires => 'Hết hạn sau';
+
+  @override
+  String get lk24h => '24 giờ';
+
+  @override
+  String get lk7d => '7 ngày';
+
+  @override
+  String get lk30d => '30 ngày';
+
+  @override
+  String get lkHideIdentity => 'Ẩn tên thật & ngày sinh';
+
+  @override
+  String lkHideIdentityHint(String name) {
+    return 'Chỉ hiện “$name” và số tuần tuổi';
+  }
+
+  @override
+  String get lkDownload => 'Cho tải ảnh về';
+
+  @override
+  String get lkDownloadHint => 'Tắt: người xem chỉ xem, không lưu';
+
+  @override
+  String get lkPasscode => 'Hỏi mật mã 4 số';
+
+  @override
+  String get lkPasscodeHint => 'Gửi mật mã riêng cho người nhận';
+
+  @override
+  String get lkNote => 'Bạn thấy được số lượt xem và thu hồi bất cứ lúc nào.';
+
+  @override
+  String get lkCopyShare => 'Sao chép & chia sẻ';
+
+  @override
+  String get lkCopy => 'Sao chép';
+
+  @override
+  String get lkCopied => 'Đã sao chép liên kết';
+
+  @override
+  String get lkPasscodeTitle => 'Mật mã của liên kết';
+
+  @override
+  String get lkPasscodeBody =>
+      'Gửi riêng mật mã này cho người nhận. Child Life không hiện lại mật mã.';
+
+  @override
+  String get lkScreenshotNote => 'Người xem vẫn có thể chụp màn hình.';
+
+  @override
+  String get soTitle => 'Đã chia sẻ ra ngoài';
+
+  @override
+  String soOpenCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count liên kết đang mở',
+      one: '1 liên kết đang mở',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get soOpen => 'Đang mở';
+
+  @override
+  String get soCards => 'Thiệp ảnh đã lưu';
+
+  @override
+  String get soClosed => 'Đã hết hạn';
+
+  @override
+  String soViewsLeftDays(int count, String left) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lượt xem · còn $left',
+      one: '1 lượt xem · còn $left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String soDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ngày',
+      one: '1 ngày',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String soHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count giờ',
+      one: '1 giờ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get soRevoke => 'Thu hồi';
+
+  @override
+  String get soRevokeTitle => 'Thu hồi liên kết?';
+
+  @override
+  String get soRevokeBody => 'Người có liên kết sẽ không xem được nữa.';
+
+  @override
+  String get soRevoked => 'Đã thu hồi';
+
+  @override
+  String soExpiredOn(String date) {
+    return 'Hết hạn $date';
+  }
+
+  @override
+  String get soCardRow => 'Ảnh · không thu hồi được';
+
+  @override
+  String get soEmpty => 'Chưa chia sẻ câu chuyện nào ra ngoài.';
 }

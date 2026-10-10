@@ -92,6 +92,13 @@
       "ignore": ["**/.DS_Store"],
       "rewrites": [
         {
+          "source": "/s/**",
+          "function": {
+            "functionId": "shareView",
+            "region": "asia-southeast1"
+          }
+        },
+        {
           "source": "/i/**",
           "function": {
             "functionId": "inviteLanding",

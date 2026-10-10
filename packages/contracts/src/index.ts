@@ -9,3 +9,4 @@ export * from './memories.js';
 export * from './albums.js';
 export * from './account.js';
 export * from './stories.js';
+export * from './links.js';

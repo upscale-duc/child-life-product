@@ -5045,4 +5045,222 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sryMore => 'Story options';
+
+  @override
+  String get shInFamily => 'In the family';
+
+  @override
+  String get shFamilyReading => 'The family is reading';
+
+  @override
+  String get shParentsReading => 'Only the parents are reading';
+
+  @override
+  String get shTapToChange => 'Family told · tap to change';
+
+  @override
+  String get shTapToChangeParents => 'Tap to change';
+
+  @override
+  String get shOutside => 'Outside the family';
+
+  @override
+  String get shCard => 'Photo card';
+
+  @override
+  String get shCardHint => 'Made for Facebook, Instagram, Zalo';
+
+  @override
+  String get shLink => 'Private link';
+
+  @override
+  String get shLinkHint => 'Expires · no app needed';
+
+  @override
+  String get shOutsideNote =>
+      'Only parents see “Outside the family”. Real name and birth date are hidden by default.';
+
+  @override
+  String get shPrivatePhotosNote =>
+      'Parents-only photos don’t appear outside the family.';
+
+  @override
+  String get cdNext => 'Next';
+
+  @override
+  String get cdMoment => '1 photo';
+
+  @override
+  String get cdThree => '3 photos';
+
+  @override
+  String get cdFour => '4 photos';
+
+  @override
+  String get cdLetter => 'Words';
+
+  @override
+  String get cdNight => 'Night';
+
+  @override
+  String get cdQuote => 'Quote';
+
+  @override
+  String get cdPhoto => 'Photo';
+
+  @override
+  String get cdCover => 'Cover photo';
+
+  @override
+  String get cdShowAge => 'Show age instead of birth date';
+
+  @override
+  String cdTo(String name) {
+    return 'Dear $name,';
+  }
+
+  @override
+  String cdSigned(String who, String season) {
+    return '— $who, $season';
+  }
+
+  @override
+  String get cdSaved => 'Card made';
+
+  @override
+  String get cdSize => 'Image 1080 × 1350';
+
+  @override
+  String get lkExpires => 'Expires after';
+
+  @override
+  String get lk24h => '24 hours';
+
+  @override
+  String get lk7d => '7 days';
+
+  @override
+  String get lk30d => '30 days';
+
+  @override
+  String get lkHideIdentity => 'Hide real name & birth date';
+
+  @override
+  String lkHideIdentityHint(String name) {
+    return 'Only “$name” and the age in weeks';
+  }
+
+  @override
+  String get lkDownload => 'Allow photo downloads';
+
+  @override
+  String get lkDownloadHint => 'Off: viewers can look but not save';
+
+  @override
+  String get lkPasscode => 'Ask for a 4-digit passcode';
+
+  @override
+  String get lkPasscodeHint => 'Send the passcode to the recipient separately';
+
+  @override
+  String get lkNote => 'You can see the views and revoke it at any time.';
+
+  @override
+  String get lkCopyShare => 'Copy & share';
+
+  @override
+  String get lkCopy => 'Copy';
+
+  @override
+  String get lkCopied => 'Link copied';
+
+  @override
+  String get lkPasscodeTitle => 'The link’s passcode';
+
+  @override
+  String get lkPasscodeBody =>
+      'Send this passcode to the recipient separately. Child Life won’t show it again.';
+
+  @override
+  String get lkScreenshotNote => 'Viewers can still take screenshots.';
+
+  @override
+  String get soTitle => 'Shared outside';
+
+  @override
+  String soOpenCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count links open',
+      one: '1 link open',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get soOpen => 'Open';
+
+  @override
+  String get soCards => 'Saved cards';
+
+  @override
+  String get soClosed => 'Expired';
+
+  @override
+  String soViewsLeftDays(int count, String left) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count views · $left left',
+      one: '1 view · $left left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String soDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String soHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours',
+      one: '1 hour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get soRevoke => 'Revoke';
+
+  @override
+  String get soRevokeTitle => 'Revoke the link?';
+
+  @override
+  String get soRevokeBody =>
+      'Anyone with the link won’t be able to open it any more.';
+
+  @override
+  String get soRevoked => 'Revoked';
+
+  @override
+  String soExpiredOn(String date) {
+    return 'Expired $date';
+  }
+
+  @override
+  String get soCardRow => 'Image · can’t be revoked';
+
+  @override
+  String get soEmpty => 'No stories shared outside yet.';
 }

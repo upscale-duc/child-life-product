@@ -7915,6 +7915,354 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tuỳ chọn câu chuyện'**
   String get sryMore;
+
+  /// 14h section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong gia đình'**
+  String get shInFamily;
+
+  /// 14h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình đang đọc'**
+  String get shFamilyReading;
+
+  /// 14h row (parents-only story).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ đang đọc'**
+  String get shParentsReading;
+
+  /// 14h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã báo cả nhà · chạm để đổi'**
+  String get shTapToChange;
+
+  /// 14h row (parents-only).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để đổi'**
+  String get shTapToChangeParents;
+
+  /// 14h section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ra ngoài'**
+  String get shOutside;
+
+  /// 14h row / 14i title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp ảnh'**
+  String get shCard;
+
+  /// 14h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đẹp để đăng Facebook, Instagram, Zalo'**
+  String get shCardHint;
+
+  /// 14h row / 14k title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên kết xem riêng'**
+  String get shLink;
+
+  /// 14h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có hạn · không cần cài app'**
+  String get shLinkHint;
+
+  /// 14h note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ thấy mục “Ra ngoài”. Mặc định ẩn tên thật và ngày sinh.'**
+  String get shOutsideNote;
+
+  /// 14h note (P-095).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh Chỉ ba mẹ không hiện khi chia sẻ ra ngoài.'**
+  String get shPrivatePhotosNote;
+
+  /// 14i top bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp'**
+  String get cdNext;
+
+  /// 14i template.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 ảnh'**
+  String get cdMoment;
+
+  /// 14i template.
+  ///
+  /// In vi, this message translates to:
+  /// **'3 ảnh'**
+  String get cdThree;
+
+  /// 14i template.
+  ///
+  /// In vi, this message translates to:
+  /// **'4 ảnh'**
+  String get cdFour;
+
+  /// 14i template.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chữ'**
+  String get cdLetter;
+
+  /// 14i template.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối'**
+  String get cdNight;
+
+  /// 14i option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu trích'**
+  String get cdQuote;
+
+  /// 14i option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get cdPhoto;
+
+  /// 14i option value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh bìa'**
+  String get cdCover;
+
+  /// 14i option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện tuổi thay ngày sinh'**
+  String get cdShowAge;
+
+  /// Letter card greeting.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi {name},'**
+  String cdTo(String name);
+
+  /// Letter card signature.
+  ///
+  /// In vi, this message translates to:
+  /// **'— {who}, {season}'**
+  String cdSigned(String who, String season);
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tạo thiệp'**
+  String get cdSaved;
+
+  /// 14j sheet head.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh 1080 × 1350'**
+  String get cdSize;
+
+  /// 14k label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết hạn sau'**
+  String get lkExpires;
+
+  /// 14k option.
+  ///
+  /// In vi, this message translates to:
+  /// **'24 giờ'**
+  String get lk24h;
+
+  /// 14k option.
+  ///
+  /// In vi, this message translates to:
+  /// **'7 ngày'**
+  String get lk7d;
+
+  /// 14k option.
+  ///
+  /// In vi, this message translates to:
+  /// **'30 ngày'**
+  String get lk30d;
+
+  /// 14k toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn tên thật & ngày sinh'**
+  String get lkHideIdentity;
+
+  /// 14k toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ hiện “{name}” và số tuần tuổi'**
+  String lkHideIdentityHint(String name);
+
+  /// 14k toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho tải ảnh về'**
+  String get lkDownload;
+
+  /// 14k toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tắt: người xem chỉ xem, không lưu'**
+  String get lkDownloadHint;
+
+  /// 14k toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi mật mã 4 số'**
+  String get lkPasscode;
+
+  /// 14k toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi mật mã riêng cho người nhận'**
+  String get lkPasscodeHint;
+
+  /// 14k note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn thấy được số lượt xem và thu hồi bất cứ lúc nào.'**
+  String get lkNote;
+
+  /// 14k button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sao chép & chia sẻ'**
+  String get lkCopyShare;
+
+  /// 14k chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sao chép'**
+  String get lkCopy;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã sao chép liên kết'**
+  String get lkCopied;
+
+  /// Passcode reveal (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật mã của liên kết'**
+  String get lkPasscodeTitle;
+
+  /// Passcode reveal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi riêng mật mã này cho người nhận. Child Life không hiện lại mật mã.'**
+  String get lkPasscodeBody;
+
+  /// 14k caveat (R-166).
+  ///
+  /// In vi, this message translates to:
+  /// **'Người xem vẫn có thể chụp màn hình.'**
+  String get lkScreenshotNote;
+
+  /// 14m title / Tôi row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chia sẻ ra ngoài'**
+  String get soTitle;
+
+  /// Tôi row value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{1 liên kết đang mở} other{{count} liên kết đang mở}}'**
+  String soOpenCount(int count);
+
+  /// 14m section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang mở'**
+  String get soOpen;
+
+  /// 14m section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp ảnh đã lưu'**
+  String get soCards;
+
+  /// 14m section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hết hạn'**
+  String get soClosed;
+
+  /// 14m row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{1 lượt xem · còn {left}} other{{count} lượt xem · còn {left}}}'**
+  String soViewsLeftDays(int count, String left);
+
+  /// 14m duration.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{1 ngày} other{{count} ngày}}'**
+  String soDays(int count);
+
+  /// 14m duration.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{1 giờ} other{{count} giờ}}'**
+  String soHours(int count);
+
+  /// 14m chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu hồi'**
+  String get soRevoke;
+
+  /// Confirmation (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu hồi liên kết?'**
+  String get soRevokeTitle;
+
+  /// Confirmation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người có liên kết sẽ không xem được nữa.'**
+  String get soRevokeBody;
+
+  /// Row / toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thu hồi'**
+  String get soRevoked;
+
+  /// 14m row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết hạn {date}'**
+  String soExpiredOn(String date);
+
+  /// 14m row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh · không thu hồi được'**
+  String get soCardRow;
+
+  /// 14m empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa chia sẻ câu chuyện nào ra ngoài.'**
+  String get soEmpty;
 }
 
 class _AppLocalizationsDelegate

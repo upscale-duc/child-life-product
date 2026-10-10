@@ -23,6 +23,8 @@ import '../memories/memory_repository.dart';
 import '../memories/push_registration.dart';
 import '../memories/upload_queue.dart';
 import '../onboarding/setup_screens.dart';
+import '../care/care_repository.dart';
+import '../stories/share_repository.dart';
 import 'me_models.dart';
 import 'me_repository.dart';
 import 'me_widgets.dart';
@@ -139,6 +141,8 @@ class MeScreen extends ConsumerWidget {
         const SizedBox(height: ClSpace.s3),
         ClCardGroup(
           children: [
+            // 13a "Đã chia sẻ ra ngoài · 2 liên kết đang mở" → 14m (parents only).
+            if (parent && !session.isAnonymous) _SharedOutRow(uid: me.uid),
             if (session.isAnonymous)
               MeRow(
                 icon: ClIcons.cloudOff,
@@ -416,4 +420,25 @@ Future<void> confirmSignOut(BuildContext context, WidgetRef ref) {
       ],
     ),
   );
+}
+
+class _SharedOutRow extends ConsumerWidget {
+  const _SharedOutRow({required this.uid});
+  final String uid;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final now = ref.read(timerClockProvider)();
+    final open =
+        (ref.watch(sharedOutProvider(uid)).value ?? const <SharedOut>[])
+            .where((r) => r.openAt(now))
+            .length;
+    return MeRow(
+      icon: ClIcons.link,
+      title: l10n.soTitle,
+      subtitle: open > 0 ? l10n.soOpenCount(open) : null,
+      onTap: () => context.push(Routes.meShared),
+    );
+  }
 }

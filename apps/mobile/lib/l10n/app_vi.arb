@@ -7086,5 +7086,283 @@
   "sryMore": "Tuỳ chọn câu chuyện",
   "@sryMore": {
     "description": "Reader ••• (a11y)."
+  },
+  "shInFamily": "Trong gia đình",
+  "@shInFamily": {
+    "description": "14h section."
+  },
+  "shFamilyReading": "Gia đình đang đọc",
+  "@shFamilyReading": {
+    "description": "14h row."
+  },
+  "shParentsReading": "Chỉ ba mẹ đang đọc",
+  "@shParentsReading": {
+    "description": "14h row (parents-only story)."
+  },
+  "shTapToChange": "Đã báo cả nhà · chạm để đổi",
+  "@shTapToChange": {
+    "description": "14h row."
+  },
+  "shTapToChangeParents": "Chạm để đổi",
+  "@shTapToChangeParents": {
+    "description": "14h row (parents-only)."
+  },
+  "shOutside": "Ra ngoài",
+  "@shOutside": {
+    "description": "14h section."
+  },
+  "shCard": "Thiệp ảnh",
+  "@shCard": {
+    "description": "14h row / 14i title."
+  },
+  "shCardHint": "Đẹp để đăng Facebook, Instagram, Zalo",
+  "@shCardHint": {
+    "description": "14h row."
+  },
+  "shLink": "Liên kết xem riêng",
+  "@shLink": {
+    "description": "14h row / 14k title."
+  },
+  "shLinkHint": "Có hạn · không cần cài app",
+  "@shLinkHint": {
+    "description": "14h row."
+  },
+  "shOutsideNote": "Chỉ ba mẹ thấy mục “Ra ngoài”. Mặc định ẩn tên thật và ngày sinh.",
+  "@shOutsideNote": {
+    "description": "14h note."
+  },
+  "shPrivatePhotosNote": "Ảnh Chỉ ba mẹ không hiện khi chia sẻ ra ngoài.",
+  "@shPrivatePhotosNote": {
+    "description": "14h note (P-095)."
+  },
+  "cdNext": "Tiếp",
+  "@cdNext": {
+    "description": "14i top bar."
+  },
+  "cdMoment": "1 ảnh",
+  "@cdMoment": {
+    "description": "14i template."
+  },
+  "cdThree": "3 ảnh",
+  "@cdThree": {
+    "description": "14i template."
+  },
+  "cdFour": "4 ảnh",
+  "@cdFour": {
+    "description": "14i template."
+  },
+  "cdLetter": "Chữ",
+  "@cdLetter": {
+    "description": "14i template."
+  },
+  "cdNight": "Tối",
+  "@cdNight": {
+    "description": "14i template."
+  },
+  "cdQuote": "Câu trích",
+  "@cdQuote": {
+    "description": "14i option."
+  },
+  "cdPhoto": "Ảnh",
+  "@cdPhoto": {
+    "description": "14i option."
+  },
+  "cdCover": "Ảnh bìa",
+  "@cdCover": {
+    "description": "14i option value."
+  },
+  "cdShowAge": "Hiện tuổi thay ngày sinh",
+  "@cdShowAge": {
+    "description": "14i option."
+  },
+  "cdTo": "Gửi {name},",
+  "@cdTo": {
+    "description": "Letter card greeting.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cdSigned": "— {who}, {season}",
+  "@cdSigned": {
+    "description": "Letter card signature.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "season": {
+        "type": "String"
+      }
+    }
+  },
+  "cdSaved": "Đã tạo thiệp",
+  "@cdSaved": {
+    "description": "Toast."
+  },
+  "cdSize": "Ảnh 1080 × 1350",
+  "@cdSize": {
+    "description": "14j sheet head."
+  },
+  "lkExpires": "Hết hạn sau",
+  "@lkExpires": {
+    "description": "14k label."
+  },
+  "lk24h": "24 giờ",
+  "@lk24h": {
+    "description": "14k option."
+  },
+  "lk7d": "7 ngày",
+  "@lk7d": {
+    "description": "14k option."
+  },
+  "lk30d": "30 ngày",
+  "@lk30d": {
+    "description": "14k option."
+  },
+  "lkHideIdentity": "Ẩn tên thật & ngày sinh",
+  "@lkHideIdentity": {
+    "description": "14k toggle."
+  },
+  "lkHideIdentityHint": "Chỉ hiện “{name}” và số tuần tuổi",
+  "@lkHideIdentityHint": {
+    "description": "14k toggle.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "lkDownload": "Cho tải ảnh về",
+  "@lkDownload": {
+    "description": "14k toggle."
+  },
+  "lkDownloadHint": "Tắt: người xem chỉ xem, không lưu",
+  "@lkDownloadHint": {
+    "description": "14k toggle."
+  },
+  "lkPasscode": "Hỏi mật mã 4 số",
+  "@lkPasscode": {
+    "description": "14k toggle."
+  },
+  "lkPasscodeHint": "Gửi mật mã riêng cho người nhận",
+  "@lkPasscodeHint": {
+    "description": "14k toggle."
+  },
+  "lkNote": "Bạn thấy được số lượt xem và thu hồi bất cứ lúc nào.",
+  "@lkNote": {
+    "description": "14k note."
+  },
+  "lkCopyShare": "Sao chép & chia sẻ",
+  "@lkCopyShare": {
+    "description": "14k button."
+  },
+  "lkCopy": "Sao chép",
+  "@lkCopy": {
+    "description": "14k chip."
+  },
+  "lkCopied": "Đã sao chép liên kết",
+  "@lkCopied": {
+    "description": "Toast."
+  },
+  "lkPasscodeTitle": "Mật mã của liên kết",
+  "@lkPasscodeTitle": {
+    "description": "Passcode reveal (not drawn)."
+  },
+  "lkPasscodeBody": "Gửi riêng mật mã này cho người nhận. Child Life không hiện lại mật mã.",
+  "@lkPasscodeBody": {
+    "description": "Passcode reveal."
+  },
+  "lkScreenshotNote": "Người xem vẫn có thể chụp màn hình.",
+  "@lkScreenshotNote": {
+    "description": "14k caveat (R-166)."
+  },
+  "soTitle": "Đã chia sẻ ra ngoài",
+  "@soTitle": {
+    "description": "14m title / Tôi row."
+  },
+  "soOpenCount": "{count, plural, =1{1 liên kết đang mở} other{{count} liên kết đang mở}}",
+  "@soOpenCount": {
+    "description": "Tôi row value.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "soOpen": "Đang mở",
+  "@soOpen": {
+    "description": "14m section."
+  },
+  "soCards": "Thiệp ảnh đã lưu",
+  "@soCards": {
+    "description": "14m section."
+  },
+  "soClosed": "Đã hết hạn",
+  "@soClosed": {
+    "description": "14m section."
+  },
+  "soViewsLeftDays": "{count, plural, =1{1 lượt xem · còn {left}} other{{count} lượt xem · còn {left}}}",
+  "@soViewsLeftDays": {
+    "description": "14m row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "soDays": "{count, plural, =1{1 ngày} other{{count} ngày}}",
+  "@soDays": {
+    "description": "14m duration.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "soHours": "{count, plural, =1{1 giờ} other{{count} giờ}}",
+  "@soHours": {
+    "description": "14m duration.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "soRevoke": "Thu hồi",
+  "@soRevoke": {
+    "description": "14m chip."
+  },
+  "soRevokeTitle": "Thu hồi liên kết?",
+  "@soRevokeTitle": {
+    "description": "Confirmation (not drawn)."
+  },
+  "soRevokeBody": "Người có liên kết sẽ không xem được nữa.",
+  "@soRevokeBody": {
+    "description": "Confirmation."
+  },
+  "soRevoked": "Đã thu hồi",
+  "@soRevoked": {
+    "description": "Row / toast."
+  },
+  "soExpiredOn": "Hết hạn {date}",
+  "@soExpiredOn": {
+    "description": "14m row.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "soCardRow": "Ảnh · không thu hồi được",
+  "@soCardRow": {
+    "description": "14m row."
+  },
+  "soEmpty": "Chưa chia sẻ câu chuyện nào ra ngoài.",
+  "@soEmpty": {
+    "description": "14m empty."
   }
 }

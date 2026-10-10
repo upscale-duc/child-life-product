@@ -59,6 +59,14 @@ import { addToAlbum, createAlbum, deleteAlbum, removeFromAlbum, updateAlbum } fr
 import { deliverNotice, onMessageCreated, onReactionWritten, type PushSender } from './social.js';
 import { openAiProvider, templateProvider, type AiProvider } from './ai.js';
 import {
+  LinkError,
+  createShareLink,
+  expireLinks,
+  handleShare,
+  recordCard,
+  revokeShareLink,
+} from './links.js';
+import {
   StoryError,
   deleteStory,
   requestSuggestion,
@@ -845,3 +853,116 @@ export const weeklyStorySuggestions = onSchedule(
     logger.info('story suggestions', { made });
   },
 );
+
+// ---------- S13: external sharing (14h–14n) ----------
+
+const linkCall = <T>(name: string, run: (uid: string, data: unknown) => Promise<T>) =>
+  onCall(async (request) => {
+    if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+    if (request.auth.token.firebase.sign_in_provider === 'anonymous') {
+      throw new HttpsError('permission-denied', 'account-required', { reason: 'account-required' });
+    }
+    try {
+      return await run(request.auth.uid, request.data);
+    } catch (error) {
+      if (error instanceof LinkError) {
+        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+      }
+      logger.error(`${name} failed`, { error: String(error) });
+      throw new HttpsError('internal', `${name} failed`);
+    }
+  });
+
+/** 14k "Sao chép & chia sẻ". */
+export const createStoryLink = linkCall('createStoryLink', (uid, d) =>
+  createShareLink(getFirestore(), uid, d, new Date(), webOriginFor(currentProjectId())),
+);
+
+/** 14m "Thu hồi". */
+export const revokeStoryLink = linkCall('revokeStoryLink', (uid, d) =>
+  revokeShareLink(getFirestore(), uid, d, new Date()),
+);
+
+/** "Thiệp ảnh đã lưu". */
+export const recordStoryCard = linkCall('recordStoryCard', (uid, d) =>
+  recordCard(getFirestore(), uid, d, new Date()),
+);
+
+export const expireStoryLinks = onSchedule('every 60 minutes', async () => {
+  const n = await expireLinks(getFirestore(), new Date());
+  logger.info('links expired', { n });
+});
+
+/** Our share cookies, carried in Hosting's single forwarded cookie `__session`. */
+function cookiesOf(header: string | undefined): Record<string, string> {
+  for (const part of (header ?? '').split(';')) {
+    const i = part.indexOf('=');
+    if (i > 0 && part.slice(0, i).trim() === '__session') {
+      try {
+        const jar = JSON.parse(decodeURIComponent(part.slice(i + 1).trim())) as unknown;
+        if (jar && typeof jar === 'object') {
+          return Object.fromEntries(
+            Object.entries(jar as Record<string, unknown>).filter(
+              (e): e is [string, string] => typeof e[1] === 'string',
+            ),
+          );
+        }
+      } catch {
+        return {};
+      }
+    }
+  }
+  return {};
+}
+
+/** `/s/{token}` on the landing host (14l, G-052): the recipient page and its images. */
+export const shareView = onRequest({ memory: '512MiB' }, async (req, res) => {
+  const origin = webOriginFor(currentProjectId());
+  const form: Record<string, string> = {};
+  if (req.method === 'POST' && req.body && typeof req.body === 'object') {
+    for (const [k, v] of Object.entries(req.body as Record<string, unknown>)) {
+      if (typeof v === 'string') form[k] = v;
+    }
+  }
+  const out = await handleShare(
+    getFirestore(),
+    bucketStore(getStorage().bucket()),
+    {
+      method: req.method,
+      path: req.path,
+      ip: clientAddress(req.headers['x-forwarded-for'], req.ip),
+      cookies: cookiesOf(req.get('cookie')),
+      form,
+      locale: localeFromHeader(req.get('accept-language')),
+    },
+    new Date(),
+    origin,
+  );
+  for (const [k, v] of Object.entries(out.headers)) res.set(k, v);
+  // Firebase Hosting forwards only the "__session" cookie: carry ours inside it.
+  const jar = {
+    ...cookiesOf(req.get('cookie')),
+    ...Object.fromEntries(out.cookies.map((c) => [c.name, c.value])),
+  };
+  if (out.cookies.length) {
+    res.cookie('__session', JSON.stringify(jar), {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: Math.max(...out.cookies.map((c) => c.maxAge)) * 1000,
+      path: '/s',
+    });
+  }
+  if (out.type === 'redirect') {
+    res.redirect(out.status, out.headers.Location ?? '/');
+    return;
+  }
+  res.status(out.status);
+  if (out.type === 'jpeg') res.type('image/jpeg').send(Buffer.from(out.body as Uint8Array));
+  else res.type('html').send(out.body as string);
+});
+
+function clientAddress(forwarded: string | string[] | undefined, ip: string | undefined): string {
+  const first = (Array.isArray(forwarded) ? forwarded[0] : forwarded)?.split(',')[0]?.trim();
+  return first || ip || 'unknown';
+}

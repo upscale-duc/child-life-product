@@ -17,8 +17,8 @@ import '../memories/album_models.dart';
 import '../memories/media_viewer.dart';
 import '../memories/memories_screen.dart';
 import '../memories/memory_models.dart';
-import '../memories/memory_sheets.dart';
 import '../memories/social_widgets.dart';
+import 'share_screens.dart';
 import 'story_editor.dart';
 import 'story_models.dart';
 import 'story_repository.dart';
@@ -124,10 +124,14 @@ class StoryReaderScreen extends ConsumerWidget {
             ),
           ),
         ),
+        // Pull quote: Lora italic 20, mint (206:301).
         QuoteBlock() => Text(
           '“${b.text}”',
-          style: cl.text.title2.copyWith(
+          style: TextStyle(
+            fontFamily: 'Lora',
             fontStyle: FontStyle.italic,
+            fontSize: 20,
+            height: 1.4,
             color: cl.colors.mintText,
           ),
         ),
@@ -188,7 +192,7 @@ class StoryReaderScreen extends ConsumerWidget {
                             ClButton(
                               label: l10n.sryShare,
                               icon: ClIcons.upload,
-                              onPressed: () => _shareSheet(context, ref, s),
+                              onPressed: () => showShareSheet(context, ref, s),
                             ),
                             const SizedBox(width: 6),
                             _Round(
@@ -340,42 +344,6 @@ class _Round extends StatelessWidget {
         child: ClIcon(icon, size: 20, color: cl.colors.ink),
       ),
     );
-  }
-}
-
-/// 14h, S12 part: who reads the story (external cards and links come with S13).
-Future<void> _shareSheet(BuildContext context, WidgetRef ref, Story s) async {
-  final l10n = AppLocalizations.of(context);
-  var audience = s.audience;
-  final next = await showClSheet<Audience>(
-    context: context,
-    builder: (sheet) => StatefulBuilder(
-      builder: (context, setState) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: l10n.sryWhoReads),
-          AudienceCards(
-            value: audience,
-            onChanged: (a) => setState(() => audience = a),
-          ),
-          const SizedBox(height: ClSpace.s4),
-          ClButton(
-            label: l10n.actionSave,
-            expand: true,
-            onPressed: () => Navigator.of(sheet).pop(audience),
-          ),
-        ],
-      ),
-    ),
-  );
-  if (next == null || next == s.audience || !context.mounted) return;
-  final toaster = ClToaster.of(context);
-  try {
-    await ref.read(storyRepositoryProvider).save(s.babyId, s.id, next, false);
-    toaster.show(message: l10n.sryAudienceChanged);
-  } on Object {
-    toaster.show(message: l10n.toastActionFailed);
   }
 }
 

@@ -108,6 +108,25 @@ flutter:
           weight: 500
         - asset: assets/fonts/BeVietnamPro-SemiBold.ttf
           weight: 600
+    # Story reader and cards (S13, 14g / 14i). SIL OFL 1.1 (assets/fonts/OFL-*.txt).
+    - family: Lora
+      fonts:
+        - asset: assets/fonts/Lora-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Lora-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Lora-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Lora-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+    - family: Dancing Script
+      fonts:
+        - asset: assets/fonts/DancingScript-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/DancingScript-SemiBold.ttf
+          weight: 600
 
   assets:
     - assets/icons/

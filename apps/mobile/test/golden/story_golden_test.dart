@@ -10,6 +10,8 @@ import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memories_screen.dart';
 import 'package:child_life/features/memories/memory_models.dart';
+import 'package:child_life/features/stories/share_repository.dart';
+import 'package:child_life/features/stories/share_screens.dart';
 import 'package:child_life/features/stories/story_editor.dart';
 import 'package:child_life/features/stories/story_reader.dart';
 import 'package:child_life/features/stories/story_widgets.dart';
@@ -73,6 +75,7 @@ List<Override> _base({
     messages: mockMessages(_journal),
   ),
   ...storyOverrides(stories: _stories),
+  ...shareOverrides(rows: mockSharedOut(_stories)),
   memoryViewProvider.overrideWith(() => _View(view)),
   if (selected != null)
     memorySelectionProvider.overrideWith(() => _Selection(selected)),
@@ -175,6 +178,44 @@ final _cases = <String, _Case>{
     prefs: const {},
     act: null,
   ),
+  '14h_share': (
+    build: () => StoryReaderScreen(storyId: sid(2)),
+    overrides: _base,
+    prefs: const {},
+    act: (t) => _tapText(t, _l10n(t).sryShare),
+  ),
+  for (final tpl in CardTemplate.values)
+    '14i_card_${tpl.name}': (
+      build: () => CardScreen(story: _stories[1]),
+      overrides: _base,
+      prefs: const {},
+      act: tpl == CardTemplate.moment
+          ? null
+          : (t) async {
+              await t.tap(find.text(_cardLabel(_l10n(t), tpl)).last);
+              await t.pumpAndSettle();
+            },
+    ),
+  '14k_link': (
+    build: () => LinkScreen(story: _stories[1]),
+    overrides: _base,
+    prefs: const {},
+    act: null,
+  ),
+  '14m_shared_out': (
+    build: () => const SharedOutScreen(),
+    overrides: _base,
+    prefs: const {},
+    act: null,
+  ),
+};
+
+String _cardLabel(AppLocalizations l10n, CardTemplate t) => switch (t) {
+  CardTemplate.moment => l10n.cdMoment,
+  CardTemplate.three => l10n.cdThree,
+  CardTemplate.four => l10n.cdFour,
+  CardTemplate.letter => l10n.cdLetter,
+  CardTemplate.night => l10n.cdNight,
 };
 
 void main() {

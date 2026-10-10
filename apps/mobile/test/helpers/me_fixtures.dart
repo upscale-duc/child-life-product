@@ -1,5 +1,6 @@
 import 'package:child_life/features/me/me_models.dart';
 import 'package:child_life/features/me/me_repository.dart';
+import 'package:child_life/features/stories/share_repository.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -89,6 +90,8 @@ List<Override> meOverrides({
   exportsProvider.overrideWith((ref, uid) => Stream.value(exports)),
   offeredToProvider.overrideWith((ref, familyId) => Stream.value(offeredTo)),
   deletionJobProvider.overrideWith((ref, jobId) => Stream.value(null)),
+  // 13a "Đã chia sẻ ra ngoài" (S13).
+  sharedOutProvider.overrideWith((ref, uid) => Stream.value(const <SharedOut>[])),
   if (repo != null) meRepositoryProvider.overrideWithValue(repo),
 ];
 

@@ -21,6 +21,7 @@ import '../features/home/home_shell.dart';
 import '../features/memories/album_screens.dart';
 import '../features/memories/memories_screen.dart';
 import '../features/memories/messages_screen.dart';
+import '../features/stories/share_screens.dart';
 import '../features/stories/story_editor.dart';
 import '../features/stories/story_models.dart';
 import '../features/stories/story_reader.dart';
@@ -246,6 +247,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (_, _) => const NotificationsScreen(),
                   ),
                   GoRoute(path: 'help', builder: (_, _) => const HelpScreen()),
+                  // 14m (S13).
+                  GoRoute(
+                    path: 'shared',
+                    builder: (_, _) => const SharedOutScreen(),
+                  ),
                 ],
               ),
             ],

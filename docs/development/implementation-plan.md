@@ -359,6 +359,8 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 - **Acceptance (plan flow E part 2):** expired / revoked / wrong passcode / lockout; hidden name & DOB by default; R-166 caveat respected in copy; downloaded cards listed as irrevocable.
 - **Depends on:** S12. G-052, G-053.
 
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S13.md). Share sheet, photo cards (5 templates, Lora / Dancing Script bundled), private links with expiry / identity / downloads / passcode, the recipient page `/s/{token}` with every state, and the link manager under Tôi work end to end on Android with the emulators; backend and hosting on dev.
+
 ### S14 — Landing site
 
 > **Status:** delivered on dev (2026-10-10) — [report](slice-reports/S14.md). Prod waits on the owner items listed there.

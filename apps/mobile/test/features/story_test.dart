@@ -4,6 +4,9 @@ import 'package:child_life/features/baby/time_zones.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memories_screen.dart';
 import 'package:child_life/features/memories/memory_models.dart';
+import 'package:child_life/core/widgets/cl_inputs.dart';
+import 'package:child_life/features/stories/share_repository.dart';
+import 'package:child_life/features/stories/share_screens.dart';
 import 'package:child_life/features/stories/story_editor.dart';
 import 'package:child_life/features/stories/story_models.dart';
 import 'package:child_life/features/stories/story_reader.dart';
@@ -29,7 +32,9 @@ List<Override> _overrides({
   Membership? me,
   FakeStoryRepository? repo,
   List<Story>? stories,
+  FakeShareRepository? share,
 }) => [
+  ...shareOverrides(repo: share, rows: mockSharedOut(_stories)),
   ...careOverrides(me: me),
   ...memoryOverrides(journal: _journal),
   ...storyOverrides(stories: stories ?? _stories, repo: repo),
@@ -203,6 +208,60 @@ void main() {
       await tester.tap(find.text('Nhắn ba mẹ…'));
       await tester.pumpAndSettle();
       expect(find.text('Gửi'), findsOneWidget);
+    });
+  });
+
+  group('S13 sharing (14h, 14k, 14m)', () {
+    testWidgets('14h: family readers and "Ra ngoài" for parents', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        StoryReaderScreen(storyId: sid(2)),
+        overrides: _overrides(),
+      );
+      await tester.tap(find.text('Chia sẻ'));
+      await tester.pumpAndSettle();
+      expect(find.text('Gia đình đang đọc'), findsOneWidget);
+      expect(find.text('Thiệp ảnh'), findsOneWidget);
+      expect(find.text('Liên kết xem riêng'), findsOneWidget);
+    });
+
+    testWidgets(
+      '14k: defaults, passcode shown once after "Sao chép & chia sẻ"',
+      (tester) async {
+        final share = FakeShareRepository();
+        await pumpRouted(
+          tester,
+          LinkScreen(story: _stories[1]),
+          overrides: _overrides(share: share),
+        );
+        await tester.tap(find.byType(ClToggle).at(2));
+        await tester.pump();
+        await tester.tap(find.text('Sao chép & chia sẻ'));
+        await tester.pumpAndSettle();
+        expect(share.links.single, (sid(2), LinkExpiry.d7, true, false, true));
+        expect(find.text('4821'), findsOneWidget);
+        expect(find.text('Mật mã của liên kết'), findsOneWidget);
+      },
+    );
+
+    testWidgets('14m: open links revoke after a confirmation; cards cannot', (
+      tester,
+    ) async {
+      final share = FakeShareRepository();
+      await pumpRouted(
+        tester,
+        const SharedOutScreen(),
+        overrides: _overrides(share: share),
+      );
+      expect(find.textContaining('12 lượt xem · còn'), findsOneWidget);
+      expect(find.text('Ảnh · không thu hồi được'), findsOneWidget);
+      await tester.tap(find.text('Thu hồi').first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Thu hồi').last);
+      await tester.pumpAndSettle();
+      expect(share.revoked, ['k7Q2abcdEFGH1234']);
     });
   });
 }

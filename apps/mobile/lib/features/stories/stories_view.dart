@@ -392,6 +392,7 @@ class StoryCard extends StatelessWidget {
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: cl.text.body.copyWith(
+                fontFamily: 'Lora',
                 fontStyle: FontStyle.italic,
                 color: cl.colors.inkMuted,
               ),

@@ -62,6 +62,7 @@ abstract final class Routes {
   static const meAccount = '/me/account';
   static const meNotifications = '/me/notifications';
   static const meHelp = '/me/help';
+  static const meShared = '/me/shared';
 
   /// S12 stories: reader `/story/{id}`, editor `/story/{id}/edit` (full screen).
   static const story = '/story';

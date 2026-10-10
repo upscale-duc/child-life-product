@@ -153,7 +153,7 @@ Future<void> firestoreSet(String path, Map<String, Object?> fields) async {
     final int i => {'integerValue': '$i'},
     final DateTime d => {'timestampValue': d.toUtc().toIso8601String()},
     final String s => {'stringValue': s},
-    final Map<String, Object?> m => {
+    final Map<String, dynamic> m => {
       'mapValue': {
         'fields': {for (final e in m.entries) e.key: encode(e.value)},
       },

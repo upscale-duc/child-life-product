@@ -57,6 +57,12 @@ service cloud.firestore {
           request.resource.data.get('signedOutAt', null) == resource.data.get('signedOutAt', null);
       }
 
+      // "Đã chia sẻ ra ngoài" (14m): my links and cards, kept by Functions (S13).
+      match /sharedOut/{id} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow write: if false;
+      }
+
       // "Thông báo" (G-056): which pushes this account receives.
       match /settings/{docId} {
         allow read: if signedIn() && request.auth.uid == uid;
