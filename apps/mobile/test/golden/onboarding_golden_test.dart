@@ -47,7 +47,9 @@ void main() {
   for (final MapEntry(key: name, value: build) in _screens.entries) {
     for (final palette in ClPalette.values) {
       for (final locale in const [Locale('vi'), Locale('en')]) {
-        testWidgets('$name ${palette.name} ${locale.languageCode}', (tester) async {
+        testWidgets('$name ${palette.name} ${locale.languageCode}', (
+          tester,
+        ) async {
           SharedPreferences.setMockInitialValues({});
           final prefs = await SharedPreferences.getInstance();
           tester.view.physicalSize = const Size(375, 812);

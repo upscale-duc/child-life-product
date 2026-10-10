@@ -14,11 +14,24 @@ enum ClRole { parent, caregiver, relative }
 enum ClTab { today, memories, family, me }
 
 /// Tabs per role (NavBar 44:362): parent 4, caregiver 3 (no Kỷ niệm), relative 3 (no Hôm nay).
-List<ClTab> tabsForRole(ClRole role) => switch (role) {
-  ClRole.parent => const [ClTab.today, ClTab.memories, ClTab.family, ClTab.me],
-  ClRole.caregiver => const [ClTab.today, ClTab.family, ClTab.me],
-  ClRole.relative => const [ClTab.memories, ClTab.family, ClTab.me],
-};
+/// A relative granted "Chăm sóc hằng ngày" also gets a read-only Hôm nay (D-018).
+List<ClTab> tabsForRole(ClRole role, {bool relativeSeesToday = false}) =>
+    switch (role) {
+      ClRole.parent => const [
+        ClTab.today,
+        ClTab.memories,
+        ClTab.family,
+        ClTab.me,
+      ],
+      ClRole.caregiver => const [ClTab.today, ClTab.family, ClTab.me],
+      ClRole.relative when relativeSeesToday => const [
+        ClTab.today,
+        ClTab.memories,
+        ClTab.family,
+        ClTab.me,
+      ],
+      ClRole.relative => const [ClTab.memories, ClTab.family, ClTab.me],
+    };
 
 /// Quick log is available to parents and caregivers only (no "+" for relatives).
 bool roleCanQuickLog(ClRole role) => role != ClRole.relative;
@@ -30,10 +43,14 @@ class ClNavBar extends StatelessWidget {
     required this.active,
     required this.onSelect,
     required this.initial,
+    this.tabs,
     super.key,
   });
 
   final ClRole role;
+
+  /// Overrides [tabsForRole] (e.g. a relative with daily care).
+  final List<ClTab>? tabs;
   final ClTab active;
   final ValueChanged<ClTab> onSelect;
 
@@ -44,7 +61,7 @@ class ClNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
-    final tabs = tabsForRole(role);
+    final tabs = this.tabs ?? tabsForRole(role);
     const pad = 6.0;
     const inactiveWidth = 52.0;
     String label(ClTab t) => switch (t) {
@@ -245,10 +262,12 @@ class ClTabDock extends StatelessWidget {
     required this.onSelect,
     required this.initial,
     this.onQuickLog,
+    this.tabs,
     super.key,
   });
 
   final ClRole role;
+  final List<ClTab>? tabs;
   final ClTab active;
   final ValueChanged<ClTab> onSelect;
   final String initial;
@@ -275,6 +294,7 @@ class ClTabDock extends StatelessWidget {
               active: active,
               onSelect: onSelect,
               initial: initial,
+              tabs: tabs,
             ),
           ),
           if (roleCanQuickLog(role) && onQuickLog != null) ...[

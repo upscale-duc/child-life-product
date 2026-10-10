@@ -91,7 +91,7 @@ void main() {
     test('matches the server schema', () {
       final draft = SetupDraft(
         displayName: ' Mai ',
-        relation: SelfRelation.other,
+        relation: Relation.other,
         relationCustom: 'Dì',
         nickname: ' Teddy ',
         dateOfBirth: DateTime(2026, 9, 7),
@@ -129,7 +129,7 @@ void main() {
         expect(draft.copyWith(displayName: 'Mai').whoComplete, isTrue);
         expect(
           draft
-              .copyWith(displayName: 'Mai', relation: SelfRelation.other)
+              .copyWith(displayName: 'Mai', relation: Relation.other)
               .whoComplete,
           isFalse,
         );

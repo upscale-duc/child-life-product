@@ -6,6 +6,12 @@ import '../core/design/tokens.g.dart';
 import '../features/appearance/appearance_screen.dart';
 import '../features/auth/auth_screens.dart';
 import '../features/diagnostics/diagnostics_screen.dart';
+import '../features/family/family_models.dart';
+import '../features/family/family_screen.dart';
+import '../features/family/invite_screens.dart';
+import '../features/family/join_screens.dart';
+import '../features/family/save_account.dart';
+import '../features/home/home_shell.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
 import '../features/showcase/showcase_screen.dart';
@@ -13,16 +19,21 @@ import '../features/today/today_screen.dart';
 import 'route_guard.dart';
 import 'session.dart';
 
-GuardState guardStateOf(Session session, Set<String> verifyDeferred) =>
-    switch (session) {
-      SessionLoading() => GuardState.loading,
-      SessionSignedOut() => GuardState.signedOut,
-      SessionSignedIn(hasBaby: true) => GuardState.ready,
-      SessionSignedIn(:final user) && final s
-          when s.emailUnverified && !verifyDeferred.contains(user.uid) =>
-        GuardState.needsVerifyPrompt,
-      SessionSignedIn() => GuardState.needsSetup,
-    };
+GuardState guardStateOf(
+  Session session,
+  Set<String> verifyDeferred, {
+  bool merging = false,
+}) => switch (session) {
+  SessionLoading() => GuardState.loading,
+  SessionSignedOut() => GuardState.signedOut,
+  SessionSignedIn(hasBaby: true) => GuardState.ready,
+  SessionSignedIn() when merging => GuardState.loading,
+  SessionSignedIn(isAnonymous: true) => GuardState.joining,
+  SessionSignedIn(:final user) && final s
+      when s.emailUnverified && !verifyDeferred.contains(user.uid) =>
+    GuardState.needsVerifyPrompt,
+  SessionSignedIn() => GuardState.needsSetup,
+};
 
 /// Splash → Welcome and → Today crossfade (36:2233 "then crossfade"); other screens use the
 /// platform default transition (D-013).
@@ -41,6 +52,9 @@ final routerProvider = Provider<GoRouter>((ref) {
     ..listen(sessionProvider, (_, _) => refresh.value++)
     ..listen(splashDoneProvider, (_, _) => refresh.value++)
     ..listen(verifyDeferredProvider, (_, _) => refresh.value++)
+    ..listen(lostAccessBabyIdProvider, (_, _) => refresh.value++)
+    ..listen(accountMergeInProgressProvider, (_, _) => refresh.value++)
+    ..listen(addingBabyProvider, (_, _) => refresh.value++)
     ..onDispose(refresh.dispose);
 
   return GoRouter(
@@ -50,9 +64,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       state: guardStateOf(
         ref.read(sessionProvider),
         ref.read(verifyDeferredProvider),
+        merging: ref.read(accountMergeInProgressProvider),
       ),
       location: state.uri.toString(),
       splashDone: ref.read(splashDoneProvider),
+      lostAccess: ref.read(lostAccessBabyIdProvider) != null,
+      addingBaby: ref.read(addingBabyProvider),
     ),
     routes: [
       GoRoute(path: Routes.splash, builder: (_, _) => const SplashScreen()),
@@ -86,9 +103,88 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const BabyProfileScreen(),
       ),
       GoRoute(path: Routes.trackers, builder: (_, _) => const TrackersScreen()),
+      StatefulShellRoute.indexedStack(
+        pageBuilder: (context, state, shell) =>
+            _fade(state, HomeShell(shell: shell)),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.today,
+                builder: (_, _) => const TodayScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.memories,
+                builder: (_, _) => const MemoriesPlaceholderScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.family,
+                builder: (_, _) => const FamilyScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(path: Routes.invite, builder: (_, _) => const InviteRoleScreen()),
       GoRoute(
-        path: Routes.today,
-        pageBuilder: (_, s) => _fade(s, const TodayScreen()),
+        path: Routes.inviteSend,
+        redirect: (_, s) => s.extra is InviteSendArgs ? null : Routes.family,
+        builder: (_, s) => InviteSendScreen(args: s.extra! as InviteSendArgs),
+      ),
+      GoRoute(
+        path: Routes.inviteSent,
+        redirect: (_, s) => s.extra is InviteSendArgs ? null : Routes.family,
+        builder: (_, s) => InviteSentScreen(args: s.extra! as InviteSendArgs),
+      ),
+      GoRoute(path: Routes.join, builder: (_, _) => const EnterCodeScreen()),
+      GoRoute(
+        path: Routes.joinScan,
+        builder: (_, _) => const ScanInviteScreen(),
+      ),
+      GoRoute(
+        path: Routes.joinInvite,
+        redirect: (_, s) => s.extra is JoinArgs ? null : Routes.join,
+        builder: (_, s) {
+          final args = s.extra! as JoinArgs;
+          return AcceptInviteScreen(lookup: args.lookup, preview: args.preview);
+        },
+      ),
+      GoRoute(
+        path: Routes.joinConfirm,
+        redirect: (_, s) => s.extra is JoinArgs ? null : Routes.join,
+        builder: (_, s) => ConfirmJoinScreen(args: s.extra! as JoinArgs),
+      ),
+      GoRoute(
+        path: Routes.joinClosed,
+        builder: (_, s) => InviteClosedScreen(
+          reason:
+              InviteClosedReason.values
+                  .asNameMap()[s.uri.queryParameters['reason']] ??
+              InviteClosedReason.notFound,
+        ),
+      ),
+      // App Links / universal links from QR codes, emails and messages (plan §3.5).
+      GoRoute(
+        path: '${Routes.inviteLink}/:token',
+        builder: (_, s) => AcceptInviteScreen(
+          lookup: InviteLookup.token(s.pathParameters['token'] ?? ''),
+        ),
+      ),
+      GoRoute(
+        path: Routes.saveAccountEmail,
+        builder: (_, _) => const SaveAccountEmailScreen(),
+      ),
+      GoRoute(
+        path: Routes.lostAccess,
+        pageBuilder: (_, s) => _fade(s, const LostAccessScreen()),
       ),
       GoRoute(
         path: Routes.appearance,

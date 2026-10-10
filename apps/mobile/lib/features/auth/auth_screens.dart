@@ -42,7 +42,7 @@ String authMessage(AppLocalizations l10n, AuthFailure failure) =>
       AuthFailure.other => l10n.authErrorGeneric,
     };
 
-bool _looksLikeEmail(String value) =>
+bool looksLikeEmail(String value) =>
     RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value.trim());
 
 /// Runs a provider sign-in from 06 or 10, showing failures as a toast. Returns true on success.
@@ -67,8 +67,8 @@ Future<bool> _runProvider(
 
 /// "Tiếp tục với Apple" as drawn in Figma (Button style apple, 8:33): black pill with the
 /// Apple logo in place of the design's placeholder mark (brand-mark 22:197).
-class _AppleButton extends StatelessWidget {
-  const _AppleButton({required this.onPressed});
+class AppleSignInButton extends StatelessWidget {
+  const AppleSignInButton({required this.onPressed, super.key});
   final VoidCallback? onPressed;
 
   @override
@@ -155,7 +155,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     large: false,
                   ),
                   const SizedBox(height: ClSpace.s6),
-                  _AppleButton(
+                  AppleSignInButton(
                     onPressed: _busy
                         ? null
                         : () => _provider((r) => r.signInWithApple()),
@@ -253,7 +253,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
     final l10n = AppLocalizations.of(context);
     final email = _email.text.trim();
     final password = _password.text;
-    if (!_looksLikeEmail(email)) {
+    if (!looksLikeEmail(email)) {
       return setState(() => _error = l10n.authErrorInvalidEmail);
     }
     if (_mode == EmailMode.create && password.length < 8) {
@@ -531,7 +531,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   Future<void> _send() async {
     final l10n = AppLocalizations.of(context);
     final email = _email.text.trim();
-    if (!_looksLikeEmail(email)) {
+    if (!looksLikeEmail(email)) {
       return setState(() {
         _message = l10n.authErrorInvalidEmail;
         _isError = true;
@@ -661,7 +661,7 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
         ],
       ],
       bottom: [
-        _AppleButton(
+        AppleSignInButton(
           onPressed: _busy ? null : () => _provider((r) => r.signInWithApple()),
         ),
         const SizedBox(height: ClSpace.s3),

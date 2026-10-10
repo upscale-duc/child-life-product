@@ -1,3 +1,3 @@
-/* Permission prompts (Figma 11c Chọn ảnh đại diện). */
-"NSCameraUsageDescription" = "Child Life dùng camera để chụp ảnh đại diện cho bé. Chỉ người trong gia đình xem được ảnh này.";
+/* Permission prompts (Figma 11c Chọn ảnh đại diện, 15 Quét mã QR). */
+"NSCameraUsageDescription" = "Child Life dùng camera để chụp ảnh đại diện cho bé và quét mã QR lời mời. Chỉ người trong gia đình xem được ảnh.";
 "NSPhotoLibraryUsageDescription" = "Child Life mở thư viện ảnh để bạn chọn ảnh đại diện cho bé. Chỉ người trong gia đình xem được ảnh này.";

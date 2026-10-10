@@ -178,10 +178,6 @@
   "@welcomeChipMilestone": {
     "description": "Welcome hero chip."
   },
-  "inviteCodeComingSoon": "Nhận lời mời bằng mã sẽ có ở bản tiếp theo.",
-  "@inviteCodeComingSoon": {
-    "description": "Shown until invites ship (S3)."
-  },
   "a11yToggleAppearance": "Đổi giao diện sáng / tối",
   "@a11yToggleAppearance": {
     "description": "Moon button on the Welcome top bar."
@@ -948,5 +944,899 @@
   "ageShortNewborn": "mới sinh",
   "@ageShortNewborn": {
     "description": "Short age on the day of birth (baby switcher)."
+  },
+  "actionContinue": "Tiếp tục",
+  "@actionContinue": {
+    "description": "Primary continue button (15)."
+  },
+  "actionCancel": "Huỷ",
+  "@actionCancel": {
+    "description": "Cancels a confirmation."
+  },
+  "familyErrorGeneric": "Chưa làm được. Thử lại nhé.",
+  "@familyErrorGeneric": {
+    "description": "Generic failure of a family action (G-001)."
+  },
+  "relationFriend": "Bạn bè",
+  "@relationFriend": {
+    "description": "Relation chip on 14b (116:11916)."
+  },
+  "roleCoParent": "Cùng nuôi",
+  "@roleCoParent": {
+    "description": "Role name (14b)."
+  },
+  "roleCaregiver": "Người chăm sóc",
+  "@roleCaregiver": {
+    "description": "Role name (14b)."
+  },
+  "roleRelative": "Người thân",
+  "@roleRelative": {
+    "description": "Role name (14b)."
+  },
+  "memberDetail": "{relation} · {role}",
+  "@memberDetail": {
+    "description": "Member row detail on 14a (\"Mẹ · Cùng nuôi\").",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "babyPickerTitle": "Chọn bé",
+  "@babyPickerTitle": {
+    "description": "Baby switcher sheet title (125:13223)."
+  },
+  "babyPickerYouAre": "Bạn là {label}",
+  "@babyPickerYouAre": {
+    "description": "Your relation (parents) or role (others) on a baby row.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "babyPickerRowDetail": "{age} · {youAre}",
+  "@babyPickerRowDetail": {
+    "description": "Baby row detail: age · \"Bạn là Mẹ\".",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      },
+      "youAre": {
+        "type": "String"
+      }
+    }
+  },
+  "babyPickerAdd": "Thêm hồ sơ bé",
+  "@babyPickerAdd": {
+    "description": "Add row in the baby switcher."
+  },
+  "babyPickerCount": "{count}/{max}",
+  "@babyPickerCount": {
+    "description": "Profiles you created out of the limit (R-043).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "babyPickerLimit": "Bạn tạo được tối đa {max} hồ sơ bé.",
+  "@babyPickerLimit": {
+    "description": "Footnote under the baby list.",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "babySwitched": "Đã chuyển sang {name}",
+  "@babySwitched": {
+    "description": "Toast after switching baby (125:13338).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memoriesComingSoon": "Kỷ niệm sẽ có ở bản tiếp theo.",
+  "@memoriesComingSoon": {
+    "description": "Memories tab placeholder until S5."
+  },
+  "todayViewOnly": "Bạn được xem chăm sóc hằng ngày, không ghi.",
+  "@todayViewOnly": {
+    "description": "Relative with \"Chăm sóc hằng ngày\" taps a tile (D-018)."
+  },
+  "unsavedBannerTitle": "Chưa lưu tài khoản",
+  "@unsavedBannerTitle": {
+    "description": "Banner for a temporary identity (123:12623)."
+  },
+  "unsavedBannerAction": "Lưu",
+  "@unsavedBannerAction": {
+    "description": "Banner action → 16d."
+  },
+  "saveAccountTitle": "Lưu tài khoản",
+  "@saveAccountTitle": {
+    "description": "16d sheet title (123:12712)."
+  },
+  "saveAccountBody": "Để không mất {baby} khi đổi máy hoặc cài lại app.",
+  "@saveAccountBody": {
+    "description": "16d body.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "saveAccountDone": "Đã lưu tài khoản",
+  "@saveAccountDone": {
+    "description": "Toast after linking a temporary identity."
+  },
+  "saveAccountMerged": "Đã gộp vào tài khoản của bạn",
+  "@saveAccountMerged": {
+    "description": "Toast after saving into an existing account (P-007)."
+  },
+  "saveEmailSubtitle": "Tạo tài khoản mới, hoặc đăng nhập tài khoản đã có để gộp vào đó.",
+  "@saveEmailSubtitle": {
+    "description": "16d \"Dùng email\" screen subtitle (not drawn)."
+  },
+  "saveEmailExists": "Email này đã có tài khoản. Đăng nhập để gộp vào đó.",
+  "@saveEmailExists": {
+    "description": "Email belongs to an existing account (Q-023)."
+  },
+  "signOutAnonTitle": "Đăng xuất khi chưa lưu?",
+  "@signOutAnonTitle": {
+    "description": "Confirm sign-out of a temporary identity."
+  },
+  "signOutAnonBody": "Tài khoản tạm sẽ mất, và bạn cần lời mời mới để vào lại.",
+  "@signOutAnonBody": {
+    "description": "Confirm sign-out body."
+  },
+  "signOutAnonConfirm": "Vẫn đăng xuất",
+  "@signOutAnonConfirm": {
+    "description": "Confirm sign-out button."
+  },
+  "familySubtitle": "Những người cùng chăm {baby}",
+  "@familySubtitle": {
+    "description": "Family tab subtitle (116:11226).",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "familyYou": "Bạn",
+  "@familyYou": {
+    "description": "Badge on your own row."
+  },
+  "familyPending": "Đang chờ nhận lời ({count})",
+  "@familyPending": {
+    "description": "Pending invites header.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "familyPendingDetail": "{relation} · hết hạn {date}",
+  "@familyPendingDetail": {
+    "description": "Pending row detail (\"Bà ngoại · hết hạn 15 thg 10\").",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "familyPendingExpired": "{relation} · đã hết hạn",
+  "@familyPendingExpired": {
+    "description": "Pending row of an expired invite.",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "familyPendingNoEmail": "Lời mời cho {relation}",
+  "@familyPendingNoEmail": {
+    "description": "Pending row title when no email was sent.",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "familyResend": "Gửi lại",
+  "@familyResend": {
+    "description": "Pending row chip."
+  },
+  "familyResent": "Đã gửi lại cho {email}",
+  "@familyResent": {
+    "description": "Toast after resending an invite email.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "familyInvite": "Mời người cùng chăm",
+  "@familyInvite": {
+    "description": "Family primary and 14b title."
+  },
+  "familyFootnote": "Người được mời chỉ thấy những gì bạn cho phép. Bạn có thể đổi quyền hoặc xoá bất cứ lúc nào.",
+  "@familyFootnote": {
+    "description": "Footnote under the invite button (118:12056)."
+  },
+  "familyLoadFailed": "Chưa tải được danh sách. Kiểm tra mạng nhé.",
+  "@familyLoadFailed": {
+    "description": "Members list failed to load."
+  },
+  "inviteSubtitle": "Chọn người đó là ai và được làm gì.",
+  "@inviteSubtitle": {
+    "description": "14b subtitle."
+  },
+  "inviteRelationLabel": "Người được mời là",
+  "@inviteRelationLabel": {
+    "description": "14b relation label."
+  },
+  "inviteRoleLabel": "Quyền",
+  "@inviteRoleLabel": {
+    "description": "14b / 14f role label."
+  },
+  "inviteCustomLabel": "Là ai với bé",
+  "@inviteCustomLabel": {
+    "description": "Custom relation field for \"Khác…\"."
+  },
+  "roleCoParentHint": "Toàn quyền, như ba mẹ",
+  "@roleCoParentHint": {
+    "description": "14b role subtitle."
+  },
+  "roleCaregiverHint": "Ghi & xem chăm sóc",
+  "@roleCaregiverHint": {
+    "description": "14b role subtitle."
+  },
+  "roleRelativeHint": "Xem kỷ niệm, chọn thêm quyền xem",
+  "@roleRelativeHint": {
+    "description": "14b role subtitle."
+  },
+  "roleCoParentOwnerOnly": "Chỉ người tạo hồ sơ mời được Cùng nuôi",
+  "@roleCoParentOwnerOnly": {
+    "description": "Disabled co-parent option (D-017)."
+  },
+  "inviteSeeDetails": "Xem chi tiết quyền",
+  "@inviteSeeDetails": {
+    "description": "14b link → 14b2."
+  },
+  "inviteNext": "Tiếp · Gửi lời mời",
+  "@inviteNext": {
+    "description": "14b primary."
+  },
+  "relativeRightsTitle": "Quyền của Người thân",
+  "@relativeRightsTitle": {
+    "description": "14b2 sheet title (121:11672)."
+  },
+  "relativeRightsAlways": "Luôn có: xem kỷ niệm, thả tim",
+  "@relativeRightsAlways": {
+    "description": "14b2 fixed banner."
+  },
+  "relativeRightsMore": "Cho xem thêm",
+  "@relativeRightsMore": {
+    "description": "14b2 toggles label."
+  },
+  "rightBabyInfo": "Thông tin bé",
+  "@rightBabyInfo": {
+    "description": "Extra right: DOB and weight."
+  },
+  "rightBabyInfoHint": "Ngày sinh, cân nặng",
+  "@rightBabyInfoHint": {
+    "description": "Extra right subtitle."
+  },
+  "rightDailyCare": "Chăm sóc hằng ngày",
+  "@rightDailyCare": {
+    "description": "Extra right: read-only Today (D-018)."
+  },
+  "rightDailyCareHint": "Bú, ngủ, tã · chỉ xem",
+  "@rightDailyCareHint": {
+    "description": "Extra right subtitle."
+  },
+  "roleDetailsTitle": "Quyền của {role}",
+  "@roleDetailsTitle": {
+    "description": "Access details sheet for co-parent / caregiver (not drawn).",
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "permLogCare": "Ghi bú, ngủ, tã",
+  "@permLogCare": {
+    "description": "Permission tile (30:1259)."
+  },
+  "permViewSchedule": "Xem lịch",
+  "@permViewSchedule": {
+    "description": "Permission tile."
+  },
+  "permViewReminders": "Xem nhắc việc",
+  "@permViewReminders": {
+    "description": "Permission tile."
+  },
+  "permMemories": "Kỷ niệm",
+  "@permMemories": {
+    "description": "Permission tile (locked for caregivers)."
+  },
+  "permViewMemories": "Xem kỷ niệm",
+  "@permViewMemories": {
+    "description": "Permission tile."
+  },
+  "permLove": "Thả tim",
+  "@permLove": {
+    "description": "Permission tile."
+  },
+  "permInvite": "Mời người khác",
+  "@permInvite": {
+    "description": "Permission tile."
+  },
+  "permAddMemories": "Thêm kỷ niệm",
+  "@permAddMemories": {
+    "description": "Permission tile."
+  },
+  "permDailyCare": "Xem bú, ngủ, tã",
+  "@permDailyCare": {
+    "description": "Permission tile for relatives."
+  },
+  "inviteSendTitle": "Gửi lời mời cho {relation}",
+  "@inviteSendTitle": {
+    "description": "14c title (117:11435).",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteSendSubtitle": "{relation} mở camera điện thoại và quét mã.",
+  "@inviteSendSubtitle": {
+    "description": "14c QR subtitle.",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteSendLinkSubtitle": "Gửi link này cho {relation} qua tin nhắn.",
+  "@inviteSendLinkSubtitle": {
+    "description": "14c Link tab subtitle (G-054).",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteSendEmailSubtitle": "Child Life gửi lời mời tới email của {relation}.",
+  "@inviteSendEmailSubtitle": {
+    "description": "14c Email tab subtitle (G-054).",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteSummaryChange": "Đổi",
+  "@inviteSummaryChange": {
+    "description": "Summary banner link → 14b."
+  },
+  "inviteChannelQr": "Mã QR",
+  "@inviteChannelQr": {
+    "description": "14c segment."
+  },
+  "inviteChannelLink": "Link",
+  "@inviteChannelLink": {
+    "description": "14c segment."
+  },
+  "inviteChannelEmail": "Email",
+  "@inviteChannelEmail": {
+    "description": "14c segment."
+  },
+  "inviteOrCode": "Hoặc nhập mã",
+  "@inviteOrCode": {
+    "description": "Under the QR."
+  },
+  "inviteExpiresInDays": "{days, plural, other{Hết hạn sau {days} ngày}}",
+  "@inviteExpiresInDays": {
+    "description": "Invite expiry under the code.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteExpiresToday": "Hết hạn hôm nay",
+  "@inviteExpiresToday": {
+    "description": "Invite expiry under the code (< 1 day)."
+  },
+  "inviteShare": "Chia sẻ lời mời",
+  "@inviteShare": {
+    "description": "14c primary → share sheet."
+  },
+  "inviteShareText": "{inviter} mời bạn cùng chăm {baby} trên Child Life.\nMở link: {link}\nHoặc nhập mã trong app: {code}",
+  "@inviteShareText": {
+    "description": "Text shared with the invite link.",
+    "placeholders": {
+      "inviter": {
+        "type": "String"
+      },
+      "baby": {
+        "type": "String"
+      },
+      "link": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteShareSubject": "Lời mời cùng chăm {baby}",
+  "@inviteShareSubject": {
+    "description": "Share sheet subject.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteCantScan": "{relation} không quét được?",
+  "@inviteCantScan": {
+    "description": "14c link → 14c2.",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteCopyLink": "Sao chép link",
+  "@inviteCopyLink": {
+    "description": "14c Link tab action."
+  },
+  "inviteLinkCopied": "Đã sao chép link",
+  "@inviteLinkCopied": {
+    "description": "Toast."
+  },
+  "inviteEmailLabel": "Email của {relation}",
+  "@inviteEmailLabel": {
+    "description": "14c Email tab field.",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteEmailSend": "Gửi email",
+  "@inviteEmailSend": {
+    "description": "14c Email tab primary."
+  },
+  "cantScanTitle": "{relation} không vào được?",
+  "@cantScanTitle": {
+    "description": "14c2 sheet title (121:12549).",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "cantScanStep1": "Mở app Child Life, chọn “Mã mời”",
+  "@cantScanStep1": {
+    "description": "14c2 step 1 (button label matches Welcome)."
+  },
+  "cantScanStep2": "Nhập mã {code}",
+  "@cantScanStep2": {
+    "description": "14c2 step 2.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "cantScanStep3": "Vẫn lỗi? Tạo mã mới bên dưới",
+  "@cantScanStep3": {
+    "description": "14c2 step 3."
+  },
+  "cantScanNewCode": "Tạo mã mới",
+  "@cantScanNewCode": {
+    "description": "14c2 secondary."
+  },
+  "cantScanByEmail": "Gửi qua email thay thế",
+  "@cantScanByEmail": {
+    "description": "14c2 plain."
+  },
+  "inviteNewCodeDone": "Đã tạo mã mới. Mã cũ không dùng được nữa.",
+  "@inviteNewCodeDone": {
+    "description": "Toast after regenerating (P-020)."
+  },
+  "inviteRevoke": "Huỷ lời mời",
+  "@inviteRevoke": {
+    "description": "Cancels a pending invite (G-033)."
+  },
+  "inviteRevoked": "Đã huỷ lời mời",
+  "@inviteRevoked": {
+    "description": "Toast."
+  },
+  "inviteSentTitle": "Đã gửi email cho {relation}",
+  "@inviteSentTitle": {
+    "description": "14d title (117:12007).",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteNotReceived": "{relation} không nhận được?",
+  "@inviteNotReceived": {
+    "description": "14d plain link (G-055).",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "notReceivedTitle": "Chưa nhận được email?",
+  "@notReceivedTitle": {
+    "description": "G-055 sheet title."
+  },
+  "notReceivedTip1": "Xem trong mục Thư rác hoặc Quảng cáo.",
+  "@notReceivedTip1": {
+    "description": "G-055 tip."
+  },
+  "notReceivedTip2": "Email có thể đến sau vài phút.",
+  "@notReceivedTip2": {
+    "description": "G-055 tip."
+  },
+  "notReceivedTip3": "Hoặc chia sẻ link qua tin nhắn.",
+  "@notReceivedTip3": {
+    "description": "G-055 tip."
+  },
+  "notReceivedResend": "Gửi lại email",
+  "@notReceivedResend": {
+    "description": "G-055 secondary."
+  },
+  "inviteErrorUnverified": "Xác minh email của bạn trước khi mời người khác.",
+  "@inviteErrorUnverified": {
+    "description": "Invites need a verified email (D-015)."
+  },
+  "inviteErrorOwnerOnly": "Chỉ người tạo hồ sơ mới quản lý được Cùng nuôi.",
+  "@inviteErrorOwnerOnly": {
+    "description": "D-017."
+  },
+  "inviteErrorTooSoon": "Vừa gửi xong. Đợi một phút rồi gửi lại nhé.",
+  "@inviteErrorTooSoon": {
+    "description": "Email resend too soon."
+  },
+  "inviteErrorTooMany": "Lời mời này đã gửi đủ 5 email. Hãy chia sẻ link thay thế.",
+  "@inviteErrorTooMany": {
+    "description": "Email cap per invite."
+  },
+  "inviteErrorSuppressed": "Địa chỉ này đã huỷ nhận email từ Child Life.",
+  "@inviteErrorSuppressed": {
+    "description": "Unsubscribed recipient."
+  },
+  "inviteErrorClosed": "Lời mời này không còn dùng được.",
+  "@inviteErrorClosed": {
+    "description": "Invite accepted, cancelled or expired meanwhile."
+  },
+  "memberMeta": "{relation} · tham gia {date}",
+  "@memberMeta": {
+    "description": "14f meta (record count arrives with care logs, S4).",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "roleCoParentHintFull": "Toàn quyền như ba mẹ",
+  "@roleCoParentHintFull": {
+    "description": "14f role subtitle (118:12056)."
+  },
+  "roleCaregiverHintFull": "Ghi & xem chăm sóc, không mời người",
+  "@roleCaregiverHintFull": {
+    "description": "14f role subtitle."
+  },
+  "roleRelativeHintFull": "Chỉ xem kỷ niệm được chia sẻ",
+  "@roleRelativeHintFull": {
+    "description": "14f role subtitle."
+  },
+  "memberAccessUntil": "Thời hạn",
+  "@memberAccessUntil": {
+    "description": "14f detail row (R-024)."
+  },
+  "memberAccessUntilValue": "Đến {date}",
+  "@memberAccessUntilValue": {
+    "description": "14f value.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "memberAccessNoLimit": "Không giới hạn",
+  "@memberAccessNoLimit": {
+    "description": "14f value without an end date."
+  },
+  "memberAccessHint": "{name} xem được đến hết ngày này.",
+  "@memberAccessHint": {
+    "description": "Access date sheet hint.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberAccessClear": "Bỏ giới hạn",
+  "@memberAccessClear": {
+    "description": "Access date sheet plain."
+  },
+  "memberRelation": "Là ai với bé",
+  "@memberRelation": {
+    "description": "14f detail row."
+  },
+  "memberRemove": "Xoá {name} khỏi gia đình",
+  "@memberRemove": {
+    "description": "14f destructive.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRecordsKept": "Bản ghi của {name} vẫn được giữ.",
+  "@memberRecordsKept": {
+    "description": "14f caption (R-023).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveConfirmTitle": "Xoá {name}?",
+  "@memberRemoveConfirmTitle": {
+    "description": "Removal confirmation (not drawn).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveConfirmBody": "{name} sẽ không xem được {baby} nữa. Bản ghi của {name} vẫn được giữ.",
+  "@memberRemoveConfirmBody": {
+    "description": "Removal confirmation body.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveConfirm": "Xoá",
+  "@memberRemoveConfirm": {
+    "description": "Removal confirmation button."
+  },
+  "memberRemoved": "Đã xoá {name}",
+  "@memberRemoved": {
+    "description": "Toast.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberUpdated": "Đã cập nhật",
+  "@memberUpdated": {
+    "description": "Toast after a 14f change."
+  },
+  "joinCodeTitle": "Nhập mã mời",
+  "@joinCodeTitle": {
+    "description": "15 title (30:1222)."
+  },
+  "joinCodeSubtitle": "6 số trong lời mời, hoặc quét mã QR.",
+  "@joinCodeSubtitle": {
+    "description": "15 subtitle."
+  },
+  "joinScan": "Quét mã QR",
+  "@joinScan": {
+    "description": "15 plain with camera icon."
+  },
+  "joinCodeWrong": "Mã chưa đúng. Kiểm tra lại 6 số nhé.",
+  "@joinCodeWrong": {
+    "description": "Unknown code (G-035)."
+  },
+  "joinLocked": "Nhập sai nhiều lần. Thử lại sau {minutes} phút.",
+  "@joinLocked": {
+    "description": "Lockout (P-021).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "a11yInviteCode": "Mã mời 6 số",
+  "@a11yInviteCode": {
+    "description": "Code field label."
+  },
+  "scanHint": "Đưa mã QR trong lời mời vào khung.",
+  "@scanHint": {
+    "description": "Scanner hint."
+  },
+  "scanNotInvite": "Đây không phải mã mời Child Life.",
+  "@scanNotInvite": {
+    "description": "Scanned a foreign QR."
+  },
+  "scanCameraDenied": "Cho phép camera trong Cài đặt để quét mã.",
+  "@scanCameraDenied": {
+    "description": "Camera permission denied."
+  },
+  "joinCountdownHours": "{hours, plural, other{Còn {hours} giờ}}",
+  "@joinCountdownHours": {
+    "description": "16 countdown chip.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "joinInviterTitle": "{inviter} mời bạn",
+  "@joinInviterTitle": {
+    "description": "16 title (\"Mẹ Mai mời bạn\").",
+    "placeholders": {
+      "inviter": {
+        "type": "String"
+      }
+    }
+  },
+  "joinRoleLine": "cùng chăm bé {baby} với vai trò",
+  "@joinRoleLine": {
+    "description": "16 line before the role chip.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "joinJoin": "Tham gia",
+  "@joinJoin": {
+    "description": "16 primary → 16b."
+  },
+  "joinNotMe": "Không phải tôi",
+  "@joinNotMe": {
+    "description": "16 plain (Q-024: just exits)."
+  },
+  "joinAlreadyMember": "Bạn đã ở trong gia đình {baby}.",
+  "@joinAlreadyMember": {
+    "description": "G-036.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "joinHowTitle": "Vào gia đình {baby}",
+  "@joinHowTitle": {
+    "description": "16b sheet title (123:12571).",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "joinHowBody": "Không cần tạo tài khoản. Có thể lưu lại sau.",
+  "@joinHowBody": {
+    "description": "16b body."
+  },
+  "joinNow": "Vào ngay",
+  "@joinNow": {
+    "description": "16b primary (temporary identity)."
+  },
+  "joinOrSave": "hoặc lưu tài khoản ngay",
+  "@joinOrSave": {
+    "description": "16b divider."
+  },
+  "joinConfirmTitle": "Bạn là ai với {baby}?",
+  "@joinConfirmTitle": {
+    "description": "16a title (118:12227).",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "joinConfirmSubtitle": "{inviter} đã chọn “{relation}”. Đổi nếu chưa đúng.",
+  "@joinConfirmSubtitle": {
+    "description": "16a subtitle.",
+    "placeholders": {
+      "inviter": {
+        "type": "String"
+      },
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "joinConfirmGo": "Vào xem {baby}",
+  "@joinConfirmGo": {
+    "description": "16a primary.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "joinExpiredTitle": "Lời mời đã hết hạn",
+  "@joinExpiredTitle": {
+    "description": "17 title (30:1346)."
+  },
+  "joinExpiredBody": "Nhờ người mời gửi link mới nhé.",
+  "@joinExpiredBody": {
+    "description": "17 body."
+  },
+  "joinRevokedTitle": "Lời mời đã bị huỷ",
+  "@joinRevokedTitle": {
+    "description": "Revoked invite (G-035)."
+  },
+  "joinRevokedBody": "Nhờ người mời gửi lời mời mới nhé.",
+  "@joinRevokedBody": {
+    "description": "Revoked invite body."
+  },
+  "joinUsedTitle": "Lời mời đã được dùng",
+  "@joinUsedTitle": {
+    "description": "Used invite (G-035)."
+  },
+  "joinUsedBody": "Mỗi lời mời chỉ dùng được một lần. Nhờ người mời gửi lời mời mới nhé.",
+  "@joinUsedBody": {
+    "description": "Used invite body."
+  },
+  "joinNotFoundTitle": "Không tìm thấy lời mời",
+  "@joinNotFoundTitle": {
+    "description": "Unknown link (G-035)."
+  },
+  "joinNotFoundBody": "Kiểm tra lại link, hoặc nhập mã 6 số.",
+  "@joinNotFoundBody": {
+    "description": "Unknown link body."
+  },
+  "joinOtherCode": "Nhập mã khác",
+  "@joinOtherCode": {
+    "description": "17 primary."
+  },
+  "joinBackToStart": "Về trang đầu",
+  "@joinBackToStart": {
+    "description": "17 secondary."
+  },
+  "lostAccessTitle": "Bạn không còn quyền xem hồ sơ này",
+  "@lostAccessTitle": {
+    "description": "9d title (127:15135)."
+  },
+  "lostAccessBody": "Quyền của bạn đã thay đổi. Nội dung trên máy này đã được ẩn.",
+  "@lostAccessBody": {
+    "description": "9d body."
+  },
+  "lostAccessHome": "Về trang chính",
+  "@lostAccessHome": {
+    "description": "9d primary."
+  },
+  "lostAccessRequest": "Xin lời mời mới",
+  "@lostAccessRequest": {
+    "description": "9d secondary → share sheet."
+  },
+  "lostAccessShareText": "Mình không còn xem được hồ sơ của bé trên Child Life. Bạn gửi mình lời mời mới nhé?",
+  "@lostAccessShareText": {
+    "description": "Message shared from 9d."
   }
 }

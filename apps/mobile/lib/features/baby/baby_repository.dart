@@ -96,6 +96,10 @@ class BabyRepository {
     }
   }
 
+  /// Lost access (R-025, P-006): drop this session's copy of the baby's photo.
+  void forgetBaby(String babyId) =>
+      _avatarCache.removeWhere((key, _) => key.startsWith('$babyId:'));
+
   Future<Uint8List?> avatarPhoto(String babyId, int version) async {
     final key = '$babyId:$version';
     final cached = _avatarCache[key];

@@ -141,7 +141,10 @@ class AuthRepository {
     }
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<void> signInWithGoogle() async =>
+      _signInWithCredential(await _googleCredential());
+
+  Future<AuthCredential> _googleCredential() async {
     final serverClientId = _config.googleServerClientId;
     if (serverClientId == null) {
       throw const AuthException(AuthFailure.notConfigured);
@@ -159,9 +162,7 @@ class AuthRepository {
       final account = await GoogleSignIn.instance.authenticate();
       final idToken = account.authentication.idToken;
       if (idToken == null) throw const AuthException(AuthFailure.other);
-      await _signInWithCredential(
-        GoogleAuthProvider.credential(idToken: idToken),
-      );
+      return GoogleAuthProvider.credential(idToken: idToken);
     } on GoogleSignInException catch (e) {
       throw AuthException(switch (e.code) {
         GoogleSignInExceptionCode.canceled ||
@@ -186,6 +187,10 @@ class AuthRepository {
       });
       return;
     }
+    await _signInWithCredential(await _appleCredential());
+  }
+
+  Future<AuthCredential> _appleCredential() async {
     final rawNonce = _nonce();
     try {
       final apple = await SignInWithApple.getAppleIDCredential(
@@ -195,12 +200,10 @@ class AuthRepository {
         ],
         nonce: sha256.convert(utf8.encode(rawNonce)).toString(),
       );
-      await _signInWithCredential(
-        OAuthProvider('apple.com').credential(
-          idToken: apple.identityToken,
-          rawNonce: rawNonce,
-          accessToken: apple.authorizationCode,
-        ),
+      return OAuthProvider('apple.com').credential(
+        idToken: apple.identityToken,
+        rawNonce: rawNonce,
+        accessToken: apple.authorizationCode,
       );
     } on SignInWithAppleAuthorizationException catch (e) {
       throw AuthException(
@@ -209,6 +212,77 @@ class AuthRepository {
             : AuthFailure.other,
       );
     }
+  }
+
+  // ---------- Temporary identity (16b "Vào ngay", 16d "Lưu tài khoản") ----------
+
+  /// "Vào ngay": join without an account (R-030).
+  Future<void> signInAnonymously() => _guard(() async {
+    await _auth.signInAnonymously();
+  });
+
+  /// 16d "Dùng email" → new account: the same uid keeps its memberships (R-031).
+  Future<void> saveAnonymousWithEmail(String email, String password) =>
+      _guard(() async {
+        final user = _auth.currentUser;
+        if (user == null || !user.isAnonymous) {
+          throw const AuthException(AuthFailure.other);
+        }
+        final result = await user.linkWithCredential(
+          EmailAuthProvider.credential(email: email, password: password),
+        );
+        // Continue unverified is allowed (P-008); the link still goes out.
+        await result.user?.sendEmailVerification();
+      });
+
+  /// 16d Apple / Google. Returns false when the credential already has an account: the caller
+  /// then signs into it with [mergeAnonymousInto].
+  Future<bool> saveAnonymousWithProvider({required bool apple}) async {
+    if (apple && !_config.appleConfigured) {
+      throw const AuthException(AuthFailure.notConfigured);
+    }
+    final credential = apple
+        ? await _appleCredential()
+        : await _googleCredential();
+    final user = _auth.currentUser;
+    if (user == null || !user.isAnonymous) {
+      throw const AuthException(AuthFailure.other);
+    }
+    try {
+      await user.linkWithCredential(credential);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'credential-already-in-use' ||
+          e.code == 'email-already-in-use') {
+        _collision = e.credential ?? credential;
+        return false;
+      }
+      throw AuthException(failureOf(e));
+    }
+  }
+
+  AuthCredential? _collision;
+
+  /// P-007: signs into the account that already owns the credential and lets [claim] move the
+  /// temporary identity's memberships there (server verifies the anonymous ID token).
+  Future<void> mergeAnonymousInto({
+    required Future<void> Function(String anonymousIdToken) claim,
+    String? email,
+    String? password,
+  }) async {
+    final user = _auth.currentUser;
+    if (user == null || !user.isAnonymous) {
+      throw const AuthException(AuthFailure.other);
+    }
+    final anonymousIdToken = await user.getIdToken();
+    if (anonymousIdToken == null) throw const AuthException(AuthFailure.other);
+    final credential = email != null && password != null
+        ? EmailAuthProvider.credential(email: email, password: password)
+        : _collision;
+    if (credential == null) throw const AuthException(AuthFailure.other);
+    await _guard(() => _auth.signInWithCredential(credential));
+    _collision = null;
+    await claim(anonymousIdToken);
   }
 
   Future<void> _signInWithCredential(AuthCredential credential) =>

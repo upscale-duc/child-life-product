@@ -10,7 +10,7 @@ import '../baby/baby_models.dart';
 class SetupDraft {
   SetupDraft({
     this.displayName = '',
-    this.relation = SelfRelation.mother,
+    this.relation = Relation.mother,
     this.relationCustom = '',
     this.nickname = '',
     DateTime? dateOfBirth,
@@ -32,7 +32,7 @@ class SetupDraft {
   };
 
   final String displayName;
-  final SelfRelation relation;
+  final Relation relation;
   final String relationCustom;
   final String nickname;
 
@@ -58,11 +58,11 @@ class SetupDraft {
 
   bool get whoComplete =>
       displayName.trim().isNotEmpty &&
-      (relation != SelfRelation.other || relationCustom.trim().isNotEmpty);
+      (relation != Relation.other || relationCustom.trim().isNotEmpty);
 
   SetupDraft copyWith({
     String? displayName,
-    SelfRelation? relation,
+    Relation? relation,
     String? relationCustom,
     String? nickname,
     DateTime? dateOfBirth,
@@ -97,7 +97,7 @@ class SetupDraft {
     trackers: trackers,
     displayName: displayName,
     relation: relation,
-    relationCustom: relation == SelfRelation.other ? relationCustom : null,
+    relationCustom: relation == Relation.other ? relationCustom : null,
   );
 }
 

@@ -11,7 +11,6 @@ import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_art.dart';
 import '../../core/widgets/cl_button.dart';
-import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
@@ -168,9 +167,7 @@ class WelcomeScreen extends ConsumerWidget {
               child: ClButton(
                 label: l10n.welcomeInviteCode,
                 style: ClButtonStyle.secondary,
-                // Invite redemption (15–17) is Slice S3.
-                onPressed: () =>
-                    showClToast(context, message: l10n.inviteCodeComingSoon),
+                onPressed: () => context.push(Routes.join),
                 expand: true,
               ),
             ),

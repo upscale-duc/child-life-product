@@ -280,9 +280,12 @@ class ClMemberRow extends StatelessWidget {
     this.resendLabel,
     this.onTap,
     this.onResend,
+    this.avatarFill,
     super.key,
   });
 
+  /// Per-member tint (Figma 14a: peach, mint, sun, lavender); peach-soft by default.
+  final Color? avatarFill;
   final String initial;
   final String name;
   final String detail;
@@ -291,6 +294,17 @@ class ClMemberRow extends StatelessWidget {
   final String? resendLabel;
   final VoidCallback? onTap;
   final VoidCallback? onResend;
+
+  /// A pending row opens its invite (re-share, new code) from the text; "Gửi lại" stays separate.
+  Widget _tappableWhenPending(Widget child) =>
+      status == ClMemberStatus.pending && onTap != null
+      ? ClPressable(
+          onPressed: onTap,
+          pressedScale: 0.99,
+          semanticLabel: '$name, $detail',
+          child: ExcludeSemantics(child: child),
+        )
+      : child;
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +323,7 @@ class ClMemberRow extends StatelessWidget {
             height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: pending ? c.surface : c.peachSoft,
+              color: pending ? c.surface : (avatarFill ?? c.peachSoft),
               border: pending
                   ? Border.all(color: c.controlBorder, width: 1.5)
                   : null,
@@ -319,16 +333,18 @@ class ClMemberRow extends StatelessWidget {
           ),
           const SizedBox(width: ClSpace.s3),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: cl.text.bodyStrong),
-                const SizedBox(height: 2),
-                Text(
-                  detail,
-                  style: cl.text.caption.copyWith(color: c.inkMuted),
-                ),
-              ],
+            child: _tappableWhenPending(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name, style: cl.text.bodyStrong),
+                  const SizedBox(height: 2),
+                  Text(
+                    detail,
+                    style: cl.text.caption.copyWith(color: c.inkMuted),
+                  ),
+                ],
+              ),
             ),
           ),
           switch (status) {
@@ -337,11 +353,15 @@ class ClMemberRow extends StatelessWidget {
               fill: c.mintSoft,
               ink: c.mintText,
             ),
+            // View-only rows (caregivers, relatives, protected members) have no chevron.
+            ClMemberStatus.member when onTap == null => const SizedBox.shrink(),
             ClMemberStatus.member => ClIcon(
               ClIcons.chevronRight,
               size: 18,
               color: c.inkMuted,
             ),
+            ClMemberStatus.pending when onResend == null =>
+              const SizedBox.shrink(),
             ClMemberStatus.pending => ClPressable(
               onPressed: onResend,
               semanticLabel: resendLabel,

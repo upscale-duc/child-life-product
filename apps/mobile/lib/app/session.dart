@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/appearance/appearance_providers.dart';
 import '../features/auth/auth_repository.dart';
 import '../features/baby/baby_models.dart';
 import 'providers.dart';
@@ -32,6 +33,12 @@ class SessionSignedIn extends Session {
       if (m.isActive) m,
   ];
   bool get hasBaby => active.isNotEmpty;
+
+  /// "Vào ngay" (16b, R-030): a temporary identity until "Lưu tài khoản" (16d).
+  bool get isAnonymous => user.isAnonymous;
+
+  Membership? membershipFor(String babyId) =>
+      active.where((m) => m.babyId == babyId).firstOrNull;
 
   /// Email accounts that have not opened the verification link (P-008: may continue).
   bool get emailUnverified =>
@@ -97,4 +104,98 @@ class VerifyDeferred extends Notifier<Set<String>> {
   Set<String> build() => const {};
 
   void defer(String uid) => state = {...state, uid};
+}
+
+/// Babies this device has shown for each account, so a membership that later ends (removed,
+/// expired, R-025) is noticed — on the next launch too — and 9d is shown once.
+final knownBabiesProvider = NotifierProvider<KnownBabies, Set<String>>(
+  KnownBabies.new,
+);
+
+class KnownBabies extends Notifier<Set<String>> {
+  String? _key;
+
+  @override
+  Set<String> build() {
+    final session = ref.watch(sessionProvider);
+    if (session is! SessionSignedIn) {
+      _key = null;
+      return const {};
+    }
+    final prefs = ref.read(sharedPreferencesProvider);
+    final key = _key = 'family.knownBabies.${session.user.uid}';
+    final saved = prefs.getStringList(key)?.toSet() ?? <String>{};
+    final merged = {...saved, for (final m in session.active) m.babyId};
+    if (merged.length != saved.length) {
+      prefs.setStringList(key, merged.toList());
+    }
+    return merged;
+  }
+
+  /// "Về trang chính" on 9d: the lost baby is acknowledged and forgotten on this device.
+  void forget(String babyId) {
+    final key = _key;
+    if (key == null) return;
+    state = {...state}..remove(babyId);
+    ref.read(sharedPreferencesProvider).setStringList(key, state.toList());
+  }
+}
+
+/// The baby whose access ended while this device knew it (9d), if any. "Left" and "merged"
+/// memberships are the user's own doing and do not show 9d.
+final lostAccessBabyIdProvider = Provider<String?>((ref) {
+  final session = ref.watch(sessionProvider);
+  if (session is! SessionSignedIn) return null;
+  final known = ref.watch(knownBabiesProvider);
+  final now = DateTime.now();
+  for (final m in session.memberships) {
+    final ended =
+        m.status == MembershipStatus.removed ||
+        m.status == MembershipStatus.expired ||
+        (m.status == MembershipStatus.active && !m.isActiveAt(now));
+    if (ended &&
+        known.contains(m.babyId) &&
+        session.membershipFor(m.babyId) == null) {
+      return m.babyId;
+    }
+  }
+  return null;
+});
+
+/// While a temporary identity is being saved into an existing account (16d → P-007), the new
+/// account briefly has no babies; routing waits instead of opening setup.
+final accountMergeInProgressProvider =
+    NotifierProvider<AccountMergeInProgress, bool>(AccountMergeInProgress.new);
+
+class AccountMergeInProgress extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set(bool value) => state = value;
+}
+
+/// "Thêm hồ sơ bé" (9x) reopens setup (10a → 11 → 12) for an account that has a baby.
+final addingBabyProvider = NotifierProvider<AddingBaby, bool>(AddingBaby.new);
+
+class AddingBaby extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set(bool value) => state = value;
+}
+
+/// Waits (≤ 10 s) until "my babies" includes [babyId] — after createBabyProfile or
+/// acceptFamilyInvite, before routing to Today (otherwise the guard would bounce back).
+Future<void> waitForMembership(
+  ProviderContainer container,
+  String babyId,
+) async {
+  final deadline = DateTime.now().add(const Duration(seconds: 10));
+  while (DateTime.now().isBefore(deadline)) {
+    final session = container.read(sessionProvider);
+    if (session is SessionSignedIn && session.membershipFor(babyId) != null) {
+      return;
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 150));
+  }
 }

@@ -131,10 +131,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeChipMilestone => 'New milestone';
 
   @override
-  String get inviteCodeComingSoon =>
-      'Joining with an invite code arrives in the next build.';
-
-  @override
   String get a11yToggleAppearance => 'Switch light / dark';
 
   @override
@@ -737,4 +733,610 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ageShortNewborn => 'newborn';
+
+  @override
+  String get actionContinue => 'Continue';
+
+  @override
+  String get actionCancel => 'Cancel';
+
+  @override
+  String get familyErrorGeneric => 'That didn\'t work. Please try again.';
+
+  @override
+  String get relationFriend => 'Friend';
+
+  @override
+  String get roleCoParent => 'Co-parent';
+
+  @override
+  String get roleCaregiver => 'Caregiver';
+
+  @override
+  String get roleRelative => 'Family member';
+
+  @override
+  String memberDetail(String relation, String role) {
+    return '$relation · $role';
+  }
+
+  @override
+  String get babyPickerTitle => 'Choose baby';
+
+  @override
+  String babyPickerYouAre(String label) {
+    return 'You\'re $label';
+  }
+
+  @override
+  String babyPickerRowDetail(String age, String youAre) {
+    return '$age · $youAre';
+  }
+
+  @override
+  String get babyPickerAdd => 'Add baby profile';
+
+  @override
+  String babyPickerCount(int count, int max) {
+    return '$count/$max';
+  }
+
+  @override
+  String babyPickerLimit(int max) {
+    return 'You can create up to $max baby profiles.';
+  }
+
+  @override
+  String babySwitched(String name) {
+    return 'Switched to $name';
+  }
+
+  @override
+  String get memoriesComingSoon => 'Memories arrive in a later build.';
+
+  @override
+  String get todayViewOnly => 'You can view daily care, not log it.';
+
+  @override
+  String get unsavedBannerTitle => 'Account not saved';
+
+  @override
+  String get unsavedBannerAction => 'Save';
+
+  @override
+  String get saveAccountTitle => 'Save your account';
+
+  @override
+  String saveAccountBody(String baby) {
+    return 'So you don\'t lose $baby when you change phones or reinstall the app.';
+  }
+
+  @override
+  String get saveAccountDone => 'Account saved';
+
+  @override
+  String get saveAccountMerged => 'Merged into your account';
+
+  @override
+  String get saveEmailSubtitle =>
+      'Create a new account, or sign in to an existing one to merge into it.';
+
+  @override
+  String get saveEmailExists =>
+      'This email already has an account. Sign in to merge into it.';
+
+  @override
+  String get signOutAnonTitle => 'Sign out without saving?';
+
+  @override
+  String get signOutAnonBody =>
+      'Your temporary account will be lost, and you\'ll need a new invite to come back.';
+
+  @override
+  String get signOutAnonConfirm => 'Sign out anyway';
+
+  @override
+  String familySubtitle(String baby) {
+    return 'People caring for $baby';
+  }
+
+  @override
+  String get familyYou => 'You';
+
+  @override
+  String familyPending(int count) {
+    return 'Waiting to accept ($count)';
+  }
+
+  @override
+  String familyPendingDetail(String relation, String date) {
+    return '$relation · expires $date';
+  }
+
+  @override
+  String familyPendingExpired(String relation) {
+    return '$relation · expired';
+  }
+
+  @override
+  String familyPendingNoEmail(String relation) {
+    return 'Invite for $relation';
+  }
+
+  @override
+  String get familyResend => 'Resend';
+
+  @override
+  String familyResent(String email) {
+    return 'Sent again to $email';
+  }
+
+  @override
+  String get familyInvite => 'Invite someone to help';
+
+  @override
+  String get familyFootnote =>
+      'People you invite only see what you allow. You can change their access or remove them at any time.';
+
+  @override
+  String get familyLoadFailed =>
+      'Couldn\'t load the list. Check your connection.';
+
+  @override
+  String get inviteSubtitle => 'Choose who they are and what they can do.';
+
+  @override
+  String get inviteRelationLabel => 'They are your baby\'s';
+
+  @override
+  String get inviteRoleLabel => 'Access';
+
+  @override
+  String get inviteCustomLabel => 'Relation to the baby';
+
+  @override
+  String get roleCoParentHint => 'Full access, like a parent';
+
+  @override
+  String get roleCaregiverHint => 'Log & view care';
+
+  @override
+  String get roleRelativeHint => 'View memories, choose extra views';
+
+  @override
+  String get roleCoParentOwnerOnly =>
+      'Only the profile creator can add co-parents';
+
+  @override
+  String get inviteSeeDetails => 'See access details';
+
+  @override
+  String get inviteNext => 'Next · Send invite';
+
+  @override
+  String get relativeRightsTitle => 'A family member\'s access';
+
+  @override
+  String get relativeRightsAlways => 'Always: view memories, send love';
+
+  @override
+  String get relativeRightsMore => 'Also allow';
+
+  @override
+  String get rightBabyInfo => 'Baby info';
+
+  @override
+  String get rightBabyInfoHint => 'Birthday, weight';
+
+  @override
+  String get rightDailyCare => 'Daily care';
+
+  @override
+  String get rightDailyCareHint => 'Feeds, sleep, diapers · view only';
+
+  @override
+  String roleDetailsTitle(String role) {
+    return '$role access';
+  }
+
+  @override
+  String get permLogCare => 'Log feeds, sleep, diapers';
+
+  @override
+  String get permViewSchedule => 'View the schedule';
+
+  @override
+  String get permViewReminders => 'View reminders';
+
+  @override
+  String get permMemories => 'Memories';
+
+  @override
+  String get permViewMemories => 'View memories';
+
+  @override
+  String get permLove => 'Send love';
+
+  @override
+  String get permInvite => 'Invite others';
+
+  @override
+  String get permAddMemories => 'Add memories';
+
+  @override
+  String get permDailyCare => 'View feeds, sleep, diapers';
+
+  @override
+  String inviteSendTitle(String relation) {
+    return 'Send the invite to $relation';
+  }
+
+  @override
+  String inviteSendSubtitle(String relation) {
+    return '$relation opens their phone camera and scans the code.';
+  }
+
+  @override
+  String inviteSendLinkSubtitle(String relation) {
+    return 'Send this link to $relation in a message.';
+  }
+
+  @override
+  String inviteSendEmailSubtitle(String relation) {
+    return 'Child Life emails the invite to $relation.';
+  }
+
+  @override
+  String get inviteSummaryChange => 'Change';
+
+  @override
+  String get inviteChannelQr => 'QR code';
+
+  @override
+  String get inviteChannelLink => 'Link';
+
+  @override
+  String get inviteChannelEmail => 'Email';
+
+  @override
+  String get inviteOrCode => 'Or enter the code';
+
+  @override
+  String inviteExpiresInDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Expires in $days days',
+      one: 'Expires in 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get inviteExpiresToday => 'Expires today';
+
+  @override
+  String get inviteShare => 'Share invite';
+
+  @override
+  String inviteShareText(
+    String inviter,
+    String baby,
+    String link,
+    String code,
+  ) {
+    return '$inviter invited you to care for $baby on Child Life.\nOpen: $link\nOr enter this code in the app: $code';
+  }
+
+  @override
+  String inviteShareSubject(String baby) {
+    return 'Invite to care for $baby';
+  }
+
+  @override
+  String inviteCantScan(String relation) {
+    return '$relation can\'t scan?';
+  }
+
+  @override
+  String get inviteCopyLink => 'Copy link';
+
+  @override
+  String get inviteLinkCopied => 'Link copied';
+
+  @override
+  String inviteEmailLabel(String relation) {
+    return '$relation\'s email';
+  }
+
+  @override
+  String get inviteEmailSend => 'Send email';
+
+  @override
+  String cantScanTitle(String relation) {
+    return '$relation can\'t get in?';
+  }
+
+  @override
+  String get cantScanStep1 =>
+      'Open the Child Life app and choose “Invite code”';
+
+  @override
+  String cantScanStep2(String code) {
+    return 'Enter the code $code';
+  }
+
+  @override
+  String get cantScanStep3 => 'Still stuck? Create a new code below';
+
+  @override
+  String get cantScanNewCode => 'Create new code';
+
+  @override
+  String get cantScanByEmail => 'Send by email instead';
+
+  @override
+  String get inviteNewCodeDone =>
+      'New code created. The old one no longer works.';
+
+  @override
+  String get inviteRevoke => 'Cancel invite';
+
+  @override
+  String get inviteRevoked => 'Invite cancelled';
+
+  @override
+  String inviteSentTitle(String relation) {
+    return 'Email sent to $relation';
+  }
+
+  @override
+  String inviteNotReceived(String relation) {
+    return '$relation didn\'t get it?';
+  }
+
+  @override
+  String get notReceivedTitle => 'No email yet?';
+
+  @override
+  String get notReceivedTip1 => 'Check the Spam or Promotions folder.';
+
+  @override
+  String get notReceivedTip2 => 'Email can take a few minutes.';
+
+  @override
+  String get notReceivedTip3 => 'Or share the link in a message.';
+
+  @override
+  String get notReceivedResend => 'Send again';
+
+  @override
+  String get inviteErrorUnverified =>
+      'Verify your email before inviting others.';
+
+  @override
+  String get inviteErrorOwnerOnly =>
+      'Only the profile creator can manage co-parents.';
+
+  @override
+  String get inviteErrorTooSoon =>
+      'Just sent. Wait a minute before sending again.';
+
+  @override
+  String get inviteErrorTooMany =>
+      'This invite has been emailed 5 times. Share the link instead.';
+
+  @override
+  String get inviteErrorSuppressed =>
+      'This address has unsubscribed from Child Life emails.';
+
+  @override
+  String get inviteErrorClosed => 'This invite can no longer be used.';
+
+  @override
+  String memberMeta(String relation, String date) {
+    return '$relation · joined $date';
+  }
+
+  @override
+  String get roleCoParentHintFull => 'Full access, like a parent';
+
+  @override
+  String get roleCaregiverHintFull => 'Log & view care, can\'t invite';
+
+  @override
+  String get roleRelativeHintFull => 'Only sees shared memories';
+
+  @override
+  String get memberAccessUntil => 'Access until';
+
+  @override
+  String memberAccessUntilValue(String date) {
+    return 'Until $date';
+  }
+
+  @override
+  String get memberAccessNoLimit => 'No limit';
+
+  @override
+  String memberAccessHint(String name) {
+    return '$name has access until the end of this day.';
+  }
+
+  @override
+  String get memberAccessClear => 'Remove limit';
+
+  @override
+  String get memberRelation => 'Relation to baby';
+
+  @override
+  String memberRemove(String name) {
+    return 'Remove $name from the family';
+  }
+
+  @override
+  String memberRecordsKept(String name) {
+    return '$name\'s logs are kept.';
+  }
+
+  @override
+  String memberRemoveConfirmTitle(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String memberRemoveConfirmBody(String name, String baby) {
+    return '$name will no longer see $baby. Their logs are kept.';
+  }
+
+  @override
+  String get memberRemoveConfirm => 'Remove';
+
+  @override
+  String memberRemoved(String name) {
+    return 'Removed $name';
+  }
+
+  @override
+  String get memberUpdated => 'Updated';
+
+  @override
+  String get joinCodeTitle => 'Enter invite code';
+
+  @override
+  String get joinCodeSubtitle =>
+      'The 6 digits in the invite, or scan the QR code.';
+
+  @override
+  String get joinScan => 'Scan QR code';
+
+  @override
+  String get joinCodeWrong => 'That code doesn\'t match. Check the 6 digits.';
+
+  @override
+  String joinLocked(int minutes) {
+    return 'Too many tries. Try again in $minutes min.';
+  }
+
+  @override
+  String get a11yInviteCode => '6-digit invite code';
+
+  @override
+  String get scanHint => 'Fit the invite QR code in the frame.';
+
+  @override
+  String get scanNotInvite => 'This isn\'t a Child Life invite.';
+
+  @override
+  String get scanCameraDenied => 'Allow camera access in Settings to scan.';
+
+  @override
+  String joinCountdownHours(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours hours left',
+      one: '1 hour left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String joinInviterTitle(String inviter) {
+    return '$inviter invited you';
+  }
+
+  @override
+  String joinRoleLine(String baby) {
+    return 'to care for $baby as';
+  }
+
+  @override
+  String get joinJoin => 'Join';
+
+  @override
+  String get joinNotMe => 'Not me';
+
+  @override
+  String joinAlreadyMember(String baby) {
+    return 'You\'re already in $baby\'s family.';
+  }
+
+  @override
+  String joinHowTitle(String baby) {
+    return 'Join $baby\'s family';
+  }
+
+  @override
+  String get joinHowBody => 'No account needed. You can save it later.';
+
+  @override
+  String get joinNow => 'Join now';
+
+  @override
+  String get joinOrSave => 'or save an account now';
+
+  @override
+  String joinConfirmTitle(String baby) {
+    return 'Who are you to $baby?';
+  }
+
+  @override
+  String joinConfirmSubtitle(String inviter, String relation) {
+    return '$inviter chose “$relation”. Change it if it isn\'t right.';
+  }
+
+  @override
+  String joinConfirmGo(String baby) {
+    return 'See $baby';
+  }
+
+  @override
+  String get joinExpiredTitle => 'This invite has expired';
+
+  @override
+  String get joinExpiredBody =>
+      'Ask the person who invited you to send a new link.';
+
+  @override
+  String get joinRevokedTitle => 'This invite was cancelled';
+
+  @override
+  String get joinRevokedBody => 'Ask the person who invited you for a new one.';
+
+  @override
+  String get joinUsedTitle => 'This invite has been used';
+
+  @override
+  String get joinUsedBody =>
+      'Each invite works once. Ask the person who invited you for a new one.';
+
+  @override
+  String get joinNotFoundTitle => 'We couldn\'t find this invite';
+
+  @override
+  String get joinNotFoundBody => 'Check the link, or enter the 6-digit code.';
+
+  @override
+  String get joinOtherCode => 'Enter another code';
+
+  @override
+  String get joinBackToStart => 'Back to start';
+
+  @override
+  String get lostAccessTitle => 'You no longer have access to this profile';
+
+  @override
+  String get lostAccessBody =>
+      'Your access has changed. Content on this device has been hidden.';
+
+  @override
+  String get lostAccessHome => 'Go to home';
+
+  @override
+  String get lostAccessRequest => 'Ask for a new invite';
+
+  @override
+  String get lostAccessShareText =>
+      'I can\'t see our baby\'s profile on Child Life anymore. Could you send me a new invite?';
 }

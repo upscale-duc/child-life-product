@@ -1,8 +1,19 @@
 import 'package:child_life/app/route_guard.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-String? go(GuardState state, String location, {bool splashDone = true}) =>
-    guardRoute(state: state, location: location, splashDone: splashDone);
+String? go(
+  GuardState state,
+  String location, {
+  bool splashDone = true,
+  bool lostAccess = false,
+  bool addingBaby = false,
+}) => guardRoute(
+  state: state,
+  location: location,
+  splashDone: splashDone,
+  lostAccess: lostAccess,
+  addingBaby: addingBaby,
+);
 
 void main() {
   group('route guard (S2 flow 1–4)', () {
@@ -74,6 +85,61 @@ void main() {
       for (final s in GuardState.values) {
         expect(go(s, Routes.showcase), isNull);
       }
+    });
+  });
+
+  group('route guard (S3 invites and access)', () {
+    const joinFlow = [
+      Routes.join,
+      Routes.joinScan,
+      Routes.joinInvite,
+      Routes.joinConfirm,
+      '${Routes.joinClosed}?reason=expired',
+      '${Routes.inviteLink}/AbCdEfGhIjKlMnOpQrStUvWxYz012345',
+    ];
+
+    test('invites open signed out, mid-setup and with a baby (15–17, /i)', () {
+      for (final l in joinFlow) {
+        for (final s in [
+          GuardState.signedOut,
+          GuardState.needsSetup,
+          GuardState.joining,
+          GuardState.ready,
+        ]) {
+          expect(go(s, l), isNull, reason: '$s $l');
+        }
+      }
+    });
+
+    test('a temporary identity without a baby stays in the join flow', () {
+      expect(go(GuardState.joining, Routes.today), Routes.join);
+      expect(go(GuardState.joining, Routes.who), Routes.join);
+      expect(go(GuardState.joining, Routes.splash), Routes.join);
+    });
+
+    test('family screens need a baby', () {
+      expect(go(GuardState.signedOut, Routes.family), Routes.welcome);
+      expect(go(GuardState.needsSetup, Routes.invite), Routes.who);
+      expect(go(GuardState.ready, Routes.invite), isNull);
+      expect(go(GuardState.ready, Routes.saveAccountEmail), isNull);
+    });
+
+    test('lost access shows 9d first, in any signed-in state (R-025)', () {
+      for (final s in [
+        GuardState.ready,
+        GuardState.needsSetup,
+        GuardState.joining,
+      ]) {
+        expect(go(s, Routes.family, lostAccess: true), Routes.lostAccess);
+        expect(go(s, Routes.lostAccess, lostAccess: true), isNull);
+      }
+      expect(go(GuardState.ready, Routes.lostAccess), Routes.splash);
+    });
+
+    test('"Thêm hồ sơ bé" reopens setup only while adding', () {
+      expect(go(GuardState.ready, Routes.who), Routes.today);
+      expect(go(GuardState.ready, Routes.who, addingBaby: true), isNull);
+      expect(go(GuardState.ready, Routes.trackers, addingBaby: true), isNull);
     });
   });
 }

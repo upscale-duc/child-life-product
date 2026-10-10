@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../app/route_guard.dart';
+import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
@@ -27,6 +28,7 @@ import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../baby/time_zones.dart';
+import '../home/home_shell.dart';
 import 'setup_draft.dart';
 import 'setup_sheets.dart';
 import 'widgets/onboarding_layout.dart';
@@ -38,17 +40,17 @@ const _progressTrackers = 0.9;
 
 String relationLabel(
   AppLocalizations l10n,
-  SelfRelation relation, [
+  Relation relation, [
   String custom = '',
 ]) => switch (relation) {
-  SelfRelation.mother => l10n.relationMother,
-  SelfRelation.father => l10n.relationFather,
-  SelfRelation.grandmother => l10n.relationGrandmother,
-  SelfRelation.grandfather => l10n.relationGrandfather,
-  SelfRelation.nanny => l10n.relationNanny,
-  SelfRelation.relative => l10n.relationRelative,
-  SelfRelation.other =>
-    custom.trim().isEmpty ? l10n.relationOther : custom.trim(),
+  Relation.mother => l10n.relationMother,
+  Relation.father => l10n.relationFather,
+  Relation.grandmother => l10n.relationGrandmother,
+  Relation.grandfather => l10n.relationGrandfather,
+  Relation.nanny => l10n.relationNanny,
+  Relation.relative => l10n.relationRelative,
+  Relation.friend => l10n.relationFriend,
+  Relation.other => custom.trim().isEmpty ? l10n.relationOther : custom.trim(),
 };
 
 /// 10a Bạn là ai với bé (115:11756): display name + relation (R-008).
@@ -136,9 +138,9 @@ class _WhoAreYouScreenState extends ConsumerState<WhoAreYouScreen> {
           spacing: ClSpace.s2,
           runSpacing: ClSpace.s2,
           children: [
-            for (final relation in SelfRelation.values)
+            for (final relation in selfRelations)
               ClRelationChip(
-                label: relation == SelfRelation.other
+                label: relation == Relation.other
                     ? l10n.relationOther
                     : relationLabel(l10n, relation),
                 selected: draft.relation == relation,
@@ -149,7 +151,7 @@ class _WhoAreYouScreenState extends ConsumerState<WhoAreYouScreen> {
           ],
         ),
         _MaybeAnimatedSize(
-          child: draft.relation == SelfRelation.other
+          child: draft.relation == Relation.other
               ? Padding(
                   padding: const EdgeInsets.only(top: ClSpace.s4),
                   child: ClTextField(
@@ -421,6 +423,7 @@ class _TrackersScreenState extends ConsumerState<TrackersScreen> {
     final l10n = AppLocalizations.of(context);
     final draft = ref.read(setupDraftProvider);
     final repo = ref.read(babyRepositoryProvider);
+    final container = ProviderScope.containerOf(context, listen: false);
     setState(() => _busy = true);
     try {
       final babyId = await repo.createBaby(draft.toInput());
@@ -433,7 +436,14 @@ class _TrackersScreenState extends ConsumerState<TrackersScreen> {
         }
       }
       ref.read(setupDraftProvider.notifier).reset();
-      // The session now has a baby; the router opens Today.
+      if (ref.read(addingBabyProvider)) {
+        // "Thêm hồ sơ bé": open the new baby once the membership has arrived.
+        await waitForMembership(container, babyId);
+        container.read(selectedBabyIdProvider.notifier).select(babyId);
+        container.read(addingBabyProvider.notifier).set(false);
+        if (mounted) context.go(Routes.today);
+      }
+      // A first baby: the session now has a baby and the router opens Today.
     } on BabyException catch (e) {
       if (!mounted) return;
       showClToast(

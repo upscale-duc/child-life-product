@@ -131,10 +131,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get welcomeChipMilestone => 'Mốc mới';
 
   @override
-  String get inviteCodeComingSoon =>
-      'Nhận lời mời bằng mã sẽ có ở bản tiếp theo.';
-
-  @override
   String get a11yToggleAppearance => 'Đổi giao diện sáng / tối';
 
   @override
@@ -673,4 +669,602 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get ageShortNewborn => 'mới sinh';
+
+  @override
+  String get actionContinue => 'Tiếp tục';
+
+  @override
+  String get actionCancel => 'Huỷ';
+
+  @override
+  String get familyErrorGeneric => 'Chưa làm được. Thử lại nhé.';
+
+  @override
+  String get relationFriend => 'Bạn bè';
+
+  @override
+  String get roleCoParent => 'Cùng nuôi';
+
+  @override
+  String get roleCaregiver => 'Người chăm sóc';
+
+  @override
+  String get roleRelative => 'Người thân';
+
+  @override
+  String memberDetail(String relation, String role) {
+    return '$relation · $role';
+  }
+
+  @override
+  String get babyPickerTitle => 'Chọn bé';
+
+  @override
+  String babyPickerYouAre(String label) {
+    return 'Bạn là $label';
+  }
+
+  @override
+  String babyPickerRowDetail(String age, String youAre) {
+    return '$age · $youAre';
+  }
+
+  @override
+  String get babyPickerAdd => 'Thêm hồ sơ bé';
+
+  @override
+  String babyPickerCount(int count, int max) {
+    return '$count/$max';
+  }
+
+  @override
+  String babyPickerLimit(int max) {
+    return 'Bạn tạo được tối đa $max hồ sơ bé.';
+  }
+
+  @override
+  String babySwitched(String name) {
+    return 'Đã chuyển sang $name';
+  }
+
+  @override
+  String get memoriesComingSoon => 'Kỷ niệm sẽ có ở bản tiếp theo.';
+
+  @override
+  String get todayViewOnly => 'Bạn được xem chăm sóc hằng ngày, không ghi.';
+
+  @override
+  String get unsavedBannerTitle => 'Chưa lưu tài khoản';
+
+  @override
+  String get unsavedBannerAction => 'Lưu';
+
+  @override
+  String get saveAccountTitle => 'Lưu tài khoản';
+
+  @override
+  String saveAccountBody(String baby) {
+    return 'Để không mất $baby khi đổi máy hoặc cài lại app.';
+  }
+
+  @override
+  String get saveAccountDone => 'Đã lưu tài khoản';
+
+  @override
+  String get saveAccountMerged => 'Đã gộp vào tài khoản của bạn';
+
+  @override
+  String get saveEmailSubtitle =>
+      'Tạo tài khoản mới, hoặc đăng nhập tài khoản đã có để gộp vào đó.';
+
+  @override
+  String get saveEmailExists =>
+      'Email này đã có tài khoản. Đăng nhập để gộp vào đó.';
+
+  @override
+  String get signOutAnonTitle => 'Đăng xuất khi chưa lưu?';
+
+  @override
+  String get signOutAnonBody =>
+      'Tài khoản tạm sẽ mất, và bạn cần lời mời mới để vào lại.';
+
+  @override
+  String get signOutAnonConfirm => 'Vẫn đăng xuất';
+
+  @override
+  String familySubtitle(String baby) {
+    return 'Những người cùng chăm $baby';
+  }
+
+  @override
+  String get familyYou => 'Bạn';
+
+  @override
+  String familyPending(int count) {
+    return 'Đang chờ nhận lời ($count)';
+  }
+
+  @override
+  String familyPendingDetail(String relation, String date) {
+    return '$relation · hết hạn $date';
+  }
+
+  @override
+  String familyPendingExpired(String relation) {
+    return '$relation · đã hết hạn';
+  }
+
+  @override
+  String familyPendingNoEmail(String relation) {
+    return 'Lời mời cho $relation';
+  }
+
+  @override
+  String get familyResend => 'Gửi lại';
+
+  @override
+  String familyResent(String email) {
+    return 'Đã gửi lại cho $email';
+  }
+
+  @override
+  String get familyInvite => 'Mời người cùng chăm';
+
+  @override
+  String get familyFootnote =>
+      'Người được mời chỉ thấy những gì bạn cho phép. Bạn có thể đổi quyền hoặc xoá bất cứ lúc nào.';
+
+  @override
+  String get familyLoadFailed => 'Chưa tải được danh sách. Kiểm tra mạng nhé.';
+
+  @override
+  String get inviteSubtitle => 'Chọn người đó là ai và được làm gì.';
+
+  @override
+  String get inviteRelationLabel => 'Người được mời là';
+
+  @override
+  String get inviteRoleLabel => 'Quyền';
+
+  @override
+  String get inviteCustomLabel => 'Là ai với bé';
+
+  @override
+  String get roleCoParentHint => 'Toàn quyền, như ba mẹ';
+
+  @override
+  String get roleCaregiverHint => 'Ghi & xem chăm sóc';
+
+  @override
+  String get roleRelativeHint => 'Xem kỷ niệm, chọn thêm quyền xem';
+
+  @override
+  String get roleCoParentOwnerOnly => 'Chỉ người tạo hồ sơ mời được Cùng nuôi';
+
+  @override
+  String get inviteSeeDetails => 'Xem chi tiết quyền';
+
+  @override
+  String get inviteNext => 'Tiếp · Gửi lời mời';
+
+  @override
+  String get relativeRightsTitle => 'Quyền của Người thân';
+
+  @override
+  String get relativeRightsAlways => 'Luôn có: xem kỷ niệm, thả tim';
+
+  @override
+  String get relativeRightsMore => 'Cho xem thêm';
+
+  @override
+  String get rightBabyInfo => 'Thông tin bé';
+
+  @override
+  String get rightBabyInfoHint => 'Ngày sinh, cân nặng';
+
+  @override
+  String get rightDailyCare => 'Chăm sóc hằng ngày';
+
+  @override
+  String get rightDailyCareHint => 'Bú, ngủ, tã · chỉ xem';
+
+  @override
+  String roleDetailsTitle(String role) {
+    return 'Quyền của $role';
+  }
+
+  @override
+  String get permLogCare => 'Ghi bú, ngủ, tã';
+
+  @override
+  String get permViewSchedule => 'Xem lịch';
+
+  @override
+  String get permViewReminders => 'Xem nhắc việc';
+
+  @override
+  String get permMemories => 'Kỷ niệm';
+
+  @override
+  String get permViewMemories => 'Xem kỷ niệm';
+
+  @override
+  String get permLove => 'Thả tim';
+
+  @override
+  String get permInvite => 'Mời người khác';
+
+  @override
+  String get permAddMemories => 'Thêm kỷ niệm';
+
+  @override
+  String get permDailyCare => 'Xem bú, ngủ, tã';
+
+  @override
+  String inviteSendTitle(String relation) {
+    return 'Gửi lời mời cho $relation';
+  }
+
+  @override
+  String inviteSendSubtitle(String relation) {
+    return '$relation mở camera điện thoại và quét mã.';
+  }
+
+  @override
+  String inviteSendLinkSubtitle(String relation) {
+    return 'Gửi link này cho $relation qua tin nhắn.';
+  }
+
+  @override
+  String inviteSendEmailSubtitle(String relation) {
+    return 'Child Life gửi lời mời tới email của $relation.';
+  }
+
+  @override
+  String get inviteSummaryChange => 'Đổi';
+
+  @override
+  String get inviteChannelQr => 'Mã QR';
+
+  @override
+  String get inviteChannelLink => 'Link';
+
+  @override
+  String get inviteChannelEmail => 'Email';
+
+  @override
+  String get inviteOrCode => 'Hoặc nhập mã';
+
+  @override
+  String inviteExpiresInDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Hết hạn sau $days ngày',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get inviteExpiresToday => 'Hết hạn hôm nay';
+
+  @override
+  String get inviteShare => 'Chia sẻ lời mời';
+
+  @override
+  String inviteShareText(
+    String inviter,
+    String baby,
+    String link,
+    String code,
+  ) {
+    return '$inviter mời bạn cùng chăm $baby trên Child Life.\nMở link: $link\nHoặc nhập mã trong app: $code';
+  }
+
+  @override
+  String inviteShareSubject(String baby) {
+    return 'Lời mời cùng chăm $baby';
+  }
+
+  @override
+  String inviteCantScan(String relation) {
+    return '$relation không quét được?';
+  }
+
+  @override
+  String get inviteCopyLink => 'Sao chép link';
+
+  @override
+  String get inviteLinkCopied => 'Đã sao chép link';
+
+  @override
+  String inviteEmailLabel(String relation) {
+    return 'Email của $relation';
+  }
+
+  @override
+  String get inviteEmailSend => 'Gửi email';
+
+  @override
+  String cantScanTitle(String relation) {
+    return '$relation không vào được?';
+  }
+
+  @override
+  String get cantScanStep1 => 'Mở app Child Life, chọn “Mã mời”';
+
+  @override
+  String cantScanStep2(String code) {
+    return 'Nhập mã $code';
+  }
+
+  @override
+  String get cantScanStep3 => 'Vẫn lỗi? Tạo mã mới bên dưới';
+
+  @override
+  String get cantScanNewCode => 'Tạo mã mới';
+
+  @override
+  String get cantScanByEmail => 'Gửi qua email thay thế';
+
+  @override
+  String get inviteNewCodeDone => 'Đã tạo mã mới. Mã cũ không dùng được nữa.';
+
+  @override
+  String get inviteRevoke => 'Huỷ lời mời';
+
+  @override
+  String get inviteRevoked => 'Đã huỷ lời mời';
+
+  @override
+  String inviteSentTitle(String relation) {
+    return 'Đã gửi email cho $relation';
+  }
+
+  @override
+  String inviteNotReceived(String relation) {
+    return '$relation không nhận được?';
+  }
+
+  @override
+  String get notReceivedTitle => 'Chưa nhận được email?';
+
+  @override
+  String get notReceivedTip1 => 'Xem trong mục Thư rác hoặc Quảng cáo.';
+
+  @override
+  String get notReceivedTip2 => 'Email có thể đến sau vài phút.';
+
+  @override
+  String get notReceivedTip3 => 'Hoặc chia sẻ link qua tin nhắn.';
+
+  @override
+  String get notReceivedResend => 'Gửi lại email';
+
+  @override
+  String get inviteErrorUnverified =>
+      'Xác minh email của bạn trước khi mời người khác.';
+
+  @override
+  String get inviteErrorOwnerOnly =>
+      'Chỉ người tạo hồ sơ mới quản lý được Cùng nuôi.';
+
+  @override
+  String get inviteErrorTooSoon =>
+      'Vừa gửi xong. Đợi một phút rồi gửi lại nhé.';
+
+  @override
+  String get inviteErrorTooMany =>
+      'Lời mời này đã gửi đủ 5 email. Hãy chia sẻ link thay thế.';
+
+  @override
+  String get inviteErrorSuppressed =>
+      'Địa chỉ này đã huỷ nhận email từ Child Life.';
+
+  @override
+  String get inviteErrorClosed => 'Lời mời này không còn dùng được.';
+
+  @override
+  String memberMeta(String relation, String date) {
+    return '$relation · tham gia $date';
+  }
+
+  @override
+  String get roleCoParentHintFull => 'Toàn quyền như ba mẹ';
+
+  @override
+  String get roleCaregiverHintFull => 'Ghi & xem chăm sóc, không mời người';
+
+  @override
+  String get roleRelativeHintFull => 'Chỉ xem kỷ niệm được chia sẻ';
+
+  @override
+  String get memberAccessUntil => 'Thời hạn';
+
+  @override
+  String memberAccessUntilValue(String date) {
+    return 'Đến $date';
+  }
+
+  @override
+  String get memberAccessNoLimit => 'Không giới hạn';
+
+  @override
+  String memberAccessHint(String name) {
+    return '$name xem được đến hết ngày này.';
+  }
+
+  @override
+  String get memberAccessClear => 'Bỏ giới hạn';
+
+  @override
+  String get memberRelation => 'Là ai với bé';
+
+  @override
+  String memberRemove(String name) {
+    return 'Xoá $name khỏi gia đình';
+  }
+
+  @override
+  String memberRecordsKept(String name) {
+    return 'Bản ghi của $name vẫn được giữ.';
+  }
+
+  @override
+  String memberRemoveConfirmTitle(String name) {
+    return 'Xoá $name?';
+  }
+
+  @override
+  String memberRemoveConfirmBody(String name, String baby) {
+    return '$name sẽ không xem được $baby nữa. Bản ghi của $name vẫn được giữ.';
+  }
+
+  @override
+  String get memberRemoveConfirm => 'Xoá';
+
+  @override
+  String memberRemoved(String name) {
+    return 'Đã xoá $name';
+  }
+
+  @override
+  String get memberUpdated => 'Đã cập nhật';
+
+  @override
+  String get joinCodeTitle => 'Nhập mã mời';
+
+  @override
+  String get joinCodeSubtitle => '6 số trong lời mời, hoặc quét mã QR.';
+
+  @override
+  String get joinScan => 'Quét mã QR';
+
+  @override
+  String get joinCodeWrong => 'Mã chưa đúng. Kiểm tra lại 6 số nhé.';
+
+  @override
+  String joinLocked(int minutes) {
+    return 'Nhập sai nhiều lần. Thử lại sau $minutes phút.';
+  }
+
+  @override
+  String get a11yInviteCode => 'Mã mời 6 số';
+
+  @override
+  String get scanHint => 'Đưa mã QR trong lời mời vào khung.';
+
+  @override
+  String get scanNotInvite => 'Đây không phải mã mời Child Life.';
+
+  @override
+  String get scanCameraDenied => 'Cho phép camera trong Cài đặt để quét mã.';
+
+  @override
+  String joinCountdownHours(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: 'Còn $hours giờ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String joinInviterTitle(String inviter) {
+    return '$inviter mời bạn';
+  }
+
+  @override
+  String joinRoleLine(String baby) {
+    return 'cùng chăm bé $baby với vai trò';
+  }
+
+  @override
+  String get joinJoin => 'Tham gia';
+
+  @override
+  String get joinNotMe => 'Không phải tôi';
+
+  @override
+  String joinAlreadyMember(String baby) {
+    return 'Bạn đã ở trong gia đình $baby.';
+  }
+
+  @override
+  String joinHowTitle(String baby) {
+    return 'Vào gia đình $baby';
+  }
+
+  @override
+  String get joinHowBody => 'Không cần tạo tài khoản. Có thể lưu lại sau.';
+
+  @override
+  String get joinNow => 'Vào ngay';
+
+  @override
+  String get joinOrSave => 'hoặc lưu tài khoản ngay';
+
+  @override
+  String joinConfirmTitle(String baby) {
+    return 'Bạn là ai với $baby?';
+  }
+
+  @override
+  String joinConfirmSubtitle(String inviter, String relation) {
+    return '$inviter đã chọn “$relation”. Đổi nếu chưa đúng.';
+  }
+
+  @override
+  String joinConfirmGo(String baby) {
+    return 'Vào xem $baby';
+  }
+
+  @override
+  String get joinExpiredTitle => 'Lời mời đã hết hạn';
+
+  @override
+  String get joinExpiredBody => 'Nhờ người mời gửi link mới nhé.';
+
+  @override
+  String get joinRevokedTitle => 'Lời mời đã bị huỷ';
+
+  @override
+  String get joinRevokedBody => 'Nhờ người mời gửi lời mời mới nhé.';
+
+  @override
+  String get joinUsedTitle => 'Lời mời đã được dùng';
+
+  @override
+  String get joinUsedBody =>
+      'Mỗi lời mời chỉ dùng được một lần. Nhờ người mời gửi lời mời mới nhé.';
+
+  @override
+  String get joinNotFoundTitle => 'Không tìm thấy lời mời';
+
+  @override
+  String get joinNotFoundBody => 'Kiểm tra lại link, hoặc nhập mã 6 số.';
+
+  @override
+  String get joinOtherCode => 'Nhập mã khác';
+
+  @override
+  String get joinBackToStart => 'Về trang đầu';
+
+  @override
+  String get lostAccessTitle => 'Bạn không còn quyền xem hồ sơ này';
+
+  @override
+  String get lostAccessBody =>
+      'Quyền của bạn đã thay đổi. Nội dung trên máy này đã được ẩn.';
+
+  @override
+  String get lostAccessHome => 'Về trang chính';
+
+  @override
+  String get lostAccessRequest => 'Xin lời mời mới';
+
+  @override
+  String get lostAccessShareText =>
+      'Mình không còn xem được hồ sơ của bé trên Child Life. Bạn gửi mình lời mời mới nhé?';
 }

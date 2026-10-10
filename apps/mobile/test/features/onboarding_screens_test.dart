@@ -163,7 +163,7 @@ void main() {
     final draft = container.read(setupDraftProvider);
     expect(
       (draft.displayName, draft.relation, draft.relationCustom),
-      ('Mai', SelfRelation.other, 'Dì'),
+      ('Mai', Relation.other, 'Dì'),
     );
   });
 

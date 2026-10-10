@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 /// Mirrors `packages/contracts/src/baby.ts` (S2). Firestore documents are parsed defensively:
@@ -9,20 +10,83 @@ enum TrackerKind { bottle, breast, sleep, diaper, pump, growth }
 /// "Giới tính · không bắt buộc" (R-009).
 enum Gender { girl, boy, unspecified }
 
-/// "Bạn là" on 10a (R-020).
-enum SelfRelation {
+/// Relation labels (R-020), mirroring `relations` in packages/contracts/src/family.ts.
+enum Relation {
   mother,
   father,
   grandmother,
   grandfather,
   nanny,
   relative,
+  friend,
   other,
 }
 
+/// "Bạn là" chips on 10a and 16a (no "Bạn bè").
+const selfRelations = [
+  Relation.mother,
+  Relation.father,
+  Relation.grandmother,
+  Relation.grandfather,
+  Relation.nanny,
+  Relation.relative,
+  Relation.other,
+];
+
+/// "Người được mời là" chips on 14b ("Mẹ" absent, "Bạn bè" added).
+const inviteRelations = [
+  Relation.father,
+  Relation.grandmother,
+  Relation.grandfather,
+  Relation.nanny,
+  Relation.relative,
+  Relation.friend,
+  Relation.other,
+];
+
 enum MemberRole { coParent, caregiver, relative }
 
-enum MembershipStatus { active, removed, expired, left }
+enum MembershipStatus { active, removed, expired, left, merged }
+
+/// 14b2: what a relative may see beyond shared memories (D-019: both off by default).
+@immutable
+class ExtraRights {
+  const ExtraRights({this.viewBabyInfo = false, this.viewDailyCare = false});
+
+  /// "Thông tin bé · Ngày sinh, cân nặng".
+  final bool viewBabyInfo;
+
+  /// "Chăm sóc hằng ngày · Bú, ngủ, tã · chỉ xem" (read-only Today, D-018).
+  final bool viewDailyCare;
+
+  static const none = ExtraRights();
+
+  factory ExtraRights.fromJson(Object? json) => json is Map
+      ? ExtraRights(
+          viewBabyInfo: json['viewBabyInfo'] == true,
+          viewDailyCare: json['viewDailyCare'] == true,
+        )
+      : none;
+
+  Map<String, bool> toJson() => {
+    'viewBabyInfo': viewBabyInfo,
+    'viewDailyCare': viewDailyCare,
+  };
+
+  ExtraRights copyWith({bool? viewBabyInfo, bool? viewDailyCare}) =>
+      ExtraRights(
+        viewBabyInfo: viewBabyInfo ?? this.viewBabyInfo,
+        viewDailyCare: viewDailyCare ?? this.viewDailyCare,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      other is ExtraRights &&
+      other.viewBabyInfo == viewBabyInfo &&
+      other.viewDailyCare == viewDailyCare;
+  @override
+  int get hashCode => Object.hash(viewBabyInfo, viewDailyCare);
+}
 
 /// Each account creates at most 3 baby profiles (R-043).
 const maxOwnedBabies = 3;
@@ -150,7 +214,8 @@ class BabyPrivateProfile {
       );
 }
 
-/// The caller's membership on one baby (`babies/{id}/members/{uid}`).
+/// A membership on one baby (`babies/{id}/members/{uid}`): the caller's own ("my babies") or
+/// another member on the Family tab (14a).
 @immutable
 class Membership {
   const Membership({
@@ -161,26 +226,49 @@ class Membership {
     required this.displayName,
     required this.status,
     required this.isOwner,
+    this.uid = '',
+    this.extraRights = ExtraRights.none,
+    this.accessUntil,
+    this.accessUntilAt,
+    this.joinedAt,
   });
 
   final String babyId;
+  final String uid;
   final MemberRole role;
-  final SelfRelation relation;
+  final Relation relation;
   final String? relationCustom;
   final String displayName;
   final MembershipStatus status;
   final bool isOwner;
+  final ExtraRights extraRights;
 
-  bool get isActive => status == MembershipStatus.active;
+  /// "Thời hạn" (R-024): last day of access in the baby's calendar, and the instant it ends.
+  final DateTime? accessUntil;
+  final DateTime? accessUntilAt;
+  final DateTime? joinedAt;
+
+  /// Active and not past its access end date (Rules deny at once, before the hourly job).
+  bool isActiveAt(DateTime now) =>
+      status == MembershipStatus.active &&
+      (accessUntilAt == null || accessUntilAt!.isAfter(now));
+
+  bool get isActive => isActiveAt(DateTime.now());
+
+  /// Relatives see Today read-only when granted "Chăm sóc hằng ngày" (D-018).
+  bool get canViewToday =>
+      role != MemberRole.relative || extraRights.viewDailyCare;
+
+  /// DOB and gender: Cùng nuôi, or relatives granted "Thông tin bé" (Rules, §5).
+  bool get canViewBabyInfo =>
+      role == MemberRole.coParent ||
+      (role == MemberRole.relative && extraRights.viewBabyInfo);
 
   factory Membership.fromJson(Map<String, Object?> json) => Membership(
     babyId: json['babyId'] as String? ?? '',
+    uid: json['uid'] as String? ?? '',
     role: _enumByName(MemberRole.values, json['role'], MemberRole.relative),
-    relation: _enumByName(
-      SelfRelation.values,
-      json['relation'],
-      SelfRelation.other,
-    ),
+    relation: _enumByName(Relation.values, json['relation'], Relation.other),
     relationCustom: json['relationCustom'] as String?,
     displayName: json['displayName'] as String? ?? '',
     status: _enumByName(
@@ -189,8 +277,20 @@ class Membership {
       MembershipStatus.removed,
     ),
     isOwner: json['isOwner'] == true,
+    extraRights: ExtraRights.fromJson(json['extraRights']),
+    accessUntil: DateTime.tryParse(json['accessUntil'] as String? ?? ''),
+    accessUntilAt: dateOf(json['accessUntilAt']),
+    joinedAt: dateOf(json['joinedAt']),
   );
 }
+
+/// Firestore Timestamp, DateTime or ISO string → DateTime.
+DateTime? dateOf(Object? value) => switch (value) {
+  Timestamp() => value.toDate(),
+  DateTime() => value,
+  String() => DateTime.tryParse(value),
+  _ => null,
+};
 
 /// Everything collected by 10a → 11 → 12 before `createBabyProfile`.
 @immutable
@@ -216,7 +316,7 @@ class NewBabyInput {
   final int avatarPreset;
   final Set<TrackerKind> trackers;
   final String displayName;
-  final SelfRelation relation;
+  final Relation relation;
   final String? relationCustom;
 
   Map<String, Object> toJson() => {
@@ -234,7 +334,7 @@ class NewBabyInput {
     'self': {
       'displayName': displayName.trim(),
       'relation': relation.name,
-      if (relation == SelfRelation.other)
+      if (relation == Relation.other)
         'relationCustom': (relationCustom ?? '').trim(),
     },
   };
