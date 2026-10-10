@@ -13,9 +13,15 @@ service cloud.firestore {
       return /databases/$(database)/documents/babies/$(babyId)/members/$(request.auth.uid);
     }
 
-    // Active membership of the caller on a baby (role per baby, R-021).
+    // Active membership of the caller on a baby (role per baby, R-021). An access end date
+    // ("Thời hạn", R-024) that has passed denies at once, before the hourly expiry job (P-005).
     function activeMember(babyId) {
-      return signedIn() && exists(memberDoc(babyId)) && get(memberDoc(babyId)).data.status == 'active';
+      return signedIn() && exists(memberDoc(babyId)) && isActive(get(memberDoc(babyId)).data);
+    }
+
+    function isActive(member) {
+      return member.status == 'active' &&
+        (member.get('accessUntilAt', null) == null || member.accessUntilAt > request.time);
     }
 
     function role(babyId) {
@@ -57,10 +63,17 @@ service cloud.firestore {
         allow list, write: if false;
       }
 
-      // Own membership, or every membership for Cùng nuôi (Family tab lists arrive in S3).
+      // Family list (14a): every active member sees who cares for the baby (view only for
+      // caregivers and relatives, §5); one's own membership stays readable after removal (R-025).
       match /members/{uid} {
-        allow get: if signedIn() && (request.auth.uid == uid || (activeMember(babyId) && role(babyId) == 'coParent'));
-        allow list: if activeMember(babyId) && role(babyId) == 'coParent';
+        allow get: if signedIn() && (request.auth.uid == uid || activeMember(babyId));
+        allow list: if activeMember(babyId);
+        allow write: if false;
+      }
+
+      // "Đang chờ nhận lời" (14a): pending invites, Cùng nuôi only. Written by Functions.
+      match /pendingInvites/{inviteId} {
+        allow read: if activeMember(babyId) && role(babyId) == 'coParent';
         allow write: if false;
       }
     }

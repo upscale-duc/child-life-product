@@ -11,3 +11,10 @@ export function environmentForProject(projectId: string | undefined): Environmen
 export function currentProjectId(): string | undefined {
   return process.env.GCLOUD_PROJECT ?? process.env.GOOGLE_CLOUD_PROJECT;
 }
+
+/** Public website of the environment: invite links, unsubscribe links (plan §3.7). */
+export function webOriginFor(projectId: string | undefined): string {
+  return environmentForProject(projectId) === 'prod'
+    ? 'https://childlife.app'
+    : 'https://child-life-dev-landing.web.app';
+}

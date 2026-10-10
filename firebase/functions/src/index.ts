@@ -1,12 +1,33 @@
 import { initializeApp } from 'firebase-admin/app';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { setGlobalOptions } from 'firebase-functions/v2';
-import { onDocumentWritten } from 'firebase-functions/v2/firestore';
-import { HttpsError, onCall, type CallableRequest } from 'firebase-functions/v2/https';
+import { onDocumentCreated, onDocumentWritten } from 'firebase-functions/v2/firestore';
+import { HttpsError, onCall, onRequest, type CallableRequest } from 'firebase-functions/v2/https';
+import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { defineSecret, defineString } from 'firebase-functions/params';
 import { logger } from 'firebase-functions';
+import { getAuth } from 'firebase-admin/auth';
 import { getStorage } from 'firebase-admin/storage';
+import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { defaultLimits, functionsRegion, limitsSchema } from '@child-life/contracts';
-import { currentProjectId } from './env.js';
+import { currentProjectId, webOriginFor } from './env.js';
+import {
+  FamilyError,
+  acceptInvite,
+  claimAnonymous,
+  createInvite,
+  expireMemberships,
+  inviteForLanding,
+  previewInvite,
+  regenerateInvite,
+  removeMember,
+  revokeInvite,
+  sendInviteEmail,
+  updateMember,
+  type Caller,
+} from './family.js';
+import { deliverMail, unsubscribe, type MailSender } from './mail.js';
+import { localeFromHeader, renderInvitePage, renderUnsubscribePage } from './pages.js';
 import { BabyError, createBaby, getBabyAvatar, setBabyAvatar, type AvatarStore } from './babies.js';
 import { handlePing, PingError } from './ping.js';
 import { isMirroredConfigId, publicProjection } from './config-mirror.js';
@@ -131,4 +152,176 @@ export const getBabyAvatarImage = onCall(async (request) => {
   } catch (error) {
     throw asHttpsError('getBabyAvatarImage', error);
   }
+});
+
+// ---------- S3: family, invites, memberships ----------
+
+function callerOf(request: CallableRequest): Caller {
+  if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+  const token = request.auth.token;
+  const provider = token.firebase.sign_in_provider;
+  return {
+    uid: request.auth.uid,
+    anonymous: provider === 'anonymous',
+    emailTrusted:
+      token.email_verified === true || provider === 'google.com' || provider === 'apple.com',
+  };
+}
+
+/** Client address for P-021 rate limits (first hop of X-Forwarded-For behind Google's front end). */
+function clientIp(request: CallableRequest): string | null {
+  const forwarded = request.rawRequest.headers['x-forwarded-for'];
+  const first = typeof forwarded === 'string' ? forwarded.split(',')[0]?.trim() : undefined;
+  return first || request.rawRequest.ip || null;
+}
+
+const familyCall = <T>(name: string, run: (request: CallableRequest) => Promise<T>) =>
+  onCall(async (request) => {
+    try {
+      return await run(request);
+    } catch (error) {
+      throw asHttpsError(name, error);
+    }
+  });
+
+export const createFamilyInvite = familyCall('createFamilyInvite', (r) =>
+  createInvite(getFirestore(), callerOf(r), r.data, new Date()),
+);
+export const regenerateFamilyInvite = familyCall('regenerateFamilyInvite', (r) =>
+  regenerateInvite(getFirestore(), callerOf(r), r.data, new Date()),
+);
+export const revokeFamilyInvite = familyCall('revokeFamilyInvite', (r) =>
+  revokeInvite(getFirestore(), callerOf(r), r.data, new Date()),
+);
+export const emailFamilyInvite = familyCall('emailFamilyInvite', (r) =>
+  sendInviteEmail(getFirestore(), callerOf(r), r.data, new Date()),
+);
+/** Works signed out (screen 16 comes before choosing how to join). */
+export const previewFamilyInvite = familyCall('previewFamilyInvite', (r) =>
+  previewInvite(getFirestore(), r.auth?.uid ?? null, clientIp(r), r.data, new Date()),
+);
+export const acceptFamilyInvite = familyCall('acceptFamilyInvite', (r) =>
+  acceptInvite(getFirestore(), callerOf(r), clientIp(r), r.data, new Date()),
+);
+export const updateFamilyMember = familyCall('updateFamilyMember', (r) =>
+  updateMember(getFirestore(), callerOf(r), r.data, new Date()),
+);
+export const removeFamilyMember = familyCall('removeFamilyMember', (r) =>
+  removeMember(getFirestore(), callerOf(r), r.data, new Date()),
+);
+export const claimAnonymousIdentity = familyCall('claimAnonymousIdentity', (r) =>
+  claimAnonymous(
+    getFirestore(),
+    {
+      verify: async (idToken) => {
+        const decoded = await getAuth().verifyIdToken(idToken);
+        return { uid: decoded.uid, provider: decoded.firebase.sign_in_provider };
+      },
+      deleteUser: (uid) => getAuth().deleteUser(uid),
+    },
+    callerOf(r),
+    r.data,
+    new Date(),
+  ),
+);
+
+/** P-005: hourly expiry of memberships whose access end date has passed. */
+export const expireFamilyMemberships = onSchedule('every 60 minutes', async () => {
+  const expired = await expireMemberships(getFirestore(), new Date());
+  if (expired > 0) logger.info('memberships expired', { count: expired });
+});
+
+// ---------- Email (D-020: AWS SES) ----------
+
+/** Set with `firebase functions:secrets:set SES_ACCESS_KEY_ID` (value "unset" = not configured). */
+const sesAccessKeyId = defineSecret('SES_ACCESS_KEY_ID');
+const sesSecretAccessKey = defineSecret('SES_SECRET_ACCESS_KEY');
+const sesRegion = defineString('SES_REGION', { default: 'ap-southeast-1' });
+const mailFrom = defineString('MAIL_FROM', { default: 'Child Life <hello@childlife.app>' });
+
+function sesSender(): MailSender | null {
+  const keyId = sesAccessKeyId.value();
+  const secret = sesSecretAccessKey.value();
+  if (!keyId || keyId === 'unset' || !secret || secret === 'unset') return null;
+  const client = new SESv2Client({
+    region: sesRegion.value(),
+    credentials: { accessKeyId: keyId, secretAccessKey: secret },
+  });
+  return {
+    send: async (mail) => {
+      await client.send(
+        new SendEmailCommand({
+          FromEmailAddress: mailFrom.value(),
+          Destination: { ToAddresses: [mail.to] },
+          Content: {
+            Simple: {
+              Subject: { Data: mail.subject, Charset: 'UTF-8' },
+              Body: {
+                Html: { Data: mail.html, Charset: 'UTF-8' },
+                Text: { Data: mail.text, Charset: 'UTF-8' },
+              },
+              Headers: [
+                { Name: 'List-Unsubscribe', Value: `<${mail.unsubscribeUrl}>` },
+                { Name: 'List-Unsubscribe-Post', Value: 'List-Unsubscribe=One-Click' },
+              ],
+            },
+          },
+        }),
+      );
+    },
+  };
+}
+
+export const deliverQueuedMail = onDocumentCreated(
+  { document: 'mail/{mailId}', secrets: [sesAccessKeyId, sesSecretAccessKey] },
+  async (event) => {
+    if (!event.data) return;
+    const status = await deliverMail(event.data, sesSender(), {
+      webOrigin: webOriginFor(currentProjectId()),
+      now: new Date(),
+    });
+    logger.info('mail processed', { mailId: event.params.mailId, status });
+  },
+);
+
+/** Retries mail waiting for the provider or after a transient failure. */
+export const retryQueuedMail = onSchedule(
+  { schedule: 'every 15 minutes', secrets: [sesAccessKeyId, sesSecretAccessKey] },
+  async () => {
+    const sender = sesSender();
+    if (!sender) return;
+    const due = await getFirestore()
+      .collection('mail')
+      .where('status', 'in', ['waiting-provider', 'retry'])
+      .limit(50)
+      .get();
+    for (const doc of due.docs) {
+      await deliverMail(doc, sender, {
+        webOrigin: webOriginFor(currentProjectId()),
+        now: new Date(),
+      });
+    }
+  },
+);
+
+// ---------- Pages on the landing host ----------
+
+export const inviteLanding = onRequest(async (req, res) => {
+  const token = req.path.split('/').filter(Boolean).pop() ?? '';
+  const { preview, code } = await inviteForLanding(getFirestore(), token, new Date());
+  res.set('Cache-Control', 'private, no-store');
+  res.set('X-Robots-Tag', 'noindex');
+  res
+    .status(preview.status === 'valid' ? 200 : 404)
+    .send(renderInvitePage(localeFromHeader(req.get('accept-language')), preview, code));
+});
+
+export const emailUnsubscribe = onRequest(async (req, res) => {
+  const token = req.path.split('/').filter(Boolean).pop() ?? '';
+  const ok = await unsubscribe(getFirestore(), token, new Date());
+  res.set('Cache-Control', 'private, no-store');
+  res.set('X-Robots-Tag', 'noindex');
+  res
+    .status(ok ? 200 : 404)
+    .send(renderUnsubscribePage(localeFromHeader(req.get('accept-language')), ok));
 });

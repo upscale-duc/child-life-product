@@ -74,6 +74,36 @@
               "value": "public, max-age=86400"
             }
           ]
+        },
+        {
+          "source": "/.well-known/**",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=3600"
+            }
+          ]
+        }
+      ],
+      "ignore": ["**/.DS_Store"],
+      "rewrites": [
+        {
+          "source": "/i/**",
+          "function": {
+            "functionId": "inviteLanding",
+            "region": "asia-southeast1"
+          }
+        },
+        {
+          "source": "/u/**",
+          "function": {
+            "functionId": "emailUnsubscribe",
+            "region": "asia-southeast1"
+          }
         }
       ]
     },

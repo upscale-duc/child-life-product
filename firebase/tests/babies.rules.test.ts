@@ -133,12 +133,51 @@ describe('memberships', () => {
     await assertSucceeds(getDoc(doc(as('gone'), 'babies/b1/members/gone')));
   });
 
-  it('Cùng nuôi read and list all memberships; others cannot', async () => {
+  it('every active member sees the family list (14a, view only for non-parents); others cannot', async () => {
     await assertSucceeds(getDocs(collection(as('dad'), 'babies/b1/members')));
-    await assertSucceeds(getDoc(doc(as('dad'), 'babies/b1/members/nanny')));
-    await assertFails(getDocs(collection(as('nanny'), 'babies/b1/members')));
-    await assertFails(getDoc(doc(as('nanny'), 'babies/b1/members/mom')));
-    await assertFails(getDoc(doc(as('grandma'), 'babies/b1/members/mom')));
+    await assertSucceeds(getDocs(collection(as('nanny'), 'babies/b1/members')));
+    await assertSucceeds(getDoc(doc(as('grandma'), 'babies/b1/members/mom')));
+    await assertFails(getDocs(collection(as('stranger'), 'babies/b1/members')));
+    await assertFails(getDocs(collection(as('gone'), 'babies/b1/members')));
+    await assertFails(getDoc(doc(as('gone'), 'babies/b1/members/mom')));
+  });
+
+  it('pending invites are visible to Cùng nuôi only', async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'babies/b1/pendingInvites/i1'), { code: '482913' });
+    });
+    await assertSucceeds(getDocs(collection(as('dad'), 'babies/b1/pendingInvites')));
+    await assertFails(getDocs(collection(as('nanny'), 'babies/b1/pendingInvites')));
+    await assertFails(getDoc(doc(as('grandma'), 'babies/b1/pendingInvites/i1')));
+    await assertFails(setDoc(doc(as('mom'), 'babies/b1/pendingInvites/i2'), { code: '111111' }));
+  });
+
+  it('access ends at "Thời hạn" even before the expiry job runs (R-024)', async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(
+        doc(ctx.firestore(), 'babies/b1/members/temp'),
+        member('temp', 'caregiver', { accessUntilAt: new Date(Date.now() - 60_000) }),
+      );
+      await setDoc(
+        doc(ctx.firestore(), 'babies/b1/members/later'),
+        member('later', 'caregiver', { accessUntilAt: new Date(Date.now() + 86_400_000) }),
+      );
+    });
+    await assertFails(getDoc(doc(as('temp'), 'babies/b1')));
+    await assertSucceeds(getDoc(doc(as('later'), 'babies/b1')));
+  });
+
+  it('server-only invite collections are closed to clients', async () => {
+    for (const path of [
+      'invites/i1',
+      'inviteCodes/482913',
+      'inviteTokens/x',
+      'mail/m1',
+      'audit/a1',
+      'rateLimits/r1',
+    ]) {
+      await assertFails(getDoc(doc(as('mom'), path)));
+    }
   });
 
   it('"my babies" collection-group query works only for my own uid', async () => {

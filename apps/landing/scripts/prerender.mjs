@@ -70,5 +70,31 @@ writeFileSync(
     : 'User-agent: *\nDisallow: /\n',
 );
 
+// Android App Links for invite links /i/{token} (plan §3.6). Dev is signed with the debug key;
+// prod fingerprints are added when the release signing key exists.
+const androidApps = {
+  dev: [
+    {
+      package_name: 'app.childlife.dev',
+      sha256_cert_fingerprints: [
+        '57:BA:4F:2C:29:C9:30:D4:EA:C9:43:3B:93:56:81:09:F3:4B:69:02:89:8E:12:C8:78:97:6A:80:6A:0E:DF:D3',
+      ],
+    },
+  ],
+  prod: [],
+};
+mkdirSync(join(dist, '.well-known'), { recursive: true });
+writeFileSync(
+  join(dist, '.well-known', 'assetlinks.json'),
+  `${JSON.stringify(
+    androidApps[environment].map((app) => ({
+      relation: ['delegate_permission/common.handle_all_urls'],
+      target: { namespace: 'android_app', ...app },
+    })),
+    null,
+    2,
+  )}\n`,
+);
+
 rmSync(join(root, 'dist-ssr'), { recursive: true, force: true });
 console.log(`sitemap.xml and robots.txt written for ${environment} (${origin})`);
