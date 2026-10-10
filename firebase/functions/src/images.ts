@@ -1,6 +1,9 @@
 import sharp from 'sharp';
 import type { getStorage } from 'firebase-admin/storage';
 import type { ImageOps, MediaStore } from './memories.js';
+import { pipeline } from 'node:stream/promises';
+import { ZipArchive } from 'archiver';
+import type { PurgeStore } from './account.js';
 
 /**
  * sharp re-encodes to JPEG: orientation applied, metadata (EXIF, GPS, ICC) dropped — sharp keeps
@@ -57,3 +60,34 @@ export function bucketStore(bucket: Bucket): MediaStore {
     },
   };
 }
+
+/** Prefix purges, counts and streamed ZIP exports in the default bucket (S11). */
+export function bucketPurgeStore(bucket: Bucket): PurgeStore {
+  return {
+    async deletePrefix(prefix) {
+      await bucket.deleteFiles({ prefix, force: true });
+    },
+    async countPrefix(prefix) {
+      const [files] = await bucket.getFiles({ prefix, maxResults: 1000 });
+      return files.length;
+    },
+    async zip(path, entries) {
+      const archive = new ZipArchive({ zlib: { level: 6 } });
+      const out = bucket.file(path).createWriteStream({
+        resumable: true,
+        contentType: 'application/zip',
+        metadata: { cacheControl: 'private, no-store' },
+      });
+      const done = pipeline(archive, out);
+      for await (const e of entries) archive.append(await e.open(), { name: e.name });
+      await archive.finalize();
+      await done;
+      const [meta] = await bucket.file(path).getMetadata();
+      return Number(meta.size ?? 0);
+    },
+  };
+}
+
+/** Streams one private object (exports read originals this way). */
+export const bucketOpen = (bucket: Bucket) => async (path: string) =>
+  bucket.file(path).createReadStream();

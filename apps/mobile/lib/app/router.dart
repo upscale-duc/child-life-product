@@ -21,6 +21,13 @@ import '../features/home/home_shell.dart';
 import '../features/memories/album_screens.dart';
 import '../features/memories/memories_screen.dart';
 import '../features/memories/messages_screen.dart';
+import '../features/me/account_screen.dart';
+import '../features/me/baby_profile_screens.dart';
+import '../features/me/help_screen.dart';
+import '../features/me/me_screen.dart';
+import '../features/me/notifications_screen.dart';
+import '../features/me/profile_screen.dart';
+import '../features/me/storage_screens.dart';
 import '../features/reminders/reminder_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
@@ -194,7 +201,57 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
+          // S11 "Tôi" (13a–13n).
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.me,
+                builder: (_, _) => const MeScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'storage',
+                    builder: (_, _) => const StorageScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'videos',
+                        builder: (_, _) => const LargestVideosScreen(),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'babies',
+                    builder: (_, _) => const BabyProfilesScreen(),
+                    routes: [
+                      GoRoute(
+                        path: ':id',
+                        builder: (_, s) => BabyProfileViewScreen(
+                          babyId: s.pathParameters['id'] ?? '',
+                        ),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'profile',
+                    builder: (_, _) => const ProfileScreen(),
+                  ),
+                  GoRoute(
+                    path: 'account',
+                    builder: (_, _) => const AccountScreen(),
+                  ),
+                  GoRoute(
+                    path: 'notifications',
+                    builder: (_, _) => const NotificationsScreen(),
+                  ),
+                  GoRoute(path: 'help', builder: (_, _) => const HelpScreen()),
+                ],
+              ),
+            ],
+          ),
         ],
+      ),
+      GoRoute(
+        path: '${Routes.babyEdit}/:id',
+        builder: (_, s) => BabyEditScreen(babyId: s.pathParameters['id'] ?? ''),
       ),
       GoRoute(
         path: Routes.growth,

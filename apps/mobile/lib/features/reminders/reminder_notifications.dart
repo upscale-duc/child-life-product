@@ -18,6 +18,7 @@ import '../home/home_shell.dart';
 import 'device_identity.dart';
 import 'reminder_models.dart';
 import 'reminder_repository.dart';
+import '../me/me_repository.dart';
 
 /// One local notification this device should have pending (D-032: once, at due − lead).
 @immutable
@@ -225,6 +226,9 @@ final deviceRemindersProvider = Provider<List<Reminder>>((ref) {
   final session = ref.watch(sessionProvider);
   final device = ref.watch(deviceIdentityProvider).value;
   if (session is! SessionSignedIn || device == null) return const [];
+  // "Thông báo · Nhắc việc" off (G-056): nothing is scheduled on this account's devices.
+  final prefs = ref.watch(notificationPrefsProvider(session.user.uid));
+  if (prefs.value?.reminders == false) return const [];
   return [
     for (final m in session.active)
       if (m.role != MemberRole.relative)

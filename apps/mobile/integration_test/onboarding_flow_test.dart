@@ -97,12 +97,12 @@ void main() {
       hasLength(4),
     );
 
-    // Returning parent: sign out from the temporary Me menu, sign in again → Today directly.
+    // Returning parent: sign out from Tôi (13a, with confirmation), sign in again → Today.
     final meTab = find.bySemanticsLabel(l10n.tabMe);
     await pumpUntil(tester, meTab);
     await tester.tap(meTab.first);
     await tester.pump(const Duration(milliseconds: 600));
-    await tapText(tester, l10n.meSignOut);
+    await signOutFromMe(tester, l10n.meSignOut);
     await tapText(tester, l10n.welcomeSignIn);
     await tapText(tester, l10n.signInEmail);
     await tapText(tester, l10n.emailSignInTab);

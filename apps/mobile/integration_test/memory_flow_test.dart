@@ -221,7 +221,10 @@ void main() {
     await _until(
       tester,
       'babies/$babyId/albums',
-      (d) => _v(d.single, 'photos') == '1',
+      (d) =>
+          ((_v(d.single, 'counts')! as Map)['mapValue']['fields']['photos']
+              as Map)['integerValue'] ==
+          '1',
     );
 
     // Chọn → the tile → "Thêm vào Yêu thích" (private to me, R-107).

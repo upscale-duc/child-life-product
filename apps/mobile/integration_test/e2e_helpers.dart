@@ -182,3 +182,17 @@ Future<void> skipTourIfShown(WidgetTester tester) async {
     }
   }
 }
+
+/// Me tab → "Đăng xuất" → confirm (S11).
+Future<void> signOutFromMe(WidgetTester tester, String label) async {
+  await pumpUntil(tester, find.text(label));
+  await tester.scrollUntilVisible(
+    find.text(label).last,
+    200,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.pump(const Duration(milliseconds: 300));
+  await tester.tap(find.text(label).last);
+  await tester.pump(const Duration(milliseconds: 600));
+  await tapText(tester, label);
+}

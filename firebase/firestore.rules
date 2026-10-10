@@ -28,6 +28,11 @@ service cloud.firestore {
       return get(memberDoc(babyId)).data.role;
     }
 
+    // Writes lock while the profile is being deleted (13l, Q-037); reads stay until the purge.
+    function babyOpen(babyId) {
+      return get(/databases/$(database)/documents/babies/$(babyId)).data.get('state', 'active') == 'active';
+    }
+
     // Public projections of feature flags and global limits (P-122, D-011).
     // Written only by Functions; readable before sign-in so kill switches apply everywhere.
     match /publicConfig/{docId} {
@@ -40,17 +45,49 @@ service cloud.firestore {
       allow get: if signedIn() && request.auth.uid == uid;
       allow list, write: if false;
 
-      // Push tokens for generic family notices (S10, R-120); one per install.
+      // One document per install: push token for generic family notices (S10, R-120) and the
+      // "Thiết bị đang đăng nhập" list (13n). Only Functions set `signedOutAt` (remote sign-out).
       match /devices/{deviceId} {
         allow read, delete: if signedIn() && request.auth.uid == uid;
-        allow create, update: if signedIn() && request.auth.uid == uid &&
-          deviceId.matches('^d_[a-f0-9]{32}$') &&
-          request.resource.data.keys().hasOnly(['token', 'platform', 'language', 'updatedAt']) &&
-          request.resource.data.token is string && request.resource.data.token.size() <= 4096 &&
-          request.resource.data.platform in ['ios', 'android'] &&
-          request.resource.data.language in ['vi', 'en'] &&
+        allow create: if signedIn() && request.auth.uid == uid &&
+          deviceId.matches('^d_[a-f0-9]{32}$') && validDevice(request.resource.data) &&
+          !('signedOutAt' in request.resource.data);
+        allow update: if signedIn() && request.auth.uid == uid &&
+          validDevice(request.resource.data) &&
+          request.resource.data.get('signedOutAt', null) == resource.data.get('signedOutAt', null);
+      }
+
+      // "Thông báo" (G-056): which pushes this account receives.
+      match /settings/{docId} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow write: if signedIn() && request.auth.uid == uid && docId == 'notifications' &&
+          request.resource.data.keys().hasOnly(['memories', 'messages', 'reminders', 'storage', 'updatedAt']) &&
+          request.resource.data.memories is bool && request.resource.data.messages is bool &&
+          request.resource.data.reminders is bool && request.resource.data.storage is bool &&
           request.resource.data.updatedAt == request.time;
       }
+    }
+
+    function validDevice(d) {
+      return d.keys().hasOnly(['token', 'platform', 'language', 'name', 'appVersion', 'updatedAt', 'signedOutAt']) &&
+        (!('token' in d) || (d.token is string && d.token.size() <= 4096)) &&
+        d.platform in ['ios', 'android'] &&
+        d.language in ['vi', 'en'] &&
+        (!('name' in d) || (d.name is string && d.name.size() <= 80)) &&
+        (!('appVersion' in d) || (d.appVersion is string && d.appVersion.size() <= 32)) &&
+        d.updatedAt == request.time;
+    }
+
+    // Deletion jobs (13l, 13n): the requester follows "Đang xoá…" until the purge is verified.
+    match /deletionJobs/{jobId} {
+      allow get: if signedIn() && resource.data.requestedBy == request.auth.uid;
+      allow list, write: if false;
+    }
+
+    // Exports (R-187): the requester sees their own jobs; files are read through Storage Rules.
+    match /dataJobs/{jobId} {
+      allow read: if signedIn() && resource.data.uid == request.auth.uid;
+      allow write: if false;
     }
 
     // Family = ownership + quota container (P-001). Owner only until storage views (S11, P-003).
@@ -94,8 +131,8 @@ service cloud.firestore {
       // soft delete with undo and a 30-day bin purged by a scheduled job.
       match /records/{recordId} {
         allow read: if canReadCare(babyId);
-        allow create: if canLog(babyId) && validNewRecord(babyId, recordId);
-        allow update: if canLog(babyId) && canEditRecord(babyId) && validRecordUpdate();
+        allow create: if canLog(babyId) && babyOpen(babyId) && validNewRecord(babyId, recordId);
+        allow update: if canLog(babyId) && babyOpen(babyId) && canEditRecord(babyId) && validRecordUpdate();
         allow delete: if false;
       }
 
@@ -109,8 +146,8 @@ service cloud.firestore {
       // first start owns it; a second device's start is refused and it joins the running one.
       match /timers/{type} {
         allow read: if canReadCare(babyId);
-        allow create: if canLog(babyId) && validNewTimer(babyId, type);
-        allow update: if canLog(babyId) && validTimerUpdate();
+        allow create: if canLog(babyId) && babyOpen(babyId) && validNewTimer(babyId, type);
+        allow update: if canLog(babyId) && babyOpen(babyId) && validTimerUpdate();
         allow delete: if canLog(babyId);
       }
 
@@ -153,7 +190,7 @@ service cloud.firestore {
       // "Mốc nhà mình đã tạo" (10h3, 10h4, R-105): reusable by every Cùng nuôi.
       match /milestones/{milestoneId} {
         allow read: if isParent(babyId);
-        allow create: if isParent(babyId) && validNewMilestone(babyId, milestoneId);
+        allow create: if isParent(babyId) && babyOpen(babyId) && validNewMilestone(babyId, milestoneId);
         allow update, delete: if false;
       }
 
@@ -179,7 +216,7 @@ service cloud.firestore {
       // "Yêu thích" (R-107): private to each person, only on what they can see.
       match /favorites/{favoriteId} {
         allow read: if seesMemories(babyId) && resource.data.uid == request.auth.uid;
-        allow create: if seesMemories(babyId) && validFavorite(babyId, favoriteId);
+        allow create: if seesMemories(babyId) && babyOpen(babyId) && validFavorite(babyId, favoriteId);
         allow delete: if seesMemories(babyId) && resource.data.uid == request.auth.uid;
         allow update: if false;
       }
@@ -188,7 +225,7 @@ service cloud.firestore {
       match /reactions/{reactionId} {
         allow read: if isParent(babyId) ||
           (isRelative(babyId) && resource.data.uid == request.auth.uid);
-        allow create: if seesMemories(babyId) && validLove(babyId, reactionId);
+        allow create: if seesMemories(babyId) && babyOpen(babyId) && validLove(babyId, reactionId);
         allow delete: if seesMemories(babyId) && resource.data.uid == request.auth.uid;
         allow update: if false;
       }
@@ -197,7 +234,7 @@ service cloud.firestore {
       match /messages/{messageId} {
         allow read: if isParent(babyId) ||
           (activeMember(babyId) && resource.data.from == request.auth.uid);
-        allow create: if activeMember(babyId) && validMessage(babyId, messageId);
+        allow create: if activeMember(babyId) && babyOpen(babyId) && validMessage(babyId, messageId);
         // Parents mark a message read for themselves only.
         allow update: if isParent(babyId) &&
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readBy']) &&
@@ -212,9 +249,9 @@ service cloud.firestore {
       // device in notifyDevice (R-091); any viewer may move it to their own device (D-029).
       match /reminders/{reminderId} {
         allow read: if canSeeReminders(babyId);
-        allow create: if canSeeReminders(babyId) && role(babyId) == 'coParent' &&
+        allow create: if canSeeReminders(babyId) && role(babyId) == 'coParent' && babyOpen(babyId) &&
           validNewReminder(babyId, reminderId);
-        allow update: if canSeeReminders(babyId) && validReminderUpdate(babyId);
+        allow update: if canSeeReminders(babyId) && babyOpen(babyId) && validReminderUpdate(babyId);
         allow delete: if canSeeReminders(babyId) && role(babyId) == 'coParent';
       }
     }

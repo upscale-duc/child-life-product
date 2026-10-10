@@ -5,15 +5,18 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../app/providers.dart';
 import '../../app/route_guard.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
+import '../auth/auth_repository.dart';
 import '../reminders/device_identity.dart';
 
-/// Registers this install's push token for generic family notices (S10, R-120) under
-/// `users/{uid}/devices/{deviceId}`, with the app language for the notice copy. It never asks
+/// Registers this install under `users/{uid}/devices/{deviceId}` (13n device list) with its
+/// push token for generic family notices (S10, R-120) when there is one, and the app language
+/// for the notice copy. A remote "Đăng xuất" (S11) signs this install out. It never asks
 /// for permission itself: iOS needs a granted notification permission and APNs (Apple team),
 /// Android 13+ uses the permission reminders already ask for (8c). Tapping a notice opens
 /// Kỷ niệm.
@@ -29,6 +32,7 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   String? _registeredFor;
   StreamSubscription<String>? _refresh;
   StreamSubscription<RemoteMessage>? _opened;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _signedOut;
 
   @override
   void initState() {
@@ -40,6 +44,7 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   void dispose() {
     _refresh?.cancel();
     _opened?.cancel();
+    _signedOut?.cancel();
     super.dispose();
   }
 
@@ -64,6 +69,30 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     _registeredFor = key;
     try {
       final device = await ref.read(deviceIdentityProvider.future);
+      final info = await PackageInfo.fromPlatform();
+      final db = ref.read(firestoreProvider);
+      final doc = db.doc('users/$uid/devices/${device.id}');
+      // 13n "Đăng xuất" from another device: this one leaves at once (S11).
+      await _signedOut?.cancel();
+      _signedOut = doc.snapshots().listen(
+        (d) {
+          if (d.data()?['signedOutAt'] != null) unawaited(_leave(doc));
+        },
+        // Signed out here (or the row removed): nothing to follow.
+        onError: (Object _) {},
+      );
+      Future<void> save(String? token) => doc.set({
+        'token': ?token,
+        'platform': defaultTargetPlatform == TargetPlatform.iOS
+            ? 'ios'
+            : 'android',
+        'language': language,
+        'name': device.label,
+        'appVersion': info.version,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      // The row exists for "Thiết bị đang đăng nhập" even without push.
+      await save(null);
       final messaging = FirebaseMessaging.instance;
       if (defaultTargetPlatform == TargetPlatform.iOS &&
           await messaging.getAPNSToken() == null) {
@@ -71,16 +100,6 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
       }
       final token = await messaging.getToken();
       if (token == null) return;
-      final db = ref.read(firestoreProvider);
-      Future<void> save(String t) =>
-          db.doc('users/$uid/devices/${device.id}').set({
-            'token': t,
-            'platform': defaultTargetPlatform == TargetPlatform.iOS
-                ? 'ios'
-                : 'android',
-            'language': language,
-            'updatedAt': FieldValue.serverTimestamp(),
-          });
       await save(token);
       await _refresh?.cancel();
       _refresh = messaging.onTokenRefresh.listen((t) => unawaited(save(t)));
@@ -89,12 +108,29 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     }
   }
 
+  Future<void> _leave(DocumentReference<Map<String, dynamic>> doc) async {
+    await _signedOut?.cancel();
+    _signedOut = null;
+    _registeredFor = null;
+    try {
+      await doc.delete();
+    } on Object {
+      // Already gone.
+    }
+    await ref.read(authRepositoryProvider).signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(sessionProvider);
     final language = Localizations.localeOf(context).languageCode == 'en'
         ? 'en'
         : 'vi';
+    if (session is! SessionSignedIn && _signedOut != null) {
+      unawaited(_signedOut!.cancel());
+      _signedOut = null;
+      _registeredFor = null;
+    }
     if (session is SessionSignedIn && session.hasBaby && !session.isAnonymous) {
       WidgetsBinding.instance.addPostFrameCallback(
         (_) => unawaited(_register(session.user.uid, language)),
@@ -102,4 +138,22 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     }
     return widget.child;
   }
+}
+
+/// "Đăng xuất" here: this install leaves the device list, then signs out (13a, 13n).
+Future<void> signOutThisDevice(WidgetRef ref) async {
+  final session = ref.read(sessionProvider);
+  if (session is SessionSignedIn) {
+    try {
+      final device = await ref.read(deviceIdentityProvider.future);
+      await ref
+          .read(firestoreProvider)
+          .doc('users/${session.user.uid}/devices/${device.id}')
+          .delete()
+          .timeout(const Duration(seconds: 3));
+    } on Object {
+      // Offline: the row is removed when the delete syncs.
+    }
+  }
+  await ref.read(authRepositoryProvider).signOut();
 }

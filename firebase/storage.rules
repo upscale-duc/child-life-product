@@ -31,6 +31,7 @@ service firebase.storage {
       let m = media(babyId, mediaId);
       return m.createdBy == request.auth.uid && m.status == 'uploading' && m.deleted == false &&
         active(member(babyId)) &&
+        firestore.get(/databases/(default)/documents/babies/$(babyId)).data.get('state', 'active') == 'active' &&
         ((isPoster && m.type == 'video' && m.hasPoster == true &&
             request.resource.contentType == 'image/jpeg' &&
             request.resource.size <= 4 * 1024 * 1024) ||
@@ -51,6 +52,22 @@ service firebase.storage {
 
     function shared(m) {
       return m.effectiveAudience == 'family' && m.status == 'ready' && m.deleted == false;
+    }
+
+    // Exports (R-187, P-123): the requester only, until the link expires, and only while they
+    // still have the right (Cùng nuôi for care; the owner for media) — re-checked at download.
+    match /exports/{uid}/{jobId}/{file} {
+      allow read: if request.auth != null && request.auth.uid == uid && exportReadable(uid, jobId);
+      allow write: if false;
+    }
+
+    function exportReadable(uid, jobId) {
+      let job = firestore.get(/databases/(default)/documents/dataJobs/$(jobId)).data;
+      let me = member(job.babyId);
+      return job.uid == uid && job.state == 'ready' && job.expiresAt > request.time &&
+        active(me) && me.role == 'coParent' &&
+        (job.exportKind == 'care' ||
+          firestore.get(/databases/(default)/documents/babies/$(job.babyId)).data.ownerUid == uid);
     }
 
     match /{allPaths=**} {

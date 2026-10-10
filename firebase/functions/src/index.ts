@@ -33,7 +33,28 @@ import { localeFromHeader, renderInvitePage, renderUnsubscribePage } from './pag
 import { CareError, onRecordWritten, purgeDeletedRecords, resolveSleepConflict } from './care.js';
 import { BabyError, createBaby, getBabyAvatar, setBabyAvatar, type AvatarStore } from './babies.js';
 import { handlePing, PingError } from './ping.js';
-import { bucketStore, sharpImages } from './images.js';
+import { bucketOpen, bucketPurgeStore, bucketStore, sharpImages } from './images.js';
+import {
+  AccountError,
+  answerOwnership,
+  createSupportTicket,
+  expireExports,
+  familyStorage,
+  maybeStorageNotice,
+  offerOwnership,
+  requestAccountDeletion,
+  requestBabyDeletion,
+  requestExport,
+  requestStorage,
+  resumeDeletionJobs,
+  runDeletionJob,
+  runExport,
+  signOutDevice,
+  updateBabyProfile,
+  updateMyProfile,
+  type AccountCaller,
+  type JobDeps,
+} from './account.js';
 import { addToAlbum, createAlbum, deleteAlbum, removeFromAlbum, updateAlbum } from './albums.js';
 import { deliverNotice, onMessageCreated, onReactionWritten, type PushSender } from './social.js';
 import {
@@ -43,6 +64,7 @@ import {
   onMediaWritten,
   processUpload,
   purgeMediaBin,
+  reconcileFamilyUsage,
   releaseStaleUploads,
   reserveUploads,
   updateMedia,
@@ -358,6 +380,15 @@ export const onMemoryMediaWrite = onDocumentWritten(
       change.before.exists ? change.before : null,
       new Date(),
     );
+    // 80 % / 100 % notices follow committed bytes (13c, 13d).
+    const familyId = change.after.get('familyId') as string | undefined;
+    if (
+      familyId &&
+      change.after.get('status') === 'ready' &&
+      change.before.get('status') !== 'ready'
+    ) {
+      await maybeStorageNotice(getFirestore(), familyId, new Date());
+    }
   },
 );
 
@@ -570,3 +601,170 @@ export const emailUnsubscribe = onRequest(async (req, res) => {
     .status(ok ? 200 : 404)
     .send(renderUnsubscribePage(localeFromHeader(req.get('accept-language')), ok));
 });
+
+// ---------- S11: Me, storage, profiles, account ----------
+
+/** Staff inbox for storage requests and help tickets (portal is the source of truth). */
+const supportInbox = defineString('SUPPORT_INBOX', { default: 'support@childlife.app' });
+
+function accountCaller(request: CallableRequest): AccountCaller {
+  if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+  const token = request.auth.token;
+  const locale = (request.data as { locale?: unknown } | null)?.locale === 'en' ? 'en' : 'vi';
+  return {
+    uid: request.auth.uid,
+    email: typeof token.email === 'string' ? token.email : null,
+    anonymous: token.firebase.sign_in_provider === 'anonymous',
+    locale,
+  };
+}
+
+const accountCall = <T>(
+  name: string,
+  run: (caller: AccountCaller, data: unknown) => Promise<T>,
+  options: { timeoutSeconds?: number } = {},
+) =>
+  onCall(options, async (request) => {
+    const caller = accountCaller(request);
+    try {
+      return await run(caller, request.data);
+    } catch (error) {
+      if (error instanceof AccountError) {
+        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+      }
+      // Never log the payload: nicknames, messages and ticket text are personal.
+      logger.error(`${name} failed`, { error: String(error) });
+      throw new HttpsError('internal', `${name} failed`);
+    }
+  });
+
+const jobDeps = (): JobDeps => ({
+  store: bucketPurgeStore(getStorage().bucket()),
+  async deleteAuthUser(uid) {
+    try {
+      await getAuth().deleteUser(uid);
+    } catch (error) {
+      if ((error as { code?: string }).code !== 'auth/user-not-found') throw error;
+    }
+  },
+});
+
+/** 13b "Dung lượng": totals, by baby, by type, largest videos, open request. */
+export const getFamilyStorage = accountCall('getFamilyStorage', (c, d) =>
+  familyStorage(getFirestore(), c, d, new Date()),
+);
+
+/** 13e "Gửi yêu cầu" (+10 / +20 GB, D-010). */
+export const requestMoreStorage = accountCall('requestMoreStorage', (c, d) =>
+  requestStorage(getFirestore(), c, d, new Date(), { staffInbox: supportInbox.value() }),
+);
+
+/** 13k "Lưu thay đổi". */
+export const updateBabyProfileInfo = accountCall('updateBabyProfileInfo', (c, d) =>
+  updateBabyProfile(getFirestore(), c, d, new Date()),
+);
+
+/** 13l "Xoá vĩnh viễn": locks writes and queues the purge job. */
+export const deleteBabyProfile = accountCall('deleteBabyProfile', (c, d) =>
+  requestBabyDeletion(getFirestore(), c, d, new Date()),
+);
+
+/** 13m "Lưu": display name and relation per baby. */
+export const updateMyProfileInfo = accountCall('updateMyProfileInfo', (c, d) =>
+  updateMyProfile(getFirestore(), c, d, new Date()),
+);
+
+/** "Chuyển chủ hồ sơ" (Q-016). */
+export const offerFamilyOwnership = accountCall('offerFamilyOwnership', (c, d) =>
+  offerOwnership(getFirestore(), c, d, new Date(), async (uid) => {
+    try {
+      return (await getAuth().getUser(uid)).email ?? null;
+    } catch {
+      return null;
+    }
+  }),
+);
+
+export const answerFamilyOwnership = accountCall('answerFamilyOwnership', (c, d) =>
+  answerOwnership(getFirestore(), c, d, new Date()),
+);
+
+/** 13n "Xoá tài khoản" (after ownership transfer, R-046). */
+export const deleteMyAccount = accountCall('deleteMyAccount', (c, d) =>
+  requestAccountDeletion(getFirestore(), c, d, new Date()),
+);
+
+/** 13n "Đăng xuất" on another device. */
+export const signOutMyDevice = accountCall('signOutMyDevice', (c, d) =>
+  signOutDevice(getFirestore(), c, d, new Date()),
+);
+
+/** "Xuất dữ liệu" (R-187, G-072). */
+export const requestDataExport = accountCall('requestDataExport', (c, d) =>
+  requestExport(getFirestore(), c, d, new Date()),
+);
+
+/** "Trợ giúp & liên hệ" (G-057, G-073). */
+export const createHelpTicket = accountCall('createHelpTicket', (c, d) =>
+  createSupportTicket(getFirestore(), c, d, new Date(), { staffInbox: supportInbox.value() }),
+);
+
+/** Deletion jobs start at once and resume from their failed step (P-110). */
+export const runDeletion = onDocumentCreated(
+  { document: 'deletionJobs/{jobId}', timeoutSeconds: 540, memory: '512MiB' },
+  async (event) => {
+    const result = await runDeletionJob(
+      getFirestore(),
+      jobDeps(),
+      event.params.jobId,
+      () => new Date(),
+    );
+    logger.info('deletion job', { jobId: event.params.jobId, result });
+  },
+);
+
+export const resumeDeletions = onSchedule(
+  { schedule: 'every 15 minutes', timeoutSeconds: 540, memory: '512MiB' },
+  async () => {
+    const n = await resumeDeletionJobs(getFirestore(), jobDeps(), () => new Date());
+    logger.info('deletion jobs resumed', { n });
+  },
+);
+
+/** Builds an export into `exports/{uid}/{jobId}/` (Storage Rules re-check access, R-187). */
+export const buildDataExport = onDocumentCreated(
+  { document: 'dataJobs/{jobId}', timeoutSeconds: 540, memory: '1GiB' },
+  async (event) => {
+    const bucket = getStorage().bucket();
+    const limits = limitsSchema.safeParse((await getFirestore().doc('config/limits').get()).data());
+    const ttl = limits.success ? limits.data.exportLinkTtlHours : defaultLimits.exportLinkTtlHours;
+    const result = await runExport(
+      getFirestore(),
+      bucketPurgeStore(bucket),
+      bucketOpen(bucket),
+      event.params.jobId,
+      new Date(),
+      ttl,
+    );
+    logger.info('export built', { jobId: event.params.jobId, result });
+  },
+);
+
+export const expireDataExports = onSchedule('every 60 minutes', async () => {
+  const n = await expireExports(
+    getFirestore(),
+    bucketPurgeStore(getStorage().bucket()),
+    new Date(),
+  );
+  logger.info('exports expired', { n });
+});
+
+/** Daily reconciliation of every family's breakdown with its items (13b). */
+export const reconcileStorageUsage = onSchedule(
+  { schedule: 'every day 03:30', timeZone: 'Asia/Ho_Chi_Minh', timeoutSeconds: 540 },
+  async () => {
+    const families = await getFirestore().collection('families').select().get();
+    for (const f of families.docs) await reconcileFamilyUsage(getFirestore(), f.id);
+    logger.info('storage reconciled', { families: families.size });
+  },
+);

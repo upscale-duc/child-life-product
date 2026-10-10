@@ -48,6 +48,7 @@ String authorLabel(
   required String Function(Relation, String) relationLabel,
 }) {
   if (isMe) return l10n.careYou;
+  if (author.deleted) return l10n.deletedUser;
   return switch (author.relation) {
     Relation.mother ||
     Relation.father ||
@@ -64,6 +65,7 @@ String authorFull(
   required bool isMe,
   required String Function(Relation, String) relationLabel,
 }) {
+  if (author.deleted) return l10n.deletedUser;
   final label = relationLabel(author.relation, author.relationCustom ?? '');
   final full = switch (author.relation) {
     Relation.mother ||

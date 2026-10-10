@@ -6409,6 +6409,966 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tuỳ chọn album'**
   String get albOptions;
+
+  /// 13a role line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{relation} · chủ hồ sơ của {names}'**
+  String meRoleOwner(String relation, String names);
+
+  /// 13a for a co-parent who is not the owner (eng).
+  ///
+  /// In vi, this message translates to:
+  /// **'{relation} · cùng nuôi {names}'**
+  String meRoleParent(String relation, String names);
+
+  /// 13g role line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{relation} · chăm {names}'**
+  String meRoleCaregiver(String relation, String names);
+
+  /// 13h role line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{relation} · người thân của {names}'**
+  String meRoleRelative(String relation, String names);
+
+  /// 13a card / 13b title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng'**
+  String get meStorage;
+
+  /// 13a card value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{used} / {quota}'**
+  String meStorageOf(String used, String quota);
+
+  /// 13a footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng chung cho tất cả các bé của bạn'**
+  String get meStorageShared;
+
+  /// 13a row / 13i title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hồ sơ các bé'**
+  String get meBabies;
+
+  /// 13g row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé được giao'**
+  String get meAssigned;
+
+  /// 13h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các bé bạn theo dõi'**
+  String get meFollowing;
+
+  /// 13a row / G-056 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo'**
+  String get meNotifications;
+
+  /// Row value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật'**
+  String get meOn;
+
+  /// Row value when some kinds are off.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một số'**
+  String get meSome;
+
+  /// Row value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tắt'**
+  String get meOff;
+
+  /// 13a row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản & đăng nhập'**
+  String get meAccount;
+
+  /// 13a row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email, Apple, đổi máy'**
+  String get meAccountHint;
+
+  /// 13a row / help title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ giúp & liên hệ'**
+  String get meHelp;
+
+  /// Sign-out confirmation (gap, eng).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng xuất khỏi máy này?'**
+  String get meSignOutTitle;
+
+  /// Sign-out confirmation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi ghi chép và kỷ niệm đã lưu trên tài khoản của bạn.'**
+  String get meSignOutBody;
+
+  /// Sign-out with a pending upload queue (gap).
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{1 mục đang chờ tải lên sẽ không được tải nếu bạn đăng xuất bây giờ.} other{{count} mục đang chờ tải lên sẽ không được tải nếu bạn đăng xuất bây giờ.}}'**
+  String meSignOutPending(int count);
+
+  /// Toast after remote sign-out.
+  ///
+  /// In vi, this message translates to:
+  /// **'Máy này đã được đăng xuất từ một thiết bị khác.'**
+  String get meSignedOutRemote;
+
+  /// 13b big number suffix.
+  ///
+  /// In vi, this message translates to:
+  /// **'/ {quota}'**
+  String stOfQuota(String quota);
+
+  /// 13b helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng chung cho tất cả các bé · ảnh ba và mẹ tải lên đều tính vào đây'**
+  String get stFootnote;
+
+  /// 13c banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp đầy · {percent}%'**
+  String stNearTitle(int percent);
+
+  /// 13c banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video chiếm nhiều chỗ nhất. Xoá bớt video dài hoặc liên hệ quản trị để mở rộng.'**
+  String get stNearBody;
+
+  /// 13d banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng hết {quota}'**
+  String stFullTitle(String quota);
+
+  /// 13d banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{Tạm dừng tải ảnh, video. 1 mục mới được giữ trên máy, không mất. Ghi chép chăm sóc vẫn lưu bình thường.} other{Tạm dừng tải ảnh, video. {count} mục mới được giữ trên máy, không mất. Ghi chép chăm sóc vẫn lưu bình thường.}}'**
+  String stFullBody(int count);
+
+  /// 13d banner without held items.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng tải ảnh, video. Ghi chép chăm sóc vẫn lưu bình thường.'**
+  String get stFullBodyNone;
+
+  /// 13b section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo bé'**
+  String get stByBaby;
+
+  /// 13b baby row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{photos} ảnh · {videos} video'**
+  String stCounts(int photos, int videos);
+
+  /// 13b section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo loại'**
+  String get stByType;
+
+  /// 13b type row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video'**
+  String get stVideo;
+
+  /// 13b type row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem video lớn nhất'**
+  String get stVideoHint;
+
+  /// 13b type row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get stPhotos;
+
+  /// 13b type row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu chuyện & ghi chú'**
+  String get stNotes;
+
+  /// 13b row (G-041).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá gần đây'**
+  String get stBin;
+
+  /// 13b row (G-041).
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn tính đến khi xoá hẳn sau 30 ngày'**
+  String get stBinHint;
+
+  /// 13b card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần thêm dung lượng?'**
+  String get stNeedMore;
+
+  /// 13b card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi gia đình có {quota}. Liên hệ quản trị Child Life để mở rộng.'**
+  String stNeedMoreBody(String quota);
+
+  /// 13b button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên hệ quản trị'**
+  String get stContact;
+
+  /// 13b after 13e (gap).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi yêu cầu +{amount} GB · {date}'**
+  String stRequested(int amount, String date);
+
+  /// 13b after 13e.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản trị Child Life sẽ trả lời qua email.'**
+  String get stRequestedHint;
+
+  /// 13e title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xin thêm dung lượng'**
+  String get stReqTitle;
+
+  /// 13e label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần thêm bao nhiêu?'**
+  String get stReqHow;
+
+  /// 13e field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn (không bắt buộc)'**
+  String get stReqMessage;
+
+  /// 13e info.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi kèm: {email} · đang dùng {used} / {quota}'**
+  String stReqAttach(String email, String used, String quota);
+
+  /// 13e button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi yêu cầu'**
+  String get stReqSend;
+
+  /// 13e footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản trị Child Life sẽ trả lời qua email, thường trong 1–2 ngày làm việc.'**
+  String get stReqFootnote;
+
+  /// 13e toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi yêu cầu'**
+  String get stReqSent;
+
+  /// 13e / help without an email.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu tài khoản bằng email để gửi yêu cầu.'**
+  String get needEmailAccount;
+
+  /// G-058 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video lớn nhất'**
+  String get stVideosTitle;
+
+  /// G-058 hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở video để xem, tải về hoặc xoá.'**
+  String get stVideosHint;
+
+  /// G-058 empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có video nào.'**
+  String get stVideosEmpty;
+
+  /// 13b error (G-001).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tải được dung lượng. Kéo xuống để thử lại.'**
+  String get stLoadFailed;
+
+  /// 13i row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{{age} · 1 người cùng chăm} other{{age} · {count} người cùng chăm}}'**
+  String bpCarers(String age, int count);
+
+  /// 13i tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm bé'**
+  String get bpAdd;
+
+  /// 13i row while purging.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xoá…'**
+  String get bpDeleting;
+
+  /// 13j head.
+  ///
+  /// In vi, this message translates to:
+  /// **'{age} · sinh ngày {date}'**
+  String bpBorn(String age, String date);
+
+  /// 13j card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng · {when}'**
+  String bpWeight(String when);
+
+  /// 13j card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều cao · {when}'**
+  String bpLength(String when);
+
+  /// 13j section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin'**
+  String get bpInfo;
+
+  /// 13j section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Của bé'**
+  String get bpOf;
+
+  /// 13j row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình của {name}'**
+  String bpFamily(String name);
+
+  /// 13j row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Biểu đồ cân nặng, chiều cao'**
+  String get bpGrowthHint;
+
+  /// 13j row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng của {name}'**
+  String bpStorage(String name);
+
+  /// 13j row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính vào {quota} của bạn'**
+  String bpStorageHint(String quota);
+
+  /// 13j card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá hồ sơ {name}'**
+  String bpDelete(String name);
+
+  /// 13j card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ chủ hồ sơ ({owner}) làm được'**
+  String bpDeleteOwner(String owner);
+
+  /// 13k button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu thay đổi'**
+  String get bpSave;
+
+  /// 13k note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người thân chỉ thấy tên thân mật'**
+  String get bpPrivacy;
+
+  /// 13k gender label.
+  ///
+  /// In vi, this message translates to:
+  /// **'· không bắt buộc'**
+  String get bpOptional;
+
+  /// 13k toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu hồ sơ'**
+  String get bpSaved;
+
+  /// 13l title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá hồ sơ {name}?'**
+  String bpDelTitle(String name);
+
+  /// 13l body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi ghi chép chăm sóc, ảnh, video và câu chuyện của {name} sẽ bị xoá với cả gia đình. Không khôi phục được.'**
+  String bpDelBody(String name);
+
+  /// 13l info.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{Giải phóng {size} · 1 người mất quyền xem} other{Giải phóng {size} · {count} người mất quyền xem}}'**
+  String bpDelFree(String size, int count);
+
+  /// 13l info.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nên tải ảnh về máy trước khi xoá.'**
+  String get bpDelTip;
+
+  /// 13l prompt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gõ “{name}” để xác nhận'**
+  String bpDelType(String name);
+
+  /// 13l button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá vĩnh viễn'**
+  String get bpDelConfirm;
+
+  /// Toast after 13l.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xoá hồ sơ {name}…'**
+  String bpDelStarted(String name);
+
+  /// Toast when the purge is verified.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá hồ sơ {name}'**
+  String bpDelDone(String name);
+
+  /// 13i row when a step failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa xoá xong, đang tự thử lại.'**
+  String get bpDelRetrying;
+
+  /// Banner for members (Q-037).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hồ sơ này đang được xoá. Không thể thêm ghi chép mới.'**
+  String get bpLocked;
+
+  /// 13m title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hồ sơ của bạn'**
+  String get pfTitle;
+
+  /// 13m field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên hiển thị'**
+  String get pfName;
+
+  /// 13m section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn là ai với bé'**
+  String get pfWho;
+
+  /// 13m footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình thấy tên và vai trò này khi bạn ghi chép hay chia sẻ.'**
+  String get pfFootnote;
+
+  /// 13m role picker (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn là gì của {name}?'**
+  String pfRelationTitle(String name);
+
+  /// 13m toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu'**
+  String get pfSaved;
+
+  /// 13n title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản'**
+  String get acTitle;
+
+  /// 13n section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập'**
+  String get acSignIn;
+
+  /// 13n row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{email} · đã xác minh'**
+  String acEmailVerified(String email);
+
+  /// 13n row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{email} · chưa xác minh'**
+  String acEmailUnverified(String email);
+
+  /// 13n row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã liên kết'**
+  String get acLinked;
+
+  /// 13n action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gỡ'**
+  String get acUnlink;
+
+  /// 13n guard.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần giữ ít nhất một cách đăng nhập.'**
+  String get acUnlinkLast;
+
+  /// 13n toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gỡ {provider}'**
+  String acUnlinked(String provider);
+
+  /// 13n row (G-059).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi mật khẩu'**
+  String get acPassword;
+
+  /// 13n toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi email đổi mật khẩu tới {email}'**
+  String acPasswordSent(String email);
+
+  /// 13n section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiết bị đang đăng nhập'**
+  String get acDevices;
+
+  /// 13n row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Máy này'**
+  String get acThisDevice;
+
+  /// 13n row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoạt động {when}'**
+  String acActive(String when);
+
+  /// 13n toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đăng xuất {name}'**
+  String acDeviceSignedOut(String name);
+
+  /// 13n section (Q-016).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ hồ sơ'**
+  String get acOwner;
+
+  /// 13n row (Q-016).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển chủ hồ sơ'**
+  String get acTransfer;
+
+  /// 13n row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho một người Cùng nuôi của {names}'**
+  String acTransferHint(String names);
+
+  /// Transfer sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người nhận trở thành chủ hồ sơ của {names}: xoá hồ sơ, chuyển tiếp và dung lượng gia đình. Họ cần đồng ý.'**
+  String acTransferBody(String names);
+
+  /// Transfer sheet empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ai Cùng nuôi tất cả các bé.'**
+  String get acTransferNone;
+
+  /// Transfer sheet button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi đề nghị'**
+  String get acTransferSend;
+
+  /// 13n row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chờ {name} đồng ý'**
+  String acTransferPending(String name);
+
+  /// 13n action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ đề nghị'**
+  String get acTransferCancel;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi đề nghị cho {name}'**
+  String acTransferSent(String name);
+
+  /// Offer card.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} muốn chuyển quyền chủ hồ sơ cho bạn'**
+  String acOfferTitle(String name);
+
+  /// Offer card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn sẽ là chủ hồ sơ của {names} và quản lý dung lượng gia đình.'**
+  String acOfferBody(String names);
+
+  /// Offer card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận'**
+  String get acOfferAccept;
+
+  /// Offer card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ chối'**
+  String get acOfferDecline;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã là chủ hồ sơ'**
+  String get acOfferAccepted;
+
+  /// Transfer error.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người này đang là chủ hồ sơ khác.'**
+  String get acReceiverOwns;
+
+  /// 13n row (G-072).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất dữ liệu'**
+  String get acExport;
+
+  /// 13n row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chép chăm sóc, ảnh và video'**
+  String get acExportHint;
+
+  /// Export sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất dữ liệu của {name}'**
+  String acExportTitle(String name);
+
+  /// Export option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chép chăm sóc'**
+  String get acExportCare;
+
+  /// Export option.
+  ///
+  /// In vi, this message translates to:
+  /// **'CSV và JSON'**
+  String get acExportCareHint;
+
+  /// Export option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh và video'**
+  String get acExportMedia;
+
+  /// Export option.
+  ///
+  /// In vi, this message translates to:
+  /// **'ZIP · chỉ chủ hồ sơ'**
+  String get acExportMediaHint;
+
+  /// Export button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu xuất'**
+  String get acExportStart;
+
+  /// Export sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chúng tôi gửi email khi tệp sẵn sàng. Liên kết tải hết hạn sau 24 giờ.'**
+  String get acExportFootnote;
+
+  /// Export row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị…'**
+  String get acExportQueued;
+
+  /// Export row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẵn sàng · hết hạn {when}'**
+  String acExportReady(String when);
+
+  /// Export row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hết hạn'**
+  String get acExportExpired;
+
+  /// Export row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không xuất được'**
+  String get acExportFailed;
+
+  /// Export error.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một tệp xuất khác đang chạy.'**
+  String get acExportRunning;
+
+  /// 13n card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá tài khoản'**
+  String get acDelete;
+
+  /// 13n card (R-046).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần chuyển chủ hồ sơ của {names} trước'**
+  String acDeleteBlocked(String names);
+
+  /// 13n card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá tên, email và thiết bị của bạn'**
+  String get acDeleteHint;
+
+  /// Confirmation (Q-016).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá tài khoản?'**
+  String get acDeleteTitle;
+
+  /// Confirmation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên, email và thiết bị của bạn sẽ bị xoá. Ghi chép và kỷ niệm bạn đã chia sẻ ở lại với gia đình, ghi là “Người dùng đã xoá”. Không khôi phục được.'**
+  String get acDeleteBody;
+
+  /// Progress.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xoá tài khoản…'**
+  String get acDeleting;
+
+  /// Author of content from a deleted account (Q-016).
+  ///
+  /// In vi, this message translates to:
+  /// **'Người dùng đã xoá'**
+  String get deletedUser;
+
+  /// Toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm mới'**
+  String get ntMemories;
+
+  /// Toggle hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi ba mẹ chia sẻ ảnh, album, câu chuyện'**
+  String get ntMemoriesHint;
+
+  /// Toggle (parents).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn'**
+  String get ntMessages;
+
+  /// Toggle hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi có người nhắn ba mẹ'**
+  String get ntMessagesHint;
+
+  /// Toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc'**
+  String get ntReminders;
+
+  /// Toggle hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trên máy được chọn cho từng nhắc việc'**
+  String get ntRemindersHint;
+
+  /// Toggle (parents).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng'**
+  String get ntStorage;
+
+  /// Toggle hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi gần đầy hoặc đã đầy'**
+  String get ntStorageHint;
+
+  /// Footnote (R-120).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo không bao giờ kèm ảnh hay tên bé.'**
+  String get ntFootnote;
+
+  /// Help form.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ đề'**
+  String get hpTopic;
+
+  /// Help topic.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm & media'**
+  String get hpCatMemories;
+
+  /// Help topic.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình & vai trò'**
+  String get hpCatFamily;
+
+  /// Help topic.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời mời'**
+  String get hpCatInvites;
+
+  /// Help topic.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng bộ'**
+  String get hpCatSync;
+
+  /// Help topic.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản'**
+  String get hpCatAccount;
+
+  /// Help topic.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng'**
+  String get hpCatStorage;
+
+  /// Help topic.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu chuyện'**
+  String get hpCatStories;
+
+  /// Help field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn cần giúp gì?'**
+  String get hpMessage;
+
+  /// Help consent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi kèm thông tin chẩn đoán'**
+  String get hpDiagnostics;
+
+  /// Help consent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phiên bản app, loại máy, tình trạng đồng bộ. Không kèm ảnh hay ghi chép.'**
+  String get hpDiagnosticsHint;
+
+  /// Help footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chúng tôi trả lời qua email {email}.'**
+  String hpFootnote(String email);
+
+  /// Help toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi · mã {ticket}'**
+  String hpSent(String ticket);
 }
 
 class _AppLocalizationsDelegate

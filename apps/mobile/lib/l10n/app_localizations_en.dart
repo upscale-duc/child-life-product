@@ -4091,4 +4091,620 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get albOptions => 'Album options';
+
+  @override
+  String meRoleOwner(String relation, String names) {
+    return '$relation · profile owner of $names';
+  }
+
+  @override
+  String meRoleParent(String relation, String names) {
+    return '$relation · co-parent of $names';
+  }
+
+  @override
+  String meRoleCaregiver(String relation, String names) {
+    return '$relation · cares for $names';
+  }
+
+  @override
+  String meRoleRelative(String relation, String names) {
+    return '$relation · family of $names';
+  }
+
+  @override
+  String get meStorage => 'Storage';
+
+  @override
+  String meStorageOf(String used, String quota) {
+    return '$used of $quota';
+  }
+
+  @override
+  String get meStorageShared => 'Shared by all your babies';
+
+  @override
+  String get meBabies => 'Baby profiles';
+
+  @override
+  String get meAssigned => 'Assigned babies';
+
+  @override
+  String get meFollowing => 'Babies you follow';
+
+  @override
+  String get meNotifications => 'Notifications';
+
+  @override
+  String get meOn => 'On';
+
+  @override
+  String get meSome => 'Some';
+
+  @override
+  String get meOff => 'Off';
+
+  @override
+  String get meAccount => 'Account & sign-in';
+
+  @override
+  String get meAccountHint => 'Email, Apple, devices';
+
+  @override
+  String get meHelp => 'Help & contact';
+
+  @override
+  String get meSignOutTitle => 'Sign out on this phone?';
+
+  @override
+  String get meSignOutBody => 'Everything you saved stays in your account.';
+
+  @override
+  String meSignOutPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count items waiting to upload won’t be uploaded if you sign out now.',
+      one: '1 item waiting to upload won’t be uploaded if you sign out now.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get meSignedOutRemote =>
+      'This phone was signed out from another device.';
+
+  @override
+  String stOfQuota(String quota) {
+    return 'of $quota';
+  }
+
+  @override
+  String get stFootnote =>
+      'Shared by all babies · photos both parents upload count here';
+
+  @override
+  String stNearTitle(int percent) {
+    return 'Almost full · $percent%';
+  }
+
+  @override
+  String get stNearBody =>
+      'Videos take the most space. Delete some long videos or contact the Child Life team to expand.';
+
+  @override
+  String stFullTitle(String quota) {
+    return 'All $quota used';
+  }
+
+  @override
+  String stFullBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Photo and video uploads are paused. $count new items are kept on this phone, not lost. Care logs still save as usual.',
+      one:
+          'Photo and video uploads are paused. 1 new item is kept on this phone, not lost. Care logs still save as usual.',
+      zero:
+          'Photo and video uploads are paused. Care logs still save as usual.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get stFullBodyNone =>
+      'Photo and video uploads are paused. Care logs still save as usual.';
+
+  @override
+  String get stByBaby => 'By baby';
+
+  @override
+  String stCounts(int photos, int videos) {
+    return '$photos photos · $videos videos';
+  }
+
+  @override
+  String get stByType => 'By type';
+
+  @override
+  String get stVideo => 'Videos';
+
+  @override
+  String get stVideoHint => 'See the largest videos';
+
+  @override
+  String get stPhotos => 'Photos';
+
+  @override
+  String get stNotes => 'Stories & notes';
+
+  @override
+  String get stBin => 'Recently deleted';
+
+  @override
+  String get stBinHint => 'Counted until removed for good after 30 days';
+
+  @override
+  String get stNeedMore => 'Need more space?';
+
+  @override
+  String stNeedMoreBody(String quota) {
+    return 'Each family has $quota. Contact the Child Life team to expand.';
+  }
+
+  @override
+  String get stContact => 'Contact the team';
+
+  @override
+  String stRequested(int amount, String date) {
+    return 'Requested +$amount GB · $date';
+  }
+
+  @override
+  String get stRequestedHint => 'The Child Life team will reply by email.';
+
+  @override
+  String get stReqTitle => 'Request more space';
+
+  @override
+  String get stReqHow => 'How much more?';
+
+  @override
+  String get stReqMessage => 'Message (optional)';
+
+  @override
+  String stReqAttach(String email, String used, String quota) {
+    return 'Attached: $email · using $used of $quota';
+  }
+
+  @override
+  String get stReqSend => 'Send request';
+
+  @override
+  String get stReqFootnote =>
+      'The Child Life team will reply by email, usually within 1–2 business days.';
+
+  @override
+  String get stReqSent => 'Request sent';
+
+  @override
+  String get needEmailAccount =>
+      'Save your account with an email to send a request.';
+
+  @override
+  String get stVideosTitle => 'Largest videos';
+
+  @override
+  String get stVideosHint => 'Open a video to watch, download or delete it.';
+
+  @override
+  String get stVideosEmpty => 'No videos yet.';
+
+  @override
+  String get stLoadFailed => 'Couldn’t load storage. Pull down to try again.';
+
+  @override
+  String bpCarers(String age, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$age · $count carers',
+      one: '$age · 1 carer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bpAdd => 'Add a baby';
+
+  @override
+  String get bpDeleting => 'Deleting…';
+
+  @override
+  String bpBorn(String age, String date) {
+    return '$age · born $date';
+  }
+
+  @override
+  String bpWeight(String when) {
+    return 'Weight · $when';
+  }
+
+  @override
+  String bpLength(String when) {
+    return 'Length · $when';
+  }
+
+  @override
+  String get bpInfo => 'Details';
+
+  @override
+  String get bpOf => 'For the baby';
+
+  @override
+  String bpFamily(String name) {
+    return '$name’s family';
+  }
+
+  @override
+  String get bpGrowthHint => 'Weight and length charts';
+
+  @override
+  String bpStorage(String name) {
+    return '$name’s storage';
+  }
+
+  @override
+  String bpStorageHint(String quota) {
+    return 'Counts toward your $quota';
+  }
+
+  @override
+  String bpDelete(String name) {
+    return 'Delete $name’s profile';
+  }
+
+  @override
+  String bpDeleteOwner(String owner) {
+    return 'Only the profile owner ($owner) can do this';
+  }
+
+  @override
+  String get bpSave => 'Save changes';
+
+  @override
+  String get bpPrivacy => 'Relatives only see the nickname';
+
+  @override
+  String get bpOptional => '· optional';
+
+  @override
+  String get bpSaved => 'Profile saved';
+
+  @override
+  String bpDelTitle(String name) {
+    return 'Delete $name’s profile?';
+  }
+
+  @override
+  String bpDelBody(String name) {
+    return 'All of $name’s care logs, photos, videos and stories will be deleted for the whole family. This can’t be undone.';
+  }
+
+  @override
+  String bpDelFree(String size, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Frees $size · $count people lose access',
+      one: 'Frees $size · 1 person loses access',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bpDelTip => 'Download photos to your phone before deleting.';
+
+  @override
+  String bpDelType(String name) {
+    return 'Type “$name” to confirm';
+  }
+
+  @override
+  String get bpDelConfirm => 'Delete permanently';
+
+  @override
+  String bpDelStarted(String name) {
+    return 'Deleting $name’s profile…';
+  }
+
+  @override
+  String bpDelDone(String name) {
+    return '$name’s profile was deleted';
+  }
+
+  @override
+  String get bpDelRetrying => 'Not finished yet; retrying by itself.';
+
+  @override
+  String get bpLocked =>
+      'This profile is being deleted. New entries can’t be added.';
+
+  @override
+  String get pfTitle => 'Your profile';
+
+  @override
+  String get pfName => 'Display name';
+
+  @override
+  String get pfWho => 'Who you are to each baby';
+
+  @override
+  String get pfFootnote =>
+      'The family sees this name and role when you log or share.';
+
+  @override
+  String pfRelationTitle(String name) {
+    return 'What are you to $name?';
+  }
+
+  @override
+  String get pfSaved => 'Saved';
+
+  @override
+  String get acTitle => 'Account';
+
+  @override
+  String get acSignIn => 'Sign-in';
+
+  @override
+  String acEmailVerified(String email) {
+    return '$email · verified';
+  }
+
+  @override
+  String acEmailUnverified(String email) {
+    return '$email · not verified';
+  }
+
+  @override
+  String get acLinked => 'Linked';
+
+  @override
+  String get acUnlink => 'Unlink';
+
+  @override
+  String get acUnlinkLast => 'Keep at least one way to sign in.';
+
+  @override
+  String acUnlinked(String provider) {
+    return '$provider unlinked';
+  }
+
+  @override
+  String get acPassword => 'Change password';
+
+  @override
+  String acPasswordSent(String email) {
+    return 'Password email sent to $email';
+  }
+
+  @override
+  String get acDevices => 'Signed-in devices';
+
+  @override
+  String get acThisDevice => 'This phone';
+
+  @override
+  String acActive(String when) {
+    return 'Active $when';
+  }
+
+  @override
+  String acDeviceSignedOut(String name) {
+    return '$name signed out';
+  }
+
+  @override
+  String get acOwner => 'Profile owner';
+
+  @override
+  String get acTransfer => 'Transfer ownership';
+
+  @override
+  String acTransferHint(String names) {
+    return 'To a co-parent of $names';
+  }
+
+  @override
+  String acTransferBody(String names) {
+    return 'They become the owner of $names: deleting profiles, passing ownership on and the family storage. They need to accept.';
+  }
+
+  @override
+  String get acTransferNone => 'Nobody co-parents all the babies yet.';
+
+  @override
+  String get acTransferSend => 'Send offer';
+
+  @override
+  String acTransferPending(String name) {
+    return 'Waiting for $name to accept';
+  }
+
+  @override
+  String get acTransferCancel => 'Cancel offer';
+
+  @override
+  String acTransferSent(String name) {
+    return 'Offer sent to $name';
+  }
+
+  @override
+  String acOfferTitle(String name) {
+    return '$name wants to make you the profile owner';
+  }
+
+  @override
+  String acOfferBody(String names) {
+    return 'You’ll own $names and look after the family storage.';
+  }
+
+  @override
+  String get acOfferAccept => 'Accept';
+
+  @override
+  String get acOfferDecline => 'Decline';
+
+  @override
+  String get acOfferAccepted => 'You’re now the profile owner';
+
+  @override
+  String get acReceiverOwns => 'This person already owns other profiles.';
+
+  @override
+  String get acExport => 'Export data';
+
+  @override
+  String get acExportHint => 'Care logs, photos and videos';
+
+  @override
+  String acExportTitle(String name) {
+    return 'Export $name’s data';
+  }
+
+  @override
+  String get acExportCare => 'Care logs';
+
+  @override
+  String get acExportCareHint => 'CSV and JSON';
+
+  @override
+  String get acExportMedia => 'Photos and videos';
+
+  @override
+  String get acExportMediaHint => 'ZIP · profile owner only';
+
+  @override
+  String get acExportStart => 'Start export';
+
+  @override
+  String get acExportFootnote =>
+      'We’ll email you when it’s ready. The download link expires after 24 hours.';
+
+  @override
+  String get acExportQueued => 'Preparing…';
+
+  @override
+  String acExportReady(String when) {
+    return 'Ready · expires $when';
+  }
+
+  @override
+  String get acExportExpired => 'Expired';
+
+  @override
+  String get acExportFailed => 'Export failed';
+
+  @override
+  String get acExportRunning => 'Another export is still running.';
+
+  @override
+  String get acDelete => 'Delete account';
+
+  @override
+  String acDeleteBlocked(String names) {
+    return 'Transfer ownership of $names first';
+  }
+
+  @override
+  String get acDeleteHint => 'Removes your name, email and devices';
+
+  @override
+  String get acDeleteTitle => 'Delete your account?';
+
+  @override
+  String get acDeleteBody =>
+      'Your name, email and devices will be deleted. Logs and memories you shared stay with the family, shown as “Deleted user”. This can’t be undone.';
+
+  @override
+  String get acDeleting => 'Deleting your account…';
+
+  @override
+  String get deletedUser => 'Deleted user';
+
+  @override
+  String get ntMemories => 'New memories';
+
+  @override
+  String get ntMemoriesHint =>
+      'When the parents share photos, albums or stories';
+
+  @override
+  String get ntMessages => 'Messages';
+
+  @override
+  String get ntMessagesHint => 'When someone messages the parents';
+
+  @override
+  String get ntReminders => 'Reminders';
+
+  @override
+  String get ntRemindersHint => 'On the phone chosen for each reminder';
+
+  @override
+  String get ntStorage => 'Storage';
+
+  @override
+  String get ntStorageHint => 'When nearly or completely full';
+
+  @override
+  String get ntFootnote =>
+      'Notifications never include photos or the baby’s name.';
+
+  @override
+  String get hpTopic => 'Topic';
+
+  @override
+  String get hpCatMemories => 'Memories & media';
+
+  @override
+  String get hpCatFamily => 'Family & roles';
+
+  @override
+  String get hpCatInvites => 'Invites';
+
+  @override
+  String get hpCatSync => 'Sync';
+
+  @override
+  String get hpCatAccount => 'Account';
+
+  @override
+  String get hpCatStorage => 'Storage';
+
+  @override
+  String get hpCatStories => 'Stories';
+
+  @override
+  String get hpMessage => 'How can we help?';
+
+  @override
+  String get hpDiagnostics => 'Include diagnostics';
+
+  @override
+  String get hpDiagnosticsHint =>
+      'App version, phone model, sync status. No photos or logs.';
+
+  @override
+  String hpFootnote(String email) {
+    return 'We’ll reply to $email.';
+  }
+
+  @override
+  String hpSent(String ticket) {
+    return 'Sent · reference $ticket';
+  }
 }

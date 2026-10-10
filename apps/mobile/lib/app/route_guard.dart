@@ -52,6 +52,19 @@ abstract final class Routes {
   /// 9d Mất quyền truy cập.
   static const lostAccess = '/lost-access';
   static const appearance = '/appearance';
+
+  /// S11 tab "Tôi" (13a–13n) and its pages, inside the shell so the dock stays.
+  static const me = '/me';
+  static const meStorage = '/me/storage';
+  static const meVideos = '/me/storage/videos';
+  static const meBabies = '/me/babies';
+  static const meProfile = '/me/profile';
+  static const meAccount = '/me/account';
+  static const meNotifications = '/me/notifications';
+  static const meHelp = '/me/help';
+
+  /// 13k "Sửa hồ sơ bé": full screen, no dock.
+  static const babyEdit = '/baby-edit';
   static const showcase = '/showcase';
   static const diagnostics = '/diagnostics';
 }

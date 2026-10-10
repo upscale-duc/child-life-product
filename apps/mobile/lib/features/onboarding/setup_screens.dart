@@ -242,165 +242,14 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
-    final draft = ref.watch(setupDraftProvider);
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    final zone = draft.timeZone;
     return OnboardingScaffold(
       topBar: ClTopBar(onBack: () => context.pop(), progress: _progressBaby),
-      content: [
-        Center(
-          child: ClPressable(
-            semanticLabel: l10n.a11yChangeBabyPhoto,
-            onPressed: () => showAvatarSheet(context),
-            child: SizedBox(
-              width: 148,
-              height: 148,
-              child: Stack(
-                children: [
-                  AnimatedSwitcher(
-                    duration: context.motion(ClMotion.quick),
-                    child: draft.avatarPhoto != null
-                        ? BabyAvatarImage.photo(
-                            draft.avatarPhoto!,
-                            size: 148,
-                            key: ValueKey(draft.avatarPhoto),
-                          )
-                        : BabyAvatarImage.preset(
-                            draft.avatarPreset,
-                            size: 148,
-                            key: ValueKey(draft.avatarPreset),
-                          ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    bottom: 4,
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: cl.colors.mintDeep,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: cl.colors.cloud, width: 3),
-                      ),
-                      alignment: Alignment.center,
-                      child: ClIcon(
-                        ClIcons.camera,
-                        size: 20,
-                        color: cl.colors.onMintDeep,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: ClSpace.s4),
-        Text(
-          l10n.babyNicknameLabel,
-          textAlign: TextAlign.center,
-          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-        ),
-        // Large inline nickname ("Teddy", 29:721).
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            if (draft.nickname.isEmpty)
-              IgnorePointer(
-                child: ExcludeSemantics(
-                  child: Text(
-                    l10n.babyNicknamePlaceholder,
-                    style: cl.text.largeTitle.copyWith(
-                      color: cl.colors.inkMuted.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ),
-              ),
-            Semantics(
-              label: l10n.babyNicknameLabel,
-              textField: true,
-              child: EditableText(
-                controller: _nickname,
-                focusNode: _nicknameFocus,
-                textAlign: TextAlign.center,
-                style: cl.text.largeTitle.copyWith(color: cl.colors.ink),
-                cursorColor: cl.colors.mintDeep,
-                backgroundCursorColor: cl.colors.separator,
-                textCapitalization: TextCapitalization.words,
-                maxLines: 1,
-                inputFormatters: [
-                  LengthLimitingTextInputFormatter(nicknameMaxLength),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: ClSpace.s4),
-        ClCardGroup(
-          shadow: true,
-          children: [
-            ClDetailRow(
-              icon: ClIcons.cake,
-              label: l10n.babyDob,
-              value:
-                  (locale.startsWith('vi')
-                          ? DateFormat.yMMMMd(locale)
-                          : DateFormat.yMMMd(locale))
-                      .format(draft.dateOfBirth),
-              onTap: () => showDobSheet(context),
-            ),
-            ClDetailRow(
-              icon: ClIcons.globe,
-              label: l10n.babyTimeZone,
-              value: zone == null
-                  ? '…'
-                  : gmtOffsetLabel(zone.zone, DateTime.now()),
-              onTap: () => showTimeZoneSheet(context),
-            ),
-          ],
-        ),
-        const SizedBox(height: ClSpace.s6),
-        Text.rich(
-          TextSpan(
-            text: l10n.babyGender,
-            children: [
-              TextSpan(
-                text: ' · ${l10n.babyOptional}',
-                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-              ),
-            ],
-          ),
-          style: cl.text.caption.copyWith(color: cl.colors.ink),
-        ),
-        const SizedBox(height: ClSpace.s2),
-        ClSegmented<Gender>(
-          options: Gender.values,
-          selected: draft.gender,
-          labelOf: (g) => switch (g) {
-            Gender.girl => l10n.genderGirl,
-            Gender.boy => l10n.genderBoy,
-            Gender.unspecified => l10n.genderUnspecified,
-          },
-          onChanged: (g) => ref
-              .read(setupDraftProvider.notifier)
-              .update(draft.copyWith(gender: g)),
-        ),
-        const SizedBox(height: ClSpace.s4),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ClIcon(ClIcons.lock, size: 14, color: cl.colors.inkMuted),
-            const SizedBox(width: ClSpace.s1),
-            Flexible(
-              child: Text(
-                l10n.babyPrivacyNote,
-                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-              ),
-            ),
-          ],
-        ),
-      ],
+      content: babyFormFields(
+        context,
+        ref,
+        nickname: _nickname,
+        focus: _nicknameFocus,
+      ),
       bottom: [
         ClButton(label: l10n.actionNext, expand: true, onPressed: _next),
       ],
@@ -622,4 +471,170 @@ class _TrackerRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The baby form of 11 (photo, nickname, DOB, zone, gender, privacy note), shared by 13k
+/// "Sửa hồ sơ bé · dùng lại form tạo". Reads and writes [setupDraftProvider].
+List<Widget> babyFormFields(
+  BuildContext context,
+  WidgetRef ref, {
+  required TextEditingController nickname,
+  required FocusNode focus,
+}) {
+  final l10n = AppLocalizations.of(context);
+  final cl = context.cl;
+  final draft = ref.watch(setupDraftProvider);
+  final locale = Localizations.localeOf(context).toLanguageTag();
+  final zone = draft.timeZone;
+  return [
+    Center(
+      child: ClPressable(
+        semanticLabel: l10n.a11yChangeBabyPhoto,
+        onPressed: () => showAvatarSheet(context),
+        child: SizedBox(
+          width: 148,
+          height: 148,
+          child: Stack(
+            children: [
+              AnimatedSwitcher(
+                duration: context.motion(ClMotion.quick),
+                child: draft.avatarPhoto != null
+                    ? BabyAvatarImage.photo(
+                        draft.avatarPhoto!,
+                        size: 148,
+                        key: ValueKey(draft.avatarPhoto),
+                      )
+                    : BabyAvatarImage.preset(
+                        draft.avatarPreset,
+                        size: 148,
+                        key: ValueKey(draft.avatarPreset),
+                      ),
+              ),
+              Positioned(
+                right: 0,
+                bottom: 4,
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: cl.colors.mintDeep,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: cl.colors.cloud, width: 3),
+                  ),
+                  alignment: Alignment.center,
+                  child: ClIcon(
+                    ClIcons.camera,
+                    size: 20,
+                    color: cl.colors.onMintDeep,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+    const SizedBox(height: ClSpace.s4),
+    Text(
+      l10n.babyNicknameLabel,
+      textAlign: TextAlign.center,
+      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+    ),
+    // Large inline nickname ("Teddy", 29:721).
+    Stack(
+      alignment: Alignment.center,
+      children: [
+        if (draft.nickname.isEmpty)
+          IgnorePointer(
+            child: ExcludeSemantics(
+              child: Text(
+                l10n.babyNicknamePlaceholder,
+                style: cl.text.largeTitle.copyWith(
+                  color: cl.colors.inkMuted.withValues(alpha: 0.6),
+                ),
+              ),
+            ),
+          ),
+        Semantics(
+          label: l10n.babyNicknameLabel,
+          textField: true,
+          child: EditableText(
+            controller: nickname,
+            focusNode: focus,
+            textAlign: TextAlign.center,
+            style: cl.text.largeTitle.copyWith(color: cl.colors.ink),
+            cursorColor: cl.colors.mintDeep,
+            backgroundCursorColor: cl.colors.separator,
+            textCapitalization: TextCapitalization.words,
+            maxLines: 1,
+            inputFormatters: [
+              LengthLimitingTextInputFormatter(nicknameMaxLength),
+            ],
+          ),
+        ),
+      ],
+    ),
+    const SizedBox(height: ClSpace.s4),
+    ClCardGroup(
+      shadow: true,
+      children: [
+        ClDetailRow(
+          icon: ClIcons.cake,
+          label: l10n.babyDob,
+          value:
+              (locale.startsWith('vi')
+                      ? DateFormat.yMMMMd(locale)
+                      : DateFormat.yMMMd(locale))
+                  .format(draft.dateOfBirth),
+          onTap: () => showDobSheet(context),
+        ),
+        ClDetailRow(
+          icon: ClIcons.globe,
+          label: l10n.babyTimeZone,
+          value: zone == null ? '…' : gmtOffsetLabel(zone.zone, DateTime.now()),
+          onTap: () => showTimeZoneSheet(context),
+        ),
+      ],
+    ),
+    const SizedBox(height: ClSpace.s6),
+    Text.rich(
+      TextSpan(
+        text: l10n.babyGender,
+        children: [
+          TextSpan(
+            text: ' · ${l10n.babyOptional}',
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
+        ],
+      ),
+      style: cl.text.caption.copyWith(color: cl.colors.ink),
+    ),
+    const SizedBox(height: ClSpace.s2),
+    ClSegmented<Gender>(
+      options: Gender.values,
+      selected: draft.gender,
+      labelOf: (g) => switch (g) {
+        Gender.girl => l10n.genderGirl,
+        Gender.boy => l10n.genderBoy,
+        Gender.unspecified => l10n.genderUnspecified,
+      },
+      onChanged: (g) => ref
+          .read(setupDraftProvider.notifier)
+          .update(draft.copyWith(gender: g)),
+    ),
+    const SizedBox(height: ClSpace.s4),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ClIcon(ClIcons.lock, size: 14, color: cl.colors.inkMuted),
+        const SizedBox(width: ClSpace.s1),
+        Flexible(
+          child: Text(
+            l10n.babyPrivacyNote,
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
+        ),
+      ],
+    ),
+  ];
 }

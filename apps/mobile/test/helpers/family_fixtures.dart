@@ -10,6 +10,8 @@ import 'package:child_life/features/reminders/device_identity.dart';
 import 'package:child_life/features/reminders/reminder_models.dart';
 import 'package:child_life/features/reminders/reminder_notifications.dart';
 import 'package:child_life/features/reminders/reminder_repository.dart';
+import 'package:child_life/features/me/me_models.dart';
+import 'package:child_life/features/me/me_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -19,18 +21,36 @@ import 'reminder_fixtures.dart';
 /// S3 fixtures: the Figma family of Teddy (Mai, Minh, Cô Lan, Bà nội Hoa) and Bà ngoại's
 /// pending invite. Times are relative to now so countdowns and ages render the same every day.
 class FakeUser extends Fake implements User {
-  FakeUser({this.uid = 'u_mai', this.isAnonymous = false});
+  FakeUser({
+    this.uid = 'u_mai',
+    this.isAnonymous = false,
+    this.email,
+    this.providers = const [],
+  });
 
   @override
   final String uid;
   @override
   final bool isAnonymous;
   @override
+  final String? email;
+
+  /// Provider ids ("password", "apple.com") for 13n.
+  final List<String> providers;
+  @override
   bool get emailVerified => true;
   @override
-  List<UserInfo> get providerData => const [];
+  List<UserInfo> get providerData => [
+    for (final p in providers) _FakeUserInfo(p),
+  ];
   @override
   String? get displayName => null;
+}
+
+class _FakeUserInfo extends Fake implements UserInfo {
+  _FakeUserInfo(this.providerId);
+  @override
+  final String providerId;
 }
 
 const teddyId = 'b_00000000000000000001';
@@ -151,12 +171,24 @@ List<Override> familyOverrides({
   ReminderRepository? reminderRepo,
   ReminderNotifications? notifications,
   String deviceId = testDeviceId,
+  NotificationPrefs prefs = const NotificationPrefs(),
+  AccountDoc account = const AccountDoc(),
+  String? email,
+  List<String> providers = const [],
 }) {
   final self = me ?? mai;
   return [
+    // S11 account documents (no Firebase in widget tests).
+    notificationPrefsProvider.overrideWith((ref, uid) => Stream.value(prefs)),
+    accountDocProvider.overrideWith((ref, uid) => Stream.value(account)),
     sessionProvider.overrideWithValue(
       SessionSignedIn(
-        user: FakeUser(uid: self.uid, isAnonymous: anonymous),
+        user: FakeUser(
+          uid: self.uid,
+          isAnonymous: anonymous,
+          email: email,
+          providers: providers,
+        ),
         memberships: [self],
       ),
     ),

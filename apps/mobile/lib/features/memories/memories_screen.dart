@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
+import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
@@ -22,6 +24,7 @@ import 'memory_repository.dart';
 import 'memory_sheets.dart';
 import 'memory_widgets.dart';
 import 'social_widgets.dart';
+import 'upload_queue.dart';
 
 // ---------- View state (10c) and selection (10b2) ----------
 
@@ -659,7 +662,26 @@ class JournalView extends ConsumerWidget {
                   const SizedBox(height: ClSpace.s3),
                   UploadPill(
                     babyId: c.babyId,
-                    onOpen: () => showQueueSheet(context, ref, c),
+                    onOpen: () {
+                      // 13f "Hết dung lượng · chạm để xem" opens Dung lượng (13d).
+                      final open = [
+                        for (final b in ref.read(uploadQueueProvider).batches)
+                          if (b.babyId == c.babyId)
+                            for (final i in b.items)
+                              if (i.state != QueueState.uploaded &&
+                                  i.state != QueueState.cancelled &&
+                                  i.state != QueueState.unreadable)
+                                i,
+                      ];
+                      if (open.isNotEmpty &&
+                          open.every(
+                            (i) => i.state == QueueState.waitingQuota,
+                          )) {
+                        context.push(Routes.meStorage);
+                      } else {
+                        showQueueSheet(context, ref, c);
+                      }
+                    },
                   ),
                 ],
                 const SizedBox(height: ClSpace.s3),

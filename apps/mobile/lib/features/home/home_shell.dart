@@ -14,7 +14,6 @@ import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
-import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../auth/auth_repository.dart';
@@ -27,8 +26,6 @@ import '../care/care_sheets.dart';
 import '../care/timer_models.dart';
 import 'today_tour.dart';
 import '../family/save_account.dart';
-import '../memories/album_models.dart';
-import '../memories/memory_repository.dart';
 import '../onboarding/setup_draft.dart';
 
 const _kSelectedBaby = 'today.selectedBabyId';
@@ -76,8 +73,8 @@ List<ClTab> tabsFor(Membership m) => tabsForRole(
 /// Overlap conflicts already opened on this device (27 shows once by itself).
 final _shownConflicts = <String>{};
 
-/// Branch order of the shell route (Me is a sheet until S10).
-const shellTabs = [ClTab.today, ClTab.memories, ClTab.family];
+/// Branch order of the shell route.
+const shellTabs = [ClTab.today, ClTab.memories, ClTab.family, ClTab.me];
 
 /// Tab shell (NavBar 44:362) with role-aware tabs (R-021, 124:13717 / 124:13778): parents see
 /// Hôm nay · Kỷ niệm · Gia đình · Tôi, caregivers no Kỷ niệm, relatives no Hôm nay unless they
@@ -162,13 +159,10 @@ class HomeShell extends ConsumerWidget {
                 tabs: tabs,
                 active: active,
                 initial: initialOf(membership.displayName),
-                onSelect: (tab) => tab == ClTab.me
-                    ? showMeMenu(context, ref)
-                    : shell.goBranch(
-                        shellTabs.indexOf(tab),
-                        initialLocation:
-                            shellTabs.indexOf(tab) == shell.currentIndex,
-                      ),
+                onSelect: (tab) => shell.goBranch(
+                  shellTabs.indexOf(tab),
+                  initialLocation: shellTabs.indexOf(tab) == shell.currentIndex,
+                ),
                 onQuickLog: membership.role == MemberRole.relative
                     ? null
                     : () => showQuickLog(context),
@@ -225,6 +219,32 @@ class BabyHeader extends ConsumerWidget {
             if (actions == null) const NightCareToggle(),
           ],
         ),
+        // Writes are locked while the owner's delete runs (13l, Q-037).
+        if (baby?.deleting == true) ...[
+          const SizedBox(height: ClSpace.s3),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(ClSpace.s3),
+            decoration: BoxDecoration(
+              color: context.cl.colors.errorSoft,
+              borderRadius: BorderRadius.circular(ClRadius.control + 4),
+            ),
+            child: Row(
+              children: [
+                ClIcon(ClIcons.lock, size: 18, color: context.cl.colors.error),
+                const SizedBox(width: ClSpace.s2),
+                Expanded(
+                  child: Text(
+                    l10n.bpLocked,
+                    style: context.cl.text.label.copyWith(
+                      color: context.cl.colors.error,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         if (session.isAnonymous) ...[
           const SizedBox(height: ClSpace.s3),
           _UnsavedBanner(
@@ -525,106 +545,8 @@ void startAddingBaby(BuildContext context, WidgetRef ref) {
   context.push(Routes.who);
 }
 
-/// Temporary "Tôi" menu until the Me tab (S10): appearance, add baby, save account, sign out.
-Future<void> showMeMenu(BuildContext context, WidgetRef ref) {
-  final l10n = AppLocalizations.of(context);
-  final session = ref.read(sessionProvider);
-  final anonymous = session is SessionSignedIn && session.isAnonymous;
-  final membership = ref.read(selectedMembershipProvider);
-  final nickname = membership == null
-      ? ''
-      : ref.read(babyProvider(membership.babyId)).value?.nickname ?? '';
-  final owned = session is SessionSignedIn
-      ? session.active.where((m) => m.isOwner).length
-      : 0;
-  return showClSheet<void>(
-    context: context,
-    builder: (sheetContext) => Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ClSheetHeader(title: l10n.tabMe),
-        ClCardGroup(
-          children: [
-            if (anonymous)
-              ClDetailRow(
-                icon: ClIcons.cloudOff,
-                label: l10n.saveAccountTitle,
-                onTap: () {
-                  Navigator.of(sheetContext).pop();
-                  showSaveAccountSheet(context, nickname);
-                },
-              ),
-            if (!anonymous)
-              ClDetailRow(
-                icon: ClIcons.plus,
-                label: l10n.babyPickerAdd,
-                value: l10n.babyPickerCount(owned, maxOwnedBabies),
-                onTap: owned < maxOwnedBabies
-                    ? () {
-                        Navigator.of(sheetContext).pop();
-                        startAddingBaby(context, ref);
-                      }
-                    : null,
-              ),
-            // "Lời nhắn" from relatives and caregivers (D-034), parents only.
-            if (membership?.role == MemberRole.coParent)
-              Consumer(
-                builder: (context, ref, _) {
-                  final unread = [
-                    for (final m
-                        in ref
-                                .watch(
-                                  messagesProvider((
-                                    membership!.babyId,
-                                    membership.uid,
-                                    true,
-                                  )),
-                                )
-                                .value ??
-                            const <ParentMessage>[])
-                      if (!m.readByUid(membership.uid)) m,
-                  ].length;
-                  return ClDetailRow(
-                    icon: ClIcons.mail,
-                    label: l10n.messagesTitle,
-                    value: unread > 0 ? l10n.messagesUnread(unread) : null,
-                    valueIsAccent: unread > 0,
-                    onTap: () {
-                      Navigator.of(sheetContext).pop();
-                      context.push(Routes.messages);
-                    },
-                  );
-                },
-              ),
-            ClDetailRow(
-              icon: ClIcons.sleep,
-              label: l10n.meAppearance,
-              onTap: () {
-                Navigator.of(sheetContext).pop();
-                context.push(Routes.appearance);
-              },
-            ),
-            ClDetailRow(
-              icon: ClIcons.back,
-              label: l10n.meSignOut,
-              onTap: () {
-                Navigator.of(sheetContext).pop();
-                if (anonymous) {
-                  _confirmAnonymousSignOut(context, ref);
-                } else {
-                  ref.read(authRepositoryProvider).signOut();
-                }
-              },
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
 /// A temporary identity cannot sign back in: say so before signing out (R-031).
-Future<void> _confirmAnonymousSignOut(BuildContext context, WidgetRef ref) {
+Future<void> confirmAnonymousSignOut(BuildContext context, WidgetRef ref) {
   final l10n = AppLocalizations.of(context);
   return showClSheet<void>(
     context: context,

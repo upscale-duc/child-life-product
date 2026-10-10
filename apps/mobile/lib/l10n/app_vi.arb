@@ -5723,5 +5723,916 @@
   "albOptions": "Tuỳ chọn album",
   "@albOptions": {
     "description": "10e ••• button (a11y) / 10e3."
+  },
+  "meRoleOwner": "{relation} · chủ hồ sơ của {names}",
+  "@meRoleOwner": {
+    "description": "13a role line.",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "meRoleParent": "{relation} · cùng nuôi {names}",
+  "@meRoleParent": {
+    "description": "13a for a co-parent who is not the owner (eng).",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "meRoleCaregiver": "{relation} · chăm {names}",
+  "@meRoleCaregiver": {
+    "description": "13g role line.",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "meRoleRelative": "{relation} · người thân của {names}",
+  "@meRoleRelative": {
+    "description": "13h role line.",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "meStorage": "Dung lượng",
+  "@meStorage": {
+    "description": "13a card / 13b title."
+  },
+  "meStorageOf": "{used} / {quota}",
+  "@meStorageOf": {
+    "description": "13a card value.",
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "quota": {
+        "type": "String"
+      }
+    }
+  },
+  "meStorageShared": "Dùng chung cho tất cả các bé của bạn",
+  "@meStorageShared": {
+    "description": "13a footnote."
+  },
+  "meBabies": "Hồ sơ các bé",
+  "@meBabies": {
+    "description": "13a row / 13i title."
+  },
+  "meAssigned": "Bé được giao",
+  "@meAssigned": {
+    "description": "13g row."
+  },
+  "meFollowing": "Các bé bạn theo dõi",
+  "@meFollowing": {
+    "description": "13h row."
+  },
+  "meNotifications": "Thông báo",
+  "@meNotifications": {
+    "description": "13a row / G-056 title."
+  },
+  "meOn": "Bật",
+  "@meOn": {
+    "description": "Row value."
+  },
+  "meSome": "Một số",
+  "@meSome": {
+    "description": "Row value when some kinds are off."
+  },
+  "meOff": "Tắt",
+  "@meOff": {
+    "description": "Row value."
+  },
+  "meAccount": "Tài khoản & đăng nhập",
+  "@meAccount": {
+    "description": "13a row."
+  },
+  "meAccountHint": "Email, Apple, đổi máy",
+  "@meAccountHint": {
+    "description": "13a row subtitle."
+  },
+  "meHelp": "Trợ giúp & liên hệ",
+  "@meHelp": {
+    "description": "13a row / help title."
+  },
+  "meSignOutTitle": "Đăng xuất khỏi máy này?",
+  "@meSignOutTitle": {
+    "description": "Sign-out confirmation (gap, eng)."
+  },
+  "meSignOutBody": "Mọi ghi chép và kỷ niệm đã lưu trên tài khoản của bạn.",
+  "@meSignOutBody": {
+    "description": "Sign-out confirmation."
+  },
+  "meSignOutPending": "{count, plural, =1{1 mục đang chờ tải lên sẽ không được tải nếu bạn đăng xuất bây giờ.} other{{count} mục đang chờ tải lên sẽ không được tải nếu bạn đăng xuất bây giờ.}}",
+  "@meSignOutPending": {
+    "description": "Sign-out with a pending upload queue (gap).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meSignedOutRemote": "Máy này đã được đăng xuất từ một thiết bị khác.",
+  "@meSignedOutRemote": {
+    "description": "Toast after remote sign-out."
+  },
+  "stOfQuota": "/ {quota}",
+  "@stOfQuota": {
+    "description": "13b big number suffix.",
+    "placeholders": {
+      "quota": {
+        "type": "String"
+      }
+    }
+  },
+  "stFootnote": "Dùng chung cho tất cả các bé · ảnh ba và mẹ tải lên đều tính vào đây",
+  "@stFootnote": {
+    "description": "13b helper."
+  },
+  "stNearTitle": "Sắp đầy · {percent}%",
+  "@stNearTitle": {
+    "description": "13c banner.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "stNearBody": "Video chiếm nhiều chỗ nhất. Xoá bớt video dài hoặc liên hệ quản trị để mở rộng.",
+  "@stNearBody": {
+    "description": "13c banner."
+  },
+  "stFullTitle": "Đã dùng hết {quota}",
+  "@stFullTitle": {
+    "description": "13d banner.",
+    "placeholders": {
+      "quota": {
+        "type": "String"
+      }
+    }
+  },
+  "stFullBody": "{count, plural, =1{Tạm dừng tải ảnh, video. 1 mục mới được giữ trên máy, không mất. Ghi chép chăm sóc vẫn lưu bình thường.} other{Tạm dừng tải ảnh, video. {count} mục mới được giữ trên máy, không mất. Ghi chép chăm sóc vẫn lưu bình thường.}}",
+  "@stFullBody": {
+    "description": "13d banner.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stFullBodyNone": "Tạm dừng tải ảnh, video. Ghi chép chăm sóc vẫn lưu bình thường.",
+  "@stFullBodyNone": {
+    "description": "13d banner without held items."
+  },
+  "stByBaby": "Theo bé",
+  "@stByBaby": {
+    "description": "13b section."
+  },
+  "stCounts": "{photos} ảnh · {videos} video",
+  "@stCounts": {
+    "description": "13b baby row.",
+    "placeholders": {
+      "photos": {
+        "type": "int"
+      },
+      "videos": {
+        "type": "int"
+      }
+    }
+  },
+  "stByType": "Theo loại",
+  "@stByType": {
+    "description": "13b section."
+  },
+  "stVideo": "Video",
+  "@stVideo": {
+    "description": "13b type row."
+  },
+  "stVideoHint": "Xem video lớn nhất",
+  "@stVideoHint": {
+    "description": "13b type row."
+  },
+  "stPhotos": "Ảnh",
+  "@stPhotos": {
+    "description": "13b type row."
+  },
+  "stNotes": "Câu chuyện & ghi chú",
+  "@stNotes": {
+    "description": "13b type row."
+  },
+  "stBin": "Đã xoá gần đây",
+  "@stBin": {
+    "description": "13b row (G-041)."
+  },
+  "stBinHint": "Còn tính đến khi xoá hẳn sau 30 ngày",
+  "@stBinHint": {
+    "description": "13b row (G-041)."
+  },
+  "stNeedMore": "Cần thêm dung lượng?",
+  "@stNeedMore": {
+    "description": "13b card."
+  },
+  "stNeedMoreBody": "Mỗi gia đình có {quota}. Liên hệ quản trị Child Life để mở rộng.",
+  "@stNeedMoreBody": {
+    "description": "13b card.",
+    "placeholders": {
+      "quota": {
+        "type": "String"
+      }
+    }
+  },
+  "stContact": "Liên hệ quản trị",
+  "@stContact": {
+    "description": "13b button."
+  },
+  "stRequested": "Đã gửi yêu cầu +{amount} GB · {date}",
+  "@stRequested": {
+    "description": "13b after 13e (gap).",
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "stRequestedHint": "Quản trị Child Life sẽ trả lời qua email.",
+  "@stRequestedHint": {
+    "description": "13b after 13e."
+  },
+  "stReqTitle": "Xin thêm dung lượng",
+  "@stReqTitle": {
+    "description": "13e title."
+  },
+  "stReqHow": "Cần thêm bao nhiêu?",
+  "@stReqHow": {
+    "description": "13e label."
+  },
+  "stReqMessage": "Lời nhắn (không bắt buộc)",
+  "@stReqMessage": {
+    "description": "13e field."
+  },
+  "stReqAttach": "Gửi kèm: {email} · đang dùng {used} / {quota}",
+  "@stReqAttach": {
+    "description": "13e info.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      },
+      "used": {
+        "type": "String"
+      },
+      "quota": {
+        "type": "String"
+      }
+    }
+  },
+  "stReqSend": "Gửi yêu cầu",
+  "@stReqSend": {
+    "description": "13e button."
+  },
+  "stReqFootnote": "Quản trị Child Life sẽ trả lời qua email, thường trong 1–2 ngày làm việc.",
+  "@stReqFootnote": {
+    "description": "13e footnote."
+  },
+  "stReqSent": "Đã gửi yêu cầu",
+  "@stReqSent": {
+    "description": "13e toast."
+  },
+  "needEmailAccount": "Lưu tài khoản bằng email để gửi yêu cầu.",
+  "@needEmailAccount": {
+    "description": "13e / help without an email."
+  },
+  "stVideosTitle": "Video lớn nhất",
+  "@stVideosTitle": {
+    "description": "G-058 title."
+  },
+  "stVideosHint": "Mở video để xem, tải về hoặc xoá.",
+  "@stVideosHint": {
+    "description": "G-058 hint."
+  },
+  "stVideosEmpty": "Chưa có video nào.",
+  "@stVideosEmpty": {
+    "description": "G-058 empty."
+  },
+  "stLoadFailed": "Không tải được dung lượng. Kéo xuống để thử lại.",
+  "@stLoadFailed": {
+    "description": "13b error (G-001)."
+  },
+  "bpCarers": "{count, plural, =1{{age} · 1 người cùng chăm} other{{age} · {count} người cùng chăm}}",
+  "@bpCarers": {
+    "description": "13i row.",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bpAdd": "Thêm bé",
+  "@bpAdd": {
+    "description": "13i tile."
+  },
+  "bpDeleting": "Đang xoá…",
+  "@bpDeleting": {
+    "description": "13i row while purging."
+  },
+  "bpBorn": "{age} · sinh ngày {date}",
+  "@bpBorn": {
+    "description": "13j head.",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bpWeight": "Cân nặng · {when}",
+  "@bpWeight": {
+    "description": "13j card.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "bpLength": "Chiều cao · {when}",
+  "@bpLength": {
+    "description": "13j card.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "bpInfo": "Thông tin",
+  "@bpInfo": {
+    "description": "13j section."
+  },
+  "bpOf": "Của bé",
+  "@bpOf": {
+    "description": "13j section."
+  },
+  "bpFamily": "Gia đình của {name}",
+  "@bpFamily": {
+    "description": "13j row.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bpGrowthHint": "Biểu đồ cân nặng, chiều cao",
+  "@bpGrowthHint": {
+    "description": "13j row."
+  },
+  "bpStorage": "Dung lượng của {name}",
+  "@bpStorage": {
+    "description": "13j row.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bpStorageHint": "Tính vào {quota} của bạn",
+  "@bpStorageHint": {
+    "description": "13j row.",
+    "placeholders": {
+      "quota": {
+        "type": "String"
+      }
+    }
+  },
+  "bpDelete": "Xoá hồ sơ {name}",
+  "@bpDelete": {
+    "description": "13j card.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bpDeleteOwner": "Chỉ chủ hồ sơ ({owner}) làm được",
+  "@bpDeleteOwner": {
+    "description": "13j card.",
+    "placeholders": {
+      "owner": {
+        "type": "String"
+      }
+    }
+  },
+  "bpSave": "Lưu thay đổi",
+  "@bpSave": {
+    "description": "13k button."
+  },
+  "bpPrivacy": "Người thân chỉ thấy tên thân mật",
+  "@bpPrivacy": {
+    "description": "13k note."
+  },
+  "bpOptional": "· không bắt buộc",
+  "@bpOptional": {
+    "description": "13k gender label."
+  },
+  "bpSaved": "Đã lưu hồ sơ",
+  "@bpSaved": {
+    "description": "13k toast."
+  },
+  "bpDelTitle": "Xoá hồ sơ {name}?",
+  "@bpDelTitle": {
+    "description": "13l title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bpDelBody": "Mọi ghi chép chăm sóc, ảnh, video và câu chuyện của {name} sẽ bị xoá với cả gia đình. Không khôi phục được.",
+  "@bpDelBody": {
+    "description": "13l body.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bpDelFree": "{count, plural, =1{Giải phóng {size} · 1 người mất quyền xem} other{Giải phóng {size} · {count} người mất quyền xem}}",
+  "@bpDelFree": {
+    "description": "13l info.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bpDelTip": "Nên tải ảnh về máy trước khi xoá.",
+  "@bpDelTip": {
+    "description": "13l info."
+  },
+  "bpDelType": "Gõ “{name}” để xác nhận",
+  "@bpDelType": {
+    "description": "13l prompt.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bpDelConfirm": "Xoá vĩnh viễn",
+  "@bpDelConfirm": {
+    "description": "13l button."
+  },
+  "bpDelStarted": "Đang xoá hồ sơ {name}…",
+  "@bpDelStarted": {
+    "description": "Toast after 13l.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bpDelDone": "Đã xoá hồ sơ {name}",
+  "@bpDelDone": {
+    "description": "Toast when the purge is verified.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bpDelRetrying": "Chưa xoá xong, đang tự thử lại.",
+  "@bpDelRetrying": {
+    "description": "13i row when a step failed."
+  },
+  "bpLocked": "Hồ sơ này đang được xoá. Không thể thêm ghi chép mới.",
+  "@bpLocked": {
+    "description": "Banner for members (Q-037)."
+  },
+  "pfTitle": "Hồ sơ của bạn",
+  "@pfTitle": {
+    "description": "13m title."
+  },
+  "pfName": "Tên hiển thị",
+  "@pfName": {
+    "description": "13m field."
+  },
+  "pfWho": "Bạn là ai với bé",
+  "@pfWho": {
+    "description": "13m section."
+  },
+  "pfFootnote": "Gia đình thấy tên và vai trò này khi bạn ghi chép hay chia sẻ.",
+  "@pfFootnote": {
+    "description": "13m footnote."
+  },
+  "pfRelationTitle": "Bạn là gì của {name}?",
+  "@pfRelationTitle": {
+    "description": "13m role picker (not drawn).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pfSaved": "Đã lưu",
+  "@pfSaved": {
+    "description": "13m toast."
+  },
+  "acTitle": "Tài khoản",
+  "@acTitle": {
+    "description": "13n title."
+  },
+  "acSignIn": "Đăng nhập",
+  "@acSignIn": {
+    "description": "13n section."
+  },
+  "acEmailVerified": "{email} · đã xác minh",
+  "@acEmailVerified": {
+    "description": "13n row.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "acEmailUnverified": "{email} · chưa xác minh",
+  "@acEmailUnverified": {
+    "description": "13n row.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "acLinked": "Đã liên kết",
+  "@acLinked": {
+    "description": "13n row."
+  },
+  "acUnlink": "Gỡ",
+  "@acUnlink": {
+    "description": "13n action."
+  },
+  "acUnlinkLast": "Cần giữ ít nhất một cách đăng nhập.",
+  "@acUnlinkLast": {
+    "description": "13n guard."
+  },
+  "acUnlinked": "Đã gỡ {provider}",
+  "@acUnlinked": {
+    "description": "13n toast.",
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "acPassword": "Đổi mật khẩu",
+  "@acPassword": {
+    "description": "13n row (G-059)."
+  },
+  "acPasswordSent": "Đã gửi email đổi mật khẩu tới {email}",
+  "@acPasswordSent": {
+    "description": "13n toast.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "acDevices": "Thiết bị đang đăng nhập",
+  "@acDevices": {
+    "description": "13n section."
+  },
+  "acThisDevice": "Máy này",
+  "@acThisDevice": {
+    "description": "13n row."
+  },
+  "acActive": "Hoạt động {when}",
+  "@acActive": {
+    "description": "13n row.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "acDeviceSignedOut": "Đã đăng xuất {name}",
+  "@acDeviceSignedOut": {
+    "description": "13n toast.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "acOwner": "Chủ hồ sơ",
+  "@acOwner": {
+    "description": "13n section (Q-016)."
+  },
+  "acTransfer": "Chuyển chủ hồ sơ",
+  "@acTransfer": {
+    "description": "13n row (Q-016)."
+  },
+  "acTransferHint": "Cho một người Cùng nuôi của {names}",
+  "@acTransferHint": {
+    "description": "13n row.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "acTransferBody": "Người nhận trở thành chủ hồ sơ của {names}: xoá hồ sơ, chuyển tiếp và dung lượng gia đình. Họ cần đồng ý.",
+  "@acTransferBody": {
+    "description": "Transfer sheet.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "acTransferNone": "Chưa có ai Cùng nuôi tất cả các bé.",
+  "@acTransferNone": {
+    "description": "Transfer sheet empty."
+  },
+  "acTransferSend": "Gửi đề nghị",
+  "@acTransferSend": {
+    "description": "Transfer sheet button."
+  },
+  "acTransferPending": "Đang chờ {name} đồng ý",
+  "@acTransferPending": {
+    "description": "13n row.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "acTransferCancel": "Huỷ đề nghị",
+  "@acTransferCancel": {
+    "description": "13n action."
+  },
+  "acTransferSent": "Đã gửi đề nghị cho {name}",
+  "@acTransferSent": {
+    "description": "Toast.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "acOfferTitle": "{name} muốn chuyển quyền chủ hồ sơ cho bạn",
+  "@acOfferTitle": {
+    "description": "Offer card.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "acOfferBody": "Bạn sẽ là chủ hồ sơ của {names} và quản lý dung lượng gia đình.",
+  "@acOfferBody": {
+    "description": "Offer card.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "acOfferAccept": "Nhận",
+  "@acOfferAccept": {
+    "description": "Offer card."
+  },
+  "acOfferDecline": "Từ chối",
+  "@acOfferDecline": {
+    "description": "Offer card."
+  },
+  "acOfferAccepted": "Bạn đã là chủ hồ sơ",
+  "@acOfferAccepted": {
+    "description": "Toast."
+  },
+  "acReceiverOwns": "Người này đang là chủ hồ sơ khác.",
+  "@acReceiverOwns": {
+    "description": "Transfer error."
+  },
+  "acExport": "Xuất dữ liệu",
+  "@acExport": {
+    "description": "13n row (G-072)."
+  },
+  "acExportHint": "Ghi chép chăm sóc, ảnh và video",
+  "@acExportHint": {
+    "description": "13n row."
+  },
+  "acExportTitle": "Xuất dữ liệu của {name}",
+  "@acExportTitle": {
+    "description": "Export sheet.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "acExportCare": "Ghi chép chăm sóc",
+  "@acExportCare": {
+    "description": "Export option."
+  },
+  "acExportCareHint": "CSV và JSON",
+  "@acExportCareHint": {
+    "description": "Export option."
+  },
+  "acExportMedia": "Ảnh và video",
+  "@acExportMedia": {
+    "description": "Export option."
+  },
+  "acExportMediaHint": "ZIP · chỉ chủ hồ sơ",
+  "@acExportMediaHint": {
+    "description": "Export option."
+  },
+  "acExportStart": "Bắt đầu xuất",
+  "@acExportStart": {
+    "description": "Export button."
+  },
+  "acExportFootnote": "Chúng tôi gửi email khi tệp sẵn sàng. Liên kết tải hết hạn sau 24 giờ.",
+  "@acExportFootnote": {
+    "description": "Export sheet."
+  },
+  "acExportQueued": "Đang chuẩn bị…",
+  "@acExportQueued": {
+    "description": "Export row."
+  },
+  "acExportReady": "Sẵn sàng · hết hạn {when}",
+  "@acExportReady": {
+    "description": "Export row.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "acExportExpired": "Đã hết hạn",
+  "@acExportExpired": {
+    "description": "Export row."
+  },
+  "acExportFailed": "Không xuất được",
+  "@acExportFailed": {
+    "description": "Export row."
+  },
+  "acExportRunning": "Một tệp xuất khác đang chạy.",
+  "@acExportRunning": {
+    "description": "Export error."
+  },
+  "acDelete": "Xoá tài khoản",
+  "@acDelete": {
+    "description": "13n card."
+  },
+  "acDeleteBlocked": "Cần chuyển chủ hồ sơ của {names} trước",
+  "@acDeleteBlocked": {
+    "description": "13n card (R-046).",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "acDeleteHint": "Xoá tên, email và thiết bị của bạn",
+  "@acDeleteHint": {
+    "description": "13n card."
+  },
+  "acDeleteTitle": "Xoá tài khoản?",
+  "@acDeleteTitle": {
+    "description": "Confirmation (Q-016)."
+  },
+  "acDeleteBody": "Tên, email và thiết bị của bạn sẽ bị xoá. Ghi chép và kỷ niệm bạn đã chia sẻ ở lại với gia đình, ghi là “Người dùng đã xoá”. Không khôi phục được.",
+  "@acDeleteBody": {
+    "description": "Confirmation."
+  },
+  "acDeleting": "Đang xoá tài khoản…",
+  "@acDeleting": {
+    "description": "Progress."
+  },
+  "deletedUser": "Người dùng đã xoá",
+  "@deletedUser": {
+    "description": "Author of content from a deleted account (Q-016)."
+  },
+  "ntMemories": "Kỷ niệm mới",
+  "@ntMemories": {
+    "description": "Toggle."
+  },
+  "ntMemoriesHint": "Khi ba mẹ chia sẻ ảnh, album, câu chuyện",
+  "@ntMemoriesHint": {
+    "description": "Toggle hint."
+  },
+  "ntMessages": "Lời nhắn",
+  "@ntMessages": {
+    "description": "Toggle (parents)."
+  },
+  "ntMessagesHint": "Khi có người nhắn ba mẹ",
+  "@ntMessagesHint": {
+    "description": "Toggle hint."
+  },
+  "ntReminders": "Nhắc việc",
+  "@ntReminders": {
+    "description": "Toggle."
+  },
+  "ntRemindersHint": "Trên máy được chọn cho từng nhắc việc",
+  "@ntRemindersHint": {
+    "description": "Toggle hint."
+  },
+  "ntStorage": "Dung lượng",
+  "@ntStorage": {
+    "description": "Toggle (parents)."
+  },
+  "ntStorageHint": "Khi gần đầy hoặc đã đầy",
+  "@ntStorageHint": {
+    "description": "Toggle hint."
+  },
+  "ntFootnote": "Thông báo không bao giờ kèm ảnh hay tên bé.",
+  "@ntFootnote": {
+    "description": "Footnote (R-120)."
+  },
+  "hpTopic": "Chủ đề",
+  "@hpTopic": {
+    "description": "Help form."
+  },
+  "hpCatMemories": "Kỷ niệm & media",
+  "@hpCatMemories": {
+    "description": "Help topic."
+  },
+  "hpCatFamily": "Gia đình & vai trò",
+  "@hpCatFamily": {
+    "description": "Help topic."
+  },
+  "hpCatInvites": "Lời mời",
+  "@hpCatInvites": {
+    "description": "Help topic."
+  },
+  "hpCatSync": "Đồng bộ",
+  "@hpCatSync": {
+    "description": "Help topic."
+  },
+  "hpCatAccount": "Tài khoản",
+  "@hpCatAccount": {
+    "description": "Help topic."
+  },
+  "hpCatStorage": "Dung lượng",
+  "@hpCatStorage": {
+    "description": "Help topic."
+  },
+  "hpCatStories": "Câu chuyện",
+  "@hpCatStories": {
+    "description": "Help topic."
+  },
+  "hpMessage": "Bạn cần giúp gì?",
+  "@hpMessage": {
+    "description": "Help field."
+  },
+  "hpDiagnostics": "Gửi kèm thông tin chẩn đoán",
+  "@hpDiagnostics": {
+    "description": "Help consent."
+  },
+  "hpDiagnosticsHint": "Phiên bản app, loại máy, tình trạng đồng bộ. Không kèm ảnh hay ghi chép.",
+  "@hpDiagnosticsHint": {
+    "description": "Help consent."
+  },
+  "hpFootnote": "Chúng tôi trả lời qua email {email}.",
+  "@hpFootnote": {
+    "description": "Help footnote.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "hpSent": "Đã gửi · mã {ticket}",
+  "@hpSent": {
+    "description": "Help toast.",
+    "placeholders": {
+      "ticket": {
+        "type": "String"
+      }
+    }
   }
 }

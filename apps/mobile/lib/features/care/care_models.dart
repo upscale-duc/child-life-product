@@ -42,11 +42,15 @@ class CareAuthor {
     required this.name,
     required this.relation,
     this.relationCustom,
+    this.deleted = false,
   });
 
   final String name;
   final Relation relation;
   final String? relationCustom;
+
+  /// The account was deleted: shown as "Người dùng đã xoá" (Q-016).
+  final bool deleted;
 
   factory CareAuthor.of(Membership m) => CareAuthor(
     name: m.displayName,
@@ -60,6 +64,7 @@ class CareAuthor {
       name: map['name'] as String? ?? '',
       relation: Relation.values.asNameMap()[map['relation']] ?? Relation.other,
       relationCustom: map['relationCustom'] as String?,
+      deleted: map['relation'] == 'deleted',
     );
   }
 

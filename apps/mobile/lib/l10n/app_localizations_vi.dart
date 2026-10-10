@@ -3747,4 +3747,617 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get albOptions => 'Tuỳ chọn album';
+
+  @override
+  String meRoleOwner(String relation, String names) {
+    return '$relation · chủ hồ sơ của $names';
+  }
+
+  @override
+  String meRoleParent(String relation, String names) {
+    return '$relation · cùng nuôi $names';
+  }
+
+  @override
+  String meRoleCaregiver(String relation, String names) {
+    return '$relation · chăm $names';
+  }
+
+  @override
+  String meRoleRelative(String relation, String names) {
+    return '$relation · người thân của $names';
+  }
+
+  @override
+  String get meStorage => 'Dung lượng';
+
+  @override
+  String meStorageOf(String used, String quota) {
+    return '$used / $quota';
+  }
+
+  @override
+  String get meStorageShared => 'Dùng chung cho tất cả các bé của bạn';
+
+  @override
+  String get meBabies => 'Hồ sơ các bé';
+
+  @override
+  String get meAssigned => 'Bé được giao';
+
+  @override
+  String get meFollowing => 'Các bé bạn theo dõi';
+
+  @override
+  String get meNotifications => 'Thông báo';
+
+  @override
+  String get meOn => 'Bật';
+
+  @override
+  String get meSome => 'Một số';
+
+  @override
+  String get meOff => 'Tắt';
+
+  @override
+  String get meAccount => 'Tài khoản & đăng nhập';
+
+  @override
+  String get meAccountHint => 'Email, Apple, đổi máy';
+
+  @override
+  String get meHelp => 'Trợ giúp & liên hệ';
+
+  @override
+  String get meSignOutTitle => 'Đăng xuất khỏi máy này?';
+
+  @override
+  String get meSignOutBody =>
+      'Mọi ghi chép và kỷ niệm đã lưu trên tài khoản của bạn.';
+
+  @override
+  String meSignOutPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count mục đang chờ tải lên sẽ không được tải nếu bạn đăng xuất bây giờ.',
+      one:
+          '1 mục đang chờ tải lên sẽ không được tải nếu bạn đăng xuất bây giờ.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get meSignedOutRemote =>
+      'Máy này đã được đăng xuất từ một thiết bị khác.';
+
+  @override
+  String stOfQuota(String quota) {
+    return '/ $quota';
+  }
+
+  @override
+  String get stFootnote =>
+      'Dùng chung cho tất cả các bé · ảnh ba và mẹ tải lên đều tính vào đây';
+
+  @override
+  String stNearTitle(int percent) {
+    return 'Sắp đầy · $percent%';
+  }
+
+  @override
+  String get stNearBody =>
+      'Video chiếm nhiều chỗ nhất. Xoá bớt video dài hoặc liên hệ quản trị để mở rộng.';
+
+  @override
+  String stFullTitle(String quota) {
+    return 'Đã dùng hết $quota';
+  }
+
+  @override
+  String stFullBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Tạm dừng tải ảnh, video. $count mục mới được giữ trên máy, không mất. Ghi chép chăm sóc vẫn lưu bình thường.',
+      one:
+          'Tạm dừng tải ảnh, video. 1 mục mới được giữ trên máy, không mất. Ghi chép chăm sóc vẫn lưu bình thường.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get stFullBodyNone =>
+      'Tạm dừng tải ảnh, video. Ghi chép chăm sóc vẫn lưu bình thường.';
+
+  @override
+  String get stByBaby => 'Theo bé';
+
+  @override
+  String stCounts(int photos, int videos) {
+    return '$photos ảnh · $videos video';
+  }
+
+  @override
+  String get stByType => 'Theo loại';
+
+  @override
+  String get stVideo => 'Video';
+
+  @override
+  String get stVideoHint => 'Xem video lớn nhất';
+
+  @override
+  String get stPhotos => 'Ảnh';
+
+  @override
+  String get stNotes => 'Câu chuyện & ghi chú';
+
+  @override
+  String get stBin => 'Đã xoá gần đây';
+
+  @override
+  String get stBinHint => 'Còn tính đến khi xoá hẳn sau 30 ngày';
+
+  @override
+  String get stNeedMore => 'Cần thêm dung lượng?';
+
+  @override
+  String stNeedMoreBody(String quota) {
+    return 'Mỗi gia đình có $quota. Liên hệ quản trị Child Life để mở rộng.';
+  }
+
+  @override
+  String get stContact => 'Liên hệ quản trị';
+
+  @override
+  String stRequested(int amount, String date) {
+    return 'Đã gửi yêu cầu +$amount GB · $date';
+  }
+
+  @override
+  String get stRequestedHint => 'Quản trị Child Life sẽ trả lời qua email.';
+
+  @override
+  String get stReqTitle => 'Xin thêm dung lượng';
+
+  @override
+  String get stReqHow => 'Cần thêm bao nhiêu?';
+
+  @override
+  String get stReqMessage => 'Lời nhắn (không bắt buộc)';
+
+  @override
+  String stReqAttach(String email, String used, String quota) {
+    return 'Gửi kèm: $email · đang dùng $used / $quota';
+  }
+
+  @override
+  String get stReqSend => 'Gửi yêu cầu';
+
+  @override
+  String get stReqFootnote =>
+      'Quản trị Child Life sẽ trả lời qua email, thường trong 1–2 ngày làm việc.';
+
+  @override
+  String get stReqSent => 'Đã gửi yêu cầu';
+
+  @override
+  String get needEmailAccount => 'Lưu tài khoản bằng email để gửi yêu cầu.';
+
+  @override
+  String get stVideosTitle => 'Video lớn nhất';
+
+  @override
+  String get stVideosHint => 'Mở video để xem, tải về hoặc xoá.';
+
+  @override
+  String get stVideosEmpty => 'Chưa có video nào.';
+
+  @override
+  String get stLoadFailed => 'Không tải được dung lượng. Kéo xuống để thử lại.';
+
+  @override
+  String bpCarers(String age, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$age · $count người cùng chăm',
+      one: '$age · 1 người cùng chăm',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bpAdd => 'Thêm bé';
+
+  @override
+  String get bpDeleting => 'Đang xoá…';
+
+  @override
+  String bpBorn(String age, String date) {
+    return '$age · sinh ngày $date';
+  }
+
+  @override
+  String bpWeight(String when) {
+    return 'Cân nặng · $when';
+  }
+
+  @override
+  String bpLength(String when) {
+    return 'Chiều cao · $when';
+  }
+
+  @override
+  String get bpInfo => 'Thông tin';
+
+  @override
+  String get bpOf => 'Của bé';
+
+  @override
+  String bpFamily(String name) {
+    return 'Gia đình của $name';
+  }
+
+  @override
+  String get bpGrowthHint => 'Biểu đồ cân nặng, chiều cao';
+
+  @override
+  String bpStorage(String name) {
+    return 'Dung lượng của $name';
+  }
+
+  @override
+  String bpStorageHint(String quota) {
+    return 'Tính vào $quota của bạn';
+  }
+
+  @override
+  String bpDelete(String name) {
+    return 'Xoá hồ sơ $name';
+  }
+
+  @override
+  String bpDeleteOwner(String owner) {
+    return 'Chỉ chủ hồ sơ ($owner) làm được';
+  }
+
+  @override
+  String get bpSave => 'Lưu thay đổi';
+
+  @override
+  String get bpPrivacy => 'Người thân chỉ thấy tên thân mật';
+
+  @override
+  String get bpOptional => '· không bắt buộc';
+
+  @override
+  String get bpSaved => 'Đã lưu hồ sơ';
+
+  @override
+  String bpDelTitle(String name) {
+    return 'Xoá hồ sơ $name?';
+  }
+
+  @override
+  String bpDelBody(String name) {
+    return 'Mọi ghi chép chăm sóc, ảnh, video và câu chuyện của $name sẽ bị xoá với cả gia đình. Không khôi phục được.';
+  }
+
+  @override
+  String bpDelFree(String size, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Giải phóng $size · $count người mất quyền xem',
+      one: 'Giải phóng $size · 1 người mất quyền xem',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bpDelTip => 'Nên tải ảnh về máy trước khi xoá.';
+
+  @override
+  String bpDelType(String name) {
+    return 'Gõ “$name” để xác nhận';
+  }
+
+  @override
+  String get bpDelConfirm => 'Xoá vĩnh viễn';
+
+  @override
+  String bpDelStarted(String name) {
+    return 'Đang xoá hồ sơ $name…';
+  }
+
+  @override
+  String bpDelDone(String name) {
+    return 'Đã xoá hồ sơ $name';
+  }
+
+  @override
+  String get bpDelRetrying => 'Chưa xoá xong, đang tự thử lại.';
+
+  @override
+  String get bpLocked =>
+      'Hồ sơ này đang được xoá. Không thể thêm ghi chép mới.';
+
+  @override
+  String get pfTitle => 'Hồ sơ của bạn';
+
+  @override
+  String get pfName => 'Tên hiển thị';
+
+  @override
+  String get pfWho => 'Bạn là ai với bé';
+
+  @override
+  String get pfFootnote =>
+      'Gia đình thấy tên và vai trò này khi bạn ghi chép hay chia sẻ.';
+
+  @override
+  String pfRelationTitle(String name) {
+    return 'Bạn là gì của $name?';
+  }
+
+  @override
+  String get pfSaved => 'Đã lưu';
+
+  @override
+  String get acTitle => 'Tài khoản';
+
+  @override
+  String get acSignIn => 'Đăng nhập';
+
+  @override
+  String acEmailVerified(String email) {
+    return '$email · đã xác minh';
+  }
+
+  @override
+  String acEmailUnverified(String email) {
+    return '$email · chưa xác minh';
+  }
+
+  @override
+  String get acLinked => 'Đã liên kết';
+
+  @override
+  String get acUnlink => 'Gỡ';
+
+  @override
+  String get acUnlinkLast => 'Cần giữ ít nhất một cách đăng nhập.';
+
+  @override
+  String acUnlinked(String provider) {
+    return 'Đã gỡ $provider';
+  }
+
+  @override
+  String get acPassword => 'Đổi mật khẩu';
+
+  @override
+  String acPasswordSent(String email) {
+    return 'Đã gửi email đổi mật khẩu tới $email';
+  }
+
+  @override
+  String get acDevices => 'Thiết bị đang đăng nhập';
+
+  @override
+  String get acThisDevice => 'Máy này';
+
+  @override
+  String acActive(String when) {
+    return 'Hoạt động $when';
+  }
+
+  @override
+  String acDeviceSignedOut(String name) {
+    return 'Đã đăng xuất $name';
+  }
+
+  @override
+  String get acOwner => 'Chủ hồ sơ';
+
+  @override
+  String get acTransfer => 'Chuyển chủ hồ sơ';
+
+  @override
+  String acTransferHint(String names) {
+    return 'Cho một người Cùng nuôi của $names';
+  }
+
+  @override
+  String acTransferBody(String names) {
+    return 'Người nhận trở thành chủ hồ sơ của $names: xoá hồ sơ, chuyển tiếp và dung lượng gia đình. Họ cần đồng ý.';
+  }
+
+  @override
+  String get acTransferNone => 'Chưa có ai Cùng nuôi tất cả các bé.';
+
+  @override
+  String get acTransferSend => 'Gửi đề nghị';
+
+  @override
+  String acTransferPending(String name) {
+    return 'Đang chờ $name đồng ý';
+  }
+
+  @override
+  String get acTransferCancel => 'Huỷ đề nghị';
+
+  @override
+  String acTransferSent(String name) {
+    return 'Đã gửi đề nghị cho $name';
+  }
+
+  @override
+  String acOfferTitle(String name) {
+    return '$name muốn chuyển quyền chủ hồ sơ cho bạn';
+  }
+
+  @override
+  String acOfferBody(String names) {
+    return 'Bạn sẽ là chủ hồ sơ của $names và quản lý dung lượng gia đình.';
+  }
+
+  @override
+  String get acOfferAccept => 'Nhận';
+
+  @override
+  String get acOfferDecline => 'Từ chối';
+
+  @override
+  String get acOfferAccepted => 'Bạn đã là chủ hồ sơ';
+
+  @override
+  String get acReceiverOwns => 'Người này đang là chủ hồ sơ khác.';
+
+  @override
+  String get acExport => 'Xuất dữ liệu';
+
+  @override
+  String get acExportHint => 'Ghi chép chăm sóc, ảnh và video';
+
+  @override
+  String acExportTitle(String name) {
+    return 'Xuất dữ liệu của $name';
+  }
+
+  @override
+  String get acExportCare => 'Ghi chép chăm sóc';
+
+  @override
+  String get acExportCareHint => 'CSV và JSON';
+
+  @override
+  String get acExportMedia => 'Ảnh và video';
+
+  @override
+  String get acExportMediaHint => 'ZIP · chỉ chủ hồ sơ';
+
+  @override
+  String get acExportStart => 'Bắt đầu xuất';
+
+  @override
+  String get acExportFootnote =>
+      'Chúng tôi gửi email khi tệp sẵn sàng. Liên kết tải hết hạn sau 24 giờ.';
+
+  @override
+  String get acExportQueued => 'Đang chuẩn bị…';
+
+  @override
+  String acExportReady(String when) {
+    return 'Sẵn sàng · hết hạn $when';
+  }
+
+  @override
+  String get acExportExpired => 'Đã hết hạn';
+
+  @override
+  String get acExportFailed => 'Không xuất được';
+
+  @override
+  String get acExportRunning => 'Một tệp xuất khác đang chạy.';
+
+  @override
+  String get acDelete => 'Xoá tài khoản';
+
+  @override
+  String acDeleteBlocked(String names) {
+    return 'Cần chuyển chủ hồ sơ của $names trước';
+  }
+
+  @override
+  String get acDeleteHint => 'Xoá tên, email và thiết bị của bạn';
+
+  @override
+  String get acDeleteTitle => 'Xoá tài khoản?';
+
+  @override
+  String get acDeleteBody =>
+      'Tên, email và thiết bị của bạn sẽ bị xoá. Ghi chép và kỷ niệm bạn đã chia sẻ ở lại với gia đình, ghi là “Người dùng đã xoá”. Không khôi phục được.';
+
+  @override
+  String get acDeleting => 'Đang xoá tài khoản…';
+
+  @override
+  String get deletedUser => 'Người dùng đã xoá';
+
+  @override
+  String get ntMemories => 'Kỷ niệm mới';
+
+  @override
+  String get ntMemoriesHint => 'Khi ba mẹ chia sẻ ảnh, album, câu chuyện';
+
+  @override
+  String get ntMessages => 'Lời nhắn';
+
+  @override
+  String get ntMessagesHint => 'Khi có người nhắn ba mẹ';
+
+  @override
+  String get ntReminders => 'Nhắc việc';
+
+  @override
+  String get ntRemindersHint => 'Trên máy được chọn cho từng nhắc việc';
+
+  @override
+  String get ntStorage => 'Dung lượng';
+
+  @override
+  String get ntStorageHint => 'Khi gần đầy hoặc đã đầy';
+
+  @override
+  String get ntFootnote => 'Thông báo không bao giờ kèm ảnh hay tên bé.';
+
+  @override
+  String get hpTopic => 'Chủ đề';
+
+  @override
+  String get hpCatMemories => 'Kỷ niệm & media';
+
+  @override
+  String get hpCatFamily => 'Gia đình & vai trò';
+
+  @override
+  String get hpCatInvites => 'Lời mời';
+
+  @override
+  String get hpCatSync => 'Đồng bộ';
+
+  @override
+  String get hpCatAccount => 'Tài khoản';
+
+  @override
+  String get hpCatStorage => 'Dung lượng';
+
+  @override
+  String get hpCatStories => 'Câu chuyện';
+
+  @override
+  String get hpMessage => 'Bạn cần giúp gì?';
+
+  @override
+  String get hpDiagnostics => 'Gửi kèm thông tin chẩn đoán';
+
+  @override
+  String get hpDiagnosticsHint =>
+      'Phiên bản app, loại máy, tình trạng đồng bộ. Không kèm ảnh hay ghi chép.';
+
+  @override
+  String hpFootnote(String email) {
+    return 'Chúng tôi trả lời qua email $email.';
+  }
+
+  @override
+  String hpSent(String ticket) {
+    return 'Đã gửi · mã $ticket';
+  }
 }

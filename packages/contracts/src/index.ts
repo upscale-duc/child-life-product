@@ -7,3 +7,4 @@ export * from './care.js';
 export * from './reminders.js';
 export * from './memories.js';
 export * from './albums.js';
+export * from './account.js';

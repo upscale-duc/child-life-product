@@ -44,7 +44,8 @@ await writeFile(join(out, 'package.json'), `${JSON.stringify(deployPkg, null, 2)
 // Non-secret Functions params (D-020). Credentials are Secret Manager secrets, never here.
 await writeFile(
   join(out, '.env'),
-  'SES_REGION=ap-southeast-1\nMAIL_FROM=Child Life <hello@childlife.app>\n',
+  // SUPPORT_INBOX: where storage requests and help tickets are announced to staff (S11).
+  'SES_REGION=ap-southeast-1\nMAIL_FROM=Child Life <hello@childlife.app>\nSUPPORT_INBOX=support@childlife.app\n',
 );
 // The Firebase CLI loads firebase-functions from the source dir to discover triggers, and Cloud Build
 // installs from the generated lockfile, so both see exactly the pinned runtime versions.

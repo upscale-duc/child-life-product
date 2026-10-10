@@ -167,6 +167,8 @@ export async function createMemory(
     const me = await requireParent(tx, db, req.babyId, uid, now);
     const baby = await tx.get(db.doc(`babies/${req.babyId}`));
     if (!baby.exists) throw new MemoryError('not-found', 'not-found');
+    // Writes are locked while the profile is being deleted (13l, Q-037).
+    if (baby.get('state') === 'deleting') throw new MemoryError('failed-precondition', 'deleting');
     const existing = await tx.get(memoryRef);
     const mediaRefs = req.items.map((i) => db.doc(`babies/${req.babyId}/media/${i.mediaId}`));
     const mediaSnaps = mediaRefs.length ? await tx.getAll(...mediaRefs) : [];
@@ -721,6 +723,7 @@ export async function onMediaWritten(
 ): Promise<void> {
   const doc = after?.exists ? after : before;
   if (!doc?.exists) return;
+  await applyUsageDelta(db, before, after);
   const memoryId = doc.get('memoryId') as string | undefined;
   const batchId = doc.get('batchId') as string | undefined;
   if (memoryId) await recomputeMemory(db, babyId, memoryId, now);
@@ -737,6 +740,98 @@ export async function onMediaWritten(
     ...((after?.get('albumIds') as string[] | undefined) ?? []),
   ]);
   for (const a of albums) await recomputeAlbum(db, babyId, a, now);
+}
+
+// ---------- Storage breakdown (13b, R-042, G-041) ----------
+
+type Usage = { babyId: string; familyId: string; video: boolean; bytes: number; bin: boolean };
+
+/** What one stored item adds to its family's breakdown (ready items only). */
+export function usageOf(doc: DocumentSnapshot | null): Usage | null {
+  if (!doc?.exists || doc.get('status') !== 'ready') return null;
+  const bytes = (doc.get('storedBytes') as number | undefined) ?? 0;
+  if (bytes <= 0) return null;
+  return {
+    babyId: doc.get('babyId') as string,
+    familyId: doc.get('familyId') as string,
+    video: doc.get('type') === 'video',
+    bytes,
+    bin: doc.get('deleted') === true,
+  };
+}
+
+/**
+ * Keeps `families/{f}.usage.{babyId}` (photos, videos and their bytes) and `binBytes` in step with
+ * item changes. Triggers may repeat, so `reconcileFamilyUsage` rebuilds it from the items daily.
+ */
+export async function applyUsageDelta(
+  db: Firestore,
+  before: DocumentSnapshot | null,
+  after: DocumentSnapshot | null,
+): Promise<void> {
+  const a = usageOf(before);
+  const b = usageOf(after);
+  if (JSON.stringify(a) === JSON.stringify(b)) return;
+  const delta: Record<string, number> = {};
+  const add = (u: Usage, sign: 1 | -1) => {
+    const inc = (key: string, n: number) => (delta[key] = (delta[key] ?? 0) + n);
+    if (u.bin) {
+      inc('binBytes', sign * u.bytes);
+      return;
+    }
+    const base = `usage.${u.babyId}.${u.video ? 'video' : 'photo'}`;
+    inc(`${base}Bytes`, sign * u.bytes);
+    inc(`${base}s`, sign);
+  };
+  if (a) add(a, -1);
+  if (b) add(b, 1);
+  const patch: Record<string, FieldValue> = {};
+  for (const [k, n] of Object.entries(delta)) if (n !== 0) patch[k] = FieldValue.increment(n);
+  if (Object.keys(patch).length === 0) return;
+  const familyId = (b ?? a)!.familyId;
+  const ref = db.doc(`families/${familyId}`);
+  if (!(await ref.get()).exists) return;
+  await ref.update(patch);
+}
+
+/** Rebuilds a family's used, reserved and per-baby bytes from its items (reconciliation). */
+export async function reconcileFamilyUsage(db: Firestore, familyId: string): Promise<void> {
+  const family = await db.doc(`families/${familyId}`).get();
+  if (!family.exists) return;
+  const babyIds = (family.get('babyIds') as string[] | undefined) ?? [];
+  const usage: Record<string, Record<string, number>> = {};
+  let used = 0;
+  let reserved = 0;
+  let bin = 0;
+  for (const babyId of babyIds) {
+    const u = { photos: 0, videos: 0, photoBytes: 0, videoBytes: 0 };
+    const items = await db
+      .collection(`babies/${babyId}/media`)
+      .select('status', 'storedBytes', 'reservedBytes', 'type', 'deleted', 'babyId', 'familyId')
+      .get();
+    for (const d of items.docs) {
+      reserved += (d.get('reservedBytes') as number | undefined) ?? 0;
+      const c = usageOf(d);
+      if (!c) continue;
+      used += c.bytes;
+      if (c.bin) bin += c.bytes;
+      else if (c.video) {
+        u.videos++;
+        u.videoBytes += c.bytes;
+      } else {
+        u.photos++;
+        u.photoBytes += c.bytes;
+      }
+    }
+    usage[babyId] = u;
+  }
+  await family.ref.update({
+    usage,
+    usedBytes: used,
+    reservedBytes: reserved,
+    binBytes: bin,
+    usageReconciledAt: new Date(),
+  });
 }
 
 // ---------- updateMedia (10b3, 10b4, 10o) ----------

@@ -105,6 +105,9 @@ void main() {
 
   testWidgets('moon toggles Light ↔ Night care at once', (tester) async {
     final (_, container) = await pumpScreen(tester, const WelcomeScreen());
+    // Keep the palette alive so it follows the pinned 10:00 clock (not the real evening).
+    container.listen(paletteProvider, (_, _) {});
+    await tester.pump();
     final before = container.read(paletteProvider);
     await tester.tap(find.bySemanticsLabel('Đổi giao diện sáng / tối'));
     await tester.pumpAndSettle();

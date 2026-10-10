@@ -1,4 +1,5 @@
 import { FieldValue, type DocumentSnapshot, type Firestore } from 'firebase-admin/firestore';
+import { mutedRecipients } from './account.js';
 
 /**
  * Loves, messages and family notices (S10). The app writes loves (`reactions`), favourites and
@@ -87,6 +88,20 @@ export function noticeCopy(kind: string, count: number, actorName: string, langu
       return vi
         ? { title: 'Có 1 câu chuyện mới', body: 'Từ Kỷ niệm của gia đình' }
         : { title: '1 new story', body: 'From the family’s Memories' };
+    case 'storage':
+      return count >= 100
+        ? vi
+          ? { title: 'Đã dùng hết dung lượng', body: 'Tạm dừng tải ảnh, video. Mở để xem.' }
+          : { title: 'Storage is full', body: 'Photo and video uploads are paused. Open to see.' }
+        : vi
+          ? {
+              title: 'Dung lượng sắp đầy',
+              body: `Gia đình đã dùng ${count}% dung lượng. Mở để xem.`,
+            }
+          : {
+              title: 'Storage is almost full',
+              body: `Your family has used ${count}% of its space. Open to see.`,
+            };
     case 'message':
       return vi
         ? { title: 'Có lời nhắn mới', body: `${actorName} vừa nhắn cho ba mẹ. Mở để đọc.` }
@@ -121,7 +136,11 @@ export async function deliverNotice(
   const kind = claimed.get('kind') as string;
   const count = (claimed.get('count') as number | undefined) ?? 1;
   let sent = 0;
-  for (const uid of (claimed.get('recipients') as string[] | undefined) ?? []) {
+  const recipients = (claimed.get('recipients') as string[] | undefined) ?? [];
+  // "Thông báo" settings (G-056): a muted kind is recorded but not pushed.
+  const muted = await mutedRecipients(db, kind, recipients);
+  for (const uid of recipients) {
+    if (muted.has(uid)) continue;
     const devices = await db.collection(`users/${uid}/devices`).get();
     const byLanguage = new Map<string, { tokens: string[]; refs: Map<string, DocumentSnapshot> }>();
     for (const d of devices.docs) {

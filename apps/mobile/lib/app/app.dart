@@ -1,3 +1,4 @@
+import '../features/me/baby_profile_screens.dart';
 import '../features/memories/push_registration.dart';
 import '../features/reminders/reminder_notifications.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,9 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
         ref
             .read(authRepositoryProvider)
             .setLanguage(Localizations.localeOf(context).languageCode);
-        return ReminderNotificationSync(child: PushRegistration(child: child!));
+        return ReminderNotificationSync(
+          child: PushRegistration(child: DeletionWatcher(child: child!)),
+        );
       },
     );
   }

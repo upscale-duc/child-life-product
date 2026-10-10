@@ -115,7 +115,7 @@ void main() {
 
     // Sign out → 01 "Mã mời" → 15 → 16.
     await _openTab(tester, l10n.tabMe);
-    await tapText(tester, l10n.meSignOut);
+    await signOutFromMe(tester, l10n.meSignOut);
     await tapText(tester, l10n.welcomeInviteCode);
     await pumpUntil(tester, find.text(l10n.joinCodeTitle));
     await tester.enterText(find.byType(EditableText).first, code);

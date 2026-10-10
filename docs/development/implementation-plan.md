@@ -338,6 +338,8 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 - **Acceptance (plan flow F):** delete baby leaves zero documents/objects for that baby (verification script), other babies untouched, quota returned; failed job resumes at the failed step; "đã xoá" never shown early; export link expires after 24 h and re-checks ownership at download.
 - **Depends on:** S9, S10. Q-016.
 
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S11.md). Tôi per role, storage (breakdown, 80 % / 100 %, requests), baby profiles (view, edit, verified resumable delete), your profile, account (devices + remote sign-out, ownership transfer, export, deletion), notification settings and help work end to end on Android with the emulators; backend on dev. Staff grants and replies wait for the portal (S14); iOS E2E to be re-run.
+
 ### S12 — Stories & AI
 
 - **Figma:** 14a–14g, 11i, StoryCard reader parts.

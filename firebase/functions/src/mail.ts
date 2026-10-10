@@ -102,6 +102,149 @@ export function renderInviteEmail(
   return { subject: t.subject, html, text };
 }
 
+// ---------- Account mail (S11) ----------
+
+/** Service mail about the account (no unsubscribe needed, never marketing). */
+export const accountTemplates = [
+  'storageRequestAck',
+  'storageRequestStaff',
+  'supportAck',
+  'supportStaff',
+  'babyDeleted',
+  'accountDeleted',
+  'ownershipOffer',
+  'exportReady',
+] as const;
+export type AccountTemplate = (typeof accountTemplates)[number];
+
+/** Only generic facts: no baby names, photos or captions (R-116 spirit); staff read the rest in the portal (P-124). */
+export interface AccountMailData {
+  amountGb?: number;
+  usedGb?: string;
+  quotaGb?: string;
+  ticket?: string;
+  category?: string;
+  fromName?: string;
+  requestId?: string;
+}
+
+export function renderAccountEmail(
+  template: AccountTemplate,
+  locale: Locale,
+  d: AccountMailData,
+): Omit<OutgoingMail, 'to' | 'unsubscribeUrl'> {
+  const vi = locale === 'vi';
+  const copy: Record<AccountTemplate, { subject: string; lines: string[] }> = vi
+    ? {
+        storageRequestAck: {
+          subject: 'Đã nhận yêu cầu thêm dung lượng',
+          lines: [
+            `Bạn xin thêm +${d.amountGb} GB (đang dùng ${d.usedGb} GB / ${d.quotaGb} GB).`,
+            'Quản trị Child Life sẽ trả lời qua email, thường trong 1–2 ngày làm việc.',
+          ],
+        },
+        storageRequestStaff: {
+          subject: `Yêu cầu dung lượng mới · +${d.amountGb} GB`,
+          lines: [
+            `Mã yêu cầu ${d.requestId} · đang dùng ${d.usedGb} GB / ${d.quotaGb} GB.`,
+            'Xem và duyệt trong cổng Vận hành.',
+          ],
+        },
+        supportAck: {
+          subject: `Đã nhận yêu cầu hỗ trợ ${d.ticket}`,
+          lines: ['Cảm ơn bạn đã liên hệ. Chúng tôi sẽ trả lời qua email này.'],
+        },
+        supportStaff: {
+          subject: `Yêu cầu hỗ trợ mới ${d.ticket}`,
+          lines: [`Chủ đề: ${d.category}.`, 'Xem nội dung trong cổng Vận hành.'],
+        },
+        babyDeleted: {
+          subject: 'Đã xoá hồ sơ bé',
+          lines: [
+            'Mọi ghi chép, ảnh, video và câu chuyện của hồ sơ đã được xoá với cả gia đình.',
+            'Dung lượng đã được trả lại cho gia đình bạn.',
+          ],
+        },
+        accountDeleted: {
+          subject: 'Tài khoản Child Life đã được xoá',
+          lines: [
+            'Tài khoản và thông tin cá nhân của bạn đã được xoá.',
+            'Ghi chép và kỷ niệm bạn đã chia sẻ vẫn ở lại với gia đình, ghi là “Người dùng đã xoá”.',
+          ],
+        },
+        ownershipOffer: {
+          subject: `${d.fromName} muốn chuyển quyền chủ hồ sơ cho bạn`,
+          lines: ['Mở Child Life → Tôi → Tài khoản & đăng nhập để nhận hoặc từ chối.'],
+        },
+        exportReady: {
+          subject: 'Tệp xuất dữ liệu đã sẵn sàng',
+          lines: [
+            'Mở Child Life → Tôi → Tài khoản & đăng nhập để tải về. Liên kết hết hạn sau 24 giờ.',
+          ],
+        },
+      }
+    : {
+        storageRequestAck: {
+          subject: 'We received your storage request',
+          lines: [
+            `You asked for +${d.amountGb} GB (using ${d.usedGb} GB of ${d.quotaGb} GB).`,
+            'The Child Life team will reply by email, usually within 1–2 business days.',
+          ],
+        },
+        storageRequestStaff: {
+          subject: `New storage request · +${d.amountGb} GB`,
+          lines: [
+            `Request ${d.requestId} · using ${d.usedGb} GB of ${d.quotaGb} GB.`,
+            'Review it in the operations portal.',
+          ],
+        },
+        supportAck: {
+          subject: `We received your request ${d.ticket}`,
+          lines: ['Thanks for getting in touch. We will reply to this email.'],
+        },
+        supportStaff: {
+          subject: `New support request ${d.ticket}`,
+          lines: [`Topic: ${d.category}.`, 'Read it in the operations portal.'],
+        },
+        babyDeleted: {
+          subject: 'The baby profile was deleted',
+          lines: [
+            'All of its care logs, photos, videos and stories were deleted for the whole family.',
+            'The storage is back in your family’s space.',
+          ],
+        },
+        accountDeleted: {
+          subject: 'Your Child Life account was deleted',
+          lines: [
+            'Your account and personal details were deleted.',
+            'Logs and memories you shared stay with the family, shown as “Deleted user”.',
+          ],
+        },
+        ownershipOffer: {
+          subject: `${d.fromName} wants to make you the profile owner`,
+          lines: ['Open Child Life → Me → Account & sign-in to accept or decline.'],
+        },
+        exportReady: {
+          subject: 'Your data export is ready',
+          lines: [
+            'Open Child Life → Me → Account & sign-in to download it. The link expires in 24 hours.',
+          ],
+        },
+      };
+  const t = copy[template];
+  const footer = vi ? 'Child Life · Riêng tư cho gia đình' : 'Child Life · Private for families';
+  const html = `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
+<body style="margin:0;background:#F6FCFB;font-family:'Be Vietnam Pro',Arial,sans-serif;color:#173D44">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:24px 12px">
+<table role="presentation" width="100%" style="max-width:480px;background:#ffffff;border-radius:24px;padding:28px" cellpadding="0" cellspacing="0">
+<tr><td style="font-size:22px;font-weight:700;color:#173D44">child life</td></tr>
+<tr><td style="padding-top:20px;font-size:24px;line-height:32px;font-weight:700">${escape(t.subject)}</td></tr>
+${t.lines.map((l) => `<tr><td style="padding-top:12px;font-size:16px;line-height:24px;color:#55707A">${escape(l)}</td></tr>`).join('\n')}
+<tr><td style="padding-top:24px;border-top:1px solid #DCE8E7;font-size:12px;color:#55707A">${escape(footer)}</td></tr>
+</table></td></tr></table></body></html>`;
+  return { subject: t.subject, html, text: [t.subject, '', ...t.lines, '', footer].join('\n') };
+}
+
 /** Delivers one queued mail document; returns the resulting status. */
 export async function deliverMail(
   doc: DocumentSnapshot,
@@ -117,11 +260,21 @@ export async function deliverMail(
   }
   const unsubscribeUrl = `${config.webOrigin}/u/${mail.unsubscribeToken as string}`;
   try {
-    if (mail.template !== 'invite') throw new Error(`Unknown template ${String(mail.template)}`);
-    const rendered = renderInviteEmail(mail.locale as Locale, mail.data as InviteMailData, {
-      webOrigin: config.webOrigin,
-      unsubscribeUrl,
-    });
+    const template = mail.template as string;
+    const rendered =
+      template === 'invite'
+        ? renderInviteEmail(mail.locale as Locale, mail.data as InviteMailData, {
+            webOrigin: config.webOrigin,
+            unsubscribeUrl,
+          })
+        : (accountTemplates as readonly string[]).includes(template)
+          ? renderAccountEmail(
+              template as AccountTemplate,
+              mail.locale as Locale,
+              (mail.data ?? {}) as AccountMailData,
+            )
+          : null;
+    if (!rendered) throw new Error(`Unknown template ${template}`);
     await sender.send({ to: mail.to as string, unsubscribeUrl, ...rendered });
     await doc.ref.update({ status: 'sent', attempts, sentAt: config.now, error: null });
     return 'sent';

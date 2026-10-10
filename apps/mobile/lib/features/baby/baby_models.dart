@@ -173,6 +173,7 @@ class Baby {
     required this.avatar,
     required this.trackers,
     required this.timeZone,
+    this.deleting = false,
   });
 
   final String id;
@@ -182,6 +183,9 @@ class Baby {
   final BabyAvatar avatar;
   final List<TrackerKind> trackers;
   final TimeZoneSetting timeZone;
+
+  /// 13l: the owner asked to delete it; writes are locked until the purge finishes.
+  final bool deleting;
 
   factory Baby.fromJson(String id, Map<String, Object?> json) => Baby(
     id: id,
@@ -194,6 +198,7 @@ class Baby {
         ?TrackerKind.values.where((k) => k.name == t).firstOrNull,
     ],
     timeZone: TimeZoneSetting.fromJson(json['timeZone']),
+    deleting: json['state'] == 'deleting',
   );
 }
 
