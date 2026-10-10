@@ -76,6 +76,130 @@ service cloud.firestore {
         allow read: if activeMember(babyId) && role(babyId) == 'coParent';
         allow write: if false;
       }
+
+      // Care records (S4). Written directly by the app so the Firestore cache is the offline
+      // outbox; client ids make retries idempotent. Never hard-deleted by clients: "Xóa" is a
+      // soft delete with undo and a 30-day bin purged by a scheduled job.
+      match /records/{recordId} {
+        allow read: if canReadCare(babyId);
+        allow create: if canLog(babyId) && validNewRecord(babyId, recordId);
+        allow update: if canLog(babyId) && canEditRecord(babyId) && validRecordUpdate();
+        allow delete: if false;
+      }
+
+      // "Đã ghi hôm nay" per baby-local date, kept by the onCareRecordWrite trigger.
+      match /days/{date} {
+        allow read: if canReadCare(babyId);
+        allow write: if false;
+      }
+    }
+
+    // ---------- Care (S4) ----------
+
+    // Cùng nuôi and Người chăm sóc see care; relatives only with "Chăm sóc hằng ngày" (D-018).
+    function canReadCare(babyId) {
+      return activeMember(babyId) && (
+        role(babyId) in ['coParent', 'caregiver'] ||
+        get(memberDoc(babyId)).data.get('extraRights', {}).get('viewDailyCare', false) == true
+      );
+    }
+
+    // Relatives never log (12a, 7b: no "+").
+    function canLog(babyId) {
+      return activeMember(babyId) && role(babyId) in ['coParent', 'caregiver'];
+    }
+
+    // Q-012 → D-022: any Cùng nuôi edits or deletes any record; a caregiver only their own
+    // ("Bản ghi của ba mẹ: chỉ xem", 12a).
+    function canEditRecord(babyId) {
+      return role(babyId) == 'coParent' || resource.data.createdBy == request.auth.uid;
+    }
+
+    function notFuture(ts) {
+      return ts is timestamp && ts <= request.time + duration.value(5, 'm');
+    }
+
+    function intIn(v, lo, hi) {
+      return v is int && v >= lo && v <= hi;
+    }
+
+    function numIn(v, lo, hi) {
+      return (v is int || v is float) && v >= lo && v <= hi;
+    }
+
+    function optionalDuration(x) {
+      return x.durationMin == null || intIn(x.durationMin, 1, 240);
+    }
+
+    // Shapes and ranges mirror packages/contracts/src/care.ts. Sleep arrives with timers (S5).
+    function validCareData(type, x) {
+      return (type == 'bottle' && x.keys().hasOnly(['amountMl', 'milk']) &&
+          x.keys().hasAll(['amountMl', 'milk']) &&
+          (x.amountMl == null || intIn(x.amountMl, 1, 500)) &&
+          x.milk in ['breastMilk', 'formula']) ||
+        (type == 'breast' && x.keys().hasOnly(['side', 'durationMin']) &&
+          x.keys().hasAll(['side', 'durationMin']) &&
+          x.side in ['left', 'right', 'both'] && optionalDuration(x)) ||
+        (type == 'pump' && x.keys().hasOnly(['side', 'amountMl', 'durationMin']) &&
+          x.keys().hasAll(['side', 'amountMl', 'durationMin']) &&
+          x.side in ['left', 'right', 'both'] && intIn(x.amountMl, 1, 1000) &&
+          optionalDuration(x)) ||
+        (type == 'diaper' && x.keys().hasOnly(['kind']) &&
+          x.kind in ['wet', 'dirty', 'both']) ||
+        (type == 'growth' && x.keys().hasOnly(['weightKg', 'lengthCm', 'measuredOn']) &&
+          x.keys().hasAll(['weightKg', 'lengthCm', 'measuredOn']) &&
+          numIn(x.weightKg, 0.3, 40) &&
+          (x.lengthCm == null || numIn(x.lengthCm, 20, 150)) &&
+          x.measuredOn is string && x.measuredOn.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$'));
+    }
+
+    // When it happened: no future times (G-021, 5 min of clock skew); spans end after they start.
+    function validCareBody(d) {
+      return d.type in ['bottle', 'breast', 'pump', 'diaper', 'growth'] &&
+        notFuture(d.occurredAt) &&
+        (d.endedAt == null || (notFuture(d.endedAt) && d.endedAt >= d.occurredAt)) &&
+        d.data is map && validCareData(d.type, d.data);
+    }
+
+    function validNewRecord(babyId, recordId) {
+      let d = request.resource.data;
+      let me = get(memberDoc(babyId)).data;
+      return d.keys().hasOnly(['id', 'babyId', 'type', 'occurredAt', 'endedAt', 'data',
+          'createdBy', 'author', 'createdAt', 'clientCreatedAt', 'updatedAt', 'updatedBy',
+          'deleted', 'deletedAt', 'deletedBy', 'source']) &&
+        d.keys().hasAll(['id', 'babyId', 'type', 'occurredAt', 'endedAt', 'data', 'createdBy',
+          'author', 'createdAt', 'clientCreatedAt', 'updatedAt', 'updatedBy', 'deleted',
+          'deletedAt', 'deletedBy', 'source']) &&
+        recordId.matches('^r_[a-f0-9]{32}$') && d.id == recordId && d.babyId == babyId &&
+        d.createdBy == request.auth.uid && d.updatedBy == request.auth.uid &&
+        d.createdAt == request.time && d.updatedAt == request.time &&
+        d.clientCreatedAt is timestamp &&
+        d.deleted == false && d.deletedAt == null && d.deletedBy == null &&
+        d.source == 'app' &&
+        // "Mẹ ghi" / "Cô Lan ghi" (D-024) must be the writer's own membership.
+        d.author is map && d.author.keys().hasOnly(['name', 'relation', 'relationCustom']) &&
+        d.author.name == me.displayName && d.author.relation == me.relation &&
+        d.author.relationCustom == me.get('relationCustom', null) &&
+        validCareBody(d);
+    }
+
+    function validRecordUpdate() {
+      let d = request.resource.data;
+      let o = resource.data;
+      let changed = d.diff(o).affectedKeys();
+      let deleteKeys = ['deleted', 'deletedAt', 'deletedBy', 'updatedAt', 'updatedBy'];
+      return d.updatedBy == request.auth.uid && d.updatedAt == request.time && (
+        // "Sửa": time and details only.
+        (o.deleted == false && d.deleted == false &&
+          changed.hasOnly(['occurredAt', 'endedAt', 'data', 'updatedAt', 'updatedBy']) &&
+          validCareBody(d)) ||
+        // "Xóa bản ghi" → soft delete.
+        (o.deleted == false && d.deleted == true && changed.hasOnly(deleteKeys) &&
+          d.deletedAt == request.time && d.deletedBy == request.auth.uid) ||
+        // "Hoàn tác" (5 s) or restore from "Đã xoá gần đây".
+        (o.deleted == true && d.deleted == false && changed.hasOnly(deleteKeys) &&
+          d.deletedAt == null && d.deletedBy == null)
+      );
     }
 
     // "My babies": collection-group query on members where uid == me (any status, so the app

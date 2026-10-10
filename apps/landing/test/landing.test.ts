@@ -109,6 +109,13 @@ describe('prerender', () => {
     expect(page.head).toContain('<title>');
   });
 
+  it('every nav link points at a section on the home page', () => {
+    const page = render('/', 'dev');
+    const targets = [...page.html.matchAll(/data-spy="([^"]+)"/g)].map((m) => m[1]);
+    expect(targets).toEqual(['cham-con', 'hieu-con', 'ky-niem', 'gia-dinh', 'hoi-dap']);
+    for (const id of targets) expect(page.html).toContain(`id="${id}"`);
+  });
+
   it('puts the FAQ answers in the HTML for search engines', () => {
     const page = render('/en/', 'prod');
     for (const item of en.faq.items) expect(page.html).toContain(item.q.replace(/'/g, '&#x27;'));

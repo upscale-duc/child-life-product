@@ -1,12 +1,16 @@
 import type { CSSProperties, ReactNode } from 'react';
 // Line icons are shared with the app (apps/mobile/assets/icons, stroke = currentColor).
+import alert from '../../../mobile/assets/icons/alert.svg?raw';
+import arrowRight from '../../../mobile/assets/icons/arrow-right.svg?raw';
 import bookmark from '../../../mobile/assets/icons/bookmark.svg?raw';
+import cake from '../../../mobile/assets/icons/cake.svg?raw';
 import check from '../../../mobile/assets/icons/check.svg?raw';
 import chevronDown from '../../../mobile/assets/icons/chevron-down.svg?raw';
 import chevronRight from '../../../mobile/assets/icons/chevron-right.svg?raw';
 import clock from '../../../mobile/assets/icons/clock.svg?raw';
 import close from '../../../mobile/assets/icons/close.svg?raw';
 import cloudOff from '../../../mobile/assets/icons/cloud-off.svg?raw';
+import drop from '../../../mobile/assets/icons/drop.svg?raw';
 import eye from '../../../mobile/assets/icons/eye.svg?raw';
 import family from '../../../mobile/assets/icons/family.svg?raw';
 import feed from '../../../mobile/assets/icons/feed.svg?raw';
@@ -17,8 +21,10 @@ import lock from '../../../mobile/assets/icons/lock.svg?raw';
 import mail from '../../../mobile/assets/icons/mail.svg?raw';
 import memories from '../../../mobile/assets/icons/memories.svg?raw';
 import plus from '../../../mobile/assets/icons/plus.svg?raw';
+import search from '../../../mobile/assets/icons/search.svg?raw';
 import sleep from '../../../mobile/assets/icons/sleep.svg?raw';
 import sliders from '../../../mobile/assets/icons/sliders.svg?raw';
+import spark from '../../../mobile/assets/icons/spark.svg?raw';
 import star from '../../../mobile/assets/icons/star.svg?raw';
 import today from '../../../mobile/assets/icons/today.svg?raw';
 import babyFace from '../../../mobile/assets/illustrations/baby-face.svg';
@@ -31,6 +37,7 @@ import miniRuler from '../../../mobile/assets/illustrations/mini-ruler.svg';
 import baby0d3f8 from '../assets/figma/baby-0d3f8.jpg';
 import baby1025f from '../assets/figma/baby-1025f.jpg';
 import baby22456 from '../assets/figma/baby-22456.jpg';
+import baby2d978 from '../assets/figma/baby-2d978.jpg';
 import baby4222e from '../assets/figma/baby-4222e.jpg';
 import baby4470d from '../assets/figma/baby-4470d.jpg';
 import baby5d2ff from '../assets/figma/baby-5d2ff.jpg';
@@ -45,13 +52,17 @@ import type { CareKind } from '../content/types';
 const clean = (svg: string) => svg.replace(/\sid="[^"]*"/g, '').trim();
 
 const icons = {
+  alert,
+  'arrow-right': arrowRight,
   bookmark,
+  cake,
   check,
   'chevron-down': chevronDown,
   'chevron-right': chevronRight,
   clock,
   close,
   'cloud-off': cloudOff,
+  drop,
   eye,
   family,
   feed,
@@ -62,8 +73,10 @@ const icons = {
   mail,
   memories,
   plus,
+  search,
   sleep,
   sliders,
+  spark,
   star,
   today,
 };
@@ -115,6 +128,7 @@ export const photos = {
   sand: baby5d2ff,
   leaf: babyAe95e,
   rose: baby4470d,
+  night: baby2d978,
 };
 export type PhotoTone = keyof typeof photos;
 
@@ -225,7 +239,7 @@ export function Eyebrow({
   className,
 }: {
   children: ReactNode;
-  tone: 'mint' | 'peach' | 'sun' | 'night' | 'coral';
+  tone: 'mint' | 'peach' | 'sun' | 'sun-ink' | 'sleep' | 'night' | 'coral';
   className?: string;
 }) {
   return (

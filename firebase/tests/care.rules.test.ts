@@ -1,0 +1,278 @@
+import {
+  assertFails,
+  assertSucceeds,
+  initializeTestEnvironment,
+  type RulesTestEnvironment,
+} from '@firebase/rules-unit-testing';
+import {
+  Timestamp,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
+
+// S4 care records: who logs, reads, edits and deletes (business map §5, 12a, Q-012 → D-022,
+// D-018) and the record shape (packages/contracts/src/care.ts).
+const projectId = 'demo-child-life';
+let env: RulesTestEnvironment;
+
+const member = (
+  uid: string,
+  role: string,
+  relation: string,
+  extra: Record<string, unknown> = {},
+) => ({
+  uid,
+  babyId: 'b1',
+  role,
+  status: 'active',
+  relation,
+  relationCustom: null,
+  displayName: uid,
+  ...extra,
+});
+
+const relations: Record<string, string> = {
+  mom: 'mother',
+  dad: 'father',
+  nanny: 'nanny',
+  grandma: 'grandmother',
+  aunt: 'relative',
+};
+
+let seq = 0;
+const newId = () => `r_${(++seq).toString(16).padStart(32, '0')}`;
+
+/** A valid new bottle record by [uid] (overrides merged last). */
+function record(uid: string, id: string, overrides: Record<string, unknown> = {}) {
+  return {
+    id,
+    babyId: 'b1',
+    type: 'bottle',
+    occurredAt: Timestamp.fromDate(new Date(Date.now() - 45 * 60_000)),
+    endedAt: null,
+    data: { amountMl: 120, milk: 'breastMilk' },
+    createdBy: uid,
+    author: { name: uid, relation: relations[uid] ?? 'other', relationCustom: null },
+    createdAt: serverTimestamp(),
+    clientCreatedAt: Timestamp.now(),
+    updatedAt: serverTimestamp(),
+    updatedBy: uid,
+    deleted: false,
+    deletedAt: null,
+    deletedBy: null,
+    source: 'app',
+    ...overrides,
+  };
+}
+
+beforeAll(async () => {
+  env = await initializeTestEnvironment({
+    projectId,
+    firestore: { rules: readFileSync(resolve(import.meta.dirname, '../firestore.rules'), 'utf8') },
+  });
+});
+
+afterAll(async () => {
+  await env.cleanup();
+});
+
+beforeEach(async () => {
+  await env.clearFirestore();
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    const db = ctx.firestore();
+    await setDoc(doc(db, 'babies/b1'), { nickname: 'Teddy', ownerUid: 'mom', familyId: 'f1' });
+    await setDoc(
+      doc(db, 'babies/b1/members/mom'),
+      member('mom', 'coParent', 'mother', { isOwner: true }),
+    );
+    await setDoc(doc(db, 'babies/b1/members/dad'), member('dad', 'coParent', 'father'));
+    await setDoc(doc(db, 'babies/b1/members/nanny'), member('nanny', 'caregiver', 'nanny'));
+    await setDoc(
+      doc(db, 'babies/b1/members/grandma'),
+      member('grandma', 'relative', 'grandmother'),
+    );
+    await setDoc(
+      doc(db, 'babies/b1/members/aunt'),
+      member('aunt', 'relative', 'relative', {
+        extraRights: { viewBabyInfo: false, viewDailyCare: true },
+      }),
+    );
+    await setDoc(
+      doc(db, 'babies/b1/members/gone'),
+      member('gone', 'caregiver', 'nanny', { status: 'removed' }),
+    );
+    await setDoc(doc(db, 'babies/b1/records/r_mom'), {
+      ...record('mom', 'r_mom'),
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
+    });
+    await setDoc(doc(db, 'babies/b1/records/r_nanny'), {
+      ...record('nanny', 'r_nanny'),
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
+    });
+    await setDoc(doc(db, 'babies/b1/days/2026-10-08'), { bottle: { count: 2, ml: 240 } });
+  });
+});
+
+const as = (uid: string) => env.authenticatedContext(uid).firestore();
+const rec = (uid: string, id: string) => doc(as(uid), `babies/b1/records/${id}`);
+
+describe('logging (12a: parents and caregivers; relatives never)', () => {
+  it('Cùng nuôi and Người chăm sóc create records with their own attribution', async () => {
+    for (const uid of ['mom', 'dad', 'nanny']) {
+      const id = newId();
+      await assertSucceeds(setDoc(rec(uid, id), record(uid, id)));
+    }
+  });
+
+  it('relatives, removed members and strangers cannot log', async () => {
+    for (const uid of ['grandma', 'aunt', 'gone', 'stranger']) {
+      const id = newId();
+      await assertFails(setDoc(rec(uid, id), record(uid, id)));
+    }
+  });
+
+  it('attribution and authorship cannot be forged', async () => {
+    const id = newId();
+    await assertFails(setDoc(rec('nanny', id), record('nanny', id, { createdBy: 'mom' })));
+    await assertFails(
+      setDoc(
+        rec('nanny', id),
+        record('nanny', id, {
+          author: { name: 'nanny', relation: 'mother', relationCustom: null },
+        }),
+      ),
+    );
+    await assertFails(
+      setDoc(rec('nanny', id), record('nanny', id, { createdAt: Timestamp.now() })),
+    );
+  });
+
+  it('shapes and ranges follow the contract (G-021: no future times)', async () => {
+    const bad: Record<string, unknown>[] = [
+      { data: { amountMl: 0, milk: 'formula' } },
+      { data: { amountMl: 120.5, milk: 'formula' } },
+      { data: { amountMl: 120, milk: 'juice' } },
+      { data: { amountMl: 120, milk: 'formula', note: 'x' } },
+      { occurredAt: Timestamp.fromDate(new Date(Date.now() + 60 * 60_000)) },
+      { type: 'pump', data: { side: 'both', amountMl: null, durationMin: 15 } },
+      { type: 'sleep', data: {} },
+      { deleted: true },
+      { source: 'widget' },
+    ];
+    for (const overrides of bad) {
+      const id = newId();
+      await assertFails(setDoc(rec('mom', id), record('mom', id, overrides)));
+    }
+    await assertFails(setDoc(rec('mom', 'r_bad'), record('mom', 'r_bad')));
+
+    const good: Record<string, unknown>[] = [
+      { data: { amountMl: null, milk: 'formula' } },
+      { type: 'breast', data: { side: 'left', durationMin: 15 } },
+      { type: 'breast', data: { side: 'both', durationMin: null } },
+      { type: 'pump', data: { side: 'both', amountMl: 90, durationMin: 15 } },
+      { type: 'diaper', data: { kind: 'both' } },
+      { type: 'growth', data: { weightKg: 4.3, lengthCm: 54.5, measuredOn: '2026-10-08' } },
+      { type: 'growth', data: { weightKg: 4, lengthCm: null, measuredOn: '2026-10-08' } },
+    ];
+    for (const overrides of good) {
+      const id = newId();
+      await assertSucceeds(setDoc(rec('dad', id), record('dad', id, overrides)));
+    }
+  });
+});
+
+describe('reading (D-018: relatives only with daily care)', () => {
+  it('parents, caregivers and relatives with "Chăm sóc hằng ngày" read records and days', async () => {
+    for (const uid of ['mom', 'nanny', 'aunt']) {
+      await assertSucceeds(
+        getDocs(query(collection(as(uid), 'babies/b1/records'), where('deleted', '==', false))),
+      );
+      await assertSucceeds(getDoc(doc(as(uid), 'babies/b1/days/2026-10-08')));
+    }
+  });
+
+  it('other relatives, removed members and strangers do not', async () => {
+    for (const uid of ['grandma', 'gone', 'stranger']) {
+      await assertFails(getDoc(rec(uid, 'r_mom')));
+      await assertFails(getDoc(doc(as(uid), 'babies/b1/days/2026-10-08')));
+    }
+  });
+
+  it('nobody writes day summaries', async () => {
+    await assertFails(
+      setDoc(doc(as('mom'), 'babies/b1/days/2026-10-09'), { bottle: { count: 1 } }),
+    );
+  });
+});
+
+describe('editing and deleting (Q-012 → D-022)', () => {
+  const edit = { data: { amountMl: 150, milk: 'formula' }, updatedAt: serverTimestamp() };
+
+  it('any Cùng nuôi edits any record; a caregiver only their own', async () => {
+    await assertSucceeds(updateDoc(rec('dad', 'r_mom'), { ...edit, updatedBy: 'dad' }));
+    await assertSucceeds(updateDoc(rec('mom', 'r_nanny'), { ...edit, updatedBy: 'mom' }));
+    await assertSucceeds(updateDoc(rec('nanny', 'r_nanny'), { ...edit, updatedBy: 'nanny' }));
+    await assertFails(updateDoc(rec('nanny', 'r_mom'), { ...edit, updatedBy: 'nanny' }));
+    await assertFails(updateDoc(rec('aunt', 'r_mom'), { ...edit, updatedBy: 'aunt' }));
+  });
+
+  it('type, author and creation time never change; edits stay valid', async () => {
+    await assertFails(
+      updateDoc(rec('mom', 'r_mom'), {
+        type: 'diaper',
+        updatedBy: 'mom',
+        updatedAt: serverTimestamp(),
+      }),
+    );
+    await assertFails(
+      updateDoc(rec('mom', 'r_mom'), {
+        createdBy: 'dad',
+        updatedBy: 'mom',
+        updatedAt: serverTimestamp(),
+      }),
+    );
+    await assertFails(
+      updateDoc(rec('mom', 'r_mom'), {
+        data: { amountMl: 9000, milk: 'formula' },
+        updatedBy: 'mom',
+        updatedAt: serverTimestamp(),
+      }),
+    );
+  });
+
+  it('delete is a soft delete with undo; hard deletes are refused', async () => {
+    const soft = {
+      deleted: true,
+      deletedAt: serverTimestamp(),
+      deletedBy: 'nanny',
+      updatedBy: 'nanny',
+      updatedAt: serverTimestamp(),
+    };
+    await assertFails(updateDoc(rec('nanny', 'r_mom'), soft));
+    await assertSucceeds(updateDoc(rec('nanny', 'r_nanny'), soft));
+    await assertFails(updateDoc(rec('nanny', 'r_nanny'), { ...edit, updatedBy: 'nanny' }));
+    await assertSucceeds(
+      updateDoc(rec('nanny', 'r_nanny'), {
+        deleted: false,
+        deletedAt: null,
+        deletedBy: null,
+        updatedBy: 'nanny',
+        updatedAt: serverTimestamp(),
+      }),
+    );
+    await assertFails(deleteDoc(rec('mom', 'r_mom')));
+  });
+});

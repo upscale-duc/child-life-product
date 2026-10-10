@@ -16,6 +16,31 @@ export interface Bullet {
   sub?: string;
 }
 
+/** Bullet of the v3 sections; `subShort` is the mobile wording (Figma 324:45487). */
+export interface CompactBullet {
+  title: string;
+  sub: string;
+  subShort: string;
+}
+
+export interface BentoTile {
+  title: string;
+  body: string;
+  /** Mobile tiles carry a shorter body. */
+  bodyShort: string;
+}
+
+export interface TitledText {
+  title: string;
+  body: string;
+}
+
+export interface Article {
+  tag: string;
+  title: string;
+  meta: string;
+}
+
 export interface CareTileText {
   label: string;
   value: string;
@@ -89,6 +114,8 @@ export interface Content {
     };
     bottleWidget: { label: string; ago: string; meta: string; button: string };
     circular: { sleep: string; feed: string; sleepLabel: string; feedLabel: string };
+    /** iOS-style push notification header. */
+    push: { app: string; now: string };
   };
   hero: {
     eyebrow: string;
@@ -132,6 +159,99 @@ export interface Content {
     logged: { title: string; meta: string; undo: string; edit: string };
     note: string;
     steps: [Bullet, Bullet, Bullet];
+  };
+  everything: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    leadShort: string;
+    tiles: [BentoTile, BentoTile, BentoTile, BentoTile, BentoTile, BentoTile, BentoTile, BentoTile];
+    logChips: [string, string];
+    notification: { title: string; sub: string };
+    familyChip: string;
+    weekChips: [string, string];
+    milestone: { title: string; sub: string };
+    topics: [string, string, string];
+    foods: [string, string, string];
+    moreFoods: string;
+  };
+  reminders: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    leadShort: string;
+    bullets: [CompactBullet, CompactBullet, CompactBullet];
+    notification: {
+      title: string;
+      sub: string;
+      subShort: string;
+      log: string;
+      snooze: string;
+      snoozeShort: string;
+      skip: string;
+    };
+    rule: { title: string; sub: string; next: string };
+    fixed: { title: string; times: [string, string, string] };
+    done: string;
+    doneShort: string;
+  };
+  understand: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    leadShort: string;
+    columns: [TitledText, TitledText, TitledText];
+    age: { chips: [string, string]; title: string; points: [string, string]; footer: string };
+    wonder: {
+      badge: string;
+      countdown: string;
+      title: string;
+      dates: string;
+      signsLabel: string;
+      signs: [string, string, string];
+      learningLabel: string;
+      learning: string;
+      reminder: string;
+    };
+    milestone: { chips: [string, string]; title: string; note: string; saved: string };
+    note: string;
+    noteShort: string;
+  };
+  library: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    leadShort: string;
+    bullets: [CompactBullet, CompactBullet, CompactBullet];
+    search: string;
+    ageChip: string;
+    articles: [Article, Article];
+    /** Mobile meta of the first article. */
+    articleMetaShort: string;
+    solids: {
+      label: string;
+      meal: string;
+      triedLabel: string;
+      /** The last one is left out on mobile. */
+      foods: [string, string, string, string, string];
+      newFood: string;
+      more: string;
+      moreShort: string;
+    };
+    saved: string;
+  };
+  firstAid: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    leadShort: string;
+    bullets: [CompactBullet, CompactBullet, CompactBullet];
+    card: {
+      title: string;
+      sub: string;
+      topics: [string, string, string, string, string, string];
+      step: { label: string; text: string };
+    };
   };
   care: {
     eyebrow: string;
@@ -202,7 +322,7 @@ export interface Content {
   faq: {
     title: string;
     sub: [string, string, string];
-    items: [FaqItem, FaqItem, FaqItem, FaqItem, FaqItem];
+    items: [FaqItem, FaqItem, FaqItem, FaqItem, FaqItem, FaqItem];
   };
   footer: {
     copyright: string;

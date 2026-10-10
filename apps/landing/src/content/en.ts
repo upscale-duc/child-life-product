@@ -54,6 +54,7 @@ export const en: Content = {
     },
     bottleWidget: { label: 'Bottle', ago: '45 min ago', meta: '120 ml · Mum', button: '+ 120 ml' },
     circular: { sleep: '1:27', feed: '45m', sleepLabel: 'Sleep', feedLabel: 'Feed' },
+    push: { app: 'CHILD LIFE', now: 'now' },
   },
   hero: {
     eyebrow: 'Free for the whole family',
@@ -133,6 +134,225 @@ export const en: Content = {
       { title: 'Saved for you', sub: 'Tapped by mistake? Fix it right away' },
       { title: 'Everyone sees it', sub: 'Nobody has to ask “has the baby eaten?”' },
     ],
+  },
+  everything: {
+    eyebrow: 'Everything in one app',
+    title: 'Everything about your baby, in one place.',
+    lead: 'From the midnight feed to the first smile — log it in a moment, understand your baby a little more each week and keep their whole childhood.',
+    leadShort:
+      'Log it in a moment, understand your baby more each week and keep their whole childhood.',
+    tiles: [
+      {
+        title: 'Log in one tap',
+        body: 'Feeds, sleep, diapers — right on your home screen, even with your baby in your arms.',
+        bodyShort: 'Feeds, sleep, diapers from the home screen',
+      },
+      {
+        title: 'Timely reminders',
+        body: 'Feed and sleep reminders at set times or after the last log.',
+        bodyShort: 'Set times or after the last log',
+      },
+      {
+        title: 'Care as a family',
+        body: 'Parents, caregivers, grandparents — everyone knows how your baby is doing.',
+        bodyShort: 'Everyone knows how baby is doing',
+      },
+      {
+        title: 'Week by week',
+        body: 'Age cards and the expected Wonder Weeks calendar for every stage.',
+        bodyShort: 'Age cards & Wonder Weeks',
+      },
+      {
+        title: 'Milestones',
+        body: 'Note the first smile, the first roll, sitting up — with photos and notes.',
+        bodyShort: 'First smile, rolling, sitting…',
+      },
+      {
+        title: 'Baby care library',
+        body: 'Short reads on feeding, sleep, teething, fever — reviewed by our experts.',
+        bodyShort: 'Reviewed by our experts',
+      },
+      {
+        title: 'Gentle weaning',
+        body: 'A meal diary, foods your baby has tried and recipes for every stage.',
+        bodyShort: 'Meal diary & recipes',
+      },
+      {
+        title: 'Keep their childhood',
+        body: "Your baby's photos, videos and stories — private to your family.",
+        bodyShort: 'Photos, videos, stories',
+      },
+    ],
+    logChips: ['Bottle · 120 ml', 'Asleep 1:27'],
+    notification: { title: 'Time for the feed you set', sub: 'Last feed 11:45' },
+    familyChip: 'Dad Tuấn just logged a diaper',
+    weekChips: ['3 weeks old', 'Wonder Week 1 · in 3 days'],
+    milestone: { title: 'Smiles back', sub: 'Observed · 08/10' },
+    topics: ['Sleep', 'Teething', 'Feeding & milk'],
+    foods: ['Pumpkin', 'Carrot', 'Avocado'],
+    moreFoods: '+11 foods',
+  },
+  reminders: {
+    eyebrow: 'Reminders',
+    title: 'Timely reminders the whole family sees.',
+    lead: 'Set feed and sleep reminders at fixed times or counted from the last log. Once someone logs, the reminder turns off for everyone.',
+    leadShort:
+      'Feed and sleep reminders at fixed times or counted from the last log. Once someone logs, it turns off for everyone.',
+    bullets: [
+      {
+        title: 'Two ways to remind',
+        sub: 'At set times, or after the last feed or sleep',
+        subShort: 'At set times, or after the last log',
+      },
+      {
+        title: 'Choose who gets reminded',
+        sub: "Parents and caregivers — grandparents aren't disturbed",
+        subShort: 'Parents and caregivers',
+      },
+      {
+        title: 'Act right from the notification',
+        sub: 'Log it, snooze or skip in a single tap',
+        subShort: 'Log, snooze or skip',
+      },
+    ],
+    notification: {
+      title: 'Time for the feed you set',
+      sub: 'Last feed 11:45 · 3 hours ago',
+      subShort: 'Last feed 11:45',
+      log: 'Log feed',
+      snooze: 'Snooze 15 min',
+      snoozeShort: 'Snooze',
+      skip: 'Skip',
+    },
+    rule: { title: 'Feed reminder', sub: '3 hours after the last feed', next: 'Next 14:45' },
+    fixed: { title: 'Get ready for sleep', times: ['09:00', '13:00', '19:30'] },
+    done: 'Dad Tuấn logged at 14:52 · reminder off',
+    doneShort: 'Dad Tuấn logged · reminder off',
+  },
+  understand: {
+    eyebrow: 'Week by week',
+    title: 'Understand your baby a little more each week.',
+    lead: "Tips for your baby's exact age, the expected Wonder Weeks calendar and the moments worth remembering — so you worry less and enjoy more.",
+    leadShort:
+      "Tips for your baby's age, the expected Wonder Weeks and the moments worth remembering.",
+    columns: [
+      {
+        title: 'Age cards',
+        body: 'One short card per stage: how your baby is doing, what you can try, with related articles and milestones.',
+      },
+      {
+        title: 'Wonder Weeks',
+        body: 'An expected calendar based on the due date, with a reminder 3 days ahead. Read what your baby is learning and note what you see.',
+      },
+      {
+        title: 'Milestones',
+        body: 'Pick a suggested milestone or create your own, like “First trip to the countryside”. Add photos and notes — and keep it as a memory.',
+      },
+    ],
+    age: {
+      chips: ['3–4 weeks', 'Teddy · 3 weeks'],
+      title: 'Follows faces, knows familiar voices',
+      points: [
+        'Talk and sing softly while your baby is awake',
+        'Some tummy time, with a grown-up close by',
+      ],
+      footer: '2 articles · 2 common milestones',
+    },
+    wonder: {
+      badge: 'Wonder Week 1',
+      countdown: 'In 3 days',
+      title: 'Changing sensations',
+      dates: 'Expected weeks 4–5 · 11/10 – 18/10',
+      signsLabel: 'Common signs',
+      signs: ['Fussier', 'Clingy', 'Unsettled sleep'],
+      learningLabel: 'What your baby is learning',
+      learning: 'Sensing sound, light and smell more clearly',
+      reminder: 'Remind me 3 days ahead',
+    },
+    milestone: {
+      chips: ['Observed', 'Social'],
+      title: 'Smiles back',
+      note: '08/10/2026 · Mum · “Smiled when I sang after the morning feed.”',
+      saved: 'Saved to Memories',
+    },
+    note: 'Written and reviewed by the Child Life expert team. Wonder Weeks are only an estimate — every baby has their own pace, and the app never scores or compares your baby.',
+    noteShort:
+      'Written and reviewed by our expert team. Wonder Weeks are only an estimate — every baby has their own pace.',
+  },
+  library: {
+    eyebrow: 'Library & weaning',
+    title: 'Whatever you wonder, there is a short, clear read.',
+    lead: 'The baby care and weaning libraries are written, reviewed and kept up to date by our expert team. Search by topic or age — save articles for when you need them.',
+    leadShort:
+      'Written and reviewed by our expert team. Search by topic or age — save articles for when you need them.',
+    bullets: [
+      {
+        title: 'Search and filter fast',
+        sub: 'By topic, age and reading time',
+        subShort: 'By topic and age',
+      },
+      {
+        title: 'Save to read again',
+        sub: "When an article is updated, you'll see it right away",
+        subShort: 'See updates right away',
+      },
+      {
+        title: 'Weaning diary',
+        sub: 'Meals, how much your baby ate and the foods they tried',
+        subShort: 'Meals and the foods they tried',
+      },
+    ],
+    search: 'Baby startles in their sleep…',
+    ageChip: '0–3 months',
+    articles: [
+      { tag: 'Sleep', title: 'Newborn sleep', meta: '6 min read · reviewed by our experts' },
+      {
+        tag: 'Weaning · Recipe',
+        title: 'Pumpkin porridge for first tastes',
+        meta: '15 min · 6–7 months',
+      },
+    ],
+    articleMetaShort: '6 min read',
+    solids: {
+      label: 'Weaning today',
+      meal: 'Pumpkin porridge · 4 spoons',
+      triedLabel: 'Foods tried · 14',
+      foods: ['Rice', 'Pumpkin', 'Carrot', 'Avocado', 'Banana'],
+      newFood: 'Sweet potato',
+      more: '+8',
+      moreShort: '+9',
+    },
+    saved: 'Saved to Library',
+  },
+  firstAid: {
+    eyebrow: 'First aid',
+    title: 'When something unexpected happens, the steps are ready.',
+    lead: 'Common little emergencies — fever, falls, minor burns, insect bites — explained briefly and calmly so you can look after your baby with a clear head.',
+    leadShort:
+      'Fever, falls, minor burns, insect bites — explained briefly and calmly so you can stay calm.',
+    bullets: [
+      {
+        title: 'Common situations',
+        sub: 'Fever, falls, minor burns, choking, insect bites…',
+        subShort: 'Fever, falls, minor burns, choking, insect bites…',
+      },
+      {
+        title: 'Step by step, illustrated',
+        sub: 'Easy to read even with your baby in your arms',
+        subShort: 'Easy to read even with your baby in your arms',
+      },
+      {
+        title: 'Reviewed with medical experts',
+        sub: 'Always reminds you to ask a doctor when needed',
+        subShort: 'Always reminds you to ask a doctor when needed',
+      },
+    ],
+    card: {
+      title: 'First aid',
+      sub: 'Step-by-step, easy to follow',
+      topics: ['Choking', 'Fever', 'Minor burn', 'Falls, bumps', 'Insect bites', 'Nosebleed'],
+      step: { label: 'Minor burn · step 1/4', text: 'Stay calm and follow the illustrated steps' },
+    },
   },
   care: {
     eyebrow: 'Everyday care',
@@ -313,8 +533,13 @@ export const en: Content = {
         open: false,
       },
       {
-        q: 'Does it work on Android?',
-        a: 'Yes. Child Life is on both iPhone and Android, so the whole family can care for your baby together whatever phone they use.',
+        q: 'Who writes the tips in the app?',
+        a: "The Child Life expert team writes, reviews and updates the age cards, articles and guides in the app. They are for reference and don't replace a doctor's advice — if something seems wrong, ask your doctor.",
+        open: false,
+      },
+      {
+        q: 'Is the Wonder Weeks calendar right for every baby?',
+        a: "Not exactly. It's an estimate based on your baby's due date, and every baby has their own pace — some earlier, some later. The app never scores or compares your baby; it just helps you know what may be coming.",
         open: false,
       },
     ],

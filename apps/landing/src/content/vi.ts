@@ -60,6 +60,7 @@ export const vi: Content = {
       button: '+ 120 ml',
     },
     circular: { sleep: '1:27', feed: '45p', sleepLabel: 'Ngủ', feedLabel: 'Bú' },
+    push: { app: 'CHILD LIFE', now: 'bây giờ' },
   },
   hero: {
     eyebrow: 'Miễn phí cho cả gia đình',
@@ -139,6 +140,229 @@ export const vi: Content = {
       { title: 'Tự lưu lại cho bạn', sub: 'Lỡ chạm nhầm cũng sửa được ngay' },
       { title: 'Cả nhà thấy ngay', sub: 'Không ai phải hỏi lại “con ăn chưa?”' },
     ],
+  },
+  // v3 sections (Figma 321:1222 / 324:45487). Mobile wording in the *Short keys.
+  everything: {
+    eyebrow: 'Tất cả trong một app',
+    title: 'Mọi điều về con, ở cùng một nơi.',
+    lead: 'Từ cữ bú lúc nửa đêm đến lần đầu con cười — ghi lại thật nhanh, hiểu con hơn mỗi tuần và giữ trọn tuổi thơ của con.',
+    leadShort: 'Ghi lại thật nhanh, hiểu con hơn mỗi tuần và giữ trọn tuổi thơ của con.',
+    tiles: [
+      {
+        title: 'Ghi trong một chạm',
+        body: 'Bú, ngủ, tã — ngay trên màn hình chính, cả khi đang bế con.',
+        bodyShort: 'Bú, ngủ, tã ngay trên màn hình chính',
+      },
+      {
+        title: 'Nhắc đúng lúc',
+        body: 'Nhắc bú, ngủ theo giờ cố định hoặc sau lần ghi gần nhất.',
+        bodyShort: 'Giờ cố định hoặc sau lần ghi gần nhất',
+      },
+      {
+        title: 'Cả nhà cùng chăm',
+        body: 'Ba mẹ, người chăm, ông bà — ai cũng biết con vừa thế nào.',
+        bodyShort: 'Ai cũng biết con vừa thế nào',
+      },
+      {
+        title: 'Hiểu con theo tuần',
+        body: 'Thẻ theo tuổi và lịch Wonder Week dự kiến cho từng giai đoạn.',
+        bodyShort: 'Thẻ theo tuổi & Wonder Week',
+      },
+      {
+        title: 'Mốc phát triển',
+        body: 'Ghi lại lần đầu con cười, lẫy, ngồi — kèm ảnh và ghi chú.',
+        bodyShort: 'Lần đầu cười, lẫy, ngồi…',
+      },
+      {
+        title: 'Thư viện chăm bé',
+        body: 'Bài viết ngắn về bú, ngủ, mọc răng, sốt — đội chuyên môn rà soát.',
+        bodyShort: 'Đội chuyên môn rà soát',
+      },
+      {
+        title: 'Ăn dặm nhẹ nhàng',
+        body: 'Nhật ký bữa ăn, món bé đã thử và công thức cho từng giai đoạn.',
+        bodyShort: 'Nhật ký & công thức',
+      },
+      {
+        title: 'Giữ trọn tuổi thơ',
+        body: 'Ảnh, video và câu chuyện của con — riêng tư cho người nhà.',
+        bodyShort: 'Ảnh, video, câu chuyện',
+      },
+    ],
+    logChips: ['Bú bình · 120 ml', 'Đang ngủ 1:27'],
+    notification: { title: 'Đến giờ nhắc bú bạn đã đặt', sub: 'Lần bú gần nhất 11:45' },
+    familyChip: 'Ba Tuấn vừa ghi thay tã',
+    weekChips: ['3 tuần tuổi', 'Wonder Week 1 · còn 3 ngày'],
+    milestone: { title: 'Mỉm cười đáp lại', sub: 'Đã quan sát · 08/10' },
+    topics: ['Giấc ngủ', 'Mọc răng', 'Bú & sữa'],
+    foods: ['Bí đỏ', 'Cà rốt', 'Bơ'],
+    moreFoods: '+11 món',
+  },
+  // Q-039: reminder promises (interval rules, recipients, actions, auto-off) go beyond R-091.
+  reminders: {
+    eyebrow: 'Nhắc nhở',
+    title: 'Nhắc đúng lúc, cả nhà cùng biết.',
+    lead: 'Đặt nhắc bú, ngủ theo giờ cố định hoặc tự tính từ lần ghi gần nhất. Một người ghi xong, nhắc tự tắt với mọi người.',
+    leadShort:
+      'Nhắc bú, ngủ theo giờ cố định hoặc tự tính từ lần ghi gần nhất. Một người ghi xong, nhắc tự tắt với mọi người.',
+    bullets: [
+      {
+        title: 'Hai cách nhắc',
+        sub: 'Giờ cố định, hoặc sau lần bú, ngủ gần nhất',
+        subShort: 'Giờ cố định, hoặc sau lần ghi gần nhất',
+      },
+      {
+        title: 'Chọn ai nhận nhắc',
+        sub: 'Bố mẹ và người chăm — không làm phiền ông bà',
+        subShort: 'Bố mẹ và người chăm',
+      },
+      {
+        title: 'Xử lý ngay trên thông báo',
+        sub: 'Ghi, báo lại sau hoặc bỏ qua chỉ một chạm',
+        subShort: 'Ghi, báo lại hoặc bỏ qua',
+      },
+    ],
+    notification: {
+      title: 'Đến giờ nhắc bú bạn đã đặt',
+      sub: 'Lần bú gần nhất 11:45 · 3 giờ trước',
+      subShort: 'Lần bú gần nhất 11:45',
+      log: 'Ghi lần bú',
+      snooze: 'Báo lại 15 phút',
+      snoozeShort: 'Báo lại',
+      skip: 'Bỏ qua',
+    },
+    rule: { title: 'Nhắc bú', sub: '3 giờ sau lần bú gần nhất', next: 'Tiếp theo 14:45' },
+    fixed: { title: 'Nhắc chuẩn bị ngủ', times: ['09:00', '13:00', '19:30'] },
+    done: 'Ba Tuấn đã ghi lúc 14:52 · nhắc tự tắt',
+    doneShort: 'Ba Tuấn đã ghi · nhắc tự tắt',
+  },
+  understand: {
+    eyebrow: 'Hiểu con',
+    title: 'Hiểu con hơn, mỗi tuần một chút.',
+    lead: 'Gợi ý theo đúng tuổi của con, lịch Wonder Week dự kiến và những mốc đáng nhớ — để bạn bớt lo và tận hưởng nhiều hơn.',
+    leadShort: 'Gợi ý theo đúng tuổi, lịch Wonder Week dự kiến và những mốc đáng nhớ.',
+    columns: [
+      {
+        title: 'Thẻ theo tuổi',
+        body: 'Mỗi giai đoạn một thẻ ngắn: bé đang thế nào, ba mẹ có thể thử gì, kèm bài viết và mốc liên quan.',
+      },
+      {
+        title: 'Wonder Week',
+        body: 'Lịch dự kiến theo ngày dự sinh, nhắc trước 3 ngày. Đọc bé đang học gì và ghi lại những gì bạn thấy ở con.',
+      },
+      {
+        title: 'Mốc phát triển',
+        body: 'Chọn mốc gợi ý hoặc tự tạo mốc riêng như “Lần đầu về quê”. Thêm ảnh, ghi chú — và lưu thành kỷ niệm.',
+      },
+    ],
+    age: {
+      chips: ['3–4 tuần', 'Teddy · 3 tuần'],
+      title: 'Bé nhìn theo mặt người, nghe giọng quen',
+      points: ['Nói chuyện, hát nhẹ khi bé thức', 'Cho bé nằm sấp vài phút, có người lớn bên cạnh'],
+      footer: '2 bài viết · 2 mốc thường gặp',
+    },
+    wonder: {
+      badge: 'Wonder Week 1',
+      countdown: 'Còn 3 ngày',
+      title: 'Cảm giác thay đổi',
+      dates: 'Dự kiến tuần 4–5 · 11/10 – 18/10',
+      signsLabel: 'Biểu hiện thường gặp',
+      signs: ['Quấy hơn', 'Bám ba mẹ', 'Ngủ xáo trộn'],
+      learningLabel: 'Bé đang học gì',
+      learning: 'Cảm nhận rõ hơn âm thanh, ánh sáng, mùi',
+      reminder: 'Nhắc trước 3 ngày',
+    },
+    milestone: {
+      chips: ['Đã quan sát', 'Giao tiếp'],
+      title: 'Mỉm cười đáp lại',
+      note: '08/10/2026 · Mẹ ghi · “Bé cười khi mẹ hát sau cữ bú sáng.”',
+      saved: 'Đã lưu vào Kỷ niệm',
+    },
+    note: 'Nội dung do đội chuyên môn Child Life soạn và rà soát. Lịch Wonder Week chỉ là dự kiến — mỗi bé có nhịp riêng, app không chấm điểm hay so sánh con.',
+    noteShort:
+      'Nội dung do đội chuyên môn soạn và rà soát. Lịch Wonder Week chỉ là dự kiến — mỗi bé có nhịp riêng.',
+  },
+  library: {
+    eyebrow: 'Thư viện & ăn dặm',
+    title: 'Băn khoăn gì, có bài đọc ngắn và dễ hiểu.',
+    lead: 'Thư viện chăm bé và thư viện ăn dặm do đội chuyên môn soạn, rà soát và cập nhật. Tìm theo chủ đề, độ tuổi — lưu lại để đọc khi cần.',
+    leadShort:
+      'Do đội chuyên môn soạn và rà soát. Tìm theo chủ đề, độ tuổi — lưu lại để đọc khi cần.',
+    bullets: [
+      {
+        title: 'Tìm và lọc nhanh',
+        sub: 'Theo chủ đề, độ tuổi, thời gian đọc',
+        subShort: 'Theo chủ đề, độ tuổi',
+      },
+      {
+        title: 'Lưu để đọc lại',
+        sub: 'Bài nào được cập nhật, bạn sẽ thấy ngay',
+        subShort: 'Bài cập nhật, bạn thấy ngay',
+      },
+      {
+        title: 'Nhật ký ăn dặm',
+        sub: 'Bữa ăn, lượng bé ăn và những món bé đã thử',
+        subShort: 'Bữa ăn và những món bé đã thử',
+      },
+    ],
+    search: 'Bé hay giật mình khi ngủ…',
+    ageChip: '0–3 tháng',
+    articles: [
+      {
+        tag: 'Giấc ngủ',
+        title: 'Giấc ngủ của bé sơ sinh',
+        meta: '6 phút đọc · đội chuyên môn rà soát',
+      },
+      {
+        tag: 'Ăn dặm · Công thức',
+        title: 'Cháo bí đỏ cho bé mới tập',
+        meta: '15 phút · 6–7 tháng',
+      },
+    ],
+    articleMetaShort: '6 phút đọc',
+    solids: {
+      label: 'Ăn dặm hôm nay',
+      meal: 'Cháo bí đỏ · 4 thìa',
+      triedLabel: 'Món bé đã thử · 14',
+      foods: ['Gạo', 'Bí đỏ', 'Cà rốt', 'Bơ', 'Chuối'],
+      newFood: 'Khoai lang',
+      more: '+8',
+      moreShort: '+9',
+    },
+    saved: 'Đã lưu vào Thư viện',
+  },
+  firstAid: {
+    eyebrow: 'Sơ cấp cứu',
+    title: 'Khi con gặp chuyện bất ngờ, bạn đã có sẵn hướng dẫn.',
+    lead: 'Những tình huống nhỏ thường gặp ở trẻ — sốt, ngã, bỏng nhẹ, côn trùng cắn — được giải thích ngắn gọn, nhẹ nhàng để bạn bình tĩnh chăm con.',
+    leadShort:
+      'Sốt, ngã, bỏng nhẹ, côn trùng cắn — giải thích ngắn gọn, nhẹ nhàng để bạn bình tĩnh chăm con.',
+    bullets: [
+      {
+        title: 'Tình huống thường gặp',
+        sub: 'Sốt, ngã, bỏng nhẹ, hóc dị vật, côn trùng cắn…',
+        subShort: 'Sốt, ngã, bỏng nhẹ, hóc dị vật, côn trùng cắn…',
+      },
+      {
+        title: 'Từng bước, có hình minh hoạ',
+        sub: 'Dễ đọc cả khi đang bế con',
+        subShort: 'Dễ đọc cả khi đang bế con',
+      },
+      {
+        title: 'Rà soát cùng chuyên gia y tế',
+        sub: 'Luôn nhắc bạn hỏi bác sĩ khi cần',
+        subShort: 'Luôn nhắc bạn hỏi bác sĩ khi cần',
+      },
+    ],
+    card: {
+      title: 'Sơ cấp cứu',
+      sub: 'Hướng dẫn từng bước, dễ làm theo',
+      topics: ['Hóc dị vật', 'Sốt', 'Bỏng nhẹ', 'Ngã, va đập', 'Côn trùng cắn', 'Chảy máu cam'],
+      step: {
+        label: 'Bỏng nhẹ · bước 1/4',
+        text: 'Giữ bình tĩnh, làm theo từng bước có hình minh hoạ',
+      },
+    },
   },
   care: {
     eyebrow: 'Chăm sóc mỗi ngày',
@@ -304,7 +528,7 @@ export const vi: Content = {
         a: 'Không. Cả gia đình dùng miễn phí, đủ chỗ cho hàng nghìn ảnh của con. Cần thêm chỗ, bạn chỉ cần nhắn cho chúng tôi.',
         open: true,
       },
-      // PROPOSED answers 3–5 (G-065): not in Figma.
+      // PROPOSED answers 3–6 (G-065): not in Figma.
       {
         q: 'Ông bà không rành điện thoại có dùng được không?',
         a: 'Được. Ba mẹ gửi lời mời, ông bà chỉ cần chạm vào là xem được ảnh và câu chuyện của cháu. Màn hình đơn giản, chữ rõ, ít nút bấm.',
@@ -316,8 +540,13 @@ export const vi: Content = {
         open: false,
       },
       {
-        q: 'Có dùng được trên Android không?',
-        a: 'Có. Child Life có trên cả iPhone và Android, nên cả nhà dùng máy khác nhau vẫn cùng chăm con được.',
+        q: 'Nội dung gợi ý trong app do ai soạn?',
+        a: 'Đội chuyên môn của Child Life soạn, rà soát và cập nhật các thẻ theo tuổi, bài viết và hướng dẫn trong app. Nội dung chỉ để tham khảo, không thay lời khuyên của bác sĩ — khi con có dấu hiệu bất thường, hãy hỏi bác sĩ.',
+        open: false,
+      },
+      {
+        q: 'Lịch Wonder Week có đúng với mọi bé không?',
+        a: 'Không hẳn. Lịch được tính dự kiến theo ngày dự sinh của con, còn mỗi bé có nhịp riêng — có bé sớm hơn, có bé muộn hơn. App không chấm điểm hay so sánh con, chỉ giúp bạn biết trước để bớt lo.',
         open: false,
       },
     ],

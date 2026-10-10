@@ -28,6 +28,7 @@ import {
 } from './family.js';
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { localeFromHeader, renderInvitePage, renderUnsubscribePage } from './pages.js';
+import { onRecordWritten, purgeDeletedRecords } from './care.js';
 import { BabyError, createBaby, getBabyAvatar, setBabyAvatar, type AvatarStore } from './babies.js';
 import { handlePing, PingError } from './ping.js';
 import { isMirroredConfigId, publicProjection } from './config-mirror.js';
@@ -231,6 +232,34 @@ export const expireFamilyMemberships = onSchedule('every 60 minutes', async () =
   const expired = await expireMemberships(getFirestore(), new Date());
   if (expired > 0) logger.info('memberships expired', { count: expired });
 });
+
+// ---------- Care (S4) ----------
+
+/** Keeps "Đã ghi hôm nay" per day and "đã ghi N lần" per member in step with the records. */
+export const onCareRecordWrite = onDocumentWritten(
+  'babies/{babyId}/records/{recordId}',
+  async (event) => {
+    const change = event.data;
+    if (!change) return;
+    const { days } = await onRecordWritten(
+      getFirestore(),
+      event.params.babyId,
+      change.before.exists ? change.before : null,
+      change.after.exists ? change.after : null,
+      new Date(),
+    );
+    logger.debug('care summaries recomputed', { days: days.length });
+  },
+);
+
+/** "Đã xoá gần đây": soft-deleted records leave after 30 days (P-009). */
+export const purgeCareBin = onSchedule(
+  { schedule: 'every day 03:30', timeZone: 'Asia/Ho_Chi_Minh' },
+  async () => {
+    const purged = await purgeDeletedRecords(getFirestore(), new Date());
+    if (purged > 0) logger.info('care records purged', { count: purged });
+  },
+);
 
 // ---------- Email (D-020: AWS SES) ----------
 
