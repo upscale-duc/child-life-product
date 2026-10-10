@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
+import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_art.dart';
 import '../../core/widgets/cl_feedback.dart';
+import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
+import '../care/care_format.dart';
+import '../care/care_models.dart';
+import '../care/care_repository.dart';
+import '../care/care_screens.dart';
+import '../care/care_sheets.dart';
+import '../family/family_labels.dart';
 import '../home/home_shell.dart';
-import '../onboarding/setup_screens.dart';
 
-/// 18 Hôm nay (lần đầu) tab (29:904): empty tiles per trackers. Logging, coachmarks (18a–18c)
-/// and the totals arrive in S4; relatives granted daily care see it read-only (D-018). Nothing
-/// here is marked done in the coverage checklist.
+/// 19 Hôm nay (46:2266) and its first-run state 18 (29:904): one tile per tracker — tap logs
+/// that type, the lines show the last entry (how long ago · detail · who) — then "Đã ghi hôm
+/// nay" (DayRhythm 48:409). Offline / pending entries show 9a's banner and "Chờ đồng bộ".
+/// Relatives with "Chăm sóc hằng ngày" see it read-only (D-018). Sleep arrives in S5,
+/// reminders (ReminderPeek) in S15, the first-run tour (18a–18c) with S5.
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
 
@@ -25,16 +37,30 @@ class TodayScreen extends ConsumerWidget {
     final cl = context.cl;
     final membership = ref.watch(selectedMembershipProvider);
     if (membership == null) return ColoredBox(color: cl.colors.cloud);
-    final baby = ref.watch(babyProvider(membership.babyId)).value;
+    final babyId = membership.babyId;
+    final baby = ref.watch(babyProvider(babyId)).value;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final now = DateTime.now();
+    final now = ref.watch(careClockProvider).value ?? DateTime.now();
     final trackers = baby?.trackers ?? const <TrackerKind>[];
     final readOnly = membership.role == MemberRole.relative;
+    final recent = ref.watch(recentRecordsProvider(babyId)).value ?? const [];
+    final growth = ref.watch(growthRecordsProvider(babyId)).value ?? const [];
+    final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
+    final day = babyDayBounds(zone, now);
+    final pendingCount = recent.where((r) => r.pending).length;
+    final online = ref.watch(onlineProvider).value ?? true;
 
-    void tap() => showClToast(
-      context,
-      message: readOnly ? l10n.todayViewOnly : l10n.todayLoggingSoon,
-    );
+    void tap(CareType type) {
+      if (readOnly) {
+        showClToast(context, message: l10n.todayViewOnly);
+      } else {
+        openCareLog(context, type);
+      }
+    }
+
+    CareRecord? last(CareType type) => type == CareType.growth
+        ? growth.firstOrNull
+        : recent.where((r) => r.type == type).firstOrNull;
 
     return ColoredBox(
       color: cl.colors.cloud,
@@ -49,6 +75,15 @@ class TodayScreen extends ConsumerWidget {
           ),
           children: [
             const BabyHeader(),
+            if (pendingCount > 0) ...[
+              const SizedBox(height: ClSpace.s3),
+              _SyncBanner(
+                label: online
+                    ? l10n.syncingBanner(pendingCount)
+                    : l10n.offlineBanner(pendingCount),
+                onTap: () => showPendingSheet(context),
+              ),
+            ],
             const SizedBox(height: ClSpace.s4),
             Text(
               toBeginningOfSentenceCase(
@@ -70,39 +105,41 @@ class TodayScreen extends ConsumerWidget {
               physics: const NeverScrollableScrollPhysics(),
               mainAxisSpacing: ClSpace.s3,
               crossAxisSpacing: ClSpace.s3,
-              childAspectRatio: 166 / 128,
+              childAspectRatio: 166 / 156,
               children: [
                 for (final kind in trackers)
-                  _EmptyCareTile(kind: kind, readOnly: readOnly, onTap: tap),
+                  if (careTypeOf(kind) case final type?)
+                    CareTile(
+                      type: type,
+                      last: last(type),
+                      previousGrowth:
+                          type == CareType.growth && growth.length > 1
+                          ? growth[1]
+                          : null,
+                      myUid: membership.uid,
+                      now: now,
+                      readOnly: readOnly,
+                      onTap: () => tap(type),
+                      onLongPress: last(type) == null
+                          ? null
+                          : () => context.push(
+                              '${Routes.record}/${last(type)!.id}',
+                            ),
+                    ),
               ],
             ),
             const SizedBox(height: ClSpace.s6),
-            Text(
-              l10n.todayTitle,
-              style: cl.text.headline.copyWith(color: cl.colors.ink),
+            ClSectionHeader(
+              title: l10n.todayTitle,
+              linkLabel: l10n.todayHistory,
+              onLink: () => showClToast(context, message: l10n.historySoon),
             ),
             const SizedBox(height: ClSpace.s3),
-            Container(
-              padding: const EdgeInsets.all(ClSpace.s4),
-              decoration: BoxDecoration(
-                color: cl.colors.surface,
-                borderRadius: BorderRadius.circular(ClRadius.card),
-                boxShadow: cl.shadows.card,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.todaySummaryEmpty,
-                    style: cl.text.bodyStrong.copyWith(color: cl.colors.ink),
-                  ),
-                  const SizedBox(height: ClSpace.s1),
-                  Text(
-                    l10n.todaySummaryEmptyBody,
-                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                  ),
-                ],
-              ),
+            DayRhythm(
+              records: recent,
+              dayStart: day.start,
+              dayEnd: day.end,
+              now: now,
             ),
           ],
         ),
@@ -111,73 +148,548 @@ class TodayScreen extends ConsumerWidget {
   }
 }
 
-/// First-run tile: "Chưa có / Chạm để ghi" on the tracker's care colour (R-012).
-class _EmptyCareTile extends StatelessWidget {
-  const _EmptyCareTile({
-    required this.kind,
-    required this.onTap,
-    this.readOnly = false,
-  });
-  final TrackerKind kind;
+/// 9a banner: sunshine-soft, cloud-off, chevron → 9b.
+class _SyncBanner extends StatelessWidget {
+  const _SyncBanner({required this.label, required this.onTap});
+  final String label;
   final VoidCallback onTap;
-  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
-    final l10n = AppLocalizations.of(context);
-    final care = switch (kind) {
-      TrackerKind.bottle => cl.care.bottle,
-      TrackerKind.breast => cl.care.breast,
-      TrackerKind.sleep => cl.care.sleep,
-      TrackerKind.diaper => cl.care.diaper,
-      TrackerKind.pump => cl.care.pump,
-      TrackerKind.growth => cl.care.growth,
-    };
-    final label = trackerLabel(l10n, kind);
     return ClPressable(
-      semanticLabel: readOnly
-          ? '$label, ${l10n.todayTileEmpty}'
-          : '$label, ${l10n.todayTileEmpty}. ${l10n.todayTileTapToLog}',
       onPressed: onTap,
+      pressedScale: 0.99,
+      semanticLabel: label,
       child: Container(
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          color: care.soft,
-          borderRadius: BorderRadius.circular(ClRadius.tile),
-          border: Border.all(color: cl.colors.cardEdge),
-          boxShadow: cl.shadows.tile,
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s4,
+          vertical: ClSpace.s3,
         ),
-        child: Stack(
+        decoration: BoxDecoration(
+          color: cl.colors.sunshineSoft,
+          borderRadius: BorderRadius.circular(ClRadius.control),
+        ),
+        child: Row(
           children: [
-            Positioned(
-              right: -14,
-              bottom: -12,
-              child: ClArt(trackerArt(kind), width: 76, height: 76),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(ClSpace.s4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(label, style: cl.text.label.copyWith(color: care.ink)),
-                  const SizedBox(height: ClSpace.s2),
-                  Text(
-                    l10n.todayTileEmpty,
-                    style: cl.text.title2.copyWith(color: cl.colors.ink),
-                  ),
-                  const Spacer(),
-                  if (!readOnly)
-                    Text(
-                      l10n.todayTileTapToLog,
-                      style: cl.text.label.copyWith(color: care.ink),
-                    ),
-                ],
+            ClIcon(ClIcons.cloudOff, size: 18, color: cl.colors.ink),
+            const SizedBox(width: ClSpace.s2),
+            Expanded(
+              child: Text(
+                label,
+                style: cl.text.label.copyWith(color: cl.colors.ink),
               ),
             ),
+            ClIcon(ClIcons.chevronRight, size: 16, color: cl.colors.ink),
           ],
         ),
       ),
     );
   }
+}
+
+/// CareTile (54:530): care-tinted card with type, value, "⏱ when" and "👤 who"; "Chưa có /
+/// Chạm để ghi" when empty. After a save it glows and shows ✓ (Motion 270:22, 24), except in
+/// Night care (no glow).
+class CareTile extends ConsumerStatefulWidget {
+  const CareTile({
+    required this.type,
+    required this.last,
+    required this.myUid,
+    required this.now,
+    required this.onTap,
+    this.previousGrowth,
+    this.readOnly = false,
+    this.onLongPress,
+    super.key,
+  });
+
+  final CareType type;
+  final CareRecord? last;
+  final CareRecord? previousGrowth;
+  final String myUid;
+  final DateTime now;
+  final bool readOnly;
+  final VoidCallback onTap;
+  final VoidCallback? onLongPress;
+
+  @override
+  ConsumerState<CareTile> createState() => _CareTileState();
+}
+
+class _CareTileState extends ConsumerState<CareTile>
+    with SingleTickerProviderStateMixin {
+  static final _bounce = TweenSequence<double>([
+    TweenSequenceItem(
+      tween: Tween(
+        begin: 1.0,
+        end: 1.04,
+      ).chain(CurveTween(curve: Curves.easeOut)),
+      weight: 15,
+    ),
+    TweenSequenceItem(
+      tween: Tween(
+        begin: 1.04,
+        end: 1.0,
+      ).chain(CurveTween(curve: Curves.easeIn)),
+      weight: 15,
+    ),
+    TweenSequenceItem(tween: ConstantTween(1.0), weight: 70),
+  ]);
+
+  late final _glow = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1600),
+  );
+
+  @override
+  void dispose() {
+    _glow.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen(lastSavedProvider, (_, saved) {
+      if (saved?.$1 == widget.type && !context.reduceMotion) {
+        _glow.forward(from: 0);
+      }
+    });
+    final cl = context.cl;
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final care = careColor(context, widget.type);
+    final label = careTypeLabel(l10n, widget.type);
+    final r = widget.last;
+    final lines = r == null ? null : _lines(l10n, locale, r);
+    final value = r == null
+        ? l10n.todayTileEmpty
+        : recordValue(l10n, locale, r);
+    final semantics = r == null
+        ? (widget.readOnly
+              ? '$label, ${l10n.todayTileEmpty}'
+              : '$label, ${l10n.todayTileEmpty}. ${l10n.todayTileTapToLog}')
+        : '$label, $value, ${lines!.join(', ')}';
+
+    final card = Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: care.soft,
+        borderRadius: BorderRadius.circular(ClRadius.tile),
+        border: Border.all(color: cl.colors.cardEdge),
+        boxShadow: cl.shadows.tile,
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -14,
+            bottom: -12,
+            child: ClArt(careArt(widget.type), width: 76, height: 76),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(ClSpace.s4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: cl.text.label.copyWith(color: care.ink)),
+                const SizedBox(height: ClSpace.s1),
+                Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: cl.text.title2.copyWith(color: cl.colors.ink),
+                ),
+                const SizedBox(height: ClSpace.s1),
+                if (lines == null) ...[
+                  const Spacer(),
+                  if (!widget.readOnly)
+                    Text(
+                      l10n.todayTileTapToLog,
+                      style: cl.text.label.copyWith(color: care.ink),
+                    ),
+                ] else
+                  // Large text never overflows the tile: extra lines are clipped.
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (final (i, line) in lines.indexed)
+                            Padding(
+                              padding: const EdgeInsets.only(right: ClSpace.s2),
+                              child: Text(
+                                line,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: cl.text.label.copyWith(
+                                  color: i == lines.length - 1 && r!.pending
+                                      ? cl.colors.pending
+                                      : cl.colors.inkMuted,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return ClPressable(
+      onPressed: widget.onTap,
+      onLongPress: widget.onLongPress,
+      semanticLabel: semantics,
+      child: AnimatedBuilder(
+        animation: _glow,
+        builder: (context, child) {
+          final t = _glow.value;
+          final on = t > 0 && t < 1 && !cl.isNightCare;
+          // Light bounce (24 annotation) and a 3 px mint border that fades out.
+          final scale = _bounce.transform(t);
+          return Transform.scale(
+            scale: scale,
+            child: Stack(
+              children: [
+                child!,
+                if (on)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(ClRadius.tile),
+                          border: Border.all(
+                            color: cl.colors.mintDeep.withValues(alpha: 1 - t),
+                            width: 3,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                if (_glow.isAnimating)
+                  Positioned(
+                    top: ClSpace.s3,
+                    right: ClSpace.s3,
+                    child: Opacity(
+                      opacity: (1 - t).clamp(0, 1),
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: cl.colors.mintDeep,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: ClIcon(
+                          ClIcons.check,
+                          size: 14,
+                          color: cl.colors.onMintDeep,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
+        child: SizedBox.expand(child: card),
+      ),
+    );
+  }
+
+  /// "45 phút trước" / "Kết thúc 3 giờ 35 phút trước" / "54,5 cm" + "+0,4 kg · hôm nay",
+  /// then "Mẹ ghi" or, while pending, "Chờ đồng bộ" (9a).
+  List<String> _lines(AppLocalizations l10n, String locale, CareRecord r) {
+    final who = r.pending ? l10n.carePending : loggedBy(l10n, r, widget.myUid);
+    switch (r.type) {
+      case CareType.growth:
+        final prev = widget.previousGrowth;
+        final measured = r.measuredOn ?? r.occurredAt;
+        final today = DateUtils.dateOnly(widget.now);
+        final whenLabel = DateUtils.isSameDay(measured, today)
+            ? l10n.dayToday
+            : DateUtils.isSameDay(
+                measured,
+                today.subtract(const Duration(days: 1)),
+              )
+            ? l10n.dayYesterday
+            : shortDate(context, measured);
+        return [
+          if (r.lengthCm != null) l10n.lengthCm(decimal(locale, r.lengthCm!)),
+          if (prev?.weightKg != null && r.weightKg != null)
+            l10n.growthDeltaToday(
+              '${r.weightKg! >= prev!.weightKg! ? '+' : '−'}${decimal(locale, (r.weightKg! - prev.weightKg!).abs())} kg',
+              whenLabel,
+            )
+          else
+            whenLabel,
+          if (r.pending) who,
+        ];
+      case CareType.breast when r.endedAt != null:
+        return [l10n.endedAgo(relativeAgo(l10n, r.endedAt!, widget.now)), who];
+      default:
+        return [relativeAgo(l10n, r.finishedAt, widget.now), who];
+    }
+  }
+}
+
+/// DayRhythm "Đã ghi hôm nay" (48:409): totals (pending included, 9a) and a 24 h strip in care
+/// colours with a "now" line. Running sleep and pumping are not counted.
+class DayRhythm extends StatelessWidget {
+  const DayRhythm({
+    required this.records,
+    required this.dayStart,
+    required this.dayEnd,
+    required this.now,
+    super.key,
+  });
+
+  final List<CareRecord> records;
+  final DateTime dayStart;
+  final DateTime dayEnd;
+  final DateTime now;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final totals = DayTotals.of(records, dayStart, dayEnd);
+    final card = BoxDecoration(
+      color: cl.colors.surface,
+      borderRadius: BorderRadius.circular(ClRadius.card),
+      boxShadow: cl.shadows.card,
+    );
+    if (totals.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(ClSpace.s4),
+        decoration: card,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.todaySummaryEmpty, style: cl.text.bodyStrong),
+            const SizedBox(height: ClSpace.s1),
+            Text(
+              l10n.todaySummaryEmptyBody,
+              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+            ),
+          ],
+        ),
+      );
+    }
+    final care = cl.care;
+    Widget stat(ClCareColor color, String label, String value) => Expanded(
+      child: Container(
+        padding: const EdgeInsets.only(left: ClSpace.s2),
+        decoration: BoxDecoration(
+          border: Border(left: BorderSide(color: color.accent, width: 3)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: cl.text.caption.copyWith(color: color.ink)),
+            Text(value, style: cl.text.headline),
+          ],
+        ),
+      ),
+    );
+    final sleepH = totals.sleepMinutes ~/ 60;
+    final sleepM = totals.sleepMinutes % 60;
+    return Container(
+      padding: const EdgeInsets.all(ClSpace.s4),
+      decoration: card,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.dayRhythmTitle,
+            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+          ),
+          const SizedBox(height: ClSpace.s3),
+          Row(
+            children: [
+              stat(
+                care.bottle,
+                l10n.trackerBottle,
+                l10n.rhythmFeeds(totals.bottleCount, totals.bottleMl),
+              ),
+              const SizedBox(width: ClSpace.s3),
+              stat(
+                care.breast,
+                l10n.trackerBreast,
+                l10n.rhythmBreast(totals.breastCount, totals.breastMinutes),
+              ),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s3),
+          Row(
+            children: [
+              stat(
+                care.sleep,
+                l10n.rhythmSleepLabel,
+                totals.sleepMinutes == 0
+                    ? '—'
+                    : l10n.rhythmSleepValue(sleepH, sleepM),
+              ),
+              const SizedBox(width: ClSpace.s3),
+              stat(
+                care.diaper,
+                l10n.trackerDiaper,
+                l10n.rhythmDiapers(totals.diaperCount),
+              ),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s4),
+          ExcludeSemantics(
+            child: SizedBox(
+              height: 28,
+              child: CustomPaint(
+                size: Size.infinite,
+                painter: _StripPainter(
+                  records: records,
+                  dayStart: dayStart,
+                  dayEnd: dayEnd,
+                  now: now,
+                  track: cl.colors.surface2,
+                  nowColor: cl.colors.ink,
+                  colors: {
+                    CareType.sleep: care.sleep.accent,
+                    CareType.bottle: care.bottle.accent,
+                    CareType.breast: care.breast.accent,
+                    CareType.diaper: care.diaper.accent,
+                  },
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: ClSpace.s1),
+          ExcludeSemantics(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                for (final h in const ['0h', '6h', '12h', '18h', '24h'])
+                  Text(
+                    h,
+                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: ClSpace.s2),
+          Wrap(
+            spacing: ClSpace.s3,
+            children: [
+              for (final (color, label) in [
+                (care.sleep.accent, l10n.legendSleep),
+                (care.bottle.accent, l10n.trackerBottle),
+                (care.breast.accent, l10n.trackerBreast),
+                (care.diaper.accent, l10n.legendDiaper),
+              ])
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      label,
+                      style: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StripPainter extends CustomPainter {
+  _StripPainter({
+    required this.records,
+    required this.dayStart,
+    required this.dayEnd,
+    required this.now,
+    required this.track,
+    required this.nowColor,
+    required this.colors,
+  });
+
+  final List<CareRecord> records;
+  final DateTime dayStart;
+  final DateTime dayEnd;
+  final DateTime now;
+  final Color track;
+  final Color nowColor;
+  final Map<CareType, Color> colors;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final span = dayEnd.difference(dayStart).inSeconds.toDouble();
+    double x(DateTime t) =>
+        (t.difference(dayStart).inSeconds / span).clamp(0.0, 1.0) * size.width;
+    final radius = const Radius.circular(6);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(Offset.zero & size, radius),
+      Paint()..color = track,
+    );
+    for (final r in records) {
+      final color = colors[r.type];
+      if (color == null || r.deleted) continue;
+      final end = r.endedAt;
+      if (end != null && end.isBefore(dayStart)) continue;
+      if (!r.occurredAt.isBefore(dayEnd)) continue;
+      final paint = Paint()..color = color;
+      if (end != null &&
+          (r.type == CareType.sleep || r.type == CareType.breast)) {
+        final left = x(r.occurredAt);
+        final right = x(end);
+        canvas.drawRRect(
+          RRect.fromLTRBR(
+            left,
+            2,
+            (right - left) < 3 ? left + 3 : right,
+            size.height - 2,
+            radius,
+          ),
+          paint,
+        );
+      } else if (!r.occurredAt.isBefore(dayStart)) {
+        final cx = x(r.occurredAt);
+        canvas.drawRRect(
+          RRect.fromLTRBR(
+            cx - 1.5,
+            6,
+            cx + 1.5,
+            size.height - 6,
+            const Radius.circular(2),
+          ),
+          paint,
+        );
+      }
+    }
+    if (now.isAfter(dayStart) && now.isBefore(dayEnd)) {
+      final nx = x(now);
+      canvas.drawRect(
+        Rect.fromLTWH(nx - 1, 0, 2, size.height),
+        Paint()..color = nowColor,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_StripPainter old) =>
+      old.records != records || old.now != now || old.track != track;
 }

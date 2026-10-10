@@ -686,19 +686,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String durationHours(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count hours',
-      one: '1 hour',
-    );
-    return '$_temp0';
+  String durationHours(int n) {
+    return '$n h';
   }
 
   @override
-  String durationHoursMinutes(int hours, int minutes) {
-    return '$hours h $minutes min';
+  String durationHoursMinutes(int h, int m) {
+    return '$h h $m min';
   }
 
   @override
@@ -1339,4 +1333,409 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get lostAccessShareText =>
       'I can\'t see our baby\'s profile on Child Life anymore. Could you send me a new invite?';
+
+  @override
+  String get agoJustNow => 'Just now';
+
+  @override
+  String agoMinutes(int n) {
+    return '$n min ago';
+  }
+
+  @override
+  String agoHours(int n) {
+    return '$n h ago';
+  }
+
+  @override
+  String agoHoursMinutes(int h, int m) {
+    return '$h h $m min ago';
+  }
+
+  @override
+  String agoDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String endedAgo(String ago) {
+    return 'Ended $ago';
+  }
+
+  @override
+  String durationMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String rhythmSleepValue(int h, int m) {
+    return '$h h $m';
+  }
+
+  @override
+  String get careYou => 'you';
+
+  @override
+  String careYouSuffix(String name) {
+    return '$name (you)';
+  }
+
+  @override
+  String careLoggedBy(String who) {
+    return 'by $who';
+  }
+
+  @override
+  String amountMl(int n) {
+    return '$n ml';
+  }
+
+  @override
+  String weightKg(String v) {
+    return '$v kg';
+  }
+
+  @override
+  String lengthCm(String v) {
+    return '$v cm';
+  }
+
+  @override
+  String get milkBreast => 'Breast milk';
+
+  @override
+  String get milkFormula => 'Formula';
+
+  @override
+  String get sideLeft => 'Left';
+
+  @override
+  String get sideRight => 'Right';
+
+  @override
+  String get sideBoth => 'Both';
+
+  @override
+  String get diaperWet => 'Wet';
+
+  @override
+  String get diaperDirty => 'Dirty';
+
+  @override
+  String get diaperWetValue => 'Wet';
+
+  @override
+  String get diaperDirtyValue => 'Dirty';
+
+  @override
+  String get diaperBothValue => 'Wet and dirty';
+
+  @override
+  String get carePending => 'Waiting to sync';
+
+  @override
+  String get dayRhythmTitle => 'Logged today';
+
+  @override
+  String rhythmFeeds(int count, int ml) {
+    return '$count feeds · $ml ml';
+  }
+
+  @override
+  String rhythmBreast(int count, int minutes) {
+    return '$count feeds · $minutes min';
+  }
+
+  @override
+  String get rhythmSleepLabel => 'Sleep (finished)';
+
+  @override
+  String rhythmDiapers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count changes',
+      one: '1 change',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get legendSleep => 'Sleep';
+
+  @override
+  String get legendDiaper => 'Diaper';
+
+  @override
+  String get todayHistory => 'History';
+
+  @override
+  String get historySoon => 'Detailed history arrives in a later build.';
+
+  @override
+  String get sleepSoon => 'Sleep logging and timers arrive in a later build.';
+
+  @override
+  String awakeFor(String duration) {
+    return 'Awake $duration';
+  }
+
+  @override
+  String growthDeltaToday(String delta, String when) {
+    return '$delta · $when';
+  }
+
+  @override
+  String get dayToday => 'today';
+
+  @override
+  String get dayYesterday => 'yesterday';
+
+  @override
+  String offlineBanner(int count) {
+    return 'Offline · $count waiting to sync';
+  }
+
+  @override
+  String syncingBanner(int count) {
+    return '$count waiting to sync';
+  }
+
+  @override
+  String get pendingTitle => 'Waiting to sync';
+
+  @override
+  String get pendingChip => 'Waiting';
+
+  @override
+  String get pendingOnlyHere => 'Saved only on this device';
+
+  @override
+  String get pendingFootnote =>
+      'Sends automatically when online. Others caring for the baby can’t see these yet.';
+
+  @override
+  String get retryNow => 'Retry now';
+
+  @override
+  String get retrySynced => 'Synced';
+
+  @override
+  String get retryStill =>
+      'Not sent yet. The app sends them when you’re online.';
+
+  @override
+  String get syncPendingLong => 'Saved on this device. Waiting to sync.';
+
+  @override
+  String get quickLogTitle => 'Quick log';
+
+  @override
+  String get quickSleep => 'Sleep';
+
+  @override
+  String get feedSheetTitle => 'Log a feed';
+
+  @override
+  String get amountOptional => 'Amount · optional';
+
+  @override
+  String get amountLabel => 'Amount';
+
+  @override
+  String get milkTypeLabel => 'Milk';
+
+  @override
+  String get timeLabel => 'Time';
+
+  @override
+  String get startLabel => 'Start';
+
+  @override
+  String get sideLabel => 'Side';
+
+  @override
+  String get durationOptional => 'Duration · optional';
+
+  @override
+  String get durationLabel => 'Duration';
+
+  @override
+  String get durationNone => 'Not set';
+
+  @override
+  String get saveFeed => 'Save feed';
+
+  @override
+  String get pumpTitle => 'Log pumping';
+
+  @override
+  String get savePump => 'Save pumping';
+
+  @override
+  String get diaperTitle => 'Diaper change';
+
+  @override
+  String get actionSave => 'Save';
+
+  @override
+  String timeNow(String time) {
+    return 'Now · $time';
+  }
+
+  @override
+  String timeToday(String time) {
+    return 'Today · $time';
+  }
+
+  @override
+  String timeYesterday(String time) {
+    return 'Yesterday · $time';
+  }
+
+  @override
+  String get timePickerTitle => 'Pick a time';
+
+  @override
+  String get durationPickerTitle => 'Pick a duration';
+
+  @override
+  String savedToast(String what) {
+    return 'Logged · $what';
+  }
+
+  @override
+  String get editedToast => 'Changes saved';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String amountRange(String min, String max, String unit) {
+    return 'Enter $min to $max $unit.';
+  }
+
+  @override
+  String get careSaveFailed =>
+      'The record could not be saved. Your access may have changed.';
+
+  @override
+  String get growthTitle => 'Growth';
+
+  @override
+  String get growthDate => 'Measured on';
+
+  @override
+  String get growthWeight => 'Weight';
+
+  @override
+  String get growthLengthOptional => 'Length · optional';
+
+  @override
+  String growthDeltaSince(String delta, String date) {
+    return '$delta since $date';
+  }
+
+  @override
+  String get growthPrevious => 'Previous measurements';
+
+  @override
+  String get growthSeeAll => 'See all';
+
+  @override
+  String get growthNoPrevious => 'This is the first measurement.';
+
+  @override
+  String get growthAtBirth => 'At birth';
+
+  @override
+  String get saveGrowth => 'Save measurement';
+
+  @override
+  String get growthWeightRequired => 'Enter a weight from 0.3 to 40 kg.';
+
+  @override
+  String get growthLengthRange => 'Length from 20 to 150 cm.';
+
+  @override
+  String get detailTime => 'Time';
+
+  @override
+  String get detailBy => 'Logged by';
+
+  @override
+  String get detailLoggedAt => 'Logged at';
+
+  @override
+  String get detailSync => 'Sync';
+
+  @override
+  String get detailAmount => 'Amount';
+
+  @override
+  String get detailMilk => 'Milk';
+
+  @override
+  String get detailSide => 'Side';
+
+  @override
+  String get detailDuration => 'Duration';
+
+  @override
+  String get detailLength => 'Length';
+
+  @override
+  String get actionEdit => 'Edit';
+
+  @override
+  String get deleteRecord => 'Delete record';
+
+  @override
+  String get detailFooter =>
+      'Everyone in the family sees this record. The person who logged it and co-parents can edit it.';
+
+  @override
+  String get deleteConfirmTitle => 'Delete this record?';
+
+  @override
+  String get deleteConfirmBody => 'It stays in “Recently deleted” for 30 days.';
+
+  @override
+  String get deletedToast => 'Deleted';
+
+  @override
+  String viewOnlyNote(String who) {
+    return '$who’s record · view only. If it’s wrong, message $who to fix it.';
+  }
+
+  @override
+  String messageAuthor(String who) {
+    return 'Message $who';
+  }
+
+  @override
+  String get messagesSoon => 'In-app messages arrive in a later build.';
+
+  @override
+  String get recordGone => 'This record is no longer available.';
+
+  @override
+  String get unitMinutes => 'min';
+
+  @override
+  String memberMetaCount(String relation, String date, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count logs',
+      one: '1 log',
+    );
+    return '$relation · joined $date · $_temp0';
+  }
 }

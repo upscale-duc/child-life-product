@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../core/design/tokens.g.dart';
 import '../features/appearance/appearance_screen.dart';
 import '../features/auth/auth_screens.dart';
+import '../features/care/care_models.dart';
+import '../features/care/care_screens.dart';
 import '../features/diagnostics/diagnostics_screen.dart';
 import '../features/family/family_models.dart';
 import '../features/family/family_screen.dart';
@@ -142,6 +144,15 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: Routes.growth,
+        builder: (_, s) => GrowthScreen(edit: s.extra as CareRecord?),
+      ),
+      GoRoute(
+        path: '${Routes.record}/:id',
+        builder: (_, s) =>
+            RecordDetailScreen(recordId: s.pathParameters['id'] ?? ''),
       ),
       GoRoute(path: Routes.invite, builder: (_, _) => const InviteRoleScreen()),
       GoRoute(

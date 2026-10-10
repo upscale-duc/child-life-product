@@ -876,23 +876,23 @@
       }
     }
   },
-  "durationHours": "{count} giờ",
+  "durationHours": "{n} giờ",
   "@durationHours": {
-    "description": "Duration in hours.",
+    "description": "Duration in whole hours.",
     "placeholders": {
-      "count": {
+      "n": {
         "type": "int"
       }
     }
   },
-  "durationHoursMinutes": "{hours} giờ {minutes} phút",
+  "durationHoursMinutes": "{h} giờ {m} phút",
   "@durationHoursMinutes": {
-    "description": "Duration in hours and minutes.",
+    "description": "Duration (\"1 giờ 20 phút\").",
     "placeholders": {
-      "hours": {
+      "h": {
         "type": "int"
       },
-      "minutes": {
+      "m": {
         "type": "int"
       }
     }
@@ -1838,5 +1838,611 @@
   "lostAccessShareText": "Mình không còn xem được hồ sơ của bé trên Child Life. Bạn gửi mình lời mời mới nhé?",
   "@lostAccessShareText": {
     "description": "Message shared from 9d."
+  },
+  "agoJustNow": "Vừa xong",
+  "@agoJustNow": {
+    "description": "Less than a minute ago."
+  },
+  "agoMinutes": "{n} phút trước",
+  "@agoMinutes": {
+    "description": "Relative time (46:2266 \"45 phút trước\").",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "agoHours": "{n} giờ trước",
+  "@agoHours": {
+    "description": "Relative time (\"2 giờ trước\").",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "agoHoursMinutes": "{h} giờ {m} phút trước",
+  "@agoHoursMinutes": {
+    "description": "Relative time, full form (D-023).",
+    "placeholders": {
+      "h": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "agoDays": "{n, plural, other{{n} ngày trước}}",
+  "@agoDays": {
+    "description": "Relative time in days.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "endedAgo": "Kết thúc {ago}",
+  "@endedAgo": {
+    "description": "Breastfeed tile (\"Kết thúc 3 giờ 35 phút trước\").",
+    "placeholders": {
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
+  "durationMinutes": "{n} phút",
+  "@durationMinutes": {
+    "description": "Duration (\"15 phút\").",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhythmSleepValue": "{h} giờ {m}",
+  "@rhythmSleepValue": {
+    "description": "DayRhythm sleep total (\"7 giờ 50\").",
+    "placeholders": {
+      "h": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "careYou": "Bạn",
+  "@careYou": {
+    "description": "The current user in attribution (\"Bạn ghi\" / \"by you\")."
+  },
+  "careYouSuffix": "{name} (bạn)",
+  "@careYouSuffix": {
+    "description": "Logged-by row on 21 (\"Mẹ Mai (bạn)\").",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "careLoggedBy": "{who} ghi",
+  "@careLoggedBy": {
+    "description": "Who logged it (\"Mẹ ghi\").",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "amountMl": "{n} ml",
+  "@amountMl": {
+    "description": "Millilitres.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weightKg": "{v} kg",
+  "@weightKg": {
+    "description": "Weight with the locale decimal (\"4,3 kg\").",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "lengthCm": "{v} cm",
+  "@lengthCm": {
+    "description": "Length (\"54,5 cm\").",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "milkBreast": "Sữa mẹ",
+  "@milkBreast": {
+    "description": "Milk type chip."
+  },
+  "milkFormula": "Sữa công thức",
+  "@milkFormula": {
+    "description": "Milk type chip."
+  },
+  "sideLeft": "Trái",
+  "@sideLeft": {
+    "description": "Side segment."
+  },
+  "sideRight": "Phải",
+  "@sideRight": {
+    "description": "Side segment."
+  },
+  "sideBoth": "Cả hai",
+  "@sideBoth": {
+    "description": "Side segment / diaper both."
+  },
+  "diaperWet": "Ướt",
+  "@diaperWet": {
+    "description": "Diaper choice tile."
+  },
+  "diaperDirty": "Bẩn",
+  "@diaperDirty": {
+    "description": "Diaper choice tile."
+  },
+  "diaperWetValue": "Tã ướt",
+  "@diaperWetValue": {
+    "description": "Diaper tile value (\"Tã ướt\")."
+  },
+  "diaperDirtyValue": "Tã bẩn",
+  "@diaperDirtyValue": {
+    "description": "Diaper tile value."
+  },
+  "diaperBothValue": "Ướt và bẩn",
+  "@diaperBothValue": {
+    "description": "Diaper tile value (both)."
+  },
+  "carePending": "Chờ đồng bộ",
+  "@carePending": {
+    "description": "Tile line / chip while pending (9a)."
+  },
+  "dayRhythmTitle": "Đã ghi hôm nay",
+  "@dayRhythmTitle": {
+    "description": "DayRhythm card title (48:409)."
+  },
+  "rhythmFeeds": "{count} cữ · {ml} ml",
+  "@rhythmFeeds": {
+    "description": "Bottle total.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "ml": {
+        "type": "int"
+      }
+    }
+  },
+  "rhythmBreast": "{count} cữ · {minutes} phút",
+  "@rhythmBreast": {
+    "description": "Breast total.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "rhythmSleepLabel": "Ngủ (đã xong)",
+  "@rhythmSleepLabel": {
+    "description": "Sleep total label."
+  },
+  "rhythmDiapers": "{count} lần",
+  "@rhythmDiapers": {
+    "description": "Diaper total.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "legendSleep": "Ngủ",
+  "@legendSleep": {
+    "description": "24 h strip legend."
+  },
+  "legendDiaper": "Tã",
+  "@legendDiaper": {
+    "description": "24 h strip legend."
+  },
+  "todayHistory": "Lịch sử",
+  "@todayHistory": {
+    "description": "Section link → History (S6)."
+  },
+  "historySoon": "Lịch sử chi tiết sẽ có ở bản tiếp theo.",
+  "@historySoon": {
+    "description": "Until History ships (S6)."
+  },
+  "sleepSoon": "Ghi giấc ngủ và hẹn giờ sẽ có ở bản tiếp theo.",
+  "@sleepSoon": {
+    "description": "Until sleep ships (S5)."
+  },
+  "awakeFor": "Đã thức {duration}",
+  "@awakeFor": {
+    "description": "Sleep tile value (S5).",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "growthDeltaToday": "{delta} · {when}",
+  "@growthDeltaToday": {
+    "description": "Growth tile line (\"+0,4 kg · hôm nay\").",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "dayToday": "hôm nay",
+  "@dayToday": {
+    "description": "Lower-case today."
+  },
+  "dayYesterday": "hôm qua",
+  "@dayYesterday": {
+    "description": "Lower-case yesterday."
+  },
+  "offlineBanner": "Đang offline · {count} bản ghi chờ đồng bộ",
+  "@offlineBanner": {
+    "description": "9a banner (127:14758).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncingBanner": "{count} bản ghi chờ đồng bộ",
+  "@syncingBanner": {
+    "description": "Pending records while online.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pendingTitle": "Chờ đồng bộ",
+  "@pendingTitle": {
+    "description": "9b sheet title."
+  },
+  "pendingChip": "Chờ",
+  "@pendingChip": {
+    "description": "Pending chip (9b)."
+  },
+  "pendingOnlyHere": "Chỉ lưu trên máy này",
+  "@pendingOnlyHere": {
+    "description": "9b row sub-line."
+  },
+  "pendingFootnote": "Tự gửi khi có mạng. Người cùng chăm chưa thấy các bản ghi này.",
+  "@pendingFootnote": {
+    "description": "9b footnote."
+  },
+  "retryNow": "Thử lại ngay",
+  "@retryNow": {
+    "description": "9b secondary."
+  },
+  "retrySynced": "Đã đồng bộ",
+  "@retrySynced": {
+    "description": "After a successful retry / SyncStatus synced."
+  },
+  "retryStill": "Vẫn chưa gửi được. App sẽ tự gửi khi có mạng.",
+  "@retryStill": {
+    "description": "Retry did not drain the queue."
+  },
+  "syncPendingLong": "Đã lưu trên máy này. Đang chờ đồng bộ.",
+  "@syncPendingLong": {
+    "description": "SyncStatus pending copy (8:84)."
+  },
+  "quickLogTitle": "Ghi nhanh",
+  "@quickLogTitle": {
+    "description": "19a sheet title."
+  },
+  "quickSleep": "Ngủ",
+  "@quickSleep": {
+    "description": "19a tile."
+  },
+  "feedSheetTitle": "Ghi cữ bú",
+  "@feedSheetTitle": {
+    "description": "22 / 23 sheet title."
+  },
+  "amountOptional": "Lượng sữa · tùy chọn",
+  "@amountOptional": {
+    "description": "Bottle amount label."
+  },
+  "amountLabel": "Lượng sữa",
+  "@amountLabel": {
+    "description": "Pump amount label."
+  },
+  "milkTypeLabel": "Loại sữa",
+  "@milkTypeLabel": {
+    "description": "Bottle milk type label."
+  },
+  "timeLabel": "Thời gian",
+  "@timeLabel": {
+    "description": "TimeRow label."
+  },
+  "startLabel": "Bắt đầu",
+  "@startLabel": {
+    "description": "TimeRow label for spans."
+  },
+  "sideLabel": "Bên",
+  "@sideLabel": {
+    "description": "Side label."
+  },
+  "durationOptional": "Thời lượng · tùy chọn",
+  "@durationOptional": {
+    "description": "Breast duration label."
+  },
+  "durationLabel": "Thời lượng",
+  "@durationLabel": {
+    "description": "Pump duration row."
+  },
+  "durationNone": "Chưa nhập",
+  "@durationNone": {
+    "description": "Pump duration chip without a value."
+  },
+  "saveFeed": "Lưu cữ bú",
+  "@saveFeed": {
+    "description": "22 / 23 primary."
+  },
+  "pumpTitle": "Ghi hút sữa",
+  "@pumpTitle": {
+    "description": "23a sheet title."
+  },
+  "savePump": "Lưu hút sữa",
+  "@savePump": {
+    "description": "23a primary."
+  },
+  "diaperTitle": "Thay tã",
+  "@diaperTitle": {
+    "description": "24 sheet title."
+  },
+  "actionSave": "Lưu",
+  "@actionSave": {
+    "description": "Generic save."
+  },
+  "timeNow": "Bây giờ · {time}",
+  "@timeNow": {
+    "description": "TimeRow chip default.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "timeToday": "Hôm nay · {time}",
+  "@timeToday": {
+    "description": "TimeRow chip / detail.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "timeYesterday": "Hôm qua · {time}",
+  "@timeYesterday": {
+    "description": "TimeRow chip / detail.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "timePickerTitle": "Chọn thời gian",
+  "@timePickerTitle": {
+    "description": "Time wheel sheet title."
+  },
+  "durationPickerTitle": "Chọn thời lượng",
+  "@durationPickerTitle": {
+    "description": "Duration wheel sheet title."
+  },
+  "savedToast": "Đã ghi · {what}",
+  "@savedToast": {
+    "description": "Toast after saving (Motion 270:22).",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "editedToast": "Đã lưu thay đổi",
+  "@editedToast": {
+    "description": "Toast after editing."
+  },
+  "undo": "Hoàn tác",
+  "@undo": {
+    "description": "Toast action."
+  },
+  "amountRange": "Nhập từ {min} đến {max} {unit}.",
+  "@amountRange": {
+    "description": "Out-of-range amount.",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "careSaveFailed": "Chưa lưu được bản ghi. Có thể quyền của bạn đã thay đổi.",
+  "@careSaveFailed": {
+    "description": "Write rejected by the server."
+  },
+  "growthTitle": "Tăng trưởng",
+  "@growthTitle": {
+    "description": "28 title."
+  },
+  "growthDate": "Ngày đo",
+  "@growthDate": {
+    "description": "28 date row."
+  },
+  "growthWeight": "Cân nặng",
+  "@growthWeight": {
+    "description": "28 weight label."
+  },
+  "growthLengthOptional": "Chiều dài · tùy chọn",
+  "@growthLengthOptional": {
+    "description": "28 length label."
+  },
+  "growthDeltaSince": "{delta} so với lần đo {date}",
+  "@growthDeltaSince": {
+    "description": "28 delta line.",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "growthPrevious": "Các lần đo trước",
+  "@growthPrevious": {
+    "description": "28 section."
+  },
+  "growthSeeAll": "Xem tất cả",
+  "@growthSeeAll": {
+    "description": "28 link → History (S6)."
+  },
+  "growthNoPrevious": "Đây là lần đo đầu tiên.",
+  "@growthNoPrevious": {
+    "description": "28 without earlier measurements."
+  },
+  "growthAtBirth": "Lúc sinh",
+  "@growthAtBirth": {
+    "description": "Birth measurement tag."
+  },
+  "saveGrowth": "Lưu số đo",
+  "@saveGrowth": {
+    "description": "28 primary."
+  },
+  "growthWeightRequired": "Nhập cân nặng từ 0,3 đến 40 kg.",
+  "@growthWeightRequired": {
+    "description": "Weight missing or out of range."
+  },
+  "growthLengthRange": "Chiều dài từ 20 đến 150 cm.",
+  "@growthLengthRange": {
+    "description": "Length out of range."
+  },
+  "detailTime": "Thời gian",
+  "@detailTime": {
+    "description": "21 row."
+  },
+  "detailBy": "Người ghi",
+  "@detailBy": {
+    "description": "21 row."
+  },
+  "detailLoggedAt": "Ghi lúc",
+  "@detailLoggedAt": {
+    "description": "21 row (creation time)."
+  },
+  "detailSync": "Đồng bộ",
+  "@detailSync": {
+    "description": "21 row."
+  },
+  "detailAmount": "Lượng",
+  "@detailAmount": {
+    "description": "12e row."
+  },
+  "detailMilk": "Loại sữa",
+  "@detailMilk": {
+    "description": "12e row."
+  },
+  "detailSide": "Bên",
+  "@detailSide": {
+    "description": "Detail row."
+  },
+  "detailDuration": "Thời lượng",
+  "@detailDuration": {
+    "description": "Detail row."
+  },
+  "detailLength": "Chiều dài",
+  "@detailLength": {
+    "description": "Detail row."
+  },
+  "actionEdit": "Sửa",
+  "@actionEdit": {
+    "description": "21 tinted button."
+  },
+  "deleteRecord": "Xóa bản ghi",
+  "@deleteRecord": {
+    "description": "21 destructive."
+  },
+  "detailFooter": "Mọi người trong gia đình thấy bản ghi này. Người ghi và Cùng nuôi được sửa.",
+  "@detailFooter": {
+    "description": "21 footer, adapted to D-022 (Figma: \"Chỉ người ghi hoặc chủ sở hữu được sửa.\")."
+  },
+  "deleteConfirmTitle": "Xóa bản ghi này?",
+  "@deleteConfirmTitle": {
+    "description": "Delete action sheet."
+  },
+  "deleteConfirmBody": "Bản ghi được giữ 30 ngày trong “Đã xoá gần đây”.",
+  "@deleteConfirmBody": {
+    "description": "Delete action sheet body."
+  },
+  "deletedToast": "Đã xóa",
+  "@deletedToast": {
+    "description": "Toast \"Đã xóa · Hoàn tác\" (5 s)."
+  },
+  "viewOnlyNote": "Bản ghi của {who} · chỉ xem. Nếu sai, nhắn {who} để sửa.",
+  "@viewOnlyNote": {
+    "description": "12e role note.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "messageAuthor": "Nhắn {who}",
+  "@messageAuthor": {
+    "description": "12e secondary (Q-007, messages arrive in S10).",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "messagesSoon": "Nhắn tin trong app sẽ có ở bản tiếp theo.",
+  "@messagesSoon": {
+    "description": "Until messages ship (S10)."
+  },
+  "recordGone": "Bản ghi này không còn nữa.",
+  "@recordGone": {
+    "description": "Detail of a deleted record."
+  },
+  "unitMinutes": "phút",
+  "@unitMinutes": {
+    "description": "Minutes unit after a duration field."
+  },
+  "memberMetaCount": "{relation} · tham gia {date} · đã ghi {count} lần",
+  "@memberMetaCount": {
+    "description": "14f meta (R-038, 118:12056).",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

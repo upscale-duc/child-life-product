@@ -20,6 +20,10 @@ abstract final class Routes {
   static const inviteSend = '/family/invite/send';
   static const inviteSent = '/family/invite/sent';
 
+  /// 28 Tăng trưởng and 21 Chi tiết bản ghi (`/care/record/{id}`).
+  static const growth = '/care/growth';
+  static const record = '/care/record';
+
   /// 15 Nhập mã mời → 16 → 16a; 17 for closed invites.
   static const join = '/join';
   static const joinScan = '/join/scan';

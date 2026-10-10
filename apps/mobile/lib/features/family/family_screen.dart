@@ -386,7 +386,13 @@ class _MemberSheetState extends ConsumerState<_MemberSheet> {
           Text(
             joined == null
                 ? relation
-                : l10n.memberMeta(relation, shortDate(context, joined)),
+                : member.recordCount == null
+                ? l10n.memberMeta(relation, shortDate(context, joined))
+                : l10n.memberMetaCount(
+                    relation,
+                    shortDate(context, joined),
+                    member.recordCount!,
+                  ),
             style: cl.text.label.copyWith(color: cl.colors.inkMuted),
           ),
           const SizedBox(height: ClSpace.s4),
@@ -574,11 +580,9 @@ class _MemberSheetState extends ConsumerState<_MemberSheet> {
           .read(familyRepositoryProvider)
           .removeMember(babyId: widget.babyId, uid: member.uid);
       if (!mounted) return;
-      final host = sheetNavigator.context;
+      final toaster = ClToaster.of(this.context);
       sheetNavigator.pop();
-      if (host.mounted) {
-        showClToast(host, message: l10n.memberRemoved(member.displayName));
-      }
+      toaster.show(message: l10n.memberRemoved(member.displayName));
     } on FamilyException catch (e) {
       if (mounted) {
         showClToast(this.context, message: familyMessage(l10n, e.failure));

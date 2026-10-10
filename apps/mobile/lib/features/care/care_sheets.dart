@@ -1,0 +1,976 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+
+import '../../app/route_guard.dart';
+import '../../core/design/cl_theme.dart';
+import '../../core/design/haptics.dart';
+import '../../core/design/motion.dart';
+import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_art.dart';
+import '../../core/widgets/cl_button.dart';
+import '../../core/widgets/cl_choices.dart';
+import '../../core/widgets/cl_feedback.dart';
+import '../../core/widgets/cl_inputs.dart';
+import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_segmented.dart';
+import '../../core/widgets/cl_sheet.dart';
+import '../../l10n/app_localizations.dart';
+import '../baby/baby_models.dart';
+import '../home/home_shell.dart';
+import '../onboarding/setup_screens.dart' show trackerArt;
+import 'care_format.dart';
+import 'care_models.dart';
+import 'care_repository.dart';
+
+/// Care colours of a type (tokens `care/<type>/soft|ink|accent`).
+ClCareColor careColor(BuildContext context, CareType type) {
+  final care = context.cl.care;
+  return switch (type) {
+    CareType.bottle => care.bottle,
+    CareType.breast => care.breast,
+    CareType.pump => care.pump,
+    CareType.sleep => care.sleep,
+    CareType.diaper => care.diaper,
+    CareType.growth => care.growth,
+  };
+}
+
+ClIllustration careArt(CareType type) => switch (type) {
+  CareType.bottle => trackerArt(TrackerKind.bottle),
+  CareType.breast => trackerArt(TrackerKind.breast),
+  CareType.pump => trackerArt(TrackerKind.pump),
+  CareType.sleep => trackerArt(TrackerKind.sleep),
+  CareType.diaper => trackerArt(TrackerKind.diaper),
+  CareType.growth => trackerArt(TrackerKind.growth),
+};
+
+/// The last save, so Today's tile can glow and show ✓ (Motion 270:22 step 4, 24 annotation).
+final lastSavedProvider = NotifierProvider<LastSaved, (CareType, int)?>(
+  LastSaved.new,
+);
+
+class LastSaved extends Notifier<(CareType, int)?> {
+  @override
+  (CareType, int)? build() => null;
+
+  void mark(CareType type) => state = (type, (state?.$2 ?? 0) + 1);
+}
+
+/// Opens the log for [type] (19a / tiles): sheets for feeds, pumping and diapers, the full
+/// screen 28 for growth. Sleep arrives with timers (S5). [edit] prefills "Sửa" (21).
+Future<void> openCareLog(
+  BuildContext context,
+  CareType type, {
+  CareRecord? edit,
+}) {
+  final l10n = AppLocalizations.of(context);
+  switch (type) {
+    case CareType.growth:
+      return context.push(Routes.growth, extra: edit);
+    case CareType.sleep:
+      showClToast(context, message: l10n.sleepSoon);
+      return Future.value();
+    case CareType.bottle || CareType.breast:
+      return showClSheet<void>(
+        context: context,
+        builder: (_) => FeedSheet(initialType: type, edit: edit),
+      );
+    case CareType.pump:
+      return showClSheet<void>(
+        context: context,
+        builder: (_) => PumpSheet(edit: edit),
+      );
+    case CareType.diaper:
+      return showClSheet<void>(
+        context: context,
+        builder: (_) => DiaperSheet(edit: edit),
+      );
+  }
+}
+
+/// Saves [record] (new or edited) without waiting for the server, then: success haptic, the
+/// tile glow and "Đã ghi · Bú bình 120 ml · Hoàn tác" (Motion 270:22).
+void commitRecord(
+  BuildContext context,
+  WidgetRef ref,
+  CareRecord record, {
+  required bool isEdit,
+}) {
+  final l10n = AppLocalizations.of(context);
+  final locale = Localizations.localeOf(context).toLanguageTag();
+  final repo = ref.read(careRepositoryProvider);
+  final me = ref.read(selectedMembershipProvider);
+  if (me == null) return;
+  // Toasts outlive the sheet (and a write that fails later).
+  final toaster = ClToaster.of(context);
+  void failed(Object _) => toaster.show(message: l10n.careSaveFailed);
+
+  if (isEdit) {
+    repo.edit(record, me.uid, onError: failed);
+  } else {
+    repo.create(record, onError: failed);
+  }
+  ClHaptics.success();
+  ref.read(lastSavedProvider.notifier).mark(record.type);
+  Navigator.of(context).pop();
+  if (isEdit) {
+    toaster.show(message: l10n.editedToast);
+  } else {
+    toaster.show(
+      message: l10n.savedToast(recordSummary(l10n, locale, record)),
+      actionLabel: l10n.undo,
+      onAction: () => repo.softDelete(record, me.uid, onError: failed),
+    );
+  }
+}
+
+/// 19a Ghi nhanh (50:3572): six coloured tiles, one tap opens the matching log.
+Future<void> showQuickLog(BuildContext context) => showClSheet<void>(
+  context: context,
+  builder: (sheetContext) {
+    final l10n = AppLocalizations.of(sheetContext);
+    final host = context;
+    Widget tile(CareType type, String label) => Expanded(
+      child: _QuickTile(
+        type: type,
+        label: label,
+        onTap: () {
+          ClHaptics.tap(sheetContext);
+          Navigator.of(sheetContext).pop();
+          openCareLog(host, type);
+        },
+      ),
+    );
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        ClSpace.s4,
+        0,
+        ClSpace.s4,
+        MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClSheetHeader(title: l10n.quickLogTitle),
+          Row(
+            children: [
+              tile(CareType.bottle, l10n.trackerBottle),
+              const SizedBox(width: ClSpace.s3),
+              tile(CareType.breast, l10n.trackerBreast),
+              const SizedBox(width: ClSpace.s3),
+              tile(CareType.sleep, l10n.quickSleep),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s3),
+          Row(
+            children: [
+              tile(CareType.diaper, l10n.trackerDiaper),
+              const SizedBox(width: ClSpace.s3),
+              tile(CareType.growth, l10n.trackerGrowth),
+              const SizedBox(width: ClSpace.s3),
+              tile(CareType.pump, l10n.trackerPump),
+            ],
+          ),
+        ],
+      ),
+    );
+  },
+);
+
+class _QuickTile extends StatelessWidget {
+  const _QuickTile({
+    required this.type,
+    required this.label,
+    required this.onTap,
+  });
+
+  final CareType type;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final care = careColor(context, type);
+    return ClPressable(
+      onPressed: onTap,
+      semanticLabel: label,
+      child: Container(
+        height: 120,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: care.soft,
+          borderRadius: BorderRadius.circular(ClRadius.tile),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: ClSpace.s2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(width: 52, height: 52, child: ClArt(careArt(type))),
+            const SizedBox(height: ClSpace.s2),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              style: cl.text.headline.copyWith(color: care.ink, height: 1.15),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Sheet frame for 22 / 23 / 23a / 24: header in the care ink, content, primary above the
+/// keyboard ("nút Lưu luôn nằm trên bàn phím", 46:3141).
+class CareSheetFrame extends StatelessWidget {
+  const CareSheetFrame({
+    required this.title,
+    required this.titleColor,
+    required this.children,
+    required this.primary,
+    super.key,
+  });
+
+  final String title;
+  final Color titleColor;
+  final List<Widget> children;
+  final Widget primary;
+
+  @override
+  Widget build(BuildContext context) {
+    final insets = MediaQuery.viewInsetsOf(context).bottom;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        ClSpace.s4,
+        0,
+        ClSpace.s4,
+        (insets > 0 ? insets : MediaQuery.paddingOf(context).bottom) +
+            ClSpace.s4,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: title, titleColor: titleColor),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: children,
+              ),
+            ),
+          ),
+          const SizedBox(height: ClSpace.s4),
+          primary,
+        ],
+      ),
+    );
+  }
+}
+
+/// Editable AmountField (45:403): numeral-xl, unit after the number, mint focus ring. The
+/// system number pad replaces the Figma keypad mock ("system keypad in production").
+class AmountInput extends StatefulWidget {
+  const AmountInput({
+    required this.controller,
+    required this.unit,
+    this.decimal = false,
+    this.autofocus = false,
+    this.semanticLabel,
+    this.height = 88,
+    super.key,
+  });
+
+  final TextEditingController controller;
+  final String unit;
+  final bool decimal;
+  final bool autofocus;
+  final String? semanticLabel;
+  final double height;
+
+  @override
+  State<AmountInput> createState() => _AmountInputState();
+}
+
+class _AmountInputState extends State<AmountInput> {
+  final _focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _focus.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final focused = _focus.hasFocus;
+    return GestureDetector(
+      onTap: _focus.requestFocus,
+      child: AnimatedContainer(
+        duration: context.motion(ClMotion.quick),
+        height: widget.height,
+        padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+        decoration: BoxDecoration(
+          color: focused ? cl.colors.mintSoft : cl.colors.surface2,
+          borderRadius: BorderRadius.circular(ClRadius.card),
+          border: Border.all(
+            color: focused ? cl.colors.mintDeep : Colors.transparent,
+            width: 2,
+          ),
+        ),
+        // Half-width fields (28) scale the numeral down rather than overflow.
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              IntrinsicWidth(
+                child: Semantics(
+                  label: widget.semanticLabel,
+                  child: TextField(
+                    controller: widget.controller,
+                    focusNode: _focus,
+                    autofocus: widget.autofocus,
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: widget.decimal,
+                    ),
+                    inputFormatters: [
+                      widget.decimal
+                          ? FilteringTextInputFormatter.allow(
+                              RegExp(r'[0-9.,]'),
+                            )
+                          : FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(5),
+                    ],
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    cursorColor: cl.colors.mintDeep,
+                    style: cl.text.numeralXl.copyWith(color: cl.colors.ink),
+                    decoration: InputDecoration(
+                      isCollapsed: true,
+                      border: InputBorder.none,
+                      hintText: '—',
+                      hintStyle: cl.text.numeralXl.copyWith(
+                        color: cl.colors.inkMuted.withValues(alpha: 0.4),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: ClSpace.s2),
+              Text(
+                widget.unit,
+                style: cl.text.headline.copyWith(color: cl.colors.inkMuted),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "Bây giờ · 15:05", "Hôm nay · 14:20", "Hôm qua · 21:42", "1 thg 10 · 08:00".
+String timeChipLabel(
+  BuildContext context,
+  DateTime at, {
+  required bool isNow,
+  DateTime? now,
+}) {
+  final l10n = AppLocalizations.of(context);
+  final locale = Localizations.localeOf(context).toLanguageTag();
+  final hm = DateFormat.Hm(locale).format(at);
+  if (isNow) return l10n.timeNow(hm);
+  final today = DateUtils.dateOnly(now ?? DateTime.now());
+  final day = DateUtils.dateOnly(at);
+  if (day == today) return l10n.timeToday(hm);
+  if (day == today.subtract(const Duration(days: 1))) {
+    return l10n.timeYesterday(hm);
+  }
+  return '${DateFormat('d MMM', locale).format(at)} · $hm';
+}
+
+/// TimeRow wheel: date + time, never in the future (G-021).
+Future<DateTime?> pickCareTime(
+  BuildContext context, {
+  required DateTime initial,
+  DateTime? earliest,
+}) {
+  final now = DateTime.now();
+  var picked = initial.isAfter(now) ? now : initial;
+  return showClSheet<DateTime>(
+    context: context,
+    builder: (sheetContext) {
+      final l10n = AppLocalizations.of(sheetContext);
+      final cl = sheetContext.cl;
+      return Padding(
+        padding: EdgeInsets.fromLTRB(
+          ClSpace.s4,
+          0,
+          ClSpace.s4,
+          MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClSheetHeader(title: l10n.timePickerTitle),
+            SizedBox(
+              height: 216,
+              child: CupertinoTheme(
+                data: CupertinoThemeData(
+                  brightness: cl.isNightCare
+                      ? Brightness.dark
+                      : Brightness.light,
+                  textTheme: CupertinoTextThemeData(
+                    dateTimePickerTextStyle: cl.text.title2.copyWith(
+                      color: cl.colors.ink,
+                    ),
+                  ),
+                ),
+                child: CupertinoDatePicker(
+                  initialDateTime: picked,
+                  maximumDate: now,
+                  minimumDate:
+                      earliest ?? now.subtract(const Duration(days: 60)),
+                  use24hFormat: true,
+                  onDateTimeChanged: (d) => picked = d,
+                ),
+              ),
+            ),
+            const SizedBox(height: ClSpace.s4),
+            ClButton(
+              label: l10n.actionDone,
+              expand: true,
+              onPressed: () => Navigator.of(sheetContext).pop(picked),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+/// Duration wheel in minutes (23a "Thời lượng · 15 phút").
+Future<int?> pickDuration(BuildContext context, {required int initial}) {
+  var picked = initial.clamp(1, CareLimits.durationMin.max);
+  return showClSheet<int>(
+    context: context,
+    builder: (sheetContext) {
+      final l10n = AppLocalizations.of(sheetContext);
+      final cl = sheetContext.cl;
+      return Padding(
+        padding: EdgeInsets.fromLTRB(
+          ClSpace.s4,
+          0,
+          ClSpace.s4,
+          MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClSheetHeader(title: l10n.durationPickerTitle),
+            SizedBox(
+              height: 200,
+              child: CupertinoPicker(
+                itemExtent: 40,
+                scrollController: FixedExtentScrollController(
+                  initialItem: picked - 1,
+                ),
+                onSelectedItemChanged: (i) => picked = i + 1,
+                children: [
+                  for (var m = 1; m <= CareLimits.durationMin.max; m++)
+                    Center(
+                      child: Text(
+                        durationLabel(l10n, m),
+                        style: cl.text.title2.copyWith(color: cl.colors.ink),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: ClSpace.s4),
+            ClButton(
+              label: l10n.actionDone,
+              expand: true,
+              onPressed: () => Navigator.of(sheetContext).pop(picked),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+/// Label above a field ("Lượng sữa · tùy chọn").
+class FieldLabel extends StatelessWidget {
+  const FieldLabel(this.text, {super.key});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: ClSpace.s4, bottom: ClSpace.s2),
+    child: Text(
+      text,
+      style: context.cl.text.label.copyWith(color: context.cl.colors.inkMuted),
+    ),
+  );
+}
+
+class _ErrorText extends StatelessWidget {
+  const _ErrorText(this.text);
+  final String? text;
+
+  @override
+  Widget build(BuildContext context) => text == null
+      ? const SizedBox.shrink()
+      : Padding(
+          padding: const EdgeInsets.only(top: ClSpace.s2),
+          child: Semantics(
+            liveRegion: true,
+            child: Text(
+              text!,
+              style: context.cl.text.label.copyWith(
+                color: context.cl.colors.error,
+              ),
+            ),
+          ),
+        );
+}
+
+/// Mixin for the sheets' shared state: id (stable for retries), time, membership, memory.
+mixin _CareSheetState<T extends ConsumerStatefulWidget> on ConsumerState<T> {
+  late final String recordId = newRecordId();
+  DateTime? _time;
+  bool _timeTouched = false;
+
+  DateTime get time => _time ?? DateTime.now();
+
+  void initTime(DateTime? editTime) {
+    if (editTime != null) {
+      _time = editTime;
+      _timeTouched = true;
+    }
+  }
+
+  Widget timeRow(String label) => ClTimeRow(
+    label: label,
+    value: timeChipLabel(
+      context,
+      _timeTouched ? time : (ref.watch(careClockProvider).value ?? time),
+      isNow: !_timeTouched,
+      now: ref.watch(careClockProvider).value,
+    ),
+    onTap: () async {
+      final picked = await pickCareTime(context, initial: time);
+      if (picked != null && mounted) {
+        setState(() {
+          _time = picked;
+          _timeTouched = true;
+        });
+      }
+    },
+  );
+
+  Membership? get me => ref.read(selectedMembershipProvider);
+  CareMemory get memory => ref.read(careMemoryProvider);
+}
+
+int? _intOrNull(TextEditingController c) => int.tryParse(c.text.trim());
+
+String? _rangeError(
+  AppLocalizations l10n,
+  int? value,
+  ({int min, int max}) range,
+  String unit,
+) => value != null && (value < range.min || value > range.max)
+    ? l10n.amountRange('${range.min}', '${range.max}', unit)
+    : null;
+
+/// 22 / 23 Ghi cữ bú: Bú bình | Bú mẹ, remembering the last type and milk (46:3141, 46:3234).
+class FeedSheet extends ConsumerStatefulWidget {
+  const FeedSheet({required this.initialType, this.edit, super.key});
+  final CareType initialType;
+  final CareRecord? edit;
+
+  @override
+  ConsumerState<FeedSheet> createState() => _FeedSheetState();
+}
+
+class _FeedSheetState extends ConsumerState<FeedSheet>
+    with _CareSheetState<FeedSheet> {
+  late CareType _type;
+  late MilkType _milk;
+
+  /// Chosen by the user (or the edited record); otherwise the suggestion is live.
+  Side? _side;
+  final _amount = TextEditingController();
+  final _minutes = TextEditingController();
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    final edit = widget.edit;
+    final babyId = me?.babyId ?? '';
+    initTime(edit?.occurredAt);
+    _type = edit?.type ?? widget.initialType;
+    _milk =
+        edit?.milk ??
+        memory.get(babyId, 'milk', MilkType.values) ??
+        MilkType.breastMilk;
+    _side = edit?.side;
+    if (edit?.amountMl != null) _amount.text = '${edit!.amountMl}';
+    if (edit?.durationMin != null) _minutes.text = '${edit!.durationMin}';
+    _amount.addListener(() => setState(() => _error = null));
+    _minutes.addListener(() => setState(() => _error = null));
+  }
+
+  /// "nhớ bên lần trước, gợi ý bên còn lại" (46:3234): the other side of the last feed.
+  Side get _effectiveSide {
+    if (_side != null) return _side!;
+    final babyId = me?.babyId ?? '';
+    final recent = ref.watch(recentRecordsProvider(babyId)).value ?? const [];
+    final last = recent.where((r) => r.type == CareType.breast).firstOrNull;
+    return switch (last?.side) {
+      Side.left => Side.right,
+      Side.right => Side.left,
+      _ => Side.both,
+    };
+  }
+
+  @override
+  void dispose() {
+    _amount.dispose();
+    _minutes.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    final l10n = AppLocalizations.of(context);
+    final me = this.me;
+    if (me == null) return;
+    final bottle = _type == CareType.bottle;
+    final amount = bottle ? _intOrNull(_amount) : null;
+    final minutes = bottle ? null : _intOrNull(_minutes);
+    final error = bottle
+        ? _rangeError(l10n, amount, CareLimits.bottleMl, 'ml')
+        : _rangeError(l10n, minutes, CareLimits.durationMin, l10n.unitMinutes);
+    if (error != null) return setState(() => _error = error);
+    memory
+      ..set(me.babyId, 'feedType', _type)
+      ..set(me.babyId, 'milk', _milk);
+    final edit = widget.edit;
+    final record = edit != null
+        ? edit.copyWith(
+            occurredAt: time,
+            amountMl: amount,
+            clearAmount: amount == null,
+            milk: _milk,
+            side: _side,
+            durationMin: minutes,
+            clearDuration: minutes == null,
+          )
+        : CareRecord.create(
+            id: recordId,
+            babyId: me.babyId,
+            type: _type,
+            occurredAt: time,
+            me: me,
+            amountMl: amount,
+            milk: bottle ? _milk : null,
+            side: bottle ? null : _effectiveSide,
+            durationMin: minutes,
+          );
+    commitRecord(context, ref, record, isEdit: edit != null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final bottle = _type == CareType.bottle;
+    final care = careColor(context, _type);
+    return CareSheetFrame(
+      title: l10n.feedSheetTitle,
+      titleColor: care.ink,
+      primary: ClButton(label: l10n.saveFeed, expand: true, onPressed: _save),
+      children: [
+        // The type cannot change on an edit (Rules keep `type` immutable).
+        if (widget.edit == null)
+          ClSegmented<CareType>(
+            options: const [CareType.bottle, CareType.breast],
+            selected: _type,
+            labelOf: (t) =>
+                t == CareType.bottle ? l10n.trackerBottle : l10n.trackerBreast,
+            onChanged: (t) => setState(() {
+              _type = t;
+              _error = null;
+            }),
+          ),
+        if (bottle) ...[
+          FieldLabel(l10n.amountOptional),
+          AmountInput(
+            controller: _amount,
+            unit: 'ml',
+            autofocus: widget.edit == null,
+            semanticLabel: l10n.amountOptional,
+          ),
+          _ErrorText(_error),
+          const SizedBox(height: ClSpace.s4),
+          Row(
+            children: [
+              Text(l10n.milkTypeLabel, style: context.cl.text.label),
+              const SizedBox(width: ClSpace.s3),
+              // "Row scrolls horizontally; last chip may peek" (FilterChip 45:347).
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      for (final (i, milk) in MilkType.values.indexed) ...[
+                        if (i > 0) const SizedBox(width: ClSpace.s2),
+                        ClFilterChip(
+                          label: milkLabel(l10n, milk),
+                          selected: _milk == milk,
+                          onTap: () => setState(() => _milk = milk),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s2),
+          timeRow(l10n.timeLabel),
+        ] else ...[
+          FieldLabel(l10n.sideLabel),
+          ClSegmented<Side>(
+            options: Side.values,
+            selected: _effectiveSide,
+            labelOf: (s) => sideLabel(l10n, s),
+            onChanged: (s) => setState(() => _side = s),
+          ),
+          FieldLabel(l10n.durationOptional),
+          AmountInput(
+            controller: _minutes,
+            unit: l10n.unitMinutes,
+            semanticLabel: l10n.durationOptional,
+          ),
+          _ErrorText(_error),
+          const SizedBox(height: ClSpace.s2),
+          timeRow(l10n.startLabel),
+        ],
+      ],
+    );
+  }
+}
+
+/// 23a Ghi hút sữa (106:11118): side, amount (required), duration wheel, start time. Pumped
+/// milk is never baby intake (R-054). Per-side amounts (G-062) and the timer (S5) come later.
+class PumpSheet extends ConsumerStatefulWidget {
+  const PumpSheet({this.edit, super.key});
+  final CareRecord? edit;
+
+  @override
+  ConsumerState<PumpSheet> createState() => _PumpSheetState();
+}
+
+class _PumpSheetState extends ConsumerState<PumpSheet>
+    with _CareSheetState<PumpSheet> {
+  late Side _side;
+  int? _minutes;
+  final _amount = TextEditingController();
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    final edit = widget.edit;
+    initTime(edit?.occurredAt);
+    _side =
+        edit?.side ??
+        memory.get(me?.babyId ?? '', 'pumpSide', Side.values) ??
+        Side.both;
+    _minutes = edit?.durationMin;
+    if (edit?.amountMl != null) _amount.text = '${edit!.amountMl}';
+    _amount.addListener(() => setState(() => _error = null));
+  }
+
+  @override
+  void dispose() {
+    _amount.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    final l10n = AppLocalizations.of(context);
+    final me = this.me;
+    if (me == null) return;
+    final amount = _intOrNull(_amount);
+    final error = amount == null
+        ? l10n.amountRange(
+            '${CareLimits.pumpMl.min}',
+            '${CareLimits.pumpMl.max}',
+            'ml',
+          )
+        : _rangeError(l10n, amount, CareLimits.pumpMl, 'ml');
+    if (error != null) return setState(() => _error = error);
+    memory.set(me.babyId, 'pumpSide', _side);
+    final edit = widget.edit;
+    final record = edit != null
+        ? edit.copyWith(
+            occurredAt: time,
+            side: _side,
+            amountMl: amount,
+            durationMin: _minutes,
+            clearDuration: _minutes == null,
+          )
+        : CareRecord.create(
+            id: recordId,
+            babyId: me.babyId,
+            type: CareType.pump,
+            occurredAt: time,
+            me: me,
+            side: _side,
+            amountMl: amount,
+            durationMin: _minutes,
+          );
+    commitRecord(context, ref, record, isEdit: edit != null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return CareSheetFrame(
+      title: l10n.pumpTitle,
+      titleColor: careColor(context, CareType.pump).ink,
+      primary: ClButton(label: l10n.savePump, expand: true, onPressed: _save),
+      children: [
+        FieldLabel(l10n.sideLabel),
+        ClSegmented<Side>(
+          options: Side.values,
+          selected: _side,
+          labelOf: (s) => sideLabel(l10n, s),
+          onChanged: (s) => setState(() => _side = s),
+        ),
+        FieldLabel(l10n.amountLabel),
+        AmountInput(
+          controller: _amount,
+          unit: 'ml',
+          autofocus: widget.edit == null,
+          semanticLabel: l10n.amountLabel,
+        ),
+        _ErrorText(_error),
+        const SizedBox(height: ClSpace.s2),
+        ClTimeRow(
+          label: l10n.durationLabel,
+          value: _minutes == null
+              ? l10n.durationNone
+              : durationLabel(l10n, _minutes!),
+          onTap: () async {
+            final picked = await pickDuration(context, initial: _minutes ?? 15);
+            if (picked != null && mounted) setState(() => _minutes = picked);
+          },
+        ),
+        timeRow(l10n.startLabel),
+      ],
+    );
+  }
+}
+
+/// 24 Thay tã (46:3308): two taps — choose → Lưu; defaults to the last kind.
+class DiaperSheet extends ConsumerStatefulWidget {
+  const DiaperSheet({this.edit, super.key});
+  final CareRecord? edit;
+
+  @override
+  ConsumerState<DiaperSheet> createState() => _DiaperSheetState();
+}
+
+class _DiaperSheetState extends ConsumerState<DiaperSheet>
+    with _CareSheetState<DiaperSheet> {
+  late DiaperKind _kind;
+
+  @override
+  void initState() {
+    super.initState();
+    initTime(widget.edit?.occurredAt);
+    _kind =
+        widget.edit?.diaper ??
+        memory.get(me?.babyId ?? '', 'diaper', DiaperKind.values) ??
+        DiaperKind.wet;
+  }
+
+  void _save() {
+    final me = this.me;
+    if (me == null) return;
+    memory.set(me.babyId, 'diaper', _kind);
+    final edit = widget.edit;
+    final record = edit != null
+        ? edit.copyWith(occurredAt: time, diaper: _kind)
+        : CareRecord.create(
+            id: recordId,
+            babyId: me.babyId,
+            type: CareType.diaper,
+            occurredAt: time,
+            me: me,
+            diaper: _kind,
+          );
+    commitRecord(context, ref, record, isEdit: edit != null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    ClIllustration art(DiaperKind k) => switch (k) {
+      DiaperKind.wet => ClIllustration.miniDrop,
+      DiaperKind.dirty => ClIllustration.miniDiaper,
+      DiaperKind.both => ClIllustration.miniWetDirty,
+    };
+    return CareSheetFrame(
+      title: l10n.diaperTitle,
+      titleColor: careColor(context, CareType.diaper).ink,
+      primary: ClButton(label: l10n.actionSave, expand: true, onPressed: _save),
+      children: [
+        Row(
+          children: [
+            for (final (i, kind) in DiaperKind.values.indexed) ...[
+              if (i > 0) const SizedBox(width: ClSpace.s3),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, c) => FittedBox(
+                    child: ClChoiceTile(
+                      label: diaperChoice(l10n, kind),
+                      art: ClArt(art(kind)),
+                      selected: _kind == kind,
+                      onTap: () => setState(() => _kind = kind),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: ClSpace.s3),
+        timeRow(l10n.timeLabel),
+      ],
+    );
+  }
+}

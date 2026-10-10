@@ -1,6 +1,8 @@
 import 'package:child_life/app/session.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/baby/baby_repository.dart';
+import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/care/care_repository.dart';
 import 'package:child_life/features/family/family_models.dart';
 import 'package:child_life/features/family/family_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -134,6 +136,10 @@ List<Override> familyOverrides({
   bool anonymous = false,
   List<Membership>? members,
   List<PendingInvite>? pending,
+  List<CareRecord> records = const [],
+  List<CareRecord> growth = const [],
+  bool online = true,
+  DateTime? now,
 }) {
   final self = me ?? mai;
   return [
@@ -152,6 +158,12 @@ List<Override> familyOverrides({
     ),
     pendingInvitesProvider.overrideWith(
       (ref, id) => Stream.value(pending ?? [pendingGrandma]),
+    ),
+    recentRecordsProvider.overrideWith((ref, id) => Stream.value(records)),
+    growthRecordsProvider.overrideWith((ref, id) => Stream.value(growth)),
+    onlineProvider.overrideWith((ref) => Stream.value(online)),
+    careClockProvider.overrideWith(
+      (ref) => Stream.value(now ?? DateTime.now()),
     ),
   ];
 }

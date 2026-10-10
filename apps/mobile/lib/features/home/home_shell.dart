@@ -23,6 +23,7 @@ import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../family/family_labels.dart';
+import '../care/care_sheets.dart';
 import '../family/save_account.dart';
 import '../onboarding/setup_draft.dart';
 
@@ -92,11 +93,6 @@ class HomeShell extends ConsumerWidget {
         if (context.mounted) shell.goBranch(shellTabs.indexOf(tabs.first));
       });
     }
-    void soon() => showClToast(
-      context,
-      message: AppLocalizations.of(context).todayLoggingSoon,
-    );
-
     return Scaffold(
       backgroundColor: cl.colors.cloud,
       body: Stack(
@@ -122,7 +118,7 @@ class HomeShell extends ConsumerWidget {
                       ),
                 onQuickLog: membership.role == MemberRole.relative
                     ? null
-                    : soon,
+                    : () => showQuickLog(context),
               ),
             ),
           ),

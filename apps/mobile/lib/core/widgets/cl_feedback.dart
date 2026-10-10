@@ -17,24 +17,47 @@ OverlayEntry showClToast(
   String? actionLabel,
   VoidCallback? onAction,
   Duration visibleFor = const Duration(seconds: 4),
-}) {
-  final overlay = Overlay.of(context, rootOverlay: true);
-  // Read now: the caller's context may be gone (sheet closed, route replaced) when the
-  // overlay rebuilds.
-  final theme = Theme.of(context);
-  late final OverlayEntry entry;
-  entry = OverlayEntry(
-    builder: (_) => _ToastHost(
-      message: message,
-      actionLabel: actionLabel,
-      onAction: onAction,
-      visibleFor: visibleFor,
-      onDone: () => entry.remove(),
-      theme: theme,
-    ),
-  );
-  overlay.insert(entry);
-  return entry;
+}) => ClToaster.of(context).show(
+  message: message,
+  actionLabel: actionLabel,
+  onAction: onAction,
+  visibleFor: visibleFor,
+)!;
+
+/// Shows toasts after the screen that asked for them has gone (a sheet that closed on save,
+/// a write that fails later): capture it with [ClToaster.of] while the context is alive.
+class ClToaster {
+  ClToaster._(this._overlay, this._theme);
+
+  factory ClToaster.of(BuildContext context) =>
+      ClToaster._(Overlay.of(context, rootOverlay: true), Theme.of(context));
+
+  final OverlayState _overlay;
+  final ThemeData _theme;
+
+  bool get mounted => _overlay.mounted;
+
+  OverlayEntry? show({
+    required String message,
+    String? actionLabel,
+    VoidCallback? onAction,
+    Duration visibleFor = const Duration(seconds: 4),
+  }) {
+    if (!_overlay.mounted) return null;
+    late final OverlayEntry entry;
+    entry = OverlayEntry(
+      builder: (_) => _ToastHost(
+        message: message,
+        actionLabel: actionLabel,
+        onAction: onAction,
+        visibleFor: visibleFor,
+        onDone: () => entry.remove(),
+        theme: _theme,
+      ),
+    );
+    _overlay.insert(entry);
+    return entry;
+  }
 }
 
 class _ToastHost extends StatefulWidget {

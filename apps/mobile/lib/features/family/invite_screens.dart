@@ -859,13 +859,13 @@ class _CantScanSheetState extends ConsumerState<_CantScanSheet> {
   Future<void> _revoke() async {
     final l10n = AppLocalizations.of(context);
     final navigator = Navigator.of(context);
+    final toaster = ClToaster.of(context);
     setState(() => _busy = true);
     try {
       await ref.read(familyRepositoryProvider).revokeInvite(_ticket.inviteId);
-      final host = navigator.context;
       navigator.pop();
       widget.onRevoked();
-      if (host.mounted) showClToast(host, message: l10n.inviteRevoked);
+      toaster.show(message: l10n.inviteRevoked);
     } on FamilyException catch (e) {
       if (mounted) {
         showClToast(context, message: familyMessage(l10n, e.failure));

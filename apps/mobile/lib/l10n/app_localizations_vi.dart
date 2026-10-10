@@ -628,13 +628,13 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String durationHours(int count) {
-    return '$count giờ';
+  String durationHours(int n) {
+    return '$n giờ';
   }
 
   @override
-  String durationHoursMinutes(int hours, int minutes) {
-    return '$hours giờ $minutes phút';
+  String durationHoursMinutes(int h, int m) {
+    return '$h giờ $m phút';
   }
 
   @override
@@ -1267,4 +1267,396 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get lostAccessShareText =>
       'Mình không còn xem được hồ sơ của bé trên Child Life. Bạn gửi mình lời mời mới nhé?';
+
+  @override
+  String get agoJustNow => 'Vừa xong';
+
+  @override
+  String agoMinutes(int n) {
+    return '$n phút trước';
+  }
+
+  @override
+  String agoHours(int n) {
+    return '$n giờ trước';
+  }
+
+  @override
+  String agoHoursMinutes(int h, int m) {
+    return '$h giờ $m phút trước';
+  }
+
+  @override
+  String agoDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n ngày trước',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String endedAgo(String ago) {
+    return 'Kết thúc $ago';
+  }
+
+  @override
+  String durationMinutes(int n) {
+    return '$n phút';
+  }
+
+  @override
+  String rhythmSleepValue(int h, int m) {
+    return '$h giờ $m';
+  }
+
+  @override
+  String get careYou => 'Bạn';
+
+  @override
+  String careYouSuffix(String name) {
+    return '$name (bạn)';
+  }
+
+  @override
+  String careLoggedBy(String who) {
+    return '$who ghi';
+  }
+
+  @override
+  String amountMl(int n) {
+    return '$n ml';
+  }
+
+  @override
+  String weightKg(String v) {
+    return '$v kg';
+  }
+
+  @override
+  String lengthCm(String v) {
+    return '$v cm';
+  }
+
+  @override
+  String get milkBreast => 'Sữa mẹ';
+
+  @override
+  String get milkFormula => 'Sữa công thức';
+
+  @override
+  String get sideLeft => 'Trái';
+
+  @override
+  String get sideRight => 'Phải';
+
+  @override
+  String get sideBoth => 'Cả hai';
+
+  @override
+  String get diaperWet => 'Ướt';
+
+  @override
+  String get diaperDirty => 'Bẩn';
+
+  @override
+  String get diaperWetValue => 'Tã ướt';
+
+  @override
+  String get diaperDirtyValue => 'Tã bẩn';
+
+  @override
+  String get diaperBothValue => 'Ướt và bẩn';
+
+  @override
+  String get carePending => 'Chờ đồng bộ';
+
+  @override
+  String get dayRhythmTitle => 'Đã ghi hôm nay';
+
+  @override
+  String rhythmFeeds(int count, int ml) {
+    return '$count cữ · $ml ml';
+  }
+
+  @override
+  String rhythmBreast(int count, int minutes) {
+    return '$count cữ · $minutes phút';
+  }
+
+  @override
+  String get rhythmSleepLabel => 'Ngủ (đã xong)';
+
+  @override
+  String rhythmDiapers(int count) {
+    return '$count lần';
+  }
+
+  @override
+  String get legendSleep => 'Ngủ';
+
+  @override
+  String get legendDiaper => 'Tã';
+
+  @override
+  String get todayHistory => 'Lịch sử';
+
+  @override
+  String get historySoon => 'Lịch sử chi tiết sẽ có ở bản tiếp theo.';
+
+  @override
+  String get sleepSoon => 'Ghi giấc ngủ và hẹn giờ sẽ có ở bản tiếp theo.';
+
+  @override
+  String awakeFor(String duration) {
+    return 'Đã thức $duration';
+  }
+
+  @override
+  String growthDeltaToday(String delta, String when) {
+    return '$delta · $when';
+  }
+
+  @override
+  String get dayToday => 'hôm nay';
+
+  @override
+  String get dayYesterday => 'hôm qua';
+
+  @override
+  String offlineBanner(int count) {
+    return 'Đang offline · $count bản ghi chờ đồng bộ';
+  }
+
+  @override
+  String syncingBanner(int count) {
+    return '$count bản ghi chờ đồng bộ';
+  }
+
+  @override
+  String get pendingTitle => 'Chờ đồng bộ';
+
+  @override
+  String get pendingChip => 'Chờ';
+
+  @override
+  String get pendingOnlyHere => 'Chỉ lưu trên máy này';
+
+  @override
+  String get pendingFootnote =>
+      'Tự gửi khi có mạng. Người cùng chăm chưa thấy các bản ghi này.';
+
+  @override
+  String get retryNow => 'Thử lại ngay';
+
+  @override
+  String get retrySynced => 'Đã đồng bộ';
+
+  @override
+  String get retryStill => 'Vẫn chưa gửi được. App sẽ tự gửi khi có mạng.';
+
+  @override
+  String get syncPendingLong => 'Đã lưu trên máy này. Đang chờ đồng bộ.';
+
+  @override
+  String get quickLogTitle => 'Ghi nhanh';
+
+  @override
+  String get quickSleep => 'Ngủ';
+
+  @override
+  String get feedSheetTitle => 'Ghi cữ bú';
+
+  @override
+  String get amountOptional => 'Lượng sữa · tùy chọn';
+
+  @override
+  String get amountLabel => 'Lượng sữa';
+
+  @override
+  String get milkTypeLabel => 'Loại sữa';
+
+  @override
+  String get timeLabel => 'Thời gian';
+
+  @override
+  String get startLabel => 'Bắt đầu';
+
+  @override
+  String get sideLabel => 'Bên';
+
+  @override
+  String get durationOptional => 'Thời lượng · tùy chọn';
+
+  @override
+  String get durationLabel => 'Thời lượng';
+
+  @override
+  String get durationNone => 'Chưa nhập';
+
+  @override
+  String get saveFeed => 'Lưu cữ bú';
+
+  @override
+  String get pumpTitle => 'Ghi hút sữa';
+
+  @override
+  String get savePump => 'Lưu hút sữa';
+
+  @override
+  String get diaperTitle => 'Thay tã';
+
+  @override
+  String get actionSave => 'Lưu';
+
+  @override
+  String timeNow(String time) {
+    return 'Bây giờ · $time';
+  }
+
+  @override
+  String timeToday(String time) {
+    return 'Hôm nay · $time';
+  }
+
+  @override
+  String timeYesterday(String time) {
+    return 'Hôm qua · $time';
+  }
+
+  @override
+  String get timePickerTitle => 'Chọn thời gian';
+
+  @override
+  String get durationPickerTitle => 'Chọn thời lượng';
+
+  @override
+  String savedToast(String what) {
+    return 'Đã ghi · $what';
+  }
+
+  @override
+  String get editedToast => 'Đã lưu thay đổi';
+
+  @override
+  String get undo => 'Hoàn tác';
+
+  @override
+  String amountRange(String min, String max, String unit) {
+    return 'Nhập từ $min đến $max $unit.';
+  }
+
+  @override
+  String get careSaveFailed =>
+      'Chưa lưu được bản ghi. Có thể quyền của bạn đã thay đổi.';
+
+  @override
+  String get growthTitle => 'Tăng trưởng';
+
+  @override
+  String get growthDate => 'Ngày đo';
+
+  @override
+  String get growthWeight => 'Cân nặng';
+
+  @override
+  String get growthLengthOptional => 'Chiều dài · tùy chọn';
+
+  @override
+  String growthDeltaSince(String delta, String date) {
+    return '$delta so với lần đo $date';
+  }
+
+  @override
+  String get growthPrevious => 'Các lần đo trước';
+
+  @override
+  String get growthSeeAll => 'Xem tất cả';
+
+  @override
+  String get growthNoPrevious => 'Đây là lần đo đầu tiên.';
+
+  @override
+  String get growthAtBirth => 'Lúc sinh';
+
+  @override
+  String get saveGrowth => 'Lưu số đo';
+
+  @override
+  String get growthWeightRequired => 'Nhập cân nặng từ 0,3 đến 40 kg.';
+
+  @override
+  String get growthLengthRange => 'Chiều dài từ 20 đến 150 cm.';
+
+  @override
+  String get detailTime => 'Thời gian';
+
+  @override
+  String get detailBy => 'Người ghi';
+
+  @override
+  String get detailLoggedAt => 'Ghi lúc';
+
+  @override
+  String get detailSync => 'Đồng bộ';
+
+  @override
+  String get detailAmount => 'Lượng';
+
+  @override
+  String get detailMilk => 'Loại sữa';
+
+  @override
+  String get detailSide => 'Bên';
+
+  @override
+  String get detailDuration => 'Thời lượng';
+
+  @override
+  String get detailLength => 'Chiều dài';
+
+  @override
+  String get actionEdit => 'Sửa';
+
+  @override
+  String get deleteRecord => 'Xóa bản ghi';
+
+  @override
+  String get detailFooter =>
+      'Mọi người trong gia đình thấy bản ghi này. Người ghi và Cùng nuôi được sửa.';
+
+  @override
+  String get deleteConfirmTitle => 'Xóa bản ghi này?';
+
+  @override
+  String get deleteConfirmBody =>
+      'Bản ghi được giữ 30 ngày trong “Đã xoá gần đây”.';
+
+  @override
+  String get deletedToast => 'Đã xóa';
+
+  @override
+  String viewOnlyNote(String who) {
+    return 'Bản ghi của $who · chỉ xem. Nếu sai, nhắn $who để sửa.';
+  }
+
+  @override
+  String messageAuthor(String who) {
+    return 'Nhắn $who';
+  }
+
+  @override
+  String get messagesSoon => 'Nhắn tin trong app sẽ có ở bản tiếp theo.';
+
+  @override
+  String get recordGone => 'Bản ghi này không còn nữa.';
+
+  @override
+  String get unitMinutes => 'phút';
+
+  @override
+  String memberMetaCount(String relation, String date, int count) {
+    return '$relation · tham gia $date · đã ghi $count lần';
+  }
 }

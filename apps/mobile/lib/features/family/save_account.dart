@@ -77,7 +77,7 @@ class _SaveAccountSheetState extends ConsumerState<_SaveAccountSheet> {
     final l10n = AppLocalizations.of(context);
     final container = ProviderScope.containerOf(context, listen: false);
     final navigator = Navigator.of(context);
-    final messenger = navigator.context;
+    final toaster = ClToaster.of(context);
     setState(() => _busy = true);
     try {
       final linked = await ref
@@ -85,12 +85,9 @@ class _SaveAccountSheetState extends ConsumerState<_SaveAccountSheet> {
           .saveAnonymousWithProvider(apple: apple);
       if (!linked) await mergeIntoExistingAccount(container);
       navigator.pop();
-      if (messenger.mounted) {
-        showClToast(
-          messenger,
-          message: linked ? l10n.saveAccountDone : l10n.saveAccountMerged,
-        );
-      }
+      toaster.show(
+        message: linked ? l10n.saveAccountDone : l10n.saveAccountMerged,
+      );
     } on AuthException catch (e) {
       if (mounted && e.failure != AuthFailure.cancelled) {
         showClToast(context, message: authMessage(l10n, e.failure));

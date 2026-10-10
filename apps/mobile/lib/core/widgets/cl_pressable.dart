@@ -17,8 +17,12 @@ class ClPressable extends StatefulWidget {
     this.selected,
     this.haptic = true,
     this.minSize = const Size(ClSpace.tapMin, ClSpace.tapMin),
+    this.onLongPress,
     super.key,
   });
+
+  /// Secondary action (e.g. a Today tile opens its last record).
+  final VoidCallback? onLongPress;
 
   final Widget child;
   final VoidCallback? onPressed;
@@ -55,6 +59,7 @@ class _ClPressableState extends State<ClPressable> {
         onTapDown: (_) => _set(true),
         onTapUp: (_) => _set(false),
         onTapCancel: () => _set(false),
+        onLongPress: widget.onLongPress,
         onTap: _enabled
             ? () {
                 if (widget.haptic) ClHaptics.tap(context);

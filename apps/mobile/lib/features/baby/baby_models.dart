@@ -231,10 +231,14 @@ class Membership {
     this.accessUntil,
     this.accessUntilAt,
     this.joinedAt,
+    this.recordCount,
   });
 
   final String babyId;
   final String uid;
+
+  /// "đã ghi 46 lần" (kept by the server, S4).
+  final int? recordCount;
   final MemberRole role;
   final Relation relation;
   final String? relationCustom;
@@ -281,6 +285,7 @@ class Membership {
     accessUntil: DateTime.tryParse(json['accessUntil'] as String? ?? ''),
     accessUntilAt: dateOf(json['accessUntilAt']),
     joinedAt: dateOf(json['joinedAt']),
+    recordCount: (json['recordCount'] as num?)?.toInt(),
   );
 }
 

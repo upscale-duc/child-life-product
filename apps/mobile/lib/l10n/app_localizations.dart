@@ -1220,17 +1220,17 @@ abstract class AppLocalizations {
   /// **'Night care trong {duration}, đến {end} sáng'**
   String nightCareDuration(String duration, String end);
 
-  /// Duration in hours.
+  /// Duration in whole hours.
   ///
   /// In vi, this message translates to:
-  /// **'{count} giờ'**
-  String durationHours(int count);
+  /// **'{n} giờ'**
+  String durationHours(int n);
 
-  /// Duration in hours and minutes.
+  /// Duration ("1 giờ 20 phút").
   ///
   /// In vi, this message translates to:
-  /// **'{hours} giờ {minutes} phút'**
-  String durationHoursMinutes(int hours, int minutes);
+  /// **'{h} giờ {m} phút'**
+  String durationHoursMinutes(int h, int m);
 
   /// Today title (29:904).
   ///
@@ -2257,6 +2257,660 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Mình không còn xem được hồ sơ của bé trên Child Life. Bạn gửi mình lời mời mới nhé?'**
   String get lostAccessShareText;
+
+  /// Less than a minute ago.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa xong'**
+  String get agoJustNow;
+
+  /// Relative time (46:2266 "45 phút trước").
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} phút trước'**
+  String agoMinutes(int n);
+
+  /// Relative time ("2 giờ trước").
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} giờ trước'**
+  String agoHours(int n);
+
+  /// Relative time, full form (D-023).
+  ///
+  /// In vi, this message translates to:
+  /// **'{h} giờ {m} phút trước'**
+  String agoHoursMinutes(int h, int m);
+
+  /// Relative time in days.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n, plural, other{{n} ngày trước}}'**
+  String agoDays(int n);
+
+  /// Breastfeed tile ("Kết thúc 3 giờ 35 phút trước").
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc {ago}'**
+  String endedAgo(String ago);
+
+  /// Duration ("15 phút").
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} phút'**
+  String durationMinutes(int n);
+
+  /// DayRhythm sleep total ("7 giờ 50").
+  ///
+  /// In vi, this message translates to:
+  /// **'{h} giờ {m}'**
+  String rhythmSleepValue(int h, int m);
+
+  /// The current user in attribution ("Bạn ghi" / "by you").
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn'**
+  String get careYou;
+
+  /// Logged-by row on 21 ("Mẹ Mai (bạn)").
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} (bạn)'**
+  String careYouSuffix(String name);
+
+  /// Who logged it ("Mẹ ghi").
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} ghi'**
+  String careLoggedBy(String who);
+
+  /// Millilitres.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} ml'**
+  String amountMl(int n);
+
+  /// Weight with the locale decimal ("4,3 kg").
+  ///
+  /// In vi, this message translates to:
+  /// **'{v} kg'**
+  String weightKg(String v);
+
+  /// Length ("54,5 cm").
+  ///
+  /// In vi, this message translates to:
+  /// **'{v} cm'**
+  String lengthCm(String v);
+
+  /// Milk type chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa mẹ'**
+  String get milkBreast;
+
+  /// Milk type chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa công thức'**
+  String get milkFormula;
+
+  /// Side segment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trái'**
+  String get sideLeft;
+
+  /// Side segment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phải'**
+  String get sideRight;
+
+  /// Side segment / diaper both.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả hai'**
+  String get sideBoth;
+
+  /// Diaper choice tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ướt'**
+  String get diaperWet;
+
+  /// Diaper choice tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bẩn'**
+  String get diaperDirty;
+
+  /// Diaper tile value ("Tã ướt").
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã ướt'**
+  String get diaperWetValue;
+
+  /// Diaper tile value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã bẩn'**
+  String get diaperDirtyValue;
+
+  /// Diaper tile value (both).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ướt và bẩn'**
+  String get diaperBothValue;
+
+  /// Tile line / chip while pending (9a).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ đồng bộ'**
+  String get carePending;
+
+  /// DayRhythm card title (48:409).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi hôm nay'**
+  String get dayRhythmTitle;
+
+  /// Bottle total.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} cữ · {ml} ml'**
+  String rhythmFeeds(int count, int ml);
+
+  /// Breast total.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} cữ · {minutes} phút'**
+  String rhythmBreast(int count, int minutes);
+
+  /// Sleep total label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ (đã xong)'**
+  String get rhythmSleepLabel;
+
+  /// Diaper total.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} lần'**
+  String rhythmDiapers(int count);
+
+  /// 24 h strip legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ'**
+  String get legendSleep;
+
+  /// 24 h strip legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã'**
+  String get legendDiaper;
+
+  /// Section link → History (S6).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử'**
+  String get todayHistory;
+
+  /// Until History ships (S6).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử chi tiết sẽ có ở bản tiếp theo.'**
+  String get historySoon;
+
+  /// Until sleep ships (S5).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi giấc ngủ và hẹn giờ sẽ có ở bản tiếp theo.'**
+  String get sleepSoon;
+
+  /// Sleep tile value (S5).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thức {duration}'**
+  String awakeFor(String duration);
+
+  /// Growth tile line ("+0,4 kg · hôm nay").
+  ///
+  /// In vi, this message translates to:
+  /// **'{delta} · {when}'**
+  String growthDeltaToday(String delta, String when);
+
+  /// Lower-case today.
+  ///
+  /// In vi, this message translates to:
+  /// **'hôm nay'**
+  String get dayToday;
+
+  /// Lower-case yesterday.
+  ///
+  /// In vi, this message translates to:
+  /// **'hôm qua'**
+  String get dayYesterday;
+
+  /// 9a banner (127:14758).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang offline · {count} bản ghi chờ đồng bộ'**
+  String offlineBanner(int count);
+
+  /// Pending records while online.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} bản ghi chờ đồng bộ'**
+  String syncingBanner(int count);
+
+  /// 9b sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ đồng bộ'**
+  String get pendingTitle;
+
+  /// Pending chip (9b).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ'**
+  String get pendingChip;
+
+  /// 9b row sub-line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ lưu trên máy này'**
+  String get pendingOnlyHere;
+
+  /// 9b footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự gửi khi có mạng. Người cùng chăm chưa thấy các bản ghi này.'**
+  String get pendingFootnote;
+
+  /// 9b secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại ngay'**
+  String get retryNow;
+
+  /// After a successful retry / SyncStatus synced.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đồng bộ'**
+  String get retrySynced;
+
+  /// Retry did not drain the queue.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn chưa gửi được. App sẽ tự gửi khi có mạng.'**
+  String get retryStill;
+
+  /// SyncStatus pending copy (8:84).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu trên máy này. Đang chờ đồng bộ.'**
+  String get syncPendingLong;
+
+  /// 19a sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhanh'**
+  String get quickLogTitle;
+
+  /// 19a tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ'**
+  String get quickSleep;
+
+  /// 22 / 23 sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi cữ bú'**
+  String get feedSheetTitle;
+
+  /// Bottle amount label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng sữa · tùy chọn'**
+  String get amountOptional;
+
+  /// Pump amount label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng sữa'**
+  String get amountLabel;
+
+  /// Bottle milk type label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Loại sữa'**
+  String get milkTypeLabel;
+
+  /// TimeRow label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian'**
+  String get timeLabel;
+
+  /// TimeRow label for spans.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu'**
+  String get startLabel;
+
+  /// Side label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên'**
+  String get sideLabel;
+
+  /// Breast duration label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời lượng · tùy chọn'**
+  String get durationOptional;
+
+  /// Pump duration row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời lượng'**
+  String get durationLabel;
+
+  /// Pump duration chip without a value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa nhập'**
+  String get durationNone;
+
+  /// 22 / 23 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu cữ bú'**
+  String get saveFeed;
+
+  /// 23a sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi hút sữa'**
+  String get pumpTitle;
+
+  /// 23a primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu hút sữa'**
+  String get savePump;
+
+  /// 24 sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thay tã'**
+  String get diaperTitle;
+
+  /// Generic save.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu'**
+  String get actionSave;
+
+  /// TimeRow chip default.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bây giờ · {time}'**
+  String timeNow(String time);
+
+  /// TimeRow chip / detail.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay · {time}'**
+  String timeToday(String time);
+
+  /// TimeRow chip / detail.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua · {time}'**
+  String timeYesterday(String time);
+
+  /// Time wheel sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn thời gian'**
+  String get timePickerTitle;
+
+  /// Duration wheel sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn thời lượng'**
+  String get durationPickerTitle;
+
+  /// Toast after saving (Motion 270:22).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi · {what}'**
+  String savedToast(String what);
+
+  /// Toast after editing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu thay đổi'**
+  String get editedToast;
+
+  /// Toast action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác'**
+  String get undo;
+
+  /// Out-of-range amount.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập từ {min} đến {max} {unit}.'**
+  String amountRange(String min, String max, String unit);
+
+  /// Write rejected by the server.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được bản ghi. Có thể quyền của bạn đã thay đổi.'**
+  String get careSaveFailed;
+
+  /// 28 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng trưởng'**
+  String get growthTitle;
+
+  /// 28 date row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày đo'**
+  String get growthDate;
+
+  /// 28 weight label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng'**
+  String get growthWeight;
+
+  /// 28 length label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài · tùy chọn'**
+  String get growthLengthOptional;
+
+  /// 28 delta line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{delta} so với lần đo {date}'**
+  String growthDeltaSince(String delta, String date);
+
+  /// 28 section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các lần đo trước'**
+  String get growthPrevious;
+
+  /// 28 link → History (S6).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả'**
+  String get growthSeeAll;
+
+  /// 28 without earlier measurements.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đây là lần đo đầu tiên.'**
+  String get growthNoPrevious;
+
+  /// Birth measurement tag.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lúc sinh'**
+  String get growthAtBirth;
+
+  /// 28 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu số đo'**
+  String get saveGrowth;
+
+  /// Weight missing or out of range.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập cân nặng từ 0,3 đến 40 kg.'**
+  String get growthWeightRequired;
+
+  /// Length out of range.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài từ 20 đến 150 cm.'**
+  String get growthLengthRange;
+
+  /// 21 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian'**
+  String get detailTime;
+
+  /// 21 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người ghi'**
+  String get detailBy;
+
+  /// 21 row (creation time).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lúc'**
+  String get detailLoggedAt;
+
+  /// 21 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng bộ'**
+  String get detailSync;
+
+  /// 12e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng'**
+  String get detailAmount;
+
+  /// 12e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Loại sữa'**
+  String get detailMilk;
+
+  /// Detail row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên'**
+  String get detailSide;
+
+  /// Detail row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời lượng'**
+  String get detailDuration;
+
+  /// Detail row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài'**
+  String get detailLength;
+
+  /// 21 tinted button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa'**
+  String get actionEdit;
+
+  /// 21 destructive.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa bản ghi'**
+  String get deleteRecord;
+
+  /// 21 footer, adapted to D-022 (Figma: "Chỉ người ghi hoặc chủ sở hữu được sửa.").
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi người trong gia đình thấy bản ghi này. Người ghi và Cùng nuôi được sửa.'**
+  String get detailFooter;
+
+  /// Delete action sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa bản ghi này?'**
+  String get deleteConfirmTitle;
+
+  /// Delete action sheet body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản ghi được giữ 30 ngày trong “Đã xoá gần đây”.'**
+  String get deleteConfirmBody;
+
+  /// Toast "Đã xóa · Hoàn tác" (5 s).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xóa'**
+  String get deletedToast;
+
+  /// 12e role note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản ghi của {who} · chỉ xem. Nếu sai, nhắn {who} để sửa.'**
+  String viewOnlyNote(String who);
+
+  /// 12e secondary (Q-007, messages arrive in S10).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắn {who}'**
+  String messageAuthor(String who);
+
+  /// Until messages ship (S10).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắn tin trong app sẽ có ở bản tiếp theo.'**
+  String get messagesSoon;
+
+  /// Detail of a deleted record.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản ghi này không còn nữa.'**
+  String get recordGone;
+
+  /// Minutes unit after a duration field.
+  ///
+  /// In vi, this message translates to:
+  /// **'phút'**
+  String get unitMinutes;
+
+  /// 14f meta (R-038, 118:12056).
+  ///
+  /// In vi, this message translates to:
+  /// **'{relation} · tham gia {date} · đã ghi {count} lần'**
+  String memberMetaCount(String relation, String date, int count);
 }
 
 class _AppLocalizationsDelegate
