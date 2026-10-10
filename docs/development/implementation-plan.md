@@ -312,7 +312,7 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 
 ### S9 — Memories core & upload
 
-> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S9.md). Journal, photos grid, add (library, Files, note), compose with milestones, upload queue + server processing (sharp, metadata stripped), viewer, selection actions and delete work end to end (iOS + Android, emulators); backend on dev. In-app burst camera, share extension, upload Live Activity and kill-proof background transfer wait (SP-1/SP-2); albums, loves, favourites in S10.
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S9.md). Journal, photos grid, add (library, Files, note), compose with milestones, upload queue + server processing (sharp, metadata stripped), viewer, selection actions and delete work end to end (iOS + Android, emulators); backend on dev. In-app burst camera, share extension, upload Live Activity and kill-proof background transfer wait (SP-1/SP-2); albums, loves, favourites done in S10.
 
 - **Figma:** 10a, 10a2, 10a3, 10b, 10b2, 10b3, 10b4, 10b5, 10c, 10f, 10g, 10h, 10h2–10h5, 10i, 10j, 10k, 10o, 13f, MemoryCard, MediaTile, UploadPill, QueueRow.
 - **Backend:** promote SP-2/SP-3 pipeline (§3.4), quota reservation, media audience per item with server-computed effective audience (D-002, P-035), milestone presets (age-based) + custom, memory publish rules (P-030), batch notification, soft delete + "Đã xoá gần đây" + purge.
@@ -327,6 +327,8 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 - **Mobile:** album CRUD/options, sort, select & remove, download all to Photos (background, Wi-Fi only option), relative UI (no +/Chọn), reactions with names for parents, generic lock-screen notifications.
 - **Acceptance:** relative never receives a Chỉ ba mẹ item via any query, notification, album, story, or cache (Rules + integration tests); album delete keeps memories.
 - **Depends on:** S9. Q-007, Q-014, Q-015.
+
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S10.md). Albums (CRUD, options, sort, audience with the multi-album rule), Yêu thích, Thương, "Nhắn ba mẹ" / "Lời nhắn" and the relatives' view work end to end on the emulators; backend on dev. Device push needs APNs (Apple team); background album download waits on SP-2.
 
 ### S11 — Me, storage, profiles, account, deletion
 

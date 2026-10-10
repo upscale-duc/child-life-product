@@ -5785,6 +5785,630 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chụp'**
   String get a11yShutter;
+
+  /// 10d bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} album'**
+  String albCount(int count);
+
+  /// 10d button / new-album sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Album mới'**
+  String get albNew;
+
+  /// Automatic album (10e2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Yêu thích'**
+  String get albFavorites;
+
+  /// 11e card.
+  ///
+  /// In vi, this message translates to:
+  /// **'của riêng bạn'**
+  String get albFavoritesMine;
+
+  /// 10e2 pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ mình bạn'**
+  String get albOnlyYou;
+
+  /// 10e2 subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'ảnh bạn đã đánh dấu'**
+  String get albFavoritesHint;
+
+  /// 10d section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gom từ mốc bạn đã gắn'**
+  String get albFromMilestones;
+
+  /// 11e section for relatives (gap note).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gom theo mốc'**
+  String get albByMilestone;
+
+  /// 11e subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} album ba mẹ chia sẻ'**
+  String albShared(int count);
+
+  /// 10d empty (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có album nào'**
+  String get albEmpty;
+
+  /// 10d empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo album để gom ảnh theo chủ đề, như Giờ tắm hay Bàn tay nhỏ.'**
+  String get albEmptyBody;
+
+  /// 10e hero.
+  ///
+  /// In vi, this message translates to:
+  /// **'{counts} · cập nhật {when}'**
+  String albUpdated(String counts, String when);
+
+  /// 10e bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh'**
+  String get albAddPhotos;
+
+  /// 10e bar (S12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Kể thành chuyện'**
+  String get albStory;
+
+  /// 11f chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} chia sẻ với gia đình'**
+  String albSharedBy(String who);
+
+  /// 10e empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Album này chưa có ảnh nào.'**
+  String get albNoItems;
+
+  /// 10e bar / 10e3 / 10e6.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai thấy album này'**
+  String get albWhoButton;
+
+  /// 10e3 / 10e4.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi tên album'**
+  String get albRename;
+
+  /// 10e3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi ảnh bìa'**
+  String get albCover;
+
+  /// 10e3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi người thân trong gia đình'**
+  String get albWhoFamilyHint;
+
+  /// 10e3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh'**
+  String get albSelect;
+
+  /// 10e3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ khỏi album, đổi ai thấy…'**
+  String get albSelectHint;
+
+  /// 10e3 / 10e7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp xếp'**
+  String get albSort;
+
+  /// 10e3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải cả album về máy'**
+  String get albDownload;
+
+  /// 10e3.
+  ///
+  /// In vi, this message translates to:
+  /// **'{counts} · khoảng {size}'**
+  String albDownloadHint(String counts, String size);
+
+  /// 10e3 / 10e10.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá album'**
+  String get albDelete;
+
+  /// 10e3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ xoá album, ảnh vẫn còn trong Kỷ niệm'**
+  String get albDeleteHint;
+
+  /// 10e4 field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên album'**
+  String get albName;
+
+  /// 10e4.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý'**
+  String get albSuggestions;
+
+  /// 10e4 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ tắm'**
+  String get albSuggestBath;
+
+  /// 10e4 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tắm nắng'**
+  String get albSuggestSun;
+
+  /// 10e4 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu đi bơi'**
+  String get albSuggestSwim;
+
+  /// New album chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bàn tay nhỏ'**
+  String get albSuggestHands;
+
+  /// New album chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ ngoan'**
+  String get albSuggestSleep;
+
+  /// 10e4.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu tên'**
+  String get albSaveName;
+
+  /// Validation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt tên cho album.'**
+  String get albNameRequired;
+
+  /// New album primary (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo album'**
+  String get albCreate;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tạo album “{name}”'**
+  String albCreated(String name);
+
+  /// 10e5 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh bìa'**
+  String get albCoverTitle;
+
+  /// 10e5 / 10b3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt làm ảnh bìa'**
+  String get albSetCover;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đổi ảnh bìa'**
+  String get albCoverSet;
+
+  /// 10e6 note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Áp dụng cho cả {count} mục trong album'**
+  String albAppliesTo(int count);
+
+  /// 10e6 note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh thêm sau này cũng theo quyền của album. Người chăm không thấy Kỷ niệm.'**
+  String get albLaterFollow;
+
+  /// 10e6 toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 thông báo chung, không kèm ảnh'**
+  String get albNoticeHint;
+
+  /// Toast after Chỉ ba mẹ (D-002).
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mục vẫn được gia đình thấy vì còn nằm trong album Gia đình khác.'**
+  String albStayShared(int count);
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đổi ai thấy album'**
+  String get albAudienceSaved;
+
+  /// 10e7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới nhất'**
+  String get sortNewest;
+
+  /// 10e7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh chụp gần đây ở trên'**
+  String get sortNewestHint;
+
+  /// 10e7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cũ nhất'**
+  String get sortOldest;
+
+  /// 10e7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kể lại từ đầu, hợp để xem lại'**
+  String get sortOldestHint;
+
+  /// 10e7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới thêm vào album'**
+  String get sortAdded;
+
+  /// 10e7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo lúc bạn thêm ảnh'**
+  String get sortAddedHint;
+
+  /// 10e8 bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ khỏi album'**
+  String get albRemove;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ {count} mục khỏi album'**
+  String albRemoved(int count);
+
+  /// 10e9 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải về máy'**
+  String get dlTitle;
+
+  /// 10e9.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mục · khoảng {size}'**
+  String dlSummary(int count, String size);
+
+  /// 10e9.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu vào album “{name}” trong app Ảnh'**
+  String dlInto(String name);
+
+  /// 10e9 toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ tải qua Wi-Fi'**
+  String get dlWifi;
+
+  /// 10e9.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video lớn sẽ đợi Wi-Fi'**
+  String get dlWifiHint;
+
+  /// 10e9 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải {count} mục'**
+  String dlN(int count);
+
+  /// 10e9.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải ở nền — xong sẽ báo bạn.'**
+  String get dlFootnote;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chờ Wi-Fi để tải video.'**
+  String get dlNeedsWifi;
+
+  /// 10e10 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá album “{name}”?'**
+  String albDeleteTitle(String name);
+
+  /// 10e10.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ảnh và video vẫn còn ở tab Ảnh và Nhật ký. Chỉ album bị xoá.'**
+  String albDeleteBody(int count);
+
+  /// 10e10.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình sẽ không thấy album này nữa.'**
+  String get albDeleteFamily;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá album'**
+  String get albDeleted;
+
+  /// 10h5 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vào album'**
+  String get albPickTitle;
+
+  /// 10h5 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo album mới'**
+  String get albPickNew;
+
+  /// 10h5 helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thể chọn nhiều album. Ảnh vẫn theo quyền “Ai thấy” bạn đã chọn.'**
+  String get albPickHint;
+
+  /// 10h value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa chọn'**
+  String get albPickNone;
+
+  /// 10h value, several albums.
+  ///
+  /// In vi, this message translates to:
+  /// **'{first} +{count}'**
+  String albPickMore(String first, int count);
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thêm {count} mục vào “{name}”'**
+  String albAdded(int count, String name);
+
+  /// 10h hint (D-002).
+  ///
+  /// In vi, this message translates to:
+  /// **'Album Gia đình: “Ai thấy” chuyển sang Gia đình.'**
+  String get albFamilySwitched;
+
+  /// Add photos to album.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn từ Kỷ niệm'**
+  String get albPickFromMemories;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thêm vào Yêu thích'**
+  String get favAdded;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ khỏi Yêu thích'**
+  String get favRemoved;
+
+  /// Action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thương'**
+  String get love;
+
+  /// Entry loves (parents).
+  ///
+  /// In vi, this message translates to:
+  /// **'{names} thương'**
+  String lovesNamed(String names);
+
+  /// Entry loves.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} lượt thương'**
+  String lovesCount(int count);
+
+  /// 11g pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắn'**
+  String get messageAction;
+
+  /// 11c action / composer title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắn ba mẹ'**
+  String get messageParents;
+
+  /// 11i field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắn ba mẹ…'**
+  String get messagePlaceholder;
+
+  /// Composer title for a caregiver (12e).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắn {who}'**
+  String messageTo(String who);
+
+  /// Composer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi'**
+  String get messageSend;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi lời nhắn'**
+  String get messageSent;
+
+  /// Composer (D-034).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ đọc được. Đây không phải trò chuyện.'**
+  String get messageHint;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa gửi được. Kiểm tra mạng và thử lại.'**
+  String get messageFailed;
+
+  /// Parents list (D-034).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn'**
+  String get messagesTitle;
+
+  /// Parents list empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có lời nhắn nào.'**
+  String get messagesEmpty;
+
+  /// Me row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} chưa đọc'**
+  String messagesUnread(int count);
+
+  /// Context.
+  ///
+  /// In vi, this message translates to:
+  /// **'về một ảnh'**
+  String get messagesAboutPhoto;
+
+  /// Context.
+  ///
+  /// In vi, this message translates to:
+  /// **'về một kỷ niệm'**
+  String get messagesAboutMemory;
+
+  /// Context.
+  ///
+  /// In vi, this message translates to:
+  /// **'về album “{name}”'**
+  String messagesAboutAlbum(String name);
+
+  /// Context.
+  ///
+  /// In vi, this message translates to:
+  /// **'về một album'**
+  String get messagesAboutAlbumGeneric;
+
+  /// Context.
+  ///
+  /// In vi, this message translates to:
+  /// **'về một câu chuyện'**
+  String get messagesAboutStory;
+
+  /// Context.
+  ///
+  /// In vi, this message translates to:
+  /// **'về một ghi chép chăm sóc'**
+  String get messagesAboutRecord;
+
+  /// Viewer thread (parents).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn ({count})'**
+  String messagesOnItem(int count);
+
+  /// Message meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} · {when}'**
+  String messageFrom(String who, String when);
+
+  /// 11c subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Những gì ba mẹ chia sẻ với gia đình'**
+  String get relSubtitle;
+
+  /// 11h.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có kỷ niệm nào được chia sẻ'**
+  String get relEmptyTitle;
+
+  /// 11h.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi ba mẹ chia sẻ ảnh với gia đình, bạn sẽ nhận một thông báo và thấy ở đây.'**
+  String get relEmptyBody;
+
+  /// 11g meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{date} · {who} chia sẻ'**
+  String viewerShared(String date, String who);
+
+  /// 10f meta with album.
+  ///
+  /// In vi, this message translates to:
+  /// **'{meta} · album {name}'**
+  String viewerInAlbum(String meta, String name);
+
+  /// 10e ••• button (a11y) / 10e3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chọn album'**
+  String get albOptions;
 }
 
 class _AppLocalizationsDelegate

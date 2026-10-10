@@ -3672,4 +3672,423 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a11yShutter => 'Take';
+
+  @override
+  String albCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count albums',
+      one: '1 album',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get albNew => 'New album';
+
+  @override
+  String get albFavorites => 'Favourites';
+
+  @override
+  String get albFavoritesMine => 'yours only';
+
+  @override
+  String get albOnlyYou => 'Only you';
+
+  @override
+  String get albFavoritesHint => 'photos you marked';
+
+  @override
+  String get albFromMilestones => 'From the milestones you tagged';
+
+  @override
+  String get albByMilestone => 'By milestone';
+
+  @override
+  String albShared(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count albums the parents shared',
+      one: '1 album the parents shared',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get albEmpty => 'No albums yet';
+
+  @override
+  String get albEmptyBody =>
+      'Make albums to gather photos by theme, like Bath time or Little hands.';
+
+  @override
+  String albUpdated(String counts, String when) {
+    return '$counts · updated $when';
+  }
+
+  @override
+  String get albAddPhotos => 'Add photos';
+
+  @override
+  String get albStory => 'Make it a story';
+
+  @override
+  String albSharedBy(String who) {
+    return '$who shared with the family';
+  }
+
+  @override
+  String get albNoItems => 'This album has no photos yet.';
+
+  @override
+  String get albWhoButton => 'Who sees this album';
+
+  @override
+  String get albRename => 'Rename album';
+
+  @override
+  String get albCover => 'Change cover';
+
+  @override
+  String get albWhoFamilyHint => 'Every relative in the family';
+
+  @override
+  String get albSelect => 'Select photos';
+
+  @override
+  String get albSelectHint => 'Remove from the album, change who sees…';
+
+  @override
+  String get albSort => 'Sort';
+
+  @override
+  String get albDownload => 'Download the whole album';
+
+  @override
+  String albDownloadHint(String counts, String size) {
+    return '$counts · about $size';
+  }
+
+  @override
+  String get albDelete => 'Delete album';
+
+  @override
+  String get albDeleteHint => 'Deletes the album only; photos stay in Memories';
+
+  @override
+  String get albName => 'Album name';
+
+  @override
+  String get albSuggestions => 'Suggestions';
+
+  @override
+  String get albSuggestBath => 'Bath time';
+
+  @override
+  String get albSuggestSun => 'Sunbathing';
+
+  @override
+  String get albSuggestSwim => 'First swim';
+
+  @override
+  String get albSuggestHands => 'Little hands';
+
+  @override
+  String get albSuggestSleep => 'Sleeping sweetly';
+
+  @override
+  String get albSaveName => 'Save name';
+
+  @override
+  String get albNameRequired => 'Name the album.';
+
+  @override
+  String get albCreate => 'Create album';
+
+  @override
+  String albCreated(String name) {
+    return 'Created “$name”';
+  }
+
+  @override
+  String get albCoverTitle => 'Choose a cover';
+
+  @override
+  String get albSetCover => 'Set as cover';
+
+  @override
+  String get albCoverSet => 'Cover changed';
+
+  @override
+  String albAppliesTo(int count) {
+    return 'Applies to all $count items in the album';
+  }
+
+  @override
+  String get albLaterFollow =>
+      'Photos added later follow the album too. Caregivers don’t see Memories.';
+
+  @override
+  String get albNoticeHint => '1 general notice, without photos';
+
+  @override
+  String albStayShared(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count items stay visible to the family because they are in another Family album.',
+      one:
+          '1 item stays visible to the family because it is in another Family album.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get albAudienceSaved => 'Album audience changed';
+
+  @override
+  String get sortNewest => 'Newest';
+
+  @override
+  String get sortNewestHint => 'Recent shots first';
+
+  @override
+  String get sortOldest => 'Oldest';
+
+  @override
+  String get sortOldestHint => 'From the beginning, good for looking back';
+
+  @override
+  String get sortAdded => 'Recently added';
+
+  @override
+  String get sortAddedHint => 'By when photos were added';
+
+  @override
+  String get albRemove => 'Remove from album';
+
+  @override
+  String albRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Removed $count items from the album',
+      one: 'Removed 1 item from the album',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dlTitle => 'Download';
+
+  @override
+  String dlSummary(int count, String size) {
+    return '$count items · about $size';
+  }
+
+  @override
+  String dlInto(String name) {
+    return 'Saves into a “$name” album in Photos';
+  }
+
+  @override
+  String get dlWifi => 'Wi-Fi only';
+
+  @override
+  String get dlWifiHint => 'Large videos wait for Wi-Fi';
+
+  @override
+  String dlN(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Download $count items',
+      one: 'Download 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dlFootnote =>
+      'Downloads in the background — we’ll tell you when done.';
+
+  @override
+  String get dlNeedsWifi => 'Waiting for Wi-Fi to download videos.';
+
+  @override
+  String albDeleteTitle(String name) {
+    return 'Delete “$name”?';
+  }
+
+  @override
+  String albDeleteBody(int count) {
+    return '$count photos and videos stay in Photos and Journal. Only the album goes.';
+  }
+
+  @override
+  String get albDeleteFamily => 'The family won’t see this album any more.';
+
+  @override
+  String get albDeleted => 'Album deleted';
+
+  @override
+  String get albPickTitle => 'Add to album';
+
+  @override
+  String get albPickNew => 'New album';
+
+  @override
+  String get albPickHint =>
+      'You can pick several albums. Photos still follow the “Who sees” you chose.';
+
+  @override
+  String get albPickNone => 'None';
+
+  @override
+  String albPickMore(String first, int count) {
+    return '$first +$count';
+  }
+
+  @override
+  String albAdded(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Added $count items to “$name”',
+      one: 'Added 1 item to “$name”',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get albFamilySwitched =>
+      'Family album: “Who sees” switched to Family.';
+
+  @override
+  String get albPickFromMemories => 'Choose from Memories';
+
+  @override
+  String get favAdded => 'Added to Favourites';
+
+  @override
+  String get favRemoved => 'Removed from Favourites';
+
+  @override
+  String get love => 'Love';
+
+  @override
+  String lovesNamed(String names) {
+    return '$names loved this';
+  }
+
+  @override
+  String lovesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count loves',
+      one: '1 love',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageAction => 'Message';
+
+  @override
+  String get messageParents => 'Message the parents';
+
+  @override
+  String get messagePlaceholder => 'Message the parents…';
+
+  @override
+  String messageTo(String who) {
+    return 'Message $who';
+  }
+
+  @override
+  String get messageSend => 'Send';
+
+  @override
+  String get messageSent => 'Message sent';
+
+  @override
+  String get messageHint => 'Only the parents read it. It isn’t a chat.';
+
+  @override
+  String get messageFailed =>
+      'Couldn’t send. Check the connection and try again.';
+
+  @override
+  String get messagesTitle => 'Messages';
+
+  @override
+  String get messagesEmpty => 'No messages yet.';
+
+  @override
+  String messagesUnread(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread',
+      one: '1 unread',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messagesAboutPhoto => 'about a photo';
+
+  @override
+  String get messagesAboutMemory => 'about a memory';
+
+  @override
+  String messagesAboutAlbum(String name) {
+    return 'about “$name”';
+  }
+
+  @override
+  String get messagesAboutAlbumGeneric => 'about an album';
+
+  @override
+  String get messagesAboutStory => 'about a story';
+
+  @override
+  String get messagesAboutRecord => 'about a care entry';
+
+  @override
+  String messagesOnItem(int count) {
+    return 'Messages ($count)';
+  }
+
+  @override
+  String messageFrom(String who, String when) {
+    return '$who · $when';
+  }
+
+  @override
+  String get relSubtitle => 'What the parents share with the family';
+
+  @override
+  String get relEmptyTitle => 'Nothing shared yet';
+
+  @override
+  String get relEmptyBody =>
+      'When the parents share photos with the family, you’ll get a notification and see them here.';
+
+  @override
+  String viewerShared(String date, String who) {
+    return '$date · shared by $who';
+  }
+
+  @override
+  String viewerInAlbum(String meta, String name) {
+    return '$meta · album $name';
+  }
+
+  @override
+  String get albOptions => 'Album options';
 }

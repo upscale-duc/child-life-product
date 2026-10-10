@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/memories/album_models.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/memory_repository.dart';
@@ -95,6 +96,7 @@ MediaItem mediaItem(
     List<MediaItem> Function(String id) items, {
     Audience audience = Audience.family,
     MilestoneRef? milestone,
+    int loveCount = 0,
   }) {
     final id = _id('mem');
     final list = items(id);
@@ -112,6 +114,7 @@ MediaItem mediaItem(
         videos: list.where((i) => i.isVideo).length,
         createdBy: by.uid,
         author: CareAuthor.of(by),
+        loveCount: loveCount,
       ),
     );
   }
@@ -131,6 +134,7 @@ MediaItem mediaItem(
     _vn(10, 8, 9, 20),
     'Ngủ trưa ngon lành sau giờ tắm.',
     (id) => [mediaItem(id, _vn(10, 8, 9, 20), colour: 'peach')],
+    loveCount: 2,
   );
   add(
     minh,
@@ -271,6 +275,80 @@ class FakeMemoryRepository extends Fake implements MemoryRepository {
     Map<String, Object?> change,
   ) async => updates.add((mediaIds, change));
 
+  final albumCalls = <(String, Map<String, Object?>)>[];
+  final favorites = <(String, bool)>[];
+  final loves = <(LoveTarget, String, bool)>[];
+  final messages = <(MessageContext, String, String)>[];
+
+  @override
+  Future<void> createAlbum(
+    String babyId,
+    String albumId,
+    String name,
+    Audience audience,
+    List<String> mediaIds,
+  ) async => albumCalls.add((
+    'create',
+    {'name': name, 'audience': audience.name, 'mediaIds': mediaIds},
+  ));
+
+  @override
+  Future<int> updateAlbum(
+    String babyId,
+    String albumId,
+    Map<String, Object?> change,
+  ) async {
+    albumCalls.add(('update', {'albumId': albumId, ...change}));
+    return 0;
+  }
+
+  @override
+  Future<void> addToAlbum(
+    String babyId,
+    String albumId,
+    List<String> mediaIds,
+  ) async =>
+      albumCalls.add(('add', {'albumId': albumId, 'mediaIds': mediaIds}));
+
+  @override
+  Future<void> removeFromAlbum(
+    String babyId,
+    String albumId,
+    List<String> mediaIds,
+  ) async =>
+      albumCalls.add(('remove', {'albumId': albumId, 'mediaIds': mediaIds}));
+
+  @override
+  Future<void> deleteAlbum(String babyId, String albumId) async =>
+      albumCalls.add(('delete', {'albumId': albumId}));
+
+  @override
+  Future<void> setFavorite(
+    String babyId,
+    String uid,
+    String mediaId,
+    bool on,
+  ) async => favorites.add((mediaId, on));
+
+  @override
+  Future<void> setLove(
+    Membership me,
+    LoveTarget target,
+    String targetId,
+    bool on,
+  ) async => loves.add((target, targetId, on));
+
+  @override
+  Future<void> sendMessage(
+    Membership me,
+    MessageContext context,
+    String contextId,
+    String text,
+  ) async => messages.add((context, contextId, text));
+
+  @override
+  Future<void> markRead(String babyId, String messageId, String uid) async {}
+
   @override
   Future<MilestoneRef> createMilestone(
     String babyId,
@@ -358,6 +436,52 @@ PickedMedia pickedVideo(String name, {DateTime? at}) => PickedMedia(
   thumbBytes: pngOf('sky'),
 );
 
+/// 10d: "Giờ tắm" (Gia đình), "Ngủ ngoan" (Chỉ ba mẹ), "Bàn tay nhỏ" (Gia đình).
+({List<Album> albums, Map<String, Map<String, DateTime>> items}) mockAlbums(
+  List<MediaItem> media,
+) {
+  final bath = 'alb_${'a' * 32}';
+  final sleep = 'alb_${'b' * 32}';
+  final hands = 'alb_${'c' * 32}';
+  final at = DateTime.utc(2026, 10, 7, 12);
+  Map<String, DateTime> of(Iterable<MediaItem> m) => {
+    for (final i in m) i.id: at,
+  };
+  final photos = media.where((m) => !m.isVideo).toList();
+  final items = {
+    bath: of(media.take(4)),
+    sleep: of(photos.skip(2).take(3)),
+    hands: of(photos.skip(5).take(2)),
+  };
+  Album album(String id, String name, Audience audience) {
+    final list = [
+      for (final m in media)
+        if (items[id]!.containsKey(m.id)) m,
+    ];
+    return Album(
+      id: id,
+      name: name,
+      audience: audience,
+      coverMediaId: list.firstOrNull?.id,
+      photos: list.where((m) => !m.isVideo).length,
+      videos: list.where((m) => m.isVideo).length,
+      loveCount: id == bath ? 2 : 0,
+      createdBy: 'u_mai',
+      author: CareAuthor.of(mai),
+      updatedAt: at,
+    );
+  }
+
+  return (
+    albums: [
+      album(bath, 'Giờ tắm', Audience.family),
+      album(sleep, 'Ngủ ngoan', Audience.parents),
+      album(hands, 'Bàn tay nhỏ', Audience.family),
+    ],
+    items: items,
+  );
+}
+
 /// Memories on top of the family / care overrides.
 List<Override> memoryOverrides({
   ({List<Memory> memories, List<MediaItem> media})? journal,
@@ -367,9 +491,45 @@ List<Override> memoryOverrides({
   List<FamilyMilestone> milestones = const [],
   List<CareAuthor>? notified,
   NetworkKind network = NetworkKind.wifi,
+  bool withAlbums = true,
+  Set<String>? favorites,
+  List<Love> loves = const [],
+  List<ParentMessage> messages = const [],
 }) {
   final j = journal ?? mockJournal();
+  final a = withAlbums
+      ? mockAlbums(j.media)
+      : (
+          albums: const <Album>[],
+          items: const <String, Map<String, DateTime>>{},
+        );
   return [
+    albumsProvider.overrideWith(
+      (ref, key) => Stream.value([
+        for (final al in a.albums)
+          if (key.$2 || al.audience == Audience.family) al,
+      ]),
+    ),
+    albumItemsProvider.overrideWith(
+      (ref, key) => Stream.value(a.items[key.$2] ?? const {}),
+    ),
+    favoritesProvider.overrideWith(
+      (ref, key) => Stream.value(
+        favorites ?? {for (final m in j.media.skip(1).take(3)) m.id},
+      ),
+    ),
+    lovesProvider.overrideWith(
+      (ref, key) => Stream.value([
+        for (final l in loves)
+          if (key.$3 || l.uid == key.$2) l,
+      ]),
+    ),
+    messagesProvider.overrideWith(
+      (ref, key) => Stream.value([
+        for (final m in messages)
+          if (key.$3 || m.from == key.$2) m,
+      ]),
+    ),
     memoriesProvider.overrideWith(
       (ref, key) => Stream.value([
         for (final m in j.memories)
@@ -397,3 +557,29 @@ List<Override> memoryOverrides({
     mediaPreparerProvider.overrideWithValue(FakePreparer()),
   ];
 }
+
+/// "Bà nội, Ba thương" on the first entry (10a).
+List<Love> mockLoves(({List<Memory> memories, List<MediaItem> media}) j) => [
+  for (final m in [hoa, minh])
+    Love(
+      uid: m.uid,
+      target: LoveTarget.memory,
+      targetId: j.memories.first.id,
+      author: CareAuthor.of(m),
+    ),
+];
+
+/// "Bà thương con quá!" from Bà nội about the first photo (D-034).
+List<ParentMessage> mockMessages(
+  ({List<Memory> memories, List<MediaItem> media}) j,
+) => [
+  ParentMessage(
+    id: 'msg_${'1' * 32}',
+    from: hoa.uid,
+    author: CareAuthor.of(hoa),
+    context: MessageContext.media,
+    contextId: j.memories.first.mediaIds.first,
+    text: 'Bà thương con quá! Cuối tuần bà sang nhé.',
+    createdAt: DateTime.utc(2026, 10, 8, 4, 10),
+  ),
+];

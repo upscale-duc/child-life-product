@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../baby/baby_models.dart';
 import '../care/care_models.dart';
+import 'album_models.dart';
 import 'memory_models.dart';
 
 /// Memories (S9). Reads follow the Rules: Cùng nuôi query everything, relatives only what is
@@ -127,6 +128,183 @@ class MemoryRepository {
         'clientState': waiting ? 'waitingWifi' : null,
       });
 
+  // ---------- S10: albums, favourites, loves, messages ----------
+
+  /// Parents: every album; relatives: the shared ones (11e).
+  Stream<List<Album>> watchAlbums(String babyId, {required bool parent}) {
+    Query<Map<String, dynamic>> q = _db.collection('babies/$babyId/albums');
+    if (!parent) q = q.where('audience', isEqualTo: Audience.family.name);
+    return q.snapshots().map((s) {
+      final list = [for (final d in s.docs) ?Album.fromSnapshot(d)];
+      list.sort(
+        (a, b) => (b.updatedAt ?? DateTime(2000)).compareTo(
+          a.updatedAt ?? DateTime(2000),
+        ),
+      );
+      return list;
+    });
+  }
+
+  /// mediaId → when it joined the album ("Mới thêm vào album", 10e7).
+  Stream<Map<String, DateTime>> watchAlbumItems(
+    String babyId,
+    String albumId,
+  ) => _db
+      .collection('babies/$babyId/albums/$albumId/items')
+      .snapshots()
+      .map(
+        (s) => {
+          for (final d in s.docs)
+            d.id: dateOf(d.data()['addedAt']) ?? DateTime(2000),
+        },
+      );
+
+  Future<void> createAlbum(
+    String babyId,
+    String albumId,
+    String name,
+    Audience audience,
+    List<String> mediaIds,
+  ) => _call('createMemoryAlbum', {
+    'babyId': babyId,
+    'albumId': albumId,
+    'name': name,
+    'audience': audience.name,
+    'mediaIds': mediaIds,
+  });
+
+  /// rename / cover / sort / audience (10e4–10e7); returns how many items stay shared (D-002).
+  Future<int> updateAlbum(
+    String babyId,
+    String albumId,
+    Map<String, Object?> change,
+  ) async {
+    final r = await _call('updateMemoryAlbum', {
+      'babyId': babyId,
+      'albumId': albumId,
+      'change': change,
+    });
+    return (r['stayingShared'] as num?)?.toInt() ?? 0;
+  }
+
+  Future<void> addToAlbum(
+    String babyId,
+    String albumId,
+    List<String> mediaIds,
+  ) => _call('addToMemoryAlbum', {
+    'babyId': babyId,
+    'albumId': albumId,
+    'mediaIds': mediaIds,
+  });
+
+  Future<void> removeFromAlbum(
+    String babyId,
+    String albumId,
+    List<String> mediaIds,
+  ) => _call('removeFromMemoryAlbum', {
+    'babyId': babyId,
+    'albumId': albumId,
+    'mediaIds': mediaIds,
+  });
+
+  Future<void> deleteAlbum(String babyId, String albumId) =>
+      _call('deleteMemoryAlbum', {'babyId': babyId, 'albumId': albumId});
+
+  /// "Yêu thích" — mine only (R-107).
+  Stream<Set<String>> watchFavorites(String babyId, String uid) => _db
+      .collection('babies/$babyId/favorites')
+      .where('uid', isEqualTo: uid)
+      .snapshots()
+      .map(
+        (s) => {for (final d in s.docs) d.data()['mediaId'] as String? ?? ''},
+      );
+
+  Future<void> setFavorite(String babyId, String uid, String mediaId, bool on) {
+    final ref = _db.doc(
+      'babies/$babyId/favorites/${favoriteIdOf(uid, mediaId)}',
+    );
+    return on
+        ? ref.set({
+            'uid': uid,
+            'mediaId': mediaId,
+            'createdAt': FieldValue.serverTimestamp(),
+          })
+        : ref.delete();
+  }
+
+  /// Parents: every love (to name who loved); relatives: their own.
+  Stream<List<Love>> watchLoves(
+    String babyId,
+    String uid, {
+    required bool parent,
+  }) {
+    Query<Map<String, dynamic>> q = _db.collection('babies/$babyId/reactions');
+    if (!parent) q = q.where('uid', isEqualTo: uid);
+    return q
+        .limit(5000)
+        .snapshots()
+        .map((s) => [for (final d in s.docs) ?Love.fromSnapshot(d)]);
+  }
+
+  Future<void> setLove(
+    Membership me,
+    LoveTarget target,
+    String targetId,
+    bool on,
+  ) {
+    final ref = _db.doc(
+      'babies/${me.babyId}/reactions/${loveIdOf(target, targetId, me.uid)}',
+    );
+    return on
+        ? ref.set({
+            'uid': me.uid,
+            'target': target.name,
+            'targetId': targetId,
+            'author': CareAuthor.of(me).toJson(),
+            'createdAt': FieldValue.serverTimestamp(),
+          })
+        : ref.delete();
+  }
+
+  /// "Nhắn ba mẹ" / "Nhắn Mẹ" (D-034).
+  Future<void> sendMessage(
+    Membership me,
+    MessageContext context,
+    String contextId,
+    String text,
+  ) {
+    final id = newMessageId();
+    return _db.doc('babies/${me.babyId}/messages/$id').set({
+      'id': id,
+      'babyId': me.babyId,
+      'from': me.uid,
+      'author': CareAuthor.of(me).toJson(),
+      'context': {'kind': context.name, 'id': contextId},
+      'text': text.trim(),
+      'createdAt': FieldValue.serverTimestamp(),
+      'readBy': <String, Object?>{},
+    });
+  }
+
+  /// Parents: all messages ("Lời nhắn"); anyone else: what they sent.
+  Stream<List<ParentMessage>> watchMessages(
+    String babyId,
+    String uid, {
+    required bool parent,
+  }) {
+    Query<Map<String, dynamic>> q = _db.collection('babies/$babyId/messages');
+    if (!parent) q = q.where('from', isEqualTo: uid);
+    return q
+        .orderBy('createdAt', descending: true)
+        .limit(500)
+        .snapshots()
+        .map((s) => [for (final d in s.docs) ?ParentMessage.fromSnapshot(d)]);
+  }
+
+  Future<void> markRead(String babyId, String messageId, String uid) => _db
+      .doc('babies/$babyId/messages/$messageId')
+      .update({'readBy.$uid': true});
+
   /// 10b3 / 10b4 / 10o.
   Future<void> update(
     String babyId,
@@ -197,3 +375,35 @@ final publicLimitsProvider = StreamProvider<PublicLimits>(
         );
       }),
 );
+
+final albumsProvider = StreamProvider.family<List<Album>, MemoryKey>(
+  (ref, key) =>
+      ref.watch(memoryRepositoryProvider).watchAlbums(key.$1, parent: key.$2),
+);
+
+final albumItemsProvider =
+    StreamProvider.family<Map<String, DateTime>, (String, String)>(
+      (ref, key) =>
+          ref.watch(memoryRepositoryProvider).watchAlbumItems(key.$1, key.$2),
+    );
+
+/// (babyId, uid)
+final favoritesProvider = StreamProvider.family<Set<String>, (String, String)>(
+  (ref, key) =>
+      ref.watch(memoryRepositoryProvider).watchFavorites(key.$1, key.$2),
+);
+
+/// (babyId, uid, parent)
+final lovesProvider = StreamProvider.family<List<Love>, (String, String, bool)>(
+  (ref, key) => ref
+      .watch(memoryRepositoryProvider)
+      .watchLoves(key.$1, key.$2, parent: key.$3),
+);
+
+/// (babyId, uid, parent)
+final messagesProvider =
+    StreamProvider.family<List<ParentMessage>, (String, String, bool)>(
+      (ref, key) => ref
+          .watch(memoryRepositoryProvider)
+          .watchMessages(key.$1, key.$2, parent: key.$3),
+    );

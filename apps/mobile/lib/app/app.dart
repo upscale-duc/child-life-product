@@ -1,3 +1,4 @@
+import '../features/memories/push_registration.dart';
 import '../features/reminders/reminder_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -66,7 +67,7 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
         ref
             .read(authRepositoryProvider)
             .setLanguage(Localizations.localeOf(context).languageCode);
-        return ReminderNotificationSync(child: child!);
+        return ReminderNotificationSync(child: PushRegistration(child: child!));
       },
     );
   }

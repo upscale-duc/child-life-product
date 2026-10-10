@@ -10,7 +10,8 @@
 // A parent opens Kỷ niệm, writes a note (10a2 → 10h), then adds a photo from the library (10g →
 // 10h "Tải lên 1 mục"): the upload session reserves quota, the bytes go to the reserved slot, the
 // server re-encodes them and the entry appears with its thumbnail read through Storage Rules.
-// On Ảnh the photo becomes Chỉ ba mẹ ("Ai thấy") and is then deleted (10b4, R-111).
+// On Ảnh the photo becomes Chỉ ba mẹ ("Ai thấy"), goes into a new Gia đình album (seen by the
+// family again, D-002), becomes a favourite and is then deleted (10b4, R-111).
 import 'package:child_life/features/memories/media_picker.dart';
 import 'package:child_life/features/memories/memory_widgets.dart';
 import 'package:child_life/main.dart' as app;
@@ -186,6 +187,52 @@ void main() {
       'babies/$babyId/media',
       (d) => _v(d.single, 'effectiveAudience') == 'parents',
     );
+
+    // Album → "Album mới" → "Giờ tắm", Gia đình (10d, 10e10).
+    await tester.tap(find.text(l10n.memAlbums).last);
+    await pumpUntil(tester, find.text(l10n.albNew));
+    await tapText(tester, l10n.albNew);
+    await pumpUntil(tester, find.text(l10n.albSuggestBath));
+    await tester.tap(find.text(l10n.albSuggestBath).last);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tapText(tester, l10n.albCreate);
+    await _until(tester, 'babies/$babyId/albums', (d) => d.length == 1);
+
+    // Ảnh → Chọn → the tile → Album → "Giờ tắm" → Xong: in a Gia đình album the photo is
+    // seen by the family again (D-002, P-035).
+    await tester.tap(find.text(l10n.memPhotos).last);
+    await pumpUntil(tester, find.text(l10n.memSelect));
+    await tapText(tester, l10n.memSelect);
+    await tester.tap(find.byType(MediaTile).first);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.bySemanticsLabel(l10n.a11yShareOptions).first);
+    await pumpUntil(tester, find.text(l10n.actFavorite));
+    await tester.tap(find.text(l10n.actAlbum).last);
+    await pumpUntil(tester, find.text(l10n.albPickTitle));
+    await pumpUntil(tester, find.text(l10n.albSuggestBath));
+    await tester.tap(find.text(l10n.albSuggestBath).last);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tapText(tester, l10n.actionDone);
+    await _until(
+      tester,
+      'babies/$babyId/media',
+      (d) => _v(d.single, 'effectiveAudience') == 'family',
+    );
+    await _until(
+      tester,
+      'babies/$babyId/albums',
+      (d) => _v(d.single, 'photos') == '1',
+    );
+
+    // Chọn → the tile → "Thêm vào Yêu thích" (private to me, R-107).
+    await pumpUntil(tester, find.text(l10n.memSelect));
+    await tapText(tester, l10n.memSelect);
+    await tester.tap(find.byType(MediaTile).first);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.bySemanticsLabel(l10n.a11yShareOptions).first);
+    await pumpUntil(tester, find.text(l10n.actFavorite));
+    await tapText(tester, l10n.actFavorite);
+    await _until(tester, 'babies/$babyId/favorites', (d) => d.length == 1);
 
     // Chọn → the tile → delete → "Xoá 1 mục" → "Đã xoá gần đây".
     await tapText(tester, l10n.memSelect);

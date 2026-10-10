@@ -27,6 +27,8 @@ import '../care/care_sheets.dart';
 import '../care/timer_models.dart';
 import 'today_tour.dart';
 import '../family/save_account.dart';
+import '../memories/album_models.dart';
+import '../memories/memory_repository.dart';
 import '../onboarding/setup_draft.dart';
 
 const _kSelectedBaby = 'today.selectedBabyId';
@@ -563,6 +565,36 @@ Future<void> showMeMenu(BuildContext context, WidgetRef ref) {
                         startAddingBaby(context, ref);
                       }
                     : null,
+              ),
+            // "Lời nhắn" from relatives and caregivers (D-034), parents only.
+            if (membership?.role == MemberRole.coParent)
+              Consumer(
+                builder: (context, ref, _) {
+                  final unread = [
+                    for (final m
+                        in ref
+                                .watch(
+                                  messagesProvider((
+                                    membership!.babyId,
+                                    membership.uid,
+                                    true,
+                                  )),
+                                )
+                                .value ??
+                            const <ParentMessage>[])
+                      if (!m.readByUid(membership.uid)) m,
+                  ].length;
+                  return ClDetailRow(
+                    icon: ClIcons.mail,
+                    label: l10n.messagesTitle,
+                    value: unread > 0 ? l10n.messagesUnread(unread) : null,
+                    valueIsAccent: unread > 0,
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      context.push(Routes.messages);
+                    },
+                  );
+                },
               ),
             ClDetailRow(
               icon: ClIcons.sleep,

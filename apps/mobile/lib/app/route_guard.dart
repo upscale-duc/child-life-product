@@ -20,6 +20,7 @@ abstract final class Routes {
   static const feedStats = '/today/stats/feed';
   static const sleepStats = '/today/stats/sleep';
   static const reminders = '/today/reminders';
+  static const messages = '/messages';
   static const memories = '/memories';
   static const family = '/family';
   static const invite = '/family/invite';

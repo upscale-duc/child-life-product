@@ -22,6 +22,7 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../care/care_repository.dart';
 import '../family/family_repository.dart';
+import 'album_screens.dart' show albumsValue, showAlbumPicker;
 import 'media_picker.dart';
 import 'media_viewer.dart';
 import 'memories_screen.dart';
@@ -225,6 +226,8 @@ class _ComposeSheetState extends ConsumerState<ComposeSheet> {
   var _single = false;
   late DateTime _date = babyToday(widget.ctx.zone, widget.ctx.now);
   MilestoneRef? _milestone;
+  var _albumIds = <String>[];
+  var _switchedToFamily = false;
   var _audience = Audience.family; // D-001
   var _notify = true;
   String? _error;
@@ -287,6 +290,22 @@ class _ComposeSheetState extends ConsumerState<ComposeSheet> {
     if (result != null) setState(() => _milestone = result.$1);
   }
 
+  /// 10h5: several albums; a Gia đình album switches "Ai thấy" to Gia đình (D-002).
+  Future<void> _pickAlbums() async {
+    final c = memoryCtx(context, ref) ?? widget.ctx;
+    final picked = await showAlbumPicker(context, ref, c, selected: _albumIds);
+    if (picked == null || !mounted) return;
+    final albums = ref.read(albumsProvider((c.babyId, true))).value ?? const [];
+    final family = albums.any(
+      (a) => picked.contains(a.id) && a.audience == Audience.family,
+    );
+    setState(() {
+      _albumIds = picked;
+      _switchedToFamily = family && _audience != Audience.family;
+      if (family) _audience = Audience.family;
+    });
+  }
+
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     final c = memoryCtx(context, ref) ?? widget.ctx;
@@ -306,6 +325,7 @@ class _ComposeSheetState extends ConsumerState<ComposeSheet> {
       'dateMode': _single || _note ? 'single' : 'capture',
       'date': _single || _note ? isoDateOf(_date) : null,
       'milestone': _milestone?.toJson(),
+      'albumIds': _albumIds,
     };
     final toaster = ClToaster.of(context);
     final navigator = Navigator.of(context);
@@ -393,8 +413,26 @@ class _ComposeSheetState extends ConsumerState<ComposeSheet> {
             value: _milestone?.name ?? l10n.composeNoMilestone,
             onTap: _pickMilestone,
           ),
+          if (!_note)
+            ClDetailRow(
+              icon: ClIcons.memories,
+              label: l10n.memAlbums,
+              value: albumsValue(
+                l10n,
+                ref.watch(albumsProvider((c.babyId, true))).value ?? const [],
+                _albumIds,
+              ),
+              onTap: _pickAlbums,
+            ),
         ],
       ),
+      if (_switchedToFamily) ...[
+        const SizedBox(height: ClSpace.s2),
+        Text(
+          l10n.albFamilySwitched,
+          style: cl.text.caption.copyWith(color: cl.colors.mintText),
+        ),
+      ],
       const SizedBox(height: ClSpace.s4),
       Text(l10n.composeWho, style: cl.text.headline),
       const SizedBox(height: ClSpace.s2),
@@ -1432,7 +1470,7 @@ Future<void> showSelectionActions(
           children: [
             tile(ClIcons.family, l10n.actWho, parent ? 'who' : null),
             const SizedBox(width: ClSpace.s2),
-            tile(ClIcons.memories, l10n.actAlbum, null),
+            tile(ClIcons.memories, l10n.actAlbum, parent ? 'album' : null),
             const SizedBox(width: ClSpace.s2),
             tile(ClIcons.download, l10n.actDownload, 'download'),
             const SizedBox(width: ClSpace.s2),
@@ -1448,7 +1486,12 @@ Future<void> showSelectionActions(
         ClCardGroup(
           color: cl.colors.surface2,
           children: [
-            row(ClIcons.bookmark, l10n.actFavorite, l10n.actSoon, null),
+            row(
+              ClIcons.bookmark,
+              l10n.actFavorite,
+              l10n.actFavoriteHint,
+              'favorite',
+            ),
             row(
               ClIcons.star,
               l10n.msTitle,
@@ -1462,7 +1505,14 @@ Future<void> showSelectionActions(
               parent ? 'date' : null,
             ),
             row(ClIcons.spark, l10n.actStory, l10n.actSoon, null),
-            row(ClIcons.memories, l10n.actCover, l10n.actCoverHint, null),
+            row(
+              ClIcons.memories,
+              l10n.actCover,
+              l10n.actCoverHint,
+              parent && items.length == 1 && !items.single.isVideo
+                  ? 'cover'
+                  : null,
+            ),
           ],
         ),
       ]);
@@ -1470,6 +1520,61 @@ Future<void> showSelectionActions(
   );
   if (action == null || !context.mounted) return;
   switch (action) {
+    case 'album':
+      final picked = await showAlbumPicker(
+        context,
+        ref,
+        c,
+        mediaIds: [for (final i in items) i.id],
+      );
+      if (picked == null || picked.isEmpty || !context.mounted) return;
+      final repo = ref.read(memoryRepositoryProvider);
+      final toaster = ClToaster.of(context);
+      final albums =
+          ref.read(albumsProvider((c.babyId, true))).value ?? const [];
+      try {
+        for (final a in picked) {
+          await repo.addToAlbum(c.babyId, a, [for (final i in items) i.id]);
+        }
+        ref.read(memorySelectionProvider.notifier).end();
+        toaster.show(
+          message: l10n.albAdded(
+            items.length,
+            albums.where((a) => a.id == picked.first).firstOrNull?.name ?? '',
+          ),
+        );
+      } on Object {
+        toaster.show(message: l10n.toastActionFailed);
+      }
+    case 'favorite':
+      final toaster = ClToaster.of(context);
+      try {
+        for (final i in items) {
+          await ref
+              .read(memoryRepositoryProvider)
+              .setFavorite(c.babyId, c.me.uid, i.id, true);
+        }
+        ref.read(memorySelectionProvider.notifier).end();
+        toaster.show(message: l10n.favAdded);
+      } on Object {
+        toaster.show(message: l10n.toastActionFailed);
+      }
+    case 'cover':
+      final picked = await showAlbumPicker(context, ref, c);
+      if (picked == null || picked.isEmpty || !context.mounted) return;
+      final repo = ref.read(memoryRepositoryProvider);
+      final toaster = ClToaster.of(context);
+      try {
+        await repo.addToAlbum(c.babyId, picked.first, [items.single.id]);
+        await repo.updateAlbum(c.babyId, picked.first, {
+          'kind': 'cover',
+          'mediaId': items.single.id,
+        });
+        ref.read(memorySelectionProvider.notifier).end();
+        toaster.show(message: l10n.albCoverSet);
+      } on Object {
+        toaster.show(message: l10n.toastActionFailed);
+      }
     case 'download':
       await saveToPhotos(context, items);
     case 'send':

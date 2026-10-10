@@ -14,11 +14,14 @@ import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
+import 'album_models.dart';
+import 'album_screens.dart';
 import 'media_viewer.dart';
 import 'memory_models.dart';
 import 'memory_repository.dart';
 import 'memory_sheets.dart';
 import 'memory_widgets.dart';
+import 'social_widgets.dart';
 
 // ---------- View state (10c) and selection (10b2) ----------
 
@@ -241,7 +244,8 @@ class MemoriesScreen extends ConsumerWidget {
         media: media,
       ),
       MemoryTab.photos => PhotosView(ctx: c, media: media),
-      MemoryTab.albums || MemoryTab.stories => _Soon(ctx: c),
+      MemoryTab.albums => AlbumsView(ctx: c),
+      MemoryTab.stories => _Soon(ctx: c),
     };
 
     return ColoredBox(
@@ -564,6 +568,8 @@ class JournalView extends ConsumerWidget {
     final cl = context.cl;
     final view = ref.watch(memoryViewProvider);
     final c = ctx;
+    final favorites =
+        ref.watch(favoritesProvider((c.babyId, c.me.uid))).value ?? const {};
     final byId = {for (final m in media ?? const <MediaItem>[]) m.id: m};
     final groups = <Object, _Group>{};
     final order = <_Group>[];
@@ -640,7 +646,15 @@ class JournalView extends ConsumerWidget {
             ),
             sliver: SliverList.list(
               children: [
-                MemoryHeader(ctx: c, title: l10n.memJournal),
+                MemoryHeader(
+                  ctx: c,
+                  title: c.isParent ? l10n.memJournal : l10n.tabMemories,
+                ),
+                if (!c.isParent)
+                  Text(
+                    l10n.relSubtitle,
+                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                  ),
                 if (c.isParent) ...[
                   const SizedBox(height: ClSpace.s3),
                   UploadPill(
@@ -654,12 +668,16 @@ class JournalView extends ConsumerWidget {
                     padding: const EdgeInsets.only(top: ClSpace.s8),
                     child: ClEmptyState(
                       icon: ClIcons.memories,
-                      title: l10n.memEmptyTitle,
+                      title: c.isParent
+                          ? l10n.memEmptyTitle
+                          : l10n.relEmptyTitle,
                       message:
                           view.show != MemoryShow.all ||
                               view.who != MemoryWho.all
                           ? l10n.memNoMatch
-                          : l10n.memEmptyBody(c.nickname),
+                          : c.isParent
+                          ? l10n.memEmptyBody(c.nickname)
+                          : l10n.relEmptyBody,
                     ),
                   ),
               ],
@@ -697,6 +715,8 @@ class JournalView extends ConsumerWidget {
                           memory: m,
                           items: items,
                           myUid: c.me.uid,
+                          favorites: favorites,
+                          footer: _EntryFooter(memory: m, ctx: c),
                           dateLabel: entryDate(l10n, c, m.occurredAt),
                           onOpen: (i) => openViewer(
                             context,
@@ -785,6 +805,8 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
     final view = ref.watch(memoryViewProvider);
     final selection = ref.watch(memorySelectionProvider);
     final selecting = selection != null;
+    final favorites =
+        ref.watch(favoritesProvider((c.babyId, c.me.uid))).value ?? const {};
     final items = visibleMedia(widget.media ?? const [], view, c.parentView);
     final months = <DateTime, List<MediaItem>>{};
     for (final i in items) {
@@ -1001,6 +1023,7 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                             final i = e.value[n];
                             return MediaTile(
                               item: i,
+                              favorite: favorites.contains(i.id),
                               selecting: selecting,
                               selected: selection?.contains(i.id) ?? false,
                               onTap: () => selecting ? toggle(i) : open(i),
@@ -1125,6 +1148,63 @@ class _ListRow extends StatelessWidget {
           AudienceIcon(audience: item.effectiveAudience),
         ],
       ),
+    );
+  }
+}
+
+/// Loves under an entry (parents see names) and, for relatives, "♡ Thương · ✉ Nhắn ba mẹ"
+/// (11c, D-034).
+class _EntryFooter extends StatelessWidget {
+  const _EntryFooter({required this.memory, required this.ctx});
+  final Memory memory;
+  final MemoryCtx ctx;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final line = LovesLine(
+      target: LoveTarget.memory,
+      targetId: memory.id,
+      count: memory.loveCount,
+    );
+    if (ctx.isParent) return line;
+    return Row(
+      children: [
+        LoveButton(
+          target: LoveTarget.memory,
+          targetId: memory.id,
+          count: memory.loveCount,
+        ),
+        const SizedBox(width: ClSpace.s2),
+        ClPressable(
+          onPressed: () => showMessageComposer(
+            context,
+            kind: MessageContext.memory,
+            contextId: memory.id,
+          ),
+          semanticLabel: l10n.messageParents,
+          child: Container(
+            height: 40,
+            padding: const EdgeInsets.symmetric(horizontal: ClSpace.s3),
+            decoration: BoxDecoration(
+              color: cl.colors.surface2,
+              borderRadius: BorderRadius.circular(ClRadius.pill),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClIcon(ClIcons.mail, size: 18, color: cl.colors.ink),
+                const SizedBox(width: 6),
+                Text(
+                  l10n.messageParents,
+                  style: cl.text.label.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

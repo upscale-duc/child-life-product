@@ -157,10 +157,14 @@ class MediaTile extends StatelessWidget {
     this.selecting = false,
     this.selected = false,
     this.radius = 6,
+    this.favorite = false,
     super.key,
   });
 
   final MediaItem item;
+
+  /// In my Yêu thích: bookmark bottom-right (R-107).
+  final bool favorite;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
   final bool selecting;
@@ -238,6 +242,18 @@ class MediaTile extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                ),
+              ),
+            if (favorite)
+              Positioned(
+                right: 6,
+                bottom: 6,
+                child: _Badge(
+                  child: ClIcon(
+                    ClIcons.bookmark,
+                    size: 12,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -327,10 +343,18 @@ class MemoryEntryCard extends StatelessWidget {
     required this.myUid,
     required this.dateLabel,
     required this.onOpen,
+    this.favorites = const {},
+    this.footer,
     super.key,
   });
 
   final Memory memory;
+
+  /// My Yêu thích (bookmark on tiles).
+  final Set<String> favorites;
+
+  /// Loves and "Nhắn ba mẹ" (S10).
+  final Widget? footer;
 
   /// Its visible items, in order.
   final List<MediaItem> items;
@@ -389,8 +413,9 @@ class MemoryEntryCard extends StatelessWidget {
           ],
           if (!note) ...[
             const SizedBox(height: ClSpace.s2),
-            _EntryMedia(items: items, onOpen: onOpen),
+            _EntryMedia(items: items, onOpen: onOpen, favorites: favorites),
           ],
+          if (footer != null) ...[const SizedBox(height: ClSpace.s2), footer!],
         ],
       ),
     );
@@ -398,7 +423,12 @@ class MemoryEntryCard extends StatelessWidget {
 }
 
 class _EntryMedia extends StatelessWidget {
-  const _EntryMedia({required this.items, required this.onOpen});
+  const _EntryMedia({
+    required this.items,
+    required this.onOpen,
+    required this.favorites,
+  });
+  final Set<String> favorites;
   final List<MediaItem> items;
   final void Function(MediaItem item) onOpen;
 
@@ -413,6 +443,7 @@ class _EntryMedia extends StatelessWidget {
         aspectRatio: ratio,
         child: MediaTile(
           item: i,
+          favorite: favorites.contains(i.id),
           radius: ClRadius.control,
           onTap: () => onOpen(i),
         ),
@@ -428,6 +459,7 @@ class _EntryMedia extends StatelessWidget {
               Expanded(
                 child: MediaTile(
                   item: i,
+                  favorite: favorites.contains(i.id),
                   radius: ClRadius.control,
                   onTap: () => onOpen(i),
                 ),
@@ -451,7 +483,11 @@ class _EntryMedia extends StatelessWidget {
           Stack(
             fit: StackFit.expand,
             children: [
-              MediaTile(item: i, onTap: () => onOpen(i)),
+              MediaTile(
+                item: i,
+                favorite: favorites.contains(i.id),
+                onTap: () => onOpen(i),
+              ),
               if (extra > 0 && n == shown.length - 1)
                 IgnorePointer(
                   child: ClipRRect(

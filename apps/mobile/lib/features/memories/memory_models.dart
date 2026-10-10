@@ -114,6 +114,8 @@ class MediaItem {
     this.deletedAt,
     this.waitingWifi = false,
     this.sizeBytes = 0,
+    this.albumIds = const [],
+    this.loveCount = 0,
   });
 
   final String id;
@@ -141,6 +143,10 @@ class MediaItem {
   final DateTime? deletedAt;
   final bool waitingWifi;
   final int sizeBytes;
+  final List<String> albumIds;
+
+  /// "♥ 4": the whole family's loves (counts for everyone, names for parents).
+  final int loveCount;
 
   bool get isVideo => type == MediaKind.video;
   bool get isReady => status == MediaStatus.ready;
@@ -184,6 +190,11 @@ class MediaItem {
       deletedAt: dateOf(j['deletedAt']),
       waitingWifi: j['clientState'] == 'waitingWifi',
       sizeBytes: (j['sizeBytes'] as num?)?.toInt() ?? 0,
+      albumIds: [
+        for (final a in (j['albumIds'] as List? ?? const []))
+          if (a is String) a,
+      ],
+      loveCount: (j['loveCount'] as num?)?.toInt() ?? 0,
     );
   }
 }
@@ -205,6 +216,7 @@ class Memory {
     this.videos = 0,
     this.published = true,
     this.deleted = false,
+    this.loveCount = 0,
   });
 
   final String id;
@@ -220,6 +232,7 @@ class Memory {
   final bool deleted;
   final String createdBy;
   final CareAuthor author;
+  final int loveCount;
 
   bool get isNote => mediaIds.isEmpty;
 
@@ -246,6 +259,7 @@ class Memory {
       deleted: j['deleted'] == true,
       createdBy: j['createdBy'] as String? ?? '',
       author: CareAuthor.fromJson(j['author']),
+      loveCount: (j['loveCount'] as num?)?.toInt() ?? 0,
     );
   }
 }

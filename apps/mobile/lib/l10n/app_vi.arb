@@ -5158,5 +5158,570 @@
   "a11yShutter": "Chụp",
   "@a11yShutter": {
     "description": "10a3."
+  },
+  "albCount": "{count} album",
+  "@albCount": {
+    "description": "10d bar.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "albNew": "Album mới",
+  "@albNew": {
+    "description": "10d button / new-album sheet."
+  },
+  "albFavorites": "Yêu thích",
+  "@albFavorites": {
+    "description": "Automatic album (10e2)."
+  },
+  "albFavoritesMine": "của riêng bạn",
+  "@albFavoritesMine": {
+    "description": "11e card."
+  },
+  "albOnlyYou": "Chỉ mình bạn",
+  "@albOnlyYou": {
+    "description": "10e2 pill."
+  },
+  "albFavoritesHint": "ảnh bạn đã đánh dấu",
+  "@albFavoritesHint": {
+    "description": "10e2 subtitle."
+  },
+  "albFromMilestones": "Gom từ mốc bạn đã gắn",
+  "@albFromMilestones": {
+    "description": "10d section."
+  },
+  "albByMilestone": "Gom theo mốc",
+  "@albByMilestone": {
+    "description": "11e section for relatives (gap note)."
+  },
+  "albShared": "{count} album ba mẹ chia sẻ",
+  "@albShared": {
+    "description": "11e subtitle.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "albEmpty": "Chưa có album nào",
+  "@albEmpty": {
+    "description": "10d empty (not drawn)."
+  },
+  "albEmptyBody": "Tạo album để gom ảnh theo chủ đề, như Giờ tắm hay Bàn tay nhỏ.",
+  "@albEmptyBody": {
+    "description": "10d empty."
+  },
+  "albUpdated": "{counts} · cập nhật {when}",
+  "@albUpdated": {
+    "description": "10e hero.",
+    "placeholders": {
+      "counts": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "albAddPhotos": "Thêm ảnh",
+  "@albAddPhotos": {
+    "description": "10e bar."
+  },
+  "albStory": "Kể thành chuyện",
+  "@albStory": {
+    "description": "10e bar (S12)."
+  },
+  "albSharedBy": "{who} chia sẻ với gia đình",
+  "@albSharedBy": {
+    "description": "11f chip.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "albNoItems": "Album này chưa có ảnh nào.",
+  "@albNoItems": {
+    "description": "10e empty."
+  },
+  "albWhoButton": "Ai thấy album này",
+  "@albWhoButton": {
+    "description": "10e bar / 10e3 / 10e6."
+  },
+  "albRename": "Đổi tên album",
+  "@albRename": {
+    "description": "10e3 / 10e4."
+  },
+  "albCover": "Đổi ảnh bìa",
+  "@albCover": {
+    "description": "10e3."
+  },
+  "albWhoFamilyHint": "Mọi người thân trong gia đình",
+  "@albWhoFamilyHint": {
+    "description": "10e3."
+  },
+  "albSelect": "Chọn ảnh",
+  "@albSelect": {
+    "description": "10e3."
+  },
+  "albSelectHint": "Bỏ khỏi album, đổi ai thấy…",
+  "@albSelectHint": {
+    "description": "10e3."
+  },
+  "albSort": "Sắp xếp",
+  "@albSort": {
+    "description": "10e3 / 10e7."
+  },
+  "albDownload": "Tải cả album về máy",
+  "@albDownload": {
+    "description": "10e3."
+  },
+  "albDownloadHint": "{counts} · khoảng {size}",
+  "@albDownloadHint": {
+    "description": "10e3.",
+    "placeholders": {
+      "counts": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "albDelete": "Xoá album",
+  "@albDelete": {
+    "description": "10e3 / 10e10."
+  },
+  "albDeleteHint": "Chỉ xoá album, ảnh vẫn còn trong Kỷ niệm",
+  "@albDeleteHint": {
+    "description": "10e3."
+  },
+  "albName": "Tên album",
+  "@albName": {
+    "description": "10e4 field."
+  },
+  "albSuggestions": "Gợi ý",
+  "@albSuggestions": {
+    "description": "10e4."
+  },
+  "albSuggestBath": "Giờ tắm",
+  "@albSuggestBath": {
+    "description": "10e4 chip."
+  },
+  "albSuggestSun": "Tắm nắng",
+  "@albSuggestSun": {
+    "description": "10e4 chip."
+  },
+  "albSuggestSwim": "Lần đầu đi bơi",
+  "@albSuggestSwim": {
+    "description": "10e4 chip."
+  },
+  "albSuggestHands": "Bàn tay nhỏ",
+  "@albSuggestHands": {
+    "description": "New album chip."
+  },
+  "albSuggestSleep": "Ngủ ngoan",
+  "@albSuggestSleep": {
+    "description": "New album chip."
+  },
+  "albSaveName": "Lưu tên",
+  "@albSaveName": {
+    "description": "10e4."
+  },
+  "albNameRequired": "Đặt tên cho album.",
+  "@albNameRequired": {
+    "description": "Validation."
+  },
+  "albCreate": "Tạo album",
+  "@albCreate": {
+    "description": "New album primary (not drawn)."
+  },
+  "albCreated": "Đã tạo album “{name}”",
+  "@albCreated": {
+    "description": "Toast.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "albCoverTitle": "Chọn ảnh bìa",
+  "@albCoverTitle": {
+    "description": "10e5 title."
+  },
+  "albSetCover": "Đặt làm ảnh bìa",
+  "@albSetCover": {
+    "description": "10e5 / 10b3."
+  },
+  "albCoverSet": "Đã đổi ảnh bìa",
+  "@albCoverSet": {
+    "description": "Toast."
+  },
+  "albAppliesTo": "Áp dụng cho cả {count} mục trong album",
+  "@albAppliesTo": {
+    "description": "10e6 note.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "albLaterFollow": "Ảnh thêm sau này cũng theo quyền của album. Người chăm không thấy Kỷ niệm.",
+  "@albLaterFollow": {
+    "description": "10e6 note."
+  },
+  "albNoticeHint": "1 thông báo chung, không kèm ảnh",
+  "@albNoticeHint": {
+    "description": "10e6 toggle."
+  },
+  "albStayShared": "{count} mục vẫn được gia đình thấy vì còn nằm trong album Gia đình khác.",
+  "@albStayShared": {
+    "description": "Toast after Chỉ ba mẹ (D-002).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "albAudienceSaved": "Đã đổi ai thấy album",
+  "@albAudienceSaved": {
+    "description": "Toast."
+  },
+  "sortNewest": "Mới nhất",
+  "@sortNewest": {
+    "description": "10e7."
+  },
+  "sortNewestHint": "Ảnh chụp gần đây ở trên",
+  "@sortNewestHint": {
+    "description": "10e7."
+  },
+  "sortOldest": "Cũ nhất",
+  "@sortOldest": {
+    "description": "10e7."
+  },
+  "sortOldestHint": "Kể lại từ đầu, hợp để xem lại",
+  "@sortOldestHint": {
+    "description": "10e7."
+  },
+  "sortAdded": "Mới thêm vào album",
+  "@sortAdded": {
+    "description": "10e7."
+  },
+  "sortAddedHint": "Theo lúc bạn thêm ảnh",
+  "@sortAddedHint": {
+    "description": "10e7."
+  },
+  "albRemove": "Bỏ khỏi album",
+  "@albRemove": {
+    "description": "10e8 bar."
+  },
+  "albRemoved": "Đã bỏ {count} mục khỏi album",
+  "@albRemoved": {
+    "description": "Toast.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dlTitle": "Tải về máy",
+  "@dlTitle": {
+    "description": "10e9 title."
+  },
+  "dlSummary": "{count} mục · khoảng {size}",
+  "@dlSummary": {
+    "description": "10e9.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dlInto": "Lưu vào album “{name}” trong app Ảnh",
+  "@dlInto": {
+    "description": "10e9.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dlWifi": "Chỉ tải qua Wi-Fi",
+  "@dlWifi": {
+    "description": "10e9 toggle."
+  },
+  "dlWifiHint": "Video lớn sẽ đợi Wi-Fi",
+  "@dlWifiHint": {
+    "description": "10e9."
+  },
+  "dlN": "Tải {count} mục",
+  "@dlN": {
+    "description": "10e9 primary.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dlFootnote": "Tải ở nền — xong sẽ báo bạn.",
+  "@dlFootnote": {
+    "description": "10e9."
+  },
+  "dlNeedsWifi": "Đang chờ Wi-Fi để tải video.",
+  "@dlNeedsWifi": {
+    "description": "Toast."
+  },
+  "albDeleteTitle": "Xoá album “{name}”?",
+  "@albDeleteTitle": {
+    "description": "10e10 title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "albDeleteBody": "{count} ảnh và video vẫn còn ở tab Ảnh và Nhật ký. Chỉ album bị xoá.",
+  "@albDeleteBody": {
+    "description": "10e10.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "albDeleteFamily": "Gia đình sẽ không thấy album này nữa.",
+  "@albDeleteFamily": {
+    "description": "10e10."
+  },
+  "albDeleted": "Đã xoá album",
+  "@albDeleted": {
+    "description": "Toast."
+  },
+  "albPickTitle": "Thêm vào album",
+  "@albPickTitle": {
+    "description": "10h5 title."
+  },
+  "albPickNew": "Tạo album mới",
+  "@albPickNew": {
+    "description": "10h5 row."
+  },
+  "albPickHint": "Có thể chọn nhiều album. Ảnh vẫn theo quyền “Ai thấy” bạn đã chọn.",
+  "@albPickHint": {
+    "description": "10h5 helper."
+  },
+  "albPickNone": "Chưa chọn",
+  "@albPickNone": {
+    "description": "10h value."
+  },
+  "albPickMore": "{first} +{count}",
+  "@albPickMore": {
+    "description": "10h value, several albums.",
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "albAdded": "Đã thêm {count} mục vào “{name}”",
+  "@albAdded": {
+    "description": "Toast.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "albFamilySwitched": "Album Gia đình: “Ai thấy” chuyển sang Gia đình.",
+  "@albFamilySwitched": {
+    "description": "10h hint (D-002)."
+  },
+  "albPickFromMemories": "Chọn từ Kỷ niệm",
+  "@albPickFromMemories": {
+    "description": "Add photos to album."
+  },
+  "favAdded": "Đã thêm vào Yêu thích",
+  "@favAdded": {
+    "description": "Toast."
+  },
+  "favRemoved": "Đã bỏ khỏi Yêu thích",
+  "@favRemoved": {
+    "description": "Toast."
+  },
+  "love": "Thương",
+  "@love": {
+    "description": "Action."
+  },
+  "lovesNamed": "{names} thương",
+  "@lovesNamed": {
+    "description": "Entry loves (parents).",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "lovesCount": "{count} lượt thương",
+  "@lovesCount": {
+    "description": "Entry loves.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageAction": "Nhắn",
+  "@messageAction": {
+    "description": "11g pill."
+  },
+  "messageParents": "Nhắn ba mẹ",
+  "@messageParents": {
+    "description": "11c action / composer title."
+  },
+  "messagePlaceholder": "Nhắn ba mẹ…",
+  "@messagePlaceholder": {
+    "description": "11i field."
+  },
+  "messageTo": "Nhắn {who}",
+  "@messageTo": {
+    "description": "Composer title for a caregiver (12e).",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "messageSend": "Gửi",
+  "@messageSend": {
+    "description": "Composer."
+  },
+  "messageSent": "Đã gửi lời nhắn",
+  "@messageSent": {
+    "description": "Toast."
+  },
+  "messageHint": "Chỉ ba mẹ đọc được. Đây không phải trò chuyện.",
+  "@messageHint": {
+    "description": "Composer (D-034)."
+  },
+  "messageFailed": "Chưa gửi được. Kiểm tra mạng và thử lại.",
+  "@messageFailed": {
+    "description": "Toast."
+  },
+  "messagesTitle": "Lời nhắn",
+  "@messagesTitle": {
+    "description": "Parents list (D-034)."
+  },
+  "messagesEmpty": "Chưa có lời nhắn nào.",
+  "@messagesEmpty": {
+    "description": "Parents list empty."
+  },
+  "messagesUnread": "{count} chưa đọc",
+  "@messagesUnread": {
+    "description": "Me row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messagesAboutPhoto": "về một ảnh",
+  "@messagesAboutPhoto": {
+    "description": "Context."
+  },
+  "messagesAboutMemory": "về một kỷ niệm",
+  "@messagesAboutMemory": {
+    "description": "Context."
+  },
+  "messagesAboutAlbum": "về album “{name}”",
+  "@messagesAboutAlbum": {
+    "description": "Context.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messagesAboutAlbumGeneric": "về một album",
+  "@messagesAboutAlbumGeneric": {
+    "description": "Context."
+  },
+  "messagesAboutStory": "về một câu chuyện",
+  "@messagesAboutStory": {
+    "description": "Context."
+  },
+  "messagesAboutRecord": "về một ghi chép chăm sóc",
+  "@messagesAboutRecord": {
+    "description": "Context."
+  },
+  "messagesOnItem": "Lời nhắn ({count})",
+  "@messagesOnItem": {
+    "description": "Viewer thread (parents).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFrom": "{who} · {when}",
+  "@messageFrom": {
+    "description": "Message meta.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "relSubtitle": "Những gì ba mẹ chia sẻ với gia đình",
+  "@relSubtitle": {
+    "description": "11c subtitle."
+  },
+  "relEmptyTitle": "Chưa có kỷ niệm nào được chia sẻ",
+  "@relEmptyTitle": {
+    "description": "11h."
+  },
+  "relEmptyBody": "Khi ba mẹ chia sẻ ảnh với gia đình, bạn sẽ nhận một thông báo và thấy ở đây.",
+  "@relEmptyBody": {
+    "description": "11h."
+  },
+  "viewerShared": "{date} · {who} chia sẻ",
+  "@viewerShared": {
+    "description": "11g meta.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "viewerInAlbum": "{meta} · album {name}",
+  "@viewerInAlbum": {
+    "description": "10f meta with album.",
+    "placeholders": {
+      "meta": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "albOptions": "Tuỳ chọn album",
+  "@albOptions": {
+    "description": "10e ••• button (a11y) / 10e3."
   }
 }

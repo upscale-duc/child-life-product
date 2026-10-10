@@ -18,7 +18,9 @@ import '../features/family/invite_screens.dart';
 import '../features/family/join_screens.dart';
 import '../features/family/save_account.dart';
 import '../features/home/home_shell.dart';
+import '../features/memories/album_screens.dart';
 import '../features/memories/memories_screen.dart';
+import '../features/memories/messages_screen.dart';
 import '../features/reminders/reminder_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
@@ -121,6 +123,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const BabyProfileScreen(),
       ),
       GoRoute(path: Routes.trackers, builder: (_, _) => const TrackersScreen()),
+      GoRoute(path: Routes.messages, builder: (_, _) => const MessagesScreen()),
       StatefulShellRoute.indexedStack(
         pageBuilder: (context, state, shell) =>
             _fade(state, HomeShell(shell: shell)),
@@ -171,6 +174,15 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: Routes.memories,
                 builder: (_, _) => const MemoriesScreen(),
+                // S10: album, favourites and milestone pages keep the dock (10e, 11f).
+                routes: [
+                  GoRoute(
+                    path: 'album/:key',
+                    builder: (_, s) => AlbumDetailScreen(
+                      albumKey: s.pathParameters['key'] ?? '',
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

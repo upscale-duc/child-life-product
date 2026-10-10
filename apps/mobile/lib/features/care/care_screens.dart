@@ -26,6 +26,8 @@ import '../baby/baby_repository.dart';
 import '../family/family_labels.dart';
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
+import '../memories/album_models.dart' show MessageContext;
+import '../memories/social_widgets.dart' show showMessageComposer;
 import 'care_format.dart';
 import 'care_models.dart';
 import 'care_repository.dart';
@@ -685,7 +687,13 @@ class RecordDetailScreen extends ConsumerWidget {
             label: l10n.messageAuthor(author),
             style: ClButtonStyle.secondary,
             expand: true,
-            onPressed: () => showClToast(context, message: l10n.messagesSoon),
+            // "Nhắn Mẹ" (D-034): one-way to the parents, about this record.
+            onPressed: () => showMessageComposer(
+              context,
+              kind: MessageContext.record,
+              contextId: record.id,
+              title: l10n.messageTo(author),
+            ),
           ),
       ],
     );

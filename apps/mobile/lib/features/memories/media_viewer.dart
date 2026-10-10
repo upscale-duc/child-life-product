@@ -13,14 +13,17 @@ import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../home/home_shell.dart';
 import 'media_bytes.dart';
+import 'album_models.dart';
 import 'memories_screen.dart';
 import 'memory_models.dart';
 import 'memory_repository.dart';
 import 'memory_widgets.dart';
+import 'social_widgets.dart';
 
 /// 10f Xem toàn màn hình (135:18156): swipe through items, audience pill, milestone, caption,
 /// "Thứ Hai, 5 tháng 10 · Mẹ đăng", Tải về and Chia sẻ (R-114). Thương and Yêu thích come
@@ -130,9 +133,32 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
     final caption = memory?.caption;
     final who = whoLabel(l10n, item.author, item.createdBy == me?.uid);
     final date = c == null ? '' : entryDate(l10n, c, item.captureAt);
-    // Relatives download photos; videos wait for Q-015.
-    final canDownload =
-        me?.role == MemberRole.coParent || (!item.isVideo && me != null);
+    // Relatives download photos and videos too (D-036).
+    final canDownload = me != null;
+    final parent = me?.role == MemberRole.coParent;
+    final albums = c == null
+        ? const <Album>[]
+        : ref.watch(albumsProvider((c.babyId, c.isParent))).value ?? const [];
+    final albumName = albums
+        .where((a) => item.albumIds.contains(a.id))
+        .map((a) => a.name)
+        .firstOrNull;
+    final posted = parent
+        ? l10n.viewerPosted(date, who)
+        : l10n.viewerShared(date, who);
+    final meta = albumName == null
+        ? posted
+        : l10n.viewerInAlbum(posted, albumName);
+    final thread = parent && me != null
+        ? [
+            for (final m
+                in ref
+                        .watch(messagesProvider((me.babyId, me.uid, true)))
+                        .value ??
+                    const <ParentMessage>[])
+              if (m.contextId == item.id || m.contextId == item.memoryId) m,
+          ]
+        : const <ParentMessage>[];
     final white = Colors.white;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -273,25 +299,66 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
                       const SizedBox(height: 4),
                     ],
                     Text(
-                      l10n.viewerPosted(date, who),
+                      meta,
                       style: cl.text.caption.copyWith(color: Colors.white70),
                     ),
+                    if (thread.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: ClSpace.s2),
+                        child: ClPressable(
+                          onPressed: () => _showThread(context, thread),
+                          semanticLabel: l10n.messagesOnItem(thread.length),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ClIcon(ClIcons.mail, size: 16, color: white),
+                              const SizedBox(width: 6),
+                              Text(
+                                l10n.messagesOnItem(thread.length),
+                                style: cl.text.label.copyWith(
+                                  color: white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: ClSpace.s3),
-                    Row(
+                    Wrap(
+                      spacing: ClSpace.s2,
+                      runSpacing: ClSpace.s2,
                       children: [
+                        LoveButton(
+                          target: LoveTarget.media,
+                          targetId: item.id,
+                          count: item.loveCount,
+                          dark: true,
+                          showLabel: false,
+                        ),
+                        FavoriteButton(mediaId: item.id, dark: true),
                         if (canDownload) ...[
                           _Action(
                             icon: ClIcons.download,
                             label: l10n.actDownload,
                             onTap: () => saveToPhotos(context, [item]),
                           ),
-                          const SizedBox(width: ClSpace.s2),
                         ],
-                        if (me?.role == MemberRole.coParent)
+                        if (parent)
                           _Action(
                             icon: ClIcons.upload,
                             label: l10n.viewerShare,
                             onTap: () => shareItems(context, [item]),
+                          )
+                        else
+                          _Action(
+                            icon: ClIcons.mail,
+                            label: l10n.messageAction,
+                            onTap: () => showMessageComposer(
+                              context,
+                              kind: MessageContext.media,
+                              contextId: item.id,
+                            ),
                           ),
                       ],
                     ),
@@ -305,6 +372,46 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
     );
   }
 }
+
+/// "Lời nhắn (2)" under an item, for parents (D-034); opening marks them read.
+Future<void> _showThread(BuildContext context, List<ParentMessage> thread) =>
+    showClSheet<void>(
+      context: context,
+      builder: (sheet) => Consumer(
+        builder: (context, ref, _) {
+          final l10n = AppLocalizations.of(context);
+          final me = ref.read(selectedMembershipProvider);
+          if (me != null) {
+            for (final m in thread) {
+              if (!m.readByUid(me.uid)) {
+                unawaited(
+                  ref
+                      .read(memoryRepositoryProvider)
+                      .markRead(me.babyId, m.id, me.uid)
+                      .catchError((Object _) {}),
+                );
+              }
+            }
+          }
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ClSheetHeader(title: l10n.messagesOnItem(thread.length)),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: thread.length,
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(height: ClSpace.s2),
+                  itemBuilder: (_, i) => MessageTile(message: thread[i]),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
 
 class _Action extends StatelessWidget {
   const _Action({required this.icon, required this.label, required this.onTap});

@@ -3380,4 +3380,371 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get a11yShutter => 'Chụp';
+
+  @override
+  String albCount(int count) {
+    return '$count album';
+  }
+
+  @override
+  String get albNew => 'Album mới';
+
+  @override
+  String get albFavorites => 'Yêu thích';
+
+  @override
+  String get albFavoritesMine => 'của riêng bạn';
+
+  @override
+  String get albOnlyYou => 'Chỉ mình bạn';
+
+  @override
+  String get albFavoritesHint => 'ảnh bạn đã đánh dấu';
+
+  @override
+  String get albFromMilestones => 'Gom từ mốc bạn đã gắn';
+
+  @override
+  String get albByMilestone => 'Gom theo mốc';
+
+  @override
+  String albShared(int count) {
+    return '$count album ba mẹ chia sẻ';
+  }
+
+  @override
+  String get albEmpty => 'Chưa có album nào';
+
+  @override
+  String get albEmptyBody =>
+      'Tạo album để gom ảnh theo chủ đề, như Giờ tắm hay Bàn tay nhỏ.';
+
+  @override
+  String albUpdated(String counts, String when) {
+    return '$counts · cập nhật $when';
+  }
+
+  @override
+  String get albAddPhotos => 'Thêm ảnh';
+
+  @override
+  String get albStory => 'Kể thành chuyện';
+
+  @override
+  String albSharedBy(String who) {
+    return '$who chia sẻ với gia đình';
+  }
+
+  @override
+  String get albNoItems => 'Album này chưa có ảnh nào.';
+
+  @override
+  String get albWhoButton => 'Ai thấy album này';
+
+  @override
+  String get albRename => 'Đổi tên album';
+
+  @override
+  String get albCover => 'Đổi ảnh bìa';
+
+  @override
+  String get albWhoFamilyHint => 'Mọi người thân trong gia đình';
+
+  @override
+  String get albSelect => 'Chọn ảnh';
+
+  @override
+  String get albSelectHint => 'Bỏ khỏi album, đổi ai thấy…';
+
+  @override
+  String get albSort => 'Sắp xếp';
+
+  @override
+  String get albDownload => 'Tải cả album về máy';
+
+  @override
+  String albDownloadHint(String counts, String size) {
+    return '$counts · khoảng $size';
+  }
+
+  @override
+  String get albDelete => 'Xoá album';
+
+  @override
+  String get albDeleteHint => 'Chỉ xoá album, ảnh vẫn còn trong Kỷ niệm';
+
+  @override
+  String get albName => 'Tên album';
+
+  @override
+  String get albSuggestions => 'Gợi ý';
+
+  @override
+  String get albSuggestBath => 'Giờ tắm';
+
+  @override
+  String get albSuggestSun => 'Tắm nắng';
+
+  @override
+  String get albSuggestSwim => 'Lần đầu đi bơi';
+
+  @override
+  String get albSuggestHands => 'Bàn tay nhỏ';
+
+  @override
+  String get albSuggestSleep => 'Ngủ ngoan';
+
+  @override
+  String get albSaveName => 'Lưu tên';
+
+  @override
+  String get albNameRequired => 'Đặt tên cho album.';
+
+  @override
+  String get albCreate => 'Tạo album';
+
+  @override
+  String albCreated(String name) {
+    return 'Đã tạo album “$name”';
+  }
+
+  @override
+  String get albCoverTitle => 'Chọn ảnh bìa';
+
+  @override
+  String get albSetCover => 'Đặt làm ảnh bìa';
+
+  @override
+  String get albCoverSet => 'Đã đổi ảnh bìa';
+
+  @override
+  String albAppliesTo(int count) {
+    return 'Áp dụng cho cả $count mục trong album';
+  }
+
+  @override
+  String get albLaterFollow =>
+      'Ảnh thêm sau này cũng theo quyền của album. Người chăm không thấy Kỷ niệm.';
+
+  @override
+  String get albNoticeHint => '1 thông báo chung, không kèm ảnh';
+
+  @override
+  String albStayShared(int count) {
+    return '$count mục vẫn được gia đình thấy vì còn nằm trong album Gia đình khác.';
+  }
+
+  @override
+  String get albAudienceSaved => 'Đã đổi ai thấy album';
+
+  @override
+  String get sortNewest => 'Mới nhất';
+
+  @override
+  String get sortNewestHint => 'Ảnh chụp gần đây ở trên';
+
+  @override
+  String get sortOldest => 'Cũ nhất';
+
+  @override
+  String get sortOldestHint => 'Kể lại từ đầu, hợp để xem lại';
+
+  @override
+  String get sortAdded => 'Mới thêm vào album';
+
+  @override
+  String get sortAddedHint => 'Theo lúc bạn thêm ảnh';
+
+  @override
+  String get albRemove => 'Bỏ khỏi album';
+
+  @override
+  String albRemoved(int count) {
+    return 'Đã bỏ $count mục khỏi album';
+  }
+
+  @override
+  String get dlTitle => 'Tải về máy';
+
+  @override
+  String dlSummary(int count, String size) {
+    return '$count mục · khoảng $size';
+  }
+
+  @override
+  String dlInto(String name) {
+    return 'Lưu vào album “$name” trong app Ảnh';
+  }
+
+  @override
+  String get dlWifi => 'Chỉ tải qua Wi-Fi';
+
+  @override
+  String get dlWifiHint => 'Video lớn sẽ đợi Wi-Fi';
+
+  @override
+  String dlN(int count) {
+    return 'Tải $count mục';
+  }
+
+  @override
+  String get dlFootnote => 'Tải ở nền — xong sẽ báo bạn.';
+
+  @override
+  String get dlNeedsWifi => 'Đang chờ Wi-Fi để tải video.';
+
+  @override
+  String albDeleteTitle(String name) {
+    return 'Xoá album “$name”?';
+  }
+
+  @override
+  String albDeleteBody(int count) {
+    return '$count ảnh và video vẫn còn ở tab Ảnh và Nhật ký. Chỉ album bị xoá.';
+  }
+
+  @override
+  String get albDeleteFamily => 'Gia đình sẽ không thấy album này nữa.';
+
+  @override
+  String get albDeleted => 'Đã xoá album';
+
+  @override
+  String get albPickTitle => 'Thêm vào album';
+
+  @override
+  String get albPickNew => 'Tạo album mới';
+
+  @override
+  String get albPickHint =>
+      'Có thể chọn nhiều album. Ảnh vẫn theo quyền “Ai thấy” bạn đã chọn.';
+
+  @override
+  String get albPickNone => 'Chưa chọn';
+
+  @override
+  String albPickMore(String first, int count) {
+    return '$first +$count';
+  }
+
+  @override
+  String albAdded(int count, String name) {
+    return 'Đã thêm $count mục vào “$name”';
+  }
+
+  @override
+  String get albFamilySwitched =>
+      'Album Gia đình: “Ai thấy” chuyển sang Gia đình.';
+
+  @override
+  String get albPickFromMemories => 'Chọn từ Kỷ niệm';
+
+  @override
+  String get favAdded => 'Đã thêm vào Yêu thích';
+
+  @override
+  String get favRemoved => 'Đã bỏ khỏi Yêu thích';
+
+  @override
+  String get love => 'Thương';
+
+  @override
+  String lovesNamed(String names) {
+    return '$names thương';
+  }
+
+  @override
+  String lovesCount(int count) {
+    return '$count lượt thương';
+  }
+
+  @override
+  String get messageAction => 'Nhắn';
+
+  @override
+  String get messageParents => 'Nhắn ba mẹ';
+
+  @override
+  String get messagePlaceholder => 'Nhắn ba mẹ…';
+
+  @override
+  String messageTo(String who) {
+    return 'Nhắn $who';
+  }
+
+  @override
+  String get messageSend => 'Gửi';
+
+  @override
+  String get messageSent => 'Đã gửi lời nhắn';
+
+  @override
+  String get messageHint => 'Chỉ ba mẹ đọc được. Đây không phải trò chuyện.';
+
+  @override
+  String get messageFailed => 'Chưa gửi được. Kiểm tra mạng và thử lại.';
+
+  @override
+  String get messagesTitle => 'Lời nhắn';
+
+  @override
+  String get messagesEmpty => 'Chưa có lời nhắn nào.';
+
+  @override
+  String messagesUnread(int count) {
+    return '$count chưa đọc';
+  }
+
+  @override
+  String get messagesAboutPhoto => 'về một ảnh';
+
+  @override
+  String get messagesAboutMemory => 'về một kỷ niệm';
+
+  @override
+  String messagesAboutAlbum(String name) {
+    return 'về album “$name”';
+  }
+
+  @override
+  String get messagesAboutAlbumGeneric => 'về một album';
+
+  @override
+  String get messagesAboutStory => 'về một câu chuyện';
+
+  @override
+  String get messagesAboutRecord => 'về một ghi chép chăm sóc';
+
+  @override
+  String messagesOnItem(int count) {
+    return 'Lời nhắn ($count)';
+  }
+
+  @override
+  String messageFrom(String who, String when) {
+    return '$who · $when';
+  }
+
+  @override
+  String get relSubtitle => 'Những gì ba mẹ chia sẻ với gia đình';
+
+  @override
+  String get relEmptyTitle => 'Chưa có kỷ niệm nào được chia sẻ';
+
+  @override
+  String get relEmptyBody =>
+      'Khi ba mẹ chia sẻ ảnh với gia đình, bạn sẽ nhận một thông báo và thấy ở đây.';
+
+  @override
+  String viewerShared(String date, String who) {
+    return '$date · $who chia sẻ';
+  }
+
+  @override
+  String viewerInAlbum(String meta, String name) {
+    return '$meta · album $name';
+  }
+
+  @override
+  String get albOptions => 'Tuỳ chọn album';
 }
