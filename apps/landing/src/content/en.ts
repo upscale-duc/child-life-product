@@ -16,7 +16,13 @@ export const en: Content = {
   nav: {
     homeLabel: 'Child Life — home',
     sectionsLabel: 'Page sections',
-    links: { care: 'Care', memories: 'Memories', family: 'Family', nights: 'Nights', faq: 'FAQ' },
+    links: {
+      care: 'Care',
+      understand: 'Week by week',
+      memories: 'Memories',
+      family: 'Family',
+      faq: 'FAQ',
+    },
     download: 'Get it free',
     downloadShort: 'Get the app',
     switchLabel: 'Xem trang này bằng tiếng Việt',
@@ -52,7 +58,7 @@ export const en: Content = {
   hero: {
     eyebrow: 'Free for the whole family',
     title: ['Care for your baby together.', 'Keep every moment', 'as they grow.'],
-    lead: 'A private space for the whole family to share the care and keep the photos, videos and stories of your baby growing up.',
+    lead: 'A private space for the whole family: log feeds and sleep in one tap, get reminders at the right time and tips for every week of age — and keep every moment of your baby growing up.',
     caption: 'Free on iPhone and Android.',
     proofInitials: ['M', 'D', 'N', 'G'],
     proof: "Parents, nannies and grandparents — everyone has a place by your baby's side",

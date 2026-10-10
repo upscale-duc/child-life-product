@@ -24,7 +24,9 @@ await build({
   format: 'esm',
   sourcemap: true,
   // Bundled CommonJS dependencies (e.g. the AWS SDK) call require() for Node built-ins.
-  banner: { js: "import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);" },
+  banner: {
+    js: "import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);",
+  },
   external: external.flatMap((name) => [name, `${name}/*`]),
   logLevel: 'warning',
 });
@@ -39,7 +41,10 @@ const deployPkg = {
 };
 await writeFile(join(out, 'package.json'), `${JSON.stringify(deployPkg, null, 2)}\n`);
 // Non-secret Functions params (D-020). Credentials are Secret Manager secrets, never here.
-await writeFile(join(out, '.env'), 'SES_REGION=ap-southeast-1\nMAIL_FROM=Child Life <hello@childlife.app>\n');
+await writeFile(
+  join(out, '.env'),
+  'SES_REGION=ap-southeast-1\nMAIL_FROM=Child Life <hello@childlife.app>\n',
+);
 // The Firebase CLI loads firebase-functions from the source dir to discover triggers, and Cloud Build
 // installs from the generated lockfile, so both see exactly the pinned runtime versions.
 execFileSync('npm', ['install', '--omit=dev', '--no-audit', '--no-fund', '--loglevel=error'], {

@@ -3,7 +3,7 @@ import { Bullets } from '../components/Bullets';
 import { Eyebrow, Fit, Icon, at, type IconName } from '../components/primitives';
 import { useSite } from '../context';
 
-/** Cùng chăm (spec §5): copy left, family panel right (mirrors Chăm sóc). */
+/** Cùng chăm (spec §5): family panel left on desktop since v3 (13-landing-v3-changes §3). */
 export function Cocare() {
   const { c } = useSite();
   const k = c.cocare;
@@ -21,7 +21,7 @@ export function Cocare() {
   return (
     <section
       id="gia-dinh"
-      className="section cocare container split"
+      className="section cocare container split split--visual-first"
       aria-labelledby="cocare-title"
     >
       <div className="split__copy">

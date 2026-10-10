@@ -249,6 +249,8 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 
 ### S3 — Family, invites, roles, multi-baby
 
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S3.md). Invite → join → save account → lost access works end to end (iOS + Android, emulators); invite emails wait for the SES keys, iOS universal links for an Apple team; leave family (12g) not built.
+
 - **Figma:** 14a–14f, 14b2, 14c2, 15, 16, 16a–16d, 17, 7a–7d (shell/nav parts), 9d, 12g, 13m (relation per baby).
 - **Backend:** invites (6-digit code, QR/link token, 7-day expiry, resend, regenerate), transactional invite email (SP-8), `previewInvite` / `acceptInvite` with rate limits, anonymous join + upgrade + merge (P-007), membership update/remove/expiry job, revocation signal → 9d, audit log.
 - **Mobile:** role-aware shells and route guards, baby switcher with content swap, QR scanner, share sheet, universal/app links `/i/{token}`, "Chưa lưu tài khoản" banner.

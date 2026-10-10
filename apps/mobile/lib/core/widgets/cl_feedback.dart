@@ -19,6 +19,9 @@ OverlayEntry showClToast(
   Duration visibleFor = const Duration(seconds: 4),
 }) {
   final overlay = Overlay.of(context, rootOverlay: true);
+  // Read now: the caller's context may be gone (sheet closed, route replaced) when the
+  // overlay rebuilds.
+  final theme = Theme.of(context);
   late final OverlayEntry entry;
   entry = OverlayEntry(
     builder: (_) => _ToastHost(
@@ -27,7 +30,7 @@ OverlayEntry showClToast(
       onAction: onAction,
       visibleFor: visibleFor,
       onDone: () => entry.remove(),
-      theme: Theme.of(context),
+      theme: theme,
     ),
   );
   overlay.insert(entry);
@@ -172,10 +175,18 @@ class _ToastHostState extends State<_ToastHost>
             left: ClSpace.s4,
             right: ClSpace.s4,
             bottom: bottom,
-            child: Semantics(
-              liveRegion: true,
-              child: Center(
-                child: Material(type: MaterialType.transparency, child: toast),
+            // Without an action the toast is information only: taps reach the screen below
+            // (it floats over the thumb-zone buttons).
+            child: IgnorePointer(
+              ignoring: widget.actionLabel == null,
+              child: Semantics(
+                liveRegion: true,
+                child: Center(
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: toast,
+                  ),
+                ),
               ),
             ),
           );

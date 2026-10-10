@@ -167,7 +167,9 @@ class WelcomeScreen extends ConsumerWidget {
               child: ClButton(
                 label: l10n.welcomeInviteCode,
                 style: ClButtonStyle.secondary,
-                onPressed: () => context.push(Routes.join),
+                // `go`, not `push`: routing re-checks the base location when the session
+                // changes ("Vào ngay"), so the join flow must be the base, not Welcome.
+                onPressed: () => context.go(Routes.join),
                 expand: true,
               ),
             ),

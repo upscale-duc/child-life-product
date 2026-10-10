@@ -58,7 +58,7 @@ export interface Content {
   nav: {
     homeLabel: string;
     sectionsLabel: string;
-    links: { care: string; memories: string; family: string; nights: string; faq: string };
+    links: { care: string; understand: string; memories: string; family: string; faq: string };
     download: string;
     downloadShort: string;
     /** Shown on this page, pointing to the other language. */

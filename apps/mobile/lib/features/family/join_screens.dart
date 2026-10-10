@@ -46,7 +46,7 @@ class JoinArgs {
   final ValidInvite preview;
 }
 
-/// Leaves the join flow: a temporary identity that never joined is signed out (Q-024: "Không
+/// Leaves the join flow: a temporary identity that never joined is signed out (D-021: "Không
 /// phải tôi" just exits; the invite stays pending).
 Future<void> leaveJoinFlow(BuildContext context, WidgetRef ref) async {
   final session = ref.read(sessionProvider);

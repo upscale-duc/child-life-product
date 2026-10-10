@@ -57,6 +57,16 @@ final routerProvider = Provider<GoRouter>((ref) {
     ..listen(addingBabyProvider, (_, _) => refresh.value++)
     ..onDispose(refresh.dispose);
 
+  // go_router rebuilds pushed pages without their `extra` when it refreshes (e.g. the session
+  // changes after "Vào ngay"), so flow arguments are remembered per location.
+  final lastArgs = <String, Object>{};
+  T? argsOf<T extends Object>(GoRouterState s) {
+    final extra = s.extra;
+    if (extra is T) return lastArgs[s.matchedLocation] = extra;
+    final kept = lastArgs[s.matchedLocation];
+    return kept is T ? kept : null;
+  }
+
   return GoRouter(
     initialLocation: Routes.splash,
     refreshListenable: refresh,
@@ -136,13 +146,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.invite, builder: (_, _) => const InviteRoleScreen()),
       GoRoute(
         path: Routes.inviteSend,
-        redirect: (_, s) => s.extra is InviteSendArgs ? null : Routes.family,
-        builder: (_, s) => InviteSendScreen(args: s.extra! as InviteSendArgs),
+        redirect: (_, s) =>
+            argsOf<InviteSendArgs>(s) == null ? Routes.family : null,
+        builder: (_, s) => InviteSendScreen(args: argsOf<InviteSendArgs>(s)!),
       ),
       GoRoute(
         path: Routes.inviteSent,
-        redirect: (_, s) => s.extra is InviteSendArgs ? null : Routes.family,
-        builder: (_, s) => InviteSentScreen(args: s.extra! as InviteSendArgs),
+        redirect: (_, s) =>
+            argsOf<InviteSendArgs>(s) == null ? Routes.family : null,
+        builder: (_, s) => InviteSentScreen(args: argsOf<InviteSendArgs>(s)!),
       ),
       GoRoute(path: Routes.join, builder: (_, _) => const EnterCodeScreen()),
       GoRoute(
@@ -151,16 +163,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: Routes.joinInvite,
-        redirect: (_, s) => s.extra is JoinArgs ? null : Routes.join,
+        redirect: (_, s) => argsOf<JoinArgs>(s) == null ? Routes.join : null,
         builder: (_, s) {
-          final args = s.extra! as JoinArgs;
+          final args = argsOf<JoinArgs>(s)!;
           return AcceptInviteScreen(lookup: args.lookup, preview: args.preview);
         },
       ),
       GoRoute(
         path: Routes.joinConfirm,
-        redirect: (_, s) => s.extra is JoinArgs ? null : Routes.join,
-        builder: (_, s) => ConfirmJoinScreen(args: s.extra! as JoinArgs),
+        redirect: (_, s) => argsOf<JoinArgs>(s) == null ? Routes.join : null,
+        builder: (_, s) => ConfirmJoinScreen(args: argsOf<JoinArgs>(s)!),
       ),
       GoRoute(
         path: Routes.joinClosed,

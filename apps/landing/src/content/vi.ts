@@ -19,9 +19,9 @@ export const vi: Content = {
     sectionsLabel: 'Các phần của trang',
     links: {
       care: 'Chăm con',
+      understand: 'Hiểu con',
       memories: 'Kỷ niệm',
       family: 'Gia đình',
-      nights: 'Ban đêm',
       faq: 'Hỏi đáp',
     },
     download: 'Tải miễn phí',
@@ -64,7 +64,7 @@ export const vi: Content = {
   hero: {
     eyebrow: 'Miễn phí cho cả gia đình',
     title: ['Cùng chăm con.', 'Giữ từng khoảnh khắc', 'con lớn lên.'],
-    lead: 'Một không gian riêng tư cho cả nhà: cùng chăm con, lưu ảnh, video, câu chuyện và nhìn lại hành trình con lớn lên.',
+    lead: 'Một không gian riêng tư cho cả nhà: ghi bú, ngủ trong một chạm, nhắc đúng lúc, gợi ý theo từng tuần tuổi — và giữ lại mọi khoảnh khắc con lớn lên.',
     caption: 'Miễn phí trên iPhone và Android.',
     proofInitials: ['M', 'B', 'L', 'H'],
     proof: 'Ba mẹ, người chăm và ông bà — ai cũng có chỗ của mình bên con',

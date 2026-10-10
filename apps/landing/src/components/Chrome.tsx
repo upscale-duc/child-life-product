@@ -2,7 +2,7 @@ import { useSite } from '../context';
 import { alternateOf, pathOf } from '../routes';
 import { Icon, Lockup } from './primitives';
 
-const sectionIds = ['cham-con', 'ky-niem', 'gia-dinh', 'ban-dem', 'hoi-dap'] as const;
+const sectionIds = ['cham-con', 'hieu-con', 'ky-niem', 'gia-dinh', 'hoi-dap'] as const;
 
 /** Nav (spec §1). Sticky with a frosted background once the page scrolls (not in Figma);
  *  section links on desktop only, as designed; the language switch is an addition (D-012). */
@@ -12,9 +12,9 @@ export function Nav() {
   const base = route.page === 'home' ? '' : homePath;
   const labels = [
     c.nav.links.care,
+    c.nav.links.understand,
     c.nav.links.memories,
     c.nav.links.family,
-    c.nav.links.nights,
     c.nav.links.faq,
   ];
   return (

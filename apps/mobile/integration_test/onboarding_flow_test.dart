@@ -6,77 +6,19 @@
 // New parent: splash → 01 → 06 → 07 (new account) → 08 (Bỏ qua, P-008) → 10a → 11 → 12 → Today,
 // then the profile is checked in Firestore; returning parent: sign out → sign in → Today.
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:child_life/features/auth/auth_screens.dart';
-import 'package:child_life/l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:child_life/main.dart' as app;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-const _project = 'child-life-dev';
-final _host = defaultTargetPlatform == TargetPlatform.android
-    ? '10.0.2.2'
-    : 'localhost';
+import 'e2e_helpers.dart';
+
 // Test-only account that exists solely in the local Auth emulator.
 const _email = 'parent.e2e@example.com';
 const _password = 'e2e-only-password';
-
-Future<String> _http(
-  String method,
-  String url, {
-  Map<String, String> headers = const {},
-}) async {
-  final client = HttpClient();
-  try {
-    final request = await client.openUrl(method, Uri.parse(url));
-    headers.forEach(request.headers.set);
-    final response = await request.close();
-    return await response.transform(utf8.decoder).join();
-  } finally {
-    client.close();
-  }
-}
-
-Future<void> _resetEmulators() async {
-  await _http(
-    'DELETE',
-    'http://$_host:9099/emulator/v1/projects/$_project/accounts',
-  );
-  await _http(
-    'DELETE',
-    'http://$_host:8080/emulator/v1/projects/$_project/databases/(default)/documents',
-  );
-}
-
-Future<void> pumpUntil(
-  WidgetTester tester,
-  Finder finder, {
-  Duration timeout = const Duration(seconds: 30),
-}) async {
-  final end = DateTime.now().add(timeout);
-  while (DateTime.now().isBefore(end)) {
-    await tester.pump(const Duration(milliseconds: 200));
-    if (finder.evaluate().isNotEmpty) return;
-  }
-  throw TestFailure('Timed out waiting for $finder');
-}
-
-AppLocalizations l10nOf(WidgetTester tester) =>
-    AppLocalizations.of(tester.element(find.byType(Navigator).first));
-
-/// Waits for [text], lets any route transition finish, then taps it.
-Future<void> tapText(WidgetTester tester, String text) async {
-  await pumpUntil(tester, find.text(text));
-  for (var i = 0; i < 8; i++) {
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-  await tester.tap(find.text(text).last);
-  await tester.pump(const Duration(milliseconds: 400));
-}
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -84,7 +26,7 @@ void main() {
   testWidgets('S2: new parent from splash to Today, then signs back in', (
     tester,
   ) async {
-    await _resetEmulators();
+    await resetEmulators();
     // bootstrap() installs Crashlytics error handlers; keep the test framework's own.
     final testOnError = FlutterError.onError;
     await app.main();
@@ -139,9 +81,9 @@ void main() {
     // Server state: one baby, owned by this account, with its restricted profile.
     final babies =
         jsonDecode(
-              await _http(
+              await http(
                 'GET',
-                'http://$_host:8080/v1/projects/$_project/databases/(default)/documents/babies',
+                'http://$host:8080/v1/projects/$project/databases/(default)/documents/babies',
                 headers: {'Authorization': 'Bearer owner'},
               ),
             )
