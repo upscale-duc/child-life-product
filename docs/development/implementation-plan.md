@@ -238,6 +238,8 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 
 ### S2 — Identity & onboarding (first secure vertical slice)
 
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S2.md). Email path works end to end (iOS + Android, emulators); Google waits for console enablement, Apple for a developer team.
+
 - **Figma:** 00–05, 06–10, 10a, 11, 11a–11c, 12, 13, 13a, 18–18c (first-run Today shell with empty tiles).
 - **Backend:** `users` doc on create, Auth providers (Apple, Google, email/password + link verify/reset with custom domain templates), `createBaby` (family creation per P-001, 3-baby cap, owner membership), baby avatar upload (private), restricted profile doc, Rules + tests.
 - **Native:** Sign in with Apple (both OS, SP-6), Google Sign-In, mail-app intent, camera/photo picker, device timezone, launch screens.

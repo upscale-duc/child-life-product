@@ -341,7 +341,11 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
             ClDetailRow(
               icon: ClIcons.cake,
               label: l10n.babyDob,
-              value: DateFormat.yMMMMd(locale).format(draft.dateOfBirth),
+              value:
+                  (locale.startsWith('vi')
+                          ? DateFormat.yMMMMd(locale)
+                          : DateFormat.yMMMd(locale))
+                      .format(draft.dateOfBirth),
               onTap: () => showDobSheet(context),
             ),
             ClDetailRow(
