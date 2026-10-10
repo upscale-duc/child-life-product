@@ -146,6 +146,24 @@ async function familyShape(db: Firestore, familyId: string) {
   return { family, babies: babyIds.length, people: people.size };
 }
 
+// ---------- Sidebar badges ----------
+
+/**
+ * The sidebar counts: open tickets ("Tất cả"), pending storage requests, and data jobs that are
+ * running or failed (the A06 badge counts what is in flight or needs a re-run).
+ */
+export async function badges(db: Firestore, staff: Staff | null) {
+  requireStaff(staff, 'view');
+  const count = async (q: FirebaseFirestore.Query) => (await q.count().get()).data().count;
+  const [tickets, storage, deletions, exports] = await Promise.all([
+    count(db.collection('supportTickets').where('status', 'in', ['new', 'claimed', 'waiting'])),
+    count(db.collection('storageRequests').where('status', '==', 'open')),
+    count(db.collection('deletionJobs').where('state', 'in', ['queued', 'running', 'failed'])),
+    count(db.collection('dataJobs').where('state', 'in', ['queued', 'running', 'failed'])),
+  ]);
+  return { tickets, storage, jobs: deletions + exports };
+}
+
 // ---------- A02 Tổng quan ----------
 
 export async function overview(
@@ -716,6 +734,10 @@ export async function decideStorage(db: Firestore, staff: Staff | null, data: un
 
 // ---------- A06 / A07 Yêu cầu dữ liệu ----------
 
+/** "DJ-2226": a short, stable job code shown in A06 and the audit log. */
+export const jobCode = (jobId: string) =>
+  `DJ-${createHash('sha256').update(jobId).digest('hex').slice(0, 4).toUpperCase()}`;
+
 export async function listJobs(db: Firestore, staff: Staff | null, data: unknown, now: Date) {
   requireStaff(staff, 'view');
   const { kind } = parse(listJobsSchema, data);
@@ -728,7 +750,7 @@ export async function listJobs(db: Firestore, staff: Staff | null, data: unknown
       const step = (j.get('step') as number) ?? 0;
       rows.push({
         id: j.id,
-        code: `DJ-${createHash('sha256').update(j.id).digest('hex').slice(0, 4).toUpperCase()}`,
+        code: jobCode(j.id),
         type: j.get('kind') === 'baby' ? 'deleteBaby' : 'deleteAccount',
         email: maskEmail((j.get('email') as string | null) ?? null),
         createdAt: iso(j.get('createdAt')),
@@ -746,7 +768,7 @@ export async function listJobs(db: Firestore, staff: Staff | null, data: unknown
     for (const j of jobs.docs) {
       rows.push({
         id: j.id,
-        code: `DJ-${createHash('sha256').update(j.id).digest('hex').slice(0, 4).toUpperCase()}`,
+        code: jobCode(j.id),
         type: j.get('exportKind') === 'media' ? 'exportMedia' : 'exportCare',
         email: maskEmail((j.get('email') as string | null) ?? null),
         createdAt: iso(j.get('createdAt')),
@@ -801,7 +823,7 @@ export async function rerunJob(
       {
         action: 'jobs.rerun',
         category: 'data',
-        target: req.jobId,
+        target: jobCode(req.jobId),
         reason: req.reason,
         detail: { from: j.get('failedStep') ?? null },
       },
@@ -1049,6 +1071,8 @@ export async function listAudit(
       category: a.get('category') as string,
       target: a.get('target') as string,
       reason: (a.get('reason') as string | null) ?? null,
+      // Staff-entered amounts and flag states only, never family content.
+      detail: (a.get('detail') as Record<string, unknown> | null) ?? null,
     }))
     .filter(
       (r) => !text || [r.actor, r.target, r.action].some((v) => v.toLowerCase().includes(text)),

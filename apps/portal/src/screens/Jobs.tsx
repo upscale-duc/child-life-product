@@ -1,0 +1,372 @@
+import { staffCan } from '@child-life/contracts';
+import { Fragment, useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { ApiError, useApi, useLoad, type JobList, type JobRow } from '../api';
+import { useRefreshBadges, useStaff } from '../context';
+import { duration, num, pct, when } from '../format';
+import {
+  Button,
+  Empty,
+  Kpi,
+  Loaded,
+  LockNote,
+  Modal,
+  Page,
+  Panel,
+  Pill,
+  ReasonField,
+  Segmented,
+  UsageBar,
+  errorMessageId,
+  reasonOk,
+  type PillTone,
+} from '../ui';
+
+type Kind = 'all' | 'export' | 'deletion';
+
+/** A06 Yêu cầu dữ liệu: status and re-run only; staff can never open or download an export. */
+export function JobsScreen() {
+  const intl = useIntl();
+  const [kind, setKind] = useState<Kind>('all');
+  const [load, reload] = useLoad<JobList>('staffJobs', { kind }, kind);
+  return (
+    <Page
+      title={<FormattedMessage id="jobs.title" />}
+      subtitle={<FormattedMessage id="jobs.sub" />}
+    >
+      <Loaded load={load} reload={reload}>
+        {(data) => (
+          <JobsView
+            data={data}
+            kind={kind}
+            onKind={setKind}
+            now={new Date()}
+            onChanged={reload}
+            filterLabel={intl.formatMessage({ id: 'jobs.filter' })}
+          />
+        )}
+      </Loaded>
+    </Page>
+  );
+}
+
+export function jobState(row: JobRow): { tone: PillTone; id: string } {
+  const deletion = row.type.startsWith('delete');
+  switch (row.state) {
+    case 'queued':
+      return { tone: 'info', id: 'job.queued' };
+    case 'running':
+      return { tone: 'info', id: deletion ? 'job.deleting' : 'job.preparing' };
+    case 'ready':
+      return { tone: 'ok', id: 'job.ready' };
+    case 'expired':
+      return { tone: 'muted', id: 'job.expired' };
+    case 'failed':
+      return { tone: 'error', id: 'job.failed' };
+    case 'done':
+      return { tone: 'ok', id: 'job.done' };
+    default:
+      return { tone: 'muted', id: 'job.unknown' };
+  }
+}
+
+export function JobsView({
+  data,
+  kind,
+  onKind,
+  now,
+  onChanged,
+  filterLabel,
+}: {
+  data: JobList;
+  kind: Kind;
+  onKind: (k: Kind) => void;
+  now: Date;
+  onChanged: () => void;
+  filterLabel: string;
+}) {
+  const intl = useIntl();
+  const staff = useStaff();
+  const canRerun = staffCan(staff.roles, 'jobs.rerun');
+  const [open, setOpen] = useState<string | null>(null);
+  const [rerun, setRerun] = useState<JobRow | null>(null);
+  const k = data.kpis;
+  return (
+    <div className="grid">
+      <div className="kpis">
+        <Kpi
+          label={<FormattedMessage id="jobs.running" />}
+          value={num(intl, k.running)}
+          foot={
+            <FormattedMessage
+              id="jobs.runningSplit"
+              values={{ exports: k.runningExports, deletions: k.running - k.runningExports }}
+            />
+          }
+        />
+        <Kpi
+          label={<FormattedMessage id="jobs.failed" />}
+          value={num(intl, k.failed24h)}
+          foot={<FormattedMessage id={k.failed24h ? 'jobs.needsRerun' : 'jobs.noFailures'} />}
+          tone={k.failed24h ? 'error' : 'muted'}
+        />
+        <Kpi
+          label={<FormattedMessage id="jobs.exportTime" />}
+          value={duration(intl, k.medianExportMinutes)}
+          foot={<FormattedMessage id="jobs.last30" />}
+        />
+        <Kpi
+          label={<FormattedMessage id="jobs.deletions" />}
+          value={pct(intl, k.deletionsTotal ? k.deletionsDone / k.deletionsTotal : null)}
+          foot={
+            <FormattedMessage
+              id="jobs.deletionsOf"
+              values={{ done: k.deletionsDone, total: k.deletionsTotal }}
+            />
+          }
+        />
+      </div>
+      <Panel className="panel--flush">
+        <div className="panel__pad toolbar">
+          <Segmented
+            label={filterLabel}
+            value={kind}
+            onChange={onKind}
+            options={[
+              { value: 'all', label: <FormattedMessage id="jobs.all" /> },
+              { value: 'export', label: <FormattedMessage id="jobs.exports" /> },
+              { value: 'deletion', label: <FormattedMessage id="jobs.deletionsTab" /> },
+            ]}
+          />
+          <span className="muted">
+            <FormattedMessage id="jobs.linkTtl" />
+          </span>
+        </div>
+        {data.rows.length === 0 ? (
+          <Empty>
+            <FormattedMessage id="jobs.empty" />
+          </Empty>
+        ) : (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>
+                  <FormattedMessage id="col.id" />
+                </th>
+                <th>
+                  <FormattedMessage id="col.type" />
+                </th>
+                <th>
+                  <FormattedMessage id="col.requester" />
+                </th>
+                <th>
+                  <FormattedMessage id="col.created" />
+                </th>
+                <th>
+                  <FormattedMessage id="col.progress" />
+                </th>
+                <th>
+                  <FormattedMessage id="col.status" />
+                </th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {data.rows.map((r) => {
+                const s = jobState(r);
+                const deletion = r.type.startsWith('delete');
+                return (
+                  <Fragment key={r.id}>
+                    <tr>
+                      <td className="mono">{r.code}</td>
+                      <td>
+                        <FormattedMessage id={`jobType.${r.type}`} />
+                      </td>
+                      <td>{r.email}</td>
+                      <td>{when(intl, r.createdAt, now)}</td>
+                      <td className="cell-progress">
+                        <UsageBar ratio={r.progress} tone={r.state === 'failed' ? 'error' : 'ok'} />
+                        <span className="muted">
+                          <ProgressText row={r} now={now} />
+                        </span>
+                      </td>
+                      <td>
+                        <Pill tone={s.tone}>
+                          <FormattedMessage id={s.id} />
+                        </Pill>
+                      </td>
+                      <td className="cell-actions">
+                        {deletion && r.state === 'failed' && canRerun ? (
+                          <Button kind="primary" onClick={() => setRerun(r)}>
+                            <FormattedMessage id="jobs.rerun" />
+                          </Button>
+                        ) : deletion ? (
+                          <Button kind="ghost" onClick={() => setOpen(open === r.id ? null : r.id)}>
+                            <FormattedMessage id="jobs.steps" />
+                          </Button>
+                        ) : null}
+                      </td>
+                    </tr>
+                    {open === r.id && r.steps && (
+                      <tr className="table__detail">
+                        <td colSpan={7}>
+                          <Steps row={r} />
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+        <div className="panel__pad">
+          <LockNote>
+            <FormattedMessage id="jobs.lock1" />
+          </LockNote>
+          <LockNote>
+            <FormattedMessage id="jobs.lock2" />
+          </LockNote>
+          <LockNote>
+            <FormattedMessage id="jobs.lock3" />
+          </LockNote>
+        </div>
+      </Panel>
+      {rerun && (
+        <RerunDialog
+          row={rerun}
+          onClose={() => setRerun(null)}
+          onDone={() => {
+            setRerun(null);
+            onChanged();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function ProgressText({ row, now }: { row: JobRow; now: Date }) {
+  const intl = useIntl();
+  if (row.state === 'failed' && row.failedStep) {
+    return (
+      <FormattedMessage
+        id="jobs.stoppedAt"
+        values={{ step: intl.formatMessage({ id: `step.${row.failedStep}` }) }}
+      />
+    );
+  }
+  if (row.state === 'ready' && row.expiresAt) {
+    const hours = Math.max(0, Math.round((Date.parse(row.expiresAt) - now.getTime()) / 3_600_000));
+    return <FormattedMessage id="jobs.expiresIn" values={{ n: hours }} />;
+  }
+  if (row.state === 'expired') return <FormattedMessage id="jobs.notDownloaded" />;
+  if (row.state === 'done' && row.finishedAt) {
+    return (
+      <FormattedMessage
+        id="jobs.doneAfter"
+        values={{
+          d: duration(intl, (Date.parse(row.finishedAt) - Date.parse(row.createdAt)) / 60_000),
+        }}
+      />
+    );
+  }
+  if (row.state === 'running' && row.type.startsWith('delete')) {
+    return <FormattedMessage id="jobs.lockedDeleting" />;
+  }
+  return <>{pct(intl, row.progress)}</>;
+}
+
+/** The step list (A07): ✓ done, ✗ where it stopped, ○ still to run. */
+function Steps({ row }: { row: JobRow }) {
+  const steps = row.steps ?? [];
+  const at = row.step ?? 0;
+  return (
+    <ol className="steps">
+      {steps.map((name, i) => {
+        const state =
+          i < at || row.state === 'done'
+            ? 'done'
+            : i === at && row.state === 'failed'
+              ? 'failed'
+              : 'todo';
+        return (
+          <li key={name} className={`steps__item steps__item--${state}`}>
+            <span aria-hidden="true">
+              {state === 'done' ? '✓' : state === 'failed' ? '✕' : '○'}
+            </span>
+            <FormattedMessage id={`step.${name}`} />
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function RerunDialog({
+  row,
+  onClose,
+  onDone,
+}: {
+  row: JobRow;
+  onClose: () => void;
+  onDone: () => void;
+}) {
+  const intl = useIntl();
+  const api = useApi();
+  const refreshBadges = useRefreshBadges();
+  const [reason, setReason] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<ApiError | null>(null);
+  const submit = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      await api.call('staffRerunJob', { jobId: row.id, reason: reason.trim() });
+      refreshBadges();
+      onDone();
+    } catch (e) {
+      setError(e instanceof ApiError ? e : new ApiError('unknown', null));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Modal
+      title={
+        <FormattedMessage
+          id="jobs.rerunTitle"
+          values={{ type: intl.formatMessage({ id: `jobType.${row.type}` }), code: row.code }}
+        />
+      }
+      onClose={onClose}
+    >
+      <p className="modal__sub">
+        <FormattedMessage
+          id="jobs.rerunSub"
+          values={{
+            step: row.failedStep ? intl.formatMessage({ id: `step.${row.failedStep}` }) : '—',
+          }}
+        />
+      </p>
+      <Steps row={row} />
+      <ReasonField value={reason} onChange={setReason} required />
+      <p className="field__help">
+        <FormattedMessage id="jobs.emailOnDone" />
+      </p>
+      {error && (
+        <p className="error" role="alert">
+          <FormattedMessage id={errorMessageId(error)} />
+        </p>
+      )}
+      <div className="modal__actions">
+        <Button onClick={onClose}>
+          <FormattedMessage id="action.cancel" />
+        </Button>
+        <Button kind="primary" disabled={busy || !reasonOk(reason)} onClick={() => void submit()}>
+          <FormattedMessage id="jobs.rerunConfirm" />
+        </Button>
+      </div>
+    </Modal>
+  );
+}

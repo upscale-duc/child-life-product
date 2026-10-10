@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@child-life/contracts": "workspace:*",
+    "@child-life/design-tokens": "workspace:*",
     "@child-life/web-config": "workspace:*",
     "firebase": "13.0.0",
     "react": "19.3.0",

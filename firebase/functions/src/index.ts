@@ -61,6 +61,7 @@ import { openAiProvider, templateProvider, type AiProvider } from './ai.js';
 import {
   StaffError,
   aiStats,
+  badges,
   claimTicket,
   closeTicket,
   decideStorage,
@@ -1034,6 +1035,7 @@ const staffCall = <T>(name: string, run: (staff: Staff | null, data: unknown) =>
     }
   });
 
+export const staffBadges = staffCall('staffBadges', (s) => badges(getFirestore(), s));
 export const staffOverview = staffCall('staffOverview', (s, d) =>
   overview(getFirestore(), s, d, new Date(), authAccounts),
 );

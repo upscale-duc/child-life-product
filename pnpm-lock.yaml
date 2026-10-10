@@ -66,6 +66,9 @@ importers:
       '@child-life/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@child-life/design-tokens':
+        specifier: workspace:*
+        version: link:../../packages/design-tokens
       '@child-life/web-config':
         specifier: workspace:*
         version: link:../../packages/web-config

@@ -7,6 +7,7 @@ import { createSupportTicket, requestStorage } from '../functions/src/account.js
 import { MemoryError, createMemory } from '../functions/src/memories.js';
 import {
   StaffError,
+  badges,
   claimTicket,
   closeTicket,
   decideStorage,
@@ -313,6 +314,8 @@ describe('A03 support', () => {
     });
     expect(list.rows[0]!.email).toBe('m***@gmail.com');
     const id = list.rows[0]!.id;
+    expect((await badges(db, ha)).tickets).toBe(1);
+    expect(await reason(badges(db, null))).toBe('not-staff');
     const detail = await ticketDetail(db, ha, { ticketId: id });
     expect(detail).toMatchObject({ role: 'owner', family: { babies: 1, people: 3 } });
     await claimTicket(db, ha, { ticketId: id }, now);
@@ -327,6 +330,7 @@ describe('A03 support', () => {
       1,
     );
     await closeTicket(db, ha, { ticketId: id, reason: 'Đã hướng dẫn xong.' }, now);
+    expect((await badges(db, ha)).tickets).toBe(0);
     const log = await listAudit(db, ha, { category: 'support', days: 7 }, now);
     expect(log.rows.map((r) => r.action).sort()).toEqual([
       'support.claim',
@@ -338,16 +342,14 @@ describe('A03 support', () => {
 
 describe('A07, A10/A11', () => {
   it('a failed deletion re-runs from its failed step with a reason', async () => {
-    await db
-      .doc('deletionJobs/del_x')
-      .set({
-        kind: 'account',
-        state: 'failed',
-        failedStep: 'personal',
-        step: 2,
-        steps: ['a', 'b', 'c'],
-        createdAt: now,
-      });
+    await db.doc('deletionJobs/del_x').set({
+      kind: 'account',
+      state: 'failed',
+      failedStep: 'personal',
+      step: 2,
+      steps: ['a', 'b', 'c'],
+      createdAt: now,
+    });
     const ran: string[] = [];
     await rerunJob(
       db,

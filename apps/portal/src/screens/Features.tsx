@@ -1,0 +1,474 @@
+import { flagKeys, staffCan, type Flag, type FlagKey } from '@child-life/contracts';
+import { useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { ApiError, useApi, useLoad, type AiStats, type FlagsView } from '../api';
+import { useStaff } from '../context';
+import { pct, shortDate } from '../format';
+import { messages } from '../messages';
+import {
+  Button,
+  Loaded,
+  LockNote,
+  Modal,
+  Page,
+  Panel,
+  Pill,
+  ReasonField,
+  errorMessageId,
+  reasonOk,
+} from '../ui';
+
+/** A10 Tính năng & phát hành: switches never change who can see what (R-189). */
+export function FeaturesScreen() {
+  const [load, reload] = useLoad<FlagsView>('staffFlags', {}, 'flags');
+  const [ai] = useLoad<AiStats>('staffAi', {}, 'ai');
+  return (
+    <Page
+      title={<FormattedMessage id="features.title" />}
+      subtitle={<FormattedMessage id="features.sub" />}
+    >
+      <Loaded load={load} reload={reload}>
+        {(data) => (
+          <FeaturesView data={data} ai={ai.status === 'ok' ? ai.data : null} onChanged={reload} />
+        )}
+      </Loaded>
+    </Page>
+  );
+}
+
+/** The rollout ladder (A10): internal → 10 → 25 → 50 → 100 %. */
+export const ladder = [10, 25, 50, 100] as const;
+
+export function nextStep(flag: Flag): (typeof ladder)[number] | null {
+  if (!flag.enabled || flag.scope === 'internal') return 10;
+  if (flag.scope === 'all') return null;
+  return ladder.find((p) => p > flag.percent) ?? null;
+}
+
+type Change = { key: FlagKey; next: Flag; kind: 'off' | 'on' | 'step' };
+
+export function FeaturesView({
+  data,
+  ai,
+  onChanged,
+}: {
+  data: FlagsView;
+  ai: AiStats | null;
+  onChanged: () => void;
+}) {
+  const intl = useIntl();
+  const staff = useStaff();
+  const canToggle = staffCan(staff.roles, 'flags.toggle');
+  const canRollout = staffCan(staff.roles, 'flags.rollout');
+  const [change, setChange] = useState<Change | null>(null);
+  const aiFlag = data.flags.ai_story_drafts;
+  const step = nextStep(aiFlag);
+  const budgetUsed =
+    ai && ai.budget.monthlyBudgetVnd ? ai.budget.spentVnd / ai.budget.monthlyBudgetVnd : null;
+  return (
+    <div className="cols cols--2-1">
+      <Panel title={<FormattedMessage id="features.switches" />} className="panel--flush">
+        <div className="panel__pad">
+          <LockNote>
+            <FormattedMessage id="features.lock" />
+          </LockNote>
+        </div>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>
+                <FormattedMessage id="col.feature" />
+              </th>
+              <th>
+                <FormattedMessage id="col.scope" />
+              </th>
+              <th>
+                <FormattedMessage id="col.lastEdit" />
+              </th>
+              <th>
+                <FormattedMessage id="col.on" />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {flagKeys.map((key) => {
+              const f = data.flags[key];
+              const last = data.lastEdit[key];
+              return (
+                <tr key={key}>
+                  <td>
+                    <strong>
+                      <FormattedMessage id={`flag.${key}`} />
+                    </strong>
+                    <br />
+                    <span className="muted">
+                      <FormattedMessage id={`flag.${key}.desc`} />
+                    </span>
+                  </td>
+                  <td>
+                    <ScopePill flag={f} />
+                  </td>
+                  <td className="muted">
+                    {last ? `${last.by.split(' ')[0]} · ${shortDate(intl, last.at)}` : '—'}
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={f.enabled}
+                      aria-label={intl.formatMessage({ id: `flag.${key}` })}
+                      className={`switch ${f.enabled ? 'switch--on' : ''}`}
+                      disabled={!canToggle}
+                      title={
+                        canToggle ? undefined : intl.formatMessage({ id: 'features.toggleRole' })
+                      }
+                      onClick={() =>
+                        setChange({
+                          key,
+                          kind: f.enabled ? 'off' : 'on',
+                          next: { ...f, enabled: !f.enabled, notice: null },
+                        })
+                      }
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </Panel>
+      <div className="stack">
+        <Panel title={<FormattedMessage id="features.rollout" />}>
+          <ol className="ladder">
+            {ladder.map((p) => {
+              const current =
+                aiFlag.enabled &&
+                ((aiFlag.scope === 'percent' && aiFlag.percent === p) ||
+                  (aiFlag.scope === 'all' && p === 100));
+              const passed =
+                aiFlag.enabled &&
+                (aiFlag.scope === 'all' || (aiFlag.scope === 'percent' && aiFlag.percent > p));
+              return (
+                <li
+                  key={p}
+                  className={`ladder__step ${current ? 'ladder__step--on' : passed ? 'ladder__step--done' : ''}`}
+                >
+                  {p}%
+                </li>
+              );
+            })}
+          </ol>
+          <dl className="kv kv--checks">
+            <dt>
+              <FormattedMessage id="features.guardReports" />
+            </dt>
+            <dd>
+              {ai ? (
+                <FormattedMessage id="features.guardReportsValue" values={{ n: ai.kpis.reports }} />
+              ) : (
+                '—'
+              )}
+            </dd>
+            <dt>
+              <FormattedMessage id="features.guardCost" />
+            </dt>
+            <dd>
+              {budgetUsed === null ? (
+                '—'
+              ) : (
+                <FormattedMessage
+                  id="features.guardCostValue"
+                  values={{ p: pct(intl, budgetUsed) }}
+                />
+              )}
+            </dd>
+            <dt>
+              <FormattedMessage id="features.guardErrors" />
+            </dt>
+            <dd>
+              <FormattedMessage id="features.guardErrorsValue" />
+            </dd>
+          </dl>
+          {step !== null && (
+            <Button
+              kind="primary"
+              disabled={!canRollout || (!aiFlag.enabled && !canToggle)}
+              title={canRollout ? undefined : intl.formatMessage({ id: 'error.role' })}
+              onClick={() =>
+                setChange({
+                  key: 'ai_story_drafts',
+                  kind: aiFlag.enabled ? 'step' : 'on',
+                  next: {
+                    enabled: true,
+                    scope: step === 100 ? 'all' : 'percent',
+                    percent: step,
+                    notice: null,
+                  },
+                })
+              }
+            >
+              <FormattedMessage id="features.openTo" values={{ p: step }} />
+            </Button>
+          )}
+        </Panel>
+        <Panel title={<FormattedMessage id="features.limits" />}>
+          <dl className="kv">
+            <dt>
+              <FormattedMessage id="limits.quota" />
+            </dt>
+            <dd>
+              <FormattedMessage
+                id="limits.quotaValue"
+                values={{ n: Math.round(data.limits.familyQuotaBytes / 1024 ** 3) }}
+              />
+            </dd>
+            <dt>
+              <FormattedMessage id="limits.video" />
+            </dt>
+            <dd>
+              {data.limits.videoMaxDurationSec === null ? (
+                <FormattedMessage id="limits.unlimited" />
+              ) : (
+                <FormattedMessage
+                  id="limits.minutes"
+                  values={{ n: Math.round(data.limits.videoMaxDurationSec / 60) }}
+                />
+              )}
+            </dd>
+            <dt>
+              <FormattedMessage id="limits.export" />
+            </dt>
+            <dd>
+              <FormattedMessage
+                id="limits.exportValue"
+                values={{ n: data.limits.exportLinkTtlHours }}
+              />
+            </dd>
+          </dl>
+        </Panel>
+        <Panel title={<FormattedMessage id="features.recent" />}>
+          {data.recent.length === 0 ? (
+            <p className="muted">
+              <FormattedMessage id="features.noRecent" />
+            </p>
+          ) : (
+            <ul className="recent">
+              {data.recent.map((r, i) => (
+                <li key={i}>
+                  <p>
+                    <AuditActionText action={r.action} target={r.target} detail={r.detail} />
+                  </p>
+                  <p className="muted">
+                    {r.by.split(' ')[0]} · {shortDate(intl, r.at)} · {r.reason}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+      </div>
+      {change && (
+        <FlagDialog
+          change={change}
+          onClose={() => setChange(null)}
+          onDone={() => {
+            setChange(null);
+            onChanged();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+export function ScopePill({ flag }: { flag: Flag }) {
+  if (flag.scope === 'internal') {
+    return (
+      <Pill tone="purple">
+        <FormattedMessage id="scope.internal" />
+      </Pill>
+    );
+  }
+  if (flag.scope === 'percent') {
+    return (
+      <Pill tone="wait">
+        <FormattedMessage id="scope.percent" values={{ p: flag.percent }} />
+      </Pill>
+    );
+  }
+  return (
+    <span className="muted">
+      <FormattedMessage id="scope.all" />
+    </span>
+  );
+}
+
+/** "Tắt “Tải video”", "Mở “AI gợi ý câu chuyện” lên 50%" (A10 recent, A12). */
+export function AuditActionText({
+  action,
+  target,
+  detail,
+}: {
+  action: string;
+  target: string;
+  detail: Record<string, unknown> | null;
+}) {
+  const intl = useIntl();
+  const flagName = (flagKeys as readonly string[]).includes(target)
+    ? intl.formatMessage({ id: `flag.${target}` })
+    : target;
+  const after = (detail?.after ?? null) as Flag | null;
+  const values = {
+    flag: flagName,
+    p: after?.scope === 'all' ? 100 : (after?.percent ?? 0),
+    n: (detail?.grantGb ?? detail?.requestedGb ?? '') as number | string,
+  };
+  const known = [
+    'support.claim',
+    'support.reply',
+    'support.macro.wifiGuide',
+    'support.close',
+    'storage.grant',
+    'storage.decline',
+    'jobs.rerun',
+    'flags.on',
+    'flags.off',
+    'flags.rollout',
+    'audit.export',
+  ];
+  return (
+    <FormattedMessage
+      id={known.includes(action) ? `audit.${action}` : 'audit.other'}
+      values={{ ...values, action }}
+    />
+  );
+}
+
+function FlagDialog({
+  change,
+  onClose,
+  onDone,
+}: {
+  change: Change;
+  onClose: () => void;
+  onDone: () => void;
+}) {
+  const intl = useIntl();
+  const api = useApi();
+  const [reason, setReason] = useState('');
+  const [notify, setNotify] = useState(true);
+  // Families see this text as typed; the default is the Vietnamese source copy (D-012).
+  const [notice, setNotice] = useState(() => defaultNotice(change.key));
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<ApiError | null>(null);
+  const off = change.kind === 'off';
+  const submit = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const percent = change.next.scope === 'all' ? 100 : change.next.percent;
+      await api.call('staffSetFlag', {
+        key: change.key,
+        enabled: change.next.enabled,
+        scope: change.next.scope,
+        percent: [0, 10, 25, 50, 100].includes(percent) ? percent : 0,
+        notice: off && notify && notice.trim() ? notice.trim() : null,
+        reason: reason.trim(),
+      });
+      onDone();
+    } catch (e) {
+      setError(e instanceof ApiError ? e : new ApiError('unknown', null));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const flag = intl.formatMessage({ id: `flag.${change.key}` });
+  return (
+    <Modal
+      title={
+        <FormattedMessage
+          id={
+            off
+              ? 'features.offTitle'
+              : change.kind === 'on'
+                ? 'features.onTitle'
+                : 'features.stepTitle'
+          }
+          values={{ flag, p: change.next.scope === 'all' ? 100 : change.next.percent }}
+        />
+      }
+      icon={
+        off ? (
+          <span className="modal__alert" aria-hidden="true">
+            !
+          </span>
+        ) : undefined
+      }
+      onClose={onClose}
+    >
+      <p className="modal__sub">
+        <FormattedMessage id={off ? `flag.${change.key}.offEffect` : 'features.onEffect'} />
+      </p>
+      <dl className="kv">
+        <dt>
+          <FormattedMessage id="features.impact" />
+        </dt>
+        <dd>
+          <ScopeText flag={change.next} />
+        </dd>
+      </dl>
+      <ReasonField value={reason} onChange={setReason} required />
+      {off && (
+        <div className="field">
+          <label className="check-row">
+            <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} />
+            <FormattedMessage id="features.notify" />
+          </label>
+          {notify && (
+            <textarea
+              className="field__input"
+              rows={2}
+              maxLength={280}
+              value={notice}
+              onChange={(e) => setNotice(e.target.value)}
+              aria-label={intl.formatMessage({ id: 'features.notify' })}
+            />
+          )}
+          {notify && (
+            <p className="field__help">
+              <FormattedMessage id="features.noticeHelp" />
+            </p>
+          )}
+        </div>
+      )}
+      {error && (
+        <p className="error" role="alert">
+          <FormattedMessage id={errorMessageId(error)} />
+        </p>
+      )}
+      <div className="modal__actions">
+        <Button onClick={onClose}>
+          <FormattedMessage id="action.cancel" />
+        </Button>
+        <Button
+          kind={off ? 'danger' : 'primary'}
+          disabled={busy || !reasonOk(reason)}
+          onClick={() => void submit()}
+        >
+          <FormattedMessage id={off ? 'features.turnOff' : 'features.confirm'} />
+        </Button>
+      </div>
+    </Modal>
+  );
+}
+
+export function defaultNotice(key: FlagKey): string {
+  return messages.vi['features.noticeDefault']!.replace('{flag}', messages.vi[`flag.${key}`]!);
+}
+
+function ScopeText({ flag }: { flag: Flag }) {
+  if (flag.scope === 'internal') return <FormattedMessage id="impact.internal" />;
+  if (flag.scope === 'percent')
+    return <FormattedMessage id="impact.percent" values={{ p: flag.percent }} />;
+  return <FormattedMessage id="impact.all" />;
+}

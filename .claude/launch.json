@@ -17,6 +17,25 @@
         "--strictPort"
       ],
       "port": 4173
+    },
+    {
+      "name": "portal-emulators",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "child-life-portal",
+        "exec",
+        "vite",
+        "--mode",
+        "dev",
+        "--port",
+        "5173",
+        "--strictPort"
+      ],
+      "env": {
+        "VITE_CL_EMULATORS": "true"
+      },
+      "port": 5173
     }
   ]
 }

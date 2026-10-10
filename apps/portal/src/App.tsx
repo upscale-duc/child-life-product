@@ -1,80 +1,220 @@
+import type { Environment } from '@child-life/contracts';
+import { saveLocale, type SupportedLocale } from '@child-life/web-config';
 import {
-  functionsRegion,
-  pingResponseSchema,
-  type Environment,
-  type PingResponse,
-} from '@child-life/contracts';
-import type { SupportedLocale } from '@child-life/web-config';
-import type { FirebaseApp } from 'firebase/app';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import { useEffect, useState } from 'react';
-import { FormattedDate, FormattedMessage, FormattedTime, IntlProvider } from 'react-intl';
+  getAdditionalUserInfo,
+  isSignInWithEmailLink,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  sendSignInLinkToEmail,
+  signInWithEmailAndPassword,
+  signInWithEmailLink,
+  signOut,
+  type Auth,
+  type UserCredential,
+} from 'firebase/auth';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { IntlProvider } from 'react-intl';
+import { ApiContext, type Api } from './api';
+import { StaffContext } from './context';
 import { messages } from './messages';
+import { SignInScreen, type SignInActions, type SignInNotice } from './screens/SignIn';
+import {
+  clearActivity,
+  idleExpired,
+  linkEmail,
+  markActivity,
+  readActivity,
+  rememberLinkEmail,
+  staffFromClaims,
+  IDLE_MS,
+  type StaffIdentity,
+} from './session';
+import { Shell } from './Shell';
+import { Loading } from './ui';
 
-type PingState =
-  | { status: 'pending' }
-  | { status: 'ok'; result: PingResponse }
-  | { status: 'error'; message: string };
+type Session =
+  | { kind: 'checking' }
+  | { kind: 'signedOut'; notice: SignInNotice }
+  | { kind: 'staff'; staff: StaffIdentity };
 
 /**
- * S0 shell: proves the admin site reaches its own environment's backend.
- * Staff sign-in (A01, Firebase Auth + TOTP — D-008) and the screens A02–A12 arrive in Slice S15.
+ * The staff portal (S15, Figma A01–A12). Access needs the `staff` claim; anyone else is signed
+ * out again (and an account the email link has just created is removed). D-043: no TOTP.
  */
 export function App({
-  app,
+  auth,
+  api,
   environment,
-  locale,
+  initialLocale,
 }: {
-  app: FirebaseApp;
+  auth: Auth;
+  api: Api;
   environment: Environment;
-  locale: SupportedLocale;
+  initialLocale: SupportedLocale;
 }) {
-  const [ping, setPing] = useState<PingState>({ status: 'pending' });
+  const [locale, setLocale] = useState(initialLocale);
+  const [session, setSession] = useState<Session>({ kind: 'checking' });
+  const [pendingLink, setPendingLink] = useState(false);
+  // While a fresh sign-in is checked (and possibly removed), the auth listener stands aside.
+  const signingIn = useRef(false);
 
+  const end = useCallback(
+    async (notice: SignInNotice) => {
+      clearActivity();
+      setSession({ kind: 'signedOut', notice });
+      await signOut(auth);
+    },
+    [auth],
+  );
+
+  /** A just-created email-link account without the claim is deleted, so no stray users remain. */
+  const checkCredential = useCallback(async (cred: UserCredential) => {
+    const token = await cred.user.getIdTokenResult(true);
+    const staff = staffFromClaims(cred.user.uid, cred.user.email, token.claims);
+    if (!staff) {
+      if (getAdditionalUserInfo(cred)?.isNewUser) await cred.user.delete().catch(() => undefined);
+      throw Object.assign(new Error('denied'), { code: 'portal/denied' });
+    }
+    markActivity(Date.now());
+    setSession({ kind: 'staff', staff });
+  }, []);
+
+  /** Runs one sign-in with the auth listener paused, then signs out again if it was refused. */
+  const signIn = useCallback(
+    async (attempt: () => Promise<UserCredential>) => {
+      signingIn.current = true;
+      markActivity(Date.now());
+      try {
+        await checkCredential(await attempt());
+      } catch (e) {
+        if ((e as { code?: string }).code === 'portal/denied') await end('denied');
+        throw e;
+      } finally {
+        signingIn.current = false;
+      }
+    },
+    [checkCredential, end],
+  );
+
+  useEffect(
+    () =>
+      onAuthStateChanged(auth, (user) => {
+        if (signingIn.current) return;
+        if (!user) {
+          setSession((s) => (s.kind === 'signedOut' ? s : { kind: 'signedOut', notice: null }));
+          return;
+        }
+        if (idleExpired(readActivity(), Date.now())) {
+          void end('idle');
+          return;
+        }
+        user
+          .getIdTokenResult(true)
+          .then((token) => {
+            const staff = staffFromClaims(user.uid, user.email, token.claims);
+            if (!staff) return end('denied');
+            markActivity(Date.now());
+            setSession({ kind: 'staff', staff });
+          })
+          .catch(() => end(null));
+      }),
+    [auth, end],
+  );
+
+  // Completing an email link opened in this browser.
   useEffect(() => {
-    const call = httpsCallable(getFunctions(app, functionsRegion), 'ping');
-    call({ clientEnvironment: environment, opId: crypto.randomUUID() })
-      .then((res) => setPing({ status: 'ok', result: pingResponseSchema.parse(res.data) }))
-      .catch((error: unknown) => setPing({ status: 'error', message: String(error) }));
-  }, [app, environment]);
+    const href = window.location.href;
+    if (!isSignInWithEmailLink(auth, href)) return;
+    const email = linkEmail();
+    if (!email) {
+      setPendingLink(true);
+      return;
+    }
+    signIn(() => signInWithEmailLink(auth, email, href))
+      .catch(async (e: { code?: string }) => {
+        if (e.code !== 'portal/denied') await end('linkInvalid');
+      })
+      .finally(() => {
+        rememberLinkEmail(null);
+        window.history.replaceState({}, '', '/');
+      });
+  }, [auth, signIn, end]);
+
+  // Idle sign-out (A01 "Tự đăng xuất sau 30 phút không hoạt động"), shared across tabs.
+  useEffect(() => {
+    if (session.kind !== 'staff') return;
+    let last = 0;
+    const touch = () => {
+      const now = Date.now();
+      if (now - last > 15_000) {
+        last = now;
+        markActivity(now);
+      }
+    };
+    const events = ['pointerdown', 'keydown', 'mousemove', 'wheel', 'touchstart'] as const;
+    events.forEach((e) => window.addEventListener(e, touch, { passive: true }));
+    const check = setInterval(() => {
+      if (idleExpired(readActivity() ?? Date.now() - IDLE_MS, Date.now())) void end('idle');
+    }, 30_000);
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, touch));
+      clearInterval(check);
+    };
+  }, [session.kind, end]);
+
+  const actions = useMemo<SignInActions>(
+    () => ({
+      withPassword: (email, password) =>
+        signIn(() => signInWithEmailAndPassword(auth, email, password)),
+      async sendLink(email) {
+        await sendSignInLinkToEmail(auth, email, {
+          url: `${window.location.origin}/`,
+          handleCodeInApp: true,
+        });
+        rememberLinkEmail(email);
+      },
+      async resetPassword(email) {
+        await sendPasswordResetEmail(auth, email).catch((e: { code?: string }) => {
+          // Same answer whether or not the address has an account.
+          if (e.code !== 'auth/user-not-found') throw e;
+        });
+      },
+      async finishLink(email) {
+        try {
+          await signIn(() => signInWithEmailLink(auth, email, window.location.href));
+        } finally {
+          setPendingLink(false);
+          window.history.replaceState({}, '', '/');
+        }
+      },
+    }),
+    [auth, signIn],
+  );
+
+  const changeLocale = (l: SupportedLocale) => {
+    saveLocale(l);
+    document.documentElement.lang = l;
+    setLocale(l);
+  };
 
   return (
     <IntlProvider locale={locale} defaultLocale="vi" messages={messages[locale]}>
-      <main style={{ fontFamily: 'system-ui, sans-serif', padding: 24, color: '#173D44' }}>
-        <h1 style={{ fontSize: 24, fontWeight: 600 }}>
-          <FormattedMessage id="portal.title" />
-        </h1>
-        <p>
-          <FormattedMessage id="portal.environment" values={{ environment }} />
-        </p>
-        {ping.status === 'pending' && (
-          <p>
-            <FormattedMessage id="portal.ping.pending" />
-          </p>
-        )}
-        {ping.status === 'ok' && (
-          <p>
-            <FormattedMessage
-              id="portal.ping.ok"
-              values={{
-                projectId: ping.result.projectId,
-                region: ping.result.region,
-                time: (
-                  <>
-                    <FormattedDate value={ping.result.serverTime} />{' '}
-                    <FormattedTime value={ping.result.serverTime} />
-                  </>
-                ),
-              }}
+      <ApiContext.Provider value={api}>
+        {session.kind === 'checking' ? (
+          <Loading />
+        ) : session.kind === 'staff' ? (
+          <StaffContext.Provider value={session.staff}>
+            <Shell
+              environment={environment}
+              locale={locale}
+              onLocale={changeLocale}
+              onSignOut={() => void end(null)}
             />
-          </p>
+          </StaffContext.Provider>
+        ) : (
+          <SignInScreen actions={actions} notice={session.notice} pendingLink={pendingLink} />
         )}
-        {ping.status === 'error' && (
-          <p role="alert">
-            <FormattedMessage id="portal.ping.error" values={{ message: ping.message }} />
-          </p>
-        )}
-      </main>
+      </ApiContext.Provider>
     </IntlProvider>
   );
 }
