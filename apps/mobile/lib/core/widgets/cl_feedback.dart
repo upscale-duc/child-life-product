@@ -44,6 +44,8 @@ class ClToaster {
     Duration visibleFor = const Duration(seconds: 4),
   }) {
     if (!_overlay.mounted) return null;
+    // One toast at a time: a new one replaces the last.
+    dismissClToasts();
     late final OverlayEntry entry;
     entry = OverlayEntry(
       builder: (_) => _ToastHost(
@@ -51,13 +53,28 @@ class ClToaster {
         actionLabel: actionLabel,
         onAction: onAction,
         visibleFor: visibleFor,
-        onDone: () => entry.remove(),
+        onDone: () {
+          _visible.remove(entry);
+          if (entry.mounted) entry.remove();
+        },
         theme: _theme,
       ),
     );
+    _visible.add(entry);
     _overlay.insert(entry);
     return entry;
   }
+}
+
+final _visible = <OverlayEntry>{};
+
+/// Removes visible toasts at once — e.g. when a sheet opens, so an "Hoàn tác" toast never
+/// sits over the sheet's primary button.
+void dismissClToasts() {
+  for (final entry in [..._visible]) {
+    if (entry.mounted) entry.remove();
+  }
+  _visible.clear();
 }
 
 class _ToastHost extends StatefulWidget {

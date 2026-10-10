@@ -213,118 +213,110 @@ class _ScheduleSheetState extends ConsumerState<_ScheduleSheet> {
       ),
     );
     final minutes = windowMinutes(_start, _end);
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(
-            title: l10n.nightCareSchedule,
-            onClose: () => Navigator.of(context).pop(),
-          ),
-          const SizedBox(height: ClSpace.s2),
-          ClSegmented<bool>(
-            options: const [false, true],
-            selected: _editEnd,
-            labelOf: (end) => end
-                ? l10n.nightCareSegmentOff(hhmm(_end))
-                : l10n.nightCareSegmentOn(hhmm(_start)),
-            onChanged: (end) => setState(() {
-              _editEnd = end;
-              _hours.jumpToItem(_current.hour);
-              _minutes.jumpToItem(_current.minute ~/ 5);
-            }),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          Row(
-            children: [
-              Expanded(
-                child: Center(
-                  child: Text(
-                    l10n.pickerHour,
-                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    l10n.pickerMinute,
-                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 200,
-            child: Row(
-              children: [
-                wheel(
-                  _hours,
-                  24,
-                  (i) => i.toString().padLeft(2, '0'),
-                  (i) => _set(TimeOfDay(hour: i, minute: _current.minute)),
-                ),
-                wheel(
-                  _minutes,
-                  12,
-                  (i) => (i * 5).toString().padLeft(2, '0'),
-                  (i) => _set(TimeOfDay(hour: _current.hour, minute: i * 5)),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              for (final h in presets)
-                ClFilterChip(
-                  label: hhmm(TimeOfDay(hour: h, minute: 0)),
-                  selected: _current == TimeOfDay(hour: h, minute: 0),
-                  onTap: () => _jump(TimeOfDay(hour: h, minute: 0)),
-                ),
-            ],
-          ),
-          const SizedBox(height: ClSpace.s3),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ClIcon(ClIcons.sleep, size: 16, color: cl.colors.mintText),
-              const SizedBox(width: ClSpace.s1),
-              Flexible(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(
+          title: l10n.nightCareSchedule,
+          onClose: () => Navigator.of(context).pop(),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        ClSegmented<bool>(
+          options: const [false, true],
+          selected: _editEnd,
+          labelOf: (end) => end
+              ? l10n.nightCareSegmentOff(hhmm(_end))
+              : l10n.nightCareSegmentOn(hhmm(_start)),
+          onChanged: (end) => setState(() {
+            _editEnd = end;
+            _hours.jumpToItem(_current.hour);
+            _minutes.jumpToItem(_current.minute ~/ 5);
+          }),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        Row(
+          children: [
+            Expanded(
+              child: Center(
                 child: Text(
-                  l10n.nightCareDuration(
-                    durationLabel(l10n, minutes),
-                    hhmm(_end),
-                  ),
-                  style: cl.text.label.copyWith(color: cl.colors.mintText),
+                  l10n.pickerHour,
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
                 ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  l10n.pickerMinute,
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 200,
+          child: Row(
+            children: [
+              wheel(
+                _hours,
+                24,
+                (i) => i.toString().padLeft(2, '0'),
+                (i) => _set(TimeOfDay(hour: i, minute: _current.minute)),
+              ),
+              wheel(
+                _minutes,
+                12,
+                (i) => (i * 5).toString().padLeft(2, '0'),
+                (i) => _set(TimeOfDay(hour: _current.hour, minute: i * 5)),
               ),
             ],
           ),
-          const SizedBox(height: ClSpace.s4),
-          ClButton(
-            label: l10n.actionDone,
-            expand: true,
-            onPressed: () {
-              final controller = ref.read(appearanceSettingsProvider.notifier);
-              final settings = ref.read(appearanceSettingsProvider);
-              controller.update(
-                settings.copyWith(scheduleStart: _start, scheduleEnd: _end),
-              );
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            for (final h in presets)
+              ClFilterChip(
+                label: hhmm(TimeOfDay(hour: h, minute: 0)),
+                selected: _current == TimeOfDay(hour: h, minute: 0),
+                onTap: () => _jump(TimeOfDay(hour: h, minute: 0)),
+              ),
+          ],
+        ),
+        const SizedBox(height: ClSpace.s3),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ClIcon(ClIcons.sleep, size: 16, color: cl.colors.mintText),
+            const SizedBox(width: ClSpace.s1),
+            Flexible(
+              child: Text(
+                l10n.nightCareDuration(
+                  durationLabel(l10n, minutes),
+                  hhmm(_end),
+                ),
+                style: cl.text.label.copyWith(color: cl.colors.mintText),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: ClSpace.s4),
+        ClButton(
+          label: l10n.actionDone,
+          expand: true,
+          onPressed: () {
+            final controller = ref.read(appearanceSettingsProvider.notifier);
+            final settings = ref.read(appearanceSettingsProvider);
+            controller.update(
+              settings.copyWith(scheduleStart: _start, scheduleEnd: _end),
+            );
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 }

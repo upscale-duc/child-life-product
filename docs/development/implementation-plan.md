@@ -261,6 +261,8 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 
 ### S4 — Care logging core & offline
 
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S4.md). Bottle, breast, pump, diaper and growth logging, record detail with edit / delete / undo, offline save and sync work end to end (iOS + Android, emulators); sleep and timers are S5, History S6.
+
 - **Figma:** 19, 19a, 21, 22, 23, 23a, 24, 28, 7a/7d content, 12b–12e, 9a, 9b, Banner/Error, SyncStatus, LogRow pending.
 - **Backend:** record schema + Rules (role, ownership P-004, ranges), `DaySummary` trigger (idempotent recompute), "Đã xoá gần đây" soft-delete + 30-day purge job, counters ("đã ghi 46 lần").
 - **Mobile:** Today tiles per trackers, quick log, all sheets with defaults/memory of last choice, keypad, wheels, record detail with attribution, edit/delete + 5 s undo, optimistic UI < 100 ms, pending/synced states, offline banner & sheet, "Nhắn Mẹ" entry (destination per Q-007).

@@ -299,85 +299,75 @@ class _BabyPickerSheet extends ConsumerWidget {
     final selected = ref.watch(selectedBabyIdProvider);
     final owned = session.active.where((m) => m.isOwner).length;
     final canAdd = owned < maxOwnedBabies && !session.isAnonymous;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: l10n.babyPickerTitle),
-          for (final m in session.active) ...[
-            _BabyRow(
-              membership: m,
-              selected: m.babyId == selected,
-              onTap: () {
-                Navigator.of(context).pop();
-                if (m.babyId == selected) return;
-                ref.read(selectedBabyIdProvider.notifier).select(m.babyId);
-                final name = ref.read(babyProvider(m.babyId)).value?.nickname;
-                if (name != null) {
-                  showClToast(context, message: l10n.babySwitched(name));
-                }
-              },
-            ),
-            const SizedBox(height: ClSpace.s2),
-          ],
-          if (!session.isAnonymous) ...[
-            ClPressable(
-              onPressed: canAdd
-                  ? () {
-                      Navigator.of(context).pop();
-                      startAddingBaby(context, ref);
-                    }
-                  : null,
-              semanticLabel:
-                  '${l10n.babyPickerAdd}, ${l10n.babyPickerCount(owned, maxOwnedBabies)}',
-              child: Opacity(
-                opacity: canAdd ? 1 : 0.5,
-                child: Container(
-                  height: 56,
-                  padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
-                  decoration: BoxDecoration(
-                    color: cl.colors.surface,
-                    borderRadius: BorderRadius.circular(ClRadius.control),
-                    border: Border.all(color: cl.colors.mintDeep),
-                  ),
-                  child: Row(
-                    children: [
-                      ClIcon(ClIcons.plus, size: 18, color: cl.colors.mintText),
-                      const SizedBox(width: ClSpace.s3),
-                      Expanded(
-                        child: Text(
-                          l10n.babyPickerAdd,
-                          style: cl.text.bodyStrong.copyWith(
-                            color: cl.colors.mintText,
-                          ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: l10n.babyPickerTitle),
+        for (final m in session.active) ...[
+          _BabyRow(
+            membership: m,
+            selected: m.babyId == selected,
+            onTap: () {
+              Navigator.of(context).pop();
+              if (m.babyId == selected) return;
+              ref.read(selectedBabyIdProvider.notifier).select(m.babyId);
+              final name = ref.read(babyProvider(m.babyId)).value?.nickname;
+              if (name != null) {
+                showClToast(context, message: l10n.babySwitched(name));
+              }
+            },
+          ),
+          const SizedBox(height: ClSpace.s2),
+        ],
+        if (!session.isAnonymous) ...[
+          ClPressable(
+            onPressed: canAdd
+                ? () {
+                    Navigator.of(context).pop();
+                    startAddingBaby(context, ref);
+                  }
+                : null,
+            semanticLabel:
+                '${l10n.babyPickerAdd}, ${l10n.babyPickerCount(owned, maxOwnedBabies)}',
+            child: Opacity(
+              opacity: canAdd ? 1 : 0.5,
+              child: Container(
+                height: 56,
+                padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+                decoration: BoxDecoration(
+                  color: cl.colors.surface,
+                  borderRadius: BorderRadius.circular(ClRadius.control),
+                  border: Border.all(color: cl.colors.mintDeep),
+                ),
+                child: Row(
+                  children: [
+                    ClIcon(ClIcons.plus, size: 18, color: cl.colors.mintText),
+                    const SizedBox(width: ClSpace.s3),
+                    Expanded(
+                      child: Text(
+                        l10n.babyPickerAdd,
+                        style: cl.text.bodyStrong.copyWith(
+                          color: cl.colors.mintText,
                         ),
                       ),
-                      Text(
-                        l10n.babyPickerCount(owned, maxOwnedBabies),
-                        style: cl.text.label.copyWith(
-                          color: cl.colors.inkMuted,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      l10n.babyPickerCount(owned, maxOwnedBabies),
+                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: ClSpace.s2),
-            Text(
-              l10n.babyPickerLimit(maxOwnedBabies),
-              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-            ),
-          ],
+          ),
+          const SizedBox(height: ClSpace.s2),
+          Text(
+            l10n.babyPickerLimit(maxOwnedBabies),
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
         ],
-      ),
+      ],
     );
   }
 }
@@ -489,64 +479,56 @@ Future<void> showMeMenu(BuildContext context, WidgetRef ref) {
       : 0;
   return showClSheet<void>(
     context: context,
-    builder: (sheetContext) => Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ClSheetHeader(title: l10n.tabMe),
-          ClCardGroup(
-            children: [
-              if (anonymous)
-                ClDetailRow(
-                  icon: ClIcons.cloudOff,
-                  label: l10n.saveAccountTitle,
-                  onTap: () {
-                    Navigator.of(sheetContext).pop();
-                    showSaveAccountSheet(context, nickname);
-                  },
-                ),
-              if (!anonymous)
-                ClDetailRow(
-                  icon: ClIcons.plus,
-                  label: l10n.babyPickerAdd,
-                  value: l10n.babyPickerCount(owned, maxOwnedBabies),
-                  onTap: owned < maxOwnedBabies
-                      ? () {
-                          Navigator.of(sheetContext).pop();
-                          startAddingBaby(context, ref);
-                        }
-                      : null,
-                ),
+    builder: (sheetContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ClSheetHeader(title: l10n.tabMe),
+        ClCardGroup(
+          children: [
+            if (anonymous)
               ClDetailRow(
-                icon: ClIcons.sleep,
-                label: l10n.meAppearance,
+                icon: ClIcons.cloudOff,
+                label: l10n.saveAccountTitle,
                 onTap: () {
                   Navigator.of(sheetContext).pop();
-                  context.push(Routes.appearance);
+                  showSaveAccountSheet(context, nickname);
                 },
               ),
+            if (!anonymous)
               ClDetailRow(
-                icon: ClIcons.back,
-                label: l10n.meSignOut,
-                onTap: () {
-                  Navigator.of(sheetContext).pop();
-                  if (anonymous) {
-                    _confirmAnonymousSignOut(context, ref);
-                  } else {
-                    ref.read(authRepositoryProvider).signOut();
-                  }
-                },
+                icon: ClIcons.plus,
+                label: l10n.babyPickerAdd,
+                value: l10n.babyPickerCount(owned, maxOwnedBabies),
+                onTap: owned < maxOwnedBabies
+                    ? () {
+                        Navigator.of(sheetContext).pop();
+                        startAddingBaby(context, ref);
+                      }
+                    : null,
               ),
-            ],
-          ),
-        ],
-      ),
+            ClDetailRow(
+              icon: ClIcons.sleep,
+              label: l10n.meAppearance,
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                context.push(Routes.appearance);
+              },
+            ),
+            ClDetailRow(
+              icon: ClIcons.back,
+              label: l10n.meSignOut,
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                if (anonymous) {
+                  _confirmAnonymousSignOut(context, ref);
+                } else {
+                  ref.read(authRepositoryProvider).signOut();
+                }
+              },
+            ),
+          ],
+        ),
+      ],
     ),
   );
 }
@@ -556,49 +538,41 @@ Future<void> _confirmAnonymousSignOut(BuildContext context, WidgetRef ref) {
   final l10n = AppLocalizations.of(context);
   return showClSheet<void>(
     context: context,
-    builder: (sheetContext) => Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: l10n.signOutAnonTitle),
-          Text(
-            l10n.signOutAnonBody,
-            style: sheetContext.cl.text.body.copyWith(
-              color: sheetContext.cl.colors.inkMuted,
-            ),
+    builder: (sheetContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: l10n.signOutAnonTitle),
+        Text(
+          l10n.signOutAnonBody,
+          style: sheetContext.cl.text.body.copyWith(
+            color: sheetContext.cl.colors.inkMuted,
           ),
-          const SizedBox(height: ClSpace.s6),
-          ClButton(
-            label: l10n.saveAccountTitle,
-            expand: true,
-            onPressed: () {
-              Navigator.of(sheetContext).pop();
-              final m = ref.read(selectedMembershipProvider);
-              final name = m == null
-                  ? ''
-                  : ref.read(babyProvider(m.babyId)).value?.nickname ?? '';
-              showSaveAccountSheet(context, name);
-            },
-          ),
-          const SizedBox(height: ClSpace.s2),
-          ClButton(
-            label: l10n.signOutAnonConfirm,
-            style: ClButtonStyle.destructive,
-            expand: true,
-            onPressed: () {
-              Navigator.of(sheetContext).pop();
-              ref.read(authRepositoryProvider).signOut();
-            },
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: ClSpace.s6),
+        ClButton(
+          label: l10n.saveAccountTitle,
+          expand: true,
+          onPressed: () {
+            Navigator.of(sheetContext).pop();
+            final m = ref.read(selectedMembershipProvider);
+            final name = m == null
+                ? ''
+                : ref.read(babyProvider(m.babyId)).value?.nickname ?? '';
+            showSaveAccountSheet(context, name);
+          },
+        ),
+        const SizedBox(height: ClSpace.s2),
+        ClButton(
+          label: l10n.signOutAnonConfirm,
+          style: ClButtonStyle.destructive,
+          expand: true,
+          onPressed: () {
+            Navigator.of(sheetContext).pop();
+            ref.read(authRepositoryProvider).signOut();
+          },
+        ),
+      ],
     ),
   );
 }

@@ -39,27 +39,16 @@ class _SheetFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(
-            title: title,
-            onClose: () => Navigator.of(context).pop(),
-          ),
-          const SizedBox(height: ClSpace.s2),
-          ...children,
-          const SizedBox(height: ClSpace.s4),
-          ClButton(label: l10n.actionDone, expand: true, onPressed: onDone),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: title, onClose: () => Navigator.of(context).pop()),
+        const SizedBox(height: ClSpace.s2),
+        ...children,
+        const SizedBox(height: ClSpace.s4),
+        ClButton(label: l10n.actionDone, expand: true, onPressed: onDone),
+      ],
     );
   }
 }

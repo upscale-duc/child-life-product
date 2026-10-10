@@ -148,54 +148,45 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
       builder: (sheetContext) {
         final l10n = AppLocalizations.of(sheetContext);
         final cl = sheetContext.cl;
-        return Padding(
-          padding: EdgeInsets.fromLTRB(
-            ClSpace.s4,
-            0,
-            ClSpace.s4,
-            MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ClSheetHeader(title: l10n.growthDate),
-              SizedBox(
-                height: 200,
-                child: CupertinoTheme(
-                  data: CupertinoThemeData(
-                    brightness: cl.isNightCare
-                        ? Brightness.dark
-                        : Brightness.light,
-                    textTheme: CupertinoTextThemeData(
-                      dateTimePickerTextStyle: cl.text.title2.copyWith(
-                        color: cl.colors.ink,
-                      ),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClSheetHeader(title: l10n.growthDate),
+            SizedBox(
+              height: 200,
+              child: CupertinoTheme(
+                data: CupertinoThemeData(
+                  brightness: cl.isNightCare
+                      ? Brightness.dark
+                      : Brightness.light,
+                  textTheme: CupertinoTextThemeData(
+                    dateTimePickerTextStyle: cl.text.title2.copyWith(
+                      color: cl.colors.ink,
                     ),
                   ),
-                  child: CupertinoDatePicker(
-                    mode: CupertinoDatePickerMode.date,
-                    initialDateTime: picked,
-                    maximumDate: today,
-                    minimumDate:
-                        dob ?? today.subtract(const Duration(days: 365 * 3)),
-                    dateOrder:
-                        Localizations.localeOf(sheetContext).languageCode ==
-                            'vi'
-                        ? DatePickerDateOrder.dmy
-                        : null,
-                    onDateTimeChanged: (d) => picked = DateUtils.dateOnly(d),
-                  ),
+                ),
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  initialDateTime: picked,
+                  maximumDate: today,
+                  minimumDate:
+                      dob ?? today.subtract(const Duration(days: 365 * 3)),
+                  dateOrder:
+                      Localizations.localeOf(sheetContext).languageCode == 'vi'
+                      ? DatePickerDateOrder.dmy
+                      : null,
+                  onDateTimeChanged: (d) => picked = DateUtils.dateOnly(d),
                 ),
               ),
-              const SizedBox(height: ClSpace.s4),
-              ClButton(
-                label: l10n.actionDone,
-                expand: true,
-                onPressed: () => Navigator.of(sheetContext).pop(picked),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: ClSpace.s4),
+            ClButton(
+              label: l10n.actionDone,
+              expand: true,
+              onPressed: () => Navigator.of(sheetContext).pop(picked),
+            ),
+          ],
         );
       },
     );
@@ -714,39 +705,31 @@ class RecordDetailScreen extends ConsumerWidget {
     ClHaptics.warning(context);
     final confirmed = await showClSheet<bool>(
       context: context,
-      builder: (sheetContext) => Padding(
-        padding: EdgeInsets.fromLTRB(
-          ClSpace.s4,
-          0,
-          ClSpace.s4,
-          MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ClSheetHeader(title: l10n.deleteConfirmTitle),
-            Text(
-              l10n.deleteConfirmBody,
-              style: sheetContext.cl.text.body.copyWith(
-                color: sheetContext.cl.colors.inkMuted,
-              ),
+      builder: (sheetContext) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.deleteConfirmTitle),
+          Text(
+            l10n.deleteConfirmBody,
+            style: sheetContext.cl.text.body.copyWith(
+              color: sheetContext.cl.colors.inkMuted,
             ),
-            const SizedBox(height: ClSpace.s6),
-            ClButton(
-              label: l10n.deleteRecord,
-              style: ClButtonStyle.destructive,
-              expand: true,
-              onPressed: () => Navigator.of(sheetContext).pop(true),
-            ),
-            ClButton(
-              label: l10n.actionCancel,
-              style: ClButtonStyle.plain,
-              expand: true,
-              onPressed: () => Navigator.of(sheetContext).pop(false),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: ClSpace.s6),
+          ClButton(
+            label: l10n.deleteRecord,
+            style: ClButtonStyle.destructive,
+            expand: true,
+            onPressed: () => Navigator.of(sheetContext).pop(true),
+          ),
+          ClButton(
+            label: l10n.actionCancel,
+            style: ClButtonStyle.plain,
+            expand: true,
+            onPressed: () => Navigator.of(sheetContext).pop(false),
+          ),
+        ],
       ),
     );
     if (confirmed != true || !context.mounted) return;
@@ -793,92 +776,82 @@ class _PendingSheetState extends ConsumerState<_PendingSheet> {
                     const [])
               if (r.pending) r,
           ];
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: l10n.pendingTitle),
-          for (final r in pending)
-            Padding(
-              padding: const EdgeInsets.only(bottom: ClSpace.s3),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 48,
-                    child: Text(
-                      DateFormat.Hm(locale).format(r.occurredAt),
-                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                    ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: l10n.pendingTitle),
+        for (final r in pending)
+          Padding(
+            padding: const EdgeInsets.only(bottom: ClSpace.s3),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 48,
+                  child: Text(
+                    DateFormat.Hm(locale).format(r.occurredAt),
+                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
                   ),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: careColor(context, r.type).soft,
-                      shape: BoxShape.circle,
-                    ),
-                    child: ClArt(careArt(r.type)),
+                ),
+                Container(
+                  width: 40,
+                  height: 40,
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: careColor(context, r.type).soft,
+                    shape: BoxShape.circle,
                   ),
-                  const SizedBox(width: ClSpace.s3),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          recordSummary(l10n, locale, r),
-                          style: cl.text.bodyStrong,
+                  child: ClArt(careArt(r.type)),
+                ),
+                const SizedBox(width: ClSpace.s3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        recordSummary(l10n, locale, r),
+                        style: cl.text.bodyStrong,
+                      ),
+                      Text(
+                        l10n.pendingOnlyHere,
+                        style: cl.text.caption.copyWith(
+                          color: cl.colors.inkMuted,
                         ),
-                        Text(
-                          l10n.pendingOnlyHere,
-                          style: cl.text.caption.copyWith(
-                            color: cl.colors.inkMuted,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  PendingChip(label: l10n.pendingChip),
-                ],
-              ),
+                ),
+                PendingChip(label: l10n.pendingChip),
+              ],
             ),
-          const SizedBox(height: ClSpace.s2),
-          Text(
-            l10n.pendingFootnote,
-            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
           ),
-          const SizedBox(height: ClSpace.s4),
-          ClButton(
-            label: l10n.retryNow,
-            style: ClButtonStyle.secondary,
-            expand: true,
-            onPressed: _busy
-                ? null
-                : () async {
-                    setState(() => _busy = true);
-                    final ok = await ref
-                        .read(careRepositoryProvider)
-                        .retryNow();
-                    if (!mounted) return;
-                    setState(() => _busy = false);
-                    if (ok) {
-                      // The toast lives in the root overlay, so it outlasts the sheet.
-                      showClToast(this.context, message: l10n.retrySynced);
-                      Navigator.of(this.context).pop();
-                    } else {
-                      showClToast(this.context, message: l10n.retryStill);
-                    }
-                  },
-          ),
-        ],
-      ),
+        const SizedBox(height: ClSpace.s2),
+        Text(
+          l10n.pendingFootnote,
+          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        ),
+        const SizedBox(height: ClSpace.s4),
+        ClButton(
+          label: l10n.retryNow,
+          style: ClButtonStyle.secondary,
+          expand: true,
+          onPressed: _busy
+              ? null
+              : () async {
+                  setState(() => _busy = true);
+                  final ok = await ref.read(careRepositoryProvider).retryNow();
+                  if (!mounted) return;
+                  setState(() => _busy = false);
+                  if (ok) {
+                    // The toast lives in the root overlay, so it outlasts the sheet.
+                    showClToast(this.context, message: l10n.retrySynced);
+                    Navigator.of(this.context).pop();
+                  } else {
+                    showClToast(this.context, message: l10n.retryStill);
+                  }
+                },
+        ),
+      ],
     );
   }
 }

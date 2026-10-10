@@ -487,60 +487,50 @@ class _JoinHowSheetState extends ConsumerState<_JoinHowSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(
-            title: l10n.joinHowTitle(widget.args.preview.babyNickname),
-          ),
-          Text(
-            l10n.joinHowBody,
-            style: cl.text.body.copyWith(color: cl.colors.inkMuted),
-          ),
-          const SizedBox(height: ClSpace.s4),
-          ClButton(
-            label: l10n.joinNow,
-            expand: true,
-            onPressed: _busy
-                ? null
-                : () => _enter((r) => r.signInAnonymously()),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          Row(
-            children: [
-              Expanded(child: Container(height: 1, color: cl.colors.separator)),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: ClSpace.s2),
-                child: Text(
-                  l10n.joinOrSave,
-                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(
+          title: l10n.joinHowTitle(widget.args.preview.babyNickname),
+        ),
+        Text(
+          l10n.joinHowBody,
+          style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+        ),
+        const SizedBox(height: ClSpace.s4),
+        ClButton(
+          label: l10n.joinNow,
+          expand: true,
+          onPressed: _busy ? null : () => _enter((r) => r.signInAnonymously()),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        Row(
+          children: [
+            Expanded(child: Container(height: 1, color: cl.colors.separator)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: ClSpace.s2),
+              child: Text(
+                l10n.joinOrSave,
+                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
               ),
-              Expanded(child: Container(height: 1, color: cl.colors.separator)),
-            ],
-          ),
-          const SizedBox(height: ClSpace.s3),
-          AppleSignInButton(
-            onPressed: _busy ? null : () => _enter((r) => r.signInWithApple()),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          ClButton(
-            label: l10n.signInGoogle,
-            style: ClButtonStyle.outline,
-            icon: ClIcons.brandMark,
-            expand: true,
-            onPressed: _busy ? null : () => _enter((r) => r.signInWithGoogle()),
-          ),
-        ],
-      ),
+            ),
+            Expanded(child: Container(height: 1, color: cl.colors.separator)),
+          ],
+        ),
+        const SizedBox(height: ClSpace.s3),
+        AppleSignInButton(
+          onPressed: _busy ? null : () => _enter((r) => r.signInWithApple()),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        ClButton(
+          label: l10n.signInGoogle,
+          style: ClButtonStyle.outline,
+          icon: ClIcons.brandMark,
+          expand: true,
+          onPressed: _busy ? null : () => _enter((r) => r.signInWithGoogle()),
+        ),
+      ],
     );
   }
 }

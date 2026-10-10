@@ -254,66 +254,58 @@ class _RelativeRightsSheetState extends State<_RelativeRightsSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: l10n.relativeRightsTitle),
-          Container(
-            padding: const EdgeInsets.all(ClSpace.s3),
-            decoration: BoxDecoration(
-              color: cl.colors.mintSoft,
-              borderRadius: BorderRadius.circular(ClRadius.control),
-            ),
-            child: Row(
-              children: [
-                ClIcon(ClIcons.check, size: 18, color: cl.colors.mintText),
-                const SizedBox(width: ClSpace.s2),
-                Expanded(
-                  child: Text(
-                    l10n.relativeRightsAlways,
-                    style: cl.text.label.copyWith(color: cl.colors.mintText),
-                  ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: l10n.relativeRightsTitle),
+        Container(
+          padding: const EdgeInsets.all(ClSpace.s3),
+          decoration: BoxDecoration(
+            color: cl.colors.mintSoft,
+            borderRadius: BorderRadius.circular(ClRadius.control),
+          ),
+          child: Row(
+            children: [
+              ClIcon(ClIcons.check, size: 18, color: cl.colors.mintText),
+              const SizedBox(width: ClSpace.s2),
+              Expanded(
+                child: Text(
+                  l10n.relativeRightsAlways,
+                  style: cl.text.label.copyWith(color: cl.colors.mintText),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(height: ClSpace.s4),
-          Text(
-            l10n.relativeRightsMore,
-            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-          ),
-          const SizedBox(height: ClSpace.s2),
-          ClSettingRow(
-            icon: ClIcons.cake,
-            title: l10n.rightBabyInfo,
-            subtitle: l10n.rightBabyInfoHint,
-            value: _value.viewBabyInfo,
-            onChanged: (v) => _set(_value.copyWith(viewBabyInfo: v)),
-          ),
-          const SizedBox(height: ClSpace.s2),
-          ClSettingRow(
-            icon: ClIcons.feed,
-            title: l10n.rightDailyCare,
-            subtitle: l10n.rightDailyCareHint,
-            value: _value.viewDailyCare,
-            onChanged: (v) => _set(_value.copyWith(viewDailyCare: v)),
-          ),
-          const SizedBox(height: ClSpace.s6),
-          ClButton(
-            label: l10n.actionDone,
-            expand: true,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: ClSpace.s4),
+        Text(
+          l10n.relativeRightsMore,
+          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        ClSettingRow(
+          icon: ClIcons.cake,
+          title: l10n.rightBabyInfo,
+          subtitle: l10n.rightBabyInfoHint,
+          value: _value.viewBabyInfo,
+          onChanged: (v) => _set(_value.copyWith(viewBabyInfo: v)),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        ClSettingRow(
+          icon: ClIcons.feed,
+          title: l10n.rightDailyCare,
+          subtitle: l10n.rightDailyCareHint,
+          value: _value.viewDailyCare,
+          onChanged: (v) => _set(_value.copyWith(viewDailyCare: v)),
+        ),
+        const SizedBox(height: ClSpace.s6),
+        ClButton(
+          label: l10n.actionDone,
+          expand: true,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
     );
   }
 }
@@ -324,29 +316,19 @@ Future<void> showRoleDetailsSheet(BuildContext context, MemberRole role) =>
       context: context,
       builder: (sheetContext) {
         final l10n = AppLocalizations.of(sheetContext);
-        return Padding(
-          padding: EdgeInsets.fromLTRB(
-            ClSpace.s4,
-            0,
-            ClSpace.s4,
-            MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ClSheetHeader(
-                title: l10n.roleDetailsTitle(roleLabel(l10n, role)),
-              ),
-              PermissionGrid(permissions: rolePermissions(l10n, role)),
-              const SizedBox(height: ClSpace.s6),
-              ClButton(
-                label: l10n.actionDone,
-                expand: true,
-                onPressed: () => Navigator.of(sheetContext).pop(),
-              ),
-            ],
-          ),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClSheetHeader(title: l10n.roleDetailsTitle(roleLabel(l10n, role))),
+            PermissionGrid(permissions: rolePermissions(l10n, role)),
+            const SizedBox(height: ClSpace.s6),
+            ClButton(
+              label: l10n.actionDone,
+              expand: true,
+              onPressed: () => Navigator.of(sheetContext).pop(),
+            ),
+          ],
         );
       },
     );
@@ -886,74 +868,66 @@ class _CantScanSheetState extends ConsumerState<_CantScanSheet> {
       l10n.cantScanStep2('${code.substring(0, 3)} ${code.substring(3)}'),
       l10n.cantScanStep3,
     ];
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: l10n.cantScanTitle(relation)),
-          for (final (i, step) in steps.indexed)
-            Padding(
-              padding: const EdgeInsets.only(bottom: ClSpace.s3),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: cl.colors.mintSoft,
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      '${i + 1}',
-                      style: cl.text.label.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: cl.colors.mintText,
-                      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: l10n.cantScanTitle(relation)),
+        for (final (i, step) in steps.indexed)
+          Padding(
+            padding: const EdgeInsets.only(bottom: ClSpace.s3),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    color: cl.colors.mintSoft,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '${i + 1}',
+                    style: cl.text.label.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: cl.colors.mintText,
                     ),
                   ),
-                  const SizedBox(width: ClSpace.s3),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 3),
-                      child: Text(step, style: cl.text.body),
-                    ),
+                ),
+                const SizedBox(width: ClSpace.s3),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: Text(step, style: cl.text.body),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          const SizedBox(height: ClSpace.s3),
-          ClButton(
-            label: l10n.cantScanNewCode,
-            style: ClButtonStyle.secondary,
-            expand: true,
-            onPressed: _busy ? null : _regenerate,
           ),
-          ClButton(
-            label: l10n.cantScanByEmail,
-            style: ClButtonStyle.plain,
-            expand: true,
-            onPressed: () {
-              Navigator.of(context).pop();
-              widget.onEmail();
-            },
-          ),
-          ClButton(
-            label: l10n.inviteRevoke,
-            style: ClButtonStyle.plain,
-            expand: true,
-            onPressed: _busy ? null : _revoke,
-          ),
-        ],
-      ),
+        const SizedBox(height: ClSpace.s3),
+        ClButton(
+          label: l10n.cantScanNewCode,
+          style: ClButtonStyle.secondary,
+          expand: true,
+          onPressed: _busy ? null : _regenerate,
+        ),
+        ClButton(
+          label: l10n.cantScanByEmail,
+          style: ClButtonStyle.plain,
+          expand: true,
+          onPressed: () {
+            Navigator.of(context).pop();
+            widget.onEmail();
+          },
+        ),
+        ClButton(
+          label: l10n.inviteRevoke,
+          style: ClButtonStyle.plain,
+          expand: true,
+          onPressed: _busy ? null : _revoke,
+        ),
+      ],
     );
   }
 }
@@ -1036,58 +1010,50 @@ class _NotReceivedSheetState extends ConsumerState<_NotReceivedSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: l10n.notReceivedTitle),
-          for (final tip in [
-            l10n.notReceivedTip1,
-            l10n.notReceivedTip2,
-            l10n.notReceivedTip3,
-          ])
-            Padding(
-              padding: const EdgeInsets.only(bottom: ClSpace.s2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: ClIcon(
-                      ClIcons.check,
-                      size: 18,
-                      color: cl.colors.mintText,
-                    ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: l10n.notReceivedTitle),
+        for (final tip in [
+          l10n.notReceivedTip1,
+          l10n.notReceivedTip2,
+          l10n.notReceivedTip3,
+        ])
+          Padding(
+            padding: const EdgeInsets.only(bottom: ClSpace.s2),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: ClIcon(
+                    ClIcons.check,
+                    size: 18,
+                    color: cl.colors.mintText,
                   ),
-                  const SizedBox(width: ClSpace.s2),
-                  Expanded(child: Text(tip, style: cl.text.body)),
-                ],
-              ),
+                ),
+                const SizedBox(width: ClSpace.s2),
+                Expanded(child: Text(tip, style: cl.text.body)),
+              ],
             ),
-          const SizedBox(height: ClSpace.s4),
-          ClButton(
-            label: l10n.notReceivedResend,
-            style: ClButtonStyle.secondary,
+          ),
+        const SizedBox(height: ClSpace.s4),
+        ClButton(
+          label: l10n.notReceivedResend,
+          style: ClButtonStyle.secondary,
+          expand: true,
+          onPressed: _busy ? null : _resend,
+        ),
+        Builder(
+          builder: (buttonContext) => ClButton(
+            label: l10n.inviteShare,
+            style: ClButtonStyle.plain,
             expand: true,
-            onPressed: _busy ? null : _resend,
+            onPressed: () => shareInvite(buttonContext, ref, widget.args),
           ),
-          Builder(
-            builder: (buttonContext) => ClButton(
-              label: l10n.inviteShare,
-              style: ClButtonStyle.plain,
-              expand: true,
-              onPressed: () => shareInvite(buttonContext, ref, widget.args),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

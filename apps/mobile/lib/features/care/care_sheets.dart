@@ -145,38 +145,30 @@ Future<void> showQuickLog(BuildContext context) => showClSheet<void>(
         },
       ),
     );
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ClSheetHeader(title: l10n.quickLogTitle),
-          Row(
-            children: [
-              tile(CareType.bottle, l10n.trackerBottle),
-              const SizedBox(width: ClSpace.s3),
-              tile(CareType.breast, l10n.trackerBreast),
-              const SizedBox(width: ClSpace.s3),
-              tile(CareType.sleep, l10n.quickSleep),
-            ],
-          ),
-          const SizedBox(height: ClSpace.s3),
-          Row(
-            children: [
-              tile(CareType.diaper, l10n.trackerDiaper),
-              const SizedBox(width: ClSpace.s3),
-              tile(CareType.growth, l10n.trackerGrowth),
-              const SizedBox(width: ClSpace.s3),
-              tile(CareType.pump, l10n.trackerPump),
-            ],
-          ),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ClSheetHeader(title: l10n.quickLogTitle),
+        Row(
+          children: [
+            tile(CareType.bottle, l10n.trackerBottle),
+            const SizedBox(width: ClSpace.s3),
+            tile(CareType.breast, l10n.trackerBreast),
+            const SizedBox(width: ClSpace.s3),
+            tile(CareType.sleep, l10n.quickSleep),
+          ],
+        ),
+        const SizedBox(height: ClSpace.s3),
+        Row(
+          children: [
+            tile(CareType.diaper, l10n.trackerDiaper),
+            const SizedBox(width: ClSpace.s3),
+            tile(CareType.growth, l10n.trackerGrowth),
+            const SizedBox(width: ClSpace.s3),
+            tile(CareType.pump, l10n.trackerPump),
+          ],
+        ),
+      ],
     );
   },
 );
@@ -243,32 +235,23 @@ class CareSheetFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final insets = MediaQuery.viewInsetsOf(context).bottom;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        (insets > 0 ? insets : MediaQuery.paddingOf(context).bottom) +
-            ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: title, titleColor: titleColor),
-          Flexible(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: children,
-              ),
+    // The sheet itself keeps clear of the keyboard and the home indicator (cl_sheet.dart).
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: title, titleColor: titleColor),
+        Flexible(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: children,
             ),
           ),
-          const SizedBox(height: ClSpace.s4),
-          primary,
-        ],
-      ),
+        ),
+        const SizedBox(height: ClSpace.s4),
+        primary,
+      ],
     );
   }
 }
@@ -418,49 +401,38 @@ Future<DateTime?> pickCareTime(
     builder: (sheetContext) {
       final l10n = AppLocalizations.of(sheetContext);
       final cl = sheetContext.cl;
-      return Padding(
-        padding: EdgeInsets.fromLTRB(
-          ClSpace.s4,
-          0,
-          ClSpace.s4,
-          MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ClSheetHeader(title: l10n.timePickerTitle),
-            SizedBox(
-              height: 216,
-              child: CupertinoTheme(
-                data: CupertinoThemeData(
-                  brightness: cl.isNightCare
-                      ? Brightness.dark
-                      : Brightness.light,
-                  textTheme: CupertinoTextThemeData(
-                    dateTimePickerTextStyle: cl.text.title2.copyWith(
-                      color: cl.colors.ink,
-                    ),
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.timePickerTitle),
+          SizedBox(
+            height: 216,
+            child: CupertinoTheme(
+              data: CupertinoThemeData(
+                brightness: cl.isNightCare ? Brightness.dark : Brightness.light,
+                textTheme: CupertinoTextThemeData(
+                  dateTimePickerTextStyle: cl.text.title2.copyWith(
+                    color: cl.colors.ink,
                   ),
                 ),
-                child: CupertinoDatePicker(
-                  initialDateTime: picked,
-                  maximumDate: now,
-                  minimumDate:
-                      earliest ?? now.subtract(const Duration(days: 60)),
-                  use24hFormat: true,
-                  onDateTimeChanged: (d) => picked = d,
-                ),
+              ),
+              child: CupertinoDatePicker(
+                initialDateTime: picked,
+                maximumDate: now,
+                minimumDate: earliest ?? now.subtract(const Duration(days: 60)),
+                use24hFormat: true,
+                onDateTimeChanged: (d) => picked = d,
               ),
             ),
-            const SizedBox(height: ClSpace.s4),
-            ClButton(
-              label: l10n.actionDone,
-              expand: true,
-              onPressed: () => Navigator.of(sheetContext).pop(picked),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: ClSpace.s4),
+          ClButton(
+            label: l10n.actionDone,
+            expand: true,
+            onPressed: () => Navigator.of(sheetContext).pop(picked),
+          ),
+        ],
       );
     },
   );
@@ -474,45 +446,37 @@ Future<int?> pickDuration(BuildContext context, {required int initial}) {
     builder: (sheetContext) {
       final l10n = AppLocalizations.of(sheetContext);
       final cl = sheetContext.cl;
-      return Padding(
-        padding: EdgeInsets.fromLTRB(
-          ClSpace.s4,
-          0,
-          ClSpace.s4,
-          MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ClSheetHeader(title: l10n.durationPickerTitle),
-            SizedBox(
-              height: 200,
-              child: CupertinoPicker(
-                itemExtent: 40,
-                scrollController: FixedExtentScrollController(
-                  initialItem: picked - 1,
-                ),
-                onSelectedItemChanged: (i) => picked = i + 1,
-                children: [
-                  for (var m = 1; m <= CareLimits.durationMin.max; m++)
-                    Center(
-                      child: Text(
-                        durationLabel(l10n, m),
-                        style: cl.text.title2.copyWith(color: cl.colors.ink),
-                      ),
-                    ),
-                ],
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.durationPickerTitle),
+          SizedBox(
+            height: 200,
+            child: CupertinoPicker(
+              itemExtent: 40,
+              scrollController: FixedExtentScrollController(
+                initialItem: picked - 1,
               ),
+              onSelectedItemChanged: (i) => picked = i + 1,
+              children: [
+                for (var m = 1; m <= CareLimits.durationMin.max; m++)
+                  Center(
+                    child: Text(
+                      durationLabel(l10n, m),
+                      style: cl.text.title2.copyWith(color: cl.colors.ink),
+                    ),
+                  ),
+              ],
             ),
-            const SizedBox(height: ClSpace.s4),
-            ClButton(
-              label: l10n.actionDone,
-              expand: true,
-              onPressed: () => Navigator.of(sheetContext).pop(picked),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: ClSpace.s4),
+          ClButton(
+            label: l10n.actionDone,
+            expand: true,
+            onPressed: () => Navigator.of(sheetContext).pop(picked),
+          ),
+        ],
       );
     },
   );

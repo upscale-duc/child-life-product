@@ -103,55 +103,47 @@ class _SaveAccountSheetState extends ConsumerState<_SaveAccountSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: l10n.saveAccountTitle),
-          Text(
-            l10n.saveAccountBody(widget.babyNickname),
-            style: cl.text.body.copyWith(color: cl.colors.inkMuted),
-          ),
-          const SizedBox(height: ClSpace.s6),
-          AppleSignInButton(
-            onPressed: _busy ? null : () => _provider(apple: true),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          ClButton(
-            label: l10n.signInGoogle,
-            style: ClButtonStyle.outline,
-            icon: ClIcons.brandMark,
-            expand: true,
-            onPressed: _busy ? null : () => _provider(apple: false),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          ClButton(
-            label: l10n.signInEmail,
-            style: ClButtonStyle.secondary,
-            icon: ClIcons.mail,
-            expand: true,
-            onPressed: _busy
-                ? null
-                : () {
-                    Navigator.of(context).pop();
-                    context.push(Routes.saveAccountEmail);
-                  },
-          ),
-          ClButton(
-            label: l10n.actionLater,
-            style: ClButtonStyle.plain,
-            expand: true,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: l10n.saveAccountTitle),
+        Text(
+          l10n.saveAccountBody(widget.babyNickname),
+          style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+        ),
+        const SizedBox(height: ClSpace.s6),
+        AppleSignInButton(
+          onPressed: _busy ? null : () => _provider(apple: true),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        ClButton(
+          label: l10n.signInGoogle,
+          style: ClButtonStyle.outline,
+          icon: ClIcons.brandMark,
+          expand: true,
+          onPressed: _busy ? null : () => _provider(apple: false),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        ClButton(
+          label: l10n.signInEmail,
+          style: ClButtonStyle.secondary,
+          icon: ClIcons.mail,
+          expand: true,
+          onPressed: _busy
+              ? null
+              : () {
+                  Navigator.of(context).pop();
+                  context.push(Routes.saveAccountEmail);
+                },
+        ),
+        ClButton(
+          label: l10n.actionLater,
+          style: ClButtonStyle.plain,
+          expand: true,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
     );
   }
 }

@@ -371,158 +371,149 @@ class _MemberSheetState extends ConsumerState<_MemberSheet> {
       },
     );
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).padding.bottom + ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: member.displayName),
-          Text(
-            joined == null
-                ? relation
-                : member.recordCount == null
-                ? l10n.memberMeta(relation, shortDate(context, joined))
-                : l10n.memberMetaCount(
-                    relation,
-                    shortDate(context, joined),
-                    member.recordCount!,
-                  ),
-            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-          ),
-          const SizedBox(height: ClSpace.s4),
-          Text(
-            l10n.inviteRoleLabel,
-            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-          ),
-          const SizedBox(height: ClSpace.s2),
-          ClCardGroup(
-            children: [
-              role(MemberRole.coParent, l10n.roleCoParentHintFull),
-              role(MemberRole.caregiver, l10n.roleCaregiverHintFull),
-              role(MemberRole.relative, l10n.roleRelativeHintFull),
-            ],
-          ),
-          // Not drawn on 14f: a relative's two extra views, as on 14b2 (open question 14f).
-          if (member.role == MemberRole.relative) ...[
-            const SizedBox(height: ClSpace.s3),
-            ClSettingRow(
-              icon: ClIcons.cake,
-              title: l10n.rightBabyInfo,
-              subtitle: l10n.rightBabyInfoHint,
-              value: member.extraRights.viewBabyInfo,
-              onChanged: _busy
-                  ? null
-                  : (v) => _run(
-                      (repo) => repo.updateRole(
-                        babyId: widget.babyId,
-                        uid: member.uid,
-                        role: MemberRole.relative,
-                        extraRights: member.extraRights.copyWith(
-                          viewBabyInfo: v,
-                        ),
-                      ),
-                    ),
-            ),
-            const SizedBox(height: ClSpace.s2),
-            ClSettingRow(
-              icon: ClIcons.feed,
-              title: l10n.rightDailyCare,
-              subtitle: l10n.rightDailyCareHint,
-              value: member.extraRights.viewDailyCare,
-              onChanged: _busy
-                  ? null
-                  : (v) => _run(
-                      (repo) => repo.updateRole(
-                        babyId: widget.babyId,
-                        uid: member.uid,
-                        role: MemberRole.relative,
-                        extraRights: member.extraRights.copyWith(
-                          viewDailyCare: v,
-                        ),
-                      ),
-                    ),
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: member.displayName),
+        Text(
+          joined == null
+              ? relation
+              : member.recordCount == null
+              ? l10n.memberMeta(relation, shortDate(context, joined))
+              : l10n.memberMetaCount(
+                  relation,
+                  shortDate(context, joined),
+                  member.recordCount!,
+                ),
+          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+        ),
+        const SizedBox(height: ClSpace.s4),
+        Text(
+          l10n.inviteRoleLabel,
+          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        ClCardGroup(
+          color: cl.colors.surface2,
+          children: [
+            role(MemberRole.coParent, l10n.roleCoParentHintFull),
+            role(MemberRole.caregiver, l10n.roleCaregiverHintFull),
+            role(MemberRole.relative, l10n.roleRelativeHintFull),
           ],
+        ),
+        // Not drawn on 14f: a relative's two extra views, as on 14b2 (open question 14f).
+        if (member.role == MemberRole.relative) ...[
           const SizedBox(height: ClSpace.s3),
-          ClCardGroup(
-            children: [
-              ClDetailRow(
-                icon: ClIcons.clock,
-                label: l10n.memberAccessUntil,
-                value: member.accessUntil == null
-                    ? l10n.memberAccessNoLimit
-                    : l10n.memberAccessUntilValue(
-                        longDate(context, member.accessUntil!),
-                      ),
-                onTap: _busy
-                    ? null
-                    : () async {
-                        final picked = await showAccessUntilSheet(
-                          context,
-                          name: member.displayName,
-                          current: member.accessUntil,
-                        );
-                        if (picked == null) return;
-                        await _run(
-                          (repo) => repo.setAccessUntil(
-                            babyId: widget.babyId,
-                            uid: member.uid,
-                            lastDay: picked.$1,
-                          ),
-                        );
-                      },
-              ),
-              ClDetailRow(
-                icon: ClIcons.edit,
-                label: l10n.memberRelation,
-                value: relation,
-                onTap: _busy
-                    ? null
-                    : () async {
-                        final picked = await showRelationSheet(
-                          context,
-                          title: l10n.memberRelation,
-                          options: [...selfRelations]
-                            ..insert(selfRelations.length - 1, Relation.friend),
-                          current: member.relation,
-                          custom: member.relationCustom ?? '',
-                        );
-                        if (picked == null) return;
-                        await _run(
-                          (repo) => repo.updateRelation(
-                            babyId: widget.babyId,
-                            uid: member.uid,
-                            relation: picked.$1,
-                            relationCustom: picked.$2,
-                          ),
-                        );
-                      },
-              ),
-            ],
-          ),
-          const SizedBox(height: ClSpace.s4),
-          ClButton(
-            label: l10n.memberRemove(member.displayName),
-            style: ClButtonStyle.destructive,
-            expand: true,
-            onPressed: _busy
+          ClSettingRow(
+            icon: ClIcons.cake,
+            title: l10n.rightBabyInfo,
+            subtitle: l10n.rightBabyInfoHint,
+            value: member.extraRights.viewBabyInfo,
+            onChanged: _busy
                 ? null
-                : () => _confirmRemove(context, member, nickname),
+                : (v) => _run(
+                    (repo) => repo.updateRole(
+                      babyId: widget.babyId,
+                      uid: member.uid,
+                      role: MemberRole.relative,
+                      extraRights: member.extraRights.copyWith(viewBabyInfo: v),
+                    ),
+                  ),
           ),
           const SizedBox(height: ClSpace.s2),
-          Text(
-            l10n.memberRecordsKept(member.displayName),
-            textAlign: TextAlign.center,
-            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ClSettingRow(
+            icon: ClIcons.feed,
+            title: l10n.rightDailyCare,
+            subtitle: l10n.rightDailyCareHint,
+            value: member.extraRights.viewDailyCare,
+            onChanged: _busy
+                ? null
+                : (v) => _run(
+                    (repo) => repo.updateRole(
+                      babyId: widget.babyId,
+                      uid: member.uid,
+                      role: MemberRole.relative,
+                      extraRights: member.extraRights.copyWith(
+                        viewDailyCare: v,
+                      ),
+                    ),
+                  ),
           ),
         ],
-      ),
+        const SizedBox(height: ClSpace.s3),
+        ClCardGroup(
+          children: [
+            ClDetailRow(
+              icon: ClIcons.clock,
+              label: l10n.memberAccessUntil,
+              value: member.accessUntil == null
+                  ? l10n.memberAccessNoLimit
+                  : l10n.memberAccessUntilValue(
+                      longDate(context, member.accessUntil!),
+                    ),
+              onTap: _busy
+                  ? null
+                  : () async {
+                      final picked = await showAccessUntilSheet(
+                        context,
+                        name: member.displayName,
+                        current: member.accessUntil,
+                      );
+                      if (picked == null) return;
+                      await _run(
+                        (repo) => repo.setAccessUntil(
+                          babyId: widget.babyId,
+                          uid: member.uid,
+                          lastDay: picked.$1,
+                        ),
+                      );
+                    },
+            ),
+            ClDetailRow(
+              icon: ClIcons.edit,
+              label: l10n.memberRelation,
+              value: relation,
+              onTap: _busy
+                  ? null
+                  : () async {
+                      final picked = await showRelationSheet(
+                        context,
+                        title: l10n.memberRelation,
+                        options: [...selfRelations]
+                          ..insert(selfRelations.length - 1, Relation.friend),
+                        current: member.relation,
+                        custom: member.relationCustom ?? '',
+                      );
+                      if (picked == null) return;
+                      await _run(
+                        (repo) => repo.updateRelation(
+                          babyId: widget.babyId,
+                          uid: member.uid,
+                          relation: picked.$1,
+                          relationCustom: picked.$2,
+                        ),
+                      );
+                    },
+            ),
+          ],
+        ),
+        const SizedBox(height: ClSpace.s4),
+        ClButton(
+          label: l10n.memberRemove(member.displayName),
+          style: ClButtonStyle.destructive,
+          expand: true,
+          onPressed: _busy
+              ? null
+              : () => _confirmRemove(context, member, nickname),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        Text(
+          l10n.memberRecordsKept(member.displayName),
+          textAlign: TextAlign.center,
+          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        ),
+      ],
     );
   }
 
@@ -536,41 +527,33 @@ class _MemberSheetState extends ConsumerState<_MemberSheet> {
     final sheetNavigator = Navigator.of(context);
     final confirmed = await showClSheet<bool>(
       context: context,
-      builder: (confirmContext) => Padding(
-        padding: EdgeInsets.fromLTRB(
-          ClSpace.s4,
-          0,
-          ClSpace.s4,
-          MediaQuery.of(confirmContext).padding.bottom + ClSpace.s4,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ClSheetHeader(
-              title: l10n.memberRemoveConfirmTitle(member.displayName),
+      builder: (confirmContext) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(
+            title: l10n.memberRemoveConfirmTitle(member.displayName),
+          ),
+          Text(
+            l10n.memberRemoveConfirmBody(member.displayName, nickname),
+            style: confirmContext.cl.text.body.copyWith(
+              color: confirmContext.cl.colors.inkMuted,
             ),
-            Text(
-              l10n.memberRemoveConfirmBody(member.displayName, nickname),
-              style: confirmContext.cl.text.body.copyWith(
-                color: confirmContext.cl.colors.inkMuted,
-              ),
-            ),
-            const SizedBox(height: ClSpace.s6),
-            ClButton(
-              label: l10n.memberRemoveConfirm,
-              style: ClButtonStyle.destructive,
-              expand: true,
-              onPressed: () => Navigator.of(confirmContext).pop(true),
-            ),
-            ClButton(
-              label: l10n.actionCancel,
-              style: ClButtonStyle.plain,
-              expand: true,
-              onPressed: () => Navigator.of(confirmContext).pop(false),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: ClSpace.s6),
+          ClButton(
+            label: l10n.memberRemoveConfirm,
+            style: ClButtonStyle.destructive,
+            expand: true,
+            onPressed: () => Navigator.of(confirmContext).pop(true),
+          ),
+          ClButton(
+            label: l10n.actionCancel,
+            style: ClButtonStyle.plain,
+            expand: true,
+            onPressed: () => Navigator.of(confirmContext).pop(false),
+          ),
+        ],
       ),
     );
     if (confirmed != true || !mounted) return;
@@ -609,63 +592,53 @@ Future<(DateTime?,)?> showAccessUntilSheet(
     builder: (sheetContext) {
       final l10n = AppLocalizations.of(sheetContext);
       final cl = sheetContext.cl;
-      return Padding(
-        padding: EdgeInsets.fromLTRB(
-          ClSpace.s4,
-          0,
-          ClSpace.s4,
-          MediaQuery.of(sheetContext).padding.bottom + ClSpace.s4,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ClSheetHeader(title: l10n.memberAccessUntil),
-            Text(
-              l10n.memberAccessHint(name),
-              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-            ),
-            SizedBox(
-              height: 200,
-              child: CupertinoTheme(
-                data: CupertinoThemeData(
-                  brightness: cl.isNightCare
-                      ? Brightness.dark
-                      : Brightness.light,
-                  textTheme: CupertinoTextThemeData(
-                    dateTimePickerTextStyle: cl.text.title2.copyWith(
-                      color: cl.colors.ink,
-                    ),
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.memberAccessUntil),
+          Text(
+            l10n.memberAccessHint(name),
+            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+          ),
+          SizedBox(
+            height: 200,
+            child: CupertinoTheme(
+              data: CupertinoThemeData(
+                brightness: cl.isNightCare ? Brightness.dark : Brightness.light,
+                textTheme: CupertinoTextThemeData(
+                  dateTimePickerTextStyle: cl.text.title2.copyWith(
+                    color: cl.colors.ink,
                   ),
                 ),
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.date,
-                  initialDateTime: picked,
-                  minimumDate: today,
-                  maximumDate: today.add(const Duration(days: 365 * 5)),
-                  dateOrder:
-                      Localizations.localeOf(sheetContext).languageCode == 'vi'
-                      ? DatePickerDateOrder.dmy
-                      : null,
-                  onDateTimeChanged: (d) => picked = DateUtils.dateOnly(d),
-                ),
+              ),
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.date,
+                initialDateTime: picked,
+                minimumDate: today,
+                maximumDate: today.add(const Duration(days: 365 * 5)),
+                dateOrder:
+                    Localizations.localeOf(sheetContext).languageCode == 'vi'
+                    ? DatePickerDateOrder.dmy
+                    : null,
+                onDateTimeChanged: (d) => picked = DateUtils.dateOnly(d),
               ),
             ),
-            const SizedBox(height: ClSpace.s4),
+          ),
+          const SizedBox(height: ClSpace.s4),
+          ClButton(
+            label: l10n.actionDone,
+            expand: true,
+            onPressed: () => Navigator.of(sheetContext).pop((picked,)),
+          ),
+          if (current != null)
             ClButton(
-              label: l10n.actionDone,
+              label: l10n.memberAccessClear,
+              style: ClButtonStyle.plain,
               expand: true,
-              onPressed: () => Navigator.of(sheetContext).pop((picked,)),
+              onPressed: () => Navigator.of(sheetContext).pop((null,)),
             ),
-            if (current != null)
-              ClButton(
-                label: l10n.memberAccessClear,
-                style: ClButtonStyle.plain,
-                expand: true,
-                onPressed: () => Navigator.of(sheetContext).pop((null,)),
-              ),
-          ],
-        ),
+        ],
       );
     },
   );
@@ -722,49 +695,39 @@ class _RelationSheetState extends State<_RelationSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        0,
-        ClSpace.s4,
-        MediaQuery.of(context).viewInsets.bottom +
-            MediaQuery.of(context).padding.bottom +
-            ClSpace.s4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: widget.title),
-          RelationChips(
-            options: widget.options,
-            selected: _relation,
-            onSelected: (r) => setState(() => _relation = r),
-          ),
-          if (_relation == Relation.other) ...[
-            const SizedBox(height: ClSpace.s4),
-            ClTextField(
-              label: l10n.inviteCustomLabel,
-              placeholder: l10n.whoCustomPlaceholder,
-              controller: _custom,
-              standalone: true,
-              textCapitalization: TextCapitalization.sentences,
-              maxLength: relationCustomMaxLength,
-            ),
-          ],
-          const SizedBox(height: ClSpace.s6),
-          ClButton(
-            label: l10n.actionDone,
-            expand: true,
-            onPressed: _valid
-                ? () => Navigator.of(context).pop((
-                    _relation,
-                    _relation == Relation.other ? _custom.text.trim() : null,
-                  ))
-                : null,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: widget.title),
+        RelationChips(
+          options: widget.options,
+          selected: _relation,
+          onSelected: (r) => setState(() => _relation = r),
+        ),
+        if (_relation == Relation.other) ...[
+          const SizedBox(height: ClSpace.s4),
+          ClTextField(
+            label: l10n.inviteCustomLabel,
+            placeholder: l10n.whoCustomPlaceholder,
+            controller: _custom,
+            standalone: true,
+            textCapitalization: TextCapitalization.sentences,
+            maxLength: relationCustomMaxLength,
           ),
         ],
-      ),
+        const SizedBox(height: ClSpace.s6),
+        ClButton(
+          label: l10n.actionDone,
+          expand: true,
+          onPressed: _valid
+              ? () => Navigator.of(context).pop((
+                  _relation,
+                  _relation == Relation.other ? _custom.text.trim() : null,
+                ))
+              : null,
+        ),
+      ],
     );
   }
 }

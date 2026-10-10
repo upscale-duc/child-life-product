@@ -8,10 +8,18 @@ import 'cl_status.dart';
 
 /// Surface card with radius-card and 1px separators between rows (ListRow / DetailRow / OptionRow).
 class ClCardGroup extends StatelessWidget {
-  const ClCardGroup({required this.children, this.shadow = false, super.key});
+  const ClCardGroup({
+    required this.children,
+    this.shadow = false,
+    this.color,
+    super.key,
+  });
 
   final List<Widget> children;
   final bool shadow;
+
+  /// Inside sheets the group sits on surface-2 (14f), elsewhere on surface.
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +27,7 @@ class ClCardGroup extends StatelessWidget {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: cl.colors.surface,
+        color: color ?? cl.colors.surface,
         borderRadius: BorderRadius.circular(ClRadius.card),
         boxShadow: shadow ? cl.shadows.card : null,
       ),

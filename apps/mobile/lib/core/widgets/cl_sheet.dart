@@ -5,6 +5,7 @@ import '../design/cl_theme.dart';
 import '../design/haptics.dart';
 import '../design/motion.dart';
 import '../design/tokens.g.dart';
+import 'cl_feedback.dart';
 import 'cl_icon.dart';
 import 'cl_pressable.dart';
 
@@ -18,7 +19,9 @@ Future<T?> showClSheet<T>({
   bool dismissible = true,
 }) {
   final theme = Theme.of(context);
-  return Navigator.of(context).push<T>(
+  dismissClToasts();
+  // Above everything, the tab dock included (19a, 22: the sheet covers the dock).
+  return Navigator.of(context, rootNavigator: true).push<T>(
     ClSheetRoute<T>(
       builder: builder,
       dismissible: dismissible,
