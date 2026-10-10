@@ -39,6 +39,18 @@ service cloud.firestore {
     match /users/{uid} {
       allow get: if signedIn() && request.auth.uid == uid;
       allow list, write: if false;
+
+      // Push tokens for generic family notices (S10, R-120); one per install.
+      match /devices/{deviceId} {
+        allow read, delete: if signedIn() && request.auth.uid == uid;
+        allow create, update: if signedIn() && request.auth.uid == uid &&
+          deviceId.matches('^d_[a-f0-9]{32}$') &&
+          request.resource.data.keys().hasOnly(['token', 'platform', 'language', 'updatedAt']) &&
+          request.resource.data.token is string && request.resource.data.token.size() <= 4096 &&
+          request.resource.data.platform in ['ios', 'android'] &&
+          request.resource.data.language in ['vi', 'en'] &&
+          request.resource.data.updatedAt == request.time;
+      }
     }
 
     // Family = ownership + quota container (P-001). Owner only until storage views (S11, P-003).
@@ -148,6 +160,51 @@ service cloud.firestore {
       // Family notices (R-120), delivered by Functions.
       match /notifications/{notificationId} {
         allow read, write: if false;
+      }
+
+      // Albums (S10, 10d–10e10): written by Functions (membership and effective audience,
+      // D-002, P-035). Relatives see shared albums only (11e); caregivers never (12a).
+      match /albums/{albumId} {
+        allow read: if isParent(babyId) ||
+          (isRelative(babyId) && resource.data.audience == 'family');
+        allow write: if false;
+
+        match /items/{mediaId} {
+          allow read: if isParent(babyId) || (isRelative(babyId) &&
+            get(/databases/$(database)/documents/babies/$(babyId)/albums/$(albumId)).data.audience == 'family');
+          allow write: if false;
+        }
+      }
+
+      // "Yêu thích" (R-107): private to each person, only on what they can see.
+      match /favorites/{favoriteId} {
+        allow read: if seesMemories(babyId) && resource.data.uid == request.auth.uid;
+        allow create: if seesMemories(babyId) && validFavorite(babyId, favoriteId);
+        allow delete: if seesMemories(babyId) && resource.data.uid == request.auth.uid;
+        allow update: if false;
+      }
+
+      // "Thương" (11c, 11f, 11g): counts for everyone (on the target), names for parents only.
+      match /reactions/{reactionId} {
+        allow read: if isParent(babyId) ||
+          (isRelative(babyId) && resource.data.uid == request.auth.uid);
+        allow create: if seesMemories(babyId) && validLove(babyId, reactionId);
+        allow delete: if seesMemories(babyId) && resource.data.uid == request.auth.uid;
+        allow update: if false;
+      }
+
+      // "Nhắn ba mẹ" / "Nhắn Mẹ" (D-034): one-way to the parents; the sender reads their own.
+      match /messages/{messageId} {
+        allow read: if isParent(babyId) ||
+          (activeMember(babyId) && resource.data.from == request.auth.uid);
+        allow create: if activeMember(babyId) && validMessage(babyId, messageId);
+        // Parents mark a message read for themselves only.
+        allow update: if isParent(babyId) &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readBy']) &&
+          request.resource.data.readBy.diff(resource.data.readBy).affectedKeys()
+            .hasOnly([request.auth.uid]) &&
+          request.resource.data.readBy[request.auth.uid] == true;
+        allow delete: if false;
       }
 
       // Reminders (S7, 8a–8e, 12f). Cùng nuôi create, edit and delete (D-030, D-031); caregivers
@@ -343,6 +400,65 @@ service cloud.firestore {
         d.createdAt == request.time && ownAuthor(d.author, me) &&
         d.name is string && d.name.trim().size() >= 1 && d.name.size() <= 60 &&
         d.date is string && d.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+
+    // ---------- Albums, favourites, loves, messages (S10) ----------
+
+    function seesMemories(babyId) {
+      return isParent(babyId) || isRelative(babyId);
+    }
+
+    function babyDoc(babyId, collection, id) {
+      return get(/databases/$(database)/documents/babies/$(babyId)/$(collection)/$(id)).data;
+    }
+
+    // What a relative may act on: published, shared, not deleted (R-119).
+    function targetShared(babyId, target, targetId) {
+      return (target == 'media' && babyDoc(babyId, 'media', targetId).effectiveAudience == 'family' &&
+          babyDoc(babyId, 'media', targetId).status == 'ready' &&
+          babyDoc(babyId, 'media', targetId).deleted == false) ||
+        (target == 'memory' && babyDoc(babyId, 'memories', targetId).audience == 'family' &&
+          babyDoc(babyId, 'memories', targetId).state == 'published' &&
+          babyDoc(babyId, 'memories', targetId).deleted == false) ||
+        (target == 'album' && babyDoc(babyId, 'albums', targetId).audience == 'family') ||
+        (target == 'story' && babyDoc(babyId, 'stories', targetId).audience == 'family');
+    }
+
+    function validFavorite(babyId, favoriteId) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['uid', 'mediaId', 'createdAt']) &&
+        d.keys().hasAll(['uid', 'mediaId', 'createdAt']) &&
+        d.uid == request.auth.uid && d.createdAt == request.time &&
+        d.mediaId is string && favoriteId == request.auth.uid + '__' + d.mediaId &&
+        (isParent(babyId) || targetShared(babyId, 'media', d.mediaId));
+    }
+
+    function validLove(babyId, reactionId) {
+      let d = request.resource.data;
+      let me = get(memberDoc(babyId)).data;
+      return d.keys().hasOnly(['uid', 'target', 'targetId', 'author', 'createdAt']) &&
+        d.keys().hasAll(['uid', 'target', 'targetId', 'author', 'createdAt']) &&
+        d.uid == request.auth.uid && d.createdAt == request.time &&
+        d.target in ['media', 'memory', 'album', 'story'] && d.targetId is string &&
+        reactionId == d.target + '__' + d.targetId + '__' + request.auth.uid &&
+        ownAuthor(d.author, me) &&
+        (isParent(babyId) || targetShared(babyId, d.target, d.targetId));
+    }
+
+    // Relatives write about what they can see; caregivers "Nhắn Mẹ" from a parent's record.
+    function validMessage(babyId, messageId) {
+      let d = request.resource.data;
+      let me = get(memberDoc(babyId)).data;
+      return messageId.matches('^msg_[a-f0-9]{32}$') &&
+        d.keys().hasOnly(['id', 'babyId', 'from', 'author', 'context', 'text', 'createdAt', 'readBy']) &&
+        d.keys().hasAll(['id', 'babyId', 'from', 'author', 'context', 'text', 'createdAt', 'readBy']) &&
+        d.id == messageId && d.babyId == babyId && d.from == request.auth.uid &&
+        d.createdAt == request.time && d.readBy == {} && ownAuthor(d.author, me) &&
+        d.text is string && d.text.trim().size() >= 1 && d.text.size() <= 1000 &&
+        d.context is map && d.context.keys().hasOnly(['kind', 'id']) && d.context.id is string &&
+        ((me.role == 'relative' && d.context.kind in ['media', 'memory', 'album', 'story'] &&
+            targetShared(babyId, d.context.kind, d.context.id)) ||
+          (me.role == 'caregiver' && d.context.kind == 'record'));
     }
 
     // ---------- Reminders (S7) ----------

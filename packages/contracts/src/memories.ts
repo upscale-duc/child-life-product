@@ -49,6 +49,8 @@ export const memoryLimits = {
 export const memoryIdSchema = z.string().regex(/^mem_[a-f0-9]{32}$/);
 export const mediaIdSchema = z.string().regex(/^med_[a-f0-9]{32}$/);
 export const batchIdSchema = z.string().regex(/^bat_[a-f0-9]{32}$/);
+/** Albums (S10, `albums.ts`). */
+export const albumIdSchema = z.string().regex(/^alb_[a-f0-9]{32}$/);
 /** Family-created milestones; age-based presets use `p_<slug>` (10h3). */
 export const milestoneIdSchema = z.string().regex(/^(ms_[a-f0-9]{32}|p_[a-z0-9_]{2,40})$/);
 
@@ -102,6 +104,8 @@ export const createMemoryRequestSchema = z
     dateMode: z.enum(['capture', 'single']),
     date: isoDate.nullable(),
     milestone: milestoneRefSchema.nullable(),
+    /** 10h5 "Thêm vào album" (several allowed; D-002). */
+    albumIds: z.array(albumIdSchema).max(20).default([]),
     items: z.array(uploadItemSchema).max(memoryLimits.itemsPerAdd),
   })
   .refine((r) => r.dateMode === 'capture' || r.date !== null, {

@@ -31,6 +31,8 @@ import {
  * send the batch's single notification (P-030). Captions, photos and names are never logged.
  */
 
+import { familyNotice, recomputeAlbum, recomputeEffective } from './albums.js';
+
 export class MemoryError extends Error {
   constructor(
     readonly code:
@@ -178,6 +180,12 @@ export async function createMemory(
       };
     }
     if (mediaSnaps.some((s) => s.exists)) throw new MemoryError('invalid-argument', 'taken');
+    // 10h5: the albums must exist; a Gia đình album shares what joins it (D-002).
+    const albumSnaps = req.albumIds.length
+      ? await tx.getAll(...req.albumIds.map((a) => db.doc(`babies/${req.babyId}/albums/${a}`)))
+      : [];
+    if (albumSnaps.some((a) => !a.exists)) throw new MemoryError('not-found', 'album');
+    const albumAudiences = albumSnaps.map((a) => a.get('audience') as Audience);
 
     const familyId = baby.get('familyId') as string;
     const zone = (baby.get('timeZone.zone') as string | undefined) ?? 'Asia/Ho_Chi_Minh';
@@ -220,6 +228,13 @@ export async function createMemory(
       } else {
         waiting.push(item.mediaId);
       }
+      for (const a of req.albumIds) {
+        tx.set(db.doc(`babies/${req.babyId}/albums/${a}/items/${item.mediaId}`), {
+          mediaId: item.mediaId,
+          addedAt: now,
+          addedBy: uid,
+        });
+      }
       tx.set(mediaRefs[index]!, {
         id: item.mediaId,
         babyId: req.babyId,
@@ -238,7 +253,8 @@ export async function createMemory(
         width: item.width,
         height: item.height,
         audience: req.audience,
-        effectiveAudience: effectiveAudience(req.audience),
+        effectiveAudience: effectiveAudience(req.audience, albumAudiences),
+        albumIds: req.albumIds,
         milestone: req.milestone,
         status: (fits ? 'uploading' : 'waitingQuota') satisfies MediaStatus,
         clientState: null,
@@ -709,6 +725,18 @@ export async function onMediaWritten(
   const batchId = doc.get('batchId') as string | undefined;
   if (memoryId) await recomputeMemory(db, babyId, memoryId, now);
   if (batchId && after?.exists) await maybeNotifyBatch(db, babyId, batchId, now);
+  // Album counts and covers follow their items (ready, deleted, joined, left).
+  const watched = ['status', 'deleted', 'albumIds', 'type'] as const;
+  const changed =
+    !before?.exists ||
+    !after?.exists ||
+    watched.some((k) => JSON.stringify(before.get(k)) !== JSON.stringify(after.get(k)));
+  if (!changed) return;
+  const albums = new Set([
+    ...((before?.get('albumIds') as string[] | undefined) ?? []),
+    ...((after?.get('albumIds') as string[] | undefined) ?? []),
+  ]);
+  for (const a of albums) await recomputeAlbum(db, babyId, a, now);
 }
 
 // ---------- updateMedia (10b3, 10b4, 10o) ----------
@@ -741,16 +769,10 @@ export async function updateMedia(
     const deleted = s.get('deleted') === true;
     let patch: Record<string, unknown> | null = null;
     switch (change.kind) {
-      case 'audience': {
-        if (deleted) break;
-        const before = s.get('effectiveAudience') as Audience;
-        const next = effectiveAudience(change.audience);
-        patch = { audience: change.audience, effectiveAudience: next };
-        if (before !== 'family' && next === 'family' && s.get('status') === 'ready') {
-          widened.push(s.id);
-        }
+      case 'audience':
+        // Effective audience (albums included) is recomputed below (D-002, P-035).
+        if (!deleted) patch = { audience: change.audience };
         break;
-      }
       case 'date': {
         if (deleted) break;
         const at = (s.get('captureAt') as Timestamp).toDate();
@@ -777,21 +799,22 @@ export async function updateMedia(
     if (++pending >= 400) await flush();
   }
   await flush();
+  if (change.kind === 'audience') {
+    widened.push(...(await recomputeEffective(db, babyId, updated, now)));
+  }
 
   // "Chia sẻ với gia đình?" + "Báo cho gia đình": one generic notice, no photos (R-118).
   let notificationId: string | null = null;
   if (change.kind === 'audience' && change.notifyFamily && widened.length > 0) {
-    notificationId = `shr_${now.getTime().toString(36)}_${uid.slice(0, 8)}`;
-    const recipients = await familyRecipients(db, babyId, uid, now);
-    await db.doc(`babies/${babyId}/notifications/${notificationId}`).set({
-      kind: 'shared',
+    notificationId = await familyNotice(
+      db,
       babyId,
-      count: widened.length,
-      actor: { name: me.displayName, relation: me.relation, relationCustom: me.relationCustom },
-      recipients: recipients.map((r) => r.uid),
-      createdAt: now,
-      delivered: false,
-    });
+      'shared',
+      widened.length,
+      uid,
+      { name: me.displayName, relation: me.relation, relationCustom: me.relationCustom },
+      now,
+    );
   }
   return { updated, notificationId };
 }

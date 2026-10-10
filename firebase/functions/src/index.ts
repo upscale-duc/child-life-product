@@ -9,6 +9,7 @@ import { defineSecret, defineString } from 'firebase-functions/params';
 import { logger } from 'firebase-functions';
 import { getAuth } from 'firebase-admin/auth';
 import { getStorage } from 'firebase-admin/storage';
+import { getMessaging } from 'firebase-admin/messaging';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { defaultLimits, functionsRegion, limitsSchema } from '@child-life/contracts';
 import { currentProjectId, webOriginFor } from './env.js';
@@ -33,6 +34,8 @@ import { CareError, onRecordWritten, purgeDeletedRecords, resolveSleepConflict }
 import { BabyError, createBaby, getBabyAvatar, setBabyAvatar, type AvatarStore } from './babies.js';
 import { handlePing, PingError } from './ping.js';
 import { bucketStore, sharpImages } from './images.js';
+import { addToAlbum, createAlbum, deleteAlbum, removeFromAlbum, updateAlbum } from './albums.js';
+import { deliverNotice, onMessageCreated, onReactionWritten, type PushSender } from './social.js';
 import {
   MemoryError,
   cancelUploads,
@@ -380,6 +383,98 @@ export const releaseStaleMemoryUploads = onSchedule('every 60 minutes', async ()
   );
   if (released > 0) logger.info('stale uploads released', { count: released });
 });
+
+// ---------- Albums, loves, messages, notices (S10) ----------
+
+/** "Album mới" (10d, 10h5). */
+export const createMemoryAlbum = memoryCall('createMemoryAlbum', (uid, data) =>
+  createAlbum(getFirestore(), uid, data, new Date()),
+);
+
+/** 10e4 rename, 10e5 cover, 10e6 audience (D-002), 10e7 sort. */
+export const updateMemoryAlbum = memoryCall('updateMemoryAlbum', (uid, data) =>
+  updateAlbum(getFirestore(), uid, data, new Date()),
+);
+
+/** 10b3 "Album", 10e "Thêm ảnh". */
+export const addToMemoryAlbum = memoryCall('addToMemoryAlbum', (uid, data) =>
+  addToAlbum(getFirestore(), uid, data, new Date()),
+);
+
+/** 10e8 "Bỏ khỏi album". */
+export const removeFromMemoryAlbum = memoryCall('removeFromMemoryAlbum', (uid, data) =>
+  removeFromAlbum(getFirestore(), uid, data, new Date()),
+);
+
+/** 10e10: the album only; its items stay (R-106). */
+export const deleteMemoryAlbum = memoryCall('deleteMemoryAlbum', (uid, data) =>
+  deleteAlbum(getFirestore(), uid, data, new Date()),
+);
+
+/** "♥ 4": love counts follow `reactions`. */
+export const onLoveWrite = onDocumentWritten(
+  'babies/{babyId}/reactions/{reactionId}',
+  async (event) => {
+    const change = event.data;
+    if (!change) return;
+    await onReactionWritten(
+      getFirestore(),
+      event.params.babyId,
+      change.before.exists ? change.before : null,
+      change.after.exists ? change.after : null,
+    );
+  },
+);
+
+/** "Nhắn ba mẹ" → one notice for the parents (D-034). */
+export const onParentMessage = onDocumentCreated(
+  'babies/{babyId}/messages/{messageId}',
+  async (event) => {
+    if (!event.data) return;
+    await onMessageCreated(getFirestore(), event.params.babyId, event.data, new Date());
+  },
+);
+
+const pushSender = (): PushSender | null => {
+  // The emulator suite has no messaging: notices are only marked delivered there.
+  if (process.env.FUNCTIONS_EMULATOR === 'true') return null;
+  return {
+    async send(tokens, message) {
+      const result = await getMessaging().sendEachForMulticast({
+        tokens,
+        notification: { title: message.title, body: message.body },
+        data: message.data,
+        apns: { payload: { aps: { sound: 'default' } } },
+        android: { priority: 'high' },
+      });
+      return result.responses
+        .map((r, i) => ({ r, token: tokens[i]! }))
+        .filter(
+          ({ r }) =>
+            !r.success &&
+            ['messaging/registration-token-not-registered', 'messaging/invalid-argument'].includes(
+              r.error?.code ?? '',
+            ),
+        )
+        .map(({ token }) => token);
+    },
+  };
+};
+
+/** Generic lock-screen notices (11b, R-120): no photo, no caption, no baby name. */
+export const deliverFamilyNotice = onDocumentCreated(
+  'babies/{babyId}/notifications/{noticeId}',
+  async (event) => {
+    const { sent } = await deliverNotice(
+      getFirestore(),
+      pushSender(),
+      event.params.babyId,
+      event.params.noticeId,
+      new Date(),
+    );
+    logger.info('family notice delivered', { sent });
+  },
+);
 
 // ---------- Email (D-020: AWS SES) ----------
 
