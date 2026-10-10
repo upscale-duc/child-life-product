@@ -276,3 +276,96 @@ describe('editing and deleting (Q-012 → D-022)', () => {
     await assertFails(deleteDoc(rec('mom', 'r_mom')));
   });
 });
+
+describe('sleep and timers (S5)', () => {
+  const sleep = (start: number, end: number | null) => ({
+    type: 'sleep',
+    data: {},
+    occurredAt: Timestamp.fromDate(new Date(Date.now() - start * 60_000)),
+    endedAt: end === null ? null : Timestamp.fromDate(new Date(Date.now() - end * 60_000)),
+  });
+
+  it('a sleep needs an end, after its start, within 24 h', async () => {
+    for (const [ok, s] of [
+      [true, sleep(90, 10)],
+      [false, sleep(90, null)],
+      [false, sleep(10, 90)],
+      [false, sleep(26 * 60, 10)],
+    ] as const) {
+      const id = newId();
+      const write = setDoc(rec('nanny', id), record('nanny', id, s));
+      await (ok ? assertSucceeds(write) : assertFails(write));
+    }
+  });
+
+  it('breastfeeds from the timer carry per-side minutes', async () => {
+    const id = newId();
+    await assertSucceeds(
+      setDoc(
+        rec('mom', id),
+        record('mom', id, {
+          type: 'breast',
+          data: { side: 'both', durationMin: 12, leftMin: 8, rightMin: 4, endSide: 'right' },
+        }),
+      ),
+    );
+  });
+
+  const timer = (uid: string, type: string, extra: Record<string, unknown> = {}) => ({
+    type,
+    babyId: 'b1',
+    sessionId: 'a'.repeat(32),
+    startedAt: Timestamp.fromDate(new Date(Date.now() - 5 * 60_000)),
+    startedBy: uid,
+    author: { name: uid, relation: relations[uid] ?? 'other', relationCustom: null },
+    sides:
+      type === 'sleep'
+        ? null
+        : {
+            left: { accumulatedMs: 0, runningSince: Timestamp.now() },
+            right: { accumulatedMs: 0, runningSince: null },
+          },
+    paused: false,
+    pausedSides: [],
+    updatedAt: serverTimestamp(),
+    updatedBy: uid,
+    ...extra,
+  });
+  const slot = (uid: string, type: string) => doc(as(uid), `babies/b1/timers/${type}`);
+
+  it('parents and caregivers start one shared timer per type; relatives cannot', async () => {
+    await assertSucceeds(setDoc(slot('dad', 'sleep'), timer('dad', 'sleep')));
+    await assertSucceeds(setDoc(slot('nanny', 'breast'), timer('nanny', 'breast')));
+    await assertFails(setDoc(slot('aunt', 'pump'), timer('aunt', 'pump')));
+    await assertFails(setDoc(slot('mom', 'bottle'), timer('mom', 'bottle')));
+    // everyone who sees care sees it running ("Cả nhà đang thấy")
+    await assertSucceeds(getDoc(doc(as('aunt'), 'babies/b1/timers/sleep')));
+    await assertFails(getDoc(doc(as('grandma'), 'babies/b1/timers/sleep')));
+  });
+
+  it('a second start does not take over the slot (P-011); updates keep the session', async () => {
+    await assertSucceeds(setDoc(slot('dad', 'sleep'), timer('dad', 'sleep')));
+    await assertFails(
+      setDoc(slot('mom', 'sleep'), timer('mom', 'sleep', { sessionId: 'b'.repeat(32) })),
+    );
+    await assertSucceeds(
+      updateDoc(slot('mom', 'sleep'), {
+        startedAt: Timestamp.fromDate(new Date(Date.now() - 20 * 60_000)),
+        updatedAt: serverTimestamp(),
+        updatedBy: 'mom',
+      }),
+    );
+    await assertFails(
+      updateDoc(slot('mom', 'sleep'), {
+        startedBy: 'mom',
+        updatedAt: serverTimestamp(),
+        updatedBy: 'mom',
+      }),
+    );
+    await assertSucceeds(deleteDoc(slot('mom', 'sleep')));
+  });
+
+  it('conflicts are read-only for clients', async () => {
+    await assertFails(setDoc(doc(as('mom'), 'babies/b1/conflicts/x'), { status: 'open' }));
+  });
+});

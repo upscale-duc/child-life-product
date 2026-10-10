@@ -38,9 +38,13 @@ export const bottleDataSchema = z.object({
   amountMl: amount(careLimits.bottleMl).nullable(),
   milk: z.enum(milkTypes),
 });
+/** Per-side minutes and the side the feed ended on come from the timer (23b, R-072). */
 export const breastDataSchema = z.object({
   side: z.enum(sides),
   durationMin: duration.nullable(),
+  leftMin: z.number().int().min(0).max(careLimits.durationMin.max).nullable().optional(),
+  rightMin: z.number().int().min(0).max(careLimits.durationMin.max).nullable().optional(),
+  endSide: z.enum(['left', 'right']).nullable().optional(),
 });
 export const pumpDataSchema = z.object({
   side: z.enum(sides),
@@ -53,8 +57,49 @@ export const growthDataSchema = z.object({
   lengthCm: z.number().min(careLimits.lengthCm.min).max(careLimits.lengthCm.max).nullable(),
   measuredOn: z.iso.date(),
 });
-/** S5 writes sleep through timers / manual entry; the shape is fixed now for summaries. */
+/** Sleep is a span (`occurredAt` → `endedAt`), from the timer (25) or entered (26). */
 export const sleepDataSchema = z.object({});
+
+/** Longest sleep that can be entered by hand (26, not in Figma). */
+export const maxSleepHours = 24;
+
+// ---------- Timers (S5; P-011, R-070…R-073) ----------
+
+export const timerTypes = ['sleep', 'breast', 'pump'] as const;
+export type TimerType = (typeof timerTypes)[number];
+
+/**
+ * One running timer per baby and type: `babies/{b}/timers/{type}`. The first device to start
+ * owns the slot; another device starting the same type joins it (Rules refuse the overwrite).
+ * Sides accumulate milliseconds; `runningSince` is set while that side is running.
+ */
+export const timerSideSchema = z.object({
+  accumulatedMs: z.number().int().min(0),
+  runningSince: z.iso.datetime().nullable(),
+});
+
+/** Ending a timer writes exactly one record whose id derives from the timer session id. */
+export const timerSessionIdSchema = z.string().regex(/^[a-f0-9]{32}$/);
+export const recordIdForTimer = (sessionId: string) => `r_${sessionId}`;
+
+// ---------- Overlapping sleeps (27, R-075) ----------
+
+/** `babies/{b}/conflicts/{a}__{b}` with record ids sorted, so a pair is found once. */
+export const conflictIdOf = (a: string, b: string) => [a, b].sort().join('__');
+
+export const resolveConflictRequestSchema = z.object({
+  babyId: z.string().regex(/^b_[a-f0-9]{20}$/),
+  conflictId: z.string().regex(/^r_[a-f0-9]{32}__r_[a-f0-9]{32}$/),
+  keepRecordId: z.string().regex(/^r_[a-f0-9]{32}$/),
+});
+
+/** Whether two spans overlap (touching ends do not). */
+export function spansOverlap(
+  a: { start: Date; end: Date },
+  b: { start: Date; end: Date },
+): boolean {
+  return a.start < b.end && b.start < a.end;
+}
 
 export const careDataSchemas = {
   bottle: bottleDataSchema,

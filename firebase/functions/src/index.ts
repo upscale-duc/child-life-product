@@ -28,7 +28,7 @@ import {
 } from './family.js';
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { localeFromHeader, renderInvitePage, renderUnsubscribePage } from './pages.js';
-import { onRecordWritten, purgeDeletedRecords } from './care.js';
+import { CareError, onRecordWritten, purgeDeletedRecords, resolveSleepConflict } from './care.js';
 import { BabyError, createBaby, getBabyAvatar, setBabyAvatar, type AvatarStore } from './babies.js';
 import { handlePing, PingError } from './ping.js';
 import { isMirroredConfigId, publicProjection } from './config-mirror.js';
@@ -251,6 +251,19 @@ export const onCareRecordWrite = onDocumentWritten(
     logger.debug('care summaries recomputed', { days: days.length });
   },
 );
+
+/** 27 "Giữ bản đã chọn" (R-075). */
+export const resolveSleepOverlap = onCall(async (request) => {
+  if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+  try {
+    return await resolveSleepConflict(getFirestore(), request.auth.uid, request.data, new Date());
+  } catch (error) {
+    if (error instanceof CareError) {
+      throw new HttpsError(error.code, error.reason, { reason: error.reason });
+    }
+    throw error;
+  }
+});
 
 /** "Đã xoá gần đây": soft-deleted records leave after 30 days (P-009). */
 export const purgeCareBin = onSchedule(

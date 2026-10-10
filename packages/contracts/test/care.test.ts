@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  conflictIdOf,
+  spansOverlap,
   bottleDataSchema,
   datesTouched,
   dayBoundsIn,
@@ -120,5 +122,27 @@ describe('day summaries in the baby time zone', () => {
         endedAt: at('2026-10-07T23:30:00Z'),
       }),
     ).toEqual(['2026-10-07', '2026-10-08']);
+  });
+});
+
+describe('overlapping sleeps (R-075)', () => {
+  it('detects overlap; touching ends are fine', () => {
+    const span = (a: string, b: string) => ({ start: at(a), end: at(b) });
+    expect(
+      spansOverlap(
+        span('2026-10-07T14:40:00Z', '2026-10-07T16:06:00Z'),
+        span('2026-10-07T14:42:00Z', '2026-10-07T16:10:00Z'),
+      ),
+    ).toBe(true);
+    expect(
+      spansOverlap(
+        span('2026-10-07T14:00:00Z', '2026-10-07T15:00:00Z'),
+        span('2026-10-07T15:00:00Z', '2026-10-07T16:00:00Z'),
+      ),
+    ).toBe(false);
+  });
+
+  it('a pair has one id whatever the order', () => {
+    expect(conflictIdOf('r_b', 'r_a')).toBe(conflictIdOf('r_a', 'r_b'));
   });
 });

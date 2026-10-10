@@ -92,6 +92,21 @@ service cloud.firestore {
         allow read: if canReadCare(babyId);
         allow write: if false;
       }
+
+      // Running timers (S5, P-011): one slot per type, shared live ("Cả nhà đang thấy"). The
+      // first start owns it; a second device's start is refused and it joins the running one.
+      match /timers/{type} {
+        allow read: if canReadCare(babyId);
+        allow create: if canLog(babyId) && validNewTimer(babyId, type);
+        allow update: if canLog(babyId) && validTimerUpdate();
+        allow delete: if canLog(babyId);
+      }
+
+      // Overlapping sleeps found by the server (27, R-075); resolved through a callable.
+      match /conflicts/{conflictId} {
+        allow read: if canReadCare(babyId);
+        allow write: if false;
+      }
     }
 
     // ---------- Care (S4) ----------
@@ -131,15 +146,20 @@ service cloud.firestore {
       return x.durationMin == null || intIn(x.durationMin, 1, 240);
     }
 
-    // Shapes and ranges mirror packages/contracts/src/care.ts. Sleep arrives with timers (S5).
+    // Shapes and ranges mirror packages/contracts/src/care.ts.
     function validCareData(type, x) {
       return (type == 'bottle' && x.keys().hasOnly(['amountMl', 'milk']) &&
           x.keys().hasAll(['amountMl', 'milk']) &&
           (x.amountMl == null || intIn(x.amountMl, 1, 500)) &&
           x.milk in ['breastMilk', 'formula']) ||
-        (type == 'breast' && x.keys().hasOnly(['side', 'durationMin']) &&
+        (type == 'breast' &&
+          x.keys().hasOnly(['side', 'durationMin', 'leftMin', 'rightMin', 'endSide']) &&
           x.keys().hasAll(['side', 'durationMin']) &&
-          x.side in ['left', 'right', 'both'] && optionalDuration(x)) ||
+          x.side in ['left', 'right', 'both'] && optionalDuration(x) &&
+          (x.get('leftMin', null) == null || intIn(x.leftMin, 0, 240)) &&
+          (x.get('rightMin', null) == null || intIn(x.rightMin, 0, 240)) &&
+          x.get('endSide', null) in [null, 'left', 'right']) ||
+        (type == 'sleep' && x.keys().size() == 0) ||
         (type == 'pump' && x.keys().hasOnly(['side', 'amountMl', 'durationMin']) &&
           x.keys().hasAll(['side', 'amountMl', 'durationMin']) &&
           x.side in ['left', 'right', 'both'] && intIn(x.amountMl, 1, 1000) &&
@@ -155,9 +175,12 @@ service cloud.firestore {
 
     // When it happened: no future times (G-021, 5 min of clock skew); spans end after they start.
     function validCareBody(d) {
-      return d.type in ['bottle', 'breast', 'pump', 'diaper', 'growth'] &&
+      return d.type in ['bottle', 'breast', 'pump', 'sleep', 'diaper', 'growth'] &&
         notFuture(d.occurredAt) &&
         (d.endedAt == null || (notFuture(d.endedAt) && d.endedAt >= d.occurredAt)) &&
+        // A sleep always has an end (a running one is a timer) and lasts at most 24 h.
+        (d.type != 'sleep' || (d.endedAt != null &&
+          d.endedAt <= d.occurredAt + duration.value(24, 'h'))) &&
         d.data is map && validCareData(d.type, d.data);
     }
 
@@ -181,6 +204,51 @@ service cloud.firestore {
         d.author.name == me.displayName && d.author.relation == me.relation &&
         d.author.relationCustom == me.get('relationCustom', null) &&
         validCareBody(d);
+    }
+
+    // ---------- Timers (S5) ----------
+
+    function validSide(s) {
+      return s is map && s.keys().hasOnly(['accumulatedMs', 'runningSince']) &&
+        s.keys().hasAll(['accumulatedMs', 'runningSince']) &&
+        s.accumulatedMs is int && s.accumulatedMs >= 0 &&
+        (s.runningSince == null || notFuture(s.runningSince));
+    }
+
+    function validTimerBody(d) {
+      return notFuture(d.startedAt) &&
+        d.paused is bool && d.pausedSides is list && d.pausedSides.size() <= 2 &&
+        ((d.type == 'sleep' && d.sides == null) ||
+          (d.type in ['breast', 'pump'] && d.sides is map &&
+            d.sides.keys().hasOnly(['left', 'right']) &&
+            d.sides.keys().hasAll(['left', 'right']) &&
+            validSide(d.sides.left) && validSide(d.sides.right)));
+    }
+
+    function validNewTimer(babyId, type) {
+      let d = request.resource.data;
+      let me = get(memberDoc(babyId)).data;
+      return type in ['sleep', 'breast', 'pump'] && d.type == type && d.babyId == babyId &&
+        d.keys().hasOnly(['type', 'babyId', 'sessionId', 'startedAt', 'startedBy', 'author',
+          'sides', 'paused', 'pausedSides', 'updatedAt', 'updatedBy']) &&
+        d.keys().hasAll(['type', 'babyId', 'sessionId', 'startedAt', 'startedBy', 'author',
+          'sides', 'paused', 'pausedSides', 'updatedAt', 'updatedBy']) &&
+        d.sessionId is string && d.sessionId.matches('^[a-f0-9]{32}$') &&
+        d.startedBy == request.auth.uid && d.updatedBy == request.auth.uid &&
+        d.updatedAt == request.time &&
+        d.author is map && d.author.keys().hasOnly(['name', 'relation', 'relationCustom']) &&
+        d.author.name == me.displayName && d.author.relation == me.relation &&
+        d.author.relationCustom == me.get('relationCustom', null) &&
+        validTimerBody(d);
+    }
+
+    // Pause, switch side, edit start: the session itself never changes hands.
+    function validTimerUpdate() {
+      let d = request.resource.data;
+      return d.diff(resource.data).affectedKeys()
+          .hasOnly(['startedAt', 'sides', 'paused', 'pausedSides', 'updatedAt', 'updatedBy']) &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time &&
+        validTimerBody(d);
     }
 
     function validRecordUpdate() {
