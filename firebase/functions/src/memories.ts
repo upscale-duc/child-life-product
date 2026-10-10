@@ -12,6 +12,7 @@ import {
   dayBoundsIn,
   defaultLimits,
   effectiveAudience,
+  flagsSchema,
   limitsSchema,
   memoryLimits,
   reserveUploadsRequestSchema,
@@ -160,6 +161,18 @@ export async function createMemory(
   }
   if (req.items.some((i) => i.type === 'video' && i.sizeBytes > limits.videoMaxBytes)) {
     throw new MemoryError('invalid-argument', 'video-too-large');
+  }
+  // Kill switches (A10/A11, P-122): new photos / videos wait on the device and resume when the
+  // switch is back (the app retries the session); notes always save.
+  if (req.items.length > 0) {
+    const flags = flagsSchema.safeParse((await db.doc('config/flags').get()).data());
+    if (flags.success) {
+      if (!flags.data.media_upload.enabled)
+        throw new MemoryError('failed-precondition', 'uploads-paused');
+      if (!flags.data.video_upload.enabled && req.items.some((i) => i.type === 'video')) {
+        throw new MemoryError('failed-precondition', 'uploads-paused');
+      }
+    }
   }
   const memoryRef = db.doc(`babies/${req.babyId}/memories/${req.memoryId}`);
 

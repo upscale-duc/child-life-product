@@ -59,6 +59,26 @@ import { addToAlbum, createAlbum, deleteAlbum, removeFromAlbum, updateAlbum } fr
 import { deliverNotice, onMessageCreated, onReactionWritten, type PushSender } from './social.js';
 import { openAiProvider, templateProvider, type AiProvider } from './ai.js';
 import {
+  StaffError,
+  aiStats,
+  claimTicket,
+  closeTicket,
+  decideStorage,
+  listAudit,
+  listJobs,
+  listStorageRequests,
+  listTickets,
+  overview,
+  readFlags,
+  replyTicket,
+  rerunJob,
+  setFlag,
+  systemHealth,
+  ticketDetail,
+  type AccountLister,
+  type Staff,
+} from './staff.js';
+import {
   LinkError,
   createShareLink,
   expireLinks,
@@ -966,3 +986,101 @@ function clientAddress(forwarded: string | string[] | undefined, ip: string | un
   const first = (Array.isArray(forwarded) ? forwarded[0] : forwarded)?.split(',')[0]?.trim();
   return first || ip || 'unknown';
 }
+
+// ---------- S15: staff portal (A01–A12, D-043) ----------
+
+/** The signed-in staff member from the ID token's custom claims (set by `scripts/create-staff.mjs`). */
+function staffOf(request: CallableRequest): Staff | null {
+  const token = request.auth?.token;
+  if (!token || token.staff !== true || !Array.isArray(token.roles)) return null;
+  const roles = (token.roles as unknown[]).filter((r): r is Staff['roles'][number] =>
+    ['ops', 'support', 'eng', 'lead'].includes(String(r)),
+  );
+  return { uid: request.auth!.uid, name: String(token.name ?? token.email ?? 'staff'), roles };
+}
+
+const authAccounts: AccountLister = {
+  async list() {
+    const out: Awaited<ReturnType<AccountLister['list']>> = [];
+    let page: string | undefined;
+    do {
+      const r = await getAuth().listUsers(1000, page);
+      for (const u of r.users) {
+        if (u.customClaims?.staff === true) continue;
+        out.push({
+          uid: u.uid,
+          email: u.email ?? null,
+          createdAt: new Date(u.metadata.creationTime),
+          verified: u.emailVerified,
+        });
+      }
+      page = r.pageToken;
+    } while (page && out.length < 20_000);
+    return out;
+  },
+};
+
+const staffCall = <T>(name: string, run: (staff: Staff | null, data: unknown) => Promise<T>) =>
+  onCall({ timeoutSeconds: 120, memory: '512MiB' }, async (request) => {
+    if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+    try {
+      return await run(staffOf(request), request.data);
+    } catch (error) {
+      if (error instanceof StaffError) {
+        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+      }
+      logger.error(`${name} failed`, { error: String(error) });
+      throw new HttpsError('internal', `${name} failed`);
+    }
+  });
+
+export const staffOverview = staffCall('staffOverview', (s, d) =>
+  overview(getFirestore(), s, d, new Date(), authAccounts),
+);
+export const staffTickets = staffCall('staffTickets', (s, d) => listTickets(getFirestore(), s, d));
+export const staffTicket = staffCall('staffTicket', (s, d) => ticketDetail(getFirestore(), s, d));
+export const staffClaimTicket = staffCall('staffClaimTicket', (s, d) =>
+  claimTicket(getFirestore(), s, d, new Date()),
+);
+export const staffReplyTicket = staffCall('staffReplyTicket', (s, d) =>
+  replyTicket(getFirestore(), s, d, new Date()),
+);
+export const staffCloseTicket = staffCall('staffCloseTicket', (s, d) =>
+  closeTicket(getFirestore(), s, d, new Date()),
+);
+export const staffStorageRequests = staffCall('staffStorageRequests', (s, d) =>
+  listStorageRequests(getFirestore(), s, d, new Date(), authAccounts),
+);
+export const staffDecideStorage = staffCall('staffDecideStorage', (s, d) =>
+  decideStorage(getFirestore(), s, d, new Date()),
+);
+export const staffJobs = staffCall('staffJobs', (s, d) =>
+  listJobs(getFirestore(), s, d, new Date()),
+);
+export const staffRerunJob = onCall({ timeoutSeconds: 540, memory: '512MiB' }, async (request) => {
+  if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+  try {
+    await rerunJob(getFirestore(), staffOf(request), request.data, new Date(), (jobId) =>
+      runDeletionJob(getFirestore(), jobDeps(), jobId, () => new Date()),
+    );
+  } catch (error) {
+    if (error instanceof StaffError)
+      throw new HttpsError(error.code, error.reason, { reason: error.reason });
+    logger.error('staffRerunJob failed', { error: String(error) });
+    throw new HttpsError('internal', 'staffRerunJob failed');
+  }
+});
+export const staffSystem = staffCall('staffSystem', (s) =>
+  systemHealth(getFirestore(), s, new Date()),
+);
+export const staffAi = staffCall('staffAi', (s) => aiStats(getFirestore(), s, new Date()));
+export const staffFlags = staffCall('staffFlags', (s) => readFlags(getFirestore(), s));
+export const staffSetFlag = staffCall('staffSetFlag', (s, d) =>
+  setFlag(getFirestore(), s, d, new Date()),
+);
+export const staffAudit = staffCall('staffAudit', (s, d) =>
+  listAudit(getFirestore(), s, d, new Date()),
+);
+export const staffExportAudit = staffCall('staffExportAudit', (s, d) =>
+  listAudit(getFirestore(), s, d, new Date(), true),
+);

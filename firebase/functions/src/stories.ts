@@ -20,6 +20,7 @@ import { FieldValue, Timestamp, type Firestore } from 'firebase-admin/firestore'
 import { z } from 'zod';
 import { AiUnavailable, templateProvider, type AiProvider } from './ai.js';
 import { familyNotice, recomputeEffective } from './albums.js';
+import { aiBudgetLeft, chargeAi } from './staff.js';
 
 /**
  * Stories (S12, Figma 14a–14g, 11i). Drafts are the app's own documents (Rules check their shape);
@@ -351,6 +352,10 @@ export async function suggestStory(
   if (!options.ignoreFlag && !(await aiEnabled(db, baby.get('familyId') as string))) {
     return { storyId: null, reason: 'flag-off' };
   }
+  // A09: at 100 % of the month's budget, new suggestions pause; saved stories are unaffected.
+  if (provider.name === 'openai' && !(await aiBudgetLeft(db, now))) {
+    return { storyId: null, reason: 'budget-paused' };
+  }
   const { sources, photoIds, items } = await weekSources(db, babyId, locale, now);
   if (items < storyLimits.minItemsForSuggestion) return { storyId: null, reason: 'too-few-items' };
   const weekKey = `${babyId}_${sources.rangeEnd}`;
@@ -377,6 +382,8 @@ export async function suggestStory(
   if (!draft) {
     draft = await templateProvider.draft(sources);
     used = 'template';
+  } else if (used === 'openai') {
+    await chargeAi(db, now, storyLimits.costPerDraftVnd);
   }
   const storyId = `sto_${createHash('sha256').update(`${weekKey}:${recent.size}`).digest('hex').slice(0, 32)}`;
   await db.doc(`babies/${babyId}/stories/${storyId}`).set({

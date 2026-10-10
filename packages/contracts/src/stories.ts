@@ -29,6 +29,8 @@ export const storyLimits = {
   suggestionPhotos: 9,
   /** Per-paragraph AI help per person per day. */
   assistPerDay: 60,
+  /** Estimated cost of one model draft against the AI budget (A09 "210 đ"). */
+  costPerDraftVnd: 210,
 } as const;
 
 export const storyKinds = ['story', 'letter'] as const;

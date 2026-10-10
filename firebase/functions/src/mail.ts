@@ -114,6 +114,9 @@ export const accountTemplates = [
   'accountDeleted',
   'ownershipOffer',
   'exportReady',
+  'supportReply',
+  'storageGranted',
+  'storageDeclined',
 ] as const;
 export type AccountTemplate = (typeof accountTemplates)[number];
 
@@ -126,6 +129,8 @@ export interface AccountMailData {
   category?: string;
   fromName?: string;
   requestId?: string;
+  /** Staff-written reply or message (S15), sent as typed. */
+  body?: string;
 }
 
 export function renderAccountEmail(
@@ -182,6 +187,21 @@ export function renderAccountEmail(
             'Mở Child Life → Tôi → Tài khoản & đăng nhập để tải về. Liên kết hết hạn sau 24 giờ.',
           ],
         },
+        supportReply: {
+          subject: `Child Life trả lời yêu cầu ${d.ticket}`,
+          lines: [d.body ?? '', 'Bạn trả lời email này nếu cần thêm giúp đỡ.'],
+        },
+        storageGranted: {
+          subject: `Gia đình bạn có thêm ${d.amountGb} GB`,
+          lines: [
+            d.body ?? '',
+            `Dung lượng mới: ${d.quotaGb} GB. Ảnh, video đang chờ sẽ tự tải tiếp.`,
+          ],
+        },
+        storageDeclined: {
+          subject: 'Về yêu cầu thêm dung lượng',
+          lines: [d.body ?? ''],
+        },
       }
     : {
         storageRequestAck: {
@@ -229,6 +249,21 @@ export function renderAccountEmail(
           lines: [
             'Open Child Life → Me → Account & sign-in to download it. The link expires in 24 hours.',
           ],
+        },
+        supportReply: {
+          subject: `Child Life replied to ${d.ticket}`,
+          lines: [d.body ?? '', 'Reply to this email if you need more help.'],
+        },
+        storageGranted: {
+          subject: `Your family has ${d.amountGb} GB more`,
+          lines: [
+            d.body ?? '',
+            `New storage: ${d.quotaGb} GB. Waiting photos and videos will upload by themselves.`,
+          ],
+        },
+        storageDeclined: {
+          subject: 'About your storage request',
+          lines: [d.body ?? ''],
         },
       };
   const t = copy[template];

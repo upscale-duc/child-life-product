@@ -10,3 +10,4 @@ export * from './albums.js';
 export * from './account.js';
 export * from './stories.js';
 export * from './links.js';
+export * from './staff.js';

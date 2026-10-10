@@ -102,6 +102,16 @@ export function noticeCopy(kind: string, count: number, actorName: string, langu
               title: 'Storage is almost full',
               body: `Your family has used ${count}% of its space. Open to see.`,
             };
+    case 'storageGranted':
+      return vi
+        ? {
+            title: 'Đã thêm dung lượng',
+            body: `Gia đình có thêm ${count} GB. Ảnh, video đang chờ sẽ tự tải tiếp.`,
+          }
+        : {
+            title: 'More storage added',
+            body: `Your family has ${count} GB more. Waiting uploads will continue.`,
+          };
     case 'message':
       return vi
         ? { title: 'Có lời nhắn mới', body: `${actorName} vừa nhắn cho ba mẹ. Mở để đọc.` }
