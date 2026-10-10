@@ -244,6 +244,20 @@ service cloud.firestore {
         allow delete: if false;
       }
 
+      // Stories (S12, 14a–14g, 11i). Parents write drafts themselves (one document per story);
+      // saving, re-saving and deleting a saved story go through Functions (audience, D-002 photo
+      // sharing, one notice — P-091). Relatives read saved Gia đình stories; caregivers never.
+      match /stories/{storyId} {
+        allow read: if (isParent(babyId) && (resource.data.status == 'saved' ||
+            resource.data.createdBy in [request.auth.uid, 'ai'])) ||
+          (isRelative(babyId) && resource.data.status == 'saved' &&
+            resource.data.audience == 'family');
+        allow create: if isParent(babyId) && babyOpen(babyId) && validNewStory(babyId, storyId);
+        allow update: if isParent(babyId) && babyOpen(babyId) && validStoryEdit();
+        allow delete: if isParent(babyId) && resource.data.status == 'draft' &&
+          resource.data.createdBy in [request.auth.uid, 'ai'];
+      }
+
       // Reminders (S7, 8a–8e, 12f). Cùng nuôi create, edit and delete (D-030, D-031); caregivers
       // view and mark done; relatives never see them (D-018). Notifications are local to the
       // device in notifyDevice (R-091); any viewer may move it to their own device (D-029).
@@ -458,7 +472,46 @@ service cloud.firestore {
           babyDoc(babyId, 'memories', targetId).state == 'published' &&
           babyDoc(babyId, 'memories', targetId).deleted == false) ||
         (target == 'album' && babyDoc(babyId, 'albums', targetId).audience == 'family') ||
-        (target == 'story' && babyDoc(babyId, 'stories', targetId).audience == 'family');
+        (target == 'story' && babyDoc(babyId, 'stories', targetId).audience == 'family' &&
+          babyDoc(babyId, 'stories', targetId).status == 'saved');
+    }
+
+    function validStoryContent(d) {
+      return d.title is string && d.title.size() <= 120 &&
+        (d.coverMediaId == null || d.coverMediaId is string) &&
+        d.blocks is list && d.blocks.size() <= 40 &&
+        d.kind in ['story', 'letter'] &&
+        d.audience in ['parents', 'family'];
+    }
+
+    function validNewStory(babyId, storyId) {
+      let d = request.resource.data;
+      return storyId.matches('^sto_[a-f0-9]{32}$') && d.id == storyId && d.babyId == babyId &&
+        d.keys().hasOnly(['id', 'babyId', 'kind', 'origin', 'suggestion', 'status', 'title',
+          'coverMediaId', 'blocks', 'audience', 'createdBy', 'author', 'loveCount', 'createdAt',
+          'updatedAt', 'updatedBy']) &&
+        d.origin == 'manual' && d.suggestion == false && d.status == 'draft' &&
+        d.createdBy == request.auth.uid && d.updatedBy == request.auth.uid &&
+        d.loveCount == 0 && d.author is map &&
+        d.createdAt == request.time && d.updatedAt == request.time &&
+        validStoryContent(d);
+    }
+
+    // Content edits only; a suggestion becomes the editor's draft ("Lưu nháp"). Status, audience
+    // of a saved story and the shared photo list stay with Functions.
+    function validStoryEdit() {
+      let d = request.resource.data;
+      let o = resource.data;
+      let changed = d.diff(o).affectedKeys();
+      return changed.hasOnly(['title', 'coverMediaId', 'blocks', 'kind', 'audience', 'suggestion',
+          'createdBy', 'author', 'updatedAt', 'updatedBy']) &&
+        d.updatedAt == request.time && d.updatedBy == request.auth.uid &&
+        (o.createdBy == request.auth.uid || o.status == 'saved' ||
+          (o.createdBy == 'ai' && d.createdBy == request.auth.uid)) &&
+        (!changed.hasAny(['createdBy']) || (o.createdBy == 'ai' && d.createdBy == request.auth.uid)) &&
+        (!changed.hasAny(['audience']) || o.status == 'draft') &&
+        (!changed.hasAny(['suggestion']) || d.suggestion == false) &&
+        validStoryContent(d);
     }
 
     function validFavorite(babyId, favoriteId) {

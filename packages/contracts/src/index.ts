@@ -8,3 +8,4 @@ export * from './reminders.js';
 export * from './memories.js';
 export * from './albums.js';
 export * from './account.js';
+export * from './stories.js';

@@ -45,7 +45,8 @@ await writeFile(join(out, 'package.json'), `${JSON.stringify(deployPkg, null, 2)
 await writeFile(
   join(out, '.env'),
   // SUPPORT_INBOX: where storage requests and help tickets are announced to staff (S11).
-  'SES_REGION=ap-southeast-1\nMAIL_FROM=Child Life <hello@childlife.app>\nSUPPORT_INBOX=support@childlife.app\n',
+  // OPENAI_MODEL: the story model behind the adapter (D-003, S12); the key is a secret.
+  'SES_REGION=ap-southeast-1\nMAIL_FROM=Child Life <hello@childlife.app>\nSUPPORT_INBOX=support@childlife.app\nOPENAI_MODEL=gpt-4.1-mini\n',
 );
 // The Firebase CLI loads firebase-functions from the source dir to discover triggers, and Cloud Build
 // installs from the generated lockfile, so both see exactly the pinned runtime versions.

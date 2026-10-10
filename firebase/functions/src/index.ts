@@ -57,6 +57,15 @@ import {
 } from './account.js';
 import { addToAlbum, createAlbum, deleteAlbum, removeFromAlbum, updateAlbum } from './albums.js';
 import { deliverNotice, onMessageCreated, onReactionWritten, type PushSender } from './social.js';
+import { openAiProvider, templateProvider, type AiProvider } from './ai.js';
+import {
+  StoryError,
+  deleteStory,
+  requestSuggestion,
+  saveStory,
+  storyAssist,
+  suggestForAll,
+} from './stories.js';
 import {
   MemoryError,
   cancelUploads,
@@ -766,5 +775,73 @@ export const reconcileStorageUsage = onSchedule(
     const families = await getFirestore().collection('families').select().get();
     for (const f of families.docs) await reconcileFamilyUsage(getFirestore(), f.id);
     logger.info('storage reconciled', { families: families.size });
+  },
+);
+
+// ---------- S12: stories and AI (D-003) ----------
+
+/** Set with `firebase functions:secrets:set OPENAI_API_KEY` (value "unset" = template drafts). */
+const openAiKey = defineSecret('OPENAI_API_KEY');
+const openAiModel = defineString('OPENAI_MODEL', { default: 'gpt-4.1-mini' });
+
+function aiProvider(): AiProvider {
+  const key = openAiKey.value();
+  return !key || key === 'unset' ? templateProvider : openAiProvider(key, openAiModel.value());
+}
+
+const storyCall = <T>(
+  name: string,
+  run: (uid: string, data: unknown) => Promise<T>,
+  options: { secrets?: ReturnType<typeof defineSecret>[]; timeoutSeconds?: number } = {},
+) =>
+  onCall(options, async (request) => {
+    if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+    try {
+      return await run(request.auth.uid, request.data);
+    } catch (error) {
+      if (error instanceof StoryError) {
+        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+      }
+      // Never log the payload: story text is family content.
+      logger.error(`${name} failed`, { error: String(error) });
+      throw new HttpsError('internal', `${name} failed`);
+    }
+  });
+
+/** 14f "Lưu câu chuyện" and re-saves. */
+export const saveFamilyStory = storyCall('saveFamilyStory', (uid, d) =>
+  saveStory(getFirestore(), uid, d, new Date()),
+);
+
+/** Delete a story (G-050). */
+export const deleteFamilyStory = storyCall('deleteFamilyStory', (uid, d) =>
+  deleteStory(getFirestore(), uid, d, new Date()),
+);
+
+/** 14b / 14c paragraph help. */
+export const storyParagraphAssist = storyCall(
+  'storyParagraphAssist',
+  (uid, d) => storyAssist(getFirestore(), aiProvider(), uid, d, new Date()),
+  { secrets: [openAiKey], timeoutSeconds: 60 },
+);
+
+/** "Gợi ý tuần này" on request. */
+export const requestStorySuggestion = storyCall(
+  'requestStorySuggestion',
+  (uid, d) => requestSuggestion(getFirestore(), aiProvider(), uid, d, new Date()),
+  { secrets: [openAiKey], timeoutSeconds: 120 },
+);
+
+/** Weekly suggestions, Sunday 19:00 in Vietnam (P-090). */
+export const weeklyStorySuggestions = onSchedule(
+  {
+    schedule: 'every sunday 19:00',
+    timeZone: 'Asia/Ho_Chi_Minh',
+    secrets: [openAiKey],
+    timeoutSeconds: 540,
+  },
+  async () => {
+    const made = await suggestForAll(getFirestore(), aiProvider(), new Date());
+    logger.info('story suggestions', { made });
   },
 );

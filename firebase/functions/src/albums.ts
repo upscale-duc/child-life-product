@@ -66,9 +66,10 @@ export async function recomputeEffective(
     for (const s of snaps) {
       if (!s.exists) continue;
       const own = s.get('audience') as Audience;
-      const inFamily = ((s.get('albumIds') as string[] | undefined) ?? []).some((a) =>
-        family.has(a),
-      );
+      // In a Gia đình album, or shown in a saved Gia đình story (D-002, S12).
+      const inFamily =
+        ((s.get('albumIds') as string[] | undefined) ?? []).some((a) => family.has(a)) ||
+        ((s.get('familyStoryIds') as string[] | undefined) ?? []).length > 0;
       const next: Audience = own === 'family' || inFamily ? 'family' : 'parents';
       const before = s.get('effectiveAudience') as Audience;
       if (next === before) continue;
@@ -156,7 +157,7 @@ async function addItems(
 async function familyNotice(
   db: Firestore,
   babyId: string,
-  kind: 'album' | 'shared',
+  kind: 'album' | 'shared' | 'story',
   count: number,
   uid: string,
   actor: unknown,
