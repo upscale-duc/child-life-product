@@ -74,7 +74,7 @@ void main() {
       find.text(l10n.todayTileEmpty),
       timeout: const Duration(seconds: 45),
     );
-    await tester.pump(const Duration(seconds: 1));
+    await skipTourIfShown(tester);
     expect(find.text(l10n.todayTileEmpty), findsNWidgets(4));
     expect(find.textContaining('Teddy'), findsWidgets);
 

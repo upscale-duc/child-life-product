@@ -109,6 +109,7 @@ void main() {
         find.text(l10n.todayTileEmpty),
         timeout: const Duration(seconds: 45),
       );
+      await skipTourIfShown(tester);
 
       // 22: tile → 120 ml formula → "Lưu cữ bú".
       await tapText(tester, l10n.trackerBottle);

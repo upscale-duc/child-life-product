@@ -75,6 +75,7 @@ void main() {
       find.text(l10n.todayTileEmpty),
       timeout: const Duration(seconds: 45),
     );
+    await skipTourIfShown(tester);
     await _openTab(tester, l10n.tabFamily);
     await pumpUntil(tester, find.text(l10n.familySubtitle('Teddy')));
     expect(find.text(l10n.familyYou), findsOneWidget);
@@ -141,6 +142,7 @@ void main() {
       find.text(l10n.unsavedBannerTitle),
       timeout: const Duration(seconds: 45),
     );
+    await skipTourIfShown(tester);
     final temporary = FirebaseAuth.instance.currentUser!;
     expect(temporary.isAnonymous, isTrue);
     final membership = await firestoreGet(

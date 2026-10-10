@@ -217,8 +217,9 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     final hm = DateFormat.Hm(locale);
 
     if (timer == null) {
-      // Ended or cancelled (here or by someone else): nothing left to show.
-      if (!_leaving) {
+      // Ended or cancelled (here or by someone else): nothing left to show. A timer that was
+      // just started may not have reached the local cache yet — wait for it.
+      if (!_leaving && _sessionSeen != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted && context.canPop()) context.pop();
         });

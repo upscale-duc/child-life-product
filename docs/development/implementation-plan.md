@@ -272,6 +272,8 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 
 ### S5 — Timers, sleep, overlap
 
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S5.md). Sleep / breastfeed / pump timers, manual sleep, overlap resolution and the first-run tour work end to end (iOS + Android, emulators); Live Activities wait for SP-1.
+
 - **Figma:** 23b, 23c, 25a, 25, 26, 27, 9c, CareTile sleep-running, Night care auto-on.
 - **Backend:** `activeTimers` transactional slot (P-011), end → exactly one record, overlap detection trigger → `conflicts`, `resolveConflict` callable, loser → 30-day bin.
 - **Mobile:** timestamp-based timers (no per-second writes), pause/resume per side, double pump, edit start, cancel confirm, chooser vs immediate start (Q-022), overlap resolver UI, haptics.

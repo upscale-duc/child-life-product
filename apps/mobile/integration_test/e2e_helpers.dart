@@ -143,3 +143,42 @@ Future<void> tapText(WidgetTester tester, String text) async {
   await tester.tap(find.text(text).last);
   await tester.pump(const Duration(milliseconds: 400));
 }
+
+/// Firestore emulator write that bypasses Rules (admin "owner" token). Values: String, bool,
+/// int, DateTime (timestamp), null, Map (nested).
+Future<void> firestoreSet(String path, Map<String, Object?> fields) async {
+  Map<String, Object?> encode(Object? v) => switch (v) {
+    null => {'nullValue': null},
+    final bool b => {'booleanValue': b},
+    final int i => {'integerValue': '$i'},
+    final DateTime d => {'timestampValue': d.toUtc().toIso8601String()},
+    final String s => {'stringValue': s},
+    final Map<String, Object?> m => {
+      'mapValue': {
+        'fields': {for (final e in m.entries) e.key: encode(e.value)},
+      },
+    },
+    _ => throw ArgumentError('Unsupported $v'),
+  };
+  await http(
+    'PATCH',
+    'http://$host:8080/v1/projects/$project/databases/(default)/documents/$path',
+    headers: {'Authorization': 'Bearer owner'},
+    json: {
+      'fields': {for (final e in fields.entries) e.key: encode(e.value)},
+    },
+  );
+}
+
+/// The first-run tour (18) shows once per device on an empty Today; skip it if it is up.
+Future<void> skipTourIfShown(WidgetTester tester) async {
+  final l10n = l10nOf(tester);
+  final end = DateTime.now().add(const Duration(seconds: 4));
+  while (DateTime.now().isBefore(end)) {
+    await tester.pump(const Duration(milliseconds: 200));
+    if (find.text(l10n.tour1Title).evaluate().isNotEmpty) {
+      await tapText(tester, l10n.actionSkip);
+      return;
+    }
+  }
+}
