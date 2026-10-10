@@ -10,7 +10,8 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, 'deploy');
 const pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
-const external = ['firebase-functions', 'firebase-admin'];
+// sharp ships native binaries per platform: Cloud Build installs the Linux build (S9 photos).
+const external = ['firebase-functions', 'firebase-admin', 'sharp'];
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });

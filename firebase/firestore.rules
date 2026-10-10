@@ -108,6 +108,48 @@ service cloud.firestore {
         allow write: if false;
       }
 
+      // Memories (S9). Written by Functions only (upload sessions, processing, batch actions).
+      // Cùng nuôi see everything, including uploads in progress and "Đã xoá gần đây"; relatives
+      // only published Gia đình memories and ready Gia đình items (D-002, P-035, R-119); caregivers
+      // never see Kỷ niệm (12a, 10o).
+      match /memories/{memoryId} {
+        allow read: if isParent(babyId) || (isRelative(babyId) &&
+          resource.data.audience == 'family' && resource.data.state == 'published' &&
+          resource.data.deleted == false);
+        allow write: if false;
+      }
+
+      match /media/{mediaId} {
+        allow read: if isParent(babyId) || (isRelative(babyId) &&
+          resource.data.effectiveAudience == 'family' && resource.data.status == 'ready' &&
+          resource.data.deleted == false);
+        // The uploader marks a video "waiting for Wi-Fi" on their device, so the batch notice
+        // need not wait for it (P-030, Q-019).
+        allow update: if isParent(babyId) && resource.data.createdBy == request.auth.uid &&
+          resource.data.status == 'uploading' &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['clientState']) &&
+          request.resource.data.clientState in [null, 'waitingWifi'];
+        allow create, delete: if false;
+      }
+
+      // The uploader's own batches ("Đã báo cho Bà nội, Ông ngoại", R-115).
+      match /uploadBatches/{batchId} {
+        allow read: if isParent(babyId) && resource.data.createdBy == request.auth.uid;
+        allow write: if false;
+      }
+
+      // "Mốc nhà mình đã tạo" (10h3, 10h4, R-105): reusable by every Cùng nuôi.
+      match /milestones/{milestoneId} {
+        allow read: if isParent(babyId);
+        allow create: if isParent(babyId) && validNewMilestone(babyId, milestoneId);
+        allow update, delete: if false;
+      }
+
+      // Family notices (R-120), delivered by Functions.
+      match /notifications/{notificationId} {
+        allow read, write: if false;
+      }
+
       // Reminders (S7, 8a–8e, 12f). Cùng nuôi create, edit and delete (D-030, D-031); caregivers
       // view and mark done; relatives never see them (D-018). Notifications are local to the
       // device in notifyDevice (R-091); any viewer may move it to their own device (D-029).
@@ -279,6 +321,28 @@ service cloud.firestore {
         (o.deleted == true && d.deleted == false && changed.hasOnly(deleteKeys) &&
           d.deletedAt == null && d.deletedBy == null)
       );
+    }
+
+    // ---------- Memories (S9) ----------
+
+    function isParent(babyId) {
+      return activeMember(babyId) && role(babyId) == 'coParent';
+    }
+
+    function isRelative(babyId) {
+      return activeMember(babyId) && role(babyId) == 'relative';
+    }
+
+    function validNewMilestone(babyId, milestoneId) {
+      let d = request.resource.data;
+      let me = get(memberDoc(babyId)).data;
+      return milestoneId.matches('^ms_[a-f0-9]{32}$') &&
+        d.keys().hasOnly(['id', 'babyId', 'name', 'date', 'createdBy', 'author', 'createdAt']) &&
+        d.keys().hasAll(['id', 'babyId', 'name', 'date', 'createdBy', 'author', 'createdAt']) &&
+        d.id == milestoneId && d.babyId == babyId && d.createdBy == request.auth.uid &&
+        d.createdAt == request.time && ownAuthor(d.author, me) &&
+        d.name is string && d.name.trim().size() >= 1 && d.name.size() <= 60 &&
+        d.date is string && d.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
     }
 
     // ---------- Reminders (S7) ----------

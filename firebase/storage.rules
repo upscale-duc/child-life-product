@@ -1,9 +1,58 @@
 rules_version = '2';
 
-// Deny all client access. Media is served through short-lived signed URLs minted by
-// Functions after membership + audience checks (implementation plan §3.3–3.4).
+// Deny by default. Memories (S9): the uploader writes raw bytes only into the slot their upload
+// session reserved; Functions process them into `media/` (P-031, P-033). Reads go through these
+// Rules with the same audience checks as Firestore (D-002, P-035, R-119); caregivers never see
+// Kỷ niệm. Avatars and everything else stay Functions-only.
 service firebase.storage {
   match /b/{bucket}/o {
+    function member(babyId) {
+      return firestore.get(/databases/(default)/documents/babies/$(babyId)/members/$(request.auth.uid)).data;
+    }
+
+    function active(m) {
+      return m.status == 'active' &&
+        (m.get('accessUntilAt', null) == null || m.accessUntilAt > request.time);
+    }
+
+    function media(babyId, mediaId) {
+      return firestore.get(/databases/(default)/documents/babies/$(babyId)/media/$(mediaId)).data;
+    }
+
+    // The raw item ("med_…") or its video poster ("med_….poster"), once, while reserved.
+    match /babies/{babyId}/uploads/{file} {
+      allow create: if request.auth != null &&
+        file.matches('^med_[a-f0-9]{32}([.]poster)?$') &&
+        uploadAllowed(babyId, file.split('[.]')[0], file.matches('.*[.]poster$'));
+      allow read, update, delete: if false;
+    }
+
+    function uploadAllowed(babyId, mediaId, isPoster) {
+      let m = media(babyId, mediaId);
+      return m.createdBy == request.auth.uid && m.status == 'uploading' && m.deleted == false &&
+        active(member(babyId)) &&
+        ((isPoster && m.type == 'video' && m.hasPoster == true &&
+            request.resource.contentType == 'image/jpeg' &&
+            request.resource.size <= 4 * 1024 * 1024) ||
+          (!isPoster && request.resource.size <= m.sizeBytes &&
+            request.resource.contentType == m.contentType));
+    }
+
+    match /babies/{babyId}/media/{mediaId}/{variant} {
+      allow read: if request.auth != null && canSee(babyId, mediaId);
+      allow write: if false;
+    }
+
+    function canSee(babyId, mediaId) {
+      let me = member(babyId);
+      return active(me) &&
+        (me.role == 'coParent' || (me.role == 'relative' && shared(media(babyId, mediaId))));
+    }
+
+    function shared(m) {
+      return m.effectiveAudience == 'family' && m.status == 'ready' && m.deleted == false;
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

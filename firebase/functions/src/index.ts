@@ -4,6 +4,7 @@ import { setGlobalOptions } from 'firebase-functions/v2';
 import { onDocumentCreated, onDocumentWritten } from 'firebase-functions/v2/firestore';
 import { HttpsError, onCall, onRequest, type CallableRequest } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { onObjectFinalized } from 'firebase-functions/v2/storage';
 import { defineSecret, defineString } from 'firebase-functions/params';
 import { logger } from 'firebase-functions';
 import { getAuth } from 'firebase-admin/auth';
@@ -31,6 +32,18 @@ import { localeFromHeader, renderInvitePage, renderUnsubscribePage } from './pag
 import { CareError, onRecordWritten, purgeDeletedRecords, resolveSleepConflict } from './care.js';
 import { BabyError, createBaby, getBabyAvatar, setBabyAvatar, type AvatarStore } from './babies.js';
 import { handlePing, PingError } from './ping.js';
+import { bucketStore, sharpImages } from './images.js';
+import {
+  MemoryError,
+  cancelUploads,
+  createMemory,
+  onMediaWritten,
+  processUpload,
+  purgeMediaBin,
+  releaseStaleUploads,
+  reserveUploads,
+  updateMedia,
+} from './memories.js';
 import { isMirroredConfigId, publicProjection } from './config-mirror.js';
 
 initializeApp();
@@ -273,6 +286,100 @@ export const purgeCareBin = onSchedule(
     if (purged > 0) logger.info('care records purged', { count: purged });
   },
 );
+
+// ---------- Memories (S9) ----------
+
+function memoryCall<T>(name: string, run: (uid: string, data: unknown) => Promise<T>) {
+  return onCall(async (request) => {
+    if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+    try {
+      return await run(request.auth.uid, request.data);
+    } catch (error) {
+      if (error instanceof MemoryError) {
+        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+      }
+      // Never log the payload: captions and capture dates are child data.
+      logger.error(`${name} failed`, { error: String(error) });
+      throw new HttpsError('internal', `${name} failed`);
+    }
+  });
+}
+
+/** 10h "Tải lên N mục" / "Viết ghi chú": memory, items and quota reservations (P-031). */
+export const createMemorySession = memoryCall('createMemorySession', (uid, data) =>
+  createMemory(getFirestore(), uid, data, new Date()),
+);
+
+/** Items kept on the device for quota (R-121) try again. */
+export const reserveMemoryUploads = memoryCall('reserveMemoryUploads', (uid, data) =>
+  reserveUploads(getFirestore(), uid, data, new Date()),
+);
+
+/** 10i "×" on a queued or uploading item. */
+export const cancelMemoryUploads = memoryCall('cancelMemoryUploads', (uid, data) =>
+  cancelUploads(getFirestore(), bucketStore(getStorage().bucket()), uid, data, new Date()),
+);
+
+/** 10b3 / 10b4 / 10o batch actions: Ai thấy, Đổi ngày, Gắn mốc, Xoá, restore. */
+export const updateMemoryMedia = memoryCall('updateMemoryMedia', (uid, data) =>
+  updateMedia(getFirestore(), uid, data, new Date()),
+);
+
+/** Raw upload finished: validate, strip metadata, renditions, commit quota (P-031, P-033). */
+export const onMediaUploaded = onObjectFinalized(
+  { memory: '1GiB', timeoutSeconds: 300, concurrency: 4 },
+  async (event) => {
+    const path = event.data.name;
+    if (!path.startsWith('babies/') || !path.includes('/uploads/')) return;
+    const result = await processUpload(
+      getFirestore(),
+      bucketStore(getStorage().bucket(event.data.bucket)),
+      sharpImages,
+      path,
+      new Date(),
+    );
+    logger.info('media upload processed', { result });
+  },
+);
+
+/** Memory counts, publish state and the batch's single notification follow the items (P-030). */
+export const onMemoryMediaWrite = onDocumentWritten(
+  'babies/{babyId}/media/{mediaId}',
+  async (event) => {
+    const change = event.data;
+    if (!change) return;
+    await onMediaWritten(
+      getFirestore(),
+      event.params.babyId,
+      change.after.exists ? change.after : null,
+      change.before.exists ? change.before : null,
+      new Date(),
+    );
+  },
+);
+
+/** "Đã xoá gần đây" ends after 30 days (R-111, P-034). */
+export const purgeMemoryBin = onSchedule(
+  { schedule: 'every day 03:45', timeZone: 'Asia/Ho_Chi_Minh' },
+  async () => {
+    const purged = await purgeMediaBin(
+      getFirestore(),
+      bucketStore(getStorage().bucket()),
+      new Date(),
+    );
+    if (purged > 0) logger.info('media purged', { count: purged });
+  },
+);
+
+/** Unused reservations go back after 24 h (P-031). */
+export const releaseStaleMemoryUploads = onSchedule('every 60 minutes', async () => {
+  const released = await releaseStaleUploads(
+    getFirestore(),
+    bucketStore(getStorage().bucket()),
+    new Date(),
+  );
+  if (released > 0) logger.info('stale uploads released', { count: released });
+});
 
 // ---------- Email (D-020: AWS SES) ----------
 
