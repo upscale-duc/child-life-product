@@ -399,7 +399,9 @@ FeedStats feedStats(
   final DateTime to;
   if (window == StatsWindow.today) {
     from = today.start.subtract(const Duration(hours: 6)); // 18:00 yesterday
-    to = now;
+    // To the end of the day, not `now`: the care clock is minute-aligned, and a feed logged
+    // earlier in this minute must already count (records are never in the future, G-021).
+    to = today.end;
   } else {
     from = windowDays(zone, now, days).first.start;
     to = today.end;

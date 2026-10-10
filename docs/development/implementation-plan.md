@@ -303,12 +303,16 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 
 ### S8 — Widgets, lock screen, Live Activity, Dynamic Island
 
+> **Status:** waiting on SP-1 — needs real devices, an Apple team (App Groups, keychain sharing) and APNs push-to-start; S9 went first on the parallel memories branch.
+
 - **Figma:** W1–W5, Components `73:399` (Small 10 states, Medium 3, Large, Lock circular/rect/inline, LiveActivity sleep/breast, DynamicIsland), upload Live Activity from 10j.
 - **Native:** promote SP-1; App Intents for log/undo/start/stop/switch side; App Group snapshot from `DaySummary`; deep-link table (W5); signed-out / empty / offline states; Android Glance widgets + ongoing timer/upload notifications mirroring the iOS layouts, states and actions (D-004).
 - **Acceptance:** one tap logs without opening app (online and offline) with ~5 s undo; LA visible to family devices (or approved fallback); deep links land on the right screen; no child photos on lock screen.
 - **Depends on:** S5, S6, SP-1. G-060. Android mirrors iOS layouts and states (D-004).
 
 ### S9 — Memories core & upload
+
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S9.md). Journal, photos grid, add (library, Files, note), compose with milestones, upload queue + server processing (sharp, metadata stripped), viewer, selection actions and delete work end to end (iOS + Android, emulators); backend on dev. In-app burst camera, share extension, upload Live Activity and kill-proof background transfer wait (SP-1/SP-2); albums, loves, favourites in S10.
 
 - **Figma:** 10a, 10a2, 10a3, 10b, 10b2, 10b3, 10b4, 10b5, 10c, 10f, 10g, 10h, 10h2–10h5, 10i, 10j, 10k, 10o, 13f, MemoryCard, MediaTile, UploadPill, QueueRow.
 - **Backend:** promote SP-2/SP-3 pipeline (§3.4), quota reservation, media audience per item with server-computed effective audience (D-002, P-035), milestone presets (age-based) + custom, memory publish rules (P-030), batch notification, soft delete + "Đã xoá gần đây" + purge.

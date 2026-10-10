@@ -30,9 +30,15 @@
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>NSCameraUsageDescription</key>
-		<string>Child Life uses the camera to take your baby's profile photo and to scan invite QR codes. Only your family can see the photo.</string>
+		<string>Child Life uses the camera to take your baby's photos and videos, their profile photo, and to scan invite QR codes. Only your family can see them.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>Child Life opens your photo library so you can choose your baby's profile photo. Only your family can see it.</string>
+		<string>Child Life opens your photo library so you can add your baby's photos and videos to Memories and choose a profile photo. Only your family can see them.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>Child Life saves photos and videos you download from Memories to your photo library.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Child Life records sound with the videos you take of your baby.</string>
+		<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
+		<true/>
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
 			<string>message</string>

@@ -4501,6 +4501,1290 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bỏ đánh dấu xong: {title}'**
   String a11yUndoDone(String title);
+
+  /// Memory tab (10a).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký'**
+  String get memJournal;
+
+  /// Memory tab (10b).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get memPhotos;
+
+  /// Memory tab (10d, S10).
+  ///
+  /// In vi, this message translates to:
+  /// **'Album'**
+  String get memAlbums;
+
+  /// Memory tab (S12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu chuyện'**
+  String get memStories;
+
+  /// Tabs not built yet (S10, S12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp có'**
+  String get memSoonTitle;
+
+  /// Tabs not built yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phần này có trong bản cập nhật tới.'**
+  String get memSoonBody;
+
+  /// Header sliders button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách xem'**
+  String get a11yViewOptions;
+
+  /// Header + button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vào Kỷ niệm'**
+  String get a11yAddMemory;
+
+  /// 10a week group (R-113).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần thứ {week}'**
+  String memWeek(int week);
+
+  /// Week group for earlier dates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước ngày chào đời'**
+  String get memBeforeBirth;
+
+  /// Count.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ảnh'**
+  String memPhotoCount(int count);
+
+  /// Count.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} video'**
+  String memVideoCount(int count);
+
+  /// Count (10b5).
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mục'**
+  String memItemCount(int count);
+
+  /// Entry date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay · {time}'**
+  String memTodayAt(String time);
+
+  /// Entry date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua · {time}'**
+  String memYesterdayAt(String time);
+
+  /// Empty journal (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có kỷ niệm nào'**
+  String get memEmptyTitle;
+
+  /// Empty journal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm + để thêm ảnh, video hoặc ghi chú đầu tiên của {name}.'**
+  String memEmptyBody(String name);
+
+  /// Empty grid.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh và video của {name} sẽ hiện ở đây.'**
+  String memPhotosEmpty(String name);
+
+  /// Filtered empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có mục nào khớp cách xem này.'**
+  String get memNoMatch;
+
+  /// Tile before ready.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xử lý'**
+  String get memProcessing;
+
+  /// UploadPill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải {done}/{total} mục'**
+  String upUploading(int done, int total);
+
+  /// UploadPill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cứ làm việc khác, xong sẽ báo bạn'**
+  String get upUploadingHint;
+
+  /// UploadPill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng · chờ mạng'**
+  String get upPaused;
+
+  /// UploadPill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự tải tiếp khi có mạng'**
+  String get upPausedHint;
+
+  /// UploadPill after "Tạm dừng".
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tạm dừng'**
+  String get upPausedByYou;
+
+  /// UploadPill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để tiếp tục'**
+  String get upPausedByYouHint;
+
+  /// UploadPill.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mục chưa tải được'**
+  String upFailed(int count);
+
+  /// UploadPill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để thử lại hoặc bỏ qua'**
+  String get upFailedHint;
+
+  /// UploadPill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tải xong {count} mục'**
+  String upDone(int count);
+
+  /// UploadPill done.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã báo cho {names}'**
+  String upToldFamily(String names);
+
+  /// UploadPill done, Chỉ ba mẹ.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ xem được'**
+  String get upParentsOnly;
+
+  /// UploadPill.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} video chờ Wi-Fi'**
+  String upWaitingWifi(int count);
+
+  /// UploadPill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video tự tải khi có Wi-Fi'**
+  String get upWaitingWifiHint;
+
+  /// UploadPill (R-121).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết dung lượng · {count} mục giữ trên máy'**
+  String upWaitingQuota(int count);
+
+  /// UploadPill (R-121).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để xem'**
+  String get upWaitingQuotaHint;
+
+  /// UploadPill before the session.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị {count} mục'**
+  String upPreparing(int count);
+
+  /// 10a2 / 10h title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vào Kỷ niệm'**
+  String get addTitle;
+
+  /// 10a2 recent strip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh mới chụp hôm nay'**
+  String get addRecent;
+
+  /// 10a2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để thêm nhanh'**
+  String get addRecentHint;
+
+  /// 10a2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp ảnh hoặc quay video'**
+  String get addCamera;
+
+  /// 10a2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu thẳng vào Kỷ niệm'**
+  String get addCameraHint;
+
+  /// 10a2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn từ Thư viện ảnh'**
+  String get addLibrary;
+
+  /// 10a2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn nhiều ảnh, video một lần'**
+  String get addLibraryHint;
+
+  /// 10a2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn từ Tệp'**
+  String get addFiles;
+
+  /// 10a2.
+  ///
+  /// In vi, this message translates to:
+  /// **'iCloud Drive, Google Drive, USB…'**
+  String get addFilesHint;
+
+  /// 10a2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết ghi chú'**
+  String get addNote;
+
+  /// 10a2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm chỉ có chữ, thêm ảnh sau'**
+  String get addNoteHint;
+
+  /// 10g chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần đây'**
+  String get pickRecent;
+
+  /// 10g chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video'**
+  String get pickVideos;
+
+  /// 10g chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Album'**
+  String get pickAlbums;
+
+  /// 10g tray.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mục · {photos} ảnh, {videos} video'**
+  String pickSummary(int count, int photos, int videos);
+
+  /// 10g tray (R-102).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối đa {count} mục/lần'**
+  String pickMax(int count);
+
+  /// 10g primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm {count} mục'**
+  String pickAdd(int count);
+
+  /// 10g limit toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi lần thêm tối đa {count} mục.'**
+  String pickLimit(int count);
+
+  /// 10g denied (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life chưa được xem thư viện ảnh.'**
+  String get pickNoAccess;
+
+  /// 10g limited access.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang cho xem một số ảnh.'**
+  String get pickLimited;
+
+  /// 10g limited access.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn thêm'**
+  String get pickChooseMore;
+
+  /// 10g empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ảnh nào ở đây'**
+  String get pickEmpty;
+
+  /// 10g album chip sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn album'**
+  String get pickAlbumsTitle;
+
+  /// 10h caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết vài dòng… (không bắt buộc)'**
+  String get composeCaption;
+
+  /// Note compose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết điều bạn muốn nhớ…'**
+  String get composeNoteHint;
+
+  /// 10h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày'**
+  String get composeDate;
+
+  /// 10h value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo ngày chụp'**
+  String get composeByCapture;
+
+  /// 10h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc'**
+  String get composeMilestone;
+
+  /// 10h value / 10h3 clear.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không gắn mốc'**
+  String get composeNoMilestone;
+
+  /// 10h section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai thấy'**
+  String get composeWho;
+
+  /// Audience.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ'**
+  String get audParents;
+
+  /// Audience card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ xem được'**
+  String get audParentsHint;
+
+  /// Audience.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình'**
+  String get audFamily;
+
+  /// Audience card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà cùng xem'**
+  String get audFamilyHint;
+
+  /// 10h toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo cho gia đình'**
+  String get composeNotify;
+
+  /// 10h toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình nhận 1 thông báo'**
+  String get composeNotifyHint;
+
+  /// 10h primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải lên {count} mục'**
+  String composeUpload(int count);
+
+  /// Note primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu ghi chú'**
+  String get composeSaveNote;
+
+  /// 10h footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh tải ở nền — xong sẽ báo bạn.'**
+  String get composeFootnote;
+
+  /// Note validation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết vài chữ cho ghi chú.'**
+  String get composeNoteRequired;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu ghi chú'**
+  String get composeNoteSaved;
+
+  /// 10h strip overflow.
+  ///
+  /// In vi, this message translates to:
+  /// **'+{count}'**
+  String composeMore(int count);
+
+  /// 10h2 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày của kỷ niệm'**
+  String get dateTitle;
+
+  /// 10h2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi ảnh giữ ngày riêng · {range}'**
+  String dateByCaptureHint(String range);
+
+  /// 10h2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một ngày cho tất cả'**
+  String get dateOneForAll;
+
+  /// 10h2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng khi ngày chụp bị sai'**
+  String get dateOneForAllHint;
+
+  /// 10h2 helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không chọn được ngày trước khi {name} chào đời.'**
+  String dateBeforeBirth(String name);
+
+  /// 10h3 title / 10b3 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gắn mốc'**
+  String get msTitle;
+
+  /// 10h3 search.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm hoặc gõ mốc mới…'**
+  String get msSearch;
+
+  /// 10h3 section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho bé {age}'**
+  String msSuggest(String age);
+
+  /// 10h3 section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc nhà mình đã tạo'**
+  String get msOwn;
+
+  /// 10h3 / 10h4.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo mốc mới'**
+  String get msCreate;
+
+  /// 10h3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi kỷ niệm 1 mốc'**
+  String get msOnePer;
+
+  /// 10h4 field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên mốc'**
+  String get msName;
+
+  /// 10h4.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trước'**
+  String get msPreview;
+
+  /// 10h4 helper (R-105).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc mới được lưu cho cả nhà dùng lại lần sau.'**
+  String get msShared;
+
+  /// 10h4 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo & gắn mốc'**
+  String get msCreateTag;
+
+  /// 10h4 validation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt tên cho mốc.'**
+  String get msNameRequired;
+
+  /// Milestone chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · {date}'**
+  String msChip(String name, String date);
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu cười'**
+  String get msFirstSmile;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu tắm'**
+  String get msFirstBath;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngẩng đầu'**
+  String get msLiftsHead;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu đi dạo'**
+  String get msFirstOuting;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đầy tháng'**
+  String get msOneMonth;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu gặp ông bà'**
+  String get msMeetsGrandparents;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu lật người'**
+  String get msRollsOver;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cười thành tiếng'**
+  String get msLaughs;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu ăn dặm'**
+  String get msFirstSolids;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự ngồi'**
+  String get msSitsUp;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiếc răng đầu tiên'**
+  String get msFirstTooth;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Biết bò'**
+  String get msCrawls;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếng nói đầu tiên'**
+  String get msFirstWord;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước đi đầu tiên'**
+  String get msFirstSteps;
+
+  /// Preset milestone (10h3; after the first six: engineering suggestion).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thôi nôi'**
+  String get msFirstBirthday;
+
+  /// 10i title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải lên'**
+  String get qTitle;
+
+  /// 10i summary.
+  ///
+  /// In vi, this message translates to:
+  /// **'{done}/{total} mục · còn khoảng {time}'**
+  String qSummary(int done, int total, String time);
+
+  /// 10i summary.
+  ///
+  /// In vi, this message translates to:
+  /// **'{done}/{total} mục'**
+  String qSummaryNoEta(int done, int total);
+
+  /// 10i button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng'**
+  String get qPause;
+
+  /// 10i button (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục'**
+  String get qResume;
+
+  /// 10i summary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình sẽ được báo khi tải xong'**
+  String get qNotice;
+
+  /// 10i errors.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mục lỗi'**
+  String qFailed(int count);
+
+  /// 10i errors.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} tệp không đọc được'**
+  String qUnreadable(int count);
+
+  /// QueueRow uploading.
+  ///
+  /// In vi, this message translates to:
+  /// **'{percent}% · {sent}/{total}'**
+  String rowProgress(int percent, String sent, String total);
+
+  /// QueueRow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ Wi-Fi · video {size}'**
+  String rowWaitingWifi(String size);
+
+  /// QueueRow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mất kết nối khi đang tải'**
+  String get rowFailed;
+
+  /// QueueRow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tệp bị lỗi · không thử lại được'**
+  String get rowUnreadable;
+
+  /// QueueRow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tải lên'**
+  String get rowDone;
+
+  /// QueueRow (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chờ'**
+  String get rowQueued;
+
+  /// QueueRow (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng'**
+  String get rowPaused;
+
+  /// QueueRow (R-121).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết dung lượng · giữ trên máy'**
+  String get rowWaitingQuota;
+
+  /// QueueRow (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã huỷ'**
+  String get rowCancelled;
+
+  /// QueueRow (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị'**
+  String get rowPreparing;
+
+  /// 10i toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video chỉ tải qua Wi-Fi'**
+  String get qWifiOnly;
+
+  /// 10i toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh vẫn tải bằng dữ liệu di động'**
+  String get qWifiOnlyHint;
+
+  /// 10i button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại tất cả ({count})'**
+  String qRetryAll(int count);
+
+  /// 10i footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục lỗi được giữ trên máy · tự thử lại khi có mạng.'**
+  String get qFootnote;
+
+  /// 10i empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không còn gì đang tải.'**
+  String get qEmpty;
+
+  /// QueueRow ×.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ tải {name}'**
+  String a11yCancelUpload(String name);
+
+  /// Month header (10b).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month}, {year}'**
+  String memMonth(int month, int year, String monthName);
+
+  /// 10b chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng'**
+  String get memFilterMonth;
+
+  /// 10b chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn'**
+  String get memSelect;
+
+  /// 10b2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn cả tháng'**
+  String get memSelectMonth;
+
+  /// 10b2 pill / 10b3 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mục đã chọn'**
+  String memSelected(int count);
+
+  /// 10b2 pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ và tuỳ chọn'**
+  String get a11yShareOptions;
+
+  /// 10b2 pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá mục đã chọn'**
+  String get a11yDeleteSelected;
+
+  /// 10b3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai thấy'**
+  String get actWho;
+
+  /// 10b3 (S10).
+  ///
+  /// In vi, this message translates to:
+  /// **'Album'**
+  String get actAlbum;
+
+  /// 10b3 / 10f.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải về'**
+  String get actDownload;
+
+  /// 10b3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi đi'**
+  String get actSend;
+
+  /// 10b3 section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm'**
+  String get actMore;
+
+  /// 10b3 (S10).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vào Yêu thích'**
+  String get actFavorite;
+
+  /// 10b3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gom vào album Yêu thích của bạn'**
+  String get actFavoriteHint;
+
+  /// 10b3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: Lần đầu cười'**
+  String get actMilestoneHint;
+
+  /// 10b3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi ngày'**
+  String get actDate;
+
+  /// 10b3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi ngày chụp bị sai'**
+  String get actDateHint;
+
+  /// 10b3 (S12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Kể thành câu chuyện'**
+  String get actStory;
+
+  /// 10b3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng {count} mục này làm bản nháp'**
+  String actStoryHint(int count);
+
+  /// 10b3 (S10).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt làm ảnh bìa album'**
+  String get actCover;
+
+  /// 10b3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ dùng khi chọn 1 ảnh'**
+  String get actCoverHint;
+
+  /// 10b3 rows of later slices.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp có'**
+  String get actSoon;
+
+  /// Audience sheet from 10b3 (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai thấy {count} mục này?'**
+  String whoItemsTitle(int count);
+
+  /// Download toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu {count} mục vào Ảnh'**
+  String toastSaved(int count);
+
+  /// Download toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang lưu vào Ảnh…'**
+  String get toastSaving;
+
+  /// Download failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được vào Ảnh. Thử lại nhé.'**
+  String get toastSaveFailed;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đổi ngày {count} mục'**
+  String toastDateChanged(int count);
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gắn mốc cho {count} mục'**
+  String toastTagged(int count);
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chuyển {count} mục sang Chỉ ba mẹ'**
+  String toastParentsOnly(int count);
+
+  /// Toast (10o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chia sẻ {count} mục với gia đình'**
+  String toastShared(int count);
+
+  /// Toast (10b4) with undo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá {count} mục'**
+  String toastDeleted(int count);
+
+  /// Batch action failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa làm được. Kiểm tra mạng và thử lại.'**
+  String get toastActionFailed;
+
+  /// 10b4 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá {count} mục?'**
+  String delTitle(int count);
+
+  /// 10b4.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục sẽ biến mất khỏi Kỷ niệm của cả gia đình. Ảnh gốc trên máy bạn vẫn còn.'**
+  String get delBody;
+
+  /// 10b4.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khôi phục được trong 30 ngày ở “Đã xoá gần đây”.'**
+  String get delRecover;
+
+  /// 10b4.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ mới xoá được.'**
+  String get delParentsOnly;
+
+  /// 10b4 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá {count} mục'**
+  String delN(int count);
+
+  /// 10b5 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đi tới tháng'**
+  String get gotoTitle;
+
+  /// 10b5 cell.
+  ///
+  /// In vi, this message translates to:
+  /// **'Th {month}'**
+  String gotoMonthShort(int month, String monthName);
+
+  /// 10b5 footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} sinh ngày {date} · năm khác sẽ hiện khi có ảnh'**
+  String gotoNote(String name, String date);
+
+  /// Date scrubber.
+  ///
+  /// In vi, this message translates to:
+  /// **'Th {month}, {year}'**
+  String scrubberMonth(int month, int year, String monthName);
+
+  /// 10c title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách xem'**
+  String get viewTitle;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhóm theo'**
+  String get viewGroup;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày'**
+  String get viewDay;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần'**
+  String get viewWeek;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng'**
+  String get viewMonth;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểu xem'**
+  String get viewLayout;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưới nhỏ'**
+  String get viewSmall;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưới lớn'**
+  String get viewLarge;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh sách'**
+  String get viewList;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện'**
+  String get viewShow;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có mốc'**
+  String get viewWithMilestone;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem như người thân'**
+  String get viewAsRelative;
+
+  /// 10c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra người thân đang thấy những gì'**
+  String get viewAsRelativeHint;
+
+  /// 10c primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Áp dụng'**
+  String get viewApply;
+
+  /// Preview banner (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xem như người thân'**
+  String get viewAsRelativeBanner;
+
+  /// Preview banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thoát'**
+  String get viewAsRelativeExit;
+
+  /// Day/month group header.
+  ///
+  /// In vi, this message translates to:
+  /// **'{date} · {counts}'**
+  String dayGroup(String date, String counts);
+
+  /// 10f meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{date} · {who} đăng'**
+  String viewerPosted(String date, String who);
+
+  /// 10f action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ'**
+  String get viewerShare;
+
+  /// 10f video.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải video…'**
+  String get viewerVideoLoading;
+
+  /// 10f video.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở được video.'**
+  String get viewerVideoFailed;
+
+  /// 10f video.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phát video'**
+  String get a11yPlay;
+
+  /// 10o title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ với gia đình?'**
+  String get shareTitle;
+
+  /// 10o items.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ảnh riêng tư'**
+  String sharePrivatePhotos(int count);
+
+  /// 10o items with videos.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mục riêng tư'**
+  String sharePrivateItems(int count);
+
+  /// 10o section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẽ thấy sau khi chia sẻ'**
+  String get shareWillSee;
+
+  /// 10o row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} người thân'**
+  String shareRelatives(int count);
+
+  /// 10o note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người chăm ({names}) không thấy Kỷ niệm.'**
+  String shareCaregivers(String names);
+
+  /// 10o toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi 1 thông báo chung, không kèm ảnh'**
+  String get shareNotifyHint;
+
+  /// 10o primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ {count} mục'**
+  String shareN(int count);
+
+  /// 10o primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ {count} ảnh'**
+  String shareNPhotos(int count);
+
+  /// 10a3 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu vào Kỷ niệm của {name}'**
+  String camDest(String name);
+
+  /// 10a3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Flash'**
+  String get camFlash;
+
+  /// 10a3 mode.
+  ///
+  /// In vi, this message translates to:
+  /// **'VIDEO'**
+  String get camVideo;
+
+  /// 10a3 mode.
+  ///
+  /// In vi, this message translates to:
+  /// **'ẢNH'**
+  String get camPhoto;
+
+  /// 10a3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong ({count})'**
+  String camDone(int count);
+
+  /// 10a3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp liên tục · bấm Xong để soạn & chia sẻ'**
+  String get camHint;
+
+  /// 10a3 error.
+  ///
+  /// In vi, this message translates to:
+  /// **'Máy này chưa mở được camera.'**
+  String get camUnavailable;
+
+  /// 10a3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp'**
+  String get a11yShutter;
 }
 
 class _AppLocalizationsDelegate

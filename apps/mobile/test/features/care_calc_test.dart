@@ -220,6 +220,22 @@ void main() {
       expect(s.todayFeeds, hasLength(5));
     });
 
+    test('Hôm nay counts a feed logged earlier in the current minute', () {
+      final justNow = DateTime.utc(2026, 10, 8, 8, 5, 40); // 15:05:40
+      final minute = DateTime.utc(2026, 10, 8, 8, 5); // what the clock says
+      final r = CareRecord(
+        id: 'r_${'f' * 32}',
+        babyId: teddyId,
+        type: CareType.bottle,
+        occurredAt: justNow,
+        createdBy: 'u_mai',
+        author: CareAuthor.of(mai),
+        amountMl: 120,
+      );
+      final s = feedStats([r], zone, minute, StatsWindow.today);
+      expect(s.bottleMl, 120);
+    });
+
     test('feeding, 7 ngày: per-day averages and the peak hour', () {
       final s = feedStats(week, zone, now, StatsWindow.week);
       // 6 full days × 540 ml + today 420 ml = 3660 / 7 ≈ 523

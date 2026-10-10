@@ -23,6 +23,9 @@ enum ClIcons {
   close,
   cloudOff('cloud-off'),
   diaper,
+
+  /// Memories "Tải về" (S9, engineering icon in the Figma line style).
+  download,
   drop,
   edit,
   eye,
@@ -46,6 +49,9 @@ enum ClIcons {
   sunrise,
   sunset,
   today,
+
+  /// Memories delete (S9, engineering icon in the Figma line style).
+  trash,
   upload;
 
   const ClIcons([this._file]);

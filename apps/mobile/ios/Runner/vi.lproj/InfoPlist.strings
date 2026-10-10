@@ -1,3 +1,5 @@
 /* Permission prompts (Figma 11c Chọn ảnh đại diện, 15 Quét mã QR). */
-"NSCameraUsageDescription" = "Child Life dùng camera để chụp ảnh đại diện cho bé và quét mã QR lời mời. Chỉ người trong gia đình xem được ảnh.";
-"NSPhotoLibraryUsageDescription" = "Child Life mở thư viện ảnh để bạn chọn ảnh đại diện cho bé. Chỉ người trong gia đình xem được ảnh này.";
+"NSCameraUsageDescription" = "Child Life dùng camera để chụp ảnh, quay video cho bé, chụp ảnh đại diện và quét mã QR lời mời. Chỉ người trong gia đình xem được.";
+"NSPhotoLibraryUsageDescription" = "Child Life mở thư viện ảnh để bạn thêm ảnh, video của bé vào Kỷ niệm và chọn ảnh đại diện. Chỉ người trong gia đình xem được.";
+"NSPhotoLibraryAddUsageDescription" = "Child Life lưu ảnh, video bạn tải về từ Kỷ niệm vào thư viện ảnh.";
+"NSMicrophoneUsageDescription" = "Child Life ghi âm thanh cùng video bạn quay cho bé.";

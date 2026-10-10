@@ -18,6 +18,7 @@ import '../features/family/invite_screens.dart';
 import '../features/family/join_screens.dart';
 import '../features/family/save_account.dart';
 import '../features/home/home_shell.dart';
+import '../features/memories/memories_screen.dart';
 import '../features/reminders/reminder_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
@@ -169,7 +170,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: Routes.memories,
-                builder: (_, _) => const MemoriesPlaceholderScreen(),
+                builder: (_, _) => const MemoriesScreen(),
               ),
             ],
           ),

@@ -2746,4 +2746,930 @@ class AppLocalizationsEn extends AppLocalizations {
   String a11yUndoDone(String title) {
     return 'Mark not done: $title';
   }
+
+  @override
+  String get memJournal => 'Journal';
+
+  @override
+  String get memPhotos => 'Photos';
+
+  @override
+  String get memAlbums => 'Albums';
+
+  @override
+  String get memStories => 'Stories';
+
+  @override
+  String get memSoonTitle => 'Coming soon';
+
+  @override
+  String get memSoonBody => 'This part arrives in a coming update.';
+
+  @override
+  String get a11yViewOptions => 'View options';
+
+  @override
+  String get a11yAddMemory => 'Add to Memories';
+
+  @override
+  String memWeek(int week) {
+    return 'Week $week';
+  }
+
+  @override
+  String get memBeforeBirth => 'Before birth';
+
+  @override
+  String memPhotoCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos',
+      one: '1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String memVideoCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count videos',
+      one: '1 video',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String memItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String memTodayAt(String time) {
+    return 'Today · $time';
+  }
+
+  @override
+  String memYesterdayAt(String time) {
+    return 'Yesterday · $time';
+  }
+
+  @override
+  String get memEmptyTitle => 'No memories yet';
+
+  @override
+  String memEmptyBody(String name) {
+    return 'Tap + to add $name’s first photo, video or note.';
+  }
+
+  @override
+  String memPhotosEmpty(String name) {
+    return '$name’s photos and videos will show here.';
+  }
+
+  @override
+  String get memNoMatch => 'Nothing matches these view options.';
+
+  @override
+  String get memProcessing => 'Processing';
+
+  @override
+  String upUploading(int done, int total) {
+    return 'Uploading $done of $total';
+  }
+
+  @override
+  String get upUploadingHint => 'Carry on — we’ll tell you when it’s done';
+
+  @override
+  String get upPaused => 'Paused · waiting for network';
+
+  @override
+  String get upPausedHint => 'Resumes by itself when online';
+
+  @override
+  String get upPausedByYou => 'Paused';
+
+  @override
+  String get upPausedByYouHint => 'Tap to resume';
+
+  @override
+  String upFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items not uploaded',
+      one: '1 item not uploaded',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get upFailedHint => 'Tap to retry or skip';
+
+  @override
+  String upDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Uploaded $count items',
+      one: 'Uploaded 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String upToldFamily(String names) {
+    return 'Told $names';
+  }
+
+  @override
+  String get upParentsOnly => 'Only parents can see them';
+
+  @override
+  String upWaitingWifi(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count videos waiting for Wi-Fi',
+      one: '1 video waiting for Wi-Fi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get upWaitingWifiHint => 'Videos upload by themselves on Wi-Fi';
+
+  @override
+  String upWaitingQuota(int count) {
+    return 'Storage full · $count kept on this phone';
+  }
+
+  @override
+  String get upWaitingQuotaHint => 'Tap to see';
+
+  @override
+  String upPreparing(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Preparing $count items',
+      one: 'Preparing 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get addTitle => 'Add to Memories';
+
+  @override
+  String get addRecent => 'Taken today';
+
+  @override
+  String get addRecentHint => 'Tap to add quickly';
+
+  @override
+  String get addCamera => 'Take a photo or video';
+
+  @override
+  String get addCameraHint => 'Saves straight to Memories';
+
+  @override
+  String get addLibrary => 'Choose from Photos';
+
+  @override
+  String get addLibraryHint => 'Pick several photos and videos at once';
+
+  @override
+  String get addFiles => 'Choose from Files';
+
+  @override
+  String get addFilesHint => 'iCloud Drive, Google Drive, USB…';
+
+  @override
+  String get addNote => 'Write a note';
+
+  @override
+  String get addNoteHint => 'A memory in words — add photos later';
+
+  @override
+  String get pickRecent => 'Recent';
+
+  @override
+  String get pickVideos => 'Videos';
+
+  @override
+  String get pickAlbums => 'Albums';
+
+  @override
+  String pickSummary(int count, int photos, int videos) {
+    return '$count items · $photos photos, $videos videos';
+  }
+
+  @override
+  String pickMax(int count) {
+    return 'Up to $count at a time';
+  }
+
+  @override
+  String pickAdd(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add $count items',
+      one: 'Add 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pickLimit(int count) {
+    return 'You can add up to $count at a time.';
+  }
+
+  @override
+  String get pickNoAccess => 'Child Life can’t see your photo library yet.';
+
+  @override
+  String get pickLimited => 'You’re sharing some photos only.';
+
+  @override
+  String get pickChooseMore => 'Choose more';
+
+  @override
+  String get pickEmpty => 'No photos here';
+
+  @override
+  String get pickAlbumsTitle => 'Choose an album';
+
+  @override
+  String get composeCaption => 'Write a few lines… (optional)';
+
+  @override
+  String get composeNoteHint => 'Write what you want to remember…';
+
+  @override
+  String get composeDate => 'Date';
+
+  @override
+  String get composeByCapture => 'By capture date';
+
+  @override
+  String get composeMilestone => 'Milestone';
+
+  @override
+  String get composeNoMilestone => 'No milestone';
+
+  @override
+  String get composeWho => 'Who sees';
+
+  @override
+  String get audParents => 'Parents only';
+
+  @override
+  String get audParentsHint => 'Only parents can see it';
+
+  @override
+  String get audFamily => 'Family';
+
+  @override
+  String get audFamilyHint => 'The whole family sees it';
+
+  @override
+  String get composeNotify => 'Tell the family';
+
+  @override
+  String get composeNotifyHint => 'The family gets 1 notification';
+
+  @override
+  String composeUpload(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Upload $count items',
+      one: 'Upload 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get composeSaveNote => 'Save note';
+
+  @override
+  String get composeFootnote =>
+      'Photos upload in the background — we’ll tell you when done.';
+
+  @override
+  String get composeNoteRequired => 'Write a few words for the note.';
+
+  @override
+  String get composeNoteSaved => 'Note saved';
+
+  @override
+  String composeMore(int count) {
+    return '+$count';
+  }
+
+  @override
+  String get dateTitle => 'Date of the memory';
+
+  @override
+  String dateByCaptureHint(String range) {
+    return 'Each photo keeps its own date · $range';
+  }
+
+  @override
+  String get dateOneForAll => 'One date for all';
+
+  @override
+  String get dateOneForAllHint => 'Use when the capture date is wrong';
+
+  @override
+  String dateBeforeBirth(String name) {
+    return 'You can’t pick a date before $name was born.';
+  }
+
+  @override
+  String get msTitle => 'Tag a milestone';
+
+  @override
+  String get msSearch => 'Search or type a new milestone…';
+
+  @override
+  String msSuggest(String age) {
+    return 'Suggestions at $age';
+  }
+
+  @override
+  String get msOwn => 'Our family’s milestones';
+
+  @override
+  String get msCreate => 'Create a milestone';
+
+  @override
+  String get msOnePer => 'One milestone per memory';
+
+  @override
+  String get msName => 'Milestone name';
+
+  @override
+  String get msPreview => 'Preview';
+
+  @override
+  String get msShared =>
+      'New milestones are saved for the whole family to reuse.';
+
+  @override
+  String get msCreateTag => 'Create & tag';
+
+  @override
+  String get msNameRequired => 'Name the milestone.';
+
+  @override
+  String msChip(String name, String date) {
+    return '$name · $date';
+  }
+
+  @override
+  String get msFirstSmile => 'First smile';
+
+  @override
+  String get msFirstBath => 'First bath';
+
+  @override
+  String get msLiftsHead => 'Lifts head';
+
+  @override
+  String get msFirstOuting => 'First outing';
+
+  @override
+  String get msOneMonth => 'One month old';
+
+  @override
+  String get msMeetsGrandparents => 'Meets grandparents';
+
+  @override
+  String get msRollsOver => 'First roll-over';
+
+  @override
+  String get msLaughs => 'First laugh';
+
+  @override
+  String get msFirstSolids => 'First solids';
+
+  @override
+  String get msSitsUp => 'Sits up';
+
+  @override
+  String get msFirstTooth => 'First tooth';
+
+  @override
+  String get msCrawls => 'Crawls';
+
+  @override
+  String get msFirstWord => 'First word';
+
+  @override
+  String get msFirstSteps => 'First steps';
+
+  @override
+  String get msFirstBirthday => 'First birthday';
+
+  @override
+  String get qTitle => 'Uploading';
+
+  @override
+  String qSummary(int done, int total, String time) {
+    return '$done of $total · about $time left';
+  }
+
+  @override
+  String qSummaryNoEta(int done, int total) {
+    return '$done of $total';
+  }
+
+  @override
+  String get qPause => 'Pause';
+
+  @override
+  String get qResume => 'Resume';
+
+  @override
+  String get qNotice => 'The family will be told when it’s done';
+
+  @override
+  String qFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count failed',
+      one: '1 failed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String qUnreadable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unreadable files',
+      one: '1 unreadable file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rowProgress(int percent, String sent, String total) {
+    return '$percent% · $sent/$total';
+  }
+
+  @override
+  String rowWaitingWifi(String size) {
+    return 'Waiting for Wi-Fi · video $size';
+  }
+
+  @override
+  String get rowFailed => 'Connection lost while uploading';
+
+  @override
+  String get rowUnreadable => 'File is damaged · can’t retry';
+
+  @override
+  String get rowDone => 'Uploaded';
+
+  @override
+  String get rowQueued => 'Waiting';
+
+  @override
+  String get rowPaused => 'Paused';
+
+  @override
+  String get rowWaitingQuota => 'Storage full · kept on this phone';
+
+  @override
+  String get rowCancelled => 'Cancelled';
+
+  @override
+  String get rowPreparing => 'Preparing';
+
+  @override
+  String get qWifiOnly => 'Videos over Wi-Fi only';
+
+  @override
+  String get qWifiOnlyHint => 'Photos still use mobile data';
+
+  @override
+  String qRetryAll(int count) {
+    return 'Retry all ($count)';
+  }
+
+  @override
+  String get qFootnote =>
+      'Failed items stay on this phone · retried when back online.';
+
+  @override
+  String get qEmpty => 'Nothing is uploading.';
+
+  @override
+  String a11yCancelUpload(String name) {
+    return 'Cancel $name';
+  }
+
+  @override
+  String memMonth(int month, int year, String monthName) {
+    return '$monthName $year';
+  }
+
+  @override
+  String get memFilterMonth => 'Month';
+
+  @override
+  String get memSelect => 'Select';
+
+  @override
+  String get memSelectMonth => 'Select month';
+
+  @override
+  String memSelected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count selected',
+      one: '1 selected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get a11yShareOptions => 'Share and options';
+
+  @override
+  String get a11yDeleteSelected => 'Delete selected';
+
+  @override
+  String get actWho => 'Who sees';
+
+  @override
+  String get actAlbum => 'Album';
+
+  @override
+  String get actDownload => 'Download';
+
+  @override
+  String get actSend => 'Send';
+
+  @override
+  String get actMore => 'More';
+
+  @override
+  String get actFavorite => 'Add to Favourites';
+
+  @override
+  String get actFavoriteHint => 'Collects into your Favourites album';
+
+  @override
+  String get actMilestoneHint => 'e.g. First smile';
+
+  @override
+  String get actDate => 'Change date';
+
+  @override
+  String get actDateHint => 'When the capture date is wrong';
+
+  @override
+  String get actStory => 'Make it a story';
+
+  @override
+  String actStoryHint(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Use these $count items as a draft',
+      one: 'Use this item as a draft',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get actCover => 'Set as album cover';
+
+  @override
+  String get actCoverHint => 'Only with 1 photo selected';
+
+  @override
+  String get actSoon => 'Coming soon';
+
+  @override
+  String whoItemsTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Who sees these $count items?',
+      one: 'Who sees this item?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String toastSaved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Saved $count items to Photos',
+      one: 'Saved 1 item to Photos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get toastSaving => 'Saving to Photos…';
+
+  @override
+  String get toastSaveFailed => 'Couldn’t save to Photos. Please try again.';
+
+  @override
+  String toastDateChanged(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Changed the date of $count items',
+      one: 'Changed the date of 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String toastTagged(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tagged $count items',
+      one: 'Tagged 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String toastParentsOnly(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Moved $count items to Parents only',
+      one: 'Moved 1 item to Parents only',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String toastShared(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Shared $count items with the family',
+      one: 'Shared 1 item with the family',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String toastDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Deleted $count items',
+      one: 'Deleted 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get toastActionFailed =>
+      'That didn’t work. Check the connection and try again.';
+
+  @override
+  String delTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Delete $count items?',
+      one: 'Delete 1 item?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get delBody =>
+      'They’ll disappear from the whole family’s Memories. The originals on your phone stay.';
+
+  @override
+  String get delRecover =>
+      'You can restore them for 30 days from “Recently deleted”.';
+
+  @override
+  String get delParentsOnly => 'Only parents can delete.';
+
+  @override
+  String delN(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Delete $count items',
+      one: 'Delete 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get gotoTitle => 'Go to month';
+
+  @override
+  String gotoMonthShort(int month, String monthName) {
+    return '$monthName';
+  }
+
+  @override
+  String gotoNote(String name, String date) {
+    return '$name was born on $date · other years appear once they have photos';
+  }
+
+  @override
+  String scrubberMonth(int month, int year, String monthName) {
+    return '$monthName $year';
+  }
+
+  @override
+  String get viewTitle => 'View options';
+
+  @override
+  String get viewGroup => 'Group by';
+
+  @override
+  String get viewDay => 'Day';
+
+  @override
+  String get viewWeek => 'Week';
+
+  @override
+  String get viewMonth => 'Month';
+
+  @override
+  String get viewLayout => 'Layout';
+
+  @override
+  String get viewSmall => 'Small grid';
+
+  @override
+  String get viewLarge => 'Large grid';
+
+  @override
+  String get viewList => 'List';
+
+  @override
+  String get viewShow => 'Show';
+
+  @override
+  String get viewWithMilestone => 'With milestone';
+
+  @override
+  String get viewAsRelative => 'View as a relative';
+
+  @override
+  String get viewAsRelativeHint => 'Check what relatives can see';
+
+  @override
+  String get viewApply => 'Apply';
+
+  @override
+  String get viewAsRelativeBanner => 'Viewing as a relative';
+
+  @override
+  String get viewAsRelativeExit => 'Exit';
+
+  @override
+  String dayGroup(String date, String counts) {
+    return '$date · $counts';
+  }
+
+  @override
+  String viewerPosted(String date, String who) {
+    return '$date · posted by $who';
+  }
+
+  @override
+  String get viewerShare => 'Share';
+
+  @override
+  String get viewerVideoLoading => 'Loading video…';
+
+  @override
+  String get viewerVideoFailed => 'Couldn’t open the video.';
+
+  @override
+  String get a11yPlay => 'Play video';
+
+  @override
+  String get shareTitle => 'Share with the family?';
+
+  @override
+  String sharePrivatePhotos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count private photos',
+      one: '1 private photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sharePrivateItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count private items',
+      one: '1 private item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareWillSee => 'Will see them after sharing';
+
+  @override
+  String shareRelatives(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count relatives',
+      one: '1 relative',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shareCaregivers(String names) {
+    return 'Caregivers ($names) don’t see Memories.';
+  }
+
+  @override
+  String get shareNotifyHint => 'Send 1 general notice, without photos';
+
+  @override
+  String shareN(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Share $count items',
+      one: 'Share 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shareNPhotos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Share $count photos',
+      one: 'Share 1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String camDest(String name) {
+    return 'Saving to $name’s Memories';
+  }
+
+  @override
+  String get camFlash => 'Flash';
+
+  @override
+  String get camVideo => 'VIDEO';
+
+  @override
+  String get camPhoto => 'PHOTO';
+
+  @override
+  String camDone(int count) {
+    return 'Done ($count)';
+  }
+
+  @override
+  String get camHint => 'Keep shooting · tap Done to write & share';
+
+  @override
+  String get camUnavailable => 'This phone’s camera isn’t available.';
+
+  @override
+  String get a11yShutter => 'Take';
 }

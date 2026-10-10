@@ -3961,5 +3961,1202 @@
         "type": "String"
       }
     }
+  },
+  "memJournal": "Nhật ký",
+  "@memJournal": {
+    "description": "Memory tab (10a)."
+  },
+  "memPhotos": "Ảnh",
+  "@memPhotos": {
+    "description": "Memory tab (10b)."
+  },
+  "memAlbums": "Album",
+  "@memAlbums": {
+    "description": "Memory tab (10d, S10)."
+  },
+  "memStories": "Câu chuyện",
+  "@memStories": {
+    "description": "Memory tab (S12)."
+  },
+  "memSoonTitle": "Sắp có",
+  "@memSoonTitle": {
+    "description": "Tabs not built yet (S10, S12)."
+  },
+  "memSoonBody": "Phần này có trong bản cập nhật tới.",
+  "@memSoonBody": {
+    "description": "Tabs not built yet."
+  },
+  "a11yViewOptions": "Cách xem",
+  "@a11yViewOptions": {
+    "description": "Header sliders button."
+  },
+  "a11yAddMemory": "Thêm vào Kỷ niệm",
+  "@a11yAddMemory": {
+    "description": "Header + button."
+  },
+  "memWeek": "Tuần thứ {week}",
+  "@memWeek": {
+    "description": "10a week group (R-113).",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "memBeforeBirth": "Trước ngày chào đời",
+  "@memBeforeBirth": {
+    "description": "Week group for earlier dates."
+  },
+  "memPhotoCount": "{count} ảnh",
+  "@memPhotoCount": {
+    "description": "Count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memVideoCount": "{count} video",
+  "@memVideoCount": {
+    "description": "Count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memItemCount": "{count} mục",
+  "@memItemCount": {
+    "description": "Count (10b5).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memTodayAt": "Hôm nay · {time}",
+  "@memTodayAt": {
+    "description": "Entry date.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "memYesterdayAt": "Hôm qua · {time}",
+  "@memYesterdayAt": {
+    "description": "Entry date.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "memEmptyTitle": "Chưa có kỷ niệm nào",
+  "@memEmptyTitle": {
+    "description": "Empty journal (not drawn)."
+  },
+  "memEmptyBody": "Chạm + để thêm ảnh, video hoặc ghi chú đầu tiên của {name}.",
+  "@memEmptyBody": {
+    "description": "Empty journal.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memPhotosEmpty": "Ảnh và video của {name} sẽ hiện ở đây.",
+  "@memPhotosEmpty": {
+    "description": "Empty grid.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memNoMatch": "Không có mục nào khớp cách xem này.",
+  "@memNoMatch": {
+    "description": "Filtered empty."
+  },
+  "memProcessing": "Đang xử lý",
+  "@memProcessing": {
+    "description": "Tile before ready."
+  },
+  "upUploading": "Đang tải {done}/{total} mục",
+  "@upUploading": {
+    "description": "UploadPill.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "upUploadingHint": "Cứ làm việc khác, xong sẽ báo bạn",
+  "@upUploadingHint": {
+    "description": "UploadPill."
+  },
+  "upPaused": "Tạm dừng · chờ mạng",
+  "@upPaused": {
+    "description": "UploadPill."
+  },
+  "upPausedHint": "Tự tải tiếp khi có mạng",
+  "@upPausedHint": {
+    "description": "UploadPill."
+  },
+  "upPausedByYou": "Đã tạm dừng",
+  "@upPausedByYou": {
+    "description": "UploadPill after \"Tạm dừng\"."
+  },
+  "upPausedByYouHint": "Chạm để tiếp tục",
+  "@upPausedByYouHint": {
+    "description": "UploadPill."
+  },
+  "upFailed": "{count} mục chưa tải được",
+  "@upFailed": {
+    "description": "UploadPill.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "upFailedHint": "Chạm để thử lại hoặc bỏ qua",
+  "@upFailedHint": {
+    "description": "UploadPill."
+  },
+  "upDone": "Đã tải xong {count} mục",
+  "@upDone": {
+    "description": "UploadPill.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "upToldFamily": "Đã báo cho {names}",
+  "@upToldFamily": {
+    "description": "UploadPill done.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "upParentsOnly": "Chỉ ba mẹ xem được",
+  "@upParentsOnly": {
+    "description": "UploadPill done, Chỉ ba mẹ."
+  },
+  "upWaitingWifi": "{count} video chờ Wi-Fi",
+  "@upWaitingWifi": {
+    "description": "UploadPill.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "upWaitingWifiHint": "Video tự tải khi có Wi-Fi",
+  "@upWaitingWifiHint": {
+    "description": "UploadPill."
+  },
+  "upWaitingQuota": "Hết dung lượng · {count} mục giữ trên máy",
+  "@upWaitingQuota": {
+    "description": "UploadPill (R-121).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "upWaitingQuotaHint": "Chạm để xem",
+  "@upWaitingQuotaHint": {
+    "description": "UploadPill (R-121)."
+  },
+  "upPreparing": "Đang chuẩn bị {count} mục",
+  "@upPreparing": {
+    "description": "UploadPill before the session.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "addTitle": "Thêm vào Kỷ niệm",
+  "@addTitle": {
+    "description": "10a2 / 10h title."
+  },
+  "addRecent": "Ảnh mới chụp hôm nay",
+  "@addRecent": {
+    "description": "10a2 recent strip."
+  },
+  "addRecentHint": "Chạm để thêm nhanh",
+  "@addRecentHint": {
+    "description": "10a2."
+  },
+  "addCamera": "Chụp ảnh hoặc quay video",
+  "@addCamera": {
+    "description": "10a2."
+  },
+  "addCameraHint": "Lưu thẳng vào Kỷ niệm",
+  "@addCameraHint": {
+    "description": "10a2."
+  },
+  "addLibrary": "Chọn từ Thư viện ảnh",
+  "@addLibrary": {
+    "description": "10a2."
+  },
+  "addLibraryHint": "Chọn nhiều ảnh, video một lần",
+  "@addLibraryHint": {
+    "description": "10a2."
+  },
+  "addFiles": "Chọn từ Tệp",
+  "@addFiles": {
+    "description": "10a2."
+  },
+  "addFilesHint": "iCloud Drive, Google Drive, USB…",
+  "@addFilesHint": {
+    "description": "10a2."
+  },
+  "addNote": "Viết ghi chú",
+  "@addNote": {
+    "description": "10a2."
+  },
+  "addNoteHint": "Kỷ niệm chỉ có chữ, thêm ảnh sau",
+  "@addNoteHint": {
+    "description": "10a2."
+  },
+  "pickRecent": "Gần đây",
+  "@pickRecent": {
+    "description": "10g chip."
+  },
+  "pickVideos": "Video",
+  "@pickVideos": {
+    "description": "10g chip."
+  },
+  "pickAlbums": "Album",
+  "@pickAlbums": {
+    "description": "10g chip."
+  },
+  "pickSummary": "{count} mục · {photos} ảnh, {videos} video",
+  "@pickSummary": {
+    "description": "10g tray.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "photos": {
+        "type": "int"
+      },
+      "videos": {
+        "type": "int"
+      }
+    }
+  },
+  "pickMax": "Tối đa {count} mục/lần",
+  "@pickMax": {
+    "description": "10g tray (R-102).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickAdd": "Thêm {count} mục",
+  "@pickAdd": {
+    "description": "10g primary.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickLimit": "Mỗi lần thêm tối đa {count} mục.",
+  "@pickLimit": {
+    "description": "10g limit toast.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickNoAccess": "Child Life chưa được xem thư viện ảnh.",
+  "@pickNoAccess": {
+    "description": "10g denied (not drawn)."
+  },
+  "pickLimited": "Bạn đang cho xem một số ảnh.",
+  "@pickLimited": {
+    "description": "10g limited access."
+  },
+  "pickChooseMore": "Chọn thêm",
+  "@pickChooseMore": {
+    "description": "10g limited access."
+  },
+  "pickEmpty": "Chưa có ảnh nào ở đây",
+  "@pickEmpty": {
+    "description": "10g empty."
+  },
+  "pickAlbumsTitle": "Chọn album",
+  "@pickAlbumsTitle": {
+    "description": "10g album chip sheet."
+  },
+  "composeCaption": "Viết vài dòng… (không bắt buộc)",
+  "@composeCaption": {
+    "description": "10h caption."
+  },
+  "composeNoteHint": "Viết điều bạn muốn nhớ…",
+  "@composeNoteHint": {
+    "description": "Note compose."
+  },
+  "composeDate": "Ngày",
+  "@composeDate": {
+    "description": "10h row."
+  },
+  "composeByCapture": "Theo ngày chụp",
+  "@composeByCapture": {
+    "description": "10h value."
+  },
+  "composeMilestone": "Mốc",
+  "@composeMilestone": {
+    "description": "10h row."
+  },
+  "composeNoMilestone": "Không gắn mốc",
+  "@composeNoMilestone": {
+    "description": "10h value / 10h3 clear."
+  },
+  "composeWho": "Ai thấy",
+  "@composeWho": {
+    "description": "10h section."
+  },
+  "audParents": "Chỉ ba mẹ",
+  "@audParents": {
+    "description": "Audience."
+  },
+  "audParentsHint": "Chỉ ba mẹ xem được",
+  "@audParentsHint": {
+    "description": "Audience card."
+  },
+  "audFamily": "Gia đình",
+  "@audFamily": {
+    "description": "Audience."
+  },
+  "audFamilyHint": "Cả nhà cùng xem",
+  "@audFamilyHint": {
+    "description": "Audience card."
+  },
+  "composeNotify": "Báo cho gia đình",
+  "@composeNotify": {
+    "description": "10h toggle."
+  },
+  "composeNotifyHint": "Gia đình nhận 1 thông báo",
+  "@composeNotifyHint": {
+    "description": "10h toggle."
+  },
+  "composeUpload": "Tải lên {count} mục",
+  "@composeUpload": {
+    "description": "10h primary.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "composeSaveNote": "Lưu ghi chú",
+  "@composeSaveNote": {
+    "description": "Note primary."
+  },
+  "composeFootnote": "Ảnh tải ở nền — xong sẽ báo bạn.",
+  "@composeFootnote": {
+    "description": "10h footnote."
+  },
+  "composeNoteRequired": "Viết vài chữ cho ghi chú.",
+  "@composeNoteRequired": {
+    "description": "Note validation."
+  },
+  "composeNoteSaved": "Đã lưu ghi chú",
+  "@composeNoteSaved": {
+    "description": "Toast."
+  },
+  "composeMore": "+{count}",
+  "@composeMore": {
+    "description": "10h strip overflow.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateTitle": "Ngày của kỷ niệm",
+  "@dateTitle": {
+    "description": "10h2 title."
+  },
+  "dateByCaptureHint": "Mỗi ảnh giữ ngày riêng · {range}",
+  "@dateByCaptureHint": {
+    "description": "10h2.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "dateOneForAll": "Một ngày cho tất cả",
+  "@dateOneForAll": {
+    "description": "10h2."
+  },
+  "dateOneForAllHint": "Dùng khi ngày chụp bị sai",
+  "@dateOneForAllHint": {
+    "description": "10h2."
+  },
+  "dateBeforeBirth": "Không chọn được ngày trước khi {name} chào đời.",
+  "@dateBeforeBirth": {
+    "description": "10h2 helper.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "msTitle": "Gắn mốc",
+  "@msTitle": {
+    "description": "10h3 title / 10b3 row."
+  },
+  "msSearch": "Tìm hoặc gõ mốc mới…",
+  "@msSearch": {
+    "description": "10h3 search."
+  },
+  "msSuggest": "Gợi ý cho bé {age}",
+  "@msSuggest": {
+    "description": "10h3 section.",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "msOwn": "Mốc nhà mình đã tạo",
+  "@msOwn": {
+    "description": "10h3 section."
+  },
+  "msCreate": "Tạo mốc mới",
+  "@msCreate": {
+    "description": "10h3 / 10h4."
+  },
+  "msOnePer": "Mỗi kỷ niệm 1 mốc",
+  "@msOnePer": {
+    "description": "10h3."
+  },
+  "msName": "Tên mốc",
+  "@msName": {
+    "description": "10h4 field."
+  },
+  "msPreview": "Xem trước",
+  "@msPreview": {
+    "description": "10h4."
+  },
+  "msShared": "Mốc mới được lưu cho cả nhà dùng lại lần sau.",
+  "@msShared": {
+    "description": "10h4 helper (R-105)."
+  },
+  "msCreateTag": "Tạo & gắn mốc",
+  "@msCreateTag": {
+    "description": "10h4 primary."
+  },
+  "msNameRequired": "Đặt tên cho mốc.",
+  "@msNameRequired": {
+    "description": "10h4 validation."
+  },
+  "msChip": "{name} · {date}",
+  "@msChip": {
+    "description": "Milestone chip.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "msFirstSmile": "Lần đầu cười",
+  "@msFirstSmile": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msFirstBath": "Lần đầu tắm",
+  "@msFirstBath": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msLiftsHead": "Ngẩng đầu",
+  "@msLiftsHead": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msFirstOuting": "Lần đầu đi dạo",
+  "@msFirstOuting": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msOneMonth": "Đầy tháng",
+  "@msOneMonth": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msMeetsGrandparents": "Lần đầu gặp ông bà",
+  "@msMeetsGrandparents": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msRollsOver": "Lần đầu lật người",
+  "@msRollsOver": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msLaughs": "Cười thành tiếng",
+  "@msLaughs": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msFirstSolids": "Lần đầu ăn dặm",
+  "@msFirstSolids": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msSitsUp": "Tự ngồi",
+  "@msSitsUp": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msFirstTooth": "Chiếc răng đầu tiên",
+  "@msFirstTooth": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msCrawls": "Biết bò",
+  "@msCrawls": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msFirstWord": "Tiếng nói đầu tiên",
+  "@msFirstWord": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msFirstSteps": "Bước đi đầu tiên",
+  "@msFirstSteps": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "msFirstBirthday": "Thôi nôi",
+  "@msFirstBirthday": {
+    "description": "Preset milestone (10h3; after the first six: engineering suggestion)."
+  },
+  "qTitle": "Đang tải lên",
+  "@qTitle": {
+    "description": "10i title."
+  },
+  "qSummary": "{done}/{total} mục · còn khoảng {time}",
+  "@qSummary": {
+    "description": "10i summary.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "qSummaryNoEta": "{done}/{total} mục",
+  "@qSummaryNoEta": {
+    "description": "10i summary.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "qPause": "Tạm dừng",
+  "@qPause": {
+    "description": "10i button."
+  },
+  "qResume": "Tiếp tục",
+  "@qResume": {
+    "description": "10i button (not drawn)."
+  },
+  "qNotice": "Gia đình sẽ được báo khi tải xong",
+  "@qNotice": {
+    "description": "10i summary."
+  },
+  "qFailed": "{count} mục lỗi",
+  "@qFailed": {
+    "description": "10i errors.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qUnreadable": "{count} tệp không đọc được",
+  "@qUnreadable": {
+    "description": "10i errors.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rowProgress": "{percent}% · {sent}/{total}",
+  "@rowProgress": {
+    "description": "QueueRow uploading.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "sent": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "rowWaitingWifi": "Chờ Wi-Fi · video {size}",
+  "@rowWaitingWifi": {
+    "description": "QueueRow.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "rowFailed": "Mất kết nối khi đang tải",
+  "@rowFailed": {
+    "description": "QueueRow."
+  },
+  "rowUnreadable": "Tệp bị lỗi · không thử lại được",
+  "@rowUnreadable": {
+    "description": "QueueRow."
+  },
+  "rowDone": "Đã tải lên",
+  "@rowDone": {
+    "description": "QueueRow."
+  },
+  "rowQueued": "Đang chờ",
+  "@rowQueued": {
+    "description": "QueueRow (not drawn)."
+  },
+  "rowPaused": "Tạm dừng",
+  "@rowPaused": {
+    "description": "QueueRow (not drawn)."
+  },
+  "rowWaitingQuota": "Hết dung lượng · giữ trên máy",
+  "@rowWaitingQuota": {
+    "description": "QueueRow (R-121)."
+  },
+  "rowCancelled": "Đã huỷ",
+  "@rowCancelled": {
+    "description": "QueueRow (not drawn)."
+  },
+  "rowPreparing": "Đang chuẩn bị",
+  "@rowPreparing": {
+    "description": "QueueRow (not drawn)."
+  },
+  "qWifiOnly": "Video chỉ tải qua Wi-Fi",
+  "@qWifiOnly": {
+    "description": "10i toggle."
+  },
+  "qWifiOnlyHint": "Ảnh vẫn tải bằng dữ liệu di động",
+  "@qWifiOnlyHint": {
+    "description": "10i toggle."
+  },
+  "qRetryAll": "Thử lại tất cả ({count})",
+  "@qRetryAll": {
+    "description": "10i button.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qFootnote": "Mục lỗi được giữ trên máy · tự thử lại khi có mạng.",
+  "@qFootnote": {
+    "description": "10i footnote."
+  },
+  "qEmpty": "Không còn gì đang tải.",
+  "@qEmpty": {
+    "description": "10i empty."
+  },
+  "a11yCancelUpload": "Huỷ tải {name}",
+  "@a11yCancelUpload": {
+    "description": "QueueRow ×.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memMonth": "Tháng {month}, {year}",
+  "@memMonth": {
+    "description": "Month header (10b).",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      },
+      "monthName": {
+        "type": "String"
+      }
+    }
+  },
+  "memFilterMonth": "Tháng",
+  "@memFilterMonth": {
+    "description": "10b chip."
+  },
+  "memSelect": "Chọn",
+  "@memSelect": {
+    "description": "10b chip."
+  },
+  "memSelectMonth": "Chọn cả tháng",
+  "@memSelectMonth": {
+    "description": "10b2."
+  },
+  "memSelected": "{count} mục đã chọn",
+  "@memSelected": {
+    "description": "10b2 pill / 10b3 title.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "a11yShareOptions": "Chia sẻ và tuỳ chọn",
+  "@a11yShareOptions": {
+    "description": "10b2 pill."
+  },
+  "a11yDeleteSelected": "Xoá mục đã chọn",
+  "@a11yDeleteSelected": {
+    "description": "10b2 pill."
+  },
+  "actWho": "Ai thấy",
+  "@actWho": {
+    "description": "10b3."
+  },
+  "actAlbum": "Album",
+  "@actAlbum": {
+    "description": "10b3 (S10)."
+  },
+  "actDownload": "Tải về",
+  "@actDownload": {
+    "description": "10b3 / 10f."
+  },
+  "actSend": "Gửi đi",
+  "@actSend": {
+    "description": "10b3."
+  },
+  "actMore": "Thêm",
+  "@actMore": {
+    "description": "10b3 section."
+  },
+  "actFavorite": "Thêm vào Yêu thích",
+  "@actFavorite": {
+    "description": "10b3 (S10)."
+  },
+  "actFavoriteHint": "Gom vào album Yêu thích của bạn",
+  "@actFavoriteHint": {
+    "description": "10b3."
+  },
+  "actMilestoneHint": "Ví dụ: Lần đầu cười",
+  "@actMilestoneHint": {
+    "description": "10b3."
+  },
+  "actDate": "Đổi ngày",
+  "@actDate": {
+    "description": "10b3."
+  },
+  "actDateHint": "Khi ngày chụp bị sai",
+  "@actDateHint": {
+    "description": "10b3."
+  },
+  "actStory": "Kể thành câu chuyện",
+  "@actStory": {
+    "description": "10b3 (S12)."
+  },
+  "actStoryHint": "Dùng {count} mục này làm bản nháp",
+  "@actStoryHint": {
+    "description": "10b3.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "actCover": "Đặt làm ảnh bìa album",
+  "@actCover": {
+    "description": "10b3 (S10)."
+  },
+  "actCoverHint": "Chỉ dùng khi chọn 1 ảnh",
+  "@actCoverHint": {
+    "description": "10b3."
+  },
+  "actSoon": "Sắp có",
+  "@actSoon": {
+    "description": "10b3 rows of later slices."
+  },
+  "whoItemsTitle": "Ai thấy {count} mục này?",
+  "@whoItemsTitle": {
+    "description": "Audience sheet from 10b3 (not drawn).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "toastSaved": "Đã lưu {count} mục vào Ảnh",
+  "@toastSaved": {
+    "description": "Download toast.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "toastSaving": "Đang lưu vào Ảnh…",
+  "@toastSaving": {
+    "description": "Download toast."
+  },
+  "toastSaveFailed": "Chưa lưu được vào Ảnh. Thử lại nhé.",
+  "@toastSaveFailed": {
+    "description": "Download failed."
+  },
+  "toastDateChanged": "Đã đổi ngày {count} mục",
+  "@toastDateChanged": {
+    "description": "Toast.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "toastTagged": "Đã gắn mốc cho {count} mục",
+  "@toastTagged": {
+    "description": "Toast.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "toastParentsOnly": "Đã chuyển {count} mục sang Chỉ ba mẹ",
+  "@toastParentsOnly": {
+    "description": "Toast.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "toastShared": "Đã chia sẻ {count} mục với gia đình",
+  "@toastShared": {
+    "description": "Toast (10o).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "toastDeleted": "Đã xoá {count} mục",
+  "@toastDeleted": {
+    "description": "Toast (10b4) with undo.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "toastActionFailed": "Chưa làm được. Kiểm tra mạng và thử lại.",
+  "@toastActionFailed": {
+    "description": "Batch action failed."
+  },
+  "delTitle": "Xoá {count} mục?",
+  "@delTitle": {
+    "description": "10b4 title.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "delBody": "Mục sẽ biến mất khỏi Kỷ niệm của cả gia đình. Ảnh gốc trên máy bạn vẫn còn.",
+  "@delBody": {
+    "description": "10b4."
+  },
+  "delRecover": "Khôi phục được trong 30 ngày ở “Đã xoá gần đây”.",
+  "@delRecover": {
+    "description": "10b4."
+  },
+  "delParentsOnly": "Chỉ ba mẹ mới xoá được.",
+  "@delParentsOnly": {
+    "description": "10b4."
+  },
+  "delN": "Xoá {count} mục",
+  "@delN": {
+    "description": "10b4 button.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gotoTitle": "Đi tới tháng",
+  "@gotoTitle": {
+    "description": "10b5 title."
+  },
+  "gotoMonthShort": "Th {month}",
+  "@gotoMonthShort": {
+    "description": "10b5 cell.",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "monthName": {
+        "type": "String"
+      }
+    }
+  },
+  "gotoNote": "{name} sinh ngày {date} · năm khác sẽ hiện khi có ảnh",
+  "@gotoNote": {
+    "description": "10b5 footnote.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "scrubberMonth": "Th {month}, {year}",
+  "@scrubberMonth": {
+    "description": "Date scrubber.",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      },
+      "monthName": {
+        "type": "String"
+      }
+    }
+  },
+  "viewTitle": "Cách xem",
+  "@viewTitle": {
+    "description": "10c title."
+  },
+  "viewGroup": "Nhóm theo",
+  "@viewGroup": {
+    "description": "10c."
+  },
+  "viewDay": "Ngày",
+  "@viewDay": {
+    "description": "10c."
+  },
+  "viewWeek": "Tuần",
+  "@viewWeek": {
+    "description": "10c."
+  },
+  "viewMonth": "Tháng",
+  "@viewMonth": {
+    "description": "10c."
+  },
+  "viewLayout": "Kiểu xem",
+  "@viewLayout": {
+    "description": "10c."
+  },
+  "viewSmall": "Lưới nhỏ",
+  "@viewSmall": {
+    "description": "10c."
+  },
+  "viewLarge": "Lưới lớn",
+  "@viewLarge": {
+    "description": "10c."
+  },
+  "viewList": "Danh sách",
+  "@viewList": {
+    "description": "10c."
+  },
+  "viewShow": "Hiện",
+  "@viewShow": {
+    "description": "10c."
+  },
+  "viewWithMilestone": "Có mốc",
+  "@viewWithMilestone": {
+    "description": "10c."
+  },
+  "viewAsRelative": "Xem như người thân",
+  "@viewAsRelative": {
+    "description": "10c."
+  },
+  "viewAsRelativeHint": "Kiểm tra người thân đang thấy những gì",
+  "@viewAsRelativeHint": {
+    "description": "10c."
+  },
+  "viewApply": "Áp dụng",
+  "@viewApply": {
+    "description": "10c primary."
+  },
+  "viewAsRelativeBanner": "Đang xem như người thân",
+  "@viewAsRelativeBanner": {
+    "description": "Preview banner (not drawn)."
+  },
+  "viewAsRelativeExit": "Thoát",
+  "@viewAsRelativeExit": {
+    "description": "Preview banner."
+  },
+  "dayGroup": "{date} · {counts}",
+  "@dayGroup": {
+    "description": "Day/month group header.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "counts": {
+        "type": "String"
+      }
+    }
+  },
+  "viewerPosted": "{date} · {who} đăng",
+  "@viewerPosted": {
+    "description": "10f meta.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "viewerShare": "Chia sẻ",
+  "@viewerShare": {
+    "description": "10f action."
+  },
+  "viewerVideoLoading": "Đang tải video…",
+  "@viewerVideoLoading": {
+    "description": "10f video."
+  },
+  "viewerVideoFailed": "Chưa mở được video.",
+  "@viewerVideoFailed": {
+    "description": "10f video."
+  },
+  "a11yPlay": "Phát video",
+  "@a11yPlay": {
+    "description": "10f video."
+  },
+  "shareTitle": "Chia sẻ với gia đình?",
+  "@shareTitle": {
+    "description": "10o title."
+  },
+  "sharePrivatePhotos": "{count} ảnh riêng tư",
+  "@sharePrivatePhotos": {
+    "description": "10o items.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sharePrivateItems": "{count} mục riêng tư",
+  "@sharePrivateItems": {
+    "description": "10o items with videos.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareWillSee": "Sẽ thấy sau khi chia sẻ",
+  "@shareWillSee": {
+    "description": "10o section."
+  },
+  "shareRelatives": "{count} người thân",
+  "@shareRelatives": {
+    "description": "10o row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareCaregivers": "Người chăm ({names}) không thấy Kỷ niệm.",
+  "@shareCaregivers": {
+    "description": "10o note.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "shareNotifyHint": "Gửi 1 thông báo chung, không kèm ảnh",
+  "@shareNotifyHint": {
+    "description": "10o toggle."
+  },
+  "shareN": "Chia sẻ {count} mục",
+  "@shareN": {
+    "description": "10o primary.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareNPhotos": "Chia sẻ {count} ảnh",
+  "@shareNPhotos": {
+    "description": "10o primary.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "camDest": "Lưu vào Kỷ niệm của {name}",
+  "@camDest": {
+    "description": "10a3 chip.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "camFlash": "Flash",
+  "@camFlash": {
+    "description": "10a3."
+  },
+  "camVideo": "VIDEO",
+  "@camVideo": {
+    "description": "10a3 mode."
+  },
+  "camPhoto": "ẢNH",
+  "@camPhoto": {
+    "description": "10a3 mode."
+  },
+  "camDone": "Xong ({count})",
+  "@camDone": {
+    "description": "10a3.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "camHint": "Chụp liên tục · bấm Xong để soạn & chia sẻ",
+  "@camHint": {
+    "description": "10a3."
+  },
+  "camUnavailable": "Máy này chưa mở được camera.",
+  "@camUnavailable": {
+    "description": "10a3 error."
+  },
+  "a11yShutter": "Chụp",
+  "@a11yShutter": {
+    "description": "10a3."
   }
 }

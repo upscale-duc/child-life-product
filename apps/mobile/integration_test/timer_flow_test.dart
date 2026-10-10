@@ -136,26 +136,51 @@ void main() {
     await pumpUntil(tester, find.text(l10n.manualSleepTitle));
     await tapText(tester, l10n.saveSleep);
 
-    // 27 opens by itself; keep Ba's.
-    await pumpUntil(
-      tester,
-      find.text(l10n.overlapTitle),
-      timeout: const Duration(seconds: 30),
-    );
-    await tester.tap(
-      find.textContaining(l10n.careLoggedBy(l10n.relationFather)).first,
-    );
-    await tester.pump(const Duration(milliseconds: 300));
-    await tapText(tester, l10n.keepSelected);
-    await pumpUntil(tester, find.text(l10n.overlapKept));
+    // 27 opens by itself; keep Ba's. When the manual hour also covers the timer sleep from the
+    // step above (it depends on where the minute boundary falls), that pair of my own sleeps
+    // may come first: keep the manual one there, then Ba's.
+    final ba = find.textContaining(l10n.careLoggedBy(l10n.relationFather));
+    for (var round = 0; round < 2; round++) {
+      await pumpUntil(
+        tester,
+        find.text(l10n.overlapTitle),
+        timeout: const Duration(seconds: 30),
+      );
+      // Wait for both cards: Ba's, or two of mine.
+      final mine = find.textContaining(l10n.careLoggedBy(l10n.careYou));
+      final end = DateTime.now().add(const Duration(seconds: 15));
+      while (DateTime.now().isBefore(end) &&
+          ba.evaluate().isEmpty &&
+          mine.evaluate().length < 2) {
+        await tester.pump(const Duration(milliseconds: 200));
+      }
+      final withBa = ba.evaluate().isNotEmpty;
+      if (withBa) {
+        await tester.tap(ba.first);
+      } else {
+        await tester.tap(
+          find.textContaining(l10n.careLoggedBy(l10n.careYou)).last,
+        );
+      }
+      await tester.pump(const Duration(milliseconds: 300));
+      await tapText(tester, l10n.keepSelected);
+      await pumpUntil(tester, find.text(l10n.overlapKept));
+      if (withBa) break;
+      await _settleFor(tester, const Duration(seconds: 4));
+    }
     records = await _records(babyId);
     final binned = records.where(
       (r) => _field(r, 'deletedReason') == 'overlap',
     );
-    expect(binned, hasLength(1));
+    final me = FirebaseAuth.instance.currentUser!.uid;
+    expect(binned, isNotEmpty);
+    expect(binned.every((r) => _field(r, 'createdBy') == me), isTrue);
     expect(
-      _field(binned.single, 'createdBy'),
-      FirebaseAuth.instance.currentUser!.uid,
+      records.where(
+        (r) => _field(r, 'createdBy') != me && _field(r, 'deleted') == true,
+      ),
+      isEmpty,
+      reason: 'Ba’s sleep is kept',
     );
 
     // 23 → "Bấm giờ thay vì nhập" → 23b → switch side → end.

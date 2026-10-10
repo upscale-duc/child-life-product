@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
@@ -72,4 +73,5 @@ Future<void> _useEmulatorsIfRequested(AppEnvironment environment) async {
   FirebaseFunctions.instanceFor(
     region: functionsRegion,
   ).useFunctionsEmulator(host, 5001);
+  await FirebaseStorage.instance.useStorageEmulator(host, 9199);
 }

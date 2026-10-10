@@ -12,7 +12,6 @@ import '../../core/format/age.dart';
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
-import '../../core/widgets/cl_misc.dart';
 import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
@@ -186,7 +185,10 @@ class HomeShell extends ConsumerWidget {
 /// Header shared by the tabs: baby switcher (45:321) + Night care toggle, and the 16c banner
 /// "Chưa lưu tài khoản · Lưu" while the identity is temporary (R-030).
 class BabyHeader extends ConsumerWidget {
-  const BabyHeader({super.key});
+  const BabyHeader({this.actions, super.key});
+
+  /// Replaces the Night care toggle (Kỷ niệm: "Cách xem" + "+", 10a).
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -217,7 +219,8 @@ class BabyHeader extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: ClSpace.s3),
-            const NightCareToggle(),
+            ...?actions,
+            if (actions == null) const NightCareToggle(),
           ],
         ),
         if (session.isAnonymous) ...[
@@ -630,38 +633,4 @@ Future<void> _confirmAnonymousSignOut(BuildContext context, WidgetRef ref) {
       ],
     ),
   );
-}
-
-/// Kỷ niệm tab until Memories ship (S5–S7).
-class MemoriesPlaceholderScreen extends StatelessWidget {
-  const MemoriesPlaceholderScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return ColoredBox(
-      color: context.cl.colors.cloud,
-      child: SafeArea(
-        bottom: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(
-            ClSpace.s4,
-            ClSpace.s2,
-            ClSpace.s4,
-            ClTabDock.contentBottomPadding,
-          ),
-          children: [
-            const BabyHeader(),
-            const SizedBox(height: ClSpace.s4),
-            ClNavHeader(title: l10n.tabMemories),
-            ClEmptyState(
-              icon: ClIcons.memories,
-              title: l10n.tabMemories,
-              message: l10n.memoriesComingSoon,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

@@ -2621,4 +2621,763 @@ class AppLocalizationsVi extends AppLocalizations {
   String a11yUndoDone(String title) {
     return 'Bỏ đánh dấu xong: $title';
   }
+
+  @override
+  String get memJournal => 'Nhật ký';
+
+  @override
+  String get memPhotos => 'Ảnh';
+
+  @override
+  String get memAlbums => 'Album';
+
+  @override
+  String get memStories => 'Câu chuyện';
+
+  @override
+  String get memSoonTitle => 'Sắp có';
+
+  @override
+  String get memSoonBody => 'Phần này có trong bản cập nhật tới.';
+
+  @override
+  String get a11yViewOptions => 'Cách xem';
+
+  @override
+  String get a11yAddMemory => 'Thêm vào Kỷ niệm';
+
+  @override
+  String memWeek(int week) {
+    return 'Tuần thứ $week';
+  }
+
+  @override
+  String get memBeforeBirth => 'Trước ngày chào đời';
+
+  @override
+  String memPhotoCount(int count) {
+    return '$count ảnh';
+  }
+
+  @override
+  String memVideoCount(int count) {
+    return '$count video';
+  }
+
+  @override
+  String memItemCount(int count) {
+    return '$count mục';
+  }
+
+  @override
+  String memTodayAt(String time) {
+    return 'Hôm nay · $time';
+  }
+
+  @override
+  String memYesterdayAt(String time) {
+    return 'Hôm qua · $time';
+  }
+
+  @override
+  String get memEmptyTitle => 'Chưa có kỷ niệm nào';
+
+  @override
+  String memEmptyBody(String name) {
+    return 'Chạm + để thêm ảnh, video hoặc ghi chú đầu tiên của $name.';
+  }
+
+  @override
+  String memPhotosEmpty(String name) {
+    return 'Ảnh và video của $name sẽ hiện ở đây.';
+  }
+
+  @override
+  String get memNoMatch => 'Không có mục nào khớp cách xem này.';
+
+  @override
+  String get memProcessing => 'Đang xử lý';
+
+  @override
+  String upUploading(int done, int total) {
+    return 'Đang tải $done/$total mục';
+  }
+
+  @override
+  String get upUploadingHint => 'Cứ làm việc khác, xong sẽ báo bạn';
+
+  @override
+  String get upPaused => 'Tạm dừng · chờ mạng';
+
+  @override
+  String get upPausedHint => 'Tự tải tiếp khi có mạng';
+
+  @override
+  String get upPausedByYou => 'Đã tạm dừng';
+
+  @override
+  String get upPausedByYouHint => 'Chạm để tiếp tục';
+
+  @override
+  String upFailed(int count) {
+    return '$count mục chưa tải được';
+  }
+
+  @override
+  String get upFailedHint => 'Chạm để thử lại hoặc bỏ qua';
+
+  @override
+  String upDone(int count) {
+    return 'Đã tải xong $count mục';
+  }
+
+  @override
+  String upToldFamily(String names) {
+    return 'Đã báo cho $names';
+  }
+
+  @override
+  String get upParentsOnly => 'Chỉ ba mẹ xem được';
+
+  @override
+  String upWaitingWifi(int count) {
+    return '$count video chờ Wi-Fi';
+  }
+
+  @override
+  String get upWaitingWifiHint => 'Video tự tải khi có Wi-Fi';
+
+  @override
+  String upWaitingQuota(int count) {
+    return 'Hết dung lượng · $count mục giữ trên máy';
+  }
+
+  @override
+  String get upWaitingQuotaHint => 'Chạm để xem';
+
+  @override
+  String upPreparing(int count) {
+    return 'Đang chuẩn bị $count mục';
+  }
+
+  @override
+  String get addTitle => 'Thêm vào Kỷ niệm';
+
+  @override
+  String get addRecent => 'Ảnh mới chụp hôm nay';
+
+  @override
+  String get addRecentHint => 'Chạm để thêm nhanh';
+
+  @override
+  String get addCamera => 'Chụp ảnh hoặc quay video';
+
+  @override
+  String get addCameraHint => 'Lưu thẳng vào Kỷ niệm';
+
+  @override
+  String get addLibrary => 'Chọn từ Thư viện ảnh';
+
+  @override
+  String get addLibraryHint => 'Chọn nhiều ảnh, video một lần';
+
+  @override
+  String get addFiles => 'Chọn từ Tệp';
+
+  @override
+  String get addFilesHint => 'iCloud Drive, Google Drive, USB…';
+
+  @override
+  String get addNote => 'Viết ghi chú';
+
+  @override
+  String get addNoteHint => 'Kỷ niệm chỉ có chữ, thêm ảnh sau';
+
+  @override
+  String get pickRecent => 'Gần đây';
+
+  @override
+  String get pickVideos => 'Video';
+
+  @override
+  String get pickAlbums => 'Album';
+
+  @override
+  String pickSummary(int count, int photos, int videos) {
+    return '$count mục · $photos ảnh, $videos video';
+  }
+
+  @override
+  String pickMax(int count) {
+    return 'Tối đa $count mục/lần';
+  }
+
+  @override
+  String pickAdd(int count) {
+    return 'Thêm $count mục';
+  }
+
+  @override
+  String pickLimit(int count) {
+    return 'Mỗi lần thêm tối đa $count mục.';
+  }
+
+  @override
+  String get pickNoAccess => 'Child Life chưa được xem thư viện ảnh.';
+
+  @override
+  String get pickLimited => 'Bạn đang cho xem một số ảnh.';
+
+  @override
+  String get pickChooseMore => 'Chọn thêm';
+
+  @override
+  String get pickEmpty => 'Chưa có ảnh nào ở đây';
+
+  @override
+  String get pickAlbumsTitle => 'Chọn album';
+
+  @override
+  String get composeCaption => 'Viết vài dòng… (không bắt buộc)';
+
+  @override
+  String get composeNoteHint => 'Viết điều bạn muốn nhớ…';
+
+  @override
+  String get composeDate => 'Ngày';
+
+  @override
+  String get composeByCapture => 'Theo ngày chụp';
+
+  @override
+  String get composeMilestone => 'Mốc';
+
+  @override
+  String get composeNoMilestone => 'Không gắn mốc';
+
+  @override
+  String get composeWho => 'Ai thấy';
+
+  @override
+  String get audParents => 'Chỉ ba mẹ';
+
+  @override
+  String get audParentsHint => 'Chỉ ba mẹ xem được';
+
+  @override
+  String get audFamily => 'Gia đình';
+
+  @override
+  String get audFamilyHint => 'Cả nhà cùng xem';
+
+  @override
+  String get composeNotify => 'Báo cho gia đình';
+
+  @override
+  String get composeNotifyHint => 'Gia đình nhận 1 thông báo';
+
+  @override
+  String composeUpload(int count) {
+    return 'Tải lên $count mục';
+  }
+
+  @override
+  String get composeSaveNote => 'Lưu ghi chú';
+
+  @override
+  String get composeFootnote => 'Ảnh tải ở nền — xong sẽ báo bạn.';
+
+  @override
+  String get composeNoteRequired => 'Viết vài chữ cho ghi chú.';
+
+  @override
+  String get composeNoteSaved => 'Đã lưu ghi chú';
+
+  @override
+  String composeMore(int count) {
+    return '+$count';
+  }
+
+  @override
+  String get dateTitle => 'Ngày của kỷ niệm';
+
+  @override
+  String dateByCaptureHint(String range) {
+    return 'Mỗi ảnh giữ ngày riêng · $range';
+  }
+
+  @override
+  String get dateOneForAll => 'Một ngày cho tất cả';
+
+  @override
+  String get dateOneForAllHint => 'Dùng khi ngày chụp bị sai';
+
+  @override
+  String dateBeforeBirth(String name) {
+    return 'Không chọn được ngày trước khi $name chào đời.';
+  }
+
+  @override
+  String get msTitle => 'Gắn mốc';
+
+  @override
+  String get msSearch => 'Tìm hoặc gõ mốc mới…';
+
+  @override
+  String msSuggest(String age) {
+    return 'Gợi ý cho bé $age';
+  }
+
+  @override
+  String get msOwn => 'Mốc nhà mình đã tạo';
+
+  @override
+  String get msCreate => 'Tạo mốc mới';
+
+  @override
+  String get msOnePer => 'Mỗi kỷ niệm 1 mốc';
+
+  @override
+  String get msName => 'Tên mốc';
+
+  @override
+  String get msPreview => 'Xem trước';
+
+  @override
+  String get msShared => 'Mốc mới được lưu cho cả nhà dùng lại lần sau.';
+
+  @override
+  String get msCreateTag => 'Tạo & gắn mốc';
+
+  @override
+  String get msNameRequired => 'Đặt tên cho mốc.';
+
+  @override
+  String msChip(String name, String date) {
+    return '$name · $date';
+  }
+
+  @override
+  String get msFirstSmile => 'Lần đầu cười';
+
+  @override
+  String get msFirstBath => 'Lần đầu tắm';
+
+  @override
+  String get msLiftsHead => 'Ngẩng đầu';
+
+  @override
+  String get msFirstOuting => 'Lần đầu đi dạo';
+
+  @override
+  String get msOneMonth => 'Đầy tháng';
+
+  @override
+  String get msMeetsGrandparents => 'Lần đầu gặp ông bà';
+
+  @override
+  String get msRollsOver => 'Lần đầu lật người';
+
+  @override
+  String get msLaughs => 'Cười thành tiếng';
+
+  @override
+  String get msFirstSolids => 'Lần đầu ăn dặm';
+
+  @override
+  String get msSitsUp => 'Tự ngồi';
+
+  @override
+  String get msFirstTooth => 'Chiếc răng đầu tiên';
+
+  @override
+  String get msCrawls => 'Biết bò';
+
+  @override
+  String get msFirstWord => 'Tiếng nói đầu tiên';
+
+  @override
+  String get msFirstSteps => 'Bước đi đầu tiên';
+
+  @override
+  String get msFirstBirthday => 'Thôi nôi';
+
+  @override
+  String get qTitle => 'Đang tải lên';
+
+  @override
+  String qSummary(int done, int total, String time) {
+    return '$done/$total mục · còn khoảng $time';
+  }
+
+  @override
+  String qSummaryNoEta(int done, int total) {
+    return '$done/$total mục';
+  }
+
+  @override
+  String get qPause => 'Tạm dừng';
+
+  @override
+  String get qResume => 'Tiếp tục';
+
+  @override
+  String get qNotice => 'Gia đình sẽ được báo khi tải xong';
+
+  @override
+  String qFailed(int count) {
+    return '$count mục lỗi';
+  }
+
+  @override
+  String qUnreadable(int count) {
+    return '$count tệp không đọc được';
+  }
+
+  @override
+  String rowProgress(int percent, String sent, String total) {
+    return '$percent% · $sent/$total';
+  }
+
+  @override
+  String rowWaitingWifi(String size) {
+    return 'Chờ Wi-Fi · video $size';
+  }
+
+  @override
+  String get rowFailed => 'Mất kết nối khi đang tải';
+
+  @override
+  String get rowUnreadable => 'Tệp bị lỗi · không thử lại được';
+
+  @override
+  String get rowDone => 'Đã tải lên';
+
+  @override
+  String get rowQueued => 'Đang chờ';
+
+  @override
+  String get rowPaused => 'Tạm dừng';
+
+  @override
+  String get rowWaitingQuota => 'Hết dung lượng · giữ trên máy';
+
+  @override
+  String get rowCancelled => 'Đã huỷ';
+
+  @override
+  String get rowPreparing => 'Đang chuẩn bị';
+
+  @override
+  String get qWifiOnly => 'Video chỉ tải qua Wi-Fi';
+
+  @override
+  String get qWifiOnlyHint => 'Ảnh vẫn tải bằng dữ liệu di động';
+
+  @override
+  String qRetryAll(int count) {
+    return 'Thử lại tất cả ($count)';
+  }
+
+  @override
+  String get qFootnote => 'Mục lỗi được giữ trên máy · tự thử lại khi có mạng.';
+
+  @override
+  String get qEmpty => 'Không còn gì đang tải.';
+
+  @override
+  String a11yCancelUpload(String name) {
+    return 'Huỷ tải $name';
+  }
+
+  @override
+  String memMonth(int month, int year, String monthName) {
+    return 'Tháng $month, $year';
+  }
+
+  @override
+  String get memFilterMonth => 'Tháng';
+
+  @override
+  String get memSelect => 'Chọn';
+
+  @override
+  String get memSelectMonth => 'Chọn cả tháng';
+
+  @override
+  String memSelected(int count) {
+    return '$count mục đã chọn';
+  }
+
+  @override
+  String get a11yShareOptions => 'Chia sẻ và tuỳ chọn';
+
+  @override
+  String get a11yDeleteSelected => 'Xoá mục đã chọn';
+
+  @override
+  String get actWho => 'Ai thấy';
+
+  @override
+  String get actAlbum => 'Album';
+
+  @override
+  String get actDownload => 'Tải về';
+
+  @override
+  String get actSend => 'Gửi đi';
+
+  @override
+  String get actMore => 'Thêm';
+
+  @override
+  String get actFavorite => 'Thêm vào Yêu thích';
+
+  @override
+  String get actFavoriteHint => 'Gom vào album Yêu thích của bạn';
+
+  @override
+  String get actMilestoneHint => 'Ví dụ: Lần đầu cười';
+
+  @override
+  String get actDate => 'Đổi ngày';
+
+  @override
+  String get actDateHint => 'Khi ngày chụp bị sai';
+
+  @override
+  String get actStory => 'Kể thành câu chuyện';
+
+  @override
+  String actStoryHint(int count) {
+    return 'Dùng $count mục này làm bản nháp';
+  }
+
+  @override
+  String get actCover => 'Đặt làm ảnh bìa album';
+
+  @override
+  String get actCoverHint => 'Chỉ dùng khi chọn 1 ảnh';
+
+  @override
+  String get actSoon => 'Sắp có';
+
+  @override
+  String whoItemsTitle(int count) {
+    return 'Ai thấy $count mục này?';
+  }
+
+  @override
+  String toastSaved(int count) {
+    return 'Đã lưu $count mục vào Ảnh';
+  }
+
+  @override
+  String get toastSaving => 'Đang lưu vào Ảnh…';
+
+  @override
+  String get toastSaveFailed => 'Chưa lưu được vào Ảnh. Thử lại nhé.';
+
+  @override
+  String toastDateChanged(int count) {
+    return 'Đã đổi ngày $count mục';
+  }
+
+  @override
+  String toastTagged(int count) {
+    return 'Đã gắn mốc cho $count mục';
+  }
+
+  @override
+  String toastParentsOnly(int count) {
+    return 'Đã chuyển $count mục sang Chỉ ba mẹ';
+  }
+
+  @override
+  String toastShared(int count) {
+    return 'Đã chia sẻ $count mục với gia đình';
+  }
+
+  @override
+  String toastDeleted(int count) {
+    return 'Đã xoá $count mục';
+  }
+
+  @override
+  String get toastActionFailed => 'Chưa làm được. Kiểm tra mạng và thử lại.';
+
+  @override
+  String delTitle(int count) {
+    return 'Xoá $count mục?';
+  }
+
+  @override
+  String get delBody =>
+      'Mục sẽ biến mất khỏi Kỷ niệm của cả gia đình. Ảnh gốc trên máy bạn vẫn còn.';
+
+  @override
+  String get delRecover => 'Khôi phục được trong 30 ngày ở “Đã xoá gần đây”.';
+
+  @override
+  String get delParentsOnly => 'Chỉ ba mẹ mới xoá được.';
+
+  @override
+  String delN(int count) {
+    return 'Xoá $count mục';
+  }
+
+  @override
+  String get gotoTitle => 'Đi tới tháng';
+
+  @override
+  String gotoMonthShort(int month, String monthName) {
+    return 'Th $month';
+  }
+
+  @override
+  String gotoNote(String name, String date) {
+    return '$name sinh ngày $date · năm khác sẽ hiện khi có ảnh';
+  }
+
+  @override
+  String scrubberMonth(int month, int year, String monthName) {
+    return 'Th $month, $year';
+  }
+
+  @override
+  String get viewTitle => 'Cách xem';
+
+  @override
+  String get viewGroup => 'Nhóm theo';
+
+  @override
+  String get viewDay => 'Ngày';
+
+  @override
+  String get viewWeek => 'Tuần';
+
+  @override
+  String get viewMonth => 'Tháng';
+
+  @override
+  String get viewLayout => 'Kiểu xem';
+
+  @override
+  String get viewSmall => 'Lưới nhỏ';
+
+  @override
+  String get viewLarge => 'Lưới lớn';
+
+  @override
+  String get viewList => 'Danh sách';
+
+  @override
+  String get viewShow => 'Hiện';
+
+  @override
+  String get viewWithMilestone => 'Có mốc';
+
+  @override
+  String get viewAsRelative => 'Xem như người thân';
+
+  @override
+  String get viewAsRelativeHint => 'Kiểm tra người thân đang thấy những gì';
+
+  @override
+  String get viewApply => 'Áp dụng';
+
+  @override
+  String get viewAsRelativeBanner => 'Đang xem như người thân';
+
+  @override
+  String get viewAsRelativeExit => 'Thoát';
+
+  @override
+  String dayGroup(String date, String counts) {
+    return '$date · $counts';
+  }
+
+  @override
+  String viewerPosted(String date, String who) {
+    return '$date · $who đăng';
+  }
+
+  @override
+  String get viewerShare => 'Chia sẻ';
+
+  @override
+  String get viewerVideoLoading => 'Đang tải video…';
+
+  @override
+  String get viewerVideoFailed => 'Chưa mở được video.';
+
+  @override
+  String get a11yPlay => 'Phát video';
+
+  @override
+  String get shareTitle => 'Chia sẻ với gia đình?';
+
+  @override
+  String sharePrivatePhotos(int count) {
+    return '$count ảnh riêng tư';
+  }
+
+  @override
+  String sharePrivateItems(int count) {
+    return '$count mục riêng tư';
+  }
+
+  @override
+  String get shareWillSee => 'Sẽ thấy sau khi chia sẻ';
+
+  @override
+  String shareRelatives(int count) {
+    return '$count người thân';
+  }
+
+  @override
+  String shareCaregivers(String names) {
+    return 'Người chăm ($names) không thấy Kỷ niệm.';
+  }
+
+  @override
+  String get shareNotifyHint => 'Gửi 1 thông báo chung, không kèm ảnh';
+
+  @override
+  String shareN(int count) {
+    return 'Chia sẻ $count mục';
+  }
+
+  @override
+  String shareNPhotos(int count) {
+    return 'Chia sẻ $count ảnh';
+  }
+
+  @override
+  String camDest(String name) {
+    return 'Lưu vào Kỷ niệm của $name';
+  }
+
+  @override
+  String get camFlash => 'Flash';
+
+  @override
+  String get camVideo => 'VIDEO';
+
+  @override
+  String get camPhoto => 'ẢNH';
+
+  @override
+  String camDone(int count) {
+    return 'Xong ($count)';
+  }
+
+  @override
+  String get camHint => 'Chụp liên tục · bấm Xong để soạn & chia sẻ';
+
+  @override
+  String get camUnavailable => 'Máy này chưa mở được camera.';
+
+  @override
+  String get a11yShutter => 'Chụp';
 }
