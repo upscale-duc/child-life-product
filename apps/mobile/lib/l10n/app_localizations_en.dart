@@ -1980,4 +1980,547 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tourStart => 'Start';
+
+  @override
+  String get historyTitle => 'History';
+
+  @override
+  String monthChip(int month, String monthName) {
+    return '$monthName';
+  }
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get filterFeed => 'Feeds';
+
+  @override
+  String get filterPump => 'Pumping';
+
+  @override
+  String get filterSleep => 'Sleep';
+
+  @override
+  String get filterDiaper => 'Diapers';
+
+  @override
+  String get filterGrowth => 'Growth';
+
+  @override
+  String get periodNight => 'Night';
+
+  @override
+  String get periodMorning => 'Morning';
+
+  @override
+  String get periodNoon => 'Midday';
+
+  @override
+  String get periodAfternoon => 'Afternoon';
+
+  @override
+  String get periodEvening => 'Evening';
+
+  @override
+  String periodItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String loggedOnDay(String date) {
+    return 'Logged on $date';
+  }
+
+  @override
+  String get feedToday => 'Feeds today';
+
+  @override
+  String feedOnDay(String date) {
+    return 'Feeds on $date';
+  }
+
+  @override
+  String get lastFeed => 'Last feed';
+
+  @override
+  String get averageGap => 'Average gap';
+
+  @override
+  String get feedStatsLink => 'See feeding stats';
+
+  @override
+  String get feedStatsLinkHint =>
+      'Day/night split · milk by hour · left/right breast';
+
+  @override
+  String get sleepToday => 'Sleep today';
+
+  @override
+  String sleepOnDay(String date) {
+    return 'Sleep on $date';
+  }
+
+  @override
+  String get totalSlept => 'Total slept';
+
+  @override
+  String get sleepCount => 'Sleeps';
+
+  @override
+  String sleepsValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sleeps',
+      one: '1 sleep',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get longestSleep => 'Longest sleep';
+
+  @override
+  String get awakeNow => 'Awake';
+
+  @override
+  String awakeSince(String duration, String time) {
+    return '$duration · since $time';
+  }
+
+  @override
+  String get asleepNow => 'Asleep';
+
+  @override
+  String get sleepStatsLink => 'See sleep stats';
+
+  @override
+  String get sleepStatsLinkHint =>
+      'Day/night split · 7-day rhythm · longest sleep';
+
+  @override
+  String get diaperToday => 'Diapers today';
+
+  @override
+  String diaperOnDay(String date) {
+    return 'Diapers on $date';
+  }
+
+  @override
+  String get diaperTotal => 'Total';
+
+  @override
+  String get diaperLast => 'Latest';
+
+  @override
+  String timesValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times',
+      one: '1 time',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pumpToday => 'Pumping today';
+
+  @override
+  String pumpOnDay(String date) {
+    return 'Pumping on $date';
+  }
+
+  @override
+  String get pumpSessions => 'Sessions';
+
+  @override
+  String get pumpVolume => 'Volume';
+
+  @override
+  String get pumpNotIntake =>
+      'Pumped milk is not counted as the baby’s intake.';
+
+  @override
+  String rowBreastSide(String side) {
+    return 'Breastfeed · $side';
+  }
+
+  @override
+  String get sideBothFull => 'Both sides';
+
+  @override
+  String get sideLeftFull => 'Left side';
+
+  @override
+  String get sideRightFull => 'Right side';
+
+  @override
+  String rowSleep(String duration) {
+    return 'Sleep $duration';
+  }
+
+  @override
+  String rowSpan(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String rowYesterdayTime(String time) {
+    return '$time yesterday';
+  }
+
+  @override
+  String get rowRunning => 'Running';
+
+  @override
+  String growthLatest(String when) {
+    return 'Latest · $when';
+  }
+
+  @override
+  String get growthWeightTab => 'Weight';
+
+  @override
+  String get growthLengthTab => 'Length';
+
+  @override
+  String growthDeltaVs(String delta, String date) {
+    return '$delta vs $date';
+  }
+
+  @override
+  String get growthMeasurements => 'Measurements';
+
+  @override
+  String get growthAdd => 'Add measurement';
+
+  @override
+  String get growthEmpty => 'No measurements yet.';
+
+  @override
+  String get emptyFeedWhat => 'a feed';
+
+  @override
+  String get emptyPumpWhat => 'pumping';
+
+  @override
+  String get emptySleepWhat => 'a sleep';
+
+  @override
+  String get emptyDiaperWhat => 'a diaper change';
+
+  @override
+  String get emptyAllWhat => 'anything';
+
+  @override
+  String emptyDayTitle(String what, String date) {
+    return 'Nothing logged for $what on $date';
+  }
+
+  @override
+  String emptyTodayTitle(String what) {
+    return 'Nothing logged for $what today';
+  }
+
+  @override
+  String get emptyDayBody =>
+      'If you forgot at the time, you can log it now with a time on that day.';
+
+  @override
+  String backLog(String what) {
+    return 'Log $what for that day';
+  }
+
+  @override
+  String logNow(String what) {
+    return 'Log $what';
+  }
+
+  @override
+  String seeAllOnDay(String date) {
+    return 'See everything on $date';
+  }
+
+  @override
+  String get pickDateTitle => 'Pick a date';
+
+  @override
+  String calendarMonth(int month, int year, String monthName) {
+    return '$monthName $year';
+  }
+
+  @override
+  String calendarFootnote(String baby, String date) {
+    return 'Dots = days with records. $baby was born on $date; earlier days can’t be picked.';
+  }
+
+  @override
+  String get calendarFootnoteNoDob => 'Dots = days with records.';
+
+  @override
+  String get backToToday => 'Back to today';
+
+  @override
+  String get a11yPrevMonth => 'Previous month';
+
+  @override
+  String get a11yNextMonth => 'Next month';
+
+  @override
+  String get feedStatsTitle => 'Feeding stats';
+
+  @override
+  String get sleepStatsTitle => 'Sleep stats';
+
+  @override
+  String get windowToday => 'Today';
+
+  @override
+  String get window7 => '7 days';
+
+  @override
+  String get window30 => '30 days';
+
+  @override
+  String get perDay => 'Daily average';
+
+  @override
+  String get gapAverage => 'Average gap';
+
+  @override
+  String get sinceYesterday18 => 'Since 6 pm yesterday';
+
+  @override
+  String feedsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bottlesBreasts(int bottles, int breasts) {
+    return '$bottles bottle · $breasts breast';
+  }
+
+  @override
+  String get dayNightFeed => 'Day and night feeds';
+
+  @override
+  String dayNightFeedHint(int days) {
+    return 'Day 06:00–18:00 · Night 18:00–06:00 · $days-day average';
+  }
+
+  @override
+  String get nightAndToday => 'Last night and today';
+
+  @override
+  String get nightAndTodayHint => 'Last night 18:00–06:00 · Today from 06:00';
+
+  @override
+  String get dayLabel => 'Day';
+
+  @override
+  String get nightLabel => 'Night';
+
+  @override
+  String get todayLabel => 'Today';
+
+  @override
+  String get lastNightLabel => 'Last night';
+
+  @override
+  String mlAndFeeds(int ml, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return '$ml ml · $_temp0';
+  }
+
+  @override
+  String lastNightInsight(int count, String gap, String from, String to) {
+    return 'Last night: $count feeds, longest gap $gap ($from–$to).';
+  }
+
+  @override
+  String lastNightGapInsight(String gap, String from, String to) {
+    return 'Longest gap last night: $gap ($from–$to).';
+  }
+
+  @override
+  String get milkByHour => 'Milk by hour';
+
+  @override
+  String milkByHourHint(int days) {
+    return 'Bottle · $days-day average (ml)';
+  }
+
+  @override
+  String peakCallout(int hour, int ml) {
+    return '${hour}h · $ml ml';
+  }
+
+  @override
+  String get mlPerHour => 'ml per hour';
+
+  @override
+  String get nightWindow => 'Night window';
+
+  @override
+  String get eachFeedToday => 'Each feed today';
+
+  @override
+  String get eachFeedHint =>
+      'Each bar is a bottle (ml) · pink dots are breastfeeds';
+
+  @override
+  String get notYet => 'Not yet';
+
+  @override
+  String get nowLabel => 'Now';
+
+  @override
+  String get bottleMlLegend => 'Bottle (ml)';
+
+  @override
+  String get nightOrNotYet => 'Night / not yet';
+
+  @override
+  String get breastCard => 'Breastfeeding';
+
+  @override
+  String averageDays(int days) {
+    return '$days-day average';
+  }
+
+  @override
+  String get perDayShort => 'per day';
+
+  @override
+  String get perFeed => 'per feed';
+
+  @override
+  String get todayShort => 'today';
+
+  @override
+  String leftShare(int pct) {
+    return 'Left $pct%';
+  }
+
+  @override
+  String rightShare(int pct) {
+    return 'Right $pct%';
+  }
+
+  @override
+  String leftMinutes(int minutes) {
+    return 'Left $minutes min';
+  }
+
+  @override
+  String rightMinutes(int minutes) {
+    return 'Right $minutes min';
+  }
+
+  @override
+  String get nextSideLeft =>
+      'Last feed ended on the right → start on the left next time.';
+
+  @override
+  String get nextSideRight =>
+      'Last feed ended on the left → start on the right next time.';
+
+  @override
+  String get dayNightSleep => 'Day and night sleep';
+
+  @override
+  String dayNightSleepHint(int days) {
+    return 'Night 18:00–06:00 · Day 06:00–18:00 · $days-day average';
+  }
+
+  @override
+  String durationAndSleeps(String duration, String range) {
+    return '$duration · $range sleeps';
+  }
+
+  @override
+  String nightLongestInsight(int days, String from, String to) {
+    return 'Longest night sleep grew from $from to $to over $days days.';
+  }
+
+  @override
+  String nightLongestSame(String duration) {
+    return 'Longest night sleep: $duration.';
+  }
+
+  @override
+  String sleepRhythm(int days) {
+    return '$days-day sleep rhythm';
+  }
+
+  @override
+  String get sleepRhythmToday => 'Today’s sleep rhythm';
+
+  @override
+  String get sleepRhythmHint => 'Each row is a day · purple is sleep';
+
+  @override
+  String get longestEachDay => 'Longest sleep each day';
+
+  @override
+  String get longestEachDayHint => 'Hours slept in one stretch';
+
+  @override
+  String get legendSleepShort => 'Sleep';
+
+  @override
+  String get statsEmpty => 'Not enough data in this range yet.';
+
+  @override
+  String compactHM(int h, int m) {
+    return '${h}h ${m}m';
+  }
+
+  @override
+  String compactH(int h) {
+    return '${h}h';
+  }
+
+  @override
+  String compactHMShort(int h, String m) {
+    return '${h}h$m';
+  }
+
+  @override
+  String durationAndSleep(String duration, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sleeps',
+      one: '1 sleep',
+    );
+    return '$duration · $_temp0';
+  }
+
+  @override
+  String get dayNightSleepTodayHint =>
+      'Today · Night 00:00–06:00 · Day 06:00–18:00';
+
+  @override
+  String get historyCaregiverNote =>
+      'You can edit your own records. Parents’ records are view-only.';
 }

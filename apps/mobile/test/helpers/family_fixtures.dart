@@ -45,10 +45,8 @@ final teddy = Baby(
 );
 
 /// "Teddy · 3 tuần".
-BabyPrivateProfile teddyProfile() => BabyPrivateProfile(
-  dateOfBirth: DateTime.now().subtract(const Duration(days: 22)),
-  gender: Gender.boy,
-);
+BabyPrivateProfile teddyProfile() =>
+    BabyPrivateProfile(dateOfBirth: DateTime(2026, 9, 17), gender: Gender.boy);
 
 Membership member(
   String uid,

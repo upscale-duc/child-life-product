@@ -283,6 +283,8 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 
 ### S6 — History & statistics
 
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S6.md). History with filters, day strip, date picker, empty-day back-log and growth, plus feeding and sleep statistics (Hôm nay / 7 / 30 ngày), work end to end (iOS + Android, emulators); the 1k-row scroll budget is not measured yet.
+
 - **Figma:** 20, 20a–20h, 20f, 20g2, DayRhythm variants, TimeSectionHeader, GrowthRow, growth chart.
 - **Shared logic:** `packages/care-calc` (TS) + Dart mirror with **shared golden vectors** (timezone, DST, midnight, empty days, pending records) — business calculations testable without UI/Firebase.
 - **Mobile:** day strip, month calendar (dots, DOB/future bounds), filters, empty-day back-logging, feeding stats (Hôm nay window from 18:00, 7/30 days, hourly avg, day/night by ml, breast sides), sleep stats (rhythm rows, longest per day), 30-day and sleep-today variants (G / Q-031), paginated queries.

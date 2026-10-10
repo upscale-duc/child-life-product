@@ -175,7 +175,7 @@ class TodayScreen extends ConsumerWidget {
             ClSectionHeader(
               title: l10n.todayTitle,
               linkLabel: l10n.todayHistory,
-              onLink: () => showClToast(context, message: l10n.historySoon),
+              onLink: () => context.push(Routes.history),
             ),
             const SizedBox(height: ClSpace.s3),
             DayRhythm(
@@ -567,6 +567,8 @@ class DayRhythm extends StatelessWidget {
     required this.dayStart,
     required this.dayEnd,
     required this.now,
+    this.title,
+    this.stripOnly = false,
     super.key,
   });
 
@@ -574,6 +576,12 @@ class DayRhythm extends StatelessWidget {
   final DateTime dayStart;
   final DateTime dayEnd;
   final DateTime now;
+
+  /// "Đã ghi ngày 5 thg 10" for a past day; "Đã ghi hôm nay" by default.
+  final String? title;
+
+  /// Only the 24 h strip and legend, inside another card (20a–20c).
+  final bool stripOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -585,7 +593,7 @@ class DayRhythm extends StatelessWidget {
       borderRadius: BorderRadius.circular(ClRadius.card),
       boxShadow: cl.shadows.card,
     );
-    if (totals.isEmpty) {
+    if (totals.isEmpty && !stripOnly) {
       return Container(
         padding: const EdgeInsets.all(ClSpace.s4),
         decoration: card,
@@ -618,6 +626,82 @@ class DayRhythm extends StatelessWidget {
         ),
       ),
     );
+    final present = {
+      for (final r in records)
+        if (!r.deleted) r.type,
+    };
+    final legend = [
+      (CareType.sleep, care.sleep.accent, l10n.legendSleep),
+      (CareType.bottle, care.bottle.accent, l10n.trackerBottle),
+      (CareType.breast, care.breast.accent, l10n.trackerBreast),
+      (CareType.diaper, care.diaper.accent, l10n.legendDiaper),
+    ].where((e) => !stripOnly || present.contains(e.$1));
+    final strip = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ExcludeSemantics(
+          child: SizedBox(
+            height: 28,
+            child: CustomPaint(
+              size: Size.infinite,
+              painter: _StripPainter(
+                records: records,
+                dayStart: dayStart,
+                dayEnd: dayEnd,
+                now: now,
+                track: cl.colors.surface2,
+                nowColor: cl.colors.ink,
+                colors: {
+                  CareType.sleep: care.sleep.accent,
+                  CareType.bottle: care.bottle.accent,
+                  CareType.breast: care.breast.accent,
+                  CareType.diaper: care.diaper.accent,
+                },
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: ClSpace.s1),
+        ExcludeSemantics(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (final h in const ['0h', '6h', '12h', '18h', '24h'])
+                Text(
+                  h,
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        Wrap(
+          spacing: ClSpace.s3,
+          children: [
+            for (final (_, color, label) in legend)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    label,
+                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ],
+    );
+    if (stripOnly) return strip;
     final sleepH = totals.sleepMinutes ~/ 60;
     final sleepM = totals.sleepMinutes % 60;
     return Container(
@@ -627,7 +711,7 @@ class DayRhythm extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.dayRhythmTitle,
+            title ?? l10n.dayRhythmTitle,
             style: cl.text.label.copyWith(color: cl.colors.inkMuted),
           ),
           const SizedBox(height: ClSpace.s3),
@@ -665,73 +749,7 @@ class DayRhythm extends StatelessWidget {
             ],
           ),
           const SizedBox(height: ClSpace.s4),
-          ExcludeSemantics(
-            child: SizedBox(
-              height: 28,
-              child: CustomPaint(
-                size: Size.infinite,
-                painter: _StripPainter(
-                  records: records,
-                  dayStart: dayStart,
-                  dayEnd: dayEnd,
-                  now: now,
-                  track: cl.colors.surface2,
-                  nowColor: cl.colors.ink,
-                  colors: {
-                    CareType.sleep: care.sleep.accent,
-                    CareType.bottle: care.bottle.accent,
-                    CareType.breast: care.breast.accent,
-                    CareType.diaper: care.diaper.accent,
-                  },
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: ClSpace.s1),
-          ExcludeSemantics(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                for (final h in const ['0h', '6h', '12h', '18h', '24h'])
-                  Text(
-                    h,
-                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: ClSpace.s2),
-          Wrap(
-            spacing: ClSpace.s3,
-            children: [
-              for (final (color, label) in [
-                (care.sleep.accent, l10n.legendSleep),
-                (care.bottle.accent, l10n.trackerBottle),
-                (care.breast.accent, l10n.trackerBreast),
-                (care.diaper.accent, l10n.legendDiaper),
-              ])
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      label,
-                      style: cl.text.caption.copyWith(
-                        color: cl.colors.inkMuted,
-                      ),
-                    ),
-                  ],
-                ),
-            ],
-          ),
+          strip,
         ],
       ),
     );

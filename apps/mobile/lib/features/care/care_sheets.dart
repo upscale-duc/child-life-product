@@ -69,27 +69,28 @@ Future<void> openCareLog(
   BuildContext context,
   CareType type, {
   CareRecord? edit,
+  DateTime? at,
 }) {
   switch (type) {
     case CareType.growth:
       return context.push(Routes.growth, extra: edit);
     case CareType.sleep:
       // 26: a past sleep, or "Sửa" on a sleep record.
-      return context.push(Routes.manualSleep, extra: edit);
+      return context.push(Routes.manualSleep, extra: edit ?? at);
     case CareType.bottle || CareType.breast:
       return showClSheet<void>(
         context: context,
-        builder: (_) => FeedSheet(initialType: type, edit: edit),
+        builder: (_) => FeedSheet(initialType: type, edit: edit, at: at),
       );
     case CareType.pump:
       return showClSheet<void>(
         context: context,
-        builder: (_) => PumpSheet(edit: edit),
+        builder: (_) => PumpSheet(edit: edit, at: at),
       );
     case CareType.diaper:
       return showClSheet<void>(
         context: context,
-        builder: (_) => DiaperSheet(edit: edit),
+        builder: (_) => DiaperSheet(edit: edit, at: at),
       );
   }
 }
@@ -586,9 +587,12 @@ String? _rangeError(
 
 /// 22 / 23 Ghi cữ bú: Bú bình | Bú mẹ, remembering the last type and milk (46:3141, 46:3234).
 class FeedSheet extends ConsumerStatefulWidget {
-  const FeedSheet({required this.initialType, this.edit, super.key});
+  const FeedSheet({required this.initialType, this.edit, this.at, super.key});
   final CareType initialType;
   final CareRecord? edit;
+
+  /// "Ghi bù" (20e): a time on an earlier day.
+  final DateTime? at;
 
   @override
   ConsumerState<FeedSheet> createState() => _FeedSheetState();
@@ -610,7 +614,7 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
     super.initState();
     final edit = widget.edit;
     final babyId = me?.babyId ?? '';
-    initTime(edit?.occurredAt);
+    initTime(edit?.occurredAt ?? widget.at);
     _type = edit?.type ?? widget.initialType;
     _milk =
         edit?.milk ??
@@ -781,8 +785,9 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
 /// 23a Ghi hút sữa (106:11118): side, amount (required), duration wheel, start time. Pumped
 /// milk is never baby intake (R-054). Per-side amounts (G-062) and the timer (S5) come later.
 class PumpSheet extends ConsumerStatefulWidget {
-  const PumpSheet({this.edit, this.timer, super.key});
+  const PumpSheet({this.edit, this.timer, this.at, super.key});
   final CareRecord? edit;
+  final DateTime? at;
 
   /// "Xong · nhập lượng sữa" (23c): the stopped pump timer this save ends.
   final CareTimer? timer;
@@ -803,7 +808,7 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
     super.initState();
     final edit = widget.edit;
     final timer = widget.timer;
-    initTime(edit?.occurredAt ?? timer?.startedAt);
+    initTime(edit?.occurredAt ?? timer?.startedAt ?? widget.at);
     if (timer != null) {
       final record = timer.toRecord(DateTime.now());
       _minutes = record.durationMin;
@@ -942,8 +947,9 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
 
 /// 24 Thay tã (46:3308): two taps — choose → Lưu; defaults to the last kind.
 class DiaperSheet extends ConsumerStatefulWidget {
-  const DiaperSheet({this.edit, super.key});
+  const DiaperSheet({this.edit, this.at, super.key});
   final CareRecord? edit;
+  final DateTime? at;
 
   @override
   ConsumerState<DiaperSheet> createState() => _DiaperSheetState();
@@ -956,7 +962,7 @@ class _DiaperSheetState extends ConsumerState<DiaperSheet>
   @override
   void initState() {
     super.initState();
-    initTime(widget.edit?.occurredAt);
+    initTime(widget.edit?.occurredAt ?? widget.at);
     _kind =
         widget.edit?.diaper ??
         memory.get(me?.babyId ?? '', 'diaper', DiaperKind.values) ??

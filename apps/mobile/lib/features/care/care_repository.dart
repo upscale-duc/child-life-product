@@ -43,6 +43,37 @@ class CareRepository {
           .snapshots(includeMetadataChanges: true)
           .map(_parse);
 
+  /// Live records with a start in [from, to), newest first (History, Statistics).
+  Stream<List<CareRecord>> watchRange(
+    String babyId,
+    DateTime from,
+    DateTime to,
+  ) => _records(babyId)
+      .where('deleted', isEqualTo: false)
+      .where('occurredAt', isGreaterThanOrEqualTo: Timestamp.fromDate(from))
+      .where('occurredAt', isLessThan: Timestamp.fromDate(to))
+      .orderBy('occurredAt', descending: true)
+      .limit(3000)
+      .snapshots(includeMetadataChanges: true)
+      .map(_parse);
+
+  /// Server day summaries between two local dates (`YYYY-MM-DD`), for the calendar dots (20f).
+  Stream<Map<String, DayMarks>> watchDayMarks(
+    String babyId,
+    String first,
+    String last,
+  ) => _db
+      .collection('babies/$babyId/days')
+      .where('date', isGreaterThanOrEqualTo: first)
+      .where('date', isLessThanOrEqualTo: last)
+      .snapshots()
+      .map(
+        (s) => {
+          for (final d in s.docs)
+            if (DayMarks.fromJson(d.data()) case final m? when m.any) d.id: m,
+        },
+      );
+
   /// "Các lần đo trước" (28) and the growth tile.
   Stream<List<CareRecord>> watchGrowth(String babyId) => _records(babyId)
       .where('type', isEqualTo: CareType.growth.name)
@@ -276,6 +307,26 @@ final onlineProvider = StreamProvider<bool>((ref) async* {
   }
 }
 
+/// Bounds of the local calendar date [date] (its year / month / day) in the baby's zone.
+({DateTime start, DateTime end}) babyDateBounds(String zone, DateTime date) {
+  ensureTimeZones();
+  try {
+    final location = tz.getLocation(zone);
+    final start = tz.TZDateTime(location, date.year, date.month, date.day);
+    final end = tz.TZDateTime(location, date.year, date.month, date.day + 1);
+    return (start: start.toUtc(), end: end.toUtc());
+  } on Object {
+    final start = DateTime(date.year, date.month, date.day);
+    return (start: start, end: start.add(const Duration(days: 1)));
+  }
+}
+
+/// Today's calendar date in the baby's zone.
+DateTime babyToday(String zone, DateTime now) {
+  final local = inBabyZone(zone, now);
+  return DateTime(local.year, local.month, local.day);
+}
+
 /// [at] as wall-clock time in the baby's zone (labels such as "Hôm nay, 14:20").
 DateTime inBabyZone(String zone, DateTime at) {
   ensureTimeZones();
@@ -320,3 +371,52 @@ final timerClockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
 
 /// Per-second refresh on timer screens and live tiles; tests turn it off.
 final timerTicksProvider = Provider<bool>((ref) => true);
+
+/// What a day holds, for the 20f calendar dots (feeds blue, sleep purple, diapers green).
+class DayMarks {
+  const DayMarks({
+    required this.feeds,
+    required this.sleep,
+    required this.diapers,
+    required this.other,
+  });
+
+  final bool feeds;
+  final bool sleep;
+  final bool diapers;
+
+  /// Pumping or growth only.
+  final bool other;
+
+  bool get any => feeds || sleep || diapers || other;
+
+  static DayMarks? fromJson(Map<String, dynamic> json) {
+    int n(String a, [String? b]) {
+      final v = b == null
+          ? json[a]
+          : (json[a] is Map ? (json[a] as Map)[b] : null);
+      return v is num ? v.toInt() : 0;
+    }
+
+    return DayMarks(
+      feeds: n('bottle', 'count') + n('breast', 'count') > 0,
+      sleep: n('sleepMinutes') > 0,
+      diapers: n('diaper', 'count') > 0,
+      other: n('pump', 'count') + n('growth', 'count') > 0,
+    );
+  }
+}
+
+typedef RangeKey = (String babyId, DateTime from, DateTime to);
+
+final rangeRecordsProvider = StreamProvider.family<List<CareRecord>, RangeKey>(
+  (ref, key) =>
+      ref.watch(careRepositoryProvider).watchRange(key.$1, key.$2, key.$3),
+);
+
+final dayMarksProvider =
+    StreamProvider.family<Map<String, DayMarks>, (String, String, String)>(
+      (ref, key) => ref
+          .watch(careRepositoryProvider)
+          .watchDayMarks(key.$1, key.$2, key.$3),
+    );

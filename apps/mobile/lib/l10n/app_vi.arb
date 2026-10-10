@@ -2800,5 +2800,840 @@
   "tourStart": "Bắt đầu",
   "@tourStart": {
     "description": "18c last action."
+  },
+  "historyTitle": "Lịch sử",
+  "@historyTitle": {
+    "description": "20 title (46:2469)."
+  },
+  "monthChip": "Tháng {month}",
+  "@monthChip": {
+    "description": "Month picker chip.",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "monthName": {
+        "type": "String"
+      }
+    }
+  },
+  "filterAll": "Tất cả",
+  "@filterAll": {
+    "description": "Filter chip."
+  },
+  "filterFeed": "Bú",
+  "@filterFeed": {
+    "description": "Filter chip (bottle + breast)."
+  },
+  "filterPump": "Hút sữa",
+  "@filterPump": {
+    "description": "Filter chip."
+  },
+  "filterSleep": "Ngủ",
+  "@filterSleep": {
+    "description": "Filter chip."
+  },
+  "filterDiaper": "Tã",
+  "@filterDiaper": {
+    "description": "Filter chip."
+  },
+  "filterGrowth": "Tăng trưởng",
+  "@filterGrowth": {
+    "description": "Filter chip."
+  },
+  "periodNight": "Đêm",
+  "@periodNight": {
+    "description": "TimeSectionHeader (59:431)."
+  },
+  "periodMorning": "Sáng",
+  "@periodMorning": {
+    "description": "TimeSectionHeader."
+  },
+  "periodNoon": "Trưa",
+  "@periodNoon": {
+    "description": "TimeSectionHeader."
+  },
+  "periodAfternoon": "Chiều",
+  "@periodAfternoon": {
+    "description": "TimeSectionHeader."
+  },
+  "periodEvening": "Tối",
+  "@periodEvening": {
+    "description": "TimeSectionHeader."
+  },
+  "periodItems": "{count} mục",
+  "@periodItems": {
+    "description": "Section count pill.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "loggedOnDay": "Đã ghi ngày {date}",
+  "@loggedOnDay": {
+    "description": "DayRhythm title for a past day (not drawn).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "feedToday": "Bú hôm nay",
+  "@feedToday": {
+    "description": "20a card title."
+  },
+  "feedOnDay": "Bú ngày {date}",
+  "@feedOnDay": {
+    "description": "20a card title, past day.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastFeed": "Cữ gần nhất",
+  "@lastFeed": {
+    "description": "20a row."
+  },
+  "averageGap": "Cách nhau trung bình",
+  "@averageGap": {
+    "description": "20a row."
+  },
+  "feedStatsLink": "Xem thống kê bú",
+  "@feedStatsLink": {
+    "description": "20a link card."
+  },
+  "feedStatsLinkHint": "Tỉ lệ ngày/đêm · lượng sữa theo giờ · bú mẹ trái/phải",
+  "@feedStatsLinkHint": {
+    "description": "20a link card subtitle."
+  },
+  "sleepToday": "Ngủ hôm nay",
+  "@sleepToday": {
+    "description": "20b card title."
+  },
+  "sleepOnDay": "Ngủ ngày {date}",
+  "@sleepOnDay": {
+    "description": "20b card title, past day.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "totalSlept": "Tổng đã ngủ",
+  "@totalSlept": {
+    "description": "20b row."
+  },
+  "sleepCount": "Số giấc",
+  "@sleepCount": {
+    "description": "20b row."
+  },
+  "sleepsValue": "{count} giấc",
+  "@sleepsValue": {
+    "description": "Sleep count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "longestSleep": "Giấc dài nhất",
+  "@longestSleep": {
+    "description": "20b row / 20h KPI."
+  },
+  "awakeNow": "Đang thức",
+  "@awakeNow": {
+    "description": "20b row."
+  },
+  "awakeSince": "{duration} · từ {time}",
+  "@awakeSince": {
+    "description": "20b value (\"2 giờ · từ 13:05\").",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asleepNow": "Đang ngủ",
+  "@asleepNow": {
+    "description": "20b row while a sleep runs (not drawn)."
+  },
+  "sleepStatsLink": "Xem thống kê ngủ",
+  "@sleepStatsLink": {
+    "description": "20b link card."
+  },
+  "sleepStatsLinkHint": "Tỉ lệ ngày/đêm · nhịp ngủ 7 ngày · giấc dài nhất",
+  "@sleepStatsLinkHint": {
+    "description": "20b link card subtitle."
+  },
+  "diaperToday": "Tã hôm nay",
+  "@diaperToday": {
+    "description": "20c card title."
+  },
+  "diaperOnDay": "Tã ngày {date}",
+  "@diaperOnDay": {
+    "description": "20c card title, past day.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "diaperTotal": "Tổng",
+  "@diaperTotal": {
+    "description": "20c row."
+  },
+  "diaperLast": "Gần nhất",
+  "@diaperLast": {
+    "description": "20c row."
+  },
+  "timesValue": "{count} lần",
+  "@timesValue": {
+    "description": "Count of changes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pumpToday": "Hút sữa hôm nay",
+  "@pumpToday": {
+    "description": "Pump card title (not drawn)."
+  },
+  "pumpOnDay": "Hút sữa ngày {date}",
+  "@pumpOnDay": {
+    "description": "Pump card title, past day (not drawn).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pumpSessions": "Số lần",
+  "@pumpSessions": {
+    "description": "Pump card row."
+  },
+  "pumpVolume": "Lượng sữa",
+  "@pumpVolume": {
+    "description": "Pump card row."
+  },
+  "pumpNotIntake": "Sữa hút ra không tính vào lượng bé bú.",
+  "@pumpNotIntake": {
+    "description": "Pump card note (D-026)."
+  },
+  "rowBreastSide": "Bú mẹ · {side}",
+  "@rowBreastSide": {
+    "description": "Timeline title.",
+    "placeholders": {
+      "side": {
+        "type": "String"
+      }
+    }
+  },
+  "sideBothFull": "Cả hai bên",
+  "@sideBothFull": {
+    "description": "Breast / pump sides."
+  },
+  "sideLeftFull": "Bên trái",
+  "@sideLeftFull": {
+    "description": "Breast / pump side."
+  },
+  "sideRightFull": "Bên phải",
+  "@sideRightFull": {
+    "description": "Breast / pump side."
+  },
+  "rowSleep": "Ngủ {duration}",
+  "@rowSleep": {
+    "description": "Timeline title (\"Ngủ 1 giờ 20 phút\").",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "rowSpan": "{from} – {to}",
+  "@rowSpan": {
+    "description": "Time span.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "rowYesterdayTime": "{time} hôm qua",
+  "@rowYesterdayTime": {
+    "description": "Start before the day (D-027).",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "rowRunning": "Đang chạy",
+  "@rowRunning": {
+    "description": "Running timer row (G-067)."
+  },
+  "growthLatest": "Gần nhất · {when}",
+  "@growthLatest": {
+    "description": "20d card label.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "growthWeightTab": "Cân nặng",
+  "@growthWeightTab": {
+    "description": "20d toggle."
+  },
+  "growthLengthTab": "Chiều dài",
+  "@growthLengthTab": {
+    "description": "20d toggle."
+  },
+  "growthDeltaVs": "{delta} so với {date}",
+  "@growthDeltaVs": {
+    "description": "20d delta pill.",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "growthMeasurements": "Các lần đo",
+  "@growthMeasurements": {
+    "description": "20d section."
+  },
+  "growthAdd": "Thêm số đo",
+  "@growthAdd": {
+    "description": "20d button."
+  },
+  "growthEmpty": "Chưa có lần đo nào.",
+  "@growthEmpty": {
+    "description": "20d empty (not drawn)."
+  },
+  "emptyFeedWhat": "cữ bú",
+  "@emptyFeedWhat": {
+    "description": "20e object."
+  },
+  "emptyPumpWhat": "hút sữa",
+  "@emptyPumpWhat": {
+    "description": "20e object."
+  },
+  "emptySleepWhat": "giấc ngủ",
+  "@emptySleepWhat": {
+    "description": "20e object."
+  },
+  "emptyDiaperWhat": "thay tã",
+  "@emptyDiaperWhat": {
+    "description": "20e object."
+  },
+  "emptyAllWhat": "ghi chép nào",
+  "@emptyAllWhat": {
+    "description": "20e object (all, not drawn)."
+  },
+  "emptyDayTitle": "Chưa ghi {what} ngày {date}",
+  "@emptyDayTitle": {
+    "description": "20e title (105:9471).",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "emptyTodayTitle": "Chưa ghi {what} hôm nay",
+  "@emptyTodayTitle": {
+    "description": "20e title for today (not drawn).",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "emptyDayBody": "Nếu quên ghi lúc đó, bạn có thể ghi bù với giờ của ngày này.",
+  "@emptyDayBody": {
+    "description": "20e body."
+  },
+  "backLog": "Ghi bù {what}",
+  "@backLog": {
+    "description": "20e button.",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "logNow": "Ghi {what}",
+  "@logNow": {
+    "description": "Empty today button.",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "seeAllOnDay": "Xem tất cả ghi chép ngày {date}",
+  "@seeAllOnDay": {
+    "description": "20e link.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pickDateTitle": "Chọn ngày",
+  "@pickDateTitle": {
+    "description": "20f sheet title (108:10271)."
+  },
+  "calendarMonth": "Tháng {month}, {year}",
+  "@calendarMonth": {
+    "description": "20f month header.",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      },
+      "monthName": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarFootnote": "Chấm màu = ngày có ghi chép. {baby} sinh ngày {date}, không chọn được ngày trước đó.",
+  "@calendarFootnote": {
+    "description": "20f footnote.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarFootnoteNoDob": "Chấm màu = ngày có ghi chép.",
+  "@calendarFootnoteNoDob": {
+    "description": "20f footnote without the birth date (caregivers)."
+  },
+  "backToToday": "Về hôm nay",
+  "@backToToday": {
+    "description": "20f button."
+  },
+  "a11yPrevMonth": "Tháng trước",
+  "@a11yPrevMonth": {
+    "description": "Calendar arrow."
+  },
+  "a11yNextMonth": "Tháng sau",
+  "@a11yNextMonth": {
+    "description": "Calendar arrow."
+  },
+  "feedStatsTitle": "Thống kê bú",
+  "@feedStatsTitle": {
+    "description": "20g title (109:10562)."
+  },
+  "sleepStatsTitle": "Thống kê ngủ",
+  "@sleepStatsTitle": {
+    "description": "20h title (111:10994)."
+  },
+  "windowToday": "Hôm nay",
+  "@windowToday": {
+    "description": "Stats segment."
+  },
+  "window7": "7 ngày",
+  "@window7": {
+    "description": "Stats segment."
+  },
+  "window30": "30 ngày",
+  "@window30": {
+    "description": "Stats segment."
+  },
+  "perDay": "TB mỗi ngày",
+  "@perDay": {
+    "description": "KPI label."
+  },
+  "gapAverage": "Cách nhau TB",
+  "@gapAverage": {
+    "description": "KPI label."
+  },
+  "sinceYesterday18": "Từ 18h hôm qua",
+  "@sinceYesterday18": {
+    "description": "20g2 KPI label."
+  },
+  "feedsCount": "{count} cữ",
+  "@feedsCount": {
+    "description": "Feeds.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bottlesBreasts": "{bottles} bình · {breasts} mẹ",
+  "@bottlesBreasts": {
+    "description": "20g2 KPI label.",
+    "placeholders": {
+      "bottles": {
+        "type": "int"
+      },
+      "breasts": {
+        "type": "int"
+      }
+    }
+  },
+  "dayNightFeed": "Bú ngày và đêm",
+  "@dayNightFeed": {
+    "description": "20g card title."
+  },
+  "dayNightFeedHint": "Ngày 06:00–18:00 · Đêm 18:00–06:00 · TB {days} ngày",
+  "@dayNightFeedHint": {
+    "description": "20g card subtitle.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "nightAndToday": "Đêm qua và hôm nay",
+  "@nightAndToday": {
+    "description": "20g2 card title."
+  },
+  "nightAndTodayHint": "Đêm qua 18:00–06:00 · Hôm nay từ 06:00",
+  "@nightAndTodayHint": {
+    "description": "20g2 card subtitle."
+  },
+  "dayLabel": "Ngày",
+  "@dayLabel": {
+    "description": "Ratio legend."
+  },
+  "nightLabel": "Đêm",
+  "@nightLabel": {
+    "description": "Ratio legend."
+  },
+  "todayLabel": "Hôm nay",
+  "@todayLabel": {
+    "description": "Ratio legend (20g2)."
+  },
+  "lastNightLabel": "Đêm qua",
+  "@lastNightLabel": {
+    "description": "Ratio legend (20g2)."
+  },
+  "mlAndFeeds": "{ml} ml · {count} cữ",
+  "@mlAndFeeds": {
+    "description": "Ratio legend detail.",
+    "placeholders": {
+      "ml": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lastNightInsight": "Đêm qua bú {count} cữ, khoảng nghỉ dài nhất {gap} ({from}–{to}).",
+  "@lastNightInsight": {
+    "description": "20g insight.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "gap": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "lastNightGapInsight": "Khoảng nghỉ dài nhất đêm qua: {gap} ({from}–{to}).",
+  "@lastNightGapInsight": {
+    "description": "20g2 insight.",
+    "placeholders": {
+      "gap": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "milkByHour": "Lượng sữa theo giờ",
+  "@milkByHour": {
+    "description": "20g card."
+  },
+  "milkByHourHint": "Bú bình · trung bình {days} ngày (ml)",
+  "@milkByHourHint": {
+    "description": "20g card subtitle.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "peakCallout": "{hour}h · {ml} ml",
+  "@peakCallout": {
+    "description": "20g peak.",
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      },
+      "ml": {
+        "type": "int"
+      }
+    }
+  },
+  "mlPerHour": "ml mỗi giờ",
+  "@mlPerHour": {
+    "description": "20g legend."
+  },
+  "nightWindow": "Khung đêm",
+  "@nightWindow": {
+    "description": "Chart legend."
+  },
+  "eachFeedToday": "Từng cữ hôm nay",
+  "@eachFeedToday": {
+    "description": "20g2 card."
+  },
+  "eachFeedHint": "Mỗi cột là một cữ bú bình (ml) · chấm hồng là bú mẹ",
+  "@eachFeedHint": {
+    "description": "20g2 card subtitle."
+  },
+  "notYet": "Chưa tới",
+  "@notYet": {
+    "description": "Chart future area."
+  },
+  "nowLabel": "Bây giờ",
+  "@nowLabel": {
+    "description": "Chart now line."
+  },
+  "bottleMlLegend": "Bú bình (ml)",
+  "@bottleMlLegend": {
+    "description": "20g2 legend."
+  },
+  "nightOrNotYet": "Đêm / chưa tới",
+  "@nightOrNotYet": {
+    "description": "20g2 legend."
+  },
+  "breastCard": "Bú mẹ",
+  "@breastCard": {
+    "description": "Stats card."
+  },
+  "averageDays": "TB {days} ngày",
+  "@averageDays": {
+    "description": "Card subtitle.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "perDayShort": "mỗi ngày",
+  "@perDayShort": {
+    "description": "KPI caption."
+  },
+  "perFeed": "mỗi cữ",
+  "@perFeed": {
+    "description": "KPI caption."
+  },
+  "todayShort": "hôm nay",
+  "@todayShort": {
+    "description": "KPI caption."
+  },
+  "leftShare": "Bên trái {pct}%",
+  "@leftShare": {
+    "description": "Side legend.",
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "rightShare": "Bên phải {pct}%",
+  "@rightShare": {
+    "description": "Side legend.",
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "leftMinutes": "Trái {minutes} phút",
+  "@leftMinutes": {
+    "description": "Side legend (today).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "rightMinutes": "Phải {minutes} phút",
+  "@rightMinutes": {
+    "description": "Side legend (today).",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "nextSideLeft": "Lần trước kết thúc bên phải → lần tới nên bắt đầu bên trái.",
+  "@nextSideLeft": {
+    "description": "Breast hint."
+  },
+  "nextSideRight": "Lần trước kết thúc bên trái → lần tới nên bắt đầu bên phải.",
+  "@nextSideRight": {
+    "description": "Breast hint."
+  },
+  "dayNightSleep": "Ngủ ngày và đêm",
+  "@dayNightSleep": {
+    "description": "20h card."
+  },
+  "dayNightSleepHint": "Đêm 18:00–06:00 · Ngày 06:00–18:00 · TB {days} ngày",
+  "@dayNightSleepHint": {
+    "description": "20h card subtitle.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "durationAndSleeps": "{duration} · {range} giấc",
+  "@durationAndSleeps": {
+    "description": "20h legend detail.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "nightLongestInsight": "Giấc đêm dài nhất tăng từ {from} lên {to} trong {days} ngày.",
+  "@nightLongestInsight": {
+    "description": "20h insight.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "nightLongestSame": "Giấc đêm dài nhất: {duration}.",
+  "@nightLongestSame": {
+    "description": "20h insight without a trend.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "sleepRhythm": "Nhịp ngủ {days} ngày",
+  "@sleepRhythm": {
+    "description": "20h card.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "sleepRhythmToday": "Nhịp ngủ hôm nay",
+  "@sleepRhythmToday": {
+    "description": "20h card for Hôm nay (D-028)."
+  },
+  "sleepRhythmHint": "Mỗi hàng là một ngày · thanh tím là lúc ngủ",
+  "@sleepRhythmHint": {
+    "description": "20h card subtitle."
+  },
+  "longestEachDay": "Giấc dài nhất mỗi ngày",
+  "@longestEachDay": {
+    "description": "20h card."
+  },
+  "longestEachDayHint": "Giờ ngủ liền một mạch",
+  "@longestEachDayHint": {
+    "description": "20h card subtitle."
+  },
+  "legendSleepShort": "Ngủ",
+  "@legendSleepShort": {
+    "description": "Chart legend."
+  },
+  "statsEmpty": "Chưa đủ dữ liệu trong khoảng này.",
+  "@statsEmpty": {
+    "description": "Stats without records (not drawn)."
+  },
+  "compactHM": "{h}g {m}p",
+  "@compactHM": {
+    "description": "Compact duration in stats.",
+    "placeholders": {
+      "h": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "compactH": "{h}g",
+  "@compactH": {
+    "description": "Compact hours.",
+    "placeholders": {
+      "h": {
+        "type": "int"
+      }
+    }
+  },
+  "compactHMShort": "{h}g{m}",
+  "@compactHMShort": {
+    "description": "Chart label (\"6g30\").",
+    "placeholders": {
+      "h": {
+        "type": "int"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "durationAndSleep": "{duration} · {count} giấc",
+  "@durationAndSleep": {
+    "description": "20h legend detail, one count (Hôm nay).",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayNightSleepTodayHint": "Hôm nay · Đêm 00:00–06:00 · Ngày 06:00–18:00",
+  "@dayNightSleepTodayHint": {
+    "description": "20h card subtitle for Hôm nay (D-028): calendar day, clipped at midnight (D-027)."
+  },
+  "historyCaregiverNote": "Bạn sửa được bản ghi của mình. Bản ghi của ba mẹ chỉ xem.",
+  "@historyCaregiverNote": {
+    "description": "12d role note (192:618), caregivers (D-022)."
   }
 }

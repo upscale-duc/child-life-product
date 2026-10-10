@@ -1,0 +1,1187 @@
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart' hide TextDirection;
+
+import '../../core/appearance/appearance_providers.dart';
+import '../../core/design/cl_theme.dart';
+import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_navigation.dart';
+import '../../core/widgets/cl_segmented.dart';
+import '../../l10n/app_localizations.dart';
+import '../baby/baby_avatar_view.dart';
+import '../baby/baby_repository.dart';
+import '../home/home_shell.dart';
+import 'care_calc.dart';
+import 'care_format.dart';
+import 'care_models.dart';
+import 'care_repository.dart';
+import 'history_screen.dart' show weekdayShort;
+
+/// "Hôm nay · 7 ngày · 30 ngày" — remembered per screen ("Remembers the last choice").
+final _windowProvider = NotifierProvider.family<_Window, StatsWindow, String>(
+  _Window.new,
+);
+
+class _Window extends Notifier<StatsWindow> {
+  _Window(this.screen);
+  final String screen;
+
+  @override
+  StatsWindow build() =>
+      StatsWindow.values.asNameMap()[ref
+          .read(sharedPreferencesProvider)
+          .getString('stats.$screen.window')] ??
+      StatsWindow.week;
+
+  void set(StatsWindow w) {
+    ref
+        .read(sharedPreferencesProvider)
+        .setString('stats.$screen.window', w.name);
+    state = w;
+  }
+}
+
+/// "2g 50p" — the compact form the stats screens use (20g, 20h).
+String compactDuration(AppLocalizations l10n, Duration d) {
+  final h = d.inHours;
+  final m = d.inMinutes % 60;
+  if (h == 0) return l10n.durationMinutes(m);
+  return m == 0 ? l10n.compactH(h) : l10n.compactHM(h, m);
+}
+
+String _windowLabel(AppLocalizations l10n, StatsWindow w) => switch (w) {
+  StatsWindow.today => l10n.windowToday,
+  StatsWindow.week => l10n.window7,
+  StatsWindow.month => l10n.window30,
+};
+
+/// Common frame: back, baby, title, the window segmented and the cards.
+class _StatsFrame extends ConsumerWidget {
+  const _StatsFrame({
+    required this.title,
+    required this.screen,
+    required this.builder,
+  });
+
+  final String title;
+  final String screen;
+  final List<Widget> Function(
+    BuildContext context,
+    StatsWindow window,
+    List<CareRecord> records,
+    String zone,
+    DateTime now,
+  )
+  builder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final me = ref.watch(selectedMembershipProvider);
+    if (me == null) return ColoredBox(color: cl.colors.cloud);
+    final baby = ref.watch(babyProvider(me.babyId)).value;
+    final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
+    final now =
+        ref.watch(careClockProvider).value ?? ref.read(timerClockProvider)();
+    final window = ref.watch(_windowProvider(screen));
+    final today = babyDayBounds(zone, now);
+    // 30 days plus the evening before (Hôm nay starts at 18:00 yesterday).
+    final from = DateTime.fromMillisecondsSinceEpoch(
+      today.start.millisecondsSinceEpoch -
+          const Duration(days: 31).inMilliseconds,
+      isUtc: true,
+    );
+    final records =
+        ref.watch(rangeRecordsProvider((me.babyId, from, today.end))).value ??
+        const <CareRecord>[];
+    return Scaffold(
+      backgroundColor: cl.colors.cloud,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                ClSpace.s4,
+                ClSpace.s2,
+                ClSpace.s4,
+                0,
+              ),
+              child: ClTopBar(
+                onBack: () => context.pop(),
+                trailing: baby == null
+                    ? null
+                    : ClBabySwitcher(
+                        label: baby.nickname,
+                        avatar: SavedBabyAvatar(baby: baby, size: 32),
+                      ),
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  ClSpace.s3,
+                  ClSpace.s4,
+                  ClTabDock.contentBottomPadding + ClSpace.s6,
+                ),
+                children: [
+                  Semantics(
+                    header: true,
+                    child: Text(title, style: cl.text.largeTitle),
+                  ),
+                  const SizedBox(height: ClSpace.s4),
+                  ClSegmented<StatsWindow>(
+                    options: StatsWindow.values,
+                    selected: window,
+                    labelOf: (w) => _windowLabel(l10n, w),
+                    onChanged: (w) =>
+                        ref.read(_windowProvider(screen).notifier).set(w),
+                  ),
+                  const SizedBox(height: ClSpace.s4),
+                  ...builder(context, window, records, zone, now),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Kpis extends StatelessWidget {
+  const _Kpis(this.items);
+  final List<(String, String)> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Row(
+      children: [
+        for (final (i, (value, label)) in items.indexed) ...[
+          if (i > 0) const SizedBox(width: ClSpace.s2),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(ClSpace.s3),
+              decoration: BoxDecoration(
+                color: cl.colors.surface,
+                borderRadius: BorderRadius.circular(ClRadius.control),
+                boxShadow: cl.shadows.card,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      value,
+                      style: cl.text.headline.copyWith(
+                        fontSize: 19,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _Card extends StatelessWidget {
+  const _Card({required this.title, this.subtitle, required this.children});
+  final String title;
+  final String? subtitle;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Container(
+      margin: const EdgeInsets.only(top: ClSpace.s4),
+      padding: const EdgeInsets.all(ClSpace.s4),
+      decoration: BoxDecoration(
+        color: cl.colors.surface,
+        borderRadius: BorderRadius.circular(ClRadius.card),
+        boxShadow: cl.shadows.card,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Semantics(header: true, child: Text(title, style: cl.text.headline)),
+          if (subtitle != null)
+            Text(
+              subtitle!,
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+          const SizedBox(height: ClSpace.s3),
+          ...children,
+        ],
+      ),
+    );
+  }
+}
+
+/// Two-part ratio bar with legend (day / night, left / right).
+class _Ratio extends StatelessWidget {
+  const _Ratio({required this.parts});
+
+  /// (colour, label, percent, detail)
+  final List<(Color, String, int, String)> parts;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final total = parts.fold(0, (s, p) => s + p.$3);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: SizedBox(
+            height: 12,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final (i, p) in parts.indexed) ...[
+                  if (i > 0) Container(width: 2, color: cl.colors.surface),
+                  Expanded(
+                    flex: math.max(1, total == 0 ? 1 : p.$3),
+                    child: ColoredBox(
+                      color: total == 0 ? cl.colors.surface2 : p.$1,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        Row(
+          children: [
+            for (final p in parts)
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: p.$1,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: ClSpace.s2),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: '${p.$2} ',
+                                  style: cl.text.label,
+                                ),
+                                TextSpan(
+                                  text: '${p.$3}%',
+                                  style: cl.text.bodyStrong,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            p.$4,
+                            style: cl.text.caption.copyWith(
+                              color: cl.colors.inkMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _Insight extends StatelessWidget {
+  const _Insight(this.text, {this.color, this.ink});
+  final String text;
+  final Color? color;
+  final Color? ink;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: ClSpace.s3),
+      padding: const EdgeInsets.all(ClSpace.s3),
+      decoration: BoxDecoration(
+        color: color ?? cl.colors.surface2,
+        borderRadius: BorderRadius.circular(ClRadius.control),
+      ),
+      child: Text(
+        text,
+        style: cl.text.label.copyWith(
+          fontSize: 13,
+          color: ink ?? cl.colors.ink,
+        ),
+      ),
+    );
+  }
+}
+
+int _pct(int part, int total) => total == 0 ? 0 : (part * 100 / total).round();
+
+/// 20g / 20g2 Thống kê bú (109:10562, 110:10949); 30 ngày per D-028.
+class FeedStatsScreen extends ConsumerWidget {
+  const FeedStatsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    return _StatsFrame(
+      title: l10n.feedStatsTitle,
+      screen: 'feed',
+      builder: (context, window, records, zone, now) {
+        final cl = context.cl;
+        final care = cl.care;
+        final hm = DateFormat('HH:mm');
+        final s = feedStats(records, zone, now, window);
+        final days = daysOf(window);
+        final gap = s.averageGap == null
+            ? '—'
+            : compactDuration(l10n, s.averageGap!);
+        final today = window == StatsWindow.today;
+        final totalMl = s.dayMl + s.nightMl;
+        final nightGap = s.lastNightGap;
+        final peak = s.peakHour;
+        final leftPct = _pct(s.leftMinutes, s.leftMinutes + s.rightMinutes);
+        return [
+          _Kpis([
+            (
+              l10n.amountMl(s.bottleMl),
+              today ? l10n.sinceYesterday18 : l10n.perDay,
+            ),
+            (
+              l10n.feedsCount(s.feeds),
+              today
+                  ? l10n.bottlesBreasts(s.bottleFeeds, s.breastFeeds)
+                  : l10n.perDay,
+            ),
+            (gap, l10n.gapAverage),
+          ]),
+          _Card(
+            title: today ? l10n.nightAndToday : l10n.dayNightFeed,
+            subtitle: today
+                ? l10n.nightAndTodayHint
+                : l10n.dayNightFeedHint(days),
+            children: [
+              _Ratio(
+                parts: [
+                  (
+                    cl.colors.sunshine,
+                    today ? l10n.todayLabel : l10n.dayLabel,
+                    _pct(s.dayMl, totalMl),
+                    l10n.mlAndFeeds(s.dayMl, s.dayFeeds),
+                  ),
+                  (
+                    care.sleep.accent,
+                    today ? l10n.lastNightLabel : l10n.nightLabel,
+                    totalMl == 0 ? 0 : 100 - _pct(s.dayMl, totalMl),
+                    l10n.mlAndFeeds(s.nightMl, s.nightFeeds),
+                  ),
+                ],
+              ),
+              if (nightGap != null)
+                _Insight(
+                  today
+                      ? l10n.lastNightGapInsight(
+                          durationLabel(l10n, nightGap.length.inMinutes),
+                          hm.format(inBabyZone(zone, nightGap.from)),
+                          hm.format(inBabyZone(zone, nightGap.to)),
+                        )
+                      : l10n.lastNightInsight(
+                          s.lastNightFeeds,
+                          durationLabel(l10n, nightGap.length.inMinutes),
+                          hm.format(inBabyZone(zone, nightGap.from)),
+                          hm.format(inBabyZone(zone, nightGap.to)),
+                        ),
+                ),
+            ],
+          ),
+          if (today)
+            _Card(
+              title: l10n.eachFeedToday,
+              subtitle: l10n.eachFeedHint,
+              children: [
+                SizedBox(
+                  height: 170,
+                  child: CustomPaint(
+                    size: Size.infinite,
+                    painter: _FeedsTodayPainter(
+                      feeds: s.todayFeeds,
+                      zone: zone,
+                      now: now,
+                      bar: care.bottle.accent,
+                      dot: care.breast.accent,
+                      shade: cl.colors.surface2,
+                      ink: cl.colors.ink,
+                      label: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
+                      ),
+                      notYet: l10n.notYet,
+                      unit: l10n.unitMinutes,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: ClSpace.s2),
+                _Legend([
+                  (care.bottle.accent, l10n.bottleMlLegend),
+                  (care.breast.accent, l10n.breastCard),
+                  (cl.colors.surface2, l10n.nightOrNotYet),
+                ]),
+              ],
+            )
+          else
+            _Card(
+              title: l10n.milkByHour,
+              subtitle: l10n.milkByHourHint(days),
+              children: [
+                SizedBox(
+                  height: 170,
+                  child: CustomPaint(
+                    size: Size.infinite,
+                    painter: _HourlyPainter(
+                      values: s.hourlyMl,
+                      peak: peak,
+                      bar: care.bottle.accent,
+                      peakBar: care.bottle.ink,
+                      shade: cl.colors.surface2,
+                      grid: cl.colors.separator,
+                      label: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
+                      ),
+                      callout: peak == null
+                          ? null
+                          : l10n.peakCallout(peak, s.hourlyMl[peak].round()),
+                      calloutStyle: cl.text.caption.copyWith(
+                        color: cl.colors.surface,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      calloutFill: cl.colors.ink,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: ClSpace.s2),
+                _Legend([
+                  (care.bottle.accent, l10n.mlPerHour),
+                  (cl.colors.surface2, l10n.nightWindow),
+                ]),
+              ],
+            ),
+          _Card(
+            title: l10n.breastCard,
+            subtitle: today ? l10n.windowToday : l10n.averageDays(days),
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: _Big(
+                      today
+                          ? l10n.feedsCount(s.breastFeeds)
+                          : l10n.feedsCount(s.breastPerDay.round()),
+                      today ? l10n.todayShort : l10n.perDayShort,
+                    ),
+                  ),
+                  Expanded(
+                    child: _Big(
+                      today
+                          ? durationLabel(l10n, s.leftMinutes + s.rightMinutes)
+                          : l10n.durationMinutes(s.breastMinutesPerFeed),
+                      today ? l10n.sideBothFull.toLowerCase() : l10n.perFeed,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: ClSpace.s3),
+              _Ratio(
+                parts: [
+                  (
+                    care.breast.accent,
+                    today
+                        ? l10n.leftMinutes(s.leftMinutes)
+                        : l10n.leftShare(leftPct),
+                    leftPct,
+                    '',
+                  ),
+                  (
+                    care.breast.ink,
+                    today
+                        ? l10n.rightMinutes(s.rightMinutes)
+                        : l10n.rightShare(100 - leftPct),
+                    s.leftMinutes + s.rightMinutes == 0 ? 0 : 100 - leftPct,
+                    '',
+                  ),
+                ],
+              ),
+              if (s.nextSide != null)
+                _Insight(
+                  s.nextSide == Side.left
+                      ? l10n.nextSideLeft
+                      : l10n.nextSideRight,
+                  color: care.breast.soft,
+                  ink: care.breast.ink,
+                ),
+            ],
+          ),
+        ];
+      },
+    );
+  }
+}
+
+class _Big extends StatelessWidget {
+  const _Big(this.value, this.caption);
+  final String value;
+  final String caption;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          value,
+          style: cl.text.headline.copyWith(
+            fontSize: 19,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Text(
+          caption,
+          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        ),
+      ],
+    );
+  }
+}
+
+class _Legend extends StatelessWidget {
+  const _Legend(this.items);
+  final List<(Color, String)> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Wrap(
+      spacing: ClSpace.s3,
+      children: [
+        for (final (color, label) in items)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+void _paintText(
+  Canvas canvas,
+  String text,
+  TextStyle style,
+  Offset at, {
+  bool centre = false,
+  bool right = false,
+}) {
+  final tp = TextPainter(
+    text: TextSpan(text: text, style: style),
+    textDirection: TextDirection.ltr,
+  )..layout();
+  final dx = centre ? at.dx - tp.width / 2 : (right ? at.dx - tp.width : at.dx);
+  tp.paint(canvas, Offset(dx, at.dy - tp.height / 2));
+}
+
+/// 0h–24h axis labels at the bottom of a chart area.
+void _paintHourAxis(
+  Canvas canvas,
+  Size size,
+  double left,
+  double width,
+  TextStyle style,
+) {
+  for (final h in const [0, 6, 12, 18, 24]) {
+    _paintText(
+      canvas,
+      '${h}h',
+      style,
+      Offset(left + width * h / 24, size.height - 8),
+      centre: h != 0 && h != 24,
+      right: h == 24,
+    );
+  }
+}
+
+/// "Lượng sữa theo giờ": 24 bars, night shading, darker peak bar with a callout.
+class _HourlyPainter extends CustomPainter {
+  _HourlyPainter({
+    required this.values,
+    required this.peak,
+    required this.bar,
+    required this.peakBar,
+    required this.shade,
+    required this.grid,
+    required this.label,
+    required this.callout,
+    required this.calloutStyle,
+    required this.calloutFill,
+  });
+
+  final List<double> values;
+  final int? peak;
+  final Color bar;
+  final Color peakBar;
+  final Color shade;
+  final Color grid;
+  final TextStyle label;
+  final String? callout;
+  final TextStyle calloutStyle;
+  final Color calloutFill;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const left = 32.0, bottom = 18.0, top = 26.0;
+    final w = size.width - left;
+    final h = size.height - bottom - top;
+    final max = values.fold(0.0, math.max);
+    final step = max <= 0 ? 20.0 : (max / 3 / 10).ceil() * 10.0;
+    final top3 = step * 3;
+    double x(int hour) => left + w * hour / 24;
+    final shadePaint = Paint()..color = shade;
+    canvas
+      ..drawRect(Rect.fromLTRB(x(0), top - 8, x(6), top + h), shadePaint)
+      ..drawRect(Rect.fromLTRB(x(18), top - 8, x(24), top + h), shadePaint);
+    for (var i = 0; i <= 3; i++) {
+      final y = top + h - h * i / 3;
+      canvas.drawLine(
+        Offset(left, y),
+        Offset(size.width, y),
+        Paint()..color = grid,
+      );
+      _paintText(
+        canvas,
+        '${(step * i).round()}',
+        label,
+        Offset(left - 6, y),
+        right: true,
+      );
+    }
+    final barWidth = w / 24 * 0.62;
+    for (var hour = 0; hour < 24; hour++) {
+      final v = values[hour];
+      if (v <= 0) continue;
+      final bh = h * (v / top3).clamp(0, 1);
+      final cx = x(hour) + w / 48;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(cx - barWidth / 2, top + h - bh, barWidth, bh),
+          const Radius.circular(3),
+        ),
+        Paint()..color = hour == peak ? peakBar : bar,
+      );
+      if (hour == peak && callout != null) {
+        final tp = TextPainter(
+          text: TextSpan(text: callout, style: calloutStyle),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        final bx = (cx - tp.width / 2 - 6).clamp(
+          0.0,
+          size.width - tp.width - 12,
+        );
+        final box = Rect.fromLTWH(
+          bx,
+          top + h - bh - tp.height - 12,
+          tp.width + 12,
+          tp.height + 6,
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(box, const Radius.circular(6)),
+          Paint()..color = calloutFill,
+        );
+        tp.paint(canvas, Offset(box.left + 6, box.top + 3));
+      }
+    }
+    _paintHourAxis(canvas, size, left, w, label);
+  }
+
+  @override
+  bool shouldRepaint(_HourlyPainter old) =>
+      old.values != values || old.bar != bar;
+}
+
+/// "Từng cữ hôm nay": bottle bars with ml, breastfeeds as pink dots, night and "Chưa tới".
+class _FeedsTodayPainter extends CustomPainter {
+  _FeedsTodayPainter({
+    required this.feeds,
+    required this.zone,
+    required this.now,
+    required this.bar,
+    required this.dot,
+    required this.shade,
+    required this.ink,
+    required this.label,
+    required this.notYet,
+    required this.unit,
+  });
+
+  final List<CareRecord> feeds;
+  final String zone;
+  final DateTime now;
+  final Color bar;
+  final Color dot;
+  final Color shade;
+  final Color ink;
+  final TextStyle label;
+  final String notYet;
+  final String unit;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const left = 32.0, bottom = 18.0, top = 16.0;
+    final w = size.width - left;
+    final h = size.height - bottom - top;
+    double hours(DateTime t) {
+      final local = inBabyZone(zone, t);
+      return local.hour + local.minute / 60;
+    }
+
+    double x(double hour) => left + w * hour / 24;
+    final shadePaint = Paint()..color = shade;
+    canvas.drawRect(Rect.fromLTRB(x(0), top, x(6), top + h), shadePaint);
+    final nowH = hours(now);
+    canvas.drawRect(
+      Rect.fromLTRB(x(nowH), top, x(24), top + h),
+      Paint()..color = shade.withValues(alpha: 0.6),
+    );
+    _paintText(
+      canvas,
+      notYet,
+      label,
+      Offset(x((nowH + 24) / 2), top + 10),
+      centre: true,
+    );
+    const maxMl = 150.0;
+    for (var i = 0; i <= 3; i++) {
+      final y = top + h - h * i / 3;
+      _paintText(
+        canvas,
+        '${(maxMl * i / 3).round()}',
+        label,
+        Offset(left - 6, y),
+        right: true,
+      );
+    }
+    for (final r in feeds) {
+      final cx = x(hours(r.occurredAt));
+      if (r.type == CareType.bottle) {
+        final ml = (r.amountMl ?? 0).toDouble();
+        final bh = h * (ml / maxMl).clamp(0.05, 1);
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(cx - 5, top + h - bh, 10, bh),
+            const Radius.circular(3),
+          ),
+          Paint()..color = bar,
+        );
+        _paintText(
+          canvas,
+          '${ml.round()}',
+          label,
+          Offset(cx, top + h - bh - 8),
+          centre: true,
+        );
+      } else {
+        canvas.drawCircle(Offset(cx, top + h - 6), 6, Paint()..color = dot);
+        _paintText(
+          canvas,
+          '${r.durationMin ?? 0}$unit',
+          label,
+          Offset(cx, top + h - 20),
+          centre: true,
+        );
+      }
+    }
+    canvas.drawRect(
+      Rect.fromLTWH(x(nowH) - 1, top, 2, h),
+      Paint()..color = ink,
+    );
+    _paintHourAxis(canvas, size, left, w, label);
+  }
+
+  @override
+  bool shouldRepaint(_FeedsTodayPainter old) =>
+      old.feeds != feeds || old.now != now;
+}
+
+/// 20h Thống kê ngủ (111:10994); Hôm nay and 30 ngày per D-028.
+class SleepStatsScreen extends ConsumerWidget {
+  const SleepStatsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    return _StatsFrame(
+      title: l10n.sleepStatsTitle,
+      screen: 'sleep',
+      builder: (context, window, records, zone, now) {
+        final cl = context.cl;
+        final care = cl.care;
+        final locale = Localizations.localeOf(context).toLanguageTag();
+        final s = sleepStats(records, zone, now, window);
+        final days = daysOf(window);
+        final total = s.nightPerDay + s.dayPerDay;
+        final nightPct = total == Duration.zero
+            ? 0
+            : (s.nightPerDay.inMinutes * 100 / total.inMinutes).round();
+        String hm(Duration d) =>
+            l10n.rhythmSleepValue(d.inHours, d.inMinutes % 60);
+        String detail(Duration d, (int, int) r) => r.$1 == r.$2
+            ? l10n.durationAndSleep(hm(d), r.$1)
+            : l10n.durationAndSleeps(hm(d), '${r.$1}–${r.$2}');
+        final today = window == StatsWindow.today;
+        final grew = s.firstNightLongest != s.lastNightLongest && days > 1;
+        return [
+          _Kpis([
+            (
+              compactDuration(l10n, s.perDay),
+              today ? l10n.windowToday : l10n.perDay,
+            ),
+            (
+              l10n.sleepsValue(s.sleepsPerDay.round()),
+              today ? l10n.windowToday : l10n.perDay,
+            ),
+            (compactDuration(l10n, s.longest), l10n.longestSleep),
+          ]),
+          _Card(
+            title: l10n.dayNightSleep,
+            subtitle: today
+                ? l10n.dayNightSleepTodayHint
+                : l10n.dayNightSleepHint(days),
+            children: [
+              _Ratio(
+                parts: [
+                  (
+                    care.sleep.accent,
+                    l10n.nightLabel,
+                    nightPct,
+                    detail(s.nightPerDay, s.nightCounts),
+                  ),
+                  (
+                    cl.colors.sunshine,
+                    l10n.dayLabel,
+                    total == Duration.zero ? 0 : 100 - nightPct,
+                    detail(s.dayPerDay, s.dayCounts),
+                  ),
+                ],
+              ),
+              if (s.lastNightLongest > Duration.zero)
+                _Insight(
+                  grew
+                      ? l10n.nightLongestInsight(
+                          days,
+                          durationLabel(l10n, s.firstNightLongest.inMinutes),
+                          durationLabel(l10n, s.lastNightLongest.inMinutes),
+                        )
+                      : l10n.nightLongestSame(
+                          durationLabel(l10n, s.lastNightLongest.inMinutes),
+                        ),
+                ),
+            ],
+          ),
+          _Card(
+            title: window == StatsWindow.today
+                ? l10n.sleepRhythmToday
+                : l10n.sleepRhythm(days),
+            subtitle: l10n.sleepRhythmHint,
+            children: [
+              SizedBox(
+                height: 30.0 + s.rows.length * (days > 7 ? 10 : 22),
+                child: CustomPaint(
+                  size: Size.infinite,
+                  painter: _RhythmPainter(
+                    rows: s.rows,
+                    labels: [
+                      for (final r in s.rows)
+                        () {
+                          final d = inBabyZone(zone, r.start);
+                          return '${weekdayShort(locale, d)} ${d.day}';
+                        }(),
+                    ],
+                    nowHour: () {
+                      final local = inBabyZone(zone, now);
+                      return local.hour + local.minute / 60;
+                    }(),
+                    bar: care.sleep.accent,
+                    shade: cl.colors.surface2,
+                    ink: cl.colors.ink,
+                    label: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                    bold: cl.text.caption.copyWith(
+                      color: cl.colors.ink,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: ClSpace.s2),
+              _Legend([
+                (care.sleep.accent, l10n.legendSleepShort),
+                (cl.colors.surface2, l10n.nightWindow),
+              ]),
+            ],
+          ),
+          _Card(
+            title: l10n.longestEachDay,
+            subtitle: l10n.longestEachDayHint,
+            children: [
+              SizedBox(
+                height: 150,
+                child: CustomPaint(
+                  size: Size.infinite,
+                  painter: _LongestPainter(
+                    rows: s.rows,
+                    labels: [
+                      for (final r in s.rows)
+                        weekdayShort(locale, inBabyZone(zone, r.start)),
+                    ],
+                    bar: care.sleep.accent,
+                    last: care.sleep.ink,
+                    grid: cl.colors.separator,
+                    label: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                    bold: cl.text.caption.copyWith(
+                      color: cl.colors.ink,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    format: (d) => l10n.compactHMShort(
+                      d.inHours,
+                      (d.inMinutes % 60).toString().padLeft(2, '0'),
+                    ),
+                    hours: (h) => l10n.compactH(h),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ];
+      },
+    );
+  }
+}
+
+/// "Nhịp ngủ": one row per day, sleep bars 0–24h split at midnight, night shading, now marker
+/// and "Chưa tới" on today's row.
+class _RhythmPainter extends CustomPainter {
+  _RhythmPainter({
+    required this.rows,
+    required this.labels,
+    required this.nowHour,
+    required this.bar,
+    required this.shade,
+    required this.ink,
+    required this.label,
+    required this.bold,
+  });
+
+  final List<SleepDayRow> rows;
+  final List<String> labels;
+  final double nowHour;
+  final Color bar;
+  final Color shade;
+  final Color ink;
+  final TextStyle label;
+  final TextStyle bold;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const left = 44.0, bottom = 18.0;
+    final w = size.width - left;
+    final rowH = (size.height - bottom) / math.max(1, rows.length);
+    double x(double hour) => left + w * hour / 24;
+    final shadePaint = Paint()..color = shade;
+    canvas
+      ..drawRect(Rect.fromLTRB(x(0), 0, x(6), size.height - bottom), shadePaint)
+      ..drawRect(
+        Rect.fromLTRB(x(18), 0, x(24), size.height - bottom),
+        shadePaint,
+      );
+    final barH = math.max(4.0, rowH * 0.6);
+    for (final (i, row) in rows.indexed) {
+      final cy = rowH * i + rowH / 2;
+      final today = i == rows.length - 1;
+      if (rowH >= 14 || i % 5 == 0 || today) {
+        _paintText(canvas, labels[i], today ? bold : label, Offset(0, cy));
+      }
+      if (today) {
+        canvas
+          ..drawRect(
+            Rect.fromLTRB(x(nowHour), cy - barH / 2, x(24), cy + barH / 2),
+            Paint()..color = shade,
+          )
+          ..drawRect(
+            Rect.fromLTWH(x(nowHour) - 1, cy - rowH / 2, 2, rowH),
+            Paint()..color = ink,
+          );
+      }
+      for (final b in row.bars) {
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTRB(
+              x(b.fromHour),
+              cy - barH / 2,
+              math.max(x(b.toHour), x(b.fromHour) + 3),
+              cy + barH / 2,
+            ),
+            Radius.circular(barH / 3),
+          ),
+          Paint()..color = bar,
+        );
+      }
+    }
+    _paintHourAxis(canvas, size, left, w, label);
+  }
+
+  @override
+  bool shouldRepaint(_RhythmPainter old) =>
+      old.rows != rows || old.nowHour != nowHour;
+}
+
+/// "Giấc dài nhất mỗi ngày": bars in hours, today darker; first and last labelled.
+class _LongestPainter extends CustomPainter {
+  _LongestPainter({
+    required this.rows,
+    required this.labels,
+    required this.bar,
+    required this.last,
+    required this.grid,
+    required this.label,
+    required this.bold,
+    required this.format,
+    required this.hours,
+  });
+
+  final List<SleepDayRow> rows;
+  final List<String> labels;
+  final Color bar;
+  final Color last;
+  final Color grid;
+  final TextStyle label;
+  final TextStyle bold;
+  final String Function(Duration) format;
+  final String Function(int) hours;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const left = 32.0, bottom = 20.0, top = 18.0;
+    final w = size.width - left;
+    final h = size.height - bottom - top;
+    final maxH = math.max(
+      8,
+      (rows
+                      .fold(
+                        Duration.zero,
+                        (m, r) => r.longest > m ? r.longest : m,
+                      )
+                      .inMinutes /
+                  60 /
+                  4)
+              .ceil() *
+          4,
+    );
+    for (var i = 0; i <= 2; i++) {
+      final v = maxH * i ~/ 2;
+      final y = top + h - h * i / 2;
+      canvas.drawLine(
+        Offset(left, y),
+        Offset(size.width, y),
+        Paint()..color = grid,
+      );
+      _paintText(canvas, hours(v), label, Offset(left - 6, y), right: true);
+    }
+    final slot = w / math.max(1, rows.length);
+    final barW = math.min(28.0, slot * 0.6);
+    for (final (i, r) in rows.indexed) {
+      final cx = left + slot * i + slot / 2;
+      final bh = h * (r.longest.inMinutes / 60 / maxH).clamp(0, 1);
+      final isLast = i == rows.length - 1;
+      canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(cx - barW / 2, top + h - bh, barW, bh),
+          topLeft: const Radius.circular(4),
+          topRight: const Radius.circular(4),
+        ),
+        Paint()..color = isLast ? last : bar,
+      );
+      if ((i == 0 || isLast) && r.longest > Duration.zero) {
+        _paintText(
+          canvas,
+          format(r.longest),
+          isLast ? bold : label,
+          Offset(cx, top + h - bh - 8),
+          centre: true,
+        );
+      }
+      if (rows.length <= 7 || i % 5 == 0 || isLast) {
+        _paintText(
+          canvas,
+          labels[i],
+          isLast ? bold : label,
+          Offset(cx, size.height - 8),
+          centre: true,
+        );
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_LongestPainter old) => old.rows != rows;
+}

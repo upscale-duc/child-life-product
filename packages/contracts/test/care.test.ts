@@ -146,3 +146,24 @@ describe('overlapping sleeps (R-075)', () => {
     expect(conflictIdOf('r_b', 'r_a')).toBe(conflictIdOf('r_a', 'r_b'));
   });
 });
+
+import vectors from './vectors/care-day.json' with { type: 'json' };
+
+describe('shared day vectors (TS ↔ Dart)', () => {
+  for (const v of vectors.vectors) {
+    it(v.name, () => {
+      const records = v.records.map((r) => ({
+        type: r.type as SummaryRecord['type'],
+        occurredAt: new Date(r.occurredAt),
+        endedAt: r.endedAt ? new Date(r.endedAt) : null,
+        data: r.data as Record<string, unknown>,
+      }));
+      const s = summarizeDay(v.zone, v.date, records);
+      expect(s.bottle).toEqual(v.expect.bottle);
+      expect(s.breast).toEqual(v.expect.breast);
+      expect(s.sleepMinutes).toBe(v.expect.sleepMinutes);
+      expect(s.diaper).toEqual(v.expect.diaper);
+      expect(s.pump).toEqual(v.expect.pump);
+    });
+  }
+});

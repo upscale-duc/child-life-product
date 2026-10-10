@@ -7,6 +7,8 @@ import '../features/appearance/appearance_screen.dart';
 import '../features/auth/auth_screens.dart';
 import '../features/care/care_models.dart';
 import '../features/care/care_screens.dart';
+import '../features/care/history_screen.dart';
+import '../features/care/stats_screens.dart';
 import '../features/care/timer_models.dart';
 import '../features/care/timer_screens.dart';
 import '../features/diagnostics/diagnostics_screen.dart';
@@ -126,6 +128,26 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: Routes.today,
                 builder: (_, _) => const TodayScreen(),
+                // S6: inside the Today branch so the tab dock stays (20 – 20h).
+                routes: [
+                  GoRoute(
+                    path: 'history',
+                    builder: (_, s) => HistoryScreen(
+                      filter:
+                          HistoryFilter.values
+                              .asNameMap()[s.uri.queryParameters['filter']] ??
+                          HistoryFilter.all,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'stats/feed',
+                    builder: (_, _) => const FeedStatsScreen(),
+                  ),
+                  GoRoute(
+                    path: 'stats/sleep',
+                    builder: (_, _) => const SleepStatsScreen(),
+                  ),
+                ],
               ),
             ],
           ),
@@ -161,7 +183,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: Routes.manualSleep,
-        builder: (_, s) => ManualSleepScreen(edit: s.extra as CareRecord?),
+        builder: (_, s) => ManualSleepScreen(
+          edit: s.extra is CareRecord ? s.extra! as CareRecord : null,
+          endAt: s.extra is DateTime ? s.extra! as DateTime : null,
+        ),
       ),
       GoRoute(
         path: '${Routes.overlap}/:id',

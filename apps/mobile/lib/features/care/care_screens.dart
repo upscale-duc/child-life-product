@@ -238,7 +238,7 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
                     ? baby.nickname
                     : l10n.babySwitcherLabel(
                         baby.nickname,
-                        ageShort(l10n, dob, DateTime.now()),
+                        ageShort(l10n, dob, today),
                       ),
                 avatar: SavedBabyAvatar(baby: baby, size: 32),
               ),
@@ -323,7 +323,7 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
         ClSectionHeader(
           title: l10n.growthPrevious,
           linkLabel: l10n.growthSeeAll,
-          onLink: () => showClToast(context, message: l10n.historySoon),
+          onLink: () => context.push('${Routes.history}?filter=growth'),
         ),
         const SizedBox(height: ClSpace.s2),
         if (previous.isEmpty)

@@ -1898,4 +1898,510 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get tourStart => 'Bắt đầu';
+
+  @override
+  String get historyTitle => 'Lịch sử';
+
+  @override
+  String monthChip(int month, String monthName) {
+    return 'Tháng $month';
+  }
+
+  @override
+  String get filterAll => 'Tất cả';
+
+  @override
+  String get filterFeed => 'Bú';
+
+  @override
+  String get filterPump => 'Hút sữa';
+
+  @override
+  String get filterSleep => 'Ngủ';
+
+  @override
+  String get filterDiaper => 'Tã';
+
+  @override
+  String get filterGrowth => 'Tăng trưởng';
+
+  @override
+  String get periodNight => 'Đêm';
+
+  @override
+  String get periodMorning => 'Sáng';
+
+  @override
+  String get periodNoon => 'Trưa';
+
+  @override
+  String get periodAfternoon => 'Chiều';
+
+  @override
+  String get periodEvening => 'Tối';
+
+  @override
+  String periodItems(int count) {
+    return '$count mục';
+  }
+
+  @override
+  String loggedOnDay(String date) {
+    return 'Đã ghi ngày $date';
+  }
+
+  @override
+  String get feedToday => 'Bú hôm nay';
+
+  @override
+  String feedOnDay(String date) {
+    return 'Bú ngày $date';
+  }
+
+  @override
+  String get lastFeed => 'Cữ gần nhất';
+
+  @override
+  String get averageGap => 'Cách nhau trung bình';
+
+  @override
+  String get feedStatsLink => 'Xem thống kê bú';
+
+  @override
+  String get feedStatsLinkHint =>
+      'Tỉ lệ ngày/đêm · lượng sữa theo giờ · bú mẹ trái/phải';
+
+  @override
+  String get sleepToday => 'Ngủ hôm nay';
+
+  @override
+  String sleepOnDay(String date) {
+    return 'Ngủ ngày $date';
+  }
+
+  @override
+  String get totalSlept => 'Tổng đã ngủ';
+
+  @override
+  String get sleepCount => 'Số giấc';
+
+  @override
+  String sleepsValue(int count) {
+    return '$count giấc';
+  }
+
+  @override
+  String get longestSleep => 'Giấc dài nhất';
+
+  @override
+  String get awakeNow => 'Đang thức';
+
+  @override
+  String awakeSince(String duration, String time) {
+    return '$duration · từ $time';
+  }
+
+  @override
+  String get asleepNow => 'Đang ngủ';
+
+  @override
+  String get sleepStatsLink => 'Xem thống kê ngủ';
+
+  @override
+  String get sleepStatsLinkHint =>
+      'Tỉ lệ ngày/đêm · nhịp ngủ 7 ngày · giấc dài nhất';
+
+  @override
+  String get diaperToday => 'Tã hôm nay';
+
+  @override
+  String diaperOnDay(String date) {
+    return 'Tã ngày $date';
+  }
+
+  @override
+  String get diaperTotal => 'Tổng';
+
+  @override
+  String get diaperLast => 'Gần nhất';
+
+  @override
+  String timesValue(int count) {
+    return '$count lần';
+  }
+
+  @override
+  String get pumpToday => 'Hút sữa hôm nay';
+
+  @override
+  String pumpOnDay(String date) {
+    return 'Hút sữa ngày $date';
+  }
+
+  @override
+  String get pumpSessions => 'Số lần';
+
+  @override
+  String get pumpVolume => 'Lượng sữa';
+
+  @override
+  String get pumpNotIntake => 'Sữa hút ra không tính vào lượng bé bú.';
+
+  @override
+  String rowBreastSide(String side) {
+    return 'Bú mẹ · $side';
+  }
+
+  @override
+  String get sideBothFull => 'Cả hai bên';
+
+  @override
+  String get sideLeftFull => 'Bên trái';
+
+  @override
+  String get sideRightFull => 'Bên phải';
+
+  @override
+  String rowSleep(String duration) {
+    return 'Ngủ $duration';
+  }
+
+  @override
+  String rowSpan(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String rowYesterdayTime(String time) {
+    return '$time hôm qua';
+  }
+
+  @override
+  String get rowRunning => 'Đang chạy';
+
+  @override
+  String growthLatest(String when) {
+    return 'Gần nhất · $when';
+  }
+
+  @override
+  String get growthWeightTab => 'Cân nặng';
+
+  @override
+  String get growthLengthTab => 'Chiều dài';
+
+  @override
+  String growthDeltaVs(String delta, String date) {
+    return '$delta so với $date';
+  }
+
+  @override
+  String get growthMeasurements => 'Các lần đo';
+
+  @override
+  String get growthAdd => 'Thêm số đo';
+
+  @override
+  String get growthEmpty => 'Chưa có lần đo nào.';
+
+  @override
+  String get emptyFeedWhat => 'cữ bú';
+
+  @override
+  String get emptyPumpWhat => 'hút sữa';
+
+  @override
+  String get emptySleepWhat => 'giấc ngủ';
+
+  @override
+  String get emptyDiaperWhat => 'thay tã';
+
+  @override
+  String get emptyAllWhat => 'ghi chép nào';
+
+  @override
+  String emptyDayTitle(String what, String date) {
+    return 'Chưa ghi $what ngày $date';
+  }
+
+  @override
+  String emptyTodayTitle(String what) {
+    return 'Chưa ghi $what hôm nay';
+  }
+
+  @override
+  String get emptyDayBody =>
+      'Nếu quên ghi lúc đó, bạn có thể ghi bù với giờ của ngày này.';
+
+  @override
+  String backLog(String what) {
+    return 'Ghi bù $what';
+  }
+
+  @override
+  String logNow(String what) {
+    return 'Ghi $what';
+  }
+
+  @override
+  String seeAllOnDay(String date) {
+    return 'Xem tất cả ghi chép ngày $date';
+  }
+
+  @override
+  String get pickDateTitle => 'Chọn ngày';
+
+  @override
+  String calendarMonth(int month, int year, String monthName) {
+    return 'Tháng $month, $year';
+  }
+
+  @override
+  String calendarFootnote(String baby, String date) {
+    return 'Chấm màu = ngày có ghi chép. $baby sinh ngày $date, không chọn được ngày trước đó.';
+  }
+
+  @override
+  String get calendarFootnoteNoDob => 'Chấm màu = ngày có ghi chép.';
+
+  @override
+  String get backToToday => 'Về hôm nay';
+
+  @override
+  String get a11yPrevMonth => 'Tháng trước';
+
+  @override
+  String get a11yNextMonth => 'Tháng sau';
+
+  @override
+  String get feedStatsTitle => 'Thống kê bú';
+
+  @override
+  String get sleepStatsTitle => 'Thống kê ngủ';
+
+  @override
+  String get windowToday => 'Hôm nay';
+
+  @override
+  String get window7 => '7 ngày';
+
+  @override
+  String get window30 => '30 ngày';
+
+  @override
+  String get perDay => 'TB mỗi ngày';
+
+  @override
+  String get gapAverage => 'Cách nhau TB';
+
+  @override
+  String get sinceYesterday18 => 'Từ 18h hôm qua';
+
+  @override
+  String feedsCount(int count) {
+    return '$count cữ';
+  }
+
+  @override
+  String bottlesBreasts(int bottles, int breasts) {
+    return '$bottles bình · $breasts mẹ';
+  }
+
+  @override
+  String get dayNightFeed => 'Bú ngày và đêm';
+
+  @override
+  String dayNightFeedHint(int days) {
+    return 'Ngày 06:00–18:00 · Đêm 18:00–06:00 · TB $days ngày';
+  }
+
+  @override
+  String get nightAndToday => 'Đêm qua và hôm nay';
+
+  @override
+  String get nightAndTodayHint => 'Đêm qua 18:00–06:00 · Hôm nay từ 06:00';
+
+  @override
+  String get dayLabel => 'Ngày';
+
+  @override
+  String get nightLabel => 'Đêm';
+
+  @override
+  String get todayLabel => 'Hôm nay';
+
+  @override
+  String get lastNightLabel => 'Đêm qua';
+
+  @override
+  String mlAndFeeds(int ml, int count) {
+    return '$ml ml · $count cữ';
+  }
+
+  @override
+  String lastNightInsight(int count, String gap, String from, String to) {
+    return 'Đêm qua bú $count cữ, khoảng nghỉ dài nhất $gap ($from–$to).';
+  }
+
+  @override
+  String lastNightGapInsight(String gap, String from, String to) {
+    return 'Khoảng nghỉ dài nhất đêm qua: $gap ($from–$to).';
+  }
+
+  @override
+  String get milkByHour => 'Lượng sữa theo giờ';
+
+  @override
+  String milkByHourHint(int days) {
+    return 'Bú bình · trung bình $days ngày (ml)';
+  }
+
+  @override
+  String peakCallout(int hour, int ml) {
+    return '${hour}h · $ml ml';
+  }
+
+  @override
+  String get mlPerHour => 'ml mỗi giờ';
+
+  @override
+  String get nightWindow => 'Khung đêm';
+
+  @override
+  String get eachFeedToday => 'Từng cữ hôm nay';
+
+  @override
+  String get eachFeedHint =>
+      'Mỗi cột là một cữ bú bình (ml) · chấm hồng là bú mẹ';
+
+  @override
+  String get notYet => 'Chưa tới';
+
+  @override
+  String get nowLabel => 'Bây giờ';
+
+  @override
+  String get bottleMlLegend => 'Bú bình (ml)';
+
+  @override
+  String get nightOrNotYet => 'Đêm / chưa tới';
+
+  @override
+  String get breastCard => 'Bú mẹ';
+
+  @override
+  String averageDays(int days) {
+    return 'TB $days ngày';
+  }
+
+  @override
+  String get perDayShort => 'mỗi ngày';
+
+  @override
+  String get perFeed => 'mỗi cữ';
+
+  @override
+  String get todayShort => 'hôm nay';
+
+  @override
+  String leftShare(int pct) {
+    return 'Bên trái $pct%';
+  }
+
+  @override
+  String rightShare(int pct) {
+    return 'Bên phải $pct%';
+  }
+
+  @override
+  String leftMinutes(int minutes) {
+    return 'Trái $minutes phút';
+  }
+
+  @override
+  String rightMinutes(int minutes) {
+    return 'Phải $minutes phút';
+  }
+
+  @override
+  String get nextSideLeft =>
+      'Lần trước kết thúc bên phải → lần tới nên bắt đầu bên trái.';
+
+  @override
+  String get nextSideRight =>
+      'Lần trước kết thúc bên trái → lần tới nên bắt đầu bên phải.';
+
+  @override
+  String get dayNightSleep => 'Ngủ ngày và đêm';
+
+  @override
+  String dayNightSleepHint(int days) {
+    return 'Đêm 18:00–06:00 · Ngày 06:00–18:00 · TB $days ngày';
+  }
+
+  @override
+  String durationAndSleeps(String duration, String range) {
+    return '$duration · $range giấc';
+  }
+
+  @override
+  String nightLongestInsight(int days, String from, String to) {
+    return 'Giấc đêm dài nhất tăng từ $from lên $to trong $days ngày.';
+  }
+
+  @override
+  String nightLongestSame(String duration) {
+    return 'Giấc đêm dài nhất: $duration.';
+  }
+
+  @override
+  String sleepRhythm(int days) {
+    return 'Nhịp ngủ $days ngày';
+  }
+
+  @override
+  String get sleepRhythmToday => 'Nhịp ngủ hôm nay';
+
+  @override
+  String get sleepRhythmHint => 'Mỗi hàng là một ngày · thanh tím là lúc ngủ';
+
+  @override
+  String get longestEachDay => 'Giấc dài nhất mỗi ngày';
+
+  @override
+  String get longestEachDayHint => 'Giờ ngủ liền một mạch';
+
+  @override
+  String get legendSleepShort => 'Ngủ';
+
+  @override
+  String get statsEmpty => 'Chưa đủ dữ liệu trong khoảng này.';
+
+  @override
+  String compactHM(int h, int m) {
+    return '${h}g ${m}p';
+  }
+
+  @override
+  String compactH(int h) {
+    return '${h}g';
+  }
+
+  @override
+  String compactHMShort(int h, String m) {
+    return '${h}g$m';
+  }
+
+  @override
+  String durationAndSleep(String duration, int count) {
+    return '$duration · $count giấc';
+  }
+
+  @override
+  String get dayNightSleepTodayHint =>
+      'Hôm nay · Đêm 00:00–06:00 · Ngày 06:00–18:00';
+
+  @override
+  String get historyCaregiverNote =>
+      'Bạn sửa được bản ghi của mình. Bản ghi của ba mẹ chỉ xem.';
 }

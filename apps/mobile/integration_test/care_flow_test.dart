@@ -9,6 +9,7 @@
 // and 9b lists it until "Thử lại ngay". The server's day summary and the member's record count
 // follow (onCareRecordWrite). The bottle is deleted from 21 and restored with "Hoàn tác"; a
 // growth measurement is saved from 28.
+import 'package:child_life/core/widgets/cl_segmented.dart';
 import 'package:child_life/features/care/care_format.dart';
 import 'package:child_life/main.dart' as app;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -84,114 +85,132 @@ Future<void> _hideKeyboard(WidgetTester tester) async {
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets(
-    'S4: log, offline save and sync, totals, delete and undo, growth',
-    (tester) async {
-      await resetEmulators();
-      final babyId = await _seedBaby();
+  testWidgets('S4: log, offline save and sync, totals, delete and undo, growth', (
+    tester,
+  ) async {
+    await resetEmulators();
+    final babyId = await _seedBaby();
 
-      final testOnError = FlutterError.onError;
-      await app.main();
-      FlutterError.onError = testOnError;
-      await FirebaseAuth.instance.signOut();
-      await tester.pump(const Duration(seconds: 2));
-      final l10n = l10nOf(tester);
+    final testOnError = FlutterError.onError;
+    await app.main();
+    FlutterError.onError = testOnError;
+    await FirebaseAuth.instance.signOut();
+    await tester.pump(const Duration(seconds: 2));
+    final l10n = l10nOf(tester);
 
-      await tapText(tester, l10n.welcomeSignIn);
-      await tapText(tester, l10n.signInEmail);
-      await tapText(tester, l10n.emailSignInTab);
-      await tester.enterText(find.byType(EditableText).at(0), _email);
-      await tester.enterText(find.byType(EditableText).at(1), _password);
-      await tester.pump();
-      await tapText(tester, l10n.emailSignInButton);
-      await pumpUntil(
-        tester,
-        find.text(l10n.todayTileEmpty),
-        timeout: const Duration(seconds: 45),
-      );
-      await skipTourIfShown(tester);
+    await tapText(tester, l10n.welcomeSignIn);
+    await tapText(tester, l10n.signInEmail);
+    await tapText(tester, l10n.emailSignInTab);
+    await tester.enterText(find.byType(EditableText).at(0), _email);
+    await tester.enterText(find.byType(EditableText).at(1), _password);
+    await tester.pump();
+    await tapText(tester, l10n.emailSignInButton);
+    await pumpUntil(
+      tester,
+      find.text(l10n.todayTileEmpty),
+      timeout: const Duration(seconds: 45),
+    );
+    await skipTourIfShown(tester);
 
-      // 22: tile → 120 ml formula → "Lưu cữ bú".
-      await tapText(tester, l10n.trackerBottle);
-      await pumpUntil(tester, find.text(l10n.feedSheetTitle));
-      await tester.enterText(find.byType(EditableText).first, '120');
-      await _hideKeyboard(tester);
-      await tapText(tester, l10n.milkFormula);
-      await tapText(tester, l10n.saveFeed);
-      await pumpUntil(tester, find.text(l10n.amountMl(120)));
-      await pumpUntil(tester, find.text(l10n.careLoggedBy(l10n.careYou)));
+    // 22: tile → 120 ml formula → "Lưu cữ bú".
+    await tapText(tester, l10n.trackerBottle);
+    await pumpUntil(tester, find.text(l10n.feedSheetTitle));
+    await tester.enterText(find.byType(EditableText).first, '120');
+    await _hideKeyboard(tester);
+    await tapText(tester, l10n.milkFormula);
+    await tapText(tester, l10n.saveFeed);
+    await pumpUntil(tester, find.text(l10n.amountMl(120)));
+    await pumpUntil(tester, find.text(l10n.careLoggedBy(l10n.careYou)));
 
-      // 19a "+" → 24 Thay tã → "Lưu" (default Ướt).
-      final plus = find.bySemanticsLabel(l10n.a11yQuickLog);
-      await pumpUntil(tester, plus);
-      await tester.tap(plus.first);
-      await tester.pump(const Duration(milliseconds: 600));
-      await tapText(tester, l10n.trackerDiaper);
-      await pumpUntil(tester, find.text(l10n.diaperTitle));
-      await tapText(tester, l10n.actionSave);
-      await pumpUntil(tester, find.text(l10n.diaperWetValue));
+    // 19a "+" → 24 Thay tã → "Lưu" (default Ướt).
+    final plus = find.bySemanticsLabel(l10n.a11yQuickLog);
+    await pumpUntil(tester, plus);
+    await tester.tap(plus.first);
+    await tester.pump(const Duration(milliseconds: 600));
+    await tapText(tester, l10n.trackerDiaper);
+    await pumpUntil(tester, find.text(l10n.diaperTitle));
+    await tapText(tester, l10n.actionSave);
+    await pumpUntil(tester, find.text(l10n.diaperWetValue));
 
-      // Offline: pumping is saved on the device and shown as waiting (9a / 9b).
-      await FirebaseFirestore.instance.disableNetwork();
-      await tapText(tester, l10n.trackerPump);
-      await pumpUntil(tester, find.text(l10n.pumpTitle));
-      await tester.enterText(find.byType(EditableText).first, '90');
-      await _hideKeyboard(tester);
-      await tapText(tester, l10n.savePump);
-      await pumpUntil(tester, find.text(l10n.amountMl(90)));
-      await pumpUntil(tester, find.text(l10n.carePending));
-      final banner = find.textContaining(l10n.syncingBanner(1));
-      await pumpUntil(tester, banner);
-      await tester.tap(banner.first);
-      await pumpUntil(tester, find.text(l10n.pendingOnlyHere));
-      await tapText(tester, l10n.retryNow); // also turns the network back on
-      final end = DateTime.now().add(const Duration(seconds: 20));
-      while (find.text(l10n.carePending).evaluate().isNotEmpty &&
-          DateTime.now().isBefore(end)) {
-        await tester.pump(const Duration(milliseconds: 300));
-      }
-      expect(find.text(l10n.carePending), findsNothing);
+    // Offline: pumping is saved on the device and shown as waiting (9a / 9b).
+    await FirebaseFirestore.instance.disableNetwork();
+    await tapText(tester, l10n.trackerPump);
+    await pumpUntil(tester, find.text(l10n.pumpTitle));
+    await tester.enterText(find.byType(EditableText).first, '90');
+    await _hideKeyboard(tester);
+    await tapText(tester, l10n.savePump);
+    await pumpUntil(tester, find.text(l10n.amountMl(90)));
+    await pumpUntil(tester, find.text(l10n.carePending));
+    final banner = find.textContaining(l10n.syncingBanner(1));
+    await pumpUntil(tester, banner);
+    await tester.tap(banner.first);
+    await pumpUntil(tester, find.text(l10n.pendingOnlyHere));
+    await tapText(tester, l10n.retryNow); // also turns the network back on
+    final end = DateTime.now().add(const Duration(seconds: 20));
+    while (find.text(l10n.carePending).evaluate().isNotEmpty &&
+        DateTime.now().isBefore(end)) {
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+    expect(find.text(l10n.carePending), findsNothing);
 
-      // Server: the day summary and "đã ghi N lần" follow the records.
-      final day = await _until(
-        'babies/$babyId/days/${_babyToday()}',
-        (d) => _field(d, ['pump', 'ml']) == '90',
-      );
-      expect(_field(day, ['bottle', 'count']), '1');
-      expect(_field(day, ['bottle', 'ml']), '120');
-      expect(_field(day, ['diaper', 'wet']), '1');
-      final uid = FirebaseAuth.instance.currentUser!.uid;
-      await _until(
-        'babies/$babyId/members/$uid',
-        (d) => _field(d, ['recordCount']) == '3',
-      );
+    // Server: the day summary and "đã ghi N lần" follow the records.
+    final day = await _until(
+      'babies/$babyId/days/${_babyToday()}',
+      (d) => _field(d, ['pump', 'ml']) == '90',
+    );
+    expect(_field(day, ['bottle', 'count']), '1');
+    expect(_field(day, ['bottle', 'ml']), '120');
+    expect(_field(day, ['diaper', 'wet']), '1');
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    await _until(
+      'babies/$babyId/members/$uid',
+      (d) => _field(d, ['recordCount']) == '3',
+    );
 
-      // 21: long-press the bottle tile → delete → "Hoàn tác".
-      await tester.longPress(find.text(l10n.amountMl(120)).first);
-      await pumpUntil(tester, find.text(l10n.deleteRecord));
-      await tapText(tester, l10n.deleteRecord);
-      await pumpUntil(tester, find.text(l10n.deleteConfirmTitle));
-      await tapText(tester, l10n.deleteRecord);
-      await pumpUntil(tester, find.text(l10n.undo));
-      await tester.tap(find.text(l10n.undo).last);
-      await tester.pump(const Duration(seconds: 1));
-      await pumpUntil(tester, find.text(l10n.amountMl(120)));
-      final records = await firestoreGet('babies/$babyId/records');
-      final docs = (records['documents'] as List).cast<Map<String, dynamic>>();
-      expect(docs, hasLength(3));
-      expect(docs.every((d) => _field(d, ['deleted']) == false), isTrue);
+    // 21: long-press the bottle tile → delete → "Hoàn tác".
+    await tester.longPress(find.text(l10n.amountMl(120)).first);
+    await pumpUntil(tester, find.text(l10n.deleteRecord));
+    await tapText(tester, l10n.deleteRecord);
+    await pumpUntil(tester, find.text(l10n.deleteConfirmTitle));
+    await tapText(tester, l10n.deleteRecord);
+    await pumpUntil(tester, find.text(l10n.undo));
+    await tester.tap(find.text(l10n.undo).last);
+    await tester.pump(const Duration(seconds: 1));
+    await pumpUntil(tester, find.text(l10n.amountMl(120)));
+    final records = await firestoreGet('babies/$babyId/records');
+    final docs = (records['documents'] as List).cast<Map<String, dynamic>>();
+    expect(docs, hasLength(3));
+    expect(docs.every((d) => _field(d, ['deleted']) == false), isTrue);
 
-      // 28: growth from its tile.
-      await tester.ensureVisible(find.text(l10n.trackerGrowth));
-      await tapText(tester, l10n.trackerGrowth);
-      await pumpUntil(tester, find.text(l10n.saveGrowth));
-      await tester.enterText(find.byType(EditableText).at(0), '4,3');
-      await _hideKeyboard(tester);
-      await tapText(tester, l10n.saveGrowth);
-      final locale = Localizations.localeOf(
-        tester.element(find.byType(Navigator).first),
-      ).toLanguageTag();
-      await pumpUntil(tester, find.text(l10n.weightKg(decimal(locale, 4.3))));
-    },
-  );
+    // 28: growth from its tile.
+    await tester.ensureVisible(find.text(l10n.trackerGrowth));
+    await tapText(tester, l10n.trackerGrowth);
+    await pumpUntil(tester, find.text(l10n.saveGrowth));
+    await tester.enterText(find.byType(EditableText).at(0), '4,3');
+    await _hideKeyboard(tester);
+    await tapText(tester, l10n.saveGrowth);
+    final locale = Localizations.localeOf(
+      tester.element(find.byType(Navigator).first),
+    ).toLanguageTag();
+    await pumpUntil(tester, find.text(l10n.weightKg(decimal(locale, 4.3))));
+
+    // 20: "Lịch sử" → today's timeline from the range query; 20a → 20g feed stats.
+    await tester.ensureVisible(find.text(l10n.todayHistory));
+    await tapText(tester, l10n.todayHistory);
+    await pumpUntil(tester, find.text(l10n.historyTitle));
+    await pumpUntil(tester, find.text(l10n.dayRhythmTitle));
+    await tapText(tester, l10n.filterFeed);
+    await pumpUntil(tester, find.text(l10n.feedStatsLink));
+    await tapText(tester, l10n.feedStatsLink);
+    await pumpUntil(tester, find.text(l10n.feedStatsTitle));
+    // "Hôm nay" is also the tab label: tap the segment.
+    await tester.tap(
+      find.descendant(
+        of: find.byWidgetPredicate((w) => w is ClSegmented),
+        matching: find.text(l10n.windowToday),
+      ),
+    );
+    await pumpUntil(tester, find.text(l10n.sinceYesterday18));
+    await pumpUntil(tester, find.text(l10n.amountMl(120)));
+  });
 }

@@ -14,6 +14,11 @@ abstract final class Routes {
   static const babyProfile = '/setup/baby';
   static const trackers = '/setup/trackers';
   static const today = '/today';
+
+  /// 20 Lịch sử and 20g / 20h, under the Hôm nay tab (the dock stays).
+  static const history = '/today/history';
+  static const feedStats = '/today/stats/feed';
+  static const sleepStats = '/today/stats/sleep';
   static const memories = '/memories';
   static const family = '/family';
   static const invite = '/family/invite';

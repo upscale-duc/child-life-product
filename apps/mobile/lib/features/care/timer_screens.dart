@@ -676,8 +676,11 @@ Future<void> showSleepChooser(BuildContext context, WidgetRef ref) {
 /// 26 Nhập giấc ngủ (47:3074): start and end with "Hôm qua / Hôm nay", "Qua đêm", the
 /// per-day split note, and a way into the timer. Also "Sửa tay từ bản của tôi" (27).
 class ManualSleepScreen extends ConsumerStatefulWidget {
-  const ManualSleepScreen({this.edit, super.key});
+  const ManualSleepScreen({this.edit, this.endAt, super.key});
   final CareRecord? edit;
+
+  /// "Ghi bù" (20e): the sleep ends at this time on an earlier day.
+  final DateTime? endAt;
 
   @override
   ConsumerState<ManualSleepScreen> createState() => _ManualSleepScreenState();
@@ -695,6 +698,7 @@ class _ManualSleepScreenState extends ConsumerState<ManualSleepScreen> {
     final now = ref.read(timerClockProvider)();
     _end =
         widget.edit?.endedAt ??
+        widget.endAt ??
         DateTime(now.year, now.month, now.day, now.hour, now.minute);
     _start = widget.edit?.occurredAt ?? _end.subtract(const Duration(hours: 1));
   }

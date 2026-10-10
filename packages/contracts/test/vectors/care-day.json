@@ -1,0 +1,124 @@
+{
+  "about": "Shared golden vectors for day summaries: the TypeScript server (summarizeDay) and the Dart app (DayTotals, feedDay, sleepDay, diaperDay) must agree. Times are UTC instants.",
+  "vectors": [
+    {
+      "name": "Figma 20 mock day, reconciled (Teddy, Thursday 8 Oct 2026, GMT+7)",
+      "zone": "Asia/Ho_Chi_Minh",
+      "date": "2026-10-08",
+      "now": "2026-10-08T08:05:00Z",
+      "records": [
+        {
+          "type": "sleep",
+          "occurredAt": "2026-10-07T14:42:00Z",
+          "endedAt": "2026-10-07T23:30:00Z",
+          "data": {}
+        },
+        {
+          "type": "bottle",
+          "occurredAt": "2026-10-08T01:00:00Z",
+          "endedAt": null,
+          "data": { "amountMl": 120, "milk": "formula" }
+        },
+        {
+          "type": "diaper",
+          "occurredAt": "2026-10-08T02:10:00Z",
+          "endedAt": null,
+          "data": { "kind": "both" }
+        },
+        {
+          "type": "pump",
+          "occurredAt": "2026-10-08T03:15:00Z",
+          "endedAt": "2026-10-08T03:30:00Z",
+          "data": { "side": "both", "amountMl": 90, "durationMin": 15 }
+        },
+        {
+          "type": "breast",
+          "occurredAt": "2026-10-08T04:30:00Z",
+          "endedAt": "2026-10-08T04:45:00Z",
+          "data": {
+            "side": "both",
+            "durationMin": 15,
+            "leftMin": 8,
+            "rightMin": 7,
+            "endSide": "right"
+          }
+        },
+        {
+          "type": "sleep",
+          "occurredAt": "2026-10-08T04:45:00Z",
+          "endedAt": "2026-10-08T06:05:00Z",
+          "data": {}
+        },
+        {
+          "type": "diaper",
+          "occurredAt": "2026-10-08T06:40:00Z",
+          "endedAt": null,
+          "data": { "kind": "wet" }
+        },
+        {
+          "type": "bottle",
+          "occurredAt": "2026-10-08T07:20:00Z",
+          "endedAt": null,
+          "data": { "amountMl": 120, "milk": "breastMilk" }
+        }
+      ],
+      "expect": {
+        "bottle": { "count": 2, "ml": 240 },
+        "breast": { "count": 1, "minutes": 15 },
+        "sleepMinutes": 470,
+        "diaper": { "count": 2, "wet": 2, "dirty": 1 },
+        "pump": { "count": 1, "ml": 90 },
+        "feedGapMinutes": 190,
+        "sleepCount": 2,
+        "longestSleepMinutes": 528
+      }
+    },
+    {
+      "name": "25-hour day when clocks go back (Berlin, 25 Oct 2026)",
+      "zone": "Europe/Berlin",
+      "date": "2026-10-25",
+      "now": "2026-10-25T18:00:00Z",
+      "records": [
+        {
+          "type": "sleep",
+          "occurredAt": "2026-10-24T20:00:00Z",
+          "endedAt": "2026-10-25T06:00:00Z",
+          "data": {}
+        },
+        {
+          "type": "bottle",
+          "occurredAt": "2026-10-25T11:00:00Z",
+          "endedAt": null,
+          "data": { "amountMl": 100, "milk": "formula" }
+        }
+      ],
+      "expect": {
+        "bottle": { "count": 1, "ml": 100 },
+        "breast": { "count": 0, "minutes": 0 },
+        "sleepMinutes": 480,
+        "diaper": { "count": 0, "wet": 0, "dirty": 0 },
+        "pump": { "count": 0, "ml": 0 },
+        "feedGapMinutes": null,
+        "sleepCount": 1,
+        "longestSleepMinutes": 600
+      }
+    },
+    {
+      "name": "Empty day",
+      "zone": "Asia/Ho_Chi_Minh",
+      "date": "2026-10-05",
+      "now": "2026-10-08T08:05:00Z",
+      "records": [],
+      "expect": {
+        "bottle": { "count": 0, "ml": 0 },
+        "breast": { "count": 0, "minutes": 0 },
+        "sleepMinutes": 0,
+        "diaper": { "count": 0, "wet": 0, "dirty": 0 },
+        "pump": { "count": 0, "ml": 0 },
+        "feedGapMinutes": null,
+        "sleepCount": 0,
+        "longestSleepMinutes": 0
+      }
+    }
+  ]
+}

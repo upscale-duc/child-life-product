@@ -3319,6 +3319,822 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bắt đầu'**
   String get tourStart;
+
+  /// 20 title (46:2469).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử'**
+  String get historyTitle;
+
+  /// Month picker chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month}'**
+  String monthChip(int month, String monthName);
+
+  /// Filter chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get filterAll;
+
+  /// Filter chip (bottle + breast).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú'**
+  String get filterFeed;
+
+  /// Filter chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hút sữa'**
+  String get filterPump;
+
+  /// Filter chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ'**
+  String get filterSleep;
+
+  /// Filter chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã'**
+  String get filterDiaper;
+
+  /// Filter chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng trưởng'**
+  String get filterGrowth;
+
+  /// TimeSectionHeader (59:431).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm'**
+  String get periodNight;
+
+  /// TimeSectionHeader.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sáng'**
+  String get periodMorning;
+
+  /// TimeSectionHeader.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trưa'**
+  String get periodNoon;
+
+  /// TimeSectionHeader.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều'**
+  String get periodAfternoon;
+
+  /// TimeSectionHeader.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối'**
+  String get periodEvening;
+
+  /// Section count pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mục'**
+  String periodItems(int count);
+
+  /// DayRhythm title for a past day (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi ngày {date}'**
+  String loggedOnDay(String date);
+
+  /// 20a card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú hôm nay'**
+  String get feedToday;
+
+  /// 20a card title, past day.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú ngày {date}'**
+  String feedOnDay(String date);
+
+  /// 20a row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cữ gần nhất'**
+  String get lastFeed;
+
+  /// 20a row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách nhau trung bình'**
+  String get averageGap;
+
+  /// 20a link card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thống kê bú'**
+  String get feedStatsLink;
+
+  /// 20a link card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tỉ lệ ngày/đêm · lượng sữa theo giờ · bú mẹ trái/phải'**
+  String get feedStatsLinkHint;
+
+  /// 20b card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ hôm nay'**
+  String get sleepToday;
+
+  /// 20b card title, past day.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ ngày {date}'**
+  String sleepOnDay(String date);
+
+  /// 20b row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng đã ngủ'**
+  String get totalSlept;
+
+  /// 20b row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số giấc'**
+  String get sleepCount;
+
+  /// Sleep count.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} giấc'**
+  String sleepsValue(int count);
+
+  /// 20b row / 20h KPI.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc dài nhất'**
+  String get longestSleep;
+
+  /// 20b row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang thức'**
+  String get awakeNow;
+
+  /// 20b value ("2 giờ · từ 13:05").
+  ///
+  /// In vi, this message translates to:
+  /// **'{duration} · từ {time}'**
+  String awakeSince(String duration, String time);
+
+  /// 20b row while a sleep runs (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngủ'**
+  String get asleepNow;
+
+  /// 20b link card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thống kê ngủ'**
+  String get sleepStatsLink;
+
+  /// 20b link card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tỉ lệ ngày/đêm · nhịp ngủ 7 ngày · giấc dài nhất'**
+  String get sleepStatsLinkHint;
+
+  /// 20c card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã hôm nay'**
+  String get diaperToday;
+
+  /// 20c card title, past day.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã ngày {date}'**
+  String diaperOnDay(String date);
+
+  /// 20c row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng'**
+  String get diaperTotal;
+
+  /// 20c row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần nhất'**
+  String get diaperLast;
+
+  /// Count of changes.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} lần'**
+  String timesValue(int count);
+
+  /// Pump card title (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hút sữa hôm nay'**
+  String get pumpToday;
+
+  /// Pump card title, past day (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hút sữa ngày {date}'**
+  String pumpOnDay(String date);
+
+  /// Pump card row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số lần'**
+  String get pumpSessions;
+
+  /// Pump card row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng sữa'**
+  String get pumpVolume;
+
+  /// Pump card note (D-026).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa hút ra không tính vào lượng bé bú.'**
+  String get pumpNotIntake;
+
+  /// Timeline title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ · {side}'**
+  String rowBreastSide(String side);
+
+  /// Breast / pump sides.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả hai bên'**
+  String get sideBothFull;
+
+  /// Breast / pump side.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên trái'**
+  String get sideLeftFull;
+
+  /// Breast / pump side.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên phải'**
+  String get sideRightFull;
+
+  /// Timeline title ("Ngủ 1 giờ 20 phút").
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ {duration}'**
+  String rowSleep(String duration);
+
+  /// Time span.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from} – {to}'**
+  String rowSpan(String from, String to);
+
+  /// Start before the day (D-027).
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} hôm qua'**
+  String rowYesterdayTime(String time);
+
+  /// Running timer row (G-067).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chạy'**
+  String get rowRunning;
+
+  /// 20d card label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần nhất · {when}'**
+  String growthLatest(String when);
+
+  /// 20d toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng'**
+  String get growthWeightTab;
+
+  /// 20d toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài'**
+  String get growthLengthTab;
+
+  /// 20d delta pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'{delta} so với {date}'**
+  String growthDeltaVs(String delta, String date);
+
+  /// 20d section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các lần đo'**
+  String get growthMeasurements;
+
+  /// 20d button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm số đo'**
+  String get growthAdd;
+
+  /// 20d empty (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có lần đo nào.'**
+  String get growthEmpty;
+
+  /// 20e object.
+  ///
+  /// In vi, this message translates to:
+  /// **'cữ bú'**
+  String get emptyFeedWhat;
+
+  /// 20e object.
+  ///
+  /// In vi, this message translates to:
+  /// **'hút sữa'**
+  String get emptyPumpWhat;
+
+  /// 20e object.
+  ///
+  /// In vi, this message translates to:
+  /// **'giấc ngủ'**
+  String get emptySleepWhat;
+
+  /// 20e object.
+  ///
+  /// In vi, this message translates to:
+  /// **'thay tã'**
+  String get emptyDiaperWhat;
+
+  /// 20e object (all, not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'ghi chép nào'**
+  String get emptyAllWhat;
+
+  /// 20e title (105:9471).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi {what} ngày {date}'**
+  String emptyDayTitle(String what, String date);
+
+  /// 20e title for today (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi {what} hôm nay'**
+  String emptyTodayTitle(String what);
+
+  /// 20e body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nếu quên ghi lúc đó, bạn có thể ghi bù với giờ của ngày này.'**
+  String get emptyDayBody;
+
+  /// 20e button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi bù {what}'**
+  String backLog(String what);
+
+  /// Empty today button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi {what}'**
+  String logNow(String what);
+
+  /// 20e link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả ghi chép ngày {date}'**
+  String seeAllOnDay(String date);
+
+  /// 20f sheet title (108:10271).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày'**
+  String get pickDateTitle;
+
+  /// 20f month header.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month}, {year}'**
+  String calendarMonth(int month, int year, String monthName);
+
+  /// 20f footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chấm màu = ngày có ghi chép. {baby} sinh ngày {date}, không chọn được ngày trước đó.'**
+  String calendarFootnote(String baby, String date);
+
+  /// 20f footnote without the birth date (caregivers).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chấm màu = ngày có ghi chép.'**
+  String get calendarFootnoteNoDob;
+
+  /// 20f button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Về hôm nay'**
+  String get backToToday;
+
+  /// Calendar arrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng trước'**
+  String get a11yPrevMonth;
+
+  /// Calendar arrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng sau'**
+  String get a11yNextMonth;
+
+  /// 20g title (109:10562).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thống kê bú'**
+  String get feedStatsTitle;
+
+  /// 20h title (111:10994).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thống kê ngủ'**
+  String get sleepStatsTitle;
+
+  /// Stats segment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get windowToday;
+
+  /// Stats segment.
+  ///
+  /// In vi, this message translates to:
+  /// **'7 ngày'**
+  String get window7;
+
+  /// Stats segment.
+  ///
+  /// In vi, this message translates to:
+  /// **'30 ngày'**
+  String get window30;
+
+  /// KPI label.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB mỗi ngày'**
+  String get perDay;
+
+  /// KPI label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách nhau TB'**
+  String get gapAverage;
+
+  /// 20g2 KPI label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ 18h hôm qua'**
+  String get sinceYesterday18;
+
+  /// Feeds.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} cữ'**
+  String feedsCount(int count);
+
+  /// 20g2 KPI label.
+  ///
+  /// In vi, this message translates to:
+  /// **'{bottles} bình · {breasts} mẹ'**
+  String bottlesBreasts(int bottles, int breasts);
+
+  /// 20g card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú ngày và đêm'**
+  String get dayNightFeed;
+
+  /// 20g card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày 06:00–18:00 · Đêm 18:00–06:00 · TB {days} ngày'**
+  String dayNightFeedHint(int days);
+
+  /// 20g2 card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm qua và hôm nay'**
+  String get nightAndToday;
+
+  /// 20g2 card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm qua 18:00–06:00 · Hôm nay từ 06:00'**
+  String get nightAndTodayHint;
+
+  /// Ratio legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày'**
+  String get dayLabel;
+
+  /// Ratio legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm'**
+  String get nightLabel;
+
+  /// Ratio legend (20g2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get todayLabel;
+
+  /// Ratio legend (20g2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm qua'**
+  String get lastNightLabel;
+
+  /// Ratio legend detail.
+  ///
+  /// In vi, this message translates to:
+  /// **'{ml} ml · {count} cữ'**
+  String mlAndFeeds(int ml, int count);
+
+  /// 20g insight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm qua bú {count} cữ, khoảng nghỉ dài nhất {gap} ({from}–{to}).'**
+  String lastNightInsight(int count, String gap, String from, String to);
+
+  /// 20g2 insight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng nghỉ dài nhất đêm qua: {gap} ({from}–{to}).'**
+  String lastNightGapInsight(String gap, String from, String to);
+
+  /// 20g card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng sữa theo giờ'**
+  String get milkByHour;
+
+  /// 20g card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình · trung bình {days} ngày (ml)'**
+  String milkByHourHint(int days);
+
+  /// 20g peak.
+  ///
+  /// In vi, this message translates to:
+  /// **'{hour}h · {ml} ml'**
+  String peakCallout(int hour, int ml);
+
+  /// 20g legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'ml mỗi giờ'**
+  String get mlPerHour;
+
+  /// Chart legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khung đêm'**
+  String get nightWindow;
+
+  /// 20g2 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từng cữ hôm nay'**
+  String get eachFeedToday;
+
+  /// 20g2 card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi cột là một cữ bú bình (ml) · chấm hồng là bú mẹ'**
+  String get eachFeedHint;
+
+  /// Chart future area.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tới'**
+  String get notYet;
+
+  /// Chart now line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bây giờ'**
+  String get nowLabel;
+
+  /// 20g2 legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình (ml)'**
+  String get bottleMlLegend;
+
+  /// 20g2 legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm / chưa tới'**
+  String get nightOrNotYet;
+
+  /// Stats card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ'**
+  String get breastCard;
+
+  /// Card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {days} ngày'**
+  String averageDays(int days);
+
+  /// KPI caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'mỗi ngày'**
+  String get perDayShort;
+
+  /// KPI caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'mỗi cữ'**
+  String get perFeed;
+
+  /// KPI caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'hôm nay'**
+  String get todayShort;
+
+  /// Side legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên trái {pct}%'**
+  String leftShare(int pct);
+
+  /// Side legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên phải {pct}%'**
+  String rightShare(int pct);
+
+  /// Side legend (today).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trái {minutes} phút'**
+  String leftMinutes(int minutes);
+
+  /// Side legend (today).
+  ///
+  /// In vi, this message translates to:
+  /// **'Phải {minutes} phút'**
+  String rightMinutes(int minutes);
+
+  /// Breast hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần trước kết thúc bên phải → lần tới nên bắt đầu bên trái.'**
+  String get nextSideLeft;
+
+  /// Breast hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần trước kết thúc bên trái → lần tới nên bắt đầu bên phải.'**
+  String get nextSideRight;
+
+  /// 20h card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ ngày và đêm'**
+  String get dayNightSleep;
+
+  /// 20h card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm 18:00–06:00 · Ngày 06:00–18:00 · TB {days} ngày'**
+  String dayNightSleepHint(int days);
+
+  /// 20h legend detail.
+  ///
+  /// In vi, this message translates to:
+  /// **'{duration} · {range} giấc'**
+  String durationAndSleeps(String duration, String range);
+
+  /// 20h insight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc đêm dài nhất tăng từ {from} lên {to} trong {days} ngày.'**
+  String nightLongestInsight(int days, String from, String to);
+
+  /// 20h insight without a trend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc đêm dài nhất: {duration}.'**
+  String nightLongestSame(String duration);
+
+  /// 20h card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp ngủ {days} ngày'**
+  String sleepRhythm(int days);
+
+  /// 20h card for Hôm nay (D-028).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp ngủ hôm nay'**
+  String get sleepRhythmToday;
+
+  /// 20h card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi hàng là một ngày · thanh tím là lúc ngủ'**
+  String get sleepRhythmHint;
+
+  /// 20h card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc dài nhất mỗi ngày'**
+  String get longestEachDay;
+
+  /// 20h card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ ngủ liền một mạch'**
+  String get longestEachDayHint;
+
+  /// Chart legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ'**
+  String get legendSleepShort;
+
+  /// Stats without records (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đủ dữ liệu trong khoảng này.'**
+  String get statsEmpty;
+
+  /// Compact duration in stats.
+  ///
+  /// In vi, this message translates to:
+  /// **'{h}g {m}p'**
+  String compactHM(int h, int m);
+
+  /// Compact hours.
+  ///
+  /// In vi, this message translates to:
+  /// **'{h}g'**
+  String compactH(int h);
+
+  /// Chart label ("6g30").
+  ///
+  /// In vi, this message translates to:
+  /// **'{h}g{m}'**
+  String compactHMShort(int h, String m);
+
+  /// 20h legend detail, one count (Hôm nay).
+  ///
+  /// In vi, this message translates to:
+  /// **'{duration} · {count} giấc'**
+  String durationAndSleep(String duration, int count);
+
+  /// 20h card subtitle for Hôm nay (D-028): calendar day, clipped at midnight (D-027).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay · Đêm 00:00–06:00 · Ngày 06:00–18:00'**
+  String get dayNightSleepTodayHint;
+
+  /// 12d role note (192:618), caregivers (D-022).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn sửa được bản ghi của mình. Bản ghi của ba mẹ chỉ xem.'**
+  String get historyCaregiverNote;
 }
 
 class _AppLocalizationsDelegate

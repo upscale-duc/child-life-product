@@ -245,7 +245,7 @@ String _switcherLabel(
   if (profile == null) return baby.nickname;
   return l10n.babySwitcherLabel(
     baby.nickname,
-    ageShort(l10n, profile.dateOfBirth, DateTime.now()),
+    ageShort(l10n, profile.dateOfBirth, ref.read(timerClockProvider)()),
   );
 }
 
@@ -455,7 +455,7 @@ class _BabyRow extends ConsumerWidget {
     final detail = profile == null
         ? youAre
         : l10n.babyPickerRowDetail(
-            ageShort(l10n, profile.dateOfBirth, DateTime.now()),
+            ageShort(l10n, profile.dateOfBirth, ref.read(timerClockProvider)()),
             youAre,
           );
     final name = baby?.nickname ?? '…';
