@@ -7369,6 +7369,552 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã gửi · mã {ticket}'**
   String hpSent(String ticket);
+
+  /// 14a card tag.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý tuần này'**
+  String get srySuggestTag;
+
+  /// 14a card.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{Từ 1 ảnh · bạn sửa trước khi lưu} other{Từ {count} ảnh · bạn sửa trước khi lưu}}'**
+  String srySuggestSub(int count);
+
+  /// 14a card CTA.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem bản nháp'**
+  String get srySuggestCta;
+
+  /// 14a filter.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp · {count}'**
+  String sryDrafts(int count);
+
+  /// 14a filter.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chia sẻ'**
+  String get sryShared;
+
+  /// 14a meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} kể · {when}'**
+  String sryToldBy(String who, String when);
+
+  /// 14a letter meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} viết · sửa lần cuối {when}'**
+  String sryWroteBy(String who, String when);
+
+  /// 14a badge / 14b title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp'**
+  String get sryDraft;
+
+  /// 14a AI draft row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nháp từ gợi ý · chưa lưu'**
+  String get sryFromSuggestion;
+
+  /// 14a FAB.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết'**
+  String get sryWrite;
+
+  /// 14a empty (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có câu chuyện nào'**
+  String get sryEmptyTitle;
+
+  /// 14a empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết lại một khoảnh khắc, hoặc chờ gợi ý cuối tuần từ những gì bạn đã ghi.'**
+  String get sryEmptyBody;
+
+  /// 11 empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba mẹ chưa chia sẻ câu chuyện nào.'**
+  String get sryRelEmpty;
+
+  /// New-story sheet (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết gì?'**
+  String get sryNewTitle;
+
+  /// New-story sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu chuyện'**
+  String get sryKindStory;
+
+  /// New-story sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kể một khoảnh khắc, có ảnh'**
+  String get sryKindStoryHint;
+
+  /// New-story sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thư'**
+  String get sryKindLetter;
+
+  /// New-story sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết thư cho con đọc sau này'**
+  String get sryKindLetterHint;
+
+  /// 14b top bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu nháp'**
+  String get srySaveDraft;
+
+  /// 14b tip.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{AI viết nháp từ 1 ảnh. Chạm vào bất kỳ đoạn, ảnh hay tiêu đề nào để sửa.} other{AI viết nháp từ {count} ảnh. Chạm vào bất kỳ đoạn, ảnh hay tiêu đề nào để sửa.}}'**
+  String sryAiTip(int count);
+
+  /// 14b tip for a manual story.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm vào bất kỳ đoạn, ảnh hay tiêu đề nào để sửa.'**
+  String get sryTip;
+
+  /// 14b chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi ảnh bìa'**
+  String get sryChangeCover;
+
+  /// 14b chip without a cover.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh bìa'**
+  String get sryAddCover;
+
+  /// 14b title placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu đề'**
+  String get sryTitleHint;
+
+  /// Empty paragraph placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết vài dòng…'**
+  String get sryParagraphHint;
+
+  /// 14b meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{1 ảnh} other{{count} ảnh}}'**
+  String sryMetaPhotos(int count);
+
+  /// 14b meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'mốc {name}'**
+  String sryMetaMilestone(String name);
+
+  /// 14b toolbar / 14c AI bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết lại'**
+  String get sryRewrite;
+
+  /// 14b toolbar / 14c AI bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ấm hơn'**
+  String get sryWarmer;
+
+  /// 14c AI bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngắn hơn'**
+  String get sryShorter;
+
+  /// 14c AI bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác'**
+  String get sryUndo;
+
+  /// 14b add row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm đoạn · ảnh · mốc'**
+  String get sryAddBlock;
+
+  /// Add sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đoạn văn'**
+  String get sryAddParagraph;
+
+  /// Add sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get sryAddPhotos;
+
+  /// Add sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc'**
+  String get sryAddMilestone;
+
+  /// Add sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu trích'**
+  String get sryAddQuote;
+
+  /// 14b button / 14e title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp xếp'**
+  String get sryArrange;
+
+  /// 14b button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trước & lưu'**
+  String get sryPreviewSave;
+
+  /// Cancel with edits (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ thay đổi?'**
+  String get sryDiscardTitle;
+
+  /// Cancel with edits.
+  ///
+  /// In vi, this message translates to:
+  /// **'Những gì bạn vừa sửa chưa được lưu.'**
+  String get sryDiscardBody;
+
+  /// Cancel with edits.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ thay đổi'**
+  String get sryDiscard;
+
+  /// Cancel with edits / 14f back.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa tiếp'**
+  String get sryKeepEditing;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu nháp'**
+  String get sryDraftSaved;
+
+  /// Editor overflow (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ bản nháp'**
+  String get sryDiscardDraft;
+
+  /// 14c title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa đoạn'**
+  String get sryEditParagraph;
+
+  /// 14c meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã sửa · không còn là văn AI'**
+  String get sryEdited;
+
+  /// 14c meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{1 từ} other{{count} từ}}'**
+  String sryWords(int count);
+
+  /// 14c section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho đoạn này'**
+  String get srySuggestFor;
+
+  /// 14c chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng câu này'**
+  String get sryUseThis;
+
+  /// 14c chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý khác'**
+  String get sryOtherSuggestion;
+
+  /// AI error (G-051).
+  ///
+  /// In vi, this message translates to:
+  /// **'AI chưa sẵn sàng. Bạn vẫn sửa tay được.'**
+  String get sryAiUnavailable;
+
+  /// AI daily limit.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay đã dùng hết lượt gợi ý.'**
+  String get sryAiLimit;
+
+  /// AI in progress.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang viết…'**
+  String get sryAiWorking;
+
+  /// 14d title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh trong câu chuyện'**
+  String get sryPhotosTitle;
+
+  /// 14d option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi ảnh'**
+  String get sryChangePhoto;
+
+  /// 14d option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn từ Kỷ niệm của {name}'**
+  String sryChangePhotoHint(String name);
+
+  /// 14d option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh vào nhóm này'**
+  String get sryAddToGroup;
+
+  /// 14d option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối đa 4 ảnh một nhóm'**
+  String get sryAddToGroupHint;
+
+  /// 14d option / caption sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm chú thích'**
+  String get sryCaption;
+
+  /// 14d option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện nhỏ dưới ảnh'**
+  String get sryCaptionHint;
+
+  /// 14d option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt làm ảnh bìa'**
+  String get sryMakeCover;
+
+  /// 14d destructive.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ khỏi câu chuyện'**
+  String get sryRemovePhotos;
+
+  /// 14d destructive.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh vẫn còn trong Kỷ niệm'**
+  String get sryRemovePhotosHint;
+
+  /// 14e hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ ≡ và kéo để đổi thứ tự. Vuốt trái để xoá khối.'**
+  String get sryArrangeHint;
+
+  /// 14e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh bìa'**
+  String get sryCoverRow;
+
+  /// 14e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đoạn {n}'**
+  String sryParagraphN(int n);
+
+  /// 14e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhóm ảnh'**
+  String get sryPhotoGroup;
+
+  /// 14e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc'**
+  String get sryMilestoneRow;
+
+  /// 14e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu trích'**
+  String get sryQuoteRow;
+
+  /// 14f label.
+  ///
+  /// In vi, this message translates to:
+  /// **'XEM TRƯỚC'**
+  String get sryPreviewLabel;
+
+  /// 14f guard.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt tiêu đề cho câu chuyện.'**
+  String get sryNeedTitle;
+
+  /// 14f guard.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ít nhất một đoạn hoặc một ảnh.'**
+  String get sryNeedContent;
+
+  /// 14f sheet title / button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu câu chuyện'**
+  String get srySaveTitle;
+
+  /// 14f card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Riêng tư'**
+  String get sryPrivate;
+
+  /// 14f card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà cùng đọc'**
+  String get sryFamilyRead;
+
+  /// 14f row.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 thông báo chung'**
+  String get sryOneNotice;
+
+  /// 14f footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu xong mới chia sẻ ra ngoài được.'**
+  String get sryShareAfter;
+
+  /// 14f D-002 note.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =1{1 ảnh đang Chỉ ba mẹ sẽ được gia đình thấy trong câu chuyện này.} other{{count} ảnh đang Chỉ ba mẹ sẽ được gia đình thấy trong câu chuyện này.}}'**
+  String sryPrivatePhotos(int count);
+
+  /// 14g toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu · đã báo cho gia đình'**
+  String get srySavedNotified;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu câu chuyện'**
+  String get srySaved;
+
+  /// 14g button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ'**
+  String get sryShare;
+
+  /// Share sheet (S12 part).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai đọc câu chuyện này'**
+  String get sryWhoReads;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đổi ai đọc'**
+  String get sryAudienceChanged;
+
+  /// Reader overflow (G-050).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá câu chuyện'**
+  String get sryDelete;
+
+  /// G-050.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá câu chuyện này?'**
+  String get sryDeleteTitle;
+
+  /// G-050.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà sẽ không đọc được nữa. Ảnh vẫn còn trong Kỷ niệm.'**
+  String get sryDeleteBody;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá câu chuyện'**
+  String get sryDeleted;
+
+  /// 14g meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} kể · {when} · {audience}'**
+  String sryMetaSaved(String who, String when, String audience);
+
+  /// 11i meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} chia sẻ với gia đình · {when}'**
+  String sryRelMeta(String who, String when);
+
+  /// 14g chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · {date}'**
+  String sryMilestoneOn(String name, String date);
+
+  /// Reader ••• (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chọn câu chuyện'**
+  String get sryMore;
 }
 
 class _AppLocalizationsDelegate

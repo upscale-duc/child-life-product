@@ -21,6 +21,8 @@ import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../care/care_repository.dart';
 import 'album_models.dart';
+import '../care/care_models.dart';
+import '../stories/story_models.dart';
 import 'media_bytes.dart';
 import 'media_viewer.dart';
 import 'memories_screen.dart';
@@ -573,7 +575,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
                           icon: ClIcons.spark,
                           label: l10n.albStory,
                           onTap: () =>
-                              showClToast(context, message: l10n.memSoonBody),
+                              _storyFromAlbum(context, c, album!, items),
                         ),
                       ],
                     )
@@ -1591,8 +1593,10 @@ class _AlbumPickerState extends ConsumerState<_AlbumPicker> {
 /// "Thêm ảnh" into an album: pick from what is already in Kỷ niệm.
 Future<List<String>?> pickFromMemories(
   BuildContext context,
-  List<MediaItem> items,
-) {
+  List<MediaItem> items, {
+  int? max,
+  String? title,
+}) {
   final selected = <String>{};
   return Navigator.of(context, rootNavigator: true).push<List<String>>(
     MaterialPageRoute(
@@ -1615,7 +1619,7 @@ Future<List<String>?> pickFromMemories(
                       ),
                       Expanded(
                         child: Text(
-                          l10n.albPickFromMemories,
+                          title ?? l10n.albPickFromMemories,
                           textAlign: TextAlign.center,
                           style: cl.text.headline,
                         ),
@@ -1641,6 +1645,12 @@ Future<List<String>?> pickFromMemories(
                               selecting: true,
                               selected: selected.contains(items[i].id),
                               onTap: () => setState(() {
+                                // A story photo group holds at most 4 (R-133).
+                                if (max != null &&
+                                    !selected.contains(items[i].id) &&
+                                    selected.length >= max) {
+                                  return;
+                                }
                                 _toggle(selected, items[i].id);
                               }),
                             ),
@@ -1682,4 +1692,37 @@ String capitalised(String s) => _cap(s);
 
 void _toggle(Set<String> set, String id) {
   if (!set.remove(id)) set.add(id);
+}
+
+/// 10e "Kể thành chuyện": a new story titled after the album, its photos in groups of 4 (S12).
+void _storyFromAlbum(
+  BuildContext context,
+  MemoryCtx c,
+  Album album,
+  List<MediaItem> items,
+) {
+  final photos = [
+    for (final m in items)
+      if (!m.isVideo) m.id,
+  ].take(9).toList();
+  final blank = Story.blank(
+    babyId: c.babyId,
+    uid: c.me.uid,
+    author: CareAuthor.of(c.me),
+    now: c.now,
+  );
+  final rest = photos.skip(1).toList();
+  final story = blank.copyWith(
+    title: album.name,
+    coverMediaId: photos.firstOrNull,
+    audience: album.audience,
+    blocks: [
+      ...blank.blocks,
+      for (var i = 0; i < rest.length; i += 4)
+        PhotosBlock(newBlockId(), [
+          for (final id in rest.skip(i).take(4)) StoryPhoto(id),
+        ]),
+    ],
+  );
+  context.push('${Routes.story}/${story.id}/edit', extra: story);
 }

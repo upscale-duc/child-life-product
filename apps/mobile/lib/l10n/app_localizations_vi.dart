@@ -4360,4 +4360,341 @@ class AppLocalizationsVi extends AppLocalizations {
   String hpSent(String ticket) {
     return 'Đã gửi · mã $ticket';
   }
+
+  @override
+  String get srySuggestTag => 'Gợi ý tuần này';
+
+  @override
+  String srySuggestSub(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Từ $count ảnh · bạn sửa trước khi lưu',
+      one: 'Từ 1 ảnh · bạn sửa trước khi lưu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get srySuggestCta => 'Xem bản nháp';
+
+  @override
+  String sryDrafts(int count) {
+    return 'Bản nháp · $count';
+  }
+
+  @override
+  String get sryShared => 'Đã chia sẻ';
+
+  @override
+  String sryToldBy(String who, String when) {
+    return '$who kể · $when';
+  }
+
+  @override
+  String sryWroteBy(String who, String when) {
+    return '$who viết · sửa lần cuối $when';
+  }
+
+  @override
+  String get sryDraft => 'Bản nháp';
+
+  @override
+  String get sryFromSuggestion => 'Nháp từ gợi ý · chưa lưu';
+
+  @override
+  String get sryWrite => 'Viết';
+
+  @override
+  String get sryEmptyTitle => 'Chưa có câu chuyện nào';
+
+  @override
+  String get sryEmptyBody =>
+      'Viết lại một khoảnh khắc, hoặc chờ gợi ý cuối tuần từ những gì bạn đã ghi.';
+
+  @override
+  String get sryRelEmpty => 'Ba mẹ chưa chia sẻ câu chuyện nào.';
+
+  @override
+  String get sryNewTitle => 'Viết gì?';
+
+  @override
+  String get sryKindStory => 'Câu chuyện';
+
+  @override
+  String get sryKindStoryHint => 'Kể một khoảnh khắc, có ảnh';
+
+  @override
+  String get sryKindLetter => 'Thư';
+
+  @override
+  String get sryKindLetterHint => 'Viết thư cho con đọc sau này';
+
+  @override
+  String get srySaveDraft => 'Lưu nháp';
+
+  @override
+  String sryAiTip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'AI viết nháp từ $count ảnh. Chạm vào bất kỳ đoạn, ảnh hay tiêu đề nào để sửa.',
+      one:
+          'AI viết nháp từ 1 ảnh. Chạm vào bất kỳ đoạn, ảnh hay tiêu đề nào để sửa.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sryTip => 'Chạm vào bất kỳ đoạn, ảnh hay tiêu đề nào để sửa.';
+
+  @override
+  String get sryChangeCover => 'Đổi ảnh bìa';
+
+  @override
+  String get sryAddCover => 'Thêm ảnh bìa';
+
+  @override
+  String get sryTitleHint => 'Tiêu đề';
+
+  @override
+  String get sryParagraphHint => 'Viết vài dòng…';
+
+  @override
+  String sryMetaPhotos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ảnh',
+      one: '1 ảnh',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sryMetaMilestone(String name) {
+    return 'mốc $name';
+  }
+
+  @override
+  String get sryRewrite => 'Viết lại';
+
+  @override
+  String get sryWarmer => 'Ấm hơn';
+
+  @override
+  String get sryShorter => 'Ngắn hơn';
+
+  @override
+  String get sryUndo => 'Hoàn tác';
+
+  @override
+  String get sryAddBlock => 'Thêm đoạn · ảnh · mốc';
+
+  @override
+  String get sryAddParagraph => 'Đoạn văn';
+
+  @override
+  String get sryAddPhotos => 'Ảnh';
+
+  @override
+  String get sryAddMilestone => 'Mốc';
+
+  @override
+  String get sryAddQuote => 'Câu trích';
+
+  @override
+  String get sryArrange => 'Sắp xếp';
+
+  @override
+  String get sryPreviewSave => 'Xem trước & lưu';
+
+  @override
+  String get sryDiscardTitle => 'Bỏ thay đổi?';
+
+  @override
+  String get sryDiscardBody => 'Những gì bạn vừa sửa chưa được lưu.';
+
+  @override
+  String get sryDiscard => 'Bỏ thay đổi';
+
+  @override
+  String get sryKeepEditing => 'Sửa tiếp';
+
+  @override
+  String get sryDraftSaved => 'Đã lưu nháp';
+
+  @override
+  String get sryDiscardDraft => 'Bỏ bản nháp';
+
+  @override
+  String get sryEditParagraph => 'Sửa đoạn';
+
+  @override
+  String get sryEdited => 'Đã sửa · không còn là văn AI';
+
+  @override
+  String sryWords(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count từ',
+      one: '1 từ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get srySuggestFor => 'Gợi ý cho đoạn này';
+
+  @override
+  String get sryUseThis => 'Dùng câu này';
+
+  @override
+  String get sryOtherSuggestion => 'Gợi ý khác';
+
+  @override
+  String get sryAiUnavailable => 'AI chưa sẵn sàng. Bạn vẫn sửa tay được.';
+
+  @override
+  String get sryAiLimit => 'Hôm nay đã dùng hết lượt gợi ý.';
+
+  @override
+  String get sryAiWorking => 'Đang viết…';
+
+  @override
+  String get sryPhotosTitle => 'Ảnh trong câu chuyện';
+
+  @override
+  String get sryChangePhoto => 'Đổi ảnh';
+
+  @override
+  String sryChangePhotoHint(String name) {
+    return 'Chọn từ Kỷ niệm của $name';
+  }
+
+  @override
+  String get sryAddToGroup => 'Thêm ảnh vào nhóm này';
+
+  @override
+  String get sryAddToGroupHint => 'Tối đa 4 ảnh một nhóm';
+
+  @override
+  String get sryCaption => 'Thêm chú thích';
+
+  @override
+  String get sryCaptionHint => 'Hiện nhỏ dưới ảnh';
+
+  @override
+  String get sryMakeCover => 'Đặt làm ảnh bìa';
+
+  @override
+  String get sryRemovePhotos => 'Bỏ khỏi câu chuyện';
+
+  @override
+  String get sryRemovePhotosHint => 'Ảnh vẫn còn trong Kỷ niệm';
+
+  @override
+  String get sryArrangeHint =>
+      'Giữ ≡ và kéo để đổi thứ tự. Vuốt trái để xoá khối.';
+
+  @override
+  String get sryCoverRow => 'Ảnh bìa';
+
+  @override
+  String sryParagraphN(int n) {
+    return 'Đoạn $n';
+  }
+
+  @override
+  String get sryPhotoGroup => 'Nhóm ảnh';
+
+  @override
+  String get sryMilestoneRow => 'Mốc';
+
+  @override
+  String get sryQuoteRow => 'Câu trích';
+
+  @override
+  String get sryPreviewLabel => 'XEM TRƯỚC';
+
+  @override
+  String get sryNeedTitle => 'Đặt tiêu đề cho câu chuyện.';
+
+  @override
+  String get sryNeedContent => 'Thêm ít nhất một đoạn hoặc một ảnh.';
+
+  @override
+  String get srySaveTitle => 'Lưu câu chuyện';
+
+  @override
+  String get sryPrivate => 'Riêng tư';
+
+  @override
+  String get sryFamilyRead => 'Cả nhà cùng đọc';
+
+  @override
+  String get sryOneNotice => '1 thông báo chung';
+
+  @override
+  String get sryShareAfter => 'Lưu xong mới chia sẻ ra ngoài được.';
+
+  @override
+  String sryPrivatePhotos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count ảnh đang Chỉ ba mẹ sẽ được gia đình thấy trong câu chuyện này.',
+      one: '1 ảnh đang Chỉ ba mẹ sẽ được gia đình thấy trong câu chuyện này.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get srySavedNotified => 'Đã lưu · đã báo cho gia đình';
+
+  @override
+  String get srySaved => 'Đã lưu câu chuyện';
+
+  @override
+  String get sryShare => 'Chia sẻ';
+
+  @override
+  String get sryWhoReads => 'Ai đọc câu chuyện này';
+
+  @override
+  String get sryAudienceChanged => 'Đã đổi ai đọc';
+
+  @override
+  String get sryDelete => 'Xoá câu chuyện';
+
+  @override
+  String get sryDeleteTitle => 'Xoá câu chuyện này?';
+
+  @override
+  String get sryDeleteBody =>
+      'Cả nhà sẽ không đọc được nữa. Ảnh vẫn còn trong Kỷ niệm.';
+
+  @override
+  String get sryDeleted => 'Đã xoá câu chuyện';
+
+  @override
+  String sryMetaSaved(String who, String when, String audience) {
+    return '$who kể · $when · $audience';
+  }
+
+  @override
+  String sryRelMeta(String who, String when) {
+    return '$who chia sẻ với gia đình · $when';
+  }
+
+  @override
+  String sryMilestoneOn(String name, String date) {
+    return '$name · $date';
+  }
+
+  @override
+  String get sryMore => 'Tuỳ chọn câu chuyện';
 }

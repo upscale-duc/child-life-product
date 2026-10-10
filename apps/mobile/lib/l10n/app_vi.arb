@@ -6634,5 +6634,457 @@
         "type": "String"
       }
     }
+  },
+  "srySuggestTag": "Gợi ý tuần này",
+  "@srySuggestTag": {
+    "description": "14a card tag."
+  },
+  "srySuggestSub": "{count, plural, =1{Từ 1 ảnh · bạn sửa trước khi lưu} other{Từ {count} ảnh · bạn sửa trước khi lưu}}",
+  "@srySuggestSub": {
+    "description": "14a card.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "srySuggestCta": "Xem bản nháp",
+  "@srySuggestCta": {
+    "description": "14a card CTA."
+  },
+  "sryDrafts": "Bản nháp · {count}",
+  "@sryDrafts": {
+    "description": "14a filter.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sryShared": "Đã chia sẻ",
+  "@sryShared": {
+    "description": "14a filter."
+  },
+  "sryToldBy": "{who} kể · {when}",
+  "@sryToldBy": {
+    "description": "14a meta.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "sryWroteBy": "{who} viết · sửa lần cuối {when}",
+  "@sryWroteBy": {
+    "description": "14a letter meta.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "sryDraft": "Bản nháp",
+  "@sryDraft": {
+    "description": "14a badge / 14b title."
+  },
+  "sryFromSuggestion": "Nháp từ gợi ý · chưa lưu",
+  "@sryFromSuggestion": {
+    "description": "14a AI draft row."
+  },
+  "sryWrite": "Viết",
+  "@sryWrite": {
+    "description": "14a FAB."
+  },
+  "sryEmptyTitle": "Chưa có câu chuyện nào",
+  "@sryEmptyTitle": {
+    "description": "14a empty (not drawn)."
+  },
+  "sryEmptyBody": "Viết lại một khoảnh khắc, hoặc chờ gợi ý cuối tuần từ những gì bạn đã ghi.",
+  "@sryEmptyBody": {
+    "description": "14a empty."
+  },
+  "sryRelEmpty": "Ba mẹ chưa chia sẻ câu chuyện nào.",
+  "@sryRelEmpty": {
+    "description": "11 empty."
+  },
+  "sryNewTitle": "Viết gì?",
+  "@sryNewTitle": {
+    "description": "New-story sheet (not drawn)."
+  },
+  "sryKindStory": "Câu chuyện",
+  "@sryKindStory": {
+    "description": "New-story sheet."
+  },
+  "sryKindStoryHint": "Kể một khoảnh khắc, có ảnh",
+  "@sryKindStoryHint": {
+    "description": "New-story sheet."
+  },
+  "sryKindLetter": "Thư",
+  "@sryKindLetter": {
+    "description": "New-story sheet."
+  },
+  "sryKindLetterHint": "Viết thư cho con đọc sau này",
+  "@sryKindLetterHint": {
+    "description": "New-story sheet."
+  },
+  "srySaveDraft": "Lưu nháp",
+  "@srySaveDraft": {
+    "description": "14b top bar."
+  },
+  "sryAiTip": "{count, plural, =1{AI viết nháp từ 1 ảnh. Chạm vào bất kỳ đoạn, ảnh hay tiêu đề nào để sửa.} other{AI viết nháp từ {count} ảnh. Chạm vào bất kỳ đoạn, ảnh hay tiêu đề nào để sửa.}}",
+  "@sryAiTip": {
+    "description": "14b tip.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sryTip": "Chạm vào bất kỳ đoạn, ảnh hay tiêu đề nào để sửa.",
+  "@sryTip": {
+    "description": "14b tip for a manual story."
+  },
+  "sryChangeCover": "Đổi ảnh bìa",
+  "@sryChangeCover": {
+    "description": "14b chip."
+  },
+  "sryAddCover": "Thêm ảnh bìa",
+  "@sryAddCover": {
+    "description": "14b chip without a cover."
+  },
+  "sryTitleHint": "Tiêu đề",
+  "@sryTitleHint": {
+    "description": "14b title placeholder."
+  },
+  "sryParagraphHint": "Viết vài dòng…",
+  "@sryParagraphHint": {
+    "description": "Empty paragraph placeholder."
+  },
+  "sryMetaPhotos": "{count, plural, =1{1 ảnh} other{{count} ảnh}}",
+  "@sryMetaPhotos": {
+    "description": "14b meta.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sryMetaMilestone": "mốc {name}",
+  "@sryMetaMilestone": {
+    "description": "14b meta.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sryRewrite": "Viết lại",
+  "@sryRewrite": {
+    "description": "14b toolbar / 14c AI bar."
+  },
+  "sryWarmer": "Ấm hơn",
+  "@sryWarmer": {
+    "description": "14b toolbar / 14c AI bar."
+  },
+  "sryShorter": "Ngắn hơn",
+  "@sryShorter": {
+    "description": "14c AI bar."
+  },
+  "sryUndo": "Hoàn tác",
+  "@sryUndo": {
+    "description": "14c AI bar."
+  },
+  "sryAddBlock": "Thêm đoạn · ảnh · mốc",
+  "@sryAddBlock": {
+    "description": "14b add row."
+  },
+  "sryAddParagraph": "Đoạn văn",
+  "@sryAddParagraph": {
+    "description": "Add sheet."
+  },
+  "sryAddPhotos": "Ảnh",
+  "@sryAddPhotos": {
+    "description": "Add sheet."
+  },
+  "sryAddMilestone": "Mốc",
+  "@sryAddMilestone": {
+    "description": "Add sheet."
+  },
+  "sryAddQuote": "Câu trích",
+  "@sryAddQuote": {
+    "description": "Add sheet."
+  },
+  "sryArrange": "Sắp xếp",
+  "@sryArrange": {
+    "description": "14b button / 14e title."
+  },
+  "sryPreviewSave": "Xem trước & lưu",
+  "@sryPreviewSave": {
+    "description": "14b button."
+  },
+  "sryDiscardTitle": "Bỏ thay đổi?",
+  "@sryDiscardTitle": {
+    "description": "Cancel with edits (not drawn)."
+  },
+  "sryDiscardBody": "Những gì bạn vừa sửa chưa được lưu.",
+  "@sryDiscardBody": {
+    "description": "Cancel with edits."
+  },
+  "sryDiscard": "Bỏ thay đổi",
+  "@sryDiscard": {
+    "description": "Cancel with edits."
+  },
+  "sryKeepEditing": "Sửa tiếp",
+  "@sryKeepEditing": {
+    "description": "Cancel with edits / 14f back."
+  },
+  "sryDraftSaved": "Đã lưu nháp",
+  "@sryDraftSaved": {
+    "description": "Toast."
+  },
+  "sryDiscardDraft": "Bỏ bản nháp",
+  "@sryDiscardDraft": {
+    "description": "Editor overflow (not drawn)."
+  },
+  "sryEditParagraph": "Sửa đoạn",
+  "@sryEditParagraph": {
+    "description": "14c title."
+  },
+  "sryEdited": "Đã sửa · không còn là văn AI",
+  "@sryEdited": {
+    "description": "14c meta."
+  },
+  "sryWords": "{count, plural, =1{1 từ} other{{count} từ}}",
+  "@sryWords": {
+    "description": "14c meta.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "srySuggestFor": "Gợi ý cho đoạn này",
+  "@srySuggestFor": {
+    "description": "14c section."
+  },
+  "sryUseThis": "Dùng câu này",
+  "@sryUseThis": {
+    "description": "14c chip."
+  },
+  "sryOtherSuggestion": "Gợi ý khác",
+  "@sryOtherSuggestion": {
+    "description": "14c chip."
+  },
+  "sryAiUnavailable": "AI chưa sẵn sàng. Bạn vẫn sửa tay được.",
+  "@sryAiUnavailable": {
+    "description": "AI error (G-051)."
+  },
+  "sryAiLimit": "Hôm nay đã dùng hết lượt gợi ý.",
+  "@sryAiLimit": {
+    "description": "AI daily limit."
+  },
+  "sryAiWorking": "Đang viết…",
+  "@sryAiWorking": {
+    "description": "AI in progress."
+  },
+  "sryPhotosTitle": "Ảnh trong câu chuyện",
+  "@sryPhotosTitle": {
+    "description": "14d title."
+  },
+  "sryChangePhoto": "Đổi ảnh",
+  "@sryChangePhoto": {
+    "description": "14d option."
+  },
+  "sryChangePhotoHint": "Chọn từ Kỷ niệm của {name}",
+  "@sryChangePhotoHint": {
+    "description": "14d option.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sryAddToGroup": "Thêm ảnh vào nhóm này",
+  "@sryAddToGroup": {
+    "description": "14d option."
+  },
+  "sryAddToGroupHint": "Tối đa 4 ảnh một nhóm",
+  "@sryAddToGroupHint": {
+    "description": "14d option."
+  },
+  "sryCaption": "Thêm chú thích",
+  "@sryCaption": {
+    "description": "14d option / caption sheet."
+  },
+  "sryCaptionHint": "Hiện nhỏ dưới ảnh",
+  "@sryCaptionHint": {
+    "description": "14d option."
+  },
+  "sryMakeCover": "Đặt làm ảnh bìa",
+  "@sryMakeCover": {
+    "description": "14d option."
+  },
+  "sryRemovePhotos": "Bỏ khỏi câu chuyện",
+  "@sryRemovePhotos": {
+    "description": "14d destructive."
+  },
+  "sryRemovePhotosHint": "Ảnh vẫn còn trong Kỷ niệm",
+  "@sryRemovePhotosHint": {
+    "description": "14d destructive."
+  },
+  "sryArrangeHint": "Giữ ≡ và kéo để đổi thứ tự. Vuốt trái để xoá khối.",
+  "@sryArrangeHint": {
+    "description": "14e hint."
+  },
+  "sryCoverRow": "Ảnh bìa",
+  "@sryCoverRow": {
+    "description": "14e row."
+  },
+  "sryParagraphN": "Đoạn {n}",
+  "@sryParagraphN": {
+    "description": "14e row.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sryPhotoGroup": "Nhóm ảnh",
+  "@sryPhotoGroup": {
+    "description": "14e row."
+  },
+  "sryMilestoneRow": "Mốc",
+  "@sryMilestoneRow": {
+    "description": "14e row."
+  },
+  "sryQuoteRow": "Câu trích",
+  "@sryQuoteRow": {
+    "description": "14e row."
+  },
+  "sryPreviewLabel": "XEM TRƯỚC",
+  "@sryPreviewLabel": {
+    "description": "14f label."
+  },
+  "sryNeedTitle": "Đặt tiêu đề cho câu chuyện.",
+  "@sryNeedTitle": {
+    "description": "14f guard."
+  },
+  "sryNeedContent": "Thêm ít nhất một đoạn hoặc một ảnh.",
+  "@sryNeedContent": {
+    "description": "14f guard."
+  },
+  "srySaveTitle": "Lưu câu chuyện",
+  "@srySaveTitle": {
+    "description": "14f sheet title / button."
+  },
+  "sryPrivate": "Riêng tư",
+  "@sryPrivate": {
+    "description": "14f card."
+  },
+  "sryFamilyRead": "Cả nhà cùng đọc",
+  "@sryFamilyRead": {
+    "description": "14f card."
+  },
+  "sryOneNotice": "1 thông báo chung",
+  "@sryOneNotice": {
+    "description": "14f row."
+  },
+  "sryShareAfter": "Lưu xong mới chia sẻ ra ngoài được.",
+  "@sryShareAfter": {
+    "description": "14f footnote."
+  },
+  "sryPrivatePhotos": "{count, plural, =1{1 ảnh đang Chỉ ba mẹ sẽ được gia đình thấy trong câu chuyện này.} other{{count} ảnh đang Chỉ ba mẹ sẽ được gia đình thấy trong câu chuyện này.}}",
+  "@sryPrivatePhotos": {
+    "description": "14f D-002 note.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "srySavedNotified": "Đã lưu · đã báo cho gia đình",
+  "@srySavedNotified": {
+    "description": "14g toast."
+  },
+  "srySaved": "Đã lưu câu chuyện",
+  "@srySaved": {
+    "description": "Toast."
+  },
+  "sryShare": "Chia sẻ",
+  "@sryShare": {
+    "description": "14g button."
+  },
+  "sryWhoReads": "Ai đọc câu chuyện này",
+  "@sryWhoReads": {
+    "description": "Share sheet (S12 part)."
+  },
+  "sryAudienceChanged": "Đã đổi ai đọc",
+  "@sryAudienceChanged": {
+    "description": "Toast."
+  },
+  "sryDelete": "Xoá câu chuyện",
+  "@sryDelete": {
+    "description": "Reader overflow (G-050)."
+  },
+  "sryDeleteTitle": "Xoá câu chuyện này?",
+  "@sryDeleteTitle": {
+    "description": "G-050."
+  },
+  "sryDeleteBody": "Cả nhà sẽ không đọc được nữa. Ảnh vẫn còn trong Kỷ niệm.",
+  "@sryDeleteBody": {
+    "description": "G-050."
+  },
+  "sryDeleted": "Đã xoá câu chuyện",
+  "@sryDeleted": {
+    "description": "Toast."
+  },
+  "sryMetaSaved": "{who} kể · {when} · {audience}",
+  "@sryMetaSaved": {
+    "description": "14g meta.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      },
+      "audience": {
+        "type": "String"
+      }
+    }
+  },
+  "sryRelMeta": "{who} chia sẻ với gia đình · {when}",
+  "@sryRelMeta": {
+    "description": "11i meta.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "sryMilestoneOn": "{name} · {date}",
+  "@sryMilestoneOn": {
+    "description": "14g chip.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sryMore": "Tuỳ chọn câu chuyện",
+  "@sryMore": {
+    "description": "Reader ••• (a11y)."
   }
 }

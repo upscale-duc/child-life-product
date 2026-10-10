@@ -25,6 +25,7 @@ import 'memory_sheets.dart';
 import 'memory_widgets.dart';
 import 'social_widgets.dart';
 import 'upload_queue.dart';
+import '../stories/stories_view.dart';
 
 // ---------- View state (10c) and selection (10b2) ----------
 
@@ -248,7 +249,7 @@ class MemoriesScreen extends ConsumerWidget {
       ),
       MemoryTab.photos => PhotosView(ctx: c, media: media),
       MemoryTab.albums => AlbumsView(ctx: c),
-      MemoryTab.stories => _Soon(ctx: c),
+      MemoryTab.stories => StoriesView(ctx: c),
     };
 
     return ColoredBox(
@@ -507,35 +508,6 @@ class _SelectionPill extends StatelessWidget {
             l10n.a11yDeleteSelected,
             onDelete,
             cl.colors.error,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Soon extends StatelessWidget {
-  const _Soon({required this.ctx});
-  final MemoryCtx ctx;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return SafeArea(
-      bottom: false,
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(
-          ClSpace.s4,
-          ClSpace.s2,
-          ClSpace.s4,
-          ClTabDock.contentBottomPadding + 64,
-        ),
-        children: [
-          MemoryHeader(ctx: ctx, title: ''),
-          ClEmptyState(
-            icon: ClIcons.memories,
-            title: l10n.memSoonTitle,
-            message: l10n.memSoonBody,
           ),
         ],
       ),

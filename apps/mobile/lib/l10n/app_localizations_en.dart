@@ -4707,4 +4707,342 @@ class AppLocalizationsEn extends AppLocalizations {
   String hpSent(String ticket) {
     return 'Sent · reference $ticket';
   }
+
+  @override
+  String get srySuggestTag => 'This week’s suggestion';
+
+  @override
+  String srySuggestSub(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'From $count photos · edit before saving',
+      one: 'From 1 photo · edit before saving',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get srySuggestCta => 'See the draft';
+
+  @override
+  String sryDrafts(int count) {
+    return 'Drafts · $count';
+  }
+
+  @override
+  String get sryShared => 'Shared';
+
+  @override
+  String sryToldBy(String who, String when) {
+    return 'Told by $who · $when';
+  }
+
+  @override
+  String sryWroteBy(String who, String when) {
+    return 'Written by $who · last edited $when';
+  }
+
+  @override
+  String get sryDraft => 'Draft';
+
+  @override
+  String get sryFromSuggestion => 'Draft from a suggestion · not saved';
+
+  @override
+  String get sryWrite => 'Write';
+
+  @override
+  String get sryEmptyTitle => 'No stories yet';
+
+  @override
+  String get sryEmptyBody =>
+      'Write about a moment, or wait for the weekend suggestion from what you logged.';
+
+  @override
+  String get sryRelEmpty => 'The parents haven’t shared a story yet.';
+
+  @override
+  String get sryNewTitle => 'What will you write?';
+
+  @override
+  String get sryKindStory => 'Story';
+
+  @override
+  String get sryKindStoryHint => 'Tell a moment, with photos';
+
+  @override
+  String get sryKindLetter => 'Letter';
+
+  @override
+  String get sryKindLetterHint => 'A letter for your child to read later';
+
+  @override
+  String get srySaveDraft => 'Save draft';
+
+  @override
+  String sryAiTip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'AI drafted this from $count photos. Tap any paragraph, photo or title to edit.',
+      one:
+          'AI drafted this from 1 photo. Tap any paragraph, photo or title to edit.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sryTip => 'Tap any paragraph, photo or title to edit.';
+
+  @override
+  String get sryChangeCover => 'Change cover';
+
+  @override
+  String get sryAddCover => 'Add a cover';
+
+  @override
+  String get sryTitleHint => 'Title';
+
+  @override
+  String get sryParagraphHint => 'Write a few lines…';
+
+  @override
+  String sryMetaPhotos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos',
+      one: '1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sryMetaMilestone(String name) {
+    return 'milestone $name';
+  }
+
+  @override
+  String get sryRewrite => 'Rewrite';
+
+  @override
+  String get sryWarmer => 'Warmer';
+
+  @override
+  String get sryShorter => 'Shorter';
+
+  @override
+  String get sryUndo => 'Undo';
+
+  @override
+  String get sryAddBlock => 'Add paragraph · photos · milestone';
+
+  @override
+  String get sryAddParagraph => 'Paragraph';
+
+  @override
+  String get sryAddPhotos => 'Photos';
+
+  @override
+  String get sryAddMilestone => 'Milestone';
+
+  @override
+  String get sryAddQuote => 'Pull quote';
+
+  @override
+  String get sryArrange => 'Arrange';
+
+  @override
+  String get sryPreviewSave => 'Preview & save';
+
+  @override
+  String get sryDiscardTitle => 'Discard changes?';
+
+  @override
+  String get sryDiscardBody => 'What you just changed isn’t saved.';
+
+  @override
+  String get sryDiscard => 'Discard';
+
+  @override
+  String get sryKeepEditing => 'Keep editing';
+
+  @override
+  String get sryDraftSaved => 'Draft saved';
+
+  @override
+  String get sryDiscardDraft => 'Discard draft';
+
+  @override
+  String get sryEditParagraph => 'Edit paragraph';
+
+  @override
+  String get sryEdited => 'Edited · no longer AI text';
+
+  @override
+  String sryWords(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count words',
+      one: '1 word',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get srySuggestFor => 'Suggestions for this paragraph';
+
+  @override
+  String get sryUseThis => 'Use this';
+
+  @override
+  String get sryOtherSuggestion => 'Another suggestion';
+
+  @override
+  String get sryAiUnavailable =>
+      'AI isn’t available right now. You can still edit by hand.';
+
+  @override
+  String get sryAiLimit => 'You’ve used today’s suggestions.';
+
+  @override
+  String get sryAiWorking => 'Writing…';
+
+  @override
+  String get sryPhotosTitle => 'Photos in the story';
+
+  @override
+  String get sryChangePhoto => 'Change photos';
+
+  @override
+  String sryChangePhotoHint(String name) {
+    return 'Pick from $name’s Memories';
+  }
+
+  @override
+  String get sryAddToGroup => 'Add photos to this group';
+
+  @override
+  String get sryAddToGroupHint => 'Up to 4 photos in a group';
+
+  @override
+  String get sryCaption => 'Add a caption';
+
+  @override
+  String get sryCaptionHint => 'Shown small under the photo';
+
+  @override
+  String get sryMakeCover => 'Make it the cover';
+
+  @override
+  String get sryRemovePhotos => 'Remove from the story';
+
+  @override
+  String get sryRemovePhotosHint => 'The photos stay in Memories';
+
+  @override
+  String get sryArrangeHint =>
+      'Hold ≡ and drag to reorder. Swipe left to delete a block.';
+
+  @override
+  String get sryCoverRow => 'Cover photo';
+
+  @override
+  String sryParagraphN(int n) {
+    return 'Paragraph $n';
+  }
+
+  @override
+  String get sryPhotoGroup => 'Photo group';
+
+  @override
+  String get sryMilestoneRow => 'Milestone';
+
+  @override
+  String get sryQuoteRow => 'Pull quote';
+
+  @override
+  String get sryPreviewLabel => 'PREVIEW';
+
+  @override
+  String get sryNeedTitle => 'Give the story a title.';
+
+  @override
+  String get sryNeedContent => 'Add at least one paragraph or photo.';
+
+  @override
+  String get srySaveTitle => 'Save story';
+
+  @override
+  String get sryPrivate => 'Private';
+
+  @override
+  String get sryFamilyRead => 'The whole family reads it';
+
+  @override
+  String get sryOneNotice => '1 general notification';
+
+  @override
+  String get sryShareAfter => 'You can share outside once it’s saved.';
+
+  @override
+  String sryPrivatePhotos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count parents-only photos will be seen by the family in this story.',
+      one: '1 parents-only photo will be seen by the family in this story.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get srySavedNotified => 'Saved · the family was told';
+
+  @override
+  String get srySaved => 'Story saved';
+
+  @override
+  String get sryShare => 'Share';
+
+  @override
+  String get sryWhoReads => 'Who reads this story';
+
+  @override
+  String get sryAudienceChanged => 'Readers changed';
+
+  @override
+  String get sryDelete => 'Delete story';
+
+  @override
+  String get sryDeleteTitle => 'Delete this story?';
+
+  @override
+  String get sryDeleteBody =>
+      'Nobody in the family will see it any more. The photos stay in Memories.';
+
+  @override
+  String get sryDeleted => 'Story deleted';
+
+  @override
+  String sryMetaSaved(String who, String when, String audience) {
+    return 'Told by $who · $when · $audience';
+  }
+
+  @override
+  String sryRelMeta(String who, String when) {
+    return '$who shared with the family · $when';
+  }
+
+  @override
+  String sryMilestoneOn(String name, String date) {
+    return '$name · $date';
+  }
+
+  @override
+  String get sryMore => 'Story options';
 }

@@ -21,6 +21,9 @@ import '../features/home/home_shell.dart';
 import '../features/memories/album_screens.dart';
 import '../features/memories/memories_screen.dart';
 import '../features/memories/messages_screen.dart';
+import '../features/stories/story_editor.dart';
+import '../features/stories/story_models.dart';
+import '../features/stories/story_reader.dart';
 import '../features/me/account_screen.dart';
 import '../features/me/baby_profile_screens.dart';
 import '../features/me/help_screen.dart';
@@ -246,6 +249,21 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ],
               ),
             ],
+          ),
+        ],
+      ),
+      // S12 stories (14b–14g, 11i): full screen.
+      GoRoute(
+        path: '${Routes.story}/:id',
+        builder: (_, s) =>
+            StoryReaderScreen(storyId: s.pathParameters['id'] ?? ''),
+        routes: [
+          GoRoute(
+            path: 'edit',
+            builder: (_, s) => StoryEditorScreen(
+              storyId: s.pathParameters['id'] ?? '',
+              initial: s.extra is Story ? s.extra! as Story : null,
+            ),
           ),
         ],
       ),

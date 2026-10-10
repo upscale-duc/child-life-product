@@ -145,7 +145,7 @@ Future<void> tapText(WidgetTester tester, String text) async {
 }
 
 /// Firestore emulator write that bypasses Rules (admin "owner" token). Values: String, bool,
-/// int, DateTime (timestamp), null, Map (nested).
+/// int, DateTime (timestamp), null, Map (nested), List.
 Future<void> firestoreSet(String path, Map<String, Object?> fields) async {
   Map<String, Object?> encode(Object? v) => switch (v) {
     null => {'nullValue': null},
@@ -156,6 +156,11 @@ Future<void> firestoreSet(String path, Map<String, Object?> fields) async {
     final Map<String, Object?> m => {
       'mapValue': {
         'fields': {for (final e in m.entries) e.key: encode(e.value)},
+      },
+    },
+    final List<Object?> l => {
+      'arrayValue': {
+        'values': [for (final x in l) encode(x)],
       },
     },
     _ => throw ArgumentError('Unsupported $v'),

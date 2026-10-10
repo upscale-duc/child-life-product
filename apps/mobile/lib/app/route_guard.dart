@@ -63,6 +63,9 @@ abstract final class Routes {
   static const meNotifications = '/me/notifications';
   static const meHelp = '/me/help';
 
+  /// S12 stories: reader `/story/{id}`, editor `/story/{id}/edit` (full screen).
+  static const story = '/story';
+
   /// 13k "Sửa hồ sơ bé": full screen, no dock.
   static const babyEdit = '/baby-edit';
   static const showcase = '/showcase';

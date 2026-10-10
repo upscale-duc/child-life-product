@@ -348,6 +348,8 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 - **Acceptance (plan flow E part 1):** AI failure path; source deleted/made private after save; saving a story to Gia đình states how many private photos family readers will see (D-002); cost per draft within agreed budget.
 - **Depends on:** S10, SP-4. G-050, G-051.
 
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S12.md). Stories list, draft editor with AI help, photos, arrange, preview & save, reader (parents and relatives), delete, and the weekly suggestion work end to end on Android with the emulators; backend on dev. Drafts use the template provider until the owner sets `OPENAI_API_KEY` (SP-4 not run); external sharing is S13.
+
 ### S13 — External sharing: cards, links, recipient web
 
 - **Figma:** 14h, 14i, 14j, 14k, 14l, 14m, 14n StoryCard templates.
