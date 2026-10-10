@@ -89,6 +89,9 @@ class CareRecord {
     this.weightKg,
     this.lengthCm,
     this.measuredOn,
+    this.leftMin,
+    this.rightMin,
+    this.endSide,
     this.createdAt,
     this.clientCreatedAt,
     this.deleted = false,
@@ -115,6 +118,11 @@ class CareRecord {
 
   /// Growth "Ngày đo" (baby-local calendar date).
   final DateTime? measuredOn;
+
+  /// Breastfeeds from the timer (23b): minutes per side and the side it ended on.
+  final int? leftMin;
+  final int? rightMin;
+  final Side? endSide;
 
   /// Server time of the first save ("Ghi lúc"); null until it reaches the server.
   final DateTime? createdAt;
@@ -162,6 +170,9 @@ class CareRecord {
       weightKg: weightKg ?? this.weightKg,
       lengthCm: clearLength ? null : (lengthCm ?? this.lengthCm),
       measuredOn: measuredOn ?? this.measuredOn,
+      leftMin: leftMin,
+      rightMin: rightMin,
+      endSide: endSide,
       createdAt: createdAt,
       clientCreatedAt: clientCreatedAt,
       deleted: deleted,
@@ -217,6 +228,9 @@ class CareRecord {
     CareType.breast => {
       'side': (side ?? Side.both).name,
       'durationMin': durationMin,
+      if (leftMin != null) 'leftMin': leftMin,
+      if (rightMin != null) 'rightMin': rightMin,
+      if (endSide != null) 'endSide': endSide!.name,
     },
     CareType.pump => {
       'side': (side ?? Side.both).name,
@@ -285,6 +299,9 @@ class CareRecord {
       weightKg: number('weightKg')?.toDouble(),
       lengthCm: number('lengthCm')?.toDouble(),
       measuredOn: DateTime.tryParse(data['measuredOn'] as String? ?? ''),
+      leftMin: number('leftMin')?.toInt(),
+      rightMin: number('rightMin')?.toInt(),
+      endSide: Side.values.asNameMap()[data['endSide']],
       createdAt: dateOf(json['createdAt']),
       clientCreatedAt: dateOf(json['clientCreatedAt']),
       deleted: json['deleted'] == true,

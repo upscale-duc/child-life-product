@@ -3,6 +3,7 @@ import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/baby/baby_repository.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/care_repository.dart';
+import 'package:child_life/features/care/timer_models.dart';
 import 'package:child_life/features/family/family_models.dart';
 import 'package:child_life/features/family/family_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -140,6 +141,8 @@ List<Override> familyOverrides({
   List<CareRecord> growth = const [],
   bool online = true,
   DateTime? now,
+  Map<TimerType, CareTimer> timers = const {},
+  List<SleepConflict> conflicts = const [],
 }) {
   final self = me ?? mai;
   return [
@@ -165,5 +168,9 @@ List<Override> familyOverrides({
     careClockProvider.overrideWith(
       (ref) => Stream.value(now ?? DateTime.now()),
     ),
+    careTimerProvider.overrideWith((ref, key) => Stream.value(timers[key.$2])),
+    openConflictsProvider.overrideWith((ref, id) => Stream.value(conflicts)),
+    timerClockProvider.overrideWithValue(() => now ?? DateTime.now()),
+    timerTicksProvider.overrideWithValue(false),
   ];
 }

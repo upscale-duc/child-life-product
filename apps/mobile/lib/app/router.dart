@@ -7,6 +7,8 @@ import '../features/appearance/appearance_screen.dart';
 import '../features/auth/auth_screens.dart';
 import '../features/care/care_models.dart';
 import '../features/care/care_screens.dart';
+import '../features/care/timer_models.dart';
+import '../features/care/timer_screens.dart';
 import '../features/diagnostics/diagnostics_screen.dart';
 import '../features/family/family_models.dart';
 import '../features/family/family_screen.dart';
@@ -148,6 +150,23 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.growth,
         builder: (_, s) => GrowthScreen(edit: s.extra as CareRecord?),
+      ),
+      GoRoute(
+        path: '${Routes.timer}/:type',
+        builder: (_, s) => TimerScreen(
+          type:
+              TimerType.values.asNameMap()[s.pathParameters['type']] ??
+              TimerType.sleep,
+        ),
+      ),
+      GoRoute(
+        path: Routes.manualSleep,
+        builder: (_, s) => ManualSleepScreen(edit: s.extra as CareRecord?),
+      ),
+      GoRoute(
+        path: '${Routes.overlap}/:id',
+        builder: (_, s) =>
+            OverlapScreen(conflictId: s.pathParameters['id'] ?? ''),
       ),
       GoRoute(
         path: '${Routes.record}/:id',

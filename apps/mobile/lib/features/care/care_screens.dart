@@ -63,9 +63,7 @@ class GrowthScreen extends ConsumerStatefulWidget {
 class _GrowthScreenState extends ConsumerState<GrowthScreen> {
   late final String _id = widget.edit?.id ?? newRecordId();
   late DateTime _date = DateUtils.dateOnly(
-    widget.edit?.measuredOn ??
-        ref.read(careClockProvider).value ??
-        DateTime.now(),
+    widget.edit?.measuredOn ?? ref.read(timerClockProvider)(),
   );
   final _weight = TextEditingController();
   final _length = TextEditingController();
@@ -112,9 +110,7 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
     // One decimal, as the field shows ("4,3 kg").
     final w = (weight * 10).round() / 10;
     final l = length == null ? null : (length * 10).round() / 10;
-    final today = DateUtils.dateOnly(
-      ref.read(careClockProvider).value ?? DateTime.now(),
-    );
+    final today = DateUtils.dateOnly(ref.read(timerClockProvider)());
     final at = _date == today
         ? DateTime.now()
         : DateTime(_date.year, _date.month, _date.day, 12);

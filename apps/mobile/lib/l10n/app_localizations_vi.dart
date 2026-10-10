@@ -1659,4 +1659,243 @@ class AppLocalizationsVi extends AppLocalizations {
   String memberMetaCount(String relation, String date, int count) {
     return '$relation · tham gia $date · đã ghi $count lần';
   }
+
+  @override
+  String get sleepChooserTitle => 'Ghi giấc ngủ';
+
+  @override
+  String sleepChooserPrompt(String baby) {
+    return '$baby đang ngủ hay đã ngủ xong rồi?';
+  }
+
+  @override
+  String get sleepStartTimer => 'Bắt đầu hẹn giờ';
+
+  @override
+  String sleepStartTimerHint(String baby) {
+    return '$baby vừa ngủ. Đồng hồ chạy, cả nhà cùng thấy';
+  }
+
+  @override
+  String get sleepManual => 'Nhập giấc đã ngủ';
+
+  @override
+  String get sleepManualHint => 'Quên bấm giờ? Chọn giờ bắt đầu và kết thúc';
+
+  @override
+  String get sleepChooserFootnote =>
+      'Đổi cách bất cứ lúc nào: từ đồng hồ có thể sửa giờ bắt đầu, từ nhập tay có thể chuyển sang hẹn giờ.';
+
+  @override
+  String get timerFamilySees => 'Cả nhà đang thấy';
+
+  @override
+  String get timerOnlyHere => 'Chỉ trên máy này';
+
+  @override
+  String get sleepNotSynced => 'Giấc ngủ này chưa được đồng bộ';
+
+  @override
+  String get timerNotSynced => 'Cữ này chưa được đồng bộ';
+
+  @override
+  String sleepTimerTitle(String baby) {
+    return 'Bé $baby đang ngủ';
+  }
+
+  @override
+  String timerStartedBy(String who, String time) {
+    return '$who bắt đầu lúc $time';
+  }
+
+  @override
+  String get sleepRingLabel => 'Đang ngủ';
+
+  @override
+  String sinceTime(String time) {
+    return 'Từ $time';
+  }
+
+  @override
+  String get endSleep => 'Kết thúc giấc ngủ';
+
+  @override
+  String get editStart => 'Sửa giờ bắt đầu';
+
+  @override
+  String get cancelNoSave => 'Hủy, không lưu';
+
+  @override
+  String get cancelConfirmTitle => 'Hủy và không lưu?';
+
+  @override
+  String get cancelConfirmBody => 'Thời gian đã chạy sẽ không được ghi.';
+
+  @override
+  String get keepTiming => 'Tiếp tục bấm giờ';
+
+  @override
+  String breastTimerTitle(String baby) {
+    return '$baby đang bú mẹ';
+  }
+
+  @override
+  String get totalTime => 'Tổng thời gian';
+
+  @override
+  String get sideLeftCaps => 'TRÁI';
+
+  @override
+  String get sideRightCaps => 'PHẢI';
+
+  @override
+  String get feedingNow => 'Đang bú';
+
+  @override
+  String get tapToSwitch => 'Chạm để đổi bên';
+
+  @override
+  String get lastEndedLeft => 'Lần trước kết thúc bên trái';
+
+  @override
+  String get lastEndedRight => 'Lần trước kết thúc bên phải';
+
+  @override
+  String get endFeed => 'Kết thúc cữ bú';
+
+  @override
+  String get pauseTimer => 'Tạm dừng';
+
+  @override
+  String get resumeTimer => 'Tiếp tục';
+
+  @override
+  String get pausedLabel => 'Tạm dừng';
+
+  @override
+  String pumpTimerTitle(String who) {
+    return '$who đang hút sữa';
+  }
+
+  @override
+  String pumpStartedFor(String time, String baby) {
+    return 'Bắt đầu lúc $time · cho $baby';
+  }
+
+  @override
+  String get pumpingNow => 'Đang hút';
+
+  @override
+  String get pumpStopped => 'Đã dừng';
+
+  @override
+  String get tapToStart => 'Chạm để chạy';
+
+  @override
+  String get doublePumpHint => 'Hút đôi · chạm 1 bên để dừng riêng';
+
+  @override
+  String get pumpDone => 'Xong · nhập lượng sữa';
+
+  @override
+  String get timerInstead => 'Bấm giờ thay vì nhập';
+
+  @override
+  String timerJoined(String who) {
+    return '$who đã bắt đầu đồng hồ này trước. Bạn đang xem cùng.';
+  }
+
+  @override
+  String wokeAt(String time) {
+    return 'Dậy lúc $time';
+  }
+
+  @override
+  String runningSince(String time, String who) {
+    return 'Từ $time · $who';
+  }
+
+  @override
+  String get manualSleepTitle => 'Nhập giấc ngủ';
+
+  @override
+  String get overnight => 'Qua đêm';
+
+  @override
+  String get sleepEnd => 'Kết thúc';
+
+  @override
+  String overnightNote(String offset) {
+    return 'Giấc qua đêm được chia vào tổng của từng ngày theo múi giờ của bé ($offset).';
+  }
+
+  @override
+  String sleepingNow(String baby) {
+    return '$baby đang ngủ?';
+  }
+
+  @override
+  String get saveSleep => 'Lưu giấc ngủ';
+
+  @override
+  String get sleepEndBeforeStart => 'Giờ kết thúc phải sau giờ bắt đầu.';
+
+  @override
+  String get sleepTooLong => 'Một giấc dài tối đa 24 giờ.';
+
+  @override
+  String get overlapTitle => 'Có hai giấc ngủ trùng nhau';
+
+  @override
+  String get overlapBody => 'Chọn bản đúng. App không tự gộp hay ghi đè.';
+
+  @override
+  String get backOnline => 'Đã có mạng lại';
+
+  @override
+  String get keepSelected => 'Giữ bản đã chọn';
+
+  @override
+  String get editMine => 'Sửa tay từ bản của tôi';
+
+  @override
+  String get overlapBanner => 'Có hai giấc ngủ trùng nhau · chọn bản đúng';
+
+  @override
+  String get overlapKept =>
+      'Đã giữ bản đã chọn. Bản kia vào “Đã xoá gần đây” 30 ngày.';
+
+  @override
+  String get overlapNotAllowed => 'Bản kia do ba mẹ ghi. Nhờ ba mẹ chọn nhé.';
+
+  @override
+  String tourStep(int n) {
+    return 'Bước $n/3';
+  }
+
+  @override
+  String get tour1Title => 'Ghi cữ bú đầu tiên';
+
+  @override
+  String get tour1Body =>
+      'Chạm thẻ Bú bình để ghi. Các thẻ khác cũng ghi y như vậy.';
+
+  @override
+  String tour2Title(String baby) {
+    return 'Theo dõi $baby lớn lên';
+  }
+
+  @override
+  String get tour2Body =>
+      'Nhập cân nặng, chiều dài lúc sinh. Mỗi lần đo sau, app tự so với lần trước.';
+
+  @override
+  String get tour3Title => 'Ghi nhanh từ mọi nơi';
+
+  @override
+  String get tour3Body =>
+      'Nút + luôn ở đây, ở mọi tab. Chạm để chọn việc cần ghi.';
+
+  @override
+  String get tourStart => 'Bắt đầu';
 }

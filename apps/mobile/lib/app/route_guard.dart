@@ -24,6 +24,11 @@ abstract final class Routes {
   static const growth = '/care/growth';
   static const record = '/care/record';
 
+  /// 25 / 23b / 23c (`/care/timer/{sleep|breast|pump}`), 26, 27 (`/care/overlap/{id}`).
+  static const timer = '/care/timer';
+  static const manualSleep = '/care/sleep';
+  static const overlap = '/care/overlap';
+
   /// 15 Nhập mã mời → 16 → 16a; 17 for closed invites.
   static const join = '/join';
   static const joinScan = '/join/scan';

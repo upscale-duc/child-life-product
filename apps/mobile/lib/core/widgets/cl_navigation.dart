@@ -263,11 +263,15 @@ class ClTabDock extends StatelessWidget {
     required this.initial,
     this.onQuickLog,
     this.tabs,
+    this.quickLogKey,
     super.key,
   });
 
   final ClRole role;
   final List<ClTab>? tabs;
+
+  /// Lets the first-run tour point at "+" (18c).
+  final Key? quickLogKey;
   final ClTab active;
   final ValueChanged<ClTab> onSelect;
   final String initial;
@@ -299,7 +303,7 @@ class ClTabDock extends StatelessWidget {
           ),
           if (roleCanQuickLog(role) && onQuickLog != null) ...[
             const SizedBox(width: ClSpace.s3),
-            ClQuickLogButton(onPressed: onQuickLog!),
+            ClQuickLogButton(key: quickLogKey, onPressed: onQuickLog!),
           ],
         ],
       ),

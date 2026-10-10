@@ -23,7 +23,10 @@ import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../family/family_labels.dart';
+import '../care/care_repository.dart';
 import '../care/care_sheets.dart';
+import '../care/timer_models.dart';
+import 'today_tour.dart';
 import '../family/save_account.dart';
 import '../onboarding/setup_draft.dart';
 
@@ -69,6 +72,9 @@ List<ClTab> tabsFor(Membership m) => tabsForRole(
   relativeSeesToday: m.role == MemberRole.relative && m.canViewToday,
 );
 
+/// Overlap conflicts already opened on this device (27 shows once by itself).
+final _shownConflicts = <String>{};
+
 /// Branch order of the shell route (Me is a sheet until S10).
 const shellTabs = [ClTab.today, ClTab.memories, ClTab.family];
 
@@ -87,6 +93,52 @@ class HomeShell extends ConsumerWidget {
     if (membership == null) return Scaffold(backgroundColor: cl.colors.cloud);
     final tabs = tabsFor(membership);
     final active = shellTabs[shell.currentIndex];
+    final babyId = membership.babyId;
+
+    // R-071 / 13: Night care turns on while your sleep timer runs, outside the schedule too.
+    final sleepTimer = ref
+        .watch(careTimerProvider((babyId, TimerType.sleep)))
+        .value;
+    final mySleepRunning =
+        sleepTimer != null && sleepTimer.startedBy == membership.uid;
+    if (ref.read(nightCareTimerRunningProvider) != mySleepRunning) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => ref
+            .read(nightCareTimerRunningProvider.notifier)
+            .set(mySleepRunning),
+      );
+    }
+
+    // 27 opens by itself for the member whose sync revealed the overlap (R-075).
+    ref.listen(openConflictsProvider(babyId), (_, next) {
+      final conflict = next.value
+          ?.where(
+            (c) => c.laterAuthor == membership.uid && _shownConflicts.add(c.id),
+          )
+          .firstOrNull;
+      if (conflict != null) context.push('${Routes.overlap}/${conflict.id}');
+    });
+
+    // 18 / 18b / 18c: first visit to an empty Today, for those who log.
+    final recent = ref.watch(recentRecordsProvider(babyId));
+    final growth = ref.watch(growthRecordsProvider(babyId));
+    final nothingLogged =
+        recent.hasValue &&
+        growth.hasValue &&
+        recent.value!.isEmpty &&
+        growth.value!.isEmpty;
+    final tourDone = ref.watch(todayTourDoneProvider);
+    if (!tourDone && recent.hasValue && recent.value!.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => ref.read(todayTourDoneProvider.notifier).finish(),
+      );
+    }
+    final showTour =
+        !tourDone &&
+        nothingLogged &&
+        active == ClTab.today &&
+        membership.role != MemberRole.relative;
+    final nickname = ref.watch(babyProvider(babyId)).value?.nickname ?? '';
     if (!tabs.contains(active)) {
       // e.g. a relative opening Hôm nay lands on Kỷ niệm (7b "vào Kỷ niệm").
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -119,9 +171,12 @@ class HomeShell extends ConsumerWidget {
                 onQuickLog: membership.role == MemberRole.relative
                     ? null
                     : () => showQuickLog(context),
+                quickLogKey: TourTargets.quickLog,
               ),
             ),
           ),
+          if (showTour)
+            Positioned.fill(child: TodayTour(babyNickname: nickname)),
         ],
       ),
     );

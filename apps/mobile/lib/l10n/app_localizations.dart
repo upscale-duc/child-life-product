@@ -2911,6 +2911,414 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'{relation} · tham gia {date} · đã ghi {count} lần'**
   String memberMetaCount(String relation, String date, int count);
+
+  /// 25a sheet title (69:4213).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi giấc ngủ'**
+  String get sleepChooserTitle;
+
+  /// 25a prompt.
+  ///
+  /// In vi, this message translates to:
+  /// **'{baby} đang ngủ hay đã ngủ xong rồi?'**
+  String sleepChooserPrompt(String baby);
+
+  /// 25a primary option / 26 link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu hẹn giờ'**
+  String get sleepStartTimer;
+
+  /// 25a option subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'{baby} vừa ngủ. Đồng hồ chạy, cả nhà cùng thấy'**
+  String sleepStartTimerHint(String baby);
+
+  /// 25a secondary option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập giấc đã ngủ'**
+  String get sleepManual;
+
+  /// 25a option subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quên bấm giờ? Chọn giờ bắt đầu và kết thúc'**
+  String get sleepManualHint;
+
+  /// 25a footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi cách bất cứ lúc nào: từ đồng hồ có thể sửa giờ bắt đầu, từ nhập tay có thể chuyển sang hẹn giờ.'**
+  String get sleepChooserFootnote;
+
+  /// Timer sync pill (R-070).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà đang thấy'**
+  String get timerFamilySees;
+
+  /// Timer / record not synced (9c, 27).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ trên máy này'**
+  String get timerOnlyHere;
+
+  /// 9c note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ này chưa được đồng bộ'**
+  String get sleepNotSynced;
+
+  /// Feed / pump timer offline note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cữ này chưa được đồng bộ'**
+  String get timerNotSynced;
+
+  /// 25 title (47:3028).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé {baby} đang ngủ'**
+  String sleepTimerTitle(String baby);
+
+  /// Timer subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} bắt đầu lúc {time}'**
+  String timerStartedBy(String who, String time);
+
+  /// Sleep ring label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngủ'**
+  String get sleepRingLabel;
+
+  /// Sleep ring footer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ {time}'**
+  String sinceTime(String time);
+
+  /// 25 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc giấc ngủ'**
+  String get endSleep;
+
+  /// 25 secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa giờ bắt đầu'**
+  String get editStart;
+
+  /// Timer plain button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy, không lưu'**
+  String get cancelNoSave;
+
+  /// Timer cancel confirmation (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy và không lưu?'**
+  String get cancelConfirmTitle;
+
+  /// Timer cancel confirmation body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian đã chạy sẽ không được ghi.'**
+  String get cancelConfirmBody;
+
+  /// Timer cancel confirmation dismiss.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục bấm giờ'**
+  String get keepTiming;
+
+  /// 23b title (112:11135).
+  ///
+  /// In vi, this message translates to:
+  /// **'{baby} đang bú mẹ'**
+  String breastTimerTitle(String baby);
+
+  /// Timer total label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng thời gian'**
+  String get totalTime;
+
+  /// Side disc label.
+  ///
+  /// In vi, this message translates to:
+  /// **'TRÁI'**
+  String get sideLeftCaps;
+
+  /// Side disc label.
+  ///
+  /// In vi, this message translates to:
+  /// **'PHẢI'**
+  String get sideRightCaps;
+
+  /// Active breast disc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bú'**
+  String get feedingNow;
+
+  /// Inactive breast disc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để đổi bên'**
+  String get tapToSwitch;
+
+  /// 23b hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần trước kết thúc bên trái'**
+  String get lastEndedLeft;
+
+  /// 23b hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần trước kết thúc bên phải'**
+  String get lastEndedRight;
+
+  /// 23b primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc cữ bú'**
+  String get endFeed;
+
+  /// Timer secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng'**
+  String get pauseTimer;
+
+  /// Timer secondary while paused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục'**
+  String get resumeTimer;
+
+  /// Disc state while paused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng'**
+  String get pausedLabel;
+
+  /// 23c title (113:11207).
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} đang hút sữa'**
+  String pumpTimerTitle(String who);
+
+  /// 23c subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu lúc {time} · cho {baby}'**
+  String pumpStartedFor(String time, String baby);
+
+  /// Running pump disc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang hút'**
+  String get pumpingNow;
+
+  /// Stopped pump disc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dừng'**
+  String get pumpStopped;
+
+  /// Stopped pump disc hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để chạy'**
+  String get tapToStart;
+
+  /// 23c hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hút đôi · chạm 1 bên để dừng riêng'**
+  String get doublePumpHint;
+
+  /// 23c primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong · nhập lượng sữa'**
+  String get pumpDone;
+
+  /// 23 / 23a plain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bấm giờ thay vì nhập'**
+  String get timerInstead;
+
+  /// A second start joined the running timer (P-011).
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} đã bắt đầu đồng hồ này trước. Bạn đang xem cùng.'**
+  String timerJoined(String who);
+
+  /// Sleep tile line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dậy lúc {time}'**
+  String wokeAt(String time);
+
+  /// Running timer tile line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ {time} · {who}'**
+  String runningSince(String time, String who);
+
+  /// 26 title (47:3074).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập giấc ngủ'**
+  String get manualSleepTitle;
+
+  /// 26 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Qua đêm'**
+  String get overnight;
+
+  /// 26 end row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc'**
+  String get sleepEnd;
+
+  /// 26 note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc qua đêm được chia vào tổng của từng ngày theo múi giờ của bé ({offset}).'**
+  String overnightNote(String offset);
+
+  /// 26 link row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{baby} đang ngủ?'**
+  String sleepingNow(String baby);
+
+  /// 26 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu giấc ngủ'**
+  String get saveSleep;
+
+  /// 26 validation (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ kết thúc phải sau giờ bắt đầu.'**
+  String get sleepEndBeforeStart;
+
+  /// 26 validation (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Một giấc dài tối đa 24 giờ.'**
+  String get sleepTooLong;
+
+  /// 27 title (47:3145).
+  ///
+  /// In vi, this message translates to:
+  /// **'Có hai giấc ngủ trùng nhau'**
+  String get overlapTitle;
+
+  /// 27 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn bản đúng. App không tự gộp hay ghi đè.'**
+  String get overlapBody;
+
+  /// 27 sync pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có mạng lại'**
+  String get backOnline;
+
+  /// 27 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ bản đã chọn'**
+  String get keepSelected;
+
+  /// 27 plain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa tay từ bản của tôi'**
+  String get editMine;
+
+  /// Today banner to 27 (eng-supplied).
+  ///
+  /// In vi, this message translates to:
+  /// **'Có hai giấc ngủ trùng nhau · chọn bản đúng'**
+  String get overlapBanner;
+
+  /// Toast after 27.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã giữ bản đã chọn. Bản kia vào “Đã xoá gần đây” 30 ngày.'**
+  String get overlapKept;
+
+  /// Caregiver cannot bin a parent’s sleep (D-022).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản kia do ba mẹ ghi. Nhờ ba mẹ chọn nhé.'**
+  String get overlapNotAllowed;
+
+  /// Tour step.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước {n}/3'**
+  String tourStep(int n);
+
+  /// 18 tour 1/3 (29:904).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi cữ bú đầu tiên'**
+  String get tour1Title;
+
+  /// 18 tour 1/3 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm thẻ Bú bình để ghi. Các thẻ khác cũng ghi y như vậy.'**
+  String get tour1Body;
+
+  /// 18b tour 2/3 (103:8099).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi {baby} lớn lên'**
+  String tour2Title(String baby);
+
+  /// 18b body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập cân nặng, chiều dài lúc sinh. Mỗi lần đo sau, app tự so với lần trước.'**
+  String get tour2Body;
+
+  /// 18c tour 3/3 (103:8275).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhanh từ mọi nơi'**
+  String get tour3Title;
+
+  /// 18c body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nút + luôn ở đây, ở mọi tab. Chạm để chọn việc cần ghi.'**
+  String get tour3Body;
+
+  /// 18c last action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu'**
+  String get tourStart;
 }
 
 class _AppLocalizationsDelegate

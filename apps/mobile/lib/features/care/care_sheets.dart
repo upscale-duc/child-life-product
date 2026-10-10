@@ -14,6 +14,7 @@ import '../../core/widgets/cl_art.dart';
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_choices.dart';
 import '../../core/widgets/cl_feedback.dart';
+import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_segmented.dart';
@@ -25,6 +26,8 @@ import '../onboarding/setup_screens.dart' show trackerArt;
 import 'care_format.dart';
 import 'care_models.dart';
 import 'care_repository.dart';
+import 'timer_models.dart';
+import 'timer_screens.dart';
 
 /// Care colours of a type (tokens `care/<type>/soft|ink|accent`).
 ClCareColor careColor(BuildContext context, CareType type) {
@@ -67,13 +70,12 @@ Future<void> openCareLog(
   CareType type, {
   CareRecord? edit,
 }) {
-  final l10n = AppLocalizations.of(context);
   switch (type) {
     case CareType.growth:
       return context.push(Routes.growth, extra: edit);
     case CareType.sleep:
-      showClToast(context, message: l10n.sleepSoon);
-      return Future.value();
+      // 26: a past sleep, or "Sửa" on a sleep record.
+      return context.push(Routes.manualSleep, extra: edit);
     case CareType.bottle || CareType.breast:
       return showClSheet<void>(
         context: context,
@@ -116,7 +118,7 @@ void commitRecord(
   }
   ClHaptics.success();
   ref.read(lastSavedProvider.notifier).mark(record.type);
-  Navigator.of(context).pop();
+  Navigator.of(context).maybePop();
   if (isEdit) {
     toaster.show(message: l10n.editedToast);
   } else {
@@ -141,8 +143,20 @@ Future<void> showQuickLog(BuildContext context) => showClSheet<void>(
         onTap: () {
           ClHaptics.tap(sheetContext);
           Navigator.of(sheetContext).pop();
-          openCareLog(host, type);
+          if (type == CareType.sleep) {
+            // D-025: "Ngủ" starts the timer at once (or opens the running one).
+            openOrStartTimer(host, TimerType.sleep);
+          } else {
+            openCareLog(host, type);
+          }
         },
+        // "nhấn giữ để nhập thủ công" (19a).
+        onLongPress: type == CareType.sleep
+            ? () {
+                Navigator.of(sheetContext).pop();
+                host.push(Routes.manualSleep);
+              }
+            : null,
       ),
     );
     return Column(
@@ -178,11 +192,13 @@ class _QuickTile extends StatelessWidget {
     required this.type,
     required this.label,
     required this.onTap,
+    this.onLongPress,
   });
 
   final CareType type;
   final String label;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -190,6 +206,7 @@ class _QuickTile extends StatelessWidget {
     final care = careColor(context, type);
     return ClPressable(
       onPressed: onTap,
+      onLongPress: onLongPress,
       semanticLabel: label,
       child: Container(
         height: 120,
@@ -740,6 +757,21 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
           _ErrorText(_error),
           const SizedBox(height: ClSpace.s2),
           timeRow(l10n.startLabel),
+          if (widget.edit == null)
+            ClButton(
+              label: l10n.timerInstead,
+              style: ClButtonStyle.plain,
+              icon: ClIcons.clock,
+              expand: true,
+              onPressed: () {
+                openOrStartTimer(
+                  context,
+                  TimerType.breast,
+                  side: _effectiveSide == Side.right ? Side.right : Side.left,
+                );
+                Navigator.of(context).removeRoute(ModalRoute.of(context)!);
+              },
+            ),
         ],
       ],
     );
@@ -749,8 +781,11 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
 /// 23a Ghi hút sữa (106:11118): side, amount (required), duration wheel, start time. Pumped
 /// milk is never baby intake (R-054). Per-side amounts (G-062) and the timer (S5) come later.
 class PumpSheet extends ConsumerStatefulWidget {
-  const PumpSheet({this.edit, super.key});
+  const PumpSheet({this.edit, this.timer, super.key});
   final CareRecord? edit;
+
+  /// "Xong · nhập lượng sữa" (23c): the stopped pump timer this save ends.
+  final CareTimer? timer;
 
   @override
   ConsumerState<PumpSheet> createState() => _PumpSheetState();
@@ -767,12 +802,18 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
   void initState() {
     super.initState();
     final edit = widget.edit;
-    initTime(edit?.occurredAt);
+    final timer = widget.timer;
+    initTime(edit?.occurredAt ?? timer?.startedAt);
+    if (timer != null) {
+      final record = timer.toRecord(DateTime.now());
+      _minutes = record.durationMin;
+    }
     _side =
+        timer?.toRecord(DateTime.now()).side ??
         edit?.side ??
         memory.get(me?.babyId ?? '', 'pumpSide', Side.values) ??
         Side.both;
-    _minutes = edit?.durationMin;
+    _minutes ??= edit?.durationMin;
     if (edit?.amountMl != null) _amount.text = '${edit!.amountMl}';
     _amount.addListener(() => setState(() => _error = null));
   }
@@ -797,6 +838,35 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
         : _rangeError(l10n, amount, CareLimits.pumpMl, 'ml');
     if (error != null) return setState(() => _error = error);
     memory.set(me.babyId, 'pumpSide', _side);
+    final timer = widget.timer;
+    if (timer != null) {
+      final record = timer
+          .toRecord(DateTime.now(), pumpAmountMl: amount)
+          .copyWith(side: _side, durationMin: _minutes, occurredAt: time);
+      final toaster = ClToaster.of(context);
+      final l10n = AppLocalizations.of(context);
+      ref
+          .read(careRepositoryProvider)
+          .endTimer(
+            timer,
+            record,
+            onError: (_) => toaster.show(message: l10n.careSaveFailed),
+          );
+      ClHaptics.success();
+      ref.read(lastSavedProvider.notifier).mark(CareType.pump);
+      Navigator.of(context).pop();
+      if (GoRouter.of(context).canPop()) GoRouter.of(context).pop();
+      toaster.show(
+        message: l10n.savedToast(
+          recordSummary(
+            l10n,
+            Localizations.localeOf(context).toLanguageTag(),
+            record,
+          ),
+        ),
+      );
+      return;
+    }
     final edit = widget.edit;
     final record = edit != null
         ? edit.copyWith(
@@ -854,6 +924,17 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
           },
         ),
         timeRow(l10n.startLabel),
+        if (widget.edit == null && widget.timer == null)
+          ClButton(
+            label: l10n.timerInstead,
+            style: ClButtonStyle.plain,
+            icon: ClIcons.clock,
+            expand: true,
+            onPressed: () {
+              openOrStartTimer(context, TimerType.pump, side: _side);
+              Navigator.of(context).removeRoute(ModalRoute.of(context)!);
+            },
+          ),
       ],
     );
   }

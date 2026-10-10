@@ -1,6 +1,8 @@
+import 'package:child_life/core/design/tabular_text.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/care_repository.dart';
+import 'package:child_life/features/care/timer_models.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -144,6 +146,41 @@ class FakeCareRepository extends Fake implements CareRepository {
 
   @override
   Future<bool> retryNow() async => true;
+
+  final started = <CareTimer>[];
+  final updated = <CareTimer>[];
+  final cancelled = <CareTimer>[];
+  final ended = <(CareTimer, CareRecord)>[];
+  final resolved = <(String, String)>[];
+
+  @override
+  void startTimer(CareTimer timer, {void Function(Object error)? onError}) =>
+      started.add(timer);
+
+  @override
+  void updateTimer(
+    CareTimer timer,
+    String uid, {
+    void Function(Object error)? onError,
+  }) => updated.add(timer);
+
+  @override
+  void cancelTimer(CareTimer timer, {void Function(Object error)? onError}) =>
+      cancelled.add(timer);
+
+  @override
+  void endTimer(
+    CareTimer timer,
+    CareRecord record, {
+    void Function(Object error)? onError,
+  }) => ended.add((timer, record));
+
+  @override
+  Future<void> resolveConflict({
+    required String babyId,
+    required String conflictId,
+    required String keepRecordId,
+  }) async => resolved.add((conflictId, keepRecordId));
 }
 
 /// Family overrides plus care data at the mock's fixed time.
@@ -154,6 +191,8 @@ List<Override> careOverrides({
   bool online = true,
   FakeCareRepository? repo,
   Map<String, CareRecord>? byId,
+  Map<TimerType, CareTimer> timers = const {},
+  List<SleepConflict> conflicts = const [],
 }) => [
   ...familyOverrides(
     me: me,
@@ -161,7 +200,15 @@ List<Override> careOverrides({
     growth: growth ?? const [],
     online: online,
     now: careNow,
+    timers: timers,
+    conflicts: conflicts,
   ),
   careRepositoryProvider.overrideWithValue(repo ?? FakeCareRepository()),
   careRecordProvider.overrideWith((ref, key) => Stream.value(byId?[key.$2])),
 ];
+
+/// Tabular numerals are laid out digit by digit; find them by their text.
+Finder findTabular(String text) => find.byWidgetPredicate(
+  (w) => w is ClTabularText && w.text == text,
+  description: 'ClTabularText "$text"',
+);

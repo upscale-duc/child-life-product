@@ -1738,4 +1738,246 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$relation · joined $date · $_temp0';
   }
+
+  @override
+  String get sleepChooserTitle => 'Log sleep';
+
+  @override
+  String sleepChooserPrompt(String baby) {
+    return 'Is $baby asleep now, or already awake?';
+  }
+
+  @override
+  String get sleepStartTimer => 'Start timer';
+
+  @override
+  String sleepStartTimerHint(String baby) {
+    return '$baby just fell asleep. The timer runs and the family sees it';
+  }
+
+  @override
+  String get sleepManual => 'Enter a past sleep';
+
+  @override
+  String get sleepManualHint =>
+      'Forgot the timer? Pick when it started and ended';
+
+  @override
+  String get sleepChooserFootnote =>
+      'Switch any time: the timer lets you fix the start, manual entry can switch to the timer.';
+
+  @override
+  String get timerFamilySees => 'The family can see this';
+
+  @override
+  String get timerOnlyHere => 'Only on this device';
+
+  @override
+  String get sleepNotSynced => 'This sleep hasn’t synced yet';
+
+  @override
+  String get timerNotSynced => 'This hasn’t synced yet';
+
+  @override
+  String sleepTimerTitle(String baby) {
+    return '$baby is sleeping';
+  }
+
+  @override
+  String timerStartedBy(String who, String time) {
+    return '$who started at $time';
+  }
+
+  @override
+  String get sleepRingLabel => 'Asleep';
+
+  @override
+  String sinceTime(String time) {
+    return 'Since $time';
+  }
+
+  @override
+  String get endSleep => 'End sleep';
+
+  @override
+  String get editStart => 'Edit start time';
+
+  @override
+  String get cancelNoSave => 'Cancel, don’t save';
+
+  @override
+  String get cancelConfirmTitle => 'Cancel without saving?';
+
+  @override
+  String get cancelConfirmBody => 'The time so far won’t be logged.';
+
+  @override
+  String get keepTiming => 'Keep timing';
+
+  @override
+  String breastTimerTitle(String baby) {
+    return '$baby is breastfeeding';
+  }
+
+  @override
+  String get totalTime => 'Total time';
+
+  @override
+  String get sideLeftCaps => 'LEFT';
+
+  @override
+  String get sideRightCaps => 'RIGHT';
+
+  @override
+  String get feedingNow => 'Feeding';
+
+  @override
+  String get tapToSwitch => 'Tap to switch';
+
+  @override
+  String get lastEndedLeft => 'Last feed ended on the left';
+
+  @override
+  String get lastEndedRight => 'Last feed ended on the right';
+
+  @override
+  String get endFeed => 'End feed';
+
+  @override
+  String get pauseTimer => 'Pause';
+
+  @override
+  String get resumeTimer => 'Resume';
+
+  @override
+  String get pausedLabel => 'Paused';
+
+  @override
+  String pumpTimerTitle(String who) {
+    return '$who is pumping';
+  }
+
+  @override
+  String pumpStartedFor(String time, String baby) {
+    return 'Started at $time · for $baby';
+  }
+
+  @override
+  String get pumpingNow => 'Pumping';
+
+  @override
+  String get pumpStopped => 'Stopped';
+
+  @override
+  String get tapToStart => 'Tap to start';
+
+  @override
+  String get doublePumpHint => 'Double pumping · tap a side to stop it';
+
+  @override
+  String get pumpDone => 'Done · enter amount';
+
+  @override
+  String get timerInstead => 'Time it instead';
+
+  @override
+  String timerJoined(String who) {
+    return '$who already started this timer. You’re following it.';
+  }
+
+  @override
+  String wokeAt(String time) {
+    return 'Woke at $time';
+  }
+
+  @override
+  String runningSince(String time, String who) {
+    return 'Since $time · $who';
+  }
+
+  @override
+  String get manualSleepTitle => 'Enter sleep';
+
+  @override
+  String get overnight => 'Overnight';
+
+  @override
+  String get sleepEnd => 'End';
+
+  @override
+  String overnightNote(String offset) {
+    return 'An overnight sleep counts toward each day in the baby’s time zone ($offset).';
+  }
+
+  @override
+  String sleepingNow(String baby) {
+    return 'Is $baby asleep now?';
+  }
+
+  @override
+  String get saveSleep => 'Save sleep';
+
+  @override
+  String get sleepEndBeforeStart => 'The end must be after the start.';
+
+  @override
+  String get sleepTooLong => 'A sleep can last 24 hours at most.';
+
+  @override
+  String get overlapTitle => 'Two sleeps overlap';
+
+  @override
+  String get overlapBody =>
+      'Pick the right one. The app never merges or overwrites.';
+
+  @override
+  String get backOnline => 'Back online';
+
+  @override
+  String get keepSelected => 'Keep selected';
+
+  @override
+  String get editMine => 'Edit my version';
+
+  @override
+  String get overlapBanner => 'Two sleeps overlap · pick the right one';
+
+  @override
+  String get overlapKept =>
+      'Kept. The other one stays in “Recently deleted” for 30 days.';
+
+  @override
+  String get overlapNotAllowed =>
+      'The other one was logged by a parent. Ask a parent to choose.';
+
+  @override
+  String tourStep(int n) {
+    return 'Step $n/3';
+  }
+
+  @override
+  String get tour1Title => 'Log the first feed';
+
+  @override
+  String get tour1Body =>
+      'Tap the Bottle card to log. The other cards work the same way.';
+
+  @override
+  String tour2Title(String baby) {
+    return 'Follow $baby growing';
+  }
+
+  @override
+  String get tour2Body =>
+      'Enter weight and length at birth. Each new measurement is compared with the last.';
+
+  @override
+  String get tour3Title => 'Quick log from anywhere';
+
+  @override
+  String get tour3Body =>
+      'The + button is always here, on every tab. Tap it to choose what to log.';
+
+  @override
+  String get tourStart => 'Start';
 }

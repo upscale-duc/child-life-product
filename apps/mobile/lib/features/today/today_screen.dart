@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
+import '../../core/design/tabular_text.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_art.dart';
 import '../../core/widgets/cl_feedback.dart';
@@ -20,8 +23,11 @@ import '../care/care_models.dart';
 import '../care/care_repository.dart';
 import '../care/care_screens.dart';
 import '../care/care_sheets.dart';
+import '../care/timer_models.dart';
+import '../care/timer_screens.dart';
 import '../family/family_labels.dart';
 import '../home/home_shell.dart';
+import '../home/today_tour.dart';
 
 /// 19 Hôm nay (46:2266) and its first-run state 18 (29:904): one tile per tracker — tap logs
 /// that type, the lines show the last entry (how long ago · detail · who) — then "Đã ghi hôm
@@ -50,9 +56,31 @@ class TodayScreen extends ConsumerWidget {
     final pendingCount = recent.where((r) => r.pending).length;
     final online = ref.watch(onlineProvider).value ?? true;
 
+    CareTimer? running(CareType type) => switch (type) {
+      CareType.sleep =>
+        ref.watch(careTimerProvider((babyId, TimerType.sleep))).value,
+      CareType.breast =>
+        ref.watch(careTimerProvider((babyId, TimerType.breast))).value,
+      CareType.pump =>
+        ref.watch(careTimerProvider((babyId, TimerType.pump))).value,
+      _ => null,
+    };
+    final conflicts =
+        ref.watch(openConflictsProvider(babyId)).value ?? const [];
+    final myConflict = conflicts
+        .where((c) => c.laterAuthor == membership.uid)
+        .firstOrNull;
+
     void tap(CareType type) {
-      if (readOnly) {
+      final timer = running(type);
+      if (timer != null) {
+        // A running timer opens itself, for everyone who sees care (R-070).
+        context.push('${Routes.timer}/${timer.type.name}');
+      } else if (readOnly) {
         showClToast(context, message: l10n.todayViewOnly);
+      } else if (type == CareType.sleep) {
+        // D-025: the Giấc ngủ tile asks "đang ngủ hay đã ngủ xong" (25a).
+        showSleepChooser(context, ref);
       } else {
         openCareLog(context, type);
       }
@@ -75,6 +103,13 @@ class TodayScreen extends ConsumerWidget {
           ),
           children: [
             const BabyHeader(),
+            if (myConflict != null) ...[
+              const SizedBox(height: ClSpace.s3),
+              _SyncBanner(
+                label: l10n.overlapBanner,
+                onTap: () => context.push('${Routes.overlap}/${myConflict.id}'),
+              ),
+            ],
             if (pendingCount > 0) ...[
               const SizedBox(height: ClSpace.s3),
               _SyncBanner(
@@ -109,22 +144,30 @@ class TodayScreen extends ConsumerWidget {
               children: [
                 for (final kind in trackers)
                   if (careTypeOf(kind) case final type?)
-                    CareTile(
-                      type: type,
-                      last: last(type),
-                      previousGrowth:
-                          type == CareType.growth && growth.length > 1
-                          ? growth[1]
-                          : null,
-                      myUid: membership.uid,
-                      now: now,
-                      readOnly: readOnly,
-                      onTap: () => tap(type),
-                      onLongPress: last(type) == null
-                          ? null
-                          : () => context.push(
-                              '${Routes.record}/${last(type)!.id}',
-                            ),
+                    KeyedSubtree(
+                      key: switch (type) {
+                        CareType.bottle => TourTargets.bottle,
+                        CareType.growth => TourTargets.growth,
+                        _ => null,
+                      },
+                      child: CareTile(
+                        type: type,
+                        last: last(type),
+                        previousGrowth:
+                            type == CareType.growth && growth.length > 1
+                            ? growth[1]
+                            : null,
+                        myUid: membership.uid,
+                        now: now,
+                        readOnly: readOnly,
+                        timer: running(type),
+                        onTap: () => tap(type),
+                        onLongPress: last(type) == null
+                            ? null
+                            : () => context.push(
+                                '${Routes.record}/${last(type)!.id}',
+                              ),
+                      ),
                     ),
               ],
             ),
@@ -195,6 +238,7 @@ class CareTile extends ConsumerStatefulWidget {
   const CareTile({
     required this.type,
     required this.last,
+    this.timer,
     required this.myUid,
     required this.now,
     required this.onTap,
@@ -206,6 +250,9 @@ class CareTile extends ConsumerStatefulWidget {
 
   final CareType type;
   final CareRecord? last;
+
+  /// A running timer of this type: "Tone=Active" with live elapsed time (54:530).
+  final CareTimer? timer;
   final CareRecord? previousGrowth;
   final String myUid;
   final DateTime now;
@@ -261,11 +308,37 @@ class _CareTileState extends ConsumerState<CareTile>
     final care = careColor(context, widget.type);
     final label = careTypeLabel(l10n, widget.type);
     final r = widget.last;
-    final lines = r == null ? null : _lines(l10n, locale, r);
-    final value = r == null
-        ? l10n.todayTileEmpty
-        : recordValue(l10n, locale, r);
-    final semantics = r == null
+    final timer = widget.timer;
+    final hm = DateFormat.Hm(locale);
+    var lines = r == null ? null : _lines(l10n, locale, r);
+    var value = r == null ? l10n.todayTileEmpty : recordValue(l10n, locale, r);
+    if (timer != null) {
+      // Tone=Active: live elapsed time and who started it.
+      lines = [
+        l10n.runningSince(
+          hm.format(timer.startedAt),
+          authorLabel(
+            l10n,
+            timer.author,
+            isMe: timer.startedBy == widget.myUid,
+            relationLabel: (rel, c) => relationLabel(l10n, rel, c),
+          ),
+        ),
+      ];
+      value = clockLabel(
+        timer.totalAt(widget.now),
+        hours: timer.type == TimerType.sleep,
+      );
+    } else if (r != null && r.type == CareType.sleep && r.endedAt != null) {
+      // "Đã thức 2 giờ · Dậy lúc 13:05 · Ba ghi" (46:2266).
+      final awake = widget.now.difference(r.endedAt!).inMinutes;
+      value = l10n.awakeFor(durationLabel(l10n, awake < 0 ? 0 : awake));
+      lines = [
+        l10n.wokeAt(hm.format(r.endedAt!)),
+        r.pending ? l10n.carePending : loggedBy(l10n, r, widget.myUid),
+      ];
+    }
+    final semantics = r == null && timer == null
         ? (widget.readOnly
               ? '$label, ${l10n.todayTileEmpty}'
               : '$label, ${l10n.todayTileEmpty}. ${l10n.todayTileTapToLog}')
@@ -276,7 +349,9 @@ class _CareTileState extends ConsumerState<CareTile>
       decoration: BoxDecoration(
         color: care.soft,
         borderRadius: BorderRadius.circular(ClRadius.tile),
-        border: Border.all(color: cl.colors.cardEdge),
+        border: timer != null
+            ? Border.all(color: care.accent, width: 2)
+            : Border.all(color: cl.colors.cardEdge),
         boxShadow: cl.shadows.tile,
       ),
       child: Stack(
@@ -293,12 +368,18 @@ class _CareTileState extends ConsumerState<CareTile>
               children: [
                 Text(label, style: cl.text.label.copyWith(color: care.ink)),
                 const SizedBox(height: ClSpace.s1),
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: cl.text.title2.copyWith(color: cl.colors.ink),
-                ),
+                if (timer != null)
+                  _LiveClock(
+                    timer: timer,
+                    style: cl.text.title2.copyWith(color: cl.colors.ink),
+                  )
+                else
+                  Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: cl.text.title2.copyWith(color: cl.colors.ink),
+                  ),
                 const SizedBox(height: ClSpace.s1),
                 if (lines == null) ...[
                   const Spacer(),
@@ -323,7 +404,9 @@ class _CareTileState extends ConsumerState<CareTile>
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: cl.text.label.copyWith(
-                                  color: i == lines.length - 1 && r!.pending
+                                  color:
+                                      i == lines.length - 1 &&
+                                          (r?.pending ?? false)
                                       ? cl.colors.pending
                                       : cl.colors.inkMuted,
                                 ),
@@ -435,6 +518,45 @@ class _CareTileState extends ConsumerState<CareTile>
         return [relativeAgo(l10n, r.finishedAt, widget.now), who];
     }
   }
+}
+
+/// Elapsed time of a running timer, refreshed every second on this tile only.
+class _LiveClock extends ConsumerStatefulWidget {
+  const _LiveClock({required this.timer, required this.style});
+  final CareTimer timer;
+  final TextStyle style;
+
+  @override
+  ConsumerState<_LiveClock> createState() => _LiveClockState();
+}
+
+class _LiveClockState extends ConsumerState<_LiveClock> {
+  Timer? _tick;
+
+  @override
+  void initState() {
+    super.initState();
+    if (ref.read(timerTicksProvider)) {
+      _tick = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (mounted) setState(() {});
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _tick?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => ClTabularText(
+    clockLabel(
+      widget.timer.totalAt(ref.read(timerClockProvider)()),
+      hours: widget.timer.type == TimerType.sleep,
+    ),
+    style: widget.style,
+  );
 }
 
 /// DayRhythm "Đã ghi hôm nay" (48:409): totals (pending included, 9a) and a 24 h strip in care

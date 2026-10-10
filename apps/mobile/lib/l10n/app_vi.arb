@@ -2444,5 +2444,361 @@
         "type": "int"
       }
     }
+  },
+  "sleepChooserTitle": "Ghi giấc ngủ",
+  "@sleepChooserTitle": {
+    "description": "25a sheet title (69:4213)."
+  },
+  "sleepChooserPrompt": "{baby} đang ngủ hay đã ngủ xong rồi?",
+  "@sleepChooserPrompt": {
+    "description": "25a prompt.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "sleepStartTimer": "Bắt đầu hẹn giờ",
+  "@sleepStartTimer": {
+    "description": "25a primary option / 26 link."
+  },
+  "sleepStartTimerHint": "{baby} vừa ngủ. Đồng hồ chạy, cả nhà cùng thấy",
+  "@sleepStartTimerHint": {
+    "description": "25a option subtitle.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "sleepManual": "Nhập giấc đã ngủ",
+  "@sleepManual": {
+    "description": "25a secondary option."
+  },
+  "sleepManualHint": "Quên bấm giờ? Chọn giờ bắt đầu và kết thúc",
+  "@sleepManualHint": {
+    "description": "25a option subtitle."
+  },
+  "sleepChooserFootnote": "Đổi cách bất cứ lúc nào: từ đồng hồ có thể sửa giờ bắt đầu, từ nhập tay có thể chuyển sang hẹn giờ.",
+  "@sleepChooserFootnote": {
+    "description": "25a footnote."
+  },
+  "timerFamilySees": "Cả nhà đang thấy",
+  "@timerFamilySees": {
+    "description": "Timer sync pill (R-070)."
+  },
+  "timerOnlyHere": "Chỉ trên máy này",
+  "@timerOnlyHere": {
+    "description": "Timer / record not synced (9c, 27)."
+  },
+  "sleepNotSynced": "Giấc ngủ này chưa được đồng bộ",
+  "@sleepNotSynced": {
+    "description": "9c note."
+  },
+  "timerNotSynced": "Cữ này chưa được đồng bộ",
+  "@timerNotSynced": {
+    "description": "Feed / pump timer offline note."
+  },
+  "sleepTimerTitle": "Bé {baby} đang ngủ",
+  "@sleepTimerTitle": {
+    "description": "25 title (47:3028).",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "timerStartedBy": "{who} bắt đầu lúc {time}",
+  "@timerStartedBy": {
+    "description": "Timer subtitle.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sleepRingLabel": "Đang ngủ",
+  "@sleepRingLabel": {
+    "description": "Sleep ring label."
+  },
+  "sinceTime": "Từ {time}",
+  "@sinceTime": {
+    "description": "Sleep ring footer.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "endSleep": "Kết thúc giấc ngủ",
+  "@endSleep": {
+    "description": "25 primary."
+  },
+  "editStart": "Sửa giờ bắt đầu",
+  "@editStart": {
+    "description": "25 secondary."
+  },
+  "cancelNoSave": "Hủy, không lưu",
+  "@cancelNoSave": {
+    "description": "Timer plain button."
+  },
+  "cancelConfirmTitle": "Hủy và không lưu?",
+  "@cancelConfirmTitle": {
+    "description": "Timer cancel confirmation (not drawn)."
+  },
+  "cancelConfirmBody": "Thời gian đã chạy sẽ không được ghi.",
+  "@cancelConfirmBody": {
+    "description": "Timer cancel confirmation body."
+  },
+  "keepTiming": "Tiếp tục bấm giờ",
+  "@keepTiming": {
+    "description": "Timer cancel confirmation dismiss."
+  },
+  "breastTimerTitle": "{baby} đang bú mẹ",
+  "@breastTimerTitle": {
+    "description": "23b title (112:11135).",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "totalTime": "Tổng thời gian",
+  "@totalTime": {
+    "description": "Timer total label."
+  },
+  "sideLeftCaps": "TRÁI",
+  "@sideLeftCaps": {
+    "description": "Side disc label."
+  },
+  "sideRightCaps": "PHẢI",
+  "@sideRightCaps": {
+    "description": "Side disc label."
+  },
+  "feedingNow": "Đang bú",
+  "@feedingNow": {
+    "description": "Active breast disc."
+  },
+  "tapToSwitch": "Chạm để đổi bên",
+  "@tapToSwitch": {
+    "description": "Inactive breast disc."
+  },
+  "lastEndedLeft": "Lần trước kết thúc bên trái",
+  "@lastEndedLeft": {
+    "description": "23b hint."
+  },
+  "lastEndedRight": "Lần trước kết thúc bên phải",
+  "@lastEndedRight": {
+    "description": "23b hint."
+  },
+  "endFeed": "Kết thúc cữ bú",
+  "@endFeed": {
+    "description": "23b primary."
+  },
+  "pauseTimer": "Tạm dừng",
+  "@pauseTimer": {
+    "description": "Timer secondary."
+  },
+  "resumeTimer": "Tiếp tục",
+  "@resumeTimer": {
+    "description": "Timer secondary while paused."
+  },
+  "pausedLabel": "Tạm dừng",
+  "@pausedLabel": {
+    "description": "Disc state while paused."
+  },
+  "pumpTimerTitle": "{who} đang hút sữa",
+  "@pumpTimerTitle": {
+    "description": "23c title (113:11207).",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "pumpStartedFor": "Bắt đầu lúc {time} · cho {baby}",
+  "@pumpStartedFor": {
+    "description": "23c subtitle.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "pumpingNow": "Đang hút",
+  "@pumpingNow": {
+    "description": "Running pump disc."
+  },
+  "pumpStopped": "Đã dừng",
+  "@pumpStopped": {
+    "description": "Stopped pump disc."
+  },
+  "tapToStart": "Chạm để chạy",
+  "@tapToStart": {
+    "description": "Stopped pump disc hint."
+  },
+  "doublePumpHint": "Hút đôi · chạm 1 bên để dừng riêng",
+  "@doublePumpHint": {
+    "description": "23c hint."
+  },
+  "pumpDone": "Xong · nhập lượng sữa",
+  "@pumpDone": {
+    "description": "23c primary."
+  },
+  "timerInstead": "Bấm giờ thay vì nhập",
+  "@timerInstead": {
+    "description": "23 / 23a plain."
+  },
+  "timerJoined": "{who} đã bắt đầu đồng hồ này trước. Bạn đang xem cùng.",
+  "@timerJoined": {
+    "description": "A second start joined the running timer (P-011).",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "wokeAt": "Dậy lúc {time}",
+  "@wokeAt": {
+    "description": "Sleep tile line.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "runningSince": "Từ {time} · {who}",
+  "@runningSince": {
+    "description": "Running timer tile line.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "manualSleepTitle": "Nhập giấc ngủ",
+  "@manualSleepTitle": {
+    "description": "26 title (47:3074)."
+  },
+  "overnight": "Qua đêm",
+  "@overnight": {
+    "description": "26 chip."
+  },
+  "sleepEnd": "Kết thúc",
+  "@sleepEnd": {
+    "description": "26 end row."
+  },
+  "overnightNote": "Giấc qua đêm được chia vào tổng của từng ngày theo múi giờ của bé ({offset}).",
+  "@overnightNote": {
+    "description": "26 note.",
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "sleepingNow": "{baby} đang ngủ?",
+  "@sleepingNow": {
+    "description": "26 link row.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "saveSleep": "Lưu giấc ngủ",
+  "@saveSleep": {
+    "description": "26 primary."
+  },
+  "sleepEndBeforeStart": "Giờ kết thúc phải sau giờ bắt đầu.",
+  "@sleepEndBeforeStart": {
+    "description": "26 validation (not drawn)."
+  },
+  "sleepTooLong": "Một giấc dài tối đa 24 giờ.",
+  "@sleepTooLong": {
+    "description": "26 validation (not drawn)."
+  },
+  "overlapTitle": "Có hai giấc ngủ trùng nhau",
+  "@overlapTitle": {
+    "description": "27 title (47:3145)."
+  },
+  "overlapBody": "Chọn bản đúng. App không tự gộp hay ghi đè.",
+  "@overlapBody": {
+    "description": "27 body."
+  },
+  "backOnline": "Đã có mạng lại",
+  "@backOnline": {
+    "description": "27 sync pill."
+  },
+  "keepSelected": "Giữ bản đã chọn",
+  "@keepSelected": {
+    "description": "27 primary."
+  },
+  "editMine": "Sửa tay từ bản của tôi",
+  "@editMine": {
+    "description": "27 plain."
+  },
+  "overlapBanner": "Có hai giấc ngủ trùng nhau · chọn bản đúng",
+  "@overlapBanner": {
+    "description": "Today banner to 27 (eng-supplied)."
+  },
+  "overlapKept": "Đã giữ bản đã chọn. Bản kia vào “Đã xoá gần đây” 30 ngày.",
+  "@overlapKept": {
+    "description": "Toast after 27."
+  },
+  "overlapNotAllowed": "Bản kia do ba mẹ ghi. Nhờ ba mẹ chọn nhé.",
+  "@overlapNotAllowed": {
+    "description": "Caregiver cannot bin a parent’s sleep (D-022)."
+  },
+  "tourStep": "Bước {n}/3",
+  "@tourStep": {
+    "description": "Tour step.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "tour1Title": "Ghi cữ bú đầu tiên",
+  "@tour1Title": {
+    "description": "18 tour 1/3 (29:904)."
+  },
+  "tour1Body": "Chạm thẻ Bú bình để ghi. Các thẻ khác cũng ghi y như vậy.",
+  "@tour1Body": {
+    "description": "18 tour 1/3 body."
+  },
+  "tour2Title": "Theo dõi {baby} lớn lên",
+  "@tour2Title": {
+    "description": "18b tour 2/3 (103:8099).",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "tour2Body": "Nhập cân nặng, chiều dài lúc sinh. Mỗi lần đo sau, app tự so với lần trước.",
+  "@tour2Body": {
+    "description": "18b body."
+  },
+  "tour3Title": "Ghi nhanh từ mọi nơi",
+  "@tour3Title": {
+    "description": "18c tour 3/3 (103:8275)."
+  },
+  "tour3Body": "Nút + luôn ở đây, ở mọi tab. Chạm để chọn việc cần ghi.",
+  "@tour3Body": {
+    "description": "18c body."
+  },
+  "tourStart": "Bắt đầu",
+  "@tourStart": {
+    "description": "18c last action."
   }
 }
