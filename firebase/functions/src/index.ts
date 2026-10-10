@@ -83,8 +83,9 @@ function requireAccount(request: CallableRequest): string {
 
 function asHttpsError(operation: string, error: unknown): HttpsError {
   if (error instanceof HttpsError) return error;
-  if (error instanceof BabyError)
+  if (error instanceof BabyError || error instanceof FamilyError) {
     return new HttpsError(error.code, error.reason, { reason: error.reason });
+  }
   // Never log request payloads: they carry the child's name and date of birth.
   logger.error(`${operation} failed`, { error: String(error) });
   return new HttpsError('internal', `${operation} failed`);

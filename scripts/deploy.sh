@@ -22,4 +22,10 @@ echo ">>> Deploying [$only] to $env ($project)"
 if [[ "$only" == *hosting* ]]; then
   pnpm --dir "$root" --filter child-life-landing --filter child-life-portal run "build:$env"
 fi
-cd "$root" && firebase deploy --project "$project" --only "$only"
+cd "$root"
+# Function updates sometimes fail on transient network errors; a re-run only redeploys what changed.
+for attempt in 1 2 3; do
+  if firebase deploy --project "$project" --only "$only"; then exit 0; fi
+  echo ">>> Deploy attempt $attempt failed; retrying" >&2
+done
+exit 1
