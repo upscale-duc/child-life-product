@@ -48,10 +48,17 @@ beforeEach(async () => {
   await env.clearFirestore();
   await env.withSecurityRulesDisabled(async (ctx) => {
     const db = ctx.firestore();
-    await setDoc(doc(db, 'users/mom'), { displayName: 'Mai', ownedBabyCount: 1, ownedFamilyId: 'f1' });
+    await setDoc(doc(db, 'users/mom'), {
+      displayName: 'Mai',
+      ownedBabyCount: 1,
+      ownedFamilyId: 'f1',
+    });
     await setDoc(doc(db, 'families/f1'), { ownerUid: 'mom', quotaBytes: 1 });
     await setDoc(doc(db, 'babies/b1'), { nickname: 'Teddy', ownerUid: 'mom', familyId: 'f1' });
-    await setDoc(doc(db, 'babies/b1/restricted/profile'), { dateOfBirth: '2026-09-17', gender: 'girl' });
+    await setDoc(doc(db, 'babies/b1/restricted/profile'), {
+      dateOfBirth: '2026-09-17',
+      gender: 'girl',
+    });
     await setDoc(doc(db, 'babies/b1/members/mom'), member('mom', 'coParent', { isOwner: true }));
     await setDoc(doc(db, 'babies/b1/members/dad'), member('dad', 'coParent'));
     await setDoc(doc(db, 'babies/b1/members/nanny'), member('nanny', 'caregiver'));
@@ -60,7 +67,10 @@ beforeEach(async () => {
       doc(db, 'babies/b1/members/aunt'),
       member('aunt', 'relative', { extraRights: { viewBabyInfo: true, viewDailyCare: false } }),
     );
-    await setDoc(doc(db, 'babies/b1/members/gone'), member('gone', 'coParent', { status: 'removed' }));
+    await setDoc(
+      doc(db, 'babies/b1/members/gone'),
+      member('gone', 'coParent', { status: 'removed' }),
+    );
     await setDoc(doc(db, 'babies/b2'), { nickname: 'Na', ownerUid: 'other' });
   });
 });
@@ -85,7 +95,9 @@ describe('baby profile', () => {
     await assertFails(updateDoc(doc(as('mom'), 'babies/b1'), { nickname: 'X' }));
     await assertFails(setDoc(doc(as('mom'), 'babies/b3'), { nickname: 'New', ownerUid: 'mom' }));
     await assertFails(updateDoc(doc(as('mom'), 'babies/b1/restricted/profile'), { gender: 'boy' }));
-    await assertFails(setDoc(doc(as('stranger'), 'babies/b1/members/stranger'), member('stranger', 'coParent')));
+    await assertFails(
+      setDoc(doc(as('stranger'), 'babies/b1/members/stranger'), member('stranger', 'coParent')),
+    );
     await assertFails(updateDoc(doc(as('nanny'), 'babies/b1/members/nanny'), { role: 'coParent' }));
   });
 
@@ -130,8 +142,12 @@ describe('memberships', () => {
   });
 
   it('"my babies" collection-group query works only for my own uid', async () => {
-    await assertSucceeds(getDocs(query(collectionGroup(as('nanny'), 'members'), where('uid', '==', 'nanny'))));
-    await assertFails(getDocs(query(collectionGroup(as('nanny'), 'members'), where('uid', '==', 'mom'))));
+    await assertSucceeds(
+      getDocs(query(collectionGroup(as('nanny'), 'members'), where('uid', '==', 'nanny'))),
+    );
+    await assertFails(
+      getDocs(query(collectionGroup(as('nanny'), 'members'), where('uid', '==', 'mom'))),
+    );
     await assertFails(getDocs(collectionGroup(as('nanny'), 'members')));
   });
 });

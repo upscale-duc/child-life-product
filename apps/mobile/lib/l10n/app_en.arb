@@ -198,5 +198,6 @@
   "todayLoggingSoon": "Care logging arrives in the next build.",
   "babySwitcherLabel": "{name} · {age}",
   "meAppearance": "Appearance",
-  "meSignOut": "Sign out"
+  "meSignOut": "Sign out",
+  "ageShortNewborn": "newborn"
 }

@@ -131,6 +131,7 @@ s('ageDays', '{count} ngày tuổi', '{count, plural, =1{1 day old} other{{count
 s('ageWeeks', '{count} tuần tuổi', '{count, plural, =1{1 week old} other{{count} weeks old}}', 'Age in weeks (< 13 weeks).', count='int')
 s('ageMonths', '{count} tháng tuổi', '{count, plural, =1{1 month old} other{{count} months old}}', 'Age in months (< 2 years).', count='int')
 s('ageYears', '{count} tuổi', '{count, plural, =1{1 year old} other{{count} years old}}', 'Age in years.', count='int')
+s('ageShortNewborn', 'mới sinh', 'newborn', 'Short age on the day of birth (baby switcher).')
 s('ageShortDays', '{count} ngày', '{count, plural, =1{1 day} other{{count} days}}', 'Short age for the baby switcher.', count='int')
 s('ageShortWeeks', '{count} tuần', '{count, plural, =1{1 week} other{{count} weeks}}', 'Short age for the baby switcher.', count='int')
 s('ageShortMonths', '{count} tháng', '{count, plural, =1{1 month} other{{count} months}}', 'Short age for the baby switcher.', count='int')

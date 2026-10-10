@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../app/providers.dart';
 import '../../app/route_guard.dart';
@@ -66,27 +65,20 @@ Future<bool> _runProvider(
   }
 }
 
-/// Apple's official button (Button 8:33 "use Apple's official button in production").
+/// "Tiếp tục với Apple" as drawn in Figma (Button style apple, 8:33): black pill with the
+/// Apple logo in place of the design's placeholder mark (brand-mark 22:197).
 class _AppleButton extends StatelessWidget {
   const _AppleButton({required this.onPressed});
   final VoidCallback? onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    final cl = context.cl;
-    return Opacity(
-      opacity: onPressed == null ? ClMotion.disabledOpacity : 1,
-      child: SignInWithAppleButton(
-        onPressed: onPressed ?? () {},
-        text: AppLocalizations.of(context).signInApple,
-        height: ClSpace.buttonHeight,
-        style: cl.isNightCare
-            ? SignInWithAppleButtonStyle.white
-            : SignInWithAppleButtonStyle.black,
-        borderRadius: const BorderRadius.all(Radius.circular(ClRadius.pill)),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => ClButton(
+    label: AppLocalizations.of(context).signInApple,
+    style: ClButtonStyle.apple,
+    leading: const Icon(Icons.apple),
+    expand: true,
+    onPressed: onPressed,
+  );
 }
 
 /// 06 Chọn cách đăng nhập (27:488).

@@ -85,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen>
                           const SizedBox(height: ClSpace.s3),
                           SvgPicture.asset(
                             'assets/logo/wordmark-color.svg',
-                            height: 56,
+                            height: 46,
                             colorFilter: ColorFilter.mode(
                               cl.colors.ink,
                               BlendMode.srcIn,

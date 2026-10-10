@@ -75,7 +75,12 @@ describe('createBaby', () => {
     expect(res.created).toBe(true);
 
     const baby = (await db.doc(`babies/${res.babyId}`).get()).data()!;
-    expect(baby).toMatchObject({ ownerUid: 'mom', familyId: res.familyId, nickname: 'Teddy', state: 'active' });
+    expect(baby).toMatchObject({
+      ownerUid: 'mom',
+      familyId: res.familyId,
+      nickname: 'Teddy',
+      state: 'active',
+    });
     expect(baby.avatar).toEqual({ kind: 'preset', preset: 1 });
     expect(baby).not.toHaveProperty('dateOfBirth');
     expect((await db.doc(`babies/${res.babyId}/restricted/profile`).get()).data()).toMatchObject({
@@ -113,7 +118,10 @@ describe('createBaby', () => {
     const a = await createBaby(db, 'mom', request(), now, quota);
     const b = await createBaby(db, 'mom', request({ nickname: 'Na' }), now, quota);
     expect(b.familyId).toBe(a.familyId);
-    expect((await db.doc(`families/${a.familyId}`).get()).get('babyIds')).toEqual([a.babyId, b.babyId]);
+    expect((await db.doc(`families/${a.familyId}`).get()).get('babyIds')).toEqual([
+      a.babyId,
+      b.babyId,
+    ]);
   });
 
   it('allows at most 3 own babies (R-043)', async () => {
@@ -137,16 +145,19 @@ describe('createBaby', () => {
 
   it('rejects a date of birth in the future of the baby time zone', async () => {
     // 2026-10-08 03:00 UTC is already the 8th in Asia/Ho_Chi_Minh but still the 7th in New York.
-    expect(await reasonOf(createBaby(db, 'mom', request({ dateOfBirth: '2026-10-09' }), now, quota))).toBe(
-      'dob-in-future',
-    );
+    expect(
+      await reasonOf(createBaby(db, 'mom', request({ dateOfBirth: '2026-10-09' }), now, quota)),
+    ).toBe('dob-in-future');
     await createBaby(db, 'mom', request({ dateOfBirth: '2026-10-08' }), now, quota);
     expect(
       await reasonOf(
         createBaby(
           db,
           'dad',
-          request({ dateOfBirth: '2026-10-08', timeZone: { mode: 'manual', zone: 'America/New_York' } }),
+          request({
+            dateOfBirth: '2026-10-08',
+            timeZone: { mode: 'manual', zone: 'America/New_York' },
+          }),
           now,
           quota,
         ),
@@ -164,7 +175,9 @@ describe('createBaby', () => {
       request({ avatarPreset: 5 }),
       request({ dateOfBirth: '1990-01-01' }),
     ]) {
-      expect(['malformed', 'dob-too-old']).toContain(await reasonOf(createBaby(db, 'mom', bad, now, quota)));
+      expect(['malformed', 'dob-too-old']).toContain(
+        await reasonOf(createBaby(db, 'mom', bad, now, quota)),
+      );
     }
   });
 });
@@ -172,16 +185,30 @@ describe('createBaby', () => {
 describe('baby avatar', () => {
   it('Cùng nuôi set a photo; every active member reads it; the old photo is deleted', async () => {
     const { babyId } = await createBaby(db, 'mom', request(), now, quota);
-    await db.doc(`babies/${babyId}/members/nanny`).set({ uid: 'nanny', role: 'caregiver', status: 'active' });
+    await db
+      .doc(`babies/${babyId}/members/nanny`)
+      .set({ uid: 'nanny', role: 'caregiver', status: 'active' });
     const { files, store } = memoryStore();
 
-    const first = await setBabyAvatar(db, store, 'mom', { babyId, avatar: { kind: 'photo', jpegBase64: jpeg.toString('base64') } }, now);
+    const first = await setBabyAvatar(
+      db,
+      store,
+      'mom',
+      { babyId, avatar: { kind: 'photo', jpegBase64: jpeg.toString('base64') } },
+      now,
+    );
     expect(first.kind).toBe('photo');
     const read = await getBabyAvatar(db, store, 'nanny', { babyId });
     expect(read?.jpegBase64).toBe(jpeg.toString('base64'));
 
     const later = new Date(now.getTime() + 1000);
-    await setBabyAvatar(db, store, 'mom', { babyId, avatar: { kind: 'photo', jpegBase64: jpeg.toString('base64') } }, later);
+    await setBabyAvatar(
+      db,
+      store,
+      'mom',
+      { babyId, avatar: { kind: 'photo', jpegBase64: jpeg.toString('base64') } },
+      later,
+    );
     expect(files.size).toBe(1);
     await setBabyAvatar(db, store, 'mom', { babyId, avatar: { kind: 'preset', preset: 3 } }, later);
     expect(files.size).toBe(0);
@@ -190,7 +217,9 @@ describe('baby avatar', () => {
 
   it('caregivers and strangers cannot change it; strangers cannot read it', async () => {
     const { babyId } = await createBaby(db, 'mom', request(), now, quota);
-    await db.doc(`babies/${babyId}/members/nanny`).set({ uid: 'nanny', role: 'caregiver', status: 'active' });
+    await db
+      .doc(`babies/${babyId}/members/nanny`)
+      .set({ uid: 'nanny', role: 'caregiver', status: 'active' });
     const { store } = memoryStore();
     const preset = { babyId, avatar: { kind: 'preset', preset: 2 } };
     expect(await reasonOf(setBabyAvatar(db, store, 'nanny', preset, now))).toBe('not-co-parent');
@@ -203,7 +232,15 @@ describe('baby avatar', () => {
     const { store } = memoryStore();
     const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 1, 2]).toString('base64');
     expect(
-      await reasonOf(setBabyAvatar(db, store, 'mom', { babyId, avatar: { kind: 'photo', jpegBase64: png } }, now)),
+      await reasonOf(
+        setBabyAvatar(
+          db,
+          store,
+          'mom',
+          { babyId, avatar: { kind: 'photo', jpegBase64: png } },
+          now,
+        ),
+      ),
     ).toBe('not-jpeg');
   });
 });

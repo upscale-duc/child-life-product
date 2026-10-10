@@ -53,14 +53,17 @@ export const mirrorPublicConfig = onDocumentWritten('config/{docId}', async (eve
 function requireAccount(request: CallableRequest): string {
   if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
   if (request.auth.token.firebase.sign_in_provider === 'anonymous') {
-    throw new HttpsError('permission-denied', 'An account is required', { reason: 'account-required' });
+    throw new HttpsError('permission-denied', 'An account is required', {
+      reason: 'account-required',
+    });
   }
   return request.auth.uid;
 }
 
 function asHttpsError(operation: string, error: unknown): HttpsError {
   if (error instanceof HttpsError) return error;
-  if (error instanceof BabyError) return new HttpsError(error.code, error.reason, { reason: error.reason });
+  if (error instanceof BabyError)
+    return new HttpsError(error.code, error.reason, { reason: error.reason });
   // Never log request payloads: they carry the child's name and date of birth.
   logger.error(`${operation} failed`, { error: String(error) });
   return new HttpsError('internal', `${operation} failed`);
@@ -96,7 +99,13 @@ async function familyQuotaBytes(): Promise<number> {
 export const createBabyProfile = onCall(async (request) => {
   const uid = requireAccount(request);
   try {
-    const response = await createBaby(getFirestore(), uid, request.data, new Date(), await familyQuotaBytes());
+    const response = await createBaby(
+      getFirestore(),
+      uid,
+      request.data,
+      new Date(),
+      await familyQuotaBytes(),
+    );
     logger.info('baby created', { babyId: response.babyId, created: response.created });
     return response;
   } catch (error) {

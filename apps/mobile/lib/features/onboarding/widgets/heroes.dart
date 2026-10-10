@@ -156,7 +156,7 @@ class TourShareHero extends StatelessWidget {
                 '01:24:08',
                 style: cl.text.numeral.copyWith(
                   color: Colors.white,
-                  fontSize: 32,
+                  fontSize: 28,
                 ),
               ),
             ],

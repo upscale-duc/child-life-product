@@ -64,6 +64,9 @@ class _ClTextFieldState extends State<ClTextField> {
     super.dispose();
   }
 
+  bool get _literal =>
+      widget.password || widget.keyboardType == TextInputType.emailAddress;
+
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
@@ -116,6 +119,12 @@ class _ClTextFieldState extends State<ClTextField> {
                   onSubmitted: widget.onSubmitted,
                   textCapitalization: widget.textCapitalization,
                   maxLength: widget.maxLength,
+                  // Emails and passwords must arrive exactly as typed (no autocorrect,
+                  // suggestions or smart punctuation).
+                  autocorrect: !_literal,
+                  enableSuggestions: !_literal,
+                  smartDashesType: _literal ? SmartDashesType.disabled : null,
+                  smartQuotesType: _literal ? SmartQuotesType.disabled : null,
                 ),
               ],
             ),

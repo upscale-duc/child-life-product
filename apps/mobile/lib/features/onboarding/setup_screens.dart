@@ -459,16 +459,19 @@ class _TrackersScreenState extends ConsumerState<TrackersScreen> {
           .update(draft.copyWith(trackers: next));
     }
 
-    Widget tile(TrackerKind kind) => ClSelectTile(
-      label: trackerLabel(l10n, kind),
-      art: ClArt(trackerArt(kind)),
-      selected: draft.trackers.contains(kind),
-      onTap: () => toggle(kind),
+    Widget tile(TrackerKind kind) => Expanded(
+      child: ClSelectTile(
+        label: trackerLabel(l10n, kind),
+        art: ClArt(trackerArt(kind)),
+        selected: draft.trackers.contains(kind),
+        onTap: () => toggle(kind),
+        width: double.infinity,
+      ),
     );
 
-    Widget row(TrackerKind kind) => ClChoiceTile(
+    Widget row(TrackerKind kind) => _TrackerRow(
       label: trackerLabel(l10n, kind),
-      art: ClArt(trackerArt(kind)),
+      art: trackerArt(kind),
       selected: draft.trackers.contains(kind),
       onTap: () => toggle(kind),
     );
@@ -486,13 +489,19 @@ class _TrackersScreenState extends ConsumerState<TrackersScreen> {
         ),
         const SizedBox(height: ClSpace.s6),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [tile(TrackerKind.bottle), tile(TrackerKind.breast)],
+          children: [
+            tile(TrackerKind.bottle),
+            const SizedBox(width: ClSpace.s3),
+            tile(TrackerKind.breast),
+          ],
         ),
         const SizedBox(height: ClSpace.s3),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [tile(TrackerKind.sleep), tile(TrackerKind.diaper)],
+          children: [
+            tile(TrackerKind.sleep),
+            const SizedBox(width: ClSpace.s3),
+            tile(TrackerKind.diaper),
+          ],
         ),
         const SizedBox(height: ClSpace.s3),
         row(TrackerKind.pump),
@@ -549,4 +558,54 @@ class _MaybeAnimatedSize extends StatelessWidget {
           alignment: Alignment.topCenter,
           child: child,
         );
+}
+
+/// Full-width tracker row on 12 (Hút sữa, Tăng trưởng): art, label and a radio-style check.
+/// Same selected treatment as SelectTile (25:399): mint-soft fill and 2 px mint-deep border.
+class _TrackerRow extends StatelessWidget {
+  const _TrackerRow({
+    required this.label,
+    required this.art,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final ClIllustration art;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Semantics(
+      checked: selected,
+      child: ClPressable(
+        onPressed: onTap,
+        semanticLabel: label,
+        child: AnimatedContainer(
+          duration: context.motion(ClMotion.quick),
+          height: 80,
+          padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+          decoration: BoxDecoration(
+            color: selected ? cl.colors.mintSoft : cl.colors.surface,
+            borderRadius: BorderRadius.circular(ClRadius.tile),
+            border: Border.all(
+              color: selected ? cl.colors.mintDeep : Colors.transparent,
+              width: 2,
+            ),
+            boxShadow: selected ? null : cl.shadows.card,
+          ),
+          child: Row(
+            children: [
+              SizedBox(width: 48, height: 48, child: ClArt(art)),
+              const SizedBox(width: ClSpace.s4),
+              Expanded(child: Text(label, style: cl.text.headline)),
+              ClRadio(selected: selected),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

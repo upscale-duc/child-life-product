@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { createBabyRequestSchema, isIanaTimeZone, localDateIn, setBabyAvatarRequestSchema } from '../src/baby.js';
+import {
+  createBabyRequestSchema,
+  isIanaTimeZone,
+  localDateIn,
+  setBabyAvatarRequestSchema,
+} from '../src/baby.js';
 
 const valid = {
   requestId: '6f1c2b8e-1d2a-4c3b-9e8f-0a1b2c3d4e5f',
@@ -18,9 +23,17 @@ describe('baby contracts', () => {
   });
 
   it('requires custom text exactly for "Khác…"', () => {
-    expect(createBabyRequestSchema.safeParse({ ...valid, self: { displayName: 'Mai', relation: 'other' } }).success).toBe(false);
     expect(
-      createBabyRequestSchema.safeParse({ ...valid, self: { displayName: 'Mai', relation: 'mother', relationCustom: 'x' } }).success,
+      createBabyRequestSchema.safeParse({
+        ...valid,
+        self: { displayName: 'Mai', relation: 'other' },
+      }).success,
+    ).toBe(false);
+    expect(
+      createBabyRequestSchema.safeParse({
+        ...valid,
+        self: { displayName: 'Mai', relation: 'mother', relationCustom: 'x' },
+      }).success,
     ).toBe(false);
   });
 
@@ -40,7 +53,17 @@ describe('baby contracts', () => {
 
   it('limits avatar photos to about 1 MB of base64', () => {
     const big = 'A'.repeat(1_500_000);
-    expect(setBabyAvatarRequestSchema.safeParse({ babyId: 'b_0123456789abcdef0123', avatar: { kind: 'photo', jpegBase64: big } }).success).toBe(false);
-    expect(setBabyAvatarRequestSchema.safeParse({ babyId: 'nope', avatar: { kind: 'preset', preset: 1 } }).success).toBe(false);
+    expect(
+      setBabyAvatarRequestSchema.safeParse({
+        babyId: 'b_0123456789abcdef0123',
+        avatar: { kind: 'photo', jpegBase64: big },
+      }).success,
+    ).toBe(false);
+    expect(
+      setBabyAvatarRequestSchema.safeParse({
+        babyId: 'nope',
+        avatar: { kind: 'preset', preset: 1 },
+      }).success,
+    ).toBe(false);
   });
 });

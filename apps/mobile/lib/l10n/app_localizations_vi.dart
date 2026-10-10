@@ -670,4 +670,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get meSignOut => 'Đăng xuất';
+
+  @override
+  String get ageShortNewborn => 'mới sinh';
 }

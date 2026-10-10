@@ -3,3 +3,4 @@ docs/discovery/
 pnpm-lock.yaml
 **/dist/
 firebase/functions/lib/
+firebase/functions/deploy/

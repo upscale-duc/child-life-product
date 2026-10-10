@@ -206,6 +206,7 @@ class ClSelectTile extends StatelessWidget {
     required this.art,
     required this.selected,
     required this.onTap,
+    this.width = 166,
     super.key,
   });
 
@@ -213,6 +214,9 @@ class ClSelectTile extends StatelessWidget {
   final Widget art;
   final bool selected;
   final VoidCallback onTap;
+
+  /// 166 in the 375 pt frame; pass `double.infinity` inside an Expanded to fill the column.
+  final double width;
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +228,7 @@ class ClSelectTile extends StatelessWidget {
         semanticLabel: label,
         child: AnimatedContainer(
           duration: context.motion(ClMotion.quick),
-          width: 166,
+          width: width,
           height: 128,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(

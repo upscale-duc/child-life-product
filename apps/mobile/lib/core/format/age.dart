@@ -36,7 +36,7 @@ String ageLong(AppLocalizations l10n, DateTime dateOfBirth, DateTime today) {
 String ageShort(AppLocalizations l10n, DateTime dateOfBirth, DateTime today) {
   final age = babyAge(dateOfBirth, today);
   return switch (age.unit) {
-    AgeUnit.newborn => l10n.ageShortDays(0),
+    AgeUnit.newborn => l10n.ageShortNewborn,
     AgeUnit.days => l10n.ageShortDays(age.count),
     AgeUnit.weeks => l10n.ageShortWeeks(age.count),
     AgeUnit.months => l10n.ageShortMonths(age.count),

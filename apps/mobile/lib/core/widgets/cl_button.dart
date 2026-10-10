@@ -23,6 +23,7 @@ class ClButton extends StatelessWidget {
     required this.onPressed,
     this.style = ClButtonStyle.primary,
     this.icon,
+    this.leading,
     this.expand = false,
     super.key,
   });
@@ -31,6 +32,9 @@ class ClButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final ClButtonStyle style;
   final ClIcons? icon;
+
+  /// Custom leading mark (e.g. the Apple logo) when a line icon does not fit.
+  final Widget? leading;
 
   /// Block button: stretch to the parent width.
   final bool expand;
@@ -62,7 +66,13 @@ class ClButton extends StatelessWidget {
       mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (icon != null) ...[
+        if (leading != null) ...[
+          IconTheme(
+            data: IconThemeData(color: ink, size: 20),
+            child: leading!,
+          ),
+          const SizedBox(width: ClSpace.s2),
+        ] else if (icon != null) ...[
           ClIcon(icon!, size: 18, color: ink),
           const SizedBox(width: ClSpace.s2),
         ],

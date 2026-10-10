@@ -734,4 +734,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get meSignOut => 'Sign out';
+
+  @override
+  String get ageShortNewborn => 'newborn';
 }

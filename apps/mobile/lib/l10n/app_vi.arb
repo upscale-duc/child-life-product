@@ -944,5 +944,9 @@
   "meSignOut": "Đăng xuất",
   "@meSignOut": {
     "description": "Temporary Me menu entry until the Me tab (S10)."
+  },
+  "ageShortNewborn": "mới sinh",
+  "@ageShortNewborn": {
+    "description": "Short age on the day of birth (baby switcher)."
   }
 }

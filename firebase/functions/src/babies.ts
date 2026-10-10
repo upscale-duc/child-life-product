@@ -22,10 +22,7 @@ export interface AvatarStore {
 }
 
 export type BabyErrorCode =
-  | 'invalid-argument'
-  | 'failed-precondition'
-  | 'permission-denied'
-  | 'not-found';
+  'invalid-argument' | 'failed-precondition' | 'permission-denied' | 'not-found';
 
 /** `reason` is a stable machine code the app maps to copy (never shown raw). */
 export class BabyError extends Error {

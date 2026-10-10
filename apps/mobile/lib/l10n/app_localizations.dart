@@ -1291,6 +1291,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đăng xuất'**
   String get meSignOut;
+
+  /// Short age on the day of birth (baby switcher).
+  ///
+  /// In vi, this message translates to:
+  /// **'mới sinh'**
+  String get ageShortNewborn;
 }
 
 class _AppLocalizationsDelegate
