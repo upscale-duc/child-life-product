@@ -1,0 +1,11 @@
+rules_version = '2';
+
+// Deny all client access. Media is served through short-lived signed URLs minted by
+// Functions after membership + audience checks (implementation plan §3.3–3.4).
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

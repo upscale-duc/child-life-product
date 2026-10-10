@@ -1,0 +1,948 @@
+{
+  "@@locale": "vi",
+  "appTitle": "Child Life",
+  "@appTitle": {
+    "description": "Product name, not translated."
+  },
+  "configErrorTitle": "Cấu hình môi trường không hợp lệ.",
+  "@configErrorTitle": {
+    "description": "Shown when the build's environment configuration is inconsistent."
+  },
+  "diagnosticsEnvironment": "Môi trường",
+  "@diagnosticsEnvironment": {
+    "description": "S0 diagnostics: label for dev/prod."
+  },
+  "diagnosticsServer": "Kết nối máy chủ",
+  "@diagnosticsServer": {
+    "description": "S0 diagnostics: backend round trip row."
+  },
+  "diagnosticsConnected": "Đã kết nối {projectId} ({region})",
+  "@diagnosticsConnected": {
+    "description": "S0 diagnostics: successful round trip.",
+    "placeholders": {
+      "projectId": {
+        "type": "String"
+      },
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "diagnosticsChecking": "Đang kiểm tra…",
+  "@diagnosticsChecking": {
+    "description": "S0 diagnostics: round trip in progress."
+  },
+  "diagnosticsUnreachable": "Không kết nối được: {error}",
+  "@diagnosticsUnreachable": {
+    "description": "S0 diagnostics: round trip failed.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "diagnosticsRetry": "Kiểm tra lại",
+  "@diagnosticsRetry": {
+    "description": "Tooltip for retrying the round trip."
+  },
+  "diagnosticsFlags": "Cấu hình tính năng",
+  "@diagnosticsFlags": {
+    "description": "S0 diagnostics: feature flag row."
+  },
+  "diagnosticsFlagsEmpty": "Chưa có cấu hình",
+  "@diagnosticsFlagsEmpty": {
+    "description": "No feature flag document yet."
+  },
+  "diagnosticsFlagsCount": "{enabled}/{total} đang bật",
+  "@diagnosticsFlagsCount": {
+    "description": "Number of enabled flags out of total.",
+    "placeholders": {
+      "enabled": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "diagnosticsLoading": "Đang tải…",
+  "@diagnosticsLoading": {
+    "description": "Generic loading text."
+  },
+  "diagnosticsUnreadable": "Không đọc được: {error}",
+  "@diagnosticsUnreadable": {
+    "description": "Reading the flag document failed.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "diagnosticsTestCrash": "Gửi lỗi thử tới Crashlytics",
+  "@diagnosticsTestCrash": {
+    "description": "Dev-only action that forces a crash."
+  },
+  "diagnosticsDevOnly": "Chỉ có ở bản dev",
+  "@diagnosticsDevOnly": {
+    "description": "Subtitle for dev-only actions."
+  },
+  "a11yBack": "Quay lại",
+  "@a11yBack": {
+    "description": "Accessibility label of the round back button (8:37)."
+  },
+  "a11yClose": "Đóng",
+  "@a11yClose": {
+    "description": "Accessibility label of sheet close buttons (37:293)."
+  },
+  "a11yNext": "Tiếp tục",
+  "@a11yNext": {
+    "description": "Accessibility label of the round next button (8:34)."
+  },
+  "a11yQuickLog": "Ghi nhanh",
+  "@a11yQuickLog": {
+    "description": "Accessibility label of the + quick-log button (44:363)."
+  },
+  "a11yNightCareToggle": "Night care",
+  "@a11yNightCareToggle": {
+    "description": "Accessibility label of the moon toggle; product term kept in English in Figma."
+  },
+  "tabToday": "Hôm nay",
+  "@tabToday": {
+    "description": "Bottom tab: Today."
+  },
+  "tabMemories": "Kỷ niệm",
+  "@tabMemories": {
+    "description": "Bottom tab: Memories."
+  },
+  "tabFamily": "Gia đình",
+  "@tabFamily": {
+    "description": "Bottom tab: Family."
+  },
+  "tabMe": "Tôi",
+  "@tabMe": {
+    "description": "Bottom tab: Me."
+  },
+  "actionSkip": "Bỏ qua",
+  "@actionSkip": {
+    "description": "Top bar skip action (23:195)."
+  },
+  "showPassword": "Hiện mật khẩu",
+  "@showPassword": {
+    "description": "Eye toggle on password fields (23:243)."
+  },
+  "hidePassword": "Ẩn mật khẩu",
+  "@hidePassword": {
+    "description": "Eye toggle on password fields (23:243)."
+  },
+  "actionNext": "Tiếp",
+  "@actionNext": {
+    "description": "Primary continue button on setup screens (10a, 11)."
+  },
+  "actionDone": "Xong",
+  "@actionDone": {
+    "description": "Sheet confirm button (11a, 11b, 11c, 13a)."
+  },
+  "actionLater": "Để sau",
+  "@actionLater": {
+    "description": "Defers an optional step (P-008 verify email)."
+  },
+  "actionRetry": "Thử lại",
+  "@actionRetry": {
+    "description": "Retries a failed action."
+  },
+  "actionOpenSettings": "Mở Cài đặt",
+  "@actionOpenSettings": {
+    "description": "Opens the OS settings after a permission was denied."
+  },
+  "splashTagline": "Cùng chăm con. Giữ tuổi thơ.",
+  "@splashTagline": {
+    "description": "Splash tagline (36:2233)."
+  },
+  "welcomeTitle": "Cùng chăm con,\ngiữ trọn tuổi thơ",
+  "@welcomeTitle": {
+    "description": "Welcome title (26:4)."
+  },
+  "welcomeExplore": "Khám phá",
+  "@welcomeExplore": {
+    "description": "Welcome primary: feature tour."
+  },
+  "welcomeSignIn": "Đăng nhập",
+  "@welcomeSignIn": {
+    "description": "Welcome: go to sign-in."
+  },
+  "welcomeInviteCode": "Mã mời",
+  "@welcomeInviteCode": {
+    "description": "Welcome: enter an invite code (S3)."
+  },
+  "welcomeChipMilestone": "Mốc mới",
+  "@welcomeChipMilestone": {
+    "description": "Welcome hero chip."
+  },
+  "inviteCodeComingSoon": "Nhận lời mời bằng mã sẽ có ở bản tiếp theo.",
+  "@inviteCodeComingSoon": {
+    "description": "Shown until invites ship (S3)."
+  },
+  "a11yToggleAppearance": "Đổi giao diện sáng / tối",
+  "@a11yToggleAppearance": {
+    "description": "Moon button on the Welcome top bar."
+  },
+  "tourCareTitle": "Ghi bú, ngủ, tã\nchỉ bằng một tay",
+  "@tourCareTitle": {
+    "description": "Tour 1/4 title (26:85)."
+  },
+  "tourCareBody": "Tối đa 3 chạm là lưu xong.",
+  "@tourCareBody": {
+    "description": "Tour 1/4 body."
+  },
+  "tourCareChipBottle": "Bú bình · 120 ml",
+  "@tourCareChipBottle": {
+    "description": "Tour 1 chip."
+  },
+  "tourCareChipDiaper": "Thay tã · Ướt",
+  "@tourCareChipDiaper": {
+    "description": "Tour 1 chip."
+  },
+  "tourCareChipSleep": "Ngủ · 1 giờ 20",
+  "@tourCareChipSleep": {
+    "description": "Tour 1 chip."
+  },
+  "tourCareTaps": "chạm",
+  "@tourCareTaps": {
+    "description": "Tour 1 badge under the number 3."
+  },
+  "tourShareTitle": "Nhận ca, không cần hỏi",
+  "@tourShareTitle": {
+    "description": "Tour 2/4 title (26:151)."
+  },
+  "tourShareBody": "Lần ghi gần nhất được đồng bộ cho cả nhà: ai ghi, ghi gì, lúc nào.",
+  "@tourShareBody": {
+    "description": "Tour 2/4 body."
+  },
+  "tourShareSynced": "Đã đồng bộ",
+  "@tourShareSynced": {
+    "description": "Tour 2 chip."
+  },
+  "tourShareAsleep": "Đang ngủ",
+  "@tourShareAsleep": {
+    "description": "Tour 2 ring label."
+  },
+  "tourShareChipMom": "Bú bình · 80 ml · Mẹ ghi",
+  "@tourShareChipMom": {
+    "description": "Tour 2 chip."
+  },
+  "tourShareChipDad": "Thay tã · Ướt · Ba ghi",
+  "@tourShareChipDad": {
+    "description": "Tour 2 chip."
+  },
+  "tourShareInitialMom": "M",
+  "@tourShareInitialMom": {
+    "description": "Initial of Mum in tour 2."
+  },
+  "tourShareInitialDad": "B",
+  "@tourShareInitialDad": {
+    "description": "Initial of Dad in tour 2."
+  },
+  "tourStoryTitle": "Khoảnh khắc\nthành chuyện",
+  "@tourStoryTitle": {
+    "description": "Tour 3/4 title (26:211)."
+  },
+  "tourStoryBody": "Một ảnh thành thẻ kỷ niệm ngay. Cuối tuần có nhật ký của bé.",
+  "@tourStoryBody": {
+    "description": "Tour 3/4 body."
+  },
+  "tourStoryChipCard": "Thẻ kỷ niệm tức thì",
+  "@tourStoryChipCard": {
+    "description": "Tour 3 chip."
+  },
+  "tourStoryChipJournal": "Nhật ký tuần 8",
+  "@tourStoryChipJournal": {
+    "description": "Tour 3 chip."
+  },
+  "tourPrivateTitle": "Đúng người,\nđúng quyền",
+  "@tourPrivateTitle": {
+    "description": "Tour 4/4 title (26:277)."
+  },
+  "tourPrivateBody": "Bà được xem ảnh, cô trông trẻ được ghi cữ bú. Bạn quyết định ai thấy gì.",
+  "@tourPrivateBody": {
+    "description": "Tour 4/4 body."
+  },
+  "tourPrivateChipAccess": "Bạn chọn quyền",
+  "@tourPrivateChipAccess": {
+    "description": "Tour 4 chip."
+  },
+  "tourPrivateChipInvite": "Mời người thân",
+  "@tourPrivateChipInvite": {
+    "description": "Tour 4 chip."
+  },
+  "tourPrivateInitials": "M|B|Bà|L",
+  "@tourPrivateInitials": {
+    "description": "Tour 4 avatar initials: mother|father|grandma|nanny, separated by |."
+  },
+  "tourCreateProfile": "Tạo hồ sơ bé",
+  "@tourCreateProfile": {
+    "description": "Tour 4/4 primary."
+  },
+  "signInTitle": "Chào bạn",
+  "@signInTitle": {
+    "description": "Sign-in sheet title (27:488)."
+  },
+  "signInSubtitle": "Đăng nhập để bắt đầu.",
+  "@signInSubtitle": {
+    "description": "Sign-in sheet subtitle."
+  },
+  "signInApple": "Tiếp tục với Apple",
+  "@signInApple": {
+    "description": "Apple button label."
+  },
+  "signInGoogle": "Tiếp tục với Google",
+  "@signInGoogle": {
+    "description": "Google button label."
+  },
+  "signInEmail": "Dùng email",
+  "@signInEmail": {
+    "description": "Email option."
+  },
+  "signInLegal": "Điều khoản · Quyền riêng tư",
+  "@signInLegal": {
+    "description": "Legal link under the sign-in buttons (Q-020)."
+  },
+  "signInHeroLetters": "B|é",
+  "@signInHeroLetters": {
+    "description": "Letters on the two toy blocks of the sign-in illustration (kept as in Figma)."
+  },
+  "emailTitle": "Email",
+  "@emailTitle": {
+    "description": "Email screen title (27:538)."
+  },
+  "emailNewAccount": "Tài khoản mới",
+  "@emailNewAccount": {
+    "description": "Segment: create account."
+  },
+  "emailSignInTab": "Đăng nhập",
+  "@emailSignInTab": {
+    "description": "Segment: sign in."
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Email field label."
+  },
+  "emailPlaceholder": "ten@email.com",
+  "@emailPlaceholder": {
+    "description": "Email field placeholder."
+  },
+  "passwordLabel": "Mật khẩu",
+  "@passwordLabel": {
+    "description": "Password field label."
+  },
+  "passwordPlaceholder": "8+ ký tự",
+  "@passwordPlaceholder": {
+    "description": "Password placeholder (R-002)."
+  },
+  "emailCreateAccount": "Tạo tài khoản",
+  "@emailCreateAccount": {
+    "description": "Primary on the new-account segment."
+  },
+  "emailSignInButton": "Đăng nhập",
+  "@emailSignInButton": {
+    "description": "Primary on the sign-in segment (not drawn)."
+  },
+  "emailUsedWithProvider": "Email đã dùng với Apple/Google?",
+  "@emailUsedWithProvider": {
+    "description": "Plain link to screen 10."
+  },
+  "emailForgot": "Quên mật khẩu?",
+  "@emailForgot": {
+    "description": "Link to screen 09 on the sign-in segment (not drawn)."
+  },
+  "authErrorInvalidEmail": "Email chưa đúng, bạn kiểm tra lại nhé.",
+  "@authErrorInvalidEmail": {
+    "description": "Invalid email (G-001)."
+  },
+  "authErrorWeakPassword": "Mật khẩu cần ít nhất 8 ký tự.",
+  "@authErrorWeakPassword": {
+    "description": "Password too short (R-002)."
+  },
+  "authErrorWrongCredentials": "Email hoặc mật khẩu chưa đúng.",
+  "@authErrorWrongCredentials": {
+    "description": "Wrong credentials (G-001)."
+  },
+  "authErrorTooManyRequests": "Bạn thử hơi nhiều lần. Đợi một lát rồi thử lại nhé.",
+  "@authErrorTooManyRequests": {
+    "description": "Rate limited (G-001)."
+  },
+  "authErrorNetwork": "Không có mạng. Kiểm tra kết nối rồi thử lại.",
+  "@authErrorNetwork": {
+    "description": "Offline (G-001)."
+  },
+  "authErrorNotConfigured": "Cách đăng nhập này chưa sẵn sàng trên bản thử nghiệm.",
+  "@authErrorNotConfigured": {
+    "description": "Provider not configured on dev (Google until enabled, Apple until a team exists)."
+  },
+  "authErrorDisabled": "Tài khoản này đang bị khoá. Liên hệ Child Life để được giúp.",
+  "@authErrorDisabled": {
+    "description": "Disabled account."
+  },
+  "authErrorGeneric": "Có lỗi xảy ra. Thử lại nhé.",
+  "@authErrorGeneric": {
+    "description": "Fallback error."
+  },
+  "authErrorLinkFailed": "Đã đăng nhập nhưng chưa liên kết được email. Thử lại trong phần Tài khoản.",
+  "@authErrorLinkFailed": {
+    "description": "Linking after a collision failed."
+  },
+  "verifyTitle": "Kiểm tra email",
+  "@verifyTitle": {
+    "description": "Verify screen title (27:588)."
+  },
+  "verifyBody": "Mình đã gửi link xác minh tới",
+  "@verifyBody": {
+    "description": "Verify body before the address chip."
+  },
+  "verifyOpenMail": "Mở Mail",
+  "@verifyOpenMail": {
+    "description": "Opens the mail app."
+  },
+  "verifyResend": "Gửi lại email",
+  "@verifyResend": {
+    "description": "Resends the link."
+  },
+  "verifyResendIn": "Gửi lại sau {seconds} giây",
+  "@verifyResendIn": {
+    "description": "Resend cooldown (G-001).",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "verifyResent": "Đã gửi lại. Nhớ xem cả mục Thư rác nhé.",
+  "@verifyResent": {
+    "description": "Toast after resend."
+  },
+  "verifyDone": "Email đã được xác minh",
+  "@verifyDone": {
+    "description": "Toast when the link was opened."
+  },
+  "verifyNoMailApp": "Không mở được ứng dụng Mail trên máy này.",
+  "@verifyNoMailApp": {
+    "description": "No mail app."
+  },
+  "verifyLaterHint": "Bạn có thể tiếp tục. Cần xác minh trước khi mời người thân.",
+  "@verifyLaterHint": {
+    "description": "P-008 note under the buttons."
+  },
+  "forgotTitle": "Quên mật khẩu",
+  "@forgotTitle": {
+    "description": "Screen 09 title (27:634)."
+  },
+  "forgotBody": "Nhập email, mình gửi link đặt lại.",
+  "@forgotBody": {
+    "description": "Screen 09 body."
+  },
+  "forgotSend": "Gửi link",
+  "@forgotSend": {
+    "description": "Screen 09 primary."
+  },
+  "forgotSent": "Nếu email này có tài khoản, link đặt lại đã được gửi tới hộp thư.",
+  "@forgotSent": {
+    "description": "Enumeration-safe success (G-001)."
+  },
+  "existsTitle": "Email đã có tài khoản",
+  "@existsTitle": {
+    "description": "Screen 10 title (27:673)."
+  },
+  "existsBody": "Đăng nhập bằng Apple hoặc Google, rồi liên kết.",
+  "@existsBody": {
+    "description": "Screen 10 body; provider is not revealed (email privacy)."
+  },
+  "existsProvider": "Apple · Google",
+  "@existsProvider": {
+    "description": "Provider chip on the account row."
+  },
+  "existsUseOtherEmail": "Dùng email khác",
+  "@existsUseOtherEmail": {
+    "description": "Back to 07."
+  },
+  "existsLinked": "Đã liên kết email với tài khoản của bạn.",
+  "@existsLinked": {
+    "description": "Toast after linking."
+  },
+  "whoTitle": "Bạn là ai với bé?",
+  "@whoTitle": {
+    "description": "Screen 10a title (115:11756)."
+  },
+  "whoSubtitle": "Cả nhà sẽ thấy “{label} ghi” trên từng bản ghi.",
+  "@whoSubtitle": {
+    "description": "Screen 10a subtitle; label = chosen relation.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "whoNameLabel": "Tên của bạn",
+  "@whoNameLabel": {
+    "description": "Display name field."
+  },
+  "whoNamePlaceholder": "Ví dụ: Mai",
+  "@whoNamePlaceholder": {
+    "description": "Display name placeholder."
+  },
+  "whoYouAre": "Bạn là",
+  "@whoYouAre": {
+    "description": "Relation chips label."
+  },
+  "whoCustomLabel": "Bạn là ai với bé",
+  "@whoCustomLabel": {
+    "description": "Free-text relation for “Khác…”."
+  },
+  "whoCustomPlaceholder": "Ví dụ: Dì",
+  "@whoCustomPlaceholder": {
+    "description": "Custom relation placeholder."
+  },
+  "relationMother": "Mẹ",
+  "@relationMother": {
+    "description": "Relation chip."
+  },
+  "relationFather": "Ba",
+  "@relationFather": {
+    "description": "Relation chip."
+  },
+  "relationGrandmother": "Bà",
+  "@relationGrandmother": {
+    "description": "Relation chip."
+  },
+  "relationGrandfather": "Ông",
+  "@relationGrandfather": {
+    "description": "Relation chip."
+  },
+  "relationNanny": "Bảo mẫu",
+  "@relationNanny": {
+    "description": "Relation chip."
+  },
+  "relationRelative": "Họ hàng",
+  "@relationRelative": {
+    "description": "Relation chip."
+  },
+  "relationOther": "Khác…",
+  "@relationOther": {
+    "description": "Relation chip that opens free text."
+  },
+  "babyNicknameLabel": "Tên thân mật",
+  "@babyNicknameLabel": {
+    "description": "Baby nickname label (29:721)."
+  },
+  "babyNicknamePlaceholder": "Tên bé",
+  "@babyNicknamePlaceholder": {
+    "description": "Shown while the nickname is empty."
+  },
+  "babyDob": "Ngày sinh",
+  "@babyDob": {
+    "description": "Detail row / sheet title."
+  },
+  "babyTimeZone": "Múi giờ",
+  "@babyTimeZone": {
+    "description": "Detail row / sheet title."
+  },
+  "babyGender": "Giới tính",
+  "@babyGender": {
+    "description": "Gender label."
+  },
+  "babyOptional": "không bắt buộc",
+  "@babyOptional": {
+    "description": "Suffix after the gender label."
+  },
+  "genderGirl": "Bé gái",
+  "@genderGirl": {
+    "description": "Gender option."
+  },
+  "genderBoy": "Bé trai",
+  "@genderBoy": {
+    "description": "Gender option."
+  },
+  "genderUnspecified": "Không nêu",
+  "@genderUnspecified": {
+    "description": "Gender option."
+  },
+  "babyPrivacyNote": "Người thân chỉ thấy tên thân mật",
+  "@babyPrivacyNote": {
+    "description": "Privacy note on 11 (R-009)."
+  },
+  "a11yChangeBabyPhoto": "Đổi ảnh đại diện",
+  "@a11yChangeBabyPhoto": {
+    "description": "Camera badge on the avatar."
+  },
+  "babyNicknameRequired": "Đặt tên thân mật cho bé nhé.",
+  "@babyNicknameRequired": {
+    "description": "Validation when Tiếp is tapped without a nickname."
+  },
+  "dobAgeHint": "{name} được {age}",
+  "@dobAgeHint": {
+    "description": "Live age under the date wheel (38:1498).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "ageNewborn": "mới chào đời",
+  "@ageNewborn": {
+    "description": "Age on the day of birth."
+  },
+  "ageDays": "{count} ngày tuổi",
+  "@ageDays": {
+    "description": "Age in days (< 2 weeks).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageWeeks": "{count} tuần tuổi",
+  "@ageWeeks": {
+    "description": "Age in weeks (< 13 weeks).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageMonths": "{count} tháng tuổi",
+  "@ageMonths": {
+    "description": "Age in months (< 2 years).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageYears": "{count} tuổi",
+  "@ageYears": {
+    "description": "Age in years.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageShortDays": "{count} ngày",
+  "@ageShortDays": {
+    "description": "Short age for the baby switcher.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageShortWeeks": "{count} tuần",
+  "@ageShortWeeks": {
+    "description": "Short age for the baby switcher.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageShortMonths": "{count} tháng",
+  "@ageShortMonths": {
+    "description": "Short age for the baby switcher.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageShortYears": "{count} tuổi",
+  "@ageShortYears": {
+    "description": "Short age for the baby switcher.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tzSearch": "Tìm thành phố hoặc quốc gia",
+  "@tzSearch": {
+    "description": "Time-zone search placeholder (38:1581)."
+  },
+  "tzAuto": "Tự động theo máy",
+  "@tzAuto": {
+    "description": "Auto time zone row."
+  },
+  "tzAutoUsing": "Đang dùng {offset} · {place}",
+  "@tzAutoUsing": {
+    "description": "Auto time zone subtitle.",
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "tzNoResults": "Không tìm thấy múi giờ phù hợp.",
+  "@tzNoResults": {
+    "description": "Empty search (not drawn)."
+  },
+  "avatarTitle": "Ảnh đại diện",
+  "@avatarTitle": {
+    "description": "Avatar sheet title (41:1861)."
+  },
+  "avatarCamera": "Chụp ảnh",
+  "@avatarCamera": {
+    "description": "Camera row."
+  },
+  "avatarLibrary": "Chọn từ thư viện",
+  "@avatarLibrary": {
+    "description": "Library row."
+  },
+  "avatarOrIllustration": "Hoặc chọn hình minh họa",
+  "@avatarOrIllustration": {
+    "description": "Preset caption."
+  },
+  "avatarPrivacy": "Chỉ người trong gia đình xem được ảnh này.",
+  "@avatarPrivacy": {
+    "description": "Avatar privacy note."
+  },
+  "avatarPreset": "Hình minh họa {number}",
+  "@avatarPreset": {
+    "description": "Accessibility label of a preset avatar.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "avatarCameraDenied": "Child Life chưa được dùng camera. Bạn có thể cho phép trong Cài đặt.",
+  "@avatarCameraDenied": {
+    "description": "Camera permission denied (G-001)."
+  },
+  "avatarLibraryDenied": "Child Life chưa được xem ảnh. Bạn có thể cho phép trong Cài đặt.",
+  "@avatarLibraryDenied": {
+    "description": "Photo permission denied (G-001)."
+  },
+  "avatarUploadFailed": "Chưa lưu được ảnh đại diện. Hồ sơ vẫn dùng hình minh họa, bạn thử lại sau nhé.",
+  "@avatarUploadFailed": {
+    "description": "Photo upload failed after the baby was created."
+  },
+  "trackersTitle": "Theo dõi gì?",
+  "@trackersTitle": {
+    "description": "Screen 12 title (29:795)."
+  },
+  "trackersSubtitle": "Đổi lại lúc nào cũng được.",
+  "@trackersSubtitle": {
+    "description": "Screen 12 subtitle."
+  },
+  "trackerBottle": "Bú bình",
+  "@trackerBottle": {
+    "description": "Tracker / tile."
+  },
+  "trackerBreast": "Bú mẹ",
+  "@trackerBreast": {
+    "description": "Tracker / tile."
+  },
+  "trackerSleep": "Giấc ngủ",
+  "@trackerSleep": {
+    "description": "Tracker / tile."
+  },
+  "trackerDiaper": "Thay tã",
+  "@trackerDiaper": {
+    "description": "Tracker / tile."
+  },
+  "trackerPump": "Hút sữa",
+  "@trackerPump": {
+    "description": "Tracker / tile."
+  },
+  "trackerGrowth": "Tăng trưởng",
+  "@trackerGrowth": {
+    "description": "Tracker / tile."
+  },
+  "trackersDone": "Xong · {count} mục",
+  "@trackersDone": {
+    "description": "Screen 12 primary with the selected count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trackersPickOne": "Chọn ít nhất một mục",
+  "@trackersPickOne": {
+    "description": "Disabled primary when nothing is selected."
+  },
+  "createBabyLimit": "Mỗi tài khoản tạo được tối đa 3 hồ sơ bé.",
+  "@createBabyLimit": {
+    "description": "R-043."
+  },
+  "createBabyFailed": "Chưa tạo được hồ sơ bé. Kiểm tra mạng rồi thử lại nhé.",
+  "@createBabyFailed": {
+    "description": "createBaby failed."
+  },
+  "createBabyDobFuture": "Ngày sinh không thể ở tương lai.",
+  "@createBabyDobFuture": {
+    "description": "Server rejected DOB."
+  },
+  "appearanceTitle": "Giao diện",
+  "@appearanceTitle": {
+    "description": "Screen 13 title (29:1063)."
+  },
+  "themeLight": "Sáng",
+  "@themeLight": {
+    "description": "Theme option."
+  },
+  "themeDark": "Tối",
+  "@themeDark": {
+    "description": "Theme option."
+  },
+  "themeAuto": "Tự động",
+  "@themeAuto": {
+    "description": "Theme option."
+  },
+  "nightCareTitle": "Night care",
+  "@nightCareTitle": {
+    "description": "Product term kept in English in Figma."
+  },
+  "nightCareScheduled": "Theo lịch {start} – {end}",
+  "@nightCareScheduled": {
+    "description": "Night care row subtitle.",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "nightCareOff": "Đang tắt lịch",
+  "@nightCareOff": {
+    "description": "Night care row subtitle when the schedule is off."
+  },
+  "nightCareSchedule": "Lịch Night care",
+  "@nightCareSchedule": {
+    "description": "Section header and sheet title (43:2067)."
+  },
+  "nightCareOn": "Bật lúc",
+  "@nightCareOn": {
+    "description": "Schedule start row."
+  },
+  "nightCareOffAt": "Tắt lúc",
+  "@nightCareOffAt": {
+    "description": "Schedule end row."
+  },
+  "nightCareHint": "Ngoài lịch, Night care vẫn tự bật khi bạn bắt đầu timer ngủ.",
+  "@nightCareHint": {
+    "description": "Hint under the schedule."
+  },
+  "appearanceAppliesNow": "Áp dụng ngay cho cả app",
+  "@appearanceAppliesNow": {
+    "description": "Footer of 13."
+  },
+  "nightCareSegmentOn": "Bật lúc · {time}",
+  "@nightCareSegmentOn": {
+    "description": "Sheet segment.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nightCareSegmentOff": "Tắt lúc · {time}",
+  "@nightCareSegmentOff": {
+    "description": "Sheet segment.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "pickerHour": "Giờ",
+  "@pickerHour": {
+    "description": "Wheel column label."
+  },
+  "pickerMinute": "Phút",
+  "@pickerMinute": {
+    "description": "Wheel column label."
+  },
+  "nightCareDuration": "Night care trong {duration}, đến {end} sáng",
+  "@nightCareDuration": {
+    "description": "Duration hint (43:2067).",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "durationHours": "{count} giờ",
+  "@durationHours": {
+    "description": "Duration in hours.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours} giờ {minutes} phút",
+  "@durationHoursMinutes": {
+    "description": "Duration in hours and minutes.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "todayTitle": "Hôm nay",
+  "@todayTitle": {
+    "description": "Today title (29:904)."
+  },
+  "todayTileEmpty": "Chưa có",
+  "@todayTileEmpty": {
+    "description": "Empty tile value."
+  },
+  "todayTileTapToLog": "Chạm để ghi",
+  "@todayTileTapToLog": {
+    "description": "Empty tile hint."
+  },
+  "todaySummaryEmpty": "Chưa có ghi chép hôm nay.",
+  "@todaySummaryEmpty": {
+    "description": "Empty day summary card."
+  },
+  "todaySummaryEmptyBody": "Ghi khi gia đình cần nhé. Tổng trong ngày sẽ hiện ở đây.",
+  "@todaySummaryEmptyBody": {
+    "description": "Empty day summary body."
+  },
+  "todayLoggingSoon": "Ghi chép chăm sóc sẽ có ở bản tiếp theo.",
+  "@todayLoggingSoon": {
+    "description": "Shown when tapping a tile before S4 ships."
+  },
+  "babySwitcherLabel": "{name} · {age}",
+  "@babySwitcherLabel": {
+    "description": "Baby switcher chip text.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "meAppearance": "Giao diện",
+  "@meAppearance": {
+    "description": "Temporary Me menu entry until the Me tab (S10)."
+  },
+  "meSignOut": "Đăng xuất",
+  "@meSignOut": {
+    "description": "Temporary Me menu entry until the Me tab (S10)."
+  }
+}

@@ -1,0 +1,8 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Icon/sliders">
+<path id="Vector" d="M4 8H7.4M10.6 8H20" stroke-width="1.8" stroke-linecap="round" stroke="currentColor"/>
+<path id="Vector_2" d="M4 16H13.4M16.6 16H20" stroke-width="1.8" stroke-linecap="round" stroke="currentColor"/>
+<path id="Ellipse" d="M10.6 8C10.6 8.88366 9.88366 9.6 9 9.6C8.11634 9.6 7.4 8.88366 7.4 8C7.4 7.11634 8.11634 6.4 9 6.4C9.88366 6.4 10.6 7.11634 10.6 8Z" stroke-width="1.8" stroke="currentColor"/>
+<path id="Ellipse_2" d="M16.6 16C16.6 16.8837 15.8837 17.6 15 17.6C14.1163 17.6 13.4 16.8837 13.4 16C13.4 15.1163 14.1163 14.4 15 14.4C15.8837 14.4 16.6 15.1163 16.6 16Z" stroke-width="1.8" stroke="currentColor"/>
+</g>
+</svg>

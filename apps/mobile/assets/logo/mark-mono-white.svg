@@ -1,0 +1,13 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Mark">
+<clipPath id="mask0_0_16">
+<rect id="Shape (mask)" width="160" height="160" rx="56"/>
+</clipPath>
+<g clip-path="url(#mask0_0_16)">
+<path id="Frame" d="M110 0H50C22.3858 0 0 22.3858 0 50V110C0 137.614 22.3858 160 50 160H110C137.614 160 160 137.614 160 110V50C160 22.3858 137.614 0 110 0Z" fill="white"/>
+<path id="Sun" d="M111 72C121.493 72 130 63.4934 130 53C130 42.5066 121.493 34 111 34C100.507 34 92 42.5066 92 53C92 63.4934 100.507 72 111 72Z" fill="#173D44"/>
+<path id="Band" d="M0 98C42 86 86 116 160 92V160H0V98Z" fill="#A9B6B8"/>
+<path id="Ground" d="M0 127C52 117 104 129 160 123V160H0V127Z" fill="#173D44"/>
+</g>
+</g>
+</svg>

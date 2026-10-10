@@ -1,0 +1,18 @@
+<svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Art">
+<path id="Flange" d="M6 8L22 15V25L6 32V8Z" fill="#E7CDF2" stroke="black"/>
+<ellipse id="Rim" cx="7.5" cy="20" rx="3.5" ry="12" fill="#C79AD9"/>
+<rect id="Collar" x="22" y="16" width="20" height="8" rx="3" fill="#B068C9"/>
+<g id="Body">
+<path d="M21 27C21 24.7909 22.7909 23 25 23H39C41.2091 23 43 24.7909 43 27V47C43 50.866 39.866 54 36 54H28C24.134 54 21 50.866 21 47V27Z" fill="white"/>
+<clipPath id="stroke0_0_45">
+<path d="M21 27C21 24.7909 22.7909 23 25 23H39C41.2091 23 43 24.7909 43 27V47C43 50.866 39.866 54 36 54H28C24.134 54 21 50.866 21 47V27Z"/>
+</clipPath>
+<path d="M28 54H36C39.866 54 43 50.866 43 47V27C43 24.7909 41.2091 23 39 23H25C22.7909 23 21 24.7909 21 27V47C21 50.866 24.134 54 28 54Z" stroke-width="2" stroke="#E9DDF0" clip-path="url(#stroke0_0_45)"/>
+</g>
+<path id="Milk" d="M21 40H43V47C43 50.866 39.866 54 36 54H28C24.134 54 21 50.866 21 47V40Z" fill="#FFF0C2"/>
+<rect id="Mark" x="34" y="29" width="6" height="2" rx="1" fill="#D9C3E6"/>
+<rect id="Mark_2" x="34" y="34" width="6" height="2" rx="1" fill="#D9C3E6"/>
+<path id="Drop" d="M13 38C13 38 17 43 17 45.5C17 47.8 15.2 49 13 49C10.8 49 9 47.8 9 45.5C9 43 13 38 13 38Z" fill="#FFE7A3" stroke="black"/>
+</g>
+</svg>

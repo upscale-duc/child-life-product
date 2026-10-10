@@ -1,0 +1,86 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+/// Line icons exported from Figma (Components 7:6, 24px, 1.8 stroke, `currentColor`).
+/// Figma notes production iOS uses SF Symbols; both platforms use these drawings so Android
+/// mimics iOS (D-004, P-063).
+enum ClIcons {
+  alert,
+  arrowRight('arrow-right'),
+  back,
+  backspace,
+  bookmark,
+  brandMark('brand-mark'),
+  cake,
+  camera,
+  check,
+  chevronDown('chevron-down'),
+  chevronRight('chevron-right'),
+  clock,
+  close,
+  cloudOff('cloud-off'),
+  diaper,
+  drop,
+  edit,
+  eye,
+  family,
+  feed,
+  globe,
+  heart,
+  journal,
+  link,
+  lock,
+  mail,
+  memories,
+  plus,
+  retry,
+  ruler,
+  search,
+  sleep,
+  sliders,
+  spark,
+  star,
+  sunrise,
+  sunset,
+  today,
+  upload;
+
+  const ClIcons([this._file]);
+  final String? _file;
+
+  String get asset => 'assets/icons/${_file ?? name}.svg';
+}
+
+class ClIcon extends StatelessWidget {
+  const ClIcon(
+    this.icon, {
+    this.size = 24,
+    this.color,
+    this.semanticLabel,
+    super.key,
+  });
+
+  final ClIcons icon;
+  final double size;
+  final Color? color;
+
+  /// Null = decorative (excluded from accessibility).
+  final String? semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final tint =
+        color ??
+        DefaultTextStyle.of(context).style.color ??
+        const Color(0xFF173D44);
+    final picture = SvgPicture.asset(
+      icon.asset,
+      width: size,
+      height: size,
+      colorFilter: ColorFilter.mode(tint, BlendMode.srcIn),
+    );
+    return semanticLabel == null
+        ? ExcludeSemantics(child: picture)
+        : Semantics(label: semanticLabel, child: picture);
+  }
+}

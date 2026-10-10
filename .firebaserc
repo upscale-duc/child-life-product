@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "dev": "child-life-dev",
+    "prod": "child-life-prod"
+  },
+  "targets": {
+    "child-life-dev": {
+      "hosting": {
+        "landing": ["child-life-dev-landing"],
+        "admin": ["child-life-dev-admin"]
+      }
+    }
+  }
+}

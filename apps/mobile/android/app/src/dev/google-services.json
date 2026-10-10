@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "759703503909",
+    "project_id": "child-life-dev",
+    "storage_bucket": "child-life-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759703503909:android:4462edb2fcd2ebbfca6bcc",
+        "android_client_info": {
+          "package_name": "app.childlife.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzN6FIWRO_Hf_ssmuotUyea0bygE6FWXk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

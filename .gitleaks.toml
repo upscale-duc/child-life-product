@@ -1,0 +1,13 @@
+# Firebase client configuration (API keys, app ids) is public by design and restricted per app
+# in Google Cloud. Real secrets (service accounts, APNs keys, OpenAI keys) live in Secret Manager.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Firebase client configuration"
+paths = [
+  '''apps/mobile/lib/app/firebase_options\.dart''',
+  '''apps/mobile/android/app/src/[a-z]+/google-services\.json''',
+  '''apps/mobile/ios/config/[a-z]+/GoogleService-Info\.plist''',
+  '''packages/web-config/src/index\.ts''',
+]

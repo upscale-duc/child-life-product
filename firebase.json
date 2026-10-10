@@ -1,0 +1,140 @@
+{
+  "firestore": {
+    "database": "(default)",
+    "location": "asia-southeast1",
+    "rules": "firebase/firestore.rules",
+    "indexes": "firebase/firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "firebase/storage.rules"
+  },
+  "functions": [
+    {
+      "source": "firebase/functions/deploy",
+      "codebase": "default",
+      "runtime": "nodejs22",
+      "predeploy": ["pnpm --dir \"$RESOURCE_DIR/..\" run build:deploy"]
+    }
+  ],
+  "hosting": [
+    {
+      "target": "landing",
+      "public": "apps/landing/dist",
+      "cleanUrls": true,
+      "trailingSlash": true,
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            {
+              "key": "Strict-Transport-Security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "key": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "key": "Referrer-Policy",
+              "value": "strict-origin-when-cross-origin"
+            },
+            {
+              "key": "X-Frame-Options",
+              "value": "DENY"
+            },
+            {
+              "key": "Permissions-Policy",
+              "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+            }
+          ]
+        },
+        {
+          "source": "/assets/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=31536000, immutable"
+            }
+          ]
+        },
+        {
+          "source": "/fonts/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=2592000"
+            }
+          ]
+        },
+        {
+          "source": "**/*.@(png|svg|webmanifest)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=86400"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "admin",
+      "public": "apps/portal/dist",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            {
+              "key": "X-Robots-Tag",
+              "value": "noindex, nofollow"
+            },
+            {
+              "key": "X-Frame-Options",
+              "value": "DENY"
+            },
+            {
+              "key": "Strict-Transport-Security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "key": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "key": "Referrer-Policy",
+              "value": "no-referrer"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "emulators": {
+    "singleProjectMode": true,
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "storage": {
+      "port": 9199
+    },
+    "functions": {
+      "port": 5001
+    },
+    "hosting": {
+      "port": 5050
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    }
+  }
+}

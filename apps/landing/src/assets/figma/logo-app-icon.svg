@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="14.4" height="14.4" viewBox="0 0 14.4 14.4" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Mark">
+<g clip-path="url(#clip0_0_405)">
+<path id="Frame" d="M14.4 0H0V14.4H14.4V0Z" fill="#2CBFB3"/>
+<path id="Sun" d="M9.99 6.48C10.9344 6.48 11.7 5.71441 11.7 4.77C11.7 3.82559 10.9344 3.06 9.99 3.06C9.04559 3.06 8.28 3.82559 8.28 4.77C8.28 5.71441 9.04559 6.48 9.99 6.48Z" fill="#FFD166"/>
+<path id="Band" d="M0 8.82C3.78 7.74 7.74 10.44 14.4 8.28V14.4H0V8.82Z" fill="white"/>
+<path id="Ground" d="M0 11.43C4.68 10.53 9.36 11.61 14.4 11.07V14.4H0V11.43Z" fill="#087F7B"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_405">
+<rect width="14.4" height="14.4" rx="3.2625" fill="white"/>
+</clipPath>
+</defs>
+</svg>

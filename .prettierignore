@@ -1,0 +1,5 @@
+apps/mobile/
+docs/discovery/
+pnpm-lock.yaml
+**/dist/
+firebase/functions/lib/

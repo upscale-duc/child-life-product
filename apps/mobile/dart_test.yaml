@@ -1,0 +1,4 @@
+# Golden tests compare pixels and only match on the platform that generated them (macOS).
+# CI runs them in the macOS job; update with: flutter test --tags golden --update-goldens
+tags:
+  golden:

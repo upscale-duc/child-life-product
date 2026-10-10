@@ -1,0 +1,11 @@
+packages:
+  - apps/landing
+  - apps/portal
+  - packages/*
+  - firebase/functions
+  - firebase/tests
+  - scripts
+allowBuilds:
+  '@firebase/util': true
+  esbuild: true
+  protobufjs: true

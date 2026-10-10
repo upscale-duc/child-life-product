@@ -1,0 +1,78 @@
+rules_version = '2';
+
+// Deny by default. Collections are opened explicitly, per role (business map §5).
+// Admin SDK paths (Functions) bypass these rules and are tested separately.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function memberDoc(babyId) {
+      return /databases/$(database)/documents/babies/$(babyId)/members/$(request.auth.uid);
+    }
+
+    // Active membership of the caller on a baby (role per baby, R-021).
+    function activeMember(babyId) {
+      return signedIn() && exists(memberDoc(babyId)) && get(memberDoc(babyId)).data.status == 'active';
+    }
+
+    function role(babyId) {
+      return get(memberDoc(babyId)).data.role;
+    }
+
+    // Public projections of feature flags and global limits (P-122, D-011).
+    // Written only by Functions; readable before sign-in so kill switches apply everywhere.
+    match /publicConfig/{docId} {
+      allow get: if docId in ['flags', 'limits'];
+      allow list, write: if false;
+    }
+
+    // Own account document only; written by Functions (createBabyProfile, later profile edits).
+    match /users/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+
+    // Family = ownership + quota container (P-001). Owner only until storage views (S11, P-003).
+    match /families/{familyId} {
+      allow get: if signedIn() && resource.data.ownerUid == request.auth.uid;
+      allow list, write: if false;
+    }
+
+    // Member-visible profile: nickname, avatar ref, trackers, time zone ("Người thân chỉ thấy
+    // tên thân mật", R-009). All writes go through Functions in S2.
+    match /babies/{babyId} {
+      allow get: if activeMember(babyId);
+      allow list, write: if false;
+
+      // DOB and gender: Cùng nuôi, or relatives granted "Thông tin bé" (§5, 121:11672).
+      // Caregivers never see the full profile.
+      match /restricted/{docId} {
+        allow get: if docId == 'profile' && activeMember(babyId) && (
+          role(babyId) == 'coParent' ||
+          (role(babyId) == 'relative' && get(memberDoc(babyId)).data.get('extraRights', {}).get('viewBabyInfo', false) == true)
+        );
+        allow list, write: if false;
+      }
+
+      // Own membership, or every membership for Cùng nuôi (Family tab lists arrive in S3).
+      match /members/{uid} {
+        allow get: if signedIn() && (request.auth.uid == uid || (activeMember(babyId) && role(babyId) == 'coParent'));
+        allow list: if activeMember(babyId) && role(babyId) == 'coParent';
+        allow write: if false;
+      }
+    }
+
+    // "My babies": collection-group query on members where uid == me (any status, so the app
+    // can show "Bạn không còn quyền xem hồ sơ này", R-025).
+    match /{path=**}/members/{uid} {
+      allow list: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

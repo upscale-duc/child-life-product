@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web-and-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: subosito/flutter-action@v2 # dart format is used by the token generator check
+        with:
+          flutter-version-file: .flutter-version
+          channel: stable
+          cache: true
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm --filter @child-life/contracts --filter @child-life/web-config run build
+      - name: Design tokens are up to date (Dart + CSS generated from tokens.json)
+        run: pnpm --filter @child-life/design-tokens run check
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - name: Firestore & Storage rules tests (emulators)
+        run: |
+          npm install --global firebase-tools@15.33.0
+          pnpm test:rules
+      - name: Build Functions bundle and web apps (dev)
+        run: |
+          pnpm --filter child-life-functions run build:deploy
+          pnpm --filter child-life-landing --filter child-life-portal run build:dev
+
+  mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: ../../.flutter-version
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed lib test
+      - run: flutter analyze
+      - run: flutter test --exclude-tags golden
+      - run: flutter build apk --flavor dev --debug
+
+  mobile-ios:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: ../../.flutter-version
+          channel: stable
+          cache: true
+      - run: flutter test --tags golden # goldens are generated on macOS
+      - run: flutter build ios --flavor dev --simulator --debug
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

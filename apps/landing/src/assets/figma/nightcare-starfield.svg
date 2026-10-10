@@ -1,0 +1,18 @@
+<svg width="600" height="560" viewBox="0 0 600 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs><radialGradient id="nc-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(310 280) scale(260)"><stop stop-color="#6673CC" stop-opacity="0.4"/><stop offset="1" stop-color="#6673CC" stop-opacity="0"/></radialGradient></defs>
+<circle cx="310" cy="280" r="260" fill="url(#nc-glow)"/>
+<circle cx="21.0" cy="21.0" r="1.0" fill="white" fill-opacity="0.5"/>
+<circle cx="118.5" cy="74.5" r="1.5" fill="white" fill-opacity="0.6"/>
+<circle cx="216.0" cy="128.0" r="2.0" fill="white" fill-opacity="0.7"/>
+<circle cx="312.0" cy="180.0" r="1.0" fill="white" fill-opacity="0.8"/>
+<circle cx="409.5" cy="33.5" r="1.5" fill="white" fill-opacity="0.5"/>
+<circle cx="507.0" cy="87.0" r="2.0" fill="white" fill-opacity="0.6"/>
+<circle cx="43.0" cy="139.0" r="1.0" fill="white" fill-opacity="0.7"/>
+<circle cx="140.5" cy="192.5" r="1.5" fill="white" fill-opacity="0.8"/>
+<circle cx="238.0" cy="46.0" r="2.0" fill="white" fill-opacity="0.5"/>
+<circle cx="334.0" cy="98.0" r="1.0" fill="white" fill-opacity="0.6"/>
+<circle cx="431.5" cy="151.5" r="1.5" fill="white" fill-opacity="0.7"/>
+<circle cx="529.0" cy="205.0" r="2.0" fill="white" fill-opacity="0.8"/>
+<circle cx="65.0" cy="57.0" r="1.0" fill="white" fill-opacity="0.5"/>
+<circle cx="162.5" cy="110.5" r="1.5" fill="white" fill-opacity="0.6"/>
+</svg>

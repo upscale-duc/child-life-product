@@ -1,0 +1,31 @@
+{
+  "name": "child-life-portal",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode dev",
+    "build": "pnpm run build:dev",
+    "build:dev": "tsc -p tsconfig.json --noEmit && vite build --mode dev",
+    "build:prod": "tsc -p tsconfig.json --noEmit && vite build --mode prod",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@child-life/contracts": "workspace:*",
+    "@child-life/web-config": "workspace:*",
+    "firebase": "13.0.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-intl": "12.1.4"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "typescript": "6.0.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.3",
+    "@child-life/vite-robots": "workspace:*"
+  }
+}

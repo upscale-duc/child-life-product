@@ -1,0 +1,5 @@
+{
+  "extends": "../../apps/tsconfig.web.json",
+  "compilerOptions": { "types": [] },
+  "include": ["index.ts"]
+}

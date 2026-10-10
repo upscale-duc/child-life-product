@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Per-app language support (Android 13+). Keep in sync with lib/app/locale.dart. -->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="vi" />
+    <locale android:name="en" />
+</locale-config>

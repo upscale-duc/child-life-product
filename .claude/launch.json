@@ -1,0 +1,22 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "landing-preview",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "child-life-landing",
+        "exec",
+        "vite",
+        "preview",
+        "--mode",
+        "dev",
+        "--port",
+        "4173",
+        "--strictPort"
+      ],
+      "port": 4173
+    }
+  ]
+}

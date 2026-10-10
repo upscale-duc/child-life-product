@@ -1,0 +1,29 @@
+{
+  "name": "child-life-landing",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode dev",
+    "build": "pnpm run build:dev",
+    "build:dev": "tsc -p tsconfig.json --noEmit && vite build --mode dev && vite build --mode dev --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs dev",
+    "build:prod": "tsc -p tsconfig.json --noEmit && vite build --mode prod && vite build --mode prod --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs prod",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@child-life/contracts": "workspace:*",
+    "@child-life/web-config": "workspace:*",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "@child-life/design-tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "typescript": "6.0.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.3"
+  }
+}

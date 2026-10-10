@@ -1,0 +1,7 @@
+# Vietnamese is the source language (Figma copy is Vietnamese); English is maintained alongside.
+arb-dir: lib/l10n
+template-arb-file: app_vi.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false
+required-resource-attributes: true

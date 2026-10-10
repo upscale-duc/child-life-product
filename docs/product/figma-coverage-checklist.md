@@ -1,0 +1,388 @@
+# Figma Flow & State Coverage Checklist — Child Life V1
+
+Traceability from every final-Figma screen, component, flow and state to code and tests. Figma file `sJLG1fAXKDnDr9YI6Yx8ex` (read-only). Companion to the [business map](business-map.md) and [implementation plan](../development/implementation-plan.md).
+
+**Rules for this checklist**
+
+- A row is ticked **only** when it works end-to-end in the **dev** environment with real Firebase on **both iOS and Android**, in **Light and Night care**, with the listed states verified and the `Code` / `Tests` columns filled with paths. Mocked, flagged-off or placeholder work stays unticked.
+- Status markers: ☐ not started · ◐ in progress (add note) · ☑ done & verified · ⛔ blocked (link Q-/SP-) · ⚠ engineering-supplied state awaiting design review (G-).
+- Night care column = the Night twin frame; both must be checked (golden or screenshot comparison).
+- Counts at the time of writing: **154 screens × 2 modes + 1 component sheet**, ~80 component sets, 11 landing sections × 2 breakpoints, 6 business flows. S1 design system delivered (see table); no screens yet.
+
+## Progress summary
+
+| Area                            | Items       | ☑          | Blocked                         |
+| ------------------------------- | ----------- | ---------- | ------------------------------- |
+| Foundations & components        | 15 groups   | 10 ☑ · 3 ◐ | —                               |
+| Screens (Light + Night)         | 155         | 0          | —                               |
+| Widgets / native states         | 9 groups    | 0          | SP-1                            |
+| Business flows A–F + extra      | 9           | 0          | —                               |
+| Engineering-supplied states (G) | 35          | 0          | design review                   |
+| Landing (desktop + mobile)      | 11 sections | 0          | D-001 copy, Q-008, Q-009, G-065 |
+| Admin portal                    | 13          | 0          | —                               |
+
+## A. Foundations & components (Slice S1 unless noted)
+
+| ✓   | Item                                                                                                                                                                                                                                                                        | Figma                                                 | Must verify                                                                                              | Code                                                                                                                                            | Tests                                                                                                          |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| ☑   | Colour tokens Light / Night care (34) + `card-edge`                                                                                                                                                                                                                         | `18:2`, `18:5`, `18:178`                              | exact hex both modes; generated Dart + CSS from one JSON                                                 | `packages/design-tokens/tokens.json` → `apps/mobile/lib/core/design/tokens.g.dart`, `dist/tokens.css`                                           | `apps/mobile/test/golden/` foundations ×4; token stale check in CI                                             |
+| ☑   | Care category tokens (bottle, breast, sleep, diaper, growth, **pump**) soft/ink/accent                                                                                                                                                                                      | `52:4491` + screens                                   | ink ≥ 5.5:1 on soft; accent never for text                                                               | `apps/mobile/lib/core/design/tokens.g.dart` (`ClCareColors`)                                                                                    | goldens (foundations)                                                                                          |
+| ☑   | Typography Be Vietnam Pro (10 styles) + tabular figures                                                                                                                                                                                                                     | `18:351`                                              | Dynamic Type to 200%; +30% text length; tabular timers                                                   | `apps/mobile/lib/core/design/cl_typography.dart`, `tabular_text.dart` (P-064: font has no `tnum`)                                               | goldens; `apps/mobile/test/flutter_test_config.dart` loads the font                                            |
+| ◐   | Spacing / size / radius / shadow (+ Night care shadows)                                                                                                                                                                                                                     | `18:414`                                              | tap-min 44; Night cards without shadow                                                                   | `apps/mobile/lib/core/design/tokens.g.dart` — Night chip/nav/lift shadows are proposals (07 §11.2)                                              | goldens with real shadows                                                                                      |
+| ☑   | Motion tokens (P-060) + Reduce Motion variants                                                                                                                                                                                                                              | descriptions only                                     | values signed off; static fallbacks                                                                      | Figma Motion spec 269:19 → `ClMotion`; `apps/mobile/lib/core/design/motion.dart`, `page_transitions.dart` (D-013), `haptics.dart`               | `apps/mobile/test/core/widgets_test.dart` (sheet timings, toast), `apps/mobile/test/core/appearance_test.dart` |
+| ☑   | Logo set (mark, lockups, wordmark, app icons Light/Dark/Tinted)                                                                                                                                                                                                             | `33:2`                                                | iOS icon set incl. dark & tinted; Android adaptive icon derived from the iOS icon (not in Figma — D-004) | `apps/mobile/assets/logo`, `apps/mobile/lib/core/widgets/cl_art.dart`; iOS `AppIcon-dev/prod`; Android adaptive mipmaps; native splash          | iOS simulator + Android emulator launch                                                                        |
+| ☑   | Buttons (7 styles), Round, Back                                                                                                                                                                                                                                             | `8:33`, `8:34`, `8:37`                                | press 0.97; disabled 40%; a11y labels                                                                    | `apps/mobile/lib/core/widgets/cl_button.dart`, `cl_pressable.dart`                                                                              | `apps/mobile/test/core/widgets_test.dart`, goldens                                                             |
+| ☑   | Chips, SyncStatus, Banner/Error, Avatar, FloatChip, PageDots, Progress                                                                                                                                                                                                      | `8:56`, `8:84`, `8:85`, `8:97`, `23:164`…             | icon + words for every status                                                                            | `apps/mobile/lib/core/widgets/cl_status.dart`, `cl_navigation.dart`                                                                             | goldens                                                                                                        |
+| ☐   | Care components (QuickAction, CareTile 8 types, LatestCard, Segmented, TimeRow, InfoRow, AmountField, ChoiceTile, LogRow, TimelineItem, DayRhythm ×4, GrowthRow, TimeSectionHeader, EntryOption, ReminderRow, ReminderPeek, BabySwitcher, DayPill, FilterChip, SummaryTile) | `9:159`, `45:408`                                     | all variants, both modes, goldens                                                                        |                                                                                                                                                 |                                                                                                                |
+| ☑   | Navigation (NavBar Parent/Caregiver/Relative × tabs, TabDock, QuickLogButton); TabBar deprecated — not built                                                                                                                                                                | `44:362`, `10:169`, `44:363`                          | role variants; labels visible                                                                            | `apps/mobile/lib/core/widgets/cl_navigation.dart`                                                                                               | `apps/mobile/test/core/widgets_test.dart` (tabs per role, vi/en labels, no + for relatives), goldens           |
+| ◐   | Sheets & screen parts (SheetHeader, BottomSheet/Feed, NavHeader, HeroCard, NumField, FieldRow, DateWheel → native picker, Keypad → system keypad)                                                                                                                           | `11:211`, `37:293`, `37:301`                          | keyboard never covers Save                                                                               | `apps/mobile/lib/core/widgets/cl_sheet.dart` (spring / exit / drag), NavHeader; HeroCard, FieldRow, native pickers in S2/S4                     | `apps/mobile/test/core/widgets_test.dart` (open / close / drag)                                                |
+| ☑   | Onboarding & auth parts (TopBar ×6, TextField, DetailRow, Radio, Toggle, ThemeOption, SettingRow, Coachmark, CodeInput (6 digits), PermissionTile, AccountRow, OptionRow, TourTip, RoleOption, MemberRow, RelationChip)                                                     | `23:379`                                              |                                                                                                          | `apps/mobile/lib/core/widgets/cl_inputs.dart`, `cl_rows.dart`, `cl_choices.dart`, `cl_misc.dart`, `cl_navigation.dart` (ThemeOption art: G-082) | goldens                                                                                                        |
+| ☐   | Memories parts (MemoryCard, MediaTile ×4, UploadPill ×4, QueueRow ×5, Illustration/Photo placeholders for previews only), StoryCard ×5 (Lora, Dancing Script)                                                                                                               | `10:122`, `131:860`, `132:898`, `132:1036`, `207:225` | Vietnamese glyphs in Dancing Script                                                                      |                                                                                                                                                 |                                                                                                                |
+| ☐   | Illustrations (Welcome, SignIn, VerifyEmail, Recover, AccountLink, InviteCode, Invite, Expired, BabyAvatar, BabyFace, TodayHero/Empty, SelectTile, LogTile, Mini ×7, Care, Handover, GrowthStory, Family)                                                                   | `24:365`                                              | exported as vector assets                                                                                |                                                                                                                                                 |                                                                                                                |
+| ☑   | Component showcase route (dev only)                                                                                                                                                                                                                                         | —                                                     | every variant reachable                                                                                  | `apps/mobile/lib/features/showcase/` (`/showcase`, dev builds)                                                                                  | goldens reuse the showcase sections                                                                            |
+
+## B. Screens
+
+Slice = delivery slice in the implementation plan. "Must verify" lists the states and rules the row must demonstrate; designed copy is in the Figma extract files.
+
+### 1 · Chào mừng & giới thiệu chức năng
+
+| ✓   | Screen              | Light     | Night care | Slice | Must verify (states / rules)                                                                     | Code | Tests |
+| --- | ------------------- | --------- | ---------- | ----- | ------------------------------------------------------------------------------------------------ | ---- | ----- |
+| ☐   | 00 Splash           | `36:2233` | `36:2249`  | S1    | ≤1 s sun-rise + crossfade; Reduce Motion static; native launch screen; follows system appearance |      |       |
+| ☐   | 01 Chào mừng        | `26:4`    | `26:359`   | S2    | Khám phá / Đăng nhập / Mã mời; theme toggle                                                      |      |       |
+| ☐   | 02 Chăm sóc         | `26:85`   | `26:421`   | S2    | Tour 1/4, Bỏ qua, round Next a11y "Tiếp tục"                                                     |      |       |
+| ☐   | 03 Cùng chăm        | `26:151`  | `26:472`   | S2    | Tour 2/4                                                                                         |      |       |
+| ☐   | 04 Growth Story     | `26:211`  | `26:522`   | S2    | Tour 3/4                                                                                         |      |       |
+| ☐   | 05 Chia sẻ riêng tư | `26:277`  | `26:579`   | S2    | Tour 4/4 → "Tạo hồ sơ bé"                                                                        |      |       |
+
+### 2 · Đăng nhập & xác minh
+
+| ✓   | Screen                   | Light       | Night care  | Slice | Must verify (states / rules)                                                                  | Code | Tests |
+| --- | ------------------------ | ----------- | ----------- | ----- | --------------------------------------------------------------------------------------------- | ---- | ----- |
+| ☐   | 06 Chọn cách đăng nhập   | `27:488`    | `27:724`    | S2    | Apple (official button) / Google / email; legal link (Q-020); provider errors (G-001)         |      |       |
+| ☐   | 07 Email                 | `27:538`    | `27:766`    | S2    | Tài khoản mới / Đăng nhập segments; 8+ chars; show/hide; collision link; field errors (G-001) |      |       |
+| ☐   | 08 Xác minh email        | `27:588`    | `27:805`    | S2    | Link sent; Mở Mail; Gửi lại (cooldown G-001); link returns to app                             |      |       |
+| ☐   | 09 Quên mật khẩu         | `27:634`    | `27:844`    | S2    | Reset link; success/not-found states (G-001)                                                  |      |       |
+| ☐   | 10 Email đã có tài khoản | `27:673`    | `27:877`    | S2    | Sign in with existing provider then link                                                      |      |       |
+| ☐   | 10a Bạn là ai với bé     | `115:11756` | `121:12631` | S2    | Display name + relation chips (Khác… free text)                                               |      |       |
+
+### 3 · Tạo hồ sơ bé & giao diện
+
+| ✓   | Screen                | Light     | Night care | Slice | Must verify (states / rules)                                            | Code | Tests |
+| --- | --------------------- | --------- | ---------- | ----- | ----------------------------------------------------------------------- | ---- | ----- |
+| ☐   | 11a Chọn ngày sinh    | `38:1498` | `38:1681`  | S2    | Native wheel; no future; live age hint                                  |      |       |
+| ☐   | 11b Chọn múi giờ      | `38:1581` | `38:1809`  | S2    | Auto from device / list; search; IANA storage (P-014)                   |      |       |
+| ☐   | 11 Hồ sơ bé           | `29:721`  | `29:1136`  | S2    | Nickname, DOB, timezone, gender optional, privacy note                  |      |       |
+| ☐   | 11c Chọn ảnh đại diện | `41:1861` | `41:1980`  | S2    | Camera / library / 4 presets; family-private; permission denied (G-001) |      |       |
+| ☐   | 12 Chọn theo dõi      | `29:795`  | `29:1198`  | S2    | 6 trackers multi-select; "Xong · N mục"                                 |      |       |
+| ☐   | 13 Giao diện          | `29:1063` | `29:1375`  | S1    | Sáng/Tối/Tự động; Night care schedule; applies immediately (Q-027)      |      |       |
+| ☐   | 13a Lịch Night care   | `43:2067` | `43:2177`  | S1    | Bật/Tắt segments; 5-min steps; presets; duration hint across midnight   |      |       |
+
+### 4 · Gia đình & mời người
+
+| ✓   | Screen                     | Light       | Night care  | Slice | Must verify (states / rules)                                                                        | Code | Tests |
+| --- | -------------------------- | ----------- | ----------- | ----- | --------------------------------------------------------------------------------------------------- | ---- | ----- |
+| ☐   | 14a Gia đình               | `116:11226` | `121:12675` | S3    | Members "relation · role", You badge, pending invites + Gửi lại, invite CTA; cancel pending (G-033) |      |       |
+| ☐   | 14b Mời · Vai trò & quyền  | `116:11916` | `121:12777` | S3    | Relation chips + role radio; Xem chi tiết quyền                                                     |      |       |
+| ☐   | 14b2 Quyền Người thân      | `121:11672` | `121:12839` | S3    | Always-on rights + 2 toggles (defaults Q-021)                                                       |      |       |
+| ☐   | 14c Mời · Gửi lời mời      | `117:11435` | `121:12939` | S3    | QR / Link / Email tabs (Link, Email not drawn G-054); 6-digit code; 7-day expiry; share sheet       |      |       |
+| ☐   | 14c2 Không quét được       | `121:12549` | `121:12989` | S3    | Help steps; Tạo mã mới (invalidates old); Gửi qua email                                             |      |       |
+| ☐   | 14d Mời · Đã gửi           | `117:12007` | `121:13067` | S3    | Email sent; "Bà không nhận được?" (G-055)                                                           |      |       |
+| ☐   | 14e Email lời mời          | `118:11494` | `121:13104` | S3    | Transactional email template incl. unsubscribe (SP-8)                                               |      |       |
+| ☐   | 14f Thành viên · Đổi quyền | `118:12056` | `121:13166` | S3    | Role change, Thời hạn, relation, remove (records kept); confirm (G-031); parent-vs-parent (Q-013)   |      |       |
+
+### 4b · Nhận lời mời
+
+| ✓   | Screen                           | Light       | Night care  | Slice | Must verify (states / rules)                                              | Code | Tests |
+| --- | -------------------------------- | ----------- | ----------- | ----- | ------------------------------------------------------------------------- | ---- | ----- |
+| ☐   | 15 Nhập mã mời                   | `30:1222`   | `30:1386`   | S3    | 6 digits / QR scan; invalid, lockout, already member (G-035/G-036)        |      |       |
+| ☐   | 16 Nhận lời mời                  | `30:1259`   | `30:1421`   | S3    | Countdown, role chip, permission tiles, Tham gia / Không phải tôi (Q-024) |      |       |
+| ☐   | 16b Chọn cách vào                | `123:12571` | `123:13123` | S3    | Vào ngay (anonymous) / Apple / Google                                     |      |       |
+| ☐   | 16a Xác nhận vai trò             | `118:12227` | `121:13322` | S3    | Name + relation (role fixed)                                              |      |       |
+| ☐   | 16c Hôm nay · Chưa lưu tài khoản | `123:12623` | `123:13221` | S3    | Save-account banner; role-correct nav (not the mock parent nav)           |      |       |
+| ☐   | 16d Lưu tài khoản                | `123:12712` | `123:13431` | S3    | Link credential, keep uid; collision merge (Q-023); Để sau                |      |       |
+| ☐   | 17 Lời mời hết hạn               | `30:1346`   | `30:1494`   | S3    | Expired; Nhập mã khác / Về trang đầu; revoked/used variants (G-035)       |      |       |
+
+### 5 · Hôm nay & Chăm sóc
+
+| ✓   | Screen                            | Light       | Night care  | Slice | Must verify (states / rules)                                                                        | Code | Tests |
+| --- | --------------------------------- | ----------- | ----------- | ----- | --------------------------------------------------------------------------------------------------- | ---- | ----- |
+| ☐   | 18 Hôm nay (lần đầu)              | `29:904`    | `29:1275`   | S4    | Empty tiles "Chưa có / Chạm để ghi"; coachmark 1/3; off after first log                             |      |       |
+| ☐   | 18b Hướng dẫn 2/3                 | `103:8099`  | `103:8432`  | S4    | Coachmark Tăng trưởng                                                                               |      |       |
+| ☐   | 18c Hướng dẫn 3/3                 | `103:8275`  | `103:8608`  | S4    | Coachmark "+"                                                                                       |      |       |
+| ☐   | 19 Hôm nay                        | `46:2266`   | `70:4386`   | S4    | Tiles per trackers with last entry; ReminderPeek; DayRhythm; Night toggle; baby switcher            |      |       |
+| ☐   | 19a Ghi nhanh                     | `50:3572`   | `70:4567`   | S4    | 6 tiles; Ngủ start/long-press (Q-022)                                                               |      |       |
+| ☐   | 20 Lịch sử                        | `46:2469`   | `70:4798`   | S6    | Period sections, spans vs events, pending pill, day strip, filters                                  |      |       |
+| ☐   | 20a Lịch sử · Lọc Bú              | `104:8724`  | `104:9076`  | S6    | Feed card (last feed, mean gap), stats link                                                         |      |       |
+| ☐   | 20b Lịch sử · Lọc Ngủ             | `104:9429`  | `104:9779`  | S6    | Sleep card; midnight clipping (Q-026); stats link                                                   |      |       |
+| ☐   | 20c Lịch sử · Lọc Tã              | `104:10130` | `104:10480` | S6    | Diaper card; Cả hai counts both                                                                     |      |       |
+| ☐   | 20d Lịch sử · Lọc Tăng trưởng     | `105:9063`  | `105:9797`  | S6    | Measurements list + chart; metric toggle                                                            |      |       |
+| ☐   | 20e Lịch sử · Lọc Tã · Ngày trống | `105:9471`  | `105:9943`  | S6    | Empty day + back-log CTA; other filters empty (G-064)                                               |      |       |
+| ☐   | 20f Chọn ngày                     | `108:10271` | `109:11496` | S6    | Month calendar, dots, DOB/future bounds, Về hôm nay                                                 |      |       |
+| ☐   | 20g Thống kê bú                   | `109:10562` | `109:12017` | S6    | 7 ngày (and 30 ngày Q-031): avg ml, feeds, gap, day/night by ml, hourly avg, breast sides           |      |       |
+| ☐   | 20g2 Thống kê bú · Hôm nay        | `110:10949` | `111:11787` | S6    | Window from 18:00 yesterday; per-feed chart; "Chưa tới"                                             |      |       |
+| ☐   | 20h Thống kê ngủ                  | `111:10994` | `111:11945` | S6    | Avg/day, sleeps/day, longest, day/night, rhythm rows, longest per day                               |      |       |
+| ☐   | 21 Chi tiết bản ghi               | `46:2649`   | `70:5099`   | S4    | Event vs created time, attribution, sync row, Edit/Delete per permission, delete confirm + 5 s undo |      |       |
+| ☐   | 22 Ghi bú bình                    | `46:3141`   | `70:5155`   | S4    | Defaults remembered, ml optional, milk type, decimal keypad, 2-tap save                             |      |       |
+| ☐   | 23 Ghi bú mẹ                      | `46:3234`   | `70:5403`   | S4    | Side suggestion, optional duration, start time, → timer                                             |      |       |
+| ☐   | 23b Timer bú mẹ                   | `112:11135` | `112:11193` | S5    | Per-side, switch, pause/resume, end, cancel confirm, Live Activity, family sees                     |      |       |
+| ☐   | 23a Ghi hút sữa                   | `106:11118` | `106:11378` | S4    | Side, ml, per-side amounts (G-062), duration, → timer; never intake                                 |      |       |
+| ☐   | 23c Timer hút sữa                 | `113:11207` | `113:11255` | S5    | Double pump, stop one side, → amount entry                                                          |      |       |
+| ☐   | 24 Thay tã                        | `46:3308`   | `70:5627`   | S4    | Ướt/Bẩn/Cả hai, last type default, tile bounce + ✓                                                  |      |       |
+| ☐   | 25a Ghi giấc ngủ                  | `69:4213`   | `70:5851`   | S5    | Chooser timer vs manual                                                                             |      |       |
+| ☐   | 25 Timer ngủ                      | `47:3028`   | `70:6064`   | S5    | Breathing ring (static w/ Reduce Motion), edit start, end + haptic, cancel confirm, Night care auto |      |       |
+| ☐   | 26 Nhập giấc ngủ                  | `47:3074`   | `70:6103`   | S5    | Start/end, Qua đêm chip, split per day note, validation (G-021)                                     |      |       |
+| ☐   | 27 Giấc ngủ trùng nhau            | `47:3145`   | `70:6176`   | S5    | Pick one (primary disabled until), edit from mine, loser → 30-day bin                               |      |       |
+| ☐   | 28 Tăng trưởng                    | `47:3210`   | `70:6236`   | S4    | Date, kg required, cm optional, delta vs previous, "Lúc sinh", no percentiles                       |      |       |
+
+### 6 · Widgets
+
+| ✓   | Screen                  | Light     | Night care | Slice | Must verify (states / rules)                                | Code | Tests |
+| --- | ----------------------- | --------- | ---------- | ----- | ----------------------------------------------------------- | ---- | ----- |
+| ☐   | W1 Home screen          | `76:5441` | `76:6879`  | S8    | Small/Medium/Large widgets on home screen                   |      |       |
+| ☐   | W1b Home screen trang 2 | `76:6650` | `76:6976`  | S8    | Additional widget placements                                |      |       |
+| ☐   | W2 Lock screen          | `76:5703` | `76:7113`  | S8    | Circular sleep/feed, rectangular, inline, Live Activity     |      |       |
+| ☐   | W3 Dynamic Island       | `76:5779` | `76:7122`  | S8    | Compact / minimal / expanded; actions                       |      |       |
+| ☐   | W4 Widget states        | `76:5852` | `76:7129`  | S8    | Default, logged + undo, running, empty, signed-out, offline |      |       |
+| ☐   | W5 Khi chạm widget      | `84:6579` | `84:7190`  | S8    | Deep-link table; background App Intent; ~5 s undo           |      |       |
+
+### 7 · Vai trò & nhiều bé
+
+| ✓   | Screen                      | Light       | Night care  | Slice | Must verify (states / rules)                             | Code | Tests |
+| --- | --------------------------- | ----------- | ----------- | ----- | -------------------------------------------------------- | ---- | ----- |
+| ☐   | 7a Hôm nay · Người chăm sóc | `124:13717` | `127:15330` | S3    | Caregiver nav (Hôm nay · Gia đình · Tôi + "+")           |      |       |
+| ☐   | 7b Kỷ niệm · Người thân     | `124:13778` | `127:15528` | S3    | Relative nav, lands on Kỷ niệm, family-only content      |      |       |
+| ☐   | 7c Chọn bé                  | `125:13223` | `127:15611` | S3    | All accessible babies with role; "Thêm hồ sơ bé n/3"     |      |       |
+| ☐   | 7d Hôm nay · Na             | `125:13338` | `127:15880` | S3    | Switch toast; tiles/reminders/totals/role UI follow baby |      |       |
+
+### 8 · Nhắc việc
+
+| ✓   | Screen                         | Light       | Night care  | Slice | Must verify (states / rules)                                                          | Code | Tests |
+| --- | ------------------------------ | ----------- | ----------- | ----- | ------------------------------------------------------------------------------------- | ---- | ----- |
+| ☐   | 8a Nhắc việc                   | `127:13602` | `127:16067` | S7    | Quá hạn / Sắp tới / Đã xong; info line; + new                                         |      |       |
+| ☐   | 8b Tạo nhắc việc               | `127:13728` | `127:16167` | S7    | Title, date-time (picker G-061), Báo trước options (G-061), baby tz note              |      |       |
+| ☐   | 8c Xin quyền thông báo         | `127:13809` | `127:16304` | S7    | Pre-prompt after first save                                                           |      |       |
+| ☐   | 8d Đã lưu · chưa bật thông báo | `127:13867` | `127:16425` | S7    | Denied state + Cài đặt                                                                |      |       |
+| ☐   | 8e Chi tiết nhắc việc          | `127:13910` | `127:16524` | S7    | Rows incl. notifying device; mark done; edit; delete (Q-018); device takeover (Q-005) |      |       |
+
+### 9 · Offline, đồng bộ & mất quyền
+
+| ✓   | Screen                 | Light       | Night care  | Slice | Must verify (states / rules)                                     | Code | Tests |
+| --- | ---------------------- | ----------- | ----------- | ----- | ---------------------------------------------------------------- | ---- | ----- |
+| ☐   | 9a Hôm nay · Offline   | `127:14758` | `127:16629` | S4    | Offline banner with count; pending tiles; totals include pending |      |       |
+| ☐   | 9b Bản ghi chờ đồng bộ | `127:14970` | `127:16840` | S4    | Pending list, Thử lại ngay; rejected writes (G-034)              |      |       |
+| ☐   | 9c Timer ngủ · Offline | `127:15087` | `127:17108` | S5    | Local-only timer, sync on reconnect, conflict path               |      |       |
+| ☐   | 9d Mất quyền truy cập  | `127:15135` | `127:17154` | S3    | Revocation screen; cache hidden/purged; request new invite       |      |       |
+
+### 10 · Kỷ niệm: ảnh, album, tải lên & chia sẻ
+
+| ✓   | Screen                           | Light       | Night care  | Slice | Must verify (states / rules)                                                                 | Code | Tests |
+| --- | -------------------------------- | ----------- | ----------- | ----- | -------------------------------------------------------------------------------------------- | ---- | ----- |
+| ☐   | 10a Kỷ niệm · Dòng thời gian     | `133:16184` | `178:25556` | S9    | Week-by-age groups, entries, audience icons, milestones, loves, upload pill                  |      |       |
+| ☐   | 10a2 Thêm mới (nút +)            | `159:18345` | `178:28946` | S9    | Recent photos row, camera / library / files / note                                           |      |       |
+| ☐   | 10a3 Chụp ảnh                    | `159:18609` | `178:29260` | S9    | In-app camera photo/video, burst counter, Xong (N)                                           |      |       |
+| ☐   | 10b Kỷ niệm · Tất cả ảnh         | `133:16697` | `178:25873` | S9    | Grid by month, counts, filters, date scrubber                                                |      |       |
+| ☐   | 10b2 Chọn nhiều                  | `171:22503` | `178:29301` | S9    | Select mode, Chọn cả tháng, selection bar                                                    |      |       |
+| ☐   | 10b3 Thêm thao tác               | `171:23012` | `178:29689` | S9    | Ai thấy · Album · Tải về · Gửi đi + more (cover only with 1)                                 |      |       |
+| ☐   | 10b4 Xoá mục                     | `171:23114` | `178:30152` | S9    | Delete for family, 30-day recovery, parents only                                             |      |       |
+| ☐   | 10b5 Chọn tháng & năm            | `175:23809` | `178:30620` | S9    | Years ≥ birth, empty months disabled                                                         |      |       |
+| ☐   | 10c Cách xem                     | `158:20925` | `178:27447` | S9    | Group/Style/Show/Audience, Xem như người thân, Áp dụng                                       |      |       |
+| ☐   | 10d Kỷ niệm · Album              | `135:17615` | `178:26229` | S10   | Albums with audience badges, + Album mới, milestone collections                              |      |       |
+| ☐   | 10e Album · Giờ tắm              | `177:18`    | `178:31031` | S10   | Album detail, audience button, Thêm ảnh, Kể thành chuyện                                     |      |       |
+| ☐   | 10e2 Album · Yêu thích           | `177:425`   | `178:31230` | S10   | Automatic per-user, "Chỉ mình bạn"                                                           |      |       |
+| ☐   | 10e3 Tuỳ chọn album              | `179:18`    | `179:25439` | S10   | Options sheet                                                                                |      |       |
+| ☐   | 10e4 Đổi tên album               | `180:18`    | `181:27085` | S10   | Rename + suggestions                                                                         |      |       |
+| ☐   | 10e5 Đổi ảnh bìa                 | `180:95`    | `181:27310` | S10   | Pick cover                                                                                   |      |       |
+| ☐   | 10e6 Ai thấy album               | `180:356`   | `181:27615` | S10   | Audience applies to all + later items; notify toggle; multi-album effective audience (D-002) |      |       |
+| ☐   | 10e7 Sắp xếp album               | `180:440`   | `181:27854` | S10   | 3 sort options, immediate                                                                    |      |       |
+| ☐   | 10e8 Chọn ảnh trong album        | `181:18`    | `181:28080` | S10   | Select, Bỏ khỏi album                                                                        |      |       |
+| ☐   | 10e9 Tải album về máy            | `181:360`   | `181:28292` | S10   | Size estimate, Photos album, Wi-Fi only, background                                          |      |       |
+| ☐   | 10e10 Xoá album                  | `181:429`   | `181:28514` | S10   | Memories kept; family loses album                                                            |      |       |
+| ☐   | 10f Xem ảnh                      | `135:18156` | `178:26392` | S9    | Viewer: audience, Thương count, Yêu thích, Tải về, Chia sẻ; video playback                   |      |       |
+| ☐   | 10g Chọn ảnh nhanh               | `146:17006` | `178:26440` | S9    | Library multi-select ≤30; Có Teddy filter (iOS only, D-004)                                  |      |       |
+| ☐   | 10h Soạn & chia sẻ               | `158:21241` | `178:27859` | S9    | Caption, date, milestone, albums, Ai thấy (default Gia đình, D-001), notify, Tải lên N mục   |      |       |
+| ☐   | 10h2 Chọn ngày                   | `185:18`    | `185:29531` | S9    | Theo ngày chụp / Một ngày cho tất cả, bounds                                                 |      |       |
+| ☐   | 10h3 Chọn mốc                    | `185:260`   | `185:29909` | S9    | Age-based presets, family custom, Không gắn mốc                                              |      |       |
+| ☐   | 10h4 Tạo mốc mới                 | `185:461`   | `185:30287` | S9    | Name + date, shared with family                                                              |      |       |
+| ☐   | 10h5 Chọn album                  | `185:639`   | `185:30637` | S9    | Multi-select albums; picking a Gia đình album switches Ai thấy (D-002)                       |      |       |
+| ☐   | 10i Hàng đợi tải lên             | `158:21349` | `178:28165` | S9    | Item states, pause all, retry all, Wi-Fi-only video                                          |      |       |
+| ☐   | 10j Màn hình khoá · đang tải nền | `149:17761` | `178:26824` | S9    | Upload Live Activity %, Wi-Fi waiting notification, no photos                                |      |       |
+| ☐   | 10k Chia sẻ từ app Ảnh           | `150:17772` | `178:26862` | S9    | Share extension: baby, audience, notify                                                      |      |       |
+| ☐   | 10o Chia sẻ mục “Chỉ ba mẹ”      | `158:21457` | `178:28500` | S9    | Who will see, caregiver excluded, notify, Chia sẻ N ảnh                                      |      |       |
+
+### 11 · Người thân xem gì khi được chia sẻ
+
+| ✓   | Screen                           | Light       | Night care  | Slice | Must verify (states / rules)                    | Code | Tests |
+| --- | -------------------------------- | ----------- | ----------- | ----- | ----------------------------------------------- | ---- | ----- |
+| ☐   | 11a Người thân thấy gì · quy tắc | `188:835`   | `188:31843` | S10   | Rules card (reference; enforce in Rules tests)  |      |       |
+| ☐   | 11b Thông báo trên màn hình khoá | `151:18383` | `188:30878` | S10   | Generic notifications, no photo/baby name       |      |       |
+| ☐   | 11c Nhật ký người thân           | `152:17833` | `188:30909` | S10   | Family-only journal, Thương, Nhắn ba mẹ (Q-007) |      |       |
+| ☐   | 11d Ảnh · người thân             | `187:29763` | `188:31099` | S10   | No + / Chọn                                     |      |       |
+| ☐   | 11e Album · người thân           | `187:30126` | `188:31414` | S10   | Shared albums + private Yêu thích               |      |       |
+| ☐   | 11f Chi tiết album · người thân  | `188:472`   | `188:31528` | S10   | Thương album, Tải về only                       |      |       |
+| ☐   | 11g Xem ảnh · người thân         | `188:680`   | `188:31718` | S10   | Thương, Yêu thích, Tải về, Nhắn                 |      |       |
+| ☐   | 11h Chưa có gì được chia sẻ      | `188:729`   | `188:31764` | S10   | Empty state                                     |      |       |
+| ☐   | 11i Đọc câu chuyện               | `208:36344` | `208:36397` | S12   | Family reader, Thương, Nhắn ba mẹ composer      |      |       |
+
+### 12 · Người chăm sóc
+
+| ✓   | Screen                           | Light       | Night care  | Slice | Must verify (states / rules)                             | Code | Tests |
+| --- | -------------------------------- | ----------- | ----------- | ----- | -------------------------------------------------------- | ---- | ----- |
+| ☐   | 12a Người chăm thấy gì · quy tắc | `192:19`    | `195:32740` | S4    | Rules card (reference; enforce in Rules tests)           |      |       |
+| ☐   | 12b Hôm nay · người chăm         | `192:47`    | `195:32767` | S4    | Caregiver Today                                          |      |       |
+| ☐   | 12c Ghi nhanh · người chăm       | `192:337`   | `195:32977` | S4    | Full 6-type log set                                      |      |       |
+| ☐   | 12d Lịch sử · người chăm         | `192:618`   | `195:33248` | S6    | Own records editable note                                |      |       |
+| ☐   | 12e Bản ghi của Mẹ · chỉ xem     | `192:32463` | `195:33761` | S4    | Read-only parent record, Nhắn Mẹ (Q-007)                 |      |       |
+| ☐   | 12f Nhắc việc · người chăm       | `192:1327`  | `195:33577` | S7    | No create; mark done only                                |      |       |
+| ☐   | 12g Gia đình · người chăm        | `192:1438`  | `195:33675` | S3    | View-only members, no pending, Rời khỏi gia đình (G-031) |      |       |
+
+### 13 · Tab Tôi: hồ sơ & dung lượng
+
+| ✓   | Screen                       | Light     | Night care  | Slice | Must verify (states / rules)                                                    | Code | Tests |
+| --- | ---------------------------- | --------- | ----------- | ----- | ------------------------------------------------------------------------------- | ---- | ----- |
+| ☐   | 13a Tôi · Ba/Mẹ              | `194:78`  | `202:35865` | S11   | Profile, storage card, rows per role, sign out                                  |      |       |
+| ☐   | 13b Dung lượng               | `194:164` | `197:34964` | S11   | Usage by baby & type, contact card                                              |      |       |
+| ☐   | 13c Dung lượng · sắp đầy     | `194:267` | `197:35068` | S11   | ≥80% warning                                                                    |      |       |
+| ☐   | 13d Dung lượng · đã đầy      | `194:377` | `197:35180` | S11   | Full: uploads paused, items kept on device, care unaffected                     |      |       |
+| ☐   | 13e Liên hệ quản trị         | `195:18`  | `197:35292` | S11   | Request +10 / +20 GB only (D-010), message, email + usage attached              |      |       |
+| ☐   | 13f Kỷ niệm · hết dung lượng | `195:177` | `197:35431` | S11   | Error upload pill, browsing continues                                           |      |       |
+| ☐   | 13g Tôi · người chăm         | `197:286` | `197:35752` | S11   | Bé được giao, no storage                                                        |      |       |
+| ☐   | 13h Tôi · người thân         | `197:391` | `197:35840` | S11   | Các bé bạn theo dõi, no storage, no "+"                                         |      |       |
+| ☐   | 13i Hồ sơ các bé             | `199:83`  | `199:35264` | S11   | List, Thêm bé n/3                                                               |      |       |
+| ☐   | 13j Hồ sơ bé · Teddy         | `199:168` | `199:35348` | S11   | Info, family, growth, storage, delete (owner only)                              |      |       |
+| ☐   | 13k Sửa hồ sơ bé             | `199:292` | `199:35471` | S11   | Reuse create form, Lưu thay đổi                                                 |      |       |
+| ☐   | 13l Xoá hồ sơ bé             | `199:385` | `199:35541` | S11   | Type nickname, Xoá vĩnh viễn, resumable purge job                               |      |       |
+| ☐   | 13m Hồ sơ của bạn            | `199:501` | `199:35680` | S11   | Display name, avatar, relation per baby                                         |      |       |
+| ☐   | 13n Tài khoản & đăng nhập    | `199:602` | `199:35775` | S11   | Providers, unlink guard, devices + remote sign-out, delete precondition (Q-016) |      |       |
+
+### 14 · Câu chuyện: gợi ý, sửa, lưu & chia sẻ
+
+| ✓   | Screen                           | Light       | Night care          | Slice | Must verify (states / rules)                                   | Code | Tests |
+| --- | -------------------------------- | ----------- | ------------------- | ----- | -------------------------------------------------------------- | ---- | ----- |
+| ☐   | 14a Câu chuyện · danh sách       | `204:84`    | `208:36469`         | S12   | Weekly suggestion, filters, 5 card variants, Viết FAB          |      |       |
+| ☐   | 14b Sửa bản nháp từ gợi ý        | `205:18`    | `208:36709`         | S12   | Block select/toolbar, Lưu nháp, Sắp xếp, Xem trước & lưu       |      |       |
+| ☐   | 14c Sửa đoạn văn                 | `205:100`   | `208:36786`         | S12   | AI bar, suggestions, edited flag, word count                   |      |       |
+| ☐   | 14d Chạm vào ảnh trong bài       | `206:18`    | `208:36884`         | S12   | Change/add (≤4)/caption/cover/remove                           |      |       |
+| ☐   | 14e Sắp xếp khối                 | `206:136`   | `208:36990`         | S12   | Drag reorder, swipe delete                                     |      |       |
+| ☐   | 14f Xem trước & lưu              | `206:212`   | `208:37065`         | S12   | Audience, notify, save; "Lưu xong mới chia sẻ ra ngoài được."  |      |       |
+| ☐   | 14g Câu chuyện đã lưu            | `206:264`   | `208:37114`         | S12   | Reader, Sửa, Chia sẻ, loves                                    |      |       |
+| ☐   | 14h Chia sẻ câu chuyện           | `208:18`    | `208:37179`         | S13   | Family audience change; Ra ngoài parents only                  |      |       |
+| ☐   | 14i Thiệp ảnh · chọn mẫu         | `208:104`   | `208:37285`         | S13   | 5 templates, quote, photo, age instead of DOB                  |      |       |
+| ☐   | 14j Thiệp · gửi đi               | `208:312`   | `208:37442`         | S13   | 1080×1350 image via OS share sheet                             |      |       |
+| ☐   | 14k Liên kết xem riêng           | `208:36164` | `208:37524`         | S13   | Expiry 24h/7d/30d, hide name & DOB, download, passcode (P-096) |      |       |
+| ☐   | 14l Người nhận mở liên kết (web) | `208:36210` | `208:37578`         | S13   | Recipient web + states G-052                                   |      |       |
+| ☐   | 14m Đã chia sẻ ra ngoài          | `208:36267` | `208:37634`         | S13   | Open / saved cards / expired; revoke (confirm G-053)           |      |       |
+| ☐   | 14n Bộ mẫu thiệp                 | `208:37714` | — (component sheet) | S13   | StoryCard component set (5 templates)                          |      |       |
+
+## C. Widgets & native states (Slice S8 unless noted)
+
+| ✓   | Item                                                                                                                    | Figma             | Must verify                                                                         | Code | Tests |
+| --- | ----------------------------------------------------------------------------------------------------------------------- | ----------------- | ----------------------------------------------------------------------------------- | ---- | ----- |
+| ☐   | Widget/Small — Bottle, Breast, Sleep, Sleeping, Diaper, Bottle logged, Breast running, Diaper logged, Empty, Signed out | `73:483`          | one-tap App Intent logging offline/online; ~5 s Hoàn tác; Sửa / Đổi loại deep links |      |       |
+| ☐   | Widget/Medium — Default, Logged, Offline                                                                                | `74:551`          | tile defaults (bottle last amount, timers, diaper wet)                              |      |       |
+| ☐   | Widget/Large                                                                                                            | `74:552`          | sleep status + quick log + 3 recent → detail                                        |      |       |
+| ☐   | Lock/Circular (Sleep, Feed), Lock/Rectangular, Lock/Inline                                                              | `75:524`–`75:532` | semantics of rings (Q in extract 02)                                                |      |       |
+| ☐   | LiveActivity Sleep / Breast                                                                                             | `75:576`          | in-place actions; family devices (SP-1)                                             |      |       |
+| ☐   | DynamicIsland Sleep compact / minimal / expanded                                                                        | `75:606`          | 2 activities → minimal                                                              |      |       |
+| ☐   | Upload Live Activity + Wi-Fi waiting notification (S9)                                                                  | `149:17761`       | no photos on lock screen                                                            |      |       |
+| ☐   | Android equivalents mimicking iOS (D-004): Glance widgets, timer / upload ongoing notifications, share target           | not in Figma      | same states, copy and actions as iOS rows above                                     |      |       |
+| ☐   | Multi-baby / permission-lost / no-baby / LA-disabled widget states                                                      | not in Figma      | ⚠ G-060                                                                             |      |       |
+
+## D. Business flows (acceptance from product plan + business map §9)
+
+| ✓   | Flow                                  | Slices  | Acceptance scenarios (all on both OS)                                                                                                                                                                         | Tests |
+| --- | ------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| ☐   | A · Join family & permission change   | S3      | expired invite; re-accept; wrong person; regenerate code; brute force; removed / expired access mid-session → 9d + cache purge; anonymous → account keeps uid & records; credential collision merge           |       |
+| ☐   | B · Care, timer & chart               | S4–S6   | double save; two loggers; offline save + kill + relaunch; date & baby timezone change; overnight split; overlapping sleeps resolved, never merged; caregiver cannot edit parent records; pump never in intake |       |
+| ☐   | C · Reminders & notifications         | S7      | overdue; edit / cancel; permission denied keeps reminder; baby timezone change; notifications only on bound device                                                                                            |       |
+| ☐   | D · Upload, album & family notify     | S9–S10  | app killed; network drop; quota full; partial batch; audience changed during processing; single notification per batch; no duplicate media / quota on retry; effective audience rules (D-002)                 |       |
+| ☐   | E · Story AI, card & private link     | S12–S13 | AI failure; source deleted / made private; link expired / revoked / wrong passcode / lockout; private photos never shown to family readers or recipients; cards irrevocable                                   |       |
+| ☐   | F · Storage & delete baby             | S11     | 80% / 100% states; request → staff grant resumes uploads; owner-only delete; purge leaves zero data for that baby, other babies intact; resumable job; no early "deleted"                                     |       |
+| ☐   | Role isolation (caregiver / relative) | S3–S13  | Rules matrix per business map §5, every cell tested                                                                                                                                                           |       |
+| ☐   | Widgets offline → family sync         | S8      | widget log offline syncs; undo window; signed out                                                                                                                                                             |       |
+| ☐   | Account lifecycle                     | S2, S11 | verify / reset links; unlink guard; remote sign-out; ownership transfer + account deletion (Q-016)                                                                                                            |       |
+
+## E. Engineering-supplied states awaiting design review (G)
+
+| ✓   | ID    | State                                                                                     | Where     | Slice  |
+| --- | ----- | ----------------------------------------------------------------------------------------- | --------- | ------ |
+| ⚠   | G-001 | Loading / error states for network actions (auth, invites, upload, story, link)           | all       | S2–S13 |
+| ⚠   | G-020 | Care note entry field                                                                     | 22–28     | S4     |
+| ⚠   | G-021 | Future-time / end-before-start validation                                                 | 22–28, 26 | S4–S5  |
+| ⚠   | G-022 | 'Đã xoá gần đây' screen + restore                                                         | 27, 10b4  | S5, S9 |
+| ⚠   | G-030 | Relative Family tab                                                                       | Gia đình  | S3     |
+| ⚠   | G-031 | Leave family / remove member confirmation                                                 | 12g, 14f  | S3     |
+| ⚠   | G-032 | Lost access: pending writes notice                                                        | 9d        | S3     |
+| ⚠   | G-033 | Cancel pending invite                                                                     | 14a       | S3     |
+| ⚠   | G-034 | Rejected write state                                                                      | 9b        | S4     |
+| ⚠   | G-035 | Invalid / regenerated / used code copy                                                    | 15, 17    | S3     |
+| ⚠   | G-036 | Already a member                                                                          | 16        | S3     |
+| ⚠   | G-040 | Non-owner co-parent storage view                                                          | 13b       | S11    |
+| ⚠   | G-041 | Bytes pending deletion in storage                                                         | 13b       | S11    |
+| ⚠   | G-050 | Delete story                                                                              | 14g       | S12    |
+| ⚠   | G-051 | AI failure / no suggestion this week                                                      | 14a       | S12    |
+| ⚠   | G-052 | Recipient web: passcode, wrong, locked, expired, revoked, not found, desktop, download on | 14l       | S13    |
+| ⚠   | G-053 | Revoke link confirmation + revoked state                                                  | 14m       | S13    |
+| ⚠   | G-054 | Invite Link & Email tabs                                                                  | 14c       | S3     |
+| ⚠   | G-055 | 'Bà không nhận được?' destination                                                         | 14d       | S3     |
+| ⚠   | G-056 | Notification settings screen                                                              | 13a       | S11    |
+| ⚠   | G-057 | 'Trợ giúp & liên hệ'                                                                      | 13a/g/h   | S11    |
+| ⚠   | G-058 | Largest videos list                                                                       | 13b       | S11    |
+| ⚠   | G-059 | Change email / password                                                                   | 13n       | S11    |
+| ⚠   | G-060 | Widget multi-baby / no access / no baby / LA disabled                                     | W*        | S8     |
+| ⚠   | G-061 | Reminder 'Báo trước' options & date-time picker                                           | 8b        | S7     |
+| ⚠   | G-062 | Pump per-side amounts                                                                     | 23a       | S4     |
+| ⚠   | G-063 | Diaper / pump stats — intentionally not built                                             | 20c       | —      |
+| ⚠   | G-064 | Empty states for other filters & all-empty day                                            | 20*       | S6     |
+| ⚠   | G-065 | FAQ answers 3–5, legal pages content                                                      | Website   | S14    |
+| ⚠   | G-066 | Story 30-day / sleep Hôm nay stats                                                        | 20g/20h   | S6     |
+| ⚠   | G-067 | Running sleep/breast in timeline & cards                                                  | 20, 19    | S5     |
+| ⚠   | G-068 | Summary card copy for past days                                                           | 20        | S6     |
+| ⚠   | G-069 | Edit-mode titles for log sheets                                                           | 22–28     | S4     |
+| ⚠   | G-070 | Delete action-sheet copy                                                                  | 21        | S4     |
+| ⚠   | G-071 | Overlap with 3+ sleeps / both online                                                      | 27        | S5     |
+
+## F. Landing website (Slice S14)
+
+Delivered on dev — [S14 report](../development/slice-reports/S14.md). ◐ = built from the Figma section, deployed to dev (https://child-life-dev-landing.web.app) and checked at 1440 / 375 in vi + en, but **not done**: prod sign-off is blocked on the "owner" items. The landing is web-only and Light-only in Figma, so the iOS / Android / Night care criteria do not apply. Tests for every row: `apps/landing/test/landing.test.ts` (content parity, SEO head, prerender).
+
+| ✓   | Section                                       | Desktop    | Mobile     | Code (`apps/landing/src`)         | Notes / still open                                                                           |
+| --- | --------------------------------------------- | ---------- | ---------- | --------------------------------- | -------------------------------------------------------------------------------------------- |
+| ◐   | Nav                                           | `219:1392` | `233:805`  | `components/Chrome.tsx`           | anchors + scrollspy; "Tải miễn phí" / "Tải app" → CTA; language switch added (D-012)         |
+| ◐   | Hero                                          | `219:1413` | `233:818`  | `sections/Hero.tsx`, `phones.tsx` | phones rebuilt in HTML (localized); LCP = headline/lead; owner: store URLs + official badges |
+| ◐   | Thao tác nhanh                                | `231:162`  | `233:860`  | `sections/Quick.tsx`, `mock.tsx`  | mobile step-card height bug fixed (auto height)                                              |
+| ◐   | Chăm sóc                                      | `220:1801` | `233:995`  | `sections/Care.tsx`               |                                                                                              |
+| ◐   | Cùng chăm                                     | `220:1918` | `233:1027` | `sections/Cocare.tsx`             |                                                                                              |
+| ◐   | Tuổi thơ                                      | `232:627`  | `233:1072` | `sections/Memories.tsx`           | owner: Q-009 replacement ("Ông ngoại thương 3 ảnh mới"); photo licences                      |
+| ◐   | Night care                                    | `221:2845` | `233:1296` | `sections/Night.tsx`              | Night palette via `[data-palette="night-care"]` token scope                                  |
+| ◐   | Quyền xem                                     | `221:3347` | `233:1336` | `sections/Roles.tsx`              | owner: D-001 note + Q-008 caregiver row replacements (proposed copy live on dev)             |
+| ◐   | CTA                                           | `221:3443` | `233:1430` | `sections/Cta.tsx`                | badges show "coming soon" until store links exist                                            |
+| ◐   | Hỏi đáp                                       | `221:3455` | `233:1448` | `sections/Faq.tsx`                | owner: answers 3–5 drafted (G-065)                                                           |
+| ◐   | Footer + legal pages                          | `221:3488` | `233:1477` | `Chrome.tsx`, `pages/Legal.tsx`   | owner: privacy / terms text (placeholders live), contact email (Q-020)                       |
+| ◐   | Core Web Vitals (lab)                         | —          | —          | —                                 | Lighthouse mobile LCP 1.6–2.7 s (varies), CLS 0, TBT 0; field INP after launch               |
+| ☐   | AASA / assetlinks, `/i/{token}`, `/s/{token}` | —          | —          | —                                 | later slices; universal & app links verified on devices                                      |
+
+## G. Admin portal (Slice S15) — Figma page `253:18`
+
+| ✓   | Screen                                                     | Node       | Must verify                                                                                                                    | Code | Tests |
+| --- | ---------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------ | ---- | ----- |
+| ☐   | Admin/Sidebar (variants per active item, badges, env pill) | `253:467`  | role-based items (P-121); sign-out menu (G-079)                                                                                |      |       |
+| ☐   | A01 Đăng nhập                                              | `264:1150` | Firebase email/password (D-008) + TOTP; 30-min idle sign-out; lock notes                                                       |      |       |
+| ☐   | A02 Tổng quan                                              | `254:151`  | aggregate KPIs, funnel, charts, "Cần xử lý" alerts (thresholds 4 h, 2 min, 15)                                                 |      |       |
+| ☐   | A03 Hỗ trợ                                                 | `255:220`  | ticket states & tabs, consented diagnostics, allowed actions, no content access                                                |      |       |
+| ☐   | A04 Mở rộng dung lượng                                     | `256:293`  | queue, masked family, usage, growth, guidance, 24 h target                                                                     |      |       |
+| ☐   | A05 Mở rộng dung lượng · Duyệt                             | `256:559`  | additive grant, reason, owner notified in-app + email; > 20 GB team lead (P-120, G-080); decline (G-075)                       |      |       |
+| ☐   | A06 Yêu cầu dữ liệu                                        | `257:423`  | export / deletion jobs, statuses, 24 h links, staff cannot download                                                            |      |       |
+| ☐   | A07 Yêu cầu dữ liệu · Chạy lại                             | `257:708`  | resume at failed step, completed steps skipped, reason                                                                         |      |       |
+| ☐   | A08 Hệ thống · Dung lượng & media                          | `260:570`  | storage by type, near-full families, video queue & latency, failure causes                                                     |      |       |
+| ☐   | A09 Hệ thống · AI gợi ý câu chuyện                         | `261:643`  | budget meter 80% / 100% auto-pause, outcomes, reports, errors, settings (text only, nickname, no retention, ≤ 3 / baby / week) |      |       |
+| ☐   | A10 Tính năng & phát hành                                  | `263:711`  | 7 flags, scopes, staged rollout with guards, global limits display                                                             |      |       |
+| ☐   | A11 Tính năng · Xác nhận tắt                               | `263:954`  | reason required, optional in-app notice, queues wait & resume                                                                  |      |       |
+| ☐   | A12 Nhật ký thao tác                                       | `264:866`  | append-only, filters, CSV export logged, ≥ 2 years                                                                             |      |       |
+
+Engineering-supplied portal states (⚠ design review): G-075 decline message & custom amount, G-076 export failure / re-run, G-078 empty / loading / error, G-079 sign-out & profile, G-080 team-lead approval. Mobile entry points required by the portal (⚠, Slices S11–S12): G-072 export request, G-073 support form + diagnostics consent, G-074 report AI content, G-077 writes locked during deletion.
+
+## H. Cross-cutting checks per screen
+
+Every screen row in §B also requires: Vietnamese **and English** strings (D-012), VoiceOver / TalkBack labels (icon-only buttons named), Dynamic Type 200%, Reduce Motion behaviour, iOS back swipe / Android predictive back, safe areas & keyboard, Vietnamese copy exactly as Figma, no child data in telemetry, role-correct visibility, offline behaviour where the screen writes data.
