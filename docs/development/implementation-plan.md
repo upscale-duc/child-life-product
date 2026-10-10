@@ -293,6 +293,8 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 
 ### S7 — Reminders
 
+> **Status:** in progress on branch `s2-onboarding` — [report](slice-reports/S7.md). Reminders 8a–8e / 12f, ReminderPeek and local notifications on the bound device work end to end (iOS + Android, emulators); reminder Rules deployed to dev; overdue, baby time-zone change and device takeover not yet run on a device.
+
 - **Figma:** 8a–8e, 12f, ReminderPeek, ReminderRow states.
 - **Backend:** reminder Rules (create/edit parents, mark done caregivers), `notifyDevice` binding.
 - **Mobile:** local notifications scheduled only on the bound device, permission pre-prompt after first save, denied state with settings deep link, reschedule on edit / timezone change / device change, overdue grouping.

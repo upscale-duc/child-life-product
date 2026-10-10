@@ -359,15 +359,26 @@ class _LabelValue extends StatelessWidget {
   final Widget label;
   final Widget? value;
 
+  /// The label keeps its natural width (at most 45%); the value takes the rest, so short
+  /// labels ("Ngày giờ") leave room for long values ("T7, 10 thg 10 · 08:30").
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Flexible(flex: 2, child: label),
-      if (value != null) ...[
-        const SizedBox(width: ClSpace.s3),
-        Flexible(flex: 3, child: value!),
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) => Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        if (value == null)
+          Expanded(child: label)
+        else ...[
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.45),
+            child: label,
+          ),
+          const SizedBox(width: ClSpace.s3),
+          Expanded(
+            child: Align(alignment: Alignment.centerRight, child: value),
+          ),
+        ],
       ],
-    ],
+    ),
   );
 }

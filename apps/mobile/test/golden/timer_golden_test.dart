@@ -117,7 +117,8 @@ final _cases = <String, _Case>{
         ],
       ),
     ),
-    overrides: () => careOverrides(records: const [], growth: const []),
+    overrides: () =>
+        careOverrides(records: const [], growth: const [], reminders: const []),
     act: (t) async => t.pumpAndSettle(),
   ),
 };

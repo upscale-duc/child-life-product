@@ -2089,11 +2089,11 @@
   },
   "dayToday": "hôm nay",
   "@dayToday": {
-    "description": "Lower-case today."
+    "description": "Relative day word."
   },
   "dayYesterday": "hôm qua",
   "@dayYesterday": {
-    "description": "Lower-case yesterday."
+    "description": "Relative day word."
   },
   "offlineBanner": "Đang offline · {count} bản ghi chờ đồng bộ",
   "@offlineBanner": {
@@ -3635,5 +3635,331 @@
   "historyCaregiverNote": "Bạn sửa được bản ghi của mình. Bản ghi của ba mẹ chỉ xem.",
   "@historyCaregiverNote": {
     "description": "12d role note (192:618), caregivers (D-022)."
+  },
+  "remindersTitle": "Nhắc việc",
+  "@remindersTitle": {
+    "description": "8a title (127:13602)."
+  },
+  "remindersOverdue": "Quá hạn",
+  "@remindersOverdue": {
+    "description": "8a group."
+  },
+  "remindersUpcoming": "Sắp tới",
+  "@remindersUpcoming": {
+    "description": "8a group."
+  },
+  "remindersDone": "Đã xong",
+  "@remindersDone": {
+    "description": "8a group."
+  },
+  "remindersInfo": "Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.",
+  "@remindersInfo": {
+    "description": "8a info line (R-091)."
+  },
+  "reminderNew": "Nhắc việc mới",
+  "@reminderNew": {
+    "description": "8a button / 8b title."
+  },
+  "reminderCreatedBy": "{who} tạo",
+  "@reminderCreatedBy": {
+    "description": "ReminderRow meta (\"Mẹ tạo\").",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderOverdueMeta": "Quá hạn · {when}",
+  "@reminderOverdueMeta": {
+    "description": "ReminderRow overdue meta.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderDoneMeta": "{who} đánh dấu xong · {date}",
+  "@reminderDoneMeta": {
+    "description": "ReminderRow done meta.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dayTomorrow": "ngày mai",
+  "@dayTomorrow": {
+    "description": "Relative day word."
+  },
+  "remindersEmpty": "Chưa có nhắc việc",
+  "@remindersEmpty": {
+    "description": "Empty list (not drawn)."
+  },
+  "remindersEmptyBody": "Ghi lịch tiêm, tái khám hay việc cần mua để cả nhà cùng thấy.",
+  "@remindersEmptyBody": {
+    "description": "Empty list body (not drawn)."
+  },
+  "remindersCaregiverNote": "Ba mẹ tạo nhắc việc. Bạn xem và đánh dấu Xong.",
+  "@remindersCaregiverNote": {
+    "description": "12f role note (192:1327)."
+  },
+  "remindersNotifOff": "Đã lưu nhắc việc. Chưa bật thông báo trên máy này.",
+  "@remindersNotifOff": {
+    "description": "8d notice (127:13867)."
+  },
+  "remindersOpenSettings": "Cài đặt",
+  "@remindersOpenSettings": {
+    "description": "8d link."
+  },
+  "reminderSaved": "Đã lưu nhắc việc",
+  "@reminderSaved": {
+    "description": "8c toast."
+  },
+  "reminderMarkedDone": "Đã đánh dấu xong",
+  "@reminderMarkedDone": {
+    "description": "Toast."
+  },
+  "reminderMarkedUndone": "Đã đánh dấu chưa xong",
+  "@reminderMarkedUndone": {
+    "description": "Toast (D-030)."
+  },
+  "reminderDeleted": "Đã xoá nhắc việc",
+  "@reminderDeleted": {
+    "description": "Toast (D-030)."
+  },
+  "reminderMoved": "Thông báo sẽ đến trên máy này",
+  "@reminderMoved": {
+    "description": "Toast (D-029)."
+  },
+  "reminderEditTitle": "Sửa nhắc việc",
+  "@reminderEditTitle": {
+    "description": "8e button / edit sheet title."
+  },
+  "reminderWhat": "Việc cần nhớ",
+  "@reminderWhat": {
+    "description": "8b field."
+  },
+  "reminderWhatHint": "Ví dụ: Tiêm 6 trong 1",
+  "@reminderWhatHint": {
+    "description": "8b placeholder."
+  },
+  "reminderWhen": "Ngày giờ",
+  "@reminderWhen": {
+    "description": "8b / 8e row."
+  },
+  "reminderLead": "Báo trước",
+  "@reminderLead": {
+    "description": "8b / 8e row."
+  },
+  "reminderFootnote": "Theo giờ của {name} ({zone}). Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.",
+  "@reminderFootnote": {
+    "description": "8b footnote.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderSave": "Lưu nhắc việc",
+  "@reminderSave": {
+    "description": "8b button."
+  },
+  "reminderTitleRequired": "Nhập việc cần nhớ.",
+  "@reminderTitleRequired": {
+    "description": "Validation."
+  },
+  "reminderPastTime": "Chọn thời điểm sau bây giờ.",
+  "@reminderPastTime": {
+    "description": "Validation (D-031)."
+  },
+  "leadOnTime": "Đúng giờ",
+  "@leadOnTime": {
+    "description": "Báo trước option (D-031)."
+  },
+  "leadOneDay": "1 ngày",
+  "@leadOneDay": {
+    "description": "Báo trước option (D-031)."
+  },
+  "leadBefore": "{lead} trước",
+  "@leadBefore": {
+    "description": "Báo trước value in lists.",
+    "placeholders": {
+      "lead": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderDelete": "Xoá nhắc việc",
+  "@reminderDelete": {
+    "description": "Edit sheet (D-030)."
+  },
+  "reminderDeleteTitle": "Xoá nhắc việc này?",
+  "@reminderDeleteTitle": {
+    "description": "Confirm (D-030)."
+  },
+  "reminderDeleteBody": "Cả nhà sẽ không thấy nhắc việc này nữa.",
+  "@reminderDeleteBody": {
+    "description": "Confirm (D-030)."
+  },
+  "notifPromptTitle": "Bật thông báo trên máy này?",
+  "@notifPromptTitle": {
+    "description": "8c (127:13809)."
+  },
+  "notifPromptBody": "Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.",
+  "@notifPromptBody": {
+    "description": "8c body."
+  },
+  "notifPromptAllow": "Bật thông báo",
+  "@notifPromptAllow": {
+    "description": "8c primary."
+  },
+  "reminderOverline": "Nhắc việc · {name}",
+  "@reminderOverline": {
+    "description": "8e overline.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderTimeZone": "Múi giờ",
+  "@reminderTimeZone": {
+    "description": "8e row."
+  },
+  "reminderNotify": "Thông báo",
+  "@reminderNotify": {
+    "description": "8e row."
+  },
+  "reminderDeviceOf": "{device} của {name}",
+  "@reminderDeviceOf": {
+    "description": "8e value (\"iPhone của Mai\").",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderNoDevice": "Chưa đặt trên máy nào",
+  "@reminderNoDevice": {
+    "description": "8e value, no device (D-029)."
+  },
+  "reminderCreator": "Người tạo",
+  "@reminderCreator": {
+    "description": "8e row."
+  },
+  "reminderDoneRow": "Đã xong",
+  "@reminderDoneRow": {
+    "description": "8e row for a done reminder."
+  },
+  "reminderDetailNote": "Thông báo chỉ được đặt trên máy tạo nhắc việc. Đánh dấu xong khi đã làm.",
+  "@reminderDetailNote": {
+    "description": "8e note."
+  },
+  "reminderMarkDone": "Đánh dấu đã xong",
+  "@reminderMarkDone": {
+    "description": "8e primary."
+  },
+  "reminderUndo": "Đánh dấu chưa xong",
+  "@reminderUndo": {
+    "description": "8e for a done reminder (D-030)."
+  },
+  "moveNotifTitle": "Nhận thông báo trên máy này?",
+  "@moveNotifTitle": {
+    "description": "D-029 sheet."
+  },
+  "moveNotifBody": "Thông báo của nhắc việc này sẽ chuyển sang {device}. Máy đang giữ thông báo sẽ không báo nữa.",
+  "@moveNotifBody": {
+    "description": "D-029 sheet.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "moveNotifAction": "Chuyển sang máy này",
+  "@moveNotifAction": {
+    "description": "D-029 sheet."
+  },
+  "reminderPeekLabel": "Nhắc việc · {count}",
+  "@reminderPeekLabel": {
+    "description": "ReminderPeek label.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderInDays": "còn {count} ngày",
+  "@reminderInDays": {
+    "description": "ReminderPeek countdown.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderInDuration": "còn {duration}",
+  "@reminderInDuration": {
+    "description": "ReminderPeek countdown, same day.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPeekEmpty": "Chưa có nhắc việc sắp tới",
+  "@reminderPeekEmpty": {
+    "description": "ReminderPeek empty (not drawn)."
+  },
+  "reminderPeekAdd": "Tạo nhắc việc",
+  "@reminderPeekAdd": {
+    "description": "ReminderPeek empty action."
+  },
+  "notifBody": "{name} · {when}",
+  "@notifBody": {
+    "description": "Local notification body.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "notifChannel": "Nhắc việc",
+  "@notifChannel": {
+    "description": "Android channel name."
+  },
+  "notifChannelDescription": "Nhắc việc của gia đình",
+  "@notifChannelDescription": {
+    "description": "Android channel description."
+  },
+  "a11yMarkDone": "Đánh dấu xong: {title}",
+  "@a11yMarkDone": {
+    "description": "Row check.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yUndoDone": "Bỏ đánh dấu xong: {title}",
+  "@a11yUndoDone": {
+    "description": "Row check (D-030).",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

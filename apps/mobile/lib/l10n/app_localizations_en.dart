@@ -2523,4 +2523,227 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get historyCaregiverNote =>
       'You can edit your own records. Parents’ records are view-only.';
+
+  @override
+  String get remindersTitle => 'Reminders';
+
+  @override
+  String get remindersOverdue => 'Overdue';
+
+  @override
+  String get remindersUpcoming => 'Upcoming';
+
+  @override
+  String get remindersDone => 'Done';
+
+  @override
+  String get remindersInfo =>
+      'The family sees reminders in the app. Notifications are set only on the device that created the reminder.';
+
+  @override
+  String get reminderNew => 'New reminder';
+
+  @override
+  String reminderCreatedBy(String who) {
+    return 'by $who';
+  }
+
+  @override
+  String reminderOverdueMeta(String when) {
+    return 'Overdue · $when';
+  }
+
+  @override
+  String reminderDoneMeta(String who, String date) {
+    return '$who marked done · $date';
+  }
+
+  @override
+  String get dayTomorrow => 'tomorrow';
+
+  @override
+  String get remindersEmpty => 'No reminders yet';
+
+  @override
+  String get remindersEmptyBody =>
+      'Add vaccinations, check-ups or things to buy so the whole family sees them.';
+
+  @override
+  String get remindersCaregiverNote =>
+      'Parents create reminders. You view them and mark them done.';
+
+  @override
+  String get remindersNotifOff =>
+      'Reminder saved. Notifications are off on this device.';
+
+  @override
+  String get remindersOpenSettings => 'Settings';
+
+  @override
+  String get reminderSaved => 'Reminder saved';
+
+  @override
+  String get reminderMarkedDone => 'Marked done';
+
+  @override
+  String get reminderMarkedUndone => 'Marked not done';
+
+  @override
+  String get reminderDeleted => 'Reminder deleted';
+
+  @override
+  String get reminderMoved => 'Notifications will come to this device';
+
+  @override
+  String get reminderEditTitle => 'Edit reminder';
+
+  @override
+  String get reminderWhat => 'Thing to remember';
+
+  @override
+  String get reminderWhatHint => 'e.g. 6-in-1 vaccine';
+
+  @override
+  String get reminderWhen => 'Date & time';
+
+  @override
+  String get reminderLead => 'Remind me';
+
+  @override
+  String reminderFootnote(String name, String zone) {
+    return 'In $name’s time zone ($zone). The family sees reminders in the app. Notifications are set only on the device that created the reminder.';
+  }
+
+  @override
+  String get reminderSave => 'Save reminder';
+
+  @override
+  String get reminderTitleRequired => 'Enter what to remember.';
+
+  @override
+  String get reminderPastTime => 'Choose a time after now.';
+
+  @override
+  String get leadOnTime => 'At the time';
+
+  @override
+  String get leadOneDay => '1 day';
+
+  @override
+  String leadBefore(String lead) {
+    return '$lead before';
+  }
+
+  @override
+  String get reminderDelete => 'Delete reminder';
+
+  @override
+  String get reminderDeleteTitle => 'Delete this reminder?';
+
+  @override
+  String get reminderDeleteBody => 'No one in the family will see it any more.';
+
+  @override
+  String get notifPromptTitle => 'Turn on notifications on this device?';
+
+  @override
+  String get notifPromptBody =>
+      'The family sees reminders in the app. Notifications are set only on the device that created the reminder.';
+
+  @override
+  String get notifPromptAllow => 'Turn on notifications';
+
+  @override
+  String reminderOverline(String name) {
+    return 'Reminder · $name';
+  }
+
+  @override
+  String get reminderTimeZone => 'Time zone';
+
+  @override
+  String get reminderNotify => 'Notification';
+
+  @override
+  String reminderDeviceOf(String device, String name) {
+    return '$name’s $device';
+  }
+
+  @override
+  String get reminderNoDevice => 'Not set on any device';
+
+  @override
+  String get reminderCreator => 'Created by';
+
+  @override
+  String get reminderDoneRow => 'Done';
+
+  @override
+  String get reminderDetailNote =>
+      'Notifications are set only on the device that created the reminder. Mark it done once it’s done.';
+
+  @override
+  String get reminderMarkDone => 'Mark as done';
+
+  @override
+  String get reminderUndo => 'Mark as not done';
+
+  @override
+  String get moveNotifTitle => 'Get notifications on this device?';
+
+  @override
+  String moveNotifBody(String device) {
+    return 'This reminder’s notification moves to $device. The device that has it now stops notifying.';
+  }
+
+  @override
+  String get moveNotifAction => 'Move to this device';
+
+  @override
+  String reminderPeekLabel(int count) {
+    return 'Reminders · $count';
+  }
+
+  @override
+  String reminderInDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'in $count days',
+      one: 'in 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reminderInDuration(String duration) {
+    return 'in $duration';
+  }
+
+  @override
+  String get reminderPeekEmpty => 'No upcoming reminders';
+
+  @override
+  String get reminderPeekAdd => 'Add a reminder';
+
+  @override
+  String notifBody(String name, String when) {
+    return '$name · $when';
+  }
+
+  @override
+  String get notifChannel => 'Reminders';
+
+  @override
+  String get notifChannelDescription => 'Family reminders';
+
+  @override
+  String a11yMarkDone(String title) {
+    return 'Mark done: $title';
+  }
+
+  @override
+  String a11yUndoDone(String title) {
+    return 'Mark not done: $title';
+  }
 }

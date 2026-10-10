@@ -9,6 +9,9 @@ enum ClIcons {
   arrowRight('arrow-right'),
   back,
   backspace,
+
+  /// Reminder notifications (S7, engineering icon in the Figma line style).
+  bell,
   bookmark,
   brandMark('brand-mark'),
   cake,

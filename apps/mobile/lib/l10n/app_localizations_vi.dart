@@ -2404,4 +2404,221 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get historyCaregiverNote =>
       'Bạn sửa được bản ghi của mình. Bản ghi của ba mẹ chỉ xem.';
+
+  @override
+  String get remindersTitle => 'Nhắc việc';
+
+  @override
+  String get remindersOverdue => 'Quá hạn';
+
+  @override
+  String get remindersUpcoming => 'Sắp tới';
+
+  @override
+  String get remindersDone => 'Đã xong';
+
+  @override
+  String get remindersInfo =>
+      'Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.';
+
+  @override
+  String get reminderNew => 'Nhắc việc mới';
+
+  @override
+  String reminderCreatedBy(String who) {
+    return '$who tạo';
+  }
+
+  @override
+  String reminderOverdueMeta(String when) {
+    return 'Quá hạn · $when';
+  }
+
+  @override
+  String reminderDoneMeta(String who, String date) {
+    return '$who đánh dấu xong · $date';
+  }
+
+  @override
+  String get dayTomorrow => 'ngày mai';
+
+  @override
+  String get remindersEmpty => 'Chưa có nhắc việc';
+
+  @override
+  String get remindersEmptyBody =>
+      'Ghi lịch tiêm, tái khám hay việc cần mua để cả nhà cùng thấy.';
+
+  @override
+  String get remindersCaregiverNote =>
+      'Ba mẹ tạo nhắc việc. Bạn xem và đánh dấu Xong.';
+
+  @override
+  String get remindersNotifOff =>
+      'Đã lưu nhắc việc. Chưa bật thông báo trên máy này.';
+
+  @override
+  String get remindersOpenSettings => 'Cài đặt';
+
+  @override
+  String get reminderSaved => 'Đã lưu nhắc việc';
+
+  @override
+  String get reminderMarkedDone => 'Đã đánh dấu xong';
+
+  @override
+  String get reminderMarkedUndone => 'Đã đánh dấu chưa xong';
+
+  @override
+  String get reminderDeleted => 'Đã xoá nhắc việc';
+
+  @override
+  String get reminderMoved => 'Thông báo sẽ đến trên máy này';
+
+  @override
+  String get reminderEditTitle => 'Sửa nhắc việc';
+
+  @override
+  String get reminderWhat => 'Việc cần nhớ';
+
+  @override
+  String get reminderWhatHint => 'Ví dụ: Tiêm 6 trong 1';
+
+  @override
+  String get reminderWhen => 'Ngày giờ';
+
+  @override
+  String get reminderLead => 'Báo trước';
+
+  @override
+  String reminderFootnote(String name, String zone) {
+    return 'Theo giờ của $name ($zone). Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.';
+  }
+
+  @override
+  String get reminderSave => 'Lưu nhắc việc';
+
+  @override
+  String get reminderTitleRequired => 'Nhập việc cần nhớ.';
+
+  @override
+  String get reminderPastTime => 'Chọn thời điểm sau bây giờ.';
+
+  @override
+  String get leadOnTime => 'Đúng giờ';
+
+  @override
+  String get leadOneDay => '1 ngày';
+
+  @override
+  String leadBefore(String lead) {
+    return '$lead trước';
+  }
+
+  @override
+  String get reminderDelete => 'Xoá nhắc việc';
+
+  @override
+  String get reminderDeleteTitle => 'Xoá nhắc việc này?';
+
+  @override
+  String get reminderDeleteBody => 'Cả nhà sẽ không thấy nhắc việc này nữa.';
+
+  @override
+  String get notifPromptTitle => 'Bật thông báo trên máy này?';
+
+  @override
+  String get notifPromptBody =>
+      'Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.';
+
+  @override
+  String get notifPromptAllow => 'Bật thông báo';
+
+  @override
+  String reminderOverline(String name) {
+    return 'Nhắc việc · $name';
+  }
+
+  @override
+  String get reminderTimeZone => 'Múi giờ';
+
+  @override
+  String get reminderNotify => 'Thông báo';
+
+  @override
+  String reminderDeviceOf(String device, String name) {
+    return '$device của $name';
+  }
+
+  @override
+  String get reminderNoDevice => 'Chưa đặt trên máy nào';
+
+  @override
+  String get reminderCreator => 'Người tạo';
+
+  @override
+  String get reminderDoneRow => 'Đã xong';
+
+  @override
+  String get reminderDetailNote =>
+      'Thông báo chỉ được đặt trên máy tạo nhắc việc. Đánh dấu xong khi đã làm.';
+
+  @override
+  String get reminderMarkDone => 'Đánh dấu đã xong';
+
+  @override
+  String get reminderUndo => 'Đánh dấu chưa xong';
+
+  @override
+  String get moveNotifTitle => 'Nhận thông báo trên máy này?';
+
+  @override
+  String moveNotifBody(String device) {
+    return 'Thông báo của nhắc việc này sẽ chuyển sang $device. Máy đang giữ thông báo sẽ không báo nữa.';
+  }
+
+  @override
+  String get moveNotifAction => 'Chuyển sang máy này';
+
+  @override
+  String reminderPeekLabel(int count) {
+    return 'Nhắc việc · $count';
+  }
+
+  @override
+  String reminderInDays(int count) {
+    return 'còn $count ngày';
+  }
+
+  @override
+  String reminderInDuration(String duration) {
+    return 'còn $duration';
+  }
+
+  @override
+  String get reminderPeekEmpty => 'Chưa có nhắc việc sắp tới';
+
+  @override
+  String get reminderPeekAdd => 'Tạo nhắc việc';
+
+  @override
+  String notifBody(String name, String when) {
+    return '$name · $when';
+  }
+
+  @override
+  String get notifChannel => 'Nhắc việc';
+
+  @override
+  String get notifChannelDescription => 'Nhắc việc của gia đình';
+
+  @override
+  String a11yMarkDone(String title) {
+    return 'Đánh dấu xong: $title';
+  }
+
+  @override
+  String a11yUndoDone(String title) {
+    return 'Bỏ đánh dấu xong: $title';
+  }
 }

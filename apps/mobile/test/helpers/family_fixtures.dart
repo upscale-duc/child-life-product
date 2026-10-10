@@ -6,9 +6,15 @@ import 'package:child_life/features/care/care_repository.dart';
 import 'package:child_life/features/care/timer_models.dart';
 import 'package:child_life/features/family/family_models.dart';
 import 'package:child_life/features/family/family_repository.dart';
+import 'package:child_life/features/reminders/device_identity.dart';
+import 'package:child_life/features/reminders/reminder_models.dart';
+import 'package:child_life/features/reminders/reminder_notifications.dart';
+import 'package:child_life/features/reminders/reminder_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+
+import 'reminder_fixtures.dart';
 
 /// S3 fixtures: the Figma family of Teddy (Mai, Minh, Cô Lan, Bà nội Hoa) and Bà ngoại's
 /// pending invite. Times are relative to now so countdowns and ages render the same every day.
@@ -141,6 +147,10 @@ List<Override> familyOverrides({
   DateTime? now,
   Map<TimerType, CareTimer> timers = const {},
   List<SleepConflict> conflicts = const [],
+  List<Reminder> reminders = const [],
+  ReminderRepository? reminderRepo,
+  ReminderNotifications? notifications,
+  String deviceId = testDeviceId,
 }) {
   final self = me ?? mai;
   return [
@@ -170,5 +180,15 @@ List<Override> familyOverrides({
     openConflictsProvider.overrideWith((ref, id) => Stream.value(conflicts)),
     timerClockProvider.overrideWithValue(() => now ?? DateTime.now()),
     timerTicksProvider.overrideWithValue(false),
+    remindersProvider.overrideWith((ref, id) => Stream.value(reminders)),
+    reminderRepositoryProvider.overrideWithValue(
+      reminderRepo ?? FakeReminderRepository(),
+    ),
+    reminderNotificationsProvider.overrideWithValue(
+      notifications ?? FakeReminderNotifications(),
+    ),
+    deviceIdentityProvider.overrideWith(
+      (ref) async => DeviceIdentity(id: deviceId, label: 'iPhone'),
+    ),
   ];
 }

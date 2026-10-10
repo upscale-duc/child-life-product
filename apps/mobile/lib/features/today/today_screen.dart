@@ -27,13 +27,14 @@ import '../care/timer_models.dart';
 import '../care/timer_screens.dart';
 import '../family/family_labels.dart';
 import '../home/home_shell.dart';
+import '../reminders/reminder_screens.dart' show ReminderPeek;
 import '../home/today_tour.dart';
 
 /// 19 Hôm nay (46:2266) and its first-run state 18 (29:904): one tile per tracker — tap logs
 /// that type, the lines show the last entry (how long ago · detail · who) — then "Đã ghi hôm
 /// nay" (DayRhythm 48:409). Offline / pending entries show 9a's banner and "Chờ đồng bộ".
 /// Relatives with "Chăm sóc hằng ngày" see it read-only (D-018). Sleep arrives in S5,
-/// reminders (ReminderPeek) in S15, the first-run tour (18a–18c) with S5.
+/// reminders (ReminderPeek, R-094) in S7, the first-run tour (18a–18c) with S5.
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
 
@@ -171,6 +172,11 @@ class TodayScreen extends ConsumerWidget {
                     ),
               ],
             ),
+            // ReminderPeek (128:665, R-094); not for relatives (D-018).
+            if (!readOnly) ...[
+              const SizedBox(height: ClSpace.s4),
+              const ReminderPeek(),
+            ],
             const SizedBox(height: ClSpace.s6),
             ClSectionHeader(
               title: l10n.todayTitle,

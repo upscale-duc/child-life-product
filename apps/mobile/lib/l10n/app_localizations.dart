@@ -2480,13 +2480,13 @@ abstract class AppLocalizations {
   /// **'{delta} · {when}'**
   String growthDeltaToday(String delta, String when);
 
-  /// Lower-case today.
+  /// Relative day word.
   ///
   /// In vi, this message translates to:
   /// **'hôm nay'**
   String get dayToday;
 
-  /// Lower-case yesterday.
+  /// Relative day word.
   ///
   /// In vi, this message translates to:
   /// **'hôm qua'**
@@ -4135,6 +4135,372 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bạn sửa được bản ghi của mình. Bản ghi của ba mẹ chỉ xem.'**
   String get historyCaregiverNote;
+
+  /// 8a title (127:13602).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc'**
+  String get remindersTitle;
+
+  /// 8a group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quá hạn'**
+  String get remindersOverdue;
+
+  /// 8a group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp tới'**
+  String get remindersUpcoming;
+
+  /// 8a group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xong'**
+  String get remindersDone;
+
+  /// 8a info line (R-091).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.'**
+  String get remindersInfo;
+
+  /// 8a button / 8b title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc mới'**
+  String get reminderNew;
+
+  /// ReminderRow meta ("Mẹ tạo").
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} tạo'**
+  String reminderCreatedBy(String who);
+
+  /// ReminderRow overdue meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quá hạn · {when}'**
+  String reminderOverdueMeta(String when);
+
+  /// ReminderRow done meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} đánh dấu xong · {date}'**
+  String reminderDoneMeta(String who, String date);
+
+  /// Relative day word.
+  ///
+  /// In vi, this message translates to:
+  /// **'ngày mai'**
+  String get dayTomorrow;
+
+  /// Empty list (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có nhắc việc'**
+  String get remindersEmpty;
+
+  /// Empty list body (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lịch tiêm, tái khám hay việc cần mua để cả nhà cùng thấy.'**
+  String get remindersEmptyBody;
+
+  /// 12f role note (192:1327).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba mẹ tạo nhắc việc. Bạn xem và đánh dấu Xong.'**
+  String get remindersCaregiverNote;
+
+  /// 8d notice (127:13867).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu nhắc việc. Chưa bật thông báo trên máy này.'**
+  String get remindersNotifOff;
+
+  /// 8d link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt'**
+  String get remindersOpenSettings;
+
+  /// 8c toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu nhắc việc'**
+  String get reminderSaved;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đánh dấu xong'**
+  String get reminderMarkedDone;
+
+  /// Toast (D-030).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đánh dấu chưa xong'**
+  String get reminderMarkedUndone;
+
+  /// Toast (D-030).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá nhắc việc'**
+  String get reminderDeleted;
+
+  /// Toast (D-029).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo sẽ đến trên máy này'**
+  String get reminderMoved;
+
+  /// 8e button / edit sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa nhắc việc'**
+  String get reminderEditTitle;
+
+  /// 8b field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc cần nhớ'**
+  String get reminderWhat;
+
+  /// 8b placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: Tiêm 6 trong 1'**
+  String get reminderWhatHint;
+
+  /// 8b / 8e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày giờ'**
+  String get reminderWhen;
+
+  /// 8b / 8e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo trước'**
+  String get reminderLead;
+
+  /// 8b footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo giờ của {name} ({zone}). Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.'**
+  String reminderFootnote(String name, String zone);
+
+  /// 8b button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu nhắc việc'**
+  String get reminderSave;
+
+  /// Validation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập việc cần nhớ.'**
+  String get reminderTitleRequired;
+
+  /// Validation (D-031).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn thời điểm sau bây giờ.'**
+  String get reminderPastTime;
+
+  /// Báo trước option (D-031).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đúng giờ'**
+  String get leadOnTime;
+
+  /// Báo trước option (D-031).
+  ///
+  /// In vi, this message translates to:
+  /// **'1 ngày'**
+  String get leadOneDay;
+
+  /// Báo trước value in lists.
+  ///
+  /// In vi, this message translates to:
+  /// **'{lead} trước'**
+  String leadBefore(String lead);
+
+  /// Edit sheet (D-030).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá nhắc việc'**
+  String get reminderDelete;
+
+  /// Confirm (D-030).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá nhắc việc này?'**
+  String get reminderDeleteTitle;
+
+  /// Confirm (D-030).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà sẽ không thấy nhắc việc này nữa.'**
+  String get reminderDeleteBody;
+
+  /// 8c (127:13809).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật thông báo trên máy này?'**
+  String get notifPromptTitle;
+
+  /// 8c body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc.'**
+  String get notifPromptBody;
+
+  /// 8c primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật thông báo'**
+  String get notifPromptAllow;
+
+  /// 8e overline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc · {name}'**
+  String reminderOverline(String name);
+
+  /// 8e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Múi giờ'**
+  String get reminderTimeZone;
+
+  /// 8e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo'**
+  String get reminderNotify;
+
+  /// 8e value ("iPhone của Mai").
+  ///
+  /// In vi, this message translates to:
+  /// **'{device} của {name}'**
+  String reminderDeviceOf(String device, String name);
+
+  /// 8e value, no device (D-029).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đặt trên máy nào'**
+  String get reminderNoDevice;
+
+  /// 8e row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người tạo'**
+  String get reminderCreator;
+
+  /// 8e row for a done reminder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xong'**
+  String get reminderDoneRow;
+
+  /// 8e note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo chỉ được đặt trên máy tạo nhắc việc. Đánh dấu xong khi đã làm.'**
+  String get reminderDetailNote;
+
+  /// 8e primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu đã xong'**
+  String get reminderMarkDone;
+
+  /// 8e for a done reminder (D-030).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu chưa xong'**
+  String get reminderUndo;
+
+  /// D-029 sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận thông báo trên máy này?'**
+  String get moveNotifTitle;
+
+  /// D-029 sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo của nhắc việc này sẽ chuyển sang {device}. Máy đang giữ thông báo sẽ không báo nữa.'**
+  String moveNotifBody(String device);
+
+  /// D-029 sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển sang máy này'**
+  String get moveNotifAction;
+
+  /// ReminderPeek label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc · {count}'**
+  String reminderPeekLabel(int count);
+
+  /// ReminderPeek countdown.
+  ///
+  /// In vi, this message translates to:
+  /// **'còn {count} ngày'**
+  String reminderInDays(int count);
+
+  /// ReminderPeek countdown, same day.
+  ///
+  /// In vi, this message translates to:
+  /// **'còn {duration}'**
+  String reminderInDuration(String duration);
+
+  /// ReminderPeek empty (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có nhắc việc sắp tới'**
+  String get reminderPeekEmpty;
+
+  /// ReminderPeek empty action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo nhắc việc'**
+  String get reminderPeekAdd;
+
+  /// Local notification body.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · {when}'**
+  String notifBody(String name, String when);
+
+  /// Android channel name.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc'**
+  String get notifChannel;
+
+  /// Android channel description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc của gia đình'**
+  String get notifChannelDescription;
+
+  /// Row check.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu xong: {title}'**
+  String a11yMarkDone(String title);
+
+  /// Row check (D-030).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ đánh dấu xong: {title}'**
+  String a11yUndoDone(String title);
 }
 
 class _AppLocalizationsDelegate

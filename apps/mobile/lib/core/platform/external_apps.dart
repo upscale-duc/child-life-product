@@ -51,3 +51,17 @@ Future<void> openAppSettings() async {
     mode: LaunchMode.externalApplication,
   );
 }
+
+/// "Cài đặt" on 8d: this app's notification settings (Android), or its settings page (iOS).
+Future<void> openNotificationSettings() async {
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    final info = await PackageInfo.fromPlatform();
+    await AndroidIntent(
+      action: 'android.settings.APP_NOTIFICATION_SETTINGS',
+      arguments: {'android.provider.extra.APP_PACKAGE': info.packageName},
+      flags: const [Flag.FLAG_ACTIVITY_NEW_TASK],
+    ).launch();
+    return;
+  }
+  await openAppSettings();
+}

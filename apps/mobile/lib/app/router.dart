@@ -18,6 +18,7 @@ import '../features/family/invite_screens.dart';
 import '../features/family/join_screens.dart';
 import '../features/family/save_account.dart';
 import '../features/home/home_shell.dart';
+import '../features/reminders/reminder_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
 import '../features/showcase/showcase_screen.dart';
@@ -146,6 +147,19 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'stats/sleep',
                     builder: (_, _) => const SleepStatsScreen(),
+                  ),
+                  // S7 reminders (8a–8e, 12f).
+                  GoRoute(
+                    path: 'reminders',
+                    builder: (_, _) => const RemindersScreen(),
+                    routes: [
+                      GoRoute(
+                        path: ':id',
+                        builder: (_, s) => ReminderDetailScreen(
+                          reminderId: s.pathParameters['id'] ?? '',
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

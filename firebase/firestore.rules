@@ -107,6 +107,17 @@ service cloud.firestore {
         allow read: if canReadCare(babyId);
         allow write: if false;
       }
+
+      // Reminders (S7, 8a–8e, 12f). Cùng nuôi create, edit and delete (D-030, D-031); caregivers
+      // view and mark done; relatives never see them (D-018). Notifications are local to the
+      // device in notifyDevice (R-091); any viewer may move it to their own device (D-029).
+      match /reminders/{reminderId} {
+        allow read: if canSeeReminders(babyId);
+        allow create: if canSeeReminders(babyId) && role(babyId) == 'coParent' &&
+          validNewReminder(babyId, reminderId);
+        allow update: if canSeeReminders(babyId) && validReminderUpdate(babyId);
+        allow delete: if canSeeReminders(babyId) && role(babyId) == 'coParent';
+      }
     }
 
     // ---------- Care (S4) ----------
@@ -267,6 +278,81 @@ service cloud.firestore {
         // "Hoàn tác" (5 s) or restore from "Đã xoá gần đây".
         (o.deleted == true && d.deleted == false && changed.hasOnly(deleteKeys) &&
           d.deletedAt == null && d.deletedBy == null)
+      );
+    }
+
+    // ---------- Reminders (S7) ----------
+
+    function canSeeReminders(babyId) {
+      return activeMember(babyId) && role(babyId) in ['coParent', 'caregiver'];
+    }
+
+    function ownAuthor(a, me) {
+      return a is map && a.keys().hasOnly(['name', 'relation', 'relationCustom']) &&
+        a.name == me.displayName && a.relation == me.relation &&
+        a.relationCustom == me.get('relationCustom', null);
+    }
+
+    // "iPhone của Mai": only ever the writer's own device (D-029).
+    function ownDevice(n, me) {
+      return n == null || (n is map && n.keys().hasOnly(['id', 'uid', 'label', 'owner']) &&
+        n.keys().hasAll(['id', 'uid', 'label', 'owner']) &&
+        n.id is string && n.id.matches('^d_[a-f0-9]{32}$') &&
+        n.uid == request.auth.uid && n.label is string && n.label.size() >= 1 &&
+        n.label.size() <= 40 && n.owner == me.displayName);
+    }
+
+    // Shapes mirror packages/contracts/src/reminders.ts. The due time is never in the past when
+    // it is set (D-031, 5 min of clock skew) and at most a year ahead.
+    function validReminderFields(d, dueChanged) {
+      return d.title is string && d.title.size() >= 1 && d.title.size() <= 80 &&
+        d.title.trim().size() >= 1 &&
+        d.dueAt is timestamp && d.dueAt <= request.time + duration.value(366, 'd') &&
+        (!dueChanged || d.dueAt >= request.time - duration.value(5, 'm')) &&
+        d.leadMinutes in [0, 10, 30, 60, 120, 1440];
+    }
+
+    function validNewReminder(babyId, reminderId) {
+      let d = request.resource.data;
+      let me = get(memberDoc(babyId)).data;
+      return d.keys().hasOnly(['id', 'babyId', 'title', 'dueAt', 'leadMinutes', 'notifyDevice',
+          'createdBy', 'author', 'createdAt', 'updatedAt', 'updatedBy', 'done', 'doneAt',
+          'doneBy', 'doneAuthor']) &&
+        d.keys().hasAll(['id', 'babyId', 'title', 'dueAt', 'leadMinutes', 'notifyDevice',
+          'createdBy', 'author', 'createdAt', 'updatedAt', 'updatedBy', 'done', 'doneAt',
+          'doneBy', 'doneAuthor']) &&
+        reminderId.matches('^rm_[a-f0-9]{32}$') && d.id == reminderId && d.babyId == babyId &&
+        d.createdBy == request.auth.uid && d.updatedBy == request.auth.uid &&
+        d.createdAt == request.time && d.updatedAt == request.time &&
+        d.done == false && d.doneAt == null && d.doneBy == null && d.doneAuthor == null &&
+        ownAuthor(d.author, me) && ownDevice(d.notifyDevice, me) &&
+        validReminderFields(d, true);
+    }
+
+    function validReminderUpdate(babyId) {
+      let d = request.resource.data;
+      let o = resource.data;
+      let me = get(memberDoc(babyId)).data;
+      let changed = d.diff(o).affectedKeys();
+      let doneKeys = ['done', 'doneAt', 'doneBy', 'doneAuthor', 'updatedAt', 'updatedBy'];
+      return d.updatedBy == request.auth.uid && d.updatedAt == request.time && (
+        // "Sửa nhắc việc": Cùng nuôi only (D-031).
+        (role(babyId) == 'coParent' &&
+          changed.hasOnly(['title', 'dueAt', 'leadMinutes', 'notifyDevice', 'updatedAt',
+            'updatedBy']) &&
+          (!changed.hasAny(['notifyDevice']) || ownDevice(d.notifyDevice, me)) &&
+          validReminderFields(d, changed.hasAny(['dueAt']))) ||
+        // "Thông báo" → this device (D-029).
+        (changed.hasOnly(['notifyDevice', 'updatedAt', 'updatedBy']) &&
+          d.notifyDevice != null && ownDevice(d.notifyDevice, me)) ||
+        // "Đánh dấu đã xong" (8e, 12f).
+        (o.done == false && d.done == true && changed.hasOnly(doneKeys) &&
+          d.doneAt == request.time && d.doneBy == request.auth.uid &&
+          ownAuthor(d.doneAuthor, me)) ||
+        // Undo (D-030): any Cùng nuôi, or whoever marked it.
+        (o.done == true && d.done == false && changed.hasOnly(doneKeys) &&
+          d.doneAt == null && d.doneBy == null && d.doneAuthor == null &&
+          (role(babyId) == 'coParent' || o.doneBy == request.auth.uid))
       );
     }
 

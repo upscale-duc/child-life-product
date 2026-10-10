@@ -23,9 +23,10 @@ Future<(List<Visit>, ProviderContainer)> pumpRouted(
   Locale locale = const Locale('vi'),
   ClPalette palette = ClPalette.light,
   List<Override> overrides = const [],
+  Map<String, Object> prefs = const {},
 }) async {
-  SharedPreferences.setMockInitialValues({});
-  final prefs = await SharedPreferences.getInstance();
+  SharedPreferences.setMockInitialValues(prefs);
+  final preferences = await SharedPreferences.getInstance();
   final visits = <Visit>[];
   Widget stub(GoRouterState s) {
     visits.add((location: s.uri.toString(), extra: s.extra));
@@ -42,7 +43,7 @@ Future<(List<Visit>, ProviderContainer)> pumpRouted(
   );
   final container = ProviderContainer(
     overrides: [
-      sharedPreferencesProvider.overrideWithValue(prefs),
+      sharedPreferencesProvider.overrideWithValue(preferences),
       environmentProvider.overrideWithValue(AppEnvironment.dev),
       providerDisplayNameProvider.overrideWithValue(null),
       minuteClockProvider.overrideWith(

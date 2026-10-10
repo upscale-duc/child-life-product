@@ -3,10 +3,13 @@ import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/care_repository.dart';
 import 'package:child_life/features/care/timer_models.dart';
+import 'package:child_life/features/reminders/reminder_models.dart';
+import 'package:child_life/features/reminders/reminder_notifications.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'family_fixtures.dart';
+import 'reminder_fixtures.dart';
 
 /// The 19 Hôm nay mock: Thursday 8 Oct 2026, 15:05 in Hồ Chí Minh (GMT+7).
 final careNow = DateTime.utc(2026, 10, 8, 8, 5).toLocal();
@@ -276,6 +279,8 @@ List<Override> careOverrides({
   Map<TimerType, CareTimer> timers = const {},
   List<SleepConflict> conflicts = const [],
   List<CareRecord>? range,
+  List<Reminder>? reminders,
+  ReminderNotifications? notifications,
 }) => [
   ...familyOverrides(
     me: me,
@@ -285,6 +290,8 @@ List<Override> careOverrides({
     now: careNow,
     timers: timers,
     conflicts: conflicts,
+    reminders: reminders ?? mockReminders(),
+    notifications: notifications,
   ),
   careRepositoryProvider.overrideWithValue(repo ?? FakeCareRepository()),
   careRecordProvider.overrideWith((ref, key) => Stream.value(byId?[key.$2])),
