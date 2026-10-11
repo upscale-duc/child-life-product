@@ -1910,5 +1910,16 @@
   "vxRescheduled": "Moved {dose} to {date}",
   "vxPickDateTitle": "Pick a date",
   "vxViewOnly": "You can view the book only.",
-  "vxTileBook": "The baby’s vaccination book"
+  "vxTileBook": "The baby’s vaccination book",
+  "vxPhotoTake": "Photograph the book / slip",
+  "vxPhotoBook": "Photograph the book to keep it",
+  "vxPhoto": "Photo of the book",
+  "vxBookPhotos": "Photos of the vaccination book",
+  "vxPhotoAdd": "Add a photo of the book",
+  "vxPhotoUploading": "Uploading the photo…",
+  "vxPhotoFailed": "Couldn’t upload the photo. Please try again.",
+  "vxPhotoRemove": "Remove the photo",
+  "vxPhotoDelete": "Delete the photo",
+  "vxPhotoDeleted": "Photo deleted",
+  "vxPhotoPrivate": "Only the family’s carers can see it. Never shown in Memories."
 }

@@ -8,6 +8,7 @@ import 'package:child_life/features/reminders/reminder_notifications.dart';
 import 'package:child_life/features/reminders/rule_models.dart';
 import 'package:child_life/features/reminders/rule_repository.dart';
 import 'package:child_life/features/vaccines/vaccine_models.dart';
+import 'package:child_life/features/vaccines/vaccine_photos.dart';
 import 'package:child_life/features/vaccines/vaccine_repository.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -291,6 +292,7 @@ List<Override> careOverrides({
   Map<String, VaccineDoseRecord> vaccines = const {},
   VaccinePlan vaccinePlan = const VaccinePlan(),
   VaccineRepository? vaccineRepo,
+  VaccinePhotoStore? vaccinePhotos,
 }) => [
   ...familyOverrides(
     me: me,
@@ -308,6 +310,7 @@ List<Override> careOverrides({
     vaccines: vaccines,
     vaccinePlan: vaccinePlan,
     vaccineRepo: vaccineRepo,
+    vaccinePhotos: vaccinePhotos,
   ),
   careRepositoryProvider.overrideWithValue(repo ?? FakeCareRepository()),
   careRecordProvider.overrideWith((ref, key) => Stream.value(byId?[key.$2])),

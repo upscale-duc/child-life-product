@@ -18,6 +18,7 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import 'vaccine_format.dart';
 import 'vaccine_models.dart';
+import 'vaccine_photos.dart';
 import 'vaccine_repository.dart';
 
 // ---------- Shared bits ----------
@@ -549,7 +550,7 @@ class _QuickSheetState extends ConsumerState<_QuickSheet> {
 
 // ---------- VX 3 Ghi mũi tiêm ----------
 
-/// The full form: date, time, place, clinic, reaction (the book photo arrives with step 4).
+/// The full form: date, time, place, clinic, reaction and a photo of the book / slip.
 /// With a record it edits it.
 Future<void> showDoseFormSheet(
   BuildContext context, {
@@ -600,6 +601,29 @@ class _FormSheetState extends ConsumerState<_FormSheet> {
       widget.place ?? _given?.place ?? VaccinePlace.service;
   late final _facility = TextEditingController(text: _given?.facility);
   late final _reaction = TextEditingController(text: _given?.reaction);
+  late String? _photo = _given?.photoPath;
+  bool _uploading = false;
+
+  Future<void> _addPhoto() async {
+    final path = await addVxPhoto(
+      context,
+      ref,
+      widget.me.babyId,
+      onBusy: (busy) {
+        if (mounted) setState(() => _uploading = busy);
+      },
+    );
+    if (path != null && mounted) setState(() => _photo = path);
+  }
+
+  void _removePhoto() {
+    final path = _photo;
+    setState(() => _photo = null);
+    // A photo uploaded in this form and dropped before saving is not kept.
+    if (path != null && path != _given?.photoPath) {
+      unawaited(ref.read(vaccinePhotoStoreProvider).remove(path));
+    }
+  }
 
   @override
   void dispose() {
@@ -624,6 +648,8 @@ class _FormSheetState extends ConsumerState<_FormSheet> {
           place: _place,
           facility: _facility.text,
           reaction: _reaction.text,
+          photoPath: _photo,
+          clearPhoto: _photo == null,
           onError: (_) => toaster.show(message: l10n.vxSaveFailed),
         );
     ClHaptics.success();
@@ -738,12 +764,33 @@ class _FormSheetState extends ConsumerState<_FormSheet> {
                   maxLines: 3,
                   textCapitalization: TextCapitalization.sentences,
                 ),
+                const SizedBox(height: ClSpace.s3),
+                if (_photo case final path?)
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: VxPhotoThumb(
+                      key: const Key('vxFormPhoto'),
+                      path: path,
+                      onPressed: () => showVxPhotoViewer(context, [path]),
+                      onRemove: _removePhoto,
+                    ),
+                  )
+                else
+                  VxPhotoButton(
+                    label: l10n.vxPhotoTake,
+                    busy: _uploading,
+                    onPressed: () => unawaited(_addPhoto()),
+                  ),
                 const SizedBox(height: ClSpace.s4),
               ],
             ),
           ),
         ),
-        ClButton(label: l10n.vxSave, expand: true, onPressed: _save),
+        ClButton(
+          label: l10n.vxSave,
+          expand: true,
+          onPressed: _uploading ? null : _save,
+        ),
         const SizedBox(height: ClSpace.s2),
       ],
     );

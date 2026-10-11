@@ -11,6 +11,7 @@ VaccineDoseRecord vxRec(
   DateTime? plannedOn,
   String by = 'u_mai',
   String? reaction,
+  String? photo,
 }) => VaccineDoseRecord(
   key: doseKeyOf(vaccineId, dose),
   vaccineId: vaccineId,
@@ -20,6 +21,7 @@ VaccineDoseRecord vxRec(
   plannedOn: plannedOn,
   place: status == DoseRecordStatus.given ? VaccinePlace.service : null,
   reaction: reaction,
+  photoPath: photo,
   createdBy: by,
   author: CareAuthor(
     name: by == 'u_mai' ? 'Mai' : 'Minh',

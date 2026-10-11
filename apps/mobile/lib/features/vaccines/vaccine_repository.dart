@@ -56,6 +56,7 @@ class VaccineRepository {
     String? declineReason,
     DateTime? plannedOn,
     String? photoPath,
+    bool clearPhoto = false,
     void Function(Object error)? onError,
   }) {
     final fields = <String, Object?>{
@@ -73,7 +74,8 @@ class VaccineRepository {
       'plannedOn': status == DoseRecordStatus.planned && plannedOn != null
           ? dayWire(plannedOn)
           : null,
-      'photoPath': status == DoseRecordStatus.given
+      // A null [photoPath] keeps the record's photo (VX 5); [clearPhoto] drops it (VX 3 "×").
+      'photoPath': status == DoseRecordStatus.given && !clearPhoto
           ? (photoPath ?? item.record?.photoPath)
           : null,
       'updatedAt': FieldValue.serverTimestamp(),

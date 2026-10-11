@@ -23,6 +23,7 @@ import '../home/home_shell.dart';
 import '../reminders/reminder_screens.dart' show reminderWho;
 import 'vaccine_format.dart';
 import 'vaccine_models.dart';
+import 'vaccine_photos.dart';
 import 'vaccine_repository.dart';
 import 'vaccine_sheets.dart';
 
@@ -330,9 +331,126 @@ class _VaccineBookScreenState extends ConsumerState<VaccineBookScreen> {
                 ? l10n.vxBannerMatrix
                 : l10n.vxBannerTimeline,
           ),
+          if (book.plan.bookPhotos.isNotEmpty ||
+              me.role == MemberRole.coParent) ...[
+            const SizedBox(height: ClSpace.s6),
+            Text(l10n.vxBookPhotos, style: cl.text.headline),
+            const SizedBox(height: ClSpace.s3),
+            _BookPhotos(
+              babyId: me.babyId,
+              paths: book.plan.bookPhotos,
+              // The plan is Cùng nuôi's (Rules); everyone who reads care sees the photos.
+              onChanged: me.role == MemberRole.coParent
+                  ? (paths) {
+                      final toaster = ClToaster.of(context);
+                      ref
+                          .read(vaccineRepositoryProvider)
+                          .savePlan(
+                            me.babyId,
+                            me,
+                            book.plan.copyWith(bookPhotos: paths),
+                            onError: (_) =>
+                                toaster.show(message: l10n.vxSaveFailed),
+                          );
+                    }
+                  : null,
+            ),
+          ],
         ],
       );
     });
+  }
+}
+
+/// Photos of the whole book (VX 0 "Chụp sổ tiêm chủng để lưu lại"; kept on the plan, up to
+/// [maxBookPhotos]). Without [onChanged] they are only viewed; [removeInline] puts the "×" on each
+/// thumbnail (VX 0), otherwise the viewer offers "Xoá ảnh".
+class _BookPhotos extends ConsumerStatefulWidget {
+  const _BookPhotos({
+    required this.babyId,
+    required this.paths,
+    this.onChanged,
+    this.removeInline = false,
+  });
+
+  final String babyId;
+  final List<String> paths;
+  final ValueChanged<List<String>>? onChanged;
+  final bool removeInline;
+
+  @override
+  ConsumerState<_BookPhotos> createState() => _BookPhotosState();
+}
+
+class _BookPhotosState extends ConsumerState<_BookPhotos> {
+  bool _uploading = false;
+
+  Future<void> _add() async {
+    final path = await addVxPhoto(
+      context,
+      ref,
+      widget.babyId,
+      onBusy: (busy) {
+        if (mounted) setState(() => _uploading = busy);
+      },
+    );
+    if (path != null) widget.onChanged?.call([...widget.paths, path]);
+  }
+
+  Future<void> _remove(String path) async {
+    widget.onChanged?.call([...widget.paths]..remove(path));
+    await ref.read(vaccinePhotoStoreProvider).remove(path);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final paths = widget.paths;
+    final editable = widget.onChanged != null;
+    final canAdd = editable && paths.length < maxBookPhotos;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (paths.isNotEmpty)
+          Wrap(
+            spacing: ClSpace.s2,
+            runSpacing: ClSpace.s2,
+            children: [
+              for (final (i, p) in paths.indexed)
+                VxPhotoThumb(
+                  path: p,
+                  width: 72,
+                  height: 88,
+                  onPressed: () => showVxPhotoViewer(
+                    context,
+                    paths,
+                    index: i,
+                    onDelete: editable && !widget.removeInline
+                        ? (p) async {
+                            final toaster = ClToaster.of(context);
+                            await _remove(p);
+                            toaster.show(message: l10n.vxPhotoDeleted);
+                          }
+                        : null,
+                  ),
+                  onRemove: editable && widget.removeInline
+                      ? () => unawaited(_remove(p))
+                      : null,
+                ),
+            ],
+          ),
+        if (paths.isNotEmpty && canAdd) const SizedBox(height: ClSpace.s3),
+        if (canAdd)
+          VxPhotoButton(
+            key: const Key('vxBookPhotoAdd'),
+            label: paths.isEmpty ? l10n.vxPhotoBook : l10n.vxPhotoAdd,
+            radius: 16,
+            height: 56,
+            busy: _uploading,
+            onPressed: () => unawaited(_add()),
+          ),
+      ],
+    );
   }
 }
 
@@ -793,6 +911,7 @@ class VaccineSetupScreen extends ConsumerStatefulWidget {
 
 class _VaccineSetupScreenState extends ConsumerState<VaccineSetupScreen> {
   Set<String>? _ticked;
+  List<String>? _photos;
 
   @override
   Widget build(BuildContext context) {
@@ -802,6 +921,7 @@ class _VaccineSetupScreenState extends ConsumerState<VaccineSetupScreen> {
     return _withBook(context, ref, (me, book, dob) {
       final due = book.dueSoFar;
       final ticked = _ticked ??= {for (final i in due) i.key};
+      final photos = _photos ??= [...book.plan.bookPhotos];
       final nickname = ref.watch(babyProvider(me.babyId)).value?.nickname ?? '';
       void finish({required bool save}) {
         final toaster = ClToaster.of(context);
@@ -816,7 +936,8 @@ class _VaccineSetupScreenState extends ConsumerState<VaccineSetupScreen> {
                         if (ticked.contains(i.key)) i,
                     ]
                   : const [],
-              plan: book.plan.copyWith(scheduleFrom: dob),
+              // The book photos are kept either way: they were taken on purpose.
+              plan: book.plan.copyWith(scheduleFrom: dob, bookPhotos: photos),
               onError: (_) => toaster.show(message: l10n.vxSaveFailed),
             );
         if (context.canPop()) context.pop();
@@ -932,6 +1053,13 @@ class _VaccineSetupScreenState extends ConsumerState<VaccineSetupScreen> {
                   ),
                 ),
             ],
+          ),
+          const SizedBox(height: ClSpace.s3),
+          _BookPhotos(
+            babyId: me.babyId,
+            paths: photos,
+            removeInline: true,
+            onChanged: (paths) => setState(() => _photos = paths),
           ),
           const SizedBox(height: ClSpace.s8),
           ClButton(
@@ -1491,6 +1619,9 @@ class VaccineDoseScreen extends ConsumerWidget {
               item,
               onError: (_) => toaster.show(message: l10n.vxSaveFailed),
             );
+        if (record.photoPath case final photo?) {
+          unawaited(ref.read(vaccinePhotoStoreProvider).remove(photo));
+        }
         toaster.show(message: l10n.vxDeleted(title));
         if (context.canPop()) context.pop();
       }
@@ -1575,6 +1706,23 @@ class VaccineDoseScreen extends ConsumerWidget {
                 kv(l10n.vxReason, record.declineReason!),
             ],
           ),
+          if (!declined && record.photoPath != null) ...[
+            const SizedBox(height: ClSpace.s4),
+            Text(
+              l10n.vxPhoto,
+              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+            ),
+            const SizedBox(height: ClSpace.s2),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: VxPhotoThumb(
+                key: const Key('vxDosePhoto'),
+                path: record.photoPath!,
+                onPressed: () =>
+                    showVxPhotoViewer(context, [record.photoPath!]),
+              ),
+            ),
+          ],
           if (!declined && next != null && !next.done) ...[
             const SizedBox(height: ClSpace.s3),
             Container(

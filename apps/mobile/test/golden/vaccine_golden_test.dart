@@ -6,6 +6,7 @@ import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
+import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/vaccines/vaccine_models.dart';
 import 'package:child_life/features/vaccines/vaccine_screens.dart';
 import 'package:child_life/l10n/app_localizations.dart';
@@ -18,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/care_fixtures.dart';
+import '../helpers/memory_fixtures.dart';
 import '../helpers/vaccine_fixtures.dart';
 
 /// Sổ tiêm chủng (Figma VX 0 – VX 9a) in Light / Night care × vi / en at 375 × 812, on the mock
@@ -122,6 +124,7 @@ final _cases = <String, _Case>{
           1,
           on: DateTime(2026, 10, 6),
           reaction: 'Sốt nhẹ buổi tối, hết sau 1 ngày',
+          photo: 'babies/b_teddy/vaccines/slip00000001.jpg',
         ),
       },
       vaccinePlan: _plan.copyWith(dtp: DtpChoice.sixInOne),
@@ -138,7 +141,22 @@ final _cases = <String, _Case>{
   ),
 };
 
+/// Storage images decode outside the fake clock: let every visible one finish first.
+Future<void> _precacheImages(WidgetTester tester) async {
+  final images = tester.widgetList<Image>(find.byType(Image)).toList();
+  if (images.isEmpty) return;
+  await tester.runAsync(() async {
+    for (final image in images) {
+      final element = tester.element(find.byWidget(image).first);
+      await precacheImage(image.image, element);
+    }
+  });
+  await tester.pumpAndSettle();
+}
+
 void main() {
+  setUp(() => mediaBytes = FakeMediaBytes());
+
   for (final MapEntry(key: name, value: c) in _cases.entries) {
     for (final palette in ClPalette.values) {
       for (final locale in const [Locale('vi'), Locale('en')]) {
@@ -197,6 +215,7 @@ void main() {
           );
           await tester.pumpAndSettle();
           await c.act?.call(tester);
+          await _precacheImages(tester);
           debugDisableShadows = false;
           try {
             await tester.pump();

@@ -6906,4 +6906,38 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get vxTileBook => 'Sổ tiêm chủng của bé';
+
+  @override
+  String get vxPhotoTake => 'Chụp sổ tiêm / phiếu tiêm';
+
+  @override
+  String get vxPhotoBook => 'Chụp sổ tiêm chủng để lưu lại';
+
+  @override
+  String get vxPhoto => 'Ảnh sổ tiêm';
+
+  @override
+  String get vxBookPhotos => 'Ảnh sổ tiêm chủng';
+
+  @override
+  String get vxPhotoAdd => 'Thêm ảnh sổ tiêm';
+
+  @override
+  String get vxPhotoUploading => 'Đang tải ảnh lên…';
+
+  @override
+  String get vxPhotoFailed => 'Chưa tải được ảnh. Thử lại nhé.';
+
+  @override
+  String get vxPhotoRemove => 'Bỏ ảnh';
+
+  @override
+  String get vxPhotoDelete => 'Xoá ảnh';
+
+  @override
+  String get vxPhotoDeleted => 'Đã xoá ảnh';
+
+  @override
+  String get vxPhotoPrivate =>
+      'Chỉ người chăm bé trong gia đình xem được. Không hiện trong Kỷ niệm.';
 }

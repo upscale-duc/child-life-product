@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:child_life/app/session.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/baby/baby_repository.dart';
@@ -15,8 +17,10 @@ import 'package:child_life/features/me/me_repository.dart';
 import 'package:child_life/features/reminders/rule_models.dart';
 import 'package:child_life/features/reminders/rule_repository.dart';
 import 'package:child_life/features/vaccines/vaccine_models.dart';
+import 'package:child_life/features/vaccines/vaccine_photos.dart';
 import 'package:child_life/features/vaccines/vaccine_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -179,6 +183,7 @@ List<Override> familyOverrides({
   Map<String, VaccineDoseRecord> vaccines = const {},
   VaccinePlan vaccinePlan = const VaccinePlan(),
   VaccineRepository? vaccineRepo,
+  VaccinePhotoStore? vaccinePhotos,
   ReminderNotifications? notifications,
   String deviceId = testDeviceId,
   NotificationPrefs prefs = const NotificationPrefs(),
@@ -231,6 +236,9 @@ List<Override> familyOverrides({
     vaccinePlanProvider.overrideWith((ref, id) => Stream.value(vaccinePlan)),
     vaccineRepositoryProvider.overrideWithValue(
       vaccineRepo ?? FakeVaccineRepository(),
+    ),
+    vaccinePhotoStoreProvider.overrideWithValue(
+      vaccinePhotos ?? FakeVaccinePhotoStore(),
     ),
     // v1.0 rule reminders (D-051).
     reminderRulesProvider.overrideWith((ref, id) => Stream.value(rules)),
@@ -287,6 +295,28 @@ class FakeRuleRepository implements RuleRepository {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+/// Photos of the book without a camera or Storage: every pick is a tiny JPEG-named PNG.
+class FakeVaccinePhotoStore implements VaccinePhotoStore {
+  final uploaded = <String>[];
+  final removed = <String>[];
+  bool cancel = false;
+
+  @override
+  Future<Uint8List?> pick(ImageSource source) async =>
+      cancel ? null : Uint8List.fromList(const [0xff, 0xd8, 0xff]);
+
+  @override
+  Future<String> upload(String babyId, Uint8List jpeg) async {
+    final path =
+        'babies/$babyId/vaccines/photo${uploaded.length + 1}0000000000.jpg';
+    uploaded.add(path);
+    return path;
+  }
+
+  @override
+  Future<void> remove(String path) async => removed.add(path);
+}
+
 /// Records what the vaccination screens write.
 class FakeVaccineRepository implements VaccineRepository {
   final saved =
@@ -298,6 +328,8 @@ class FakeVaccineRepository implements VaccineRepository {
           VaccinePlace? place,
           DateTime? plannedOn,
           String? reason,
+          String? photoPath,
+          bool clearPhoto,
         })
       >[];
   final deleted = <String>[];
@@ -318,6 +350,7 @@ class FakeVaccineRepository implements VaccineRepository {
     String? declineReason,
     DateTime? plannedOn,
     String? photoPath,
+    bool clearPhoto = false,
     void Function(Object error)? onError,
   }) => saved.add((
     key: item.key,
@@ -326,6 +359,8 @@ class FakeVaccineRepository implements VaccineRepository {
     place: place,
     plannedOn: plannedOn,
     reason: declineReason,
+    photoPath: photoPath,
+    clearPhoto: clearPhoto,
   ));
 
   @override

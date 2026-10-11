@@ -1,4 +1,5 @@
 import 'package:child_life/features/care/care_hub_screen.dart';
+import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/vaccines/vaccine_models.dart';
 import 'package:child_life/features/vaccines/vaccine_notifications.dart';
 import 'package:child_life/features/vaccines/vaccine_screens.dart';
@@ -7,11 +8,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/care_fixtures.dart';
 import '../helpers/family_fixtures.dart';
+import '../helpers/memory_fixtures.dart';
 import '../helpers/router_pump.dart';
 import '../helpers/vaccine_fixtures.dart';
 
 /// Sổ tiêm chủng (Figma VX 0 – VX 9a, P-133). Teddy, born 17/9/2026; "now" is 8/10 15:05.
 void main() {
+  setUp(() => mediaBytes = FakeMediaBytes());
+
   group('VX 1 Tiêm chủng', () {
     testWidgets('the next shot, the counter and the matrix', (tester) async {
       await pumpRouted(
@@ -265,6 +269,156 @@ void main() {
       expect(find.text('Tối thiểu 4 tuần giữa các mũi'), findsOneWidget);
       expect(find.text('Các mũi của Teddy'), findsOneWidget);
       expect(find.text('Dự kiến 17/1/2027'), findsOneWidget);
+    });
+  });
+
+  group('photos of the book (step 4)', () {
+    testWidgets(
+      'VX 3: "Chụp sổ tiêm / phiếu tiêm" uploads and saves the path',
+      (tester) async {
+        final repo = FakeVaccineRepository();
+        final photos = FakeVaccinePhotoStore();
+        await pumpRouted(
+          tester,
+          const VaccineDoseScreen(doseKey: 'dtp_1'),
+          overrides: careOverrides(
+            vaccines: {
+              ...vxBirthDoses(),
+              'dtp_1': vxRec('dtp', 1, on: DateTime(2026, 10, 6)),
+            },
+            vaccinePlan: vxSetUp.copyWith(dtp: DtpChoice.sixInOne),
+            vaccineRepo: repo,
+            vaccinePhotos: photos,
+          ),
+        );
+        expect(find.byKey(const Key('vxDosePhoto')), findsNothing);
+        await tester.tap(find.byKey(const Key('vxEdit')));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Chụp sổ tiêm / phiếu tiêm'));
+        await tester.tap(find.text('Chụp sổ tiêm / phiếu tiêm'));
+        await tester.pumpAndSettle();
+        expect(find.text('Thêm ảnh sổ tiêm'), findsOneWidget);
+        await tester.tap(find.text('Chụp ảnh'));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('vxFormPhoto')), findsOneWidget);
+        await tester.tap(find.text('Lưu mũi tiêm'));
+        await tester.pumpAndSettle();
+        expect(repo.saved.single.photoPath, photos.uploaded.single);
+        expect(repo.saved.single.clearPhoto, isFalse);
+        await tester.pumpAndSettle(const Duration(seconds: 5));
+      },
+    );
+
+    testWidgets('VX 3: "×" drops the photo from the record', (tester) async {
+      final repo = FakeVaccineRepository();
+      final photos = FakeVaccinePhotoStore();
+      const path = 'babies/$teddyId/vaccines/slip00000001.jpg';
+      await pumpRouted(
+        tester,
+        const VaccineDoseScreen(doseKey: 'dtp_1'),
+        overrides: careOverrides(
+          vaccines: {
+            ...vxBirthDoses(),
+            'dtp_1': vxRec('dtp', 1, on: DateTime(2026, 10, 6), photo: path),
+          },
+          vaccinePlan: vxSetUp.copyWith(dtp: DtpChoice.sixInOne),
+          vaccineRepo: repo,
+          vaccinePhotos: photos,
+        ),
+      );
+      await tester.tap(find.byKey(const Key('vxEdit')));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const Key('vxFormPhoto')));
+      await tester.tap(find.bySemanticsLabel('Bỏ ảnh'));
+      await tester.pumpAndSettle();
+      expect(find.text('Chụp sổ tiêm / phiếu tiêm'), findsOneWidget);
+      // The saved photo stays in Storage until the record is saved without it.
+      expect(photos.removed, isEmpty);
+      await tester.tap(find.text('Lưu mũi tiêm'));
+      await tester.pumpAndSettle();
+      expect(repo.saved.single.clearPhoto, isTrue);
+      await tester.pumpAndSettle(const Duration(seconds: 5));
+    });
+
+    testWidgets('VX 6: "Ảnh sổ tiêm" opens full screen; deleting the dose '
+        'removes it', (tester) async {
+      final photos = FakeVaccinePhotoStore();
+      const path = 'babies/$teddyId/vaccines/slip00000001.jpg';
+      await pumpRouted(
+        tester,
+        const VaccineDoseScreen(doseKey: 'dtp_1'),
+        overrides: careOverrides(
+          vaccines: {
+            ...vxBirthDoses(),
+            'dtp_1': vxRec('dtp', 1, on: DateTime(2026, 10, 6), photo: path),
+          },
+          vaccinePlan: vxSetUp.copyWith(dtp: DtpChoice.sixInOne),
+          vaccinePhotos: photos,
+        ),
+      );
+      expect(find.text('Ảnh sổ tiêm'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('vxDosePhoto')));
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel('Đóng'), findsOneWidget);
+      await tester.tap(find.bySemanticsLabel('Đóng'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Xoá mũi tiêm này'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Xoá'));
+      await tester.pumpAndSettle();
+      expect(photos.removed, [path]);
+      await tester.pumpAndSettle(const Duration(seconds: 5));
+    });
+
+    testWidgets('VX 0: "Chụp sổ tiêm chủng để lưu lại" keeps the photos on the '
+        'plan', (tester) async {
+      final repo = FakeVaccineRepository();
+      final photos = FakeVaccinePhotoStore();
+      await pumpRouted(
+        tester,
+        const VaccineSetupScreen(),
+        overrides: careOverrides(vaccineRepo: repo, vaccinePhotos: photos),
+      );
+      await tester.ensureVisible(find.text('Chụp sổ tiêm chủng để lưu lại'));
+      await tester.tap(find.text('Chụp sổ tiêm chủng để lưu lại'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Chọn từ thư viện'));
+      await tester.pumpAndSettle();
+      expect(find.text('Thêm ảnh sổ tiêm'), findsOneWidget); // add another
+      await tester.tap(find.text('Lưu 3 mũi đã tiêm'));
+      await tester.pumpAndSettle();
+      expect(repo.plans.last.bookPhotos, photos.uploaded);
+    });
+
+    testWidgets('VX 1: the book photos; relatives only look', (tester) async {
+      const path = 'babies/$teddyId/vaccines/book00000001.jpg';
+      await pumpRouted(
+        tester,
+        const VaccineBookScreen(),
+        overrides: careOverrides(
+          vaccines: vxBirthDoses(),
+          vaccinePlan: vxSetUp.copyWith(bookPhotos: [path]),
+        ),
+      );
+      await tester.scrollUntilVisible(find.text('Ảnh sổ tiêm chủng'), 200);
+      expect(find.byKey(const Key('vxBookPhotoAdd')), findsOneWidget);
+      await pumpRouted(
+        tester,
+        const VaccineBookScreen(),
+        overrides: careOverrides(
+          me: hoa,
+          vaccines: vxBirthDoses(),
+          vaccinePlan: VaccinePlan(
+            setupDone: true,
+            exists: true,
+            scheduleFrom: DateTime(2026, 9, 17),
+            bookPhotos: const [path],
+          ),
+        ),
+      );
+      await tester.scrollUntilVisible(find.text('Ảnh sổ tiêm chủng'), 200);
+      expect(find.bySemanticsLabel('Ảnh sổ tiêm'), findsOneWidget);
+      expect(find.byKey(const Key('vxBookPhotoAdd')), findsNothing);
     });
   });
 

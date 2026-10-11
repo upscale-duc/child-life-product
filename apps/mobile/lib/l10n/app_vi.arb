@@ -10455,5 +10455,49 @@
   "vxTileBook": "Sổ tiêm chủng của bé",
   "@vxTileBook": {
     "description": "Tile subtitle without dates."
+  },
+  "vxPhotoTake": "Chụp sổ tiêm / phiếu tiêm",
+  "@vxPhotoTake": {
+    "description": "VX 3 dashed chip."
+  },
+  "vxPhotoBook": "Chụp sổ tiêm chủng để lưu lại",
+  "@vxPhotoBook": {
+    "description": "VX 0 dashed card."
+  },
+  "vxPhoto": "Ảnh sổ tiêm",
+  "@vxPhoto": {
+    "description": "VX 6 label; thumbnail semantics."
+  },
+  "vxBookPhotos": "Ảnh sổ tiêm chủng",
+  "@vxBookPhotos": {
+    "description": "VX 1 section with the book photos from setup."
+  },
+  "vxPhotoAdd": "Thêm ảnh sổ tiêm",
+  "@vxPhotoAdd": {
+    "description": "Source sheet title; add tile."
+  },
+  "vxPhotoUploading": "Đang tải ảnh lên…",
+  "@vxPhotoUploading": {
+    "description": "Dashed chip while uploading."
+  },
+  "vxPhotoFailed": "Chưa tải được ảnh. Thử lại nhé.",
+  "@vxPhotoFailed": {
+    "description": "Toast."
+  },
+  "vxPhotoRemove": "Bỏ ảnh",
+  "@vxPhotoRemove": {
+    "description": "Corner × on a thumbnail."
+  },
+  "vxPhotoDelete": "Xoá ảnh",
+  "@vxPhotoDelete": {
+    "description": "Viewer action (Cùng nuôi)."
+  },
+  "vxPhotoDeleted": "Đã xoá ảnh",
+  "@vxPhotoDeleted": {
+    "description": "Toast."
+  },
+  "vxPhotoPrivate": "Chỉ người chăm bé trong gia đình xem được. Không hiện trong Kỷ niệm.",
+  "@vxPhotoPrivate": {
+    "description": "Source sheet note."
   }
 }

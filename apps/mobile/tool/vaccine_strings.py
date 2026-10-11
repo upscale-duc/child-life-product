@@ -152,6 +152,19 @@ s('vxRescheduled', 'Đã dời {dose} sang {date}', 'Moved {dose} to {date}', 'T
 s('vxPickDateTitle', 'Chọn ngày', 'Pick a date', 'Date sheet.')
 s('vxViewOnly', 'Bạn chỉ xem được sổ tiêm.', 'You can view the book only.', 'Relative tap.')
 
+# Step 4: photos of the book / slip (VX 0, VX 3, VX 6).
+s('vxPhotoTake', 'Chụp sổ tiêm / phiếu tiêm', 'Photograph the book / slip', 'VX 3 dashed chip.')
+s('vxPhotoBook', 'Chụp sổ tiêm chủng để lưu lại', 'Photograph the book to keep it', 'VX 0 dashed card.')
+s('vxPhoto', 'Ảnh sổ tiêm', 'Photo of the book', 'VX 6 label; thumbnail semantics.')
+s('vxBookPhotos', 'Ảnh sổ tiêm chủng', 'Photos of the vaccination book', 'VX 1 section with the book photos from setup.')
+s('vxPhotoAdd', 'Thêm ảnh sổ tiêm', 'Add a photo of the book', 'Source sheet title; add tile.')
+s('vxPhotoUploading', 'Đang tải ảnh lên…', 'Uploading the photo…', 'Dashed chip while uploading.')
+s('vxPhotoFailed', 'Chưa tải được ảnh. Thử lại nhé.', 'Couldn’t upload the photo. Please try again.', 'Toast.')
+s('vxPhotoRemove', 'Bỏ ảnh', 'Remove the photo', 'Corner × on a thumbnail.')
+s('vxPhotoDelete', 'Xoá ảnh', 'Delete the photo', 'Viewer action (Cùng nuôi).')
+s('vxPhotoDeleted', 'Đã xoá ảnh', 'Photo deleted', 'Toast.')
+s('vxPhotoPrivate', 'Chỉ người chăm bé trong gia đình xem được. Không hiện trong Kỷ niệm.', 'Only the family’s carers can see it. Never shown in Memories.', 'Source sheet note.')
+
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'
 for locale, idx in (('vi', 0), ('en', 1)):
     path = root / f'app_{locale}.arb'

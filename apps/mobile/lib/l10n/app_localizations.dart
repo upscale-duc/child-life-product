@@ -11568,6 +11568,72 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Sổ tiêm chủng của bé'**
   String get vxTileBook;
+
+  /// VX 3 dashed chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp sổ tiêm / phiếu tiêm'**
+  String get vxPhotoTake;
+
+  /// VX 0 dashed card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp sổ tiêm chủng để lưu lại'**
+  String get vxPhotoBook;
+
+  /// VX 6 label; thumbnail semantics.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh sổ tiêm'**
+  String get vxPhoto;
+
+  /// VX 1 section with the book photos from setup.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh sổ tiêm chủng'**
+  String get vxBookPhotos;
+
+  /// Source sheet title; add tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh sổ tiêm'**
+  String get vxPhotoAdd;
+
+  /// Dashed chip while uploading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải ảnh lên…'**
+  String get vxPhotoUploading;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được ảnh. Thử lại nhé.'**
+  String get vxPhotoFailed;
+
+  /// Corner × on a thumbnail.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ ảnh'**
+  String get vxPhotoRemove;
+
+  /// Viewer action (Cùng nuôi).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá ảnh'**
+  String get vxPhotoDelete;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá ảnh'**
+  String get vxPhotoDeleted;
+
+  /// Source sheet note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ người chăm bé trong gia đình xem được. Không hiện trong Kỷ niệm.'**
+  String get vxPhotoPrivate;
 }
 
 class _AppLocalizationsDelegate

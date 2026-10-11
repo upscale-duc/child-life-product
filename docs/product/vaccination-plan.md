@@ -39,8 +39,11 @@ thêm tính năng sổ tiêm chủng trong mục chăm sóc".
    nuôi + Người chăm sóc), **3 days before and the evening before at 19:00** in the baby's zone; a
    rescheduled dose gets the evening-before one. Actions: Xem lịch tiêm · Nhắc lại sáng mai (07:00) ·
    Dời lịch. The copy leaves out the baby's name (R-120): "Ngày mai có lịch tiêm của bé".
-7. **Photos** of the book / slip: optional, one per dose plus book photos from setup, stored under the
-   baby's private storage, counted in family storage, never in Kỷ niệm, story links or exports.
+7. **Photos** of the book / slip: optional, one per dose (VX 3 / VX 6) plus up to 10 of the whole
+   book (VX 0, also on VX 1 for Cùng nuôi), re-encoded to a ≤1600 px JPEG without EXIF, at
+   `babies/{id}/vaccines/{id}.jpg`. Storage Rules: whoever reads care reads them, Cùng nuôi and Người
+   chăm sóc add them (≤4 MB), Cùng nuôi delete them. Never in Kỷ niệm, story links or exports. Not yet
+   counted in family storage (the usage reconcile only counts Kỷ niệm media).
 
 ## Build steps (each one committed and pushed)
 1. **Data:** schedule catalogue (TS → Dart generator), dose + plan shapes in contracts, Firestore Rules
@@ -48,5 +51,6 @@ thêm tính năng sổ tiêm chủng trong mục chăm sóc".
 2. **App:** tile, routes, book (matrix + timeline + view sheet), setup, milestone, record (full + quick),
    dose detail, vaccine info, overdue sheet; vi / en strings; widget tests and goldens (Light + Night).
 3. **Reminders:** scheduler Function + push + iOS lock-screen actions; recipients row; deploy to dev.
-4. **Photos:** upload, Storage Rules, viewer.
+4. **Photos:** upload, Storage Rules, viewer. (Done; the Storage Rules emulator tests wait on the
+   wedged local Storage emulator.)
 5. Device run on the owner's iPhone.

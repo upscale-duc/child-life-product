@@ -7366,4 +7366,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vxTileBook => 'The baby’s vaccination book';
+
+  @override
+  String get vxPhotoTake => 'Photograph the book / slip';
+
+  @override
+  String get vxPhotoBook => 'Photograph the book to keep it';
+
+  @override
+  String get vxPhoto => 'Photo of the book';
+
+  @override
+  String get vxBookPhotos => 'Photos of the vaccination book';
+
+  @override
+  String get vxPhotoAdd => 'Add a photo of the book';
+
+  @override
+  String get vxPhotoUploading => 'Uploading the photo…';
+
+  @override
+  String get vxPhotoFailed => 'Couldn’t upload the photo. Please try again.';
+
+  @override
+  String get vxPhotoRemove => 'Remove the photo';
+
+  @override
+  String get vxPhotoDelete => 'Delete the photo';
+
+  @override
+  String get vxPhotoDeleted => 'Photo deleted';
+
+  @override
+  String get vxPhotoPrivate =>
+      'Only the family’s carers can see it. Never shown in Memories.';
 }
