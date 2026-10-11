@@ -304,6 +304,26 @@ int ageWeekOf(DateTime dateOfBirth, DateTime day) {
   return (first: first, last: DateTime(first.year, first.month, first.day + 6));
 }
 
+/// "Tháng thứ 2" (v1.0 10b "Tháng tuổi"): month n runs from the n−1th monthly birthday to the
+/// day before the nth; 0 is "before birth".
+int ageMonthOf(DateTime dateOfBirth, DateTime day) {
+  final dob = DateTime(dateOfBirth.year, dateOfBirth.month, dateOfBirth.day);
+  final d = DateTime(day.year, day.month, day.day);
+  if (d.isBefore(dob)) return 0;
+  var months = (d.year - dob.year) * 12 + d.month - dob.month;
+  if (d.day < dob.day) months -= 1;
+  return months + 1;
+}
+
+/// The calendar days of age-month [month] (1-based).
+({DateTime first, DateTime last}) ageMonthRange(DateTime dateOfBirth, int month) {
+  final dob = DateTime(dateOfBirth.year, dateOfBirth.month, dateOfBirth.day);
+  return (
+    first: DateTime(dob.year, dob.month + month - 1, dob.day),
+    last: DateTime(dob.year, dob.month + month, dob.day - 1),
+  );
+}
+
 /// Age-based milestone suggestions ("Gợi ý cho bé 3 tuần", 10h3). The first six follow Figma for
 /// a newborn; the later ones are engineering suggestions (for design review).
 enum PresetMilestone {

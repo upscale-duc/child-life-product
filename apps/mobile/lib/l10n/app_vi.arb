@@ -9533,5 +9533,104 @@
   "reminderPeekTitle": "Nhắc việc",
   "@reminderPeekTitle": {
     "description": "ReminderPeek label on Hôm nay (128:665, 370:1248 \"Nhắc việc · 3\")."
+  },
+  "photoByTitle": "Xem ảnh theo",
+  "@photoByTitle": {
+    "description": "SH Ảnh · Xem theo (391:2761) title."
+  },
+  "photoByWeek": "Tuần tuổi",
+  "@photoByWeek": {
+    "description": "Grouping option."
+  },
+  "photoByWeekSub": "Tuần 1, tuần 2… hợp với năm đầu đời",
+  "@photoByWeekSub": {
+    "description": "Grouping option caption."
+  },
+  "photoByAgeMonth": "Tháng tuổi",
+  "@photoByAgeMonth": {
+    "description": "Grouping option."
+  },
+  "photoByAgeMonthSub": "1 tháng, 2 tháng…",
+  "@photoByAgeMonthSub": {
+    "description": "Grouping option caption."
+  },
+  "photoByMonth": "Tháng trong năm",
+  "@photoByMonth": {
+    "description": "Grouping option."
+  },
+  "photoByMonthSub": "Tháng 10, tháng 9…",
+  "@photoByMonthSub": {
+    "description": "Grouping option caption."
+  },
+  "photoPillWeek": "Theo tuần tuổi",
+  "@photoPillWeek": {
+    "description": "10b grouping pill."
+  },
+  "photoPillAgeMonth": "Theo tháng tuổi",
+  "@photoPillAgeMonth": {
+    "description": "10b grouping pill."
+  },
+  "photoPillMonth": "Theo tháng",
+  "@photoPillMonth": {
+    "description": "10b grouping pill."
+  },
+  "photoShowTitle": "Hiển thị",
+  "@photoShowTitle": {
+    "description": "SH Ảnh · Loại (391:2888) title."
+  },
+  "photoShowAll": "Ảnh & video",
+  "@photoShowAll": {
+    "description": "Type option and pill."
+  },
+  "photoShowPhotos": "Chỉ ảnh",
+  "@photoShowPhotos": {
+    "description": "Type option and pill."
+  },
+  "photoShowVideos": "Chỉ video",
+  "@photoShowVideos": {
+    "description": "Type option and pill."
+  },
+  "photoShowFavorites": "Đã yêu thích",
+  "@photoShowFavorites": {
+    "description": "Type option and pill."
+  },
+  "photoGotoWeek": "Đi tới tuần",
+  "@photoGotoWeek": {
+    "description": "SH Ảnh · Chọn tuần (391:3028) title."
+  },
+  "photoGotoAgeMonth": "Đi tới tháng tuổi",
+  "@photoGotoAgeMonth": {
+    "description": "Jump sheet title, month of age."
+  },
+  "photoAgeMonth": "Tháng thứ {month}",
+  "@photoAgeMonth": {
+    "description": "Section title, month of age.",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      }
+    }
+  },
+  "photoScrubWeek": "Tuần {week}",
+  "@photoScrubWeek": {
+    "description": "Scrubber pill.",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "photoScrubAgeMonth": "Tháng {month}",
+  "@photoScrubAgeMonth": {
+    "description": "Scrubber pill, month of age.",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      }
+    }
+  },
+  "photoSelectSection": "Chọn tất cả",
+  "@photoSelectSection": {
+    "description": "Select a whole week / month of age."
   }
 }

@@ -6700,4 +6700,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reminderPeekTitle => 'Reminders';
+
+  @override
+  String get photoByTitle => 'View photos by';
+
+  @override
+  String get photoByWeek => 'Week of age';
+
+  @override
+  String get photoByWeekSub => 'Week 1, week 2… suits the first year';
+
+  @override
+  String get photoByAgeMonth => 'Month of age';
+
+  @override
+  String get photoByAgeMonthSub => '1 month, 2 months…';
+
+  @override
+  String get photoByMonth => 'Calendar month';
+
+  @override
+  String get photoByMonthSub => 'October, September…';
+
+  @override
+  String get photoPillWeek => 'By week of age';
+
+  @override
+  String get photoPillAgeMonth => 'By month of age';
+
+  @override
+  String get photoPillMonth => 'By month';
+
+  @override
+  String get photoShowTitle => 'Show';
+
+  @override
+  String get photoShowAll => 'Photos & videos';
+
+  @override
+  String get photoShowPhotos => 'Photos only';
+
+  @override
+  String get photoShowVideos => 'Videos only';
+
+  @override
+  String get photoShowFavorites => 'Favourites';
+
+  @override
+  String get photoGotoWeek => 'Go to week';
+
+  @override
+  String get photoGotoAgeMonth => 'Go to month of age';
+
+  @override
+  String photoAgeMonth(int month) {
+    return 'Month $month';
+  }
+
+  @override
+  String photoScrubWeek(int week) {
+    return 'Week $week';
+  }
+
+  @override
+  String photoScrubAgeMonth(int month) {
+    return 'Month $month';
+  }
+
+  @override
+  String get photoSelectSection => 'Select all';
 }

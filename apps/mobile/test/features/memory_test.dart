@@ -20,6 +20,14 @@ Future<void> _tab(WidgetTester tester, String label) async {
   await tester.pumpAndSettle();
 }
 
+/// v1.0 10b groups Ảnh by week of age; these cases are about calendar months.
+Future<void> _byMonth(WidgetTester tester) async {
+  await tester.tap(find.text('Theo tuần tuổi'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Tháng trong năm'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   setUpAll(ensureTimeZones);
   setUp(() => mediaBytes = FakeMediaBytes());
@@ -116,8 +124,8 @@ void main() {
       expect(find.text('Tuần thứ 4'), findsOneWidget);
       await tester.fling(pages, const Offset(-300, 0), 1000);
       await tester.pumpAndSettle();
-      expect(find.text('Tất cả'), findsOneWidget);
-      expect(find.text('Tuần thứ 4'), findsNothing);
+      expect(find.text('Theo tuần tuổi'), findsOneWidget);
+      expect(find.byType(JournalView), findsNothing);
       await tester.fling(pages, const Offset(-300, 0), 1000);
       await tester.pumpAndSettle();
       expect(find.text('Album mới'), findsOneWidget);
@@ -279,9 +287,10 @@ void main() {
         ],
       );
       await _tab(tester, 'Ảnh');
+      await _byMonth(tester);
       expect(find.text('Tháng 10, 2026'), findsOneWidget);
-      expect(find.text('7 ảnh · 3 video'), findsOneWidget);
-      await tester.tap(find.text('Chọn'));
+      expect(find.text('7 ảnh, 3 video'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('photoSelect')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Chọn cả tháng').first);
       await tester.pumpAndSettle();
@@ -313,7 +322,8 @@ void main() {
         ],
       );
       await _tab(tester, 'Ảnh');
-      await tester.tap(find.text('Chọn'));
+      await _byMonth(tester);
+      await tester.tap(find.byKey(const Key('photoSelect')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Chọn cả tháng').first);
       await tester.pumpAndSettle();
@@ -355,7 +365,8 @@ void main() {
         ],
       );
       await _tab(tester, 'Ảnh');
-      await tester.tap(find.text('Chọn'));
+      await _byMonth(tester);
+      await tester.tap(find.byKey(const Key('photoSelect')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Chọn cả tháng').last);
       await tester.pumpAndSettle();
@@ -373,6 +384,46 @@ void main() {
       await tester.pump(const Duration(seconds: 5));
     });
 
+    testWidgets('v1.0 10b: by week of age, Hiển thị, Đi tới tuần, tháng tuổi', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        const Scaffold(body: MemoriesScreen()),
+        overrides: [...careOverrides(), ...memoryOverrides()],
+      );
+      await _tab(tester, 'Ảnh');
+      expect(find.text('Theo tuần tuổi'), findsOneWidget);
+      expect(find.text('Ảnh & video'), findsOneWidget);
+      expect(find.text('Tuần thứ 4'), findsOneWidget);
+      expect(find.textContaining('8 – 14 tháng 10 ·'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('photoScrubber')));
+      await tester.pumpAndSettle();
+      expect(find.text('Đi tới tuần'), findsOneWidget);
+      expect(find.text('Tuần thứ 4'), findsNWidgets(2));
+      Navigator.of(tester.element(find.text('Đi tới tuần'))).pop();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Ảnh & video'));
+      await tester.pumpAndSettle();
+      expect(find.text('Hiển thị'), findsOneWidget);
+      expect(find.text('Chỉ ảnh'), findsOneWidget);
+      expect(find.text('Đã yêu thích'), findsOneWidget);
+      await tester.tap(find.text('Chỉ video'));
+      await tester.pumpAndSettle();
+      expect(find.text('Chỉ video'), findsOneWidget);
+      expect(find.textContaining('ảnh,'), findsNothing);
+
+      await tester.tap(find.text('Theo tuần tuổi'));
+      await tester.pumpAndSettle();
+      expect(find.text('Xem ảnh theo'), findsOneWidget);
+      await tester.tap(find.text('Tháng tuổi'));
+      await tester.pumpAndSettle();
+      expect(find.text('Theo tháng tuổi'), findsOneWidget);
+      expect(find.text('Tháng thứ 1'), findsOneWidget);
+    });
+
     testWidgets('"Đi tới tháng": months without media are disabled (10b5)', (
       tester,
     ) async {
@@ -382,7 +433,8 @@ void main() {
         overrides: [...careOverrides(), ...memoryOverrides()],
       );
       await _tab(tester, 'Ảnh');
-      await tester.tap(find.text('Tháng'));
+      await _byMonth(tester);
+      await tester.tap(find.byKey(const Key('photoScrubber')));
       await tester.pumpAndSettle();
       expect(find.text('Đi tới tháng'), findsOneWidget);
       expect(find.text('10 mục'), findsOneWidget);

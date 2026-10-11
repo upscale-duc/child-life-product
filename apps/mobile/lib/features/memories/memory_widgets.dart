@@ -10,6 +10,7 @@ import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
+import '../baby/baby_models.dart' show Relation;
 import '../care/care_format.dart';
 import '../care/care_models.dart';
 import '../family/family_labels.dart';
@@ -334,7 +335,9 @@ class AuthorAvatar extends StatelessWidget {
   }
 }
 
-/// One journal entry (10a "Entry · 1 ảnh / 1 video / 2 ảnh / ghi chú / nhiều ảnh").
+/// One journal entry, compact since v1.0 (382:2794 "Nhật ký · gọn"): 12 px padding, radius 20;
+/// one photo or video as a 128 px strip, two side by side at 96 px, more as one row of four
+/// squares with "+N"; a note on a warm card with its audience icon; loves as one muted line.
 class MemoryEntryCard extends StatelessWidget {
   const MemoryEntryCard({
     required this.memory,
@@ -371,15 +374,15 @@ class MemoryEntryCard extends StatelessWidget {
       padding: const EdgeInsets.all(ClSpace.s3),
       decoration: BoxDecoration(
         color: note ? cl.colors.sunshineSoft : cl.colors.surface,
-        borderRadius: BorderRadius.circular(ClRadius.card - 4),
-        boxShadow: note ? null : cl.shadows.card,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: note ? null : cl.shadows.tile,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              AuthorAvatar(name: memory.author.name),
+              _AuthorChip(author: memory.author),
               const SizedBox(width: ClSpace.s2),
               Text(
                 who,
@@ -394,7 +397,7 @@ class MemoryEntryCard extends StatelessWidget {
                   style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
                 ),
               ),
-              AudienceIcon(audience: memory.audience),
+              AudienceIcon(audience: memory.audience, size: 14),
             ],
           ),
           if (memory.milestone != null) ...[
@@ -405,7 +408,8 @@ class MemoryEntryCard extends StatelessWidget {
             const SizedBox(height: ClSpace.s2),
             Text(
               memory.caption!,
-              style: (note ? cl.text.body : cl.text.label).copyWith(
+              style: cl.text.body.copyWith(
+                height: 22 / 16,
                 color: note ? cl.colors.onWarm : cl.colors.ink,
               ),
             ),
@@ -421,6 +425,36 @@ class MemoryEntryCard extends StatelessWidget {
   }
 }
 
+/// 10a author chip: the initial on a soft pill (peach for Mẹ, sunshine for Ba).
+class _AuthorChip extends StatelessWidget {
+  const _AuthorChip({required this.author});
+  final CareAuthor author;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final color = switch (author.relation) {
+      Relation.mother || Relation.grandmother => cl.colors.peachSoft,
+      Relation.father || Relation.grandfather => cl.colors.sunshineSoft,
+      _ => cl.colors.mintSoft,
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(ClRadius.pill),
+      ),
+      child: Text(
+        initialOf(author.name),
+        style: cl.text.caption.copyWith(
+          fontWeight: FontWeight.w600,
+          color: cl.colors.ink,
+        ),
+      ),
+    );
+  }
+}
+
 class _EntryMedia extends StatelessWidget {
   const _EntryMedia({
     required this.items,
@@ -431,81 +465,76 @@ class _EntryMedia extends StatelessWidget {
   final List<MediaItem> items;
   final void Function(MediaItem item) onOpen;
 
+  static const _gap = 6.0;
+
+  Widget _tile(MediaItem i, {double radius = 12}) => MediaTile(
+    item: i,
+    favorite: favorites.contains(i.id),
+    radius: radius,
+    onTap: () => onOpen(i),
+  );
+
   @override
   Widget build(BuildContext context) {
     if (items.length == 1) {
-      final i = items.single;
-      final ratio = (i.width != null && i.height != null && i.height! > 0)
-          ? (i.width! / i.height!).clamp(0.75, 1.6)
-          : 4 / 3;
-      return AspectRatio(
-        aspectRatio: ratio,
-        child: MediaTile(
-          item: i,
-          favorite: favorites.contains(i.id),
-          radius: ClRadius.control,
-          onTap: () => onOpen(i),
-        ),
+      return SizedBox(
+        height: 128,
+        width: double.infinity,
+        child: _tile(items.single),
       );
     }
     if (items.length == 2) {
-      return AspectRatio(
-        aspectRatio: 2,
+      return SizedBox(
+        height: 96,
         child: Row(
           children: [
             for (final (n, i) in items.indexed) ...[
-              if (n > 0) const SizedBox(width: 4),
-              Expanded(
-                child: MediaTile(
-                  item: i,
-                  favorite: favorites.contains(i.id),
-                  radius: ClRadius.control,
-                  onTap: () => onOpen(i),
-                ),
-              ),
+              if (n > 0) const SizedBox(width: _gap),
+              Expanded(child: _tile(i)),
             ],
           ],
         ),
       );
     }
-    final shown = items.take(6).toList();
+    // Three or more: one row of four squares, "+N" on the last when there are more.
+    final shown = items.take(4).toList();
     final extra = items.length - shown.length;
-    return GridView.count(
-      crossAxisCount: 3,
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.zero,
+    return Row(
       children: [
-        for (final (n, i) in shown.indexed)
-          Stack(
-            fit: StackFit.expand,
-            children: [
-              MediaTile(
-                item: i,
-                favorite: favorites.contains(i.id),
-                onTap: () => onOpen(i),
-              ),
-              if (extra > 0 && n == shown.length - 1)
-                IgnorePointer(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: ColoredBox(
-                      color: Colors.black45,
-                      child: Center(
-                        child: Text(
-                          '+$extra',
-                          style: context.cl.text.headline.copyWith(
-                            color: Colors.white,
+        for (var n = 0; n < 4; n++) ...[
+          if (n > 0) const SizedBox(width: _gap),
+          Expanded(
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: n >= shown.length
+                  ? const SizedBox.shrink()
+                  : Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        _tile(shown[n]),
+                        if (extra > 0 && n == 3)
+                          IgnorePointer(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: ColoredBox(
+                                color: const Color(0x8C0F262B),
+                                child: Center(
+                                  child: Text(
+                                    '+$extra',
+                                    style: context.cl.text.headline.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                      ],
                     ),
-                  ),
-                ),
-            ],
+            ),
           ),
+        ],
       ],
     );
   }

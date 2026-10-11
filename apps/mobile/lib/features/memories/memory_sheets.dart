@@ -2038,6 +2038,256 @@ Future<void> showGotoMonth(
   }
 }
 
+// ---------- v1.0 10b sheets (391:2761, 391:2888, 391:3028) ----------
+
+/// "Xem ảnh theo": Tuần tuổi · Tháng tuổi · Tháng trong năm; a tap applies and closes.
+Future<void> showPhotoGroupSheet(BuildContext context, WidgetRef ref) =>
+    showClSheet<void>(
+      context: context,
+      builder: (sheet) {
+        final l10n = AppLocalizations.of(sheet);
+        final view = ref.read(memoryViewProvider);
+        return _sheet([
+          ClSheetHeader(title: l10n.photoByTitle),
+          _OptionGroup(
+            children: [
+              for (final (g, title, sub) in [
+                (PhotoGroup.ageWeek, l10n.photoByWeek, l10n.photoByWeekSub),
+                (
+                  PhotoGroup.ageMonth,
+                  l10n.photoByAgeMonth,
+                  l10n.photoByAgeMonthSub,
+                ),
+                (PhotoGroup.month, l10n.photoByMonth, l10n.photoByMonthSub),
+              ])
+                _OptionRow(
+                  leading: _Radio(on: view.photoGroup == g),
+                  title: title,
+                  subtitle: sub,
+                  selected: view.photoGroup == g,
+                  onTap: () {
+                    ref
+                        .read(memoryViewProvider.notifier)
+                        .set(view.copyWith(photoGroup: g));
+                    Navigator.of(sheet).pop();
+                  },
+                ),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s4),
+        ]);
+      },
+    );
+
+/// "Hiển thị": Ảnh & video · Chỉ ảnh · Chỉ video · Đã yêu thích, each with its count.
+Future<void> showPhotoShowSheet(
+  BuildContext context,
+  WidgetRef ref, {
+  required List<MediaItem> items,
+  required Set<String> favorites,
+}) => showClSheet<void>(
+  context: context,
+  builder: (sheet) {
+    final l10n = AppLocalizations.of(sheet);
+    final view = ref.read(memoryViewProvider);
+    final photos = items.where((i) => !i.isVideo).length;
+    final videos = items.length - photos;
+    final faved = items.where((i) => favorites.contains(i.id)).length;
+    return _sheet([
+      ClSheetHeader(title: l10n.photoShowTitle),
+      _OptionGroup(
+        children: [
+          for (final (show, icon, title, count) in [
+            (
+              PhotoShow.all,
+              ClIcons.camera,
+              l10n.photoShowAll,
+              l10n.memItemCount(items.length),
+            ),
+            (
+              PhotoShow.photos,
+              ClIcons.memories,
+              l10n.photoShowPhotos,
+              l10n.memPhotoCount(photos),
+            ),
+            (
+              PhotoShow.videos,
+              ClIcons.eye,
+              l10n.photoShowVideos,
+              l10n.memVideoCount(videos),
+            ),
+            (
+              PhotoShow.favorites,
+              ClIcons.bookmark,
+              l10n.photoShowFavorites,
+              l10n.memItemCount(faved),
+            ),
+          ])
+            _OptionRow(
+              leading: ClIcon(icon, size: 20, color: sheet.cl.colors.mintText),
+              title: title,
+              subtitle: count,
+              selected: view.photoShow == show,
+              trailingCheck: true,
+              onTap: () {
+                ref
+                    .read(memoryViewProvider.notifier)
+                    .set(view.copyWith(photoShow: show));
+                Navigator.of(sheet).pop();
+              },
+            ),
+        ],
+      ),
+      const SizedBox(height: ClSpace.s4),
+    ]);
+  },
+);
+
+/// One week (or month) of age in "Đi tới tuần".
+typedef PhotoSection = ({
+  Object key,
+  String title,
+  String subtitle,
+  MediaItem? cover,
+});
+
+/// "Đi tới tuần" / "Đi tới tháng tuổi": newest first, a cover, the range and how many items;
+/// the one in view is checked.
+Future<void> showGotoSection(
+  BuildContext context, {
+  required String title,
+  required List<PhotoSection> sections,
+  required Object? current,
+  required void Function(Object key) jumpTo,
+}) async {
+  final picked = await showClSheet<Object>(
+    context: context,
+    builder: (sheet) => _sheet([
+      ClSheetHeader(title: title),
+      _OptionGroup(
+        children: [
+          for (final s in sections)
+            _OptionRow(
+              leading: SizedBox(
+                width: 44,
+                height: 44,
+                child: s.cover == null
+                    ? DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: sheet.cl.colors.surface2,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      )
+                    : IgnorePointer(
+                        child: MediaTile(item: s.cover!, radius: 10),
+                      ),
+              ),
+              title: s.title,
+              subtitle: s.subtitle,
+              selected: s.key == current,
+              trailingCheck: true,
+              onTap: () => Navigator.of(sheet).pop(s.key),
+            ),
+        ],
+      ),
+      const SizedBox(height: ClSpace.s4),
+    ]),
+  );
+  if (picked != null) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => jumpTo(picked));
+  }
+}
+
+class _OptionGroup extends StatelessWidget {
+  const _OptionGroup({required this.children});
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      color: context.cl.colors.surface,
+      borderRadius: BorderRadius.circular(16),
+    ),
+    clipBehavior: Clip.antiAlias,
+    child: Column(children: children),
+  );
+}
+
+class _Radio extends StatelessWidget {
+  const _Radio({required this.on});
+  final bool on;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.cl.colors;
+    return Container(
+      width: 22,
+      height: 22,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: on ? c.mintDeep : c.controlBorder,
+          width: on ? 7 : 1.5,
+        ),
+      ),
+    );
+  }
+}
+
+class _OptionRow extends StatelessWidget {
+  const _OptionRow({
+    required this.leading,
+    required this.title,
+    required this.subtitle,
+    required this.selected,
+    required this.onTap,
+    this.trailingCheck = false,
+  });
+
+  final Widget leading;
+  final String title;
+  final String subtitle;
+  final bool selected;
+  final bool trailingCheck;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return ClPressable(
+      onPressed: onTap,
+      selected: selected,
+      semanticLabel: '$title. $subtitle',
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            leading,
+            const SizedBox(width: ClSpace.s3),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: cl.text.bodyStrong.copyWith(fontSize: 15)),
+                  Text(
+                    subtitle,
+                    style: cl.text.caption.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: cl.colors.inkMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (trailingCheck && selected)
+              ClIcon(ClIcons.check, size: 20, color: cl.colors.mintText),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ---------- 10c "Cách xem" ----------
 
 Future<void> showViewOptions(

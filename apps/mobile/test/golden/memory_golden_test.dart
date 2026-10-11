@@ -323,9 +323,44 @@ final _cases = <String, _Case>{
   ),
   '10b5_goto_month': (
     build: _tab,
+    overrides: () => _base(
+      view: const MemoryView(
+        tab: MemoryTab.photos,
+        photoGroup: PhotoGroup.month,
+      ),
+    ),
+    prefs: const {},
+    act: (t) async => t.tap(find.byKey(const Key('photoScrubber'))),
+  ),
+  // v1.0 "Nhật ký gọn hơn" (382:2793): the three sheets of 10b.
+  'v1i_10b_group_sheet': (
+    build: _tab,
     overrides: () => _base(view: const MemoryView(tab: MemoryTab.photos)),
     prefs: const {},
-    act: (t) async => t.tap(find.text(_l10n(t).memFilterMonth)),
+    act: (t) async => t.tap(find.text(_l10n(t).photoPillWeek)),
+  ),
+  'v1i_10b_show_sheet': (
+    build: _tab,
+    overrides: () => _base(view: const MemoryView(tab: MemoryTab.photos)),
+    prefs: const {},
+    act: (t) async => t.tap(find.text(_l10n(t).photoShowAll)),
+  ),
+  'v1i_10b_goto_week': (
+    build: _tab,
+    overrides: () => _base(view: const MemoryView(tab: MemoryTab.photos)),
+    prefs: const {},
+    act: (t) async => t.tap(find.byKey(const Key('photoScrubber'))),
+  ),
+  'v1i_10b_by_age_month': (
+    build: _tab,
+    overrides: () => _base(
+      view: const MemoryView(
+        tab: MemoryTab.photos,
+        photoGroup: PhotoGroup.ageMonth,
+      ),
+    ),
+    prefs: const {},
+    act: null,
   ),
   '10c_view_options': (
     build: _tab,

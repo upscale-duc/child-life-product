@@ -10572,6 +10572,132 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nhắc việc'**
   String get reminderPeekTitle;
+
+  /// SH Ảnh · Xem theo (391:2761) title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem ảnh theo'**
+  String get photoByTitle;
+
+  /// Grouping option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần tuổi'**
+  String get photoByWeek;
+
+  /// Grouping option caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần 1, tuần 2… hợp với năm đầu đời'**
+  String get photoByWeekSub;
+
+  /// Grouping option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng tuổi'**
+  String get photoByAgeMonth;
+
+  /// Grouping option caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 tháng, 2 tháng…'**
+  String get photoByAgeMonthSub;
+
+  /// Grouping option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng trong năm'**
+  String get photoByMonth;
+
+  /// Grouping option caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng 10, tháng 9…'**
+  String get photoByMonthSub;
+
+  /// 10b grouping pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tuần tuổi'**
+  String get photoPillWeek;
+
+  /// 10b grouping pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tháng tuổi'**
+  String get photoPillAgeMonth;
+
+  /// 10b grouping pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tháng'**
+  String get photoPillMonth;
+
+  /// SH Ảnh · Loại (391:2888) title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiển thị'**
+  String get photoShowTitle;
+
+  /// Type option and pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh & video'**
+  String get photoShowAll;
+
+  /// Type option and pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ảnh'**
+  String get photoShowPhotos;
+
+  /// Type option and pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ video'**
+  String get photoShowVideos;
+
+  /// Type option and pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã yêu thích'**
+  String get photoShowFavorites;
+
+  /// SH Ảnh · Chọn tuần (391:3028) title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đi tới tuần'**
+  String get photoGotoWeek;
+
+  /// Jump sheet title, month of age.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đi tới tháng tuổi'**
+  String get photoGotoAgeMonth;
+
+  /// Section title, month of age.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng thứ {month}'**
+  String photoAgeMonth(int month);
+
+  /// Scrubber pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần {week}'**
+  String photoScrubWeek(int week);
+
+  /// Scrubber pill, month of age.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month}'**
+  String photoScrubAgeMonth(int month);
+
+  /// Select a whole week / month of age.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn tất cả'**
+  String get photoSelectSection;
 }
 
 class _AppLocalizationsDelegate

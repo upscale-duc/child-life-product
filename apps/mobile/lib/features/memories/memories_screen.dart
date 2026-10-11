@@ -45,6 +45,12 @@ enum MemoryShow { all, photos, videos, milestones }
 
 enum MemoryWho { all, family, parents }
 
+/// v1.0 10b "Xem ảnh theo": week of age, month of age, calendar month.
+enum PhotoGroup { ageWeek, ageMonth, month }
+
+/// v1.0 10b "Hiển thị".
+enum PhotoShow { all, photos, videos, favorites }
+
 @immutable
 class MemoryView {
   const MemoryView({
@@ -54,6 +60,8 @@ class MemoryView {
     this.show = MemoryShow.all,
     this.who = MemoryWho.all,
     this.asRelative = false,
+    this.photoGroup = PhotoGroup.ageWeek,
+    this.photoShow = PhotoShow.all,
   });
 
   final MemoryTab tab;
@@ -61,6 +69,8 @@ class MemoryView {
   final MemoryLayout layout;
   final MemoryShow show;
   final MemoryWho who;
+  final PhotoGroup photoGroup;
+  final PhotoShow photoShow;
 
   /// "Xem như người thân" (10c): what relatives see, nothing private.
   final bool asRelative;
@@ -72,6 +82,8 @@ class MemoryView {
     MemoryShow? show,
     MemoryWho? who,
     bool? asRelative,
+    PhotoGroup? photoGroup,
+    PhotoShow? photoShow,
   }) => MemoryView(
     tab: tab ?? this.tab,
     group: group ?? this.group,
@@ -79,6 +91,8 @@ class MemoryView {
     show: show ?? this.show,
     who: who ?? this.who,
     asRelative: asRelative ?? this.asRelative,
+    photoGroup: photoGroup ?? this.photoGroup,
+    photoShow: photoShow ?? this.photoShow,
   );
 }
 
@@ -771,51 +785,62 @@ class JournalView extends ConsumerWidget {
               ],
             ),
           ),
-          for (final g in order)
+          for (final (n, g) in order.indexed)
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(
+              padding: EdgeInsets.fromLTRB(
                 ClSpace.s4,
-                ClSpace.s3,
+                n == 0 ? ClSpace.s3 : 20,
                 ClSpace.s4,
                 0,
               ),
+              // 10a (382:2794): "Tuần thứ 3" left, "1 – 7 tháng 10 · 13 ảnh, 3 video" right.
               sliver: SliverToBoxAdapter(
-                child: Container(
-                  padding: const EdgeInsets.only(left: ClSpace.s3),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      left: BorderSide(color: cl.colors.mint, width: 3),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(g.title, style: cl.text.headline),
-                      Text(
-                        g.subtitle,
-                        style: cl.text.caption.copyWith(
-                          color: cl.colors.inkMuted,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Semantics(
+                          header: true,
+                          child: Text(
+                            g.title,
+                            style: cl.text.bodyStrong.copyWith(fontSize: 15),
+                          ),
                         ),
-                      ),
-                      for (final (m, items) in g.entries) ...[
-                        const SizedBox(height: ClSpace.s3),
-                        MemoryEntryCard(
-                          memory: m,
-                          items: items,
-                          myUid: c.me.uid,
-                          favorites: favorites,
-                          footer: _EntryFooter(memory: m, ctx: c),
-                          dateLabel: entryDate(l10n, c, m.occurredAt),
-                          onOpen: (i) => openViewer(
-                            context,
-                            items: items,
-                            start: items.indexOf(i),
-                            memory: m,
+                        const SizedBox(width: ClSpace.s2),
+                        Expanded(
+                          child: Text(
+                            g.subtitle,
+                            textAlign: TextAlign.end,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: cl.text.caption.copyWith(
+                              color: cl.colors.inkMuted,
+                            ),
                           ),
                         ),
                       ],
+                    ),
+                    for (final (m, items) in g.entries) ...[
+                      const SizedBox(height: 10),
+                      MemoryEntryCard(
+                        memory: m,
+                        items: items,
+                        myUid: c.me.uid,
+                        favorites: favorites,
+                        footer: _EntryFooter(memory: m, ctx: c),
+                        dateLabel: entryDate(l10n, c, m.occurredAt),
+                        onOpen: (i) => openViewer(
+                          context,
+                          items: items,
+                          start: items.indexOf(i),
+                          memory: m,
+                        ),
+                      ),
                     ],
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -848,8 +873,10 @@ class PhotosView extends ConsumerStatefulWidget {
 
 class _PhotosViewState extends ConsumerState<PhotosView> {
   final _scroll = ScrollController();
-  final _monthKeys = <DateTime, GlobalKey>{};
-  DateTime? _visibleMonth;
+
+  /// Section anchors: a week or month of age (int) or a calendar month (DateTime).
+  final _monthKeys = <Object, GlobalKey>{};
+  Object? _visibleMonth;
 
   /// Ids already on screen while this tab is open: anything new fades in.
   final _seen = <String>{};
@@ -868,7 +895,7 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
   }
 
   void _trackMonth() {
-    DateTime? best;
+    Object? best;
     for (final e in _monthKeys.entries) {
       final box = e.value.currentContext?.findRenderObject();
       if (box is! RenderBox || !box.attached) continue;
@@ -879,8 +906,8 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
     if (best != _visibleMonth) setState(() => _visibleMonth = best);
   }
 
-  void jumpTo(DateTime month) {
-    final ctx = _monthKeys[month]?.currentContext;
+  void jumpTo(Object section) {
+    final ctx = _monthKeys[section]?.currentContext;
     if (ctx != null) {
       Scrollable.ensureVisible(
         ctx,
@@ -899,29 +926,118 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
     final selecting = selection != null;
     final favorites =
         ref.watch(favoritesProvider((c.babyId, c.me.uid))).value ?? const {};
-    final items = visibleMedia(widget.media ?? const [], view, c.parentView);
+    // v1.0 10b: "Hiển thị" filters by type or Yêu thích; the 10c "Hiện" option is the journal's.
+    final base = visibleMedia(
+      widget.media ?? const [],
+      view.copyWith(show: MemoryShow.all),
+      c.parentView,
+    );
+    final items = [
+      for (final i in base)
+        if (switch (view.photoShow) {
+          PhotoShow.all => true,
+          PhotoShow.photos => !i.isVideo,
+          PhotoShow.videos => i.isVideo,
+          PhotoShow.favorites => favorites.contains(i.id),
+        })
+          i,
+    ];
     // Rebuild when an upload moves on, not on every progress tick.
     ref.watch(uploadQueueProvider.select((q) => _queueKey(q, c.babyId)));
-    final landing = c.parentView
+    final landing = c.parentView && view.photoShow != PhotoShow.favorites
         ? landingCells(
             ref.read(uploadQueueProvider),
             widget.media ?? const [],
-            view,
+            view.copyWith(
+              show: switch (view.photoShow) {
+                PhotoShow.photos => MemoryShow.photos,
+                PhotoShow.videos => MemoryShow.videos,
+                _ => MemoryShow.all,
+              },
+            ),
             c.babyId,
           )
         : const <PhotoCell>[];
-    final months = <DateTime, List<PhotoCell>>{};
+    // Week or month of age need the birthday; without it, calendar months.
+    final mode = c.dob == null ? PhotoGroup.month : view.photoGroup;
+    Object sectionOf(DateTime at) {
+      final l = inBabyZone(c.zone, at);
+      final day = DateTime(l.year, l.month, l.day);
+      return switch (mode) {
+        PhotoGroup.ageWeek => ageWeekOf(c.dob!, day),
+        PhotoGroup.ageMonth => ageMonthOf(c.dob!, day),
+        PhotoGroup.month => DateTime(l.year, l.month),
+      };
+    }
+
+    final months = <Object, List<PhotoCell>>{};
     for (final cell in _merge([
       for (final i in items) PhotoCell.ready(i),
     ], landing)) {
-      final l = inBabyZone(c.zone, cell.at);
-      months.putIfAbsent(DateTime(l.year, l.month), () => []).add(cell);
+      months.putIfAbsent(sectionOf(cell.at), () => []).add(cell);
     }
     final readyMonths = {
       for (final e in months.entries)
-        if (e.value.any((x) => x.item != null))
-          e.key: [for (final x in e.value) ?x.item],
+        if (e.key is DateTime && e.value.any((x) => x.item != null))
+          e.key as DateTime: [for (final x in e.value) ?x.item],
     };
+    String sectionTitle(Object k) => switch (k) {
+      final DateTime m => monthTitle(l10n, c.locale, m),
+      0 => l10n.memBeforeBirth,
+      final int n when mode == PhotoGroup.ageWeek => l10n.memWeek(n),
+      final int n => l10n.photoAgeMonth(n),
+      _ => '',
+    };
+    String? sectionRange(Object k) {
+      if (k is! int || k == 0 || c.dob == null) return null;
+      final r = mode == PhotoGroup.ageWeek
+          ? ageWeekRange(c.dob!, k)
+          : ageMonthRange(c.dob!, k);
+      return _dayRange(c.locale, r.first, r.last);
+    }
+
+    String sectionCaption(Object k, List<PhotoCell> cells) {
+      final counts = countsLabel(
+        l10n,
+        cells.where((x) => x.item?.isVideo == false).length,
+        cells.where((x) => x.item?.isVideo == true).length,
+        ', ',
+      );
+      final range = sectionRange(k);
+      return range == null ? counts : '$range · $counts';
+    }
+
+    void gotoSection() {
+      if (mode == PhotoGroup.month) {
+        showGotoMonth(context, c, readyMonths, jumpTo);
+        return;
+      }
+      final current = _visibleMonth ?? months.keys.firstOrNull;
+      showGotoSection(
+        context,
+        title: mode == PhotoGroup.ageWeek
+            ? l10n.photoGotoWeek
+            : l10n.photoGotoAgeMonth,
+        current: current,
+        jumpTo: jumpTo,
+        sections: [
+          for (final e in months.entries)
+            if (e.value.any((x) => x.item != null))
+              (
+                key: e.key,
+                title: sectionTitle(e.key),
+                subtitle: [
+                  ?sectionRange(e.key),
+                  l10n.memItemCount(
+                    e.value.where((x) => x.item != null).length,
+                  ),
+                ].join(' · '),
+                cover: e.value.firstWhere((x) => x.item != null).item,
+              ),
+        ],
+      );
+    }
+
     final fresh = <String>{};
     if (widget.media != null) {
       for (final cells in months.values) {
@@ -1017,33 +1133,76 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                   children: [
                     Row(
                       children: [
-                        chip(l10n.filterAll, on: true, onTap: () {}),
-                        const SizedBox(width: ClSpace.s2),
-                        chip(
-                          l10n.memFilterMonth,
-                          on: false,
-                          trailing: ClIcons.chevronDown,
-                          onTap: months.isEmpty
-                              ? null
-                              : () => showGotoMonth(
-                                  context,
-                                  c,
-                                  readyMonths,
-                                  jumpTo,
+                        // 10b: "Theo tuần tuổi ▾" (grouping) and "Ảnh & video ▾" (type).
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                _FilterPill(
+                                  icon: ClIcons.cake,
+                                  label: switch (mode) {
+                                    PhotoGroup.ageWeek => l10n.photoPillWeek,
+                                    PhotoGroup.ageMonth =>
+                                      l10n.photoPillAgeMonth,
+                                    PhotoGroup.month => l10n.photoPillMonth,
+                                  },
+                                  onTap: c.dob == null
+                                      ? null
+                                      : () => showPhotoGroupSheet(context, ref),
                                 ),
+                                const SizedBox(width: 6),
+                                _FilterPill(
+                                  icon: ClIcons.camera,
+                                  label: switch (view.photoShow) {
+                                    PhotoShow.all => l10n.photoShowAll,
+                                    PhotoShow.photos => l10n.photoShowPhotos,
+                                    PhotoShow.videos => l10n.photoShowVideos,
+                                    PhotoShow.favorites =>
+                                      l10n.photoShowFavorites,
+                                  },
+                                  onTap: () => showPhotoShowSheet(
+                                    context,
+                                    ref,
+                                    items: base,
+                                    favorites: favorites,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        const Spacer(),
-                        if (c.parentView || selecting)
+                        const SizedBox(width: ClSpace.s2),
+                        // "Chọn" is not on 10b: a round icon keeps room for the two pills.
+                        if (selecting)
                           chip(
-                            selecting ? l10n.actionDone : l10n.memSelect,
-                            on: selecting,
-                            icon: selecting ? null : ClIcons.check,
-                            onTap: () {
-                              final sel = ref.read(
-                                memorySelectionProvider.notifier,
-                              );
-                              selecting ? sel.end() : sel.start();
-                            },
+                            l10n.actionDone,
+                            on: true,
+                            onTap: () => ref
+                                .read(memorySelectionProvider.notifier)
+                                .end(),
+                          )
+                        else if (c.parentView)
+                          ClPressable(
+                            key: const Key('photoSelect'),
+                            onPressed: () => ref
+                                .read(memorySelectionProvider.notifier)
+                                .start(),
+                            semanticLabel: l10n.memSelect,
+                            child: Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: cl.colors.surface2,
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: ClIcon(
+                                ClIcons.check,
+                                size: 16,
+                                color: cl.colors.ink,
+                              ),
+                            ),
                           ),
                       ],
                     ),
@@ -1081,8 +1240,8 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                       children: [
                         Expanded(
                           child: Text(
-                            monthTitle(l10n, c.locale, e.key),
-                            style: cl.text.headline,
+                            sectionTitle(e.key),
+                            style: cl.text.headline.copyWith(fontSize: 18),
                           ),
                         ),
                         if (selecting)
@@ -1097,9 +1256,13 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                                   .read(memorySelectionProvider.notifier)
                                   .setAll(ids, !all);
                             },
-                            semanticLabel: l10n.memSelectMonth,
+                            semanticLabel: mode == PhotoGroup.month
+                                ? l10n.memSelectMonth
+                                : l10n.photoSelectSection,
                             child: Text(
-                              l10n.memSelectMonth,
+                              mode == PhotoGroup.month
+                                  ? l10n.memSelectMonth
+                                  : l10n.photoSelectSection,
                               style: cl.text.label.copyWith(
                                 color: cl.colors.mintText,
                                 fontWeight: FontWeight.w600,
@@ -1107,19 +1270,15 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                             ),
                           )
                         else
-                          Text(
-                            countsLabel(
-                              l10n,
-                              e.value
-                                  .where((x) => x.item?.isVideo == false)
-                                  .length,
-                              e.value
-                                  .where((x) => x.item?.isVideo == true)
-                                  .length,
-                              ' · ',
-                            ),
-                            style: cl.text.caption.copyWith(
-                              color: cl.colors.inkMuted,
+                          Flexible(
+                            child: Text(
+                              sectionCaption(e.key, e.value),
+                              textAlign: TextAlign.end,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: cl.text.caption.copyWith(
+                                color: cl.colors.inkMuted,
+                              ),
                             ),
                           ),
                       ],
@@ -1209,8 +1368,13 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
               right: ClSpace.s4,
               bottom: MediaQuery.paddingOf(context).bottom + 160,
               child: ClPressable(
-                onPressed: () => showGotoMonth(context, c, readyMonths, jumpTo),
-                semanticLabel: l10n.gotoTitle,
+                key: const Key('photoScrubber'),
+                onPressed: gotoSection,
+                semanticLabel: mode == PhotoGroup.month
+                    ? l10n.gotoTitle
+                    : mode == PhotoGroup.ageWeek
+                    ? l10n.photoGotoWeek
+                    : l10n.photoGotoAgeMonth,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: ClSpace.s3,
@@ -1225,17 +1389,19 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        c.locale.startsWith('vi')
-                            ? l10n.scrubberMonth(
-                                scrubber.month,
-                                scrubber.year,
-                                '',
-                              )
-                            : l10n.scrubberMonth(
-                                0,
-                                scrubber.year,
-                                DateFormat.MMM(c.locale).format(scrubber),
-                              ),
+                        switch (scrubber) {
+                          final int n when mode == PhotoGroup.ageWeek =>
+                            l10n.photoScrubWeek(n),
+                          final int n => l10n.photoScrubAgeMonth(n),
+                          final DateTime m when c.locale.startsWith('vi') =>
+                            l10n.scrubberMonth(m.month, m.year, ''),
+                          final DateTime m => l10n.scrubberMonth(
+                            0,
+                            m.year,
+                            DateFormat.MMM(c.locale).format(m),
+                          ),
+                          _ => '',
+                        },
                         style: cl.text.label.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -1252,6 +1418,47 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// 10b filter pill: surface, separator border, icon · label · chevron.
+class _FilterPill extends StatelessWidget {
+  const _FilterPill({required this.icon, required this.label, this.onTap});
+  final ClIcons icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return ClPressable(
+      onPressed: onTap,
+      semanticLabel: label,
+      child: Container(
+        height: 36,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: cl.colors.surface,
+          borderRadius: BorderRadius.circular(ClRadius.pill),
+          border: Border.all(color: cl.colors.separator),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClIcon(icon, size: 14, color: cl.colors.ink),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: cl.text.label.copyWith(fontWeight: FontWeight.w600),
+            ),
+            if (onTap != null) ...[
+              const SizedBox(width: 3),
+              ClIcon(ClIcons.chevronDown, size: 12, color: cl.colors.ink),
+            ],
+          ],
+        ),
       ),
     );
   }

@@ -6303,4 +6303,73 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get reminderPeekTitle => 'Nhắc việc';
+
+  @override
+  String get photoByTitle => 'Xem ảnh theo';
+
+  @override
+  String get photoByWeek => 'Tuần tuổi';
+
+  @override
+  String get photoByWeekSub => 'Tuần 1, tuần 2… hợp với năm đầu đời';
+
+  @override
+  String get photoByAgeMonth => 'Tháng tuổi';
+
+  @override
+  String get photoByAgeMonthSub => '1 tháng, 2 tháng…';
+
+  @override
+  String get photoByMonth => 'Tháng trong năm';
+
+  @override
+  String get photoByMonthSub => 'Tháng 10, tháng 9…';
+
+  @override
+  String get photoPillWeek => 'Theo tuần tuổi';
+
+  @override
+  String get photoPillAgeMonth => 'Theo tháng tuổi';
+
+  @override
+  String get photoPillMonth => 'Theo tháng';
+
+  @override
+  String get photoShowTitle => 'Hiển thị';
+
+  @override
+  String get photoShowAll => 'Ảnh & video';
+
+  @override
+  String get photoShowPhotos => 'Chỉ ảnh';
+
+  @override
+  String get photoShowVideos => 'Chỉ video';
+
+  @override
+  String get photoShowFavorites => 'Đã yêu thích';
+
+  @override
+  String get photoGotoWeek => 'Đi tới tuần';
+
+  @override
+  String get photoGotoAgeMonth => 'Đi tới tháng tuổi';
+
+  @override
+  String photoAgeMonth(int month) {
+    return 'Tháng thứ $month';
+  }
+
+  @override
+  String photoScrubWeek(int week) {
+    return 'Tuần $week';
+  }
+
+  @override
+  String photoScrubAgeMonth(int month) {
+    return 'Tháng $month';
+  }
+
+  @override
+  String get photoSelectSection => 'Chọn tất cả';
 }
