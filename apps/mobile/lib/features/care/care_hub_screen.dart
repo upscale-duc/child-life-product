@@ -16,6 +16,7 @@ import '../baby/baby_models.dart';
 import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
 import '../reminders/reminder_repository.dart';
+import '../reminders/rule_repository.dart';
 import '../today/today_layout.dart';
 import 'care_repository.dart';
 import 'history_screen.dart' show HistoryFilter;
@@ -63,12 +64,18 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
     final now = ref.watch(careClockProvider).value ?? DateTime.now();
     final reminders = ref.watch(remindersProvider(me.babyId)).value ?? const [];
     final upcoming = reminders.where((r) => !r.done && r.dueAt.isAfter(now));
-    // 370:2174: a caregiver sees the reminders that ring on their phone.
+    // Rule reminders that are on (v1.0 1a) plus the one-time ones still ahead.
+    final rules =
+        (ref.watch(reminderRulesProvider(me.babyId)).value ?? const []).where(
+          (r) => r.enabled,
+        );
+    // 370:2174: a caregiver sees the reminders assigned to them.
     final remindersLine = caregiver
         ? l10n.careRemindersMine(
-            upcoming.where((r) => r.notifyDevice?.uid == me.uid).length,
+            rules.where((r) => r.recipients.contains(me.uid)).length +
+                upcoming.where((r) => r.notifyDevice?.uid == me.uid).length,
           )
-        : l10n.careRemindersOn(upcoming.length);
+        : l10n.careRemindersOn(rules.length + upcoming.length);
 
     final daily = [
       _Tile(

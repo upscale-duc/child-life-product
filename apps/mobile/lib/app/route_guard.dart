@@ -21,6 +21,10 @@ abstract final class Routes {
   static const feedStats = '/care/stats/feed';
   static const sleepStats = '/care/stats/sleep';
   static const reminders = '/care/reminders';
+
+  /// Rule reminders (v1.0 1a–1h): `/new`, `/{id}`, `/{id}/edit`.
+  static const ruleDetail = '/care/reminders/rules';
+  static const ruleNew = '/care/reminders/rules/new';
   static const messages = '/messages';
   static const memories = '/memories';
   static const family = '/family';

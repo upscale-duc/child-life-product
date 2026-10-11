@@ -12,6 +12,8 @@ import 'package:child_life/features/reminders/reminder_notifications.dart';
 import 'package:child_life/features/reminders/reminder_repository.dart';
 import 'package:child_life/features/me/me_models.dart';
 import 'package:child_life/features/me/me_repository.dart';
+import 'package:child_life/features/reminders/rule_models.dart';
+import 'package:child_life/features/reminders/rule_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -169,6 +171,9 @@ List<Override> familyOverrides({
   List<SleepConflict> conflicts = const [],
   List<Reminder> reminders = const [],
   ReminderRepository? reminderRepo,
+  List<ReminderRule> rules = const [],
+  RuleRepository? ruleRepo,
+  Map<String, List<RuleOccurrence>> occurrences = const {},
   ReminderNotifications? notifications,
   String deviceId = testDeviceId,
   NotificationPrefs prefs = const NotificationPrefs(),
@@ -216,6 +221,12 @@ List<Override> familyOverrides({
     reminderRepositoryProvider.overrideWithValue(
       reminderRepo ?? FakeReminderRepository(),
     ),
+    // v1.0 rule reminders (D-051).
+    reminderRulesProvider.overrideWith((ref, id) => Stream.value(rules)),
+    ruleOccurrencesProvider.overrideWith(
+      (ref, key) => Stream.value(occurrences[key.$2] ?? const []),
+    ),
+    ruleRepositoryProvider.overrideWithValue(ruleRepo ?? FakeRuleRepository()),
     reminderNotificationsProvider.overrideWithValue(
       notifications ?? FakeReminderNotifications(),
     ),
@@ -223,4 +234,43 @@ List<Override> familyOverrides({
       (ref) async => DeviceIdentity(id: deviceId, label: 'iPhone'),
     ),
   ];
+}
+
+/// Records what the rule screens ask the Functions for.
+class FakeRuleRepository implements RuleRepository {
+  final saved = <RuleDraft>[];
+  final toggled = <(String, bool)>[];
+  final deleted = <String>[];
+  final answers = <({String ruleId, DateTime dueAt, int? snooze})>[];
+
+  /// What `answer` reports (false = someone already handled it).
+  bool answerDone = true;
+
+  @override
+  Future<DateTime?> save(String babyId, RuleDraft draft) async {
+    saved.add(draft);
+    return null;
+  }
+
+  @override
+  Future<void> setEnabled(String babyId, String ruleId, bool enabled) async {
+    toggled.add((ruleId, enabled));
+  }
+
+  @override
+  Future<void> delete(String babyId, String ruleId) async => deleted.add(ruleId);
+
+  @override
+  Future<bool> answer(
+    String babyId,
+    String ruleId,
+    DateTime dueAt, {
+    int? snoozeMinutes,
+  }) async {
+    answers.add((ruleId: ruleId, dueAt: dueAt, snooze: snoozeMinutes));
+    return answerDone;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

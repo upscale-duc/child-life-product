@@ -20,6 +20,7 @@ import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
+import '../../core/widgets/cl_segmented.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_avatar_view.dart';
@@ -35,6 +36,7 @@ import 'device_identity.dart';
 import 'reminder_models.dart';
 import 'reminder_notifications.dart';
 import 'reminder_repository.dart';
+import 'rule_screens.dart' show RuleRemindersList;
 
 // ---------- Labels ----------
 
@@ -129,12 +131,28 @@ ReminderCtx? _context(BuildContext context, WidgetRef ref) {
 
 // ---------- 8a / 12f list ----------
 
-/// 8a Nhắc việc (127:13602) for Cùng nuôi; 12f (192:1327) for caregivers: view and mark done.
+/// Which half of Nhắc nhở shows (v1.0 1a): "Theo quy tắc" first.
+enum ReminderTab { rules, once }
+
+final reminderTabProvider = NotifierProvider<ReminderTabState, ReminderTab>(
+  ReminderTabState.new,
+);
+
+class ReminderTabState extends Notifier<ReminderTab> {
+  @override
+  ReminderTab build() => ReminderTab.rules;
+
+  void set(ReminderTab tab) => state = tab;
+}
+
+/// Nhắc nhở (v1.0 370:2365): "Theo quy tắc" (rule reminders, 1a) and "Một lần" — 8a Nhắc
+/// việc (127:13602) for Cùng nuôi; 12f (192:1327) for caregivers: view and mark done.
 class RemindersScreen extends ConsumerWidget {
   const RemindersScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tab = ref.watch(reminderTabProvider);
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final c = _context(context, ref);
@@ -196,59 +214,74 @@ class RemindersScreen extends ConsumerWidget {
                     header: true,
                     child: Text(l10n.remindersTitle, style: cl.text.largeTitle),
                   ),
-                  if (blocked) ...[
-                    const SizedBox(height: ClSpace.s4),
-                    const _NotificationsOffCard(),
-                  ],
-                  if (!parent) ...[
-                    const SizedBox(height: ClSpace.s3),
-                    _Note(
-                      icon: ClIcons.clock,
-                      text: l10n.remindersCaregiverNote,
-                    ),
-                  ],
-                  if (all != null &&
-                      groups.overdue.isEmpty &&
-                      groups.upcoming.isEmpty &&
-                      groups.done.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: ClSpace.s6),
-                      child: Column(
-                        children: [
-                          Text(
-                            l10n.remindersEmpty,
-                            style: cl.text.headline,
-                            textAlign: TextAlign.center,
-                          ),
-                          if (parent) ...[
-                            const SizedBox(height: ClSpace.s2),
+                  const SizedBox(height: ClSpace.s3),
+                  ClSegmented<ReminderTab>(
+                    options: ReminderTab.values,
+                    selected: tab,
+                    labelOf: (t) => switch (t) {
+                      ReminderTab.rules => l10n.ruleTabRules,
+                      ReminderTab.once => l10n.ruleTabOnce,
+                    },
+                    onChanged: ref.read(reminderTabProvider.notifier).set,
+                  ),
+                  const SizedBox(height: ClSpace.s4),
+                  if (tab == ReminderTab.rules)
+                    const RuleRemindersList()
+                  else ...[
+                    if (blocked) ...[
+                      const SizedBox(height: ClSpace.s4),
+                      const _NotificationsOffCard(),
+                    ],
+                    if (!parent) ...[
+                      const SizedBox(height: ClSpace.s3),
+                      _Note(
+                        icon: ClIcons.clock,
+                        text: l10n.remindersCaregiverNote,
+                      ),
+                    ],
+                    if (all != null &&
+                        groups.overdue.isEmpty &&
+                        groups.upcoming.isEmpty &&
+                        groups.done.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: ClSpace.s6),
+                        child: Column(
+                          children: [
                             Text(
-                              l10n.remindersEmptyBody,
-                              style: cl.text.label.copyWith(
-                                color: cl.colors.inkMuted,
-                              ),
+                              l10n.remindersEmpty,
+                              style: cl.text.headline,
                               textAlign: TextAlign.center,
                             ),
+                            if (parent) ...[
+                              const SizedBox(height: ClSpace.s2),
+                              Text(
+                                l10n.remindersEmptyBody,
+                                style: cl.text.label.copyWith(
+                                  color: cl.colors.inkMuted,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                  if (groups.overdue.isNotEmpty)
-                    group(l10n.remindersOverdue, groups.overdue),
-                  if (groups.upcoming.isNotEmpty)
-                    group(l10n.remindersUpcoming, groups.upcoming),
-                  if (groups.done.isNotEmpty)
-                    group(l10n.remindersDone, groups.done),
-                  const SizedBox(height: ClSpace.s4),
-                  _Note(icon: ClIcons.clock, text: l10n.remindersInfo),
-                  if (parent) ...[
+                    if (groups.overdue.isNotEmpty)
+                      group(l10n.remindersOverdue, groups.overdue),
+                    if (groups.upcoming.isNotEmpty)
+                      group(l10n.remindersUpcoming, groups.upcoming),
+                    if (groups.done.isNotEmpty)
+                      group(l10n.remindersDone, groups.done),
                     const SizedBox(height: ClSpace.s4),
-                    ClButton(
-                      label: l10n.reminderNew,
-                      icon: ClIcons.plus,
-                      expand: true,
-                      onPressed: () => showReminderSheet(context),
-                    ),
+                    _Note(icon: ClIcons.clock, text: l10n.remindersInfo),
+                    if (parent) ...[
+                      const SizedBox(height: ClSpace.s4),
+                      ClButton(
+                        label: l10n.reminderNew,
+                        icon: ClIcons.plus,
+                        expand: true,
+                        onPressed: () => showReminderSheet(context),
+                      ),
+                    ],
                   ],
                 ],
               ),
@@ -1179,7 +1212,7 @@ class ReminderPeek extends ConsumerWidget {
                 children: [
                   Text(
                     open == 0
-                        ? l10n.remindersTitle
+                        ? l10n.reminderPeekTitle
                         : l10n.reminderPeekLabel(open),
                     style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
                   ),

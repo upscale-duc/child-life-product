@@ -57,6 +57,15 @@ import {
 } from './account.js';
 import { addToAlbum, createAlbum, deleteAlbum, removeFromAlbum, updateAlbum } from './albums.js';
 import { deliverNotice, onMessageCreated, onReactionWritten, type PushSender } from './social.js';
+import {
+  ReminderRuleError,
+  answerReminderRule,
+  deleteReminderRule,
+  fireDueRules,
+  onRecordForRules,
+  saveReminderRule,
+  setReminderRuleEnabled,
+} from './reminder-rules.js';
 import { openAiProvider, templateProvider, type AiProvider } from './ai.js';
 import {
   StaffError,
@@ -328,6 +337,58 @@ export const onCareRecordWrite = onDocumentWritten(
   },
 );
 
+// ---------- Rule reminders (v1.0 improvement, D-051) ----------
+
+/** The first log of the activity answers a due rule reminder for everyone (1d). */
+export const onCareRecordForRules = onDocumentWritten(
+  'babies/{babyId}/records/{recordId}',
+  async (event) => {
+    const change = event.data;
+    if (!change) return;
+    const { updated } = await onRecordForRules(
+      getFirestore(),
+      event.params.babyId,
+      change.before.exists ? change.before : null,
+      change.after.exists ? change.after : null,
+      new Date(),
+    );
+    if (updated > 0) logger.debug('reminder rules moved', { updated });
+  },
+);
+
+function ruleCall<T>(run: (uid: string, data: unknown, now: Date) => Promise<T>) {
+  return onCall(async (request) => {
+    if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+    try {
+      return await run(request.auth.uid, request.data, new Date());
+    } catch (error) {
+      if (error instanceof ReminderRuleError) {
+        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+      }
+      throw error;
+    }
+  });
+}
+
+export const saveRuleReminder = ruleCall((uid, data, now) =>
+  saveReminderRule(getFirestore(), uid, data, now),
+);
+export const setRuleReminderEnabled = ruleCall((uid, data, now) =>
+  setReminderRuleEnabled(getFirestore(), uid, data, now),
+);
+export const deleteRuleReminder = ruleCall((uid, data, now) =>
+  deleteReminderRule(getFirestore(), uid, data, now),
+);
+export const answerRuleReminder = ruleCall((uid, data, now) =>
+  answerReminderRule(getFirestore(), uid, data, now),
+);
+
+/** Rings rule reminders whose time has come (1f). */
+export const ringRuleReminders = onSchedule('every 1 minutes', async () => {
+  const { fired, sent } = await fireDueRules(getFirestore(), pushSender(), new Date());
+  if (fired > 0) logger.info('rule reminders rang', { fired, sent });
+});
+
 /** 27 "Giữ bản đã chọn" (R-075). */
 export const resolveSleepOverlap = onCall(async (request) => {
   if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
@@ -513,7 +574,18 @@ const pushSender = (): PushSender | null => {
         tokens,
         notification: { title: message.title, body: message.body },
         data: message.data,
-        apns: { payload: { aps: { sound: 'default' } } },
+        apns: {
+          ...(message.apns?.collapseId
+            ? { headers: { 'apns-collapse-id': message.apns.collapseId } }
+            : {}),
+          payload: {
+            aps: {
+              sound: 'default',
+              ...(message.apns?.category ? { category: message.apns.category } : {}),
+              ...(message.apns?.threadId ? { threadId: message.apns.threadId } : {}),
+            },
+          },
+        },
         android: { priority: 'high' },
       });
       return result.responses

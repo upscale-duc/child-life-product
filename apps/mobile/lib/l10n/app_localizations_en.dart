@@ -6283,4 +6283,421 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get welcomeBackBody =>
       'Sign in to continue the journey with your child.';
+
+  @override
+  String get ruleTabRules => 'Rule-based';
+
+  @override
+  String get ruleTabOnce => 'One-time';
+
+  @override
+  String get ruleTitleFeed => 'Feeding reminder';
+
+  @override
+  String get ruleTitleSleep => 'Sleep reminder';
+
+  @override
+  String get ruleTitleDiaper => 'Diaper reminder';
+
+  @override
+  String get ruleTitlePump => 'Pumping reminder';
+
+  @override
+  String ruleAfterFeed(String duration) {
+    return '$duration after the latest feed';
+  }
+
+  @override
+  String ruleAfterSleep(String duration) {
+    return '$duration after waking up';
+  }
+
+  @override
+  String ruleAfterDiaper(String duration) {
+    return '$duration after the latest change';
+  }
+
+  @override
+  String ruleAfterPump(String duration) {
+    return '$duration after the latest pump';
+  }
+
+  @override
+  String ruleFixedLine(String times) {
+    return 'Fixed $times';
+  }
+
+  @override
+  String ruleNext(String when) {
+    return 'Next $when';
+  }
+
+  @override
+  String get rulePaused => 'Paused';
+
+  @override
+  String ruleDueNow(String time) {
+    return 'Due · $time';
+  }
+
+  @override
+  String ruleSnoozedUntil(String time) {
+    return 'Again at $time';
+  }
+
+  @override
+  String get ruleWaiting => 'Waits for the next log';
+
+  @override
+  String ruleRecipientsLine(String names) {
+    return 'Recipients: $names';
+  }
+
+  @override
+  String get ruleYou => 'you';
+
+  @override
+  String get ruleAdd => 'Add reminder';
+
+  @override
+  String get ruleEmpty => 'No rule-based reminders yet';
+
+  @override
+  String get ruleEmptyBody =>
+      'For example: a feeding reminder 3 hours after the latest feed, for the whole family.';
+
+  @override
+  String get ruleCaregiverNote =>
+      'Parents set reminders; you get the ones assigned to you.';
+
+  @override
+  String get ruleActFeed => 'a feed';
+
+  @override
+  String get ruleActSleep => 'a sleep';
+
+  @override
+  String get ruleActDiaper => 'a diaper change';
+
+  @override
+  String get ruleActPump => 'a pump';
+
+  @override
+  String ruleHandled(String who, String activity, String time, String next) {
+    return '$who logged $activity at $time · next reminder $next';
+  }
+
+  @override
+  String ruleHandledNoNext(String who, String activity, String time) {
+    return '$who logged $activity at $time';
+  }
+
+  @override
+  String get ruleNewTitle => 'New reminder';
+
+  @override
+  String get ruleEditTitle => 'Edit reminder';
+
+  @override
+  String get ruleWhat => 'What should we remind you about?';
+
+  @override
+  String get ruleTypeFeed => 'Feeding';
+
+  @override
+  String get ruleTypeSleep => 'Sleep';
+
+  @override
+  String get ruleTypeDiaper => 'Diaper change';
+
+  @override
+  String get ruleTypePump => 'Pumping';
+
+  @override
+  String get ruleHow => 'How to remind';
+
+  @override
+  String get ruleModeAfter => 'After the latest log';
+
+  @override
+  String get ruleModeAfterHint => 'E.g. 3 hours after the latest feed';
+
+  @override
+  String get ruleModeFixed => 'Fixed times';
+
+  @override
+  String get ruleModeFixedHint => 'E.g. 09:00, 13:00, 19:30 every day';
+
+  @override
+  String get ruleContinue => 'Continue';
+
+  @override
+  String ruleStep(int step) {
+    return 'Step $step of 3';
+  }
+
+  @override
+  String get ruleEvery => 'Remind every';
+
+  @override
+  String get ruleCountedFeed =>
+      'counted from the latest feed (bottle or breast)';
+
+  @override
+  String get ruleCountedSleep => 'counted from when your baby wakes up';
+
+  @override
+  String get ruleCountedDiaper => 'counted from the latest diaper change';
+
+  @override
+  String get ruleCountedPump => 'counted from the latest pump';
+
+  @override
+  String get ruleExample => 'Example today';
+
+  @override
+  String get ruleExFeed => 'Fed';
+
+  @override
+  String get ruleExSleep => 'Woke';
+
+  @override
+  String get ruleExDiaper => 'Changed';
+
+  @override
+  String get ruleExPump => 'Pumped';
+
+  @override
+  String ruleExampleLine(String act, String from, String to) {
+    return '$act at $from → reminder at $to';
+  }
+
+  @override
+  String get ruleExampleNone =>
+      'Nothing logged yet: it starts after the first log.';
+
+  @override
+  String ruleExampleShift(String activity) {
+    return 'Log $activity and the reminder moves with it.';
+  }
+
+  @override
+  String get ruleQuiet => 'No reminders at night';
+
+  @override
+  String get ruleQuietRange => '22:00 – 06:00';
+
+  @override
+  String get ruleDays => 'Days';
+
+  @override
+  String get ruleEveryDay => 'Every day';
+
+  @override
+  String get ruleTimesTitle => 'Times each day';
+
+  @override
+  String get ruleSlotMorningNap => 'Morning nap';
+
+  @override
+  String get ruleSlotMiddayNap => 'Midday nap';
+
+  @override
+  String get ruleSlotAfternoonNap => 'Afternoon nap';
+
+  @override
+  String get ruleSlotNightSleep => 'Night sleep';
+
+  @override
+  String get ruleSlotMorning => 'Morning';
+
+  @override
+  String get ruleSlotMidday => 'Midday';
+
+  @override
+  String get ruleSlotAfternoon => 'Afternoon';
+
+  @override
+  String get ruleSlotEvening => 'Evening';
+
+  @override
+  String get ruleAddTime => 'Add time';
+
+  @override
+  String ruleRemoveTime(String time) {
+    return 'Remove $time';
+  }
+
+  @override
+  String get ruleTimeExists => 'That time is already on the list.';
+
+  @override
+  String get ruleWeek => 'Days of the week';
+
+  @override
+  String ruleZoneNote(String zone) {
+    return 'Reminders follow your baby’s time ($zone). When you travel, they stay on the time where your baby lives.';
+  }
+
+  @override
+  String get ruleWho => 'Who gets the reminder?';
+
+  @override
+  String get ruleRoleParent => 'Parent';
+
+  @override
+  String get ruleRoleCaregiver => 'Caregiver';
+
+  @override
+  String get ruleRoleViewOnly => 'Family · view only';
+
+  @override
+  String get ruleWhoNote =>
+      'Only parents and caregivers can get reminders. Whoever logs the activity first turns it off for everyone.';
+
+  @override
+  String get ruleAllDay => 'all day';
+
+  @override
+  String get ruleNotAtNight => 'not at night';
+
+  @override
+  String ruleRecipients(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count recipients',
+      one: '1 recipient',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ruleSave => 'Save reminder';
+
+  @override
+  String get ruleNeedRecipient => 'Choose at least one person.';
+
+  @override
+  String get ruleSavedFeed => 'Feeding reminder saved';
+
+  @override
+  String get ruleSavedSleep => 'Sleep reminder saved';
+
+  @override
+  String get ruleSavedDiaper => 'Diaper reminder saved';
+
+  @override
+  String get ruleSavedPump => 'Pumping reminder saved';
+
+  @override
+  String get ruleSaveFailed =>
+      'Couldn’t save. Check your connection and try again.';
+
+  @override
+  String get ruleDueFeed => 'Time for the feeding reminder you set';
+
+  @override
+  String get ruleDueSleep => 'Time for the sleep reminder you set';
+
+  @override
+  String get ruleDueDiaper => 'Time for the diaper reminder you set';
+
+  @override
+  String get ruleDuePump => 'Time for the pumping reminder you set';
+
+  @override
+  String get ruleLastFeed => 'Last feed';
+
+  @override
+  String get ruleLastSleep => 'Woke at';
+
+  @override
+  String get ruleLastDiaper => 'Last change';
+
+  @override
+  String get ruleLastPump => 'Last pump';
+
+  @override
+  String get ruleLogFeed => 'Log a feed';
+
+  @override
+  String get ruleLogSleep => 'Log sleep';
+
+  @override
+  String get ruleLogDiaper => 'Log a change';
+
+  @override
+  String get ruleLogPump => 'Log pumping';
+
+  @override
+  String get ruleSnoozeIn => 'Remind again in';
+
+  @override
+  String get ruleSkip => 'Skip this time';
+
+  @override
+  String get ruleAlreadyHandled => 'Someone already took care of this.';
+
+  @override
+  String ruleSnoozedToast(String time) {
+    return 'We’ll remind you again at $time';
+  }
+
+  @override
+  String get ruleSkippedToast => 'Skipped this time';
+
+  @override
+  String get ruleRecent => 'Recent';
+
+  @override
+  String get ruleRecentEmpty => 'Nothing has rung yet.';
+
+  @override
+  String ruleOutLogged(String time) {
+    return '$time · Logged';
+  }
+
+  @override
+  String ruleOutSnoozed(String time, int minutes) {
+    return '$time · Snoozed $minutes min';
+  }
+
+  @override
+  String ruleOutSkipped(String time) {
+    return '$time · Skipped';
+  }
+
+  @override
+  String ruleOutMissed(String time) {
+    return '$time · Nobody answered';
+  }
+
+  @override
+  String ruleOutLoggedBy(String who, String what) {
+    return '$who logged $what';
+  }
+
+  @override
+  String get ruleEdit => 'Edit reminder';
+
+  @override
+  String get ruleDelete => 'Delete reminder';
+
+  @override
+  String ruleDeleteTitle(String title) {
+    return 'Delete $title?';
+  }
+
+  @override
+  String get ruleDeleteBody => 'Everyone stops getting it.';
+
+  @override
+  String get ruleDeleteConfirm => 'Delete';
+
+  @override
+  String get ruleDeleted => 'Reminder deleted';
+
+  @override
+  String get reminderPeekTitle => 'Reminders';
 }

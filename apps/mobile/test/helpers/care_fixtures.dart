@@ -5,6 +5,8 @@ import 'package:child_life/features/care/care_repository.dart';
 import 'package:child_life/features/care/timer_models.dart';
 import 'package:child_life/features/reminders/reminder_models.dart';
 import 'package:child_life/features/reminders/reminder_notifications.dart';
+import 'package:child_life/features/reminders/rule_models.dart';
+import 'package:child_life/features/reminders/rule_repository.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -281,6 +283,9 @@ List<Override> careOverrides({
   List<CareRecord>? range,
   List<Reminder>? reminders,
   ReminderNotifications? notifications,
+  List<ReminderRule> rules = const [],
+  RuleRepository? ruleRepo,
+  Map<String, List<RuleOccurrence>> occurrences = const {},
 }) => [
   ...familyOverrides(
     me: me,
@@ -292,6 +297,9 @@ List<Override> careOverrides({
     conflicts: conflicts,
     reminders: reminders ?? mockReminders(),
     notifications: notifications,
+    rules: rules,
+    ruleRepo: ruleRepo,
+    occurrences: occurrences,
   ),
   careRepositoryProvider.overrideWithValue(repo ?? FakeCareRepository()),
   careRecordProvider.overrideWith((ref, key) => Stream.value(byId?[key.$2])),

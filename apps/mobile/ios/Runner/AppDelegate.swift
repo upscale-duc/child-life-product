@@ -10,6 +10,8 @@ import UserNotifications
   ) -> Bool {
     // Reminders (S7): show local notifications while the app is open, too.
     UNUserNotificationCenter.current().delegate = self
+    // v1.0 1f: lock-screen actions for rule reminders.
+    RuleNotifications.registerCategories()
     // 10j: reconnect to background uploads that finished or kept going while the app was gone.
     BackgroundUploads.shared.resume()
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -24,11 +26,13 @@ import UserNotifications
     BackgroundUploads.shared.resume()
   }
 
-  /// "Đã tải xong 7 mục" and friends open Kỷ niệm; every other notification goes to the plugins.
+  /// Rule reminder actions (1f) are answered natively; "Đã tải xong 7 mục" and friends open Kỷ
+  /// niệm; every other notification goes to the plugins.
   override func userNotificationCenter(
     _ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
     withCompletionHandler completionHandler: @escaping () -> Void
   ) {
+    if RuleNotifications.handle(response, completion: completionHandler) { return }
     guard response.notification.request.identifier.hasPrefix("uploads.") else {
       super.userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler)
       return
@@ -48,6 +52,9 @@ import UserNotifications
     }
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "BackgroundUploads") {
       BackgroundUploads.register(with: registrar.messenger())
+    }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "RuleNotifications") {
+      RuleNotifications.register(with: registrar.messenger())
     }
   }
 }

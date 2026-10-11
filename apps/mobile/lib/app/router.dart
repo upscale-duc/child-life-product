@@ -34,6 +34,7 @@ import '../features/me/notifications_screen.dart';
 import '../features/me/profile_screen.dart';
 import '../features/me/storage_screens.dart';
 import '../features/reminders/reminder_screens.dart';
+import '../features/reminders/rule_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
 import '../features/showcase/showcase_screen.dart';
@@ -252,6 +253,25 @@ final routerProvider = Provider<GoRouter>((ref) {
                     path: 'reminders',
                     builder: (_, _) => const RemindersScreen(),
                     routes: [
+                      // v1.0 rule reminders (1b–1h), before the one-time ':id'.
+                      _route(
+                        path: 'rules/new',
+                        builder: (_, _) => const RuleEditorScreen(),
+                      ),
+                      _route(
+                        path: 'rules/:ruleId',
+                        builder: (_, s) => RuleDetailScreen(
+                          ruleId: s.pathParameters['ruleId'] ?? '',
+                        ),
+                        routes: [
+                          _route(
+                            path: 'edit',
+                            builder: (_, s) => RuleEditorScreen(
+                              ruleId: s.pathParameters['ruleId'],
+                            ),
+                          ),
+                        ],
+                      ),
                       _route(
                         path: ':id',
                         builder: (_, s) => ReminderDetailScreen(

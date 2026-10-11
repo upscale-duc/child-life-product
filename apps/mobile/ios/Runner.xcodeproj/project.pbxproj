@@ -34,6 +34,7 @@
 		CCAEF9567BA0AC156952B976 /* BackgroundUploads.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C96963E5EE870246A9BA3F /* BackgroundUploads.swift */; };
 		D7357982DCDD10F0E711AF34 /* GlanceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2A0870821DA7145DF6CF70 /* GlanceStore.swift */; };
 		DC4361A7FC4B05C4B265A407 /* GlanceIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9348597E7EA32D40BCC9352 /* GlanceIntents.swift */; };
+		F14C252BC4FA6B4DF730E4F5 /* RuleNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC72B376D0CCE5AA23BE249 /* RuleNotifications.swift */; };
 		F351C9EFE0853A7C75975C5C /* GlanceLive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8C9836661320132AB04B35 /* GlanceLive.swift */; };
 		FC72C793F0CFDEAC3A3D56E4 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EF800959D6539B03719B8BF /* Pods_Runner.framework */; };
 		FFA97308B7EF61D4D2DA5F04 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3E55DFC36F891549016D931 /* Pods_RunnerTests.framework */; };
@@ -134,6 +135,7 @@
 		C54F7A49F1314623601C2661 /* GlanceAuth.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GlanceAuth.swift; sourceTree = "<group>"; };
 		D24A0ECE9B00725C6FC131D9 /* GlanceFirestore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GlanceFirestore.swift; sourceTree = "<group>"; };
 		D7F8B96E087F3A789D88E9CC /* Pods-Runner.debug-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-prod.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-prod.xcconfig"; sourceTree = "<group>"; };
+		DBC72B376D0CCE5AA23BE249 /* RuleNotifications.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RuleNotifications.swift; sourceTree = "<group>"; };
 		E151BB26312E1FC09F0CB001 /* Pods-RunnerTests.release-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release-prod.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release-prod.xcconfig"; sourceTree = "<group>"; };
 		E9348597E7EA32D40BCC9352 /* GlanceIntents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GlanceIntents.swift; sourceTree = "<group>"; };
 		EAFB637278BCDB452B04A152 /* Release-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Release-dev.xcconfig"; path = "Flutter/Release-dev.xcconfig"; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				83342895D553E66C5F75E1A3 /* InfoPlist.strings */,
 				F4C96963E5EE870246A9BA3F /* BackgroundUploads.swift */,
+				DBC72B376D0CCE5AA23BE249 /* RuleNotifications.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -688,6 +691,7 @@
 				D7357982DCDD10F0E711AF34 /* GlanceStore.swift in Sources */,
 				CCAEF9567BA0AC156952B976 /* BackgroundUploads.swift in Sources */,
 				47F02B84492E9DBB1D25111B /* UploadAttributes.swift in Sources */,
+				F14C252BC4FA6B4DF730E4F5 /* RuleNotifications.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

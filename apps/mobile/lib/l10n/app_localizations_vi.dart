@@ -2406,7 +2406,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Bạn sửa được bản ghi của mình. Bản ghi của ba mẹ chỉ xem.';
 
   @override
-  String get remindersTitle => 'Nhắc việc';
+  String get remindersTitle => 'Nhắc nhở';
 
   @override
   String get remindersOverdue => 'Quá hạn';
@@ -5894,4 +5894,413 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get welcomeBackBody => 'Đăng nhập để tiếp tục hành trình cùng con.';
+
+  @override
+  String get ruleTabRules => 'Theo quy tắc';
+
+  @override
+  String get ruleTabOnce => 'Một lần';
+
+  @override
+  String get ruleTitleFeed => 'Nhắc bú';
+
+  @override
+  String get ruleTitleSleep => 'Nhắc chuẩn bị ngủ';
+
+  @override
+  String get ruleTitleDiaper => 'Nhắc thay tã';
+
+  @override
+  String get ruleTitlePump => 'Nhắc hút sữa';
+
+  @override
+  String ruleAfterFeed(String duration) {
+    return '$duration sau lần bú gần nhất';
+  }
+
+  @override
+  String ruleAfterSleep(String duration) {
+    return '$duration sau khi bé dậy';
+  }
+
+  @override
+  String ruleAfterDiaper(String duration) {
+    return '$duration sau lần thay gần nhất';
+  }
+
+  @override
+  String ruleAfterPump(String duration) {
+    return '$duration sau lần hút sữa gần nhất';
+  }
+
+  @override
+  String ruleFixedLine(String times) {
+    return 'Cố định $times';
+  }
+
+  @override
+  String ruleNext(String when) {
+    return 'Tiếp theo $when';
+  }
+
+  @override
+  String get rulePaused => 'Đang tạm dừng';
+
+  @override
+  String ruleDueNow(String time) {
+    return 'Đến giờ · $time';
+  }
+
+  @override
+  String ruleSnoozedUntil(String time) {
+    return 'Báo lại lúc $time';
+  }
+
+  @override
+  String get ruleWaiting => 'Chờ lần ghi tiếp theo';
+
+  @override
+  String ruleRecipientsLine(String names) {
+    return 'Người nhận: $names';
+  }
+
+  @override
+  String get ruleYou => 'bạn';
+
+  @override
+  String get ruleAdd => 'Thêm nhắc';
+
+  @override
+  String get ruleEmpty => 'Chưa có nhắc theo quy tắc';
+
+  @override
+  String get ruleEmptyBody =>
+      'Ví dụ: nhắc bú 3 giờ sau lần bú gần nhất, cho cả nhà.';
+
+  @override
+  String get ruleCaregiverNote =>
+      'Ba mẹ đặt nhắc; bạn nhận những nhắc được giao cho mình.';
+
+  @override
+  String get ruleActFeed => 'lần bú';
+
+  @override
+  String get ruleActSleep => 'giấc ngủ';
+
+  @override
+  String get ruleActDiaper => 'lần thay tã';
+
+  @override
+  String get ruleActPump => 'lần hút sữa';
+
+  @override
+  String ruleHandled(String who, String activity, String time, String next) {
+    return '$who đã ghi $activity lúc $time · nhắc tiếp theo $next';
+  }
+
+  @override
+  String ruleHandledNoNext(String who, String activity, String time) {
+    return '$who đã ghi $activity lúc $time';
+  }
+
+  @override
+  String get ruleNewTitle => 'Nhắc mới';
+
+  @override
+  String get ruleEditTitle => 'Sửa nhắc';
+
+  @override
+  String get ruleWhat => 'Bạn muốn nhắc việc gì?';
+
+  @override
+  String get ruleTypeFeed => 'Bú';
+
+  @override
+  String get ruleTypeSleep => 'Ngủ';
+
+  @override
+  String get ruleTypeDiaper => 'Thay tã';
+
+  @override
+  String get ruleTypePump => 'Hút sữa';
+
+  @override
+  String get ruleHow => 'Cách nhắc';
+
+  @override
+  String get ruleModeAfter => 'Sau lần ghi gần nhất';
+
+  @override
+  String get ruleModeAfterHint => 'Ví dụ: 3 giờ sau lần bú gần nhất';
+
+  @override
+  String get ruleModeFixed => 'Giờ cố định';
+
+  @override
+  String get ruleModeFixedHint => 'Ví dụ: 09:00, 13:00, 19:30 mỗi ngày';
+
+  @override
+  String get ruleContinue => 'Tiếp tục';
+
+  @override
+  String ruleStep(int step) {
+    return 'Bước $step/3';
+  }
+
+  @override
+  String get ruleEvery => 'Nhắc sau mỗi';
+
+  @override
+  String get ruleCountedFeed => 'tính từ lần bú gần nhất (bú bình hoặc bú mẹ)';
+
+  @override
+  String get ruleCountedSleep => 'tính từ lúc bé thức dậy';
+
+  @override
+  String get ruleCountedDiaper => 'tính từ lần thay tã gần nhất';
+
+  @override
+  String get ruleCountedPump => 'tính từ lần hút sữa gần nhất';
+
+  @override
+  String get ruleExample => 'Ví dụ hôm nay';
+
+  @override
+  String get ruleExFeed => 'Bú';
+
+  @override
+  String get ruleExSleep => 'Dậy';
+
+  @override
+  String get ruleExDiaper => 'Thay tã';
+
+  @override
+  String get ruleExPump => 'Hút sữa';
+
+  @override
+  String ruleExampleLine(String act, String from, String to) {
+    return '$act lúc $from → nhắc lúc $to';
+  }
+
+  @override
+  String get ruleExampleNone =>
+      'Chưa có lần ghi nào: nhắc bắt đầu sau lần ghi đầu tiên.';
+
+  @override
+  String ruleExampleShift(String activity) {
+    return 'Ghi $activity mới thì giờ nhắc tự lùi theo.';
+  }
+
+  @override
+  String get ruleQuiet => 'Không nhắc ban đêm';
+
+  @override
+  String get ruleQuietRange => '22:00 – 06:00';
+
+  @override
+  String get ruleDays => 'Ngày áp dụng';
+
+  @override
+  String get ruleEveryDay => 'Mỗi ngày';
+
+  @override
+  String get ruleTimesTitle => 'Giờ nhắc mỗi ngày';
+
+  @override
+  String get ruleSlotMorningNap => 'Giấc sáng';
+
+  @override
+  String get ruleSlotMiddayNap => 'Giấc trưa';
+
+  @override
+  String get ruleSlotAfternoonNap => 'Giấc chiều';
+
+  @override
+  String get ruleSlotNightSleep => 'Giấc đêm';
+
+  @override
+  String get ruleSlotMorning => 'Buổi sáng';
+
+  @override
+  String get ruleSlotMidday => 'Buổi trưa';
+
+  @override
+  String get ruleSlotAfternoon => 'Buổi chiều';
+
+  @override
+  String get ruleSlotEvening => 'Buổi tối';
+
+  @override
+  String get ruleAddTime => 'Thêm giờ';
+
+  @override
+  String ruleRemoveTime(String time) {
+    return 'Xoá $time';
+  }
+
+  @override
+  String get ruleTimeExists => 'Giờ này đã có trong danh sách.';
+
+  @override
+  String get ruleWeek => 'Ngày trong tuần';
+
+  @override
+  String ruleZoneNote(String zone) {
+    return 'Nhắc theo giờ của bé ($zone). Khi đi xa, giờ nhắc vẫn giữ theo nơi bé ở.';
+  }
+
+  @override
+  String get ruleWho => 'Ai sẽ nhận nhắc?';
+
+  @override
+  String get ruleRoleParent => 'Bố mẹ';
+
+  @override
+  String get ruleRoleCaregiver => 'Người chăm';
+
+  @override
+  String get ruleRoleViewOnly => 'Gia đình · chỉ xem';
+
+  @override
+  String get ruleWhoNote =>
+      'Chỉ bố mẹ và người chăm nhận được nhắc. Ai ghi hoạt động trước, nhắc sẽ tự tắt với mọi người.';
+
+  @override
+  String get ruleAllDay => 'cả ngày';
+
+  @override
+  String get ruleNotAtNight => 'trừ ban đêm';
+
+  @override
+  String ruleRecipients(int count) {
+    return '$count người nhận';
+  }
+
+  @override
+  String get ruleSave => 'Lưu nhắc';
+
+  @override
+  String get ruleNeedRecipient => 'Chọn ít nhất một người nhận.';
+
+  @override
+  String get ruleSavedFeed => 'Đã lưu nhắc bú';
+
+  @override
+  String get ruleSavedSleep => 'Đã lưu nhắc chuẩn bị ngủ';
+
+  @override
+  String get ruleSavedDiaper => 'Đã lưu nhắc thay tã';
+
+  @override
+  String get ruleSavedPump => 'Đã lưu nhắc hút sữa';
+
+  @override
+  String get ruleSaveFailed => 'Chưa lưu được. Kiểm tra mạng rồi thử lại.';
+
+  @override
+  String get ruleDueFeed => 'Đến giờ nhắc bú bạn đã đặt';
+
+  @override
+  String get ruleDueSleep => 'Đến giờ nhắc chuẩn bị ngủ bạn đã đặt';
+
+  @override
+  String get ruleDueDiaper => 'Đến giờ nhắc thay tã bạn đã đặt';
+
+  @override
+  String get ruleDuePump => 'Đến giờ nhắc hút sữa bạn đã đặt';
+
+  @override
+  String get ruleLastFeed => 'Lần bú gần nhất';
+
+  @override
+  String get ruleLastSleep => 'Bé dậy lúc';
+
+  @override
+  String get ruleLastDiaper => 'Lần thay gần nhất';
+
+  @override
+  String get ruleLastPump => 'Lần hút sữa gần nhất';
+
+  @override
+  String get ruleLogFeed => 'Ghi lần bú';
+
+  @override
+  String get ruleLogSleep => 'Ghi giấc ngủ';
+
+  @override
+  String get ruleLogDiaper => 'Ghi thay tã';
+
+  @override
+  String get ruleLogPump => 'Ghi hút sữa';
+
+  @override
+  String get ruleSnoozeIn => 'Báo lại sau';
+
+  @override
+  String get ruleSkip => 'Bỏ qua lần này';
+
+  @override
+  String get ruleAlreadyHandled => 'Đã có người xử lý nhắc này.';
+
+  @override
+  String ruleSnoozedToast(String time) {
+    return 'Sẽ nhắc lại lúc $time';
+  }
+
+  @override
+  String get ruleSkippedToast => 'Đã bỏ qua lần này';
+
+  @override
+  String get ruleRecent => 'Gần đây';
+
+  @override
+  String get ruleRecentEmpty => 'Chưa có lần nhắc nào.';
+
+  @override
+  String ruleOutLogged(String time) {
+    return '$time · Đã ghi';
+  }
+
+  @override
+  String ruleOutSnoozed(String time, int minutes) {
+    return '$time · Báo lại $minutes phút';
+  }
+
+  @override
+  String ruleOutSkipped(String time) {
+    return '$time · Bỏ qua';
+  }
+
+  @override
+  String ruleOutMissed(String time) {
+    return '$time · Chưa ai xử lý';
+  }
+
+  @override
+  String ruleOutLoggedBy(String who, String what) {
+    return '$who ghi $what';
+  }
+
+  @override
+  String get ruleEdit => 'Sửa nhắc';
+
+  @override
+  String get ruleDelete => 'Xoá nhắc';
+
+  @override
+  String ruleDeleteTitle(String title) {
+    return 'Xoá $title?';
+  }
+
+  @override
+  String get ruleDeleteBody => 'Mọi người nhận sẽ thôi được nhắc.';
+
+  @override
+  String get ruleDeleteConfirm => 'Xoá';
+
+  @override
+  String get ruleDeleted => 'Đã xoá nhắc';
+
+  @override
+  String get reminderPeekTitle => 'Nhắc việc';
 }

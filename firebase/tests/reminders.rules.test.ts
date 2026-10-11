@@ -280,3 +280,37 @@ describe('notification device (R-091, D-029)', () => {
     );
   });
 });
+
+describe('rule reminders (v1.0 1a–1h, D-051)', () => {
+  const RULE = `babies/b1/reminderRules/rr_${'a'.repeat(32)}`;
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, RULE), { type: 'feed', enabled: true, recipients: ['mom', 'nanny'] });
+      await setDoc(doc(db, `${RULE}/occurrences/o1`), { outcome: 'logged' });
+    });
+  });
+  const as = (uid: string) => env.authenticatedContext(uid).firestore();
+
+  it('parents and caregivers read rules and their history', async () => {
+    for (const uid of ['mom', 'nanny']) {
+      await assertSucceeds(getDoc(doc(as(uid), RULE)));
+      await assertSucceeds(getDocs(collection(as(uid), `${RULE}/occurrences`)));
+    }
+  });
+
+  it('relatives and former members never', async () => {
+    for (const uid of ['aunt', 'gone', 'stranger']) {
+      await assertFails(getDoc(doc(as(uid), RULE)));
+    }
+  });
+
+  it('nobody writes them directly: only the Functions do', async () => {
+    await assertFails(updateDoc(doc(as('mom'), RULE), { enabled: false }));
+    await assertFails(
+      setDoc(doc(as('mom'), `babies/b1/reminderRules/rr_${'b'.repeat(32)}`), { type: 'feed' }),
+    );
+    await assertFails(deleteDoc(doc(as('mom'), RULE)));
+    await assertFails(setDoc(doc(as('nanny'), `${RULE}/occurrences/o2`), { outcome: 'skipped' }));
+  });
+});

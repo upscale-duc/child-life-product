@@ -13,13 +13,14 @@ import '../../app/router.dart';
 import '../../app/session.dart';
 import '../auth/auth_repository.dart';
 import '../reminders/device_identity.dart';
+import '../reminders/rule_notifications.dart';
 
 /// Registers this install under `users/{uid}/devices/{deviceId}` (13n device list) with its
 /// push token for generic family notices (S10, R-120) when there is one, and the app language
 /// for the notice copy. A remote "Đăng xuất" (S11) signs this install out. It never asks
 /// for permission itself: iOS needs a granted notification permission and APNs (Apple team),
 /// Android 13+ uses the permission reminders already ask for (8c). Tapping a notice opens
-/// Kỷ niệm.
+/// Kỷ niệm; a rule reminder (v1.0 1f) opens its sheet.
 class PushRegistration extends ConsumerStatefulWidget {
   const PushRegistration({required this.child, super.key});
   final Widget child;
@@ -32,6 +33,8 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   String? _registeredFor;
   StreamSubscription<String>? _refresh;
   StreamSubscription<RemoteMessage>? _opened;
+  StreamSubscription<RemoteMessage>? _foreground;
+  String? _categoriesFor;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _signedOut;
 
   @override
@@ -44,6 +47,7 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   void dispose() {
     _refresh?.cancel();
     _opened?.cancel();
+    _foreground?.cancel();
     _signedOut?.cancel();
     super.dispose();
   }
@@ -51,15 +55,29 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
   Future<void> _listenForTaps() async {
     try {
       final initial = await FirebaseMessaging.instance.getInitialMessage();
-      if (initial != null) _open();
-      _opened = FirebaseMessaging.onMessageOpenedApp.listen((_) => _open());
+      if (initial != null) unawaited(_open(initial));
+      _opened = FirebaseMessaging.onMessageOpenedApp.listen(
+        (m) => unawaited(_open(m)),
+      );
+      // A rule reminder that rings while the app is open shows 1g at once.
+      _foreground = FirebaseMessaging.onMessage.listen((m) {
+        final push = rulePushOf(m.data);
+        if (push != null && mounted) unawaited(openRulePush(ref, push));
+      });
     } on Object {
       // No messaging on this device (simulator without APNs, tests).
     }
   }
 
-  void _open() {
+  Future<void> _open(RemoteMessage message) async {
     if (!mounted) return;
+    // v1.0 1f / 1g: rule reminders open their sheet (or the log, from "Ghi …").
+    final push = rulePushOf(message.data);
+    if (push != null) {
+      final action = await const RuleNotificationChannel().takeLaunchAction();
+      if (mounted) await openRulePush(ref, push, action: action);
+      return;
+    }
     ref.read(routerProvider).go(Routes.memories);
   }
 
@@ -140,6 +158,11 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
       unawaited(_signedOut!.cancel());
       _signedOut = null;
       _registeredFor = null;
+    }
+    // The lock-screen action titles follow the app language (1f).
+    if (_categoriesFor != language) {
+      _categoriesFor = language;
+      unawaited(const RuleNotificationChannel().refreshCategories());
     }
     if (session is SessionSignedIn && session.hasBaby && !session.isAnonymous) {
       WidgetsBinding.instance.addPostFrameCallback(

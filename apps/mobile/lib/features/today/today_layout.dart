@@ -17,6 +17,7 @@ import '../baby/baby_repository.dart';
 import '../home/home_shell.dart';
 import '../onboarding/setup_screens.dart' show trackerLabel;
 import '../reminders/reminder_repository.dart';
+import '../reminders/rule_repository.dart';
 import '../care/care_repository.dart';
 
 /// The three parts of Hôm nay that "Tuỳ chỉnh Hôm nay" arranges (v1.0 improvement 370:1525).
@@ -129,9 +130,13 @@ class _CustomizeSheetState extends ConsumerState<_CustomizeSheet> {
         ref.watch(babyProvider(me.babyId)).value?.trackers ??
         const <TrackerKind>[];
     final now = ref.watch(careClockProvider).value ?? DateTime.now();
-    final remindersOn = (ref.watch(remindersProvider(me.babyId)).value ?? [])
-        .where((r) => !r.done && r.dueAt.isAfter(now))
-        .length;
+    final remindersOn =
+        (ref.watch(remindersProvider(me.babyId)).value ?? [])
+            .where((r) => !r.done && r.dueAt.isAfter(now))
+            .length +
+        (ref.watch(reminderRulesProvider(me.babyId)).value ?? [])
+            .where((r) => r.enabled)
+            .length;
 
     (String, String) labels(TodaySection s) => switch (s) {
       TodaySection.tiles => (l10n.sectionTiles, l10n.sectionTilesSub),

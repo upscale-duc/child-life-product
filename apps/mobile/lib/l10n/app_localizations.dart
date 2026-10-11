@@ -4139,7 +4139,7 @@ abstract class AppLocalizations {
   /// 8a title (127:13602).
   ///
   /// In vi, this message translates to:
-  /// **'Nhắc việc'**
+  /// **'Nhắc nhở'**
   String get remindersTitle;
 
   /// 8a group.
@@ -9858,6 +9858,720 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đăng nhập để tiếp tục hành trình cùng con.'**
   String get welcomeBackBody;
+
+  /// 1a segment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo quy tắc'**
+  String get ruleTabRules;
+
+  /// 1a segment: the dated reminders.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một lần'**
+  String get ruleTabOnce;
+
+  /// Rule title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc bú'**
+  String get ruleTitleFeed;
+
+  /// Rule title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc chuẩn bị ngủ'**
+  String get ruleTitleSleep;
+
+  /// Rule title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc thay tã'**
+  String get ruleTitleDiaper;
+
+  /// Rule title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc hút sữa'**
+  String get ruleTitlePump;
+
+  /// Rule line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{duration} sau lần bú gần nhất'**
+  String ruleAfterFeed(String duration);
+
+  /// Rule line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{duration} sau khi bé dậy'**
+  String ruleAfterSleep(String duration);
+
+  /// Rule line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{duration} sau lần thay gần nhất'**
+  String ruleAfterDiaper(String duration);
+
+  /// Rule line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{duration} sau lần hút sữa gần nhất'**
+  String ruleAfterPump(String duration);
+
+  /// Rule line, fixed times.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cố định {times}'**
+  String ruleFixedLine(String times);
+
+  /// Rule status pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp theo {when}'**
+  String ruleNext(String when);
+
+  /// Rule status pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tạm dừng'**
+  String get rulePaused;
+
+  /// Rule status pill: rang, unanswered.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến giờ · {time}'**
+  String ruleDueNow(String time);
+
+  /// Rule status pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo lại lúc {time}'**
+  String ruleSnoozedUntil(String time);
+
+  /// Rule status pill: no anchor (or asleep).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ lần ghi tiếp theo'**
+  String get ruleWaiting;
+
+  /// 1a line under the list.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người nhận: {names}'**
+  String ruleRecipientsLine(String names);
+
+  /// Recipient list word for yourself.
+  ///
+  /// In vi, this message translates to:
+  /// **'bạn'**
+  String get ruleYou;
+
+  /// 1a primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm nhắc'**
+  String get ruleAdd;
+
+  /// 1a empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có nhắc theo quy tắc'**
+  String get ruleEmpty;
+
+  /// 1a empty body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: nhắc bú 3 giờ sau lần bú gần nhất, cho cả nhà.'**
+  String get ruleEmptyBody;
+
+  /// 1a note for caregivers.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba mẹ đặt nhắc; bạn nhận những nhắc được giao cho mình.'**
+  String get ruleCaregiverNote;
+
+  /// Activity noun.
+  ///
+  /// In vi, this message translates to:
+  /// **'lần bú'**
+  String get ruleActFeed;
+
+  /// Activity noun.
+  ///
+  /// In vi, this message translates to:
+  /// **'giấc ngủ'**
+  String get ruleActSleep;
+
+  /// Activity noun.
+  ///
+  /// In vi, this message translates to:
+  /// **'lần thay tã'**
+  String get ruleActDiaper;
+
+  /// Activity noun.
+  ///
+  /// In vi, this message translates to:
+  /// **'lần hút sữa'**
+  String get ruleActPump;
+
+  /// 1h banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} đã ghi {activity} lúc {time} · nhắc tiếp theo {next}'**
+  String ruleHandled(String who, String activity, String time, String next);
+
+  /// 1h banner without a next time.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} đã ghi {activity} lúc {time}'**
+  String ruleHandledNoNext(String who, String activity, String time);
+
+  /// 1b title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc mới'**
+  String get ruleNewTitle;
+
+  /// Edit title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa nhắc'**
+  String get ruleEditTitle;
+
+  /// 1b question.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn muốn nhắc việc gì?'**
+  String get ruleWhat;
+
+  /// 1b option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú'**
+  String get ruleTypeFeed;
+
+  /// 1b option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ'**
+  String get ruleTypeSleep;
+
+  /// 1b option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thay tã'**
+  String get ruleTypeDiaper;
+
+  /// 1b option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hút sữa'**
+  String get ruleTypePump;
+
+  /// 1b section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách nhắc'**
+  String get ruleHow;
+
+  /// 1b radio.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sau lần ghi gần nhất'**
+  String get ruleModeAfter;
+
+  /// 1b radio hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: 3 giờ sau lần bú gần nhất'**
+  String get ruleModeAfterHint;
+
+  /// 1b radio.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ cố định'**
+  String get ruleModeFixed;
+
+  /// 1b radio hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: 09:00, 13:00, 19:30 mỗi ngày'**
+  String get ruleModeFixedHint;
+
+  /// 1b–1c primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục'**
+  String get ruleContinue;
+
+  /// 1c / 1d step.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước {step}/3'**
+  String ruleStep(int step);
+
+  /// 1c card label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc sau mỗi'**
+  String get ruleEvery;
+
+  /// 1c caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'tính từ lần bú gần nhất (bú bình hoặc bú mẹ)'**
+  String get ruleCountedFeed;
+
+  /// 1c caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'tính từ lúc bé thức dậy'**
+  String get ruleCountedSleep;
+
+  /// 1c caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'tính từ lần thay tã gần nhất'**
+  String get ruleCountedDiaper;
+
+  /// 1c caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'tính từ lần hút sữa gần nhất'**
+  String get ruleCountedPump;
+
+  /// 1c preview title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ hôm nay'**
+  String get ruleExample;
+
+  /// 1c preview verb.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú'**
+  String get ruleExFeed;
+
+  /// 1c preview verb.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dậy'**
+  String get ruleExSleep;
+
+  /// 1c preview verb.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thay tã'**
+  String get ruleExDiaper;
+
+  /// 1c preview verb.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hút sữa'**
+  String get ruleExPump;
+
+  /// 1c preview line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{act} lúc {from} → nhắc lúc {to}'**
+  String ruleExampleLine(String act, String from, String to);
+
+  /// 1c preview without a log.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có lần ghi nào: nhắc bắt đầu sau lần ghi đầu tiên.'**
+  String get ruleExampleNone;
+
+  /// 1c preview note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi {activity} mới thì giờ nhắc tự lùi theo.'**
+  String ruleExampleShift(String activity);
+
+  /// 1c row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không nhắc ban đêm'**
+  String get ruleQuiet;
+
+  /// 1c row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'22:00 – 06:00'**
+  String get ruleQuietRange;
+
+  /// 1c row and sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày áp dụng'**
+  String get ruleDays;
+
+  /// All seven days.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi ngày'**
+  String get ruleEveryDay;
+
+  /// 1c2 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ nhắc mỗi ngày'**
+  String get ruleTimesTitle;
+
+  /// 1c2 label (sleep).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc sáng'**
+  String get ruleSlotMorningNap;
+
+  /// 1c2 label (sleep).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc trưa'**
+  String get ruleSlotMiddayNap;
+
+  /// 1c2 label (sleep).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc chiều'**
+  String get ruleSlotAfternoonNap;
+
+  /// 1c2 label (sleep).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc đêm'**
+  String get ruleSlotNightSleep;
+
+  /// 1c2 label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Buổi sáng'**
+  String get ruleSlotMorning;
+
+  /// 1c2 label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Buổi trưa'**
+  String get ruleSlotMidday;
+
+  /// 1c2 label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Buổi chiều'**
+  String get ruleSlotAfternoon;
+
+  /// 1c2 label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Buổi tối'**
+  String get ruleSlotEvening;
+
+  /// 1c2 add row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm giờ'**
+  String get ruleAddTime;
+
+  /// 1c2 a11y.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá {time}'**
+  String ruleRemoveTime(String time);
+
+  /// 1c2 duplicate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ này đã có trong danh sách.'**
+  String get ruleTimeExists;
+
+  /// 1c2 section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày trong tuần'**
+  String get ruleWeek;
+
+  /// 1c2 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc theo giờ của bé ({zone}). Khi đi xa, giờ nhắc vẫn giữ theo nơi bé ở.'**
+  String ruleZoneNote(String zone);
+
+  /// 1d title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai sẽ nhận nhắc?'**
+  String get ruleWho;
+
+  /// 1d role.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bố mẹ'**
+  String get ruleRoleParent;
+
+  /// 1d role.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người chăm'**
+  String get ruleRoleCaregiver;
+
+  /// 1d role, not selectable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình · chỉ xem'**
+  String get ruleRoleViewOnly;
+
+  /// 1d banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ bố mẹ và người chăm nhận được nhắc. Ai ghi hoạt động trước, nhắc sẽ tự tắt với mọi người.'**
+  String get ruleWhoNote;
+
+  /// 1d summary.
+  ///
+  /// In vi, this message translates to:
+  /// **'cả ngày'**
+  String get ruleAllDay;
+
+  /// 1d summary.
+  ///
+  /// In vi, this message translates to:
+  /// **'trừ ban đêm'**
+  String get ruleNotAtNight;
+
+  /// 1d summary.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} người nhận'**
+  String ruleRecipients(int count);
+
+  /// 1d primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu nhắc'**
+  String get ruleSave;
+
+  /// 1d validation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ít nhất một người nhận.'**
+  String get ruleNeedRecipient;
+
+  /// 1e toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu nhắc bú'**
+  String get ruleSavedFeed;
+
+  /// 1e toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu nhắc chuẩn bị ngủ'**
+  String get ruleSavedSleep;
+
+  /// 1e toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu nhắc thay tã'**
+  String get ruleSavedDiaper;
+
+  /// 1e toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu nhắc hút sữa'**
+  String get ruleSavedPump;
+
+  /// Callable failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Kiểm tra mạng rồi thử lại.'**
+  String get ruleSaveFailed;
+
+  /// 1f / 1g.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến giờ nhắc bú bạn đã đặt'**
+  String get ruleDueFeed;
+
+  /// 1f / 1g.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến giờ nhắc chuẩn bị ngủ bạn đã đặt'**
+  String get ruleDueSleep;
+
+  /// 1f / 1g.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến giờ nhắc thay tã bạn đã đặt'**
+  String get ruleDueDiaper;
+
+  /// 1f / 1g.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến giờ nhắc hút sữa bạn đã đặt'**
+  String get ruleDuePump;
+
+  /// 1g banner label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần bú gần nhất'**
+  String get ruleLastFeed;
+
+  /// 1g banner label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé dậy lúc'**
+  String get ruleLastSleep;
+
+  /// 1g banner label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần thay gần nhất'**
+  String get ruleLastDiaper;
+
+  /// 1g banner label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần hút sữa gần nhất'**
+  String get ruleLastPump;
+
+  /// 1f / 1g primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lần bú'**
+  String get ruleLogFeed;
+
+  /// 1f / 1g primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi giấc ngủ'**
+  String get ruleLogSleep;
+
+  /// 1f / 1g primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi thay tã'**
+  String get ruleLogDiaper;
+
+  /// 1f / 1g primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi hút sữa'**
+  String get ruleLogPump;
+
+  /// 1g label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo lại sau'**
+  String get ruleSnoozeIn;
+
+  /// 1f / 1g.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua lần này'**
+  String get ruleSkip;
+
+  /// 1g when another recipient answered.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có người xử lý nhắc này.'**
+  String get ruleAlreadyHandled;
+
+  /// 1g snooze toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẽ nhắc lại lúc {time}'**
+  String ruleSnoozedToast(String time);
+
+  /// 1g skip toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ qua lần này'**
+  String get ruleSkippedToast;
+
+  /// 1h section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần đây'**
+  String get ruleRecent;
+
+  /// 1h empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có lần nhắc nào.'**
+  String get ruleRecentEmpty;
+
+  /// 1h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} · Đã ghi'**
+  String ruleOutLogged(String time);
+
+  /// 1h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} · Báo lại {minutes} phút'**
+  String ruleOutSnoozed(String time, int minutes);
+
+  /// 1h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} · Bỏ qua'**
+  String ruleOutSkipped(String time);
+
+  /// 1h row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} · Chưa ai xử lý'**
+  String ruleOutMissed(String time);
+
+  /// 1h row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} ghi {what}'**
+  String ruleOutLoggedBy(String who, String what);
+
+  /// Rule detail action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa nhắc'**
+  String get ruleEdit;
+
+  /// Rule detail action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá nhắc'**
+  String get ruleDelete;
+
+  /// Delete confirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá {title}?'**
+  String ruleDeleteTitle(String title);
+
+  /// Delete confirm body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi người nhận sẽ thôi được nhắc.'**
+  String get ruleDeleteBody;
+
+  /// Delete confirm button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá'**
+  String get ruleDeleteConfirm;
+
+  /// Delete toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá nhắc'**
+  String get ruleDeleted;
+
+  /// ReminderPeek label on Hôm nay (128:665, 370:1248 "Nhắc việc · 3").
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc'**
+  String get reminderPeekTitle;
 }
 
 class _AppLocalizationsDelegate

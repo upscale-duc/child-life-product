@@ -3636,7 +3636,7 @@
   "@historyCaregiverNote": {
     "description": "12d role note (192:618), caregivers (D-022)."
   },
-  "remindersTitle": "Nhắc việc",
+  "remindersTitle": "Nhắc nhở",
   "@remindersTitle": {
     "description": "8a title (127:13602)."
   },
@@ -8910,5 +8910,628 @@
   "welcomeBackBody": "Đăng nhập để tiếp tục hành trình cùng con.",
   "@welcomeBackBody": {
     "description": "R1 sheet body (368:1276)."
+  },
+  "ruleTabRules": "Theo quy tắc",
+  "@ruleTabRules": {
+    "description": "1a segment."
+  },
+  "ruleTabOnce": "Một lần",
+  "@ruleTabOnce": {
+    "description": "1a segment: the dated reminders."
+  },
+  "ruleTitleFeed": "Nhắc bú",
+  "@ruleTitleFeed": {
+    "description": "Rule title."
+  },
+  "ruleTitleSleep": "Nhắc chuẩn bị ngủ",
+  "@ruleTitleSleep": {
+    "description": "Rule title."
+  },
+  "ruleTitleDiaper": "Nhắc thay tã",
+  "@ruleTitleDiaper": {
+    "description": "Rule title."
+  },
+  "ruleTitlePump": "Nhắc hút sữa",
+  "@ruleTitlePump": {
+    "description": "Rule title."
+  },
+  "ruleAfterFeed": "{duration} sau lần bú gần nhất",
+  "@ruleAfterFeed": {
+    "description": "Rule line.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleAfterSleep": "{duration} sau khi bé dậy",
+  "@ruleAfterSleep": {
+    "description": "Rule line.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleAfterDiaper": "{duration} sau lần thay gần nhất",
+  "@ruleAfterDiaper": {
+    "description": "Rule line.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleAfterPump": "{duration} sau lần hút sữa gần nhất",
+  "@ruleAfterPump": {
+    "description": "Rule line.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleFixedLine": "Cố định {times}",
+  "@ruleFixedLine": {
+    "description": "Rule line, fixed times.",
+    "placeholders": {
+      "times": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNext": "Tiếp theo {when}",
+  "@ruleNext": {
+    "description": "Rule status pill.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "rulePaused": "Đang tạm dừng",
+  "@rulePaused": {
+    "description": "Rule status pill."
+  },
+  "ruleDueNow": "Đến giờ · {time}",
+  "@ruleDueNow": {
+    "description": "Rule status pill: rang, unanswered.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleSnoozedUntil": "Báo lại lúc {time}",
+  "@ruleSnoozedUntil": {
+    "description": "Rule status pill.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleWaiting": "Chờ lần ghi tiếp theo",
+  "@ruleWaiting": {
+    "description": "Rule status pill: no anchor (or asleep)."
+  },
+  "ruleRecipientsLine": "Người nhận: {names}",
+  "@ruleRecipientsLine": {
+    "description": "1a line under the list.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleYou": "bạn",
+  "@ruleYou": {
+    "description": "Recipient list word for yourself."
+  },
+  "ruleAdd": "Thêm nhắc",
+  "@ruleAdd": {
+    "description": "1a primary."
+  },
+  "ruleEmpty": "Chưa có nhắc theo quy tắc",
+  "@ruleEmpty": {
+    "description": "1a empty."
+  },
+  "ruleEmptyBody": "Ví dụ: nhắc bú 3 giờ sau lần bú gần nhất, cho cả nhà.",
+  "@ruleEmptyBody": {
+    "description": "1a empty body."
+  },
+  "ruleCaregiverNote": "Ba mẹ đặt nhắc; bạn nhận những nhắc được giao cho mình.",
+  "@ruleCaregiverNote": {
+    "description": "1a note for caregivers."
+  },
+  "ruleActFeed": "lần bú",
+  "@ruleActFeed": {
+    "description": "Activity noun."
+  },
+  "ruleActSleep": "giấc ngủ",
+  "@ruleActSleep": {
+    "description": "Activity noun."
+  },
+  "ruleActDiaper": "lần thay tã",
+  "@ruleActDiaper": {
+    "description": "Activity noun."
+  },
+  "ruleActPump": "lần hút sữa",
+  "@ruleActPump": {
+    "description": "Activity noun."
+  },
+  "ruleHandled": "{who} đã ghi {activity} lúc {time} · nhắc tiếp theo {next}",
+  "@ruleHandled": {
+    "description": "1h banner.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "activity": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "next": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleHandledNoNext": "{who} đã ghi {activity} lúc {time}",
+  "@ruleHandledNoNext": {
+    "description": "1h banner without a next time.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "activity": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNewTitle": "Nhắc mới",
+  "@ruleNewTitle": {
+    "description": "1b title."
+  },
+  "ruleEditTitle": "Sửa nhắc",
+  "@ruleEditTitle": {
+    "description": "Edit title."
+  },
+  "ruleWhat": "Bạn muốn nhắc việc gì?",
+  "@ruleWhat": {
+    "description": "1b question."
+  },
+  "ruleTypeFeed": "Bú",
+  "@ruleTypeFeed": {
+    "description": "1b option."
+  },
+  "ruleTypeSleep": "Ngủ",
+  "@ruleTypeSleep": {
+    "description": "1b option."
+  },
+  "ruleTypeDiaper": "Thay tã",
+  "@ruleTypeDiaper": {
+    "description": "1b option."
+  },
+  "ruleTypePump": "Hút sữa",
+  "@ruleTypePump": {
+    "description": "1b option."
+  },
+  "ruleHow": "Cách nhắc",
+  "@ruleHow": {
+    "description": "1b section."
+  },
+  "ruleModeAfter": "Sau lần ghi gần nhất",
+  "@ruleModeAfter": {
+    "description": "1b radio."
+  },
+  "ruleModeAfterHint": "Ví dụ: 3 giờ sau lần bú gần nhất",
+  "@ruleModeAfterHint": {
+    "description": "1b radio hint."
+  },
+  "ruleModeFixed": "Giờ cố định",
+  "@ruleModeFixed": {
+    "description": "1b radio."
+  },
+  "ruleModeFixedHint": "Ví dụ: 09:00, 13:00, 19:30 mỗi ngày",
+  "@ruleModeFixedHint": {
+    "description": "1b radio hint."
+  },
+  "ruleContinue": "Tiếp tục",
+  "@ruleContinue": {
+    "description": "1b–1c primary."
+  },
+  "ruleStep": "Bước {step}/3",
+  "@ruleStep": {
+    "description": "1c / 1d step.",
+    "placeholders": {
+      "step": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleEvery": "Nhắc sau mỗi",
+  "@ruleEvery": {
+    "description": "1c card label."
+  },
+  "ruleCountedFeed": "tính từ lần bú gần nhất (bú bình hoặc bú mẹ)",
+  "@ruleCountedFeed": {
+    "description": "1c caption."
+  },
+  "ruleCountedSleep": "tính từ lúc bé thức dậy",
+  "@ruleCountedSleep": {
+    "description": "1c caption."
+  },
+  "ruleCountedDiaper": "tính từ lần thay tã gần nhất",
+  "@ruleCountedDiaper": {
+    "description": "1c caption."
+  },
+  "ruleCountedPump": "tính từ lần hút sữa gần nhất",
+  "@ruleCountedPump": {
+    "description": "1c caption."
+  },
+  "ruleExample": "Ví dụ hôm nay",
+  "@ruleExample": {
+    "description": "1c preview title."
+  },
+  "ruleExFeed": "Bú",
+  "@ruleExFeed": {
+    "description": "1c preview verb."
+  },
+  "ruleExSleep": "Dậy",
+  "@ruleExSleep": {
+    "description": "1c preview verb."
+  },
+  "ruleExDiaper": "Thay tã",
+  "@ruleExDiaper": {
+    "description": "1c preview verb."
+  },
+  "ruleExPump": "Hút sữa",
+  "@ruleExPump": {
+    "description": "1c preview verb."
+  },
+  "ruleExampleLine": "{act} lúc {from} → nhắc lúc {to}",
+  "@ruleExampleLine": {
+    "description": "1c preview line.",
+    "placeholders": {
+      "act": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleExampleNone": "Chưa có lần ghi nào: nhắc bắt đầu sau lần ghi đầu tiên.",
+  "@ruleExampleNone": {
+    "description": "1c preview without a log."
+  },
+  "ruleExampleShift": "Ghi {activity} mới thì giờ nhắc tự lùi theo.",
+  "@ruleExampleShift": {
+    "description": "1c preview note.",
+    "placeholders": {
+      "activity": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleQuiet": "Không nhắc ban đêm",
+  "@ruleQuiet": {
+    "description": "1c row."
+  },
+  "ruleQuietRange": "22:00 – 06:00",
+  "@ruleQuietRange": {
+    "description": "1c row subtitle."
+  },
+  "ruleDays": "Ngày áp dụng",
+  "@ruleDays": {
+    "description": "1c row and sheet title."
+  },
+  "ruleEveryDay": "Mỗi ngày",
+  "@ruleEveryDay": {
+    "description": "All seven days."
+  },
+  "ruleTimesTitle": "Giờ nhắc mỗi ngày",
+  "@ruleTimesTitle": {
+    "description": "1c2 card."
+  },
+  "ruleSlotMorningNap": "Giấc sáng",
+  "@ruleSlotMorningNap": {
+    "description": "1c2 label (sleep)."
+  },
+  "ruleSlotMiddayNap": "Giấc trưa",
+  "@ruleSlotMiddayNap": {
+    "description": "1c2 label (sleep)."
+  },
+  "ruleSlotAfternoonNap": "Giấc chiều",
+  "@ruleSlotAfternoonNap": {
+    "description": "1c2 label (sleep)."
+  },
+  "ruleSlotNightSleep": "Giấc đêm",
+  "@ruleSlotNightSleep": {
+    "description": "1c2 label (sleep)."
+  },
+  "ruleSlotMorning": "Buổi sáng",
+  "@ruleSlotMorning": {
+    "description": "1c2 label."
+  },
+  "ruleSlotMidday": "Buổi trưa",
+  "@ruleSlotMidday": {
+    "description": "1c2 label."
+  },
+  "ruleSlotAfternoon": "Buổi chiều",
+  "@ruleSlotAfternoon": {
+    "description": "1c2 label."
+  },
+  "ruleSlotEvening": "Buổi tối",
+  "@ruleSlotEvening": {
+    "description": "1c2 label."
+  },
+  "ruleAddTime": "Thêm giờ",
+  "@ruleAddTime": {
+    "description": "1c2 add row."
+  },
+  "ruleRemoveTime": "Xoá {time}",
+  "@ruleRemoveTime": {
+    "description": "1c2 a11y.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleTimeExists": "Giờ này đã có trong danh sách.",
+  "@ruleTimeExists": {
+    "description": "1c2 duplicate."
+  },
+  "ruleWeek": "Ngày trong tuần",
+  "@ruleWeek": {
+    "description": "1c2 section."
+  },
+  "ruleZoneNote": "Nhắc theo giờ của bé ({zone}). Khi đi xa, giờ nhắc vẫn giữ theo nơi bé ở.",
+  "@ruleZoneNote": {
+    "description": "1c2 banner.",
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleWho": "Ai sẽ nhận nhắc?",
+  "@ruleWho": {
+    "description": "1d title."
+  },
+  "ruleRoleParent": "Bố mẹ",
+  "@ruleRoleParent": {
+    "description": "1d role."
+  },
+  "ruleRoleCaregiver": "Người chăm",
+  "@ruleRoleCaregiver": {
+    "description": "1d role."
+  },
+  "ruleRoleViewOnly": "Gia đình · chỉ xem",
+  "@ruleRoleViewOnly": {
+    "description": "1d role, not selectable."
+  },
+  "ruleWhoNote": "Chỉ bố mẹ và người chăm nhận được nhắc. Ai ghi hoạt động trước, nhắc sẽ tự tắt với mọi người.",
+  "@ruleWhoNote": {
+    "description": "1d banner."
+  },
+  "ruleAllDay": "cả ngày",
+  "@ruleAllDay": {
+    "description": "1d summary."
+  },
+  "ruleNotAtNight": "trừ ban đêm",
+  "@ruleNotAtNight": {
+    "description": "1d summary."
+  },
+  "ruleRecipients": "{count} người nhận",
+  "@ruleRecipients": {
+    "description": "1d summary.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleSave": "Lưu nhắc",
+  "@ruleSave": {
+    "description": "1d primary."
+  },
+  "ruleNeedRecipient": "Chọn ít nhất một người nhận.",
+  "@ruleNeedRecipient": {
+    "description": "1d validation."
+  },
+  "ruleSavedFeed": "Đã lưu nhắc bú",
+  "@ruleSavedFeed": {
+    "description": "1e toast."
+  },
+  "ruleSavedSleep": "Đã lưu nhắc chuẩn bị ngủ",
+  "@ruleSavedSleep": {
+    "description": "1e toast."
+  },
+  "ruleSavedDiaper": "Đã lưu nhắc thay tã",
+  "@ruleSavedDiaper": {
+    "description": "1e toast."
+  },
+  "ruleSavedPump": "Đã lưu nhắc hút sữa",
+  "@ruleSavedPump": {
+    "description": "1e toast."
+  },
+  "ruleSaveFailed": "Chưa lưu được. Kiểm tra mạng rồi thử lại.",
+  "@ruleSaveFailed": {
+    "description": "Callable failed."
+  },
+  "ruleDueFeed": "Đến giờ nhắc bú bạn đã đặt",
+  "@ruleDueFeed": {
+    "description": "1f / 1g."
+  },
+  "ruleDueSleep": "Đến giờ nhắc chuẩn bị ngủ bạn đã đặt",
+  "@ruleDueSleep": {
+    "description": "1f / 1g."
+  },
+  "ruleDueDiaper": "Đến giờ nhắc thay tã bạn đã đặt",
+  "@ruleDueDiaper": {
+    "description": "1f / 1g."
+  },
+  "ruleDuePump": "Đến giờ nhắc hút sữa bạn đã đặt",
+  "@ruleDuePump": {
+    "description": "1f / 1g."
+  },
+  "ruleLastFeed": "Lần bú gần nhất",
+  "@ruleLastFeed": {
+    "description": "1g banner label."
+  },
+  "ruleLastSleep": "Bé dậy lúc",
+  "@ruleLastSleep": {
+    "description": "1g banner label."
+  },
+  "ruleLastDiaper": "Lần thay gần nhất",
+  "@ruleLastDiaper": {
+    "description": "1g banner label."
+  },
+  "ruleLastPump": "Lần hút sữa gần nhất",
+  "@ruleLastPump": {
+    "description": "1g banner label."
+  },
+  "ruleLogFeed": "Ghi lần bú",
+  "@ruleLogFeed": {
+    "description": "1f / 1g primary."
+  },
+  "ruleLogSleep": "Ghi giấc ngủ",
+  "@ruleLogSleep": {
+    "description": "1f / 1g primary."
+  },
+  "ruleLogDiaper": "Ghi thay tã",
+  "@ruleLogDiaper": {
+    "description": "1f / 1g primary."
+  },
+  "ruleLogPump": "Ghi hút sữa",
+  "@ruleLogPump": {
+    "description": "1f / 1g primary."
+  },
+  "ruleSnoozeIn": "Báo lại sau",
+  "@ruleSnoozeIn": {
+    "description": "1g label."
+  },
+  "ruleSkip": "Bỏ qua lần này",
+  "@ruleSkip": {
+    "description": "1f / 1g."
+  },
+  "ruleAlreadyHandled": "Đã có người xử lý nhắc này.",
+  "@ruleAlreadyHandled": {
+    "description": "1g when another recipient answered."
+  },
+  "ruleSnoozedToast": "Sẽ nhắc lại lúc {time}",
+  "@ruleSnoozedToast": {
+    "description": "1g snooze toast.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleSkippedToast": "Đã bỏ qua lần này",
+  "@ruleSkippedToast": {
+    "description": "1g skip toast."
+  },
+  "ruleRecent": "Gần đây",
+  "@ruleRecent": {
+    "description": "1h section."
+  },
+  "ruleRecentEmpty": "Chưa có lần nhắc nào.",
+  "@ruleRecentEmpty": {
+    "description": "1h empty."
+  },
+  "ruleOutLogged": "{time} · Đã ghi",
+  "@ruleOutLogged": {
+    "description": "1h row.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleOutSnoozed": "{time} · Báo lại {minutes} phút",
+  "@ruleOutSnoozed": {
+    "description": "1h row.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleOutSkipped": "{time} · Bỏ qua",
+  "@ruleOutSkipped": {
+    "description": "1h row.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleOutMissed": "{time} · Chưa ai xử lý",
+  "@ruleOutMissed": {
+    "description": "1h row.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleOutLoggedBy": "{who} ghi {what}",
+  "@ruleOutLoggedBy": {
+    "description": "1h row subtitle.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleEdit": "Sửa nhắc",
+  "@ruleEdit": {
+    "description": "Rule detail action."
+  },
+  "ruleDelete": "Xoá nhắc",
+  "@ruleDelete": {
+    "description": "Rule detail action."
+  },
+  "ruleDeleteTitle": "Xoá {title}?",
+  "@ruleDeleteTitle": {
+    "description": "Delete confirm.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleDeleteBody": "Mọi người nhận sẽ thôi được nhắc.",
+  "@ruleDeleteBody": {
+    "description": "Delete confirm body."
+  },
+  "ruleDeleteConfirm": "Xoá",
+  "@ruleDeleteConfirm": {
+    "description": "Delete confirm button."
+  },
+  "ruleDeleted": "Đã xoá nhắc",
+  "@ruleDeleted": {
+    "description": "Delete toast."
+  },
+  "reminderPeekTitle": "Nhắc việc",
+  "@reminderPeekTitle": {
+    "description": "ReminderPeek label on Hôm nay (128:665, 370:1248 \"Nhắc việc · 3\")."
   }
 }

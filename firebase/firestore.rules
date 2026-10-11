@@ -274,6 +274,18 @@ service cloud.firestore {
         allow update: if canSeeReminders(babyId) && babyOpen(babyId) && validReminderUpdate(babyId);
         allow delete: if canSeeReminders(babyId) && role(babyId) == 'coParent';
       }
+
+      // Rule reminders (v1.0 1a–1h, D-051): read like reminders; written only by the
+      // Functions (saveRuleReminder, setRuleReminderEnabled, deleteRuleReminder,
+      // answerRuleReminder) and the scheduler, which keep the schedule and recipients valid.
+      match /reminderRules/{ruleId} {
+        allow read: if canSeeReminders(babyId);
+        allow write: if false;
+        match /occurrences/{occurrenceId} {
+          allow read: if canSeeReminders(babyId);
+          allow write: if false;
+        }
+      }
     }
 
     // ---------- Care (S4) ----------

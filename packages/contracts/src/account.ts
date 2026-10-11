@@ -184,6 +184,8 @@ export const noticePref: Record<string, NotificationPrefKey> = {
   story: 'memories',
   message: 'messages',
   storage: 'storage',
+  // Rule reminders (1f) follow "Nhắc việc" in Thông báo.
+  reminderRule: 'reminders',
 };
 
 // ---------- Data export (R-187, P-123, G-072) ----------

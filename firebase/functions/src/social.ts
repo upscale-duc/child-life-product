@@ -62,7 +62,13 @@ export interface PushSender {
   /** Sends to [tokens]; returns the tokens the push service rejected for good. */
   send(
     tokens: string[],
-    message: { title: string; body: string; data: Record<string, string> },
+    message: {
+      title: string;
+      body: string;
+      data: Record<string, string>;
+      /** iOS notification category (actions), collapse id and thread. */
+      apns?: { category?: string; collapseId?: string; threadId?: string };
+    },
   ): Promise<string[]>;
 }
 

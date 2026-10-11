@@ -13,6 +13,12 @@ import '../helpers/family_fixtures.dart';
 import '../helpers/reminder_fixtures.dart';
 import '../helpers/router_pump.dart';
 
+/// v1.0: Nhắc nhở opens on "Theo quy tắc"; these are the dated reminders ("Một lần").
+Future<void> _oneTime(WidgetTester tester) async {
+  await tester.tap(find.text('Một lần'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   setUpAll(ensureTimeZones);
 
@@ -61,6 +67,7 @@ void main() {
         const RemindersScreen(),
         overrides: careOverrides(),
       );
+      await _oneTime(tester);
       expect(find.text('Quá hạn'), findsOneWidget);
       expect(find.text('Quá hạn · hôm qua 18:00 · Ba tạo'), findsOneWidget);
       expect(find.text('Thứ Bảy, 10 thg 10 · 08:30 · Bạn tạo'), findsOneWidget);
@@ -80,6 +87,7 @@ void main() {
           now: careNow,
         ),
       );
+      await _oneTime(tester);
       await tester.tap(find.bySemanticsLabel('Đánh dấu xong: Tiêm 6 trong 1'));
       await tester.pump();
       expect(repo.done.single.$1.title, 'Tiêm 6 trong 1');
@@ -104,6 +112,7 @@ void main() {
           now: careNow,
         ),
       );
+      await _oneTime(tester);
       expect(
         find.text('Ba mẹ tạo nhắc việc. Bạn xem và đánh dấu Xong.'),
         findsOneWidget,
@@ -132,6 +141,7 @@ void main() {
         ),
         prefs: const {'reminders.notificationsAsked': true},
       );
+      await _oneTime(tester);
       await tester.pumpAndSettle();
       expect(
         find.text('Đã lưu nhắc việc. Chưa bật thông báo trên máy này.'),
@@ -157,6 +167,7 @@ void main() {
           now: careNow,
         ),
       );
+      await _oneTime(tester);
       await tester.tap(find.text('Nhắc việc mới'));
       await tester.pumpAndSettle();
       expect(
@@ -201,6 +212,7 @@ void main() {
         const RemindersScreen(),
         overrides: careOverrides(reminders: const []),
       );
+      await _oneTime(tester);
       await tester.tap(find.text('Nhắc việc mới'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Báo trước'));
