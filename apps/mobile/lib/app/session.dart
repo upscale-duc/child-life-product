@@ -80,6 +80,36 @@ final sessionProvider = Provider<Session>((ref) {
   return SessionSignedIn(user: user, memberships: list);
 });
 
+/// This device has signed in to a real account before (v1.0 368:837, P-128): signed out, it
+/// opens R1 "Chào mừng trở lại" instead of 01 and the tour. Kept in app preferences, so a
+/// reinstall shows onboarding again.
+final signedInBeforeProvider = NotifierProvider<SignedInBefore, bool>(
+  SignedInBefore.new,
+);
+
+class SignedInBefore extends Notifier<bool> {
+  static const key = 'device.signedInBefore';
+
+  @override
+  bool build() {
+    try {
+      return ref.read(sharedPreferencesProvider).getBool(key) ?? false;
+    } on Object {
+      return false;
+    }
+  }
+
+  void mark() {
+    if (state) return;
+    state = true;
+    try {
+      ref.read(sharedPreferencesProvider).setBool(key, true);
+    } on Object {
+      // No preferences (tests).
+    }
+  }
+}
+
 /// The in-app splash (00) shows for at most ~1 s while the session resolves (R-006).
 final splashDoneProvider = NotifierProvider<SplashDone, bool>(SplashDone.new);
 

@@ -4,10 +4,12 @@ import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/features/appearance/appearance_screen.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
+import 'package:child_life/features/auth/auth_screens.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/onboarding/setup_draft.dart';
 import 'package:child_life/features/onboarding/setup_screens.dart';
 import 'package:child_life/features/onboarding/welcome_screens.dart';
+import 'package:child_life/features/onboarding/widgets/journey_hero.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -90,8 +92,23 @@ Future<(List<String>, ProviderContainer)> pumpScreen(
 void main() {
   testWidgets('01 Chào mừng: three entries, in both languages', (tester) async {
     final (visited, _) = await pumpScreen(tester, const WelcomeScreen());
-    expect(find.text('Cùng chăm con,\ngiữ trọn tuổi thơ'), findsOneWidget);
-    expect(find.text('Khám phá'), findsOneWidget);
+    // v1.0 (368:843): the growth journey and its new copy.
+    expect(
+      find.text('Cùng con lớn lên,\nđồng hành từng bước.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        'Chăm sóc, thấu hiểu và lưu giữ hành trình của con — bắt đầu từ năm đầu đời.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.byType(JourneyHero), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(RegExp('Hành trình lớn lên của con')),
+      findsOneWidget,
+    );
+    expect(find.text('Bắt đầu chặng đầu cùng con'), findsOneWidget);
     await tester.tap(find.text('Đăng nhập'));
     await tester.pumpAndSettle();
     expect(visited, [Routes.signIn]);
@@ -99,8 +116,29 @@ void main() {
 
   testWidgets('01 in English', (tester) async {
     await pumpScreen(tester, const WelcomeScreen(), locale: const Locale('en'));
-    expect(find.text('Explore'), findsOneWidget);
+    expect(find.text('Start the first stage together'), findsOneWidget);
     expect(find.text('Invite code'), findsOneWidget);
+  });
+
+  testWidgets('06 and R1 Chào mừng trở lại: same sheet, R1 has no Back', (
+    tester,
+  ) async {
+    await pumpScreen(tester, const SignInScreen());
+    expect(find.text('Chào bạn'), findsOneWidget);
+    expect(
+      find.text('Đăng nhập để bắt đầu hành trình cùng con.'),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel('Quay lại'), findsOneWidget);
+
+    await pumpScreen(tester, const SignInScreen(returning: true));
+    expect(find.text('Chào mừng trở lại'), findsOneWidget);
+    expect(
+      find.text('Đăng nhập để tiếp tục hành trình cùng con.'),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel('Quay lại'), findsNothing);
+    expect(find.text('Dùng email'), findsOneWidget);
   });
 
   testWidgets('moon toggles Light ↔ Night care at once', (tester) async {

@@ -93,12 +93,19 @@ GoRoute _route({
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = ValueNotifier<int>(0);
   ref
-    ..listen(sessionProvider, (_, _) => refresh.value++)
+    ..listen(sessionProvider, (_, session) {
+      // A real account (not a "Vào ngay" identity) marks the device as returning (P-128).
+      if (session case SessionSignedIn(isAnonymous: false)) {
+        ref.read(signedInBeforeProvider.notifier).mark();
+      }
+      refresh.value++;
+    })
     ..listen(splashDoneProvider, (_, _) => refresh.value++)
     ..listen(verifyDeferredProvider, (_, _) => refresh.value++)
     ..listen(lostAccessBabyIdProvider, (_, _) => refresh.value++)
     ..listen(accountMergeInProgressProvider, (_, _) => refresh.value++)
     ..listen(addingBabyProvider, (_, _) => refresh.value++)
+    ..listen(signedInBeforeProvider, (_, _) => refresh.value++)
     ..onDispose(refresh.dispose);
 
   // go_router rebuilds pushed pages without their `extra` when it refreshes (e.g. the session
@@ -124,6 +131,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       splashDone: ref.read(splashDoneProvider),
       lostAccess: ref.read(lostAccessBabyIdProvider) != null,
       addingBaby: ref.read(addingBabyProvider),
+      returning: ref.read(signedInBeforeProvider),
     ),
     routes: [
       _route(path: Routes.splash, builder: (_, _) => const SplashScreen()),
@@ -133,6 +141,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       _route(path: Routes.tour, builder: (_, _) => const TourScreen()),
       _route(path: Routes.signIn, builder: (_, _) => const SignInScreen()),
+      GoRoute(
+        path: Routes.welcomeBack,
+        pageBuilder: (_, s) => _fade(s, const SignInScreen(returning: true)),
+      ),
       _route(path: Routes.email, builder: (_, _) => const EmailScreen()),
       _route(
         path: Routes.forgot,
@@ -218,7 +230,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: Routes.care,
                 builder: (_, _) => const CareHubScreen(),
                 routes: [
-
                   _route(
                     path: 'history',
                     builder: (_, s) => HistoryScreen(
@@ -284,30 +295,20 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               _route(
                 path: ':id',
-                builder: (_, s) => BabyProfileViewScreen(
-                  babyId: s.pathParameters['id'] ?? '',
-                ),
+                builder: (_, s) =>
+                    BabyProfileViewScreen(babyId: s.pathParameters['id'] ?? ''),
               ),
             ],
           ),
-          _route(
-            path: 'profile',
-            builder: (_, _) => const ProfileScreen(),
-          ),
-          _route(
-            path: 'account',
-            builder: (_, _) => const AccountScreen(),
-          ),
+          _route(path: 'profile', builder: (_, _) => const ProfileScreen()),
+          _route(path: 'account', builder: (_, _) => const AccountScreen()),
           _route(
             path: 'notifications',
             builder: (_, _) => const NotificationsScreen(),
           ),
           _route(path: 'help', builder: (_, _) => const HelpScreen()),
           // 14m (S13).
-          _route(
-            path: 'shared',
-            builder: (_, _) => const SharedOutScreen(),
-          ),
+          _route(path: 'shared', builder: (_, _) => const SharedOutScreen()),
         ],
       ),
       // S12 stories (14b–14g, 11i): full screen.

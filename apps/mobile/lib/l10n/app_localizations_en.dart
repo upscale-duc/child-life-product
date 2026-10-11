@@ -116,10 +116,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get splashTagline => 'Care together. Keep childhood.';
 
   @override
-  String get welcomeTitle => 'Care for your baby together,\nkeep every moment';
+  String get welcomeTitle => 'Grow up together,\nevery step of the way.';
 
   @override
-  String get welcomeExplore => 'Explore';
+  String get welcomeExplore => 'Start the first stage together';
 
   @override
   String get welcomeSignIn => 'Sign in';
@@ -212,7 +212,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInTitle => 'Hello';
 
   @override
-  String get signInSubtitle => 'Sign in to get started.';
+  String get signInSubtitle => 'Sign in to start the journey with your child.';
 
   @override
   String get signInApple => 'Continue with Apple';
@@ -6241,4 +6241,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a11yDragToReorder => 'Drag to reorder';
+
+  @override
+  String get welcomeBody =>
+      'Care for, understand and keep your child’s journey — starting with the first year.';
+
+  @override
+  String get journeyFeed => 'Bottle · 120 ml';
+
+  @override
+  String get journeyFeedWho => 'Mum logged · 2 min ago';
+
+  @override
+  String get journeySmile => 'First smile';
+
+  @override
+  String get journeySmileSaved => 'Saved to Memories';
+
+  @override
+  String get journeyLove => 'Grandma loved Teddy’s photo';
+
+  @override
+  String get journeyStage1 => '0–12 months';
+
+  @override
+  String get journeyStage2 => '1–3 years';
+
+  @override
+  String get journeyStage3 => '3–6 years';
+
+  @override
+  String get journeyStage4 => '6–12 years';
+
+  @override
+  String get a11yJourney =>
+      'Your child’s growing-up journey, from the first year to 12';
+
+  @override
+  String get welcomeBackTitle => 'Welcome back';
+
+  @override
+  String get welcomeBackBody =>
+      'Sign in to continue the journey with your child.';
 }

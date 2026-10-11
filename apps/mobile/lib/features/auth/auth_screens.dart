@@ -23,6 +23,7 @@ import '../../core/widgets/cl_segmented.dart';
 import '../../core/widgets/cl_status.dart';
 import '../../l10n/app_localizations.dart';
 import '../onboarding/widgets/heroes.dart';
+import '../onboarding/widgets/journey_hero.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
 import 'auth_repository.dart';
 
@@ -89,7 +90,11 @@ class AppleSignInButton extends StatelessWidget {
 
 /// 06 Chọn cách đăng nhập (27:488).
 class SignInScreen extends ConsumerStatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({this.returning = false, super.key});
+
+  /// R1 "Chào mừng trở lại" (368:1266): this device has signed in before, so no onboarding
+  /// and no Back (368:837).
+  final bool returning;
 
   @override
   ConsumerState<SignInScreen> createState() => _SignInScreenState();
@@ -119,19 +124,27 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final media = MediaQuery.of(context);
+    final returning = widget.returning;
     return Scaffold(
-      backgroundColor: cl.colors.cardMint,
+      backgroundColor: cl.colors.cloud,
       body: Stack(
         children: [
-          const Positioned(top: 0, left: 0, right: 0, child: SignInHero()),
+          // v1.0 (368:1056 / 368:1266): the growth journey from 01 behind the sheet.
           Positioned(
-            top: media.padding.top + ClSpace.s2,
-            left: ClSpace.s4,
-            child: ClBackButton(
-              semanticLabel: l10n.a11yBack,
-              onPressed: () => context.pop(),
-            ),
+            top: media.padding.top + ClSpace.s6,
+            left: 0,
+            right: 0,
+            child: const JourneyHero(),
           ),
+          if (!returning)
+            Positioned(
+              top: media.padding.top + ClSpace.s2,
+              left: ClSpace.s4,
+              child: ClBackButton(
+                semanticLabel: l10n.a11yBack,
+                onPressed: () => context.pop(),
+              ),
+            ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -165,8 +178,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   ),
                   const SizedBox(height: ClSpace.s6),
                   ScreenHeading(
-                    title: l10n.signInTitle,
-                    subtitle: l10n.signInSubtitle,
+                    title: returning ? l10n.welcomeBackTitle : l10n.signInTitle,
+                    subtitle: returning
+                        ? l10n.welcomeBackBody
+                        : l10n.signInSubtitle,
                     large: false,
                   ),
                   const SizedBox(height: ClSpace.s6),
@@ -684,10 +699,7 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
         ),
         if (email != null) ...[
           const SizedBox(height: ClSpace.s4),
-          ClAccountRow(
-            email: email,
-            provider: l10n.existsProvider,
-          ),
+          ClAccountRow(email: email, provider: l10n.existsProvider),
         ],
       ],
       bottom: [

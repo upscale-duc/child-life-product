@@ -299,13 +299,13 @@ abstract class AppLocalizations {
   /// Welcome title (26:4).
   ///
   /// In vi, this message translates to:
-  /// **'Cùng chăm con,\ngiữ trọn tuổi thơ'**
+  /// **'Cùng con lớn lên,\nđồng hành từng bước.'**
   String get welcomeTitle;
 
   /// Welcome primary: feature tour.
   ///
   /// In vi, this message translates to:
-  /// **'Khám phá'**
+  /// **'Bắt đầu chặng đầu cùng con'**
   String get welcomeExplore;
 
   /// Welcome: go to sign-in.
@@ -485,7 +485,7 @@ abstract class AppLocalizations {
   /// Sign-in sheet subtitle.
   ///
   /// In vi, this message translates to:
-  /// **'Đăng nhập để bắt đầu.'**
+  /// **'Đăng nhập để bắt đầu hành trình cùng con.'**
   String get signInSubtitle;
 
   /// Apple button label.
@@ -9780,6 +9780,84 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Kéo để sắp xếp'**
   String get a11yDragToReorder;
+
+  /// 01 Chào mừng body (368:998).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chăm sóc, thấu hiểu và lưu giữ hành trình của con — bắt đầu từ năm đầu đời.'**
+  String get welcomeBody;
+
+  /// Journey illustration card (368:967).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình · 120 ml'**
+  String get journeyFeed;
+
+  /// Journey illustration card (368:968).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẹ ghi · 2 phút trước'**
+  String get journeyFeedWho;
+
+  /// Journey illustration card (368:974).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu con cười'**
+  String get journeySmile;
+
+  /// Journey illustration card (368:975).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu vào Kỷ niệm'**
+  String get journeySmileSaved;
+
+  /// Journey illustration card (368:979).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bà nội thương ảnh của Teddy'**
+  String get journeyLove;
+
+  /// Journey stage chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'0–12 tháng'**
+  String get journeyStage1;
+
+  /// Journey stage chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'1–3 tuổi'**
+  String get journeyStage2;
+
+  /// Journey stage chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'3–6 tuổi'**
+  String get journeyStage3;
+
+  /// Journey stage chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'6–12 tuổi'**
+  String get journeyStage4;
+
+  /// Journey illustration label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hành trình lớn lên của con, từ năm đầu đời đến 12 tuổi'**
+  String get a11yJourney;
+
+  /// R1 sheet title (368:1274).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào mừng trở lại'**
+  String get welcomeBackTitle;
+
+  /// R1 sheet body (368:1276).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập để tiếp tục hành trình cùng con.'**
+  String get welcomeBackBody;
 }
 
 class _AppLocalizationsDelegate

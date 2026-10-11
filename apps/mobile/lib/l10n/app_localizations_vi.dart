@@ -116,10 +116,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get splashTagline => 'Cùng chăm con. Giữ tuổi thơ.';
 
   @override
-  String get welcomeTitle => 'Cùng chăm con,\ngiữ trọn tuổi thơ';
+  String get welcomeTitle => 'Cùng con lớn lên,\nđồng hành từng bước.';
 
   @override
-  String get welcomeExplore => 'Khám phá';
+  String get welcomeExplore => 'Bắt đầu chặng đầu cùng con';
 
   @override
   String get welcomeSignIn => 'Đăng nhập';
@@ -212,7 +212,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get signInTitle => 'Chào bạn';
 
   @override
-  String get signInSubtitle => 'Đăng nhập để bắt đầu.';
+  String get signInSubtitle => 'Đăng nhập để bắt đầu hành trình cùng con.';
 
   @override
   String get signInApple => 'Tiếp tục với Apple';
@@ -5853,4 +5853,45 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get a11yDragToReorder => 'Kéo để sắp xếp';
+
+  @override
+  String get welcomeBody =>
+      'Chăm sóc, thấu hiểu và lưu giữ hành trình của con — bắt đầu từ năm đầu đời.';
+
+  @override
+  String get journeyFeed => 'Bú bình · 120 ml';
+
+  @override
+  String get journeyFeedWho => 'Mẹ ghi · 2 phút trước';
+
+  @override
+  String get journeySmile => 'Lần đầu con cười';
+
+  @override
+  String get journeySmileSaved => 'Đã lưu vào Kỷ niệm';
+
+  @override
+  String get journeyLove => 'Bà nội thương ảnh của Teddy';
+
+  @override
+  String get journeyStage1 => '0–12 tháng';
+
+  @override
+  String get journeyStage2 => '1–3 tuổi';
+
+  @override
+  String get journeyStage3 => '3–6 tuổi';
+
+  @override
+  String get journeyStage4 => '6–12 tuổi';
+
+  @override
+  String get a11yJourney =>
+      'Hành trình lớn lên của con, từ năm đầu đời đến 12 tuổi';
+
+  @override
+  String get welcomeBackTitle => 'Chào mừng trở lại';
+
+  @override
+  String get welcomeBackBody => 'Đăng nhập để tiếp tục hành trình cùng con.';
 }

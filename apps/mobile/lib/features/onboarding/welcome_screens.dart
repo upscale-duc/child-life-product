@@ -16,6 +16,7 @@ import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import 'widgets/heroes.dart';
+import 'widgets/journey_hero.dart';
 import 'widgets/onboarding_layout.dart';
 
 /// 00 Splash (36:2233): logo rises 8 px and fades in, then the router crossfades to the next
@@ -111,7 +112,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-/// 01 Chào mừng (26:4): Khám phá → tour, Đăng nhập → 06, Mã mời → 15 (S3); moon = theme toggle.
+/// 01 Chào mừng (v1.0 368:843; was 26:4): the growth journey, "Bắt đầu chặng đầu cùng con" → tour, Đăng nhập → 06, Mã mời → 15 (S3); moon = theme toggle.
 class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
@@ -138,11 +139,20 @@ class WelcomeScreen extends ConsumerWidget {
         ),
       ),
       content: [
-        const WelcomeHero(),
-        const SizedBox(height: ClSpace.s6),
+        const JourneyHero(),
+        const SizedBox(height: ClSpace.s4),
         Text(
           l10n.welcomeTitle,
           style: cl.text.title.copyWith(color: cl.colors.ink),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        Text(
+          l10n.welcomeBody,
+          style: cl.text.body.copyWith(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            color: cl.colors.inkMuted,
+          ),
         ),
       ],
       bottom: [

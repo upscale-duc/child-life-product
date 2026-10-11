@@ -7,12 +7,14 @@ String? go(
   bool splashDone = true,
   bool lostAccess = false,
   bool addingBaby = false,
+  bool returning = false,
 }) => guardRoute(
   state: state,
   location: location,
   splashDone: splashDone,
   lostAccess: lostAccess,
   addingBaby: addingBaby,
+  returning: returning,
 );
 
 void main() {
@@ -140,6 +142,37 @@ void main() {
       expect(go(GuardState.ready, Routes.who), Routes.today);
       expect(go(GuardState.ready, Routes.who, addingBaby: true), isNull);
       expect(go(GuardState.ready, Routes.trackers, addingBaby: true), isNull);
+    });
+  });
+
+  group('returning device (v1.0 368:837)', () {
+    test('signed out, it opens R1 instead of 01 and the tour', () {
+      expect(
+        go(GuardState.signedOut, Routes.splash, returning: true),
+        Routes.welcomeBack,
+      );
+      expect(
+        go(GuardState.signedOut, Routes.welcome, returning: true),
+        Routes.welcomeBack,
+      );
+      expect(
+        go(GuardState.signedOut, Routes.tour, returning: true),
+        Routes.welcomeBack,
+      );
+      expect(
+        go(GuardState.signedOut, Routes.today, returning: true),
+        Routes.welcomeBack,
+      );
+    });
+
+    test('sign-in, email and invites stay open; ready leaves R1', () {
+      expect(
+        go(GuardState.signedOut, Routes.welcomeBack, returning: true),
+        isNull,
+      );
+      expect(go(GuardState.signedOut, Routes.email, returning: true), isNull);
+      expect(go(GuardState.signedOut, Routes.join, returning: true), isNull);
+      expect(go(GuardState.ready, Routes.welcomeBack), Routes.today);
     });
   });
 }

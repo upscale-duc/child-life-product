@@ -55,6 +55,8 @@ abstract final class Routes {
   static const appearance = '/appearance';
 
   /// S11 tab "Tôi" (13a–13n) and its pages, inside the shell so the dock stays.
+  /// R1 "Chào mừng trở lại" (368:1266): a signed-out device that has signed in before.
+  static const welcomeBack = '/welcome-back';
   static const me = '/me';
   static const meStorage = '/me/storage';
   static const meVideos = '/me/storage/videos';
@@ -97,12 +99,14 @@ bool _under(String location, String prefix) =>
 ///
 /// [lostAccess]: a baby this device showed is no longer accessible (R-025) → 9d first.
 /// [addingBaby]: "Thêm hồ sơ bé" from the baby switcher reopens setup for a ready account.
+/// [returning]: this device has signed in before → R1 instead of 01 and the tour (368:837).
 String? guardRoute({
   required GuardState state,
   required String location,
   required bool splashDone,
   bool lostAccess = false,
   bool addingBaby = false,
+  bool returning = false,
 }) {
   final onSplash = location == Routes.splash;
   if (state == GuardState.loading) return null;
@@ -123,16 +127,22 @@ String? guardRoute({
   }
   if (location == Routes.lostAccess) return Routes.splash;
 
+  final onboarding =
+      _under(location, Routes.welcome) || _under(location, Routes.tour);
   final public =
-      _under(location, Routes.welcome) ||
-      _under(location, Routes.tour) ||
+      onboarding ||
+      _under(location, Routes.welcomeBack) ||
       _under(location, Routes.signIn);
 
   switch (state) {
     case GuardState.loading:
       return null;
     case GuardState.signedOut:
-      return public || joining ? null : Routes.welcome;
+      if (joining) return null;
+      if (returning) {
+        return public && !onboarding ? null : Routes.welcomeBack;
+      }
+      return public ? null : Routes.welcome;
     case GuardState.needsVerifyPrompt:
       // Right after creating an email account (08 "Kiểm tra email").
       return location == Routes.verify ? null : Routes.verify;
@@ -148,7 +158,7 @@ String? guardRoute({
     case GuardState.ready:
       if (joining || _under(location, Routes.saveAccountEmail)) return null;
       if (addingBaby && _under(location, '/setup')) return null;
-      final onboarding = onSplash || public || _under(location, '/setup');
-      return onboarding ? Routes.today : null;
+      final starting = onSplash || public || _under(location, '/setup');
+      return starting ? Routes.today : null;
   }
 }

@@ -35,6 +35,8 @@ final _screens = <String, Widget Function()>{
   '01_welcome': () => const WelcomeScreen(),
   '02_tour': () => const TourScreen(),
   '06_sign_in': () => const SignInScreen(),
+  // v1.0 R1 (368:1266): a device that has signed in before.
+  'r1_welcome_back': () => const SignInScreen(returning: true),
   '07_email': () => const EmailScreen(),
   '09_forgot': () => const ForgotPasswordScreen(),
   '10a_who': () => const WhoAreYouScreen(),
