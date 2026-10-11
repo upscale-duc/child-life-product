@@ -95,8 +95,8 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
       await save(null);
       final messaging = FirebaseMessaging.instance;
       if (defaultTargetPlatform == TargetPlatform.iOS &&
-          await messaging.getAPNSToken() == null) {
-        return; // No APNs (simulator or no Apple team yet).
+          await _apnsToken(messaging) == null) {
+        return; // No APNs (simulator, or push not allowed for this build).
       }
       final token = await messaging.getToken();
       if (token == null) return;
@@ -106,6 +106,16 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     } on Object {
       _registeredFor = null; // Try again on the next change.
     }
+  }
+
+  /// On a device the APNs token arrives a moment after registration; wait up to ~10 s for it.
+  Future<String?> _apnsToken(FirebaseMessaging messaging) async {
+    for (var i = 0; i < 10; i++) {
+      final token = await messaging.getAPNSToken();
+      if (token != null || !mounted) return token;
+      await Future<void>.delayed(const Duration(seconds: 1));
+    }
+    return null;
   }
 
   Future<void> _leave(DocumentReference<Map<String, dynamic>> doc) async {

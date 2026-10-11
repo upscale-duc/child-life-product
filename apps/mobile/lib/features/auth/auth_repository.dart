@@ -177,7 +177,7 @@ class AuthRepository {
 
   /// Native on iOS, Firebase web flow on Android (plan §3.6, SP-6). Needs an Apple Developer team.
   Future<void> signInWithApple() async {
-    if (!_config.appleConfigured) {
+    if (!_config.appleOn(defaultTargetPlatform)) {
       throw const AuthException(AuthFailure.notConfigured);
     }
     if (defaultTargetPlatform == TargetPlatform.android) {
@@ -238,7 +238,7 @@ class AuthRepository {
   /// 16d Apple / Google. Returns false when the credential already has an account: the caller
   /// then signs into it with [mergeAnonymousInto].
   Future<bool> saveAnonymousWithProvider({required bool apple}) async {
-    if (apple && !_config.appleConfigured) {
+    if (apple && !_config.appleOn(defaultTargetPlatform)) {
       throw const AuthException(AuthFailure.notConfigured);
     }
     final credential = apple

@@ -16,9 +16,15 @@ ENTITLEMENTS = 'Runner/Runner.entitlements'
 FLAVORS = {
   # dev signs manually with the owner-supplied development profile "hsba app dev" (push, the
   # owner's iPhone); install it into ~/Library/Developer/Xcode/UserData/Provisioning Profiles.
-  'dev' => { bundle_id: 'dev.hsba.app', name: 'Child Life Dev', icon: 'AppIcon-dev', profile: 'hsba app dev' },
-  'prod' => { bundle_id: 'app.childlife', name: 'Child Life', icon: 'AppIcon-prod' },
+  'dev' => { bundle_id: 'dev.hsba.app', name: 'Child Life Dev', icon: 'AppIcon-dev', profile: 'hsba app dev',
+             widget_id: 'dev.hsba.app.widgets', widget_profile: nil },
+  'prod' => { bundle_id: 'app.childlife', name: 'Child Life', icon: 'AppIcon-prod',
+              widget_id: 'app.childlife.widgets', widget_profile: nil },
 }.freeze
+# Widget / Live Activity extension (S8). The Xcode template uses Control widgets (iOS 18); the app
+# itself stays on DEPLOYMENT_TARGET and simply has no extension on older systems.
+WIDGET_TARGET = 'widgetExtension'
+WIDGET_DEPLOYMENT_TARGET = '18.0'
 BASES = %w[Debug Profile Release].freeze
 DEPLOYMENT_TARGET = '16.1'
 
@@ -30,6 +36,21 @@ tests = project.targets.find { |t| t.name == 'RunnerTests' }
 def flutter_xcconfig(project, base)
   group = project.main_group['Flutter']
   group.files.find { |f| f.path == "#{base}.xcconfig" } || group.files.find { |f| f.path == "#{base == 'Profile' ? 'Release' : base}.xcconfig" }
+end
+
+# Manual signing with an owner-supplied development profile, or automatic signing without one.
+def sign(config, profile)
+  config.build_settings['DEVELOPMENT_TEAM'] = TEAM_ID
+  config.build_settings.delete('DEVELOPMENT_TEAM[sdk=iphoneos*]')
+  config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Development'
+  config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = 'Apple Development'
+  if profile
+    config.build_settings['CODE_SIGN_STYLE'] = 'Manual'
+    config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = profile
+  else
+    config.build_settings['CODE_SIGN_STYLE'] = 'Automatic'
+    config.build_settings.delete('PROVISIONING_PROFILE_SPECIFIER')
+  end
 end
 
 def ensure_config(list, name, template)
@@ -85,15 +106,7 @@ flutter_group = project.main_group['Flutter']
         # Signing on the team; push (aps-environment) comes from the entitlements.
         config.build_settings['DEVELOPMENT_TEAM'] = TEAM_ID
         config.build_settings['CODE_SIGN_ENTITLEMENTS'] = ENTITLEMENTS
-        if info[:profile]
-          config.build_settings['CODE_SIGN_STYLE'] = 'Manual'
-          config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Development'
-          config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = 'Apple Development'
-          config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = info[:profile]
-        else
-          config.build_settings['CODE_SIGN_STYLE'] = 'Automatic'
-          %w[CODE_SIGN_IDENTITY[sdk=iphoneos*] PROVISIONING_PROFILE_SPECIFIER].each { |k| config.build_settings.delete(k) }
-        end
+        sign(config, info[:profile])
       elsif owner == :tests
         config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle_id]}.RunnerTests"
         config.build_settings['TEST_HOST'] = '$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner'
@@ -103,6 +116,24 @@ flutter_group = project.main_group['Flutter']
     end
   end
   # Unflavored configurations are removed so no build can run without an explicit environment.
+  list.build_configurations.select { |c| BASES.include?(c.name) }.each(&:remove_from_project)
+  list.default_configuration_name = 'Release-prod'
+end
+
+# The widget extension: per-flavor bundle id and signing, flavored configurations only.
+widget = project.targets.find { |t| t.name == WIDGET_TARGET }
+if widget
+  list = widget.build_configuration_list
+  BASES.each do |base|
+    template = list.build_configurations.find { |c| c.name == base } || list.build_configurations.find { |c| c.name.start_with?("#{base}-") }
+    FLAVORS.each do |flavor, info|
+      config = ensure_config(list, "#{base}-#{flavor}", template)
+      config.base_configuration_reference = nil
+      config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = info[:widget_id]
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = WIDGET_DEPLOYMENT_TARGET
+      sign(config, info[:widget_profile])
+    end
+  end
   list.build_configurations.select { |c| BASES.include?(c.name) }.each(&:remove_from_project)
   list.default_configuration_name = 'Release-prod'
 end
@@ -136,8 +167,15 @@ dsym.input_paths = [
   '$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).app/GoogleService-Info.plist',
   '$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)',
 ]
-# Keep both phases last so they run after Flutter's build and resource phases.
+# Keep both phases last so they run after Flutter's build and resource phases. Extensions are
+# embedded before Flutter's "Thin Binary" script, or Xcode reports a dependency cycle.
 [copy, dsym].each { |phase| runner.build_phases.delete(phase); runner.build_phases << phase }
+embed = runner.copy_files_build_phases.find { |p| p.name == 'Embed Foundation Extensions' }
+thin = runner.shell_script_build_phases.find { |p| p.name == 'Thin Binary' }
+if embed && thin
+  runner.build_phases.delete(embed)
+  runner.build_phases.insert(runner.build_phases.index(thin), embed)
+end
 
 project.save
 
