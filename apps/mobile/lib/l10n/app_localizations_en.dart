@@ -7400,4 +7400,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get vxPhotoPrivate =>
       'Only the family’s carers can see it. Never shown in Memories.';
+
+  @override
+  String get joinFromProfile => 'Enter an invite code';
+
+  @override
+  String get joinFromProfileHint =>
+      'Invited to care for another baby? Enter the 6-digit code from the invite.';
 }

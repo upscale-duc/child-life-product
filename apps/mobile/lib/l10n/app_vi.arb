@@ -10499,5 +10499,13 @@
   "vxPhotoPrivate": "Chỉ người chăm bé trong gia đình xem được. Không hiện trong Kỷ niệm.",
   "@vxPhotoPrivate": {
     "description": "Source sheet note."
+  },
+  "joinFromProfile": "Nhập mã mời",
+  "@joinFromProfile": {
+    "description": "Hồ sơ bé / Chọn bé row opening 15 Nhập mã mời."
+  },
+  "joinFromProfileHint": "Được mời chăm một bé khác? Nhập mã 6 số trong lời mời.",
+  "@joinFromProfileHint": {
+    "description": "Under the row."
   }
 }

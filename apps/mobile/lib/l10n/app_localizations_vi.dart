@@ -6940,4 +6940,11 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get vxPhotoPrivate =>
       'Chỉ người chăm bé trong gia đình xem được. Không hiện trong Kỷ niệm.';
+
+  @override
+  String get joinFromProfile => 'Nhập mã mời';
+
+  @override
+  String get joinFromProfileHint =>
+      'Được mời chăm một bé khác? Nhập mã 6 số trong lời mời.';
 }

@@ -538,6 +538,45 @@ class _BabyPickerSheet extends ConsumerWidget {
             style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
           ),
         ],
+        const SizedBox(height: ClSpace.s3),
+        // Already have a profile and invited to another baby (owner, 2026-10-11).
+        ClPressable(
+          key: const Key('pickerJoin'),
+          onPressed: () {
+            final router = GoRouter.of(context);
+            Navigator.of(context).pop();
+            unawaited(router.push(Routes.join));
+          },
+          semanticLabel: l10n.joinFromProfile,
+          child: Container(
+            height: 56,
+            padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+            decoration: BoxDecoration(
+              color: cl.colors.surface,
+              borderRadius: BorderRadius.circular(ClRadius.control),
+              border: Border.all(color: cl.colors.separator),
+            ),
+            child: Row(
+              children: [
+                ClIcon(ClIcons.link, size: 18, color: cl.colors.mintText),
+                const SizedBox(width: ClSpace.s3),
+                Expanded(
+                  child: Text(
+                    l10n.joinFromProfile,
+                    style: cl.text.bodyStrong.copyWith(
+                      color: cl.colors.mintText,
+                    ),
+                  ),
+                ),
+                ClIcon(
+                  ClIcons.chevronRight,
+                  size: 18,
+                  color: cl.colors.inkMuted,
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

@@ -11634,6 +11634,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chỉ người chăm bé trong gia đình xem được. Không hiện trong Kỷ niệm.'**
   String get vxPhotoPrivate;
+
+  /// Hồ sơ bé / Chọn bé row opening 15 Nhập mã mời.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập mã mời'**
+  String get joinFromProfile;
+
+  /// Under the row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Được mời chăm một bé khác? Nhập mã 6 số trong lời mời.'**
+  String get joinFromProfileHint;
 }
 
 class _AppLocalizationsDelegate

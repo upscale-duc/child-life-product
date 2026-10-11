@@ -113,6 +113,37 @@ class BabyProfilesScreen extends ConsumerWidget {
             style: cl.text.label.copyWith(color: cl.colors.inkMuted),
           ),
         ],
+        const SizedBox(height: ClSpace.s4),
+        // Already have a profile and invited to another baby (owner, 2026-10-11).
+        ClPressable(
+          key: const Key('profileJoin'),
+          onPressed: () => unawaited(context.push(Routes.join)),
+          semanticLabel: l10n.joinFromProfile,
+          child: Container(
+            height: 64,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(ClRadius.card - 6),
+              border: Border.all(color: cl.colors.separator, width: 1.5),
+            ),
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClIcon(ClIcons.link, size: 20, color: cl.colors.mintText),
+                const SizedBox(width: ClSpace.s2),
+                Text(
+                  l10n.joinFromProfile,
+                  style: cl.text.bodyStrong.copyWith(color: cl.colors.mintText),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        Text(
+          l10n.joinFromProfileHint,
+          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+        ),
       ],
     );
   }

@@ -279,4 +279,24 @@ void main() {
       });
     });
   });
+
+  testWidgets('Hồ sơ bé: "Nhập mã mời" opens 15 for every role', (
+    tester,
+  ) async {
+    for (final who in [mai, lan, hoa]) {
+      final (visits, _) = await pumpRouted(
+        tester,
+        const BabyProfilesScreen(),
+        overrides: _overrides(me: who),
+      );
+      await tester.scrollUntilVisible(find.text('Nhập mã mời'), 200);
+      expect(
+        find.text('Được mời chăm một bé khác? Nhập mã 6 số trong lời mời.'),
+        findsOneWidget,
+      );
+      await tester.tap(find.byKey(const Key('profileJoin')));
+      await tester.pumpAndSettle();
+      expect(visits.last.location, '/join');
+    }
+  });
 }

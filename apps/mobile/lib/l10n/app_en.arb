@@ -1921,5 +1921,7 @@
   "vxPhotoRemove": "Remove the photo",
   "vxPhotoDelete": "Delete the photo",
   "vxPhotoDeleted": "Photo deleted",
-  "vxPhotoPrivate": "Only the family’s carers can see it. Never shown in Memories."
+  "vxPhotoPrivate": "Only the family’s carers can see it. Never shown in Memories.",
+  "joinFromProfile": "Enter an invite code",
+  "joinFromProfileHint": "Invited to care for another baby? Enter the 6-digit code from the invite."
 }
