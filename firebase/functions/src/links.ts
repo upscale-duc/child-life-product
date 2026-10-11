@@ -255,8 +255,10 @@ const copy = {
     passLocked: 'Thử sai quá nhiều lần. Đợi 15 phút rồi thử lại.',
     open: 'Mở',
     shared: (who: string) => `${who} chia sẻ`,
-    expires: (d: string) => `Liên kết hết hạn ngày ${d}`,
-    noDownload: 'không tải ảnh được',
+    noDownloadNote: 'Người gửi không cho tải ảnh về.',
+    close: 'Đóng',
+    prev: 'Ảnh trước',
+    next: 'Ảnh sau',
     download: 'Tải ảnh',
     tagline: 'Lưu giữ kỷ niệm của bé cùng gia đình',
     getApp: 'Tải app',
@@ -274,8 +276,10 @@ const copy = {
     passLocked: 'Too many tries. Wait 15 minutes and try again.',
     open: 'Open',
     shared: (who: string) => `shared by ${who}`,
-    expires: (d: string) => `Link expires on ${d}`,
-    noDownload: 'photos can’t be downloaded',
+    noDownloadNote: 'The sender turned off photo downloads.',
+    close: 'Close',
+    prev: 'Previous photo',
+    next: 'Next photo',
     download: 'Download photo',
     tagline: 'Keep your baby’s memories with the family',
     getApp: 'Get the app',
@@ -304,6 +308,14 @@ main{max-width:520px;margin:0 auto;padding:0 0 120px}
 input{font-size:28px;letter-spacing:12px;width:9ch;text-align:center;border:2px solid #087F7B;border-radius:14px;padding:8px;margin:12px 0}
 button{background:#087F7B;color:#fff;border:0;border-radius:999px;padding:12px 24px;font-size:16px;font-weight:600}
 .err{color:#A12B32}
+.grid a,.cover-link{display:block}
+.lb{display:none;position:fixed;inset:0;z-index:10;background:#0c1719f2;align-items:center;justify-content:center}
+.lb:target{display:flex}
+.lb .bg{position:absolute;inset:0}
+.lb img{position:relative;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none}
+.lb .x,.lb .nav{position:absolute;color:#fff;text-decoration:none;font-size:30px;line-height:44px;width:44px;height:44px;text-align:center;border-radius:999px;background:#ffffff26}
+.lb .x{top:16px;right:16px}.lb .prev{left:12px;top:50%;margin-top:-22px}.lb .next{right:12px;top:50%;margin-top:-22px}
+.lb .lbdl{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;background:#ffffff26;border-radius:999px;padding:8px 16px;text-decoration:none}
 </style></head><body><main>${body}</main>
 <div class="banner"><div><b>Child Life</b><span>${escape(t.tagline)}</span></div><a href="${escape(landing)}">${escape(t.getApp)}</a></div>
 </body></html>`;
@@ -515,7 +527,17 @@ ${error ? `<p class="err">${escape(error)}</p>` : ''}<p><button type="submit">${
   const cover = view.visible.find((m) => m.id === view.story.get('coverMediaId'));
   const allowDownload = link.get('allowDownload') === true;
   const body: string[] = [];
-  if (cover) body.push(`<img class="cover" src="${base}/${cover.id}" alt="">`);
+  // Owner request: a tap on any photo shows it full screen (CSS :target, the page runs no script).
+  const viewed: { id: string; caption: string }[] = [];
+  const openFull = (id: string, caption = '') => {
+    if (!viewed.some((v) => v.id === id)) viewed.push({ id, caption });
+    return `#v-${escape(id)}`;
+  };
+  if (cover) {
+    body.push(
+      `<a class="cover-link" href="${openFull(cover.id)}"><img class="cover" src="${base}/${cover.id}" alt=""></a>`,
+    );
+  }
   body.push(
     `<div class="pad"><h1>${escape(view.story.get('title') as string)}</h1><div class="meta">${escape(metaBits.join(' · '))}</div>`,
   );
@@ -531,7 +553,7 @@ ${error ? `<p class="err">${escape(error)}</p>` : ''}<p><button type="submit">${
         `<div class="grid">${items
           .map((i) => {
             shown.add(i.mediaId);
-            return `<div><img src="${base}/${i.mediaId}" alt="${escape(i.caption ?? '')}">${
+            return `<div><a href="${openFull(i.mediaId, i.caption ?? '')}"><img src="${base}/${i.mediaId}" alt="${escape(i.caption ?? '')}"></a>${
               allowDownload
                 ? `<a class="dl" href="${base}/${i.mediaId}/dl">${escape(t.download)}</a>`
                 : ''
@@ -541,10 +563,31 @@ ${error ? `<p class="err">${escape(error)}</p>` : ''}<p><button type="submit">${
       );
     }
   }
-  const expires = fmt((link.get('expiresAt') as Timestamp).toDate());
+  // Owner request: the page does not say when the link expires.
   body.push(
-    `<div class="note">🕒 <span>${escape(t.expires(expires))}${allowDownload ? '' : ` · ${escape(t.noDownload)}`}</span></div></div>`,
+    allowDownload
+      ? '</div>'
+      : `<div class="note">🔒 <span>${escape(t.noDownloadNote)}</span></div></div>`,
   );
+  viewed.forEach((v, n) => {
+    const prev = viewed[n - 1];
+    const next = viewed[n + 1];
+    body.push(
+      `<div class="lb" id="v-${escape(v.id)}"><a class="bg" href="#_" aria-label="${escape(t.close)}"></a>` +
+        `<img src="${base}/${v.id}" alt="${escape(v.caption)}">` +
+        `<a class="x" href="#_" aria-label="${escape(t.close)}">×</a>` +
+        (prev
+          ? `<a class="nav prev" href="#v-${escape(prev.id)}" aria-label="${escape(t.prev)}">‹</a>`
+          : '') +
+        (next
+          ? `<a class="nav next" href="#v-${escape(next.id)}" aria-label="${escape(t.next)}">›</a>`
+          : '') +
+        (allowDownload
+          ? `<a class="lbdl" href="${base}/${v.id}/dl">${escape(t.download)}</a>`
+          : '') +
+        `</div>`,
+    );
+  });
   return html(
     200,
     shell(req.locale, view.story.get('title') as string, body.join('\n'), landing),

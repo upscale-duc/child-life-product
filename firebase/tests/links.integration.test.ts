@@ -198,7 +198,12 @@ describe('the recipient page (14l, P-095)', () => {
     expect(html).not.toContain(PRIVATE);
     expect(html).not.toContain(GONE);
     expect(html).not.toContain('sinh ngày');
-    expect(html).toContain('không tải ảnh được');
+    expect(html).toContain('Người gửi không cho tải ảnh về.');
+    // Owner request: no expiry date on the page; every photo opens full screen (no script).
+    expect(html).not.toContain('hết hạn');
+    expect(html).not.toContain('<script');
+    expect(html).toMatch(/<a [^>]*href="#v-med_[a-z]+"><img/);
+    expect(html).toMatch(/<div class="lb" id="v-med_[a-z]+">/);
     expect(page.headers['X-Robots-Tag']).toContain('noindex');
     const seen = Object.fromEntries(page.cookies.map((c) => [c.name, c.value]));
     await handleShare(db, store, req(`/s/${token}-be-na`, { cookies: seen }), now, 'https://x');
