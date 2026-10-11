@@ -184,7 +184,7 @@ class AlbumsView extends ConsumerWidget {
           ClSpace.s4,
           ClSpace.s2,
           ClSpace.s4,
-          ClTabDock.contentBottomPadding + 64,
+          ClTabDock.contentBottomPadding + 88,
         ),
         children: [
           MemoryHeader(ctx: c, title: l10n.memAlbums),

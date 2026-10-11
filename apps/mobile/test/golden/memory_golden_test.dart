@@ -13,6 +13,7 @@ import 'package:child_life/features/memories/memories_screen.dart';
 import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/memory_sheets.dart';
 import 'package:child_life/features/memories/upload_queue.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -59,9 +60,17 @@ List<Override> _base({
   Set<String>? selected,
   MemoryQueueStore? store,
   List<FamilyMilestone> milestones = const [],
+  FakeMemoryRepository? repo,
+  NetworkKind network = NetworkKind.wifi,
 }) => [
   ...careOverrides(me: me),
-  ...memoryOverrides(journal: _journal, store: store, milestones: milestones),
+  ...memoryOverrides(
+    journal: _journal,
+    store: store,
+    milestones: milestones,
+    repo: repo,
+    network: network,
+  ),
   memoryViewProvider.overrideWith(() => _View(view)),
   if (selected != null)
     memorySelectionProvider.overrideWith(() => _Selection(selected)),
@@ -140,7 +149,116 @@ QueueBatch _uploadingBatch() => QueueBatch(
   ],
 );
 
+QueueItem _item(String n, QueueState s, {bool video = false}) => QueueItem(
+  mediaId: 'med_${n.hashCode.toRadixString(16).padLeft(32, '0')}',
+  type: video ? MediaKind.video : MediaKind.photo,
+  name: n,
+  localPath: '/nope/$n',
+  contentType: video ? 'video/quicktime' : 'image/jpeg',
+  bytes: video ? 48000000 : 3400000,
+  captureAt: DateTime(2026, 10, 8),
+  state: s,
+);
+
+/// A batch whose upload session the server refused: `uploads-paused` (A11) or a refusal.
+QueueBatch _blockedBatch(String id, String blocked, QueueState state) =>
+    QueueBatch(
+      batchId: 'bat_${id * 32}',
+      babyId: teddyId,
+      memoryId: 'mem_${id * 32}',
+      request: {
+        'audience': 'family',
+        'notifyFamily': true,
+        'batchId': 'bat_${id * 32}',
+      },
+      createdAt: DateTime(2026, 10, 8),
+      blocked: blocked,
+      items: [
+        _item('IMG_3${id}01.HEIC', state),
+        _item('IMG_3${id}02.MOV', state, video: true),
+      ],
+    );
+
+QueueBatch _plainBatch(String id, List<QueueItem> items) => QueueBatch(
+  batchId: 'bat_${id * 32}',
+  babyId: teddyId,
+  memoryId: 'mem_${id * 32}',
+  request: const {'audience': 'family', 'notifyFamily': true},
+  createdAt: DateTime(2026, 10, 8),
+  sessionCreated: true,
+  items: items,
+);
+
+/// The server keeps refusing the blocked batches, so their state holds while the screen settles.
+FakeMemoryRepository _refusing() => FakeMemoryRepository()
+  ..refuseBatches = {
+    'bat_${'b' * 32}': FirebaseFunctionsException(
+      code: 'failed-precondition',
+      message: 'uploads-paused',
+      details: {'reason': 'uploads-paused'},
+    ),
+    'bat_${'c' * 32}': FirebaseFunctionsException(
+      code: 'permission-denied',
+      message: 'not-allowed',
+      details: {'reason': 'not-allowed'},
+    ),
+  };
+
 final _cases = <String, _Case>{
+  '10i_queue_states': (
+    build: () => _Host((c, r, m) => showQueueSheet(c, r, m)),
+    overrides: () => _base(
+      repo: _refusing(),
+      store: MemoryQueueStore()
+        ..saved = [
+          _blockedBatch('b', 'uploads-paused', QueueState.pendingSession),
+          _blockedBatch('c', 'not-allowed', QueueState.failed),
+          _plainBatch('d', [
+            _item('IMG_3d01.HEIC', QueueState.paused),
+            _item('IMG_3d02.HEIC', QueueState.waitingQuota),
+          ]),
+        ],
+    ),
+    prefs: const {},
+    act: null,
+  ),
+  '10a_pill_uploads_paused': (
+    build: _tab,
+    overrides: () => _base(
+      repo: _refusing(),
+      store: MemoryQueueStore()
+        ..saved = [
+          _blockedBatch('b', 'uploads-paused', QueueState.pendingSession),
+        ],
+    ),
+    prefs: const {},
+    act: null,
+  ),
+  '10a_pill_failed': (
+    build: _tab,
+    overrides: () => _base(
+      repo: _refusing(),
+      store: MemoryQueueStore()
+        ..saved = [_blockedBatch('c', 'not-allowed', QueueState.failed)],
+    ),
+    prefs: const {},
+    act: null,
+  ),
+  '10a_pill_offline': (
+    build: _tab,
+    overrides: () => _base(
+      network: NetworkKind.none,
+      store: MemoryQueueStore()
+        ..saved = [
+          _plainBatch('d', [
+            _item('IMG_3d01.HEIC', QueueState.paused),
+            _item('IMG_3d02.HEIC', QueueState.paused),
+          ]),
+        ],
+    ),
+    prefs: const {},
+    act: null,
+  ),
   '10a_journal': (build: _tab, overrides: _base, prefs: const {}, act: null),
   '10a_uploading': (
     build: _tab,

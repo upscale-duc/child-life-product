@@ -85,7 +85,7 @@ class _StoriesViewState extends ConsumerState<StoriesView> {
               ClSpace.s4,
               ClSpace.s2,
               ClSpace.s4,
-              ClTabDock.contentBottomPadding + 120,
+              ClTabDock.contentBottomPadding + 144,
             ),
             children: [
               MemoryHeader(ctx: c, title: l10n.memStories),
@@ -138,7 +138,8 @@ class _StoriesViewState extends ConsumerState<StoriesView> {
         if (c.parentView)
           Positioned(
             right: ClSpace.s4,
-            bottom: ClTabDock.contentBottomPadding + 56,
+            // Above the dock (inset + 24 + 68) and the Kỷ niệm tabs (12 + ~52), plus 12.
+            bottom: MediaQuery.paddingOf(context).bottom + 168,
             child: ClButton(
               label: l10n.sryWrite,
               icon: ClIcons.edit,

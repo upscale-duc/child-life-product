@@ -1290,29 +1290,47 @@ class _QueueRow extends ConsumerWidget {
       QueueState.queued => (l10n.rowQueued, cl.colors.inkMuted),
     };
     final thumb = i.isVideo ? i.posterPath : i.localPath;
+    // "×" removes the item from the queue in every unfinished state, failed ones included.
+    final remove = ClPressable(
+      onPressed: () => queue.cancel(i.mediaId),
+      semanticLabel: l10n.a11yCancelUpload(i.name),
+      child: SizedBox(
+        width: ClSpace.tapMin,
+        height: ClSpace.tapMin,
+        child: Center(
+          child: ClIcon(ClIcons.close, size: 18, color: cl.colors.inkMuted),
+        ),
+      ),
+    );
     final action = switch (i.state) {
       QueueState.uploaded => ClIcon(
         ClIcons.check,
         size: 20,
         color: cl.colors.mintText,
       ),
-      QueueState.failed => ClButton(
-        label: l10n.actionRetry,
-        icon: ClIcons.retry,
-        style: ClButtonStyle.tinted,
-        onPressed: () => queue.retry(i.mediaId),
-      ),
-      _ => ClPressable(
-        onPressed: () => queue.cancel(i.mediaId),
-        semanticLabel: l10n.a11yCancelUpload(i.name),
-        child: SizedBox(
-          width: ClSpace.tapMin,
-          height: ClSpace.tapMin,
-          child: Center(
-            child: ClIcon(ClIcons.close, size: 18, color: cl.colors.inkMuted),
+      // Icon-only so the file name and status keep their room.
+      QueueState.failed => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClPressable(
+            onPressed: () => queue.retry(i.mediaId),
+            semanticLabel: '${l10n.actionRetry} · ${i.name}',
+            child: SizedBox(
+              width: ClSpace.tapMin,
+              height: ClSpace.tapMin,
+              child: Center(
+                child: ClIcon(
+                  ClIcons.retry,
+                  size: 20,
+                  color: cl.colors.mintText,
+                ),
+              ),
+            ),
           ),
-        ),
+          remove,
+        ],
       ),
+      _ => remove,
     };
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),

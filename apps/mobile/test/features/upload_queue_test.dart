@@ -332,4 +332,71 @@ void main() {
       ]);
     },
   );
+
+  test(
+    'a failed item can be removed; a refused batch emptied this way is dropped',
+    () async {
+      repo.refuseWith = FirebaseFunctionsException(
+        code: 'permission-denied',
+        message: 'not-allowed',
+        details: {'reason': 'not-allowed'},
+      );
+      container = await start();
+      final queue = container.read(uploadQueueProvider.notifier);
+      await queue.enqueue(
+        babyId: teddyId,
+        request: request(),
+        picked: [pickedPhoto('a.HEIC'), pickedPhoto('b.HEIC')],
+      );
+      await pumpEventQueue();
+      final ids = items().map((i) => i.mediaId).toList();
+      expect(items().map((i) => i.state), [
+        QueueState.failed,
+        QueueState.failed,
+      ]);
+      final attempts = repo.sessions.length;
+
+      await queue.cancel(ids.first);
+      expect(items().first.state, QueueState.cancelled);
+      await queue.cancel(ids.last);
+      repo.refuseWith = null;
+      await queue.retry();
+      await pumpEventQueue();
+      // No session is asked for removed items, and the empty batch is gone.
+      expect(repo.sessions.length, attempts);
+      expect(container.read(uploadQueueProvider).batches, isEmpty);
+    },
+  );
+
+  test(
+    'after an app update the saved paths follow the files to the new container',
+    () {
+      final root = Directory.systemTemp.createTempSync('cl_queue');
+      addTearDown(() => root.deleteSync(recursive: true));
+      final support = '${root.path}/NEW-UUID/Library/Application Support';
+      Directory('$support/uploads').createSync(recursive: true);
+      File('$support/uploads/med_a.jpg').writeAsBytesSync([1]);
+      File('$support/uploads/med_v.poster.jpg').writeAsBytesSync([1]);
+      const old =
+          '/var/mobile/Containers/Data/Application/OLD-UUID/Library/Application Support';
+      final batch = rebaseQueuePaths({
+        'batchId': 'bat_x',
+        'items': [
+          {'localPath': '$old/uploads/med_a.jpg', 'posterPath': null},
+          {
+            'localPath': '$old/uploads/med_v.mp4',
+            'posterPath': '$old/uploads/med_v.poster.jpg',
+          },
+        ],
+      }, support);
+      final items = batch['items']! as List;
+      expect((items[0] as Map)['localPath'], '$support/uploads/med_a.jpg');
+      // A file that is really gone keeps its path (the upload then fails visibly).
+      expect((items[1] as Map)['localPath'], '$old/uploads/med_v.mp4');
+      expect(
+        (items[1] as Map)['posterPath'],
+        '$support/uploads/med_v.poster.jpg',
+      );
+    },
+  );
 }

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -239,7 +242,9 @@ class MemoriesScreen extends ConsumerWidget {
     final memories = ref.watch(memoriesProvider(key)).value;
     final media = ref.watch(mediaProvider(key)).value;
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final pillBottom = (bottom > 0 ? bottom : ClSpace.s6) + 68 + ClSpace.s3;
+    // The dock sits in a SafeArea and floats 24 above it (ClTabDock), and is 68 tall: the
+    // tabs / selection pill float 12 above the dock.
+    final pillBottom = bottom + ClSpace.s6 + 68 + ClSpace.s3;
 
     final body = switch (view.tab) {
       MemoryTab.journal => JournalView(
@@ -525,6 +530,26 @@ class _Group {
   final entries = <(Memory, List<MediaItem>)>[];
 }
 
+/// Pull to refresh (Nhật ký, Ảnh): failed uploads try again and the lists re-subscribe.
+Future<void> refreshMemories(WidgetRef ref, MemoryCtx c) async {
+  final key = (c.babyId, c.isParent);
+  unawaited(ref.read(uploadQueueProvider.notifier).retry());
+  ref.invalidate(memoriesProvider(key));
+  ref.invalidate(mediaProvider(key));
+  try {
+    await ref
+        .read(mediaProvider(key).future)
+        .timeout(const Duration(seconds: 8));
+  } on Object {
+    // Offline: the lists keep what they have and update when back online.
+  }
+}
+
+/// Lets pull-to-refresh work on Android too (D-004: Android follows the iOS design).
+const _pullPhysics = BouncingScrollPhysics(
+  parent: AlwaysScrollableScrollPhysics(),
+);
+
 class JournalView extends ConsumerWidget {
   const JournalView({
     required this.ctx,
@@ -607,11 +632,15 @@ class JournalView extends ConsumerWidget {
       }
     }
 
-    final bottom = ClTabDock.contentBottomPadding + 64;
+    final bottom = ClTabDock.contentBottomPadding + 88;
     return SafeArea(
       bottom: false,
       child: CustomScrollView(
+        physics: _pullPhysics,
         slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () => refreshMemories(ref, ctx),
+          ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(
               ClSpace.s4,
@@ -878,7 +907,11 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
         children: [
           CustomScrollView(
             controller: _scroll,
+            physics: _pullPhysics,
             slivers: [
+              CupertinoSliverRefreshControl(
+                onRefresh: () => refreshMemories(ref, widget.ctx),
+              ),
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(
                   ClSpace.s4,
@@ -1032,7 +1065,7 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                 ),
               ],
               SliverToBoxAdapter(
-                child: SizedBox(height: ClTabDock.contentBottomPadding + 64),
+                child: SizedBox(height: ClTabDock.contentBottomPadding + 88),
               ),
             ],
           ),

@@ -392,6 +392,30 @@ abstract class QueueStore {
   Future<void> save(List<QueueBatch> batches);
 }
 
+/// iOS gives the app a new data-container path on every update, so saved absolute paths go
+/// stale while the files themselves move with the app. A path whose file is gone is looked up
+/// by name in the current `uploads` folder.
+String? rebaseUploadPath(String? path, String supportDir) {
+  if (path == null || File(path).existsSync()) return path;
+  final moved = '$supportDir/uploads/${path.split('/').last}';
+  return File(moved).existsSync() ? moved : path;
+}
+
+Map<String, Object?> rebaseQueuePaths(
+  Map<String, Object?> batch,
+  String supportDir,
+) => {
+  ...batch,
+  'items': [
+    for (final i in (batch['items'] as List? ?? const []))
+      {
+        ...(i as Map).cast<String, Object?>(),
+        'localPath': rebaseUploadPath(i['localPath'] as String?, supportDir),
+        'posterPath': rebaseUploadPath(i['posterPath'] as String?, supportDir),
+      },
+  ],
+};
+
 class FileQueueStore implements QueueStore {
   Future<File> _file() async => File(
     '${(await getApplicationSupportDirectory()).path}/upload_queue.json',
@@ -402,10 +426,13 @@ class FileQueueStore implements QueueStore {
     try {
       final f = await _file();
       if (!await f.exists()) return [];
+      final support = (await getApplicationSupportDirectory()).path;
       final json = jsonDecode(await f.readAsString()) as List;
       return [
         for (final b in json)
-          QueueBatch.fromJson((b as Map).cast<String, Object?>()),
+          QueueBatch.fromJson(
+            rebaseQueuePaths((b as Map).cast<String, Object?>(), support),
+          ),
       ];
     } on Object {
       return [];
@@ -651,8 +678,14 @@ class UploadQueue extends Notifier<QueueView> {
     if (_network == NetworkKind.none) return;
     for (final b in _batches.where((b) => !b.sessionCreated)) {
       final live = b.items
-          .where((i) => i.state != QueueState.unreadable)
+          .where(
+            (i) =>
+                i.state != QueueState.unreadable &&
+                i.state != QueueState.cancelled,
+          )
           .toList();
+      // Everything removed before the session existed: nothing to ask the server.
+      if (live.isEmpty && b.items.isNotEmpty) continue;
       try {
         final r = await ref.read(memoryRepositoryProvider).createSession({
           ...b.request,
@@ -687,8 +720,15 @@ class UploadQueue extends Notifier<QueueView> {
         _retrySessionsLater(const Duration(seconds: 30));
       }
     }
-    // A note has nothing to upload once its memory exists.
-    _batches.removeWhere((b) => b.sessionCreated && b.items.isEmpty);
+    // A note has nothing to upload once its memory exists; a batch whose items were all
+    // removed before it had a session is dropped.
+    _batches.removeWhere(
+      (b) =>
+          (b.sessionCreated && b.items.isEmpty) ||
+          (!b.sessionCreated &&
+              b.items.isNotEmpty &&
+              b.items.every((i) => i.state == QueueState.cancelled)),
+    );
     await _persist();
   }
 

@@ -547,6 +547,8 @@ class UploadPill extends ConsumerWidget {
 
     String title;
     String subtitle;
+    // A waiting or failed upload shows a still icon, never a spinner (only active work spins).
+    ClIcons? still;
     var tone = cl.colors.mintSoft;
     var ink = cl.colors.ink;
     if (finished) {
@@ -565,27 +567,33 @@ class UploadPill extends ConsumerWidget {
     } else if (quota > 0 && quota + done + unreadable == total) {
       title = l10n.upWaitingQuota(quota);
       subtitle = l10n.upWaitingQuotaHint;
+      still = ClIcons.clock;
       tone = cl.colors.errorSoft;
     } else if (failed + unreadable > 0 && failed + unreadable + done == total) {
       title = l10n.upFailed(failed + unreadable);
       subtitle = l10n.upFailedHint;
+      still = ClIcons.alert;
       tone = cl.colors.errorSoft;
       ink = cl.colors.error;
     } else if (batches.any((b) => b.paused)) {
       title = l10n.upUploadsPaused;
       subtitle = l10n.upUploadsPausedHint;
+      still = ClIcons.clock;
       tone = cl.colors.sunshineSoft;
     } else if (view.paused) {
       title = l10n.upPausedByYou;
       subtitle = l10n.upPausedByYouHint;
+      still = ClIcons.clock;
       tone = cl.colors.sunshineSoft;
     } else if (paused) {
       title = l10n.upPaused;
       subtitle = l10n.upPausedHint;
+      still = ClIcons.cloudOff;
       tone = cl.colors.sunshineSoft;
     } else if (wifi > 0 && wifi + done + unreadable == total) {
       title = l10n.upWaitingWifi(wifi);
       subtitle = l10n.upWaitingWifiHint;
+      still = ClIcons.clock;
       tone = cl.colors.sunshineSoft;
     } else if (preparing == total) {
       title = l10n.upPreparing(total);
@@ -626,7 +634,14 @@ class UploadPill extends ConsumerWidget {
                         fit: BoxFit.cover,
                         cacheWidth: 120,
                       ),
-                    if (!finished)
+                    if (!finished && still != null)
+                      ColoredBox(
+                        color: Colors.black38,
+                        child: Center(
+                          child: ClIcon(still, size: 20, color: Colors.white),
+                        ),
+                      )
+                    else if (!finished)
                       ColoredBox(
                         color: Colors.black38,
                         child: Center(

@@ -229,12 +229,17 @@ class FakeMemoryRepository extends Fake implements MemoryRepository {
   /// Thrown by createSession instead of answering (kill switch, refusals, outages).
   Object? refuseWith;
 
+  /// Per-batch refusals (by `batchId`), for screens that show several states at once.
+  Map<String, Object> refuseBatches = {};
+
   @override
   Future<({List<String> reserved, List<String> waitingQuota})> createSession(
     Map<String, Object?> request,
   ) async {
     sessions.add(request);
     if (refuseWith != null) throw refuseWith!;
+    final refusal = refuseBatches[request['batchId']];
+    if (refusal != null) throw refusal;
     final ids = [
       for (final i in request['items']! as List)
         (i as Map)['mediaId'] as String,
