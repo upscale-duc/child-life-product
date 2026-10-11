@@ -88,8 +88,6 @@ class _StoriesViewState extends ConsumerState<StoriesView> {
               ClTabDock.contentBottomPadding + 144,
             ),
             children: [
-              MemoryHeader(ctx: c, title: l10n.memStories),
-              const SizedBox(height: ClSpace.s3),
               if (suggestion != null) ...[
                 _SuggestionCard(story: suggestion, media: media),
                 const SizedBox(height: ClSpace.s4),

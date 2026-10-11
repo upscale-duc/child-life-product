@@ -7,6 +7,7 @@ import '../../app/session.dart';
 import '../../core/appearance/appearance.dart';
 import '../../core/appearance/appearance_providers.dart';
 import '../../core/design/cl_theme.dart';
+import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/format/age.dart';
 import '../../core/widgets/cl_button.dart';
@@ -21,6 +22,7 @@ import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../family/family_labels.dart';
+import '../memories/memories_screen.dart' show GlobalUploadPill;
 import '../care/care_repository.dart';
 import '../care/care_sheets.dart';
 import '../care/timer_models.dart';
@@ -147,14 +149,12 @@ class HomeShell extends ConsumerWidget {
       backgroundColor: cl.colors.cloud,
       body: Stack(
         children: [
-          Positioned.fill(child: shell),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: SafeArea(
-              top: false,
-              child: ClTabDock(
+          Positioned.fill(
+            child: _HideDockOnScroll(
+              resetKey: shell.shellRouteContext.routerState.uri.path,
+              content: shell,
+              banner: const GlobalUploadPill(),
+              dock: ClTabDock(
                 role: clRoleOf(membership.role),
                 tabs: tabs,
                 active: active,
@@ -210,7 +210,10 @@ class BabyHeader extends ConsumerWidget {
                         label: _switcherLabel(context, ref, membership, baby),
                         avatar: SavedBabyAvatar(baby: baby, size: 32),
                         hasMultiple: multiple,
-                        onTap: multiple ? () => showBabyPicker(context) : null,
+                        // One baby: their profile; several: pick which one.
+                        onTap: multiple
+                            ? () => showBabyPicker(context)
+                            : () => context.push('${Routes.baby}/${baby.id}'),
                       ),
               ),
             ),
@@ -291,7 +294,7 @@ class _UnsavedBanner extends StatelessWidget {
     final cl = context.cl;
     return ClPressable(
       onPressed: onSave,
-      pressedScale: 0.99,
+      pressedOpacity: ClPressable.surfaceOpacity,
       semanticLabel: '$label. $action',
       child: Container(
         padding: const EdgeInsets.symmetric(
@@ -333,6 +336,8 @@ class NightCareToggle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cl = context.cl;
+    // The target palette, so the icon starts turning as soon as the colours start fading.
+    final night = ref.watch(paletteProvider) == ClPalette.nightCare;
     return ClPressable(
       semanticLabel: AppLocalizations.of(context).a11yNightCareToggle,
       onPressed: () {
@@ -354,7 +359,29 @@ class NightCareToggle extends ConsumerWidget {
           shape: BoxShape.circle,
         ),
         alignment: Alignment.center,
-        child: ClIcon(ClIcons.sleep, size: 20, color: cl.colors.ink),
+        // Moon in Light, sun in Night care: the icon turns and cross-fades with the palette
+        // (MaterialApp's theme animation, motion.gentle).
+        child: AnimatedSwitcher(
+          duration: context.motion(ClMotion.gentle),
+          switchInCurve: ClCurves.gentle,
+          switchOutCurve: ClCurves.gentle,
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: RotationTransition(
+              turns: Tween(begin: -0.25, end: 0.0).animate(animation),
+              child: ScaleTransition(
+                scale: Tween(begin: 0.6, end: 1.0).animate(animation),
+                child: child,
+              ),
+            ),
+          ),
+          child: ClIcon(
+            night ? ClIcons.today : ClIcons.sleep,
+            key: ValueKey(night),
+            size: 20,
+            color: cl.colors.ink,
+          ),
+        ),
       ),
     );
   }
@@ -488,7 +515,7 @@ class _BabyRow extends ConsumerWidget {
       selected: selected,
       child: ClPressable(
         onPressed: onTap,
-        pressedScale: 0.99,
+        pressedOpacity: ClPressable.surfaceOpacity,
         semanticLabel: '$name, $detail',
         child: Container(
           padding: const EdgeInsets.symmetric(
@@ -587,4 +614,122 @@ Future<void> confirmAnonymousSignOut(BuildContext context, WidgetRef ref) {
       ],
     ),
   );
+}
+
+/// Hides the tab dock while the content scrolls down and brings it back as soon as the user
+/// scrolls back up 8 px, at the top, or on a tab change (Motion spec P4 270:296; the owner asked
+/// for it to leave the screen rather than fade to 30 %, D-048): it slides, it does not fade.
+/// Reduce Motion fades only.
+class _HideDockOnScroll extends StatefulWidget {
+  const _HideDockOnScroll({
+    required this.content,
+    required this.dock,
+    required this.resetKey,
+    this.banner,
+  });
+
+  final Widget content;
+  final Widget dock;
+
+  /// Floats above the dock (the upload pill) and drops to the bottom edge while the dock is
+  /// hidden, so it is always visible.
+  final Widget? banner;
+
+  /// Changing it (another tab or screen) shows the dock again.
+  final Object resetKey;
+
+  @override
+  State<_HideDockOnScroll> createState() => _HideDockOnScrollState();
+}
+
+class _HideDockOnScrollState extends State<_HideDockOnScroll> {
+  static const _reveal = 8.0;
+  static const _hideAfter = 24.0;
+
+  bool _hidden = false;
+  double _run = 0; // scrolled in the current direction
+
+  @override
+  void didUpdateWidget(_HideDockOnScroll old) {
+    super.didUpdateWidget(old);
+    if (old.resetKey != widget.resetKey) _show(true);
+  }
+
+  void _show(bool show) {
+    if (_hidden == !show) return;
+    setState(() => _hidden = !show);
+  }
+
+  bool _onScroll(ScrollNotification n) {
+    // The page's own vertical scroll (finger or momentum); not nested or sideways lists.
+    if (n is! ScrollUpdateNotification ||
+        n.depth != 0 ||
+        n.metrics.axis != Axis.vertical) {
+      return false;
+    }
+    final delta = n.scrollDelta ?? 0;
+    final m = n.metrics;
+    if (m.pixels <= m.minScrollExtent) {
+      _run = 0;
+      _show(true);
+      return false;
+    }
+    // Ignore the bounce past the end.
+    if (m.pixels >= m.maxScrollExtent) return false;
+    if ((delta > 0) != (_run > 0)) _run = 0;
+    _run += delta;
+    if (_run > _hideAfter) _show(false);
+    if (_run < -_reveal) _show(true);
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final reduce = context.reduceMotion;
+    final duration = context.motion(ClMotion.quick);
+    final safeBottom = MediaQuery.paddingOf(context).bottom;
+    // ClTabDock: 68 tall, 24 above the safe area.
+    const dockHeight = 68.0 + ClSpace.s6;
+    final banner = widget.banner;
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: NotificationListener<ScrollNotification>(
+            onNotification: _onScroll,
+            child: widget.content,
+          ),
+        ),
+        if (banner != null)
+          AnimatedPositioned(
+            duration: duration,
+            curve: ClCurves.quick,
+            left: ClSpace.s4,
+            right: ClSpace.s4,
+            bottom: safeBottom + ClSpace.s3 + (_hidden ? 0 : dockHeight),
+            child: banner,
+          ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: IgnorePointer(
+            ignoring: _hidden,
+            child: AnimatedSlide(
+              offset: _hidden && !reduce ? const Offset(0, 1.2) : Offset.zero,
+              duration: duration,
+              curve: _hidden ? ClCurves.exit : ClCurves.quick,
+              // Slides only: a half-faded dock over the content reads as disabled buttons.
+              // Reduce Motion has no slide, so it fades instead.
+              child: AnimatedOpacity(
+                opacity: _hidden && reduce ? 0 : 1,
+                duration: duration,
+                curve: ClCurves.quick,
+                child: SafeArea(top: false, child: widget.dock),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

@@ -2836,6 +2836,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String memLanding(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Adding $count items…',
+      one: 'Adding 1 item…',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get memNoMatch => 'Nothing matches these view options.';
 
   @override
@@ -5765,4 +5776,174 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get meLanguageHint =>
       'Changes the whole app, widgets and notices on this phone right away.';
+
+  @override
+  String get whoIntro =>
+      'From the WHO child growth standards. Every baby grows at their own pace.';
+
+  @override
+  String get whoBoy => 'Boy';
+
+  @override
+  String get whoGirl => 'Girl';
+
+  @override
+  String get whoByWeek => 'By week';
+
+  @override
+  String get whoByMonth => 'By month';
+
+  @override
+  String get whoAge => 'Age';
+
+  @override
+  String get whoLow => 'Low';
+
+  @override
+  String get whoMedian => 'Median';
+
+  @override
+  String get whoHigh => 'High';
+
+  @override
+  String get whoBirth => 'Birth';
+
+  @override
+  String whoWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count weeks',
+      one: '1 week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String whoMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count months',
+      one: '1 month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get whoUnitKg =>
+      'Unit: kg. “Low” and “High” are the lower and upper edges of the normal range.';
+
+  @override
+  String get whoUnitCm =>
+      'Unit: cm. “Low” and “High” are the lower and upper edges of the normal range.';
+
+  @override
+  String get whoDoctor =>
+      'If your baby’s measurement is outside the normal range, talk to their doctor.';
+
+  @override
+  String get whoSource =>
+      'Source: WHO Child Growth Standards · Child Life update 09/2026';
+
+  @override
+  String whoBabyAt(String name, String value, String status) {
+    return '$name $value · $status';
+  }
+
+  @override
+  String get whoNormal => 'Normal';
+
+  @override
+  String get whoBelow => 'Below the reference';
+
+  @override
+  String get whoAbove => 'Above the reference';
+
+  @override
+  String get whoOpen => 'See the WHO growth standards';
+
+  @override
+  String get whoBand => 'Normal range';
+
+  @override
+  String get whoMedianLine => 'WHO median';
+
+  @override
+  String get feedsPerDayTitle => 'Feeds per day';
+
+  @override
+  String feedsPerDayHint(int days) {
+    return 'Bottle and breast feeds · $days days';
+  }
+
+  @override
+  String feedsDayTip(
+    String day,
+    int bottles,
+    int ml,
+    int breasts,
+    int minutes,
+  ) {
+    return '$day · $bottles bottle $ml ml · $breasts breast $minutes′';
+  }
+
+  @override
+  String feedsAvgLine(int count) {
+    return 'Avg $count';
+  }
+
+  @override
+  String bottleShareLine(int pct, int ml) {
+    return 'Bottle $pct% · $ml ml/day';
+  }
+
+  @override
+  String breastShareLine(int pct, int minutes) {
+    return 'Breast $pct% · $minutes min/day';
+  }
+
+  @override
+  String get kpiFeedsPerDay => 'Avg per day';
+
+  @override
+  String get kpiBottlePerDay => 'Bottle/day';
+
+  @override
+  String get kpiBreastPerDay => 'Breast/day';
+
+  @override
+  String get sleepPerDayTitle => 'Total sleep per day';
+
+  @override
+  String get sleepPerDayHint => 'Night 18:00–06:00 · Day 06:00–18:00';
+
+  @override
+  String sleepDayTip(String day, String total, String night, String daytime) {
+    return '$day · $total · night $night · day $daytime';
+  }
+
+  @override
+  String sleepAvgLine(String total) {
+    return 'Avg $total';
+  }
+
+  @override
+  String get legendNightSleep => 'Night sleep';
+
+  @override
+  String get legendDaySleep => 'Day sleep';
+
+  @override
+  String sleepSteadyInsight(int hours, int days) {
+    return 'Total sleep has stayed around $hours h a day over the last $days days.';
+  }
+
+  @override
+  String sleepRangeInsight(String min, String max, int days) {
+    return 'Total sleep ran from $min to $max a day over the last $days days.';
+  }
+
+  @override
+  String get whoStandardsTitle => 'Growth standards';
 }

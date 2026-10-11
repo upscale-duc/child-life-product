@@ -363,7 +363,7 @@ class ClRoleOption extends StatelessWidget {
       checked: selected,
       child: ClPressable(
         onPressed: onTap,
-        pressedScale: 0.98,
+        pressedOpacity: ClPressable.surfaceOpacity,
         semanticLabel: '$title. $subtitle',
         child: AnimatedContainer(
           duration: context.motion(ClMotion.quick),
@@ -467,7 +467,7 @@ class ClEntryOption extends StatelessWidget {
     final cl = context.cl;
     return ClPressable(
       onPressed: onTap,
-      pressedScale: 0.98,
+      pressedOpacity: ClPressable.surfaceOpacity,
       semanticLabel: '$title. $subtitle',
       child: Container(
         padding: const EdgeInsets.all(ClSpace.s4),

@@ -88,6 +88,8 @@ void main() {
     testWidgets('"Đăng xuất" asks first', (tester) async {
       await pumpRouted(tester, const MeScreen(), overrides: _overrides());
       await tester.scrollUntilVisible(find.text('Đăng xuất'), 200);
+      await tester.ensureVisible(find.text('Đăng xuất'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Đăng xuất'));
       await tester.pumpAndSettle();
       expect(find.text('Đăng xuất khỏi máy này?'), findsOneWidget);

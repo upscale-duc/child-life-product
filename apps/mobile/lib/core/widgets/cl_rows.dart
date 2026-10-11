@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../design/cl_theme.dart';
 import '../design/tokens.g.dart';
 import 'cl_icon.dart';
+import 'cl_inputs.dart';
 import 'cl_pressable.dart';
 import 'cl_status.dart';
 
@@ -24,22 +25,31 @@ class ClCardGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
+    // A group of fields gets the input stroke around it (see [ClInputGroup]).
+    final inputs = children.any((c) => c is ClTextField);
+    final column = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < children.length; i++) ...[
+          if (i > 0) Container(height: 1, color: cl.colors.separator),
+          children[i],
+        ],
+      ],
+    );
     return Container(
       clipBehavior: Clip.antiAlias,
+      foregroundDecoration: inputs
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(ClRadius.card),
+              border: Border.all(color: clInputStroke(cl)),
+            )
+          : null,
       decoration: BoxDecoration(
         color: color ?? cl.colors.surface,
         borderRadius: BorderRadius.circular(ClRadius.card),
         boxShadow: shadow ? cl.shadows.card : null,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < children.length; i++) ...[
-            if (i > 0) Container(height: 1, color: cl.colors.separator),
-            children[i],
-          ],
-        ],
-      ),
+      child: inputs ? ClInputGroup(child: column) : column,
     );
   }
 }
@@ -345,7 +355,7 @@ class _RowShell extends StatelessWidget {
     return ClPressable(
       onPressed: onTap,
       semanticLabel: semanticLabel,
-      pressedScale: 0.99,
+      pressedOpacity: ClPressable.surfaceOpacity,
       child: ExcludeSemantics(child: row),
     );
   }

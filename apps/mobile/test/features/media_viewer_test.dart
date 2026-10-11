@@ -141,6 +141,17 @@ void main() {
         tester.getRect(thumbs).top,
         greaterThan(tester.getRect(find.byType(RailButton).last).bottom),
       );
+      // A swipe that starts on the caption, over the bottom fade, still pages.
+      await tester.flingFrom(
+        Offset(60, tester.getRect(thumbs).top - 24),
+        const Offset(300, 0),
+        1000,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<PageView>(find.byType(PageView)).controller!.page,
+        0,
+      );
 
       await _tapMedia(tester);
       expect(_chromeOpacity(tester), 0);

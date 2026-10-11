@@ -42,10 +42,22 @@ class ClTheme extends ThemeExtension<ClTheme> {
   ClTheme copyWith({ClPalette? palette}) =>
       palette == null ? this : ClTheme.of(palette);
 
-  /// Palettes switch without interpolation; the app cross-fades the whole tree instead.
+  /// Colours, care tints and shadows blend over the theme animation, so Light ↔ Night care
+  /// fades smoothly; behaviour that depends on the palette ([isNightCare]) flips halfway.
   @override
-  ClTheme lerp(ClTheme? other, double t) =>
-      t < 0.5 || other == null ? this : other;
+  ClTheme lerp(ClTheme? other, double t) {
+    if (other == null || identical(this, other)) return this;
+    if (t <= 0) return this;
+    if (t >= 1) return other;
+    final colors = ClColors.lerp(this.colors, other.colors, t);
+    return ClTheme(
+      palette: t < 0.5 ? palette : other.palette,
+      colors: colors,
+      care: ClCareColors.lerp(care, other.care, t),
+      shadows: ClShadows.lerp(shadows, other.shadows, t),
+      text: ClTypography(colors.ink),
+    );
+  }
 }
 
 extension ClThemeContext on BuildContext {

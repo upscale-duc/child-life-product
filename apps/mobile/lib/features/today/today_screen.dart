@@ -11,6 +11,7 @@ import '../../core/design/motion.dart';
 import '../../core/design/tabular_text.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_art.dart';
+import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
@@ -91,107 +92,99 @@ class TodayScreen extends ConsumerWidget {
         ? growth.firstOrNull
         : recent.where((r) => r.type == type).firstOrNull;
 
-    return ColoredBox(
-      color: cl.colors.cloud,
-      child: SafeArea(
-        bottom: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(
-            ClSpace.s4,
-            ClSpace.s2,
-            ClSpace.s4,
-            140,
-          ),
-          children: [
-            const BabyHeader(),
-            if (myConflict != null) ...[
-              const SizedBox(height: ClSpace.s3),
-              _SyncBanner(
-                label: l10n.overlapBanner,
-                onTap: () => context.push('${Routes.overlap}/${myConflict.id}'),
-              ),
-            ],
-            if (pendingCount > 0) ...[
-              const SizedBox(height: ClSpace.s3),
-              _SyncBanner(
-                label: online
-                    ? l10n.syncingBanner(pendingCount)
-                    : l10n.offlineBanner(pendingCount),
-                onTap: () => showPendingSheet(context),
-              ),
-            ],
-            const SizedBox(height: ClSpace.s4),
-            Text(
-              toBeginningOfSentenceCase(
-                DateFormat('EEEE, d MMMM', locale).format(now),
-              ),
-              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-            ),
-            Semantics(
-              header: true,
-              child: Text(
-                l10n.todayTitle,
-                style: cl.text.largeTitle.copyWith(color: cl.colors.ink),
-              ),
-            ),
-            const SizedBox(height: ClSpace.s4),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: ClSpace.s3,
-              crossAxisSpacing: ClSpace.s3,
-              childAspectRatio: 166 / 156,
-              children: [
-                for (final kind in trackers)
-                  if (careTypeOf(kind) case final type?)
-                    KeyedSubtree(
-                      key: switch (type) {
-                        CareType.bottle => TourTargets.bottle,
-                        CareType.growth => TourTargets.growth,
-                        _ => null,
-                      },
-                      child: CareTile(
-                        type: type,
-                        last: last(type),
-                        previousGrowth:
-                            type == CareType.growth && growth.length > 1
-                            ? growth[1]
-                            : null,
-                        myUid: membership.uid,
-                        now: now,
-                        readOnly: readOnly,
-                        timer: running(type),
-                        onTap: () => tap(type),
-                        onLongPress: last(type) == null
-                            ? null
-                            : () => context.push(
-                                '${Routes.record}/${last(type)!.id}',
-                              ),
-                      ),
-                    ),
-              ],
-            ),
-            // ReminderPeek (128:665, R-094); not for relatives (D-018).
-            if (!readOnly) ...[
-              const SizedBox(height: ClSpace.s4),
-              const ReminderPeek(),
-            ],
-            const SizedBox(height: ClSpace.s6),
-            ClSectionHeader(
-              title: l10n.todayTitle,
-              linkLabel: l10n.todayHistory,
-              onLink: () => context.push(Routes.history),
-            ),
+    // The baby header stays pinned while the day scrolls under it.
+    return ClPinnedHeaderScaffold(
+      header: const BabyHeader(),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(ClSpace.s4, 0, ClSpace.s4, 140),
+        children: [
+          if (myConflict != null) ...[
             const SizedBox(height: ClSpace.s3),
-            DayRhythm(
-              records: recent,
-              dayStart: day.start,
-              dayEnd: day.end,
-              now: now,
+            _SyncBanner(
+              label: l10n.overlapBanner,
+              onTap: () => context.push('${Routes.overlap}/${myConflict.id}'),
             ),
           ],
-        ),
+          if (pendingCount > 0) ...[
+            const SizedBox(height: ClSpace.s3),
+            _SyncBanner(
+              label: online
+                  ? l10n.syncingBanner(pendingCount)
+                  : l10n.offlineBanner(pendingCount),
+              onTap: () => showPendingSheet(context),
+            ),
+          ],
+          const SizedBox(height: ClSpace.s4),
+          Text(
+            toBeginningOfSentenceCase(
+              DateFormat('EEEE, d MMMM', locale).format(now),
+            ),
+            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+          ),
+          Semantics(
+            header: true,
+            child: Text(
+              l10n.todayTitle,
+              style: cl.text.largeTitle.copyWith(color: cl.colors.ink),
+            ),
+          ),
+          const SizedBox(height: ClSpace.s4),
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: ClSpace.s3,
+            crossAxisSpacing: ClSpace.s3,
+            childAspectRatio: 166 / 156,
+            children: [
+              for (final kind in trackers)
+                if (careTypeOf(kind) case final type?)
+                  KeyedSubtree(
+                    key: switch (type) {
+                      CareType.bottle => TourTargets.bottle,
+                      CareType.growth => TourTargets.growth,
+                      _ => null,
+                    },
+                    child: CareTile(
+                      type: type,
+                      last: last(type),
+                      previousGrowth:
+                          type == CareType.growth && growth.length > 1
+                          ? growth[1]
+                          : null,
+                      myUid: membership.uid,
+                      now: now,
+                      readOnly: readOnly,
+                      timer: running(type),
+                      onTap: () => tap(type),
+                      onLongPress: last(type) == null
+                          ? null
+                          : () => context.push(
+                              '${Routes.record}/${last(type)!.id}',
+                            ),
+                    ),
+                  ),
+            ],
+          ),
+          // ReminderPeek (128:665, R-094); not for relatives (D-018).
+          if (!readOnly) ...[
+            const SizedBox(height: ClSpace.s4),
+            const ReminderPeek(),
+          ],
+          const SizedBox(height: ClSpace.s6),
+          ClSectionHeader(
+            title: l10n.todayTitle,
+            linkLabel: l10n.todayHistory,
+            onLink: () => context.push(Routes.history),
+          ),
+          const SizedBox(height: ClSpace.s3),
+          DayRhythm(
+            records: recent,
+            dayStart: day.start,
+            dayEnd: day.end,
+            now: now,
+          ),
+        ],
       ),
     );
   }
@@ -208,7 +201,7 @@ class _SyncBanner extends StatelessWidget {
     final cl = context.cl;
     return ClPressable(
       onPressed: onTap,
-      pressedScale: 0.99,
+      pressedOpacity: ClPressable.surfaceOpacity,
       semanticLabel: label,
       child: Container(
         padding: const EdgeInsets.symmetric(

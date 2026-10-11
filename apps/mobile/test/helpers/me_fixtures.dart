@@ -91,7 +91,9 @@ List<Override> meOverrides({
   offeredToProvider.overrideWith((ref, familyId) => Stream.value(offeredTo)),
   deletionJobProvider.overrideWith((ref, jobId) => Stream.value(null)),
   // 13a "Đã chia sẻ ra ngoài" (S13).
-  sharedOutProvider.overrideWith((ref, uid) => Stream.value(const <SharedOut>[])),
+  sharedOutProvider.overrideWith(
+    (ref, uid) => Stream.value(const <SharedOut>[]),
+  ),
   if (repo != null) meRepositoryProvider.overrideWithValue(repo),
 ];
 

@@ -142,7 +142,6 @@ Future<void> showQuickLog(BuildContext context) => showClSheet<void>(
         type: type,
         label: label,
         onTap: () {
-          ClHaptics.tap(sheetContext);
           Navigator.of(sheetContext).pop();
           if (type == CareType.sleep) {
             // D-025: "Ngủ" starts the timer at once (or opens the running one).
@@ -326,9 +325,11 @@ class _AmountInputState extends State<AmountInput> {
         decoration: BoxDecoration(
           color: focused ? cl.colors.mintSoft : cl.colors.surface2,
           borderRadius: BorderRadius.circular(ClRadius.card),
+          // Resting: the shared 1 px input stroke; focused: the 2 px mint ring (the numeral is
+          // centred, so the extra pixel does not move it).
           border: Border.all(
-            color: focused ? cl.colors.mintDeep : Colors.transparent,
-            width: 2,
+            color: focused ? cl.colors.mintDeep : clInputStroke(cl),
+            width: focused ? 2 : 1,
           ),
         ),
         // Half-width fields (28) scale the numeral down rather than overflow.

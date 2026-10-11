@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../design/cl_theme.dart';
-import '../design/haptics.dart';
 import '../design/motion.dart';
 import '../design/tabular_text.dart';
 import '../design/tokens.g.dart';
@@ -11,6 +10,22 @@ import 'cl_icon.dart';
 import 'cl_pressable.dart';
 
 /// Text field (23:243): caption label above the value. Grouped = row inside a card;
+/// Resting stroke of every input, so a field reads as a field on any surface (owner feedback,
+/// 2026-10-11): ink-muted at 35 %, visible on Light and Night care sheets alike.
+Color clInputStroke(ClTheme cl) => cl.colors.inkMuted.withValues(alpha: 0.35);
+
+/// Marks fields stacked inside a [ClCardGroup]: the group draws the one stroke around them, so
+/// each field only shows its focus ring.
+class ClInputGroup extends InheritedWidget {
+  const ClInputGroup({required super.child, super.key});
+
+  static bool of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<ClInputGroup>() != null;
+
+  @override
+  bool updateShouldNotify(ClInputGroup oldWidget) => false;
+}
+
 /// Standalone = its own surface card with shadow-card. Focus = 2px focus-ring (no Figma variant).
 class ClTextField extends StatefulWidget {
   const ClTextField({
@@ -72,22 +87,30 @@ class _ClTextFieldState extends State<ClTextField> {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
     final focused = _focus.hasFocus;
+    final grouped = ClInputGroup.of(context);
+    // Width of the resting border the focus ring replaces.
+    final stroke = grouped ? 0.0 : 1.0;
     return AnimatedContainer(
       duration: context.motion(ClMotion.quick),
       curve: ClCurves.quick,
-      padding: const EdgeInsets.symmetric(
-        horizontal: ClSpace.s4,
-        vertical: ClSpace.s3,
+      // Alone, the 1 px resting stroke becomes the 2 px focus ring; in a group the group carries
+      // the stroke and the field shows only the ring. Padding gives back the ring's extra width
+      // so the text never shifts.
+      padding: EdgeInsets.symmetric(
+        horizontal: ClSpace.s4 - (focused ? 2 - stroke : 0),
+        vertical: ClSpace.s3 - (focused ? 2 - stroke : 0),
       ),
       decoration: BoxDecoration(
         color: widget.standalone ? cl.colors.surface : null,
-        borderRadius: widget.standalone || focused
-            ? BorderRadius.circular(ClRadius.card)
-            : null,
+        borderRadius: grouped && !focused
+            ? null
+            : BorderRadius.circular(ClRadius.card),
         boxShadow: widget.standalone ? cl.shadows.card : null,
         border: focused
             ? Border.all(color: cl.colors.focusRing, width: 2)
-            : null,
+            : grouped
+            ? null
+            : Border.all(color: clInputStroke(cl)),
       ),
       child: Row(
         children: [
@@ -170,12 +193,7 @@ class ClToggle extends StatelessWidget {
       label: semanticLabel,
       child: CupertinoSwitch(
         value: value,
-        onChanged: onChanged == null
-            ? null
-            : (v) {
-                ClHaptics.tap(context);
-                onChanged!(v);
-              },
+        onChanged: onChanged,
         activeTrackColor: c.mintDeep,
         inactiveTrackColor: c.separator,
         thumbColor: const Color(0xFFFFFFFF),
@@ -284,6 +302,7 @@ class ClCodeInput extends StatelessWidget {
         decoration: BoxDecoration(
           color: cl.colors.surface2,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: clInputStroke(cl)),
         ),
         alignment: Alignment.center,
         child: Semantics(
@@ -340,7 +359,7 @@ class ClAmountField extends StatelessWidget {
         borderRadius: BorderRadius.circular(ClRadius.card),
         border: focused
             ? Border.all(color: cl.colors.mintDeep, width: 2)
-            : null,
+            : Border.all(color: clInputStroke(cl)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -364,7 +383,7 @@ class ClAmountField extends StatelessWidget {
     }
     return ClPressable(
       onPressed: onTap,
-      pressedScale: 1,
+      pressedOpacity: 1,
       semanticLabel: '$value $unit',
       child: field,
     );

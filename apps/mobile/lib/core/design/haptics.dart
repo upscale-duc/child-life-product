@@ -3,16 +3,15 @@ import 'package:flutter/widgets.dart';
 
 import 'cl_theme.dart';
 
-/// Haptics per the Motion spec (271:537): light on tap, success when a save completes,
-/// warning before delete / duplicate time. Night care: no haptics except success.
+/// Haptics only where they mean something (owner request 2026-10-11, replacing the Motion
+/// spec's tap / sheet / warning haptics): switching the main tab, and a save that shows its
+/// success toast. Taps, sheets and confirmations stay silent. Night care: success only.
 abstract final class ClHaptics {
-  static void tap(BuildContext context) {
-    if (!context.cl.isNightCare) HapticFeedback.lightImpact();
+  /// Switching the main tab (D-048), like the iOS selection tick.
+  static void selection(BuildContext context) {
+    if (!context.cl.isNightCare) HapticFeedback.selectionClick();
   }
 
+  /// Call right where the success toast is shown, and nowhere else.
   static void success() => HapticFeedback.mediumImpact();
-
-  static void warning(BuildContext context) {
-    if (!context.cl.isNightCare) HapticFeedback.heavyImpact();
-  }
 }

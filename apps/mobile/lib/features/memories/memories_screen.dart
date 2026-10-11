@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:intl/intl.dart' hide TextDirection;
 
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
+import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_icon.dart';
@@ -21,6 +23,7 @@ import '../care/care_repository.dart';
 import '../home/home_shell.dart';
 import 'album_models.dart';
 import 'album_screens.dart';
+import 'media_bytes.dart';
 import 'media_viewer.dart';
 import 'memory_models.dart';
 import 'memory_repository.dart';
@@ -227,17 +230,63 @@ String monthTitle(AppLocalizations l10n, String locale, DateTime month) =>
 
 /// Kỷ niệm (10a Nhật ký, 10b Ảnh; Album and Câu chuyện arrive with S10 / S12). Cùng nuôi see
 /// both audiences; relatives what is shared (R-119); caregivers never get this tab (12a).
-class MemoriesScreen extends ConsumerWidget {
+class MemoriesScreen extends ConsumerStatefulWidget {
   const MemoriesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MemoriesScreen> createState() => _MemoriesScreenState();
+}
+
+/// The four tabs are pages side by side: a swipe moves between them, a tap on a title slides
+/// to it (owner request 2026-10-11).
+class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
+  late final _pages = PageController(
+    initialPage: ref.read(memoryViewProvider).tab.index,
+  );
+
+  /// While a tapped title slides the pages, the pages passed on the way are not chosen.
+  var _sliding = false;
+
+  @override
+  void dispose() {
+    _pages.dispose();
+    super.dispose();
+  }
+
+  Future<void> _slideTo(MemoryTab t) async {
+    // Already there, or the finger is moving the pages (the tab follows the swipe).
+    if (!_pages.hasClients || _pages.page?.round() == t.index) return;
+    if (context.reduceMotion) {
+      _pages.jumpToPage(t.index);
+      return;
+    }
+    _sliding = true;
+    try {
+      await _pages.animateToPage(
+        t.index,
+        duration: context.motion(ClMotion.standard),
+        curve: ClCurves.standard,
+      );
+    } finally {
+      _sliding = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final c = memoryCtx(context, ref);
     if (c == null) return ColoredBox(color: cl.colors.cloud);
     final view = ref.watch(memoryViewProvider);
     final selection = ref.watch(memorySelectionProvider);
+    // The upload pill moved to the shell; keep the queue loaded here too without rebuilding the
+    // tab on every progress tick.
+    ref.listen(uploadQueueProvider, (_, _) {});
+    ref.listen(
+      memoryViewProvider.select((v) => v.tab),
+      (_, t) => unawaited(_slideTo(t)),
+    );
     final key = (c.babyId, c.isParent);
     final memories = ref.watch(memoriesProvider(key)).value;
     final media = ref.watch(mediaProvider(key)).value;
@@ -246,72 +295,98 @@ class MemoriesScreen extends ConsumerWidget {
     // tabs / selection pill float 12 above the dock.
     final pillBottom = bottom + ClSpace.s6 + 68 + ClSpace.s3;
 
-    final body = switch (view.tab) {
-      MemoryTab.journal => JournalView(
-        ctx: c,
-        memories: memories,
-        media: media,
-      ),
-      MemoryTab.photos => PhotosView(ctx: c, media: media),
-      MemoryTab.albums => AlbumsView(ctx: c),
-      MemoryTab.stories => StoriesView(ctx: c),
-    };
+    final body = PageView.builder(
+      key: const Key('memoryPages'),
+      controller: _pages,
+      // Picking items stays on its tab.
+      physics: selection != null ? const NeverScrollableScrollPhysics() : null,
+      itemCount: MemoryTab.values.length,
+      onPageChanged: (i) {
+        if (_sliding) return;
+        ref.read(memoryViewProvider.notifier).tab(MemoryTab.values[i]);
+      },
+      itemBuilder: (_, i) => switch (MemoryTab.values[i]) {
+        MemoryTab.journal => JournalView(
+          ctx: c,
+          memories: memories,
+          media: media,
+        ),
+        MemoryTab.photos => PhotosView(ctx: c, media: media),
+        MemoryTab.albums => AlbumsView(ctx: c),
+        MemoryTab.stories => StoriesView(ctx: c),
+      },
+    );
 
-    return ColoredBox(
-      color: cl.colors.cloud,
-      child: Stack(
-        children: [
-          Positioned.fill(child: body),
-          if (view.asRelative)
-            Positioned(
-              left: ClSpace.s4,
-              right: ClSpace.s4,
-              top: MediaQuery.paddingOf(context).top + ClSpace.s2,
-              child: _RelativePreviewBanner(
-                onExit: () => ref
-                    .read(memoryViewProvider.notifier)
-                    .set(view.copyWith(asRelative: false)),
-              ),
+    final labels = [
+      l10n.memJournal,
+      l10n.memPhotos,
+      l10n.memAlbums,
+      l10n.memStories,
+    ];
+    return Stack(
+      children: [
+        // The baby header and the title tabs stay pinned; the tab's content scrolls under them
+        // (owner feedback 2026-10-11: the big title is the tab bar, no floating bar above the
+        // dock).
+        Positioned.fill(
+          child: ClPinnedHeaderScaffold(
+            header: MemoryHeader(
+              ctx: c,
+              tab: view.tab,
+              labels: labels,
+              onSelect: (t) => ref.read(memoryViewProvider.notifier).tab(t),
             ),
+            body: body,
+            scrollDepth: 1,
+          ),
+        ),
+        if (view.asRelative)
+          Positioned(
+            left: ClSpace.s4,
+            right: ClSpace.s4,
+            top: MediaQuery.paddingOf(context).top + ClSpace.s2,
+            child: _RelativePreviewBanner(
+              onExit: () => ref
+                  .read(memoryViewProvider.notifier)
+                  .set(view.copyWith(asRelative: false)),
+            ),
+          ),
+        if (selection != null)
           Positioned(
             left: ClSpace.s4,
             right: ClSpace.s4,
             bottom: pillBottom,
             child: Center(
-              child: selection != null
-                  ? _SelectionPill(
-                      count: selection.length,
-                      onShare: selection.isEmpty
-                          ? null
-                          : () => showSelectionActions(context, ref, c),
-                      onDelete: selection.isEmpty || !c.isParent
-                          ? null
-                          : () => confirmDeleteSelection(context, ref, c),
-                    )
-                  : _MemoryTabs(
-                      tab: view.tab,
-                      onSelect: (t) =>
-                          ref.read(memoryViewProvider.notifier).tab(t),
-                      labels: [
-                        l10n.memJournal,
-                        l10n.memPhotos,
-                        l10n.memAlbums,
-                        l10n.memStories,
-                      ],
-                    ),
+              child: _SelectionPill(
+                count: selection.length,
+                onShare: selection.isEmpty
+                    ? null
+                    : () => showSelectionActions(context, ref, c),
+                onDelete: selection.isEmpty || !c.isParent
+                    ? null
+                    : () => confirmDeleteSelection(context, ref, c),
+              ),
             ),
           ),
-        ],
-      ),
+      ],
     );
   }
 }
 
-/// Header: baby switcher, "Cách xem" (10c) and "+" (10a2, parents only).
+/// Header: baby switcher, "Cách xem" (10c) and "+" (10a2, parents only), then the tabs as
+/// large titles "Nhật ký · Ảnh · Album · Câu chuyện" (the selected one in ink).
 class MemoryHeader extends ConsumerWidget {
-  const MemoryHeader({required this.ctx, required this.title, super.key});
+  const MemoryHeader({
+    required this.ctx,
+    required this.tab,
+    required this.labels,
+    required this.onSelect,
+    super.key,
+  });
   final MemoryCtx ctx;
-  final String title;
+  final MemoryTab tab;
+  final List<String> labels;
+  final ValueChanged<MemoryTab> onSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -359,8 +434,8 @@ class MemoryHeader extends ConsumerWidget {
             ],
           ],
         ),
-        const SizedBox(height: ClSpace.s4),
-        Semantics(header: true, child: Text(title, style: cl.text.largeTitle)),
+        const SizedBox(height: ClSpace.s3),
+        _MemoryTitleTabs(tab: tab, labels: labels, onSelect: onSelect),
       ],
     );
   }
@@ -401,9 +476,10 @@ class _RelativePreviewBanner extends StatelessWidget {
   }
 }
 
-/// Floating "Nhật ký · Ảnh · Album · Câu chuyện" (layer "Memory tabs (floating)").
-class _MemoryTabs extends StatelessWidget {
-  const _MemoryTabs({
+/// The tabs as large titles: the selected one in ink, the others muted; scrolls sideways when
+/// the labels outgrow the width and keeps the selected one in view.
+class _MemoryTitleTabs extends StatefulWidget {
+  const _MemoryTitleTabs({
     required this.tab,
     required this.onSelect,
     required this.labels,
@@ -413,43 +489,62 @@ class _MemoryTabs extends StatelessWidget {
   final List<String> labels;
 
   @override
+  State<_MemoryTitleTabs> createState() => _MemoryTitleTabsState();
+}
+
+class _MemoryTitleTabsState extends State<_MemoryTitleTabs> {
+  final _keys = {for (final t in MemoryTab.values) t: GlobalKey()};
+
+  @override
+  void didUpdateWidget(_MemoryTitleTabs old) {
+    super.didUpdateWidget(old);
+    if (old.tab != widget.tab) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final target = _keys[widget.tab]!.currentContext;
+        if (target == null || !mounted) return;
+        Scrollable.ensureVisible(
+          target,
+          alignment: 0.5,
+          duration: context.motion(ClMotion.quick),
+          curve: ClCurves.quick,
+        );
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final cl = context.cl;
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: cl.colors.surface,
-        borderRadius: BorderRadius.circular(ClRadius.pill),
-        boxShadow: cl.shadows.card,
-      ),
+    final duration = context.motion(ClMotion.quick);
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      clipBehavior: Clip.none,
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          for (final t in MemoryTab.values)
+          for (final t in MemoryTab.values) ...[
+            if (t.index > 0) const SizedBox(width: ClSpace.s4),
             ClPressable(
-              onPressed: () => onSelect(t),
-              selected: t == tab,
-              semanticLabel: labels[t.index],
-              haptic: false,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: ClSpace.s3,
-                  vertical: 9,
-                ),
-                decoration: BoxDecoration(
-                  color: t == tab ? cl.colors.ink : null,
-                  borderRadius: BorderRadius.circular(ClRadius.pill),
-                ),
-                child: Text(
-                  labels[t.index],
-                  style: cl.text.label.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: t == tab ? cl.colors.surface : cl.colors.inkMuted,
+              key: _keys[t],
+              onPressed: () => widget.onSelect(t),
+              selected: t == widget.tab,
+              semanticLabel: widget.labels[t.index],
+              pressedOpacity: 1,
+              minSize: Size.zero,
+              child: Semantics(
+                header: t == widget.tab,
+                child: AnimatedDefaultTextStyle(
+                  duration: duration,
+                  curve: ClCurves.quick,
+                  style: cl.text.title.copyWith(
+                    color: t == widget.tab
+                        ? cl.colors.ink
+                        : cl.colors.inkMuted.withValues(alpha: 0.55),
                   ),
+                  child: Text(widget.labels[t.index]),
                 ),
               ),
             ),
+          ],
         ],
       ),
     );
@@ -650,41 +745,11 @@ class JournalView extends ConsumerWidget {
             ),
             sliver: SliverList.list(
               children: [
-                MemoryHeader(
-                  ctx: c,
-                  title: c.isParent ? l10n.memJournal : l10n.tabMemories,
-                ),
                 if (!c.isParent)
                   Text(
                     l10n.relSubtitle,
                     style: cl.text.label.copyWith(color: cl.colors.inkMuted),
                   ),
-                if (c.isParent) ...[
-                  const SizedBox(height: ClSpace.s3),
-                  UploadPill(
-                    babyId: c.babyId,
-                    onOpen: () {
-                      // 13f "Hết dung lượng · chạm để xem" opens Dung lượng (13d).
-                      final open = [
-                        for (final b in ref.read(uploadQueueProvider).batches)
-                          if (b.babyId == c.babyId)
-                            for (final i in b.items)
-                              if (i.state != QueueState.uploaded &&
-                                  i.state != QueueState.cancelled &&
-                                  i.state != QueueState.unreadable)
-                                i,
-                      ];
-                      if (open.isNotEmpty &&
-                          open.every(
-                            (i) => i.state == QueueState.waitingQuota,
-                          )) {
-                        context.push(Routes.meStorage);
-                      } else {
-                        showQueueSheet(context, ref, c);
-                      }
-                    },
-                  ),
-                ],
                 const SizedBox(height: ClSpace.s3),
                 if (memories != null && order.isEmpty)
                   Padding(
@@ -786,6 +851,10 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
   final _monthKeys = <DateTime, GlobalKey>{};
   DateTime? _visibleMonth;
 
+  /// Ids already on screen while this tab is open: anything new fades in.
+  final _seen = <String>{};
+  var _primed = false;
+
   @override
   void initState() {
     super.initState();
@@ -831,10 +900,36 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
     final favorites =
         ref.watch(favoritesProvider((c.babyId, c.me.uid))).value ?? const {};
     final items = visibleMedia(widget.media ?? const [], view, c.parentView);
-    final months = <DateTime, List<MediaItem>>{};
-    for (final i in items) {
-      final l = inBabyZone(c.zone, i.captureAt);
-      months.putIfAbsent(DateTime(l.year, l.month), () => []).add(i);
+    // Rebuild when an upload moves on, not on every progress tick.
+    ref.watch(uploadQueueProvider.select((q) => _queueKey(q, c.babyId)));
+    final landing = c.parentView
+        ? landingCells(
+            ref.read(uploadQueueProvider),
+            widget.media ?? const [],
+            view,
+            c.babyId,
+          )
+        : const <PhotoCell>[];
+    final months = <DateTime, List<PhotoCell>>{};
+    for (final cell in _merge([
+      for (final i in items) PhotoCell.ready(i),
+    ], landing)) {
+      final l = inBabyZone(c.zone, cell.at);
+      months.putIfAbsent(DateTime(l.year, l.month), () => []).add(cell);
+    }
+    final readyMonths = {
+      for (final e in months.entries)
+        if (e.value.any((x) => x.item != null))
+          e.key: [for (final x in e.value) ?x.item],
+    };
+    final fresh = <String>{};
+    if (widget.media != null) {
+      for (final cells in months.values) {
+        for (final cell in cells) {
+          if (_seen.add(cell.id) && _primed) fresh.add(cell.id);
+        }
+      }
+      _primed = true;
     }
     _monthKeys.removeWhere((k, _) => !months.containsKey(k));
     for (final m in months.keys) {
@@ -860,7 +955,6 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
       onPressed: onTap,
       selected: on,
       semanticLabel: label,
-      haptic: false,
       child: Container(
         height: 36,
         padding: const EdgeInsets.symmetric(horizontal: ClSpace.s3),
@@ -921,8 +1015,6 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                 ),
                 sliver: SliverList.list(
                   children: [
-                    MemoryHeader(ctx: c, title: l10n.memPhotos),
-                    const SizedBox(height: ClSpace.s3),
                     Row(
                       children: [
                         chip(l10n.filterAll, on: true, onTap: () {}),
@@ -933,7 +1025,12 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                           trailing: ClIcons.chevronDown,
                           onTap: months.isEmpty
                               ? null
-                              : () => showGotoMonth(context, c, months, jumpTo),
+                              : () => showGotoMonth(
+                                  context,
+                                  c,
+                                  readyMonths,
+                                  jumpTo,
+                                ),
                         ),
                         const Spacer(),
                         if (c.parentView || selecting)
@@ -950,7 +1047,10 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                           ),
                       ],
                     ),
-                    if (widget.media != null && items.isEmpty)
+                    if (landing.isNotEmpty) _LandingLine(count: landing.length),
+                    if (widget.media != null &&
+                        items.isEmpty &&
+                        landing.isEmpty)
                       Padding(
                         padding: const EdgeInsets.only(top: ClSpace.s8),
                         child: ClEmptyState(
@@ -988,14 +1088,16 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                         if (selecting)
                           ClPressable(
                             onPressed: () {
-                              final ids = [for (final i in e.value) i.id];
+                              final ids = [
+                                for (final cell in e.value)
+                                  if (cell.item != null) cell.id,
+                              ];
                               final all = ids.every(selection.contains);
                               ref
                                   .read(memorySelectionProvider.notifier)
                                   .setAll(ids, !all);
                             },
                             semanticLabel: l10n.memSelectMonth,
-                            haptic: false,
                             child: Text(
                               l10n.memSelectMonth,
                               style: cl.text.label.copyWith(
@@ -1008,8 +1110,12 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                           Text(
                             countsLabel(
                               l10n,
-                              e.value.where((i) => !i.isVideo).length,
-                              e.value.where((i) => i.isVideo).length,
+                              e.value
+                                  .where((x) => x.item?.isVideo == false)
+                                  .length,
+                              e.value
+                                  .where((x) => x.item?.isVideo == true)
+                                  .length,
                               ' · ',
                             ),
                             style: cl.text.caption.copyWith(
@@ -1024,11 +1130,13 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                   padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
                   sliver: view.layout == MemoryLayout.list
                       ? SliverList.separated(
-                          itemCount: e.value.length,
+                          itemCount: e.value
+                              .where((x) => x.item != null)
+                              .length,
                           separatorBuilder: (_, _) =>
                               const SizedBox(height: ClSpace.s2),
                           itemBuilder: (_, n) {
-                            final i = e.value[n];
+                            final i = [for (final x in e.value) ?x.item][n];
                             return _ListRow(
                               item: i,
                               ctx: c,
@@ -1046,19 +1154,46 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                                 crossAxisSpacing: 4,
                               ),
                           itemCount: e.value.length,
+                          // Cells follow their item when others land before them.
+                          findChildIndexCallback: (key) {
+                            final at = e.value.indexWhere(
+                              (x) => ValueKey(x.id) == key,
+                            );
+                            return at < 0 ? null : at;
+                          },
                           itemBuilder: (_, n) {
-                            final i = e.value[n];
-                            return MediaTile(
-                              item: i,
-                              favorite: favorites.contains(i.id),
-                              selecting: selecting,
-                              selected: selection?.contains(i.id) ?? false,
-                              onTap: () => selecting ? toggle(i) : open(i),
-                              onLongPress: c.parentView && !selecting
-                                  ? () => ref
-                                        .read(memorySelectionProvider.notifier)
-                                        .start(i.id)
-                                  : null,
+                            final cell = e.value[n];
+                            final i = cell.item;
+                            return _GridCell(
+                              key: ValueKey(cell.id),
+                              appear: fresh.contains(cell.id),
+                              readyThumb: i?.thumbPath,
+                              landing: i != null
+                                  ? null
+                                  : _LandingTile(
+                                      path: cell.local,
+                                      waiting: cell.waiting,
+                                      onTap: () => openUploads(context, ref, c),
+                                    ),
+                              ready: i == null
+                                  ? null
+                                  : MediaTile(
+                                      item: i,
+                                      favorite: favorites.contains(i.id),
+                                      selecting: selecting,
+                                      selected:
+                                          selection?.contains(i.id) ?? false,
+                                      onTap: () =>
+                                          selecting ? toggle(i) : open(i),
+                                      onLongPress: c.parentView && !selecting
+                                          ? () => ref
+                                                .read(
+                                                  memorySelectionProvider
+                                                      .notifier,
+                                                )
+                                                .start(i.id)
+                                          : null,
+                                    ),
                             );
                           },
                         ),
@@ -1074,7 +1209,7 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
               right: ClSpace.s4,
               bottom: MediaQuery.paddingOf(context).bottom + 160,
               child: ClPressable(
-                onPressed: () => showGotoMonth(context, c, months, jumpTo),
+                onPressed: () => showGotoMonth(context, c, readyMonths, jumpTo),
                 semanticLabel: l10n.gotoTitle,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -1122,6 +1257,319 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
   }
 }
 
+/// A cell of the Ảnh grid: a ready item, or one still landing (sent from this phone, or
+/// being processed) shown from the copy on the device until the server's arrives.
+@immutable
+class PhotoCell {
+  PhotoCell.ready(MediaItem this.item)
+    : id = item.id,
+      at = item.captureAt,
+      local = null,
+      waiting = false;
+  const PhotoCell.landing({
+    required this.id,
+    required this.at,
+    this.local,
+    this.waiting = false,
+  }) : item = null;
+
+  final String id;
+  final DateTime at;
+  final MediaItem? item;
+
+  /// The picture on this phone (thumbnail, photo or video poster), if still there.
+  final String? local;
+
+  /// Held (Wi-Fi only, paused, no session yet): a clock instead of a spinner.
+  final bool waiting;
+}
+
+String _queueKey(QueueView q, String babyId) => [
+  for (final b in q.batches)
+    if (b.babyId == babyId)
+      for (final i in b.items) '${i.mediaId}:${i.state.name}:${i.thumbPath}',
+].join(',');
+
+bool _onTheWay(QueueState s) => switch (s) {
+  QueueState.pendingSession ||
+  QueueState.queued ||
+  QueueState.waitingWifi ||
+  QueueState.uploading ||
+  QueueState.paused ||
+  QueueState.uploaded => true,
+  QueueState.waitingQuota ||
+  QueueState.failed ||
+  QueueState.unreadable ||
+  QueueState.cancelled => false,
+};
+
+bool _landingShown(bool video, Audience audience, MemoryView v) {
+  final who = switch (v.who) {
+    MemoryWho.all => true,
+    MemoryWho.family => audience == Audience.family,
+    MemoryWho.parents => audience == Audience.parents,
+  };
+  return who &&
+      switch (v.show) {
+        MemoryShow.all => true,
+        MemoryShow.photos => !video,
+        MemoryShow.videos => video,
+        MemoryShow.milestones => false,
+      };
+}
+
+/// What is on its way into Ảnh (parents only), newest first: items uploading or sent from
+/// this phone, and items the server is still processing (from any parent's phone). Without
+/// them an upload "finished" in the pill but was missing from the grid for a while.
+List<PhotoCell> landingCells(
+  QueueView queue,
+  List<MediaItem> media,
+  MemoryView v,
+  String babyId,
+) {
+  final queued = {
+    for (final b in queue.batches)
+      if (b.babyId == babyId && !b.dismissed)
+        for (final i in b.items) i.mediaId: (b, i),
+  };
+  String? local(QueueItem i) => [
+    i.thumbPath,
+    if (i.isVideo) i.posterPath else i.localPath,
+  ].nonNulls.where((p) => File(p).existsSync()).firstOrNull;
+  final cells = <PhotoCell>[];
+  final docs = <String>{};
+  for (final m in media) {
+    docs.add(m.id);
+    if (m.status != MediaStatus.uploading || m.deleted) continue;
+    final q = queued[m.id];
+    if (q != null && (!_onTheWay(q.$2.state) || q.$1.refused)) continue;
+    if (!_landingShown(m.isVideo, m.effectiveAudience, v)) continue;
+    cells.add(
+      PhotoCell.landing(
+        id: m.id,
+        at: m.captureAt,
+        local: q == null ? null : local(q.$2),
+        waiting: q != null && _held(q.$2.state),
+      ),
+    );
+  }
+  for (final (b, i) in queued.values) {
+    if (docs.contains(i.mediaId) || !_onTheWay(i.state) || b.refused) continue;
+    final audience = b.request['audience'] == Audience.family.name
+        ? Audience.family
+        : Audience.parents;
+    if (!_landingShown(i.isVideo, audience, v)) continue;
+    cells.add(
+      PhotoCell.landing(
+        id: i.mediaId,
+        at: i.captureAt,
+        local: local(i),
+        waiting: _held(i.state),
+      ),
+    );
+  }
+  cells.sort((a, b) => b.at.compareTo(a.at));
+  return cells;
+}
+
+bool _held(QueueState s) =>
+    s == QueueState.waitingWifi ||
+    s == QueueState.paused ||
+    s == QueueState.pendingSession;
+
+/// Two newest-first lists as one, keeping each list's own order.
+List<PhotoCell> _merge(List<PhotoCell> a, List<PhotoCell> b) {
+  final out = <PhotoCell>[];
+  var i = 0;
+  var j = 0;
+  while (i < a.length || j < b.length) {
+    if (j >= b.length || (i < a.length && !b[j].at.isAfter(a[i].at))) {
+      out.add(a[i++]);
+    } else {
+      out.add(b[j++]);
+    }
+  }
+  return out;
+}
+
+/// "Đang thêm 3 mục…" over the grid while uploads land, so a finished upload that is not in
+/// the grid yet is never a surprise.
+class _LandingLine extends StatelessWidget {
+  const _LandingLine({required this.count});
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Padding(
+      padding: const EdgeInsets.only(top: ClSpace.s3),
+      child: Row(
+        children: [
+          SizedBox.square(
+            dimension: 14,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: cl.colors.mintText,
+            ),
+          ),
+          const SizedBox(width: ClSpace.s2),
+          Expanded(
+            child: Text(
+              AppLocalizations.of(context).memLanding(count),
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// An item still landing: the picture from this phone, dimmed, with a spinner (or a clock
+/// while held). A tap opens the upload queue.
+class _LandingTile extends StatelessWidget {
+  const _LandingTile({
+    required this.path,
+    required this.waiting,
+    required this.onTap,
+  });
+  final String? path;
+  final bool waiting;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final path = this.path;
+    return ClPressable(
+      onPressed: onTap,
+      semanticLabel: AppLocalizations.of(context).memLanding(1),
+      minSize: Size.zero,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ColoredBox(color: cl.colors.surface2),
+            if (path != null)
+              Image.file(
+                File(path),
+                fit: BoxFit.cover,
+                cacheWidth: 360,
+                gaplessPlayback: true,
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
+              ),
+            ColoredBox(color: Colors.black.withValues(alpha: 0.3)),
+            Center(
+              child: waiting
+                  ? const ClIcon(ClIcons.clock, size: 20, color: Colors.white)
+                  : const SizedBox.square(
+                      dimension: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.2,
+                        color: Colors.white,
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// One grid cell. A new cell fades and grows in; a landing item turns into the server's once
+/// that picture is loaded, cross-fading in place, so the grid never blinks.
+class _GridCell extends StatefulWidget {
+  const _GridCell({
+    required this.appear,
+    this.ready,
+    this.readyThumb,
+    this.landing,
+    super.key,
+  });
+  final bool appear;
+  final Widget? ready;
+  final String? readyThumb;
+  final Widget? landing;
+
+  @override
+  State<_GridCell> createState() => _GridCellState();
+}
+
+class _GridCellState extends State<_GridCell>
+    with SingleTickerProviderStateMixin {
+  late final _in = AnimationController(
+    vsync: this,
+    duration: ClMotion.standard,
+    value: widget.appear ? 0 : 1,
+  );
+  late var _showReady = widget.ready != null;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.appear) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        context.reduceMotion ? _in.value = 1 : unawaited(_in.forward());
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(_GridCell old) {
+    super.didUpdateWidget(old);
+    if (widget.ready == null) {
+      _showReady = false;
+    } else if (!_showReady) {
+      final thumb = widget.readyThumb;
+      if (thumb == null) {
+        _showReady = true;
+      } else {
+        // Keep the phone's picture until the server's is decoded.
+        unawaited(
+          precacheImage(
+            StorageImage(thumb),
+            context,
+            onError: (_, _) {},
+          ).whenComplete(() {
+            if (mounted) setState(() => _showReady = true);
+          }),
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _in.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ready = widget.ready;
+    final child = _showReady && ready != null
+        ? KeyedSubtree(key: const ValueKey('ready'), child: ready)
+        : KeyedSubtree(
+            key: const ValueKey('landing'),
+            child: widget.landing ?? ready ?? const SizedBox.shrink(),
+          );
+    final curved = CurvedAnimation(parent: _in, curve: ClCurves.standard);
+    return FadeTransition(
+      opacity: curved,
+      child: ScaleTransition(
+        scale: Tween(begin: 0.88, end: 1.0).animate(curved),
+        child: AnimatedSwitcher(
+          duration: context.motion(ClMotion.standard),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
 /// "Danh sách" layout (10c).
 class _ListRow extends StatelessWidget {
   const _ListRow({
@@ -1143,7 +1591,6 @@ class _ListRow extends StatelessWidget {
     final cl = context.cl;
     return ClPressable(
       onPressed: onTap,
-      haptic: false,
       child: Row(
         children: [
           SizedBox(
@@ -1232,6 +1679,85 @@ class _EntryFooter extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Opens what an upload pill points at: Dung lượng when everything left waits for space (13f),
+/// otherwise the queue (10i).
+void openUploads(BuildContext context, WidgetRef ref, MemoryCtx c) {
+  final open = [
+    for (final b in ref.read(uploadQueueProvider).batches)
+      if (b.babyId == c.babyId)
+        for (final i in b.items)
+          if (i.state != QueueState.uploaded &&
+              i.state != QueueState.cancelled &&
+              i.state != QueueState.unreadable)
+            i,
+  ];
+  if (open.isNotEmpty &&
+      open.every((i) => i.state == QueueState.waitingQuota)) {
+    context.push(Routes.meStorage);
+  } else {
+    showQueueSheet(context, ref, c);
+  }
+}
+
+/// The upload pill (382:2807) floating above the tab dock on every tab, so an upload started
+/// from anywhere stays visible (owner, 2026-10-11, D-048). A finished batch shows its result for
+/// a few seconds and then steps aside; it stays in the queue until dismissed there.
+class GlobalUploadPill extends ConsumerStatefulWidget {
+  const GlobalUploadPill({super.key});
+
+  @override
+  ConsumerState<GlobalUploadPill> createState() => _GlobalUploadPillState();
+}
+
+class _GlobalUploadPillState extends ConsumerState<GlobalUploadPill> {
+  static const _showDone = Duration(seconds: 4);
+  final _hidden = <String>{};
+  final _timers = <String, Timer>{};
+
+  @override
+  void dispose() {
+    for (final t in _timers.values) {
+      t.cancel();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Watched first and always: this keeps the queue loaded and running from app start.
+    final queue = ref.watch(uploadQueueProvider);
+    final c = memoryCtx(context, ref);
+    // Parents upload; the selection pill takes this place while picking in Kỷ niệm.
+    if (c == null ||
+        !c.isParent ||
+        ref.watch(memorySelectionProvider) != null) {
+      return const SizedBox.shrink();
+    }
+    for (final b in queue.batches) {
+      if (b.babyId != c.babyId || !b.done || _hidden.contains(b.batchId)) {
+        continue;
+      }
+      _timers.putIfAbsent(
+        b.batchId,
+        () => Timer(_showDone, () {
+          if (mounted) setState(() => _hidden.add(b.batchId));
+        }),
+      );
+    }
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(ClRadius.card - 4),
+        boxShadow: context.cl.shadows.card,
+      ),
+      child: UploadPill(
+        babyId: c.babyId,
+        hidden: _hidden,
+        onOpen: () => openUploads(context, ref, c),
+      ),
     );
   }
 }

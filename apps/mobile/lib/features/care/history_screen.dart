@@ -709,7 +709,7 @@ class _LinkCard extends StatelessWidget {
     final cl = context.cl;
     return ClPressable(
       onPressed: onTap,
-      pressedScale: 0.99,
+      pressedOpacity: ClPressable.surfaceOpacity,
       semanticLabel: '$title. $subtitle',
       child: Container(
         padding: const EdgeInsets.all(ClSpace.s4),
@@ -1017,7 +1017,7 @@ class _TimelineRow extends StatelessWidget {
     );
     return ClPressable(
       onPressed: () => context.push('${Routes.record}/${r.id}'),
-      pressedScale: 0.99,
+      pressedOpacity: ClPressable.surfaceOpacity,
       semanticLabel:
           '${hm.format(start)}, $title, $detail${r.pending ? ', ${l10n.carePending}' : ''}',
       child: ExcludeSemantics(
@@ -1082,7 +1082,7 @@ class _RunningRow extends ConsumerWidget {
     );
     return ClPressable(
       onPressed: () => context.push('${Routes.timer}/${timer.type.name}'),
-      pressedScale: 0.99,
+      pressedOpacity: ClPressable.surfaceOpacity,
       semanticLabel:
           '${careTypeLabel(l10n, timer.type.careType)}, ${l10n.rowRunning}',
       child: ExcludeSemantics(
@@ -1421,7 +1421,7 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
             last: i == all.length - 1,
             child: ClPressable(
               onPressed: () => context.push('${Routes.record}/${r.id}'),
-              pressedScale: 0.99,
+              pressedOpacity: ClPressable.surfaceOpacity,
               semanticLabel: recordSummary(l10n, locale, r),
               child: ExcludeSemantics(
                 child: Padding(

@@ -2693,6 +2693,16 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String memLanding(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đang thêm $count mục…',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get memNoMatch => 'Không có mục nào khớp cách xem này.';
 
   @override
@@ -5402,4 +5412,162 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get meLanguageHint =>
       'Đổi ngay cho cả app, widget và thông báo trên máy này.';
+
+  @override
+  String get whoIntro =>
+      'Theo bảng chuẩn tăng trưởng trẻ em của WHO. Mỗi bé lớn theo nhịp riêng.';
+
+  @override
+  String get whoBoy => 'Bé trai';
+
+  @override
+  String get whoGirl => 'Bé gái';
+
+  @override
+  String get whoByWeek => 'Theo tuần';
+
+  @override
+  String get whoByMonth => 'Theo tháng';
+
+  @override
+  String get whoAge => 'Tuổi';
+
+  @override
+  String get whoLow => 'Thấp';
+
+  @override
+  String get whoMedian => 'Trung vị';
+
+  @override
+  String get whoHigh => 'Cao';
+
+  @override
+  String get whoBirth => 'Mới sinh';
+
+  @override
+  String whoWeeks(int count) {
+    return '$count tuần';
+  }
+
+  @override
+  String whoMonths(int count) {
+    return '$count tháng';
+  }
+
+  @override
+  String get whoUnitKg =>
+      'Đơn vị: kg. “Thấp” và “Cao” là ngưỡng dưới và ngưỡng trên của khoảng bình thường.';
+
+  @override
+  String get whoUnitCm =>
+      'Đơn vị: cm. “Thấp” và “Cao” là ngưỡng dưới và ngưỡng trên của khoảng bình thường.';
+
+  @override
+  String get whoDoctor =>
+      'Nếu số đo của bé nằm ngoài khoảng bình thường, hãy trao đổi với bác sĩ của bé.';
+
+  @override
+  String get whoSource =>
+      'Nguồn: WHO Child Growth Standards · Child Life cập nhật 09/2026';
+
+  @override
+  String whoBabyAt(String name, String value, String status) {
+    return '$name $value · $status';
+  }
+
+  @override
+  String get whoNormal => 'Bình thường';
+
+  @override
+  String get whoBelow => 'Dưới mức tham chiếu';
+
+  @override
+  String get whoAbove => 'Trên mức tham chiếu';
+
+  @override
+  String get whoOpen => 'Xem tiêu chuẩn tăng trưởng WHO';
+
+  @override
+  String get whoBand => 'Khoảng bình thường';
+
+  @override
+  String get whoMedianLine => 'Trung vị WHO';
+
+  @override
+  String get feedsPerDayTitle => 'Bú mỗi ngày';
+
+  @override
+  String feedsPerDayHint(int days) {
+    return 'Số cữ bú bình và bú mẹ · $days ngày';
+  }
+
+  @override
+  String feedsDayTip(
+    String day,
+    int bottles,
+    int ml,
+    int breasts,
+    int minutes,
+  ) {
+    return '$day · $bottles bình $ml ml · $breasts mẹ $minutes′';
+  }
+
+  @override
+  String feedsAvgLine(int count) {
+    return 'TB $count cữ';
+  }
+
+  @override
+  String bottleShareLine(int pct, int ml) {
+    return 'Bú bình $pct% · $ml ml/ngày';
+  }
+
+  @override
+  String breastShareLine(int pct, int minutes) {
+    return 'Bú mẹ $pct% · $minutes phút/ngày';
+  }
+
+  @override
+  String get kpiFeedsPerDay => 'TB mỗi ngày';
+
+  @override
+  String get kpiBottlePerDay => 'Bú bình/ngày';
+
+  @override
+  String get kpiBreastPerDay => 'Bú mẹ/ngày';
+
+  @override
+  String get sleepPerDayTitle => 'Tổng giờ ngủ mỗi ngày';
+
+  @override
+  String get sleepPerDayHint => 'Đêm 18:00–06:00 · Ngày 06:00–18:00';
+
+  @override
+  String sleepDayTip(String day, String total, String night, String daytime) {
+    return '$day · $total · đêm $night · ngày $daytime';
+  }
+
+  @override
+  String sleepAvgLine(String total) {
+    return 'TB $total';
+  }
+
+  @override
+  String get legendNightSleep => 'Ngủ đêm';
+
+  @override
+  String get legendDaySleep => 'Ngủ ngày';
+
+  @override
+  String sleepSteadyInsight(int hours, int days) {
+    return 'Tổng giờ ngủ ổn định quanh $hours giờ/ngày trong $days ngày qua.';
+  }
+
+  @override
+  String sleepRangeInsight(String min, String max, int days) {
+    return 'Tổng giờ ngủ từ $min đến $max mỗi ngày trong $days ngày qua.';
+  }
+
+  @override
+  String get whoStandardsTitle => 'Tiêu chuẩn tăng trưởng';
 }

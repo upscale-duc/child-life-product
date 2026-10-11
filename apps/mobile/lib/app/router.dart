@@ -67,6 +67,28 @@ Page<void> _fade(GoRouterState state, Widget child) =>
           FadeTransition(opacity: animation, child: child),
     );
 
+/// Every other screen: an explicit [MaterialPage], so iOS gets the Cupertino slide and edge
+/// swipe-back and Android its predictive back (D-013). go_router's own fallback looks for
+/// `material_ui`'s MaterialApp, misses ours (`package:flutter/material.dart`) and would hand out
+/// a NoTransitionPage instead.
+GoRoute _route({
+  required String path,
+  required Widget Function(BuildContext context, GoRouterState state) builder,
+  GoRouterRedirect? redirect,
+  List<RouteBase> routes = const [],
+}) => GoRoute(
+  path: path,
+  redirect: redirect,
+  routes: routes,
+  pageBuilder: (context, state) => MaterialPage<void>(
+    key: state.pageKey,
+    name: state.name ?? state.path,
+    arguments: {...state.pathParameters, ...state.uri.queryParameters},
+    restorationId: state.pageKey.value,
+    child: builder(context, state),
+  ),
+);
+
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = ValueNotifier<int>(0);
   ref
@@ -103,21 +125,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       addingBaby: ref.read(addingBabyProvider),
     ),
     routes: [
-      GoRoute(path: Routes.splash, builder: (_, _) => const SplashScreen()),
+      _route(path: Routes.splash, builder: (_, _) => const SplashScreen()),
       GoRoute(
         path: Routes.welcome,
         pageBuilder: (_, s) => _fade(s, const WelcomeScreen()),
       ),
-      GoRoute(path: Routes.tour, builder: (_, _) => const TourScreen()),
-      GoRoute(path: Routes.signIn, builder: (_, _) => const SignInScreen()),
-      GoRoute(path: Routes.email, builder: (_, _) => const EmailScreen()),
-      GoRoute(
+      _route(path: Routes.tour, builder: (_, _) => const TourScreen()),
+      _route(path: Routes.signIn, builder: (_, _) => const SignInScreen()),
+      _route(path: Routes.email, builder: (_, _) => const EmailScreen()),
+      _route(
         path: Routes.forgot,
         builder: (_, s) => ForgotPasswordScreen(
           initialEmail: s.uri.queryParameters['email'] ?? '',
         ),
       ),
-      GoRoute(
+      _route(
         path: Routes.exists,
         builder: (_, _) => const AccountExistsScreen(),
       ),
@@ -129,24 +151,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.who,
         pageBuilder: (_, s) => _fade(s, const WhoAreYouScreen()),
       ),
-      GoRoute(
+      _route(
         path: Routes.babyProfile,
         builder: (_, _) => const BabyProfileScreen(),
       ),
-      GoRoute(path: Routes.trackers, builder: (_, _) => const TrackersScreen()),
-      GoRoute(path: Routes.messages, builder: (_, _) => const MessagesScreen()),
+      _route(path: Routes.trackers, builder: (_, _) => const TrackersScreen()),
+      _route(path: Routes.messages, builder: (_, _) => const MessagesScreen()),
       StatefulShellRoute.indexedStack(
         pageBuilder: (context, state, shell) =>
             _fade(state, HomeShell(shell: shell)),
         branches: [
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              _route(
                 path: Routes.today,
                 builder: (_, _) => const TodayScreen(),
                 // S6: inside the Today branch so the tab dock stays (20 – 20h).
                 routes: [
-                  GoRoute(
+                  _route(
                     path: 'history',
                     builder: (_, s) => HistoryScreen(
                       filter:
@@ -155,20 +177,20 @@ final routerProvider = Provider<GoRouter>((ref) {
                           HistoryFilter.all,
                     ),
                   ),
-                  GoRoute(
+                  _route(
                     path: 'stats/feed',
                     builder: (_, _) => const FeedStatsScreen(),
                   ),
-                  GoRoute(
+                  _route(
                     path: 'stats/sleep',
                     builder: (_, _) => const SleepStatsScreen(),
                   ),
                   // S7 reminders (8a–8e, 12f).
-                  GoRoute(
+                  _route(
                     path: 'reminders',
                     builder: (_, _) => const RemindersScreen(),
                     routes: [
-                      GoRoute(
+                      _route(
                         path: ':id',
                         builder: (_, s) => ReminderDetailScreen(
                           reminderId: s.pathParameters['id'] ?? '',
@@ -182,12 +204,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              _route(
                 path: Routes.memories,
                 builder: (_, _) => const MemoriesScreen(),
                 // S10: album, favourites and milestone pages keep the dock (10e, 11f).
                 routes: [
-                  GoRoute(
+                  _route(
                     path: 'album/:key',
                     builder: (_, s) => AlbumDetailScreen(
                       albumKey: s.pathParameters['key'] ?? '',
@@ -199,7 +221,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              _route(
                 path: Routes.family,
                 builder: (_, _) => const FamilyScreen(),
               ),
@@ -208,25 +230,25 @@ final routerProvider = Provider<GoRouter>((ref) {
           // S11 "Tôi" (13a–13n).
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              _route(
                 path: Routes.me,
                 builder: (_, _) => const MeScreen(),
                 routes: [
-                  GoRoute(
+                  _route(
                     path: 'storage',
                     builder: (_, _) => const StorageScreen(),
                     routes: [
-                      GoRoute(
+                      _route(
                         path: 'videos',
                         builder: (_, _) => const LargestVideosScreen(),
                       ),
                     ],
                   ),
-                  GoRoute(
+                  _route(
                     path: 'babies',
                     builder: (_, _) => const BabyProfilesScreen(),
                     routes: [
-                      GoRoute(
+                      _route(
                         path: ':id',
                         builder: (_, s) => BabyProfileViewScreen(
                           babyId: s.pathParameters['id'] ?? '',
@@ -234,21 +256,21 @@ final routerProvider = Provider<GoRouter>((ref) {
                       ),
                     ],
                   ),
-                  GoRoute(
+                  _route(
                     path: 'profile',
                     builder: (_, _) => const ProfileScreen(),
                   ),
-                  GoRoute(
+                  _route(
                     path: 'account',
                     builder: (_, _) => const AccountScreen(),
                   ),
-                  GoRoute(
+                  _route(
                     path: 'notifications',
                     builder: (_, _) => const NotificationsScreen(),
                   ),
-                  GoRoute(path: 'help', builder: (_, _) => const HelpScreen()),
+                  _route(path: 'help', builder: (_, _) => const HelpScreen()),
                   // 14m (S13).
-                  GoRoute(
+                  _route(
                     path: 'shared',
                     builder: (_, _) => const SharedOutScreen(),
                   ),
@@ -259,12 +281,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
       // S12 stories (14b–14g, 11i): full screen.
-      GoRoute(
+      _route(
         path: '${Routes.story}/:id',
         builder: (_, s) =>
             StoryReaderScreen(storyId: s.pathParameters['id'] ?? ''),
         routes: [
-          GoRoute(
+          _route(
             path: 'edit',
             builder: (_, s) => StoryEditorScreen(
               storyId: s.pathParameters['id'] ?? '',
@@ -273,15 +295,20 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      GoRoute(
+      _route(
+        path: '${Routes.baby}/:id',
+        builder: (_, s) =>
+            BabyProfileViewScreen(babyId: s.pathParameters['id'] ?? ''),
+      ),
+      _route(
         path: '${Routes.babyEdit}/:id',
         builder: (_, s) => BabyEditScreen(babyId: s.pathParameters['id'] ?? ''),
       ),
-      GoRoute(
+      _route(
         path: Routes.growth,
         builder: (_, s) => GrowthScreen(edit: s.extra as CareRecord?),
       ),
-      GoRoute(
+      _route(
         path: '${Routes.timer}/:type',
         builder: (_, s) => TimerScreen(
           type:
@@ -289,42 +316,42 @@ final routerProvider = Provider<GoRouter>((ref) {
               TimerType.sleep,
         ),
       ),
-      GoRoute(
+      _route(
         path: Routes.manualSleep,
         builder: (_, s) => ManualSleepScreen(
           edit: s.extra is CareRecord ? s.extra! as CareRecord : null,
           endAt: s.extra is DateTime ? s.extra! as DateTime : null,
         ),
       ),
-      GoRoute(
+      _route(
         path: '${Routes.overlap}/:id',
         builder: (_, s) =>
             OverlapScreen(conflictId: s.pathParameters['id'] ?? ''),
       ),
-      GoRoute(
+      _route(
         path: '${Routes.record}/:id',
         builder: (_, s) =>
             RecordDetailScreen(recordId: s.pathParameters['id'] ?? ''),
       ),
-      GoRoute(path: Routes.invite, builder: (_, _) => const InviteRoleScreen()),
-      GoRoute(
+      _route(path: Routes.invite, builder: (_, _) => const InviteRoleScreen()),
+      _route(
         path: Routes.inviteSend,
         redirect: (_, s) =>
             argsOf<InviteSendArgs>(s) == null ? Routes.family : null,
         builder: (_, s) => InviteSendScreen(args: argsOf<InviteSendArgs>(s)!),
       ),
-      GoRoute(
+      _route(
         path: Routes.inviteSent,
         redirect: (_, s) =>
             argsOf<InviteSendArgs>(s) == null ? Routes.family : null,
         builder: (_, s) => InviteSentScreen(args: argsOf<InviteSendArgs>(s)!),
       ),
-      GoRoute(path: Routes.join, builder: (_, _) => const EnterCodeScreen()),
-      GoRoute(
+      _route(path: Routes.join, builder: (_, _) => const EnterCodeScreen()),
+      _route(
         path: Routes.joinScan,
         builder: (_, _) => const ScanInviteScreen(),
       ),
-      GoRoute(
+      _route(
         path: Routes.joinInvite,
         redirect: (_, s) => argsOf<JoinArgs>(s) == null ? Routes.join : null,
         builder: (_, s) {
@@ -332,12 +359,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           return AcceptInviteScreen(lookup: args.lookup, preview: args.preview);
         },
       ),
-      GoRoute(
+      _route(
         path: Routes.joinConfirm,
         redirect: (_, s) => argsOf<JoinArgs>(s) == null ? Routes.join : null,
         builder: (_, s) => ConfirmJoinScreen(args: argsOf<JoinArgs>(s)!),
       ),
-      GoRoute(
+      _route(
         path: Routes.joinClosed,
         builder: (_, s) => InviteClosedScreen(
           reason:
@@ -347,13 +374,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       // App Links / universal links from QR codes, emails and messages (plan §3.5).
-      GoRoute(
+      _route(
         path: '${Routes.inviteLink}/:token',
         builder: (_, s) => AcceptInviteScreen(
           lookup: InviteLookup.token(s.pathParameters['token'] ?? ''),
         ),
       ),
-      GoRoute(
+      _route(
         path: Routes.saveAccountEmail,
         builder: (_, _) => const SaveAccountEmailScreen(),
       ),
@@ -361,12 +388,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.lostAccess,
         pageBuilder: (_, s) => _fade(s, const LostAccessScreen()),
       ),
-      GoRoute(
+      _route(
         path: Routes.appearance,
         builder: (_, _) => const AppearanceScreen(),
       ),
-      GoRoute(path: Routes.showcase, builder: (_, _) => const ShowcaseScreen()),
-      GoRoute(
+      _route(path: Routes.showcase, builder: (_, _) => const ShowcaseScreen()),
+      _route(
         path: Routes.diagnostics,
         builder: (_, _) => const DiagnosticsScreen(),
       ),

@@ -5,6 +5,7 @@ import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memories_screen.dart';
 import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/memory_sheets.dart';
+import 'package:child_life/features/memories/upload_queue.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -35,6 +36,59 @@ void main() {
       expect(ageWeekRange(dob, 3).last, DateTime(2026, 10, 7));
     });
 
+    test('landing: on its way until the server has it ready', () {
+      final at = DateTime(2026, 10, 9, 9);
+      QueueItem item(String id, QueueState state) => QueueItem(
+        mediaId: id,
+        type: MediaKind.photo,
+        name: 'IMG.jpg',
+        localPath: '/nowhere/$id.jpg',
+        contentType: 'image/jpeg',
+        bytes: 10,
+        captureAt: at,
+        state: state,
+      );
+      final processing = mediaItem('mem1', at, status: MediaStatus.uploading);
+      final ready = mediaItem('mem1', at);
+      final queue = QueueView(
+        batches: [
+          QueueBatch(
+            batchId: 'b1',
+            babyId: teddyId,
+            memoryId: 'mem1',
+            request: const {'audience': 'family'},
+            createdAt: at,
+            items: [
+              item(processing.id, QueueState.uploaded),
+              item(ready.id, QueueState.uploaded),
+              item('med_sending', QueueState.uploading),
+              item('med_failed', QueueState.failed),
+            ],
+          ),
+        ],
+      );
+      final cells = landingCells(
+        queue,
+        [processing, ready],
+        const MemoryView(),
+        teddyId,
+      );
+      // Sent but still processing, and still sending; not the ready or the failed one.
+      expect(
+        cells.map((c) => c.id),
+        unorderedEquals([processing.id, 'med_sending']),
+      );
+      expect(
+        landingCells(
+          queue,
+          [processing, ready],
+          const MemoryView(show: MemoryShow.videos),
+          teddyId,
+        ),
+        isEmpty,
+      );
+    });
+
     test('presets follow the baby’s age (10h3)', () {
       expect(
         PresetMilestone.forAgeWeeks(2),
@@ -48,6 +102,58 @@ void main() {
         PresetMilestone.forAgeWeeks(50),
         contains(PresetMilestone.firstBirthday),
       );
+    });
+  });
+
+  group('tabs', () {
+    testWidgets('a swipe moves between Nhật ký, Ảnh and Album', (tester) async {
+      await pumpRouted(
+        tester,
+        const Scaffold(body: MemoriesScreen()),
+        overrides: [...careOverrides(), ...memoryOverrides()],
+      );
+      final pages = find.byKey(const Key('memoryPages'));
+      expect(find.text('Tuần thứ 4'), findsOneWidget);
+      await tester.fling(pages, const Offset(-300, 0), 1000);
+      await tester.pumpAndSettle();
+      expect(find.text('Tất cả'), findsOneWidget);
+      expect(find.text('Tuần thứ 4'), findsNothing);
+      await tester.fling(pages, const Offset(-300, 0), 1000);
+      await tester.pumpAndSettle();
+      expect(find.text('Album mới'), findsOneWidget);
+      // A tap on a title slides back.
+      await tester.ensureVisible(find.text('Nhật ký'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Nhật ký'));
+      await tester.pumpAndSettle();
+      expect(find.text('Tuần thứ 4'), findsOneWidget);
+    });
+
+    testWidgets('Ảnh says what is still landing, as a tile in the grid', (
+      tester,
+    ) async {
+      final j = mockJournal();
+      final processing = mediaItem(
+        'mem1',
+        DateTime(2026, 10, 8, 14),
+        status: MediaStatus.uploading,
+      );
+      await pumpRouted(
+        tester,
+        const Scaffold(body: MemoriesScreen()),
+        overrides: [
+          ...careOverrides(),
+          ...memoryOverrides(
+            journal: (memories: j.memories, media: [processing, ...j.media]),
+          ),
+        ],
+      );
+      // The spinners never settle.
+      await tester.tap(find.text('Ảnh').last);
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('Đang thêm 1 mục…'), findsOneWidget);
+      // The line over the grid and the tile in it.
+      expect(find.bySemanticsLabel('Đang thêm 1 mục…'), findsNWidgets(2));
     });
   });
 

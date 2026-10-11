@@ -96,98 +96,95 @@ class FamilyScreen extends ConsumerWidget {
       cl.care.sleep.soft,
     ];
 
-    return ColoredBox(
-      color: cl.colors.cloud,
-      child: SafeArea(
-        bottom: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(
-            ClSpace.s4,
-            ClSpace.s2,
-            ClSpace.s4,
-            ClTabDock.contentBottomPadding + ClSpace.s6,
+    // The baby header stays pinned while the day scrolls under it.
+    return ClPinnedHeaderScaffold(
+      header: const BabyHeader(),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(
+          ClSpace.s4,
+          0,
+          ClSpace.s4,
+          ClTabDock.contentBottomPadding + ClSpace.s6,
+        ),
+        children: [
+          const SizedBox(height: ClSpace.s2),
+          ClNavHeader(
+            title: l10n.tabFamily,
+            subtitle: l10n.familySubtitle(nickname),
           ),
-          children: [
-            const BabyHeader(),
-            const SizedBox(height: ClSpace.s2),
-            ClNavHeader(
-              title: l10n.tabFamily,
-              subtitle: l10n.familySubtitle(nickname),
-            ),
-            switch (members) {
-              AsyncData(:final value) => ClCardGroup(
-                shadow: true,
-                children: [
-                  for (final (i, m) in sortMembers(
-                    value,
-                    session.user.uid,
-                  ).indexed)
-                    ClMemberRow(
-                      initial: initialOf(m.displayName),
-                      name: m.displayName,
-                      detail: memberDetail(l10n, m),
-                      avatarFill: fills[i % fills.length],
-                      status: m.uid == session.user.uid
-                          ? ClMemberStatus.you
-                          : ClMemberStatus.member,
-                      youLabel: l10n.familyYou,
-                      onTap: canManage(me, m)
-                          ? () => showMemberSheet(
-                              context,
-                              babyId: babyId,
-                              uid: m.uid,
-                            )
-                          : null,
-                    ),
-                ],
-              ),
-              AsyncError() => Padding(
-                padding: const EdgeInsets.symmetric(vertical: ClSpace.s4),
-                child: Text(
-                  l10n.familyLoadFailed,
-                  style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                ),
-              ),
-              _ => const ClCardGroup(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(ClSpace.s4),
-                    child: ClSkeleton(height: 44),
+          switch (members) {
+            AsyncData(:final value) => ClCardGroup(
+              shadow: true,
+              children: [
+                for (final (i, m) in sortMembers(
+                  value,
+                  session.user.uid,
+                ).indexed)
+                  ClMemberRow(
+                    initial: initialOf(m.displayName),
+                    name: m.displayName,
+                    detail: memberDetail(l10n, m),
+                    avatarFill: fills[i % fills.length],
+                    status: m.uid == session.user.uid
+                        ? ClMemberStatus.you
+                        : ClMemberStatus.member,
+                    youLabel: l10n.familyYou,
+                    onTap: canManage(me, m)
+                        ? () => showMemberSheet(
+                            context,
+                            babyId: babyId,
+                            uid: m.uid,
+                          )
+                        : null,
                   ),
-                ],
-              ),
-            },
-            if (pending.isNotEmpty) ...[
-              const SizedBox(height: ClSpace.s6),
-              ClSectionHeader(title: l10n.familyPending(pending.length)),
-              const SizedBox(height: ClSpace.s2),
-              for (final invite in pending) ...[
-                _PendingCard(
-                  invite: invite,
-                  babyId: babyId,
-                  inviterName: me.displayName,
-                  babyNickname: nickname,
-                ),
-                const SizedBox(height: ClSpace.s2),
               ],
-            ],
-            if (isCoParent) ...[
-              const SizedBox(height: ClSpace.s6),
-              ClButton(
-                label: l10n.familyInvite,
-                icon: ClIcons.plus,
-                expand: true,
-                onPressed: () => context.push(Routes.invite),
+            ),
+            AsyncError() => Padding(
+              padding: const EdgeInsets.symmetric(vertical: ClSpace.s4),
+              child: Text(
+                l10n.familyLoadFailed,
+                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
               ),
-              const SizedBox(height: ClSpace.s3),
-              Text(
-                l10n.familyFootnote,
-                textAlign: TextAlign.center,
-                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+            _ => const ClCardGroup(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(ClSpace.s4),
+                  child: ClSkeleton(height: 44),
+                ),
+              ],
+            ),
+          },
+          if (pending.isNotEmpty) ...[
+            const SizedBox(height: ClSpace.s6),
+            ClSectionHeader(title: l10n.familyPending(pending.length)),
+            const SizedBox(height: ClSpace.s2),
+            for (final invite in pending) ...[
+              _PendingCard(
+                invite: invite,
+                babyId: babyId,
+                inviterName: me.displayName,
+                babyNickname: nickname,
               ),
+              const SizedBox(height: ClSpace.s2),
             ],
           ],
-        ),
+          if (isCoParent) ...[
+            const SizedBox(height: ClSpace.s6),
+            ClButton(
+              label: l10n.familyInvite,
+              icon: ClIcons.plus,
+              expand: true,
+              onPressed: () => context.push(Routes.invite),
+            ),
+            const SizedBox(height: ClSpace.s3),
+            Text(
+              l10n.familyFootnote,
+              textAlign: TextAlign.center,
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            ),
+          ],
+        ],
       ),
     );
   }

@@ -167,6 +167,44 @@ void main() {
     );
 
     testWidgets(
+      'opened alone from the Live Activity: back and end land on Hôm nay',
+      (tester) async {
+        // pumpRouted shows the screen as the only page, as a deep link leaves it.
+        final repo = FakeCareRepository();
+        final (visits, _) = await pumpRouted(
+          tester,
+          const TimerScreen(type: TimerType.sleep),
+          overrides: careOverrides(
+            repo: repo,
+            timers: {TimerType.sleep: sleepTimer()},
+          ),
+        );
+        await tester.tap(find.bySemanticsLabel('Quay lại'));
+        await tester.pumpAndSettle();
+        expect(visits.single.location, '/today');
+      },
+    );
+
+    testWidgets(
+      'ending a sleep opened alone from the Live Activity leaves for Hôm nay',
+      (tester) async {
+        final repo = FakeCareRepository();
+        final (visits, _) = await pumpRouted(
+          tester,
+          const TimerScreen(type: TimerType.sleep),
+          overrides: careOverrides(
+            repo: repo,
+            timers: {TimerType.sleep: sleepTimer()},
+          ),
+        );
+        await tester.tap(find.text('Kết thúc giấc ngủ'));
+        await tester.pumpAndSettle();
+        expect(repo.ended, hasLength(1));
+        expect(visits.single.location, '/today');
+      },
+    );
+
+    testWidgets(
       '9c: a timer not yet on the server says so; cancel asks first',
       (tester) async {
         final repo = FakeCareRepository();

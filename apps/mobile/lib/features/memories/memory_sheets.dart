@@ -791,7 +791,6 @@ class _MilestoneSheetState extends ConsumerState<_MilestoneSheet> {
         onPressed: () => setState(() => _selected = on ? null : m),
         selected: on,
         semanticLabel: m.name,
-        haptic: false,
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: ClSpace.s3,
@@ -896,7 +895,6 @@ class _MilestoneSheetState extends ConsumerState<_MilestoneSheet> {
           ClPressable(
             onPressed: () => setState(() => _selected = null),
             semanticLabel: l10n.composeNoMilestone,
-            haptic: false,
             child: Text(
               l10n.composeNoMilestone,
               style: cl.text.label.copyWith(

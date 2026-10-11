@@ -300,7 +300,7 @@ class ClMemberRow extends StatelessWidget {
       status == ClMemberStatus.pending && onTap != null
       ? ClPressable(
           onPressed: onTap,
-          pressedScale: 0.99,
+          pressedOpacity: ClPressable.surfaceOpacity,
           semanticLabel: '$name, $detail',
           child: ExcludeSemantics(child: child),
         )
@@ -380,7 +380,7 @@ class ClMemberRow extends StatelessWidget {
     return status == ClMemberStatus.member && onTap != null
         ? ClPressable(
             onPressed: onTap,
-            pressedScale: 0.99,
+            pressedOpacity: ClPressable.surfaceOpacity,
             semanticLabel: '$name, $detail',
             child: ExcludeSemantics(child: row),
           )

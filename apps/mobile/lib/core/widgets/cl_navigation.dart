@@ -1,7 +1,12 @@
+import 'dart:math' as math;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../design/cl_theme.dart';
+import '../design/haptics.dart';
 import '../design/motion.dart';
 import '../design/tokens.g.dart';
 import 'cl_button.dart';
@@ -36,8 +41,9 @@ List<ClTab> tabsForRole(ClRole role, {bool relativeSeesToday = false}) =>
 /// Quick log is available to parents and caregivers only (no "+" for relatives).
 bool roleCanQuickLog(ClRole role) => role != ClRole.relative;
 
-/// Floating tab bar (44:362): active tab is a labelled pill, others icon-only 52 wide.
-class ClNavBar extends StatelessWidget {
+/// Floating tab bar (44:362): active tab is a labelled pill, others icon-only 52 wide. The pill,
+/// label and icon colours move together on one spring when the tab changes (D-048).
+class ClNavBar extends StatefulWidget {
   const ClNavBar({
     required this.role,
     required this.active,
@@ -58,12 +64,68 @@ class ClNavBar extends StatelessWidget {
   final String initial;
 
   @override
+  State<ClNavBar> createState() => _ClNavBarState();
+}
+
+class _ClNavBarState extends State<ClNavBar>
+    with SingleTickerProviderStateMixin {
+  static const _pad = 6.0;
+  static const _inactiveWidth = 52.0;
+
+  // Each tab's selection progress (0 = icon only, 1 = pill). A change hands progress straight
+  // from the tabs as they are now to the new tab, so tabs in between never grow.
+  late List<double> _from = _oneHot(_activeIndex);
+  late List<double> _to = _from;
+  late final AnimationController _move = AnimationController.unbounded(
+    vsync: this,
+    value: 1,
+  );
+
+  List<ClTab> get _tabs => widget.tabs ?? tabsForRole(widget.role);
+  int get _activeIndex => math.max(_tabs.indexOf(widget.active), 0);
+
+  List<double> _oneHot(int index) => [
+    for (var i = 0; i < _tabs.length; i++) i == index ? 1.0 : 0.0,
+  ];
+
+  List<double> get _current => [
+    for (var i = 0; i < _to.length; i++)
+      (_from[i] + (_to[i] - _from[i]) * _move.value).clamp(0.0, 1.0),
+  ];
+
+  @override
+  void didUpdateWidget(ClNavBar old) {
+    super.didUpdateWidget(old);
+    final oldTabs = old.tabs ?? tabsForRole(old.role);
+    if (!listEquals(oldTabs, _tabs)) {
+      _from = _to = _oneHot(_activeIndex);
+      _move.value = 1;
+    } else if (old.active != widget.active) {
+      _from = _current;
+      _to = _oneHot(_activeIndex);
+      if (context.reduceMotion) {
+        _move.value = 1;
+      } else {
+        _move
+          ..value = 0
+          ..animateWith(
+            SpringSimulation(standardSpring(), 0, 1, 0, snapToEnd: true),
+          );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _move.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
-    final tabs = this.tabs ?? tabsForRole(role);
-    const pad = 6.0;
-    const inactiveWidth = 52.0;
+    final tabs = _tabs;
     String label(ClTab t) => switch (t) {
       ClTab.today => l10n.tabToday,
       ClTab.memories => l10n.tabMemories,
@@ -79,7 +141,7 @@ class ClNavBar extends StatelessWidget {
 
     return Container(
       height: 68,
-      padding: const EdgeInsets.all(pad),
+      padding: const EdgeInsets.all(_pad),
       decoration: BoxDecoration(
         color: cl.colors.navBar,
         borderRadius: BorderRadius.circular(ClRadius.pill),
@@ -88,56 +150,80 @@ class ClNavBar extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final activeWidth =
-              constraints.maxWidth - inactiveWidth * (tabs.length - 1);
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              for (final tab in tabs)
-                _NavTab(
-                  inactiveWidth: inactiveWidth,
-                  activeWidth: activeWidth,
-                  active: tab == active,
-                  label: label(tab),
-                  onTap: () => onSelect(tab),
-                  child: tab == ClTab.me
-                      ? _MeRing(initial: initial, active: tab == active)
-                      : ClIcon(
-                          icon(tab),
-                          size: 22,
-                          color: tab == active
-                              ? cl.colors.onNavActive
-                              : cl.colors.navIcon,
-                        ),
-                ),
-            ],
+              constraints.maxWidth - _inactiveWidth * (tabs.length - 1);
+          return AnimatedBuilder(
+            animation: _move,
+            builder: (context, _) {
+              final progress = _current;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  for (var i = 0; i < tabs.length; i++)
+                    _tabAt(
+                      tab: tabs[i],
+                      t: progress[i],
+                      activeWidth: activeWidth,
+                      label: label(tabs[i]),
+                      icon: icon(tabs[i]),
+                    ),
+                ],
+              );
+            },
           );
         },
       ),
     );
   }
+
+  Widget _tabAt({
+    required ClTab tab,
+    required double t,
+    required double activeWidth,
+    required String label,
+    required ClIcons icon,
+  }) => _NavTab(
+    inactiveWidth: _inactiveWidth,
+    activeWidth: activeWidth,
+    t: t,
+    active: tab == widget.active,
+    label: label,
+    onTap: () {
+      if (tab != widget.active) ClHaptics.selection(context);
+      widget.onSelect(tab);
+    },
+    icon: (ink) => tab == ClTab.me
+        ? _MeRing(initial: widget.initial, ink: ink, active: t > 0.5)
+        : ClIcon(icon, size: 22, color: ink),
+  );
 }
 
+/// One tab at selection progress [t] (0 = icon only, 1 = labelled pill). Neighbouring tabs'
+/// progress sums to 1, so the tabs always fill the bar.
 class _NavTab extends StatelessWidget {
   const _NavTab({
     required this.inactiveWidth,
     required this.activeWidth,
+    required this.t,
     required this.active,
     required this.label,
     required this.onTap,
-    required this.child,
+    required this.icon,
   });
 
   final double inactiveWidth;
   final double activeWidth;
+  final double t;
   final bool active;
   final String label;
   final VoidCallback onTap;
-  final Widget child;
+  final Widget Function(Color ink) icon;
 
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
-    final duration = context.motion(ClMotion.quick);
+    final ink = Color.lerp(cl.colors.navIcon, cl.colors.onNavActive, t)!;
+    // The label fades in over the second half of the pill's growth, once there is room.
+    final labelOpacity = ((t - 0.5) * 2).clamp(0.0, 1.0);
     return Semantics(
       selected: active,
       button: true,
@@ -145,44 +231,37 @@ class _NavTab extends StatelessWidget {
       excludeSemantics: true,
       child: ClPressable(
         onPressed: onTap,
-        pressedScale: 1,
+        pressedOpacity: 1,
         isButton: false,
-        // Each tab animates its share of the bar (0 = inactive, 1 = active) so the tabs always sum
-        // to the bar width, even while the bar itself resizes.
-        child: TweenAnimationBuilder<double>(
-          tween: Tween(end: active ? 1 : 0),
-          duration: duration,
-          curve: ClCurves.quick,
-          builder: (context, t, child) => Container(
-            width: inactiveWidth + (activeWidth - inactiveWidth) * t,
-            height: 56,
-            decoration: BoxDecoration(
-              color: Color.lerp(
-                const Color(0x00000000),
-                cl.colors.navActive,
-                t,
-              ),
-              borderRadius: BorderRadius.circular(ClRadius.pill),
+        child: Container(
+          width: inactiveWidth + (activeWidth - inactiveWidth) * t,
+          height: 56,
+          decoration: BoxDecoration(
+            color: cl.colors.navActive.withValues(
+              alpha: cl.colors.navActive.a * t,
             ),
-            clipBehavior: Clip.antiAlias,
-            child: child,
+            borderRadius: BorderRadius.circular(ClRadius.pill),
           ),
+          clipBehavior: Clip.antiAlias,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              child,
-              if (active) ...[
-                const SizedBox(width: 6),
+              icon(ink),
+              if (labelOpacity > 0) ...[
+                SizedBox(width: 6 * labelOpacity),
                 Flexible(
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                    style: cl.text.label.copyWith(
-                      height: 16 / 14,
-                      letterSpacing: 0.2,
-                      color: cl.colors.onNavActive,
+                  child: Opacity(
+                    opacity: labelOpacity,
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.clip,
+                      softWrap: false,
+                      style: cl.text.label.copyWith(
+                        height: 16 / 14,
+                        letterSpacing: 0.2,
+                        color: cl.colors.onNavActive,
+                      ),
                     ),
                   ),
                 ),
@@ -196,15 +275,18 @@ class _NavTab extends StatelessWidget {
 }
 
 class _MeRing extends StatelessWidget {
-  const _MeRing({required this.initial, required this.active});
+  const _MeRing({
+    required this.initial,
+    required this.ink,
+    required this.active,
+  });
 
   final String initial;
+  final Color ink;
   final bool active;
 
   @override
   Widget build(BuildContext context) {
-    final c = context.cl.colors;
-    final ink = active ? c.onNavActive : c.navIcon;
     return Container(
       width: 22,
       height: 22,
@@ -485,6 +567,7 @@ class ClPageDots extends StatelessWidget {
 }
 
 /// Baby switcher chip (45:321): avatar + name (+ chevron when there is more than one baby).
+/// [onTap] opens the baby's profile (one baby) or the baby picker (several).
 class ClBabySwitcher extends StatelessWidget {
   const ClBabySwitcher({
     required this.label,
@@ -529,11 +612,175 @@ class ClBabySwitcher extends StatelessWidget {
         ],
       ),
     );
-    return hasMultiple && onTap != null
-        ? ClPressable(onPressed: onTap, semanticLabel: label, child: chip)
+    return onTap != null
+        ? ClPressable(
+            onPressed: onTap,
+            pressedOpacity: ClPressable.surfaceOpacity,
+            semanticLabel: label,
+            child: chip,
+          )
         : Semantics(
             label: label,
             child: ExcludeSemantics(child: chip),
           );
+  }
+}
+
+/// Tab and Me screens: [header] (baby switcher row, back bar, title tabs) stays pinned while
+/// [body] scrolls under it (owner feedback, 2026-10-11). A hairline shows once content has
+/// scrolled beneath; [collapsedTitle] fades into the bar after the large title scrolls away,
+/// like an iOS large-title navigation bar.
+class ClPinnedHeaderScaffold extends StatefulWidget {
+  const ClPinnedHeaderScaffold({
+    required this.body,
+    this.header,
+    this.collapsedTitle,
+    this.collapseAfter = 48,
+    this.scrollDepth = 0,
+    super.key,
+  });
+
+  final Widget? header;
+  final Widget body;
+
+  /// How deep the body's vertical scroll sits: 1 when the body pages sideways (a PageView of
+  /// scrolling tabs), so the separator still follows it.
+  final int scrollDepth;
+  final String? collapsedTitle;
+
+  /// Scroll offset after which [collapsedTitle] shows (about one large-title line).
+  final double collapseAfter;
+
+  @override
+  State<ClPinnedHeaderScaffold> createState() => _ClPinnedHeaderScaffoldState();
+}
+
+class _ClPinnedHeaderScaffoldState extends State<ClPinnedHeaderScaffold> {
+  bool _under = false;
+  bool _collapsed = false;
+
+  bool _onScroll(ScrollNotification n) {
+    if (n.depth != widget.scrollDepth || n.metrics.axis != Axis.vertical) {
+      return false;
+    }
+    final pixels = n.metrics.pixels - n.metrics.minScrollExtent;
+    final under = pixels > 0.5;
+    final collapsed = pixels > widget.collapseAfter;
+    if (under != _under || collapsed != _collapsed) {
+      setState(() {
+        _under = under;
+        _collapsed = collapsed;
+      });
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final duration = context.motion(ClMotion.quick);
+    final title = widget.collapsedTitle;
+    final listener = NotificationListener<ScrollNotification>(
+      onNotification: _onScroll,
+      child: widget.body,
+    );
+    // No header: the page starts at the top as before, and a compact bar with the title covers
+    // it only once the large title has scrolled away.
+    if (widget.header == null) {
+      return ColoredBox(
+        color: cl.colors.cloud,
+        child: Stack(
+          children: [
+            Positioned.fill(child: SafeArea(bottom: false, child: listener)),
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 0,
+              child: IgnorePointer(
+                child: AnimatedOpacity(
+                  opacity: _collapsed ? 1 : 0,
+                  duration: duration,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: cl.colors.cloud,
+                      border: Border(
+                        bottom: BorderSide(color: cl.colors.separator),
+                      ),
+                    ),
+                    child: SafeArea(
+                      bottom: false,
+                      child: SizedBox(
+                        height: ClSpace.tapMin,
+                        child: Center(
+                          child: Text(
+                            title ?? '',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: cl.text.bodyStrong,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return ColoredBox(
+      color: cl.colors.cloud,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                ClSpace.s4,
+                ClSpace.s2,
+                ClSpace.s4,
+                ClSpace.s2,
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  widget.header!,
+                  if (title != null)
+                    IgnorePointer(
+                      child: AnimatedOpacity(
+                        opacity: _collapsed ? 1 : 0,
+                        duration: duration,
+                        child: Semantics(
+                          excludeSemantics: true,
+                          child: Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: cl.text.bodyStrong,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          AnimatedContainer(
+            duration: duration,
+            height: 1,
+            color: _under ? cl.colors.separator : cl.colors.cloud,
+          ),
+          Expanded(
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: listener,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

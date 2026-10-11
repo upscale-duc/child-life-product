@@ -187,8 +187,6 @@ class AlbumsView extends ConsumerWidget {
           ClTabDock.contentBottomPadding + 88,
         ),
         children: [
-          MemoryHeader(ctx: c, title: l10n.memAlbums),
-          const SizedBox(height: ClSpace.s2),
           Row(
             children: [
               Expanded(

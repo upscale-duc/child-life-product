@@ -4610,6 +4610,12 @@ abstract class AppLocalizations {
   /// **'Ảnh và video của {name} sẽ hiện ở đây.'**
   String memPhotosEmpty(String name);
 
+  /// 10b Ảnh: items uploading or being processed, not in the grid yet (owner request 2026-10-11).
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Đang thêm {count} mục…}}'**
+  String memLanding(int count);
+
   /// Filtered empty.
   ///
   /// In vi, this message translates to:
@@ -9042,6 +9048,252 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đổi ngay cho cả app, widget và thông báo trên máy này.'**
   String get meLanguageHint;
+
+  /// 20i subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo bảng chuẩn tăng trưởng trẻ em của WHO. Mỗi bé lớn theo nhịp riêng.'**
+  String get whoIntro;
+
+  /// 20i chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé trai'**
+  String get whoBoy;
+
+  /// 20i chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé gái'**
+  String get whoGirl;
+
+  /// 20i chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tuần'**
+  String get whoByWeek;
+
+  /// 20i chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tháng'**
+  String get whoByMonth;
+
+  /// 20i column.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuổi'**
+  String get whoAge;
+
+  /// 20i column: 3rd percentile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thấp'**
+  String get whoLow;
+
+  /// 20i column: median.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung vị'**
+  String get whoMedian;
+
+  /// 20i column: 97th percentile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cao'**
+  String get whoHigh;
+
+  /// 20i row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới sinh'**
+  String get whoBirth;
+
+  /// 20i row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} tuần'**
+  String whoWeeks(int count);
+
+  /// 20i row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} tháng'**
+  String whoMonths(int count);
+
+  /// 20i footnote, weight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đơn vị: kg. “Thấp” và “Cao” là ngưỡng dưới và ngưỡng trên của khoảng bình thường.'**
+  String get whoUnitKg;
+
+  /// 20i footnote, length.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đơn vị: cm. “Thấp” và “Cao” là ngưỡng dưới và ngưỡng trên của khoảng bình thường.'**
+  String get whoUnitCm;
+
+  /// 20i banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nếu số đo của bé nằm ngoài khoảng bình thường, hãy trao đổi với bác sĩ của bé.'**
+  String get whoDoctor;
+
+  /// 20i source line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nguồn: WHO Child Growth Standards · Child Life cập nhật 09/2026'**
+  String get whoSource;
+
+  /// 20i: the baby’s row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} {value} · {status}'**
+  String whoBabyAt(String name, String value, String status);
+
+  /// Within the WHO normal range (3rd–97th percentile).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bình thường'**
+  String get whoNormal;
+
+  /// Under the 3rd percentile (20d).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dưới mức tham chiếu'**
+  String get whoBelow;
+
+  /// Over the 97th percentile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trên mức tham chiếu'**
+  String get whoAbove;
+
+  /// 20d link to 20i.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tiêu chuẩn tăng trưởng WHO'**
+  String get whoOpen;
+
+  /// 20d chart legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng bình thường'**
+  String get whoBand;
+
+  /// 20d chart legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung vị WHO'**
+  String get whoMedianLine;
+
+  /// 20g card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mỗi ngày'**
+  String get feedsPerDayTitle;
+
+  /// 20g card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số cữ bú bình và bú mẹ · {days} ngày'**
+  String feedsPerDayHint(int days);
+
+  /// 20g selected-day callout.
+  ///
+  /// In vi, this message translates to:
+  /// **'{day} · {bottles} bình {ml} ml · {breasts} mẹ {minutes}′'**
+  String feedsDayTip(String day, int bottles, int ml, int breasts, int minutes);
+
+  /// 20g average line.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {count} cữ'**
+  String feedsAvgLine(int count);
+
+  /// 20g share.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình {pct}% · {ml} ml/ngày'**
+  String bottleShareLine(int pct, int ml);
+
+  /// 20g share.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ {pct}% · {minutes} phút/ngày'**
+  String breastShareLine(int pct, int minutes);
+
+  /// 20g KPI caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB mỗi ngày'**
+  String get kpiFeedsPerDay;
+
+  /// 20g KPI caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình/ngày'**
+  String get kpiBottlePerDay;
+
+  /// 20g KPI caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ/ngày'**
+  String get kpiBreastPerDay;
+
+  /// 20h card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng giờ ngủ mỗi ngày'**
+  String get sleepPerDayTitle;
+
+  /// 20h card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm 18:00–06:00 · Ngày 06:00–18:00'**
+  String get sleepPerDayHint;
+
+  /// 20h selected-day callout.
+  ///
+  /// In vi, this message translates to:
+  /// **'{day} · {total} · đêm {night} · ngày {daytime}'**
+  String sleepDayTip(String day, String total, String night, String daytime);
+
+  /// 20h average line.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {total}'**
+  String sleepAvgLine(String total);
+
+  /// 20h legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ đêm'**
+  String get legendNightSleep;
+
+  /// 20h legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ ngày'**
+  String get legendDaySleep;
+
+  /// 20h insight when days differ by 2 h or less.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng giờ ngủ ổn định quanh {hours} giờ/ngày trong {days} ngày qua.'**
+  String sleepSteadyInsight(int hours, int days);
+
+  /// 20h insight otherwise.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng giờ ngủ từ {min} đến {max} mỗi ngày trong {days} ngày qua.'**
+  String sleepRangeInsight(String min, String max, int days);
+
+  /// 20i title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu chuẩn tăng trưởng'**
+  String get whoStandardsTitle;
 }
 
 class _AppLocalizationsDelegate

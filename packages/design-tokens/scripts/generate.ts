@@ -143,6 +143,11 @@ const dart: string[] = [
   'class ClColors {',
   `  const ClColors({${colorNames.map((n) => `required this.${camel(n)}`).join(', ')}});`,
   ...colorNames.map((n) => `  final Color ${camel(n)};`),
+  '',
+  '  /// Blends two palettes, so switching Light ↔ Night care fades instead of snapping.',
+  `  static ClColors lerp(ClColors a, ClColors b, double t) => ClColors(${colorNames
+    .map((n) => `${camel(n)}: Color.lerp(a.${camel(n)}, b.${camel(n)}, t)!`)
+    .join(', ')});`,
   '}',
   '',
   ...(['light', 'nightCare'] as const).map(
@@ -155,11 +160,17 @@ const dart: string[] = [
   '  final Color soft;',
   '  final Color ink;',
   '  final Color accent;',
+  '',
+  '  static ClCareColor lerp(ClCareColor a, ClCareColor b, double t) => ClCareColor(soft: Color.lerp(a.soft, b.soft, t)!, ink: Color.lerp(a.ink, b.ink, t)!, accent: Color.lerp(a.accent, b.accent, t)!);',
   '}',
   '',
   'class ClCareColors {',
   `  const ClCareColors({${careNames.map((n) => `required this.${n}`).join(', ')}});`,
   ...careNames.map((n) => `  final ClCareColor ${n};`),
+  '',
+  `  static ClCareColors lerp(ClCareColors a, ClCareColors b, double t) => ClCareColors(${careNames
+    .map((n) => `${n}: ClCareColor.lerp(a.${n}, b.${n}, t)`)
+    .join(', ')});`,
   '}',
   '',
   ...(['light', 'nightCare'] as const).map(
@@ -174,6 +185,11 @@ const dart: string[] = [
   'class ClShadows {',
   `  const ClShadows({${shadowNames.map((n) => `required this.${camel(n.replace('shadow-', ''))}`).join(', ')}});`,
   ...shadowNames.map((n) => `  final List<BoxShadow> ${camel(n.replace('shadow-', ''))};`),
+  '',
+  `  static ClShadows lerp(ClShadows a, ClShadows b, double t) => ClShadows(${shadowNames
+    .map((n) => camel(n.replace('shadow-', '')))
+    .map((n) => `${n}: BoxShadow.lerpList(a.${n}, b.${n}, t)!`)
+    .join(', ')});`,
   '}',
   '',
   ...(['light', 'nightCare'] as const).map(

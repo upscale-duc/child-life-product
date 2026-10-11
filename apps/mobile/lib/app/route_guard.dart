@@ -69,6 +69,9 @@ abstract final class Routes {
 
   /// 13k "Sửa hồ sơ bé": full screen, no dock.
   static const babyEdit = '/baby-edit';
+
+  /// A baby's profile above the tabs, from the header chip.
+  static const baby = '/baby';
   static const showcase = '/showcase';
   static const diagnostics = '/diagnostics';
 }

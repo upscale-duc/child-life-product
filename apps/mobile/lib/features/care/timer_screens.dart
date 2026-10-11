@@ -3,11 +3,11 @@ import 'dart:math' as math;
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../app/navigation.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/haptics.dart';
@@ -37,6 +37,7 @@ import 'care_models.dart';
 import 'care_repository.dart';
 import 'care_screens.dart';
 import 'care_sheets.dart';
+import 'sleep_ambient.dart';
 import 'timer_models.dart';
 
 /// "01:27:06" for sleep; "11:52" (or "1:05:20") for feeds.
@@ -72,7 +73,6 @@ void openOrStartTimer(
           CareTimer.start(type: type, me: me, now: DateTime.now(), side: side),
           onError: (_) => toaster.show(message: l10n.careSaveFailed),
         );
-    HapticFeedback.lightImpact();
   }
   final location = '${Routes.timer}/${type.name}';
   replace ? router.pushReplacement(location) : router.push(location);
@@ -80,7 +80,8 @@ void openOrStartTimer(
 
 /// 25 Timer ngủ (47:3028), 23b Timer bú mẹ (112:11135), 23c Timer hút sữa (113:11207), and 9c
 /// when the timer has not reached the server. Elapsed time is computed from timestamps; the
-/// ring "breathes" (static with Reduce Motion). Live Activities are a later slice (SP-1).
+/// sleep ring "breathes" (Motion spec P10 272:368, static with Reduce Motion). Live Activities
+/// are a later slice (SP-1).
 class TimerScreen extends ConsumerStatefulWidget {
   const TimerScreen({required this.type, super.key});
   final TimerType type;
@@ -149,7 +150,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     _repo.endTimer(timer, record, onError: _failed);
     ClHaptics.success();
     ref.read(lastSavedProvider.notifier).mark(record.type);
-    if (context.canPop()) context.pop();
+    context.popOrToday();
     toaster.show(
       message: l10n.savedToast(recordSummary(l10n, locale, record)),
       actionLabel: l10n.undo,
@@ -159,7 +160,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
 
   Future<void> _cancel(CareTimer timer) async {
     final l10n = AppLocalizations.of(context);
-    ClHaptics.warning(context);
     final confirmed = await showClSheet<bool>(
       context: context,
       builder: (sheetContext) => Column(
@@ -192,7 +192,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     if (confirmed != true || !mounted) return;
     _leaving = true;
     _repo.cancelTimer(timer, onError: _failed);
-    if (context.canPop()) context.pop();
+    context.popOrToday();
   }
 
   Future<void> _editStart(CareTimer timer) async {
@@ -221,7 +221,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       // just started may not have reached the local cache yet — wait for it.
       if (!_leaving && _sessionSeen != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted && context.canPop()) context.pop();
+          if (mounted) context.popOrToday();
         });
       }
       return Scaffold(backgroundColor: cl.colors.cloud);
@@ -285,7 +285,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
 
     return OnboardingScaffold(
       topBar: ClTopBar(
-        onBack: () => context.pop(),
+        onBack: () => context.popOrToday(),
         trailing: ClSyncStatus(
           state: timer.pending ? ClSyncState.pending : ClSyncState.synced,
           label: timer.pending ? l10n.timerOnlyHere : l10n.timerFamilySees,
@@ -351,8 +351,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
   }
 }
 
-/// SleepTimer (10:83): 272 px ring, arc over the current hour, breathing opacity 1 ↔ 0.55
-/// (static with Reduce Motion), elapsed in tabular numerals.
+/// SleepTimer (10:83): 272 px ring, arc over the current hour, elapsed in tabular numerals.
+/// Ambient motion follows Motion spec P10 272:368 (see [SleepBreath]): the moon and halo breathe
+/// on a 4 s cycle while the arc advances evenly with the seconds. This replaces the component's
+/// older "arc opacity 1 ↔ 0.55" note (open issue 6 in 10-motion-spec.md).
 class SleepRing extends StatefulWidget {
   const SleepRing({
     required this.elapsed,
@@ -373,25 +375,60 @@ class SleepRing extends StatefulWidget {
 
 class _SleepRingState extends State<SleepRing>
     with SingleTickerProviderStateMixin {
+  static const double _size = 272;
+
+  /// Motion spec P10 272:368: one repeating controller drives the moon and the halo; the
+  /// counter text and the arc are not rebuilt by it.
   late final _breath = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 2400),
+    duration: SleepBreath.cycle,
   );
+  late final Animation<double> _phase = _breath.drive(
+    CurveTween(curve: const SleepBreathCurve()),
+  );
+  late final Animation<double> _moonScale = _phase.drive(
+    Tween(begin: 1, end: SleepBreath.moonScalePeak),
+  );
+  late final AppLifecycleListener _lifecycle;
+  bool _visible = true;
+  bool _allowed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Ambient rules 272:425: run only while the screen is visible; pause in the background.
+    _lifecycle = AppLifecycleListener(
+      onStateChange: (state) {
+        _visible = state == AppLifecycleState.resumed;
+        _sync();
+      },
+    );
+    final state = WidgetsBinding.instance.lifecycleState;
+    _visible = state == null || state == AppLifecycleState.resumed;
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (context.reduceMotion ||
-        !ProviderScope.containerOf(context).read(timerTicksProvider)) {
+    // Ambient rules 272:425: Reduce Motion leaves only the counter. Ticks off (tests) too.
+    _allowed =
+        !context.reduceMotion &&
+        ProviderScope.containerOf(context).read(timerTicksProvider);
+    _sync();
+  }
+
+  void _sync() {
+    if (_allowed && _visible) {
+      if (!_breath.isAnimating) _breath.repeat();
+    } else {
       _breath.stop();
       _breath.value = 0;
-    } else if (!_breath.isAnimating) {
-      _breath.repeat(reverse: true);
     }
   }
 
   @override
   void dispose() {
+    _lifecycle.dispose();
     _breath.dispose();
     super.dispose();
   }
@@ -400,28 +437,57 @@ class _SleepRingState extends State<SleepRing>
   Widget build(BuildContext context) {
     final cl = context.cl;
     final minutes = widget.elapsed.inSeconds % 3600 / 3600;
+    const halo = _size * SleepBreath.haloToRing;
     return Semantics(
       label: '${widget.label} ${clockLabel(widget.elapsed, hours: true)}',
       child: ExcludeSemantics(
         child: SizedBox(
-          width: 272,
-          height: 272,
-          child: AnimatedBuilder(
-            animation: _breath,
-            builder: (context, child) => CustomPaint(
-              painter: _RingPainter(
-                track: cl.colors.surface2,
-                color: widget.color.withValues(
-                  alpha: 1 - 0.45 * Curves.easeInOut.transform(_breath.value),
+          width: _size,
+          height: _size,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              // The halo is 170/150 of the ring, so it reaches slightly past it, fading out.
+              Positioned(
+                left: (_size - halo) / 2,
+                top: (_size - halo) / 2,
+                width: halo,
+                height: halo,
+                child: RepaintBoundary(
+                  child: CustomPaint(
+                    key: const ValueKey('sleep-halo'),
+                    painter: SleepHaloPainter(
+                      phase: _phase,
+                      color: widget.color,
+                    ),
+                  ),
                 ),
-                fraction: minutes == 0 ? 0.002 : minutes,
               ),
-              child: child,
-            ),
-            child: Center(
-              child: Column(
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _RingPainter(
+                    track: cl.colors.surface2,
+                    color: widget.color,
+                    fraction: minutes == 0 ? 0.002 : minutes,
+                  ),
+                ),
+              ),
+              Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  RepaintBoundary(
+                    child: ScaleTransition(
+                      key: const ValueKey('sleep-moon'),
+                      scale: _moonScale,
+                      child: const ClArt(
+                        ClIllustration.miniMoon,
+                        width: 48,
+                        height: 48,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: ClSpace.s1),
                   Text(
                     widget.label,
                     style: cl.text.label.copyWith(color: cl.colors.inkMuted),
@@ -436,7 +502,7 @@ class _SleepRingState extends State<SleepRing>
                   ),
                 ],
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -773,7 +839,7 @@ class _ManualSleepScreenState extends ConsumerState<ManualSleepScreen> {
 
     return OnboardingScaffold(
       topBar: ClTopBar(
-        onBack: () => context.pop(),
+        onBack: () => context.popOrToday(),
         trailing: baby == null
             ? null
             : ClBabySwitcher(
@@ -953,7 +1019,7 @@ class _OverlapScreenState extends ConsumerState<OverlapScreen> {
           );
       if (!mounted) return;
       showClToast(context, message: l10n.overlapKept);
-      if (context.canPop()) context.pop();
+      context.popOrToday();
     } on FirebaseFunctionsException catch (e) {
       if (!mounted) return;
       final reason = e.details is Map ? (e.details as Map)['reason'] : null;
@@ -986,7 +1052,7 @@ class _OverlapScreenState extends ConsumerState<OverlapScreen> {
     ];
     if (conflict == null || records.length < 2) {
       return OnboardingScaffold(
-        topBar: ClTopBar(onBack: () => context.pop()),
+        topBar: ClTopBar(onBack: () => context.popOrToday()),
         content: [
           const SizedBox(height: ClSpace.s8),
           Center(
@@ -1030,7 +1096,7 @@ class _OverlapScreenState extends ConsumerState<OverlapScreen> {
         checked: selected,
         child: ClPressable(
           onPressed: () => setState(() => _keep = r.id),
-          pressedScale: 0.99,
+          pressedOpacity: ClPressable.surfaceOpacity,
           semanticLabel:
               '${hm.format(r.occurredAt)} – ${hm.format(r.endedAt!)}',
           child: AnimatedContainer(
@@ -1114,7 +1180,7 @@ class _OverlapScreenState extends ConsumerState<OverlapScreen> {
 
     return OnboardingScaffold(
       topBar: ClTopBar(
-        onBack: () => context.pop(),
+        onBack: () => context.popOrToday(),
         trailing: ClSyncStatus(
           state: ClSyncState.synced,
           label: l10n.backOnline,

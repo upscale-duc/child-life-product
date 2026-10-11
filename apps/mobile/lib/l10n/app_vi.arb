@@ -4074,6 +4074,15 @@
       }
     }
   },
+  "memLanding": "{count, plural, other{Đang thêm {count} mục…}}",
+  "@memLanding": {
+    "description": "10b Ảnh: items uploading or being processed, not in the grid yet (owner request 2026-10-11).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memNoMatch": "Không có mục nào khớp cách xem này.",
   "@memNoMatch": {
     "description": "Filtered empty."
@@ -5093,8 +5102,12 @@
   "@viewerThumb": {
     "description": "10f thumbnail strip: one thumbnail (accessibility).",
     "placeholders": {
-      "index": {"type": "int"},
-      "count": {"type": "int"}
+      "index": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
     }
   },
   "shareTitle": "Chia sẻ với gia đình?",
@@ -8133,5 +8146,271 @@
   "meLanguageHint": "Đổi ngay cho cả app, widget và thông báo trên máy này.",
   "@meLanguageHint": {
     "description": "Sheet footnote."
+  },
+  "whoIntro": "Theo bảng chuẩn tăng trưởng trẻ em của WHO. Mỗi bé lớn theo nhịp riêng.",
+  "@whoIntro": {
+    "description": "20i subtitle."
+  },
+  "whoBoy": "Bé trai",
+  "@whoBoy": {
+    "description": "20i chip."
+  },
+  "whoGirl": "Bé gái",
+  "@whoGirl": {
+    "description": "20i chip."
+  },
+  "whoByWeek": "Theo tuần",
+  "@whoByWeek": {
+    "description": "20i chip."
+  },
+  "whoByMonth": "Theo tháng",
+  "@whoByMonth": {
+    "description": "20i chip."
+  },
+  "whoAge": "Tuổi",
+  "@whoAge": {
+    "description": "20i column."
+  },
+  "whoLow": "Thấp",
+  "@whoLow": {
+    "description": "20i column: 3rd percentile."
+  },
+  "whoMedian": "Trung vị",
+  "@whoMedian": {
+    "description": "20i column: median."
+  },
+  "whoHigh": "Cao",
+  "@whoHigh": {
+    "description": "20i column: 97th percentile."
+  },
+  "whoBirth": "Mới sinh",
+  "@whoBirth": {
+    "description": "20i row."
+  },
+  "whoWeeks": "{count} tuần",
+  "@whoWeeks": {
+    "description": "20i row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "whoMonths": "{count} tháng",
+  "@whoMonths": {
+    "description": "20i row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "whoUnitKg": "Đơn vị: kg. “Thấp” và “Cao” là ngưỡng dưới và ngưỡng trên của khoảng bình thường.",
+  "@whoUnitKg": {
+    "description": "20i footnote, weight."
+  },
+  "whoUnitCm": "Đơn vị: cm. “Thấp” và “Cao” là ngưỡng dưới và ngưỡng trên của khoảng bình thường.",
+  "@whoUnitCm": {
+    "description": "20i footnote, length."
+  },
+  "whoDoctor": "Nếu số đo của bé nằm ngoài khoảng bình thường, hãy trao đổi với bác sĩ của bé.",
+  "@whoDoctor": {
+    "description": "20i banner."
+  },
+  "whoSource": "Nguồn: WHO Child Growth Standards · Child Life cập nhật 09/2026",
+  "@whoSource": {
+    "description": "20i source line."
+  },
+  "whoBabyAt": "{name} {value} · {status}",
+  "@whoBabyAt": {
+    "description": "20i: the baby’s row.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "whoNormal": "Bình thường",
+  "@whoNormal": {
+    "description": "Within the WHO normal range (3rd–97th percentile)."
+  },
+  "whoBelow": "Dưới mức tham chiếu",
+  "@whoBelow": {
+    "description": "Under the 3rd percentile (20d)."
+  },
+  "whoAbove": "Trên mức tham chiếu",
+  "@whoAbove": {
+    "description": "Over the 97th percentile."
+  },
+  "whoOpen": "Xem tiêu chuẩn tăng trưởng WHO",
+  "@whoOpen": {
+    "description": "20d link to 20i."
+  },
+  "whoBand": "Khoảng bình thường",
+  "@whoBand": {
+    "description": "20d chart legend."
+  },
+  "whoMedianLine": "Trung vị WHO",
+  "@whoMedianLine": {
+    "description": "20d chart legend."
+  },
+  "feedsPerDayTitle": "Bú mỗi ngày",
+  "@feedsPerDayTitle": {
+    "description": "20g card."
+  },
+  "feedsPerDayHint": "Số cữ bú bình và bú mẹ · {days} ngày",
+  "@feedsPerDayHint": {
+    "description": "20g card subtitle.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "feedsDayTip": "{day} · {bottles} bình {ml} ml · {breasts} mẹ {minutes}p",
+  "@feedsDayTip": {
+    "description": "20g selected-day callout.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "bottles": {
+        "type": "int"
+      },
+      "ml": {
+        "type": "int"
+      },
+      "breasts": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "feedsAvgLine": "TB {count} cữ",
+  "@feedsAvgLine": {
+    "description": "20g average line.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bottleShareLine": "Bú bình {pct}% · {ml} ml/ngày",
+  "@bottleShareLine": {
+    "description": "20g share.",
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      },
+      "ml": {
+        "type": "int"
+      }
+    }
+  },
+  "breastShareLine": "Bú mẹ {pct}% · {minutes} phút/ngày",
+  "@breastShareLine": {
+    "description": "20g share.",
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "kpiFeedsPerDay": "TB mỗi ngày",
+  "@kpiFeedsPerDay": {
+    "description": "20g KPI caption."
+  },
+  "kpiBottlePerDay": "Bú bình/ngày",
+  "@kpiBottlePerDay": {
+    "description": "20g KPI caption."
+  },
+  "kpiBreastPerDay": "Bú mẹ/ngày",
+  "@kpiBreastPerDay": {
+    "description": "20g KPI caption."
+  },
+  "sleepPerDayTitle": "Tổng giờ ngủ mỗi ngày",
+  "@sleepPerDayTitle": {
+    "description": "20h card."
+  },
+  "sleepPerDayHint": "Đêm 18:00–06:00 · Ngày 06:00–18:00",
+  "@sleepPerDayHint": {
+    "description": "20h card subtitle."
+  },
+  "sleepDayTip": "{day} · {total} · đêm {night} · ngày {daytime}",
+  "@sleepDayTip": {
+    "description": "20h selected-day callout.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "night": {
+        "type": "String"
+      },
+      "daytime": {
+        "type": "String"
+      }
+    }
+  },
+  "sleepAvgLine": "TB {total}",
+  "@sleepAvgLine": {
+    "description": "20h average line.",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "legendNightSleep": "Ngủ đêm",
+  "@legendNightSleep": {
+    "description": "20h legend."
+  },
+  "legendDaySleep": "Ngủ ngày",
+  "@legendDaySleep": {
+    "description": "20h legend."
+  },
+  "sleepSteadyInsight": "Tổng giờ ngủ ổn định quanh {hours} giờ/ngày trong {days} ngày qua.",
+  "@sleepSteadyInsight": {
+    "description": "20h insight when days differ by 2 h or less.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "sleepRangeInsight": "Tổng giờ ngủ từ {min} đến {max} mỗi ngày trong {days} ngày qua.",
+  "@sleepRangeInsight": {
+    "description": "20h insight otherwise.",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "whoStandardsTitle": "Tiêu chuẩn tăng trưởng",
+  "@whoStandardsTitle": {
+    "description": "20i title."
   }
 }

@@ -843,13 +843,11 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
       );
     }
     if (!mounted) return;
-    ClHaptics.success();
     Navigator.of(context).pop(true);
   }
 
   Future<void> _delete(Reminder r) async {
     final l10n = AppLocalizations.of(context);
-    ClHaptics.warning(context);
     final ok = await showClSheet<bool>(
       context: context,
       builder: (sheetContext) => Column(

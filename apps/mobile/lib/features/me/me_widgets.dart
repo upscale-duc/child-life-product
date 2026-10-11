@@ -31,27 +31,29 @@ class MePage extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(
         ClSpace.s4,
-        ClSpace.s2,
+        0,
         ClSpace.s4,
         ClTabDock.contentBottomPadding,
       ),
       children: [
-        if (back || trailing != null)
-          ClTopBar(
-            onBack: back ? () => context.pop() : null,
-            trailing: trailing,
-          ),
-        SizedBox(height: back ? ClSpace.s3 : ClSpace.s2),
+        const SizedBox(height: ClSpace.s2),
         Semantics(header: true, child: Text(title, style: cl.text.largeTitle)),
         const SizedBox(height: ClSpace.s4),
         ...children,
       ],
     );
+    // The back bar stays pinned, and the title moves into it once the large one scrolls away.
     return Scaffold(
       backgroundColor: cl.colors.cloud,
-      body: SafeArea(
-        bottom: false,
-        child: onRefresh == null
+      body: ClPinnedHeaderScaffold(
+        collapsedTitle: title,
+        header: back || trailing != null
+            ? ClTopBar(
+                onBack: back ? () => context.pop() : null,
+                trailing: trailing,
+              )
+            : null,
+        body: onRefresh == null
             ? list
             : RefreshIndicator(onRefresh: onRefresh!, child: list),
       ),
@@ -59,7 +61,6 @@ class MePage extends StatelessWidget {
   }
 }
 
-/// A Me row: icon tile, title, optional subtitle, value and chevron (13a, 13b, 13j, 13n).
 class MeRow extends StatelessWidget {
   const MeRow({
     required this.title,

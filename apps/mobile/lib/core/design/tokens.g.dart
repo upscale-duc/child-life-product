@@ -87,6 +87,49 @@ class ClColors {
   final Color logoSun;
   final Color logoBand;
   final Color logoGround;
+
+  /// Blends two palettes, so switching Light ↔ Night care fades instead of snapping.
+  static ClColors lerp(ClColors a, ClColors b, double t) => ClColors(
+    cloud: Color.lerp(a.cloud, b.cloud, t)!,
+    surface: Color.lerp(a.surface, b.surface, t)!,
+    surface2: Color.lerp(a.surface2, b.surface2, t)!,
+    separator: Color.lerp(a.separator, b.separator, t)!,
+    controlBorder: Color.lerp(a.controlBorder, b.controlBorder, t)!,
+    ink: Color.lerp(a.ink, b.ink, t)!,
+    inkMuted: Color.lerp(a.inkMuted, b.inkMuted, t)!,
+    mint: Color.lerp(a.mint, b.mint, t)!,
+    mintDeep: Color.lerp(a.mintDeep, b.mintDeep, t)!,
+    onMintDeep: Color.lerp(a.onMintDeep, b.onMintDeep, t)!,
+    mintText: Color.lerp(a.mintText, b.mintText, t)!,
+    mintSoft: Color.lerp(a.mintSoft, b.mintSoft, t)!,
+    sunshine: Color.lerp(a.sunshine, b.sunshine, t)!,
+    sunshineSoft: Color.lerp(a.sunshineSoft, b.sunshineSoft, t)!,
+    peach: Color.lerp(a.peach, b.peach, t)!,
+    peachSoft: Color.lerp(a.peachSoft, b.peachSoft, t)!,
+    onWarm: Color.lerp(a.onWarm, b.onWarm, t)!,
+    cardMint: Color.lerp(a.cardMint, b.cardMint, t)!,
+    cardNight: Color.lerp(a.cardNight, b.cardNight, t)!,
+    cardPeach: Color.lerp(a.cardPeach, b.cardPeach, t)!,
+    cardSun: Color.lerp(a.cardSun, b.cardSun, t)!,
+    onCard: Color.lerp(a.onCard, b.onCard, t)!,
+    chip: Color.lerp(a.chip, b.chip, t)!,
+    navBar: Color.lerp(a.navBar, b.navBar, t)!,
+    navIcon: Color.lerp(a.navIcon, b.navIcon, t)!,
+    navActive: Color.lerp(a.navActive, b.navActive, t)!,
+    onNavActive: Color.lerp(a.onNavActive, b.onNavActive, t)!,
+    appleButton: Color.lerp(a.appleButton, b.appleButton, t)!,
+    appleButtonInk: Color.lerp(a.appleButtonInk, b.appleButtonInk, t)!,
+    error: Color.lerp(a.error, b.error, t)!,
+    errorSoft: Color.lerp(a.errorSoft, b.errorSoft, t)!,
+    pending: Color.lerp(a.pending, b.pending, t)!,
+    focusRing: Color.lerp(a.focusRing, b.focusRing, t)!,
+    scrim: Color.lerp(a.scrim, b.scrim, t)!,
+    cardEdge: Color.lerp(a.cardEdge, b.cardEdge, t)!,
+    logoSky: Color.lerp(a.logoSky, b.logoSky, t)!,
+    logoSun: Color.lerp(a.logoSun, b.logoSun, t)!,
+    logoBand: Color.lerp(a.logoBand, b.logoBand, t)!,
+    logoGround: Color.lerp(a.logoGround, b.logoGround, t)!,
+  );
 }
 
 const ClColors lightColors = ClColors(
@@ -183,6 +226,13 @@ class ClCareColor {
   final Color soft;
   final Color ink;
   final Color accent;
+
+  static ClCareColor lerp(ClCareColor a, ClCareColor b, double t) =>
+      ClCareColor(
+        soft: Color.lerp(a.soft, b.soft, t)!,
+        ink: Color.lerp(a.ink, b.ink, t)!,
+        accent: Color.lerp(a.accent, b.accent, t)!,
+      );
 }
 
 class ClCareColors {
@@ -200,6 +250,16 @@ class ClCareColors {
   final ClCareColor diaper;
   final ClCareColor growth;
   final ClCareColor pump;
+
+  static ClCareColors lerp(ClCareColors a, ClCareColors b, double t) =>
+      ClCareColors(
+        bottle: ClCareColor.lerp(a.bottle, b.bottle, t),
+        breast: ClCareColor.lerp(a.breast, b.breast, t),
+        sleep: ClCareColor.lerp(a.sleep, b.sleep, t),
+        diaper: ClCareColor.lerp(a.diaper, b.diaper, t),
+        growth: ClCareColor.lerp(a.growth, b.growth, t),
+        pump: ClCareColor.lerp(a.pump, b.pump, t),
+      );
 }
 
 const ClCareColors lightCareColors = ClCareColors(
@@ -283,6 +343,15 @@ class ClShadows {
   final List<BoxShadow> nav;
   final List<BoxShadow> lift;
   final List<BoxShadow> tile;
+
+  static ClShadows lerp(ClShadows a, ClShadows b, double t) => ClShadows(
+    card: BoxShadow.lerpList(a.card, b.card, t)!,
+    chip: BoxShadow.lerpList(a.chip, b.chip, t)!,
+    sheet: BoxShadow.lerpList(a.sheet, b.sheet, t)!,
+    nav: BoxShadow.lerpList(a.nav, b.nav, t)!,
+    lift: BoxShadow.lerpList(a.lift, b.lift, t)!,
+    tile: BoxShadow.lerpList(a.tile, b.tile, t)!,
+  );
 }
 
 const ClShadows lightShadows = ClShadows(

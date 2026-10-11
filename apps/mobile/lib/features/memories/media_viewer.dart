@@ -122,6 +122,27 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
   final _players = <int, ViewerVideo>{};
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _precacheAround(_index);
+    });
+  }
+
+  /// Loads the neighbours' images ahead, so a swipe lands on a ready photo, not black.
+  void _precacheAround(int i) {
+    for (final j in [i - 1, i + 1]) {
+      if (j < 0 || j >= widget.items.length) continue;
+      final it = widget.items[j];
+      final path = it.isVideo
+          ? it.paths?.poster ?? it.thumbPath
+          : it.displayPath;
+      if (path == null) continue;
+      unawaited(precacheImage(StorageImage(path), context, onError: (_, _) {}));
+    }
+  }
+
+  @override
   void dispose() {
     if (!_chrome) _showSystemUi(true);
     _pages.dispose();
@@ -283,15 +304,27 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (milestone != null) ...[
-          MilestoneChip(milestone: milestone, compact: true),
-          const SizedBox(height: ClSpace.s2),
-        ],
-        if (caption != null && caption.isNotEmpty) ...[
-          Text(caption, style: cl.text.headline.copyWith(color: white)),
-          const SizedBox(height: 4),
-        ],
-        Text(meta, style: cl.text.caption.copyWith(color: Colors.white70)),
+        // Text is not a control: a swipe that starts on it still pages.
+        IgnorePointer(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (milestone != null) ...[
+                MilestoneChip(milestone: milestone, compact: true),
+                const SizedBox(height: ClSpace.s2),
+              ],
+              if (caption != null && caption.isNotEmpty) ...[
+                Text(caption, style: cl.text.headline.copyWith(color: white)),
+                const SizedBox(height: 4),
+              ],
+              Text(
+                meta,
+                style: cl.text.caption.copyWith(color: Colors.white70),
+              ),
+            ],
+          ),
+        ),
         if (thread.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: ClSpace.s2),
@@ -367,10 +400,13 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
               controller: _pages,
               physics: _zoomed ? const NeverScrollableScrollPhysics() : null,
               itemCount: widget.items.length,
-              onPageChanged: (i) => setState(() {
-                _index = i;
-                _zoomed = false;
-              }),
+              onPageChanged: (i) {
+                setState(() {
+                  _index = i;
+                  _zoomed = false;
+                });
+                _precacheAround(i);
+              },
               itemBuilder: (_, i) {
                 final it = widget.items[i];
                 return it.isVideo
@@ -415,7 +451,6 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
                       right: 0,
                       child: _Scrim(
                         fromTop: true,
-                        onTap: _toggleChrome,
                         child: SafeArea(bottom: false, child: top),
                       ),
                     ),
@@ -425,7 +460,6 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
                       bottom: 0,
                       child: _Scrim(
                         fromTop: false,
-                        onTap: _toggleChrome,
                         child: SafeArea(top: false, child: bottom),
                       ),
                     ),
@@ -440,33 +474,38 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
   }
 }
 
-/// A soft black fade behind the floating chrome so white text reads on any photo.
+/// A soft black fade behind the floating chrome so white text reads on any photo. Only the
+/// controls take touches: swipes and taps between them reach the media, so paging and
+/// hiding the chrome work anywhere on screen.
 class _Scrim extends StatelessWidget {
-  const _Scrim({
-    required this.fromTop,
-    required this.onTap,
-    required this.child,
-  });
+  const _Scrim({required this.fromTop, required this.child});
   final bool fromTop;
-  final VoidCallback onTap;
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-    // Taps between the buttons hide the chrome like taps on the media.
-    onTap: onTap,
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: fromTop ? Alignment.topCenter : Alignment.bottomCenter,
-          end: fromTop ? Alignment.bottomCenter : Alignment.topCenter,
-          colors: fromTop
-              ? const [Color(0x8C000000), Color(0x00000000)]
-              : const [Color(0xB3000000), Color(0x66000000), Color(0x00000000)],
+  Widget build(BuildContext context) => Stack(
+    children: [
+      Positioned.fill(
+        child: IgnorePointer(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: fromTop ? Alignment.topCenter : Alignment.bottomCenter,
+                end: fromTop ? Alignment.bottomCenter : Alignment.topCenter,
+                colors: fromTop
+                    ? const [Color(0x8C000000), Color(0x00000000)]
+                    : const [
+                        Color(0xB3000000),
+                        Color(0x66000000),
+                        Color(0x00000000),
+                      ],
+              ),
+            ),
+          ),
         ),
       ),
-      child: child,
-    ),
+      child,
+    ],
   );
 }
 
@@ -602,11 +641,7 @@ class _PhotoPageState extends State<_PhotoPage>
           child: SizedBox.expand(
             child: path == null
                 ? const SizedBox.shrink()
-                : Image(
-                    image: StorageImage(path),
-                    fit: BoxFit.contain,
-                    gaplessPlayback: true,
-                  ),
+                : _FullImage(path: path, standIn: widget.item.paths?.thumb),
           ),
         ),
       ),
@@ -712,12 +747,18 @@ class _VideoPageState extends ConsumerState<_VideoPage> {
               KeyedSubtree(
                 key: const ValueKey('poster'),
                 child: v == null
-                    ? _Poster(path: poster)
+                    ? _FullImage(
+                        path: poster,
+                        standIn: widget.item.paths?.thumb,
+                      )
                     : ValueListenableBuilder(
                         valueListenable: v.state,
                         builder: (_, s, child) =>
                             s.rendered ? const SizedBox.shrink() : child!,
-                        child: _Poster(path: poster),
+                        child: _FullImage(
+                          path: poster,
+                          standIn: widget.item.paths?.thumb,
+                        ),
                       ),
               ),
             Center(
@@ -744,16 +785,30 @@ class _VideoPageState extends ConsumerState<_VideoPage> {
   }
 }
 
-class _Poster extends StatelessWidget {
-  const _Poster({required this.path});
+/// A photo or poster on black. Until it has loaded, the small thumbnail (already cached by the
+/// grid and the strip) stands in, so a page never opens black.
+class _FullImage extends StatelessWidget {
+  const _FullImage({required this.path, this.standIn});
   final String path;
+  final String? standIn;
 
   @override
-  Widget build(BuildContext context) => Image(
-    image: StorageImage(path),
-    fit: BoxFit.contain,
-    gaplessPlayback: true,
-  );
+  Widget build(BuildContext context) {
+    final standIn = this.standIn;
+    return Image(
+      image: StorageImage(path),
+      fit: BoxFit.contain,
+      gaplessPlayback: true,
+      frameBuilder: (_, child, frame, sync) =>
+          frame != null || sync || standIn == null || standIn == path
+          ? child
+          : Image(
+              image: StorageImage(standIn),
+              fit: BoxFit.contain,
+              gaplessPlayback: true,
+            ),
+    );
+  }
 }
 
 /// Small thumbnails of every item along the bottom; the current one is outlined and kept in
@@ -850,7 +905,6 @@ class _ThumbStripState extends State<_ThumbStrip> {
             onPressed: () => widget.onSelect(i),
             semanticLabel: l10n.viewerThumb(i + 1, n),
             selected: on,
-            haptic: false,
             minSize: Size.zero,
             child: AnimatedOpacity(
               opacity: on ? 1 : 0.55,
@@ -861,6 +915,10 @@ class _ThumbStripState extends State<_ThumbStrip> {
                 height: _size,
                 decoration: BoxDecoration(
                   color: Colors.white12,
+                  borderRadius: BorderRadius.circular(ClRadius.sm),
+                ),
+                // Drawn over the picture, so picture and outline share one rounded edge.
+                foregroundDecoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(ClRadius.sm),
                   border: Border.all(
                     color: on ? Colors.white : Colors.transparent,

@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../app/navigation.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
-import '../../core/design/haptics.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/format/age.dart';
 import '../../core/widgets/cl_art.dart';
@@ -385,7 +385,7 @@ class LogRow extends StatelessWidget {
     final care = careColor(context, record.type);
     return ClPressable(
       onPressed: () => context.push('${Routes.record}/${record.id}'),
-      pressedScale: 0.99,
+      pressedOpacity: ClPressable.surfaceOpacity,
       semanticLabel: record.pending
           ? '$title, $subtitle, ${l10n.carePending}'
           : '$title, $subtitle',
@@ -485,7 +485,7 @@ class RecordDetailScreen extends ConsumerWidget {
         : ref.watch(careRecordProvider((me.babyId, recordId))).value;
     if (me == null || record == null || record.deleted) {
       return OnboardingScaffold(
-        topBar: ClTopBar(onBack: () => context.pop()),
+        topBar: ClTopBar(onBack: () => context.popOrToday()),
         content: [
           const SizedBox(height: ClSpace.s8),
           Center(
@@ -546,7 +546,7 @@ class RecordDetailScreen extends ConsumerWidget {
 
     return OnboardingScaffold(
       topBar: ClTopBar(
-        onBack: () => context.pop(),
+        onBack: () => context.popOrToday(),
         trailing: editable
             ? ClButton(
                 label: l10n.actionEdit,
@@ -706,7 +706,6 @@ class RecordDetailScreen extends ConsumerWidget {
     Membership me,
   ) async {
     final l10n = AppLocalizations.of(context);
-    ClHaptics.warning(context);
     final confirmed = await showClSheet<bool>(
       context: context,
       builder: (sheetContext) => Column(
@@ -742,7 +741,7 @@ class RecordDetailScreen extends ConsumerWidget {
     void failed(Object _) => toaster.show(message: l10n.careSaveFailed);
 
     repo.softDelete(record, me.uid, onError: failed);
-    if (context.canPop()) context.pop();
+    context.popOrToday();
     toaster.show(
       message: l10n.deletedToast,
       actionLabel: l10n.undo,

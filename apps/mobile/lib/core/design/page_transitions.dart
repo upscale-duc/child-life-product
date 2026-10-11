@@ -8,6 +8,31 @@ class ClPageTransitionsBuilder extends PageTransitionsBuilder {
 
   final PageTransitionsBuilder platformDefault;
 
+  // Routes read their timing and the outgoing screen's motion (iOS parallax) from the theme's
+  // builder, so forward them; otherwise iOS pushes run 300 ms over a static screen.
+  @override
+  Duration get transitionDuration => platformDefault.transitionDuration;
+
+  @override
+  Duration get reverseTransitionDuration =>
+      platformDefault.reverseTransitionDuration;
+
+  @override
+  DelegatedTransitionBuilder? get delegatedTransition {
+    final delegated = platformDefault.delegatedTransition;
+    if (delegated == null) return null;
+    return (context, animation, secondaryAnimation, allowSnapshotting, child) =>
+        (MediaQuery.maybeDisableAnimationsOf(context) ?? false)
+        ? child
+        : delegated(
+            context,
+            animation,
+            secondaryAnimation,
+            allowSnapshotting,
+            child,
+          );
+  }
+
   @override
   Widget buildTransitions<T>(
     PageRoute<T> route,

@@ -78,6 +78,21 @@ List<Override> _base({
 
 Widget _tab() => const Scaffold(body: MemoriesScreen());
 
+/// The tab with the shell's floating upload pill where it sits above the dock (D-048).
+Widget _tabWithPill() => const Scaffold(
+  body: Stack(
+    children: [
+      Positioned.fill(child: MemoriesScreen()),
+      Positioned(
+        left: 16,
+        right: 16,
+        bottom: 12 + 68 + 24,
+        child: GlobalUploadPill(),
+      ),
+    ],
+  ),
+);
+
 /// Opens a sheet from a host that has the screen's context.
 class _Host extends ConsumerStatefulWidget {
   const _Host(this.open);
@@ -223,7 +238,7 @@ final _cases = <String, _Case>{
     act: null,
   ),
   '10a_pill_uploads_paused': (
-    build: _tab,
+    build: _tabWithPill,
     overrides: () => _base(
       repo: _refusing(),
       store: MemoryQueueStore()
@@ -235,7 +250,7 @@ final _cases = <String, _Case>{
     act: null,
   ),
   '10a_pill_failed': (
-    build: _tab,
+    build: _tabWithPill,
     overrides: () => _base(
       repo: _refusing(),
       store: MemoryQueueStore()
@@ -245,7 +260,7 @@ final _cases = <String, _Case>{
     act: null,
   ),
   '10a_pill_offline': (
-    build: _tab,
+    build: _tabWithPill,
     overrides: () => _base(
       network: NetworkKind.none,
       store: MemoryQueueStore()
@@ -261,7 +276,7 @@ final _cases = <String, _Case>{
   ),
   '10a_journal': (build: _tab, overrides: _base, prefs: const {}, act: null),
   '10a_uploading': (
-    build: _tab,
+    build: _tabWithPill,
     overrides: () =>
         _base(store: MemoryQueueStore()..saved = [_uploadingBatch()]),
     prefs: const {},

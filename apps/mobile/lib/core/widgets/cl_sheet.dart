@@ -1,8 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../design/cl_theme.dart';
-import '../design/haptics.dart';
 import '../design/motion.dart';
 import '../design/tokens.g.dart';
 import 'cl_feedback.dart';
@@ -12,7 +14,8 @@ import 'cl_pressable.dart';
 /// Presents a bottom sheet per the Motion spec pattern "Mở và đóng sheet" (270:108):
 /// opens with motion.standard (spring, ≤4px settle) while the scrim fades 0 → 32 %, closes with
 /// motion.exit; drag past 30 % or flick to close (light haptic); otherwise springs back.
-/// Night care: no bounce, 250 ms ease-out. Reduce Motion: 150 ms fade, no slide. No haptic on open.
+/// Night care: no bounce, 250 ms ease-out. Reduce Motion: 150 ms fade, no slide. A medium haptic on
+/// open (D-048).
 Future<T?> showClSheet<T>({
   required BuildContext context,
   required WidgetBuilder builder,
@@ -70,6 +73,80 @@ class ClSheetRoute<T> extends PopupRoute<T> {
   Duration get reverseTransitionDuration =>
       reduceMotion ? const Duration(milliseconds: 150) : ClMotion.exit;
 
+  // The route's own controller is the sheet's position (1 = open, 0 = off screen): the open
+  // spring, the finger, the release and the close all drive it, so the scrim always tracks the
+  // sheet and a flick carries its speed into the close instead of restarting a curve.
+  final ValueNotifier<bool> _dragged = ValueNotifier(false);
+  double? _releaseVelocity;
+
+  @override
+  TickerFuture didPush() {
+    super.didPush();
+    final c = controller!;
+    if (reduceMotion || nightCare) {
+      return c.animateTo(
+        1,
+        duration: transitionDuration,
+        curve: reduceMotion ? Curves.linear : ClCurves.quick,
+      );
+    }
+    return c.animateWith(
+      SpringSimulation(standardSpring(), c.value, 1, 0, snapToEnd: true),
+    );
+  }
+
+  @override
+  bool didPop(T? result) {
+    final popped = super.didPop(result);
+    final c = controller!;
+    final velocity = _releaseVelocity;
+    // Already off screen (dragged all the way down): super's reverse has finished the route.
+    if (c.isDismissed) return popped;
+    if (velocity != null) {
+      // Closed by a drag: keep the finger's speed (Motion spec 270:108 step 4).
+      c.fling(velocity: math.min(velocity, -2));
+    } else {
+      c.animateBack(
+        0,
+        duration: reverseTransitionDuration * c.value,
+        curve: reduceMotion ? Curves.linear : ClCurves.exit,
+      );
+    }
+    return popped;
+  }
+
+  @override
+  void dispose() {
+    _dragged.dispose();
+    super.dispose();
+  }
+
+  void _dragUpdate(double delta, double height) {
+    _dragged.value = true;
+    controller!.value -= delta / height;
+  }
+
+  /// Past 30 % or a fast flick closes (light haptic); otherwise springs back with the
+  /// finger's velocity. Returns whether the sheet is closing.
+  bool _dragEnd(double velocity, double height) {
+    final c = controller!;
+    final v = -velocity / height; // sheet units per second, + = opening
+    if (velocity > 700 || c.value < 0.7) {
+      _releaseVelocity = v;
+      return true;
+    }
+    final spring = nightCare || reduceMotion
+        ? SpringDescription.withDampingRatio(mass: 1, stiffness: 500, ratio: 1)
+        : standardSpring();
+    c
+        .animateWith(SpringSimulation(spring, c.value, 1, v, snapToEnd: true))
+        .whenCompleteOrCancel(() {
+          // Back in place: Reduce Motion closes with a fade again.
+          if (isActive) _dragged.value = false;
+        });
+    return false;
+  }
+
   @override
   Widget buildPage(
     BuildContext context,
@@ -93,20 +170,13 @@ class ClSheetRoute<T> extends PopupRoute<T> {
     final scrimColor = ClTheme.of(
       nightCare ? ClPalette.nightCare : ClPalette.light,
     ).colors.scrim;
-    final curved = CurvedAnimation(
-      parent: animation,
-      curve: nightCare ? ClCurves.quick : ClCurves.standard,
-      reverseCurve: ClCurves.exit,
+    final slide = SlideTransition(
+      position: Tween(
+        begin: const Offset(0, 1),
+        end: Offset.zero,
+      ).animate(animation),
+      child: child,
     );
-    final sheet = reduceMotion
-        ? FadeTransition(opacity: animation, child: child)
-        : SlideTransition(
-            position: Tween(
-              begin: const Offset(0, 1),
-              end: Offset.zero,
-            ).animate(curved),
-            child: child,
-          );
     return Stack(
       children: [
         Positioned.fill(
@@ -117,7 +187,19 @@ class ClSheetRoute<T> extends PopupRoute<T> {
             ),
           ),
         ),
-        Align(alignment: Alignment.bottomCenter, child: sheet),
+        Align(
+          alignment: Alignment.bottomCenter,
+          // Reduce Motion: open and close fade without sliding; a drag still moves the sheet.
+          child: reduceMotion
+              ? ValueListenableBuilder(
+                  valueListenable: _dragged,
+                  child: child,
+                  builder: (_, dragged, child) => dragged
+                      ? slide
+                      : FadeTransition(opacity: animation, child: child),
+                )
+              : slide,
+        ),
       ],
     );
   }
@@ -134,81 +216,56 @@ class _SheetBody extends StatefulWidget {
   State<_SheetBody> createState() => _SheetBodyState();
 }
 
-class _SheetBodyState extends State<_SheetBody>
-    with SingleTickerProviderStateMixin {
+class _SheetBodyState extends State<_SheetBody> {
   final _key = GlobalKey();
-  late final AnimationController _drag = AnimationController(
-    vsync: this,
-    lowerBound: 0,
-    upperBound: 1,
-  );
 
   double get _height => _key.currentContext?.size?.height ?? 1;
 
-  @override
-  void dispose() {
-    _drag.dispose();
-    super.dispose();
-  }
+  bool get _canDrag => widget.route.dismissible && widget.route.isCurrent;
 
   void _onUpdate(DragUpdateDetails d) {
-    if (!widget.route.dismissible) return;
-    _drag.value = (_drag.value + d.primaryDelta! / _height).clamp(0, 1);
+    if (!_canDrag) return;
+    widget.route._dragUpdate(d.primaryDelta!, _height);
   }
 
   void _onEnd(DragEndDetails d) {
-    if (!widget.route.dismissible) return;
-    final flick = d.primaryVelocity != null && d.primaryVelocity! > 700;
-    if (flick || _drag.value > 0.3) {
-      ClHaptics.tap(context);
+    if (!_canDrag) return;
+    if (widget.route._dragEnd(d.primaryVelocity ?? 0, _height)) {
       Navigator.of(context).pop();
-    } else {
-      _drag.animateBack(
-        0,
-        duration: context.motion(ClMotion.quick),
-        curve: ClCurves.quick,
-      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
-    final media = MediaQuery.of(context);
-    return AnimatedBuilder(
-      animation: _drag,
-      builder: (context, child) => FractionalTranslation(
-        translation: Offset(0, _drag.value),
-        child: child,
+    final padding = MediaQuery.paddingOf(context);
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.viewInsetsOf(context).bottom,
+        top: padding.top + ClSpace.s6,
       ),
-      child: Padding(
-        padding: EdgeInsets.only(
-          bottom: media.viewInsets.bottom,
-          top: media.padding.top + ClSpace.s6,
-        ),
-        child: GestureDetector(
-          onVerticalDragUpdate: _onUpdate,
-          onVerticalDragEnd: _onEnd,
-          child: Material(
-            type: MaterialType.transparency,
-            child: Container(
-              key: _key,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: cl.colors.surface,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(ClRadius.sheet),
-                ),
-                boxShadow: cl.shadows.sheet,
+      child: GestureDetector(
+        onVerticalDragUpdate: _onUpdate,
+        onVerticalDragEnd: _onEnd,
+        child: Material(
+          type: MaterialType.transparency,
+          child: Container(
+            key: _key,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: cl.colors.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(ClRadius.sheet),
               ),
-              padding: EdgeInsets.fromLTRB(
-                ClSpace.s4,
-                ClSpace.s2,
-                ClSpace.s4,
-                ClSpace.s6 + media.padding.bottom,
-              ),
-              child: SafeArea(top: false, bottom: false, child: widget.child),
+              boxShadow: cl.shadows.sheet,
             ),
+            padding: EdgeInsets.fromLTRB(
+              ClSpace.s4,
+              ClSpace.s2,
+              ClSpace.s4,
+              ClSpace.s6 + padding.bottom,
+            ),
+            child: SafeArea(top: false, bottom: false, child: widget.child),
           ),
         ),
       ),

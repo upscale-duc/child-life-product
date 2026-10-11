@@ -45,7 +45,6 @@ Future<void> toggleLove(
 ) async {
   final me = ref.read(selectedMembershipProvider);
   if (me == null) return;
-  if (on) ClHaptics.success();
   try {
     await ref.read(memoryRepositoryProvider).setLove(me, target, targetId, on);
   } on Object {

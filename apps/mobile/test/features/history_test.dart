@@ -206,9 +206,13 @@ void main() {
         ),
         findsOneWidget,
       );
+      // Below "Tổng giờ ngủ mỗi ngày" and "Ngủ ngày và đêm" (v1.0 improvement).
+      await tester.scrollUntilVisible(find.text('Nhịp ngủ 7 ngày'), 300);
       expect(find.text('Nhịp ngủ 7 ngày'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('30 ngày'), -300);
       await tester.tap(find.text('30 ngày'));
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.text('Nhịp ngủ 30 ngày'), 300);
       expect(find.text('Nhịp ngủ 30 ngày'), findsOneWidget);
     });
   });

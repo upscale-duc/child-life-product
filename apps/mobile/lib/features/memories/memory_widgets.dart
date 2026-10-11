@@ -183,7 +183,6 @@ class MediaTile extends StatelessWidget {
           ? '${l10n.pickVideos} ${videoDuration(item.durationMs)}'
           : l10n.memPhotos,
       selected: selecting ? selected : null,
-      haptic: false,
       minSize: Size.zero,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
@@ -514,9 +513,17 @@ class _EntryMedia extends StatelessWidget {
 
 /// UploadPill (132:898): Uploading · Paused · Failed · Done (+ Wi-Fi and quota waits).
 class UploadPill extends ConsumerWidget {
-  const UploadPill({required this.babyId, required this.onOpen, super.key});
+  const UploadPill({
+    required this.babyId,
+    required this.onOpen,
+    this.hidden = const {},
+    super.key,
+  });
   final String babyId;
   final VoidCallback onOpen;
+
+  /// Finished batches the floating pill has already shown long enough.
+  final Set<String> hidden;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -525,7 +532,8 @@ class UploadPill extends ConsumerWidget {
     final view = ref.watch(uploadQueueProvider);
     final batches = [
       for (final b in view.batches)
-        if (b.babyId == babyId && !b.dismissed) b,
+        if (b.babyId == babyId && !b.dismissed && !hidden.contains(b.batchId))
+          b,
     ];
     if (batches.isEmpty) return const SizedBox.shrink();
     final items = [for (final b in batches) ...b.items];

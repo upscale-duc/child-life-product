@@ -8,7 +8,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../app/providers.dart';
+import '../../app/session.dart';
 import '../baby/baby_models.dart';
+import '../memories/memory_repository.dart';
 import 'me_models.dart';
 
 /// Me, storage, profiles and the account (S11). Sensitive changes go through callables (zod on
@@ -201,11 +203,33 @@ final meRepositoryProvider = Provider<MeRepository>(
   ),
 );
 
-/// 13b for the selected baby's family; refreshed on pull and after a request.
+/// 13b for the selected baby's family; refreshed on pull, after a request, and whenever the
+/// baby's media change (an upload lands or a photo is deleted): the callable sums the bytes, and
+/// the Me tab stays alive in the shell, so it would otherwise keep its first answer.
 final familyStorageProvider = FutureProvider.autoDispose
-    .family<FamilyStorage, String>(
-      (ref, babyId) => ref.watch(meRepositoryProvider).familyStorage(babyId),
-    );
+    .family<FamilyStorage, String>((ref, babyId) {
+      ref.listen(_mediaSignatureProvider(babyId), (previous, next) {
+        if (previous != null && next != previous) ref.invalidateSelf();
+      });
+      return ref.watch(meRepositoryProvider).familyStorage(babyId);
+    });
+
+/// Changes when the baby's media set or any item's state changes; null until known, and for
+/// members who cannot read the parents' media (they do not see storage).
+final _mediaSignatureProvider = Provider.autoDispose.family<int?, String>((
+  ref,
+  babyId,
+) {
+  final session = ref.watch(sessionProvider);
+  final parent =
+      session is SessionSignedIn &&
+      session.membershipFor(babyId)?.role == MemberRole.coParent;
+  if (!parent) return null;
+  final items = ref.watch(mediaProvider((babyId, true))).value;
+  return items == null
+      ? null
+      : Object.hashAll(items.map((m) => (m.id, m.status)));
+});
 
 final accountDocProvider = StreamProvider.family<AccountDoc, String>(
   (ref, uid) => ref.watch(meRepositoryProvider).watchAccount(uid),

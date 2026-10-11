@@ -69,7 +69,7 @@ class ClSegmented<T> extends StatelessWidget {
                         onPressed: () => onChanged(options[i]),
                         semanticLabel: labelOf(options[i]),
                         selected: i == index,
-                        pressedScale: 1,
+                        pressedOpacity: 1,
                         child: SizedBox(
                           height: 46,
                           child: Center(
