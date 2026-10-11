@@ -1531,5 +1531,11 @@
   "legendDaySleep": "Day sleep",
   "sleepSteadyInsight": "Total sleep has stayed around {hours} h a day over the last {days} days.",
   "sleepRangeInsight": "Total sleep ran from {min} to {max} a day over the last {days} days.",
-  "whoStandardsTitle": "Growth standards"
+  "whoStandardsTitle": "Growth standards",
+  "whoLowerEdge": "Lower edge {value}",
+  "whoUpperEdge": "Upper edge {value}",
+  "whoBelowWeightNote": "{name}’s weight is below the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.",
+  "whoBelowLengthNote": "{name}’s length is below the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.",
+  "whoAboveWeightNote": "{name}’s weight is above the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.",
+  "whoAboveLengthNote": "{name}’s length is above the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up."
 }

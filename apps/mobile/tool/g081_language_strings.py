@@ -19,6 +19,10 @@ for locale, idx in (('vi', 0), ('en', 1)):
     path = root / f'app_{locale}.arb'
     data = json.loads(path.read_text(), object_pairs_hook=collections.OrderedDict)
     for key, (vi, en, desc, ph) in S.items():
+        # Never take over another screen's key (whoTitle once clobbered 10a's title).
+        meta = data.get('@' + key)
+        if locale == 'vi' and key in data and (meta or {}).get('description') != desc:
+            raise SystemExit(f'{key} already exists for something else: pick another id')
         data[key] = (vi, en)[idx]
         if locale == 'vi':
             meta = collections.OrderedDict(description=desc)

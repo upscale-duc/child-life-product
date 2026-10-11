@@ -8412,5 +8412,59 @@
   "whoStandardsTitle": "Tiêu chuẩn tăng trưởng",
   "@whoStandardsTitle": {
     "description": "20i title."
+  },
+  "whoLowerEdge": "Ngưỡng dưới {value}",
+  "@whoLowerEdge": {
+    "description": "20d pill below the band.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "whoUpperEdge": "Ngưỡng trên {value}",
+  "@whoUpperEdge": {
+    "description": "20d pill above the band.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "whoBelowWeightNote": "Cân nặng của {name} đang thấp hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.",
+  "@whoBelowWeightNote": {
+    "description": "20d note (347:935).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "whoBelowLengthNote": "Chiều dài của {name} đang thấp hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.",
+  "@whoBelowLengthNote": {
+    "description": "20d note.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "whoAboveWeightNote": "Cân nặng của {name} đang cao hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.",
+  "@whoAboveWeightNote": {
+    "description": "20d note.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "whoAboveLengthNote": "Chiều dài của {name} đang cao hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.",
+  "@whoAboveLengthNote": {
+    "description": "20d note.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

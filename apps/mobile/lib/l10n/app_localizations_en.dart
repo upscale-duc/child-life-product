@@ -5885,7 +5885,7 @@ class AppLocalizationsEn extends AppLocalizations {
     int breasts,
     int minutes,
   ) {
-    return '$day · $bottles bottle $ml ml · $breasts breast $minutes′';
+    return '$day · $bottles bottle $ml ml · $breasts breast ${minutes}m';
   }
 
   @override
@@ -5946,4 +5946,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whoStandardsTitle => 'Growth standards';
+
+  @override
+  String whoLowerEdge(String value) {
+    return 'Lower edge $value';
+  }
+
+  @override
+  String whoUpperEdge(String value) {
+    return 'Upper edge $value';
+  }
+
+  @override
+  String whoBelowWeightNote(String name) {
+    return '$name’s weight is below the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.';
+  }
+
+  @override
+  String whoBelowLengthNote(String name) {
+    return '$name’s length is below the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.';
+  }
+
+  @override
+  String whoAboveWeightNote(String name) {
+    return '$name’s weight is above the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.';
+  }
+
+  @override
+  String whoAboveLengthNote(String name) {
+    return '$name’s length is above the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.';
+  }
 }

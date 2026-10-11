@@ -19,6 +19,7 @@ import 'care_format.dart';
 import 'care_models.dart';
 import 'care_repository.dart';
 import 'history_screen.dart' show weekdayShort;
+import 'stacked_days_chart.dart';
 
 /// "Hôm nay · 7 ngày · 30 ngày" — remembered per screen ("Remembers the last choice").
 final _windowProvider = NotifierProvider.family<_Window, StatsWindow, String>(
@@ -382,20 +383,34 @@ class FeedStatsScreen extends ConsumerWidget {
         final nightGap = s.lastNightGap;
         final peak = s.peakHour;
         final leftPct = _pct(s.leftMinutes, s.leftMinutes + s.rightMinutes);
+        final breastPerDay = s.days.isEmpty
+            ? 0
+            : (s.days.fold(0, (t, d) => t + d.breastMinutes) / s.days.length)
+                  .round();
         return [
-          _Kpis([
-            (
-              l10n.amountMl(s.bottleMl),
-              today ? l10n.sinceYesterday18 : l10n.perDay,
+          // v1.0 improvement 20g: cữ / ml bú bình / phút bú mẹ per day.
+          if (today)
+            _Kpis([
+              (l10n.amountMl(s.bottleMl), l10n.sinceYesterday18),
+              (
+                l10n.feedsCount(s.feeds),
+                l10n.bottlesBreasts(s.bottleFeeds, s.breastFeeds),
+              ),
+              (gap, l10n.gapAverage),
+            ])
+          else
+            _Kpis([
+              (l10n.feedsCount(s.feeds), l10n.kpiFeedsPerDay),
+              (l10n.amountMl(s.bottleMl), l10n.kpiBottlePerDay),
+              (l10n.durationMinutes(breastPerDay), l10n.kpiBreastPerDay),
+            ]),
+          if (!today && s.days.isNotEmpty)
+            _FeedsPerDayCard(
+              stats: s,
+              days: days,
+              breastPerDay: breastPerDay,
+              zone: zone,
             ),
-            (
-              l10n.feedsCount(s.feeds),
-              today
-                  ? l10n.bottlesBreasts(s.bottleFeeds, s.breastFeeds)
-                  : l10n.perDay,
-            ),
-            (gap, l10n.gapAverage),
-          ]),
           _Card(
             title: today ? l10n.nightAndToday : l10n.dayNightFeed,
             subtitle: today
@@ -903,6 +918,8 @@ class SleepStatsScreen extends ConsumerWidget {
             ),
             (compactDuration(l10n, s.longest), l10n.longestSleep),
           ]),
+          if (!today && s.rows.isNotEmpty)
+            _SleepPerDayCard(stats: s, days: days, zone: zone),
           _Card(
             title: l10n.dayNightSleep,
             subtitle: today
@@ -1184,4 +1201,174 @@ class _LongestPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_LongestPainter old) => old.rows != rows;
+}
+
+String _dayLabel(String locale, String zone, DateTime start, int days) {
+  final d = inBabyZone(zone, start);
+  return days > 7 ? '${d.day}' : weekdayShort(locale, d);
+}
+
+/// 20g "Bú mỗi ngày" (v1.0 improvement): bottle and breast feeds stacked per day, the window's
+/// average, and the share of each kind.
+class _FeedsPerDayCard extends StatelessWidget {
+  const _FeedsPerDayCard({
+    required this.stats,
+    required this.days,
+    required this.breastPerDay,
+    required this.zone,
+  });
+
+  final FeedStats stats;
+  final int days;
+  final int breastPerDay;
+  final String zone;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final care = cl.care;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final bars = stats.days;
+    final bottles = bars.fold(0, (t, d) => t + d.bottles);
+    final all = bars.fold(0, (t, d) => t + d.feeds);
+    final bottlePct = _pct(bottles, all);
+    final labels = [
+      for (final d in bars) _dayLabel(locale, zone, d.start, days),
+    ];
+    return _Card(
+      title: l10n.feedsPerDayTitle,
+      subtitle: l10n.feedsPerDayHint(days),
+      children: [
+        StackedDaysChart(
+          bottoms: [for (final d in bars) d.bottles.toDouble()],
+          tops: [for (final d in bars) d.breasts.toDouble()],
+          labels: labels,
+          bottomColor: care.bottle.accent,
+          topColor: care.breast.accent,
+          average: stats.feeds.toDouble(),
+          averageLabel: l10n.feedsAvgLine(stats.feeds),
+          tickLabel: (v) => '${v.round()}',
+          tipOf: (i) => l10n.feedsDayTip(
+            labels[i],
+            bars[i].bottles,
+            bars[i].bottleMl,
+            bars[i].breasts,
+            bars[i].breastMinutes,
+          ),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        _Legend([
+          (care.bottle.accent, l10n.trackerBottle),
+          (care.breast.accent, l10n.trackerBreast),
+        ]),
+        const SizedBox(height: ClSpace.s3),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: SizedBox(
+            height: 8,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: math.max(1, all == 0 ? 1 : bottlePct),
+                  child: ColoredBox(
+                    color: all == 0 ? cl.colors.surface2 : care.bottle.accent,
+                  ),
+                ),
+                Container(width: 2, color: cl.colors.surface),
+                Expanded(
+                  flex: math.max(1, all == 0 ? 1 : 100 - bottlePct),
+                  child: ColoredBox(
+                    color: all == 0 ? cl.colors.surface2 : care.breast.accent,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        Text(
+          l10n.bottleShareLine(bottlePct, stats.bottleMl),
+          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        ),
+        Text(
+          l10n.breastShareLine(all == 0 ? 0 : 100 - bottlePct, breastPerDay),
+          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        ),
+      ],
+    );
+  }
+}
+
+/// 20h "Tổng giờ ngủ mỗi ngày" (v1.0 improvement): night and day sleep stacked per day, the
+/// window's average, and whether it held steady.
+class _SleepPerDayCard extends StatelessWidget {
+  const _SleepPerDayCard({
+    required this.stats,
+    required this.days,
+    required this.zone,
+  });
+
+  final SleepStats stats;
+  final int days;
+  final String zone;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final care = cl.care;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final rows = stats.rows;
+    final labels = [
+      for (final r in rows) _dayLabel(locale, zone, r.start, days),
+    ];
+    String c(Duration d) => compactDuration(l10n, d);
+    final totals = [for (final r in rows) r.night + r.day];
+    final logged = totals.where((t) => t > Duration.zero).toList();
+    final min = logged.isEmpty
+        ? Duration.zero
+        : logged.reduce((a, b) => a < b ? a : b);
+    final max = logged.isEmpty
+        ? Duration.zero
+        : logged.reduce((a, b) => a > b ? a : b);
+    return _Card(
+      title: l10n.sleepPerDayTitle,
+      subtitle: l10n.sleepPerDayHint,
+      children: [
+        StackedDaysChart(
+          bottoms: [for (final r in rows) r.night.inMinutes / 60],
+          tops: [for (final r in rows) r.day.inMinutes / 60],
+          labels: labels,
+          bottomColor: care.sleep.accent,
+          topColor: cl.colors.sunshine,
+          average: stats.perDay.inMinutes / 60,
+          averageLabel: l10n.sleepAvgLine(c(stats.perDay)),
+          step: 6,
+          tickLabel: (v) => l10n.compactH(v.round()),
+          tipOf: (i) => l10n.sleepDayTip(
+            labels[i],
+            c(rows[i].night + rows[i].day),
+            c(rows[i].night),
+            c(rows[i].day),
+          ),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        _Legend([
+          (care.sleep.accent, l10n.legendNightSleep),
+          (cl.colors.sunshine, l10n.legendDaySleep),
+        ]),
+        if (logged.length > 1)
+          _Insight(
+            max - min <= const Duration(hours: 2)
+                ? l10n.sleepSteadyInsight(
+                    (stats.perDay.inMinutes / 60).round(),
+                    days,
+                  )
+                : l10n.sleepRangeInsight(c(min), c(max), days),
+          ),
+      ],
+    );
+  }
 }

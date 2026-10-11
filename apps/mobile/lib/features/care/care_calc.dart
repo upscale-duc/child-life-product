@@ -325,9 +325,13 @@ class FeedStats {
     required this.rightMinutes,
     required this.nextSide,
     required this.todayFeeds,
+    this.days = const [],
   });
 
   final StatsWindow window;
+
+  /// 20g "Bú mỗi ngày" (v1.0 improvement): each day of a 7 / 30-day window, oldest first.
+  final List<FeedDayBar> days;
 
   /// Today: totals in the window. 7 / 30: per-day averages (rounded).
   final int bottleMl;
@@ -489,7 +493,49 @@ FeedStats feedStats(
             r.occurredAt.isBefore(today.end))
           r,
     ]..sort((a, b) => a.occurredAt.compareTo(b.occurredAt)),
+    days: window == StatsWindow.today
+        ? const []
+        : [
+            for (final d in windowDays(zone, now, days))
+              () {
+                final inDay = [
+                  for (final r in feeds)
+                    if (!r.occurredAt.isBefore(d.start) &&
+                        r.occurredAt.isBefore(d.end))
+                      r,
+                ];
+                final b = inDay.where((r) => r.type == CareType.bottle);
+                final m = inDay.where((r) => r.type == CareType.breast);
+                return FeedDayBar(
+                  start: d.start,
+                  bottles: b.length,
+                  breasts: m.length,
+                  bottleMl: b.fold(0, (s, r) => s + (r.amountMl ?? 0)),
+                  breastMinutes: m.fold(0, (s, r) => s + (r.durationMin ?? 0)),
+                );
+              }(),
+          ],
   );
+}
+
+/// One day of "Bú mỗi ngày": feeds by kind, bottle ml and breastfeeding minutes.
+@immutable
+class FeedDayBar {
+  const FeedDayBar({
+    required this.start,
+    required this.bottles,
+    required this.breasts,
+    required this.bottleMl,
+    required this.breastMinutes,
+  });
+
+  final DateTime start;
+  final int bottles;
+  final int breasts;
+  final int bottleMl;
+  final int breastMinutes;
+
+  int get feeds => bottles + breasts;
 }
 
 /// One sleep piece on a day row of "Nhịp ngủ" (split at midnight), in hours 0–24.
@@ -507,10 +553,16 @@ class SleepDayRow {
     required this.bars,
     required this.longest,
     required this.total,
+    this.night = Duration.zero,
+    this.day = Duration.zero,
   });
 
   final DateTime start;
   final List<SleepBar> bars;
+
+  /// 20h "Tổng giờ ngủ mỗi ngày": sleep in the night window (18–06) and in the day (06–18).
+  final Duration night;
+  final Duration day;
 
   /// D-027: the longest full sleep that ended this day.
   final Duration longest;
@@ -574,6 +626,7 @@ SleepStats sleepStats(
     var dayTotal = Duration.zero;
     var dayLongest = Duration.zero;
     var nightLong = Duration.zero;
+    var rowNight = Duration.zero, rowDay = Duration.zero;
     var n = 0, dd = 0;
     for (final r in sleeps) {
       final part = _overlap(r.occurredAt, r.endedAt!, d.start, d.end);
@@ -594,8 +647,10 @@ SleepStats sleepStats(
               : const Duration(minutes: 30);
           if (isNightHour(inBabyZone(zone, t).hour)) {
             night += step;
+            rowNight += step;
           } else {
             day += step;
+            rowDay += step;
           }
         }
       }
@@ -619,6 +674,8 @@ SleepStats sleepStats(
         bars: bars,
         longest: dayLongest,
         total: dayTotal,
+        night: rowNight,
+        day: rowDay,
       ),
     );
     total += dayTotal;

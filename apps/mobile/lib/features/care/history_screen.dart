@@ -7,7 +7,6 @@ import 'package:intl/intl.dart' hide TextDirection;
 
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
-import '../../core/design/motion.dart';
 import '../../core/design/tabular_text.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_art.dart';
@@ -28,6 +27,10 @@ import '../today/today_screen.dart' show DayRhythm;
 import 'care_calc.dart';
 import 'care_format.dart';
 import 'care_models.dart';
+import '../../core/widgets/cl_segmented.dart';
+import 'growth_chart.dart';
+import 'growth_standards_screen.dart';
+import 'who_growth.dart';
 import 'care_repository.dart';
 import 'care_screens.dart';
 import 'care_sheets.dart';
@@ -121,9 +124,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     final today = babyToday(zone, now);
     final day = _day ?? today;
     final isToday = day == today;
-    final dob = me.canViewBabyInfo
-        ? ref.watch(babyPrivateProfileProvider(babyId)).value?.dateOfBirth
+    final profile = me.canViewBabyInfo
+        ? ref.watch(babyPrivateProfileProvider(babyId)).value
         : null;
+    final dob = profile?.dateOfBirth;
     final bounds = babyDateBounds(zone, day);
     // A sleep from the night before still belongs to the day (D-027).
     final records =
@@ -232,6 +236,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           records: growth,
           myUid: me.uid,
           dob: dob,
+          gender: profile?.gender,
+          nickname: baby?.nickname ?? '',
           readOnly: readOnly,
         ),
       );
@@ -1234,12 +1240,18 @@ class _GrowthPanel extends ConsumerStatefulWidget {
     required this.myUid,
     required this.dob,
     required this.readOnly,
+    this.gender,
+    this.nickname = '',
   });
 
   final List<CareRecord> records;
   final String myUid;
   final DateTime? dob;
   final bool readOnly;
+
+  /// For the WHO comparison (v1.0 improvement 20d); without it the plain line chart shows.
+  final Gender? gender;
+  final String nickname;
 
   @override
   ConsumerState<_GrowthPanel> createState() => _GrowthPanelState();
@@ -1282,11 +1294,6 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
     }
     final latest = all.first;
     final previous = all.length > 1 ? all[1] : null;
-    final today = DateUtils.dateOnly(
-      ref.watch(careClockProvider).value ?? DateTime.now(),
-    );
-    String when(DateTime d) =>
-        DateUtils.isSameDay(d, today) ? l10n.dayToday : shortDate(context, d);
     String signed(double v, String unit) =>
         '${v >= 0 ? '+' : '−'}${decimal(locale, v.abs())} $unit';
     String? deltaOf(CareRecord r, CareRecord? prev) {
@@ -1327,6 +1334,78 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
             shortDate(context, previous.measuredOn ?? previous.occurredAt),
           );
 
+    // v1.0 improvement 20d: the latest value with the baby's age, its place against the WHO
+    // normal band (347:935 when outside it), the WHO chart and the way to 20i.
+    final measure = _length ? GrowthMeasure.length : GrowthMeasure.weight;
+    final boy = switch (widget.gender) {
+      Gender.boy => true,
+      Gender.girl => false,
+      _ => null,
+    };
+    final dob = widget.dob == null ? null : DateUtils.dateOnly(widget.dob!);
+    int? ageOn(CareRecord r) => dob == null
+        ? null
+        : DateUtils.dateOnly(
+            r.measuredOn ?? r.occurredAt,
+          ).difference(dob).inDays;
+    final shown = all
+        .where((r) => (_length ? r.lengthCm : r.weightKg) != null)
+        .toList();
+    final current = shown.firstOrNull;
+    final currentValue = current == null
+        ? null
+        : (_length ? current.lengthCm! : current.weightKg!);
+    final currentAge = current == null ? null : ageOn(current);
+    final band = boy == null || currentAge == null || currentValue == null
+        ? null
+        : WhoGrowth.band(
+            measure,
+            boy: boy,
+            ageDays: currentAge,
+            value: currentValue,
+          );
+    final range = boy == null || currentAge == null
+        ? null
+        : WhoGrowth.range(measure, boy: boy, ageDays: currentAge);
+    String ageText(int days) => days < 14
+        ? l10n.ageDays(days)
+        : days < 13 * 7
+        ? l10n.ageWeeks(days ~/ 7)
+        : l10n.ageMonths((days / 30.4375).floor());
+    final unit = _length ? 'cm' : 'kg';
+    final whoPoints = [
+      for (final r in shown.reversed)
+        if (ageOn(r) != null && ageOn(r)! >= 0)
+          (ageOn(r)!, _length ? r.lengthCm! : r.weightKg!),
+    ];
+    final outside = band != null && band != GrowthBand.normal;
+    Widget pill(String text, Color bg, Color ink, {ClIcons? icon}) => Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: ClSpace.s3,
+        vertical: ClSpace.s1,
+      ),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(ClRadius.pill),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            ClIcon(icon, size: 13, color: ink),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            text,
+            style: cl.text.caption.copyWith(
+              color: ink,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -1340,73 +1419,206 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.growthLatest(
-                        when(latest.measuredOn ?? latest.occurredAt),
-                      ),
-                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                    ),
-                  ),
-                  _MiniToggle(
-                    options: [l10n.growthWeightTab, l10n.growthLengthTab],
-                    selected: _length ? 1 : 0,
-                    onChanged: (i) => setState(() => _length = i == 1),
-                  ),
-                ],
+              ClSegmented<bool>(
+                options: const [false, true],
+                selected: _length,
+                labelOf: (l) => l ? l10n.growthLengthTab : l10n.growthWeightTab,
+                onChanged: (l) => setState(() => _length = l),
               ),
-              const SizedBox(height: ClSpace.s2),
+              const SizedBox(height: ClSpace.s3),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    primary,
-                    style: cl.text.title.copyWith(fontWeight: FontWeight.w600),
+                    currentValue == null
+                        ? primary
+                        : (_length
+                              ? l10n.lengthCm(decimal(locale, currentValue))
+                              : l10n.weightKg(decimal(locale, currentValue))),
+                    style: cl.text.title.copyWith(fontWeight: FontWeight.w700),
                   ),
-                  if (secondary != null)
-                    Text(
-                      ' · $secondary',
-                      style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+                  Flexible(
+                    child: Text(
+                      currentAge != null && currentAge >= 0
+                          ? ' · ${ageText(currentAge)}'
+                          : (secondary == null ? '' : ' · $secondary'),
+                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                      overflow: TextOverflow.ellipsis,
                     ),
+                  ),
                 ],
               ),
-              if (delta != null) ...[
-                const SizedBox(height: ClSpace.s2),
+              const SizedBox(height: ClSpace.s2),
+              Wrap(
+                spacing: ClSpace.s2,
+                runSpacing: ClSpace.s2,
+                children: [
+                  if (band == GrowthBand.normal)
+                    pill(
+                      l10n.whoNormal,
+                      cl.colors.mintSoft,
+                      cl.colors.mintText,
+                      icon: ClIcons.check,
+                    )
+                  else if (band != null)
+                    pill(
+                      band == GrowthBand.below ? l10n.whoBelow : l10n.whoAbove,
+                      cl.colors.sunshineSoft,
+                      cl.colors.ink,
+                      icon: ClIcons.alert,
+                    ),
+                  if (outside && range != null)
+                    pill(
+                      band == GrowthBand.below
+                          ? l10n.whoLowerEdge(
+                              '${decimal(locale, range.low)} $unit',
+                            )
+                          : l10n.whoUpperEdge(
+                              '${decimal(locale, range.high)} $unit',
+                            ),
+                      cl.colors.surface2,
+                      cl.colors.ink,
+                    )
+                  else if (delta != null)
+                    pill(delta, cl.colors.peachSoft, cl.colors.ink),
+                ],
+              ),
+              if (outside) ...[
+                const SizedBox(height: ClSpace.s3),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: ClSpace.s3,
-                    vertical: ClSpace.s1,
-                  ),
+                  padding: const EdgeInsets.all(ClSpace.s3),
                   decoration: BoxDecoration(
-                    color: care.soft,
-                    borderRadius: BorderRadius.circular(ClRadius.pill),
+                    color: cl.colors.sunshineSoft,
+                    borderRadius: BorderRadius.circular(ClRadius.control),
                   ),
-                  child: Text(
-                    delta,
-                    style: cl.text.caption.copyWith(color: care.ink),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClIcon(ClIcons.heart, size: 16, color: cl.colors.ink),
+                      const SizedBox(width: ClSpace.s2),
+                      Expanded(
+                        child: Text(switch ((band, _length)) {
+                          (GrowthBand.below, false) => l10n.whoBelowWeightNote(
+                            widget.nickname,
+                          ),
+                          (GrowthBand.below, true) => l10n.whoBelowLengthNote(
+                            widget.nickname,
+                          ),
+                          (_, false) => l10n.whoAboveWeightNote(
+                            widget.nickname,
+                          ),
+                          (_, true) => l10n.whoAboveLengthNote(widget.nickname),
+                        }, style: cl.text.label.copyWith(color: cl.colors.ink)),
+                      ),
+                    ],
                   ),
                 ),
               ],
               const SizedBox(height: ClSpace.s3),
-              ExcludeSemantics(
-                child: SizedBox(
-                  height: 150,
-                  child: CustomPaint(
-                    size: Size.infinite,
-                    painter: _GrowthLinePainter(
-                      points: points,
-                      line: care.accent,
-                      grid: cl.colors.separator,
-                      label: cl.text.caption.copyWith(
-                        color: cl.colors.inkMuted,
+              if (boy != null && whoPoints.isNotEmpty) ...[
+                ExcludeSemantics(
+                  child: WhoGrowthChart(
+                    measure: measure,
+                    boy: boy,
+                    points: whoPoints,
+                    unit: unit,
+                    axisLabel: (a) => a.value == 0
+                        ? l10n.whoBirth
+                        : a.weeks
+                        ? l10n.whoWeeks(a.value)
+                        : l10n.whoMonths(a.value),
+                  ),
+                ),
+                const SizedBox(height: ClSpace.s2),
+                Wrap(
+                  spacing: ClSpace.s3,
+                  children: [
+                    for (final (color, label) in [
+                      (cl.colors.mintSoft, l10n.whoBand),
+                      (cl.colors.mintDeep, l10n.whoMedianLine),
+                      (cl.colors.peach, widget.nickname),
+                    ])
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            label,
+                            style: cl.text.caption.copyWith(
+                              color: cl.colors.inkMuted,
+                            ),
+                          ),
+                        ],
                       ),
-                      surface: cl.colors.surface,
-                      unit: _length ? 'cm' : 'kg',
-                      dateLabel: (d) => shortDate(context, d),
+                  ],
+                ),
+              ] else
+                ExcludeSemantics(
+                  child: SizedBox(
+                    height: 150,
+                    child: CustomPaint(
+                      size: Size.infinite,
+                      painter: _GrowthLinePainter(
+                        points: points,
+                        line: care.accent,
+                        grid: cl.colors.separator,
+                        label: cl.text.caption.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                        surface: cl.colors.surface,
+                        unit: unit,
+                        dateLabel: (d) => shortDate(context, d),
+                      ),
                     ),
+                  ),
+                ),
+              const SizedBox(height: ClSpace.s3),
+              ClPressable(
+                onPressed: () =>
+                    GrowthStandardsScreen.open(context, length: _length),
+                pressedOpacity: ClPressable.surfaceOpacity,
+                semanticLabel: l10n.whoOpen,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: ClSpace.s3,
+                    vertical: ClSpace.s3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: cl.colors.mintSoft,
+                    borderRadius: BorderRadius.circular(ClRadius.control),
+                  ),
+                  child: Row(
+                    children: [
+                      ClIcon(
+                        ClIcons.ruler,
+                        size: 18,
+                        color: cl.colors.mintText,
+                      ),
+                      const SizedBox(width: ClSpace.s2),
+                      Expanded(
+                        child: Text(
+                          l10n.whoOpen,
+                          style: cl.text.label.copyWith(
+                            color: cl.colors.mintText,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      ClIcon(
+                        ClIcons.chevronRight,
+                        size: 18,
+                        color: cl.colors.mintText,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -1499,62 +1711,6 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
           ),
         ],
       ],
-    );
-  }
-}
-
-class _MiniToggle extends StatelessWidget {
-  const _MiniToggle({
-    required this.options,
-    required this.selected,
-    required this.onChanged,
-  });
-  final List<String> options;
-  final int selected;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final cl = context.cl;
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: cl.colors.surface2,
-        borderRadius: BorderRadius.circular(ClRadius.pill),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (final (i, o) in options.indexed)
-            ClPressable(
-              onPressed: () => onChanged(i),
-              selected: i == selected,
-              semanticLabel: o,
-              minSize: const Size(44, 32),
-              child: AnimatedContainer(
-                duration: context.motion(ClMotion.quick),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: ClSpace.s3,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: i == selected ? cl.colors.surface : null,
-                  borderRadius: BorderRadius.circular(ClRadius.pill),
-                  boxShadow: i == selected ? cl.shadows.card : null,
-                ),
-                child: Text(
-                  o,
-                  style: cl.text.caption.copyWith(
-                    fontWeight: i == selected
-                        ? FontWeight.w600
-                        : FontWeight.w400,
-                    color: i == selected ? cl.colors.ink : cl.colors.inkMuted,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

@@ -5509,7 +5509,7 @@ class AppLocalizationsVi extends AppLocalizations {
     int breasts,
     int minutes,
   ) {
-    return '$day · $bottles bình $ml ml · $breasts mẹ $minutes′';
+    return '$day · $bottles bình $ml ml · $breasts mẹ ${minutes}p';
   }
 
   @override
@@ -5570,4 +5570,34 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get whoStandardsTitle => 'Tiêu chuẩn tăng trưởng';
+
+  @override
+  String whoLowerEdge(String value) {
+    return 'Ngưỡng dưới $value';
+  }
+
+  @override
+  String whoUpperEdge(String value) {
+    return 'Ngưỡng trên $value';
+  }
+
+  @override
+  String whoBelowWeightNote(String name) {
+    return 'Cân nặng của $name đang thấp hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.';
+  }
+
+  @override
+  String whoBelowLengthNote(String name) {
+    return 'Chiều dài của $name đang thấp hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.';
+  }
+
+  @override
+  String whoAboveWeightNote(String name) {
+    return 'Cân nặng của $name đang cao hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.';
+  }
+
+  @override
+  String whoAboveLengthNote(String name) {
+    return 'Chiều dài của $name đang cao hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.';
+  }
 }

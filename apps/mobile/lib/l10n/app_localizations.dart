@@ -9202,7 +9202,7 @@ abstract class AppLocalizations {
   /// 20g selected-day callout.
   ///
   /// In vi, this message translates to:
-  /// **'{day} · {bottles} bình {ml} ml · {breasts} mẹ {minutes}′'**
+  /// **'{day} · {bottles} bình {ml} ml · {breasts} mẹ {minutes}p'**
   String feedsDayTip(String day, int bottles, int ml, int breasts, int minutes);
 
   /// 20g average line.
@@ -9294,6 +9294,42 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tiêu chuẩn tăng trưởng'**
   String get whoStandardsTitle;
+
+  /// 20d pill below the band.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngưỡng dưới {value}'**
+  String whoLowerEdge(String value);
+
+  /// 20d pill above the band.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngưỡng trên {value}'**
+  String whoUpperEdge(String value);
+
+  /// 20d note (347:935).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng của {name} đang thấp hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.'**
+  String whoBelowWeightNote(String name);
+
+  /// 20d note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài của {name} đang thấp hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.'**
+  String whoBelowLengthNote(String name);
+
+  /// 20d note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng của {name} đang cao hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.'**
+  String whoAboveWeightNote(String name);
+
+  /// 20d note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài của {name} đang cao hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.'**
+  String whoAboveLengthNote(String name);
 }
 
 class _AppLocalizationsDelegate
