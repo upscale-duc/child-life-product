@@ -41,12 +41,13 @@ const deployPkg = {
   dependencies: Object.fromEntries(external.map((name) => [name, pkg.dependencies[name]])),
 };
 await writeFile(join(out, 'package.json'), `${JSON.stringify(deployPkg, null, 2)}\n`);
-// Non-secret Functions params (D-020). Credentials are Secret Manager secrets, never here.
+// Non-secret Functions params (D-054). Credentials are Secret Manager secrets, never here.
 await writeFile(
   join(out, '.env'),
+  // MAIL_FROM / MAIL_REPLY_TO: Resend sends as hello@childlife.app; replies reach the GoDaddy mailbox.
   // SUPPORT_INBOX: where storage requests and help tickets are announced to staff (S11).
   // OPENAI_MODEL: the story model behind the adapter (D-003, S12); the key is a secret.
-  'SES_REGION=ap-southeast-1\nMAIL_FROM=Child Life <hello@childlife.app>\nSUPPORT_INBOX=support@childlife.app\nOPENAI_MODEL=gpt-4.1-mini\n',
+  'MAIL_FROM=Child Life <hello@childlife.app>\nMAIL_REPLY_TO=hello@childlife.app\nSUPPORT_INBOX=support@childlife.app\nOPENAI_MODEL=gpt-4.1-mini\n',
 );
 // The Firebase CLI loads firebase-functions from the source dir to discover triggers, and Cloud Build
 // installs from the generated lockfile, so both see exactly the pinned runtime versions.
