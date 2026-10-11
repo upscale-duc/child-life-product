@@ -938,6 +938,7 @@
   "a11yPause": "Pause video",
   "viewerSeek": "Video position",
   "viewerToggleChrome": "show or hide controls",
+  "viewerThumb": "Item {index} of {count}",
   "shareTitle": "Share with the family?",
   "sharePrivatePhotos": "{count, plural, =1{1 private photo} other{{count} private photos}}",
   "sharePrivateItems": "{count, plural, =1{1 private item} other{{count} private items}}",
@@ -1482,5 +1483,11 @@
   "glanceUploadFailedBody": "Open Child Life to try again.",
   "glanceUploadWifiOne": "1 video is waiting for Wi‑Fi",
   "glanceUploadWifi": "{n} videos are waiting for Wi‑Fi",
-  "glanceUploadWifiBody": "Photos are still uploading. Videos will upload on Wi‑Fi."
+  "glanceUploadWifiBody": "Photos are still uploading. Videos will upload on Wi‑Fi.",
+  "meLanguage": "Language",
+  "meLanguageDevice": "Same as phone",
+  "meLanguageDeviceNow": "Now {name}",
+  "meLanguageVi": "Tiếng Việt",
+  "meLanguageEn": "English",
+  "meLanguageHint": "Changes the whole app, widgets and notices on this phone right away."
 }

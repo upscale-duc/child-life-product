@@ -5089,6 +5089,14 @@
   "@viewerToggleChrome": {
     "description": "10f tap hint on the photo or video (accessibility)."
   },
+  "viewerThumb": "Mục {index} trên {count}",
+  "@viewerThumb": {
+    "description": "10f thumbnail strip: one thumbnail (accessibility).",
+    "placeholders": {
+      "index": {"type": "int"},
+      "count": {"type": "int"}
+    }
+  },
   "shareTitle": "Chia sẻ với gia đình?",
   "@shareTitle": {
     "description": "10o title."
@@ -8096,5 +8104,34 @@
   "glanceUploadWifiBody": "Ảnh vẫn đang tải. Video sẽ tự tải khi có Wi‑Fi.",
   "@glanceUploadWifiBody": {
     "description": "Notice body (10j)."
+  },
+  "meLanguage": "Ngôn ngữ",
+  "@meLanguage": {
+    "description": "Tôi row and sheet title (G-081)."
+  },
+  "meLanguageDevice": "Theo máy",
+  "@meLanguageDevice": {
+    "description": "Follow the phone language."
+  },
+  "meLanguageDeviceNow": "Đang dùng {name}",
+  "@meLanguageDeviceNow": {
+    "description": "Subtitle: the language the phone gives.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "meLanguageVi": "Tiếng Việt",
+  "@meLanguageVi": {
+    "description": "Endonym, same in every language."
+  },
+  "meLanguageEn": "English",
+  "@meLanguageEn": {
+    "description": "Endonym, same in every language."
+  },
+  "meLanguageHint": "Đổi ngay cho cả app, widget và thông báo trên máy này.",
+  "@meLanguageHint": {
+    "description": "Sheet footnote."
   }
 }

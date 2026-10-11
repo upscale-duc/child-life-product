@@ -1,21 +1,46 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/appearance/appearance_providers.dart';
+
 /// Languages shipped in V1 (D-012). Vietnamese is the source language and the fallback.
 const supportedLocales = [Locale('vi'), Locale('en')];
 const fallbackLocale = Locale('vi');
 
-/// In-app language override; `null` follows the device. Persisted per account in a later slice
-/// (Me → language row, design gap G-081).
+const _kLocale = 'app.locale';
+
+/// In-app language override (D-012, Tôi → Ngôn ngữ, G-081); `null` follows the device. Kept on
+/// this device like Giao diện (P-061). Service mail and pushes follow it too, since they use the
+/// app's current language.
 final localeOverrideProvider = NotifierProvider<LocaleOverride, Locale?>(
   LocaleOverride.new,
 );
 
 class LocaleOverride extends Notifier<Locale?> {
   @override
-  Locale? build() => null;
+  Locale? build() {
+    try {
+      final code = ref.read(sharedPreferencesProvider).getString(_kLocale);
+      return supportedLocales.where((l) => l.languageCode == code).firstOrNull;
+    } on StateError {
+      // No preferences (some tests): follow the device.
+      return null;
+    }
+  }
 
-  void set(Locale? locale) => state = locale;
+  void set(Locale? locale) {
+    state = locale;
+    try {
+      final prefs = ref.read(sharedPreferencesProvider);
+      if (locale == null) {
+        prefs.remove(_kLocale);
+      } else {
+        prefs.setString(_kLocale, locale.languageCode);
+      }
+    } on StateError {
+      // Not persisted without preferences.
+    }
+  }
 }
 
 /// Picks the first device language we support, otherwise Vietnamese.

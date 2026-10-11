@@ -89,7 +89,10 @@ enum GlanceActions {
     let write = recordWrite(
       s, babyId: babyId, uid: uid, author: a, id: id, type: "bottle", occurredAt: now, endedAt: nil,
       data: ["amountMl": amount.map(FSValue.int) ?? .null, "milk": .string(milk)], now: now)
-    return finish(await GlanceFirestore.commit(s, [write]))
+    let outcome = await GlanceFirestore.commit(s, [write])
+    // Refused (no right to log any more, say): it is not on the widget either.
+    if outcome == .rejected { revert(id) }
+    return finish(outcome)
   }
 
   /// Small Diaper "Ướt / Bẩn / Cả hai", Medium "Thay tã" (= Ướt).
@@ -109,16 +112,19 @@ enum GlanceActions {
     let write = recordWrite(
       s, babyId: babyId, uid: uid, author: a, id: id, type: "diaper", occurredAt: now, endedAt: nil,
       data: ["kind": .string(kind)], now: now)
-    return finish(await GlanceFirestore.commit(s, [write]))
+    let outcome = await GlanceFirestore.commit(s, [write])
+    // Refused (no right to log any more, say): it is not on the widget either.
+    if outcome == .rejected { revert(id) }
+    return finish(outcome)
   }
 
-  /// "Hoàn tác": the soft delete the app's Undo does (validRecordUpdate).
-  static func undo(_ recordId: String) async -> Result {
-    guard let (s, babyId, uid, _) = ready() else { return .signedOut }
+  /// Takes a one-tap log back out of the widgets (Hoàn tác, or the server refused it).
+  static func revert(_ recordId: String) {
     GlanceSnapshot.update { snap in
       guard let logged = snap.logged, logged.recordId == recordId else { return }
       switch logged.type {
       case "bottle":
+        snap.bottleMlToday = max(0, snap.bottleMlToday - (snap.lastBottle?.amountMl ?? 0))
         snap.lastBottle = logged.previous
         snap.bottlesToday = max(0, snap.bottlesToday - 1)
         snap.feedsToday = max(0, snap.feedsToday - 1)
@@ -130,6 +136,12 @@ enum GlanceActions {
       snap.logged = nil
     }
     reload()
+  }
+
+  /// "Hoàn tác": the soft delete the app's Undo does (validRecordUpdate).
+  static func undo(_ recordId: String) async -> Result {
+    guard let (s, babyId, uid, _) = ready() else { return .signedOut }
+    revert(recordId)
     let write = FSWrite.patch(
       "\(GlanceFirestore.root(s))/babies/\(babyId)/records/\(recordId)",
       ["deleted": .bool(true), "deletedBy": .string(uid), "updatedBy": .string(uid)],

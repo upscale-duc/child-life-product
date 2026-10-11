@@ -5726,6 +5726,12 @@ abstract class AppLocalizations {
   /// **'hiện hoặc ẩn điều khiển'**
   String get viewerToggleChrome;
 
+  /// 10f thumbnail strip: one thumbnail (accessibility).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục {index} trên {count}'**
+  String viewerThumb(int index, int count);
+
   /// 10o title.
   ///
   /// In vi, this message translates to:
@@ -9000,6 +9006,42 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Ảnh vẫn đang tải. Video sẽ tự tải khi có Wi‑Fi.'**
   String get glanceUploadWifiBody;
+
+  /// Tôi row and sheet title (G-081).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngôn ngữ'**
+  String get meLanguage;
+
+  /// Follow the phone language.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo máy'**
+  String get meLanguageDevice;
+
+  /// Subtitle: the language the phone gives.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang dùng {name}'**
+  String meLanguageDeviceNow(String name);
+
+  /// Endonym, same in every language.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếng Việt'**
+  String get meLanguageVi;
+
+  /// Endonym, same in every language.
+  ///
+  /// In vi, this message translates to:
+  /// **'English'**
+  String get meLanguageEn;
+
+  /// Sheet footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi ngay cho cả app, widget và thông báo trên máy này.'**
+  String get meLanguageHint;
 }
 
 class _AppLocalizationsDelegate

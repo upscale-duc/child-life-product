@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/route_guard.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
+import '../../core/design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/glance_copy.dart';
 import '../auth/auth_repository.dart';
@@ -268,22 +269,24 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
       router.go(Routes.today);
       return;
     }
+    _tryPendingLog();
+  }
+
+  /// Opens the asked log once Hôm nay shows for a signed-in member. Called on route changes and
+  /// on every rebuild (session and membership arrive after the link on a cold start).
+  void _tryPendingLog() {
+    final router = _router;
     final type = _pendingLog;
-    if (type == null || uri.path != Routes.today) return;
+    if (router == null || type == null || !mounted) return;
+    if (router.routerDelegate.currentConfiguration.uri.path != Routes.today) {
+      return;
+    }
     final me = ref.read(selectedMembershipProvider);
     if (ref.read(sessionProvider) is! SessionSignedIn || me == null) return;
     _pendingLog = null;
     // Người thân only views (the widget hides "+" for them too).
     if (me.role == MemberRole.relative) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final context = router.routerDelegate.navigatorKey.currentContext;
-      if (context == null || !context.mounted) return;
-      if (type == 'sleep') {
-        unawaited(showSleepChooser(context, ref));
-      } else {
-        unawaited(openCareLog(context, CareType.values.byName(type)));
-      }
-    });
+    unawaited(_openLog(router, me.babyId, type));
   }
 
   @override
@@ -292,6 +295,30 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
       unawaited(
         ref.read(glanceChannelProvider)?.refresh().catchError((Object _) {}),
       );
+    }
+  }
+
+  /// After a cold start the palette is not settled yet (Night care follows a running sleep
+  /// timer, which is still loading); a sheet keeps the theme it opened with, so wait for it.
+  Future<void> _openLog(GoRouter router, String babyId, String type) async {
+    try {
+      await ref
+          .read(careTimerProvider((babyId, TimerType.sleep)).future)
+          .timeout(const Duration(seconds: 2));
+    } on Object {
+      // Open anyway.
+    }
+    // The palette follows the timer a frame later, then the theme cross-fades (ClMotion.gentle).
+    await WidgetsBinding.instance.endOfFrame;
+    await Future<void>.delayed(
+      ClMotion.gentle + const Duration(milliseconds: 100),
+    );
+    final context = router.routerDelegate.navigatorKey.currentContext;
+    if (!mounted || context == null || !context.mounted) return;
+    if (type == 'sleep') {
+      unawaited(showSleepChooser(context, ref));
+    } else {
+      unawaited(openCareLog(context, CareType.values.byName(type)));
     }
   }
 
@@ -321,6 +348,9 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
         ? ref.watch(selectedMembershipProvider)
         : null;
     final usable = me != null && me.canViewToday;
+    if (_pendingLog != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _tryPendingLog());
+    }
     final baby = usable ? ref.watch(babyProvider(me.babyId)).value : null;
     final records = usable
         ? ref.watch(recentRecordsProvider(me.babyId)).value

@@ -3602,6 +3602,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewerToggleChrome => 'show or hide controls';
 
   @override
+  String viewerThumb(int index, int count) {
+    return 'Item $index of $count';
+  }
+
+  @override
   String get shareTitle => 'Share with the family?';
 
   @override
@@ -5739,4 +5744,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get glanceUploadWifiBody =>
       'Photos are still uploading. Videos will upload on Wi‑Fi.';
+
+  @override
+  String get meLanguage => 'Language';
+
+  @override
+  String get meLanguageDevice => 'Same as phone';
+
+  @override
+  String meLanguageDeviceNow(String name) {
+    return 'Now $name';
+  }
+
+  @override
+  String get meLanguageVi => 'Tiếng Việt';
+
+  @override
+  String get meLanguageEn => 'English';
+
+  @override
+  String get meLanguageHint =>
+      'Changes the whole app, widgets and notices on this phone right away.';
 }

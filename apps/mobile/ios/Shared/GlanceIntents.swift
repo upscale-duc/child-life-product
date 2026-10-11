@@ -1,45 +1,9 @@
 import AppIntents
 import Foundation
 
-// Buttons on widgets and Live Activities (W5): they run without opening the app. Logs run in
-// the widget extension; timer actions are LiveActivityIntents, which iOS runs in the app's
-// process so the Live Activity can start or end with the timer.
-
-@available(iOS 17.0, *)
-struct LogBottleIntent: AppIntent {
-  static var title: LocalizedStringResource = "Log a bottle"
-  static var isDiscoverable = false
-  func perform() async throws -> some IntentResult {
-    _ = await GlanceActions.logBottle()
-    return .result()
-  }
-}
-
-@available(iOS 17.0, *)
-struct LogDiaperIntent: AppIntent {
-  static var title: LocalizedStringResource = "Log a diaper"
-  static var isDiscoverable = false
-  @Parameter(title: "Kind") var kind: String
-  init() {}
-  init(kind: String) { self.kind = kind }
-  func perform() async throws -> some IntentResult {
-    _ = await GlanceActions.logDiaper(kind)
-    return .result()
-  }
-}
-
-@available(iOS 17.0, *)
-struct UndoLogIntent: AppIntent {
-  static var title: LocalizedStringResource = "Undo"
-  static var isDiscoverable = false
-  @Parameter(title: "Record") var recordId: String
-  init() {}
-  init(recordId: String) { self.recordId = recordId }
-  func perform() async throws -> some IntentResult {
-    _ = await GlanceActions.undo(recordId)
-    return .result()
-  }
-}
+// Timer buttons on widgets and Live Activities (W5): LiveActivityIntents, which iOS runs in the
+// app's process (launching it in the background if needed) so the Live Activity can start or end
+// with the timer. The one-tap logs live in the widget extension only (ios/widget/LogIntents.swift).
 
 @available(iOS 17.0, *)
 struct StartTimerIntent: LiveActivityIntent {

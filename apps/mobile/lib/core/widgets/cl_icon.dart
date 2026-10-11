@@ -34,6 +34,9 @@ enum ClIcons {
   globe,
   heart,
   journal,
+
+  /// Tôi → Ngôn ngữ (G-081, engineering icon in the Figma line style).
+  language,
   link,
   lock,
   mail,

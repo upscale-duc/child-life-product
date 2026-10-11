@@ -3340,6 +3340,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get viewerToggleChrome => 'hiện hoặc ẩn điều khiển';
 
   @override
+  String viewerThumb(int index, int count) {
+    return 'Mục $index trên $count';
+  }
+
+  @override
   String get shareTitle => 'Chia sẻ với gia đình?';
 
   @override
@@ -5376,4 +5381,25 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get glanceUploadWifiBody =>
       'Ảnh vẫn đang tải. Video sẽ tự tải khi có Wi‑Fi.';
+
+  @override
+  String get meLanguage => 'Ngôn ngữ';
+
+  @override
+  String get meLanguageDevice => 'Theo máy';
+
+  @override
+  String meLanguageDeviceNow(String name) {
+    return 'Đang dùng $name';
+  }
+
+  @override
+  String get meLanguageVi => 'Tiếng Việt';
+
+  @override
+  String get meLanguageEn => 'English';
+
+  @override
+  String get meLanguageHint =>
+      'Đổi ngay cho cả app, widget và thông báo trên máy này.';
 }

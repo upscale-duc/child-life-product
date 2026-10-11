@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/locale.dart';
 import '../../app/route_guard.dart';
 import '../../app/session.dart';
 import '../../core/appearance/appearance.dart';
@@ -135,6 +136,17 @@ class MeScreen extends ConsumerWidget {
                 ThemePreference.dark => l10n.themeDark,
               },
               onTap: () => context.push(Routes.appearance),
+            ),
+            // G-081 (D-012): the in-app language, not drawn in Figma.
+            MeRow(
+              icon: ClIcons.language,
+              title: l10n.meLanguage,
+              value: switch (ref.watch(localeOverrideProvider)?.languageCode) {
+                'vi' => l10n.meLanguageVi,
+                'en' => l10n.meLanguageEn,
+                _ => l10n.meLanguageDevice,
+              },
+              onTap: () => showLanguageSheet(context),
             ),
           ],
         ),
@@ -451,3 +463,61 @@ class _SharedOutRow extends ConsumerWidget {
     );
   }
 }
+
+/// Tôi → Ngôn ngữ (G-081): Theo máy · Tiếng Việt · English, applied at once on this device.
+Future<void> showLanguageSheet(BuildContext context) => showClSheet<void>(
+  context: context,
+  builder: (sheet) => Consumer(
+    builder: (context, ref, _) {
+      final l10n = AppLocalizations.of(context);
+      final cl = context.cl;
+      final current = ref.watch(localeOverrideProvider)?.languageCode;
+      final device = resolveLocale(
+        WidgetsBinding.instance.platformDispatcher.locales,
+      ).languageCode;
+      void pick(String? code) {
+        ref
+            .read(localeOverrideProvider.notifier)
+            .set(code == null ? null : Locale(code));
+        Navigator.of(sheet).pop();
+      }
+
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.meLanguage),
+          ClCardGroup(
+            children: [
+              ClOptionRow(
+                title: l10n.meLanguageDevice,
+                subtitle: l10n.meLanguageDeviceNow(
+                  device == 'en' ? l10n.meLanguageEn : l10n.meLanguageVi,
+                ),
+                selected: current == null,
+                onTap: () => pick(null),
+              ),
+              ClOptionRow(
+                title: l10n.meLanguageVi,
+                selected: current == 'vi',
+                onTap: () => pick('vi'),
+              ),
+              ClOptionRow(
+                title: l10n.meLanguageEn,
+                selected: current == 'en',
+                onTap: () => pick('en'),
+              ),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s3),
+          Text(
+            l10n.meLanguageHint,
+            textAlign: TextAlign.center,
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
+          const SizedBox(height: ClSpace.s4),
+        ],
+      );
+    },
+  ),
+);

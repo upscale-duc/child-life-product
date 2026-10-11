@@ -69,11 +69,15 @@ enum GlanceFirestore {
     try? JSONSerialization.data(withJSONObject: ["writes": writes.map(\.json)])
   }
 
-  /// Sends one commit. Offline → queued for later; a create that already exists counts as done.
+  /// Sends one commit. Offline, or no usable session here (the app refreshes it when opened) →
+  /// kept for later and shown as "Chưa đồng bộ"; a create that already exists counts as done.
   static func commit(_ s: GlanceSnapshot, _ writes: [FSWrite], queueIfOffline: Bool = true) async -> Outcome {
     guard let body = commitBody(s, writes) else { return .rejected }
     let outcome = await send(s, body)
-    if outcome == .offline && queueIfOffline { GlancePending.add(body) }
+    if (outcome == .offline || outcome == .signedOut) && queueIfOffline {
+      GlancePending.add(body)
+      GlanceSnapshot.update { $0.pending = GlancePending.all().count }
+    }
     return outcome
   }
 
@@ -108,7 +112,7 @@ enum GlanceFirestore {
     for body in GlancePending.all() {
       if !left.isEmpty { left.append(body); continue }
       let outcome = await send(s, body)
-      if outcome == .offline { left.append(body) }
+      if outcome == .offline || outcome == .signedOut { left.append(body) }
     }
     GlancePending.replace(left)
   }
