@@ -376,6 +376,7 @@ class _TrackersScreenState extends ConsumerState<TrackersScreen> {
           label: count == 0 ? l10n.trackersPickOne : l10n.trackersDone(count),
           expand: true,
           onPressed: count == 0 || _busy ? null : _create,
+          loading: _busy,
         ),
       ],
     );

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fc_native_video_thumbnail/fc_native_video_thumbnail.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -145,6 +146,7 @@ class QueueBatch {
     required this.createdAt,
     this.sessionCreated = false,
     this.dismissed = false,
+    this.blocked,
   });
 
   final String batchId;
@@ -157,6 +159,13 @@ class QueueBatch {
   final DateTime createdAt;
   bool sessionCreated;
   bool dismissed;
+
+  /// Why the server refused the upload session: `uploads-paused` (A11 kill switch, retried by
+  /// itself) or a refusal shown as "Chưa tải lên được" with "Thử lại" (`not-allowed`, ...).
+  String? blocked;
+
+  bool get paused => !sessionCreated && blocked == 'uploads-paused';
+  bool get refused => !sessionCreated && blocked != null && !paused;
 
   bool get notifyFamily =>
       request['notifyFamily'] == true && request['audience'] == 'family';
@@ -171,6 +180,7 @@ class QueueBatch {
     'createdAt': createdAt.toUtc().toIso8601String(),
     'sessionCreated': sessionCreated,
     'dismissed': dismissed,
+    'blocked': blocked,
   };
 
   static QueueBatch fromJson(Map<String, Object?> j) => QueueBatch(
@@ -185,6 +195,7 @@ class QueueBatch {
     createdAt: DateTime.parse(j['createdAt']! as String),
     sessionCreated: j['sessionCreated'] == true,
     dismissed: j['dismissed'] == true,
+    blocked: j['blocked'] as String?,
   );
 }
 
@@ -451,6 +462,7 @@ class UploadQueue extends Notifier<QueueView> {
   var _loaded = false;
   DateTime? _lastQuotaTry;
   String? _currentPath;
+  Timer? _sessionRetry;
 
   @override
   QueueView build() {
@@ -465,6 +477,7 @@ class UploadQueue extends Notifier<QueueView> {
       }
       unawaited(_kick());
     });
+    ref.onDispose(() => _sessionRetry?.cancel());
     unawaited(_load());
     return const QueueView();
   }
@@ -548,8 +561,31 @@ class UploadQueue extends Notifier<QueueView> {
     unawaited(_kick());
   }
 
+  static const _transientCodes = {
+    'unavailable',
+    'internal',
+    'unknown',
+    'deadline-exceeded',
+    'resource-exhausted',
+    'aborted',
+    'unauthenticated',
+  };
+
+  void _retrySessionsLater(Duration after) {
+    if (_sessionRetry?.isActive ?? false) return;
+    _sessionRetry = Timer(after, () {
+      if (ref.mounted) unawaited(_kick());
+    });
+  }
+
   /// "Thử lại" / "Thử lại tất cả (N)".
   Future<void> retry([String? mediaId]) async {
+    for (final b in _batches) {
+      if (b.refused &&
+          b.items.any((i) => mediaId == null || i.mediaId == mediaId)) {
+        b.blocked = null;
+      }
+    }
     for (final i in _items) {
       if ((mediaId == null || i.mediaId == mediaId) &&
           i.state == QueueState.failed) {
@@ -623,6 +659,7 @@ class UploadQueue extends Notifier<QueueView> {
           'items': [for (final i in live) i.requestJson()],
         });
         b.sessionCreated = true;
+        b.blocked = null;
         for (final i in live) {
           if (r.reserved.contains(i.mediaId)) {
             i.state = QueueState.queued;
@@ -630,8 +667,24 @@ class UploadQueue extends Notifier<QueueView> {
             i.state = QueueState.waitingQuota;
           }
         }
+      } on FirebaseFunctionsException catch (e) {
+        final details = e.details;
+        final reason = details is Map ? details['reason'] as String? : null;
+        if (_transientCodes.contains(e.code)) {
+          _retrySessionsLater(const Duration(seconds: 30));
+        } else if (reason == 'uploads-paused') {
+          // A11: uploads are switched off; the items wait and go on by themselves.
+          b.blocked = reason;
+          _retrySessionsLater(const Duration(minutes: 1));
+        } else {
+          b.blocked = reason ?? e.code;
+          for (final i in live) {
+            i.state = QueueState.failed;
+          }
+        }
       } on Object {
-        // Offline or the server is unhappy: try again on the next kick.
+        // Offline or no answer: try again shortly (and on the next network change).
+        _retrySessionsLater(const Duration(seconds: 30));
       }
     }
     // A note has nothing to upload once its memory exists.

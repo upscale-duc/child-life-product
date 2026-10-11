@@ -571,6 +571,10 @@ class UploadPill extends ConsumerWidget {
       subtitle = l10n.upFailedHint;
       tone = cl.colors.errorSoft;
       ink = cl.colors.error;
+    } else if (batches.any((b) => b.paused)) {
+      title = l10n.upUploadsPaused;
+      subtitle = l10n.upUploadsPausedHint;
+      tone = cl.colors.sunshineSoft;
     } else if (view.paused) {
       title = l10n.upPausedByYou;
       subtitle = l10n.upPausedByYouHint;

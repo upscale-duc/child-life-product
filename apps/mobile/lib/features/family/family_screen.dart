@@ -503,9 +503,8 @@ class _MemberSheetState extends ConsumerState<_MemberSheet> {
           label: l10n.memberRemove(member.displayName),
           style: ClButtonStyle.destructive,
           expand: true,
-          onPressed: _busy
-              ? null
-              : () => _confirmRemove(context, member, nickname),
+          onPressed: () => _confirmRemove(context, member, nickname),
+          loading: _busy,
         ),
         const SizedBox(height: ClSpace.s2),
         Text(

@@ -1179,7 +1179,8 @@ class _AlbumNameSheetState extends ConsumerState<_AlbumNameSheet> {
                 ClButton(
                   label: renaming ? l10n.albSaveName : l10n.albCreate,
                   expand: true,
-                  onPressed: _busy ? null : _save,
+                  onPressed: _save,
+                  loading: _busy,
                 ),
               ],
             ),

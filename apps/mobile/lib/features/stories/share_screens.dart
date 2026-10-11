@@ -870,7 +870,11 @@ class _LinkScreenState extends ConsumerState<LinkScreen> {
                 allowDownload: _download,
                 passcode: _passcode,
               );
-      setState(() => _link = link);
+      // The call is done: the spinner stops before the passcode and share sheets open.
+      setState(() {
+        _link = link;
+        _busy = false;
+      });
       // The passcode is shown once, before anything else (P-096).
       if (link.passcode != null && mounted) await _showPasscode(link.passcode!);
       unawaited(
@@ -1047,7 +1051,8 @@ class _LinkScreenState extends ConsumerState<LinkScreen> {
               child: ClButton(
                 label: l10n.lkCopyShare,
                 expand: true,
-                onPressed: _busy ? null : _create,
+                onPressed: _create,
+                loading: _busy,
               ),
             ),
           ],

@@ -299,6 +299,7 @@ class _SaveAccountEmailScreenState
           label: create ? l10n.saveAccountTitle : l10n.emailSignInButton,
           expand: true,
           onPressed: _canSubmit ? _submit : null,
+          loading: _busy,
         ),
       ],
     );

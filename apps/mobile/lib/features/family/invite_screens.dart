@@ -217,6 +217,7 @@ class _InviteRoleScreenState extends ConsumerState<InviteRoleScreen> {
           label: l10n.inviteNext,
           expand: true,
           onPressed: _complete && !_busy ? _next : null,
+          loading: _busy,
         ),
       ],
     );
@@ -724,6 +725,7 @@ class _InviteSendScreenState extends ConsumerState<InviteSendScreen> {
             label: l10n.inviteEmailSend,
             expand: true,
             onPressed: _busy || _email.text.trim().isEmpty ? null : _sendEmail,
+            loading: _busy,
           )
         else
           Builder(

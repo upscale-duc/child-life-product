@@ -852,7 +852,8 @@ class _StoryEditorScreenState extends ConsumerState<StoryEditorScreen> {
                       child: ClButton(
                         label: l10n.sryPreviewSave,
                         expand: true,
-                        onPressed: _busy ? null : _preview,
+                        onPressed: _preview,
+                        loading: _busy,
                       ),
                     ),
                   ],
@@ -1576,7 +1577,8 @@ class _StoryPreviewScreenState extends ConsumerState<StoryPreviewScreen> {
                   ClButton(
                     label: l10n.srySaveTitle,
                     expand: true,
-                    onPressed: _busy ? null : _save,
+                    onPressed: _save,
+                    loading: _busy,
                   ),
                   const SizedBox(height: ClSpace.s2),
                   Text(

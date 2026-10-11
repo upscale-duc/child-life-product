@@ -4914,4 +4914,55 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get soEmpty => 'Chưa chia sẻ câu chuyện nào ra ngoài.';
+
+  @override
+  String get shareExtTitle => 'Thêm vào Kỷ niệm';
+
+  @override
+  String get shareExtAdd => 'Thêm';
+
+  @override
+  String get shareExtBaby => 'Bé';
+
+  @override
+  String get shareExtNotifyHint => 'Gửi 1 thông báo khi tải xong';
+
+  @override
+  String shareExtPhotos(int count) {
+    return '$count ảnh';
+  }
+
+  @override
+  String shareExtVideos(int count) {
+    return '$count video';
+  }
+
+  @override
+  String get shareExtFootnote => 'Ảnh sẽ tải lên khi bạn mở Child Life.';
+
+  @override
+  String get shareExtSignedOut =>
+      'Mở Child Life và đăng nhập để thêm ảnh vào Kỷ niệm.';
+
+  @override
+  String get shareExtNoBaby =>
+      'Chỉ ba mẹ (Cùng nuôi) thêm được kỷ niệm cho bé.';
+
+  @override
+  String get shareExtNothing => 'Không có ảnh hay video nào để thêm.';
+
+  @override
+  String get shareExtClose => 'Đóng';
+
+  @override
+  String get upUploadsPaused => 'Tải ảnh, video đang tạm dừng';
+
+  @override
+  String get upUploadsPausedHint => 'Ảnh, video sẽ tự tải tiếp khi mở lại.';
+
+  @override
+  String get rowUploadsPaused => 'Đang tạm dừng tải lên';
+
+  @override
+  String get rowRejected => 'Chưa tải lên được';
 }

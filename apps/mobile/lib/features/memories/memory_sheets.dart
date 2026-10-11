@@ -453,7 +453,8 @@ class _ComposeSheetState extends ConsumerState<ComposeSheet> {
       ClButton(
         label: _note ? l10n.composeSaveNote : l10n.composeUpload(picked.length),
         expand: true,
-        onPressed: _busy ? null : _submit,
+        onPressed: _submit,
+        loading: _busy,
       ),
       if (!_note) ...[
         const SizedBox(height: ClSpace.s2),
@@ -1052,7 +1053,8 @@ class _CreateMilestoneState extends ConsumerState<_CreateMilestone> {
       ClButton(
         label: l10n.msCreateTag,
         expand: true,
-        onPressed: _busy ? null : _save,
+        onPressed: _save,
+        loading: _busy,
       ),
     ]);
   }
@@ -1184,7 +1186,15 @@ class QueueSheet extends ConsumerWidget {
             shrinkWrap: true,
             padding: EdgeInsets.zero,
             children: [
-              for (final i in items) _QueueRow(item: i, locale: ctx.locale),
+              for (final b in batches)
+                for (final i in b.items)
+                  if (i.state != QueueState.cancelled)
+                    _QueueRow(
+                      item: i,
+                      locale: ctx.locale,
+                      paused: b.paused,
+                      refused: b.refused,
+                    ),
             ],
           ),
         ),
@@ -1233,9 +1243,18 @@ class QueueSheet extends ConsumerWidget {
 }
 
 class _QueueRow extends ConsumerWidget {
-  const _QueueRow({required this.item, required this.locale});
+  const _QueueRow({
+    required this.item,
+    required this.locale,
+    this.paused = false,
+    this.refused = false,
+  });
   final QueueItem item;
   final String locale;
+
+  /// The session was refused: uploads switched off (waits) or not allowed ("Thử lại").
+  final bool paused;
+  final bool refused;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1256,12 +1275,17 @@ class _QueueRow extends ConsumerWidget {
         l10n.rowWaitingWifi(byteSize(locale, i.bytes)),
         cl.colors.inkMuted,
       ),
+      QueueState.failed when refused => (l10n.rowRejected, cl.colors.error),
       QueueState.failed => (l10n.rowFailed, cl.colors.error),
       QueueState.unreadable => (l10n.rowUnreadable, cl.colors.error),
       QueueState.uploaded => (l10n.rowDone, cl.colors.inkMuted),
       QueueState.paused => (l10n.rowPaused, cl.colors.inkMuted),
       QueueState.waitingQuota => (l10n.rowWaitingQuota, cl.colors.error),
       QueueState.cancelled => (l10n.rowCancelled, cl.colors.inkMuted),
+      QueueState.pendingSession when paused => (
+        l10n.rowUploadsPaused,
+        cl.colors.inkMuted,
+      ),
       QueueState.pendingSession => (l10n.rowPreparing, cl.colors.inkMuted),
       QueueState.queued => (l10n.rowQueued, cl.colors.inkMuted),
     };

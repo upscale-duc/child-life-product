@@ -226,11 +226,15 @@ class FakeMemoryRepository extends Fake implements MemoryRepository {
   /// Reserve only this many items per session; the rest wait for quota (R-121).
   int? reserveOnly;
 
+  /// Thrown by createSession instead of answering (kill switch, refusals, outages).
+  Object? refuseWith;
+
   @override
   Future<({List<String> reserved, List<String> waitingQuota})> createSession(
     Map<String, Object?> request,
   ) async {
     sessions.add(request);
+    if (refuseWith != null) throw refuseWith!;
     final ids = [
       for (final i in request['items']! as List)
         (i as Map)['mediaId'] as String,

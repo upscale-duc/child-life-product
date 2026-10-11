@@ -7364,5 +7364,75 @@
   "soEmpty": "Chưa chia sẻ câu chuyện nào ra ngoài.",
   "@soEmpty": {
     "description": "14m empty."
+  },
+  "shareExtTitle": "Thêm vào Kỷ niệm",
+  "@shareExtTitle": {
+    "description": "10k share extension title."
+  },
+  "shareExtAdd": "Thêm",
+  "@shareExtAdd": {
+    "description": "10k confirm."
+  },
+  "shareExtBaby": "Bé",
+  "@shareExtBaby": {
+    "description": "10k baby row."
+  },
+  "shareExtNotifyHint": "Gửi 1 thông báo khi tải xong",
+  "@shareExtNotifyHint": {
+    "description": "10k notify subtitle."
+  },
+  "shareExtPhotos": "{count} ảnh",
+  "@shareExtPhotos": {
+    "description": "10k item count: photos.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareExtVideos": "{count} video",
+  "@shareExtVideos": {
+    "description": "10k item count: videos.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareExtFootnote": "Ảnh sẽ tải lên khi bạn mở Child Life.",
+  "@shareExtFootnote": {
+    "description": "10k footnote (D-046: uploads start when the app opens)."
+  },
+  "shareExtSignedOut": "Mở Child Life và đăng nhập để thêm ảnh vào Kỷ niệm.",
+  "@shareExtSignedOut": {
+    "description": "10k when signed out."
+  },
+  "shareExtNoBaby": "Chỉ ba mẹ (Cùng nuôi) thêm được kỷ niệm cho bé.",
+  "@shareExtNoBaby": {
+    "description": "10k when the account cannot add memories."
+  },
+  "shareExtNothing": "Không có ảnh hay video nào để thêm.",
+  "@shareExtNothing": {
+    "description": "10k when nothing usable was shared."
+  },
+  "shareExtClose": "Đóng",
+  "@shareExtClose": {
+    "description": "10k close."
+  },
+  "upUploadsPaused": "Tải ảnh, video đang tạm dừng",
+  "@upUploadsPaused": {
+    "description": "UploadPill when uploads are switched off (A11 kill switch)."
+  },
+  "upUploadsPausedHint": "Ảnh, video sẽ tự tải tiếp khi mở lại.",
+  "@upUploadsPausedHint": {
+    "description": "UploadPill hint while uploads are paused."
+  },
+  "rowUploadsPaused": "Đang tạm dừng tải lên",
+  "@rowUploadsPaused": {
+    "description": "10i row while uploads are switched off."
+  },
+  "rowRejected": "Chưa tải lên được",
+  "@rowRejected": {
+    "description": "10i row when the server refused the upload (Thử lại)."
   }
 }

@@ -551,7 +551,8 @@ class _BabyEditScreenState extends ConsumerState<BabyEditScreen> {
         ClButton(
           label: l10n.bpSave,
           expand: true,
-          onPressed: _busy ? null : _save,
+          onPressed: _save,
+          loading: _busy,
         ),
       ],
     );
@@ -666,6 +667,7 @@ class _DeleteBabySheetState extends ConsumerState<_DeleteBabySheet> {
           style: ClButtonStyle.destructive,
           expand: true,
           onPressed: _busy || !_matches ? null : _delete,
+          loading: _busy,
         ),
         const SizedBox(height: ClSpace.s2),
         ClButton(

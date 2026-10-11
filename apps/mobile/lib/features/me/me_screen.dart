@@ -354,7 +354,8 @@ class _OwnershipOfferCardState extends ConsumerState<OwnershipOfferCard> {
             child: ClButton(
               label: l10n.acOfferAccept,
               expand: true,
-              onPressed: _busy ? null : () => _answer('accept'),
+              onPressed: () => _answer('accept'),
+              loading: _busy,
             ),
           ),
           const SizedBox(width: ClSpace.s2),

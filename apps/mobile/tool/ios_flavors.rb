@@ -152,6 +152,7 @@ flutter_group = project.main_group['Flutter']
         config.base_configuration_reference = ref
         config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = info[:bundle_id]
         config.build_settings['FLAVOR_APP_NAME'] = info[:name]
+        config.build_settings['CL_APP_GROUP'] = info[:app_group]
         config.build_settings['ASSETCATALOG_COMPILER_APPICON_NAME'] = info[:icon]
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = DEPLOYMENT_TARGET
         # Signing on the team; push (aps-environment) comes from the entitlements.
@@ -183,6 +184,8 @@ EXTENSIONS.each do |name, ext|
       config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle_id]}.#{ext[:suffix]}"
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = ext[:deployment]
       config.build_settings['CODE_SIGN_ENTITLEMENTS'] = "#{ext[:dir]}/#{ext[:dir]}-#{flavor}.entitlements"
+      config.build_settings['CL_APP_GROUP'] = info[:app_group]
+      config.build_settings['FLAVOR_APP_NAME'] = info[:name]
       sign(config, info[:extension_profiles][name], info[:team])
     end
   end

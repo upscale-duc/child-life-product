@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:child_life/core/appearance/appearance_providers.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/memory_repository.dart';
 import 'package:child_life/features/memories/upload_queue.dart';
@@ -255,6 +256,80 @@ void main() {
       await pumpEventQueue();
       expect(items().single.state, QueueState.uploaded);
       expect(File('/tmp/a.jpg').path, isNotEmpty);
+    },
+  );
+
+  test(
+    'A11 kill switch: the batch waits as "tạm dừng" and goes on once uploads reopen',
+    () async {
+      repo.refuseWith = FirebaseFunctionsException(
+        code: 'failed-precondition',
+        message: 'uploads-paused',
+        details: {'reason': 'uploads-paused'},
+      );
+      container = await start();
+      await container
+          .read(uploadQueueProvider.notifier)
+          .enqueue(
+            babyId: teddyId,
+            request: request(),
+            picked: [pickedPhoto('a.HEIC')],
+          );
+      await pumpEventQueue();
+      final batch = container.read(uploadQueueProvider).batches.single;
+      expect(batch.paused, isTrue);
+      expect(batch.refused, isFalse);
+      expect(items().single.state, QueueState.pendingSession);
+      expect(transport.uploaded, isEmpty);
+
+      // Uploads reopen; the next kick (here a network change) creates the session.
+      repo.refuseWith = null;
+      network.add(NetworkKind.cellular);
+      await pumpEventQueue();
+      expect(
+        container.read(uploadQueueProvider).batches.single.paused,
+        isFalse,
+      );
+      expect(items().single.state, QueueState.uploaded);
+    },
+  );
+
+  test(
+    'a refused session is shown as failed with "Thử lại", never silently pending',
+    () async {
+      repo.refuseWith = FirebaseFunctionsException(
+        code: 'permission-denied',
+        message: 'not-allowed',
+        details: {'reason': 'not-allowed'},
+      );
+      container = await start();
+      final queue = container.read(uploadQueueProvider.notifier);
+      await queue.enqueue(
+        babyId: teddyId,
+        request: request(),
+        picked: [pickedPhoto('a.HEIC'), pickedPhoto('b.HEIC')],
+      );
+      await pumpEventQueue();
+      expect(
+        container.read(uploadQueueProvider).batches.single.refused,
+        isTrue,
+      );
+      expect(items().map((i) => i.state), [
+        QueueState.failed,
+        QueueState.failed,
+      ]);
+
+      repo.refuseWith = null;
+      await queue.retry();
+      await pumpEventQueue();
+      expect(
+        container.read(uploadQueueProvider).batches.single.blocked,
+        isNull,
+      );
+      expect(items().map((i) => i.state), [
+        QueueState.uploaded,
+        QueueState.uploaded,
+      ]);
     },
   );
 }

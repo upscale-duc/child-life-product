@@ -585,7 +585,8 @@ class _LibraryPickerState extends State<LibraryPicker> {
                     ClButton(
                       label: l10n.pickAdd(_selected.length),
                       expand: true,
-                      onPressed: _busy ? null : _done,
+                      onPressed: _done,
+                      loading: _busy,
                     ),
                   ],
                 ),

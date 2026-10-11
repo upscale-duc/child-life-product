@@ -170,6 +170,7 @@ class _EnterCodeScreenState extends ConsumerState<EnterCodeScreen> {
           onPressed: complete && !_busy
               ? () => _lookup(InviteLookup.code(_code.text))
               : null,
+          loading: _busy,
         ),
         ClButton(
           label: l10n.joinScan,
@@ -502,7 +503,8 @@ class _JoinHowSheetState extends ConsumerState<_JoinHowSheet> {
         ClButton(
           label: l10n.joinNow,
           expand: true,
-          onPressed: _busy ? null : () => _enter((r) => r.signInAnonymously()),
+          onPressed: () => _enter((r) => r.signInAnonymously()),
+          loading: _busy,
         ),
         const SizedBox(height: ClSpace.s3),
         Row(
@@ -677,6 +679,7 @@ class _ConfirmJoinScreenState extends ConsumerState<ConfirmJoinScreen> {
           label: l10n.joinConfirmGo(preview.babyNickname),
           expand: true,
           onPressed: _complete && !_busy ? _accept : null,
+          loading: _busy,
         ),
       ],
     );

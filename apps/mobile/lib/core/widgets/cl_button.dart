@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../design/cl_theme.dart';
 import '../design/tokens.g.dart';
@@ -25,12 +25,17 @@ class ClButton extends StatelessWidget {
     this.icon,
     this.leading,
     this.expand = false,
+    this.loading = false,
     super.key,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final ClButtonStyle style;
+
+  /// Submitting: a spinner replaces the icon, the label stays, taps are ignored and the button
+  /// is not dimmed (it is busy, not unavailable).
+  final bool loading;
   final ClIcons? icon;
 
   /// Custom leading mark (e.g. the Apple logo) when a line icon does not fit.
@@ -66,7 +71,10 @@ class ClButton extends StatelessWidget {
       mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (leading != null) ...[
+        if (loading) ...[
+          CupertinoActivityIndicator(color: ink, radius: 9),
+          const SizedBox(width: ClSpace.s2),
+        ] else if (leading != null) ...[
           IconTheme(
             data: IconThemeData(color: ink, size: 20),
             child: leading!,
@@ -87,8 +95,8 @@ class ClButton extends StatelessWidget {
       ],
     );
 
-    return ClPressable(
-      onPressed: onPressed,
+    final button = ClPressable(
+      onPressed: loading ? () {} : onPressed,
       semanticLabel: label,
       child: Container(
         height: height,
@@ -102,6 +110,8 @@ class ClButton extends StatelessWidget {
         child: ExcludeSemantics(child: content),
       ),
     );
+    if (!loading) return button;
+    return Semantics(liveRegion: true, child: IgnorePointer(child: button));
   }
 }
 

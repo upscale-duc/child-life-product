@@ -303,6 +303,7 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
                   label: l10n.stReqSend,
                   expand: true,
                   onPressed: _busy || email.isEmpty ? null : _send,
+                  loading: _busy,
                 ),
                 const SizedBox(height: ClSpace.s3),
                 Text(

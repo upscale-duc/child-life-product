@@ -8263,6 +8263,96 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chưa chia sẻ câu chuyện nào ra ngoài.'**
   String get soEmpty;
+
+  /// 10k share extension title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vào Kỷ niệm'**
+  String get shareExtTitle;
+
+  /// 10k confirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm'**
+  String get shareExtAdd;
+
+  /// 10k baby row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé'**
+  String get shareExtBaby;
+
+  /// 10k notify subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi 1 thông báo khi tải xong'**
+  String get shareExtNotifyHint;
+
+  /// 10k item count: photos.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ảnh'**
+  String shareExtPhotos(int count);
+
+  /// 10k item count: videos.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} video'**
+  String shareExtVideos(int count);
+
+  /// 10k footnote (D-046: uploads start when the app opens).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh sẽ tải lên khi bạn mở Child Life.'**
+  String get shareExtFootnote;
+
+  /// 10k when signed out.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Child Life và đăng nhập để thêm ảnh vào Kỷ niệm.'**
+  String get shareExtSignedOut;
+
+  /// 10k when the account cannot add memories.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ (Cùng nuôi) thêm được kỷ niệm cho bé.'**
+  String get shareExtNoBaby;
+
+  /// 10k when nothing usable was shared.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có ảnh hay video nào để thêm.'**
+  String get shareExtNothing;
+
+  /// 10k close.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get shareExtClose;
+
+  /// UploadPill when uploads are switched off (A11 kill switch).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải ảnh, video đang tạm dừng'**
+  String get upUploadsPaused;
+
+  /// UploadPill hint while uploads are paused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh, video sẽ tự tải tiếp khi mở lại.'**
+  String get upUploadsPausedHint;
+
+  /// 10i row while uploads are switched off.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tạm dừng tải lên'**
+  String get rowUploadsPaused;
+
+  /// 10i row when the server refused the upload (Thử lại).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải lên được'**
+  String get rowRejected;
 }
 
 class _AppLocalizationsDelegate

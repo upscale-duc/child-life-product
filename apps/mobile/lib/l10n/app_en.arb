@@ -1360,5 +1360,20 @@
   "soRevoked": "Revoked",
   "soExpiredOn": "Expired {date}",
   "soCardRow": "Image · can’t be revoked",
-  "soEmpty": "No stories shared outside yet."
+  "soEmpty": "No stories shared outside yet.",
+  "shareExtTitle": "Add to Memories",
+  "shareExtAdd": "Add",
+  "shareExtBaby": "Baby",
+  "shareExtNotifyHint": "Send 1 notification when the upload finishes",
+  "shareExtPhotos": "{count, plural, =1{1 photo} other{{count} photos}}",
+  "shareExtVideos": "{count, plural, =1{1 video} other{{count} videos}}",
+  "shareExtFootnote": "Uploads start when you open Child Life.",
+  "shareExtSignedOut": "Open Child Life and sign in to add photos to Memories.",
+  "shareExtNoBaby": "Only parents (Cùng nuôi) can add memories for a baby.",
+  "shareExtNothing": "There are no photos or videos to add.",
+  "shareExtClose": "Close",
+  "upUploadsPaused": "Photo and video uploads are paused",
+  "upUploadsPausedHint": "They'll continue on their own when uploads reopen.",
+  "rowUploadsPaused": "Uploads paused",
+  "rowRejected": "Couldn't upload"
 }

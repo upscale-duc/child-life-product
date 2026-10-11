@@ -68,8 +68,13 @@ Future<bool> _runProvider(
 /// "Tiếp tục với Apple" as drawn in Figma (Button style apple, 8:33): black pill with the
 /// Apple logo in place of the design's placeholder mark (brand-mark 22:197).
 class AppleSignInButton extends StatelessWidget {
-  const AppleSignInButton({required this.onPressed, super.key});
+  const AppleSignInButton({
+    required this.onPressed,
+    this.loading = false,
+    super.key,
+  });
   final VoidCallback? onPressed;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) => ClButton(
@@ -78,6 +83,7 @@ class AppleSignInButton extends StatelessWidget {
     leading: const Icon(Icons.apple),
     expand: true,
     onPressed: onPressed,
+    loading: loading,
   );
 }
 
@@ -92,8 +98,17 @@ class SignInScreen extends ConsumerStatefulWidget {
 class _SignInScreenState extends ConsumerState<SignInScreen> {
   bool _busy = false;
 
-  Future<void> _provider(Future<void> Function(AuthRepository) action) async {
-    setState(() => _busy = true);
+  /// Which provider button is signing in ('apple' / 'google'), for its spinner.
+  String? _via;
+
+  Future<void> _provider(
+    Future<void> Function(AuthRepository) action, {
+    required String via,
+  }) async {
+    setState(() {
+      _busy = true;
+      _via = via;
+    });
     final repo = ref.read(authRepositoryProvider);
     await _runProvider(context, () => action(repo));
     if (mounted) setState(() => _busy = false);
@@ -158,7 +173,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   AppleSignInButton(
                     onPressed: _busy
                         ? null
-                        : () => _provider((r) => r.signInWithApple()),
+                        : () => _provider(
+                            (r) => r.signInWithApple(),
+                            via: 'apple',
+                          ),
+                    loading: _busy && _via == 'apple',
                   ),
                   const SizedBox(height: ClSpace.s3),
                   ClButton(
@@ -168,7 +187,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     expand: true,
                     onPressed: _busy
                         ? null
-                        : () => _provider((r) => r.signInWithGoogle()),
+                        : () => _provider(
+                            (r) => r.signInWithGoogle(),
+                            via: 'google',
+                          ),
+                    loading: _busy && _via == 'google',
                   ),
                   const SizedBox(height: ClSpace.s3),
                   ClButton(
@@ -364,6 +387,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
           label: create ? l10n.emailCreateAccount : l10n.emailSignInButton,
           expand: true,
           onPressed: _canSubmit ? _submit : null,
+          loading: _busy,
         ),
         if (create)
           ClButton(
@@ -598,6 +622,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           label: l10n.forgotSend,
           expand: true,
           onPressed: _busy || _email.text.trim().isEmpty ? null : _send,
+          loading: _busy,
         ),
       ],
     );
@@ -617,8 +642,17 @@ class AccountExistsScreen extends ConsumerStatefulWidget {
 class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
   bool _busy = false;
 
-  Future<void> _provider(Future<void> Function(AuthRepository) action) async {
-    setState(() => _busy = true);
+  /// Which provider button is signing in ('apple' / 'google'), for its spinner.
+  String? _via;
+
+  Future<void> _provider(
+    Future<void> Function(AuthRepository) action, {
+    required String via,
+  }) async {
+    setState(() {
+      _busy = true;
+      _via = via;
+    });
     final repo = ref.read(authRepositoryProvider);
     final linking = repo.pendingEmail != null;
     final ok = await _runProvider(context, () => action(repo));
@@ -662,7 +696,10 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
       ],
       bottom: [
         AppleSignInButton(
-          onPressed: _busy ? null : () => _provider((r) => r.signInWithApple()),
+          onPressed: _busy
+              ? null
+              : () => _provider((r) => r.signInWithApple(), via: 'apple'),
+          loading: _busy && _via == 'apple',
         ),
         const SizedBox(height: ClSpace.s3),
         ClButton(
@@ -672,7 +709,8 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
           expand: true,
           onPressed: _busy
               ? null
-              : () => _provider((r) => r.signInWithGoogle()),
+              : () => _provider((r) => r.signInWithGoogle(), via: 'google'),
+          loading: _busy && _via == 'google',
         ),
         ClButton(
           label: l10n.existsUseOtherEmail,

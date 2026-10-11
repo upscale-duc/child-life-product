@@ -5263,4 +5263,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get soEmpty => 'No stories shared outside yet.';
+
+  @override
+  String get shareExtTitle => 'Add to Memories';
+
+  @override
+  String get shareExtAdd => 'Add';
+
+  @override
+  String get shareExtBaby => 'Baby';
+
+  @override
+  String get shareExtNotifyHint =>
+      'Send 1 notification when the upload finishes';
+
+  @override
+  String shareExtPhotos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos',
+      one: '1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shareExtVideos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count videos',
+      one: '1 video',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shareExtFootnote => 'Uploads start when you open Child Life.';
+
+  @override
+  String get shareExtSignedOut =>
+      'Open Child Life and sign in to add photos to Memories.';
+
+  @override
+  String get shareExtNoBaby =>
+      'Only parents (Cùng nuôi) can add memories for a baby.';
+
+  @override
+  String get shareExtNothing => 'There are no photos or videos to add.';
+
+  @override
+  String get shareExtClose => 'Close';
+
+  @override
+  String get upUploadsPaused => 'Photo and video uploads are paused';
+
+  @override
+  String get upUploadsPausedHint =>
+      'They\'ll continue on their own when uploads reopen.';
+
+  @override
+  String get rowUploadsPaused => 'Uploads paused';
+
+  @override
+  String get rowRejected => 'Couldn\'t upload';
 }

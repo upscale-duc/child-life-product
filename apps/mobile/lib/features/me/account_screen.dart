@@ -411,27 +411,26 @@ Future<void> _showExportSheet(
             ClButton(
               label: l10n.acExportStart,
               expand: true,
-              onPressed: busy
-                  ? null
-                  : () async {
-                      final toaster = ClToaster.of(context);
-                      final navigator = Navigator.of(sheet);
-                      setState(() => busy = true);
-                      try {
-                        await ref
-                            .read(meRepositoryProvider)
-                            .requestExport(babyId, kind);
-                        navigator.pop();
-                        toaster.show(message: l10n.acExportQueued);
-                      } on AccountActionException catch (e) {
-                        setState(() => busy = false);
-                        toaster.show(
-                          message: e.reason == 'export-running'
-                              ? l10n.acExportRunning
-                              : l10n.toastActionFailed,
-                        );
-                      }
-                    },
+              onPressed: () async {
+                final toaster = ClToaster.of(context);
+                final navigator = Navigator.of(sheet);
+                setState(() => busy = true);
+                try {
+                  await ref
+                      .read(meRepositoryProvider)
+                      .requestExport(babyId, kind);
+                  navigator.pop();
+                  toaster.show(message: l10n.acExportQueued);
+                } on AccountActionException catch (e) {
+                  setState(() => busy = false);
+                  toaster.show(
+                    message: e.reason == 'export-running'
+                        ? l10n.acExportRunning
+                        : l10n.toastActionFailed,
+                  );
+                }
+              },
+              loading: busy,
             ),
           ],
         );
@@ -465,20 +464,19 @@ Future<void> _confirmDeleteAccount(
             label: busy ? l10n.acDeleting : l10n.acDelete,
             style: ClButtonStyle.destructive,
             expand: true,
-            onPressed: busy
-                ? null
-                : () async {
-                    final toaster = ClToaster.of(context);
-                    setState(() => busy = true);
-                    try {
-                      await ref.read(meRepositoryProvider).deleteAccount();
-                      // The job removes the account server-side; this device signs out now.
-                      await ref.read(authRepositoryProvider).signOut();
-                    } on Object {
-                      setState(() => busy = false);
-                      toaster.show(message: l10n.toastActionFailed);
-                    }
-                  },
+            onPressed: () async {
+              final toaster = ClToaster.of(context);
+              setState(() => busy = true);
+              try {
+                await ref.read(meRepositoryProvider).deleteAccount();
+                // The job removes the account server-side; this device signs out now.
+                await ref.read(authRepositoryProvider).signOut();
+              } on Object {
+                setState(() => busy = false);
+                toaster.show(message: l10n.toastActionFailed);
+              }
+            },
+            loading: busy,
           ),
           const SizedBox(height: ClSpace.s2),
           ClButton(

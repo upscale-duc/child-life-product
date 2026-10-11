@@ -306,6 +306,7 @@ class _ComposerState extends ConsumerState<_Composer> {
           icon: ClIcons.arrowRight,
           expand: true,
           onPressed: _busy || _text.text.trim().isEmpty ? null : _send,
+          loading: _busy,
         ),
       ],
     );
