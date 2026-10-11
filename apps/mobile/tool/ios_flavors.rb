@@ -16,17 +16,21 @@ ENTITLEMENTS = 'Runner/Runner.entitlements'
 FLAVORS = {
   # dev signs manually with the owner-supplied development profile "hsba app dev" (push, the
   # owner's iPhone); install it into ~/Library/Developer/Xcode/UserData/Provisioning Profiles.
+  # Extension profiles (owner-supplied) go here per flavor once they exist; nil = automatic.
   'dev' => { bundle_id: 'dev.hsba.app', name: 'Child Life Dev', icon: 'AppIcon-dev', profile: 'hsba app dev',
-             widget_id: 'dev.hsba.app.widgets', widget_profile: nil },
+             extension_profiles: { 'widgetExtension' => nil, 'share' => nil } },
   'prod' => { bundle_id: 'app.childlife', name: 'Child Life', icon: 'AppIcon-prod',
-              widget_id: 'app.childlife.widgets', widget_profile: nil },
+              extension_profiles: {} },
 }.freeze
-# Widget / Live Activity extension (S8). The Xcode template uses Control widgets (iOS 18); the app
-# itself stays on DEPLOYMENT_TARGET and simply has no extension on older systems.
-WIDGET_TARGET = 'widgetExtension'
-WIDGET_DEPLOYMENT_TARGET = '18.0'
 BASES = %w[Debug Profile Release].freeze
 DEPLOYMENT_TARGET = '16.1'
+# App extensions: bundle id = app bundle id + suffix. The widget template uses Control widgets
+# (iOS 18), so the widget extension only exists on iOS 18+; the share extension (S9) runs
+# wherever the app does.
+EXTENSIONS = {
+  'widgetExtension' => { suffix: 'widgets', deployment: '18.0' },
+  'share' => { suffix: 'share', deployment: DEPLOYMENT_TARGET },
+}.freeze
 
 root = File.expand_path('../ios', __dir__)
 project = Xcodeproj::Project.open(File.join(root, 'Runner.xcodeproj'))
@@ -120,18 +124,19 @@ flutter_group = project.main_group['Flutter']
   list.default_configuration_name = 'Release-prod'
 end
 
-# The widget extension: per-flavor bundle id and signing, flavored configurations only.
-widget = project.targets.find { |t| t.name == WIDGET_TARGET }
-if widget
-  list = widget.build_configuration_list
+# App extensions: per-flavor bundle id and signing, flavored configurations only.
+EXTENSIONS.each do |name, ext|
+  target = project.targets.find { |t| t.name == name }
+  next unless target
+  list = target.build_configuration_list
   BASES.each do |base|
     template = list.build_configurations.find { |c| c.name == base } || list.build_configurations.find { |c| c.name.start_with?("#{base}-") }
     FLAVORS.each do |flavor, info|
       config = ensure_config(list, "#{base}-#{flavor}", template)
       config.base_configuration_reference = nil
-      config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = info[:widget_id]
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = WIDGET_DEPLOYMENT_TARGET
-      sign(config, info[:widget_profile])
+      config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle_id]}.#{ext[:suffix]}"
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = ext[:deployment]
+      sign(config, info[:extension_profiles][name])
     end
   end
   list.build_configurations.select { |c| BASES.include?(c.name) }.each(&:remove_from_project)
