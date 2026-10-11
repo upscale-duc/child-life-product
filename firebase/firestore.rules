@@ -650,10 +650,11 @@ service cloud.firestore {
 
     function validVaccinePlan(babyId) {
       let d = request.resource.data;
-      return d.keys().hasOnly(['dtp', 'setupDone', 'remind', 'recipients', 'bookPhotos',
-          'updatedAt', 'updatedBy']) &&
-        d.keys().hasAll(['dtp', 'setupDone', 'remind', 'recipients', 'bookPhotos', 'updatedAt',
-          'updatedBy']) &&
+      return d.keys().hasOnly(['dtp', 'setupDone', 'scheduleFrom', 'remind', 'recipients',
+          'bookPhotos', 'updatedAt', 'updatedBy']) &&
+        d.keys().hasAll(['dtp', 'setupDone', 'scheduleFrom', 'remind', 'recipients',
+          'bookPhotos', 'updatedAt', 'updatedBy']) &&
+        optDate(d.scheduleFrom) &&
         (d.dtp == null || d.dtp in ['6in1', '5in1']) && d.setupDone is bool && d.remind is bool &&
         d.recipients is list && d.recipients.size() <= 20 &&
         d.bookPhotos is list && d.bookPhotos.size() <= 10 &&

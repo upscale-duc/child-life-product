@@ -271,6 +271,11 @@ export const vaccinePlanSchema = z.object({
   dtp: z.enum(['6in1', '5in1']).nullable(),
   /** VX 0 done or skipped. */
   setupDone: z.boolean(),
+  /**
+   * The date the schedule counts from (the date of birth), kept by Cùng nuôi so caregivers, who
+   * cannot read the private profile, see the same planned dates (P-133).
+   */
+  scheduleFrom: isoDate.nullable(),
   /** VX 2 "Nhắc trước 3 ngày" for every milestone. */
   remind: z.boolean(),
   recipients: z.array(z.string()).max(20),

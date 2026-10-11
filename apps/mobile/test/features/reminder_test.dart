@@ -313,13 +313,14 @@ void main() {
       );
       expect(find.text('Nhắc việc · 3'), findsOneWidget);
       expect(find.text('Thứ Bảy 08:30 · còn 2 ngày'), findsOneWidget);
+      // A row opens that reminder.
       await tester.tap(find.text('Tiêm 6 trong 1'));
       await tester.pumpAndSettle();
-      expect(visits.single.location, Routes.reminders);
+      expect(visits.single.location, startsWith('${Routes.reminders}/rm_'));
     });
 
     testWidgets(
-      'Today lists the next 3, rules\' next times included, then "Xem thêm"',
+      'Today lists the next 3, rules\' next times included, under "Xem tất cả"',
       (tester) async {
         final (visits, _) = await pumpRouted(
           tester,
@@ -333,11 +334,22 @@ void main() {
         expect(y('Nhắc bú'), lessThan(y('Nhắc chuẩn bị ngủ')));
         expect(find.text('Hôm nay 17:20 · còn 2 giờ 15 phút'), findsOneWidget);
         expect(find.text('Tiêm 6 trong 1'), findsNothing);
-        await tester.tap(find.text('Xem thêm'));
+        await tester.tap(find.text('Xem tất cả'));
         await tester.pumpAndSettle();
         expect(visits.single.location, Routes.reminders);
       },
     );
+
+    testWidgets('a rule\'s row on Today opens that rule', (tester) async {
+      final (visits, _) = await pumpRouted(
+        tester,
+        const Scaffold(body: TodayScreen()),
+        overrides: careOverrides(rules: [feed]),
+      );
+      await tester.tap(find.text('Nhắc bú'));
+      await tester.pumpAndSettle();
+      expect(visits.single.location, '${Routes.ruleDetail}/rr_feed');
+    });
 
     testWidgets('relatives never see reminders (D-018)', (tester) async {
       await pumpRouted(

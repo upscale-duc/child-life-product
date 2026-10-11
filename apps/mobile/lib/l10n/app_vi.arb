@@ -3924,7 +3924,7 @@
   "@reminderPeekAdd": {
     "description": "ReminderPeek empty action."
   },
-  "reminderPeekMore": "Xem thêm",
+  "reminderPeekMore": "Xem tất cả",
   "@reminderPeekMore": {
     "description": "Hôm nay reminder card: opens Nhắc nhở after the first 3 (owner request 2026-10-11)."
   },
@@ -4213,14 +4213,18 @@
   "@addRecentCount": {
     "description": "10a2 recent strip: how many are chosen.",
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "addRecentAdd": "{count, plural, other{Thêm {count} mục}}",
   "@addRecentAdd": {
     "description": "10a2 recent strip: goes on to compose with the chosen items (owner, 2026-10-11).",
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "addCamera": "Chụp ảnh hoặc quay video",
@@ -9671,5 +9675,785 @@
         "type": "String"
       }
     }
+  },
+  "vxTile": "Tiêm chủng",
+  "@vxTile": {
+    "description": "Chăm sóc tile (394:4451)."
+  },
+  "vxTileNext": "Mũi tiếp theo {date}",
+  "@vxTileNext": {
+    "description": "Tile subtitle.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vxTileOverdue": "{count} mũi quá hạn",
+  "@vxTileOverdue": {
+    "description": "Tile subtitle.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vxTileAllDone": "Đã tiêm đủ theo lịch",
+  "@vxTileAllDone": {
+    "description": "Tile subtitle."
+  },
+  "vxTileSetup": "Ghi các mũi đã tiêm",
+  "@vxTileSetup": {
+    "description": "Tile subtitle before setup."
+  },
+  "vxTitle": "Tiêm chủng",
+  "@vxTitle": {
+    "description": "VX 1 title."
+  },
+  "vxNextLine": "Mũi tiếp theo · {date} · {left}",
+  "@vxNextLine": {
+    "description": "VX 1 next card.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "vxDaysLeft": "còn {count} ngày",
+  "@vxDaysLeft": {
+    "description": "Days to go.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vxDueToday": "hôm nay",
+  "@vxDueToday": {
+    "description": "Due today."
+  },
+  "vxOverdueLine": "Quá hạn {count} ngày · dự kiến {date}",
+  "@vxOverdueLine": {
+    "description": "VX 9 next card.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vxDoseSuffix": "(mũi {n})",
+  "@vxDoseSuffix": {
+    "description": "After a list of vaccines with the same dose.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vxDoseOf": "{name} mũi {n}",
+  "@vxDoseOf": {
+    "description": "One dose.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vxViewByVaccine": "Theo vắc xin",
+  "@vxViewByVaccine": {
+    "description": "View pill and option."
+  },
+  "vxViewByAge": "Theo tháng tuổi",
+  "@vxViewByAge": {
+    "description": "View pill and option."
+  },
+  "vxCount": "Đã tiêm {given} / {total} mũi",
+  "@vxCount": {
+    "description": "Counter.",
+    "placeholders": {
+      "given": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "vxLegendGiven": "Đã tiêm",
+  "@vxLegendGiven": {
+    "description": "Status."
+  },
+  "vxLegendUpcoming": "Sắp tới",
+  "@vxLegendUpcoming": {
+    "description": "Status."
+  },
+  "vxLegendOverdue": "Quá hạn",
+  "@vxLegendOverdue": {
+    "description": "Status."
+  },
+  "vxLegendLater": "Chưa tới",
+  "@vxLegendLater": {
+    "description": "Status."
+  },
+  "vxLegendDeclined": "Không tiêm",
+  "@vxLegendDeclined": {
+    "description": "Status (VX 9a)."
+  },
+  "vxMonthsShort": "{months} th",
+  "@vxMonthsShort": {
+    "description": "Under a later dot.",
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "vxBirth": "Sơ sinh",
+  "@vxBirth": {
+    "description": "Age 0."
+  },
+  "vxMonths": "{months} tháng",
+  "@vxMonths": {
+    "description": "Age block.",
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "vxMonthsOld": "{months} tháng tuổi",
+  "@vxMonthsOld": {
+    "description": "VX 2 title.",
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "vxMilestoneBirth": "Mốc sơ sinh",
+  "@vxMilestoneBirth": {
+    "description": "Milestone label."
+  },
+  "vxMilestone": "Mốc {months} tháng tuổi",
+  "@vxMilestone": {
+    "description": "Milestone label.",
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "vxMilestoneShort": "Mốc {months} tháng",
+  "@vxMilestoneShort": {
+    "description": "Milestone chip.",
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "vxHintMonths": "{list} tháng",
+  "@vxHintMonths": {
+    "description": "Matrix row hint.",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "vxHintYearly": "hằng năm",
+  "@vxHintYearly": {
+    "description": "Flu hint."
+  },
+  "vxBannerMatrix": "Chạm vào một mũi để ghi đã tiêm hoặc xem chi tiết. Lịch tham khảo, có thể thay đổi theo chỉ định của bác sĩ.",
+  "@vxBannerMatrix": {
+    "description": "VX 1 banner."
+  },
+  "vxBannerTimeline": "Tích vào ô khi bé đã tiêm — app sẽ hỏi ngày và nơi tiêm. Lịch tham khảo, có thể thay đổi theo chỉ định của bác sĩ.",
+  "@vxBannerTimeline": {
+    "description": "VX 1b banner."
+  },
+  "vxOverdueCard": "{count} mũi đã quá ngày dự kiến. Nếu bé đã tiêm, hãy tích để cập nhật; nếu chưa, đặt lại lịch với cơ sở tiêm.",
+  "@vxOverdueCard": {
+    "description": "VX 9 card.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vxNoDob": "Cần ngày sinh của {name} để lập lịch tiêm.",
+  "@vxNoDob": {
+    "description": "No DOB.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vxNoDobBody": "Ba mẹ thêm ngày sinh trong hồ sơ bé.",
+  "@vxNoDobBody": {
+    "description": "No DOB body."
+  },
+  "vxViewTitle": "Xem lịch tiêm theo",
+  "@vxViewTitle": {
+    "description": "VX 1a title."
+  },
+  "vxViewByVaccineSub": "Mỗi loại một dòng, thấy ngay mũi nào còn thiếu",
+  "@vxViewByVaccineSub": {
+    "description": "VX 1a option."
+  },
+  "vxViewByAgeSub": "Từng mốc tuổi tiêm gì, tích khi đã tiêm",
+  "@vxViewByAgeSub": {
+    "description": "VX 1a option."
+  },
+  "vxNoDate": "Chưa ghi ngày",
+  "@vxNoDate": {
+    "description": "Given without a date."
+  },
+  "vxSetupTitle": "{name} đã tiêm những mũi nào?",
+  "@vxSetupTitle": {
+    "description": "VX 0 title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vxSetupBody": "Tích các mũi bé đã tiêm từ lúc sinh. Không nhớ ngày cũng không sao — bạn có thể bổ sung sau.",
+  "@vxSetupBody": {
+    "description": "VX 0 body."
+  },
+  "vxSetupAtHospital": "Sơ sinh · thường tiêm tại bệnh viện",
+  "@vxSetupAtHospital": {
+    "description": "VX 0 row."
+  },
+  "vxSetupFirstDay": "Trong 24 giờ đầu",
+  "@vxSetupFirstDay": {
+    "description": "VX 0 hepatitis B row."
+  },
+  "vxSetupDue": "{age} · dự kiến {date}",
+  "@vxSetupDue": {
+    "description": "VX 0 row for an older baby.",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vxSetupSave": "Lưu {count} mũi đã tiêm",
+  "@vxSetupSave": {
+    "description": "VX 0 primary.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vxSetupContinue": "Tiếp tục",
+  "@vxSetupContinue": {
+    "description": "VX 0 primary with nothing ticked."
+  },
+  "vxSetupSkip": "Bỏ qua, làm sau",
+  "@vxSetupSkip": {
+    "description": "VX 0 plain."
+  },
+  "vxPlannedLeft": "Dự kiến {date} · {left}",
+  "@vxPlannedLeft": {
+    "description": "VX 2 line.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "left": {
+        "type": "String"
+      }
+    }
+  },
+  "vxPlannedOverdue": "Dự kiến {date} · đã quá {count} ngày",
+  "@vxPlannedOverdue": {
+    "description": "VX 2 / 9a line.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vxChooseOne": "Chọn một trong hai",
+  "@vxChooseOne": {
+    "description": "VX 2."
+  },
+  "vx6in1Title": "6in1 · Dịch vụ",
+  "@vx6in1Title": {
+    "description": "VX 2 option."
+  },
+  "vx6in1Body": "Bạch hầu, ho gà, uốn ván, bại liệt, Hib, viêm gan B — một mũi",
+  "@vx6in1Body": {
+    "description": "VX 2 option."
+  },
+  "vxPaid": "Có phí",
+  "@vxPaid": {
+    "description": "VX 2 pill."
+  },
+  "vx5in1Title": "5in1 + Bại liệt · Trạm y tế",
+  "@vx5in1Title": {
+    "description": "VX 2 option."
+  },
+  "vx5in1Body": "Tiêm chủng mở rộng, uống/tiêm thêm bại liệt",
+  "@vx5in1Body": {
+    "description": "VX 2 option."
+  },
+  "vxFree": "Miễn phí",
+  "@vxFree": {
+    "description": "VX 2 pill."
+  },
+  "vxShots": "Các mũi",
+  "@vxShots": {
+    "description": "VX 2 list."
+  },
+  "vxOtherShots": "Các mũi khác",
+  "@vxOtherShots": {
+    "description": "VX 2 list after the choice."
+  },
+  "vxLog": "Ghi",
+  "@vxLog": {
+    "description": "VX 2 / 7 pill."
+  },
+  "vxRouteOral": "Uống",
+  "@vxRouteOral": {
+    "description": "Route."
+  },
+  "vxRouteInjection": "Tiêm",
+  "@vxRouteInjection": {
+    "description": "Route."
+  },
+  "vxProgEpi": "Tiêm chủng mở rộng",
+  "@vxProgEpi": {
+    "description": "Programme."
+  },
+  "vxProgService": "Dịch vụ",
+  "@vxProgService": {
+    "description": "Programme."
+  },
+  "vxProgHospital": "Bệnh viện",
+  "@vxProgHospital": {
+    "description": "Programme."
+  },
+  "vxProgChoice": "6in1 dịch vụ hoặc 5in1 miễn phí",
+  "@vxProgChoice": {
+    "description": "Programme."
+  },
+  "vxRemind": "Nhắc trước 3 ngày",
+  "@vxRemind": {
+    "description": "VX 2 toggle."
+  },
+  "vxRemindNobody": "Chưa chọn người nhận",
+  "@vxRemindNobody": {
+    "description": "VX 2 toggle subtitle."
+  },
+  "vxRecipientsTitle": "Ai nhận nhắc lịch tiêm?",
+  "@vxRecipientsTitle": {
+    "description": "Recipients sheet."
+  },
+  "vxAppointment": "Đặt lịch hẹn",
+  "@vxAppointment": {
+    "description": "VX 2 row."
+  },
+  "vxAppointmentNone": "Chưa đặt ngày hẹn",
+  "@vxAppointmentNone": {
+    "description": "VX 2 row subtitle."
+  },
+  "vxAppointmentOn": "Hẹn {date}",
+  "@vxAppointmentOn": {
+    "description": "VX 2 row subtitle.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vxAskDoctor": "Hỏi bác sĩ hoặc nhân viên y tế để chọn loại vắc xin phù hợp với bé.",
+  "@vxAskDoctor": {
+    "description": "VX 2 banner."
+  },
+  "vxGivenOn": "Đã tiêm {date}",
+  "@vxGivenOn": {
+    "description": "Row status.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vxRecordTitle": "Ghi mũi tiêm",
+  "@vxRecordTitle": {
+    "description": "VX 3 title."
+  },
+  "vxEditTitle": "Sửa mũi tiêm",
+  "@vxEditTitle": {
+    "description": "Edit title."
+  },
+  "vxDate": "Ngày tiêm",
+  "@vxDate": {
+    "description": "Field."
+  },
+  "vxTime": "Giờ",
+  "@vxTime": {
+    "description": "Field."
+  },
+  "vxTimeNone": "Không rõ",
+  "@vxTimeNone": {
+    "description": "Time not set."
+  },
+  "vxPlace": "Nơi tiêm",
+  "@vxPlace": {
+    "description": "Field."
+  },
+  "vxPlaceHospital": "Bệnh viện",
+  "@vxPlaceHospital": {
+    "description": "Place."
+  },
+  "vxPlaceService": "Dịch vụ",
+  "@vxPlaceService": {
+    "description": "Place."
+  },
+  "vxPlaceStation": "Trạm y tế",
+  "@vxPlaceStation": {
+    "description": "Place."
+  },
+  "vxFacility": "Tên cơ sở (không bắt buộc)",
+  "@vxFacility": {
+    "description": "Field."
+  },
+  "vxFacilityHint": "VD: Trung tâm tiêm chủng gần nhà",
+  "@vxFacilityHint": {
+    "description": "Placeholder."
+  },
+  "vxReaction": "Phản ứng sau tiêm (không bắt buộc)",
+  "@vxReaction": {
+    "description": "Field."
+  },
+  "vxReactionHint": "Sốt nhẹ, quấy hơn…",
+  "@vxReactionHint": {
+    "description": "Placeholder."
+  },
+  "vxSave": "Lưu mũi tiêm",
+  "@vxSave": {
+    "description": "VX 3 primary."
+  },
+  "vxSaved": "Đã lưu {dose}",
+  "@vxSaved": {
+    "description": "Toast.",
+    "placeholders": {
+      "dose": {
+        "type": "String"
+      }
+    }
+  },
+  "vxSavedNext": "Đã lưu {dose} · mũi {n} dự kiến {date}",
+  "@vxSavedNext": {
+    "description": "VX 4 toast.",
+    "placeholders": {
+      "dose": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vxSaveFailed": "Chưa lưu được. Thử lại nhé.",
+  "@vxSaveFailed": {
+    "description": "Write failed."
+  },
+  "vxQuickTitle": "Đã tiêm {dose}",
+  "@vxQuickTitle": {
+    "description": "VX 5 title.",
+    "placeholders": {
+      "dose": {
+        "type": "String"
+      }
+    }
+  },
+  "vxWhichDay": "Tiêm ngày nào?",
+  "@vxWhichDay": {
+    "description": "VX 5."
+  },
+  "vxDayToday": "Hôm nay",
+  "@vxDayToday": {
+    "description": "VX 5 chip."
+  },
+  "vxDayYesterday": "Hôm qua",
+  "@vxDayYesterday": {
+    "description": "VX 5 chip."
+  },
+  "vxPickDay": "Chọn ngày",
+  "@vxPickDay": {
+    "description": "VX 5 chip."
+  },
+  "vxWhere": "Tiêm ở đâu?",
+  "@vxWhere": {
+    "description": "VX 5."
+  },
+  "vxQuickSave": "Lưu",
+  "@vxQuickSave": {
+    "description": "VX 5 primary."
+  },
+  "vxMoreDetails": "Thêm chi tiết (phản ứng, ảnh sổ tiêm)",
+  "@vxMoreDetails": {
+    "description": "VX 5 plain."
+  },
+  "vxRecordedBy": "Người ghi",
+  "@vxRecordedBy": {
+    "description": "VX 6."
+  },
+  "vxReactionShort": "Phản ứng",
+  "@vxReactionShort": {
+    "description": "VX 6."
+  },
+  "vxNextDose": "Mũi {n} dự kiến {date}",
+  "@vxNextDose": {
+    "description": "VX 6 card.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vxReminderOn": "đã bật nhắc",
+  "@vxReminderOn": {
+    "description": "VX 6 card."
+  },
+  "vxReminderOff": "chưa bật nhắc",
+  "@vxReminderOff": {
+    "description": "VX 6 card."
+  },
+  "vxDelete": "Xoá mũi tiêm này",
+  "@vxDelete": {
+    "description": "VX 6."
+  },
+  "vxDeleteTitle": "Xoá {dose}?",
+  "@vxDeleteTitle": {
+    "description": "Confirm.",
+    "placeholders": {
+      "dose": {
+        "type": "String"
+      }
+    }
+  },
+  "vxDeleteBody": "Mũi này sẽ trở lại chưa tiêm.",
+  "@vxDeleteBody": {
+    "description": "Confirm."
+  },
+  "vxDeleteConfirm": "Xoá",
+  "@vxDeleteConfirm": {
+    "description": "Confirm."
+  },
+  "vxDeleted": "Đã xoá {dose}",
+  "@vxDeleted": {
+    "description": "Toast.",
+    "placeholders": {
+      "dose": {
+        "type": "String"
+      }
+    }
+  },
+  "vxReason": "Lý do",
+  "@vxReason": {
+    "description": "Declined detail."
+  },
+  "vxUndoDecline": "Bỏ đánh dấu không tiêm",
+  "@vxUndoDecline": {
+    "description": "Declined detail."
+  },
+  "vxUndoReschedule": "Huỷ lịch hẹn",
+  "@vxUndoReschedule": {
+    "description": "Rescheduled dose."
+  },
+  "vxAddDate": "Thêm ngày tiêm",
+  "@vxAddDate": {
+    "description": "Given without a date."
+  },
+  "vxDoseCount": "{count} mũi",
+  "@vxDoseCount": {
+    "description": "VX 7.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vxDoseCountOral": "{count} liều",
+  "@vxDoseCountOral": {
+    "description": "VX 7 oral.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vxDoses": "Số mũi",
+  "@vxDoses": {
+    "description": "VX 7."
+  },
+  "vxDosesOral": "Số liều",
+  "@vxDosesOral": {
+    "description": "VX 7 oral."
+  },
+  "vxTiming": "Thời điểm",
+  "@vxTiming": {
+    "description": "VX 7."
+  },
+  "vxTimingValue": "{list} tháng tuổi",
+  "@vxTimingValue": {
+    "description": "VX 7.",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "vxInterval": "Khoảng cách",
+  "@vxInterval": {
+    "description": "VX 7."
+  },
+  "vxIntervalValue": "Tối thiểu {weeks} tuần giữa các mũi",
+  "@vxIntervalValue": {
+    "description": "VX 7.",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "vxRoute": "Cách dùng",
+  "@vxRoute": {
+    "description": "VX 7."
+  },
+  "vxBabyDoses": "Các mũi của {name}",
+  "@vxBabyDoses": {
+    "description": "VX 7.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vxDoseN": "Mũi {n}",
+  "@vxDoseN": {
+    "description": "VX 7 row.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "vxPlannedOn": "Dự kiến {date}",
+  "@vxPlannedOn": {
+    "description": "VX 7 row.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vxInfoBanner": "Thông tin tham khảo. Hỏi bác sĩ nếu bạn còn băn khoăn.",
+  "@vxInfoBanner": {
+    "description": "VX 7 banner."
+  },
+  "vxAlreadyGiven": "Bé đã tiêm rồi",
+  "@vxAlreadyGiven": {
+    "description": "VX 9a."
+  },
+  "vxAlreadyGivenSub": "Ghi ngày và nơi tiêm",
+  "@vxAlreadyGivenSub": {
+    "description": "VX 9a."
+  },
+  "vxReschedule": "Dời lịch",
+  "@vxReschedule": {
+    "description": "VX 9a."
+  },
+  "vxRescheduleSub": "Chọn ngày hẹn mới, app nhắc lại trước 1 ngày",
+  "@vxRescheduleSub": {
+    "description": "VX 9a."
+  },
+  "vxDecline": "Không tiêm mũi này",
+  "@vxDecline": {
+    "description": "VX 9a."
+  },
+  "vxDeclineSub": "Theo tư vấn của bác sĩ · có thể ghi lý do",
+  "@vxDeclineSub": {
+    "description": "VX 9a."
+  },
+  "vxCatchUp": "Hỏi cơ sở tiêm chủng hoặc bác sĩ để được hướng dẫn lịch tiêm bù phù hợp.",
+  "@vxCatchUp": {
+    "description": "VX 9a banner."
+  },
+  "vxDeclineTitle": "Không tiêm {dose}",
+  "@vxDeclineTitle": {
+    "description": "Decline sheet.",
+    "placeholders": {
+      "dose": {
+        "type": "String"
+      }
+    }
+  },
+  "vxDeclineReasonHint": "Lý do (không bắt buộc)",
+  "@vxDeclineReasonHint": {
+    "description": "Decline sheet."
+  },
+  "vxDeclined": "Đã ghi không tiêm {dose}",
+  "@vxDeclined": {
+    "description": "Toast.",
+    "placeholders": {
+      "dose": {
+        "type": "String"
+      }
+    }
+  },
+  "vxRescheduled": "Đã dời {dose} sang {date}",
+  "@vxRescheduled": {
+    "description": "Toast.",
+    "placeholders": {
+      "dose": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vxPickDateTitle": "Chọn ngày",
+  "@vxPickDateTitle": {
+    "description": "Date sheet."
+  },
+  "vxViewOnly": "Bạn chỉ xem được sổ tiêm.",
+  "@vxViewOnly": {
+    "description": "Relative tap."
+  },
+  "vxTileBook": "Sổ tiêm chủng của bé",
+  "@vxTileBook": {
+    "description": "Tile subtitle without dates."
   }
 }

@@ -4475,7 +4475,7 @@ abstract class AppLocalizations {
   /// Hôm nay reminder card: opens Nhắc nhở after the first 3 (owner request 2026-10-11).
   ///
   /// In vi, this message translates to:
-  /// **'Xem thêm'**
+  /// **'Xem tất cả'**
   String get reminderPeekMore;
 
   /// Local notification body.
@@ -10740,6 +10740,834 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Vào Kỷ niệm của {name}'**
   String glanceMemFor(String name);
+
+  /// Chăm sóc tile (394:4451).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm chủng'**
+  String get vxTile;
+
+  /// Tile subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mũi tiếp theo {date}'**
+  String vxTileNext(String date);
+
+  /// Tile subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mũi quá hạn'**
+  String vxTileOverdue(int count);
+
+  /// Tile subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tiêm đủ theo lịch'**
+  String get vxTileAllDone;
+
+  /// Tile subtitle before setup.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi các mũi đã tiêm'**
+  String get vxTileSetup;
+
+  /// VX 1 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm chủng'**
+  String get vxTitle;
+
+  /// VX 1 next card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mũi tiếp theo · {date} · {left}'**
+  String vxNextLine(String date, String left);
+
+  /// Days to go.
+  ///
+  /// In vi, this message translates to:
+  /// **'còn {count} ngày'**
+  String vxDaysLeft(int count);
+
+  /// Due today.
+  ///
+  /// In vi, this message translates to:
+  /// **'hôm nay'**
+  String get vxDueToday;
+
+  /// VX 9 next card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quá hạn {count} ngày · dự kiến {date}'**
+  String vxOverdueLine(int count, String date);
+
+  /// After a list of vaccines with the same dose.
+  ///
+  /// In vi, this message translates to:
+  /// **'(mũi {n})'**
+  String vxDoseSuffix(int n);
+
+  /// One dose.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} mũi {n}'**
+  String vxDoseOf(String name, int n);
+
+  /// View pill and option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo vắc xin'**
+  String get vxViewByVaccine;
+
+  /// View pill and option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tháng tuổi'**
+  String get vxViewByAge;
+
+  /// Counter.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tiêm {given} / {total} mũi'**
+  String vxCount(int given, int total);
+
+  /// Status.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tiêm'**
+  String get vxLegendGiven;
+
+  /// Status.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp tới'**
+  String get vxLegendUpcoming;
+
+  /// Status.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quá hạn'**
+  String get vxLegendOverdue;
+
+  /// Status.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tới'**
+  String get vxLegendLater;
+
+  /// Status (VX 9a).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tiêm'**
+  String get vxLegendDeclined;
+
+  /// Under a later dot.
+  ///
+  /// In vi, this message translates to:
+  /// **'{months} th'**
+  String vxMonthsShort(int months);
+
+  /// Age 0.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sơ sinh'**
+  String get vxBirth;
+
+  /// Age block.
+  ///
+  /// In vi, this message translates to:
+  /// **'{months} tháng'**
+  String vxMonths(int months);
+
+  /// VX 2 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'{months} tháng tuổi'**
+  String vxMonthsOld(int months);
+
+  /// Milestone label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc sơ sinh'**
+  String get vxMilestoneBirth;
+
+  /// Milestone label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc {months} tháng tuổi'**
+  String vxMilestone(int months);
+
+  /// Milestone chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc {months} tháng'**
+  String vxMilestoneShort(int months);
+
+  /// Matrix row hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'{list} tháng'**
+  String vxHintMonths(String list);
+
+  /// Flu hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'hằng năm'**
+  String get vxHintYearly;
+
+  /// VX 1 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm vào một mũi để ghi đã tiêm hoặc xem chi tiết. Lịch tham khảo, có thể thay đổi theo chỉ định của bác sĩ.'**
+  String get vxBannerMatrix;
+
+  /// VX 1b banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tích vào ô khi bé đã tiêm — app sẽ hỏi ngày và nơi tiêm. Lịch tham khảo, có thể thay đổi theo chỉ định của bác sĩ.'**
+  String get vxBannerTimeline;
+
+  /// VX 9 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mũi đã quá ngày dự kiến. Nếu bé đã tiêm, hãy tích để cập nhật; nếu chưa, đặt lại lịch với cơ sở tiêm.'**
+  String vxOverdueCard(int count);
+
+  /// No DOB.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần ngày sinh của {name} để lập lịch tiêm.'**
+  String vxNoDob(String name);
+
+  /// No DOB body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba mẹ thêm ngày sinh trong hồ sơ bé.'**
+  String get vxNoDobBody;
+
+  /// VX 1a title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem lịch tiêm theo'**
+  String get vxViewTitle;
+
+  /// VX 1a option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi loại một dòng, thấy ngay mũi nào còn thiếu'**
+  String get vxViewByVaccineSub;
+
+  /// VX 1a option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từng mốc tuổi tiêm gì, tích khi đã tiêm'**
+  String get vxViewByAgeSub;
+
+  /// Given without a date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi ngày'**
+  String get vxNoDate;
+
+  /// VX 0 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} đã tiêm những mũi nào?'**
+  String vxSetupTitle(String name);
+
+  /// VX 0 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tích các mũi bé đã tiêm từ lúc sinh. Không nhớ ngày cũng không sao — bạn có thể bổ sung sau.'**
+  String get vxSetupBody;
+
+  /// VX 0 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sơ sinh · thường tiêm tại bệnh viện'**
+  String get vxSetupAtHospital;
+
+  /// VX 0 hepatitis B row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong 24 giờ đầu'**
+  String get vxSetupFirstDay;
+
+  /// VX 0 row for an older baby.
+  ///
+  /// In vi, this message translates to:
+  /// **'{age} · dự kiến {date}'**
+  String vxSetupDue(String age, String date);
+
+  /// VX 0 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu {count} mũi đã tiêm'**
+  String vxSetupSave(int count);
+
+  /// VX 0 primary with nothing ticked.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục'**
+  String get vxSetupContinue;
+
+  /// VX 0 plain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua, làm sau'**
+  String get vxSetupSkip;
+
+  /// VX 2 line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dự kiến {date} · {left}'**
+  String vxPlannedLeft(String date, String left);
+
+  /// VX 2 / 9a line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dự kiến {date} · đã quá {count} ngày'**
+  String vxPlannedOverdue(String date, int count);
+
+  /// VX 2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn một trong hai'**
+  String get vxChooseOne;
+
+  /// VX 2 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'6in1 · Dịch vụ'**
+  String get vx6in1Title;
+
+  /// VX 2 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạch hầu, ho gà, uốn ván, bại liệt, Hib, viêm gan B — một mũi'**
+  String get vx6in1Body;
+
+  /// VX 2 pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có phí'**
+  String get vxPaid;
+
+  /// VX 2 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'5in1 + Bại liệt · Trạm y tế'**
+  String get vx5in1Title;
+
+  /// VX 2 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm chủng mở rộng, uống/tiêm thêm bại liệt'**
+  String get vx5in1Body;
+
+  /// VX 2 pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Miễn phí'**
+  String get vxFree;
+
+  /// VX 2 list.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các mũi'**
+  String get vxShots;
+
+  /// VX 2 list after the choice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các mũi khác'**
+  String get vxOtherShots;
+
+  /// VX 2 / 7 pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi'**
+  String get vxLog;
+
+  /// Route.
+  ///
+  /// In vi, this message translates to:
+  /// **'Uống'**
+  String get vxRouteOral;
+
+  /// Route.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm'**
+  String get vxRouteInjection;
+
+  /// Programme.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm chủng mở rộng'**
+  String get vxProgEpi;
+
+  /// Programme.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dịch vụ'**
+  String get vxProgService;
+
+  /// Programme.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bệnh viện'**
+  String get vxProgHospital;
+
+  /// Programme.
+  ///
+  /// In vi, this message translates to:
+  /// **'6in1 dịch vụ hoặc 5in1 miễn phí'**
+  String get vxProgChoice;
+
+  /// VX 2 toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc trước 3 ngày'**
+  String get vxRemind;
+
+  /// VX 2 toggle subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa chọn người nhận'**
+  String get vxRemindNobody;
+
+  /// Recipients sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai nhận nhắc lịch tiêm?'**
+  String get vxRecipientsTitle;
+
+  /// VX 2 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt lịch hẹn'**
+  String get vxAppointment;
+
+  /// VX 2 row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đặt ngày hẹn'**
+  String get vxAppointmentNone;
+
+  /// VX 2 row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hẹn {date}'**
+  String vxAppointmentOn(String date);
+
+  /// VX 2 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi bác sĩ hoặc nhân viên y tế để chọn loại vắc xin phù hợp với bé.'**
+  String get vxAskDoctor;
+
+  /// Row status.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tiêm {date}'**
+  String vxGivenOn(String date);
+
+  /// VX 3 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi mũi tiêm'**
+  String get vxRecordTitle;
+
+  /// Edit title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa mũi tiêm'**
+  String get vxEditTitle;
+
+  /// Field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày tiêm'**
+  String get vxDate;
+
+  /// Field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ'**
+  String get vxTime;
+
+  /// Time not set.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không rõ'**
+  String get vxTimeNone;
+
+  /// Field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nơi tiêm'**
+  String get vxPlace;
+
+  /// Place.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bệnh viện'**
+  String get vxPlaceHospital;
+
+  /// Place.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dịch vụ'**
+  String get vxPlaceService;
+
+  /// Place.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trạm y tế'**
+  String get vxPlaceStation;
+
+  /// Field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên cơ sở (không bắt buộc)'**
+  String get vxFacility;
+
+  /// Placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Trung tâm tiêm chủng gần nhà'**
+  String get vxFacilityHint;
+
+  /// Field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phản ứng sau tiêm (không bắt buộc)'**
+  String get vxReaction;
+
+  /// Placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sốt nhẹ, quấy hơn…'**
+  String get vxReactionHint;
+
+  /// VX 3 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu mũi tiêm'**
+  String get vxSave;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu {dose}'**
+  String vxSaved(String dose);
+
+  /// VX 4 toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu {dose} · mũi {n} dự kiến {date}'**
+  String vxSavedNext(String dose, int n, String date);
+
+  /// Write failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Thử lại nhé.'**
+  String get vxSaveFailed;
+
+  /// VX 5 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tiêm {dose}'**
+  String vxQuickTitle(String dose);
+
+  /// VX 5.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm ngày nào?'**
+  String get vxWhichDay;
+
+  /// VX 5 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get vxDayToday;
+
+  /// VX 5 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua'**
+  String get vxDayYesterday;
+
+  /// VX 5 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày'**
+  String get vxPickDay;
+
+  /// VX 5.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm ở đâu?'**
+  String get vxWhere;
+
+  /// VX 5 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu'**
+  String get vxQuickSave;
+
+  /// VX 5 plain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm chi tiết (phản ứng, ảnh sổ tiêm)'**
+  String get vxMoreDetails;
+
+  /// VX 6.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người ghi'**
+  String get vxRecordedBy;
+
+  /// VX 6.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phản ứng'**
+  String get vxReactionShort;
+
+  /// VX 6 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mũi {n} dự kiến {date}'**
+  String vxNextDose(int n, String date);
+
+  /// VX 6 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'đã bật nhắc'**
+  String get vxReminderOn;
+
+  /// VX 6 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'chưa bật nhắc'**
+  String get vxReminderOff;
+
+  /// VX 6.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá mũi tiêm này'**
+  String get vxDelete;
+
+  /// Confirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá {dose}?'**
+  String vxDeleteTitle(String dose);
+
+  /// Confirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mũi này sẽ trở lại chưa tiêm.'**
+  String get vxDeleteBody;
+
+  /// Confirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá'**
+  String get vxDeleteConfirm;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá {dose}'**
+  String vxDeleted(String dose);
+
+  /// Declined detail.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lý do'**
+  String get vxReason;
+
+  /// Declined detail.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ đánh dấu không tiêm'**
+  String get vxUndoDecline;
+
+  /// Rescheduled dose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ lịch hẹn'**
+  String get vxUndoReschedule;
+
+  /// Given without a date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ngày tiêm'**
+  String get vxAddDate;
+
+  /// VX 7.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mũi'**
+  String vxDoseCount(int count);
+
+  /// VX 7 oral.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} liều'**
+  String vxDoseCountOral(int count);
+
+  /// VX 7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số mũi'**
+  String get vxDoses;
+
+  /// VX 7 oral.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số liều'**
+  String get vxDosesOral;
+
+  /// VX 7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời điểm'**
+  String get vxTiming;
+
+  /// VX 7.
+  ///
+  /// In vi, this message translates to:
+  /// **'{list} tháng tuổi'**
+  String vxTimingValue(String list);
+
+  /// VX 7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng cách'**
+  String get vxInterval;
+
+  /// VX 7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối thiểu {weeks} tuần giữa các mũi'**
+  String vxIntervalValue(int weeks);
+
+  /// VX 7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách dùng'**
+  String get vxRoute;
+
+  /// VX 7.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các mũi của {name}'**
+  String vxBabyDoses(String name);
+
+  /// VX 7 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mũi {n}'**
+  String vxDoseN(int n);
+
+  /// VX 7 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dự kiến {date}'**
+  String vxPlannedOn(String date);
+
+  /// VX 7 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin tham khảo. Hỏi bác sĩ nếu bạn còn băn khoăn.'**
+  String get vxInfoBanner;
+
+  /// VX 9a.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé đã tiêm rồi'**
+  String get vxAlreadyGiven;
+
+  /// VX 9a.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi ngày và nơi tiêm'**
+  String get vxAlreadyGivenSub;
+
+  /// VX 9a.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dời lịch'**
+  String get vxReschedule;
+
+  /// VX 9a.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày hẹn mới, app nhắc lại trước 1 ngày'**
+  String get vxRescheduleSub;
+
+  /// VX 9a.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tiêm mũi này'**
+  String get vxDecline;
+
+  /// VX 9a.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tư vấn của bác sĩ · có thể ghi lý do'**
+  String get vxDeclineSub;
+
+  /// VX 9a banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi cơ sở tiêm chủng hoặc bác sĩ để được hướng dẫn lịch tiêm bù phù hợp.'**
+  String get vxCatchUp;
+
+  /// Decline sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tiêm {dose}'**
+  String vxDeclineTitle(String dose);
+
+  /// Decline sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lý do (không bắt buộc)'**
+  String get vxDeclineReasonHint;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi không tiêm {dose}'**
+  String vxDeclined(String dose);
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dời {dose} sang {date}'**
+  String vxRescheduled(String dose, String date);
+
+  /// Date sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày'**
+  String get vxPickDateTitle;
+
+  /// Relative tap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chỉ xem được sổ tiêm.'**
+  String get vxViewOnly;
+
+  /// Tile subtitle without dates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sổ tiêm chủng của bé'**
+  String get vxTileBook;
 }
 
 class _AppLocalizationsDelegate

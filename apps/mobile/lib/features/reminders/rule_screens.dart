@@ -72,6 +72,10 @@ String _dueLabel(AppLocalizations l10n, RuleType t) => switch (t) {
   RuleType.pump => l10n.ruleDuePump,
 };
 
+/// The activity's icon and soft tint, as on the rule cards (Hôm nay's reminders use them too).
+ClIcons ruleIcon(RuleType t) => _icon(t);
+Color ruleTint(ClTheme cl, RuleType t) => _tint(cl, t);
+
 ClIcons _icon(RuleType t) => switch (t) {
   RuleType.feed => ClIcons.feed,
   RuleType.sleep => ClIcons.sleep,

@@ -15,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// A route visit recorded by the stub pages: path (with query) and `extra`.
 typedef Visit = ({String location, Object? extra});
 
-/// Pumps [screen] at '/' with stub pages for every other route (up to three segments) on a
+/// Pumps [screen] at '/' with stub pages for every other route (up to four segments) on a
 /// 375 × 812 phone; returns the visits and the provider container.
 Future<(List<Visit>, ProviderContainer)> pumpRouted(
   WidgetTester tester,
@@ -41,6 +41,7 @@ Future<(List<Visit>, ProviderContainer)> pumpRouted(
       GoRouter(
         routes: [
           GoRoute(path: '/', builder: (_, _) => screen),
+          GoRoute(path: '/:a/:b/:c/:d', builder: (_, s) => stub(s)),
           GoRoute(path: '/:a/:b/:c', builder: (_, s) => stub(s)),
           GoRoute(path: '/:a/:b', builder: (_, s) => stub(s)),
           GoRoute(path: '/:a', builder: (_, s) => stub(s)),

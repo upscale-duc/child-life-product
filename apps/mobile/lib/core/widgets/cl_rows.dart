@@ -104,6 +104,7 @@ class ClListRow extends StatelessWidget {
     this.leading,
     this.onTap,
     this.isInvite = false,
+    this.subtitleColor,
     super.key,
   });
 
@@ -112,6 +113,9 @@ class ClListRow extends StatelessWidget {
   final Widget? leading;
   final VoidCallback? onTap;
   final bool isInvite;
+
+  /// e.g. error for an overdue reminder; ink-muted otherwise.
+  final Color? subtitleColor;
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +143,9 @@ class ClListRow extends StatelessWidget {
               if (subtitle != null)
                 Text(
                   subtitle!,
-                  style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                  style: cl.text.label.copyWith(
+                    color: subtitleColor ?? cl.colors.inkMuted,
+                  ),
                 ),
             ],
           ),

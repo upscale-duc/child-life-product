@@ -14,6 +14,8 @@ import 'package:child_life/features/me/me_models.dart';
 import 'package:child_life/features/me/me_repository.dart';
 import 'package:child_life/features/reminders/rule_models.dart';
 import 'package:child_life/features/reminders/rule_repository.dart';
+import 'package:child_life/features/vaccines/vaccine_models.dart';
+import 'package:child_life/features/vaccines/vaccine_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -174,6 +176,9 @@ List<Override> familyOverrides({
   List<ReminderRule> rules = const [],
   RuleRepository? ruleRepo,
   Map<String, List<RuleOccurrence>> occurrences = const {},
+  Map<String, VaccineDoseRecord> vaccines = const {},
+  VaccinePlan vaccinePlan = const VaccinePlan(),
+  VaccineRepository? vaccineRepo,
   ReminderNotifications? notifications,
   String deviceId = testDeviceId,
   NotificationPrefs prefs = const NotificationPrefs(),
@@ -220,6 +225,12 @@ List<Override> familyOverrides({
     remindersProvider.overrideWith((ref, id) => Stream.value(reminders)),
     reminderRepositoryProvider.overrideWithValue(
       reminderRepo ?? FakeReminderRepository(),
+    ),
+    // Sổ tiêm chủng (P-133).
+    vaccineDosesProvider.overrideWith((ref, id) => Stream.value(vaccines)),
+    vaccinePlanProvider.overrideWith((ref, id) => Stream.value(vaccinePlan)),
+    vaccineRepositoryProvider.overrideWithValue(
+      vaccineRepo ?? FakeVaccineRepository(),
     ),
     // v1.0 rule reminders (D-051).
     reminderRulesProvider.overrideWith((ref, id) => Stream.value(rules)),
@@ -271,6 +282,78 @@ class FakeRuleRepository implements RuleRepository {
     answers.add((ruleId: ruleId, dueAt: dueAt, snooze: snoozeMinutes));
     return answerDone;
   }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// Records what the vaccination screens write.
+class FakeVaccineRepository implements VaccineRepository {
+  final saved =
+      <
+        ({
+          String key,
+          DoseRecordStatus status,
+          DateTime? givenOn,
+          VaccinePlace? place,
+          DateTime? plannedOn,
+          String? reason,
+        })
+      >[];
+  final deleted = <String>[];
+  final plans = <VaccinePlan>[];
+  final setups = <List<String>>[];
+
+  @override
+  void save({
+    required String babyId,
+    required Membership me,
+    required DoseItem item,
+    required DoseRecordStatus status,
+    DateTime? givenOn,
+    String? givenTime,
+    VaccinePlace? place,
+    String? facility,
+    String? reaction,
+    String? declineReason,
+    DateTime? plannedOn,
+    String? photoPath,
+    void Function(Object error)? onError,
+  }) => saved.add((
+    key: item.key,
+    status: status,
+    givenOn: givenOn,
+    place: place,
+    plannedOn: plannedOn,
+    reason: declineReason,
+  ));
+
+  @override
+  void saveSetup({
+    required String babyId,
+    required Membership me,
+    required List<DoseItem> items,
+    required VaccinePlan plan,
+    void Function(Object error)? onError,
+  }) {
+    setups.add([for (final i in items) i.key]);
+    plans.add(plan.copyWith(setupDone: true));
+  }
+
+  @override
+  void delete(
+    String babyId,
+    DoseItem item, {
+    void Function(Object error)? onError,
+  }) => deleted.add(item.key);
+
+  @override
+  void savePlan(
+    String babyId,
+    Membership me,
+    VaccinePlan plan, {
+    void Function(Object error)? onError,
+  }) => plans.add(plan);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

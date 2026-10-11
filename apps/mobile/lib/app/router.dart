@@ -35,6 +35,7 @@ import '../features/me/profile_screen.dart';
 import '../features/me/storage_screens.dart';
 import '../features/reminders/reminder_screens.dart';
 import '../features/reminders/rule_screens.dart';
+import '../features/vaccines/vaccine_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
 import '../features/showcase/showcase_screen.dart';
@@ -248,6 +249,37 @@ final routerProvider = Provider<GoRouter>((ref) {
                   _route(
                     path: 'stats/sleep',
                     builder: (_, _) => const SleepStatsScreen(),
+                  ),
+                  // Sổ tiêm chủng (VX 0 – VX 9a).
+                  _route(
+                    path: 'vaccines',
+                    builder: (_, _) => const VaccineBookScreen(),
+                    routes: [
+                      _route(
+                        path: 'setup',
+                        builder: (_, _) => const VaccineSetupScreen(),
+                      ),
+                      _route(
+                        path: 'age/:months',
+                        builder: (_, s) => VaccineMilestoneScreen(
+                          months:
+                              int.tryParse(s.pathParameters['months'] ?? '') ??
+                              0,
+                        ),
+                      ),
+                      _route(
+                        path: 'dose/:key',
+                        builder: (_, s) => VaccineDoseScreen(
+                          doseKey: s.pathParameters['key'] ?? '',
+                        ),
+                      ),
+                      _route(
+                        path: 'info/:id',
+                        builder: (_, s) => VaccineInfoScreen(
+                          vaccineId: s.pathParameters['id'] ?? '',
+                        ),
+                      ),
+                    ],
                   ),
                   // S7 reminders (8a–8e, 12f).
                   _route(

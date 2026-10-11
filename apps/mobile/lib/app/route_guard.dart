@@ -25,6 +25,13 @@ abstract final class Routes {
   /// Rule reminders (v1.0 1a–1h): `/new`, `/{id}`, `/{id}/edit`.
   static const ruleDetail = '/care/reminders/rules';
   static const ruleNew = '/care/reminders/rules/new';
+
+  /// Sổ tiêm chủng (VX 0 – VX 9a): the book, setup, a milestone, a dose, a vaccine.
+  static const vaccines = '/care/vaccines';
+  static const vaccineSetup = '/care/vaccines/setup';
+  static const vaccineAge = '/care/vaccines/age';
+  static const vaccineDose = '/care/vaccines/dose';
+  static const vaccineInfo = '/care/vaccines/info';
   static const messages = '/messages';
   static const memories = '/memories';
   static const family = '/family';

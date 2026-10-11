@@ -185,7 +185,8 @@ class TodayScreen extends ConsumerWidget {
                 // ReminderPeek (128:665, R-094); not for relatives (D-018).
                 TodaySection.reminders => [
                   if (!readOnly) ...[
-                    const SizedBox(height: ClSpace.s4),
+                    // A section like "Hôm nay" below: its own header, the same gap.
+                    const SizedBox(height: ClSpace.s6),
                     const ReminderPeek(),
                   ],
                 ],

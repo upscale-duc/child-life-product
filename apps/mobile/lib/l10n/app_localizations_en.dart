@@ -2727,7 +2727,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminderPeekAdd => 'Add a reminder';
 
   @override
-  String get reminderPeekMore => 'See more';
+  String get reminderPeekMore => 'See all';
 
   @override
   String notifBody(String name, String when) {
@@ -6804,4 +6804,566 @@ class AppLocalizationsEn extends AppLocalizations {
   String glanceMemFor(String name) {
     return 'To $name’s memories';
   }
+
+  @override
+  String get vxTile => 'Vaccinations';
+
+  @override
+  String vxTileNext(String date) {
+    return 'Next shot $date';
+  }
+
+  @override
+  String vxTileOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count shots overdue',
+      one: '1 shot overdue',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vxTileAllDone => 'All shots done';
+
+  @override
+  String get vxTileSetup => 'Log the shots given';
+
+  @override
+  String get vxTitle => 'Vaccinations';
+
+  @override
+  String vxNextLine(String date, String left) {
+    return 'Next shot · $date · $left';
+  }
+
+  @override
+  String vxDaysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days left',
+      one: '1 day left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vxDueToday => 'today';
+
+  @override
+  String vxOverdueLine(int count, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Overdue by $count days',
+      one: 'Overdue by 1 day',
+    );
+    return '$_temp0 · planned $date';
+  }
+
+  @override
+  String vxDoseSuffix(int n) {
+    return '(dose $n)';
+  }
+
+  @override
+  String vxDoseOf(String name, int n) {
+    return '$name dose $n';
+  }
+
+  @override
+  String get vxViewByVaccine => 'By vaccine';
+
+  @override
+  String get vxViewByAge => 'By month of age';
+
+  @override
+  String vxCount(int given, int total) {
+    return '$given / $total shots given';
+  }
+
+  @override
+  String get vxLegendGiven => 'Given';
+
+  @override
+  String get vxLegendUpcoming => 'Upcoming';
+
+  @override
+  String get vxLegendOverdue => 'Overdue';
+
+  @override
+  String get vxLegendLater => 'Not yet';
+
+  @override
+  String get vxLegendDeclined => 'Not given';
+
+  @override
+  String vxMonthsShort(int months) {
+    return '$months mo';
+  }
+
+  @override
+  String get vxBirth => 'Newborn';
+
+  @override
+  String vxMonths(int months) {
+    String _temp0 = intl.Intl.pluralLogic(
+      months,
+      locale: localeName,
+      other: '$months months',
+      one: '1 month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vxMonthsOld(int months) {
+    String _temp0 = intl.Intl.pluralLogic(
+      months,
+      locale: localeName,
+      other: '$months months old',
+      one: '1 month old',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vxMilestoneBirth => 'Newborn';
+
+  @override
+  String vxMilestone(int months) {
+    return '$months-month milestone';
+  }
+
+  @override
+  String vxMilestoneShort(int months) {
+    return '$months-month';
+  }
+
+  @override
+  String vxHintMonths(String list) {
+    return '$list months';
+  }
+
+  @override
+  String get vxHintYearly => 'yearly';
+
+  @override
+  String get vxBannerMatrix =>
+      'Tap a shot to log it or see details. A reference schedule; it may change on the doctor’s advice.';
+
+  @override
+  String get vxBannerTimeline =>
+      'Tick a box once the shot is given — the app asks the date and place. A reference schedule; it may change on the doctor’s advice.';
+
+  @override
+  String vxOverdueCard(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count shots are',
+      one: '1 shot is',
+    );
+    return '$_temp0 past the planned date. If given, tick to update; if not, rebook with the clinic.';
+  }
+
+  @override
+  String vxNoDob(String name) {
+    return '$name’s date of birth is needed for the schedule.';
+  }
+
+  @override
+  String get vxNoDobBody => 'Parents add it in the baby profile.';
+
+  @override
+  String get vxViewTitle => 'View the schedule by';
+
+  @override
+  String get vxViewByVaccineSub =>
+      'One line per vaccine; see what is missing at a glance';
+
+  @override
+  String get vxViewByAgeSub => 'What each age needs; tick when given';
+
+  @override
+  String get vxNoDate => 'No date';
+
+  @override
+  String vxSetupTitle(String name) {
+    return 'Which shots has $name had?';
+  }
+
+  @override
+  String get vxSetupBody =>
+      'Tick the shots given since birth. No need to remember the dates — you can add them later.';
+
+  @override
+  String get vxSetupAtHospital => 'Newborn · usually at the hospital';
+
+  @override
+  String get vxSetupFirstDay => 'Within the first 24 hours';
+
+  @override
+  String vxSetupDue(String age, String date) {
+    return '$age · planned $date';
+  }
+
+  @override
+  String vxSetupSave(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Save $count shots',
+      one: 'Save 1 shot',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vxSetupContinue => 'Continue';
+
+  @override
+  String get vxSetupSkip => 'Skip for now';
+
+  @override
+  String vxPlannedLeft(String date, String left) {
+    return 'Planned $date · $left';
+  }
+
+  @override
+  String vxPlannedOverdue(String date, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return 'Planned $date · $_temp0 overdue';
+  }
+
+  @override
+  String get vxChooseOne => 'Choose one';
+
+  @override
+  String get vx6in1Title => '6-in-1 · Private clinic';
+
+  @override
+  String get vx6in1Body =>
+      'Diphtheria, whooping cough, tetanus, polio, Hib, hepatitis B — one shot';
+
+  @override
+  String get vxPaid => 'Paid';
+
+  @override
+  String get vx5in1Title => '5-in-1 + Polio · Health station';
+
+  @override
+  String get vx5in1Body => 'Free programme; polio given separately';
+
+  @override
+  String get vxFree => 'Free';
+
+  @override
+  String get vxShots => 'Shots';
+
+  @override
+  String get vxOtherShots => 'Other shots';
+
+  @override
+  String get vxLog => 'Log';
+
+  @override
+  String get vxRouteOral => 'Oral';
+
+  @override
+  String get vxRouteInjection => 'Injection';
+
+  @override
+  String get vxProgEpi => 'Free programme';
+
+  @override
+  String get vxProgService => 'Private clinic';
+
+  @override
+  String get vxProgHospital => 'Hospital';
+
+  @override
+  String get vxProgChoice => '6-in-1 private or 5-in-1 free';
+
+  @override
+  String get vxRemind => 'Remind 3 days before';
+
+  @override
+  String get vxRemindNobody => 'Nobody chosen';
+
+  @override
+  String get vxRecipientsTitle => 'Who gets the reminders?';
+
+  @override
+  String get vxAppointment => 'Set an appointment';
+
+  @override
+  String get vxAppointmentNone => 'No date set';
+
+  @override
+  String vxAppointmentOn(String date) {
+    return 'Booked for $date';
+  }
+
+  @override
+  String get vxAskDoctor =>
+      'Ask a doctor or health worker which vaccine suits your baby.';
+
+  @override
+  String vxGivenOn(String date) {
+    return 'Given $date';
+  }
+
+  @override
+  String get vxRecordTitle => 'Log a shot';
+
+  @override
+  String get vxEditTitle => 'Edit the shot';
+
+  @override
+  String get vxDate => 'Date';
+
+  @override
+  String get vxTime => 'Time';
+
+  @override
+  String get vxTimeNone => 'Not set';
+
+  @override
+  String get vxPlace => 'Where';
+
+  @override
+  String get vxPlaceHospital => 'Hospital';
+
+  @override
+  String get vxPlaceService => 'Private clinic';
+
+  @override
+  String get vxPlaceStation => 'Health station';
+
+  @override
+  String get vxFacility => 'Clinic name (optional)';
+
+  @override
+  String get vxFacilityHint => 'e.g. The vaccination centre near home';
+
+  @override
+  String get vxReaction => 'Reaction after the shot (optional)';
+
+  @override
+  String get vxReactionHint => 'Mild fever, fussier…';
+
+  @override
+  String get vxSave => 'Save the shot';
+
+  @override
+  String vxSaved(String dose) {
+    return 'Saved $dose';
+  }
+
+  @override
+  String vxSavedNext(String dose, int n, String date) {
+    return 'Saved $dose · dose $n planned $date';
+  }
+
+  @override
+  String get vxSaveFailed => 'Couldn’t save. Please try again.';
+
+  @override
+  String vxQuickTitle(String dose) {
+    return '$dose given';
+  }
+
+  @override
+  String get vxWhichDay => 'Which day?';
+
+  @override
+  String get vxDayToday => 'Today';
+
+  @override
+  String get vxDayYesterday => 'Yesterday';
+
+  @override
+  String get vxPickDay => 'Pick a date';
+
+  @override
+  String get vxWhere => 'Where?';
+
+  @override
+  String get vxQuickSave => 'Save';
+
+  @override
+  String get vxMoreDetails => 'Add details (reaction, photo of the book)';
+
+  @override
+  String get vxRecordedBy => 'Logged by';
+
+  @override
+  String get vxReactionShort => 'Reaction';
+
+  @override
+  String vxNextDose(int n, String date) {
+    return 'Dose $n planned $date';
+  }
+
+  @override
+  String get vxReminderOn => 'reminder on';
+
+  @override
+  String get vxReminderOff => 'reminder off';
+
+  @override
+  String get vxDelete => 'Delete this shot';
+
+  @override
+  String vxDeleteTitle(String dose) {
+    return 'Delete $dose?';
+  }
+
+  @override
+  String get vxDeleteBody => 'The shot goes back to not given.';
+
+  @override
+  String get vxDeleteConfirm => 'Delete';
+
+  @override
+  String vxDeleted(String dose) {
+    return 'Deleted $dose';
+  }
+
+  @override
+  String get vxReason => 'Reason';
+
+  @override
+  String get vxUndoDecline => 'Undo “not given”';
+
+  @override
+  String get vxUndoReschedule => 'Cancel the appointment';
+
+  @override
+  String get vxAddDate => 'Add the date';
+
+  @override
+  String vxDoseCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doses',
+      one: '1 dose',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String vxDoseCountOral(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doses',
+      one: '1 dose',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vxDoses => 'Doses';
+
+  @override
+  String get vxDosesOral => 'Doses';
+
+  @override
+  String get vxTiming => 'Timing';
+
+  @override
+  String vxTimingValue(String list) {
+    return '$list months old';
+  }
+
+  @override
+  String get vxInterval => 'Interval';
+
+  @override
+  String vxIntervalValue(int weeks) {
+    return 'At least $weeks weeks between doses';
+  }
+
+  @override
+  String get vxRoute => 'How it’s given';
+
+  @override
+  String vxBabyDoses(String name) {
+    return '$name’s doses';
+  }
+
+  @override
+  String vxDoseN(int n) {
+    return 'Dose $n';
+  }
+
+  @override
+  String vxPlannedOn(String date) {
+    return 'Planned $date';
+  }
+
+  @override
+  String get vxInfoBanner =>
+      'Reference information. Ask a doctor if you have any doubts.';
+
+  @override
+  String get vxAlreadyGiven => 'Already given';
+
+  @override
+  String get vxAlreadyGivenSub => 'Log the date and place';
+
+  @override
+  String get vxReschedule => 'Reschedule';
+
+  @override
+  String get vxRescheduleSub =>
+      'Pick a new date; we’ll remind you the day before';
+
+  @override
+  String get vxDecline => 'Not giving this shot';
+
+  @override
+  String get vxDeclineSub =>
+      'On the doctor’s advice · add a reason if you like';
+
+  @override
+  String get vxCatchUp =>
+      'Ask the clinic or a doctor about a suitable catch-up schedule.';
+
+  @override
+  String vxDeclineTitle(String dose) {
+    return 'Not giving $dose';
+  }
+
+  @override
+  String get vxDeclineReasonHint => 'Reason (optional)';
+
+  @override
+  String vxDeclined(String dose) {
+    return 'Marked $dose as not given';
+  }
+
+  @override
+  String vxRescheduled(String dose, String date) {
+    return 'Moved $dose to $date';
+  }
+
+  @override
+  String get vxPickDateTitle => 'Pick a date';
+
+  @override
+  String get vxViewOnly => 'You can view the book only.';
+
+  @override
+  String get vxTileBook => 'The baby’s vaccination book';
 }

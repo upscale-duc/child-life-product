@@ -62,6 +62,7 @@ function dose(uid: string, over: Record<string, unknown> = {}) {
 const plan = (uid: string, over: Record<string, unknown> = {}) => ({
   dtp: '6in1',
   setupDone: true,
+  scheduleFrom: '2026-09-17',
   remind: true,
   recipients: ['mom', 'dad'],
   bookPhotos: [],

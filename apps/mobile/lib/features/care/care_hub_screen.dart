@@ -17,11 +17,12 @@ import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
 import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
+import '../vaccines/vaccine_format.dart';
 import 'care_repository.dart';
 import 'history_screen.dart' show HistoryFilter;
 
 /// Chăm sóc tab (v1.0 improvement 370:1971; caregiver 370:2174): search, daily care (Nhắc nhở ·
-/// Thống kê · Lịch sử · Tăng trưởng) and the coming-soon teasers. Caregivers see no Tăng trưởng
+/// Tiêm chủng · Thống kê · Lịch sử · Tăng trưởng) and the coming-soon teasers. Caregivers see no Tăng trưởng
 /// tile. No "Cài đặt" section (owner, 2026-10-11): Tuỳ chỉnh lives on Hôm nay, Thông báo in Tôi.
 class CareHubScreen extends ConsumerStatefulWidget {
   const CareHubScreen({super.key});
@@ -83,6 +84,27 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
         title: l10n.careReminders,
         subtitle: remindersLine,
         onTap: () => context.push(Routes.reminders),
+      ),
+      // Sổ tiêm chủng (394:4451, caregivers too 394:4461): the next shot, or what needs doing.
+      _Tile(
+        icon: ClIcons.heart,
+        tint: cl.colors.peachSoft,
+        title: l10n.vxTile,
+        subtitle: switch (ref.watch(vaccineBookProvider(me))) {
+          VaccineBookReady(:final book) when book.overdue.isNotEmpty =>
+            l10n.vxTileOverdue(book.overdue.length),
+          VaccineBookReady(:final book)
+              when !book.plan.setupDone &&
+                  me.role == MemberRole.coParent &&
+                  book.dueSoFar.isNotEmpty =>
+            l10n.vxTileSetup,
+          VaccineBookReady(:final book) => switch (book.nextGroup) {
+            final g? => l10n.vxTileNext(vxDay(g.date)),
+            null => l10n.vxTileAllDone,
+          },
+          _ => l10n.vxTileBook,
+        },
+        onTap: () => context.push(Routes.vaccines),
       ),
       _Tile(
         icon: ClIcons.sliders,

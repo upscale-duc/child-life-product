@@ -37,7 +37,8 @@ import 'reminder_models.dart';
 import 'reminder_notifications.dart';
 import 'reminder_repository.dart';
 import 'rule_repository.dart' show reminderRulesProvider;
-import 'rule_screens.dart' show RuleRemindersList, ruleTitle;
+import 'rule_screens.dart'
+    show RuleRemindersList, ruleIcon, ruleTint, ruleTitle, showRuleDueSheet;
 
 // ---------- Labels ----------
 
@@ -1126,13 +1127,13 @@ Future<void> _maybeAsk(
 
 // ---------- ReminderPeek (128:665) ----------
 
-/// On Hôm nay: the next reminders (up to [shown]), dated ones and rules' next times together,
-/// overdue first, then "Xem thêm" into 8a (owner, 2026-10-11; was the next one only). Hidden
-/// for relatives (D-018).
+/// On Hôm nay: "Nhắc việc · N" with "Xem tất cả", then the next reminders (up to [shown]) as
+/// rows, dated ones and rules' next times together, overdue first; a row opens its reminder
+/// (a rule that rang opens its "Ghi …" sheet). Owner, 2026-10-11. Hidden for relatives (D-018).
 class ReminderPeek extends ConsumerWidget {
   const ReminderPeek({super.key});
 
-  /// Lines on Hôm nay before "Xem thêm".
+  /// Rows on Hôm nay; the rest are behind "Xem tất cả".
   static const shown = 3;
 
   @override
@@ -1148,26 +1149,57 @@ class ReminderPeek extends ConsumerWidget {
     final rules =
         ref.watch(reminderRulesProvider(c.me.babyId)).value ?? const [];
     final groups = groupReminders(all, c.now);
+    final babyId = c.me.babyId;
     final items =
-        <({String title, DateTime at, bool overdue})>[
-          for (final r in [...groups.overdue, ...groups.upcoming])
-            (
-              title: r.title,
-              at: r.dueAt,
-              overdue: r.statusAt(c.now) == ReminderStatus.overdue,
-            ),
-          for (final r in rules)
-            if (!r.enabled)
-              ...[]
-            // Rang and not yet answered (1g) comes first, like an overdue reminder.
-            else if (r.pendingDueAt case final due?)
-              (title: ruleTitle(l10n, r.type), at: due, overdue: true)
-            else if (r.nextDueAt case final next?)
-              (title: ruleTitle(l10n, r.type), at: next, overdue: false),
-        ]..sort((a, b) {
-          if (a.overdue != b.overdue) return a.overdue ? -1 : 1;
-          return a.at.compareTo(b.at);
-        });
+        <
+            ({
+              String title,
+              DateTime at,
+              bool overdue,
+              ClIcons icon,
+              Color tint,
+              VoidCallback open,
+            })
+          >[
+            for (final r in [...groups.overdue, ...groups.upcoming])
+              (
+                title: r.title,
+                at: r.dueAt,
+                overdue: r.statusAt(c.now) == ReminderStatus.overdue,
+                icon: ClIcons.bell,
+                tint: cl.colors.mintSoft,
+                open: () => context.push('${Routes.reminders}/${r.id}'),
+              ),
+            for (final r in rules)
+              if (!r.enabled)
+                ...[]
+              // Rang and not yet answered (1g): first, like an overdue reminder, and opens the
+              // same sheet as the notification.
+              else if (r.pendingDueAt case final due?)
+                (
+                  title: ruleTitle(l10n, r.type),
+                  at: due,
+                  overdue: true,
+                  icon: ruleIcon(r.type),
+                  tint: ruleTint(cl, r.type),
+                  open: () => unawaited(
+                    showRuleDueSheet(context, babyId: babyId, ruleId: r.id),
+                  ),
+                )
+              else if (r.nextDueAt case final next?)
+                (
+                  title: ruleTitle(l10n, r.type),
+                  at: next,
+                  overdue: false,
+                  icon: ruleIcon(r.type),
+                  tint: ruleTint(cl, r.type),
+                  open: () => context.push('${Routes.ruleDetail}/${r.id}'),
+                ),
+          ]
+          ..sort((a, b) {
+            if (a.overdue != b.overdue) return a.overdue ? -1 : 1;
+            return a.at.compareTo(b.at);
+          });
     final parent = c.me.role == MemberRole.coParent;
     final today = babyToday(c.zone, c.now);
 
@@ -1194,127 +1226,57 @@ class ReminderPeek extends ConsumerWidget {
       return '$label · $left';
     }
 
-    final caption = cl.text.caption.copyWith(color: cl.colors.inkMuted);
-    return ClPressable(
-      onPressed: () => items.isEmpty && parent
-          ? showReminderSheet(context)
-          : context.push(Routes.reminders),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(
-          ClSpace.s4,
-          ClSpace.s3,
-          ClSpace.s3,
-          ClSpace.s3,
+    Widget mark(ClIcons icon, Color tint, {bool overdue = false}) => Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: overdue ? cl.colors.errorSoft : tint,
+        shape: BoxShape.circle,
+      ),
+      alignment: Alignment.center,
+      child: ClIcon(
+        icon,
+        size: 20,
+        color: overdue ? cl.colors.error : cl.colors.ink,
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSectionHeader(
+          title: items.isEmpty
+              ? l10n.reminderPeekTitle
+              : l10n.reminderPeekLabel(items.length),
+          linkLabel: items.isEmpty ? null : l10n.reminderPeekMore,
+          onLink: () => context.push(Routes.reminders),
         ),
-        decoration: BoxDecoration(
-          color: cl.colors.surface,
-          borderRadius: BorderRadius.circular(ClRadius.card),
-          boxShadow: cl.shadows.card,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        const SizedBox(height: ClSpace.s2),
+        ClCardGroup(
+          shadow: true,
           children: [
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: cl.colors.mintSoft,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: ClIcon(
-                      ClIcons.bell,
-                      size: 20,
-                      color: cl.colors.mintDeep,
-                    ),
-                  ),
+            if (items.isEmpty)
+              ClListRow(
+                leading: mark(ClIcons.bell, cl.colors.mintSoft),
+                title: l10n.reminderPeekEmpty,
+                subtitle: parent ? l10n.reminderPeekAdd : null,
+                subtitleColor: cl.colors.mintText,
+                onTap: () => parent
+                    ? showReminderSheet(context)
+                    : context.push(Routes.reminders),
+              )
+            else
+              for (final i in items.take(shown))
+                ClListRow(
+                  leading: mark(i.icon, i.tint, overdue: i.overdue),
+                  title: i.title,
+                  subtitle: when(i.at, i.overdue),
+                  subtitleColor: i.overdue ? cl.colors.error : null,
+                  onTap: i.open,
                 ),
-                const SizedBox(width: ClSpace.s3),
-                Expanded(
-                  child: items.isEmpty
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(l10n.reminderPeekTitle, style: caption),
-                            Text(
-                              l10n.reminderPeekEmpty,
-                              style: cl.text.bodyStrong,
-                            ),
-                            if (parent)
-                              Text(
-                                l10n.reminderPeekAdd,
-                                style: cl.text.caption.copyWith(
-                                  color: cl.colors.mintText,
-                                ),
-                              ),
-                          ],
-                        )
-                      : Text(
-                          l10n.reminderPeekLabel(items.length),
-                          style: cl.text.bodyStrong,
-                        ),
-                ),
-                if (items.isEmpty)
-                  ClIcon(
-                    ClIcons.chevronRight,
-                    size: 20,
-                    color: cl.colors.inkMuted,
-                  ),
-              ],
-            ),
-            for (final i in items.take(shown)) ...[
-              const SizedBox(height: ClSpace.s2),
-              Padding(
-                // Under the title, past the bell.
-                padding: const EdgeInsets.only(left: 40 + ClSpace.s3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      i.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: cl.text.body,
-                    ),
-                    Text(
-                      when(i.at, i.overdue),
-                      style: i.overdue
-                          ? cl.text.caption.copyWith(color: cl.colors.error)
-                          : caption,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-            if (items.isNotEmpty) ...[
-              const SizedBox(height: ClSpace.s2),
-              Padding(
-                padding: const EdgeInsets.only(left: 40 + ClSpace.s3),
-                child: Row(
-                  children: [
-                    Text(
-                      l10n.reminderPeekMore,
-                      style: cl.text.label.copyWith(
-                        color: cl.colors.mintText,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(width: 2),
-                    ClIcon(
-                      ClIcons.chevronRight,
-                      size: 16,
-                      color: cl.colors.mintText,
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ],
         ),
-      ),
+      ],
     );
   }
 }

@@ -2602,7 +2602,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get reminderPeekAdd => 'Tạo nhắc việc';
 
   @override
-  String get reminderPeekMore => 'Xem thêm';
+  String get reminderPeekMore => 'Xem tất cả';
 
   @override
   String notifBody(String name, String when) {
@@ -6406,4 +6406,504 @@ class AppLocalizationsVi extends AppLocalizations {
   String glanceMemFor(String name) {
     return 'Vào Kỷ niệm của $name';
   }
+
+  @override
+  String get vxTile => 'Tiêm chủng';
+
+  @override
+  String vxTileNext(String date) {
+    return 'Mũi tiếp theo $date';
+  }
+
+  @override
+  String vxTileOverdue(int count) {
+    return '$count mũi quá hạn';
+  }
+
+  @override
+  String get vxTileAllDone => 'Đã tiêm đủ theo lịch';
+
+  @override
+  String get vxTileSetup => 'Ghi các mũi đã tiêm';
+
+  @override
+  String get vxTitle => 'Tiêm chủng';
+
+  @override
+  String vxNextLine(String date, String left) {
+    return 'Mũi tiếp theo · $date · $left';
+  }
+
+  @override
+  String vxDaysLeft(int count) {
+    return 'còn $count ngày';
+  }
+
+  @override
+  String get vxDueToday => 'hôm nay';
+
+  @override
+  String vxOverdueLine(int count, String date) {
+    return 'Quá hạn $count ngày · dự kiến $date';
+  }
+
+  @override
+  String vxDoseSuffix(int n) {
+    return '(mũi $n)';
+  }
+
+  @override
+  String vxDoseOf(String name, int n) {
+    return '$name mũi $n';
+  }
+
+  @override
+  String get vxViewByVaccine => 'Theo vắc xin';
+
+  @override
+  String get vxViewByAge => 'Theo tháng tuổi';
+
+  @override
+  String vxCount(int given, int total) {
+    return 'Đã tiêm $given / $total mũi';
+  }
+
+  @override
+  String get vxLegendGiven => 'Đã tiêm';
+
+  @override
+  String get vxLegendUpcoming => 'Sắp tới';
+
+  @override
+  String get vxLegendOverdue => 'Quá hạn';
+
+  @override
+  String get vxLegendLater => 'Chưa tới';
+
+  @override
+  String get vxLegendDeclined => 'Không tiêm';
+
+  @override
+  String vxMonthsShort(int months) {
+    return '$months th';
+  }
+
+  @override
+  String get vxBirth => 'Sơ sinh';
+
+  @override
+  String vxMonths(int months) {
+    return '$months tháng';
+  }
+
+  @override
+  String vxMonthsOld(int months) {
+    return '$months tháng tuổi';
+  }
+
+  @override
+  String get vxMilestoneBirth => 'Mốc sơ sinh';
+
+  @override
+  String vxMilestone(int months) {
+    return 'Mốc $months tháng tuổi';
+  }
+
+  @override
+  String vxMilestoneShort(int months) {
+    return 'Mốc $months tháng';
+  }
+
+  @override
+  String vxHintMonths(String list) {
+    return '$list tháng';
+  }
+
+  @override
+  String get vxHintYearly => 'hằng năm';
+
+  @override
+  String get vxBannerMatrix =>
+      'Chạm vào một mũi để ghi đã tiêm hoặc xem chi tiết. Lịch tham khảo, có thể thay đổi theo chỉ định của bác sĩ.';
+
+  @override
+  String get vxBannerTimeline =>
+      'Tích vào ô khi bé đã tiêm — app sẽ hỏi ngày và nơi tiêm. Lịch tham khảo, có thể thay đổi theo chỉ định của bác sĩ.';
+
+  @override
+  String vxOverdueCard(int count) {
+    return '$count mũi đã quá ngày dự kiến. Nếu bé đã tiêm, hãy tích để cập nhật; nếu chưa, đặt lại lịch với cơ sở tiêm.';
+  }
+
+  @override
+  String vxNoDob(String name) {
+    return 'Cần ngày sinh của $name để lập lịch tiêm.';
+  }
+
+  @override
+  String get vxNoDobBody => 'Ba mẹ thêm ngày sinh trong hồ sơ bé.';
+
+  @override
+  String get vxViewTitle => 'Xem lịch tiêm theo';
+
+  @override
+  String get vxViewByVaccineSub =>
+      'Mỗi loại một dòng, thấy ngay mũi nào còn thiếu';
+
+  @override
+  String get vxViewByAgeSub => 'Từng mốc tuổi tiêm gì, tích khi đã tiêm';
+
+  @override
+  String get vxNoDate => 'Chưa ghi ngày';
+
+  @override
+  String vxSetupTitle(String name) {
+    return '$name đã tiêm những mũi nào?';
+  }
+
+  @override
+  String get vxSetupBody =>
+      'Tích các mũi bé đã tiêm từ lúc sinh. Không nhớ ngày cũng không sao — bạn có thể bổ sung sau.';
+
+  @override
+  String get vxSetupAtHospital => 'Sơ sinh · thường tiêm tại bệnh viện';
+
+  @override
+  String get vxSetupFirstDay => 'Trong 24 giờ đầu';
+
+  @override
+  String vxSetupDue(String age, String date) {
+    return '$age · dự kiến $date';
+  }
+
+  @override
+  String vxSetupSave(int count) {
+    return 'Lưu $count mũi đã tiêm';
+  }
+
+  @override
+  String get vxSetupContinue => 'Tiếp tục';
+
+  @override
+  String get vxSetupSkip => 'Bỏ qua, làm sau';
+
+  @override
+  String vxPlannedLeft(String date, String left) {
+    return 'Dự kiến $date · $left';
+  }
+
+  @override
+  String vxPlannedOverdue(String date, int count) {
+    return 'Dự kiến $date · đã quá $count ngày';
+  }
+
+  @override
+  String get vxChooseOne => 'Chọn một trong hai';
+
+  @override
+  String get vx6in1Title => '6in1 · Dịch vụ';
+
+  @override
+  String get vx6in1Body =>
+      'Bạch hầu, ho gà, uốn ván, bại liệt, Hib, viêm gan B — một mũi';
+
+  @override
+  String get vxPaid => 'Có phí';
+
+  @override
+  String get vx5in1Title => '5in1 + Bại liệt · Trạm y tế';
+
+  @override
+  String get vx5in1Body => 'Tiêm chủng mở rộng, uống/tiêm thêm bại liệt';
+
+  @override
+  String get vxFree => 'Miễn phí';
+
+  @override
+  String get vxShots => 'Các mũi';
+
+  @override
+  String get vxOtherShots => 'Các mũi khác';
+
+  @override
+  String get vxLog => 'Ghi';
+
+  @override
+  String get vxRouteOral => 'Uống';
+
+  @override
+  String get vxRouteInjection => 'Tiêm';
+
+  @override
+  String get vxProgEpi => 'Tiêm chủng mở rộng';
+
+  @override
+  String get vxProgService => 'Dịch vụ';
+
+  @override
+  String get vxProgHospital => 'Bệnh viện';
+
+  @override
+  String get vxProgChoice => '6in1 dịch vụ hoặc 5in1 miễn phí';
+
+  @override
+  String get vxRemind => 'Nhắc trước 3 ngày';
+
+  @override
+  String get vxRemindNobody => 'Chưa chọn người nhận';
+
+  @override
+  String get vxRecipientsTitle => 'Ai nhận nhắc lịch tiêm?';
+
+  @override
+  String get vxAppointment => 'Đặt lịch hẹn';
+
+  @override
+  String get vxAppointmentNone => 'Chưa đặt ngày hẹn';
+
+  @override
+  String vxAppointmentOn(String date) {
+    return 'Hẹn $date';
+  }
+
+  @override
+  String get vxAskDoctor =>
+      'Hỏi bác sĩ hoặc nhân viên y tế để chọn loại vắc xin phù hợp với bé.';
+
+  @override
+  String vxGivenOn(String date) {
+    return 'Đã tiêm $date';
+  }
+
+  @override
+  String get vxRecordTitle => 'Ghi mũi tiêm';
+
+  @override
+  String get vxEditTitle => 'Sửa mũi tiêm';
+
+  @override
+  String get vxDate => 'Ngày tiêm';
+
+  @override
+  String get vxTime => 'Giờ';
+
+  @override
+  String get vxTimeNone => 'Không rõ';
+
+  @override
+  String get vxPlace => 'Nơi tiêm';
+
+  @override
+  String get vxPlaceHospital => 'Bệnh viện';
+
+  @override
+  String get vxPlaceService => 'Dịch vụ';
+
+  @override
+  String get vxPlaceStation => 'Trạm y tế';
+
+  @override
+  String get vxFacility => 'Tên cơ sở (không bắt buộc)';
+
+  @override
+  String get vxFacilityHint => 'VD: Trung tâm tiêm chủng gần nhà';
+
+  @override
+  String get vxReaction => 'Phản ứng sau tiêm (không bắt buộc)';
+
+  @override
+  String get vxReactionHint => 'Sốt nhẹ, quấy hơn…';
+
+  @override
+  String get vxSave => 'Lưu mũi tiêm';
+
+  @override
+  String vxSaved(String dose) {
+    return 'Đã lưu $dose';
+  }
+
+  @override
+  String vxSavedNext(String dose, int n, String date) {
+    return 'Đã lưu $dose · mũi $n dự kiến $date';
+  }
+
+  @override
+  String get vxSaveFailed => 'Chưa lưu được. Thử lại nhé.';
+
+  @override
+  String vxQuickTitle(String dose) {
+    return 'Đã tiêm $dose';
+  }
+
+  @override
+  String get vxWhichDay => 'Tiêm ngày nào?';
+
+  @override
+  String get vxDayToday => 'Hôm nay';
+
+  @override
+  String get vxDayYesterday => 'Hôm qua';
+
+  @override
+  String get vxPickDay => 'Chọn ngày';
+
+  @override
+  String get vxWhere => 'Tiêm ở đâu?';
+
+  @override
+  String get vxQuickSave => 'Lưu';
+
+  @override
+  String get vxMoreDetails => 'Thêm chi tiết (phản ứng, ảnh sổ tiêm)';
+
+  @override
+  String get vxRecordedBy => 'Người ghi';
+
+  @override
+  String get vxReactionShort => 'Phản ứng';
+
+  @override
+  String vxNextDose(int n, String date) {
+    return 'Mũi $n dự kiến $date';
+  }
+
+  @override
+  String get vxReminderOn => 'đã bật nhắc';
+
+  @override
+  String get vxReminderOff => 'chưa bật nhắc';
+
+  @override
+  String get vxDelete => 'Xoá mũi tiêm này';
+
+  @override
+  String vxDeleteTitle(String dose) {
+    return 'Xoá $dose?';
+  }
+
+  @override
+  String get vxDeleteBody => 'Mũi này sẽ trở lại chưa tiêm.';
+
+  @override
+  String get vxDeleteConfirm => 'Xoá';
+
+  @override
+  String vxDeleted(String dose) {
+    return 'Đã xoá $dose';
+  }
+
+  @override
+  String get vxReason => 'Lý do';
+
+  @override
+  String get vxUndoDecline => 'Bỏ đánh dấu không tiêm';
+
+  @override
+  String get vxUndoReschedule => 'Huỷ lịch hẹn';
+
+  @override
+  String get vxAddDate => 'Thêm ngày tiêm';
+
+  @override
+  String vxDoseCount(int count) {
+    return '$count mũi';
+  }
+
+  @override
+  String vxDoseCountOral(int count) {
+    return '$count liều';
+  }
+
+  @override
+  String get vxDoses => 'Số mũi';
+
+  @override
+  String get vxDosesOral => 'Số liều';
+
+  @override
+  String get vxTiming => 'Thời điểm';
+
+  @override
+  String vxTimingValue(String list) {
+    return '$list tháng tuổi';
+  }
+
+  @override
+  String get vxInterval => 'Khoảng cách';
+
+  @override
+  String vxIntervalValue(int weeks) {
+    return 'Tối thiểu $weeks tuần giữa các mũi';
+  }
+
+  @override
+  String get vxRoute => 'Cách dùng';
+
+  @override
+  String vxBabyDoses(String name) {
+    return 'Các mũi của $name';
+  }
+
+  @override
+  String vxDoseN(int n) {
+    return 'Mũi $n';
+  }
+
+  @override
+  String vxPlannedOn(String date) {
+    return 'Dự kiến $date';
+  }
+
+  @override
+  String get vxInfoBanner =>
+      'Thông tin tham khảo. Hỏi bác sĩ nếu bạn còn băn khoăn.';
+
+  @override
+  String get vxAlreadyGiven => 'Bé đã tiêm rồi';
+
+  @override
+  String get vxAlreadyGivenSub => 'Ghi ngày và nơi tiêm';
+
+  @override
+  String get vxReschedule => 'Dời lịch';
+
+  @override
+  String get vxRescheduleSub => 'Chọn ngày hẹn mới, app nhắc lại trước 1 ngày';
+
+  @override
+  String get vxDecline => 'Không tiêm mũi này';
+
+  @override
+  String get vxDeclineSub => 'Theo tư vấn của bác sĩ · có thể ghi lý do';
+
+  @override
+  String get vxCatchUp =>
+      'Hỏi cơ sở tiêm chủng hoặc bác sĩ để được hướng dẫn lịch tiêm bù phù hợp.';
+
+  @override
+  String vxDeclineTitle(String dose) {
+    return 'Không tiêm $dose';
+  }
+
+  @override
+  String get vxDeclineReasonHint => 'Lý do (không bắt buộc)';
+
+  @override
+  String vxDeclined(String dose) {
+    return 'Đã ghi không tiêm $dose';
+  }
+
+  @override
+  String vxRescheduled(String dose, String date) {
+    return 'Đã dời $dose sang $date';
+  }
+
+  @override
+  String get vxPickDateTitle => 'Chọn ngày';
+
+  @override
+  String get vxViewOnly => 'Bạn chỉ xem được sổ tiêm.';
+
+  @override
+  String get vxTileBook => 'Sổ tiêm chủng của bé';
 }
