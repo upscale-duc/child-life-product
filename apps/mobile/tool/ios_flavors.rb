@@ -28,11 +28,11 @@ FLAVORS = {
 }.freeze
 BASES = %w[Debug Profile Release].freeze
 DEPLOYMENT_TARGET = '16.1'
-# App extensions: bundle id = app bundle id + suffix. The widget template uses Control widgets
-# (iOS 18), so the widget extension only exists on iOS 18+; the share extension (S9) runs
-# wherever the app does.
+# App extensions: bundle id = app bundle id + suffix. Interactive widgets and Live Activity
+# intents need iOS 17, so the widget extension exists from 17 on; the share extension (S9) runs
+# wherever the app does. `shared: true` targets also compile ios/Shared (S8 glance kit).
 EXTENSIONS = {
-  'widgetExtension' => { suffix: 'widgets', deployment: '18.0', dir: 'widget' },
+  'widgetExtension' => { suffix: 'widgets', deployment: '17.0', dir: 'widget', shared: true },
   'share' => { suffix: 'share', deployment: DEPLOYMENT_TARGET, dir: 'share' },
 }.freeze
 
@@ -62,15 +62,18 @@ def write_entitlements(path, entries)
 end
 
 FLAVORS.each do |flavor, info|
+  # The keychain group lets widgets and Live Activity buttons write as the signed-in person (S8).
+  keychain = ["$(AppIdentifierPrefix)#{info[:bundle_id]}.shared"]
   write_entitlements(File.join(root, 'Runner', "Runner-#{flavor}.entitlements"), {
     'aps-environment' => 'development',
     'com.apple.developer.applesignin' => ['Default'],
     'com.apple.security.application-groups' => [info[:app_group]],
+    'keychain-access-groups' => keychain,
   })
   EXTENSIONS.each_value do |ext|
     write_entitlements(File.join(root, ext[:dir], "#{ext[:dir]}-#{flavor}.entitlements"), {
       'com.apple.security.application-groups' => [info[:app_group]],
-    })
+    }.merge(ext[:shared] ? { 'keychain-access-groups' => keychain } : {}))
   end
 end
 project = Xcodeproj::Project.open(File.join(root, 'Runner.xcodeproj'))
@@ -153,6 +156,8 @@ flutter_group = project.main_group['Flutter']
         config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = info[:bundle_id]
         config.build_settings['FLAVOR_APP_NAME'] = info[:name]
         config.build_settings['CL_APP_GROUP'] = info[:app_group]
+        config.build_settings['CL_URL_SCHEME'] = info[:bundle_id]
+        config.build_settings['CL_KEYCHAIN_GROUP'] = "#{info[:bundle_id]}.shared"
         config.build_settings['ASSETCATALOG_COMPILER_APPICON_NAME'] = info[:icon]
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = DEPLOYMENT_TARGET
         # Signing on the team; push (aps-environment) comes from the entitlements.
@@ -185,12 +190,28 @@ EXTENSIONS.each do |name, ext|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = ext[:deployment]
       config.build_settings['CODE_SIGN_ENTITLEMENTS'] = "#{ext[:dir]}/#{ext[:dir]}-#{flavor}.entitlements"
       config.build_settings['CL_APP_GROUP'] = info[:app_group]
+      config.build_settings['CL_URL_SCHEME'] = info[:bundle_id]
+      config.build_settings['CL_KEYCHAIN_GROUP'] = "#{info[:bundle_id]}.shared"
       config.build_settings['FLAVOR_APP_NAME'] = info[:name]
       sign(config, info[:extension_profiles][name], info[:team])
     end
   end
   list.build_configurations.select { |c| BASES.include?(c.name) }.each(&:remove_from_project)
   list.default_configuration_name = 'Release-prod'
+end
+
+# ios/Shared (glance kit: App Group snapshot, shared session, Firestore REST, intents, Live
+# Activity attributes) compiles into the app and every `shared: true` extension.
+shared_group = project.main_group['Shared'] || project.main_group.new_group('Shared', 'Shared')
+shared_files = Dir[File.join(root, 'Shared', '*.swift')].sort.map do |path|
+  name = File.basename(path)
+  shared_group.files.find { |f| f.path == name } || shared_group.new_file(name)
+end
+shared_group.files.reject { |f| shared_files.include?(f) }.each(&:remove_from_project)
+shared_targets = [runner] + EXTENSIONS.select { |_, e| e[:shared] }.keys.map { |n| project.targets.find { |t| t.name == n } }.compact
+shared_targets.each do |target|
+  phase = target.source_build_phase
+  shared_files.each { |ref| phase.add_file_reference(ref, true) }
 end
 
 # Copy the flavor's GoogleService-Info.plist into the app bundle; fail if the flavor has none.

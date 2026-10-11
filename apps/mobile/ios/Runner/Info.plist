@@ -27,10 +27,27 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>app.childlife.glance</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>$(CL_URL_SCHEME)</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>CLAppGroup</key>
 	<string>$(CL_APP_GROUP)</string>
+	<key>CLKeychainGroup</key>
+	<string>$(AppIdentifierPrefix)$(CL_KEYCHAIN_GROUP)</string>
+	<key>CLURLScheme</key>
+	<string>$(CL_URL_SCHEME)</string>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>message</string>
@@ -45,6 +62,8 @@
 	<string>Child Life saves photos and videos you download from Memories to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Child Life opens your photo library so you can add your baby's photos and videos to Memories and choose a profile photo. Only your family can see them.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

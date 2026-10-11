@@ -1,18 +1,20 @@
-//
-//  widgetBundle.swift
-//  widget
-//
-//  Created by Duc Nguyen on 10/11/26.
-//
-
-import WidgetKit
 import SwiftUI
+import WidgetKit
 
+/// Child Life widgets (S8, Figma W1–W5): small per care type, medium quick log, large Today,
+/// lock-screen accessories, and the Sleep / Breast Live Activity with its Dynamic Island.
 @main
-struct widgetBundle: WidgetBundle {
-    var body: some Widget {
-        widget()
-        widgetControl()
-        widgetLiveActivity()
-    }
+struct ChildLifeWidgets: WidgetBundle {
+  var body: some Widget {
+    BottleWidget()
+    BreastWidget()
+    SleepWidget()
+    DiaperWidget()
+    QuickLogWidget()
+    TodayWidget()
+    LockWidget()
+    LockSleepWidget()
+    LockFeedWidget()
+    CareLiveActivityWidget()
+  }
 }

@@ -7,12 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0139B57B7A56FE37B9F39219 /* GlanceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2A0870821DA7145DF6CF70 /* GlanceStore.swift */; };
+		0878EBA5FD6919E9EA835F74 /* GlanceActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F12A1DDA854FECB2FB4C2E8 /* GlanceActions.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		72DF1183C98318C496E92D4D /* GlanceActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F12A1DDA854FECB2FB4C2E8 /* GlanceActions.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		7494EA86ECF5E03380771000 /* GlanceAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54F7A49F1314623601C2661 /* GlanceAuth.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
+		7AA6061D3E3D2DDD928A3A66 /* GlanceFirestore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24A0ECE9B00725C6FC131D9 /* GlanceFirestore.swift */; };
+		7D04AF7A64359EF08EF29F22 /* GlanceIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9348597E7EA32D40BCC9352 /* GlanceIntents.swift */; };
 		8131B424183A68F676B3AA6C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 83342895D553E66C5F75E1A3 /* InfoPlist.strings */; };
+		9120E04F8D17ED86CDF1A7B5 /* GlanceLive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8C9836661320132AB04B35 /* GlanceLive.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -20,6 +27,11 @@
 		AB3A428C307B257B001F0044 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB3A428B307B257B001F0044 /* SwiftUI.framework */; };
 		AB3A429D307B257C001F0044 /* widgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AB3A4288307B257B001F0044 /* widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AB3A42FB307B27BE001F0044 /* share.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AB3A42F1307B27BE001F0044 /* share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B32BDE0DC85A40AE3BBF835E /* GlanceFirestore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24A0ECE9B00725C6FC131D9 /* GlanceFirestore.swift */; };
+		BD8182D5D4824E61699FDC8C /* GlanceAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54F7A49F1314623601C2661 /* GlanceAuth.swift */; };
+		D7357982DCDD10F0E711AF34 /* GlanceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2A0870821DA7145DF6CF70 /* GlanceStore.swift */; };
+		DC4361A7FC4B05C4B265A407 /* GlanceIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9348597E7EA32D40BCC9352 /* GlanceIntents.swift */; };
+		F351C9EFE0853A7C75975C5C /* GlanceLive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8C9836661320132AB04B35 /* GlanceLive.swift */; };
 		FC72C793F0CFDEAC3A3D56E4 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EF800959D6539B03719B8BF /* Pods_Runner.framework */; };
 		FFA97308B7EF61D4D2DA5F04 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3E55DFC36F891549016D931 /* Pods_RunnerTests.framework */; };
 /* End PBXBuildFile section */
@@ -86,7 +98,10 @@
 		3400928A0B051E2EE10C1B6D /* Profile-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Profile-prod.xcconfig"; path = "Flutter/Profile-prod.xcconfig"; sourceTree = "<group>"; };
 		396FD5433A1CA39429DCBFF1 /* Pods-Runner.release-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release-dev.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release-dev.xcconfig"; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		3E2A0870821DA7145DF6CF70 /* GlanceStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GlanceStore.swift; sourceTree = "<group>"; };
+		3F12A1DDA854FECB2FB4C2E8 /* GlanceActions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GlanceActions.swift; sourceTree = "<group>"; };
 		436A9AD78AC64DC850274457 /* Pods-Runner.profile-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile-dev.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile-dev.xcconfig"; sourceTree = "<group>"; };
+		4A8C9836661320132AB04B35 /* GlanceLive.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GlanceLive.swift; sourceTree = "<group>"; };
 		4E9AEF463A1429ADB4466A16 /* Release-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Release-prod.xcconfig"; path = "Flutter/Release-prod.xcconfig"; sourceTree = "<group>"; };
 		5EF800959D6539B03719B8BF /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6923C5D950412DEE48C4D957 /* Pods-RunnerTests.debug-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug-dev.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug-dev.xcconfig"; sourceTree = "<group>"; };
@@ -113,8 +128,11 @@
 		AB3A42F1307B27BE001F0044 /* share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = share.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB3A4424307B30A3001F0044 /* RunnerRelease-dev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "RunnerRelease-dev.entitlements"; sourceTree = "<group>"; };
 		BD1393B667FD11DDB1155987 /* Pods-Runner.profile-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile-prod.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile-prod.xcconfig"; sourceTree = "<group>"; };
+		C54F7A49F1314623601C2661 /* GlanceAuth.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GlanceAuth.swift; sourceTree = "<group>"; };
+		D24A0ECE9B00725C6FC131D9 /* GlanceFirestore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GlanceFirestore.swift; sourceTree = "<group>"; };
 		D7F8B96E087F3A789D88E9CC /* Pods-Runner.debug-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-prod.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-prod.xcconfig"; sourceTree = "<group>"; };
 		E151BB26312E1FC09F0CB001 /* Pods-RunnerTests.release-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release-prod.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release-prod.xcconfig"; sourceTree = "<group>"; };
+		E9348597E7EA32D40BCC9352 /* GlanceIntents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GlanceIntents.swift; sourceTree = "<group>"; };
 		EAFB637278BCDB452B04A152 /* Release-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Release-dev.xcconfig"; path = "Flutter/Release-dev.xcconfig"; sourceTree = "<group>"; };
 		F9D4AF4F9DDA1AA2E46C45FF /* vi */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -218,6 +236,20 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8718673FC988D65673A684FA /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				3F12A1DDA854FECB2FB4C2E8 /* GlanceActions.swift */,
+				C54F7A49F1314623601C2661 /* GlanceAuth.swift */,
+				D24A0ECE9B00725C6FC131D9 /* GlanceFirestore.swift */,
+				E9348597E7EA32D40BCC9352 /* GlanceIntents.swift */,
+				4A8C9836661320132AB04B35 /* GlanceLive.swift */,
+				3E2A0870821DA7145DF6CF70 /* GlanceStore.swift */,
+			);
+			name = Shared;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
@@ -246,6 +278,7 @@
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				E1EB2EF4FCB5BA982AF62ED2 /* Pods */,
 				7B9BF1A0D8414A40E6A22D34 /* Frameworks */,
+				8718673FC988D65673A684FA /* Shared */,
 			);
 			sourceTree = "<group>";
 		};
@@ -643,6 +676,12 @@
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,
+				0878EBA5FD6919E9EA835F74 /* GlanceActions.swift in Sources */,
+				7494EA86ECF5E03380771000 /* GlanceAuth.swift in Sources */,
+				B32BDE0DC85A40AE3BBF835E /* GlanceFirestore.swift in Sources */,
+				7D04AF7A64359EF08EF29F22 /* GlanceIntents.swift in Sources */,
+				9120E04F8D17ED86CDF1A7B5 /* GlanceLive.swift in Sources */,
+				D7357982DCDD10F0E711AF34 /* GlanceStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -650,6 +689,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72DF1183C98318C496E92D4D /* GlanceActions.swift in Sources */,
+				BD8182D5D4824E61699FDC8C /* GlanceAuth.swift in Sources */,
+				7AA6061D3E3D2DDD928A3A66 /* GlanceFirestore.swift in Sources */,
+				DC4361A7FC4B05C4B265A407 /* GlanceIntents.swift in Sources */,
+				F351C9EFE0853A7C75975C5C /* GlanceLive.swift in Sources */,
+				0139B57B7A56FE37B9F39219 /* GlanceStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -766,6 +811,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-prod";
 				CLANG_ENABLE_MODULES = YES;
 				CL_APP_GROUP = group.app.childlife;
+				CL_KEYCHAIN_GROUP = app.childlife.shared;
+				CL_URL_SCHEME = app.childlife;
 				CODE_SIGN_ENTITLEMENTS = "Runner/Runner-prod.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -1043,6 +1090,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-dev";
 				CLANG_ENABLE_MODULES = YES;
 				CL_APP_GROUP = group.dev.hsba.app;
+				CL_KEYCHAIN_GROUP = dev.hsba.app.shared;
+				CL_URL_SCHEME = dev.hsba.app;
 				CODE_SIGN_ENTITLEMENTS = "Runner/Runner-dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
@@ -1091,6 +1140,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-prod";
 				CLANG_ENABLE_MODULES = YES;
 				CL_APP_GROUP = group.app.childlife;
+				CL_KEYCHAIN_GROUP = app.childlife.shared;
+				CL_URL_SCHEME = app.childlife;
 				CODE_SIGN_ENTITLEMENTS = "Runner/Runner-prod.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -1118,6 +1169,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-dev";
 				CLANG_ENABLE_MODULES = YES;
 				CL_APP_GROUP = group.dev.hsba.app;
+				CL_KEYCHAIN_GROUP = dev.hsba.app.shared;
+				CL_URL_SCHEME = dev.hsba.app;
 				CODE_SIGN_ENTITLEMENTS = "Runner/Runner-dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
@@ -1178,6 +1231,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.dev.hsba.app;
+				CL_KEYCHAIN_GROUP = dev.hsba.app.shared;
+				CL_URL_SCHEME = dev.hsba.app;
 				CODE_SIGN_ENTITLEMENTS = "widget/widget-dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
@@ -1208,7 +1263,7 @@
 				INFOPLIST_FILE = widget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = widget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1270,6 +1325,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.app.childlife;
+				CL_KEYCHAIN_GROUP = app.childlife.shared;
+				CL_URL_SCHEME = app.childlife;
 				CODE_SIGN_ENTITLEMENTS = "widget/widget-prod.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -1298,7 +1355,7 @@
 				INFOPLIST_FILE = widget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = widget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1360,6 +1417,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.dev.hsba.app;
+				CL_KEYCHAIN_GROUP = dev.hsba.app.shared;
+				CL_URL_SCHEME = dev.hsba.app;
 				CODE_SIGN_ENTITLEMENTS = "widget/widget-dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
@@ -1384,7 +1443,7 @@
 				INFOPLIST_FILE = widget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = widget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1445,6 +1504,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.app.childlife;
+				CL_KEYCHAIN_GROUP = app.childlife.shared;
+				CL_URL_SCHEME = app.childlife;
 				CODE_SIGN_ENTITLEMENTS = "widget/widget-prod.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -1467,7 +1528,7 @@
 				INFOPLIST_FILE = widget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = widget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1528,6 +1589,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.dev.hsba.app;
+				CL_KEYCHAIN_GROUP = dev.hsba.app.shared;
+				CL_URL_SCHEME = dev.hsba.app;
 				CODE_SIGN_ENTITLEMENTS = "widget/widget-dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
@@ -1552,7 +1615,7 @@
 				INFOPLIST_FILE = widget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = widget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1613,6 +1676,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.app.childlife;
+				CL_KEYCHAIN_GROUP = app.childlife.shared;
+				CL_URL_SCHEME = app.childlife;
 				CODE_SIGN_ENTITLEMENTS = "widget/widget-prod.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -1635,7 +1700,7 @@
 				INFOPLIST_FILE = widget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = widget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1694,6 +1759,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.dev.hsba.app;
+				CL_KEYCHAIN_GROUP = dev.hsba.app.shared;
+				CL_URL_SCHEME = dev.hsba.app;
 				CODE_SIGN_ENTITLEMENTS = "share/share-dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
@@ -1784,6 +1851,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.app.childlife;
+				CL_KEYCHAIN_GROUP = app.childlife.shared;
+				CL_URL_SCHEME = app.childlife;
 				CODE_SIGN_ENTITLEMENTS = "share/share-prod.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -1872,6 +1941,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.dev.hsba.app;
+				CL_KEYCHAIN_GROUP = dev.hsba.app.shared;
+				CL_URL_SCHEME = dev.hsba.app;
 				CODE_SIGN_ENTITLEMENTS = "share/share-dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
@@ -1955,6 +2026,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.app.childlife;
+				CL_KEYCHAIN_GROUP = app.childlife.shared;
+				CL_URL_SCHEME = app.childlife;
 				CODE_SIGN_ENTITLEMENTS = "share/share-prod.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -2036,6 +2109,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.dev.hsba.app;
+				CL_KEYCHAIN_GROUP = dev.hsba.app.shared;
+				CL_URL_SCHEME = dev.hsba.app;
 				CODE_SIGN_ENTITLEMENTS = "share/share-dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
@@ -2119,6 +2194,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CL_APP_GROUP = group.app.childlife;
+				CL_KEYCHAIN_GROUP = app.childlife.shared;
+				CL_URL_SCHEME = app.childlife;
 				CODE_SIGN_ENTITLEMENTS = "share/share-prod.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -2173,6 +2250,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-prod";
 				CLANG_ENABLE_MODULES = YES;
 				CL_APP_GROUP = group.app.childlife;
+				CL_KEYCHAIN_GROUP = app.childlife.shared;
+				CL_URL_SCHEME = app.childlife;
 				CODE_SIGN_ENTITLEMENTS = "Runner/Runner-prod.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -2201,6 +2280,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-dev";
 				CLANG_ENABLE_MODULES = YES;
 				CL_APP_GROUP = group.dev.hsba.app;
+				CL_KEYCHAIN_GROUP = dev.hsba.app.shared;
+				CL_URL_SCHEME = dev.hsba.app;
 				CODE_SIGN_ENTITLEMENTS = "Runner/Runner-dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
