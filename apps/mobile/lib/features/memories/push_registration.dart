@@ -14,6 +14,7 @@ import '../../app/session.dart';
 import '../auth/auth_repository.dart';
 import '../reminders/device_identity.dart';
 import '../reminders/rule_notifications.dart';
+import '../vaccines/vaccine_notifications.dart';
 
 /// Registers this install under `users/{uid}/devices/{deviceId}` (13n device list) with its
 /// push token for generic family notices (S10, R-120) when there is one, and the app language
@@ -76,6 +77,13 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     if (push != null) {
       final action = await const RuleNotificationChannel().takeLaunchAction();
       if (mounted) await openRulePush(ref, push, action: action);
+      return;
+    }
+    // Sổ tiêm chủng (VX 8).
+    final vaccine = vaccinePushOf(message.data);
+    if (vaccine != null) {
+      final action = await const RuleNotificationChannel().takeLaunchAction();
+      if (mounted) openVaccinePush(ref, vaccine, action: action);
       return;
     }
     ref.read(routerProvider).go(Routes.memories);

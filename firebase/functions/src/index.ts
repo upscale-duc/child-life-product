@@ -66,6 +66,11 @@ import {
   saveReminderRule,
   setReminderRuleEnabled,
 } from './reminder-rules.js';
+import {
+  VaccineReminderError,
+  ringVaccineReminders,
+  snoozeVaccineReminder,
+} from './vaccine-reminders.js';
 import { openAiProvider, templateProvider, type AiProvider } from './ai.js';
 import {
   StaffError,
@@ -382,6 +387,25 @@ export const deleteRuleReminder = ruleCall((uid, data, now) =>
 export const answerRuleReminder = ruleCall((uid, data, now) =>
   answerReminderRule(getFirestore(), uid, data, now),
 );
+
+/** Sổ tiêm chủng reminders: 3 days before and the evening before at 19:00 (P-133). */
+export const ringVaccineReminderPush = onSchedule('every 5 minutes', async () => {
+  const { rang, sent } = await ringVaccineReminders(getFirestore(), pushSender(), new Date());
+  if (rang > 0) logger.info('vaccine reminders rang', { rang, sent });
+});
+
+/** VX 8 "Nhắc lại sáng mai". */
+export const snoozeVaccine = onCall(async (request) => {
+  if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+  try {
+    return await snoozeVaccineReminder(getFirestore(), request.auth.uid, request.data, new Date());
+  } catch (error) {
+    if (error instanceof VaccineReminderError) {
+      throw new HttpsError(error.code, error.reason, { reason: error.reason });
+    }
+    throw error;
+  }
+});
 
 /** Rings rule reminders whose time has come (1f). */
 export const ringRuleReminders = onSchedule('every 1 minutes', async () => {

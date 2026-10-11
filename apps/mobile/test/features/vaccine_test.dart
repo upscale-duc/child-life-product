@@ -1,5 +1,6 @@
 import 'package:child_life/features/care/care_hub_screen.dart';
 import 'package:child_life/features/vaccines/vaccine_models.dart';
+import 'package:child_life/features/vaccines/vaccine_notifications.dart';
 import 'package:child_life/features/vaccines/vaccine_screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -275,5 +276,18 @@ void main() {
     );
     expect(find.text('Tiêm chủng'), findsOneWidget);
     expect(find.text('Mũi tiếp theo 17/11'), findsOneWidget);
+  });
+
+  test('vaccination pushes are recognised by kind (VX 8)', () {
+    expect(
+      vaccinePushOf({
+        'kind': 'vaccine',
+        'babyId': teddyId,
+        'date': '2026-11-17',
+        'months': '2',
+      }),
+      (babyId: teddyId, date: '2026-11-17', months: 2),
+    );
+    expect(vaccinePushOf({'kind': 'reminderRule'}), isNull);
   });
 }

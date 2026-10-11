@@ -12,6 +12,12 @@ enum RuleNotifications {
   static let snoozeAction = "CL_SNOOZE15"
   static let skipAction = "CL_SKIP"
 
+  /// Sổ tiêm chủng (VX 8, P-133): Xem lịch tiêm · Nhắc lại sáng mai · Dời lịch.
+  static let vaccineCategory = "CL_VACCINE"
+  static let vaccineView = "VX_VIEW"
+  static let vaccineSnooze = "VX_SNOOZE"
+  static let vaccineMove = "VX_MOVE"
+
   /// "Ghi …" from a notification, for the app to pick up once Flutter runs.
   private static var launchAction: [String: Any]?
 
@@ -48,16 +54,31 @@ enum RuleNotifications {
         intentIdentifiers: [],
         options: [])
     }
+    let vaccine = UNNotificationCategory(
+      identifier: vaccineCategory,
+      actions: [
+        UNNotificationAction(identifier: vaccineView, title: vi ? "Xem lịch tiêm" : "View the schedule", options: [.foreground]),
+        UNNotificationAction(
+          identifier: vaccineSnooze, title: vi ? "Nhắc lại sáng mai" : "Remind me in the morning", options: []),
+        UNNotificationAction(identifier: vaccineMove, title: vi ? "Dời lịch" : "Reschedule", options: [.foreground]),
+      ],
+      intentIdentifiers: [],
+      options: [])
     let center = UNUserNotificationCenter.current()
     center.getNotificationCategories { existing in
-      let others = existing.filter { !$0.identifier.hasPrefix(categoryPrefix) }
-      center.setNotificationCategories(others.union(ours))
+      let others = existing.filter {
+        !$0.identifier.hasPrefix(categoryPrefix) && $0.identifier != vaccineCategory
+      }
+      center.setNotificationCategories(others.union(ours).union([vaccine]))
     }
   }
 
   /// Handles our actions; false = not ours (let the plugins have it).
   static func handle(_ response: UNNotificationResponse, completion: @escaping () -> Void) -> Bool {
     let content = response.notification.request.content
+    if content.categoryIdentifier == vaccineCategory {
+      return handleVaccine(response, completion: completion)
+    }
     guard content.categoryIdentifier.hasPrefix(categoryPrefix) else { return false }
     let info = content.userInfo
     switch response.actionIdentifier {
@@ -78,6 +99,48 @@ enum RuleNotifications {
     default:
       return false
     }
+  }
+
+  private static func handleVaccine(
+    _ response: UNNotificationResponse, completion: @escaping () -> Void
+  ) -> Bool {
+    let info = response.notification.request.content.userInfo
+    switch response.actionIdentifier {
+    case vaccineSnooze:
+      Task {
+        if let babyId = info["babyId"] as? String, let date = info["date"] as? String {
+          await callFunction("snoozeVaccine", ["babyId": babyId, "date": date])
+        }
+        completion()
+      }
+      return true
+    case vaccineView, vaccineMove:
+      launchAction = [
+        "action": response.actionIdentifier == vaccineView ? "view" : "move",
+        "babyId": info["babyId"] as? String ?? "",
+      ]
+      return false
+    default:
+      return false
+    }
+  }
+
+  /// A callable Function from here, with the widgets' shared session (GlanceAuth).
+  private static func callFunction(_ name: String, _ data: [String: Any]) async {
+    guard let snapshot = GlanceSnapshot.load(),
+      let token = try? await GlanceAuth.idToken(snapshot).token
+    else { return }
+    let region = "asia-southeast1"
+    let base = snapshot.emulatorHost.map { "http://\($0):5001/\(snapshot.projectId)/\(region)" }
+      ?? "https://\(region)-\(snapshot.projectId).cloudfunctions.net"
+    guard let url = URL(string: "\(base)/\(name)") else { return }
+    var req = URLRequest(url: url)
+    req.httpMethod = "POST"
+    req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    req.httpBody = try? JSONSerialization.data(withJSONObject: ["data": data])
+    req.timeoutInterval = 20
+    _ = try? await URLSession.shared.data(for: req)
   }
 
   private static func answer(_ info: [AnyHashable: Any], snooze: Bool) async {
