@@ -12,14 +12,15 @@ require 'xcodeproj'
 # dev uses an App ID borrowed from the owner's interim Apple team (VHFV2HNZGN) until the
 # Child Life developer account exists (D-045); its push certificate is uploaded to Firebase.
 TEAM_ID = 'VHFV2HNZGN'
-ENTITLEMENTS = 'Runner/Runner.entitlements'
 FLAVORS = {
   # dev signs manually with the owner-supplied development profile "hsba app dev" (push, the
   # owner's iPhone); install it into ~/Library/Developer/Xcode/UserData/Provisioning Profiles.
   # Extension profiles (owner-supplied) go here per flavor once they exist; nil = automatic.
   'dev' => { bundle_id: 'dev.hsba.app', name: 'Child Life Dev', icon: 'AppIcon-dev', profile: 'hsba app dev',
+             app_group: 'group.dev.hsba.app',
              extension_profiles: { 'widgetExtension' => nil, 'share' => nil } },
   'prod' => { bundle_id: 'app.childlife', name: 'Child Life', icon: 'AppIcon-prod',
+              app_group: 'group.app.childlife',
               extension_profiles: {} },
 }.freeze
 BASES = %w[Debug Profile Release].freeze
@@ -28,11 +29,47 @@ DEPLOYMENT_TARGET = '16.1'
 # (iOS 18), so the widget extension only exists on iOS 18+; the share extension (S9) runs
 # wherever the app does.
 EXTENSIONS = {
-  'widgetExtension' => { suffix: 'widgets', deployment: '18.0' },
-  'share' => { suffix: 'share', deployment: DEPLOYMENT_TARGET },
+  'widgetExtension' => { suffix: 'widgets', deployment: '18.0', dir: 'widget' },
+  'share' => { suffix: 'share', deployment: DEPLOYMENT_TARGET, dir: 'share' },
 }.freeze
 
 root = File.expand_path('../ios', __dir__)
+
+# Entitlements per flavor, generated here: the App Group shared by the app and its extensions
+# (share hand-off, widget data); the app also has push and Sign in with Apple. Xcode switches
+# aps-environment to production when exporting for distribution.
+def plist_value(value)
+  case value
+  when Array then "<array>\n#{value.map { |v| "\t\t<string>#{v}</string>" }.join("\n")}\n\t</array>"
+  else "<string>#{value}</string>"
+  end
+end
+
+def write_entitlements(path, entries)
+  body = entries.map { |k, v| "\t<key>#{k}</key>\n\t#{plist_value(v)}" }.join("\n")
+  File.write(path, <<~PLIST)
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    <plist version="1.0">
+    <dict>
+    #{body}
+    </dict>
+    </plist>
+  PLIST
+end
+
+FLAVORS.each do |flavor, info|
+  write_entitlements(File.join(root, 'Runner', "Runner-#{flavor}.entitlements"), {
+    'aps-environment' => 'development',
+    'com.apple.developer.applesignin' => ['Default'],
+    'com.apple.security.application-groups' => [info[:app_group]],
+  })
+  EXTENSIONS.each_value do |ext|
+    write_entitlements(File.join(root, ext[:dir], "#{ext[:dir]}-#{flavor}.entitlements"), {
+      'com.apple.security.application-groups' => [info[:app_group]],
+    })
+  end
+end
 project = Xcodeproj::Project.open(File.join(root, 'Runner.xcodeproj'))
 runner = project.targets.find { |t| t.name == 'Runner' }
 tests = project.targets.find { |t| t.name == 'RunnerTests' }
@@ -109,7 +146,7 @@ flutter_group = project.main_group['Flutter']
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = DEPLOYMENT_TARGET
         # Signing on the team; push (aps-environment) comes from the entitlements.
         config.build_settings['DEVELOPMENT_TEAM'] = TEAM_ID
-        config.build_settings['CODE_SIGN_ENTITLEMENTS'] = ENTITLEMENTS
+        config.build_settings['CODE_SIGN_ENTITLEMENTS'] = "Runner/Runner-#{flavor}.entitlements"
         sign(config, info[:profile])
       elsif owner == :tests
         config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle_id]}.RunnerTests"
@@ -136,6 +173,7 @@ EXTENSIONS.each do |name, ext|
       config.base_configuration_reference = nil
       config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle_id]}.#{ext[:suffix]}"
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = ext[:deployment]
+      config.build_settings['CODE_SIGN_ENTITLEMENTS'] = "#{ext[:dir]}/#{ext[:dir]}-#{flavor}.entitlements"
       sign(config, info[:extension_profiles][name])
     end
   end
