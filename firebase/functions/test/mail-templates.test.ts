@@ -24,7 +24,7 @@ const sample: AccountMailData = {
   requestId: 'sr_3f2a',
   body: 'Chào bạn,\nChúng tôi đã thêm dung lượng cho gia đình.',
   role: 'Hỗ trợ · Vận hành',
-  url: 'https://child-life-dev-admin.web.app',
+  url: 'https://admin.dev.childlife.app',
   toEmail: 'ba***@gmail.com',
 };
 const invite = {
@@ -97,7 +97,7 @@ describe('templates', () => {
   it('service mail has no unsubscribe; staff mail points at the portal', () => {
     const staff = renderAccountEmail('staffInvite', 'vi', sample);
     expect(staff.subject).toBe('Mai mời bạn vào Child Life · Vận hành');
-    expect(staff.html).toContain('href="https://child-life-dev-admin.web.app"');
+    expect(staff.html).toContain('href="https://admin.dev.childlife.app"');
     expect(staff.html).not.toContain('Huỷ nhận email');
     const transfer = renderAccountEmail('ownershipStaffRequest', 'en', sample);
     expect(transfer.text).toContain('New owner: ba***@gmail.com');

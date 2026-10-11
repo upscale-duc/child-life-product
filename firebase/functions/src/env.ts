@@ -23,5 +23,5 @@ export function webOriginFor(projectId: string | undefined): string {
 export function adminOriginFor(projectId: string | undefined): string {
   return environmentForProject(projectId) === 'prod'
     ? 'https://admin.childlife.app'
-    : 'https://child-life-dev-admin.web.app';
+    : 'https://admin.dev.childlife.app';
 }
