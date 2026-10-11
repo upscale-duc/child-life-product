@@ -212,12 +212,6 @@ abstract class AppLocalizations {
   /// **'Ghi nhanh'**
   String get a11yQuickLog;
 
-  /// Accessibility label of the chevron beside the baby chip; the chip itself opens the baby's profile (engineering copy).
-  ///
-  /// In vi, this message translates to:
-  /// **'Đổi bé'**
-  String get a11ySwitchBaby;
-
   /// Accessibility label of the moon toggle; product term kept in English in Figma.
   ///
   /// In vi, this message translates to:
@@ -4862,6 +4856,30 @@ abstract class AppLocalizations {
   /// **'Chọn album'**
   String get pickAlbumsTitle;
 
+  /// 10g primary before anything is selected.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm'**
+  String get pickConfirm;
+
+  /// 10g toast: video over the configured duration (D-011).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa thêm được video dài hơn {limit}.'**
+  String pickVideoTooLong(String limit);
+
+  /// 10g toast: video over the configured file size (D-011).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa thêm được video lớn hơn {size}.'**
+  String pickVideoTooBig(String size);
+
+  /// 10g toast while picked originals are fetched (e.g. from iCloud).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị ảnh và video…'**
+  String get pickPreparing;
+
   /// 10h caption.
   ///
   /// In vi, this message translates to:
@@ -5689,6 +5707,24 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Phát video'**
   String get a11yPlay;
+
+  /// 10f video.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng video'**
+  String get a11yPause;
+
+  /// 10f video scrubber (accessibility).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vị trí video'**
+  String get viewerSeek;
+
+  /// 10f tap hint on the photo or video (accessibility).
+  ///
+  /// In vi, this message translates to:
+  /// **'hiện hoặc ẩn điều khiển'**
+  String get viewerToggleChrome;
 
   /// 10o title.
   ///
@@ -8880,6 +8916,90 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bao lâu từ lần bú gần nhất.'**
   String get glanceGalleryLockFeedBlurb;
+
+  /// Upload Live Activity header (10j).
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm của {name}'**
+  String glanceUploadTitle(String name);
+
+  /// Upload Live Activity header without a nickname.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm'**
+  String get glanceUploadTitlePlain;
+
+  /// Upload Live Activity (10j).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải {done}/{total} mục'**
+  String glanceUploadProgress(String done, String total);
+
+  /// Upload Live Activity sub (10j).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong sẽ báo bạn'**
+  String get glanceUploadNotify;
+
+  /// Upload Live Activity sub when videos wait (D-033).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} video chờ Wi‑Fi'**
+  String glanceUploadWaiting(String n);
+
+  /// Notice when background uploads finish.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tải xong 1 mục'**
+  String get glanceUploadDoneOne;
+
+  /// Notice when background uploads finish.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tải xong {n} mục'**
+  String glanceUploadDone(String n);
+
+  /// Notice body (no photo, 10j).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh và video đã có trong Kỷ niệm.'**
+  String get glanceUploadDoneBody;
+
+  /// Notice when background uploads fail.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 mục chưa tải lên được'**
+  String get glanceUploadFailedOne;
+
+  /// Notice when background uploads fail.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} mục chưa tải lên được'**
+  String glanceUploadFailed(String n);
+
+  /// Notice body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Child Life để thử lại.'**
+  String get glanceUploadFailedBody;
+
+  /// Notice (10j) when the app is left with a video held for Wi-Fi.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 video đang chờ Wi‑Fi'**
+  String get glanceUploadWifiOne;
+
+  /// Notice (10j).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} video đang chờ Wi‑Fi'**
+  String glanceUploadWifi(String n);
+
+  /// Notice body (10j).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh vẫn đang tải. Video sẽ tự tải khi có Wi‑Fi.'**
+  String get glanceUploadWifiBody;
 }
 
 class _AppLocalizationsDelegate

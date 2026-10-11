@@ -188,7 +188,7 @@ struct SmallCareView: View {
           }.buttonStyle(.plain)
         }
       }
-      .widgetURL(GlanceLink.url(GlanceLink.today))
+      .widgetURL(GlanceLink.url(GlanceLink.log("bottle", s)))
     }
   }
 
@@ -240,7 +240,7 @@ struct SmallCareView: View {
           }.buttonStyle(.plain)
         }
       }
-      .widgetURL(GlanceLink.url(GlanceLink.today))
+      .widgetURL(GlanceLink.url(GlanceLink.log("breast", s)))
     }
   }
 
@@ -284,7 +284,7 @@ struct SmallCareView: View {
           }.buttonStyle(.plain)
         }
       }
-      .widgetURL(GlanceLink.url(GlanceLink.today))
+      .widgetURL(GlanceLink.url(GlanceLink.log("sleep", s)))
     }
   }
 
@@ -332,7 +332,7 @@ struct SmallCareView: View {
           }
         }
       }
-      .widgetURL(GlanceLink.url(GlanceLink.today))
+      .widgetURL(GlanceLink.url(GlanceLink.log("diaper", s)))
     }
   }
 }
@@ -402,25 +402,15 @@ struct QuickTile: View {
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(p.soft, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
 
+    // A tile opens the app's own log for its type, as the Hôm nay tile does (ml, kind, side,
+    // time; Sleep asks "đang ngủ hay đã ngủ xong"); a running timer opens itself. Owner request
+    // 2026-10-11: logging from the widget goes through the same choices as the app.
     if !s.canLog {
       content
+    } else if (type == "sleep" && s.sleep != nil) || (type == "breast" && s.breast != nil) {
+      Link(destination: GlanceLink.url(GlanceLink.timer(type))) { content }
     } else {
-      switch type {
-      case "bottle": Button(intent: LogBottleIntent()) { content }.buttonStyle(.plain)
-      case "diaper": Button(intent: LogDiaperIntent(kind: "wet")) { content }.buttonStyle(.plain)
-      case "sleep":
-        if s.sleep != nil {
-          Link(destination: GlanceLink.url(GlanceLink.timer("sleep"))) { content }
-        } else {
-          Button(intent: StartTimerIntent(type: "sleep")) { content }.buttonStyle(.plain)
-        }
-      default:
-        if s.breast != nil {
-          Link(destination: GlanceLink.url(GlanceLink.timer("breast"))) { content }
-        } else {
-          Button(intent: StartTimerIntent(type: "breast", side: "left")) { content }.buttonStyle(.plain)
-        }
-      }
+      Link(destination: GlanceLink.url(GlanceLink.log(type, s))) { content }
     }
   }
 

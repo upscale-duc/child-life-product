@@ -169,6 +169,9 @@ flutter_group = project.main_group['Flutter']
         config.build_settings['CODE_SIGN_ENTITLEMENTS'] = "Runner/Runner-#{flavor}.entitlements"
         sign(config, info[:profile], info[:team])
       elsif owner == :tests
+        # The template's Pods xcconfig is another flavor's: use this configuration's own.
+        pods = project.files.find { |f| File.basename(f.path.to_s) == "Pods-RunnerTests.#{base.downcase}-#{flavor}.xcconfig" }
+        config.base_configuration_reference = pods if pods
         config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle_id]}.RunnerTests"
         config.build_settings['TEST_HOST'] = '$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner'
       else
@@ -217,6 +220,14 @@ shared_targets = [runner] + EXTENSIONS.select { |_, e| e[:shared] }.keys.map { |
 shared_targets.each do |target|
   phase = target.source_build_phase
   shared_files.each { |ref| phase.add_file_reference(ref, true) }
+end
+
+# App-only native code next to AppDelegate (background uploads, 10j): every ios/Runner/*.swift.
+runner_group = project.main_group['Runner']
+Dir[File.join(root, 'Runner', '*.swift')].sort.each do |path|
+  name = File.basename(path)
+  ref = runner_group.files.find { |f| f.path == name } || runner_group.new_file(name)
+  runner.source_build_phase.add_file_reference(ref, true)
 end
 
 # Copy the flavor's GoogleService-Info.plist into the app bundle; fail if the flavor has none.

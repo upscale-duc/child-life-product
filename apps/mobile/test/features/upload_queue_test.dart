@@ -155,6 +155,68 @@ void main() {
     expect(container.read(uploadQueueProvider).batches, isEmpty);
   });
 
+  test(
+    'everything that may go is handed over at once (10j), videos keep the Wi-Fi rule',
+    () async {
+      File('/tmp/IMG_2043.MOV.jpg').writeAsBytesSync([1]);
+      addTearDown(() => File('/tmp/IMG_2043.MOV.jpg').deleteSync());
+      container = await start(initial: NetworkKind.cellular);
+      await container
+          .read(uploadQueueProvider.notifier)
+          .enqueue(
+            babyId: teddyId,
+            request: request(),
+            picked: [pickedPhoto('IMG_2041.HEIC'), pickedVideo('IMG_2043.MOV')],
+          );
+      await pumpEventQueue();
+      final photo = items().first.mediaId;
+      final video = items().last.mediaId;
+      final base = 'babies/$teddyId/uploads';
+      expect(
+        {for (final j in transport.handedOff) j.path: (j.video, j.wifiOnly)},
+        {
+          '$base/$photo': (false, false),
+          '$base/$video.poster': (false, true),
+          '$base/$video': (true, true),
+        },
+      );
+      // On mobile data the queue itself only sends the photo; iOS holds the video for Wi-Fi.
+      expect(transport.uploaded, ['$base/$photo']);
+      expect(items().last.state, QueueState.waitingWifi);
+    },
+  );
+
+  test(
+    'a file Storage already has counts as uploaded, not refused (10j)',
+    () async {
+      // It finished while the app was gone; sending it again is refused.
+      transport.rejectAll = true;
+      container = await start();
+      final queue = container.read(uploadQueueProvider.notifier);
+      await queue.enqueue(
+        babyId: teddyId,
+        request: request(),
+        picked: [pickedPhoto('IMG_3605.HEIC'), pickedPhoto('IMG_3606.HEIC')],
+      );
+      await pumpEventQueue();
+      // The first is ready on the server, the second never arrived.
+      final first = items().first;
+      expect(items().map((i) => i.state), everyElement(QueueState.failed));
+      repo.statuses[first.mediaId] = 'ready';
+      await queue.retry(first.mediaId);
+      await pumpEventQueue();
+      expect(items().first.state, QueueState.uploaded);
+      expect(items().first.thumbPath, isNotNull);
+      expect(items().last.state, QueueState.failed);
+    },
+  );
+
+  test('"Tạm dừng" stops everything handed over', () async {
+    container = await start();
+    container.read(uploadQueueProvider.notifier).setPaused(true);
+    expect(transport.cancelledAll, 1);
+  });
+
   test('turning the Wi-Fi rule off lets the video go on mobile data', () async {
     container = await start(initial: NetworkKind.cellular);
     await container

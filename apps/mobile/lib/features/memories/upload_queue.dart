@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../core/appearance/appearance_providers.dart';
+import 'background_uploads.dart';
 import 'memory_models.dart';
 import 'memory_repository.dart';
 
@@ -225,15 +226,45 @@ class UploadRejected implements Exception {
 
 class UploadCancelled implements Exception {}
 
+/// One file to send: the item's bytes or its video poster.
+@immutable
+class UploadJob {
+  const UploadJob({
+    required this.path,
+    required this.file,
+    required this.contentType,
+    required this.babyId,
+    this.video = false,
+    this.wifiOnly = false,
+  });
+
+  /// `babies/<babyId>/uploads/<mediaId>[.poster]`.
+  final String path;
+  final File file;
+  final String contentType;
+  final String babyId;
+
+  /// The item's video bytes (not its poster): counted for "1 video đang chờ Wi‑Fi".
+  final bool video;
+
+  /// Held until Wi-Fi (D-033), even when the platform carries on without the app.
+  final bool wifiOnly;
+}
+
 /// Raw bytes into the reserved slot (Storage Rules check it, ADR-004).
 abstract class UploadTransport {
-  Future<void> upload(
-    String storagePath,
-    File file,
-    String contentType,
-    void Function(int sent) onProgress,
-  );
+  /// Sends [job] and completes when Storage has it. A file already handed over (or already
+  /// finished while the app was gone) is joined, not sent again.
+  Future<void> upload(UploadJob job, void Function(int sent) onProgress);
+
+  /// 10j: gives the platform every file that may go now, so uploads continue with the phone
+  /// locked or the app closed. A no-op where uploads only run in the app.
+  Future<void> handOff(List<UploadJob> jobs);
+
   void cancel(String storagePath);
+
+  /// "Tạm dừng": stops everything handed over.
+  void cancelAll();
 }
 
 class StorageTransport implements UploadTransport {
@@ -243,15 +274,11 @@ class StorageTransport implements UploadTransport {
   final _tasks = <String, UploadTask>{};
 
   @override
-  Future<void> upload(
-    String storagePath,
-    File file,
-    String contentType,
-    void Function(int sent) onProgress,
-  ) async {
+  Future<void> upload(UploadJob job, void Function(int sent) onProgress) async {
+    final storagePath = job.path;
     final task = _storage
         .ref(storagePath)
-        .putFile(file, SettableMetadata(contentType: contentType));
+        .putFile(job.file, SettableMetadata(contentType: job.contentType));
     _tasks[storagePath] = task;
     final sub = task.snapshotEvents.listen(
       (s) => onProgress(s.bytesTransferred),
@@ -270,7 +297,17 @@ class StorageTransport implements UploadTransport {
   }
 
   @override
+  Future<void> handOff(List<UploadJob> jobs) async {}
+
+  @override
   void cancel(String storagePath) => _tasks[storagePath]?.cancel();
+
+  @override
+  void cancelAll() {
+    for (final t in [..._tasks.values]) {
+      unawaited(t.cancel());
+    }
+  }
 }
 
 enum NetworkKind { none, wifi, cellular }
@@ -432,8 +469,12 @@ class DeviceMediaPreparer implements MediaPreparer {
   }
 }
 
+/// iOS sends through a background URLSession (10j, background_uploads.dart); elsewhere the
+/// Storage SDK uploads while the app runs.
 final uploadTransportProvider = Provider<UploadTransport>(
-  (ref) => StorageTransport(),
+  (ref) => defaultTargetPlatform == TargetPlatform.iOS
+      ? BackgroundTransport.forApp()
+      : StorageTransport(),
 );
 final mediaPreparerProvider = Provider<MediaPreparer>(
   (ref) => DeviceMediaPreparer(),
@@ -542,7 +583,6 @@ class UploadQueue extends Notifier<QueueView> {
   var _running = false;
   var _loaded = false;
   DateTime? _lastQuotaTry;
-  String? _currentPath;
   Timer? _sessionRetry;
 
   @override
@@ -554,6 +594,18 @@ class UploadQueue extends Notifier<QueueView> {
           if (i.state == QueueState.failed || i.state == QueueState.paused) {
             i.state = QueueState.queued;
           }
+        }
+      }
+      unawaited(_kick());
+    });
+    // Files handed over keep the Wi-Fi rule they were given: hand the videos over again.
+    ref.listen(videoWifiOnlyProvider, (_, _) {
+      final transport = ref.read(uploadTransportProvider);
+      for (final b in _batches) {
+        for (final i in b.items.where(
+          (i) => i.isVideo && !_terminal(i.state),
+        )) {
+          transport.cancel(_path(b, i));
         }
       }
       unawaited(_kick());
@@ -630,9 +682,7 @@ class UploadQueue extends Notifier<QueueView> {
 
   void setPaused(bool paused) {
     _paused = paused;
-    if (paused && _currentPath != null) {
-      ref.read(uploadTransportProvider).cancel(_currentPath!);
-    }
+    if (paused) ref.read(uploadTransportProvider).cancelAll();
     if (!paused) {
       for (final i in _items) {
         if (i.state == QueueState.paused) i.state = QueueState.queued;
@@ -723,6 +773,7 @@ class UploadQueue extends Notifier<QueueView> {
     try {
       await _createSessions();
       await _retryQuota();
+      await _handOff();
       while (true) {
         final next = _next();
         if (next == null) break;
@@ -856,6 +907,70 @@ class UploadQueue extends Notifier<QueueView> {
     return null;
   }
 
+  /// A file that reached Storage earlier (while the app was gone, or whose answer was lost)
+  /// counts as uploaded: the server has processed it, so sending it again can only fail.
+  Future<bool> _alreadyThere(QueueBatch b, QueueItem i) async {
+    String? status;
+    try {
+      status = await ref
+          .read(memoryRepositoryProvider)
+          .mediaStatus(b.babyId, i.mediaId);
+    } on Object {
+      return false;
+    }
+    if (status != 'ready' && status != 'unreadable') return false;
+    i.state = QueueState.uploaded;
+    i.error = null;
+    i.sent = i.bytes;
+    i.thumbPath = await ref.read(mediaPreparerProvider).finish(i);
+    return true;
+  }
+
+  String _path(QueueBatch b, QueueItem i) =>
+      'babies/${b.babyId}/uploads/${i.mediaId}';
+
+  List<UploadJob> _jobs(QueueBatch b, QueueItem i) {
+    final base = _path(b, i);
+    final wifiOnly = i.isVideo && ref.read(videoWifiOnlyProvider);
+    return [
+      if (i.posterPath != null && File(i.posterPath!).existsSync())
+        UploadJob(
+          path: '$base.poster',
+          file: File(i.posterPath!),
+          contentType: 'image/jpeg',
+          babyId: b.babyId,
+          wifiOnly: wifiOnly,
+        ),
+      UploadJob(
+        path: base,
+        file: File(i.localPath),
+        contentType: i.contentType,
+        babyId: b.babyId,
+        video: i.isVideo,
+        wifiOnly: wifiOnly,
+      ),
+    ];
+  }
+
+  /// 10j: everything that may go now is handed to the platform at once, videos held for Wi-Fi
+  /// included, so it all continues with the phone locked; the loop below then joins each file.
+  Future<void> _handOff() async {
+    if (_paused || _network == NetworkKind.none) return;
+    final jobs = [
+      for (final b in _batches.where((b) => b.sessionCreated))
+        for (final i in b.items)
+          if (i.state == QueueState.queued ||
+              (i.state == QueueState.waitingWifi && i.isVideo))
+            ..._jobs(b, i),
+    ];
+    if (jobs.isEmpty) return;
+    try {
+      await ref.read(uploadTransportProvider).handOff(jobs);
+    } on Object {
+      // The loop sends them one by one instead.
+    }
+  }
+
   /// Failure codes only (no names, paths or ids), so a field problem can be diagnosed.
   void _report(String code) {
     try {
@@ -873,25 +988,21 @@ class UploadQueue extends Notifier<QueueView> {
 
   Future<void> _upload(QueueBatch b, QueueItem i) async {
     final transport = ref.read(uploadTransportProvider);
-    final base = 'babies/${b.babyId}/uploads/${i.mediaId}';
     i.state = QueueState.uploading;
     i.sent = 0;
     _publish();
     try {
-      if (i.posterPath != null && await File(i.posterPath!).exists()) {
-        _currentPath = '$base.poster';
+      for (final job in _jobs(b, i)) {
         await transport.upload(
-          '$base.poster',
-          File(i.posterPath!),
-          'image/jpeg',
-          (_) {},
+          job,
+          job.path.endsWith('.poster')
+              ? (_) {}
+              : (sent) {
+                  i.sent = sent;
+                  _publish();
+                },
         );
       }
-      _currentPath = base;
-      await transport.upload(base, File(i.localPath), i.contentType, (sent) {
-        i.sent = sent;
-        _publish();
-      });
       i.state = QueueState.uploaded;
       i.error = null;
       i.sent = i.bytes;
@@ -901,11 +1012,14 @@ class UploadQueue extends Notifier<QueueView> {
         i.state = _paused ? QueueState.paused : QueueState.queued;
       }
     } on UploadRejected catch (e) {
-      // Storage refused the bytes (slot expired, or a rule): shown, kept, retried or removed.
+      // Storage refused the bytes (slot expired, or a rule): shown, kept, retried or removed —
+      // unless it refused because it already has them.
+      if (await _alreadyThere(b, i)) return;
       i.state = QueueState.failed;
       i.error = 'rejected:${e.code}';
       _report(i.error!);
     } on Object catch (e) {
+      if (_network != NetworkKind.none && await _alreadyThere(b, i)) return;
       i.state = _network == NetworkKind.none
           ? QueueState.paused
           : QueueState.failed;
@@ -914,7 +1028,6 @@ class UploadQueue extends Notifier<QueueView> {
           : e.runtimeType.toString();
       if (i.state == QueueState.failed) _report(i.error!);
     } finally {
-      _currentPath = null;
       if (ref.mounted) await _persist();
     }
   }

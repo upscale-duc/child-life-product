@@ -74,9 +74,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get a11yQuickLog => 'Quick log';
 
   @override
-  String get a11ySwitchBaby => 'Switch baby';
-
-  @override
   String get a11yNightCareToggle => 'Night care';
 
   @override
@@ -3014,6 +3011,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickAlbumsTitle => 'Choose an album';
 
   @override
+  String get pickConfirm => 'Add';
+
+  @override
+  String pickVideoTooLong(String limit) {
+    return 'Videos longer than $limit can’t be added yet.';
+  }
+
+  @override
+  String pickVideoTooBig(String size) {
+    return 'Videos larger than $size can’t be added yet.';
+  }
+
+  @override
+  String get pickPreparing => 'Getting your photos and videos ready…';
+
+  @override
   String get composeCaption => 'Write a few lines… (optional)';
 
   @override
@@ -3578,6 +3591,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a11yPlay => 'Play video';
+
+  @override
+  String get a11yPause => 'Pause video';
+
+  @override
+  String get viewerSeek => 'Video position';
+
+  @override
+  String get viewerToggleChrome => 'show or hide controls';
 
   @override
   String get shareTitle => 'Share with the family?';
@@ -5662,4 +5684,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get glanceGalleryLockFeedBlurb => 'Time since the last feed.';
+
+  @override
+  String glanceUploadTitle(String name) {
+    return '$name’s memories';
+  }
+
+  @override
+  String get glanceUploadTitlePlain => 'Memories';
+
+  @override
+  String glanceUploadProgress(String done, String total) {
+    return 'Uploading $done of $total';
+  }
+
+  @override
+  String get glanceUploadNotify => 'We’ll let you know when it’s done';
+
+  @override
+  String glanceUploadWaiting(String n) {
+    return 'Videos waiting for Wi‑Fi: $n';
+  }
+
+  @override
+  String get glanceUploadDoneOne => 'Uploaded 1 item';
+
+  @override
+  String glanceUploadDone(String n) {
+    return 'Uploaded $n items';
+  }
+
+  @override
+  String get glanceUploadDoneBody => 'Your photos and videos are in Memories.';
+
+  @override
+  String get glanceUploadFailedOne => '1 item couldn’t upload';
+
+  @override
+  String glanceUploadFailed(String n) {
+    return '$n items couldn’t upload';
+  }
+
+  @override
+  String get glanceUploadFailedBody => 'Open Child Life to try again.';
+
+  @override
+  String get glanceUploadWifiOne => '1 video is waiting for Wi‑Fi';
+
+  @override
+  String glanceUploadWifi(String n) {
+    return '$n videos are waiting for Wi‑Fi';
+  }
+
+  @override
+  String get glanceUploadWifiBody =>
+      'Photos are still uploading. Videos will upload on Wi‑Fi.';
 }

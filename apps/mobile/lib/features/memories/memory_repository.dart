@@ -119,6 +119,14 @@ class MemoryRepository {
     ];
   }
 
+  /// What the server made of an item (`uploading`, `ready`, …), or null when unknown. Tells
+  /// "Storage refused the bytes" from "Storage already has them" (a file that finished while the
+  /// app was gone, 10j).
+  Future<String?> mediaStatus(String babyId, String mediaId) async {
+    final d = await _db.doc('babies/$babyId/media/$mediaId').get();
+    return d.data()?['status'] as String?;
+  }
+
   Future<void> cancel(String babyId, List<String> mediaIds) =>
       _call('cancelMemoryUploads', {'babyId': babyId, 'mediaIds': mediaIds});
 

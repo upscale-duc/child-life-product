@@ -7,7 +7,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../app/route_guard.dart';
+import '../../app/router.dart';
 import '../../app/session.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/glance_copy.dart';
@@ -17,7 +20,9 @@ import '../baby/baby_repository.dart';
 import '../care/care_format.dart';
 import '../care/care_models.dart';
 import '../care/care_repository.dart';
+import '../care/care_sheets.dart';
 import '../care/timer_models.dart';
+import '../care/timer_screens.dart' show showSleepChooser;
 import '../home/home_shell.dart';
 import '../onboarding/setup_screens.dart' show relationLabel;
 
@@ -200,8 +205,18 @@ extension _Let<T> on T? {
   R? let<R>(R Function(T) f) => this == null ? null : f(this as T);
 }
 
+/// The care type a widget tile asked to log (`/today?log=bottle`), or null.
+String? widgetLogRequest(Uri uri) {
+  final type = uri.queryParameters['log'];
+  if (uri.path != Routes.today || type == null) return null;
+  return const {'bottle', 'breast', 'sleep', 'diaper'}.contains(type)
+      ? type
+      : null;
+}
+
 /// Mounted under the app: pushes the session and snapshot whenever they change, and on resume
-/// sends offline widget logs and re-syncs the Live Activities.
+/// sends offline widget logs and re-syncs the Live Activities. A widget tile opens Hôm nay with
+/// `?log=<type>`: the same log the Hôm nay tile opens is shown over it (ml, kind, side, time).
 class GlanceSync extends ConsumerStatefulWidget {
   const GlanceSync({required this.child, super.key});
   final Widget child;
@@ -214,17 +229,61 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
     with WidgetsBindingObserver {
   String? _sentSnapshot;
   String? _sentSession;
+  GoRouter? _router;
+
+  /// Kept until Hôm nay is showing for a signed-in member (a cold start passes the splash first).
+  String? _pendingLog;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _pendingLog = widgetLogRequest(
+      Uri.parse(WidgetsBinding.instance.platformDispatcher.defaultRouteName),
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || ref.read(glanceChannelProvider) == null) return;
+      final router = ref.read(routerProvider);
+      _router = router;
+      router.routerDelegate.addListener(_onRoute);
+      _onRoute();
+    });
   }
 
   @override
   void dispose() {
+    _router?.routerDelegate.removeListener(_onRoute);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _onRoute() {
+    final router = _router;
+    if (router == null || !mounted) return;
+    final uri = router.routerDelegate.currentConfiguration.uri;
+    final asked = widgetLogRequest(uri);
+    if (asked != null) {
+      _pendingLog = asked;
+      // Drop the query so going back to Hôm nay later does not open it again.
+      router.go(Routes.today);
+      return;
+    }
+    final type = _pendingLog;
+    if (type == null || uri.path != Routes.today) return;
+    final me = ref.read(selectedMembershipProvider);
+    if (ref.read(sessionProvider) is! SessionSignedIn || me == null) return;
+    _pendingLog = null;
+    // Người thân only views (the widget hides "+" for them too).
+    if (me.role == MemberRole.relative) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = router.routerDelegate.navigatorKey.currentContext;
+      if (context == null || !context.mounted) return;
+      if (type == 'sleep') {
+        unawaited(showSleepChooser(context, ref));
+      } else {
+        unawaited(openCareLog(context, CareType.values.byName(type)));
+      }
+    });
   }
 
   @override

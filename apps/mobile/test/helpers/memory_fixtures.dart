@@ -216,6 +216,13 @@ MediaItem mediaItem(
 
 /// What the screens asked the server to do.
 class FakeMemoryRepository extends Fake implements MemoryRepository {
+  /// What the server says of each item (`ready` once processed); unknown by default.
+  final statuses = <String, String>{};
+
+  @override
+  Future<String?> mediaStatus(String babyId, String mediaId) async =>
+      statuses[mediaId];
+
   final sessions = <Map<String, Object?>>[];
   final updates = <(List<String>, Map<String, Object?>)>[];
   final cancelled = <String>[];
@@ -389,13 +396,19 @@ class FakeTransport implements UploadTransport {
   /// Storage refuses every upload (rules / expired slot).
   bool rejectAll = false;
 
+  /// What the queue handed over at once (10j), and whether "Tạm dừng" stopped it all.
+  final handedOff = <UploadJob>[];
+  var cancelledAll = 0;
+
   @override
-  Future<void> upload(
-    String storagePath,
-    File file,
-    String contentType,
-    void Function(int sent) onProgress,
-  ) async {
+  Future<void> handOff(List<UploadJob> jobs) async => handedOff.addAll(jobs);
+
+  @override
+  void cancelAll() => cancelledAll++;
+
+  @override
+  Future<void> upload(UploadJob job, void Function(int sent) onProgress) async {
+    final storagePath = job.path;
     if (rejectAll) throw const UploadRejected();
     if (fail.contains(storagePath) || failTimes > 0) {
       if (failTimes > 0) failTimes--;

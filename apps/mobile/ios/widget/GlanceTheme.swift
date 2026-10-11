@@ -101,4 +101,8 @@ enum GlanceLink {
   static let today = "/today"
   static func timer(_ type: String) -> String { "/care/timer/\(type)" }
   static func record(_ id: String) -> String { "/care/record/\(id)" }
+
+  /// The app's own log for [type] (amount, kind, side, time — as from the Hôm nay tile), opened
+  /// over Hôm nay; read-only members just get Hôm nay (owner request 2026-10-11).
+  static func log(_ type: String, _ s: GlanceSnapshot) -> String { s.canLog ? "/today?log=\(type)" : today }
 }

@@ -10,7 +10,32 @@ import UserNotifications
   ) -> Bool {
     // Reminders (S7): show local notifications while the app is open, too.
     UNUserNotificationCenter.current().delegate = self
+    // 10j: reconnect to background uploads that finished or kept going while the app was gone.
+    BackgroundUploads.shared.resume()
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  /// iOS relaunched the app because background uploads finished.
+  override func application(
+    _ application: UIApplication, handleEventsForBackgroundURLSession identifier: String,
+    completionHandler: @escaping () -> Void
+  ) {
+    BackgroundUploads.shared.backgroundCompletion = completionHandler
+    BackgroundUploads.shared.resume()
+  }
+
+  /// "Đã tải xong 7 mục" and friends open Kỷ niệm; every other notification goes to the plugins.
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    guard response.notification.request.identifier.hasPrefix("uploads.") else {
+      super.userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler)
+      return
+    }
+    let scheme = (Bundle.main.object(forInfoDictionaryKey: "CLURLScheme") as? String) ?? "childlife"
+    if let url = URL(string: "\(scheme)://app/memories") { UIApplication.shared.open(url) }
+    completionHandler()
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
@@ -20,6 +45,9 @@ import UserNotifications
     }
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "Glance") {
       GlanceChannel.register(with: registrar.messenger())
+    }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "BackgroundUploads") {
+      BackgroundUploads.register(with: registrar.messenger())
     }
   }
 }

@@ -29,7 +29,8 @@ Set<String> _matches(String source, String pattern) => {
 };
 
 void main() {
-  final swift = _swift('ios/Shared') + _swift('ios/widget');
+  final swift =
+      _swift('ios/Shared') + _swift('ios/widget') + _swift('ios/Runner');
   final live = File('ios/widget/LockAndLive.swift').readAsStringSync();
   final l10ns = {
     for (final code in ['vi', 'en']) code: lookupAppLocalizations(Locale(code)),
@@ -48,7 +49,9 @@ void main() {
         for (final k in DiaperKind.values) 'diaper.${k.name}',
         for (final p in ['dur', 'durS'])
           for (final u in ['m', 'h', 'hm']) '$p.$u',
-      };
+        for (final n in ['doneTitle', 'failedTitle', 'wifiTitle'])
+          for (final v in ['', '.one']) 'upload.$n$v',
+      }..remove('title'); // Filled in by the uploader ("Kỷ niệm của Teddy").
       expect(keys.length, greaterThan(40));
       for (final MapEntry(key: code, value: l) in l10ns.entries) {
         final copy = glanceCopy(l);
@@ -70,6 +73,19 @@ void main() {
         'breastSide.left',
         'breastSide.right',
       };
+      expect(read.difference(carried), isEmpty);
+    });
+
+    test('the upload Live Activity carries every key it reads', () {
+      final list = RegExp(r'let keys = \[([^\]]*)\]').firstMatch(
+        File('ios/Runner/BackgroundUploads.swift').readAsStringSync(),
+      )!;
+      final carried = {..._matches(list.group(1)!, r'"([A-Za-z.]+)"'), 'title'};
+      final read = _matches(
+        File('ios/widget/UploadLive.swift').readAsStringSync(),
+        r'a\.text\("([A-Za-z.]+)"',
+      );
+      expect(read, isNotEmpty);
       expect(read.difference(carried), isEmpty);
     });
 
@@ -120,6 +136,14 @@ void main() {
       expect(used, hasLength(18));
       expect(used.difference(strings.keys.toSet()), isEmpty);
     });
+  });
+
+  test('a widget tile asks Hôm nay to open its log (?log=<type>)', () {
+    expect(widgetLogRequest(Uri.parse('/today?log=bottle')), 'bottle');
+    expect(widgetLogRequest(Uri.parse('/today?log=sleep')), 'sleep');
+    expect(widgetLogRequest(Uri.parse('/today')), isNull);
+    expect(widgetLogRequest(Uri.parse('/memories?log=bottle')), isNull);
+    expect(widgetLogRequest(Uri.parse('/today?log=growth')), isNull);
   });
 
   group('buildGlanceSnapshot', () {
@@ -204,7 +228,8 @@ void main() {
     });
 
     test('no child photos, captions or dates of birth in the snapshot', () {
-      final json = jsonEncode(build(me: mai));
+      // The copy strings may say "photos"; the data must not carry any.
+      final json = jsonEncode({...build(me: mai)}..remove('copy'));
       for (final word in ['photo', 'caption', 'dateOfBirth', 'storagePath']) {
         expect(json.contains(word), isFalse, reason: word);
       }

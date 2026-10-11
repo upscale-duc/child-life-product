@@ -102,10 +102,6 @@
   "@a11yQuickLog": {
     "description": "Accessibility label of the + quick-log button (44:363)."
   },
-  "a11ySwitchBaby": "Đổi bé",
-  "@a11ySwitchBaby": {
-    "description": "Accessibility label of the chevron beside the baby chip; the chip itself opens the baby's profile (engineering copy)."
-  },
   "a11yNightCareToggle": "Night care",
   "@a11yNightCareToggle": {
     "description": "Accessibility label of the moon toggle; product term kept in English in Figma."
@@ -4306,6 +4302,32 @@
   "@pickAlbumsTitle": {
     "description": "10g album chip sheet."
   },
+  "pickConfirm": "Thêm",
+  "@pickConfirm": {
+    "description": "10g primary before anything is selected."
+  },
+  "pickVideoTooLong": "Chưa thêm được video dài hơn {limit}.",
+  "@pickVideoTooLong": {
+    "description": "10g toast: video over the configured duration (D-011).",
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "pickVideoTooBig": "Chưa thêm được video lớn hơn {size}.",
+  "@pickVideoTooBig": {
+    "description": "10g toast: video over the configured file size (D-011).",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "pickPreparing": "Đang chuẩn bị ảnh và video…",
+  "@pickPreparing": {
+    "description": "10g toast while picked originals are fetched (e.g. from iCloud)."
+  },
   "composeCaption": "Viết vài dòng… (không bắt buộc)",
   "@composeCaption": {
     "description": "10h caption."
@@ -5054,6 +5076,18 @@
   "a11yPlay": "Phát video",
   "@a11yPlay": {
     "description": "10f video."
+  },
+  "a11yPause": "Tạm dừng video",
+  "@a11yPause": {
+    "description": "10f video."
+  },
+  "viewerSeek": "Vị trí video",
+  "@viewerSeek": {
+    "description": "10f video scrubber (accessibility)."
+  },
+  "viewerToggleChrome": "hiện hoặc ẩn điều khiển",
+  "@viewerToggleChrome": {
+    "description": "10f tap hint on the photo or video (accessibility)."
   },
   "shareTitle": "Chia sẻ với gia đình?",
   "@shareTitle": {
@@ -7973,5 +8007,94 @@
   "glanceGalleryLockFeedBlurb": "Bao lâu từ lần bú gần nhất.",
   "@glanceGalleryLockFeedBlurb": {
     "description": "Lock Screen widget description."
+  },
+  "glanceUploadTitle": "Kỷ niệm của {name}",
+  "@glanceUploadTitle": {
+    "description": "Upload Live Activity header (10j).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceUploadTitlePlain": "Kỷ niệm",
+  "@glanceUploadTitlePlain": {
+    "description": "Upload Live Activity header without a nickname."
+  },
+  "glanceUploadProgress": "Đang tải {done}/{total} mục",
+  "@glanceUploadProgress": {
+    "description": "Upload Live Activity (10j).",
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceUploadNotify": "Xong sẽ báo bạn",
+  "@glanceUploadNotify": {
+    "description": "Upload Live Activity sub (10j)."
+  },
+  "glanceUploadWaiting": "{n} video chờ Wi‑Fi",
+  "@glanceUploadWaiting": {
+    "description": "Upload Live Activity sub when videos wait (D-033).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceUploadDoneOne": "Đã tải xong 1 mục",
+  "@glanceUploadDoneOne": {
+    "description": "Notice when background uploads finish."
+  },
+  "glanceUploadDone": "Đã tải xong {n} mục",
+  "@glanceUploadDone": {
+    "description": "Notice when background uploads finish.",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceUploadDoneBody": "Ảnh và video đã có trong Kỷ niệm.",
+  "@glanceUploadDoneBody": {
+    "description": "Notice body (no photo, 10j)."
+  },
+  "glanceUploadFailedOne": "1 mục chưa tải lên được",
+  "@glanceUploadFailedOne": {
+    "description": "Notice when background uploads fail."
+  },
+  "glanceUploadFailed": "{n} mục chưa tải lên được",
+  "@glanceUploadFailed": {
+    "description": "Notice when background uploads fail.",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceUploadFailedBody": "Mở Child Life để thử lại.",
+  "@glanceUploadFailedBody": {
+    "description": "Notice body."
+  },
+  "glanceUploadWifiOne": "1 video đang chờ Wi‑Fi",
+  "@glanceUploadWifiOne": {
+    "description": "Notice (10j) when the app is left with a video held for Wi-Fi."
+  },
+  "glanceUploadWifi": "{n} video đang chờ Wi‑Fi",
+  "@glanceUploadWifi": {
+    "description": "Notice (10j).",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceUploadWifiBody": "Ảnh vẫn đang tải. Video sẽ tự tải khi có Wi‑Fi.",
+  "@glanceUploadWifiBody": {
+    "description": "Notice body (10j)."
   }
 }

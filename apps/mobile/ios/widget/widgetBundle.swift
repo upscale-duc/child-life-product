@@ -2,7 +2,8 @@ import SwiftUI
 import WidgetKit
 
 /// Child Life widgets (S8, Figma W1–W5): small per care type, medium quick log, large Today,
-/// lock-screen accessories, and the Sleep / Breast Live Activity with its Dynamic Island.
+/// lock-screen accessories, the Sleep / Breast Live Activity with its Dynamic Island, and the
+/// background upload Live Activity (10j).
 @main
 struct ChildLifeWidgets: WidgetBundle {
   var body: some Widget {
@@ -16,5 +17,6 @@ struct ChildLifeWidgets: WidgetBundle {
     LockSleepWidget()
     LockFeedWidget()
     CareLiveActivityWidget()
+    UploadLiveActivityWidget()
   }
 }

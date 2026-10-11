@@ -74,9 +74,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get a11yQuickLog => 'Ghi nhanh';
 
   @override
-  String get a11ySwitchBaby => 'Đổi bé';
-
-  @override
   String get a11yNightCareToggle => 'Night care';
 
   @override
@@ -2841,6 +2838,22 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pickAlbumsTitle => 'Chọn album';
 
   @override
+  String get pickConfirm => 'Thêm';
+
+  @override
+  String pickVideoTooLong(String limit) {
+    return 'Chưa thêm được video dài hơn $limit.';
+  }
+
+  @override
+  String pickVideoTooBig(String size) {
+    return 'Chưa thêm được video lớn hơn $size.';
+  }
+
+  @override
+  String get pickPreparing => 'Đang chuẩn bị ảnh và video…';
+
+  @override
   String get composeCaption => 'Viết vài dòng… (không bắt buộc)';
 
   @override
@@ -3316,6 +3329,15 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get a11yPlay => 'Phát video';
+
+  @override
+  String get a11yPause => 'Tạm dừng video';
+
+  @override
+  String get viewerSeek => 'Vị trí video';
+
+  @override
+  String get viewerToggleChrome => 'hiện hoặc ẩn điều khiển';
 
   @override
   String get shareTitle => 'Chia sẻ với gia đình?';
@@ -5299,4 +5321,59 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get glanceGalleryLockFeedBlurb => 'Bao lâu từ lần bú gần nhất.';
+
+  @override
+  String glanceUploadTitle(String name) {
+    return 'Kỷ niệm của $name';
+  }
+
+  @override
+  String get glanceUploadTitlePlain => 'Kỷ niệm';
+
+  @override
+  String glanceUploadProgress(String done, String total) {
+    return 'Đang tải $done/$total mục';
+  }
+
+  @override
+  String get glanceUploadNotify => 'Xong sẽ báo bạn';
+
+  @override
+  String glanceUploadWaiting(String n) {
+    return '$n video chờ Wi‑Fi';
+  }
+
+  @override
+  String get glanceUploadDoneOne => 'Đã tải xong 1 mục';
+
+  @override
+  String glanceUploadDone(String n) {
+    return 'Đã tải xong $n mục';
+  }
+
+  @override
+  String get glanceUploadDoneBody => 'Ảnh và video đã có trong Kỷ niệm.';
+
+  @override
+  String get glanceUploadFailedOne => '1 mục chưa tải lên được';
+
+  @override
+  String glanceUploadFailed(String n) {
+    return '$n mục chưa tải lên được';
+  }
+
+  @override
+  String get glanceUploadFailedBody => 'Mở Child Life để thử lại.';
+
+  @override
+  String get glanceUploadWifiOne => '1 video đang chờ Wi‑Fi';
+
+  @override
+  String glanceUploadWifi(String n) {
+    return '$n video đang chờ Wi‑Fi';
+  }
+
+  @override
+  String get glanceUploadWifiBody =>
+      'Ảnh vẫn đang tải. Video sẽ tự tải khi có Wi‑Fi.';
 }
