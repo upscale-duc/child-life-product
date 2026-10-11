@@ -17,9 +17,12 @@ FLAVORS = {
   # owner's iPhone); install it into ~/Library/Developer/Xcode/UserData/Provisioning Profiles.
   # Extension profiles (owner-supplied) go here per flavor once they exist; nil = automatic.
   'dev' => { bundle_id: 'dev.hsba.app', name: 'Child Life Dev', icon: 'AppIcon-dev', profile: 'hsba app dev',
+             team: TEAM_ID,
              app_group: 'group.dev.hsba.app',
              extension_profiles: { 'widgetExtension' => nil, 'share' => nil } },
-  'prod' => { bundle_id: 'app.childlife', name: 'Child Life', icon: 'AppIcon-prod',
+  # prod has no team until the Child Life developer account exists: signing it on the borrowed
+  # team would register app.childlife there (it did once, from Xcode's automatic signing).
+  'prod' => { bundle_id: 'app.childlife', name: 'Child Life', icon: 'AppIcon-prod', team: nil,
               app_group: 'group.app.childlife',
               extension_profiles: {} },
 }.freeze
@@ -80,9 +83,16 @@ def flutter_xcconfig(project, base)
 end
 
 # Manual signing with an owner-supplied development profile, or automatic signing without one.
-def sign(config, profile)
-  config.build_settings['DEVELOPMENT_TEAM'] = TEAM_ID
+def sign(config, profile, team)
   config.build_settings.delete('DEVELOPMENT_TEAM[sdk=iphoneos*]')
+  unless team
+    # No team: nothing can be signed or registered for this flavor.
+    %w[DEVELOPMENT_TEAM PROVISIONING_PROFILE_SPECIFIER CODE_SIGN_IDENTITY[sdk=iphoneos*]].each { |k| config.build_settings.delete(k) }
+    config.build_settings['CODE_SIGN_STYLE'] = 'Manual'
+    config.build_settings['CODE_SIGN_IDENTITY'] = ''
+    return
+  end
+  config.build_settings['DEVELOPMENT_TEAM'] = team
   config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Development'
   config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = 'Apple Development'
   if profile
@@ -145,9 +155,8 @@ flutter_group = project.main_group['Flutter']
         config.build_settings['ASSETCATALOG_COMPILER_APPICON_NAME'] = info[:icon]
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = DEPLOYMENT_TARGET
         # Signing on the team; push (aps-environment) comes from the entitlements.
-        config.build_settings['DEVELOPMENT_TEAM'] = TEAM_ID
         config.build_settings['CODE_SIGN_ENTITLEMENTS'] = "Runner/Runner-#{flavor}.entitlements"
-        sign(config, info[:profile])
+        sign(config, info[:profile], info[:team])
       elsif owner == :tests
         config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle_id]}.RunnerTests"
         config.build_settings['TEST_HOST'] = '$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner'
@@ -174,7 +183,7 @@ EXTENSIONS.each do |name, ext|
       config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle_id]}.#{ext[:suffix]}"
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = ext[:deployment]
       config.build_settings['CODE_SIGN_ENTITLEMENTS'] = "#{ext[:dir]}/#{ext[:dir]}-#{flavor}.entitlements"
-      sign(config, info[:extension_profiles][name])
+      sign(config, info[:extension_profiles][name], info[:team])
     end
   end
   list.build_configurations.select { |c| BASES.include?(c.name) }.each(&:remove_from_project)
