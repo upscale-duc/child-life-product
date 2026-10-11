@@ -45,10 +45,17 @@ export async function deliverMail(
   doc: DocumentSnapshot,
   sender: MailSender | null,
   config: { webOrigin: string; adminOrigin?: string; now: Date },
-): Promise<'sent' | 'waiting-provider' | 'failed'> {
+): Promise<'sent' | 'waiting-provider' | 'failed' | 'superseded'> {
   const mail = doc.data();
   if (!mail || mail.status === 'sent') return 'sent';
+  if (mail.status === 'superseded') return 'superseded';
   const attempts = ((mail.attempts as number | undefined) ?? 0) + 1;
+  // An invite that waited (no provider, retries) is dropped once the same invite was mailed again
+  // to the same address: the newer one already went or is going out.
+  if (mail.template === 'invite' && (await newerInviteMail(doc))) {
+    await doc.ref.update({ status: 'superseded', attempts, updatedAt: config.now });
+    return 'superseded';
+  }
   if (!sender) {
     await doc.ref.update({ status: 'waiting-provider', attempts, updatedAt: config.now });
     return 'waiting-provider';
@@ -88,6 +95,21 @@ export async function deliverMail(
     });
     return 'failed';
   }
+}
+
+async function newerInviteMail(doc: DocumentSnapshot): Promise<boolean> {
+  const created = doc.get('createdAt') as { toMillis(): number } | Date | undefined;
+  const at = created instanceof Date ? created.getTime() : (created?.toMillis() ?? 0);
+  const same = await doc.ref.parent
+    .where('to', '==', doc.get('to'))
+    .where('template', '==', 'invite')
+    .where('data.code', '==', doc.get('data.code'))
+    .get();
+  return same.docs.some((d) => {
+    if (d.id === doc.id) return false;
+    const c = d.get('createdAt') as { toMillis(): number } | Date | undefined;
+    return (c instanceof Date ? c.getTime() : (c?.toMillis() ?? 0)) > at;
+  });
 }
 
 /** "Huỷ nhận email": records the suppression; returns false for unknown tokens. */

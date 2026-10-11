@@ -297,7 +297,32 @@ describe('invite email (14c Email, 14d, 14e)', () => {
     ).toBe('suppressed');
   });
 
-  it('waits for the provider when SES is not configured', async () => {
+  it('a waiting invite mail is dropped once the same invite was mailed again', async () => {
+    const ticket = await invite(mom);
+    const send = (at: Date, locale: 'vi' | 'en') =>
+      sendInviteEmail(
+        db,
+        mom,
+        { inviteId: ticket.inviteId, email: 'ba.ngoai@example.com', locale },
+        at,
+      );
+    await send(now, 'en');
+    const first = (await db.collection('mail').get()).docs[0]!;
+    expect(await deliverMail(first, null, { webOrigin: 'https://example.test', now })).toBe(
+      'waiting-provider',
+    );
+    await send(later(5), 'vi');
+    const sent: OutgoingMail[] = [];
+    const sender = { send: async (m: OutgoingMail) => void sent.push(m) };
+    const docs = (await db.collection('mail').orderBy('createdAt').get()).docs;
+    expect(await deliverMail(docs[1]!, sender, { webOrigin: 'x', now: later(5) })).toBe('sent');
+    expect(
+      await deliverMail(await docs[0]!.ref.get(), sender, { webOrigin: 'x', now: later(20) }),
+    ).toBe('superseded');
+    expect(sent.map((m) => m.subject)).toEqual(['Mai mời bạn cùng chăm Teddy']);
+  });
+
+  it('waits for the provider when none is configured', async () => {
     const ticket = await invite(mom);
     await sendInviteEmail(
       db,
