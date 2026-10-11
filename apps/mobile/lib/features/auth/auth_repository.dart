@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -54,10 +55,14 @@ AuthFailure failureOf(FirebaseAuthException e) => switch (e.code) {
 
 /// Sign-in for 06 / 07 / 09 / 10 (R-001…R-005). One person = one account with linked providers.
 class AuthRepository {
-  AuthRepository(this._auth, this._config);
+  AuthRepository(this._auth, this._config, [this._functions]);
 
   final FirebaseAuth _auth;
   final AuthProviderConfig _config;
+
+  /// Read only when a branded mail goes out (D-054), so tests without Firebase never touch it.
+  final FirebaseFunctions Function()? _functions;
+  String _language = 'vi';
   bool _googleReady = false;
 
   /// Credential the user tried before we found the email already had an account (screen 10).
@@ -70,7 +75,36 @@ class AuthRepository {
   /// Includes profile changes such as emailVerified after reload().
   Stream<User?> userChanges() => _auth.userChanges();
 
-  void setLanguage(String languageCode) => _auth.setLanguageCode(languageCode);
+  void setLanguage(String languageCode) {
+    _language = languageCode.startsWith('en') ? 'en' : 'vi';
+    _auth.setLanguageCode(languageCode);
+  }
+
+  /// "Xác minh email" / "Quên mật khẩu" as Child Life's own mail through Resend (D-054). False
+  /// when that is not possible yet (no provider, Function not deployed, offline): the caller then
+  /// lets Firebase send its own mail, as before.
+  Future<bool> _brandedMail(Map<String, Object?> data) async {
+    final functions = _functions;
+    if (functions == null) return false;
+    try {
+      await functions().httpsCallable('sendAuthEmail').call<Object?>({
+        ...data,
+        'locale': _language,
+      });
+      return true;
+    } on FirebaseFunctionsException catch (e) {
+      if (e.code == 'resource-exhausted') {
+        throw const AuthException(AuthFailure.tooManyRequests);
+      }
+      return false;
+    }
+  }
+
+  Future<void> _sendVerification(User? user) async {
+    if (user == null || user.emailVerified) return;
+    if (await _brandedMail({'kind': 'verifyEmail'})) return;
+    await user.sendEmailVerification();
+  }
 
   Future<T> _guard<T>(Future<T> Function() action) async {
     try {
@@ -88,7 +122,7 @@ class AuthRepository {
         email: email,
         password: password,
       );
-      await result.user?.sendEmailVerification();
+      await _sendVerification(result.user);
     } on FirebaseAuthException catch (e) {
       if (e.code != 'email-already-in-use') throw AuthException(failureOf(e));
       try {
@@ -116,7 +150,7 @@ class AuthRepository {
   );
 
   Future<void> sendVerificationEmail() => _guard(() async {
-    await _auth.currentUser?.sendEmailVerification();
+    await _sendVerification(_auth.currentUser);
   });
 
   /// Re-reads the account so a link opened in the browser shows up (no universal links yet).
@@ -134,6 +168,7 @@ class AuthRepository {
   /// "Gửi link" (09). Never reveals whether the email has an account (email privacy is on).
   Future<void> sendPasswordReset(String email) async {
     try {
+      if (await _brandedMail({'kind': 'resetPassword', 'email': email})) return;
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') return;
@@ -232,7 +267,7 @@ class AuthRepository {
           EmailAuthProvider.credential(email: email, password: password),
         );
         // Continue unverified is allowed (P-008); the link still goes out.
-        await result.user?.sendEmailVerification();
+        await _sendVerification(result.user);
       });
 
   /// 16d Apple / Google. Returns false when the credential already has an account: the caller
@@ -335,6 +370,7 @@ final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => AuthRepository(
     ref.watch(firebaseAuthProvider),
     authProviderConfigFor(ref.watch(environmentProvider)),
+    () => ref.read(functionsProvider),
   ),
 );
 

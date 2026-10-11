@@ -10,9 +10,8 @@ import { logger } from 'firebase-functions';
 import { getAuth } from 'firebase-admin/auth';
 import { getStorage } from 'firebase-admin/storage';
 import { getMessaging } from 'firebase-admin/messaging';
-import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { defaultLimits, functionsRegion, limitsSchema } from '@child-life/contracts';
-import { currentProjectId, webOriginFor } from './env.js';
+import { adminOriginFor, currentProjectId, webOriginFor } from './env.js';
 import {
   FamilyError,
   acceptInvite,
@@ -29,6 +28,8 @@ import {
   type Caller,
 } from './family.js';
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
+import { resendSender } from './mail-resend.js';
+import { AuthMailError, sendAuthEmail as sendAuthMail } from './auth-mail.js';
 import { localeFromHeader, renderInvitePage, renderUnsubscribePage } from './pages.js';
 import { CareError, onRecordWritten, purgeDeletedRecords, resolveSleepConflict } from './care.js';
 import { BabyError, createBaby, getBabyAvatar, setBabyAvatar, type AvatarStore } from './babies.js';
@@ -641,53 +642,31 @@ export const deliverFamilyNotice = onDocumentCreated(
   },
 );
 
-// ---------- Email (D-020: AWS SES) ----------
+// ---------- Email (D-054: Resend; replaces SES, D-020) ----------
 
-/** Set with `firebase functions:secrets:set SES_ACCESS_KEY_ID` (value "unset" = not configured). */
-const sesAccessKeyId = defineSecret('SES_ACCESS_KEY_ID');
-const sesSecretAccessKey = defineSecret('SES_SECRET_ACCESS_KEY');
-const sesRegion = defineString('SES_REGION', { default: 'ap-southeast-1' });
+/** Set with `firebase functions:secrets:set RESEND_API_KEY` (value "unset" = not configured). */
+const resendApiKey = defineSecret('RESEND_API_KEY');
 const mailFrom = defineString('MAIL_FROM', { default: 'Child Life <hello@childlife.app>' });
+/** Replies land in the GoDaddy mailbox. */
+const mailReplyTo = defineString('MAIL_REPLY_TO', { default: 'hello@childlife.app' });
 
-function sesSender(): MailSender | null {
-  const keyId = sesAccessKeyId.value();
-  const secret = sesSecretAccessKey.value();
-  if (!keyId || keyId === 'unset' || !secret || secret === 'unset') return null;
-  const client = new SESv2Client({
-    region: sesRegion.value(),
-    credentials: { accessKeyId: keyId, secretAccessKey: secret },
-  });
-  return {
-    send: async (mail) => {
-      await client.send(
-        new SendEmailCommand({
-          FromEmailAddress: mailFrom.value(),
-          Destination: { ToAddresses: [mail.to] },
-          Content: {
-            Simple: {
-              Subject: { Data: mail.subject, Charset: 'UTF-8' },
-              Body: {
-                Html: { Data: mail.html, Charset: 'UTF-8' },
-                Text: { Data: mail.text, Charset: 'UTF-8' },
-              },
-              Headers: [
-                { Name: 'List-Unsubscribe', Value: `<${mail.unsubscribeUrl}>` },
-                { Name: 'List-Unsubscribe-Post', Value: 'List-Unsubscribe=One-Click' },
-              ],
-            },
-          },
-        }),
-      );
-    },
-  };
+function mailSender(): MailSender | null {
+  const apiKey = resendApiKey.value();
+  if (!apiKey || apiKey === 'unset') return null;
+  return resendSender({ apiKey, from: mailFrom.value(), replyTo: mailReplyTo.value() });
 }
 
+const mailOrigins = () => ({
+  webOrigin: webOriginFor(currentProjectId()),
+  adminOrigin: adminOriginFor(currentProjectId()),
+});
+
 export const deliverQueuedMail = onDocumentCreated(
-  { document: 'mail/{mailId}', secrets: [sesAccessKeyId, sesSecretAccessKey] },
+  { document: 'mail/{mailId}', secrets: [resendApiKey] },
   async (event) => {
     if (!event.data) return;
-    const status = await deliverMail(event.data, sesSender(), {
-      webOrigin: webOriginFor(currentProjectId()),
+    const status = await deliverMail(event.data, mailSender(), {
+      ...mailOrigins(),
       now: new Date(),
     });
     logger.info('mail processed', { mailId: event.params.mailId, status });
@@ -696,9 +675,9 @@ export const deliverQueuedMail = onDocumentCreated(
 
 /** Retries mail waiting for the provider or after a transient failure. */
 export const retryQueuedMail = onSchedule(
-  { schedule: 'every 15 minutes', secrets: [sesAccessKeyId, sesSecretAccessKey] },
+  { schedule: 'every 15 minutes', secrets: [resendApiKey] },
   async () => {
-    const sender = sesSender();
+    const sender = mailSender();
     if (!sender) return;
     const due = await getFirestore()
       .collection('mail')
@@ -706,13 +685,38 @@ export const retryQueuedMail = onSchedule(
       .limit(50)
       .get();
     for (const doc of due.docs) {
-      await deliverMail(doc, sender, {
-        webOrigin: webOriginFor(currentProjectId()),
-        now: new Date(),
-      });
+      await deliverMail(doc, sender, { ...mailOrigins(), now: new Date() });
     }
   },
 );
+
+/** Branded "Xác minh email", "Quên mật khẩu" and the portal's email link (D-054). */
+export const sendAuthEmail = onCall({ secrets: [resendApiKey] }, async (request) => {
+  try {
+    return await sendAuthMail(
+      {
+        db: getFirestore(),
+        auth: getAuth(),
+        sender: mailSender(),
+        adminOrigin: adminOriginFor(currentProjectId()),
+      },
+      request.auth
+        ? {
+            uid: request.auth.uid,
+            email: request.auth.token.email,
+            emailVerified: request.auth.token.email_verified,
+          }
+        : null,
+      request.data,
+      new Date(),
+    );
+  } catch (error) {
+    if (error instanceof AuthMailError) {
+      throw new HttpsError(error.code, error.reason, { reason: error.reason });
+    }
+    throw error;
+  }
+});
 
 // ---------- Pages on the landing host ----------
 
