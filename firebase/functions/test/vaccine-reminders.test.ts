@@ -5,7 +5,8 @@ import { atLocalHour, dueReminders, openDoses, vaccineCopy } from '../src/vaccin
 const zone = 'Asia/Ho_Chi_Minh';
 const vn = (d: string, h: number, m = 0) =>
   new Date(`${d}T${String(h - 7).padStart(2, '0')}:${String(m).padStart(2, '0')}:00Z`);
-const birth = new Map([
+type Rec = { status: string; plannedOn: string | null };
+const birth = new Map<string, Rec>([
   ['vitk_1', { status: 'given', plannedOn: null }],
   ['bcg_1', { status: 'given', plannedOn: null }],
   ['hepb_1', { status: 'given', plannedOn: null }],
@@ -33,7 +34,10 @@ describe('when they ring', () => {
   });
 
   it('a rescheduled dose rings only the evening before; a snooze at 07:00', () => {
-    const records = new Map([...birth, ['rota_1', { status: 'planned', plannedOn: '2026-11-25' }]]);
+    const records = new Map<string, Rec>([
+      ...birth,
+      ['rota_1', { status: 'planned', plannedOn: '2026-11-25' }],
+    ]);
     const doses = openDoses('2026-09-17', null, records);
     expect(dueReminders(zone, doses, [], vn('2026-11-22', 19, 1))).toEqual([]);
     expect(dueReminders(zone, doses, [], vn('2026-11-24', 19, 1)).map((r) => r.kind)).toEqual([
@@ -48,7 +52,7 @@ describe('when they ring', () => {
   });
 
   it('given and declined doses never ring; 5in1 adds polio', () => {
-    const records = new Map([
+    const records = new Map<string, Rec>([
       ...birth,
       ['dtp_1', { status: 'given', plannedOn: null }],
       ['rota_1', { status: 'declined', plannedOn: null }],
