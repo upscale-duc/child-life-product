@@ -24,6 +24,7 @@ void main() {
 
   Future<ProviderContainer> start({
     NetworkKind initial = NetworkKind.wifi,
+    MediaPreparer? preparer,
   }) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -33,7 +34,7 @@ void main() {
         sharedPreferencesProvider.overrideWithValue(prefs),
         memoryRepositoryProvider.overrideWithValue(repo),
         uploadTransportProvider.overrideWithValue(transport),
-        mediaPreparerProvider.overrideWithValue(FakePreparer()),
+        mediaPreparerProvider.overrideWithValue(preparer ?? FakePreparer()),
         queueStoreProvider.overrideWithValue(store),
         networkKindProvider.overrideWith((ref) async* {
           yield initial;
@@ -125,6 +126,34 @@ void main() {
       expect(items().last.state, QueueState.uploaded);
     },
   );
+
+  test('uploaded rows keep a thumbnail until the batch is dismissed', () async {
+    final preparer = FakePreparer();
+    container = await start(preparer: preparer);
+    final queue = container.read(uploadQueueProvider.notifier);
+    await queue.enqueue(
+      babyId: teddyId,
+      request: request(),
+      picked: [pickedPhoto('IMG_3605.HEIC'), pickedPhoto('IMG_3606.HEIC')],
+    );
+    await pumpEventQueue();
+    final done = items();
+    expect(done.map((i) => i.state), everyElement(QueueState.uploaded));
+    // The copies are dropped, but each row still has its picture (and it survives a restart).
+    expect(preparer.finished, done.map((i) => i.mediaId));
+    expect(done.map((i) => i.thumbPath), everyElement(isNotNull));
+    expect(
+      done.map((i) => QueueItem.fromJson(i.toJson()).thumbPath),
+      done.map((i) => i.thumbPath),
+    );
+    expect(preparer.discarded, isEmpty);
+
+    await queue.dismiss(
+      container.read(uploadQueueProvider).batches.single.batchId,
+    );
+    expect(preparer.discarded, done.map((i) => i.mediaId));
+    expect(container.read(uploadQueueProvider).batches, isEmpty);
+  });
 
   test('turning the Wi-Fi rule off lets the video go on mobile data', () async {
     container = await start(initial: NetworkKind.cellular);

@@ -112,8 +112,8 @@ struct LockWidget: Widget {
     StaticConfiguration(kind: "app.childlife.lock", provider: GlanceProvider()) { entry in
       LockFamilyView(entry: entry).containerBackground(.clear, for: .widget)
     }
-    .configurationDisplayName("Child Life")
-    .description("Lần bú, tã và giấc ngủ trên màn hình khoá.")
+    .configurationDisplayName("glanceGalleryLockName")
+    .description("glanceGalleryLockBlurb")
     .supportedFamilies([.accessoryRectangular, .accessoryInline])
   }
 }
@@ -134,8 +134,8 @@ struct LockSleepWidget: Widget {
     StaticConfiguration(kind: "app.childlife.lock.sleep", provider: GlanceProvider()) { entry in
       LockSleepView(entry: entry).containerBackground(.clear, for: .widget)
     }
-    .configurationDisplayName("Giấc ngủ")
-    .description("Đang ngủ bao lâu, hoặc đã thức bao lâu.")
+    .configurationDisplayName("glanceGalleryLockSleepName")
+    .description("glanceGalleryLockSleepBlurb")
     .supportedFamilies([.accessoryCircular])
   }
 }
@@ -145,8 +145,8 @@ struct LockFeedWidget: Widget {
     StaticConfiguration(kind: "app.childlife.lock.feed", provider: GlanceProvider()) { entry in
       LockFeedView(entry: entry).containerBackground(.clear, for: .widget)
     }
-    .configurationDisplayName("Lần bú")
-    .description("Bao lâu từ lần bú gần nhất.")
+    .configurationDisplayName("glanceGalleryLockFeedName")
+    .description("glanceGalleryLockFeedBlurb")
     .supportedFamilies([.accessoryCircular])
   }
 }
@@ -170,11 +170,12 @@ struct CareLiveActivityWidget: Widget {
         }
         DynamicIslandExpandedRegion(.trailing) {
           LiveTimerText(state: st).font(.system(size: 24, weight: .semibold).monospacedDigit())
-            .foregroundStyle(p.accent)
+            .foregroundStyle(p.accent).lineLimit(1).minimumScaleFactor(0.6)
+            .multilineTextAlignment(.trailing).frame(width: 96, alignment: .trailing)
         }
         DynamicIslandExpandedRegion(.center) {
           VStack(alignment: .leading, spacing: 2) {
-            Text(LiveText.title(a, st)).font(.system(size: 15, weight: .semibold)).lineLimit(1)
+            Text(LiveText.title(a, st)).font(.system(size: 15, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.75)
             Text(LiveText.since(a, st)).font(.system(size: 12)).foregroundStyle(.secondary).lineLimit(1)
           }
           .frame(maxWidth: .infinity, alignment: .leading)
@@ -183,7 +184,8 @@ struct CareLiveActivityWidget: Widget {
       } compactLeading: {
         Image(systemName: a.type == "sleep" ? "moon.fill" : "drop.fill").foregroundStyle(p.accent)
       } compactTrailing: {
-        LiveTimerText(state: st).monospacedDigit().foregroundStyle(p.accent).frame(maxWidth: 56)
+        LiveTimerText(state: st).monospacedDigit().foregroundStyle(p.accent).lineLimit(1)
+          .minimumScaleFactor(0.7).multilineTextAlignment(.trailing).frame(width: 52, alignment: .trailing)
       } minimal: {
         Image(systemName: a.type == "sleep" ? "moon.fill" : "drop.fill").foregroundStyle(p.accent)
       }
@@ -236,12 +238,14 @@ struct LiveButtons: View {
           Text(LiveText.t(attributes, "wake", "Thức dậy")).frame(maxWidth: .infinity)
         }
         .tint(p.accent)
+        // The button style also styles Links: tint it like "Đổi bên" rather than drawing a capsule
+        // inside the default (blue) one.
         Link(destination: GlanceLink.url(GlanceLink.timer("sleep"))) {
           Text(LiveText.t(attributes, compact ? "editTimeShort" : "editTime", "Sửa giờ bắt đầu"))
-            .frame(maxWidth: .infinity, minHeight: 34)
-            .background(Color.clSurface.opacity(0.9), in: Capsule())
-            .foregroundStyle(Color.clInk)
+            .frame(maxWidth: .infinity)
         }
+        .tint(Color.clSurface)
+        .foregroundStyle(Color.clInk)
       } else {
         Button(intent: SwitchSideIntent()) {
           Text(LiveText.t(attributes, "switchSide", "Đổi bên")).frame(maxWidth: .infinity)
@@ -278,12 +282,12 @@ struct LiveLockView: View {
         Image(a.type == "sleep" ? "MiniMoon" : "MiniDrop").resizable().scaledToFit().frame(width: 44, height: 44)
         VStack(alignment: .leading, spacing: 2) {
           Text(LiveText.title(a, st)).font(.system(size: 16, weight: .semibold)).foregroundStyle(Color.clInk)
-            .lineLimit(1)
+            .lineLimit(1).minimumScaleFactor(0.75)
           Text(LiveText.since(a, st)).font(.system(size: 13)).foregroundStyle(Color.clMuted).lineLimit(1)
         }
         Spacer(minLength: 0)
         LiveTimerText(state: st).font(.system(size: 28, weight: .semibold).monospacedDigit())
-          .foregroundStyle(p.ink).multilineTextAlignment(.trailing).frame(maxWidth: 120, alignment: .trailing)
+          .foregroundStyle(p.ink).lineLimit(1).multilineTextAlignment(.trailing).frame(maxWidth: 120, alignment: .trailing)
       }
       LiveButtons(attributes: a, state: st)
     }

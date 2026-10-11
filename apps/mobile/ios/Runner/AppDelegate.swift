@@ -18,6 +18,9 @@ import UserNotifications
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "ShareInbox") {
       ShareInbox.register(with: registrar.messenger())
     }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "Glance") {
+      GlanceChannel.register(with: registrar.messenger())
+    }
   }
 }
 
@@ -71,5 +74,64 @@ enum ShareInbox {
       }
     }
     return out.sorted { $0.0 < $1.0 }.map { $0.1 }
+  }
+}
+
+/// S8: the app's side of widgets and Live Activities (lib/features/glance/glance_bridge.dart).
+enum GlanceChannel {
+  static func register(with messenger: FlutterBinaryMessenger) {
+    let channel = FlutterMethodChannel(name: "childlife/glance", binaryMessenger: messenger)
+    channel.setMethodCallHandler { call, result in
+      switch call.method {
+      case "setSession":
+        let args = call.arguments as? [String: Any]
+        if let uid = args?["uid"] as? String, let token = args?["refreshToken"] as? String {
+          let current = GlanceAuth.load()
+          // Keep a still-valid ID token when the same person's session is pushed again.
+          if current?.uid != uid || current?.refreshToken != token {
+            GlanceAuth.save(GlanceSession(uid: uid, refreshToken: token))
+          }
+        }
+        result(nil)
+      case "clearSession":
+        GlanceAuth.clear()
+        GlanceSnapshot.update { s in
+          s.signedIn = false
+          s.uid = nil
+          s.babyId = nil
+          s.sleep = nil
+          s.breast = nil
+        }
+        GlanceActions.reload()
+        Task { await GlanceLive.sync() }
+        result(nil)
+      case "setSnapshot":
+        guard let json = (call.arguments as? String)?.data(using: .utf8),
+          var next = try? GlanceCoding.decoder.decode(GlanceSnapshot.self, from: json)
+        else {
+          result(FlutterError(code: "bad-snapshot", message: nil, details: nil))
+          return
+        }
+        // What only the native side knows: writes waiting offline, and a fresh "Hoàn tác".
+        let previous = GlanceSnapshot.load()
+        next.pending = GlancePending.all().count
+        if let logged = previous?.logged, logged.at.addingTimeInterval(Glance.undoWindow) > Date() {
+          next.logged = logged
+        }
+        next.save()
+        GlanceActions.reload()
+        Task { await GlanceLive.sync() }
+        result(nil)
+      case "refresh":
+        Task {
+          if let s = GlanceSnapshot.load(), s.pending > 0 { await GlanceFirestore.flushPending(s) }
+          await GlanceLive.sync()
+          GlanceActions.reload()
+        }
+        result(nil)
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
   }
 }

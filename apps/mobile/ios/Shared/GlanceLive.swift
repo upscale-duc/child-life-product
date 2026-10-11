@@ -67,8 +67,8 @@ enum GlanceLive {
 
   static func liveCopy(_ s: GlanceSnapshot) -> [String: String] {
     let keys = [
-      "appName", "familySees", "sleeping", "since", "wake", "editTime", "breastSide.left",
-      "breastSide.right", "breastTitle", "switchSide", "endFeed", "paused",
+      "appName", "familySees", "sleepingTitle", "since", "wake", "editTime", "editTimeShort",
+      "breastSide.left", "breastSide.right", "breastTitle", "switchSide", "endFeed",
     ]
     var out: [String: String] = [:]
     for k in keys { out[k] = s.copy[k] }

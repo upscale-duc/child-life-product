@@ -245,69 +245,77 @@ class StorageCard extends ConsumerWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final s = ref.watch(familyStorageProvider(babyId)).value;
     final tints = babyTints(context);
+    // One child: the bar belongs to the Storage row, with no divider between them.
     return ClCardGroup(
       children: [
-        MeRow(
-          title: l10n.meStorage,
-          value: s == null
-              ? null
-              : l10n.meStorageOf(
-                  formatBytes(s.usedBytes, locale),
-                  formatBytes(s.quotaBytes, locale),
-                ),
-          onTap: () => context.push(Routes.meStorage),
-        ),
-        if (s != null)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              ClSpace.s4,
-              0,
-              ClSpace.s4,
-              ClSpace.s4,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            MeRow(
+              title: l10n.meStorage,
+              value: s == null
+                  ? null
+                  : l10n.meStorageOf(
+                      formatBytes(s.usedBytes, locale),
+                      formatBytes(s.quotaBytes, locale),
+                    ),
+              onTap: () => context.push(Routes.meStorage),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                StorageBar(
-                  segments: [for (final b in s.babies) b.bytes],
-                  quota: s.quotaBytes,
-                  full: s.state == StorageState.full,
+            if (s != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  0,
+                  ClSpace.s4,
+                  ClSpace.s4,
                 ),
-                const SizedBox(height: ClSpace.s2),
-                Wrap(
-                  spacing: ClSpace.s3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (final (i, b) in s.babies.indexed)
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: tints[i % tints.length],
-                              shape: BoxShape.circle,
-                            ),
+                    StorageBar(
+                      segments: [for (final b in s.babies) b.bytes],
+                      quota: s.quotaBytes,
+                      full: s.state == StorageState.full,
+                    ),
+                    const SizedBox(height: ClSpace.s2),
+                    Wrap(
+                      spacing: ClSpace.s3,
+                      children: [
+                        for (final (i, b) in s.babies.indexed)
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: tints[i % tints.length],
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${b.nickname} ${formatBytes(b.bytes, locale)}',
+                                style: cl.text.caption.copyWith(
+                                  color: cl.colors.inkMuted,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${b.nickname} ${formatBytes(b.bytes, locale)}',
-                            style: cl.text.caption.copyWith(
-                              color: cl.colors.inkMuted,
-                            ),
-                          ),
-                        ],
+                      ],
+                    ),
+                    const SizedBox(height: ClSpace.s1),
+                    Text(
+                      l10n.meStorageShared,
+                      style: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
                       ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: ClSpace.s1),
-                Text(
-                  l10n.meStorageShared,
-                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                ),
-              ],
-            ),
-          ),
+              ),
+          ],
+        ),
       ],
     );
   }

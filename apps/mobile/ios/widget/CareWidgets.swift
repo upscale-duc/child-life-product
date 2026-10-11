@@ -337,7 +337,8 @@ struct SmallCareView: View {
   }
 }
 
-/// One small widget per care type (Widget requires a parameterless init).
+/// One small widget per care type (Widget requires a parameterless init). Gallery names and blurbs
+/// are keys in Localizable.xcstrings, generated from the ARB catalogs by tool/s8_widget_strings.py.
 private func smallConfiguration(_ kind: String, _ type: String, _ name: LocalizedStringResource,
   _ blurb: LocalizedStringResource) -> some WidgetConfiguration {
   StaticConfiguration(kind: kind, provider: GlanceProvider()) { entry in
@@ -350,25 +351,25 @@ private func smallConfiguration(_ kind: String, _ type: String, _ name: Localize
 
 struct BottleWidget: Widget {
   var body: some WidgetConfiguration {
-    smallConfiguration("app.childlife.bottle", "bottle", "Bú bình", "Ghi lại cữ bình vừa rồi chỉ với một chạm.")
+    smallConfiguration("app.childlife.bottle", "bottle", "glanceGalleryBottleName", "glanceGalleryBottleBlurb")
   }
 }
 
 struct BreastWidget: Widget {
   var body: some WidgetConfiguration {
-    smallConfiguration("app.childlife.breast", "breast", "Bú mẹ", "Bắt đầu, đổi bên và kết thúc cữ bú.")
+    smallConfiguration("app.childlife.breast", "breast", "glanceGalleryBreastName", "glanceGalleryBreastBlurb")
   }
 }
 
 struct SleepWidget: Widget {
   var body: some WidgetConfiguration {
-    smallConfiguration("app.childlife.sleep", "sleep", "Giấc ngủ", "Bắt đầu ngủ và thức dậy ngay trên màn hình chính.")
+    smallConfiguration("app.childlife.sleep", "sleep", "glanceGallerySleepName", "glanceGallerySleepBlurb")
   }
 }
 
 struct DiaperWidget: Widget {
   var body: some WidgetConfiguration {
-    smallConfiguration("app.childlife.diaper", "diaper", "Thay tã", "Ướt, bẩn hay cả hai — một chạm.")
+    smallConfiguration("app.childlife.diaper", "diaper", "glanceGalleryDiaperName", "glanceGalleryDiaperBlurb")
   }
 }
 
@@ -454,12 +455,18 @@ struct GlanceHeader: View {
   let date: Date
   var trailing: String? = nil
 
+  /// "Bú bình · 120 ml" / "Thay tã · Ướt"; just the type when there is nothing more to say.
+  private func toastWhat(_ logged: GlanceLogged) -> String {
+    let type = s.text(logged.type, logged.type)
+    return logged.label.isEmpty || logged.label == type ? type : "\(type) · \(logged.label)"
+  }
+
   var body: some View {
     let f = GlanceFormat(s: s)
     if let logged = s.logged, date < logged.at.addingTimeInterval(Glance.undoWindow) {
       HStack(spacing: 8) {
         Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundStyle(Color.clMint)
-        Text(s.text("loggedToast", ["what": "\(s.text(logged.type, logged.type)) · \(logged.label)"]))
+        Text(s.text("loggedToast", ["what": toastWhat(logged)]))
           .font(.system(size: 12, weight: .semibold)).foregroundStyle(Color.clSurface).lineLimit(1)
           .minimumScaleFactor(0.8)
         Spacer(minLength: 0)
@@ -588,8 +595,8 @@ struct QuickLogWidget: Widget {
     StaticConfiguration(kind: "app.childlife.quick", provider: GlanceProvider()) { entry in
       MediumCareView(entry: entry).containerBackground(Color.clSurface, for: .widget)
     }
-    .configurationDisplayName("Ghi nhanh")
-    .description("Bú bình, bú mẹ, ngủ, thay tã — một chạm.")
+    .configurationDisplayName("glanceGalleryQuickName")
+    .description("glanceGalleryQuickBlurb")
     .supportedFamilies([.systemMedium])
   }
 }
@@ -599,8 +606,8 @@ struct TodayWidget: Widget {
     StaticConfiguration(kind: "app.childlife.today", provider: GlanceProvider()) { entry in
       LargeCareView(entry: entry).containerBackground(Color.clSurface, for: .widget)
     }
-    .configurationDisplayName("Hôm nay")
-    .description("Giấc ngủ, ghi nhanh và 3 lần ghi gần nhất.")
+    .configurationDisplayName("glanceGalleryTodayName")
+    .description("glanceGalleryTodayBlurb")
     .supportedFamilies([.systemLarge])
   }
 }

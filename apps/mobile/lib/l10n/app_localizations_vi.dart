@@ -74,6 +74,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get a11yQuickLog => 'Ghi nhanh';
 
   @override
+  String get a11ySwitchBaby => 'Đổi bé';
+
+  @override
   String get a11yNightCareToggle => 'Night care';
 
   @override
@@ -4965,4 +4968,335 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rowRejected => 'Chưa tải lên được';
+
+  @override
+  String get glanceAppName => 'Child Life';
+
+  @override
+  String get glanceYou => 'Bạn';
+
+  @override
+  String get glanceBottle => 'Bú bình';
+
+  @override
+  String get glanceBreast => 'Bú mẹ';
+
+  @override
+  String get glanceSleep => 'Ngủ';
+
+  @override
+  String get glanceSleepTitle => 'Giấc ngủ';
+
+  @override
+  String get glanceDiaper => 'Thay tã';
+
+  @override
+  String get glanceDiaperWet => 'Ướt';
+
+  @override
+  String get glanceDiaperDirty => 'Bẩn';
+
+  @override
+  String get glanceDiaperBoth => 'Cả hai';
+
+  @override
+  String glanceAgo(String t) {
+    return '$t trước';
+  }
+
+  @override
+  String glanceLoggedBy(String name) {
+    return '$name ghi';
+  }
+
+  @override
+  String glancePlusMl(String ml) {
+    return '+ $ml ml';
+  }
+
+  @override
+  String glanceLoggedBottle(String ml) {
+    return '$ml ml';
+  }
+
+  @override
+  String glanceLoggedDiaper(String kind) {
+    return '$kind';
+  }
+
+  @override
+  String glanceLogged(String what, String name) {
+    return 'Đã ghi $what · $name';
+  }
+
+  @override
+  String glanceLoggedToast(String what) {
+    return 'Đã ghi $what';
+  }
+
+  @override
+  String get glanceJustNow => 'Vừa xong';
+
+  @override
+  String get glanceUndo => 'Hoàn tác';
+
+  @override
+  String get glanceEdit => 'Sửa';
+
+  @override
+  String get glanceChangeType => 'Đổi loại';
+
+  @override
+  String get glanceStartBreast => 'Bắt đầu bú';
+
+  @override
+  String get glanceFeeding => 'Đang bú';
+
+  @override
+  String get glanceSwitchSide => 'Đổi bên';
+
+  @override
+  String get glanceDone => 'Xong';
+
+  @override
+  String get glanceBreastSideLeft => 'Bên trái';
+
+  @override
+  String get glanceBreastSideRight => 'Bên phải';
+
+  @override
+  String glanceSinceTime(String time) {
+    return 'từ $time';
+  }
+
+  @override
+  String glanceAwakeFor(String t) {
+    return 'Đã thức $t';
+  }
+
+  @override
+  String glanceWokeAt(String time) {
+    return 'Dậy lúc $time';
+  }
+
+  @override
+  String get glanceStartSleep => 'Bắt đầu ngủ';
+
+  @override
+  String get glanceSleeping => 'Đang ngủ';
+
+  @override
+  String glanceSince(String time, String name) {
+    return 'Từ $time · $name';
+  }
+
+  @override
+  String get glanceWake => 'Thức dậy';
+
+  @override
+  String get glanceJustWoke => 'Vừa thức dậy';
+
+  @override
+  String glanceSlept(String t) {
+    return 'Ngủ $t';
+  }
+
+  @override
+  String get glanceEmptyTitle => 'Hôm nay chưa ghi';
+
+  @override
+  String get glanceEmptySub => 'Ghi cữ đầu tiên nhé';
+
+  @override
+  String get glanceQuickLog => '+ Ghi nhanh';
+
+  @override
+  String get glanceSignedOutTitle => 'Đăng nhập để dùng widget';
+
+  @override
+  String get glanceOpenApp => 'Mở app';
+
+  @override
+  String get glanceOpenChildLife => 'Mở Child Life';
+
+  @override
+  String glanceSummary(String feeds, String sleep) {
+    return '$feeds cữ · ngủ $sleep hôm nay';
+  }
+
+  @override
+  String glancePending(String n) {
+    return 'Chưa đồng bộ · $n bản ghi chờ';
+  }
+
+  @override
+  String get glanceRecent => 'Gần đây';
+
+  @override
+  String glanceTotals(
+    String bottles,
+    String ml,
+    String breasts,
+    String diapers,
+  ) {
+    return 'Hôm nay: $bottles cữ bình $ml ml · $breasts lần bú mẹ · $diapers tã';
+  }
+
+  @override
+  String get glanceNoneYet => 'Chưa có';
+
+  @override
+  String glanceFedFor(String t, String name) {
+    return 'Bú $t · $name ghi';
+  }
+
+  @override
+  String glanceAgoFor(String t) {
+    return 'trước · $t';
+  }
+
+  @override
+  String glanceAgoKind(String kind) {
+    return 'trước · $kind';
+  }
+
+  @override
+  String glanceAwakeShort(String t) {
+    return 'thức $t';
+  }
+
+  @override
+  String glanceSleptToday(String t) {
+    return 'ngủ $t hôm nay';
+  }
+
+  @override
+  String glanceLockFeeds(String feed, String diaper) {
+    return 'Bú $feed · Tã $diaper';
+  }
+
+  @override
+  String glanceLockSleep(String awake, String slept) {
+    return 'Thức $awake · ngủ $slept';
+  }
+
+  @override
+  String glanceInlineFed(String name, String t) {
+    return '$name bú $t trước';
+  }
+
+  @override
+  String get glanceFamilySees => 'Cả nhà đang thấy';
+
+  @override
+  String glanceSleepingTitle(String name) {
+    return '$name đang ngủ';
+  }
+
+  @override
+  String get glanceEditTime => 'Sửa giờ bắt đầu';
+
+  @override
+  String get glanceEditTimeShort => 'Sửa giờ';
+
+  @override
+  String glanceBreastTitle(String side) {
+    return 'Bú mẹ · $side';
+  }
+
+  @override
+  String get glanceEndFeed => 'Kết thúc';
+
+  @override
+  String get glancePaused => 'Tạm dừng';
+
+  @override
+  String glanceDurM(String m) {
+    return '$m phút';
+  }
+
+  @override
+  String glanceDurH(String h) {
+    return '$h giờ';
+  }
+
+  @override
+  String glanceDurHm(String h, String m) {
+    return '$h giờ $m phút';
+  }
+
+  @override
+  String glanceDurSM(String m) {
+    return '${m}p';
+  }
+
+  @override
+  String glanceDurSH(String h) {
+    return '${h}g';
+  }
+
+  @override
+  String glanceDurSHm(String h, String m) {
+    return '${h}g ${m}p';
+  }
+
+  @override
+  String get glanceGalleryBottleName => 'Bú bình';
+
+  @override
+  String get glanceGalleryBottleBlurb =>
+      'Ghi lại cữ bình vừa rồi chỉ với một chạm.';
+
+  @override
+  String get glanceGalleryBreastName => 'Bú mẹ';
+
+  @override
+  String get glanceGalleryBreastBlurb => 'Bắt đầu, đổi bên và kết thúc cữ bú.';
+
+  @override
+  String get glanceGallerySleepName => 'Giấc ngủ';
+
+  @override
+  String get glanceGallerySleepBlurb =>
+      'Bắt đầu ngủ và thức dậy ngay trên màn hình chính.';
+
+  @override
+  String get glanceGalleryDiaperName => 'Thay tã';
+
+  @override
+  String get glanceGalleryDiaperBlurb => 'Ướt, bẩn hay cả hai — một chạm.';
+
+  @override
+  String get glanceGalleryQuickName => 'Ghi nhanh';
+
+  @override
+  String get glanceGalleryQuickBlurb =>
+      'Bú bình, bú mẹ, ngủ, thay tã — một chạm.';
+
+  @override
+  String get glanceGalleryTodayName => 'Hôm nay';
+
+  @override
+  String get glanceGalleryTodayBlurb =>
+      'Giấc ngủ, ghi nhanh và 3 lần ghi gần nhất.';
+
+  @override
+  String get glanceGalleryLockName => 'Child Life';
+
+  @override
+  String get glanceGalleryLockBlurb =>
+      'Lần bú, tã và giấc ngủ trên màn hình khoá.';
+
+  @override
+  String get glanceGalleryLockSleepName => 'Giấc ngủ';
+
+  @override
+  String get glanceGalleryLockSleepBlurb =>
+      'Đang ngủ bao lâu, hoặc đã thức bao lâu.';
+
+  @override
+  String get glanceGalleryLockFeedName => 'Lần bú';
+
+  @override
+  String get glanceGalleryLockFeedBlurb => 'Bao lâu từ lần bú gần nhất.';
 }

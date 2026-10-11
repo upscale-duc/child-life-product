@@ -19,6 +19,9 @@ FLAVORS = {
   'dev' => { bundle_id: 'dev.hsba.app', name: 'Child Life Dev', icon: 'AppIcon-dev', profile: 'hsba app dev',
              team: TEAM_ID,
              app_group: 'group.dev.hsba.app',
+             # Universal links (/i, /s): enable once the "hsba app dev" profile carries
+             # Associated Domains, or device signing fails.
+             applinks: [], # ['child-life-dev-landing.web.app', 'dev.childlife.app'],
              extension_profiles: { 'widgetExtension' => nil, 'share' => nil } },
   # prod has no team until the Child Life developer account exists: signing it on the borrowed
   # team would register app.childlife there (it did once, from Xcode's automatic signing).
@@ -69,7 +72,9 @@ FLAVORS.each do |flavor, info|
     'com.apple.developer.applesignin' => ['Default'],
     'com.apple.security.application-groups' => [info[:app_group]],
     'keychain-access-groups' => keychain,
-  })
+  }.merge(info[:applinks].to_a.empty? ? {} : {
+    'com.apple.developer.associated-domains' => info[:applinks].map { |d| "applinks:#{d}" },
+  }))
   EXTENSIONS.each_value do |ext|
     write_entitlements(File.join(root, ext[:dir], "#{ext[:dir]}-#{flavor}.entitlements"), {
       'com.apple.security.application-groups' => [info[:app_group]],

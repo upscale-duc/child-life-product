@@ -1292,7 +1292,7 @@ class _QueueRow extends ConsumerWidget {
       QueueState.pendingSession => (l10n.rowPreparing, cl.colors.inkMuted),
       QueueState.queued => (l10n.rowQueued, cl.colors.inkMuted),
     };
-    final thumb = i.isVideo ? i.posterPath : i.localPath;
+    final thumb = i.thumbPath ?? (i.isVideo ? i.posterPath : i.localPath);
     // "×" removes the item from the queue in every unfinished state, failed ones included.
     final remove = ClPressable(
       onPressed: () => queue.cancel(i.mediaId),

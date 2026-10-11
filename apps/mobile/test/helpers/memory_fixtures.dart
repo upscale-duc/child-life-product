@@ -429,7 +429,16 @@ class FakePreparer implements MediaPreparer {
       );
 
   @override
-  Future<void> discard(QueueItem item) async {}
+  Future<String?> finish(QueueItem item) async {
+    finished.add(item.mediaId);
+    return '/tmp/${item.mediaId}.thumb.jpg';
+  }
+
+  final finished = <String>[];
+  final discarded = <String>[];
+
+  @override
+  Future<void> discard(QueueItem item) async => discarded.add(item.mediaId);
 }
 
 PickedMedia pickedPhoto(String name, {DateTime? at}) => PickedMedia(

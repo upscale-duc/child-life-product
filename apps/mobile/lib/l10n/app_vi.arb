@@ -102,6 +102,10 @@
   "@a11yQuickLog": {
     "description": "Accessibility label of the + quick-log button (44:363)."
   },
+  "a11ySwitchBaby": "Đổi bé",
+  "@a11ySwitchBaby": {
+    "description": "Accessibility label of the chevron beside the baby chip; the chip itself opens the baby's profile (engineering copy)."
+  },
   "a11yNightCareToggle": "Night care",
   "@a11yNightCareToggle": {
     "description": "Accessibility label of the moon toggle; product term kept in English in Figma."
@@ -7434,5 +7438,540 @@
   "rowRejected": "Chưa tải lên được",
   "@rowRejected": {
     "description": "10i row when the server refused the upload (Thử lại)."
+  },
+  "glanceAppName": "Child Life",
+  "@glanceAppName": {
+    "description": "Widget / Live Activity copy (appName); placeholders stay as templates."
+  },
+  "glanceYou": "Bạn",
+  "@glanceYou": {
+    "description": "Widget / Live Activity copy (you); placeholders stay as templates."
+  },
+  "glanceBottle": "Bú bình",
+  "@glanceBottle": {
+    "description": "Widget / Live Activity copy (bottle); placeholders stay as templates."
+  },
+  "glanceBreast": "Bú mẹ",
+  "@glanceBreast": {
+    "description": "Widget / Live Activity copy (breast); placeholders stay as templates."
+  },
+  "glanceSleep": "Ngủ",
+  "@glanceSleep": {
+    "description": "Widget / Live Activity copy (sleep); placeholders stay as templates."
+  },
+  "glanceSleepTitle": "Giấc ngủ",
+  "@glanceSleepTitle": {
+    "description": "Widget / Live Activity copy (sleepTitle); placeholders stay as templates."
+  },
+  "glanceDiaper": "Thay tã",
+  "@glanceDiaper": {
+    "description": "Widget / Live Activity copy (diaper); placeholders stay as templates."
+  },
+  "glanceDiaperWet": "Ướt",
+  "@glanceDiaperWet": {
+    "description": "Widget / Live Activity copy (diaper.wet); placeholders stay as templates."
+  },
+  "glanceDiaperDirty": "Bẩn",
+  "@glanceDiaperDirty": {
+    "description": "Widget / Live Activity copy (diaper.dirty); placeholders stay as templates."
+  },
+  "glanceDiaperBoth": "Cả hai",
+  "@glanceDiaperBoth": {
+    "description": "Widget / Live Activity copy (diaper.both); placeholders stay as templates."
+  },
+  "glanceAgo": "{t} trước",
+  "@glanceAgo": {
+    "description": "Widget / Live Activity copy (ago); placeholders stay as templates.",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceLoggedBy": "{name} ghi",
+  "@glanceLoggedBy": {
+    "description": "Widget / Live Activity copy (loggedBy); placeholders stay as templates.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "glancePlusMl": "+ {ml} ml",
+  "@glancePlusMl": {
+    "description": "Widget / Live Activity copy (plusMl); placeholders stay as templates.",
+    "placeholders": {
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceLoggedBottle": "{ml} ml",
+  "@glanceLoggedBottle": {
+    "description": "Widget / Live Activity copy (loggedBottle); placeholders stay as templates.",
+    "placeholders": {
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceLoggedDiaper": "{kind}",
+  "@glanceLoggedDiaper": {
+    "description": "Widget / Live Activity copy (loggedDiaper); placeholders stay as templates.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceLogged": "Đã ghi {what} · {name}",
+  "@glanceLogged": {
+    "description": "Widget / Live Activity copy (logged); placeholders stay as templates.",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceLoggedToast": "Đã ghi {what}",
+  "@glanceLoggedToast": {
+    "description": "Widget / Live Activity copy (loggedToast); placeholders stay as templates.",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceJustNow": "Vừa xong",
+  "@glanceJustNow": {
+    "description": "Widget / Live Activity copy (justNow); placeholders stay as templates."
+  },
+  "glanceUndo": "Hoàn tác",
+  "@glanceUndo": {
+    "description": "Widget / Live Activity copy (undo); placeholders stay as templates."
+  },
+  "glanceEdit": "Sửa",
+  "@glanceEdit": {
+    "description": "Widget / Live Activity copy (edit); placeholders stay as templates."
+  },
+  "glanceChangeType": "Đổi loại",
+  "@glanceChangeType": {
+    "description": "Widget / Live Activity copy (changeType); placeholders stay as templates."
+  },
+  "glanceStartBreast": "Bắt đầu bú",
+  "@glanceStartBreast": {
+    "description": "Widget / Live Activity copy (startBreast); placeholders stay as templates."
+  },
+  "glanceFeeding": "Đang bú",
+  "@glanceFeeding": {
+    "description": "Widget / Live Activity copy (feeding); placeholders stay as templates."
+  },
+  "glanceSwitchSide": "Đổi bên",
+  "@glanceSwitchSide": {
+    "description": "Widget / Live Activity copy (switchSide); placeholders stay as templates."
+  },
+  "glanceDone": "Xong",
+  "@glanceDone": {
+    "description": "Widget / Live Activity copy (done); placeholders stay as templates."
+  },
+  "glanceBreastSideLeft": "Bên trái",
+  "@glanceBreastSideLeft": {
+    "description": "Widget / Live Activity copy (breastSide.left); placeholders stay as templates."
+  },
+  "glanceBreastSideRight": "Bên phải",
+  "@glanceBreastSideRight": {
+    "description": "Widget / Live Activity copy (breastSide.right); placeholders stay as templates."
+  },
+  "glanceSinceTime": "từ {time}",
+  "@glanceSinceTime": {
+    "description": "Widget / Live Activity copy (sinceTime); placeholders stay as templates.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceAwakeFor": "Đã thức {t}",
+  "@glanceAwakeFor": {
+    "description": "Widget / Live Activity copy (awakeFor); placeholders stay as templates.",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceWokeAt": "Dậy lúc {time}",
+  "@glanceWokeAt": {
+    "description": "Widget / Live Activity copy (wokeAt); placeholders stay as templates.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceStartSleep": "Bắt đầu ngủ",
+  "@glanceStartSleep": {
+    "description": "Widget / Live Activity copy (startSleep); placeholders stay as templates."
+  },
+  "glanceSleeping": "Đang ngủ",
+  "@glanceSleeping": {
+    "description": "Widget / Live Activity copy (sleeping); placeholders stay as templates."
+  },
+  "glanceSince": "Từ {time} · {name}",
+  "@glanceSince": {
+    "description": "Widget / Live Activity copy (since); placeholders stay as templates.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceWake": "Thức dậy",
+  "@glanceWake": {
+    "description": "Widget / Live Activity copy (wake); placeholders stay as templates."
+  },
+  "glanceJustWoke": "Vừa thức dậy",
+  "@glanceJustWoke": {
+    "description": "Widget / Live Activity copy (justWoke); placeholders stay as templates."
+  },
+  "glanceSlept": "Ngủ {t}",
+  "@glanceSlept": {
+    "description": "Widget / Live Activity copy (slept); placeholders stay as templates.",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceEmptyTitle": "Hôm nay chưa ghi",
+  "@glanceEmptyTitle": {
+    "description": "Widget / Live Activity copy (emptyTitle); placeholders stay as templates."
+  },
+  "glanceEmptySub": "Ghi cữ đầu tiên nhé",
+  "@glanceEmptySub": {
+    "description": "Widget / Live Activity copy (emptySub); placeholders stay as templates."
+  },
+  "glanceQuickLog": "+ Ghi nhanh",
+  "@glanceQuickLog": {
+    "description": "Widget / Live Activity copy (quickLog); placeholders stay as templates."
+  },
+  "glanceSignedOutTitle": "Đăng nhập để dùng widget",
+  "@glanceSignedOutTitle": {
+    "description": "Widget / Live Activity copy (signedOutTitle); placeholders stay as templates."
+  },
+  "glanceOpenApp": "Mở app",
+  "@glanceOpenApp": {
+    "description": "Widget / Live Activity copy (openApp); placeholders stay as templates."
+  },
+  "glanceOpenChildLife": "Mở Child Life",
+  "@glanceOpenChildLife": {
+    "description": "Widget / Live Activity copy (openChildLife); placeholders stay as templates."
+  },
+  "glanceSummary": "{feeds} cữ · ngủ {sleep} hôm nay",
+  "@glanceSummary": {
+    "description": "Widget / Live Activity copy (summary); placeholders stay as templates.",
+    "placeholders": {
+      "feeds": {
+        "type": "String"
+      },
+      "sleep": {
+        "type": "String"
+      }
+    }
+  },
+  "glancePending": "Chưa đồng bộ · {n} bản ghi chờ",
+  "@glancePending": {
+    "description": "Widget / Live Activity copy (pending); placeholders stay as templates.",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceRecent": "Gần đây",
+  "@glanceRecent": {
+    "description": "Widget / Live Activity copy (recent); placeholders stay as templates."
+  },
+  "glanceTotals": "Hôm nay: {bottles} cữ bình {ml} ml · {breasts} lần bú mẹ · {diapers} tã",
+  "@glanceTotals": {
+    "description": "Widget / Live Activity copy (totals); placeholders stay as templates.",
+    "placeholders": {
+      "bottles": {
+        "type": "String"
+      },
+      "ml": {
+        "type": "String"
+      },
+      "breasts": {
+        "type": "String"
+      },
+      "diapers": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceNoneYet": "Chưa có",
+  "@glanceNoneYet": {
+    "description": "Widget / Live Activity copy (noneYet); placeholders stay as templates."
+  },
+  "glanceFedFor": "Bú {t} · {name} ghi",
+  "@glanceFedFor": {
+    "description": "Widget / Live Activity copy (fedFor); placeholders stay as templates.",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceAgoFor": "trước · {t}",
+  "@glanceAgoFor": {
+    "description": "Widget / Live Activity copy (agoFor); placeholders stay as templates.",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceAgoKind": "trước · {kind}",
+  "@glanceAgoKind": {
+    "description": "Widget / Live Activity copy (agoKind); placeholders stay as templates.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceAwakeShort": "thức {t}",
+  "@glanceAwakeShort": {
+    "description": "Widget / Live Activity copy (awakeShort); placeholders stay as templates.",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceSleptToday": "ngủ {t} hôm nay",
+  "@glanceSleptToday": {
+    "description": "Widget / Live Activity copy (sleptToday); placeholders stay as templates.",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceLockFeeds": "Bú {feed} · Tã {diaper}",
+  "@glanceLockFeeds": {
+    "description": "Widget / Live Activity copy (lockFeeds); placeholders stay as templates.",
+    "placeholders": {
+      "feed": {
+        "type": "String"
+      },
+      "diaper": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceLockSleep": "Thức {awake} · ngủ {slept}",
+  "@glanceLockSleep": {
+    "description": "Widget / Live Activity copy (lockSleep); placeholders stay as templates.",
+    "placeholders": {
+      "awake": {
+        "type": "String"
+      },
+      "slept": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceInlineFed": "{name} bú {t} trước",
+  "@glanceInlineFed": {
+    "description": "Widget / Live Activity copy (inlineFed); placeholders stay as templates.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceFamilySees": "Cả nhà đang thấy",
+  "@glanceFamilySees": {
+    "description": "Widget / Live Activity copy (familySees); placeholders stay as templates."
+  },
+  "glanceSleepingTitle": "{name} đang ngủ",
+  "@glanceSleepingTitle": {
+    "description": "Widget / Live Activity copy (sleepingTitle); placeholders stay as templates.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceEditTime": "Sửa giờ bắt đầu",
+  "@glanceEditTime": {
+    "description": "Widget / Live Activity copy (editTime); placeholders stay as templates."
+  },
+  "glanceEditTimeShort": "Sửa giờ",
+  "@glanceEditTimeShort": {
+    "description": "Widget / Live Activity copy (editTimeShort); placeholders stay as templates."
+  },
+  "glanceBreastTitle": "Bú mẹ · {side}",
+  "@glanceBreastTitle": {
+    "description": "Widget / Live Activity copy (breastTitle); placeholders stay as templates.",
+    "placeholders": {
+      "side": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceEndFeed": "Kết thúc",
+  "@glanceEndFeed": {
+    "description": "Widget / Live Activity copy (endFeed); placeholders stay as templates."
+  },
+  "glancePaused": "Tạm dừng",
+  "@glancePaused": {
+    "description": "Widget / Live Activity copy (paused); placeholders stay as templates."
+  },
+  "glanceDurM": "{m} phút",
+  "@glanceDurM": {
+    "description": "Widget / Live Activity copy (dur.m); placeholders stay as templates.",
+    "placeholders": {
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceDurH": "{h} giờ",
+  "@glanceDurH": {
+    "description": "Widget / Live Activity copy (dur.h); placeholders stay as templates.",
+    "placeholders": {
+      "h": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceDurHm": "{h} giờ {m} phút",
+  "@glanceDurHm": {
+    "description": "Widget / Live Activity copy (dur.hm); placeholders stay as templates.",
+    "placeholders": {
+      "h": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceDurSM": "{m}p",
+  "@glanceDurSM": {
+    "description": "Widget / Live Activity copy (durS.m); placeholders stay as templates.",
+    "placeholders": {
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceDurSH": "{h}g",
+  "@glanceDurSH": {
+    "description": "Widget / Live Activity copy (durS.h); placeholders stay as templates.",
+    "placeholders": {
+      "h": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceDurSHm": "{h}g {m}p",
+  "@glanceDurSHm": {
+    "description": "Widget / Live Activity copy (durS.hm); placeholders stay as templates.",
+    "placeholders": {
+      "h": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "glanceGalleryBottleName": "Bú bình",
+  "@glanceGalleryBottleName": {
+    "description": "Widget gallery name (W1 small)."
+  },
+  "glanceGalleryBottleBlurb": "Ghi lại cữ bình vừa rồi chỉ với một chạm.",
+  "@glanceGalleryBottleBlurb": {
+    "description": "Widget gallery description."
+  },
+  "glanceGalleryBreastName": "Bú mẹ",
+  "@glanceGalleryBreastName": {
+    "description": "Widget gallery name (W1 small)."
+  },
+  "glanceGalleryBreastBlurb": "Bắt đầu, đổi bên và kết thúc cữ bú.",
+  "@glanceGalleryBreastBlurb": {
+    "description": "Widget gallery description."
+  },
+  "glanceGallerySleepName": "Giấc ngủ",
+  "@glanceGallerySleepName": {
+    "description": "Widget gallery name (W1 small)."
+  },
+  "glanceGallerySleepBlurb": "Bắt đầu ngủ và thức dậy ngay trên màn hình chính.",
+  "@glanceGallerySleepBlurb": {
+    "description": "Widget gallery description."
+  },
+  "glanceGalleryDiaperName": "Thay tã",
+  "@glanceGalleryDiaperName": {
+    "description": "Widget gallery name (W1 small)."
+  },
+  "glanceGalleryDiaperBlurb": "Ướt, bẩn hay cả hai — một chạm.",
+  "@glanceGalleryDiaperBlurb": {
+    "description": "Widget gallery description."
+  },
+  "glanceGalleryQuickName": "Ghi nhanh",
+  "@glanceGalleryQuickName": {
+    "description": "Widget gallery name (W2 medium)."
+  },
+  "glanceGalleryQuickBlurb": "Bú bình, bú mẹ, ngủ, thay tã — một chạm.",
+  "@glanceGalleryQuickBlurb": {
+    "description": "Widget gallery description."
+  },
+  "glanceGalleryTodayName": "Hôm nay",
+  "@glanceGalleryTodayName": {
+    "description": "Widget gallery name (W2 large)."
+  },
+  "glanceGalleryTodayBlurb": "Giấc ngủ, ghi nhanh và 3 lần ghi gần nhất.",
+  "@glanceGalleryTodayBlurb": {
+    "description": "Widget gallery description."
+  },
+  "glanceGalleryLockName": "Child Life",
+  "@glanceGalleryLockName": {
+    "description": "Lock Screen widget name (W3)."
+  },
+  "glanceGalleryLockBlurb": "Lần bú, tã và giấc ngủ trên màn hình khoá.",
+  "@glanceGalleryLockBlurb": {
+    "description": "Lock Screen widget description."
+  },
+  "glanceGalleryLockSleepName": "Giấc ngủ",
+  "@glanceGalleryLockSleepName": {
+    "description": "Lock Screen widget name (W3 circular)."
+  },
+  "glanceGalleryLockSleepBlurb": "Đang ngủ bao lâu, hoặc đã thức bao lâu.",
+  "@glanceGalleryLockSleepBlurb": {
+    "description": "Lock Screen widget description."
+  },
+  "glanceGalleryLockFeedName": "Lần bú",
+  "@glanceGalleryLockFeedName": {
+    "description": "Lock Screen widget name (W3 circular)."
+  },
+  "glanceGalleryLockFeedBlurb": "Bao lâu từ lần bú gần nhất.",
+  "@glanceGalleryLockFeedBlurb": {
+    "description": "Lock Screen widget description."
   }
 }

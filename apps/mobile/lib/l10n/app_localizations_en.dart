@@ -74,6 +74,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get a11yQuickLog => 'Quick log';
 
   @override
+  String get a11ySwitchBaby => 'Switch baby';
+
+  @override
   String get a11yNightCareToggle => 'Night care';
 
   @override
@@ -5328,4 +5331,335 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rowRejected => 'Couldn\'t upload';
+
+  @override
+  String get glanceAppName => 'Child Life';
+
+  @override
+  String get glanceYou => 'You';
+
+  @override
+  String get glanceBottle => 'Bottle';
+
+  @override
+  String get glanceBreast => 'Breastfeeding';
+
+  @override
+  String get glanceSleep => 'Sleep';
+
+  @override
+  String get glanceSleepTitle => 'Sleep';
+
+  @override
+  String get glanceDiaper => 'Diaper';
+
+  @override
+  String get glanceDiaperWet => 'Wet';
+
+  @override
+  String get glanceDiaperDirty => 'Dirty';
+
+  @override
+  String get glanceDiaperBoth => 'Both';
+
+  @override
+  String glanceAgo(String t) {
+    return '$t ago';
+  }
+
+  @override
+  String glanceLoggedBy(String name) {
+    return '$name logged';
+  }
+
+  @override
+  String glancePlusMl(String ml) {
+    return '+ $ml ml';
+  }
+
+  @override
+  String glanceLoggedBottle(String ml) {
+    return '$ml ml';
+  }
+
+  @override
+  String glanceLoggedDiaper(String kind) {
+    return '$kind';
+  }
+
+  @override
+  String glanceLogged(String what, String name) {
+    return 'Logged $what · $name';
+  }
+
+  @override
+  String glanceLoggedToast(String what) {
+    return 'Logged $what';
+  }
+
+  @override
+  String get glanceJustNow => 'Just now';
+
+  @override
+  String get glanceUndo => 'Undo';
+
+  @override
+  String get glanceEdit => 'Edit';
+
+  @override
+  String get glanceChangeType => 'Change type';
+
+  @override
+  String get glanceStartBreast => 'Start feeding';
+
+  @override
+  String get glanceFeeding => 'Feeding';
+
+  @override
+  String get glanceSwitchSide => 'Switch side';
+
+  @override
+  String get glanceDone => 'Done';
+
+  @override
+  String get glanceBreastSideLeft => 'Left side';
+
+  @override
+  String get glanceBreastSideRight => 'Right side';
+
+  @override
+  String glanceSinceTime(String time) {
+    return 'since $time';
+  }
+
+  @override
+  String glanceAwakeFor(String t) {
+    return 'Awake $t';
+  }
+
+  @override
+  String glanceWokeAt(String time) {
+    return 'Woke at $time';
+  }
+
+  @override
+  String get glanceStartSleep => 'Start sleep';
+
+  @override
+  String get glanceSleeping => 'Sleeping';
+
+  @override
+  String glanceSince(String time, String name) {
+    return 'Since $time · $name';
+  }
+
+  @override
+  String get glanceWake => 'Wake up';
+
+  @override
+  String get glanceJustWoke => 'Just woke up';
+
+  @override
+  String glanceSlept(String t) {
+    return 'Slept $t';
+  }
+
+  @override
+  String get glanceEmptyTitle => 'Nothing logged today';
+
+  @override
+  String get glanceEmptySub => 'Log the first feed';
+
+  @override
+  String get glanceQuickLog => '+ Quick log';
+
+  @override
+  String get glanceSignedOutTitle => 'Sign in to use the widget';
+
+  @override
+  String get glanceOpenApp => 'Open the app';
+
+  @override
+  String get glanceOpenChildLife => 'Open Child Life';
+
+  @override
+  String glanceSummary(String feeds, String sleep) {
+    return 'Feeds $feeds · sleep $sleep today';
+  }
+
+  @override
+  String glancePending(String n) {
+    return 'Not synced · $n waiting';
+  }
+
+  @override
+  String get glanceRecent => 'Recent';
+
+  @override
+  String glanceTotals(
+    String bottles,
+    String ml,
+    String breasts,
+    String diapers,
+  ) {
+    return 'Today: bottles $bottles ($ml ml) · breastfeeds $breasts · diapers $diapers';
+  }
+
+  @override
+  String get glanceNoneYet => 'None yet';
+
+  @override
+  String glanceFedFor(String t, String name) {
+    return 'Fed $t · $name logged';
+  }
+
+  @override
+  String glanceAgoFor(String t) {
+    return 'ago · $t';
+  }
+
+  @override
+  String glanceAgoKind(String kind) {
+    return 'ago · $kind';
+  }
+
+  @override
+  String glanceAwakeShort(String t) {
+    return 'awake $t';
+  }
+
+  @override
+  String glanceSleptToday(String t) {
+    return 'slept $t today';
+  }
+
+  @override
+  String glanceLockFeeds(String feed, String diaper) {
+    return 'Fed $feed · Diaper $diaper';
+  }
+
+  @override
+  String glanceLockSleep(String awake, String slept) {
+    return 'Awake $awake · slept $slept';
+  }
+
+  @override
+  String glanceInlineFed(String name, String t) {
+    return '$name fed $t ago';
+  }
+
+  @override
+  String get glanceFamilySees => 'The whole family sees this';
+
+  @override
+  String glanceSleepingTitle(String name) {
+    return '$name is sleeping';
+  }
+
+  @override
+  String get glanceEditTime => 'Edit start time';
+
+  @override
+  String get glanceEditTimeShort => 'Edit time';
+
+  @override
+  String glanceBreastTitle(String side) {
+    return 'Breastfeeding · $side';
+  }
+
+  @override
+  String get glanceEndFeed => 'End';
+
+  @override
+  String get glancePaused => 'Paused';
+
+  @override
+  String glanceDurM(String m) {
+    return '$m min';
+  }
+
+  @override
+  String glanceDurH(String h) {
+    return '$h h';
+  }
+
+  @override
+  String glanceDurHm(String h, String m) {
+    return '$h h $m min';
+  }
+
+  @override
+  String glanceDurSM(String m) {
+    return '${m}m';
+  }
+
+  @override
+  String glanceDurSH(String h) {
+    return '${h}h';
+  }
+
+  @override
+  String glanceDurSHm(String h, String m) {
+    return '${h}h ${m}m';
+  }
+
+  @override
+  String get glanceGalleryBottleName => 'Bottle';
+
+  @override
+  String get glanceGalleryBottleBlurb =>
+      'Log the last bottle again with one tap.';
+
+  @override
+  String get glanceGalleryBreastName => 'Breastfeeding';
+
+  @override
+  String get glanceGalleryBreastBlurb => 'Start, switch sides and end a feed.';
+
+  @override
+  String get glanceGallerySleepName => 'Sleep';
+
+  @override
+  String get glanceGallerySleepBlurb =>
+      'Start sleep and wake up right from the Home Screen.';
+
+  @override
+  String get glanceGalleryDiaperName => 'Diaper';
+
+  @override
+  String get glanceGalleryDiaperBlurb => 'Wet, dirty or both — one tap.';
+
+  @override
+  String get glanceGalleryQuickName => 'Quick log';
+
+  @override
+  String get glanceGalleryQuickBlurb =>
+      'Bottle, breastfeeding, sleep, diaper — one tap.';
+
+  @override
+  String get glanceGalleryTodayName => 'Today';
+
+  @override
+  String get glanceGalleryTodayBlurb =>
+      'Sleep, quick log and the 3 latest entries.';
+
+  @override
+  String get glanceGalleryLockName => 'Child Life';
+
+  @override
+  String get glanceGalleryLockBlurb =>
+      'Feeds, diapers and sleep on the Lock Screen.';
+
+  @override
+  String get glanceGalleryLockSleepName => 'Sleep';
+
+  @override
+  String get glanceGalleryLockSleepBlurb =>
+      'How long asleep, or how long awake.';
+
+  @override
+  String get glanceGalleryLockFeedName => 'Last feed';
+
+  @override
+  String get glanceGalleryLockFeedBlurb => 'Time since the last feed.';
 }

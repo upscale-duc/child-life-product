@@ -8,6 +8,11 @@
 	<string>$(AppIdentifierPrefix)$(CL_KEYCHAIN_GROUP)</string>
 	<key>CLURLScheme</key>
 	<string>$(CL_URL_SCHEME)</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>

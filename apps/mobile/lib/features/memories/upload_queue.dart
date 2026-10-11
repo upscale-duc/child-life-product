@@ -66,6 +66,7 @@ class QueueItem {
     this.state = QueueState.pendingSession,
     this.sent = 0,
     this.error,
+    this.thumbPath,
   });
 
   final String mediaId;
@@ -83,6 +84,10 @@ class QueueItem {
   final int? height;
   QueueState state;
   int sent;
+
+  /// A small picture kept once the bytes are sent and the copy is deleted, so the "Đã tải lên"
+  /// row still shows what it was (10i); deleted with the batch.
+  String? thumbPath;
 
   /// The last failure's code (`storage/unauthorized`, `object-not-found`, …), never content:
   /// a rejected upload stays visible as "Chưa tải lên được" instead of disappearing.
@@ -106,6 +111,7 @@ class QueueItem {
     'height': height,
     'state': state.name,
     'error': error,
+    'thumbPath': thumbPath,
   };
 
   static QueueItem fromJson(Map<String, Object?> j) {
@@ -129,6 +135,7 @@ class QueueItem {
       height: (j['height'] as num?)?.toInt(),
       state: state,
       error: j['error'] as String?,
+      thumbPath: j['thumbPath'] as String?,
     );
   }
 
@@ -311,6 +318,12 @@ class PickedMedia {
 /// videos keep their bytes and get a poster frame.
 abstract class MediaPreparer {
   Future<QueueItem> prepare(PickedMedia picked, String mediaId);
+
+  /// After the bytes are sent: deletes the copy (and poster) but keeps a small thumbnail for the
+  /// row; returns its path, or null when none could be made.
+  Future<String?> finish(QueueItem item);
+
+  /// Deletes everything the item left on the phone: copy, poster and row thumbnail.
   Future<void> discard(QueueItem item);
 }
 
@@ -380,8 +393,35 @@ class DeviceMediaPreparer implements MediaPreparer {
   }
 
   @override
-  Future<void> discard(QueueItem item) async {
-    for (final p in [item.localPath, item.posterPath]) {
+  Future<String?> finish(QueueItem item) async {
+    final source = item.isVideo ? item.posterPath : item.localPath;
+    String? thumb;
+    if (source != null) {
+      try {
+        final out = '${(await _dir()).path}/${item.mediaId}.thumb.jpg';
+        final file = await FlutterImageCompress.compressAndGetFile(
+          source,
+          out,
+          quality: 70,
+          keepExif: false,
+          minWidth: 240,
+          minHeight: 240,
+        );
+        thumb = file?.path;
+      } on Object {
+        thumb = null;
+      }
+    }
+    await _delete([item.localPath, item.posterPath]);
+    return thumb;
+  }
+
+  @override
+  Future<void> discard(QueueItem item) =>
+      _delete([item.localPath, item.posterPath, item.thumbPath]);
+
+  Future<void> _delete(List<String?> paths) async {
+    for (final p in paths) {
       if (p == null) continue;
       try {
         await File(p).delete();
@@ -425,6 +465,7 @@ Map<String, Object?> rebaseQueuePaths(
         ...(i as Map).cast<String, Object?>(),
         'localPath': rebaseUploadPath(i['localPath'] as String?, supportDir),
         'posterPath': rebaseUploadPath(i['posterPath'] as String?, supportDir),
+        'thumbPath': rebaseUploadPath(i['thumbPath'] as String?, supportDir),
       },
   ],
 };
@@ -667,8 +708,13 @@ class UploadQueue extends Notifier<QueueView> {
 
   /// Hide a finished batch's pill ("Đã tải xong 7 mục").
   Future<void> dismiss(String batchId) async {
-    _batches.removeWhere((b) => b.batchId == batchId && b.done);
+    final gone = _batches.where((b) => b.batchId == batchId && b.done).toList();
+    _batches.removeWhere(gone.contains);
     await _persist();
+    final preparer = ref.read(mediaPreparerProvider);
+    for (final i in gone.expand((b) => b.items)) {
+      await preparer.discard(i);
+    }
   }
 
   Future<void> _kick() async {
@@ -849,7 +895,7 @@ class UploadQueue extends Notifier<QueueView> {
       i.state = QueueState.uploaded;
       i.error = null;
       i.sent = i.bytes;
-      await ref.read(mediaPreparerProvider).discard(i);
+      i.thumbPath = await ref.read(mediaPreparerProvider).finish(i);
     } on UploadCancelled {
       if (i.state == QueueState.uploading) {
         i.state = _paused ? QueueState.paused : QueueState.queued;

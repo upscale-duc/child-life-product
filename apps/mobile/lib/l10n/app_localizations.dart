@@ -212,6 +212,12 @@ abstract class AppLocalizations {
   /// **'Ghi nhanh'**
   String get a11yQuickLog;
 
+  /// Accessibility label of the chevron beside the baby chip; the chip itself opens the baby's profile (engineering copy).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi bé'**
+  String get a11ySwitchBaby;
+
   /// Accessibility label of the moon toggle; product term kept in English in Figma.
   ///
   /// In vi, this message translates to:
@@ -8353,6 +8359,527 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chưa tải lên được'**
   String get rowRejected;
+
+  /// Widget / Live Activity copy (appName); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life'**
+  String get glanceAppName;
+
+  /// Widget / Live Activity copy (you); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn'**
+  String get glanceYou;
+
+  /// Widget / Live Activity copy (bottle); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình'**
+  String get glanceBottle;
+
+  /// Widget / Live Activity copy (breast); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ'**
+  String get glanceBreast;
+
+  /// Widget / Live Activity copy (sleep); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ'**
+  String get glanceSleep;
+
+  /// Widget / Live Activity copy (sleepTitle); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ'**
+  String get glanceSleepTitle;
+
+  /// Widget / Live Activity copy (diaper); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thay tã'**
+  String get glanceDiaper;
+
+  /// Widget / Live Activity copy (diaper.wet); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ướt'**
+  String get glanceDiaperWet;
+
+  /// Widget / Live Activity copy (diaper.dirty); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bẩn'**
+  String get glanceDiaperDirty;
+
+  /// Widget / Live Activity copy (diaper.both); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả hai'**
+  String get glanceDiaperBoth;
+
+  /// Widget / Live Activity copy (ago); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{t} trước'**
+  String glanceAgo(String t);
+
+  /// Widget / Live Activity copy (loggedBy); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} ghi'**
+  String glanceLoggedBy(String name);
+
+  /// Widget / Live Activity copy (plusMl); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'+ {ml} ml'**
+  String glancePlusMl(String ml);
+
+  /// Widget / Live Activity copy (loggedBottle); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{ml} ml'**
+  String glanceLoggedBottle(String ml);
+
+  /// Widget / Live Activity copy (loggedDiaper); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{kind}'**
+  String glanceLoggedDiaper(String kind);
+
+  /// Widget / Live Activity copy (logged); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi {what} · {name}'**
+  String glanceLogged(String what, String name);
+
+  /// Widget / Live Activity copy (loggedToast); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi {what}'**
+  String glanceLoggedToast(String what);
+
+  /// Widget / Live Activity copy (justNow); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa xong'**
+  String get glanceJustNow;
+
+  /// Widget / Live Activity copy (undo); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác'**
+  String get glanceUndo;
+
+  /// Widget / Live Activity copy (edit); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa'**
+  String get glanceEdit;
+
+  /// Widget / Live Activity copy (changeType); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi loại'**
+  String get glanceChangeType;
+
+  /// Widget / Live Activity copy (startBreast); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu bú'**
+  String get glanceStartBreast;
+
+  /// Widget / Live Activity copy (feeding); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bú'**
+  String get glanceFeeding;
+
+  /// Widget / Live Activity copy (switchSide); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi bên'**
+  String get glanceSwitchSide;
+
+  /// Widget / Live Activity copy (done); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get glanceDone;
+
+  /// Widget / Live Activity copy (breastSide.left); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên trái'**
+  String get glanceBreastSideLeft;
+
+  /// Widget / Live Activity copy (breastSide.right); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên phải'**
+  String get glanceBreastSideRight;
+
+  /// Widget / Live Activity copy (sinceTime); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'từ {time}'**
+  String glanceSinceTime(String time);
+
+  /// Widget / Live Activity copy (awakeFor); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thức {t}'**
+  String glanceAwakeFor(String t);
+
+  /// Widget / Live Activity copy (wokeAt); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dậy lúc {time}'**
+  String glanceWokeAt(String time);
+
+  /// Widget / Live Activity copy (startSleep); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu ngủ'**
+  String get glanceStartSleep;
+
+  /// Widget / Live Activity copy (sleeping); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngủ'**
+  String get glanceSleeping;
+
+  /// Widget / Live Activity copy (since); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ {time} · {name}'**
+  String glanceSince(String time, String name);
+
+  /// Widget / Live Activity copy (wake); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thức dậy'**
+  String get glanceWake;
+
+  /// Widget / Live Activity copy (justWoke); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa thức dậy'**
+  String get glanceJustWoke;
+
+  /// Widget / Live Activity copy (slept); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ {t}'**
+  String glanceSlept(String t);
+
+  /// Widget / Live Activity copy (emptyTitle); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay chưa ghi'**
+  String get glanceEmptyTitle;
+
+  /// Widget / Live Activity copy (emptySub); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi cữ đầu tiên nhé'**
+  String get glanceEmptySub;
+
+  /// Widget / Live Activity copy (quickLog); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'+ Ghi nhanh'**
+  String get glanceQuickLog;
+
+  /// Widget / Live Activity copy (signedOutTitle); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập để dùng widget'**
+  String get glanceSignedOutTitle;
+
+  /// Widget / Live Activity copy (openApp); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở app'**
+  String get glanceOpenApp;
+
+  /// Widget / Live Activity copy (openChildLife); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Child Life'**
+  String get glanceOpenChildLife;
+
+  /// Widget / Live Activity copy (summary); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{feeds} cữ · ngủ {sleep} hôm nay'**
+  String glanceSummary(String feeds, String sleep);
+
+  /// Widget / Live Activity copy (pending); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đồng bộ · {n} bản ghi chờ'**
+  String glancePending(String n);
+
+  /// Widget / Live Activity copy (recent); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần đây'**
+  String get glanceRecent;
+
+  /// Widget / Live Activity copy (totals); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay: {bottles} cữ bình {ml} ml · {breasts} lần bú mẹ · {diapers} tã'**
+  String glanceTotals(
+    String bottles,
+    String ml,
+    String breasts,
+    String diapers,
+  );
+
+  /// Widget / Live Activity copy (noneYet); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có'**
+  String get glanceNoneYet;
+
+  /// Widget / Live Activity copy (fedFor); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú {t} · {name} ghi'**
+  String glanceFedFor(String t, String name);
+
+  /// Widget / Live Activity copy (agoFor); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'trước · {t}'**
+  String glanceAgoFor(String t);
+
+  /// Widget / Live Activity copy (agoKind); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'trước · {kind}'**
+  String glanceAgoKind(String kind);
+
+  /// Widget / Live Activity copy (awakeShort); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'thức {t}'**
+  String glanceAwakeShort(String t);
+
+  /// Widget / Live Activity copy (sleptToday); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'ngủ {t} hôm nay'**
+  String glanceSleptToday(String t);
+
+  /// Widget / Live Activity copy (lockFeeds); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú {feed} · Tã {diaper}'**
+  String glanceLockFeeds(String feed, String diaper);
+
+  /// Widget / Live Activity copy (lockSleep); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thức {awake} · ngủ {slept}'**
+  String glanceLockSleep(String awake, String slept);
+
+  /// Widget / Live Activity copy (inlineFed); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} bú {t} trước'**
+  String glanceInlineFed(String name, String t);
+
+  /// Widget / Live Activity copy (familySees); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà đang thấy'**
+  String get glanceFamilySees;
+
+  /// Widget / Live Activity copy (sleepingTitle); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} đang ngủ'**
+  String glanceSleepingTitle(String name);
+
+  /// Widget / Live Activity copy (editTime); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa giờ bắt đầu'**
+  String get glanceEditTime;
+
+  /// Widget / Live Activity copy (editTimeShort); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa giờ'**
+  String get glanceEditTimeShort;
+
+  /// Widget / Live Activity copy (breastTitle); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ · {side}'**
+  String glanceBreastTitle(String side);
+
+  /// Widget / Live Activity copy (endFeed); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc'**
+  String get glanceEndFeed;
+
+  /// Widget / Live Activity copy (paused); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng'**
+  String get glancePaused;
+
+  /// Widget / Live Activity copy (dur.m); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{m} phút'**
+  String glanceDurM(String m);
+
+  /// Widget / Live Activity copy (dur.h); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{h} giờ'**
+  String glanceDurH(String h);
+
+  /// Widget / Live Activity copy (dur.hm); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{h} giờ {m} phút'**
+  String glanceDurHm(String h, String m);
+
+  /// Widget / Live Activity copy (durS.m); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{m}p'**
+  String glanceDurSM(String m);
+
+  /// Widget / Live Activity copy (durS.h); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{h}g'**
+  String glanceDurSH(String h);
+
+  /// Widget / Live Activity copy (durS.hm); placeholders stay as templates.
+  ///
+  /// In vi, this message translates to:
+  /// **'{h}g {m}p'**
+  String glanceDurSHm(String h, String m);
+
+  /// Widget gallery name (W1 small).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình'**
+  String get glanceGalleryBottleName;
+
+  /// Widget gallery description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lại cữ bình vừa rồi chỉ với một chạm.'**
+  String get glanceGalleryBottleBlurb;
+
+  /// Widget gallery name (W1 small).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ'**
+  String get glanceGalleryBreastName;
+
+  /// Widget gallery description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu, đổi bên và kết thúc cữ bú.'**
+  String get glanceGalleryBreastBlurb;
+
+  /// Widget gallery name (W1 small).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ'**
+  String get glanceGallerySleepName;
+
+  /// Widget gallery description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu ngủ và thức dậy ngay trên màn hình chính.'**
+  String get glanceGallerySleepBlurb;
+
+  /// Widget gallery name (W1 small).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thay tã'**
+  String get glanceGalleryDiaperName;
+
+  /// Widget gallery description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ướt, bẩn hay cả hai — một chạm.'**
+  String get glanceGalleryDiaperBlurb;
+
+  /// Widget gallery name (W2 medium).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhanh'**
+  String get glanceGalleryQuickName;
+
+  /// Widget gallery description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình, bú mẹ, ngủ, thay tã — một chạm.'**
+  String get glanceGalleryQuickBlurb;
+
+  /// Widget gallery name (W2 large).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get glanceGalleryTodayName;
+
+  /// Widget gallery description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ, ghi nhanh và 3 lần ghi gần nhất.'**
+  String get glanceGalleryTodayBlurb;
+
+  /// Lock Screen widget name (W3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life'**
+  String get glanceGalleryLockName;
+
+  /// Lock Screen widget description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần bú, tã và giấc ngủ trên màn hình khoá.'**
+  String get glanceGalleryLockBlurb;
+
+  /// Lock Screen widget name (W3 circular).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ'**
+  String get glanceGalleryLockSleepName;
+
+  /// Lock Screen widget description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngủ bao lâu, hoặc đã thức bao lâu.'**
+  String get glanceGalleryLockSleepBlurb;
+
+  /// Lock Screen widget name (W3 circular).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần bú'**
+  String get glanceGalleryLockFeedName;
+
+  /// Lock Screen widget description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bao lâu từ lần bú gần nhất.'**
+  String get glanceGalleryLockFeedBlurb;
 }
 
 class _AppLocalizationsDelegate
