@@ -12,13 +12,14 @@
 // server re-encodes them and the entry appears with its thumbnail read through Storage Rules.
 // On Ảnh the photo becomes Chỉ ba mẹ ("Ai thấy"), goes into a new Gia đình album (seen by the
 // family again, D-002), becomes a favourite and is then deleted (10b4, R-111).
-import 'package:child_life/features/memories/media_picker.dart';
 import 'package:child_life/features/memories/memory_widgets.dart';
 import 'package:child_life/main.dart' as app;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart'
+    show AssetEntityGridItemBuilder;
 
 import 'e2e_helpers.dart';
 
@@ -133,9 +134,8 @@ void main() {
     // 10a2 → 10g: the first photo of the library → 10h "Tải lên 1 mục".
     await tester.tap(find.bySemanticsLabel(l10n.a11yAddMemory).first);
     await tapText(tester, l10n.addLibrary);
-    final picker = find.byType(LibraryPicker);
-    await pumpUntil(tester, picker);
-    final thumbs = find.descendant(of: picker, matching: find.byType(Image));
+    // wechat_assets_picker grid: a tap selects (no preview).
+    final thumbs = find.byType(AssetEntityGridItemBuilder);
     await pumpUntil(tester, thumbs, timeout: const Duration(seconds: 30));
     await tester.tap(thumbs.first);
     await tester.pump(const Duration(milliseconds: 400));

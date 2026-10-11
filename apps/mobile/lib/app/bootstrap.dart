@@ -10,6 +10,7 @@ import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../features/baby/time_zones.dart';
@@ -21,6 +22,8 @@ import 'firebase_options.dart';
 /// Never attaches user, family or child data to telemetry (engineering brief §05).
 Future<ResolvedEnvironment> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Video playback in the Memories viewer (10f).
+  MediaKit.ensureInitialized();
   final info = await PackageInfo.fromPlatform();
   final resolved = resolveEnvironment(
     flavor: appFlavor,

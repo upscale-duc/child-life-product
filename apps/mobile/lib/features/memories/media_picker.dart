@@ -1,17 +1,18 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter/services.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../app/providers.dart';
 import '../../core/design/cl_theme.dart';
+import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
-import '../../core/widgets/cl_choices.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_misc.dart';
@@ -165,437 +166,429 @@ class _RecentTodayState extends State<RecentToday> {
 
 // ---------- 10g "Chọn từ Thư viện ảnh" ----------
 
+/// Video limits from `publicConfig/limits` (D-011): no duration limit by default, 4 GB per file.
+@immutable
+class VideoLimits {
+  const VideoLimits({this.maxDuration, this.maxBytes = 4 * 1024 * 1024 * 1024});
+  final Duration? maxDuration;
+  final int maxBytes;
+}
+
+final videoLimitsProvider = StreamProvider<VideoLimits>(
+  (ref) => ref
+      .watch(firestoreProvider)
+      .doc('publicConfig/limits')
+      .snapshots()
+      .map((s) {
+        final d = s.data() ?? const {};
+        final sec = (d['videoMaxDurationSec'] as num?)?.toInt();
+        return VideoLimits(
+          maxDuration: sec == null ? null : Duration(seconds: sec),
+          maxBytes:
+              (d['videoMaxBytes'] as num?)?.toInt() ?? 4 * 1024 * 1024 * 1024,
+        );
+      }),
+);
+
+/// The photo-library picker behind "Chọn từ Thư viện ảnh"; the app uses wechat_assets_picker,
+/// widget tests a fake (the native library cannot run there).
+abstract interface class MediaLibraryPicker {
+  /// Null when cancelled or the library is not shared.
+  Future<List<PickedMedia>?> pick(
+    BuildContext context, {
+    required int max,
+    required VideoLimits limits,
+  });
+}
+
+final mediaLibraryPickerProvider = Provider<MediaLibraryPicker>(
+  (_) => const WechatLibraryPicker(),
+);
+
+/// The provider's current value, waiting briefly for the first snapshot when nothing is
+/// listening yet (an unlistened provider is paused).
+Future<T> _current<T>(
+  WidgetRef ref,
+  StreamProvider<T> provider,
+  T fallback,
+) async {
+  final now = ref.read(provider).value;
+  if (now != null) return now;
+  final sub = ref.listenManual(provider, (_, _) {});
+  try {
+    return await ref.read(provider.future).timeout(const Duration(seconds: 2));
+  } on Object {
+    return fallback;
+  } finally {
+    sub.close();
+  }
+}
+
 Future<List<PickedMedia>?> pickFromLibrary(
   BuildContext context,
   WidgetRef ref,
-) {
-  final max = ref.read(publicLimitsProvider).value?.mediaItemsPerAdd ?? 30;
-  return Navigator.of(context, rootNavigator: true).push<List<PickedMedia>>(
-    MaterialPageRoute(
-      fullscreenDialog: true,
-      builder: (_) => LibraryPicker(max: max),
-    ),
-  );
+) async {
+  final picker = ref.read(mediaLibraryPickerProvider);
+  // At most 30 items per add (R-102); video limits are server configuration (D-011).
+  final (limits, video) = await (
+    _current(ref, publicLimitsProvider, const PublicLimits()),
+    _current(ref, videoLimitsProvider, const VideoLimits()),
+  ).wait;
+  if (!context.mounted) return null;
+  return picker.pick(context, max: limits.mediaItemsPerAdd, limits: video);
 }
 
-enum _Source { recent, videos, album }
+const _libraryPermission = PermissionRequestOption(
+  androidPermission: AndroidPermission(
+    type: RequestType.common,
+    mediaLocation: false,
+  ),
+);
 
-class LibraryPicker extends StatefulWidget {
-  const LibraryPicker({required this.max, super.key});
-  final int max;
-
-  @override
-  State<LibraryPicker> createState() => _LibraryPickerState();
-}
-
-class _LibraryPickerState extends State<LibraryPicker> {
-  PermissionState? _permission;
-  var _source = _Source.recent;
-  AssetPathEntity? _path;
-  AssetPathEntity? _album;
-  final _assets = <AssetEntity>[];
-  final _thumbs = <String, Uint8List?>{};
-  final _selected = <AssetEntity>[];
-  var _loading = true;
-  var _busy = false;
+/// wechat_assets_picker in the app's palette (Light / Night care) and language, with drag to
+/// select: a horizontal drag (or long press, then drag) over the grid selects every photo it
+/// passes, like Photos; starting on a selected one deselects instead.
+class WechatLibraryPicker implements MediaLibraryPicker {
+  const WechatLibraryPicker();
 
   @override
-  void initState() {
-    super.initState();
-    unawaited(_start());
-  }
-
-  Future<void> _start() async {
-    final state = await PhotoManager.requestPermissionExtend();
-    if (!mounted) return;
-    setState(() => _permission = state);
-    if (state.hasAccess) await _load();
-  }
-
-  Future<void> _load() async {
-    setState(() {
-      _loading = true;
-      _assets.clear();
-    });
-    final order = FilterOptionGroup(
-      orders: [const OrderOption(type: OrderOptionType.createDate)],
-    );
-    AssetPathEntity? path;
-    if (_source == _Source.album && _album != null) {
-      path = _album;
-    } else {
-      final paths = await PhotoManager.getAssetPathList(
-        type: _source == _Source.videos
-            ? RequestType.video
-            : RequestType.common,
-        onlyAll: true,
-        filterOption: order,
+  Future<List<PickedMedia>?> pick(
+    BuildContext context, {
+    required int max,
+    required VideoLimits limits,
+  }) async {
+    final l10n = AppLocalizations.of(context);
+    final toaster = ClToaster.of(context);
+    PermissionState permission;
+    try {
+      permission = await PhotoManager.requestPermissionExtend(
+        requestOption: _libraryPermission,
       );
-      path = paths.firstOrNull;
+    } on Object {
+      permission = PermissionState.denied;
     }
-    _path = path;
-    if (path != null) {
-      _assets.addAll(await path.getAssetListPaged(page: 0, size: 120));
+    if (!context.mounted) return null;
+    if (!permission.hasAccess) {
+      await _showNoAccess(context);
+      return null;
     }
-    if (mounted) setState(() => _loading = false);
-  }
 
-  Future<void> _more() async {
-    final path = _path;
-    if (path == null || _loading) return;
-    final total = await path.assetCountAsync;
-    if (_assets.length >= total) return;
-    _loading = true;
-    final next = await path.getAssetListPaged(
-      page: _assets.length ~/ 120,
-      size: 120,
+    var lastToast = DateTime(0);
+    void toast(String message) {
+      // Drag to select asks for many items at once: one toast, not one per item.
+      final now = DateTime.now();
+      if (now.difference(lastToast) < const Duration(seconds: 2)) return;
+      lastToast = now;
+      toaster.show(message: message);
+    }
+
+    final provider = DefaultAssetPickerProvider(
+      maxAssets: max,
+      pageSize: 120,
+      requestType: RequestType.common,
+      initializeDelayDuration: const Duration(milliseconds: 250),
     );
-    if (!mounted) return;
-    setState(() {
-      _assets.addAll(next.where((a) => !_assets.any((b) => b.id == a.id)));
-      _loading = false;
-    });
-  }
+    final delegate = _ClPickerDelegate(
+      provider: provider,
+      initialPermission: permission,
+      l10n: l10n,
+      pickerTheme: _pickerTheme(context),
+      textDelegate: _pickerText(context, l10n),
+      locale: Localizations.maybeLocaleOf(context),
+      selectPredicate: (_, asset, selected) {
+        if (selected) return true;
+        if (provider.selectedAssets.length >= max) {
+          toast(l10n.pickLimit(max));
+          return false;
+        }
+        final longest = limits.maxDuration;
+        if (asset.type == AssetType.video &&
+            longest != null &&
+            asset.videoDuration > longest) {
+          toast(l10n.pickVideoTooLong(videoDuration(longest.inMilliseconds)));
+          return false;
+        }
+        return true;
+      },
+    );
+    final List<AssetEntity>? assets;
+    try {
+      assets =
+          await AssetPicker.pickAssetsWithDelegate<
+            AssetEntity,
+            AssetPathEntity,
+            DefaultAssetPickerProvider,
+            _ClPickerDelegate
+          >(
+            context,
+            delegate: delegate,
+            permissionRequestOption: _libraryPermission,
+          );
+    } on StateError {
+      // Access was withdrawn between the check and the picker.
+      if (context.mounted) await _showNoAccess(context);
+      return null;
+    }
+    if (assets == null || assets.isEmpty) return null;
 
-  Future<Uint8List?> _thumb(AssetEntity a) async => _thumbs[a.id] ??= await a
-      .thumbnailDataWithSize(const ThumbnailSize.square(240));
-
-  void _toggle(AssetEntity a) {
-    final l10n = AppLocalizations.of(context);
-    setState(() {
-      if (_selected.any((s) => s.id == a.id)) {
-        _selected.removeWhere((s) => s.id == a.id);
-      } else if (_selected.length >= widget.max) {
-        showClToast(context, message: l10n.pickLimit(widget.max));
-      } else {
-        _selected.add(a);
+    // iCloud originals may download first: say so when it takes a moment.
+    final slow = Timer(
+      const Duration(milliseconds: 400),
+      () => toaster.show(message: l10n.pickPreparing),
+    );
+    final out = <PickedMedia>[];
+    var tooBig = false;
+    try {
+      for (final a in assets) {
+        final p = await _fromAsset(a, null);
+        if (p == null) continue;
+        if (p.type == MediaKind.video &&
+            await p.file.length() > limits.maxBytes) {
+          tooBig = true; // D-011: the client refuses what the server would.
+          continue;
+        }
+        out.add(p);
       }
-    });
+    } finally {
+      slow.cancel();
+    }
+    if (tooBig) {
+      toaster.show(message: l10n.pickVideoTooBig(_size(limits.maxBytes)));
+    } else if (out.isNotEmpty) {
+      dismissClToasts();
+    }
+    return out;
   }
+}
 
-  Future<void> _pickAlbum() async {
-    final l10n = AppLocalizations.of(context);
-    final paths = await PhotoManager.getAssetPathList(type: RequestType.common);
-    if (!mounted) return;
-    final picked = await showClSheet<AssetPathEntity>(
-      context: context,
-      builder: (sheet) => Column(
+String _size(int bytes) {
+  const gb = 1024 * 1024 * 1024;
+  const mb = 1024 * 1024;
+  return bytes >= gb
+      ? '${(bytes / gb).round()} GB'
+      : '${(bytes / mb).round()} MB';
+}
+
+/// Denied: what the library is for and the way to Settings (10g; nothing is drawn for it).
+Future<void> _showNoAccess(BuildContext context) => showClSheet<void>(
+  context: context,
+  builder: (sheet) {
+    final l10n = AppLocalizations.of(sheet);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: ClSpace.s4),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ClSheetHeader(title: l10n.pickAlbumsTitle),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.sizeOf(context).height * 0.5,
-            ),
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                for (final p in paths.where((p) => !p.isAll))
-                  ListTile(
-                    title: Text(p.name, style: sheet.cl.text.body),
-                    onTap: () => Navigator.of(sheet).pop(p),
-                  ),
-              ],
-            ),
+          ClEmptyState(
+            icon: ClIcons.memories,
+            title: l10n.addLibrary,
+            message: l10n.pickNoAccess,
+          ),
+          ClButton(
+            label: l10n.actionOpenSettings,
+            expand: true,
+            onPressed: () {
+              Navigator.of(sheet).pop();
+              unawaited(PhotoManager.openSetting());
+            },
           ),
         ],
       ),
     );
-    if (picked == null) return;
-    _album = picked;
-    _source = _Source.album;
-    await _load();
-  }
+  },
+);
 
-  Future<void> _done() async {
-    setState(() => _busy = true);
-    final out = <PickedMedia>[];
-    for (final a in _selected) {
-      final p = await _fromAsset(a, _thumbs[a.id]);
-      if (p != null) out.add(p);
-    }
-    if (mounted) Navigator.of(context).pop(out);
-  }
+/// The picker's Material theme from the current palette, so Night care stays dark and calm.
+ThemeData _pickerTheme(BuildContext context) {
+  final base = Theme.of(context);
+  final cl = context.cl;
+  final c = cl.colors;
+  final overlay = cl.isNightCare
+      ? SystemUiOverlayStyle.light
+      : SystemUiOverlayStyle.dark;
+  return base.copyWith(
+    primaryColor: c.surface,
+    canvasColor: c.cloud,
+    scaffoldBackgroundColor: c.cloud,
+    cardColor: c.surface,
+    // The grid's video and GIF fades.
+    splashColor: Colors.black54,
+    focusColor: c.surface2,
+    // The ring of an unselected item sits on the photo.
+    unselectedWidgetColor: Colors.white,
+    iconTheme: IconThemeData(color: c.ink),
+    appBarTheme: base.appBarTheme.copyWith(
+      backgroundColor: c.surface,
+      foregroundColor: c.ink,
+      elevation: 0,
+      systemOverlayStyle: overlay,
+      iconTheme: IconThemeData(color: c.ink),
+    ),
+    bottomAppBarTheme: base.bottomAppBarTheme.copyWith(color: c.surface),
+    colorScheme: base.colorScheme.copyWith(
+      // A selected item gets a soft veil of the background; the badge is mint.
+      primary: c.cloud,
+      secondary: c.mintDeep,
+      onSecondary: c.onMintDeep,
+      surface: c.surface,
+    ),
+  );
+}
+
+/// The package's Vietnamese or English copy for the app locale (D-012), with the strings the
+/// app already says its own way taken from ARB.
+AssetPickerTextDelegate _pickerText(
+  BuildContext context,
+  AppLocalizations l10n,
+) => Localizations.localeOf(context).languageCode == 'en'
+    ? _EnPickerText(l10n)
+    : _ViPickerText(l10n);
+
+mixin _ClPickerCopy on AssetPickerTextDelegate {
+  AppLocalizations get l10n;
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+  String get confirm => l10n.pickConfirm;
+  @override
+  String get cancel => l10n.actionCancel;
+  @override
+  String get emptyList => l10n.pickEmpty;
+  @override
+  String get unableToAccessAll => l10n.pickNoAccess;
+  @override
+  String get accessAllTip => l10n.pickLimited;
+  @override
+  String get viewingLimitedAssetsTip => l10n.pickLimited;
+  @override
+  String get changeAccessibleLimitedAssets => l10n.pickChooseMore;
+  @override
+  String get goToSystemSettings => l10n.actionOpenSettings;
+  @override
+  String get accessiblePathName => l10n.pickRecent;
+}
+
+class _ViPickerText extends VietnameseAssetPickerTextDelegate
+    with _ClPickerCopy {
+  _ViPickerText(this.l10n);
+  @override
+  final AppLocalizations l10n;
+}
+
+class _EnPickerText extends EnglishAssetPickerTextDelegate with _ClPickerCopy {
+  _EnPickerText(this.l10n);
+  @override
+  final AppLocalizations l10n;
+}
+
+class _ClPickerDelegate
+    extends DefaultAssetPickerBuilderDelegate<DefaultAssetPickerProvider> {
+  _ClPickerDelegate({
+    required super.provider,
+    required super.initialPermission,
+    required this.l10n,
+    required super.pickerTheme,
+    required super.textDelegate,
+    required super.locale,
+    required super.selectPredicate,
+  }) : super(
+         gridCount: 4,
+         // Tap selects (10g); drag across thumbnails selects many at once.
+         specialPickerType: SpecialPickerType.noPreview,
+         dragToSelect: true,
+         gridThumbnailSize: const ThumbnailSize.square(240),
+         // The limited state is a bar under the grid, not a blocking overlay.
+         limitedPermissionOverlayPredicate: (_) => false,
+         pathNameBuilder: (path) => path.isAll ? l10n.pickRecent : path.name,
+       );
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget accessLimitedBottomTip(BuildContext context) {
     final cl = context.cl;
-    final permission = _permission;
-    final photos = _selected.where((a) => a.type != AssetType.video).length;
-    final videos = _selected.length - photos;
-    return Scaffold(
-      backgroundColor: cl.colors.cloud,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                ClSpace.s2,
-                ClSpace.s2,
-                ClSpace.s4,
-                0,
-              ),
-              child: Row(
-                children: [
-                  ClButton(
-                    label: l10n.actionCancel,
-                    style: ClButtonStyle.plain,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  Expanded(
-                    child: Text(
-                      switch (_source) {
-                        _Source.recent => l10n.pickRecent,
-                        _Source.videos => l10n.pickVideos,
-                        _Source.album => _album?.name ?? l10n.pickAlbums,
-                      },
-                      textAlign: TextAlign.center,
-                      style: cl.text.headline,
-                    ),
-                  ),
-                  const SizedBox(width: 72),
-                ],
-              ),
+    return Container(
+      height: permissionLimitedBarHeight,
+      padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+      color: cl.colors.surface,
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              l10n.pickLimited,
+              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: ClSpace.s4,
-                vertical: ClSpace.s2,
-              ),
-              child: Row(
-                children: [
-                  ClFilterChip(
-                    label: l10n.pickRecent,
-                    selected: _source == _Source.recent,
-                    onTap: () {
-                      _source = _Source.recent;
-                      unawaited(_load());
-                    },
-                  ),
-                  const SizedBox(width: ClSpace.s2),
-                  ClFilterChip(
-                    label: l10n.pickVideos,
-                    selected: _source == _Source.videos,
-                    onTap: () {
-                      _source = _Source.videos;
-                      unawaited(_load());
-                    },
-                  ),
-                  const SizedBox(width: ClSpace.s2),
-                  ClFilterChip(
-                    label: l10n.pickAlbums,
-                    selected: _source == _Source.album,
-                    onTap: _pickAlbum,
-                  ),
-                ],
-              ),
-            ),
-            if (permission == PermissionState.limited)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        l10n.pickLimited,
-                        style: cl.text.caption.copyWith(
-                          color: cl.colors.inkMuted,
-                        ),
-                      ),
-                    ),
-                    ClButton(
-                      label: l10n.pickChooseMore,
-                      style: ClButtonStyle.plain,
-                      onPressed: () async {
-                        await PhotoManager.presentLimited();
-                        await _load();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            Expanded(
-              child: permission == null
-                  ? const Center(child: CircularProgressIndicator())
-                  : !permission.hasAccess
-                  ? Padding(
-                      padding: const EdgeInsets.all(ClSpace.s6),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ClEmptyState(
-                            icon: ClIcons.memories,
-                            title: l10n.addLibrary,
-                            message: l10n.pickNoAccess,
-                          ),
-                          ClButton(
-                            label: l10n.actionOpenSettings,
-                            onPressed: PhotoManager.openSetting,
-                          ),
-                        ],
-                      ),
-                    )
-                  : _assets.isEmpty && !_loading
-                  ? Center(
-                      child: Text(
-                        l10n.pickEmpty,
-                        style: cl.text.body.copyWith(color: cl.colors.inkMuted),
-                      ),
-                    )
-                  : NotificationListener<ScrollNotification>(
-                      onNotification: (n) {
-                        if (n.metrics.extentAfter < 600) unawaited(_more());
-                        return false;
-                      },
-                      child: GridView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                              mainAxisSpacing: 2,
-                              crossAxisSpacing: 2,
-                            ),
-                        itemCount: _assets.length,
-                        itemBuilder: (_, i) {
-                          final a = _assets[i];
-                          final on = _selected.any((s) => s.id == a.id);
-                          return ClPressable(
-                            onPressed: () => _toggle(a),
-                            selected: on,
-                            haptic: false,
-                            minSize: Size.zero,
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                FutureBuilder<Uint8List?>(
-                                  future: _thumb(a),
-                                  builder: (_, s) => s.data == null
-                                      ? ColoredBox(color: cl.colors.surface2)
-                                      : Image.memory(
-                                          s.data!,
-                                          fit: BoxFit.cover,
-                                          gaplessPlayback: true,
-                                        ),
-                                ),
-                                if (a.type == AssetType.video)
-                                  Positioned(
-                                    left: 4,
-                                    bottom: 4,
-                                    child: Text(
-                                      videoDuration(
-                                        a.videoDuration.inMilliseconds,
-                                      ),
-                                      style: cl.text.caption.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w700,
-                                        shadows: const [Shadow(blurRadius: 4)],
-                                      ),
-                                    ),
-                                  ),
-                                Positioned(
-                                  right: 5,
-                                  top: 5,
-                                  child: Container(
-                                    width: 22,
-                                    height: 22,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: on
-                                          ? cl.colors.mintDeep
-                                          : Colors.black26,
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 1.8,
-                                      ),
-                                    ),
-                                    child: on
-                                        ? ClIcon(
-                                            ClIcons.check,
-                                            size: 14,
-                                            color: cl.colors.onMintDeep,
-                                          )
-                                        : null,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-            ),
-            if (_selected.isNotEmpty)
-              Container(
-                padding: const EdgeInsets.fromLTRB(
-                  ClSpace.s4,
-                  ClSpace.s3,
-                  ClSpace.s4,
-                  ClSpace.s3,
-                ),
-                decoration: BoxDecoration(
-                  color: cl.colors.surface,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(ClRadius.card),
-                  ),
-                  boxShadow: cl.shadows.card,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(
-                      height: 48,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _selected.length,
-                        separatorBuilder: (_, _) => const SizedBox(width: 6),
-                        itemBuilder: (_, i) {
-                          final thumb = _thumbs[_selected[i].id];
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: SizedBox(
-                              width: 48,
-                              height: 48,
-                              child: thumb == null
-                                  ? ColoredBox(color: cl.colors.surface2)
-                                  : Image.memory(thumb, fit: BoxFit.cover),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: ClSpace.s2),
-                    Row(
-                      children: [
-                        Text(
-                          l10n.pickSummary(_selected.length, photos, videos),
-                          style: cl.text.label,
-                        ),
-                        const Spacer(),
-                        Text(
-                          l10n.pickMax(widget.max),
-                          style: cl.text.caption.copyWith(
-                            color: cl.colors.inkMuted,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: ClSpace.s2),
-                    ClButton(
-                      label: l10n.pickAdd(_selected.length),
-                      expand: true,
-                      onPressed: _done,
-                      loading: _busy,
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
+          ),
+          ClButton(
+            label: l10n.pickChooseMore,
+            style: ClButtonStyle.plain,
+            // The picker refreshes itself when the shared set changes.
+            onPressed: () => unawaited(PhotoManager.presentLimited()),
+          ),
+        ],
       ),
     );
   }
+
+  @override
+  Widget confirmButton(BuildContext context) => ListenableBuilder(
+    listenable: provider,
+    builder: (context, _) {
+      final cl = context.cl;
+      final selected = provider.selectedAssets;
+      final videos = selected.where((a) => a.type == AssetType.video).length;
+      final enabled = selected.isNotEmpty;
+      return ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.sizeOf(context).width - 40,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                enabled
+                    ? l10n.pickSummary(
+                        selected.length,
+                        selected.length - videos,
+                        videos,
+                      )
+                    : l10n.pickMax(provider.maxAssets),
+                overflow: TextOverflow.ellipsis,
+                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+              ),
+            ),
+            const SizedBox(width: ClSpace.s3),
+            ClPressable(
+              onPressed: enabled
+                  ? () => Navigator.maybeOf(context)?.maybePop(selected)
+                  : null,
+              semanticLabel: enabled
+                  ? l10n.pickAdd(selected.length)
+                  : l10n.pickConfirm,
+              minSize: const Size(0, ClSpace.tapMin),
+              child: AnimatedContainer(
+                duration: context.motion(ClMotion.quick),
+                height: 40,
+                padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: enabled ? cl.colors.mintDeep : cl.colors.surface2,
+                  borderRadius: BorderRadius.circular(ClRadius.pill),
+                ),
+                child: Text(
+                  enabled ? l10n.pickAdd(selected.length) : l10n.pickConfirm,
+                  style: cl.text.bodyStrong.copyWith(
+                    color: enabled ? cl.colors.onMintDeep : cl.colors.inkMuted,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
 
 // ---------- "Chọn từ Tệp" ----------

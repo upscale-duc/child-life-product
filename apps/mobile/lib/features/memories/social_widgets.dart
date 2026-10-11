@@ -66,6 +66,7 @@ class LoveButton extends ConsumerWidget {
     required this.count,
     this.dark = false,
     this.showLabel = true,
+    this.rail = false,
     super.key,
   });
 
@@ -77,11 +78,24 @@ class LoveButton extends ConsumerWidget {
   final bool dark;
   final bool showLabel;
 
+  /// Icon only, in the viewer's right-hand rail ([RailButton]).
+  final bool rail;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final mine = lovedByMe(ref, target, targetId);
+    if (rail) {
+      return RailButton(
+        icon: ClIcons.heart,
+        semanticLabel: l10n.love,
+        selected: mine,
+        color: mine ? cl.colors.peach : Colors.white,
+        count: count,
+        onPressed: () => toggleLove(context, ref, target, targetId, !mine),
+      );
+    }
     final label = [
       if (showLabel) l10n.love,
       if (count > 0) '$count',
@@ -123,9 +137,17 @@ class LoveButton extends ConsumerWidget {
 
 /// "🔖 Yêu thích" — private to me (R-107).
 class FavoriteButton extends ConsumerWidget {
-  const FavoriteButton({required this.mediaId, this.dark = false, super.key});
+  const FavoriteButton({
+    required this.mediaId,
+    this.dark = false,
+    this.rail = false,
+    super.key,
+  });
   final String mediaId;
   final bool dark;
+
+  /// Icon only, in the viewer's right-hand rail ([RailButton]).
+  final bool rail;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -139,19 +161,30 @@ class FavoriteButton extends ConsumerWidget {
             .value
             ?.contains(mediaId) ??
         false;
+    Future<void> toggle() async {
+      final toaster = ClToaster.of(context);
+      try {
+        await ref
+            .read(memoryRepositoryProvider)
+            .setFavorite(me.babyId, me.uid, mediaId, !on);
+        toaster.show(message: on ? l10n.favRemoved : l10n.favAdded);
+      } on Object {
+        toaster.show(message: l10n.toastActionFailed);
+      }
+    }
+
+    if (rail) {
+      return RailButton(
+        icon: ClIcons.bookmark,
+        semanticLabel: l10n.albFavorites,
+        selected: on,
+        color: on ? cl.colors.sunshine : Colors.white,
+        onPressed: toggle,
+      );
+    }
     final fg = dark ? Colors.white : cl.colors.ink;
     return ClPressable(
-      onPressed: () async {
-        final toaster = ClToaster.of(context);
-        try {
-          await ref
-              .read(memoryRepositoryProvider)
-              .setFavorite(me.babyId, me.uid, mediaId, !on);
-          toaster.show(message: on ? l10n.favRemoved : l10n.favAdded);
-        } on Object {
-          toaster.show(message: l10n.toastActionFailed);
-        }
-      },
+      onPressed: toggle,
       selected: on,
       semanticLabel: l10n.albFavorites,
       child: Container(
@@ -179,6 +212,65 @@ class FavoriteButton extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// A round, icon-only action in the viewer's right-hand rail (TikTok-style); [count], when
+/// above zero, sits under the icon.
+class RailButton extends StatelessWidget {
+  const RailButton({
+    required this.icon,
+    required this.semanticLabel,
+    required this.onPressed,
+    this.color = Colors.white,
+    this.selected,
+    this.count = 0,
+    super.key,
+  });
+  final ClIcons icon;
+  final String semanticLabel;
+  final VoidCallback onPressed;
+  final Color color;
+  final bool? selected;
+  final int count;
+
+  static const double size = 48;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return ClPressable(
+      onPressed: onPressed,
+      selected: selected,
+      semanticLabel: semanticLabel,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: size,
+            height: size,
+            decoration: const BoxDecoration(
+              color: Colors.white24,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: ClIcon(icon, size: 24, color: color),
+          ),
+          if (count > 0)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                '$count',
+                style: cl.text.caption.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
