@@ -89,6 +89,8 @@ struct GlanceLogged: Codable, Hashable {
 struct GlanceSnapshot: Codable {
   var signedIn: Bool
   var canLog: Bool
+  /// Cùng nuôi add memories (the camera and photo widgets); optional so older snapshots decode.
+  var canAddMemories: Bool?
   var locale: String
   var projectId: String
   var apiKey: String

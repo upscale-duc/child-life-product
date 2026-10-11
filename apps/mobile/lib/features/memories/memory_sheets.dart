@@ -149,7 +149,7 @@ Future<void> showAddSheet(
       ClSheetHeader(title: l10n.addTitle),
       RecentToday(
         zone: c.zone,
-        onPick: (picked) => Navigator.of(sheet).pop('recent:${picked.name}'),
+        onPick: (_) => Navigator.of(sheet).pop('recent'),
       ),
       _EntryOption(
         icon: ClIcons.camera,
@@ -193,8 +193,8 @@ Future<void> showAddSheet(
       picked = await pickFromFiles(context, ref);
     case 'camera':
       picked = await captureWithCamera(context, c.nickname);
-    default:
-      if (choice.startsWith('recent:')) picked = lastRecentPick;
+    case 'recent':
+      picked = lastRecentPick;
   }
   if (picked == null || picked.isEmpty || !context.mounted) return;
   await showComposeSheet(context, ref, c, picked);
@@ -382,12 +382,12 @@ class _ComposeSheetState extends ConsumerState<ComposeSheet> {
         ),
         const SizedBox(height: ClSpace.s3),
       ],
+      // Same field as "Tên album" in a sheet; a few lines grow in place.
       ClTextField(
-        label: '',
         placeholder: _note ? l10n.composeNoteHint : l10n.composeCaption,
         controller: _caption,
-        standalone: true,
         maxLength: 2000,
+        maxLines: 5,
         textCapitalization: TextCapitalization.sentences,
         onChanged: (_) {
           if (_error != null) setState(() => _error = null);
@@ -528,8 +528,11 @@ class AudienceCards extends StatelessWidget {
           onPressed: () => onChanged(a),
           selected: on,
           semanticLabel: '$title. $subtitle',
+          // Fills its half: the pressable centres a child that only wraps its text, which
+          // left the two cards narrow and far apart.
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 160),
+            width: double.infinity,
             padding: const EdgeInsets.all(ClSpace.s3),
             decoration: BoxDecoration(
               color: on ? cl.colors.mintSoft : cl.colors.surface2,
@@ -828,10 +831,8 @@ class _MilestoneSheetState extends ConsumerState<_MilestoneSheet> {
     return _sheet([
       ClSheetHeader(title: l10n.msTitle),
       ClTextField(
-        label: '',
         placeholder: l10n.msSearch,
         controller: _search,
-        standalone: true,
         onChanged: (_) => setState(() {}),
       ),
       const SizedBox(height: ClSpace.s3),

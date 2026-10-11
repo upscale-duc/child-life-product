@@ -438,9 +438,10 @@ class _CareTileState extends ConsumerState<CareTile>
                     style: cl.text.title2.copyWith(color: cl.colors.ink),
                   )
                 else
+                  // "Đã thức 2 giờ 36 phút" wraps rather than ending in "…" (owner, 2026-10-11).
                   Text(
                     value,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: cl.text.title2.copyWith(color: cl.colors.ink),
                   ),

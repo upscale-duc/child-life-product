@@ -56,74 +56,132 @@ Future<PickedMedia?> _fromAsset(AssetEntity a, Uint8List? thumb) async {
 /// What the recent strip picked; read by the add sheet after it closes.
 List<PickedMedia>? lastRecentPick;
 
-/// Today's photos and videos, only when the library is already shared (never prompts here).
+/// One of today's photos or videos in the strip; the file is fetched only when added (it may
+/// have to come down from iCloud).
+@immutable
+class RecentItem {
+  const RecentItem({required this.resolve, this.thumb, this.isVideo = false});
+  final Uint8List? thumb;
+  final bool isVideo;
+  final Future<PickedMedia?> Function() resolve;
+}
+
+/// Today's newest 10, only when the library is already shared (never prompts here).
+Future<List<RecentItem>> loadRecentToday() async {
+  try {
+    final state = await PhotoManager.getPermissionState(
+      requestOption: const PermissionRequestOption(),
+    );
+    if (!state.hasAccess) return const [];
+    final now = DateTime.now();
+    final start = DateTime(now.year, now.month, now.day);
+    final paths = await PhotoManager.getAssetPathList(
+      type: RequestType.common,
+      onlyAll: true,
+      filterOption: FilterOptionGroup(
+        createTimeCond: DateTimeCond(min: start, max: now),
+        orders: [const OrderOption(type: OrderOptionType.createDate)],
+      ),
+    );
+    if (paths.isEmpty) return const [];
+    final assets = await paths.first.getAssetListRange(start: 0, end: 10);
+    return [
+      for (final a in assets)
+        await () async {
+          final thumb = await a.thumbnailDataWithSize(
+            const ThumbnailSize.square(160),
+          );
+          return RecentItem(
+            thumb: thumb,
+            isVideo: a.type == AssetType.video,
+            resolve: () => _fromAsset(a, thumb),
+          );
+        }(),
+    ];
+  } on Object {
+    // No library on this device: no strip.
+    return const [];
+  }
+}
+
+/// "Ảnh mới chụp hôm nay" (10a2): tap to select one or several (numbered in tap order), then
+/// "Thêm N mục" goes on to compose with all of them (owner, 2026-10-11; a tap used to add one).
 class RecentToday extends StatefulWidget {
-  const RecentToday({required this.zone, required this.onPick, super.key});
+  const RecentToday({
+    required this.zone,
+    required this.onPick,
+    this.load = loadRecentToday,
+    super.key,
+  });
   final String zone;
-  final void Function(PickedMedia picked) onPick;
+  final void Function(List<PickedMedia> picked) onPick;
+
+  /// Replaced in tests (the native library cannot run there).
+  final Future<List<RecentItem>> Function() load;
 
   @override
   State<RecentToday> createState() => _RecentTodayState();
 }
 
 class _RecentTodayState extends State<RecentToday> {
-  List<(AssetEntity, Uint8List?)>? _assets;
+  List<RecentItem>? _items;
+
+  /// Indices in the order they were tapped.
+  final _selected = <int>[];
+  var _busy = false;
 
   @override
   void initState() {
     super.initState();
-    unawaited(_load());
+    unawaited(
+      widget.load().then((items) {
+        if (mounted && items.isNotEmpty) setState(() => _items = items);
+      }),
+    );
   }
 
-  Future<void> _load() async {
-    try {
-      final state = await PhotoManager.getPermissionState(
-        requestOption: const PermissionRequestOption(),
-      );
-      if (!state.hasAccess) return;
-      final now = DateTime.now();
-      final start = DateTime(now.year, now.month, now.day);
-      final paths = await PhotoManager.getAssetPathList(
-        type: RequestType.common,
-        onlyAll: true,
-        filterOption: FilterOptionGroup(
-          createTimeCond: DateTimeCond(min: start, max: now),
-          orders: [const OrderOption(type: OrderOptionType.createDate)],
-        ),
-      );
-      if (paths.isEmpty) return;
-      final assets = await paths.first.getAssetListRange(start: 0, end: 10);
-      final out = <(AssetEntity, Uint8List?)>[];
-      for (final a in assets) {
-        out.add((
-          a,
-          await a.thumbnailDataWithSize(const ThumbnailSize.square(160)),
-        ));
-      }
-      if (mounted && out.isNotEmpty) setState(() => _assets = out);
-    } on Object {
-      // No library on this device: no strip.
+  void _toggle(int i) => setState(
+    () => _selected.contains(i) ? _selected.remove(i) : _selected.add(i),
+  );
+
+  Future<void> _add() async {
+    final items = _items;
+    if (items == null || _selected.isEmpty || _busy) return;
+    setState(() => _busy = true);
+    final picked = <PickedMedia>[];
+    for (final i in _selected) {
+      final p = await items[i].resolve();
+      if (p != null) picked.add(p);
     }
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (picked.isEmpty) return;
+    lastRecentPick = picked;
+    widget.onPick(picked);
   }
 
   @override
   Widget build(BuildContext context) {
-    final assets = _assets;
-    if (assets == null) return const SizedBox.shrink();
+    final items = _items;
+    if (items == null) return const SizedBox.shrink();
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
+    final count = _selected.length;
     return Padding(
       padding: const EdgeInsets.only(bottom: ClSpace.s3),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
               Text(l10n.addRecent, style: cl.text.bodyStrong),
               const Spacer(),
               Text(
-                l10n.addRecentHint,
-                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                count == 0 ? l10n.addRecentHint : l10n.addRecentCount(count),
+                style: cl.text.caption.copyWith(
+                  color: count == 0 ? cl.colors.inkMuted : cl.colors.mintText,
+                  fontWeight: count == 0 ? null : FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -132,32 +190,90 @@ class _RecentTodayState extends State<RecentToday> {
             height: 64,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              itemCount: assets.length,
+              itemCount: items.length,
               separatorBuilder: (_, _) => const SizedBox(width: 6),
               itemBuilder: (_, i) {
-                final (a, thumb) = assets[i];
+                final item = items[i];
+                final order = _selected.indexOf(i);
+                final on = order >= 0;
                 return ClPressable(
-                  onPressed: () async {
-                    final p = await _fromAsset(a, thumb);
-                    if (p == null) return;
-                    lastRecentPick = [p];
-                    widget.onPick(p);
-                  },
-                  semanticLabel: l10n.addRecentHint,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(ClRadius.sm),
-                    child: SizedBox(
-                      width: 64,
-                      height: 64,
-                      child: thumb == null
-                          ? ColoredBox(color: cl.colors.surface2)
-                          : Image.memory(thumb, fit: BoxFit.cover),
+                  key: ValueKey('recent$i'),
+                  onPressed: _busy ? null : () => _toggle(i),
+                  selected: on,
+                  semanticLabel: item.isVideo
+                      ? l10n.pickVideos
+                      : l10n.memPhotos,
+                  minSize: Size.zero,
+                  child: Container(
+                    width: 64,
+                    height: 64,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      color: cl.colors.surface2,
+                      borderRadius: BorderRadius.circular(ClRadius.sm),
+                    ),
+                    foregroundDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(ClRadius.sm),
+                      border: on
+                          ? Border.all(color: cl.colors.mintDeep, width: 3)
+                          : null,
+                    ),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        if (item.thumb case final t?)
+                          Image.memory(t, fit: BoxFit.cover),
+                        if (item.isVideo)
+                          const Positioned(
+                            left: 5,
+                            bottom: 5,
+                            child: PlayGlyph(size: 10),
+                          ),
+                        // iOS-style: an empty ring, or the tap order once chosen.
+                        Positioned(
+                          right: 4,
+                          top: 4,
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: on ? cl.colors.mintDeep : Colors.black26,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 1.5,
+                              ),
+                            ),
+                            alignment: Alignment.center,
+                            child: on
+                                ? Text(
+                                    '${order + 1}',
+                                    style: cl.text.caption.copyWith(
+                                      fontSize: 11,
+                                      height: 1,
+                                      fontWeight: FontWeight.w700,
+                                      color: cl.colors.onMintDeep,
+                                    ),
+                                  )
+                                : null,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );
               },
             ),
           ),
+          if (count > 0) ...[
+            const SizedBox(height: ClSpace.s3),
+            ClButton(
+              label: l10n.addRecentAdd(count),
+              expand: true,
+              loading: _busy,
+              onPressed: _add,
+            ),
+          ],
         ],
       ),
     );
@@ -626,13 +742,57 @@ Future<List<PickedMedia>?> pickFromFiles(
 
 // ---------- 10a3 camera (until the in-app burst camera lands) ----------
 
-/// The system camera, one photo; the in-app burst camera (10a3) replaces this.
+/// The system camera (ios/Runner/CameraCapture.swift): photo or video in one screen, video
+/// length capped by the server limit (D-011). Elsewhere (Android) one photo via image_picker.
+const _camera = MethodChannel('childlife/camera');
+
+/// The system camera; the in-app burst camera (10a3) replaces this.
 Future<List<PickedMedia>?> captureWithCamera(
   BuildContext context,
   String nickname,
 ) async {
   final l10n = AppLocalizations.of(context);
   final toaster = ClToaster.of(context);
+  if (Platform.isIOS) {
+    final container = ProviderScope.containerOf(context, listen: false);
+    var limits = const VideoLimits();
+    final sub = container.listen(videoLimitsProvider, (_, _) {});
+    try {
+      limits = await container
+          .read(videoLimitsProvider.future)
+          .timeout(const Duration(seconds: 2));
+    } on Object {
+      // Offline: no length cap from here; the size check below still applies.
+    } finally {
+      sub.close();
+    }
+    try {
+      final r = await _camera.invokeMapMethod<String, Object?>('capture', {
+        'maxDurationSec': limits.maxDuration?.inSeconds,
+      });
+      if (r == null) return null;
+      final file = File(r['path']! as String);
+      final video = r['kind'] == 'video';
+      if (video && await file.length() > limits.maxBytes) {
+        toaster.show(message: l10n.pickVideoTooBig(_size(limits.maxBytes)));
+        return null;
+      }
+      return [
+        PickedMedia(
+          file: file,
+          type: video ? MediaKind.video : MediaKind.photo,
+          name: r['name']! as String,
+          captureAt: DateTime.now(),
+          durationMs: (r['durationMs'] as num?)?.toInt(),
+          width: (r['width'] as num?)?.toInt(),
+          height: (r['height'] as num?)?.toInt(),
+        ),
+      ];
+    } on Object {
+      toaster.show(message: l10n.camUnavailable);
+      return null;
+    }
+  }
   try {
     final shot = await ImagePicker().pickImage(source: ImageSource.camera);
     if (shot == null) return null;

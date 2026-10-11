@@ -272,19 +272,28 @@ class _NavTab extends StatelessWidget {
 
 /// "+" quick-log button (44:363), 68px, opens the quick-log chooser.
 class ClQuickLogButton extends StatelessWidget {
-  const ClQuickLogButton({required this.onPressed, super.key});
+  const ClQuickLogButton({
+    required this.onPressed,
+    this.semanticLabel,
+    this.size = 68,
+    super.key,
+  });
 
   final VoidCallback onPressed;
+
+  /// "Ghi nhanh" unless the button does something else (Kỷ niệm: add photos).
+  final String? semanticLabel;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     final c = context.cl.colors;
     return ClPressable(
       onPressed: onPressed,
-      semanticLabel: AppLocalizations.of(context).a11yQuickLog,
+      semanticLabel: semanticLabel ?? AppLocalizations.of(context).a11yQuickLog,
       child: Container(
-        width: 68,
-        height: 68,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           color: c.mintDeep,
           shape: BoxShape.circle,
@@ -297,29 +306,42 @@ class ClQuickLogButton extends StatelessWidget {
   }
 }
 
-/// Tab dock (10:169): NavBar + QuickLogButton, floating 24 above the bottom safe area.
+/// The current tab's own "+" on the dock: Ghi nhanh on Hôm nay, add photos on Kỷ niệm.
+@immutable
+class ClDockAction {
+  const ClDockAction({required this.label, required this.onPressed, this.key});
+  final String label;
+  final VoidCallback onPressed;
+
+  /// Lets the first-run tour point at "+" (18c).
+  final Key? key;
+}
+
+/// Tab dock (10:169), floating 24 above the bottom safe area: the NavBar full width, and the
+/// tab's "+" (if it has one) floating above its right end (owner, 2026-10-11; it used to sit
+/// beside the bar on every tab).
 class ClTabDock extends StatelessWidget {
   const ClTabDock({
     required this.role,
     required this.active,
     required this.onSelect,
-    this.onQuickLog,
+    this.action,
     this.tabs,
-    this.quickLogKey,
     super.key,
   });
 
   final ClRole role;
   final List<ClTab>? tabs;
-
-  /// Lets the first-run tour point at "+" (18c).
-  final Key? quickLogKey;
   final ClTab active;
   final ValueChanged<ClTab> onSelect;
-  final VoidCallback? onQuickLog;
+  final ClDockAction? action;
 
   /// Clearance scrolling content needs so its last item stays above the dock (47: 120).
   static const double contentBottomPadding = 120;
+
+  /// Height the "+" adds above the bar.
+  static const double actionExtent = _actionSize + ClSpace.s3;
+  static const double _actionSize = 56;
 
   @override
   Widget build(BuildContext context) {
@@ -331,20 +353,24 @@ class ClTabDock extends StatelessWidget {
         ClSpace.s4,
         bottom > 0 ? bottom : ClSpace.s6,
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            child: ClNavBar(
-              role: role,
-              active: active,
-              onSelect: onSelect,
-              tabs: tabs,
+          if (action case final a?)
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: ClSpace.s3),
+                child: ClQuickLogButton(
+                  key: a.key,
+                  onPressed: a.onPressed,
+                  semanticLabel: a.label,
+                  size: _actionSize,
+                ),
+              ),
             ),
-          ),
-          if (roleCanQuickLog(role) && onQuickLog != null) ...[
-            const SizedBox(width: ClSpace.s3),
-            ClQuickLogButton(key: quickLogKey, onPressed: onQuickLog!),
-          ],
+          ClNavBar(role: role, active: active, onSelect: onSelect, tabs: tabs),
         ],
       ),
     );

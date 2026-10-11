@@ -1,9 +1,11 @@
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/baby/time_zones.dart';
+import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/memories/album_models.dart';
 import 'package:child_life/features/memories/album_screens.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memories_screen.dart';
+import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/messages_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -87,6 +89,43 @@ void main() {
       expect(find.text('Giờ tắm'), findsOneWidget);
       expect(find.text('Ngủ ngoan'), findsOneWidget);
       expect(find.text('Album mới'), findsOneWidget);
+    });
+
+    testWidgets('an empty album says so on its cover, not "0 ảnh"', (
+      tester,
+    ) async {
+      final empty = Album(
+        id: 'alb_${'e' * 32}',
+        name: 'Ngày đầu đi dạo',
+        audience: Audience.family,
+        photos: 0,
+        videos: 0,
+        loveCount: 0,
+        createdBy: 'u_mai',
+        author: CareAuthor.of(mai),
+        updatedAt: DateTime.utc(2026, 10, 8, 12),
+      );
+      await pumpRouted(
+        tester,
+        const Scaffold(body: MemoriesScreen()),
+        overrides: [
+          ...careOverrides(),
+          ...memoryOverrides(
+            journal: _journal,
+            withAlbums: false,
+            extraAlbums: [empty],
+            favorites: const {},
+          ),
+          memoryViewProvider.overrideWith(
+            () => _View(const MemoryView(tab: MemoryTab.albums)),
+          ),
+        ],
+      );
+      await tester.pumpAndSettle();
+      // Yêu thích and the new album are both empty; only the album invites adding.
+      expect(find.text('Chưa có ảnh'), findsNWidgets(2));
+      expect(find.text('Thêm ảnh'), findsOneWidget);
+      expect(find.text('0 ảnh'), findsNothing);
     });
 
     testWidgets(
@@ -182,6 +221,7 @@ void main() {
         const Scaffold(body: MemoriesScreen()),
         overrides: [
           ...careOverrides(me: hoa),
+          startOn(MemoryTab.journal),
           ...memoryOverrides(journal: _journal, repo: repo),
         ],
       );
@@ -219,6 +259,7 @@ void main() {
         const Scaffold(body: MemoriesScreen()),
         overrides: [
           ...careOverrides(),
+          startOn(MemoryTab.journal),
           ...memoryOverrides(journal: _journal, loves: mockLoves(_journal)),
         ],
       );

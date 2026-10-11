@@ -316,6 +316,49 @@ void main() {
     });
   });
 
+  group('10a2 Ảnh mới chụp hôm nay', () {
+    testWidgets('several can be chosen, in tap order, then added together', (
+      tester,
+    ) async {
+      List<PickedMedia>? added;
+      final files = ['a.jpg', 'b.jpg', 'c.jpg'];
+      await pumpRouted(
+        tester,
+        Scaffold(
+          body: RecentToday(
+            zone: 'Asia/Ho_Chi_Minh',
+            load: () async => [
+              for (final f in files)
+                RecentItem(resolve: () async => pickedPhoto(f)),
+            ],
+            onPick: (p) => added = p,
+          ),
+        ),
+      );
+      expect(find.text('Chạm để chọn'), findsOneWidget);
+      expect(find.text('Thêm 1 mục'), findsNothing);
+      await tester.tap(find.byKey(const ValueKey('recent2')));
+      await tester.tap(find.byKey(const ValueKey('recent0')));
+      await tester.pump();
+      expect(find.text('Đã chọn 2'), findsOneWidget);
+      // Numbered in tap order.
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('recent2')),
+          matching: find.text('1'),
+        ),
+        findsOneWidget,
+      );
+      // A second tap un-chooses.
+      await tester.tap(find.byKey(const ValueKey('recent1')));
+      await tester.tap(find.byKey(const ValueKey('recent1')));
+      await tester.pump();
+      await tester.tap(find.text('Thêm 2 mục'));
+      await tester.pumpAndSettle();
+      expect(added?.map((p) => p.name), ['c.jpg', 'a.jpg']);
+    });
+  });
+
   group('10g library', () {
     testWidgets(
       'the picker gets the batch limit (R-102) and video limits (D-011)',

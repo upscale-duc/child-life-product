@@ -29,8 +29,13 @@ OverlayEntry showClToast(
 class ClToaster {
   ClToaster._(this._overlay, this._theme);
 
-  factory ClToaster.of(BuildContext context) =>
-      ClToaster._(Overlay.of(context, rootOverlay: true), Theme.of(context));
+  /// Also from the root navigator's own context, which has no Overlay above it (a widget or
+  /// Live Activity link opens its sheet from there): its overlay is used.
+  factory ClToaster.of(BuildContext context) => ClToaster._(
+    Overlay.maybeOf(context, rootOverlay: true) ??
+        Navigator.of(context, rootNavigator: true).overlay!,
+    Theme.of(context),
+  );
 
   final OverlayState _overlay;
   final ThemeData _theme;

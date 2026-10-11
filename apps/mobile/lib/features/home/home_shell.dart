@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +24,8 @@ import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../family/family_labels.dart';
-import '../memories/memories_screen.dart' show GlobalUploadPill;
+import '../memories/memories_screen.dart' show GlobalUploadPill, memoryCtx;
+import '../memories/memory_sheets.dart' show showAddSheet;
 import '../care/care_repository.dart';
 import '../care/care_sheets.dart';
 import '../care/timer_models.dart';
@@ -77,6 +80,9 @@ final _shownConflicts = <String>{};
 
 /// Branch order of the shell route.
 const shellTabs = [ClTab.today, ClTab.memories, ClTab.care, ClTab.family];
+
+/// The tabs' own screens: the only places that show the dock.
+const _tabRoots = {Routes.today, Routes.memories, Routes.care, Routes.family};
 
 /// Tab shell (NavBar v1.0.1, v1.0 improvement 370:1246) with role-aware tabs (R-021): parents see
 /// Hôm nay · Kỷ niệm · Chăm sóc · Gia đình, caregivers no Kỷ niệm, relatives no Hôm nay unless
@@ -146,13 +152,36 @@ class HomeShell extends ConsumerWidget {
         if (context.mounted) shell.goBranch(shellTabs.indexOf(tabs.first));
       });
     }
+    final path = shell.shellRouteContext.routerState.uri.path;
+    final l10n = AppLocalizations.of(context);
+    // Only Hôm nay (for those who log) and Kỷ niệm (for parents, who upload) have a "+".
+    final action = switch (active) {
+      ClTab.today when membership.role != MemberRole.relative => ClDockAction(
+        label: l10n.a11yQuickLog,
+        key: TourTargets.quickLog,
+        onPressed: () => showQuickLog(context),
+      ),
+      ClTab.memories when membership.role == MemberRole.coParent =>
+        ClDockAction(
+          label: l10n.a11yAddMemory,
+          onPressed: () {
+            final c = memoryCtx(context, ref);
+            if (c != null) unawaited(showAddSheet(context, ref, c));
+          },
+        ),
+      _ => null,
+    };
     return Scaffold(
       backgroundColor: cl.colors.cloud,
       body: Stack(
         children: [
           Positioned.fill(
             child: _HideDockOnScroll(
-              resetKey: shell.shellRouteContext.routerState.uri.path,
+              resetKey: path,
+              // A screen opened from a tab (Lịch sử, Nhắc nhở, an album…) has no dock, like
+              // iOS hidesBottomBarWhenPushed (owner, 2026-10-11); it slides back on return.
+              hideDock: !_tabRoots.contains(path),
+              dockExtra: action == null ? 0 : ClTabDock.actionExtent,
               content: shell,
               banner: const GlobalUploadPill(),
               dock: ClTabDock(
@@ -163,10 +192,7 @@ class HomeShell extends ConsumerWidget {
                   shellTabs.indexOf(tab),
                   initialLocation: shellTabs.indexOf(tab) == shell.currentIndex,
                 ),
-                onQuickLog: membership.role == MemberRole.relative
-                    ? null
-                    : () => showQuickLog(context),
-                quickLogKey: TourTargets.quickLog,
+                action: action,
               ),
             ),
           ),
@@ -664,10 +690,18 @@ class _HideDockOnScroll extends StatefulWidget {
     required this.dock,
     required this.resetKey,
     this.banner,
+    this.hideDock = false,
+    this.dockExtra = 0,
   });
 
   final Widget content;
   final Widget dock;
+
+  /// Kept hidden whatever the scroll (a screen opened from a tab).
+  final bool hideDock;
+
+  /// The tab's "+" above the bar: the banner sits above it too.
+  final double dockExtra;
 
   /// Floats above the dock (the upload pill) and drops to the bottom edge while the dock is
   /// hidden, so it is always visible.
@@ -729,6 +763,7 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
     // ClTabDock: 68 tall, 24 above the safe area.
     const dockHeight = 68.0 + ClSpace.s6;
     final banner = widget.banner;
+    final hidden = _hidden || widget.hideDock;
     return Stack(
       children: [
         Positioned.fill(
@@ -743,7 +778,10 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
             curve: ClCurves.quick,
             left: ClSpace.s4,
             right: ClSpace.s4,
-            bottom: safeBottom + ClSpace.s3 + (_hidden ? 0 : dockHeight),
+            bottom:
+                safeBottom +
+                ClSpace.s3 +
+                (hidden ? 0 : dockHeight + widget.dockExtra),
             child: banner,
           ),
         Positioned(
@@ -751,15 +789,15 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
           right: 0,
           bottom: 0,
           child: IgnorePointer(
-            ignoring: _hidden,
+            ignoring: hidden,
             child: AnimatedSlide(
-              offset: _hidden && !reduce ? const Offset(0, 1.2) : Offset.zero,
+              offset: hidden && !reduce ? const Offset(0, 1.2) : Offset.zero,
               duration: duration,
-              curve: _hidden ? ClCurves.exit : ClCurves.quick,
+              curve: hidden ? ClCurves.exit : ClCurves.quick,
               // Slides only: a half-faded dock over the content reads as disabled buttons.
               // Reduce Motion has no slide, so it fades instead.
               child: AnimatedOpacity(
-                opacity: _hidden && reduce ? 0 : 1,
+                opacity: hidden && reduce ? 0 : 1,
                 duration: duration,
                 curve: ClCurves.quick,
                 child: SafeArea(top: false, child: widget.dock),

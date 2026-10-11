@@ -9,6 +9,8 @@ import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/memory_repository.dart';
 import 'package:child_life/features/memories/upload_queue.dart';
 import 'package:flutter/foundation.dart';
+import 'package:child_life/features/memories/memories_screen.dart'
+    show MemoryTab, MemoryView, MemoryViewState, memoryViewProvider;
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -527,6 +529,7 @@ List<Override> memoryOverrides({
   List<CareAuthor>? notified,
   NetworkKind network = NetworkKind.wifi,
   bool withAlbums = true,
+  List<Album> extraAlbums = const [],
   Set<String>? favorites,
   List<Love> loves = const [],
   List<ParentMessage> messages = const [],
@@ -541,7 +544,7 @@ List<Override> memoryOverrides({
   return [
     albumsProvider.overrideWith(
       (ref, key) => Stream.value([
-        for (final al in a.albums)
+        for (final al in [...a.albums, ...extraAlbums])
           if (key.$2 || al.audience == Audience.family) al,
       ]),
     ),
@@ -618,3 +621,15 @@ List<ParentMessage> mockMessages(
     createdAt: DateTime.utc(2026, 10, 8, 4, 10),
   ),
 ];
+
+/// Kỷ niệm opens on Ảnh (owner request); journal-first cases start on [tab] instead.
+Override startOn(MemoryTab tab) =>
+    memoryViewProvider.overrideWith(() => _StartOn(tab));
+
+class _StartOn extends MemoryViewState {
+  _StartOn(this.first);
+  final MemoryTab first;
+
+  @override
+  MemoryView build() => MemoryView(tab: first);
+}

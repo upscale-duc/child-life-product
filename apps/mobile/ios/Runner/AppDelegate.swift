@@ -56,6 +56,9 @@ import UserNotifications
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "RuleNotifications") {
       RuleNotifications.register(with: registrar.messenger())
     }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "CameraCapture") {
+      CameraCapture.register(with: registrar.messenger())
+    }
   }
 }
 

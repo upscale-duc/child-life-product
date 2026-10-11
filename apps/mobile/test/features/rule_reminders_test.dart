@@ -32,6 +32,12 @@ class _Host extends StatelessWidget {
   );
 }
 
+/// Nhắc nhở opens on "Một lần"; "Theo quy tắc" comes second (owner, 2026-10-11).
+Future<void> _rulesTab(WidgetTester tester) async {
+  await tester.tap(find.text('Theo quy tắc'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   group('1a Nhắc nhở · Theo quy tắc', () {
     testWidgets('rules with their next time, pause and recipients', (
@@ -44,7 +50,13 @@ void main() {
         overrides: careOverrides(rules: [feed, sleep, diaper], ruleRepo: repo),
       );
       expect(find.text('Nhắc nhở'), findsOneWidget);
-      expect(find.text('Theo quy tắc'), findsOneWidget);
+      // "Một lần" first and open; "Theo quy tắc" after it.
+      expect(
+        tester.getCenter(find.text('Một lần')).dx,
+        lessThan(tester.getCenter(find.text('Theo quy tắc')).dx),
+      );
+      expect(find.text('Nhắc bú'), findsNothing);
+      await _rulesTab(tester);
       expect(find.text('Nhắc bú'), findsOneWidget);
       expect(find.text('3 giờ sau lần bú gần nhất'), findsOneWidget);
       expect(find.text('Tiếp theo 17:20'), findsOneWidget);
@@ -77,6 +89,7 @@ void main() {
         const RemindersScreen(),
         overrides: careOverrides(me: lan, rules: [feed]),
       );
+      await _rulesTab(tester);
       expect(find.text('Nhắc bú'), findsOneWidget);
       expect(find.byType(ClToggle), findsNothing);
       expect(find.text('Thêm nhắc'), findsNothing);
@@ -106,6 +119,7 @@ void main() {
         const RemindersScreen(),
         overrides: careOverrides(rules: [handled]),
       );
+      await _rulesTab(tester);
       expect(
         find.text('Ba đã ghi lần bú lúc 14:52 · nhắc tiếp theo 17:52'),
         findsOneWidget,
@@ -114,6 +128,35 @@ void main() {
   });
 
   group('1b → 1c → 1d', () {
+    testWidgets('1b: the four kinds are cards of one size in two columns', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        const RuleEditorScreen(),
+        overrides: careOverrides(
+          records: mockDay(),
+          ruleRepo: FakeRuleRepository(),
+        ),
+      );
+      final cards = [
+        for (final label in ['Bú', 'Ngủ', 'Thay tã', 'Hút sữa'])
+          tester.getRect(
+            find
+                .ancestor(
+                  of: find.text(label),
+                  matching: find.byType(Container),
+                )
+                .first,
+          ),
+      ];
+      expect({for (final r in cards) r.size}, hasLength(1));
+      expect(cards[0].left, cards[2].left);
+      expect(cards[1].left, cards[3].left);
+      expect(cards[0].top, cards[1].top);
+      expect(cards[1].left, greaterThan(cards[0].right));
+    });
+
     testWidgets('after the latest feed, every 2 h 30, for everyone eligible', (
       tester,
     ) async {

@@ -4,6 +4,7 @@ import '../features/glance/glance_bridge.dart';
 import '../features/memories/share_inbox.dart';
 import '../features/reminders/reminder_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -70,10 +71,15 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
         ref
             .read(authRepositoryProvider)
             .setLanguage(Localizations.localeOf(context).languageCode);
-        return ReminderNotificationSync(
-          child: PushRegistration(
-            child: ShareInbox(
-              child: GlanceSync(child: DeletionWatcher(child: child!)),
+        // The status bar follows the app's palette, not the phone's appearance, and comes back
+        // after a screen that set its own (the photo viewer's white icons stayed on Light).
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: clStatusBarStyle(palette),
+          child: ReminderNotificationSync(
+            child: PushRegistration(
+              child: ShareInbox(
+                child: GlanceSync(child: DeletionWatcher(child: child!)),
+              ),
             ),
           ),
         );

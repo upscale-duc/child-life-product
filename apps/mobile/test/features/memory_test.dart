@@ -5,6 +5,7 @@ import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memories_screen.dart';
 import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/memory_sheets.dart';
+import 'package:child_life/features/memories/memory_widgets.dart';
 import 'package:child_life/features/memories/upload_queue.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,17 @@ import '../helpers/care_fixtures.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
 import '../helpers/router_pump.dart';
+
+QueueItem _queued(String id, QueueState state, DateTime at) => QueueItem(
+  mediaId: id,
+  type: MediaKind.photo,
+  name: 'IMG.jpg',
+  localPath: '/nowhere/$id.jpg',
+  contentType: 'image/jpeg',
+  bytes: 10,
+  captureAt: at,
+  state: state,
+);
 
 Future<void> _tab(WidgetTester tester, String label) async {
   await tester.tap(find.text(label).last);
@@ -46,18 +58,11 @@ void main() {
 
     test('landing: on its way until the server has it ready', () {
       final at = DateTime(2026, 10, 9, 9);
-      QueueItem item(String id, QueueState state) => QueueItem(
-        mediaId: id,
-        type: MediaKind.photo,
-        name: 'IMG.jpg',
-        localPath: '/nowhere/$id.jpg',
-        contentType: 'image/jpeg',
-        bytes: 10,
-        captureAt: at,
-        state: state,
-      );
+      QueueItem item(String id, QueueState state) => _queued(id, state, at);
       final processing = mediaItem('mem1', at, status: MediaStatus.uploading);
       final ready = mediaItem('mem1', at);
+      // Left "uploading" on the server with nothing on this phone (abandoned or removed).
+      final orphan = mediaItem('mem1', at, status: MediaStatus.uploading);
       final queue = QueueView(
         batches: [
           QueueBatch(
@@ -66,22 +71,26 @@ void main() {
             memoryId: 'mem1',
             request: const {'audience': 'family'},
             createdAt: at,
+            sessionCreated: true,
             items: [
               item(processing.id, QueueState.uploaded),
               item(ready.id, QueueState.uploaded),
               item('med_sending', QueueState.uploading),
               item('med_failed', QueueState.failed),
+              // Sent, then deleted: its server item is gone from the list.
+              item('med_deleted', QueueState.uploaded),
             ],
           ),
         ],
       );
       final cells = landingCells(
         queue,
-        [processing, ready],
+        [processing, ready, orphan],
         const MemoryView(),
         teddyId,
       );
-      // Sent but still processing, and still sending; not the ready or the failed one.
+      // Sent but still processing, and still sending; not the ready, failed, deleted or
+      // orphaned ones (they once read "Đang thêm 3 mục…" for good).
       expect(
         cells.map((c) => c.id),
         unorderedEquals([processing.id, 'med_sending']),
@@ -114,45 +123,60 @@ void main() {
   });
 
   group('tabs', () {
-    testWidgets('a swipe moves between Nhật ký, Ảnh and Album', (tester) async {
+    testWidgets('opens on Ảnh; a swipe moves to Album, then Nhật ký', (
+      tester,
+    ) async {
       await pumpRouted(
         tester,
         const Scaffold(body: MemoriesScreen()),
         overrides: [...careOverrides(), ...memoryOverrides()],
       );
       final pages = find.byKey(const Key('memoryPages'));
-      expect(find.text('Tuần thứ 4'), findsOneWidget);
-      await tester.fling(pages, const Offset(-300, 0), 1000);
-      await tester.pumpAndSettle();
+      // Owner request: Ảnh · Album · Nhật ký · Câu chuyện, Ảnh first.
       expect(find.text('Theo tuần tuổi'), findsOneWidget);
       expect(find.byType(JournalView), findsNothing);
       await tester.fling(pages, const Offset(-300, 0), 1000);
       await tester.pumpAndSettle();
       expect(find.text('Album mới'), findsOneWidget);
-      // A tap on a title slides back.
-      await tester.ensureVisible(find.text('Nhật ký'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Nhật ký'));
+      await tester.fling(pages, const Offset(-300, 0), 1000);
       await tester.pumpAndSettle();
       expect(find.text('Tuần thứ 4'), findsOneWidget);
+      // A tap on a title slides back.
+      await tester.ensureVisible(find.text('Ảnh'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Ảnh'));
+      await tester.pumpAndSettle();
+      expect(find.text('Theo tuần tuổi'), findsOneWidget);
     });
 
     testWidgets('Ảnh says what is still landing, as a tile in the grid', (
       tester,
     ) async {
       final j = mockJournal();
-      final processing = mediaItem(
-        'mem1',
-        DateTime(2026, 10, 8, 14),
-        status: MediaStatus.uploading,
-      );
+      final at = DateTime(2026, 10, 8, 14);
+      final processing = mediaItem('mem1', at, status: MediaStatus.uploading);
+      // Sent from this phone; the server is still making its thumbnail.
+      final store = MemoryQueueStore()
+        ..saved = [
+          QueueBatch(
+            batchId: 'b1',
+            babyId: teddyId,
+            memoryId: 'mem1',
+            request: const {'audience': 'family'},
+            createdAt: at,
+            sessionCreated: true,
+            items: [_queued(processing.id, QueueState.uploaded, at)],
+          ),
+        ];
       await pumpRouted(
         tester,
         const Scaffold(body: MemoriesScreen()),
         overrides: [
           ...careOverrides(),
+          startOn(MemoryTab.journal),
           ...memoryOverrides(
             journal: (memories: j.memories, media: [processing, ...j.media]),
+            store: store,
           ),
         ],
       );
@@ -165,6 +189,95 @@ void main() {
     });
   });
 
+  testWidgets('Ảnh: the filters stay pinned while the grid scrolls', (
+    tester,
+  ) async {
+    await pumpRouted(
+      tester,
+      const Scaffold(body: MemoriesScreen()),
+      overrides: [...careOverrides(), ...memoryOverrides()],
+    );
+    await _tab(tester, 'Ảnh');
+    final pill = find.text('Theo tuần tuổi');
+    final before = tester.getTopLeft(pill);
+    final section = find.byType(MediaTile).first;
+    final sectionBefore = tester.getTopLeft(section).dy;
+    await tester.drag(
+      find.byType(CustomScrollView).last,
+      const Offset(0, -300),
+    );
+    await tester.pumpAndSettle();
+    // The grid moved; the filters did not.
+    expect(tester.getTopLeft(section).dy, lessThan(sectionBefore));
+    expect(tester.getTopLeft(pill), before);
+    await tester.tap(pill);
+    await tester.pumpAndSettle();
+    expect(find.text('Xem ảnh theo'), findsOneWidget);
+  });
+
+  testWidgets('a thumbnail that is only a picture is not dimmed', (
+    tester,
+  ) async {
+    final video = mediaItem(
+      'mem1',
+      DateTime(2026, 10, 8, 9),
+      video: true,
+      durationMs: 34000,
+    );
+    await pumpRouted(
+      tester,
+      Scaffold(
+        body: Column(
+          children: [
+            // "Đi tới tuần" row: no tap, 56 wide.
+            SizedBox.square(dimension: 56, child: MediaTile(item: video)),
+            SizedBox.square(
+              dimension: 120,
+              child: MediaTile(item: video, onTap: () {}),
+            ),
+          ],
+        ),
+      ),
+    );
+    final small = find.byType(MediaTile).first;
+    expect(
+      find.descendant(of: small, matching: find.byType(AnimatedOpacity)),
+      findsNothing,
+    );
+    // Too small for "0:34"; the grid tile keeps it.
+    expect(
+      find.descendant(of: small, matching: find.text('0:34')),
+      findsNothing,
+    );
+    expect(find.text('0:34'), findsOneWidget);
+  });
+
+  testWidgets('"Ai thấy": two cards share the width, 8 apart', (tester) async {
+    await pumpRouted(
+      tester,
+      Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: AudienceCards(value: Audience.family, onChanged: (_) {}),
+        ),
+      ),
+    );
+    Rect card(String title) => tester.getRect(
+      find
+          .ancestor(
+            of: find.text(title),
+            matching: find.byType(AnimatedContainer),
+          )
+          .first,
+    );
+    final parents = card('Chỉ ba mẹ');
+    final family = card('Gia đình');
+    expect(parents.width, family.width);
+    expect(parents.left, 16);
+    expect(family.right, 375 - 16);
+    expect(family.left - parents.right, 8);
+  });
+
   group('10a Nhật ký', () {
     testWidgets('weeks of life with ranges and counts; entries with labels', (
       tester,
@@ -172,7 +285,11 @@ void main() {
       await pumpRouted(
         tester,
         const Scaffold(body: MemoriesScreen()),
-        overrides: [...careOverrides(), ...memoryOverrides()],
+        overrides: [
+          ...careOverrides(),
+          startOn(MemoryTab.journal),
+          ...memoryOverrides(),
+        ],
       );
       expect(find.text('Tuần thứ 4'), findsOneWidget);
       expect(find.text('8 – 14 tháng 10 · 1 ảnh'), findsOneWidget);
@@ -193,7 +310,11 @@ void main() {
         await pumpRouted(
           tester,
           const Scaffold(body: MemoriesScreen()),
-          overrides: [...careOverrides(), ...memoryOverrides()],
+          overrides: [
+            ...careOverrides(),
+            startOn(MemoryTab.journal),
+            ...memoryOverrides(),
+          ],
         );
         await tester.dragUntilVisible(
           find.text(note),

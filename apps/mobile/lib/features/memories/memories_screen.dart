@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderAbstractViewport;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
@@ -35,7 +36,8 @@ import '../stories/stories_view.dart';
 
 // ---------- View state (10c) and selection (10b2) ----------
 
-enum MemoryTab { journal, photos, albums, stories }
+/// Owner request (2026-10-11): Ảnh first, then Album, Nhật ký, Câu chuyện; Kỷ niệm opens on Ảnh.
+enum MemoryTab { photos, albums, journal, stories }
 
 enum MemoryGroup { day, week, month }
 
@@ -54,7 +56,7 @@ enum PhotoShow { all, photos, videos, favorites }
 @immutable
 class MemoryView {
   const MemoryView({
-    this.tab = MemoryTab.journal,
+    this.tab = MemoryTab.photos,
     this.group = MemoryGroup.week,
     this.layout = MemoryLayout.small,
     this.show = MemoryShow.all,
@@ -331,11 +333,15 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
       },
     );
 
+    // In MemoryTab order.
     final labels = [
-      l10n.memJournal,
-      l10n.memPhotos,
-      l10n.memAlbums,
-      l10n.memStories,
+      for (final t in MemoryTab.values)
+        switch (t) {
+          MemoryTab.photos => l10n.memPhotos,
+          MemoryTab.albums => l10n.memAlbums,
+          MemoryTab.journal => l10n.memJournal,
+          MemoryTab.stories => l10n.memStories,
+        },
     ];
     return Stack(
       children: [
@@ -894,26 +900,46 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
     super.dispose();
   }
 
+  /// Where the grid shows under the pinned filter bar, in global coordinates.
+  double get _gridTop {
+    final box = context.findRenderObject();
+    final top = box is RenderBox && box.attached
+        ? box.localToGlobal(Offset.zero).dy
+        : 0.0;
+    return top + _FilterBar.height;
+  }
+
   void _trackMonth() {
     Object? best;
+    // A section is current once its title reaches the pinned filter bar.
+    final line = _gridTop + ClSpace.s6;
     for (final e in _monthKeys.entries) {
       final box = e.value.currentContext?.findRenderObject();
       if (box is! RenderBox || !box.attached) continue;
       final y = box.localToGlobal(Offset.zero).dy;
-      if (y <= 160) best = e.key;
+      if (y <= line) best = e.key;
     }
     best ??= _monthKeys.keys.firstOrNull;
     if (best != _visibleMonth) setState(() => _visibleMonth = best);
   }
 
+  /// Scrolls the section's title to just under the pinned filter bar.
   void jumpTo(Object section) {
-    final ctx = _monthKeys[section]?.currentContext;
-    if (ctx != null) {
-      Scrollable.ensureVisible(
-        ctx,
+    final box = _monthKeys[section]?.currentContext?.findRenderObject();
+    if (box == null || !_scroll.hasClients) return;
+    final p = _scroll.position;
+    final reveal = RenderAbstractViewport.of(box).getOffsetToReveal(box, 0);
+    final target = (reveal.offset - _FilterBar.height - ClSpace.s2).clamp(
+      p.minScrollExtent,
+      p.maxScrollExtent,
+    );
+    unawaited(
+      _scroll.animateTo(
+        target,
         duration: const Duration(milliseconds: 300),
-      );
-    }
+        curve: ClCurves.standard,
+      ),
+    );
   }
 
   @override
@@ -1122,90 +1148,94 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
               CupertinoSliverRefreshControl(
                 onRefresh: () => refreshMemories(ref, widget.ctx),
               ),
+              // The filters stay at the top while the grid scrolls under them (owner, 2026-10-11).
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _FilterBar(
+                  Row(
+                    children: [
+                      // 10b: "Theo tuần tuổi ▾" (grouping) and "Ảnh & video ▾" (type).
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              _FilterPill(
+                                icon: ClIcons.cake,
+                                label: switch (mode) {
+                                  PhotoGroup.ageWeek => l10n.photoPillWeek,
+                                  PhotoGroup.ageMonth => l10n.photoPillAgeMonth,
+                                  PhotoGroup.month => l10n.photoPillMonth,
+                                },
+                                onTap: c.dob == null
+                                    ? null
+                                    : () => showPhotoGroupSheet(context, ref),
+                              ),
+                              const SizedBox(width: 6),
+                              _FilterPill(
+                                icon: ClIcons.camera,
+                                label: switch (view.photoShow) {
+                                  PhotoShow.all => l10n.photoShowAll,
+                                  PhotoShow.photos => l10n.photoShowPhotos,
+                                  PhotoShow.videos => l10n.photoShowVideos,
+                                  PhotoShow.favorites =>
+                                    l10n.photoShowFavorites,
+                                },
+                                onTap: () => showPhotoShowSheet(
+                                  context,
+                                  ref,
+                                  items: base,
+                                  favorites: favorites,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: ClSpace.s2),
+                      // "Chọn" is not on 10b: a round icon keeps room for the two pills.
+                      if (selecting)
+                        chip(
+                          l10n.actionDone,
+                          on: true,
+                          onTap: () =>
+                              ref.read(memorySelectionProvider.notifier).end(),
+                        )
+                      else if (c.parentView)
+                        ClPressable(
+                          key: const Key('photoSelect'),
+                          onPressed: () => ref
+                              .read(memorySelectionProvider.notifier)
+                              .start(),
+                          semanticLabel: l10n.memSelect,
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: cl.colors.surface2,
+                              shape: BoxShape.circle,
+                            ),
+                            alignment: Alignment.center,
+                            child: ClIcon(
+                              ClIcons.check,
+                              size: 16,
+                              color: cl.colors.ink,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(
                   ClSpace.s4,
-                  ClSpace.s2,
+                  0,
                   ClSpace.s4,
                   0,
                 ),
                 sliver: SliverList.list(
                   children: [
-                    Row(
-                      children: [
-                        // 10b: "Theo tuần tuổi ▾" (grouping) and "Ảnh & video ▾" (type).
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                _FilterPill(
-                                  icon: ClIcons.cake,
-                                  label: switch (mode) {
-                                    PhotoGroup.ageWeek => l10n.photoPillWeek,
-                                    PhotoGroup.ageMonth =>
-                                      l10n.photoPillAgeMonth,
-                                    PhotoGroup.month => l10n.photoPillMonth,
-                                  },
-                                  onTap: c.dob == null
-                                      ? null
-                                      : () => showPhotoGroupSheet(context, ref),
-                                ),
-                                const SizedBox(width: 6),
-                                _FilterPill(
-                                  icon: ClIcons.camera,
-                                  label: switch (view.photoShow) {
-                                    PhotoShow.all => l10n.photoShowAll,
-                                    PhotoShow.photos => l10n.photoShowPhotos,
-                                    PhotoShow.videos => l10n.photoShowVideos,
-                                    PhotoShow.favorites =>
-                                      l10n.photoShowFavorites,
-                                  },
-                                  onTap: () => showPhotoShowSheet(
-                                    context,
-                                    ref,
-                                    items: base,
-                                    favorites: favorites,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: ClSpace.s2),
-                        // "Chọn" is not on 10b: a round icon keeps room for the two pills.
-                        if (selecting)
-                          chip(
-                            l10n.actionDone,
-                            on: true,
-                            onTap: () => ref
-                                .read(memorySelectionProvider.notifier)
-                                .end(),
-                          )
-                        else if (c.parentView)
-                          ClPressable(
-                            key: const Key('photoSelect'),
-                            onPressed: () => ref
-                                .read(memorySelectionProvider.notifier)
-                                .start(),
-                            semanticLabel: l10n.memSelect,
-                            child: Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                color: cl.colors.surface2,
-                                shape: BoxShape.circle,
-                              ),
-                              alignment: Alignment.center,
-                              child: ClIcon(
-                                ClIcons.check,
-                                size: 16,
-                                color: cl.colors.ink,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
                     if (landing.isNotEmpty) _LandingLine(count: landing.length),
                     if (widget.media != null &&
                         items.isEmpty &&
@@ -1464,6 +1494,39 @@ class _FilterPill extends StatelessWidget {
   }
 }
 
+/// The Ảnh filters ("Theo tuần tuổi ▾", "Ảnh & video ▾", select), pinned on the screen colour.
+class _FilterBar extends SliverPersistentHeaderDelegate {
+  _FilterBar(this.child);
+  final Widget child;
+
+  /// The row is a tap target tall (the pills are 36 inside 44), with the screen's top gap.
+  static const double height = ClSpace.tapMin + ClSpace.s2;
+
+  @override
+  double get minExtent => height;
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlaps) =>
+      ColoredBox(
+        color: context.cl.colors.cloud,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            ClSpace.s4,
+            ClSpace.s2,
+            ClSpace.s4,
+            0,
+          ),
+          child: child,
+        ),
+      );
+
+  // The row is rebuilt with the screen (selection, filters).
+  @override
+  bool shouldRebuild(_FilterBar old) => true;
+}
+
 /// A cell of the Ảnh grid: a ready item, or one still landing (sent from this phone, or
 /// being processed) shown from the copy on the device until the server's arrives.
 @immutable
@@ -1525,9 +1588,14 @@ bool _landingShown(bool video, Audience audience, MemoryView v) {
       };
 }
 
-/// What is on its way into Ảnh (parents only), newest first: items uploading or sent from
-/// this phone, and items the server is still processing (from any parent's phone). Without
-/// them an upload "finished" in the pill but was missing from the grid for a while.
+/// What is on its way into Ảnh (parents only), newest first: items this phone is sending, and
+/// items it has sent that the server is still processing. Without them an upload "finished" in
+/// the pill but was missing from the grid for a while.
+///
+/// Only this phone's queue counts. A server item left "uploading" with nothing behind it here
+/// (an abandoned or removed upload, released by the server after 24 h) is not landing, and
+/// neither is a sent item whose server copy is gone (deleted) — both once showed as "Đang
+/// thêm 3 mục…" that never ended.
 List<PhotoCell> landingCells(
   QueueView queue,
   List<MediaItem> media,
@@ -1549,19 +1617,21 @@ List<PhotoCell> landingCells(
     docs.add(m.id);
     if (m.status != MediaStatus.uploading || m.deleted) continue;
     final q = queued[m.id];
-    if (q != null && (!_onTheWay(q.$2.state) || q.$1.refused)) continue;
+    if (q == null || !_onTheWay(q.$2.state) || q.$1.refused) continue;
     if (!_landingShown(m.isVideo, m.effectiveAudience, v)) continue;
     cells.add(
       PhotoCell.landing(
         id: m.id,
         at: m.captureAt,
-        local: q == null ? null : local(q.$2),
-        waiting: q != null && _held(q.$2.state),
+        local: local(q.$2),
+        waiting: _held(q.$2.state),
       ),
     );
   }
   for (final (b, i) in queued.values) {
     if (docs.contains(i.mediaId) || !_onTheWay(i.state) || b.refused) continue;
+    // Sent, yet no live server item: deleted or released since, not on its way.
+    if (i.state == QueueState.uploaded && b.sessionCreated) continue;
     final audience = b.request['audience'] == Audience.family.name
         ? Audience.family
         : Audience.parents;

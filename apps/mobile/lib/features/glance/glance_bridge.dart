@@ -26,6 +26,7 @@ import '../care/timer_models.dart';
 import '../care/timer_screens.dart' show showSleepChooser;
 import '../home/home_shell.dart';
 import '../onboarding/setup_screens.dart' show relationLabel;
+import '../memories/quick_add.dart';
 
 /// S8 glanceables (Figma W1–W5): keeps the iOS widgets and Live Activities in step with the app.
 /// It hands the native side the signed-in session (so widget and Live Activity buttons can write
@@ -96,6 +97,8 @@ Map<String, Object?> buildGlanceSnapshot({
   final base = <String, Object?>{
     'signedIn': me != null,
     'canLog': me != null && me.role != MemberRole.relative,
+    // Camera / photo widgets add to Kỷ niệm: Cùng nuôi only.
+    'canAddMemories': me?.role == MemberRole.coParent,
     'locale': locale,
     'projectId': projectId,
     'apiKey': apiKey,
@@ -235,13 +238,18 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
   /// Kept until Hôm nay is showing for a signed-in member (a cold start passes the splash first).
   String? _pendingLog;
 
+  /// The camera / photo widgets (`/memories?add=`), kept until Kỷ niệm shows the same way.
+  QuickAdd? _pendingAdd;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _pendingLog = widgetLogRequest(
-      Uri.parse(WidgetsBinding.instance.platformDispatcher.defaultRouteName),
+    final launch = Uri.parse(
+      WidgetsBinding.instance.platformDispatcher.defaultRouteName,
     );
+    _pendingLog = widgetLogRequest(launch);
+    _pendingAdd = quickAddRequest(launch);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || ref.read(glanceChannelProvider) == null) return;
       final router = ref.read(routerProvider);
@@ -262,6 +270,12 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
     final router = _router;
     if (router == null || !mounted) return;
     final uri = router.routerDelegate.currentConfiguration.uri;
+    final add = quickAddRequest(uri);
+    if (add != null) {
+      _pendingAdd = add;
+      router.go(Routes.memories);
+      return;
+    }
     final asked = widgetLogRequest(uri);
     if (asked != null) {
       _pendingLog = asked;
@@ -270,6 +284,34 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
       return;
     }
     _tryPendingLog();
+    _tryPendingAdd();
+  }
+
+  /// Opens the camera or library once Kỷ niệm shows for a signed-in member; anyone but Cùng
+  /// nuôi just stays there (the widget links them to Hôm nay anyway).
+  void _tryPendingAdd() {
+    final router = _router;
+    final add = _pendingAdd;
+    if (router == null || add == null || !mounted) return;
+    if (router.routerDelegate.currentConfiguration.uri.path !=
+        Routes.memories) {
+      return;
+    }
+    final me = ref.read(selectedMembershipProvider);
+    if (ref.read(sessionProvider) is! SessionSignedIn || me == null) return;
+    _pendingAdd = null;
+    if (me.role != MemberRole.coParent) return;
+    unawaited(_openAdd(router, add));
+  }
+
+  Future<void> _openAdd(GoRouter router, QuickAdd add) async {
+    // Like the log sheet: let the palette settle (Night care follows a running sleep).
+    await WidgetsBinding.instance.endOfFrame;
+    await Future<void>.delayed(
+      ClMotion.gentle + const Duration(milliseconds: 100),
+    );
+    if (!mounted) return;
+    await openQuickAdd(router, ref, add);
   }
 
   /// Opens the asked log once Hôm nay shows for a signed-in member. Called on route changes and
@@ -350,6 +392,9 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
     final usable = me != null && me.canViewToday;
     if (_pendingLog != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _tryPendingLog());
+    }
+    if (_pendingAdd != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _tryPendingAdd());
     }
     final baby = usable ? ref.watch(babyProvider(me.babyId)).value : null;
     final records = usable

@@ -378,11 +378,10 @@ class _ComposerState extends ConsumerState<_Composer> {
       children: [
         ClSheetHeader(title: widget.title ?? l10n.messageParents),
         ClTextField(
-          label: '',
           placeholder: l10n.messagePlaceholder,
           controller: _text,
-          standalone: true,
           maxLength: 1000,
+          maxLines: 5,
           textCapitalization: TextCapitalization.sentences,
           onChanged: (_) => setState(() {}),
         ),

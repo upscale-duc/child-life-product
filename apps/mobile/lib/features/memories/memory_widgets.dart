@@ -149,6 +149,9 @@ class AudienceIcon extends StatelessWidget {
   }
 }
 
+/// Longest side of the server's `thumb.jpg` (functions memories.ts `photoMax.thumb`).
+const _thumbPx = 480;
+
 /// MediaTile (131:860): Default · Selected · Uploading. Overlays: video duration, Private lock.
 class MediaTile extends StatelessWidget {
   const MediaTile({
@@ -177,17 +180,14 @@ class MediaTile extends StatelessWidget {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
     final path = item.thumbPath;
-    return ClPressable(
-      onPressed: onTap,
-      onLongPress: onLongPress,
-      semanticLabel: item.isVideo
-          ? '${l10n.pickVideos} ${videoDuration(item.durationMs)}'
-          : l10n.memPhotos,
-      selected: selecting ? selected : null,
-      minSize: Size.zero,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(radius),
-        child: Stack(
+    final label = item.isVideo
+        ? '${l10n.pickVideos} ${videoDuration(item.durationMs)}'
+        : l10n.memPhotos;
+    final tile = ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      // A small thumbnail (a sheet row) has no room for "▶ 0:34": the play mark alone.
+      child: LayoutBuilder(
+        builder: (context, box) => Stack(
           fit: StackFit.expand,
           children: [
             ColoredBox(color: cl.colors.surface2),
@@ -197,8 +197,26 @@ class MediaTile extends StatelessWidget {
                 fit: BoxFit.cover,
                 gaplessPlayback: true,
                 errorBuilder: (_, _, _) => const SizedBox.shrink(),
-              )
-            else if (item.isVideo)
+              ),
+            // Owner report: a tile wider than the 480 px thumb (the journal's one-photo strip)
+            // looked soft; the display rendition (1600 px / video poster) loads over it.
+            if (path != null &&
+                item.displayPath != null &&
+                item.displayPath != path &&
+                box.maxWidth * MediaQuery.devicePixelRatioOf(context) >
+                    _thumbPx)
+              Image(
+                image: StorageImage(item.displayPath!),
+                fit: BoxFit.cover,
+                gaplessPlayback: true,
+                frameBuilder: (_, child, frame, sync) => AnimatedOpacity(
+                  opacity: frame == null ? 0 : 1,
+                  duration: sync ? Duration.zero : ClMotion.quick,
+                  child: child,
+                ),
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
+              ),
+            if (path == null && item.isVideo)
               Center(
                 child: ClIcon(
                   ClIcons.memories,
@@ -233,14 +251,15 @@ class MediaTile extends StatelessWidget {
                         size: 12,
                         color: Colors.white,
                       ),
-                      Text(
-                        videoDuration(item.durationMs),
-                        style: cl.text.caption.copyWith(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
+                      if (box.maxWidth >= 72)
+                        Text(
+                          videoDuration(item.durationMs),
+                          style: cl.text.caption.copyWith(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -289,6 +308,18 @@ class MediaTile extends StatelessWidget {
           ],
         ),
       ),
+    );
+    // Only a picture (a sheet row, a cover): no pressable, which would dim it as disabled.
+    if (onTap == null && onLongPress == null) {
+      return Semantics(image: true, label: label, child: tile);
+    }
+    return ClPressable(
+      onPressed: onTap,
+      onLongPress: onLongPress,
+      semanticLabel: label,
+      selected: selecting ? selected : null,
+      minSize: Size.zero,
+      child: tile,
     );
   }
 }

@@ -8,6 +8,8 @@ import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
+import 'package:child_life/features/memories/album_models.dart';
+import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/memories/album_screens.dart';
 import 'package:child_life/features/memories/media_viewer.dart';
 import 'package:child_life/features/memories/memory_widgets.dart';
@@ -56,11 +58,13 @@ final _journal = mockJournal();
 
 List<Override> _base({
   Membership? me,
-  MemoryView view = const MemoryView(),
+  MemoryView view = const MemoryView(tab: MemoryTab.journal),
   Set<String>? selected,
   MemoryQueueStore? store,
   List<FamilyMilestone> milestones = const [],
   bool empty = false,
+  List<Album> extraAlbums = const [],
+  Set<String>? favorites,
 }) => [
   ...careOverrides(me: me),
   ...memoryOverrides(
@@ -69,6 +73,8 @@ List<Override> _base({
         : _journal,
     store: store,
     milestones: milestones,
+    extraAlbums: extraAlbums,
+    favorites: favorites,
     loves: mockLoves(_journal),
     messages: mockMessages(_journal),
   ),
@@ -140,6 +146,29 @@ final _cases = <String, _Case>{
   '10d_albums': (
     build: _tab,
     overrides: () => _base(view: const MemoryView(tab: MemoryTab.albums)),
+    prefs: const {},
+    act: null,
+  ),
+  // An empty album and an empty Yêu thích: mint cover, "Thêm ảnh" on the album only.
+  '10d_albums_empty': (
+    build: _tab,
+    overrides: () => _base(
+      view: const MemoryView(tab: MemoryTab.albums),
+      favorites: const {},
+      extraAlbums: [
+        Album(
+          id: 'alb_${'e' * 32}',
+          name: 'Ngày đầu đi dạo',
+          audience: Audience.parents,
+          photos: 0,
+          videos: 0,
+          loveCount: 0,
+          createdBy: 'u_mai',
+          author: CareAuthor.of(mai),
+          updatedAt: DateTime.utc(2026, 10, 8, 12),
+        ),
+      ],
+    ),
     prefs: const {},
     act: null,
   ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/route_guard.dart';
@@ -19,93 +19,33 @@ import 'widgets/heroes.dart';
 import 'widgets/journey_hero.dart';
 import 'widgets/onboarding_layout.dart';
 
-/// 00 Splash (36:2233): logo rises 8 px and fades in, then the router crossfades to the next
-/// screen (≤ 1 s). Reduce Motion: static logo. The native launch screen is the same without glow.
-class SplashScreen extends StatefulWidget {
+/// 00 Splash: one splash only (owner, 2026-10-11, D-048). It draws exactly what the native
+/// launch screen shows (flutter_native_splash.yaml: the 150 pt mark centred on cloud, Light or
+/// Night by the system appearance), so the hand-over from iOS/Android to Flutter is invisible;
+/// the router then crossfades to the next screen (≤ 1 s, R-006). No glow, wordmark or tagline,
+/// which made it read as a second splash.
+class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: ClMotion.standard,
-  );
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (context.reduceMotion) {
-      _controller.value = 1;
-    } else if (_controller.value == 0 && !_controller.isAnimating) {
-      _controller.forward();
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  /// The launch image's size in points (600 px source at 4x).
+  static const markSize = 150.0;
 
   @override
   Widget build(BuildContext context) {
-    final cl = context.cl;
-    final curve = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-    return Scaffold(
-      backgroundColor: cl.colors.cloud,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Center(
-                child: Container(
-                  width: 320,
-                  height: 320,
-                  decoration: BoxDecoration(
-                    color: cl.colors.mintSoft,
-                    shape: BoxShape.circle,
-                  ),
-                  alignment: Alignment.center,
-                  child: FadeTransition(
-                    opacity: curve,
-                    child: AnimatedBuilder(
-                      animation: curve,
-                      builder: (context, child) => Transform.translate(
-                        offset: Offset(0, 8 * (1 - curve.value)),
-                        child: child,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const ClLogo(height: 104),
-                          const SizedBox(height: ClSpace.s3),
-                          SvgPicture.asset(
-                            'assets/logo/wordmark-color.svg',
-                            height: 46,
-                            colorFilter: ColorFilter.mode(
-                              cl.colors.ink,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: ClSpace.s8),
-              child: Text(
-                AppLocalizations.of(context).splashTagline,
-                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-              ),
-            ),
-          ],
+    // The native launch screen can only follow the system appearance, while the app's palette
+    // also follows "Sáng"/"Tối", the Night care schedule and running timers; match the former.
+    final palette = MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? ClPalette.nightCare
+        : ClPalette.light;
+    final cl = ClTheme.of(palette);
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: clStatusBarStyle(palette),
+      child: Theme(
+        data: buildClTheme(palette),
+        child: ColoredBox(
+          color: cl.colors.cloud,
+          // Centred on the whole screen, not the safe area, like the launch storyboard.
+          child: const Center(child: ClLogo(height: markSize)),
         ),
       ),
     );

@@ -24,6 +24,9 @@ Future<(List<Visit>, ProviderContainer)> pumpRouted(
   ClPalette palette = ClPalette.light,
   List<Override> overrides = const [],
   Map<String, Object> prefs = const {},
+
+  /// Replaces the stub router (e.g. the real tab shell); [screen] is then unused.
+  GoRouter? router,
 }) async {
   SharedPreferences.setMockInitialValues(prefs);
   final preferences = await SharedPreferences.getInstance();
@@ -33,14 +36,16 @@ Future<(List<Visit>, ProviderContainer)> pumpRouted(
     return const Scaffold(body: Text('stub'));
   }
 
-  final router = GoRouter(
-    routes: [
-      GoRoute(path: '/', builder: (_, _) => screen),
-      GoRoute(path: '/:a/:b/:c', builder: (_, s) => stub(s)),
-      GoRoute(path: '/:a/:b', builder: (_, s) => stub(s)),
-      GoRoute(path: '/:a', builder: (_, s) => stub(s)),
-    ],
-  );
+  final routes =
+      router ??
+      GoRouter(
+        routes: [
+          GoRoute(path: '/', builder: (_, _) => screen),
+          GoRoute(path: '/:a/:b/:c', builder: (_, s) => stub(s)),
+          GoRoute(path: '/:a/:b', builder: (_, s) => stub(s)),
+          GoRoute(path: '/:a', builder: (_, s) => stub(s)),
+        ],
+      );
   final container = ProviderContainer(
     overrides: [
       sharedPreferencesProvider.overrideWithValue(preferences),
@@ -74,7 +79,7 @@ Future<(List<Visit>, ProviderContainer)> pumpRouted(
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          routerConfig: router,
+          routerConfig: routes,
         ),
       ),
     ),

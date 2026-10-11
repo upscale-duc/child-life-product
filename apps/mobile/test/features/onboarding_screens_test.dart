@@ -2,6 +2,7 @@ import 'package:child_life/app/route_guard.dart';
 import 'package:child_life/core/appearance/appearance.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
+import 'package:child_life/core/design/tokens.g.dart';
 import 'package:child_life/features/appearance/appearance_screen.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
 import 'package:child_life/features/auth/auth_screens.dart';
@@ -11,7 +12,9 @@ import 'package:child_life/features/onboarding/setup_screens.dart';
 import 'package:child_life/features/onboarding/welcome_screens.dart';
 import 'package:child_life/features/onboarding/widgets/journey_hero.dart';
 import 'package:child_life/l10n/app_localizations.dart';
+import 'package:child_life/core/widgets/cl_art.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -90,6 +93,78 @@ Future<(List<String>, ProviderContainer)> pumpScreen(
 }
 
 void main() {
+  testWidgets(
+    '00 Splash takes the launch screen\'s colours, not the app palette',
+    (tester) async {
+      // Phone in Dark Mode, app set to "Sáng": the native launch screen is dark.
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+      addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+      Color? background() => tester
+          .widget<ColoredBox>(
+            find
+                .descendant(
+                  of: find.byType(SplashScreen),
+                  matching: find.byType(ColoredBox),
+                )
+                .first,
+          )
+          .color;
+      Future<void> pump(ClPalette app) => tester.pumpWidget(
+        MaterialApp(
+          theme: buildClTheme(app),
+          locale: const Locale('vi'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: const SplashScreen(),
+        ),
+      );
+      Brightness? icons() => tester
+          .widget<AnnotatedRegion<SystemUiOverlayStyle>>(
+            find.byType(AnnotatedRegion<SystemUiOverlayStyle>).last,
+          )
+          .value
+          .statusBarIconBrightness;
+      await pump(ClPalette.light);
+      expect(background(), nightCareColors.cloud);
+      // The status bar reads on the splash, not on the app palette.
+      expect(icons(), Brightness.light);
+
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+      await pump(ClPalette.nightCare);
+      await tester.pump();
+      expect(background(), lightColors.cloud);
+      expect(icons(), Brightness.dark);
+    },
+  );
+
+  testWidgets(
+    '00 Splash is the launch screen itself: only the 150 pt mark, centred',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: buildClTheme(ClPalette.light),
+          locale: const Locale('vi'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: const SplashScreen(),
+        ),
+      );
+      final screen = tester.getRect(find.byType(SplashScreen));
+      final mark = tester.getRect(find.byType(ClLogo));
+      expect(mark.size, const Size.square(SplashScreen.markSize));
+      expect(mark.center, screen.center);
+      // No wordmark, tagline or glow: anything more reads as a second splash.
+      expect(find.byType(Text), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(SplashScreen),
+          matching: find.byType(DecoratedBox),
+        ),
+        findsNothing,
+      );
+    },
+  );
+
   testWidgets('01 Chào mừng: three entries, in both languages', (tester) async {
     final (visited, _) = await pumpScreen(tester, const WelcomeScreen());
     // v1.0 (368:843): the growth journey and its new copy.

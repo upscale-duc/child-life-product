@@ -4,6 +4,9 @@ import 'app_localizations.dart';
 
 Map<String, String> glanceCopy(AppLocalizations l) => {
   'appName': l.glanceAppName,
+  'memCamera': l.glanceMemCamera,
+  'memLibrary': l.glanceMemLibrary,
+  'memFor': l.glanceMemFor('{name}'),
   'you': l.glanceYou,
   'bottle': l.glanceBottle,
   'breast': l.glanceBreast,

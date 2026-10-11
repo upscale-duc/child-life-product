@@ -4472,6 +4472,12 @@ abstract class AppLocalizations {
   /// **'Tạo nhắc việc'**
   String get reminderPeekAdd;
 
+  /// Hôm nay reminder card: opens Nhắc nhở after the first 3 (owner request 2026-10-11).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm'**
+  String get reminderPeekMore;
+
   /// Local notification body.
   ///
   /// In vi, this message translates to:
@@ -4739,8 +4745,20 @@ abstract class AppLocalizations {
   /// 10a2.
   ///
   /// In vi, this message translates to:
-  /// **'Chạm để thêm nhanh'**
+  /// **'Chạm để chọn'**
   String get addRecentHint;
+
+  /// 10a2 recent strip: how many are chosen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chọn {count}'**
+  String addRecentCount(int count);
+
+  /// 10a2 recent strip: goes on to compose with the chosen items (owner, 2026-10-11).
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Thêm {count} mục}}'**
+  String addRecentAdd(int count);
 
   /// 10a2.
   ///
@@ -5935,6 +5953,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Album này chưa có ảnh nào.'**
   String get albNoItems;
+
+  /// Albums tab: under an empty album's name, instead of "0 ảnh" (owner, 2026-10-11).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ảnh'**
+  String get albCoverEmptyMeta;
+
+  /// Albums tab: on an empty album's cover, for parents.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh'**
+  String get albCoverAdd;
 
   /// 10e bar / 10e3 / 10e6.
   ///
@@ -9667,36 +9697,6 @@ abstract class AppLocalizations {
   /// **'Nhật ký & thư viện ăn dặm'**
   String get careSolidsSub;
 
-  /// Care section.
-  ///
-  /// In vi, this message translates to:
-  /// **'Cài đặt'**
-  String get careSettings;
-
-  /// Care settings row.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tuỳ chỉnh theo dõi'**
-  String get careTracking;
-
-  /// Care settings row.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chọn loại hoạt động cần ghi'**
-  String get careTrackingSub;
-
-  /// Care settings row.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thông báo'**
-  String get careNotifications;
-
-  /// Care settings row.
-  ///
-  /// In vi, this message translates to:
-  /// **'Nhắc nhở, gia đình'**
-  String get careNotificationsSub;
-
   /// Sheet title when tapping Thống kê.
   ///
   /// In vi, this message translates to:
@@ -10698,6 +10698,48 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chọn tất cả'**
   String get photoSelectSection;
+
+  /// Widget gallery name (camera shortcut).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp ảnh bé'**
+  String get glanceGalleryCameraName;
+
+  /// Widget gallery description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở camera để chụp ảnh hoặc quay video, rồi lưu vào Kỷ niệm.'**
+  String get glanceGalleryCameraBlurb;
+
+  /// Widget gallery name (photo-library shortcut).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm từ Ảnh'**
+  String get glanceGalleryLibraryName;
+
+  /// Widget gallery description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh, video trong máy để lưu vào Kỷ niệm.'**
+  String get glanceGalleryLibraryBlurb;
+
+  /// Camera widget title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp ảnh, quay video'**
+  String get glanceMemCamera;
+
+  /// Photo-library widget title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm từ Ảnh'**
+  String get glanceMemLibrary;
+
+  /// Widget subtitle: the baby.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vào Kỷ niệm của {name}'**
+  String glanceMemFor(String name);
 }
 
 class _AppLocalizationsDelegate

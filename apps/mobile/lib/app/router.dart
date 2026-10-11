@@ -212,7 +212,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               _route(
                 path: Routes.memories,
                 builder: (_, _) => const MemoriesScreen(),
-                // S10: album, favourites and milestone pages keep the dock (10e, 11f).
+                // S10: album, favourites and milestone pages (10e, 11f); like every screen opened
+                // from a tab, they hide the dock (owner, 2026-10-11).
                 routes: [
                   _route(
                     path: 'album/:key',

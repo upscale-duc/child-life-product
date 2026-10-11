@@ -29,7 +29,7 @@ class ClInputGroup extends InheritedWidget {
 /// Standalone = its own surface card with shadow-card. Focus = 2px focus-ring (no Figma variant).
 class ClTextField extends StatefulWidget {
   const ClTextField({
-    required this.label,
+    this.label,
     this.controller,
     this.placeholder,
     this.standalone = false,
@@ -41,10 +41,13 @@ class ClTextField extends StatefulWidget {
     this.onSubmitted,
     this.textCapitalization = TextCapitalization.none,
     this.maxLength,
+    this.maxLines = 1,
     super.key,
   });
 
-  final String label;
+  /// Caption above the value. Without one, the placeholder sits alone in the field, centred
+  /// like a labelled field's value (an empty label used to leave a blank line above it).
+  final String? label;
   final TextEditingController? controller;
   final String? placeholder;
   final bool standalone;
@@ -58,6 +61,9 @@ class ClTextField extends StatefulWidget {
 
   /// Hard limit without a visible counter (names: 30 / 40 / 24 characters, contracts).
   final int? maxLength;
+
+  /// More than 1: grows with the text up to this many lines (captions, messages).
+  final int maxLines;
 
   @override
   State<ClTextField> createState() => _ClTextFieldState();
@@ -88,6 +94,8 @@ class _ClTextFieldState extends State<ClTextField> {
     final l10n = AppLocalizations.of(context);
     final focused = _focus.hasFocus;
     final grouped = ClInputGroup.of(context);
+    final label = widget.label;
+    final multiline = widget.maxLines > 1;
     // Width of the resting border the focus ring replaces.
     final stroke = grouped ? 0.0 : 1.0;
     return AnimatedContainer(
@@ -119,11 +127,15 @@ class _ClTextFieldState extends State<ClTextField> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  widget.label,
-                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                ),
-                const SizedBox(height: 2),
+                if (label != null && label.isNotEmpty) ...[
+                  Text(
+                    label,
+                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                  ),
+                  const SizedBox(height: 2),
+                ] else
+                  // The same height as a labelled field: half the caption line above and below.
+                  SizedBox(height: _captionLine(cl) / 2 + 1),
                 CupertinoTextField.borderless(
                   controller: widget.controller,
                   focusNode: _focus,
@@ -135,8 +147,14 @@ class _ClTextFieldState extends State<ClTextField> {
                   style: cl.text.body,
                   cursorColor: cl.colors.mintDeep,
                   obscureText: widget.password && _obscured,
-                  keyboardType: widget.keyboardType,
-                  textInputAction: widget.textInputAction,
+                  minLines: 1,
+                  maxLines: widget.maxLines,
+                  keyboardType:
+                      widget.keyboardType ??
+                      (multiline ? TextInputType.multiline : null),
+                  textInputAction:
+                      widget.textInputAction ??
+                      (multiline ? TextInputAction.newline : null),
                   autofillHints: widget.autofillHints,
                   onChanged: widget.onChanged,
                   onSubmitted: widget.onSubmitted,
@@ -149,6 +167,8 @@ class _ClTextFieldState extends State<ClTextField> {
                   smartDashesType: _literal ? SmartDashesType.disabled : null,
                   smartQuotesType: _literal ? SmartQuotesType.disabled : null,
                 ),
+                if (label == null || label.isEmpty)
+                  SizedBox(height: _captionLine(cl) / 2 + 1),
               ],
             ),
           ),
@@ -172,6 +192,9 @@ class _ClTextFieldState extends State<ClTextField> {
     );
   }
 }
+
+double _captionLine(ClTheme cl) =>
+    (cl.text.caption.fontSize ?? 12) * (cl.text.caption.height ?? 1.3);
 
 /// iOS-style switch (23:262): mint-deep on, separator off, white knob (both modes).
 class ClToggle extends StatelessWidget {

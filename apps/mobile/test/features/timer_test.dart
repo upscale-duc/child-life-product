@@ -3,7 +3,11 @@ import 'package:child_life/features/care/timer_models.dart';
 import 'package:child_life/features/care/timer_screens.dart';
 import 'package:child_life/features/home/today_tour.dart';
 import 'package:child_life/features/today/today_screen.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/care_fixtures.dart';
@@ -167,6 +171,36 @@ void main() {
     );
 
     testWidgets(
+      'widget "Ngủ" on a cold start: the chooser\'s "Bấm giờ" opens the timer',
+      (tester) async {
+        // GlanceSync opens the chooser from the root navigator's own context, which has no
+        // Overlay above it: taking a toaster there used to throw, and nothing happened.
+        final repo = FakeCareRepository();
+        late WidgetRef widgetRef;
+        final (visits, _) = await pumpRouted(
+          tester,
+          Consumer(
+            builder: (context, ref, _) {
+              widgetRef = ref;
+              return const Scaffold(body: SizedBox.expand());
+            },
+          ),
+          overrides: careOverrides(repo: repo),
+        );
+        final navigator = GoRouter.of(
+          tester.element(find.byType(Scaffold)),
+        ).routerDelegate.navigatorKey.currentContext!;
+        unawaited(showSleepChooser(navigator, widgetRef));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Bắt đầu hẹn giờ'));
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        expect(repo.started, hasLength(1));
+        expect(visits.last.location, '/care/timer/sleep');
+      },
+    );
+
+    testWidgets(
       'opened alone from the Live Activity: back and end land on Hôm nay',
       (tester) async {
         // pumpRouted shows the screen as the only page, as a deep link leaves it.
@@ -277,6 +311,27 @@ void main() {
       expect(find.text('Đã thức 2 giờ'), findsOneWidget);
       expect(find.text('Dậy lúc 13:05'), findsOneWidget);
       expect(find.text('Ba ghi'), findsWidgets);
+    });
+
+    testWidgets('19: a long "Đã thức …" wraps instead of ending in "…"', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        const Scaffold(body: TodayScreen()),
+        overrides: careOverrides(
+          records: [
+            rec(CareType.sleep, vn(8, 11, 0), minh, endedAt: vn(8, 12, 29)),
+            ...mockDay(),
+          ],
+        ),
+      );
+      final value = find.textContaining('Đã thức');
+      expect(value, findsOneWidget);
+      final text = tester.widget<Text>(value);
+      expect(text.data, contains('phút'));
+      // The test font is too wide to measure the wrap; the tile allows a second line.
+      expect(text.maxLines, 2);
     });
 
     testWidgets('26: the end must follow the start; a valid sleep saves', (

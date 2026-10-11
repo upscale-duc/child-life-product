@@ -17,13 +17,12 @@ import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
 import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
-import '../today/today_layout.dart';
 import 'care_repository.dart';
 import 'history_screen.dart' show HistoryFilter;
 
 /// Chăm sóc tab (v1.0 improvement 370:1971; caregiver 370:2174): search, daily care (Nhắc nhở ·
-/// Thống kê · Lịch sử · Tăng trưởng), the coming-soon teasers and settings. Caregivers see no
-/// Tăng trưởng tile.
+/// Thống kê · Lịch sử · Tăng trưởng) and the coming-soon teasers. Caregivers see no Tăng trưởng
+/// tile. No "Cài đặt" section (owner, 2026-10-11): Tuỳ chỉnh lives on Hôm nay, Thông báo in Tôi.
 class CareHubScreen extends ConsumerStatefulWidget {
   const CareHubScreen({super.key});
 
@@ -130,25 +129,10 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
         ),
     ].where((t) => _matches(t.title, t.subtitle)).toList();
 
-    final settings = [
-      (
-        ClIcons.sliders,
-        l10n.careTracking,
-        l10n.careTrackingSub,
-        () => showTodayCustomizeSheet(context),
-      ),
-      (
-        ClIcons.bell,
-        l10n.careNotifications,
-        l10n.careNotificationsSub,
-        () => context.push(Routes.meNotifications),
-      ),
-    ].where((r) => _matches(r.$2, r.$3)).toList();
-
-    final nothing = daily.isEmpty && teasers.isEmpty && settings.isEmpty;
+    final nothing = daily.isEmpty && teasers.isEmpty;
+    // Like Hôm nay: the baby header stays, with no collapsed title over it (it overlapped).
     return ClPinnedHeaderScaffold(
       header: const BabyHeader(),
-      collapsedTitle: l10n.careTitle,
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
           ClSpace.s4,
@@ -199,20 +183,6 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
           ],
           if (daily.isNotEmpty) ...[_Section(l10n.careDaily), _Grid(daily)],
           if (teasers.isNotEmpty) ...[_Section(l10n.careSoon), _Grid(teasers)],
-          if (settings.isNotEmpty) ...[
-            _Section(l10n.careSettings),
-            ClCardGroup(
-              children: [
-                for (final (icon, title, subtitle, onTap) in settings)
-                  MeRow(
-                    icon: icon,
-                    title: title,
-                    subtitle: subtitle,
-                    onTap: onTap,
-                  ),
-              ],
-            ),
-          ],
         ],
       ),
     );

@@ -2,6 +2,7 @@ import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/core/widgets/cl_button.dart';
 import 'package:child_life/core/widgets/cl_feedback.dart';
 import 'package:child_life/core/widgets/cl_icon.dart';
+import 'package:child_life/core/widgets/cl_inputs.dart';
 import 'package:child_life/core/widgets/cl_navigation.dart';
 import 'package:child_life/core/widgets/cl_pressable.dart';
 import 'package:child_life/core/widgets/cl_segmented.dart';
@@ -29,27 +30,29 @@ void main() {
       expect(tabsForRole(ClRole.relative), [ClTab.memories, ClTab.family]);
     });
 
-    testWidgets('relatives get no quick-log button', (tester) async {
+    testWidgets('the tab\'s "+" floats above the bar, at its right end', (
+      tester,
+    ) async {
       await pumpCl(
         tester,
-        ClTabDock(
-          role: ClRole.relative,
-          active: ClTab.memories,
-          onSelect: (_) {},
-          onQuickLog: () {},
-        ),
+        ClTabDock(role: ClRole.parent, active: ClTab.care, onSelect: (_) {}),
       );
-      expect(find.bySemanticsLabel('Ghi nhanh'), findsNothing);
+      expect(find.byType(ClQuickLogButton), findsNothing);
       await pumpCl(
         tester,
         ClTabDock(
-          role: ClRole.caregiver,
+          role: ClRole.parent,
           active: ClTab.today,
           onSelect: (_) {},
-          onQuickLog: () {},
+          action: ClDockAction(label: 'Ghi nhanh', onPressed: () {}),
         ),
       );
-      expect(find.bySemanticsLabel('Ghi nhanh'), findsOneWidget);
+      final plus = tester.getRect(find.bySemanticsLabel('Ghi nhanh'));
+      final bar = tester.getRect(find.byType(ClNavBar));
+      expect(plus.bottom, lessThanOrEqualTo(bar.top));
+      expect(plus.right, moreOrLessEquals(bar.right, epsilon: 1));
+      // The bar keeps the full width.
+      expect(bar.width, greaterThan(300));
     });
 
     testWidgets('every tab is labelled for screen readers, in both languages', (
@@ -57,22 +60,14 @@ void main() {
     ) async {
       await pumpCl(
         tester,
-        ClNavBar(
-          role: ClRole.parent,
-          active: ClTab.today,
-          onSelect: (_) {},
-        ),
+        ClNavBar(role: ClRole.parent, active: ClTab.today, onSelect: (_) {}),
       );
       for (final label in ['Hôm nay', 'Kỷ niệm', 'Chăm sóc', 'Gia đình']) {
         expect(find.bySemanticsLabel(label), findsOneWidget);
       }
       await pumpCl(
         tester,
-        ClNavBar(
-          role: ClRole.parent,
-          active: ClTab.today,
-          onSelect: (_) {},
-        ),
+        ClNavBar(role: ClRole.parent, active: ClTab.today, onSelect: (_) {}),
         locale: const Locale('en'),
       );
       for (final label in ['Today', 'Memories', 'Care', 'Family']) {
@@ -98,11 +93,7 @@ void main() {
         '(D-048)', (tester) async {
       Widget bar(ClTab active) => SizedBox(
         width: 360,
-        child: ClNavBar(
-          role: ClRole.parent,
-          active: active,
-          onSelect: (_) {},
-        ),
+        child: ClNavBar(role: ClRole.parent, active: active, onSelect: (_) {}),
       );
       double width(String label) =>
           tester.getSize(find.bySemanticsLabel(label)).width;
@@ -121,11 +112,7 @@ void main() {
     ) async {
       Widget bar(ClTab active) => SizedBox(
         width: 360,
-        child: ClNavBar(
-          role: ClRole.parent,
-          active: active,
-          onSelect: (_) {},
-        ),
+        child: ClNavBar(role: ClRole.parent, active: active, onSelect: (_) {}),
       );
       double width(String label) =>
           tester.getSize(find.bySemanticsLabel(label)).width;
@@ -163,6 +150,66 @@ void main() {
       );
     },
   );
+
+  test('status bar icons follow the palette', () {
+    expect(
+      clStatusBarStyle(ClPalette.light).statusBarIconBrightness,
+      Brightness.dark,
+    );
+    expect(
+      clStatusBarStyle(ClPalette.light).statusBarBrightness,
+      Brightness.light,
+    );
+    expect(
+      clStatusBarStyle(ClPalette.nightCare).statusBarIconBrightness,
+      Brightness.light,
+    );
+    // The navigation bar is left alone.
+    expect(clStatusBarStyle(ClPalette.light).systemNavigationBarColor, isNull);
+  });
+
+  group('text field', () {
+    testWidgets(
+      'no label: no blank caption line, the height of a labelled field',
+      (tester) async {
+        final caption = TextEditingController();
+        await pumpCl(
+          tester,
+          Column(
+            children: [
+              const ClTextField(key: Key('named'), label: 'Tên album'),
+              const ClTextField(
+                key: Key('bare'),
+                placeholder: 'Viết vài dòng…',
+              ),
+              ClTextField(
+                key: const Key('lines'),
+                controller: caption,
+                placeholder: 'Viết vài dòng…',
+                maxLines: 5,
+              ),
+            ],
+          ),
+        );
+        double h(String key) => tester.getSize(find.byKey(Key(key))).height;
+        expect(h('bare'), moreOrLessEquals(h('named'), epsilon: 1));
+        expect(h('lines'), moreOrLessEquals(h('named'), epsilon: 1));
+        // The placeholder sits in the middle, not under an empty caption.
+        final field = tester.getRect(find.byKey(const Key('bare')));
+        final hint = tester.getRect(
+          find.descendant(
+            of: find.byKey(const Key('bare')),
+            matching: find.text('Viết vài dòng…'),
+          ),
+        );
+        expect(hint.center.dy, moreOrLessEquals(field.center.dy, epsilon: 1));
+        // A caption grows with its lines.
+        caption.text = 'một\nhai\nba';
+        await tester.pump();
+        expect(h('lines'), greaterThan(h('named') + 20));
+      },
+    );
+  });
 
   group('buttons', () {
     testWidgets('finger jitter before a scroll does not leave a row dimmed', (

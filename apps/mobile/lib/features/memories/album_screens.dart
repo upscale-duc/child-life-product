@@ -75,6 +75,54 @@ String _when(AppLocalizations l10n, MemoryCtx c, DateTime? at) {
 
 // ---------- 10d / 11e tab ----------
 
+/// A cover with no picture: the soft mint of the brand with the album mark, and for an empty
+/// album the way in ("Thêm ảnh" for parents), instead of a blank grey square.
+class _EmptyCover extends StatelessWidget {
+  const _EmptyCover({required this.empty, required this.canAdd});
+  final bool empty;
+  final bool canAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final l10n = AppLocalizations.of(context);
+    return ColoredBox(
+      color: cl.colors.mintSoft,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: cl.colors.surface,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: ClIcon(
+                empty && canAdd ? ClIcons.plus : ClIcons.memories,
+                size: 24,
+                color: cl.colors.mintText,
+              ),
+            ),
+            if (empty && canAdd) ...[
+              const SizedBox(height: ClSpace.s2),
+              Text(
+                l10n.albCoverAdd,
+                style: cl.text.label.copyWith(
+                  color: cl.colors.mintText,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class AlbumsView extends ConsumerWidget {
   const AlbumsView({required this.ctx, super.key});
   final MemoryCtx ctx;
@@ -104,6 +152,8 @@ class AlbumsView extends ConsumerWidget {
       required Widget badge,
       required String meta,
       required VoidCallback onTap,
+      bool empty = false,
+      bool addable = true,
     }) => ClPressable(
       onPressed: onTap,
       semanticLabel: '$name. $meta',
@@ -117,9 +167,11 @@ class AlbumsView extends ConsumerWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  ColoredBox(color: cl.colors.surface2),
-                  if (coverPath != null)
+                  if (coverPath != null) ...[
+                    ColoredBox(color: cl.colors.surface2),
                     Image(image: StorageImage(coverPath), fit: BoxFit.cover),
+                  ] else
+                    _EmptyCover(empty: empty, canAdd: c.parentView && addable),
                   Positioned(left: 8, top: 8, child: badge),
                 ],
               ),
@@ -162,7 +214,14 @@ class AlbumsView extends ConsumerWidget {
         name: l10n.albFavorites,
         coverPath: favs.firstOrNull?.thumbPath,
         badge: badge(ClIcons.lock),
-        meta: c.parentView ? favMeta : '$favMeta · ${l10n.albFavoritesMine}',
+        empty: favs.isEmpty,
+        // Filled with the bookmark on a photo, not by adding to it.
+        addable: false,
+        meta: favs.isEmpty
+            ? l10n.albCoverEmptyMeta
+            : c.parentView
+            ? favMeta
+            : '$favMeta · ${l10n.albFavoritesMine}',
         onTap: () => context.push('${Routes.memories}/album/$favoritesKey'),
       ),
       for (final a in albums)
@@ -172,7 +231,11 @@ class AlbumsView extends ConsumerWidget {
           badge: badge(
             a.audience == Audience.family ? ClIcons.family : ClIcons.lock,
           ),
-          meta: countsLabel(l10n, a.photos, a.videos, ' · '),
+          empty: a.photos + a.videos == 0,
+          // "Chưa có ảnh" instead of "0 ảnh".
+          meta: a.photos + a.videos == 0
+              ? l10n.albCoverEmptyMeta
+              : countsLabel(l10n, a.photos, a.videos, ' · '),
           onTap: () => context.push('${Routes.memories}/album/${a.id}'),
         ),
     ];

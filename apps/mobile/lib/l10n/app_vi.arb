@@ -3924,6 +3924,10 @@
   "@reminderPeekAdd": {
     "description": "ReminderPeek empty action."
   },
+  "reminderPeekMore": "Xem thêm",
+  "@reminderPeekMore": {
+    "description": "Hôm nay reminder card: opens Nhắc nhở after the first 3 (owner request 2026-10-11)."
+  },
   "notifBody": "{name} · {when}",
   "@notifBody": {
     "description": "Local notification body.",
@@ -4201,9 +4205,23 @@
   "@addRecent": {
     "description": "10a2 recent strip."
   },
-  "addRecentHint": "Chạm để thêm nhanh",
+  "addRecentHint": "Chạm để chọn",
   "@addRecentHint": {
     "description": "10a2."
+  },
+  "addRecentCount": "Đã chọn {count}",
+  "@addRecentCount": {
+    "description": "10a2 recent strip: how many are chosen.",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "addRecentAdd": "{count, plural, other{Thêm {count} mục}}",
+  "@addRecentAdd": {
+    "description": "10a2 recent strip: goes on to compose with the chosen items (owner, 2026-10-11).",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
   },
   "addCamera": "Chụp ảnh hoặc quay video",
   "@addCamera": {
@@ -5304,6 +5322,14 @@
   "albNoItems": "Album này chưa có ảnh nào.",
   "@albNoItems": {
     "description": "10e empty."
+  },
+  "albCoverEmptyMeta": "Chưa có ảnh",
+  "@albCoverEmptyMeta": {
+    "description": "Albums tab: under an empty album's name, instead of \"0 ảnh\" (owner, 2026-10-11)."
+  },
+  "albCoverAdd": "Thêm ảnh",
+  "@albCoverAdd": {
+    "description": "Albums tab: on an empty album's cover, for parents."
   },
   "albWhoButton": "Ai thấy album này",
   "@albWhoButton": {
@@ -8783,26 +8809,6 @@
   "@careSolidsSub": {
     "description": "Coming-soon tile."
   },
-  "careSettings": "Cài đặt",
-  "@careSettings": {
-    "description": "Care section."
-  },
-  "careTracking": "Tuỳ chỉnh theo dõi",
-  "@careTracking": {
-    "description": "Care settings row."
-  },
-  "careTrackingSub": "Chọn loại hoạt động cần ghi",
-  "@careTrackingSub": {
-    "description": "Care settings row."
-  },
-  "careNotifications": "Thông báo",
-  "@careNotifications": {
-    "description": "Care settings row."
-  },
-  "careNotificationsSub": "Nhắc nhở, gia đình",
-  "@careNotificationsSub": {
-    "description": "Care settings row."
-  },
   "careStatsPick": "Xem thống kê",
   "@careStatsPick": {
     "description": "Sheet title when tapping Thống kê."
@@ -9632,5 +9638,38 @@
   "photoSelectSection": "Chọn tất cả",
   "@photoSelectSection": {
     "description": "Select a whole week / month of age."
+  },
+  "glanceGalleryCameraName": "Chụp ảnh bé",
+  "@glanceGalleryCameraName": {
+    "description": "Widget gallery name (camera shortcut)."
+  },
+  "glanceGalleryCameraBlurb": "Mở camera để chụp ảnh hoặc quay video, rồi lưu vào Kỷ niệm.",
+  "@glanceGalleryCameraBlurb": {
+    "description": "Widget gallery description."
+  },
+  "glanceGalleryLibraryName": "Thêm từ Ảnh",
+  "@glanceGalleryLibraryName": {
+    "description": "Widget gallery name (photo-library shortcut)."
+  },
+  "glanceGalleryLibraryBlurb": "Chọn ảnh, video trong máy để lưu vào Kỷ niệm.",
+  "@glanceGalleryLibraryBlurb": {
+    "description": "Widget gallery description."
+  },
+  "glanceMemCamera": "Chụp ảnh, quay video",
+  "@glanceMemCamera": {
+    "description": "Camera widget title."
+  },
+  "glanceMemLibrary": "Thêm từ Ảnh",
+  "@glanceMemLibrary": {
+    "description": "Photo-library widget title."
+  },
+  "glanceMemFor": "Vào Kỷ niệm của {name}",
+  "@glanceMemFor": {
+    "description": "Widget subtitle: the baby.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

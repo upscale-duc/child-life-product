@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'cl_typography.dart';
 import 'page_transitions.dart';
@@ -62,6 +63,18 @@ class ClTheme extends ThemeExtension<ClTheme> {
 
 extension ClThemeContext on BuildContext {
   ClTheme get cl => Theme.of(this).extension<ClTheme>()!;
+}
+
+/// Status bar icons that read on the palette's background: dark on Light, light on Night care.
+/// Only the status bar is set (the navigation bar keeps the system's own handling).
+SystemUiOverlayStyle clStatusBarStyle(ClPalette palette) {
+  final light = palette == ClPalette.light;
+  return SystemUiOverlayStyle(
+    statusBarColor: const Color(0x00000000),
+    // iOS reads the bar's brightness, Android the icons' brightness.
+    statusBarBrightness: light ? Brightness.light : Brightness.dark,
+    statusBarIconBrightness: light ? Brightness.dark : Brightness.light,
+  );
 }
 
 ThemeData buildClTheme(ClPalette palette) {

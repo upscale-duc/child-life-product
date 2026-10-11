@@ -36,7 +36,8 @@ import 'device_identity.dart';
 import 'reminder_models.dart';
 import 'reminder_notifications.dart';
 import 'reminder_repository.dart';
-import 'rule_screens.dart' show RuleRemindersList;
+import 'rule_repository.dart' show reminderRulesProvider;
+import 'rule_screens.dart' show RuleRemindersList, ruleTitle;
 
 // ---------- Labels ----------
 
@@ -131,8 +132,9 @@ ReminderCtx? _context(BuildContext context, WidgetRef ref) {
 
 // ---------- 8a / 12f list ----------
 
-/// Which half of Nhắc nhở shows (v1.0 1a): "Theo quy tắc" first.
-enum ReminderTab { rules, once }
+/// Which half of Nhắc nhở shows: "Một lần" first, then "Theo quy tắc" (owner, 2026-10-11;
+/// v1.0 1a had the rules first).
+enum ReminderTab { once, rules }
 
 final reminderTabProvider = NotifierProvider<ReminderTabState, ReminderTab>(
   ReminderTabState.new,
@@ -140,7 +142,7 @@ final reminderTabProvider = NotifierProvider<ReminderTabState, ReminderTab>(
 
 class ReminderTabState extends Notifier<ReminderTab> {
   @override
-  ReminderTab build() => ReminderTab.rules;
+  ReminderTab build() => ReminderTab.once;
 
   void set(ReminderTab tab) => state = tab;
 }
@@ -1124,10 +1126,14 @@ Future<void> _maybeAsk(
 
 // ---------- ReminderPeek (128:665) ----------
 
-/// On Hôm nay: the next upcoming reminder and how many are open; tap opens 8a. Hidden for
-/// relatives (D-018).
+/// On Hôm nay: the next reminders (up to [shown]), dated ones and rules' next times together,
+/// overdue first, then "Xem thêm" into 8a (owner, 2026-10-11; was the next one only). Hidden
+/// for relatives (D-018).
 class ReminderPeek extends ConsumerWidget {
   const ReminderPeek({super.key});
+
+  /// Lines on Hôm nay before "Xem thêm".
+  static const shown = 3;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1139,44 +1145,62 @@ class ReminderPeek extends ConsumerWidget {
     }
     final all = ref.watch(remindersProvider(c.me.babyId)).value;
     if (all == null) return const SizedBox.shrink();
+    final rules =
+        ref.watch(reminderRulesProvider(c.me.babyId)).value ?? const [];
     final groups = groupReminders(all, c.now);
-    final open = groups.overdue.length + groups.upcoming.length;
-    final next = groups.upcoming.firstOrNull ?? groups.overdue.firstOrNull;
+    final items =
+        <({String title, DateTime at, bool overdue})>[
+          for (final r in [...groups.overdue, ...groups.upcoming])
+            (
+              title: r.title,
+              at: r.dueAt,
+              overdue: r.statusAt(c.now) == ReminderStatus.overdue,
+            ),
+          for (final r in rules)
+            if (!r.enabled)
+              ...[]
+            // Rang and not yet answered (1g) comes first, like an overdue reminder.
+            else if (r.pendingDueAt case final due?)
+              (title: ruleTitle(l10n, r.type), at: due, overdue: true)
+            else if (r.nextDueAt case final next?)
+              (title: ruleTitle(l10n, r.type), at: next, overdue: false),
+        ]..sort((a, b) {
+          if (a.overdue != b.overdue) return a.overdue ? -1 : 1;
+          return a.at.compareTo(b.at);
+        });
     final parent = c.me.role == MemberRole.coParent;
+    final today = babyToday(c.zone, c.now);
 
-    String? meta;
-    var overdue = false;
-    if (next != null) {
-      final wall = inBabyZone(c.zone, next.dueAt);
-      final today = babyToday(c.zone, c.now);
+    String when(DateTime at, bool overdue) {
+      final wall = inBabyZone(c.zone, at);
+      if (overdue) {
+        return l10n.reminderOverdueMeta(
+          reminderWhenRelative(l10n, c.locale, wall, today),
+        );
+      }
       final day = DateTime(wall.year, wall.month, wall.day);
       final hm = DateFormat('HH:mm').format(wall);
       final days = day.difference(today).inDays;
-      if (next.statusAt(c.now) == ReminderStatus.overdue) {
-        overdue = true;
-        meta = l10n.reminderOverdueMeta(
-          reminderWhenRelative(l10n, c.locale, wall, today),
-        );
-      } else {
-        final when = switch (days) {
-          0 => _cap('${l10n.dayToday} $hm'),
-          1 => _cap('${l10n.dayTomorrow} $hm'),
-          _ => '${_cap(DateFormat('EEEE', c.locale).format(wall))} $hm',
-        };
-        final left = days == 0
-            ? l10n.reminderInDuration(
-                durationLabel(l10n, next.dueAt.difference(c.now).inMinutes),
-              )
-            : l10n.reminderInDays(days);
-        meta = '$when · $left';
-      }
+      final label = switch (days) {
+        0 => _cap('${l10n.dayToday} $hm'),
+        1 => _cap('${l10n.dayTomorrow} $hm'),
+        _ => '${_cap(DateFormat('EEEE', c.locale).format(wall))} $hm',
+      };
+      final left = days == 0
+          ? l10n.reminderInDuration(
+              durationLabel(l10n, at.difference(c.now).inMinutes),
+            )
+          : l10n.reminderInDays(days);
+      return '$label · $left';
     }
 
+    final caption = cl.text.caption.copyWith(color: cl.colors.inkMuted);
     return ClPressable(
-      onPressed: () => next == null && parent
+      onPressed: () => items.isEmpty && parent
           ? showReminderSheet(context)
           : context.push(Routes.reminders),
       child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.fromLTRB(
           ClSpace.s4,
           ClSpace.s3,
@@ -1188,58 +1212,106 @@ class ReminderPeek extends ConsumerWidget {
           borderRadius: BorderRadius.circular(ClRadius.card),
           boxShadow: cl.shadows.card,
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: cl.colors.mintSoft,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: ClIcon(
-                  ClIcons.bell,
-                  size: 20,
-                  color: cl.colors.mintDeep,
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: cl.colors.mintSoft,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: ClIcon(
+                      ClIcons.bell,
+                      size: 20,
+                      color: cl.colors.mintDeep,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: ClSpace.s3),
+                Expanded(
+                  child: items.isEmpty
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(l10n.reminderPeekTitle, style: caption),
+                            Text(
+                              l10n.reminderPeekEmpty,
+                              style: cl.text.bodyStrong,
+                            ),
+                            if (parent)
+                              Text(
+                                l10n.reminderPeekAdd,
+                                style: cl.text.caption.copyWith(
+                                  color: cl.colors.mintText,
+                                ),
+                              ),
+                          ],
+                        )
+                      : Text(
+                          l10n.reminderPeekLabel(items.length),
+                          style: cl.text.bodyStrong,
+                        ),
+                ),
+                if (items.isEmpty)
+                  ClIcon(
+                    ClIcons.chevronRight,
+                    size: 20,
+                    color: cl.colors.inkMuted,
+                  ),
+              ],
+            ),
+            for (final i in items.take(shown)) ...[
+              const SizedBox(height: ClSpace.s2),
+              Padding(
+                // Under the title, past the bell.
+                padding: const EdgeInsets.only(left: 40 + ClSpace.s3),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      i.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: cl.text.body,
+                    ),
+                    Text(
+                      when(i.at, i.overdue),
+                      style: i.overdue
+                          ? cl.text.caption.copyWith(color: cl.colors.error)
+                          : caption,
+                    ),
+                  ],
                 ),
               ),
-            ),
-            const SizedBox(width: ClSpace.s3),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    open == 0
-                        ? l10n.reminderPeekTitle
-                        : l10n.reminderPeekLabel(open),
-                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                  ),
-                  Text(
-                    next?.title ?? l10n.reminderPeekEmpty,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: cl.text.bodyStrong,
-                  ),
-                  if (meta != null)
+            ],
+            if (items.isNotEmpty) ...[
+              const SizedBox(height: ClSpace.s2),
+              Padding(
+                padding: const EdgeInsets.only(left: 40 + ClSpace.s3),
+                child: Row(
+                  children: [
                     Text(
-                      meta,
-                      style: cl.text.caption.copyWith(
-                        color: overdue ? cl.colors.error : cl.colors.inkMuted,
-                      ),
-                    )
-                  else if (parent)
-                    Text(
-                      l10n.reminderPeekAdd,
-                      style: cl.text.caption.copyWith(
+                      l10n.reminderPeekMore,
+                      style: cl.text.label.copyWith(
                         color: cl.colors.mintText,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                ],
+                    const SizedBox(width: 2),
+                    ClIcon(
+                      ClIcons.chevronRight,
+                      size: 16,
+                      color: cl.colors.mintText,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            ClIcon(ClIcons.chevronRight, size: 20, color: cl.colors.inkMuted),
+            ],
           ],
         ),
       ),

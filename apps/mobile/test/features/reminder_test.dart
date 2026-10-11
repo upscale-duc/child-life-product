@@ -11,9 +11,10 @@ import 'package:flutter_test/flutter_test.dart';
 import '../helpers/care_fixtures.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/reminder_fixtures.dart';
+import '../helpers/rule_fixtures.dart';
 import '../helpers/router_pump.dart';
 
-/// v1.0: Nhắc nhở opens on "Theo quy tắc"; these are the dated reminders ("Một lần").
+/// Nhắc nhở opens on "Một lần" (the dated reminders); a tap on it changes nothing.
 Future<void> _oneTime(WidgetTester tester) async {
   await tester.tap(find.text('Một lần'));
   await tester.pumpAndSettle();
@@ -316,6 +317,27 @@ void main() {
       await tester.pumpAndSettle();
       expect(visits.single.location, Routes.reminders);
     });
+
+    testWidgets(
+      'Today lists the next 3, rules\' next times included, then "Xem thêm"',
+      (tester) async {
+        final (visits, _) = await pumpRouted(
+          tester,
+          const Scaffold(body: TodayScreen()),
+          overrides: careOverrides(rules: [feed, sleep, diaper]),
+        );
+        // 3 dated (1 overdue, 1 done not counted) + 2 running rules; the paused one is not.
+        expect(find.text('Nhắc việc · 5'), findsOneWidget);
+        double y(String t) => tester.getTopLeft(find.text(t)).dy;
+        expect(y('Mua sữa công thức'), lessThan(y('Nhắc bú')));
+        expect(y('Nhắc bú'), lessThan(y('Nhắc chuẩn bị ngủ')));
+        expect(find.text('Hôm nay 17:20 · còn 2 giờ 15 phút'), findsOneWidget);
+        expect(find.text('Tiêm 6 trong 1'), findsNothing);
+        await tester.tap(find.text('Xem thêm'));
+        await tester.pumpAndSettle();
+        expect(visits.single.location, Routes.reminders);
+      },
+    );
 
     testWidgets('relatives never see reminders (D-018)', (tester) async {
       await pumpRouted(

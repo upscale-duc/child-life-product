@@ -69,6 +69,40 @@
         }
       }
     },
+    "glanceGalleryCameraBlurb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the camera for a photo or a video, then save it to Memories."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở camera để chụp ảnh hoặc quay video, rồi lưu vào Kỷ niệm."
+          }
+        }
+      }
+    },
+    "glanceGalleryCameraName": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baby camera"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chụp ảnh bé"
+          }
+        }
+      }
+    },
     "glanceGalleryDiaperBlurb": {
       "extractionState": "manual",
       "localizations": {
@@ -99,6 +133,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thay tã"
+          }
+        }
+      }
+    },
+    "glanceGalleryLibraryBlurb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick photos and videos on this phone to save to Memories."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn ảnh, video trong máy để lưu vào Kỷ niệm."
+          }
+        }
+      }
+    },
+    "glanceGalleryLibraryName": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add from Photos"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm từ Ảnh"
           }
         }
       }

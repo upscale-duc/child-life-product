@@ -655,7 +655,6 @@ class _DeleteBabySheetState extends ConsumerState<_DeleteBabySheet> {
         Text(l10n.bpDelType(name), style: cl.text.bodyStrong),
         const SizedBox(height: ClSpace.s2),
         ClTextField(
-          label: '',
           controller: _typed,
           standalone: true,
           placeholder: name,

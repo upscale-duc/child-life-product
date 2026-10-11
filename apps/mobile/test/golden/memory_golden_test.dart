@@ -56,7 +56,7 @@ final _journal = mockJournal();
 
 List<Override> _base({
   Membership? me,
-  MemoryView view = const MemoryView(),
+  MemoryView view = const MemoryView(tab: MemoryTab.journal),
   Set<String>? selected,
   MemoryQueueStore? store,
   List<FamilyMilestone> milestones = const [],

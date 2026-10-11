@@ -63,7 +63,7 @@ _Case _list({
     notifications: FakeReminderNotifications(on: on),
   ),
   prefs: prefs,
-  // v1.0: the dated reminders are the "Một lần" half of Nhắc nhở.
+  // The dated reminders: the "Một lần" half, which Nhắc nhở opens on (tapping it is a no-op).
   act: (t) async {
     await t.tap(find.text(_l10n(t).ruleTabOnce));
     await t.pumpAndSettle();
@@ -82,7 +82,11 @@ _Case _rules({Membership? me}) => (
   build: () => const RemindersScreen(),
   overrides: () => careOverrides(me: me, rules: [feed, sleep, diaper]),
   prefs: const {},
-  act: null,
+  // "Theo quy tắc" is the second half now ("Một lần" opens first).
+  act: (t) async {
+    await t.tap(find.text(_l10n(t).ruleTabRules));
+    await t.pumpAndSettle();
+  },
 );
 
 _Case _editor(Future<void> Function(WidgetTester tester)? act) => (

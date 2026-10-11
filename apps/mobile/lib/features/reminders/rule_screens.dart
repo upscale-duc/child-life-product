@@ -1659,7 +1659,11 @@ class _OptionCard extends StatelessWidget {
         onPressed: onTap,
         selected: selected,
         semanticLabel: label,
+        // Fills its grid cell, so every card is the same size (the pressable loosens the
+        // cell's constraints; the card used to shrink to its label and sit centred).
         child: Container(
+          width: double.infinity,
+          height: double.infinity,
           padding: const EdgeInsets.all(ClSpace.s3),
           decoration: BoxDecoration(
             color: selected ? cl.colors.mintSoft : cl.colors.surface,
@@ -1670,6 +1674,7 @@ class _OptionCard extends StatelessWidget {
             ),
           ),
           child: Stack(
+            fit: StackFit.expand,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

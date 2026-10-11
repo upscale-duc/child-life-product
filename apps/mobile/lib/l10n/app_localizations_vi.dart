@@ -2602,6 +2602,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get reminderPeekAdd => 'Tạo nhắc việc';
 
   @override
+  String get reminderPeekMore => 'Xem thêm';
+
+  @override
   String notifBody(String name, String when) {
     return '$name · $when';
   }
@@ -2777,7 +2780,22 @@ class AppLocalizationsVi extends AppLocalizations {
   String get addRecent => 'Ảnh mới chụp hôm nay';
 
   @override
-  String get addRecentHint => 'Chạm để thêm nhanh';
+  String get addRecentHint => 'Chạm để chọn';
+
+  @override
+  String addRecentCount(int count) {
+    return 'Đã chọn $count';
+  }
+
+  @override
+  String addRecentAdd(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Thêm $count mục',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get addCamera => 'Chụp ảnh hoặc quay video';
@@ -3477,6 +3495,12 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get albNoItems => 'Album này chưa có ảnh nào.';
+
+  @override
+  String get albCoverEmptyMeta => 'Chưa có ảnh';
+
+  @override
+  String get albCoverAdd => 'Thêm ảnh';
 
   @override
   String get albWhoButton => 'Ai thấy album này';
@@ -5797,21 +5821,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get careSolidsSub => 'Nhật ký & thư viện ăn dặm';
 
   @override
-  String get careSettings => 'Cài đặt';
-
-  @override
-  String get careTracking => 'Tuỳ chỉnh theo dõi';
-
-  @override
-  String get careTrackingSub => 'Chọn loại hoạt động cần ghi';
-
-  @override
-  String get careNotifications => 'Thông báo';
-
-  @override
-  String get careNotificationsSub => 'Nhắc nhở, gia đình';
-
-  @override
   String get careStatsPick => 'Xem thống kê';
 
   @override
@@ -6372,4 +6381,29 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get photoSelectSection => 'Chọn tất cả';
+
+  @override
+  String get glanceGalleryCameraName => 'Chụp ảnh bé';
+
+  @override
+  String get glanceGalleryCameraBlurb =>
+      'Mở camera để chụp ảnh hoặc quay video, rồi lưu vào Kỷ niệm.';
+
+  @override
+  String get glanceGalleryLibraryName => 'Thêm từ Ảnh';
+
+  @override
+  String get glanceGalleryLibraryBlurb =>
+      'Chọn ảnh, video trong máy để lưu vào Kỷ niệm.';
+
+  @override
+  String get glanceMemCamera => 'Chụp ảnh, quay video';
+
+  @override
+  String get glanceMemLibrary => 'Thêm từ Ảnh';
+
+  @override
+  String glanceMemFor(String name) {
+    return 'Vào Kỷ niệm của $name';
+  }
 }

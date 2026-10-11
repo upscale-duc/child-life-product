@@ -258,7 +258,8 @@ class FakeRuleRepository implements RuleRepository {
   }
 
   @override
-  Future<void> delete(String babyId, String ruleId) async => deleted.add(ruleId);
+  Future<void> delete(String babyId, String ruleId) async =>
+      deleted.add(ruleId);
 
   @override
   Future<bool> answer(

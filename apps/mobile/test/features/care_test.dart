@@ -160,6 +160,12 @@ void main() {
       expect(find.text('Tã ướt'), findsOneWidget);
       expect(find.text('Cô Lan ghi'), findsOneWidget);
       expect(find.text('Kết thúc 3 giờ 20 phút trước'), findsOneWidget);
+      // The day's totals sit under the reminders card, which lists up to 3 now.
+      await tester.scrollUntilVisible(
+        find.text('2 cữ · 240 ml'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('2 cữ · 240 ml'), findsOneWidget);
       expect(find.text('1 cữ · 15 phút'), findsOneWidget);
       expect(find.text('2 lần'), findsOneWidget);

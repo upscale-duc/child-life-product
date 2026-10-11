@@ -5,6 +5,7 @@ import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/timer_models.dart';
 import 'package:child_life/features/glance/glance_bridge.dart';
+import 'package:child_life/features/memories/quick_add.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:child_life/l10n/glance_copy.dart';
 import 'package:flutter/widgets.dart';
@@ -133,7 +134,7 @@ void main() {
           r'smallConfiguration\("[^"]+", "[a-z]+", "([A-Za-z]+)", "([A-Za-z]+)"\)',
         ),
       };
-      expect(used, hasLength(18));
+      expect(used, hasLength(22));
       expect(used.difference(strings.keys.toSet()), isEmpty);
     });
   });
@@ -166,6 +167,27 @@ void main() {
       sleep: sleep,
       breast: null,
     );
+
+    test('camera / photo widgets: only Cùng nuôi add memories', () {
+      expect(build(me: mai)['canAddMemories'], isTrue);
+      expect(build(me: lan)['canAddMemories'], isFalse);
+      expect(build(me: hoa)['canAddMemories'], isFalse);
+      expect(build()['canAddMemories'], isFalse);
+    });
+
+    test('widget links: /memories?add=camera | library', () {
+      expect(
+        quickAddRequest(Uri.parse('/memories?add=camera')),
+        QuickAdd.camera,
+      );
+      expect(
+        quickAddRequest(Uri.parse('/memories?add=library')),
+        QuickAdd.library,
+      );
+      expect(quickAddRequest(Uri.parse('/memories?add=files')), isNull);
+      expect(quickAddRequest(Uri.parse('/today?add=camera')), isNull);
+      expect(quickAddRequest(Uri.parse('/memories')), isNull);
+    });
 
     test('signed out: no baby, no person, but the copy is there', () {
       final s = build();

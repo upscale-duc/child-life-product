@@ -2727,6 +2727,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminderPeekAdd => 'Add a reminder';
 
   @override
+  String get reminderPeekMore => 'See more';
+
+  @override
   String notifBody(String name, String when) {
     return '$name · $when';
   }
@@ -2945,7 +2948,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addRecent => 'Taken today';
 
   @override
-  String get addRecentHint => 'Tap to add quickly';
+  String get addRecentHint => 'Tap to select';
+
+  @override
+  String addRecentCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String addRecentAdd(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add $count items',
+      one: 'Add 1 item',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get addCamera => 'Take a photo or video';
@@ -3782,6 +3801,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get albNoItems => 'This album has no photos yet.';
+
+  @override
+  String get albCoverEmptyMeta => 'No photos yet';
+
+  @override
+  String get albCoverAdd => 'Add photos';
 
   @override
   String get albWhoButton => 'Who sees this album';
@@ -6185,21 +6210,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get careSolidsSub => 'Solids diary & library';
 
   @override
-  String get careSettings => 'Settings';
-
-  @override
-  String get careTracking => 'Customise tracking';
-
-  @override
-  String get careTrackingSub => 'Choose what to log';
-
-  @override
-  String get careNotifications => 'Notifications';
-
-  @override
-  String get careNotificationsSub => 'Reminders, family';
-
-  @override
   String get careStatsPick => 'See statistics';
 
   @override
@@ -6769,4 +6779,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoSelectSection => 'Select all';
+
+  @override
+  String get glanceGalleryCameraName => 'Baby camera';
+
+  @override
+  String get glanceGalleryCameraBlurb =>
+      'Open the camera for a photo or a video, then save it to Memories.';
+
+  @override
+  String get glanceGalleryLibraryName => 'Add from Photos';
+
+  @override
+  String get glanceGalleryLibraryBlurb =>
+      'Pick photos and videos on this phone to save to Memories.';
+
+  @override
+  String get glanceMemCamera => 'Take a photo or video';
+
+  @override
+  String get glanceMemLibrary => 'Add from Photos';
+
+  @override
+  String glanceMemFor(String name) {
+    return 'To $name’s memories';
+  }
 }
