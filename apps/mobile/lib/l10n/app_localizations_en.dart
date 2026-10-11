@@ -7407,4 +7407,60 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get joinFromProfileHint =>
       'Invited to care for another baby? Enter the 6-digit code from the invite.';
+
+  @override
+  String get myInvitesTitle => 'Invites for you';
+
+  @override
+  String myInviteLine(String inviter, String baby) {
+    return '$inviter invited you to care for $baby';
+  }
+
+  @override
+  String myInviteMeta(String role, String date) {
+    return '$role · Expires $date';
+  }
+
+  @override
+  String get myInviteAccept => 'Accept';
+
+  @override
+  String get myInviteDecline => 'Decline';
+
+  @override
+  String myInviteDeclineTitle(String baby) {
+    return 'Decline the invite for $baby?';
+  }
+
+  @override
+  String myInviteDeclineBody(String inviter) {
+    return '$inviter will see the invite is no longer waiting. The code and link will stop working.';
+  }
+
+  @override
+  String myInviteDeclined(String baby) {
+    return 'Declined the invite for $baby';
+  }
+
+  @override
+  String get signInHaveCode => 'I have an invite code';
+
+  @override
+  String get familyRevokeTitle => 'Revoke this invite?';
+
+  @override
+  String familyRevokeBody(String who) {
+    return 'The code and link sent to $who will stop working.';
+  }
+
+  @override
+  String get myInvitesPending => 'Invites waiting for you';
+
+  @override
+  String get myInviteSheetTitle => 'Invite to care for a baby';
+
+  @override
+  String myInviteSheetHint(String baby) {
+    return 'Once you accept, $baby joins your list of babies.';
+  }
 }

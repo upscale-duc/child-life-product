@@ -9,6 +9,8 @@ import 'package:child_life/features/me/me_screen.dart';
 import 'package:child_life/features/me/notifications_screen.dart';
 import 'package:child_life/features/me/storage_screens.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
+import 'package:child_life/features/family/family_models.dart';
+import 'package:child_life/features/family/my_invites.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -22,6 +24,7 @@ const _gb = 1024 * 1024 * 1024;
 
 List<Override> _overrides({
   Membership? me,
+  List<MyInvite> myInvites = const [],
   FakeMeRepository? repo,
   FamilyStorage? storage,
   AccountDoc account = const AccountDoc(),
@@ -32,6 +35,7 @@ List<Override> _overrides({
     email: 'mai@gmail.com',
     providers: providers,
     account: account,
+    myInvites: myInvites,
   ),
   ...memoryOverrides(),
   ...meOverrides(repo: repo, storage: storage),
@@ -253,6 +257,22 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.calls.single.$1, 'savePrefs');
       expect(repo.calls.single.$2['memories'], isFalse);
+    });
+
+    testWidgets('Hồ sơ các bé lists an invite mailed to me, with a red dot', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        const BabyProfilesScreen(),
+        overrides: _overrides(myInvites: [binInvite]),
+      );
+      expect(find.text('Lời mời đang chờ bạn'), findsOneWidget);
+      expect(find.text('Mẹ Hà mời bạn cùng chăm bé Bin'), findsOneWidget);
+      expect(find.byType(ClRedDot), findsOneWidget);
+      await tester.tap(find.text('Mẹ Hà mời bạn cùng chăm bé Bin'));
+      await tester.pumpAndSettle();
+      expect(find.text('Lời mời cùng chăm bé'), findsOneWidget);
     });
 
     testWidgets('help needs a topic and a message', (tester) async {

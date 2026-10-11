@@ -24,6 +24,8 @@ import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../family/family_labels.dart';
+import '../family/my_invites.dart'
+    show ClRedDot, MyInviteRows, myInvitesProvider, showMyInviteSheet;
 import '../memories/memories_screen.dart' show GlobalUploadPill, memoryCtx;
 import '../memories/memory_sheets.dart' show showAddSheet;
 import '../care/care_repository.dart';
@@ -222,6 +224,7 @@ class BabyHeader extends ConsumerWidget {
     }
     final baby = ref.watch(babyProvider(membership.babyId)).value;
     final multiple = session.active.length > 1;
+    final invited = (ref.watch(myInvitesProvider).value ?? const []).isNotEmpty;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -235,14 +238,34 @@ class BabyHeader extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: baby == null
                     ? const SizedBox.shrink()
-                    : ClBabySwitcher(
-                        label: _switcherLabel(context, ref, membership, baby),
-                        avatar: SavedBabyAvatar(baby: baby, size: 32),
-                        hasMultiple: multiple,
-                        // One baby: their profile; several: pick which one.
-                        onTap: multiple
-                            ? () => showBabyPicker(context)
-                            : () => context.push('${Routes.baby}/${baby.id}'),
+                    : Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          ClBabySwitcher(
+                            label: _switcherLabel(
+                              context,
+                              ref,
+                              membership,
+                              baby,
+                            ),
+                            avatar: SavedBabyAvatar(baby: baby, size: 32),
+                            hasMultiple: multiple || invited,
+                            // One baby: their profile; several, or an invite waiting: the
+                            // list, where invites are answered.
+                            onTap: multiple || invited
+                                ? () => showBabyPicker(context)
+                                : () =>
+                                      context.push('${Routes.baby}/${baby.id}'),
+                          ),
+                          // An invite to another baby waits (owner, 2026-10-11).
+                          if (invited)
+                            const Positioned(
+                              key: Key('babySwitcherDot'),
+                              top: 0,
+                              right: 0,
+                              child: ClRedDot(),
+                            ),
+                        ],
                       ),
               ),
             ),
@@ -475,6 +498,15 @@ class _BabyPickerSheet extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ClSheetHeader(title: l10n.babyPickerTitle),
+        // Invites mailed to me, behind the switcher's red dot (owner, 2026-10-11).
+        MyInviteRows(
+          padding: const EdgeInsets.only(bottom: ClSpace.s4),
+          onOpen: (invite) {
+            final host = Navigator.of(context, rootNavigator: true).context;
+            Navigator.of(context).pop();
+            unawaited(showMyInviteSheet(host, invite));
+          },
+        ),
         for (final m in session.active) ...[
           _BabyRow(
             membership: m,

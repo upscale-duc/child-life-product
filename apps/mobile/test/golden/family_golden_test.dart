@@ -15,6 +15,7 @@ import 'package:child_life/features/family/family_screen.dart';
 import 'package:child_life/features/family/invite_screens.dart';
 import 'package:child_life/features/family/join_screens.dart';
 import 'package:child_life/l10n/app_localizations.dart';
+import 'package:child_life/core/widgets/cl_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -126,6 +127,25 @@ final _cases = <String, _Case>{
     build: () => const Scaffold(body: FamilyScreen()),
     overrides: familyOverrides,
     act: null,
+  ),
+  // An invite mailed to me: red dot on the switcher, a row in Chọn bé (owner, 2026-10-11).
+  '9x_baby_picker_invited': (
+    build: () => const Scaffold(body: FamilyScreen()),
+    overrides: () => familyOverrides(myInvites: [binInvite]),
+    act: (t) async {
+      await t.tap(find.byType(ClBabySwitcher));
+      await t.pumpAndSettle();
+    },
+  ),
+  '9x_invite_sheet': (
+    build: () => const Scaffold(body: FamilyScreen()),
+    overrides: () => familyOverrides(myInvites: [binInvite]),
+    act: (t) async {
+      await t.tap(find.byType(ClBabySwitcher));
+      await t.pumpAndSettle();
+      await t.tap(find.byKey(ValueKey('myInvite-${binInvite.inviteId}')));
+      await t.pumpAndSettle();
+    },
   ),
   '14f_member': (
     build: () => const Scaffold(body: FamilyScreen()),

@@ -11646,6 +11646,90 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Được mời chăm một bé khác? Nhập mã 6 số trong lời mời.'**
   String get joinFromProfileHint;
+
+  /// Family tab / setup: invites mailed to the signed-in person's email (owner, 2026-10-11).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời mời cho bạn'**
+  String get myInvitesTitle;
+
+  /// An invite card: who invites and for which baby.
+  ///
+  /// In vi, this message translates to:
+  /// **'{inviter} mời bạn cùng chăm bé {baby}'**
+  String myInviteLine(String inviter, String baby);
+
+  /// An invite card: the role offered and the expiry date.
+  ///
+  /// In vi, this message translates to:
+  /// **'{role} · Hết hạn {date}'**
+  String myInviteMeta(String role, String date);
+
+  /// Accepts an invite without the code (then relation and name, as 16 → 16a).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng ý'**
+  String get myInviteAccept;
+
+  /// Declines an invite mailed to me.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ chối'**
+  String get myInviteDecline;
+
+  /// Decline confirmation title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ chối lời mời chăm bé {baby}?'**
+  String myInviteDeclineTitle(String baby);
+
+  /// Decline confirmation body.
+  ///
+  /// In vi, this message translates to:
+  /// **'{inviter} sẽ biết lời mời không còn chờ nữa. Mã và link mời sẽ hết hiệu lực.'**
+  String myInviteDeclineBody(String inviter);
+
+  /// Toast after declining.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã từ chối lời mời chăm bé {baby}'**
+  String myInviteDeclined(String baby);
+
+  /// Sign-in options: opens 15 Nhập mã mời (owner, 2026-10-11).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi có mã mời'**
+  String get signInHaveCode;
+
+  /// Family tab: confirm before revoking a pending invite.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ lời mời này?'**
+  String get familyRevokeTitle;
+
+  /// Family tab: what revoking does.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã và link đã gửi cho {who} sẽ không dùng được nữa.'**
+  String familyRevokeBody(String who);
+
+  /// Chọn bé / Hồ sơ các bé: invites mailed to me, each with a red dot (owner, 2026-10-11).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời mời đang chờ bạn'**
+  String get myInvitesPending;
+
+  /// The sheet for one invite mailed to me.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời mời cùng chăm bé'**
+  String get myInviteSheetTitle;
+
+  /// Under Đồng ý / Từ chối.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng ý xong, {baby} sẽ có trong danh sách bé của bạn.'**
+  String myInviteSheetHint(String baby);
 }
 
 class _AppLocalizationsDelegate

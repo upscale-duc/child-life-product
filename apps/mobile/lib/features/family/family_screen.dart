@@ -16,6 +16,7 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_misc.dart';
 import '../../core/widgets/cl_navigation.dart';
+import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
@@ -272,22 +273,101 @@ class _PendingCardState extends ConsumerState<_PendingCard> {
         borderRadius: BorderRadius.circular(ClRadius.card),
         border: Border.all(color: cl.colors.controlBorder),
       ),
-      child: ClMemberRow(
-        initial: '?',
-        name: invite.recipientEmail ?? l10n.familyPendingNoEmail(relation),
-        detail: expired
-            ? l10n.familyPendingExpired(relation)
-            : l10n.familyPendingDetail(
-                relation,
-                shortDate(context, invite.expiresAt),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClMemberRow(
+            initial: '?',
+            name: invite.recipientEmail ?? l10n.familyPendingNoEmail(relation),
+            detail: expired
+                ? l10n.familyPendingExpired(relation)
+                : l10n.familyPendingDetail(
+                    relation,
+                    shortDate(context, invite.expiresAt),
+                  ),
+            status: ClMemberStatus.pending,
+            resendLabel: l10n.familyResend,
+            onResend: _busy ? null : _resend,
+            onTap: () =>
+                context.push(Routes.inviteSend, extra: _args(invite.ticket)),
+          ),
+          // "Thu hồi" right on the row (owner, 2026-10-11): the code and link stop working.
+          Align(
+            alignment: Alignment.centerRight,
+            child: ClPressable(
+              onPressed: _busy ? null : _revoke,
+              semanticLabel: l10n.inviteRevoke,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  0,
+                  ClSpace.s4,
+                  ClSpace.s3,
+                ),
+                child: Text(
+                  l10n.inviteRevoke,
+                  style: cl.text.label.copyWith(
+                    color: cl.colors.error,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-        status: ClMemberStatus.pending,
-        resendLabel: l10n.familyResend,
-        onResend: _busy ? null : _resend,
-        onTap: () =>
-            context.push(Routes.inviteSend, extra: _args(invite.ticket)),
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  Future<void> _revoke() async {
+    final l10n = AppLocalizations.of(context);
+    final who =
+        widget.invite.recipientEmail ??
+        relationLabel(
+          l10n,
+          widget.invite.relation,
+          widget.invite.relationCustom ?? '',
+        );
+    final confirmed = await showClSheet<bool>(
+      context: context,
+      builder: (sheet) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.familyRevokeTitle),
+          Text(
+            l10n.familyRevokeBody(who),
+            style: sheet.cl.text.body.copyWith(color: sheet.cl.colors.inkMuted),
+          ),
+          const SizedBox(height: ClSpace.s6),
+          ClButton(
+            label: l10n.inviteRevoke,
+            style: ClButtonStyle.destructive,
+            expand: true,
+            onPressed: () => Navigator.of(sheet).pop(true),
+          ),
+          ClButton(
+            label: l10n.actionCancel,
+            style: ClButtonStyle.plain,
+            expand: true,
+            onPressed: () => Navigator.of(sheet).pop(false),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    final toaster = ClToaster.of(context);
+    setState(() => _busy = true);
+    try {
+      await ref
+          .read(familyRepositoryProvider)
+          .revokeInvite(widget.invite.inviteId);
+      toaster.show(message: l10n.inviteRevoked);
+    } on FamilyException catch (e) {
+      toaster.show(message: familyMessage(l10n, e.failure));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 }
 

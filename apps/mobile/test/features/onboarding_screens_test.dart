@@ -7,6 +7,8 @@ import 'package:child_life/features/appearance/appearance_screen.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
 import 'package:child_life/features/auth/auth_screens.dart';
 import 'package:child_life/features/baby/baby_models.dart';
+import 'package:child_life/features/family/family_models.dart';
+import 'package:child_life/features/family/my_invites.dart';
 import 'package:child_life/features/onboarding/setup_draft.dart';
 import 'package:child_life/features/onboarding/setup_screens.dart';
 import 'package:child_life/features/onboarding/welcome_screens.dart';
@@ -22,12 +24,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/family_fixtures.dart';
+
 /// Pumps [screen] at '/' with stub pages for every other route; returns the visited paths.
 Future<(List<String>, ProviderContainer)> pumpScreen(
   WidgetTester tester,
   Widget screen, {
   Locale locale = const Locale('vi'),
   List<Override> overrides = const [],
+  List<MyInvite> myInvites = const [],
 }) async {
   SharedPreferences.setMockInitialValues({});
   final prefs = await SharedPreferences.getInstance();
@@ -53,6 +58,8 @@ Future<(List<String>, ProviderContainer)> pumpScreen(
   );
   final container = ProviderContainer(
     overrides: [
+      // Invites mailed to me (owner, 2026-10-11); no Functions in widget tests.
+      myInvitesProvider.overrideWith((ref) async => myInvites),
       sharedPreferencesProvider.overrideWithValue(prefs),
       providerDisplayNameProvider.overrideWithValue(null),
       minuteClockProvider.overrideWith(
@@ -214,6 +221,23 @@ void main() {
     );
     expect(find.bySemanticsLabel('Quay lại'), findsNothing);
     expect(find.text('Dùng email'), findsOneWidget);
+  });
+
+  testWidgets('06: "Tôi có mã mời" opens 15 Nhập mã mời', (tester) async {
+    final (visited, _) = await pumpScreen(tester, const SignInScreen());
+    await tester.ensureVisible(find.text('Tôi có mã mời'));
+    await tester.tap(find.text('Tôi có mã mời'));
+    await tester.pumpAndSettle();
+    expect(visited.last, Routes.join);
+  });
+
+  testWidgets('10a: an invite mailed to me shows before starting a baby', (
+    tester,
+  ) async {
+    await pumpScreen(tester, const WhoAreYouScreen(), myInvites: [binInvite]);
+    expect(find.text('Lời mời cho bạn'), findsOneWidget);
+    expect(find.text('Mẹ Hà mời bạn cùng chăm bé Bin'), findsOneWidget);
+    expect(find.text('Đồng ý'), findsOneWidget);
   });
 
   testWidgets('moon toggles Light ↔ Night care at once', (tester) async {

@@ -8,9 +8,11 @@ import {
   acceptInvite,
   claimAnonymous,
   createInvite,
+  declineInvite,
   endOfDayIn,
   expireMemberships,
   inviteForLanding,
+  listMyInvites,
   previewInvite,
   regenerateInvite,
   removeMember,
@@ -241,6 +243,99 @@ describe('redeeming (15 → 16 → 16a)', () => {
     });
     expect(new Date(fresh.expiresAt).getTime()).toBe(later(60).getTime() + 7 * 86_400_000);
     await expect(join(nanny, fresh.code, later(61))).resolves.toMatchObject({ role: 'caregiver' });
+  });
+});
+
+describe('invites mailed to me (owner, 2026-10-11)', () => {
+  const quynh: Caller = {
+    uid: 'quynh',
+    anonymous: false,
+    emailTrusted: true,
+    email: 'quynh@example.com',
+  };
+  const stranger: Caller = {
+    uid: 'stranger',
+    anonymous: false,
+    emailTrusted: true,
+    email: 'someone@example.com',
+  };
+  async function mailed(role: 'coParent' | 'caregiver' = 'coParent', at = now) {
+    const ticket = await invite(mom, role, at);
+    await sendInviteEmail(
+      db,
+      mom,
+      { inviteId: ticket.inviteId, email: 'Quynh@Example.com', locale: 'vi' },
+      at,
+    );
+    return ticket;
+  }
+
+  it('lists live invites to my verified email, newest per baby, not for babies I am in', async () => {
+    await mailed('caregiver');
+    const newest = await mailed('coParent', later(1));
+    const mine = await listMyInvites(db, quynh, later(2));
+    expect(mine.invites).toHaveLength(1);
+    expect(mine.invites[0]).toMatchObject({
+      inviteId: newest.inviteId,
+      babyNickname: 'Teddy',
+      inviterName: 'Mai',
+      role: 'coParent',
+    });
+    expect((await listMyInvites(db, stranger, later(2))).invites).toEqual([]);
+    // No trusted email, no list.
+    expect((await listMyInvites(db, { ...quynh, emailTrusted: false }, later(2))).invites).toEqual(
+      [],
+    );
+    expect((await listMyInvites(db, quynh, later(8 * 24 * 60))).invites).toEqual([]);
+  });
+
+  it('accepts by id without the code, only for the recipient', async () => {
+    const ticket = await mailed();
+    const asStranger = acceptInvite(
+      db,
+      stranger,
+      null,
+      { inviteId: ticket.inviteId, displayName: 'X', relation: 'other', relationCustom: 'X' },
+      now,
+    );
+    expect(await reasonOf(asStranger)).toBe('not-found');
+    const result = await acceptInvite(
+      db,
+      quynh,
+      null,
+      { inviteId: ticket.inviteId, displayName: 'Quỳnh', relation: 'mother' },
+      now,
+    );
+    expect(result).toEqual({ babyId, role: 'coParent' });
+    expect((await db.doc(`babies/${babyId}/members/quynh`).get()).get('displayName')).toBe('Quỳnh');
+    // Used now: gone from my list, and the code no longer works.
+    expect((await listMyInvites(db, quynh, now)).invites).toEqual([]);
+    expect(await reasonOf(join(nanny, ticket.code))).toBe('not-found');
+  });
+
+  it('declines: the invite closes for everyone and leaves "Đang chờ"', async () => {
+    const ticket = await mailed();
+    expect(await reasonOf(declineInvite(db, stranger, { inviteId: ticket.inviteId }, now))).toBe(
+      'not-found',
+    );
+    await declineInvite(db, quynh, { inviteId: ticket.inviteId }, now);
+    expect((await db.doc(`invites/${ticket.inviteId}`).get()).get('status')).toBe('declined');
+    expect((await db.doc(`babies/${babyId}/pendingInvites/${ticket.inviteId}`).get()).exists).toBe(
+      false,
+    );
+    expect((await listMyInvites(db, quynh, now)).invites).toEqual([]);
+    expect(await reasonOf(join(nanny, ticket.code))).toBe('not-found');
+    expect(
+      await reasonOf(
+        acceptInvite(
+          db,
+          quynh,
+          null,
+          { inviteId: ticket.inviteId, displayName: 'Quỳnh', relation: 'mother' },
+          now,
+        ),
+      ),
+    ).toBe('revoked');
   });
 });
 

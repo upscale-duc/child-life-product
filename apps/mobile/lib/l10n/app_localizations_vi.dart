@@ -6947,4 +6947,60 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get joinFromProfileHint =>
       'Được mời chăm một bé khác? Nhập mã 6 số trong lời mời.';
+
+  @override
+  String get myInvitesTitle => 'Lời mời cho bạn';
+
+  @override
+  String myInviteLine(String inviter, String baby) {
+    return '$inviter mời bạn cùng chăm bé $baby';
+  }
+
+  @override
+  String myInviteMeta(String role, String date) {
+    return '$role · Hết hạn $date';
+  }
+
+  @override
+  String get myInviteAccept => 'Đồng ý';
+
+  @override
+  String get myInviteDecline => 'Từ chối';
+
+  @override
+  String myInviteDeclineTitle(String baby) {
+    return 'Từ chối lời mời chăm bé $baby?';
+  }
+
+  @override
+  String myInviteDeclineBody(String inviter) {
+    return '$inviter sẽ biết lời mời không còn chờ nữa. Mã và link mời sẽ hết hiệu lực.';
+  }
+
+  @override
+  String myInviteDeclined(String baby) {
+    return 'Đã từ chối lời mời chăm bé $baby';
+  }
+
+  @override
+  String get signInHaveCode => 'Tôi có mã mời';
+
+  @override
+  String get familyRevokeTitle => 'Huỷ lời mời này?';
+
+  @override
+  String familyRevokeBody(String who) {
+    return 'Mã và link đã gửi cho $who sẽ không dùng được nữa.';
+  }
+
+  @override
+  String get myInvitesPending => 'Lời mời đang chờ bạn';
+
+  @override
+  String get myInviteSheetTitle => 'Lời mời cùng chăm bé';
+
+  @override
+  String myInviteSheetHint(String baby) {
+    return 'Đồng ý xong, $baby sẽ có trong danh sách bé của bạn.';
+  }
 }

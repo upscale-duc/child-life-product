@@ -8,6 +8,7 @@ import 'package:child_life/features/care/care_repository.dart';
 import 'package:child_life/features/care/timer_models.dart';
 import 'package:child_life/features/family/family_models.dart';
 import 'package:child_life/features/family/family_repository.dart';
+import 'package:child_life/features/family/my_invites.dart';
 import 'package:child_life/features/reminders/device_identity.dart';
 import 'package:child_life/features/reminders/reminder_models.dart';
 import 'package:child_life/features/reminders/reminder_notifications.dart';
@@ -128,6 +129,23 @@ final hoa = member(
   extra: const ExtraRights(viewBabyInfo: true),
 );
 
+/// Mailed to me by Mẹ Hà for bé Bin: answered from Gia đình / Hôm nay (owner, 2026-10-11).
+final binInvite = MyInvite(
+  inviteId: 'i_00000000000000000009',
+  preview: ValidInvite(
+    babyNickname: 'Bin',
+    inviterName: 'Hà',
+    inviterRelation: Relation.mother,
+    inviterRelationCustom: null,
+    role: MemberRole.coParent,
+    relation: Relation.mother,
+    relationCustom: null,
+    extraRights: null,
+    expiresAt: DateTime.utc(2026, 10, 15, 5),
+    alreadyMember: false,
+  ),
+);
+
 final pendingGrandma = PendingInvite(
   inviteId: 'i_00000000000000000001',
   relation: Relation.other,
@@ -190,6 +208,7 @@ List<Override> familyOverrides({
   AccountDoc account = const AccountDoc(),
   String? email,
   List<String> providers = const [],
+  List<MyInvite> myInvites = const [],
 }) {
   final self = me ?? mai;
   return [
@@ -207,6 +226,7 @@ List<Override> familyOverrides({
         memberships: [self],
       ),
     ),
+    myInvitesProvider.overrideWith((ref) async => myInvites),
     babyProvider.overrideWith((ref, id) => Stream.value(teddy)),
     babyPrivateProfileProvider.overrideWith(
       (ref, id) => Stream.value(teddyProfile()),

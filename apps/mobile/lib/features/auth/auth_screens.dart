@@ -216,6 +216,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     expand: true,
                     onPressed: _busy ? null : () => context.push(Routes.email),
                   ),
+                  const SizedBox(height: ClSpace.s3),
+                  // Joining someone's baby starts from the code too (owner, 2026-10-11).
+                  ClButton(
+                    label: l10n.signInHaveCode,
+                    style: ClButtonStyle.plain,
+                    icon: ClIcons.family,
+                    expand: true,
+                    onPressed: _busy ? null : () => context.push(Routes.join),
+                  ),
                   const SizedBox(height: ClSpace.s4),
                   Center(
                     child: ClPressable(

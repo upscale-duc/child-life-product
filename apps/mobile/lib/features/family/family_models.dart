@@ -7,17 +7,23 @@ import '../baby/baby_models.dart';
 /// Invites last 7 days ("Hết hạn sau 7 ngày", R-032).
 const inviteTtlDays = 7;
 
-/// By 6-digit code (15) or link token (`/i/{token}`, QR).
+/// By 6-digit code (15), link token (`/i/{token}`, QR), or id for an invite mailed to me (no
+/// code to type; owner, 2026-10-11).
 @immutable
 class InviteLookup {
-  const InviteLookup.code(String this.code) : token = null;
-  const InviteLookup.token(String this.token) : code = null;
+  const InviteLookup.code(String this.code) : token = null, inviteId = null;
+  const InviteLookup.token(String this.token) : code = null, inviteId = null;
+  const InviteLookup.id(String this.inviteId) : code = null, token = null;
 
   final String? code;
   final String? token;
+  final String? inviteId;
 
-  Map<String, String> toJson() =>
-      code != null ? {'code': code!} : {'token': token!};
+  Map<String, String> toJson() => code != null
+      ? {'code': code!}
+      : token != null
+      ? {'token': token!}
+      : {'inviteId': inviteId!};
 
   static final _code = RegExp(r'^\d{6}$');
   static final _token = RegExp(r'^[A-Za-z0-9_-]{32}$');
@@ -45,9 +51,26 @@ class InviteLookup {
 
   @override
   bool operator ==(Object other) =>
-      other is InviteLookup && other.code == code && other.token == token;
+      other is InviteLookup &&
+      other.code == code &&
+      other.token == token &&
+      other.inviteId == inviteId;
   @override
-  int get hashCode => Object.hash(code, token);
+  int get hashCode => Object.hash(code, token, inviteId);
+}
+
+/// An invite mailed to my own email: shown to accept or decline without the code.
+@immutable
+class MyInvite {
+  const MyInvite({required this.inviteId, required this.preview});
+  final String inviteId;
+  final ValidInvite preview;
+
+  factory MyInvite.fromJson(Map<String, Object?> json) => MyInvite(
+    inviteId: json['inviteId']! as String,
+    preview:
+        InvitePreview.fromJson({...json, 'status': 'valid'}) as ValidInvite,
+  );
 }
 
 /// What the inviter needs on 14c: code, link token, expiry.

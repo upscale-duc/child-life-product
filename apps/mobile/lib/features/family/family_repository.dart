@@ -152,6 +152,19 @@ class FamilyRepository {
         await _call('previewFamilyInvite', lookup.toJson()),
       );
 
+  /// Live invites mailed to my verified email, for babies I am not in.
+  Future<List<MyInvite>> listMyInvites() async {
+    final data = await _call('listMyFamilyInvites', const {});
+    return [
+      for (final i in (data['invites'] as List? ?? const []))
+        MyInvite.fromJson((i as Map).cast<String, Object?>()),
+    ];
+  }
+
+  /// "Từ chối": the invite closes; its code and link stop working.
+  Future<void> declineInvite(String inviteId) =>
+      _call('declineFamilyInvite', {'inviteId': inviteId});
+
   /// 16a "Vào xem Teddy". Returns the baby joined.
   Future<String> acceptInvite({
     required InviteLookup lookup,

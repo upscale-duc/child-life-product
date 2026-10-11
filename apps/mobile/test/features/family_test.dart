@@ -32,6 +32,15 @@ class FakeFamilyRepository extends Fake implements FamilyRepository {
     return preview ?? const ClosedInvite(InviteClosedReason.notFound);
   }
 
+  final declined = <String>[];
+  final revoked = <String>[];
+
+  @override
+  Future<void> declineInvite(String inviteId) async => declined.add(inviteId);
+
+  @override
+  Future<void> revokeInvite(String inviteId) async => revoked.add(inviteId);
+
   @override
   Future<String> acceptInvite({
     required InviteLookup lookup,
@@ -240,6 +249,95 @@ void main() {
       await tester.tap(find.text('Mời người cùng chăm'));
       await tester.pumpAndSettle();
       expect(visits.last.location, Routes.invite);
+    });
+
+    testWidgets(
+      'an invite: red dot on the switcher, a row in Chọn bé, accept with no code',
+      (tester) async {
+        final (visits, _) = await pumpRouted(
+          tester,
+          const Scaffold(body: TodayScreen()),
+          overrides: familyOverrides(myInvites: [binInvite]),
+        );
+        expect(find.byKey(const Key('babySwitcherDot')), findsOneWidget);
+        // One baby, yet the switcher opens the list: that is where the invite is.
+        await tester.tap(find.byType(ClBabySwitcher));
+        await tester.pumpAndSettle();
+        expect(find.text('Lời mời đang chờ bạn'), findsOneWidget);
+        await tester.tap(find.text('Mẹ Hà mời bạn cùng chăm bé Bin'));
+        await tester.pumpAndSettle();
+        expect(find.text('Lời mời cùng chăm bé'), findsOneWidget);
+        expect(find.text('Cùng nuôi · Hết hạn 15 thg 10'), findsOneWidget);
+        await tester.tap(find.text('Đồng ý'));
+        await tester.pumpAndSettle();
+        expect(visits.last.location, Routes.joinInvite);
+        final args = visits.last.extra! as JoinArgs;
+        expect(args.lookup, InviteLookup.id(binInvite.inviteId));
+        expect(args.preview.babyNickname, 'Bin');
+      },
+    );
+
+    testWidgets('an invite can be declined from its sheet, after asking', (
+      tester,
+    ) async {
+      final repo = FakeFamilyRepository();
+      await pumpRouted(
+        tester,
+        const Scaffold(body: TodayScreen()),
+        overrides: [
+          ...familyOverrides(myInvites: [binInvite]),
+          familyRepositoryProvider.overrideWithValue(repo),
+        ],
+      );
+      await tester.tap(find.byType(ClBabySwitcher));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Mẹ Hà mời bạn cùng chăm bé Bin'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Từ chối'));
+      await tester.pumpAndSettle();
+      expect(find.text('Từ chối lời mời chăm bé Bin?'), findsOneWidget);
+      await tester.tap(find.text('Từ chối').last);
+      await tester.pumpAndSettle();
+      expect(repo.declined, [binInvite.inviteId]);
+    });
+
+    testWidgets('no invite: no dot, and Gia đình has no invite section', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        const Scaffold(body: FamilyScreen()),
+        overrides: familyOverrides(),
+      );
+      expect(find.byKey(const Key('babySwitcherDot')), findsNothing);
+      expect(find.text('Lời mời đang chờ bạn'), findsNothing);
+    });
+
+    testWidgets('a pending invite can be revoked from its row, after asking', (
+      tester,
+    ) async {
+      final repo = FakeFamilyRepository();
+      await pumpRouted(
+        tester,
+        const Scaffold(body: FamilyScreen()),
+        overrides: [
+          ...familyOverrides(),
+          familyRepositoryProvider.overrideWithValue(repo),
+        ],
+      );
+      await tester.ensureVisible(find.text('Huỷ lời mời'));
+      await tester.tap(find.text('Huỷ lời mời'));
+      await tester.pumpAndSettle();
+      expect(find.text('Huỷ lời mời này?'), findsOneWidget);
+      expect(
+        find.text(
+          'Mã và link đã gửi cho ba.ngoai@gmail.com sẽ không dùng được nữa.',
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Huỷ lời mời').last);
+      await tester.pumpAndSettle();
+      expect(repo.revoked, [pendingGrandma.inviteId]);
     });
 
     testWidgets('14a as a caregiver: view only, no pending, no invite', (

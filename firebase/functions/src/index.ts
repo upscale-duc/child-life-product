@@ -15,6 +15,8 @@ import { adminOriginFor, currentProjectId, webOriginFor } from './env.js';
 import {
   FamilyError,
   acceptInvite,
+  declineInvite,
+  listMyInvites,
   claimAnonymous,
   createInvite,
   expireMemberships,
@@ -253,11 +255,13 @@ function callerOf(request: CallableRequest): Caller {
   if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
   const token = request.auth.token;
   const provider = token.firebase.sign_in_provider;
+  const emailTrusted =
+    token.email_verified === true || provider === 'google.com' || provider === 'apple.com';
   return {
     uid: request.auth.uid,
     anonymous: provider === 'anonymous',
-    emailTrusted:
-      token.email_verified === true || provider === 'google.com' || provider === 'apple.com',
+    emailTrusted,
+    email: emailTrusted && typeof token.email === 'string' ? token.email.toLowerCase() : null,
   };
 }
 
@@ -292,6 +296,13 @@ export const emailFamilyInvite = familyCall('emailFamilyInvite', (r) =>
 /** Works signed out (screen 16 comes before choosing how to join). */
 export const previewFamilyInvite = familyCall('previewFamilyInvite', (r) =>
   previewInvite(getFirestore(), r.auth?.uid ?? null, clientIp(r), r.data, new Date()),
+);
+/** Invites mailed to the caller's own email (owner, 2026-10-11). */
+export const listMyFamilyInvites = familyCall('listMyFamilyInvites', (r) =>
+  listMyInvites(getFirestore(), callerOf(r), new Date()),
+);
+export const declineFamilyInvite = familyCall('declineFamilyInvite', (r) =>
+  declineInvite(getFirestore(), callerOf(r), r.data, new Date()),
 );
 export const acceptFamilyInvite = familyCall('acceptFamilyInvite', (r) =>
   acceptInvite(getFirestore(), callerOf(r), clientIp(r), r.data, new Date()),

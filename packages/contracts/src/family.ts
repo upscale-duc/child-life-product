@@ -109,18 +109,22 @@ export const inviteLookupSchema = z.union([
 ]);
 export type InviteLookup = z.infer<typeof inviteLookupSchema>;
 
+const validInviteFields = {
+  babyNickname: z.string(),
+  inviterName: z.string(),
+  inviterRelation: z.enum(relations),
+  inviterRelationCustom: z.string().nullable(),
+  role: z.enum(memberRoles),
+  relation: z.enum(relations),
+  relationCustom: z.string().nullable(),
+  extraRights: extraRightsSchema.nullable(),
+  expiresAt: z.iso.datetime(),
+};
+
 export const invitePreviewSchema = z.discriminatedUnion('status', [
   z.object({
     status: z.literal('valid'),
-    babyNickname: z.string(),
-    inviterName: z.string(),
-    inviterRelation: z.enum(relations),
-    inviterRelationCustom: z.string().nullable(),
-    role: z.enum(memberRoles),
-    relation: z.enum(relations),
-    relationCustom: z.string().nullable(),
-    extraRights: extraRightsSchema.nullable(),
-    expiresAt: z.iso.datetime(),
+    ...validInviteFields,
     /** The caller already belongs to this baby (G-036). */
     alreadyMember: z.boolean(),
   }),
@@ -129,8 +133,22 @@ export const invitePreviewSchema = z.discriminatedUnion('status', [
 ]);
 export type InvitePreview = z.infer<typeof invitePreviewSchema>;
 
+/**
+ * Invites mailed to the caller's own verified email (owner, 2026-10-11): shown to a signed-in
+ * user to accept or decline without typing the code. Only live invites for babies they are not
+ * already in.
+ */
+export const myInviteSchema = z.object({ inviteId: inviteIdSchema, ...validInviteFields });
+export type MyInvite = z.infer<typeof myInviteSchema>;
+export const myInvitesResponseSchema = z.object({ invites: z.array(myInviteSchema) });
+export type MyInvitesResponse = z.infer<typeof myInvitesResponseSchema>;
+
+/** "Từ chối": only the invite's own recipient (by verified email). */
+export const declineInviteRequestSchema = inviteRefSchema;
+
 export const acceptInviteRequestSchema = z.intersection(
-  inviteLookupSchema,
+  // By code or link token (anyone holding it), or by id for an invite mailed to the caller.
+  z.union([inviteLookupSchema, inviteRefSchema]),
   z
     .object({
       displayName: z.string().trim().min(1).max(displayNameMaxLength),

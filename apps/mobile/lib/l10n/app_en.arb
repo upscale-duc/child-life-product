@@ -1923,5 +1923,19 @@
   "vxPhotoDeleted": "Photo deleted",
   "vxPhotoPrivate": "Only the family’s carers can see it. Never shown in Memories.",
   "joinFromProfile": "Enter an invite code",
-  "joinFromProfileHint": "Invited to care for another baby? Enter the 6-digit code from the invite."
+  "joinFromProfileHint": "Invited to care for another baby? Enter the 6-digit code from the invite.",
+  "myInvitesTitle": "Invites for you",
+  "myInviteLine": "{inviter} invited you to care for {baby}",
+  "myInviteMeta": "{role} · Expires {date}",
+  "myInviteAccept": "Accept",
+  "myInviteDecline": "Decline",
+  "myInviteDeclineTitle": "Decline the invite for {baby}?",
+  "myInviteDeclineBody": "{inviter} will see the invite is no longer waiting. The code and link will stop working.",
+  "myInviteDeclined": "Declined the invite for {baby}",
+  "signInHaveCode": "I have an invite code",
+  "familyRevokeTitle": "Revoke this invite?",
+  "familyRevokeBody": "The code and link sent to {who} will stop working.",
+  "myInvitesPending": "Invites waiting for you",
+  "myInviteSheetTitle": "Invite to care for a baby",
+  "myInviteSheetHint": "Once you accept, {baby} joins your list of babies."
 }

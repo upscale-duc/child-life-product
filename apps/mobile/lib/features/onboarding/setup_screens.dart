@@ -23,6 +23,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_segmented.dart';
 import '../../l10n/app_localizations.dart';
+import '../family/my_invites.dart';
 import '../auth/auth_repository.dart';
 import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
@@ -111,6 +112,8 @@ class _WhoAreYouScreenState extends ConsumerState<WhoAreYouScreen> {
         progress: _progressWho,
       ),
       content: [
+        // Invited by email already? Join that baby instead of starting one (owner, 2026-10-11).
+        const MyInvitesSection(padding: EdgeInsets.only(bottom: ClSpace.s6)),
         ScreenHeading(
           title: l10n.whoTitle,
           subtitle: l10n.whoSubtitle(

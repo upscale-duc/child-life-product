@@ -10507,5 +10507,102 @@
   "joinFromProfileHint": "Được mời chăm một bé khác? Nhập mã 6 số trong lời mời.",
   "@joinFromProfileHint": {
     "description": "Under the row."
+  },
+  "myInvitesTitle": "Lời mời cho bạn",
+  "@myInvitesTitle": {
+    "description": "Family tab / setup: invites mailed to the signed-in person's email (owner, 2026-10-11)."
+  },
+  "myInviteLine": "{inviter} mời bạn cùng chăm bé {baby}",
+  "@myInviteLine": {
+    "description": "An invite card: who invites and for which baby.",
+    "placeholders": {
+      "inviter": {
+        "type": "String"
+      },
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "myInviteMeta": "{role} · Hết hạn {date}",
+  "@myInviteMeta": {
+    "description": "An invite card: the role offered and the expiry date.",
+    "placeholders": {
+      "role": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "myInviteAccept": "Đồng ý",
+  "@myInviteAccept": {
+    "description": "Accepts an invite without the code (then relation and name, as 16 → 16a)."
+  },
+  "myInviteDecline": "Từ chối",
+  "@myInviteDecline": {
+    "description": "Declines an invite mailed to me."
+  },
+  "myInviteDeclineTitle": "Từ chối lời mời chăm bé {baby}?",
+  "@myInviteDeclineTitle": {
+    "description": "Decline confirmation title.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "myInviteDeclineBody": "{inviter} sẽ biết lời mời không còn chờ nữa. Mã và link mời sẽ hết hiệu lực.",
+  "@myInviteDeclineBody": {
+    "description": "Decline confirmation body.",
+    "placeholders": {
+      "inviter": {
+        "type": "String"
+      }
+    }
+  },
+  "myInviteDeclined": "Đã từ chối lời mời chăm bé {baby}",
+  "@myInviteDeclined": {
+    "description": "Toast after declining.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "signInHaveCode": "Tôi có mã mời",
+  "@signInHaveCode": {
+    "description": "Sign-in options: opens 15 Nhập mã mời (owner, 2026-10-11)."
+  },
+  "familyRevokeTitle": "Huỷ lời mời này?",
+  "@familyRevokeTitle": {
+    "description": "Family tab: confirm before revoking a pending invite."
+  },
+  "familyRevokeBody": "Mã và link đã gửi cho {who} sẽ không dùng được nữa.",
+  "@familyRevokeBody": {
+    "description": "Family tab: what revoking does.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "myInvitesPending": "Lời mời đang chờ bạn",
+  "@myInvitesPending": {
+    "description": "Chọn bé / Hồ sơ các bé: invites mailed to me, each with a red dot (owner, 2026-10-11)."
+  },
+  "myInviteSheetTitle": "Lời mời cùng chăm bé",
+  "@myInviteSheetTitle": {
+    "description": "The sheet for one invite mailed to me."
+  },
+  "myInviteSheetHint": "Đồng ý xong, {baby} sẽ có trong danh sách bé của bạn.",
+  "@myInviteSheetHint": {
+    "description": "Under Đồng ý / Từ chối.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -3,6 +3,7 @@ import {
   acceptInviteRequestSchema,
   claimAnonymousRequestSchema,
   createInviteRequestSchema,
+  declineInviteRequestSchema,
   defaultExtraRights,
   inviteEmailMinGapSeconds,
   inviteLookupLockMinutes,
@@ -20,6 +21,7 @@ import {
   type InviteLookup,
   type InvitePreview,
   type InviteTicket,
+  type MyInvitesResponse,
 } from '@child-life/contracts';
 import {
   FieldValue,
@@ -52,6 +54,12 @@ export interface Caller {
   anonymous: boolean;
   /** Verified email, or a provider that verifies email itself (Google, Apple). D-015. */
   emailTrusted: boolean;
+  /**
+   * The account's email when trusted, lower-cased: matches invites mailed to it (accept or
+   * decline without the code). Null otherwise (anonymous, unverified, Apple's hidden relay is
+   * still an address but only matches if the invite was mailed to it).
+   */
+  email?: string | null;
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -332,10 +340,116 @@ async function findInvite(
   if (!invite.exists) return { status: 'not-found' };
   const status = invite.get('status') as string;
   if (status === 'accepted') return { status: 'used' };
-  if (status === 'revoked') return { status: 'revoked' };
+  // Declined by the invitee: closed for everyone, like a revoked one.
+  if (status === 'revoked' || status === 'declined') return { status: 'revoked' };
   if ((invite.get('expiresAt') as Timestamp).toMillis() <= now.getTime())
     return { status: 'expired' };
   return { status: 'valid', invite };
+}
+
+/**
+ * An invite by id, for its recipient only: the caller's trusted email must be the address it was
+ * mailed to (owner, 2026-10-11: accept or decline from the app without the code). Anyone else
+ * gets "not-found", as for an unknown code.
+ */
+async function findMailedInvite(
+  db: Firestore,
+  caller: Caller,
+  inviteId: string,
+  now: Date,
+  tx?: Transaction,
+): Promise<LookupResult> {
+  const invite = await (tx
+    ? tx.get(db.doc(invitesPath(inviteId)))
+    : db.doc(invitesPath(inviteId)).get());
+  if (!invite.exists || !mailedTo(invite, caller)) return { status: 'not-found' };
+  const status = invite.get('status') as string;
+  if (status === 'accepted') return { status: 'used' };
+  if (status === 'revoked' || status === 'declined') return { status: 'revoked' };
+  if ((invite.get('expiresAt') as Timestamp).toMillis() <= now.getTime())
+    return { status: 'expired' };
+  return { status: 'valid', invite };
+}
+
+const mailedTo = (invite: DocumentSnapshot, caller: Caller) => {
+  const to = invite.get('recipientEmail') as string | null;
+  return (
+    !caller.anonymous &&
+    caller.emailTrusted &&
+    !!caller.email &&
+    !!to &&
+    to.trim().toLowerCase() === caller.email.trim().toLowerCase()
+  );
+};
+
+/** Live invites mailed to the caller's email, for babies they are not in yet. */
+export async function listMyInvites(
+  db: Firestore,
+  caller: Caller,
+  now: Date,
+): Promise<MyInvitesResponse> {
+  if (caller.anonymous || !caller.emailTrusted || !caller.email) return { invites: [] };
+  const snap = await db
+    .collection('invites')
+    .where('recipientEmail', '==', caller.email.trim().toLowerCase())
+    .where('status', '==', 'pending')
+    .get();
+  const invites: MyInvitesResponse['invites'] = [];
+  const seen = new Set<string>();
+  // Newest first; one per baby (a re-sent invite replaces the older one in the list).
+  const live = snap.docs
+    .filter((d) => (d.get('expiresAt') as Timestamp).toMillis() > now.getTime())
+    .sort(
+      (a, b) =>
+        (b.get('createdAt') as Timestamp).toMillis() - (a.get('createdAt') as Timestamp).toMillis(),
+    );
+  for (const invite of live) {
+    const babyId = invite.get('babyId') as string;
+    if (seen.has(babyId)) continue;
+    seen.add(babyId);
+    if (isActiveMember(await db.doc(memberPath(babyId, caller.uid)).get(), now)) continue;
+    invites.push({
+      inviteId: invite.id,
+      babyNickname: invite.get('babyNickname') as string,
+      inviterName: invite.get('inviterName') as string,
+      inviterRelation: invite.get('inviterRelation') as never,
+      inviterRelationCustom: (invite.get('inviterRelationCustom') as string | null) ?? null,
+      role: invite.get('role') as never,
+      relation: invite.get('relation') as never,
+      relationCustom: (invite.get('relationCustom') as string | null) ?? null,
+      extraRights: (invite.get('extraRights') as ExtraRights | null) ?? null,
+      expiresAt: (invite.get('expiresAt') as Timestamp).toDate().toISOString(),
+    });
+  }
+  return { invites };
+}
+
+/** "Từ chối" (owner, 2026-10-11): the recipient closes the invite; its code and link stop working. */
+export async function declineInvite(
+  db: Firestore,
+  caller: Caller,
+  data: unknown,
+  now: Date,
+): Promise<void> {
+  const parsed = declineInviteRequestSchema.safeParse(data);
+  if (!parsed.success) throw new FamilyError('invalid-argument', 'malformed');
+  const { inviteId } = parsed.data;
+  await db.runTransaction(async (tx) => {
+    const found = await findMailedInvite(db, caller, inviteId, now, tx);
+    if (found.status !== 'valid') throw new FamilyError('failed-precondition', found.status);
+    const invite = found.invite;
+    const babyId = invite.get('babyId') as string;
+    tx.update(invite.ref, { status: 'declined', declinedAt: now, declinedBy: caller.uid });
+    tx.delete(db.doc(`inviteCodes/${invite.get('code') as string}`));
+    tx.delete(db.doc(`inviteTokens/${invite.get('tokenHash') as string}`));
+    tx.delete(db.doc(pendingPath(babyId, inviteId)));
+    audit(
+      tx,
+      db,
+      { action: 'invite.decline', actor: caller.uid, babyId, target: inviteId, category: 'family' },
+      now,
+    );
+  });
 }
 
 /** P-021: lockout after repeated unknown codes, per caller and per network address. */
@@ -437,10 +551,14 @@ export async function acceptInvite(
   const req = parsed.data;
   const keys = rateKeys(caller.uid, ip);
   if ((await lockedFor(db, keys, now)) > 0) throw new FamilyError('resource-exhausted', 'locked');
-  const lookup: InviteLookup = 'code' in req ? { code: req.code } : { token: req.token };
+  const byId = 'inviteId' in req ? req.inviteId : null;
+  const lookup: InviteLookup | null =
+    'code' in req ? { code: req.code } : 'token' in req ? { token: req.token } : null;
 
   const result = await db.runTransaction(async (tx) => {
-    const found = await findInvite(db, lookup, now, tx);
+    const found = lookup
+      ? await findInvite(db, lookup, now, tx)
+      : await findMailedInvite(db, caller, byId!, now, tx);
     if (found.status !== 'valid') return { failure: found.status };
     const invite = found.invite;
     const babyId = invite.get('babyId') as string;

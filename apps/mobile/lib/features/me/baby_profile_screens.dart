@@ -20,6 +20,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../family/my_invites.dart' show MyInviteRows;
 import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
@@ -71,6 +72,8 @@ class BabyProfilesScreen extends ConsumerWidget {
         MemberRole.relative => l10n.meFollowing,
       },
       children: [
+        // Invites mailed to me (owner, 2026-10-11): answered from here too.
+        const MyInviteRows(padding: EdgeInsets.only(bottom: ClSpace.s4)),
         for (final (i, m) in mine.indexed) ...[
           _BabyCard(membership: m, tint: soft[i % soft.length]),
           const SizedBox(height: ClSpace.s3),
