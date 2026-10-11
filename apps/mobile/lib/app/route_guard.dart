@@ -15,11 +15,12 @@ abstract final class Routes {
   static const trackers = '/setup/trackers';
   static const today = '/today';
 
-  /// 20 Lịch sử and 20g / 20h, under the Hôm nay tab (the dock stays).
-  static const history = '/today/history';
-  static const feedStats = '/today/stats/feed';
-  static const sleepStats = '/today/stats/sleep';
-  static const reminders = '/today/reminders';
+  /// Chăm sóc tab (v1.0 improvement 370:1971): 20 Lịch sử, 20g / 20h, reminders; the dock stays.
+  static const care = '/care';
+  static const history = '/care/history';
+  static const feedStats = '/care/stats/feed';
+  static const sleepStats = '/care/stats/sleep';
+  static const reminders = '/care/reminders';
   static const messages = '/messages';
   static const memories = '/memories';
   static const family = '/family';

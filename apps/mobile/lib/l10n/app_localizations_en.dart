@@ -6089,4 +6089,156 @@ class AppLocalizationsEn extends AppLocalizations {
   String lastNightBreastInsight(int count, int minutes, String time) {
     return 'Last night: $count breastfeeds, $minutes min ($time).';
   }
+
+  @override
+  String get tabCare => 'Care';
+
+  @override
+  String get a11yOpenMe => 'Me';
+
+  @override
+  String get careTitle => 'Care';
+
+  @override
+  String get careSearchHint => 'Search in Care…';
+
+  @override
+  String get careDaily => 'Daily care';
+
+  @override
+  String get careReminders => 'Reminders';
+
+  @override
+  String careRemindersOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reminders on',
+      one: '1 reminder on',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String careRemindersMine(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reminders for you',
+      one: '1 reminder for you',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get careStats => 'Statistics';
+
+  @override
+  String get careStatsSub => 'Feeding, sleep by day';
+
+  @override
+  String get careHistory => 'History';
+
+  @override
+  String get careHistorySub => 'Every logged entry';
+
+  @override
+  String get careGrowth => 'Growth';
+
+  @override
+  String get careGrowthSub => 'Weight, length';
+
+  @override
+  String get careSoon => 'Coming soon';
+
+  @override
+  String get careSoonToast => 'This arrives in a coming update.';
+
+  @override
+  String get careWonderWeek => 'Wonder Week';
+
+  @override
+  String get careWonderWeekSub => 'Expected developmental phases';
+
+  @override
+  String get careAgeCards => 'Cards by age';
+
+  @override
+  String get careAgeCardsSub => 'Ideas for your baby’s age';
+
+  @override
+  String get careMilestones => 'Milestones';
+
+  @override
+  String get careMilestonesSub => 'Record your child’s firsts';
+
+  @override
+  String get careLibrary => 'Baby-care library';
+
+  @override
+  String get careLibrarySub => 'Expert-reviewed articles';
+
+  @override
+  String get careSolids => 'Solids';
+
+  @override
+  String get careSolidsSub => 'Solids diary & library';
+
+  @override
+  String get careSettings => 'Settings';
+
+  @override
+  String get careTracking => 'Customise tracking';
+
+  @override
+  String get careTrackingSub => 'Choose what to log';
+
+  @override
+  String get careNotifications => 'Notifications';
+
+  @override
+  String get careNotificationsSub => 'Reminders, family';
+
+  @override
+  String get careStatsPick => 'See statistics';
+
+  @override
+  String get careNoResults => 'Nothing matches.';
+
+  @override
+  String get todayCustomize => 'Customise';
+
+  @override
+  String get customizeTitle => 'Customise Today';
+
+  @override
+  String get customizeIntro =>
+      'Turn on, turn off and drag to arrange what shows on Today.';
+
+  @override
+  String get sectionTiles => 'Quick tracking tiles';
+
+  @override
+  String get sectionTilesSub => 'Feeding, sleep, diapers, pumping, growth';
+
+  @override
+  String get sectionReminders => 'Upcoming reminders';
+
+  @override
+  String get sectionRhythm => 'Daily rhythm';
+
+  @override
+  String get sectionRhythmSub => '24-hour chart';
+
+  @override
+  String get visibleTiles => 'Visible tracking tiles';
+
+  @override
+  String get customizeReset => 'Reset';
+
+  @override
+  String get customizeDone => 'Done';
+
+  @override
+  String get a11yDragToReorder => 'Drag to reorder';
 }

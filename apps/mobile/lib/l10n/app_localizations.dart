@@ -9510,6 +9510,276 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đêm qua bú mẹ {count} cữ, {minutes} phút ({time}).'**
   String lastNightBreastInsight(int count, int minutes, String time);
+
+  /// NavBar v1.0.1 tab.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chăm sóc'**
+  String get tabCare;
+
+  /// Header avatar → Tôi (370:1898).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi'**
+  String get a11yOpenMe;
+
+  /// Care tab title (370:1971).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chăm sóc'**
+  String get careTitle;
+
+  /// Care search field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm trong Chăm sóc…'**
+  String get careSearchHint;
+
+  /// Care section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chăm hằng ngày'**
+  String get careDaily;
+
+  /// Care tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc nhở'**
+  String get careReminders;
+
+  /// Care tile subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} nhắc đang bật'**
+  String careRemindersOn(int count);
+
+  /// Care tile subtitle, caregiver (370:2174).
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} nhắc giao cho bạn'**
+  String careRemindersMine(int count);
+
+  /// Care tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thống kê'**
+  String get careStats;
+
+  /// Care tile subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú, ngủ theo ngày'**
+  String get careStatsSub;
+
+  /// Care tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử'**
+  String get careHistory;
+
+  /// Care tile subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi lần đã ghi'**
+  String get careHistorySub;
+
+  /// Care tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng trưởng'**
+  String get careGrowth;
+
+  /// Care tile subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng, chiều dài'**
+  String get careGrowthSub;
+
+  /// Care section and badge.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sớm ra mắt'**
+  String get careSoon;
+
+  /// Tap on a coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phần này sẽ có trong bản cập nhật tới.'**
+  String get careSoonToast;
+
+  /// Coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Wonder Week'**
+  String get careWonderWeek;
+
+  /// Coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn phát triển dự kiến'**
+  String get careWonderWeekSub;
+
+  /// Coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thẻ theo tuổi'**
+  String get careAgeCards;
+
+  /// Coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý theo tuổi của bé'**
+  String get careAgeCardsSub;
+
+  /// Coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc phát triển'**
+  String get careMilestones;
+
+  /// Coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lại lần đầu của con'**
+  String get careMilestonesSub;
+
+  /// Coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thư viện chăm bé'**
+  String get careLibrary;
+
+  /// Coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài viết được chuyên môn rà soát'**
+  String get careLibrarySub;
+
+  /// Coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn dặm'**
+  String get careSolids;
+
+  /// Coming-soon tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký & thư viện ăn dặm'**
+  String get careSolidsSub;
+
+  /// Care section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt'**
+  String get careSettings;
+
+  /// Care settings row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chỉnh theo dõi'**
+  String get careTracking;
+
+  /// Care settings row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn loại hoạt động cần ghi'**
+  String get careTrackingSub;
+
+  /// Care settings row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo'**
+  String get careNotifications;
+
+  /// Care settings row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc nhở, gia đình'**
+  String get careNotificationsSub;
+
+  /// Sheet title when tapping Thống kê.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thống kê'**
+  String get careStatsPick;
+
+  /// Care search, no result.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có mục nào khớp.'**
+  String get careNoResults;
+
+  /// Hôm nay pill (370:1248).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chỉnh'**
+  String get todayCustomize;
+
+  /// Sheet title (370:1525).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chỉnh Hôm nay'**
+  String get customizeTitle;
+
+  /// Sheet body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật, tắt và kéo để sắp xếp những gì hiện trên Hôm nay.'**
+  String get customizeIntro;
+
+  /// Today section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ô theo dõi nhanh'**
+  String get sectionTiles;
+
+  /// Today section subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú, ngủ, tã, hút sữa, tăng trưởng'**
+  String get sectionTilesSub;
+
+  /// Today section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc sắp tới'**
+  String get sectionReminders;
+
+  /// Today section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp trong ngày'**
+  String get sectionRhythm;
+
+  /// Today section subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Biểu đồ 24 giờ'**
+  String get sectionRhythmSub;
+
+  /// Customise sheet section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ô theo dõi hiển thị'**
+  String get visibleTiles;
+
+  /// Customise sheet secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt lại'**
+  String get customizeReset;
+
+  /// Customise sheet primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get customizeDone;
+
+  /// Drag handle a11y.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kéo để sắp xếp'**
+  String get a11yDragToReorder;
 }
 
 class _AppLocalizationsDelegate

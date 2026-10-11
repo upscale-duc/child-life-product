@@ -6,6 +6,7 @@ import '../core/design/tokens.g.dart';
 import '../features/appearance/appearance_screen.dart';
 import '../features/auth/auth_screens.dart';
 import '../features/care/care_models.dart';
+import '../features/care/care_hub_screen.dart';
 import '../features/care/care_screens.dart';
 import '../features/care/history_screen.dart';
 import '../features/care/stats_screens.dart';
@@ -166,8 +167,58 @@ final routerProvider = Provider<GoRouter>((ref) {
               _route(
                 path: Routes.today,
                 builder: (_, _) => const TodayScreen(),
-                // S6: inside the Today branch so the tab dock stays (20 – 20h).
+                // Before v1.0.1 these lived under Hôm nay; links already handed out (scheduled
+                // reminder notifications, widgets) still arrive here.
                 routes: [
+                  for (final (old, now) in const [
+                    ('history', Routes.history),
+                    ('stats/feed', Routes.feedStats),
+                    ('stats/sleep', Routes.sleepStats),
+                    ('reminders', Routes.reminders),
+                  ])
+                    GoRoute(
+                      path: old,
+                      redirect: (_, s) => Uri(
+                        path: now,
+                        queryParameters: s.uri.queryParameters.isEmpty
+                            ? null
+                            : s.uri.queryParameters,
+                      ).toString(),
+                    ),
+                  GoRoute(
+                    path: 'reminders/:id',
+                    redirect: (_, s) =>
+                        '${Routes.reminders}/${s.pathParameters['id']}',
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              _route(
+                path: Routes.memories,
+                builder: (_, _) => const MemoriesScreen(),
+                // S10: album, favourites and milestone pages keep the dock (10e, 11f).
+                routes: [
+                  _route(
+                    path: 'album/:key',
+                    builder: (_, s) => AlbumDetailScreen(
+                      albumKey: s.pathParameters['key'] ?? '',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          // v1.0 improvement: Chăm sóc (370:1971) holds reminders, stats, history and growth.
+          StatefulShellBranch(
+            routes: [
+              _route(
+                path: Routes.care,
+                builder: (_, _) => const CareHubScreen(),
+                routes: [
+
                   _route(
                     path: 'history',
                     builder: (_, s) => HistoryScreen(
@@ -205,78 +256,57 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               _route(
-                path: Routes.memories,
-                builder: (_, _) => const MemoriesScreen(),
-                // S10: album, favourites and milestone pages keep the dock (10e, 11f).
-                routes: [
-                  _route(
-                    path: 'album/:key',
-                    builder: (_, s) => AlbumDetailScreen(
-                      albumKey: s.pathParameters['key'] ?? '',
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              _route(
                 path: Routes.family,
                 builder: (_, _) => const FamilyScreen(),
               ),
             ],
           ),
-          // S11 "Tôi" (13a–13n).
-          StatefulShellBranch(
+        ],
+      ),
+      // S11 "Tôi" (13a–13n), opened from the header avatar: pushed, without the dock (370:1898).
+      _route(
+        path: Routes.me,
+        builder: (_, _) => const MeScreen(),
+        routes: [
+          _route(
+            path: 'storage',
+            builder: (_, _) => const StorageScreen(),
             routes: [
               _route(
-                path: Routes.me,
-                builder: (_, _) => const MeScreen(),
-                routes: [
-                  _route(
-                    path: 'storage',
-                    builder: (_, _) => const StorageScreen(),
-                    routes: [
-                      _route(
-                        path: 'videos',
-                        builder: (_, _) => const LargestVideosScreen(),
-                      ),
-                    ],
-                  ),
-                  _route(
-                    path: 'babies',
-                    builder: (_, _) => const BabyProfilesScreen(),
-                    routes: [
-                      _route(
-                        path: ':id',
-                        builder: (_, s) => BabyProfileViewScreen(
-                          babyId: s.pathParameters['id'] ?? '',
-                        ),
-                      ),
-                    ],
-                  ),
-                  _route(
-                    path: 'profile',
-                    builder: (_, _) => const ProfileScreen(),
-                  ),
-                  _route(
-                    path: 'account',
-                    builder: (_, _) => const AccountScreen(),
-                  ),
-                  _route(
-                    path: 'notifications',
-                    builder: (_, _) => const NotificationsScreen(),
-                  ),
-                  _route(path: 'help', builder: (_, _) => const HelpScreen()),
-                  // 14m (S13).
-                  _route(
-                    path: 'shared',
-                    builder: (_, _) => const SharedOutScreen(),
-                  ),
-                ],
+                path: 'videos',
+                builder: (_, _) => const LargestVideosScreen(),
               ),
             ],
+          ),
+          _route(
+            path: 'babies',
+            builder: (_, _) => const BabyProfilesScreen(),
+            routes: [
+              _route(
+                path: ':id',
+                builder: (_, s) => BabyProfileViewScreen(
+                  babyId: s.pathParameters['id'] ?? '',
+                ),
+              ),
+            ],
+          ),
+          _route(
+            path: 'profile',
+            builder: (_, _) => const ProfileScreen(),
+          ),
+          _route(
+            path: 'account',
+            builder: (_, _) => const AccountScreen(),
+          ),
+          _route(
+            path: 'notifications',
+            builder: (_, _) => const NotificationsScreen(),
+          ),
+          _route(path: 'help', builder: (_, _) => const HelpScreen()),
+          // 14m (S13).
+          _route(
+            path: 'shared',
+            builder: (_, _) => const SharedOutScreen(),
           ),
         ],
       ),

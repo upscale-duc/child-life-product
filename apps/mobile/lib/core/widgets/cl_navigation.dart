@@ -16,26 +16,28 @@ import 'cl_pressable.dart';
 /// Membership role of the current user for the selected baby (business map §2.1).
 enum ClRole { parent, caregiver, relative }
 
-enum ClTab { today, memories, family, me }
+/// NavBar v1.0.1 (v1.0 improvement 370:1246): Hôm nay · Kỷ niệm · Chăm sóc · Gia đình. There is
+/// no "Tôi" tab: Tôi opens from the user avatar in the header.
+enum ClTab { today, memories, care, family }
 
-/// Tabs per role (NavBar 44:362): parent 4, caregiver 3 (no Kỷ niệm), relative 3 (no Hôm nay).
-/// A relative granted "Chăm sóc hằng ngày" also gets a read-only Hôm nay (D-018).
+/// Tabs per role (NavBar v1.0.1): parent Hôm nay · Kỷ niệm · Chăm sóc · Gia đình; caregiver
+/// without Kỷ niệm (370:2174); relative Kỷ niệm · Gia đình, plus a read-only Hôm nay when granted
+/// daily care (D-018; the relative dock is not drawn in v1.0.1, so they keep their view).
 List<ClTab> tabsForRole(ClRole role, {bool relativeSeesToday = false}) =>
     switch (role) {
       ClRole.parent => const [
         ClTab.today,
         ClTab.memories,
+        ClTab.care,
         ClTab.family,
-        ClTab.me,
       ],
-      ClRole.caregiver => const [ClTab.today, ClTab.family, ClTab.me],
+      ClRole.caregiver => const [ClTab.today, ClTab.care, ClTab.family],
       ClRole.relative when relativeSeesToday => const [
         ClTab.today,
         ClTab.memories,
         ClTab.family,
-        ClTab.me,
       ],
-      ClRole.relative => const [ClTab.memories, ClTab.family, ClTab.me],
+      ClRole.relative => const [ClTab.memories, ClTab.family],
     };
 
 /// Quick log is available to parents and caregivers only (no "+" for relatives).
@@ -48,7 +50,6 @@ class ClNavBar extends StatefulWidget {
     required this.role,
     required this.active,
     required this.onSelect,
-    required this.initial,
     this.tabs,
     super.key,
   });
@@ -59,9 +60,6 @@ class ClNavBar extends StatefulWidget {
   final List<ClTab>? tabs;
   final ClTab active;
   final ValueChanged<ClTab> onSelect;
-
-  /// Initial of the signed-in user for the "Tôi" ring.
-  final String initial;
 
   @override
   State<ClNavBar> createState() => _ClNavBarState();
@@ -129,14 +127,14 @@ class _ClNavBarState extends State<ClNavBar>
     String label(ClTab t) => switch (t) {
       ClTab.today => l10n.tabToday,
       ClTab.memories => l10n.tabMemories,
+      ClTab.care => l10n.tabCare,
       ClTab.family => l10n.tabFamily,
-      ClTab.me => l10n.tabMe,
     };
     ClIcons icon(ClTab t) => switch (t) {
       ClTab.today => ClIcons.today,
       ClTab.memories => ClIcons.memories,
+      ClTab.care => ClIcons.care,
       ClTab.family => ClIcons.family,
-      ClTab.me => ClIcons.today,
     };
 
     return Container(
@@ -191,9 +189,7 @@ class _ClNavBarState extends State<ClNavBar>
       if (tab != widget.active) ClHaptics.selection(context);
       widget.onSelect(tab);
     },
-    icon: (ink) => tab == ClTab.me
-        ? _MeRing(initial: widget.initial, ink: ink, active: t > 0.5)
-        : ClIcon(icon, size: 22, color: ink),
+    icon: (ink) => ClIcon(icon, size: 22, color: ink),
   );
 }
 
@@ -274,41 +270,6 @@ class _NavTab extends StatelessWidget {
   }
 }
 
-class _MeRing extends StatelessWidget {
-  const _MeRing({
-    required this.initial,
-    required this.ink,
-    required this.active,
-  });
-
-  final String initial;
-  final Color ink;
-  final bool active;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 22,
-      height: 22,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: ink, width: 1.6),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        initial,
-        style: context.cl.text.caption.copyWith(
-          fontSize: 11,
-          height: 1,
-          letterSpacing: 0,
-          fontWeight: active ? FontWeight.w500 : FontWeight.w600,
-          color: ink,
-        ),
-      ),
-    );
-  }
-}
-
 /// "+" quick-log button (44:363), 68px, opens the quick-log chooser.
 class ClQuickLogButton extends StatelessWidget {
   const ClQuickLogButton({required this.onPressed, super.key});
@@ -342,7 +303,6 @@ class ClTabDock extends StatelessWidget {
     required this.role,
     required this.active,
     required this.onSelect,
-    required this.initial,
     this.onQuickLog,
     this.tabs,
     this.quickLogKey,
@@ -356,7 +316,6 @@ class ClTabDock extends StatelessWidget {
   final Key? quickLogKey;
   final ClTab active;
   final ValueChanged<ClTab> onSelect;
-  final String initial;
   final VoidCallback? onQuickLog;
 
   /// Clearance scrolling content needs so its last item stays above the dock (47: 120).
@@ -379,7 +338,6 @@ class ClTabDock extends StatelessWidget {
               role: role,
               active: active,
               onSelect: onSelect,
-              initial: initial,
               tabs: tabs,
             ),
           ),

@@ -189,11 +189,7 @@ void main() {
     });
 
     test('tabs per role; relatives with daily care get Hôm nay', () {
-      expect(tabsForRole(ClRole.relative), [
-        ClTab.memories,
-        ClTab.family,
-        ClTab.me,
-      ]);
+      expect(tabsForRole(ClRole.relative), [ClTab.memories, ClTab.family]);
       expect(
         tabsForRole(ClRole.relative, relativeSeesToday: true).first,
         ClTab.today,

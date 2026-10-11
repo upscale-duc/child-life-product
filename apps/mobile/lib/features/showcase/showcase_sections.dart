@@ -798,7 +798,6 @@ class _NavigationState extends State<_Navigation> {
                 child: ClNavBar(
                   role: role,
                   active: active[role]!,
-                  initial: 'M',
                   onSelect: (t) => setState(() => active[role] = t),
                 ),
               ),

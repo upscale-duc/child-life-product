@@ -37,7 +37,8 @@ String babyNames(WidgetRef ref, Iterable<String> babyIds) => [
       ref.watch(babyProvider(id)).value!.nickname,
 ].join(', ');
 
-/// Tab "Tôi" per role (13a parent, 13g caregiver, 13h relative; R-123).
+/// "Tôi" per role (13a parent, 13g caregiver, 13h relative; R-123), pushed from the header
+/// avatar since NavBar v1.0.1 (370:1898).
 class MeScreen extends ConsumerWidget {
   const MeScreen({super.key});
 
@@ -78,7 +79,6 @@ class MeScreen extends ConsumerWidget {
 
     return MePage(
       title: l10n.tabMe,
-      back: false,
       children: [
         if (account?.offer case final offer?) ...[
           OwnershipOfferCard(offer: offer),

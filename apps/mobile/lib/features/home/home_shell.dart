@@ -76,11 +76,12 @@ List<ClTab> tabsFor(Membership m) => tabsForRole(
 final _shownConflicts = <String>{};
 
 /// Branch order of the shell route.
-const shellTabs = [ClTab.today, ClTab.memories, ClTab.family, ClTab.me];
+const shellTabs = [ClTab.today, ClTab.memories, ClTab.care, ClTab.family];
 
-/// Tab shell (NavBar 44:362) with role-aware tabs (R-021, 124:13717 / 124:13778): parents see
-/// Hôm nay · Kỷ niệm · Gia đình · Tôi, caregivers no Kỷ niệm, relatives no Hôm nay unless they
-/// were granted daily care (D-018). Switching baby can change the tabs.
+/// Tab shell (NavBar v1.0.1, v1.0 improvement 370:1246) with role-aware tabs (R-021): parents see
+/// Hôm nay · Kỷ niệm · Chăm sóc · Gia đình, caregivers no Kỷ niệm, relatives no Hôm nay unless
+/// they were granted daily care (D-018). Tôi opens from the header avatar. Switching baby can
+/// change the tabs.
 class HomeShell extends ConsumerWidget {
   const HomeShell({required this.shell, super.key});
 
@@ -158,7 +159,6 @@ class HomeShell extends ConsumerWidget {
                 role: clRoleOf(membership.role),
                 tabs: tabs,
                 active: active,
-                initial: initialOf(membership.displayName),
                 onSelect: (tab) => shell.goBranch(
                   shellTabs.indexOf(tab),
                   initialLocation: shellTabs.indexOf(tab) == shell.currentIndex,
@@ -201,6 +201,9 @@ class BabyHeader extends ConsumerWidget {
       children: [
         Row(
           children: [
+            // v1.0 improvement 370:1248: who you are, at the far left; opens Tôi.
+            UserAvatar(membership: membership),
+            const SizedBox(width: ClSpace.s2),
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,
@@ -257,6 +260,41 @@ class BabyHeader extends ConsumerWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// The signed-in member's initial in their role colour (Mẹ / Ba peach, người chăm diaper-soft,
+/// người thân sunshine-soft); tapping opens Tôi (370:1898), a pushed screen without the dock.
+class UserAvatar extends StatelessWidget {
+  const UserAvatar({required this.membership, super.key});
+  final Membership membership;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final bg = switch (membership.role) {
+      MemberRole.coParent => cl.colors.peachSoft,
+      MemberRole.caregiver => cl.care.diaper.soft,
+      MemberRole.relative => cl.colors.sunshineSoft,
+    };
+    return ClPressable(
+      onPressed: () => context.push(Routes.me),
+      semanticLabel: AppLocalizations.of(context).a11yOpenMe,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
+        alignment: Alignment.center,
+        child: Text(
+          initialOf(membership.displayName),
+          style: cl.text.bodyStrong.copyWith(
+            fontSize: 16,
+            height: 1,
+            color: cl.colors.ink,
+          ),
+        ),
+      ),
     );
   }
 }

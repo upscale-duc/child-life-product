@@ -6,9 +6,11 @@ import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
+import 'package:child_life/features/care/care_hub_screen.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/care_screens.dart';
 import 'package:child_life/features/care/care_sheets.dart';
+import 'package:child_life/features/today/today_layout.dart';
 import 'package:child_life/features/today/today_screen.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -123,6 +125,25 @@ final _cases = <String, _Case>{
     build: () => RecordDetailScreen(recordId: _bottle.id),
     overrides: () => careOverrides(me: lan, byId: {_bottle.id: _bottle}),
     act: null,
+  ),
+  // v1.0 improvement: Chăm sóc (370:1971 parent, 370:2174 caregiver), Tuỳ chỉnh Hôm nay (370:1525).
+  'v1i_care_hub': (
+    build: () => const Scaffold(body: CareHubScreen()),
+    overrides: () => careOverrides(growth: mockGrowth()),
+    act: null,
+  ),
+  'v1i_care_hub_caregiver': (
+    build: () => const Scaffold(body: CareHubScreen()),
+    overrides: () => careOverrides(me: lan, growth: mockGrowth()),
+    act: null,
+  ),
+  'v1i_today_customize': (
+    build: _today,
+    overrides: () => careOverrides(growth: mockGrowth()),
+    act: (t) async {
+      showTodayCustomizeSheet(t.element(find.byType(TodayScreen)));
+      await t.pumpAndSettle();
+    },
   ),
 };
 

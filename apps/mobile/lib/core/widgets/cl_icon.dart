@@ -16,6 +16,9 @@ enum ClIcons {
   brandMark('brand-mark'),
   cake,
   camera,
+
+  /// NavBar v1.0.1 Chăm sóc tab (engineering icon in the Figma line style).
+  care,
   check,
   chevronDown('chevron-down'),
   chevronRight('chevron-right'),

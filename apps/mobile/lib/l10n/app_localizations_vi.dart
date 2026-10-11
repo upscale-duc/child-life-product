@@ -5713,4 +5713,144 @@ class AppLocalizationsVi extends AppLocalizations {
   String lastNightBreastInsight(int count, int minutes, String time) {
     return 'Đêm qua bú mẹ $count cữ, $minutes phút ($time).';
   }
+
+  @override
+  String get tabCare => 'Chăm sóc';
+
+  @override
+  String get a11yOpenMe => 'Tôi';
+
+  @override
+  String get careTitle => 'Chăm sóc';
+
+  @override
+  String get careSearchHint => 'Tìm trong Chăm sóc…';
+
+  @override
+  String get careDaily => 'Chăm hằng ngày';
+
+  @override
+  String get careReminders => 'Nhắc nhở';
+
+  @override
+  String careRemindersOn(int count) {
+    return '$count nhắc đang bật';
+  }
+
+  @override
+  String careRemindersMine(int count) {
+    return '$count nhắc giao cho bạn';
+  }
+
+  @override
+  String get careStats => 'Thống kê';
+
+  @override
+  String get careStatsSub => 'Bú, ngủ theo ngày';
+
+  @override
+  String get careHistory => 'Lịch sử';
+
+  @override
+  String get careHistorySub => 'Mọi lần đã ghi';
+
+  @override
+  String get careGrowth => 'Tăng trưởng';
+
+  @override
+  String get careGrowthSub => 'Cân nặng, chiều dài';
+
+  @override
+  String get careSoon => 'Sớm ra mắt';
+
+  @override
+  String get careSoonToast => 'Phần này sẽ có trong bản cập nhật tới.';
+
+  @override
+  String get careWonderWeek => 'Wonder Week';
+
+  @override
+  String get careWonderWeekSub => 'Giai đoạn phát triển dự kiến';
+
+  @override
+  String get careAgeCards => 'Thẻ theo tuổi';
+
+  @override
+  String get careAgeCardsSub => 'Gợi ý theo tuổi của bé';
+
+  @override
+  String get careMilestones => 'Mốc phát triển';
+
+  @override
+  String get careMilestonesSub => 'Ghi lại lần đầu của con';
+
+  @override
+  String get careLibrary => 'Thư viện chăm bé';
+
+  @override
+  String get careLibrarySub => 'Bài viết được chuyên môn rà soát';
+
+  @override
+  String get careSolids => 'Ăn dặm';
+
+  @override
+  String get careSolidsSub => 'Nhật ký & thư viện ăn dặm';
+
+  @override
+  String get careSettings => 'Cài đặt';
+
+  @override
+  String get careTracking => 'Tuỳ chỉnh theo dõi';
+
+  @override
+  String get careTrackingSub => 'Chọn loại hoạt động cần ghi';
+
+  @override
+  String get careNotifications => 'Thông báo';
+
+  @override
+  String get careNotificationsSub => 'Nhắc nhở, gia đình';
+
+  @override
+  String get careStatsPick => 'Xem thống kê';
+
+  @override
+  String get careNoResults => 'Không có mục nào khớp.';
+
+  @override
+  String get todayCustomize => 'Tuỳ chỉnh';
+
+  @override
+  String get customizeTitle => 'Tuỳ chỉnh Hôm nay';
+
+  @override
+  String get customizeIntro =>
+      'Bật, tắt và kéo để sắp xếp những gì hiện trên Hôm nay.';
+
+  @override
+  String get sectionTiles => 'Ô theo dõi nhanh';
+
+  @override
+  String get sectionTilesSub => 'Bú, ngủ, tã, hút sữa, tăng trưởng';
+
+  @override
+  String get sectionReminders => 'Nhắc việc sắp tới';
+
+  @override
+  String get sectionRhythm => 'Nhịp trong ngày';
+
+  @override
+  String get sectionRhythmSub => 'Biểu đồ 24 giờ';
+
+  @override
+  String get visibleTiles => 'Ô theo dõi hiển thị';
+
+  @override
+  String get customizeReset => 'Đặt lại';
+
+  @override
+  String get customizeDone => 'Xong';
+
+  @override
+  String get a11yDragToReorder => 'Kéo để sắp xếp';
 }

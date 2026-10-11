@@ -14,22 +14,19 @@ import '../helpers/pump.dart';
 void main() {
   group('roles', () {
     test('tabs per role follow NavBar 44:362', () {
+      // NavBar v1.0.1 (v1.0 improvement): Chăm sóc replaces Tôi, which opens from the avatar.
       expect(tabsForRole(ClRole.parent), [
         ClTab.today,
         ClTab.memories,
+        ClTab.care,
         ClTab.family,
-        ClTab.me,
       ]);
       expect(tabsForRole(ClRole.caregiver), [
         ClTab.today,
+        ClTab.care,
         ClTab.family,
-        ClTab.me,
       ]);
-      expect(tabsForRole(ClRole.relative), [
-        ClTab.memories,
-        ClTab.family,
-        ClTab.me,
-      ]);
+      expect(tabsForRole(ClRole.relative), [ClTab.memories, ClTab.family]);
     });
 
     testWidgets('relatives get no quick-log button', (tester) async {
@@ -39,7 +36,6 @@ void main() {
           role: ClRole.relative,
           active: ClTab.memories,
           onSelect: (_) {},
-          initial: 'H',
           onQuickLog: () {},
         ),
       );
@@ -50,7 +46,6 @@ void main() {
           role: ClRole.caregiver,
           active: ClTab.today,
           onSelect: (_) {},
-          initial: 'L',
           onQuickLog: () {},
         ),
       );
@@ -66,10 +61,9 @@ void main() {
           role: ClRole.parent,
           active: ClTab.today,
           onSelect: (_) {},
-          initial: 'M',
         ),
       );
-      for (final label in ['Hôm nay', 'Kỷ niệm', 'Gia đình', 'Tôi']) {
+      for (final label in ['Hôm nay', 'Kỷ niệm', 'Chăm sóc', 'Gia đình']) {
         expect(find.bySemanticsLabel(label), findsOneWidget);
       }
       await pumpCl(
@@ -78,11 +72,10 @@ void main() {
           role: ClRole.parent,
           active: ClTab.today,
           onSelect: (_) {},
-          initial: 'M',
         ),
         locale: const Locale('en'),
       );
-      for (final label in ['Today', 'Memories', 'Family', 'Me']) {
+      for (final label in ['Today', 'Memories', 'Care', 'Family']) {
         expect(find.bySemanticsLabel(label), findsOneWidget);
       }
     });
@@ -95,7 +88,6 @@ void main() {
           role: ClRole.parent,
           active: ClTab.today,
           onSelect: (t) => selected = t,
-          initial: 'M',
         ),
       );
       await tester.tap(find.bySemanticsLabel('Gia đình'));
@@ -110,7 +102,6 @@ void main() {
           role: ClRole.parent,
           active: active,
           onSelect: (_) {},
-          initial: 'M',
         ),
       );
       double width(String label) =>
@@ -134,19 +125,18 @@ void main() {
           role: ClRole.parent,
           active: active,
           onSelect: (_) {},
-          initial: 'M',
         ),
       );
       double width(String label) =>
           tester.getSize(find.bySemanticsLabel(label)).width;
       await pumpCl(tester, bar(ClTab.today));
-      await tester.pumpWidget(clHarness(bar(ClTab.me)));
+      await tester.pumpWidget(clHarness(bar(ClTab.family)));
       for (var ms = 0; ms < 400; ms += 40) {
         await tester.pump(const Duration(milliseconds: 40));
         expect(width('Kỷ niệm'), closeTo(52, 0.5));
-        expect(width('Gia đình'), closeTo(52, 0.5));
+        expect(width('Chăm sóc'), closeTo(52, 0.5));
       }
-      expect(width('Tôi'), greaterThan(150));
+      expect(width('Gia đình'), greaterThan(150));
     });
   });
 

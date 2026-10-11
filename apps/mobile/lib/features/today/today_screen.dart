@@ -30,6 +30,7 @@ import '../family/family_labels.dart';
 import '../home/home_shell.dart';
 import '../reminders/reminder_screens.dart' show ReminderPeek;
 import '../home/today_tour.dart';
+import 'today_layout.dart';
 
 /// 19 Hôm nay (46:2266) and its first-run state 18 (29:904): one tile per tracker — tap logs
 /// that type, the lines show the last entry (how long ago · detail · who) — then "Đã ghi hôm
@@ -51,6 +52,8 @@ class TodayScreen extends ConsumerWidget {
     final now = ref.watch(careClockProvider).value ?? DateTime.now();
     final trackers = baby?.trackers ?? const <TrackerKind>[];
     final readOnly = membership.role == MemberRole.relative;
+    // v1.0 improvement 370:1525: the sections and tiles this device shows, in its order.
+    final layout = ref.watch(todayLayoutProvider(babyId));
     final recent = ref.watch(recentRecordsProvider(babyId)).value ?? const [];
     final growth = ref.watch(growthRecordsProvider(babyId)).value ?? const [];
     final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
@@ -121,70 +124,132 @@ class TodayScreen extends ConsumerWidget {
             ),
             style: cl.text.label.copyWith(color: cl.colors.inkMuted),
           ),
-          Semantics(
-            header: true,
-            child: Text(
-              l10n.todayTitle,
-              style: cl.text.largeTitle.copyWith(color: cl.colors.ink),
-            ),
-          ),
-          const SizedBox(height: ClSpace.s4),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: ClSpace.s3,
-            crossAxisSpacing: ClSpace.s3,
-            childAspectRatio: 166 / 156,
+          Row(
             children: [
-              for (final kind in trackers)
-                if (careTypeOf(kind) case final type?)
-                  KeyedSubtree(
-                    key: switch (type) {
-                      CareType.bottle => TourTargets.bottle,
-                      CareType.growth => TourTargets.growth,
-                      _ => null,
-                    },
-                    child: CareTile(
-                      type: type,
-                      last: last(type),
-                      previousGrowth:
-                          type == CareType.growth && growth.length > 1
-                          ? growth[1]
-                          : null,
-                      myUid: membership.uid,
-                      now: now,
-                      readOnly: readOnly,
-                      timer: running(type),
-                      onTap: () => tap(type),
-                      onLongPress: last(type) == null
-                          ? null
-                          : () => context.push(
-                              '${Routes.record}/${last(type)!.id}',
-                            ),
-                    ),
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    l10n.todayTitle,
+                    style: cl.text.largeTitle.copyWith(color: cl.colors.ink),
                   ),
+                ),
+              ),
+              if (!readOnly) const _CustomizePill(),
             ],
           ),
-          // ReminderPeek (128:665, R-094); not for relatives (D-018).
-          if (!readOnly) ...[
-            const SizedBox(height: ClSpace.s4),
-            const ReminderPeek(),
-          ],
-          const SizedBox(height: ClSpace.s6),
-          ClSectionHeader(
-            title: l10n.todayTitle,
-            linkLabel: l10n.todayHistory,
-            onLink: () => context.push(Routes.history),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          DayRhythm(
-            records: recent,
-            dayStart: day.start,
-            dayEnd: day.end,
-            now: now,
-          ),
+          for (final section in layout.order)
+            if (layout.shows(section))
+              ...switch (section) {
+                TodaySection.tiles => [
+                  const SizedBox(height: ClSpace.s4),
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    mainAxisSpacing: ClSpace.s3,
+                    crossAxisSpacing: ClSpace.s3,
+                    childAspectRatio: 166 / 156,
+                    children: [
+                      for (final kind in trackers)
+                        if (!layout.hiddenTiles.contains(kind))
+                          if (careTypeOf(kind) case final type?)
+                            KeyedSubtree(
+                              key: switch (type) {
+                                CareType.bottle => TourTargets.bottle,
+                                CareType.growth => TourTargets.growth,
+                                _ => null,
+                              },
+                              child: CareTile(
+                                type: type,
+                                last: last(type),
+                                previousGrowth:
+                                    type == CareType.growth && growth.length > 1
+                                    ? growth[1]
+                                    : null,
+                                myUid: membership.uid,
+                                now: now,
+                                readOnly: readOnly,
+                                timer: running(type),
+                                onTap: () => tap(type),
+                                onLongPress: last(type) == null
+                                    ? null
+                                    : () => context.push(
+                                        '${Routes.record}/${last(type)!.id}',
+                                      ),
+                              ),
+                            ),
+                    ],
+                  ),
+                ],
+                // ReminderPeek (128:665, R-094); not for relatives (D-018).
+                TodaySection.reminders => [
+                  if (!readOnly) ...[
+                    const SizedBox(height: ClSpace.s4),
+                    const ReminderPeek(),
+                  ],
+                ],
+                TodaySection.rhythm => [
+                  const SizedBox(height: ClSpace.s6),
+                  ClSectionHeader(
+                    title: l10n.todayTitle,
+                    linkLabel: l10n.todayHistory,
+                    onLink: () => context.push(Routes.history),
+                  ),
+                  const SizedBox(height: ClSpace.s3),
+                  DayRhythm(
+                    records: recent,
+                    dayStart: day.start,
+                    dayEnd: day.end,
+                    now: now,
+                  ),
+                ],
+              },
         ],
+      ),
+    );
+  }
+}
+
+/// 370:1265 "Tuỳ chỉnh": surface pill, separator border, sliders 14 + SemiBold 13.
+class _CustomizePill extends StatelessWidget {
+  const _CustomizePill();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    return ClPressable(
+      onPressed: () => showTodayCustomizeSheet(context),
+      semanticLabel: l10n.customizeTitle,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 44),
+        child: Center(
+          child: Container(
+            height: 34,
+            padding: const EdgeInsets.symmetric(horizontal: ClSpace.s3),
+            decoration: BoxDecoration(
+              color: cl.colors.surface,
+              borderRadius: BorderRadius.circular(ClRadius.pill),
+              border: Border.all(color: cl.colors.separator),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClIcon(ClIcons.sliders, size: 14, color: cl.colors.ink),
+                const SizedBox(width: 6),
+                Text(
+                  l10n.todayCustomize,
+                  style: cl.text.label.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: cl.colors.ink,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

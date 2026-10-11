@@ -29,11 +29,12 @@ class MePage extends StatelessWidget {
     final cl = context.cl;
     final list = ListView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(
+      // Tôi and its pages are pushed without the dock (NavBar v1.0.1, 370:1898).
+      padding: EdgeInsets.fromLTRB(
         ClSpace.s4,
         0,
         ClSpace.s4,
-        ClTabDock.contentBottomPadding,
+        MediaQuery.paddingOf(context).bottom + ClSpace.s6,
       ),
       children: [
         const SizedBox(height: ClSpace.s2),
