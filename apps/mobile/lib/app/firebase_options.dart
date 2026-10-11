@@ -23,11 +23,11 @@ FirebaseOptions? firebaseOptionsFor(
         ),
         TargetPlatform.iOS => const FirebaseOptions(
           apiKey: 'AIzaSyCPSQwcdn5Vz0uGmcbxs-fXCsBgs_0SW0g',
-          appId: '1:759703503909:ios:d773349411c53756ca6bcc',
+          appId: '1:759703503909:ios:01eb224b87e45474ca6bcc',
           messagingSenderId: '759703503909',
           projectId: 'child-life-dev',
           storageBucket: 'child-life-dev.firebasestorage.app',
-          iosBundleId: 'app.childlife.dev',
+          iosBundleId: 'dev.hsba.app',
         ),
         _ => null,
       };

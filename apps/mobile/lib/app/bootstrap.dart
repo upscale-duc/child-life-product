@@ -25,6 +25,7 @@ Future<ResolvedEnvironment> bootstrap() async {
   final resolved = resolveEnvironment(
     flavor: appFlavor,
     packageName: info.packageName,
+    platform: defaultTargetPlatform,
     optionsFor: firebaseOptionsFor,
   );
 

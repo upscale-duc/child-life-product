@@ -2,7 +2,7 @@
 // process uploads with sharp, Storage Rules read Firestore):
 //
 //   firebase emulators:start --only auth,firestore,functions,storage --project child-life-dev
-//   xcrun simctl privacy <udid> grant photos app.childlife.dev                       # iOS
+//   xcrun simctl privacy <udid> grant photos dev.hsba.app                            # iOS
 //   adb shell pm grant app.childlife.dev android.permission.READ_MEDIA_IMAGES        # Android
 //   flutter test integration_test/memory_flow_test.dart --flavor dev \
 //     --dart-define=CL_EMULATORS=true -d <device>

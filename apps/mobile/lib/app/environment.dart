@@ -1,29 +1,40 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 
 /// Deployment environment of this build. Emulators are a test target, not an environment.
 enum AppEnvironment {
   dev(
-    bundleId: 'app.childlife.dev',
+    androidAppId: 'app.childlife.dev',
+    // Borrowed App ID on the owner's interim Apple team (VHFV2HNZGN) until the Child Life
+    // developer account exists; it carries the dev push certificate (D-045).
+    iosAppId: 'dev.hsba.app',
     firebaseProjectId: 'child-life-dev',
     siteHost: 'dev.childlife.app',
     // Firebase default domain until dev.childlife.app DNS is connected (plan §3.7).
     webOrigin: 'https://child-life-dev-landing.web.app',
   ),
   prod(
-    bundleId: 'app.childlife',
+    androidAppId: 'app.childlife',
+    iosAppId: 'app.childlife',
     firebaseProjectId: 'child-life-prod',
     siteHost: 'childlife.app',
     webOrigin: 'https://childlife.app',
   );
 
   const AppEnvironment({
-    required this.bundleId,
+    required this.androidAppId,
+    required this.iosAppId,
     required this.firebaseProjectId,
     required this.siteHost,
     required this.webOrigin,
   });
 
-  final String bundleId;
+  /// Android application id and iOS bundle id of this environment's builds.
+  final String androidAppId;
+  final String iosAppId;
+
+  String appIdFor(TargetPlatform platform) =>
+      platform == TargetPlatform.iOS ? iosAppId : androidAppId;
   final String firebaseProjectId;
 
   /// Only links and auth redirects from this host are accepted (implementation plan §3.7).
@@ -54,6 +65,7 @@ class ResolvedEnvironment {
 ResolvedEnvironment resolveEnvironment({
   required String? flavor,
   required String packageName,
+  required TargetPlatform platform,
   required FirebaseOptions? Function(AppEnvironment) optionsFor,
 }) {
   final environment = AppEnvironment.values
@@ -75,9 +87,17 @@ ResolvedEnvironment resolveEnvironment({
       '${environment.name} build points at Firebase project ${options.projectId}',
     );
   }
-  if (packageName != environment.bundleId) {
+  final expected = environment.appIdFor(platform);
+  if (packageName != expected) {
     throw EnvironmentConfigError(
-      '${environment.name} build is installed as $packageName (expected ${environment.bundleId})',
+      '${environment.name} build is installed as $packageName (expected $expected)',
+    );
+  }
+  if (platform == TargetPlatform.iOS &&
+      options.iosBundleId != null &&
+      options.iosBundleId != expected) {
+    throw EnvironmentConfigError(
+      '${environment.name} Firebase options are for ${options.iosBundleId} (expected $expected)',
     );
   }
   return ResolvedEnvironment(environment, options);

@@ -9,8 +9,14 @@
 # (build fails if the flavor has no Firebase config), and Crashlytics dSYM upload for non-Debug builds.
 require 'xcodeproj'
 
+# dev uses an App ID borrowed from the owner's interim Apple team (VHFV2HNZGN) until the
+# Child Life developer account exists (D-045); its push certificate is uploaded to Firebase.
+TEAM_ID = 'VHFV2HNZGN'
+ENTITLEMENTS = 'Runner/Runner.entitlements'
 FLAVORS = {
-  'dev' => { bundle_id: 'app.childlife.dev', name: 'Child Life Dev', icon: 'AppIcon-dev' },
+  # dev signs manually with the owner-supplied development profile "hsba app dev" (push, the
+  # owner's iPhone); install it into ~/Library/Developer/Xcode/UserData/Provisioning Profiles.
+  'dev' => { bundle_id: 'dev.hsba.app', name: 'Child Life Dev', icon: 'AppIcon-dev', profile: 'hsba app dev' },
   'prod' => { bundle_id: 'app.childlife', name: 'Child Life', icon: 'AppIcon-prod' },
 }.freeze
 BASES = %w[Debug Profile Release].freeze
@@ -76,6 +82,18 @@ flutter_group = project.main_group['Flutter']
         config.build_settings['FLAVOR_APP_NAME'] = info[:name]
         config.build_settings['ASSETCATALOG_COMPILER_APPICON_NAME'] = info[:icon]
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = DEPLOYMENT_TARGET
+        # Signing on the team; push (aps-environment) comes from the entitlements.
+        config.build_settings['DEVELOPMENT_TEAM'] = TEAM_ID
+        config.build_settings['CODE_SIGN_ENTITLEMENTS'] = ENTITLEMENTS
+        if info[:profile]
+          config.build_settings['CODE_SIGN_STYLE'] = 'Manual'
+          config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Development'
+          config.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = 'Apple Development'
+          config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = info[:profile]
+        else
+          config.build_settings['CODE_SIGN_STYLE'] = 'Automatic'
+          %w[CODE_SIGN_IDENTITY[sdk=iphoneos*] PROVISIONING_PROFILE_SPECIFIER].each { |k| config.build_settings.delete(k) }
+        end
       elsif owner == :tests
         config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle_id]}.RunnerTests"
         config.build_settings['TEST_HOST'] = '$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner'
