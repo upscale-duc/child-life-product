@@ -142,6 +142,29 @@ service cloud.firestore {
         allow delete: if false;
       }
 
+      // Sổ tiêm chủng (P-133): read like care; Cùng nuôi write any dose, Người chăm sóc record
+      // and change what they recorded (as D-022); relatives with daily care only view. Shapes
+      // mirror packages/contracts/src/vaccines.ts.
+      match /vaccines/{doseKey} {
+        allow read: if canReadCare(babyId);
+        allow create: if canLog(babyId) && babyOpen(babyId) && validNewVaccineDose(babyId, doseKey);
+        allow update: if canLog(babyId) && babyOpen(babyId) && canEditRecord(babyId) &&
+          validVaccineDoseUpdate(doseKey);
+        allow delete: if canLog(babyId) && canEditRecord(babyId);
+      }
+
+      // The book's plan (6in1 / 5in1, reminders, recipients, book photos): Cùng nuôi only.
+      match /vaccinePlan/{docId} {
+        allow read: if canReadCare(babyId);
+        allow write: if docId == 'main' && activeMember(babyId) && role(babyId) == 'coParent' &&
+          babyOpen(babyId) && validVaccinePlan(babyId);
+      }
+
+      // Vaccination reminder bookkeeping (sent / snoozed): the scheduler Function only.
+      match /vaccineReminders/{id} {
+        allow read, write: if false;
+      }
+
       // "Đã ghi hôm nay" per baby-local date, kept by the onCareRecordWrite trigger.
       match /days/{date} {
         allow read: if canReadCare(babyId);
@@ -573,6 +596,68 @@ service cloud.firestore {
 
     function canSeeReminders(babyId) {
       return activeMember(babyId) && role(babyId) in ['coParent', 'caregiver'];
+    }
+
+    // ---------- Sổ tiêm chủng (P-133) ----------
+
+    function optText(v, max) {
+      return v == null || (v is string && v.size() <= max);
+    }
+
+    function optDate(v) {
+      return v == null || (v is string && v.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$'));
+    }
+
+    function validVaccineFields(d, doseKey) {
+      return doseKey.matches('^[a-z0-9]{2,12}_[1-9]$') &&
+        d.vaccineId is string && d.dose is int && d.dose >= 1 && d.dose <= 9 &&
+        doseKey == d.vaccineId + '_' + string(d.dose) &&
+        d.status in ['given', 'declined', 'planned'] &&
+        optDate(d.givenOn) && optDate(d.plannedOn) &&
+        (d.givenTime == null || (d.givenTime is string && d.givenTime.matches('^([01][0-9]|2[0-3]):[0-5][0-9]$'))) &&
+        (d.place == null || d.place in ['hospital', 'service', 'station']) &&
+        optText(d.facility, 80) && optText(d.reaction, 300) && optText(d.declineReason, 200) &&
+        (d.photoPath == null || (d.photoPath is string &&
+          d.photoPath.matches('^babies/' + d.babyId + '/vaccines/[A-Za-z0-9_-]{8,64}[.]jpg$'))) &&
+        // A given dose has no reason, a declined one no date, a rescheduled one its new date.
+        (d.status != 'given' || d.declineReason == null) &&
+        (d.status != 'declined' || d.givenOn == null) &&
+        (d.status != 'planned' || (d.plannedOn != null && d.givenOn == null)) &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time;
+    }
+
+    function validNewVaccineDose(babyId, doseKey) {
+      let d = request.resource.data;
+      let me = get(memberDoc(babyId)).data;
+      return d.keys().hasOnly(['babyId', 'vaccineId', 'dose', 'status', 'givenOn', 'givenTime',
+          'place', 'facility', 'reaction', 'declineReason', 'plannedOn', 'photoPath', 'createdBy',
+          'author', 'createdAt', 'updatedAt', 'updatedBy']) &&
+        d.keys().hasAll(['babyId', 'vaccineId', 'dose', 'status', 'givenOn', 'givenTime',
+          'place', 'facility', 'reaction', 'declineReason', 'plannedOn', 'photoPath', 'createdBy',
+          'author', 'createdAt', 'updatedAt', 'updatedBy']) &&
+        d.babyId == babyId && d.createdBy == request.auth.uid && d.createdAt == request.time &&
+        ownAuthor(d.author, me) && validVaccineFields(d, doseKey);
+    }
+
+    function validVaccineDoseUpdate(doseKey) {
+      let d = request.resource.data;
+      let o = resource.data;
+      return d.diff(o).affectedKeys().hasOnly(['status', 'givenOn', 'givenTime', 'place',
+          'facility', 'reaction', 'declineReason', 'plannedOn', 'photoPath', 'updatedAt',
+          'updatedBy']) &&
+        validVaccineFields(d, doseKey);
+    }
+
+    function validVaccinePlan(babyId) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['dtp', 'setupDone', 'remind', 'recipients', 'bookPhotos',
+          'updatedAt', 'updatedBy']) &&
+        d.keys().hasAll(['dtp', 'setupDone', 'remind', 'recipients', 'bookPhotos', 'updatedAt',
+          'updatedBy']) &&
+        (d.dtp == null || d.dtp in ['6in1', '5in1']) && d.setupDone is bool && d.remind is bool &&
+        d.recipients is list && d.recipients.size() <= 20 &&
+        d.bookPhotos is list && d.bookPhotos.size() <= 10 &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time;
     }
 
     function ownAuthor(a, me) {
