@@ -420,16 +420,15 @@ class _Badge extends StatelessWidget {
   );
 }
 
-/// Existing account found for this email (23:370).
+/// Existing account found for this email (23:370). Whose account it is is not known yet, so the
+/// avatar is the family icon (v1.0 improvement 345:35762).
 class ClAccountRow extends StatelessWidget {
   const ClAccountRow({
-    required this.initial,
     required this.email,
     required this.provider,
     super.key,
   });
 
-  final String initial;
   final String email;
   final String provider;
 
@@ -458,15 +457,7 @@ class ClAccountRow extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
-              child: Text(
-                initial,
-                style: cl.text.bodyStrong.copyWith(
-                  fontSize: 15,
-                  height: 1,
-                  fontWeight: FontWeight.w600,
-                  color: c.onMintDeep,
-                ),
-              ),
+              child: ClIcon(ClIcons.family, size: 18, color: c.onMintDeep),
             ),
             const SizedBox(width: ClSpace.s3),
             Expanded(child: Text(email, style: cl.text.label)),

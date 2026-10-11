@@ -219,6 +219,33 @@ void main() {
       expect(repo.deleted.single.id, saved.id);
     });
 
+    testWidgets(
+      '22 (v1.0): last amount prefilled, quick picks for the baby\'s age',
+      (tester) async {
+        final repo = FakeCareRepository();
+        await pumpRouted(
+          tester,
+          _Host((c) => openCareLog(c, CareType.bottle)),
+          overrides: careOverrides(repo: repo),
+        );
+        await tester.tap(find.text('open'));
+        await tester.pumpAndSettle();
+        // The last bottle today was 120 ml at 14:20; Teddy is three weeks old.
+        expect(find.text('Lượng sữa · đã điền theo lần trước'), findsOneWidget);
+        expect(find.text('Lần trước 120 ml · 14:20'), findsOneWidget);
+        expect(find.text('Gợi ý cho bé 3 tuần'), findsOneWidget);
+        for (final ml in const ['60', '90', '120', '150']) {
+          expect(find.text('$ml ml', findRichText: true), findsOneWidget);
+        }
+        await tester.tap(find.text('90 ml', findRichText: true));
+        await tester.pump();
+        expect(find.text('Lượng sữa · tùy chọn'), findsOneWidget);
+        await tester.tap(find.text('Lưu cữ bú'));
+        await tester.pumpAndSettle();
+        expect(repo.created.single.amountMl, 90);
+      },
+    );
+
     testWidgets('23: suggests the other side; 24 remembers the last kind', (
       tester,
     ) async {

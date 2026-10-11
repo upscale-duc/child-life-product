@@ -268,4 +268,56 @@ void main() {
       expect(sleepStats(week, zone, now, StatsWindow.today).rows, hasLength(1));
     });
   });
+
+  group('statistics · v1.0 improvement (20g types, ranges, per day)', () {
+    final week = _week();
+    const zone = 'Asia/Ho_Chi_Minh';
+    final now = DateTime.utc(2026, 10, 8, 8, 5); // 15:05
+
+    test('a type keeps only its feeds', () {
+      final bottle = feedStats(
+        week,
+        zone,
+        now,
+        StatsWindow.week,
+        kind: FeedKind.bottle,
+      );
+      final breast = feedStats(
+        week,
+        zone,
+        now,
+        StatsWindow.week,
+        kind: FeedKind.breast,
+      );
+      expect(bottle.breastFeeds, 0);
+      expect(breast.bottleFeeds, 0);
+      expect(bottle.days, hasLength(7));
+      for (final d in bottle.days) {
+        expect(d.breastMilkMl + d.formulaMl, d.bottleMl);
+      }
+      for (final d in breast.days) {
+        expect(
+          d.leftMinutes + d.rightMinutes,
+          lessThanOrEqualTo(d.breastMinutes + 1),
+        );
+      }
+    });
+
+    test('a custom range has its own days, ending on its last day', () {
+      final s = feedStats(
+        week,
+        zone,
+        now,
+        StatsWindow.week,
+        custom: (end: now.subtract(const Duration(days: 2)), days: 3),
+      );
+      expect(s.days, hasLength(3));
+      final all = feedStats(week, zone, now, StatsWindow.week);
+      // The last three days of the custom range are days 3–5 of the week.
+      expect(
+        [for (final d in s.days) d.feeds],
+        [for (final d in all.days.sublist(2, 5)) d.feeds],
+      );
+    });
+  });
 }

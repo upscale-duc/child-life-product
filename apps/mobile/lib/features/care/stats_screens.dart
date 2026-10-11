@@ -8,8 +8,12 @@ import 'package:intl/intl.dart' hide TextDirection;
 import '../../core/appearance/appearance_providers.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_navigation.dart';
+import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_segmented.dart';
+import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_avatar_view.dart';
 import '../baby/baby_repository.dart';
@@ -45,6 +49,38 @@ class _Window extends Notifier<StatsWindow> {
   }
 }
 
+/// 20g "Loại bú" (v1.0 improvement 391:3185), remembered like the window.
+final _feedKindProvider = NotifierProvider<_FeedKindNotifier, FeedKind>(
+  _FeedKindNotifier.new,
+);
+
+class _FeedKindNotifier extends Notifier<FeedKind> {
+  @override
+  FeedKind build() =>
+      FeedKind.values.asNameMap()[ref
+          .read(sharedPreferencesProvider)
+          .getString('stats.feed.kind')] ??
+      FeedKind.all;
+
+  void set(FeedKind k) {
+    ref.read(sharedPreferencesProvider).setString('stats.feed.kind', k.name);
+    state = k;
+  }
+}
+
+/// 20g "Tuỳ chọn" (391:3373): a custom range for this visit; null = the window above.
+final _feedCustomProvider = NotifierProvider<_FeedCustom, CustomRange?>(
+  _FeedCustom.new,
+);
+
+class _FeedCustom extends Notifier<CustomRange?> {
+  @override
+  CustomRange? build() => null;
+
+  // ignore: use_setters_to_change_properties
+  void set(CustomRange? r) => state = r;
+}
+
 /// "2g 50p" — the compact form the stats screens use (20g, 20h).
 String compactDuration(AppLocalizations l10n, Duration d) {
   final h = d.inHours;
@@ -65,10 +101,19 @@ class _StatsFrame extends ConsumerWidget {
     required this.title,
     required this.screen,
     required this.builder,
+    this.controls,
+    this.custom,
   });
 
   final String title;
   final String screen;
+
+  /// Replaces the window segmented (20g's type and range pills).
+  final Widget Function(BuildContext context, String zone, DateTime now)?
+  controls;
+
+  /// A custom range reaching further back than 30 days.
+  final CustomRange? custom;
   final List<Widget> Function(
     BuildContext context,
     StatsWindow window,
@@ -90,10 +135,13 @@ class _StatsFrame extends ConsumerWidget {
         ref.watch(careClockProvider).value ?? ref.read(timerClockProvider)();
     final window = ref.watch(_windowProvider(screen));
     final today = babyDayBounds(zone, now);
-    // 30 days plus the evening before (Hôm nay starts at 18:00 yesterday).
+    // 30 days plus the evening before (Hôm nay starts at 18:00 yesterday), or the custom range.
+    final start = custom == null
+        ? today.start
+        : windowDays(zone, custom!.end, custom!.days).first.start;
     final from = DateTime.fromMillisecondsSinceEpoch(
-      today.start.millisecondsSinceEpoch -
-          const Duration(days: 31).inMilliseconds,
+      start.millisecondsSinceEpoch -
+          Duration(days: custom == null ? 31 : 1).inMilliseconds,
       isUtc: true,
     );
     final records =
@@ -136,13 +184,16 @@ class _StatsFrame extends ConsumerWidget {
                     child: Text(title, style: cl.text.largeTitle),
                   ),
                   const SizedBox(height: ClSpace.s4),
-                  ClSegmented<StatsWindow>(
-                    options: StatsWindow.values,
-                    selected: window,
-                    labelOf: (w) => _windowLabel(l10n, w),
-                    onChanged: (w) =>
-                        ref.read(_windowProvider(screen).notifier).set(w),
-                  ),
+                  if (controls != null)
+                    controls!(context, zone, now)
+                  else
+                    ClSegmented<StatsWindow>(
+                      options: StatsWindow.values,
+                      selected: window,
+                      labelOf: (w) => _windowLabel(l10n, w),
+                      onChanged: (w) =>
+                          ref.read(_windowProvider(screen).notifier).set(w),
+                    ),
                   const SizedBox(height: ClSpace.s4),
                   ...builder(context, window, records, zone, now),
                 ],
@@ -366,15 +417,28 @@ class FeedStatsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final kind = ref.watch(_feedKindProvider);
+    final custom = ref.watch(_feedCustomProvider);
     return _StatsFrame(
       title: l10n.feedStatsTitle,
       screen: 'feed',
-      builder: (context, window, records, zone, now) {
+      custom: custom,
+      controls: (context, zone, now) =>
+          _FeedControls(kind: kind, custom: custom, zone: zone, now: now),
+      builder: (context, savedWindow, records, zone, now) {
         final cl = context.cl;
         final care = cl.care;
         final hm = DateFormat('HH:mm');
-        final s = feedStats(records, zone, now, window);
-        final days = daysOf(window);
+        final window = custom == null ? savedWindow : StatsWindow.month;
+        final s = feedStats(
+          records,
+          zone,
+          now,
+          window,
+          kind: kind,
+          custom: custom,
+        );
+        final days = custom?.days ?? daysOf(window);
         final gap = s.averageGap == null
             ? '—'
             : compactDuration(l10n, s.averageGap!);
@@ -399,41 +463,109 @@ class FeedStatsScreen extends ConsumerWidget {
               (gap, l10n.gapAverage),
             ])
           else
-            _Kpis([
-              (l10n.feedsCount(s.feeds), l10n.kpiFeedsPerDay),
-              (l10n.amountMl(s.bottleMl), l10n.kpiBottlePerDay),
-              (l10n.durationMinutes(breastPerDay), l10n.kpiBreastPerDay),
-            ]),
+            _Kpis(switch (kind) {
+              FeedKind.all => [
+                (l10n.feedsCount(s.feeds), l10n.kpiFeedsPerDay),
+                (l10n.amountMl(s.bottleMl), l10n.kpiBottlePerDay),
+                (l10n.durationMinutes(breastPerDay), l10n.kpiBreastPerDay),
+              ],
+              FeedKind.bottle => [
+                (l10n.amountMl(s.bottleMl), l10n.kpiFeedsPerDay),
+                (l10n.feedsCount(s.bottleFeeds), l10n.kpiFeedsPerDay),
+                (
+                  l10n.amountMl(
+                    s.bottleFeeds == 0
+                        ? 0
+                        : (s.bottleMl / s.bottleFeeds).round(),
+                  ),
+                  l10n.kpiPerFeed,
+                ),
+              ],
+              FeedKind.breast => [
+                (l10n.durationMinutes(breastPerDay), l10n.kpiFeedsPerDay),
+                (l10n.feedsCount(s.breastFeeds), l10n.kpiFeedsPerDay),
+                (l10n.durationMinutes(s.breastMinutesPerFeed), l10n.kpiPerFeed),
+              ],
+            }),
           if (!today && s.days.isNotEmpty)
-            _FeedsPerDayCard(
-              stats: s,
-              days: days,
-              breastPerDay: breastPerDay,
-              zone: zone,
-            ),
+            switch (kind) {
+              FeedKind.all => _FeedsPerDayCard(
+                stats: s,
+                days: days,
+                breastPerDay: breastPerDay,
+                zone: zone,
+              ),
+              FeedKind.bottle => _MilkPerDayCard(
+                stats: s,
+                days: days,
+                zone: zone,
+              ),
+              FeedKind.breast => _BreastPerDayCard(
+                stats: s,
+                days: days,
+                breastPerDay: breastPerDay,
+                zone: zone,
+              ),
+            },
           _Card(
             title: today ? l10n.nightAndToday : l10n.dayNightFeed,
             subtitle: today
                 ? l10n.nightAndTodayHint
                 : l10n.dayNightFeedHint(days),
             children: [
-              _Ratio(
-                parts: [
-                  (
-                    cl.colors.sunshine,
-                    today ? l10n.todayLabel : l10n.dayLabel,
-                    _pct(s.dayMl, totalMl),
-                    l10n.mlAndFeeds(s.dayMl, s.dayFeeds),
+              if (kind == FeedKind.breast)
+                // 346:590: breastfeeding is counted by time.
+                _Ratio(
+                  parts: [
+                    (
+                      cl.colors.sunshine,
+                      today ? l10n.todayLabel : l10n.dayLabel,
+                      _pct(s.dayMinutes, s.dayMinutes + s.nightMinutes),
+                      l10n.minutesAndFeeds(s.dayMinutes, s.dayFeeds),
+                    ),
+                    (
+                      care.sleep.accent,
+                      today ? l10n.lastNightLabel : l10n.nightLabel,
+                      s.dayMinutes + s.nightMinutes == 0
+                          ? 0
+                          : 100 -
+                                _pct(
+                                  s.dayMinutes,
+                                  s.dayMinutes + s.nightMinutes,
+                                ),
+                      l10n.minutesAndFeeds(s.nightMinutes, s.nightFeeds),
+                    ),
+                  ],
+                )
+              else
+                _Ratio(
+                  parts: [
+                    (
+                      cl.colors.sunshine,
+                      today ? l10n.todayLabel : l10n.dayLabel,
+                      _pct(s.dayMl, totalMl),
+                      l10n.mlAndFeeds(s.dayMl, s.dayFeeds),
+                    ),
+                    (
+                      care.sleep.accent,
+                      today ? l10n.lastNightLabel : l10n.nightLabel,
+                      totalMl == 0 ? 0 : 100 - _pct(s.dayMl, totalMl),
+                      l10n.mlAndFeeds(s.nightMl, s.nightFeeds),
+                    ),
+                  ],
+                ),
+              if (kind == FeedKind.breast && s.lastNightBreasts > 0)
+                _Insight(
+                  l10n.lastNightBreastInsight(
+                    s.lastNightBreasts,
+                    s.lastNightBreastMinutes,
+                    s.lastNightBreasts == 1
+                        ? hm.format(inBabyZone(zone, s.lastNightBreastFrom!))
+                        : '${hm.format(inBabyZone(zone, s.lastNightBreastFrom!))}–'
+                              '${hm.format(inBabyZone(zone, s.lastNightBreastTo!))}',
                   ),
-                  (
-                    care.sleep.accent,
-                    today ? l10n.lastNightLabel : l10n.nightLabel,
-                    totalMl == 0 ? 0 : 100 - _pct(s.dayMl, totalMl),
-                    l10n.mlAndFeeds(s.nightMl, s.nightFeeds),
-                  ),
-                ],
-              ),
-              if (nightGap != null)
+                )
+              else if (kind != FeedKind.breast && nightGap != null)
                 _Insight(
                   today
                       ? l10n.lastNightGapInsight(
@@ -483,7 +615,8 @@ class FeedStatsScreen extends ConsumerWidget {
                 ]),
               ],
             )
-          else
+          else if (kind == FeedKind.bottle)
+            // 346:354: the hourly card lives on the Bú bình view.
             _Card(
               title: l10n.milkByHour,
               subtitle: l10n.milkByHourHint(days),
@@ -520,61 +653,65 @@ class FeedStatsScreen extends ConsumerWidget {
                 ]),
               ],
             ),
-          _Card(
-            title: l10n.breastCard,
-            subtitle: today ? l10n.windowToday : l10n.averageDays(days),
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: _Big(
-                      today
-                          ? l10n.feedsCount(s.breastFeeds)
-                          : l10n.feedsCount(s.breastPerDay.round()),
-                      today ? l10n.todayShort : l10n.perDayShort,
+          if (kind != FeedKind.bottle)
+            _Card(
+              title: l10n.breastCard,
+              subtitle: today ? l10n.windowToday : l10n.averageDays(days),
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _Big(
+                        today
+                            ? l10n.feedsCount(s.breastFeeds)
+                            : l10n.feedsCount(s.breastPerDay.round()),
+                        today ? l10n.todayShort : l10n.perDayShort,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: _Big(
-                      today
-                          ? durationLabel(l10n, s.leftMinutes + s.rightMinutes)
-                          : l10n.durationMinutes(s.breastMinutesPerFeed),
-                      today ? l10n.sideBothFull.toLowerCase() : l10n.perFeed,
+                    Expanded(
+                      child: _Big(
+                        today
+                            ? durationLabel(
+                                l10n,
+                                s.leftMinutes + s.rightMinutes,
+                              )
+                            : l10n.durationMinutes(s.breastMinutesPerFeed),
+                        today ? l10n.sideBothFull.toLowerCase() : l10n.perFeed,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: ClSpace.s3),
-              _Ratio(
-                parts: [
-                  (
-                    care.breast.accent,
-                    today
-                        ? l10n.leftMinutes(s.leftMinutes)
-                        : l10n.leftShare(leftPct),
-                    leftPct,
-                    '',
-                  ),
-                  (
-                    care.breast.ink,
-                    today
-                        ? l10n.rightMinutes(s.rightMinutes)
-                        : l10n.rightShare(100 - leftPct),
-                    s.leftMinutes + s.rightMinutes == 0 ? 0 : 100 - leftPct,
-                    '',
-                  ),
-                ],
-              ),
-              if (s.nextSide != null)
-                _Insight(
-                  s.nextSide == Side.left
-                      ? l10n.nextSideLeft
-                      : l10n.nextSideRight,
-                  color: care.breast.soft,
-                  ink: care.breast.ink,
+                  ],
                 ),
-            ],
-          ),
+                const SizedBox(height: ClSpace.s3),
+                _Ratio(
+                  parts: [
+                    (
+                      care.breast.accent,
+                      today
+                          ? l10n.leftMinutes(s.leftMinutes)
+                          : l10n.leftShare(leftPct),
+                      leftPct,
+                      '',
+                    ),
+                    (
+                      care.breast.ink,
+                      today
+                          ? l10n.rightMinutes(s.rightMinutes)
+                          : l10n.rightShare(100 - leftPct),
+                      s.leftMinutes + s.rightMinutes == 0 ? 0 : 100 - leftPct,
+                      '',
+                    ),
+                  ],
+                ),
+                if (s.nextSide != null)
+                  _Insight(
+                    s.nextSide == Side.left
+                        ? l10n.nextSideLeft
+                        : l10n.nextSideRight,
+                    color: care.breast.soft,
+                    ink: care.breast.ink,
+                  ),
+              ],
+            ),
         ];
       },
     );
@@ -1368,6 +1505,331 @@ class _SleepPerDayCard extends StatelessWidget {
                   )
                 : l10n.sleepRangeInsight(c(min), c(max), days),
           ),
+      ],
+    );
+  }
+}
+
+String _span(DateTime from, DateTime to) =>
+    '${from.day}/${from.month} – ${to.day}/${to.month}';
+
+/// 20g type and range pills (v1.0 improvement 346:64): "Tất cả ▾" · "7 ngày ▾".
+class _FeedControls extends ConsumerWidget {
+  const _FeedControls({
+    required this.kind,
+    required this.custom,
+    required this.zone,
+    required this.now,
+  });
+
+  final FeedKind kind;
+  final CustomRange? custom;
+  final String zone;
+  final DateTime now;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final window = ref.watch(_windowProvider('feed'));
+    String range() {
+      final c = custom;
+      if (c == null) return _windowLabel(l10n, window);
+      final days = windowDays(zone, c.end, c.days);
+      return _span(
+        inBabyZone(zone, days.first.start),
+        inBabyZone(zone, days.last.start),
+      );
+    }
+
+    return Wrap(
+      spacing: ClSpace.s2,
+      runSpacing: ClSpace.s2,
+      children: [
+        _DropPill(
+          icon: ClIcons.feed,
+          label: switch (kind) {
+            FeedKind.all => l10n.feedKindAll,
+            FeedKind.bottle => l10n.trackerBottle,
+            FeedKind.breast => l10n.trackerBreast,
+          },
+          onTap: () => _showKindSheet(context),
+        ),
+        _DropPill(
+          icon: ClIcons.clock,
+          label: range(),
+          onTap: () => _showRangeSheet(context, zone, now),
+        ),
+      ],
+    );
+  }
+}
+
+class _DropPill extends StatelessWidget {
+  const _DropPill({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final ClIcons icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return ClPressable(
+      onPressed: onTap,
+      semanticLabel: label,
+      child: Container(
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: ClSpace.s3),
+        decoration: BoxDecoration(
+          color: cl.colors.surface,
+          borderRadius: BorderRadius.circular(ClRadius.pill),
+          border: Border.all(color: cl.colors.separator),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClIcon(icon, size: 16, color: cl.colors.ink),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: cl.text.label.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(width: 4),
+            ClIcon(ClIcons.chevronDown, size: 16, color: cl.colors.inkMuted),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// SH Thống kê bú · Loại (391:3185).
+Future<void> _showKindSheet(BuildContext context) => showClSheet<void>(
+  context: context,
+  builder: (sheet) => Consumer(
+    builder: (context, ref, _) {
+      final l10n = AppLocalizations.of(context);
+      final kind = ref.watch(_feedKindProvider);
+      void pick(FeedKind k) {
+        ref.read(_feedKindProvider.notifier).set(k);
+        Navigator.of(sheet).pop();
+      }
+
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.feedKindTitle),
+          ClCardGroup(
+            children: [
+              for (final (k, title, hint) in [
+                (FeedKind.all, l10n.feedKindAll, l10n.feedKindAllHint),
+                (FeedKind.bottle, l10n.trackerBottle, l10n.feedKindBottleHint),
+                (FeedKind.breast, l10n.trackerBreast, l10n.feedKindBreastHint),
+              ])
+                ClOptionRow(
+                  title: title,
+                  subtitle: hint,
+                  selected: kind == k,
+                  onTap: () => pick(k),
+                ),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s4),
+        ],
+      );
+    },
+  ),
+);
+
+/// SH Thống kê bú · Thời gian (391:3373): Hôm nay · 7 ngày · 30 ngày · Tuỳ chọn.
+Future<void> _showRangeSheet(BuildContext context, String zone, DateTime now) =>
+    showClSheet<void>(
+      context: context,
+      builder: (sheet) => Consumer(
+        builder: (context, ref, _) {
+          final l10n = AppLocalizations.of(context);
+          final window = ref.watch(_windowProvider('feed'));
+          final custom = ref.watch(_feedCustomProvider);
+          String caption(int days) {
+            final d = windowDays(zone, now, days);
+            return _span(
+              inBabyZone(zone, d.first.start),
+              inBabyZone(zone, d.last.start),
+            );
+          }
+
+          void pick(StatsWindow w) {
+            ref.read(_feedCustomProvider.notifier).set(null);
+            ref.read(_windowProvider('feed').notifier).set(w);
+            Navigator.of(sheet).pop();
+          }
+
+          Future<void> pickCustom() async {
+            final today = inBabyZone(zone, now);
+            final last = DateTime(today.year, today.month, today.day);
+            final picked = await showDateRangePicker(
+              context: context,
+              firstDate: last.subtract(const Duration(days: 730)),
+              lastDate: last,
+              initialDateRange: DateTimeRange(
+                start: last.subtract(const Duration(days: 6)),
+                end: last,
+              ),
+            );
+            if (picked == null || !sheet.mounted) return;
+            final days = picked.end.difference(picked.start).inDays + 1;
+            // Noon of the last day, in the baby's zone, anchors the window.
+            final end = now.subtract(
+              Duration(days: last.difference(picked.end).inDays),
+            );
+            ref.read(_feedCustomProvider.notifier).set((
+              end: end,
+              days: days.clamp(1, 730),
+            ));
+            if (sheet.mounted) Navigator.of(sheet).pop();
+          }
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ClSheetHeader(title: l10n.rangeTitle),
+              ClCardGroup(
+                children: [
+                  ClOptionRow(
+                    title: l10n.windowToday,
+                    selected: custom == null && window == StatsWindow.today,
+                    onTap: () => pick(StatsWindow.today),
+                  ),
+                  ClOptionRow(
+                    title: l10n.window7,
+                    subtitle: caption(7),
+                    selected: custom == null && window == StatsWindow.week,
+                    onTap: () => pick(StatsWindow.week),
+                  ),
+                  ClOptionRow(
+                    title: l10n.window30,
+                    subtitle: caption(30),
+                    selected: custom == null && window == StatsWindow.month,
+                    onTap: () => pick(StatsWindow.month),
+                  ),
+                  ClOptionRow(
+                    title: l10n.rangeCustom,
+                    subtitle: l10n.rangeCustomHint,
+                    selected: custom != null,
+                    onTap: pickCustom,
+                  ),
+                ],
+              ),
+              const SizedBox(height: ClSpace.s4),
+            ],
+          );
+        },
+      ),
+    );
+
+/// 20g · Bú bình (346:354) "Lượng sữa mỗi ngày": expressed milk and formula ml per day.
+class _MilkPerDayCard extends StatelessWidget {
+  const _MilkPerDayCard({
+    required this.stats,
+    required this.days,
+    required this.zone,
+  });
+
+  final FeedStats stats;
+  final int days;
+  final String zone;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final care = cl.care;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final bars = stats.days;
+    final labels = [
+      for (final d in bars) _dayLabel(locale, zone, d.start, days),
+    ];
+    return _Card(
+      title: l10n.milkPerDayTitle,
+      subtitle: l10n.milkPerDayHint(days),
+      children: [
+        StackedDaysChart(
+          bottoms: [for (final d in bars) d.breastMilkMl.toDouble()],
+          tops: [for (final d in bars) d.formulaMl.toDouble()],
+          labels: labels,
+          bottomColor: care.pump.accent,
+          topColor: care.bottle.accent,
+          average: stats.bottleMl.toDouble(),
+          averageLabel: l10n.mlAvgLine(stats.bottleMl),
+          tickLabel: (v) => '${v.round()}',
+          tipOf: (i) =>
+              l10n.milkDayTip(labels[i], bars[i].bottleMl, bars[i].bottles),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        _Legend([
+          (care.pump.accent, l10n.legendExpressedMilk),
+          (care.bottle.accent, l10n.legendFormula),
+        ]),
+      ],
+    );
+  }
+}
+
+/// 20g · Bú mẹ (346:590) "Thời gian bú mẹ mỗi ngày": left and right minutes per day.
+class _BreastPerDayCard extends StatelessWidget {
+  const _BreastPerDayCard({
+    required this.stats,
+    required this.days,
+    required this.breastPerDay,
+    required this.zone,
+  });
+
+  final FeedStats stats;
+  final int days;
+  final int breastPerDay;
+  final String zone;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final care = cl.care;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final bars = stats.days;
+    final labels = [
+      for (final d in bars) _dayLabel(locale, zone, d.start, days),
+    ];
+    return _Card(
+      title: l10n.breastPerDayTitle,
+      subtitle: l10n.breastPerDayHint,
+      children: [
+        StackedDaysChart(
+          bottoms: [for (final d in bars) d.leftMinutes.toDouble()],
+          tops: [for (final d in bars) d.rightMinutes.toDouble()],
+          labels: labels,
+          bottomColor: care.breast.accent,
+          topColor: care.breast.ink,
+          average: breastPerDay.toDouble(),
+          averageLabel: l10n.minutesAvgLine(breastPerDay),
+          tickLabel: (v) => '${v.round()}′',
+          tipOf: (i) => l10n.breastDayTip(
+            labels[i],
+            bars[i].breastMinutes,
+            bars[i].breasts,
+          ),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        _Legend([
+          (care.breast.accent, l10n.legendLeftSide),
+          (care.breast.ink, l10n.legendRightSide),
+        ]),
+        _Insight(l10n.breastByTimeNote),
       ],
     );
   }

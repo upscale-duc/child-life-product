@@ -8466,5 +8466,207 @@
         "type": "String"
       }
     }
+  },
+  "amountFromLast": "Lượng sữa · đã điền theo lần trước",
+  "@amountFromLast": {
+    "description": "22 field label when prefilled."
+  },
+  "lastBottleAt": "Lần trước {ml} ml · {time}",
+  "@lastBottleAt": {
+    "description": "22 caption.",
+    "placeholders": {
+      "ml": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bottleSuggestFor": "Gợi ý cho bé {age}",
+  "@bottleSuggestFor": {
+    "description": "22 caption; age like \"3 tuần\".",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "bottleSuggestNewborn": "Gợi ý cho bé sơ sinh",
+  "@bottleSuggestNewborn": {
+    "description": "22 caption, first week."
+  },
+  "bottleQuickPick": "{ml} ml",
+  "@bottleQuickPick": {
+    "description": "22 quick-pick chip (a11y).",
+    "placeholders": {
+      "ml": {
+        "type": "int"
+      }
+    }
+  },
+  "feedKindTitle": "Loại bú",
+  "@feedKindTitle": {
+    "description": "20g type sheet title."
+  },
+  "feedKindAll": "Tất cả",
+  "@feedKindAll": {
+    "description": "20g type: all feeds."
+  },
+  "feedKindAllHint": "Bú bình và bú mẹ",
+  "@feedKindAllHint": {
+    "description": "20g type caption."
+  },
+  "feedKindBottleHint": "Theo lượng sữa (ml)",
+  "@feedKindBottleHint": {
+    "description": "20g type caption."
+  },
+  "feedKindBreastHint": "Theo thời gian bú (phút)",
+  "@feedKindBreastHint": {
+    "description": "20g type caption."
+  },
+  "rangeTitle": "Khoảng thời gian",
+  "@rangeTitle": {
+    "description": "20g range sheet title."
+  },
+  "rangeCustom": "Tuỳ chọn",
+  "@rangeCustom": {
+    "description": "20g range: custom."
+  },
+  "rangeCustomHint": "Chọn từ ngày – đến ngày",
+  "@rangeCustomHint": {
+    "description": "20g range caption."
+  },
+  "rangeSpan": "{from} – {to}",
+  "@rangeSpan": {
+    "description": "20g range caption / pill.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "kpiPerFeed": "TB mỗi cữ",
+  "@kpiPerFeed": {
+    "description": "20g KPI caption."
+  },
+  "milkPerDayTitle": "Lượng sữa mỗi ngày",
+  "@milkPerDayTitle": {
+    "description": "20g Bú bình card."
+  },
+  "milkPerDayHint": "Tổng ml bú bình · {days} ngày",
+  "@milkPerDayHint": {
+    "description": "20g Bú bình card subtitle.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "milkDayTip": "{day} · {ml} ml · {count} cữ",
+  "@milkDayTip": {
+    "description": "20g Bú bình callout.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "ml": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mlAvgLine": "TB {ml} ml",
+  "@mlAvgLine": {
+    "description": "20g Bú bình average line.",
+    "placeholders": {
+      "ml": {
+        "type": "int"
+      }
+    }
+  },
+  "legendExpressedMilk": "Sữa mẹ vắt",
+  "@legendExpressedMilk": {
+    "description": "20g Bú bình legend."
+  },
+  "legendFormula": "Sữa công thức",
+  "@legendFormula": {
+    "description": "20g Bú bình legend."
+  },
+  "breastPerDayTitle": "Thời gian bú mẹ mỗi ngày",
+  "@breastPerDayTitle": {
+    "description": "20g Bú mẹ card."
+  },
+  "breastPerDayHint": "Tổng phút · bên trái và bên phải",
+  "@breastPerDayHint": {
+    "description": "20g Bú mẹ card subtitle."
+  },
+  "breastDayTip": "{day} · {minutes} phút · {count} cữ",
+  "@breastDayTip": {
+    "description": "20g Bú mẹ callout.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesAvgLine": "TB {minutes} phút",
+  "@minutesAvgLine": {
+    "description": "20g Bú mẹ average line.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "legendLeftSide": "Bên trái",
+  "@legendLeftSide": {
+    "description": "20g Bú mẹ legend."
+  },
+  "legendRightSide": "Bên phải",
+  "@legendRightSide": {
+    "description": "20g Bú mẹ legend."
+  },
+  "breastByTimeNote": "Bú mẹ khó đo lượng sữa, nên app thống kê bằng thời gian bú.",
+  "@breastByTimeNote": {
+    "description": "20g Bú mẹ banner."
+  },
+  "minutesAndFeeds": "{minutes} phút · {count} cữ",
+  "@minutesAndFeeds": {
+    "description": "20g Bú mẹ day/night detail.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lastNightBreastInsight": "Đêm qua bú mẹ {count} cữ, {minutes} phút ({time}).",
+  "@lastNightBreastInsight": {
+    "description": "20g Bú mẹ insight.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

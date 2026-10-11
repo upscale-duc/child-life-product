@@ -254,6 +254,12 @@ PumpDay pumpDay(Iterable<CareRecord> records, DateTime start, DateTime end) {
 
 enum StatsWindow { today, week, month }
 
+/// 20g "Loại bú" (v1.0 improvement 391:3185): all feeds, bottle only, breastfeeding only.
+enum FeedKind { all, bottle, breast }
+
+/// 20g "Tuỳ chọn" (391:3373): [days] whole local days ending on the day of [end].
+typedef CustomRange = ({DateTime end, int days});
+
 int daysOf(StatsWindow w) => switch (w) {
   StatsWindow.today => 1,
   StatsWindow.week => 7,
@@ -326,7 +332,23 @@ class FeedStats {
     required this.nextSide,
     required this.todayFeeds,
     this.days = const [],
+    this.dayMinutes = 0,
+    this.nightMinutes = 0,
+    this.lastNightBreasts = 0,
+    this.lastNightBreastMinutes = 0,
+    this.lastNightBreastFrom,
+    this.lastNightBreastTo,
   });
+
+  /// Bú mẹ day / night by minutes (per-day averages; today: totals).
+  final int dayMinutes;
+  final int nightMinutes;
+
+  /// "Đêm qua bú mẹ 1 cữ, 16 phút (02:10)." (346:590).
+  final int lastNightBreasts;
+  final int lastNightBreastMinutes;
+  final DateTime? lastNightBreastFrom;
+  final DateTime? lastNightBreastTo;
 
   final StatsWindow window;
 
@@ -391,17 +413,32 @@ FeedStats feedStats(
   Iterable<CareRecord> all,
   String zone,
   DateTime now,
-  StatsWindow window,
-) {
+  StatsWindow window, {
+  FeedKind kind = FeedKind.all,
+  CustomRange? custom,
+}) {
   final live = [
     for (final r in all)
-      if (!r.deleted && _isFeed(r)) r,
+      if (!r.deleted &&
+          _isFeed(r) &&
+          switch (kind) {
+            FeedKind.all => true,
+            FeedKind.bottle => r.type == CareType.bottle,
+            FeedKind.breast => r.type == CareType.breast,
+          })
+        r,
   ];
   final today = babyDayBounds(zone, now);
-  final days = daysOf(window);
+  if (custom != null) window = StatsWindow.month;
+  final days = custom?.days ?? daysOf(window);
+  // The last day of the window: today, or the custom range's end.
+  final anchor = custom?.end ?? now;
   final DateTime from;
   final DateTime to;
-  if (window == StatsWindow.today) {
+  if (custom != null) {
+    from = windowDays(zone, anchor, days).first.start;
+    to = babyDayBounds(zone, anchor).end;
+  } else if (window == StatsWindow.today) {
     from = today.start.subtract(const Duration(hours: 6)); // 18:00 yesterday
     // To the end of the day, not `now`: the care clock is minute-aligned, and a feed logged
     // earlier in this minute must already count (records are never in the future, G-021).
@@ -419,18 +456,22 @@ FeedStats feedStats(
   final per = window == StatsWindow.today ? 1 : days;
 
   var dayMl = 0, nightMl = 0, dayFeeds = 0, nightFeeds = 0;
+  var dayMinutes = 0, nightMinutes = 0;
   final hourly = List<double>.filled(24, 0);
   for (final r in feeds) {
     final hour = inBabyZone(zone, r.occurredAt).hour;
     final night = window == StatsWindow.today
         ? r.occurredAt.isBefore(today.start.add(const Duration(hours: 6)))
         : isNightHour(hour);
+    final minutes = r.type == CareType.breast ? (r.durationMin ?? 0) : 0;
     if (night) {
       nightFeeds++;
       nightMl += r.amountMl ?? 0;
+      nightMinutes += minutes;
     } else {
       dayFeeds++;
       dayMl += r.amountMl ?? 0;
+      dayMinutes += minutes;
     }
     if (r.type == CareType.bottle) hourly[hour] += (r.amountMl ?? 0) / per;
   }
@@ -439,12 +480,14 @@ FeedStats feedStats(
   final sixToday = today.start.add(const Duration(hours: 6));
   final lastNightStart = today.start.subtract(const Duration(hours: 6));
   final lastNightEnd = now.isBefore(sixToday) ? now : sixToday;
-  final nightStarts = [
+  final lastNight = [
     for (final r in live)
       if (!r.occurredAt.isBefore(lastNightStart) &&
           r.occurredAt.isBefore(lastNightEnd))
-        r.occurredAt,
-  ];
+        r,
+  ]..sort((a, b) => a.occurredAt.compareTo(b.occurredAt));
+  final nightStarts = [for (final r in lastNight) r.occurredAt];
+  final nightBreasts = lastNight.where((r) => r.type == CareType.breast);
 
   var left = 0, right = 0, breastMinutes = 0;
   for (final r in breasts) {
@@ -473,6 +516,15 @@ FeedStats feedStats(
     nightMl: avg(nightMl),
     dayFeeds: avg(dayFeeds),
     nightFeeds: avg(nightFeeds),
+    dayMinutes: avg(dayMinutes),
+    nightMinutes: avg(nightMinutes),
+    lastNightBreasts: nightBreasts.length,
+    lastNightBreastMinutes: nightBreasts.fold(
+      0,
+      (t, r) => t + (r.durationMin ?? 0),
+    ),
+    lastNightBreastFrom: nightBreasts.firstOrNull?.occurredAt,
+    lastNightBreastTo: nightBreasts.lastOrNull?.occurredAt,
     lastNightFeeds: nightStarts.length,
     lastNightGap: longestGap(nightStarts),
     hourlyMl: hourly,
@@ -496,7 +548,7 @@ FeedStats feedStats(
     days: window == StatsWindow.today
         ? const []
         : [
-            for (final d in windowDays(zone, now, days))
+            for (final d in windowDays(zone, anchor, days))
               () {
                 final inDay = [
                   for (final r in feeds)
@@ -506,12 +558,22 @@ FeedStats feedStats(
                 ];
                 final b = inDay.where((r) => r.type == CareType.bottle);
                 final m = inDay.where((r) => r.type == CareType.breast);
+                int ml(MilkType? milk) => b
+                    .where((r) => milk == null || r.milk == milk)
+                    .fold(0, (s, r) => s + (r.amountMl ?? 0));
+                final sides = [for (final r in m) _sides(r)];
                 return FeedDayBar(
                   start: d.start,
                   bottles: b.length,
                   breasts: m.length,
-                  bottleMl: b.fold(0, (s, r) => s + (r.amountMl ?? 0)),
+                  bottleMl: ml(null),
                   breastMinutes: m.fold(0, (s, r) => s + (r.durationMin ?? 0)),
+                  // No milk recorded counts as formula (the sheet's default is "Sữa mẹ";
+                  // older records without it are bottle formula, inferred).
+                  breastMilkMl: ml(MilkType.breastMilk),
+                  formulaMl: ml(null) - ml(MilkType.breastMilk),
+                  leftMinutes: sides.fold(0, (s, x) => s + x.left),
+                  rightMinutes: sides.fold(0, (s, x) => s + x.right),
                 );
               }(),
           ],
@@ -527,6 +589,10 @@ class FeedDayBar {
     required this.breasts,
     required this.bottleMl,
     required this.breastMinutes,
+    this.breastMilkMl = 0,
+    this.formulaMl = 0,
+    this.leftMinutes = 0,
+    this.rightMinutes = 0,
   });
 
   final DateTime start;
@@ -534,6 +600,14 @@ class FeedDayBar {
   final int breasts;
   final int bottleMl;
   final int breastMinutes;
+
+  /// Bú bình: "Sữa mẹ vắt" / "Sữa công thức" ml (346:354).
+  final int breastMilkMl;
+  final int formulaMl;
+
+  /// Bú mẹ: minutes per side (346:590).
+  final int leftMinutes;
+  final int rightMinutes;
 
   int get feeds => bottles + breasts;
 }

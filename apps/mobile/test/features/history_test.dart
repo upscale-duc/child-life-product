@@ -180,7 +180,11 @@ void main() {
         overrides: careOverrides(),
       );
       expect(find.text('523 ml'), findsOneWidget);
-      expect(find.text('Bú ngày và đêm'), findsOneWidget);
+      // v1.0 improvement: the range is a pill opening "Khoảng thời gian".
+      await tester.tap(find.text('7 ngày'));
+      await tester.pumpAndSettle();
+      expect(find.text('Khoảng thời gian'), findsOneWidget);
+      expect(find.text('Tuỳ chọn'), findsOneWidget);
       await tester.tap(find.text('Hôm nay'));
       await tester.pumpAndSettle();
       expect(find.text('540 ml'), findsOneWidget);
@@ -191,6 +195,39 @@ void main() {
             .read(sharedPreferencesProvider)
             .getString('stats.feed.window'),
         'today',
+      );
+    });
+
+    testWidgets('feed: "Loại bú" switches the cards (v1.0 improvement)', (
+      tester,
+    ) async {
+      final (_, container) = await pumpRouted(
+        tester,
+        const FeedStatsScreen(),
+        overrides: careOverrides(),
+      );
+      expect(find.text('Bú mỗi ngày'), findsOneWidget);
+      await tester.tap(find.text('Tất cả'));
+      await tester.pumpAndSettle();
+      expect(find.text('Loại bú'), findsOneWidget);
+      await tester.tap(find.text('Theo lượng sữa (ml)'));
+      await tester.pumpAndSettle();
+      expect(find.text('Lượng sữa mỗi ngày'), findsOneWidget);
+      expect(find.text('TB mỗi cữ'), findsOneWidget);
+      expect(
+        container.read(sharedPreferencesProvider).getString('stats.feed.kind'),
+        'bottle',
+      );
+      await tester.tap(find.text('Bú bình'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Theo thời gian bú (phút)'));
+      await tester.pumpAndSettle();
+      expect(find.text('Thời gian bú mẹ mỗi ngày'), findsOneWidget);
+      expect(
+        find.text(
+          'Bú mẹ khó đo lượng sữa, nên app thống kê bằng thời gian bú.',
+        ),
+        findsOneWidget,
       );
     });
 

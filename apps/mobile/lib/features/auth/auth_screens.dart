@@ -667,9 +667,6 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
     final l10n = AppLocalizations.of(context);
     final repo = ref.watch(authRepositoryProvider);
     final email = repo.pendingEmail;
-    final initial = (email == null || email.isEmpty)
-        ? '@'
-        : email.characters.first.toUpperCase();
     return OnboardingScaffold(
       topBar: ClTopBar(
         onBack: () {
@@ -678,7 +675,7 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
         },
       ),
       content: [
-        AccountLinkHero(initial: initial),
+        const AccountLinkHero(),
         const SizedBox(height: ClSpace.s6),
         ScreenHeading(
           title: l10n.existsTitle,
@@ -688,7 +685,6 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
         if (email != null) ...[
           const SizedBox(height: ClSpace.s4),
           ClAccountRow(
-            initial: initial,
             email: email,
             provider: l10n.existsProvider,
           ),

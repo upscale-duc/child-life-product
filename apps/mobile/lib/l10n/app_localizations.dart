@@ -9330,6 +9330,186 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chiều dài của {name} đang cao hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.'**
   String whoAboveLengthNote(String name);
+
+  /// 22 field label when prefilled.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng sữa · đã điền theo lần trước'**
+  String get amountFromLast;
+
+  /// 22 caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần trước {ml} ml · {time}'**
+  String lastBottleAt(int ml, String time);
+
+  /// 22 caption; age like "3 tuần".
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho bé {age}'**
+  String bottleSuggestFor(String age);
+
+  /// 22 caption, first week.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho bé sơ sinh'**
+  String get bottleSuggestNewborn;
+
+  /// 22 quick-pick chip (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'{ml} ml'**
+  String bottleQuickPick(int ml);
+
+  /// 20g type sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Loại bú'**
+  String get feedKindTitle;
+
+  /// 20g type: all feeds.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get feedKindAll;
+
+  /// 20g type caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình và bú mẹ'**
+  String get feedKindAllHint;
+
+  /// 20g type caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo lượng sữa (ml)'**
+  String get feedKindBottleHint;
+
+  /// 20g type caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo thời gian bú (phút)'**
+  String get feedKindBreastHint;
+
+  /// 20g range sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng thời gian'**
+  String get rangeTitle;
+
+  /// 20g range: custom.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chọn'**
+  String get rangeCustom;
+
+  /// 20g range caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn từ ngày – đến ngày'**
+  String get rangeCustomHint;
+
+  /// 20g range caption / pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from} – {to}'**
+  String rangeSpan(String from, String to);
+
+  /// 20g KPI caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB mỗi cữ'**
+  String get kpiPerFeed;
+
+  /// 20g Bú bình card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng sữa mỗi ngày'**
+  String get milkPerDayTitle;
+
+  /// 20g Bú bình card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng ml bú bình · {days} ngày'**
+  String milkPerDayHint(int days);
+
+  /// 20g Bú bình callout.
+  ///
+  /// In vi, this message translates to:
+  /// **'{day} · {ml} ml · {count} cữ'**
+  String milkDayTip(String day, int ml, int count);
+
+  /// 20g Bú bình average line.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {ml} ml'**
+  String mlAvgLine(int ml);
+
+  /// 20g Bú bình legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa mẹ vắt'**
+  String get legendExpressedMilk;
+
+  /// 20g Bú bình legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa công thức'**
+  String get legendFormula;
+
+  /// 20g Bú mẹ card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian bú mẹ mỗi ngày'**
+  String get breastPerDayTitle;
+
+  /// 20g Bú mẹ card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng phút · bên trái và bên phải'**
+  String get breastPerDayHint;
+
+  /// 20g Bú mẹ callout.
+  ///
+  /// In vi, this message translates to:
+  /// **'{day} · {minutes} phút · {count} cữ'**
+  String breastDayTip(String day, int minutes, int count);
+
+  /// 20g Bú mẹ average line.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {minutes} phút'**
+  String minutesAvgLine(int minutes);
+
+  /// 20g Bú mẹ legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên trái'**
+  String get legendLeftSide;
+
+  /// 20g Bú mẹ legend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên phải'**
+  String get legendRightSide;
+
+  /// 20g Bú mẹ banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ khó đo lượng sữa, nên app thống kê bằng thời gian bú.'**
+  String get breastByTimeNote;
+
+  /// 20g Bú mẹ day/night detail.
+  ///
+  /// In vi, this message translates to:
+  /// **'{minutes} phút · {count} cữ'**
+  String minutesAndFeeds(int minutes, int count);
+
+  /// 20g Bú mẹ insight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm qua bú mẹ {count} cữ, {minutes} phút ({time}).'**
+  String lastNightBreastInsight(int count, int minutes, String time);
 }
 
 class _AppLocalizationsDelegate

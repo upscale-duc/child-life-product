@@ -5600,4 +5600,117 @@ class AppLocalizationsVi extends AppLocalizations {
   String whoAboveLengthNote(String name) {
     return 'Chiều dài của $name đang cao hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.';
   }
+
+  @override
+  String get amountFromLast => 'Lượng sữa · đã điền theo lần trước';
+
+  @override
+  String lastBottleAt(int ml, String time) {
+    return 'Lần trước $ml ml · $time';
+  }
+
+  @override
+  String bottleSuggestFor(String age) {
+    return 'Gợi ý cho bé $age';
+  }
+
+  @override
+  String get bottleSuggestNewborn => 'Gợi ý cho bé sơ sinh';
+
+  @override
+  String bottleQuickPick(int ml) {
+    return '$ml ml';
+  }
+
+  @override
+  String get feedKindTitle => 'Loại bú';
+
+  @override
+  String get feedKindAll => 'Tất cả';
+
+  @override
+  String get feedKindAllHint => 'Bú bình và bú mẹ';
+
+  @override
+  String get feedKindBottleHint => 'Theo lượng sữa (ml)';
+
+  @override
+  String get feedKindBreastHint => 'Theo thời gian bú (phút)';
+
+  @override
+  String get rangeTitle => 'Khoảng thời gian';
+
+  @override
+  String get rangeCustom => 'Tuỳ chọn';
+
+  @override
+  String get rangeCustomHint => 'Chọn từ ngày – đến ngày';
+
+  @override
+  String rangeSpan(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String get kpiPerFeed => 'TB mỗi cữ';
+
+  @override
+  String get milkPerDayTitle => 'Lượng sữa mỗi ngày';
+
+  @override
+  String milkPerDayHint(int days) {
+    return 'Tổng ml bú bình · $days ngày';
+  }
+
+  @override
+  String milkDayTip(String day, int ml, int count) {
+    return '$day · $ml ml · $count cữ';
+  }
+
+  @override
+  String mlAvgLine(int ml) {
+    return 'TB $ml ml';
+  }
+
+  @override
+  String get legendExpressedMilk => 'Sữa mẹ vắt';
+
+  @override
+  String get legendFormula => 'Sữa công thức';
+
+  @override
+  String get breastPerDayTitle => 'Thời gian bú mẹ mỗi ngày';
+
+  @override
+  String get breastPerDayHint => 'Tổng phút · bên trái và bên phải';
+
+  @override
+  String breastDayTip(String day, int minutes, int count) {
+    return '$day · $minutes phút · $count cữ';
+  }
+
+  @override
+  String minutesAvgLine(int minutes) {
+    return 'TB $minutes phút';
+  }
+
+  @override
+  String get legendLeftSide => 'Bên trái';
+
+  @override
+  String get legendRightSide => 'Bên phải';
+
+  @override
+  String get breastByTimeNote =>
+      'Bú mẹ khó đo lượng sữa, nên app thống kê bằng thời gian bú.';
+
+  @override
+  String minutesAndFeeds(int minutes, int count) {
+    return '$minutes phút · $count cữ';
+  }
+
+  @override
+  String lastNightBreastInsight(int count, int minutes, String time) {
+    return 'Đêm qua bú mẹ $count cữ, $minutes phút ($time).';
+  }
 }

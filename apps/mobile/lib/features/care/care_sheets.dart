@@ -21,8 +21,10 @@ import '../../core/widgets/cl_segmented.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
+import '../baby/baby_repository.dart';
 import '../home/home_shell.dart';
 import '../onboarding/setup_screens.dart' show trackerArt;
+import 'bottle_suggestions.dart';
 import 'care_format.dart';
 import 'care_models.dart';
 import 'care_repository.dart';
@@ -610,6 +612,14 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
   final _minutes = TextEditingController();
   String? _error;
 
+  /// v1.0 improvement 22: the last bottle of this baby, prefilled into a new log.
+  CareRecord? _lastBottle;
+  var _built = false;
+  bool get _prefilled =>
+      widget.edit == null &&
+      _lastBottle?.amountMl != null &&
+      _amount.text == '${_lastBottle!.amountMl}';
+
   @override
   void initState() {
     super.initState();
@@ -624,6 +634,22 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
     _side = edit?.side;
     if (edit?.amountMl != null) _amount.text = '${edit!.amountMl}';
     if (edit?.durationMin != null) _minutes.text = '${edit!.durationMin}';
+    if (edit == null) {
+      // "nhớ lần trước" (346:47151): start from the last bottle's amount, once the records
+      // are in, unless something was typed already.
+      ref.listenManual(recentRecordsProvider(babyId), (_, next) {
+        final last = next.value
+            ?.where((r) => r.type == CareType.bottle)
+            .firstOrNull;
+        if (last == null || _lastBottle != null || !mounted) return;
+        // Already loaded, this runs inside initState: no setState until built.
+        _lastBottle = last;
+        if (last.amountMl != null && _amount.text.isEmpty) {
+          _amount.text = '${last.amountMl}';
+        }
+        if (_built) setState(() {});
+      }, fireImmediately: true);
+    }
     _amount.addListener(() => setState(() => _error = null));
     _minutes.addListener(() => setState(() => _error = null));
   }
@@ -689,6 +715,7 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
 
   @override
   Widget build(BuildContext context) {
+    _built = true;
     final l10n = AppLocalizations.of(context);
     final bottle = _type == CareType.bottle;
     final care = careColor(context, _type);
@@ -710,7 +737,7 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
             }),
           ),
         if (bottle) ...[
-          FieldLabel(l10n.amountOptional),
+          FieldLabel(_prefilled ? l10n.amountFromLast : l10n.amountOptional),
           AmountInput(
             controller: _amount,
             unit: 'ml',
@@ -718,6 +745,14 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
             semanticLabel: l10n.amountOptional,
           ),
           _ErrorText(_error),
+          if (widget.edit == null) ...[
+            const SizedBox(height: ClSpace.s3),
+            _QuickPicks(
+              last: _lastBottle,
+              selected: _intOrNull(_amount),
+              onPick: (ml) => _amount.text = '$ml',
+            ),
+          ],
           const SizedBox(height: ClSpace.s4),
           Row(
             children: [
@@ -1022,6 +1057,148 @@ class _DiaperSheetState extends ConsumerState<DiaperSheet>
         ),
         const SizedBox(height: ClSpace.s3),
         timeRow(l10n.timeLabel),
+      ],
+    );
+  }
+}
+
+/// 22 "gợi ý nhanh" (346:47151): four amounts for the baby's age, and what was given last time.
+class _QuickPicks extends ConsumerWidget {
+  const _QuickPicks({
+    required this.last,
+    required this.selected,
+    required this.onPick,
+  });
+
+  final CareRecord? last;
+  final int? selected;
+  final ValueChanged<int> onPick;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final me = ref.watch(selectedMembershipProvider);
+    final dob = me == null || !me.canViewBabyInfo
+        ? null
+        : ref.watch(babyPrivateProfileProvider(me.babyId)).value?.dateOfBirth;
+    final today = DateUtils.dateOnly(
+      ref.watch(careClockProvider).value ?? DateTime.now(),
+    );
+    final age = dob == null
+        ? null
+        : today.difference(DateUtils.dateOnly(dob)).inDays;
+    final picks = bottleSuggestions(age);
+    final zone =
+        (me == null ? null : ref.watch(babyProvider(me.babyId)).value)
+            ?.timeZone
+            .zone ??
+        'Asia/Ho_Chi_Minh';
+    final caption = cl.text.caption.copyWith(
+      color: cl.colors.inkMuted,
+      fontWeight: FontWeight.w500,
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            for (final (i, ml) in picks.indexed) ...[
+              if (i > 0) const SizedBox(width: ClSpace.s2),
+              Expanded(
+                child: ClPressable(
+                  onPressed: () => onPick(ml),
+                  selected: selected == ml,
+                  semanticLabel: l10n.bottleQuickPick(ml),
+                  child: Container(
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: selected == ml
+                          ? cl.colors.mintDeep
+                          : cl.colors.surface2,
+                      borderRadius: BorderRadius.circular(ClRadius.pill),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '$ml',
+                            style: cl.text.bodyStrong.copyWith(fontSize: 15),
+                          ),
+                          TextSpan(
+                            text: ' ml',
+                            style: cl.text.caption.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      style: TextStyle(
+                        color: selected == ml
+                            ? cl.colors.onMintDeep
+                            : cl.colors.ink,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: ClSpace.s2),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (last?.amountMl != null)
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClIcon(ClIcons.clock, size: 14, color: cl.colors.inkMuted),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        l10n.lastBottleAt(
+                          last!.amountMl!,
+                          DateFormat(
+                            'HH:mm',
+                          ).format(inBabyZone(zone, last!.occurredAt)),
+                        ),
+                        style: caption,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            if (age != null) ...[
+              const SizedBox(width: ClSpace.s2),
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClIcon(ClIcons.cake, size: 14, color: cl.colors.inkMuted),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        age < 7
+                            ? l10n.bottleSuggestNewborn
+                            : l10n.bottleSuggestFor(
+                                age < 13 * 7
+                                    ? l10n.whoWeeks(age ~/ 7)
+                                    : l10n.whoMonths((age / 30.4375).floor()),
+                              ),
+                        style: caption,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
       ],
     );
   }

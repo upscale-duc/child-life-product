@@ -341,9 +341,10 @@ class RecoverHero extends StatelessWidget {
   );
 }
 
+/// 10 "Email đã có tài khoản": the person is not known yet, so the left circle shows the family
+/// icon rather than an initial (v1.0 improvement 345:35762).
 class AccountLinkHero extends StatelessWidget {
-  const AccountLinkHero({required this.initial, super.key});
-  final String initial;
+  const AccountLinkHero({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -353,18 +354,13 @@ class AccountLinkHero extends StatelessWidget {
       size: const Size(343, 236),
       color: cl.colors.cardMint,
       overlays: [
-        Positioned(
+        const Positioned(
           left: 69,
-          top: 98,
+          top: 80,
           width: 80,
-          child: Text(
-            initial,
-            textAlign: TextAlign.center,
-            style: cl.text.title.copyWith(
-              fontSize: 34,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
+          height: 80,
+          child: Center(
+            child: ClIcon(ClIcons.family, size: 52, color: Colors.white),
           ),
         ),
       ],

@@ -5976,4 +5976,117 @@ class AppLocalizationsEn extends AppLocalizations {
   String whoAboveLengthNote(String name) {
     return '$name’s length is above the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.';
   }
+
+  @override
+  String get amountFromLast => 'Amount · filled in from last time';
+
+  @override
+  String lastBottleAt(int ml, String time) {
+    return 'Last time $ml ml · $time';
+  }
+
+  @override
+  String bottleSuggestFor(String age) {
+    return 'Suggested for $age';
+  }
+
+  @override
+  String get bottleSuggestNewborn => 'Suggested for a newborn';
+
+  @override
+  String bottleQuickPick(int ml) {
+    return '$ml ml';
+  }
+
+  @override
+  String get feedKindTitle => 'Feed type';
+
+  @override
+  String get feedKindAll => 'All';
+
+  @override
+  String get feedKindAllHint => 'Bottle and breast';
+
+  @override
+  String get feedKindBottleHint => 'By milk volume (ml)';
+
+  @override
+  String get feedKindBreastHint => 'By feeding time (minutes)';
+
+  @override
+  String get rangeTitle => 'Time range';
+
+  @override
+  String get rangeCustom => 'Custom';
+
+  @override
+  String get rangeCustomHint => 'Choose from – to date';
+
+  @override
+  String rangeSpan(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String get kpiPerFeed => 'Avg per feed';
+
+  @override
+  String get milkPerDayTitle => 'Milk per day';
+
+  @override
+  String milkPerDayHint(int days) {
+    return 'Total bottle ml · $days days';
+  }
+
+  @override
+  String milkDayTip(String day, int ml, int count) {
+    return '$day · $ml ml · $count feeds';
+  }
+
+  @override
+  String mlAvgLine(int ml) {
+    return 'Avg $ml ml';
+  }
+
+  @override
+  String get legendExpressedMilk => 'Expressed milk';
+
+  @override
+  String get legendFormula => 'Formula';
+
+  @override
+  String get breastPerDayTitle => 'Breastfeeding time per day';
+
+  @override
+  String get breastPerDayHint => 'Total minutes · left and right';
+
+  @override
+  String breastDayTip(String day, int minutes, int count) {
+    return '$day · $minutes min · $count feeds';
+  }
+
+  @override
+  String minutesAvgLine(int minutes) {
+    return 'Avg $minutes min';
+  }
+
+  @override
+  String get legendLeftSide => 'Left';
+
+  @override
+  String get legendRightSide => 'Right';
+
+  @override
+  String get breastByTimeNote =>
+      'Breast milk is hard to measure, so the app counts breastfeeding by time.';
+
+  @override
+  String minutesAndFeeds(int minutes, int count) {
+    return '$minutes min · $count feeds';
+  }
+
+  @override
+  String lastNightBreastInsight(int count, int minutes, String time) {
+    return 'Last night: $count breastfeeds, $minutes min ($time).';
+  }
 }
