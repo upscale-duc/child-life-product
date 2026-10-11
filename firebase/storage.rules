@@ -27,11 +27,12 @@ service firebase.storage {
       allow read, update, delete: if false;
     }
 
+    // Storage Rules may read at most TWO Firestore documents per request (media + member here);
+    // a baby being deleted is refused by createMemorySession and processUpload instead.
     function uploadAllowed(babyId, mediaId, isPoster) {
       let m = media(babyId, mediaId);
       return m.createdBy == request.auth.uid && m.status == 'uploading' && m.deleted == false &&
         active(member(babyId)) &&
-        firestore.get(/databases/(default)/documents/babies/$(babyId)).data.get('state', 'active') == 'active' &&
         ((isPoster && m.type == 'video' && m.hasPoster == true &&
             request.resource.contentType == 'image/jpeg' &&
             request.resource.size <= 4 * 1024 * 1024) ||
@@ -61,13 +62,13 @@ service firebase.storage {
       allow write: if false;
     }
 
+    // Two documents at most (job + member): ownership comes from the member's isOwner.
     function exportReadable(uid, jobId) {
       let job = firestore.get(/databases/(default)/documents/dataJobs/$(jobId)).data;
       let me = member(job.babyId);
       return job.uid == uid && job.state == 'ready' && job.expiresAt > request.time &&
         active(me) && me.role == 'coParent' &&
-        (job.exportKind == 'care' ||
-          firestore.get(/databases/(default)/documents/babies/$(job.babyId)).data.ownerUid == uid);
+        (job.exportKind == 'care' || me.get('isOwner', false) == true);
     }
 
     match /{allPaths=**} {

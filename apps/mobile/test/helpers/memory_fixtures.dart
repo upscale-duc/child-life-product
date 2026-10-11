@@ -386,6 +386,9 @@ class FakeTransport implements UploadTransport {
   /// Fail this many uploads ("Mất kết nối khi đang tải").
   int failTimes = 0;
 
+  /// Storage refuses every upload (rules / expired slot).
+  bool rejectAll = false;
+
   @override
   Future<void> upload(
     String storagePath,
@@ -393,6 +396,7 @@ class FakeTransport implements UploadTransport {
     String contentType,
     void Function(int sent) onProgress,
   ) async {
+    if (rejectAll) throw const UploadRejected();
     if (fail.contains(storagePath) || failTimes > 0) {
       if (failTimes > 0) failTimes--;
       throw const SocketException('offline');

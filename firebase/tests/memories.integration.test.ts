@@ -277,6 +277,20 @@ describe('processing (P-033) and publish (P-030)', () => {
     expect(await maybeNotifyBatch(db, babyId, req.batchId, now)).toBe('done');
   });
 
+  it('bytes that land while the baby is being deleted are dropped (not checked by Storage Rules)', async () => {
+    const a = id('med');
+    const raw = await jpegWithGps();
+    await createMemory(db, 'mom', request([photo(a, raw.length)]), now);
+    await db.doc(`babies/${babyId}`).update({ state: 'deleting' });
+    const store = new FakeStore();
+    await store.save(`babies/${babyId}/uploads/${a}`, raw, 'image/jpeg');
+    expect(await processUpload(db, store, sharpImages, `babies/${babyId}/uploads/${a}`, now)).toBe(
+      'ignored',
+    );
+    expect(store.files.size).toBe(0);
+    await db.doc(`babies/${babyId}`).update({ state: 'active' });
+  });
+
   it('refuses what is not really a photo and gives the bytes back (unreadable)', async () => {
     const a = id('med');
     const html = new TextEncoder().encode('<!doctype html><script>');

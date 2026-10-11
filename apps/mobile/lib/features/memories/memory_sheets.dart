@@ -1275,7 +1275,10 @@ class _QueueRow extends ConsumerWidget {
         l10n.rowWaitingWifi(byteSize(locale, i.bytes)),
         cl.colors.inkMuted,
       ),
-      QueueState.failed when refused => (l10n.rowRejected, cl.colors.error),
+      QueueState.failed when refused || i.rejected => (
+        l10n.rowRejected,
+        cl.colors.error,
+      ),
       QueueState.failed => (l10n.rowFailed, cl.colors.error),
       QueueState.unreadable => (l10n.rowUnreadable, cl.colors.error),
       QueueState.uploaded => (l10n.rowDone, cl.colors.inkMuted),

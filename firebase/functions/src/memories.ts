@@ -477,6 +477,12 @@ export async function processUpload(
     await store.delete(objectPath);
     return 'ignored';
   }
+  // A baby being deleted takes no new bytes. Storage Rules cannot check this themselves: they
+  // may read at most two Firestore documents (media + member).
+  if ((await db.doc(`babies/${babyId}`).get()).get('state') === 'deleting') {
+    await store.delete(objectPath);
+    return 'ignored';
+  }
 
   if (poster) {
     const bytes = await store.read(objectPath);

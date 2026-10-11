@@ -399,4 +399,28 @@ void main() {
       );
     },
   );
+
+  test(
+    'a Storage refusal stays visible with its code instead of vanishing',
+    () async {
+      transport.rejectAll = true;
+      container = await start();
+      final queue = container.read(uploadQueueProvider.notifier);
+      await queue.enqueue(
+        babyId: teddyId,
+        request: request(),
+        picked: [pickedPhoto('a.HEIC')],
+      );
+      await pumpEventQueue();
+      expect(items().single.state, QueueState.failed);
+      expect(items().single.rejected, isTrue);
+      expect(items().single.error, 'rejected:unauthorized');
+
+      transport.rejectAll = false;
+      await queue.retry();
+      await pumpEventQueue();
+      expect(items().single.state, QueueState.uploaded);
+      expect(items().single.error, isNull);
+    },
+  );
 }

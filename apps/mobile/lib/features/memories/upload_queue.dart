@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fc_native_video_thumbnail/fc_native_video_thumbnail.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -64,6 +65,7 @@ class QueueItem {
     this.height,
     this.state = QueueState.pendingSession,
     this.sent = 0,
+    this.error,
   });
 
   final String mediaId;
@@ -82,6 +84,12 @@ class QueueItem {
   QueueState state;
   int sent;
 
+  /// The last failure's code (`storage/unauthorized`, `object-not-found`, …), never content:
+  /// a rejected upload stays visible as "Chưa tải lên được" instead of disappearing.
+  String? error;
+
+  bool get rejected => error != null && error!.startsWith('rejected');
+
   bool get isVideo => type == MediaKind.video;
 
   Map<String, Object?> toJson() => {
@@ -97,6 +105,7 @@ class QueueItem {
     'width': width,
     'height': height,
     'state': state.name,
+    'error': error,
   };
 
   static QueueItem fromJson(Map<String, Object?> j) {
@@ -119,6 +128,7 @@ class QueueItem {
       width: (j['width'] as num?)?.toInt(),
       height: (j['height'] as num?)?.toInt(),
       state: state,
+      error: j['error'] as String?,
     );
   }
 
@@ -201,7 +211,10 @@ class QueueBatch {
 
 // ---------- I/O seams (replaced in tests) ----------
 
-class UploadRejected implements Exception {}
+class UploadRejected implements Exception {
+  const UploadRejected([this.code = 'unauthorized']);
+  final String code;
+}
 
 class UploadCancelled implements Exception {}
 
@@ -241,7 +254,7 @@ class StorageTransport implements UploadTransport {
       await task;
     } on FirebaseException catch (e) {
       if (e.code == 'canceled') throw UploadCancelled();
-      if (e.code == 'unauthorized') throw UploadRejected();
+      if (e.code == 'unauthorized') throw UploadRejected(e.code);
       rethrow;
     } finally {
       await sub.cancel();
@@ -618,6 +631,7 @@ class UploadQueue extends Notifier<QueueView> {
           i.state == QueueState.failed) {
         i.state = QueueState.queued;
         i.sent = 0;
+        i.error = null;
       }
     }
     await _persist();
@@ -796,6 +810,21 @@ class UploadQueue extends Notifier<QueueView> {
     return null;
   }
 
+  /// Failure codes only (no names, paths or ids), so a field problem can be diagnosed.
+  void _report(String code) {
+    try {
+      unawaited(
+        FirebaseCrashlytics.instance.recordError(
+          'memory upload failed: $code',
+          null,
+          reason: 'upload queue',
+        ),
+      );
+    } on Object {
+      // No Crashlytics (tests).
+    }
+  }
+
   Future<void> _upload(QueueBatch b, QueueItem i) async {
     final transport = ref.read(uploadTransportProvider);
     final base = 'babies/${b.babyId}/uploads/${i.mediaId}';
@@ -818,19 +847,26 @@ class UploadQueue extends Notifier<QueueView> {
         _publish();
       });
       i.state = QueueState.uploaded;
+      i.error = null;
       i.sent = i.bytes;
       await ref.read(mediaPreparerProvider).discard(i);
     } on UploadCancelled {
       if (i.state == QueueState.uploading) {
         i.state = _paused ? QueueState.paused : QueueState.queued;
       }
-    } on UploadRejected {
-      // The slot is gone (cancelled elsewhere or expired after 24 h).
-      i.state = QueueState.cancelled;
-    } on Object {
+    } on UploadRejected catch (e) {
+      // Storage refused the bytes (slot expired, or a rule): shown, kept, retried or removed.
+      i.state = QueueState.failed;
+      i.error = 'rejected:${e.code}';
+      _report(i.error!);
+    } on Object catch (e) {
       i.state = _network == NetworkKind.none
           ? QueueState.paused
           : QueueState.failed;
+      i.error = e is FirebaseException
+          ? '${e.plugin}/${e.code}'
+          : e.runtimeType.toString();
+      if (i.state == QueueState.failed) _report(i.error!);
     } finally {
       _currentPath = null;
       if (ref.mounted) await _persist();
