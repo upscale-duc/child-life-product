@@ -11,16 +11,15 @@ final environmentProvider = Provider<AppEnvironment>(
       throw StateError('environmentProvider must be overridden at startup'),
 );
 
-/// "1.0.0 (12) · dev" for the bottom of Tôi (owner, 2026-10-12): which build this is. Prod
-/// shows no environment.
+/// UP6 Tôi · Phiên bản (D-061): "1.0.3" on prod; "1.0.3 (86) · dev" elsewhere, so testers can
+/// tell builds apart.
 final appVersionProvider = FutureProvider<String>((ref) async {
   final environment = ref.watch(environmentProvider);
   final info = await PackageInfo.fromPlatform();
-  final build = '${info.version} (${info.buildNumber})';
   return environment == AppEnvironment.prod
-      ? build
-      : '$build · ${environment.name}';
-});
+      ? info.version
+      : '${info.version} (${info.buildNumber}) · ${environment.name}';
+}, retry: (_, _) => null);
 
 const functionsRegion = 'asia-southeast1';
 

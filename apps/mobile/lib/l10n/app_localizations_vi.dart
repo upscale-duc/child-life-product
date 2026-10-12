@@ -8047,4 +8047,91 @@ class AppLocalizationsVi extends AppLocalizations {
   String meVersion(String version) {
     return 'Phiên bản $version';
   }
+
+  @override
+  String get upRequiredTitle => 'Cần cập nhật để tiếp tục';
+
+  @override
+  String get upRequiredBody =>
+      'Phiên bản này đã cũ và không còn đồng bộ an toàn với cả nhà. Cập nhật mất khoảng 1 phút.';
+
+  @override
+  String get upSafeTitle => 'Dữ liệu của bé vẫn an toàn';
+
+  @override
+  String get upSafeBody => 'Ảnh, nhật ký và lịch sử chăm sóc được giữ nguyên';
+
+  @override
+  String upPendingTitle(int count) {
+    return '$count lần ghi chưa đồng bộ';
+  }
+
+  @override
+  String get upPendingBody => 'Sẽ tự gửi lên ngay sau khi cập nhật';
+
+  @override
+  String get upOpenAppStore => 'Cập nhật trên App Store';
+
+  @override
+  String get upOpenPlay => 'Cập nhật trên Google Play';
+
+  @override
+  String upWhatsNewIn(String version) {
+    return 'Có gì mới trong $version';
+  }
+
+  @override
+  String upNewTag(String version) {
+    return 'Mới · $version';
+  }
+
+  @override
+  String get upNewTitle => 'Child Life có bản mới';
+
+  @override
+  String get upUpdate => 'Cập nhật';
+
+  @override
+  String get upLater => 'Để sau';
+
+  @override
+  String upPageTag(String version) {
+    return 'Mới trong $version';
+  }
+
+  @override
+  String get upSkip => 'Bỏ qua';
+
+  @override
+  String get upNext => 'Tiếp';
+
+  @override
+  String get upPagesDone => 'Xong';
+
+  @override
+  String upPageOf(int page, int count) {
+    return 'Trang $page trên $count';
+  }
+
+  @override
+  String upBannerTitle(String version) {
+    return 'Đã cập nhật $version';
+  }
+
+  @override
+  String get upBannerSee => 'Xem';
+
+  @override
+  String get upBannerClose => 'Đóng thông báo cập nhật';
+
+  @override
+  String upNewVersion(String version) {
+    return 'Có bản mới $version';
+  }
+
+  @override
+  String get upLatestVersion => 'Đây là bản mới nhất';
+
+  @override
+  String get upNoStore => 'Chưa mở được trang cập nhật. Thử lại sau nhé.';
 }

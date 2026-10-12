@@ -16,6 +16,7 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../app_update/app_update_screens.dart' show AppVersionRow;
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../family/save_account.dart';
@@ -183,6 +184,8 @@ class MeScreen extends ConsumerWidget {
               title: l10n.meHelp,
               onTap: () => context.push(Routes.meHelp),
             ),
+            // UP6 (D-061): the version, and "Cập nhật" when the store has a newer one.
+            if (ref.watch(appVersionProvider).hasValue) const AppVersionRow(),
           ],
         ),
         const SizedBox(height: ClSpace.s3),
@@ -195,18 +198,6 @@ class MeScreen extends ConsumerWidget {
             ),
           ],
         ),
-        if (ref.watch(appVersionProvider).value case final version?)
-          Padding(
-            padding: const EdgeInsets.only(top: ClSpace.s4),
-            child: Text(
-              l10n.meVersion(version),
-              key: const Key('meVersion'),
-              textAlign: TextAlign.center,
-              style: context.cl.text.caption.copyWith(
-                color: context.cl.colors.inkMuted,
-              ),
-            ),
-          ),
       ],
     );
   }

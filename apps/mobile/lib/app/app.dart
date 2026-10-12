@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../features/app_update/app_update_screens.dart';
 import '../features/me/baby_profile_screens.dart';
 import '../features/memories/push_registration.dart';
 import '../features/glance/glance_bridge.dart';
@@ -80,10 +81,15 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
         // after a screen that set its own (the photo viewer's white icons stayed on Light).
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: clStatusBarStyle(palette),
-          child: ReminderNotificationSync(
-            child: PushRegistration(
-              child: ShareInbox(
-                child: GlanceSync(child: DeletionWatcher(child: child!)),
+          // D-061: below the oldest allowed version only UP1 shows; UP2 offers a newer one.
+          child: AppUpdateGate(
+            child: AppUpdatePrompt(
+              child: ReminderNotificationSync(
+                child: PushRegistration(
+                  child: ShareInbox(
+                    child: GlanceSync(child: DeletionWatcher(child: child!)),
+                  ),
+                ),
               ),
             ),
           ),

@@ -59,6 +59,14 @@ describe('Firestore baseline (deny by default)', () => {
     await assertSucceeds(getDoc(doc(anon, 'publicConfig/limits')));
   });
 
+  it('anyone can get the app update config (D-061); its history stays staff-only', async () => {
+    const anon = env.unauthenticatedContext().firestore();
+    await assertSucceeds(getDoc(doc(anon, 'publicConfig/appUpdate')));
+    const user = env.authenticatedContext('u1', { staff: true, roles: ['owner'] }).firestore();
+    await assertFails(setDoc(doc(user, 'publicConfig/appUpdate'), { version: 'x' }));
+    await assertFails(getDoc(doc(user, 'appUpdateHistory/au_20261012_01')));
+  });
+
   it('nobody can list publicConfig or read other ids in it', async () => {
     const user = env.authenticatedContext('u1').firestore();
     await assertFails(getDocs(collection(user, 'publicConfig')));

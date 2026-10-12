@@ -1,4 +1,6 @@
 import type {
+  AppUpdateConfig,
+  AppUpdatePublic,
   AuditCategory,
   FirstAidPack,
   FlagKey,
@@ -60,6 +62,9 @@ export type Callable =
   | 'staffFirstAidDraft'
   | 'staffFirstAidAct'
   | 'staffFirstAidImage'
+  | 'staffAppUpdate'
+  | 'staffAppUpdateSave'
+  | 'staffAppUpdateImage'
   | 'sendAuthEmail';
 
 export interface Api {
@@ -585,4 +590,17 @@ export interface FirstAidView {
   images: FirstAidImage[];
   /** Prod: approving records the medical review (who, when, sources). */
   requireReview: boolean;
+}
+
+/** Cập nhật ứng dụng (D-061). */
+export interface AppUpdateView {
+  current: AppUpdatePublic | null;
+  history: Array<{
+    version: string;
+    publishedAt: string;
+    byName: string;
+    reason: string;
+    config: AppUpdateConfig;
+  }>;
+  images: FirstAidImage[];
 }

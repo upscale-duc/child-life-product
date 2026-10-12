@@ -192,6 +192,8 @@ export const staffActions = [
   'content.edit',
   'content.approve',
   'system.view',
+  'release.view',
+  'release.edit',
   'features.view',
   'flags.toggle',
   'flags.rollout',
@@ -233,6 +235,9 @@ export const staffActionLevel: Record<StaffAction, readonly [StaffFunction, Staf
   // D-058: publishing medical content is a second person's sign-off (an expert on prod).
   'content.approve': ['content', 'approve'],
   'system.view': ['system', 'view'],
+  // D-061: Cập nhật ứng dụng — raising a minimum version blocks older phones.
+  'release.view': ['system', 'view'],
+  'release.edit': ['system', 'edit'],
   'features.view': ['features', 'view'],
   'flags.toggle': ['features', 'edit'],
   'flags.rollout': ['features', 'edit'],

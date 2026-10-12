@@ -104,6 +104,12 @@ service firebase.storage {
       allow write: if false;
     }
 
+    // "Có gì mới" pictures (D-061): public with the release notes; Functions only; immutable.
+    match /content/app-update/{file} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // Exports (R-187, P-123): the requester only, until the link expires, and only while they
     // still have the right (Cùng nuôi for care; the owner for media) — re-checked at download.
     match /exports/{uid}/{jobId}/{file} {

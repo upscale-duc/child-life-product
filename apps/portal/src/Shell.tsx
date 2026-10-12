@@ -23,6 +23,7 @@ import { AnalyticsScreen } from './screens/Analytics';
 import { AuditScreen } from './screens/Audit';
 import { FamiliesScreen } from './screens/Families';
 import { FeaturesScreen } from './screens/Features';
+import { AppUpdateScreen } from './screens/AppUpdate';
 import { FirstAidScreen } from './screens/FirstAid';
 import { JobsScreen } from './screens/Jobs';
 import { OverviewScreen } from './screens/Overview';
@@ -52,6 +53,7 @@ const nav: NavItem[] = [
   { route: 'firstAid', group: 'content', can: 'content.view' },
   { route: 'system', group: 'system', can: 'system.view' },
   { route: 'features', group: 'system', can: 'features.view' },
+  { route: 'appUpdate', group: 'system', can: 'release.view' },
   { route: 'staff', group: 'system', can: 'staff.view' },
   { route: 'audit', group: 'system', can: 'audit.view' },
   { route: 'qa', group: 'develop', can: 'qa.view' },
@@ -207,6 +209,8 @@ function Screen({ route }: { route: Route }) {
       return <SystemScreen tab="ai" />;
     case 'features':
       return <FeaturesScreen />;
+    case 'appUpdate':
+      return <AppUpdateScreen />;
     case 'audit':
       return <AuditScreen />;
     case 'qa':

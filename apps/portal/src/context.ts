@@ -20,6 +20,7 @@ export type Route =
   | 'firstAid'
   | 'system'
   | 'systemAi'
+  | 'appUpdate'
   | 'features'
   | 'staff'
   | 'audit'
@@ -36,6 +37,7 @@ export const routePaths: Record<Route, string> = {
   firstAid: '/first-aid',
   system: '/system',
   systemAi: '/system/ai',
+  appUpdate: '/app-update',
   features: '/features',
   staff: '/staff',
   audit: '/audit',

@@ -8596,4 +8596,97 @@ class AppLocalizationsEn extends AppLocalizations {
   String meVersion(String version) {
     return 'Version $version';
   }
+
+  @override
+  String get upRequiredTitle => 'Update to keep going';
+
+  @override
+  String get upRequiredBody =>
+      'This version is too old to sync safely with your family. Updating takes about a minute.';
+
+  @override
+  String get upSafeTitle => 'Your baby\'s data is safe';
+
+  @override
+  String get upSafeBody => 'Photos, journal and care history stay as they are';
+
+  @override
+  String upPendingTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'items',
+      one: 'item',
+    );
+    return '$count $_temp0 not synced yet';
+  }
+
+  @override
+  String get upPendingBody => 'They go up right after you update';
+
+  @override
+  String get upOpenAppStore => 'Update on the App Store';
+
+  @override
+  String get upOpenPlay => 'Update on Google Play';
+
+  @override
+  String upWhatsNewIn(String version) {
+    return 'What\'s new in $version';
+  }
+
+  @override
+  String upNewTag(String version) {
+    return 'New · $version';
+  }
+
+  @override
+  String get upNewTitle => 'A new Child Life is here';
+
+  @override
+  String get upUpdate => 'Update';
+
+  @override
+  String get upLater => 'Later';
+
+  @override
+  String upPageTag(String version) {
+    return 'New in $version';
+  }
+
+  @override
+  String get upSkip => 'Skip';
+
+  @override
+  String get upNext => 'Next';
+
+  @override
+  String get upPagesDone => 'Done';
+
+  @override
+  String upPageOf(int page, int count) {
+    return 'Page $page of $count';
+  }
+
+  @override
+  String upBannerTitle(String version) {
+    return 'Updated to $version';
+  }
+
+  @override
+  String get upBannerSee => 'See';
+
+  @override
+  String get upBannerClose => 'Close the update note';
+
+  @override
+  String upNewVersion(String version) {
+    return '$version is available';
+  }
+
+  @override
+  String get upLatestVersion => 'You have the latest version';
+
+  @override
+  String get upNoStore => 'Couldn\'t open the update page. Try again later.';
 }

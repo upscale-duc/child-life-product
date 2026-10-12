@@ -29,6 +29,7 @@ import '../care/timer_screens.dart';
 import '../family/family_labels.dart';
 import '../home/home_shell.dart';
 import '../reminders/reminder_screens.dart' show ReminderPeek;
+import '../app_update/app_update_screens.dart' show WhatsNewBanner;
 import '../home/today_tour.dart';
 import 'today_layout.dart';
 
@@ -138,6 +139,8 @@ class TodayScreen extends ConsumerWidget {
               if (!readOnly) const _CustomizePill(),
             ],
           ),
+          // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
+          const WhatsNewBanner(),
           for (final section in layout.order)
             if (layout.shows(section))
               ...switch (section) {

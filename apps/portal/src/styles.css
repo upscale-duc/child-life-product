@@ -2321,3 +2321,29 @@ td.down {
 .fa-end {
   align-items: flex-end;
 }
+
+/* Cập nhật ứng dụng (D-061). */
+.au-item {
+  display: grid;
+  gap: 12px;
+  margin: 12px 0;
+}
+.au-page {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.au-page__image {
+  aspect-ratio: 335 / 300;
+  border-radius: 16px;
+  background: var(--surface-2, #eef6f5);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.au-page__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

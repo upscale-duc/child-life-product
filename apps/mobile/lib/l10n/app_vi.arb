@@ -12191,5 +12191,139 @@
         "type": "String"
       }
     }
+  },
+  "upRequiredTitle": "Cần cập nhật để tiếp tục",
+  "@upRequiredTitle": {
+    "description": "UP1 title (469:6476)."
+  },
+  "upRequiredBody": "Phiên bản này đã cũ và không còn đồng bộ an toàn với cả nhà. Cập nhật mất khoảng 1 phút.",
+  "@upRequiredBody": {
+    "description": "UP1 body (469:6477)."
+  },
+  "upSafeTitle": "Dữ liệu của bé vẫn an toàn",
+  "@upSafeTitle": {
+    "description": "UP1 reassurance row."
+  },
+  "upSafeBody": "Ảnh, nhật ký và lịch sử chăm sóc được giữ nguyên",
+  "@upSafeBody": {
+    "description": "UP1 reassurance row, second line."
+  },
+  "upPendingTitle": "{count} lần ghi chưa đồng bộ",
+  "@upPendingTitle": {
+    "description": "UP1: uploads still on this phone.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "upPendingBody": "Sẽ tự gửi lên ngay sau khi cập nhật",
+  "@upPendingBody": {
+    "description": "UP1 pending row, second line."
+  },
+  "upOpenAppStore": "Cập nhật trên App Store",
+  "@upOpenAppStore": {
+    "description": "UP1 button on iOS."
+  },
+  "upOpenPlay": "Cập nhật trên Google Play",
+  "@upOpenPlay": {
+    "description": "UP1 button on Android."
+  },
+  "upWhatsNewIn": "Có gì mới trong {version}",
+  "@upWhatsNewIn": {
+    "description": "UP1 link to the release pages.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "upNewTag": "Mới · {version}",
+  "@upNewTag": {
+    "description": "UP2 tag.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "upNewTitle": "Child Life có bản mới",
+  "@upNewTitle": {
+    "description": "UP2 title."
+  },
+  "upUpdate": "Cập nhật",
+  "@upUpdate": {
+    "description": "UP2 button; UP6 tag."
+  },
+  "upLater": "Để sau",
+  "@upLater": {
+    "description": "UP2 secondary action."
+  },
+  "upPageTag": "Mới trong {version}",
+  "@upPageTag": {
+    "description": "UP3/UP4 tag on the picture.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "upSkip": "Bỏ qua",
+  "@upSkip": {
+    "description": "UP3/UP4 top right."
+  },
+  "upNext": "Tiếp",
+  "@upNext": {
+    "description": "UP3/UP4 button."
+  },
+  "upPagesDone": "Xong",
+  "@upPagesDone": {
+    "description": "UP3/UP4 button on the last page."
+  },
+  "upPageOf": "Trang {page} trên {count}",
+  "@upPageOf": {
+    "description": "UP3/UP4 page dots, for screen readers.",
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "upBannerTitle": "Đã cập nhật {version}",
+  "@upBannerTitle": {
+    "description": "UP5 banner title.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "upBannerSee": "Xem",
+  "@upBannerSee": {
+    "description": "UP5 banner action."
+  },
+  "upBannerClose": "Đóng thông báo cập nhật",
+  "@upBannerClose": {
+    "description": "UP5 close button, for screen readers."
+  },
+  "upNewVersion": "Có bản mới {version}",
+  "@upNewVersion": {
+    "description": "UP6 Tôi · Phiên bản subtitle.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "upLatestVersion": "Đây là bản mới nhất",
+  "@upLatestVersion": {
+    "description": "UP6 subtitle when up to date."
+  },
+  "upNoStore": "Chưa mở được trang cập nhật. Thử lại sau nhé.",
+  "@upNoStore": {
+    "description": "Toast when the store link is missing or fails."
   }
 }

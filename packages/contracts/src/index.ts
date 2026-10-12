@@ -8,6 +8,7 @@ export * from './reminders.js';
 export * from './reminder-rules.js';
 export * from './vaccines.js';
 export * from './first-aid.js';
+export * from './app-update.js';
 export * from './spending.js';
 export * from './memories.js';
 export * from './albums.js';

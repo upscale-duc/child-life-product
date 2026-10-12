@@ -39,7 +39,7 @@ service cloud.firestore {
     // way: published by Functions after a second person approves; the app falls back to its copy.
     match /publicConfig/{docId} {
       allow get: if docId in ['flags', 'limits', 'reference_growth_weight', 'reference_growth_length',
-        'reference_bottle', 'reference_vaccines', 'content_firstAid'];
+        'reference_bottle', 'reference_vaccines', 'content_firstAid', 'appUpdate'];
       allow list, write: if false;
     }
 

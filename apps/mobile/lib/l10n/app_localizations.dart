@@ -13476,6 +13476,150 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Phiên bản {version}'**
   String meVersion(String version);
+
+  /// UP1 title (469:6476).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần cập nhật để tiếp tục'**
+  String get upRequiredTitle;
+
+  /// UP1 body (469:6477).
+  ///
+  /// In vi, this message translates to:
+  /// **'Phiên bản này đã cũ và không còn đồng bộ an toàn với cả nhà. Cập nhật mất khoảng 1 phút.'**
+  String get upRequiredBody;
+
+  /// UP1 reassurance row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu của bé vẫn an toàn'**
+  String get upSafeTitle;
+
+  /// UP1 reassurance row, second line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh, nhật ký và lịch sử chăm sóc được giữ nguyên'**
+  String get upSafeBody;
+
+  /// UP1: uploads still on this phone.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} lần ghi chưa đồng bộ'**
+  String upPendingTitle(int count);
+
+  /// UP1 pending row, second line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẽ tự gửi lên ngay sau khi cập nhật'**
+  String get upPendingBody;
+
+  /// UP1 button on iOS.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật trên App Store'**
+  String get upOpenAppStore;
+
+  /// UP1 button on Android.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật trên Google Play'**
+  String get upOpenPlay;
+
+  /// UP1 link to the release pages.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có gì mới trong {version}'**
+  String upWhatsNewIn(String version);
+
+  /// UP2 tag.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới · {version}'**
+  String upNewTag(String version);
+
+  /// UP2 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life có bản mới'**
+  String get upNewTitle;
+
+  /// UP2 button; UP6 tag.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật'**
+  String get upUpdate;
+
+  /// UP2 secondary action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau'**
+  String get upLater;
+
+  /// UP3/UP4 tag on the picture.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới trong {version}'**
+  String upPageTag(String version);
+
+  /// UP3/UP4 top right.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua'**
+  String get upSkip;
+
+  /// UP3/UP4 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp'**
+  String get upNext;
+
+  /// UP3/UP4 button on the last page.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get upPagesDone;
+
+  /// UP3/UP4 page dots, for screen readers.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trang {page} trên {count}'**
+  String upPageOf(int page, int count);
+
+  /// UP5 banner title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã cập nhật {version}'**
+  String upBannerTitle(String version);
+
+  /// UP5 banner action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem'**
+  String get upBannerSee;
+
+  /// UP5 close button, for screen readers.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng thông báo cập nhật'**
+  String get upBannerClose;
+
+  /// UP6 Tôi · Phiên bản subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có bản mới {version}'**
+  String upNewVersion(String version);
+
+  /// UP6 subtitle when up to date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đây là bản mới nhất'**
+  String get upLatestVersion;
+
+  /// Toast when the store link is missing or fails.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở được trang cập nhật. Thử lại sau nhé.'**
+  String get upNoStore;
 }
 
 class _AppLocalizationsDelegate

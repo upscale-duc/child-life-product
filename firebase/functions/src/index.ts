@@ -63,7 +63,9 @@ import {
   firstAidUploadImage,
   firstAidView,
   type ContentDeps,
+  type FirstAidImageStore,
 } from './content.js';
+import { appUpdateSave, appUpdateUploadImage, appUpdateView } from './app-update.js';
 import {
   AccountError,
   answerOwnership,
@@ -1509,35 +1511,40 @@ export const staffReferenceAct = staffCall('staffReferenceAct', (s, d) =>
 
 // Sơ cứu (D-058, P-141): the guide's draft, a second person approves (an expert on prod), the
 // app reads publicConfig/content_firstAid; pictures are public WebP under content/first-aid/.
-function contentDeps(): ContentDeps {
+/** Public, immutable WebP pictures under `content/{folder}/` (Sơ cứu, Có gì mới). */
+function publicImageStore(folder: string): FirstAidImageStore {
   const bucket = getStorage().bucket();
-  const path = (id: string) => `content/first-aid/${id}.webp`;
+  const prefix = `content/${folder}/`;
+  const path = (id: string) => `${prefix}${id}.webp`;
+  return {
+    exists: async (id) => (await bucket.file(path(id)).exists())[0],
+    save: (id, webp) =>
+      bucket.file(path(id)).save(webp, {
+        contentType: 'image/webp',
+        metadata: { cacheControl: 'public, max-age=31536000, immutable' },
+      }),
+    list: async () =>
+      (await bucket.getFiles({ prefix }))[0]
+        .map((f) => f.name.slice(prefix.length).replace(/\.webp$/, ''))
+        .filter((id) => /^[a-z0-9-]{2,48}_[a-f0-9]{8}$/.test(id)),
+    publicUrl: (id) =>
+      `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(path(id))}?alt=media`,
+    encode: (bytes, icon) =>
+      (icon
+        ? sharp(bytes).resize(176, 176, {
+            fit: 'contain',
+            background: { r: 0, g: 0, b: 0, alpha: 0 },
+          })
+        : sharp(bytes).resize({ width: 1200, withoutEnlargement: true })
+      )
+        .webp({ quality: icon ? 90 : 78 })
+        .toBuffer(),
+  };
+}
+function contentDeps(): ContentDeps {
   return {
     requireReview: environmentForProject(currentProjectId()) === 'prod',
-    images: {
-      exists: async (id) => (await bucket.file(path(id)).exists())[0],
-      save: (id, webp) =>
-        bucket.file(path(id)).save(webp, {
-          contentType: 'image/webp',
-          metadata: { cacheControl: 'public, max-age=31536000, immutable' },
-        }),
-      list: async () =>
-        (await bucket.getFiles({ prefix: 'content/first-aid/' }))[0]
-          .map((f) => f.name.slice('content/first-aid/'.length).replace(/\.webp$/, ''))
-          .filter((id) => /^[a-z0-9-]{2,48}_[a-f0-9]{8}$/.test(id)),
-      publicUrl: (id) =>
-        `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(path(id))}?alt=media`,
-      encode: (bytes, icon) =>
-        (icon
-          ? sharp(bytes).resize(176, 176, {
-              fit: 'contain',
-              background: { r: 0, g: 0, b: 0, alpha: 0 },
-            })
-          : sharp(bytes).resize({ width: 1200, withoutEnlargement: true })
-        )
-          .webp({ quality: icon ? 90 : 78 })
-          .toBuffer(),
-    },
+    images: publicImageStore('first-aid'),
   };
 }
 export const staffFirstAid = staffCall('staffFirstAid', (s) =>
@@ -1551,6 +1558,19 @@ export const staffFirstAidAct = staffCall('staffFirstAidAct', (s, d) =>
 );
 export const staffFirstAidImage = staffCall('staffFirstAidImage', (s, d) =>
   firstAidUploadImage(getFirestore(), contentDeps(), s, d, new Date()),
+);
+
+// Cập nhật ứng dụng (D-061): store versions, the oldest allowed, "Có gì mới"; the app reads
+// publicConfig/appUpdate.
+const appUpdateDeps = () => ({ images: publicImageStore('app-update') });
+export const staffAppUpdate = staffCall('staffAppUpdate', (s) =>
+  appUpdateView(getFirestore(), appUpdateDeps(), s),
+);
+export const staffAppUpdateSave = staffCall('staffAppUpdateSave', (s, d) =>
+  appUpdateSave(getFirestore(), appUpdateDeps(), s, d, new Date()),
+);
+export const staffAppUpdateImage = staffCall('staffAppUpdateImage', (s, d) =>
+  appUpdateUploadImage(getFirestore(), appUpdateDeps(), s, d, new Date()),
 );
 
 // QA handbook (P-132): test runs, results and comments; never family data.
