@@ -6,7 +6,9 @@ import { describe, expect, it } from 'vitest';
 import { ApiContext, type Api, type AppUpdateView } from '../src/api';
 import { StaffContext } from '../src/context';
 import { messages } from '../src/messages';
+import { Sidebar } from '../src/Shell';
 import { AppUpdateBody, raisedMinimum } from '../src/screens/AppUpdate';
+import { AppUpdatePreview, type PreviewScreen } from '../src/screens/AppUpdatePreview';
 import { levelsForRoles, type StaffRole } from './fixtures';
 
 // Cập nhật ứng dụng on the portal (D-061): what is in use, who may publish, the raised-minimum
@@ -113,5 +115,69 @@ describe('Cập nhật ứng dụng', () => {
     expect(text(render(<AppUpdateBody view={view} canEdit />, ['admin'], 'en'))).toContain(
       'Oldest allowed',
     );
+  });
+});
+
+describe('Cập nhật ứng dụng: preview (portal review 2026-10-12)', () => {
+  const show = (initial: PreviewScreen, c: AppUpdateConfig = config) =>
+    text(render(<AppUpdatePreview config={c} images={view.images} initial={initial} />));
+
+  it("draws each app screen from the form, in the app's copy", () => {
+    expect(show('required')).toContain('Cần cập nhật để tiếp tục');
+    expect(show('required')).toMatch(/1\.0\.4\s+1\.2\.0/);
+    expect(show('required')).toContain('Cập nhật trên App Store');
+    expect(show('required')).toContain('Có gì mới trong 1.2.0');
+    expect(show('available')).toContain('Mới · 1.2.0');
+    expect(show('available')).toContain('Sơ cứu trẻ em');
+    expect(show('banner')).toContain('Đã cập nhật 1.2.0');
+    expect(show('banner')).toContain('Sơ cứu, chi tiêu chung, lịch tiêm');
+    expect(show('pages')).toContain('Sơ cứu trẻ em, luôn trong túi bạn');
+    expect(show('pages')).toContain('Tìm trong tab Tiện ích');
+    expect(show('version')).toContain('Có bản mới 1.2.0');
+  });
+
+  it('says why a screen would not show', () => {
+    const none = { ...config, release: null, ios: { latest: null, minimum: null, storeUrl: null } };
+    expect(show('required', none)).toContain('không máy nào bị chặn');
+    expect(show('available', none)).toContain('app không nhắc cập nhật');
+    expect(show('banner', none)).toContain('Chưa có trang giới thiệu');
+  });
+
+  it('the page has the preview next to the form', () => {
+    expect(text(render(<AppUpdateBody view={view} canEdit />))).toContain('Xem trước');
+  });
+});
+
+describe('Sidebar: icons and the icon-only menu (portal review 2026-10-12)', () => {
+  const bar = (collapsed: boolean) =>
+    render(
+      <Sidebar
+        route="appUpdate"
+        badges={null}
+        environment="dev"
+        locale="vi"
+        onLocale={() => undefined}
+        onSignOut={() => undefined}
+        navigate={() => undefined}
+        collapsed={collapsed}
+        onCollapse={() => undefined}
+      />,
+    );
+
+  it('every item has an icon; the toggle says what it does', () => {
+    const html = bar(false);
+    expect(html.match(/class="sidebar__item/g)!.length).toBe(
+      html.match(/<a [^>]*class="sidebar__item[^"]*"[^>]*>\s*<svg class="sidebar__icon"/g)!.length,
+    );
+    expect(html).toContain('aria-label="Thu gọn menu"');
+    expect(html).not.toContain('sidebar--rail');
+  });
+
+  it('collapsed: icons only, names kept for screen readers and as tooltips', () => {
+    const html = bar(true);
+    expect(html).toContain('sidebar--rail');
+    expect(html).toContain('aria-label="Mở rộng menu"');
+    expect(html).toContain('title="Cập nhật ứng dụng"');
+    expect(text(html)).toContain('Cập nhật ứng dụng');
   });
 });

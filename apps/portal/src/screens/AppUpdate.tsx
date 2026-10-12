@@ -29,6 +29,7 @@ import {
   errorMessageId,
   reasonOk,
 } from '../ui';
+import { AppUpdatePreview } from './AppUpdatePreview';
 import { fileToBase64 } from './FirstAidEditor';
 
 /**
@@ -103,68 +104,79 @@ export function AppUpdateBody({
         </div>
       </Panel>
 
-      <div className="cols cols--1-1">
-        {platforms.map((p) => (
-          <PlatformPanel
-            key={p}
-            platform={p}
-            value={config[p]}
-            before={published?.[p] ?? null}
-            readOnly={ro}
-            onChange={(v) => setConfig({ ...config, [p]: v })}
-          />
-        ))}
-      </div>
-
-      <Panel
-        title={<FormattedMessage id="au.nudge" />}
-        note={<FormattedMessage id="au.nudgeNote" />}
-      >
-        <div className="panel__pad">
-          <NumberField
-            label={<FormattedMessage id="au.snoozeDays" />}
-            value={config.snoozeDays}
-            min={1}
-            max={30}
-            readOnly={ro}
-            onChange={(snoozeDays) => setConfig({ ...config, snoozeDays })}
-          />
-        </div>
-      </Panel>
-
-      <ReleasePanel
-        value={config.release}
-        images={images}
-        readOnly={ro}
-        onImage={(img) => setImages((all) => [img, ...all.filter((i) => i.id !== img.id)])}
-        onChange={(release) => setConfig({ ...config, release })}
-      />
-
-      {canEdit && (
-        <div className="fa-editbar">
-          {problems.length > 0 && (
-            <ul className="error" role="alert">
-              {problems.map((p) => (
-                <li key={p}>
-                  <FormattedMessage id={p} />
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className="actions">
-            <Button disabled={!changed} onClick={() => setConfig(published ?? appUpdateEmpty)}>
-              <FormattedMessage id="au.reset" />
-            </Button>
-            <Button
-              kind="primary"
-              disabled={!changed || problems.length > 0}
-              onClick={() => setConfirm(true)}
-            >
-              <FormattedMessage id="au.publish" />
-            </Button>
+      <div className="au-layout">
+        <div className="stack">
+          <div className="cols cols--1-1">
+            {platforms.map((p) => (
+              <PlatformPanel
+                key={p}
+                platform={p}
+                value={config[p]}
+                before={published?.[p] ?? null}
+                readOnly={ro}
+                onChange={(v) => setConfig({ ...config, [p]: v })}
+              />
+            ))}
           </div>
+
+          <Panel
+            title={<FormattedMessage id="au.nudge" />}
+            note={<FormattedMessage id="au.nudgeNote" />}
+          >
+            <div className="panel__pad">
+              <NumberField
+                label={<FormattedMessage id="au.snoozeDays" />}
+                value={config.snoozeDays}
+                min={1}
+                max={30}
+                readOnly={ro}
+                onChange={(snoozeDays) => setConfig({ ...config, snoozeDays })}
+              />
+            </div>
+          </Panel>
+
+          <ReleasePanel
+            value={config.release}
+            images={images}
+            readOnly={ro}
+            onImage={(img) => setImages((all) => [img, ...all.filter((i) => i.id !== img.id)])}
+            onChange={(release) => setConfig({ ...config, release })}
+          />
+
+          {canEdit && (
+            <div className="fa-editbar">
+              {problems.length > 0 && (
+                <ul className="error" role="alert">
+                  {problems.map((p) => (
+                    <li key={p}>
+                      <FormattedMessage id={p} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="actions">
+                <Button disabled={!changed} onClick={() => setConfig(published ?? appUpdateEmpty)}>
+                  <FormattedMessage id="au.reset" />
+                </Button>
+                <Button
+                  kind="primary"
+                  disabled={!changed || problems.length > 0}
+                  onClick={() => setConfirm(true)}
+                >
+                  <FormattedMessage id="au.publish" />
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+        <aside className="au-layout__aside">
+          <Panel title={<FormattedMessage id="au.pv.title" />}>
+            <div className="panel__pad">
+              <AppUpdatePreview config={config} images={images} />
+            </div>
+          </Panel>
+        </aside>
+      </div>
 
       <Panel title={<FormattedMessage id="au.history" />} className="panel--flush">
         <TableScroll>

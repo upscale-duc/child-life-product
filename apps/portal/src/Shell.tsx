@@ -23,6 +23,7 @@ import { AnalyticsScreen } from './screens/Analytics';
 import { AuditScreen } from './screens/Audit';
 import { FamiliesScreen } from './screens/Families';
 import { FeaturesScreen } from './screens/Features';
+import { NavIcon } from './nav-icons';
 import { AppUpdateScreen } from './screens/AppUpdate';
 import { FirstAidScreen } from './screens/FirstAid';
 import { JobsScreen } from './screens/Jobs';
@@ -70,6 +71,8 @@ export function allowedRoute(levels: StaffLevels, route: Route): Route {
     ? route
     : (nav.find((n) => canOpen(levels, n.route))?.route ?? route);
 }
+
+const collapsedKey = 'portal.sidebar.collapsed';
 
 /** The signed-in portal: the Admin/Sidebar (`253:467`) and the A02–A12 screens. */
 export function Shell({
@@ -123,6 +126,22 @@ export function Shell({
   }, []);
   // Below 860 px the sidebar is a drawer opened from the top bar (portal UI review).
   const [drawer, setDrawer] = useState(false);
+  // Wider: the menu can shrink to icons; remembered on this browser (portal review 2026-10-12).
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      return window.localStorage.getItem(collapsedKey) === '1';
+    } catch {
+      return false;
+    }
+  });
+  const collapse = useCallback((value: boolean) => {
+    setCollapsed(value);
+    try {
+      window.localStorage.setItem(collapsedKey, value ? '1' : '0');
+    } catch {
+      // Private mode: it just resets next time.
+    }
+  }, []);
   useScrollLock(drawer);
   useEscape(() => setDrawer(false), drawer);
   const intl = useIntl();
@@ -131,7 +150,7 @@ export function Shell({
   return (
     <NavigateContext.Provider value={navigate}>
       <BadgesContext.Provider value={refreshBadges}>
-        <div className="shell">
+        <div className={`shell ${collapsed ? 'shell--collapsed' : ''}`}>
           <header className="topbar">
             <button
               type="button"
@@ -173,6 +192,8 @@ export function Shell({
             navigate={navigate}
             open={drawer}
             onClose={() => setDrawer(false)}
+            collapsed={collapsed}
+            onCollapse={collapse}
           />
           <main className="main">
             <Screen route={route} />
@@ -228,6 +249,8 @@ export function Sidebar({
   navigate,
   open = false,
   onClose,
+  collapsed = false,
+  onCollapse,
 }: {
   route: Route;
   badges: Badges | null;
@@ -239,9 +262,13 @@ export function Sidebar({
   /** The drawer state below 860 px. */
   open?: boolean;
   onClose?: () => void;
+  /** Wide screens: icons only (portal review 2026-10-12); the drawer is always full. */
+  collapsed?: boolean;
+  onCollapse?: (collapsed: boolean) => void;
 }) {
   const intl = useIntl();
   const staff = useStaff();
+  const rail = collapsed && !open;
   const listRef = useRef<HTMLUListElement>(null);
   const [menu, setMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -269,13 +296,30 @@ export function Sidebar({
   return (
     <nav
       id="portal-menu"
-      className={`sidebar ${open ? 'sidebar--open' : ''}`}
+      className={`sidebar ${open ? 'sidebar--open' : ''} ${rail ? 'sidebar--rail' : ''}`}
       aria-label={intl.formatMessage({ id: 'nav.label' })}
     >
       <div className="sidebar__head">
         <p className="brand brand--side">
-          Child Life <span className="brand__sub">Vận hành</span>
+          <span className="brand__full">
+            Child Life <span className="brand__sub">Vận hành</span>
+          </span>
+          <span className="brand__short" aria-hidden="true">
+            CL
+          </span>
         </p>
+        {onCollapse && (
+          <button
+            type="button"
+            className="sidebar__toggle"
+            aria-label={intl.formatMessage({ id: collapsed ? 'nav.expand' : 'nav.collapse' })}
+            title={intl.formatMessage({ id: collapsed ? 'nav.expand' : 'nav.collapse' })}
+            aria-expanded={!collapsed}
+            onClick={() => onCollapse(!collapsed)}
+          >
+            <NavIcon name={collapsed ? 'expand' : 'collapse'} />
+          </button>
+        )}
         {onClose && (
           <button
             type="button"
@@ -311,6 +355,7 @@ export function Sidebar({
               )}
               <a
                 href={routePaths[item.route]}
+                title={rail ? intl.formatMessage({ id: `nav.${item.route}` }) : undefined}
                 className={`sidebar__item ${active === item.route ? 'sidebar__item--on' : ''}`}
                 aria-current={active === item.route ? 'page' : undefined}
                 onClick={(e) => {
@@ -319,7 +364,10 @@ export function Sidebar({
                   navigate(item.route);
                 }}
               >
-                <FormattedMessage id={`nav.${item.route}`} />
+                <NavIcon name={item.route as Exclude<Route, 'systemAi'>} />
+                <span className="sidebar__label">
+                  <FormattedMessage id={`nav.${item.route}`} />
+                </span>
                 {item.badge && badges && badges[item.badge] > 0 && (
                   <span className="sidebar__badge">{intl.formatNumber(badges[item.badge])}</span>
                 )}
@@ -335,6 +383,7 @@ export function Sidebar({
           <button
             type="button"
             className="usercard__button"
+            title={rail ? staff.name : undefined}
             aria-haspopup="menu"
             aria-expanded={menu}
             onClick={() => setMenu((m) => !m)}
