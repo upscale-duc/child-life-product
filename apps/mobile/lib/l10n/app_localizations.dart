@@ -13470,6 +13470,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Người thân'**
   String get inviteLinkDefaultName;
+
+  /// App version at the bottom of Tôi, e.g. "1.0.0 (12) · dev".
+  ///
+  /// In vi, this message translates to:
+  /// **'Phiên bản {version}'**
+  String meVersion(String version);
 }
 
 class _AppLocalizationsDelegate

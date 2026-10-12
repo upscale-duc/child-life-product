@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/locale.dart';
+import '../../app/providers.dart';
 import '../../app/route_guard.dart';
 import '../../app/session.dart';
 import '../../core/appearance/appearance.dart';
@@ -194,6 +195,18 @@ class MeScreen extends ConsumerWidget {
             ),
           ],
         ),
+        if (ref.watch(appVersionProvider).value case final version?)
+          Padding(
+            padding: const EdgeInsets.only(top: ClSpace.s4),
+            child: Text(
+              l10n.meVersion(version),
+              key: const Key('meVersion'),
+              textAlign: TextAlign.center,
+              style: context.cl.text.caption.copyWith(
+                color: context.cl.colors.inkMuted,
+              ),
+            ),
+          ),
       ],
     );
   }

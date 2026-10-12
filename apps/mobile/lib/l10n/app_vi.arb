@@ -12182,5 +12182,14 @@
   "inviteLinkDefaultName": "Người thân",
   "@inviteLinkDefaultName": {
     "description": "Name given when joining from a link (owner, 2026-10-12)."
+  },
+  "meVersion": "Phiên bản {version}",
+  "@meVersion": {
+    "description": "App version at the bottom of Tôi, e.g. \"1.0.0 (12) · dev\".",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
   }
 }

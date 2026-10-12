@@ -1,3 +1,4 @@
+import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/widgets/cl_inputs.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/baby/time_zones.dart';
@@ -88,6 +89,21 @@ void main() {
         expect(find.text('Lời nhắn'), findsNothing);
       },
     );
+
+    testWidgets('the app version sits under Đăng xuất (owner, 2026-10-12)', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        const MeScreen(),
+        overrides: [
+          ..._overrides(),
+          appVersionProvider.overrideWith((ref) async => '1.0.0 (7) · dev'),
+        ],
+      );
+      await tester.scrollUntilVisible(find.byKey(const Key('meVersion')), 200);
+      expect(find.text('Phiên bản 1.0.0 (7) · dev'), findsOneWidget);
+    });
 
     testWidgets('"Đăng xuất" asks first', (tester) async {
       await pumpRouted(tester, const MeScreen(), overrides: _overrides());

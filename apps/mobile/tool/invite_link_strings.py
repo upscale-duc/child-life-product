@@ -1,5 +1,5 @@
-# One-tap invite links (owner, 2026-10-12): the email's "Nhận lời mời" (AppsFlyer OneLink or
-# /i/<token>) joins at once. Vietnamese = owner, English = engineering draft (D-012). Idempotent.
+# One-tap invite links (owner, 2026-10-12, D-059): opening an invite link
+# /i/<token> joins at once. Vietnamese = owner, English = engineering draft (D-012). Idempotent.
 # Usage: python3 tool/invite_link_strings.py
 import json, collections, pathlib
 

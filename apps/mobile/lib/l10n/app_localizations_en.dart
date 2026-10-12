@@ -8591,4 +8591,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get inviteLinkDefaultName => 'Family member';
+
+  @override
+  String meVersion(String version) {
+    return 'Version $version';
+  }
 }

@@ -2227,5 +2227,6 @@
   "careNutritionSub": "Milk and nutrients by stage",
   "inviteLinkJoining": "Accepting the invite…",
   "inviteLinkJoined": "You now care for {baby}. Change your name in Family.",
-  "inviteLinkDefaultName": "Family member"
+  "inviteLinkDefaultName": "Family member",
+  "meVersion": "Version {version}"
 }

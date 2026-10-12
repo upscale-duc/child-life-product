@@ -8042,4 +8042,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get inviteLinkDefaultName => 'Người thân';
+
+  @override
+  String meVersion(String version) {
+    return 'Phiên bản $version';
+  }
 }
