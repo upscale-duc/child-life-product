@@ -31,6 +31,8 @@ import '../home/home_shell.dart';
 import '../reminders/reminder_screens.dart' show ReminderPeek;
 import '../app_update/app_update_screens.dart' show WhatsNewBanner;
 import '../home/today_tour.dart';
+import '../spending/spending_models.dart' show SpendingAccess;
+import 'today_cards.dart';
 import 'today_layout.dart';
 
 /// 19 Hôm nay (46:2266) and its first-run state 18 (29:904): one tile per tracker — tap logs
@@ -154,7 +156,7 @@ class TodayScreen extends ConsumerWidget {
                     crossAxisSpacing: ClSpace.s3,
                     childAspectRatio: 166 / 156,
                     children: [
-                      for (final kind in trackers)
+                      for (final kind in layout.tiles(trackers))
                         if (!layout.hiddenTiles.contains(kind))
                           if (careTypeOf(kind) case final type?)
                             KeyedSubtree(
@@ -191,6 +193,23 @@ class TodayScreen extends ConsumerWidget {
                     // A section like "Hôm nay" below: its own header, the same gap.
                     const SizedBox(height: ClSpace.s6),
                     const ReminderPeek(),
+                  ],
+                ],
+                // Opt-in parts (owner, 2026-10-12); each checks the viewer's rights.
+                TodaySection.quickActions => [
+                  if (!readOnly) ...[
+                    const SizedBox(height: ClSpace.s6),
+                    TodayQuickActions(layout: layout),
+                  ],
+                ],
+                TodaySection.vaccine => [
+                  const SizedBox(height: ClSpace.s6),
+                  const TodayVaccineCard(),
+                ],
+                TodaySection.spending => [
+                  if (SpendingAccess.of(membership).viewAll) ...[
+                    const SizedBox(height: ClSpace.s6),
+                    const TodaySpendingCard(),
                   ],
                 ],
                 TodaySection.rhythm => [

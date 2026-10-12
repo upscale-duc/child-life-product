@@ -9784,7 +9784,7 @@ abstract class AppLocalizations {
   /// Sheet body.
   ///
   /// In vi, this message translates to:
-  /// **'Bật, tắt và kéo để sắp xếp những gì hiện trên Hôm nay.'**
+  /// **'Bật phần nào thì chọn luôn nội dung ngay bên dưới. Kéo tay nắm bên trái, hoặc nhấn giữ một dòng, để đổi thứ tự.'**
   String get customizeIntro;
 
   /// Today section.
@@ -9826,7 +9826,7 @@ abstract class AppLocalizations {
   /// Customise sheet secondary.
   ///
   /// In vi, this message translates to:
-  /// **'Đặt lại'**
+  /// **'Về mặc định'**
   String get customizeReset;
 
   /// Customise sheet primary.
@@ -13098,6 +13098,108 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Từ khi {name} chào đời'**
   String spSinceBirthYoung(String name);
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo nhanh'**
+  String get sectionQuickActions;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc nhở, chi tiêu, mũi tiêm, kỷ niệm'**
+  String get sectionQuickActionsSub;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mũi tiêm sắp tới'**
+  String get sectionVaccine;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ sổ tiêm chủng của bé'**
+  String get sectionVaccineSub;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu tháng này'**
+  String get sectionSpending;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng tháng so với ngân sách'**
+  String get sectionSpendingSub;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc nhở'**
+  String get quickReminder;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu'**
+  String get quickExpense;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mũi tiêm'**
+  String get quickVaccine;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm'**
+  String get quickMemory;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo nhắc việc mới'**
+  String get quickReminderHint;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi khoản đã chi'**
+  String get quickExpenseHint;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở sổ tiêm chủng'**
+  String get quickVaccineHint;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh, video, nhật ký'**
+  String get quickMemoryHint;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} mũi · chạm để xem'**
+  String todayVaccineShots(int n);
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở sổ tiêm chủng'**
+  String get todayVaccineOpen;
+
+  /// Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đặt ngân sách tháng'**
+  String get todaySpendingNoBudget;
 
   /// Tài khoản → Xuất dữ liệu row once the file is ready (download only from the email).
   ///

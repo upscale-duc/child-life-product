@@ -6263,7 +6263,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customizeIntro =>
-      'Turn on, turn off and drag to arrange what shows on Today.';
+      'Turn a part on and pick what it shows right below it. Drag the handle on the left, or press and hold a row, to reorder.';
 
   @override
   String get sectionTiles => 'Quick tracking tiles';
@@ -6284,7 +6284,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get visibleTiles => 'Visible tracking tiles';
 
   @override
-  String get customizeReset => 'Reset';
+  String get customizeReset => 'Reset to default';
 
   @override
   String get customizeDone => 'Done';
@@ -8328,6 +8328,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String spSinceBirthYoung(String name) {
     return 'Since $name was born';
   }
+
+  @override
+  String get sectionQuickActions => 'Quick add';
+
+  @override
+  String get sectionQuickActionsSub => 'Reminders, spending, shots, memories';
+
+  @override
+  String get sectionVaccine => 'Upcoming shots';
+
+  @override
+  String get sectionVaccineSub => 'From the baby\'s vaccination book';
+
+  @override
+  String get sectionSpending => 'Spending this month';
+
+  @override
+  String get sectionSpendingSub => 'The month\'s total against the budget';
+
+  @override
+  String get quickReminder => 'Reminder';
+
+  @override
+  String get quickExpense => 'Expense';
+
+  @override
+  String get quickVaccine => 'Shot';
+
+  @override
+  String get quickMemory => 'Memory';
+
+  @override
+  String get quickReminderHint => 'Create a reminder';
+
+  @override
+  String get quickExpenseHint => 'Record an expense';
+
+  @override
+  String get quickVaccineHint => 'Open the vaccination book';
+
+  @override
+  String get quickMemoryHint => 'Photos, videos, notes';
+
+  @override
+  String todayVaccineShots(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n shots · tap to see',
+      one: '1 shot · tap to see',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get todayVaccineOpen => 'Open the vaccination book';
+
+  @override
+  String get todaySpendingNoBudget => 'No monthly budget set';
 
   @override
   String acExportEmailed(String when) {

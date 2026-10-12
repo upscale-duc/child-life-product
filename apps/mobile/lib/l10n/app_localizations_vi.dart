@@ -5874,7 +5874,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get customizeIntro =>
-      'Bật, tắt và kéo để sắp xếp những gì hiện trên Hôm nay.';
+      'Bật phần nào thì chọn luôn nội dung ngay bên dưới. Kéo tay nắm bên trái, hoặc nhấn giữ một dòng, để đổi thứ tự.';
 
   @override
   String get sectionTiles => 'Ô theo dõi nhanh';
@@ -5895,7 +5895,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get visibleTiles => 'Ô theo dõi hiển thị';
 
   @override
-  String get customizeReset => 'Đặt lại';
+  String get customizeReset => 'Về mặc định';
 
   @override
   String get customizeDone => 'Xong';
@@ -7817,6 +7817,59 @@ class AppLocalizationsVi extends AppLocalizations {
   String spSinceBirthYoung(String name) {
     return 'Từ khi $name chào đời';
   }
+
+  @override
+  String get sectionQuickActions => 'Tạo nhanh';
+
+  @override
+  String get sectionQuickActionsSub => 'Nhắc nhở, chi tiêu, mũi tiêm, kỷ niệm';
+
+  @override
+  String get sectionVaccine => 'Mũi tiêm sắp tới';
+
+  @override
+  String get sectionVaccineSub => 'Từ sổ tiêm chủng của bé';
+
+  @override
+  String get sectionSpending => 'Chi tiêu tháng này';
+
+  @override
+  String get sectionSpendingSub => 'Tổng tháng so với ngân sách';
+
+  @override
+  String get quickReminder => 'Nhắc nhở';
+
+  @override
+  String get quickExpense => 'Chi tiêu';
+
+  @override
+  String get quickVaccine => 'Mũi tiêm';
+
+  @override
+  String get quickMemory => 'Kỷ niệm';
+
+  @override
+  String get quickReminderHint => 'Tạo nhắc việc mới';
+
+  @override
+  String get quickExpenseHint => 'Ghi khoản đã chi';
+
+  @override
+  String get quickVaccineHint => 'Mở sổ tiêm chủng';
+
+  @override
+  String get quickMemoryHint => 'Ảnh, video, nhật ký';
+
+  @override
+  String todayVaccineShots(int n) {
+    return '$n mũi · chạm để xem';
+  }
+
+  @override
+  String get todayVaccineOpen => 'Mở sổ tiêm chủng';
+
+  @override
+  String get todaySpendingNoBudget => 'Chưa đặt ngân sách tháng';
 
   @override
   String acExportEmailed(String when) {

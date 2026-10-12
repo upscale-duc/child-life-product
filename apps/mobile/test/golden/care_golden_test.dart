@@ -5,6 +5,7 @@ import 'package:child_life/app/environment.dart';
 import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
+import 'package:child_life/core/widgets/cl_inputs.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
 import 'package:child_life/features/care/care_hub_screen.dart';
 import 'package:child_life/features/care/care_models.dart';
@@ -142,6 +143,50 @@ final _cases = <String, _Case>{
     overrides: () => careOverrides(growth: mockGrowth()),
     act: (t) async {
       showTodayCustomizeSheet(t.element(find.byType(TodayScreen)));
+      await t.pumpAndSettle();
+    },
+  ),
+  // Owner, 2026-10-12: each tile on its own row, and the shortcuts.
+  'v1i_today_customize_tiles': (
+    build: _today,
+    overrides: () => careOverrides(growth: mockGrowth()),
+    act: (t) async {
+      showTodayCustomizeSheet(t.element(find.byType(TodayScreen)));
+      await t.pumpAndSettle();
+      // Tạo nhanh on: its shortcuts show right under it.
+      await t.tap(
+        find.descendant(
+          of: find
+              .ancestor(
+                of: find.textContaining(RegExp(r'^(Tạo nhanh|Quick add)$')).first,
+                matching: find.byType(Row),
+              )
+              .first,
+          matching: find.byType(ClToggle),
+        ),
+      );
+      await t.pumpAndSettle();
+    },
+  ),
+  'v1i_today_extras': (
+    build: _today,
+    overrides: () => careOverrides(growth: mockGrowth()),
+    act: (t) async {
+      ProviderScope.containerOf(t.element(find.byType(TodayScreen)))
+          .read(todayLayoutProvider(teddyId).notifier)
+          .set(
+            const TodayLayout(
+              order: [
+                TodaySection.quickActions,
+                TodaySection.vaccine,
+                TodaySection.spending,
+                TodaySection.tiles,
+                TodaySection.reminders,
+                TodaySection.rhythm,
+              ],
+              hidden: {},
+            ),
+          );
       await t.pumpAndSettle();
     },
   ),

@@ -8898,7 +8898,7 @@
   "@customizeTitle": {
     "description": "Sheet title (370:1525)."
   },
-  "customizeIntro": "Bật, tắt và kéo để sắp xếp những gì hiện trên Hôm nay.",
+  "customizeIntro": "Bật phần nào thì chọn luôn nội dung ngay bên dưới. Kéo tay nắm bên trái, hoặc nhấn giữ một dòng, để đổi thứ tự.",
   "@customizeIntro": {
     "description": "Sheet body."
   },
@@ -8926,7 +8926,7 @@
   "@visibleTiles": {
     "description": "Customise sheet section."
   },
-  "customizeReset": "Đặt lại",
+  "customizeReset": "Về mặc định",
   "@customizeReset": {
     "description": "Customise sheet secondary."
   },
@@ -11826,6 +11826,79 @@
         "type": "String"
       }
     }
+  },
+  "sectionQuickActions": "Tạo nhanh",
+  "@sectionQuickActions": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "sectionQuickActionsSub": "Nhắc nhở, chi tiêu, mũi tiêm, kỷ niệm",
+  "@sectionQuickActionsSub": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "sectionVaccine": "Mũi tiêm sắp tới",
+  "@sectionVaccine": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "sectionVaccineSub": "Từ sổ tiêm chủng của bé",
+  "@sectionVaccineSub": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "sectionSpending": "Chi tiêu tháng này",
+  "@sectionSpending": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "sectionSpendingSub": "Tổng tháng so với ngân sách",
+  "@sectionSpendingSub": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "quickReminder": "Nhắc nhở",
+  "@quickReminder": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "quickExpense": "Chi tiêu",
+  "@quickExpense": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "quickVaccine": "Mũi tiêm",
+  "@quickVaccine": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "quickMemory": "Kỷ niệm",
+  "@quickMemory": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "quickReminderHint": "Tạo nhắc việc mới",
+  "@quickReminderHint": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "quickExpenseHint": "Ghi khoản đã chi",
+  "@quickExpenseHint": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "quickVaccineHint": "Mở sổ tiêm chủng",
+  "@quickVaccineHint": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "quickMemoryHint": "Ảnh, video, nhật ký",
+  "@quickMemoryHint": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "todayVaccineShots": "{n} mũi · chạm để xem",
+  "@todayVaccineShots": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "todayVaccineOpen": "Mở sổ tiêm chủng",
+  "@todayVaccineOpen": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
+  },
+  "todaySpendingNoBudget": "Chưa đặt ngân sách tháng",
+  "@todaySpendingNoBudget": {
+    "description": "Tuỳ chỉnh Hôm nay, opt-in parts (owner, 2026-10-12)."
   },
   "acExportEmailed": "Đã gửi link tải qua email · hết hạn {when}",
   "@acExportEmailed": {

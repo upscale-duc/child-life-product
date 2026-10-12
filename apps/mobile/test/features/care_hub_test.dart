@@ -2,9 +2,11 @@ import 'package:child_life/app/route_guard.dart';
 import 'package:child_life/core/widgets/cl_inputs.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_hub_screen.dart';
+import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/home/home_shell.dart';
 import 'package:child_life/features/reminders/reminder_screens.dart'
     show ReminderPeek;
+import 'package:child_life/features/today/today_cards.dart';
 import 'package:child_life/features/today/today_layout.dart';
 import 'package:child_life/features/today/today_screen.dart';
 import 'package:child_life/core/widgets/cl_navigation.dart';
@@ -225,14 +227,49 @@ void main() {
         'hidden': ['reminders'],
         'hiddenTiles': ['pump', 'nope'],
       });
+      // Missing parts go in their default place; the opt-in ones stay hidden.
       expect(layout.order, [
         TodaySection.rhythm,
         TodaySection.tiles,
         TodaySection.reminders,
+        TodaySection.quickActions,
+        TodaySection.vaccine,
+        TodaySection.spending,
       ]);
       expect(layout.shows(TodaySection.reminders), isFalse);
+      expect(layout.shows(TodaySection.quickActions), isFalse);
       expect(layout.hiddenTiles, {TrackerKind.pump});
+      expect(layout.actionOrder, QuickAction.values);
       expect(TodayLayout.fromJson(layout.toJson()).toJson(), layout.toJson());
+    });
+
+    test('the default is the design: tiles, reminders, rhythm', () {
+      const d = TodayLayout();
+      expect(
+        [
+          for (final s in d.order)
+            if (d.shows(s)) s,
+        ],
+        [TodaySection.tiles, TodaySection.reminders, TodaySection.rhythm],
+      );
+      expect(
+        const TodayLayout(
+          tileOrder: [TrackerKind.diaper, TrackerKind.pump],
+        ).tiles([TrackerKind.bottle, TrackerKind.sleep, TrackerKind.diaper]),
+        [TrackerKind.diaper, TrackerKind.bottle, TrackerKind.sleep],
+      );
+      // Moving what the viewer sees keeps the rest in place.
+      expect(reorderVisible([1, 2, 3, 4], [1, 3, 4], 2, 0), [4, 2, 1, 3]);
+    });
+
+    test('shortcuts and parts follow the viewer\'s rights', () {
+      expect(allowedActions(mai), QuickAction.values);
+      expect(allowedActions(lan), [QuickAction.reminder, QuickAction.vaccine]);
+      expect(allowedActions(hoa), isEmpty);
+      expect(
+        allowedSections(lan, hasTiles: true),
+        isNot(contains(TodaySection.spending)),
+      );
     });
 
     testWidgets('hide a section and a tile; Xong keeps it, Đặt lại undoes', (
@@ -262,10 +299,8 @@ void main() {
           matching: find.byType(ClToggle),
         ),
       );
-      // The sheet's chip (the day's legend below also says Bú bình).
-      final bottleChip = find
-          .descendant(of: find.byType(Wrap), matching: find.text('Bú bình'))
-          .last;
+      // The tile's chip, right under "Ô theo dõi nhanh".
+      final bottleChip = find.byKey(const Key('tileChip-bottle'));
       await tester.ensureVisible(bottleChip);
       await tester.tap(bottleChip);
       // Nothing changes until Xong.
@@ -281,11 +316,142 @@ void main() {
 
       await tester.tap(find.text('Tuỳ chỉnh'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Đặt lại'));
+      await tester.tap(find.text('Về mặc định'));
       await tester.tap(find.text('Xong'));
       await tester.pumpAndSettle();
       expect(find.byType(ReminderPeek), findsOneWidget);
       expect(find.byType(CareTile), findsNWidgets(4));
+    });
+
+    testWidgets('opt-in parts: Tạo nhanh, Mũi tiêm sắp tới, Chi tiêu', (
+      tester,
+    ) async {
+      final (_, container) = await pumpRouted(
+        tester,
+        const Scaffold(body: TodayScreen()),
+        overrides: careOverrides(),
+      );
+      expect(find.byType(TodayQuickActions), findsNothing);
+      await tester.tap(find.text('Tuỳ chỉnh'));
+      await tester.pumpAndSettle();
+      for (final part in [
+        'Tạo nhanh',
+        'Mũi tiêm sắp tới',
+        'Chi tiêu tháng này',
+      ]) {
+        final toggle = find.descendant(
+          of: find
+              .ancestor(
+                of: find.descendant(
+                  of: find.byKey(const Key('customizeSections')),
+                  matching: find.text(part),
+                ),
+                matching: find.byType(Row),
+              )
+              .first,
+          matching: find.byType(ClToggle),
+        );
+        await tester.ensureVisible(toggle);
+        await tester.tap(toggle);
+        await tester.pump();
+      }
+      // One shortcut off, ticked right under "Tạo nhanh".
+      final memory = find.byKey(const Key('actionChip-memory'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(memory);
+      await tester.pumpAndSettle();
+      await tester.tap(memory);
+      await tester.tap(find.text('Xong'));
+      await tester.pumpAndSettle();
+      final layout = container.read(todayLayoutProvider(teddyId));
+      expect(layout.shows(TodaySection.quickActions), isTrue);
+      expect(layout.hiddenActions, {QuickAction.memory});
+      await tester.scrollUntilVisible(
+        find.byType(TodayQuickActions),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.byKey(const Key('quick-reminder')), findsOneWidget);
+      expect(find.byKey(const Key('quick-expense')), findsOneWidget);
+      expect(find.byKey(const Key('quick-memory')), findsNothing);
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('todaySpending')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.byKey(const Key('todayVaccine')), findsOneWidget);
+    });
+
+    testWidgets('drag by the handle, or press and hold a row', (tester) async {
+      final (_, container) = await pumpRouted(
+        tester,
+        const Scaffold(body: TodayScreen()),
+        overrides: careOverrides(),
+      );
+      await tester.tap(find.text('Tuỳ chỉnh'));
+      await tester.pumpAndSettle();
+      Finder inGroup(String key, String text) =>
+          find.descendant(of: find.byKey(Key(key)), matching: find.text(text));
+      // Handle: "Nhịp trong ngày" (last) to the top.
+      final rhythm = inGroup('customizeSections', 'Nhịp trong ngày');
+      final handle = find.descendant(
+        of: find.ancestor(of: rhythm, matching: find.byType(Row)).first,
+        matching: find.byType(ReorderableDragStartListener),
+      );
+      final top = tester.getCenter(
+        inGroup('customizeSections', 'Ô theo dõi nhanh'),
+      );
+      final start = tester.getCenter(handle);
+      final gesture = await tester.startGesture(start);
+      await tester.pump();
+      await gesture.moveBy(const Offset(0, -20));
+      await tester.pump();
+      // A real finger moves in steps; the list makes room as it goes.
+      for (var y = start.dy - 20; y > top.dy - 40; y -= 20) {
+        await gesture.moveTo(Offset(start.dx, y));
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      await tester.pump(const Duration(milliseconds: 300));
+      await gesture.up();
+      await tester.pumpAndSettle();
+      // Long press anywhere on a row: "Nhắc việc sắp tới" back to the top.
+      final reminders = inGroup('customizeSections', 'Nhắc việc sắp tới');
+      final first = tester.getCenter(
+        inGroup('customizeSections', 'Nhịp trong ngày'),
+      );
+      final from = tester.getCenter(reminders);
+      final hold = await tester.startGesture(from);
+      await tester.pump(const Duration(milliseconds: 600));
+      for (var y = from.dy - 20; y > first.dy - 40; y -= 20) {
+        await hold.moveTo(Offset(from.dx, y));
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      await tester.pump(const Duration(milliseconds: 300));
+      await hold.up();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Xong'));
+      await tester.pumpAndSettle();
+      final layout = container.read(todayLayoutProvider(teddyId));
+      expect(layout.order.take(2), [
+        TodaySection.reminders,
+        TodaySection.rhythm,
+      ]);
+    });
+
+    testWidgets('tiles follow the order chosen here', (tester) async {
+      await pumpRouted(
+        tester,
+        const Scaffold(body: TodayScreen()),
+        overrides: careOverrides(),
+        prefs: {
+          'today.layout.$teddyId':
+              '{"order":["tiles","reminders","rhythm"],"hidden":[],'
+              '"tileOrder":["diaper","sleep"],"hiddenTiles":[]}',
+        },
+      );
+      final tiles = tester.widgetList<CareTile>(find.byType(CareTile)).toList();
+      expect(tiles.first.type, CareType.diaper);
+      expect(tiles[1].type, CareType.sleep);
     });
 
     testWidgets('the saved order is per baby and read back', (tester) async {
