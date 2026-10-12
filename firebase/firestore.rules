@@ -36,7 +36,7 @@ service cloud.firestore {
     // Public projections of feature flags and global limits (P-122, D-011).
     // Written only by Functions; readable before sign-in so kill switches apply everywhere.
     match /publicConfig/{docId} {
-      allow get: if docId in ['flags', 'limits'];
+      allow get: if docId in ['flags', 'limits', 'content_firstAid'];
       allow list, write: if false;
     }
 
@@ -63,14 +63,18 @@ service cloud.firestore {
         allow write: if false;
       }
 
-      // "Thông báo" (G-056): which pushes this account receives.
+      // "Thông báo" (G-056): which pushes this account receives. "firstAid": the situations this
+      // account saved in Sơ cứu (D-058), ids only.
       match /settings/{docId} {
         allow read: if signedIn() && request.auth.uid == uid;
-        allow write: if signedIn() && request.auth.uid == uid && docId == 'notifications' &&
+        allow write: if signedIn() && request.auth.uid == uid && ((docId == 'notifications' &&
           request.resource.data.keys().hasOnly(['memories', 'messages', 'reminders', 'storage', 'updatedAt']) &&
           request.resource.data.memories is bool && request.resource.data.messages is bool &&
           request.resource.data.reminders is bool && request.resource.data.storage is bool &&
-          request.resource.data.updatedAt == request.time;
+          request.resource.data.updatedAt == request.time) || (docId == 'firstAid' &&
+          request.resource.data.keys().hasOnly(['saved', 'updatedAt']) &&
+          request.resource.data.saved is list && request.resource.data.saved.size() <= 40 &&
+          request.resource.data.updatedAt == request.time));
       }
     }
 

@@ -89,6 +89,9 @@
   --apple-button-ink: #ffffff;
   --error: #a12b32;
   --error-soft: #fbe9ea;
+  --danger: #db4a45;
+  --danger-soft: #fcebe8;
+  --on-danger: #ffffff;
   --pending: #7a5600;
   --focus-ring: #087f7b;
   --scrim: rgb(12 23 25 / 0.322);
@@ -157,6 +160,9 @@
   --apple-button-ink: #000000;
   --error: #ff8a8f;
   --error-soft: #3a1c1e;
+  --danger: #f06a60;
+  --danger-soft: #3a1d1b;
+  --on-danger: #ffffff;
   --pending: #ffd166;
   --focus-ring: #3fd0c3;
   --scrim: rgb(0 0 0 / 0.561);
@@ -224,6 +230,9 @@
     --apple-button-ink: #000000;
     --error: #ff8a8f;
     --error-soft: #3a1c1e;
+    --danger: #f06a60;
+    --danger-soft: #3a1d1b;
+    --on-danger: #ffffff;
     --pending: #ffd166;
     --focus-ring: #3fd0c3;
     --scrim: rgb(0 0 0 / 0.561);

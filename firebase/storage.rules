@@ -97,6 +97,13 @@ service firebase.storage {
       return active(m) && m.role in ['coParent', 'caregiver'];
     }
 
+    // Sơ cứu (D-058): the published guide's pictures, public like the guide itself. Written by
+    // Functions only; immutable (a new picture gets a new name).
+    match /content/first-aid/{file} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // Exports (R-187, P-123): the requester only, until the link expires, and only while they
     // still have the right (Cùng nuôi for care; the owner for media) — re-checked at download.
     match /exports/{uid}/{jobId}/{file} {

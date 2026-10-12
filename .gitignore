@@ -35,3 +35,6 @@ firebase/emulator-data/
 *.jks
 *.keystore
 service-account*.json
+
+# Sơ cứu: Figma exports (≈ 50 MB); the committed WebP copies are in content/first-aid/images/.
+content/first-aid/source/

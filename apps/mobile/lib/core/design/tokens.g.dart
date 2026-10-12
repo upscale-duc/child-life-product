@@ -39,6 +39,9 @@ class ClColors {
     required this.appleButtonInk,
     required this.error,
     required this.errorSoft,
+    required this.danger,
+    required this.dangerSoft,
+    required this.onDanger,
     required this.pending,
     required this.focusRing,
     required this.scrim,
@@ -79,6 +82,9 @@ class ClColors {
   final Color appleButtonInk;
   final Color error;
   final Color errorSoft;
+  final Color danger;
+  final Color dangerSoft;
+  final Color onDanger;
   final Color pending;
   final Color focusRing;
   final Color scrim;
@@ -121,6 +127,9 @@ class ClColors {
     appleButtonInk: Color.lerp(a.appleButtonInk, b.appleButtonInk, t)!,
     error: Color.lerp(a.error, b.error, t)!,
     errorSoft: Color.lerp(a.errorSoft, b.errorSoft, t)!,
+    danger: Color.lerp(a.danger, b.danger, t)!,
+    dangerSoft: Color.lerp(a.dangerSoft, b.dangerSoft, t)!,
+    onDanger: Color.lerp(a.onDanger, b.onDanger, t)!,
     pending: Color.lerp(a.pending, b.pending, t)!,
     focusRing: Color.lerp(a.focusRing, b.focusRing, t)!,
     scrim: Color.lerp(a.scrim, b.scrim, t)!,
@@ -164,6 +173,9 @@ const ClColors lightColors = ClColors(
   appleButtonInk: Color(0xFFFFFFFF),
   error: Color(0xFFA12B32),
   errorSoft: Color(0xFFFBE9EA),
+  danger: Color(0xFFDB4A45),
+  dangerSoft: Color(0xFFFCEBE8),
+  onDanger: Color(0xFFFFFFFF),
   pending: Color(0xFF7A5600),
   focusRing: Color(0xFF087F7B),
   scrim: Color(0x520C1719),
@@ -206,6 +218,9 @@ const ClColors nightCareColors = ClColors(
   appleButtonInk: Color(0xFF000000),
   error: Color(0xFFFF8A8F),
   errorSoft: Color(0xFF3A1C1E),
+  danger: Color(0xFFF06A60),
+  dangerSoft: Color(0xFF3A1D1B),
+  onDanger: Color(0xFFFFFFFF),
   pending: Color(0xFFFFD166),
   focusRing: Color(0xFF3FD0C3),
   scrim: Color(0x8F000000),
