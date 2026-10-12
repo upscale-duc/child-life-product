@@ -9137,4 +9137,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String imInto(String name) {
     return 'Into: $name';
   }
+
+  @override
+  String get upFirstAid => 'First aid';
 }

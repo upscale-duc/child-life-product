@@ -29,6 +29,7 @@ s('upBannerSee', 'Xem', 'See', 'UP5 banner action.')
 s('upBannerClose', 'Đóng thông báo cập nhật', 'Close the update note', 'UP5 close button, for screen readers.')
 s('upNewVersion', 'Có bản mới {version}', '{version} is available', 'UP6 Tôi · Phiên bản subtitle.', version='String')
 s('upLatestVersion', 'Đây là bản mới nhất', 'You have the latest version', 'UP6 subtitle when up to date.')
+s('upFirstAid', 'Sơ cứu', 'First aid', 'UP1: the offline Sơ cứu guide stays reachable while blocked (owner, 2026-10-12).')
 s('upNoStore', 'Chưa mở được trang cập nhật. Thử lại sau nhé.', "Couldn't open the update page. Try again later.", 'Toast when the store link is missing or fails.')
 
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'

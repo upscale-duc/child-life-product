@@ -14250,6 +14250,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Vào: {name}'**
   String imInto(String name);
+
+  /// UP1: the offline Sơ cứu guide stays reachable while blocked (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sơ cứu'**
+  String get upFirstAid;
 }
 
 class _AppLocalizationsDelegate

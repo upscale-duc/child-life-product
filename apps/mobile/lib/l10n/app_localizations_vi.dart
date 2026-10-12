@@ -8501,4 +8501,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String imInto(String name) {
     return 'Vào: $name';
   }
+
+  @override
+  String get upFirstAid => 'Sơ cứu';
 }

@@ -12861,5 +12861,9 @@
         "type": "String"
       }
     }
+  },
+  "upFirstAid": "Sơ cứu",
+  "@upFirstAid": {
+    "description": "UP1: the offline Sơ cứu guide stays reachable while blocked (owner, 2026-10-12)."
   }
 }

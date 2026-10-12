@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
 import '../../app/route_guard.dart';
@@ -16,6 +17,8 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../first_aid/first_aid_repository.dart';
+import '../first_aid/first_aid_screens.dart';
 import '../me/me_widgets.dart';
 import '../memories/upload_queue.dart';
 import 'app_update_models.dart';
@@ -36,20 +39,82 @@ Future<void> openStore(BuildContext context, WidgetRef ref, Uri? url) async {
 // ---------- UP1 · Bắt buộc cập nhật ----------
 
 /// Wraps the whole app (D-061): below the oldest allowed version only UP1 shows, offline too
-/// (the last config is cached). Its own navigator lets "Có gì mới trong …" open the pages.
-class AppUpdateGate extends ConsumerWidget {
+/// (the last config is cached). It runs its own small router: "Có gì mới trong …" opens the pages,
+/// and the offline Sơ cứu guide stays reachable for emergencies (owner, 2026-10-12, P-143).
+class AppUpdateGate extends ConsumerStatefulWidget {
   const AppUpdateGate({required this.child, super.key});
   final Widget child;
 
   @override
+  ConsumerState<AppUpdateGate> createState() => _AppUpdateGateState();
+}
+
+class _AppUpdateGateState extends ConsumerState<AppUpdateGate> {
+  GoRouter? _router;
+
+  GoRouter _blockedRouter() => _router ??= GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (_, _) => const _BlockedHome(),
+        routes: [
+          // The same paths as the app's, so the Sơ cứu screens navigate unchanged.
+          GoRoute(
+            path: Routes.firstAid.substring(1),
+            builder: (_, _) => const FirstAidHomeScreen(),
+            routes: [
+              GoRoute(
+                path: 'search',
+                builder: (_, _) => const FirstAidSearchScreen(),
+              ),
+              GoRoute(
+                path: 'saved',
+                builder: (_, _) => const FirstAidSavedScreen(),
+              ),
+              GoRoute(
+                path: 's/:id',
+                builder: (_, s) => FirstAidSituationScreen(
+                  situationId: s.pathParameters['id'] ?? '',
+                  variantId: s.uri.queryParameters['v'],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  );
+
+  @override
+  void dispose() {
+    _router?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final blocked = ref.watch(appUpdateStatusProvider) is UpdateRequired;
+    if (!blocked) {
+      final old = _router;
+      _router = null;
+      if (old != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => old.dispose());
+      }
+      return widget.child;
+    }
+    return Router.withConfig(config: _blockedRouter());
+  }
+}
+
+class _BlockedHome extends ConsumerWidget {
+  const _BlockedHome();
+
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final status = ref.watch(appUpdateStatusProvider);
-    if (status is! UpdateRequired) return child;
-    return Navigator(
-      onGenerateRoute: (_) => MaterialPageRoute<void>(
-        builder: (_) => UpdateRequiredScreen(status: status),
-      ),
-    );
+    return status is UpdateRequired
+        ? UpdateRequiredScreen(status: status)
+        : const SizedBox.shrink();
   }
 }
 
@@ -173,11 +238,32 @@ class UpdateRequiredScreen extends ConsumerWidget {
                     expand: true,
                     onPressed: () => openStore(context, ref, status.storeUrl),
                   ),
-                  if (notes != null)
-                    _TextAction(
-                      label: l10n.upWhatsNewIn('${notes.version}'),
-                      onTap: () => openWhatsNew(context, notes),
-                    ),
+                  // One row: "Có gì mới trong …" and, since emergencies cannot wait for an
+                  // update, the offline Sơ cứu guide (P-143).
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (notes != null)
+                        Flexible(
+                          child: _TextAction(
+                            label: l10n.upWhatsNewIn('${notes.version}'),
+                            onTap: () => openWhatsNew(context, notes),
+                          ),
+                        ),
+                      if (ref.watch(firstAidPackProvider).value != null) ...[
+                        if (notes != null) const SizedBox(width: ClSpace.s4),
+                        Flexible(
+                          child: _TextAction(
+                            key: const Key('upFirstAid'),
+                            label: l10n.upFirstAid,
+                            icon: ClIcons.alert,
+                            color: cl.colors.error,
+                            onTap: () => context.push(Routes.firstAid),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -365,9 +451,17 @@ class _SafeRow extends StatelessWidget {
 }
 
 class _TextAction extends StatelessWidget {
-  const _TextAction({required this.label, required this.onTap, super.key});
+  const _TextAction({
+    required this.label,
+    required this.onTap,
+    this.icon,
+    this.color,
+    super.key,
+  });
   final String label;
   final VoidCallback onTap;
+  final ClIcons? icon;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -376,19 +470,27 @@ class _TextAction extends StatelessWidget {
       onPressed: onTap,
       semanticLabel: label,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minHeight: 44,
-          minWidth: double.infinity,
-        ),
+        constraints: const BoxConstraints(minHeight: 44, minWidth: 44),
         child: Center(
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: cl.text.body.copyWith(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: cl.colors.mintText,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon case final icon?) ...[
+                ClIcon(icon, size: 16, color: color ?? cl.colors.mintText),
+                const SizedBox(width: 6),
+              ],
+              Flexible(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: cl.text.body.copyWith(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: color ?? cl.colors.mintText,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

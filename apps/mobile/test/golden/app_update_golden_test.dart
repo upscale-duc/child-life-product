@@ -9,6 +9,7 @@ import 'package:child_life/core/widgets/cl_rows.dart';
 import 'package:child_life/core/widgets/cl_sheet.dart';
 import 'package:child_life/features/app_update/app_update_models.dart';
 import 'package:child_life/features/app_update/app_update_screens.dart';
+import 'package:child_life/features/first_aid/first_aid_repository.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/app_update_fixtures.dart';
+import '../helpers/first_aid_fixtures.dart';
 
 /// App updates (v1.0 improvement UP1–UP6, D-061) in Light / Night care × vi / en.
 /// Regenerate on macOS: flutter test --tags golden --update-goldens
@@ -35,7 +37,13 @@ final _cases = <String, _Case>{
   // UP1 469:6454.
   'up1_required': (
     build: () => const AppUpdateGate(child: SizedBox()),
-    overrides: appUpdateOverrides(config: sampleConfig(minimum: '1.1.0')),
+    // With the offline Sơ cứu guide on the phone: its link shows (P-143).
+    overrides: [
+      firstAidPackProvider.overrideWith(
+        (ref) => Stream.value(seedFirstAidPack()),
+      ),
+      ...appUpdateOverrides(config: sampleConfig(minimum: '1.1.0')),
+    ],
     prefs: const {},
     act: null,
   ),

@@ -60,4 +60,4 @@ Bold 12.
 
 When each screen appears and how often, the up-to-date UP6 state ("Đây là bản mới nhất"), what
 "lần ghi chưa đồng bộ" counts, Android wording ("Cập nhật trên Google Play"), where the content
-comes from (the portal), and whether UP1 keeps a way into Sơ cứu.
+comes from (the portal), and the way into Sơ cứu from UP1 (owner: yes).

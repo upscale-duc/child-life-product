@@ -2357,5 +2357,6 @@
   "imUndoBody": "{n, plural, =1{The imported item will be removed from Spending, even if it was edited since.} other{The {n} imported items will be removed from Spending, even those edited since.}}",
   "imUndoConfirm": "{n, plural, =1{Remove 1 item} other{Remove {n} items}}",
   "imUndone": "{n, plural, =1{Removed 1 imported item} other{Removed {n} imported items}}",
-  "imInto": "Into: {name}"
+  "imInto": "Into: {name}",
+  "upFirstAid": "First aid"
 }

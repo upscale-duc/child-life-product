@@ -1,12 +1,15 @@
 import 'package:child_life/features/app_update/app_update_models.dart';
 import 'package:child_life/features/app_update/app_update_repository.dart';
 import 'package:child_life/features/app_update/app_update_screens.dart';
+import 'package:child_life/features/first_aid/first_aid_screens.dart';
 import 'package:child_life/core/widgets/cl_rows.dart';
 import 'package:child_life/core/widgets/cl_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/app_update_fixtures.dart';
+import '../helpers/family_fixtures.dart';
+import '../helpers/first_aid_fixtures.dart';
 import '../helpers/router_pump.dart';
 
 // App updates (D-061, v1.0 improvement UP1–UP6).
@@ -149,6 +152,39 @@ void main() {
         expect(find.text('Sơ cứu trẻ em, luôn trong túi bạn'), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'Sơ cứu stays reachable while blocked, and back returns to UP1',
+      (tester) async {
+        await pumpRouted(
+          tester,
+          const AppUpdateGate(child: Text('the app')),
+          overrides: [
+            ...familyOverrides(firstAid: seedFirstAidPack()),
+            ...appUpdateOverrides(config: sampleConfig(minimum: '1.1.0')),
+          ],
+        );
+        await tester.tap(find.byKey(const Key('upFirstAid')));
+        await tester.pumpAndSettle();
+        expect(find.byType(FirstAidHomeScreen), findsOneWidget);
+        expect(find.text('Cần cập nhật để tiếp tục'), findsNothing);
+        Navigator.of(tester.element(find.byType(FirstAidHomeScreen))).pop();
+        await tester.pumpAndSettle();
+        expect(find.text('Cần cập nhật để tiếp tục'), findsOneWidget);
+      },
+    );
+
+    testWidgets('no guide on the phone, no Sơ cứu link', (tester) async {
+      await pumpRouted(
+        tester,
+        const AppUpdateGate(child: Text('the app')),
+        overrides: [
+          ...familyOverrides(),
+          ...appUpdateOverrides(config: sampleConfig(minimum: '1.1.0')),
+        ],
+      );
+      expect(find.byKey(const Key('upFirstAid')), findsNothing);
+    });
 
     testWidgets('Android names Google Play; above the minimum the app shows', (
       tester,
