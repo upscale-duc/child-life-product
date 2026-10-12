@@ -104,8 +104,8 @@
           },
           "hero": null,
           "banner": {
-            "vi": "Gọi 115 và bật loa ngoài trước khi bắt đầu. Có người khác: nhờ gọi giúp.",
-            "en": "Call 115 and turn on the speaker before you start. If someone else is there, ask them to call."
+            "vi": "Gọi 115 ngay. Có người khác: nhờ gọi giúp.",
+            "en": "Call 115 now. If someone else is there, ask them to call."
           },
           "steps": [
             {
@@ -226,8 +226,8 @@
           },
           "hero": "ep-tim-tre-lon",
           "banner": {
-            "vi": "Gọi 115 và bật loa ngoài trước khi bắt đầu. Có người khác: nhờ gọi giúp.",
-            "en": "Call 115 and turn on the speaker before you start. If someone else is there, ask them to call."
+            "vi": "Gọi 115 ngay. Có người khác: nhờ gọi giúp.",
+            "en": "Call 115 now. If someone else is there, ask them to call."
           },
           "steps": [
             {
