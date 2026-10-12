@@ -17,6 +17,8 @@ import {
   currentProjectId,
   environmentForProject,
   inviteOpenUrl,
+  otherAppHost,
+  signInContinueUrlFor,
   storeLinksFor,
   webOriginFor,
 } from './env.js';
@@ -39,7 +41,7 @@ import {
 } from './family.js';
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { resendSender } from './mail-resend.js';
-import { AuthMailError, sendAuthEmail as sendAuthMail } from './auth-mail.js';
+import { AuthMailError, sendAuthEmail as sendAuthMail, signInLinkTarget } from './auth-mail.js';
 import {
   caseComments as qaCaseComments,
   handbook as qaHandbook,
@@ -49,6 +51,7 @@ import {
   localeFromHeader,
   renderExportPage,
   renderInvitePage,
+  renderSignInLinkPage,
   renderUnsubscribePage,
 } from './pages.js';
 import { resolveExportDownload } from './export-download.js';
@@ -831,6 +834,8 @@ export const sendAuthEmail = onCall({ secrets: [resendApiKey] }, async (request)
         auth: getAuth(),
         sender: mailSender(),
         adminOrigin: adminOriginFor(currentProjectId()),
+        webOrigin: webOriginFor(currentProjectId()),
+        continueUrl: signInContinueUrlFor(currentProjectId()),
       },
       request.auth
         ? {
@@ -865,6 +870,20 @@ export const inviteLanding = onRequest(async (req, res) => {
       ...storeLinksFor(project),
     }),
   );
+});
+
+/** The app's email sign-in link opened in a browser instead of the app (D-064). */
+export const signInLinkLanding = onRequest((req, res) => {
+  const link = signInLinkTarget(
+    req.query,
+    otherAppHost(currentProjectId(), req.get('x-forwarded-host') ?? req.hostname),
+    new Date(),
+  );
+  res.set('Cache-Control', 'private, no-store');
+  res.set('X-Robots-Tag', 'noindex');
+  res
+    .status(link.expired ? 410 : 200)
+    .send(renderSignInLinkPage(localeFromHeader(req.get('accept-language')), link));
 });
 
 export const emailUnsubscribe = onRequest(async (req, res) => {

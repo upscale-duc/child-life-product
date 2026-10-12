@@ -96,8 +96,8 @@ writeFileSync(
   )}\n`,
 );
 
-// iOS Universal Links: only invite links /i/{token} open the app; story links /s/… stay on the
-// web. Served instead of Firebase's generated file, which opened every path. Dev borrows the
+// iOS Universal Links: invite links /i/{token} and email sign-in links /auth/link/ (D-064) open
+// the app; story links /s/… stay on the web. Served instead of Firebase's generated file, which opened every path. Dev borrows the
 // owner's interim team (tool/ios_flavors.rb); prod waits for the Child Life developer account.
 const iosApps = { dev: ['VHFV2HNZGN.dev.hsba.app'], prod: [] };
 writeFileSync(
@@ -107,9 +107,9 @@ writeFileSync(
       applinks: {
         details: iosApps[environment].map((appID) => ({
           appIDs: [appID],
-          components: [{ '/': '/i/*' }],
+          components: [{ '/': '/i/*' }, { '/': '/auth/link/*' }],
           appID,
-          paths: ['/i/*'],
+          paths: ['/i/*', '/auth/link/*'],
         })),
       },
     },

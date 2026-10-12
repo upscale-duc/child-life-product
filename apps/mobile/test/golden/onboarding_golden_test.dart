@@ -6,6 +6,7 @@ import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/features/appearance/appearance_screen.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
 import 'package:child_life/features/auth/auth_screens.dart';
+import 'package:child_life/features/auth/email_link.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/onboarding/setup_draft.dart';
 import 'package:child_life/features/onboarding/setup_screens.dart';
@@ -37,12 +38,31 @@ final _screens = <String, Widget Function()>{
   '06_sign_in': () => const SignInScreen(),
   // v1.0 R1 (368:1266): a device that has signed in before.
   'r1_welcome_back': () => const SignInScreen(returning: true),
+  // 07a (368:1139): the email link first (D-064).
   '07_email': () => const EmailScreen(),
+  '07b_link_sent': () =>
+      const EmailLinkSentScreen(email: 'mai.nguyen@email.com'),
+  // 07c (368:1221): "Đăng nhập bằng mật khẩu" from 07a.
+  '07c_password': () => const EmailScreen(),
   '09_forgot': () => const ForgotPasswordScreen(),
   '10a_who': () => const WhoAreYouScreen(),
   '11_baby': () => const BabyProfileScreen(),
   '12_trackers': () => const TrackersScreen(),
   '13_appearance': () => const AppearanceScreen(),
+};
+
+/// Taps that bring a screen to the state drawn in Figma.
+final _prepare = <String, Future<void> Function(WidgetTester, Locale)>{
+  '07c_password': (tester, locale) async {
+    await tester.tap(
+      find.text(
+        locale.languageCode == 'vi'
+            ? 'Đăng nhập bằng mật khẩu'
+            : 'Sign in with password',
+      ),
+    );
+    await tester.pumpAndSettle();
+  },
 };
 
 void main() {
@@ -96,6 +116,7 @@ void main() {
             ),
           );
           await tester.pumpAndSettle();
+          await _prepare[name]?.call(tester, locale);
           debugDisableShadows = false;
           try {
             await tester.pump();

@@ -32,9 +32,24 @@ export function inviteHostsFor(projectId: string | undefined): string[] {
 
 /** "Mở app và nhận lời mời" on the page served from [host]. */
 export function inviteOpenUrl(projectId: string | undefined, host: string, token: string): string {
+  return `https://${otherAppHost(projectId, host)}/i/${token}`;
+}
+
+/** Another of the app's link domains than [host] (iOS ignores a Universal Link to its own page). */
+export function otherAppHost(projectId: string | undefined, host: string): string {
   const hosts = inviteHostsFor(projectId);
-  const other = hosts.find((h) => h !== host) ?? hosts[0]!;
-  return `https://${other}/i/${token}`;
+  return hosts.find((h) => h !== host) ?? hosts[0]!;
+}
+
+/**
+ * The continue URL Firebase is given for the app's sign-in links (D-064). The link sent is rebuilt
+ * on [webOriginFor], so this is never opened, but Firebase wants an authorized domain: on dev the
+ * landing's own Hosting domain is one; prod needs `childlife.app` in the authorized domains.
+ */
+export function signInContinueUrlFor(projectId: string | undefined): string {
+  return environmentForProject(projectId) === 'prod'
+    ? 'https://childlife.app/auth/link/'
+    : 'https://child-life-dev-landing.web.app/auth/link/';
 }
 
 /** Store pages for "Cài app"; none until the app is published (dev testers install by hand). */

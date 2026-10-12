@@ -24,6 +24,9 @@ enum AuthFailure {
   disabled,
   cancelled,
   linkFailed,
+
+  /// An email sign-in link that was used, has expired or is not one (D-064).
+  linkExpired,
   other,
 }
 
@@ -50,6 +53,7 @@ AuthFailure failureOf(FirebaseAuthException e) => switch (e.code) {
   'operation-not-allowed' || 'internal-error' => AuthFailure.notConfigured,
   'user-disabled' => AuthFailure.disabled,
   'web-context-canceled' || 'canceled' => AuthFailure.cancelled,
+  'invalid-action-code' || 'expired-action-code' => AuthFailure.linkExpired,
   _ => AuthFailure.other,
 };
 
@@ -175,6 +179,40 @@ class AuthRepository {
       throw AuthException(failureOf(e));
     }
   }
+
+  /// 07a "Gửi link đăng nhập" (D-064): Child Life's own mail, whose link opens the app on the
+  /// website's `/auth/link/`. Firebase's own mail has no such link, so there is no fallback.
+  /// Signs in or creates the account alike; the answer never tells which.
+  Future<void> sendSignInLink(String email) async {
+    final functions = _functions;
+    if (functions == null) throw const AuthException(AuthFailure.notConfigured);
+    try {
+      await functions().httpsCallable('sendAuthEmail').call<Object?>({
+        'kind': 'appSignInLink',
+        'email': email,
+        'locale': _language,
+      });
+    } on FirebaseFunctionsException catch (e) {
+      throw AuthException(switch (e.code) {
+        'resource-exhausted' => AuthFailure.tooManyRequests,
+        'invalid-argument' => AuthFailure.invalidEmail,
+        'unavailable' when e.message == 'no-provider' =>
+          AuthFailure.notConfigured,
+        'not-found' => AuthFailure.notConfigured,
+        'unavailable' || 'deadline-exceeded' => AuthFailure.network,
+        _ => AuthFailure.other,
+      });
+    }
+  }
+
+  bool isSignInLink(String link) => _auth.isSignInWithEmailLink(link);
+
+  /// Opening the link from 07b on this phone (D-064). The email is the one the link was sent to.
+  Future<void> signInWithEmailLink(String email, String link) =>
+      _guard(() async {
+        await _auth.signInWithEmailLink(email: email, emailLink: link);
+        await _linkPending();
+      });
 
   Future<void> signInWithGoogle() async =>
       _signInWithCredential(await _googleCredential());

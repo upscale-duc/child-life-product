@@ -712,7 +712,12 @@ export function renderAccountEmail(
 
 // ---------- Sign-in emails (D-054: instead of Firebase Auth's own) ----------
 
-export const authTemplates = ['verifyEmail', 'resetPassword', 'signInLink'] as const;
+export const authTemplates = [
+  'verifyEmail',
+  'resetPassword',
+  'signInLink',
+  'appSignInLink',
+] as const;
 export type AuthTemplate = (typeof authTemplates)[number];
 
 export function renderAuthEmail(
@@ -791,6 +796,31 @@ export function renderAuthEmail(
             {
               kind: 'note',
               text: 'The link works once and expires in 1 hour. Do not forward this email.',
+            },
+          ]);
+    case 'appSignInLink':
+      // 07a "Gửi link đăng nhập" / 07b (D-064).
+      return vi
+        ? c('Đăng nhập Child Life', 'Link đăng nhập, dùng trong 15 phút', [
+            {
+              kind: 'text',
+              text: 'Bấm nút dưới đây trên điện thoại bạn vừa yêu cầu để vào app — không cần mật khẩu.',
+            },
+            { kind: 'button', label: 'Đăng nhập', url: d.link },
+            {
+              kind: 'note',
+              text: 'Link dùng được một lần, trong 15 phút. Đừng chuyển tiếp email này.',
+            },
+          ])
+        : c('Sign in to Child Life', 'Your sign-in link, valid for 15 minutes', [
+            {
+              kind: 'text',
+              text: 'Tap the button below on the phone you asked from to get into the app — no password needed.',
+            },
+            { kind: 'button', label: 'Sign in', url: d.link },
+            {
+              kind: 'note',
+              text: 'The link works once, within 15 minutes. Do not forward this email.',
             },
           ]);
   }

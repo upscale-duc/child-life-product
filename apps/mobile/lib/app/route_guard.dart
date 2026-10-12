@@ -7,6 +7,12 @@ abstract final class Routes {
   static const tour = '/tour';
   static const signIn = '/auth';
   static const email = '/auth/email';
+
+  /// 07b "Kiểm tra email của bạn" after "Gửi link đăng nhập" (D-064).
+  static const emailLinkSent = '/auth/email/sent';
+
+  /// The email sign-in link itself (`https://dev.childlife.app/auth/link/?mode=signIn…`, D-064).
+  static const emailLink = '/auth/link';
   static const forgot = '/auth/forgot';
   static const exists = '/auth/exists';
   static const verify = '/auth/verify';

@@ -20,10 +20,12 @@ usual 16 screen.
 
 | Platform | Declared in                                                                   | Served by the landing build                            |
 | -------- | ----------------------------------------------------------------------------- | ------------------------------------------------------ |
-| iOS      | `tool/ios_flavors.rb` → `applinks:` both landing domains (profile allows `*`) | `/.well-known/apple-app-site-association`, `/i/*` only |
-| Android  | `android/app/src/dev/AndroidManifest.xml`, both hosts, `pathPrefix /i/`       | `/.well-known/assetlinks.json` (debug key on dev)      |
+| iOS      | `tool/ios_flavors.rb` → `applinks:` both landing domains (profile allows `*`) | `/.well-known/apple-app-site-association`, `/i/*` and `/auth/link/*` |
+| Android  | `android/app/src/dev/AndroidManifest.xml`, both hosts, `/i/` and `/auth/link/` | `/.well-known/assetlinks.json` (debug key on dev)      |
 
-Both files come from `apps/landing/scripts/prerender.mjs`; deploy with
+The same files also open the app for email sign-in links `/auth/link/?mode=signIn&…` (07a, D-064);
+in a browser that path is the `signInLinkLanding` page, whose button opens the app through the other
+domain. Both files come from `apps/landing/scripts/prerender.mjs`; deploy with
 `scripts/deploy.sh dev hosting:landing`. iOS reads the association file when the app is installed
 (through Apple's CDN), so reinstall after changing it.
 

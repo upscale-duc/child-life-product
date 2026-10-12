@@ -14370,6 +14370,114 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Có thể hoàn tác đến {time} ngày {date} (còn {days} ngày)'**
   String imUndoUntil(String time, String date, int days);
+
+  /// 07a title (368:1144)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập'**
+  String get emailSignInTitle;
+
+  /// 07a helper under the email field (368:1180)
+  ///
+  /// In vi, this message translates to:
+  /// **'Chúng tôi sẽ gửi link đăng nhập vào email — không cần nhớ mật khẩu.'**
+  String get emailLinkHelper;
+
+  /// 07a primary button (368:1153); also the link in 07c's footer
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi link đăng nhập'**
+  String get emailLinkSend;
+
+  /// 07a text link to 07c (368:1155)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập bằng mật khẩu'**
+  String get emailUsePassword;
+
+  /// 07b title (368:1198)
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra email của bạn'**
+  String get linkSentTitle;
+
+  /// 07b body (368:1199)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi link đăng nhập đến {email}. Mở link trên điện thoại này trong 15 phút để vào app.'**
+  String linkSentBody(String email);
+
+  /// 07b banner (368:1205)
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thấy email? Xem thư mục Quảng cáo hoặc Spam.'**
+  String get linkSentSpam;
+
+  /// 07b primary button (368:1207)
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở ứng dụng Mail'**
+  String get linkSentOpenMail;
+
+  /// 07b countdown (368:1211), time as m:ss
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi lại sau {time}'**
+  String linkSentResendIn(String time);
+
+  /// 07b resend once the countdown ends
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi lại'**
+  String get linkSentResend;
+
+  /// Toast after resending (not drawn)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi lại link.'**
+  String get linkSentResent;
+
+  /// 07b plain button (368:1216)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi email'**
+  String get linkSentChangeEmail;
+
+  /// Opening a sign-in link (not drawn, G-001)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang đăng nhập…'**
+  String get linkOpenSigningIn;
+
+  /// Link opened without the address on this device (not drawn)
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận email'**
+  String get linkConfirmTitle;
+
+  /// Link opened without the address on this device (not drawn)
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập email đã nhận link để đăng nhập trên máy này.'**
+  String get linkConfirmBody;
+
+  /// Expired or used sign-in link (not drawn)
+  ///
+  /// In vi, this message translates to:
+  /// **'Link đã hết hạn'**
+  String get linkExpiredTitle;
+
+  /// Expired or used sign-in link (not drawn)
+  ///
+  /// In vi, this message translates to:
+  /// **'Link đăng nhập dùng được một lần, trong 15 phút. Gửi link mới để vào app.'**
+  String get linkExpiredBody;
+
+  /// Expired sign-in link: back to 07a
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi link mới'**
+  String get linkExpiredButton;
 }
 
 class _AppLocalizationsDelegate

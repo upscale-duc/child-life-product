@@ -111,6 +111,13 @@
             "functionId": "emailUnsubscribe",
             "region": "asia-southeast1"
           }
+        },
+        {
+          "source": "/auth/link/**",
+          "function": {
+            "functionId": "signInLinkLanding",
+            "region": "asia-southeast1"
+          }
         }
       ]
     },

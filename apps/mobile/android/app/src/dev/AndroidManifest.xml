@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <application>
         <activity android:name=".MainActivity" tools:node="merge">
-            <!-- Invite links /i/{token} from QR codes, emails and messages (S3, plan section 3.5).
+            <!-- Invite links /i/{token} from QR codes, emails and messages (S3, plan section 3.5),
+                 and email sign-in links /auth/link/ (07a, D-064).
                  Verified by the dev landing's /.well-known/assetlinks.json (both hosts serve it) (debug signing key). -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -12,6 +13,7 @@
                 <data android:host="child-life-dev-landing.web.app" />
                 <data android:host="dev.childlife.app" />
                 <data android:pathPrefix="/i/" />
+                <data android:pathPrefix="/auth/link/" />
             </intent-filter>
         </activity>
     </application>

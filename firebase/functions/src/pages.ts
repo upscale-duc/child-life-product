@@ -3,7 +3,8 @@ import type { InvitePreview } from '@child-life/contracts';
 /**
  * Small server-rendered pages on the landing host (plan §3.5): the invite landing `/i/{token}`
  * (D-059: the email's "Nhận lời mời" — open the app, or install it first, or type the code) and
- * the unsubscribe confirmation `/u/{token}`. No client Firestore access.
+ * the unsubscribe confirmation `/u/{token}` and the app's sign-in link `/auth/link/` opened in a
+ * browser (D-064). No client Firestore access.
  */
 
 export type PageLocale = 'vi' | 'en';
@@ -186,4 +187,48 @@ export function renderExportPage(
     },
   }[locale][reason];
   return page(locale, copy[0]!, `<h1>${escape(copy[0]!)}</h1><p>${escape(copy[1]!)}</p>`);
+}
+
+/**
+ * The app's email sign-in link (07a, D-064) opened in a browser: on the phone, the button opens
+ * the app through the other domain; on a computer, the link has to be opened on the phone.
+ */
+export function renderSignInLinkPage(
+  locale: PageLocale,
+  link: { openUrl: string | null; expired: boolean },
+): string {
+  const t = {
+    vi: {
+      title: 'Mở link trong app Child Life',
+      body: 'Link đăng nhập chỉ dùng được trong app Child Life, trên điện thoại bạn đã yêu cầu.',
+      open: 'Mở Child Life',
+      computer: 'Đang xem trên máy tính? Mở email này trên điện thoại đã cài app.',
+      expiredTitle: 'Link đã hết hạn',
+      expiredBody:
+        'Link đăng nhập chỉ dùng được trong 15 phút. Mở app Child Life → Đăng nhập → Gửi link đăng nhập để nhận link mới.',
+    },
+    en: {
+      title: 'Open the link in the Child Life app',
+      body: 'Sign-in links only work in the Child Life app, on the phone you asked from.',
+      open: 'Open Child Life',
+      computer: 'On a computer? Open this email on the phone with the app.',
+      expiredTitle: 'This link has expired',
+      expiredBody:
+        'Sign-in links work for 15 minutes. Open Child Life → Sign in → Send sign-in link to get a new one.',
+    },
+  }[locale];
+  if (link.expired || !link.openUrl) {
+    return page(
+      locale,
+      t.expiredTitle,
+      `<h1>${escape(t.expiredTitle)}</h1><p>${escape(t.expiredBody)}</p>`,
+    );
+  }
+  return page(
+    locale,
+    t.title,
+    `<h1>${escape(t.title)}</h1><p>${escape(t.body)}</p>
+<a class="btn" href="${escape(link.openUrl)}">${escape(t.open)}</a>
+<p class="foot">${escape(t.computer)}</p>`,
+  );
 }

@@ -9239,4 +9239,66 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return 'You can undo until $time on $date ($_temp0)';
   }
+
+  @override
+  String get emailSignInTitle => 'Sign in';
+
+  @override
+  String get emailLinkHelper =>
+      'We\'ll email you a sign-in link — no password to remember.';
+
+  @override
+  String get emailLinkSend => 'Send sign-in link';
+
+  @override
+  String get emailUsePassword => 'Sign in with password';
+
+  @override
+  String get linkSentTitle => 'Check your email';
+
+  @override
+  String linkSentBody(String email) {
+    return 'We sent a sign-in link to $email. Open it on this phone within 15 minutes to get in.';
+  }
+
+  @override
+  String get linkSentSpam =>
+      'Can\'t find it? Check your Promotions or Spam folder.';
+
+  @override
+  String get linkSentOpenMail => 'Open Mail';
+
+  @override
+  String linkSentResendIn(String time) {
+    return 'Resend in $time';
+  }
+
+  @override
+  String get linkSentResend => 'Resend';
+
+  @override
+  String get linkSentResent => 'Link sent again.';
+
+  @override
+  String get linkSentChangeEmail => 'Change email';
+
+  @override
+  String get linkOpenSigningIn => 'Signing you in…';
+
+  @override
+  String get linkConfirmTitle => 'Confirm your email';
+
+  @override
+  String get linkConfirmBody =>
+      'Enter the email that got the link to sign in on this device.';
+
+  @override
+  String get linkExpiredTitle => 'This link has expired';
+
+  @override
+  String get linkExpiredBody =>
+      'A sign-in link works once, within 15 minutes. Send a new one to get in.';
+
+  @override
+  String get linkExpiredButton => 'Send a new link';
 }

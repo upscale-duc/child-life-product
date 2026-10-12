@@ -8576,4 +8576,66 @@ class AppLocalizationsVi extends AppLocalizations {
   String imUndoUntil(String time, String date, int days) {
     return 'Có thể hoàn tác đến $time ngày $date (còn $days ngày)';
   }
+
+  @override
+  String get emailSignInTitle => 'Đăng nhập';
+
+  @override
+  String get emailLinkHelper =>
+      'Chúng tôi sẽ gửi link đăng nhập vào email — không cần nhớ mật khẩu.';
+
+  @override
+  String get emailLinkSend => 'Gửi link đăng nhập';
+
+  @override
+  String get emailUsePassword => 'Đăng nhập bằng mật khẩu';
+
+  @override
+  String get linkSentTitle => 'Kiểm tra email của bạn';
+
+  @override
+  String linkSentBody(String email) {
+    return 'Đã gửi link đăng nhập đến $email. Mở link trên điện thoại này trong 15 phút để vào app.';
+  }
+
+  @override
+  String get linkSentSpam =>
+      'Không thấy email? Xem thư mục Quảng cáo hoặc Spam.';
+
+  @override
+  String get linkSentOpenMail => 'Mở ứng dụng Mail';
+
+  @override
+  String linkSentResendIn(String time) {
+    return 'Gửi lại sau $time';
+  }
+
+  @override
+  String get linkSentResend => 'Gửi lại';
+
+  @override
+  String get linkSentResent => 'Đã gửi lại link.';
+
+  @override
+  String get linkSentChangeEmail => 'Đổi email';
+
+  @override
+  String get linkOpenSigningIn => 'Đang đăng nhập…';
+
+  @override
+  String get linkConfirmTitle => 'Xác nhận email';
+
+  @override
+  String get linkConfirmBody =>
+      'Nhập email đã nhận link để đăng nhập trên máy này.';
+
+  @override
+  String get linkExpiredTitle => 'Link đã hết hạn';
+
+  @override
+  String get linkExpiredBody =>
+      'Link đăng nhập dùng được một lần, trong 15 phút. Gửi link mới để vào app.';
+
+  @override
+  String get linkExpiredButton => 'Gửi link mới';
 }

@@ -12988,5 +12988,87 @@
         "type": "int"
       }
     }
+  },
+  "emailSignInTitle": "Đăng nhập",
+  "@emailSignInTitle": {
+    "description": "07a title (368:1144)"
+  },
+  "emailLinkHelper": "Chúng tôi sẽ gửi link đăng nhập vào email — không cần nhớ mật khẩu.",
+  "@emailLinkHelper": {
+    "description": "07a helper under the email field (368:1180)"
+  },
+  "emailLinkSend": "Gửi link đăng nhập",
+  "@emailLinkSend": {
+    "description": "07a primary button (368:1153); also the link in 07c's footer"
+  },
+  "emailUsePassword": "Đăng nhập bằng mật khẩu",
+  "@emailUsePassword": {
+    "description": "07a text link to 07c (368:1155)"
+  },
+  "linkSentTitle": "Kiểm tra email của bạn",
+  "@linkSentTitle": {
+    "description": "07b title (368:1198)"
+  },
+  "linkSentBody": "Đã gửi link đăng nhập đến {email}. Mở link trên điện thoại này trong 15 phút để vào app.",
+  "@linkSentBody": {
+    "description": "07b body (368:1199)",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "linkSentSpam": "Không thấy email? Xem thư mục Quảng cáo hoặc Spam.",
+  "@linkSentSpam": {
+    "description": "07b banner (368:1205)"
+  },
+  "linkSentOpenMail": "Mở ứng dụng Mail",
+  "@linkSentOpenMail": {
+    "description": "07b primary button (368:1207)"
+  },
+  "linkSentResendIn": "Gửi lại sau {time}",
+  "@linkSentResendIn": {
+    "description": "07b countdown (368:1211), time as m:ss",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "linkSentResend": "Gửi lại",
+  "@linkSentResend": {
+    "description": "07b resend once the countdown ends"
+  },
+  "linkSentResent": "Đã gửi lại link.",
+  "@linkSentResent": {
+    "description": "Toast after resending (not drawn)"
+  },
+  "linkSentChangeEmail": "Đổi email",
+  "@linkSentChangeEmail": {
+    "description": "07b plain button (368:1216)"
+  },
+  "linkOpenSigningIn": "Đang đăng nhập…",
+  "@linkOpenSigningIn": {
+    "description": "Opening a sign-in link (not drawn, G-001)"
+  },
+  "linkConfirmTitle": "Xác nhận email",
+  "@linkConfirmTitle": {
+    "description": "Link opened without the address on this device (not drawn)"
+  },
+  "linkConfirmBody": "Nhập email đã nhận link để đăng nhập trên máy này.",
+  "@linkConfirmBody": {
+    "description": "Link opened without the address on this device (not drawn)"
+  },
+  "linkExpiredTitle": "Link đã hết hạn",
+  "@linkExpiredTitle": {
+    "description": "Expired or used sign-in link (not drawn)"
+  },
+  "linkExpiredBody": "Link đăng nhập dùng được một lần, trong 15 phút. Gửi link mới để vào app.",
+  "@linkExpiredBody": {
+    "description": "Expired or used sign-in link (not drawn)"
+  },
+  "linkExpiredButton": "Gửi link mới",
+  "@linkExpiredButton": {
+    "description": "Expired sign-in link: back to 07a"
   }
 }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../core/design/tokens.g.dart';
 import '../features/appearance/appearance_screen.dart';
 import '../features/auth/auth_screens.dart';
+import '../features/auth/email_link.dart';
 import '../features/care/care_models.dart';
 import '../features/care/care_hub_screen.dart';
 import '../features/care/care_screens.dart';
@@ -49,6 +50,7 @@ import '../features/spending/spending_screens.dart';
 import '../features/spending/spending_stats.dart';
 import '../features/today/today_screen.dart';
 import 'route_guard.dart';
+import 'providers.dart';
 import 'session.dart';
 
 GuardState guardStateOf(
@@ -170,6 +172,21 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (_, s) => _fade(s, const SignInScreen(returning: true)),
       ),
       _route(path: Routes.email, builder: (_, _) => const EmailScreen()),
+      _route(
+        path: Routes.emailLinkSent,
+        builder: (_, s) =>
+            EmailLinkSentScreen(email: s.uri.queryParameters['email'] ?? ''),
+      ),
+      // The sign-in link from 07b's email, opened as a Universal / App Link (D-064). Rebuilt on
+      // the website's origin, which is what Firebase reads it from.
+      _route(
+        path: Routes.emailLink,
+        builder: (_, s) => EmailLinkScreen(
+          link: Uri.parse(
+            ref.read(environmentProvider).webOrigin,
+          ).replace(path: '${Routes.emailLink}/', query: s.uri.query),
+        ),
+      ),
       _route(
         path: Routes.forgot,
         builder: (_, s) => ForgotPasswordScreen(
