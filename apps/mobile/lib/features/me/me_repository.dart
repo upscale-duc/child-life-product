@@ -112,6 +112,20 @@ class MeRepository {
           as String? ??
       '';
 
+  /// The owner's answer to a transfer opened by Child Life Hỗ trợ (A17, P-136): "confirmed"
+  /// (the usual offer now goes to the candidate) or "declined". `not-pending` when it expired
+  /// or was answered already.
+  Future<String> answerStaffTransfer(
+    String transferId, {
+    required bool accept,
+  }) async =>
+      (await _call('answerStaffOwnershipRequest', {
+            'transferId': transferId,
+            'accept': accept,
+          }))['state']
+          as String? ??
+      '';
+
   /// Family whose transfer I offered (owner side), from the family document.
   Stream<String?> watchOfferedTo(String familyId) => _db
       .doc('families/$familyId')

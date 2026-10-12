@@ -7196,6 +7196,66 @@ abstract class AppLocalizations {
   /// **'Người này đang là chủ hồ sơ khác.'**
   String get acReceiverOwns;
 
+  /// A17 (P-136): card title when Child Life Support asks the owner to transfer ownership.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỗ trợ Child Life đề nghị chuyển quyền chủ hồ sơ'**
+  String get acStaffTransferTitle;
+
+  /// A17 card body without a ticket. to = masked email, time = deadline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho {to}. Bạn đồng ý trong 48 giờ (đến {time}); nếu không, đề nghị tự huỷ. Đồng ý thì {to} sẽ nhận lời mời làm chủ hồ sơ như bình thường.'**
+  String acStaffTransferBody(String to, String time);
+
+  /// A17 card body with the support ticket code (CL-1042).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho {to} · mã {ticket}. Bạn đồng ý trong 48 giờ (đến {time}); nếu không, đề nghị tự huỷ. Đồng ý thì {to} sẽ nhận lời mời làm chủ hồ sơ như bình thường.'**
+  String acStaffTransferBodyTicket(String to, String ticket, String time);
+
+  /// A17 card and confirmation button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng ý'**
+  String get acStaffTransferAgree;
+
+  /// A17 card button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không đồng ý'**
+  String get acStaffTransferDecline;
+
+  /// A17 confirmation sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng ý chuyển quyền chủ hồ sơ?'**
+  String get acStaffTransferConfirmTitle;
+
+  /// A17 confirmation sheet body.
+  ///
+  /// In vi, this message translates to:
+  /// **'{to} sẽ nhận lời mời làm chủ hồ sơ. Quyền chỉ chuyển khi họ nhận lời; trước đó bạn vẫn có thể huỷ đề nghị ở mục Chủ hồ sơ.'**
+  String acStaffTransferConfirmBody(String to);
+
+  /// Toast after agreeing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đồng ý · {to} sẽ nhận lời mời'**
+  String acStaffTransferAgreed(String to);
+
+  /// Toast after declining.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã từ chối đề nghị chuyển quyền'**
+  String get acStaffTransferDeclined;
+
+  /// Toast when the request is no longer pending.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đề nghị này đã hết hạn hoặc đã được trả lời.'**
+  String get acStaffTransferGone;
+
   /// 13n row (G-072).
   ///
   /// In vi, this message translates to:

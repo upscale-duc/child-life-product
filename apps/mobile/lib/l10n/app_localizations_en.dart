@@ -4631,6 +4631,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get acReceiverOwns => 'This person already owns other profiles.';
 
   @override
+  String get acStaffTransferTitle =>
+      'Child Life Support suggests transferring profile ownership';
+
+  @override
+  String acStaffTransferBody(String to, String time) {
+    return 'To $to. Agree within 48 hours (by $time); otherwise the request cancels itself. If you agree, $to gets the usual invitation to become the profile owner.';
+  }
+
+  @override
+  String acStaffTransferBodyTicket(String to, String ticket, String time) {
+    return 'To $to · ticket $ticket. Agree within 48 hours (by $time); otherwise the request cancels itself. If you agree, $to gets the usual invitation to become the profile owner.';
+  }
+
+  @override
+  String get acStaffTransferAgree => 'Agree';
+
+  @override
+  String get acStaffTransferDecline => 'Decline';
+
+  @override
+  String get acStaffTransferConfirmTitle => 'Agree to transfer ownership?';
+
+  @override
+  String acStaffTransferConfirmBody(String to) {
+    return '$to will get the invitation to become the profile owner. Nothing changes until they accept; until then you can cancel the offer under Profile owner.';
+  }
+
+  @override
+  String acStaffTransferAgreed(String to) {
+    return 'Agreed · $to will get the invitation';
+  }
+
+  @override
+  String get acStaffTransferDeclined => 'Transfer request declined';
+
+  @override
+  String get acStaffTransferGone =>
+      'This request has expired or was already answered.';
+
+  @override
   String get acExport => 'Export data';
 
   @override

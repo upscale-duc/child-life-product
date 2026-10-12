@@ -1062,7 +1062,8 @@ class _DiaperSheetState extends ConsumerState<DiaperSheet>
   }
 }
 
-/// 22 "gợi ý nhanh" (346:47151): four amounts for the baby's age, and what was given last time.
+/// 22 "gợi ý nhanh" (346:47151): four amounts for the baby's age (reference data, P-138), and
+/// what was given last time.
 class _QuickPicks extends ConsumerWidget {
   const _QuickPicks({
     required this.last,
@@ -1088,7 +1089,9 @@ class _QuickPicks extends ConsumerWidget {
     final age = dob == null
         ? null
         : today.difference(DateUtils.dateOnly(dob)).inDays;
-    final picks = bottleSuggestions(age);
+    // P-138: the approved C02 table when one is published, else the bundled P-126 copy. The
+    // last amount stays first (prefilled above); 22 draws no ± adjuster, so stepMl is unused.
+    final picks = bottleSuggestions(age, ref.watch(bottleTableProvider));
     final zone =
         (me == null ? null : ref.watch(babyProvider(me.babyId)).value)
             ?.timeZone

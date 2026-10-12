@@ -6527,6 +6527,75 @@
   "@acReceiverOwns": {
     "description": "Transfer error."
   },
+  "acStaffTransferTitle": "Hỗ trợ Child Life đề nghị chuyển quyền chủ hồ sơ",
+  "@acStaffTransferTitle": {
+    "description": "A17 (P-136): card title when Child Life Support asks the owner to transfer ownership."
+  },
+  "acStaffTransferBody": "Cho {to}. Bạn đồng ý trong 48 giờ (đến {time}); nếu không, đề nghị tự huỷ. Đồng ý thì {to} sẽ nhận lời mời làm chủ hồ sơ như bình thường.",
+  "@acStaffTransferBody": {
+    "description": "A17 card body without a ticket. to = masked email, time = deadline.",
+    "placeholders": {
+      "to": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "acStaffTransferBodyTicket": "Cho {to} · mã {ticket}. Bạn đồng ý trong 48 giờ (đến {time}); nếu không, đề nghị tự huỷ. Đồng ý thì {to} sẽ nhận lời mời làm chủ hồ sơ như bình thường.",
+  "@acStaffTransferBodyTicket": {
+    "description": "A17 card body with the support ticket code (CL-1042).",
+    "placeholders": {
+      "to": {
+        "type": "String"
+      },
+      "ticket": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "acStaffTransferAgree": "Đồng ý",
+  "@acStaffTransferAgree": {
+    "description": "A17 card and confirmation button."
+  },
+  "acStaffTransferDecline": "Không đồng ý",
+  "@acStaffTransferDecline": {
+    "description": "A17 card button."
+  },
+  "acStaffTransferConfirmTitle": "Đồng ý chuyển quyền chủ hồ sơ?",
+  "@acStaffTransferConfirmTitle": {
+    "description": "A17 confirmation sheet title."
+  },
+  "acStaffTransferConfirmBody": "{to} sẽ nhận lời mời làm chủ hồ sơ. Quyền chỉ chuyển khi họ nhận lời; trước đó bạn vẫn có thể huỷ đề nghị ở mục Chủ hồ sơ.",
+  "@acStaffTransferConfirmBody": {
+    "description": "A17 confirmation sheet body.",
+    "placeholders": {
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "acStaffTransferAgreed": "Đã đồng ý · {to} sẽ nhận lời mời",
+  "@acStaffTransferAgreed": {
+    "description": "Toast after agreeing.",
+    "placeholders": {
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "acStaffTransferDeclined": "Đã từ chối đề nghị chuyển quyền",
+  "@acStaffTransferDeclined": {
+    "description": "Toast after declining."
+  },
+  "acStaffTransferGone": "Đề nghị này đã hết hạn hoặc đã được trả lời.",
+  "@acStaffTransferGone": {
+    "description": "Toast when the request is no longer pending."
+  },
   "acExport": "Xuất dữ liệu",
   "@acExport": {
     "description": "13n row (G-072)."

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../features/me/baby_profile_screens.dart';
 import '../features/memories/push_registration.dart';
 import '../features/glance/glance_bridge.dart';
@@ -12,6 +14,7 @@ import '../core/appearance/appearance_providers.dart';
 import '../core/design/cl_theme.dart';
 import '../core/design/tokens.g.dart';
 import '../features/auth/auth_repository.dart';
+import '../features/care/bottle_suggestions.dart';
 import '../l10n/app_localizations.dart';
 import 'locale.dart';
 import 'router.dart';
@@ -36,6 +39,8 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Reference data (P-138): one read per launch; the bundled copy until it lands.
+    unawaited(ref.read(bottleTableProvider.notifier).refresh());
   }
 
   @override

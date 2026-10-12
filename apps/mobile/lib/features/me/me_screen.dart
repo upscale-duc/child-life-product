@@ -29,6 +29,7 @@ import '../stories/share_repository.dart';
 import 'me_models.dart';
 import 'me_repository.dart';
 import 'me_widgets.dart';
+import 'staff_transfer.dart';
 
 /// Nicknames of [babyIds] joined "Teddy, Na".
 String babyNames(WidgetRef ref, Iterable<String> babyIds) => [
@@ -76,12 +77,18 @@ class MeScreen extends ConsumerWidget {
         const NotificationPrefs();
     final theme = ref.watch(appearanceSettingsProvider).theme;
     final account = ref.watch(accountDocProvider(me.uid)).value;
+    final staffTransfer = openStaffTransfer(ref, account?.staffTransfer);
 
     return MePage(
       title: l10n.tabMe,
       children: [
         if (account?.offer case final offer?) ...[
           OwnershipOfferCard(offer: offer),
+          const SizedBox(height: ClSpace.s3),
+        ],
+        // A17 (P-136): Hỗ trợ's request also shows here, not only in Tài khoản & đăng nhập.
+        if (staffTransfer != null) ...[
+          StaffTransferCard(request: staffTransfer),
           const SizedBox(height: ClSpace.s3),
         ],
         // Profile → 13m.

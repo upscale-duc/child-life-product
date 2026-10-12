@@ -209,12 +209,14 @@ class NotificationPrefs {
   };
 }
 
-/// What `users/{uid}` tells the Me tab: an ownership offer waiting for me (Q-016).
+/// What `users/{uid}` tells the Me tab: an ownership offer waiting for me (Q-016), and a
+/// transfer Child Life Hỗ trợ asks me, the owner, to confirm (A17, P-136).
 @immutable
 class AccountDoc {
-  const AccountDoc({this.ownedBabyCount = 0, this.offer});
+  const AccountDoc({this.ownedBabyCount = 0, this.offer, this.staffTransfer});
   final int ownedBabyCount;
   final OwnershipOffer? offer;
+  final StaffTransferRequest? staffTransfer;
 
   factory AccountDoc.fromMap(Map<String, dynamic>? m) {
     final o = (m?['pendingOwnership'] as Map?)?.cast<String, Object?>();
@@ -227,6 +229,56 @@ class AccountDoc {
               fromName: o['fromName'] as String? ?? '',
               babyIds: [for (final b in (o['babyIds'] as List? ?? [])) '$b'],
             ),
+      staffTransfer: StaffTransferRequest.fromMap(m?['pendingStaffTransfer']),
+    );
+  }
+}
+
+/// `users/{uid}.pendingStaffTransfer`, set by `staffOpenTransfer` (A17, P-136): Hỗ trợ asks the
+/// owner to hand the family to [toMasked] (a Cùng nuôi of every baby). The owner answers within
+/// 48 hours with `answerStaffOwnershipRequest`; agreeing makes the usual 13n offer.
+@immutable
+class StaffTransferRequest {
+  const StaffTransferRequest({
+    required this.transferId,
+    required this.toMasked,
+    required this.expiresAt,
+    this.ticket,
+    this.at,
+  });
+
+  /// `ft_` + 20 hex characters.
+  final String transferId;
+
+  /// The candidate's masked email ("m***@gmail.com"); never the full address.
+  final String toMasked;
+
+  /// "CL-1042", or null when the request has no ticket.
+  final String? ticket;
+  final DateTime? at;
+  final DateTime expiresAt;
+
+  /// Still answerable at [now] (the server expires it hourly after 48 hours).
+  bool isOpenAt(DateTime now) => expiresAt.isAfter(now);
+
+  /// Null when absent or malformed (nothing to show).
+  static StaffTransferRequest? fromMap(Object? raw) {
+    if (raw is! Map) return null;
+    final id = raw['transferId'];
+    final to = raw['toMasked'];
+    final ticket = raw['ticket'];
+    final expires = raw['expiresAt'];
+    if (id is! String || !RegExp(r'^ft_[a-f0-9]{20}$').hasMatch(id)) {
+      return null;
+    }
+    if (to is! String || to.isEmpty || expires is! Timestamp) return null;
+    final at = raw['at'];
+    return StaffTransferRequest(
+      transferId: id,
+      toMasked: to,
+      ticket: ticket is String && ticket.isNotEmpty ? ticket : null,
+      at: at is Timestamp ? at.toDate() : null,
+      expiresAt: expires.toDate(),
     );
   }
 }

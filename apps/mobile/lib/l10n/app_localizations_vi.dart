@@ -4284,6 +4284,46 @@ class AppLocalizationsVi extends AppLocalizations {
   String get acReceiverOwns => 'Người này đang là chủ hồ sơ khác.';
 
   @override
+  String get acStaffTransferTitle =>
+      'Hỗ trợ Child Life đề nghị chuyển quyền chủ hồ sơ';
+
+  @override
+  String acStaffTransferBody(String to, String time) {
+    return 'Cho $to. Bạn đồng ý trong 48 giờ (đến $time); nếu không, đề nghị tự huỷ. Đồng ý thì $to sẽ nhận lời mời làm chủ hồ sơ như bình thường.';
+  }
+
+  @override
+  String acStaffTransferBodyTicket(String to, String ticket, String time) {
+    return 'Cho $to · mã $ticket. Bạn đồng ý trong 48 giờ (đến $time); nếu không, đề nghị tự huỷ. Đồng ý thì $to sẽ nhận lời mời làm chủ hồ sơ như bình thường.';
+  }
+
+  @override
+  String get acStaffTransferAgree => 'Đồng ý';
+
+  @override
+  String get acStaffTransferDecline => 'Không đồng ý';
+
+  @override
+  String get acStaffTransferConfirmTitle => 'Đồng ý chuyển quyền chủ hồ sơ?';
+
+  @override
+  String acStaffTransferConfirmBody(String to) {
+    return '$to sẽ nhận lời mời làm chủ hồ sơ. Quyền chỉ chuyển khi họ nhận lời; trước đó bạn vẫn có thể huỷ đề nghị ở mục Chủ hồ sơ.';
+  }
+
+  @override
+  String acStaffTransferAgreed(String to) {
+    return 'Đã đồng ý · $to sẽ nhận lời mời';
+  }
+
+  @override
+  String get acStaffTransferDeclined => 'Đã từ chối đề nghị chuyển quyền';
+
+  @override
+  String get acStaffTransferGone =>
+      'Đề nghị này đã hết hạn hoặc đã được trả lời.';
+
+  @override
   String get acExport => 'Xuất dữ liệu';
 
   @override

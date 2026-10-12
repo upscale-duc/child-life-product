@@ -23,9 +23,11 @@ import 'me_models.dart';
 import 'me_repository.dart';
 import 'me_screen.dart';
 import 'me_widgets.dart';
+import 'staff_transfer.dart';
 
 /// 13n "Tài khoản": sign-in methods (unlink guard), devices with remote sign-out, ownership
-/// transfer (Q-016), data export (R-187, G-072) and account deletion (R-046).
+/// transfer (Q-016) and a transfer Child Life Hỗ trợ asks the owner to confirm (A17, P-136),
+/// data export (R-187, G-072) and account deletion (R-046).
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({super.key});
 
@@ -57,6 +59,10 @@ class AccountScreen extends ConsumerWidget {
     final offeredTo = familyId == null
         ? null
         : ref.watch(offeredToProvider(familyId)).value;
+    final staffTransfer = openStaffTransfer(
+      ref,
+      ref.watch(accountDocProvider(uid)).value?.staffTransfer,
+    );
     final offeredName = offeredTo == null
         ? null
         : [
@@ -163,6 +169,10 @@ class AccountScreen extends ConsumerWidget {
         ),
         if (owned.isNotEmpty && familyId != null) ...[
           MeSection(l10n.acOwner),
+          if (staffTransfer != null) ...[
+            StaffTransferCard(request: staffTransfer),
+            const SizedBox(height: ClSpace.s3),
+          ],
           ClCardGroup(
             children: [
               if (offeredTo != null)
