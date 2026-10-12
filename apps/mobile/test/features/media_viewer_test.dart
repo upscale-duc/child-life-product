@@ -20,6 +20,7 @@ import '../helpers/router_pump.dart';
 
 /// The native player cannot run in widget tests: this one records what the viewer asks for.
 class _FakeVideo implements ViewerVideo {
+  MediaSource? opened;
   final calls = <String>[];
   final _state = ValueNotifier(
     const ViewerVideoState(duration: Duration(seconds: 24)),
@@ -29,8 +30,9 @@ class _FakeVideo implements ViewerVideo {
   ValueListenable<ViewerVideoState> get state => _state;
 
   @override
-  Future<void> open(String filePath) async {
+  Future<void> open(MediaSource source) async {
     calls.add('open');
+    opened = source;
     _state.value = _state.value.copyWith(playing: true);
   }
 
@@ -242,16 +244,22 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(video.calls, ['open']);
+      // Streamed, not downloaded first (owner, 2026-10-12).
+      expect(video.opened?.uri, startsWith('https://storage.test/'));
       expect(find.byType(Slider), findsOneWidget);
-      // The poster covers the player until its first frame: no black flash.
-      Finder posterImage() => find.descendant(
-        of: find.byKey(const ValueKey('poster')),
-        matching: find.byType(Image),
-      );
-      expect(posterImage(), findsOneWidget);
+      // The poster covers the player until a frame is drawn, then fades: no black flash.
+      double posterOpacity() => tester
+          .widget<AnimatedOpacity>(
+            find.descendant(
+              of: find.byKey(const ValueKey('poster')),
+              matching: find.byType(AnimatedOpacity),
+            ),
+          )
+          .opacity;
+      expect(posterOpacity(), 1);
       video.render();
       await tester.pumpAndSettle();
-      expect(posterImage(), findsNothing);
+      expect(posterOpacity(), 0);
       expect(find.bySemanticsLabel('Tạm dừng video'), findsOneWidget);
 
       await tester.tap(find.bySemanticsLabel('Tạm dừng video'));

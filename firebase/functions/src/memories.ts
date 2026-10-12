@@ -473,7 +473,18 @@ export async function processUpload(
   const ref = db.doc(`babies/${babyId}/media/${mediaId}`);
   const media = await ref.get();
   const paths = mediaPaths(babyId, mediaId);
-  if (!media.exists || media.get('status') !== 'uploading' || media.get('deleted') === true) {
+  // A poster that lands after its video was processed still belongs to it (iOS sends both at
+  // once): without it the viewer shows black until play.
+  const latePoster =
+    !!poster &&
+    media.get('status') === 'ready' &&
+    media.get('type') === 'video' &&
+    !media.get('paths.poster');
+  if (
+    !media.exists ||
+    (media.get('status') !== 'uploading' && !latePoster) ||
+    media.get('deleted') === true
+  ) {
     await store.delete(objectPath);
     return 'ignored';
   }
@@ -493,11 +504,33 @@ export async function processUpload(
       const thumb = await images.jpeg(bytes, photoMax.thumb, 72);
       await store.save(`${paths.dir}/poster.jpg`, big.bytes, 'image/jpeg');
       await store.save(`${paths.dir}/thumb.jpg`, thumb.bytes, 'image/jpeg');
-      await ref.update({
-        posterBytes: big.bytes.length + thumb.bytes.length,
-        width: media.get('width') ?? big.width,
-        height: media.get('height') ?? big.height,
-        updatedAt: now,
+      const posterBytes = big.bytes.length + thumb.bytes.length;
+      await db.runTransaction(async (tx) => {
+        const fresh = await tx.get(ref);
+        const size = {
+          posterBytes,
+          width: fresh.get('width') ?? big.width,
+          height: fresh.get('height') ?? big.height,
+          updatedAt: now,
+        };
+        if (fresh.get('status') === 'uploading') {
+          // The video, when it lands, links the poster and counts its bytes.
+          tx.update(ref, size);
+        } else if (
+          fresh.get('status') === 'ready' &&
+          fresh.get('deleted') !== true &&
+          !fresh.get('paths.poster')
+        ) {
+          tx.update(db.doc(`families/${fresh.get('familyId') as string}`), {
+            usedBytes: FieldValue.increment(posterBytes),
+          });
+          tx.update(ref, {
+            ...size,
+            'paths.poster': `${paths.dir}/poster.jpg`,
+            'paths.thumb': `${paths.dir}/thumb.jpg`,
+            storedBytes: FieldValue.increment(posterBytes),
+          });
+        }
       });
     } catch {
       // A broken poster only costs the frame; the video still plays.
@@ -547,15 +580,14 @@ export async function processUpload(
     const ext = kind === 'quicktime' ? 'mov' : 'mp4';
     const contentType = kind === 'quicktime' ? 'video/quicktime' : 'video/mp4';
     await store.move(objectPath, `${paths.dir}/original.${ext}`, contentType);
-    const fresh = await ref.get();
-    const posterBytes = (fresh.get('posterBytes') as number | undefined) ?? 0;
-    stored = (size ?? 0) + posterBytes;
+    // The poster is linked in the transaction below, from what has landed by then.
+    stored = size ?? 0;
     out = {
       paths: {
         original: `${paths.dir}/original.${ext}`,
         display: null,
-        thumb: posterBytes > 0 ? `${paths.dir}/thumb.jpg` : null,
-        poster: posterBytes > 0 ? `${paths.dir}/poster.jpg` : null,
+        thumb: null,
+        poster: null,
       },
       contentType,
     };
@@ -568,6 +600,20 @@ export async function processUpload(
     if (!out) {
       releaseIn(tx, db, fresh, 'unreadable', now);
       return 'unreadable' as const;
+    }
+    if (type === 'video') {
+      const posterBytes = (fresh.get('posterBytes') as number | undefined) ?? 0;
+      if (posterBytes > 0) {
+        stored += posterBytes;
+        out = {
+          ...out,
+          paths: {
+            ...(out.paths as Record<string, unknown>),
+            thumb: `${paths.dir}/thumb.jpg`,
+            poster: `${paths.dir}/poster.jpg`,
+          },
+        };
+      }
     }
     const familyId = fresh.get('familyId') as string;
     const reserved = (fresh.get('reservedBytes') as number | undefined) ?? 0;

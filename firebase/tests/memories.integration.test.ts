@@ -345,6 +345,46 @@ describe('processing (P-033) and publish (P-030)', () => {
     expect(store.files.get(item.paths.original)?.contentType).toBe('video/mp4');
   });
 
+  it('a poster that lands after its video is still linked and counted', async () => {
+    const v = id('med');
+    const head = mp4Head();
+    await createMemory(
+      db,
+      'mom',
+      request([
+        {
+          ...photo(v, head.length),
+          type: 'video',
+          contentType: 'video/mp4',
+          durationMs: 24_000,
+          hasPoster: true,
+        },
+      ]),
+      now,
+    );
+    const store = new FakeStore();
+    await store.save(`babies/${babyId}/uploads/${v}`, head, 'video/mp4');
+    expect(await processUpload(db, store, sharpImages, `babies/${babyId}/uploads/${v}`, now)).toBe(
+      'ready',
+    );
+    const before = (await db.doc(`babies/${babyId}/media/${v}`).get()).data()!;
+    expect(before.paths.poster).toBeNull();
+    const used = (await family()).usedBytes as number;
+    await store.save(
+      `babies/${babyId}/uploads/${v}.poster`,
+      await jpegWithGps(640, 360),
+      'image/jpeg',
+    );
+    expect(
+      await processUpload(db, store, sharpImages, `babies/${babyId}/uploads/${v}.poster`, now),
+    ).toBe('poster');
+    const item = (await db.doc(`babies/${babyId}/media/${v}`).get()).data()!;
+    expect(item.paths.poster).toBe(`babies/${babyId}/media/${v}/poster.jpg`);
+    expect(item.paths.thumb).toBe(`babies/${babyId}/media/${v}/thumb.jpg`);
+    expect(item.storedBytes).toBe(before.storedBytes + item.posterBytes);
+    expect((await family()).usedBytes).toBe(used + item.posterBytes);
+  });
+
   it('the batch notice waits for uploads but not for Wi-Fi waits (Q-019)', async () => {
     const a = id('med');
     const v = id('med');

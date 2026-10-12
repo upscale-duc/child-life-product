@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -131,7 +130,8 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
 
   /// Loads the neighbours' images ahead, so a swipe lands on a ready photo, not black.
   void _precacheAround(int i) {
-    for (final j in [i - 1, i + 1]) {
+    // The page itself too: its full poster replaces the small thumb sooner.
+    for (final j in [i, i - 1, i + 1]) {
       if (j < 0 || j >= widget.items.length) continue;
       final it = widget.items[j];
       final path = it.isVideo
@@ -701,10 +701,11 @@ class _VideoPageState extends ConsumerState<_VideoPage> {
     });
     ViewerVideo? v;
     try {
-      final File file = await mediaBytes.file(path);
+      // Streamed unless cached: playback starts after the first bytes (owner, 2026-10-12).
+      final source = await mediaBytes.playable(path);
       if (!mounted) return;
       v = ref.read(viewerVideoProvider)();
-      await v.open(file.path);
+      await v.open(source);
       if (!mounted) {
         await v.dispose();
         return;
@@ -751,10 +752,16 @@ class _VideoPageState extends ConsumerState<_VideoPage> {
                         path: poster,
                         standIn: widget.item.paths?.thumb,
                       )
+                    // Faded out once a frame is really drawn: no black between.
                     : ValueListenableBuilder(
                         valueListenable: v.state,
-                        builder: (_, s, child) =>
-                            s.rendered ? const SizedBox.shrink() : child!,
+                        builder: (_, s, child) => IgnorePointer(
+                          child: AnimatedOpacity(
+                            opacity: s.rendered ? 0 : 1,
+                            duration: const Duration(milliseconds: 180),
+                            child: child,
+                          ),
+                        ),
                         child: _FullImage(
                           path: poster,
                           standIn: widget.item.paths?.thumb,

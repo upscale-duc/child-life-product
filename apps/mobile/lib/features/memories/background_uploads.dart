@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'upload_queue.dart';
@@ -177,5 +179,19 @@ class BackgroundTransport implements UploadTransport {
     for (final path in [..._waiting.keys]) {
       _settle(path, 'cancelled');
     }
+  }
+}
+
+/// iOS: rewrites the recording at [src] to [dst] with its index first, without re-encoding.
+/// False elsewhere or when it fails (the caller copies the file instead).
+Future<bool> faststartVideo(String src, String dst) async {
+  if (kIsWeb || !Platform.isIOS) return false;
+  try {
+    return await const MethodChannel(
+          'childlife/uploads',
+        ).invokeMethod<bool>('faststart', {'src': src, 'dst': dst}) ??
+        false;
+  } on Object {
+    return false;
   }
 }

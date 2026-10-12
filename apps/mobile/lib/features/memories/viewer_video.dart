@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+
+import 'media_bytes.dart';
 
 /// What the 10f viewer shows for a playing video: the frame plus our own controls.
 @immutable
@@ -22,8 +25,9 @@ class ViewerVideoState {
   final bool completed;
   final bool buffering;
 
-  /// The first frame is on screen: until then the viewer keeps the poster up, so play does
-  /// not flash black.
+  /// A frame is really on screen: until then the viewer keeps the poster up, so play does not
+  /// flash black. media_kit's "first frame rendered" fires when the texture is sized, before
+  /// anything is drawn, so this also waits for playback to move.
   final bool rendered;
   final Duration position;
   final Duration duration;
@@ -50,8 +54,8 @@ class ViewerVideoState {
 abstract class ViewerVideo {
   ValueListenable<ViewerVideoState> get state;
 
-  /// Opens a local file (the Rules-gated, cached original) and starts playing.
-  Future<void> open(String filePath);
+  /// Opens the cached file or the streamed original and starts playing.
+  Future<void> open(MediaSource source);
   Future<void> play();
   Future<void> pause();
   Future<void> seek(Duration position);
@@ -73,21 +77,38 @@ class MediaKitViewerVideo implements ViewerVideo {
     _controller = VideoController(_player);
     _subs.addAll([
       _player.stream.playing.listen((v) => _set(_value.copyWith(playing: v))),
-      _player.stream.completed.listen(
-        (v) => _set(_value.copyWith(completed: v)),
-      ),
+      _player.stream.completed.listen((v) {
+        _set(_value.copyWith(completed: v));
+        _maybeRendered();
+      }),
       _player.stream.buffering.listen(
         (v) => _set(_value.copyWith(buffering: v)),
       ),
-      _player.stream.position.listen((v) => _set(_value.copyWith(position: v))),
+      _player.stream.position.listen((v) {
+        _set(_value.copyWith(position: v));
+        _maybeRendered();
+      }),
       _player.stream.duration.listen((v) => _set(_value.copyWith(duration: v))),
     ]);
     unawaited(
-      _controller.waitUntilFirstFrameRendered.then(
-        (_) => _set(_value.copyWith(rendered: true)),
-        onError: (Object _) {},
-      ),
+      _controller.waitUntilFirstFrameRendered.then((_) {
+        _sized = true;
+        _maybeRendered();
+      }, onError: (Object _) {}),
     );
+  }
+
+  var _sized = false;
+
+  /// Sized texture and a moving clock (or the end): a frame has been drawn. One more frame of
+  /// Flutter so the texture is composited before the poster goes.
+  void _maybeRendered() {
+    if (_value.rendered || !_sized) return;
+    if (_value.position <= Duration.zero && !_value.completed) return;
+    SchedulerBinding.instance.addPostFrameCallback(
+      (_) => _set(_value.copyWith(rendered: true)),
+    );
+    SchedulerBinding.instance.scheduleFrame();
   }
 
   final _player = Player();
@@ -106,8 +127,8 @@ class MediaKitViewerVideo implements ViewerVideo {
   ValueListenable<ViewerVideoState> get state => _state;
 
   @override
-  Future<void> open(String filePath) async {
-    await _player.open(Media(Uri.file(filePath).toString()));
+  Future<void> open(MediaSource source) async {
+    await _player.open(Media(source.uri, httpHeaders: source.headers));
   }
 
   @override

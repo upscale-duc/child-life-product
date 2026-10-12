@@ -39,6 +39,10 @@ class FakeMediaBytes implements MediaBytes {
   @override
   Future<File> file(String path) async =>
       throw UnsupportedError('no files in tests');
+
+  @override
+  Future<MediaSource> playable(String path) async =>
+      MediaSource('https://storage.test/$path', headers: const {'a': 'b'});
 }
 
 DateTime _vn(int month, int day, int h, int m) =>

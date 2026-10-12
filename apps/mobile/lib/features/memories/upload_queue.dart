@@ -399,7 +399,11 @@ class DeviceMediaPreparer implements MediaPreparer {
     }
     final mov = picked.file.path.toLowerCase().endsWith('.mov');
     final out = '${dir.path}/$mediaId.${mov ? 'mov' : 'mp4'}';
-    await picked.file.copy(out);
+    // iOS: the index moved to the front, nothing re-encoded, so playback can start after the
+    // first bytes (owner, 2026-10-12); otherwise the file as it is.
+    if (!await faststartVideo(picked.file.path, out)) {
+      await picked.file.copy(out);
+    }
     String? poster = '${dir.path}/$mediaId.poster.jpg';
     try {
       final ok = await FcNativeVideoThumbnail().saveThumbnailToFile(

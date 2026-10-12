@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
@@ -14,6 +15,19 @@ abstract class MediaBytes {
 
   /// A local file for the video player and "Tải về".
   Future<File> file(String path);
+
+  /// What the video player opens: the cached file when there is one, else the object streamed
+  /// straight from Storage (range requests, so playback starts after the first bytes rather
+  /// than the whole download; still behind Storage Rules, signed in as the viewer).
+  Future<MediaSource> playable(String path);
+}
+
+/// A URI for the player and the headers it needs.
+@immutable
+class MediaSource {
+  const MediaSource(this.uri, {this.headers = const {}});
+  final String uri;
+  final Map<String, String> headers;
 }
 
 class StorageMediaBytes implements MediaBytes {
@@ -46,6 +60,22 @@ class StorageMediaBytes implements MediaBytes {
       unawaited(Future<void>(() => _inFlight.remove(path)));
     }
   }();
+
+  @override
+  Future<MediaSource> playable(String path) async {
+    final local = await _local(path);
+    if (await local.exists()) {
+      return MediaSource(Uri.file(local.path).toString());
+    }
+    final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+    if (token == null) throw StateError('signed out');
+    final object = Uri.encodeComponent(path);
+    return MediaSource(
+      'https://firebasestorage.googleapis.com/v0/b/${_storage.bucket}/o/$object?alt=media',
+      // Never logged (a token and a child's media path).
+      headers: {'Authorization': 'Firebase $token'},
+    );
+  }
 
   @override
   Future<File> file(String path) async {

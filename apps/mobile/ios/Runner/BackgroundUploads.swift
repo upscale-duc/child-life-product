@@ -1,3 +1,4 @@
+import AVFoundation
 import Flutter
 import Foundation
 import Network
@@ -121,10 +122,39 @@ final class BackgroundUploads: NSObject, URLSessionDataDelegate {
       case "cancelAll":
         me.cancelAll()
         result(nil)
+      case "faststart":
+        let src = args["src"] as? String ?? ""
+        let dst = args["dst"] as? String ?? ""
+        Task {
+          let ok = await BackgroundUploads.faststart(src: src, dst: dst)
+          DispatchQueue.main.async { result(ok) }
+        }
       default:
         result(FlutterMethodNotImplemented)
       }
     }
+  }
+
+  /// A copy of a recording with its index ("moov") at the front and nothing re-encoded, so a
+  /// player can start after the first bytes instead of the whole file (owner, 2026-10-12).
+  /// iPhone recordings write the index at the end. False when it cannot be done; the caller then
+  /// uploads the file as it is.
+  static func faststart(src: String, dst: String) async -> Bool {
+    let asset = AVURLAsset(url: URL(fileURLWithPath: src))
+    guard
+      let export = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetPassthrough)
+    else { return false }
+    let out = URL(fileURLWithPath: dst)
+    try? FileManager.default.removeItem(at: out)
+    export.outputURL = out
+    export.outputFileType = dst.lowercased().hasSuffix(".mp4") ? .mp4 : .mov
+    export.shouldOptimizeForNetworkUse = true
+    await withCheckedContinuation { (done: CheckedContinuation<Void, Never>) in
+      export.exportAsynchronously { done.resume() }
+    }
+    if export.status == .completed { return true }
+    try? FileManager.default.removeItem(at: out)
+    return false
   }
 
   func status(_ path: String) -> [String: Any]? {
