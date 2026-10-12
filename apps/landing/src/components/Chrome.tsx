@@ -1,22 +1,38 @@
 import { useSite } from '../context';
-import { alternateOf, pathOf } from '../routes';
+import { alternateOf, isStage, pathOf } from '../routes';
 import { Icon, Lockup } from './primitives';
 
-const sectionIds = ['cham-con', 'hieu-con', 'ky-niem', 'gia-dinh', 'hoi-dap'] as const;
+interface NavLink {
+  label: string;
+  href: string;
+  /** Section id on this page, highlighted while in view. */
+  spy?: string;
+  current?: boolean;
+}
 
-/** Nav (spec §1). Sticky with a frosted background once the page scrolls (not in Figma);
- *  section links on desktop only, as designed; the language switch is an addition (D-012). */
+/** Nav (14-landing-v3-home §1, 15-landing-v3-stages §1). Sticky with a frosted background once
+ *  the page scrolls (not in Figma); section links on desktop only, as designed; the language
+ *  switch is an addition (D-012). Links point at this page's sections where it has them. */
 export function Nav() {
   const { c, route, homePath } = useSite();
   const other = alternateOf(route, route.locale === 'vi' ? 'en' : 'vi');
-  const base = route.page === 'home' ? '' : homePath;
-  const labels = [
-    c.nav.links.care,
-    c.nav.links.understand,
-    c.nav.links.memories,
-    c.nav.links.family,
-    c.nav.links.faq,
+  const l = c.nav.links;
+  const firstYear = pathOf('stage1', route.locale);
+  const onHome = route.page === 'home';
+  const onStage1 = route.page === 'stage1';
+  const local = (id: string) => ({ href: `#${id}`, spy: id });
+  const links: NavLink[] = [
+    { label: l.journey, ...(onHome ? local('hanh-trinh') : { href: `${homePath}#hanh-trinh` }) },
+    onHome
+      ? { label: l.firstYear, ...local('nam-dau-doi') }
+      : { label: l.firstYear, href: firstYear, current: onStage1 },
+    {
+      label: l.family,
+      ...(onHome || onStage1 ? local('gia-dinh') : { href: `${homePath}#gia-dinh` }),
+    },
+    { label: l.faq, ...(onHome || onStage1 ? local('hoi-dap') : { href: `${homePath}#hoi-dap` }) },
   ];
+  const hasCta = onHome || isStage(route.page);
   return (
     <header className="nav" data-nav="">
       <div className="nav__inner container">
@@ -24,9 +40,14 @@ export function Nav() {
           <Lockup />
         </a>
         <nav className="nav__links" aria-label={c.nav.sectionsLabel}>
-          {sectionIds.map((id, i) => (
-            <a key={id} href={`${base}#${id}`} data-spy={route.page === 'home' ? id : undefined}>
-              {labels[i]}
+          {links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              data-spy={link.spy}
+              aria-current={link.current ? 'page' : undefined}
+            >
+              {link.label}
             </a>
           ))}
         </nav>
@@ -43,7 +64,7 @@ export function Nav() {
               {c.nav.switchLabel}
             </span>
           </a>
-          <a className="nav__cta pressable" href={`${base}#tai-app`}>
+          <a className="nav__cta pressable" href={hasCta ? '#tai-app' : `${homePath}#tai-app`}>
             <span className="only-desktop-inline">{c.nav.download}</span>
             <span className="only-mobile-inline">{c.nav.downloadShort}</span>
           </a>

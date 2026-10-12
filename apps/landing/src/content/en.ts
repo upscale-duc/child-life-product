@@ -7,19 +7,18 @@ export const en: Content = {
   locale: 'en',
   languageName: 'English',
   meta: {
-    title: 'Child Life — Care for your baby together, keep every moment',
+    title: 'Child Life — Grow up together, one step at a time',
     description:
-      "A free app for the whole family: log feeds, sleep and diapers in one tap, share the care, and keep your baby's photos, videos and stories. On iPhone and Android.",
-    ogAlt: 'Child Life — care for your baby together and keep their whole childhood',
+      'A free app that helps the whole family care for your child, understand them week by week and keep their journey of growing up — starting with the first year. On iPhone and Android.',
+    ogAlt: 'Child Life — grow up together, one step at a time',
   },
   skipToContent: 'Skip to main content',
   nav: {
     homeLabel: 'Child Life — home',
     sectionsLabel: 'Page sections',
     links: {
-      care: 'Care',
-      understand: 'Week by week',
-      memories: 'Memories',
+      journey: 'Journey',
+      firstYear: 'First year',
       family: 'Family',
       faq: 'FAQ',
     },
@@ -134,6 +133,200 @@ export const en: Content = {
       { title: 'Saved for you', sub: 'Tapped by mistake? Fix it right away' },
       { title: 'Everyone sees it', sub: 'Nobody has to ask “has the baby eaten?”' },
     ],
+  },
+  journey: {
+    label: 'Journey',
+    number: 'Stage {n}',
+    prevNextLabel: 'Stages',
+    highlightsTitle: 'At this stage, Child Life is with you',
+    prev: '← Previous stage',
+    next: 'Next stage →',
+    backLabel: 'Back to',
+    backTitle: 'The whole journey',
+    ctaTitle: ['Start the journey with your child', 'today.'],
+    stages: [
+      {
+        name: 'The very first days',
+        ages: '0–12 months',
+        title: 'The very first days.',
+        lead: "Getting to know each other one feed and one nap at a time — and keeping your child's firsts.",
+        chips: ['Everyday care', 'Week by week', 'Keep the moments'],
+        highlights: null,
+        quote: null,
+      },
+      {
+        name: 'Exploring the world',
+        ages: '1–3 years',
+        title: 'Exploring the world.',
+        lead: 'Toddling, first words and small new habits, together.',
+        chips: ['Daily rhythm', 'Play & movement', 'First words'],
+        highlights: [
+          {
+            title: 'First steps',
+            body: 'Capture the wobbly first steps, the first words and the first trips away from home.',
+          },
+          {
+            title: 'Small daily rhythms',
+            body: 'The whole family keeps track of meals and naps, and gently builds first habits.',
+          },
+          {
+            title: 'Play together',
+            body: 'Ideas for play, movement and conversation that suit their age.',
+          },
+        ],
+        quote: 'First steps, the moments the whole family cheers — all worth keeping.',
+      },
+      {
+        name: 'Curious and growing',
+        ages: '3–6 years',
+        title: 'Curious and growing.',
+        lead: 'Playing, reading, drawing and answering an endless stream of “why?”.',
+        chips: ['Learning through play', 'Feelings', 'Their creations'],
+        highlights: [
+          {
+            title: 'Learning through play',
+            body: 'Read stories, draw and make little things together.',
+          },
+          {
+            title: 'All the “why?” questions',
+            body: 'Keep what they wonder about and the funny things they say.',
+          },
+          {
+            title: 'Growing up bit by bit',
+            body: 'Practise doing things on their own and naming their feelings.',
+          },
+        ],
+        quote: 'Every “why?” is a small memory worth saving.',
+      },
+      {
+        name: 'A world of their own',
+        ages: '6–12 years',
+        title: 'A world of their own.',
+        lead: 'Gently by their side as they grow independent, with interests and dreams of their own.',
+        chips: ['Interests', 'Independence', 'Look back on the journey'],
+        highlights: [
+          {
+            title: 'What they love',
+            body: "Keep their hobbies, projects and the things they're proud of.",
+          },
+          {
+            title: 'Independent, their way',
+            body: 'Set small goals as a family; your child takes the lead.',
+          },
+          {
+            title: 'Their own space',
+            body: 'Stay close while respecting the world they are building.',
+          },
+        ],
+        quote: "They have a world of their own now. You're still here whenever they need you.",
+      },
+    ],
+  },
+  home: {
+    hero: {
+      eyebrow: 'Child Life · Growing up together',
+      title: ['Grow up together,', 'one step at a time.'],
+      lead: 'An ecosystem that helps parents care for, understand and walk alongside their child — from the very first days to adulthood.',
+      promises: [
+        'Everyday care, with the whole family in sync',
+        'Understand your child through every stage',
+        'Walk alongside them and keep their journey',
+      ],
+      explore: "See your child's journey",
+      art: {
+        feed: { title: 'Bottle · 120 ml', sub: 'Mum logged · 2 min ago' },
+        smile: { title: 'First smile', sub: 'Saved to Memories' },
+        love: "Grandma loved Teddy's photo",
+      },
+    },
+    chapters: {
+      eyebrow: 'Growing up',
+      title: 'With your child at every stage.',
+      lead: 'At every stage of growing up, Child Life helps you care for your child, understand them and keep what matters.',
+      available: 'In the app',
+      explore: 'Explore the first year',
+      view: 'See this stage',
+    },
+    firstYear: {
+      eyebrow: 'Stage 1 · The first year',
+      title: "Your baby's first year, gentler for the whole family.",
+      lead: 'Everyday care, understanding your baby week by week and keeping the firsts — all in one app.',
+      leadShort: 'Everyday care, understanding your baby week by week and keeping the firsts.',
+      familyTitle: 'Caring as a family — everyone has a place by your baby',
+      familyTitleShort: 'Caring as a family',
+      roles: [
+        {
+          role: 'Parents',
+          title: 'Less to remember',
+          body: 'Care together and decide together who sees what.',
+        },
+        {
+          role: 'Caregivers',
+          title: 'Clear teamwork',
+          body: 'Log and get reminders for the baby in their care, without double logging.',
+        },
+        {
+          role: 'Grandparents, relatives',
+          title: 'Close even when far away',
+          body: 'See new photos of their grandchild, send love, save photos.',
+        },
+      ],
+      trust: [
+        { text: 'Private, not a social network', short: 'Private' },
+        { text: 'No pressure to log everything', short: 'No pressure to log everything' },
+        { text: 'No scores, no comparisons', short: 'No scores' },
+        { text: 'Content reviewed by experts', short: 'Expert reviewed' },
+        { text: "Your child's data, your rights", short: "Your child's data, your rights" },
+      ],
+      nextTitle: 'The stages ahead',
+      preparing: 'Being prepared with care',
+      more: 'See the first year in detail',
+    },
+    growUp: {
+      eyebrow: 'One record that grows with them',
+      title: 'What you save today, they will look back on when they grow up.',
+      body: 'From the very first photo to the drawing they made for grandma — their whole journey in one place, never lost as they grow.',
+      bodyShort: 'Their whole journey in one place, never lost as they grow.',
+      years: [
+        { year: '2026', caption: 'The day they were born' },
+        { year: '2027', caption: 'First steps' },
+        { year: '2029', caption: 'First day at school' },
+      ],
+    },
+    faq: {
+      items: [
+        {
+          q: 'What is Child Life?',
+          a: 'An ecosystem that helps parents care for, understand and walk alongside their child through every stage of growing up. The app currently focuses on the first year.',
+          open: true,
+        },
+        {
+          q: 'What age is Child Life for?',
+          a: 'From the day your baby is born. In the first year the app helps the whole family with everyday care; the next stages will grow with your child into adulthood.',
+          open: true,
+        },
+        {
+          q: 'When my child grows up, will their photos and records still be there?',
+          a: 'Yes. Their photos, videos and stories stay in your family until you delete them yourself, and you can download them at any time.',
+          open: false,
+        },
+        {
+          q: 'Does it cost anything?',
+          a: "No. The whole family uses it for free, with room for thousands of your baby's photos. If you need more space, just message us.",
+          open: false,
+        },
+        {
+          q: "Who can see my baby's photos and information?",
+          a: 'Only the people you invite into your family. Parents decide who sees what: caregivers only see the daily care, relatives only see the photos and stories you share.',
+          open: false,
+        },
+        {
+          q: 'Who writes the tips in the app?',
+          a: "The Child Life expert team writes, reviews and updates the age cards, articles and guides in the app. They are for reference and don't replace a doctor's advice — if something seems wrong, ask your doctor.",
+          open: false,
+        },
+      ],
+    },
   },
   everything: {
     eyebrow: 'Everything in one app',

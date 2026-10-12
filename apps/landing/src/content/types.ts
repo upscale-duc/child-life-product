@@ -30,6 +30,34 @@ export interface BentoTile {
   bodyShort: string;
 }
 
+export interface StageText {
+  name: string;
+  /** "0–12 tháng". */
+  ages: string;
+  title: string;
+  lead: string;
+  chips: [string, string, string];
+  /** Chặng 2–4 only (Chặng 1 shows the feature sections instead). */
+  highlights: [TitledText, TitledText, TitledText] | null;
+  quote: string | null;
+}
+
+export interface RoleText {
+  role: string;
+  title: string;
+  body: string;
+}
+
+export interface ShortText {
+  text: string;
+  short: string;
+}
+
+export interface YearText {
+  year: string;
+  caption: string;
+}
+
 export interface TitledText {
   title: string;
   body: string;
@@ -83,7 +111,7 @@ export interface Content {
   nav: {
     homeLabel: string;
     sectionsLabel: string;
-    links: { care: string; understand: string; memories: string; family: string; faq: string };
+    links: { journey: string; firstYear: string; family: string; faq: string };
     download: string;
     downloadShort: string;
     /** Shown on this page, pointing to the other language. */
@@ -159,6 +187,66 @@ export interface Content {
     logged: { title: string; meta: string; undo: string; edit: string };
     note: string;
     steps: [Bullet, Bullet, Bullet];
+  };
+  /** v3 journey: shared by the home page and the four stage pages (14 / 15-landing-v3). */
+  journey: {
+    /** "Hành trình": switcher label and breadcrumb. */
+    label: string;
+    /** "Chặng {n}". */
+    number: string;
+    prevNextLabel: string;
+    highlightsTitle: string;
+    prev: string;
+    next: string;
+    backLabel: string;
+    backTitle: string;
+    /** CTA title of the home and Chặng 2–4 pages. */
+    ctaTitle: [string, string];
+    stages: [StageText, StageText, StageText, StageText];
+  };
+  home: {
+    hero: {
+      eyebrow: string;
+      title: [string, string];
+      lead: string;
+      promises: [string, string, string];
+      explore: string;
+      art: {
+        feed: { title: string; sub: string };
+        smile: { title: string; sub: string };
+        love: string;
+      };
+    };
+    chapters: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      available: string;
+      explore: string;
+      view: string;
+    };
+    firstYear: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      leadShort: string;
+      familyTitle: string;
+      familyTitleShort: string;
+      roles: [RoleText, RoleText, RoleText];
+      /** The last chip is desktop only. */
+      trust: [ShortText, ShortText, ShortText, ShortText, ShortText];
+      nextTitle: string;
+      preparing: string;
+      more: string;
+    };
+    growUp: {
+      eyebrow: string;
+      title: string;
+      body: string;
+      bodyShort: string;
+      years: [YearText, YearText, YearText];
+    };
+    faq: { items: [FaqItem, FaqItem, FaqItem, FaqItem, FaqItem, FaqItem] };
   };
   everything: {
     eyebrow: string;

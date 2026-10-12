@@ -5,13 +5,22 @@ import { Footer, Nav, Toast } from './components/Chrome';
 import { Icon } from './components/primitives';
 import { contentFor } from './content';
 import { SiteContext, type Site } from './context';
-import { startFit, startLocaleLinks, startNav, startStoryFonts, startTicking } from './effects';
+import {
+  startFit,
+  startLocaleLinks,
+  startNav,
+  startStoryFonts,
+  startSwitcher,
+  startTicking,
+} from './effects';
 import { startReveal } from './motion';
 import { Home } from './pages/Home';
 import { Legal } from './pages/Legal';
-import { alternateOf, pathOf, type Route } from './routes';
+import { StagePage } from './pages/StagePage';
+import { alternateOf, isStage, pathOf, type Route } from './routes';
 
-/** Landing site (Slice S14): Figma Website 219:1391 / 233:804, Vietnamese at / and English at /en/. */
+/** Landing site: v3 home + four stage pages (Figma Website 358:2901 / 362:3398, 370:50752,
+ *  361:3457 / 3575 / 3693) and the legal pages; Vietnamese at / and English at /en/. */
 export function App({ route, environment }: { route: Route; environment: Environment }) {
   const c = contentFor(route.locale);
   const other = alternateOf(route, route.locale === 'vi' ? 'en' : 'vi');
@@ -38,6 +47,7 @@ export function App({ route, environment }: { route: Route; environment: Environ
       startNav(),
       startLocaleLinks(),
       startStoryFonts(),
+      startSwitcher(),
     ];
     return () => stops.forEach((stop) => stop());
   }, []);
@@ -56,7 +66,15 @@ export function App({ route, environment }: { route: Route; environment: Environ
         {c.skipToContent}
       </a>
       <Nav />
-      <main id="main">{route.page === 'home' ? <Home /> : <Legal page={route.page} />}</main>
+      <main id="main">
+        {route.page === 'home' ? (
+          <Home />
+        ) : isStage(route.page) ? (
+          <StagePage stage={route.page} />
+        ) : (
+          <Legal page={route.page} />
+        )}
+      </main>
       <Footer environment={environment} />
       <Toast message={toast} onClose={() => setToast(null)} closeLabel={c.stores.close} />
       {suggest && (

@@ -23,7 +23,7 @@ const fan: [PhotoTone, number, number, number, number, number][] = [
 
 /** Mọi thứ trong một app (12-landing-v3 §1): 4 × 2 bento with mock footers on desktop,
  *  text-only 2-column tiles on mobile. */
-export function Everything() {
+export function BentoGrid() {
   const { c } = useSite();
   const e = c.everything;
   const footers = [
@@ -85,6 +85,41 @@ export function Everything() {
     </Fit>,
   ];
   return (
+    <ul className="bento__grid reveal-group">
+      {e.tiles.map((tile, i) => {
+        const look = tiles[i]!;
+        return (
+          <li
+            key={tile.title}
+            className={`bento-tile tint--${look.tint} reveal`}
+            style={staggerStyle(i)}
+          >
+            <IconBox
+              tint={look.iconTint ?? 'white'}
+              icon={look.icon}
+              size={20}
+              className="bento-tile__icon"
+            />
+            <h3 className="bento-tile__title">{tile.title}</h3>
+            <p className="bento-tile__body">
+              <span className="only-desktop-inline">{tile.body}</span>
+              <span className="only-mobile-inline">{tile.bodyShort}</span>
+            </p>
+            <div className="bento-tile__foot only-desktop" aria-hidden="true">
+              {footers[i]}
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** The bento section of the Chặng 1 page (v2.1 `322:1809`); the home reuses only the grid. */
+export function Everything() {
+  const { c } = useSite();
+  const e = c.everything;
+  return (
     <section id="tat-ca" className="section bento container" aria-labelledby="bento-title">
       <header className="section-head section-head--center reveal">
         <Eyebrow tone="mint">{e.eyebrow}</Eyebrow>
@@ -96,33 +131,7 @@ export function Everything() {
           <span className="only-mobile-inline">{e.leadShort}</span>
         </p>
       </header>
-      <ul className="bento__grid reveal-group">
-        {e.tiles.map((tile, i) => {
-          const look = tiles[i]!;
-          return (
-            <li
-              key={tile.title}
-              className={`bento-tile tint--${look.tint} reveal`}
-              style={staggerStyle(i)}
-            >
-              <IconBox
-                tint={look.iconTint ?? 'white'}
-                icon={look.icon}
-                size={20}
-                className="bento-tile__icon"
-              />
-              <h3 className="bento-tile__title">{tile.title}</h3>
-              <p className="bento-tile__body">
-                <span className="only-desktop-inline">{tile.body}</span>
-                <span className="only-mobile-inline">{tile.bodyShort}</span>
-              </p>
-              <div className="bento-tile__foot only-desktop" aria-hidden="true">
-                {footers[i]}
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      <BentoGrid />
     </section>
   );
 }

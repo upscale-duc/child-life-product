@@ -1,36 +1,22 @@
-import { Care } from '../sections/Care';
-import { Cocare } from '../sections/Cocare';
+import { useSite } from '../context';
+import { Chapters } from '../sections/Chapters';
 import { Cta } from '../sections/Cta';
-import { Everything } from '../sections/Everything';
 import { Faq } from '../sections/Faq';
-import { FirstAid } from '../sections/FirstAid';
-import { Hero } from '../sections/Hero';
-import { Library } from '../sections/Library';
-import { Memories } from '../sections/Memories';
-import { Night } from '../sections/Night';
-import { Quick } from '../sections/Quick';
-import { Reminders } from '../sections/Reminders';
-import { Roles } from '../sections/Roles';
-import { Understand } from '../sections/Understand';
+import { FirstYear } from '../sections/FirstYear';
+import { GrowUp } from '../sections/GrowUp';
+import { JourneyHero } from '../sections/JourneyHero';
 
-/** Landing page, section order per Figma v3 321:1222 / 324:45487. */
+/** v3 home page, section order per Figma 358:2901 / 362:3398. */
 export function Home() {
+  const { c } = useSite();
   return (
     <>
-      <Hero />
-      <Everything />
-      <Quick />
-      <Care />
-      <Reminders />
-      <Cocare />
-      <Understand />
-      <Library />
-      <FirstAid />
-      <Memories />
-      <Night />
-      <Roles />
-      <Cta />
-      <Faq />
+      <JourneyHero />
+      <Chapters />
+      <FirstYear />
+      <GrowUp />
+      <Cta title={c.journey.ctaTitle} compact />
+      <Faq items={c.home.faq.items} />
     </>
   );
 }

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="540" viewBox="0 0 540 540" fill="none">
+  <!-- Landing v3 hero "Landscape" 358:2951 (540 x 540, radius 48), composed from the exported Figma layers 358:2952-358:2964 at their exact positions. Stage nodes, chips, photo and float cards are live HTML on top (spec 14 §2). -->
+  <defs>
+    <linearGradient id="jl-sky" x1="0" y1="0" x2="0" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF5D9"/>
+      <stop offset="1" stop-color="#E0F5F0"/>
+    </linearGradient>
+    <clipPath id="jl-clip">
+      <rect width="540" height="540" rx="48"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#jl-clip)">
+    <rect width="540" height="540" fill="url(#jl-sky)"/>
+    <!-- sun + halo -->
+    <circle cx="445" cy="91" r="45" fill="#FFD166"/>
+    <circle cx="445" cy="91" r="65" fill="#FFD166" opacity="0.25"/>
+    <!-- cloud left -->
+    <ellipse cx="90" cy="97" rx="30" ry="17" fill="white" fill-opacity="0.9"/>
+    <ellipse cx="112" cy="92" rx="28" ry="22" fill="white" fill-opacity="0.9"/>
+    <ellipse cx="139" cy="98" rx="25" ry="16" fill="white" fill-opacity="0.9"/>
+    <!-- cloud right -->
+    <ellipse cx="271" cy="58.9" rx="21" ry="11.9" fill="white" fill-opacity="0.9"/>
+    <ellipse cx="286.4" cy="55.4" rx="19.6" ry="15.4" fill="white" fill-opacity="0.9"/>
+    <ellipse cx="305.3" cy="59.6" rx="17.5" ry="11.2" fill="white" fill-opacity="0.9"/>
+    <!-- hills -->
+    <ellipse cx="150" cy="540" rx="450" ry="210" fill="#FDEDE2"/>
+    <ellipse cx="520" cy="570" rx="400" ry="190" fill="#E6F7F5"/>
+    <ellipse cx="170" cy="600" rx="350" ry="150" fill="#E7F4E3"/>
+    <!-- path: white road + dashed centre line -->
+    <path transform="translate(105 185)" d="M5 285.001C55 285.001 75 205.001 125 175.001C175 175.001 185 135.001 235 105.001C285 105.001 295 35.0008 345 5.00076" stroke="white" stroke-width="10" stroke-linecap="round"/>
+    <path transform="translate(108.5 188.5)" d="M1.5 281.5C51.5 281.5 71.5 201.5 121.5 171.5C171.5 171.5 181.5 131.5 231.5 101.5C281.5 101.5 291.5 31.5002 341.5 1.50023" stroke="#DCE8E7" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"/>
+  </g>
+</svg>

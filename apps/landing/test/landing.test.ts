@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { en } from '../src/content/en';
 import { vi as viContent } from '../src/content/vi';
 import { render } from '../src/entry-server';
-import { alternateOf, pathOf, routeFor, routes } from '../src/routes';
+import { alternateOf, pathOf, routeFor, routes, stageIds } from '../src/routes';
 import { buildHead } from '../src/seo';
 
 /** Structure of a catalog: keys and array lengths, with leaf types. */
@@ -58,7 +58,7 @@ describe('content catalogs (D-012)', () => {
 
 describe('routes', () => {
   it('every page exists in both languages, Vietnamese at the root', () => {
-    for (const page of ['home', 'privacy', 'terms'] as const) {
+    for (const page of ['home', ...stageIds, 'privacy', 'terms'] as const) {
       expect(pathOf(page, 'vi').startsWith('/en/')).toBe(false);
       expect(pathOf(page, 'en').startsWith('/en/')).toBe(true);
     }
@@ -89,7 +89,10 @@ describe('SEO head', () => {
     expect(head).toContain('hreflang="vi" href="https://childlife.app/"');
     expect(head).toContain('hreflang="en" href="https://childlife.app/en/"');
     expect(head).toContain('hreflang="x-default" href="https://childlife.app/"');
-    expect(head).toContain('og:image" content="https://childlife.app/og/en.png"');
+    expect(head).toContain('og:image" content="https://childlife.app/og/en.png?v=3"');
+    const stage = buildHead(routeFor('/hanh-trinh/con-tap-kham-pha/'), viContent, 'prod');
+    expect(stage).toContain('og:image" content="https://childlife.app/og/vi-stage2.png?v=3"');
+    expect(stage).toContain('<title>Con tập khám phá (1–3 tuổi) — Child Life</title>');
     expect(head).toContain('og:locale" content="en_US"');
   });
 
@@ -97,7 +100,7 @@ describe('SEO head', () => {
     const head = buildHead(home, viContent, 'prod');
     const json = JSON.parse(/<script type="application\/ld\+json">(.*)<\/script>/.exec(head)![1]!);
     const faq = json['@graph'].find((node: { '@type': string }) => node['@type'] === 'FAQPage');
-    expect(faq.mainEntity).toHaveLength(viContent.faq.items.length);
+    expect(faq.mainEntity).toHaveLength(viContent.home.faq.items.length);
   });
 });
 
@@ -109,15 +112,34 @@ describe('prerender', () => {
     expect(page.head).toContain('<title>');
   });
 
-  it('every nav link points at a section on the home page', () => {
-    const page = render('/', 'dev');
-    const targets = [...page.html.matchAll(/data-spy="([^"]+)"/g)].map((m) => m[1]);
-    expect(targets).toEqual(['cham-con', 'hieu-con', 'ky-niem', 'gia-dinh', 'hoi-dap']);
-    for (const id of targets) expect(page.html).toContain(`id="${id}"`);
+  it('nav links point at sections that exist on the page they lead to', () => {
+    const htmlOf = (path: string) => render(path, 'dev').html;
+    for (const route of routes) {
+      const page = render(route.path, 'dev');
+      const hrefs = [...page.html.matchAll(/<nav class="nav__links"[^>]*>(.*?)<\/nav>/g)].flatMap(
+        (m) => [...m[1]!.matchAll(/href="([^"]+)"/g)].map((h) => h[1]!),
+      );
+      expect(hrefs, route.path).toHaveLength(4);
+      for (const href of hrefs) {
+        const [path, id] = href.split('#');
+        const target = path ? htmlOf(path) : page.html;
+        if (id) expect(target, `${route.path} → ${href}`).toContain(`id="${id}"`);
+      }
+    }
+  });
+
+  it('every stage page links to its neighbours and has one h1', () => {
+    for (const stage of stageIds) {
+      const html = render(pathOf(stage, 'vi'), 'dev').html;
+      expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
+      expect(html).toContain('aria-current="page"');
+      expect(html).toContain('id="tai-app"');
+    }
   });
 
   it('puts the FAQ answers in the HTML for search engines', () => {
     const page = render('/en/', 'prod');
-    for (const item of en.faq.items) expect(page.html).toContain(item.q.replace(/'/g, '&#x27;'));
+    for (const item of en.home.faq.items)
+      expect(page.html).toContain(item.q.replace(/'/g, '&#x27;'));
   });
 });

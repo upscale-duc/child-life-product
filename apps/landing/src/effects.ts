@@ -132,3 +132,12 @@ export function startStoryFonts(): () => void {
   observer.observe(target);
   return () => observer.disconnect();
 }
+
+/** On narrow screens the stage switcher scrolls sideways: bring the current stage into view. */
+export function startSwitcher(): () => void {
+  const row = document.querySelector<HTMLElement>('.switcher');
+  const active = row?.querySelector<HTMLElement>('.is-active');
+  if (row && active && row.scrollWidth > row.clientWidth)
+    row.scrollLeft = active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2;
+  return () => undefined;
+}

@@ -1,10 +1,11 @@
 import { Icon } from '../components/primitives';
+import type { FaqItem } from '../content/types';
 import { useSite } from '../context';
 import { staggerStyle } from '../motion';
 
 /** Hỏi đáp (spec §10): native <details> so answers are in the HTML for search engines;
  *  opening animates its height where the browser supports ::details-content. */
-export function Faq() {
+export function Faq({ items }: { items?: FaqItem[] }) {
   const { c } = useSite();
   const f = c.faq;
   return (
@@ -20,7 +21,7 @@ export function Faq() {
         </p>
       </header>
       <div className="faq__list">
-        {f.items.map((item, i) => (
+        {(items ?? f.items).map((item, i) => (
           <details
             key={item.q}
             className="faq-item reveal"

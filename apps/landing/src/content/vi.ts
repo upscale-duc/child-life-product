@@ -8,19 +8,18 @@ export const vi: Content = {
   locale: 'vi',
   languageName: 'Tiếng Việt',
   meta: {
-    title: 'Child Life — Cùng chăm con, giữ từng khoảnh khắc con lớn lên',
+    title: 'Child Life — Cùng con lớn lên, đồng hành từng bước',
     description:
-      'Ứng dụng miễn phí giúp cả nhà cùng chăm con: ghi bú, ngủ, thay tã trong một chạm và lưu giữ ảnh, video, câu chuyện của con. Có trên iPhone và Android.',
-    ogAlt: 'Child Life — cùng chăm con và giữ trọn tuổi thơ của con',
+      'Ứng dụng miễn phí giúp cả nhà cùng chăm con, hiểu con qua từng tuần tuổi và lưu giữ hành trình con lớn lên — bắt đầu từ năm đầu đời. Có trên iPhone và Android.',
+    ogAlt: 'Child Life — cùng con lớn lên, đồng hành từng bước',
   },
   skipToContent: 'Bỏ qua, đến nội dung chính',
   nav: {
     homeLabel: 'Child Life — trang chủ',
     sectionsLabel: 'Các phần của trang',
     links: {
-      care: 'Chăm con',
-      understand: 'Hiểu con',
-      memories: 'Kỷ niệm',
+      journey: 'Hành trình',
+      firstYear: 'Năm đầu đời',
       family: 'Gia đình',
       faq: 'Hỏi đáp',
     },
@@ -140,6 +139,203 @@ export const vi: Content = {
       { title: 'Tự lưu lại cho bạn', sub: 'Lỡ chạm nhầm cũng sửa được ngay' },
       { title: 'Cả nhà thấy ngay', sub: 'Không ai phải hỏi lại “con ăn chưa?”' },
     ],
+  },
+  // v3 home + stage pages (Figma 358:2901 / 362:3398, 370:50752, 361:3457 / 3575 / 3693).
+  // Q-039: stages 2–4 describe features beyond the V1 scope.
+  journey: {
+    label: 'Hành trình',
+    number: 'Chặng {n}',
+    prevNextLabel: 'Các chặng',
+    highlightsTitle: 'Ở chặng này, Child Life cùng ba mẹ',
+    prev: '← Chặng trước',
+    next: 'Chặng tiếp theo →',
+    backLabel: 'Quay lại',
+    backTitle: 'Toàn bộ hành trình',
+    ctaTitle: ['Bắt đầu hành trình cùng con', 'ngay hôm nay.'],
+    stages: [
+      {
+        name: 'Những ngày đầu đời',
+        ages: '0–12 tháng',
+        title: 'Những ngày đầu đời.',
+        lead: 'Làm quen với nhau qua từng cữ bú, giấc ngủ — và giữ lại những lần đầu tiên của con.',
+        chips: ['Chăm con mỗi ngày', 'Hiểu từng tuần tuổi', 'Lưu giữ khoảnh khắc'],
+        highlights: null,
+        quote: null,
+      },
+      {
+        name: 'Con tập khám phá',
+        ages: '1–3 tuổi',
+        title: 'Con tập khám phá.',
+        lead: 'Cùng con chập chững, bập bẹ những từ đầu tiên và tập những thói quen nhỏ.',
+        chips: ['Nếp sinh hoạt', 'Chơi & vận động', 'Từ đầu tiên'],
+        highlights: [
+          {
+            title: 'Những bước chân đầu tiên',
+            body: 'Ghi lại khi con chập chững, bập bẹ từ đầu tiên và những chuyến đi xa đầu đời.',
+          },
+          {
+            title: 'Nếp nhỏ mỗi ngày',
+            body: 'Cả nhà cùng nắm giờ ăn, giờ ngủ của con, nhẹ nhàng tập những thói quen đầu tiên.',
+          },
+          {
+            title: 'Chơi cùng con',
+            body: 'Những ý tưởng chơi, vận động và trò chuyện vừa với tuổi của con.',
+          },
+        ],
+        quote: 'Những bước chân đầu tiên, những lần cả nhà vỡ oà — đều đáng được giữ lại.',
+      },
+      {
+        name: 'Tò mò và lớn khôn',
+        ages: '3–6 tuổi',
+        title: 'Tò mò và lớn khôn.',
+        lead: 'Cùng con chơi, đọc, vẽ và trả lời những câu hỏi “vì sao” không ngừng.',
+        chips: ['Học qua chơi', 'Cảm xúc', 'Tác phẩm của con'],
+        highlights: [
+          {
+            title: 'Học qua chơi',
+            body: 'Cùng con đọc truyện, vẽ tranh và làm những món đồ nhỏ xinh.',
+          },
+          {
+            title: 'Những câu hỏi “vì sao”',
+            body: 'Giữ lại điều con tò mò và những câu nói ngộ nghĩnh của con.',
+          },
+          {
+            title: 'Lớn khôn từng chút',
+            body: 'Cùng con tập tự làm và gọi tên những cảm xúc của mình.',
+          },
+        ],
+        quote: 'Mỗi câu hỏi “vì sao” của con là một kỷ niệm nhỏ, đáng được lưu lại.',
+      },
+      {
+        name: 'Thế giới riêng của con',
+        ages: '6–12 tuổi',
+        title: 'Thế giới riêng của con.',
+        lead: 'Đồng hành nhẹ nhàng khi con tự lập, có sở thích và những ước mơ riêng.',
+        chips: ['Sở thích', 'Tự lập', 'Nhìn lại hành trình'],
+        highlights: [
+          {
+            title: 'Điều con yêu thích',
+            body: 'Lưu lại sở thích, dự án và những thành quả con tự hào.',
+          },
+          {
+            title: 'Tự lập theo cách của con',
+            body: 'Cả nhà cùng đặt mục tiêu nhỏ, con chủ động thực hiện.',
+          },
+          {
+            title: 'Khoảng riêng của con',
+            body: 'Đồng hành mà vẫn tôn trọng thế giới riêng con đang lớn dần.',
+          },
+        ],
+        quote: 'Con có thế giới riêng rồi. Ba mẹ vẫn ở đây, mỗi khi con cần.',
+      },
+    ],
+  },
+  home: {
+    hero: {
+      eyebrow: 'Child Life · Hành trình lớn lên',
+      title: ['Cùng con lớn lên,', 'đồng hành từng bước.'],
+      lead: 'Hệ sinh thái giúp cha mẹ chăm sóc, thấu hiểu và đồng hành cùng con — từ những ngày đầu đời đến khi trưởng thành.',
+      promises: [
+        'Chăm sóc con mỗi ngày, cả nhà cùng phối hợp',
+        'Thấu hiểu con qua từng giai đoạn lớn lên',
+        'Đồng hành và lưu giữ hành trình của con',
+      ],
+      explore: 'Xem hành trình của con',
+      art: {
+        feed: { title: 'Bú bình · 120 ml', sub: 'Mẹ ghi · 2 phút trước' },
+        smile: { title: 'Lần đầu con cười', sub: 'Đã lưu vào Kỷ niệm' },
+        love: 'Bà nội thương ảnh của Teddy',
+      },
+    },
+    chapters: {
+      eyebrow: 'Hành trình lớn lên',
+      title: 'Đi cùng con qua từng chặng.',
+      lead: 'Mỗi giai đoạn con lớn lên, Child Life cùng ba mẹ chăm con, hiểu con và giữ lại những điều đáng nhớ.',
+      available: 'Có trên app',
+      explore: 'Khám phá năm đầu đời',
+      view: 'Xem chặng này',
+    },
+    firstYear: {
+      eyebrow: 'Chặng 1 · Năm đầu đời',
+      title: 'Năm đầu đời của con, nhẹ nhàng hơn cho cả nhà.',
+      lead: 'Chăm con mỗi ngày, hiểu con từng tuần và giữ lại những lần đầu tiên — tất cả trong một ứng dụng.',
+      leadShort: 'Chăm con mỗi ngày, hiểu con từng tuần và giữ lại những lần đầu tiên.',
+      familyTitle: 'Cả nhà cùng chăm — ai cũng có chỗ bên con',
+      familyTitleShort: 'Cả nhà cùng chăm',
+      roles: [
+        {
+          role: 'Ba mẹ',
+          title: 'Bớt phải nhớ',
+          body: 'Cùng chăm, cùng quyết định ai được xem gì.',
+        },
+        {
+          role: 'Người chăm sóc',
+          title: 'Phối hợp rõ ràng',
+          body: 'Ghi và nhận nhắc cho bé được giao, không lo ghi trùng.',
+        },
+        {
+          role: 'Ông bà, người thân',
+          title: 'Gần con dù ở xa',
+          body: 'Xem ảnh mới của cháu, thả thương, tải ảnh về.',
+        },
+      ],
+      trust: [
+        { text: 'Riêng tư, không mạng xã hội', short: 'Riêng tư' },
+        { text: 'Không áp lực ghi đủ', short: 'Không áp lực ghi đủ' },
+        { text: 'Không chấm điểm hay so sánh con', short: 'Không chấm điểm con' },
+        { text: 'Nội dung được chuyên môn rà soát', short: 'Chuyên môn rà soát' },
+        { text: 'Dữ liệu của con, quyền của bạn', short: 'Dữ liệu của con, quyền của bạn' },
+      ],
+      nextTitle: 'Những chặng tiếp theo',
+      preparing: 'Đang cùng con chuẩn bị',
+      more: 'Xem chi tiết năm đầu đời',
+    },
+    growUp: {
+      eyebrow: 'Một hồ sơ, lớn lên cùng con',
+      title: 'Những gì bạn lưu hôm nay, con sẽ còn xem lại khi lớn.',
+      body: 'Từ tấm ảnh đầu tiên đến bức tranh con vẽ tặng bà — hành trình của con nằm trọn ở một nơi, không mất đi khi con lớn.',
+      bodyShort: 'Hành trình của con nằm trọn ở một nơi, không mất đi khi con lớn.',
+      years: [
+        { year: '2026', caption: 'Ngày con chào đời' },
+        { year: '2027', caption: 'Bước đi đầu tiên' },
+        { year: '2029', caption: 'Ngày đầu đi học' },
+      ],
+    },
+    faq: {
+      items: [
+        {
+          q: 'Child Life là gì?',
+          a: 'Hệ sinh thái giúp cha mẹ chăm sóc, thấu hiểu và đồng hành cùng con qua từng chặng lớn lên. Ứng dụng hiện tập trung vào năm đầu đời của con.',
+          open: true,
+        },
+        {
+          q: 'Child Life dành cho bé mấy tuổi?',
+          a: 'Từ ngày con chào đời. Năm đầu, app giúp cả nhà chăm con mỗi ngày; những chặng tiếp theo sẽ cùng con lớn lên đến tuổi trưởng thành.',
+          open: true,
+        },
+        // PROPOSED answers 3–6 (G-065): not in Figma.
+        {
+          q: 'Khi con lớn, ảnh và hồ sơ của con có còn không?',
+          a: 'Còn. Ảnh, video và câu chuyện của con ở lại trong gia đình bạn cho đến khi chính bạn xoá, và bạn có thể tải về bất cứ lúc nào.',
+          open: false,
+        },
+        {
+          q: 'Có mất phí không?',
+          a: 'Không. Cả gia đình dùng miễn phí, đủ chỗ cho hàng nghìn ảnh của con. Cần thêm chỗ, bạn chỉ cần nhắn cho chúng tôi.',
+          open: false,
+        },
+        {
+          q: 'Ai được xem ảnh và thông tin của con?',
+          a: 'Chỉ những người bạn mời vào gia đình. Ba mẹ quyết định ai được xem gì: người chăm chỉ thấy việc chăm bé hằng ngày, người thân chỉ thấy ảnh và câu chuyện bạn chia sẻ.',
+          open: false,
+        },
+        {
+          q: 'Nội dung gợi ý trong app do ai soạn?',
+          a: 'Đội chuyên môn của Child Life soạn, rà soát và cập nhật các thẻ theo tuổi, bài viết và hướng dẫn trong app. Nội dung chỉ để tham khảo, không thay lời khuyên của bác sĩ — khi con có dấu hiệu bất thường, hãy hỏi bác sĩ.',
+          open: false,
+        },
+      ],
+    },
   },
   // v3 sections (Figma 321:1222 / 324:45487). Mobile wording in the *Short keys.
   everything: {
