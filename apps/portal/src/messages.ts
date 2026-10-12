@@ -58,10 +58,8 @@ const vi: Record<string, string> = {
   'signIn.resetSent': 'Đã gửi email đặt lại mật khẩu',
   'signIn.resetSentBody': 'Nếu {email} có tài khoản vận hành, email sẽ đến trong vài phút.',
   'signIn.useOther': 'Dùng email khác',
-  'signIn.idle': 'Tự đăng xuất sau 30 phút không hoạt động',
   'signIn.notice.denied':
     'Tài khoản này chưa được cấp quyền vào trang vận hành. Liên hệ trưởng nhóm để được cấp.',
-  'signIn.notice.idle': 'Bạn đã được đăng xuất sau 30 phút không hoạt động.',
   'signIn.notice.linkInvalid': 'Link đăng nhập đã hết hạn hoặc đã được dùng. Gửi link mới nhé.',
   'signIn.error.credentials': 'Email hoặc mật khẩu chưa đúng.',
   'signIn.error.email': 'Email chưa đúng định dạng.',
@@ -1586,10 +1584,8 @@ const en: Record<string, string> = {
   'signIn.resetSentBody':
     'If {email} has an operations account, the email arrives in a few minutes.',
   'signIn.useOther': 'Use another email',
-  'signIn.idle': 'Signs out after 30 minutes of inactivity',
   'signIn.notice.denied':
     "This account doesn't have operations access. Ask a team lead to grant it.",
-  'signIn.notice.idle': 'You were signed out after 30 minutes of inactivity.',
   'signIn.notice.linkInvalid': 'This sign-in link has expired or was already used. Send a new one.',
   'signIn.error.credentials': 'Email or password is incorrect.',
   'signIn.error.email': "That email address doesn't look right.",

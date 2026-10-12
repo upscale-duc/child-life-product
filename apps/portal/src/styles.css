@@ -155,15 +155,6 @@ p {
   font: var(--text-title-2);
   margin: 0;
 }
-.signin__idle {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  color: var(--ink-muted);
-  font: var(--text-caption);
-  border-top: 1px solid var(--separator);
-  padding-top: 16px;
-}
 .sent {
   background: var(--mint-soft);
   border-radius: var(--radius-control);

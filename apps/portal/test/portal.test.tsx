@@ -22,8 +22,10 @@ import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { IntlProvider, createIntl } from 'react-intl';
 import { describe, expect, it } from 'vitest';
+import type { User } from 'firebase/auth';
 import {
   ApiContext,
+  ApiError,
   type Api,
   type AuditRow,
   type FlagsView,
@@ -42,7 +44,8 @@ import { SignInScreen, authErrorId, type SignInActions } from '../src/screens/Si
 import { DecideDialog, StorageView, needsLead } from '../src/screens/Storage';
 import { TicketDetailView, TicketListView } from '../src/screens/Support';
 import { Sidebar } from '../src/Shell';
-import { IDLE_MS, idleExpired, staffFromClaims, type StaffIdentity } from '../src/session';
+import { staffFromClaims, type StaffIdentity } from '../src/session';
+import { identify } from '../src/App';
 
 const now = new Date('2026-10-10T03:52:00Z'); // 10:52 in Vietnam
 const noApi: Api = { call: () => Promise.reject(new Error('no network in tests')) };
@@ -275,11 +278,34 @@ describe('session (A01, D-043)', () => {
     );
   });
 
-  it('signs out after 30 idle minutes, not before', () => {
-    const t = 1_000_000_000;
-    expect(idleExpired(null, t)).toBe(false);
-    expect(idleExpired(t - IDLE_MS + 1000, t)).toBe(false);
-    expect(idleExpired(t - IDLE_MS, t)).toBe(true);
+  it('keeps the session through network trouble; only a refusal signs out (D-062)', async () => {
+    const claims = { staff: true, roles: ['owner'], name: 'Duc' };
+    // Offline: the forced refresh fails, the stored token still says who this is.
+    const user = (stored: Record<string, unknown>) =>
+      ({
+        uid: 'u1',
+        email: 'owner@example.com',
+        getIdTokenResult: (force?: boolean) =>
+          force ? Promise.reject(new Error('offline')) : Promise.resolve({ claims: stored }),
+      }) as unknown as User;
+    const api = (fail: Record<string, ApiError | Error>): Api => ({
+      call: <T,>(name: string) =>
+        fail[name] ? Promise.reject(fail[name]) : Promise.resolve({} as T),
+    });
+    const offline = new ApiError('unavailable', null);
+    expect((await identify(user(claims), api({ staffMe: offline })))?.name).toBe('Duc');
+    // Paused or removed since the token was issued: refused.
+    expect(
+      await identify(user(claims), api({ staffMe: new ApiError('permission-denied', null) })),
+    ).toBeNull();
+    // No staff claim: an invitation that is not there is a refusal, a network error is retried.
+    expect(
+      await identify(
+        user({}),
+        api({ staffAcceptInvite: new ApiError('permission-denied', 'no-invite') }),
+      ),
+    ).toBeNull();
+    await expect(identify(user({}), api({ staffAcceptInvite: offline }))).rejects.toBe(offline);
   });
 
   it('auth errors never reveal whether an account exists', () => {
@@ -298,7 +324,7 @@ describe('session (A01, D-043)', () => {
     expect(html).toContain('Mật khẩu');
     expect(html).toContain('Link qua email');
     expect(html).toContain('Quên mật khẩu?');
-    expect(html).toContain('Tự đăng xuất sau 30 phút không hoạt động');
+    expect(html).not.toContain('30 phút'); // D-062: no idle sign-out
     expect(html).toContain('chưa được cấp quyền');
     expect(html).not.toMatch(/xác minh 2 bước/i);
     const pending = text(render(<SignInScreen actions={actions} notice={null} pendingLink />));

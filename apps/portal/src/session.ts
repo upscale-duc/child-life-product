@@ -7,10 +7,10 @@ import {
 } from '@child-life/contracts';
 
 /**
- * Staff session rules (A01, D-043): email + password or an email link, the `staff` custom claim
- * set by `scripts/create-staff.mjs`, and sign-out after 30 minutes without activity (R-180).
+ * Staff session rules (A01, D-043): email + password or an email link and the `staff` custom
+ * claim set by `scripts/create-staff.mjs`. The session stays until the member signs out or loses
+ * access (D-062: no idle sign-out).
  */
-export const IDLE_MS = 30 * 60 * 1000;
 
 export interface StaffIdentity {
   uid: string;
@@ -39,12 +39,6 @@ export function staffFromClaims(
   return { uid, email, name, roles, levels: levelsForRoles(roles) };
 }
 
-export function idleExpired(lastActivity: number | null, now: number): boolean {
-  return lastActivity !== null && now - lastActivity >= IDLE_MS;
-}
-
-// Activity is shared between tabs through localStorage, so a busy tab keeps the others signed in.
-const activityKey = 'childlife.portal.activity';
 const linkEmailKey = 'childlife.portal.linkEmail';
 
 function read(key: string): string | null {
@@ -59,19 +53,8 @@ function write(key: string, value: string | null): void {
     if (value === null) globalThis.localStorage?.removeItem(key);
     else globalThis.localStorage?.setItem(key, value);
   } catch {
-    // Storage can be unavailable (private mode); the in-memory timer still applies.
+    // Storage can be unavailable (private mode): the address is typed again.
   }
-}
-
-export function readActivity(): number | null {
-  const v = Number(read(activityKey));
-  return Number.isFinite(v) && v > 0 ? v : null;
-}
-export function markActivity(now: number): void {
-  write(activityKey, String(now));
-}
-export function clearActivity(): void {
-  write(activityKey, null);
 }
 
 /** The address an email link was sent to, so opening it on the same browser needs no retyping. */

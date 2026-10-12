@@ -19,17 +19,7 @@ import { ApiContext, ApiError, type Api, type StaffMe } from './api';
 import { StaffContext } from './context';
 import { messages } from './messages';
 import { SignInScreen, type SignInActions, type SignInNotice } from './screens/SignIn';
-import {
-  clearActivity,
-  idleExpired,
-  linkEmail,
-  markActivity,
-  readActivity,
-  rememberLinkEmail,
-  staffFromClaims,
-  IDLE_MS,
-  type StaffIdentity,
-} from './session';
+import { linkEmail, rememberLinkEmail, staffFromClaims, type StaffIdentity } from './session';
 import { Shell } from './Shell';
 import { Loading } from './ui';
 
@@ -43,13 +33,18 @@ type Session =
  * first sign-in (P-135); then `staffMe` gives the stored roles and levels (P-134). `null` = refused.
  */
 export async function identify(user: User, api: Api): Promise<StaffIdentity | null> {
-  let token = await user.getIdTokenResult(true);
+  // A fresh token picks up role changes; offline, the stored one still says who this is (D-062).
+  let token = await user.getIdTokenResult(true).catch(() => user.getIdTokenResult());
   let staff = staffFromClaims(user.uid, user.email, token.claims);
   if (!staff) {
     try {
       await api.call('staffAcceptInvite');
-    } catch {
-      return null;
+    } catch (e) {
+      // No invitation (or not verified) is a refusal; a network error is tried again.
+      if (e instanceof ApiError && ['permission-denied', 'failed-precondition'].includes(e.code)) {
+        return null;
+      }
+      throw e;
     }
     token = await user.getIdTokenResult(true);
     staff = staffFromClaims(user.uid, user.email, token.claims);
@@ -89,7 +84,6 @@ export function App({
 
   const end = useCallback(
     async (notice: SignInNotice) => {
-      clearActivity();
       setSession({ kind: 'signedOut', notice });
       await signOut(auth);
     },
@@ -104,7 +98,6 @@ export function App({
         if (getAdditionalUserInfo(cred)?.isNewUser) await cred.user.delete().catch(() => undefined);
         throw Object.assign(new Error('denied'), { code: 'portal/denied' });
       }
-      markActivity(Date.now());
       setSession({ kind: 'staff', staff });
     },
     [api],
@@ -114,7 +107,6 @@ export function App({
   const signIn = useCallback(
     async (attempt: () => Promise<UserCredential>) => {
       signingIn.current = true;
-      markActivity(Date.now());
       try {
         await checkCredential(await attempt());
       } catch (e) {
@@ -127,28 +119,37 @@ export function App({
     [checkCredential, end],
   );
 
-  useEffect(
-    () =>
-      onAuthStateChanged(auth, (user) => {
-        if (signingIn.current) return;
-        if (!user) {
-          setSession((s) => (s.kind === 'signedOut' ? s : { kind: 'signedOut', notice: null }));
-          return;
-        }
-        if (idleExpired(readActivity(), Date.now())) {
-          void end('idle');
-          return;
-        }
-        identify(user, api)
-          .then((staff) => {
-            if (!staff) return end('denied');
-            markActivity(Date.now());
-            setSession({ kind: 'staff', staff });
-          })
-          .catch(() => end(null));
-      }),
-    [auth, api, end],
-  );
+  // The session stays until the member signs out or loses access (D-062: no idle sign-out).
+  // Offline or a slow first call keeps the session and tries again; only a refusal signs out.
+  useEffect(() => {
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    const resolve = (user: User, attempt: number) => {
+      identify(user, api)
+        .then((staff) => {
+          if (!staff) return end('denied');
+          setSession({ kind: 'staff', staff });
+        })
+        .catch(() => {
+          retry = setTimeout(
+            () => resolve(user, attempt + 1),
+            Math.min(30_000, 2_000 * 2 ** attempt),
+          );
+        });
+    };
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      clearTimeout(retry);
+      if (signingIn.current) return;
+      if (!user) {
+        setSession((s) => (s.kind === 'signedOut' ? s : { kind: 'signedOut', notice: null }));
+        return;
+      }
+      resolve(user, 0);
+    });
+    return () => {
+      clearTimeout(retry);
+      unsubscribe();
+    };
+  }, [auth, api, end]);
 
   // Completing an email link opened in this browser.
   useEffect(() => {
@@ -168,28 +169,6 @@ export function App({
         window.history.replaceState({}, '', '/');
       });
   }, [auth, signIn, end]);
-
-  // Idle sign-out (A01 "Tự đăng xuất sau 30 phút không hoạt động"), shared across tabs.
-  useEffect(() => {
-    if (session.kind !== 'staff') return;
-    let last = 0;
-    const touch = () => {
-      const now = Date.now();
-      if (now - last > 15_000) {
-        last = now;
-        markActivity(now);
-      }
-    };
-    const events = ['pointerdown', 'keydown', 'mousemove', 'wheel', 'touchstart'] as const;
-    events.forEach((e) => window.addEventListener(e, touch, { passive: true }));
-    const check = setInterval(() => {
-      if (idleExpired(readActivity() ?? Date.now() - IDLE_MS, Date.now())) void end('idle');
-    }, 30_000);
-    return () => {
-      events.forEach((e) => window.removeEventListener(e, touch));
-      clearInterval(check);
-    };
-  }, [session.kind, end]);
 
   // Branded mail through `sendAuthEmail` (D-054); Firebase's own mail while no provider is set up.
   const sendAuthMail = useCallback(

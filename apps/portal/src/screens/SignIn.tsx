@@ -3,7 +3,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { maskEmail } from '@child-life/contracts';
 import { Button, Segmented } from '../ui';
 
-export type SignInNotice = 'denied' | 'idle' | 'linkInvalid' | null;
+export type SignInNotice = 'denied' | 'linkInvalid' | null;
 
 export interface SignInActions {
   withPassword(email: string, password: string): Promise<void>;
@@ -44,7 +44,7 @@ export function authErrorId(code: string): string {
 
 /**
  * A01 Đăng nhập (D-043): email + password, or a sign-in link by email. No TOTP and no company
- * SSO in V1; the staff claim decides access, and the session ends after 30 idle minutes.
+ * SSO in V1; the staff claim decides access, and the session stays until sign-out (D-062).
  */
 export function SignInScreen({
   actions,
@@ -119,7 +119,7 @@ export function SignInScreen({
           </p>
 
           {notice && !error && (
-            <p className={`note ${notice === 'idle' ? '' : 'note--warn'}`} role="status">
+            <p className="note note--warn" role="status">
               <FormattedMessage id={`signIn.notice.${notice}`} />
             </p>
           )}
@@ -221,15 +221,6 @@ export function SignInScreen({
               )}
             </>
           )}
-          <p className="signin__idle">
-            <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                fill="currentColor"
-                d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 10.4 3.2 3.2-1.4 1.4L11 13.2V6h2v6.4Z"
-              />
-            </svg>
-            <FormattedMessage id="signIn.idle" />
-          </p>
         </form>
       </section>
     </main>
