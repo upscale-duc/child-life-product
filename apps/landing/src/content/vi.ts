@@ -20,7 +20,9 @@ export const vi: Content = {
     links: {
       journey: 'Hành trình',
       firstYear: 'Năm đầu đời',
-      family: 'Gia đình',
+      health: 'Sức khoẻ',
+      utilities: 'Tiện ích',
+      watch: 'Apple Watch',
       faq: 'Hỏi đáp',
     },
     download: 'Tải miễn phí',
@@ -313,7 +315,7 @@ export const vi: Content = {
           a: 'Từ ngày con chào đời. Năm đầu, app giúp cả nhà chăm con mỗi ngày; những chặng tiếp theo sẽ cùng con lớn lên đến tuổi trưởng thành.',
           open: true,
         },
-        // PROPOSED answers 3–6 (G-065): not in Figma.
+        // PROPOSED answers 3–9 (G-065): not in Figma.
         {
           q: 'Khi con lớn, ảnh và hồ sơ của con có còn không?',
           a: 'Còn. Ảnh, video và câu chuyện của con ở lại trong gia đình bạn cho đến khi chính bạn xoá, và bạn có thể tải về bất cứ lúc nào.',
@@ -334,7 +336,181 @@ export const vi: Content = {
           a: 'Đội chuyên môn của Child Life soạn, rà soát và cập nhật các thẻ theo tuổi, bài viết và hướng dẫn trong app. Nội dung chỉ để tham khảo, không thay lời khuyên của bác sĩ — khi con có dấu hiệu bất thường, hãy hỏi bác sĩ.',
           open: false,
         },
+        {
+          q: 'Sơ cứu trong app có thay thế bác sĩ không?',
+          a: 'Không. Hướng dẫn sơ cứu trong app chỉ để tham khảo khi chờ hỗ trợ y tế, không thay thế chẩn đoán của bác sĩ. Khi con nguy kịch, hãy gọi 115 ngay.',
+          open: false,
+        },
+        {
+          q: 'Ai xem được chi tiêu của gia đình?',
+          a: 'Mặc định chỉ ba mẹ (thành viên Cùng nuôi) thấy chi tiêu. Ba mẹ có thể cho người khác ghi khoản mình đã chi, hoặc xem toàn bộ, trong phần Gia đình.',
+          open: false,
+        },
+        {
+          q: 'Có dùng Child Life trên Apple Watch được không?',
+          a: 'Có, nếu bạn dùng iPhone. Kết nối đồng hồ một lần từ ứng dụng trên iPhone, sau đó bạn ghi bú, ngủ, thay tã và bấm giờ ngay trên Apple Watch, kể cả khi điện thoại không ở bên cạnh. Hiện chưa có ứng dụng cho đồng hồ Android.',
+          open: false,
+        },
       ],
+    },
+    // v4 (Figma 459:3538). Q-039: some claims here go beyond the app (22-landing-v4-home §12).
+    health: {
+      eyebrow: 'Sức khoẻ của con',
+      title: 'Lịch tiêm và tăng trưởng, nhìn là hiểu.',
+      lead: 'Biết con đã tiêm gì, sắp tiêm gì, lớn lên ra sao — không cần lục sổ.',
+      bullets: [
+        {
+          title: 'Lịch tiêm theo tháng tuổi',
+          sub: 'Đánh dấu mũi đã tiêm, nhắc trước ngày tiêm cho cả nhà.',
+          subShort: 'Đánh dấu mũi đã tiêm, nhắc trước ngày tiêm cho cả nhà.',
+        },
+        {
+          title: 'Cân nặng, chiều dài theo chuẩn WHO',
+          sub: 'Biểu đồ dễ đọc, không chấm điểm hay so sánh con.',
+          subShort: 'Biểu đồ dễ đọc, không chấm điểm hay so sánh con.',
+        },
+        {
+          title: 'Dinh dưỡng theo giai đoạn',
+          sub: 'Lượng sữa tham khảo và nhóm chất cần chú ý theo tuổi.',
+          subShort: 'Lượng sữa tham khảo và nhóm chất cần chú ý theo tuổi.',
+        },
+      ],
+      footnote:
+        'Nội dung tham khảo, được chuyên môn rà soát. Lịch tiêm cụ thể theo hướng dẫn của cơ sở y tế.',
+      mock: {
+        title: 'Lịch tiêm chủng · Teddy',
+        columns: ['Sơ sinh', '2 th', '3 th', '4 th', '6 th', '9 th'],
+        rows: ['Viêm gan B', 'Lao', '6 trong 1', 'Phế cầu', 'Rota', 'Sởi'],
+        next: 'Mũi tiếp theo: 6 trong 1 · lần 3 · 17/11',
+        growthLabel: 'Cân nặng',
+        growthValue: '7,8 kg',
+        growthChip: 'Trong khoảng chuẩn WHO',
+      },
+    },
+    utilities: {
+      eyebrow: 'Tiện ích cho ba mẹ',
+      title: ['Những thứ nhỏ giúp', 'ngày làm cha mẹ nhẹ hơn.'],
+      lead: 'Có sẵn trong tab Tiện ích, mở ra là dùng được.',
+      cards: [
+        {
+          title: 'Sơ cứu trẻ em',
+          body: '25 tình huống thường gặp, từng bước có hình minh hoạ, đọc to hướng dẫn. Dùng được cả khi không có mạng.',
+        },
+        {
+          title: 'Sổ chi tiêu chung cho bé',
+          body: 'Mọi khoản chi cho con ở một chỗ. Ba và mẹ cùng ghi, cùng xem một sổ như nhau — biết con cần gì, cả nhà đã lo đến đâu.',
+        },
+        {
+          title: 'Gia đình & chia sẻ',
+          body: 'Mời ông bà, người chăm cùng theo dõi bé. Mỗi người một quyền riêng, ba mẹ quyết định ai thấy gì.',
+        },
+      ],
+      spending: {
+        header: 'Chi cho Teddy · tháng này',
+        total: '4.215.000 ₫',
+        split: [
+          { label: 'Mẹ ghi', amount: '2.320.000 ₫' },
+          { label: 'Ba ghi', amount: '1.895.000 ₫' },
+        ],
+        initials: ['M', 'B'],
+        together: 'Ba và mẹ cùng xem như nhau',
+      },
+      members: [
+        { initial: 'M', name: 'Mẹ', role: 'Toàn quyền' },
+        { initial: 'B', name: 'Ba', role: 'Toàn quyền' },
+        { initial: 'L', name: 'Cô Lan', role: 'Ghi chăm sóc' },
+        { initial: 'B', name: 'Bà ngoại', role: 'Xem kỷ niệm' },
+      ],
+    },
+    // v5 (Figma 475:4503). Q-039: the watch app is not released yet.
+    watch: {
+      eyebrow: 'Apple Watch',
+      title: ['Tay bế con,', 'vẫn ghi kịp từng cữ.'],
+      lead: 'Ghi bú, ngủ, tã ngay trên đồng hồ chỉ với một chạm — không cần tìm điện thoại.',
+      bullets: [
+        {
+          title: 'Ghi trong một chạm',
+          sub: 'Bú bình xoay núm chọn ml, tã ướt hay bẩn chỉ một lần chạm.',
+          subShort: 'Xoay núm chọn ml, tã ướt hay bẩn một chạm.',
+        },
+        {
+          title: 'Bấm giờ bú mẹ, ngủ, hút sữa',
+          sub: 'Đổi bên, dừng nhanh — kể cả chạm hai ngón khi tay bận.',
+          subShort: 'Đổi bên, dừng nhanh khi tay bận.',
+        },
+        {
+          title: 'Nhắc đúng lúc, xem nhanh',
+          sub: 'Thông báo có sẵn nút ghi; mặt đồng hồ hiện cữ trước bao lâu.',
+          subShort: 'Thông báo có nút ghi; mặt đồng hồ hiện cữ trước.',
+        },
+        {
+          title: 'Không cần điện thoại bên cạnh',
+          sub: 'Ghi lưu trên đồng hồ, tự đồng bộ cho cả nhà khi có mạng.',
+          subShort: 'Lưu trên đồng hồ, tự đồng bộ khi có mạng.',
+        },
+      ],
+      note: 'Dành cho Apple Watch, đi kèm ứng dụng iPhone',
+      mock: {
+        baby: 'Teddy',
+        time: '9:41',
+        tiles: [
+          { label: 'Bú bình', value: '2:15', caption: 'từ cữ trước' },
+          { label: 'Bú mẹ', value: '3:35', caption: 'từ cữ trước' },
+          { label: 'Ngủ', value: '0:42', caption: 'đang ngủ' },
+          { label: 'Tã', value: '1:25', caption: 'từ lần trước' },
+          { label: 'Hút sữa', value: '5:10', caption: 'từ lần trước' },
+          { label: 'Nhắc', value: '17:00', caption: 'nhắc bú' },
+        ],
+        breast: {
+          title: 'Bú mẹ',
+          left: 'Trái',
+          leftValue: '8:12',
+          right: 'Phải',
+          rightValue: '4:20',
+          total: 'Tổng 12:32 · đang bú bên trái',
+          switchSide: 'Đổi bên',
+          stop: 'Dừng',
+        },
+        notify: {
+          app: 'CHILD LIFE',
+          title: 'Đến giờ nhắc bú bạn đã đặt',
+          sub: 'Cữ trước 14:45 · 120 ml',
+          log: 'Ghi bú bình 120 ml',
+          snooze: 'Nhắc lại sau 15 phút',
+        },
+      },
+    },
+    yourWay: {
+      eyebrow: 'Theo cách của bạn',
+      title: 'Ứng dụng của nhà bạn, theo nhịp của nhà bạn.',
+      lead: 'Chỉ hiện những gì bạn cần. Bớt đi những gì bạn không dùng.',
+      bullets: [
+        {
+          title: 'Bật, tắt và sắp xếp màn hình Hôm nay',
+          sub: 'Bú bình hay bú mẹ, có hút sữa hay không — tuỳ nhà bạn.',
+          subShort: 'Bú bình hay bú mẹ, có hút sữa hay không — tuỳ nhà bạn.',
+        },
+        {
+          title: 'Chế độ đêm',
+          sub: 'Màn hình tối, chữ to, ghi nhanh lúc 3 giờ sáng.',
+          subShort: 'Màn hình tối, chữ to, ghi nhanh lúc 3 giờ sáng.',
+        },
+        {
+          title: 'Danh mục chi tiêu riêng',
+          sub: 'Thêm, sửa, ẩn danh mục cho đúng cách nhà bạn chi.',
+          subShort: 'Thêm, sửa, ẩn danh mục cho đúng cách nhà bạn chi.',
+        },
+      ],
+      mock: {
+        title: 'Tuỳ chỉnh Hôm nay',
+        rows: [
+          { title: 'Ô theo dõi nhanh', body: 'Bú, ngủ, tã, hút sữa, tăng trưởng' },
+          { title: 'Nhắc nhở sắp tới', body: '3 nhắc đang bật' },
+          { title: 'Nhịp trong ngày', body: 'Biểu đồ 24 giờ' },
+        ],
+        chips: ['Bú bình', 'Bú mẹ', 'Ngủ', 'Thay tã', 'Hút sữa'],
+        night: 'Chế độ đêm dịu mắt',
+      },
     },
   },
   // v3 sections (Figma 321:1222 / 324:45487). Mobile wording in the *Short keys.

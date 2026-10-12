@@ -42,6 +42,18 @@ export interface StageText {
   quote: string | null;
 }
 
+export interface WatchTile {
+  label: string;
+  value: string;
+  caption: string;
+}
+
+export interface MemberText {
+  initial: string;
+  name: string;
+  role: string;
+}
+
 export interface RoleText {
   role: string;
   title: string;
@@ -111,7 +123,14 @@ export interface Content {
   nav: {
     homeLabel: string;
     sectionsLabel: string;
-    links: { journey: string; firstYear: string; family: string; faq: string };
+    links: {
+      journey: string;
+      firstYear: string;
+      health: string;
+      utilities: string;
+      watch: string;
+      faq: string;
+    };
     download: string;
     downloadShort: string;
     /** Shown on this page, pointing to the other language. */
@@ -246,7 +265,74 @@ export interface Content {
       bodyShort: string;
       years: [YearText, YearText, YearText];
     };
-    faq: { items: [FaqItem, FaqItem, FaqItem, FaqItem, FaqItem, FaqItem] };
+    /** v4 sections (Figma 459:3538, 22-landing-v4-home). Mock strings are illustrative app UI. */
+    health: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      bullets: [CompactBullet, CompactBullet, CompactBullet];
+      footnote: string;
+      mock: {
+        title: string;
+        columns: [string, string, string, string, string, string];
+        rows: [string, string, string, string, string, string];
+        next: string;
+        growthLabel: string;
+        growthValue: string;
+        growthChip: string;
+      };
+    };
+    utilities: {
+      eyebrow: string;
+      title: [string, string];
+      lead: string;
+      cards: [TitledText, TitledText, TitledText];
+      spending: {
+        header: string;
+        total: string;
+        split: [{ label: string; amount: string }, { label: string; amount: string }];
+        initials: [string, string];
+        together: string;
+      };
+      members: [MemberText, MemberText, MemberText, MemberText];
+    };
+    yourWay: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      bullets: [CompactBullet, CompactBullet, CompactBullet];
+      mock: {
+        title: string;
+        rows: [TitledText, TitledText, TitledText];
+        chips: [string, string, string, string, string];
+        night: string;
+      };
+    };
+    /** v5 "Trên cổ tay" (Figma 475:4503, 25-landing-v5-home). Watch faces are illustrative. */
+    watch: {
+      eyebrow: string;
+      title: [string, string];
+      lead: string;
+      bullets: [CompactBullet, CompactBullet, CompactBullet, CompactBullet];
+      note: string;
+      mock: {
+        baby: string;
+        time: string;
+        tiles: [WatchTile, WatchTile, WatchTile, WatchTile, WatchTile, WatchTile];
+        breast: {
+          title: string;
+          left: string;
+          leftValue: string;
+          right: string;
+          rightValue: string;
+          total: string;
+          switchSide: string;
+          stop: string;
+        };
+        notify: { app: string; title: string; sub: string; log: string; snooze: string };
+      };
+    };
+    faq: { items: FaqItem[] };
   };
   everything: {
     eyebrow: string;

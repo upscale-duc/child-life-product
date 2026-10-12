@@ -15,7 +15,8 @@ export type Tint =
   | 'growth'
   | 'accent'
   | 'plain'
-  | 'white';
+  | 'white'
+  | 'glass';
 
 /** Text colour override (e.g. a white chip with mint text). */
 export type Ink = 'mint' | 'bottle' | 'sleep' | 'ink';
@@ -111,9 +112,9 @@ export function Push({
   );
 }
 
-/** App Toggle (23:262), always on; `scale` of the 51 × 31 base. */
-export function Toggle({ scale }: { scale: number }) {
-  return <span className="toggle" style={{ ['--s' as string]: scale }} />;
+/** App Toggle (23:262), on unless `off`; `scale` of the 51 × 31 base. Decorative. */
+export function Toggle({ scale, off }: { scale: number; off?: boolean }) {
+  return <span className={off ? 'toggle is-off' : 'toggle'} style={{ ['--s' as string]: scale }} />;
 }
 
 const initialTints: Tint[] = ['coral', 'sleep', 'diaper', 'mint'];

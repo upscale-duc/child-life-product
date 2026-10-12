@@ -119,7 +119,7 @@ describe('prerender', () => {
       const hrefs = [...page.html.matchAll(/<nav class="nav__links"[^>]*>(.*?)<\/nav>/g)].flatMap(
         (m) => [...m[1]!.matchAll(/href="([^"]+)"/g)].map((h) => h[1]!),
       );
-      expect(hrefs, route.path).toHaveLength(4);
+      expect(hrefs, route.path).toHaveLength(6);
       for (const href of hrefs) {
         const [path, id] = href.split('#');
         const target = path ? htmlOf(path) : page.html;

@@ -37,10 +37,11 @@ export interface CompactBulletItem {
   subShort: string;
 }
 
-/** v3 bullet (12-landing-v3 §0.5): 36 × 36 box, SemiBold 16 / Medium 14; mobile wording below 1120. */
-export function CompactBullets({ items }: { items: CompactBulletItem[] }) {
+/** v3 bullet (12-landing-v3 §0.5): 36 × 36 box, SemiBold 16 / Medium 14; mobile wording below 1120.
+ *  `dark` recolours it for the dark watch band (25-landing-v5-home §3.1). */
+export function CompactBullets({ items, dark }: { items: CompactBulletItem[]; dark?: boolean }) {
   return (
-    <ul className="bullets bullets--compact">
+    <ul className={dark ? 'bullets bullets--compact bullets--on-dark' : 'bullets bullets--compact'}>
       {items.map((item, i) => (
         <li key={item.title} className="bullet reveal" style={staggerStyle(i + 2)}>
           <span className={`bullet__icon tint--${item.tint}`}>

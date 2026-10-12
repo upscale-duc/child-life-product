@@ -10,17 +10,20 @@ import chevronRight from '../../../mobile/assets/icons/chevron-right.svg?raw';
 import clock from '../../../mobile/assets/icons/clock.svg?raw';
 import close from '../../../mobile/assets/icons/close.svg?raw';
 import cloudOff from '../../../mobile/assets/icons/cloud-off.svg?raw';
+import diaper from '../../../mobile/assets/icons/diaper.svg?raw';
 import drop from '../../../mobile/assets/icons/drop.svg?raw';
 import eye from '../../../mobile/assets/icons/eye.svg?raw';
 import family from '../../../mobile/assets/icons/family.svg?raw';
 import feed from '../../../mobile/assets/icons/feed.svg?raw';
 import globe from '../../../mobile/assets/icons/globe.svg?raw';
+import grid from '../../../mobile/assets/icons/grid.svg?raw';
 import heart from '../../../mobile/assets/icons/heart.svg?raw';
 import journal from '../../../mobile/assets/icons/journal.svg?raw';
 import lock from '../../../mobile/assets/icons/lock.svg?raw';
 import mail from '../../../mobile/assets/icons/mail.svg?raw';
 import memories from '../../../mobile/assets/icons/memories.svg?raw';
 import plus from '../../../mobile/assets/icons/plus.svg?raw';
+import ruler from '../../../mobile/assets/icons/ruler.svg?raw';
 import search from '../../../mobile/assets/icons/search.svg?raw';
 import sleep from '../../../mobile/assets/icons/sleep.svg?raw';
 import sliders from '../../../mobile/assets/icons/sliders.svg?raw';
@@ -62,17 +65,20 @@ const icons = {
   clock,
   close,
   'cloud-off': cloudOff,
+  diaper,
   drop,
   eye,
   family,
   feed,
   globe,
+  grid,
   heart,
   journal,
   lock,
   mail,
   memories,
   plus,
+  ruler,
   search,
   sleep,
   sliders,
@@ -239,7 +245,7 @@ export function Eyebrow({
   className,
 }: {
   children: ReactNode;
-  tone: 'mint' | 'peach' | 'sun' | 'sun-ink' | 'sleep' | 'night' | 'coral';
+  tone: 'mint' | 'peach' | 'sun' | 'sun-ink' | 'sunshine' | 'sleep' | 'night' | 'coral';
   className?: string;
 }) {
   return (

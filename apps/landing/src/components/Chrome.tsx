@@ -10,7 +10,7 @@ interface NavLink {
   current?: boolean;
 }
 
-/** Nav (14-landing-v3-home §1, 15-landing-v3-stages §1). Sticky with a frosted background once
+/** Nav (25-landing-v5-home §2, 15-landing-v3-stages §1). Sticky with a frosted background once
  *  the page scrolls (not in Figma); section links on desktop only, as designed; the language
  *  switch is an addition (D-012). Links point at this page's sections where it has them. */
 export function Nav() {
@@ -26,10 +26,9 @@ export function Nav() {
     onHome
       ? { label: l.firstYear, ...local('nam-dau-doi') }
       : { label: l.firstYear, href: firstYear, current: onStage1 },
-    {
-      label: l.family,
-      ...(onHome || onStage1 ? local('gia-dinh') : { href: `${homePath}#gia-dinh` }),
-    },
+    { label: l.health, ...(onHome ? local('suc-khoe') : { href: `${homePath}#suc-khoe` }) },
+    { label: l.utilities, ...(onHome ? local('tien-ich') : { href: `${homePath}#tien-ich` }) },
+    { label: l.watch, ...(onHome ? local('apple-watch') : { href: `${homePath}#apple-watch` }) },
     { label: l.faq, ...(onHome || onStage1 ? local('hoi-dap') : { href: `${homePath}#hoi-dap` }) },
   ];
   const hasCta = onHome || isStage(route.page);

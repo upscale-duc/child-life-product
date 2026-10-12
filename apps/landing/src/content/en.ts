@@ -19,7 +19,9 @@ export const en: Content = {
     links: {
       journey: 'Journey',
       firstYear: 'First year',
-      family: 'Family',
+      health: 'Health',
+      utilities: 'Tools',
+      watch: 'Apple Watch',
       faq: 'FAQ',
     },
     download: 'Get it free',
@@ -325,7 +327,179 @@ export const en: Content = {
           a: "The Child Life expert team writes, reviews and updates the age cards, articles and guides in the app. They are for reference and don't replace a doctor's advice — if something seems wrong, ask your doctor.",
           open: false,
         },
+        {
+          q: 'Does the first aid guide replace a doctor?',
+          a: "No. The first aid guide in the app is for reference while you wait for medical help and doesn't replace a doctor's diagnosis. If your child is in danger, call emergency services right away.",
+          open: false,
+        },
+        {
+          q: "Who can see the family's spending?",
+          a: 'By default only the parents (Co-parent members) see spending. Parents can let others log what they paid, or see everything, from the Family section.',
+          open: false,
+        },
+        {
+          q: 'Can I use Child Life on Apple Watch?',
+          a: "Yes, if you use an iPhone. Connect your watch once from the iPhone app, then log feeds, sleep and diapers and run timers right on your Apple Watch, even when your phone isn't nearby. There is no app for Android watches yet.",
+          open: false,
+        },
       ],
+    },
+    health: {
+      eyebrow: "Your child's health",
+      title: 'Vaccines and growth, clear at a glance.',
+      lead: "Know which shots they've had, what's next and how they're growing — no digging through the record book.",
+      bullets: [
+        {
+          title: 'Vaccine schedule by month of age',
+          sub: 'Mark the shots given and get reminded before each one, for the whole family.',
+          subShort: 'Mark the shots given and get reminded before each one, for the whole family.',
+        },
+        {
+          title: 'Weight and length against the WHO standard',
+          sub: 'Easy-to-read charts, no scores and no comparing your child.',
+          subShort: 'Easy-to-read charts, no scores and no comparing your child.',
+        },
+        {
+          title: 'Nutrition by stage',
+          sub: 'Reference milk amounts and the nutrients to watch at each age.',
+          subShort: 'Reference milk amounts and the nutrients to watch at each age.',
+        },
+      ],
+      footnote:
+        'For reference, reviewed by experts. Follow your health clinic for the exact vaccine schedule.',
+      mock: {
+        title: 'Vaccines · Teddy',
+        columns: ['Birth', '2 mo', '3 mo', '4 mo', '6 mo', '9 mo'],
+        rows: ['Hepatitis B', 'BCG', '6-in-1', 'Pneumococcal', 'Rotavirus', 'Measles'],
+        next: 'Next shot: 6-in-1 · dose 3 · Nov 17',
+        growthLabel: 'Weight',
+        growthValue: '7.8 kg',
+        growthChip: 'Within the WHO range',
+      },
+    },
+    utilities: {
+      eyebrow: 'Tools for parents',
+      title: ['The little things that make', 'parenting days lighter.'],
+      lead: 'Ready in the Tools tab, open and use.',
+      cards: [
+        {
+          title: 'Child first aid',
+          body: '25 common situations, illustrated step by step, with instructions read aloud. Works even without a connection.',
+        },
+        {
+          title: 'A shared spending book',
+          body: 'Everything you spend on your child in one place. Both parents log and see the same book — what your child needs and what the family has covered.',
+        },
+        {
+          title: 'Family & sharing',
+          body: 'Invite grandparents and caregivers to follow along. Everyone has their own rights; parents decide who sees what.',
+        },
+      ],
+      spending: {
+        header: 'Spent on Teddy · this month',
+        total: '4,215,000 ₫',
+        split: [
+          { label: 'Mum logged', amount: '2,320,000 ₫' },
+          { label: 'Dad logged', amount: '1,895,000 ₫' },
+        ],
+        initials: ['M', 'D'],
+        together: 'Mum and Dad see the same book',
+      },
+      members: [
+        { initial: 'M', name: 'Mum', role: 'Full access' },
+        { initial: 'D', name: 'Dad', role: 'Full access' },
+        { initial: 'L', name: 'Lan (nanny)', role: 'Logs care' },
+        { initial: 'G', name: 'Grandma', role: 'Sees memories' },
+      ],
+    },
+    watch: {
+      eyebrow: 'Apple Watch',
+      title: ['Baby in your arms,', 'every feed still logged.'],
+      lead: 'Log feeds, sleep and diapers right on your watch with one tap — no need to find your phone.',
+      bullets: [
+        {
+          title: 'Log with one tap',
+          sub: 'Turn the crown to pick the bottle amount; wet or dirty diaper in one tap.',
+          subShort: 'Turn the crown for ml; diapers in one tap.',
+        },
+        {
+          title: 'Time breastfeeds, sleep and pumping',
+          sub: 'Switch sides or stop in a moment — even with a double tap when your hands are full.',
+          subShort: 'Switch sides or stop when your hands are full.',
+        },
+        {
+          title: 'Timely reminders, quick glances',
+          sub: 'Notifications come with a log button; your watch face shows the time since the last feed.',
+          subShort: 'Notifications with a log button; time since the last feed.',
+        },
+        {
+          title: 'No phone needed nearby',
+          sub: "Logs are saved on the watch and sync to the family once you're online.",
+          subShort: 'Saved on the watch, synced once online.',
+        },
+      ],
+      note: 'For Apple Watch, works with the iPhone app',
+      mock: {
+        baby: 'Teddy',
+        time: '9:41',
+        tiles: [
+          { label: 'Bottle', value: '2:15', caption: 'since last feed' },
+          { label: 'Breast', value: '3:35', caption: 'since last feed' },
+          { label: 'Sleep', value: '0:42', caption: 'asleep' },
+          { label: 'Diaper', value: '1:25', caption: 'since last time' },
+          { label: 'Pumping', value: '5:10', caption: 'since last time' },
+          { label: 'Reminder', value: '17:00', caption: 'feed reminder' },
+        ],
+        breast: {
+          title: 'Breast',
+          left: 'Left',
+          leftValue: '8:12',
+          right: 'Right',
+          rightValue: '4:20',
+          total: 'Total 12:32 · on the left',
+          switchSide: 'Switch side',
+          stop: 'Stop',
+        },
+        notify: {
+          app: 'CHILD LIFE',
+          title: 'Time for the feed you set',
+          sub: 'Last feed 14:45 · 120 ml',
+          log: 'Log bottle 120 ml',
+          snooze: 'Remind me in 15 min',
+        },
+      },
+    },
+    yourWay: {
+      eyebrow: 'Your way',
+      title: "Your family's app, at your family's pace.",
+      lead: "Show only what you need. Hide what you don't use.",
+      bullets: [
+        {
+          title: 'Turn on, off and reorder the Today screen',
+          sub: 'Bottle or breast, pumping or not — your family decides.',
+          subShort: 'Bottle or breast, pumping or not — your family decides.',
+        },
+        {
+          title: 'Night mode',
+          sub: 'A dark screen, large text, quick logging at 3 am.',
+          subShort: 'A dark screen, large text, quick logging at 3 am.',
+        },
+        {
+          title: 'Your own spending categories',
+          sub: 'Add, edit and hide categories to match how your family spends.',
+          subShort: 'Add, edit and hide categories to match how your family spends.',
+        },
+      ],
+      mock: {
+        title: 'Customise Today',
+        rows: [
+          { title: 'Quick tiles', body: 'Feeds, sleep, diapers, pumping, growth' },
+          { title: 'Upcoming reminders', body: '3 reminders on' },
+          { title: 'Daily rhythm', body: '24-hour chart' },
+        ],
+        chips: ['Bottle', 'Breast', 'Sleep', 'Diaper', 'Pumping'],
+        night: 'Gentle night mode',
+      },
     },
   },
   everything: {

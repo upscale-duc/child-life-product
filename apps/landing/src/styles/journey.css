@@ -1156,3 +1156,748 @@
     font-size: 18px;
   }
 }
+
+/* ---------- v4 home: Sức khoẻ, Tiện ích, Theo cách của bạn (22-landing-v4-home) ---------- */
+.toggle.is-off {
+  background: var(--separator);
+}
+.toggle.is-off::after {
+  right: auto;
+  left: calc(2px * var(--s));
+}
+@media (min-width: 1120px) {
+  .split__visual.split__visual--600 {
+    flex-basis: 600px;
+  }
+}
+.feature__footnote {
+  margin: 0;
+  max-width: 480px;
+  font: 500 12px/1.5 var(--font-family);
+  color: var(--ink-muted);
+}
+@media (min-width: 1120px) {
+  .feature__footnote {
+    font-size: 13px;
+  }
+}
+.flow-panel--health,
+.flow-panel--stretch {
+  padding: 20px 16px;
+}
+.flow-panel--health {
+  align-items: stretch;
+}
+
+/* Sức khoẻ: vaccine grid + growth card */
+.vaccine-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.vaccine-card__title {
+  font: 700 16px/1.25 var(--font-family);
+  color: var(--ink);
+}
+.vaccine-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) repeat(var(--cols), 44px);
+  align-items: center;
+}
+.vaccine-grid__row {
+  display: contents;
+}
+.vaccine-grid__head {
+  text-align: center;
+  font: 600 11px/16px var(--font-family);
+  color: var(--ink-muted);
+}
+.vaccine-grid__name {
+  font: 600 13px/28px var(--font-family);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.vaccine-grid__cell {
+  display: grid;
+  place-items: center;
+  height: 28px;
+}
+.vaccine-mark {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--separator);
+}
+.vaccine-mark.is-done,
+.vaccine-mark.is-next {
+  width: 18px;
+  height: 18px;
+}
+.vaccine-mark.is-done {
+  display: grid;
+  place-items: center;
+  background: var(--mint-deep);
+  color: #fff;
+}
+.vaccine-mark.is-next {
+  border: 2px solid var(--sunshine);
+  background: var(--sunshine-soft);
+}
+.vaccine-card__next {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--sunshine-soft);
+  font: 600 13px/1.3 var(--font-family);
+  color: var(--ink);
+}
+.growth-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: flex-start;
+  gap: 6px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: var(--surface);
+}
+.growth-card__label {
+  font: 500 13px/1.3 var(--font-family);
+  color: var(--ink-muted);
+}
+.growth-card strong {
+  font: 700 24px/1.25 var(--font-family);
+  color: var(--ink);
+}
+.fit .vaccine-card {
+  padding: 20px 22px;
+  border-radius: 22px;
+}
+.fit .vaccine-grid {
+  grid-template-columns: 104px repeat(var(--cols), 46px);
+}
+.fit .vaccine-card__next {
+  white-space: nowrap;
+}
+.fit .growth-card {
+  box-shadow: var(--shadow-card);
+}
+
+/* Tiện ích cho ba mẹ */
+.utilities {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.utilities__cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.utility-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 24px;
+}
+.utility-card .icon-box {
+  color: inherit;
+}
+.utility-card.tint--peach .icon-box {
+  color: var(--ink);
+}
+.utility-card h3 {
+  margin: 0;
+  font: 700 20px/1.26 var(--font-family);
+  color: var(--ink);
+}
+.utility-card p {
+  margin: 0;
+  font: 500 14px/1.5 var(--font-family);
+  color: var(--ink-muted);
+}
+.utility-card__visual {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 8px;
+}
+.utility-card__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 340 / 200;
+  object-fit: cover;
+  border-radius: 16px;
+}
+.spend-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: var(--surface);
+}
+.spend-card__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 13px/1.3 var(--font-family);
+  color: var(--ink-muted);
+}
+.spend-card__icon {
+  display: inline-flex;
+  padding: 6px;
+  border-radius: 50%;
+  background: var(--care-growth-soft);
+  color: var(--care-growth-ink);
+}
+.spend-card__total {
+  font: 700 26px/1.2 var(--font-family);
+  color: var(--ink);
+}
+.spend-card__bar {
+  display: flex;
+  gap: 3px;
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+.spend-card__bar span:first-child,
+.spend-card__legend span:first-child i {
+  background: var(--mint-deep);
+}
+.spend-card__bar span:last-child,
+.spend-card__legend span:last-child i {
+  background: var(--peach);
+}
+.spend-card__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.spend-card__legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 12px/1.3 var(--font-family);
+  color: var(--ink-muted);
+}
+.spend-card__legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.spend-card__legend b {
+  font-weight: 600;
+  color: var(--ink);
+}
+.spend-card__foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding-top: 12px;
+  border-top: 1px solid var(--separator);
+  font: 600 13px/1.3 var(--font-family);
+  color: var(--ink);
+}
+.spend-card__avatars {
+  display: inline-flex;
+}
+.spend-card__avatars span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--mint-soft);
+  font: 700 12px/1 var(--font-family);
+  color: var(--care-bottle-ink);
+}
+.spend-card__avatars span:first-child {
+  position: relative;
+  z-index: 1;
+  margin-right: -8px;
+  background: var(--card-peach);
+}
+.member-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.member-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: var(--surface);
+}
+.member-list__avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--card-peach);
+  font: 700 12px/1 var(--font-family);
+  color: var(--care-bottle-ink);
+}
+.member-list strong {
+  flex: 1;
+  min-width: 0;
+  font: 600 14px/1.3 var(--font-family);
+  color: var(--ink);
+}
+.member-list li > span:last-child {
+  font: 500 12px/1.3 var(--font-family);
+  color: var(--ink-muted);
+}
+@media (min-width: 1120px) {
+  .section.utilities {
+    align-items: center;
+    gap: 40px;
+    padding-block: 72px;
+  }
+  .utilities .section-head {
+    max-width: 900px;
+  }
+  .utilities__title > span {
+    display: block;
+  }
+  .utilities .lead {
+    max-width: 600px;
+  }
+  .utilities__cards {
+    width: 100%;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 20px;
+  }
+  .utilities__cards > li {
+    flex: 1;
+    min-width: 0;
+  }
+  .utility-card {
+    gap: 12px;
+    min-height: 440px;
+    padding: 28px;
+    border-radius: 28px;
+  }
+  .utility-card h3 {
+    font-size: 22px;
+    white-space: nowrap;
+  }
+  .utility-card p {
+    font-size: 15px;
+  }
+  .utility-card__visual {
+    padding-top: 0;
+  }
+  .utility-card__art {
+    border-radius: 20px;
+  }
+}
+
+/* Theo cách của bạn: "Tuỳ chỉnh Hôm nay" mock + night chip */
+.customize-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.customize-card__title {
+  font: 700 16px/1.25 var(--font-family);
+  color: var(--ink);
+}
+.customize-card__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.customize-card__handle {
+  flex-shrink: 0;
+  width: 14px;
+  height: 12px;
+  background: linear-gradient(
+    var(--control-border) 0 2px,
+    transparent 2px 5px,
+    var(--control-border) 5px 7px,
+    transparent 7px 10px,
+    var(--control-border) 10px 12px
+  );
+}
+.customize-card__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.customize-card__text strong {
+  font: 600 14px/1.3 var(--font-family);
+  color: var(--ink);
+}
+.customize-card__text span {
+  overflow: hidden;
+  font: 500 12px/1.3 var(--font-family);
+  color: var(--ink-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chip.chip--5-10 {
+  padding: 5px 10px;
+}
+.night-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  font: 600 14px/18px var(--font-family);
+  color: #fff;
+  white-space: nowrap;
+}
+.fit .customize-card {
+  padding: 20px 22px;
+  border-radius: 22px;
+}
+.fit .customize-card__title {
+  font-size: 18px;
+}
+.fit .customize-card__text strong {
+  font-size: 15px;
+}
+
+/* ---------- v5 home: Trên cổ tay / Apple Watch (25-landing-v5-home) ---------- */
+/* Six nav links need tighter spacing until the content column is wide enough. */
+@media (min-width: 1120px) and (max-width: 1279px) {
+  .nav .nav__links {
+    gap: 16px;
+  }
+  .nav .nav__links a {
+    font-size: 14px;
+  }
+  .nav .nav__actions {
+    margin-left: 24px;
+  }
+}
+.eyebrow--sunshine {
+  background: var(--sunshine);
+  color: var(--ink);
+}
+.tint--glass {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.bullets--on-dark .bullet__text strong {
+  color: #fff;
+}
+.bullets--on-dark .bullet__text span {
+  color: rgba(255, 255, 255, 0.65);
+}
+.watch-band {
+  background: var(--ink);
+  color: #fff;
+}
+.watch-band__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-block: 48px;
+}
+.watch-band__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  min-width: 0;
+}
+.h2.watch-band__title {
+  color: #fff;
+  font-size: 30px;
+  line-height: 1.2;
+}
+.watch-band__title > span {
+  display: block;
+}
+.watch-band__lead {
+  margin: 0;
+  font: 500 16px/1.55 var(--font-family);
+  color: rgba(255, 255, 255, 0.75);
+}
+.watch-band__note {
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font: 600 12px/16px var(--font-family);
+  color: rgba(255, 255, 255, 0.75);
+}
+.watch-band__glow {
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(250, 204, 92, 0.35), rgba(250, 204, 92, 0));
+}
+.watch-band__solo {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-self: stretch;
+  padding-block: 12px;
+}
+.watch-band__solo .watch-band__glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 320px;
+  height: 320px;
+  transform: translate(-50%, -50%);
+}
+@media (min-width: 1120px) {
+  .watch-band__inner {
+    flex-direction: row;
+    align-items: center;
+    gap: 80px;
+    padding-block: 96px;
+  }
+  .watch-band__copy {
+    flex: 1;
+    gap: 28px;
+  }
+  .h2.watch-band__title {
+    font-size: 44px;
+    line-height: 1.18;
+    white-space: nowrap;
+  }
+  .watch-band__lead {
+    max-width: 460px;
+    font-size: 18px;
+  }
+  .watch-band__note {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .watch-band__visual {
+    flex: 0 0 560px;
+  }
+}
+
+/* Apple Watch 46 mm at scale 1: case 236 × 276 (radius 62), screen 208 × 248 (radius 46). */
+.watch {
+  --s: 1;
+  position: relative;
+  flex-shrink: 0;
+  width: calc(236px * var(--s));
+  height: calc(276px * var(--s));
+}
+.watch__body {
+  position: relative;
+  width: 236px;
+  height: 276px;
+  transform: scale(var(--s));
+  transform-origin: 0 0;
+}
+.watch__crown {
+  position: absolute;
+  left: 234px;
+  top: 70px;
+  width: 10px;
+  height: 34px;
+  border-radius: 4px;
+  background: #4d4f52;
+}
+.watch__case {
+  position: absolute;
+  inset: 0;
+  padding: 14px;
+  border-radius: 62px;
+  background: #292b2e;
+}
+.watch__screen {
+  width: 208px;
+  height: 248px;
+  overflow: hidden;
+  border-radius: 46px;
+  background: #000;
+  color: #fff;
+}
+.watch-face {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  white-space: nowrap;
+}
+.watch-face--gap {
+  gap: 8px;
+}
+.watch-face__top {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px 0;
+  font: 600 15px/1.25 var(--font-family);
+}
+.watch-face__top strong {
+  font-weight: 700;
+}
+.watch-face__top > span {
+  margin-left: auto;
+}
+.watch-face__accent {
+  color: var(--care-breast-accent);
+}
+.watch-face__note {
+  text-align: center;
+  font: 500 11px/1.3 var(--font-family);
+  color: rgba(255, 255, 255, 0.6);
+}
+.watch-face__note--left {
+  text-align: left;
+  font-size: 12px;
+}
+.watch-tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.watch-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 20px;
+  background: #1f2124;
+}
+.watch-tile__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12px/1.25 var(--font-family);
+  color: var(--accent);
+}
+.watch-tile__icon {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #000;
+}
+.watch-tile strong {
+  font: 700 16px/1.25 var(--font-family);
+}
+.watch-tile__caption {
+  font: 500 11px/1.25 var(--font-family);
+  color: rgba(255, 255, 255, 0.6);
+}
+/* A running timer fills the tile; the label and icon turn white as in the watch app. */
+.watch-tile.is-running {
+  background: var(--accent);
+}
+.watch-tile.is-running .watch-tile__head {
+  color: #fff;
+}
+.watch-tile.is-running .watch-tile__icon {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+.watch-tile.is-running .watch-tile__caption {
+  color: rgba(255, 255, 255, 0.8);
+}
+.watch-sides,
+.watch-actions {
+  display: flex;
+  gap: 6px;
+}
+.watch-sides > span {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  border-radius: 16px;
+  background: #1f2124;
+}
+.watch-sides > span > span {
+  font: 600 12px/1.25 var(--font-family);
+  color: rgba(255, 255, 255, 0.6);
+}
+.watch-sides strong {
+  font: 700 20px/1.25 var(--font-family);
+}
+.watch-sides .is-active {
+  background: var(--care-breast-accent);
+}
+.watch-sides .is-active,
+.watch-sides .is-active > span {
+  color: #000;
+}
+.watch-actions > span,
+.watch-pill {
+  flex: 1;
+  padding: 10px;
+  border-radius: 999px;
+  background: #1f2124;
+  text-align: center;
+  font: 600 15px/1.2 var(--font-family);
+  color: #fff;
+}
+.watch-actions .is-stop {
+  background: #db4a45;
+}
+.watch-face--notify {
+  gap: 8px;
+  padding-top: 22px;
+}
+.watch-notify__app {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 11px/1.25 var(--font-family);
+  color: rgba(255, 255, 255, 0.6);
+}
+.watch-notify__app > span {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 50%;
+  background: var(--mint-deep);
+  color: #fff;
+}
+.watch-notify__title {
+  white-space: normal;
+  font: 700 16px/1.25 var(--font-family);
+}
+.watch-pill {
+  flex: none;
+  padding: 9px 10px;
+  font-size: 14px;
+}
+.watch-pill.is-bottle {
+  background: var(--care-bottle-accent);
+  color: #000;
+}
