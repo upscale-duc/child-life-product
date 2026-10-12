@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { initializeApp } from 'firebase-admin/app';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { setGlobalOptions } from 'firebase-functions/v2';
@@ -32,7 +33,13 @@ import {
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { resendSender } from './mail-resend.js';
 import { AuthMailError, sendAuthEmail as sendAuthMail } from './auth-mail.js';
-import { localeFromHeader, renderInvitePage, renderUnsubscribePage } from './pages.js';
+import {
+  localeFromHeader,
+  renderExportPage,
+  renderInvitePage,
+  renderUnsubscribePage,
+} from './pages.js';
+import { resolveExportDownload } from './export-download.js';
 import { CareError, onRecordWritten, purgeDeletedRecords, resolveSleepConflict } from './care.js';
 import { BabyError, createBaby, getBabyAvatar, setBabyAvatar, type AvatarStore } from './babies.js';
 import { handlePing, PingError } from './ping.js';
@@ -714,6 +721,8 @@ function mailSender(): MailSender | null {
 const mailOrigins = () => ({
   webOrigin: webOriginFor(currentProjectId()),
   adminOrigin: adminOriginFor(currentProjectId()),
+  /** Where `exportDownload` answers (direct, not through Hosting: no 60 s proxy limit). */
+  functionsOrigin: `https://${functionsRegion}-${currentProjectId()}.cloudfunctions.net`,
 });
 
 export const deliverQueuedMail = onDocumentCreated(
@@ -793,6 +802,42 @@ export const emailUnsubscribe = onRequest(async (req, res) => {
   res
     .status(ok ? 200 : 404)
     .send(renderUnsubscribePage(localeFromHeader(req.get('accept-language')), ok));
+});
+
+/**
+ * "Tải tệp về" in the export email (R-187, P-123): re-checks the right, then redirects to a fresh
+ * Firebase Storage download URL for the zip (rotated on every click, gone when the export expires).
+ */
+export const exportDownload = onRequest(async (req, res) => {
+  const [jobId = '', token = ''] = req.path.split('/').filter(Boolean).slice(-2);
+  const bucket = getStorage().bucket();
+  const result = await resolveExportDownload(
+    getFirestore(),
+    {
+      async issue(path, filename) {
+        const downloadToken = randomUUID();
+        await bucket.file(path).setMetadata({
+          contentDisposition: `attachment; filename="${filename}"`,
+          metadata: { firebaseStorageDownloadTokens: downloadToken },
+        });
+        return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(path)}?alt=media&token=${downloadToken}`;
+      },
+    },
+    jobId,
+    token,
+    new Date(),
+  );
+  res.set('Cache-Control', 'private, no-store');
+  res.set('Referrer-Policy', 'no-referrer');
+  res.set('X-Robots-Tag', 'noindex');
+  logger.info('export download', { result: result.kind });
+  if (result.kind === 'redirect') {
+    res.redirect(302, result.url);
+    return;
+  }
+  res
+    .status(result.kind === 'invalid' ? 404 : 410)
+    .send(renderExportPage(localeFromHeader(req.get('accept-language')), result.kind));
 });
 
 // ---------- S11: Me, storage, profiles, account ----------

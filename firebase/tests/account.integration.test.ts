@@ -558,6 +558,12 @@ describe('devices, exports and help', () => {
     const job = (await get(`dataJobs/${jobId}`))!;
     expect(store.zips.get(job.path)).toEqual(['care.json', 'care.csv']);
     expect((job.expiresAt as Timestamp).toMillis()).toBe(now.getTime() + 24 * 3_600_000);
+    // "Tải tệp về" in the email: the token's hash on the job, the token in the queued mail only.
+    expect(job.downloadTokenHash).toMatch(/^[a-f0-9]{64}$/);
+    const exportMail = (await db.collection('mail').where('template', '==', 'exportReady').get())
+      .docs[0]!;
+    expect(exportMail.get('data')).toMatchObject({ jobId, size: '1 MB' });
+    expect(exportMail.get('data.token')).toMatch(/^[A-Za-z0-9_-]{32}$/);
 
     await item(TEDDY, 'm1', 'photo', 1_000);
     const media = await requestExport(

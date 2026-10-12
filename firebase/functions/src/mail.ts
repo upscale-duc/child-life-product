@@ -44,7 +44,7 @@ export interface MailSender {
 export async function deliverMail(
   doc: DocumentSnapshot,
   sender: MailSender | null,
-  config: { webOrigin: string; adminOrigin?: string; now: Date },
+  config: { webOrigin: string; adminOrigin?: string; functionsOrigin?: string; now: Date },
 ): Promise<'sent' | 'waiting-provider' | 'failed' | 'superseded'> {
   const mail = doc.data();
   if (!mail || mail.status === 'sent') return 'sent';
@@ -73,7 +73,7 @@ export async function deliverMail(
           ? renderAccountEmail(
               template as AccountTemplate,
               mail.locale as Locale,
-              (mail.data ?? {}) as AccountMailData,
+              withDownloadUrl((mail.data ?? {}) as AccountMailData, config.functionsOrigin),
               { adminOrigin: config.adminOrigin ?? 'https://admin.childlife.app' },
             )
           : null;
@@ -84,7 +84,14 @@ export async function deliverMail(
       idempotencyKey: `mail-${doc.id}`,
       ...rendered,
     });
-    await doc.ref.update({ status: 'sent', attempts, sentAt: config.now, error: null });
+    await doc.ref.update({
+      status: 'sent',
+      attempts,
+      sentAt: config.now,
+      error: null,
+      // The export link lives in the email only; the queue keeps no usable copy.
+      ...(template === 'exportReady' ? { 'data.token': null } : {}),
+    });
     return 'sent';
   } catch (error) {
     await doc.ref.update({
@@ -95,6 +102,12 @@ export async function deliverMail(
     });
     return 'failed';
   }
+}
+
+/** "Tải tệp về" (exportReady): the one-click link, served by the `exportDownload` Function. */
+function withDownloadUrl(d: AccountMailData, functionsOrigin: string | undefined): AccountMailData {
+  if (!d.jobId || !d.token || !functionsOrigin) return d;
+  return { ...d, downloadUrl: `${functionsOrigin}/exportDownload/${d.jobId}/${d.token}` };
 }
 
 async function newerInviteMail(doc: DocumentSnapshot): Promise<boolean> {

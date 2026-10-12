@@ -1098,6 +1098,9 @@ export async function runExport(
     const entries =
       kind === 'care' ? careEntries(db, babyId) : mediaEntries(db, babyId, openObject);
     const bytes = await store.zip(path, entries);
+    // "Tải về" straight from the email: a 24 h token whose hash stays on the job; the page re-checks
+    // the right at every click (exportDownload, P-123).
+    const token = randomBytes(24).toString('base64url');
     await db.runTransaction(async (tx) => {
       tx.update(ref, {
         state: 'ready',
@@ -1105,10 +1108,25 @@ export async function runExport(
         bytes,
         readyAt: now,
         expiresAt: new Date(now.getTime() + ttlHours * HOUR_MS),
+        downloadTokenHash: sha(token),
         updatedAt: now,
       });
       const email = job.get('email') as string | null;
-      if (email) queueMail(tx, db, email, 'exportReady', job.get('locale') as Locale, {}, now);
+      const size =
+        bytes >= 1024 ** 3
+          ? `${(bytes / 1024 ** 3).toFixed(1)} GB`
+          : `${Math.max(1, Math.round(bytes / 1024 ** 2))} MB`;
+      if (email) {
+        queueMail(
+          tx,
+          db,
+          email,
+          'exportReady',
+          job.get('locale') as Locale,
+          { jobId, token, size },
+          now,
+        );
+      }
     });
     return 'ready';
   } catch (error) {

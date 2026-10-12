@@ -280,6 +280,11 @@ export interface AccountMailData {
   url?: string;
   /** Staff-opened ownership transfer (P-136): the masked email of the proposed owner. */
   toEmail?: string;
+  /** "Tệp xuất dữ liệu đã sẵn sàng": the one-click download and the file size. */
+  jobId?: string;
+  token?: string | null;
+  downloadUrl?: string;
+  size?: string;
 }
 
 const accountPath = {
@@ -465,27 +470,51 @@ export function renderAccountEmail(
               { kind: 'steps', text: accountPath.en },
             ],
           );
-    case 'exportReady':
+    case 'exportReady': {
+      const link = d.downloadUrl;
+      const size: Block[] = d.size
+        ? [{ kind: 'facts', rows: [[vi ? 'Dung lượng' : 'Size', d.size]] }]
+        : [];
       return vi
         ? c('Tệp xuất dữ liệu đã sẵn sàng', 'Tải về trong 24 giờ', [
-            { kind: 'text', text: 'Tệp xuất dữ liệu bạn yêu cầu đã sẵn sàng. Mở app để tải về:' },
-            { kind: 'steps', text: accountPath.vi },
+            {
+              kind: 'text',
+              text: link
+                ? 'Tệp xuất dữ liệu bạn yêu cầu đã sẵn sàng. Bấm nút dưới đây để tải về (tệp .zip).'
+                : 'Tệp xuất dữ liệu bạn yêu cầu đã sẵn sàng. Mở app để tải về:',
+            },
+            ...size,
+            ...(link
+              ? [
+                  { kind: 'button' as const, label: 'Tải tệp về', url: link },
+                  { kind: 'note' as const, text: `Hoặc mở app: ${accountPath.vi}.` },
+                ]
+              : [{ kind: 'steps' as const, text: accountPath.vi }]),
             {
               kind: 'warning',
-              text: 'Liên kết tải hết hạn sau 24 giờ. Tệp có dữ liệu riêng của gia đình, hãy cất ở nơi an toàn.',
+              text: 'Liên kết tải hết hạn sau 24 giờ và chỉ dùng được khi bạn còn quyền với hồ sơ. Tệp có dữ liệu riêng của gia đình: đừng chuyển tiếp email này, hãy cất tệp ở nơi an toàn.',
             },
           ])
         : c('Your data export is ready', 'Download it within 24 hours', [
             {
               kind: 'text',
-              text: 'The data export you asked for is ready. Open the app to download it:',
+              text: link
+                ? 'The data export you asked for is ready. Tap the button below to download it (a .zip file).'
+                : 'The data export you asked for is ready. Open the app to download it:',
             },
-            { kind: 'steps', text: accountPath.en },
+            ...size,
+            ...(link
+              ? [
+                  { kind: 'button' as const, label: 'Download the file', url: link },
+                  { kind: 'note' as const, text: `Or open the app: ${accountPath.en}.` },
+                ]
+              : [{ kind: 'steps' as const, text: accountPath.en }]),
             {
               kind: 'warning',
-              text: 'The download link expires in 24 hours. The file holds your family’s private data, so keep it somewhere safe.',
+              text: 'The link expires in 24 hours and only works while you still have access to the profile. The file holds your family’s private data: do not forward this email, and keep the file somewhere safe.',
             },
           ]);
+    }
     case 'supportReply':
       return c(
         vi ? `Child Life trả lời yêu cầu ${d.ticket}` : `Child Life replied to ${d.ticket}`,

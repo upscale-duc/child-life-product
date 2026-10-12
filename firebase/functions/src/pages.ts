@@ -100,3 +100,41 @@ export function renderUnsubscribePage(locale: PageLocale, ok: boolean): string {
         '<h1>This link is not valid</h1><p>This unsubscribe link can no longer be used.</p>',
       );
 }
+
+/** "Tải tệp về" from the export email when the file cannot be given (R-187). */
+export function renderExportPage(
+  locale: PageLocale,
+  reason: 'invalid' | 'expired' | 'denied',
+): string {
+  const copy = {
+    vi: {
+      invalid: [
+        'Liên kết không hợp lệ',
+        'Liên kết tải này không đúng hoặc đã được thay bằng tệp mới.',
+      ],
+      expired: [
+        'Liên kết đã hết hạn',
+        'Tệp xuất chỉ giữ 24 giờ. Mở Child Life → Tôi → Tài khoản & đăng nhập để xuất lại.',
+      ],
+      denied: [
+        'Bạn không còn quyền tải tệp này',
+        'Quyền của bạn với hồ sơ đã thay đổi. Liên hệ chủ hồ sơ nếu cần.',
+      ],
+    },
+    en: {
+      invalid: [
+        'This link is not valid',
+        'This download link is wrong or was replaced by a newer export.',
+      ],
+      expired: [
+        'This link has expired',
+        'Exports are kept for 24 hours. Open Child Life → Me → Account & sign-in to export again.',
+      ],
+      denied: [
+        'You can no longer download this file',
+        'Your access to the profile changed. Ask the profile owner if you need it.',
+      ],
+    },
+  }[locale][reason];
+  return page(locale, copy[0]!, `<h1>${escape(copy[0]!)}</h1><p>${escape(copy[1]!)}</p>`);
+}
