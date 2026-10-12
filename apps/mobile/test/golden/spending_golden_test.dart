@@ -175,6 +175,18 @@ final _cases = <String, _Case>{
       await t.pumpAndSettle();
     },
   ),
+  'im2_adjust': _screen(
+    () => const SpendingImportReviewScreen(importId: mockImportId),
+    act: (t) async {
+      await _tap(t, find.byKey(const Key('imAdjust')));
+    },
+  ),
+  'im2_skipped': _screen(
+    () => const SpendingImportReviewScreen(importId: mockImportId),
+    act: (t) async {
+      await _tap(t, find.byKey(const Key('imSkipped')));
+    },
+  ),
   'im3_importing': _screen(
     () => const SpendingImportResultScreen(importId: mockImportId),
     importStatus: ImportStatus.importing,

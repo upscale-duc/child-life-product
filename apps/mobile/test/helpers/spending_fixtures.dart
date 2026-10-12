@@ -301,22 +301,25 @@ SpendingImport mockImport(ImportStatus status) => SpendingImport(
     ImportPreviewRow(
       row: 2,
       spentOn: '2026-10-12',
-      amount: -1020000,
+      amount: 1020000,
       note: 'Sữa công thức',
       category: 'Sữa',
       payer: '',
       issue: null,
     ),
+  ],
+  skipped: const [
     ImportPreviewRow(
       row: 3,
       spentOn: null,
-      amount: -50000,
+      amount: 50000,
       note: 'Bánh',
       category: 'Ăn uống',
       payer: '',
       issue: ImportIssue.noDate,
     ),
   ],
+  total: (amount: 41815000, from: '2026-03-20', to: '2026-10-12'),
   categories: const [
     SourceName(
       key: 'sua',

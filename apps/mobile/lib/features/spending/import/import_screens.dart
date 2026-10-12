@@ -27,6 +27,7 @@ import '../../baby/baby_models.dart';
 import '../../family/family_repository.dart';
 import '../spending_format.dart';
 import '../spending_models.dart';
+import '../spending_sheets.dart' show ClCardGroupLike;
 import '../spending_widgets.dart';
 import 'import_reader.dart';
 import 'import_repository.dart';
@@ -380,6 +381,27 @@ class _PasteSheetState extends State<_PasteSheet> {
 
 // ---------- Review ----------
 
+/// What the review says about how the file was read ("Kiểu Money Lover · số âm là khoản chi").
+String readingSummary(AppLocalizations l10n, SpendingImport im) {
+  final parts = [
+    if (im.preset != null) l10n.imReadingPreset(im.preset!),
+    if (im.mixedSigns)
+      switch (im.options.rows) {
+        RowSign.negative => l10n.imReadingNegative,
+        RowSign.positive => l10n.imReadingPositive,
+        RowSign.all => l10n.imReadingAllSigns,
+      },
+    if (im.ambiguousDates)
+      switch (im.options.dateOrder) {
+        DateOrder.dmy => l10n.imReadingDmy,
+        DateOrder.mdy => l10n.imReadingMdy,
+      },
+  ];
+  return parts.isEmpty ? l10n.imReadingAuto : parts.join(' · ');
+}
+
+/// Owner, 2026-10-12: one number first (what will be imported), then only what needs a choice;
+/// how the file was read and the rows left out open in sheets.
 class SpendingImportReviewScreen extends ConsumerStatefulWidget {
   const SpendingImportReviewScreen({required this.importId, super.key});
   final String importId;
@@ -396,34 +418,7 @@ class _SpendingImportReviewScreenState
   final _payers = <String, String?>{};
   final _payersSet = <String>{};
   bool _busy = false;
-
-  Future<void> _reread(
-    SpendingScope scope,
-    SpendingImport im, {
-    ImportMapping? mapping,
-    ImportOptions? options,
-  }) async {
-    final l10n = AppLocalizations.of(context);
-    final toaster = ClToaster.of(context);
-    setState(() => _busy = true);
-    try {
-      await ref
-          .read(spendingImportRepositoryProvider)
-          .analyze(
-            babyId: scope.babyId,
-            importId: im.id,
-            kind: im.kind,
-            mapping: mapping ?? im.mapping,
-            options: options ?? im.options,
-          );
-    } on ImportException catch (e) {
-      toaster.show(message: importFailureLabel(l10n, e.reason));
-    } on Object {
-      toaster.show(message: l10n.imFailGeneric);
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
+  bool _allRows = false;
 
   CategoryChoice? _categoryOf(SourceName<CategoryChoice> c) =>
       _categories.containsKey(c.key) ? _categories[c.key] : c.suggested;
@@ -459,29 +454,6 @@ class _SpendingImportReviewScreenState
     }
   }
 
-  Future<void> _pickColumn(
-    SpendingScope scope,
-    SpendingImport im,
-    String title,
-    int? current,
-    ImportMapping Function(int?) apply,
-  ) async {
-    final l10n = AppLocalizations.of(context);
-    final picked = await showClSheet<(int?,)>(
-      context: context,
-      builder: (sheet) => _ChoiceSheet<int?>(
-        title: title,
-        current: current,
-        options: [
-          (null, l10n.imColumnNone),
-          for (final (i, name) in im.columns.indexed) (i, name),
-        ],
-      ),
-    );
-    if (picked == null || !mounted) return;
-    await _reread(scope, im, mapping: apply(picked.$1));
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -505,14 +477,12 @@ class _SpendingImportReviewScreenState
     }
     final locale = spLocale(context);
     final c = im.counts;
-    final m = im.mapping;
-    String col(int? i) =>
-        i == null || i >= im.columns.length ? l10n.imColumnNone : im.columns[i];
+    final skippedCount = c.rows - c.ready;
+    final dmy = DateFormat('dd/MM/yyyy');
     final members =
         ref.watch(familyMembersProvider(scope.babyId)).value ??
         const <Membership>[];
     String payerName(String? uid) {
-      if (uid == null) return l10n.spPayerOther;
       final m = members.where((x) => x.uid == uid).firstOrNull;
       return m == null ? l10n.spPayerOther : payerLabel(l10n, Payer.of(m));
     }
@@ -522,6 +492,16 @@ class _SpendingImportReviewScreenState
       NewCategory(:final name) => l10n.imNewCategory(name),
       null => categoryName(l10n, scope.category(otherCategoryId)),
     };
+    // Names without a match first: they are the ones to decide.
+    final categories = [...im.categories]
+      ..sort((a, b) {
+        final ma = a.suggested == null ? 0 : 1;
+        final mb = b.suggested == null ? 0 : 1;
+        return ma != mb ? ma - mb : b.rows - a.rows;
+      });
+    final unmatched = im.categories.where((x) => x.suggested == null).length;
+    final rows = _allRows ? im.preview : im.preview.take(5).toList();
+    final from = im.total.from, to = im.total.to;
 
     return Stack(
       children: [
@@ -536,190 +516,158 @@ class _SpendingImportReviewScreenState
           ),
           children: [
             SpTitle(l10n.imReviewTitle),
-            const SizedBox(height: ClSpace.s1),
-            Text(
-              [
-                ?im.fileName,
-                if (im.preset != null) l10n.imPreset(im.preset!),
-              ].join(' · '),
-              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-            ),
+            if (im.fileName != null)
+              Text(
+                im.fileName!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+              ),
             const SizedBox(height: ClSpace.s4),
+            // The one number that matters, then how it was read.
             SpCard(
+              radius: 24,
+              padding: const EdgeInsets.all(18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    l10n.imWillImport(c.ready),
-                    style: cl.text.headline.copyWith(
-                      fontWeight: FontWeight.w700,
+                  Semantics(
+                    label: '${c.ready} ${l10n.imReadyLabel(c.ready)}',
+                    child: ExcludeSemantics(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClTabularText(
+                            moneyPlain(locale, c.ready),
+                            key: const Key('imReady'),
+                            style: cl.text.largeTitle.copyWith(
+                              fontSize: 34,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            l10n.imReadyLabel(c.ready),
+                            style: cl.text.body.copyWith(
+                              color: cl.colors.inkMuted,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: ClSpace.s1),
-                  Text(
-                    [
-                      l10n.imRows(c.rows),
+                  if (c.ready > 0) ...[
+                    const SizedBox(height: ClSpace.s1),
+                    ClTabularText(
+                      l10n.imTotal(money(locale, im.total.amount)),
+                      style: cl.text.body.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    if (from != null && to != null)
+                      Text(
+                        from == to
+                            ? dmy.format(DateTime.parse(from))
+                            : l10n.imDays(
+                                dmy.format(DateTime.parse(from)),
+                                dmy.format(DateTime.parse(to)),
+                              ),
+                        style: cl.text.label.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                      ),
+                  ],
+                  const SizedBox(height: ClSpace.s3),
+                  Container(height: 1, color: cl.colors.separator),
+                  const SizedBox(height: ClSpace.s3),
+                  Row(
+                    children: [
+                      ClIcon(
+                        ClIcons.check,
+                        size: 16,
+                        color: cl.colors.mintText,
+                      ),
+                      const SizedBox(width: ClSpace.s2),
+                      Expanded(
+                        child: Text(
+                          readingSummary(l10n, im),
+                          style: cl.text.label.copyWith(
+                            color: cl.colors.inkMuted,
+                          ),
+                        ),
+                      ),
+                      ClPressable(
+                        key: const Key('imAdjust'),
+                        onPressed: () => showClSheet<void>(
+                          context: context,
+                          builder: (_) => _ReadingSheet(importId: im.id),
+                        ),
+                        semanticLabel: l10n.imAdjustTitle,
+                        child: Padding(
+                          padding: const EdgeInsets.all(ClSpace.s1),
+                          child: Text(
+                            l10n.imAdjust,
+                            style: cl.text.label.copyWith(
+                              color: cl.colors.mintText,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            if (skippedCount > 0) ...[
+              const SizedBox(height: ClSpace.s3),
+              SpGroup(
+                children: [
+                  SpActionRow(
+                    key: const Key('imSkipped'),
+                    icon: ClIcons.alert,
+                    label: l10n.imSkippedRows(skippedCount),
+                    value: [
                       if (c.duplicates > 0) l10n.imDuplicates(c.duplicates),
                       if (c.income > 0) l10n.imIncome(c.income),
                       if (c.errors > 0) l10n.imErrors(c.errors),
                     ].join(' · '),
+                    onTap: () => showClSheet<void>(
+                      context: context,
+                      builder: (_) =>
+                          _SkippedSheet(rows: im.skipped, total: skippedCount),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            if (categories.isNotEmpty) ...[
+              const SizedBox(height: ClSpace.s6),
+              ClSectionHeader(title: l10n.imCategoriesTitle),
+              if (unmatched > 0) ...[
+                const SizedBox(height: ClSpace.s1),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: ClSpace.s1),
+                  child: Text(
+                    l10n.imCategoriesHint(unmatched),
                     style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                  ),
-                ],
-              ),
-            ),
-            if (im.kind == ImportKind.file) ...[
-              const SizedBox(height: ClSpace.s6),
-              ClSectionHeader(title: l10n.imColumns),
-              const SizedBox(height: ClSpace.s2),
-              SpGroup(
-                children: [
-                  SpActionRow(
-                    icon: ClIcons.today,
-                    label: l10n.spDate,
-                    value: col(m.date),
-                    onTap: () => _pickColumn(
-                      scope,
-                      im,
-                      l10n.spDate,
-                      m.date,
-                      (i) => m.copyWith(date: () => i),
-                    ),
-                  ),
-                  SpActionRow(
-                    icon: ClIcons.grid,
-                    label: l10n.spAmount,
-                    value: col(m.amount),
-                    onTap: () => _pickColumn(
-                      scope,
-                      im,
-                      l10n.spAmount,
-                      m.amount,
-                      (i) => m.copyWith(amount: () => i),
-                    ),
-                  ),
-                  SpActionRow(
-                    icon: ClIcons.journal,
-                    label: l10n.spNote,
-                    value: m.note.isEmpty
-                        ? l10n.imColumnNone
-                        : m.note.map(col).join(' + '),
-                    onTap: () => _pickColumn(
-                      scope,
-                      im,
-                      l10n.spNote,
-                      m.note.firstOrNull,
-                      (i) => m.copyWith(note: i == null ? const [] : [i]),
-                    ),
-                  ),
-                  SpActionRow(
-                    icon: ClIcons.star,
-                    label: l10n.spCategory,
-                    value: col(m.category),
-                    onTap: () => _pickColumn(
-                      scope,
-                      im,
-                      l10n.spCategory,
-                      m.category,
-                      (i) => m.copyWith(category: () => i),
-                    ),
-                  ),
-                  SpActionRow(
-                    icon: ClIcons.family,
-                    label: l10n.spPayer,
-                    value: col(m.payer),
-                    onTap: () => _pickColumn(
-                      scope,
-                      im,
-                      l10n.spPayer,
-                      m.payer,
-                      (i) => m.copyWith(payer: () => i),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            if (im.ambiguousDates || im.mixedSigns) ...[
-              const SizedBox(height: ClSpace.s6),
-              ClSectionHeader(title: l10n.imReading),
-            ],
-            if (im.ambiguousDates) ...[
-              SpLabel(l10n.imDateOrder),
-              ClSegmented<DateOrder>(
-                options: DateOrder.values,
-                selected: im.options.dateOrder,
-                labelOf: (o) => switch (o) {
-                  DateOrder.dmy => l10n.imDateDmy,
-                  DateOrder.mdy => l10n.imDateMdy,
-                },
-                onChanged: (o) => unawaited(
-                  _reread(
-                    scope,
-                    im,
-                    options: im.options.copyWith(dateOrder: o),
-                  ),
-                ),
-              ),
-            ],
-            if (im.mixedSigns) ...[
-              SpLabel(l10n.imRowsAre),
-              ClSegmented<RowSign>(
-                options: const [
-                  RowSign.negative,
-                  RowSign.positive,
-                  RowSign.all,
-                ],
-                selected: im.options.rows,
-                labelOf: (o) => switch (o) {
-                  RowSign.negative => l10n.imRowsNegative,
-                  RowSign.positive => l10n.imRowsPositive,
-                  RowSign.all => l10n.imRowsAll,
-                },
-                onChanged: (o) => unawaited(
-                  _reread(scope, im, options: im.options.copyWith(rows: o)),
-                ),
-              ),
-            ],
-            const SizedBox(height: ClSpace.s3),
-            SpGroup(
-              children: [
-                SpActionRow(
-                  icon: ClIcons.check,
-                  label: l10n.imSkipDuplicates,
-                  value: l10n.imSkipDuplicatesHint,
-                  trailing: ClToggle(
-                    value: im.options.skipDuplicates,
-                    semanticLabel: l10n.imSkipDuplicates,
-                    onChanged: _busy
-                        ? null
-                        : (v) => unawaited(
-                            _reread(
-                              scope,
-                              im,
-                              options: im.options.copyWith(skipDuplicates: v),
-                            ),
-                          ),
                   ),
                 ),
               ],
-            ),
-            if (im.categories.isNotEmpty) ...[
-              const SizedBox(height: ClSpace.s6),
-              ClSectionHeader(title: l10n.imCategories),
               const SizedBox(height: ClSpace.s2),
               SpGroup(
                 children: [
-                  for (final cat in im.categories)
-                    SpActionRow(
+                  for (final cat in categories)
+                    _MatchRow(
                       key: Key('imCat-${cat.key}'),
-                      icon: ClIcons.star,
-                      label: l10n.imSourceRows(cat.name, cat.rows),
-                      value: l10n.imInto(choiceName(_categoryOf(cat))),
+                      from: cat.name,
+                      count: cat.rows,
+                      to: choiceName(_categoryOf(cat)),
+                      needsChoice:
+                          cat.suggested == null &&
+                          !_categories.containsKey(cat.key),
                       onTap: () async {
                         final picked = await showClSheet<(CategoryChoice?,)>(
                           context: context,
                           builder: (_) => _ChoiceSheet<CategoryChoice?>(
-                            title: cat.name,
+                            title: l10n.imCategoryFor(cat.name),
                             current: _categoryOf(cat),
                             options: [
                               (
@@ -753,10 +701,11 @@ class _SpendingImportReviewScreenState
               SpGroup(
                 children: [
                   for (final p in im.payers)
-                    SpActionRow(
-                      icon: ClIcons.family,
-                      label: l10n.imSourceRows(p.name, p.rows),
-                      value: l10n.imInto(payerName(_payerOf(p))),
+                    _MatchRow(
+                      from: p.name,
+                      count: p.rows,
+                      to: payerName(_payerOf(p)),
+                      needsChoice: false,
                       onTap: () async {
                         final picked = await showClSheet<(String?,)>(
                           context: context,
@@ -781,17 +730,391 @@ class _SpendingImportReviewScreenState
                 ],
               ),
             ],
-            const SizedBox(height: ClSpace.s6),
-            ClSectionHeader(title: l10n.imPreview(im.preview.length)),
-            const SizedBox(height: ClSpace.s2),
-            SpGroup(
-              children: [
-                for (final r in im.preview) _PreviewRow(row: r, locale: locale),
-              ],
-            ),
+            if (im.preview.isNotEmpty) ...[
+              const SizedBox(height: ClSpace.s6),
+              ClSectionHeader(
+                title: l10n.imSamples,
+                linkLabel: im.preview.length > 5
+                    ? (_allRows ? l10n.imShowLess : l10n.imShowMore)
+                    : null,
+                onLink: () => setState(() => _allRows = !_allRows),
+              ),
+              const SizedBox(height: ClSpace.s2),
+              SpGroup(
+                children: [
+                  for (final r in rows) _PreviewRow(row: r, locale: locale),
+                ],
+              ),
+            ],
           ],
         ),
         if (_busy) _BusyOverlay(label: l10n.imBusyReading),
+      ],
+    );
+  }
+}
+
+/// "Bơi lội · 4 khoản" → "Tạo mới “Bơi lội”"; a name without a match is marked.
+class _MatchRow extends StatelessWidget {
+  const _MatchRow({
+    required this.from,
+    required this.count,
+    required this.to,
+    required this.needsChoice,
+    required this.onTap,
+    super.key,
+  });
+
+  final String from;
+  final int count;
+  final String to;
+  final bool needsChoice;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    return ClPressable(
+      onPressed: onTap,
+      pressedOpacity: ClPressable.surfaceOpacity,
+      semanticLabel: '$from, $to',
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: ClSpace.s4,
+            vertical: 10,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.imSourceRows(from, count),
+                      style: spRowTitle(context),
+                    ),
+                    Text(
+                      l10n.imInto(to),
+                      style: cl.text.caption.copyWith(
+                        color: needsChoice
+                            ? cl.colors.mintText
+                            : cl.colors.inkMuted,
+                        fontWeight: needsChoice ? FontWeight.w600 : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (needsChoice) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: ClSpace.s2,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: cl.colors.sunshineSoft,
+                    borderRadius: BorderRadius.circular(ClRadius.pill),
+                  ),
+                  child: Text(
+                    l10n.imChoose,
+                    style: cl.text.caption.copyWith(
+                      color: cl.colors.onWarm,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: ClSpace.s2),
+              ],
+              ClIcon(ClIcons.chevronRight, size: 18, color: cl.colors.inkMuted),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "Cách đọc tệp": the columns found, and the questions a file can raise (day order, which
+/// rows are spending, duplicates). Every change reads the file again on the server.
+class _ReadingSheet extends ConsumerStatefulWidget {
+  const _ReadingSheet({required this.importId});
+  final String importId;
+
+  @override
+  ConsumerState<_ReadingSheet> createState() => _ReadingSheetState();
+}
+
+class _ReadingSheetState extends ConsumerState<_ReadingSheet> {
+  bool _busy = false;
+
+  Future<void> _reread(
+    SpendingScope scope,
+    SpendingImport im, {
+    ImportMapping? mapping,
+    ImportOptions? options,
+  }) async {
+    final l10n = AppLocalizations.of(context);
+    final toaster = ClToaster.of(context);
+    setState(() => _busy = true);
+    try {
+      await ref
+          .read(spendingImportRepositoryProvider)
+          .analyze(
+            babyId: scope.babyId,
+            importId: im.id,
+            kind: im.kind,
+            mapping: mapping ?? im.mapping,
+            options: options ?? im.options,
+          );
+    } on ImportException catch (e) {
+      toaster.show(message: importFailureLabel(l10n, e.reason));
+    } on Object {
+      toaster.show(message: l10n.imFailGeneric);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _pickColumn(
+    SpendingScope scope,
+    SpendingImport im,
+    String title,
+    int? current,
+    ImportMapping Function(int?) apply,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final picked = await showClSheet<(int?,)>(
+      context: context,
+      builder: (_) => _ChoiceSheet<int?>(
+        title: title,
+        current: current,
+        options: [
+          (null, l10n.imColumnNone),
+          for (final (i, name) in im.columns.indexed) (i, name),
+        ],
+      ),
+    );
+    if (picked == null || !mounted) return;
+    await _reread(scope, im, mapping: apply(picked.$1));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final scope = watchSpending(ref);
+    final im = scope == null
+        ? null
+        : ref
+              .watch(spendingImportProvider((scope.babyId, widget.importId)))
+              .value;
+    if (scope == null || im == null) return const SizedBox(height: 200);
+    final m = im.mapping;
+    String col(int? i) =>
+        i == null || i >= im.columns.length ? l10n.imColumnNone : im.columns[i];
+    Widget column(
+      ClIcons icon,
+      String label,
+      String value,
+      int? current,
+      ImportMapping Function(int?) apply,
+    ) => SpActionRow(
+      icon: icon,
+      label: label,
+      value: value,
+      onTap: _busy ? null : () => _pickColumn(scope, im, label, current, apply),
+    );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          container: true,
+          explicitChildNodes: true,
+          child: ClSheetHeader(title: l10n.imAdjustTitle),
+        ),
+        Flexible(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (_busy)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: ClSpace.s3),
+                    child: LinearProgressIndicator(
+                      color: cl.colors.mintDeep,
+                      backgroundColor: cl.colors.surface2,
+                    ),
+                  ),
+                if (im.ambiguousDates) ...[
+                  SpLabel(l10n.imDateOrder),
+                  ClSegmented<DateOrder>(
+                    options: DateOrder.values,
+                    selected: im.options.dateOrder,
+                    labelOf: (o) => switch (o) {
+                      DateOrder.dmy => l10n.imDateDmy,
+                      DateOrder.mdy => l10n.imDateMdy,
+                    },
+                    onChanged: (o) => unawaited(
+                      _reread(
+                        scope,
+                        im,
+                        options: im.options.copyWith(dateOrder: o),
+                      ),
+                    ),
+                  ),
+                ],
+                if (im.mixedSigns) ...[
+                  SpLabel(l10n.imRowsAre),
+                  ClSegmented<RowSign>(
+                    options: const [
+                      RowSign.negative,
+                      RowSign.positive,
+                      RowSign.all,
+                    ],
+                    selected: im.options.rows,
+                    labelOf: (o) => switch (o) {
+                      RowSign.negative => l10n.imRowsNegative,
+                      RowSign.positive => l10n.imRowsPositive,
+                      RowSign.all => l10n.imRowsAll,
+                    },
+                    onChanged: (o) => unawaited(
+                      _reread(scope, im, options: im.options.copyWith(rows: o)),
+                    ),
+                  ),
+                ],
+                if (im.kind == ImportKind.file) ...[
+                  SpLabel(l10n.imColumns),
+                  ClCardGroupLike(
+                    children: [
+                      column(
+                        ClIcons.today,
+                        l10n.spDate,
+                        col(m.date),
+                        m.date,
+                        (i) => m.copyWith(date: () => i),
+                      ),
+                      column(
+                        ClIcons.grid,
+                        l10n.spAmount,
+                        col(m.amount),
+                        m.amount,
+                        (i) => m.copyWith(amount: () => i),
+                      ),
+                      column(
+                        ClIcons.journal,
+                        l10n.spNote,
+                        m.note.isEmpty
+                            ? l10n.imColumnNone
+                            : m.note.map(col).join(' + '),
+                        m.note.firstOrNull,
+                        (i) => m.copyWith(note: i == null ? const [] : [i]),
+                      ),
+                      column(
+                        ClIcons.star,
+                        l10n.spCategory,
+                        col(m.category),
+                        m.category,
+                        (i) => m.copyWith(category: () => i),
+                      ),
+                      column(
+                        ClIcons.family,
+                        l10n.spPayer,
+                        col(m.payer),
+                        m.payer,
+                        (i) => m.copyWith(payer: () => i),
+                      ),
+                    ],
+                  ),
+                ],
+                const SizedBox(height: ClSpace.s3),
+                ClCardGroupLike(
+                  children: [
+                    SpActionRow(
+                      icon: ClIcons.check,
+                      label: l10n.imSkipDuplicates,
+                      value: l10n.imSkipDuplicatesHint,
+                      trailing: ClToggle(
+                        value: im.options.skipDuplicates,
+                        semanticLabel: l10n.imSkipDuplicates,
+                        onChanged: _busy
+                            ? null
+                            : (v) => unawaited(
+                                _reread(
+                                  scope,
+                                  im,
+                                  options: im.options.copyWith(
+                                    skipDuplicates: v,
+                                  ),
+                                ),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: ClSpace.s3),
+              ],
+            ),
+          ),
+        ),
+        ClButton(
+          label: l10n.customizeDone,
+          expand: true,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        const SizedBox(height: ClSpace.s2),
+      ],
+    );
+  }
+}
+
+/// The rows left out, with why.
+class _SkippedSheet extends StatelessWidget {
+  const _SkippedSheet({required this.rows, required this.total});
+  final List<ImportPreviewRow> rows;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = spLocale(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Its own node: next to the scrolling list the title and "Đóng" would read as one.
+        Semantics(
+          container: true,
+          explicitChildNodes: true,
+          child: ClSheetHeader(title: l10n.imSkippedRows(total)),
+        ),
+        Text(
+          l10n.imSkippedExplain,
+          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        Flexible(
+          child: SingleChildScrollView(
+            child: SpGroup(
+              children: [
+                for (final r in rows) _PreviewRow(row: r, locale: locale),
+                if (total > rows.length)
+                  Padding(
+                    padding: const EdgeInsets.all(ClSpace.s4),
+                    child: Text(
+                      l10n.imSkippedMore(total - rows.length),
+                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: ClSpace.s4),
       ],
     );
   }

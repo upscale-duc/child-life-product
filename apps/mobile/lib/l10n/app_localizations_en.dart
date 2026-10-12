@@ -8750,9 +8750,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upNoStore => 'Couldn\'t open the update page. Try again later.';
 
   @override
-  String get spImport => 'Import';
-
-  @override
   String get spFirstImport => 'Import from another app or Excel';
 
   @override
@@ -8819,33 +8816,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imReviewTitle => 'Review';
 
   @override
-  String imPreset(String name) {
-    return 'Recognised: $name';
-  }
-
-  @override
-  String imWillImport(int n) {
-    String _temp0 = intl.Intl.pluralLogic(
-      n,
-      locale: localeName,
-      other: '$n items will be imported',
-      one: '1 item will be imported',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String imRows(int n) {
-    String _temp0 = intl.Intl.pluralLogic(
-      n,
-      locale: localeName,
-      other: '$n rows',
-      one: '1 row',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String imDuplicates(int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
@@ -8885,9 +8855,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imColumnNone => 'None';
 
   @override
-  String get imReading => 'How to read it';
-
-  @override
   String get imDateOrder => 'Dates are written as';
 
   @override
@@ -8915,9 +8882,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imSkipDuplicatesHint => 'Same day, amount and description';
 
   @override
-  String get imCategories => 'Categories';
-
-  @override
   String imSourceRows(String name, int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
@@ -8931,11 +8895,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String imNewCategory(String name) {
     return 'New “$name”';
-  }
-
-  @override
-  String imPreview(int n) {
-    return 'First $n rows';
   }
 
   @override
@@ -9140,4 +9099,113 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get upFirstAid => 'First aid';
+
+  @override
+  String imTotal(String amount) {
+    return 'Total $amount';
+  }
+
+  @override
+  String imDays(String from, String to) {
+    return 'From $from to $to';
+  }
+
+  @override
+  String get imReadingAuto => 'Columns found automatically';
+
+  @override
+  String imReadingPreset(String name) {
+    return '$name file';
+  }
+
+  @override
+  String get imReadingNegative => 'negative amounts are spending';
+
+  @override
+  String get imReadingPositive => 'positive amounts are spending';
+
+  @override
+  String get imReadingAllSigns => 'both negative and positive amounts';
+
+  @override
+  String get imReadingDmy => 'day/month/year';
+
+  @override
+  String get imReadingMdy => 'month/day/year';
+
+  @override
+  String get imAdjust => 'Adjust';
+
+  @override
+  String get imAdjustTitle => 'How the file is read';
+
+  @override
+  String imSkippedRows(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n rows left out',
+      one: '1 row left out',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imSkippedExplain =>
+      'These rows won\'t be imported. Fix them in the file and import again if needed.';
+
+  @override
+  String imSkippedMore(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'And $n more rows',
+      one: 'And 1 more row',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imCategoriesTitle => 'Put into categories';
+
+  @override
+  String imCategoriesHint(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other:
+          '$n names aren\'t in Spending yet — tap to choose where they go, or they go to “Other”.',
+      one:
+          '1 name isn\'t in Spending yet — tap to choose where it goes, or it goes to “Other”.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String imCategoryFor(String name) {
+    return 'Put “$name” into';
+  }
+
+  @override
+  String get imChoose => 'Choose';
+
+  @override
+  String get imSamples => 'Some of what will be imported';
+
+  @override
+  String get imShowMore => 'Show more';
+
+  @override
+  String get imShowLess => 'Show less';
+
+  @override
+  String imReadyLabel(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'expenses ready to import',
+      one: 'expense ready to import',
+    );
+    return '$_temp0';
+  }
 }

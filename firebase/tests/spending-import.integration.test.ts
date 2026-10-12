@@ -238,15 +238,15 @@ describe('analyze (file)', () => {
       'Wallet',
       'Paid by',
     ]);
-    expect(d.preview.map((r: { issue: string | null }) => r.issue)).toEqual([
-      null,
+    // The review: rows that will be imported, rows left out with why, the total and days.
+    expect(d.preview.map((r: { issue: string | null }) => r.issue)).toEqual([null, null, null]);
+    expect(d.skipped.map((r: { issue: string | null }) => r.issue)).toEqual([
       'duplicate',
-      null,
       'income',
       'other-currency',
-      null,
       'future-date',
     ]);
+    expect(d.total.from).toBe('2026-10-01');
     expect(d.preview[0]).toEqual({
       row: 2,
       spentOn: '2026-10-01',
@@ -344,7 +344,7 @@ describe('analyze (AI)', () => {
       preset: null,
       counts: { rows: 2, ready: 1, duplicates: 0, income: 0, errors: 1 },
     });
-    expect(d.preview[1].issue).toBe('no-date');
+    expect(d.skipped[0].issue).toBe('no-date');
     await analyzeSpendingImport(
       deps(),
       'mom',

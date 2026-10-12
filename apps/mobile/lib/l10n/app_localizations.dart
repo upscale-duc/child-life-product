@@ -13726,12 +13726,6 @@ abstract class AppLocalizations {
   /// Nhập chi tiêu (D-060).
   ///
   /// In vi, this message translates to:
-  /// **'Nhập'**
-  String get spImport;
-
-  /// Nhập chi tiêu (D-060).
-  ///
-  /// In vi, this message translates to:
   /// **'Nhập từ app khác hoặc Excel'**
   String get spFirstImport;
 
@@ -13852,24 +13846,6 @@ abstract class AppLocalizations {
   /// Nhập chi tiêu (D-060).
   ///
   /// In vi, this message translates to:
-  /// **'Nhận dạng: {name}'**
-  String imPreset(String name);
-
-  /// Nhập chi tiêu (D-060).
-  ///
-  /// In vi, this message translates to:
-  /// **'Sẽ nhập {n} khoản'**
-  String imWillImport(int n);
-
-  /// Nhập chi tiêu (D-060).
-  ///
-  /// In vi, this message translates to:
-  /// **'{n} dòng'**
-  String imRows(int n);
-
-  /// Nhập chi tiêu (D-060).
-  ///
-  /// In vi, this message translates to:
   /// **'{n} khoản trùng'**
   String imDuplicates(int n);
 
@@ -13896,12 +13872,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Không có'**
   String get imColumnNone;
-
-  /// Nhập chi tiêu (D-060).
-  ///
-  /// In vi, this message translates to:
-  /// **'Cách đọc'**
-  String get imReading;
 
   /// Nhập chi tiêu (D-060).
   ///
@@ -13960,12 +13930,6 @@ abstract class AppLocalizations {
   /// Nhập chi tiêu (D-060).
   ///
   /// In vi, this message translates to:
-  /// **'Danh mục'**
-  String get imCategories;
-
-  /// Nhập chi tiêu (D-060).
-  ///
-  /// In vi, this message translates to:
   /// **'{name} · {n} khoản'**
   String imSourceRows(String name, int n);
 
@@ -13974,12 +13938,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tạo mới “{name}”'**
   String imNewCategory(String name);
-
-  /// Nhập chi tiêu (D-060).
-  ///
-  /// In vi, this message translates to:
-  /// **'Xem trước {n} dòng đầu'**
-  String imPreview(int n);
 
   /// Nhập chi tiêu (D-060).
   ///
@@ -14256,6 +14214,138 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Sơ cứu'**
   String get upFirstAid;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng {amount}'**
+  String imTotal(String amount);
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ {from} đến {to}'**
+  String imDays(String from, String to);
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tự nhận các cột'**
+  String get imReadingAuto;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tệp {name}'**
+  String imReadingPreset(String name);
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'số âm là khoản chi'**
+  String get imReadingNegative;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'số dương là khoản chi'**
+  String get imReadingPositive;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'lấy cả số âm và số dương'**
+  String get imReadingAllSigns;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'ngày/tháng/năm'**
+  String get imReadingDmy;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'tháng/ngày/năm'**
+  String get imReadingMdy;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh'**
+  String get imAdjust;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách đọc tệp'**
+  String get imAdjustTitle;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua {n} dòng'**
+  String imSkippedRows(int n);
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các dòng này không được nhập. Sửa trong tệp rồi nhập lại nếu cần.'**
+  String get imSkippedExplain;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Và {n} dòng khác'**
+  String imSkippedMore(int n);
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xếp vào danh mục'**
+  String get imCategoriesTitle;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} mục chưa có trong Chi tiêu — chạm để chọn nơi xếp, nếu không sẽ vào “Khác”.'**
+  String imCategoriesHint(int n);
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xếp “{name}” vào'**
+  String imCategoryFor(String name);
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn'**
+  String get imChoose;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một vài khoản sẽ nhập'**
+  String get imSamples;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm'**
+  String get imShowMore;
+
+  /// Nhập chi tiêu (D-060), review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu gọn'**
+  String get imShowLess;
+
+  /// Nhập chi tiêu (D-060), under the count.
+  ///
+  /// In vi, this message translates to:
+  /// **'khoản chi sẵn sàng nhập'**
+  String imReadyLabel(int n);
 }
 
 class _AppLocalizationsDelegate

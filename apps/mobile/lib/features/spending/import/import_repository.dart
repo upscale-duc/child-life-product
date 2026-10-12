@@ -271,6 +271,8 @@ class SpendingImport {
     required this.ambiguousDates,
     required this.counts,
     required this.preview,
+    this.skipped = const [],
+    this.total = (amount: 0, from: null, to: null),
     required this.categories,
     required this.payers,
     required this.progress,
@@ -294,7 +296,15 @@ class SpendingImport {
   final bool mixedSigns;
   final bool ambiguousDates;
   final ImportCounts counts;
+
+  /// The first rows that will be imported.
   final List<ImportPreviewRow> preview;
+
+  /// The first rows left out, with why.
+  final List<ImportPreviewRow> skipped;
+
+  /// What will be imported: the sum and the first and last day.
+  final ({int amount, String? from, String? to}) total;
   final List<SourceName<CategoryChoice>> categories;
   final List<SourceName<String>> payers;
 
@@ -349,6 +359,18 @@ class SpendingImport {
         for (final r in (j['preview'] as List? ?? const []))
           ImportPreviewRow.fromJson(r),
       ],
+      skipped: [
+        for (final r in (j['skipped'] as List? ?? const []))
+          ImportPreviewRow.fromJson(r),
+      ],
+      total: switch (j['total']) {
+        final Map<Object?, Object?> t => (
+          amount: (t['amount'] as num?)?.toInt() ?? 0,
+          from: t['from'] as String?,
+          to: t['to'] as String?,
+        ),
+        _ => (amount: 0, from: null, to: null),
+      },
       categories: [
         for (final c in maps(j['categories']))
           SourceName<CategoryChoice>(

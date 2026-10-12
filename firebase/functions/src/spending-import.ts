@@ -700,6 +700,31 @@ export function summarize(
   };
 }
 
+/**
+ * What the review shows: the first rows that will be imported, the rows left out with why, and
+ * the total and days of what will be imported.
+ */
+export function previewOf(rows: ReadRow[]): {
+  preview: ReadRow[];
+  skipped: ReadRow[];
+  total: { amount: number; from: string | null; to: string | null };
+} {
+  const ready = rows.filter((r) => r.issue == null);
+  const days = ready
+    .map((r) => r.spentOn)
+    .filter((d): d is string => d != null)
+    .sort();
+  return {
+    preview: ready.slice(0, importLimits.previewRows),
+    skipped: rows.filter((r) => r.issue != null).slice(0, importLimits.skippedRows),
+    total: {
+      amount: ready.reduce((sum, r) => sum + (r.amount ?? 0), 0),
+      from: days[0] ?? null,
+      to: days[days.length - 1] ?? null,
+    },
+  };
+}
+
 // ---------- Firebase ----------
 
 /** Storage behind one port (tests use memory). */
@@ -968,6 +993,8 @@ export async function analyzeSpendingImport(
       ambiguousDates: false,
       counts: emptyCounts,
       preview: [],
+      skipped: [],
+      total: { amount: 0, from: null, to: null },
       categories: [],
       payers: [],
     });
@@ -1024,7 +1051,7 @@ export async function analyzeSpendingImport(
     mixedSigns,
     ambiguousDates,
     counts: countRows(rows),
-    preview: rows.slice(0, importLimits.previewRows),
+    ...previewOf(rows),
     categories: summary.categories,
     payers: summary.payers,
   };

@@ -96,9 +96,16 @@ Future<(List<Visit>, ProviderContainer)> _pump(
 }
 
 void main() {
-  testWidgets('Chi tiêu offers "Nhập" to Cùng nuôi', (tester) async {
-    await _pump(tester, const SpendingScreen());
-    expect(find.byKey(const Key('spImport')), findsOneWidget);
+  testWidgets('Chi tiêu offers a small "Nhập" under "Thêm khoản chi"', (
+    tester,
+  ) async {
+    final (visits, _) = await _pump(tester, const SpendingScreen());
+    final add = tester.getCenter(find.byKey(const Key('spAdd')));
+    final import = tester.getCenter(find.byKey(const Key('spImport')));
+    expect(import.dy, greaterThan(add.dy));
+    await tester.tap(find.byKey(const Key('spImport')));
+    await tester.pumpAndSettle();
+    expect(visits.last.location, '/utilities/spending/import');
   });
 
   testWidgets('sources and the recent imports; parents only', (tester) async {
@@ -136,22 +143,39 @@ void main() {
       const SpendingImportReviewScreen(importId: _id),
       repo: repo,
     );
-    expect(_t('Sẽ nhập 210 khoản'), findsOneWidget);
-    expect(
-      _t('216 dòng · 3 khoản trùng · 2 khoản thu · 1 dòng lỗi'),
-      findsOneWidget,
-    );
-    expect(_t('money-lover-2026.csv · Nhận dạng: Money Lover'), findsOneWidget);
-    expect(_t('Date'), findsOneWidget);
+    expect(_t('210'), findsOneWidget);
+    expect(_t('khoản chi sẵn sàng nhập'), findsOneWidget);
+    expect(_t('Tổng 41.815.000 ₫'), findsOneWidget);
+    expect(_t('Từ 20/03/2026 đến 12/10/2026'), findsOneWidget);
+    expect(_t('Tệp Money Lover · số âm là khoản chi'), findsOneWidget);
+    // Columns and options wait in "Chỉnh"; the rows left out in their own sheet.
+    expect(_t('Cột trong tệp'), findsNothing);
+    expect(_t('Bỏ qua 6 dòng'), findsOneWidget);
+    await tester.tap(_t('Bỏ qua 6 dòng'));
+    await tester.pumpAndSettle();
+    expect(_t('Thiếu ngày'), findsOneWidget);
+    expect(_t('Và 5 dòng khác'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('Đóng').last);
+    await tester.pumpAndSettle();
 
-    // Spending is the positive rows: read again.
-    await _see(tester, _t('Số dương'));
+    // Spending is the positive rows: read again, from "Chỉnh".
+    await tester.tap(find.byKey(const Key('imAdjust')));
+    await tester.pumpAndSettle();
+    expect(_t('Cột trong tệp'), findsOneWidget);
     await tester.tap(_t('Số dương'));
     await tester.pumpAndSettle();
     expect(repo.analyzed.single.$2?.rows, RowSign.positive);
+    await tester.tap(_t('Xong'));
+    await tester.pumpAndSettle();
 
-    // "Bơi" has no match: it goes to a new category.
-    await _see(tester, find.byKey(const Key('imCat-boi')));
+    // "Bơi" has no match: it is first and marked; it goes to a new category.
+    expect(
+      _t(
+        '1 mục chưa có trong Chi tiêu — chạm để chọn nơi xếp, nếu không sẽ vào “Khác”.',
+      ),
+      findsOneWidget,
+    );
+    expect(_t('Chọn'), findsOneWidget);
     expect(_t('Vào: Sữa & ăn dặm'), findsOneWidget);
     expect(_t('Vào: Khác'), findsOneWidget);
     await tester.tap(find.byKey(const Key('imCat-boi')));
@@ -159,8 +183,9 @@ void main() {
     await tester.tap(_t('Tạo mới “Bơi”').last);
     await tester.pumpAndSettle();
     expect(_t('Vào: Tạo mới “Bơi”'), findsOneWidget);
+    expect(_t('Chọn'), findsNothing);
 
-    await _see(tester, _t('Thiếu ngày'));
+    await _see(tester, _t('Sữa công thức'));
     await tester.tap(_t('Nhập 210 khoản'));
     await tester.pumpAndSettle();
     expect(repo.confirmed?.categories, {

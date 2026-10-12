@@ -168,13 +168,13 @@ class _FirstUse extends StatelessWidget {
         ),
         if (scope.access.parent) ...[
           const SizedBox(height: ClSpace.s1),
-          ClButton(
-            key: const Key('spFirstImport'),
-            label: l10n.spFirstImport,
-            icon: ClIcons.download,
-            style: ClButtonStyle.secondary,
-            expand: true,
-            onPressed: () => context.push(Routes.spendingImport),
+          Center(
+            child: SpSmallLink(
+              key: const Key('spFirstImport'),
+              icon: ClIcons.download,
+              label: l10n.spFirstImport,
+              onPressed: () => context.push(Routes.spendingImport),
+            ),
           ),
           ClButton(
             label: l10n.spFirstBudget,
@@ -240,10 +240,23 @@ class _Month extends ConsumerWidget {
     final ranked = s.ranked;
     return SpPage(
       bottom: scope.access.record
-          ? SpBottomButton(
-              key: const Key('spAdd'),
-              label: l10n.spAdd,
-              onPressed: () => showExpenseSheet(context, scope: scope),
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SpBottomButton(
+                  key: const Key('spAdd'),
+                  label: l10n.spAdd,
+                  onPressed: () => showExpenseSheet(context, scope: scope),
+                ),
+                // Nhập chi tiêu (D-060), Cùng nuôi only: small, under "Thêm khoản chi".
+                if (scope.access.parent)
+                  SpSmallLink(
+                    key: const Key('spImport'),
+                    icon: ClIcons.download,
+                    label: l10n.spFirstImport,
+                    onPressed: () => context.push(Routes.spendingImport),
+                  ),
+              ],
             )
           : null,
       children: [
@@ -283,41 +296,26 @@ class _Month extends ConsumerWidget {
           locale: locale,
         ),
         const SizedBox(height: ClSpace.s3),
-        // One line that scrolls sideways (four shortcuts with "Nhập", D-060).
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          clipBehavior: Clip.none,
-          child: Row(
-            children: [
-              SpPill(
-                icon: ClIcons.grid,
-                label: l10n.spStats,
-                onPressed: () => context.push(Routes.spendingStats),
-              ),
-              const SizedBox(width: ClSpace.s2),
-              SpPill(
-                icon: ClIcons.sliders,
-                label: l10n.spBudget,
-                onPressed: () => context.push(Routes.spendingBudget),
-              ),
-              const SizedBox(width: ClSpace.s2),
-              SpPill(
-                icon: ClIcons.retry,
-                label: l10n.spRecurring,
-                onPressed: () => context.push(Routes.spendingRecurring),
-              ),
-              // Nhập chi tiêu (D-060), Cùng nuôi only.
-              if (scope.access.parent) ...[
-                const SizedBox(width: ClSpace.s2),
-                SpPill(
-                  key: const Key('spImport'),
-                  icon: ClIcons.download,
-                  label: l10n.spImport,
-                  onPressed: () => context.push(Routes.spendingImport),
-                ),
-              ],
-            ],
-          ),
+        Wrap(
+          spacing: ClSpace.s2,
+          runSpacing: ClSpace.s2,
+          children: [
+            SpPill(
+              icon: ClIcons.grid,
+              label: l10n.spStats,
+              onPressed: () => context.push(Routes.spendingStats),
+            ),
+            SpPill(
+              icon: ClIcons.sliders,
+              label: l10n.spBudget,
+              onPressed: () => context.push(Routes.spendingBudget),
+            ),
+            SpPill(
+              icon: ClIcons.retry,
+              label: l10n.spRecurring,
+              onPressed: () => context.push(Routes.spendingRecurring),
+            ),
+          ],
         ),
         const SizedBox(height: 18),
         ClSectionHeader(

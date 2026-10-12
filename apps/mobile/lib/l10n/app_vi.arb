@@ -12399,10 +12399,6 @@
   "@upNoStore": {
     "description": "Toast when the store link is missing or fails."
   },
-  "spImport": "Nhập",
-  "@spImport": {
-    "description": "Nhập chi tiêu (D-060)."
-  },
   "spFirstImport": "Nhập từ app khác hoặc Excel",
   "@spFirstImport": {
     "description": "Nhập chi tiêu (D-060)."
@@ -12488,33 +12484,6 @@
   "@imReviewTitle": {
     "description": "Nhập chi tiêu (D-060)."
   },
-  "imPreset": "Nhận dạng: {name}",
-  "@imPreset": {
-    "description": "Nhập chi tiêu (D-060).",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "imWillImport": "Sẽ nhập {n} khoản",
-  "@imWillImport": {
-    "description": "Nhập chi tiêu (D-060).",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "imRows": "{n} dòng",
-  "@imRows": {
-    "description": "Nhập chi tiêu (D-060).",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "imDuplicates": "{n} khoản trùng",
   "@imDuplicates": {
     "description": "Nhập chi tiêu (D-060).",
@@ -12548,10 +12517,6 @@
   },
   "imColumnNone": "Không có",
   "@imColumnNone": {
-    "description": "Nhập chi tiêu (D-060)."
-  },
-  "imReading": "Cách đọc",
-  "@imReading": {
     "description": "Nhập chi tiêu (D-060)."
   },
   "imDateOrder": "Ngày viết theo kiểu",
@@ -12590,10 +12555,6 @@
   "@imSkipDuplicatesHint": {
     "description": "Nhập chi tiêu (D-060)."
   },
-  "imCategories": "Danh mục",
-  "@imCategories": {
-    "description": "Nhập chi tiêu (D-060)."
-  },
   "imSourceRows": "{name} · {n} khoản",
   "@imSourceRows": {
     "description": "Nhập chi tiêu (D-060).",
@@ -12612,15 +12573,6 @@
     "placeholders": {
       "name": {
         "type": "String"
-      }
-    }
-  },
-  "imPreview": "Xem trước {n} dòng đầu",
-  "@imPreview": {
-    "description": "Nhập chi tiêu (D-060).",
-    "placeholders": {
-      "n": {
-        "type": "int"
       }
     }
   },
@@ -12865,5 +12817,136 @@
   "upFirstAid": "Sơ cứu",
   "@upFirstAid": {
     "description": "UP1: the offline Sơ cứu guide stays reachable while blocked (owner, 2026-10-12)."
+  },
+  "imTotal": "Tổng {amount}",
+  "@imTotal": {
+    "description": "Nhập chi tiêu (D-060), review.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "imDays": "Từ {from} đến {to}",
+  "@imDays": {
+    "description": "Nhập chi tiêu (D-060), review.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "imReadingAuto": "Đã tự nhận các cột",
+  "@imReadingAuto": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imReadingPreset": "Tệp {name}",
+  "@imReadingPreset": {
+    "description": "Nhập chi tiêu (D-060), review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "imReadingNegative": "số âm là khoản chi",
+  "@imReadingNegative": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imReadingPositive": "số dương là khoản chi",
+  "@imReadingPositive": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imReadingAllSigns": "lấy cả số âm và số dương",
+  "@imReadingAllSigns": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imReadingDmy": "ngày/tháng/năm",
+  "@imReadingDmy": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imReadingMdy": "tháng/ngày/năm",
+  "@imReadingMdy": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imAdjust": "Chỉnh",
+  "@imAdjust": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imAdjustTitle": "Cách đọc tệp",
+  "@imAdjustTitle": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imSkippedRows": "Bỏ qua {n} dòng",
+  "@imSkippedRows": {
+    "description": "Nhập chi tiêu (D-060), review.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imSkippedExplain": "Các dòng này không được nhập. Sửa trong tệp rồi nhập lại nếu cần.",
+  "@imSkippedExplain": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imSkippedMore": "Và {n} dòng khác",
+  "@imSkippedMore": {
+    "description": "Nhập chi tiêu (D-060), review.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imCategoriesTitle": "Xếp vào danh mục",
+  "@imCategoriesTitle": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imCategoriesHint": "{n} mục chưa có trong Chi tiêu — chạm để chọn nơi xếp, nếu không sẽ vào “Khác”.",
+  "@imCategoriesHint": {
+    "description": "Nhập chi tiêu (D-060), review.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imCategoryFor": "Xếp “{name}” vào",
+  "@imCategoryFor": {
+    "description": "Nhập chi tiêu (D-060), review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "imChoose": "Chọn",
+  "@imChoose": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imSamples": "Một vài khoản sẽ nhập",
+  "@imSamples": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imShowMore": "Xem thêm",
+  "@imShowMore": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imShowLess": "Thu gọn",
+  "@imShowLess": {
+    "description": "Nhập chi tiêu (D-060), review."
+  },
+  "imReadyLabel": "khoản chi sẵn sàng nhập",
+  "@imReadyLabel": {
+    "description": "Nhập chi tiêu (D-060), under the count.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

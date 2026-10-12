@@ -8189,9 +8189,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get upNoStore => 'Chưa mở được trang cập nhật. Thử lại sau nhé.';
 
   @override
-  String get spImport => 'Nhập';
-
-  @override
   String get spFirstImport => 'Nhập từ app khác hoặc Excel';
 
   @override
@@ -8258,21 +8255,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get imReviewTitle => 'Xem trước';
 
   @override
-  String imPreset(String name) {
-    return 'Nhận dạng: $name';
-  }
-
-  @override
-  String imWillImport(int n) {
-    return 'Sẽ nhập $n khoản';
-  }
-
-  @override
-  String imRows(int n) {
-    return '$n dòng';
-  }
-
-  @override
   String imDuplicates(int n) {
     return '$n khoản trùng';
   }
@@ -8292,9 +8274,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get imColumnNone => 'Không có';
-
-  @override
-  String get imReading => 'Cách đọc';
 
   @override
   String get imDateOrder => 'Ngày viết theo kiểu';
@@ -8324,9 +8303,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get imSkipDuplicatesHint => 'Cùng ngày, số tiền và nội dung';
 
   @override
-  String get imCategories => 'Danh mục';
-
-  @override
   String imSourceRows(String name, int n) {
     return '$name · $n khoản';
   }
@@ -8334,11 +8310,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String imNewCategory(String name) {
     return 'Tạo mới “$name”';
-  }
-
-  @override
-  String imPreview(int n) {
-    return 'Xem trước $n dòng đầu';
   }
 
   @override
@@ -8504,4 +8475,87 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get upFirstAid => 'Sơ cứu';
+
+  @override
+  String imTotal(String amount) {
+    return 'Tổng $amount';
+  }
+
+  @override
+  String imDays(String from, String to) {
+    return 'Từ $from đến $to';
+  }
+
+  @override
+  String get imReadingAuto => 'Đã tự nhận các cột';
+
+  @override
+  String imReadingPreset(String name) {
+    return 'Tệp $name';
+  }
+
+  @override
+  String get imReadingNegative => 'số âm là khoản chi';
+
+  @override
+  String get imReadingPositive => 'số dương là khoản chi';
+
+  @override
+  String get imReadingAllSigns => 'lấy cả số âm và số dương';
+
+  @override
+  String get imReadingDmy => 'ngày/tháng/năm';
+
+  @override
+  String get imReadingMdy => 'tháng/ngày/năm';
+
+  @override
+  String get imAdjust => 'Chỉnh';
+
+  @override
+  String get imAdjustTitle => 'Cách đọc tệp';
+
+  @override
+  String imSkippedRows(int n) {
+    return 'Bỏ qua $n dòng';
+  }
+
+  @override
+  String get imSkippedExplain =>
+      'Các dòng này không được nhập. Sửa trong tệp rồi nhập lại nếu cần.';
+
+  @override
+  String imSkippedMore(int n) {
+    return 'Và $n dòng khác';
+  }
+
+  @override
+  String get imCategoriesTitle => 'Xếp vào danh mục';
+
+  @override
+  String imCategoriesHint(int n) {
+    return '$n mục chưa có trong Chi tiêu — chạm để chọn nơi xếp, nếu không sẽ vào “Khác”.';
+  }
+
+  @override
+  String imCategoryFor(String name) {
+    return 'Xếp “$name” vào';
+  }
+
+  @override
+  String get imChoose => 'Chọn';
+
+  @override
+  String get imSamples => 'Một vài khoản sẽ nhập';
+
+  @override
+  String get imShowMore => 'Xem thêm';
+
+  @override
+  String get imShowLess => 'Thu gọn';
+
+  @override
+  String imReadyLabel(int n) {
+    return 'khoản chi sẵn sàng nhập';
+  }
 }

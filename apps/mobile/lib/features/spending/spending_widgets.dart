@@ -750,6 +750,48 @@ class SpActionRow extends StatelessWidget {
   }
 }
 
+/// A small text link under the bottom-bar button ("Nhập từ app khác hoặc Excel").
+class SpSmallLink extends StatelessWidget {
+  const SpSmallLink({
+    required this.label,
+    required this.onPressed,
+    this.icon,
+    super.key,
+  });
+
+  final String label;
+  final VoidCallback onPressed;
+  final ClIcons? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return ClPressable(
+      onPressed: onPressed,
+      semanticLabel: label,
+      child: SizedBox(
+        height: 40,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              ClIcon(icon!, size: 16, color: cl.colors.mintText),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              label,
+              style: cl.text.label.copyWith(
+                color: cl.colors.mintText,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// The primary bottom-bar button.
 class SpBottomButton extends StatelessWidget {
   const SpBottomButton({

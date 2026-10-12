@@ -21,6 +21,8 @@ export const importLimits = {
   imagesMax: 5,
   imageBytesMax: 4 * 1024 * 1024,
   previewRows: 20,
+  /** Rows left out shown on the review (with why); all are counted. */
+  skippedRows: 30,
   /** Row problems kept on the import (the rest are only counted). */
   issuesKept: 200,
   undoDays: 7,
@@ -174,7 +176,12 @@ export interface SpendingImportDoc {
   /** Whether a date such as 03/04 could be read both ways (the app then asks). */
   ambiguousDates: boolean;
   counts: ImportCounts;
+  /** The first rows that will be imported. */
   preview: ImportPreviewRow[];
+  /** The first rows left out, with why. */
+  skipped: ImportPreviewRow[];
+  /** What will be imported: the sum and the first and last day. */
+  total: { amount: number; from: string | null; to: string | null };
   /** Categories named in the file with a suggestion (folded name as key). */
   categories: { key: string; name: string; rows: number; suggested: CategoryChoice | null }[];
   payers: { key: string; name: string; rows: number; suggested: string | null }[];
