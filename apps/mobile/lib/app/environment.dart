@@ -10,8 +10,8 @@ enum AppEnvironment {
     iosAppId: 'dev.hsba.app',
     firebaseProjectId: 'child-life-dev',
     siteHost: 'dev.childlife.app',
-    // Firebase default domain until dev.childlife.app DNS is connected (plan §3.7).
-    webOrigin: 'https://child-life-dev-landing.web.app',
+    // The custom domain: iOS opens invite links only from the Associated Domains (D-059).
+    webOrigin: 'https://dev.childlife.app',
   ),
   prod(
     androidAppId: 'app.childlife',
