@@ -1,4 +1,4 @@
-import 'package:child_life/features/care/care_hub_screen.dart';
+import 'package:child_life/features/utilities/utilities_screen.dart';
 import 'package:child_life/features/first_aid/first_aid_models.dart';
 import 'package:child_life/features/first_aid/first_aid_screens.dart';
 import 'package:flutter/material.dart';
@@ -58,17 +58,17 @@ void main() {
   });
 
   testWidgets(
-    '7a: Chăm sóc shows the red entry only once a guide is on the device',
+    'Tiện ích lists Sơ cứu once a guide is on the device (450:6597)',
     (tester) async {
       await pumpRouted(
         tester,
-        const Scaffold(body: CareHubScreen()),
+        const Scaffold(body: UtilitiesScreen()),
         overrides: careOverrides(),
       );
-      expect(find.byKey(const Key('faEntry')), findsNothing);
+      expect(find.byKey(const Key('utFirstAid')), findsNothing);
       final (visits, _) = await pumpRouted(
         tester,
-        const Scaffold(body: CareHubScreen()),
+        const Scaffold(body: UtilitiesScreen()),
         overrides: careOverrides(firstAid: pack),
       );
       expect(find.text('Sơ cứu trẻ em'), findsOneWidget);
@@ -76,9 +76,9 @@ void main() {
         find.text('25 tình huống · dùng khi không có mạng'),
         findsOneWidget,
       );
-      await tester.tap(find.byKey(const Key('faEntry')));
+      await tester.tap(find.byKey(const Key('utFirstAid')));
       await tester.pumpAndSettle();
-      expect(visits.last.location, '/care/first-aid');
+      expect(visits.last.location, '/utilities/first-aid');
     },
   );
 
@@ -117,7 +117,7 @@ void main() {
     await tester.tap(find.byKey(const Key('faStartCpr')));
     await tester.pumpAndSettle();
     // Revision 2: CPR is the TH01 page itself (the beat starts on its own).
-    expect(visits.last.location, '/care/first-aid/s/cpr?v=under-1');
+    expect(visits.last.location, '/utilities/first-aid/s/cpr?v=under-1');
   });
 
   testWidgets(

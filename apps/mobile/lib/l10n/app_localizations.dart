@@ -13368,6 +13368,90 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bước {n}. {title}. {body}'**
   String faSpeakStep(int n, String title, String body);
+
+  /// Dock tab replacing Gia đình (450:6597).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiện ích'**
+  String get tabUtilities;
+
+  /// Tiện ích title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiện ích'**
+  String get utTitle;
+
+  /// Tiện ích section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho bé'**
+  String get utForBaby;
+
+  /// Chi tiêu row (full amount).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng này {amount}'**
+  String utSpendingMonth(String amount);
+
+  /// Chi tiêu row for someone allowed to record (450:6873).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản tôi đã chi'**
+  String get utMySpending;
+
+  /// Row subline (who granted it is not stored).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn được phép ghi khoản chi'**
+  String get utMySpendingSub;
+
+  /// Gia đình row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên & chia sẻ'**
+  String get utMembers;
+
+  /// Members row subline.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} người'**
+  String utMembersCount(int count);
+
+  /// Members row subline, after the count.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} lời mời đang chờ'**
+  String utMembersPending(int count);
+
+  /// Members row for caregivers and relatives.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thành viên gia đình'**
+  String get utMembersView;
+
+  /// Gia đình row (Cùng nuôi).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mời người thân'**
+  String get utInvite;
+
+  /// Invite row subline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ông bà, người chăm cùng theo dõi bé'**
+  String get utInviteSub;
+
+  /// Chăm sóc coming-soon tile (450:6424).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dinh dưỡng'**
+  String get careNutrition;
+
+  /// Tile subline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa, vi chất theo giai đoạn'**
+  String get careNutritionSub;
 }
 
 class _AppLocalizationsDelegate

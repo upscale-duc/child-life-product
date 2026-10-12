@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../first_aid/first_aid_modes.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
@@ -14,21 +13,18 @@ import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
-import '../baby/baby_repository.dart';
 import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
 import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
-import '../spending/spending_calc.dart';
-import '../spending/spending_format.dart';
-import '../spending/spending_models.dart';
-import '../spending/spending_repository.dart';
+import '../utilities/utilities_screen.dart' show CareSoonBadge;
 import '../vaccines/vaccine_format.dart';
 import 'care_repository.dart';
 import 'history_screen.dart' show HistoryFilter;
 
-/// Chăm sóc tab (v1.0 improvement 370:1971; caregiver 370:2174): search, daily care (Nhắc nhở ·
-/// Tiêm chủng · Thống kê · Lịch sử · Tăng trưởng) and the coming-soon teasers. Caregivers see no Tăng trưởng
+/// Chăm sóc tab (v1.0 improvement 450:6424; caregiver 370:2174): search, daily care (Nhắc nhở ·
+/// Tiêm chủng · Thống kê · Lịch sử · Tăng trưởng) and the coming-soon teasers (Wonder Week, Thẻ
+/// theo tuổi, Mốc phát triển, Ăn dặm, Dinh dưỡng). Sơ cứu, Chi tiêu and Thư viện are in Tiện ích. Caregivers see no Tăng trưởng
 /// tile. No "Cài đặt" section (owner, 2026-10-11): Tuỳ chỉnh lives on Hôm nay, Thông báo in Tôi.
 class CareHubScreen extends ConsumerStatefulWidget {
   const CareHubScreen({super.key});
@@ -83,30 +79,6 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
           )
         : l10n.careRemindersOn(rules.length + upcoming.length);
 
-    final spending = SpendingAccess.of(me);
-    final String spendingLine;
-    if (!spending.viewAll) {
-      spendingLine = l10n.spTileRecord;
-    } else {
-      final expenses =
-          ref.watch(expensesProvider((me.babyId, spending))).value ??
-          const <Expense>[];
-      final zone =
-          ref.watch(babyProvider(me.babyId)).value?.timeZone.zone ??
-          'Asia/Ho_Chi_Minh';
-      final today = babyToday(zone, now);
-      final total = MonthSummary.of(expenses, monthOf(today), today).total;
-      spendingLine = total == 0
-          ? l10n.spTileEmpty
-          : l10n.spTileMonth(
-              moneyShort(
-                l10n,
-                Localizations.localeOf(context).toLanguageTag(),
-                total,
-              ),
-            );
-    }
-
     final daily = [
       _Tile(
         icon: ClIcons.clock,
@@ -160,29 +132,46 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
             '${Routes.history}?filter=${HistoryFilter.growth.name}',
           ),
         ),
-      // Chi tiêu (v1.1 8a): for anyone with a spending right (D-055).
-      if (spending.any)
-        _Tile(
-          icon: ClIcons.grid,
-          tint: cl.care.growth.soft,
-          title: l10n.spTitle,
-          subtitle: spendingLine,
-          onTap: () => context.push(Routes.spending),
-        ),
     ].where((t) => _matches(t.title, t.subtitle)).toList();
 
     void soon() => showClToast(context, message: l10n.careSoonToast);
+    // 450:6424: drawn like the live tiles, each with its own chip; only the badge marks them.
     final teasers = [
-      for (final (title, subtitle) in [
-        (l10n.careWonderWeek, l10n.careWonderWeekSub),
-        (l10n.careAgeCards, l10n.careAgeCardsSub),
-        (l10n.careMilestones, l10n.careMilestonesSub),
-        (l10n.careLibrary, l10n.careLibrarySub),
-        (l10n.careSolids, l10n.careSolidsSub),
+      for (final (icon, tint, title, subtitle) in [
+        (
+          ClIcons.spark,
+          cl.care.sleep.soft,
+          l10n.careWonderWeek,
+          l10n.careWonderWeekSub,
+        ),
+        (
+          ClIcons.cake,
+          cl.colors.sunshineSoft,
+          l10n.careAgeCards,
+          l10n.careAgeCardsSub,
+        ),
+        (
+          ClIcons.star,
+          cl.colors.peachSoft,
+          l10n.careMilestones,
+          l10n.careMilestonesSub,
+        ),
+        (
+          ClIcons.feed,
+          cl.care.bottle.soft,
+          l10n.careSolids,
+          l10n.careSolidsSub,
+        ),
+        (
+          ClIcons.spark,
+          cl.colors.mintSoft,
+          l10n.careNutrition,
+          l10n.careNutritionSub,
+        ),
       ])
         _Tile(
-          icon: ClIcons.spark,
-          tint: cl.colors.surface,
+          icon: icon,
+          tint: tint,
           title: title,
           subtitle: subtitle,
           soon: true,
@@ -234,8 +223,6 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
               ),
             ),
           ),
-          // Sơ cứu trẻ em (v1.1 7a): the red entry, once a guide is on the device.
-          if (_query.isEmpty) const FirstAidEntry(),
           if (nothing) ...[
             const SizedBox(height: ClSpace.s6),
             Text(
@@ -352,16 +339,15 @@ class _Tile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    final fade = soon ? 0.6 : 1.0;
     return ClPressable(
       onPressed: onTap,
       semanticLabel: soon ? '$title. ${l10n.careSoon}' : '$title. $subtitle',
       child: Container(
-        padding: const EdgeInsets.all(ClSpace.s4),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: soon ? cl.colors.surface2 : cl.colors.surface,
+          color: cl.colors.surface,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: soon ? null : cl.shadows.card,
+          boxShadow: cl.shadows.card,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -369,52 +355,32 @@ class _Tile extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Opacity(
-                  opacity: soon ? 0.5 : 1,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: tint,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    alignment: Alignment.center,
-                    child: ClIcon(icon, size: 20, color: cl.colors.ink),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: tint,
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  child: ClIcon(icon, size: 18, color: cl.colors.ink),
                 ),
                 const Spacer(),
-                if (soon)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: ClSpace.s2,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: cl.colors.surface,
-                      borderRadius: BorderRadius.circular(ClRadius.pill),
-                    ),
-                    child: Text(
-                      l10n.careSoon,
-                      style: cl.text.caption.copyWith(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: cl.colors.inkMuted,
-                      ),
-                    ),
-                  ),
+                if (soon) const CareSoonBadge(),
               ],
             ),
-            const SizedBox(height: ClSpace.s3),
-            Opacity(
-              opacity: fade,
-              child: Text(title, style: cl.text.bodyStrong),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: cl.text.bodyStrong.copyWith(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: 2),
-            Opacity(
-              opacity: fade,
-              child: Text(
-                subtitle,
-                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            Text(
+              subtitle,
+              style: cl.text.caption.copyWith(
+                color: cl.colors.inkMuted,
+                height: 1.4,
               ),
             ),
           ],

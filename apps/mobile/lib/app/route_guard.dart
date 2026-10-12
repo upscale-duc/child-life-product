@@ -36,21 +36,23 @@ abstract final class Routes {
   /// Chi tiêu (v1.1 8a–8o): the month, history, an expense, budget, recurring, statistics.
   /// Sơ cứu trẻ em (v1.1 7a–7i, TH01–TH24): the index, search, saved, a situation
   /// (`/care/first-aid/s/<id>?v=<variant>`).
-  static const firstAid = '/care/first-aid';
-  static const firstAidSearch = '/care/first-aid/search';
-  static const firstAidSaved = '/care/first-aid/saved';
-  static const firstAidSituation = '/care/first-aid/s';
+  static const firstAid = '/utilities/first-aid';
+  static const firstAidSearch = '/utilities/first-aid/search';
+  static const firstAidSaved = '/utilities/first-aid/saved';
+  static const firstAidSituation = '/utilities/first-aid/s';
 
-  static const spending = '/care/spending';
-  static const spendingHistory = '/care/spending/history';
-  static const spendingExpense = '/care/spending/expense';
-  static const spendingBudget = '/care/spending/budget';
-  static const spendingRecurring = '/care/spending/recurring';
-  static const spendingStats = '/care/spending/stats';
-  static const spendingCategories = '/care/spending/categories';
+  static const spending = '/utilities/spending';
+  static const spendingHistory = '/utilities/spending/history';
+  static const spendingExpense = '/utilities/spending/expense';
+  static const spendingBudget = '/utilities/spending/budget';
+  static const spendingRecurring = '/utilities/spending/recurring';
+  static const spendingStats = '/utilities/spending/stats';
+  static const spendingCategories = '/utilities/spending/categories';
   static const messages = '/messages';
   static const memories = '/memories';
-  static const family = '/family';
+  /// Tiện ích tab (v1.0 improvement 450:6597): Sơ cứu, Chi tiêu, Gia đình.
+  static const utilities = '/utilities';
+  static const family = '/utilities/family';
   static const invite = '/family/invite';
   static const inviteSend = '/family/invite/send';
   static const inviteSent = '/family/invite/sent';

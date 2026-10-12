@@ -2210,5 +2210,19 @@
   "faMetronomePaused": "Beat paused while reading",
   "faMetronomeBody": "Turn the speaker on and put the phone beside your baby. Press with each beep. After every {count}, the app says “{breaths} rescue breaths”.",
   "faSayBreaths": "{count, plural, =1{Give 1 rescue breath} other{Give {count} rescue breaths}}",
-  "faSpeakStep": "Step {n}. {title}. {body}"
+  "faSpeakStep": "Step {n}. {title}. {body}",
+  "tabUtilities": "Utilities",
+  "utTitle": "Utilities",
+  "utForBaby": "For the baby",
+  "utSpendingMonth": "This month {amount}",
+  "utMySpending": "What I paid",
+  "utMySpendingSub": "You may record what you paid",
+  "utMembers": "Members & sharing",
+  "utMembersCount": "{count, plural, =1{1 person} other{{count} people}}",
+  "utMembersPending": "{count, plural, =1{1 invite pending} other{{count} invites pending}}",
+  "utMembersView": "See family members",
+  "utInvite": "Invite family",
+  "utInviteSub": "Grandparents and caregivers follow the baby with you",
+  "careNutrition": "Nutrition",
+  "careNutritionSub": "Milk and nutrients by stage"
 }

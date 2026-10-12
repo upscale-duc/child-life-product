@@ -7983,4 +7983,52 @@ class AppLocalizationsVi extends AppLocalizations {
   String faSpeakStep(int n, String title, String body) {
     return 'Bước $n. $title. $body';
   }
+
+  @override
+  String get tabUtilities => 'Tiện ích';
+
+  @override
+  String get utTitle => 'Tiện ích';
+
+  @override
+  String get utForBaby => 'Cho bé';
+
+  @override
+  String utSpendingMonth(String amount) {
+    return 'Tháng này $amount';
+  }
+
+  @override
+  String get utMySpending => 'Khoản tôi đã chi';
+
+  @override
+  String get utMySpendingSub => 'Bạn được phép ghi khoản chi';
+
+  @override
+  String get utMembers => 'Thành viên & chia sẻ';
+
+  @override
+  String utMembersCount(int count) {
+    return '$count người';
+  }
+
+  @override
+  String utMembersPending(int count) {
+    return '$count lời mời đang chờ';
+  }
+
+  @override
+  String get utMembersView => 'Xem thành viên gia đình';
+
+  @override
+  String get utInvite => 'Mời người thân';
+
+  @override
+  String get utInviteSub => 'Ông bà, người chăm cùng theo dõi bé';
+
+  @override
+  String get careNutrition => 'Dinh dưỡng';
+
+  @override
+  String get careNutritionSub => 'Sữa, vi chất theo giai đoạn';
 }

@@ -20,14 +20,14 @@ void main() {
         ClTab.today,
         ClTab.memories,
         ClTab.care,
-        ClTab.family,
+        ClTab.utilities,
       ]);
       expect(tabsForRole(ClRole.caregiver), [
         ClTab.today,
         ClTab.care,
-        ClTab.family,
+        ClTab.utilities,
       ]);
-      expect(tabsForRole(ClRole.relative), [ClTab.memories, ClTab.family]);
+      expect(tabsForRole(ClRole.relative), [ClTab.memories, ClTab.utilities]);
     });
 
     testWidgets('the tab\'s "+" floats above the bar, at its right end', (
@@ -62,7 +62,7 @@ void main() {
         tester,
         ClNavBar(role: ClRole.parent, active: ClTab.today, onSelect: (_) {}),
       );
-      for (final label in ['Hôm nay', 'Kỷ niệm', 'Chăm sóc', 'Gia đình']) {
+      for (final label in ['Hôm nay', 'Kỷ niệm', 'Chăm sóc', 'Tiện ích']) {
         expect(find.bySemanticsLabel(label), findsOneWidget);
       }
       await pumpCl(
@@ -70,7 +70,7 @@ void main() {
         ClNavBar(role: ClRole.parent, active: ClTab.today, onSelect: (_) {}),
         locale: const Locale('en'),
       );
-      for (final label in ['Today', 'Memories', 'Care', 'Family']) {
+      for (final label in ['Today', 'Memories', 'Care', 'Utilities']) {
         expect(find.bySemanticsLabel(label), findsOneWidget);
       }
     });
@@ -85,8 +85,8 @@ void main() {
           onSelect: (t) => selected = t,
         ),
       );
-      await tester.tap(find.bySemanticsLabel('Gia đình'));
-      expect(selected, ClTab.family);
+      await tester.tap(find.bySemanticsLabel('Tiện ích'));
+      expect(selected, ClTab.utilities);
     });
 
     testWidgets('the pill, label and icon move together on a tab change '
@@ -117,13 +117,13 @@ void main() {
       double width(String label) =>
           tester.getSize(find.bySemanticsLabel(label)).width;
       await pumpCl(tester, bar(ClTab.today));
-      await tester.pumpWidget(clHarness(bar(ClTab.family)));
+      await tester.pumpWidget(clHarness(bar(ClTab.utilities)));
       for (var ms = 0; ms < 400; ms += 40) {
         await tester.pump(const Duration(milliseconds: 40));
         expect(width('Kỷ niệm'), closeTo(52, 0.5));
         expect(width('Chăm sóc'), closeTo(52, 0.5));
       }
-      expect(width('Gia đình'), greaterThan(150));
+      expect(width('Tiện ích'), greaterThan(150));
     });
   });
 

@@ -36,6 +36,7 @@ import '../features/me/storage_screens.dart';
 import '../features/reminders/reminder_screens.dart';
 import '../features/reminders/rule_screens.dart';
 import '../features/first_aid/first_aid_screens.dart';
+import '../features/utilities/utilities_screen.dart';
 import '../features/vaccines/vaccine_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
@@ -255,61 +256,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                     path: 'stats/sleep',
                     builder: (_, _) => const SleepStatsScreen(),
                   ),
-                  // Chi tiêu (v1.1 8b–8m; D-055 … D-057).
-                  _route(
-                    path: 'spending',
-                    builder: (_, _) => const SpendingScreen(),
-                    routes: [
-                      _route(
-                        path: 'history',
-                        builder: (_, _) => const SpendingHistoryScreen(),
-                      ),
-                      _route(
-                        path: 'expense/:id',
-                        builder: (_, s) => ExpenseDetailScreen(
-                          expenseId: s.pathParameters['id'] ?? '',
-                        ),
-                      ),
-                      _route(
-                        path: 'budget',
-                        builder: (_, _) => const BudgetScreen(),
-                      ),
-                      _route(
-                        path: 'recurring',
-                        builder: (_, _) => const RecurringScreen(),
-                      ),
-                      _route(
-                        path: 'stats',
-                        builder: (_, _) => const SpendingStatsScreen(),
-                      ),
-                      _route(
-                        path: 'categories',
-                        builder: (_, _) => const CategoriesScreen(),
-                      ),
-                    ],
-                  ),
-                  // Sơ cứu trẻ em (v1.1 7b–7i, TH01–TH24; D-058).
-                  _route(
-                    path: 'first-aid',
-                    builder: (_, _) => const FirstAidHomeScreen(),
-                    routes: [
-                      _route(
-                        path: 'search',
-                        builder: (_, _) => const FirstAidSearchScreen(),
-                      ),
-                      _route(
-                        path: 'saved',
-                        builder: (_, _) => const FirstAidSavedScreen(),
-                      ),
-                      _route(
-                        path: 's/:id',
-                        builder: (_, s) => FirstAidSituationScreen(
-                          situationId: s.pathParameters['id'] ?? '',
-                          variantId: s.uri.queryParameters['v'],
-                        ),
-                      ),
-                    ],
-                  ),
                   // Sổ tiêm chủng (VX 0 – VX 9a).
                   _route(
                     path: 'vaccines',
@@ -377,11 +323,74 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
+          // Tiện ích (v1.0 improvement 450:6597) replaces the Gia đình tab: Sơ cứu, Chi tiêu and
+          // Gia đình (members, invites) open from here.
           StatefulShellBranch(
             routes: [
               _route(
-                path: Routes.family,
-                builder: (_, _) => const FamilyScreen(),
+                path: Routes.utilities,
+                builder: (_, _) => const UtilitiesScreen(),
+                routes: [
+                  _route(
+                    path: 'family',
+                    builder: (_, _) => const FamilyScreen(),
+                  ),
+                  // Chi tiêu (v1.1 8b–8m; D-055 … D-057).
+                  _route(
+                    path: 'spending',
+                    builder: (_, _) => const SpendingScreen(),
+                    routes: [
+                      _route(
+                        path: 'history',
+                        builder: (_, _) => const SpendingHistoryScreen(),
+                      ),
+                      _route(
+                        path: 'expense/:id',
+                        builder: (_, s) => ExpenseDetailScreen(
+                          expenseId: s.pathParameters['id'] ?? '',
+                        ),
+                      ),
+                      _route(
+                        path: 'budget',
+                        builder: (_, _) => const BudgetScreen(),
+                      ),
+                      _route(
+                        path: 'recurring',
+                        builder: (_, _) => const RecurringScreen(),
+                      ),
+                      _route(
+                        path: 'stats',
+                        builder: (_, _) => const SpendingStatsScreen(),
+                      ),
+                      _route(
+                        path: 'categories',
+                        builder: (_, _) => const CategoriesScreen(),
+                      ),
+                    ],
+                  ),
+                  // Sơ cứu trẻ em (v1.1 7b–7i, TH01–TH24; D-058).
+                  _route(
+                    path: 'first-aid',
+                    builder: (_, _) => const FirstAidHomeScreen(),
+                    routes: [
+                      _route(
+                        path: 'search',
+                        builder: (_, _) => const FirstAidSearchScreen(),
+                      ),
+                      _route(
+                        path: 'saved',
+                        builder: (_, _) => const FirstAidSavedScreen(),
+                      ),
+                      _route(
+                        path: 's/:id',
+                        builder: (_, s) => FirstAidSituationScreen(
+                          situationId: s.pathParameters['id'] ?? '',
+                          variantId: s.uri.queryParameters['v'],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

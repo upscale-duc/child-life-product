@@ -81,10 +81,15 @@ List<ClTab> tabsFor(Membership m) => tabsForRole(
 final _shownConflicts = <String>{};
 
 /// Branch order of the shell route.
-const shellTabs = [ClTab.today, ClTab.memories, ClTab.care, ClTab.family];
+const shellTabs = [ClTab.today, ClTab.memories, ClTab.care, ClTab.utilities];
 
 /// The tabs' own screens: the only places that show the dock.
-const _tabRoots = {Routes.today, Routes.memories, Routes.care, Routes.family};
+const _tabRoots = {
+  Routes.today,
+  Routes.memories,
+  Routes.care,
+  Routes.utilities,
+};
 
 /// Tab shell (NavBar v1.0.1, v1.0 improvement 370:1246) with role-aware tabs (R-021): parents see
 /// Hôm nay · Kỷ niệm · Chăm sóc · Gia đình, caregivers no Kỷ niệm, relatives no Hôm nay unless

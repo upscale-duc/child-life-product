@@ -16,28 +16,28 @@ import 'cl_pressable.dart';
 /// Membership role of the current user for the selected baby (business map §2.1).
 enum ClRole { parent, caregiver, relative }
 
-/// NavBar v1.0.1 (v1.0 improvement 370:1246): Hôm nay · Kỷ niệm · Chăm sóc · Gia đình. There is
-/// no "Tôi" tab: Tôi opens from the user avatar in the header.
-enum ClTab { today, memories, care, family }
+/// Hôm nay · Kỷ niệm · Chăm sóc · Tiện ích (v1.0 improvement 450:6597, R1–R4): Tiện ích replaced
+/// Gia đình, which now opens from Tiện ích. There is no "Tôi" tab: it opens from the header avatar.
+enum ClTab { today, memories, care, utilities }
 
-/// Tabs per role (NavBar v1.0.1): parent Hôm nay · Kỷ niệm · Chăm sóc · Gia đình; caregiver
-/// without Kỷ niệm (370:2174); relative Kỷ niệm · Gia đình, plus a read-only Hôm nay when granted
-/// daily care (D-018; the relative dock is not drawn in v1.0.1, so they keep their view).
+/// Tabs per role: parent Hôm nay · Kỷ niệm · Chăm sóc · Tiện ích; caregiver without Kỷ niệm
+/// (450:6873); relative Kỷ niệm · Tiện ích, plus a read-only Hôm nay when granted daily care
+/// (D-018; the relative dock is not drawn, so they keep their view).
 List<ClTab> tabsForRole(ClRole role, {bool relativeSeesToday = false}) =>
     switch (role) {
       ClRole.parent => const [
         ClTab.today,
         ClTab.memories,
         ClTab.care,
-        ClTab.family,
+        ClTab.utilities,
       ],
-      ClRole.caregiver => const [ClTab.today, ClTab.care, ClTab.family],
+      ClRole.caregiver => const [ClTab.today, ClTab.care, ClTab.utilities],
       ClRole.relative when relativeSeesToday => const [
         ClTab.today,
         ClTab.memories,
-        ClTab.family,
+        ClTab.utilities,
       ],
-      ClRole.relative => const [ClTab.memories, ClTab.family],
+      ClRole.relative => const [ClTab.memories, ClTab.utilities],
     };
 
 /// Quick log is available to parents and caregivers only (no "+" for relatives).
@@ -128,13 +128,13 @@ class _ClNavBarState extends State<ClNavBar>
       ClTab.today => l10n.tabToday,
       ClTab.memories => l10n.tabMemories,
       ClTab.care => l10n.tabCare,
-      ClTab.family => l10n.tabFamily,
+      ClTab.utilities => l10n.tabUtilities,
     };
     ClIcons icon(ClTab t) => switch (t) {
       ClTab.today => ClIcons.today,
       ClTab.memories => ClIcons.memories,
       ClTab.care => ClIcons.care,
-      ClTab.family => ClIcons.family,
+      ClTab.utilities => ClIcons.grid,
     };
 
     return Container(

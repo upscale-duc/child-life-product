@@ -109,6 +109,15 @@ class FamilyScreen extends ConsumerWidget {
         ),
         children: [
           const SizedBox(height: ClSpace.s2),
+          // Opened from Tiện ích now (450:6597): a pushed page with its back button.
+          if (context.canPop())
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: ClBackButton(
+                semanticLabel: l10n.a11yBack,
+                onPressed: () => context.pop(),
+              ),
+            ),
           ClNavHeader(
             title: l10n.tabFamily,
             subtitle: l10n.familySubtitle(nickname),

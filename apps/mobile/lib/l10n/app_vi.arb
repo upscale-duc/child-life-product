@@ -12094,5 +12094,76 @@
         "type": "String"
       }
     }
+  },
+  "tabUtilities": "Tiện ích",
+  "@tabUtilities": {
+    "description": "Dock tab replacing Gia đình (450:6597)."
+  },
+  "utTitle": "Tiện ích",
+  "@utTitle": {
+    "description": "Tiện ích title."
+  },
+  "utForBaby": "Cho bé",
+  "@utForBaby": {
+    "description": "Tiện ích section."
+  },
+  "utSpendingMonth": "Tháng này {amount}",
+  "@utSpendingMonth": {
+    "description": "Chi tiêu row (full amount).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "utMySpending": "Khoản tôi đã chi",
+  "@utMySpending": {
+    "description": "Chi tiêu row for someone allowed to record (450:6873)."
+  },
+  "utMySpendingSub": "Bạn được phép ghi khoản chi",
+  "@utMySpendingSub": {
+    "description": "Row subline (who granted it is not stored)."
+  },
+  "utMembers": "Thành viên & chia sẻ",
+  "@utMembers": {
+    "description": "Gia đình row."
+  },
+  "utMembersCount": "{count} người",
+  "@utMembersCount": {
+    "description": "Members row subline.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "utMembersPending": "{count} lời mời đang chờ",
+  "@utMembersPending": {
+    "description": "Members row subline, after the count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "utMembersView": "Xem thành viên gia đình",
+  "@utMembersView": {
+    "description": "Members row for caregivers and relatives."
+  },
+  "utInvite": "Mời người thân",
+  "@utInvite": {
+    "description": "Gia đình row (Cùng nuôi)."
+  },
+  "utInviteSub": "Ông bà, người chăm cùng theo dõi bé",
+  "@utInviteSub": {
+    "description": "Invite row subline."
+  },
+  "careNutrition": "Dinh dưỡng",
+  "@careNutrition": {
+    "description": "Chăm sóc coming-soon tile (450:6424)."
+  },
+  "careNutritionSub": "Sữa, vi chất theo giai đoạn",
+  "@careNutritionSub": {
+    "description": "Tile subline."
   }
 }

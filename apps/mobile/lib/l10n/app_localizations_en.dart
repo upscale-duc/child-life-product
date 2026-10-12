@@ -8519,4 +8519,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String faSpeakStep(int n, String title, String body) {
     return 'Step $n. $title. $body';
   }
+
+  @override
+  String get tabUtilities => 'Utilities';
+
+  @override
+  String get utTitle => 'Utilities';
+
+  @override
+  String get utForBaby => 'For the baby';
+
+  @override
+  String utSpendingMonth(String amount) {
+    return 'This month $amount';
+  }
+
+  @override
+  String get utMySpending => 'What I paid';
+
+  @override
+  String get utMySpendingSub => 'You may record what you paid';
+
+  @override
+  String get utMembers => 'Members & sharing';
+
+  @override
+  String utMembersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people',
+      one: '1 person',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String utMembersPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count invites pending',
+      one: '1 invite pending',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get utMembersView => 'See family members';
+
+  @override
+  String get utInvite => 'Invite family';
+
+  @override
+  String get utInviteSub =>
+      'Grandparents and caregivers follow the baby with you';
+
+  @override
+  String get careNutrition => 'Nutrition';
+
+  @override
+  String get careNutritionSub => 'Milk and nutrients by stage';
 }
