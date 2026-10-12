@@ -380,6 +380,16 @@ See [slice-reports/S1.md](slice-reports/S1.md).
 - **Acceptance:** granting quota resumes WaitingQuota uploads and notifies the owner; kill switch stops new uploads while queues wait and resume; re-run resumes deletion at the failed step; AI pauses at 100% budget; every mutation visible in A12 with actor, role, reason.
 - **Depends on:** S0 (Auth + MFA enabled), S9 (uploads), S11 (data jobs, storage requests), S12 (AI). Flags (A10) are needed earlier: the flag store ships in S0, its portal UI here.
 
+### S15b — Admin portal v1.0 (Figma `253:18` section v1.0)
+
+> **Status:** built on branch `s2-onboarding` (2026-10-11; committed 2026-10-12 as b28e85d, 10b4a01, 06cd338, 871bf50; deployed to dev) — [report](slice-reports/S15b.md), [plan](../product/portal-v1.0-plan.md), evidence [`18-admin-portal-v1.md`](../discovery/figma-extract/18-admin-portal-v1.md). Owner decisions D-053 (no 2FA, no family suspension, any email domain, first Owner). App reading of the published growth / vaccine tables waits for the vaccination work.
+
+- Phase 1 — staff RBAC v2 (roles and per-function levels server-side), the v1.0 sidebar, A18–A21 and portal invitations, migration of today's claims; the QA handbook (P-132) stays under PHÁT TRIỂN.
+- Phase 2 — families directory A15–A17 on a `familyDirectory` read model, privacy rules P-136, staff-initiated ownership transfer with the owner's confirmation in the app.
+- Phase 3 — analytics A13 / A14: mobile device heartbeat (`lastActiveAt`), nightly / weekly rollups, backfill, one set of metric definitions shared with A02 / A15 (P-137).
+- Phase 4 — reference data C01–C04 with two-person approval and rollback, delivered through `publicConfig/reference_*`; the app reads it offline-first with a bundled fallback (growth, bottle; vaccines after P-133 lands) (P-138).
+- Phase 5 — undrawn states G-085 … G-091, A12 categories (P-139), QA handbook cases, end-to-end on the emulators, dev deploy.
+
 ### S16 — Verify & release readiness
 
 - Design QA pass (side-by-side goldens and device screenshots for all 154 screens × 2 modes), accessibility audit, security review (Rules fuzzing, App Check enforcement, dependency audit, pen-test checklist), performance runs on the device matrix, E2E suites on Firebase Test Lab + real devices, monitoring & alert drills, backup/restore drill, runbooks complete, prod provisioning with owner approval, store metadata/privacy labels/data-safety forms, release checklist, testing & release report with known gaps.

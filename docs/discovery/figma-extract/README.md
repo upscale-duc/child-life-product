@@ -13,6 +13,8 @@ These files are the evidence behind the R-/Q-/G- items in [`../../product/busine
 | `05-relative-me-storage.md` | Sections 11 and 13. Metadata-only notes in the first part are superseded by the gap-fill pass appended at the end (all 12 frames re-read in full). |
 | `06-story-links-website.md` | Section 14 and the Website page (landing desktop + mobile). |
 | `07-foundations-components-motion.md` | Foundations, Components, Cover, Logo; motion findings. The logo sheet screenshot referenced as `figma-notes/img/…` is `img/logo_sheet_35-240.png` here. |
+| `08-admin-portal.md` | Admin portal `253:18` as of 2026-10-10 (A01–A12, sidebar). |
+| `18-admin-portal-v1.md` | Admin portal `253:18` section **v1.0** (2026-10-11): A01–A01d, A13–A21, C01–C04, sidebar v1.0, delta for A02–A12, 44 logic gaps; v1.1 frames listed only. |
 | `19-spending.md` | Page **v1.1**, cluster "Chi tiêu" 8a–8o (2026-10-12): Care tile, month view, add expense, stats (6 months / since birth), history, detail, budget, recurring, first use, vaccination cost prompt, family spending permissions, categories (list / add-edit / delete). Screenshots in `img/v11/`. |
 | `20-v11-content-features.md` | Page **v1.1** `304:18` (2026-10-12), every cluster except spending: A Today/Me changes (new tab bar, "Dành cho bé hôm nay", Customise rows), 2 Thẻ theo tuổi, 3 Mốc phát triển, 4 Thư viện chăm bé, 5 Ăn dặm, 6 Wonder Week, 7 Sơ cứu (7a–7i + TH01–TH24), 9 Dinh dưỡng theo giai đoạn, the `photo_demo` first-aid image sheet; consolidated data model, admin-portal gaps and open questions. Screenshots in `img/v11/`. |
 
