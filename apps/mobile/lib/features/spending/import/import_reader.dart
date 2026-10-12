@@ -42,16 +42,19 @@ List<List<String>> readGrid(String fileName, Uint8List bytes) {
   } on Object {
     throw const ReadException(ReadFailure.broken);
   }
+  // Empty rows stay (blank), so "Dòng 12" is row 12 of the file; trailing ones go.
   final rows = [
     for (final r in grid)
-      if (r.any((c) => c.trim().isNotEmpty))
-        [
-          for (final c in r.take(GridLimits.colsMax))
-            c.length > GridLimits.cellMax
-                ? c.substring(0, GridLimits.cellMax)
-                : c.trim(),
-        ],
+      [
+        for (final c in r.take(GridLimits.colsMax))
+          c.length > GridLimits.cellMax
+              ? c.substring(0, GridLimits.cellMax)
+              : c.trim(),
+      ],
   ];
+  while (rows.isNotEmpty && rows.last.every((c) => c.isEmpty)) {
+    rows.removeLast();
+  }
   if (rows.isEmpty) throw const ReadException(ReadFailure.empty);
   if (rows.length > GridLimits.rowsMax + 10) {
     throw const ReadException(ReadFailure.tooBig);
@@ -166,6 +169,11 @@ List<List<String>> _sheet(String xml, List<String> shared) {
       };
     }
     if (cells.isEmpty) continue;
+    // Rows missing from the sheet (blank in Excel) keep their place.
+    final r = int.tryParse(row.getAttribute('r') ?? '');
+    while (r != null && out.length < r - 1) {
+      out.add(const []);
+    }
     final width = cells.keys.reduce((a, b) => a > b ? a : b) + 1;
     out.add([for (var i = 0; i < width; i++) cells[i] ?? '']);
     if (out.length > GridLimits.rowsMax + 10) break;

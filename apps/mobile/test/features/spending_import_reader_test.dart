@@ -54,35 +54,46 @@ void main() {
       ]);
     });
 
-    test('empty rows dropped; empty files and old .xls refused', () {
-      expect(readGrid('a.csv', bytes('a,b\n,\n1,2\n')).length, 2);
-      expect(
-        () => readGrid('a.csv', bytes(' \n')),
-        throwsA(
-          isA<ReadException>().having((e) => e.failure, 'f', ReadFailure.empty),
-        ),
-      );
-      expect(
-        () => readGrid('a.xls', bytes('x')),
-        throwsA(
-          isA<ReadException>().having(
-            (e) => e.failure,
-            'f',
-            ReadFailure.oldExcel,
+    test(
+      'blank rows keep their place, trailing ones go; empty and .xls refused',
+      () {
+        expect(readGrid('a.csv', bytes('a,b\n,\n1,2\n,\n')), [
+          ['a', 'b'],
+          ['', ''],
+          ['1', '2'],
+        ]);
+        expect(
+          () => readGrid('a.csv', bytes(' \n')),
+          throwsA(
+            isA<ReadException>().having(
+              (e) => e.failure,
+              'f',
+              ReadFailure.empty,
+            ),
           ),
-        ),
-      );
-      expect(
-        () => readGrid('a.pdf', bytes('x')),
-        throwsA(
-          isA<ReadException>().having(
-            (e) => e.failure,
-            'f',
-            ReadFailure.unsupported,
+        );
+        expect(
+          () => readGrid('a.xls', bytes('x')),
+          throwsA(
+            isA<ReadException>().having(
+              (e) => e.failure,
+              'f',
+              ReadFailure.oldExcel,
+            ),
           ),
-        ),
-      );
-    });
+        );
+        expect(
+          () => readGrid('a.pdf', bytes('x')),
+          throwsA(
+            isA<ReadException>().having(
+              (e) => e.failure,
+              'f',
+              ReadFailure.unsupported,
+            ),
+          ),
+        );
+      },
+    );
   });
 
   group('xlsx', () {
