@@ -2155,5 +2155,6 @@
   "rightViewSpending": "See all spending",
   "rightViewSpendingHint": "Totals, statistics, every expense",
   "rightSpendingNote": "Spending is for parents by default. Someone with “Record expenses” on won't see totals or other people's items.",
-  "spSinceBirthYoung": "Since {name} was born"
+  "spSinceBirthYoung": "Since {name} was born",
+  "acExportEmailed": "Download link emailed · expires {when}"
 }

@@ -11757,5 +11757,14 @@
         "type": "String"
       }
     }
+  },
+  "acExportEmailed": "Đã gửi link tải qua email · hết hạn {when}",
+  "@acExportEmailed": {
+    "description": "Tài khoản → Xuất dữ liệu row once the file is ready (download only from the email).",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
   }
 }

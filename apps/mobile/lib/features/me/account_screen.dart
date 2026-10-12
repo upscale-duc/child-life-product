@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:share_plus/share_plus.dart';
 
 import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
@@ -234,30 +233,13 @@ class _ExportRow extends ConsumerWidget {
           '${job.kind == ExportKind.care ? l10n.acExportCare : l10n.acExportMedia} · $name',
       subtitle: switch (job.state) {
         ExportState.queued || ExportState.running => l10n.acExportQueued,
-        ExportState.ready when ready => l10n.acExportReady(
+        // Downloaded from the email link only (owner, 2026-10-12; exportDownload re-checks).
+        ExportState.ready when ready => l10n.acExportEmailed(
           DateFormat.MMMd(locale).add_Hm().format(job.expiresAt!.toLocal()),
         ),
         ExportState.failed => l10n.acExportFailed,
         _ => l10n.acExportExpired,
       },
-      trailing: ready
-          ? MeRowAction(
-              label: l10n.actDownload,
-              onPressed: () async {
-                final toaster = ClToaster.of(context);
-                try {
-                  final file = await ref
-                      .read(meRepositoryProvider)
-                      .downloadExport(job);
-                  await SharePlus.instance.share(
-                    ShareParams(files: [XFile(file.path)]),
-                  );
-                } on Object {
-                  toaster.show(message: l10n.toastActionFailed);
-                }
-              },
-            )
-          : null,
     );
   }
 }

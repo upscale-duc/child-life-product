@@ -8288,4 +8288,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String spSinceBirthYoung(String name) {
     return 'Since $name was born';
   }
+
+  @override
+  String acExportEmailed(String when) {
+    return 'Download link emailed · expires $when';
+  }
 }

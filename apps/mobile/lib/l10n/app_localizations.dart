@@ -13038,6 +13038,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Từ khi {name} chào đời'**
   String spSinceBirthYoung(String name);
+
+  /// Tài khoản → Xuất dữ liệu row once the file is ready (download only from the email).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi link tải qua email · hết hạn {when}'**
+  String acExportEmailed(String when);
 }
 
 class _AppLocalizationsDelegate

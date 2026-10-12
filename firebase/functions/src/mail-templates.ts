@@ -481,14 +481,11 @@ export function renderAccountEmail(
               kind: 'text',
               text: link
                 ? 'Tệp xuất dữ liệu bạn yêu cầu đã sẵn sàng. Bấm nút dưới đây để tải về (tệp .zip).'
-                : 'Tệp xuất dữ liệu bạn yêu cầu đã sẵn sàng. Mở app để tải về:',
+                : 'Liên kết tải của tệp này không còn dùng được. Hãy xuất lại trong app:',
             },
             ...size,
             ...(link
-              ? [
-                  { kind: 'button' as const, label: 'Tải tệp về', url: link },
-                  { kind: 'note' as const, text: `Hoặc mở app: ${accountPath.vi}.` },
-                ]
+              ? [{ kind: 'button' as const, label: 'Tải tệp về', url: link }]
               : [{ kind: 'steps' as const, text: accountPath.vi }]),
             {
               kind: 'warning',
@@ -500,14 +497,11 @@ export function renderAccountEmail(
               kind: 'text',
               text: link
                 ? 'The data export you asked for is ready. Tap the button below to download it (a .zip file).'
-                : 'The data export you asked for is ready. Open the app to download it:',
+                : 'The download link for this file no longer works. Export again in the app:',
             },
             ...size,
             ...(link
-              ? [
-                  { kind: 'button' as const, label: 'Download the file', url: link },
-                  { kind: 'note' as const, text: `Or open the app: ${accountPath.en}.` },
-                ]
+              ? [{ kind: 'button' as const, label: 'Download the file', url: link }]
               : [{ kind: 'steps' as const, text: accountPath.en }]),
             {
               kind: 'warning',

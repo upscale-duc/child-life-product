@@ -7777,4 +7777,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String spSinceBirthYoung(String name) {
     return 'Từ khi $name chào đời';
   }
+
+  @override
+  String acExportEmailed(String when) {
+    return 'Đã gửi link tải qua email · hết hạn $when';
+  }
 }
