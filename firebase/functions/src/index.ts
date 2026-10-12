@@ -12,7 +12,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { getStorage } from 'firebase-admin/storage';
 import { getMessaging } from 'firebase-admin/messaging';
 import { defaultLimits, functionsRegion, limitsSchema } from '@child-life/contracts';
-import { adminOriginFor, currentProjectId, webOriginFor } from './env.js';
+import { adminOriginFor, currentProjectId, environmentForProject, webOriginFor } from './env.js';
 import {
   FamilyError,
   acceptInvite,
@@ -49,6 +49,14 @@ import { CareError, onRecordWritten, purgeDeletedRecords, resolveSleepConflict }
 import { BabyError, createBaby, getBabyAvatar, setBabyAvatar, type AvatarStore } from './babies.js';
 import { handlePing, PingError } from './ping.js';
 import { bucketOpen, bucketPurgeStore, bucketStore, sharpImages } from './images.js';
+import sharp from 'sharp';
+import {
+  firstAidAct,
+  firstAidDraft,
+  firstAidUploadImage,
+  firstAidView,
+  type ContentDeps,
+} from './content.js';
 import {
   AccountError,
   answerOwnership,
@@ -1485,6 +1493,52 @@ export const staffReferenceDraft = staffCall('staffReferenceDraft', (s, d) =>
 );
 export const staffReferenceAct = staffCall('staffReferenceAct', (s, d) =>
   referenceAct(getFirestore(), s, d, new Date()),
+);
+
+// Sơ cứu (D-058, P-141): the guide's draft, a second person approves (an expert on prod), the
+// app reads publicConfig/content_firstAid; pictures are public WebP under content/first-aid/.
+function contentDeps(): ContentDeps {
+  const bucket = getStorage().bucket();
+  const path = (id: string) => `content/first-aid/${id}.webp`;
+  return {
+    requireReview: environmentForProject(currentProjectId()) === 'prod',
+    images: {
+      exists: async (id) => (await bucket.file(path(id)).exists())[0],
+      save: (id, webp) =>
+        bucket.file(path(id)).save(webp, {
+          contentType: 'image/webp',
+          metadata: { cacheControl: 'public, max-age=31536000, immutable' },
+        }),
+      list: async () =>
+        (await bucket.getFiles({ prefix: 'content/first-aid/' }))[0]
+          .map((f) => f.name.slice('content/first-aid/'.length).replace(/\.webp$/, ''))
+          .filter((id) => /^[a-z0-9-]{2,48}_[a-f0-9]{8}$/.test(id)),
+      publicUrl: (id) =>
+        `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(path(id))}?alt=media`,
+      encode: (bytes, icon) =>
+        (icon
+          ? sharp(bytes).resize(176, 176, {
+              fit: 'contain',
+              background: { r: 0, g: 0, b: 0, alpha: 0 },
+            })
+          : sharp(bytes).resize({ width: 1200, withoutEnlargement: true })
+        )
+          .webp({ quality: icon ? 90 : 78 })
+          .toBuffer(),
+    },
+  };
+}
+export const staffFirstAid = staffCall('staffFirstAid', (s) =>
+  firstAidView(getFirestore(), contentDeps(), s),
+);
+export const staffFirstAidDraft = staffCall('staffFirstAidDraft', (s, d) =>
+  firstAidDraft(getFirestore(), contentDeps(), s, d, new Date()),
+);
+export const staffFirstAidAct = staffCall('staffFirstAidAct', (s, d) =>
+  firstAidAct(getFirestore(), contentDeps(), s, d, new Date()),
+);
+export const staffFirstAidImage = staffCall('staffFirstAidImage', (s, d) =>
+  firstAidUploadImage(getFirestore(), contentDeps(), s, d, new Date()),
 );
 
 // QA handbook (P-132): test runs, results and comments; never family data.

@@ -209,20 +209,29 @@ export const firstAidPublicDocId = 'content_firstAid';
 
 // ---------- Portal (staff) ----------
 
-export const firstAidSaveDraftSchema = z.object({ pack: firstAidPackSchema }).strict();
-export const firstAidSubmitSchema = z.object({ note: z.string().trim().min(3).max(500) }).strict();
-export const firstAidDecideSchema = z
+export const firstAidVersionIdSchema = z.string().regex(/^fv_[a-f0-9]{16}$/);
+const reason = z.string().trim().min(3).max(500);
+
+/** Save the open draft (or start one); editing a version under review withdraws it. */
+export const firstAidDraftSchema = z
+  .object({ pack: firstAidPackSchema, notes: z.string().trim().max(500) })
+  .strict();
+
+/** Gửi duyệt · Duyệt & xuất bản · Trả lại · Huỷ nháp · Dùng lại bản này. */
+export const firstAidActSchema = z
   .object({
-    versionId: z.string().regex(/^fv_[a-f0-9]{16}$/),
-    approve: z.boolean(),
-    note: z.string().trim().min(3).max(500),
-    /** Recorded on the pack when approving (prod needs it). */
+    versionId: firstAidVersionIdSchema,
+    action: z.enum(['submit', 'approve', 'reject', 'discard', 'rollback']),
+    reason,
+    /** Approving on prod records who reviewed it (P-141); shown in the app's footer. */
     review: firstAidReviewSchema.nullable(),
   })
   .strict();
+
 export const firstAidUploadImageSchema = z
   .object({
-    name: z.string().regex(/^[a-z0-9-]{2,48}$/),
+    /** Becomes `{name}_{hash}`; "icon-…" names are pictograms (square, small). */
+    name: z.string().regex(/^[a-z0-9-]{2,40}$/),
     /** PNG, JPEG or WebP, base64. */
     data: z.base64().max(Math.ceil((firstAidLimits.imageBytes * 4) / 3) + 4),
   })

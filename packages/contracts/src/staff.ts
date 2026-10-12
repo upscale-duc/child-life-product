@@ -44,6 +44,8 @@ export const staffFunctions = [
   'storage',
   'dataJobs',
   'reference',
+  /** Sơ cứu and later editorial content (D-058): Xem · Sửa · Duyệt (medical sign-off). */
+  'content',
   'system',
   'features',
   'staff',
@@ -84,6 +86,7 @@ export const staffRoleTemplates: Record<BuiltinStaffRole, StaffLevels> = {
     storage: 'edit',
     dataJobs: 'edit',
     reference: 'edit',
+    content: 'edit',
     system: 'view',
     features: 'view',
     audit: 'view',
@@ -97,6 +100,7 @@ export const staffRoleTemplates: Record<BuiltinStaffRole, StaffLevels> = {
     storage: 'view',
     dataJobs: 'view',
     reference: 'view',
+    content: 'view',
     qa: 'edit',
   },
   eng: {
@@ -109,7 +113,7 @@ export const staffRoleTemplates: Record<BuiltinStaffRole, StaffLevels> = {
     qa: 'full',
   },
   analyst: { ...none, overview: 'view', analyticsExport: 'edit', qa: 'edit' },
-  expert: { ...none, reference: 'approve', qa: 'edit' },
+  expert: { ...none, reference: 'approve', content: 'approve', qa: 'edit' },
   qa: { ...none, qa: 'full' },
 };
 
@@ -184,6 +188,9 @@ export const staffActions = [
   'reference.view',
   'reference.edit',
   'reference.approve',
+  'content.view',
+  'content.edit',
+  'content.approve',
   'system.view',
   'features.view',
   'flags.toggle',
@@ -221,6 +228,10 @@ export const staffActionLevel: Record<StaffAction, readonly [StaffFunction, Staf
   'reference.view': ['reference', 'view'],
   'reference.edit': ['reference', 'edit'],
   'reference.approve': ['reference', 'approve'],
+  'content.view': ['content', 'view'],
+  'content.edit': ['content', 'edit'],
+  // D-058: publishing medical content is a second person's sign-off (an expert on prod).
+  'content.approve': ['content', 'approve'],
   'system.view': ['system', 'view'],
   'features.view': ['features', 'view'],
   'flags.toggle': ['features', 'edit'],
@@ -311,6 +322,7 @@ export const auditCategories = [
   'families',
   'staff',
   'reference',
+  'content',
   'analytics',
 ] as const;
 export type AuditCategory = (typeof auditCategories)[number];

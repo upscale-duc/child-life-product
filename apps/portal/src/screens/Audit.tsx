@@ -29,6 +29,7 @@ const categoryTone: Record<AuditRow['category'], PillTone> = {
   families: 'high',
   staff: 'muted',
   reference: 'ok',
+  content: 'purple',
   analytics: 'info',
 };
 

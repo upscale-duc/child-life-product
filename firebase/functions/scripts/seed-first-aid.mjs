@@ -13,7 +13,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { initializeApp } from 'firebase-admin/app';
-import { FieldValue, getFirestore } from 'firebase-admin/firestore';
+import { getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import {
   firstAidImagePath,
@@ -94,22 +94,31 @@ const n = prevVersion?.startsWith(`fa_${day}_`) ? Number(prevVersion.slice(-2)) 
 const version = `fa_${day}_${String(n).padStart(2, '0')}`;
 const versionId = `fv_${createHash('sha256').update(version).digest('hex').slice(0, 16)}`;
 const batch = db.batch();
-batch.set(db.doc('content/firstAid'), {
-  pack: parsed,
-  basedOn: versionId,
-  updatedAt: FieldValue.serverTimestamp(),
-  updatedBy: 'seed',
-});
+// Same shape as an approval on the portal (content.ts): the seed stands in for both people.
+const published = await db
+  .collection('content/firstAid/versions')
+  .where('status', '==', 'published')
+  .get();
+for (const p of published.docs) batch.update(p.ref, { status: 'retired', updatedAt: now });
 batch.set(db.doc(`content/firstAid/versions/${versionId}`), {
   status: 'published',
-  version,
+  label: version,
   pack: parsed,
-  note: 'Seed from Figma v1.1 (dev only, not medically reviewed)',
-  createdBy: 'seed',
-  createdAt: FieldValue.serverTimestamp(),
-  decidedBy: 'seed',
-  decidedAt: FieldValue.serverTimestamp(),
+  notes: 'Seed from Figma v1.1 (dev only, not medically reviewed)',
+  authorUid: 'seed',
+  authorName: 'Seed (Figma v1.1)',
+  approverUid: 'seed',
+  approverName: 'Seed (dev)',
+  createdAt: now,
+  updatedAt: now,
+  approvedAt: now,
+  rejection: null,
 });
+batch.set(
+  db.doc('content/firstAid'),
+  { currentVersionId: versionId, updatedAt: now },
+  { merge: true },
+);
 batch.set(db.doc(`publicConfig/${firstAidPublicDocId}`), {
   version,
   publishedAt: now.toISOString(),
