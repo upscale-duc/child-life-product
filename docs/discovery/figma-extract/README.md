@@ -14,6 +14,7 @@ These files are the evidence behind the R-/Q-/G- items in [`../../product/busine
 | `06-story-links-website.md` | Section 14 and the Website page (landing desktop + mobile). |
 | `07-foundations-components-motion.md` | Foundations, Components, Cover, Logo; motion findings. The logo sheet screenshot referenced as `figma-notes/img/…` is `img/logo_sheet_35-240.png` here. |
 | `19-spending.md` | Page **v1.1**, cluster "Chi tiêu" 8a–8o (2026-10-12): Care tile, month view, add expense, stats (6 months / since birth), history, detail, budget, recurring, first use, vaccination cost prompt, family spending permissions, categories (list / add-edit / delete). Screenshots in `img/v11/`. |
+| `20-v11-content-features.md` | Page **v1.1** `304:18` (2026-10-12), every cluster except spending: A Today/Me changes (new tab bar, "Dành cho bé hôm nay", Customise rows), 2 Thẻ theo tuổi, 3 Mốc phát triển, 4 Thư viện chăm bé, 5 Ăn dặm, 6 Wonder Week, 7 Sơ cứu (7a–7i + TH01–TH24), 9 Dinh dưỡng theo giai đoạn, the `photo_demo` first-aid image sheet; consolidated data model, admin-portal gaps and open questions. Screenshots in `img/v11/`. |
 
 Coverage: all 154 Light screens were read in full; Night care twins were checked structurally and by spot-check screenshots (copy and behaviour identical, colours differ). The MCP page listing shows only Cover and Logo; Foundations `17:467`, Components `7:4`, Screens `26:2` and Website `210:759` were reached by node id (Q-032 asks the owner to confirm there are no other pages).
 
