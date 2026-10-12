@@ -270,7 +270,7 @@ void main() {
         expect(find.text('Cùng nuôi · Hết hạn 15 thg 10'), findsOneWidget);
         await tester.tap(find.text('Đồng ý'));
         await tester.pumpAndSettle();
-        expect(visits.last.location, Routes.joinInvite);
+        expect(visits.last.location, startsWith(Routes.joinInvite));
         final args = visits.last.extra! as JoinArgs;
         expect(args.lookup, InviteLookup.id(binInvite.inviteId));
         expect(args.preview.babyNickname, 'Bin');
@@ -393,7 +393,7 @@ void main() {
       repo.preview = invitePreview();
       await tester.enterText(find.byType(EditableText), '482913');
       await tester.pumpAndSettle();
-      expect(visits.last.location, Routes.joinInvite);
+      expect(visits.last.location, startsWith(Routes.joinInvite));
       expect((visits.last.extra! as JoinArgs).preview.inviterName, 'Mai');
     });
 

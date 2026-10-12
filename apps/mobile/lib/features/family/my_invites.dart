@@ -55,15 +55,15 @@ String _meta(BuildContext context, AppLocalizations l10n, ValidInvite p) =>
 
 /// "Đồng ý": 16 → 16a as for a code, with the invite already known (relation and name, then
 /// join). [context] must stay mounted (a screen, or the root navigator's).
-void acceptMyInvite(BuildContext context, MyInvite invite) => unawaited(
-  GoRouter.of(context).push(
-    Routes.joinInvite,
-    extra: JoinArgs(
-      lookup: InviteLookup.id(invite.inviteId),
-      preview: invite.preview,
-    ),
-  ),
-);
+void acceptMyInvite(BuildContext context, MyInvite invite) {
+  final args = JoinArgs(
+    lookup: InviteLookup.id(invite.inviteId),
+    preview: invite.preview,
+  );
+  unawaited(
+    GoRouter.of(context).push(args.location(Routes.joinInvite), extra: args),
+  );
+}
 
 /// "Từ chối", after asking. True when the invite was closed.
 Future<bool> declineMyInvite(

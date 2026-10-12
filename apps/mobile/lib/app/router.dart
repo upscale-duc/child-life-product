@@ -128,6 +128,20 @@ final routerProvider = Provider<GoRouter>((ref) {
     return kept is T ? kept : null;
   }
 
+  InviteLookup? lookupOf(GoRouterState s) =>
+      JoinArgs.lookupOf(s.uri.queryParameters);
+  // 16 / 16a: the pushed arguments, else the invite in the location with its preview seen in
+  // this run.
+  JoinArgs? joinArgsOf(GoRouterState s) {
+    final args = argsOf<JoinArgs>(s);
+    if (args != null) return args;
+    final lookup = lookupOf(s);
+    final preview = lookup == null ? null : JoinArgs.previewOf(lookup);
+    return lookup == null || preview == null
+        ? null
+        : JoinArgs(lookup: lookup, preview: preview);
+  }
+
   return GoRouter(
     initialLocation: Routes.splash,
     refreshListenable: refresh,
@@ -527,18 +541,32 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.joinScan,
         builder: (_, _) => const ScanInviteScreen(),
       ),
+      // The invite is in the query (`?code=`), so losing `extra` never sends people back to 15:
+      // 16 reads the preview again when it is not known.
       _route(
         path: Routes.joinInvite,
-        redirect: (_, s) => argsOf<JoinArgs>(s) == null ? Routes.join : null,
+        redirect: (_, s) =>
+            joinArgsOf(s) == null && lookupOf(s) == null ? Routes.join : null,
         builder: (_, s) {
-          final args = argsOf<JoinArgs>(s)!;
-          return AcceptInviteScreen(lookup: args.lookup, preview: args.preview);
+          final args = joinArgsOf(s);
+          final lookup = args?.lookup ?? lookupOf(s)!;
+          return AcceptInviteScreen(lookup: lookup, preview: args?.preview);
         },
       ),
       _route(
         path: Routes.joinConfirm,
-        redirect: (_, s) => argsOf<JoinArgs>(s) == null ? Routes.join : null,
-        builder: (_, s) => ConfirmJoinScreen(args: argsOf<JoinArgs>(s)!),
+        redirect: (_, s) {
+          if (joinArgsOf(s) != null) return null;
+          // Known invite, preview not: back to 16, which reads it.
+          final lookup = lookupOf(s);
+          return lookup == null
+              ? Routes.join
+              : Uri(
+                  path: Routes.joinInvite,
+                  queryParameters: lookup.toJson(),
+                ).toString();
+        },
+        builder: (_, s) => ConfirmJoinScreen(args: joinArgsOf(s)!),
       ),
       _route(
         path: Routes.joinClosed,

@@ -44,6 +44,37 @@ class JoinArgs {
   const JoinArgs({required this.lookup, required this.preview});
   final InviteLookup lookup;
   final ValidInvite preview;
+
+  /// `/join/invite?code=482913`: the invite rides in the location, so a screen rebuilt without
+  /// its `extra` (iOS release builds lost it, owner 2026-10-12: "nhập mã mời xong lại xuất hiện
+  /// màn nhập mã mời") still knows which invite it is.
+  String location(String route) {
+    _previews[lookup] = preview;
+    return Uri(path: route, queryParameters: lookup.toJson()).toString();
+  }
+
+  /// From a location's query (and the preview seen in this run, if any).
+  static InviteLookup? lookupOf(Map<String, String> query) {
+    final code = query['code'], token = query['token'], id = query['inviteId'];
+    if (code != null && RegExp(r'^\d{6}$').hasMatch(code)) {
+      return InviteLookup.code(code);
+    }
+    if (token != null && RegExp(r'^[A-Za-z0-9_-]{32}$').hasMatch(token)) {
+      return InviteLookup.token(token);
+    }
+    if (id != null && RegExp(r'^[A-Za-z0-9_-]{1,64}$').hasMatch(id)) {
+      return InviteLookup.id(id);
+    }
+    return null;
+  }
+
+  static ValidInvite? previewOf(InviteLookup lookup) => _previews[lookup];
+
+  static void remember(InviteLookup lookup, ValidInvite preview) =>
+      _previews[lookup] = preview;
+
+  /// The previews read in this run, by invite.
+  static final _previews = <InviteLookup, ValidInvite>{};
 }
 
 /// Leaves the join flow: a temporary identity that never joined is signed out (D-021: "Không
@@ -91,11 +122,9 @@ class _EnterCodeScreenState extends ConsumerState<EnterCodeScreen> {
       if (!mounted) return;
       switch (preview) {
         case ValidInvite():
+          final args = JoinArgs(lookup: lookup, preview: preview);
           unawaited(
-            context.push(
-              Routes.joinInvite,
-              extra: JoinArgs(lookup: lookup, preview: preview),
-            ),
+            context.push(args.location(Routes.joinInvite), extra: args),
           );
         case ClosedInvite(reason: InviteClosedReason.notFound)
             when lookup.code != null:
@@ -327,6 +356,7 @@ class _AcceptInviteScreenState extends ConsumerState<AcceptInviteScreen> {
       if (!mounted) return;
       switch (preview) {
         case ValidInvite():
+          JoinArgs.remember(widget.lookup, preview);
           setState(() => _preview = preview);
         case ClosedInvite(:final reason):
           context.pushReplacement('${Routes.joinClosed}?reason=${reason.name}');
@@ -357,7 +387,7 @@ class _AcceptInviteScreenState extends ConsumerState<AcceptInviteScreen> {
     }
     final args = JoinArgs(lookup: widget.lookup, preview: preview);
     if (ref.read(sessionProvider) is SessionSignedIn) {
-      context.push(Routes.joinConfirm, extra: args);
+      context.push(args.location(Routes.joinConfirm), extra: args);
     } else {
       showClSheet<void>(
         context: context,
@@ -473,7 +503,12 @@ class _JoinHowSheetState extends ConsumerState<_JoinHowSheet> {
       await signIn(ref.read(authRepositoryProvider));
       navigator.pop();
       if (widget.host.mounted) {
-        unawaited(widget.host.push(Routes.joinConfirm, extra: widget.args));
+        unawaited(
+          widget.host.push(
+            widget.args.location(Routes.joinConfirm),
+            extra: widget.args,
+          ),
+        );
       }
     } on AuthException catch (e) {
       if (mounted && e.failure != AuthFailure.cancelled) {
