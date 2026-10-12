@@ -19,14 +19,16 @@ FLAVORS = {
   'dev' => { bundle_id: 'dev.hsba.app', name: 'Child Life Dev', icon: 'AppIcon-dev', profile: 'hsba app dev',
              team: TEAM_ID,
              app_group: 'group.dev.hsba.app',
-             # Universal links (/i, /s): enable once the "hsba app dev" profile carries
-             # Associated Domains, or device signing fails.
-             applinks: [], # ['child-life-dev-landing.web.app', 'dev.childlife.app'],
+             # Invite links open the app (owner, 2026-10-12; the "hsba app dev" profile carries
+             # Associated Domains): AppsFlyer OneLink, and our own /i/<token> on the landing host.
+             applinks: ['childlife.onelink.me', 'dev.childlife.app'],
              extension_profiles: { 'widgetExtension' => nil, 'share' => nil } },
   # prod has no team until the Child Life developer account exists: signing it on the borrowed
   # team would register app.childlife there (it did once, from Xcode's automatic signing).
   'prod' => { bundle_id: 'app.childlife', name: 'Child Life', icon: 'AppIcon-prod', team: nil,
               app_group: 'group.app.childlife',
+              # Needs Associated Domains on the prod App ID and profile when they exist.
+              applinks: ['childlife.onelink.me', 'childlife.app'],
               extension_profiles: {} },
 }.freeze
 BASES = %w[Debug Profile Release].freeze
