@@ -13,6 +13,7 @@ import {
   parseAmount,
   parseDay,
   spendingLimits,
+  importPageRequestSchema,
   undoImportRequestSchema,
   type CategoryChoice,
   type ImportCounts,
@@ -690,11 +691,33 @@ export function summarize(
       map.set(key, entry);
     }
   }
+  // Owner, 2026-10-12: a name without a match becomes a category of its own, as far as the
+  // family's room for custom categories goes (the largest first); the rest go to "Khác".
+  let room = Math.max(
+    0,
+    spendingLimits.customCategoriesMax - categories.filter((c) => !c.builtIn).length,
+  );
+  const byRows = [...cats].sort((a, b) => b[1].rows - a[1].rows);
+  const suggested = new Map<string, CategoryChoice | null>();
+  for (const [key, v] of byRows) {
+    const match = suggestCategory(v.name, categories);
+    if (match) {
+      suggested.set(key, match);
+    } else if (room > 0) {
+      room -= 1;
+      suggested.set(key, {
+        kind: 'new',
+        name: v.name.trim().slice(0, spendingLimits.categoryNameMax),
+      });
+    } else {
+      suggested.set(key, null);
+    }
+  }
   return {
     categories: [...cats].map(([key, v]) => ({
       key,
       ...v,
-      suggested: suggestCategory(v.name, categories),
+      suggested: suggested.get(key) ?? null,
     })),
     payers: [...pays].map(([key, v]) => ({ key, ...v, suggested: suggestPayer(v.name, members) })),
   };
@@ -1397,6 +1420,47 @@ export async function runSpendingImport(
  * `undoSpendingImport`: soft-deletes every expense of the import (edited ones too) within
  * [importLimits.undoDays] days. Re-running finishes a partial undo.
  */
+/** "Xem tất cả" (owner, 2026-10-12): one page of [importLimits.pageRows] rows to import. */
+export async function importPage(
+  deps: Pick<ImportDeps, 'db' | 'store'>,
+  uid: string,
+  data: unknown,
+  now: Date,
+): Promise<{ rows: ReadRow[]; total: number; page: number; pages: number }> {
+  const parsed = importPageRequestSchema.safeParse(data);
+  if (!parsed.success) throw new SpendingError('invalid-argument', 'malformed');
+  const { babyId, importId, page } = parsed.data;
+  const { baby } = await requireParent(deps.db, babyId, uid, now);
+  const doc = await deps.db.doc(`babies/${babyId}/spendingImports/${importId}`).get();
+  if (!doc.exists) throw new SpendingError('not-found', 'not-found');
+  if (doc.get('status') !== 'ready') throw new SpendingError('failed-precondition', 'wrong-state');
+  const owner = doc.get('createdBy') as string;
+  const size = await deps.store.size(gridPath(owner, importId));
+  if (size == null) throw new SpendingError('failed-precondition', 'no-upload');
+  if (size > importLimits.gridBytesMax) throw new SpendingError('invalid-argument', 'too-big');
+  const grid = parseGrid(JSON.parse((await deps.store.read(gridPath(owner, importId))).toString()));
+  const rows = (
+    await readWithDuplicates(
+      deps.db,
+      babyId,
+      importId,
+      grid,
+      doc.get('mapping') as ImportMapping,
+      doc.get('options') as ImportOptions,
+      localDateIn(zoneOf(baby), now),
+      detectLayout(grid).currency,
+    )
+  ).filter((r) => r.issue == null);
+  const pages = Math.max(1, Math.ceil(rows.length / importLimits.pageRows));
+  const at = Math.min(page, pages - 1);
+  return {
+    rows: rows.slice(at * importLimits.pageRows, (at + 1) * importLimits.pageRows),
+    total: rows.length,
+    page: at,
+    pages,
+  };
+}
+
 export async function undoSpendingImport(
   db: Firestore,
   uid: string,

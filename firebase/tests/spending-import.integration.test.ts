@@ -10,6 +10,7 @@ import {
   confirmSpendingImport,
   importedCategoryId,
   importedExpenseId,
+  importPage,
   runSpendingImport,
   undoSpendingImport,
   type ImportDeps,
@@ -258,13 +259,28 @@ describe('analyze (file)', () => {
     });
     expect(d.categories).toEqual([
       { key: 'sua', name: 'Sữa', rows: 1, suggested: { kind: 'existing', id: 'c_milk' } },
-      { key: 'boi loi', name: 'Bơi lội', rows: 1, suggested: null },
+      // No match: a category of its own by default (owner, 2026-10-12).
+      { key: 'boi loi', name: 'Bơi lội', rows: 1, suggested: { kind: 'new', name: 'Bơi lội' } },
       { key: 'kham', name: 'Khám', rows: 1, suggested: { kind: 'existing', id: 'c_health' } },
     ]);
     expect(d.payers).toEqual([
       { key: 'mẹ', name: 'Mẹ', rows: 2, suggested: 'mom' },
       { key: 'bà', name: 'Bà', rows: 1, suggested: 'gma' },
     ]);
+  });
+
+  it('pages through every row that will be imported', async () => {
+    store.put(`imports/mom/${im(1)}.json`, moneyLover);
+    await analyzeSpendingImport(deps(), 'mom', { babyId, importId: im(1), kind: 'file' }, now);
+    const first = await importPage(deps(), 'dad', { babyId, importId: im(1), page: 0 }, now);
+    expect(first).toMatchObject({ total: 3, page: 0, pages: 1 });
+    expect(first.rows.every((r) => r.issue == null)).toBe(true);
+    expect((await importPage(deps(), 'mom', { babyId, importId: im(1), page: 9 }, now)).page).toBe(
+      0,
+    );
+    expect(
+      await reasonOf(importPage(deps(), 'nanny', { babyId, importId: im(1), page: 0 }, now)),
+    ).toBe('not-co-parent');
   });
 
   it('reads again with other options or columns', async () => {

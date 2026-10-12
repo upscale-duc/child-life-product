@@ -14146,12 +14146,6 @@ abstract class AppLocalizations {
   /// Nhập chi tiêu (D-060).
   ///
   /// In vi, this message translates to:
-  /// **'Hoàn tác lần nhập (đến {date})'**
-  String imUndo(String date);
-
-  /// Nhập chi tiêu (D-060).
-  ///
-  /// In vi, this message translates to:
   /// **'Dòng không nhập'**
   String get imIssues;
 
@@ -14308,20 +14302,8 @@ abstract class AppLocalizations {
   /// Nhập chi tiêu (D-060), review.
   ///
   /// In vi, this message translates to:
-  /// **'{n} mục chưa có trong Chi tiêu — chạm để chọn nơi xếp, nếu không sẽ vào “Khác”.'**
-  String imCategoriesHint(int n);
-
-  /// Nhập chi tiêu (D-060), review.
-  ///
-  /// In vi, this message translates to:
   /// **'Xếp “{name}” vào'**
   String imCategoryFor(String name);
-
-  /// Nhập chi tiêu (D-060), review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chọn'**
-  String get imChoose;
 
   /// Nhập chi tiêu (D-060), review.
   ///
@@ -14329,23 +14311,65 @@ abstract class AppLocalizations {
   /// **'Một vài khoản sẽ nhập'**
   String get imSamples;
 
-  /// Nhập chi tiêu (D-060), review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Xem thêm'**
-  String get imShowMore;
-
-  /// Nhập chi tiêu (D-060), review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thu gọn'**
-  String get imShowLess;
-
   /// Nhập chi tiêu (D-060), under the count.
   ///
   /// In vi, this message translates to:
   /// **'khoản chi sẵn sàng nhập'**
   String imReadyLabel(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} mục chưa có trong Chi tiêu sẽ được tạo thành danh mục mới. Chạm để đổi.'**
+  String imCategoriesNewHint(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới'**
+  String get imBadgeNew;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả {n}'**
+  String imSeeAll(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} khoản sẽ nhập'**
+  String imAllTitle(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trang {page}/{pages}'**
+  String imPageOf(int page, int pages);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trang trước'**
+  String get imPagePrev;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trang sau'**
+  String get imPageNext;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác lần nhập'**
+  String get imUndoAction;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thể hoàn tác đến {time} ngày {date} (còn {days} ngày)'**
+  String imUndoUntil(String time, String date, int days);
 }
 
 class _AppLocalizationsDelegate

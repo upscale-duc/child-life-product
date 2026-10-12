@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show ProviderListenable;
 
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tabular_text.dart';
@@ -60,20 +61,25 @@ class SpendingScope {
       );
 }
 
-SpendingScope? watchSpending(WidgetRef ref) {
-  final me = ref.watch(selectedMembershipProvider);
+SpendingScope? watchSpending(WidgetRef ref) => _scope(ref, watch: true);
+
+/// The same, read once (callbacks, `initState`).
+SpendingScope? readSpending(WidgetRef ref) => _scope(ref, watch: false);
+
+SpendingScope? _scope(WidgetRef ref, {required bool watch}) {
+  T get<T>(ProviderListenable<T> p) => watch ? ref.watch(p) : ref.read(p);
+  final me = get(selectedMembershipProvider);
   if (me == null) return null;
-  final baby = ref.watch(babyProvider(me.babyId)).value;
+  final baby = get(babyProvider(me.babyId)).value;
   final access = SpendingAccess.of(me);
   final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
-  final now =
-      ref.watch(careClockProvider).value ?? ref.read(timerClockProvider)();
+  final now = get(careClockProvider).value ?? ref.read(timerClockProvider)();
   final expenses = access.any
-      ? ref.watch(expensesProvider((me.babyId, access)))
+      ? get(expensesProvider((me.babyId, access)))
       : const AsyncValue<List<Expense>>.data([]);
   final categories = baby == null
       ? null
-      : ref.watch(spendingCategoriesProvider(baby.familyId)).value;
+      : get(spendingCategoriesProvider(baby.familyId)).value;
   return SpendingScope(
     me: me,
     baby: baby,

@@ -18,12 +18,15 @@ import '../../../core/widgets/cl_button.dart';
 import '../../../core/widgets/cl_feedback.dart';
 import '../../../core/widgets/cl_icon.dart';
 import '../../../core/widgets/cl_inputs.dart';
+import '../../../core/widgets/cl_navigation.dart';
 import '../../../core/widgets/cl_pressable.dart';
 import '../../../core/widgets/cl_rows.dart';
 import '../../../core/widgets/cl_segmented.dart';
 import '../../../core/widgets/cl_sheet.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../baby/baby_models.dart';
+import '../../care/care_repository.dart'
+    show careClockProvider, timerClockProvider;
 import '../../family/family_repository.dart';
 import '../spending_format.dart';
 import '../spending_models.dart';
@@ -64,6 +67,17 @@ String readFailureLabel(AppLocalizations l10n, ReadFailure f) => switch (f) {
   ReadFailure.tooBig => l10n.imFailTooBig,
   ReadFailure.broken => l10n.imReadBroken,
 };
+
+/// "Có thể hoàn tác đến 14:30 thứ Hai, 19/10/2026 (còn 7 ngày)".
+String undoUntilLabel(AppLocalizations l10n, DateTime until, DateTime now) {
+  final local = until.toLocal();
+  final days = local.difference(now).inHours ~/ 24;
+  return l10n.imUndoUntil(
+    DateFormat('HH:mm').format(local),
+    DateFormat('dd/MM/yyyy').format(local),
+    days < 0 ? 0 : days,
+  );
+}
 
 String importStatusLabel(AppLocalizations l10n, SpendingImport im) =>
     switch (im.status) {
@@ -418,7 +432,6 @@ class _SpendingImportReviewScreenState
   final _payers = <String, String?>{};
   final _payersSet = <String>{};
   bool _busy = false;
-  bool _allRows = false;
 
   CategoryChoice? _categoryOf(SourceName<CategoryChoice> c) =>
       _categories.containsKey(c.key) ? _categories[c.key] : c.suggested;
@@ -495,12 +508,15 @@ class _SpendingImportReviewScreenState
     // Names without a match first: they are the ones to decide.
     final categories = [...im.categories]
       ..sort((a, b) {
-        final ma = a.suggested == null ? 0 : 1;
-        final mb = b.suggested == null ? 0 : 1;
+        final ma = a.suggested is ExistingCategory ? 1 : 0;
+        final mb = b.suggested is ExistingCategory ? 1 : 0;
         return ma != mb ? ma - mb : b.rows - a.rows;
       });
-    final unmatched = im.categories.where((x) => x.suggested == null).length;
-    final rows = _allRows ? im.preview : im.preview.take(5).toList();
+    // Owner, 2026-10-12: names without a match become categories of their own.
+    final created = im.categories
+        .where((x) => _categoryOf(x) is NewCategory)
+        .length;
+    final rows = im.preview.take(5).toList();
     final from = im.total.from, to = im.total.to;
 
     return Stack(
@@ -641,12 +657,12 @@ class _SpendingImportReviewScreenState
             if (categories.isNotEmpty) ...[
               const SizedBox(height: ClSpace.s6),
               ClSectionHeader(title: l10n.imCategoriesTitle),
-              if (unmatched > 0) ...[
+              if (created > 0) ...[
                 const SizedBox(height: ClSpace.s1),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: ClSpace.s1),
                   child: Text(
-                    l10n.imCategoriesHint(unmatched),
+                    l10n.imCategoriesNewHint(created),
                     style: cl.text.label.copyWith(color: cl.colors.inkMuted),
                   ),
                 ),
@@ -660,9 +676,9 @@ class _SpendingImportReviewScreenState
                       from: cat.name,
                       count: cat.rows,
                       to: choiceName(_categoryOf(cat)),
-                      needsChoice:
-                          cat.suggested == null &&
-                          !_categories.containsKey(cat.key),
+                      badge: _categoryOf(cat) is NewCategory
+                          ? l10n.imBadgeNew
+                          : null,
                       onTap: () async {
                         final picked = await showClSheet<(CategoryChoice?,)>(
                           context: context,
@@ -705,7 +721,6 @@ class _SpendingImportReviewScreenState
                       from: p.name,
                       count: p.rows,
                       to: payerName(_payerOf(p)),
-                      needsChoice: false,
                       onTap: () async {
                         final picked = await showClSheet<(String?,)>(
                           context: context,
@@ -734,10 +749,14 @@ class _SpendingImportReviewScreenState
               const SizedBox(height: ClSpace.s6),
               ClSectionHeader(
                 title: l10n.imSamples,
-                linkLabel: im.preview.length > 5
-                    ? (_allRows ? l10n.imShowLess : l10n.imShowMore)
+                linkLabel: c.ready > rows.length
+                    ? l10n.imSeeAll(c.ready)
                     : null,
-                onLink: () => setState(() => _allRows = !_allRows),
+                onLink: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => _AllRowsScreen(importId: im.id),
+                  ),
+                ),
               ),
               const SizedBox(height: ClSpace.s2),
               SpGroup(
@@ -760,15 +779,17 @@ class _MatchRow extends StatelessWidget {
     required this.from,
     required this.count,
     required this.to,
-    required this.needsChoice,
     required this.onTap,
+    this.badge,
     super.key,
   });
 
   final String from;
   final int count;
   final String to;
-  final bool needsChoice;
+
+  /// "Mới": a category made from the file.
+  final String? badge;
   final VoidCallback onTap;
 
   @override
@@ -778,7 +799,7 @@ class _MatchRow extends StatelessWidget {
     return ClPressable(
       onPressed: onTap,
       pressedOpacity: ClPressable.surfaceOpacity,
-      semanticLabel: '$from, $to',
+      semanticLabel: [from, to, ?badge].join(', '),
       child: SizedBox(
         width: double.infinity,
         child: Padding(
@@ -799,16 +820,13 @@ class _MatchRow extends StatelessWidget {
                     Text(
                       l10n.imInto(to),
                       style: cl.text.caption.copyWith(
-                        color: needsChoice
-                            ? cl.colors.mintText
-                            : cl.colors.inkMuted,
-                        fontWeight: needsChoice ? FontWeight.w600 : null,
+                        color: cl.colors.inkMuted,
                       ),
                     ),
                   ],
                 ),
               ),
-              if (needsChoice) ...[
+              if (badge != null) ...[
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: ClSpace.s2,
@@ -819,7 +837,7 @@ class _MatchRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(ClRadius.pill),
                   ),
                   child: Text(
-                    l10n.imChoose,
+                    badge!,
                     style: cl.text.caption.copyWith(
                       color: cl.colors.onWarm,
                       fontWeight: FontWeight.w600,
@@ -1271,6 +1289,8 @@ class SpendingImportResultScreen extends ConsumerWidget {
         child: ClIcon(i, size: 30, color: ink),
       ),
     );
+    final now =
+        ref.watch(careClockProvider).value ?? ref.read(timerClockProvider)();
     final c = im.counts;
     final details = [
       if (c.duplicates > 0) l10n.imDuplicates(c.duplicates),
@@ -1352,14 +1372,20 @@ class SpendingImportResultScreen extends ConsumerWidget {
               expand: true,
               onPressed: () => context.go(Routes.spending),
             ),
-            if (im.canUndo(DateTime.now()) && undoUntil != null) ...[
+            if (im.canUndo(now) && undoUntil != null) ...[
               const SizedBox(height: ClSpace.s2),
               ClButton(
                 key: const Key('imUndo'),
-                label: l10n.imUndo(DateFormat('dd/MM').format(undoUntil)),
+                label: l10n.imUndoAction,
                 style: ClButtonStyle.secondary,
                 expand: true,
                 onPressed: () => _undo(context, ref, scope, im),
+              ),
+              const SizedBox(height: ClSpace.s1),
+              Text(
+                undoUntilLabel(l10n, undoUntil, now),
+                textAlign: TextAlign.center,
+                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
               ),
             ],
             if (im.issues.isNotEmpty) ...[
@@ -1417,13 +1443,19 @@ class SpendingImportResultScreen extends ConsumerWidget {
               onPressed: () => context.pushReplacement(Routes.spendingImport),
             ),
             // Part was written before it failed: it can be taken back.
-            if (im.canUndo(DateTime.now()) && undoUntil != null) ...[
+            if (im.canUndo(now) && undoUntil != null) ...[
               const SizedBox(height: ClSpace.s2),
               ClButton(
-                label: l10n.imUndo(DateFormat('dd/MM').format(undoUntil)),
+                label: l10n.imUndoAction,
                 style: ClButtonStyle.secondary,
                 expand: true,
                 onPressed: () => _undo(context, ref, scope, im),
+              ),
+              const SizedBox(height: ClSpace.s1),
+              Text(
+                undoUntilLabel(l10n, undoUntil, now),
+                textAlign: TextAlign.center,
+                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
               ),
             ],
           ],
@@ -1488,5 +1520,158 @@ class SpendingImportResultScreen extends ConsumerWidget {
     } on Object {
       toaster.show(message: l10n.imFailGeneric);
     }
+  }
+}
+
+/// "Tất cả khoản sẽ nhập": every row to import, 50 a page (owner, 2026-10-12).
+class _AllRowsScreen extends ConsumerStatefulWidget {
+  const _AllRowsScreen({required this.importId});
+  final String importId;
+
+  @override
+  ConsumerState<_AllRowsScreen> createState() => _AllRowsScreenState();
+}
+
+class _AllRowsScreenState extends ConsumerState<_AllRowsScreen> {
+  int _page = 0;
+  ImportPage? _data;
+  String? _failure;
+  final _scroll = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _load(0));
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  Future<void> _load(int page) async {
+    final scope = readSpending(ref);
+    if (scope == null) return;
+    setState(() {
+      _page = page;
+      _failure = null;
+    });
+    try {
+      final data = await ref
+          .read(spendingImportRepositoryProvider)
+          .page(scope.babyId, widget.importId, page);
+      if (!mounted) return;
+      setState(() => _data = data);
+      if (_scroll.hasClients) _scroll.jumpTo(0);
+    } on ImportException catch (e) {
+      if (mounted) setState(() => _failure = e.reason);
+    } on Object {
+      if (mounted) setState(() => _failure = 'unavailable');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = spLocale(context);
+    final data = _data;
+    final loading = data == null || data.page != _page;
+    return Scaffold(
+      backgroundColor: cl.colors.cloud,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                ClSpace.s4,
+                ClSpace.s2,
+                ClSpace.s4,
+                0,
+              ),
+              child: ClTopBar(onBack: () => Navigator.of(context).maybePop()),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                ClSpace.s4,
+                ClSpace.s3,
+                ClSpace.s4,
+                ClSpace.s2,
+              ),
+              child: SpTitle(l10n.imAllTitle(data?.total ?? 0)),
+            ),
+            Expanded(
+              child: _failure != null
+                  ? Center(
+                      child: Text(
+                        importFailureLabel(l10n, _failure!),
+                        style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+                      ),
+                    )
+                  : loading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: cl.colors.mintDeep,
+                      ),
+                    )
+                  : ListView(
+                      controller: _scroll,
+                      padding: const EdgeInsets.fromLTRB(
+                        ClSpace.s4,
+                        0,
+                        ClSpace.s4,
+                        ClSpace.s4,
+                      ),
+                      children: [
+                        SpGroup(
+                          children: [
+                            for (final r in data.rows)
+                              _PreviewRow(row: r, locale: locale),
+                          ],
+                        ),
+                      ],
+                    ),
+            ),
+            if (data != null && data.pages > 1)
+              Container(
+                color: cl.colors.cloud,
+                padding: EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  ClSpace.s2,
+                  ClSpace.s4,
+                  MediaQuery.paddingOf(context).bottom + ClSpace.s2,
+                ),
+                child: Row(
+                  children: [
+                    SpRoundIcon(
+                      icon: ClIcons.back,
+                      label: l10n.imPagePrev,
+                      onPressed: _page > 0 ? () => _load(_page - 1) : null,
+                    ),
+                    Expanded(
+                      child: Text(
+                        l10n.imPageOf(_page + 1, data.pages),
+                        key: const Key('imPage'),
+                        textAlign: TextAlign.center,
+                        style: cl.text.bodyStrong,
+                      ),
+                    ),
+                    SpRoundIcon(
+                      icon: ClIcons.chevronRight,
+                      label: l10n.imPageNext,
+                      onPressed: _page < data.pages - 1
+                          ? () => _load(_page + 1)
+                          : null,
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }

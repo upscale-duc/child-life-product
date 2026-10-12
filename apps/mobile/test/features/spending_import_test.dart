@@ -20,6 +20,29 @@ class _FakeImports implements SpendingImportRepository {
   ({Map<String, CategoryChoice> categories, Map<String, String?> payers})?
   confirmed;
   final undone = <String>[];
+  final pages = <int>[];
+
+  @override
+  Future<ImportPage> page(String babyId, String importId, int page) async {
+    pages.add(page);
+    return ImportPage(
+      rows: [
+        for (var i = 0; i < 50; i++)
+          ImportPreviewRow(
+            row: page * 50 + i + 2,
+            spentOn: '2026-10-01',
+            amount: 1000 * (i + 1),
+            note: 'Khoản ${page * 50 + i + 1}',
+            category: 'Sữa',
+            payer: '',
+            issue: null,
+          ),
+      ],
+      total: 210,
+      page: page,
+      pages: 5,
+    );
+  }
 
   @override
   Future<void> analyze({
@@ -168,29 +191,42 @@ void main() {
     await tester.tap(_t('Xong'));
     await tester.pumpAndSettle();
 
-    // "Bơi" has no match: it is first and marked; it goes to a new category.
+    // "Bơi" has no match: it becomes a category of its own unless changed.
     expect(
       _t(
-        '1 mục chưa có trong Chi tiêu — chạm để chọn nơi xếp, nếu không sẽ vào “Khác”.',
+        '1 mục chưa có trong Chi tiêu sẽ được tạo thành danh mục mới. Chạm để đổi.',
       ),
       findsOneWidget,
     );
-    expect(_t('Chọn'), findsOneWidget);
+    expect(_t('Mới'), findsOneWidget);
+    expect(_t('Vào: Tạo mới “Bơi”'), findsOneWidget);
     expect(_t('Vào: Sữa & ăn dặm'), findsOneWidget);
-    expect(_t('Vào: Khác'), findsOneWidget);
     await tester.tap(find.byKey(const Key('imCat-boi')));
     await tester.pumpAndSettle();
-    await tester.tap(_t('Tạo mới “Bơi”').last);
+    await tester.tap(_t('Quần áo').last);
     await tester.pumpAndSettle();
-    expect(_t('Vào: Tạo mới “Bơi”'), findsOneWidget);
-    expect(_t('Chọn'), findsNothing);
+    expect(_t('Vào: Quần áo'), findsOneWidget);
+    expect(_t('Mới'), findsNothing);
+
+    // Every row, 50 a page.
+    await _see(tester, _t('Xem tất cả 210'));
+    await tester.tap(_t('Xem tất cả 210'));
+    await tester.pumpAndSettle();
+    expect(_t('210 khoản sẽ nhập'), findsOneWidget);
+    expect(_t('Trang 1/5'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('Trang sau'));
+    await tester.pumpAndSettle();
+    expect(_t('Trang 2/5'), findsOneWidget);
+    expect(repo.pages, [0, 1]);
+    await tester.tap(find.bySemanticsLabel('Quay lại').last);
+    await tester.pumpAndSettle();
 
     await _see(tester, _t('Sữa công thức'));
     await tester.tap(_t('Nhập 210 khoản'));
     await tester.pumpAndSettle();
     expect(repo.confirmed?.categories, {
       'sua': const ExistingCategory('c_milk'),
-      'boi': const NewCategory('Bơi'),
+      'boi': const ExistingCategory('c_clothes'),
     });
     expect(visits.last.location, '/utilities/spending/import/$_id');
   });
@@ -224,6 +260,11 @@ void main() {
       findsOneWidget,
     );
     await _see(tester, find.byKey(const Key('imUndo')));
+    expect(find.textContaining('Có thể hoàn tác đến'), findsOneWidget);
+    expect(
+      _t('Có thể hoàn tác đến 09:00 ngày 19/10/2026 (còn 7 ngày)'),
+      findsOneWidget,
+    );
     await tester.tap(find.byKey(const Key('imUndo')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('imUndoConfirm')));

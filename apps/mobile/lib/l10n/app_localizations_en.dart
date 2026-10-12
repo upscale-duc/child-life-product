@@ -9033,11 +9033,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imSeeSpending => 'See spending';
 
   @override
-  String imUndo(String date) {
-    return 'Undo this import (until $date)';
-  }
-
-  @override
   String get imIssues => 'Rows not imported';
 
   @override
@@ -9169,34 +9164,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imCategoriesTitle => 'Put into categories';
 
   @override
-  String imCategoriesHint(int n) {
-    String _temp0 = intl.Intl.pluralLogic(
-      n,
-      locale: localeName,
-      other:
-          '$n names aren\'t in Spending yet — tap to choose where they go, or they go to “Other”.',
-      one:
-          '1 name isn\'t in Spending yet — tap to choose where it goes, or it goes to “Other”.',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String imCategoryFor(String name) {
     return 'Put “$name” into';
   }
 
   @override
-  String get imChoose => 'Choose';
-
-  @override
   String get imSamples => 'Some of what will be imported';
-
-  @override
-  String get imShowMore => 'Show more';
-
-  @override
-  String get imShowLess => 'Show less';
 
   @override
   String imReadyLabel(int n) {
@@ -9207,5 +9180,63 @@ class AppLocalizationsEn extends AppLocalizations {
       one: 'expense ready to import',
     );
     return '$_temp0';
+  }
+
+  @override
+  String imCategoriesNewHint(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other:
+          '$n names aren\'t in Spending yet and become new categories. Tap to change.',
+      one:
+          '1 name isn\'t in Spending yet and becomes a new category. Tap to change.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imBadgeNew => 'New';
+
+  @override
+  String imSeeAll(int n) {
+    return 'See all $n';
+  }
+
+  @override
+  String imAllTitle(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n items to import',
+      one: '1 item to import',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String imPageOf(int page, int pages) {
+    return 'Page $page of $pages';
+  }
+
+  @override
+  String get imPagePrev => 'Previous page';
+
+  @override
+  String get imPageNext => 'Next page';
+
+  @override
+  String get imUndoAction => 'Undo this import';
+
+  @override
+  String imUndoUntil(String time, String date, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days left',
+      one: '1 day left',
+      zero: 'less than a day left',
+    );
+    return 'You can undo until $time on $date ($_temp0)';
   }
 }

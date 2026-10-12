@@ -12740,15 +12740,6 @@
   "@imSeeSpending": {
     "description": "Nhập chi tiêu (D-060)."
   },
-  "imUndo": "Hoàn tác lần nhập (đến {date})",
-  "@imUndo": {
-    "description": "Nhập chi tiêu (D-060).",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "imIssues": "Dòng không nhập",
   "@imIssues": {
     "description": "Nhập chi tiêu (D-060)."
@@ -12906,15 +12897,6 @@
   "@imCategoriesTitle": {
     "description": "Nhập chi tiêu (D-060), review."
   },
-  "imCategoriesHint": "{n} mục chưa có trong Chi tiêu — chạm để chọn nơi xếp, nếu không sẽ vào “Khác”.",
-  "@imCategoriesHint": {
-    "description": "Nhập chi tiêu (D-060), review.",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "imCategoryFor": "Xếp “{name}” vào",
   "@imCategoryFor": {
     "description": "Nhập chi tiêu (D-060), review.",
@@ -12924,20 +12906,8 @@
       }
     }
   },
-  "imChoose": "Chọn",
-  "@imChoose": {
-    "description": "Nhập chi tiêu (D-060), review."
-  },
   "imSamples": "Một vài khoản sẽ nhập",
   "@imSamples": {
-    "description": "Nhập chi tiêu (D-060), review."
-  },
-  "imShowMore": "Xem thêm",
-  "@imShowMore": {
-    "description": "Nhập chi tiêu (D-060), review."
-  },
-  "imShowLess": "Thu gọn",
-  "@imShowLess": {
     "description": "Nhập chi tiêu (D-060), review."
   },
   "imReadyLabel": "khoản chi sẵn sàng nhập",
@@ -12945,6 +12915,76 @@
     "description": "Nhập chi tiêu (D-060), under the count.",
     "placeholders": {
       "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imCategoriesNewHint": "{n} mục chưa có trong Chi tiêu sẽ được tạo thành danh mục mới. Chạm để đổi.",
+  "@imCategoriesNewHint": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imBadgeNew": "Mới",
+  "@imBadgeNew": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSeeAll": "Xem tất cả {n}",
+  "@imSeeAll": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imAllTitle": "{n} khoản sẽ nhập",
+  "@imAllTitle": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imPageOf": "Trang {page}/{pages}",
+  "@imPageOf": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "pages": {
+        "type": "int"
+      }
+    }
+  },
+  "imPagePrev": "Trang trước",
+  "@imPagePrev": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imPageNext": "Trang sau",
+  "@imPageNext": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imUndoAction": "Hoàn tác lần nhập",
+  "@imUndoAction": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imUndoUntil": "Có thể hoàn tác đến {time} ngày {date} (còn {days} ngày)",
+  "@imUndoUntil": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "days": {
         "type": "int"
       }
     }

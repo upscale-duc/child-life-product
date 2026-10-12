@@ -8429,11 +8429,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get imSeeSpending => 'Xem chi tiêu';
 
   @override
-  String imUndo(String date) {
-    return 'Hoàn tác lần nhập (đến $date)';
-  }
-
-  @override
   String get imIssues => 'Dòng không nhập';
 
   @override
@@ -8533,29 +8528,52 @@ class AppLocalizationsVi extends AppLocalizations {
   String get imCategoriesTitle => 'Xếp vào danh mục';
 
   @override
-  String imCategoriesHint(int n) {
-    return '$n mục chưa có trong Chi tiêu — chạm để chọn nơi xếp, nếu không sẽ vào “Khác”.';
-  }
-
-  @override
   String imCategoryFor(String name) {
     return 'Xếp “$name” vào';
   }
 
   @override
-  String get imChoose => 'Chọn';
-
-  @override
   String get imSamples => 'Một vài khoản sẽ nhập';
-
-  @override
-  String get imShowMore => 'Xem thêm';
-
-  @override
-  String get imShowLess => 'Thu gọn';
 
   @override
   String imReadyLabel(int n) {
     return 'khoản chi sẵn sàng nhập';
+  }
+
+  @override
+  String imCategoriesNewHint(int n) {
+    return '$n mục chưa có trong Chi tiêu sẽ được tạo thành danh mục mới. Chạm để đổi.';
+  }
+
+  @override
+  String get imBadgeNew => 'Mới';
+
+  @override
+  String imSeeAll(int n) {
+    return 'Xem tất cả $n';
+  }
+
+  @override
+  String imAllTitle(int n) {
+    return '$n khoản sẽ nhập';
+  }
+
+  @override
+  String imPageOf(int page, int pages) {
+    return 'Trang $page/$pages';
+  }
+
+  @override
+  String get imPagePrev => 'Trang trước';
+
+  @override
+  String get imPageNext => 'Trang sau';
+
+  @override
+  String get imUndoAction => 'Hoàn tác lần nhập';
+
+  @override
+  String imUndoUntil(String time, String date, int days) {
+    return 'Có thể hoàn tác đến $time ngày $date (còn $days ngày)';
   }
 }

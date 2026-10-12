@@ -21,6 +21,8 @@ export const importLimits = {
   imagesMax: 5,
   imageBytesMax: 4 * 1024 * 1024,
   previewRows: 20,
+  /** Rows per page of "Xem tất cả". */
+  pageRows: 50,
   /** Rows left out shown on the review (with why); all are counted. */
   skippedRows: 30,
   /** Row problems kept on the import (the rest are only counted). */
@@ -117,6 +119,13 @@ export const confirmImportRequestSchema = z.object({
   payers: z.record(sourceName, payerChoice),
 });
 export type ConfirmImportRequest = z.infer<typeof confirmImportRequestSchema>;
+
+/** "Xem tất cả": one page of the rows that will be imported, with the current reading. */
+export const importPageRequestSchema = z.object({
+  babyId: z.string().min(1).max(128),
+  importId: importIdSchema,
+  page: z.number().int().min(0).max(1000),
+});
 
 export const undoImportRequestSchema = z.object({
   babyId: z.string().min(1).max(128),

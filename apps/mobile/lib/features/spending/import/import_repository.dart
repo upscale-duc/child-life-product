@@ -405,6 +405,21 @@ class SpendingImport {
   }
 }
 
+/// One page of "Xem tất cả".
+@immutable
+class ImportPage {
+  const ImportPage({
+    required this.rows,
+    required this.total,
+    required this.page,
+    required this.pages,
+  });
+  final List<ImportPreviewRow> rows;
+  final int total;
+  final int page;
+  final int pages;
+}
+
 /// A server refusal, by its reason (`SpendingError` in Functions).
 class ImportException implements Exception {
   const ImportException(this.reason);
@@ -509,6 +524,24 @@ class SpendingImportRepository {
     'categories': {for (final e in categories.entries) e.key: e.value.toJson()},
     'payers': payers,
   });
+
+  /// "Xem tất cả": one page of 50 rows that will be imported.
+  Future<ImportPage> page(String babyId, String importId, int page) async {
+    final r = await _call('spendingImportPage', {
+      'babyId': babyId,
+      'importId': importId,
+      'page': page,
+    });
+    return ImportPage(
+      rows: [
+        for (final x in (r['rows'] as List? ?? const []))
+          ImportPreviewRow.fromJson(x),
+      ],
+      total: (r['total'] as num?)?.toInt() ?? 0,
+      page: (r['page'] as num?)?.toInt() ?? 0,
+      pages: (r['pages'] as num?)?.toInt() ?? 1,
+    );
+  }
 
   /// Returns how many expenses were removed.
   Future<int> undo(String babyId, String importId) async {

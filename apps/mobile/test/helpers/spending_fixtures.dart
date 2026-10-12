@@ -327,7 +327,7 @@ SpendingImport mockImport(ImportStatus status) => SpendingImport(
       rows: 64,
       suggested: ExistingCategory('c_milk'),
     ),
-    SourceName(key: 'boi', name: 'Bơi', rows: 4, suggested: null),
+    SourceName(key: 'boi', name: 'Bơi', rows: 4, suggested: NewCategory('Bơi')),
   ],
   payers: const [],
   progress: status == ImportStatus.importing ? 57 : 0,
@@ -341,5 +341,5 @@ SpendingImport mockImport(ImportStatus status) => SpendingImport(
   createdBy: 'u_mai',
   createdAt: DateTime(2026, 10, 12, 9),
   finishedAt: null,
-  undoUntil: status == ImportStatus.done ? DateTime(2099, 10, 19) : null,
+  undoUntil: status == ImportStatus.done ? DateTime(2026, 10, 19, 9) : null,
 );

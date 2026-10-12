@@ -121,6 +121,7 @@ import {
   cleanupSpendingImports as cleanupImports,
   confirmSpendingImport as confirmImport,
   runSpendingImport as runImport,
+  importPage,
   undoSpendingImport as undoImport,
   type ImportStore,
 } from './spending-import.js';
@@ -1241,6 +1242,13 @@ export const analyzeSpendingImport = importCall(
 /** "Nhập N khoản": keeps the choices; the trigger below imports. */
 export const confirmSpendingImport = importCall('confirmSpendingImport', {}, (uid, d) =>
   confirmImport(getFirestore(), uid, d, new Date()),
+);
+
+/** "Xem tất cả": one page of 50 rows to import. */
+export const spendingImportPage = importCall(
+  'spendingImportPage',
+  { timeoutSeconds: 120, memory: '1GiB' },
+  (uid, d) => importPage({ db: getFirestore(), store: importStore() }, uid, d, new Date()),
 );
 
 /** "Hoàn tác lần nhập" (7 days). */
