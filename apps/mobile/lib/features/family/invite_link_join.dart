@@ -16,15 +16,11 @@ import 'family_models.dart';
 import 'family_repository.dart';
 import 'join_screens.dart';
 
-/// Tokens opened this run are remembered: the OS hands the link to the router and AppsFlyer
-/// reports the same click, which must not join twice.
-final openedInviteTokens = <String>{};
-
-/// A tapped invite link — the email's "Nhận lời mời" through AppsFlyer OneLink, or our own
-/// `/i/<token>` (owner, 2026-10-12): joins without questions. No account yet → a temporary
-/// ("Vào ngay") one; the relation is the one the inviter chose and the name "Người thân", both
-/// editable later in Gia đình; then straight to Hôm nay. A closed invite says why; anything
-/// unexpected (offline) falls back to the usual 16 Nhận lời mời screen.
+/// A tapped invite link `/i/<token>` (owner, 2026-10-12, D-059): the invite web page's "Mở app
+/// và nhận lời mời", the email, a QR or a message. Joins without questions: no account yet → a
+/// temporary ("Vào ngay") one; the relation is the one the inviter chose and the name "Người
+/// thân", both editable later in Gia đình; then straight to Hôm nay. A closed invite says why;
+/// anything unexpected (offline) falls back to the usual 16 Nhận lời mời screen.
 class InviteLinkScreen extends ConsumerStatefulWidget {
   const InviteLinkScreen({required this.lookup, super.key});
   final InviteLookup lookup;
@@ -39,8 +35,6 @@ class _InviteLinkScreenState extends ConsumerState<InviteLinkScreen> {
   @override
   void initState() {
     super.initState();
-    final token = widget.lookup.token;
-    if (token != null) openedInviteTokens.add(token);
     WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_join()));
   }
 

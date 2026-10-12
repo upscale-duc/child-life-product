@@ -19,16 +19,18 @@ FLAVORS = {
   'dev' => { bundle_id: 'dev.hsba.app', name: 'Child Life Dev', icon: 'AppIcon-dev', profile: 'hsba app dev',
              team: TEAM_ID,
              app_group: 'group.dev.hsba.app',
-             # Invite links open the app (owner, 2026-10-12; the "hsba app dev" profile carries
-             # Associated Domains): AppsFlyer OneLink, and our own /i/<token> on the landing host.
-             applinks: ['childlife.onelink.me', 'dev.childlife.app'],
+             # Invite links /i/<token> open the app (D-059; the "hsba app dev" profile carries
+             # Associated Domains). Both landing hosts: the invite page's "Mở app" button links
+             # to the other one, because iOS ignores a Universal Link to the page's own domain.
+             applinks: ['dev.childlife.app', 'child-life-dev-landing.web.app'],
              extension_profiles: { 'widgetExtension' => nil, 'share' => nil } },
   # prod has no team until the Child Life developer account exists: signing it on the borrowed
   # team would register app.childlife there (it did once, from Xcode's automatic signing).
   'prod' => { bundle_id: 'app.childlife', name: 'Child Life', icon: 'AppIcon-prod', team: nil,
               app_group: 'group.app.childlife',
-              # Needs Associated Domains on the prod App ID and profile when they exist.
-              applinks: ['childlife.onelink.me', 'childlife.app'],
+              # Needs Associated Domains on the prod App ID and profile when they exist, and a
+              # second host for the invite page's "Mở app" button (open question in D-059).
+              applinks: ['childlife.app'],
               extension_profiles: {} },
 }.freeze
 BASES = %w[Debug Profile Release].freeze

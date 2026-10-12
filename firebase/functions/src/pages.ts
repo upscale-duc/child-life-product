@@ -2,8 +2,8 @@ import type { InvitePreview } from '@child-life/contracts';
 
 /**
  * Small server-rendered pages on the landing host (plan §3.5): the invite landing `/i/{token}`
- * (QR / email link opened outside the app — shows the code to type in the app until universal
- * links exist) and the unsubscribe confirmation `/u/{token}`. No client Firestore access.
+ * (D-059: the email's "Nhận lời mời" — open the app, or install it first, or type the code) and
+ * the unsubscribe confirmation `/u/{token}`. No client Firestore access.
  */
 
 export type PageLocale = 'vi' | 'en';
@@ -27,6 +27,14 @@ main{max-width:440px;margin:0 auto;padding:40px 20px}
 h1{font-size:26px;line-height:1.3;margin:0 0 8px}p{color:#55707A;line-height:1.55;margin:8px 0}
 .code{display:inline-block;background:#EEF6F5;border-radius:14px;padding:10px 18px;font-size:28px;font-weight:600;letter-spacing:4px;color:#173D44}
 ol{padding-left:20px;color:#173D44;line-height:1.7}
+h2{font-size:17px;margin:24px 0 4px}.hint{font-size:14px}
+.btn{display:block;text-align:center;background:#0B7F78;color:#fff;text-decoration:none;font-weight:600;font-size:17px;border-radius:16px;padding:15px 16px;margin:16px 0 4px}
+.steps{list-style:none;padding:0;margin:8px 0 0;counter-reset:s}
+.steps li{position:relative;padding:4px 0 12px 40px;counter-increment:s;color:#173D44;line-height:1.55}
+.steps li:before{content:counter(s);position:absolute;left:0;top:2px;width:28px;height:28px;border-radius:50%;background:#EEF6F5;color:#0B7F78;font-weight:700;text-align:center;line-height:28px}
+.stores a{display:inline-block;margin:8px 8px 0 0;padding:8px 14px;border-radius:12px;background:#173D44;color:#fff;text-decoration:none;font-size:14px;font-weight:600}
+.copy{margin-left:8px;border:0;background:none;color:#0B7F78;font:inherit;font-weight:600;cursor:pointer}
+.foot{font-size:14px;margin-top:20px}
 </style></head><body><main><div class="brand">child life</div><div class="card">${body}</div></main></body></html>`;
 }
 
@@ -35,10 +43,49 @@ const roleLabel = {
   en: { coParent: 'Co-parent', caregiver: 'Caregiver', relative: 'Family member' },
 } as const;
 
+export interface InvitePageLinks {
+  /** The same invite on another app domain, so a tap opens the app (Universal / App Links). */
+  openUrl: string;
+  appStore: string | null;
+  playStore: string | null;
+}
+
+const invitePageCopy = {
+  vi: {
+    title: (name: string, baby: string) => `${name} mời bạn cùng chăm ${baby}`,
+    role: 'Vai trò',
+    haveApp: 'Đã có app Child Life',
+    open: 'Mở app và nhận lời mời',
+    openHint: (baby: string) => `App mở ra và tự đưa bạn vào gia đình của ${baby}.`,
+    noApp: 'Chưa có app',
+    install: 'Cài app Child Life trên điện thoại.',
+    back: 'Cài xong, quay lại trang này (hoặc bấm lại “Nhận lời mời” trong email) và bấm “Mở app và nhận lời mời”.',
+    code: 'Hoặc mở app, chọn “Mã mời” và nhập mã:',
+    copy: 'Sao chép',
+    copied: 'Đã chép',
+    stranger: 'Không quen người gửi? Bỏ qua trang này.',
+  },
+  en: {
+    title: (name: string, baby: string) => `${name} invited you to care for ${baby}`,
+    role: 'Role',
+    haveApp: 'Have the Child Life app',
+    open: 'Open the app and accept',
+    openHint: (baby: string) => `The app opens and takes you into ${baby}'s family.`,
+    noApp: "Don't have the app yet",
+    install: 'Install the Child Life app on your phone.',
+    back: 'Then come back to this page (or tap “Accept invite” in the email again) and tap “Open the app and accept”.',
+    code: 'Or open the app, choose “Invite code” and enter:',
+    copy: 'Copy',
+    copied: 'Copied',
+    stranger: "Don't know the sender? Just close this page.",
+  },
+} as const;
+
 export function renderInvitePage(
   locale: PageLocale,
   preview: InvitePreview,
   code: string | null,
+  links: InvitePageLinks,
 ): string {
   if (preview.status !== 'valid' || !code) {
     return locale === 'vi'
@@ -53,25 +100,27 @@ export function renderInvitePage(
           '<h1>This invite has expired</h1><p>Ask the person who invited you to send a new link.</p>',
         );
   }
+  const t = invitePageCopy[locale];
   const spaced = `${code.slice(0, 3)} ${code.slice(3)}`;
   const name = escape(preview.inviterName);
   const baby = escape(preview.babyNickname);
-  const role = roleLabel[locale][preview.role];
-  return locale === 'vi'
-    ? page(
-        locale,
-        `${preview.inviterName} mời bạn`,
-        `<h1>${name} mời bạn cùng chăm ${baby}</h1><p>Vai trò: ${role}</p>
-<ol><li>Cài app Child Life trên điện thoại.</li><li>Mở app, chọn “Mã mời”.</li><li>Nhập mã:</li></ol>
-<p><span class="code">${spaced}</span></p><p>Không quen người gửi? Bỏ qua trang này.</p>`,
-      )
-    : page(
-        locale,
-        `${preview.inviterName} invited you`,
-        `<h1>${name} invited you to care for ${baby}</h1><p>Role: ${role}</p>
-<ol><li>Install the Child Life app.</li><li>Open it and choose “Invite code”.</li><li>Enter the code:</li></ol>
-<p><span class="code">${spaced}</span></p><p>Don't know the sender? Just close this page.</p>`,
-      );
+  const stores = [
+    links.appStore ? `<a href="${escape(links.appStore)}">App Store</a>` : '',
+    links.playStore ? `<a href="${escape(links.playStore)}">Google Play</a>` : '',
+  ].join('');
+  return page(
+    locale,
+    t.title(preview.inviterName, preview.babyNickname),
+    `<h1>${t.title(name, baby)}</h1><p>${t.role}: ${roleLabel[locale][preview.role]}</p>
+<h2>${t.haveApp}</h2>
+<a class="btn" href="${escape(links.openUrl)}">${t.open}</a><p class="hint">${t.openHint(baby)}</p>
+<h2>${t.noApp}</h2>
+<ol class="steps"><li>${t.install}${stores ? `<div class="stores">${stores}</div>` : ''}</li>
+<li>${t.back}</li>
+<li>${t.code}<p><span class="code">${spaced}</span><button class="copy" type="button" data-code="${code}" data-done="${t.copied}">${t.copy}</button></p></li></ol>
+<p class="foot">${t.stranger}</p>
+<script>document.querySelector('.copy').addEventListener('click',function(e){var b=e.currentTarget;navigator.clipboard&&navigator.clipboard.writeText(b.dataset.code).then(function(){b.textContent=b.dataset.done})})</script>`,
+  );
 }
 
 export function renderUnsubscribePage(locale: PageLocale, ok: boolean): string {

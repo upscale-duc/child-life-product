@@ -13,8 +13,8 @@ import 'package:flutter_test/flutter_test.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/router_pump.dart';
 
-// One-tap invite links (owner, 2026-10-12): the email's OneLink or `/i/{token}` joins without
-// questions and lands on Hôm nay.
+// One-tap invite links (owner, 2026-10-12, D-059): `/i/{token}` joins without questions and
+// lands on Hôm nay.
 const token = 'AbCdEfGhIjKlMnOpQrStUvWxYz012345';
 const lookup = InviteLookup.token(token);
 
@@ -86,8 +86,6 @@ List<Override> _overrides(
 ];
 
 void main() {
-  setUp(openedInviteTokens.clear);
-
   testWidgets(
     'no account: waits for the saved one, then "Vào ngay" as Người thân',
     (tester) async {
@@ -104,7 +102,6 @@ void main() {
         const InviteLinkScreen(lookup: lookup),
         overrides: _overrides(live, repo, auth),
       );
-      expect(openedInviteTokens, {token});
       expect(auth.signedInFrom, isA<SessionSignedOut>());
       expect(auth.anonymousSignIns, 1);
       expect(repo.accepted.single, ('Người thân', Relation.grandmother));

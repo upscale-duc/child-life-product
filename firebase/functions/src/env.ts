@@ -20,17 +20,31 @@ export function webOriginFor(projectId: string | undefined): string {
 }
 
 /**
- * The invite email's AppsFlyer OneLink template (owner, 2026-10-12), e.g.
- * `https://childlife.onelink.me/AbCd`; undefined until it exists, and the email then links the
- * web page `/i/{token}`, which also opens the installed app.
+ * The hosts serving the invite page `/i/{token}`, all in the app's Associated Domains / App Links
+ * (D-059). The page's "Mở app" button links to another one: iOS ignores a Universal Link to the
+ * domain the page is on. Prod has one host until a second is chosen.
  */
-const inviteOneLinks: Record<'dev' | 'prod', string | undefined> = {
-  dev: undefined,
-  prod: undefined,
+export function inviteHostsFor(projectId: string | undefined): string[] {
+  return environmentForProject(projectId) === 'prod'
+    ? ['childlife.app']
+    : ['dev.childlife.app', 'child-life-dev-landing.web.app'];
+}
+
+/** "Mở app và nhận lời mời" on the page served from [host]. */
+export function inviteOpenUrl(projectId: string | undefined, host: string, token: string): string {
+  const hosts = inviteHostsFor(projectId);
+  const other = hosts.find((h) => h !== host) ?? hosts[0]!;
+  return `https://${other}/i/${token}`;
+}
+
+/** Store pages for "Cài app"; none until the app is published (dev testers install by hand). */
+const storeLinks: Record<Environment, { appStore: string | null; playStore: string | null }> = {
+  dev: { appStore: null, playStore: null },
+  prod: { appStore: null, playStore: null },
 };
 
-export function inviteOneLinkFor(projectId: string | undefined): string | undefined {
-  return inviteOneLinks[environmentForProject(projectId) === 'prod' ? 'prod' : 'dev'];
+export function storeLinksFor(projectId: string | undefined) {
+  return storeLinks[environmentForProject(projectId)];
 }
 
 /** The staff portal of the environment: staff invitations (P-135). */

@@ -16,7 +16,8 @@ import {
   adminOriginFor,
   currentProjectId,
   environmentForProject,
-  inviteOneLinkFor,
+  inviteOpenUrl,
+  storeLinksFor,
   webOriginFor,
 } from './env.js';
 import {
@@ -770,7 +771,6 @@ function mailSender(): MailSender | null {
 
 const mailOrigins = () => ({
   webOrigin: webOriginFor(currentProjectId()),
-  oneLink: inviteOneLinkFor(currentProjectId()),
   adminOrigin: adminOriginFor(currentProjectId()),
   /** Where `exportDownload` answers (direct, not through Hosting: no 60 s proxy limit). */
   functionsOrigin: `https://${functionsRegion}-${currentProjectId()}.cloudfunctions.net`,
@@ -838,11 +838,16 @@ export const sendAuthEmail = onCall({ secrets: [resendApiKey] }, async (request)
 export const inviteLanding = onRequest(async (req, res) => {
   const token = req.path.split('/').filter(Boolean).pop() ?? '';
   const { preview, code } = await inviteForLanding(getFirestore(), token, new Date());
+  const project = currentProjectId();
   res.set('Cache-Control', 'private, no-store');
   res.set('X-Robots-Tag', 'noindex');
-  res
-    .status(preview.status === 'valid' ? 200 : 404)
-    .send(renderInvitePage(localeFromHeader(req.get('accept-language')), preview, code));
+  res.status(preview.status === 'valid' ? 200 : 404).send(
+    renderInvitePage(localeFromHeader(req.get('accept-language')), preview, code, {
+      // Hosting forwards the domain the person opened (D-059: the button opens the other one).
+      openUrl: inviteOpenUrl(project, req.get('x-forwarded-host') ?? req.hostname, token),
+      ...storeLinksFor(project),
+    }),
+  );
 });
 
 export const emailUnsubscribe = onRequest(async (req, res) => {

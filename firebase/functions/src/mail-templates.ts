@@ -198,34 +198,16 @@ export function shortDate(iso: string, locale: Locale): string {
     : part({ day: 'numeric', month: 'short' });
 }
 
-/**
- * "Nhận lời mời": the AppsFlyer OneLink when configured (owner, 2026-10-12), so the app opens and
- * joins on its own, even right after installing it from the store; desktop browsers go to the web
- * page. Without a OneLink, the web page `/i/{token}`, which also opens the installed app.
- */
-export function inviteLinkUrl(token: string, webOrigin: string, oneLink?: string): string {
-  const web = `${webOrigin}/i/${token}`;
-  if (!oneLink) return web;
-  const url = new URL(oneLink);
-  url.searchParams.set('deep_link_value', 'invite');
-  url.searchParams.set('deep_link_sub1', token);
-  url.searchParams.set('af_web_dp', web);
-  url.searchParams.set('pid', 'invite_email');
-  return url.toString();
-}
-
 export function renderInviteEmail(
   locale: Locale,
   data: InviteMailData,
-  links: { webOrigin: string; unsubscribeUrl: string; oneLink?: string | undefined },
+  links: { webOrigin: string; unsubscribeUrl: string },
 ): RenderedMail {
   const vi = locale === 'vi';
   const subject = vi
     ? `${data.inviterName} mời bạn cùng chăm ${data.babyNickname}`
     : `${data.inviterName} invited you to care for ${data.babyNickname}`;
-  const link = data.token
-    ? inviteLinkUrl(data.token, links.webOrigin, links.oneLink)
-    : links.webOrigin;
+  const link = data.token ? `${links.webOrigin}/i/${data.token}` : links.webOrigin;
   const code = `${data.code.slice(0, 3)} ${data.code.slice(3)}`;
   return layout({
     locale,

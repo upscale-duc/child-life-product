@@ -1,49 +1,42 @@
 # Invite links (D-059)
 
-"Nhận lời mời" in the invite email opens the app and joins without questions, also right after
-installing it from the store.
+"Nhận lời mời" in the invite email opens the web page `https://dev.childlife.app/i/{token}`
+(prod: `https://childlife.app/i/{token}`). With the app installed, iOS and Android usually open the
+app straight away; otherwise the page shows:
 
-## How a tap travels
+1. **Mở app và nhận lời mời** — a link to the same invite on the other landing domain
+   (`child-life-dev-landing.web.app` ↔ `dev.childlife.app`). iOS ignores a Universal Link to the
+   domain the page is already on, so the button always points at the other one
+   (`inviteOpenUrl` in `firebase/functions/src/env.ts`).
+2. **Chưa có app:** install it (store buttons once `storeLinksFor` has them), come back to the page
+   or the email and tap the button, or open the app → "Mã mời" and type the code (copy button).
 
-| Where the person is                            | What happens                                                                                                                                                                            |
-| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Phone with the app                             | iOS Universal Link / Android App Link on `childlife.onelink.me` opens the app; the router turns `?deep_link_value=invite&deep_link_sub1={token}` into `/i/{token}` (`oneLinkLocation`). |
-| Phone without the app                          | OneLink sends them to the App Store / Play Store. The first open after installing gets the link from AppsFlyer (`startOneLink`, deferred deep link) and goes to `/i/{token}`.           |
-| Desktop                                        | `af_web_dp`: the web page `/i/{token}` with the code to type in the app.                                                                                                                |
-| Web link `https://dev.childlife.app/i/{token}` | Opens the app too (AASA and `assetlinks.json` from the landing build allow only `/i/*`).                                                                                                |
+In the app, `/i/{token}` is `InviteLinkScreen`: it waits for a saved account to load, signs in
+anonymously ("Vào ngay") if there is none, accepts with the invited relation and the name
+"Người thân", selects the baby and opens Hôm nay. A closed invite shows 17; an error shows the
+usual 16 screen.
 
-`/i/{token}` is `InviteLinkScreen`: it waits for a saved account to load, signs in anonymously
-("Vào ngay") if there is none, accepts with the invited relation and the name "Người thân", selects
-the baby and opens Hôm nay. A closed invite shows 17; an error shows the usual 16 screen.
+## What makes a link open the app
 
-Until the OneLink template exists the email links the web page `/i/{token}`, which also opens the
-installed app.
+| Platform | Declared in                                                                   | Served by the landing build                            |
+| -------- | ----------------------------------------------------------------------------- | ------------------------------------------------------ |
+| iOS      | `tool/ios_flavors.rb` → `applinks:` both landing domains (profile allows `*`) | `/.well-known/apple-app-site-association`, `/i/*` only |
+| Android  | `android/app/src/dev/AndroidManifest.xml`, both hosts, `pathPrefix /i/`       | `/.well-known/assetlinks.json` (debug key on dev)      |
 
-## One-time setup (owner)
+Both files come from `apps/landing/scripts/prerender.mjs`; deploy with
+`scripts/deploy.sh dev hosting:landing`. iOS reads the association file when the app is installed
+(through Apple's CDN), so reinstall after changing it.
 
-1. **AppsFlyer apps:** add the iOS app (dev bundle `dev.hsba.app`, later `app.childlife`) and the
-   Android app (`app.childlife.dev`, later `app.childlife`).
-2. **OneLink template** on the subdomain `childlife.onelink.me`:
-   - iOS: Universal Links on, team ID `VHFV2HNZGN` for dev; App Store link.
-   - Android: App Links on, SHA-256 of the signing key (dev: the debug key, see
-     `apps/landing/scripts/prerender.mjs`); Play Store link.
-   - Give engineering the template URL (for example `https://childlife.onelink.me/AbCd`). It goes in
-     `inviteOneLinks` in `firebase/functions/src/env.ts`; it is not a secret.
-3. **Keys for the app build:** copy `apps/mobile/config/appsflyer.example.json` to
-   `apps/mobile/config/appsflyer.dev.json` (gitignored) and fill in:
-   - `AF_DEV_KEY`: AppsFlyer → App settings → Dev key. Never paste it in chat or commit it.
-   - `AF_APPLE_APP_ID`: the numeric App Store ID (iOS only).
-4. **Build with the keys:**
+## Known limits
 
-   ```bash
-   flutter run --flavor dev --dart-define-from-file=config/appsflyer.dev.json
-   ```
+- Gmail / Outlook may open the email link in their own browser, where neither the link nor the
+  button opens the app. "Mở trong Safari" (or the code) works.
+- Someone who once chose "open in Safari" for the domain keeps getting the web page; long-press the
+  link → "Mở trong Child Life" resets it.
+- Click tracking in Resend must stay off: a redirect through another domain stops the app opening.
 
-   A build without the file never starts AppsFlyer; invite links still open the installed app.
+## Open for prod
 
-## Privacy
-
-AppsFlyer is started with advertising identifiers disabled (no IDFA / GAID, the Android `AD_ID`
-permission is removed, no tracking prompt, Apple Search Ads off). The app never gives it a user
-id, email or any child data. The invite token is the link's parameter, so AppsFlyer sees it; it is
-only good until the invite is accepted, revoked or expires.
+- A second domain for the button (for example `www.childlife.app`), added to `inviteHostsFor`,
+  the prod Associated Domains, and the App Links filter.
+- App Store / Google Play links in `storeLinksFor` once the app is published.

@@ -176,26 +176,8 @@ void main() {
     });
   });
 
-  group('opened links (invite email OneLink, 2026-10-12)', () {
+  group('opened links (D-059)', () {
     const token = 'AbCdEfGhIjKlMnOpQrStUvWxYz012345';
-
-    test('an invite OneLink becomes /i/{token}, before the session loads', () {
-      const link =
-          '/AbCd?deep_link_value=invite&deep_link_sub1=$token&pid=invite_email';
-      for (final s in GuardState.values) {
-        expect(go(s, link), '${Routes.inviteLink}/$token', reason: '$s');
-      }
-      expect(go(GuardState.loading, link, splashDone: false), isNotNull);
-    });
-
-    test('other or broken OneLinks land on the splash, then Hôm nay', () {
-      expect(go(GuardState.ready, '/AbCd?deep_link_value=story'), Routes.splash);
-      expect(
-        go(GuardState.ready, '/AbCd?deep_link_value=invite&deep_link_sub1=x'),
-        Routes.splash,
-      );
-      expect(oneLinkLocation('${Routes.inviteLink}/$token'), isNull);
-    });
 
     test('links arrive with their host; the guard sees path and query', () {
       expect(
@@ -203,11 +185,20 @@ void main() {
         '/i/$token',
       );
       expect(
-        appLocation(Uri.parse('https://childlife.onelink.me/AbCd?a=1')),
-        '/AbCd?a=1',
+        appLocation(
+          Uri.parse('https://child-life-dev-landing.web.app/i/$token?a=1'),
+        ),
+        '/i/$token?a=1',
       );
       expect(appLocation(Uri.parse('https://dev.childlife.app')), '/');
       expect(appLocation(Uri.parse('/today')), '/today');
+      expect(
+        go(
+          GuardState.signedOut,
+          appLocation(Uri.parse('https://dev.childlife.app/i/$token')),
+        ),
+        isNull,
+      );
     });
   });
 }

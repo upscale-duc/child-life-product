@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Reminders (S7, R-091): local notifications, rescheduled after a reboot. Inexact
          while-idle alarms, so no exact-alarm permission is requested. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
@@ -10,9 +9,6 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <!-- AppsFlyer OneLink (invite emails) runs without advertising identifiers: drop the
-         AD_ID permission its SDK declares. -->
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
     <application
         android:label="${appName}"
         android:localeConfig="@xml/locales_config"
@@ -38,14 +34,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            <!-- The invite email's AppsFlyer OneLink opens the app when installed (verified by
-                 AppsFlyer's assetlinks for the OneLink domain). -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="childlife.onelink.me" />
             </intent-filter>
         </activity>
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
