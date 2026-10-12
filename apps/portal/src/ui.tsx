@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import type { ApiError, Load } from './api';
 
@@ -140,6 +140,18 @@ export function Button({
   );
 }
 
+/**
+ * A wide table scrolls sideways inside its panel instead of being cut off or squeezed into
+ * one-word columns. `min` is the width below which the table stops shrinking.
+ */
+export function TableScroll({ min = 640, children }: { min?: number; children: ReactNode }) {
+  return (
+    <div className="table-scroll" style={{ '--table-min': `${min}px` } as CSSProperties}>
+      {children}
+    </div>
+  );
+}
+
 /** Lock-icon helper notes (A03, A04, A06, A10, A12). */
 export function LockNote({ children }: { children: ReactNode }) {
   return (
@@ -164,31 +176,80 @@ export function UsageBar({ ratio, tone }: { ratio: number; tone: 'ok' | 'warn' |
   );
 }
 
+/**
+ * Keeps the page behind an open dialog, drawer or menu from scrolling. Counted, so a dialog opened
+ * from the QA case sheet does not unlock the page when it closes.
+ */
+export function useScrollLock(active = true) {
+  useEffect(() => {
+    if (!active || typeof document === 'undefined') return;
+    const body = document.body;
+    const count = Number(body.dataset.scrollLocks ?? '0') + 1;
+    body.dataset.scrollLocks = String(count);
+    body.classList.add('no-scroll');
+    return () => {
+      const left = Number(body.dataset.scrollLocks ?? '1') - 1;
+      body.dataset.scrollLocks = String(left);
+      if (left <= 0) body.classList.remove('no-scroll');
+    };
+  }, [active]);
+}
+
+/** Open layers (menu drawer, case sheet, dialog), newest last: Escape closes only the top one. */
+const escapeStack: { current: () => void }[] = [];
+function onEscapeKey(e: KeyboardEvent) {
+  const top = escapeStack[escapeStack.length - 1];
+  if (e.key !== 'Escape' || !top) return;
+  e.stopPropagation();
+  top.current();
+}
+
+export function useEscape(onEscape: () => void, active = true) {
+  const handler = useRef(onEscape);
+  handler.current = onEscape;
+  useEffect(() => {
+    if (!active || typeof window === 'undefined') return;
+    if (escapeStack.length === 0) window.addEventListener('keydown', onEscapeKey);
+    escapeStack.push(handler);
+    return () => {
+      const at = escapeStack.lastIndexOf(handler);
+      if (at >= 0) escapeStack.splice(at, 1);
+      if (escapeStack.length === 0) window.removeEventListener('keydown', onEscapeKey);
+    };
+  }, [active]);
+}
+
 export function Modal({
   title,
   onClose,
   children,
   icon,
+  wide,
 }: {
   title: ReactNode;
   onClose: () => void;
   children: ReactNode;
   icon?: ReactNode;
+  /** Forms with several long fields (the QA case editor). */
+  wide?: boolean;
 }) {
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
-  const close = useRef(onClose);
-  close.current = onClose;
+  useScrollLock();
+  useEscape(onClose);
   // Focus the first field once, when the dialog opens.
   useEffect(() => {
     ref.current?.querySelector<HTMLElement>('textarea, input, button')?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close.current();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
   }, []);
   return (
     <div className="scrim" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal" role="dialog" aria-modal="true" aria-labelledby={id} ref={ref}>
+      <div
+        className={`modal ${wide ? 'modal--wide' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={id}
+        ref={ref}
+      >
         {icon}
         <h2 className="modal__title" id={id}>
           {title}
@@ -242,12 +303,40 @@ export function Empty({ children }: { children: ReactNode }) {
   return <div className="state state--empty">{children}</div>;
 }
 
+/** Server reasons with their own message (`error.<reason>`), v1.0 staff and data actions. */
+export const reasonMessages = [
+  'last-owner',
+  'self',
+  'already-member',
+  'already-active',
+  'locked',
+  'name-taken',
+  'unknown-role',
+  'already-requested',
+  'same-person',
+  'not-requested',
+  'past',
+  'not-eligible',
+  'transfer-pending',
+  'no-change',
+  'rows-invalid',
+  'rows-duplicate',
+  'rows-out-of-range',
+  'bands-gap',
+  'bands-open',
+  'not-draft',
+  'not-pending',
+  'not-retired',
+];
+
 export function errorMessageId(error: ApiError): string {
   if (error.reason === 'role') return 'error.role';
   if (error.reason === 'not-staff' || error.code === 'unauthenticated') return 'error.notStaff';
   if (error.reason === 'already-claimed') return 'error.alreadyClaimed';
   if (error.reason === 'already-decided') return 'error.alreadyDecided';
   if (error.reason === 'not-failed') return 'error.notFailed';
+  if (error.reason === 'archived') return 'error.qaArchived';
+  if (error.reason && reasonMessages.includes(error.reason)) return `error.${error.reason}`;
   if (error.code === 'not-found') return 'error.notFound';
   if (error.code === 'invalid-argument') return 'error.invalid';
   return 'error.generic';

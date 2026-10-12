@@ -227,9 +227,9 @@ export function TicketDetailView({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [dialog, setDialog] = useState<Dialog>(null);
-  const canClaim = staffCan(staff.roles, 'support.claim');
-  const canReply = staffCan(staff.roles, 'support.reply');
-  const canClose = staffCan(staff.roles, 'support.close');
+  const canClaim = staffCan(staff.levels, 'support.claim');
+  const canReply = staffCan(staff.levels, 'support.reply');
+  const canClose = staffCan(staff.levels, 'support.close');
   const closed = ticket.status === 'closed';
 
   const run = async (fn: () => Promise<unknown>) => {

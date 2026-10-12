@@ -1,4 +1,10 @@
-import type { Environment } from '@child-life/contracts';
+import {
+  builtinRole,
+  staffCan,
+  type Environment,
+  type StaffAction,
+  type StaffLevels,
+} from '@child-life/contracts';
 import type { SupportedLocale } from '@child-life/web-config';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -12,23 +18,54 @@ import {
   type Route,
 } from './context';
 import { sortedRoles } from './session';
+import { useEscape, useScrollLock } from './ui';
+import { AnalyticsScreen } from './screens/Analytics';
 import { AuditScreen } from './screens/Audit';
+import { FamiliesScreen } from './screens/Families';
 import { FeaturesScreen } from './screens/Features';
 import { JobsScreen } from './screens/Jobs';
 import { OverviewScreen } from './screens/Overview';
+import { QaScreen } from './screens/Qa';
+import { ReferenceScreen } from './screens/Reference';
+import { StaffScreen } from './screens/Staff';
 import { StorageScreen } from './screens/Storage';
 import { SupportScreen } from './screens/Support';
 import { SystemScreen } from './screens/System';
 
-const nav: Array<{ route: Route; badge?: keyof Badges; section?: true }> = [
-  { route: 'overview' },
-  { route: 'support', badge: 'tickets' },
-  { route: 'storage', badge: 'storage' },
-  { route: 'jobs', badge: 'jobs' },
-  { route: 'system', section: true },
-  { route: 'features' },
-  { route: 'audit' },
+type NavItem = {
+  route: Route;
+  badge?: keyof Badges;
+  group?: 'ops' | 'system' | 'develop';
+  /** What a member needs to see the item (P-134); Kiểm thử only reaches the QA handbook. */
+  can: StaffAction;
+};
+/** The v1.0 sidebar (`253:467`), plus PHÁT TRIỂN › Sổ tay kiểm thử (P-132). */
+const nav: NavItem[] = [
+  { route: 'overview', can: 'overview.view' },
+  { route: 'analytics', can: 'analytics.view' },
+  { route: 'families', group: 'ops', can: 'families.view' },
+  { route: 'support', badge: 'tickets', group: 'ops', can: 'support.view' },
+  { route: 'storage', badge: 'storage', group: 'ops', can: 'storage.view' },
+  { route: 'jobs', badge: 'jobs', group: 'ops', can: 'jobs.view' },
+  { route: 'reference', group: 'ops', can: 'reference.view' },
+  { route: 'system', group: 'system', can: 'system.view' },
+  { route: 'features', group: 'system', can: 'features.view' },
+  { route: 'staff', group: 'system', can: 'staff.view' },
+  { route: 'audit', group: 'system', can: 'audit.view' },
+  { route: 'qa', group: 'develop', can: 'qa.view' },
 ];
+
+const canOpen = (levels: StaffLevels, route: Route) => {
+  const item = nav.find((n) => n.route === (route === 'systemAi' ? 'system' : route));
+  return !!item && staffCan(levels, item.can);
+};
+
+/** The page a staff member lands on: the requested one, or the first their levels may open. */
+export function allowedRoute(levels: StaffLevels, route: Route): Route {
+  return canOpen(levels, route)
+    ? route
+    : (nav.find((n) => canOpen(levels, n.route))?.route ?? route);
+}
 
 /** The signed-in portal: the Admin/Sidebar (`253:467`) and the A02–A12 screens. */
 export function Shell({
@@ -43,15 +80,20 @@ export function Shell({
   onSignOut: () => void;
 }) {
   const api = useApi();
-  const [route, setRoute] = useState<Route>(() => routeOf(window.location.pathname));
+  const staff = useStaff();
+  const [route, setRoute] = useState<Route>(() =>
+    allowedRoute(staff.levels, routeOf(window.location.pathname)),
+  );
   const [badges, setBadges] = useState<Badges | null>(null);
+  const seesCounts = staffCan(staff.levels, 'overview.view');
 
   const refreshBadges = useCallback(() => {
+    if (!seesCounts) return;
     api
       .call<Badges>('staffBadges')
       .then(setBadges)
       .catch(() => setBadges(null));
-  }, [api]);
+  }, [api, seesCounts]);
   useEffect(() => {
     refreshBadges();
     const t = setInterval(refreshBadges, 60_000);
@@ -59,20 +101,64 @@ export function Shell({
   }, [refreshBadges]);
 
   useEffect(() => {
-    const onPop = () => setRoute(routeOf(window.location.pathname));
+    const onPop = () => setRoute(allowedRoute(staff.levels, routeOf(window.location.pathname)));
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
-  }, []);
+  }, [staff.levels]);
+  // A page the levels may not open (e.g. "/" for Kiểm thử) shows its fallback's address.
+  useEffect(() => {
+    if (routeOf(window.location.pathname) !== route) {
+      window.history.replaceState({}, '', routePaths[route]);
+    }
+  }, [route]);
   const navigate = useCallback((r: Route) => {
     if (window.location.pathname !== routePaths[r]) window.history.pushState({}, '', routePaths[r]);
     setRoute(r);
+    setDrawer(false);
     window.scrollTo(0, 0);
   }, []);
+  // Below 860 px the sidebar is a drawer opened from the top bar (portal UI review).
+  const [drawer, setDrawer] = useState(false);
+  useScrollLock(drawer);
+  useEscape(() => setDrawer(false), drawer);
+  const intl = useIntl();
+  const active = route === 'systemAi' ? 'system' : route;
 
   return (
     <NavigateContext.Provider value={navigate}>
       <BadgesContext.Provider value={refreshBadges}>
         <div className="shell">
+          <header className="topbar">
+            <button
+              type="button"
+              className="topbar__menu"
+              aria-label={intl.formatMessage({ id: 'nav.open' })}
+              aria-expanded={drawer}
+              aria-controls="portal-menu"
+              onClick={() => setDrawer(true)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4 7h16M4 12h16M4 17h16"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+            <p className="topbar__title">
+              <span className="brand">Child Life</span>
+              <span className="topbar__page">
+                <FormattedMessage id={`nav.${active}`} />
+              </span>
+            </p>
+            <span className={`env env--${environment}`}>
+              ● <FormattedMessage id={`env.${environment}`} />
+            </span>
+          </header>
+          {drawer && (
+            <div className="sidebar-scrim" onClick={() => setDrawer(false)} aria-hidden="true" />
+          )}
           <Sidebar
             route={route}
             badges={badges}
@@ -81,6 +167,8 @@ export function Shell({
             onLocale={onLocale}
             onSignOut={onSignOut}
             navigate={navigate}
+            open={drawer}
+            onClose={() => setDrawer(false)}
           />
           <main className="main">
             <Screen route={route} />
@@ -95,6 +183,14 @@ function Screen({ route }: { route: Route }) {
   switch (route) {
     case 'overview':
       return <OverviewScreen />;
+    case 'analytics':
+      return <AnalyticsScreen />;
+    case 'families':
+      return <FamiliesScreen />;
+    case 'reference':
+      return <ReferenceScreen />;
+    case 'staff':
+      return <StaffScreen />;
     case 'support':
       return <SupportScreen />;
     case 'storage':
@@ -109,6 +205,8 @@ function Screen({ route }: { route: Route }) {
       return <FeaturesScreen />;
     case 'audit':
       return <AuditScreen />;
+    case 'qa':
+      return <QaScreen />;
   }
 }
 
@@ -120,6 +218,8 @@ export function Sidebar({
   onLocale,
   onSignOut,
   navigate,
+  open = false,
+  onClose,
 }: {
   route: Route;
   badges: Badges | null;
@@ -128,9 +228,13 @@ export function Sidebar({
   onLocale: (l: SupportedLocale) => void;
   onSignOut: () => void;
   navigate: (r: Route) => void;
+  /** The drawer state below 860 px. */
+  open?: boolean;
+  onClose?: () => void;
 }) {
   const intl = useIntl();
   const staff = useStaff();
+  const listRef = useRef<HTMLUListElement>(null);
   const [menu, setMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -138,48 +242,82 @@ export function Sidebar({
     const close = (e: MouseEvent) => {
       if (!menuRef.current?.contains(e.target as Node)) setMenu(false);
     };
-    const esc = (e: KeyboardEvent) => e.key === 'Escape' && setMenu(false);
     document.addEventListener('mousedown', close);
-    document.addEventListener('keydown', esc);
-    return () => {
-      document.removeEventListener('mousedown', close);
-      document.removeEventListener('keydown', esc);
-    };
+    return () => document.removeEventListener('mousedown', close);
   }, [menu]);
+  useEscape(() => setMenu(false), menu);
   const active = route === 'systemAi' ? 'system' : route;
+  // The menu scrolls on short screens: keep the current page in view.
+  useEffect(() => {
+    listRef.current?.querySelector('.sidebar__item--on')?.scrollIntoView?.({ block: 'nearest' });
+  }, [active, open]);
+  // Built-in roles by their catalog name; roles made on the portal by the name `staffMe` gave.
+  const names = new Map(staff.roles.map((r, i) => [builtinRole(r) ?? r, staff.roleNames?.[i]]));
   const roles = sortedRoles(staff.roles)
-    .map((r) => intl.formatMessage({ id: `role.${r}` }))
+    .map((r) =>
+      builtinRole(r) ? intl.formatMessage({ id: `role.${builtinRole(r)}` }) : (names.get(r) ?? r),
+    )
     .join(' · ');
   return (
-    <nav className="sidebar" aria-label={intl.formatMessage({ id: 'nav.label' })}>
-      <p className="brand brand--side">
-        Child Life <span className="brand__sub">Vận hành</span>
-      </p>
-      <ul className="sidebar__nav">
-        {nav.map((item) => (
-          <li key={item.route}>
-            {item.section && (
-              <p className="sidebar__section">
-                <FormattedMessage id="nav.section.system" />
-              </p>
-            )}
-            <a
-              href={routePaths[item.route]}
-              className={`sidebar__item ${active === item.route ? 'sidebar__item--on' : ''}`}
-              aria-current={active === item.route ? 'page' : undefined}
-              onClick={(e) => {
-                if (e.metaKey || e.ctrlKey || e.shiftKey) return;
-                e.preventDefault();
-                navigate(item.route);
-              }}
-            >
-              <FormattedMessage id={`nav.${item.route}`} />
-              {item.badge && badges && badges[item.badge] > 0 && (
-                <span className="sidebar__badge">{intl.formatNumber(badges[item.badge])}</span>
+    <nav
+      id="portal-menu"
+      className={`sidebar ${open ? 'sidebar--open' : ''}`}
+      aria-label={intl.formatMessage({ id: 'nav.label' })}
+    >
+      <div className="sidebar__head">
+        <p className="brand brand--side">
+          Child Life <span className="brand__sub">Vận hành</span>
+        </p>
+        {onClose && (
+          <button
+            type="button"
+            className="sidebar__close"
+            aria-label={intl.formatMessage({ id: 'nav.close' })}
+            onClick={onClose}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M6 6l12 12M18 6L6 18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        )}
+      </div>
+      <ul className="sidebar__nav" ref={listRef}>
+        {nav
+          .filter((item) => canOpen(staff.levels, item.route))
+          .map((item, i, shown) => ({
+            ...item,
+            // A group's heading sits above its first item this member can see.
+            section: item.group && item.group !== shown[i - 1]?.group ? item.group : undefined,
+          }))
+          .map((item) => (
+            <li key={item.route}>
+              {item.section && (
+                <p className="sidebar__section">
+                  <FormattedMessage id={`nav.section.${item.section}`} />
+                </p>
               )}
-            </a>
-          </li>
-        ))}
+              <a
+                href={routePaths[item.route]}
+                className={`sidebar__item ${active === item.route ? 'sidebar__item--on' : ''}`}
+                aria-current={active === item.route ? 'page' : undefined}
+                onClick={(e) => {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+                  e.preventDefault();
+                  navigate(item.route);
+                }}
+              >
+                <FormattedMessage id={`nav.${item.route}`} />
+                {item.badge && badges && badges[item.badge] > 0 && (
+                  <span className="sidebar__badge">{intl.formatNumber(badges[item.badge])}</span>
+                )}
+              </a>
+            </li>
+          ))}
       </ul>
       <div className="sidebar__foot">
         <span className={`env env--${environment}`}>

@@ -1,4 +1,10 @@
-import { staffRoles, type StaffRole } from '@child-life/contracts';
+import {
+  builtinRole,
+  levelsForRoles,
+  staffRoles,
+  type StaffLevels,
+  type StaffRole,
+} from '@child-life/contracts';
 
 /**
  * Staff session rules (A01, D-043): email + password or an email link, the `staff` custom claim
@@ -11,21 +17,26 @@ export interface StaffIdentity {
   email: string | null;
   name: string;
   roles: StaffRole[];
+  /** Role display names from `staffMe` (roles made on the portal have their own names). */
+  roleNames?: string[];
+  /** What this member may open and do (P-134), from `staffMe`; templates until it answers. */
+  levels: StaffLevels;
 }
 
-/** The staff identity from ID-token claims, or `null` for an account without portal access. */
+/**
+ * The staff identity from ID-token claims, or `null` for an account without portal access. The
+ * levels are the built-in templates until `staffMe` answers with the stored roles.
+ */
 export function staffFromClaims(
   uid: string,
   email: string | null,
   claims: Record<string, unknown>,
 ): StaffIdentity | null {
   if (claims.staff !== true || !Array.isArray(claims.roles)) return null;
-  const roles = claims.roles.filter((r): r is StaffRole =>
-    (staffRoles as readonly unknown[]).includes(r),
-  );
+  const roles = claims.roles.filter((r): r is StaffRole => typeof r === 'string' && r.length > 0);
   if (!roles.length) return null;
   const name = typeof claims.name === 'string' && claims.name.trim() ? claims.name : (email ?? '');
-  return { uid, email, name, roles };
+  return { uid, email, name, roles, levels: levelsForRoles(roles) };
 }
 
 export function idleExpired(lastActivity: number | null, now: number): boolean {
@@ -71,7 +82,11 @@ export function linkEmail(): string | null {
   return read(linkEmailKey);
 }
 
-/** "Vận hành · Hỗ trợ" order: the matrix order, not the claim order. */
+/** "Admin · Vận hành" order: built-in roles in matrix order, then roles made on the portal. */
 export function sortedRoles(roles: readonly StaffRole[]): StaffRole[] {
-  return staffRoles.filter((r) => roles.includes(r));
+  const ids = roles.map((r) => builtinRole(r) ?? r);
+  return [
+    ...staffRoles.filter((r) => ids.includes(r)),
+    ...ids.filter((r) => !(staffRoles as readonly string[]).includes(r)),
+  ];
 }

@@ -18,6 +18,7 @@ import {
   UsageBar,
   errorMessageId,
   reasonOk,
+  TableScroll,
 } from '../ui';
 
 type Status = 'open' | 'granted' | 'declined';
@@ -73,7 +74,7 @@ export function StorageView({
 }) {
   const intl = useIntl();
   const staff = useStaff();
-  const canDecide = staffCan(staff.roles, 'storage.decide');
+  const canDecide = staffCan(staff.levels, 'storage.decide');
   const [selected, setSelected] = useState<string | null>(null);
   const [dialog, setDialog] = useState<{ row: StorageRow; kind: 'grant' | 'decline' } | null>(null);
   const row = data.rows.find((r) => r.id === selected) ?? data.rows[0] ?? null;
@@ -123,82 +124,87 @@ export function StorageView({
             <FormattedMessage id={`storage.empty.${status}`} />
           </Empty>
         ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                <th>
-                  <FormattedMessage id="col.id" />
-                </th>
-                <th>
-                  <FormattedMessage id="col.family" />
-                </th>
-                <th>
-                  <FormattedMessage id="col.using" />
-                </th>
-                <th>
-                  <FormattedMessage id="col.requested" />
-                </th>
-                <th>
-                  <FormattedMessage id="col.message" />
-                </th>
-                <th>
-                  <FormattedMessage id="col.sent" />
-                </th>
-                {status === 'open' && canDecide && <th />}
-              </tr>
-            </thead>
-            <tbody>
-              {data.rows.map((r) => {
-                const ratio = r.usedBytes / Math.max(1, r.quotaBytes);
-                return (
-                  <tr
-                    key={r.id}
-                    className={r.id === row?.id ? 'table__row--on' : ''}
-                    onClick={() => setSelected(r.id)}
-                  >
-                    <td className="mono nowrap">{r.code}</td>
-                    <td>
-                      <strong className="mono nowrap">{r.family}</strong>
-                      <br />
-                      <span className="muted">
-                        <FormattedMessage
-                          id="family.shape"
-                          values={{ babies: r.babies, people: r.people }}
-                        />
-                      </span>
-                    </td>
-                    <td className="nowrap">
-                      {gb(intl, r.usedBytes)} / {gb(intl, r.quotaBytes, 0)} · {pct(intl, ratio)}
-                      <UsageBar ratio={ratio} tone={usageTone(r.usedBytes, r.quotaBytes)} />
-                    </td>
-                    <td>
-                      <strong>+{r.requestedGb} GB</strong>
-                      {r.grantedGb !== null && (
-                        <>
-                          <br />
-                          <span className="muted">
-                            <FormattedMessage id="storage.grantedN" values={{ n: r.grantedGb }} />
-                          </span>
-                        </>
-                      )}
-                    </td>
-                    <td className="cell-message">{r.message ?? '—'}</td>
-                    <td className="nowrap">{ago(intl, r.createdAt, now)}</td>
-                    {status === 'open' && canDecide && (
-                      <td className="cell-actions">
-                        <Button onClick={() => setDialog({ row: r, kind: 'decline' })}>
-                          <FormattedMessage id="storage.decline" />
-                        </Button>
-                        <Button kind="primary" onClick={() => setDialog({ row: r, kind: 'grant' })}>
-                          <FormattedMessage id="storage.approve" />
-                        </Button>
+          <TableScroll min={880}>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>
+                    <FormattedMessage id="col.id" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="col.family" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="col.using" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="col.requested" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="col.message" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="col.sent" />
+                  </th>
+                  {status === 'open' && canDecide && <th />}
+                </tr>
+              </thead>
+              <tbody>
+                {data.rows.map((r) => {
+                  const ratio = r.usedBytes / Math.max(1, r.quotaBytes);
+                  return (
+                    <tr
+                      key={r.id}
+                      className={r.id === row?.id ? 'table__row--on' : ''}
+                      onClick={() => setSelected(r.id)}
+                    >
+                      <td className="mono nowrap">{r.code}</td>
+                      <td>
+                        <strong className="mono nowrap">{r.family}</strong>
+                        <br />
+                        <span className="muted">
+                          <FormattedMessage
+                            id="family.shape"
+                            values={{ babies: r.babies, people: r.people }}
+                          />
+                        </span>
                       </td>
-                    )}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      <td className="nowrap">
+                        {gb(intl, r.usedBytes)} / {gb(intl, r.quotaBytes, 0)} · {pct(intl, ratio)}
+                        <UsageBar ratio={ratio} tone={usageTone(r.usedBytes, r.quotaBytes)} />
+                      </td>
+                      <td>
+                        <strong>+{r.requestedGb} GB</strong>
+                        {r.grantedGb !== null && (
+                          <>
+                            <br />
+                            <span className="muted">
+                              <FormattedMessage id="storage.grantedN" values={{ n: r.grantedGb }} />
+                            </span>
+                          </>
+                        )}
+                      </td>
+                      <td className="cell-message">{r.message ?? '—'}</td>
+                      <td className="nowrap">{ago(intl, r.createdAt, now)}</td>
+                      {status === 'open' && canDecide && (
+                        <td className="cell-actions">
+                          <Button onClick={() => setDialog({ row: r, kind: 'decline' })}>
+                            <FormattedMessage id="storage.decline" />
+                          </Button>
+                          <Button
+                            kind="primary"
+                            onClick={() => setDialog({ row: r, kind: 'grant' })}
+                          >
+                            <FormattedMessage id="storage.approve" />
+                          </Button>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </TableScroll>
         )}
       </Panel>
       <div className="cols cols--1-1">
@@ -333,7 +339,7 @@ export function DecideDialog({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const leadNeeded = kind === 'grant' && validGb && needsLead(grantGb);
-  const blocked = leadNeeded && !staffCan(staff.roles, 'storage.large');
+  const blocked = leadNeeded && !staffCan(staff.levels, 'storage.large');
   const submit = async () => {
     setBusy(true);
     setError(null);

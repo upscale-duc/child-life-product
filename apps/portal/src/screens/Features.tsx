@@ -16,6 +16,7 @@ import {
   ReasonField,
   errorMessageId,
   reasonOk,
+  TableScroll,
 } from '../ui';
 
 /** A10 Tính năng & phát hành: switches never change who can see what (R-189). */
@@ -58,8 +59,8 @@ export function FeaturesView({
 }) {
   const intl = useIntl();
   const staff = useStaff();
-  const canToggle = staffCan(staff.roles, 'flags.toggle');
-  const canRollout = staffCan(staff.roles, 'flags.rollout');
+  const canToggle = staffCan(staff.levels, 'flags.toggle');
+  const canRollout = staffCan(staff.levels, 'flags.rollout');
   const [change, setChange] = useState<Change | null>(null);
   const aiFlag = data.flags.ai_story_drafts;
   const step = nextStep(aiFlag);
@@ -73,69 +74,71 @@ export function FeaturesView({
             <FormattedMessage id="features.lock" />
           </LockNote>
         </div>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>
-                <FormattedMessage id="col.feature" />
-              </th>
-              <th>
-                <FormattedMessage id="col.scope" />
-              </th>
-              <th>
-                <FormattedMessage id="col.lastEdit" />
-              </th>
-              <th>
-                <FormattedMessage id="col.on" />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {flagKeys.map((key) => {
-              const f = data.flags[key];
-              const last = data.lastEdit[key];
-              return (
-                <tr key={key}>
-                  <td>
-                    <strong>
-                      <FormattedMessage id={`flag.${key}`} />
-                    </strong>
-                    <br />
-                    <span className="muted">
-                      <FormattedMessage id={`flag.${key}.desc`} />
-                    </span>
-                  </td>
-                  <td>
-                    <ScopePill flag={f} />
-                  </td>
-                  <td className="muted">
-                    {last ? `${last.by.split(' ')[0]} · ${shortDate(intl, last.at)}` : '—'}
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-checked={f.enabled}
-                      aria-label={intl.formatMessage({ id: `flag.${key}` })}
-                      className={`switch ${f.enabled ? 'switch--on' : ''}`}
-                      disabled={!canToggle}
-                      title={
-                        canToggle ? undefined : intl.formatMessage({ id: 'features.toggleRole' })
-                      }
-                      onClick={() =>
-                        setChange({
-                          key,
-                          kind: f.enabled ? 'off' : 'on',
-                          next: { ...f, enabled: !f.enabled, notice: null },
-                        })
-                      }
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <TableScroll min={640}>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>
+                  <FormattedMessage id="col.feature" />
+                </th>
+                <th>
+                  <FormattedMessage id="col.scope" />
+                </th>
+                <th>
+                  <FormattedMessage id="col.lastEdit" />
+                </th>
+                <th>
+                  <FormattedMessage id="col.on" />
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {flagKeys.map((key) => {
+                const f = data.flags[key];
+                const last = data.lastEdit[key];
+                return (
+                  <tr key={key}>
+                    <td>
+                      <strong>
+                        <FormattedMessage id={`flag.${key}`} />
+                      </strong>
+                      <br />
+                      <span className="muted">
+                        <FormattedMessage id={`flag.${key}.desc`} />
+                      </span>
+                    </td>
+                    <td>
+                      <ScopePill flag={f} />
+                    </td>
+                    <td className="muted">
+                      {last ? `${last.by.split(' ')[0]} · ${shortDate(intl, last.at)}` : '—'}
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={f.enabled}
+                        aria-label={intl.formatMessage({ id: `flag.${key}` })}
+                        className={`switch ${f.enabled ? 'switch--on' : ''}`}
+                        disabled={!canToggle}
+                        title={
+                          canToggle ? undefined : intl.formatMessage({ id: 'features.toggleRole' })
+                        }
+                        onClick={() =>
+                          setChange({
+                            key,
+                            kind: f.enabled ? 'off' : 'on',
+                            next: { ...f, enabled: !f.enabled, notice: null },
+                          })
+                        }
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </TableScroll>
       </Panel>
       <div className="stack">
         <Panel title={<FormattedMessage id="features.rollout" />}>
@@ -335,6 +338,27 @@ export function AuditActionText({
     'flags.off',
     'flags.rollout',
     'audit.export',
+    'jobs.rerunRequest',
+    'staff.invite',
+    'staff.join',
+    'staff.revokeInvite',
+    'staff.roles',
+    'staff.access',
+    'staff.pause',
+    'staff.resume',
+    'staff.remove',
+    'staff.saveRole',
+    'staff.createRole',
+    'family.view',
+    'family.transferOpen',
+    'family.transferCancel',
+    'analytics.export',
+    'reference.draft',
+    'reference.submit',
+    'reference.publish',
+    'reference.reject',
+    'reference.discard',
+    'reference.rollback',
   ];
   return (
     <FormattedMessage

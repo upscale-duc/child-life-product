@@ -10,11 +10,12 @@ import {
   signInWithEmailLink,
   signOut,
   type Auth,
+  type User,
   type UserCredential,
 } from 'firebase/auth';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { IntlProvider } from 'react-intl';
-import { ApiContext, type Api } from './api';
+import { ApiContext, ApiError, type Api, type StaffMe } from './api';
 import { StaffContext } from './context';
 import { messages } from './messages';
 import { SignInScreen, type SignInActions, type SignInNotice } from './screens/SignIn';
@@ -38,8 +39,36 @@ type Session =
   | { kind: 'staff'; staff: StaffIdentity };
 
 /**
- * The staff portal (S15, Figma A01–A12). Access needs the `staff` claim; anyone else is signed
- * out again (and an account the email link has just created is removed). D-043: no TOTP.
+ * Who this account is on the portal: the `staff` claim, or a pending invitation accepted on this
+ * first sign-in (P-135); then `staffMe` gives the stored roles and levels (P-134). `null` = refused.
+ */
+export async function identify(user: User, api: Api): Promise<StaffIdentity | null> {
+  let token = await user.getIdTokenResult(true);
+  let staff = staffFromClaims(user.uid, user.email, token.claims);
+  if (!staff) {
+    try {
+      await api.call('staffAcceptInvite');
+    } catch {
+      return null;
+    }
+    token = await user.getIdTokenResult(true);
+    staff = staffFromClaims(user.uid, user.email, token.claims);
+    if (!staff) return null;
+  }
+  try {
+    const me = await api.call<StaffMe>('staffMe');
+    return { ...staff, name: me.name, roles: me.roles, roleNames: me.roleNames, levels: me.levels };
+  } catch (e) {
+    // Paused, removed or expired since the token was issued.
+    if (e instanceof ApiError && e.code === 'permission-denied') return null;
+    return staff;
+  }
+}
+
+/**
+ * The staff portal (S15, Figma A01–A12; v1.0 P-134). Access needs the `staff` claim or an
+ * invitation; anyone else is signed out again (and an account the email link has just created is
+ * removed). D-043: no TOTP.
  */
 export function App({
   auth,
@@ -68,16 +97,18 @@ export function App({
   );
 
   /** A just-created email-link account without the claim is deleted, so no stray users remain. */
-  const checkCredential = useCallback(async (cred: UserCredential) => {
-    const token = await cred.user.getIdTokenResult(true);
-    const staff = staffFromClaims(cred.user.uid, cred.user.email, token.claims);
-    if (!staff) {
-      if (getAdditionalUserInfo(cred)?.isNewUser) await cred.user.delete().catch(() => undefined);
-      throw Object.assign(new Error('denied'), { code: 'portal/denied' });
-    }
-    markActivity(Date.now());
-    setSession({ kind: 'staff', staff });
-  }, []);
+  const checkCredential = useCallback(
+    async (cred: UserCredential) => {
+      const staff = await identify(cred.user, api);
+      if (!staff) {
+        if (getAdditionalUserInfo(cred)?.isNewUser) await cred.user.delete().catch(() => undefined);
+        throw Object.assign(new Error('denied'), { code: 'portal/denied' });
+      }
+      markActivity(Date.now());
+      setSession({ kind: 'staff', staff });
+    },
+    [api],
+  );
 
   /** Runs one sign-in with the auth listener paused, then signs out again if it was refused. */
   const signIn = useCallback(
@@ -108,17 +139,15 @@ export function App({
           void end('idle');
           return;
         }
-        user
-          .getIdTokenResult(true)
-          .then((token) => {
-            const staff = staffFromClaims(user.uid, user.email, token.claims);
+        identify(user, api)
+          .then((staff) => {
             if (!staff) return end('denied');
             markActivity(Date.now());
             setSession({ kind: 'staff', staff });
           })
           .catch(() => end(null));
       }),
-    [auth, end],
+    [auth, api, end],
   );
 
   // Completing an email link opened in this browser.
@@ -162,22 +191,39 @@ export function App({
     };
   }, [session.kind, end]);
 
+  // Branded mail through `sendAuthEmail` (D-054); Firebase's own mail while no provider is set up.
+  const sendAuthMail = useCallback(
+    async (kind: 'signInLink' | 'resetPassword', email: string, fallback: () => Promise<void>) => {
+      try {
+        await api.call('sendAuthEmail', { kind, email, locale });
+      } catch (e) {
+        if (!(e instanceof ApiError) || e.code !== 'unavailable') throw e;
+        await fallback();
+      }
+    },
+    [api, locale],
+  );
+
   const actions = useMemo<SignInActions>(
     () => ({
       withPassword: (email, password) =>
         signIn(() => signInWithEmailAndPassword(auth, email, password)),
       async sendLink(email) {
-        await sendSignInLinkToEmail(auth, email, {
-          url: `${window.location.origin}/`,
-          handleCodeInApp: true,
-        });
+        await sendAuthMail('signInLink', email, () =>
+          sendSignInLinkToEmail(auth, email, {
+            url: `${window.location.origin}/`,
+            handleCodeInApp: true,
+          }),
+        );
         rememberLinkEmail(email);
       },
       async resetPassword(email) {
-        await sendPasswordResetEmail(auth, email).catch((e: { code?: string }) => {
-          // Same answer whether or not the address has an account.
-          if (e.code !== 'auth/user-not-found') throw e;
-        });
+        await sendAuthMail('resetPassword', email, () =>
+          sendPasswordResetEmail(auth, email).catch((e: { code?: string }) => {
+            // Same answer whether or not the address has an account.
+            if (e.code !== 'auth/user-not-found') throw e;
+          }),
+        );
       },
       async finishLink(email) {
         try {
@@ -188,7 +234,7 @@ export function App({
         }
       },
     }),
-    [auth, signIn],
+    [auth, signIn, sendAuthMail],
   );
 
   const changeLocale = (l: SupportedLocale) => {

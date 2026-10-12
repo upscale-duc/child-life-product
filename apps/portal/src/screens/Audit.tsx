@@ -13,6 +13,7 @@ import {
   Pill,
   Segmented,
   errorMessageId,
+  TableScroll,
   type PillTone,
 } from '../ui';
 import { AuditActionText } from './Features';
@@ -25,6 +26,10 @@ const categoryTone: Record<AuditRow['category'], PillTone> = {
   storage: 'wait',
   data: 'purple',
   features: 'ok',
+  families: 'high',
+  staff: 'muted',
+  reference: 'ok',
+  analytics: 'info',
 };
 
 /** A12 Nhật ký thao tác: append-only; only codes, actions and reasons, never family content. */
@@ -133,46 +138,48 @@ export function AuditTable({ rows, now }: { rows: AuditRow[]; now: Date }) {
     );
   }
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>
-            <FormattedMessage id="col.time" />
-          </th>
-          <th>
-            <FormattedMessage id="col.actor" />
-          </th>
-          <th>
-            <FormattedMessage id="col.action" />
-          </th>
-          <th>
-            <FormattedMessage id="col.target" />
-          </th>
-          <th>
-            <FormattedMessage id="col.reason" />
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((r) => (
-          <tr key={r.id}>
-            <td className="nowrap">{when(intl, r.at, now)}</td>
-            <td>
-              <strong>{r.actor}</strong>
-              <br />
-              <span className="muted">{r.role}</span>
-            </td>
-            <td>
-              <AuditActionText action={r.action} target={r.target} detail={r.detail} />{' '}
-              <Pill tone={categoryTone[r.category]}>
-                <FormattedMessage id={`auditCategory.${r.category}`} />
-              </Pill>
-            </td>
-            <td className="mono">{r.target}</td>
-            <td>{r.reason ?? '—'}</td>
+    <TableScroll min={760}>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>
+              <FormattedMessage id="col.time" />
+            </th>
+            <th>
+              <FormattedMessage id="col.actor" />
+            </th>
+            <th>
+              <FormattedMessage id="col.action" />
+            </th>
+            <th>
+              <FormattedMessage id="col.target" />
+            </th>
+            <th>
+              <FormattedMessage id="col.reason" />
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.id}>
+              <td className="nowrap">{when(intl, r.at, now)}</td>
+              <td>
+                <strong>{r.actor}</strong>
+                <br />
+                <span className="muted">{r.role}</span>
+              </td>
+              <td>
+                <AuditActionText action={r.action} target={r.target} detail={r.detail} />{' '}
+                <Pill tone={categoryTone[r.category]}>
+                  <FormattedMessage id={`auditCategory.${r.category}`} />
+                </Pill>
+              </td>
+              <td className="mono">{r.target}</td>
+              <td>{r.reason ?? '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </TableScroll>
   );
 }

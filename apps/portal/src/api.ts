@@ -1,4 +1,14 @@
-import type { FlagKey, Flags, Limits } from '@child-life/contracts';
+import type {
+  AuditCategory,
+  FlagKey,
+  Flags,
+  Limits,
+  QaCaseContent,
+  QaEnvironment,
+  QaStatus,
+  StaffLevels,
+  StaffMemberStatus,
+} from '@child-life/contracts';
 import { FirebaseError } from 'firebase/app';
 import { httpsCallable, type Functions } from 'firebase/functions';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
@@ -25,7 +35,27 @@ export type Callable =
   | 'staffFlags'
   | 'staffSetFlag'
   | 'staffAudit'
-  | 'staffExportAudit';
+  | 'staffExportAudit'
+  | 'staffQa'
+  | 'staffQaCase'
+  | 'staffQaUpdate'
+  | 'staffMe'
+  | 'staffAcceptInvite'
+  | 'staffTeam'
+  | 'staffInvite'
+  | 'staffUpdateMember'
+  | 'staffSaveRole'
+  | 'staffApproveRerun'
+  | 'staffFamilies'
+  | 'staffFamily'
+  | 'staffOpenTransfer'
+  | 'staffCancelTransfer'
+  | 'staffAnalytics'
+  | 'staffExportAnalytics'
+  | 'staffReference'
+  | 'staffReferenceDraft'
+  | 'staffReferenceAct'
+  | 'sendAuthEmail';
 
 export interface Api {
   call<T>(name: Callable, data?: unknown): Promise<T>;
@@ -207,6 +237,8 @@ export interface JobRow {
   finishedAt?: string | null;
   expiresAt?: string | null;
   readyAt?: string | null;
+  /** P-139: a deletion re-run waiting for a second person. */
+  rerunRequest?: { byUid: string; by: string; reason: string; at: string } | null;
 }
 export interface JobList {
   kpis: {
@@ -268,8 +300,251 @@ export interface AuditRow {
   actor: string;
   role: string;
   action: string;
-  category: 'support' | 'storage' | 'data' | 'features';
+  category: AuditCategory;
   target: string;
   reason: string | null;
   detail: Record<string, unknown> | null;
+}
+
+// ---------- QA handbook (P-132, mirrors qa.ts) ----------
+
+export interface QaCase extends QaCaseContent {
+  id: string;
+  refs: string[];
+  /** Ships with the server catalog; `edited` once someone changed it on the portal. */
+  builtin: boolean;
+  edited: boolean;
+  archived: boolean;
+  updatedBy: string | null;
+  updatedAt: string | null;
+}
+
+export interface QaRun {
+  id: string;
+  name: string;
+  environment: QaEnvironment;
+  notes: string;
+  createdBy: string;
+  createdAt: string;
+  archived: boolean;
+}
+
+export interface QaResult {
+  status: QaStatus;
+  by: string | null;
+  at: string | null;
+  comments: number;
+}
+
+export interface QaHandbook {
+  cases: QaCase[];
+  runs: QaRun[];
+  runId: string | null;
+  results: Record<string, QaResult>;
+}
+
+export interface QaComment {
+  id: string;
+  by: string;
+  text: string;
+  at: string;
+}
+
+// ---------- Nhân sự & phân quyền (P-134, mirrors staff-access.ts) ----------
+
+export interface StaffMe {
+  uid: string;
+  name: string;
+  roles: string[];
+  roleNames: string[];
+  levels: StaffLevels;
+}
+
+export interface StaffMemberRow {
+  uid: string;
+  name: string;
+  email: string;
+  roles: string[];
+  status: StaffMemberStatus;
+  accessUntil: string | null;
+  lastSeenAt: string | null;
+  createdAt: string | null;
+}
+
+export interface StaffRoleRow {
+  id: string;
+  name: string;
+  levels: StaffLevels;
+  builtin: boolean;
+  locked: boolean;
+  members: number;
+  updatedBy: string | null;
+  updatedAt: string | null;
+}
+
+export interface StaffInviteRow {
+  id: string;
+  email: string;
+  name: string;
+  roles: string[];
+  invitedBy: string;
+  expiresAt: string | null;
+}
+
+export interface StaffTeam {
+  members: StaffMemberRow[];
+  invites: StaffInviteRow[];
+  roles: StaffRoleRow[];
+  kpis: { members: number; sensitive: number; invites: number };
+}
+
+// ---------- Gia đình (P-136, mirrors staff-families.ts) ----------
+
+export type FamilyRole = 'coParent' | 'caregiver' | 'relative';
+
+export interface FamilyRow {
+  code: string;
+  owner: string;
+  members: number;
+  carers: number;
+  pendingInvites: number;
+  babies: number;
+  usedBytes: number;
+  quotaBytes: number;
+  platforms: string[];
+  lastActiveAt: string | null;
+  activity: 'active' | 'low';
+}
+
+export interface FamilyList {
+  kpis: {
+    total: number;
+    active: number;
+    low: number;
+    multiCarerRate: number | null;
+    nearFull: number;
+  };
+  rows: FamilyRow[];
+  next: string | null;
+}
+
+export interface FamilyDetail {
+  code: string;
+  createdAt: string | null;
+  owner: string;
+  platforms: string[];
+  usedBytes: number;
+  quotaBytes: number;
+  expanded: boolean;
+  language: string | null;
+  lastActiveAt: string | null;
+  activity: 'active' | 'low';
+  members: Array<{
+    uid: string;
+    email: string;
+    relation: string;
+    isOwner: boolean;
+    roles: Array<{ baby: number; role: FamilyRole }>;
+    lastActiveAt: string | null;
+    platform: string | null;
+    model: string | null;
+    appVersion: string | null;
+    eligible: boolean;
+  }>;
+  invites: Array<{
+    relation: string;
+    role: FamilyRole;
+    state: 'pending' | 'expired';
+    createdAt: string | null;
+  }>;
+  babies: Array<{ ordinal: number; records7d: number; media7d: number; stories: number }>;
+  tickets: Array<{
+    id: string;
+    ticket: string;
+    title: string;
+    status: string;
+    createdAt: string | null;
+  }>;
+  transfer: {
+    id: string;
+    to: string;
+    ticket: string | null;
+    openedBy: string;
+    expiresAt: string | null;
+  } | null;
+}
+
+// ---------- Phân tích (P-137, mirrors analytics.ts) ----------
+
+export type Delta = { value: number | null; change?: number | null; points?: number | null };
+
+export interface AnalyticsGrowth {
+  empty: false;
+  range: { from: string; to: string };
+  days: number;
+  kpis: { dau: Delta; wau: Delta; mau: Delta; stickiness: Delta; d30: Delta };
+  series: Array<{ date: string; dau: number; wau: number; mau: number }>;
+  channels: { invite: number; website: number; store: number };
+  platforms: { ios: number; android: number };
+  newFamilies: number;
+  cohorts: Array<{ week: string; families: number; retention: Array<number | null> }>;
+  totalFamilies: number;
+}
+
+export interface AnalyticsFeatures {
+  empty: false;
+  range: { from: string; to: string };
+  days: number;
+  kpis: { carePerDay: Delta; memoriesPerWeek: Delta; storiesPerWeek: Delta; relativesShare: Delta };
+  features: Array<{ feature: string; share: number | null; perDay: number; change: number | null }>;
+  storage: {
+    usedBytes: number;
+    photoBytes: number;
+    videoBytes: number;
+    otherBytes: number;
+    baseFamilies: number;
+    expandedFamilies: number;
+    over80Families: number;
+  };
+  versions: Array<{ platform: string; version: string; devices: number }>;
+}
+
+export type AnalyticsResult =
+  | { empty: true; range: { from: string; to: string }; days: number }
+  | AnalyticsGrowth
+  | AnalyticsFeatures;
+
+// ---------- Dữ liệu tham chiếu (P-138, mirrors reference-data.ts) ----------
+
+export interface ReferenceVersion {
+  versionId: string;
+  label: string | null;
+  status: 'draft' | 'pending' | 'published' | 'retired' | 'discarded';
+  notes: string;
+  source: string;
+  author: string;
+  authorUid: string;
+  approver: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  publishedAt: string | null;
+  rejection: { by: string; reason: string } | null;
+}
+
+export interface ReferenceView {
+  dataset: string;
+  current: {
+    versionId: string;
+    label: string;
+    rows: unknown[];
+    publishedAt: string | null;
+    approver: string | null;
+  };
+  draft:
+    | (ReferenceVersion & {
+        rows: unknown[];
+        diff: { added: string[]; removed: string[]; changed: string[] };
+      })
+    | null;
+  history: ReferenceVersion[];
 }

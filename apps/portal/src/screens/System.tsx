@@ -14,6 +14,7 @@ import {
   Pill,
   Segmented,
   UsageBar,
+  TableScroll,
 } from '../ui';
 
 /** A08 / A09 Hệ thống & AI: aggregate figures only. */
@@ -146,54 +147,56 @@ export function SystemView({ data, now }: { data: SystemHealth; now: Date }) {
             <FormattedMessage id="system.nearEmpty" />
           </Empty>
         ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                <th>
-                  <FormattedMessage id="col.family" />
-                </th>
-                <th>
-                  <FormattedMessage id="col.babies" />
-                </th>
-                <th>
-                  <FormattedMessage id="col.used" />
-                </th>
-                <th>
-                  <FormattedMessage id="col.request" />
-                </th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {data.nearQuota.map((f) => (
-                <tr key={f.family}>
-                  <td className="mono">
-                    <strong>{f.family}</strong>
-                  </td>
-                  <td>
-                    <FormattedMessage id="family.babies" values={{ n: f.babies }} />
-                  </td>
-                  <td>
-                    {gb(intl, f.usedBytes)} · {pct(intl, f.usedBytes / Math.max(1, f.quotaBytes))}
-                    <UsageBar
-                      ratio={f.usedBytes / Math.max(1, f.quotaBytes)}
-                      tone={usageTone(f.usedBytes, f.quotaBytes)}
-                    />
-                  </td>
-                  <td>
-                    <FormattedMessage
-                      id={f.requested ? 'system.requested' : 'system.notRequested'}
-                    />
-                  </td>
-                  <td>
-                    <LockNote>
-                      <FormattedMessage id="system.noPhotos" />
-                    </LockNote>
-                  </td>
+          <TableScroll min={640}>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>
+                    <FormattedMessage id="col.family" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="col.babies" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="col.used" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="col.request" />
+                  </th>
+                  <th />
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.nearQuota.map((f) => (
+                  <tr key={f.family}>
+                    <td className="mono">
+                      <strong>{f.family}</strong>
+                    </td>
+                    <td>
+                      <FormattedMessage id="family.babies" values={{ n: f.babies }} />
+                    </td>
+                    <td>
+                      {gb(intl, f.usedBytes)} · {pct(intl, f.usedBytes / Math.max(1, f.quotaBytes))}
+                      <UsageBar
+                        ratio={f.usedBytes / Math.max(1, f.quotaBytes)}
+                        tone={usageTone(f.usedBytes, f.quotaBytes)}
+                      />
+                    </td>
+                    <td>
+                      <FormattedMessage
+                        id={f.requested ? 'system.requested' : 'system.notRequested'}
+                      />
+                    </td>
+                    <td>
+                      <LockNote>
+                        <FormattedMessage id="system.noPhotos" />
+                      </LockNote>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableScroll>
         )}
       </Panel>
     </div>

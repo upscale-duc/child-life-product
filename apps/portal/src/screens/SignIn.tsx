@@ -23,8 +23,10 @@ export function authErrorId(code: string): string {
       return 'signIn.error.credentials';
     case 'auth/invalid-email':
     case 'auth/missing-email':
+    case 'invalid-argument': // sendAuthEmail: malformed address
       return 'signIn.error.email';
     case 'auth/too-many-requests':
+    case 'resource-exhausted': // sendAuthEmail: one a minute, five a day per address
       return 'signIn.error.tooMany';
     case 'auth/network-request-failed':
       return 'signIn.error.network';

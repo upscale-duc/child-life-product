@@ -6,7 +6,14 @@ import {
   babyDeletionSteps,
   flagKeys,
   launchedFlagDefaults,
+  levelsForRoles,
+  staffFunctions,
+  staffLevels,
   memberRoles,
+  qaLevels,
+  qaModules,
+  qaPlatforms,
+  qaStatuses,
   staffRoles,
   supportCategories,
   type StaffRole,
@@ -26,6 +33,7 @@ import {
 import { StaffContext, routeOf, routePaths } from '../src/context';
 import { ago, csvCell, gb, pct, usageTone, when } from '../src/format';
 import { messages } from '../src/messages';
+import { reasonMessages } from '../src/ui';
 import { AuditTable } from '../src/screens/Audit';
 import { FeaturesView, defaultNotice, nextStep } from '../src/screens/Features';
 import { jobState } from '../src/screens/Jobs';
@@ -40,7 +48,13 @@ const now = new Date('2026-10-10T03:52:00Z'); // 10:52 in Vietnam
 const noApi: Api = { call: () => Promise.reject(new Error('no network in tests')) };
 
 function staff(...roles: StaffRole[]): StaffIdentity {
-  return { uid: 's1', email: 'linh@example.com', name: 'Linh Trần', roles };
+  return {
+    uid: 's1',
+    email: 'linh@example.com',
+    name: 'Linh Trần',
+    roles,
+    levels: levelsForRoles(roles),
+  };
 }
 
 function render(
@@ -120,6 +134,27 @@ describe('message catalogs (D-012)', () => {
         `storage.empty.${s}`,
       ]),
       ...['dev', 'prod'].map((e) => `env.${e}`),
+      ...['ops', 'system', 'develop'].map((s) => `nav.section.${s}`),
+      ...staffFunctions.flatMap((f) => [`fn.${f}`, `fn.${f}.note`]),
+      ...staffLevels.map((l) => `level.${l}`),
+      ...['overview', 'ops', 'system', 'develop'].map((g) => `staff.group.${g}`),
+      ...['active', 'paused', 'expired', 'removed'].map((st) => `staff.status.${st}`),
+      ...['roles', 'access', 'pause', 'resume', 'remove', 'revokeInvite'].flatMap((o) => [
+        `staff.dialog.${o}`,
+        `staff.confirm.${o}`,
+      ]),
+      ...['unlimited', 'days', 'until'].map((a) => `staff.access.${a}`),
+      ...reasonMessages.map((r) => `error.${r}`),
+      ...qaModules.flatMap((m) => [`qa.module.${m}`, `qa.module.${m}.about`]),
+      ...qaPlatforms.map((p) => `qa.platform.${p}`),
+      ...qaLevels.map((l) => `qa.level.${l}`),
+      ...qaStatuses.map((s) => `qa.status.${s}`),
+      ...['level', 'platform', 'status'].map((f) => `qa.filter.${f}`),
+      ...['create', 'follow', 'record', 'archive'].map((s) => `qa.start.run.${s}`),
+      ...['passed', 'failed', 'blocked', 'skipped'].map((s) => `qa.start.status.${s}`),
+      ...['owner', 'coParent', 'caregiver', 'relative', 'guest', 'staff'].map(
+        (a) => `qa.start.accounts.${a}`,
+      ),
     ];
     for (const id of dynamic) {
       expect(messages.vi[id], id).toBeTruthy();
@@ -165,6 +200,38 @@ describe('message catalogs (D-012)', () => {
               deletions: 1,
               done: 1,
               total: 1,
+              env: 'x',
+              when: 'x',
+              status: 'x',
+              filter: 'x',
+              refs: 'x',
+              reason: 'x',
+              v: 'x',
+              w: 'x',
+              lo: 1,
+              hi: 2,
+              role: 'x',
+              unit: 'day',
+              date: 'x',
+              platforms: 'x',
+              plan: 'x',
+              to: 'x',
+              by: 'x',
+              until: 'x',
+              records: 1,
+              media: 1,
+              stories: 1,
+              size: 'x',
+              owner: 'x',
+              line: 1,
+              message: 'x',
+              added: 1,
+              changed: 1,
+              removed: 1,
+              author: 'x',
+              approver: 'x',
+              max: 1,
+              b: (chunks: ReactNode[]) => chunks,
             },
           ),
         ).not.toThrow();
@@ -174,20 +241,30 @@ describe('message catalogs (D-012)', () => {
 });
 
 describe('session (A01, D-043)', () => {
-  it('only accounts with the staff claim and a known role get in', () => {
+  it('only accounts with the staff claim and a role get in; levels start from the templates', () => {
     expect(staffFromClaims('u', 'a@b.c', {})).toBeNull();
     expect(staffFromClaims('u', 'a@b.c', { staff: true })).toBeNull();
     expect(staffFromClaims('u', 'a@b.c', { staff: 'true', roles: ['ops'] })).toBeNull();
-    expect(staffFromClaims('u', 'a@b.c', { staff: true, roles: ['admin'] })).toBeNull();
+    expect(staffFromClaims('u', 'a@b.c', { staff: true, roles: [] })).toBeNull();
+    // Roles made on the portal ("r_…") are resolved by `staffMe` (P-134).
     expect(
-      staffFromClaims('u', 'a@b.c', { staff: true, roles: ['ops', 'root'], name: 'Linh' }),
+      staffFromClaims('u', 'a@b.c', {
+        staff: true,
+        roles: ['ops', 'r_0123456789ab'],
+        name: 'Linh',
+      }),
     ).toEqual({
       uid: 'u',
       email: 'a@b.c',
       name: 'Linh',
-      roles: ['ops'],
+      roles: ['ops', 'r_0123456789ab'],
+      levels: levelsForRoles(['ops']),
     });
     expect(staffFromClaims('u', 'a@b.c', { staff: true, roles: ['eng'] })?.name).toBe('a@b.c');
+    // S15 trưởng nhóm claims read as Admin.
+    expect(staffFromClaims('u', 'a@b.c', { staff: true, roles: ['lead'] })?.levels.storage).toBe(
+      'full',
+    );
   });
 
   it('signs out after 30 idle minutes, not before', () => {
