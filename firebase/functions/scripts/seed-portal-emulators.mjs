@@ -5,9 +5,11 @@
 //   pnpm --filter child-life-portal exec vite --mode dev   (with VITE_CL_EMULATORS=true)
 //
 // It creates a family through the real callables (a help ticket, a storage request), a failed
-// account deletion, and three staff accounts that exist only in the Auth emulator:
-//   staff.ops@example.com (ops + support), staff.eng@example.com (eng),
-//   staff.lead@example.com (lead) — password below, emulator only.
+// account deletion, and five staff accounts that exist only in the Auth emulator:
+//   staff.owner@example.com (owner), staff.ops@example.com (ops + support),
+//   staff.eng@example.com (eng), staff.lead@example.com (admin), staff.qa@example.com (qa: QA
+//   handbook only, P-132) — password below, emulator only. Each also gets its `staffMembers` row
+//   (P-134).
 // Refuses to run unless the emulator hosts are local.
 /* global fetch */
 import { randomUUID } from 'node:crypto';
@@ -129,11 +131,23 @@ await failedJob.set({
 
 // Staff (claims as `create-staff.mjs` sets them).
 for (const [email, name, roles] of [
+  ['staff.owner@example.com', 'Chủ Child Life', ['owner']],
   ['staff.ops@example.com', 'Linh Trần', ['ops', 'support']],
   ['staff.eng@example.com', 'Minh Phạm', ['eng']],
-  ['staff.lead@example.com', 'An Lê', ['lead']],
+  ['staff.lead@example.com', 'An Lê', ['admin']],
+  ['staff.qa@example.com', 'Thu Hà', ['qa']],
 ]) {
   const { localId } = await signUp(email);
   await auth.setCustomUserClaims(localId, { staff: true, roles, name });
+  await db.doc(`staffMembers/${localId}`).set({
+    email,
+    name,
+    roles,
+    status: 'active',
+    accessUntil: null,
+    createdAt: now,
+    lastSeenAt: null,
+    invitedByUid: 'seed',
+  });
 }
-console.log('Seeded: 1 family, 1 help ticket, 1 storage request, 1 failed deletion, 3 staff.');
+console.log('Seeded: 1 family, 1 help ticket, 1 storage request, 1 failed deletion, 5 staff.');

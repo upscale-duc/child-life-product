@@ -17,8 +17,9 @@ import {
   listTickets,
   overview,
   readFlags,
+  approveRerun,
   replyTicket,
-  rerunJob,
+  requestRerun,
   setFlag,
   systemHealth,
   ticketDetail,
@@ -26,7 +27,7 @@ import {
   type Staff,
 } from '../functions/src/staff.js';
 
-// S15 server side against the Firestore emulator: the role matrix (P-121), reasons and the
+// S15 server side against the Firestore emulator: the role levels (P-121, v1.0 P-134), reasons and the
 // append-only audit (A12, R-183), storage grant / decline (A05, P-120), tickets (A03), job re-run
 // (A07), flags and the upload kill switch (A10/A11, P-122), and that no answer carries captions,
 // names or other family content.
@@ -81,12 +82,10 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-  await fetch(
-    `http://127.0.0.1:8080/emulator/v1/projects/${projectId}/databases/(default)/documents`,
-    {
-      method: 'DELETE',
-    },
-  );
+  const host = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080';
+  await fetch(`http://${host}/emulator/v1/projects/${projectId}/databases/(default)/documents`, {
+    method: 'DELETE',
+  });
   await db.doc(`families/${familyId}`).set({
     ownerUid: 'mom',
     quotaBytes: 10 * GB,
@@ -165,9 +164,9 @@ describe('the matrix (P-121)', () => {
         ),
       ),
     ).toBe('role');
-    expect(
-      await reason(rerunJob(db, ha, { jobId: 'x', reason: 'thử lại' }, now, async () => {})),
-    ).toBe('role');
+    expect(await reason(requestRerun(db, ha, { jobId: 'x', reason: 'thử lại' }, now))).toBe('role');
+    // A12 is not open to Hỗ trợ in v1.0 (A19 "Nhật ký thao tác · —").
+    expect(await reason(listAudit(db, ha, { category: 'all', days: 7 }, now))).toBe('role');
   });
 
   it('a reason is required for every mutation', async () => {
@@ -331,7 +330,7 @@ describe('A03 support', () => {
     );
     await closeTicket(db, ha, { ticketId: id, reason: 'Đã hướng dẫn xong.' }, now);
     expect((await badges(db, ha)).tickets).toBe(0);
-    const log = await listAudit(db, ha, { category: 'support', days: 7 }, now);
+    const log = await listAudit(db, linh, { category: 'support', days: 7 }, now);
     expect(log.rows.map((r) => r.action).sort()).toEqual([
       'support.claim',
       'support.close',
@@ -341,7 +340,7 @@ describe('A03 support', () => {
 });
 
 describe('A07, A10/A11', () => {
-  it('a failed deletion re-runs from its failed step with a reason', async () => {
+  it('a failed deletion re-runs from its failed step once a second person approves (P-139)', async () => {
     await db.doc('deletionJobs/del_x').set({
       kind: 'account',
       state: 'failed',
@@ -351,27 +350,37 @@ describe('A07, A10/A11', () => {
       createdAt: now,
     });
     const ran: string[] = [];
-    await rerunJob(
-      db,
-      minh,
-      { jobId: 'del_x', reason: 'Kho lưu trữ đã ổn định lại.' },
-      now,
-      async (j) => {
-        ran.push(j);
-      },
-    );
+    const run = async (j: string) => {
+      ran.push(j);
+    };
+    const why = { jobId: 'del_x', reason: 'Kho lưu trữ đã ổn định lại.' };
+    expect(await reason(approveRerun(db, lead, why, now, run))).toBe('not-requested');
+    await requestRerun(db, minh, why, now);
+    expect(await reason(requestRerun(db, linh, why, now))).toBe('already-requested');
+    // Kỹ sư may ask, not approve; the asker can never approve their own request.
+    expect(await reason(approveRerun(db, minh, why, now, run))).toBe('role');
+    expect(ran).toEqual([]);
+    await approveRerun(db, lead, why, now, run);
     expect(ran).toEqual(['del_x']);
-    expect((await db.doc('deletionJobs/del_x').get()).data()).toMatchObject({
-      state: 'queued',
-      step: 2,
-      attempts: 0,
-    });
+    const job = (await db.doc('deletionJobs/del_x').get()).data()!;
+    expect(job).toMatchObject({ state: 'queued', step: 2, attempts: 0, rerunBy: 's_minh' });
+    expect(job.rerunRequest).toBeUndefined();
+    expect(await reason(requestRerun(db, minh, { jobId: 'del_x', reason: 'lại' }, now))).toBe(
+      'not-failed',
+    );
+
+    await db.doc('deletionJobs/del_y').set({ kind: 'baby', state: 'failed', createdAt: now });
+    await requestRerun(db, lead, { jobId: 'del_y', reason: 'thử lại' }, now);
     expect(
-      await reason(rerunJob(db, minh, { jobId: 'del_x', reason: 'lại' }, now, async () => {})),
-    ).toBe('not-failed');
+      await reason(approveRerun(db, lead, { jobId: 'del_y', reason: 'tự duyệt' }, now, run)),
+    ).toBe('same-person');
+    const log = await listAudit(db, lead, { category: 'data', days: 7 }, now);
+    expect(log.rows.map((r) => r.action)).toEqual(
+      expect.arrayContaining(['jobs.rerunRequest', 'jobs.rerun']),
+    );
   });
 
-  it('switching uploads off needs Kỹ thuật; new uploads wait, notes still save', async () => {
+  it('switching uploads off needs Kỹ sư; new uploads wait, notes still save', async () => {
     expect(
       await reason(
         setFlag(
@@ -438,10 +447,27 @@ describe('A07, A10/A11', () => {
       ),
     ).toBe('uploads-paused');
     expect(await reason(createMemory(db, 'mom', compose([]), now))).toBe('ok');
-    // Ops move a rollout step without changing on/off.
+    // v1.0: Vận hành only views "Tính năng & phát hành"; Kỹ sư moves the rollout step.
+    expect(
+      await reason(
+        setFlag(
+          db,
+          linh,
+          {
+            key: 'ai_story_drafts',
+            enabled: false,
+            scope: 'percent',
+            percent: 50,
+            notice: null,
+            reason: 'Chi phí ổn định.',
+          },
+          now,
+        ),
+      ),
+    ).toBe('role');
     await setFlag(
       db,
-      linh,
+      minh,
       {
         key: 'ai_story_drafts',
         enabled: false,

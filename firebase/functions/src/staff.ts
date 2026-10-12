@@ -18,10 +18,14 @@ import {
   rerunJobSchema,
   routineGrantGb,
   setFlagSchema,
+  builtinRole,
+  levelsForRoles,
   staffCan,
   ticketRefSchema,
+  type AuditCategory,
   type Flags,
   type StaffAction,
+  type StaffLevels,
   type StaffRole,
 } from '@child-life/contracts';
 import {
@@ -54,6 +58,10 @@ export interface Staff {
   uid: string;
   name: string;
   roles: StaffRole[];
+  /** Resolved from the roles stored on the portal (P-134); built-in templates when absent. */
+  levels?: StaffLevels;
+  /** Display names of the roles, for the audit log. */
+  roleNames?: string[];
 }
 
 /** Reads accounts for the funnel and "Tài khoản tạo" (Admin Auth in production). */
@@ -65,7 +73,7 @@ const DAY_MS = 86_400_000;
 const GB = 1024 ** 3;
 const ZONE = 'Asia/Ho_Chi_Minh';
 
-function parse<T>(
+export function parse<T>(
   schema: { safeParse(d: unknown): { success: boolean; data?: T } },
   data: unknown,
 ): T {
@@ -74,23 +82,34 @@ function parse<T>(
   return r.data as T;
 }
 
+export function staffLevelsOf(staff: Staff): StaffLevels {
+  return staff.levels ?? levelsForRoles(staff.roles);
+}
+
 export function requireStaff(staff: Staff | null, action: StaffAction): Staff {
   if (!staff) throw new StaffError('permission-denied', 'not-staff');
-  if (!staffCan(staff.roles, action)) throw new StaffError('permission-denied', 'role');
+  if (!staffCan(staffLevelsOf(staff), action)) throw new StaffError('permission-denied', 'role');
   return staff;
 }
 
-const roleLabel: Record<StaffRole, string> = {
+/** Vietnamese names of the built-in roles (v1.0, P-134), as the audit log shows them. */
+export const builtinRoleLabel: Record<string, string> = {
+  owner: 'Owner',
+  admin: 'Admin',
   ops: 'Vận hành',
   support: 'Hỗ trợ',
-  eng: 'Kỹ thuật',
-  lead: 'Trưởng nhóm',
+  eng: 'Kỹ sư',
+  analyst: 'Phân tích',
+  expert: 'Chuyên gia',
+  qa: 'Kiểm thử',
 };
 
-type AuditCategory = 'support' | 'storage' | 'data' | 'features';
+export function roleNamesOf(staff: Staff): string[] {
+  return staff.roleNames ?? staff.roles.map((r) => builtinRoleLabel[builtinRole(r) ?? r] ?? r);
+}
 
 /** One append-only entry (A12): time, actor, role, action, category, target, reason. */
-function audit(
+export function staffAudit(
   tx: Transaction | FirebaseFirestore.WriteBatch,
   db: Firestore,
   staff: Staff,
@@ -109,7 +128,7 @@ function audit(
     detail: entry.detail ?? null,
     actorUid: staff.uid,
     actorName: staff.name,
-    actorRole: staff.roles.map((r) => roleLabel[r]).join(' · '),
+    actorRole: roleNamesOf(staff).join(' · '),
     at: now,
   };
   (tx as Transaction).create(ref, data);
@@ -153,7 +172,7 @@ async function familyShape(db: Firestore, familyId: string) {
  * running or failed (the A06 badge counts what is in flight or needs a re-run).
  */
 export async function badges(db: Firestore, staff: Staff | null) {
-  requireStaff(staff, 'view');
+  requireStaff(staff, 'overview.view');
   const count = async (q: FirebaseFirestore.Query) => (await q.count().get()).data().count;
   const [tickets, storage, deletions, exports] = await Promise.all([
     count(db.collection('supportTickets').where('status', 'in', ['new', 'claimed', 'waiting'])),
@@ -173,7 +192,7 @@ export async function overview(
   now: Date,
   accounts: AccountLister,
 ) {
-  requireStaff(staff, 'view');
+  requireStaff(staff, 'overview.view');
   const { days } = parse(overviewRequestSchema, data);
   const since = new Date(now.getTime() - days * DAY_MS);
   const prevSince = new Date(since.getTime() - days * DAY_MS);
@@ -207,9 +226,22 @@ export async function overview(
   };
   const current = await activity(since, now);
   const previous = await activity(prevSince, since);
-  const families = (rows: typeof current) =>
-    new Set(rows.map((r) => familyOf.get(r.babyId)).filter(Boolean));
-  const activeFamilies = families(current);
+  // P-137: one "Hoạt động" with Phân tích — a write, or a day a member opened the app.
+  const opened = await db.collection('familyActivity').select('days').get();
+  const openedIn = (from: Date, to: Date) => {
+    const a = localDateIn(ZONE, from);
+    const b = localDateIn(ZONE, to);
+    return opened.docs
+      .filter((d) =>
+        Object.keys((d.get('days') as Record<string, boolean> | undefined) ?? {}).some(
+          (k) => k >= a && k <= b,
+        ),
+      )
+      .map((d) => d.id);
+  };
+  const families = (rows: typeof current, from: Date, to: Date) =>
+    new Set([...rows.map((r) => familyOf.get(r.babyId)).filter(Boolean), ...openedIn(from, to)]);
+  const activeFamilies = families(current, since, now);
 
   // Daily active families (last [days] days, Vietnam dates).
   const byDay = new Map<string, Set<string>>();
@@ -297,7 +329,7 @@ export async function overview(
   return {
     kpis: {
       activeFamilies: activeFamilies.size,
-      activeFamiliesPrev: families(previous).size,
+      activeFamiliesPrev: families(previous, prevSince, new Date(since.getTime() - 1)).size,
       newAccounts: inWindow.length,
       newAccountsPrev: prevAccounts,
       setupRate: inWindow.length ? funnel[3]!.count! / inWindow.length : null,
@@ -373,7 +405,7 @@ function ticketRow(d: DocumentSnapshot) {
 }
 
 export async function listTickets(db: Firestore, staff: Staff | null, data: unknown) {
-  requireStaff(staff, 'view');
+  requireStaff(staff, 'support.view');
   const req = parse(listTicketsSchema, data);
   const all = await db.collection('supportTickets').orderBy('createdAt', 'desc').limit(300).get();
   const rows = all.docs.map(ticketRow);
@@ -392,7 +424,7 @@ export async function listTickets(db: Firestore, staff: Staff | null, data: unkn
 }
 
 export async function ticketDetail(db: Firestore, staff: Staff | null, data: unknown) {
-  requireStaff(staff, 'view');
+  requireStaff(staff, 'support.view');
   const { ticketId } = parse(ticketRefSchema, data);
   const t = await db.doc(`supportTickets/${ticketId}`).get();
   if (!t.exists) throw new StaffError('not-found', 'not-found');
@@ -442,7 +474,7 @@ export async function claimTicket(db: Firestore, staff: Staff | null, data: unkn
     if (!t.exists) throw new StaffError('not-found', 'not-found');
     if (t.get('status') !== 'new') throw new StaffError('failed-precondition', 'already-claimed');
     tx.update(ref, { status: 'claimed', claimedBy: s.uid, claimedByName: s.name, claimedAt: now });
-    audit(
+    staffAudit(
       tx,
       db,
       s,
@@ -488,7 +520,7 @@ export async function replyTicket(db: Firestore, staff: Staff | null, data: unkn
         { ticket: t.get('ticket') as string, body: text },
         now,
       );
-    audit(
+    staffAudit(
       tx,
       db,
       s,
@@ -516,7 +548,7 @@ export async function closeTicket(db: Firestore, staff: Staff | null, data: unkn
       closedAt: now,
       retainUntil: new Date(now.getTime() + 365 * DAY_MS),
     });
-    audit(
+    staffAudit(
       tx,
       db,
       s,
@@ -540,7 +572,7 @@ export async function listStorageRequests(
   now: Date,
   accounts: AccountLister,
 ) {
-  requireStaff(staff, 'view');
+  requireStaff(staff, 'storage.view');
   const { status } = parse(listStorageRequestsSchema, data);
   const snap = await db.collection('storageRequests').orderBy('createdAt', 'desc').limit(200).get();
   const created = new Map((await accounts.list()).map((u) => [u.uid, u.createdAt]));
@@ -684,7 +716,7 @@ export async function decideStorage(db: Firestore, staff: Staff | null, data: un
           now,
         );
       }
-      audit(
+      staffAudit(
         tx,
         db,
         s,
@@ -715,7 +747,7 @@ export async function decideStorage(db: Firestore, staff: Staff | null, data: un
         { amountGb: r.get('amountGb') as number, body: req.message },
         now,
       );
-    audit(
+    staffAudit(
       tx,
       db,
       s,
@@ -739,7 +771,7 @@ export const jobCode = (jobId: string) =>
   `DJ-${createHash('sha256').update(jobId).digest('hex').slice(0, 4).toUpperCase()}`;
 
 export async function listJobs(db: Firestore, staff: Staff | null, data: unknown, now: Date) {
-  requireStaff(staff, 'view');
+  requireStaff(staff, 'jobs.view');
   const { kind } = parse(listJobsSchema, data);
   const since = new Date(now.getTime() - 30 * DAY_MS);
   const rows: Array<Record<string, unknown>> = [];
@@ -760,6 +792,15 @@ export async function listJobs(db: Firestore, staff: Staff | null, data: unknown
         failedStep: (j.get('failedStep') as string | undefined) ?? null,
         state: j.get('state') as string,
         finishedAt: j.get('finishedAt') ? iso(j.get('finishedAt')) : null,
+        // P-139: a re-run waits for a second person.
+        rerunRequest: j.get('rerunRequest')
+          ? {
+              byUid: j.get('rerunRequest.byUid') as string,
+              by: j.get('rerunRequest.byName') as string,
+              reason: j.get('rerunRequest.reason') as string,
+              at: iso(j.get('rerunRequest.at')),
+            }
+          : null,
       });
     }
   }
@@ -800,14 +841,11 @@ export async function listJobs(db: Firestore, staff: Staff | null, data: unknown
   };
 }
 
-/** A07 "Chạy lại": a failed deletion resumes at its failed step (completed steps are skipped). */
-export async function rerunJob(
-  db: Firestore,
-  staff: Staff | null,
-  data: unknown,
-  now: Date,
-  run: (jobId: string) => Promise<unknown>,
-) {
+/**
+ * A07 "Chạy lại", step 1 (P-139 "Xoá cần người thứ hai duyệt"): someone with "Yêu cầu dữ liệu: Sửa"
+ * asks for a failed deletion to resume; nothing runs yet.
+ */
+export async function requestRerun(db: Firestore, staff: Staff | null, data: unknown, now: Date) {
   const s = requireStaff(staff, 'jobs.rerun');
   const req = parse(rerunJobSchema, data);
   await db.runTransaction(async (tx) => {
@@ -815,8 +853,57 @@ export async function rerunJob(
     const j = await tx.get(ref);
     if (!j.exists) throw new StaffError('not-found', 'not-found');
     if (j.get('state') !== 'failed') throw new StaffError('failed-precondition', 'not-failed');
-    tx.update(ref, { state: 'queued', attempts: 0, updatedAt: now, rerunBy: s.uid });
-    audit(
+    if (j.get('rerunRequest')) throw new StaffError('failed-precondition', 'already-requested');
+    tx.update(ref, {
+      rerunRequest: { byUid: s.uid, byName: s.name, reason: req.reason, at: now },
+      updatedAt: now,
+    });
+    staffAudit(
+      tx,
+      db,
+      s,
+      {
+        action: 'jobs.rerunRequest',
+        category: 'data',
+        target: jobCode(req.jobId),
+        reason: req.reason,
+        detail: { from: j.get('failedStep') ?? null },
+      },
+      now,
+    );
+  });
+}
+
+/**
+ * A07 step 2: a different person with "Yêu cầu dữ liệu: Duyệt" approves, and the deletion resumes
+ * at its failed step (completed steps are skipped).
+ */
+export async function approveRerun(
+  db: Firestore,
+  staff: Staff | null,
+  data: unknown,
+  now: Date,
+  run: (jobId: string) => Promise<unknown>,
+) {
+  const s = requireStaff(staff, 'jobs.approve');
+  const req = parse(rerunJobSchema, data);
+  await db.runTransaction(async (tx) => {
+    const ref = db.doc(`deletionJobs/${req.jobId}`);
+    const j = await tx.get(ref);
+    if (!j.exists) throw new StaffError('not-found', 'not-found');
+    if (j.get('state') !== 'failed') throw new StaffError('failed-precondition', 'not-failed');
+    const asked = j.get('rerunRequest') as { byUid: string; byName: string } | undefined;
+    if (!asked) throw new StaffError('failed-precondition', 'not-requested');
+    if (asked.byUid === s.uid) throw new StaffError('failed-precondition', 'same-person');
+    tx.update(ref, {
+      state: 'queued',
+      attempts: 0,
+      updatedAt: now,
+      rerunBy: asked.byUid,
+      rerunApprovedBy: s.uid,
+      rerunRequest: FieldValue.delete(),
+    });
+    staffAudit(
       tx,
       db,
       s,
@@ -825,7 +912,7 @@ export async function rerunJob(
         category: 'data',
         target: jobCode(req.jobId),
         reason: req.reason,
-        detail: { from: j.get('failedStep') ?? null },
+        detail: { from: j.get('failedStep') ?? null, requestedBy: asked.byName },
       },
       now,
     );
@@ -836,7 +923,7 @@ export async function rerunJob(
 // ---------- A08 / A09 Hệ thống & AI ----------
 
 export async function systemHealth(db: Firestore, staff: Staff | null, now: Date) {
-  requireStaff(staff, 'view');
+  requireStaff(staff, 'system.view');
   const families = await db
     .collection('families')
     .select('usedBytes', 'quotaBytes', 'grantsCount', 'storageNoticeState', 'usageReconciledAt')
@@ -914,7 +1001,7 @@ export async function readAiBudget(db: Firestore, now: Date) {
 }
 
 export async function aiStats(db: Firestore, staff: Staff | null, now: Date) {
-  requireStaff(staff, 'view');
+  requireStaff(staff, 'system.view');
   const since = new Date(now.getTime() - 14 * DAY_MS);
   const drafts = await db
     .collectionGroup('stories')
@@ -972,7 +1059,7 @@ export const launchedFlags: Flags = {
 };
 
 export async function readFlags(db: Firestore, staff: Staff | null) {
-  requireStaff(staff, 'view');
+  requireStaff(staff, 'features.view');
   const flags = flagsSchema.safeParse((await db.doc('config/flags').get()).data());
   const limits = limitsSchema.safeParse((await db.doc('config/limits').get()).data());
   const last = await db
@@ -1021,7 +1108,7 @@ export async function setFlag(db: Firestore, staff: Staff | null, data: unknown,
       notice: req.enabled ? null : req.notice,
     };
     tx.set(ref, flags);
-    audit(
+    staffAudit(
       tx,
       db,
       s,
@@ -1051,7 +1138,7 @@ export async function listAudit(
   now: Date,
   exporting = false,
 ) {
-  const s = requireStaff(staff, exporting ? 'audit.export' : 'view');
+  const s = requireStaff(staff, exporting ? 'audit.export' : 'audit.view');
   const req = parse(listAuditSchema, data);
   let q = db
     .collection('staffAudit')
@@ -1079,7 +1166,7 @@ export async function listAudit(
     );
   if (exporting) {
     const batch = db.batch();
-    audit(
+    staffAudit(
       batch,
       db,
       s,

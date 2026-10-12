@@ -171,6 +171,27 @@ describe('devices (13n)', () => {
     );
   });
 
+  it('the daily heartbeat (P-137): server time only, a coarse model, never a back-dated day', async () => {
+    const other = `d_${'e'.repeat(32)}`;
+    const ref = doc(db('mom'), `users/mom/devices/${other}`);
+    await assertSucceeds(
+      setDoc(
+        ref,
+        device({
+          lastActiveAt: serverTimestamp(),
+          osVersion: 'Android 16',
+          model: 'Android phone',
+        }),
+      ),
+    );
+    await assertFails(
+      setDoc(ref, device({ lastActiveAt: Timestamp.fromDate(new Date('2026-01-01')) })),
+    );
+    await assertFails(setDoc(ref, device({ model: 'Pixel 9 của Mai' })));
+    // A later write without a new heartbeat keeps the stored day as it is.
+    await assertSucceeds(updateDoc(ref, { language: 'vi', updatedAt: serverTimestamp() }));
+  });
+
   it('only the server signs a device out', async () => {
     await assertFails(
       setDoc(

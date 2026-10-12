@@ -34,6 +34,11 @@ import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { resendSender } from './mail-resend.js';
 import { AuthMailError, sendAuthEmail as sendAuthMail } from './auth-mail.js';
 import {
+  caseComments as qaCaseComments,
+  handbook as qaHandbook,
+  update as qaUpdate,
+} from './qa.js';
+import {
   localeFromHeader,
   renderExportPage,
   renderInvitePage,
@@ -101,14 +106,45 @@ import {
   listTickets,
   overview,
   readFlags,
+  approveRerun,
   replyTicket,
-  rerunJob,
+  requestRerun,
   setFlag,
   systemHealth,
   ticketDetail,
   type AccountLister,
   type Staff,
 } from './staff.js';
+import { referenceAct, referenceDraft, referenceView } from './reference-data.js';
+import {
+  analytics,
+  backfillDays,
+  exportAnalytics,
+  markDeviceActivity,
+  recordAcquisition,
+} from './analytics.js';
+import {
+  answerStaffTransfer,
+  cancelTransfer,
+  expireTransfers,
+  familyDetail,
+  listFamilies,
+  openTransfer,
+  refreshAllFamilies,
+  refreshFamilyDirectory,
+  type FamilyDeps,
+} from './staff-families.js';
+import {
+  acceptStaffInvite,
+  expireStaffAccess,
+  inviteStaff,
+  listStaff,
+  resolveStaff,
+  saveStaffRole,
+  staffMe as describeStaff,
+  updateStaffMember,
+  type StaffAuthPort,
+} from './staff-access.js';
 import {
   LinkError,
   createShareLink,
@@ -927,6 +963,16 @@ export const answerFamilyOwnership = accountCall('answerFamilyOwnership', (c, d)
   answerOwnership(getFirestore(), c, d, new Date()),
 );
 
+/** Android install source, once per account (A13 "Nguồn gia đình mới", P-137). */
+export const recordInstallSource = accountCall('recordInstallSource', (c, d) =>
+  recordAcquisition(getFirestore(), c, d, new Date()),
+);
+
+/** The owner's answer to an ownership transfer opened by Child Life Hỗ trợ (A17, P-136). */
+export const answerStaffOwnershipRequest = accountCall('answerStaffOwnershipRequest', (c, d) =>
+  answerStaffTransfer(getFirestore(), c, d, new Date(), familyDeps.emailOf),
+);
+
 /** 13n "Xoá tài khoản" (after ownership transfer, R-046). */
 export const deleteMyAccount = accountCall('deleteMyAccount', (c, d) =>
   requestAccountDeletion(getFirestore(), c, d, new Date()),
@@ -1190,15 +1236,43 @@ function clientAddress(forwarded: string | string[] | undefined, ip: string | un
 
 // ---------- S15: staff portal (A01–A12, D-043) ----------
 
-/** The signed-in staff member from the ID token's custom claims (set by `scripts/create-staff.mjs`). */
-function staffOf(request: CallableRequest): Staff | null {
-  const token = request.auth?.token;
-  if (!token || token.staff !== true || !Array.isArray(token.roles)) return null;
-  const roles = (token.roles as unknown[]).filter((r): r is Staff['roles'][number] =>
-    ['ops', 'support', 'eng', 'lead'].includes(String(r)),
+/**
+ * The signed-in staff member: the `staff` claim gates, then `staffMembers` / `staffRoles` decide
+ * (P-134), so a pause or a role edit applies on the next call.
+ */
+function staffOf(request: CallableRequest): Promise<Staff | null> {
+  return resolveStaff(
+    getFirestore(),
+    request.auth ? { uid: request.auth.uid, token: request.auth.token } : undefined,
+    new Date(),
   );
-  return { uid: request.auth!.uid, name: String(token.name ?? token.email ?? 'staff'), roles };
 }
+
+const familyDeps: FamilyDeps = {
+  async emailOf(uid) {
+    try {
+      return (await getAuth().getUser(uid)).email ?? null;
+    } catch {
+      return null;
+    }
+  },
+  async uidByEmail(email) {
+    try {
+      return (await getAuth().getUserByEmail(email)).uid;
+    } catch {
+      return null;
+    }
+  },
+};
+
+const staffAuthPort: StaffAuthPort = {
+  async setClaims(uid, claims) {
+    await getAuth().setCustomUserClaims(uid, claims);
+  },
+  async revoke(uid) {
+    await getAuth().revokeRefreshTokens(uid);
+  },
+};
 
 const authAccounts: AccountLister = {
   async list() {
@@ -1225,7 +1299,7 @@ const staffCall = <T>(name: string, run: (staff: Staff | null, data: unknown) =>
   onCall({ timeoutSeconds: 120, memory: '512MiB' }, async (request) => {
     if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
     try {
-      return await run(staffOf(request), request.data);
+      return await run(await staffOf(request), request.data);
     } catch (error) {
       if (error instanceof StaffError) {
         throw new HttpsError(error.code, error.reason, { reason: error.reason });
@@ -1259,19 +1333,30 @@ export const staffDecideStorage = staffCall('staffDecideStorage', (s, d) =>
 export const staffJobs = staffCall('staffJobs', (s, d) =>
   listJobs(getFirestore(), s, d, new Date()),
 );
-export const staffRerunJob = onCall({ timeoutSeconds: 540, memory: '512MiB' }, async (request) => {
-  if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
-  try {
-    await rerunJob(getFirestore(), staffOf(request), request.data, new Date(), (jobId) =>
-      runDeletionJob(getFirestore(), jobDeps(), jobId, () => new Date()),
-    );
-  } catch (error) {
-    if (error instanceof StaffError)
-      throw new HttpsError(error.code, error.reason, { reason: error.reason });
-    logger.error('staffRerunJob failed', { error: String(error) });
-    throw new HttpsError('internal', 'staffRerunJob failed');
-  }
-});
+// P-139: a re-run is asked for by one person and approved by another.
+export const staffRerunJob = staffCall('staffRerunJob', (s, d) =>
+  requestRerun(getFirestore(), s, d, new Date()),
+);
+export const staffApproveRerun = onCall(
+  { timeoutSeconds: 540, memory: '512MiB' },
+  async (request) => {
+    if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+    try {
+      await approveRerun(
+        getFirestore(),
+        await staffOf(request),
+        request.data,
+        new Date(),
+        (jobId) => runDeletionJob(getFirestore(), jobDeps(), jobId, () => new Date()),
+      );
+    } catch (error) {
+      if (error instanceof StaffError)
+        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+      logger.error('staffApproveRerun failed', { error: String(error) });
+      throw new HttpsError('internal', 'staffApproveRerun failed');
+    }
+  },
+);
 export const staffSystem = staffCall('staffSystem', (s) =>
   systemHealth(getFirestore(), s, new Date()),
 );
@@ -1285,4 +1370,126 @@ export const staffAudit = staffCall('staffAudit', (s, d) =>
 );
 export const staffExportAudit = staffCall('staffExportAudit', (s, d) =>
   listAudit(getFirestore(), s, d, new Date(), true),
+);
+
+// Nhân sự & phân quyền (A18–A21, P-134, P-135).
+export const staffMe = staffCall('staffMe', async (s) => describeStaff(s));
+export const staffTeam = staffCall('staffTeam', (s) => listStaff(getFirestore(), s, new Date()));
+export const staffInvite = staffCall('staffInvite', (s, d) =>
+  inviteStaff(getFirestore(), s, d, new Date(), {
+    adminOrigin: adminOriginFor(currentProjectId()),
+  }),
+);
+export const staffUpdateMember = staffCall('staffUpdateMember', (s, d) =>
+  updateStaffMember(getFirestore(), s, d, new Date(), staffAuthPort),
+);
+export const staffSaveRole = staffCall('staffSaveRole', (s, d) =>
+  saveStaffRole(getFirestore(), s, d, new Date()),
+);
+/** An invitee's first sign-in: no staff claim yet, so this one is not a `staffCall`. */
+export const staffAcceptInvite = onCall({ timeoutSeconds: 60 }, async (request) => {
+  if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+  try {
+    return await acceptStaffInvite(
+      getFirestore(),
+      { uid: request.auth.uid, token: request.auth.token },
+      new Date(),
+      staffAuthPort,
+    );
+  } catch (error) {
+    if (error instanceof StaffError)
+      throw new HttpsError(error.code, error.reason, { reason: error.reason });
+    logger.error('staffAcceptInvite failed', { error: String(error) });
+    throw new HttpsError('internal', 'staffAcceptInvite failed');
+  }
+});
+export const expireStaffAccessJob = onSchedule('every 60 minutes', async () => {
+  const done = await expireStaffAccess(getFirestore(), new Date(), staffAuthPort);
+  if (done.members || done.invites) logger.info('staff access expired', done);
+});
+
+// Gia đình (A15–A17, P-136): counts only, codes not names; ownership needs the owner's yes.
+export const staffFamilies = staffCall('staffFamilies', (s, d) =>
+  listFamilies(getFirestore(), s, d, familyDeps),
+);
+export const staffFamily = staffCall('staffFamily', (s, d) =>
+  familyDetail(getFirestore(), s, d, new Date(), familyDeps),
+);
+export const staffOpenTransfer = staffCall('staffOpenTransfer', (s, d) =>
+  openTransfer(getFirestore(), s, d, new Date(), familyDeps),
+);
+export const staffCancelTransfer = staffCall('staffCancelTransfer', (s, d) =>
+  cancelTransfer(getFirestore(), s, d, new Date()),
+);
+export const expireFamilyTransfersJob = onSchedule('every 60 minutes', async () => {
+  const n = await expireTransfers(getFirestore(), new Date());
+  if (n) logger.info('family transfers expired', { n });
+});
+/** Keeps `familyDirectory` in step with the family, its members and its invites. */
+export const familyDirectoryOnFamily = onDocumentWritten('families/{familyId}', async (event) => {
+  await refreshFamilyDirectory(getFirestore(), event.params.familyId, new Date(), familyDeps);
+});
+export const familyDirectoryOnMember = onDocumentWritten(
+  'babies/{babyId}/members/{uid}',
+  async (event) => {
+    const baby = await getFirestore().doc(`babies/${event.params.babyId}`).get();
+    const familyId = baby.get('familyId') as string | undefined;
+    if (familyId) await refreshFamilyDirectory(getFirestore(), familyId, new Date(), familyDeps);
+  },
+);
+export const familyDirectoryOnInvite = onDocumentWritten('invites/{inviteId}', async (event) => {
+  const familyId = (event.data?.after.get('familyId') ?? event.data?.before.get('familyId')) as
+    string | undefined;
+  if (familyId) await refreshFamilyDirectory(getFirestore(), familyId, new Date(), familyDeps);
+});
+
+// Phân tích (A13 / A14, P-137): aggregates from `statsDaily` only.
+export const staffAnalytics = staffCall('staffAnalytics', (s, d) =>
+  analytics(getFirestore(), s, d, new Date()),
+);
+export const staffExportAnalytics = staffCall('staffExportAnalytics', (s, d) =>
+  exportAnalytics(getFirestore(), s, d, new Date()),
+);
+/** A new heartbeat day marks the person's families active (P-137). */
+export const activityOnDevice = onDocumentWritten(
+  'users/{uid}/devices/{deviceId}',
+  async (event) => {
+    await markDeviceActivity(
+      getFirestore(),
+      event.params.uid,
+      event.data?.before.data(),
+      event.data?.after.data(),
+    );
+  },
+);
+/**
+ * 00:30 Vietnam: the days not yet rolled up (the day that ended, or up to 30 after a deploy), then
+ * every family's directory row so "Hoạt động / Ít hoạt động" stays true without writes.
+ */
+export const rollupDaily = onSchedule(
+  { schedule: '30 0 * * *', timeZone: 'Asia/Ho_Chi_Minh', timeoutSeconds: 540, memory: '1GiB' },
+  async () => {
+    const now = new Date();
+    const days = await backfillDays(getFirestore(), now, 30);
+    const families = await refreshAllFamilies(getFirestore(), now, familyDeps);
+    logger.info('daily rollup', { days: days.length, families });
+  },
+);
+
+// Dữ liệu tham chiếu (C01–C04, P-138): drafts, a second person approves, then the apps get it.
+export const staffReference = staffCall('staffReference', (s, d) =>
+  referenceView(getFirestore(), s, d),
+);
+export const staffReferenceDraft = staffCall('staffReferenceDraft', (s, d) =>
+  referenceDraft(getFirestore(), s, d, new Date()),
+);
+export const staffReferenceAct = staffCall('staffReferenceAct', (s, d) =>
+  referenceAct(getFirestore(), s, d, new Date()),
+);
+
+// QA handbook (P-132): test runs, results and comments; never family data.
+export const staffQa = staffCall('staffQa', (s, d) => qaHandbook(getFirestore(), s, d));
+export const staffQaCase = staffCall('staffQaCase', (s, d) => qaCaseComments(getFirestore(), s, d));
+export const staffQaUpdate = staffCall('staffQaUpdate', (s, d) =>
+  qaUpdate(getFirestore(), s, d, new Date()),
 );

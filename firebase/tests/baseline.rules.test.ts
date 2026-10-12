@@ -37,6 +37,22 @@ beforeEach(async () => {
 });
 
 describe('Firestore baseline (deny by default)', () => {
+  it('anyone can get the approved reference tables (P-138), nobody can write them', async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'publicConfig/reference_bottle'), { version: 'v2026.10' });
+    });
+    const anon = env.unauthenticatedContext().firestore();
+    await assertSucceeds(getDoc(doc(anon, 'publicConfig/reference_bottle')));
+    await assertSucceeds(getDoc(doc(anon, 'publicConfig/reference_growth_length')));
+    await assertFails(getDoc(doc(anon, 'publicConfig/reference_secret')));
+    const user = env.authenticatedContext('u1', { staff: true, roles: ['owner'] }).firestore();
+    await assertFails(setDoc(doc(user, 'publicConfig/reference_bottle'), { version: 'x' }));
+    await assertFails(getDoc(doc(user, 'referenceData/bottle.quickPicks')));
+    await assertFails(getDoc(doc(user, 'familyDirectory/f1')));
+    await assertFails(getDoc(doc(user, 'staffMembers/u1')));
+    await assertFails(getDoc(doc(user, 'statsDaily/2026-10-10')));
+  });
+
   it('anyone can get the public flags and limits projections', async () => {
     const anon = env.unauthenticatedContext().firestore();
     await assertSucceeds(getDoc(doc(anon, 'publicConfig/flags')));
@@ -60,6 +76,21 @@ describe('Firestore baseline (deny by default)', () => {
     await assertFails(getDoc(doc(user, 'config/flags')));
     await assertFails(getDoc(doc(user, 'babies/b1')));
     await assertFails(setDoc(doc(user, 'babies/b2'), { nickname: 'Na' }));
+  });
+
+  it('the QA handbook is reached only through the staff callables (P-132), even by staff', async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'qaRuns/r_0123456789abcdef0123'), { name: '1.0.3' });
+    });
+    const staff = env
+      .authenticatedContext('s1', { staff: true, roles: ['qa', 'lead'] })
+      .firestore();
+    await assertFails(getDoc(doc(staff, 'qaRuns/r_0123456789abcdef0123')));
+    await assertFails(getDocs(collection(staff, 'qaRuns')));
+    await assertFails(setDoc(doc(staff, 'qaCases/CARE-Q01'), { builtin: false }));
+    await assertFails(
+      setDoc(doc(staff, 'qaRuns/r_0123456789abcdef0123/results/CARE-001'), { status: 'passed' }),
+    );
   });
 });
 

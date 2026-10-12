@@ -35,8 +35,11 @@ service cloud.firestore {
 
     // Public projections of feature flags and global limits (P-122, D-011).
     // Written only by Functions; readable before sign-in so kill switches apply everywhere.
+    // Approved reference tables (P-138: WHO growth, bottle quick picks, vaccine schedule), the same
+    // way: published by Functions after a second person approves; the app falls back to its copy.
     match /publicConfig/{docId} {
-      allow get: if docId in ['flags', 'limits', 'content_firstAid'];
+      allow get: if docId in ['flags', 'limits', 'reference_growth_weight', 'reference_growth_length',
+        'reference_bottle', 'reference_vaccines', 'content_firstAid'];
       allow list, write: if false;
     }
 
@@ -78,13 +81,20 @@ service cloud.firestore {
       }
     }
 
+    // P-137: `lastActiveAt` (once a local day, the analytics heartbeat), `osVersion` and a coarse
+    // `model` (never shown with the device name to staff).
     function validDevice(d) {
-      return d.keys().hasOnly(['token', 'platform', 'language', 'name', 'appVersion', 'updatedAt', 'signedOutAt']) &&
+      return d.keys().hasOnly(['token', 'platform', 'language', 'name', 'appVersion', 'updatedAt', 'signedOutAt',
+          'lastActiveAt', 'osVersion', 'model']) &&
         (!('token' in d) || (d.token is string && d.token.size() <= 4096)) &&
         d.platform in ['ios', 'android'] &&
         d.language in ['vi', 'en'] &&
         (!('name' in d) || (d.name is string && d.name.size() <= 80)) &&
         (!('appVersion' in d) || (d.appVersion is string && d.appVersion.size() <= 32)) &&
+        (!('osVersion' in d) || (d.osVersion is string && d.osVersion.size() <= 40)) &&
+        (!('model' in d) || d.model in ['iPhone', 'iPad', 'Android phone', 'Android tablet']) &&
+        (!('lastActiveAt' in d) || d.lastActiveAt == request.time ||
+          (resource != null && d.lastActiveAt == resource.data.get('lastActiveAt', null))) &&
         d.updatedAt == request.time;
     }
 
