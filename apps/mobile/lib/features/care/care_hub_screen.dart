@@ -13,10 +13,15 @@ import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
+import '../baby/baby_repository.dart';
 import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
 import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
+import '../spending/spending_calc.dart';
+import '../spending/spending_format.dart';
+import '../spending/spending_models.dart';
+import '../spending/spending_repository.dart';
 import '../vaccines/vaccine_format.dart';
 import 'care_repository.dart';
 import 'history_screen.dart' show HistoryFilter;
@@ -77,6 +82,30 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
           )
         : l10n.careRemindersOn(rules.length + upcoming.length);
 
+    final spending = SpendingAccess.of(me);
+    final String spendingLine;
+    if (!spending.viewAll) {
+      spendingLine = l10n.spTileRecord;
+    } else {
+      final expenses =
+          ref.watch(expensesProvider((me.babyId, spending))).value ??
+          const <Expense>[];
+      final zone =
+          ref.watch(babyProvider(me.babyId)).value?.timeZone.zone ??
+          'Asia/Ho_Chi_Minh';
+      final today = babyToday(zone, now);
+      final total = MonthSummary.of(expenses, monthOf(today), today).total;
+      spendingLine = total == 0
+          ? l10n.spTileEmpty
+          : l10n.spTileMonth(
+              moneyShort(
+                l10n,
+                Localizations.localeOf(context).toLanguageTag(),
+                total,
+              ),
+            );
+    }
+
     final daily = [
       _Tile(
         icon: ClIcons.clock,
@@ -129,6 +158,15 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
           onTap: () => context.push(
             '${Routes.history}?filter=${HistoryFilter.growth.name}',
           ),
+        ),
+      // Chi tiêu (v1.1 8a): for anyone with a spending right (D-055).
+      if (spending.any)
+        _Tile(
+          icon: ClIcons.grid,
+          tint: cl.care.growth.soft,
+          title: l10n.spTitle,
+          subtitle: spendingLine,
+          onTap: () => context.push(Routes.spending),
         ),
     ].where((t) => _matches(t.title, t.subtitle)).toList();
 

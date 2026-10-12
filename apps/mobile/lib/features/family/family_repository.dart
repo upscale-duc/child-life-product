@@ -192,8 +192,16 @@ class FamilyRepository {
     'babyId': babyId,
     'uid': uid,
     'role': role.name,
-    if (role == MemberRole.relative && extraRights != null)
-      'extraRights': extraRights.toJson(),
+    // A caregiver keeps only the spending rights (D-055); Cùng nuôi have everything.
+    if (role != MemberRole.coParent && extraRights != null)
+      'extraRights':
+          (role == MemberRole.caregiver
+                  ? extraRights.copyWith(
+                      viewBabyInfo: false,
+                      viewDailyCare: false,
+                    )
+                  : extraRights)
+              .toJson(),
   });
 
   Future<void> updateRelation({

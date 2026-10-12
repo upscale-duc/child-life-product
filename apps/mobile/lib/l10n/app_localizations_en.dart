@@ -7463,4 +7463,829 @@ class AppLocalizationsEn extends AppLocalizations {
   String myInviteSheetHint(String baby) {
     return 'Once you accept, $baby joins your list of babies.';
   }
+
+  @override
+  String get spTitle => 'Spending';
+
+  @override
+  String spTileMonth(String amount) {
+    return '$amount this month';
+  }
+
+  @override
+  String get spTileEmpty => 'Nothing this month';
+
+  @override
+  String get spTileRecord => 'Record expenses';
+
+  @override
+  String spMillions(String value) {
+    return '${value}M';
+  }
+
+  @override
+  String get spCurrencyName => 'dong';
+
+  @override
+  String get spCatChildcare => 'Childcare & learning';
+
+  @override
+  String get spCatMilk => 'Milk & solids';
+
+  @override
+  String get spCatDiaper => 'Diapers & hygiene';
+
+  @override
+  String get spCatHealth => 'Health & vaccines';
+
+  @override
+  String get spCatClothes => 'Clothes';
+
+  @override
+  String get spCatOther => 'Other';
+
+  @override
+  String get spToday => 'Today';
+
+  @override
+  String get spYesterday => 'Yesterday';
+
+  @override
+  String spDayToday(String date) {
+    return 'Today · $date';
+  }
+
+  @override
+  String spDayYesterday(String date) {
+    return 'Yesterday · $date';
+  }
+
+  @override
+  String spDateToday(String date) {
+    return 'Today, $date';
+  }
+
+  @override
+  String spDateYesterday(String date) {
+    return 'Yesterday, $date';
+  }
+
+  @override
+  String get spPayerOther => 'Other';
+
+  @override
+  String spPaidBy(String payer) {
+    return '$payer paid';
+  }
+
+  @override
+  String spPays(String payer) {
+    return '$payer pays';
+  }
+
+  @override
+  String get spFromVaccines => 'from Vaccinations';
+
+  @override
+  String get spFromRecurring => 'recurring';
+
+  @override
+  String get spFromRecurringFull => 'Recurring item';
+
+  @override
+  String spScheduleMonthly(int day) {
+    return 'Day $day of every month';
+  }
+
+  @override
+  String spScheduleMonthlyTwo(int a, int b) {
+    return 'Days $a and $b of every month';
+  }
+
+  @override
+  String spScheduleWeeks(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Every $n weeks',
+      one: 'Every week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String spScheduleYearly(String date) {
+    return '$date every year';
+  }
+
+  @override
+  String get spPending => 'Waiting to sync';
+
+  @override
+  String get spHasReceipt => 'Has receipt';
+
+  @override
+  String get spNoAccess =>
+      'The baby\'s spending is for parents only. Ask a co-parent to give you access in Family if you need to record.';
+
+  @override
+  String spFirstTitle(String name) {
+    return 'Record spending for $name';
+  }
+
+  @override
+  String get spFirstBody =>
+      'Know how much each month goes on milk, diapers, vaccinations and childcare. Only parents see it; you can share it with others.';
+
+  @override
+  String get spFirstBodyRecorder =>
+      'Record what you have spent on the baby. You only see the items you recorded.';
+
+  @override
+  String get spFirstPoint1 => 'Record in a few seconds';
+
+  @override
+  String get spFirstPoint2 => 'Statistics by month, category and payer';
+
+  @override
+  String get spFirstPoint3 => 'Budget and recurring items';
+
+  @override
+  String get spFirstAdd => 'Add the first expense';
+
+  @override
+  String get spFirstBudget => 'Set a budget';
+
+  @override
+  String get spAdd => 'Add expense';
+
+  @override
+  String get spOwnOnlyNote =>
+      'You only see the items you recorded, not totals or other people\'s items.';
+
+  @override
+  String get spMine => 'Items you recorded';
+
+  @override
+  String get spPrevMonth => 'Previous month';
+
+  @override
+  String get spNextMonth => 'Next month';
+
+  @override
+  String spMonthLabel(int month, int year) {
+    return '$month/$year';
+  }
+
+  @override
+  String spMonthShort(int month, int year) {
+    return 'Month $month';
+  }
+
+  @override
+  String spUpTo(String date) {
+    return 'Up to $date';
+  }
+
+  @override
+  String spSpentOn(String name) {
+    return 'Spent on $name';
+  }
+
+  @override
+  String get spStats => 'Statistics';
+
+  @override
+  String get spBudget => 'Budget';
+
+  @override
+  String get spRecurring => 'Recurring';
+
+  @override
+  String get spByCategory => 'By category';
+
+  @override
+  String get spSeeStats => 'See statistics';
+
+  @override
+  String get spMonthEmpty => 'No expenses this month yet.';
+
+  @override
+  String spItems(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String spIncludesShots(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Includes $n shots',
+      one: 'Includes 1 shot',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get spRecent => 'Recent';
+
+  @override
+  String get spSeeAll => 'See all';
+
+  @override
+  String get spParentsOnly =>
+      'Only parents see spending. You can give others access in Family.';
+
+  @override
+  String get spSharedWithYou =>
+      'The parents have shared the baby\'s spending with you.';
+
+  @override
+  String spBudgetShare(String share, String total) {
+    return '$share of the $total budget';
+  }
+
+  @override
+  String spLeft(String amount) {
+    return '$amount left';
+  }
+
+  @override
+  String spOverBy(String amount) {
+    return '$amount over';
+  }
+
+  @override
+  String get spAvgPerDay => 'Average/day';
+
+  @override
+  String get spSame => 'Same';
+
+  @override
+  String spLower(String share) {
+    return '$share lower';
+  }
+
+  @override
+  String spHigher(String share) {
+    return '$share higher';
+  }
+
+  @override
+  String spComparedWith(int month) {
+    return 'Compared with month $month';
+  }
+
+  @override
+  String get spAllTitle => 'All expenses';
+
+  @override
+  String get spSearch => 'Search expenses…';
+
+  @override
+  String get spAllMonths => 'All months';
+
+  @override
+  String get spFilterMonth => 'Choose a month';
+
+  @override
+  String get spAllCategories => 'All categories';
+
+  @override
+  String get spAnyone => 'Anyone';
+
+  @override
+  String get spNothingYet => 'No expenses yet.';
+
+  @override
+  String get spNoMatch => 'No expenses match.';
+
+  @override
+  String get spGone => 'This expense is no longer here.';
+
+  @override
+  String get spCategory => 'Category';
+
+  @override
+  String get spDate => 'Date';
+
+  @override
+  String get spPayer => 'Who paid';
+
+  @override
+  String get spRecordedBy => 'Recorded by';
+
+  @override
+  String get spSource => 'Source';
+
+  @override
+  String get spLink => 'Link';
+
+  @override
+  String spLinkVaccine(String dose) {
+    return 'Vaccinations · $dose';
+  }
+
+  @override
+  String get spReceiptTitle => 'Receipt';
+
+  @override
+  String get spReceiptOpen => 'Tap to see it large';
+
+  @override
+  String get spDelete => 'Delete expense';
+
+  @override
+  String get spDeleted => 'Expense deleted';
+
+  @override
+  String get spAddTitle => 'Add expense';
+
+  @override
+  String get spEditTitle => 'Edit expense';
+
+  @override
+  String get spAmount => 'Amount';
+
+  @override
+  String spLastTime(String amount) {
+    return 'Last time $amount';
+  }
+
+  @override
+  String get spEditCategories => 'Edit categories';
+
+  @override
+  String get spAddCategoryChip => 'Category';
+
+  @override
+  String get spNote => 'Description';
+
+  @override
+  String get spNoteHint => 'E.g. Formula ×2';
+
+  @override
+  String get spReceipt => 'Receipt photo';
+
+  @override
+  String get spReceiptAttached => 'Attached · tap to see';
+
+  @override
+  String get spReceiptRemove => 'Remove the receipt';
+
+  @override
+  String get spReceiptAdd => 'Add a receipt photo';
+
+  @override
+  String get spReceiptPrivate =>
+      'Only people who can see spending see this photo.';
+
+  @override
+  String get spRepeatMonthly => 'Repeat monthly';
+
+  @override
+  String spRepeatMonthlyOn(int day) {
+    return 'Added on day $day every month';
+  }
+
+  @override
+  String get spSave => 'Save expense';
+
+  @override
+  String get spSaved => 'Expense saved';
+
+  @override
+  String get spUpdated => 'Expense updated';
+
+  @override
+  String get spAmountMissing => 'Enter an amount';
+
+  @override
+  String get spSaveFailed => 'Couldn\'t save. Try again later.';
+
+  @override
+  String get spVaccineTitle => 'Record the cost of the shot?';
+
+  @override
+  String get spVaccineBody =>
+      'Saved to Spending under Health & vaccines. You can skip this.';
+
+  @override
+  String get spVaccineSave => 'Save to Spending';
+
+  @override
+  String get spVaccineSaved => 'Shot cost saved';
+
+  @override
+  String get spSkip => 'Skip';
+
+  @override
+  String get spCategories => 'Categories';
+
+  @override
+  String get spCategoriesIntro =>
+      'Drag to reorder. Categories are shared by every baby in the family.';
+
+  @override
+  String get spCategoriesInUse => 'In use';
+
+  @override
+  String get spCategoriesHidden => 'Hidden';
+
+  @override
+  String get spCategoryLocked => 'Default · can\'t be deleted';
+
+  @override
+  String spCategoryCustom(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Custom · $n items',
+      one: 'Custom · 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String spCategoryHiddenSub(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Hidden from the picker · keeps $n old items',
+      one: 'Hidden from the picker · keeps 1 old item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get spShowAgain => 'Show again';
+
+  @override
+  String get spDragHandle => 'Drag to reorder';
+
+  @override
+  String get spAddCategory => 'Add category';
+
+  @override
+  String get spNewCategory => 'New category';
+
+  @override
+  String get spEditCategory => 'Edit category';
+
+  @override
+  String get spCategoryName => 'Category name';
+
+  @override
+  String get spCategoryNamePlaceholder => 'E.g. Swimming & activities';
+
+  @override
+  String get spCategoryNameHelp => 'Up to 24 characters';
+
+  @override
+  String get spCategoryNameMissing => 'Enter a category name';
+
+  @override
+  String get spCategoryNameTaken => 'A category with this name already exists';
+
+  @override
+  String get spCategoryIcon => 'Icon';
+
+  @override
+  String get spCategoryColor => 'Colour';
+
+  @override
+  String spColorN(int n) {
+    return 'Colour $n';
+  }
+
+  @override
+  String get spSaveCategory => 'Save category';
+
+  @override
+  String get spHideCategory => 'Hide category';
+
+  @override
+  String get spCategoryHiddenToast => 'Category hidden';
+
+  @override
+  String get spDeleteCategory => 'Delete category';
+
+  @override
+  String spDeleteCategoryTitle(String name) {
+    return 'Delete “$name”?';
+  }
+
+  @override
+  String spDeleteCategoryBody(int n, String amount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other:
+          'This category has $n expenses ($amount). Choose where to move them:',
+      one: 'This category has 1 expense ($amount). Choose where to move it:',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get spDeleteCategoryEmpty =>
+      'This category has no expenses for this baby. Any other baby\'s items move to:';
+
+  @override
+  String get spMoveToOther => 'Move to “Other”';
+
+  @override
+  String get spMoveToOtherSub => 'Totals stay the same';
+
+  @override
+  String get spMoveToAnother => 'Move to another category';
+
+  @override
+  String get spChooseCategory => 'Choose a category';
+
+  @override
+  String get spHideInstead =>
+      'Want to keep old figures without seeing the category when recording? Choose Hide instead of Delete.';
+
+  @override
+  String spDeleteAndMove(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Delete and move $n items',
+      one: 'Delete and move 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get spHideCategoryInstead => 'Hide the category instead';
+
+  @override
+  String get spCategoryDeleted => 'Category deleted';
+
+  @override
+  String get spNeedsNetwork => 'Deleting a category needs a connection.';
+
+  @override
+  String get spBudgetTitle => 'Monthly budget';
+
+  @override
+  String get spBudgetIntro =>
+      'Set an expected amount to keep track. Categories can stay empty.';
+
+  @override
+  String get spBudgetPerMonth => 'Budget per month';
+
+  @override
+  String spBudgetUsed(int month, String share) {
+    return 'Month $month: $share used';
+  }
+
+  @override
+  String get spNoCap => 'No limit set';
+
+  @override
+  String get spClearCap => 'Remove this limit';
+
+  @override
+  String spUsedShare(String share) {
+    return '$share used';
+  }
+
+  @override
+  String spNearCap(String amount) {
+    return 'Nearly at the limit · $amount left';
+  }
+
+  @override
+  String spOverCap(String amount) {
+    return '$amount over the limit';
+  }
+
+  @override
+  String get spAlert80 => 'Remind me at 80% of the budget';
+
+  @override
+  String get spAlert80Sub => 'Sent to parents';
+
+  @override
+  String get spSaveBudget => 'Save budget';
+
+  @override
+  String get spBudgetSaved => 'Budget saved';
+
+  @override
+  String get spRecurringTitle => 'Recurring items';
+
+  @override
+  String get spRecurringIntro =>
+      'Added to spending on the day. Parents get a notification and can change the amount afterwards.';
+
+  @override
+  String get spRecurringEmpty =>
+      'No recurring items yet. Add childcare, formula or insurance so you don\'t have to record them each time.';
+
+  @override
+  String spRecurringNext(String date, String title, String amount) {
+    return 'On $date: $title $amount will be added. You can change the amount afterwards.';
+  }
+
+  @override
+  String get spAddRecurring => 'Add recurring item';
+
+  @override
+  String get spEditRecurring => 'Edit recurring item';
+
+  @override
+  String get spRecurringName => 'Name';
+
+  @override
+  String get spRecurringNameHint => 'E.g. Nanny';
+
+  @override
+  String get spRecurringTitleMissing => 'Enter a name';
+
+  @override
+  String get spSchedule => 'Repeats';
+
+  @override
+  String get spKindMonthly => 'Monthly';
+
+  @override
+  String get spKindWeeks => 'Weekly';
+
+  @override
+  String get spKindYearly => 'Yearly';
+
+  @override
+  String get spScheduleDays => 'Days of the month';
+
+  @override
+  String get spScheduleDaysHelp =>
+      'Choose 1 or 2 days. Shorter months use their last day.';
+
+  @override
+  String get spStartOn => 'Starting';
+
+  @override
+  String get spScheduleOn => 'Date';
+
+  @override
+  String get spRecurringOn => 'On';
+
+  @override
+  String get spRecurringHelp =>
+      'Items are added automatically on the due day, in the baby\'s time zone.';
+
+  @override
+  String get spDeleteRecurring => 'Delete recurring item';
+
+  @override
+  String get spRecurringSaved => 'Recurring item saved';
+
+  @override
+  String get spRecurringDeleted => 'Recurring item deleted';
+
+  @override
+  String get spLess => 'Less';
+
+  @override
+  String get spMore => 'More';
+
+  @override
+  String get spStatsTitle => 'Spending statistics';
+
+  @override
+  String get spWindowMonth => 'Month';
+
+  @override
+  String get spWindowSix => '6 months';
+
+  @override
+  String get spWindowBirth => 'Since birth';
+
+  @override
+  String get spMonthTotal => 'This month';
+
+  @override
+  String get spCount => 'Expenses';
+
+  @override
+  String get spSixTotal => '6-month total';
+
+  @override
+  String get spAvgPerMonth => 'Average per month';
+
+  @override
+  String spHighest(int month) {
+    return 'Highest · M$month';
+  }
+
+  @override
+  String get spByMonth => 'By month';
+
+  @override
+  String spCountedTo(int month, String date) {
+    return 'M$month counted up to $date';
+  }
+
+  @override
+  String spMonthTick(int month) {
+    return 'M$month';
+  }
+
+  @override
+  String spAvgLine(String amount) {
+    return 'Avg $amount';
+  }
+
+  @override
+  String spTip(String label, String amount) {
+    return '$label · $amount';
+  }
+
+  @override
+  String get spOthersFolded => 'Other';
+
+  @override
+  String spSinceBirth(String name, int months) {
+    String _temp0 = intl.Intl.pluralLogic(
+      months,
+      locale: localeName,
+      other: '$months months',
+      one: '1 month',
+    );
+    return 'Since $name was born · $_temp0';
+  }
+
+  @override
+  String get spSinceFirst => 'Since the first expense';
+
+  @override
+  String spSinceBirthSub(String amount, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Average $amount per month of age · $n expenses',
+      one: 'Average $amount per month of age · 1 expense',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get spByAge => 'By month of age';
+
+  @override
+  String get spFirstMonth => 'First month';
+
+  @override
+  String spAgeMonth(int n) {
+    return 'Month $n of age';
+  }
+
+  @override
+  String get spLargest => 'Largest items';
+
+  @override
+  String get spExport => 'Export spending (CSV)';
+
+  @override
+  String spExportFile(String date) {
+    return 'spending-$date';
+  }
+
+  @override
+  String get spExportFailed => 'Couldn\'t export the file. Try again later.';
+
+  @override
+  String get spOwnFamilyOnly =>
+      'Figures are for your family\'s own tracking, never compared with other families.';
+
+  @override
+  String get rightRecordSpending => 'Record expenses';
+
+  @override
+  String get rightRecordSpendingHint => 'Only sees the items they recorded';
+
+  @override
+  String get rightViewSpending => 'See all spending';
+
+  @override
+  String get rightViewSpendingHint => 'Totals, statistics, every expense';
+
+  @override
+  String get rightSpendingNote =>
+      'Spending is for parents by default. Someone with “Record expenses” on won\'t see totals or other people\'s items.';
+
+  @override
+  String spSinceBirthYoung(String name) {
+    return 'Since $name was born';
+  }
 }

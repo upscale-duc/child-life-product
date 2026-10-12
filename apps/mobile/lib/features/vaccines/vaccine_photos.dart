@@ -27,8 +27,9 @@ abstract class VaccinePhotoStore {
   /// The chosen photo as a ≤1600 px JPEG without metadata; null when cancelled.
   Future<Uint8List?> pick(ImageSource source);
 
-  /// Uploads [jpeg] and returns its Storage path.
-  Future<String> upload(String babyId, Uint8List jpeg);
+  /// Uploads [jpeg] and returns its Storage path. [folder] `expenses` holds spending receipts
+  /// (Chi tiêu 8c / 8k, same rules of handling).
+  Future<String> upload(String babyId, Uint8List jpeg, {String folder});
 
   /// Best effort (Cùng nuôi only by Rules).
   Future<void> remove(String path);
@@ -62,9 +63,13 @@ class FirebaseVaccinePhotoStore implements VaccinePhotoStore {
   }
 
   @override
-  Future<String> upload(String babyId, Uint8List jpeg) async {
+  Future<String> upload(
+    String babyId,
+    Uint8List jpeg, {
+    String folder = 'vaccines',
+  }) async {
     final id = const Uuid().v4().replaceAll('-', '');
-    final path = 'babies/$babyId/vaccines/$id.jpg';
+    final path = 'babies/$babyId/$folder/$id.jpg';
     await _storage
         .ref(path)
         .putData(jpeg, SettableMetadata(contentType: 'image/jpeg'));
@@ -102,11 +107,17 @@ Future<String?> addVxPhoto(
   WidgetRef ref,
   String babyId, {
   void Function(bool busy)? onBusy,
+
+  /// Chi tiêu: a receipt (title, privacy note and Storage folder of its own).
+  bool receipt = false,
 }) async {
   final l10n = AppLocalizations.of(context);
   final source = await showClSheet<ImageSource>(
     context: context,
-    builder: (sheet) => _SourceSheet(title: l10n.vxPhotoAdd),
+    builder: (sheet) => _SourceSheet(
+      title: receipt ? l10n.spReceiptAdd : l10n.vxPhotoAdd,
+      note: receipt ? l10n.spReceiptPrivate : l10n.vxPhotoPrivate,
+    ),
   );
   if (source == null || !context.mounted) return null;
   final store = ref.read(vaccinePhotoStoreProvider);
@@ -115,7 +126,11 @@ Future<String?> addVxPhoto(
     final jpeg = await store.pick(source);
     if (jpeg == null) return null;
     onBusy?.call(true);
-    return await store.upload(babyId, jpeg);
+    return await store.upload(
+      babyId,
+      jpeg,
+      folder: receipt ? 'expenses' : 'vaccines',
+    );
   } on PlatformException catch (e) {
     final denied = e.code.contains('denied') || e.code.contains('access');
     toaster.show(
@@ -136,8 +151,9 @@ Future<String?> addVxPhoto(
 }
 
 class _SourceSheet extends StatelessWidget {
-  const _SourceSheet({required this.title});
+  const _SourceSheet({required this.title, required this.note});
   final String title;
+  final String note;
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +205,7 @@ class _SourceSheet extends StatelessWidget {
             const SizedBox(width: ClSpace.s1),
             Flexible(
               child: Text(
-                l10n.vxPhotoPrivate,
+                note,
                 textAlign: TextAlign.center,
                 style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
               ),

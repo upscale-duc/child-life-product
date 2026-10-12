@@ -32,6 +32,15 @@ abstract final class Routes {
   static const vaccineAge = '/care/vaccines/age';
   static const vaccineDose = '/care/vaccines/dose';
   static const vaccineInfo = '/care/vaccines/info';
+
+  /// Chi tiêu (v1.1 8a–8o): the month, history, an expense, budget, recurring, statistics.
+  static const spending = '/care/spending';
+  static const spendingHistory = '/care/spending/history';
+  static const spendingExpense = '/care/spending/expense';
+  static const spendingBudget = '/care/spending/budget';
+  static const spendingRecurring = '/care/spending/recurring';
+  static const spendingStats = '/care/spending/stats';
+  static const spendingCategories = '/care/spending/categories';
   static const messages = '/messages';
   static const memories = '/memories';
   static const family = '/family';

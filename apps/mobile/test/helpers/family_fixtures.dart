@@ -17,6 +17,8 @@ import 'package:child_life/features/me/me_models.dart';
 import 'package:child_life/features/me/me_repository.dart';
 import 'package:child_life/features/reminders/rule_models.dart';
 import 'package:child_life/features/reminders/rule_repository.dart';
+import 'package:child_life/features/spending/spending_models.dart';
+import 'package:child_life/features/spending/spending_repository.dart';
 import 'package:child_life/features/vaccines/vaccine_models.dart';
 import 'package:child_life/features/vaccines/vaccine_photos.dart';
 import 'package:child_life/features/vaccines/vaccine_repository.dart';
@@ -26,6 +28,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'reminder_fixtures.dart';
+import 'spending_fixtures.dart';
 
 /// S3 fixtures: the Figma family of Teddy (Mai, Minh, Cô Lan, Bà nội Hoa) and Bà ngoại's
 /// pending invite. Times are relative to now so countdowns and ages render the same every day.
@@ -209,6 +212,11 @@ List<Override> familyOverrides({
   String? email,
   List<String> providers = const [],
   List<MyInvite> myInvites = const [],
+  List<Expense> expenses = const [],
+  List<SpendingCategory> categories = const [],
+  Budget budget = Budget.empty,
+  List<RecurringExpense> recurring = const [],
+  SpendingRepository? spendingRepo,
 }) {
   final self = me ?? mai;
   return [
@@ -259,6 +267,18 @@ List<Override> familyOverrides({
     ),
     vaccinePhotoStoreProvider.overrideWithValue(
       vaccinePhotos ?? FakeVaccinePhotoStore(),
+    ),
+    // Chi tiêu (v1.1): rights filtering is the repository's job, so tests pass what one may read.
+    expensesProvider.overrideWith((ref, key) => Stream.value(expenses)),
+    spendingCategoriesProvider.overrideWith(
+      (ref, id) => Stream.value(mergeCategories(categories)),
+    ),
+    budgetProvider.overrideWith((ref, id) => Stream.value(budget)),
+    recurringExpensesProvider.overrideWith(
+      (ref, id) => Stream.value(recurring),
+    ),
+    spendingRepositoryProvider.overrideWithValue(
+      spendingRepo ?? FakeSpendingRepository(),
     ),
     // v1.0 rule reminders (D-051).
     reminderRulesProvider.overrideWith((ref, id) => Stream.value(rules)),
@@ -326,9 +346,13 @@ class FakeVaccinePhotoStore implements VaccinePhotoStore {
       cancel ? null : Uint8List.fromList(const [0xff, 0xd8, 0xff]);
 
   @override
-  Future<String> upload(String babyId, Uint8List jpeg) async {
+  Future<String> upload(
+    String babyId,
+    Uint8List jpeg, {
+    String folder = 'vaccines',
+  }) async {
     final path =
-        'babies/$babyId/vaccines/photo${uploaded.length + 1}0000000000.jpg';
+        'babies/$babyId/$folder/photo${uploaded.length + 1}0000000000.jpg';
     uploaded.add(path);
     return path;
   }

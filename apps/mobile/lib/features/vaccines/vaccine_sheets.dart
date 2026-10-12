@@ -16,6 +16,7 @@ import '../../core/widgets/cl_segmented.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
+import '../spending/spending_sheets.dart' show offerVaccineCost;
 import 'vaccine_format.dart';
 import 'vaccine_models.dart';
 import 'vaccine_photos.dart';
@@ -65,6 +66,30 @@ bool vxCanLog(Membership me) => me.role != MemberRole.relative;
 bool vxCanEdit(Membership me, DoseItem item) =>
     me.role == MemberRole.coParent ||
     (me.role == MemberRole.caregiver && item.record?.createdBy == me.uid);
+
+/// v1.1 8k: once a dose is first recorded as given, offer to save its cost in Chi tiêu. Not for
+/// the free programme at the commune station.
+void _offerCost(
+  BuildContext host,
+  AppLocalizations l10n,
+  String locale,
+  Membership me,
+  VaccineBook book,
+  DoseItem item,
+  DateTime givenOn,
+  VaccinePlace place,
+) {
+  if (place == VaccinePlace.station || !host.mounted) return;
+  unawaited(
+    offerVaccineCost(
+      host,
+      me: me,
+      doseKey: item.key,
+      doseTitle: vxDoseTitle(l10n, locale, item, book.plan),
+      givenOn: givenOn,
+    ),
+  );
+}
 
 /// "Đã lưu 6in1 mũi 1 · mũi 2 dự kiến 17/12" (VX 4).
 void vxSavedToast(
@@ -429,8 +454,22 @@ class _QuickSheetState extends ConsumerState<_QuickSheet> {
           onError: (_) => toaster.show(message: l10n.vxSaveFailed),
         );
     ClHaptics.success();
+    final host = Navigator.of(context).context;
+    final firstTime = widget.item.record?.status != DoseRecordStatus.given;
     Navigator.of(context).pop();
     vxSavedToast(toaster, l10n, locale, widget.book, widget.item);
+    if (firstTime) {
+      _offerCost(
+        host,
+        l10n,
+        locale,
+        widget.me,
+        widget.book,
+        widget.item,
+        _day,
+        _place,
+      );
+    }
   }
 
   @override
@@ -653,8 +692,22 @@ class _FormSheetState extends ConsumerState<_FormSheet> {
           onError: (_) => toaster.show(message: l10n.vxSaveFailed),
         );
     ClHaptics.success();
+    final host = Navigator.of(context).context;
+    final firstTime = _given == null;
     Navigator.of(context).pop();
     vxSavedToast(toaster, l10n, locale, widget.book, widget.item);
+    if (firstTime) {
+      _offerCost(
+        host,
+        l10n,
+        locale,
+        widget.me,
+        widget.book,
+        widget.item,
+        _day,
+        _place,
+      );
+    }
   }
 
   @override

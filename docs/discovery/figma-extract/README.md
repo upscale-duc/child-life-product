@@ -13,6 +13,7 @@ These files are the evidence behind the R-/Q-/G- items in [`../../product/busine
 | `05-relative-me-storage.md` | Sections 11 and 13. Metadata-only notes in the first part are superseded by the gap-fill pass appended at the end (all 12 frames re-read in full). |
 | `06-story-links-website.md` | Section 14 and the Website page (landing desktop + mobile). |
 | `07-foundations-components-motion.md` | Foundations, Components, Cover, Logo; motion findings. The logo sheet screenshot referenced as `figma-notes/img/…` is `img/logo_sheet_35-240.png` here. |
+| `19-spending.md` | Page **v1.1**, cluster "Chi tiêu" 8a–8o (2026-10-12): Care tile, month view, add expense, stats (6 months / since birth), history, detail, budget, recurring, first use, vaccination cost prompt, family spending permissions, categories (list / add-edit / delete). Screenshots in `img/v11/`. |
 
 Coverage: all 154 Light screens were read in full; Night care twins were checked structurally and by spot-check screenshots (copy and behaviour identical, colours differ). The MCP page listing shows only Cover and Logo; Foundations `17:467`, Components `7:4`, Screens `26:2` and Website `210:759` were reached by node id (Q-032 asks the owner to confirm there are no other pages).
 

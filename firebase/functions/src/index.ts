@@ -74,6 +74,12 @@ import {
   ringVaccineReminders,
   snoozeVaccineReminder,
 } from './vaccine-reminders.js';
+import {
+  SpendingError,
+  addRecurringExpenses as addDueRecurring,
+  deleteSpendingCategory as deleteCategory,
+  spendingBudgetAlert as checkBudgetAlert,
+} from './spending.js';
 import { openAiProvider, templateProvider, type AiProvider } from './ai.js';
 import {
   StaffError,
@@ -177,7 +183,11 @@ function requireAccount(request: CallableRequest): string {
 
 function asHttpsError(operation: string, error: unknown): HttpsError {
   if (error instanceof HttpsError) return error;
-  if (error instanceof BabyError || error instanceof FamilyError) {
+  if (
+    error instanceof BabyError ||
+    error instanceof FamilyError ||
+    error instanceof SpendingError
+  ) {
     return new HttpsError(error.code, error.reason, { reason: error.reason });
   }
   // Never log request payloads: they carry the child's name and date of birth.
@@ -418,6 +428,40 @@ export const snoozeVaccine = onCall(async (request) => {
     throw error;
   }
 });
+
+// ---------- Chi tiêu (Figma v1.1 8a–8o, D-055 … D-057, P-140) ----------
+
+/** 8o: delete a category; its expenses, recurring items and caps move in every family baby. */
+export const deleteSpendingCategory = familyCall('deleteSpendingCategory', (r) =>
+  deleteCategory(getFirestore(), callerOf(r).uid, r.data, new Date()),
+);
+
+/** 8i / D-057: recurring items are added on their due day in the baby's zone. */
+export const addRecurringExpenses = onSchedule(
+  { schedule: 'every day 00:30', timeZone: 'Asia/Ho_Chi_Minh', timeoutSeconds: 540 },
+  async () => {
+    const { added, babies, sent } = await addDueRecurring(getFirestore(), pushSender(), new Date());
+    if (added > 0) logger.info('recurring expenses added', { added, babies, sent });
+  },
+);
+
+/** 8h: the 80 % budget push, once a month (no amounts in logs, P-140). */
+export const spendingBudgetAlert = onDocumentWritten(
+  'babies/{babyId}/expenses/{expenseId}',
+  async (event) => {
+    const change = event.data;
+    if (!change) return;
+    const { alerted, sent } = await checkBudgetAlert(
+      getFirestore(),
+      pushSender(),
+      event.params.babyId,
+      change.before.exists ? change.before : null,
+      change.after.exists ? change.after : null,
+      new Date(),
+    );
+    if (alerted) logger.info('spending budget alert', { sent });
+  },
+);
 
 /** Rings rule reminders whose time has come (1f). */
 export const ringRuleReminders = onSchedule('every 1 minutes', async () => {

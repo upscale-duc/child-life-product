@@ -674,10 +674,28 @@ export async function updateMember(
     }
     const update: Record<string, unknown> = { updatedAt: now, updatedBy: caller.uid };
     if (req.role) update.role = req.role;
+    const rights = req.extraRights ?? (target.get('extraRights') as ExtraRights | null) ?? null;
     if (toRole === 'relative') {
-      update.extraRights =
-        req.extraRights ?? (target.get('extraRights') as ExtraRights | null) ?? defaultExtraRights;
+      const r = rights ?? defaultExtraRights;
+      update.extraRights = {
+        viewBabyInfo: r.viewBabyInfo,
+        viewDailyCare: r.viewDailyCare,
+        recordSpending: r.recordSpending ?? false,
+        viewSpending: r.viewSpending ?? false,
+      } satisfies ExtraRights;
+    } else if (toRole === 'caregiver') {
+      // D-055 (8l): a Người chăm sóc may carry the two spending rights, nothing else.
+      if (req.extraRights?.viewBabyInfo || req.extraRights?.viewDailyCare) {
+        throw new FamilyError('invalid-argument', 'extra-rights-relatives-only');
+      }
+      update.extraRights = {
+        viewBabyInfo: false,
+        viewDailyCare: false,
+        recordSpending: rights?.recordSpending ?? false,
+        viewSpending: rights?.viewSpending ?? false,
+      } satisfies ExtraRights;
     } else {
+      // Cùng nuôi have every right already.
       if (req.extraRights) throw new FamilyError('invalid-argument', 'extra-rights-relatives-only');
       update.extraRights = null;
     }

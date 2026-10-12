@@ -11730,6 +11730,1314 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đồng ý xong, {baby} sẽ có trong danh sách bé của bạn.'**
   String myInviteSheetHint(String baby);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu'**
+  String get spTitle;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'{amount} tháng này'**
+  String spTileMonth(String amount);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi tháng này'**
+  String get spTileEmpty;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi khoản đã chi'**
+  String get spTileRecord;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'{value} tr'**
+  String spMillions(String value);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'đồng'**
+  String get spCurrencyName;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ trẻ & học'**
+  String get spCatChildcare;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sữa & ăn dặm'**
+  String get spCatMilk;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã & vệ sinh'**
+  String get spCatDiaper;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Y tế & tiêm chủng'**
+  String get spCatHealth;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Quần áo'**
+  String get spCatClothes;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get spCatOther;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get spToday;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua'**
+  String get spYesterday;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay · {date}'**
+  String spDayToday(String date);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua · {date}'**
+  String spDayYesterday(String date);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay, {date}'**
+  String spDateToday(String date);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua, {date}'**
+  String spDateYesterday(String date);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get spPayerOther;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'{payer} trả'**
+  String spPaidBy(String payer);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'{payer} trả'**
+  String spPays(String payer);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'từ Tiêm chủng'**
+  String get spFromVaccines;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'định kỳ'**
+  String get spFromRecurring;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản định kỳ'**
+  String get spFromRecurringFull;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày {day} hằng tháng'**
+  String spScheduleMonthly(int day);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày {a} và {b} hằng tháng'**
+  String spScheduleMonthlyTwo(int a, int b);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n, plural, =1{Mỗi tuần} other{Mỗi {n} tuần}}'**
+  String spScheduleWeeks(int n);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày {date} hằng năm'**
+  String spScheduleYearly(String date);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ đồng bộ'**
+  String get spPending;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Có hoá đơn'**
+  String get spHasReceipt;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu của bé chỉ cha mẹ xem. Nhờ Cùng nuôi cấp quyền trong Gia đình nếu bạn cần ghi.'**
+  String get spNoAccess;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lại chi tiêu cho {name}'**
+  String spFirstTitle(String name);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Biết mỗi tháng tốn bao nhiêu cho sữa, tã, tiêm chủng, giữ trẻ. Chỉ cha mẹ thấy, có thể chia sẻ cho người khác.'**
+  String get spFirstBody;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi các khoản bạn đã chi cho bé. Bạn chỉ thấy những khoản do mình ghi.'**
+  String get spFirstBodyRecorder;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhanh trong vài giây'**
+  String get spFirstPoint1;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thống kê theo tháng, danh mục, người trả'**
+  String get spFirstPoint2;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngân sách và khoản định kỳ'**
+  String get spFirstPoint3;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm khoản chi đầu tiên'**
+  String get spFirstAdd;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt ngân sách'**
+  String get spFirstBudget;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm khoản chi'**
+  String get spAdd;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chỉ thấy các khoản do mình ghi, không thấy tổng hay khoản của người khác.'**
+  String get spOwnOnlyNote;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản bạn đã ghi'**
+  String get spMine;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng trước'**
+  String get spPrevMonth;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng sau'**
+  String get spNextMonth;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month} · {year}'**
+  String spMonthLabel(int month, int year);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month}'**
+  String spMonthShort(int month, int year);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đến {date}'**
+  String spUpTo(String date);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chi cho {name}'**
+  String spSpentOn(String name);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thống kê'**
+  String get spStats;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngân sách'**
+  String get spBudget;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Định kỳ'**
+  String get spRecurring;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo danh mục'**
+  String get spByCategory;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thống kê'**
+  String get spSeeStats;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có khoản chi nào trong tháng này.'**
+  String get spMonthEmpty;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} khoản'**
+  String spItems(int n);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gồm {n} mũi tiêm'**
+  String spIncludesShots(int n);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần đây'**
+  String get spRecent;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả'**
+  String get spSeeAll;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ cha mẹ thấy chi tiêu. Có thể cấp quyền cho người khác trong Gia đình.'**
+  String get spParentsOnly;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cha mẹ đã chia sẻ chi tiêu của bé với bạn.'**
+  String get spSharedWithYou;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'{share} ngân sách {total}'**
+  String spBudgetShare(String share, String total);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn {amount}'**
+  String spLeft(String amount);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vượt {amount}'**
+  String spOverBy(String amount);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung bình/ngày'**
+  String get spAvgPerDay;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bằng'**
+  String get spSame;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thấp hơn {share}'**
+  String spLower(String share);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cao hơn {share}'**
+  String spHigher(String share);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'So với tháng {month}'**
+  String spComparedWith(int month);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả khoản chi'**
+  String get spAllTitle;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm khoản chi…'**
+  String get spSearch;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi tháng'**
+  String get spAllMonths;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn tháng'**
+  String get spFilterMonth;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả danh mục'**
+  String get spAllCategories;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai cũng được'**
+  String get spAnyone;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có khoản chi nào.'**
+  String get spNothingYet;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có khoản chi nào khớp.'**
+  String get spNoMatch;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản chi này không còn.'**
+  String get spGone;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục'**
+  String get spCategory;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày'**
+  String get spDate;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai trả'**
+  String get spPayer;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi bởi'**
+  String get spRecordedBy;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nguồn'**
+  String get spSource;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên kết'**
+  String get spLink;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch tiêm chủng · {dose}'**
+  String spLinkVaccine(String dose);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoá đơn'**
+  String get spReceiptTitle;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để xem ảnh lớn'**
+  String get spReceiptOpen;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá khoản chi'**
+  String get spDelete;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá khoản chi'**
+  String get spDeleted;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm khoản chi'**
+  String get spAddTitle;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa khoản chi'**
+  String get spEditTitle;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Số tiền'**
+  String get spAmount;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần trước {amount}'**
+  String spLastTime(String amount);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa danh mục'**
+  String get spEditCategories;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục'**
+  String get spAddCategoryChip;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung'**
+  String get spNote;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: Sữa công thức ×2'**
+  String get spNoteHint;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh hoá đơn'**
+  String get spReceipt;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đính kèm · chạm để xem'**
+  String get spReceiptAttached;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ ảnh hoá đơn'**
+  String get spReceiptRemove;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh hoá đơn'**
+  String get spReceiptAdd;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ người xem được chi tiêu thấy ảnh này.'**
+  String get spReceiptPrivate;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lặp lại hằng tháng'**
+  String get spRepeatMonthly;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự thêm ngày {day} mỗi tháng'**
+  String spRepeatMonthlyOn(int day);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu khoản chi'**
+  String get spSave;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu khoản chi'**
+  String get spSaved;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã cập nhật khoản chi'**
+  String get spUpdated;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập số tiền'**
+  String get spAmountMissing;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Thử lại sau.'**
+  String get spSaveFailed;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chi phí mũi tiêm?'**
+  String get spVaccineTitle;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu vào Chi tiêu, danh mục Y tế & tiêm chủng. Có thể bỏ qua.'**
+  String get spVaccineBody;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu vào Chi tiêu'**
+  String get spVaccineSave;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu chi phí mũi tiêm'**
+  String get spVaccineSaved;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua'**
+  String get spSkip;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục'**
+  String get spCategories;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Kéo để sắp xếp. Danh mục dùng chung cho mọi bé trong gia đình.'**
+  String get spCategoriesIntro;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang dùng'**
+  String get spCategoriesInUse;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ẩn'**
+  String get spCategoriesHidden;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mặc định · không xoá được'**
+  String get spCategoryLocked;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự tạo · {n} khoản'**
+  String spCategoryCustom(int n);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn khỏi danh sách chọn · vẫn giữ {n} khoản cũ'**
+  String spCategoryHiddenSub(int n);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện lại'**
+  String get spShowAgain;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Kéo để sắp xếp'**
+  String get spDragHandle;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm danh mục'**
+  String get spAddCategory;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục mới'**
+  String get spNewCategory;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa danh mục'**
+  String get spEditCategory;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên danh mục'**
+  String get spCategoryName;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: Bơi & vận động'**
+  String get spCategoryNamePlaceholder;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối đa 24 ký tự'**
+  String get spCategoryNameHelp;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tên danh mục'**
+  String get spCategoryNameMissing;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có danh mục tên này'**
+  String get spCategoryNameTaken;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Biểu tượng'**
+  String get spCategoryIcon;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Màu'**
+  String get spCategoryColor;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Màu {n}'**
+  String spColorN(int n);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu danh mục'**
+  String get spSaveCategory;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn danh mục'**
+  String get spHideCategory;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ẩn danh mục'**
+  String get spCategoryHiddenToast;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá danh mục'**
+  String get spDeleteCategory;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá “{name}”?'**
+  String spDeleteCategoryTitle(String name);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục này có {n} khoản chi ({amount}). Chọn nơi chuyển các khoản này:'**
+  String spDeleteCategoryBody(int n, String amount);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục này chưa có khoản chi nào của bé. Khoản của bé khác (nếu có) sẽ được chuyển sang:'**
+  String get spDeleteCategoryEmpty;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển sang “Khác”'**
+  String get spMoveToOther;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ nguyên tổng chi tiêu'**
+  String get spMoveToOtherSub;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển sang danh mục khác'**
+  String get spMoveToAnother;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn danh mục'**
+  String get spChooseCategory;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Muốn giữ số liệu cũ mà không thấy danh mục khi ghi? Hãy chọn Ẩn thay vì Xoá.'**
+  String get spHideInstead;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá và chuyển {n} khoản'**
+  String spDeleteAndMove(int n);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn danh mục thay vì xoá'**
+  String get spHideCategoryInstead;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá danh mục'**
+  String get spCategoryDeleted;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần kết nối mạng để xoá danh mục.'**
+  String get spNeedsNetwork;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngân sách tháng'**
+  String get spBudgetTitle;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt mức dự kiến để dễ theo dõi. Có thể bỏ trống danh mục.'**
+  String get spBudgetIntro;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngân sách mỗi tháng'**
+  String get spBudgetPerMonth;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month}: đã dùng {share}'**
+  String spBudgetUsed(int month, String share);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đặt mức'**
+  String get spNoCap;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ mức này'**
+  String get spClearCap;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'{share} đã dùng'**
+  String spUsedShare(String share);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần chạm mức · còn {amount}'**
+  String spNearCap(String amount);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vượt mức {amount}'**
+  String spOverCap(String amount);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc khi dùng 80% ngân sách'**
+  String get spAlert80;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi cho cha mẹ'**
+  String get spAlert80Sub;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu ngân sách'**
+  String get spSaveBudget;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu ngân sách'**
+  String get spBudgetSaved;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản định kỳ'**
+  String get spRecurringTitle;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự thêm vào chi tiêu đúng ngày. Cha mẹ nhận thông báo và có thể sửa số tiền sau đó.'**
+  String get spRecurringIntro;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có khoản định kỳ. Thêm tiền giữ trẻ, sữa hay bảo hiểm để khỏi phải ghi lại mỗi lần.'**
+  String get spRecurringEmpty;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày {date}: {title} {amount} sẽ được thêm. Bạn có thể sửa số tiền sau khi thêm.'**
+  String spRecurringNext(String date, String title, String amount);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm khoản định kỳ'**
+  String get spAddRecurring;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa khoản định kỳ'**
+  String get spEditRecurring;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên khoản'**
+  String get spRecurringName;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: Cô giữ trẻ'**
+  String get spRecurringNameHint;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tên khoản'**
+  String get spRecurringTitleMissing;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lặp lại'**
+  String get spSchedule;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hằng tháng'**
+  String get spKindMonthly;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tuần'**
+  String get spKindWeeks;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hằng năm'**
+  String get spKindYearly;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày trong tháng'**
+  String get spScheduleDays;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn 1 hoặc 2 ngày. Tháng ngắn hơn sẽ dùng ngày cuối tháng.'**
+  String get spScheduleDaysHelp;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu từ'**
+  String get spStartOn;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày'**
+  String get spScheduleOn;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bật'**
+  String get spRecurringOn;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản được thêm tự động vào ngày đến hạn, theo giờ của bé.'**
+  String get spRecurringHelp;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá khoản định kỳ'**
+  String get spDeleteRecurring;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu khoản định kỳ'**
+  String get spRecurringSaved;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá khoản định kỳ'**
+  String get spRecurringDeleted;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bớt'**
+  String get spLess;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm'**
+  String get spMore;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thống kê chi tiêu'**
+  String get spStatsTitle;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng'**
+  String get spWindowMonth;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'6 tháng'**
+  String get spWindowSix;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ khi sinh'**
+  String get spWindowBirth;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng tháng này'**
+  String get spMonthTotal;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản chi'**
+  String get spCount;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng 6 tháng'**
+  String get spSixTotal;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'TB mỗi tháng'**
+  String get spAvgPerMonth;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cao nhất · T{month}'**
+  String spHighest(int month);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tháng'**
+  String get spByMonth;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'T{month} đang tính đến {date}'**
+  String spCountedTo(int month, String date);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'T{month}'**
+  String spMonthTick(int month);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {amount}'**
+  String spAvgLine(String amount);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'{label} · {amount}'**
+  String spTip(String label, String amount);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get spOthersFolded;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ khi {name} chào đời · {months} tháng'**
+  String spSinceBirth(String name, int months);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ khoản chi đầu tiên'**
+  String get spSinceFirst;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung bình {amount} mỗi tháng tuổi · {n} khoản chi'**
+  String spSinceBirthSub(String amount, int n);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tháng tuổi'**
+  String get spByAge;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng đầu'**
+  String get spFirstMonth;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng tuổi {n}'**
+  String spAgeMonth(int n);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản lớn nhất'**
+  String get spLargest;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất file chi tiêu (CSV)'**
+  String get spExport;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'chi-tieu-{date}'**
+  String spExportFile(String date);
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa xuất được file. Thử lại sau.'**
+  String get spExportFailed;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Số liệu chỉ để gia đình tự theo dõi, không so sánh với gia đình khác.'**
+  String get spOwnFamilyOnly;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi khoản đã chi'**
+  String get rightRecordSpending;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ thấy khoản do mình ghi'**
+  String get rightRecordSpendingHint;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem toàn bộ chi tiêu'**
+  String get rightViewSpending;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng, thống kê, mọi khoản chi'**
+  String get rightViewSpendingHint;
+
+  /// Chi tiêu (v1.1 8a–8o).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu mặc định chỉ cha mẹ thấy. Người được bật “Ghi khoản đã chi” sẽ không thấy tổng hay khoản của người khác.'**
+  String get rightSpendingNote;
+
+  /// Chi tiêu (v1.1 8e), under a month old.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ khi {name} chào đời'**
+  String spSinceBirthYoung(String name);
 }
 
 class _AppLocalizationsDelegate

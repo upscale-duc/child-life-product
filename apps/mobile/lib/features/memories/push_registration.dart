@@ -12,6 +12,7 @@ import '../../app/route_guard.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
 import '../auth/auth_repository.dart';
+import '../home/home_shell.dart';
 import '../reminders/device_identity.dart';
 import '../reminders/rule_notifications.dart';
 import '../vaccines/vaccine_notifications.dart';
@@ -84,6 +85,18 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     if (vaccine != null) {
       final action = await const RuleNotificationChannel().takeLaunchAction();
       if (mounted) openVaccinePush(ref, vaccine, action: action);
+      return;
+    }
+    // Chi tiêu: a recurring item added or 80 % of the budget (D-057).
+    if (message.data['kind'] == 'spending' &&
+        message.data['babyId'] is String) {
+      final babyId = message.data['babyId'] as String;
+      if (ref.read(selectedBabyIdProvider) != babyId) {
+        ref.read(selectedBabyIdProvider.notifier).select(babyId);
+      }
+      ref.read(routerProvider)
+        ..go(Routes.care)
+        ..push(Routes.spending);
       return;
     }
     ref.read(routerProvider).go(Routes.memories);

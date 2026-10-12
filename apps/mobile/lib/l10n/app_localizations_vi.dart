@@ -7003,4 +7003,778 @@ class AppLocalizationsVi extends AppLocalizations {
   String myInviteSheetHint(String baby) {
     return 'Đồng ý xong, $baby sẽ có trong danh sách bé của bạn.';
   }
+
+  @override
+  String get spTitle => 'Chi tiêu';
+
+  @override
+  String spTileMonth(String amount) {
+    return '$amount tháng này';
+  }
+
+  @override
+  String get spTileEmpty => 'Chưa ghi tháng này';
+
+  @override
+  String get spTileRecord => 'Ghi khoản đã chi';
+
+  @override
+  String spMillions(String value) {
+    return '$value tr';
+  }
+
+  @override
+  String get spCurrencyName => 'đồng';
+
+  @override
+  String get spCatChildcare => 'Giữ trẻ & học';
+
+  @override
+  String get spCatMilk => 'Sữa & ăn dặm';
+
+  @override
+  String get spCatDiaper => 'Tã & vệ sinh';
+
+  @override
+  String get spCatHealth => 'Y tế & tiêm chủng';
+
+  @override
+  String get spCatClothes => 'Quần áo';
+
+  @override
+  String get spCatOther => 'Khác';
+
+  @override
+  String get spToday => 'Hôm nay';
+
+  @override
+  String get spYesterday => 'Hôm qua';
+
+  @override
+  String spDayToday(String date) {
+    return 'Hôm nay · $date';
+  }
+
+  @override
+  String spDayYesterday(String date) {
+    return 'Hôm qua · $date';
+  }
+
+  @override
+  String spDateToday(String date) {
+    return 'Hôm nay, $date';
+  }
+
+  @override
+  String spDateYesterday(String date) {
+    return 'Hôm qua, $date';
+  }
+
+  @override
+  String get spPayerOther => 'Khác';
+
+  @override
+  String spPaidBy(String payer) {
+    return '$payer trả';
+  }
+
+  @override
+  String spPays(String payer) {
+    return '$payer trả';
+  }
+
+  @override
+  String get spFromVaccines => 'từ Tiêm chủng';
+
+  @override
+  String get spFromRecurring => 'định kỳ';
+
+  @override
+  String get spFromRecurringFull => 'Khoản định kỳ';
+
+  @override
+  String spScheduleMonthly(int day) {
+    return 'Ngày $day hằng tháng';
+  }
+
+  @override
+  String spScheduleMonthlyTwo(int a, int b) {
+    return 'Ngày $a và $b hằng tháng';
+  }
+
+  @override
+  String spScheduleWeeks(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Mỗi $n tuần',
+      one: 'Mỗi tuần',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String spScheduleYearly(String date) {
+    return 'Ngày $date hằng năm';
+  }
+
+  @override
+  String get spPending => 'Chờ đồng bộ';
+
+  @override
+  String get spHasReceipt => 'Có hoá đơn';
+
+  @override
+  String get spNoAccess =>
+      'Chi tiêu của bé chỉ cha mẹ xem. Nhờ Cùng nuôi cấp quyền trong Gia đình nếu bạn cần ghi.';
+
+  @override
+  String spFirstTitle(String name) {
+    return 'Ghi lại chi tiêu cho $name';
+  }
+
+  @override
+  String get spFirstBody =>
+      'Biết mỗi tháng tốn bao nhiêu cho sữa, tã, tiêm chủng, giữ trẻ. Chỉ cha mẹ thấy, có thể chia sẻ cho người khác.';
+
+  @override
+  String get spFirstBodyRecorder =>
+      'Ghi các khoản bạn đã chi cho bé. Bạn chỉ thấy những khoản do mình ghi.';
+
+  @override
+  String get spFirstPoint1 => 'Ghi nhanh trong vài giây';
+
+  @override
+  String get spFirstPoint2 => 'Thống kê theo tháng, danh mục, người trả';
+
+  @override
+  String get spFirstPoint3 => 'Ngân sách và khoản định kỳ';
+
+  @override
+  String get spFirstAdd => 'Thêm khoản chi đầu tiên';
+
+  @override
+  String get spFirstBudget => 'Đặt ngân sách';
+
+  @override
+  String get spAdd => 'Thêm khoản chi';
+
+  @override
+  String get spOwnOnlyNote =>
+      'Bạn chỉ thấy các khoản do mình ghi, không thấy tổng hay khoản của người khác.';
+
+  @override
+  String get spMine => 'Khoản bạn đã ghi';
+
+  @override
+  String get spPrevMonth => 'Tháng trước';
+
+  @override
+  String get spNextMonth => 'Tháng sau';
+
+  @override
+  String spMonthLabel(int month, int year) {
+    return 'Tháng $month · $year';
+  }
+
+  @override
+  String spMonthShort(int month, int year) {
+    return 'Tháng $month';
+  }
+
+  @override
+  String spUpTo(String date) {
+    return 'Đến $date';
+  }
+
+  @override
+  String spSpentOn(String name) {
+    return 'Đã chi cho $name';
+  }
+
+  @override
+  String get spStats => 'Thống kê';
+
+  @override
+  String get spBudget => 'Ngân sách';
+
+  @override
+  String get spRecurring => 'Định kỳ';
+
+  @override
+  String get spByCategory => 'Theo danh mục';
+
+  @override
+  String get spSeeStats => 'Xem thống kê';
+
+  @override
+  String get spMonthEmpty => 'Chưa có khoản chi nào trong tháng này.';
+
+  @override
+  String spItems(int n) {
+    return '$n khoản';
+  }
+
+  @override
+  String spIncludesShots(int n) {
+    return 'Gồm $n mũi tiêm';
+  }
+
+  @override
+  String get spRecent => 'Gần đây';
+
+  @override
+  String get spSeeAll => 'Xem tất cả';
+
+  @override
+  String get spParentsOnly =>
+      'Chỉ cha mẹ thấy chi tiêu. Có thể cấp quyền cho người khác trong Gia đình.';
+
+  @override
+  String get spSharedWithYou => 'Cha mẹ đã chia sẻ chi tiêu của bé với bạn.';
+
+  @override
+  String spBudgetShare(String share, String total) {
+    return '$share ngân sách $total';
+  }
+
+  @override
+  String spLeft(String amount) {
+    return 'Còn $amount';
+  }
+
+  @override
+  String spOverBy(String amount) {
+    return 'Vượt $amount';
+  }
+
+  @override
+  String get spAvgPerDay => 'Trung bình/ngày';
+
+  @override
+  String get spSame => 'Bằng';
+
+  @override
+  String spLower(String share) {
+    return 'Thấp hơn $share';
+  }
+
+  @override
+  String spHigher(String share) {
+    return 'Cao hơn $share';
+  }
+
+  @override
+  String spComparedWith(int month) {
+    return 'So với tháng $month';
+  }
+
+  @override
+  String get spAllTitle => 'Tất cả khoản chi';
+
+  @override
+  String get spSearch => 'Tìm khoản chi…';
+
+  @override
+  String get spAllMonths => 'Mọi tháng';
+
+  @override
+  String get spFilterMonth => 'Chọn tháng';
+
+  @override
+  String get spAllCategories => 'Tất cả danh mục';
+
+  @override
+  String get spAnyone => 'Ai cũng được';
+
+  @override
+  String get spNothingYet => 'Chưa có khoản chi nào.';
+
+  @override
+  String get spNoMatch => 'Không có khoản chi nào khớp.';
+
+  @override
+  String get spGone => 'Khoản chi này không còn.';
+
+  @override
+  String get spCategory => 'Danh mục';
+
+  @override
+  String get spDate => 'Ngày';
+
+  @override
+  String get spPayer => 'Ai trả';
+
+  @override
+  String get spRecordedBy => 'Ghi bởi';
+
+  @override
+  String get spSource => 'Nguồn';
+
+  @override
+  String get spLink => 'Liên kết';
+
+  @override
+  String spLinkVaccine(String dose) {
+    return 'Lịch tiêm chủng · $dose';
+  }
+
+  @override
+  String get spReceiptTitle => 'Hoá đơn';
+
+  @override
+  String get spReceiptOpen => 'Chạm để xem ảnh lớn';
+
+  @override
+  String get spDelete => 'Xoá khoản chi';
+
+  @override
+  String get spDeleted => 'Đã xoá khoản chi';
+
+  @override
+  String get spAddTitle => 'Thêm khoản chi';
+
+  @override
+  String get spEditTitle => 'Sửa khoản chi';
+
+  @override
+  String get spAmount => 'Số tiền';
+
+  @override
+  String spLastTime(String amount) {
+    return 'Lần trước $amount';
+  }
+
+  @override
+  String get spEditCategories => 'Sửa danh mục';
+
+  @override
+  String get spAddCategoryChip => 'Danh mục';
+
+  @override
+  String get spNote => 'Nội dung';
+
+  @override
+  String get spNoteHint => 'Ví dụ: Sữa công thức ×2';
+
+  @override
+  String get spReceipt => 'Ảnh hoá đơn';
+
+  @override
+  String get spReceiptAttached => 'Đã đính kèm · chạm để xem';
+
+  @override
+  String get spReceiptRemove => 'Bỏ ảnh hoá đơn';
+
+  @override
+  String get spReceiptAdd => 'Thêm ảnh hoá đơn';
+
+  @override
+  String get spReceiptPrivate => 'Chỉ người xem được chi tiêu thấy ảnh này.';
+
+  @override
+  String get spRepeatMonthly => 'Lặp lại hằng tháng';
+
+  @override
+  String spRepeatMonthlyOn(int day) {
+    return 'Tự thêm ngày $day mỗi tháng';
+  }
+
+  @override
+  String get spSave => 'Lưu khoản chi';
+
+  @override
+  String get spSaved => 'Đã lưu khoản chi';
+
+  @override
+  String get spUpdated => 'Đã cập nhật khoản chi';
+
+  @override
+  String get spAmountMissing => 'Nhập số tiền';
+
+  @override
+  String get spSaveFailed => 'Chưa lưu được. Thử lại sau.';
+
+  @override
+  String get spVaccineTitle => 'Ghi chi phí mũi tiêm?';
+
+  @override
+  String get spVaccineBody =>
+      'Lưu vào Chi tiêu, danh mục Y tế & tiêm chủng. Có thể bỏ qua.';
+
+  @override
+  String get spVaccineSave => 'Lưu vào Chi tiêu';
+
+  @override
+  String get spVaccineSaved => 'Đã lưu chi phí mũi tiêm';
+
+  @override
+  String get spSkip => 'Bỏ qua';
+
+  @override
+  String get spCategories => 'Danh mục';
+
+  @override
+  String get spCategoriesIntro =>
+      'Kéo để sắp xếp. Danh mục dùng chung cho mọi bé trong gia đình.';
+
+  @override
+  String get spCategoriesInUse => 'Đang dùng';
+
+  @override
+  String get spCategoriesHidden => 'Đã ẩn';
+
+  @override
+  String get spCategoryLocked => 'Mặc định · không xoá được';
+
+  @override
+  String spCategoryCustom(int n) {
+    return 'Tự tạo · $n khoản';
+  }
+
+  @override
+  String spCategoryHiddenSub(int n) {
+    return 'Ẩn khỏi danh sách chọn · vẫn giữ $n khoản cũ';
+  }
+
+  @override
+  String get spShowAgain => 'Hiện lại';
+
+  @override
+  String get spDragHandle => 'Kéo để sắp xếp';
+
+  @override
+  String get spAddCategory => 'Thêm danh mục';
+
+  @override
+  String get spNewCategory => 'Danh mục mới';
+
+  @override
+  String get spEditCategory => 'Sửa danh mục';
+
+  @override
+  String get spCategoryName => 'Tên danh mục';
+
+  @override
+  String get spCategoryNamePlaceholder => 'Ví dụ: Bơi & vận động';
+
+  @override
+  String get spCategoryNameHelp => 'Tối đa 24 ký tự';
+
+  @override
+  String get spCategoryNameMissing => 'Nhập tên danh mục';
+
+  @override
+  String get spCategoryNameTaken => 'Đã có danh mục tên này';
+
+  @override
+  String get spCategoryIcon => 'Biểu tượng';
+
+  @override
+  String get spCategoryColor => 'Màu';
+
+  @override
+  String spColorN(int n) {
+    return 'Màu $n';
+  }
+
+  @override
+  String get spSaveCategory => 'Lưu danh mục';
+
+  @override
+  String get spHideCategory => 'Ẩn danh mục';
+
+  @override
+  String get spCategoryHiddenToast => 'Đã ẩn danh mục';
+
+  @override
+  String get spDeleteCategory => 'Xoá danh mục';
+
+  @override
+  String spDeleteCategoryTitle(String name) {
+    return 'Xoá “$name”?';
+  }
+
+  @override
+  String spDeleteCategoryBody(int n, String amount) {
+    return 'Danh mục này có $n khoản chi ($amount). Chọn nơi chuyển các khoản này:';
+  }
+
+  @override
+  String get spDeleteCategoryEmpty =>
+      'Danh mục này chưa có khoản chi nào của bé. Khoản của bé khác (nếu có) sẽ được chuyển sang:';
+
+  @override
+  String get spMoveToOther => 'Chuyển sang “Khác”';
+
+  @override
+  String get spMoveToOtherSub => 'Giữ nguyên tổng chi tiêu';
+
+  @override
+  String get spMoveToAnother => 'Chuyển sang danh mục khác';
+
+  @override
+  String get spChooseCategory => 'Chọn danh mục';
+
+  @override
+  String get spHideInstead =>
+      'Muốn giữ số liệu cũ mà không thấy danh mục khi ghi? Hãy chọn Ẩn thay vì Xoá.';
+
+  @override
+  String spDeleteAndMove(int n) {
+    return 'Xoá và chuyển $n khoản';
+  }
+
+  @override
+  String get spHideCategoryInstead => 'Ẩn danh mục thay vì xoá';
+
+  @override
+  String get spCategoryDeleted => 'Đã xoá danh mục';
+
+  @override
+  String get spNeedsNetwork => 'Cần kết nối mạng để xoá danh mục.';
+
+  @override
+  String get spBudgetTitle => 'Ngân sách tháng';
+
+  @override
+  String get spBudgetIntro =>
+      'Đặt mức dự kiến để dễ theo dõi. Có thể bỏ trống danh mục.';
+
+  @override
+  String get spBudgetPerMonth => 'Ngân sách mỗi tháng';
+
+  @override
+  String spBudgetUsed(int month, String share) {
+    return 'Tháng $month: đã dùng $share';
+  }
+
+  @override
+  String get spNoCap => 'Chưa đặt mức';
+
+  @override
+  String get spClearCap => 'Bỏ mức này';
+
+  @override
+  String spUsedShare(String share) {
+    return '$share đã dùng';
+  }
+
+  @override
+  String spNearCap(String amount) {
+    return 'Gần chạm mức · còn $amount';
+  }
+
+  @override
+  String spOverCap(String amount) {
+    return 'Vượt mức $amount';
+  }
+
+  @override
+  String get spAlert80 => 'Nhắc khi dùng 80% ngân sách';
+
+  @override
+  String get spAlert80Sub => 'Gửi cho cha mẹ';
+
+  @override
+  String get spSaveBudget => 'Lưu ngân sách';
+
+  @override
+  String get spBudgetSaved => 'Đã lưu ngân sách';
+
+  @override
+  String get spRecurringTitle => 'Khoản định kỳ';
+
+  @override
+  String get spRecurringIntro =>
+      'Tự thêm vào chi tiêu đúng ngày. Cha mẹ nhận thông báo và có thể sửa số tiền sau đó.';
+
+  @override
+  String get spRecurringEmpty =>
+      'Chưa có khoản định kỳ. Thêm tiền giữ trẻ, sữa hay bảo hiểm để khỏi phải ghi lại mỗi lần.';
+
+  @override
+  String spRecurringNext(String date, String title, String amount) {
+    return 'Ngày $date: $title $amount sẽ được thêm. Bạn có thể sửa số tiền sau khi thêm.';
+  }
+
+  @override
+  String get spAddRecurring => 'Thêm khoản định kỳ';
+
+  @override
+  String get spEditRecurring => 'Sửa khoản định kỳ';
+
+  @override
+  String get spRecurringName => 'Tên khoản';
+
+  @override
+  String get spRecurringNameHint => 'Ví dụ: Cô giữ trẻ';
+
+  @override
+  String get spRecurringTitleMissing => 'Nhập tên khoản';
+
+  @override
+  String get spSchedule => 'Lặp lại';
+
+  @override
+  String get spKindMonthly => 'Hằng tháng';
+
+  @override
+  String get spKindWeeks => 'Theo tuần';
+
+  @override
+  String get spKindYearly => 'Hằng năm';
+
+  @override
+  String get spScheduleDays => 'Ngày trong tháng';
+
+  @override
+  String get spScheduleDaysHelp =>
+      'Chọn 1 hoặc 2 ngày. Tháng ngắn hơn sẽ dùng ngày cuối tháng.';
+
+  @override
+  String get spStartOn => 'Bắt đầu từ';
+
+  @override
+  String get spScheduleOn => 'Ngày';
+
+  @override
+  String get spRecurringOn => 'Đang bật';
+
+  @override
+  String get spRecurringHelp =>
+      'Khoản được thêm tự động vào ngày đến hạn, theo giờ của bé.';
+
+  @override
+  String get spDeleteRecurring => 'Xoá khoản định kỳ';
+
+  @override
+  String get spRecurringSaved => 'Đã lưu khoản định kỳ';
+
+  @override
+  String get spRecurringDeleted => 'Đã xoá khoản định kỳ';
+
+  @override
+  String get spLess => 'Bớt';
+
+  @override
+  String get spMore => 'Thêm';
+
+  @override
+  String get spStatsTitle => 'Thống kê chi tiêu';
+
+  @override
+  String get spWindowMonth => 'Tháng';
+
+  @override
+  String get spWindowSix => '6 tháng';
+
+  @override
+  String get spWindowBirth => 'Từ khi sinh';
+
+  @override
+  String get spMonthTotal => 'Tổng tháng này';
+
+  @override
+  String get spCount => 'Khoản chi';
+
+  @override
+  String get spSixTotal => 'Tổng 6 tháng';
+
+  @override
+  String get spAvgPerMonth => 'TB mỗi tháng';
+
+  @override
+  String spHighest(int month) {
+    return 'Cao nhất · T$month';
+  }
+
+  @override
+  String get spByMonth => 'Theo tháng';
+
+  @override
+  String spCountedTo(int month, String date) {
+    return 'T$month đang tính đến $date';
+  }
+
+  @override
+  String spMonthTick(int month) {
+    return 'T$month';
+  }
+
+  @override
+  String spAvgLine(String amount) {
+    return 'TB $amount';
+  }
+
+  @override
+  String spTip(String label, String amount) {
+    return '$label · $amount';
+  }
+
+  @override
+  String get spOthersFolded => 'Khác';
+
+  @override
+  String spSinceBirth(String name, int months) {
+    return 'Từ khi $name chào đời · $months tháng';
+  }
+
+  @override
+  String get spSinceFirst => 'Từ khoản chi đầu tiên';
+
+  @override
+  String spSinceBirthSub(String amount, int n) {
+    return 'Trung bình $amount mỗi tháng tuổi · $n khoản chi';
+  }
+
+  @override
+  String get spByAge => 'Theo tháng tuổi';
+
+  @override
+  String get spFirstMonth => 'Tháng đầu';
+
+  @override
+  String spAgeMonth(int n) {
+    return 'Tháng tuổi $n';
+  }
+
+  @override
+  String get spLargest => 'Khoản lớn nhất';
+
+  @override
+  String get spExport => 'Xuất file chi tiêu (CSV)';
+
+  @override
+  String spExportFile(String date) {
+    return 'chi-tieu-$date';
+  }
+
+  @override
+  String get spExportFailed => 'Chưa xuất được file. Thử lại sau.';
+
+  @override
+  String get spOwnFamilyOnly =>
+      'Số liệu chỉ để gia đình tự theo dõi, không so sánh với gia đình khác.';
+
+  @override
+  String get rightRecordSpending => 'Ghi khoản đã chi';
+
+  @override
+  String get rightRecordSpendingHint => 'Chỉ thấy khoản do mình ghi';
+
+  @override
+  String get rightViewSpending => 'Xem toàn bộ chi tiêu';
+
+  @override
+  String get rightViewSpendingHint => 'Tổng, thống kê, mọi khoản chi';
+
+  @override
+  String get rightSpendingNote =>
+      'Chi tiêu mặc định chỉ cha mẹ thấy. Người được bật “Ghi khoản đã chi” sẽ không thấy tổng hay khoản của người khác.';
+
+  @override
+  String spSinceBirthYoung(String name) {
+    return 'Từ khi $name chào đời';
+  }
 }

@@ -52,6 +52,10 @@ export const extraRightsSchema = z.object({
   viewBabyInfo: z.boolean(),
   /** "Chăm sóc hằng ngày · Bú, ngủ, tã · chỉ xem" (read-only Today, D-018). */
   viewDailyCare: z.boolean(),
+  /** 8l "Ghi khoản đã chi": record expenses, see only one's own (D-055). Caregivers too. */
+  recordSpending: z.boolean().optional(),
+  /** 8l "Xem toàn bộ chi tiêu": every expense, totals, statistics, budget (D-055). */
+  viewSpending: z.boolean().optional(),
 });
 export type ExtraRights = z.infer<typeof extraRightsSchema>;
 

@@ -35,6 +35,7 @@ enum ClIcons {
   family,
   feed,
   globe,
+  grid,
   heart,
   journal,
 

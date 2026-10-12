@@ -1,0 +1,270 @@
+import 'package:child_life/core/widgets/cl_icon.dart';
+import 'package:child_life/features/baby/baby_models.dart';
+import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/spending/spending_models.dart';
+import 'package:child_life/features/spending/spending_repository.dart';
+
+/// Chi tiêu without Firestore: records what the screens write.
+class FakeSpendingRepository implements SpendingRepository {
+  final expenses =
+      <
+        ({
+          String? id,
+          int amount,
+          String categoryId,
+          String note,
+          DateTime spentOn,
+          Payer? payer,
+          String? receiptPath,
+          String? doseKey,
+        })
+      >[];
+  final deleted = <(String id, bool undo)>[];
+  final budgets = <Budget>[];
+  final recurring =
+      <
+        ({
+          String? id,
+          String title,
+          int amount,
+          RecurringSchedule schedule,
+          bool enabled,
+          DateTime? recordedOn,
+        })
+      >[];
+  final categories = <List<SpendingCategory>>[];
+  final deletedCategories = <(String categoryId, String moveTo)>[];
+
+  @override
+  String saveExpense({
+    required String babyId,
+    required Membership me,
+    String? id,
+    required int amount,
+    required String categoryId,
+    required String note,
+    required DateTime spentOn,
+    required Payer? payer,
+    String? receiptPath,
+    String? doseKey,
+    void Function(Object error)? onError,
+  }) {
+    expenses.add((
+      id: id,
+      amount: amount,
+      categoryId: categoryId,
+      note: note,
+      spentOn: spentOn,
+      payer: payer,
+      receiptPath: receiptPath,
+      doseKey: doseKey,
+    ));
+    return id ?? newExpenseId();
+  }
+
+  @override
+  void deleteExpense(
+    String babyId,
+    String id,
+    Membership me, {
+    bool undo = false,
+    void Function(Object error)? onError,
+  }) => deleted.add((id, undo));
+
+  @override
+  void saveBudget(
+    String babyId,
+    Membership me,
+    Budget budget, {
+    void Function(Object error)? onError,
+  }) => budgets.add(budget);
+
+  @override
+  void saveRecurring({
+    required String babyId,
+    required Membership me,
+    String? id,
+    required String title,
+    required String categoryId,
+    required int amount,
+    required Payer? payer,
+    required RecurringSchedule schedule,
+    required bool enabled,
+    DateTime? recordedOn,
+    void Function(Object error)? onError,
+  }) => recurring.add((
+    id: id,
+    title: title,
+    amount: amount,
+    schedule: schedule,
+    enabled: enabled,
+    recordedOn: recordedOn,
+  ));
+
+  @override
+  void saveCategories(
+    String familyId,
+    Membership me,
+    List<SpendingCategory> categories, {
+    void Function(Object error)? onError,
+  }) => this.categories.add(categories);
+
+  @override
+  Future<void> deleteCategory({
+    required String babyId,
+    required String categoryId,
+    required String moveTo,
+  }) async => deletedCategories.add((categoryId, moveTo));
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+const _mom = CareAuthor(name: 'Mai', relation: Relation.mother);
+const _dad = CareAuthor(name: 'Minh', relation: Relation.father);
+
+Expense spend(
+  String id,
+  int amount,
+  String categoryId,
+  DateTime day, {
+  String note = '',
+  String createdBy = 'u_mai',
+  CareAuthor author = _mom,
+  Payer? payer,
+  bool noPayer = false,
+  String? receipt,
+  ExpenseSource source = ExpenseSource.manual,
+  String? sourceRef,
+}) => Expense(
+  id: 'x_${id.padLeft(32, '0')}',
+  babyId: 'b_00000000000000000001',
+  amount: amount,
+  categoryId: categoryId,
+  note: note,
+  spentOn: day,
+  payer: noPayer ? null : (payer ?? const Payer(uid: 'u_mai', author: _mom)),
+  source: source,
+  sourceRef: sourceRef,
+  receiptPath: receipt,
+  createdBy: createdBy,
+  author: author,
+  createdAt: DateTime(day.year, day.month, day.day, 10, 24),
+);
+
+const dadPays = Payer(uid: 'u_minh', author: _dad);
+
+/// October 2026 as drawn in 8b / 8f (4.215.000 ₫), plus a September and an older month.
+List<Expense> mockSpending() => [
+  spend(
+    '1',
+    1020000,
+    'c_milk',
+    DateTime(2026, 10, 12),
+    note: 'Sữa công thức ×2',
+    receipt: 'babies/b_00000000000000000001/expenses/r1aaaaaaaa.jpg',
+  ),
+  spend(
+    '2',
+    285000,
+    'c_diaper',
+    DateTime(2026, 10, 11),
+    note: 'Tã dán size M',
+    payer: dadPays,
+  ),
+  spend(
+    '3',
+    160000,
+    'c_clothes',
+    DateTime(2026, 10, 11),
+    note: 'Bộ body cotton',
+  ),
+  spend(
+    '4',
+    395000,
+    'c_health',
+    DateTime(2026, 10, 9),
+    note: 'Mũi 6 trong 1 · lần 2',
+    source: ExpenseSource.vaccine,
+    sourceRef: 'dtp_2',
+    receipt: 'babies/b_00000000000000000001/expenses/r2aaaaaaaa.jpg',
+  ),
+  spend('5', 255000, 'c_diaper', DateTime(2026, 10, 5), note: 'Khăn ướt ×6'),
+  spend(
+    '6',
+    100000,
+    'c_milk',
+    DateTime(2026, 10, 5),
+    note: 'Bột ăn dặm vị bí đỏ',
+    noPayer: true,
+  ),
+  spend(
+    '7',
+    2000000,
+    'c_childcare',
+    DateTime(2026, 10, 1),
+    note: 'Cô giữ trẻ · nửa đầu tháng',
+    payer: dadPays,
+    source: ExpenseSource.recurring,
+    sourceRef: 'rx_1',
+  ),
+  spend(
+    '8',
+    3500000,
+    'c_childcare',
+    DateTime(2026, 9, 1),
+    note: 'Cô giữ trẻ · tháng 9',
+  ),
+  spend('9', 1100000, 'c_milk', DateTime(2026, 9, 8), note: 'Sữa công thức'),
+  spend(
+    '10',
+    6200000,
+    'c_other',
+    DateTime(2026, 3, 20),
+    note: 'Xe đẩy & nôi',
+    payer: dadPays,
+  ),
+];
+
+const swimCategory = SpendingCategory(
+  id: 'c_0123456789abcdef0123',
+  name: 'Bơi & vận động',
+  icon: ClIcons.journal,
+  tint: CategoryTint.sunshine,
+  order: 5,
+);
+
+const mockBudget = Budget(
+  monthlyTotal: 8000000,
+  caps: {
+    'c_childcare': 4000000,
+    'c_milk': 2200000,
+    'c_diaper': 1000000,
+    'c_health': 400000,
+  },
+);
+
+final mockRecurring = [
+  RecurringExpense(
+    id: 'rx_1',
+    title: 'Cô giữ trẻ',
+    categoryId: 'c_childcare',
+    amount: 2000000,
+    payer: dadPays,
+    schedule: const Monthly([1, 16]),
+    enabled: true,
+    createdBy: 'u_mai',
+    author: _mom,
+  ),
+  RecurringExpense(
+    id: 'rx_2',
+    title: 'Bảo hiểm sức khoẻ của bé',
+    categoryId: 'c_health',
+    amount: 1800000,
+    payer: null,
+    schedule: const Yearly(month: 3, day: 5),
+    enabled: false,
+    createdBy: 'u_mai',
+    author: _mom,
+  ),
+];

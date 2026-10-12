@@ -48,10 +48,16 @@ enum MemberRole { coParent, caregiver, relative }
 
 enum MembershipStatus { active, removed, expired, left, merged }
 
-/// 14b2: what a relative may see beyond shared memories (D-019: both off by default).
+/// 14b2: what a relative may see beyond shared memories (D-019: both off by default), and the
+/// two Chi tiêu rights (8l, D-055) a Cùng nuôi can give any non-parent member.
 @immutable
 class ExtraRights {
-  const ExtraRights({this.viewBabyInfo = false, this.viewDailyCare = false});
+  const ExtraRights({
+    this.viewBabyInfo = false,
+    this.viewDailyCare = false,
+    this.recordSpending = false,
+    this.viewSpending = false,
+  });
 
   /// "Thông tin bé · Ngày sinh, cân nặng".
   final bool viewBabyInfo;
@@ -59,33 +65,53 @@ class ExtraRights {
   /// "Chăm sóc hằng ngày · Bú, ngủ, tã · chỉ xem" (read-only Today, D-018).
   final bool viewDailyCare;
 
+  /// "Ghi khoản đã chi": record expenses and see only one's own.
+  final bool recordSpending;
+
+  /// "Xem toàn bộ chi tiêu": every expense, totals, statistics, budget.
+  final bool viewSpending;
+
   static const none = ExtraRights();
 
   factory ExtraRights.fromJson(Object? json) => json is Map
       ? ExtraRights(
           viewBabyInfo: json['viewBabyInfo'] == true,
           viewDailyCare: json['viewDailyCare'] == true,
+          recordSpending: json['recordSpending'] == true,
+          viewSpending: json['viewSpending'] == true,
         )
       : none;
 
   Map<String, bool> toJson() => {
     'viewBabyInfo': viewBabyInfo,
     'viewDailyCare': viewDailyCare,
+    'recordSpending': recordSpending,
+    'viewSpending': viewSpending,
   };
 
-  ExtraRights copyWith({bool? viewBabyInfo, bool? viewDailyCare}) =>
-      ExtraRights(
-        viewBabyInfo: viewBabyInfo ?? this.viewBabyInfo,
-        viewDailyCare: viewDailyCare ?? this.viewDailyCare,
-      );
+  ExtraRights copyWith({
+    bool? viewBabyInfo,
+    bool? viewDailyCare,
+    bool? recordSpending,
+    bool? viewSpending,
+  }) => ExtraRights(
+    viewBabyInfo: viewBabyInfo ?? this.viewBabyInfo,
+    viewDailyCare: viewDailyCare ?? this.viewDailyCare,
+    recordSpending: recordSpending ?? this.recordSpending,
+    viewSpending: viewSpending ?? this.viewSpending,
+  );
 
   @override
   bool operator ==(Object other) =>
       other is ExtraRights &&
       other.viewBabyInfo == viewBabyInfo &&
-      other.viewDailyCare == viewDailyCare;
+      other.viewDailyCare == viewDailyCare &&
+      other.recordSpending == recordSpending &&
+      other.viewSpending == viewSpending;
+
   @override
-  int get hashCode => Object.hash(viewBabyInfo, viewDailyCare);
+  int get hashCode =>
+      Object.hash(viewBabyInfo, viewDailyCare, recordSpending, viewSpending);
 }
 
 /// Each account creates at most 3 baby profiles (R-043).

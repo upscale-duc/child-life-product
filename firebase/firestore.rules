@@ -100,6 +100,16 @@ service cloud.firestore {
     match /families/{familyId} {
       allow get: if signedIn() && resource.data.ownerUid == request.auth.uid;
       allow list, write: if false;
+
+      // Chi tiêu categories, shared by the family's babies (8m–8o, P-140): read by whoever may
+      // see or record spending for one of them; Cùng nuôi add, edit, reorder and hide. Delete
+      // moves expenses across babies, so it goes through deleteSpendingCategory (Functions).
+      match /spendingCategories/{categoryId} {
+        allow read: if spendingReaderOf(familyId);
+        allow create: if spendingManagerOf(familyId) && validNewCategory(categoryId);
+        allow update: if spendingManagerOf(familyId) && validCategoryUpdate(categoryId);
+        allow delete: if false;
+      }
     }
 
     // Member-visible profile: nickname, avatar ref, trackers, time zone ("Người thân chỉ thấy
@@ -151,6 +161,38 @@ service cloud.firestore {
         allow update: if canLog(babyId) && babyOpen(babyId) && canEditRecord(babyId) &&
           validVaccineDoseUpdate(doseKey);
         allow delete: if canLog(babyId) && canEditRecord(babyId);
+      }
+
+      // ---------- Chi tiêu (Figma v1.1 8a–8o, D-055 … D-057, P-140) ----------
+      // Cùng nuôi see and change everything. Anyone else only with the 8l rights: "Ghi khoản đã
+      // chi" records and sees their own items only; "Xem toàn bộ chi tiêu" reads every item, the
+      // budget and the recurring list. Shapes mirror packages/contracts/src/spending.ts.
+      match /expenses/{expenseId} {
+        allow read: if canViewSpending(babyId) ||
+          (canRecordSpending(babyId) && resource.data.createdBy == request.auth.uid);
+        allow create: if canRecordSpending(babyId) && babyOpen(babyId) &&
+          validNewExpense(babyId, expenseId);
+        allow update: if canRecordSpending(babyId) && babyOpen(babyId) &&
+          (role(babyId) == 'coParent' || resource.data.createdBy == request.auth.uid) &&
+          validExpenseUpdate(babyId);
+        allow delete: if false;
+      }
+
+      // The monthly budget (8h): one document.
+      match /spending/{docId} {
+        allow read: if docId == 'budget' && canViewSpending(babyId);
+        allow create, update: if docId == 'budget' && spendingParent(babyId) && babyOpen(babyId) &&
+          validBudget();
+        allow delete: if false;
+      }
+
+      // Recurring items (8i); occurrences are added by Functions (D-057).
+      match /recurringExpenses/{recurringId} {
+        allow read: if canViewSpending(babyId);
+        allow create: if spendingParent(babyId) && babyOpen(babyId) &&
+          validNewRecurring(babyId, recurringId);
+        allow update: if spendingParent(babyId) && babyOpen(babyId) && validRecurringUpdate();
+        allow delete: if spendingParent(babyId);
       }
 
       // The book's plan (6in1 / 5in1, reminders, recipients, book photos): Cùng nuôi only.
@@ -659,6 +701,192 @@ service cloud.firestore {
         d.recipients is list && d.recipients.size() <= 20 &&
         d.bookPhotos is list && d.bookPhotos.size() <= 10 &&
         d.updatedBy == request.auth.uid && d.updatedAt == request.time;
+    }
+
+    // ---------- Chi tiêu (D-055, P-140) ----------
+
+    // A member's 8l right; extraRights is null for roles that never had one.
+    function spendRight(babyId, key) {
+      let x = get(memberDoc(babyId)).data.get('extraRights', null);
+      return x != null && x.get(key, false) == true;
+    }
+
+    function spendingParent(babyId) {
+      return activeMember(babyId) && role(babyId) == 'coParent';
+    }
+
+    function canViewSpending(babyId) {
+      return activeMember(babyId) &&
+        (role(babyId) == 'coParent' || spendRight(babyId, 'viewSpending'));
+    }
+
+    function canRecordSpending(babyId) {
+      return activeMember(babyId) &&
+        (role(babyId) == 'coParent' || spendRight(babyId, 'recordSpending'));
+    }
+
+    function familyBabies(familyId) {
+      return get(/databases/$(database)/documents/families/$(familyId)).data.babyIds;
+    }
+
+    // A Cùng nuôi of one of the family's babies (at most 3, maxOwnedBabies).
+    function spendingManagerOf(familyId) {
+      let ids = familyBabies(familyId);
+      return (ids.size() > 0 && spendingParent(ids[0])) ||
+        (ids.size() > 1 && spendingParent(ids[1])) ||
+        (ids.size() > 2 && spendingParent(ids[2]));
+    }
+
+    // Anyone who may see or record spending for one of them.
+    function spendingReaderOf(familyId) {
+      let ids = familyBabies(familyId);
+      return (ids.size() > 0 && spendsOn(ids[0])) ||
+        (ids.size() > 1 && spendsOn(ids[1])) ||
+        (ids.size() > 2 && spendsOn(ids[2]));
+    }
+
+    function spendsOn(babyId) {
+      return canViewSpending(babyId) || canRecordSpending(babyId);
+    }
+
+    function isoDay(v) {
+      return v is string && v.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+
+    function categoryRef(v) {
+      return v is string && v.matches('^c_[a-z0-9]{3,20}$');
+    }
+
+    // "Ai trả" (D-056): a member's label snapshot, or null for "Khác".
+    function validPayer(p) {
+      return p == null || (p is map &&
+        p.keys().hasOnly(['uid', 'name', 'relation', 'relationCustom']) &&
+        p.keys().hasAll(['uid', 'name', 'relation', 'relationCustom']) &&
+        p.uid is string && p.uid.size() <= 128 &&
+        p.name is string && p.name.size() >= 1 && p.name.size() <= 40 &&
+        p.relation is string && p.relation.size() <= 24 &&
+        (p.relationCustom == null || (p.relationCustom is string && p.relationCustom.size() <= 24)));
+    }
+
+    function validExpenseBody(babyId, d) {
+      return intIn(d.amount, 1, 1000000000) && categoryRef(d.categoryId) &&
+        d.note is string && d.note.size() <= 80 && isoDay(d.spentOn) && validPayer(d.payer) &&
+        (d.receiptPath == null || (d.receiptPath is string &&
+          d.receiptPath.matches('^babies/' + babyId + '/expenses/[A-Za-z0-9_-]{8,64}[.]jpg$')));
+    }
+
+    function validNewExpense(babyId, expenseId) {
+      let d = request.resource.data;
+      let keys = ['amount', 'categoryId', 'note', 'spentOn', 'payer', 'receiptPath', 'source',
+        'sourceRef', 'createdBy', 'author', 'createdAt', 'updatedAt', 'updatedBy', 'deleted',
+        'deletedAt', 'deletedBy'];
+      return d.keys().hasOnly(keys) && d.keys().hasAll(keys) &&
+        expenseId.matches('^x_[a-f0-9]{32}$') &&
+        d.createdBy == request.auth.uid && d.updatedBy == request.auth.uid &&
+        d.createdAt == request.time && d.updatedAt == request.time &&
+        d.deleted == false && d.deletedAt == null && d.deletedBy == null &&
+        // Recurring occurrences come from Functions only (D-057).
+        ((d.source == 'manual' && d.sourceRef == null) ||
+          (d.source == 'vaccine' && d.sourceRef is string &&
+            d.sourceRef.matches('^[a-z0-9]{2,12}_[1-9][0-9]?$'))) &&
+        ownAuthor(d.author, get(memberDoc(babyId)).data) &&
+        validExpenseBody(babyId, d);
+    }
+
+    // Edit, soft delete ("Xoá khoản chi", 8g) and its undo; who and where it came from stay.
+    function validExpenseUpdate(babyId) {
+      let d = request.resource.data;
+      return d.diff(resource.data).affectedKeys().hasOnly(['amount', 'categoryId', 'note',
+          'spentOn', 'payer', 'receiptPath', 'updatedAt', 'updatedBy', 'deleted', 'deletedAt',
+          'deletedBy']) &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time &&
+        d.deleted is bool &&
+        (d.deleted == resource.data.deleted ||
+          (d.deleted && d.deletedAt == request.time && d.deletedBy == request.auth.uid) ||
+          (!d.deleted && d.deletedAt == null && d.deletedBy == null)) &&
+        validExpenseBody(babyId, d);
+    }
+
+    // 8h. `alertedMonth` belongs to the 80 % alert (Functions).
+    function validBudget() {
+      let d = request.resource.data;
+      let before = resource == null ? null : resource.data.get('alertedMonth', null);
+      return d.keys().hasOnly(['monthlyTotal', 'caps', 'alert80', 'updatedAt', 'updatedBy',
+          'alertedMonth']) &&
+        d.keys().hasAll(['monthlyTotal', 'caps', 'alert80', 'updatedAt', 'updatedBy']) &&
+        (d.monthlyTotal == null || intIn(d.monthlyTotal, 0, 1000000000)) &&
+        d.caps is map && d.caps.size() <= 60 && d.alert80 is bool &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time &&
+        d.get('alertedMonth', null) == before;
+    }
+
+    function validSchedule(s) {
+      return s is map && (
+        (s.kind == 'monthly' && s.keys().hasOnly(['kind', 'days']) && s.days is list &&
+          s.days.size() >= 1 && s.days.size() <= 2 && intIn(s.days[0], 1, 31) &&
+          (s.days.size() == 1 || intIn(s.days[1], 1, 31))) ||
+        (s.kind == 'weeks' && s.keys().hasOnly(['kind', 'every', 'startOn']) &&
+          s.keys().hasAll(['kind', 'every', 'startOn']) && intIn(s.every, 1, 8) &&
+          isoDay(s.startOn)) ||
+        (s.kind == 'yearly' && s.keys().hasOnly(['kind', 'month', 'day']) &&
+          s.keys().hasAll(['kind', 'month', 'day']) && intIn(s.month, 1, 12) &&
+          intIn(s.day, 1, 31)));
+    }
+
+    function validRecurringBody(d) {
+      return d.title is string && d.title.size() >= 1 && d.title.size() <= 60 &&
+        categoryRef(d.categoryId) && intIn(d.amount, 1, 1000000000) && validPayer(d.payer) &&
+        validSchedule(d.schedule) && d.enabled is bool;
+    }
+
+    function validNewRecurring(babyId, recurringId) {
+      let d = request.resource.data;
+      let keys = ['title', 'categoryId', 'amount', 'payer', 'schedule', 'enabled', 'createdBy',
+        'author', 'createdAt', 'updatedAt', 'updatedBy'];
+      // `lastOn` only from 8c "Lặp lại hằng tháng": that day's expense is already recorded.
+      return d.keys().hasOnly(keys.concat(['lastOn'])) && d.keys().hasAll(keys) &&
+        (!('lastOn' in d) || isoDay(d.lastOn)) &&
+        recurringId.matches('^rx_[a-f0-9]{32}$') &&
+        d.createdBy == request.auth.uid && d.updatedBy == request.auth.uid &&
+        d.createdAt == request.time && d.updatedAt == request.time &&
+        ownAuthor(d.author, get(memberDoc(babyId)).data) && validRecurringBody(d);
+    }
+
+    // `lastOn` belongs to the daily job.
+    function validRecurringUpdate() {
+      let d = request.resource.data;
+      return d.diff(resource.data).affectedKeys().hasOnly(['title', 'categoryId', 'amount',
+          'payer', 'schedule', 'enabled', 'updatedAt', 'updatedBy']) &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time && validRecurringBody(d);
+    }
+
+    function validCategoryBody(categoryId, d) {
+      return d.keys().hasOnly(['name', 'icon', 'tint', 'order', 'hidden', 'builtIn',
+          'updatedAt', 'updatedBy']) &&
+        d.keys().hasAll(['name', 'icon', 'tint', 'order', 'hidden', 'builtIn', 'updatedAt',
+          'updatedBy']) &&
+        (d.name == null || (d.name is string && d.name.size() >= 1 && d.name.size() <= 24)) &&
+        d.icon in ['family', 'feed', 'diaper', 'heart', 'star', 'journal', 'grid', 'spark',
+          'sleep', 'ruler', 'camera', 'cake', 'bell', 'globe', 'today', 'drop'] &&
+        d.tint in ['growth', 'bottle', 'diaper', 'pump', 'breast', 'sleep', 'sunshine', 'mint'] &&
+        intIn(d.order, 0, 1000) && d.hidden is bool &&
+        // "Khác" always stays (8m "không xoá được").
+        (categoryId != 'c_other' || d.hidden == false) &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time;
+    }
+
+    function validNewCategory(categoryId) {
+      let d = request.resource.data;
+      let builtIn = categoryId in ['c_childcare', 'c_milk', 'c_diaper', 'c_health', 'c_clothes',
+        'c_other'];
+      return validCategoryBody(categoryId, d) && d.builtIn == builtIn &&
+        (builtIn || (categoryId.matches('^c_[a-f0-9]{20}$') && d.name != null));
+    }
+
+    function validCategoryUpdate(categoryId) {
+      let d = request.resource.data;
+      return validCategoryBody(categoryId, d) && d.builtIn == resource.data.builtIn &&
+        (d.builtIn || d.name != null);
     }
 
     function ownAuthor(a, me) {

@@ -39,6 +39,10 @@ import '../features/vaccines/vaccine_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
 import '../features/showcase/showcase_screen.dart';
+import '../features/spending/spending_categories.dart';
+import '../features/spending/spending_plan_screens.dart';
+import '../features/spending/spending_screens.dart';
+import '../features/spending/spending_stats.dart';
 import '../features/today/today_screen.dart';
 import 'route_guard.dart';
 import 'session.dart';
@@ -249,6 +253,39 @@ final routerProvider = Provider<GoRouter>((ref) {
                   _route(
                     path: 'stats/sleep',
                     builder: (_, _) => const SleepStatsScreen(),
+                  ),
+                  // Chi tiêu (v1.1 8b–8m; D-055 … D-057).
+                  _route(
+                    path: 'spending',
+                    builder: (_, _) => const SpendingScreen(),
+                    routes: [
+                      _route(
+                        path: 'history',
+                        builder: (_, _) => const SpendingHistoryScreen(),
+                      ),
+                      _route(
+                        path: 'expense/:id',
+                        builder: (_, s) => ExpenseDetailScreen(
+                          expenseId: s.pathParameters['id'] ?? '',
+                        ),
+                      ),
+                      _route(
+                        path: 'budget',
+                        builder: (_, _) => const BudgetScreen(),
+                      ),
+                      _route(
+                        path: 'recurring',
+                        builder: (_, _) => const RecurringScreen(),
+                      ),
+                      _route(
+                        path: 'stats',
+                        builder: (_, _) => const SpendingStatsScreen(),
+                      ),
+                      _route(
+                        path: 'categories',
+                        builder: (_, _) => const CategoriesScreen(),
+                      ),
+                    ],
                   ),
                   // Sổ tiêm chủng (VX 0 – VX 9a).
                   _route(

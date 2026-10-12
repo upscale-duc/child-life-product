@@ -452,142 +452,221 @@ class _MemberSheetState extends ConsumerState<_MemberSheet> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ClSheetHeader(title: member.displayName),
-        Text(
-          joined == null
-              ? relation
-              : member.recordCount == null
-              ? l10n.memberMeta(relation, shortDate(context, joined))
-              : l10n.memberMetaCount(
-                  relation,
-                  shortDate(context, joined),
-                  member.recordCount!,
+        // Its own node: next to the scrolling body the title and "Đóng" would read as one.
+        Semantics(
+          container: true,
+          explicitChildNodes: true,
+          child: ClSheetHeader(title: member.displayName),
+        ),
+        // With 8l's two spending switches the sheet can outgrow a small phone.
+        Flexible(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  joined == null
+                      ? relation
+                      : member.recordCount == null
+                      ? l10n.memberMeta(relation, shortDate(context, joined))
+                      : l10n.memberMetaCount(
+                          relation,
+                          shortDate(context, joined),
+                          member.recordCount!,
+                        ),
+                  style: cl.text.label.copyWith(color: cl.colors.inkMuted),
                 ),
-          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-        ),
-        const SizedBox(height: ClSpace.s4),
-        Text(
-          l10n.inviteRoleLabel,
-          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-        ),
-        const SizedBox(height: ClSpace.s2),
-        ClCardGroup(
-          color: cl.colors.surface2,
-          children: [
-            role(MemberRole.coParent, l10n.roleCoParentHintFull),
-            role(MemberRole.caregiver, l10n.roleCaregiverHintFull),
-            role(MemberRole.relative, l10n.roleRelativeHintFull),
-          ],
-        ),
-        // Not drawn on 14f: a relative's two extra views, as on 14b2 (open question 14f).
-        if (member.role == MemberRole.relative) ...[
-          const SizedBox(height: ClSpace.s3),
-          ClSettingRow(
-            icon: ClIcons.cake,
-            title: l10n.rightBabyInfo,
-            subtitle: l10n.rightBabyInfoHint,
-            value: member.extraRights.viewBabyInfo,
-            onChanged: _busy
-                ? null
-                : (v) => _run(
-                    (repo) => repo.updateRole(
-                      babyId: widget.babyId,
-                      uid: member.uid,
-                      role: MemberRole.relative,
-                      extraRights: member.extraRights.copyWith(viewBabyInfo: v),
-                    ),
+                const SizedBox(height: ClSpace.s4),
+                Text(
+                  l10n.inviteRoleLabel,
+                  style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                ),
+                const SizedBox(height: ClSpace.s2),
+                ClCardGroup(
+                  color: cl.colors.surface2,
+                  children: [
+                    role(MemberRole.coParent, l10n.roleCoParentHintFull),
+                    role(MemberRole.caregiver, l10n.roleCaregiverHintFull),
+                    role(MemberRole.relative, l10n.roleRelativeHintFull),
+                  ],
+                ),
+                // Not drawn on 14f: a relative's two extra views, as on 14b2 (open question 14f).
+                if (member.role == MemberRole.relative) ...[
+                  const SizedBox(height: ClSpace.s3),
+                  ClSettingRow(
+                    icon: ClIcons.cake,
+                    title: l10n.rightBabyInfo,
+                    subtitle: l10n.rightBabyInfoHint,
+                    value: member.extraRights.viewBabyInfo,
+                    onChanged: _busy
+                        ? null
+                        : (v) => _run(
+                            (repo) => repo.updateRole(
+                              babyId: widget.babyId,
+                              uid: member.uid,
+                              role: MemberRole.relative,
+                              extraRights: member.extraRights.copyWith(
+                                viewBabyInfo: v,
+                              ),
+                            ),
+                          ),
                   ),
-          ),
-          const SizedBox(height: ClSpace.s2),
-          ClSettingRow(
-            icon: ClIcons.feed,
-            title: l10n.rightDailyCare,
-            subtitle: l10n.rightDailyCareHint,
-            value: member.extraRights.viewDailyCare,
-            onChanged: _busy
-                ? null
-                : (v) => _run(
-                    (repo) => repo.updateRole(
-                      babyId: widget.babyId,
-                      uid: member.uid,
-                      role: MemberRole.relative,
-                      extraRights: member.extraRights.copyWith(
-                        viewDailyCare: v,
+                  const SizedBox(height: ClSpace.s2),
+                  ClSettingRow(
+                    icon: ClIcons.feed,
+                    title: l10n.rightDailyCare,
+                    subtitle: l10n.rightDailyCareHint,
+                    value: member.extraRights.viewDailyCare,
+                    onChanged: _busy
+                        ? null
+                        : (v) => _run(
+                            (repo) => repo.updateRole(
+                              babyId: widget.babyId,
+                              uid: member.uid,
+                              role: MemberRole.relative,
+                              extraRights: member.extraRights.copyWith(
+                                viewDailyCare: v,
+                              ),
+                            ),
+                          ),
+                  ),
+                ],
+                // v1.1 8l: spending stays with Cùng nuôi unless turned on here, per member and baby (D-055).
+                if (member.role != MemberRole.coParent) ...[
+                  const SizedBox(height: ClSpace.s3),
+                  ClSettingRow(
+                    key: const Key('rightRecordSpending'),
+                    icon: ClIcons.plus,
+                    title: l10n.rightRecordSpending,
+                    subtitle: l10n.rightRecordSpendingHint,
+                    value: member.extraRights.recordSpending,
+                    onChanged: _busy
+                        ? null
+                        : (v) => _run(
+                            (repo) => repo.updateRole(
+                              babyId: widget.babyId,
+                              uid: member.uid,
+                              role: member.role,
+                              extraRights: member.extraRights.copyWith(
+                                recordSpending: v,
+                              ),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(height: ClSpace.s2),
+                  ClSettingRow(
+                    key: const Key('rightViewSpending'),
+                    icon: ClIcons.grid,
+                    title: l10n.rightViewSpending,
+                    subtitle: l10n.rightViewSpendingHint,
+                    value: member.extraRights.viewSpending,
+                    onChanged: _busy
+                        ? null
+                        : (v) => _run(
+                            (repo) => repo.updateRole(
+                              babyId: widget.babyId,
+                              uid: member.uid,
+                              role: member.role,
+                              extraRights: member.extraRights.copyWith(
+                                viewSpending: v,
+                              ),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(height: ClSpace.s2),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClIcon(ClIcons.lock, size: 14, color: cl.colors.inkMuted),
+                      const SizedBox(width: ClSpace.s1),
+                      Expanded(
+                        child: Text(
+                          l10n.rightSpendingNote,
+                          style: cl.text.caption.copyWith(
+                            color: cl.colors.inkMuted,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-          ),
-        ],
-        const SizedBox(height: ClSpace.s3),
-        ClCardGroup(
-          children: [
-            ClDetailRow(
-              icon: ClIcons.clock,
-              label: l10n.memberAccessUntil,
-              value: member.accessUntil == null
-                  ? l10n.memberAccessNoLimit
-                  : l10n.memberAccessUntilValue(
-                      longDate(context, member.accessUntil!),
+                ],
+                const SizedBox(height: ClSpace.s3),
+                ClCardGroup(
+                  children: [
+                    ClDetailRow(
+                      icon: ClIcons.clock,
+                      label: l10n.memberAccessUntil,
+                      value: member.accessUntil == null
+                          ? l10n.memberAccessNoLimit
+                          : l10n.memberAccessUntilValue(
+                              longDate(context, member.accessUntil!),
+                            ),
+                      onTap: _busy
+                          ? null
+                          : () async {
+                              final picked = await showAccessUntilSheet(
+                                context,
+                                name: member.displayName,
+                                current: member.accessUntil,
+                              );
+                              if (picked == null) return;
+                              await _run(
+                                (repo) => repo.setAccessUntil(
+                                  babyId: widget.babyId,
+                                  uid: member.uid,
+                                  lastDay: picked.$1,
+                                ),
+                              );
+                            },
                     ),
-              onTap: _busy
-                  ? null
-                  : () async {
-                      final picked = await showAccessUntilSheet(
-                        context,
-                        name: member.displayName,
-                        current: member.accessUntil,
-                      );
-                      if (picked == null) return;
-                      await _run(
-                        (repo) => repo.setAccessUntil(
-                          babyId: widget.babyId,
-                          uid: member.uid,
-                          lastDay: picked.$1,
-                        ),
-                      );
-                    },
+                    ClDetailRow(
+                      icon: ClIcons.edit,
+                      label: l10n.memberRelation,
+                      value: relation,
+                      onTap: _busy
+                          ? null
+                          : () async {
+                              final picked = await showRelationSheet(
+                                context,
+                                title: l10n.memberRelation,
+                                options: [...selfRelations]
+                                  ..insert(
+                                    selfRelations.length - 1,
+                                    Relation.friend,
+                                  ),
+                                current: member.relation,
+                                custom: member.relationCustom ?? '',
+                              );
+                              if (picked == null) return;
+                              await _run(
+                                (repo) => repo.updateRelation(
+                                  babyId: widget.babyId,
+                                  uid: member.uid,
+                                  relation: picked.$1,
+                                  relationCustom: picked.$2,
+                                ),
+                              );
+                            },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: ClSpace.s4),
+                ClButton(
+                  label: l10n.memberRemove(member.displayName),
+                  style: ClButtonStyle.destructive,
+                  expand: true,
+                  onPressed: () => _confirmRemove(context, member, nickname),
+                  loading: _busy,
+                ),
+                const SizedBox(height: ClSpace.s2),
+                Text(
+                  l10n.memberRecordsKept(member.displayName),
+                  textAlign: TextAlign.center,
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
+              ],
             ),
-            ClDetailRow(
-              icon: ClIcons.edit,
-              label: l10n.memberRelation,
-              value: relation,
-              onTap: _busy
-                  ? null
-                  : () async {
-                      final picked = await showRelationSheet(
-                        context,
-                        title: l10n.memberRelation,
-                        options: [...selfRelations]
-                          ..insert(selfRelations.length - 1, Relation.friend),
-                        current: member.relation,
-                        custom: member.relationCustom ?? '',
-                      );
-                      if (picked == null) return;
-                      await _run(
-                        (repo) => repo.updateRelation(
-                          babyId: widget.babyId,
-                          uid: member.uid,
-                          relation: picked.$1,
-                          relationCustom: picked.$2,
-                        ),
-                      );
-                    },
-            ),
-          ],
-        ),
-        const SizedBox(height: ClSpace.s4),
-        ClButton(
-          label: l10n.memberRemove(member.displayName),
-          style: ClButtonStyle.destructive,
-          expand: true,
-          onPressed: () => _confirmRemove(context, member, nickname),
-          loading: _busy,
-        ),
-        const SizedBox(height: ClSpace.s2),
-        Text(
-          l10n.memberRecordsKept(member.displayName),
-          textAlign: TextAlign.center,
-          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
         ),
       ],
     );

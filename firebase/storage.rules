@@ -68,6 +68,26 @@ service firebase.storage {
       allow update: if false;
     }
 
+    // Chi tiêu receipts ("Ảnh hoá đơn", 8c / 8g, P-140): whoever may record or see spending adds and
+    // reads them (a recorder only learns the paths of their own items); Cùng nuôi remove them.
+    // Never in Kỷ niệm, story links or the CSV.
+    match /babies/{babyId}/expenses/{file} {
+      allow read: if request.auth != null && spends(member(babyId));
+      allow create: if request.auth != null && file.matches('^[A-Za-z0-9_-]{8,64}[.]jpg$') &&
+        spends(member(babyId)) && request.resource.contentType == 'image/jpeg' &&
+        request.resource.size <= 4 * 1024 * 1024;
+      allow delete: if request.auth != null && active(member(babyId)) &&
+        member(babyId).role == 'coParent';
+      allow update: if false;
+    }
+
+    function spends(m) {
+      return active(m) && (m.role == 'coParent' ||
+        (m.get('extraRights', null) != null &&
+          (m.extraRights.get('viewSpending', false) == true ||
+            m.extraRights.get('recordSpending', false) == true)));
+    }
+
     function readsCare(m) {
       return active(m) && (m.role in ['coParent', 'caregiver'] ||
         m.get('extraRights', {}).get('viewDailyCare', false) == true);

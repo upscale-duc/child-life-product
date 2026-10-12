@@ -10604,5 +10604,1158 @@
         "type": "String"
       }
     }
+  },
+  "spTitle": "Chi tiêu",
+  "@spTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spTileMonth": "{amount} tháng này",
+  "@spTileMonth": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "spTileEmpty": "Chưa ghi tháng này",
+  "@spTileEmpty": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spTileRecord": "Ghi khoản đã chi",
+  "@spTileRecord": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spMillions": "{value} tr",
+  "@spMillions": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "spCurrencyName": "đồng",
+  "@spCurrencyName": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCatChildcare": "Giữ trẻ & học",
+  "@spCatChildcare": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCatMilk": "Sữa & ăn dặm",
+  "@spCatMilk": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCatDiaper": "Tã & vệ sinh",
+  "@spCatDiaper": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCatHealth": "Y tế & tiêm chủng",
+  "@spCatHealth": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCatClothes": "Quần áo",
+  "@spCatClothes": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCatOther": "Khác",
+  "@spCatOther": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spToday": "Hôm nay",
+  "@spToday": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spYesterday": "Hôm qua",
+  "@spYesterday": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spDayToday": "Hôm nay · {date}",
+  "@spDayToday": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "spDayYesterday": "Hôm qua · {date}",
+  "@spDayYesterday": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "spDateToday": "Hôm nay, {date}",
+  "@spDateToday": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "spDateYesterday": "Hôm qua, {date}",
+  "@spDateYesterday": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "spPayerOther": "Khác",
+  "@spPayerOther": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spPaidBy": "{payer} trả",
+  "@spPaidBy": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "payer": {
+        "type": "String"
+      }
+    }
+  },
+  "spPays": "{payer} trả",
+  "@spPays": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "payer": {
+        "type": "String"
+      }
+    }
+  },
+  "spFromVaccines": "từ Tiêm chủng",
+  "@spFromVaccines": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFromRecurring": "định kỳ",
+  "@spFromRecurring": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFromRecurringFull": "Khoản định kỳ",
+  "@spFromRecurringFull": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spScheduleMonthly": "Ngày {day} hằng tháng",
+  "@spScheduleMonthly": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "spScheduleMonthlyTwo": "Ngày {a} và {b} hằng tháng",
+  "@spScheduleMonthlyTwo": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "int"
+      }
+    }
+  },
+  "spScheduleWeeks": "{n, plural, =1{Mỗi tuần} other{Mỗi {n} tuần}}",
+  "@spScheduleWeeks": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spScheduleYearly": "Ngày {date} hằng năm",
+  "@spScheduleYearly": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "spPending": "Chờ đồng bộ",
+  "@spPending": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spHasReceipt": "Có hoá đơn",
+  "@spHasReceipt": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spNoAccess": "Chi tiêu của bé chỉ cha mẹ xem. Nhờ Cùng nuôi cấp quyền trong Gia đình nếu bạn cần ghi.",
+  "@spNoAccess": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFirstTitle": "Ghi lại chi tiêu cho {name}",
+  "@spFirstTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spFirstBody": "Biết mỗi tháng tốn bao nhiêu cho sữa, tã, tiêm chủng, giữ trẻ. Chỉ cha mẹ thấy, có thể chia sẻ cho người khác.",
+  "@spFirstBody": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFirstBodyRecorder": "Ghi các khoản bạn đã chi cho bé. Bạn chỉ thấy những khoản do mình ghi.",
+  "@spFirstBodyRecorder": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFirstPoint1": "Ghi nhanh trong vài giây",
+  "@spFirstPoint1": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFirstPoint2": "Thống kê theo tháng, danh mục, người trả",
+  "@spFirstPoint2": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFirstPoint3": "Ngân sách và khoản định kỳ",
+  "@spFirstPoint3": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFirstAdd": "Thêm khoản chi đầu tiên",
+  "@spFirstAdd": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFirstBudget": "Đặt ngân sách",
+  "@spFirstBudget": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAdd": "Thêm khoản chi",
+  "@spAdd": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spOwnOnlyNote": "Bạn chỉ thấy các khoản do mình ghi, không thấy tổng hay khoản của người khác.",
+  "@spOwnOnlyNote": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spMine": "Khoản bạn đã ghi",
+  "@spMine": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spPrevMonth": "Tháng trước",
+  "@spPrevMonth": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spNextMonth": "Tháng sau",
+  "@spNextMonth": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spMonthLabel": "Tháng {month} · {year}",
+  "@spMonthLabel": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "spMonthShort": "Tháng {month}",
+  "@spMonthShort": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "spUpTo": "Đến {date}",
+  "@spUpTo": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "spSpentOn": "Đã chi cho {name}",
+  "@spSpentOn": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spStats": "Thống kê",
+  "@spStats": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spBudget": "Ngân sách",
+  "@spBudget": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurring": "Định kỳ",
+  "@spRecurring": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spByCategory": "Theo danh mục",
+  "@spByCategory": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSeeStats": "Xem thống kê",
+  "@spSeeStats": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spMonthEmpty": "Chưa có khoản chi nào trong tháng này.",
+  "@spMonthEmpty": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spItems": "{n} khoản",
+  "@spItems": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spIncludesShots": "Gồm {n} mũi tiêm",
+  "@spIncludesShots": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spRecent": "Gần đây",
+  "@spRecent": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSeeAll": "Xem tất cả",
+  "@spSeeAll": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spParentsOnly": "Chỉ cha mẹ thấy chi tiêu. Có thể cấp quyền cho người khác trong Gia đình.",
+  "@spParentsOnly": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSharedWithYou": "Cha mẹ đã chia sẻ chi tiêu của bé với bạn.",
+  "@spSharedWithYou": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spBudgetShare": "{share} ngân sách {total}",
+  "@spBudgetShare": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "share": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "spLeft": "Còn {amount}",
+  "@spLeft": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "spOverBy": "Vượt {amount}",
+  "@spOverBy": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "spAvgPerDay": "Trung bình/ngày",
+  "@spAvgPerDay": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSame": "Bằng",
+  "@spSame": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spLower": "Thấp hơn {share}",
+  "@spLower": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "share": {
+        "type": "String"
+      }
+    }
+  },
+  "spHigher": "Cao hơn {share}",
+  "@spHigher": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "share": {
+        "type": "String"
+      }
+    }
+  },
+  "spComparedWith": "So với tháng {month}",
+  "@spComparedWith": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      }
+    }
+  },
+  "spAllTitle": "Tất cả khoản chi",
+  "@spAllTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSearch": "Tìm khoản chi…",
+  "@spSearch": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAllMonths": "Mọi tháng",
+  "@spAllMonths": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFilterMonth": "Chọn tháng",
+  "@spFilterMonth": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAllCategories": "Tất cả danh mục",
+  "@spAllCategories": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAnyone": "Ai cũng được",
+  "@spAnyone": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spNothingYet": "Chưa có khoản chi nào.",
+  "@spNothingYet": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spNoMatch": "Không có khoản chi nào khớp.",
+  "@spNoMatch": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spGone": "Khoản chi này không còn.",
+  "@spGone": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategory": "Danh mục",
+  "@spCategory": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spDate": "Ngày",
+  "@spDate": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spPayer": "Ai trả",
+  "@spPayer": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecordedBy": "Ghi bởi",
+  "@spRecordedBy": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSource": "Nguồn",
+  "@spSource": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spLink": "Liên kết",
+  "@spLink": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spLinkVaccine": "Lịch tiêm chủng · {dose}",
+  "@spLinkVaccine": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "dose": {
+        "type": "String"
+      }
+    }
+  },
+  "spReceiptTitle": "Hoá đơn",
+  "@spReceiptTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spReceiptOpen": "Chạm để xem ảnh lớn",
+  "@spReceiptOpen": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spDelete": "Xoá khoản chi",
+  "@spDelete": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spDeleted": "Đã xoá khoản chi",
+  "@spDeleted": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAddTitle": "Thêm khoản chi",
+  "@spAddTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spEditTitle": "Sửa khoản chi",
+  "@spEditTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAmount": "Số tiền",
+  "@spAmount": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spLastTime": "Lần trước {amount}",
+  "@spLastTime": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "spEditCategories": "Sửa danh mục",
+  "@spEditCategories": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAddCategoryChip": "Danh mục",
+  "@spAddCategoryChip": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spNote": "Nội dung",
+  "@spNote": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spNoteHint": "Ví dụ: Sữa công thức ×2",
+  "@spNoteHint": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spReceipt": "Ảnh hoá đơn",
+  "@spReceipt": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spReceiptAttached": "Đã đính kèm · chạm để xem",
+  "@spReceiptAttached": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spReceiptRemove": "Bỏ ảnh hoá đơn",
+  "@spReceiptRemove": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spReceiptAdd": "Thêm ảnh hoá đơn",
+  "@spReceiptAdd": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spReceiptPrivate": "Chỉ người xem được chi tiêu thấy ảnh này.",
+  "@spReceiptPrivate": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRepeatMonthly": "Lặp lại hằng tháng",
+  "@spRepeatMonthly": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRepeatMonthlyOn": "Tự thêm ngày {day} mỗi tháng",
+  "@spRepeatMonthlyOn": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "spSave": "Lưu khoản chi",
+  "@spSave": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSaved": "Đã lưu khoản chi",
+  "@spSaved": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spUpdated": "Đã cập nhật khoản chi",
+  "@spUpdated": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAmountMissing": "Nhập số tiền",
+  "@spAmountMissing": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSaveFailed": "Chưa lưu được. Thử lại sau.",
+  "@spSaveFailed": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spVaccineTitle": "Ghi chi phí mũi tiêm?",
+  "@spVaccineTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spVaccineBody": "Lưu vào Chi tiêu, danh mục Y tế & tiêm chủng. Có thể bỏ qua.",
+  "@spVaccineBody": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spVaccineSave": "Lưu vào Chi tiêu",
+  "@spVaccineSave": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spVaccineSaved": "Đã lưu chi phí mũi tiêm",
+  "@spVaccineSaved": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSkip": "Bỏ qua",
+  "@spSkip": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategories": "Danh mục",
+  "@spCategories": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoriesIntro": "Kéo để sắp xếp. Danh mục dùng chung cho mọi bé trong gia đình.",
+  "@spCategoriesIntro": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoriesInUse": "Đang dùng",
+  "@spCategoriesInUse": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoriesHidden": "Đã ẩn",
+  "@spCategoriesHidden": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryLocked": "Mặc định · không xoá được",
+  "@spCategoryLocked": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryCustom": "Tự tạo · {n} khoản",
+  "@spCategoryCustom": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spCategoryHiddenSub": "Ẩn khỏi danh sách chọn · vẫn giữ {n} khoản cũ",
+  "@spCategoryHiddenSub": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spShowAgain": "Hiện lại",
+  "@spShowAgain": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spDragHandle": "Kéo để sắp xếp",
+  "@spDragHandle": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAddCategory": "Thêm danh mục",
+  "@spAddCategory": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spNewCategory": "Danh mục mới",
+  "@spNewCategory": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spEditCategory": "Sửa danh mục",
+  "@spEditCategory": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryName": "Tên danh mục",
+  "@spCategoryName": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryNamePlaceholder": "Ví dụ: Bơi & vận động",
+  "@spCategoryNamePlaceholder": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryNameHelp": "Tối đa 24 ký tự",
+  "@spCategoryNameHelp": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryNameMissing": "Nhập tên danh mục",
+  "@spCategoryNameMissing": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryNameTaken": "Đã có danh mục tên này",
+  "@spCategoryNameTaken": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryIcon": "Biểu tượng",
+  "@spCategoryIcon": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryColor": "Màu",
+  "@spCategoryColor": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spColorN": "Màu {n}",
+  "@spColorN": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spSaveCategory": "Lưu danh mục",
+  "@spSaveCategory": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spHideCategory": "Ẩn danh mục",
+  "@spHideCategory": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryHiddenToast": "Đã ẩn danh mục",
+  "@spCategoryHiddenToast": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spDeleteCategory": "Xoá danh mục",
+  "@spDeleteCategory": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spDeleteCategoryTitle": "Xoá “{name}”?",
+  "@spDeleteCategoryTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spDeleteCategoryBody": "Danh mục này có {n} khoản chi ({amount}). Chọn nơi chuyển các khoản này:",
+  "@spDeleteCategoryBody": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "spDeleteCategoryEmpty": "Danh mục này chưa có khoản chi nào của bé. Khoản của bé khác (nếu có) sẽ được chuyển sang:",
+  "@spDeleteCategoryEmpty": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spMoveToOther": "Chuyển sang “Khác”",
+  "@spMoveToOther": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spMoveToOtherSub": "Giữ nguyên tổng chi tiêu",
+  "@spMoveToOtherSub": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spMoveToAnother": "Chuyển sang danh mục khác",
+  "@spMoveToAnother": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spChooseCategory": "Chọn danh mục",
+  "@spChooseCategory": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spHideInstead": "Muốn giữ số liệu cũ mà không thấy danh mục khi ghi? Hãy chọn Ẩn thay vì Xoá.",
+  "@spHideInstead": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spDeleteAndMove": "Xoá và chuyển {n} khoản",
+  "@spDeleteAndMove": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spHideCategoryInstead": "Ẩn danh mục thay vì xoá",
+  "@spHideCategoryInstead": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCategoryDeleted": "Đã xoá danh mục",
+  "@spCategoryDeleted": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spNeedsNetwork": "Cần kết nối mạng để xoá danh mục.",
+  "@spNeedsNetwork": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spBudgetTitle": "Ngân sách tháng",
+  "@spBudgetTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spBudgetIntro": "Đặt mức dự kiến để dễ theo dõi. Có thể bỏ trống danh mục.",
+  "@spBudgetIntro": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spBudgetPerMonth": "Ngân sách mỗi tháng",
+  "@spBudgetPerMonth": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spBudgetUsed": "Tháng {month}: đã dùng {share}",
+  "@spBudgetUsed": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "share": {
+        "type": "String"
+      }
+    }
+  },
+  "spNoCap": "Chưa đặt mức",
+  "@spNoCap": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spClearCap": "Bỏ mức này",
+  "@spClearCap": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spUsedShare": "{share} đã dùng",
+  "@spUsedShare": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "share": {
+        "type": "String"
+      }
+    }
+  },
+  "spNearCap": "Gần chạm mức · còn {amount}",
+  "@spNearCap": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "spOverCap": "Vượt mức {amount}",
+  "@spOverCap": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "spAlert80": "Nhắc khi dùng 80% ngân sách",
+  "@spAlert80": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAlert80Sub": "Gửi cho cha mẹ",
+  "@spAlert80Sub": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSaveBudget": "Lưu ngân sách",
+  "@spSaveBudget": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spBudgetSaved": "Đã lưu ngân sách",
+  "@spBudgetSaved": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringTitle": "Khoản định kỳ",
+  "@spRecurringTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringIntro": "Tự thêm vào chi tiêu đúng ngày. Cha mẹ nhận thông báo và có thể sửa số tiền sau đó.",
+  "@spRecurringIntro": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringEmpty": "Chưa có khoản định kỳ. Thêm tiền giữ trẻ, sữa hay bảo hiểm để khỏi phải ghi lại mỗi lần.",
+  "@spRecurringEmpty": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringNext": "Ngày {date}: {title} {amount} sẽ được thêm. Bạn có thể sửa số tiền sau khi thêm.",
+  "@spRecurringNext": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "spAddRecurring": "Thêm khoản định kỳ",
+  "@spAddRecurring": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spEditRecurring": "Sửa khoản định kỳ",
+  "@spEditRecurring": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringName": "Tên khoản",
+  "@spRecurringName": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringNameHint": "Ví dụ: Cô giữ trẻ",
+  "@spRecurringNameHint": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringTitleMissing": "Nhập tên khoản",
+  "@spRecurringTitleMissing": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSchedule": "Lặp lại",
+  "@spSchedule": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spKindMonthly": "Hằng tháng",
+  "@spKindMonthly": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spKindWeeks": "Theo tuần",
+  "@spKindWeeks": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spKindYearly": "Hằng năm",
+  "@spKindYearly": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spScheduleDays": "Ngày trong tháng",
+  "@spScheduleDays": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spScheduleDaysHelp": "Chọn 1 hoặc 2 ngày. Tháng ngắn hơn sẽ dùng ngày cuối tháng.",
+  "@spScheduleDaysHelp": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spStartOn": "Bắt đầu từ",
+  "@spStartOn": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spScheduleOn": "Ngày",
+  "@spScheduleOn": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringOn": "Đang bật",
+  "@spRecurringOn": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringHelp": "Khoản được thêm tự động vào ngày đến hạn, theo giờ của bé.",
+  "@spRecurringHelp": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spDeleteRecurring": "Xoá khoản định kỳ",
+  "@spDeleteRecurring": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringSaved": "Đã lưu khoản định kỳ",
+  "@spRecurringSaved": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spRecurringDeleted": "Đã xoá khoản định kỳ",
+  "@spRecurringDeleted": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spLess": "Bớt",
+  "@spLess": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spMore": "Thêm",
+  "@spMore": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spStatsTitle": "Thống kê chi tiêu",
+  "@spStatsTitle": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spWindowMonth": "Tháng",
+  "@spWindowMonth": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spWindowSix": "6 tháng",
+  "@spWindowSix": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spWindowBirth": "Từ khi sinh",
+  "@spWindowBirth": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spMonthTotal": "Tổng tháng này",
+  "@spMonthTotal": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCount": "Khoản chi",
+  "@spCount": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSixTotal": "Tổng 6 tháng",
+  "@spSixTotal": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAvgPerMonth": "TB mỗi tháng",
+  "@spAvgPerMonth": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spHighest": "Cao nhất · T{month}",
+  "@spHighest": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      }
+    }
+  },
+  "spByMonth": "Theo tháng",
+  "@spByMonth": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spCountedTo": "T{month} đang tính đến {date}",
+  "@spCountedTo": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "spMonthTick": "T{month}",
+  "@spMonthTick": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "month": {
+        "type": "int"
+      }
+    }
+  },
+  "spAvgLine": "TB {amount}",
+  "@spAvgLine": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "spTip": "{label} · {amount}",
+  "@spTip": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "spOthersFolded": "Khác",
+  "@spOthersFolded": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSinceBirth": "Từ khi {name} chào đời · {months} tháng",
+  "@spSinceBirth": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "spSinceFirst": "Từ khoản chi đầu tiên",
+  "@spSinceFirst": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSinceBirthSub": "Trung bình {amount} mỗi tháng tuổi · {n} khoản chi",
+  "@spSinceBirthSub": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spByAge": "Theo tháng tuổi",
+  "@spByAge": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spFirstMonth": "Tháng đầu",
+  "@spFirstMonth": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spAgeMonth": "Tháng tuổi {n}",
+  "@spAgeMonth": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spLargest": "Khoản lớn nhất",
+  "@spLargest": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spExport": "Xuất file chi tiêu (CSV)",
+  "@spExport": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spExportFile": "chi-tieu-{date}",
+  "@spExportFile": {
+    "description": "Chi tiêu (v1.1 8a–8o).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "spExportFailed": "Chưa xuất được file. Thử lại sau.",
+  "@spExportFailed": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spOwnFamilyOnly": "Số liệu chỉ để gia đình tự theo dõi, không so sánh với gia đình khác.",
+  "@spOwnFamilyOnly": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "rightRecordSpending": "Ghi khoản đã chi",
+  "@rightRecordSpending": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "rightRecordSpendingHint": "Chỉ thấy khoản do mình ghi",
+  "@rightRecordSpendingHint": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "rightViewSpending": "Xem toàn bộ chi tiêu",
+  "@rightViewSpending": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "rightViewSpendingHint": "Tổng, thống kê, mọi khoản chi",
+  "@rightViewSpendingHint": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "rightSpendingNote": "Chi tiêu mặc định chỉ cha mẹ thấy. Người được bật “Ghi khoản đã chi” sẽ không thấy tổng hay khoản của người khác.",
+  "@rightSpendingNote": {
+    "description": "Chi tiêu (v1.1 8a–8o)."
+  },
+  "spSinceBirthYoung": "Từ khi {name} chào đời",
+  "@spSinceBirthYoung": {
+    "description": "Chi tiêu (v1.1 8e), under a month old.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }
