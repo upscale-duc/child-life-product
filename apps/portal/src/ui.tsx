@@ -327,6 +327,9 @@ export const reasonMessages = [
   'not-draft',
   'not-pending',
   'not-retired',
+  'image-missing',
+  'image-unreadable',
+  'review-required',
 ];
 
 export function errorMessageId(error: ApiError): string {

@@ -1,5 +1,6 @@
 import type {
   AuditCategory,
+  FirstAidPack,
   FlagKey,
   Flags,
   Limits,
@@ -55,6 +56,10 @@ export type Callable =
   | 'staffReference'
   | 'staffReferenceDraft'
   | 'staffReferenceAct'
+  | 'staffFirstAid'
+  | 'staffFirstAidDraft'
+  | 'staffFirstAidAct'
+  | 'staffFirstAidImage'
   | 'sendAuthEmail';
 
 export interface Api {
@@ -547,4 +552,37 @@ export interface ReferenceView {
       })
     | null;
   history: ReferenceVersion[];
+}
+
+// ---------- Sơ cứu (D-058, P-141, mirrors content.ts) ----------
+
+export type FirstAidStatus = 'draft' | 'pending' | 'published' | 'retired' | 'discarded';
+
+export interface FirstAidVersion {
+  versionId: string;
+  status: FirstAidStatus;
+  label: string | null;
+  notes: string;
+  authorName: string;
+  approverName: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  approvedAt: string | null;
+  rejection: { by: string; reason: string } | null;
+  /** Number of situations in the version's pack. */
+  situations: number;
+}
+
+export interface FirstAidImage {
+  id: string;
+  url: string;
+}
+
+export interface FirstAidView {
+  current: { version: string; publishedAt: string; pack: FirstAidPack } | null;
+  draft: (FirstAidVersion & { status: 'draft' | 'pending'; pack: FirstAidPack }) | null;
+  history: FirstAidVersion[];
+  images: FirstAidImage[];
+  /** Prod: approving records the medical review (who, when, sources). */
+  requireReview: boolean;
 }

@@ -17,6 +17,7 @@ export type Route =
   | 'storage'
   | 'jobs'
   | 'reference'
+  | 'firstAid'
   | 'system'
   | 'systemAi'
   | 'features'
@@ -32,6 +33,7 @@ export const routePaths: Record<Route, string> = {
   storage: '/storage',
   jobs: '/jobs',
   reference: '/reference',
+  firstAid: '/first-aid',
   system: '/system',
   systemAi: '/system/ai',
   features: '/features',
@@ -41,7 +43,7 @@ export const routePaths: Record<Route, string> = {
 };
 
 /** v1.0 screens with their own sub-pages: "/families/F-7Q2K", "/staff/roles/support". */
-const nestedRoutes: Route[] = ['analytics', 'families', 'reference', 'staff'];
+const nestedRoutes: Route[] = ['analytics', 'families', 'reference', 'firstAid', 'staff'];
 
 export function routeOf(pathname: string): Route {
   const clean = pathname.replace(/\/+$/, '') || '/';

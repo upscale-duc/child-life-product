@@ -23,6 +23,7 @@ import { AnalyticsScreen } from './screens/Analytics';
 import { AuditScreen } from './screens/Audit';
 import { FamiliesScreen } from './screens/Families';
 import { FeaturesScreen } from './screens/Features';
+import { FirstAidScreen } from './screens/FirstAid';
 import { JobsScreen } from './screens/Jobs';
 import { OverviewScreen } from './screens/Overview';
 import { QaScreen } from './screens/Qa';
@@ -35,11 +36,11 @@ import { SystemScreen } from './screens/System';
 type NavItem = {
   route: Route;
   badge?: keyof Badges;
-  group?: 'ops' | 'system' | 'develop';
+  group?: 'ops' | 'content' | 'system' | 'develop';
   /** What a member needs to see the item (P-134); Kiểm thử only reaches the QA handbook. */
   can: StaffAction;
 };
-/** The v1.0 sidebar (`253:467`), plus PHÁT TRIỂN › Sổ tay kiểm thử (P-132). */
+/** The v1.0 sidebar (`253:467`), NỘI DUNG › Sơ cứu (D-058), PHÁT TRIỂN › Sổ tay kiểm thử (P-132). */
 const nav: NavItem[] = [
   { route: 'overview', can: 'overview.view' },
   { route: 'analytics', can: 'analytics.view' },
@@ -48,6 +49,7 @@ const nav: NavItem[] = [
   { route: 'storage', badge: 'storage', group: 'ops', can: 'storage.view' },
   { route: 'jobs', badge: 'jobs', group: 'ops', can: 'jobs.view' },
   { route: 'reference', group: 'ops', can: 'reference.view' },
+  { route: 'firstAid', group: 'content', can: 'content.view' },
   { route: 'system', group: 'system', can: 'system.view' },
   { route: 'features', group: 'system', can: 'features.view' },
   { route: 'staff', group: 'system', can: 'staff.view' },
@@ -189,6 +191,8 @@ function Screen({ route }: { route: Route }) {
       return <FamiliesScreen />;
     case 'reference':
       return <ReferenceScreen />;
+    case 'firstAid':
+      return <FirstAidScreen />;
     case 'staff':
       return <StaffScreen />;
     case 'support':
