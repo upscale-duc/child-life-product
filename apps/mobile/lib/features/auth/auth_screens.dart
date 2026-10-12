@@ -223,7 +223,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     style: ClButtonStyle.plain,
                     icon: ClIcons.family,
                     expand: true,
-                    onPressed: _busy ? null : () => context.push(Routes.join),
+                    // `go`, not `push`: the guard reads the bottom of the stack, and over
+                    // R1 "Vào ngay" / Apple / Google would send 16a back to 15 or to "Bạn là
+                    // ai" (owner, 2026-10-12). Back from 15 returns here (leaveJoinFlow).
+                    onPressed: _busy ? null : () => context.go(Routes.join),
                   ),
                   const SizedBox(height: ClSpace.s4),
                   Center(

@@ -87,16 +87,17 @@ bool _isSession(Object o) {
 
 Future<(GoRouter, _Repo, ValueNotifier<Session>)> _app(
   WidgetTester tester,
-  Session start,
-) async {
-  SharedPreferences.setMockInitialValues({});
-  final prefs = await SharedPreferences.getInstance();
+  Session start, {
+  Map<String, Object> prefs = const {},
+}) async {
+  SharedPreferences.setMockInitialValues(prefs);
+  final preferences = await SharedPreferences.getInstance();
   final live = ValueNotifier<Session>(start);
   final repo = _Repo(live);
   final container = ProviderContainer(
     overrides: [
       ...careOverrides().where((o) => !_isSession(o)),
-      sharedPreferencesProvider.overrideWithValue(prefs),
+      sharedPreferencesProvider.overrideWithValue(preferences),
       environmentProvider.overrideWithValue(AppEnvironment.dev),
       sessionProvider.overrideWith((ref) {
         void changed() => ref.invalidateSelf();
@@ -173,6 +174,29 @@ void main() {
     await tester.pumpAndSettle();
     expect(repo.accepted, ['Bà nội Hoa']);
     expect(_where(router), '/today');
+    await _close(tester);
+  });
+
+  testWidgets('from R1 (a device signed in before): "Vào ngay" stays on 16a', (
+    tester,
+  ) async {
+    final (router, repo, _) = await _app(
+      tester,
+      const SessionSignedOut(),
+      prefs: const {'device.signedInBefore': true},
+    );
+    expect(_where(router), Routes.welcomeBack);
+    await tester.ensureVisible(find.text('Tôi có mã mời'));
+    await tester.tap(find.text('Tôi có mã mời'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(EditableText).first, '482913');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Tham gia'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Vào ngay'));
+    await tester.pumpAndSettle();
+    expect(_where(router), '/join > /join/invite > /join/confirm');
+    expect(find.text('Bạn là ai với Teddy?'), findsOneWidget);
     await _close(tester);
   });
 
