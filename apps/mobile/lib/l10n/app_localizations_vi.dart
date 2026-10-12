@@ -8031,4 +8031,15 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get careNutritionSub => 'Sữa, vi chất theo giai đoạn';
+
+  @override
+  String get inviteLinkJoining => 'Đang nhận lời mời…';
+
+  @override
+  String inviteLinkJoined(String baby) {
+    return 'Bạn đã cùng chăm $baby. Đổi tên trong Gia đình.';
+  }
+
+  @override
+  String get inviteLinkDefaultName => 'Người thân';
 }

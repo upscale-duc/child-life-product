@@ -12,7 +12,13 @@ import { getAuth } from 'firebase-admin/auth';
 import { getStorage } from 'firebase-admin/storage';
 import { getMessaging } from 'firebase-admin/messaging';
 import { defaultLimits, functionsRegion, limitsSchema } from '@child-life/contracts';
-import { adminOriginFor, currentProjectId, environmentForProject, webOriginFor } from './env.js';
+import {
+  adminOriginFor,
+  currentProjectId,
+  environmentForProject,
+  inviteOneLinkFor,
+  webOriginFor,
+} from './env.js';
 import {
   FamilyError,
   acceptInvite,
@@ -764,6 +770,7 @@ function mailSender(): MailSender | null {
 
 const mailOrigins = () => ({
   webOrigin: webOriginFor(currentProjectId()),
+  oneLink: inviteOneLinkFor(currentProjectId()),
   adminOrigin: adminOriginFor(currentProjectId()),
   /** Where `exportDownload` answers (direct, not through Hosting: no 60 s proxy limit). */
   functionsOrigin: `https://${functionsRegion}-${currentProjectId()}.cloudfunctions.net`,

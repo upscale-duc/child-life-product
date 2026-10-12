@@ -8580,4 +8580,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get careNutritionSub => 'Milk and nutrients by stage';
+
+  @override
+  String get inviteLinkJoining => 'Accepting the invite…';
+
+  @override
+  String inviteLinkJoined(String baby) {
+    return 'You now care for $baby. Change your name in Family.';
+  }
+
+  @override
+  String get inviteLinkDefaultName => 'Family member';
 }

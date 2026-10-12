@@ -16,7 +16,21 @@ export function currentProjectId(): string | undefined {
 export function webOriginFor(projectId: string | undefined): string {
   return environmentForProject(projectId) === 'prod'
     ? 'https://childlife.app'
-    : 'https://child-life-dev-landing.web.app';
+    : 'https://dev.childlife.app';
+}
+
+/**
+ * The invite email's AppsFlyer OneLink template (owner, 2026-10-12), e.g.
+ * `https://childlife.onelink.me/AbCd`; undefined until it exists, and the email then links the
+ * web page `/i/{token}`, which also opens the installed app.
+ */
+const inviteOneLinks: Record<'dev' | 'prod', string | undefined> = {
+  dev: undefined,
+  prod: undefined,
+};
+
+export function inviteOneLinkFor(projectId: string | undefined): string | undefined {
+  return inviteOneLinks[environmentForProject(projectId) === 'prod' ? 'prod' : 'dev'];
 }
 
 /** The staff portal of the environment: staff invitations (P-135). */

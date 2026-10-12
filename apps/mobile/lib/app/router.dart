@@ -16,6 +16,7 @@ import '../features/diagnostics/diagnostics_screen.dart';
 import '../features/family/family_models.dart';
 import '../features/family/family_screen.dart';
 import '../features/family/invite_screens.dart';
+import '../features/family/invite_link_join.dart';
 import '../features/family/join_screens.dart';
 import '../features/family/save_account.dart';
 import '../features/home/home_shell.dart';
@@ -135,7 +136,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ref.read(verifyDeferredProvider),
         merging: ref.read(accountMergeInProgressProvider),
       ),
-      location: state.uri.toString(),
+      location: appLocation(state.uri),
       splashDone: ref.read(splashDoneProvider),
       lostAccess: ref.read(lostAccessBabyIdProvider) != null,
       addingBaby: ref.read(addingBabyProvider),
@@ -529,7 +530,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       // App Links / universal links from QR codes, emails and messages (plan §3.5).
       _route(
         path: '${Routes.inviteLink}/:token',
-        builder: (_, s) => AcceptInviteScreen(
+        // A tapped link joins at once (owner, 2026-10-12).
+        builder: (_, s) => InviteLinkScreen(
           lookup: InviteLookup.token(s.pathParameters['token'] ?? ''),
         ),
       ),

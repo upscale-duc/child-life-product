@@ -16,7 +16,10 @@ import '../core/design/tokens.g.dart';
 import '../features/auth/auth_repository.dart';
 import '../features/care/bottle_suggestions.dart';
 import '../l10n/app_localizations.dart';
+import '../features/family/invite_link_join.dart';
 import 'locale.dart';
+import 'onelink.dart';
+import 'route_guard.dart';
 import 'router.dart';
 
 const _localizationsDelegates = [
@@ -41,6 +44,16 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
     WidgetsBinding.instance.addObserver(this);
     // Reference data (P-138): one read per launch; the bundled copy until it lands.
     unawaited(ref.read(bottleTableProvider.notifier).refresh());
+    // The invite email's OneLink after installing (deferred); a link the OS already opened has
+    // its screen up and is not joined twice.
+    unawaited(
+      startOneLink(
+        onInvite: (token) {
+          if (openedInviteTokens.contains(token)) return;
+          ref.read(routerProvider).go('${Routes.inviteLink}/$token');
+        },
+      ),
+    );
   }
 
   @override

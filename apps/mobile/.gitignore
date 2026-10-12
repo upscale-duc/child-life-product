@@ -46,3 +46,7 @@ app.*.map.json
 
 # Golden mismatch output from flutter test
 test/golden/failures/
+
+# AppsFlyer keys (set by the owner; see config/appsflyer.example.json)
+/config/appsflyer.*.json
+!/config/appsflyer.example.json

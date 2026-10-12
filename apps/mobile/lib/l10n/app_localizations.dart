@@ -13452,6 +13452,24 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Sữa, vi chất theo giai đoạn'**
   String get careNutritionSub;
+
+  /// While an invite link joins.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang nhận lời mời…'**
+  String get inviteLinkJoining;
+
+  /// Toast after joining from a link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã cùng chăm {baby}. Đổi tên trong Gia đình.'**
+  String inviteLinkJoined(String baby);
+
+  /// Name given when joining from a link (owner, 2026-10-12).
+  ///
+  /// In vi, this message translates to:
+  /// **'Người thân'**
+  String get inviteLinkDefaultName;
 }
 
 class _AppLocalizationsDelegate

@@ -96,5 +96,27 @@ writeFileSync(
   )}\n`,
 );
 
+// iOS Universal Links: only invite links /i/{token} open the app; story links /s/… stay on the
+// web. Served instead of Firebase's generated file, which opened every path. Dev borrows the
+// owner's interim team (tool/ios_flavors.rb); prod waits for the Child Life developer account.
+const iosApps = { dev: ['VHFV2HNZGN.dev.hsba.app'], prod: [] };
+writeFileSync(
+  join(dist, '.well-known', 'apple-app-site-association'),
+  `${JSON.stringify(
+    {
+      applinks: {
+        details: iosApps[environment].map((appID) => ({
+          appIDs: [appID],
+          components: [{ '/': '/i/*' }],
+          appID,
+          paths: ['/i/*'],
+        })),
+      },
+    },
+    null,
+    2,
+  )}\n`,
+);
+
 rmSync(join(root, 'dist-ssr'), { recursive: true, force: true });
 console.log(`sitemap.xml and robots.txt written for ${environment} (${origin})`);

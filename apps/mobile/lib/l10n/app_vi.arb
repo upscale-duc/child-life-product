@@ -12165,5 +12165,22 @@
   "careNutritionSub": "Sữa, vi chất theo giai đoạn",
   "@careNutritionSub": {
     "description": "Tile subline."
+  },
+  "inviteLinkJoining": "Đang nhận lời mời…",
+  "@inviteLinkJoining": {
+    "description": "While an invite link joins."
+  },
+  "inviteLinkJoined": "Bạn đã cùng chăm {baby}. Đổi tên trong Gia đình.",
+  "@inviteLinkJoined": {
+    "description": "Toast after joining from a link.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteLinkDefaultName": "Người thân",
+  "@inviteLinkDefaultName": {
+    "description": "Name given when joining from a link (owner, 2026-10-12)."
   }
 }

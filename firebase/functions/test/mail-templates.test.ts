@@ -7,6 +7,7 @@ import {
   authTemplates,
   renderAccountEmail,
   renderAuthEmail,
+  inviteLinkUrl,
   renderInviteEmail,
   type AccountMailData,
   type Locale,
@@ -92,6 +93,25 @@ describe('templates', () => {
     expect(m.html).toContain('Hoặc nhập mã trong app · hết hạn 15 thg 10');
     expect(m.html).toContain('Huỷ nhận email');
     expect(m.text).toContain('Nhận lời mời: https://childlife.app/i/tok_abc');
+  });
+
+  it('with a OneLink, "Nhận lời mời" opens the app and joins, even after installing', () => {
+    const url = new URL(
+      inviteLinkUrl('tok_abc', 'https://dev.childlife.app', 'https://childlife.onelink.me/AbCd'),
+    );
+    expect(url.origin + url.pathname).toBe('https://childlife.onelink.me/AbCd');
+    expect(Object.fromEntries(url.searchParams)).toEqual({
+      deep_link_value: 'invite',
+      deep_link_sub1: 'tok_abc',
+      af_web_dp: 'https://dev.childlife.app/i/tok_abc',
+      pid: 'invite_email',
+    });
+    const m = renderInviteEmail('en', invite, {
+      webOrigin: 'https://dev.childlife.app',
+      unsubscribeUrl: 'https://dev.childlife.app/u/xyz',
+      oneLink: 'https://childlife.onelink.me/AbCd',
+    });
+    expect(m.text).toContain('https://childlife.onelink.me/AbCd?deep_link_value=invite');
   });
 
   it('service mail has no unsubscribe; staff mail points at the portal', () => {

@@ -44,7 +44,14 @@ export interface MailSender {
 export async function deliverMail(
   doc: DocumentSnapshot,
   sender: MailSender | null,
-  config: { webOrigin: string; adminOrigin?: string; functionsOrigin?: string; now: Date },
+  config: {
+    webOrigin: string;
+    adminOrigin?: string;
+    functionsOrigin?: string;
+    /** The invite OneLink template (`https://childlife.onelink.me/AbCd`); unset → web link. */
+    oneLink?: string | undefined;
+    now: Date;
+  },
 ): Promise<'sent' | 'waiting-provider' | 'failed' | 'superseded'> {
   const mail = doc.data();
   if (!mail || mail.status === 'sent') return 'sent';
@@ -68,6 +75,7 @@ export async function deliverMail(
         ? renderInviteEmail(mail.locale as Locale, mail.data as InviteMailData, {
             webOrigin: config.webOrigin,
             unsubscribeUrl,
+            oneLink: config.oneLink,
           })
         : (accountTemplates as readonly string[]).includes(template)
           ? renderAccountEmail(

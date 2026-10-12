@@ -50,6 +50,7 @@ abstract final class Routes {
   static const spendingCategories = '/utilities/spending/categories';
   static const messages = '/messages';
   static const memories = '/memories';
+
   /// Tiện ích tab (v1.0 improvement 450:6597): Sơ cứu, Chi tiêu, Gia đình.
   static const utilities = '/utilities';
   static const family = '/utilities/family';
@@ -119,6 +120,33 @@ enum GuardState {
   ready,
 }
 
+/// The in-app location of an opened link. Universal Links and App Links reach the router with
+/// their host (`https://dev.childlife.app/i/…`); the guard works on the path and query.
+String appLocation(Uri uri) {
+  final path = uri.path.isEmpty ? '/' : uri.path;
+  return uri.hasQuery ? '$path?${uri.query}' : path;
+}
+
+final _inviteToken = RegExp(r'^[A-Za-z0-9_-]{32}$');
+
+/// An invite link token (`/i/{token}`): 32 URL-safe characters.
+bool isInviteToken(String token) => _inviteToken.hasMatch(token);
+
+/// The invite email's AppsFlyer OneLink (`childlife.onelink.me/{template}?deep_link_value=invite
+/// &deep_link_sub1={token}`) opening the installed app: the router sees the template path, which
+/// means nothing here, so it becomes `/i/{token}`. Any other OneLink lands on Hôm nay.
+String? oneLinkLocation(String location) {
+  final uri = Uri.tryParse(location);
+  final params = uri?.queryParameters ?? const <String, String>{};
+  final kind = params['deep_link_value'];
+  if (kind == null) return null;
+  final token = params['deep_link_sub1'] ?? '';
+  if (kind == 'invite' && isInviteToken(token)) {
+    return '${Routes.inviteLink}/$token';
+  }
+  return Routes.splash;
+}
+
 bool _under(String location, String prefix) =>
     location == prefix ||
     location.startsWith('$prefix/') ||
@@ -137,6 +165,8 @@ String? guardRoute({
   bool addingBaby = false,
   bool returning = false,
 }) {
+  final link = oneLinkLocation(location);
+  if (link != null) return link;
   final onSplash = location == Routes.splash;
   if (state == GuardState.loading) return null;
   if (onSplash && !splashDone) return null;
