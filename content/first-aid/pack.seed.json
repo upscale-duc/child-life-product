@@ -119,7 +119,8 @@
               },
               "image": "mo-duong-tho",
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -132,7 +133,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -160,7 +162,8 @@
                   "tone": "neutral"
                 }
               ],
-              "count": null
+              "count": null,
+              "cprRole": "compressions"
             },
             {
               "title": {
@@ -173,7 +176,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": "breaths"
             }
           ],
           "callouts": [
@@ -237,7 +241,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -250,7 +255,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -278,7 +284,8 @@
                   "tone": "neutral"
                 }
               ],
-              "count": null
+              "count": null,
+              "cprRole": "compressions"
             },
             {
               "title": {
@@ -291,7 +298,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": "breaths"
             }
           ],
           "callouts": [
@@ -411,7 +419,8 @@
               },
               "image": null,
               "chips": [],
-              "count": 5
+              "count": 5,
+              "cprRole": null
             },
             {
               "title": {
@@ -424,7 +433,8 @@
               },
               "image": "an-nguc",
               "chips": [],
-              "count": 5
+              "count": 5,
+              "cprRole": null
             },
             {
               "title": {
@@ -437,7 +447,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -505,7 +516,8 @@
               },
               "image": "ep-bung",
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -518,7 +530,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -531,7 +544,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -638,7 +652,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -651,7 +666,8 @@
               },
               "image": "kich-thich-long-ban-chan",
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -664,7 +680,8 @@
               },
               "image": "vo-lung",
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -677,7 +694,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -783,7 +801,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -796,7 +815,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -809,7 +829,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -899,7 +920,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -912,7 +934,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -925,7 +948,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -938,7 +962,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -951,7 +976,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -1069,7 +1095,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1082,7 +1109,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1095,7 +1123,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -1194,7 +1223,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1207,7 +1237,8 @@
               },
               "image": "nam-nghieng-an-toan",
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1220,7 +1251,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1233,7 +1265,8 @@
               },
               "image": "mang-theo-vo-thuoc",
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -1336,7 +1369,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1349,7 +1383,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1362,7 +1397,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1375,7 +1411,8 @@
               },
               "image": "ep-gac-cam-mau",
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1388,7 +1425,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -1487,7 +1525,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1500,7 +1539,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1513,7 +1553,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -1627,7 +1668,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1640,7 +1682,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1653,7 +1696,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -1698,7 +1742,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1711,7 +1756,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1724,7 +1770,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -1831,7 +1878,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1844,7 +1892,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1857,7 +1906,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1870,7 +1920,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -1973,7 +2024,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1986,7 +2038,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -1999,7 +2052,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -2102,7 +2156,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2115,7 +2170,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2128,7 +2184,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -2214,7 +2271,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2227,7 +2285,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2240,7 +2299,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2253,7 +2313,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -2363,7 +2424,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2376,7 +2438,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2389,7 +2452,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -2451,7 +2515,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2464,7 +2529,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2477,7 +2543,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -2588,7 +2655,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2601,7 +2669,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2614,7 +2683,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -2717,7 +2787,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2730,7 +2801,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2743,7 +2815,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -2825,7 +2898,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2838,7 +2912,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2851,7 +2926,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -2937,7 +3013,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -2950,7 +3027,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -3045,7 +3123,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3058,7 +3137,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3071,7 +3151,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -3174,7 +3255,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3187,7 +3269,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3200,7 +3283,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3213,7 +3297,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -3316,7 +3401,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3329,7 +3415,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3342,7 +3429,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -3453,7 +3541,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3466,7 +3555,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3479,7 +3569,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [
@@ -3569,7 +3660,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3582,7 +3674,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             },
             {
               "title": {
@@ -3595,7 +3688,8 @@
               },
               "image": null,
               "chips": [],
-              "count": null
+              "count": null,
+              "cprRole": null
             }
           ],
           "callouts": [

@@ -8333,4 +8333,240 @@ class AppLocalizationsEn extends AppLocalizations {
   String acExportEmailed(String when) {
     return 'Download link emailed · expires $when';
   }
+
+  @override
+  String get faEntryTitle => 'Child first aid';
+
+  @override
+  String faEntrySub(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count situations · works offline',
+      one: '1 situation · works offline',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get faTitle => 'First aid';
+
+  @override
+  String get faSubtitle =>
+      'Stay calm and follow the steps. Works even without a connection.';
+
+  @override
+  String get faEmergencyQuestion =>
+      'Baby not breathing, turning blue or unconscious?';
+
+  @override
+  String faCall(String number) {
+    return 'Call $number';
+  }
+
+  @override
+  String get faStartCpr => 'Start CPR';
+
+  @override
+  String get faSearchHint => 'Choking, fever, burns, breathing…';
+
+  @override
+  String get faAll => 'All';
+
+  @override
+  String faSortedFor(String name, String age) {
+    return 'Sorted for $name · $age';
+  }
+
+  @override
+  String get faSaved => 'Saved';
+
+  @override
+  String get faSavedEmpty =>
+      'Nothing saved yet. Tap the bookmark on a situation to keep it here.';
+
+  @override
+  String get faSave => 'Save this situation';
+
+  @override
+  String get faUnsave => 'Remove from saved';
+
+  @override
+  String get faSavedToast => 'Saved to First aid · Saved';
+
+  @override
+  String get faUnsavedToast => 'Removed from saved';
+
+  @override
+  String faResults(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count situations',
+      one: '1 situation',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get faQuickSearch => 'Quick search';
+
+  @override
+  String faNoResults(String number) {
+    return 'No matching situation. If your baby is in danger, call $number.';
+  }
+
+  @override
+  String get faOffline => 'Works offline';
+
+  @override
+  String get faMonitoring => 'Monitoring';
+
+  @override
+  String get faFollowSteps => 'Follow the steps';
+
+  @override
+  String get faStepMode => 'Step by step';
+
+  @override
+  String get faTimes => 'times';
+
+  @override
+  String get faDisclaimer =>
+      'For reference only. It does not replace a doctor’s diagnosis.';
+
+  @override
+  String faReviewed(String reviewer, String month) {
+    return 'Reviewed by $reviewer, $month.';
+  }
+
+  @override
+  String get faSeizureTimer => 'Time the seizure';
+
+  @override
+  String get faTimerStart => 'Start';
+
+  @override
+  String get faTimerStop => 'Stop';
+
+  @override
+  String get faTimerReset => 'Reset';
+
+  @override
+  String faStepOf(String title, int n, int total) {
+    return '$title · Step $n/$total';
+  }
+
+  @override
+  String get faTapToCount => 'Tap to count';
+
+  @override
+  String get faScreenOn => 'The screen stays on while you follow the guide.';
+
+  @override
+  String get faBack => 'Back';
+
+  @override
+  String get faNext => 'Next step';
+
+  @override
+  String get faFinish => 'Done';
+
+  @override
+  String get faClose => 'Close the guide';
+
+  @override
+  String faCprStep(String title, int n, int total, int cycle) {
+    return '$title · Step $n/$total · Cycle $cycle';
+  }
+
+  @override
+  String faCprRate(int rate) {
+    return '$rate per minute';
+  }
+
+  @override
+  String get faCprBeep => 'Beep and vibration on each beat';
+
+  @override
+  String faCprNextBreaths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Next: $count rescue breaths',
+      one: 'Next: 1 rescue breath',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String faCprNextCompressions(int count) {
+    return 'Next: $count chest compressions';
+  }
+
+  @override
+  String get faCprFootnote =>
+      'The screen stays on. Never pause compressions for more than 10 seconds.';
+
+  @override
+  String get faCprPause => 'Pause';
+
+  @override
+  String get faCprResume => 'Resume';
+
+  @override
+  String get faCprBreathing => 'Baby is breathing again';
+
+  @override
+  String faCprBreathsDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count breaths given',
+      one: '1 breath given',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get faCprStopped =>
+      'Keep watching your baby until medical help arrives. If breathing stops again, start again at once.';
+
+  @override
+  String faCallTitle(String number) {
+    return 'Call emergency $number';
+  }
+
+  @override
+  String faCallHandling(String situation) {
+    return 'Now handling: $situation';
+  }
+
+  @override
+  String get faCallTell => 'Tell the operator';
+
+  @override
+  String get faCallTell1 => 'How old your baby is and what happened';
+
+  @override
+  String get faCallTell2 => 'Whether your baby is breathing and awake';
+
+  @override
+  String get faCallTell3 => 'The exact address and a landmark';
+
+  @override
+  String get faCallTell4 => 'A number to call you back on';
+
+  @override
+  String faCallFailed(String number) {
+    return 'Couldn’t open the phone app. Dial $number on your phone.';
+  }
+
+  @override
+  String faWeightKg(String kg) {
+    return '$kg kg';
+  }
+
+  @override
+  String get faNotFound => 'This guide wasn’t found. Open First aid again.';
 }

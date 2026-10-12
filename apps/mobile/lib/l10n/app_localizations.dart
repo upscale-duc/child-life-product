@@ -13104,6 +13104,354 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã gửi link tải qua email · hết hạn {when}'**
   String acExportEmailed(String when);
+
+  /// 7a entry banner on Chăm sóc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sơ cứu trẻ em'**
+  String get faEntryTitle;
+
+  /// 7a banner subline.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} tình huống · dùng khi không có mạng'**
+  String faEntrySub(int count);
+
+  /// 7b title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sơ cứu'**
+  String get faTitle;
+
+  /// 7b subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bình tĩnh, làm theo từng bước. Dùng được cả khi không có mạng.'**
+  String get faSubtitle;
+
+  /// 7b emergency card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé không thở, tím tái hoặc bất tỉnh?'**
+  String get faEmergencyQuestion;
+
+  /// Red call buttons.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gọi {number}'**
+  String faCall(String number);
+
+  /// 7b emergency card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu hồi sức tim phổi (CPR)'**
+  String get faStartCpr;
+
+  /// 7b / 7c search placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hóc, sốt, bỏng, khó thở…'**
+  String get faSearchHint;
+
+  /// 7b filter chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get faAll;
+
+  /// 7b first section subline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp xếp theo tuổi {name} · {age}'**
+  String faSortedFor(String name, String age);
+
+  /// Saved situations screen title; bookmark a11y.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu'**
+  String get faSaved;
+
+  /// Saved screen empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu tình huống nào. Bấm dấu trang trên một tình huống để lưu lại đây.'**
+  String get faSavedEmpty;
+
+  /// Bookmark a11y.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu tình huống'**
+  String get faSave;
+
+  /// Bookmark a11y when saved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ lưu'**
+  String get faUnsave;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu vào Sơ cứu · Đã lưu'**
+  String get faSavedToast;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ lưu'**
+  String get faUnsavedToast;
+
+  /// 7c result count.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} tình huống'**
+  String faResults(int count);
+
+  /// 7c chips header.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm nhanh'**
+  String get faQuickSearch;
+
+  /// 7c no results.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy tình huống phù hợp. Bé gặp nguy hiểm: gọi {number}.'**
+  String faNoResults(String number);
+
+  /// Detail tag.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng được khi không có mạng'**
+  String get faOffline;
+
+  /// Detail tag (TH21, TH24).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi'**
+  String get faMonitoring;
+
+  /// Detail section header.
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm theo các bước'**
+  String get faFollowSteps;
+
+  /// Bottom bar primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm theo từng bước'**
+  String get faStepMode;
+
+  /// After the count dots (7d).
+  ///
+  /// In vi, this message translates to:
+  /// **'lần'**
+  String get faTimes;
+
+  /// Detail footer (no review claimed until one is recorded, P-141).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung tham khảo, không thay thế chẩn đoán của bác sĩ.'**
+  String get faDisclaimer;
+
+  /// Detail footer once a review is recorded.
+  ///
+  /// In vi, this message translates to:
+  /// **'Được {reviewer} rà soát tháng {month}.'**
+  String faReviewed(String reviewer, String month);
+
+  /// TH04 timer card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bấm giờ cơn giật'**
+  String get faSeizureTimer;
+
+  /// TH04 timer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu'**
+  String get faTimerStart;
+
+  /// TH04 timer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng'**
+  String get faTimerStop;
+
+  /// TH04 timer after stopping.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bấm lại'**
+  String get faTimerReset;
+
+  /// 7f progress label.
+  ///
+  /// In vi, this message translates to:
+  /// **'{title} · Bước {n}/{total}'**
+  String faStepOf(String title, int n, int total);
+
+  /// 7f counter card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để đếm'**
+  String get faTapToCount;
+
+  /// 7f footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Màn hình luôn sáng trong khi bạn làm theo hướng dẫn.'**
+  String get faScreenOn;
+
+  /// 7f secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay lại'**
+  String get faBack;
+
+  /// 7f primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước tiếp'**
+  String get faNext;
+
+  /// Step mode, last step.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get faFinish;
+
+  /// Step / CPR mode close a11y.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng hướng dẫn'**
+  String get faClose;
+
+  /// 7i progress label.
+  ///
+  /// In vi, this message translates to:
+  /// **'{title} · Bước {n}/{total} · Chu kỳ {cycle}'**
+  String faCprStep(String title, int n, int total, int cycle);
+
+  /// 7i beat row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{rate} nhịp/phút'**
+  String faCprRate(int rate);
+
+  /// 7i.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếng bíp và rung theo nhịp'**
+  String get faCprBeep;
+
+  /// 7i pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp: thổi ngạt {count} lần'**
+  String faCprNextBreaths(int count);
+
+  /// 7i pill on the breaths step.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp: ép ngực {count} lần'**
+  String faCprNextCompressions(int count);
+
+  /// 7i footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Màn hình luôn sáng. Dừng ép không quá 10 giây.'**
+  String get faCprFootnote;
+
+  /// 7i secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng'**
+  String get faCprPause;
+
+  /// 7i secondary when paused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục'**
+  String get faCprResume;
+
+  /// 7i primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé đã thở lại'**
+  String get faCprBreathing;
+
+  /// 7i breaths step primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thổi {count} lần'**
+  String faCprBreathsDone(int count);
+
+  /// Toast after "Bé đã thở lại".
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục theo dõi bé đến khi nhân viên y tế tới. Bé ngừng thở lại: bắt đầu lại ngay.'**
+  String get faCprStopped;
+
+  /// 7h sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gọi cấp cứu {number}'**
+  String faCallTitle(String number);
+
+  /// 7h baby row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xử lý: {situation}'**
+  String faCallHandling(String situation);
+
+  /// 7h checklist header.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nói rõ với tổng đài'**
+  String get faCallTell;
+
+  /// 7h checklist.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé mấy tuổi, chuyện gì đã xảy ra'**
+  String get faCallTell1;
+
+  /// 7h checklist.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé còn thở, còn tỉnh không'**
+  String get faCallTell2;
+
+  /// 7h checklist.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa chỉ chính xác, điểm dễ nhận biết'**
+  String get faCallTell3;
+
+  /// 7h checklist.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số điện thoại để gọi lại'**
+  String get faCallTell4;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không mở được trình gọi điện. Hãy bấm số {number} trên điện thoại.'**
+  String faCallFailed(String number);
+
+  /// 7h baby row weight.
+  ///
+  /// In vi, this message translates to:
+  /// **'{kg} kg'**
+  String faWeightKg(String kg);
+
+  /// Unknown situation id.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy hướng dẫn này. Mở lại Sơ cứu.'**
+  String get faNotFound;
 }
 
 class _AppLocalizationsDelegate

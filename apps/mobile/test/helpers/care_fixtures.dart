@@ -8,6 +8,9 @@ import 'package:child_life/features/reminders/reminder_notifications.dart';
 import 'package:child_life/features/reminders/rule_models.dart';
 import 'package:child_life/features/reminders/rule_repository.dart';
 import 'package:child_life/features/vaccines/vaccine_models.dart';
+import 'package:child_life/features/first_aid/first_aid_models.dart';
+import 'package:child_life/features/first_aid/first_aid_modes.dart';
+import 'package:child_life/features/first_aid/first_aid_repository.dart';
 import 'package:child_life/features/vaccines/vaccine_photos.dart';
 import 'package:child_life/features/vaccines/vaccine_repository.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -293,6 +296,10 @@ List<Override> careOverrides({
   VaccinePlan vaccinePlan = const VaccinePlan(),
   VaccineRepository? vaccineRepo,
   VaccinePhotoStore? vaccinePhotos,
+  FirstAidPack? firstAid,
+  List<String> firstAidSaved = const [],
+  FirstAidDevice? firstAidDevice,
+  FirstAidStore? firstAidStore,
 }) => [
   ...familyOverrides(
     me: me,
@@ -311,6 +318,10 @@ List<Override> careOverrides({
     vaccinePlan: vaccinePlan,
     vaccineRepo: vaccineRepo,
     vaccinePhotos: vaccinePhotos,
+    firstAid: firstAid,
+    firstAidSaved: firstAidSaved,
+    firstAidDevice: firstAidDevice,
+    firstAidStore: firstAidStore,
   ),
   careRepositoryProvider.overrideWithValue(repo ?? FakeCareRepository()),
   careRecordProvider.overrideWith((ref, key) => Stream.value(byId?[key.$2])),

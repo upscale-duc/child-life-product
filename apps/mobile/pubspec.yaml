@@ -81,6 +81,8 @@ dependencies:
   media_kit_video: ^2.0.1
   media_kit_libs_video: ^1.0.7
   play_install_referrer: ^0.5.0
+  wakelock_plus: ^1.8.0
+  audioplayers: ^6.8.1
 
 dev_dependencies:
   flutter_test:
@@ -141,6 +143,7 @@ flutter:
     - assets/icons/
     - assets/logo/
     - assets/illustrations/
+    - assets/sounds/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

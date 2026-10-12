@@ -20,6 +20,9 @@ import 'package:child_life/features/reminders/rule_repository.dart';
 import 'package:child_life/features/spending/spending_models.dart';
 import 'package:child_life/features/spending/spending_repository.dart';
 import 'package:child_life/features/vaccines/vaccine_models.dart';
+import 'package:child_life/features/first_aid/first_aid_models.dart';
+import 'package:child_life/features/first_aid/first_aid_modes.dart';
+import 'package:child_life/features/first_aid/first_aid_repository.dart';
 import 'package:child_life/features/vaccines/vaccine_photos.dart';
 import 'package:child_life/features/vaccines/vaccine_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,6 +30,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
+import 'first_aid_fixtures.dart';
 import 'reminder_fixtures.dart';
 import 'spending_fixtures.dart';
 
@@ -205,6 +209,10 @@ List<Override> familyOverrides({
   VaccinePlan vaccinePlan = const VaccinePlan(),
   VaccineRepository? vaccineRepo,
   VaccinePhotoStore? vaccinePhotos,
+  FirstAidPack? firstAid,
+  List<String> firstAidSaved = const [],
+  FirstAidDevice? firstAidDevice,
+  FirstAidStore? firstAidStore,
   ReminderNotifications? notifications,
   String deviceId = testDeviceId,
   NotificationPrefs prefs = const NotificationPrefs(),
@@ -267,6 +275,16 @@ List<Override> familyOverrides({
     ),
     vaccinePhotoStoreProvider.overrideWithValue(
       vaccinePhotos ?? FakeVaccinePhotoStore(),
+    ),
+    // Sơ cứu (D-058): no guide unless a test passes one.
+    firstAidStoreProvider.overrideWithValue(
+      firstAidStore ?? FakeFirstAidStore(),
+    ),
+    firstAidPackProvider.overrideWith((ref) => Stream.value(firstAid)),
+    firstAidSavedProvider.overrideWith((ref) => Stream.value(firstAidSaved)),
+    firstAidImageProvider.overrideWithValue(fakeFirstAidImage),
+    firstAidDeviceProvider.overrideWithValue(
+      firstAidDevice ?? FakeFirstAidDevice(),
     ),
     // Chi tiêu (v1.1): rights filtering is the repository's job, so tests pass what one may read.
     expensesProvider.overrideWith((ref, key) => Stream.value(expenses)),

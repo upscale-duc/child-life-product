@@ -58,6 +58,8 @@ export const firstAidStepSchema = z
     chips: z.array(firstAidChipSchema).max(firstAidLimits.chips),
     /** "Vỗ lưng 5 lần": tap-to-count dots in reading and step mode (7d, 7f). */
     count: z.number().int().min(2).max(10).nullable(),
+    /** CPR mode (7i): the compressions step runs the metronome; the breaths step closes a cycle. */
+    cprRole: z.enum(['compressions', 'breaths']).nullable(),
   })
   .strict();
 

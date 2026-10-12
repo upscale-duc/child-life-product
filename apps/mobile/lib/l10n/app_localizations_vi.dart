@@ -7822,4 +7822,215 @@ class AppLocalizationsVi extends AppLocalizations {
   String acExportEmailed(String when) {
     return 'Đã gửi link tải qua email · hết hạn $when';
   }
+
+  @override
+  String get faEntryTitle => 'Sơ cứu trẻ em';
+
+  @override
+  String faEntrySub(int count) {
+    return '$count tình huống · dùng khi không có mạng';
+  }
+
+  @override
+  String get faTitle => 'Sơ cứu';
+
+  @override
+  String get faSubtitle =>
+      'Bình tĩnh, làm theo từng bước. Dùng được cả khi không có mạng.';
+
+  @override
+  String get faEmergencyQuestion => 'Bé không thở, tím tái hoặc bất tỉnh?';
+
+  @override
+  String faCall(String number) {
+    return 'Gọi $number';
+  }
+
+  @override
+  String get faStartCpr => 'Bắt đầu hồi sức tim phổi (CPR)';
+
+  @override
+  String get faSearchHint => 'Hóc, sốt, bỏng, khó thở…';
+
+  @override
+  String get faAll => 'Tất cả';
+
+  @override
+  String faSortedFor(String name, String age) {
+    return 'Sắp xếp theo tuổi $name · $age';
+  }
+
+  @override
+  String get faSaved => 'Đã lưu';
+
+  @override
+  String get faSavedEmpty =>
+      'Chưa lưu tình huống nào. Bấm dấu trang trên một tình huống để lưu lại đây.';
+
+  @override
+  String get faSave => 'Lưu tình huống';
+
+  @override
+  String get faUnsave => 'Bỏ lưu';
+
+  @override
+  String get faSavedToast => 'Đã lưu vào Sơ cứu · Đã lưu';
+
+  @override
+  String get faUnsavedToast => 'Đã bỏ lưu';
+
+  @override
+  String faResults(int count) {
+    return '$count tình huống';
+  }
+
+  @override
+  String get faQuickSearch => 'Tìm nhanh';
+
+  @override
+  String faNoResults(String number) {
+    return 'Không tìm thấy tình huống phù hợp. Bé gặp nguy hiểm: gọi $number.';
+  }
+
+  @override
+  String get faOffline => 'Dùng được khi không có mạng';
+
+  @override
+  String get faMonitoring => 'Theo dõi';
+
+  @override
+  String get faFollowSteps => 'Làm theo các bước';
+
+  @override
+  String get faStepMode => 'Làm theo từng bước';
+
+  @override
+  String get faTimes => 'lần';
+
+  @override
+  String get faDisclaimer =>
+      'Nội dung tham khảo, không thay thế chẩn đoán của bác sĩ.';
+
+  @override
+  String faReviewed(String reviewer, String month) {
+    return 'Được $reviewer rà soát tháng $month.';
+  }
+
+  @override
+  String get faSeizureTimer => 'Bấm giờ cơn giật';
+
+  @override
+  String get faTimerStart => 'Bắt đầu';
+
+  @override
+  String get faTimerStop => 'Dừng';
+
+  @override
+  String get faTimerReset => 'Bấm lại';
+
+  @override
+  String faStepOf(String title, int n, int total) {
+    return '$title · Bước $n/$total';
+  }
+
+  @override
+  String get faTapToCount => 'Chạm để đếm';
+
+  @override
+  String get faScreenOn =>
+      'Màn hình luôn sáng trong khi bạn làm theo hướng dẫn.';
+
+  @override
+  String get faBack => 'Quay lại';
+
+  @override
+  String get faNext => 'Bước tiếp';
+
+  @override
+  String get faFinish => 'Xong';
+
+  @override
+  String get faClose => 'Đóng hướng dẫn';
+
+  @override
+  String faCprStep(String title, int n, int total, int cycle) {
+    return '$title · Bước $n/$total · Chu kỳ $cycle';
+  }
+
+  @override
+  String faCprRate(int rate) {
+    return '$rate nhịp/phút';
+  }
+
+  @override
+  String get faCprBeep => 'Tiếng bíp và rung theo nhịp';
+
+  @override
+  String faCprNextBreaths(int count) {
+    return 'Tiếp: thổi ngạt $count lần';
+  }
+
+  @override
+  String faCprNextCompressions(int count) {
+    return 'Tiếp: ép ngực $count lần';
+  }
+
+  @override
+  String get faCprFootnote => 'Màn hình luôn sáng. Dừng ép không quá 10 giây.';
+
+  @override
+  String get faCprPause => 'Tạm dừng';
+
+  @override
+  String get faCprResume => 'Tiếp tục';
+
+  @override
+  String get faCprBreathing => 'Bé đã thở lại';
+
+  @override
+  String faCprBreathsDone(int count) {
+    return 'Đã thổi $count lần';
+  }
+
+  @override
+  String get faCprStopped =>
+      'Tiếp tục theo dõi bé đến khi nhân viên y tế tới. Bé ngừng thở lại: bắt đầu lại ngay.';
+
+  @override
+  String faCallTitle(String number) {
+    return 'Gọi cấp cứu $number';
+  }
+
+  @override
+  String faCallHandling(String situation) {
+    return 'Đang xử lý: $situation';
+  }
+
+  @override
+  String get faCallTell => 'Nói rõ với tổng đài';
+
+  @override
+  String get faCallTell1 => 'Bé mấy tuổi, chuyện gì đã xảy ra';
+
+  @override
+  String get faCallTell2 => 'Bé còn thở, còn tỉnh không';
+
+  @override
+  String get faCallTell3 => 'Địa chỉ chính xác, điểm dễ nhận biết';
+
+  @override
+  String get faCallTell4 => 'Số điện thoại để gọi lại';
+
+  @override
+  String faCallFailed(String number) {
+    return 'Không mở được trình gọi điện. Hãy bấm số $number trên điện thoại.';
+  }
+
+  @override
+  String faWeightKg(String kg) {
+    return '$kg kg';
+  }
+
+  @override
+  String get faNotFound => 'Không tìm thấy hướng dẫn này. Mở lại Sơ cứu.';
 }

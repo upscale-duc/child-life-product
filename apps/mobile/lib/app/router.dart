@@ -35,6 +35,8 @@ import '../features/me/profile_screen.dart';
 import '../features/me/storage_screens.dart';
 import '../features/reminders/reminder_screens.dart';
 import '../features/reminders/rule_screens.dart';
+import '../features/first_aid/first_aid_modes.dart';
+import '../features/first_aid/first_aid_screens.dart';
 import '../features/vaccines/vaccine_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
@@ -284,6 +286,43 @@ final routerProvider = Provider<GoRouter>((ref) {
                       _route(
                         path: 'categories',
                         builder: (_, _) => const CategoriesScreen(),
+                      ),
+                    ],
+                  ),
+                  // Sơ cứu trẻ em (v1.1 7b–7i, TH01–TH24; D-058).
+                  _route(
+                    path: 'first-aid',
+                    builder: (_, _) => const FirstAidHomeScreen(),
+                    routes: [
+                      _route(
+                        path: 'search',
+                        builder: (_, _) => const FirstAidSearchScreen(),
+                      ),
+                      _route(
+                        path: 'saved',
+                        builder: (_, _) => const FirstAidSavedScreen(),
+                      ),
+                      _route(
+                        path: 's/:id',
+                        builder: (_, s) => FirstAidSituationScreen(
+                          situationId: s.pathParameters['id'] ?? '',
+                          variantId: s.uri.queryParameters['v'],
+                        ),
+                        routes: [
+                          _route(
+                            path: 'steps',
+                            builder: (_, s) => FirstAidStepScreen(
+                              situationId: s.pathParameters['id'] ?? '',
+                              variantId: s.uri.queryParameters['v'],
+                            ),
+                          ),
+                        ],
+                      ),
+                      _route(
+                        path: 'cpr',
+                        builder: (_, s) => FirstAidCprScreen(
+                          variantId: s.uri.queryParameters['v'],
+                        ),
                       ),
                     ],
                   ),

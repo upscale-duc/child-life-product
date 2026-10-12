@@ -13,6 +13,9 @@ enum ClIcons {
   /// Reminder notifications (S7, engineering icon in the Figma line style).
   bell,
   bookmark,
+
+  /// Saved (Sơ cứu 7b, engineering icon: the bookmark filled).
+  bookmarkFill('bookmark-fill'),
   brandMark('brand-mark'),
   cake,
   camera,
@@ -56,6 +59,9 @@ enum ClIcons {
   sunrise,
   sunset,
   today,
+
+  /// Sơ cứu "Gọi 115" (Figma Icon/phone, v1.1; drawn in the line style).
+  phone,
 
   /// Memories delete (S9, engineering icon in the Figma line style).
   trash,

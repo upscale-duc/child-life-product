@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../first_aid/first_aid_modes.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
@@ -233,6 +234,8 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
               ),
             ),
           ),
+          // Sơ cứu trẻ em (v1.1 7a): the red entry, once a guide is on the device.
+          if (_query.isEmpty) const FirstAidEntry(),
           if (nothing) ...[
             const SizedBox(height: ClSpace.s6),
             Text(
