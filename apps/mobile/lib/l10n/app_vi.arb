@@ -11952,14 +11952,6 @@
   "@faFollowSteps": {
     "description": "Detail section header."
   },
-  "faStepMode": "Làm theo từng bước",
-  "@faStepMode": {
-    "description": "Bottom bar primary."
-  },
-  "faTimes": "lần",
-  "@faTimes": {
-    "description": "After the count dots (7d)."
-  },
   "faDisclaimer": "Nội dung tham khảo, không thay thế chẩn đoán của bác sĩ.",
   "@faDisclaimer": {
     "description": "Detail footer (no review claimed until one is recorded, P-141)."
@@ -11992,161 +11984,6 @@
   "@faTimerReset": {
     "description": "TH04 timer after stopping."
   },
-  "faStepOf": "{title} · Bước {n}/{total}",
-  "@faStepOf": {
-    "description": "7f progress label.",
-    "placeholders": {
-      "title": {
-        "type": "String"
-      },
-      "n": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "faTapToCount": "Chạm để đếm",
-  "@faTapToCount": {
-    "description": "7f counter card."
-  },
-  "faScreenOn": "Màn hình luôn sáng trong khi bạn làm theo hướng dẫn.",
-  "@faScreenOn": {
-    "description": "7f footnote."
-  },
-  "faBack": "Quay lại",
-  "@faBack": {
-    "description": "7f secondary."
-  },
-  "faNext": "Bước tiếp",
-  "@faNext": {
-    "description": "7f primary."
-  },
-  "faFinish": "Xong",
-  "@faFinish": {
-    "description": "Step mode, last step."
-  },
-  "faClose": "Đóng hướng dẫn",
-  "@faClose": {
-    "description": "Step / CPR mode close a11y."
-  },
-  "faCprStep": "{title} · Bước {n}/{total} · Chu kỳ {cycle}",
-  "@faCprStep": {
-    "description": "7i progress label.",
-    "placeholders": {
-      "title": {
-        "type": "String"
-      },
-      "n": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      },
-      "cycle": {
-        "type": "int"
-      }
-    }
-  },
-  "faCprRate": "{rate} nhịp/phút",
-  "@faCprRate": {
-    "description": "7i beat row.",
-    "placeholders": {
-      "rate": {
-        "type": "int"
-      }
-    }
-  },
-  "faCprBeep": "Tiếng bíp và rung theo nhịp",
-  "@faCprBeep": {
-    "description": "7i."
-  },
-  "faCprNextBreaths": "Tiếp: thổi ngạt {count} lần",
-  "@faCprNextBreaths": {
-    "description": "7i pill.",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "faCprNextCompressions": "Tiếp: ép ngực {count} lần",
-  "@faCprNextCompressions": {
-    "description": "7i pill on the breaths step.",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "faCprFootnote": "Màn hình luôn sáng. Dừng ép không quá 10 giây.",
-  "@faCprFootnote": {
-    "description": "7i footnote."
-  },
-  "faCprPause": "Tạm dừng",
-  "@faCprPause": {
-    "description": "7i secondary."
-  },
-  "faCprResume": "Tiếp tục",
-  "@faCprResume": {
-    "description": "7i secondary when paused."
-  },
-  "faCprBreathing": "Bé đã thở lại",
-  "@faCprBreathing": {
-    "description": "7i primary."
-  },
-  "faCprBreathsDone": "Đã thổi {count} lần",
-  "@faCprBreathsDone": {
-    "description": "7i breaths step primary.",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "faCprStopped": "Tiếp tục theo dõi bé đến khi nhân viên y tế tới. Bé ngừng thở lại: bắt đầu lại ngay.",
-  "@faCprStopped": {
-    "description": "Toast after \"Bé đã thở lại\"."
-  },
-  "faCallTitle": "Gọi cấp cứu {number}",
-  "@faCallTitle": {
-    "description": "7h sheet title.",
-    "placeholders": {
-      "number": {
-        "type": "String"
-      }
-    }
-  },
-  "faCallHandling": "Đang xử lý: {situation}",
-  "@faCallHandling": {
-    "description": "7h baby row.",
-    "placeholders": {
-      "situation": {
-        "type": "String"
-      }
-    }
-  },
-  "faCallTell": "Nói rõ với tổng đài",
-  "@faCallTell": {
-    "description": "7h checklist header."
-  },
-  "faCallTell1": "Bé mấy tuổi, chuyện gì đã xảy ra",
-  "@faCallTell1": {
-    "description": "7h checklist."
-  },
-  "faCallTell2": "Bé còn thở, còn tỉnh không",
-  "@faCallTell2": {
-    "description": "7h checklist."
-  },
-  "faCallTell3": "Địa chỉ chính xác, điểm dễ nhận biết",
-  "@faCallTell3": {
-    "description": "7h checklist."
-  },
-  "faCallTell4": "Số điện thoại để gọi lại",
-  "@faCallTell4": {
-    "description": "7h checklist."
-  },
   "faCallFailed": "Không mở được trình gọi điện. Hãy bấm số {number} trên điện thoại.",
   "@faCallFailed": {
     "description": "Toast.",
@@ -12168,5 +12005,94 @@
   "faNotFound": "Không tìm thấy hướng dẫn này. Mở lại Sơ cứu.",
   "@faNotFound": {
     "description": "Unknown situation id."
+  },
+  "faReadAloud": "Đọc to hướng dẫn",
+  "@faReadAloud": {
+    "description": "Bottom bar (normal pages)."
+  },
+  "faReadAloudShort": "Đọc to",
+  "@faReadAloudShort": {
+    "description": "Speaker button a11y (emergency pages)."
+  },
+  "faStopReading": "Dừng đọc",
+  "@faStopReading": {
+    "description": "Bottom bar while reading."
+  },
+  "faCountTimes": "× {count} lần",
+  "@faCountTimes": {
+    "description": "Static count label on a step (was tap-to-count).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "faCalling": "Đang gọi {number} · {time}",
+  "@faCalling": {
+    "description": "Green bar after dialling (7h revision 2).",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "faTellOperator": "Nói với tổng đài",
+  "@faTellOperator": {
+    "description": "7h card."
+  },
+  "faTellBaby": "Bé",
+  "@faTellBaby": {
+    "description": "7h card row."
+  },
+  "faTellCondition": "Tình trạng",
+  "@faTellCondition": {
+    "description": "7h card row."
+  },
+  "faMetronomeTitle": "Nhịp ép đang phát · tự động",
+  "@faMetronomeTitle": {
+    "description": "TH01 metronome card."
+  },
+  "faMetronomePaused": "Nhịp ép tạm dừng trong lúc đọc",
+  "@faMetronomePaused": {
+    "description": "TH01 metronome while the guide is read aloud."
+  },
+  "faMetronomeBody": "Bật loa, đặt điện thoại cạnh bé. Ép theo tiếng bíp. Sau mỗi {count} lần, app đọc “thổi ngạt {breaths} lần”.",
+  "@faMetronomeBody": {
+    "description": "TH01 metronome card body.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "breaths": {
+        "type": "int"
+      }
+    }
+  },
+  "faSayBreaths": "Thổi ngạt {count} lần",
+  "@faSayBreaths": {
+    "description": "Spoken after each set of compressions.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "faSpeakStep": "Bước {n}. {title}. {body}",
+  "@faSpeakStep": {
+    "description": "Spoken while reading a step aloud.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      },
+      "body": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -63,6 +63,10 @@ enum ClIcons {
   /// Sơ cứu "Gọi 115" (Figma Icon/phone, v1.1; drawn in the line style).
   phone,
 
+  /// Sơ cứu "Đọc to hướng dẫn" (Figma Icon/speaker, v1.1 revision 2) and stopping it.
+  speaker,
+  stop,
+
   /// Memories delete (S9, engineering icon in the Figma line style).
   trash,
   upload;

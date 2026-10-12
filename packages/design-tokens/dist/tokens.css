@@ -92,6 +92,8 @@
   --danger: #db4a45;
   --danger-soft: #fcebe8;
   --on-danger: #ffffff;
+  --live: #299966;
+  --on-live: #ffffff;
   --pending: #7a5600;
   --focus-ring: #087f7b;
   --scrim: rgb(12 23 25 / 0.322);
@@ -163,6 +165,8 @@
   --danger: #f06a60;
   --danger-soft: #3a1d1b;
   --on-danger: #ffffff;
+  --live: #3fb27f;
+  --on-live: #062a1a;
   --pending: #ffd166;
   --focus-ring: #3fd0c3;
   --scrim: rgb(0 0 0 / 0.561);
@@ -233,6 +237,8 @@
     --danger: #f06a60;
     --danger-soft: #3a1d1b;
     --on-danger: #ffffff;
+    --live: #3fb27f;
+    --on-live: #062a1a;
     --pending: #ffd166;
     --focus-ring: #3fd0c3;
     --scrim: rgb(0 0 0 / 0.561);

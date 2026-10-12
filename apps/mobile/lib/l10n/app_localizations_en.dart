@@ -8426,12 +8426,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get faFollowSteps => 'Follow the steps';
 
   @override
-  String get faStepMode => 'Step by step';
-
-  @override
-  String get faTimes => 'times';
-
-  @override
   String get faDisclaimer =>
       'For reference only. It does not replace a doctor’s diagnosis.';
 
@@ -8453,111 +8447,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get faTimerReset => 'Reset';
 
   @override
-  String faStepOf(String title, int n, int total) {
-    return '$title · Step $n/$total';
-  }
-
-  @override
-  String get faTapToCount => 'Tap to count';
-
-  @override
-  String get faScreenOn => 'The screen stays on while you follow the guide.';
-
-  @override
-  String get faBack => 'Back';
-
-  @override
-  String get faNext => 'Next step';
-
-  @override
-  String get faFinish => 'Done';
-
-  @override
-  String get faClose => 'Close the guide';
-
-  @override
-  String faCprStep(String title, int n, int total, int cycle) {
-    return '$title · Step $n/$total · Cycle $cycle';
-  }
-
-  @override
-  String faCprRate(int rate) {
-    return '$rate per minute';
-  }
-
-  @override
-  String get faCprBeep => 'Beep and vibration on each beat';
-
-  @override
-  String faCprNextBreaths(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Next: $count rescue breaths',
-      one: 'Next: 1 rescue breath',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String faCprNextCompressions(int count) {
-    return 'Next: $count chest compressions';
-  }
-
-  @override
-  String get faCprFootnote =>
-      'The screen stays on. Never pause compressions for more than 10 seconds.';
-
-  @override
-  String get faCprPause => 'Pause';
-
-  @override
-  String get faCprResume => 'Resume';
-
-  @override
-  String get faCprBreathing => 'Baby is breathing again';
-
-  @override
-  String faCprBreathsDone(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count breaths given',
-      one: '1 breath given',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get faCprStopped =>
-      'Keep watching your baby until medical help arrives. If breathing stops again, start again at once.';
-
-  @override
-  String faCallTitle(String number) {
-    return 'Call emergency $number';
-  }
-
-  @override
-  String faCallHandling(String situation) {
-    return 'Now handling: $situation';
-  }
-
-  @override
-  String get faCallTell => 'Tell the operator';
-
-  @override
-  String get faCallTell1 => 'How old your baby is and what happened';
-
-  @override
-  String get faCallTell2 => 'Whether your baby is breathing and awake';
-
-  @override
-  String get faCallTell3 => 'The exact address and a landmark';
-
-  @override
-  String get faCallTell4 => 'A number to call you back on';
-
-  @override
   String faCallFailed(String number) {
     return 'Couldn’t open the phone app. Dial $number on your phone.';
   }
@@ -8569,4 +8458,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faNotFound => 'This guide wasn’t found. Open First aid again.';
+
+  @override
+  String get faReadAloud => 'Read the guide aloud';
+
+  @override
+  String get faReadAloudShort => 'Read aloud';
+
+  @override
+  String get faStopReading => 'Stop reading';
+
+  @override
+  String faCountTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '× $count times',
+      one: '× 1 time',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String faCalling(String number, String time) {
+    return 'Calling $number · $time';
+  }
+
+  @override
+  String get faTellOperator => 'Tell the operator';
+
+  @override
+  String get faTellBaby => 'Baby';
+
+  @override
+  String get faTellCondition => 'Condition';
+
+  @override
+  String get faMetronomeTitle => 'Compression beat playing · automatic';
+
+  @override
+  String get faMetronomePaused => 'Beat paused while reading';
+
+  @override
+  String faMetronomeBody(int count, int breaths) {
+    return 'Turn the speaker on and put the phone beside your baby. Press with each beep. After every $count, the app says “$breaths rescue breaths”.';
+  }
+
+  @override
+  String faSayBreaths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Give $count rescue breaths',
+      one: 'Give 1 rescue breath',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String faSpeakStep(int n, String title, String body) {
+    return 'Step $n. $title. $body';
+  }
 }

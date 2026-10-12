@@ -7,7 +7,6 @@ import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
-import 'package:child_life/features/first_aid/first_aid_modes.dart';
 import 'package:child_life/features/first_aid/first_aid_screens.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -60,36 +59,19 @@ final _cases = <String, _Case>{
   'fa_th24_jaundice': _c(
     () => const FirstAidSituationScreen(situationId: 'jaundice'),
   ),
-  'fa7f_steps': _c(
+  'fa_th01_cpr': _c(
     () =>
-        const FirstAidStepScreen(situationId: 'choking', variantId: 'under-1'),
-    act: (t) async {
-      for (var i = 0; i < 3; i++) {
-        await t.tap(find.byKey(const Key('faCounter')));
-      }
-      await t.pump();
-    },
+        const FirstAidSituationScreen(situationId: 'cpr', variantId: 'under-1'),
   ),
-  'fa7i_cpr': _c(
-    () => const FirstAidCprScreen(variantId: 'under-1'),
-    act: (t) async {
-      await t.tap(find.byKey(const Key('faNext')));
-      await t.pumpAndSettle();
-      await t.tap(find.byKey(const Key('faNext')));
-      await t.pump();
-      await t.pump();
-      for (var i = 0; i < 18; i++) {
-        await t.pump(const Duration(milliseconds: 546));
-      }
-      await t.tap(find.byKey(const Key('faPause')));
-      await t.pump();
-    },
+  'fa_th08_read_aloud': _c(
+    () => const FirstAidSituationScreen(situationId: 'nosebleed'),
   ),
-  'fa7h_call': _c(
-    () => const FirstAidSituationScreen(situationId: 'choking'),
+  'fa7h_calling': _c(
+    () =>
+        const FirstAidSituationScreen(situationId: 'cpr', variantId: 'under-1'),
     act: (t) async {
-      await t.tap(find.byKey(const Key('faCall')).first);
-      await t.pumpAndSettle();
+      await t.tap(find.byKey(const Key('faCall')).last);
+      await t.pump();
     },
   ),
 };

@@ -35,7 +35,6 @@ import '../features/me/profile_screen.dart';
 import '../features/me/storage_screens.dart';
 import '../features/reminders/reminder_screens.dart';
 import '../features/reminders/rule_screens.dart';
-import '../features/first_aid/first_aid_modes.dart';
 import '../features/first_aid/first_aid_screens.dart';
 import '../features/vaccines/vaccine_screens.dart';
 import '../features/onboarding/setup_screens.dart';
@@ -306,21 +305,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                         path: 's/:id',
                         builder: (_, s) => FirstAidSituationScreen(
                           situationId: s.pathParameters['id'] ?? '',
-                          variantId: s.uri.queryParameters['v'],
-                        ),
-                        routes: [
-                          _route(
-                            path: 'steps',
-                            builder: (_, s) => FirstAidStepScreen(
-                              situationId: s.pathParameters['id'] ?? '',
-                              variantId: s.uri.queryParameters['v'],
-                            ),
-                          ),
-                        ],
-                      ),
-                      _route(
-                        path: 'cpr',
-                        builder: (_, s) => FirstAidCprScreen(
                           variantId: s.uri.queryParameters['v'],
                         ),
                       ),

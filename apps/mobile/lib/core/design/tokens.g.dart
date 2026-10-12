@@ -42,6 +42,8 @@ class ClColors {
     required this.danger,
     required this.dangerSoft,
     required this.onDanger,
+    required this.live,
+    required this.onLive,
     required this.pending,
     required this.focusRing,
     required this.scrim,
@@ -85,6 +87,8 @@ class ClColors {
   final Color danger;
   final Color dangerSoft;
   final Color onDanger;
+  final Color live;
+  final Color onLive;
   final Color pending;
   final Color focusRing;
   final Color scrim;
@@ -130,6 +134,8 @@ class ClColors {
     danger: Color.lerp(a.danger, b.danger, t)!,
     dangerSoft: Color.lerp(a.dangerSoft, b.dangerSoft, t)!,
     onDanger: Color.lerp(a.onDanger, b.onDanger, t)!,
+    live: Color.lerp(a.live, b.live, t)!,
+    onLive: Color.lerp(a.onLive, b.onLive, t)!,
     pending: Color.lerp(a.pending, b.pending, t)!,
     focusRing: Color.lerp(a.focusRing, b.focusRing, t)!,
     scrim: Color.lerp(a.scrim, b.scrim, t)!,
@@ -176,6 +182,8 @@ const ClColors lightColors = ClColors(
   danger: Color(0xFFDB4A45),
   dangerSoft: Color(0xFFFCEBE8),
   onDanger: Color(0xFFFFFFFF),
+  live: Color(0xFF299966),
+  onLive: Color(0xFFFFFFFF),
   pending: Color(0xFF7A5600),
   focusRing: Color(0xFF087F7B),
   scrim: Color(0x520C1719),
@@ -221,6 +229,8 @@ const ClColors nightCareColors = ClColors(
   danger: Color(0xFFF06A60),
   dangerSoft: Color(0xFF3A1D1B),
   onDanger: Color(0xFFFFFFFF),
+  live: Color(0xFF3FB27F),
+  onLive: Color(0xFF062A1A),
   pending: Color(0xFFFFD166),
   focusRing: Color(0xFF3FD0C3),
   scrim: Color(0x8F000000),

@@ -149,8 +149,8 @@
               "chips": [
                 {
                   "label": {
-                    "vi": "× 30",
-                    "en": "× 30"
+                    "vi": "× 30 lần",
+                    "en": "× 30 times"
                   },
                   "tone": "mint"
                 },
@@ -271,8 +271,8 @@
               "chips": [
                 {
                   "label": {
-                    "vi": "× 30",
-                    "en": "× 30"
+                    "vi": "× 30 lần",
+                    "en": "× 30 times"
                   },
                   "tone": "mint"
                 },

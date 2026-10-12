@@ -64,14 +64,18 @@ class _FaPage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: ListView(
+              // Built in full (not lazily) so "Đọc to" can scroll to any step.
+              child: SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(
                   ClSpace.s4,
                   ClSpace.s4,
                   ClSpace.s4,
                   (bottom == null ? media.padding.bottom : 0) + ClSpace.s8,
                 ),
-                children: children,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: children,
+                ),
               ),
             ),
             ?bottom,
@@ -86,12 +90,6 @@ Widget _loading(BuildContext context) => Scaffold(
   backgroundColor: context.cl.colors.cloud,
   body: const SizedBox.shrink(),
 );
-
-void openFirstAidCall(
-  BuildContext context,
-  WidgetRef ref, {
-  FaSituation? situation,
-}) => unawaited(showFirstAidCallSheet(context, situation: situation));
 
 // ---------- 7b Sơ cứu ----------
 
@@ -118,7 +116,6 @@ class _FirstAidHomeScreenState extends ConsumerState<FirstAidHomeScreen> {
       for (final c in pack.categories)
         if (_category == null || _category == c.id) c,
     ];
-    var first = true;
 
     Widget chip(String label, bool selected, VoidCallback onTap) => Padding(
       padding: const EdgeInsets.only(right: 8),
@@ -193,14 +190,14 @@ class _FirstAidHomeScreenState extends ConsumerState<FirstAidHomeScreen> {
               FaCallButton(
                 number: pack.emergencyNumber,
                 expand: true,
-                onPressed: () => openFirstAidCall(context, ref),
+                onPressed: () => unawaited(callEmergency(context, ref)),
               ),
               if (cpr != null) ...[
                 const SizedBox(height: 10),
                 ClPressable(
                   key: const Key('faStartCpr'),
                   onPressed: () => context.push(
-                    '${Routes.firstAidCpr}?v=${cpr.defaultVariant(baby?.months).id}',
+                    '${Routes.firstAidSituation}/${cpr.id}?v=${cpr.defaultVariant(baby?.months).id}',
                   ),
                   semanticLabel: l10n.faStartCpr,
                   child: Container(
@@ -281,7 +278,7 @@ class _FirstAidHomeScreenState extends ConsumerState<FirstAidHomeScreen> {
               ),
             ),
           ),
-          if (first && baby?.ageLabel != null) ...[
+          if (c.id == categories.first.id && baby?.ageLabel != null) ...[
             const SizedBox(height: 2),
             Text(
               l10n.faSortedFor(baby!.name, baby.ageLabel!),
@@ -291,12 +288,7 @@ class _FirstAidHomeScreenState extends ConsumerState<FirstAidHomeScreen> {
               ),
             ),
           ],
-          Builder(
-            builder: (_) {
-              first = false;
-              return const SizedBox(height: ClSpace.s3);
-            },
-          ),
+          const SizedBox(height: ClSpace.s3),
           _CategoryBody(
             category: c,
             situations: [
@@ -640,6 +632,79 @@ class _FirstAidSituationScreenState
     extends ConsumerState<FirstAidSituationScreen> {
   String? _variant;
 
+  /// The part being read aloud: -1 the page head, 0… the steps, null when not reading.
+  int? _reading;
+  var _readRun = 0;
+  final _stepKeys = <GlobalKey>[];
+  late final FirstAidDevice _device;
+
+  @override
+  void initState() {
+    super.initState();
+    // Read now: dispose() must not touch ref.
+    _device = ref.read(firstAidDeviceProvider);
+  }
+
+  @override
+  void dispose() {
+    _readRun++;
+    unawaited(_device.stopSpeaking());
+    super.dispose();
+  }
+
+  /// "Đọc to hướng dẫn": reads the head, every step (scrolling to it) and the callouts. The
+  /// sentences are built first so nothing reads the context after a pause.
+  Future<void> _readAloud(FaSituation s, FaVariant v) async {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context);
+    String t(FaText x) => x.pick(locale);
+    final head = [
+      t(s.title),
+      t(s.lead),
+      if (v.banner != null) t(v.banner!),
+    ].join('. ');
+    final steps = [
+      for (final (i, st) in v.steps.indexed)
+        l10n.faSpeakStep(i + 1, t(st.title), t(st.body)),
+    ];
+    final callouts = [
+      for (final c in v.callouts) [t(c.heading), ...c.items.map(t)].join('. '),
+    ];
+    final run = ++_readRun;
+    bool stale() => !mounted || run != _readRun;
+    setState(() => _reading = -1);
+    await _device.keepAwake(true);
+    await _device.speak(head, locale);
+    for (final (i, line) in steps.indexed) {
+      if (stale()) return;
+      setState(() => _reading = i);
+      final target = i < _stepKeys.length ? _stepKeys[i].currentContext : null;
+      if (target != null && target.mounted) {
+        await Scrollable.ensureVisible(
+          target,
+          alignment: 0.15,
+          duration: const Duration(milliseconds: 350),
+        );
+      }
+      if (stale()) return;
+      await _device.speak(line, locale);
+    }
+    for (final line in callouts) {
+      if (stale()) return;
+      await _device.speak(line, locale);
+    }
+    if (stale()) return;
+    await _device.keepAwake(false);
+    if (!stale()) setState(() => _reading = null);
+  }
+
+  void _stopReading() {
+    _readRun++;
+    unawaited(_device.stopSpeaking());
+    unawaited(_device.keepAwake(false));
+    setState(() => _reading = null);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -658,14 +723,14 @@ class _FirstAidSituationScreenState
     final saved = (ref.watch(firstAidSavedProvider).value ?? const []).contains(
       s.id,
     );
+    final calling = ref.watch(firstAidCallStartedProvider) != null;
+    final protocol = pack.protocol(variant.cpr);
     final (tagBg, tagInk) = faToneColors(context, category.tone);
     final title = s.title.of(context);
-
-    void openSteps() => context.push(
-      variant.cpr != null
-          ? '${Routes.firstAidCpr}?v=${variant.id}'
-          : '${Routes.firstAidSituation}/${s.id}/steps?v=${variant.id}',
-    );
+    while (_stepKeys.length < variant.steps.length) {
+      _stepKeys.add(GlobalKey());
+    }
+    final reading = _reading != null;
 
     Future<void> toggleSaved() async {
       final toaster = ClToaster.of(context);
@@ -673,34 +738,36 @@ class _FirstAidSituationScreenState
       toaster.show(message: saved ? l10n.faUnsavedToast : l10n.faSavedToast);
     }
 
-    final hasSteps = variant.steps.isNotEmpty;
-    final bottom = hasSteps || s.emergency
-        ? _BottomBar(
-            children: [
-              if (hasSteps)
-                Expanded(
-                  child: _StepModeButton(
-                    label: l10n.faStepMode,
-                    onPressed: openSteps,
-                  ),
+    void toggleReading() =>
+        reading ? _stopReading() : unawaited(_readAloud(s, variant));
+
+    // Revision 2: emergencies get the big call button and a speaker; other pages read aloud.
+    final bottom = _BottomBar(
+      children: s.emergency
+          ? [
+              Expanded(child: FaCallBar(number: pack.emergencyNumber)),
+              const SizedBox(width: 10),
+              _SpeakerButton(reading: reading, onPressed: toggleReading),
+            ]
+          : [
+              Expanded(
+                child: _ReadAloudButton(
+                  reading: reading,
+                  onPressed: toggleReading,
                 ),
-              if (hasSteps && s.emergency) const SizedBox(width: 10),
-              if (s.emergency)
-                FaCallButton(
-                  number: pack.emergencyNumber,
-                  onPressed: () => openFirstAidCall(context, ref, situation: s),
-                ),
+              ),
             ],
-          )
-        : null;
+    );
 
     return _FaPage(
       trailing: s.emergency
-          ? FaCallButton(
-              number: pack.emergencyNumber,
-              small: true,
-              onPressed: () => openFirstAidCall(context, ref, situation: s),
-            )
+          ? (calling
+                ? null
+                : FaCallButton(
+                    number: pack.emergencyNumber,
+                    small: true,
+                    onPressed: () => unawaited(callEmergency(context, ref)),
+                  ))
           : FaRoundButton(
               key: const Key('faBookmark'),
               icon: saved ? ClIcons.bookmarkFill : ClIcons.bookmark,
@@ -748,6 +815,15 @@ class _FirstAidSituationScreenState
         ),
         const SizedBox(height: ClSpace.s4),
         FaImage(variant.hero ?? s.hero),
+        // TH01: the beat plays by itself while the page is open (revision 2).
+        if (protocol != null) ...[
+          const SizedBox(height: ClSpace.s4),
+          FaMetronomeCard(protocol: protocol, paused: reading),
+        ],
+        if (calling && s.emergency) ...[
+          const SizedBox(height: ClSpace.s3),
+          FaTellOperatorCard(situation: s),
+        ],
         if (variant.banner != null) ...[
           const SizedBox(height: ClSpace.s4),
           _Banner(variant.banner!.of(context)),
@@ -757,10 +833,13 @@ class _FirstAidSituationScreenState
           _VariantSwitch(
             situation: s,
             selected: variant,
-            onChanged: (v) => setState(() => _variant = v.id),
+            onChanged: (v) {
+              if (reading) _stopReading();
+              setState(() => _variant = v.id);
+            },
           ),
         ],
-        if (hasSteps) ...[
+        if (variant.steps.isNotEmpty) ...[
           const SizedBox(height: ClSpace.s4),
           Semantics(
             header: true,
@@ -774,7 +853,12 @@ class _FirstAidSituationScreenState
           ),
           for (final (i, step) in variant.steps.indexed) ...[
             const SizedBox(height: ClSpace.s3),
-            _StepCard(index: i + 1, step: step),
+            _StepCard(
+              key: _stepKeys[i],
+              index: i + 1,
+              step: step,
+              active: _reading == i,
+            ),
           ],
         ],
         if (s.seizureTimer) ...[
@@ -794,6 +878,90 @@ class _FirstAidSituationScreenState
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Normal pages: "Đọc to hướng dẫn" (outlined, full width) / "Dừng đọc".
+class _ReadAloudButton extends StatelessWidget {
+  const _ReadAloudButton({required this.reading, required this.onPressed});
+  final bool reading;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final l10n = AppLocalizations.of(context);
+    final label = reading ? l10n.faStopReading : l10n.faReadAloud;
+    return ClPressable(
+      key: const Key('faReadAloud'),
+      onPressed: onPressed,
+      semanticLabel: label,
+      child: Container(
+        height: 52,
+        decoration: BoxDecoration(
+          color: reading ? cl.colors.mintSoft : cl.colors.surface,
+          borderRadius: BorderRadius.circular(ClRadius.pill),
+          border: Border.all(
+            color: reading ? cl.colors.mintDeep : cl.colors.controlBorder,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClIcon(
+              reading ? ClIcons.stop : ClIcons.speaker,
+              size: 22,
+              color: reading ? cl.colors.mintText : cl.colors.ink,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: cl.text.bodyStrong.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: reading ? cl.colors.mintText : cl.colors.ink,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Emergency pages: the small speaker next to "Gọi 115" (56 × 52, outlined).
+class _SpeakerButton extends StatelessWidget {
+  const _SpeakerButton({required this.reading, required this.onPressed});
+  final bool reading;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final l10n = AppLocalizations.of(context);
+    return ClPressable(
+      key: const Key('faReadAloud'),
+      onPressed: onPressed,
+      semanticLabel: reading ? l10n.faStopReading : l10n.faReadAloudShort,
+      child: Container(
+        width: 56,
+        height: 52,
+        decoration: BoxDecoration(
+          color: reading ? cl.colors.mintSoft : cl.colors.surface,
+          borderRadius: BorderRadius.circular(ClRadius.pill),
+          border: Border.all(
+            color: reading ? cl.colors.mintDeep : cl.colors.controlBorder,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: ClIcon(
+          reading ? ClIcons.stop : ClIcons.speaker,
+          size: 22,
+          color: reading ? cl.colors.mintText : cl.colors.ink,
+        ),
+      ),
     );
   }
 }
@@ -834,41 +1002,6 @@ class _BottomBar extends StatelessWidget {
         ],
       ),
       child: Row(children: children),
-    );
-  }
-}
-
-/// The bottom bar's primary (design: Button h56, label Medium 17, narrower sides so it fits
-/// next to "Gọi 115").
-class _StepModeButton extends StatelessWidget {
-  const _StepModeButton({required this.label, required this.onPressed});
-  final String label;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final cl = context.cl;
-    return ClPressable(
-      key: const Key('faStepMode'),
-      onPressed: onPressed,
-      semanticLabel: label,
-      child: Container(
-        height: ClSpace.buttonHeight,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: cl.colors.mintDeep,
-          borderRadius: BorderRadius.circular(ClRadius.pill),
-        ),
-        alignment: Alignment.center,
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            label,
-            maxLines: 1,
-            style: cl.text.bodyStrong.copyWith(color: cl.colors.onMintDeep),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -967,9 +1100,17 @@ class _VariantSwitch extends StatelessWidget {
 }
 
 class _StepCard extends StatelessWidget {
-  const _StepCard({required this.index, required this.step});
+  const _StepCard({
+    required this.index,
+    required this.step,
+    this.active = false,
+    super.key,
+  });
   final int index;
   final FaStep step;
+
+  /// Being read aloud: outlined so the eye finds it.
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
@@ -981,6 +1122,7 @@ class _StepCard extends StatelessWidget {
         color: cl.colors.surface,
         borderRadius: BorderRadius.circular(20),
         boxShadow: cl.shadows.card,
+        border: active ? Border.all(color: cl.colors.mintDeep, width: 2) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1031,47 +1173,8 @@ class _StepCard extends StatelessWidget {
               ),
             ],
           ),
-          if (step.count != null) ...[
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsetsDirectional.only(start: 42),
-              child: Row(
-                children: [
-                  for (var i = 1; i <= step.count!; i++) ...[
-                    Container(
-                      width: 26,
-                      height: 26,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: cl.colors.mintDeep,
-                          width: 1.5,
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '$i',
-                        style: cl.text.caption.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: cl.colors.mintText,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                  ],
-                  const SizedBox(width: 2),
-                  Text(
-                    l10n.faTimes,
-                    style: cl.text.label.copyWith(
-                      fontSize: 13,
-                      color: cl.colors.inkMuted,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-          if (step.chips.isNotEmpty) ...[
+          // Revision 2: counts are static labels ("× 5 lần"), nothing to tap.
+          if (step.count != null || step.chips.isNotEmpty) ...[
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsetsDirectional.only(start: 42),
@@ -1079,6 +1182,12 @@ class _StepCard extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 6,
                 children: [
+                  if (step.count != null)
+                    FaTag(
+                      l10n.faCountTimes(step.count!),
+                      background: cl.colors.mintSoft,
+                      ink: cl.colors.mintText,
+                    ),
                   for (final c in step.chips)
                     FaTag(
                       c.label.of(context),

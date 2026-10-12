@@ -7902,12 +7902,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get faFollowSteps => 'Làm theo các bước';
 
   @override
-  String get faStepMode => 'Làm theo từng bước';
-
-  @override
-  String get faTimes => 'lần';
-
-  @override
   String get faDisclaimer =>
       'Nội dung tham khảo, không thay thế chẩn đoán của bác sĩ.';
 
@@ -7929,99 +7923,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get faTimerReset => 'Bấm lại';
 
   @override
-  String faStepOf(String title, int n, int total) {
-    return '$title · Bước $n/$total';
-  }
-
-  @override
-  String get faTapToCount => 'Chạm để đếm';
-
-  @override
-  String get faScreenOn =>
-      'Màn hình luôn sáng trong khi bạn làm theo hướng dẫn.';
-
-  @override
-  String get faBack => 'Quay lại';
-
-  @override
-  String get faNext => 'Bước tiếp';
-
-  @override
-  String get faFinish => 'Xong';
-
-  @override
-  String get faClose => 'Đóng hướng dẫn';
-
-  @override
-  String faCprStep(String title, int n, int total, int cycle) {
-    return '$title · Bước $n/$total · Chu kỳ $cycle';
-  }
-
-  @override
-  String faCprRate(int rate) {
-    return '$rate nhịp/phút';
-  }
-
-  @override
-  String get faCprBeep => 'Tiếng bíp và rung theo nhịp';
-
-  @override
-  String faCprNextBreaths(int count) {
-    return 'Tiếp: thổi ngạt $count lần';
-  }
-
-  @override
-  String faCprNextCompressions(int count) {
-    return 'Tiếp: ép ngực $count lần';
-  }
-
-  @override
-  String get faCprFootnote => 'Màn hình luôn sáng. Dừng ép không quá 10 giây.';
-
-  @override
-  String get faCprPause => 'Tạm dừng';
-
-  @override
-  String get faCprResume => 'Tiếp tục';
-
-  @override
-  String get faCprBreathing => 'Bé đã thở lại';
-
-  @override
-  String faCprBreathsDone(int count) {
-    return 'Đã thổi $count lần';
-  }
-
-  @override
-  String get faCprStopped =>
-      'Tiếp tục theo dõi bé đến khi nhân viên y tế tới. Bé ngừng thở lại: bắt đầu lại ngay.';
-
-  @override
-  String faCallTitle(String number) {
-    return 'Gọi cấp cứu $number';
-  }
-
-  @override
-  String faCallHandling(String situation) {
-    return 'Đang xử lý: $situation';
-  }
-
-  @override
-  String get faCallTell => 'Nói rõ với tổng đài';
-
-  @override
-  String get faCallTell1 => 'Bé mấy tuổi, chuyện gì đã xảy ra';
-
-  @override
-  String get faCallTell2 => 'Bé còn thở, còn tỉnh không';
-
-  @override
-  String get faCallTell3 => 'Địa chỉ chính xác, điểm dễ nhận biết';
-
-  @override
-  String get faCallTell4 => 'Số điện thoại để gọi lại';
-
-  @override
   String faCallFailed(String number) {
     return 'Không mở được trình gọi điện. Hãy bấm số $number trên điện thoại.';
   }
@@ -8033,4 +7934,53 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get faNotFound => 'Không tìm thấy hướng dẫn này. Mở lại Sơ cứu.';
+
+  @override
+  String get faReadAloud => 'Đọc to hướng dẫn';
+
+  @override
+  String get faReadAloudShort => 'Đọc to';
+
+  @override
+  String get faStopReading => 'Dừng đọc';
+
+  @override
+  String faCountTimes(int count) {
+    return '× $count lần';
+  }
+
+  @override
+  String faCalling(String number, String time) {
+    return 'Đang gọi $number · $time';
+  }
+
+  @override
+  String get faTellOperator => 'Nói với tổng đài';
+
+  @override
+  String get faTellBaby => 'Bé';
+
+  @override
+  String get faTellCondition => 'Tình trạng';
+
+  @override
+  String get faMetronomeTitle => 'Nhịp ép đang phát · tự động';
+
+  @override
+  String get faMetronomePaused => 'Nhịp ép tạm dừng trong lúc đọc';
+
+  @override
+  String faMetronomeBody(int count, int breaths) {
+    return 'Bật loa, đặt điện thoại cạnh bé. Ép theo tiếng bíp. Sau mỗi $count lần, app đọc “thổi ngạt $breaths lần”.';
+  }
+
+  @override
+  String faSayBreaths(int count) {
+    return 'Thổi ngạt $count lần';
+  }
+
+  @override
+  String faSpeakStep(int n, String title, String body) {
+    return 'Bước $n. $title. $body';
+  }
 }

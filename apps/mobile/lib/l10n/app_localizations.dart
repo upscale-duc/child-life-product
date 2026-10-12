@@ -13237,18 +13237,6 @@ abstract class AppLocalizations {
   /// **'Làm theo các bước'**
   String get faFollowSteps;
 
-  /// Bottom bar primary.
-  ///
-  /// In vi, this message translates to:
-  /// **'Làm theo từng bước'**
-  String get faStepMode;
-
-  /// After the count dots (7d).
-  ///
-  /// In vi, this message translates to:
-  /// **'lần'**
-  String get faTimes;
-
   /// Detail footer (no review claimed until one is recorded, P-141).
   ///
   /// In vi, this message translates to:
@@ -13285,156 +13273,6 @@ abstract class AppLocalizations {
   /// **'Bấm lại'**
   String get faTimerReset;
 
-  /// 7f progress label.
-  ///
-  /// In vi, this message translates to:
-  /// **'{title} · Bước {n}/{total}'**
-  String faStepOf(String title, int n, int total);
-
-  /// 7f counter card.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chạm để đếm'**
-  String get faTapToCount;
-
-  /// 7f footnote.
-  ///
-  /// In vi, this message translates to:
-  /// **'Màn hình luôn sáng trong khi bạn làm theo hướng dẫn.'**
-  String get faScreenOn;
-
-  /// 7f secondary.
-  ///
-  /// In vi, this message translates to:
-  /// **'Quay lại'**
-  String get faBack;
-
-  /// 7f primary.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bước tiếp'**
-  String get faNext;
-
-  /// Step mode, last step.
-  ///
-  /// In vi, this message translates to:
-  /// **'Xong'**
-  String get faFinish;
-
-  /// Step / CPR mode close a11y.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đóng hướng dẫn'**
-  String get faClose;
-
-  /// 7i progress label.
-  ///
-  /// In vi, this message translates to:
-  /// **'{title} · Bước {n}/{total} · Chu kỳ {cycle}'**
-  String faCprStep(String title, int n, int total, int cycle);
-
-  /// 7i beat row.
-  ///
-  /// In vi, this message translates to:
-  /// **'{rate} nhịp/phút'**
-  String faCprRate(int rate);
-
-  /// 7i.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tiếng bíp và rung theo nhịp'**
-  String get faCprBeep;
-
-  /// 7i pill.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tiếp: thổi ngạt {count} lần'**
-  String faCprNextBreaths(int count);
-
-  /// 7i pill on the breaths step.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tiếp: ép ngực {count} lần'**
-  String faCprNextCompressions(int count);
-
-  /// 7i footnote.
-  ///
-  /// In vi, this message translates to:
-  /// **'Màn hình luôn sáng. Dừng ép không quá 10 giây.'**
-  String get faCprFootnote;
-
-  /// 7i secondary.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tạm dừng'**
-  String get faCprPause;
-
-  /// 7i secondary when paused.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tiếp tục'**
-  String get faCprResume;
-
-  /// 7i primary.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bé đã thở lại'**
-  String get faCprBreathing;
-
-  /// 7i breaths step primary.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đã thổi {count} lần'**
-  String faCprBreathsDone(int count);
-
-  /// Toast after "Bé đã thở lại".
-  ///
-  /// In vi, this message translates to:
-  /// **'Tiếp tục theo dõi bé đến khi nhân viên y tế tới. Bé ngừng thở lại: bắt đầu lại ngay.'**
-  String get faCprStopped;
-
-  /// 7h sheet title.
-  ///
-  /// In vi, this message translates to:
-  /// **'Gọi cấp cứu {number}'**
-  String faCallTitle(String number);
-
-  /// 7h baby row.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đang xử lý: {situation}'**
-  String faCallHandling(String situation);
-
-  /// 7h checklist header.
-  ///
-  /// In vi, this message translates to:
-  /// **'Nói rõ với tổng đài'**
-  String get faCallTell;
-
-  /// 7h checklist.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bé mấy tuổi, chuyện gì đã xảy ra'**
-  String get faCallTell1;
-
-  /// 7h checklist.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bé còn thở, còn tỉnh không'**
-  String get faCallTell2;
-
-  /// 7h checklist.
-  ///
-  /// In vi, this message translates to:
-  /// **'Địa chỉ chính xác, điểm dễ nhận biết'**
-  String get faCallTell3;
-
-  /// 7h checklist.
-  ///
-  /// In vi, this message translates to:
-  /// **'Số điện thoại để gọi lại'**
-  String get faCallTell4;
-
   /// Toast.
   ///
   /// In vi, this message translates to:
@@ -13452,6 +13290,84 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Không tìm thấy hướng dẫn này. Mở lại Sơ cứu.'**
   String get faNotFound;
+
+  /// Bottom bar (normal pages).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc to hướng dẫn'**
+  String get faReadAloud;
+
+  /// Speaker button a11y (emergency pages).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc to'**
+  String get faReadAloudShort;
+
+  /// Bottom bar while reading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng đọc'**
+  String get faStopReading;
+
+  /// Static count label on a step (was tap-to-count).
+  ///
+  /// In vi, this message translates to:
+  /// **'× {count} lần'**
+  String faCountTimes(int count);
+
+  /// Green bar after dialling (7h revision 2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang gọi {number} · {time}'**
+  String faCalling(String number, String time);
+
+  /// 7h card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nói với tổng đài'**
+  String get faTellOperator;
+
+  /// 7h card row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé'**
+  String get faTellBaby;
+
+  /// 7h card row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tình trạng'**
+  String get faTellCondition;
+
+  /// TH01 metronome card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp ép đang phát · tự động'**
+  String get faMetronomeTitle;
+
+  /// TH01 metronome while the guide is read aloud.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp ép tạm dừng trong lúc đọc'**
+  String get faMetronomePaused;
+
+  /// TH01 metronome card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật loa, đặt điện thoại cạnh bé. Ép theo tiếng bíp. Sau mỗi {count} lần, app đọc “thổi ngạt {breaths} lần”.'**
+  String faMetronomeBody(int count, int breaths);
+
+  /// Spoken after each set of compressions.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thổi ngạt {count} lần'**
+  String faSayBreaths(int count);
+
+  /// Spoken while reading a step aloud.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước {n}. {title}. {body}'**
+  String faSpeakStep(int n, String title, String body);
 }
 
 class _AppLocalizationsDelegate

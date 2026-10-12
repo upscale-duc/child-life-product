@@ -3505,3 +3505,321 @@ This part pulls together the per-cluster sections above. Field-level tables are 
 - 0 failed calls, 0 rate-limit errors, no Figma write tools.
 - All 90 frame screenshots and the asset sheet are in `img/v11/`. The 15 spending frames are covered by `19-spending.md`.
 - Not read: the label text nodes (their names come from the metadata) and the 31 individual images inside `photo_demo` (names from the metadata, one screenshot of the sheet).
+
+---
+
+## Part G — Sơ cứu revision 2 (hands-free), 2026-10-12
+
+Figma `sJLG1fAXKDnDr9YI6Yx8ex` (read-only), page **"v1.1"** (canvas `304:18`), cluster 7. Re-read on 2026-10-12 after the designer's "hands-free" revision. The designer's rule is that nothing in an emergency needs a tap. Step mode is gone, the counters are now static labels, the bottom bar is "Gọi 115" plus "Đọc to", the CPR page plays a metronome on its own, and 7h became an in-call state.
+
+**Method.** `get_metadata` ×1 on `304:18` (saved and split per frame locally). `get_design_context` ×6: 7d `446:4290`, 7e `446:4394`, 7h `446:54981`, TH01 `446:4492`, TH02 `446:4604`, TH08 `446:5152`. `get_screenshot` ×10: the six above plus 7b `433:2879`, TH04 `446:4763`, TH19 `446:54503`, TH24 `446:54895`. 0 failures, 0 rate limits, no Figma write tool. For the other 20 TH pages, I compared the metadata only: every text layer's first 30 characters against Parts D–F, plus the bottom-bar, top-row, tag and block structure. Strings are the rendered text. Glosses in parentheses are engineering drafts. **(prototype link)** = `<a … cursor-pointer>`; targets are never exposed, so every target is inferred. **Annotations:** no `data-annotation` on any frame. **Night care:** none drawn; every frame is Light (`cloud #f6fcfb`).
+
+**Designer note `claude/first-aid-v1.1.md`.** It is **not in the file**. No text, sticky or annotation frame on page v1.1 mentions it, and no layer name contains "claude", "note" or "first-aid". (Calling `get_metadata` without a node id lists only the pages "Cover" `0:1` and "Logo" `33:2`, yet `304:18` still resolves. I searched only v1.1.) There is nothing to transcribe.
+
+Screenshots (overwritten or new) in `img/v11/`: `433-2879.png`, `446-4290.png`, `446-4394.png`, `446-4492.png`, `446-4604.png`, `446-4763.png`, `446-5152.png`, `446-54503.png`, `446-54895.png`, `446-54981.png`. Old PNGs for ids that no longer exist are left in place as history.
+
+### G.1 Frame inventory: deleted, re-created, new
+
+**Every detail page was re-created under a new id.** None of the old `427:*`, `429:2573…2848`, `433:3201…4423`, `433:53311…54284` or `434:3155` ids exists any more. Only 7a, 7b and 7c keep their ids.
+
+| Frame | Old id (Parts D–F) | Current id | Status | Canvas (x, y) | Size |
+|---|---|---|---|---|---|
+| 7a · Chăm sóc · lối vào Sơ cứu | 429:2424 | 429:2424 | unchanged (metadata only) | 0, 9620 | 375 × 1411 |
+| 7b · Sơ cứu | 433:2879 | 433:2879 | unchanged (same layers, same size; screenshot identical to the old one) | 415, 9620 | 375 × 2524 |
+| 7c · Sơ cứu · Tìm kiếm | 428:2346 | 428:2346 | unchanged (metadata only) | 830, 9620 | 375 × 812 |
+| 7d · Hóc dị vật · dưới 1 tuổi | 427:2048 | **446:4290** | redone | 1245, 9620 | 375 × 1835.75 |
+| 7e · Hóc dị vật · từ 1 tuổi | 429:2573 | **446:4394** | redone | 1660, 9620 | 375 × 1650.75 |
+| 7f · Từng bước · Vỗ lưng | 429:2711 | — | **deleted** | | |
+| 7g · Từng bước · Ấn ngực | 429:2779 | — | **deleted** | | |
+| 7h · Gọi 115 (sheet) | 429:2848 | — | **deleted**, replaced by ↓ | | |
+| **7h · Đang gọi 115 (quay lại app)** (Calling 115, back in the app) | — | **446:54981** | **new** | 2075, 9620 | 375 × 2122.75 |
+| 7i · CPR · Ép ngực (nhịp) | 434:3155 | — | **deleted** (the metronome moved into TH01) | | |
+| TH01 · Hồi sức tim phổi (CPR) | 433:3201 | **446:4492** | redone (+ metronome card) | 0, 11800 | 375 × 1964.75 |
+| TH02 · Sặc sữa | 433:3343 | 446:4604 | redone | 415, 11800 | 375 × 1831.125 |
+| TH03 · Ngừng thở ở trẻ sinh non | 433:3483 | 446:4695 | redone | 830, 11800 | 375 × 1200.375 |
+| TH04 · Co giật | 433:3566 | 446:4763 | redone | 1245, 11800 | 375 × 1749.375 |
+| TH05 · Sốc phản vệ | 433:3699 | 446:4880 | redone | 1660, 11800 | 375 × 1278.375 |
+| TH06 · Uống nhầm thuốc, hoá chất | 433:3793 | 446:4964 | redone | 2075, 11800 | 375 × 1889.125 |
+| TH07 · Tai nạn giao thông | 433:3920 | 446:5055 | redone | 2490, 11800 | 375 × 1790.75 |
+| TH08 · Chảy máu cam | 433:4047 | 446:5152 | redone | 2905, 11800 | 375 × 1479.75 |
+| TH09 · Vết thương chảy máu | 433:4149 | 446:5231 | redone | 3320, 11800 | 375 × 1186.375 |
+| TH10 · Băng bó cơ bản | 433:4234 | 446:5304 | redone | 3735, 11800 | 375 × 1418.375 |
+| TH11 · Bỏng nước sôi | 433:4332 | 446:5389 | redone | 4150, 11800 | 375 × 1252.375 |
+| TH12 · Bong gân | 433:4423 | 446:5467 | redone | 4565, 11800 | 375 × 1141.375 |
+| TH13 · Gãy xương | 433:53311 | 446:54054 | redone | 0, 14000 | 375 × 1428.375 |
+| TH14 · Tổn thương ở mắt | 433:53417 | 446:54143 | redone | 415, 14000 | 375 × 1366.375 |
+| TH15 · Chó cắn | 433:53511 | 446:54230 | redone | 830, 14000 | 375 × 1229.375 |
+| TH16 · Ong đốt | 433:53604 | 446:54308 | redone | 1245, 14000 | 375 × 1141.375 |
+| TH17 · Kiến ba khoang | 433:53682 | 446:54372 | redone | 1660, 14000 | 375 × 1141.375 |
+| TH18 · Côn trùng vào tai | 433:53759 | 446:54436 | redone | 2075, 14000 | 375 × 1099.375 |
+| TH19 · Rắn cắn | 433:53833 | 446:54503 | redone | 2490, 14000 | 375 × 1275.375 |
+| TH20 · Say nắng, say nóng | 433:53925 | 446:54585 | redone | 2905, 14000 | 375 × 1417.375 |
+| TH21 · Đo thân nhiệt | 433:54033 | 446:54674 | redone | 3320, 14000 | 375 × 1354.375 |
+| TH22 · Ngộ độc thực phẩm | 433:54128 | 446:54759 | redone | 3735, 14000 | 375 × 1173.375 |
+| TH23 · Nhiễm lạnh | 433:54201 | 446:54827 | redone | 4150, 14000 | 375 × 1174.375 |
+| TH24 · Vàng da sơ sinh | 433:54284 | 446:54895 | redone (**now has a bottom bar**) | 4565, 14000 | 375 × 1143.375 |
+
+Labels are unchanged: `429:53390` "Label · 7 · Sơ cứu trẻ em (v1.1)" at y 9550, and the two overlapping row labels `433:54377` "… chi tiết 24 tình huống" and `429:53391` "… chi tiết 17 tình huống" (stale) at y 11730.
+
+**Not drawn anywhere (searched by layer name):**
+- a read-aloud "reading" or "paused" state, or any step highlight;
+- a metronome paused or muted state;
+- a collapsed "Nói với tổng đài" card;
+- a call-ended state;
+- an in-call variant for any page other than CPR;
+- a notes or annotation frame.
+
+### G.2 Shared changes (every page)
+
+**Removed everywhere:** the primary Button "Làm theo từng bước" (Follow step by step) and so the whole guided step mode (7f/7g/7i). The "Gọi cấp cứu 115" interstitial sheet is gone too. Also gone are its "Báo cho cả nhà" (Notify the whole family) button and its location-push footnote.
+
+**Unchanged everywhere** (except where noted below): the top row, tags, title, lead, hero, banner, segmented control, "Làm theo các bước" header, step cards, "Không được làm" / "Đưa bé đi viện ngay khi" / other callout boxes, and the disclaimer. Styles, tokens and raw hex are as documented in Parts E/F.
+- Emergency pages keep the small top-right red **"Gọi 115"** pill (`#db4a45`, px 14 py 8, Icon/phone 16, Bold 14 white) as a **(prototype link)**.
+- Normal pages keep the bookmark "save" button (not a link).
+
+#### New bottom bar A — emergency pages
+Used on 7d, 7e, TH01–TH07, TH19, TH20 (11 frames), plus the 7h variant below.
+- Container: absolute at the bottom, `surface` white, shadow `0 −4 8 rgba(0,0,0,.08)`, pt 12 / pb 30 / px 16, **gap 10**, items centred, height **94** (was ≈ 98–100).
+- **"Gọi 115"** (Call 115), big red pill **(prototype link)** on every emergency frame. Values:
+  - flex 1 → **277 × 50**;
+  - background raw **`#db4a45`**, radius 999, px 20 py 15, gap 8;
+  - **Icon/phone 20** (white, asset `82062`) + "Gọi 115" Bold 16 white (raw `text-white`).
+  - It is now the bar's primary element. Before, it was a secondary button beside "Làm theo từng bước".
+- **"Đọc to"** (Read aloud), small square-ish pill, **not** a prototype link. Values:
+  - **56 × 52**, `surface` white, **1 px `control-border #7e959a`**, radius 999, px 16 py 14;
+  - **Icon/speaker 22** (new icon, asset `e88bc`, no component description returned);
+  - **icon only**, with no visible label (needs an a11y label such as "Đọc to hướng dẫn"; inferred).
+- Behaviour per the designer: "Gọi 115" **dials immediately** (`tel:115`, no sheet). Returning to the app shows the 7h state. "Đọc to" reads the guide aloud. Neither behaviour can be seen in Figma (prototype targets are not exposed).
+
+#### New bottom bar B — normal pages
+Used on TH08–TH18 and TH21–TH24 (15 frames).
+- Same container (pt 12 / pb 30 / px 16, height 94).
+- One full-width button **"Đọc to hướng dẫn"** (Read the guide aloud), **343 × 52**:
+  - `surface` white, 1 px `control-border #7e959a`, radius 999, px 20 py 14, gap 8, centred;
+  - **Icon/speaker 22** + label **Bold 16 `ink #173d44`**;
+  - **not** a prototype link.
+- It is an outlined, secondary-looking button, not the mint-deep primary Button (8:33). The bar has no primary action any more.
+- **TH24 gained this bar** (before, it had no bottom bar because it has no steps). Read-aloud therefore applies to the callout lists too (inferred).
+
+#### Read-aloud states
+**Only the idle state is drawn**, on both sizes. Nothing shows "reading", "paused" or "stop", a progress indicator, a highlighted step, or auto-scroll.
+- What the designer describes: the app reads the steps aloud and scrolls along with them.
+- **Inferred:**
+  - while reading, the button toggles to a stop or pause icon;
+  - the step card being read is highlighted, for example with a mint-deep outline or `mint-soft` fill;
+  - the page auto-scrolls to keep that card in view;
+  - the reading order is title → lead → banner → steps → "Không được làm" → "Đưa bé đi viện ngay khi". Whether the disclaimer is read is unknown.
+- None of this is in Figma.
+
+#### Static count labels (replacing the tap-to-count dots and chips)
+- Style (same as the old TH01 chip):
+  - row "Nhịp" with pl 42 (aligned to the step text), gap 8;
+  - pill px 10 py 4, radius 999, **Bold 12**;
+  - count chip `mint-soft #e6f7f5` / `mint-text #06716d`;
+  - rate chip `surface-2 #eef6f5` / `ink-muted #55707a`.
+- **7d step 1** "Vỗ lưng 5 lần": **"× 5 lần"** (× 5 times). It replaces the 5 outlined 26 px circles plus "lần".
+- **7d step 2** "Ấn ngực 5 lần": **"× 5 lần"**, placed **above** the step illustration. It replaces the 5 circles.
+- **TH01 step 3** "Ép ngực 30 lần" (also in 7h): **"× 30 lần"** + **"100–120 lần/phút"** as two separate chips. Before, they were "× 30" + "100–120 lần/phút". The designer's summary "× 30 lần · 100–120 lần/phút" is drawn as two chips, not one string.
+- No other page has count chips.
+
+### G.3 446:54981 — 7h · Đang gọi 115 (quay lại app) (Calling 115, back in the app) — NEW
+
+**What it is.** This is the CPR page (a copy of TH01) as it looks after the user tapped "Gọi 115", the phone dialled 115, and the user switched back to the app during the call. It replaces the old "Gọi cấp cứu 115" sheet; there is no longer any screen before dialling. **(inferred):** the same in-call state applies to every emergency page; only CPR is drawn.
+
+**Text (reading order)**
+1. StatusBar "9:41" / "•••".
+2. Top row: back **(prototype link)** · spacer. The top-right **"Gọi 115" pill is still in the layer tree but `hidden`** (`446:54987`), so there is no call pill during a call.
+3. Tags: "Khẩn cấp" · "Dùng được khi không có mạng".
+4. Title "Hồi sức tim phổi (CPR)". Lead "Bé bất tỉnh, không thở hoặc thở ngáp".
+5. Hero `Illus/FA/Ép tim sơ sinh`.
+6. **Metronome card "Nhịp ép"**, the same as TH01 (see G.4).
+7. **NEW card "Nói với tổng đài"** (Tell the operator):
+   - Header: **"Nói với tổng đài"** · spacer · **Icon/chevron-down 16** (asset `9d6a9`).
+   - Row **"Bé"** (Baby) → **"Teddy · 7 tháng · 7,8 kg"** (Teddy · 7 months · 7.8 kg).
+   - Row **"Tình trạng"** (Condition) → **"Không thở, không phản ứng"** (Not breathing, not responding).
+   - Row **"Địa chỉ"** (Address) → **"Vị trí hiện tại · đã gửi kèm"** (Current location · sent along).
+8. Banner (sunshine-soft, Icon/alert): "Gọi 115 và bật loa ngoài trước khi bắt đầu. Có người khác: nhờ gọi giúp." (unchanged).
+9. Segmented "Dưới 1 tuổi" (selected) | "Từ 1 tuổi". Neither segment is a link here.
+10. "Làm theo các bước" and steps 1–4. The text is identical to TH01, including the "× 30 lần" and "100–120 lần/phút" chips on step 3 and the `Illus/FA/Mở đường thở` image on step 1.
+11. "Không được làm": "Dừng ép ngực quá 10 giây" · "Ép trên bụng hoặc đầu xương ức".
+12. "Đưa bé đi viện ngay khi": "Luôn gọi 115, kể cả khi bé đã thở lại".
+13. Disclaimer (standard).
+14. A stray empty text node `446:55111` (" ", 4 px) after the disclaimer. It is a design artefact; ignore it.
+15. **Bottom bar (in-call variant):**
+    - **"Đang gọi 115 · 00:42"** (Calling 115 · 00:42), call-status pill;
+    - · the small **"Đọc to"** speaker button (56 × 52, as in bar A).
+
+**"Đang gọi" pill** (`446:55092`)
+- Specs:
+  - takes the "Gọi 115" slot: flex 1 → **277 × 50**;
+  - background raw **`#299966`** (green; no token in the code);
+  - radius 999, px 20 py 15, gap 8;
+  - **Icon/phone 20** white + "Đang gọi 115 · 00:42" **Bold 16 white**.
+- It is **not** a prototype link.
+- **(inferred):**
+  - "00:42" is the elapsed call time (mm:ss), ticking every second;
+  - tapping it returns to the system call screen, or does nothing;
+  - the bar reverts to the red "Gọi 115" when the call ends.
+- **Not drawn:** call ended, call failed, or a long call (≥ 1 h).
+
+**"Nói với tổng đài" card** (`446:55093`)
+- Card:
+  - **343 × 121**, `surface` white, **1 px `control-border #7e959a`**, radius 20, px 16 py 14, vertical gap 8;
+  - placed **between the metronome card and the banner**, near the top, so it is visible without scrolling (inferred intent).
+- Header: "Nói với tổng đài" **Bold 15 `ink`**, spacer, Icon/chevron-down 16.
+- Rows: each is label **Medium 13 `ink-muted`**, left · flexible spacer · value **SemiBold 13 `ink`**, right-aligned, one line, row gap 10.
+- Fields:
+  - **Bé**: the selected baby's name · age · latest weight. The designer's "age, weight" are merged into this one row. Source (inferred): the baby profile plus the latest growth log (7,8 kg matches 9b).
+  - **Tình trạng**: a short condition phrase per situation. Here it is the CPR wording. Inferred: an editorial field per situation, e.g. `operatorSummary`.
+  - **Địa chỉ**: "Vị trí hiện tại · đã gửi kèm". It implies the app got the device location and "sent it along". **To whom is not stated.** A `tel:` call cannot carry data to 115. Inferred: shown to the user to read out, and/or shared with family. This is a privacy/permission question; see G.7.
+- **States:**
+  - Only **expanded** is drawn. The chevron points **down** while expanded, which is ambiguous.
+  - **(inferred):** collapsed = header row only (≈ 47 px tall), chevron toggles, and the default is expanded during a call.
+  - The designer calls it "collapsible". The collapsed state is not drawn.
+- Mock scenario changed: the old 7h sheet said "Bé Na · 7 tháng tuổi · 7,8 kg", and this card says **Teddy**.
+
+**Navigation:** back **(prototype link)** only.
+
+### G.4 446:4492 — TH01 · Hồi sức tim phổi (CPR) — redone with the auto metronome
+
+**Text (reading order):** the same as Part E (433:3201), plus the new metronome card after the hero. The changes are:
+- **New card "Nhịp ép"** (Compression rhythm), `446:4514`, placed between the hero and the banner:
+  - 343 × 107, background raw **`#fcebe8`**, radius 20, px 16 py 14, gap 14, items centred.
+  - **Beat disc "ring"**:
+    - **56 px** solid circle, raw **`#db4a45`**;
+    - centre text **"110"** Bold 18 white (the rate in beats/min; no unit shown);
+    - a drop shadow `0 0 0 rgba(219,74,69,.35)`, with 0 blur and 0 spread, so it is invisible. **Inferred:** a placeholder for a pulsing halo that expands on each beat.
+  - Text column (gap 3):
+    - **"Nhịp ép đang phát · tự động"** (Compression beat playing · automatic), **Bold 15 `#db4a45`**.
+    - `Bật loa, đặt điện thoại cạnh bé. Ép theo tiếng bíp. Sau mỗi 30 lần, app đọc "thổi ngạt 2 lần".`, **Medium 13 / 1.45 `ink`**. Gloss: Turn on the speaker, put the phone next to the baby. Press with the beep. After every 30, the app says "2 rescue breaths".
+  - **Not interactive.** There is no link, no pause, no mute, no stop and no volume control.
+  - Removed versus 7i: no compression count (18/30), no progress ring, no cycle counter, and no "Tiếp: thổi ngạt 2 lần" pill.
+- **Step 3 chips:** "× 30" → **"× 30 lần"**. "100–120 lần/phút" is unchanged.
+- **Bottom bar:** bar A ("Gọi 115" **(prototype link)** + "Đọc to"). Before, it was "Làm theo từng bước" + "Gọi 115", with the hotspot on the bar container. The prototype link now sits on "Gọi 115" itself.
+- Everything else is word-for-word the same as Part E: the banner, segmented control (with "Từ 1 tuổi" still not drawn and not a link), steps 1–4, don'ts, seek-care and disclaimer.
+
+**Metronome behaviour.** Per the designer; nothing below is drawn.
+
+| Item | Value |
+|---|---|
+| Start | **automatically when the page opens**; no tap |
+| Rate | **110 /min** (the disc says "110"), beat interval ≈ 545 ms |
+| Output | beep through the **loudspeaker** ("Bật loa") |
+| Breath prompt | every **30** beats the app **speaks "thổi ngạt 2 lần"** (2 rescue breaths) |
+| Pause for breaths | not stated. **Inferred:** the beat pauses for about 2 breaths (≈ 3–5 s) and then resumes; or it never pauses (the designer says only "every 30 beats the app says…"). Needs a decision. |
+| Visual sync | **inferred:** the disc pulses on each beat (the shadow placeholder) |
+| Haptics / screen-on | no longer stated. 7i's "Tiếng bíp và rung theo nhịp" and "Màn hình luôn sáng…" copy is gone. Inferred: keep the wakelock and drop vibration (the phone lies beside the baby). |
+| Stop | not drawn. **Inferred:** leaving the page stops it; no other control. |
+| Interaction with read-aloud | not drawn. On TH01 both the metronome and "Đọc to" produce audio. Inferred: TTS ducks or pauses the beat, or reading is disabled while the beat plays. |
+| During a 115 call (7h) | the card still says "đang phát", so the beat keeps playing while the user is on the phone (inferred). |
+| Age variant | "Từ 1 tuổi" is not drawn. Inferred: the same 110/min. |
+
+**Copy tension (flag).** The banner still says "Gọi 115 và bật loa ngoài **trước khi bắt đầu**" (… before you start), but the beat already starts on page open.
+
+### G.5 446:4290 — 7d · Hóc dị vật · dưới 1 tuổi — redone
+
+**Text (reading order):**
+- Top: back **(prototype link)** · red "Gọi 115" pill **(prototype link)**.
+- Tags "Khẩn cấp" · "Dùng được khi không có mạng". Title "Hóc dị vật". Lead "Bé ho sặc, không khóc, không thở được". Hero `Illus/FA/Vỗ lưng`.
+- Banner: "Nếu bé còn ho, khóc được: để bé tự ho ra, không vỗ, theo dõi sát."
+- Segmented: **"Dưới 1 tuổi"** (selected) | "Từ 1 tuổi" **(prototype link)** → 7e.
+- "Làm theo các bước":
+  1. "Vỗ lưng 5 lần" / "Đặt bé nằm sấp dọc cẳng tay, đầu thấp hơn ngực, đỡ cằm bé. Dùng gót bàn tay vỗ mạnh 5 lần giữa hai bả vai." + chip **"× 5 lần"**.
+  2. "Ấn ngực 5 lần" / "Lật bé nằm ngửa, đầu thấp. Đặt 2 ngón tay giữa ngực, ngay dưới đường nối hai núm vú, ấn mạnh 5 lần." + chip **"× 5 lần"** + `Illus/FA/Ấn ngực` (asset `74615`).
+  3. "Lặp lại đến khi dị vật ra" / "Xen kẽ 5 lần vỗ lưng và 5 lần ấn ngực. Bé lả đi, không thở: gọi 115 ngay."
+- "Không được làm": "Thò tay vào miệng bé để móc dị vật" · "Dốc ngược bé lên".
+- "Đưa bé đi viện ngay khi": "Bé tím tái, lả đi, ngừng thở: gọi 115" · "Đã lấy được dị vật nhưng bé vẫn ho, khó thở".
+- Disclaimer (standard).
+- Bottom bar A: "Gọi 115" **(prototype link)** + "Đọc to".
+
+**Changes vs Part D (427:2048):**
+- The count-dot rows became "× 5 lần" chips.
+- "Làm theo từng bước" was removed.
+- The top and bottom "Gọi 115" are now **both prototype links**; before, neither was linked.
+- **Text: no change.**
+
+### G.6 446:4394 — 7e · Hóc dị vật · từ 1 tuổi — redone
+
+**Text:** the same as Part D. Segmented "Dưới 1 tuổi" **(prototype link)** → 7d | **"Từ 1 tuổi"** (selected). Steps:
+1. "Đứng sau lưng bé" (+ `Illus/FA/Ép bụng`, asset `816ba`)
+2. "Đặt nắm tay trên rốn"
+3. "Ấn mạnh vào trong, lên trên"
+
+There are still **no count chips**: no thrust count for ≥ 1 year. The don'ts, seek-care, banner and disclaimer are the same as 7d. Bottom bar A.
+
+**Changes:**
+- Bar A replaces "Làm theo từng bước" + "Gọi 115".
+- Back, the top "Gọi 115" and the bottom "Gọi 115" are now **prototype links** (in Part D only the segment was linked).
+- **Text: no change.**
+- **Still open:** the hero is still the infant back-blow image `Illus/FA/Vỗ lưng`, which is wrong for ≥ 1 year (flagged in Part D).
+
+### G.7 TH02–TH24 — what changed
+
+Results of the full-text check (design_context: TH02, TH08) plus the metadata check (all others):
+
+| Group | Frames | Top row | Bottom bar | Other change |
+|---|---|---|---|---|
+| Emergency | TH01–TH07, TH19, TH20 | back + red "Gọi 115" pill (link) | **bar A**: "Gọi 115" (link) + "Đọc to" icon button | TH01 only: metronome card + "× 30 lần" |
+| Normal | TH08–TH18, TH21–TH23 | back + bookmark | **bar B**: "Đọc to hướng dẫn" full width | none |
+| Information | TH24 | back + bookmark | **bar B (new; before: no bar)** | none |
+
+- **TH04 seizure timer** (`446:4823` "Bấm giờ") is **unchanged**: Icon/clock tile, "Bấm giờ cơn giật", "00:00", Button "Bắt đầu" (Start). It still needs a tap to start, which conflicts with the hands-free principle (flag). Its running and stopped states are still not drawn.
+- **TH02** (full read): text is word-for-word the same as Part E. The top and bottom "Gọi 115" are links.
+- **TH08** (full read): text is the same as Part E, including the "Ngửa đầu (sai)" image inside the Don't box. Only back is linked; neither "save" nor "Đọc to hướng dẫn" is a link.
+- **Content text:** **no step, callout, banner, title, lead, tag or disclaimer text changed on any of the 26 detail frames.**
+  - 7d, 7e, TH01, TH02, TH08 and 7h were checked in full.
+  - The other 20 pages were checked on the first 30 characters of every text layer, plus layer counts and block order. A change after the 30th character of a string would not be caught on those 20.
+  - Block lists and frame heights match Parts E/F; the deltas are explained by the 94-px bar and TH01's +123-px metronome card.
+  - Image layers and assets are the same.
+- **Strings added:**
+  - "Nhịp ép đang phát · tự động"
+  - the metronome body
+  - "× 5 lần"
+  - "× 30 lần"
+  - "Đọc to hướng dẫn"
+  - "Nói với tổng đài", "Bé", "Tình trạng", "Địa chỉ"
+  - "Teddy · 7 tháng · 7,8 kg"
+  - "Không thở, không phản ứng"
+  - "Vị trí hiện tại · đã gửi kèm"
+  - "Đang gọi 115 · 00:42"
+- **Strings removed** (they were in Parts D–E):
+  - "Làm theo từng bước";
+  - from 7f/7g: "Hóc dị vật · dưới 1 tuổi · Bước n/3", "Chạm để đếm", "3 / 5", "Màn hình luôn sáng trong khi bạn làm theo hướng dẫn.", "Quay lại", "Bước tiếp";
+  - from 7i: "Hồi sức tim phổi · dưới 1 tuổi · Bước 3/4 · Chu kỳ 2", "2 ngón tay giữa ngực, ấn sâu khoảng 4 cm. Ấn theo nhịp tiếng bíp.", "110 nhịp/phút", "Tiếng bíp và rung theo nhịp", "Tiếp: thổi ngạt 2 lần", "Màn hình luôn sáng. Dừng ép không quá 10 giây.", "Tạm dừng", "Bé đã thở lại";
+  - from the old 7h sheet: "Gọi cấp cứu 115", "Bé Na · 7 tháng tuổi · 7,8 kg", "Đang xử lý: Hóc dị vật", "Nói rõ với tổng đài" and its 4 checklist items, "Báo cho cả nhà", "Cả nhà nhận thông báo kèm vị trí của bạn.".
+- **7b** (`433:2879`): unchanged. Its "Bắt đầu hồi sức tim phổi (CPR)" button pointed at 7i (inferred), which no longer exists. **Inferred:** it now opens TH01, where the metronome starts on its own. The "Gọi 115" button on 7b presumably dials directly as well.
+
+### G.8 Tokens and components introduced
+
+| Item | Value | Note |
+|---|---|---|
+| Icon/speaker | 22 px, asset `e88bc` | new icon; no component description |
+| Icon/chevron-down | 16 px, asset `9d6a9` | used in the operator card |
+| Call-active green | raw **`#299966`** | not a token. Needs e.g. `success` / `call-active` + `on-…` + a Night value |
+| Danger pair (unchanged) | raw `#db4a45` / `#fcebe8`, now also on the metronome card | still no `danger` / `danger-soft` tokens |
+| Outlined pill button | `surface` + 1 px `control-border` + radius 999 + Bold 16 `ink` | used for "Đọc to"; not the Button component 8:33 |
+| Info card with key/value rows | `surface` + 1 px `control-border`, radius 20, rows Medium 13 muted / SemiBold 13 ink | "Nói với tổng đài" |
+| Count chip | `mint-soft` / `mint-text` Bold 12 pill; rate chip `surface-2` / `ink-muted` | now the only count UI |
+
+### G.9 Open questions raised by revision 2
+1. **Read-aloud states and highlight are not drawn.** For idle → reading → paused/stopped: which icon or label, and does tapping again stop or pause? How is the current step highlighted? Does auto-scroll follow the reading? What is read (callouts? disclaimer?) Which TTS voice and language, vi or en (D-012)? Is a Vietnamese voice available **offline** on every device, given the page promises "Dùng được khi không có mạng"?
+2. **Metronome control.** It starts on page open, with no visible stop or mute, so opening TH01 just to read about CPR makes it beep. Is that acceptable? Is there a pause for the 2 breaths? What happens when the app is backgrounded, when a 115 call is active (iOS/Android may duck app audio or route it to the earpiece during a cellular call), or when it plays at the same time as read-aloud?
+3. **In-call detection.** "Đang gọi 115 · 00:42" needs call-state observation. On iOS that is CallKit `CXCallObserver`; on Android it needs `READ_PHONE_STATE` or a fallback. A fallback is to time from the tap and show the state until the user dismisses it. Should the state show on every emergency page or only on the one that started the call? What are the end, failed and long-call states?
+4. **"Địa chỉ · Vị trí hiện tại · đã gửi kèm".** "Sent along" to whom? A `tel:` call can't transmit location. If it goes to the family (the old "Báo cho cả nhà"), that is a push with location and needs explicit consent, location permission and a privacy review. If it is only shown for the user to read out, the copy "đã gửi kèm" is wrong. The address text itself (a reverse-geocoded street) is not drawn.
+5. **"Tình trạng" source.** Is it a per-situation editorial string (portal field) or a fixed ARB string? Only the CPR value is drawn.
+6. **Collapsed operator card** is not drawn. What is the default state, and what is the chevron direction in each state?
+7. **TH04 seizure timer** still requires "Bắt đầu". Should it auto-start or be removed under the no-tap rule?
+8. **Banner copy** "trước khi bắt đầu" conflicts with the auto-start metronome (TH01, 7h).
+9. **Non-emergency pages lost their primary action.** The bar now holds only an outlined secondary button. Intended?
+10. **Designer note** `claude/first-aid-v1.1.md` is not in the Figma. Ask the designer for it, since it may hold the read-aloud and in-call rules not drawn here.
+11. Unchanged carry-overs:
+    - 7e hero image;
+    - "Từ 1 tuổi" CPR content and TH09/TH14 second variants are still not drawn;
+    - no Night care variant;
+    - stale "17 tình huống" label.
+
+### G.10 Coverage
+- `get_metadata` ×1 (`304:18`), plus ×1 without a node id (page list).
+- `get_design_context` ×6: `446:4290`, `446:4394`, `446:4492`, `446:4604`, `446:5152`, `446:54981`.
+- `get_screenshot` ×10: `433:2879`, `446:4290`, `446:4394`, `446:4492`, `446:4604`, `446:4763`, `446:5152`, `446:54503`, `446:54895`, `446:54981`.
+- 0 failures, 0 rate-limit errors, no Figma write tools.

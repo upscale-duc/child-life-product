@@ -1,6 +1,5 @@
 import 'package:child_life/features/care/care_hub_screen.dart';
 import 'package:child_life/features/first_aid/first_aid_models.dart';
-import 'package:child_life/features/first_aid/first_aid_modes.dart';
 import 'package:child_life/features/first_aid/first_aid_screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -117,7 +116,8 @@ void main() {
     );
     await tester.tap(find.byKey(const Key('faStartCpr')));
     await tester.pumpAndSettle();
-    expect(visits.last.location, '/care/first-aid/cpr?v=under-1');
+    // Revision 2: CPR is the TH01 page itself (the beat starts on its own).
+    expect(visits.last.location, '/care/first-aid/s/cpr?v=under-1');
   });
 
   testWidgets(
@@ -148,7 +148,9 @@ void main() {
       expect(find.text('Khẩn cấp'), findsOneWidget);
       expect(find.text('Dùng được khi không có mạng'), findsOneWidget);
       expect(find.text('Vỗ lưng 5 lần'), findsOneWidget);
+      expect(find.text('× 5 lần'), findsNWidgets(2));
       expect(find.text('Gọi 115'), findsNWidgets(2));
+      expect(find.byKey(const Key('faReadAloud')), findsOneWidget);
       await tester.tap(find.text('Từ 1 tuổi'));
       await tester.pumpAndSettle();
       expect(find.text('Đứng sau lưng bé'), findsOneWidget);
@@ -162,7 +164,6 @@ void main() {
         find.text('Nội dung tham khảo, không thay thế chẩn đoán của bác sĩ.'),
         findsOneWidget,
       );
-      expect(find.byKey(const Key('faStepMode')), findsOneWidget);
     },
   );
 
@@ -182,80 +183,83 @@ void main() {
     expect(find.text('Bấm lại'), findsOneWidget);
   });
 
-  testWidgets('7f: step mode keeps the screen on and counts taps', (
+  testWidgets(
+    '7h: "Gọi 115" dials at once; back in the app the bar counts the call',
+    (tester) async {
+      final device = FakeFirstAidDevice();
+      await pumpRouted(
+        tester,
+        const FirstAidSituationScreen(situationId: 'choking'),
+        overrides: careOverrides(firstAid: pack, firstAidDevice: device),
+      );
+      expect(find.byKey(const Key('faTellOperator')), findsNothing);
+      await tester.tap(find.text('Gọi 115').last);
+      await tester.pump();
+      expect(device.dialled, ['115']);
+      expect(find.text('Đang gọi 115 · 00:00'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 2));
+      // The top pill gives way; the card to read out to the operator appears.
+      expect(find.text('Gọi 115'), findsNothing);
+      expect(find.text('Nói với tổng đài'), findsOneWidget);
+      expect(
+        find.text('Bé ho sặc, không khóc, không thở được'),
+        findsNWidgets(2),
+      );
+    },
+  );
+
+  testWidgets('"Đọc to hướng dẫn" reads the head, each step and the callouts', (
     tester,
   ) async {
     final device = FakeFirstAidDevice();
     await pumpRouted(
       tester,
-      const FirstAidStepScreen(situationId: 'choking', variantId: 'under-1'),
+      const FirstAidSituationScreen(situationId: 'nosebleed'),
       overrides: careOverrides(firstAid: pack, firstAidDevice: device),
     );
-    expect(find.text('Hóc dị vật · dưới 1 tuổi · Bước 1/3'), findsOneWidget);
-    expect(find.text('Chạm để đếm'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('faCounter')));
-    await tester.tap(find.byKey(const Key('faCounter')));
-    await tester.pump();
-    expect(find.text('2 / 5'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('faNext')));
+    expect(find.text('Gọi 115'), findsNothing);
+    expect(find.text('Đọc to hướng dẫn'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('faReadAloud')));
     await tester.pumpAndSettle();
-    expect(find.text('Ấn ngực 5 lần'), findsOneWidget);
-    expect(find.text('0 / 5'), findsOneWidget);
-    expect(device.awake, [true]);
+    final page = pack.situation('nosebleed')!.variants.first;
+    expect(device.spoken.first, startsWith('Chảy máu cam.'));
+    expect(device.spoken[1], startsWith('Bước 1.'));
+    expect(
+      device.spoken,
+      hasLength(1 + page.steps.length + page.callouts.length),
+    );
+    expect(device.awake, [true, false]);
+    expect(find.text('Đọc to hướng dẫn'), findsOneWidget);
   });
 
-  testWidgets('7i: CPR counts 30 on the beat, then 2 breaths start cycle 2', (
-    tester,
-  ) async {
-    final device = FakeFirstAidDevice();
-    await pumpRouted(
-      tester,
-      const FirstAidCprScreen(variantId: 'under-1'),
-      overrides: careOverrides(firstAid: pack, firstAidDevice: device),
-    );
-    expect(find.textContaining('Bước 1/4 · Chu kỳ 1'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('faNext')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('faNext')));
-    await tester.pump();
-    await tester.pump();
-    expect(find.text('Ép ngực 30 lần'), findsOneWidget);
-    expect(find.text('110 nhịp/phút'), findsOneWidget);
-    expect(find.text('Tiếp: thổi ngạt 2 lần'), findsOneWidget);
-    for (var i = 0; i < 31; i++) {
-      await tester.pump(const Duration(milliseconds: 546));
-    }
-    await tester.pump();
-    expect(device.beats, 30);
-    expect(find.byKey(const Key('faBreathsDone')), findsOneWidget);
-    await tester.tap(find.byKey(const Key('faBreathsDone')));
-    await tester.pump();
-    await tester.pump();
-    expect(find.textContaining('Bước 3/4 · Chu kỳ 2'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('faPause')));
-    await tester.pump();
-    expect(find.text('Tiếp tục'), findsOneWidget);
-  });
-
-  testWidgets('7h: the call sheet reads out the baby and dials 115', (
-    tester,
-  ) async {
-    final device = FakeFirstAidDevice();
-    await pumpRouted(
-      tester,
-      const FirstAidHomeScreen(),
-      overrides: careOverrides(firstAid: pack, firstAidDevice: device),
-    );
-    await tester.tap(find.text('Gọi 115'));
-    await tester.pumpAndSettle();
-    expect(find.text('Gọi cấp cứu 115'), findsOneWidget);
-    expect(find.textContaining('Teddy'), findsWidgets);
-    expect(find.text('Nói rõ với tổng đài'), findsOneWidget);
-    expect(find.text('Số điện thoại để gọi lại'), findsOneWidget);
-    await tester.tap(find.text('Gọi 115').last);
-    await tester.pumpAndSettle();
-    expect(device.dialled, ['115']);
-  });
+  testWidgets(
+    'TH01: the beat plays by itself; after 30 the app says the breaths',
+    (tester) async {
+      final device = FakeFirstAidDevice();
+      await pumpRouted(
+        tester,
+        const FirstAidSituationScreen(situationId: 'cpr', variantId: 'under-1'),
+        overrides: careOverrides(firstAid: pack, firstAidDevice: device),
+      );
+      expect(find.text('Nhịp ép đang phát · tự động'), findsOneWidget);
+      expect(find.text('110'), findsOneWidget);
+      expect(find.text('× 30 lần'), findsOneWidget);
+      for (var i = 0; i < 30; i++) {
+        await tester.pump(const Duration(milliseconds: 546));
+      }
+      expect(device.beats, 30);
+      expect(device.spoken, ['Thổi ngạt 2 lần']);
+      // The beat waits for the breaths, then carries on.
+      await tester.pump(const Duration(seconds: 2));
+      expect(device.beats, 30);
+      await tester.pump(const Duration(seconds: 3));
+      expect(device.beats, greaterThan(30));
+      expect(device.awake.first, isTrue);
+      // Leaving the page stops it.
+      await pumpRouted(tester, const SizedBox(), overrides: careOverrides());
+      expect(device.awake.last, isFalse);
+    },
+  );
 
   test('a malformed pack is refused whole', () {
     expect(FirstAidPack.fromDoc(null), isNull);

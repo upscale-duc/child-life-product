@@ -32,6 +32,14 @@ class FakeFirstAidDevice implements FirstAidDevice {
   @override
   Future<void> beat() async => beats++;
 
+  final spoken = <String>[];
+
+  @override
+  Future<void> speak(String text, Locale locale) async => spoken.add(text);
+
+  @override
+  Future<void> stopSpeaking() async {}
+
   @override
   Future<bool> dial(String number) async {
     dialled.add(number);

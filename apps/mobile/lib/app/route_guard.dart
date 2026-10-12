@@ -35,12 +35,11 @@ abstract final class Routes {
 
   /// Chi tiêu (v1.1 8a–8o): the month, history, an expense, budget, recurring, statistics.
   /// Sơ cứu trẻ em (v1.1 7a–7i, TH01–TH24): the index, search, saved, a situation
-  /// (`/care/first-aid/s/<id>?v=<variant>`), its step mode and CPR mode.
+  /// (`/care/first-aid/s/<id>?v=<variant>`).
   static const firstAid = '/care/first-aid';
   static const firstAidSearch = '/care/first-aid/search';
   static const firstAidSaved = '/care/first-aid/saved';
   static const firstAidSituation = '/care/first-aid/s';
-  static const firstAidCpr = '/care/first-aid/cpr';
 
   static const spending = '/care/spending';
   static const spendingHistory = '/care/spending/history';
