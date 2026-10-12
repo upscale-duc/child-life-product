@@ -192,6 +192,13 @@ service cloud.firestore {
         allow delete: if false;
       }
 
+      // Nhập chi tiêu (D-060, P-144): the reading, progress and result of an import. Written by
+      // Functions only (analyzeSpendingImport, confirmSpendingImport, the import trigger).
+      match /spendingImports/{importId} {
+        allow read: if spendingParent(babyId);
+        allow write: if false;
+      }
+
       // The monthly budget (8h): one document.
       match /spending/{docId} {
         allow read: if docId == 'budget' && canViewSpending(babyId);

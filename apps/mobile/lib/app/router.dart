@@ -42,6 +42,7 @@ import '../features/vaccines/vaccine_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
 import '../features/showcase/showcase_screen.dart';
+import '../features/spending/import/import_screens.dart';
 import '../features/spending/spending_categories.dart';
 import '../features/spending/spending_plan_screens.dart';
 import '../features/spending/spending_screens.dart';
@@ -366,6 +367,27 @@ final routerProvider = Provider<GoRouter>((ref) {
                       _route(
                         path: 'categories',
                         builder: (_, _) => const CategoriesScreen(),
+                      ),
+                      // Nhập chi tiêu (D-060).
+                      _route(
+                        path: 'import',
+                        builder: (_, _) => const SpendingImportScreen(),
+                        routes: [
+                          _route(
+                            path: ':id',
+                            builder: (_, s) => SpendingImportResultScreen(
+                              importId: s.pathParameters['id'] ?? '',
+                            ),
+                            routes: [
+                              _route(
+                                path: 'review',
+                                builder: (_, s) => SpendingImportReviewScreen(
+                                  importId: s.pathParameters['id'] ?? '',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),

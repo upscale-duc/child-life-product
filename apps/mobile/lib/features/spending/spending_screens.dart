@@ -169,6 +169,14 @@ class _FirstUse extends StatelessWidget {
         if (scope.access.parent) ...[
           const SizedBox(height: ClSpace.s1),
           ClButton(
+            key: const Key('spFirstImport'),
+            label: l10n.spFirstImport,
+            icon: ClIcons.download,
+            style: ClButtonStyle.secondary,
+            expand: true,
+            onPressed: () => context.push(Routes.spendingImport),
+          ),
+          ClButton(
             label: l10n.spFirstBudget,
             style: ClButtonStyle.plain,
             expand: true,
@@ -275,26 +283,41 @@ class _Month extends ConsumerWidget {
           locale: locale,
         ),
         const SizedBox(height: ClSpace.s3),
-        Wrap(
-          spacing: ClSpace.s2,
-          runSpacing: ClSpace.s2,
-          children: [
-            SpPill(
-              icon: ClIcons.grid,
-              label: l10n.spStats,
-              onPressed: () => context.push(Routes.spendingStats),
-            ),
-            SpPill(
-              icon: ClIcons.sliders,
-              label: l10n.spBudget,
-              onPressed: () => context.push(Routes.spendingBudget),
-            ),
-            SpPill(
-              icon: ClIcons.retry,
-              label: l10n.spRecurring,
-              onPressed: () => context.push(Routes.spendingRecurring),
-            ),
-          ],
+        // One line that scrolls sideways (four shortcuts with "Nhập", D-060).
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          child: Row(
+            children: [
+              SpPill(
+                icon: ClIcons.grid,
+                label: l10n.spStats,
+                onPressed: () => context.push(Routes.spendingStats),
+              ),
+              const SizedBox(width: ClSpace.s2),
+              SpPill(
+                icon: ClIcons.sliders,
+                label: l10n.spBudget,
+                onPressed: () => context.push(Routes.spendingBudget),
+              ),
+              const SizedBox(width: ClSpace.s2),
+              SpPill(
+                icon: ClIcons.retry,
+                label: l10n.spRecurring,
+                onPressed: () => context.push(Routes.spendingRecurring),
+              ),
+              // Nhập chi tiêu (D-060), Cùng nuôi only.
+              if (scope.access.parent) ...[
+                const SizedBox(width: ClSpace.s2),
+                SpPill(
+                  key: const Key('spImport'),
+                  icon: ClIcons.download,
+                  label: l10n.spImport,
+                  onPressed: () => context.push(Routes.spendingImport),
+                ),
+              ],
+            ],
+          ),
         ),
         const SizedBox(height: 18),
         ClSectionHeader(
@@ -957,6 +980,14 @@ class ExpenseDetailScreen extends ConsumerWidget {
             info(l10n.spDate, DateFormat('dd/MM/yyyy').format(e.spentOn)),
             info(l10n.spPayer, payerLabel(l10n, e.payer)),
             info(l10n.spRecordedBy, at == null ? recorder : '$recorder · $at'),
+            if (e.source == ExpenseSource.import && e.sourceRef != null)
+              SpActionRow(
+                icon: ClIcons.download,
+                label: l10n.spSource,
+                value: l10n.spFromImportFull,
+                onTap: () =>
+                    context.push('${Routes.spendingImport}/${e.sourceRef}'),
+              ),
             if (e.source == ExpenseSource.recurring)
               info(l10n.spSource, l10n.spFromRecurringFull),
             if (e.source == ExpenseSource.vaccine && e.sourceRef != null)

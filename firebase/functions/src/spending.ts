@@ -30,7 +30,12 @@ import type { PushSender } from './social.js';
 
 export class SpendingError extends Error {
   constructor(
-    readonly code: 'invalid-argument' | 'failed-precondition' | 'permission-denied' | 'not-found',
+    readonly code:
+      | 'invalid-argument'
+      | 'failed-precondition'
+      | 'permission-denied'
+      | 'not-found'
+      | 'unavailable',
     readonly reason: string,
   ) {
     super(reason);
@@ -457,7 +462,7 @@ async function mutedForSpending(db: Firestore, uids: string[]): Promise<Set<stri
   );
 }
 
-type PushMessage = Parameters<PushSender['send']>[1];
+export type PushMessage = Parameters<PushSender['send']>[1];
 
 /** Sends to the baby's active Cùng nuôi (D-055: spending pushes are for parents). */
 async function pushParents(
@@ -472,9 +477,20 @@ async function pushParents(
   const parents = members.docs
     .filter((m) => isActiveMember(m, now) && m.get('role') === 'coParent')
     .map((m) => m.id);
-  const muted = await mutedForSpending(db, parents);
+  return pushUsers(db, sender, parents, message);
+}
+
+/** Sends to [uids]' signed-in devices in each device's language, unless "Nhắc việc" is off. */
+export async function pushUsers(
+  db: Firestore,
+  sender: PushSender | null,
+  uids: string[],
+  message: (language: string) => PushMessage,
+): Promise<number> {
+  if (!sender) return 0;
+  const muted = await mutedForSpending(db, uids);
   let sent = 0;
-  for (const uid of parents) {
+  for (const uid of uids) {
     if (muted.has(uid)) continue;
     const devices = await db.collection(`users/${uid}/devices`).get();
     const byLanguage = new Map<string, string[]>();

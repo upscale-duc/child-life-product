@@ -8187,4 +8187,318 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get upNoStore => 'Chưa mở được trang cập nhật. Thử lại sau nhé.';
+
+  @override
+  String get spImport => 'Nhập';
+
+  @override
+  String get spFirstImport => 'Nhập từ app khác hoặc Excel';
+
+  @override
+  String get spFromImport => 'nhập từ tệp';
+
+  @override
+  String get spFromImportFull => 'Nhập chi tiêu · xem lần nhập';
+
+  @override
+  String get imTitle => 'Nhập chi tiêu';
+
+  @override
+  String imIntro(String name) {
+    return 'Mang chi tiêu từ app khác, bảng tính hoặc sổ tay vào Chi tiêu của $name. Bạn xem trước rồi mới nhập.';
+  }
+
+  @override
+  String get imParentsOnly => 'Chỉ Cùng nuôi được nhập chi tiêu.';
+
+  @override
+  String get imSourceFile => 'Tệp CSV hoặc Excel';
+
+  @override
+  String get imSourceFileHint =>
+      'Money Lover, MISA, Google Sheets, Excel… tự nhận cột';
+
+  @override
+  String get imSourceText => 'Dán văn bản';
+
+  @override
+  String get imSourceTextHint =>
+      'Ghi chú, tin nhắn, danh sách — AI tách thành từng khoản';
+
+  @override
+  String get imSourcePhotos => 'Ảnh chụp sổ chi tiêu';
+
+  @override
+  String get imSourcePhotosHint => 'Tối đa 5 ảnh — AI đọc từng dòng';
+
+  @override
+  String get imPrivacy =>
+      'Văn bản và ảnh được gửi tới dịch vụ AI chỉ để đọc, không lưu lại; tên bé không được gửi. Tệp tải lên tự xoá sau 7 ngày.';
+
+  @override
+  String get imRecent => 'Các lần nhập';
+
+  @override
+  String get imBusyReading => 'Đang đọc dữ liệu…';
+
+  @override
+  String get imBusyAi => 'AI đang đọc, có thể mất nửa phút…';
+
+  @override
+  String get imPasteHint =>
+      'Mỗi khoản một dòng, ví dụ: “12/10 sữa công thức 1.020.000 mẹ trả”.';
+
+  @override
+  String get imPastePlaceholder => 'Dán nội dung ở đây';
+
+  @override
+  String get imRead => 'Đọc nội dung';
+
+  @override
+  String get imReviewTitle => 'Xem trước';
+
+  @override
+  String imPreset(String name) {
+    return 'Nhận dạng: $name';
+  }
+
+  @override
+  String imWillImport(int n) {
+    return 'Sẽ nhập $n khoản';
+  }
+
+  @override
+  String imRows(int n) {
+    return '$n dòng';
+  }
+
+  @override
+  String imDuplicates(int n) {
+    return '$n khoản trùng';
+  }
+
+  @override
+  String imIncome(int n) {
+    return '$n khoản thu';
+  }
+
+  @override
+  String imErrors(int n) {
+    return '$n dòng lỗi';
+  }
+
+  @override
+  String get imColumns => 'Cột trong tệp';
+
+  @override
+  String get imColumnNone => 'Không có';
+
+  @override
+  String get imReading => 'Cách đọc';
+
+  @override
+  String get imDateOrder => 'Ngày viết theo kiểu';
+
+  @override
+  String get imDateDmy => 'Ngày/Tháng/Năm';
+
+  @override
+  String get imDateMdy => 'Tháng/Ngày/Năm';
+
+  @override
+  String get imRowsAre => 'Khoản chi là các dòng';
+
+  @override
+  String get imRowsNegative => 'Số âm';
+
+  @override
+  String get imRowsPositive => 'Số dương';
+
+  @override
+  String get imRowsAll => 'Tất cả';
+
+  @override
+  String get imSkipDuplicates => 'Bỏ qua khoản đã có';
+
+  @override
+  String get imSkipDuplicatesHint => 'Cùng ngày, số tiền và nội dung';
+
+  @override
+  String get imCategories => 'Danh mục';
+
+  @override
+  String imSourceRows(String name, int n) {
+    return '$name · $n khoản';
+  }
+
+  @override
+  String imNewCategory(String name) {
+    return 'Tạo mới “$name”';
+  }
+
+  @override
+  String imPreview(int n) {
+    return 'Xem trước $n dòng đầu';
+  }
+
+  @override
+  String imConfirm(int n) {
+    return 'Nhập $n khoản';
+  }
+
+  @override
+  String get imNothingToImport => 'Không có khoản nào để nhập';
+
+  @override
+  String get imIssueNoDate => 'Thiếu ngày';
+
+  @override
+  String get imIssueBadDate => 'Không đọc được ngày';
+
+  @override
+  String get imIssueFutureDate => 'Ngày trong tương lai';
+
+  @override
+  String get imIssueNoAmount => 'Thiếu số tiền';
+
+  @override
+  String get imIssueBadAmount => 'Số tiền không hợp lệ';
+
+  @override
+  String get imIssueTooLarge => 'Số tiền quá lớn';
+
+  @override
+  String get imIssueCurrency => 'Không phải tiền Việt';
+
+  @override
+  String get imIssueIncome => 'Khoản thu, bỏ qua';
+
+  @override
+  String get imIssueDuplicate => 'Đã có, bỏ qua';
+
+  @override
+  String get imFailAiUnavailable =>
+      'AI chưa sẵn sàng. Hãy dùng tệp CSV hoặc Excel.';
+
+  @override
+  String get imFailAi =>
+      'AI chưa đọc được nội dung này. Thử ảnh rõ hơn hoặc dán văn bản.';
+
+  @override
+  String get imFailEmpty => 'Không tìm thấy khoản chi nào trong dữ liệu.';
+
+  @override
+  String get imFailTooBig => 'Tệp quá lớn (tối đa 10 MB, 5.000 dòng).';
+
+  @override
+  String get imFailOffline => 'Cần kết nối mạng để nhập.';
+
+  @override
+  String get imFailGeneric => 'Chưa nhập được. Thử lại sau.';
+
+  @override
+  String get imReadOldExcel =>
+      'Tệp .xls cũ chưa đọc được. Hãy lưu thành .xlsx hoặc CSV rồi thử lại.';
+
+  @override
+  String get imReadUnsupported => 'Chọn tệp CSV hoặc Excel (.xlsx).';
+
+  @override
+  String get imReadBroken => 'Không mở được tệp này.';
+
+  @override
+  String get imStatusAnalyzing => 'Đang đọc';
+
+  @override
+  String get imStatusReady => 'Chờ bạn xem trước';
+
+  @override
+  String get imStatusImporting => 'Đang nhập';
+
+  @override
+  String imStatusDone(int n) {
+    return 'Đã nhập $n khoản';
+  }
+
+  @override
+  String get imStatusFailed => 'Chưa nhập được';
+
+  @override
+  String get imStatusUndone => 'Đã hoàn tác';
+
+  @override
+  String get imContinueReview => 'Tiếp tục xem trước';
+
+  @override
+  String get imImporting => 'Đang nhập chi tiêu…';
+
+  @override
+  String imProgress(int done, int total) {
+    return '$done / $total khoản';
+  }
+
+  @override
+  String get imCanClose =>
+      'Bạn có thể đóng app. Child Life sẽ gửi email và thông báo khi xong.';
+
+  @override
+  String imDone(int n) {
+    return 'Đã nhập $n khoản';
+  }
+
+  @override
+  String imSkipped(String details) {
+    return 'Bỏ qua: $details.';
+  }
+
+  @override
+  String get imEmailSent => 'Kết quả cũng đã được gửi qua email.';
+
+  @override
+  String get imSeeSpending => 'Xem chi tiêu';
+
+  @override
+  String imUndo(String date) {
+    return 'Hoàn tác lần nhập (đến $date)';
+  }
+
+  @override
+  String get imIssues => 'Dòng không nhập';
+
+  @override
+  String imRow(int n) {
+    return 'Dòng $n';
+  }
+
+  @override
+  String get imFailedTitle => 'Chưa nhập được chi tiêu';
+
+  @override
+  String get imTryAgain => 'Thử lại';
+
+  @override
+  String get imUndoneTitle => 'Đã hoàn tác lần nhập này';
+
+  @override
+  String get imUndoTitle => 'Hoàn tác lần nhập?';
+
+  @override
+  String imUndoBody(int n) {
+    return '$n khoản đã nhập sẽ bị xoá khỏi Chi tiêu, kể cả khoản đã sửa sau đó.';
+  }
+
+  @override
+  String imUndoConfirm(int n) {
+    return 'Xoá $n khoản';
+  }
+
+  @override
+  String imUndone(int n) {
+    return 'Đã xoá $n khoản đã nhập';
+  }
+
+  @override
+  String imInto(String name) {
+    return 'Vào: $name';
+  }
 }

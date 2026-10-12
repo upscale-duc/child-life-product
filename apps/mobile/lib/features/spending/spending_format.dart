@@ -145,6 +145,7 @@ String expenseSubline(AppLocalizations l10n, Expense e, {String? lead}) {
   final source = switch (e.source) {
     ExpenseSource.vaccine => l10n.spFromVaccines,
     ExpenseSource.recurring => l10n.spFromRecurring,
+    ExpenseSource.import => l10n.spFromImport,
     ExpenseSource.manual => null,
   };
   return [

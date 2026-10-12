@@ -76,7 +76,8 @@ const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 /** "Ai trả" (D-056): a member's label snapshot, or null for "Khác". */
 export const payerSchema = authorSchema.extend({ uid: z.string().min(1).max(128) }).nullable();
 
-export const expenseSources = ['manual', 'recurring', 'vaccine'] as const;
+/** `import`: brought in by "Nhập chi tiêu" (D-060); sourceRef = the import id. */
+export const expenseSources = ['manual', 'recurring', 'vaccine', 'import'] as const;
 
 /** `babies/{babyId}/expenses/{expenseId}`. Soft delete only. */
 export const expenseSchema = z.object({

@@ -125,9 +125,15 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
         ref.read(selectedBabyIdProvider.notifier).select(babyId);
       }
       // Chi tiêu lives in Tiện ích (450:6597).
-      ref.read(routerProvider)
+      final router = ref.read(routerProvider)
         ..go(Routes.utilities)
         ..push(Routes.spending);
+      // Nhập chi tiêu (D-060): the import's result.
+      final importId = message.data['importId'];
+      if (importId is String &&
+          RegExp(r'^im_[a-f0-9]{32}$').hasMatch(importId)) {
+        router.push('${Routes.spendingImport}/$importId');
+      }
       return;
     }
     ref.read(routerProvider).go(Routes.memories);

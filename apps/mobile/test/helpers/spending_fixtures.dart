@@ -1,6 +1,7 @@
 import 'package:child_life/core/widgets/cl_icon.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/spending/import/import_repository.dart';
 import 'package:child_life/features/spending/spending_models.dart';
 import 'package:child_life/features/spending/spending_repository.dart';
 
@@ -268,3 +269,74 @@ final mockRecurring = [
     author: _mom,
   ),
 ];
+
+const mockImportId = 'im_0123456789abcdef0123456789abcdef';
+
+/// Nhập chi tiêu (D-060): a Money Lover file of 216 rows.
+SpendingImport mockImport(ImportStatus status) => SpendingImport(
+  id: mockImportId,
+  kind: ImportKind.file,
+  status: status,
+  fileName: 'money-lover-2026.csv',
+  preset: 'Money Lover',
+  columns: const ['Id', 'Date', 'Category', 'Amount', 'Currency', 'Note'],
+  mapping: const ImportMapping(
+    firstRow: 1,
+    date: 1,
+    amount: 3,
+    note: [5],
+    category: 2,
+  ),
+  options: const ImportOptions(rows: RowSign.negative),
+  mixedSigns: true,
+  ambiguousDates: false,
+  counts: const ImportCounts(
+    rows: 216,
+    ready: 210,
+    duplicates: 3,
+    income: 2,
+    errors: 1,
+  ),
+  preview: const [
+    ImportPreviewRow(
+      row: 2,
+      spentOn: '2026-10-12',
+      amount: -1020000,
+      note: 'Sữa công thức',
+      category: 'Sữa',
+      payer: '',
+      issue: null,
+    ),
+    ImportPreviewRow(
+      row: 3,
+      spentOn: null,
+      amount: -50000,
+      note: 'Bánh',
+      category: 'Ăn uống',
+      payer: '',
+      issue: ImportIssue.noDate,
+    ),
+  ],
+  categories: const [
+    SourceName(
+      key: 'sua',
+      name: 'Sữa',
+      rows: 64,
+      suggested: ExistingCategory('c_milk'),
+    ),
+    SourceName(key: 'boi', name: 'Bơi', rows: 4, suggested: null),
+  ],
+  payers: const [],
+  progress: status == ImportStatus.importing ? 57 : 0,
+  imported: switch (status) {
+    ImportStatus.importing => 120,
+    ImportStatus.done => 210,
+    _ => 0,
+  },
+  issues: const [(3, ImportIssue.noDate)],
+  failure: null,
+  createdBy: 'u_mai',
+  createdAt: DateTime(2026, 10, 12, 9),
+  finishedAt: null,
+  undoUntil: status == ImportStatus.done ? DateTime(2099, 10, 19) : null,
+);

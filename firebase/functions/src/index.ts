@@ -109,7 +109,21 @@ import {
   deleteSpendingCategory as deleteCategory,
   spendingBudgetAlert as checkBudgetAlert,
 } from './spending.js';
-import { openAiProvider, templateProvider, type AiProvider } from './ai.js';
+import {
+  openAiExpenseExtractor,
+  openAiProvider,
+  templateProvider,
+  type AiProvider,
+  type ExpenseExtractor,
+} from './ai.js';
+import {
+  analyzeSpendingImport as analyzeImport,
+  cleanupSpendingImports as cleanupImports,
+  confirmSpendingImport as confirmImport,
+  runSpendingImport as runImport,
+  undoSpendingImport as undoImport,
+  type ImportStore,
+} from './spending-import.js';
 import {
   StaffError,
   aiStats,
@@ -1140,6 +1154,154 @@ export const weeklyStorySuggestions = onSchedule(
   async () => {
     const made = await suggestForAll(getFirestore(), aiProvider(), new Date());
     logger.info('story suggestions', { made });
+  },
+);
+
+// ---------- Nhập chi tiêu (D-060, P-144) ----------
+
+function expenseExtractor(): ExpenseExtractor | null {
+  const key = openAiKey.value();
+  return !key || key === 'unset' ? null : openAiExpenseExtractor(key, openAiModel.value());
+}
+
+/** Grids and photos under `imports/` (written by the app, read and deleted here). */
+const importStore = (): ImportStore => {
+  const bucket = getStorage().bucket();
+  return {
+    size: async (path) => {
+      const file = bucket.file(path);
+      const [exists] = await file.exists();
+      if (!exists) return null;
+      const [meta] = await file.getMetadata();
+      return Number(meta.size ?? 0);
+    },
+    read: async (path) => (await bucket.file(path).download())[0],
+    write: async (path, bytes, contentType) => {
+      await bucket.file(path).save(bytes, { contentType, resumable: false });
+    },
+    listOlderThan: async (prefix, before, max) => {
+      const out: string[] = [];
+      let pageToken: string | undefined;
+      // At most 10 pages per run; the next run continues.
+      for (let page = 0; page < 10 && out.length < max; page++) {
+        const [files, next] = await bucket.getFiles({
+          prefix,
+          maxResults: 1000,
+          autoPaginate: false,
+          ...(pageToken ? { pageToken } : {}),
+        });
+        for (const f of files) {
+          const created = Date.parse(String(f.metadata.timeCreated ?? ''));
+          if (Number.isFinite(created) && created < before.getTime()) out.push(f.name);
+          if (out.length >= max) break;
+        }
+        pageToken = (next as { pageToken?: string } | null)?.pageToken;
+        if (!pageToken) break;
+      }
+      return out;
+    },
+    delete: async (path) => {
+      await bucket.file(path).delete({ ignoreNotFound: true });
+    },
+  };
+};
+
+const importCall = <T>(
+  name: string,
+  options: {
+    secrets?: ReturnType<typeof defineSecret>[];
+    timeoutSeconds?: number;
+    memory?: '512MiB' | '1GiB';
+  },
+  run: (uid: string, data: unknown) => Promise<T>,
+) =>
+  onCall(options, async (request) => {
+    const uid = callerOf(request).uid;
+    try {
+      return await run(uid, request.data);
+    } catch (error) {
+      // Never the payload: it holds the family's spending.
+      throw asHttpsError(name, error);
+    }
+  });
+
+/** Reads the uploaded grid (or the pasted text / photos through AI) and writes the preview. */
+export const analyzeSpendingImport = importCall(
+  'analyzeSpendingImport',
+  { secrets: [openAiKey], timeoutSeconds: 300, memory: '1GiB' },
+  (uid, d) =>
+    analyzeImport(
+      { db: getFirestore(), store: importStore(), extractor: expenseExtractor() },
+      uid,
+      d,
+      new Date(),
+    ),
+);
+
+/** "Nhập N khoản": keeps the choices; the trigger below imports. */
+export const confirmSpendingImport = importCall('confirmSpendingImport', {}, (uid, d) =>
+  confirmImport(getFirestore(), uid, d, new Date()),
+);
+
+/** "Hoàn tác lần nhập" (7 days). */
+export const undoSpendingImport = importCall(
+  'undoSpendingImport',
+  { timeoutSeconds: 300 },
+  async (uid, d) => {
+    const result = await undoImport(getFirestore(), uid, d, new Date());
+    logger.info('spending import undone', { removed: result.removed });
+    return result;
+  },
+);
+
+/** Imports a confirmed import in batches, then mails and pushes the importer. */
+export const runSpendingImport = onDocumentWritten(
+  {
+    document: 'babies/{babyId}/spendingImports/{importId}',
+    timeoutSeconds: 540,
+    memory: '1GiB',
+  },
+  async (event) => {
+    const before = event.data?.before;
+    const after = event.data?.after;
+    if (!after?.exists || after.get('status') !== 'queued') return;
+    if (before?.exists && before.get('status') === 'queued') return;
+    const { babyId, importId } = event.params;
+    const result = await runImport(
+      {
+        db: getFirestore(),
+        store: importStore(),
+        extractor: null,
+        sender: pushSender(),
+        emailOf: async (uid) => {
+          try {
+            return (await getAuth().getUser(uid)).email ?? null;
+          } catch {
+            return null;
+          }
+        },
+      },
+      babyId,
+      importId,
+      new Date(),
+    );
+    if (result.ran) {
+      logger.info('spending import finished', {
+        babyId,
+        importId,
+        imported: result.imported,
+        failure: result.failure,
+      });
+    }
+  },
+);
+
+/** Deletes old grids and photos; expires imports left waiting (no mail). */
+export const cleanupSpendingImports = onSchedule(
+  { schedule: 'every day 03:15', timeZone: 'Asia/Ho_Chi_Minh', timeoutSeconds: 540 },
+  async () => {
+    const { files, expired } = await cleanupImports(getFirestore(), importStore(), new Date());
+    if (files > 0 || expired > 0) logger.info('spending imports cleaned', { files, expired });
   },
 );
 

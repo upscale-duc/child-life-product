@@ -12398,5 +12398,468 @@
   "upNoStore": "Chưa mở được trang cập nhật. Thử lại sau nhé.",
   "@upNoStore": {
     "description": "Toast when the store link is missing or fails."
+  },
+  "spImport": "Nhập",
+  "@spImport": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "spFirstImport": "Nhập từ app khác hoặc Excel",
+  "@spFirstImport": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "spFromImport": "nhập từ tệp",
+  "@spFromImport": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "spFromImportFull": "Nhập chi tiêu · xem lần nhập",
+  "@spFromImportFull": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imTitle": "Nhập chi tiêu",
+  "@imTitle": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imIntro": "Mang chi tiêu từ app khác, bảng tính hoặc sổ tay vào Chi tiêu của {name}. Bạn xem trước rồi mới nhập.",
+  "@imIntro": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "imParentsOnly": "Chỉ Cùng nuôi được nhập chi tiêu.",
+  "@imParentsOnly": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSourceFile": "Tệp CSV hoặc Excel",
+  "@imSourceFile": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSourceFileHint": "Money Lover, MISA, Google Sheets, Excel… tự nhận cột",
+  "@imSourceFileHint": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSourceText": "Dán văn bản",
+  "@imSourceText": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSourceTextHint": "Ghi chú, tin nhắn, danh sách — AI tách thành từng khoản",
+  "@imSourceTextHint": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSourcePhotos": "Ảnh chụp sổ chi tiêu",
+  "@imSourcePhotos": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSourcePhotosHint": "Tối đa 5 ảnh — AI đọc từng dòng",
+  "@imSourcePhotosHint": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imPrivacy": "Văn bản và ảnh được gửi tới dịch vụ AI chỉ để đọc, không lưu lại; tên bé không được gửi. Tệp tải lên tự xoá sau 7 ngày.",
+  "@imPrivacy": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imRecent": "Các lần nhập",
+  "@imRecent": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imBusyReading": "Đang đọc dữ liệu…",
+  "@imBusyReading": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imBusyAi": "AI đang đọc, có thể mất nửa phút…",
+  "@imBusyAi": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imPasteHint": "Mỗi khoản một dòng, ví dụ: “12/10 sữa công thức 1.020.000 mẹ trả”.",
+  "@imPasteHint": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imPastePlaceholder": "Dán nội dung ở đây",
+  "@imPastePlaceholder": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imRead": "Đọc nội dung",
+  "@imRead": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imReviewTitle": "Xem trước",
+  "@imReviewTitle": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imPreset": "Nhận dạng: {name}",
+  "@imPreset": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "imWillImport": "Sẽ nhập {n} khoản",
+  "@imWillImport": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imRows": "{n} dòng",
+  "@imRows": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imDuplicates": "{n} khoản trùng",
+  "@imDuplicates": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imIncome": "{n} khoản thu",
+  "@imIncome": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imErrors": "{n} dòng lỗi",
+  "@imErrors": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imColumns": "Cột trong tệp",
+  "@imColumns": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imColumnNone": "Không có",
+  "@imColumnNone": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imReading": "Cách đọc",
+  "@imReading": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imDateOrder": "Ngày viết theo kiểu",
+  "@imDateOrder": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imDateDmy": "Ngày/Tháng/Năm",
+  "@imDateDmy": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imDateMdy": "Tháng/Ngày/Năm",
+  "@imDateMdy": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imRowsAre": "Khoản chi là các dòng",
+  "@imRowsAre": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imRowsNegative": "Số âm",
+  "@imRowsNegative": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imRowsPositive": "Số dương",
+  "@imRowsPositive": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imRowsAll": "Tất cả",
+  "@imRowsAll": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSkipDuplicates": "Bỏ qua khoản đã có",
+  "@imSkipDuplicates": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSkipDuplicatesHint": "Cùng ngày, số tiền và nội dung",
+  "@imSkipDuplicatesHint": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imCategories": "Danh mục",
+  "@imCategories": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSourceRows": "{name} · {n} khoản",
+  "@imSourceRows": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imNewCategory": "Tạo mới “{name}”",
+  "@imNewCategory": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "imPreview": "Xem trước {n} dòng đầu",
+  "@imPreview": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imConfirm": "Nhập {n} khoản",
+  "@imConfirm": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imNothingToImport": "Không có khoản nào để nhập",
+  "@imNothingToImport": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imIssueNoDate": "Thiếu ngày",
+  "@imIssueNoDate": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imIssueBadDate": "Không đọc được ngày",
+  "@imIssueBadDate": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imIssueFutureDate": "Ngày trong tương lai",
+  "@imIssueFutureDate": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imIssueNoAmount": "Thiếu số tiền",
+  "@imIssueNoAmount": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imIssueBadAmount": "Số tiền không hợp lệ",
+  "@imIssueBadAmount": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imIssueTooLarge": "Số tiền quá lớn",
+  "@imIssueTooLarge": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imIssueCurrency": "Không phải tiền Việt",
+  "@imIssueCurrency": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imIssueIncome": "Khoản thu, bỏ qua",
+  "@imIssueIncome": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imIssueDuplicate": "Đã có, bỏ qua",
+  "@imIssueDuplicate": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imFailAiUnavailable": "AI chưa sẵn sàng. Hãy dùng tệp CSV hoặc Excel.",
+  "@imFailAiUnavailable": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imFailAi": "AI chưa đọc được nội dung này. Thử ảnh rõ hơn hoặc dán văn bản.",
+  "@imFailAi": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imFailEmpty": "Không tìm thấy khoản chi nào trong dữ liệu.",
+  "@imFailEmpty": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imFailTooBig": "Tệp quá lớn (tối đa 10 MB, 5.000 dòng).",
+  "@imFailTooBig": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imFailOffline": "Cần kết nối mạng để nhập.",
+  "@imFailOffline": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imFailGeneric": "Chưa nhập được. Thử lại sau.",
+  "@imFailGeneric": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imReadOldExcel": "Tệp .xls cũ chưa đọc được. Hãy lưu thành .xlsx hoặc CSV rồi thử lại.",
+  "@imReadOldExcel": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imReadUnsupported": "Chọn tệp CSV hoặc Excel (.xlsx).",
+  "@imReadUnsupported": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imReadBroken": "Không mở được tệp này.",
+  "@imReadBroken": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imStatusAnalyzing": "Đang đọc",
+  "@imStatusAnalyzing": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imStatusReady": "Chờ bạn xem trước",
+  "@imStatusReady": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imStatusImporting": "Đang nhập",
+  "@imStatusImporting": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imStatusDone": "Đã nhập {n} khoản",
+  "@imStatusDone": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imStatusFailed": "Chưa nhập được",
+  "@imStatusFailed": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imStatusUndone": "Đã hoàn tác",
+  "@imStatusUndone": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imContinueReview": "Tiếp tục xem trước",
+  "@imContinueReview": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imImporting": "Đang nhập chi tiêu…",
+  "@imImporting": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imProgress": "{done} / {total} khoản",
+  "@imProgress": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "imCanClose": "Bạn có thể đóng app. Child Life sẽ gửi email và thông báo khi xong.",
+  "@imCanClose": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imDone": "Đã nhập {n} khoản",
+  "@imDone": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imSkipped": "Bỏ qua: {details}.",
+  "@imSkipped": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "imEmailSent": "Kết quả cũng đã được gửi qua email.",
+  "@imEmailSent": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imSeeSpending": "Xem chi tiêu",
+  "@imSeeSpending": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imUndo": "Hoàn tác lần nhập (đến {date})",
+  "@imUndo": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "imIssues": "Dòng không nhập",
+  "@imIssues": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imRow": "Dòng {n}",
+  "@imRow": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imFailedTitle": "Chưa nhập được chi tiêu",
+  "@imFailedTitle": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imTryAgain": "Thử lại",
+  "@imTryAgain": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imUndoneTitle": "Đã hoàn tác lần nhập này",
+  "@imUndoneTitle": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imUndoTitle": "Hoàn tác lần nhập?",
+  "@imUndoTitle": {
+    "description": "Nhập chi tiêu (D-060)."
+  },
+  "imUndoBody": "{n} khoản đã nhập sẽ bị xoá khỏi Chi tiêu, kể cả khoản đã sửa sau đó.",
+  "@imUndoBody": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imUndoConfirm": "Xoá {n} khoản",
+  "@imUndoConfirm": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imUndone": "Đã xoá {n} khoản đã nhập",
+  "@imUndone": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "imInto": "Vào: {name}",
+  "@imInto": {
+    "description": "Nhập chi tiêu (D-060).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

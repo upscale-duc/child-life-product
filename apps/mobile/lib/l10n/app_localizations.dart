@@ -13722,6 +13722,534 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chưa mở được trang cập nhật. Thử lại sau nhé.'**
   String get upNoStore;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập'**
+  String get spImport;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập từ app khác hoặc Excel'**
+  String get spFirstImport;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'nhập từ tệp'**
+  String get spFromImport;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập chi tiêu · xem lần nhập'**
+  String get spFromImportFull;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập chi tiêu'**
+  String get imTitle;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mang chi tiêu từ app khác, bảng tính hoặc sổ tay vào Chi tiêu của {name}. Bạn xem trước rồi mới nhập.'**
+  String imIntro(String name);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ Cùng nuôi được nhập chi tiêu.'**
+  String get imParentsOnly;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tệp CSV hoặc Excel'**
+  String get imSourceFile;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Money Lover, MISA, Google Sheets, Excel… tự nhận cột'**
+  String get imSourceFileHint;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dán văn bản'**
+  String get imSourceText;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú, tin nhắn, danh sách — AI tách thành từng khoản'**
+  String get imSourceTextHint;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh chụp sổ chi tiêu'**
+  String get imSourcePhotos;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối đa 5 ảnh — AI đọc từng dòng'**
+  String get imSourcePhotosHint;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Văn bản và ảnh được gửi tới dịch vụ AI chỉ để đọc, không lưu lại; tên bé không được gửi. Tệp tải lên tự xoá sau 7 ngày.'**
+  String get imPrivacy;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Các lần nhập'**
+  String get imRecent;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang đọc dữ liệu…'**
+  String get imBusyReading;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'AI đang đọc, có thể mất nửa phút…'**
+  String get imBusyAi;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi khoản một dòng, ví dụ: “12/10 sữa công thức 1.020.000 mẹ trả”.'**
+  String get imPasteHint;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dán nội dung ở đây'**
+  String get imPastePlaceholder;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc nội dung'**
+  String get imRead;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trước'**
+  String get imReviewTitle;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận dạng: {name}'**
+  String imPreset(String name);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẽ nhập {n} khoản'**
+  String imWillImport(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} dòng'**
+  String imRows(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} khoản trùng'**
+  String imDuplicates(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} khoản thu'**
+  String imIncome(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} dòng lỗi'**
+  String imErrors(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cột trong tệp'**
+  String get imColumns;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có'**
+  String get imColumnNone;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách đọc'**
+  String get imReading;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày viết theo kiểu'**
+  String get imDateOrder;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày/Tháng/Năm'**
+  String get imDateDmy;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng/Ngày/Năm'**
+  String get imDateMdy;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản chi là các dòng'**
+  String get imRowsAre;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Số âm'**
+  String get imRowsNegative;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Số dương'**
+  String get imRowsPositive;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get imRowsAll;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua khoản đã có'**
+  String get imSkipDuplicates;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cùng ngày, số tiền và nội dung'**
+  String get imSkipDuplicatesHint;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục'**
+  String get imCategories;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · {n} khoản'**
+  String imSourceRows(String name, int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo mới “{name}”'**
+  String imNewCategory(String name);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trước {n} dòng đầu'**
+  String imPreview(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập {n} khoản'**
+  String imConfirm(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có khoản nào để nhập'**
+  String get imNothingToImport;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiếu ngày'**
+  String get imIssueNoDate;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không đọc được ngày'**
+  String get imIssueBadDate;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày trong tương lai'**
+  String get imIssueFutureDate;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiếu số tiền'**
+  String get imIssueNoAmount;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Số tiền không hợp lệ'**
+  String get imIssueBadAmount;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Số tiền quá lớn'**
+  String get imIssueTooLarge;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không phải tiền Việt'**
+  String get imIssueCurrency;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản thu, bỏ qua'**
+  String get imIssueIncome;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có, bỏ qua'**
+  String get imIssueDuplicate;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'AI chưa sẵn sàng. Hãy dùng tệp CSV hoặc Excel.'**
+  String get imFailAiUnavailable;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'AI chưa đọc được nội dung này. Thử ảnh rõ hơn hoặc dán văn bản.'**
+  String get imFailAi;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy khoản chi nào trong dữ liệu.'**
+  String get imFailEmpty;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tệp quá lớn (tối đa 10 MB, 5.000 dòng).'**
+  String get imFailTooBig;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần kết nối mạng để nhập.'**
+  String get imFailOffline;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa nhập được. Thử lại sau.'**
+  String get imFailGeneric;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tệp .xls cũ chưa đọc được. Hãy lưu thành .xlsx hoặc CSV rồi thử lại.'**
+  String get imReadOldExcel;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn tệp CSV hoặc Excel (.xlsx).'**
+  String get imReadUnsupported;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không mở được tệp này.'**
+  String get imReadBroken;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang đọc'**
+  String get imStatusAnalyzing;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ bạn xem trước'**
+  String get imStatusReady;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang nhập'**
+  String get imStatusImporting;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã nhập {n} khoản'**
+  String imStatusDone(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa nhập được'**
+  String get imStatusFailed;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hoàn tác'**
+  String get imStatusUndone;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục xem trước'**
+  String get imContinueReview;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang nhập chi tiêu…'**
+  String get imImporting;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'{done} / {total} khoản'**
+  String imProgress(int done, int total);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể đóng app. Child Life sẽ gửi email và thông báo khi xong.'**
+  String get imCanClose;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã nhập {n} khoản'**
+  String imDone(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua: {details}.'**
+  String imSkipped(String details);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết quả cũng đã được gửi qua email.'**
+  String get imEmailSent;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem chi tiêu'**
+  String get imSeeSpending;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác lần nhập (đến {date})'**
+  String imUndo(String date);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dòng không nhập'**
+  String get imIssues;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dòng {n}'**
+  String imRow(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa nhập được chi tiêu'**
+  String get imFailedTitle;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại'**
+  String get imTryAgain;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hoàn tác lần nhập này'**
+  String get imUndoneTitle;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác lần nhập?'**
+  String get imUndoTitle;
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} khoản đã nhập sẽ bị xoá khỏi Chi tiêu, kể cả khoản đã sửa sau đó.'**
+  String imUndoBody(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá {n} khoản'**
+  String imUndoConfirm(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá {n} khoản đã nhập'**
+  String imUndone(int n);
+
+  /// Nhập chi tiêu (D-060).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vào: {name}'**
+  String imInto(String name);
 }
 
 class _AppLocalizationsDelegate

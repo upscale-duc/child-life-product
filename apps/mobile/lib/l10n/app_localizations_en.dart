@@ -8748,4 +8748,393 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get upNoStore => 'Couldn\'t open the update page. Try again later.';
+
+  @override
+  String get spImport => 'Import';
+
+  @override
+  String get spFirstImport => 'Import from another app or Excel';
+
+  @override
+  String get spFromImport => 'imported';
+
+  @override
+  String get spFromImportFull => 'Imported · see the import';
+
+  @override
+  String get imTitle => 'Import spending';
+
+  @override
+  String imIntro(String name) {
+    return 'Bring spending from another app, a spreadsheet or a notebook into $name\'s Spending. You review it before anything is added.';
+  }
+
+  @override
+  String get imParentsOnly => 'Only co-parents can import spending.';
+
+  @override
+  String get imSourceFile => 'CSV or Excel file';
+
+  @override
+  String get imSourceFileHint =>
+      'Money Lover, MISA, Google Sheets, Excel… columns found for you';
+
+  @override
+  String get imSourceText => 'Paste text';
+
+  @override
+  String get imSourceTextHint =>
+      'Notes, messages, lists — AI splits them into items';
+
+  @override
+  String get imSourcePhotos => 'Photos of a spending notebook';
+
+  @override
+  String get imSourcePhotosHint => 'Up to 5 photos — AI reads each line';
+
+  @override
+  String get imPrivacy =>
+      'Text and photos go to an AI service only to be read, not kept; the baby\'s name is never sent. Uploads are deleted after 7 days.';
+
+  @override
+  String get imRecent => 'Imports';
+
+  @override
+  String get imBusyReading => 'Reading…';
+
+  @override
+  String get imBusyAi => 'The AI is reading; this can take half a minute…';
+
+  @override
+  String get imPasteHint =>
+      'One item per line, e.g. “12/10 formula 1,020,000 mum paid”.';
+
+  @override
+  String get imPastePlaceholder => 'Paste here';
+
+  @override
+  String get imRead => 'Read it';
+
+  @override
+  String get imReviewTitle => 'Review';
+
+  @override
+  String imPreset(String name) {
+    return 'Recognised: $name';
+  }
+
+  @override
+  String imWillImport(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n items will be imported',
+      one: '1 item will be imported',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String imRows(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n rows',
+      one: '1 row',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String imDuplicates(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n duplicates',
+      one: '1 duplicate',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String imIncome(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n income rows',
+      one: '1 income row',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String imErrors(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n rows with problems',
+      one: '1 row with a problem',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imColumns => 'Columns in the file';
+
+  @override
+  String get imColumnNone => 'None';
+
+  @override
+  String get imReading => 'How to read it';
+
+  @override
+  String get imDateOrder => 'Dates are written as';
+
+  @override
+  String get imDateDmy => 'Day/Month/Year';
+
+  @override
+  String get imDateMdy => 'Month/Day/Year';
+
+  @override
+  String get imRowsAre => 'Spending is the rows with';
+
+  @override
+  String get imRowsNegative => 'Negative';
+
+  @override
+  String get imRowsPositive => 'Positive';
+
+  @override
+  String get imRowsAll => 'All';
+
+  @override
+  String get imSkipDuplicates => 'Skip items already recorded';
+
+  @override
+  String get imSkipDuplicatesHint => 'Same day, amount and description';
+
+  @override
+  String get imCategories => 'Categories';
+
+  @override
+  String imSourceRows(String name, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n items',
+      one: '1 item',
+    );
+    return '$name · $_temp0';
+  }
+
+  @override
+  String imNewCategory(String name) {
+    return 'New “$name”';
+  }
+
+  @override
+  String imPreview(int n) {
+    return 'First $n rows';
+  }
+
+  @override
+  String imConfirm(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Import $n items',
+      one: 'Import 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imNothingToImport => 'Nothing to import';
+
+  @override
+  String get imIssueNoDate => 'No date';
+
+  @override
+  String get imIssueBadDate => 'Date not readable';
+
+  @override
+  String get imIssueFutureDate => 'Date in the future';
+
+  @override
+  String get imIssueNoAmount => 'No amount';
+
+  @override
+  String get imIssueBadAmount => 'Amount not valid';
+
+  @override
+  String get imIssueTooLarge => 'Amount too large';
+
+  @override
+  String get imIssueCurrency => 'Not in Vietnamese đồng';
+
+  @override
+  String get imIssueIncome => 'Income, skipped';
+
+  @override
+  String get imIssueDuplicate => 'Already recorded, skipped';
+
+  @override
+  String get imFailAiUnavailable =>
+      'The AI isn\'t available yet. Use a CSV or Excel file.';
+
+  @override
+  String get imFailAi =>
+      'The AI couldn\'t read this. Try a clearer photo or paste text.';
+
+  @override
+  String get imFailEmpty => 'No spending found in this.';
+
+  @override
+  String get imFailTooBig =>
+      'The file is too large (10 MB, 5,000 rows at most).';
+
+  @override
+  String get imFailOffline => 'Importing needs a connection.';
+
+  @override
+  String get imFailGeneric => 'Couldn\'t import. Try again later.';
+
+  @override
+  String get imReadOldExcel =>
+      'Old .xls files can\'t be read. Save it as .xlsx or CSV and try again.';
+
+  @override
+  String get imReadUnsupported => 'Choose a CSV or Excel (.xlsx) file.';
+
+  @override
+  String get imReadBroken => 'This file can\'t be opened.';
+
+  @override
+  String get imStatusAnalyzing => 'Reading';
+
+  @override
+  String get imStatusReady => 'Waiting for your review';
+
+  @override
+  String get imStatusImporting => 'Importing';
+
+  @override
+  String imStatusDone(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n items imported',
+      one: '1 item imported',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get imStatusFailed => 'Not imported';
+
+  @override
+  String get imStatusUndone => 'Undone';
+
+  @override
+  String get imContinueReview => 'Continue the review';
+
+  @override
+  String get imImporting => 'Importing spending…';
+
+  @override
+  String imProgress(int done, int total) {
+    return '$done / $total items';
+  }
+
+  @override
+  String get imCanClose =>
+      'You can close the app. Child Life will email you and notify you when it\'s done.';
+
+  @override
+  String imDone(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n items imported',
+      one: '1 item imported',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String imSkipped(String details) {
+    return 'Skipped: $details.';
+  }
+
+  @override
+  String get imEmailSent => 'The result was also sent by email.';
+
+  @override
+  String get imSeeSpending => 'See spending';
+
+  @override
+  String imUndo(String date) {
+    return 'Undo this import (until $date)';
+  }
+
+  @override
+  String get imIssues => 'Rows not imported';
+
+  @override
+  String imRow(int n) {
+    return 'Row $n';
+  }
+
+  @override
+  String get imFailedTitle => 'Spending wasn\'t imported';
+
+  @override
+  String get imTryAgain => 'Try again';
+
+  @override
+  String get imUndoneTitle => 'This import was undone';
+
+  @override
+  String get imUndoTitle => 'Undo this import?';
+
+  @override
+  String imUndoBody(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other:
+          'The $n imported items will be removed from Spending, even those edited since.',
+      one:
+          'The imported item will be removed from Spending, even if it was edited since.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String imUndoConfirm(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Remove $n items',
+      one: 'Remove 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String imUndone(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Removed $n imported items',
+      one: 'Removed 1 imported item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String imInto(String name) {
+    return 'Into: $name';
+  }
 }

@@ -8,6 +8,8 @@ import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/core/widgets/cl_icon.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
+import 'package:child_life/features/spending/import/import_repository.dart';
+import 'package:child_life/features/spending/import/import_screens.dart';
 import 'package:child_life/features/spending/spending_categories.dart';
 import 'package:child_life/features/spending/spending_models.dart';
 import 'package:child_life/features/spending/spending_plan_screens.dart';
@@ -53,10 +55,20 @@ _Case _screen(
   Widget Function() build, {
   List<Expense>? expenses,
   List<SpendingCategory> categories = const [],
+  ImportStatus importStatus = ImportStatus.ready,
   Future<void> Function(WidgetTester tester)? act,
 }) => (
   build: build,
-  overrides: () => _data(expenses: expenses, categories: categories),
+  overrides: () => [
+    ..._data(expenses: expenses, categories: categories),
+    // Nhập chi tiêu (D-060).
+    spendingImportsProvider.overrideWith(
+      (ref, id) => Stream.value([mockImport(ImportStatus.done)]),
+    ),
+    spendingImportProvider.overrideWith(
+      (ref, key) => Stream.value(mockImport(importStatus)),
+    ),
+  ],
   prefs: const {},
   act: act,
 );
@@ -150,6 +162,26 @@ final _cases = <String, _Case>{
       );
       await _tap(t, find.byKey(const Key('spDeleteCategory')));
     },
+  ),
+  // Nhập chi tiêu (D-060; not drawn).
+  'im1_sources': _screen(() => const SpendingImportScreen()),
+  'im2_review': _screen(
+    () => const SpendingImportReviewScreen(importId: mockImportId),
+  ),
+  'im2_review_scrolled': _screen(
+    () => const SpendingImportReviewScreen(importId: mockImportId),
+    act: (t) async {
+      await t.drag(find.byType(Scrollable).first, const Offset(0, -700));
+      await t.pumpAndSettle();
+    },
+  ),
+  'im3_importing': _screen(
+    () => const SpendingImportResultScreen(importId: mockImportId),
+    importStatus: ImportStatus.importing,
+  ),
+  'im3_done': _screen(
+    () => const SpendingImportResultScreen(importId: mockImportId),
+    importStatus: ImportStatus.done,
   ),
 };
 

@@ -74,7 +74,10 @@ export async function deliverMail(
               template as AccountTemplate,
               mail.locale as Locale,
               withDownloadUrl((mail.data ?? {}) as AccountMailData, config.functionsOrigin),
-              { adminOrigin: config.adminOrigin ?? 'https://admin.childlife.app' },
+              {
+                adminOrigin: config.adminOrigin ?? 'https://admin.childlife.app',
+                webOrigin: config.webOrigin,
+              },
             )
           : null;
     if (!rendered) throw new Error(`Unknown template ${template}`);

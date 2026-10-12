@@ -261,6 +261,8 @@ export const accountTemplates = [
   'storageDeclined',
   'staffInvite',
   'ownershipStaffRequest',
+  'spendingImportDone',
+  'spendingImportFailed',
 ] as const;
 export type AccountTemplate = (typeof accountTemplates)[number];
 
@@ -285,6 +287,10 @@ export interface AccountMailData {
   token?: string | null;
   downloadUrl?: string;
   size?: string;
+  /** "Nhập chi tiêu" (D-060): counts only, never amounts, descriptions or the baby's name. */
+  added?: number;
+  duplicates?: number;
+  errors?: number;
 }
 
 const accountPath = {
@@ -292,11 +298,47 @@ const accountPath = {
   en: 'Child Life → Me → Account & sign-in',
 };
 
+const importPath = {
+  vi: 'Child Life → Tiện ích → Chi tiêu → Nhập',
+  en: 'Child Life → Utilities → Spending → Import',
+};
+
+/** "Bỏ qua 3 khoản trùng và 1 dòng lỗi." — empty when nothing was skipped. */
+export function importSkips(locale: Locale, duplicates: number, errors: number): string {
+  const vi = locale === 'vi';
+  const parts: string[] = [];
+  if (duplicates > 0)
+    parts.push(
+      vi ? `${duplicates} khoản trùng` : `${duplicates} duplicate${duplicates === 1 ? '' : 's'}`,
+    );
+  if (errors > 0)
+    parts.push(vi ? `${errors} dòng lỗi` : `${errors} row${errors === 1 ? '' : 's'} with problems`);
+  if (parts.length === 0) return '';
+  return vi ? `Bỏ qua ${parts.join(' và ')}.` : `Skipped ${parts.join(' and ')}.`;
+}
+
+/** The email and push line after an import: "Đã thêm 210 khoản vào Chi tiêu. Bỏ qua …". */
+export function importSummary(
+  locale: Locale,
+  added: number,
+  duplicates: number,
+  errors: number,
+): string {
+  const head =
+    locale === 'vi'
+      ? `Đã thêm ${added} khoản vào Chi tiêu.`
+      : `Added ${added} expense${added === 1 ? '' : 's'} to Spending.`;
+  const skips = importSkips(locale, duplicates, errors);
+  return skips ? `${head} ${skips}` : head;
+}
+
 export function renderAccountEmail(
   template: AccountTemplate,
   locale: Locale,
   d: AccountMailData,
-  links: { adminOrigin: string } = { adminOrigin: 'https://admin.childlife.app' },
+  links: { adminOrigin: string; webOrigin?: string } = {
+    adminOrigin: 'https://admin.childlife.app',
+  },
 ): RenderedMail {
   const vi = locale === 'vi';
   const staffReason = vi
@@ -618,6 +660,52 @@ export function renderAccountEmail(
               kind: 'warning',
               text: 'If you did not ask for this, choose “Decline”. Child Life never asks for your password.',
             },
+          ]);
+    case 'spendingImportDone': {
+      // No baby name, amounts or descriptions (R-120): counts only.
+      const summary = importSummary(locale, d.added ?? 0, d.duplicates ?? 0, d.errors ?? 0);
+      const open: Block = {
+        kind: 'button',
+        label: vi ? 'Xem kết quả' : 'See the result',
+        url: links.webOrigin ?? 'https://childlife.app',
+      };
+      return vi
+        ? c('Đã nhập xong chi tiêu', summary, [
+            { kind: 'text', text: summary },
+            { kind: 'text', text: 'Xem kết quả trong app:' },
+            { kind: 'steps', text: importPath.vi },
+            open,
+            {
+              kind: 'note',
+              text: 'Nếu nhập nhầm, bạn có thể hoàn tác lần nhập này trong 7 ngày.',
+            },
+          ])
+        : c('Your spending import is done', summary, [
+            { kind: 'text', text: summary },
+            { kind: 'text', text: 'See the result in the app:' },
+            { kind: 'steps', text: importPath.en },
+            open,
+            {
+              kind: 'note',
+              text: 'If something looks wrong, you can undo this import within 7 days.',
+            },
+          ]);
+    }
+    case 'spendingImportFailed':
+      return vi
+        ? c('Chưa nhập được chi tiêu', 'Mở app để thử lại', [
+            {
+              kind: 'text',
+              text: 'Lần nhập chi tiêu của bạn chưa xong. Mở app để thử lại:',
+            },
+            { kind: 'steps', text: importPath.vi },
+          ])
+        : c('Your spending import didn’t finish', 'Open the app to try again', [
+            {
+              kind: 'text',
+              text: 'Your spending import didn’t finish. Open the app to try again:',
+            },
+            { kind: 'steps', text: importPath.en },
           ]);
   }
 }

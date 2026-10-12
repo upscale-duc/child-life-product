@@ -48,6 +48,9 @@ abstract final class Routes {
   static const spendingRecurring = '/utilities/spending/recurring';
   static const spendingStats = '/utilities/spending/stats';
   static const spendingCategories = '/utilities/spending/categories';
+
+  /// Nhập chi tiêu (D-060): sources, `/{id}/review`, `/{id}` (the result).
+  static const spendingImport = '/utilities/spending/import';
   static const messages = '/messages';
   static const memories = '/memories';
 

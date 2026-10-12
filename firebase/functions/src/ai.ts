@@ -201,3 +201,146 @@ export function openAiProvider(
     },
   };
 }
+
+// ---------- Nhập chi tiêu: rows from pasted text or photos (D-060, P-144) ----------
+
+/** One spending row read by the model; the server reads it again like a file. */
+export interface AiExpenseRow {
+  date: string | null;
+  amount: number | null;
+  note: string;
+  category: string;
+  payer: string;
+}
+
+export interface ExpenseExtractInput {
+  /** What was pasted, or photos (JPEG) of a notebook, a receipt list, a screenshot. */
+  text?: string;
+  images?: Buffer[];
+  /** The baby's local day: dates without a year are in this year, never after it. */
+  today: string;
+  locale: 'vi' | 'en';
+}
+
+/**
+ * Text or photos → spending rows (D-003 adapter, OpenAI first). Only what the person pasted or
+ * photographed goes out, with today's date and the language; never the baby's name or any other
+ * family data. The request asks the provider not to store it (`store: false`).
+ */
+export interface ExpenseExtractor {
+  readonly name: 'openai';
+  extractExpenses(input: ExpenseExtractInput): Promise<AiExpenseRow[]>;
+}
+
+const expenseRowsSchema = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['rows'],
+  properties: {
+    rows: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['date', 'amount', 'note', 'category', 'payer'],
+        properties: {
+          date: { type: ['string', 'null'] },
+          amount: { type: ['number', 'null'] },
+          note: { type: 'string' },
+          category: { type: 'string' },
+          payer: { type: 'string' },
+        },
+      },
+    },
+  },
+} as const;
+
+const expenseRules = (today: string, locale: 'vi' | 'en') => [
+  'You read a family’s spending notes (pasted text or photos of a notebook, receipts or a screenshot) and list each expense as one row.',
+  `Today is ${today}. Dates are day first (12/10 = 12 October). A date without a year is in the year of today and never after today. Write dates as YYYY-MM-DD, or null when the row has no date.`,
+  'Amounts are Vietnamese đồng (VND), whole numbers, positive. "k" or "nghìn" = thousand, "tr" or "triệu" = million, "1tr2" = 1 200 000. Use null when no amount is readable.',
+  'note: what was bought, copied from the source in its own language, short. category: a category written in the source (for example "Sữa", "Tã", "Y tế"), else "". payer: who paid when written (for example "Mẹ", "Ba"), else "".',
+  'Do not invent rows, dates or amounts. Skip totals, balances and income. Keep the order of the source.',
+  locale === 'vi'
+    ? 'The family writes mostly in Vietnamese.'
+    : 'The family writes mostly in English.',
+];
+
+/** Rows from the model, checked; anything else is treated as a failed reading. */
+function readExpenseRows(out: unknown, max: number): AiExpenseRow[] {
+  const rows = (out as { rows?: unknown } | null)?.rows;
+  if (!Array.isArray(rows)) throw new AiUnavailable('shape');
+  const text = (v: unknown) => (typeof v === 'string' ? v.trim().slice(0, 300) : '');
+  return rows.slice(0, max).map((r: Record<string, unknown>) => ({
+    date: typeof r?.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(r.date) ? r.date : null,
+    amount: typeof r?.amount === 'number' && Number.isFinite(r.amount) ? r.amount : null,
+    note: text(r?.note),
+    category: text(r?.category),
+    payer: text(r?.payer),
+  }));
+}
+
+/** OpenAI chat completions with a strict JSON schema, text and images, `store: false`. */
+export function openAiExpenseExtractor(
+  apiKey: string,
+  model: string,
+  fetchImpl: typeof fetch = fetch,
+  maxRows = 5000,
+): ExpenseExtractor {
+  return {
+    name: 'openai',
+    async extractExpenses(input) {
+      const content: Array<Record<string, unknown>> = [];
+      if (input.text) content.push({ type: 'text', text: input.text });
+      for (const image of input.images ?? []) {
+        content.push({
+          type: 'image_url',
+          image_url: { url: `data:image/jpeg;base64,${image.toString('base64')}`, detail: 'high' },
+        });
+      }
+      if (content.length === 0) return [];
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 150_000);
+      try {
+        const res = await fetchImpl('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          signal: controller.signal,
+          headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            store: false,
+            temperature: 0,
+            max_completion_tokens: 16_000,
+            messages: [
+              { role: 'system', content: expenseRules(input.today, input.locale).join('\n') },
+              { role: 'user', content },
+            ],
+            response_format: {
+              type: 'json_schema',
+              json_schema: { name: 'expenses', strict: true, schema: expenseRowsSchema },
+            },
+          }),
+        });
+        if (!res.ok) throw new AiUnavailable(`openai ${res.status}`);
+        const body = (await res.json()) as {
+          choices?: Array<{ message?: { content?: string } }>;
+        };
+        const raw = body.choices?.[0]?.message?.content;
+        if (!raw) throw new AiUnavailable('empty');
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(raw);
+        } catch {
+          throw new AiUnavailable('json');
+        }
+        return readExpenseRows(parsed, maxRows);
+      } catch (error) {
+        if (error instanceof AiUnavailable) throw error;
+        // Network errors and timeouts: never the request or the reply in the message.
+        throw new AiUnavailable('request');
+      } finally {
+        clearTimeout(timer);
+      }
+    },
+  };
+}

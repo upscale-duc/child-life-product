@@ -57,7 +57,8 @@ class Payer {
   int get hashCode => uid.hashCode;
 }
 
-enum ExpenseSource { manual, recurring, vaccine }
+/// `import`: brought in by "Nhập chi tiêu" (D-060); sourceRef = the import id.
+enum ExpenseSource { manual, recurring, vaccine, import }
 
 @immutable
 class Expense {

@@ -84,6 +84,9 @@ dependencies:
   wakelock_plus: ^1.8.0
   audioplayers: ^6.8.1
   flutter_tts: ^4.2.5
+  csv: ^6.0.0
+  archive: ^4.0.7
+  xml: ^7.0.1
 
 dev_dependencies:
   flutter_test:

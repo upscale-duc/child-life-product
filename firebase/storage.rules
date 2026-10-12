@@ -126,6 +126,29 @@ service firebase.storage {
         (job.exportKind == 'care' || me.get('isOwner', false) == true);
     }
 
+    // Nhập chi tiêu (D-060, P-144): the grid the phone read from a CSV / Excel file (JSON) and
+    // the photos for the AI reading. Only the uploader writes, under their own uid; nobody reads
+    // them from a client (Functions do), and an upload never replaces one (`resource == null`:
+    // the emulator counts an overwrite as a create); Functions delete them after 7 days. No
+    // Firestore reads.
+    match /imports/{uid}/{file} {
+      allow create: if request.auth != null && request.auth.uid == uid && resource == null &&
+        file.matches('^im_[a-f0-9]{32}[.]json$') &&
+        request.resource.contentType.matches('^application/json(;.*)?$') &&
+        request.resource.size <= 12 * 1024 * 1024;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow read, update: if false;
+    }
+
+    match /imports/{uid}/{importId}/{file} {
+      allow create: if request.auth != null && request.auth.uid == uid && resource == null &&
+        importId.matches('^im_[a-f0-9]{32}$') && file.matches('^[0-4][.]jpg$') &&
+        request.resource.contentType == 'image/jpeg' &&
+        request.resource.size <= 4 * 1024 * 1024;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow read, update: if false;
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

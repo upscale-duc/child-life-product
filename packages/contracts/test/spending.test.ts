@@ -66,7 +66,8 @@ describe('expenses', () => {
     expect(expenseSchema.safeParse(base).success).toBe(true);
     expect(expenseSchema.safeParse({ ...base, amount: 10.5 }).success).toBe(false);
     expect(expenseSchema.safeParse({ ...base, amount: 0 }).success).toBe(false);
-    expect(expenseSchema.safeParse({ ...base, source: 'import' }).success).toBe(false);
+    expect(expenseSchema.safeParse({ ...base, source: 'import' }).success).toBe(true);
+    expect(expenseSchema.safeParse({ ...base, source: 'bank' }).success).toBe(false);
   });
 
   it('the built-ins end with Khác, which cannot be deleted', () => {
