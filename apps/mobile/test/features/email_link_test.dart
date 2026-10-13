@@ -113,46 +113,58 @@ ClButton _button(WidgetTester tester, String label) => tester.widget<ClButton>(
 );
 
 void main() {
-  testWidgets('07a: "Đăng nhập" first, the link by default, then 07b', (
-    tester,
-  ) async {
-    final auth = _Auth();
-    final (visited, prefs) = await _pump(tester, const EmailScreen(), auth);
-    expect(find.text('Đăng nhập'), findsWidgets);
-    expect(
-      tester.getTopLeft(find.text('Đăng nhập').at(1)).dx,
-      lessThan(tester.getTopLeft(find.text('Tài khoản mới')).dx),
-    );
-    expect(
-      find.text(
-        'Chúng tôi sẽ gửi link đăng nhập vào email — không cần nhớ mật khẩu.',
-      ),
-      findsOneWidget,
-    );
-    expect(find.text('Mật khẩu'), findsNothing);
-    expect(_button(tester, 'Gửi link đăng nhập').onPressed, isNull);
+  testWidgets(
+    'Đăng nhập: password first; "Gửi link đăng nhập" needs only the email',
+    (tester) async {
+      final auth = _Auth();
+      final (visited, prefs) = await _pump(tester, const EmailScreen(), auth);
+      expect(
+        tester.getTopLeft(find.text('Đăng nhập').at(1)).dx,
+        lessThan(tester.getTopLeft(find.text('Tài khoản mới')).dx),
+      );
+      expect(find.text('Mật khẩu'), findsOneWidget);
+      expect(find.text('Quên mật khẩu?'), findsOneWidget);
+      expect(
+        _button(tester, 'Gửi link đăng nhập').style,
+        ClButtonStyle.secondary,
+      );
+      expect(_button(tester, 'Gửi link đăng nhập').onPressed, isNull);
 
-    await tester.enterText(find.byType(EditableText), 'mai@example.com');
-    await tester.pump();
-    await tester.tap(find.text('Gửi link đăng nhập'));
-    await tester.pumpAndSettle();
-    expect(auth.sent, ['mai@example.com']);
-    expect(prefs.getString('auth.linkEmail'), 'mai@example.com');
-    expect(visited, ['/auth/email/sent?email=mai%40example.com']);
-  });
+      await tester.enterText(
+        find.byType(EditableText).first,
+        'mai@example.com',
+      );
+      await tester.pump();
+      // "Đăng nhập" (the main button) waits for the password; the link does not.
+      expect(
+        tester
+            .widgetList<ClButton>(find.byType(ClButton))
+            .firstWhere(
+              (b) => b.label == 'Đăng nhập' && b.style == ClButtonStyle.primary,
+            )
+            .onPressed,
+        isNull,
+      );
+      await tester.tap(find.text('Gửi link đăng nhập'));
+      await tester.pumpAndSettle();
+      expect(auth.sent, ['mai@example.com']);
+      expect(prefs.getString('auth.linkEmail'), 'mai@example.com');
+      expect(visited, ['/auth/email/sent?email=mai%40example.com']);
+    },
+  );
 
   testWidgets('07a: a bad address or too many links say so on the screen', (
     tester,
   ) async {
     final auth = _Auth()..sendFails = AuthFailure.tooManyRequests;
     await _pump(tester, const EmailScreen(), auth);
-    await tester.enterText(find.byType(EditableText), 'mai@');
+    await tester.enterText(find.byType(EditableText).first, 'mai@');
     await tester.pump();
     await tester.tap(find.text('Gửi link đăng nhập'));
     await tester.pump();
     expect(find.text('Email chưa đúng, bạn kiểm tra lại nhé.'), findsOneWidget);
 
-    await tester.enterText(find.byType(EditableText), 'mai@example.com');
+    await tester.enterText(find.byType(EditableText).first, 'mai@example.com');
     await tester.pump();
     await tester.tap(find.text('Gửi link đăng nhập'));
     await tester.pumpAndSettle();
@@ -160,28 +172,10 @@ void main() {
     expect(find.textContaining('Bạn thử hơi nhiều lần'), findsOneWidget);
   });
 
-  testWidgets('07c: the password, and back to the link from its footer', (
+  testWidgets('"Đăng ký" on 06 opens "Tài khoản mới", with a password', (
     tester,
   ) async {
-    await _pump(tester, const EmailScreen(), _Auth());
-    await tester.tap(find.text('Đăng nhập bằng mật khẩu'));
-    await tester.pumpAndSettle();
-    expect(find.text('Mật khẩu'), findsOneWidget);
-    expect(find.text('Quên mật khẩu?'), findsOneWidget);
-    expect(find.text('Gửi link đăng nhập'), findsOneWidget);
-    expect(find.text('Đăng nhập bằng mật khẩu'), findsNothing);
-
-    await tester.tap(find.text('Gửi link đăng nhập'));
-    await tester.pumpAndSettle();
-    expect(find.text('Mật khẩu'), findsNothing);
-  });
-
-  testWidgets('"Tài khoản mới" still creates an account with a password', (
-    tester,
-  ) async {
-    await _pump(tester, const EmailScreen(), _Auth());
-    await tester.tap(find.text('Tài khoản mới'));
-    await tester.pumpAndSettle();
+    await _pump(tester, const EmailScreen(mode: EmailMode.create), _Auth());
     expect(find.text('Mật khẩu'), findsOneWidget);
     expect(find.text('Tạo tài khoản'), findsOneWidget);
     expect(find.text('Gửi link đăng nhập'), findsNothing);

@@ -117,11 +117,7 @@ class _SaveAccountSheetState extends ConsumerState<_SaveAccountSheet> {
           onPressed: _busy ? null : () => _provider(apple: true),
         ),
         const SizedBox(height: ClSpace.s3),
-        ClButton(
-          label: l10n.signInGoogle,
-          style: ClButtonStyle.outline,
-          icon: ClIcons.brandMark,
-          expand: true,
+        GoogleSignInButton(
           onPressed: _busy ? null : () => _provider(apple: false),
         ),
         const SizedBox(height: ClSpace.s3),

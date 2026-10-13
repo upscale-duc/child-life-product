@@ -220,7 +220,10 @@ void main() {
       findsOneWidget,
     );
     expect(find.bySemanticsLabel('Quay lại'), findsNothing);
-    expect(find.text('Dùng email'), findsOneWidget);
+    // Email: "Đăng nhập" and "Đăng ký" (owner, 2026-10-13, D-067).
+    expect(find.text('Dùng email'), findsNothing);
+    expect(find.text('Đăng ký'), findsOneWidget);
+    expect(find.text('Đăng nhập'), findsOneWidget);
   });
 
   testWidgets('06: "Tôi có mã mời" opens 15 Nhập mã mời', (tester) async {

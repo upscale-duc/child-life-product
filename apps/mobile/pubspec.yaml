@@ -147,6 +147,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/logo/
+    - assets/brands/
     - assets/illustrations/
     - assets/sounds/
 

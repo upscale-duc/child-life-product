@@ -14377,23 +14377,11 @@ abstract class AppLocalizations {
   /// **'Đăng nhập'**
   String get emailSignInTitle;
 
-  /// 07a helper under the email field (368:1180)
-  ///
-  /// In vi, this message translates to:
-  /// **'Chúng tôi sẽ gửi link đăng nhập vào email — không cần nhớ mật khẩu.'**
-  String get emailLinkHelper;
-
   /// 07a primary button (368:1153); also the link in 07c's footer
   ///
   /// In vi, this message translates to:
   /// **'Gửi link đăng nhập'**
   String get emailLinkSend;
-
-  /// 07a text link to 07c (368:1155)
-  ///
-  /// In vi, this message translates to:
-  /// **'Đăng nhập bằng mật khẩu'**
-  String get emailUsePassword;
 
   /// 07b title (368:1198)
   ///
@@ -14664,6 +14652,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Góp ý · {type}'**
   String hpFeedbackLabel(String type);
+
+  /// 06 / R1: create an account with email (owner, 2026-10-13, D-067)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký'**
+  String get signInRegister;
 }
 
 class _AppLocalizationsDelegate

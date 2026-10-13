@@ -12993,17 +12993,9 @@
   "@emailSignInTitle": {
     "description": "07a title (368:1144)"
   },
-  "emailLinkHelper": "Chúng tôi sẽ gửi link đăng nhập vào email — không cần nhớ mật khẩu.",
-  "@emailLinkHelper": {
-    "description": "07a helper under the email field (368:1180)"
-  },
   "emailLinkSend": "Gửi link đăng nhập",
   "@emailLinkSend": {
     "description": "07a primary button (368:1153); also the link in 07c's footer"
-  },
-  "emailUsePassword": "Đăng nhập bằng mật khẩu",
-  "@emailUsePassword": {
-    "description": "07a text link to 07c (368:1155)"
   },
   "linkSentTitle": "Kiểm tra email của bạn",
   "@linkSentTitle": {
@@ -13199,5 +13191,9 @@
         "type": "String"
       }
     }
+  },
+  "signInRegister": "Đăng ký",
+  "@signInRegister": {
+    "description": "06 / R1: create an account with email (owner, 2026-10-13, D-067)"
   }
 }

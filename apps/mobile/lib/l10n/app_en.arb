@@ -2379,9 +2379,7 @@
   "imUndoAction": "Undo this import",
   "imUndoUntil": "You can undo until {time} on {date} ({days, plural, =0{less than a day left} =1{1 day left} other{{days} days left}})",
   "emailSignInTitle": "Sign in",
-  "emailLinkHelper": "We'll email you a sign-in link — no password to remember.",
   "emailLinkSend": "Send sign-in link",
-  "emailUsePassword": "Sign in with password",
   "linkSentTitle": "Check your email",
   "linkSentBody": "We sent a sign-in link to {email}. Open it on this phone within 15 minutes to get in.",
   "linkSentSpam": "Can't find it? Check your Promotions or Spam folder.",
@@ -2426,5 +2424,6 @@
   "hpStatusClaimed": "In review",
   "hpStatusWaiting": "Answered",
   "hpStatusClosed": "Closed",
-  "hpFeedbackLabel": "Feedback · {type}"
+  "hpFeedbackLabel": "Feedback · {type}",
+  "signInRegister": "Sign up"
 }

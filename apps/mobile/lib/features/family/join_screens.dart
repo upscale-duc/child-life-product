@@ -560,11 +560,7 @@ class _JoinHowSheetState extends ConsumerState<_JoinHowSheet> {
           onPressed: _busy ? null : () => _enter((r) => r.signInWithApple()),
         ),
         const SizedBox(height: ClSpace.s3),
-        ClButton(
-          label: l10n.signInGoogle,
-          style: ClButtonStyle.outline,
-          icon: ClIcons.brandMark,
-          expand: true,
+        GoogleSignInButton(
           onPressed: _busy ? null : () => _enter((r) => r.signInWithGoogle()),
         ),
       ],

@@ -177,7 +177,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.welcomeBack,
         pageBuilder: (_, s) => _fade(s, const SignInScreen(returning: true)),
       ),
-      _route(path: Routes.email, builder: (_, _) => const EmailScreen()),
+      _route(
+        path: Routes.email,
+        builder: (_, s) => EmailScreen(
+          mode: EmailMode.values.asNameMap()[s.uri.queryParameters['mode']],
+        ),
+      ),
       _route(
         path: Routes.emailLinkSent,
         builder: (_, s) =>

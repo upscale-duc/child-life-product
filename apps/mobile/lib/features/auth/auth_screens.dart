@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
@@ -68,8 +69,8 @@ Future<bool> _runProvider(
   }
 }
 
-/// "Tiếp tục với Apple" as drawn in Figma (Button style apple, 8:33): black pill with the
-/// Apple logo in place of the design's placeholder mark (brand-mark 22:197).
+/// "Tiếp tục với Apple" as drawn in Figma (Button style apple, 8:33): black pill with Apple's
+/// logo (`assets/brands/apple.svg`) in place of the design's placeholder mark (brand-mark 22:197).
 class AppleSignInButton extends StatelessWidget {
   const AppleSignInButton({
     required this.onPressed,
@@ -83,7 +84,43 @@ class AppleSignInButton extends StatelessWidget {
   Widget build(BuildContext context) => ClButton(
     label: AppLocalizations.of(context).signInApple,
     style: ClButtonStyle.apple,
-    leading: const Icon(Icons.apple),
+    // Apple's logo, tinted like the label (white button in Night care, black in Light).
+    leading: SvgPicture.asset(
+      'assets/brands/apple.svg',
+      height: 20,
+      colorFilter: ColorFilter.mode(
+        context.cl.colors.appleButtonInk,
+        BlendMode.srcIn,
+      ),
+      excludeFromSemantics: true,
+    ),
+    expand: true,
+    onPressed: onPressed,
+    loading: loading,
+  );
+}
+
+/// "Tiếp tục với Google" with Google's own "G" (brand guidelines) in place of the design's
+/// placeholder mark (owner, 2026-10-13).
+class GoogleSignInButton extends StatelessWidget {
+  const GoogleSignInButton({
+    required this.onPressed,
+    this.loading = false,
+    super.key,
+  });
+  final VoidCallback? onPressed;
+  final bool loading;
+
+  @override
+  Widget build(BuildContext context) => ClButton(
+    label: AppLocalizations.of(context).signInGoogle,
+    style: ClButtonStyle.outline,
+    leading: SvgPicture.asset(
+      'assets/brands/google-g.svg',
+      width: 20,
+      height: 20,
+      excludeFromSemantics: true,
+    ),
     expand: true,
     onPressed: onPressed,
     loading: loading,
@@ -197,11 +234,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     loading: _busy && _via == 'apple',
                   ),
                   const SizedBox(height: ClSpace.s3),
-                  ClButton(
-                    label: l10n.signInGoogle,
-                    style: ClButtonStyle.outline,
-                    icon: ClIcons.brandMark,
-                    expand: true,
+                  GoogleSignInButton(
                     onPressed: _busy
                         ? null
                         : () => _provider(
@@ -211,12 +244,35 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     loading: _busy && _via == 'google',
                   ),
                   const SizedBox(height: ClSpace.s3),
-                  ClButton(
-                    label: l10n.signInEmail,
-                    style: ClButtonStyle.secondary,
-                    icon: ClIcons.mail,
-                    expand: true,
-                    onPressed: _busy ? null : () => context.push(Routes.email),
+                  // Email: "Đăng nhập" and "Đăng ký" side by side (owner, 2026-10-13, D-067).
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ClButton(
+                          label: l10n.emailSignInTab,
+                          style: ClButtonStyle.secondary,
+                          expand: true,
+                          onPressed: _busy
+                              ? null
+                              : () => context.push(
+                                  '${Routes.email}?mode=${EmailMode.signIn.name}',
+                                ),
+                        ),
+                      ),
+                      const SizedBox(width: ClSpace.s3),
+                      Expanded(
+                        child: ClButton(
+                          label: l10n.signInRegister,
+                          style: ClButtonStyle.secondary,
+                          expand: true,
+                          onPressed: _busy
+                              ? null
+                              : () => context.push(
+                                  '${Routes.email}?mode=${EmailMode.create.name}',
+                                ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: ClSpace.s3),
                   // Joining someone's baby starts from the code too (owner, 2026-10-11).
@@ -264,11 +320,16 @@ enum EmailMode { signIn, create }
 
 const _kEmailMode = 'auth.emailMode';
 
-/// 07 Email: "Đăng nhập" / "Tài khoản mới"; remembers the last segment (Segmented 9:124).
-/// "Đăng nhập" starts with the email link (07a, D-064) and offers the password (07c);
-/// "Tài khoản mới" creates an account with a password (27:538).
+/// 07 Email: "Đăng nhập" / "Tài khoản mới"; opens on the segment chosen on 06 ("Đăng nhập" /
+/// "Đăng ký"), else the last one (Segmented 9:124). "Đăng nhập" keeps the password with
+/// "Đăng nhập" as the main action and "Gửi link đăng nhập" (D-064) as the second (owner,
+/// 2026-10-13, D-067, instead of 07a's link first); "Tài khoản mới" creates an account with a
+/// password (27:538).
 class EmailScreen extends ConsumerStatefulWidget {
-  const EmailScreen({super.key});
+  const EmailScreen({this.mode, super.key});
+
+  /// From 06; null = the last segment used.
+  final EmailMode? mode;
 
   @override
   ConsumerState<EmailScreen> createState() => _EmailScreenState();
@@ -281,18 +342,16 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
   String? _error;
   bool _busy = false;
 
-  /// 07c "Đăng nhập bằng mật khẩu" instead of the link.
-  bool _withPassword = false;
-
-  bool get _link => _mode == EmailMode.signIn && !_withPassword;
+  /// "Gửi link đăng nhập" on its way.
+  bool _sending = false;
 
   @override
   void initState() {
     super.initState();
     final saved = ref.read(sharedPreferencesProvider).getString(_kEmailMode);
-    _mode = saved == EmailMode.create.name
-        ? EmailMode.create
-        : EmailMode.signIn;
+    _mode =
+        widget.mode ??
+        (saved == EmailMode.create.name ? EmailMode.create : EmailMode.signIn);
     _email.addListener(_changed);
     _password.addListener(_changed);
   }
@@ -308,8 +367,22 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
 
   bool get _canSubmit =>
       !_busy &&
+      !_sending &&
       _email.text.trim().isNotEmpty &&
-      (_link || _password.text.isNotEmpty);
+      _password.text.isNotEmpty;
+
+  bool get _canSendLink => !_busy && !_sending && _email.text.trim().isNotEmpty;
+
+  /// "Gửi link đăng nhập": only the email is needed.
+  void _link() {
+    final email = _email.text.trim();
+    if (!looksLikeEmail(email)) {
+      return setState(
+        () => _error = AppLocalizations.of(context).authErrorInvalidEmail,
+      );
+    }
+    unawaited(_sendLink(email));
+  }
 
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
@@ -318,7 +391,6 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
     if (!looksLikeEmail(email)) {
       return setState(() => _error = l10n.authErrorInvalidEmail);
     }
-    if (_link) return _sendLink(email);
     if (_mode == EmailMode.create && password.length < 8) {
       return setState(() => _error = l10n.authErrorWeakPassword);
     }
@@ -348,7 +420,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
 
   /// 07a "Gửi link đăng nhập" → 07b.
   Future<void> _sendLink(String email) async {
-    setState(() => _busy = true);
+    setState(() => _sending = true);
     try {
       await sendEmailSignInLink(
         ref,
@@ -371,21 +443,15 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
         );
       }
     } finally {
-      if (mounted) setState(() => _busy = false);
+      if (mounted) setState(() => _sending = false);
     }
   }
-
-  void _usePassword(bool value) => setState(() {
-    _withPassword = value;
-    _error = null;
-  });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final create = _mode == EmailMode.create;
-    final link = _link;
     return OnboardingScaffold(
       topBar: ClTopBar(onBack: () => context.pop()),
       content: [
@@ -414,24 +480,20 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
               placeholder: l10n.emailPlaceholder,
               controller: _email,
               keyboardType: TextInputType.emailAddress,
-              textInputAction: link
-                  ? TextInputAction.send
-                  : TextInputAction.next,
+              textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.email],
-              onSubmitted: link ? (_) => _canSubmit ? _submit() : null : null,
             ),
-            if (!link)
-              ClTextField(
-                label: l10n.passwordLabel,
-                placeholder: l10n.passwordPlaceholder,
-                controller: _password,
-                password: true,
-                textInputAction: TextInputAction.done,
-                autofillHints: [
-                  create ? AutofillHints.newPassword : AutofillHints.password,
-                ],
-                onSubmitted: (_) => _canSubmit ? _submit() : null,
-              ),
+            ClTextField(
+              label: l10n.passwordLabel,
+              placeholder: l10n.passwordPlaceholder,
+              controller: _password,
+              password: true,
+              textInputAction: TextInputAction.done,
+              autofillHints: [
+                create ? AutofillHints.newPassword : AutofillHints.password,
+              ],
+              onSubmitted: (_) => _canSubmit ? _submit() : null,
+            ),
           ],
         ),
         if (_error != null) ...[
@@ -444,61 +506,42 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
             ),
           ),
         ],
-        if (link) ...[
-          const SizedBox(height: ClSpace.s3),
-          Text(
-            l10n.emailLinkHelper,
-            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+        if (!create) ...[
+          const SizedBox(height: ClSpace.s2),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: ClButton(
+              label: l10n.emailForgot,
+              style: ClButtonStyle.plain,
+              onPressed: () => context.push(
+                Uri(
+                  path: Routes.forgot,
+                  queryParameters: {'email': _email.text.trim()},
+                ).toString(),
+              ),
+            ),
           ),
         ],
       ],
       bottom: [
         ClButton(
-          label: create
-              ? l10n.emailCreateAccount
-              : link
-              ? l10n.emailLinkSend
-              : l10n.emailSignInButton,
+          label: create ? l10n.emailCreateAccount : l10n.emailSignInButton,
           expand: true,
           onPressed: _canSubmit ? _submit : null,
           loading: _busy,
         ),
-        if (link)
+        // The link needs no password (D-064); "Đăng nhập" stays the main action (D-067).
+        if (!create) ...[
+          const SizedBox(height: ClSpace.s3),
           ClButton(
-            label: l10n.emailUsePassword,
-            style: ClButtonStyle.plain,
+            label: l10n.emailLinkSend,
+            style: ClButtonStyle.secondary,
+            icon: ClIcons.mail,
             expand: true,
-            onPressed: () => _usePassword(true),
+            onPressed: _canSendLink ? _link : null,
+            loading: _sending,
           ),
-        // 07c footer "Quên mật khẩu? · Gửi link đăng nhập" (368:1237) as two links.
-        if (!create && !link)
-          Wrap(
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              ClButton(
-                label: l10n.emailForgot,
-                style: ClButtonStyle.plain,
-                onPressed: () => context.push(
-                  Uri(
-                    path: Routes.forgot,
-                    queryParameters: {'email': _email.text.trim()},
-                  ).toString(),
-                ),
-              ),
-              ExcludeSemantics(
-                child: Text(
-                  '·',
-                  style: cl.text.label.copyWith(color: cl.colors.mintText),
-                ),
-              ),
-              ClButton(
-                label: l10n.emailLinkSend,
-                style: ClButtonStyle.plain,
-                onPressed: () => _usePassword(false),
-              ),
-            ],
-          ),
+        ],
         if (create)
           ClButton(
             label: l10n.emailUsedWithProvider,
@@ -805,11 +848,7 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
           loading: _busy && _via == 'apple',
         ),
         const SizedBox(height: ClSpace.s3),
-        ClButton(
-          label: l10n.signInGoogle,
-          style: ClButtonStyle.outline,
-          icon: ClIcons.brandMark,
-          expand: true,
+        GoogleSignInButton(
           onPressed: _busy
               ? null
               : () => _provider((r) => r.signInWithGoogle(), via: 'google'),

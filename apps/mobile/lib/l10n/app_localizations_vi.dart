@@ -8581,14 +8581,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get emailSignInTitle => 'Đăng nhập';
 
   @override
-  String get emailLinkHelper =>
-      'Chúng tôi sẽ gửi link đăng nhập vào email — không cần nhớ mật khẩu.';
-
-  @override
   String get emailLinkSend => 'Gửi link đăng nhập';
-
-  @override
-  String get emailUsePassword => 'Đăng nhập bằng mật khẩu';
 
   @override
   String get linkSentTitle => 'Kiểm tra email của bạn';
@@ -8737,4 +8730,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String hpFeedbackLabel(String type) {
     return 'Góp ý · $type';
   }
+
+  @override
+  String get signInRegister => 'Đăng ký';
 }

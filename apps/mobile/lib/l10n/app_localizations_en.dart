@@ -9244,14 +9244,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailSignInTitle => 'Sign in';
 
   @override
-  String get emailLinkHelper =>
-      'We\'ll email you a sign-in link — no password to remember.';
-
-  @override
   String get emailLinkSend => 'Send sign-in link';
-
-  @override
-  String get emailUsePassword => 'Sign in with password';
 
   @override
   String get linkSentTitle => 'Check your email';
@@ -9399,4 +9392,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String hpFeedbackLabel(String type) {
     return 'Feedback · $type';
   }
+
+  @override
+  String get signInRegister => 'Sign up';
 }
