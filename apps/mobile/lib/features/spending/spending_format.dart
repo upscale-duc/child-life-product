@@ -96,7 +96,7 @@ String categoryName(AppLocalizations l10n, SpendingCategory c) =>
     ),
     CategoryTint.sunshine => (
       soft: c.sunshineSoft,
-      ink: c.onWarm,
+      ink: c.ink,
       accent: c.sunshine,
     ),
     CategoryTint.mint => (soft: c.mintSoft, ink: c.mintText, accent: c.mint),

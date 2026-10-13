@@ -108,7 +108,7 @@ class LoveButton extends ConsumerWidget {
       if (showLabel) l10n.love,
       if (count > 0) '$count',
     ].join(' · ');
-    final fg = dark ? Colors.white : (mine ? cl.colors.onWarm : cl.colors.ink);
+    final fg = dark ? Colors.white : cl.colors.ink;
     return ClPressable(
       onPressed: () => toggleLove(context, ref, target, targetId, !mine),
       selected: mine,

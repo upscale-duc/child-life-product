@@ -818,7 +818,7 @@ class _MilestoneSheetState extends ConsumerState<_MilestoneSheet> {
               ClIcon(
                 ClIcons.star,
                 size: 14,
-                color: on ? cl.colors.surface : cl.colors.onWarm,
+                color: on ? cl.colors.surface : cl.colors.ink,
               ),
               const SizedBox(width: 4),
               Text(

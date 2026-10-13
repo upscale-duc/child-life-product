@@ -92,8 +92,9 @@ class AutoSaveBetaBadge extends StatelessWidget {
       ),
       child: Text(
         AppLocalizations.of(context).autoSaveBeta,
+        // ink, not onWarm: onWarm is for the bright sunshine fill and stays dark in Night.
         style: cl.text.caption.copyWith(
-          color: cl.colors.onWarm,
+          color: cl.colors.ink,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -243,7 +244,7 @@ class AutoSaveTag extends StatelessWidget {
     final (bg, ink) = dark
         ? (cl.colors.ink, cl.colors.surface)
         : warm
-        ? (cl.colors.sunshineSoft, cl.colors.onWarm)
+        ? (cl.colors.sunshineSoft, cl.colors.ink)
         : (cl.colors.surface, cl.colors.ink);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
@@ -332,7 +333,7 @@ class AutoSaveEntryCard extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(ClRadius.control),
                 ),
                 alignment: Alignment.center,
-                child: ClIcon(ClIcons.spark, size: 16, color: cl.colors.onWarm),
+                child: ClIcon(ClIcons.spark, size: 16, color: cl.colors.ink),
               ),
               const SizedBox(width: ClSpace.s3),
               Expanded(

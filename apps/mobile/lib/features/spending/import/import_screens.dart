@@ -839,7 +839,7 @@ class _MatchRow extends StatelessWidget {
                   child: Text(
                     badge!,
                     style: cl.text.caption.copyWith(
-                      color: cl.colors.onWarm,
+                      color: cl.colors.ink,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

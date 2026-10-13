@@ -257,7 +257,7 @@ class InitialAvatar extends StatelessWidget {
           initial,
           style: cl.text.headline.copyWith(
             fontSize: size * 0.42,
-            color: cl.colors.onWarm,
+            color: cl.colors.ink,
           ),
         ),
       ),

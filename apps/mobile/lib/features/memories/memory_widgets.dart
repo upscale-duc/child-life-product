@@ -104,7 +104,7 @@ class MilestoneChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ClIcon(ClIcons.star, size: 14, color: cl.colors.onWarm),
+          ClIcon(ClIcons.star, size: 14, color: cl.colors.ink),
           const SizedBox(width: 4),
           Flexible(
             child: Text(
@@ -112,7 +112,7 @@ class MilestoneChip extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: cl.text.caption.copyWith(
-                color: cl.colors.onWarm,
+                color: cl.colors.ink,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -441,7 +441,7 @@ class MemoryEntryCard extends StatelessWidget {
               memory.caption!,
               style: cl.text.body.copyWith(
                 height: 22 / 16,
-                color: note ? cl.colors.onWarm : cl.colors.ink,
+                color: cl.colors.ink,
               ),
             ),
           ],
