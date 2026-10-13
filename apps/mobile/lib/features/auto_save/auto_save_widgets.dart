@@ -87,15 +87,16 @@ class AutoSaveBetaBadge extends StatelessWidget {
     final cl = context.cl;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      // The bright sunshine fill of AS12–AS19 with its own text colour: the same in Light and
+      // Night care, so it reads on both.
       decoration: BoxDecoration(
-        color: cl.colors.sunshineSoft,
+        color: cl.colors.sunshine,
         borderRadius: BorderRadius.circular(ClRadius.pill),
       ),
       child: Text(
         AppLocalizations.of(context).autoSaveBeta,
-        // ink, not onWarm: onWarm is for the bright sunshine fill and stays dark in Night.
         style: cl.text.caption.copyWith(
-          color: cl.colors.ink,
+          color: cl.colors.onWarm,
           fontWeight: FontWeight.w600,
         ),
       ),

@@ -8,6 +8,7 @@ import 'package:child_life/features/auto_save/auto_save_review.dart';
 import 'package:child_life/features/auto_save/auto_save_store.dart';
 import 'package:child_life/features/auto_save/auto_save_today.dart';
 import 'package:child_life/features/auto_save/auto_save_widgets.dart';
+import 'package:child_life/features/me/me_widgets.dart';
 import 'package:child_life/features/me/me_repository.dart';
 import 'package:child_life/features/memories/memories_screen.dart';
 import 'package:flutter/material.dart';
@@ -149,6 +150,35 @@ void main() {
       reason: 'P-147',
     );
   });
+
+  testWidgets(
+    'AS16: nothing new is a white card with a filled "Kiểm tra ảnh mới"',
+    (tester) async {
+      await store().save(ready());
+      await pumpRouted(
+        tester,
+        const AutoSaveHomeScreen(),
+        overrides: overrides(),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Chưa có ảnh mới có thể có Teddy'), findsOneWidget);
+      // On a surface-2 notice the secondary button lost its fill (owner, 2026-10-13).
+      expect(
+        find.ancestor(
+          of: find.text('Kiểm tra ảnh mới'),
+          matching: find.byType(AutoSaveCard),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.ancestor(
+          of: find.text('Kiểm tra ảnh mới'),
+          matching: find.byType(MeNotice),
+        ),
+        findsNothing,
+      );
+    },
+  );
 
   testWidgets('AS14: paused without photo access, manual add still there', (
     tester,

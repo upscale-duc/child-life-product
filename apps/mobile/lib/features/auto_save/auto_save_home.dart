@@ -181,20 +181,60 @@ class _Home extends ConsumerWidget {
         ),
       );
     } else if (pending == 0 && last != null && ready.isNotEmpty) {
-      // AS16: a calm empty result.
+      // AS16 (483:7315): a calm empty result. A white card like AS12, so the secondary
+      // "Kiểm tra ảnh mới" keeps its fill (on a surface-2 notice it vanished).
       status.add(
-        MeNotice(
-          icon: ClIcons.check,
-          title: l10n.autoSaveNothingTitle(names),
-          body: l10n.autoSaveNothingBody(
-            s.lastScanCount,
-            checkedAt(context, last, now),
-          ),
-          child: ClButton(
-            label: l10n.autoSaveCheckNow,
-            style: ClButtonStyle.secondary,
-            expand: true,
-            onPressed: () => unawaited(c.scan()),
+        AutoSaveCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: cl.colors.mintSoft,
+                      borderRadius: BorderRadius.circular(ClRadius.sm),
+                    ),
+                    alignment: Alignment.center,
+                    child: ClIcon(
+                      ClIcons.check,
+                      size: 18,
+                      color: cl.colors.mintText,
+                    ),
+                  ),
+                  const SizedBox(width: ClSpace.s3),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.autoSaveNothingTitle(names),
+                          style: cl.text.bodyStrong,
+                        ),
+                        Text(
+                          l10n.autoSaveNothingBody(
+                            s.lastScanCount,
+                            checkedAt(context, last, now),
+                          ),
+                          style: cl.text.caption.copyWith(
+                            color: cl.colors.inkMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: ClSpace.s3),
+              ClButton(
+                label: l10n.autoSaveCheckNow,
+                style: ClButtonStyle.secondary,
+                expand: true,
+                onPressed: () => unawaited(c.scan()),
+              ),
+            ],
           ),
         ),
       );
