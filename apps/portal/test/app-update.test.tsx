@@ -111,6 +111,16 @@ describe('Cập nhật ứng dụng', () => {
     expect(raisedMinimum(config.ios, { ...config.ios, minimum: null })).toBe(false);
   });
 
+  it('uses the shadcn controls: selects, file button, icon buttons (D-063)', () => {
+    const html = render(<AppUpdateBody view={view} canEdit />);
+    expect(html).not.toMatch(
+      /<select[^>]*class="field__input|<input[^>]*type="file"[^>]*class="field__input/,
+    );
+    expect(html).toContain('data-slot="select-trigger"');
+    expect(text(html)).toContain('Chọn tệp');
+    expect(html).toContain('aria-label="Chuyển lên"');
+  });
+
   it('English labels exist', () => {
     expect(text(render(<AppUpdateBody view={view} canEdit />, ['admin'], 'en'))).toContain(
       'Oldest allowed',

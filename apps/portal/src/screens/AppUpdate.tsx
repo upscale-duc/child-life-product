@@ -30,6 +30,7 @@ import {
   reasonOk,
 } from '../ui';
 import { AppUpdatePreview } from './AppUpdatePreview';
+import { FieldSelect, FilePicker, IconButton } from './form-controls';
 import { fileToBase64 } from './FirstAidEditor';
 
 /**
@@ -549,6 +550,7 @@ function PageEditor({
   onMove: (to: number) => void;
   onRemove: () => void;
 }) {
+  const intl = useIntl();
   const url = images.find((i) => i.id === value.image)?.url;
   return (
     <div className="fa-card au-item">
@@ -558,12 +560,18 @@ function PageEditor({
         </strong>
         {!readOnly && (
           <div className="actions">
-            <Button kind="ghost" disabled={index === 0} onClick={() => onMove(index - 1)}>
-              ↑
-            </Button>
-            <Button kind="ghost" disabled={index === count - 1} onClick={() => onMove(index + 1)}>
-              ↓
-            </Button>
+            <IconButton
+              icon="up"
+              label={intl.formatMessage({ id: 'au.moveUp' })}
+              disabled={index === 0}
+              onClick={() => onMove(index - 1)}
+            />
+            <IconButton
+              icon="down"
+              label={intl.formatMessage({ id: 'au.moveDown' })}
+              disabled={index === count - 1}
+              onClick={() => onMove(index + 1)}
+            />
             <Button kind="ghost" onClick={onRemove}>
               <FormattedMessage id="au.remove" />
             </Button>
@@ -638,13 +646,11 @@ function ImageUpload({ onUploaded }: { onUploaded: (img: FirstAidImage) => void 
       <label className="field__label" htmlFor={id}>
         <FormattedMessage id="au.upload" />
       </label>
-      <input
+      <FilePicker
         id={id}
-        type="file"
         accept="image/png,image/jpeg,image/webp"
         disabled={busy}
-        onChange={(e) => {
-          const file = e.target.files?.[0];
+        onFile={(file) => {
           if (!file) return;
           const name =
             file.name
@@ -843,19 +849,13 @@ function SelectField({
       <label className="field__label" htmlFor={id}>
         {label}
       </label>
-      <select
+      <FieldSelect
         id={id}
-        className="field__input"
         value={value}
+        options={options}
         disabled={readOnly}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
+        onChange={onChange}
+      />
     </div>
   );
 }

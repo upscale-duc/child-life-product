@@ -9,6 +9,7 @@ import { createContext, useContext, useId, useMemo, useState, type ReactNode } f
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
 import { ApiError, useApi, type Api, type FirstAidImage } from '../api';
 import { Button, Modal, Segmented, errorMessageId } from '../ui';
+import { CheckRow, FieldSelect, FilePicker, IconButton } from './form-controls';
 
 /**
  * The Sơ cứu pack editor (D-058, P-141): one situation at a time, vi and en side by side (D-012),
@@ -401,9 +402,7 @@ function LocRow({
           <FieldError text={lang === 'vi' ? errVi : errEn} />
         </div>
       ))}
-      <button type="button" className="icon-btn" aria-label={removeLabel} onClick={onRemove}>
-        ✕
-      </button>
+      <IconButton icon="remove" label={removeLabel} onClick={onRemove} />
     </div>
   );
 }
@@ -500,18 +499,7 @@ function SelectField<T extends string>({
       <label className="field__label" htmlFor={id}>
         {label}
       </label>
-      <select
-        id={id}
-        className="field__input"
-        value={value}
-        onChange={(e) => onChange(e.target.value as T)}
-      >
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
+      <FieldSelect id={id} value={value} options={options} onChange={onChange} />
       <FieldError text={err} />
     </div>
   );
@@ -526,12 +514,7 @@ function CheckField({
   checked: boolean;
   onChange: (v: boolean) => void;
 }) {
-  return (
-    <label className="check-row">
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
-      {label}
-    </label>
-  );
+  return <CheckRow label={label} checked={checked} onChange={onChange} />;
 }
 
 /** "Chỉ cho bé từ … đến … tháng" (to empty = no upper bound). */
@@ -793,13 +776,10 @@ export function UploadBox({
         <label className="field__label" htmlFor={id}>
           <FormattedMessage id="firstAid.upload.file" />
         </label>
-        <input
+        <FilePicker
           id={id}
-          type="file"
           accept={imageTypes.join(',')}
-          className="field__input"
-          onChange={(e) => {
-            const f = e.target.files?.[0] ?? null;
+          onFile={(f) => {
             setError(null);
             setProblem(null);
             setFile(f);
@@ -904,33 +884,24 @@ function ItemTools({
   const intl = useIntl();
   return (
     <span className="fa-tools">
-      <button
-        type="button"
-        className="icon-btn"
-        aria-label={intl.formatMessage({ id: 'firstAid.moveUp' })}
+      <IconButton
+        icon="up"
+        label={intl.formatMessage({ id: 'firstAid.moveUp' })}
         disabled={index === 0}
         onClick={() => onMove(-1)}
-      >
-        ↑
-      </button>
-      <button
-        type="button"
-        className="icon-btn"
-        aria-label={intl.formatMessage({ id: 'firstAid.moveDown' })}
+      />
+      <IconButton
+        icon="down"
+        label={intl.formatMessage({ id: 'firstAid.moveDown' })}
         disabled={index === count - 1}
         onClick={() => onMove(1)}
-      >
-        ↓
-      </button>
-      <button
-        type="button"
-        className="icon-btn"
-        aria-label={intl.formatMessage({ id: 'firstAid.remove' })}
+      />
+      <IconButton
+        icon="remove"
+        label={intl.formatMessage({ id: 'firstAid.remove' })}
         disabled={!canRemove}
         onClick={onRemove}
-      >
-        ✕
-      </button>
+      />
     </span>
   );
 }
@@ -1523,22 +1494,20 @@ function StepEditor({
                 })
               }
             />
-            <select
-              className="field__input fa-chip-tone"
+            <FieldSelect
+              className="fa-chip-tone w-auto"
               value={c.tone}
-              aria-label={intl.formatMessage({ id: 'firstAid.field.tone' })}
-              onChange={(e) =>
+              ariaLabel={intl.formatMessage({ id: 'firstAid.field.tone' })}
+              options={(['mint', 'neutral'] as const).map((t) => ({
+                value: t,
+                label: intl.formatMessage({ id: `firstAid.chipTone.${t}` }),
+              }))}
+              onChange={(tone) =>
                 set((s) => {
-                  s.chips[i]!.tone = e.target.value as 'mint' | 'neutral';
+                  s.chips[i]!.tone = tone;
                 })
               }
-            >
-              {(['mint', 'neutral'] as const).map((t) => (
-                <option key={t} value={t}>
-                  {intl.formatMessage({ id: `firstAid.chipTone.${t}` })}
-                </option>
-              ))}
-            </select>
+            />
           </div>
         ))}
         <div>

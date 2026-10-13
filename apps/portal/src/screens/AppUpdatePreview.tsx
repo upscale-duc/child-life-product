@@ -1,7 +1,7 @@
 import type { AppUpdateConfig, AppUpdateHighlight, AppUpdateText } from '@child-life/contracts';
-import { useState, type ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 import { FormattedMessage, IntlProvider, useIntl } from 'react-intl';
-import { appIcons, appMark } from '../app-icons';
+import { appIcons, appMark, appPalettes } from '../app-icons';
 import type { FirstAidImage } from '../api';
 import { messages } from '../messages';
 import { Segmented } from '../ui';
@@ -26,6 +26,8 @@ export function AppUpdatePreview({
   const [screen, setScreen] = useState<PreviewScreen>(initial);
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
   const [platform, setPlatform] = useState<'ios' | 'android'>('ios');
+  // The app's own palette, whatever the portal's light / dark theme.
+  const [palette, setPalette] = useState<'light' | 'night'>('light');
   const [page, setPage] = useState(0);
   const pages = config.release?.pages ?? [];
   const pageIndex = Math.min(page, Math.max(pages.length - 1, 0));
@@ -51,6 +53,15 @@ export function AppUpdatePreview({
           ]}
         />
         <Segmented
+          label={intl.formatMessage({ id: 'au.pv.palette' })}
+          value={palette}
+          onChange={setPalette}
+          options={[
+            { value: 'light', label: <FormattedMessage id="au.pv.light" /> },
+            { value: 'night', label: <FormattedMessage id="au.pv.night" /> },
+          ]}
+        />
+        <Segmented
           label={intl.formatMessage({ id: 'au.pv.platform' })}
           value={platform}
           onChange={setPlatform}
@@ -60,7 +71,12 @@ export function AppUpdatePreview({
           ]}
         />
       </div>
-      <div className="aup__frame" aria-label={intl.formatMessage({ id: 'au.pv.label' })} role="img">
+      <div
+        className="aup__frame"
+        aria-label={intl.formatMessage({ id: 'au.pv.label' })}
+        role="img"
+        style={appPalettes[palette] as CSSProperties}
+      >
         <div className="aup__screen">
           <IntlProvider locale={lang} defaultLocale="vi" messages={messages[lang]}>
             <Phone

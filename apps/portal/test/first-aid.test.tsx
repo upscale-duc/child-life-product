@@ -517,6 +517,10 @@ describe('Sơ cứu: the editor', () => {
     expect(text(html)).toContain('Bước 1');
     expect(text(html)).toContain('Thêm lưu ý');
     expect(text(editor(false))).not.toContain('Bắt buộc.');
+    // shadcn controls (D-063): no browser select, checkbox or arrow buttons left.
+    expect(html).not.toMatch(/<select[^>]*class="field__input|class="icon-btn"/);
+    expect(html).toContain('data-slot="select-trigger"');
+    expect(html).toContain('data-slot="checkbox"');
   });
 
   it('picture names come from the file name, kebab-cased', () => {

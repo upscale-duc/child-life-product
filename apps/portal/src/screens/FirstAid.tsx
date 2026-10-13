@@ -32,6 +32,7 @@ import {
   errorMessageId,
   reasonOk,
   type PillTone,
+  RowActions,
 } from '../ui';
 import {
   GeneralEditor,
@@ -1000,48 +1001,55 @@ export function SituationList({
                 </td>
                 <td className="cell-actions">
                   {editing && (
-                    <span className="fa-tools">
-                      <button
-                        type="button"
-                        className="icon-btn"
-                        aria-label={intl.formatMessage({ id: 'firstAid.moveUp' })}
-                        disabled={i === 0}
-                        onClick={() => edit((p) => moveItem(p.situations, i, -1))}
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        className="icon-btn"
-                        aria-label={intl.formatMessage({ id: 'firstAid.moveDown' })}
-                        disabled={i === pack.situations.length - 1}
-                        onClick={() => edit((p) => moveItem(p.situations, i, 1))}
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        className="icon-btn"
-                        aria-label={intl.formatMessage({ id: 'firstAid.remove' })}
-                        disabled={pack.situations.length <= 1}
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              intl.formatMessage(
-                                { id: 'firstAid.removeConfirm' },
-                                { name: s.title.vi || s.id },
-                              ),
-                            )
-                          ) {
-                            edit((p) => {
-                              p.situations.splice(i, 1);
-                            });
-                          }
-                        }}
-                      >
-                        ✕
-                      </button>
-                    </span>
+                    <RowActions
+                      label={intl.formatMessage(
+                        { id: 'table.actionsFor' },
+                        { name: s.title.vi || s.id },
+                      )}
+                      actions={[
+                        ...(i > 0
+                          ? [
+                              {
+                                key: 'up',
+                                label: <FormattedMessage id="firstAid.moveUp" />,
+                                onSelect: () => edit((p) => moveItem(p.situations, i, -1)),
+                              },
+                            ]
+                          : []),
+                        ...(i < pack.situations.length - 1
+                          ? [
+                              {
+                                key: 'down',
+                                label: <FormattedMessage id="firstAid.moveDown" />,
+                                onSelect: () => edit((p) => moveItem(p.situations, i, 1)),
+                              },
+                            ]
+                          : []),
+                        ...(pack.situations.length > 1
+                          ? [
+                              {
+                                key: 'remove',
+                                destructive: true,
+                                label: <FormattedMessage id="firstAid.remove" />,
+                                onSelect: () => {
+                                  if (
+                                    window.confirm(
+                                      intl.formatMessage(
+                                        { id: 'firstAid.removeConfirm' },
+                                        { name: s.title.vi || s.id },
+                                      ),
+                                    )
+                                  ) {
+                                    edit((p) => {
+                                      p.situations.splice(i, 1);
+                                    });
+                                  }
+                                },
+                              },
+                            ]
+                          : []),
+                      ]}
+                    />
                   )}
                 </td>
               </tr>
