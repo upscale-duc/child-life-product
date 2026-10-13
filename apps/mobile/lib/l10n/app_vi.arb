@@ -13195,5 +13195,9 @@
   "signInRegister": "Đăng ký",
   "@signInRegister": {
     "description": "06 / R1: create an account with email (owner, 2026-10-13, D-067)"
+  },
+  "emailLinkNeedsEmail": "Nhập email để nhận link đăng nhập.",
+  "@emailLinkNeedsEmail": {
+    "description": "07: \"Gửi link đăng nhập\" with no email yet (owner, 2026-10-13)"
   }
 }

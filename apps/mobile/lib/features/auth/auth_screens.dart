@@ -168,12 +168,146 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       backgroundColor: cl.colors.cloud,
       body: Stack(
         children: [
-          // v1.0 (368:1056 / 368:1266): the growth journey from 01 behind the sheet.
-          Positioned(
-            top: media.padding.top + ClSpace.s6,
-            left: 0,
-            right: 0,
-            child: const JourneyHero(),
+          Column(
+            children: [
+              SizedBox(height: media.padding.top + ClSpace.s6),
+              // v1.0 (368:1056 / 368:1266): the growth journey from 01, above the sheet and
+              // scaled to the room left, so the sheet never covers it (owner, 2026-10-13).
+              const Expanded(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: ClSpace.s3),
+                    child: JourneyHero(),
+                  ),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: cl.colors.surface,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(ClRadius.sheet),
+                  ),
+                  boxShadow: cl.shadows.sheet,
+                ),
+                padding: EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  ClSpace.s2,
+                  ClSpace.s4,
+                  // "Điều khoản · Quyền riêng tư" sits just above the home indicator.
+                  media.padding.bottom > 0 ? media.padding.bottom : ClSpace.s4,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 36,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: cl.colors.separator,
+                          borderRadius: BorderRadius.circular(ClRadius.pill),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: ClSpace.s6),
+                    ScreenHeading(
+                      title: returning
+                          ? l10n.welcomeBackTitle
+                          : l10n.signInTitle,
+                      subtitle: returning
+                          ? l10n.welcomeBackBody
+                          : l10n.signInSubtitle,
+                      large: false,
+                    ),
+                    const SizedBox(height: ClSpace.s6),
+                    AppleSignInButton(
+                      onPressed: _busy
+                          ? null
+                          : () => _provider(
+                              (r) => r.signInWithApple(),
+                              via: 'apple',
+                            ),
+                      loading: _busy && _via == 'apple',
+                    ),
+                    const SizedBox(height: ClSpace.s3),
+                    GoogleSignInButton(
+                      onPressed: _busy
+                          ? null
+                          : () => _provider(
+                              (r) => r.signInWithGoogle(),
+                              via: 'google',
+                            ),
+                      loading: _busy && _via == 'google',
+                    ),
+                    const SizedBox(height: ClSpace.s3),
+                    // Email: "Đăng nhập" and "Đăng ký" side by side (owner, 2026-10-13, D-067).
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ClButton(
+                            label: l10n.emailSignInTab,
+                            style: ClButtonStyle.secondary,
+                            expand: true,
+                            onPressed: _busy
+                                ? null
+                                : () => context.push(
+                                    '${Routes.email}?mode=${EmailMode.signIn.name}',
+                                  ),
+                          ),
+                        ),
+                        const SizedBox(width: ClSpace.s3),
+                        Expanded(
+                          child: ClButton(
+                            label: l10n.signInRegister,
+                            style: ClButtonStyle.secondary,
+                            expand: true,
+                            onPressed: _busy
+                                ? null
+                                : () => context.push(
+                                    '${Routes.email}?mode=${EmailMode.create.name}',
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: ClSpace.s3),
+                    // Joining someone's baby starts from the code too (owner, 2026-10-11).
+                    ClButton(
+                      label: l10n.signInHaveCode,
+                      style: ClButtonStyle.plain,
+                      icon: ClIcons.family,
+                      expand: true,
+                      // `go`, not `push`: the guard reads the bottom of the stack, and over
+                      // R1 "Vào ngay" / Apple / Google would send 16a back to 15 or to "Bạn là
+                      // ai" (owner, 2026-10-12). Back from 15 returns here (leaveJoinFlow).
+                      onPressed: _busy ? null : () => context.go(Routes.join),
+                    ),
+                    const SizedBox(height: ClSpace.s1),
+                    Center(
+                      child: ClPressable(
+                        semanticLabel: l10n.signInLegal,
+                        onPressed: () => openLegal(
+                          ref.read(environmentProvider),
+                          Localizations.localeOf(context).languageCode,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(ClSpace.s2),
+                          child: Text(
+                            l10n.signInLegal,
+                            style: cl.text.caption.copyWith(
+                              color: cl.colors.mintText,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           if (!returning)
             Positioned(
@@ -184,131 +318,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 onPressed: () => context.pop(),
               ),
             ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: cl.colors.surface,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(ClRadius.sheet),
-                ),
-                boxShadow: cl.shadows.sheet,
-              ),
-              padding: EdgeInsets.fromLTRB(
-                ClSpace.s4,
-                ClSpace.s2,
-                ClSpace.s4,
-                media.padding.bottom + ClSpace.s4,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 36,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: cl.colors.separator,
-                        borderRadius: BorderRadius.circular(ClRadius.pill),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: ClSpace.s6),
-                  ScreenHeading(
-                    title: returning ? l10n.welcomeBackTitle : l10n.signInTitle,
-                    subtitle: returning
-                        ? l10n.welcomeBackBody
-                        : l10n.signInSubtitle,
-                    large: false,
-                  ),
-                  const SizedBox(height: ClSpace.s6),
-                  AppleSignInButton(
-                    onPressed: _busy
-                        ? null
-                        : () => _provider(
-                            (r) => r.signInWithApple(),
-                            via: 'apple',
-                          ),
-                    loading: _busy && _via == 'apple',
-                  ),
-                  const SizedBox(height: ClSpace.s3),
-                  GoogleSignInButton(
-                    onPressed: _busy
-                        ? null
-                        : () => _provider(
-                            (r) => r.signInWithGoogle(),
-                            via: 'google',
-                          ),
-                    loading: _busy && _via == 'google',
-                  ),
-                  const SizedBox(height: ClSpace.s3),
-                  // Email: "Đăng nhập" and "Đăng ký" side by side (owner, 2026-10-13, D-067).
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ClButton(
-                          label: l10n.emailSignInTab,
-                          style: ClButtonStyle.secondary,
-                          expand: true,
-                          onPressed: _busy
-                              ? null
-                              : () => context.push(
-                                  '${Routes.email}?mode=${EmailMode.signIn.name}',
-                                ),
-                        ),
-                      ),
-                      const SizedBox(width: ClSpace.s3),
-                      Expanded(
-                        child: ClButton(
-                          label: l10n.signInRegister,
-                          style: ClButtonStyle.secondary,
-                          expand: true,
-                          onPressed: _busy
-                              ? null
-                              : () => context.push(
-                                  '${Routes.email}?mode=${EmailMode.create.name}',
-                                ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: ClSpace.s3),
-                  // Joining someone's baby starts from the code too (owner, 2026-10-11).
-                  ClButton(
-                    label: l10n.signInHaveCode,
-                    style: ClButtonStyle.plain,
-                    icon: ClIcons.family,
-                    expand: true,
-                    // `go`, not `push`: the guard reads the bottom of the stack, and over
-                    // R1 "Vào ngay" / Apple / Google would send 16a back to 15 or to "Bạn là
-                    // ai" (owner, 2026-10-12). Back from 15 returns here (leaveJoinFlow).
-                    onPressed: _busy ? null : () => context.go(Routes.join),
-                  ),
-                  const SizedBox(height: ClSpace.s4),
-                  Center(
-                    child: ClPressable(
-                      semanticLabel: l10n.signInLegal,
-                      onPressed: () => openLegal(
-                        ref.read(environmentProvider),
-                        Localizations.localeOf(context).languageCode,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(ClSpace.s2),
-                        child: Text(
-                          l10n.signInLegal,
-                          style: cl.text.caption.copyWith(
-                            color: cl.colors.mintText,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -356,12 +365,21 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
     _password.addListener(_changed);
   }
 
-  void _changed() => setState(() => _error = null);
+  /// The texts last seen: focusing a field moves its selection, which is not an edit.
+  String _seen = '\u0000';
+
+  void _changed() {
+    final now = '${_email.text}\u0000${_password.text}';
+    if (now == _seen) return setState(() {});
+    _seen = now;
+    setState(() => _error = null);
+  }
 
   @override
   void dispose() {
     _email.dispose();
     _password.dispose();
+    _emailFocus.dispose();
     super.dispose();
   }
 
@@ -371,11 +389,18 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
       _email.text.trim().isNotEmpty &&
       _password.text.isNotEmpty;
 
-  bool get _canSendLink => !_busy && !_sending && _email.text.trim().isNotEmpty;
+  final _emailFocus = FocusNode();
 
-  /// "Gửi link đăng nhập": only the email is needed.
+  /// "Gửi link đăng nhập": always there; only the email is needed, so an empty one is asked
+  /// for (owner, 2026-10-13).
   void _link() {
     final email = _email.text.trim();
+    if (email.isEmpty) {
+      _emailFocus.requestFocus();
+      return setState(
+        () => _error = AppLocalizations.of(context).emailLinkNeedsEmail,
+      );
+    }
     if (!looksLikeEmail(email)) {
       return setState(
         () => _error = AppLocalizations.of(context).authErrorInvalidEmail,
@@ -479,6 +504,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
               label: l10n.emailLabel,
               placeholder: l10n.emailPlaceholder,
               controller: _email,
+              focusNode: _emailFocus,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.email],
@@ -538,7 +564,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
             style: ClButtonStyle.secondary,
             icon: ClIcons.mail,
             expand: true,
-            onPressed: _canSendLink ? _link : null,
+            onPressed: _busy || _sending ? null : _link,
             loading: _sending,
           ),
         ],

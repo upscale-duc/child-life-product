@@ -42,6 +42,7 @@ class ClTextField extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
     this.maxLength,
     this.maxLines = 1,
+    this.focusNode,
     super.key,
   });
 
@@ -65,23 +66,40 @@ class ClTextField extends StatefulWidget {
   /// More than 1: grows with the text up to this many lines (captions, messages).
   final int maxLines;
 
+  /// To focus the field from outside (e.g. "Gửi link đăng nhập" without an email); owned by
+  /// the caller. Null = the field's own.
+  final FocusNode? focusNode;
+
   @override
   State<ClTextField> createState() => _ClTextFieldState();
 }
 
 class _ClTextFieldState extends State<ClTextField> {
-  final _focus = FocusNode();
+  FocusNode? _own;
+  FocusNode get _focus => widget.focusNode ?? (_own ??= FocusNode());
   bool _obscured = true;
+
+  void _focusChanged() => setState(() {});
 
   @override
   void initState() {
     super.initState();
-    _focus.addListener(() => setState(() {}));
+    _focus.addListener(_focusChanged);
+  }
+
+  @override
+  void didUpdateWidget(ClTextField old) {
+    super.didUpdateWidget(old);
+    if (old.focusNode != widget.focusNode) {
+      (old.focusNode ?? _own)?.removeListener(_focusChanged);
+      _focus.addListener(_focusChanged);
+    }
   }
 
   @override
   void dispose() {
-    _focus.dispose();
+    _focus.removeListener(_focusChanged);
+    _own?.dispose();
     super.dispose();
   }
 

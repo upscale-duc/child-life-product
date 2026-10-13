@@ -14658,6 +14658,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đăng ký'**
   String get signInRegister;
+
+  /// 07: "Gửi link đăng nhập" with no email yet (owner, 2026-10-13)
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập email để nhận link đăng nhập.'**
+  String get emailLinkNeedsEmail;
 }
 
 class _AppLocalizationsDelegate

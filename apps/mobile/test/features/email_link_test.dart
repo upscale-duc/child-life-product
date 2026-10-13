@@ -128,7 +128,18 @@ void main() {
         _button(tester, 'Gửi link đăng nhập').style,
         ClButtonStyle.secondary,
       );
-      expect(_button(tester, 'Gửi link đăng nhập').onPressed, isNull);
+      // Always there: without an email it asks for one (owner, 2026-10-13).
+      await tester.tap(find.text('Gửi link đăng nhập'));
+      await tester.pump();
+      expect(find.text('Nhập email để nhận link đăng nhập.'), findsOneWidget);
+      expect(auth.sent, isEmpty);
+      expect(
+        tester
+            .widget<EditableText>(find.byType(EditableText).first)
+            .focusNode
+            .hasFocus,
+        isTrue,
+      );
 
       await tester.enterText(
         find.byType(EditableText).first,

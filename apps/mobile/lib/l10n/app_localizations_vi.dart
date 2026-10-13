@@ -8733,4 +8733,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get signInRegister => 'Đăng ký';
+
+  @override
+  String get emailLinkNeedsEmail => 'Nhập email để nhận link đăng nhập.';
 }

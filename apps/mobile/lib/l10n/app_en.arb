@@ -2425,5 +2425,6 @@
   "hpStatusWaiting": "Answered",
   "hpStatusClosed": "Closed",
   "hpFeedbackLabel": "Feedback · {type}",
-  "signInRegister": "Sign up"
+  "signInRegister": "Sign up",
+  "emailLinkNeedsEmail": "Enter your email to get a sign-in link."
 }

@@ -9395,4 +9395,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signInRegister => 'Sign up';
+
+  @override
+  String get emailLinkNeedsEmail => 'Enter your email to get a sign-in link.';
 }
