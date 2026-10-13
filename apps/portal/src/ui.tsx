@@ -531,6 +531,9 @@ export const reasonMessages = [
   'image-missing',
   'image-unreadable',
   'review-required',
+  'no-contact',
+  'no-screenshot',
+  'too-large',
 ];
 
 export function errorMessageId(error: ApiError): string {

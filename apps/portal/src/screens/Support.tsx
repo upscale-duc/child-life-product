@@ -7,6 +7,7 @@ import {
   useLoad,
   type TicketDetail,
   type TicketList,
+  type TicketRow,
   type TicketStatus,
 } from '../api';
 import { useRefreshBadges, useStaff } from '../context';
@@ -22,6 +23,7 @@ import {
   Pill,
   ReasonField,
   Segmented,
+  SelectMenu,
   UsageBar,
   errorMessageId,
   reasonOk,
@@ -104,6 +106,10 @@ export function SupportScreen() {
   );
 }
 
+type Kind = 'all' | 'help' | 'feedback';
+const kindOf = (t: TicketRow): Exclude<Kind, 'all'> =>
+  t.category === 'feedback' ? 'feedback' : 'help';
+
 export function TicketListView({
   data,
   filter,
@@ -120,9 +126,12 @@ export function TicketListView({
   now: Date;
 }) {
   const intl = useIntl();
+  // Hỗ trợ and Góp ý (P-145) share the queue; the type narrows the list on screen.
+  const [kind, setKind] = useState<Kind>('all');
+  const rows = kind === 'all' ? data.rows : data.rows.filter((t) => kindOf(t) === kind);
   return (
     <div>
-      <div className="panel__pad">
+      <div className="panel__pad stack">
         <Segmented
           label={intl.formatMessage({ id: 'support.filter' })}
           value={filter}
@@ -147,14 +156,24 @@ export function TicketListView({
             { value: 'closed', label: <FormattedMessage id="support.closedTab" /> },
           ]}
         />
+        <SelectMenu
+          value={kind}
+          onChange={setKind}
+          label={intl.formatMessage({ id: 'support.kind' })}
+          options={(['all', 'help', 'feedback'] as Kind[]).map((k) => ({
+            value: k,
+            label: intl.formatMessage({ id: `support.kind.${k}` }),
+          }))}
+          className="justify-self-start"
+        />
       </div>
-      {data.rows.length === 0 ? (
+      {rows.length === 0 ? (
         <Empty>
           <FormattedMessage id="support.empty" />
         </Empty>
       ) : (
         <ul className="tickets">
-          {data.rows.map((t) => (
+          {rows.map((t) => (
             <li key={t.id}>
               <button
                 type="button"
@@ -167,7 +186,8 @@ export function TicketListView({
                   <StatusPill status={t.status} />
                 </span>
                 <span className="tickets__meta">
-                  {t.ticket} · <FormattedMessage id={`category.${t.category}`} /> · {t.email}
+                  {t.ticket} · <TicketKind ticket={t} /> ·{' '}
+                  {t.contactable ? t.email : <FormattedMessage id="support.noContactShort" />}
                 </span>
                 <span className="tickets__age">{ago(intl, t.createdAt, now)}</span>
               </button>
@@ -176,6 +196,21 @@ export function TicketListView({
         </ul>
       )}
     </div>
+  );
+}
+
+/** "Kỷ niệm & media", or "Góp ý · Báo lỗi" for feedback (P-145). */
+function TicketKind({ ticket }: { ticket: TicketRow }) {
+  return (
+    <>
+      <FormattedMessage id={`category.${ticket.category}`} />
+      {ticket.feedbackType && (
+        <>
+          {' · '}
+          <FormattedMessage id={`feedbackType.${ticket.feedbackType}`} />
+        </>
+      )}
+    </>
   );
 }
 
@@ -231,6 +266,8 @@ export function TicketDetailView({
   const canReply = staffCan(staff.levels, 'support.reply');
   const canClose = staffCan(staff.levels, 'support.close');
   const closed = ticket.status === 'closed';
+  // P-145: without "Cho phép liên hệ lại" there is nobody to write to.
+  const canAnswer = canReply && ticket.contactable;
 
   const run = async (fn: () => Promise<unknown>) => {
     setBusy(true);
@@ -254,7 +291,7 @@ export function TicketDetailView({
       <div className="ticket__head">
         <div>
           <p className="muted">
-            {ticket.ticket} · <FormattedMessage id={`category.${ticket.category}`} /> ·{' '}
+            {ticket.ticket} · <TicketKind ticket={ticket} /> ·{' '}
             <FormattedMessage
               id="support.sent"
               values={{ ago: ago(intl, ticket.createdAt, now) }}
@@ -278,10 +315,18 @@ export function TicketDetailView({
         )}
       </div>
 
+      {!ticket.contactable && (
+        <p className="note note--warn" role="status">
+          <FormattedMessage id="support.noContact" />
+        </p>
+      )}
+
       <h3 className="label">
         <FormattedMessage id="support.userWrote" />
       </h3>
       <blockquote className="quote">{ticket.message}</blockquote>
+
+      {ticket.hasScreenshot && <Screenshot ticketId={ticket.id} ticket={ticket.ticket} />}
 
       <div className="tiles">
         <div className="tile">
@@ -385,13 +430,13 @@ export function TicketDetailView({
         </>
       )}
 
-      {!closed && (canReply || canClose) && (
+      {!closed && (canAnswer || canClose) && (
         <>
           <h3 className="label">
             <FormattedMessage id="support.allowed" />
           </h3>
           <div className="actions">
-            {canReply && (
+            {canAnswer && (
               <Button onClick={() => setDialog({ kind: 'wifi' })} disabled={busy}>
                 <FormattedMessage id="support.wifiGuide" />
               </Button>
@@ -415,7 +460,7 @@ export function TicketDetailView({
         </p>
       )}
 
-      {!closed && canReply && (
+      {!closed && canAnswer && (
         <form
           className="composer"
           onSubmit={(e) => {
@@ -495,6 +540,55 @@ export function TicketDetailView({
           }
         />
       )}
+    </div>
+  );
+}
+
+/** P-145: the Góp ý screenshot, loaded on request (each view is logged on the server). */
+function Screenshot({ ticketId, ticket }: { ticketId: string; ticket: string }) {
+  const intl = useIntl();
+  const api = useApi();
+  const [src, setSrc] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<ApiError | null>(null);
+  const show = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const r = await api.call<{ dataUrl: string }>('staffTicketScreenshot', { ticketId });
+      setSrc(r.dataUrl);
+    } catch (e) {
+      setError(e instanceof ApiError ? e : new ApiError('unknown', null));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="stack">
+      <h3 className="label">
+        <FormattedMessage id="support.screenshot" />
+      </h3>
+      {src ? (
+        <img
+          className="ticket__shot"
+          src={src}
+          alt={intl.formatMessage({ id: 'support.screenshotAlt' }, { id: ticket })}
+        />
+      ) : (
+        <div className="actions">
+          <Button onClick={() => void show()} disabled={busy}>
+            <FormattedMessage id="support.showScreenshot" />
+          </Button>
+        </div>
+      )}
+      {error && (
+        <p className="error" role="alert">
+          <FormattedMessage id={errorMessageId(error)} />
+        </p>
+      )}
+      <LockNote>
+        <FormattedMessage id="support.screenshotLogged" />
+      </LockNote>
     </div>
   );
 }

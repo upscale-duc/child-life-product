@@ -512,6 +512,19 @@ describe('Phân tích (A13 / A14)', () => {
     expect(html).toContain('Ảnh 2,9 TB · 60%');
     expect(html).toContain('Gói 10 GB 2.874 gia đình');
     expect(html).toContain('iOS 1.0.3 1.402 · 100%');
+    // Góp ý & đánh giá (P-145): shown only when the server sends the counters.
+    expect(html).not.toContain('Góp ý & đánh giá');
+    const withFeedback = {
+      ...feats,
+      feedback: { idea: 6, bug: 3, other: 1 },
+      reviewPrompt: { eligible: 40, requested: 10 },
+    };
+    const fb = text(render(<FeaturesView data={withFeedback} />, ['analyst']));
+    expect(fb).toContain('Góp ý & đánh giá');
+    expect(fb).toContain('Góp ý đã gửi · 10');
+    expect(fb).toContain('Báo lỗi 3 · 30%');
+    expect(fb).toContain('Đã hiện lời mời đánh giá 10 · 25%');
+    expect(analyticsCsv(withFeedback)).toContain('"feedback","bug","3"');
     const csv = analyticsCsv(growth);
     expect(csv.split('\r\n')[0]).toBe('"section","key","value"');
     expect(csv).toContain('"channel","invite","480"');

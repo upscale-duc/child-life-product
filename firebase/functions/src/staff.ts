@@ -401,6 +401,10 @@ function ticketRow(d: DocumentSnapshot) {
     status: d.get('status') as string,
     createdAt: iso(d.get('createdAt')),
     claimedBy: (d.get('claimedByName') as string | undefined) ?? null,
+    // Góp ý (D-065, P-145): its type, and whether anyone may write back. Without "Cho phép liên
+    // hệ lại" the ticket has no email, so the team cannot answer it.
+    feedbackType: (d.get('feedbackType') as string | undefined) ?? null,
+    contactable: !!d.get('email'),
   };
 }
 
@@ -458,11 +462,56 @@ export async function ticketDetail(db: Firestore, staff: Staff | null, data: unk
     role,
     family,
     diagnostics: (t.get('diagnostics') as Record<string, unknown> | null) ?? null,
+    // The image itself comes from `staffTicketScreenshot` (viewing it is logged).
+    hasScreenshot: !!t.get('screenshotPath'),
     thread: ((t.get('thread') as Array<Record<string, unknown>> | undefined) ?? []).map((m) => ({
       ...m,
       at: iso(m.at),
     })),
   };
+}
+
+/** At most this much image goes back through a callable (the app uploads compressed shots). */
+const SCREENSHOT_MAX_BYTES = 8 * 1024 * 1024;
+
+/**
+ * P-145: the screenshot of a Góp ý, for staff who can see the ticket. It comes back inline (a
+ * data URL), never as a link that could be passed on, and every view is logged (P-124).
+ */
+export async function ticketScreenshot(
+  db: Firestore,
+  staff: Staff | null,
+  data: unknown,
+  now: Date,
+  read: (path: string) => Promise<Buffer | null>,
+) {
+  const s = requireStaff(staff, 'support.view');
+  const { ticketId } = parse(ticketRefSchema, data);
+  const t = await db.doc(`supportTickets/${ticketId}`).get();
+  if (!t.exists) throw new StaffError('not-found', 'not-found');
+  const path = t.get('screenshotPath') as string | null | undefined;
+  if (!path || !/^feedback\/[^/]+\/[^/]+\.(jpg|png)$/.test(path)) {
+    throw new StaffError('not-found', 'no-screenshot');
+  }
+  const bytes = await read(path);
+  if (!bytes) throw new StaffError('not-found', 'no-screenshot');
+  if (bytes.length > SCREENSHOT_MAX_BYTES) throw new StaffError('failed-precondition', 'too-large');
+  const batch = db.batch();
+  staffAudit(
+    batch,
+    db,
+    s,
+    {
+      action: 'support.screenshot',
+      category: 'support',
+      target: t.get('ticket') as string,
+      reason: null,
+    },
+    now,
+  );
+  await batch.commit();
+  const type = path.endsWith('.png') ? 'image/png' : 'image/jpeg';
+  return { dataUrl: `data:${type};base64,${bytes.toString('base64')}` };
 }
 
 export async function claimTicket(db: Firestore, staff: Staff | null, data: unknown, now: Date) {
@@ -502,6 +551,8 @@ export async function replyTicket(db: Firestore, staff: Staff | null, data: unkn
     const ref = db.doc(`supportTickets/${req.ticketId}`);
     const t = await tx.get(ref);
     if (!t.exists) throw new StaffError('not-found', 'not-found');
+    // P-145: a Góp ý sent without "Cho phép liên hệ lại" is not answered.
+    if (!t.get('email')) throw new StaffError('failed-precondition', 'no-contact');
     const locale = (t.get('locale') as 'vi' | 'en' | undefined) ?? 'vi';
     const text = req.macro === 'wifiGuide' ? wifiGuide[locale] : req.text;
     tx.update(ref, {

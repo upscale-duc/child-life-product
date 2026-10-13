@@ -158,6 +158,19 @@ describe('reading and exporting (A13 / A14)', () => {
   it('aggregates for the range; export needs "Phân tích · xuất CSV" and is logged', async () => {
     await rollupDay(db, '2026-10-09', now);
     await rollupDay(db, DAY, now);
+    // The app's Góp ý / review-prompt counters (D-065); a day outside the range is left out.
+    await db.doc('appEventsDaily/2026-10-09').set({
+      day: '2026-10-09',
+      feedbackSent_bug: 2,
+      reviewPromptEligible: 5,
+    });
+    await db.doc(`appEventsDaily/${DAY}`).set({
+      day: DAY,
+      feedbackSent_idea: 1,
+      reviewPromptEligible: 3,
+      reviewPromptRequested: 1,
+    });
+    await db.doc('appEventsDaily/2026-09-01').set({ day: '2026-09-01', feedbackSent_idea: 9 });
     const growth = await analytics(db, ops, { tab: 'growth', days: 7, platform: 'all' }, now);
     expect(growth.empty).toBe(false);
     if (growth.empty) return;
@@ -174,6 +187,8 @@ describe('reading and exporting (A13 / A14)', () => {
     if (feats.empty || !('features' in feats)) throw new Error('features tab');
     expect(feats.features.find((f) => f.feature === 'feeding')).toMatchObject({ perDay: 0.5 });
     expect(feats.versions).toEqual([{ platform: 'android', version: '1.0.1', devices: 1 }]);
+    expect(feats.feedback).toEqual({ idea: 1, bug: 2, other: 0 });
+    expect(feats.reviewPrompt).toEqual({ eligible: 8, requested: 1 });
     expect(await reason(analytics(db, qa, { tab: 'growth', days: 7, platform: 'all' }, now))).toBe(
       'role',
     );

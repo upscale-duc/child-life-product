@@ -152,6 +152,7 @@ import {
   setFlag,
   systemHealth,
   ticketDetail,
+  ticketScreenshot,
   type AccountLister,
   type Staff,
 } from './staff.js';
@@ -1550,6 +1551,15 @@ export const staffOverview = staffCall('staffOverview', (s, d) =>
 );
 export const staffTickets = staffCall('staffTickets', (s, d) => listTickets(getFirestore(), s, d));
 export const staffTicket = staffCall('staffTicket', (s, d) => ticketDetail(getFirestore(), s, d));
+export const staffTicketScreenshot = staffCall('staffTicketScreenshot', (s, d) =>
+  ticketScreenshot(getFirestore(), s, d, new Date(), async (path) => {
+    const file = getStorage().bucket().file(path);
+    const [exists] = await file.exists();
+    if (!exists) return null;
+    const [bytes] = await file.download();
+    return bytes;
+  }),
+);
 export const staffClaimTicket = staffCall('staffClaimTicket', (s, d) =>
   claimTicket(getFirestore(), s, d, new Date()),
 );

@@ -816,6 +816,15 @@ td .lock {
   gap: 16px;
   align-items: flex-start;
 }
+.ticket__shot {
+  display: block;
+  max-width: 100%;
+  max-height: 520px;
+  width: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--muted);
+}
 .ticket__title {
   font: 600 20px/28px var(--font-family);
   margin: 4px 0 0;

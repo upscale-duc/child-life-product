@@ -2,6 +2,7 @@ import type {
   AppUpdateConfig,
   AppUpdatePublic,
   AuditCategory,
+  FeedbackType,
   FirstAidPack,
   FlagKey,
   Flags,
@@ -26,6 +27,7 @@ export type Callable =
   | 'staffOverview'
   | 'staffTickets'
   | 'staffTicket'
+  | 'staffTicketScreenshot'
   | 'staffClaimTicket'
   | 'staffReplyTicket'
   | 'staffCloseTicket'
@@ -168,15 +170,22 @@ export interface Overview {
 }
 
 export type TicketStatus = 'new' | 'claimed' | 'waiting' | 'closed';
+/** Góp ý (D-065): FB2's "Ý tưởng · Báo lỗi · Khác". */
+export type { FeedbackType };
+
 export interface TicketRow {
   id: string;
   ticket: string;
   title: string;
+  /** A help topic, or `feedback` (P-145). */
   category: string;
   email: string;
   status: TicketStatus;
   createdAt: string;
   claimedBy: string | null;
+  feedbackType: FeedbackType | null;
+  /** False for a Góp ý sent without "Cho phép liên hệ lại": nobody may write back. */
+  contactable: boolean;
 }
 export interface TicketList {
   counts: { open: number; new: number; claimed: number; waiting: number };
@@ -195,6 +204,8 @@ export interface TicketDetail extends TicketRow {
     lastSyncAt?: string | null;
   } | null;
   thread: Array<{ by: string; text: string; at: string }>;
+  /** The image comes from `staffTicketScreenshot`; each view is logged. */
+  hasScreenshot: boolean;
 }
 
 export interface StorageRow {
@@ -517,6 +528,9 @@ export interface AnalyticsFeatures {
     over80Families: number;
   };
   versions: Array<{ platform: string; version: string; devices: number }>;
+  /** D-065 counters (all platforms); absent from servers older than P-145. */
+  feedback?: Record<FeedbackType, number>;
+  reviewPrompt?: { eligible: number; requested: number };
 }
 
 export type AnalyticsResult =

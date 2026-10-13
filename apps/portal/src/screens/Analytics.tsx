@@ -9,6 +9,7 @@ import {
   type AnalyticsGrowth,
   type AnalyticsResult,
   type Delta,
+  type FeedbackType,
 } from '../api';
 import { routePaths, subPath, useStaff } from '../context';
 import { bytes, downloadCsv, pct, shortDate, toCsv } from '../format';
@@ -442,7 +443,62 @@ export function FeaturesView({ data }: { data: AnalyticsFeatures }) {
           )}
         </Panel>
       </div>
+      {data.feedback && data.reviewPrompt && (
+        <FeedbackPanel feedback={data.feedback} reviewPrompt={data.reviewPrompt} />
+      )}
     </div>
+  );
+}
+
+/** Góp ý & đánh giá (D-065, P-145): counts only, from the app's daily counters. */
+function FeedbackPanel({
+  feedback,
+  reviewPrompt,
+}: {
+  feedback: Record<FeedbackType, number>;
+  reviewPrompt: { eligible: number; requested: number };
+}) {
+  const intl = useIntl();
+  const sent = feedback.idea + feedback.bug + feedback.other;
+  return (
+    <Panel
+      title={<FormattedMessage id="analytics.feedback" />}
+      note={<FormattedMessage id="analytics.feedbackNote" />}
+    >
+      <div className="cols cols--1-1">
+        <section className="sources">
+          <div>
+            <h3 className="sources__head">
+              <FormattedMessage id="analytics.feedbackSent" /> · {intl.formatNumber(sent)}
+            </h3>
+            <HBars
+              rows={(['idea', 'bug', 'other'] as const).map((t) => ({
+                label: <FormattedMessage id={`feedbackType.${t}`} />,
+                value: `${intl.formatNumber(feedback[t])} · ${pct(intl, sent ? feedback[t] / sent : null)}`,
+                ratio: sent ? feedback[t] / sent : 0,
+                ...(t === 'bug' ? { tone: 'warn' } : {}),
+              }))}
+            />
+          </div>
+        </section>
+        <dl className="kv">
+          <dt>
+            <FormattedMessage id="analytics.reviewEligible" />
+          </dt>
+          <dd>{intl.formatNumber(reviewPrompt.eligible)}</dd>
+          <dt>
+            <FormattedMessage id="analytics.reviewRequested" />
+          </dt>
+          <dd>
+            {intl.formatNumber(reviewPrompt.requested)} ·{' '}
+            {pct(
+              intl,
+              reviewPrompt.eligible ? reviewPrompt.requested / reviewPrompt.eligible : null,
+            )}
+          </dd>
+        </dl>
+      </div>
+    </Panel>
   );
 }
 
@@ -466,6 +522,8 @@ export function analyticsCsv(r: AnalyticsResult): string {
     for (const f of r.features) rows.push(['feature', f.feature, `${f.share ?? ''}/${f.perDay}`]);
     for (const [k, v] of Object.entries(r.storage)) rows.push(['storage', k, v]);
     for (const v of r.versions) rows.push(['version', `${v.platform} ${v.version}`, v.devices]);
+    for (const [k, v] of Object.entries(r.feedback ?? {})) rows.push(['feedback', k, v]);
+    for (const [k, v] of Object.entries(r.reviewPrompt ?? {})) rows.push(['reviewPrompt', k, v]);
   }
   return toCsv(rows[0] as string[], rows.slice(1));
 }

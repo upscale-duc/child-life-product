@@ -420,6 +420,8 @@ describe('A03 support', () => {
         status: 'new' as const,
         createdAt: '2026-10-10T03:40:00Z',
         claimedBy: null,
+        feedbackType: null,
+        contactable: true,
       },
     ],
   };
@@ -437,6 +439,7 @@ describe('A03 support', () => {
       lastSyncAt: '2026-10-10T03:50:00Z',
     },
     thread: [],
+    hasScreenshot: false,
   };
   it('lists tickets with masked emails and status counts', () => {
     const html = text(
@@ -475,6 +478,44 @@ describe('A03 support', () => {
     expect(eng).not.toContain('Nhận xử lý');
     expect(eng).not.toContain('Gửi hướng dẫn');
     expect(eng).not.toContain('Trả lời người dùng…');
+  });
+  it('Góp ý (P-145): type, "không liên hệ lại" and the screenshot on request', () => {
+    const fb = {
+      ...detail,
+      id: 't_2',
+      ticket: 'CL-1100',
+      title: 'Nút lưu không bấm được',
+      category: 'feedback',
+      email: '—',
+      feedbackType: 'bug' as const,
+      contactable: false,
+      hasScreenshot: true,
+    };
+    const listed = text(
+      render(
+        <TicketListView
+          data={{ ...list, rows: [...list.rows, fb] }}
+          filter="open"
+          onFilter={() => undefined}
+          selected="t_2"
+          onSelect={() => undefined}
+          now={now}
+        />,
+      ),
+    );
+    expect(listed).toContain('CL-1100 · Góp ý · Báo lỗi · Không liên hệ lại');
+    expect(listed).toContain('Loại: Tất cả');
+    const shown = text(
+      render(<TicketDetailView ticket={fb} now={now} onChanged={() => undefined} />, ['support']),
+    );
+    expect(shown).toContain('CL-1100 · Góp ý · Báo lỗi');
+    expect(shown).toContain('không để Child Life liên hệ lại');
+    expect(shown).toContain('Xem ảnh chụp màn hình');
+    expect(shown).toContain('Mỗi lần xem ảnh được ghi vào nhật ký');
+    // Nobody to write to: no reply box, no Wi-Fi macro; closing stays.
+    expect(shown).not.toContain('Trả lời người dùng…');
+    expect(shown).not.toContain('Gửi hướng dẫn tải qua Wi-Fi');
+    expect(shown).toContain('Đóng yêu cầu');
   });
 });
 

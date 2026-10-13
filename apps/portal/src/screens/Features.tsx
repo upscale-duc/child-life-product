@@ -331,6 +331,7 @@ export function AuditActionText({
     'support.reply',
     'support.macro.wifiGuide',
     'support.close',
+    'support.screenshot',
     'storage.grant',
     'storage.decline',
     'jobs.rerun',

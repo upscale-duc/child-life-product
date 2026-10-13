@@ -503,6 +503,14 @@ export async function analytics(db: Firestore, staff: Staff | null, data: unknow
   const careKeys = ['feeding', 'sleep', 'diaper', 'pump'] as const;
   const care = (xs: Stats[]) => avg(xs.map((s) => careKeys.reduce((n, k) => n + s.features[k], 0)));
   const weekActive = pick(latest.weekActive, p);
+  // Góp ý & đánh giá (D-065, P-145): the app's daily counters, all platforms, the same days.
+  const events = await db
+    .collection('appEventsDaily')
+    .where('day', '>=', split0)
+    .where('day', '<=', last)
+    .get();
+  const total = (k: string) =>
+    events.docs.reduce((n, d) => n + ((d.get(k) as number | undefined) ?? 0), 0);
   return {
     ...base,
     empty: false as const,
@@ -533,6 +541,15 @@ export async function analytics(db: Firestore, staff: Staff | null, data: unknow
     })),
     storage: latest.storage,
     versions: latest.versions.filter((v) => p === 'all' || v.platform === p),
+    feedback: {
+      idea: total('feedbackSent_idea'),
+      bug: total('feedbackSent_bug'),
+      other: total('feedbackSent_other'),
+    },
+    reviewPrompt: {
+      eligible: total('reviewPromptEligible'),
+      requested: total('reviewPromptRequested'),
+    },
   };
 }
 

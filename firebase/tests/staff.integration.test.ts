@@ -23,6 +23,7 @@ import {
   setFlag,
   systemHealth,
   ticketDetail,
+  ticketScreenshot,
   type AccountLister,
   type Staff,
 } from '../functions/src/staff.js';
@@ -336,6 +337,87 @@ describe('A03 support', () => {
       'support.close',
       'support.macro.wifiGuide',
     ]);
+  });
+});
+
+describe('Góp ý in Hỗ trợ (P-145, D-065)', () => {
+  // The ticket the app's `sendFeedback` writes (category feedback, no email without "Cho phép
+  // liên hệ lại", the screenshot's path only).
+  const feedback = (extra: Record<string, unknown> = {}) =>
+    db.doc('supportTickets/t_fb000000000000000001').set({
+      ticket: 'CL-1100',
+      category: 'feedback',
+      feedbackType: 'bug',
+      message: 'Nút lưu không bấm được\nChi tiết…',
+      diagnostics: null,
+      screenshotPath: 'feedback/mom/req1.png',
+      replyByEmail: false,
+      uid: 'mom',
+      email: null,
+      locale: 'vi',
+      status: 'new',
+      createdAt: now,
+      ...extra,
+    });
+  const png = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
+  const read = async (path: string) => (path === 'feedback/mom/req1.png' ? png : null);
+
+  it('shows the type and that nobody may write back; replies are refused', async () => {
+    await feedback();
+    const row = (await listTickets(db, ha, { status: 'open' })).rows[0]!;
+    expect(row).toMatchObject({
+      ticket: 'CL-1100',
+      category: 'feedback',
+      feedbackType: 'bug',
+      contactable: false,
+      email: '—',
+    });
+    expect(await ticketDetail(db, ha, { ticketId: 't_fb000000000000000001' })).toMatchObject({
+      hasScreenshot: true,
+      contactable: false,
+    });
+    expect(
+      await reason(
+        replyTicket(
+          db,
+          ha,
+          {
+            ticketId: 't_fb000000000000000001',
+            text: 'Cảm ơn',
+            macro: null,
+            reason: 'Trả lời góp ý.',
+          },
+          now,
+        ),
+      ),
+    ).toBe('no-contact');
+    expect((await db.collection('mail').get()).size).toBe(0);
+  });
+
+  it('the screenshot comes back inline for support, and every view is logged', async () => {
+    await feedback();
+    const { dataUrl } = await ticketScreenshot(
+      db,
+      ha,
+      { ticketId: 't_fb000000000000000001' },
+      now,
+      read,
+    );
+    expect(dataUrl).toBe(`data:image/png;base64,${png.toString('base64')}`);
+    const log = await listAudit(db, linh, { category: 'support', days: 7 }, now);
+    expect(log.rows.map((r) => [r.action, r.target])).toEqual([['support.screenshot', 'CL-1100']]);
+    // Kỹ sư has no ticket access (P-124); a path that is not a feedback upload is refused.
+    expect(
+      await reason(ticketScreenshot(db, minh, { ticketId: 't_fb000000000000000001' }, now, read)),
+    ).toBe('role');
+    await feedback({ screenshotPath: 'babies/b1/memories/m1.jpg' });
+    expect(
+      await reason(ticketScreenshot(db, ha, { ticketId: 't_fb000000000000000001' }, now, read)),
+    ).toBe('no-screenshot');
+    await feedback({ screenshotPath: null });
+    expect(
+      await reason(ticketScreenshot(db, ha, { ticketId: 't_fb000000000000000001' }, now, read)),
+    ).toBe('no-screenshot');
   });
 });
 
