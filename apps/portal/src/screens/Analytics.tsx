@@ -15,6 +15,7 @@ import { bytes, downloadCsv, pct, shortDate, toCsv } from '../format';
 import {
   Button,
   Empty,
+  errorMessageId,
   HBars,
   Kpi,
   LineChart,
@@ -23,7 +24,7 @@ import {
   Page,
   Panel,
   Segmented,
-  errorMessageId,
+  SelectMenu,
   TableScroll,
 } from '../ui';
 
@@ -120,30 +121,24 @@ export function AnalyticsScreen() {
             ]}
           />
           <div className="qa-filters">
-            <select
-              className="select"
+            <SelectMenu
               value={platform}
-              onChange={(e) => setPlatform(e.target.value as Platform)}
-              aria-label={intl.formatMessage({ id: 'analytics.platform' })}
-            >
-              {(['all', 'ios', 'android'] as const).map((p) => (
-                <option key={p} value={p}>
-                  {intl.formatMessage({ id: `analytics.platform.${p}` })}
-                </option>
-              ))}
-            </select>
-            <select
-              className="select"
+              onChange={setPlatform}
+              label={intl.formatMessage({ id: 'analytics.platform' })}
+              options={(['all', 'ios', 'android'] as Platform[]).map((p) => ({
+                value: p,
+                label: intl.formatMessage({ id: `analytics.platform.${p}` }),
+              }))}
+            />
+            <SelectMenu
               value={days}
-              onChange={(e) => setDays(Number(e.target.value) as Days)}
-              aria-label={intl.formatMessage({ id: 'analytics.range' })}
-            >
-              {([7, 30, 90] as Days[]).map((d) => (
-                <option key={d} value={d}>
-                  {intl.formatMessage({ id: 'analytics.rangeDays' }, { n: d })}
-                </option>
-              ))}
-            </select>
+              onChange={setDays}
+              label={intl.formatMessage({ id: 'analytics.range' })}
+              options={([7, 30, 90] as Days[]).map((d) => ({
+                value: d,
+                label: intl.formatMessage({ id: 'analytics.rangeDays' }, { n: d }),
+              }))}
+            />
           </div>
         </div>
         {error && (

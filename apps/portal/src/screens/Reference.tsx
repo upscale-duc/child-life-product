@@ -15,6 +15,7 @@ import { routePaths, subPath, useStaff } from '../context';
 import { ZONE } from '../format';
 import {
   Button,
+  errorMessageId,
   Loaded,
   Loading,
   LockNote,
@@ -23,9 +24,9 @@ import {
   Panel,
   Pill,
   ReasonField,
-  Segmented,
-  errorMessageId,
   reasonOk,
+  Segmented,
+  SelectMenu,
   TableScroll,
   type PillTone,
 } from '../ui';
@@ -522,19 +523,21 @@ export function VaccineTable({ rows, changed }: { rows: VaccineDef[]; changed: S
   return (
     <Panel className="panel--flush">
       <div className="panel__pad toolbar">
-        <select
-          className="select"
+        <SelectMenu
           value={programme}
-          onChange={(e) => setProgramme(e.target.value as typeof programme)}
-          aria-label={intl.formatMessage({ id: 'reference.col.programme' })}
-        >
-          <option value="all">{intl.formatMessage({ id: 'reference.programme.all' })}</option>
-          {vaccineProgrammes.map((p) => (
-            <option key={p} value={p}>
-              {intl.formatMessage({ id: `reference.programme.${p}` })}
-            </option>
-          ))}
-        </select>
+          onChange={setProgramme}
+          label={intl.formatMessage({ id: 'reference.col.programme' })}
+          options={[
+            {
+              value: 'all' as typeof programme,
+              label: intl.formatMessage({ id: 'reference.programme.all' }),
+            },
+            ...vaccineProgrammes.map((p) => ({
+              value: p as typeof programme,
+              label: intl.formatMessage({ id: `reference.programme.${p}` }),
+            })),
+          ]}
+        />
         <span className="muted">
           <FormattedMessage
             id="reference.doses"

@@ -11,8 +11,12 @@ import {
   type QaPlatform,
   type QaStatus,
 } from '@child-life/contracts';
-import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Button as UiButton } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   ApiError,
   useApi,
@@ -28,16 +32,15 @@ import { ZONE, when } from '../format';
 import {
   Button,
   Empty,
+  errorMessageId,
   Loaded,
   Modal,
   Page,
   Panel,
   Pill,
   Segmented,
-  errorMessageId,
+  SelectMenu,
   TableScroll,
-  useEscape,
-  useScrollLock,
   type PillTone,
 } from '../ui';
 
@@ -507,10 +510,9 @@ export function QaRunPanel({
           )}
           {runs.some((r) => r.archived) && (
             <label className="check-row">
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={showArchived}
-                onChange={(e) => onShowArchived(e.target.checked)}
+                onCheckedChange={(v) => onShowArchived(v === true)}
               />
               <FormattedMessage id="qa.run.showArchived" />
             </label>
@@ -759,21 +761,18 @@ export function QaCaseTable({
     options: readonly string[],
     labelPrefix: string,
   ) => (
-    <select
-      className="select"
+    <SelectMenu
       value={filters[key]}
-      aria-label={t(`qa.filter.${key}`)}
-      onChange={(e) => onFilters({ ...filters, [key]: e.target.value })}
-    >
-      <option value="all">
-        {intl.formatMessage({ id: 'qa.filter.any' }, { filter: t(`qa.filter.${key}`) })}
-      </option>
-      {options.map((o) => (
-        <option key={o} value={o}>
-          {t(`${labelPrefix}.${o}`)}
-        </option>
-      ))}
-    </select>
+      label={t(`qa.filter.${key}`)}
+      onChange={(v) => onFilters({ ...filters, [key]: v })}
+      options={[
+        {
+          value: 'all',
+          label: intl.formatMessage({ id: 'qa.filter.any' }, { filter: t(`qa.filter.${key}`) }),
+        },
+        ...options.map((o) => ({ value: o, label: t(`${labelPrefix}.${o}`) })),
+      ]}
+    />
   );
   return (
     <Panel className="panel--flush">
@@ -882,15 +881,7 @@ export function QaCaseTable({
 
 // ---------- One case ----------
 
-function Icon({ d }: { d: string }) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d={d} />
-    </svg>
-  );
-}
-
-/** The case sheet on the right: Escape or the backdrop closes it. */
+/** The case sheet on the right (shadcn Sheet): Escape, the backdrop or × closes it. */
 export function QaCaseDrawer({
   title,
   onClose,
@@ -905,56 +896,42 @@ export function QaCaseDrawer({
   children: ReactNode;
 }) {
   const intl = useIntl();
-  const ref = useRef<HTMLElement>(null);
-  useScrollLock();
-  useEscape(onClose);
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
+  const t = (id: string) => intl.formatMessage({ id });
   return (
-    <div
-      className="scrim scrim--drawer"
-      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <aside
-        className="drawer"
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
-        ref={ref}
-        tabIndex={-1}
+    <Sheet open onOpenChange={(open) => !open && onClose()}>
+      <SheetContent
+        side="right"
+        showCloseButton={false}
+        aria-describedby={undefined}
+        className="w-full gap-0 overflow-y-auto overscroll-contain p-0 sm:max-w-xl"
       >
+        <SheetTitle className="sr-only">{title}</SheetTitle>
         <div className="drawer__tools">
-          <button
-            type="button"
-            className="icon-btn"
+          <UiButton
+            variant="ghost"
+            size="icon"
             onClick={onPrev}
             disabled={!onPrev}
-            aria-label={intl.formatMessage({ id: 'qa.case.prev' })}
+            aria-label={t('qa.case.prev')}
           >
-            <Icon d="M15 18l-6-6 6-6" />
-          </button>
-          <button
-            type="button"
-            className="icon-btn"
+            <ChevronLeft />
+          </UiButton>
+          <UiButton
+            variant="ghost"
+            size="icon"
             onClick={onNext}
             disabled={!onNext}
-            aria-label={intl.formatMessage({ id: 'qa.case.next' })}
+            aria-label={t('qa.case.next')}
           >
-            <Icon d="M9 18l6-6-6-6" />
-          </button>
-          <button
-            type="button"
-            className="icon-btn"
-            onClick={onClose}
-            aria-label={intl.formatMessage({ id: 'qa.case.close' })}
-          >
-            <Icon d="M6 6l12 12M18 6L6 18" />
-          </button>
+            <ChevronRight />
+          </UiButton>
+          <UiButton variant="ghost" size="icon" onClick={onClose} aria-label={t('qa.case.close')}>
+            <X />
+          </UiButton>
         </div>
         {children}
-      </aside>
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 }
 

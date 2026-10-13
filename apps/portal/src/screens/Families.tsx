@@ -14,6 +14,7 @@ import { ZONE, ago, gb, pct } from '../format';
 import {
   Button,
   Empty,
+  errorMessageId,
   Kpi,
   Loaded,
   LockNote,
@@ -22,11 +23,11 @@ import {
   Panel,
   Pill,
   ReasonField,
-  Segmented,
-  UsageBar,
-  errorMessageId,
   reasonOk,
+  Segmented,
+  SelectMenu,
   TableScroll,
+  UsageBar,
 } from '../ui';
 
 /**
@@ -222,30 +223,24 @@ export function FamilyListView({
             ]}
           />
           <div className="qa-filters">
-            <select
-              className="select"
+            <SelectMenu
               value={platform}
-              onChange={(e) => onPlatform(e.target.value as Platform)}
-              aria-label={intl.formatMessage({ id: 'families.filter.platform' })}
-            >
-              {(['all', 'ios', 'android', 'both'] as const).map((p) => (
-                <option key={p} value={p}>
-                  {intl.formatMessage({ id: `families.platform.${p}` })}
-                </option>
-              ))}
-            </select>
-            <select
-              className="select"
+              onChange={onPlatform}
+              label={intl.formatMessage({ id: 'families.filter.platform' })}
+              options={(['all', 'ios', 'android', 'both'] as Platform[]).map((p) => ({
+                value: p,
+                label: intl.formatMessage({ id: `families.platform.${p}` }),
+              }))}
+            />
+            <SelectMenu
               value={storage}
-              onChange={(e) => onStorage(e.target.value as Storage)}
-              aria-label={intl.formatMessage({ id: 'families.filter.storage' })}
-            >
-              {(['all', 'over80', 'expanded'] as const).map((s) => (
-                <option key={s} value={s}>
-                  {intl.formatMessage({ id: `families.storage.${s}` })}
-                </option>
-              ))}
-            </select>
+              onChange={onStorage}
+              label={intl.formatMessage({ id: 'families.filter.storage' })}
+              options={(['all', 'over80', 'expanded'] as Storage[]).map((s) => ({
+                value: s,
+                label: intl.formatMessage({ id: `families.storage.${s}` }),
+              }))}
+            />
           </div>
         </div>
         {data.rows.length === 0 ? (

@@ -27,6 +27,7 @@ import { ZONE, ago } from '../format';
 import {
   Button,
   Empty,
+  errorMessageId,
   Kpi,
   Loaded,
   LockNote,
@@ -35,11 +36,12 @@ import {
   Panel,
   Pill,
   ReasonField,
+  reasonOk,
   RowActions,
   Segmented,
-  errorMessageId,
-  reasonOk,
+  SelectMenu,
   TableScroll,
+  useSort,
   type PillTone,
 } from '../ui';
 
@@ -313,6 +315,12 @@ export function MemberTable({
       (role === 'all' || m.roles.some((r) => (builtinRole(r) ?? r) === role)) &&
       (!text || `${m.name} ${m.email}`.toLowerCase().includes(text)),
   );
+  const sort = useSort(rows, {
+    member: (m) => m.name,
+    access: (m) => m.accessUntil,
+    last: (m) => m.lastSeenAt,
+    status: (m) => m.status,
+  });
   return (
     <>
       <div className="panel__pad toolbar toolbar--start">
@@ -324,19 +332,15 @@ export function MemberTable({
           placeholder={intl.formatMessage({ id: 'staff.search' })}
           aria-label={intl.formatMessage({ id: 'staff.search' })}
         />
-        <select
-          className="select"
+        <SelectMenu
           value={role}
-          onChange={(e) => setRole(e.target.value)}
-          aria-label={intl.formatMessage({ id: 'staff.col.role' })}
-        >
-          <option value="all">{intl.formatMessage({ id: 'staff.filter.allRoles' })}</option>
-          {team.roles.map((r) => (
-            <option key={r.id} value={r.id}>
-              {roleName(intl, r.id, team.roles)}
-            </option>
-          ))}
-        </select>
+          onChange={setRole}
+          label={intl.formatMessage({ id: 'staff.col.role' })}
+          options={[
+            { value: 'all', label: intl.formatMessage({ id: 'staff.filter.allRoles' }) },
+            ...team.roles.map((r) => ({ value: r.id, label: roleName(intl, r.id, team.roles) })),
+          ]}
+        />
       </div>
       {rows.length === 0 ? (
         <Empty>
@@ -347,29 +351,21 @@ export function MemberTable({
           <table className="table">
             <thead>
               <tr>
-                <th>
-                  <FormattedMessage id="staff.col.member" />
-                </th>
+                {sort.th('member', <FormattedMessage id="staff.col.member" />)}
                 <th>
                   <FormattedMessage id="staff.col.role" />
                 </th>
                 <th>
                   <FormattedMessage id="staff.col.scope" />
                 </th>
-                <th>
-                  <FormattedMessage id="staff.col.access" />
-                </th>
-                <th>
-                  <FormattedMessage id="staff.col.last" />
-                </th>
-                <th>
-                  <FormattedMessage id="staff.col.status" />
-                </th>
+                {sort.th('access', <FormattedMessage id="staff.col.access" />)}
+                {sort.th('last', <FormattedMessage id="staff.col.last" />)}
+                {sort.th('status', <FormattedMessage id="staff.col.status" />)}
                 {canManage && <th />}
               </tr>
             </thead>
             <tbody>
-              {rows.map((m) => (
+              {sort.rows.map((m) => (
                 <tr key={m.uid}>
                   <td>
                     <span className="person">

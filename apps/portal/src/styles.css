@@ -665,6 +665,24 @@ td .lock {
   background: color-mix(in oklab, var(--muted) 60%, transparent);
   white-space: nowrap;
 }
+.th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: -4px -8px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: calc(var(--radius) - 4px);
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.th-sort:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
 .table td {
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
@@ -991,40 +1009,7 @@ td .lock {
   margin-top: 12px;
 }
 
-/* ---------- Charts ---------- */
-.chart {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-.chart__grid {
-  stroke: var(--border);
-  stroke-width: 1;
-}
-.chart__axis {
-  fill: var(--muted-foreground);
-  font: 500 11px var(--font-family);
-}
-.chart__line {
-  fill: none;
-  stroke: var(--primary);
-  stroke-width: 2.5;
-}
-.chart__area {
-  fill: var(--accent);
-}
-.chart__dot {
-  fill: var(--primary);
-}
-.chart__value {
-  fill: var(--ink);
-  font: 600 12px var(--font-family);
-}
-.chart__threshold {
-  stroke: #f59e0b;
-  stroke-dasharray: 6 5;
-  stroke-width: 1.5;
-}
+/* ---------- Charts (shadcn chart in ui.tsx; legend dots for the storage bar) ---------- */
 .fill-feed {
   fill: var(--care-bottle-accent);
   background: var(--care-bottle-accent);

@@ -1,6 +1,8 @@
 import { flagKeys, staffCan, type Flag, type FlagKey } from '@child-life/contracts';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 import { ApiError, useApi, useLoad, type AiStats, type FlagsView } from '../api';
 import { useStaff } from '../context';
 import { pct, shortDate } from '../format';
@@ -114,17 +116,15 @@ export function FeaturesView({
                       {last ? `${last.by.split(' ')[0]} · ${shortDate(intl, last.at)}` : '—'}
                     </td>
                     <td>
-                      <button
-                        type="button"
-                        role="switch"
-                        aria-checked={f.enabled}
+                      <Switch
+                        checked={f.enabled}
                         aria-label={intl.formatMessage({ id: `flag.${key}` })}
-                        className={`switch ${f.enabled ? 'switch--on' : ''}`}
                         disabled={!canToggle}
                         title={
                           canToggle ? undefined : intl.formatMessage({ id: 'features.toggleRole' })
                         }
-                        onClick={() =>
+                        // The change is confirmed in a dialog first (A11), so the switch only asks.
+                        onCheckedChange={() =>
                           setChange({
                             key,
                             kind: f.enabled ? 'off' : 'on',
@@ -445,7 +445,7 @@ function FlagDialog({
       {off && (
         <div className="field">
           <label className="check-row">
-            <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} />
+            <Checkbox checked={notify} onCheckedChange={(v) => setNotify(v === true)} />
             <FormattedMessage id="features.notify" />
           </label>
           {notify && (

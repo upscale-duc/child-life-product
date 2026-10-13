@@ -7,6 +7,7 @@ import { ZONE, ago, duration, gb, num, pct, usageTone } from '../format';
 import {
   Button,
   Empty,
+  errorMessageId,
   Kpi,
   Loaded,
   LockNote,
@@ -14,11 +15,11 @@ import {
   Page,
   Panel,
   ReasonField,
-  Segmented,
-  UsageBar,
-  errorMessageId,
   reasonOk,
+  Segmented,
   TableScroll,
+  UsageBar,
+  useSort,
 } from '../ui';
 
 type Status = 'open' | 'granted' | 'declined';
@@ -78,6 +79,13 @@ export function StorageView({
   const [selected, setSelected] = useState<string | null>(null);
   const [dialog, setDialog] = useState<{ row: StorageRow; kind: 'grant' | 'decline' } | null>(null);
   const row = data.rows.find((r) => r.id === selected) ?? data.rows[0] ?? null;
+  const sort = useSort(data.rows, {
+    code: (r) => r.code,
+    family: (r) => r.family,
+    using: (r) => (r.quotaBytes ? r.usedBytes / r.quotaBytes : null),
+    requested: (r) => r.requestedGb,
+    sent: (r) => r.createdAt,
+  });
   const k = data.kpis;
   return (
     <div className="grid">
@@ -128,29 +136,19 @@ export function StorageView({
             <table className="table">
               <thead>
                 <tr>
-                  <th>
-                    <FormattedMessage id="col.id" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="col.family" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="col.using" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="col.requested" />
-                  </th>
+                  {sort.th('code', <FormattedMessage id="col.id" />)}
+                  {sort.th('family', <FormattedMessage id="col.family" />)}
+                  {sort.th('using', <FormattedMessage id="col.using" />)}
+                  {sort.th('requested', <FormattedMessage id="col.requested" />)}
                   <th>
                     <FormattedMessage id="col.message" />
                   </th>
-                  <th>
-                    <FormattedMessage id="col.sent" />
-                  </th>
+                  {sort.th('sent', <FormattedMessage id="col.sent" />)}
                   {status === 'open' && canDecide && <th />}
                 </tr>
               </thead>
               <tbody>
-                {data.rows.map((r) => {
+                {sort.rows.map((r) => {
                   const ratio = r.usedBytes / Math.max(1, r.quotaBytes);
                   return (
                     <tr

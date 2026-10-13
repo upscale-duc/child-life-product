@@ -7,6 +7,7 @@ import { duration, num, pct, when } from '../format';
 import {
   Button,
   Empty,
+  errorMessageId,
   Kpi,
   Loaded,
   LockNote,
@@ -15,11 +16,11 @@ import {
   Panel,
   Pill,
   ReasonField,
-  Segmented,
-  UsageBar,
-  errorMessageId,
   reasonOk,
+  Segmented,
   TableScroll,
+  UsageBar,
+  useSort,
   type PillTone,
 } from '../ui';
 
@@ -92,6 +93,14 @@ export function JobsView({
   const canApprove = staffCan(staff.levels, 'jobs.approve');
   const [open, setOpen] = useState<string | null>(null);
   const [rerun, setRerun] = useState<{ row: JobRow; mode: 'request' | 'approve' } | null>(null);
+  const sort = useSort(data.rows, {
+    code: (r) => r.code,
+    type: (r) => r.type,
+    email: (r) => r.email,
+    created: (r) => r.createdAt,
+    progress: (r) => r.progress,
+    state: (r) => r.state,
+  });
   const k = data.kpis;
   return (
     <div className="grid">
@@ -153,29 +162,17 @@ export function JobsView({
             <table className="table">
               <thead>
                 <tr>
-                  <th>
-                    <FormattedMessage id="col.id" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="col.type" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="col.requester" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="col.created" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="col.progress" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="col.status" />
-                  </th>
+                  {sort.th('code', <FormattedMessage id="col.id" />)}
+                  {sort.th('type', <FormattedMessage id="col.type" />)}
+                  {sort.th('email', <FormattedMessage id="col.requester" />)}
+                  {sort.th('created', <FormattedMessage id="col.created" />)}
+                  {sort.th('progress', <FormattedMessage id="col.progress" />)}
+                  {sort.th('state', <FormattedMessage id="col.status" />)}
                   <th />
                 </tr>
               </thead>
               <tbody>
-                {data.rows.map((r) => {
+                {sort.rows.map((r) => {
                   const s = jobState(r);
                   const deletion = r.type.startsWith('delete');
                   return (

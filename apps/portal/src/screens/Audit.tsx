@@ -6,14 +6,16 @@ import { downloadCsv, toCsv, when } from '../format';
 import {
   Button,
   Empty,
+  errorMessageId,
   Loaded,
   LockNote,
   Page,
   Panel,
   Pill,
   Segmented,
-  errorMessageId,
+  SelectMenu,
   TableScroll,
+  useSort,
   type PillTone,
 } from '../ui';
 import { AuditActionText } from './Features';
@@ -98,18 +100,15 @@ export function AuditScreen() {
               label: <FormattedMessage id={`auditCategory.${c}`} />,
             }))}
           />
-          <select
-            className="select"
+          <SelectMenu
             value={days}
-            onChange={(e) => setDays(Number(e.target.value) as Days)}
-            aria-label={intl.formatMessage({ id: 'audit.window' })}
-          >
-            {([1, 7, 30, 90] as Days[]).map((d) => (
-              <option key={d} value={d}>
-                {intl.formatMessage({ id: 'audit.lastDays' }, { n: d })}
-              </option>
-            ))}
-          </select>
+            onChange={setDays}
+            label={intl.formatMessage({ id: 'audit.window' })}
+            options={([1, 7, 30, 90] as Days[]).map((d) => ({
+              value: d,
+              label: intl.formatMessage({ id: 'audit.lastDays' }, { n: d }),
+            }))}
+          />
         </div>
         {exportError && (
           <p className="error panel__pad" role="alert">
@@ -131,6 +130,11 @@ export function AuditScreen() {
 
 export function AuditTable({ rows, now }: { rows: AuditRow[]; now: Date }) {
   const intl = useIntl();
+  const sort = useSort(rows, {
+    at: (r) => r.at,
+    actor: (r) => r.actor,
+    action: (r) => r.category,
+  });
   if (rows.length === 0) {
     return (
       <Empty>
@@ -143,15 +147,9 @@ export function AuditTable({ rows, now }: { rows: AuditRow[]; now: Date }) {
       <table className="table">
         <thead>
           <tr>
-            <th>
-              <FormattedMessage id="col.time" />
-            </th>
-            <th>
-              <FormattedMessage id="col.actor" />
-            </th>
-            <th>
-              <FormattedMessage id="col.action" />
-            </th>
+            {sort.th('at', <FormattedMessage id="col.time" />)}
+            {sort.th('actor', <FormattedMessage id="col.actor" />)}
+            {sort.th('action', <FormattedMessage id="col.action" />)}
             <th>
               <FormattedMessage id="col.target" />
             </th>
@@ -161,7 +159,7 @@ export function AuditTable({ rows, now }: { rows: AuditRow[]; now: Date }) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => (
+          {sort.rows.map((r) => (
             <tr key={r.id}>
               <td className="nowrap">{when(intl, r.at, now)}</td>
               <td>

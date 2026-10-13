@@ -1,8 +1,41 @@
-import { Loader2, Lock, MoreHorizontal } from 'lucide-react';
-import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Loader2, Lock, MoreHorizontal } from 'lucide-react';
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ReferenceLine,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import { Button as UiButton } from '@/components/ui/button';
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -162,6 +195,43 @@ export function Button({
   );
 }
 
+/** A filter or choice from a short list (shadcn Select); the label names it for screen readers. */
+export function SelectMenu<T extends string | number>({
+  value,
+  onChange,
+  options,
+  label,
+  className,
+}: {
+  value: T;
+  onChange: (value: T) => void;
+  options: Array<{ value: T; label: string }>;
+  label: string;
+  className?: string;
+}) {
+  const selected = options.find((o) => o.value === value);
+  return (
+    <Select
+      value={String(value)}
+      onValueChange={(v) => {
+        const hit = options.find((o) => String(o.value) === v);
+        if (hit) onChange(hit.value);
+      }}
+    >
+      <SelectTrigger aria-label={label} className={cn('min-w-36', className)}>
+        <SelectValue>{selected?.label}</SelectValue>
+      </SelectTrigger>
+      <SelectContent position="popper" align="start">
+        {options.map((o) => (
+          <SelectItem key={String(o.value)} value={String(o.value)}>
+            {o.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
 export type RowAction = {
   key: string;
   label: ReactNode;
@@ -202,6 +272,70 @@ export function RowActions({ label, actions }: { label: string; actions: RowActi
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+export type SortDir = 'asc' | 'desc';
+type SortValue = string | number | null | undefined;
+const collator = new Intl.Collator('vi', { numeric: true, sensitivity: 'base' });
+
+/**
+ * Click-to-sort columns for lists the portal loads whole (shadcn-admin data tables): asc, desc,
+ * then back to the server's order. Empty values always go last.
+ */
+export function useSort<T, K extends string>(
+  rows: readonly T[],
+  by: Record<K, (row: T) => SortValue>,
+) {
+  const [sort, setSort] = useState<{ key: K; dir: SortDir } | null>(null);
+  const sorted = useMemo(() => {
+    if (!sort) return rows;
+    const get = by[sort.key];
+    const sign = sort.dir === 'asc' ? 1 : -1;
+    return [...rows].sort((a, b) => {
+      const x = get(a);
+      const y = get(b);
+      if (x == null || x === '') return y == null || y === '' ? 0 : 1;
+      if (y == null || y === '') return -1;
+      const c =
+        typeof x === 'number' && typeof y === 'number'
+          ? x - y
+          : collator.compare(String(x), String(y));
+      return c * sign;
+    });
+    // `by` is a table of accessors defined with the table; the sort key decides.
+  }, [rows, sort]);
+  const toggle = (key: K) =>
+    setSort((s) =>
+      s?.key !== key ? { key, dir: 'asc' } : s.dir === 'asc' ? { key, dir: 'desc' } : null,
+    );
+  const th = (key: K, label: ReactNode) => (
+    <SortTh label={label} dir={sort?.key === key ? sort.dir : null} onClick={() => toggle(key)} />
+  );
+  return { rows: sorted, th };
+}
+
+/** A header cell that sorts its column; `aria-sort` tells screen readers the order. */
+export function SortTh({
+  label,
+  dir,
+  onClick,
+}: {
+  label: ReactNode;
+  dir: SortDir | null;
+  onClick: () => void;
+}) {
+  const Icon = dir === 'asc' ? ArrowUp : dir === 'desc' ? ArrowDown : ArrowUpDown;
+  return (
+    <th aria-sort={dir === 'asc' ? 'ascending' : dir === 'desc' ? 'descending' : undefined}>
+      <button type="button" className="th-sort" onClick={onClick}>
+        {label}
+        <Icon
+          className={cn('size-3.5', dir ? 'text-foreground' : 'opacity-50')}
+          aria-hidden="true"
+        />
+      </button>
+    </th>
   );
 }
 
@@ -295,6 +429,7 @@ export function Modal({
   wide?: boolean;
 }) {
   const id = useId();
+  const intl = useIntl();
   // Server rendering (tests) has no portal: the same content, inline.
   if (typeof document === 'undefined') {
     return (
@@ -312,6 +447,7 @@ export function Modal({
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         aria-describedby={undefined}
+        closeLabel={intl.formatMessage({ id: 'action.close' })}
         className={cn(
           'max-h-[calc(100dvh-2rem)] gap-4 overflow-y-auto overscroll-contain',
           wide ? 'sm:max-w-3xl' : 'sm:max-w-lg',
@@ -436,14 +572,15 @@ export function Loaded<T>({
   return <>{children(load.data)}</>;
 }
 
-// ---------- Charts (plain SVG; aggregates only) ----------
+// ---------- Charts (shadcn chart on recharts; aggregates only) ----------
 
-function niceMax(v: number): number {
-  if (v <= 5) return 5;
-  const p = 10 ** Math.floor(Math.log10(v));
-  const m = v / p;
-  return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p;
-}
+/** The legacy class names screens pass for series colours, as chart colours. */
+const seriesColor: Record<string, string> = {
+  'fill-feed': 'var(--care-bottle-accent)',
+  'fill-sleep': 'var(--care-sleep-accent)',
+  'fill-diaper': 'var(--care-diaper-accent)',
+};
+const fallbackColors = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
 
 export function LineChart({
   points,
@@ -461,62 +598,64 @@ export function LineChart({
   title: string;
 }) {
   const intl = useIntl();
-  const W = 640;
-  const H = 220;
-  const pad = { l: 44, r: 16, t: 12, b: 26 };
-  const max = niceMax(Math.max(1, threshold ?? 0, ...points));
-  const x = (i: number) => pad.l + (i * (W - pad.l - pad.r)) / Math.max(1, points.length - 1);
-  const y = (v: number) => pad.t + (1 - v / max) * (H - pad.t - pad.b);
-  const line = points.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v)}`).join('');
-  const ticks = [0, max / 3, (2 * max) / 3, max].map((t) => Math.round(t));
-  const last = points.length - 1;
-  const every = Math.ceil(labels.length / 6);
+  const gradient = useId().replace(/:/g, '');
+  const data = points.map((value, i) => ({ label: labels[i] ?? '', value }));
+  const config = { value: { label: title, color: 'var(--chart-2)' } } satisfies ChartConfig;
   return (
-    <svg className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={title}>
-      {ticks.map((t) => (
-        <g key={t}>
-          <line className="chart__grid" x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} />
-          <text className="chart__axis" x={pad.l - 8} y={y(t) + 4} textAnchor="end">
-            {intl.formatNumber(t)}
-          </text>
-        </g>
-      ))}
-      {area && points.length > 1 && (
-        <path className="chart__area" d={`${line}L${x(last)},${y(0)}L${x(0)},${y(0)}Z`} />
-      )}
-      <path className="chart__line" d={line} />
-      {threshold !== undefined && (
-        <g>
-          <line
-            className="chart__threshold"
-            x1={pad.l}
-            x2={W - pad.r}
-            y1={y(threshold)}
-            y2={y(threshold)}
+    <ChartContainer
+      config={config}
+      className="aspect-auto h-[220px] w-full"
+      role="img"
+      aria-label={title}
+    >
+      <AreaChart data={data} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
+        <defs>
+          <linearGradient id={gradient} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-value)" stopOpacity={area ? 0.3 : 0} />
+            <stop offset="95%" stopColor="var(--color-value)" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={8} minTickGap={24} />
+        <YAxis
+          width={40}
+          tickLine={false}
+          axisLine={false}
+          allowDecimals={false}
+          tickFormatter={(v: number) => intl.formatNumber(v, { notation: 'compact' })}
+        />
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent indicator="line" className="min-w-44 gap-2" />}
+        />
+        {threshold !== undefined && (
+          <ReferenceLine
+            y={threshold}
+            stroke="var(--warning)"
+            strokeDasharray="6 5"
+            label={
+              thresholdLabel
+                ? {
+                    value: thresholdLabel,
+                    position: 'insideTopRight',
+                    fill: 'var(--muted-foreground)',
+                    fontSize: 11,
+                  }
+                : undefined
+            }
           />
-          {thresholdLabel && (
-            <text className="chart__axis" x={W - pad.r} y={y(threshold) - 6} textAnchor="end">
-              {thresholdLabel}
-            </text>
-          )}
-        </g>
-      )}
-      {last >= 0 && (
-        <g>
-          <circle className="chart__dot" cx={x(last)} cy={y(points[last]!)} r={4} />
-          <text className="chart__value" x={x(last) - 8} y={y(points[last]!) - 10} textAnchor="end">
-            {intl.formatNumber(points[last]!)}
-          </text>
-        </g>
-      )}
-      {labels.map((l, i) =>
-        i % every === 0 || i === last ? (
-          <text key={i} className="chart__axis" x={x(i)} y={H - 6} textAnchor="middle">
-            {l}
-          </text>
-        ) : null,
-      )}
-    </svg>
+        )}
+        <Area
+          dataKey="value"
+          type="monotone"
+          stroke="var(--color-value)"
+          strokeWidth={2}
+          fill={`url(#${gradient})`}
+          dot={false}
+          activeDot={{ r: 4 }}
+        />
+      </AreaChart>
+    </ChartContainer>
   );
 }
 
@@ -532,70 +671,50 @@ export function StackedBars({
   title: string;
 }) {
   const intl = useIntl();
-  const W = 640;
-  const H = 220;
-  const pad = { l: 44, r: 16, t: 12, b: 26 };
-  const value = (s: Record<string, number | string>, key: string) => Number(s[key] ?? 0) || 0;
-  const totals = series.map((s) => keys.reduce((n, k) => n + value(s, k.key), 0));
-  const max = niceMax(Math.max(1, ...totals));
-  const band = (W - pad.l - pad.r) / Math.max(1, series.length);
-  const y = (v: number) => (v / max) * (H - pad.t - pad.b);
+  const data = series.map((s, i) => ({
+    label: labels[i] ?? '',
+    ...Object.fromEntries(keys.map((k) => [k.key, Number(s[k.key] ?? 0) || 0])),
+  }));
+  const config = Object.fromEntries(
+    keys.map((k, i) => [
+      k.key,
+      { label: k.label, color: seriesColor[k.className] ?? fallbackColors[i % 4] },
+    ]),
+  ) satisfies ChartConfig;
   return (
-    <div>
-      <svg className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={title}>
-        {[0, max / 2, max].map((t) => (
-          <g key={t}>
-            <line
-              className="chart__grid"
-              x1={pad.l}
-              x2={W - pad.r}
-              y1={H - pad.b - y(t)}
-              y2={H - pad.b - y(t)}
-            />
-            <text className="chart__axis" x={pad.l - 8} y={H - pad.b - y(t) + 4} textAnchor="end">
-              {intl.formatNumber(t, { notation: 'compact' })}
-            </text>
-          </g>
+    <ChartContainer
+      config={config}
+      className="aspect-auto h-[240px] w-full"
+      role="img"
+      aria-label={title}
+    >
+      <BarChart data={data} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={8} minTickGap={16} />
+        <YAxis
+          width={40}
+          tickLine={false}
+          axisLine={false}
+          allowDecimals={false}
+          tickFormatter={(v: number) => intl.formatNumber(v, { notation: 'compact' })}
+        />
+        <ChartTooltip
+          cursor={{ fill: 'var(--muted)' }}
+          content={<ChartTooltipContent className="min-w-44 gap-2" />}
+        />
+        <ChartLegend content={<ChartLegendContent />} />
+        {keys.map((k, i) => (
+          <Bar
+            key={k.key}
+            dataKey={k.key}
+            stackId="a"
+            fill={`var(--color-${k.key})`}
+            radius={i === keys.length - 1 ? [4, 4, 0, 0] : 0}
+            maxBarSize={36}
+          />
         ))}
-        {series.map((s, i) => {
-          let base = H - pad.b;
-          return (
-            <g key={i}>
-              {keys.map((k) => {
-                const h = y(value(s, k.key));
-                base -= h;
-                return (
-                  <rect
-                    key={k.key}
-                    className={k.className}
-                    x={pad.l + i * band + band * 0.2}
-                    width={band * 0.6}
-                    y={base}
-                    height={h}
-                  />
-                );
-              })}
-              <text
-                className="chart__axis"
-                x={pad.l + i * band + band / 2}
-                y={H - 6}
-                textAnchor="middle"
-              >
-                {labels[i]}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
-      <ul className="legend">
-        {keys.map((k) => (
-          <li key={k.key}>
-            <span className={`legend__dot ${k.className}`} />
-            {k.label}
-          </li>
-        ))}
-      </ul>
-    </div>
+      </BarChart>
+    </ChartContainer>
   );
 }
 

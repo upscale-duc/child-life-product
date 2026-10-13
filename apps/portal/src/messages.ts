@@ -219,6 +219,8 @@ const vi: Record<string, string> = {
   'search.pages': 'Trang',
   'search.actions': 'Thao tác',
   'table.actionsFor': 'Thao tác cho {name}',
+  'action.close': 'Đóng',
+  'nav.breadcrumb': 'Vị trí trang',
   'role.ops': 'Vận hành',
   'role.support': 'Hỗ trợ',
 
@@ -1756,6 +1758,8 @@ const en: Record<string, string> = {
   'search.pages': 'Pages',
   'search.actions': 'Actions',
   'table.actionsFor': 'Actions for {name}',
+  'action.close': 'Close',
+  'nav.breadcrumb': 'Breadcrumb',
   'role.ops': 'Operations',
   'role.support': 'Support',
 

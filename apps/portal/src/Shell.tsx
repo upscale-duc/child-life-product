@@ -174,6 +174,7 @@ export function Shell({
   );
   const [badges, setBadges] = useState<Badges | null>(null);
   const [search, setSearch] = useState(false);
+  const intl = useIntl();
   const seesCounts = staffCan(staff.levels, 'overview.view');
 
   const refreshBadges = useCallback(() => {
@@ -258,7 +259,10 @@ export function Shell({
                   orientation="vertical"
                   className="mr-1 data-[orientation=vertical]:h-4"
                 />
-                <nav aria-label="breadcrumb" className="flex min-w-0 items-center gap-1.5 text-sm">
+                <nav
+                  aria-label={intl.formatMessage({ id: 'nav.breadcrumb' })}
+                  className="flex min-w-0 items-center gap-1.5 text-sm"
+                >
                   {group !== 'main' && (
                     <span className="hidden truncate text-muted-foreground sm:inline">
                       <SectionName group={group} />
@@ -275,9 +279,10 @@ export function Shell({
                   <EnvBadge environment={environment} className="hidden md:inline-flex" />
                 </div>
               </header>
-              <main className="main flex-1">
+              {/* SidebarInset is the page's <main>. */}
+              <div className="main flex-1">
                 <Screen route={route} />
-              </main>
+              </div>
             </SidebarInset>
             <CommandMenu
               open={search}
@@ -459,13 +464,14 @@ function AppSidebar({
 }: SidebarProps) {
   const intl = useIntl();
   const staff = useStaff();
-  const { isMobile, setOpenMobile } = useSidebar();
+  const { isMobile, setOpenMobile, open } = useSidebar();
   const active = route === 'systemAi' ? 'system' : route;
   return (
     <SidebarRoot
       collapsible="icon"
       variant="inset"
       aria-label={intl.formatMessage({ id: 'nav.label' })}
+      closeLabel={intl.formatMessage({ id: 'nav.close' })}
     >
       <SidebarHeader>
         <SidebarMenu>
@@ -529,7 +535,10 @@ function AppSidebar({
       <SidebarFooter>
         <UserMenu locale={locale} onLocale={onLocale} onSignOut={onSignOut} />
       </SidebarFooter>
-      <SidebarRail />
+      <SidebarRail
+        aria-label={intl.formatMessage({ id: open ? 'nav.collapse' : 'nav.expand' })}
+        title={intl.formatMessage({ id: open ? 'nav.collapse' : 'nav.expand' })}
+      />
     </SidebarRoot>
   );
 }
