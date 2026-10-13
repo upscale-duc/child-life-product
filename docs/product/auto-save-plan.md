@@ -6,7 +6,7 @@ Source: Figma page **"v1.0 - improvement"** `345:35701`, rows "AS · Tự lưu k
 free beta. The flow is: scan new photos → analyse on the phone → group near-duplicates → rank quality →
 parents confirm → upload.
 
-Status (2026-10-13): **M1 code in place, not yet tried on a phone** (§9.1). Owner decisions are D-066. Engineering proposals P-146 …
+Status (2026-10-13): **M1 committed (4ebc0e0); M2 code in place; neither tried on a phone yet** (§9.1, §9.2). Owner decisions are D-066. Engineering proposals P-146 …
 P-150 need the owner to confirm them. Open questions are Q-054 … Q-058 and design gaps are G-102 … G-106
 (business map).
 
@@ -276,6 +276,29 @@ Where it differs from the frames, and why:
   poster frame only; face crops are not turned upright; matching and grouping thresholds are guesses in
   `AutoSaveTuning` until beta photos calibrate them; Tự lưu data stays on the phone after sign-out (the
   ledger and samples of the previous account; to decide).
+
+### 9.2 M2 as built (2026-10-13)
+
+- **Background checks (AR03):** `BGProcessingTask` `childlife.autosave.check` (`processing` in
+  `UIBackgroundModes`, listed in `BGTaskSchedulerPermittedIdentifiers`), asked for again after every check,
+  about an hour later at the earliest; iOS picks the time. The check is the same Dart code: the running
+  app's engine when it is alive, otherwise a headless engine on `autoSaveBackground`
+  (`lib/features/auto_save/auto_save_background.dart`), which has no Firebase and no session and uses the
+  babies set up on this phone. Turning Tự lưu off or deleting its data cancels the request.
+- **Notification (AR03):** posted by the phone, text written in Dart in the app's language: "Có 8 ảnh mới
+  có thể có Teddy" / "Chạm để xem và chọn ảnh muốn lưu vào Kỷ niệm.". Only when AS19 "Báo khi có ảnh mới"
+  is on, at most one a day. The app has no quiet-hours setting, so Tự lưu uses the reminders' night
+  (22:00 – 06:00, "Không nhắc ban đêm"); something found at night is told at 07:00 instead of dropped.
+  Nicknames are kept on the phone for this. The tap opens AS07 (`…://app/memories/auto-save/review`).
+- **AR02:** the Hôm nay banner sits under the title, above the customisable sections; "Để sau" or × hides
+  it until new suggestions arrive. A dot on the Kỷ niệm tab while suggestions wait for the selected baby.
+- **AR05 / AR08:** the quick sheet shows the newest 8 groups with their best photo ticked, the defaults
+  "Nhật ký · Chỉ ba mẹ / Không báo cho gia đình" with "Đổi" (AS10), "Xem lớn từng ảnh" (AS07) and "Bỏ qua
+  lần này" with Hoàn tác.
+- **AR06 / AR07:** the existing upload pill and its "Đã tải xong" state, not a separate toast.
+- Not verified on a phone: background launches need a real device (iOS rarely runs them in the
+  simulator); try with Xcode's `e -l objc -- (void)[[BGTaskScheduler sharedScheduler]
+  _simulateLaunchForTaskWithIdentifier:@"childlife.autosave.check"]` while paused in the debugger.
 
 ## 10. Open questions for the owner
 

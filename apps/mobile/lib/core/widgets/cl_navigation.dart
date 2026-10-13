@@ -51,6 +51,8 @@ class ClNavBar extends StatefulWidget {
     required this.active,
     required this.onSelect,
     this.tabs,
+    this.dots = const {},
+    this.dotLabel,
     super.key,
   });
 
@@ -60,6 +62,12 @@ class ClNavBar extends StatefulWidget {
   final List<ClTab>? tabs;
   final ClTab active;
   final ValueChanged<ClTab> onSelect;
+
+  /// Tabs with something new waiting (Tự lưu suggestions on Kỷ niệm, AR02): a small dot.
+  final Set<ClTab> dots;
+
+  /// What the dot means, for screen readers.
+  final String? dotLabel;
 
   @override
   State<ClNavBar> createState() => _ClNavBarState();
@@ -189,7 +197,34 @@ class _ClNavBarState extends State<ClNavBar>
       if (tab != widget.active) ClHaptics.selection(context);
       widget.onSelect(tab);
     },
-    icon: (ink) => ClIcon(icon, size: 22, color: ink),
+    icon: (ink) => widget.dots.contains(tab) && tab != widget.active
+        ? Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ClIcon(icon, size: 22, color: ink),
+              Positioned(
+                top: -1,
+                right: -2,
+                child: Semantics(
+                  label: widget.dotLabel,
+                  child: Container(
+                    key: ValueKey('tabDot.${tab.name}'),
+                    width: 9,
+                    height: 9,
+                    decoration: BoxDecoration(
+                      color: context.cl.colors.error,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: context.cl.colors.navBar,
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        : ClIcon(icon, size: 22, color: ink),
   );
 }
 
@@ -327,6 +362,8 @@ class ClTabDock extends StatelessWidget {
     required this.onSelect,
     this.action,
     this.tabs,
+    this.dots = const {},
+    this.dotLabel,
     super.key,
   });
 
@@ -335,6 +372,10 @@ class ClTabDock extends StatelessWidget {
   final ClTab active;
   final ValueChanged<ClTab> onSelect;
   final ClDockAction? action;
+
+  /// See [ClNavBar.dots].
+  final Set<ClTab> dots;
+  final String? dotLabel;
 
   /// Clearance scrolling content needs so its last item stays above the dock (47: 120).
   static const double contentBottomPadding = 120;
@@ -370,7 +411,14 @@ class ClTabDock extends StatelessWidget {
                 ),
               ),
             ),
-          ClNavBar(role: role, active: active, onSelect: onSelect, tabs: tabs),
+          ClNavBar(
+            role: role,
+            active: active,
+            onSelect: onSelect,
+            tabs: tabs,
+            dots: dots,
+            dotLabel: dotLabel,
+          ),
         ],
       ),
     );

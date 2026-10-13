@@ -18,6 +18,9 @@ import '../diagnostics/diagnostics_providers.dart';
 import '../memories/memory_widgets.dart' show PlayGlyph;
 import 'auto_save_controller.dart';
 
+// Only the phone calls the background entry point; exporting it keeps it in release builds.
+export 'auto_save_background.dart' show autoSaveBackground;
+
 /// Tự lưu is offered on iOS in dev builds, or where `publicConfig/flags.auto_save` is on
 /// (P-148; the server key comes with M3).
 final autoSaveAvailableProvider = Provider<bool>((ref) {

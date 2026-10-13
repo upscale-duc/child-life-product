@@ -10183,4 +10183,73 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get autoSaveSamplesHint =>
       '3–5 well-lit photos where the face is clear. Samples are only used for suggestions and don\'t appear in Memories.';
+
+  @override
+  String autoSavePushTitle(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new photos may show $name',
+      one: '1 new photo may show $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSavePushBody =>
+      'Tap to see them and choose what to save to Memories.';
+
+  @override
+  String get autoSaveYourBaby => 'your baby';
+
+  @override
+  String autoSaveBannerTitle(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new photos may show $name',
+      one: '1 new photo may show $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveBannerBody => 'From your photo library · not uploaded yet';
+
+  @override
+  String get autoSaveBannerOpen => 'See and choose';
+
+  @override
+  String get autoSaveBannerLater => 'Later';
+
+  @override
+  String autoSaveQuickSub(String range) {
+    return 'Taken $range · untick anything you don\'t want to save';
+  }
+
+  @override
+  String get autoSaveQuickDefaults => 'Journal · Parents only';
+
+  @override
+  String get autoSaveQuickNoNotify => 'Family not told';
+
+  @override
+  String get autoSaveQuickBig => 'View each photo';
+
+  @override
+  String get autoSaveSkipBatch => 'Skip these';
+
+  @override
+  String autoSaveSkipped(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Skipped $count photos · won\'t suggest them again',
+      one: 'Skipped 1 photo · won\'t suggest it again',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveTabDot => 'New photos to review';
 }

@@ -14,6 +14,8 @@ import UserNotifications
     RuleNotifications.registerCategories()
     // 10j: reconnect to background uploads that finished or kept going while the app was gone.
     BackgroundUploads.shared.resume()
+    // Tự lưu (D-066, AR03): checks iOS runs while the app is in the background or closed.
+    AutoSaveBackground.registerTask()
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
@@ -33,6 +35,13 @@ import UserNotifications
     withCompletionHandler completionHandler: @escaping () -> Void
   ) {
     if RuleNotifications.handle(response, completion: completionHandler) { return }
+    // AR03 "Có 8 ảnh mới có thể có Teddy" opens the Tự lưu review.
+    if response.notification.request.identifier.hasPrefix("autosave.") {
+      let scheme = (Bundle.main.object(forInfoDictionaryKey: "CLURLScheme") as? String) ?? "childlife"
+      if let url = URL(string: "\(scheme)://app/memories/auto-save/review") { UIApplication.shared.open(url) }
+      completionHandler()
+      return
+    }
     guard response.notification.request.identifier.hasPrefix("uploads.") else {
       super.userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler)
       return

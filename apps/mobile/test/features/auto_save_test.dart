@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:child_life/app/session.dart';
+import 'package:child_life/features/baby/baby_repository.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/features/auto_save/auto_save_controller.dart';
 import 'package:child_life/features/auto_save/auto_save_engine.dart';
@@ -9,6 +10,7 @@ import 'package:child_life/features/auto_save/auto_save_native.dart';
 import 'package:child_life/features/auto_save/auto_save_store.dart';
 import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/upload_queue.dart';
+import 'package:child_life/l10n/app_localizations_vi.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -90,7 +92,7 @@ void main() {
   });
 
   Future<ProviderContainer> container() async {
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({'app.locale': 'vi'});
     final prefs = await SharedPreferences.getInstance();
     final c = ProviderContainer(
       overrides: [
@@ -102,6 +104,7 @@ void main() {
             memberships: [mai],
           ),
         ),
+        babyProvider.overrideWith((ref, id) => Stream.value(teddy)),
         autoSaveNativeProvider.overrideWithValue(
           AutoSaveNative(supported: true),
         ),
@@ -124,6 +127,9 @@ void main() {
   }
 
   Future<AutoSaveController> setUpTeddy(ProviderContainer c) async {
+    // The setup screen has the baby loaded; so does this.
+    c.listen(babyProvider(teddyId), (_, _) {});
+    await pumpEventQueue();
     final ctl = c.read(autoSaveProvider.notifier);
     await ctl.ready();
     await ctl.setUp(
@@ -408,5 +414,118 @@ void main() {
         expect(s.pending, isEmpty);
       },
     );
+  });
+
+  group('AR03 notification', () {
+    final l10n = AppLocalizationsVi();
+    Candidate fresh(String id) => Candidate(
+      asset: AssetInfo(id: id, captureAt: t0),
+      match: const FaceMatch(babyId: teddyId, distance: 0.1, face: 0),
+    );
+    const on = AutoSaveState(
+      enabled: true,
+      consentVersion: autoSaveConsentVersion,
+      names: {teddyId: 'Teddy'},
+    );
+
+    test('names the baby and counts the new photos', () {
+      final note = autoSaveNote(
+        state: on,
+        fresh: [fresh('a'), fresh('b')],
+        now: DateTime(2026, 10, 18, 9, 41),
+        l10n: l10n,
+      )!;
+      expect(note.title, 'Có 2 ảnh mới có thể có Teddy');
+      expect(note.body, 'Chạm để xem và chọn ảnh muốn lưu vào Kỷ niệm.');
+      expect(note.at, DateTime(2026, 10, 18, 9, 41));
+    });
+
+    test('nothing new, switched off in AS19, or already told today: none', () {
+      final now = DateTime(2026, 10, 18, 15);
+      expect(autoSaveNote(state: on, fresh: [], now: now, l10n: l10n), isNull);
+      expect(
+        autoSaveNote(
+          state: on.copyWith(notify: false),
+          fresh: [fresh('a')],
+          now: now,
+          l10n: l10n,
+        ),
+        isNull,
+      );
+      expect(
+        autoSaveNote(
+          state: on.copyWith(notifiedAt: DateTime(2026, 10, 18, 7)),
+          fresh: [fresh('a')],
+          now: now,
+          l10n: l10n,
+        ),
+        isNull,
+      );
+    });
+
+    test('found in quiet hours (22:00 – 06:00): told at 07:00', () {
+      final late = autoSaveNote(
+        state: on,
+        fresh: [fresh('a')],
+        now: DateTime(2026, 10, 18, 23, 30),
+        l10n: l10n,
+      )!;
+      expect(late.at, DateTime(2026, 10, 19, 7));
+      final early = autoSaveNote(
+        state: on,
+        fresh: [fresh('a')],
+        now: DateTime(2026, 10, 19, 3),
+        l10n: l10n,
+      )!;
+      expect(early.at, DateTime(2026, 10, 19, 7));
+      // Already told for the 19th: the night find waits.
+      expect(
+        autoSaveNote(
+          state: on.copyWith(notifiedAt: DateTime(2026, 10, 19, 7)),
+          fresh: [fresh('a')],
+          now: DateTime(2026, 10, 19, 3),
+          l10n: l10n,
+        ),
+        isNull,
+      );
+    });
+
+    test(
+      'a background check answers once, then stays quiet that day',
+      () async {
+        library = ['a'];
+        described = {'a': photo('a', face: teddyFace)};
+        final c = await container();
+        final ctl = await setUpTeddy(c);
+        library = ['a', 'b'];
+        described['b'] = photo(
+          'b',
+          at: const Duration(minutes: 30),
+          face: teddyFace,
+        );
+        final reply = await ctl.backgroundCheck();
+        expect(reply?['title'], 'Có 1 ảnh mới có thể có Teddy');
+        expect(c.read(autoSaveProvider).state.notifiedAt, isNotNull);
+        expect(calls.where((m) => m.method == 'schedule'), isNotEmpty);
+
+        library = ['a', 'b', 'c'];
+        described['c'] = photo(
+          'c',
+          at: const Duration(hours: 2),
+          face: teddyFace,
+        );
+        expect(await ctl.backgroundCheck(), isNull, reason: 'one a day');
+        expect(c.read(autoSaveProvider).state.pending, hasLength(3));
+      },
+    );
+
+    test('"Để sau" hides the banner until something new arrives', () async {
+      library = ['a'];
+      described = {'a': photo('a', face: teddyFace)};
+      final c = await container();
+      final ctl = await setUpTeddy(c);
+      await ctl.hideBanner();
+      expect(c.read(autoSaveProvider).state.bannerHidden, {'a'});
+    });
   });
 }

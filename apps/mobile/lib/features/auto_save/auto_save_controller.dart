@@ -4,7 +4,10 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/locale.dart';
 import '../../app/session.dart';
+import '../../l10n/app_localizations.dart';
+import '../baby/baby_repository.dart';
 import '../baby/baby_models.dart';
 import '../memories/media_picker.dart';
 import '../memories/memory_models.dart';
@@ -90,6 +93,68 @@ class AutoSaveUndo {
   final AutoSaveState _before;
 }
 
+/// True in the engine iOS starts only for a background check (auto_save_background.dart).
+final autoSaveHeadlessProvider = Provider<bool>((ref) => false);
+
+/// The "Có 8 ảnh mới có thể có Teddy" notification (AR03).
+@immutable
+class AutoSaveNote {
+  const AutoSaveNote({
+    required this.title,
+    required this.body,
+    required this.at,
+  });
+  final String title;
+  final String body;
+
+  /// When to show it: now, or 07:00 when found during the night.
+  final DateTime at;
+}
+
+/// Quiet hours, the same as reminders' "Không nhắc ban đêm" (22:00 – 06:00).
+bool isQuietHour(DateTime t) => t.hour >= 22 || t.hour < 6;
+
+/// Whether new suggestions earn a notification: on in AS19, at most one a day, never in quiet
+/// hours (a find at night is told at 07:00).
+AutoSaveNote? autoSaveNote({
+  required AutoSaveState state,
+  required List<Candidate> fresh,
+  required DateTime now,
+  required AppLocalizations l10n,
+}) {
+  if (fresh.isEmpty || !state.notify || !state.enabled) return null;
+  var at = now;
+  if (isQuietHour(now)) {
+    final day = now.hour >= 22 ? now.add(const Duration(days: 1)) : now;
+    at = DateTime(day.year, day.month, day.day, 7);
+  }
+  final last = state.notifiedAt;
+  if (last != null &&
+      last.year == at.year &&
+      last.month == at.month &&
+      last.day == at.day) {
+    return null;
+  }
+  final babies = {for (final c in fresh) c.match.babyId};
+  final names = [
+    for (final id in babies)
+      if (state.names[id] case final n? when n.isNotEmpty) n,
+  ];
+  final who = names.isEmpty
+      ? l10n.autoSaveYourBaby
+      : names.length == 1
+      ? names.single
+      : l10n.autoSaveAnd(
+          names.sublist(0, names.length - 1).join(', '),
+          names.last,
+        );
+  return AutoSaveNote(
+    title: l10n.autoSavePushTitle(fresh.length, who),
+    body: l10n.autoSavePushBody,
+    at: at,
+  );
+}
+
 final autoSaveProvider = NotifierProvider<AutoSaveController, AutoSaveView>(
   AutoSaveController.new,
 );
@@ -112,15 +177,21 @@ class AutoSaveController extends Notifier<AutoSaveView> {
 
   @override
   AutoSaveView build() {
+    final headless = ref.read(autoSaveHeadlessProvider);
     if (_native.supported) {
-      // AR01: check quietly whenever the app comes back; stop when it leaves.
-      _lifecycle = AppLifecycleListener(
-        onResume: () => unawaited(scan()),
-        onHide: stop,
-      );
-      ref.onDispose(() => _lifecycle?.dispose());
+      if (!headless) {
+        // AR01: check quietly whenever the app comes back; stop when it leaves.
+        _lifecycle = AppLifecycleListener(
+          onResume: () => unawaited(scan()),
+          onHide: stop,
+        );
+        ref.onDispose(() => _lifecycle?.dispose());
+      }
+      // AR03: iOS may ask for a check while the app is in the background or closed.
+      _native.listen(onCheck: backgroundCheck, onStop: stop);
+      unawaited(_native.backgroundReady(headless: headless));
     }
-    unawaited(_load().then((_) => scan()));
+    if (!headless) unawaited(_load().then((_) => scan()));
     return const AutoSaveView();
   }
 
@@ -161,8 +232,10 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     }
   }
 
-  /// Babies this account may turn Tự lưu on for: Cùng nuôi only (AS03).
-  Set<String> _parentOf() {
+  /// Babies this account may turn Tự lưu on for: Cùng nuôi only (AS03). Null in a background
+  /// check, which has no session: the babies set up on this phone are used as they are.
+  Set<String>? _parentOf() {
+    if (ref.read(autoSaveHeadlessProvider)) return null;
     final session = ref.read(sessionProvider);
     if (session is! SessionSignedIn) return const {};
     return {
@@ -248,6 +321,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       },
       scanFrom: scanFrom,
     );
+    _s = _s.copyWith(names: _names());
     await _save();
     unawaited(scan());
   }
@@ -310,7 +384,11 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     );
     if (!on) stop();
     await _save();
-    if (on) unawaited(scan());
+    if (on) {
+      unawaited(scan());
+    } else {
+      unawaited(_native.unschedule());
+    }
   }
 
   Future<void> setKinds({bool? photos, bool? videos}) async {
@@ -330,6 +408,62 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     await _load();
     stop();
     _s = _s.wipeFaces();
+    await _save();
+    unawaited(_native.unschedule());
+  }
+
+  // ---------- Background check (AR03) ----------
+
+  /// Nicknames for the notification text, kept up to date while the app runs.
+  Map<String, String> _names() {
+    if (ref.read(autoSaveHeadlessProvider)) return _s.names;
+    return {
+      ..._s.names,
+      for (final id in _s.babies.keys)
+        id: ?ref.read(babyProvider(id)).value?.nickname,
+    };
+  }
+
+  Locale _locale() {
+    try {
+      final chosen = ref.read(localeOverrideProvider);
+      if (chosen != null) return chosen;
+    } on Object {
+      // No preferences in this engine: follow the phone.
+    }
+    return resolveLocale(WidgetsBinding.instance.platformDispatcher.locales);
+  }
+
+  /// A check iOS asked for: new suggestions may earn one notification (AR03).
+  Future<Map<String, Object?>?> backgroundCheck() async {
+    await _load();
+    final before = {for (final c in _s.pending) c.asset.id};
+    await scan();
+    final fresh = [
+      for (final c in _s.pending)
+        if (!before.contains(c.asset.id)) c,
+    ];
+    final now = DateTime.now();
+    final note = autoSaveNote(
+      state: _s,
+      fresh: fresh,
+      now: now,
+      l10n: lookupAppLocalizations(_locale()),
+    );
+    if (note == null) return null;
+    _s = _s.copyWith(notifiedAt: note.at);
+    await _save();
+    return {
+      'title': note.title,
+      'body': note.body,
+      if (note.at.isAfter(now)) 'at': note.at.millisecondsSinceEpoch,
+    };
+  }
+
+  /// AR02 "Để sau": the banner waits for new suggestions.
+  Future<void> hideBanner() async {
+    await _load();
+    _s = _s.copyWith(bannerHidden: {for (final c in _s.pending) c.asset.id});
     await _save();
   }
 
@@ -364,7 +498,8 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       final parentOf = _parentOf();
       final babies = {
         for (final e in _s.babies.entries)
-          if (e.value.samples.isNotEmpty && parentOf.contains(e.key))
+          if (e.value.samples.isNotEmpty &&
+              (parentOf == null || parentOf.contains(e.key)))
             e.key: e.value.faces,
       };
       if (babies.isEmpty) return;
@@ -429,8 +564,10 @@ class AutoSaveController extends Notifier<AutoSaveView> {
           lastScanAt: now,
           lastScanCount: todo.length,
           clearScanFrom: true,
+          names: _names(),
         );
         await _save();
+        unawaited(_native.schedule());
       }
     }
   }

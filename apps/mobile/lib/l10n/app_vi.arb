@@ -14233,5 +14233,87 @@
   "autoSaveSamplesHint": "3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.",
   "@autoSaveSamplesHint": {
     "description": "AS19 › baby samples page subtitle (AS04 copy without the step)"
+  },
+  "autoSavePushTitle": "{count, plural, other{Có {count} ảnh mới có thể có {name}}}",
+  "@autoSavePushTitle": {
+    "description": "AR03 notification title, at most once a day, never in quiet hours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSavePushBody": "Chạm để xem và chọn ảnh muốn lưu vào Kỷ niệm.",
+  "@autoSavePushBody": {
+    "description": "AR03 notification body"
+  },
+  "autoSaveYourBaby": "bé",
+  "@autoSaveYourBaby": {
+    "description": "Stands for the baby when no nickname is known on this phone"
+  },
+  "autoSaveBannerTitle": "{count, plural, other{{count} ảnh mới có thể có {name}}}",
+  "@autoSaveBannerTitle": {
+    "description": "AR02 Hôm nay banner title",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveBannerBody": "Từ thư viện máy · chưa tải lên",
+  "@autoSaveBannerBody": {
+    "description": "AR02 banner subtitle"
+  },
+  "autoSaveBannerOpen": "Xem & chọn ảnh",
+  "@autoSaveBannerOpen": {
+    "description": "AR02 primary button"
+  },
+  "autoSaveBannerLater": "Để sau",
+  "@autoSaveBannerLater": {
+    "description": "AR02 secondary button: hides the banner until new suggestions"
+  },
+  "autoSaveQuickSub": "Chụp từ {range} · bỏ chọn ảnh không muốn lưu",
+  "@autoSaveQuickSub": {
+    "description": "AR05 quick review subtitle; range like '15–18/10'",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveQuickDefaults": "Nhật ký · Chỉ ba mẹ",
+  "@autoSaveQuickDefaults": {
+    "description": "AR05 defaults row (D-052 Nhật ký, D-066 Chỉ ba mẹ)"
+  },
+  "autoSaveQuickNoNotify": "Không báo cho gia đình",
+  "@autoSaveQuickNoNotify": {
+    "description": "AR05 defaults row, second line"
+  },
+  "autoSaveQuickBig": "Xem lớn từng ảnh",
+  "@autoSaveQuickBig": {
+    "description": "AR05 link to the full review"
+  },
+  "autoSaveSkipBatch": "Bỏ qua lần này",
+  "@autoSaveSkipBatch": {
+    "description": "AR05 link: drops the whole batch (AR08)"
+  },
+  "autoSaveSkipped": "{count, plural, other{Đã bỏ qua {count} ảnh · sẽ không gợi ý lại}}",
+  "@autoSaveSkipped": {
+    "description": "AR08 toast with Hoàn tác",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveTabDot": "Có ảnh mới chờ duyệt",
+  "@autoSaveTabDot": {
+    "description": "Screen-reader label of the dot on the Kỷ niệm tab (AR02)"
   }
 }

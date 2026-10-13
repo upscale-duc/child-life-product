@@ -6,6 +6,7 @@ import 'package:child_life/features/auto_save/auto_save_home.dart';
 import 'package:child_life/features/auto_save/auto_save_native.dart';
 import 'package:child_life/features/auto_save/auto_save_review.dart';
 import 'package:child_life/features/auto_save/auto_save_store.dart';
+import 'package:child_life/features/auto_save/auto_save_today.dart';
 import 'package:child_life/features/auto_save/auto_save_widgets.dart';
 import 'package:child_life/features/me/me_repository.dart';
 import 'package:child_life/features/memories/memories_screen.dart';
@@ -201,6 +202,89 @@ void main() {
       expect(decision.reviewed, hasLength(3));
     },
   );
+
+  testWidgets('AR02 → AR05 → AR08: banner, quick review, skip with undo', (
+    tester,
+  ) async {
+    await store().save(
+      ready(
+        pending: [
+          candidate('a', Duration.zero, v([1, 0]), 0.5),
+          candidate('b', const Duration(minutes: 10), v([0, 1]), 0.5),
+          candidate('c', const Duration(minutes: 20), v([1, 1]), 0.5),
+        ],
+      ),
+    );
+    await pumpRouted(
+      tester,
+      Scaffold(body: ListView(children: const [AutoSaveTodayBanner()])),
+      overrides: overrides(),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('3 ảnh mới có thể có Teddy'), findsOneWidget);
+    expect(find.text('Từ thư viện máy · chưa tải lên'), findsOneWidget);
+
+    await tester.tap(find.text('Xem & chọn ảnh'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tải lên 3 mục'), findsOneWidget);
+    expect(find.text('Nhật ký · Chỉ ba mẹ'), findsOneWidget);
+
+    await tester.tap(find.text('Bỏ qua lần này'));
+    await tester.pumpAndSettle();
+    expect(find.text('Đã bỏ qua 3 ảnh · sẽ không gợi ý lại'), findsOneWidget);
+    expect(saved.state.pending, isEmpty);
+    expect(find.byKey(const Key('autoSaveBanner')), findsNothing);
+
+    await tester.tap(find.text('Hoàn tác'));
+    await tester.pumpAndSettle();
+    expect(saved.state.pending, hasLength(3));
+    expect(find.byKey(const Key('autoSaveBanner')), findsOneWidget);
+  });
+
+  testWidgets('AR02 "Để sau" hides the banner until new suggestions', (
+    tester,
+  ) async {
+    await store().save(
+      ready(
+        pending: [
+          candidate('a', Duration.zero, v([1, 0]), 0.5),
+        ],
+      ),
+    );
+    await pumpRouted(
+      tester,
+      Scaffold(body: ListView(children: const [AutoSaveTodayBanner()])),
+      overrides: overrides(),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Để sau'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('autoSaveBanner')), findsNothing);
+    expect(saved.state.bannerHidden, {'a'});
+  });
+
+  testWidgets('AR02: a dot on Kỷ niệm while suggestions wait', (tester) async {
+    await store().save(
+      ready(
+        pending: [
+          candidate('a', Duration.zero, v([1, 0]), 0.5),
+        ],
+      ),
+    );
+    final (_, container) = await pumpRouted(
+      tester,
+      const Scaffold(body: SizedBox()),
+      overrides: overrides(),
+    );
+    final dot = container.listen(autoSaveTabDotProvider, (_, _) {});
+    await tester.pumpAndSettle();
+    expect(dot.read(), isTrue);
+    await container
+        .read(autoSaveProvider.notifier)
+        .skip(container.read(autoSaveProvider).state.pending);
+    await tester.pumpAndSettle();
+    expect(dot.read(), isFalse);
+  });
 }
 
 /// Widget tests run in fake time, where file I/O never finishes: the state stays in memory.

@@ -129,6 +129,32 @@ class AutoSaveNative {
   Future<void> excludeFromBackup(String path) =>
       _quiet('excludeFromBackup', {'path': path});
 
+  /// Calls from the phone: `backgroundCheck` (a background check is due) and `stopBackground`
+  /// (iOS wants the time back). [onCheck] returns the notification text, or null.
+  void listen({
+    required Future<Map<String, Object?>?> Function() onCheck,
+    required void Function() onStop,
+  }) {
+    if (!supported) return;
+    _channel.setMethodCallHandler((call) async {
+      switch (call.method) {
+        case 'backgroundCheck':
+          return onCheck();
+        case 'stopBackground':
+          onStop();
+      }
+      return null;
+    });
+  }
+
+  /// This Dart side can run background checks now ([headless]: started only for one).
+  Future<void> backgroundReady({bool headless = false}) =>
+      _quiet('backgroundReady', {'headless': headless});
+
+  /// Asks iOS for the next background check (AR03), or cancels it.
+  Future<void> schedule() => _quiet('schedule');
+  Future<void> unschedule() => _quiet('unschedule');
+
   Future<void> _quiet(String method, [Object? args]) async {
     if (!supported) return;
     try {

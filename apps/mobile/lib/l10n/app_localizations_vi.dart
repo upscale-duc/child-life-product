@@ -9502,4 +9502,70 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get autoSaveSamplesHint =>
       '3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.';
+
+  @override
+  String autoSavePushTitle(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Có $count ảnh mới có thể có $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSavePushBody =>
+      'Chạm để xem và chọn ảnh muốn lưu vào Kỷ niệm.';
+
+  @override
+  String get autoSaveYourBaby => 'bé';
+
+  @override
+  String autoSaveBannerTitle(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ảnh mới có thể có $name',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveBannerBody => 'Từ thư viện máy · chưa tải lên';
+
+  @override
+  String get autoSaveBannerOpen => 'Xem & chọn ảnh';
+
+  @override
+  String get autoSaveBannerLater => 'Để sau';
+
+  @override
+  String autoSaveQuickSub(String range) {
+    return 'Chụp từ $range · bỏ chọn ảnh không muốn lưu';
+  }
+
+  @override
+  String get autoSaveQuickDefaults => 'Nhật ký · Chỉ ba mẹ';
+
+  @override
+  String get autoSaveQuickNoNotify => 'Không báo cho gia đình';
+
+  @override
+  String get autoSaveQuickBig => 'Xem lớn từng ảnh';
+
+  @override
+  String get autoSaveSkipBatch => 'Bỏ qua lần này';
+
+  @override
+  String autoSaveSkipped(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đã bỏ qua $count ảnh · sẽ không gợi ý lại',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveTabDot => 'Có ảnh mới chờ duyệt';
 }

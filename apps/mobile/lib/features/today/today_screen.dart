@@ -17,6 +17,7 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
+import '../auto_save/auto_save_today.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_format.dart';
@@ -143,6 +144,8 @@ class TodayScreen extends ConsumerWidget {
           ),
           // D-061 UP5: "Đã cập nhật 1.2.0" after an update, until seen or closed.
           const WhatsNewBanner(),
+          // AR02: new library photos that may show the baby (Tự lưu, D-066).
+          const AutoSaveTodayBanner(),
           for (final section in layout.order)
             if (layout.shows(section))
               ...switch (section) {

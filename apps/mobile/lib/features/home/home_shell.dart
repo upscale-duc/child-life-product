@@ -19,6 +19,7 @@ import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../auto_save/auto_save_today.dart';
 import '../auto_save/auto_save_widgets.dart';
 import '../auth/auth_repository.dart';
 import '../baby/baby_avatar_view.dart';
@@ -202,6 +203,9 @@ class HomeShell extends ConsumerWidget {
                   initialLocation: shellTabs.indexOf(tab) == shell.currentIndex,
                 ),
                 action: action,
+                // AR02: Tự lưu suggestions wait for the selected baby.
+                dots: {if (ref.watch(autoSaveTabDotProvider)) ClTab.memories},
+                dotLabel: l10n.autoSaveTabDot,
               ),
             ),
           ),

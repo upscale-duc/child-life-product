@@ -1,7 +1,9 @@
+import BackgroundTasks
 import Flutter
 import Photos
 import PhotosUI
 import UIKit
+import UserNotifications
 import Vision
 
 /// Tự lưu kỷ niệm (D-066, AS01 – AS19): the phone's side of the scan. It only reads the library
@@ -14,7 +16,8 @@ enum AutoSave {
   static let side: CGFloat = 512
   private static let work = DispatchQueue(label: "childlife.autosave", qos: .utility)
 
-  static func register(with messenger: FlutterBinaryMessenger) {
+  /// [headless]: the engine started only for a background check (AutoSaveBackground).
+  static func register(with messenger: FlutterBinaryMessenger, headless: Bool = false) {
     let channel = FlutterMethodChannel(name: "childlife/autosave", binaryMessenger: messenger)
     channel.setMethodCallHandler { call, result in
       let args = call.arguments as? [String: Any] ?? [:]
@@ -44,6 +47,15 @@ enum AutoSave {
       case "save":
         save(path: args["path"] as? String ?? "", video: args["video"] as? Bool ?? false,
              album: args["album"] as? String, reply: reply)
+      case "backgroundReady":
+        AutoSaveBackground.dartReady(channel, headless: headless)
+        result(nil)
+      case "schedule":
+        AutoSaveBackground.schedule()
+        result(nil)
+      case "unschedule":
+        BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: AutoSaveBackground.taskId)
+        result(nil)
       case "excludeFromBackup":
         var url = URL(fileURLWithPath: args["path"] as? String ?? "")
         var values = URLResourceValues()
@@ -287,5 +299,105 @@ enum AutoSave {
     var top = scene?.windows.first { $0.isKeyWindow }?.rootViewController
     while let next = top?.presentedViewController { top = next }
     return top
+  }
+}
+
+/// Checks while the app is in the background or closed (M2, AR03). iOS decides when, usually
+/// while the phone charges. The check itself is Dart, where matching and grouping live: the app's
+/// engine when it is running, otherwise a headless engine started just for the check
+/// (`autoSaveBackground` in lib/features/auto_save/auto_save_background.dart). Dart answers with
+/// the notification text, or nothing; the notification is posted here.
+enum AutoSaveBackground {
+  static let taskId = "childlife.autosave.check"
+
+  /// The running app's channel, once its Dart side listens.
+  private static var appChannel: FlutterMethodChannel?
+  private static var waiting: BGProcessingTask?
+  private static var running: (task: BGProcessingTask, channel: FlutterMethodChannel)?
+  private static var finished = Set<ObjectIdentifier>()
+  private static var headless: FlutterEngine?
+
+  /// From didFinishLaunching: iOS wants the handler before launch ends.
+  static func registerTask() {
+    BGTaskScheduler.shared.register(forTaskWithIdentifier: taskId, using: .main) { task in
+      guard let task = task as? BGProcessingTask else { return task.setTaskCompleted(success: false) }
+      start(task)
+    }
+  }
+
+  /// Asks iOS for the next check; one pending request at a time (same identifier).
+  static func schedule() {
+    let request = BGProcessingTaskRequest(identifier: taskId)
+    request.requiresNetworkConnectivity = false
+    request.requiresExternalPower = false
+    request.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 60)
+    try? BGTaskScheduler.shared.submit(request)
+  }
+
+  static func dartReady(_ channel: FlutterMethodChannel, headless isHeadless: Bool) {
+    if !isHeadless { appChannel = channel }
+    if let task = waiting { run(task, on: channel) }
+  }
+
+  private static func start(_ task: BGProcessingTask) {
+    schedule()
+    task.expirationHandler = {
+      DispatchQueue.main.async {
+        guard let current = running, current.task === task else { return finish(task, ok: false) }
+        current.channel.invokeMethod("stopBackground", arguments: nil)
+        // Dart stops between batches; iOS will not wait long.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { finish(task, ok: false) }
+      }
+    }
+    if let channel = appChannel {
+      return run(task, on: channel)
+    }
+    waiting = task
+    let engine = FlutterEngine(name: "autosave.background", project: nil, allowHeadlessExecution: true)
+    engine.run(
+      withEntrypoint: "autoSaveBackground",
+      libraryURI: "package:child_life/features/auto_save/auto_save_background.dart")
+    GeneratedPluginRegistrant.register(with: engine)
+    if let registrar = engine.registrar(forPlugin: "AutoSaveBackground") {
+      AutoSave.register(with: registrar.messenger(), headless: true)
+    }
+    headless = engine
+    // Nothing set up, or Dart never answered: give the time back.
+    DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
+      if waiting === task { finish(task, ok: false) }
+    }
+  }
+
+  private static func run(_ task: BGProcessingTask, on channel: FlutterMethodChannel) {
+    if waiting === task { waiting = nil }
+    running = (task, channel)
+    channel.invokeMethod("backgroundCheck", arguments: nil) { reply in
+      if let r = reply as? [String: Any], let title = r["title"] as? String, let body = r["body"] as? String {
+        notify(title: title, body: body, at: (r["at"] as? NSNumber).map { Date(timeIntervalSince1970: $0.doubleValue / 1000) })
+      }
+      finish(task, ok: !(reply is FlutterError))
+    }
+  }
+
+  private static func finish(_ task: BGProcessingTask, ok: Bool) {
+    guard finished.insert(ObjectIdentifier(task)).inserted else { return }
+    if waiting === task { waiting = nil }
+    if running?.task === task { running = nil }
+    task.setTaskCompleted(success: ok)
+    headless?.destroyContext()
+    headless = nil
+  }
+
+  /// AR03: "Có 8 ảnh mới có thể có Teddy"; the tap opens the review (AppDelegate). A find during
+  /// quiet hours is shown at [at] (07:00).
+  private static func notify(title: String, body: String, at: Date?) {
+    let content = UNMutableNotificationContent()
+    content.title = title
+    content.body = body
+    content.sound = .default
+    let id = "autosave.\(Int(Date().timeIntervalSince1970))"
+    let wait = (at?.timeIntervalSinceNow ?? 0)
+    let trigger = wait > 1 ? UNTimeIntervalNotificationTrigger(timeInterval: wait, repeats: false) : nil
+    UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
   }
 }

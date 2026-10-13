@@ -15738,6 +15738,90 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.'**
   String get autoSaveSamplesHint;
+
+  /// AR03 notification title, at most once a day, never in quiet hours
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Có {count} ảnh mới có thể có {name}}}'**
+  String autoSavePushTitle(int count, String name);
+
+  /// AR03 notification body
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để xem và chọn ảnh muốn lưu vào Kỷ niệm.'**
+  String get autoSavePushBody;
+
+  /// Stands for the baby when no nickname is known on this phone
+  ///
+  /// In vi, this message translates to:
+  /// **'bé'**
+  String get autoSaveYourBaby;
+
+  /// AR02 Hôm nay banner title
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} ảnh mới có thể có {name}}}'**
+  String autoSaveBannerTitle(int count, String name);
+
+  /// AR02 banner subtitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ thư viện máy · chưa tải lên'**
+  String get autoSaveBannerBody;
+
+  /// AR02 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem & chọn ảnh'**
+  String get autoSaveBannerOpen;
+
+  /// AR02 secondary button: hides the banner until new suggestions
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau'**
+  String get autoSaveBannerLater;
+
+  /// AR05 quick review subtitle; range like '15–18/10'
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp từ {range} · bỏ chọn ảnh không muốn lưu'**
+  String autoSaveQuickSub(String range);
+
+  /// AR05 defaults row (D-052 Nhật ký, D-066 Chỉ ba mẹ)
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký · Chỉ ba mẹ'**
+  String get autoSaveQuickDefaults;
+
+  /// AR05 defaults row, second line
+  ///
+  /// In vi, this message translates to:
+  /// **'Không báo cho gia đình'**
+  String get autoSaveQuickNoNotify;
+
+  /// AR05 link to the full review
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem lớn từng ảnh'**
+  String get autoSaveQuickBig;
+
+  /// AR05 link: drops the whole batch (AR08)
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua lần này'**
+  String get autoSaveSkipBatch;
+
+  /// AR08 toast with Hoàn tác
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Đã bỏ qua {count} ảnh · sẽ không gợi ý lại}}'**
+  String autoSaveSkipped(int count);
+
+  /// Screen-reader label of the dot on the Kỷ niệm tab (AR02)
+  ///
+  /// In vi, this message translates to:
+  /// **'Có ảnh mới chờ duyệt'**
+  String get autoSaveTabDot;
 }
 
 class _AppLocalizationsDelegate

@@ -134,6 +134,9 @@ class AutoSaveState {
     this.savedByMonth = const {},
     this.offAt,
     this.scanFrom,
+    this.names = const {},
+    this.notifiedAt,
+    this.bannerHidden = const {},
   });
 
   /// Master switch (AS19).
@@ -175,6 +178,16 @@ class AutoSaveState {
   /// the first check after setup (30 days, or since birth) and after a baby's samples change.
   final DateTime? scanFrom;
 
+  /// Babies' nicknames, for the notification a background check writes without Firestore.
+  final Map<String, String> names;
+
+  /// When the last "Có N ảnh mới" notification was (or will be) shown: at most one a day (AR03).
+  final DateTime? notifiedAt;
+
+  /// Suggestions the Hôm nay banner was put off for with "Để sau" (AR02): it comes back only for
+  /// new ones.
+  final Set<String> bannerHidden;
+
   bool get consented => consentVersion == autoSaveConsentVersion;
 
   /// Whether this item is done for this baby (or for every baby).
@@ -205,6 +218,9 @@ class AutoSaveState {
     bool clearOffAt = false,
     DateTime? scanFrom,
     bool clearScanFrom = false,
+    Map<String, String>? names,
+    DateTime? notifiedAt,
+    Set<String>? bannerHidden,
   }) => AutoSaveState(
     enabled: enabled ?? this.enabled,
     consentVersion: clearConsent ? null : consentVersion ?? this.consentVersion,
@@ -222,6 +238,9 @@ class AutoSaveState {
     savedByMonth: savedByMonth ?? this.savedByMonth,
     offAt: clearOffAt ? null : offAt ?? this.offAt,
     scanFrom: clearScanFrom ? null : scanFrom ?? this.scanFrom,
+    names: names ?? this.names,
+    notifiedAt: notifiedAt ?? this.notifiedAt,
+    bannerHidden: bannerHidden ?? this.bannerHidden,
   );
 
   /// "Xoá ảnh mẫu và dữ liệu gợi ý" (AS19) or withdrawing the consent: every face number,
@@ -269,6 +288,9 @@ class AutoSaveState {
     'savedByMonth': savedByMonth,
     'offAt': offAt?.millisecondsSinceEpoch,
     'scanFrom': scanFrom?.millisecondsSinceEpoch,
+    'names': names,
+    'notifiedAt': notifiedAt?.millisecondsSinceEpoch,
+    'bannerHidden': bannerHidden.toList(),
   };
 
   static AutoSaveState fromJson(Map<String, Object?> j) {
@@ -309,6 +331,11 @@ class AutoSaveState {
       },
       offAt: time(j['offAt']),
       scanFrom: time(j['scanFrom']),
+      names: map(j['names']).cast<String, String>(),
+      notifiedAt: time(j['notifiedAt']),
+      bannerHidden: {
+        for (final id in (j['bannerHidden'] as List?) ?? const []) id as String,
+      },
     );
   }
 }
