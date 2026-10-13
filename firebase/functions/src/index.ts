@@ -41,6 +41,11 @@ import {
 } from './family.js';
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { resendSender } from './mail-resend.js';
+import {
+  myTickets,
+  recordAppEvent as recordEvent,
+  sendFeedback as sendFeedbackTicket,
+} from './feedback.js';
 import { AuthMailError, sendAuthEmail as sendAuthMail, signInLinkTarget } from './auth-mail.js';
 import {
   caseComments as qaCaseComments,
@@ -1047,6 +1052,25 @@ export const requestDataExport = accountCall('requestDataExport', (c, d) =>
 /** "Trợ giúp & liên hệ" (G-057, G-073). */
 export const createHelpTicket = accountCall('createHelpTicket', (c, d) =>
   createSupportTicket(getFirestore(), c, d, new Date(), { staffInbox: supportInbox.value() }),
+);
+
+/** FB2 "Gửi góp ý" (D-065): a support ticket of category `feedback`. */
+export const sendFeedback = accountCall('sendFeedback', (c, d) =>
+  sendFeedbackTicket(getFirestore(), c, d, new Date(), {
+    staffInbox: supportInbox.value(),
+    async screenshotExists(path) {
+      const [exists] = await getStorage().bucket().file(path).exists();
+      return exists;
+    },
+  }),
+);
+
+/** FB3 "Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ". */
+export const myHelpTickets = accountCall('myHelpTickets', (c) => myTickets(getFirestore(), c));
+
+/** FB5 counters (P-137): aggregate only. */
+export const recordAppEvent = accountCall('recordAppEvent', (_c, d) =>
+  recordEvent(getFirestore(), d, new Date()),
 );
 
 /** Deletion jobs start at once and resume from their failed step (P-110). */

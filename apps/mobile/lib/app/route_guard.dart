@@ -104,6 +104,10 @@ abstract final class Routes {
   static const meAccount = '/me/account';
   static const meNotifications = '/me/notifications';
   static const meHelp = '/me/help';
+
+  /// FB2 Góp ý and FB3 Đã gửi (D-065).
+  static const meFeedback = '/me/feedback';
+  static const meFeedbackSent = '/me/feedback/sent';
   static const meShared = '/me/shared';
 
   /// S12 stories: reader `/story/{id}`, editor `/story/{id}/edit` (full screen).

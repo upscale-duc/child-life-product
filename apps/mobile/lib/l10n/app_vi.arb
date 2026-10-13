@@ -13070,5 +13070,134 @@
   "linkExpiredButton": "Gửi link mới",
   "@linkExpiredButton": {
     "description": "Expired sign-in link: back to 07a"
+  },
+  "meFeedback": "Góp ý cho Child Life",
+  "@meFeedback": {
+    "description": "FB1 row (477:6398)"
+  },
+  "meFeedbackHint": "Báo lỗi, đề xuất tính năng",
+  "@meFeedbackHint": {
+    "description": "FB1 row subtitle"
+  },
+  "meRateAppStore": "Đánh giá trên App Store",
+  "@meRateAppStore": {
+    "description": "FB1 row: opens the store page (user-initiated)"
+  },
+  "meRatePlay": "Đánh giá trên Google Play",
+  "@meRatePlay": {
+    "description": "FB1 row on Android"
+  },
+  "meRateUnavailable": "Child Life chưa có trên cửa hàng ứng dụng.",
+  "@meRateUnavailable": {
+    "description": "FB1 rate row before the app is published (not drawn)"
+  },
+  "fbTitle": "Góp ý",
+  "@fbTitle": {
+    "description": "FB2 title (477:6493)"
+  },
+  "fbIntro": "Đội ngũ Child Life đọc từng góp ý. Cảm ơn bạn đã giúp app tốt hơn cho các gia đình.",
+  "@fbIntro": {
+    "description": "FB2 intro"
+  },
+  "fbTypeIdea": "Ý tưởng",
+  "@fbTypeIdea": {
+    "description": "FB2 chip"
+  },
+  "fbTypeBug": "Báo lỗi",
+  "@fbTypeBug": {
+    "description": "FB2 chip; FB4 button"
+  },
+  "fbTypeOther": "Khác",
+  "@fbTypeOther": {
+    "description": "FB2 chip"
+  },
+  "fbMessageLabel": "Bạn muốn chia sẻ điều gì?",
+  "@fbMessageLabel": {
+    "description": "FB2 field label"
+  },
+  "fbScreenshot": "Ảnh chụp màn hình",
+  "@fbScreenshot": {
+    "description": "FB2 attachment tile"
+  },
+  "fbScreenshotRemove": "Bỏ ảnh",
+  "@fbScreenshotRemove": {
+    "description": "FB2 attached screenshot: remove (not drawn)"
+  },
+  "fbDevice": "Gửi kèm thông tin thiết bị",
+  "@fbDevice": {
+    "description": "FB2 toggle"
+  },
+  "fbDeviceHint": "Phiên bản app, hệ điều hành · không gồm ảnh hay dữ liệu của bé",
+  "@fbDeviceHint": {
+    "description": "FB2 toggle subtitle"
+  },
+  "fbReply": "Cho phép liên hệ lại",
+  "@fbReply": {
+    "description": "FB2 toggle; subtitle is the email"
+  },
+  "fbReplyNoEmail": "Cần tài khoản có email",
+  "@fbReplyNoEmail": {
+    "description": "FB2 reply toggle without an email (not drawn)"
+  },
+  "fbSend": "Gửi góp ý",
+  "@fbSend": {
+    "description": "FB2 primary button"
+  },
+  "fbSendFailed": "Chưa gửi được góp ý. Thử lại nhé.",
+  "@fbSendFailed": {
+    "description": "FB2 send failed (not drawn)"
+  },
+  "fbSentTitle": "Đã nhận góp ý của bạn",
+  "@fbSentTitle": {
+    "description": "FB3 title (477:6549)"
+  },
+  "fbSentBody": "Nếu cần thêm thông tin, đội ngũ sẽ trả lời qua email trong 2 ngày làm việc. Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ.",
+  "@fbSentBody": {
+    "description": "FB3 body"
+  },
+  "fbSentBodyNoReply": "Đội ngũ sẽ đọc góp ý của bạn. Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ.",
+  "@fbSentBodyNoReply": {
+    "description": "FB3 body when 'Cho phép liên hệ lại' is off (not drawn)"
+  },
+  "fbDone": "Xong",
+  "@fbDone": {
+    "description": "FB3 button"
+  },
+  "fbShotTitle": "Có gì chưa ổn ở màn này?",
+  "@fbShotTitle": {
+    "description": "FB4 toast title (477:6564)"
+  },
+  "fbShotBody": "Gửi kèm ảnh vừa chụp để báo lỗi",
+  "@fbShotBody": {
+    "description": "FB4 toast body"
+  },
+  "hpSentTitle": "Đã gửi",
+  "@hpSentTitle": {
+    "description": "Trợ giúp & liên hệ: what you sent (FB3)"
+  },
+  "hpStatusNew": "Đã nhận",
+  "@hpStatusNew": {
+    "description": "Ticket status"
+  },
+  "hpStatusClaimed": "Đang xem",
+  "@hpStatusClaimed": {
+    "description": "Ticket status"
+  },
+  "hpStatusWaiting": "Đã trả lời",
+  "@hpStatusWaiting": {
+    "description": "Ticket status"
+  },
+  "hpStatusClosed": "Đã xong",
+  "@hpStatusClosed": {
+    "description": "Ticket status"
+  },
+  "hpFeedbackLabel": "Góp ý · {type}",
+  "@hpFeedbackLabel": {
+    "description": "A sent Góp ý in the list",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -59,6 +59,25 @@ import UserNotifications
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "CameraCapture") {
       CameraCapture.register(with: registrar.messenger())
     }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "ScreenshotChannel") {
+      ScreenshotChannel.register(with: registrar.messenger())
+    }
+  }
+}
+
+/// FB4 (D-065): tells Flutter a screenshot was just taken, so it can offer "Báo lỗi" with it.
+/// iOS gives no image, only the moment; the app captures its own screen.
+enum ScreenshotChannel {
+  private static var observer: NSObjectProtocol?
+
+  static func register(with messenger: FlutterBinaryMessenger) {
+    let channel = FlutterMethodChannel(name: "childlife/screenshot", binaryMessenger: messenger)
+    if let observer { NotificationCenter.default.removeObserver(observer) }
+    observer = NotificationCenter.default.addObserver(
+      forName: UIApplication.userDidTakeScreenshotNotification, object: nil, queue: .main
+    ) { _ in
+      channel.invokeMethod("taken", arguments: nil)
+    }
   }
 }
 

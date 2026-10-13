@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- FB4: Android 14+ reports a screenshot of the app (no image, normal permission). -->
+    <uses-permission android:name="android.permission.DETECT_SCREEN_CAPTURE"/>
     <application
         android:label="${appName}"
         android:localeConfig="@xml/locales_config"

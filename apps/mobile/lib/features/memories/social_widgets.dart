@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart' hide TextDirection;
@@ -13,6 +15,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
+import '../feedback/review_prompt.dart';
 import '../home/home_shell.dart';
 import 'album_models.dart';
 import 'memory_repository.dart';
@@ -47,6 +50,12 @@ Future<void> toggleLove(
   if (me == null) return;
   try {
     await ref.read(memoryRepositoryProvider).setLove(me, target, targetId, on);
+    // FB5: the first reaction to something the family shared (D-065).
+    if (on) {
+      unawaited(
+        ref.read(reviewPrompterProvider).trigger(ReviewTrigger.firstReaction),
+      );
+    }
   } on Object {
     if (context.mounted) {
       showClToast(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +24,7 @@ import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
+import '../feedback/review_prompt.dart';
 import '../home/home_shell.dart';
 import '../onboarding/setup_screens.dart' show trackerArt;
 import 'bottle_suggestions.dart';
@@ -112,12 +115,18 @@ void commitRecord(
   if (me == null) return;
   // Toasts outlive the sheet (and a write that fails later).
   final toaster = ClToaster.of(context);
-  void failed(Object _) => toaster.show(message: l10n.careSaveFailed);
+  void failed(Object _) {
+    // FB5: no rating prompt after an error (D-065).
+    ReviewSession.afterError = true;
+    toaster.show(message: l10n.careSaveFailed);
+  }
 
   if (isEdit) {
     repo.edit(record, me.uid, onError: failed);
   } else {
     repo.create(record, onError: failed);
+    // FB5: logs count towards "≥ 10 logs" and a full week of logs is a happy moment.
+    unawaited(ref.read(reviewPrompterProvider).logged(DateTime.now()));
   }
   ClHaptics.success();
   ref.read(lastSavedProvider.notifier).mark(record.type);

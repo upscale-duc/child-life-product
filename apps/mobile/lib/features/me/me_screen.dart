@@ -20,6 +20,7 @@ import '../app_update/app_update_screens.dart' show AppVersionRow;
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../family/save_account.dart';
+import '../feedback/rate_app.dart';
 import '../home/home_shell.dart';
 import '../memories/album_models.dart';
 import '../memories/memory_repository.dart';
@@ -184,6 +185,14 @@ class MeScreen extends ConsumerWidget {
               title: l10n.meHelp,
               onTap: () => context.push(Routes.meHelp),
             ),
+            // FB1 (477:6398, D-065): Góp ý, and the store page on request.
+            MeRow(
+              icon: ClIcons.mail,
+              title: l10n.meFeedback,
+              subtitle: l10n.meFeedbackHint,
+              onTap: () => context.push(Routes.meFeedback),
+            ),
+            const RateAppRow(),
             // UP6 (D-061): the version, and "Cập nhật" when the store has a newer one.
             if (ref.watch(appVersionProvider).hasValue) const AppVersionRow(),
           ],

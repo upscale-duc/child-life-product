@@ -9301,4 +9301,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get linkExpiredButton => 'Send a new link';
+
+  @override
+  String get meFeedback => 'Send feedback';
+
+  @override
+  String get meFeedbackHint => 'Report a bug, suggest a feature';
+
+  @override
+  String get meRateAppStore => 'Rate on the App Store';
+
+  @override
+  String get meRatePlay => 'Rate on Google Play';
+
+  @override
+  String get meRateUnavailable => 'Child Life isn\'t in the store yet.';
+
+  @override
+  String get fbTitle => 'Feedback';
+
+  @override
+  String get fbIntro =>
+      'The Child Life team reads every message. Thank you for helping make the app better for families.';
+
+  @override
+  String get fbTypeIdea => 'Idea';
+
+  @override
+  String get fbTypeBug => 'Bug';
+
+  @override
+  String get fbTypeOther => 'Other';
+
+  @override
+  String get fbMessageLabel => 'What would you like to share?';
+
+  @override
+  String get fbScreenshot => 'Screenshot';
+
+  @override
+  String get fbScreenshotRemove => 'Remove screenshot';
+
+  @override
+  String get fbDevice => 'Include device info';
+
+  @override
+  String get fbDeviceHint => 'App and system version · no photos or baby data';
+
+  @override
+  String get fbReply => 'Allow us to reply';
+
+  @override
+  String get fbReplyNoEmail => 'Needs an account with an email';
+
+  @override
+  String get fbSend => 'Send feedback';
+
+  @override
+  String get fbSendFailed => 'Couldn\'t send your feedback. Try again.';
+
+  @override
+  String get fbSentTitle => 'Thanks, we got your feedback';
+
+  @override
+  String get fbSentBody =>
+      'If we need more details, the team will email you within 2 working days. You can find it again in Me › Help & contact.';
+
+  @override
+  String get fbSentBodyNoReply =>
+      'The team will read your feedback. You can find it again in Me › Help & contact.';
+
+  @override
+  String get fbDone => 'Done';
+
+  @override
+  String get fbShotTitle => 'Something wrong on this screen?';
+
+  @override
+  String get fbShotBody => 'Report it with the screenshot you just took';
+
+  @override
+  String get hpSentTitle => 'Sent';
+
+  @override
+  String get hpStatusNew => 'Received';
+
+  @override
+  String get hpStatusClaimed => 'In review';
+
+  @override
+  String get hpStatusWaiting => 'Answered';
+
+  @override
+  String get hpStatusClosed => 'Closed';
+
+  @override
+  String hpFeedbackLabel(String type) {
+    return 'Feedback · $type';
+  }
 }

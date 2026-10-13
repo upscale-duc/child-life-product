@@ -37,6 +37,8 @@ import '../features/me/profile_screen.dart';
 import '../features/me/storage_screens.dart';
 import '../features/reminders/reminder_screens.dart';
 import '../features/reminders/rule_screens.dart';
+import '../features/feedback/feedback_repository.dart';
+import '../features/feedback/feedback_screens.dart';
 import '../features/first_aid/first_aid_screens.dart';
 import '../features/utilities/utilities_screen.dart';
 import '../features/vaccines/vaccine_screens.dart';
@@ -89,12 +91,16 @@ GoRoute _route({
   required Widget Function(BuildContext context, GoRouterState state) builder,
   GoRouterRedirect? redirect,
   List<RouteBase> routes = const [],
+
+  /// Slides up with a close button instead of Back (FB2 Góp ý).
+  bool modal = false,
 }) => GoRoute(
   path: path,
   redirect: redirect,
   routes: routes,
   pageBuilder: (context, state) => MaterialPage<void>(
     key: state.pageKey,
+    fullscreenDialog: modal,
     name: state.name ?? state.path,
     arguments: {...state.pathParameters, ...state.uri.queryParameters},
     restorationId: state.pageKey.value,
@@ -483,6 +489,26 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, _) => const NotificationsScreen(),
           ),
           _route(path: 'help', builder: (_, _) => const HelpScreen()),
+          // FB2 / FB3 Góp ý (D-065); FB4 "Báo lỗi" opens it with `?type=bug`.
+          _route(
+            path: 'feedback',
+            modal: true,
+            builder: (_, s) => FeedbackScreen(
+              type:
+                  FeedbackType.values
+                      .asNameMap()[s.uri.queryParameters['type']] ??
+                  FeedbackType.idea,
+            ),
+            routes: [
+              _route(
+                path: 'sent',
+                modal: true,
+                builder: (_, s) => FeedbackSentScreen(
+                  reply: s.uri.queryParameters['reply'] != '0',
+                ),
+              ),
+            ],
+          ),
           // 14m (S13).
           _route(path: 'shared', builder: (_, _) => const SharedOutScreen()),
         ],

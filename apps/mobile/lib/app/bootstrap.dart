@@ -14,6 +14,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../features/baby/time_zones.dart';
+import '../features/feedback/review_prompt.dart';
 import 'environment.dart';
 import 'providers.dart';
 import 'firebase_options.dart';
@@ -45,8 +46,14 @@ Future<ResolvedEnvironment> bootstrap() async {
     'appVersion',
     '${info.version}+${info.buildNumber}',
   );
-  FlutterError.onError = crashlytics.recordFlutterFatalError;
+  // FB5: no rating prompt after a crash or an error (D-065).
+  ReviewSession.afterError = await crashlytics.didCrashOnPreviousExecution();
+  FlutterError.onError = (details) {
+    ReviewSession.afterError = true;
+    crashlytics.recordFlutterFatalError(details);
+  };
   PlatformDispatcher.instance.onError = (error, stack) {
+    ReviewSession.afterError = true;
     unawaited(crashlytics.recordError(error, stack, fatal: true));
     return true;
   };

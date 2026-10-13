@@ -230,3 +230,39 @@ export const createSupportTicketSchema = z.object({
   diagnostics: diagnosticsSchema.nullable(),
   locale: z.enum(['vi', 'en']),
 });
+
+// ---------- Góp ý & đánh giá (FB1–FB5, D-065) ----------
+
+/** FB2 "Ý tưởng · Báo lỗi · Khác". */
+export const feedbackTypes = ['idea', 'bug', 'other'] as const;
+export type FeedbackType = (typeof feedbackTypes)[number];
+
+/**
+ * FB2 "Gửi góp ý". The screenshot, when attached, is uploaded first to
+ * `feedback/{uid}/{requestId}.{jpg|png}` (picked: JPEG; captured by FB4: PNG); device info is the same consented snapshot as Trợ giúp
+ * (no baby data); "Cho phép liên hệ lại" off = no email to or from the team about it.
+ */
+export const sendFeedbackSchema = z.object({
+  requestId: z.uuid(),
+  type: z.enum(feedbackTypes),
+  message: z.string().trim().min(1).max(2000),
+  screenshot: z.enum(['jpg', 'png']).nullable(),
+  diagnostics: diagnosticsSchema.nullable(),
+  replyByEmail: z.boolean(),
+  locale: z.enum(['vi', 'en']),
+});
+
+/** FB5 counters (P-137: first-party, aggregate only); feedback is counted by the server. */
+export const appEvents = ['reviewPromptEligible', 'reviewPromptRequested'] as const;
+export const recordAppEventSchema = z.object({ event: z.enum(appEvents) });
+
+/** FB3 "Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ": what this person sent. */
+export interface MyTicket {
+  ticket: string;
+  /** A help topic, or `feedback`. */
+  category: string;
+  feedbackType: FeedbackType | null;
+  message: string;
+  status: string;
+  createdAt: string;
+}

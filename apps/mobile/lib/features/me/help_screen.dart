@@ -17,6 +17,8 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
+import '../feedback/feedback_repository.dart';
+import '../feedback/feedback_screens.dart';
 import '../home/home_shell.dart';
 import '../memories/upload_queue.dart';
 import 'me_models.dart';
@@ -32,6 +34,48 @@ String helpCategoryLabel(AppLocalizations l10n, HelpCategory c) => switch (c) {
   HelpCategory.storage => l10n.hpCatStorage,
   HelpCategory.stories => l10n.hpCatStories,
 };
+
+/// The consented device snapshot for Trợ giúp and Góp ý (FB2): app and OS versions, model, role,
+/// pending uploads. Nothing about the child.
+Future<Map<String, Object?>> deviceSnapshot(WidgetRef ref) async {
+  final info = await PackageInfo.fromPlatform();
+  final device = DeviceInfoPlugin();
+  var os = Platform.operatingSystemVersion;
+  var model = defaultTargetPlatform == TargetPlatform.iOS
+      ? 'iPhone'
+      : 'Android';
+  try {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      final i = await device.iosInfo;
+      os = 'iOS ${i.systemVersion}';
+      model = i.utsname.machine;
+    } else {
+      final a = await device.androidInfo;
+      os = 'Android ${a.version.release}';
+      model = a.model;
+    }
+  } on Object {
+    // Keep the defaults.
+  }
+  final pending = [
+    for (final b in ref.read(uploadQueueProvider).batches)
+      for (final i in b.items)
+        if (i.state != QueueState.uploaded &&
+            i.state != QueueState.cancelled &&
+            i.state != QueueState.unreadable)
+          i,
+  ].length;
+  String cut(String s, int n) => s.length > n ? s.substring(0, n) : s;
+  return {
+    'platform': defaultTargetPlatform == TargetPlatform.iOS ? 'ios' : 'android',
+    'appVersion': cut('${info.version}+${info.buildNumber}', 32),
+    'osVersion': cut(os, 64),
+    'deviceModel': cut(model, 64),
+    'role': ref.read(selectedMembershipProvider)?.role.name,
+    'pendingUploads': pending,
+    'lastSyncAt': null,
+  };
+}
 
 /// "Trợ giúp & liên hệ" (13a/13g/13h; form not drawn, G-057/G-073): topic, message, and
 /// diagnostics only with consent (no child content).
@@ -54,48 +98,6 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
     super.dispose();
   }
 
-  Future<Map<String, Object?>> _snapshot() async {
-    final info = await PackageInfo.fromPlatform();
-    final device = DeviceInfoPlugin();
-    var os = Platform.operatingSystemVersion;
-    var model = defaultTargetPlatform == TargetPlatform.iOS
-        ? 'iPhone'
-        : 'Android';
-    try {
-      if (defaultTargetPlatform == TargetPlatform.iOS) {
-        final i = await device.iosInfo;
-        os = 'iOS ${i.systemVersion}';
-        model = i.utsname.machine;
-      } else {
-        final a = await device.androidInfo;
-        os = 'Android ${a.version.release}';
-        model = a.model;
-      }
-    } on Object {
-      // Keep the defaults.
-    }
-    final pending = [
-      for (final b in ref.read(uploadQueueProvider).batches)
-        for (final i in b.items)
-          if (i.state != QueueState.uploaded &&
-              i.state != QueueState.cancelled &&
-              i.state != QueueState.unreadable)
-            i,
-    ].length;
-    String cut(String s, int n) => s.length > n ? s.substring(0, n) : s;
-    return {
-      'platform': defaultTargetPlatform == TargetPlatform.iOS
-          ? 'ios'
-          : 'android',
-      'appVersion': cut('${info.version}+${info.buildNumber}', 32),
-      'osVersion': cut(os, 64),
-      'deviceModel': cut(model, 64),
-      'role': ref.read(selectedMembershipProvider)?.role.name,
-      'pendingUploads': pending,
-      'lastSyncAt': null,
-    };
-  }
-
   Future<void> _send() async {
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
@@ -107,8 +109,9 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
           .sendHelp(
             _category!,
             _message.text,
-            _diagnostics ? await _snapshot() : null,
+            _diagnostics ? await deviceSnapshot(ref) : null,
           );
+      ref.invalidate(myTicketsProvider);
       toaster.show(message: l10n.hpSent(ticket));
       router.pop();
     } on Object {
@@ -183,6 +186,57 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
           icon: ClIcons.arrowRight,
           expand: true,
           onPressed: ready ? _send : null,
+        ),
+        const _SentTickets(),
+      ],
+    );
+  }
+}
+
+/// FB3 "Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ": what this person sent, newest first.
+/// Hidden while loading, offline or empty.
+class _SentTickets extends ConsumerWidget {
+  const _SentTickets();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final tickets = ref.watch(myTicketsProvider).value ?? const [];
+    if (tickets.isEmpty) return const SizedBox.shrink();
+    String topic(MyTicket t) {
+      final type = t.type;
+      if (type != null) {
+        return l10n.hpFeedbackLabel(feedbackTypeLabel(l10n, type));
+      }
+      final category = HelpCategory.values.asNameMap()[t.category];
+      return category == null ? t.category : helpCategoryLabel(l10n, category);
+    }
+
+    String status(String s) => switch (s) {
+      'claimed' => l10n.hpStatusClaimed,
+      'waiting' => l10n.hpStatusWaiting,
+      'closed' => l10n.hpStatusClosed,
+      _ => l10n.hpStatusNew,
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: ClSpace.s6),
+        Semantics(
+          header: true,
+          child: Text(l10n.hpSentTitle, style: cl.text.bodyStrong),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        ClCardGroup(
+          children: [
+            for (final t in tickets)
+              MeRow(
+                title: '${t.ticket} · ${topic(t)}',
+                subtitle: t.message,
+                value: status(t.status),
+              ),
+          ],
         ),
       ],
     );

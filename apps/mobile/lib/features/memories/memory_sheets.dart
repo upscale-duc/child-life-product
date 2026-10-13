@@ -22,6 +22,7 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../care/care_repository.dart';
 import '../family/family_repository.dart';
+import '../feedback/review_prompt.dart';
 import 'album_screens.dart' show albumsValue, showAlbumPicker;
 import 'media_picker.dart';
 import 'media_viewer.dart';
@@ -336,6 +337,14 @@ class _ComposeSheetState extends ConsumerState<ComposeSheet> {
       babyId: c.babyId,
       request: request,
       picked: widget.picked,
+    );
+    // FB5: a memory or a milestone saved is a happy moment (D-065).
+    unawaited(
+      ref
+          .read(reviewPrompterProvider)
+          .trigger(
+            _milestone != null ? ReviewTrigger.milestone : ReviewTrigger.memory,
+          ),
     );
   }
 

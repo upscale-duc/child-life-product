@@ -8638,4 +8638,103 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get linkExpiredButton => 'Gửi link mới';
+
+  @override
+  String get meFeedback => 'Góp ý cho Child Life';
+
+  @override
+  String get meFeedbackHint => 'Báo lỗi, đề xuất tính năng';
+
+  @override
+  String get meRateAppStore => 'Đánh giá trên App Store';
+
+  @override
+  String get meRatePlay => 'Đánh giá trên Google Play';
+
+  @override
+  String get meRateUnavailable => 'Child Life chưa có trên cửa hàng ứng dụng.';
+
+  @override
+  String get fbTitle => 'Góp ý';
+
+  @override
+  String get fbIntro =>
+      'Đội ngũ Child Life đọc từng góp ý. Cảm ơn bạn đã giúp app tốt hơn cho các gia đình.';
+
+  @override
+  String get fbTypeIdea => 'Ý tưởng';
+
+  @override
+  String get fbTypeBug => 'Báo lỗi';
+
+  @override
+  String get fbTypeOther => 'Khác';
+
+  @override
+  String get fbMessageLabel => 'Bạn muốn chia sẻ điều gì?';
+
+  @override
+  String get fbScreenshot => 'Ảnh chụp màn hình';
+
+  @override
+  String get fbScreenshotRemove => 'Bỏ ảnh';
+
+  @override
+  String get fbDevice => 'Gửi kèm thông tin thiết bị';
+
+  @override
+  String get fbDeviceHint =>
+      'Phiên bản app, hệ điều hành · không gồm ảnh hay dữ liệu của bé';
+
+  @override
+  String get fbReply => 'Cho phép liên hệ lại';
+
+  @override
+  String get fbReplyNoEmail => 'Cần tài khoản có email';
+
+  @override
+  String get fbSend => 'Gửi góp ý';
+
+  @override
+  String get fbSendFailed => 'Chưa gửi được góp ý. Thử lại nhé.';
+
+  @override
+  String get fbSentTitle => 'Đã nhận góp ý của bạn';
+
+  @override
+  String get fbSentBody =>
+      'Nếu cần thêm thông tin, đội ngũ sẽ trả lời qua email trong 2 ngày làm việc. Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ.';
+
+  @override
+  String get fbSentBodyNoReply =>
+      'Đội ngũ sẽ đọc góp ý của bạn. Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ.';
+
+  @override
+  String get fbDone => 'Xong';
+
+  @override
+  String get fbShotTitle => 'Có gì chưa ổn ở màn này?';
+
+  @override
+  String get fbShotBody => 'Gửi kèm ảnh vừa chụp để báo lỗi';
+
+  @override
+  String get hpSentTitle => 'Đã gửi';
+
+  @override
+  String get hpStatusNew => 'Đã nhận';
+
+  @override
+  String get hpStatusClaimed => 'Đang xem';
+
+  @override
+  String get hpStatusWaiting => 'Đã trả lời';
+
+  @override
+  String get hpStatusClosed => 'Đã xong';
+
+  @override
+  String hpFeedbackLabel(String type) {
+    return 'Góp ý · $type';
+  }
 }

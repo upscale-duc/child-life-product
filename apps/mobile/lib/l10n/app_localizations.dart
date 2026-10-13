@@ -14478,6 +14478,192 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Gửi link mới'**
   String get linkExpiredButton;
+
+  /// FB1 row (477:6398)
+  ///
+  /// In vi, this message translates to:
+  /// **'Góp ý cho Child Life'**
+  String get meFeedback;
+
+  /// FB1 row subtitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo lỗi, đề xuất tính năng'**
+  String get meFeedbackHint;
+
+  /// FB1 row: opens the store page (user-initiated)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá trên App Store'**
+  String get meRateAppStore;
+
+  /// FB1 row on Android
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá trên Google Play'**
+  String get meRatePlay;
+
+  /// FB1 rate row before the app is published (not drawn)
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life chưa có trên cửa hàng ứng dụng.'**
+  String get meRateUnavailable;
+
+  /// FB2 title (477:6493)
+  ///
+  /// In vi, this message translates to:
+  /// **'Góp ý'**
+  String get fbTitle;
+
+  /// FB2 intro
+  ///
+  /// In vi, this message translates to:
+  /// **'Đội ngũ Child Life đọc từng góp ý. Cảm ơn bạn đã giúp app tốt hơn cho các gia đình.'**
+  String get fbIntro;
+
+  /// FB2 chip
+  ///
+  /// In vi, this message translates to:
+  /// **'Ý tưởng'**
+  String get fbTypeIdea;
+
+  /// FB2 chip; FB4 button
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo lỗi'**
+  String get fbTypeBug;
+
+  /// FB2 chip
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get fbTypeOther;
+
+  /// FB2 field label
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn muốn chia sẻ điều gì?'**
+  String get fbMessageLabel;
+
+  /// FB2 attachment tile
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh chụp màn hình'**
+  String get fbScreenshot;
+
+  /// FB2 attached screenshot: remove (not drawn)
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ ảnh'**
+  String get fbScreenshotRemove;
+
+  /// FB2 toggle
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi kèm thông tin thiết bị'**
+  String get fbDevice;
+
+  /// FB2 toggle subtitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Phiên bản app, hệ điều hành · không gồm ảnh hay dữ liệu của bé'**
+  String get fbDeviceHint;
+
+  /// FB2 toggle; subtitle is the email
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho phép liên hệ lại'**
+  String get fbReply;
+
+  /// FB2 reply toggle without an email (not drawn)
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần tài khoản có email'**
+  String get fbReplyNoEmail;
+
+  /// FB2 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi góp ý'**
+  String get fbSend;
+
+  /// FB2 send failed (not drawn)
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa gửi được góp ý. Thử lại nhé.'**
+  String get fbSendFailed;
+
+  /// FB3 title (477:6549)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã nhận góp ý của bạn'**
+  String get fbSentTitle;
+
+  /// FB3 body
+  ///
+  /// In vi, this message translates to:
+  /// **'Nếu cần thêm thông tin, đội ngũ sẽ trả lời qua email trong 2 ngày làm việc. Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ.'**
+  String get fbSentBody;
+
+  /// FB3 body when 'Cho phép liên hệ lại' is off (not drawn)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đội ngũ sẽ đọc góp ý của bạn. Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ.'**
+  String get fbSentBodyNoReply;
+
+  /// FB3 button
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get fbDone;
+
+  /// FB4 toast title (477:6564)
+  ///
+  /// In vi, this message translates to:
+  /// **'Có gì chưa ổn ở màn này?'**
+  String get fbShotTitle;
+
+  /// FB4 toast body
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi kèm ảnh vừa chụp để báo lỗi'**
+  String get fbShotBody;
+
+  /// Trợ giúp & liên hệ: what you sent (FB3)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi'**
+  String get hpSentTitle;
+
+  /// Ticket status
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã nhận'**
+  String get hpStatusNew;
+
+  /// Ticket status
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xem'**
+  String get hpStatusClaimed;
+
+  /// Ticket status
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã trả lời'**
+  String get hpStatusWaiting;
+
+  /// Ticket status
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xong'**
+  String get hpStatusClosed;
+
+  /// A sent Góp ý in the list
+  ///
+  /// In vi, this message translates to:
+  /// **'Góp ý · {type}'**
+  String hpFeedbackLabel(String type);
 }
 
 class _AppLocalizationsDelegate

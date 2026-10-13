@@ -8,6 +8,9 @@ import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/feedback/feedback_host.dart';
+import 'package:child_life/features/feedback/feedback_repository.dart';
+import 'package:child_life/features/feedback/feedback_screens.dart';
 import 'package:child_life/features/me/account_screen.dart';
 import 'package:child_life/features/me/baby_profile_screens.dart';
 import 'package:child_life/features/me/help_screen.dart';
@@ -19,6 +22,7 @@ import 'package:child_life/features/me/storage_screens.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -164,8 +168,78 @@ final _cases = <String, _Case>{
     overrides: () => _base(prefs: const NotificationPrefs(messages: false)),
     act: null,
   ),
-  'help': (build: () => const HelpScreen(), overrides: _base, act: null),
+  'help': (
+    build: () => const HelpScreen(),
+    overrides: () => [
+      ..._base(),
+      myTicketsProvider.overrideWith((ref) async => _sent),
+    ],
+    act: null,
+  ),
+  // Góp ý & đánh giá (FB2 477:6493, FB3 477:6549, FB4 477:6564; D-065).
+  'fb2_feedback': (
+    build: () => const FeedbackScreen(),
+    overrides: _base,
+    act: (tester) async {
+      await tester.enterText(
+        find.byType(EditableText),
+        'Mong có thêm biểu đồ giấc ngủ theo tuần, để biết bé ngủ trưa có đều không.',
+      );
+      FocusManager.instance.primaryFocus?.unfocus();
+    },
+  ),
+  'fb3_sent': (
+    build: () => const FeedbackSentScreen(),
+    overrides: _base,
+    act: null,
+  ),
+  'fb4_toast': (
+    build: () => Scaffold(
+      body: Align(
+        alignment: const Alignment(0, 0.6),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: ScreenshotToast(
+            shot: FeedbackShot(_thumb, png: true),
+            onReport: () {},
+            onClose: () {},
+          ),
+        ),
+      ),
+    ),
+    overrides: _base,
+    act: null,
+  ),
 };
+
+final _sent = [
+  MyTicket(
+    ticket: 'CL-1002',
+    category: 'feedback',
+    type: FeedbackType.idea,
+    message: 'Mong có thêm biểu đồ giấc ngủ theo tuần',
+    status: 'new',
+    createdAt: DateTime(2026, 10, 8, 9),
+  ),
+  MyTicket(
+    ticket: 'CL-1001',
+    category: 'storage',
+    type: null,
+    message: 'Video tải lên chậm',
+    status: 'waiting',
+    createdAt: DateTime(2026, 10, 6, 21),
+  ),
+];
+
+/// A 1 × 1 pixel standing in for the screenshot.
+final _thumb = Uint8List.fromList(const [
+  0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, //
+  0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+  0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4, 0x89, 0x00, 0x00, 0x00,
+  0x0D, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9C, 0x63, 0xF8, 0xCF, 0xC0, 0xF0,
+  0x1F, 0x00, 0x05, 0x00, 0x01, 0xFF, 0x89, 0x99, 0x3D, 0x1D, 0x00, 0x00,
+  0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
+]);
 
 void main() {
   for (final MapEntry(key: name, value: c) in _cases.entries) {

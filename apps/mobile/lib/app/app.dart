@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import '../features/app_update/app_update_screens.dart';
+import '../features/feedback/feedback_host.dart';
 import '../features/me/baby_profile_screens.dart';
 import '../features/memories/push_registration.dart';
 import '../features/glance/glance_bridge.dart';
@@ -87,7 +88,12 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
               child: ReminderNotificationSync(
                 child: PushRegistration(
                   child: ShareInbox(
-                    child: GlanceSync(child: DeletionWatcher(child: child!)),
+                    child: GlanceSync(
+                      child: DeletionWatcher(
+                        // FB4 screenshot toast, FB5 active days (D-065).
+                        child: FeedbackHost(child: child!),
+                      ),
+                    ),
                   ),
                 ),
               ),
