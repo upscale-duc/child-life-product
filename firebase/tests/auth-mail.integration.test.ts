@@ -23,9 +23,16 @@ const auth = {
   },
   generateEmailVerificationLink: async () => 'https://x.test/verify?oobCode=v1',
   generateSignInWithEmailLink: async (_: string, s: { url: string }) =>
-    `https://x.test/signin?continueUrl=${encodeURIComponent(s.url)}`,
+    `https://x.test/signin?mode=signIn&oobCode=s1&apiKey=k1&continueUrl=${encodeURIComponent(s.url)}`,
 } as unknown as Auth;
-const deps = () => ({ db, auth, sender, adminOrigin: 'https://admin.test' });
+const deps = () => ({
+  db,
+  auth,
+  sender,
+  adminOrigin: 'https://admin.test',
+  webOrigin: 'https://web.test',
+  continueUrl: 'https://landing.test/auth/link/',
+});
 const reason = (p: Promise<unknown>) =>
   p.then(
     () => 'ok',
@@ -125,5 +132,25 @@ describe('portal "Link qua email"', () => {
     expect(
       await reason(sendAuthEmail(deps(), null, { kind: 'resetPassword', email: 'x' }, now)),
     ).toBe('malformed');
+  });
+});
+
+describe('app "Gửi link đăng nhập" (07a, D-064)', () => {
+  it('anyone gets a link on the website that opens the app, once a minute', async () => {
+    await sendAuthEmail(
+      deps(),
+      null,
+      { kind: 'appSignInLink', email: 'new@example.com', locale: 'vi' },
+      now,
+    );
+    expect(sent).toHaveLength(1);
+    expect(sent[0]!.subject).toBe('Đăng nhập Child Life');
+    expect(sent[0]!.html).toContain('https://web.test/auth/link/?mode=signIn&amp;oobCode=s1');
+    expect(sent[0]!.html).not.toContain('x.test');
+    expect(
+      await reason(
+        sendAuthEmail(deps(), null, { kind: 'appSignInLink', email: 'new@example.com' }, later(30)),
+      ),
+    ).toBe('too-soon');
   });
 });
