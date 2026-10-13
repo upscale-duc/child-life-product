@@ -35,6 +35,7 @@ import {
   Panel,
   Pill,
   ReasonField,
+  RowActions,
   Segmented,
   errorMessageId,
   reasonOk,
@@ -280,6 +281,12 @@ export function StaffScreen() {
 
 type MemberOp = 'roles' | 'access' | 'pause' | 'resume' | 'remove';
 
+/** What a manager may do to a member: never pause or remove yourself (P-134). */
+export function memberActions(m: StaffMemberRow, selfUid: string): MemberOp[] {
+  if (m.uid === selfUid) return ['roles', 'access'];
+  return ['roles', 'access', m.status === 'active' ? 'pause' : 'resume', 'remove'];
+}
+
 export function MemberTable({
   team,
   canManage,
@@ -396,28 +403,16 @@ export function MemberTable({
                     </Pill>
                   </td>
                   {canManage && (
-                    <td className="cell-actions cell-actions--wrap">
-                      <Button kind="ghost" onClick={() => onAction(m, 'roles')}>
-                        <FormattedMessage id="staff.action.roles" />
-                      </Button>
-                      <Button kind="ghost" onClick={() => onAction(m, 'access')}>
-                        <FormattedMessage id="staff.action.access" />
-                      </Button>
-                      {m.uid !== selfUid &&
-                        (m.status === 'active' ? (
-                          <Button kind="ghost" onClick={() => onAction(m, 'pause')}>
-                            <FormattedMessage id="staff.action.pause" />
-                          </Button>
-                        ) : (
-                          <Button kind="ghost" onClick={() => onAction(m, 'resume')}>
-                            <FormattedMessage id="staff.action.resume" />
-                          </Button>
-                        ))}
-                      {m.uid !== selfUid && (
-                        <Button kind="ghost" onClick={() => onAction(m, 'remove')}>
-                          <FormattedMessage id="staff.action.remove" />
-                        </Button>
-                      )}
+                    <td className="cell-actions">
+                      <RowActions
+                        label={intl.formatMessage({ id: 'table.actionsFor' }, { name: m.name })}
+                        actions={memberActions(m, selfUid).map((op) => ({
+                          key: op,
+                          label: <FormattedMessage id={`staff.action.${op}`} />,
+                          onSelect: () => onAction(m, op),
+                          destructive: op === 'remove',
+                        }))}
+                      />
                     </td>
                   )}
                 </tr>

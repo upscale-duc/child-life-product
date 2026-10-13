@@ -387,7 +387,7 @@ describe('Sơ cứu: approving needs the medical review on prod', () => {
     expect(html).toContain('Ghi đủ người rà soát');
     // The approve button stays off until the review and the reason are there.
     expect(render(<ActDialog act="approve" requireReview {...props} />)).toMatch(
-      /<button type="button" class="btn btn--primary" disabled="">Duyệt &amp; xuất bản/,
+      /<button data-slot="button" data-variant="default"[^>]* disabled="">Duyệt &amp; xuất bản/,
     );
     const reject = text(render(<ActDialog act="reject" requireReview {...props} />));
     expect(reject).not.toContain('Người rà soát');

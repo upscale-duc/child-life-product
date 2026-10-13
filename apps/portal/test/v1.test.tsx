@@ -24,7 +24,7 @@ import {
   VaccineTable,
   bandLabel,
 } from '../src/screens/Reference';
-import { MemberTable, RoleMatrix, maxLevel, scopeOf } from '../src/screens/Staff';
+import { MemberTable, RoleMatrix, maxLevel, memberActions, scopeOf } from '../src/screens/Staff';
 import { Sidebar } from '../src/Shell';
 import {
   bottleQuickPicksV1,
@@ -215,9 +215,25 @@ describe('Nhân sự & phân quyền (A18–A21)', () => {
     );
     expect(html).toContain('Minh Phạm minh@childlife.vn Owner Toàn bộ Không giới hạn');
     expect(html).toContain('Thảo Lê thao@gmail.com Hỗ trợ');
-    expect(html).toContain('Tạm ngưng');
-    expect(html).toContain('Mở lại');
     expect(html).toContain('Mai Hồ mai@x.vn Trực đêm');
+    // Row actions sit behind "⋯": pause or resume by status, never on yourself (P-134).
+    const raw = render(
+      <MemberTable team={team} canManage now={now} selfUid="u1" onAction={() => undefined} />,
+    );
+    expect(raw).toContain('aria-label="Thao tác cho Thảo Lê"');
+    const byName = (name: string) => team.members.find((m) => m.name === name)!;
+    expect(memberActions(byName('Thảo Lê'), 'u1')).toContain(
+      byName('Thảo Lê').status === 'active' ? 'pause' : 'resume',
+    );
+    expect(team.members.map((m) => memberActions(m, 'u1')).flat()).toEqual(
+      expect.arrayContaining(['pause', 'resume', 'remove']),
+    );
+    expect(
+      memberActions(
+        team.members.find((m) => m.uid === 'u1')!,
+        'u1',
+      ),
+    ).toEqual(['roles', 'access']);
     const readOnly = text(
       render(
         <MemberTable
@@ -229,7 +245,7 @@ describe('Nhân sự & phân quyền (A18–A21)', () => {
         />,
       ),
     );
-    expect(readOnly).not.toContain('Gỡ');
+    expect(readOnly).not.toContain('Thao tác cho');
   });
 
   it('the matrix shows levels per role, grouped; locked roles are marked', () => {

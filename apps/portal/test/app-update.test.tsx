@@ -148,7 +148,7 @@ describe('Cập nhật ứng dụng: preview (portal review 2026-10-12)', () => 
   });
 });
 
-describe('Sidebar: icons and the icon-only menu (portal review 2026-10-12)', () => {
+describe('Sidebar: icons and the icon-only menu (shadcn/ui, D-063)', () => {
   const bar = (collapsed: boolean) =>
     render(
       <Sidebar
@@ -160,24 +160,26 @@ describe('Sidebar: icons and the icon-only menu (portal review 2026-10-12)', () 
         onSignOut={() => undefined}
         navigate={() => undefined}
         collapsed={collapsed}
-        onCollapse={() => undefined}
       />,
     );
 
   it('every item has an icon; the toggle says what it does', () => {
     const html = bar(false);
-    expect(html.match(/class="sidebar__item/g)!.length).toBe(
-      html.match(/<a [^>]*class="sidebar__item[^"]*"[^>]*>\s*<svg class="sidebar__icon"/g)!.length,
-    );
+    const items = html.match(/<a [^>]*data-sidebar="menu-button"[^>]*>/g)!;
+    expect(items.length).toBeGreaterThan(5);
+    expect(
+      html.match(/<a [^>]*data-sidebar="menu-button"[^>]*>\s*<svg [^>]*class="lucide/g)!.length,
+    ).toBe(items.length);
     expect(html).toContain('aria-label="Thu gọn menu"');
-    expect(html).not.toContain('sidebar--rail');
+    expect(html).toContain('data-state="expanded"');
+    expect(html).toContain('aria-current="page"');
   });
 
-  it('collapsed: icons only, names kept for screen readers and as tooltips', () => {
+  it('collapsed: icons only, names kept for screen readers', () => {
     const html = bar(true);
-    expect(html).toContain('sidebar--rail');
+    expect(html).toContain('data-state="collapsed"');
+    expect(html).toContain('data-collapsible="icon"');
     expect(html).toContain('aria-label="Mở rộng menu"');
-    expect(html).toContain('title="Cập nhật ứng dụng"');
     expect(text(html)).toContain('Cập nhật ứng dụng');
   });
 });

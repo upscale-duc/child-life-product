@@ -1,0 +1,228 @@
+/*
+ * Staff portal on shadcn/ui (D-063): Tailwind 4 + Radix with the Child Life palette, light and
+ * dark. The pre-shadcn stylesheet sits in the `legacy` layer, under shadcn's components and
+ * utilities, until each screen has moved over.
+ */
+@layer theme, base, legacy, components, utilities;
+@import '@child-life/design-tokens/tokens.css';
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './styles.css' layer(legacy);
+
+/* `data-theme` drives both the shadcn tokens and the design tokens the legacy CSS reads. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/be-vietnam-pro-regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/be-vietnam-pro-medium.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/be-vietnam-pro-semibold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/be-vietnam-pro-bold.woff2') format('woff2');
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #173d44;
+  --card: #ffffff;
+  --card-foreground: #173d44;
+  --popover: #ffffff;
+  --popover-foreground: #173d44;
+  --primary: #087f7b;
+  --primary-foreground: #ffffff;
+  --secondary: #eef6f5;
+  --secondary-foreground: #173d44;
+  --muted: #f1f7f6;
+  --muted-foreground: #55707a;
+  --accent: #e6f7f5;
+  --accent-foreground: #06716d;
+  --destructive: #db4a45;
+  --destructive-foreground: #ffffff;
+  --success: #299966;
+  --warning: #b45309;
+  --border: #dce8e7;
+  --input: #cbdcdb;
+  --ring: #2cbfb3;
+  --chart-1: #2cbfb3;
+  --chart-2: #087f7b;
+  --chart-3: #ffa58d;
+  --chart-4: #e0a800;
+  --chart-5: #8a8deb;
+  --sidebar: #f6fcfb;
+  --sidebar-foreground: #173d44;
+  --sidebar-primary: #087f7b;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e6f7f5;
+  --sidebar-accent-foreground: #06716d;
+  --sidebar-border: #dce8e7;
+  --sidebar-ring: #2cbfb3;
+  /* The pre-shadcn console colours, kept for the legacy layer. */
+  --side: #163d44;
+  --side-ink: #b9cfcf;
+  --orange: #c2410c;
+  --orange-soft: #ffedd5;
+  --blue: #1d5f99;
+  --blue-soft: #e5f1fb;
+  --purple: #6b3fa0;
+  --purple-soft: #f1e8fb;
+  color-scheme: light;
+}
+
+/* Dark: the app's Night care palette (tokens.css), whatever the system setting is. */
+:root[data-theme='dark'] {
+  --background: #0c1719;
+  --foreground: #e6f2f1;
+  --card: #122126;
+  --card-foreground: #e6f2f1;
+  --popover: #15242a;
+  --popover-foreground: #e6f2f1;
+  --primary: #3fd0c3;
+  --primary-foreground: #062a2c;
+  --secondary: #1c2e33;
+  --secondary-foreground: #e6f2f1;
+  --muted: #182a2f;
+  --muted-foreground: #9db3b4;
+  --accent: #123536;
+  --accent-foreground: #3fd0c3;
+  --destructive: #f06a60;
+  --destructive-foreground: #ffffff;
+  --success: #3fb27f;
+  --warning: #f2b544;
+  --border: #26393e;
+  --input: #30474c;
+  --ring: #3fd0c3;
+  --chart-1: #2cbfb3;
+  --chart-2: #3fd0c3;
+  --chart-3: #ffa58d;
+  --chart-4: #ffd166;
+  --chart-5: #8a8deb;
+  --sidebar: #0f1d20;
+  --sidebar-foreground: #e6f2f1;
+  --sidebar-primary: #3fd0c3;
+  --sidebar-primary-foreground: #062a2c;
+  --sidebar-accent: #123536;
+  --sidebar-accent-foreground: #3fd0c3;
+  --sidebar-border: #26393e;
+  --sidebar-ring: #3fd0c3;
+  --side: #0f1d20;
+  --side-ink: #9db3b4;
+  --orange-soft: #3a2617;
+  --blue-soft: #16314a;
+  --purple-soft: #2b2140;
+  /* Design tokens (Night care), also when the system is light. */
+  --cloud: #0c1719;
+  --surface: #15242a;
+  --surface-2: #1c2e33;
+  --separator: #26393e;
+  --control-border: #6b8a90;
+  --ink: #e6f2f1;
+  --ink-muted: #9db3b4;
+  --mint: #2cbfb3;
+  --mint-deep: #3fd0c3;
+  --on-mint-deep: #062a2c;
+  --mint-text: #3fd0c3;
+  --mint-soft: #123536;
+  --sunshine: #ffd166;
+  --sunshine-soft: #3a3115;
+  --peach: #ffa58d;
+  --peach-soft: #3a2620;
+  --error: #ff8a8f;
+  --error-soft: #3a1c1e;
+  --danger: #f06a60;
+  --danger-soft: #3a1d1b;
+  --live: #3fb27f;
+  --pending: #ffd166;
+  --focus-ring: #3fd0c3;
+  --scrim: rgb(0 0 0 / 0.561);
+  --care-bottle-soft: #16314a;
+  --care-bottle-ink: #9ccbf5;
+  --care-bottle-accent: #5aa6e8;
+  --care-sleep-soft: #23244a;
+  --care-sleep-ink: #bdbff7;
+  --care-sleep-accent: #8a8deb;
+  --care-diaper-accent: #74bf63;
+  --care-growth-soft: #3a2617;
+  --care-growth-ink: #f7c29a;
+  --care-pump-soft: #33203d;
+  --care-pump-ink: #e2b8f2;
+  --shadow-card: none;
+  --shadow-chip: 0px 8px 24px 0px rgb(0 0 0 / 0.349);
+  --shadow-lift: 0px 12px 32px 0px rgb(0 0 0 / 0.451);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans text-sm antialiased;
+  }
+  /* Thin scrollbars in the menu and wide tables, light and dark. */
+  [data-sidebar='content'],
+  .table-scroll,
+  .matrix-wrap {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--foreground) 18%, transparent) transparent;
+  }
+}

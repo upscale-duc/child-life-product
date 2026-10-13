@@ -1,8 +1,22 @@
+import { Loader2, Lock, MoreHorizontal } from 'lucide-react';
 import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Button as UiButton } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 import type { ApiError, Load } from './api';
 
-/** Building blocks of the staff portal (Figma Admin portal `253:18`, 1440 px desktop). */
+/**
+ * Building blocks of the staff portal (Figma Admin portal `253:18`), drawn with shadcn/ui and the
+ * Child Life palette (D-063). Screens keep these props; the look lives here and in index.css.
+ */
 
 export function Page({
   title,
@@ -112,6 +126,13 @@ export function Pill({ tone, children }: { tone: PillTone; children: ReactNode }
   return <span className={`pill pill--${tone}`}>{children}</span>;
 }
 
+const buttonVariant = {
+  primary: 'default',
+  secondary: 'outline',
+  danger: 'destructive',
+  ghost: 'ghost',
+} as const;
+
 export function Button({
   kind = 'secondary',
   children,
@@ -128,15 +149,59 @@ export function Button({
   title?: string;
 }) {
   return (
-    <button
+    <UiButton
       type={type}
-      className={`btn btn--${kind}`}
+      variant={buttonVariant[kind]}
+      className={kind === 'ghost' ? 'text-primary hover:text-primary' : undefined}
       disabled={disabled}
       onClick={onClick}
       title={title}
     >
       {children}
-    </button>
+    </UiButton>
+  );
+}
+
+export type RowAction = {
+  key: string;
+  label: ReactNode;
+  onSelect: () => void;
+  /** Shown in red, after a separator (remove, revoke). */
+  destructive?: boolean;
+};
+
+/** A row's actions behind "⋯" (shadcn-admin data tables), so long rows keep one line. */
+export function RowActions({ label, actions }: { label: string; actions: RowAction[] }) {
+  if (!actions.length) return null;
+  const plain = actions.filter((a) => !a.destructive);
+  const danger = actions.filter((a) => a.destructive);
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <UiButton
+          variant="ghost"
+          size="icon"
+          className="size-8 data-[state=open]:bg-muted"
+          aria-label={label}
+          title={label}
+        >
+          <MoreHorizontal />
+        </UiButton>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-40">
+        {plain.map((a) => (
+          <DropdownMenuItem key={a.key} onSelect={a.onSelect}>
+            {a.label}
+          </DropdownMenuItem>
+        ))}
+        {plain.length > 0 && danger.length > 0 && <DropdownMenuSeparator />}
+        {danger.map((a) => (
+          <DropdownMenuItem key={a.key} variant="destructive" onSelect={a.onSelect}>
+            {a.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -156,12 +221,7 @@ export function TableScroll({ min = 640, children }: { min?: number; children: R
 export function LockNote({ children }: { children: ReactNode }) {
   return (
     <p className="lock">
-      <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          fill="currentColor"
-          d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 1 1 6 0v3H9Z"
-        />
-      </svg>
+      <Lock className="size-3.5" aria-hidden="true" />
       <span>{children}</span>
     </p>
   );
@@ -199,7 +259,8 @@ export function useScrollLock(active = true) {
 const escapeStack: { current: () => void }[] = [];
 function onEscapeKey(e: KeyboardEvent) {
   const top = escapeStack[escapeStack.length - 1];
-  if (e.key !== 'Escape' || !top) return;
+  // A Radix dialog or menu above our layers handles its own Escape (and marks it handled).
+  if (e.key !== 'Escape' || !top || e.defaultPrevented) return;
   e.stopPropagation();
   top.current();
 }
@@ -234,29 +295,33 @@ export function Modal({
   wide?: boolean;
 }) {
   const id = useId();
-  const ref = useRef<HTMLDivElement>(null);
-  useScrollLock();
-  useEscape(onClose);
-  // Focus the first field once, when the dialog opens.
-  useEffect(() => {
-    ref.current?.querySelector<HTMLElement>('textarea, input, button')?.focus();
-  }, []);
-  return (
-    <div className="scrim" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div
-        className={`modal ${wide ? 'modal--wide' : ''}`}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={id}
-        ref={ref}
-      >
+  // Server rendering (tests) has no portal: the same content, inline.
+  if (typeof document === 'undefined') {
+    return (
+      <div className="modal" role="dialog" aria-modal="true" aria-labelledby={id}>
         {icon}
         <h2 className="modal__title" id={id}>
           {title}
         </h2>
         {children}
       </div>
-    </div>
+    );
+  }
+  // Radix: focus trap, scroll lock and Escape; the first field gets the focus.
+  return (
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        aria-describedby={undefined}
+        className={cn(
+          'max-h-[calc(100dvh-2rem)] gap-4 overflow-y-auto overscroll-contain',
+          wide ? 'sm:max-w-3xl' : 'sm:max-w-lg',
+        )}
+      >
+        {icon}
+        <DialogTitle className="modal__title pr-6">{title}</DialogTitle>
+        {children}
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -293,7 +358,7 @@ export const reasonOk = (s: string) => s.trim().length >= 3;
 export function Loading() {
   return (
     <div className="state" role="status">
-      <span className="spinner" aria-hidden="true" />
+      <Loader2 className="size-4 animate-spin text-primary" aria-hidden="true" />
       <FormattedMessage id="state.loading" />
     </div>
   );

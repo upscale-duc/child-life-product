@@ -7,7 +7,8 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createApi } from './api';
 import { App } from './App';
-import './styles.css';
+import './index.css';
+import { ThemeProvider, applyTheme, readThemeMode } from './theme';
 
 const host = window.location.hostname;
 const { environment, firebase } = resolveWebEnvironment(import.meta.env.MODE, 'admin', host);
@@ -22,11 +23,19 @@ if (
   connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true });
   connectFunctionsEmulator(functions, host, 5001);
 }
+applyTheme(readThemeMode());
 const locale = resolveLocale(readSavedLocale(), navigator.languages);
 document.documentElement.lang = locale;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App auth={auth} api={createApi(functions)} environment={environment} initialLocale={locale} />
+    <ThemeProvider>
+      <App
+        auth={auth}
+        api={createApi(functions)}
+        environment={environment}
+        initialLocale={locale}
+      />
+    </ThemeProvider>
   </StrictMode>,
 );
