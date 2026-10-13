@@ -3,7 +3,7 @@ import type { Firestore, Timestamp } from 'firebase-admin/firestore';
 import {
   featureAccessRequestSchema,
   flagsSchema,
-  isFlagOnForBucket,
+  isFlagOnForFamily,
   type FeatureAccess,
 } from '@child-life/contracts';
 
@@ -23,7 +23,8 @@ export function familyBucket(familyId: string): number {
 
 /**
  * P-148: per-family features for one of the caller's babies. Tự lưu (D-066) is for Cùng nuôi and
- * follows the `auto_save` flag: off, staff families ("internal"), a share of families, or all.
+ * follows the `auto_save` flag: off, the families picked in A10 (and families marked `internal`),
+ * a share of families, or all.
  */
 export async function featureAccess(
   db: Firestore,
@@ -56,6 +57,6 @@ export async function featureAccess(
   return {
     autoSave:
       member.get('role') === 'coParent' &&
-      isFlagOnForBucket(flag, familyBucket(familyId), internal),
+      isFlagOnForFamily(flag, familyId, familyBucket(familyId), internal),
   };
 }

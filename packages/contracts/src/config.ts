@@ -27,6 +27,11 @@ export const flagSchema = z.object({
   percent: z.number().int().min(0).max(100),
   /** Optional in-app notice shown when the flag is switched off (A11). */
   notice: z.string().max(280).nullable(),
+  /**
+   * Scope `internal`: the families staff picked in A10 ("Một vài gia đình"), as family ids, on top
+   * of families marked `internal`. The portal shows them as codes; never mirrored to clients.
+   */
+  families: z.array(z.string().min(1).max(128)).max(100).optional(),
 });
 export type Flag = z.infer<typeof flagSchema>;
 
@@ -98,6 +103,21 @@ export type FeatureAccessRequest = z.infer<typeof featureAccessRequestSchema>;
 export interface FeatureAccess {
   /** Tự lưu kỷ niệm (D-066): the flag is on for this family and the caller is a Cùng nuôi. */
   autoSave: boolean;
+}
+
+/** Whether a flag is on for a given family (stable hash bucket 0–99); a family picked in A10
+ * counts as internal for that flag. */
+export function isFlagOnForFamily(
+  flag: Flag,
+  familyId: string,
+  bucket: number,
+  isInternalFamily: boolean,
+): boolean {
+  return isFlagOnForBucket(
+    flag,
+    bucket,
+    isInternalFamily || (flag.families ?? []).includes(familyId),
+  );
 }
 
 /** Whether a flag is on for a given family (stable hash bucket 0–99). */

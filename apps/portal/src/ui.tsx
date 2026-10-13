@@ -507,6 +507,7 @@ export function Empty({ children }: { children: ReactNode }) {
 /** Server reasons with their own message (`error.<reason>`), v1.0 staff and data actions. */
 export const reasonMessages = [
   'last-owner',
+  'family-not-found',
   'self',
   'already-member',
   'already-active',

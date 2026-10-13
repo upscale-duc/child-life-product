@@ -16,5 +16,14 @@ export function publicProjection(
   data: unknown,
 ): Record<string, unknown> | null {
   const parsed = schemas[id].safeParse(data);
-  return parsed.success ? (parsed.data as Record<string, unknown>) : null;
+  if (!parsed.success) return null;
+  if (id !== 'flags') return parsed.data as Record<string, unknown>;
+  // Families picked for a flag (A10) stay on the server.
+  return Object.fromEntries(
+    Object.entries(parsed.data as Record<string, Record<string, unknown>>).map(([k, f]) => {
+      const rest = { ...f };
+      delete rest.families;
+      return [k, rest];
+    }),
+  );
 }

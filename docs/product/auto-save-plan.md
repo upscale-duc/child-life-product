@@ -308,13 +308,21 @@ Where it differs from the frames, and why:
 - **`getFeatureAccess`** (`firebase/functions/src/features.ts`): for an active member and baby, whether
   `auto_save` is on for that family (Cùng nuôi only; `internal` from the family document, `percent` from
   the AI-drafts bucket). The app asks for the selected baby and keeps the answer on the phone; checks only
-  run for babies answered yes, and a "no" for every baby cancels the background check. Dev builds skip the
-  question.
+  run for babies answered yes, and a "no" for every baby cancels the background check. Debug runs against
+  dev skip the question; release builds, dev included, follow the flag.
+- **"Ai được dùng" in A10** (owner: "bật lên thì chọn 1 vài gia đình hoặc là cho all"): turning a flag on,
+  or tapping its scope, offers **Một vài gia đình** or **Tất cả gia đình**. Families are added by code
+  (F-XXXX, as Gia đình shows it) or a parent's exact email (matched on the server, never shown); the
+  flag keeps their ids, the portal and the audit log show codes, `publicConfig` never carries them. A plain
+  on / off keeps the list. They count as internal for that flag only (AI drafts read it the same way);
+  families marked `internal: true` still count, so no hand edit is needed any more.
 - **Counters** (P-148): new `appEvents` names `autoSave*`, an optional `n`, counted in `appEventsDaily` and
   shown in Phân tích › Tính năng as "Tự lưu kỷ niệm (beta iOS)" (and in the CSV). The phone queues them in
   its Tự lưu state and sends them when the app runs, so background checks are counted too.
 - **Deployed to dev (2026-10-13):** `getFeatureAccess` (new), `recordAppEvent`, `staffAnalytics`,
   `staffExportAnalytics`, `staffFlags`, `staffSetFlag`, `mirrorPublicConfig`, and the portal.
+- **Deployed to dev, second round (2026-10-13):** `staffSetFlag`, `staffFlags`, `getFeatureAccess`,
+  `mirrorPublicConfig`, `requestStorySuggestion`, `weeklyStorySuggestions`, and the portal.
 - **To roll out on dev:** deploy the functions (`scripts/deploy.sh dev functions:getFeatureAccess,functions:recordAppEvent,functions:staffAnalytics,functions:staffExportAnalytics`)
   and the portal, then in the portal set `auto_save` to "Thử nội bộ" and mark staff
   families `internal: true` (no tool does this yet; by hand in Firestore), then 10 %.

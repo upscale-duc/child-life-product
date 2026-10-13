@@ -315,6 +315,11 @@ export const setFlagSchema = z.object({
   percent: z.union([z.literal(0), z.literal(10), z.literal(25), z.literal(50), z.literal(100)]),
   /** A11 "Báo cho gia đình trong app": shown to families while the feature is off. */
   notice: z.string().trim().max(280).nullable(),
+  /** Scope `internal`: family codes picked in A10 ("Một vài gia đình"); the server stores ids. */
+  families: z
+    .array(z.string().regex(/^F-[A-Z2-9]{4}$/))
+    .max(50)
+    .optional(),
   reason,
 });
 

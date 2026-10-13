@@ -27,6 +27,7 @@ import {
   type StaffAction,
   type StaffLevels,
   type StaffRole,
+  type Flag,
 } from '@child-life/contracts';
 import {
   FieldValue,
@@ -1126,7 +1127,7 @@ export async function readFlags(db: Firestore, staff: Staff | null) {
       lastEdit.set(key, { by: a.get('actorName') as string, at: iso(a.get('at')) });
   }
   return {
-    flags: flags.success ? flags.data : launchedFlags,
+    flags: withCodes(flags.success ? flags.data : launchedFlags),
     limits: limits.success ? limits.data : defaultLimits,
     lastEdit: Object.fromEntries(lastEdit),
     recent: last.docs.slice(0, 5).map((a) => ({
@@ -1140,10 +1141,37 @@ export async function readFlags(db: Firestore, staff: Staff | null) {
   };
 }
 
+/** Picked families are stored as ids; staff only ever see their codes (A10, A12). */
+function codesOf(flag: Flag): Flag {
+  const { families, ...rest } = flag;
+  return families?.length ? { ...rest, families: families.map(familyCode) } : rest;
+}
+
+function withCodes(flags: Flags): Flags {
+  return Object.fromEntries(Object.entries(flags).map(([k, f]) => [k, codesOf(f)])) as Flags;
+}
+
+/** "Một vài gia đình" (A10): codes to family ids, every code must exist. */
+async function familyIdsOf(db: Firestore, codes: string[]): Promise<string[]> {
+  const ids: string[] = [];
+  for (const code of [...new Set(codes)]) {
+    const hit = await db.collection('familyDirectory').where('code', '==', code).limit(1).get();
+    if (hit.empty) throw new StaffError('not-found', 'family-not-found');
+    ids.push(hit.docs[0]!.id);
+  }
+  return ids;
+}
+
 /** A10 switch / rollout step and A11 "Tắt tính năng": reason required; never changes rights. */
 export async function setFlag(db: Firestore, staff: Staff | null, data: unknown, now: Date) {
   const req = parse(setFlagSchema, data);
   const s = requireStaff(staff, 'flags.rollout');
+  // Only "Một vài gia đình" keeps a list; looked up before the transaction (directory reads).
+  // No list sent (a plain on / off): the families picked before stay.
+  const picked =
+    req.scope === 'internal' && req.families !== undefined
+      ? await familyIdsOf(db, req.families)
+      : null;
   await db.runTransaction(async (tx) => {
     const ref = db.doc('config/flags');
     const snap = await tx.get(ref);
@@ -1158,7 +1186,12 @@ export async function setFlag(db: Firestore, staff: Staff | null, data: unknown,
       percent: req.scope === 'percent' ? req.percent : 0,
       notice: req.enabled ? null : req.notice,
     };
+    const families = req.scope === 'internal' ? (picked ?? before.families ?? []) : [];
+    if (families.length) flags[req.key].families = families;
     tx.set(ref, flags);
+    const scopeSame =
+      before.scope === req.scope &&
+      (before.percent === flags[req.key].percent || req.scope !== 'percent');
     staffAudit(
       tx,
       db,
@@ -1169,11 +1202,13 @@ export async function setFlag(db: Firestore, staff: Staff | null, data: unknown,
             ? req.enabled
               ? 'flags.on'
               : 'flags.off'
-            : 'flags.rollout',
+            : scopeSame && req.scope === 'internal'
+              ? 'flags.families'
+              : 'flags.rollout',
         category: 'features',
         target: req.key,
         reason: req.reason,
-        detail: { before, after: flags[req.key] },
+        detail: { before: codesOf(before), after: codesOf(flags[req.key]) },
       },
       now,
     );

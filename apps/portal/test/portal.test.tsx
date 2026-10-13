@@ -37,7 +37,7 @@ import { ago, csvCell, gb, pct, usageTone, when } from '../src/format';
 import { messages } from '../src/messages';
 import { reasonMessages } from '../src/ui';
 import { AuditTable } from '../src/screens/Audit';
-import { FeaturesView, defaultNotice, nextStep } from '../src/screens/Features';
+import { AuditActionText, FeaturesView, defaultNotice, nextStep } from '../src/screens/Features';
 import { jobState } from '../src/screens/Jobs';
 import { OverviewView } from '../src/screens/Overview';
 import { SignInScreen, authErrorId, type SignInActions } from '../src/screens/SignIn';
@@ -675,6 +675,37 @@ describe('A06 jobs, A10 features, A12 audit', () => {
       'eng',
     ]);
     expect(eng).not.toMatch(/role="switch"[^>]*disabled=""/);
+  });
+  it('a flag can be for a few chosen families, shown by count; the scope opens for rollout', () => {
+    const chosen: FlagsView = {
+      ...flags,
+      flags: {
+        ...flags.flags,
+        auto_save: {
+          enabled: true,
+          scope: 'internal',
+          percent: 0,
+          notice: null,
+          families: ['F-7Q2K', 'F-ABCD'],
+        },
+      },
+    };
+    const raw = render(<FeaturesView data={chosen} ai={null} onChanged={() => undefined} />, [
+      'eng',
+    ]);
+    const ops = text(raw);
+    expect(ops).toContain('2 gia đình được chọn');
+    expect(raw).toContain('aria-label="Ai được dùng “Tự lưu kỷ niệm (beta iOS)”"');
+    const html = text(
+      render(
+        <AuditActionText
+          action="flags.families"
+          target="auto_save"
+          detail={{ after: chosen.flags.auto_save }}
+        />,
+      ),
+    );
+    expect(html).toContain('Đổi gia đình được dùng “Tự lưu kỷ niệm (beta iOS)”');
   });
   it('audit rows read as actions with the reason, no family content', () => {
     const rows: AuditRow[] = [

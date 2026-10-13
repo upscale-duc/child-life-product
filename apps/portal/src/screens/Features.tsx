@@ -1,9 +1,12 @@
 import { flagKeys, staffCan, type Flag, type FlagKey } from '@child-life/contracts';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { ApiError, useApi, useLoad, type AiStats, type FlagsView } from '../api';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { ApiError, useApi, useLoad, type AiStats, type FamilyList, type FlagsView } from '../api';
 import { useStaff } from '../context';
 import { pct, shortDate } from '../format';
 import { messages } from '../messages';
@@ -48,7 +51,7 @@ export function nextStep(flag: Flag): (typeof ladder)[number] | null {
   return ladder.find((p) => p > flag.percent) ?? null;
 }
 
-type Change = { key: FlagKey; next: Flag; kind: 'off' | 'on' | 'step' };
+type Change = { key: FlagKey; next: Flag; kind: 'off' | 'on' | 'step' | 'scope' };
 
 export function FeaturesView({
   data,
@@ -110,7 +113,22 @@ export function FeaturesView({
                       </span>
                     </td>
                     <td>
-                      <ScopePill flag={f} />
+                      {canRollout && f.scope !== 'percent' ? (
+                        // "Ai được dùng": a few families, or every family.
+                        <button
+                          type="button"
+                          className="link-button"
+                          onClick={() => setChange({ key, kind: 'scope', next: { ...f } })}
+                          aria-label={intl.formatMessage(
+                            { id: 'features.scopeTitle' },
+                            { flag: intl.formatMessage({ id: `flag.${key}` }) },
+                          )}
+                        >
+                          <ScopePill flag={f} />
+                        </button>
+                      ) : (
+                        <ScopePill flag={f} />
+                      )}
                     </td>
                     <td className="muted">
                       {last ? `${last.by.split(' ')[0]} · ${shortDate(intl, last.at)}` : '—'}
@@ -286,9 +304,14 @@ export function FeaturesView({
 
 export function ScopePill({ flag }: { flag: Flag }) {
   if (flag.scope === 'internal') {
+    const n = flag.families?.length ?? 0;
     return (
       <Pill tone="purple">
-        <FormattedMessage id="scope.internal" />
+        {n ? (
+          <FormattedMessage id="scope.chosen" values={{ n }} />
+        ) : (
+          <FormattedMessage id="scope.internal" />
+        )}
       </Pill>
     );
   }
@@ -338,6 +361,7 @@ export function AuditActionText({
     'flags.on',
     'flags.off',
     'flags.rollout',
+    'flags.families',
     'audit.export',
     'jobs.rerunRequest',
     'staff.invite',
@@ -387,17 +411,31 @@ function FlagDialog({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const off = change.kind === 'off';
+  // "Ai được dùng" (on, or the scope cell): a few families, or every family. Percent steps stay
+  // on the rollout ladder.
+  const choosing =
+    (change.kind === 'on' || change.kind === 'scope') && change.next.scope !== 'percent';
+  const [who, setWho] = useState<'some' | 'all'>(change.next.scope === 'all' ? 'all' : 'some');
+  const [families, setFamilies] = useState<string[]>(change.next.families ?? []);
+  const scope = choosing ? (who === 'all' ? 'all' : 'internal') : change.next.scope;
+  const next: Flag = {
+    ...change.next,
+    scope,
+    families: scope === 'internal' ? (choosing ? families : change.next.families) : undefined,
+  };
   const submit = async () => {
     setBusy(true);
     setError(null);
     try {
-      const percent = change.next.scope === 'all' ? 100 : change.next.percent;
+      const percent = next.scope === 'all' ? 100 : next.percent;
       await api.call('staffSetFlag', {
         key: change.key,
-        enabled: change.next.enabled,
-        scope: change.next.scope,
+        enabled: next.enabled,
+        scope: next.scope,
         percent: [0, 10, 25, 50, 100].includes(percent) ? percent : 0,
         notice: off && notify && notice.trim() ? notice.trim() : null,
+        // Only a choice made here is sent; a plain on / off keeps the families picked before.
+        ...(choosing && next.scope === 'internal' ? { families } : {}),
         reason: reason.trim(),
       });
       onDone();
@@ -417,9 +455,11 @@ function FlagDialog({
               ? 'features.offTitle'
               : change.kind === 'on'
                 ? 'features.onTitle'
-                : 'features.stepTitle'
+                : change.kind === 'scope'
+                  ? 'features.scopeTitle'
+                  : 'features.stepTitle'
           }
-          values={{ flag, p: change.next.scope === 'all' ? 100 : change.next.percent }}
+          values={{ flag, p: next.scope === 'all' ? 100 : next.percent }}
         />
       }
       icon={
@@ -434,12 +474,33 @@ function FlagDialog({
       <p className="modal__sub">
         <FormattedMessage id={off ? `flag.${change.key}.offEffect` : 'features.onEffect'} />
       </p>
+      {choosing && (
+        <div className="field">
+          <span className="field__label">
+            <FormattedMessage id="features.who" />
+          </span>
+          <ToggleGroup
+            type="single"
+            variant="outline"
+            value={who}
+            onValueChange={(v) => v && setWho(v as 'some' | 'all')}
+          >
+            <ToggleGroupItem value="some">
+              <FormattedMessage id="features.whoSome" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="all">
+              <FormattedMessage id="features.whoAll" />
+            </ToggleGroupItem>
+          </ToggleGroup>
+          {who === 'some' && <FamilyPicker value={families} onChange={setFamilies} />}
+        </div>
+      )}
       <dl className="kv">
         <dt>
           <FormattedMessage id="features.impact" />
         </dt>
         <dd>
-          <ScopeText flag={change.next} />
+          <ScopeText flag={next} />
         </dd>
       </dl>
       <ReasonField value={reason} onChange={setReason} required />
@@ -491,7 +552,103 @@ export function defaultNotice(key: FlagKey): string {
   return messages.vi['features.noticeDefault']!.replace('{flag}', messages.vi[`flag.${key}`]!);
 }
 
+/**
+ * "Một vài gia đình": by family code (F-XXXX, as Gia đình shows it) or a parent's exact email,
+ * matched on the server and never shown back.
+ */
+function FamilyPicker({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
+  const intl = useIntl();
+  const api = useApi();
+  const [q, setQ] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [problem, setProblem] = useState<string | null>(null);
+  const add = async () => {
+    const text = q.trim();
+    if (!text) return;
+    setProblem(null);
+    if (/^F-[A-Z2-9]{4}$/i.test(text)) {
+      onChange([...new Set([...value, text.toUpperCase()])]);
+      setQ('');
+      return;
+    }
+    if (!text.includes('@')) {
+      setProblem('features.familyHint');
+      return;
+    }
+    setBusy(true);
+    try {
+      const found = await api.call<FamilyList>('staffFamilies', {
+        activity: 'all',
+        platform: 'all',
+        storage: 'all',
+        q: text,
+      });
+      if (found.rows.length === 0) {
+        setProblem('features.familyNotFound');
+      } else {
+        onChange([...new Set([...value, ...found.rows.map((r) => r.code)])]);
+        setQ('');
+      }
+    } catch (e) {
+      setProblem(e instanceof ApiError ? errorMessageId(e) : 'features.familyNotFound');
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="family-picker">
+      <div className="family-picker__row">
+        <Input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              void add();
+            }
+          }}
+          placeholder={intl.formatMessage({ id: 'features.familyFind' })}
+          aria-label={intl.formatMessage({ id: 'features.familyFind' })}
+        />
+        <Button disabled={busy || !q.trim()} onClick={() => void add()}>
+          <FormattedMessage id="features.familyAdd" />
+        </Button>
+      </div>
+      {problem && (
+        <p className="error" role="alert">
+          <FormattedMessage id={problem} />
+        </p>
+      )}
+      {value.length === 0 ? (
+        <p className="field__help">
+          <FormattedMessage id="features.familyNone" />
+        </p>
+      ) : (
+        <ul className="family-picker__list">
+          {value.map((code) => (
+            <li key={code}>
+              <Badge variant="secondary">
+                {code}
+                <button
+                  type="button"
+                  className="family-picker__remove"
+                  aria-label={intl.formatMessage({ id: 'features.familyRemove' }, { code })}
+                  onClick={() => onChange(value.filter((c) => c !== code))}
+                >
+                  ×
+                </button>
+              </Badge>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function ScopeText({ flag }: { flag: Flag }) {
+  if (flag.scope === 'internal' && flag.families?.length)
+    return <FormattedMessage id="impact.chosen" values={{ n: flag.families.length }} />;
   if (flag.scope === 'internal') return <FormattedMessage id="impact.internal" />;
   if (flag.scope === 'percent')
     return <FormattedMessage id="impact.percent" values={{ p: flag.percent }} />;

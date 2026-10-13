@@ -24,8 +24,9 @@ import 'auto_save_controller.dart';
 export 'auto_save_background.dart' show autoSaveBackground;
 
 /// The `auto_save` rollout for one baby (P-148): asked from the server (`getFeatureAccess`,
-/// which knows staff families and percent buckets) and remembered on the phone, so background
-/// checks follow a kill switch too. Dev builds always have it, for testing.
+/// which knows the families picked in the portal and percent buckets) and remembered on the
+/// phone, so background checks follow a kill switch too. Debug runs against dev always have it;
+/// release builds, dev included, follow the flag like everyone else.
 final autoSaveFlagProvider = FutureProvider.autoDispose.family<bool, String>((
   ref,
   babyId,
@@ -33,7 +34,7 @@ final autoSaveFlagProvider = FutureProvider.autoDispose.family<bool, String>((
   if (!ref.watch(autoSaveNativeProvider).supported) return false;
   final controller = ref.read(autoSaveProvider.notifier);
   bool on;
-  if (ref.watch(environmentProvider) == AppEnvironment.dev) {
+  if (kDebugMode && ref.watch(environmentProvider) == AppEnvironment.dev) {
     on = true;
   } else {
     try {

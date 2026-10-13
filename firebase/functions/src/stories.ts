@@ -327,6 +327,7 @@ async function aiEnabled(db: Firestore, familyId: string): Promise<boolean> {
   if (!f.enabled) return false;
   if (f.scope === 'all') return true;
   if (f.scope === 'internal') {
+    if ((f.families ?? []).includes(familyId)) return true;
     return (await db.doc(`families/${familyId}`).get()).get('internal') === true;
   }
   const bucket =

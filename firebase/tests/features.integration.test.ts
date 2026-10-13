@@ -62,6 +62,14 @@ describe('getFeatureAccess · auto_save', () => {
     expect((await featureAccess(db, 'mom', { babyId: 'b1' }, now)).autoSave).toBe(false);
   });
 
+  it('the families picked in A10 count as internal for this flag only', async () => {
+    await db.doc('families/f1').set({ internal: false });
+    await autoSave({ scope: 'internal', families: ['f1'] });
+    expect((await featureAccess(db, 'mom', { babyId: 'b1' }, now)).autoSave).toBe(true);
+    await autoSave({ scope: 'internal', families: ['f9'] });
+    expect((await featureAccess(db, 'mom', { babyId: 'b1' }, now)).autoSave).toBe(false);
+  });
+
   it('percent follows the family bucket; all is everyone; off is the kill switch', async () => {
     const bucket = familyBucket('f1');
     await autoSave({ scope: 'percent', percent: bucket + 1 });

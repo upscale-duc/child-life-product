@@ -2,7 +2,8 @@ import { randomUUID } from 'node:crypto';
 import { deleteApp, initializeApp, type App } from 'firebase-admin/app';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { defaultFlags, maskEmail } from '@child-life/contracts';
+import { defaultFlags, maskEmail, type Flag } from '@child-life/contracts';
+import { publicProjection } from '../functions/src/config-mirror.js';
 import { createSupportTicket, requestStorage } from '../functions/src/account.js';
 import { MemoryError, createMemory } from '../functions/src/memories.js';
 import {
@@ -565,6 +566,44 @@ describe('A07, A10/A11', () => {
     expect(flags.flags.ai_story_drafts).toMatchObject({ scope: 'percent', percent: 50 });
     expect(flags.lastEdit.media_upload?.by).toBe('Minh Phạm');
     expect(defaultFlags.media_upload.enabled).toBe(false);
+  });
+
+  it('A10 "Một vài gia đình": codes in, ids kept, codes out; kept across on / off; never public', async () => {
+    const code = familyCode(familyId);
+    await db.doc(`familyDirectory/${familyId}`).set({ code });
+    const set = (over: Record<string, unknown>) =>
+      setFlag(
+        db,
+        minh,
+        {
+          key: 'auto_save',
+          enabled: true,
+          scope: 'internal',
+          percent: 0,
+          notice: null,
+          reason: 'Thử với gia đình của team.',
+          ...over,
+        },
+        now,
+      );
+    const stored = async () => (await db.doc('config/flags').get()).get('auto_save') as Flag;
+    await set({ families: [code] });
+    expect((await stored()).families).toEqual([familyId]);
+    expect((await readFlags(db, linh)).flags.auto_save.families).toEqual([code]);
+    // A plain off (no list sent) keeps the families picked before.
+    await set({ enabled: false });
+    expect((await stored()).families).toEqual([familyId]);
+    expect(
+      publicProjection('flags', (await db.doc('config/flags').get()).data())?.auto_save,
+    ).not.toHaveProperty('families');
+    // Every family: no list.
+    await set({ scope: 'all' });
+    expect((await stored()).families).toBeUndefined();
+    expect(await reason(set({ families: ['F-ZZZZ'] }))).toBe('family-not-found');
+    // The audit log names codes, never family ids.
+    const audit = await db.collection('staffAudit').where('target', '==', 'auto_save').get();
+    expect(JSON.stringify(audit.docs.map((d) => d.get('detail')))).not.toContain(familyId);
+    expect(audit.docs.some((d) => d.get('action') === 'flags.on')).toBe(true);
   });
 });
 
