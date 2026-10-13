@@ -14,6 +14,18 @@ describe('config contracts', () => {
     expect(flagsSchema.parse(defaultFlags)).toEqual(defaultFlags);
   });
 
+  it('a stored document written before a flag existed still parses, the new flag off', () => {
+    const older: Partial<typeof defaultFlags> = { ...defaultFlags };
+    delete older.auto_save;
+    const live = { ...older, media_upload: { ...older.media_upload, enabled: true } };
+    const parsed = flagsSchema.parse(live);
+    expect(parsed.media_upload.enabled).toBe(true);
+    expect(parsed.auto_save).toEqual(defaultFlags.auto_save);
+    // Each parse gets its own copy of the default.
+    parsed.auto_save.enabled = true;
+    expect(flagsSchema.parse(live).auto_save.enabled).toBe(false);
+  });
+
   it('default limits match owner decisions', () => {
     const limits = limitsSchema.parse(defaultLimits);
     expect(limits.familyQuotaBytes).toBe(10 * 1024 ** 3);

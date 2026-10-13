@@ -169,6 +169,8 @@ describe('reading and exporting (A13 / A14)', () => {
       feedbackSent_idea: 1,
       reviewPromptEligible: 3,
       reviewPromptRequested: 1,
+      autoSaveSetupDone: 2,
+      autoSaveApproved: 15,
     });
     await db.doc('appEventsDaily/2026-09-01').set({ day: '2026-09-01', feedbackSent_idea: 9 });
     const growth = await analytics(db, ops, { tab: 'growth', days: 7, platform: 'all' }, now);
@@ -189,6 +191,7 @@ describe('reading and exporting (A13 / A14)', () => {
     expect(feats.versions).toEqual([{ platform: 'android', version: '1.0.1', devices: 1 }]);
     expect(feats.feedback).toEqual({ idea: 1, bug: 2, other: 0 });
     expect(feats.reviewPrompt).toEqual({ eligible: 8, requested: 1 });
+    expect(feats.autoSave).toMatchObject({ setupDone: 2, approved: 15, rejected: 0 });
     expect(await reason(analytics(db, qa, { tab: 'growth', days: 7, platform: 'all' }, now))).toBe(
       'role',
     );

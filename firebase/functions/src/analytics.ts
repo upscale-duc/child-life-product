@@ -550,6 +550,24 @@ export async function analytics(db: Firestore, staff: Staff | null, data: unknow
       eligible: total('reviewPromptEligible'),
       requested: total('reviewPromptRequested'),
     },
+    // Tự lưu kỷ niệm beta (D-066, P-148).
+    autoSave: {
+      setupStarted: total('autoSaveSetupStarted'),
+      setupDone: total('autoSaveSetupDone'),
+      accessFull: total('autoSaveAccessFull'),
+      accessLimited: total('autoSaveAccessLimited'),
+      accessDenied: total('autoSaveAccessDenied'),
+      suggested: total('autoSaveSuggested'),
+      approved: total('autoSaveApproved'),
+      unticked: total('autoSaveUnticked'),
+      rejected: total('autoSaveRejected'),
+      skipped: total('autoSaveSkipped'),
+      missed: total('autoSaveMissed'),
+      backgroundChecks: total('autoSaveBackgroundCheck'),
+      notified: total('autoSaveNotified'),
+      turnedOff: total('autoSaveTurnedOff'),
+      wiped: total('autoSaveWiped'),
+    },
   };
 }
 

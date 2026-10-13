@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/locale.dart';
+import '../../app/providers.dart';
 import '../../app/session.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_repository.dart';
@@ -34,6 +35,16 @@ final autoSaveStoreProvider = Provider<AutoSaveStore>((ref) {
 final libraryResolverProvider =
     Provider<Future<PickedMedia?> Function(String id)>(
       (ref) => pickedFromLibrary,
+    );
+
+/// Sends one beta counter (P-148) through `recordAppEvent`; replaced in tests.
+final autoSaveEventSinkProvider =
+    Provider<Future<void> Function(String event, int n)>(
+      (ref) =>
+          (event, n) => ref
+              .read(functionsProvider)
+              .httpsCallable('recordAppEvent')
+              .call<Object?>({'event': event, 'n': n}),
     );
 
 /// Knobs for matching and grouping; guesses until the beta measures them (P-146, P-149).
@@ -191,7 +202,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       _native.listen(onCheck: backgroundCheck, onStop: stop);
       unawaited(_native.backgroundReady(headless: headless));
     }
-    if (!headless) unawaited(_load().then((_) => scan()));
+    if (!headless) unawaited(_load().then((_) => scan()).then((_) => _flush()));
     return const AutoSaveView();
   }
 
@@ -382,7 +393,10 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       offAt: on ? null : DateTime.now(),
       clearOffAt: on,
     );
-    if (!on) stop();
+    if (!on) {
+      stop();
+      _count('autoSaveTurnedOff');
+    }
     await _save();
     if (on) {
       unawaited(scan());
@@ -408,8 +422,10 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     await _load();
     stop();
     _s = _s.wipeFaces();
+    _count('autoSaveWiped');
     await _save();
     unawaited(_native.unschedule());
+    unawaited(_flush());
   }
 
   // ---------- Background check (AR03) ----------
@@ -438,6 +454,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
   Future<Map<String, Object?>?> backgroundCheck() async {
     await _load();
     final before = {for (final c in _s.pending) c.asset.id};
+    _count('autoSaveBackgroundCheck');
     await scan();
     final fresh = [
       for (final c in _s.pending)
@@ -450,14 +467,33 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       now: now,
       l10n: lookupAppLocalizations(_locale()),
     );
-    if (note == null) return null;
+    if (note == null) {
+      await _save();
+      return null;
+    }
     _s = _s.copyWith(notifiedAt: note.at);
+    _count('autoSaveNotified');
     await _save();
     return {
       'title': note.title,
       'body': note.body,
       if (note.at.isAfter(now)) 'at': note.at.millisecondsSinceEpoch,
     };
+  }
+
+  /// The `auto_save` rollout answer for a baby (P-148). Turned on: check now; off everywhere
+  /// (the kill switch): no more background checks.
+  Future<void> rememberAllowed(String babyId, bool on) async {
+    await _load();
+    if (_s.allowed[babyId] == on) return;
+    _s = _s.copyWith(allowed: {..._s.allowed, babyId: on});
+    await _save();
+    if (on) {
+      unawaited(scan());
+    } else if (!_s.allowed.values.any((v) => v)) {
+      stop();
+      unawaited(_native.unschedule());
+    }
   }
 
   /// AR02 "Để sau": the banner waits for new suggestions.
@@ -499,6 +535,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       final babies = {
         for (final e in _s.babies.entries)
           if (e.value.samples.isNotEmpty &&
+              _s.allowed[e.key] == true &&
               (parentOf == null || parentOf.contains(e.key)))
             e.key: e.value.faces,
       };
@@ -549,6 +586,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
           final m = matchBaby(a, babies, tuning: tuning);
           if (m == null || _s.handled(a.id, m.babyId)) continue;
           pending.add(Candidate(asset: a, match: m));
+          _count('autoSaveSuggested');
         }
         for (final id in ids) {
           seen.putIfAbsent(id, () => now);
@@ -683,7 +721,10 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         month: (_s.savedByMonth[month] ?? 0) + queued,
       },
     );
+    _count('autoSaveApproved', queued);
+    _count('autoSaveUnticked', reviewed.length - chosen.length);
     await _save();
+    unawaited(_flush());
     return queued;
   }
 
@@ -703,6 +744,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
           if (!ids.contains(c.asset.id)) c,
       ],
     );
+    _count('autoSaveSkipped', items.length);
     await _save();
     return AutoSaveUndo(before);
   }
@@ -731,6 +773,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
               ),
             },
     );
+    _count('autoSaveRejected');
     await _save();
     return AutoSaveUndo(before);
   }
@@ -776,6 +819,20 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       // The ledger only serves Tự lưu, which exists on iOS (D-066 #3).
       if (!_native.supported) return;
       await _load();
+      if (st == LedgerState.uploaded && _s.enabled) {
+        // A photo a check had looked at, never suggested, then added by hand: a miss (P-148).
+        final waiting = {for (final c in _s.pending) c.asset.id};
+        _count(
+          'autoSaveMissed',
+          [
+            for (final id in ids)
+              if (_s.seen.containsKey(id) &&
+                  !waiting.contains(id) &&
+                  !_s.handled(id))
+                id,
+          ].length,
+        );
+      }
       final ledger = _copyLedger();
       for (final id in ids) {
         (ledger[id] ??= {})[babyId] = st;
@@ -794,6 +851,44 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     } on Object {
       // Never block an upload or a download over the ledger.
     }
+  }
+
+  // ---------- Beta counters (P-148) ----------
+
+  /// Counts [n] of [event] for the next send; saved with the state.
+  void _count(String event, [int n = 1]) {
+    if (n <= 0) return;
+    _s = _s.copyWith(
+      unsent: {..._s.unsent, event: (_s.unsent[event] ?? 0) + n},
+    );
+  }
+
+  /// Counts an event from a screen (setup steps, photo access) and sends what waits.
+  Future<void> track(String event, [int n = 1]) async {
+    await _load();
+    _count(event, n);
+    await _save();
+    unawaited(_flush());
+  }
+
+  /// Sends waiting counters; whatever fails waits for the next time. Not from a background
+  /// check, which has no Firebase.
+  Future<void> _flush() async {
+    if (ref.read(autoSaveHeadlessProvider) || !ref.mounted) return;
+    final send = ref.read(autoSaveEventSinkProvider);
+    for (final e in {..._s.unsent}.entries) {
+      try {
+        await send(e.key, e.value.clamp(1, 1000));
+      } on Object {
+        continue;
+      }
+      final left = (_s.unsent[e.key] ?? 0) - e.value;
+      _s = _s.copyWith(
+        unsent: {..._s.unsent}..update(e.key, (_) => left, ifAbsent: () => 0),
+      );
+      if (left <= 0) _s = _s.copyWith(unsent: {..._s.unsent}..remove(e.key));
+    }
+    await _save();
   }
 
   Map<String, Map<String, LedgerState>> _copyLedger() => {

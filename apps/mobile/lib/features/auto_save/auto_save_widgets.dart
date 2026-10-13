@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,19 +16,47 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
-import '../diagnostics/diagnostics_providers.dart';
+import '../home/home_shell.dart';
 import '../memories/memory_widgets.dart' show PlayGlyph;
 import 'auto_save_controller.dart';
 
 // Only the phone calls the background entry point; exporting it keeps it in release builds.
 export 'auto_save_background.dart' show autoSaveBackground;
 
-/// Tự lưu is offered on iOS in dev builds, or where `publicConfig/flags.auto_save` is on
-/// (P-148; the server key comes with M3).
-final autoSaveAvailableProvider = Provider<bool>((ref) {
+/// The `auto_save` rollout for one baby (P-148): asked from the server (`getFeatureAccess`,
+/// which knows staff families and percent buckets) and remembered on the phone, so background
+/// checks follow a kill switch too. Dev builds always have it, for testing.
+final autoSaveFlagProvider = FutureProvider.autoDispose.family<bool, String>((
+  ref,
+  babyId,
+) async {
   if (!ref.watch(autoSaveNativeProvider).supported) return false;
-  if (ref.watch(environmentProvider) == AppEnvironment.dev) return true;
-  return ref.watch(publicFlagsProvider).value?['auto_save'] == true;
+  final controller = ref.read(autoSaveProvider.notifier);
+  bool on;
+  if (ref.watch(environmentProvider) == AppEnvironment.dev) {
+    on = true;
+  } else {
+    try {
+      final result = await ref
+          .watch(functionsProvider)
+          .httpsCallable('getFeatureAccess')
+          .call<Object?>({'babyId': babyId});
+      on = (result.data as Map?)?['autoSave'] == true;
+    } on Object {
+      // Offline or failing: the last answer this phone got.
+      await controller.ready();
+      return ref.read(autoSaveProvider).state.allowed[babyId] ?? false;
+    }
+  }
+  unawaited(controller.rememberAllowed(babyId, on));
+  return on;
+});
+
+/// Tự lưu is offered to the selected baby (iOS only, D-066 #3).
+final autoSaveAvailableProvider = Provider<bool>((ref) {
+  final babyId = ref.watch(selectedBabyIdProvider);
+  if (babyId == null) return false;
+  return ref.watch(autoSaveFlagProvider(babyId)).value ?? false;
 });
 
 /// Loads a library thumbnail by PhotoKit id; replaced in tests.

@@ -137,6 +137,8 @@ class AutoSaveState {
     this.names = const {},
     this.notifiedAt,
     this.bannerHidden = const {},
+    this.allowed = const {},
+    this.unsent = const {},
   });
 
   /// Master switch (AS19).
@@ -188,6 +190,14 @@ class AutoSaveState {
   /// new ones.
   final Set<String> bannerHidden;
 
+  /// The last `auto_save` rollout answer per baby (P-148), so a background check follows a kill
+  /// switch without asking the server. Only babies answered `true` are checked.
+  final Map<String, bool> allowed;
+
+  /// Beta counters not yet sent (P-148, `recordAppEvent`): event name → how many. A background
+  /// check has no Firebase, so they wait here for the app.
+  final Map<String, int> unsent;
+
   bool get consented => consentVersion == autoSaveConsentVersion;
 
   /// Whether this item is done for this baby (or for every baby).
@@ -221,6 +231,8 @@ class AutoSaveState {
     Map<String, String>? names,
     DateTime? notifiedAt,
     Set<String>? bannerHidden,
+    Map<String, bool>? allowed,
+    Map<String, int>? unsent,
   }) => AutoSaveState(
     enabled: enabled ?? this.enabled,
     consentVersion: clearConsent ? null : consentVersion ?? this.consentVersion,
@@ -241,6 +253,8 @@ class AutoSaveState {
     names: names ?? this.names,
     notifiedAt: notifiedAt ?? this.notifiedAt,
     bannerHidden: bannerHidden ?? this.bannerHidden,
+    allowed: allowed ?? this.allowed,
+    unsent: unsent ?? this.unsent,
   );
 
   /// "Xoá ảnh mẫu và dữ liệu gợi ý" (AS19) or withdrawing the consent: every face number,
@@ -263,6 +277,8 @@ class AutoSaveState {
           },
     },
     savedByMonth: savedByMonth,
+    allowed: allowed,
+    unsent: unsent,
   );
 
   Map<String, Object?> toJson() => {
@@ -291,6 +307,8 @@ class AutoSaveState {
     'names': names,
     'notifiedAt': notifiedAt?.millisecondsSinceEpoch,
     'bannerHidden': bannerHidden.toList(),
+    'allowed': allowed,
+    'unsent': unsent,
   };
 
   static AutoSaveState fromJson(Map<String, Object?> j) {
@@ -335,6 +353,11 @@ class AutoSaveState {
       notifiedAt: time(j['notifiedAt']),
       bannerHidden: {
         for (final id in (j['bannerHidden'] as List?) ?? const []) id as String,
+      },
+      allowed: map(j['allowed']).cast<String, bool>(),
+      unsent: {
+        for (final e in map(j['unsent']).entries)
+          e.key: (e.value! as num).toInt(),
       },
     );
   }

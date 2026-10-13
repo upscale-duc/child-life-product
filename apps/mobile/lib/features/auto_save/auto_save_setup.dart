@@ -27,6 +27,7 @@ import '../memories/memory_models.dart';
 import '../memories/memory_repository.dart';
 import '../memories/memory_widgets.dart';
 import 'auto_save_controller.dart';
+import 'auto_save_native.dart';
 import 'auto_save_store.dart';
 import 'auto_save_widgets.dart';
 
@@ -108,7 +109,12 @@ class AutoSaveIntro extends ConsumerWidget {
       bottom: ClButton(
         label: l10n.autoSaveStart,
         expand: true,
-        onPressed: () => context.push(Routes.autoSaveSetup),
+        onPressed: () {
+          unawaited(
+            ref.read(autoSaveProvider.notifier).track('autoSaveSetupStarted'),
+          );
+          context.push(Routes.autoSaveSetup);
+        },
       ),
       children: [
         AutoSaveCard(
@@ -184,7 +190,16 @@ class _AutoSaveSetupScreenState extends ConsumerState<AutoSaveSetupScreen> {
     }
     setState(() => _busy = true);
     final c = ref.read(autoSaveProvider.notifier);
-    await c.requestAccess();
+    final access = await c.requestAccess();
+    // P-148 funnel: finished with the consent, and which photo access was given.
+    unawaited(c.track('autoSaveSetupDone'));
+    unawaited(
+      c.track(switch (access) {
+        LibraryAccess.full => 'autoSaveAccessFull',
+        LibraryAccess.limited => 'autoSaveAccessLimited',
+        _ => 'autoSaveAccessDenied',
+      }),
+    );
     await c.setUp(
       samples: {for (final id in _chosen) id: _samples[id] ?? const []},
       scanFrom: autoSaveScanFrom(ref, _chosen, DateTime.now()),

@@ -8,6 +8,7 @@ import {
   type AnalyticsFeatures,
   type AnalyticsGrowth,
   type AnalyticsResult,
+  type AutoSaveCounts,
   type Delta,
   type FeedbackType,
 } from '../api';
@@ -446,7 +447,58 @@ export function FeaturesView({ data }: { data: AnalyticsFeatures }) {
       {data.feedback && data.reviewPrompt && (
         <FeedbackPanel feedback={data.feedback} reviewPrompt={data.reviewPrompt} />
       )}
+      {data.autoSave && <AutoSavePanel counts={data.autoSave} />}
     </div>
+  );
+}
+
+/**
+ * Tự lưu kỷ niệm beta (D-066, P-148): counts only. How parents get through setup, which photo
+ * access they give, and what they do with suggestions; "Bỏ sót" are photos added by hand that a
+ * check had seen but not suggested.
+ */
+function AutoSavePanel({ counts: c }: { counts: AutoSaveCounts }) {
+  const intl = useIntl();
+  const access = c.accessFull + c.accessLimited + c.accessDenied;
+  const decided = c.approved + c.unticked + c.rejected + c.skipped;
+  const row = (id: string, value: number, of?: number) => (
+    <>
+      <dt>
+        <FormattedMessage id={`analytics.autoSave.${id}`} />
+      </dt>
+      <dd>
+        {intl.formatNumber(value)}
+        {of === undefined ? null : ` · ${pct(intl, of ? value / of : null)}`}
+      </dd>
+    </>
+  );
+  return (
+    <Panel
+      title={<FormattedMessage id="analytics.autoSave" />}
+      note={<FormattedMessage id="analytics.autoSaveNote" />}
+    >
+      <div className="cols cols--1-1">
+        <dl className="kv">
+          {row('setupStarted', c.setupStarted)}
+          {row('setupDone', c.setupDone, c.setupStarted)}
+          {row('accessFull', c.accessFull, access)}
+          {row('accessLimited', c.accessLimited, access)}
+          {row('accessDenied', c.accessDenied, access)}
+          {row('turnedOff', c.turnedOff)}
+          {row('wiped', c.wiped)}
+        </dl>
+        <dl className="kv">
+          {row('suggested', c.suggested)}
+          {row('approved', c.approved, decided)}
+          {row('unticked', c.unticked, decided)}
+          {row('rejected', c.rejected, decided)}
+          {row('skipped', c.skipped, decided)}
+          {row('missed', c.missed)}
+          {row('backgroundChecks', c.backgroundChecks)}
+          {row('notified', c.notified)}
+        </dl>
+      </div>
+    </Panel>
   );
 }
 
@@ -524,6 +576,7 @@ export function analyticsCsv(r: AnalyticsResult): string {
     for (const v of r.versions) rows.push(['version', `${v.platform} ${v.version}`, v.devices]);
     for (const [k, v] of Object.entries(r.feedback ?? {})) rows.push(['feedback', k, v]);
     for (const [k, v] of Object.entries(r.reviewPrompt ?? {})) rows.push(['reviewPrompt', k, v]);
+    for (const [k, v] of Object.entries(r.autoSave ?? {})) rows.push(['autoSave', k, v]);
   }
   return toCsv(rows[0] as string[], rows.slice(1));
 }

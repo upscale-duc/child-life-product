@@ -531,6 +531,26 @@ export interface AnalyticsFeatures {
   /** D-065 counters (all platforms); absent from servers older than P-145. */
   feedback?: Record<FeedbackType, number>;
   reviewPrompt?: { eligible: number; requested: number };
+  /** Tự lưu kỷ niệm beta counters (D-066, P-148); absent from older servers. */
+  autoSave?: AutoSaveCounts;
+}
+
+export interface AutoSaveCounts {
+  setupStarted: number;
+  setupDone: number;
+  accessFull: number;
+  accessLimited: number;
+  accessDenied: number;
+  suggested: number;
+  approved: number;
+  unticked: number;
+  rejected: number;
+  skipped: number;
+  missed: number;
+  backgroundChecks: number;
+  notified: number;
+  turnedOff: number;
+  wiped: number;
 }
 
 export type AnalyticsResult =

@@ -252,9 +252,36 @@ export const sendFeedbackSchema = z.object({
   locale: z.enum(['vi', 'en']),
 });
 
-/** FB5 counters (P-137: first-party, aggregate only); feedback is counted by the server. */
-export const appEvents = ['reviewPromptEligible', 'reviewPromptRequested'] as const;
-export const recordAppEventSchema = z.object({ event: z.enum(appEvents) });
+/**
+ * Counters from the app (P-137: first-party, aggregate only, nothing about who); feedback is
+ * counted by the server. FB5 review prompts, and Tự lưu kỷ niệm's beta numbers (P-148): setup,
+ * photo access, what parents do with suggestions, background checks, missed photos.
+ */
+export const appEvents = [
+  'reviewPromptEligible',
+  'reviewPromptRequested',
+  'autoSaveSetupStarted',
+  'autoSaveSetupDone',
+  'autoSaveAccessFull',
+  'autoSaveAccessLimited',
+  'autoSaveAccessDenied',
+  'autoSaveSuggested',
+  'autoSaveApproved',
+  'autoSaveUnticked',
+  'autoSaveRejected',
+  'autoSaveSkipped',
+  'autoSaveMissed',
+  'autoSaveBackgroundCheck',
+  'autoSaveNotified',
+  'autoSaveTurnedOff',
+  'autoSaveWiped',
+] as const;
+export type AppEvent = (typeof appEvents)[number];
+/** [n]: how many at once (e.g. 15 photos approved in one go). */
+export const recordAppEventSchema = z.object({
+  event: z.enum(appEvents),
+  n: z.number().int().min(1).max(1000).default(1),
+});
 
 /** FB3 "Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ": what this person sent. */
 export interface MyTicket {

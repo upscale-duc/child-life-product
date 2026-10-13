@@ -6,7 +6,7 @@ Source: Figma page **"v1.0 - improvement"** `345:35701`, rows "AS · Tự lưu k
 free beta. The flow is: scan new photos → analyse on the phone → group near-duplicates → rank quality →
 parents confirm → upload.
 
-Status (2026-10-13): **M1 committed (4ebc0e0); M2 code in place; neither tried on a phone yet** (§9.1, §9.2). Owner decisions are D-066. Engineering proposals P-146 …
+Status (2026-10-13): **M1 (4ebc0e0) and M2 (0423d5f) committed; M3 code in place, not deployed; nothing tried on a phone yet** (§9.1 – §9.3). Owner decisions are D-066. Engineering proposals P-146 …
 P-150 need the owner to confirm them. Open questions are Q-054 … Q-058 and design gaps are G-102 … G-106
 (business map).
 
@@ -299,6 +299,28 @@ Where it differs from the frames, and why:
 - Not verified on a phone: background launches need a real device (iOS rarely runs them in the
   simulator); try with Xcode's `e -l objc -- (void)[[BGTaskScheduler sharedScheduler]
   _simulateLaunchForTaskWithIdentifier:@"childlife.autosave.check"]` while paused in the debugger.
+
+### 9.3 M3 as built (2026-10-13)
+
+- **Flag `auto_save`** in `packages/contracts/src/config.ts`, default off with scope `internal`. `flagsSchema`
+  now fills a missing key with its default, so today's `config/flags` documents keep parsing (and every kill
+  switch keeps working) after the key is added; the portal's A10 lists it with its labels.
+- **`getFeatureAccess`** (`firebase/functions/src/features.ts`): for an active member and baby, whether
+  `auto_save` is on for that family (Cùng nuôi only; `internal` from the family document, `percent` from
+  the AI-drafts bucket). The app asks for the selected baby and keeps the answer on the phone; checks only
+  run for babies answered yes, and a "no" for every baby cancels the background check. Dev builds skip the
+  question.
+- **Counters** (P-148): new `appEvents` names `autoSave*`, an optional `n`, counted in `appEventsDaily` and
+  shown in Phân tích › Tính năng as "Tự lưu kỷ niệm (beta iOS)" (and in the CSV). The phone queues them in
+  its Tự lưu state and sends them when the app runs, so background checks are counted too.
+- **To roll out on dev:** deploy the functions (`scripts/deploy.sh dev functions:getFeatureAccess,functions:recordAppEvent,functions:staffAnalytics,functions:staffExportAnalytics`)
+  and the portal, then in the portal set `auto_save` to "Thử nội bộ" and mark staff
+  families `internal: true` (no tool does this yet; by hand in Firestore), then 10 %.
+- Tests: `firebase/tests/features.integration.test.ts` (own emulator project, since it rewrites
+  `config/flags`), counter cases in `feedback.integration.test.ts` and `analytics.integration.test.ts`,
+  `packages/contracts/test/config.test.ts`, mobile `auto_save_test.dart`. The Firebase suite has failures
+  that exist on HEAD without these changes (account, links, memories "unused reservations", stories
+  "inventing model"), plus some that come and go when files run in parallel.
 
 ## 10. Open questions for the owner
 

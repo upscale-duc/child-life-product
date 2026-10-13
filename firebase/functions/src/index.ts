@@ -39,6 +39,7 @@ import {
   updateMember,
   type Caller,
 } from './family.js';
+import { FeatureError, featureAccess } from './features.js';
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { resendSender } from './mail-resend.js';
 import {
@@ -270,7 +271,8 @@ function asHttpsError(operation: string, error: unknown): HttpsError {
   if (
     error instanceof BabyError ||
     error instanceof FamilyError ||
-    error instanceof SpendingError
+    error instanceof SpendingError ||
+    error instanceof FeatureError
   ) {
     return new HttpsError(error.code, error.reason, { reason: error.reason });
   }
@@ -374,6 +376,11 @@ const familyCall = <T>(name: string, run: (request: CallableRequest) => Promise<
       throw asHttpsError(name, error);
     }
   });
+
+/** P-148: per-family features (Tự lưu kỷ niệm's `auto_save` rollout) for one of my babies. */
+export const getFeatureAccess = familyCall('getFeatureAccess', (r) =>
+  featureAccess(getFirestore(), requireAccount(r), r.data, new Date()),
+);
 
 export const createFamilyInvite = familyCall('createFamilyInvite', (r) =>
   createInvite(getFirestore(), callerOf(r), r.data, new Date()),

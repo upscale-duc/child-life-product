@@ -126,11 +126,11 @@ export async function myTickets(db: Firestore, caller: AccountCaller): Promise<M
     .map(({ at, ...t }) => ({ ...t, createdAt: at.toISOString() }));
 }
 
-/** FB5 "prompt_eligible" / "prompt_requested": a daily count, nothing about who. */
+/** FB5 "prompt_eligible" / "prompt_requested", Tự lưu (P-148): a daily count, nothing about who. */
 export async function recordAppEvent(db: Firestore, data: unknown, now: Date) {
   const req = parse(recordAppEventSchema, data);
   await db
     .doc(`appEventsDaily/${dayOf(now)}`)
-    .set({ day: dayOf(now), [req.event]: FieldValue.increment(1) }, { merge: true });
+    .set({ day: dayOf(now), [req.event]: FieldValue.increment(req.n) }, { merge: true });
   return { ok: true };
 }

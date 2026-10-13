@@ -13,6 +13,8 @@ export const flagKeys = [
   'invites',
   'lock_widgets',
   'night_auto',
+  /** Tự lưu kỷ niệm beta on iOS (D-066, P-148); evaluated per family by `featureAccess`. */
+  'auto_save',
 ] as const;
 export type FlagKey = (typeof flagKeys)[number];
 
@@ -28,10 +30,37 @@ export const flagSchema = z.object({
 });
 export type Flag = z.infer<typeof flagSchema>;
 
+export type Flags = Record<FlagKey, Flag>;
+
+const off = (scope: Flag['scope'] = 'all'): Flag => ({
+  enabled: false,
+  scope,
+  percent: 0,
+  notice: null,
+});
+
+/** Safe defaults used when the config document is missing: features ship dark until enabled. */
+export const defaultFlags: Flags = {
+  media_upload: off(),
+  video_upload: off(),
+  ai_story_drafts: off('internal'),
+  story_share_link: off(),
+  invites: off(),
+  lock_widgets: off(),
+  night_auto: off('internal'),
+  auto_save: off('internal'),
+};
+
+/**
+ * Every flag. A key the stored document does not have yet (a flag added after the document was
+ * written, such as `auto_save`) reads as its default, off, instead of failing the whole document
+ * and with it every kill switch.
+ */
 export const flagsSchema = z.object(
-  Object.fromEntries(flagKeys.map((k) => [k, flagSchema])) as Record<FlagKey, typeof flagSchema>,
+  Object.fromEntries(
+    flagKeys.map((k) => [k, flagSchema.default(() => ({ ...defaultFlags[k] }))]),
+  ) as Record<FlagKey, z.ZodDefault<typeof flagSchema>>,
 );
-export type Flags = z.infer<typeof flagsSchema>;
 
 /**
  * Global limits (D-011, Admin portal A10 "Giới hạn chung"). Changed without an app release.
@@ -60,23 +89,16 @@ export const defaultLimits: Limits = {
   storageRequestAmountsGb: [10, 20], // D-010
 };
 
-const off = (scope: Flag['scope'] = 'all'): Flag => ({
-  enabled: false,
-  scope,
-  percent: 0,
-  notice: null,
-});
-
-/** Safe defaults used when the config document is missing: features ship dark until enabled. */
-export const defaultFlags: Flags = {
-  media_upload: off(),
-  video_upload: off(),
-  ai_story_drafts: off('internal'),
-  story_share_link: off(),
-  invites: off(),
-  lock_widgets: off(),
-  night_auto: off('internal'),
-};
+/**
+ * `featureAccess` callable (P-148): which per-family features a member's baby may use. The app
+ * cannot evaluate `internal` or `percent` itself (only the owner may read the family document).
+ */
+export const featureAccessRequestSchema = z.object({ babyId: z.string().min(1).max(128) });
+export type FeatureAccessRequest = z.infer<typeof featureAccessRequestSchema>;
+export interface FeatureAccess {
+  /** Tự lưu kỷ niệm (D-066): the flag is on for this family and the caller is a Cùng nuôi. */
+  autoSave: boolean;
+}
 
 /** Whether a flag is on for a given family (stable hash bucket 0–99). */
 export function isFlagOnForBucket(flag: Flag, bucket: number, isInternalFamily: boolean): boolean {

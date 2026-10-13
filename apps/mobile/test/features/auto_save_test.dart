@@ -37,6 +37,8 @@ void main() {
   late Map<String, Map<String, Object?>> described;
   late List<MethodCall> calls;
   late String access;
+  late List<(String, int)> sent;
+  var sinkFails = false;
 
   Map<String, Object?> photo(
     String id, {
@@ -57,6 +59,8 @@ void main() {
   setUp(() {
     dir = Directory.systemTemp.createTempSync('autosave');
     calls = [];
+    sent = [];
+    sinkFails = false;
     access = 'full';
     library = [];
     described = {};
@@ -105,6 +109,10 @@ void main() {
           ),
         ),
         babyProvider.overrideWith((ref, id) => Stream.value(teddy)),
+        autoSaveEventSinkProvider.overrideWithValue((event, n) async {
+          if (sinkFails) throw StateError('offline');
+          sent.add((event, n));
+        }),
         autoSaveNativeProvider.overrideWithValue(
           AutoSaveNative(supported: true),
         ),
@@ -132,6 +140,8 @@ void main() {
     await pumpEventQueue();
     final ctl = c.read(autoSaveProvider.notifier);
     await ctl.ready();
+    // The `auto_save` rollout said yes for this family (P-148).
+    await ctl.rememberAllowed(teddyId, true);
     await ctl.setUp(
       samples: {
         teddyId: [
@@ -527,5 +537,79 @@ void main() {
       await ctl.hideBanner();
       expect(c.read(autoSaveProvider).state.bannerHidden, {'a'});
     });
+  });
+
+  group('P-148 rollout and counters', () {
+    test(
+      'no check for a baby the rollout said no to; the kill switch stops background checks',
+      () async {
+        library = ['a'];
+        described = {'a': photo('a', face: teddyFace)};
+        final c = await container();
+        final ctl = await setUpTeddy(c);
+        expect(c.read(autoSaveProvider).state.pending, hasLength(1));
+        calls.clear();
+        await ctl.rememberAllowed(teddyId, false);
+        expect(calls.map((m) => m.method), contains('unschedule'));
+        library = ['a', 'b'];
+        described['b'] = photo(
+          'b',
+          at: const Duration(hours: 1),
+          face: teddyFace,
+        );
+        await ctl.scan();
+        expect(calls.where((m) => m.method == 'analyze'), isEmpty);
+      },
+    );
+
+    test(
+      'what parents do is counted, sent, and kept when sending fails',
+      () async {
+        library = ['a', 'b'];
+        described = {
+          'a': photo('a', face: teddyFace),
+          'b': photo('b', at: const Duration(minutes: 10), face: teddyFace),
+        };
+        final c = await container();
+        final ctl = await setUpTeddy(c);
+        sinkFails = true;
+        final pending = c.read(autoSaveProvider).state.pending;
+        await ctl.approve(
+          chosen: [pending.first],
+          reviewed: pending,
+          audience: Audience.parents,
+          notifyFamily: false,
+        );
+        final waiting = c.read(autoSaveProvider).state.unsent;
+        expect(waiting['autoSaveApproved'], 1);
+        expect(waiting['autoSaveUnticked'], 1);
+        expect(waiting['autoSaveSuggested'], 2);
+
+        sinkFails = false;
+        await ctl.track('autoSaveSetupStarted');
+        await pumpEventQueue();
+        expect(
+          sent,
+          containsAll([('autoSaveApproved', 1), ('autoSaveSuggested', 2)]),
+        );
+        expect(c.read(autoSaveProvider).state.unsent, isEmpty);
+      },
+    );
+
+    test(
+      'a photo a check saw but did not suggest, added by hand, is a miss',
+      () async {
+        library = ['a', 'z'];
+        described = {
+          'a': photo('a', face: teddyFace),
+          'z': photo('z', at: const Duration(minutes: 5), face: strangerFace),
+        };
+        final c = await container();
+        await setUpTeddy(c);
+        sinkFails = true;
+        await c.read(autoSaveProvider.notifier).recordUploaded(['z'], teddyId);
+        expect(c.read(autoSaveProvider).state.unsent['autoSaveMissed'], 1);
+      },
+    );
   });
 }

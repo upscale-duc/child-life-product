@@ -141,4 +141,13 @@ describe('FB3 history and FB5 counters', () => {
     });
     expect(await reason(recordAppEvent(db, { event: 'uid:mom' }, now))).toBe('malformed');
   });
+
+  it('Tự lưu counters add several at once (P-148)', async () => {
+    await recordAppEvent(db, { event: 'autoSaveApproved', n: 15 }, now);
+    await recordAppEvent(db, { event: 'autoSaveApproved' }, now);
+    expect((await db.doc('appEventsDaily/2026-10-13').get()).get('autoSaveApproved')).toBe(16);
+    expect(await reason(recordAppEvent(db, { event: 'autoSaveApproved', n: 0 }, now))).toBe(
+      'malformed',
+    );
+  });
 });
