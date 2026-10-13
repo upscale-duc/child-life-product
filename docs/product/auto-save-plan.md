@@ -6,7 +6,7 @@ Source: Figma page **"v1.0 - improvement"** `345:35701`, rows "AS · Tự lưu k
 free beta. The flow is: scan new photos → analyse on the phone → group near-duplicates → rank quality →
 parents confirm → upload.
 
-Status (2026-10-13): **M1 (4ebc0e0) and M2 (0423d5f) committed; M3 code in place, not deployed; nothing tried on a phone yet** (§9.1 – §9.3). Owner decisions are D-066. Engineering proposals P-146 …
+Status (2026-10-13): **M1 (4ebc0e0), M2 (0423d5f) and M3 (c3dd71f) committed; M3's functions and the portal deployed to dev; `auto_save` still off; nothing tried on a phone yet** (§9.1 – §9.3). Owner decisions are D-066. Engineering proposals P-146 …
 P-150 need the owner to confirm them. Open questions are Q-054 … Q-058 and design gaps are G-102 … G-106
 (business map).
 
@@ -313,6 +313,8 @@ Where it differs from the frames, and why:
 - **Counters** (P-148): new `appEvents` names `autoSave*`, an optional `n`, counted in `appEventsDaily` and
   shown in Phân tích › Tính năng as "Tự lưu kỷ niệm (beta iOS)" (and in the CSV). The phone queues them in
   its Tự lưu state and sends them when the app runs, so background checks are counted too.
+- **Deployed to dev (2026-10-13):** `getFeatureAccess` (new), `recordAppEvent`, `staffAnalytics`,
+  `staffExportAnalytics`, `staffFlags`, `staffSetFlag`, `mirrorPublicConfig`, and the portal.
 - **To roll out on dev:** deploy the functions (`scripts/deploy.sh dev functions:getFeatureAccess,functions:recordAppEvent,functions:staffAnalytics,functions:staffExportAnalytics`)
   and the portal, then in the portal set `auto_save` to "Thử nội bộ" and mark staff
   families `internal: true` (no tool does this yet; by hand in Firestore), then 10 %.
