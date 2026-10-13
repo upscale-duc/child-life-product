@@ -6,6 +6,9 @@ import '../core/design/tokens.g.dart';
 import '../features/appearance/appearance_screen.dart';
 import '../features/auth/auth_screens.dart';
 import '../features/auth/email_link.dart';
+import '../features/auto_save/auto_save_home.dart';
+import '../features/auto_save/auto_save_review.dart';
+import '../features/auto_save/auto_save_setup.dart';
 import '../features/care/care_models.dart';
 import '../features/care/care_hub_screen.dart';
 import '../features/care/care_screens.dart';
@@ -271,6 +274,42 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (_, s) => AlbumDetailScreen(
                       albumKey: s.pathParameters['key'] ?? '',
                     ),
+                  ),
+                  // Tự lưu kỷ niệm (D-066, AS02 – AS19).
+                  _route(
+                    path: 'auto-save',
+                    builder: (_, _) => const AutoSaveHomeScreen(),
+                    routes: [
+                      _route(
+                        path: 'setup',
+                        builder: (_, _) => const AutoSaveSetupScreen(),
+                      ),
+                      _route(
+                        path: 'review',
+                        builder: (_, _) => const AutoSaveReviewScreen(),
+                        routes: [
+                          _route(
+                            path: 'confirm',
+                            redirect: (_, s) => s.extra is AutoSaveDecision
+                                ? null
+                                : Routes.autoSaveReview,
+                            builder: (_, s) => AutoSaveConfirmScreen(
+                              decision: s.extra! as AutoSaveDecision,
+                            ),
+                          ),
+                        ],
+                      ),
+                      _route(
+                        path: 'settings',
+                        builder: (_, _) => const AutoSaveSettingsScreen(),
+                      ),
+                      _route(
+                        path: 'samples/:babyId',
+                        builder: (_, s) => AutoSaveSamplesScreen(
+                          babyId: s.pathParameters['babyId'] ?? '',
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gal/gal.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
@@ -19,6 +18,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../auto_save/library_save.dart';
 import '../care/care_repository.dart';
 import 'album_models.dart';
 import '../care/care_models.dart';
@@ -1450,17 +1450,13 @@ Future<void> showDownloadAlbumSheet(
   ];
   toaster.show(message: l10n.toastSaving);
   try {
-    if (!await Gal.hasAccess(toAlbum: true)) {
-      await Gal.requestAccess(toAlbum: true);
-    }
     var saved = 0;
     for (final i in now) {
       final path = i.paths?.original;
       if (path == null) continue;
       final file = await mediaBytes.file(path);
-      i.isVideo
-          ? await Gal.putVideo(file.path, album: name)
-          : await Gal.putImage(file.path, album: name);
+      if (!context.mounted) return;
+      await saveToLibrary(context, file, video: i.isVideo, album: name);
       saved++;
     }
     toaster.show(

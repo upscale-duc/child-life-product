@@ -48,7 +48,15 @@ Future<PickedMedia?> _fromAsset(AssetEntity a, Uint8List? thumb) async {
     height: a.orientatedHeight,
     thumbBytes:
         thumb ?? await a.thumbnailDataWithSize(const ThumbnailSize.square(200)),
+    assetId: a.id,
   );
+}
+
+/// A library item by its PhotoKit id (Tự lưu suggestions, AS10); null when it is gone. The
+/// original may come down from iCloud first (AS11 "Đang lấy tệp gốc từ iCloud").
+Future<PickedMedia?> pickedFromLibrary(String id) async {
+  final a = await AssetEntity.fromId(id);
+  return a == null ? null : _fromAsset(a, null);
 }
 
 // ---------- "Ảnh mới chụp hôm nay" (10a2) ----------

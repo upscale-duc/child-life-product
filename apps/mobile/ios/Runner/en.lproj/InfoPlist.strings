@@ -1,5 +1,5 @@
 /* Permission prompts (Figma 11c Chọn ảnh đại diện, 15 Quét mã QR). */
 "NSCameraUsageDescription" = "Child Life uses the camera to take your baby's photos and videos, their profile photo, and to scan invite QR codes. Only your family can see them.";
-"NSPhotoLibraryUsageDescription" = "Child Life opens your photo library so you can add your baby's photos and videos to Memories and choose a profile photo. Only your family can see them.";
+"NSPhotoLibraryUsageDescription" = "Child Life opens your photo library so you can add your baby's photos and videos to Memories and choose a profile photo. If you turn on Auto-save memories, the app looks for new photos of your baby on this phone and only uploads the ones you approve. Only your family can see them.";
 "NSPhotoLibraryAddUsageDescription" = "Child Life saves photos and videos you download from Memories to your photo library.";
 "NSMicrophoneUsageDescription" = "Child Life records sound with the videos you take of your baby.";

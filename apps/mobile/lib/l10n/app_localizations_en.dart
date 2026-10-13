@@ -9398,4 +9398,789 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emailLinkNeedsEmail => 'Enter your email to get a sign-in link.';
+
+  @override
+  String get autoSaveTitle => 'Auto-save memories';
+
+  @override
+  String get autoSaveBeta => 'Free beta';
+
+  @override
+  String autoSaveEntryHint(String name) {
+    return 'Suggests photos and videos of $name from your library';
+  }
+
+  @override
+  String autoSaveEntryPending(int count, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new photos to review · checked at $time',
+      one: '1 new photo to review · checked at $time',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveReviewShort => 'Review';
+
+  @override
+  String get autoSaveIntroLead =>
+      'No more digging through your library. Child Life finds photos and videos that may show your baby, and you check them before anything is uploaded.';
+
+  @override
+  String get autoSaveStep1 => 'Pick your baby and a few clear photos';
+
+  @override
+  String get autoSaveStep1Hint => 'Helps the app suggest better';
+
+  @override
+  String get autoSaveStep2 => 'The app looks through new photos';
+
+  @override
+  String get autoSaveStep2Hint => 'Only the photos you let it see';
+
+  @override
+  String get autoSaveStep3 => 'You approve before anything uploads';
+
+  @override
+  String get autoSaveStep3Hint => 'Nothing uploads or shares on its own';
+
+  @override
+  String autoSaveIntroFootnote(String usage) {
+    return 'Suggestions can miss photos or get them wrong, especially dark, tilted or crowded ones. Photos are checked on this phone and never sent anywhere. The beta is free; uploaded files still count towards your family\'s storage ($usage).';
+  }
+
+  @override
+  String get autoSaveIntroFootnoteNoUsage =>
+      'Suggestions can miss photos or get them wrong, especially dark, tilted or crowded ones. Photos are checked on this phone and never sent anywhere. The beta is free; uploaded files still count towards your family\'s storage.';
+
+  @override
+  String get autoSaveStart => 'Set up';
+
+  @override
+  String get autoSavePickBabyTitle => 'Which baby should we look for?';
+
+  @override
+  String get autoSavePickBabySub =>
+      'Step 1 of 3 · You can add another baby later in Settings.';
+
+  @override
+  String autoSaveYouAre(String relation) {
+    return 'You are $relation';
+  }
+
+  @override
+  String get autoSaveLockedCaregiver =>
+      'you\'re a caregiver, so you can\'t turn this on';
+
+  @override
+  String get autoSaveLockedRelative =>
+      'you\'re a relative, so you can\'t turn this on';
+
+  @override
+  String get autoSaveNext => 'Next';
+
+  @override
+  String autoSaveSamplesTitle(String name) {
+    return 'Pick a few clear photos of $name';
+  }
+
+  @override
+  String get autoSaveSamplesSub =>
+      'Step 2 of 3 · 3–5 well-lit photos where the face is clear. Samples are only used for suggestions and don\'t appear in Memories.';
+
+  @override
+  String autoSaveSamplesCount(int count) {
+    return '$count/5 samples · from your Memories';
+  }
+
+  @override
+  String get autoSaveSamplesFromLibrary => 'Or choose from your library';
+
+  @override
+  String autoSaveSamplesNext(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Next · $count samples',
+      one: 'Next · 1 sample',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveSamplesNeed => 'Pick at least 3 samples.';
+
+  @override
+  String get autoSaveSampleNoFace =>
+      'No clear face in this photo. Try another one.';
+
+  @override
+  String autoSaveSamplesEmpty(String name) {
+    return 'Memories has no photos of $name yet. Choose from your library.';
+  }
+
+  @override
+  String get autoSaveConsentTitle => 'Before you start';
+
+  @override
+  String get autoSaveConsentSub =>
+      'Step 3 of 3 · You can change this any time in Auto-save settings.';
+
+  @override
+  String autoSaveFaceTitle(String name) {
+    return 'Recognise $name on this phone only';
+  }
+
+  @override
+  String autoSaveFaceBody(String name) {
+    return 'Child Life compares faces in new photos with $name\'s samples to make suggestions. It all happens on your phone.';
+  }
+
+  @override
+  String autoSaveFaceNoPhotos(String name) {
+    return 'No photos of $name are kept: your samples stay in Memories or your library.';
+  }
+
+  @override
+  String get autoSaveFaceNumbers =>
+      'Only a list of numbers about the face is remembered, on this phone, never sent to Child Life.';
+
+  @override
+  String get autoSaveFaceNoOne =>
+      'Child Life can\'t see it and never uses it for ads. Delete it any time.';
+
+  @override
+  String autoSaveFaceAgree(String name) {
+    return 'I agree to let Child Life recognise $name on this phone';
+  }
+
+  @override
+  String get autoSaveAgreeFirst =>
+      'Tick the agreement in the first card to continue.';
+
+  @override
+  String get autoSaveWhatKept => 'What does Child Life keep?';
+
+  @override
+  String get autoSaveLibraryTitle => 'Let Child Life see your photo library';
+
+  @override
+  String autoSaveLibraryBody(String name) {
+    return 'To find new photos and videos that may show $name. The app never deletes or changes anything in your library.';
+  }
+
+  @override
+  String get autoSaveLibraryHint =>
+      'Next, your phone asks for permission. You can allow all photos or only the ones you choose.';
+
+  @override
+  String get autoSaveUploadTitle => 'Only what you approve is uploaded';
+
+  @override
+  String get autoSaveUploadBody =>
+      'Photos and videos you approve are uploaded to Memories just like when you add them yourself, and keep uploading when your phone is locked.';
+
+  @override
+  String get autoSaveAllow => 'Allow photo access';
+
+  @override
+  String get autoSaveLater => 'Later · add photos yourself';
+
+  @override
+  String get autoSaveKeptHere => 'On this phone';
+
+  @override
+  String get autoSaveKeptHereBody =>
+      'Numbers about the face from your samples and the photos you approved; which photos were checked or skipped; your Auto-save settings. Not in your iCloud backup. Removing the app removes it all.';
+
+  @override
+  String get autoSaveKeptNever => 'Never';
+
+  @override
+  String get autoSaveKeptNeverBody =>
+      'Keep copies of your samples or library photos; send face data to Child Life\'s servers or anyone else; use it for ads.';
+
+  @override
+  String get autoSaveKeptUp => 'Uploaded to Child Life';
+
+  @override
+  String get autoSaveKeptUpBody =>
+      'Only the photos and videos you approve, with the \"Who can see\" you choose (Parents only by default).';
+
+  @override
+  String get autoSaveKeptFooter =>
+      'Delete it in Auto-save settings › Delete samples and suggestion data. If you turn Auto-save off, the data on this phone is deleted after 30 days.';
+
+  @override
+  String get autoSaveChecking => 'Checking new photos';
+
+  @override
+  String autoSaveCheckingFirst(String checked, String total) {
+    return '$checked / $total files · nothing uploaded yet';
+  }
+
+  @override
+  String autoSaveCheckingProgress(String checked, String total) {
+    return '$checked / $total files · checking progress';
+  }
+
+  @override
+  String get autoSaveCheckingPause =>
+      'It may pause when you leave the app and carries on next time.';
+
+  @override
+  String get autoSaveCheckingSeparate =>
+      'Separate from the upload progress below.';
+
+  @override
+  String autoSaveFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Found $count suggestions',
+      one: 'Found 1 suggestion',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveFoundHint => 'You can look now; checking carries on.';
+
+  @override
+  String autoSaveSeeFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'See $count suggestions',
+      one: 'See 1 suggestion',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveKinds => 'Photos and videos';
+
+  @override
+  String get autoSaveKindsBoth => 'Checks both · only what you allow';
+
+  @override
+  String autoSaveLastCheck(String time) {
+    return 'Last checked: $time';
+  }
+
+  @override
+  String autoSaveNewFiles(int count, String names) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new files · $names',
+      one: '1 new file · $names',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveCheckNow => 'Check new photos';
+
+  @override
+  String get autoSaveWhen =>
+      'The app checks when you open it and when your phone allows it in the background; there\'s no fixed time.';
+
+  @override
+  String autoSavePending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count suggestions to review',
+      one: '1 suggestion to review',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String autoSavePendingMore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count suggestions to review · finding more',
+      one: '1 suggestion to review · finding more',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveReview => 'Review suggestions';
+
+  @override
+  String get autoSaveUploadingRow => 'Uploading';
+
+  @override
+  String autoSaveUploadingValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveSavedRow => 'Saved by Auto-save';
+
+  @override
+  String autoSaveSavedValue(int count, String month) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items in $month',
+      one: '1 item in $month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveManual => 'Add photos yourself';
+
+  @override
+  String get autoSaveManualHint => 'Choose from your library as before';
+
+  @override
+  String get autoSaveLimitedTitle => 'Looking at the photos you chose';
+
+  @override
+  String get autoSaveLimitedBody =>
+      'Child Life only suggests from these photos';
+
+  @override
+  String get autoSavePickMore => 'Choose more photos';
+
+  @override
+  String get autoSaveAllowAll => 'Allow all photos in your phone\'s Settings';
+
+  @override
+  String get autoSaveDeniedTitle => 'Child Life can\'t see your photos';
+
+  @override
+  String get autoSaveDeniedBody =>
+      'Auto-save is paused. Saved memories aren\'t affected.';
+
+  @override
+  String get autoSaveOpenSettings => 'Open phone Settings';
+
+  @override
+  String autoSaveNoSamplesTitle(String name) {
+    return '$name has no samples yet';
+  }
+
+  @override
+  String autoSaveNoSamplesBody(String name) {
+    return 'Add 3–5 clear photos to start suggesting photos of $name';
+  }
+
+  @override
+  String get autoSaveAddSamples => 'Add samples';
+
+  @override
+  String autoSaveNothingTitle(String names) {
+    return 'No new photos that may show $names';
+  }
+
+  @override
+  String autoSaveNothingBody(int count, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Checked at $time · $count new files since last time',
+      one: 'Checked at $time · 1 new file since last time',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveOffTitle => 'Auto-save is off';
+
+  @override
+  String get autoSaveOffBody =>
+      'Turn it back on in Auto-save settings to look for new photos. Saved memories aren\'t affected.';
+
+  @override
+  String get autoSaveNotYet => 'Not checked yet';
+
+  @override
+  String autoSaveReviewTitle(String name) {
+    return 'May show $name';
+  }
+
+  @override
+  String autoSaveReviewSub(int count, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count suggestions · checked at $time. Untick anything you don\'t want to save.',
+      one:
+          '1 suggestion · checked at $time. Untick anything you don\'t want to save.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveGroupedHint =>
+      'Similar photos are grouped; the clearest one is already ticked.';
+
+  @override
+  String autoSaveFilterAll(int count) {
+    return 'All · $count';
+  }
+
+  @override
+  String autoSaveFilterPhotos(int count) {
+    return 'Photos · $count';
+  }
+
+  @override
+  String autoSaveFilterVideos(int count) {
+    return 'Videos · $count';
+  }
+
+  @override
+  String autoSaveDayToday(String date) {
+    return 'Today · $date';
+  }
+
+  @override
+  String autoSaveDayYesterday(String date) {
+    return 'Yesterday · $date';
+  }
+
+  @override
+  String autoSaveDayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveAlready => 'Saved';
+
+  @override
+  String get autoSaveInCloud => 'In iCloud';
+
+  @override
+  String get autoSaveLegend =>
+      '\"Saved\": already in Memories, won\'t be uploaded again. \"In iCloud\": the original isn\'t on this phone yet and is fetched when online.';
+
+  @override
+  String autoSaveGroupTitle(int count, int chosen) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count similar photos · $chosen ticked',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveGroupAll => 'Tick all';
+
+  @override
+  String get autoSaveGroupCollapse => 'Collapse';
+
+  @override
+  String get autoSaveBest => 'Clearest';
+
+  @override
+  String autoSaveChosen(int count, int photos, int videos) {
+    return '$count ticked · $photos photos, $videos videos';
+  }
+
+  @override
+  String autoSaveMerged(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count similar photos grouped · nothing deleted on your phone',
+      one: '1 similar photo grouped · nothing deleted on your phone',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String autoSaveContinue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Continue with $count items',
+      one: 'Continue with 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveReviewEmpty => 'No suggestions left to review.';
+
+  @override
+  String autoSaveViewerPos(int index, int total, String time) {
+    return '$index / $total · $time';
+  }
+
+  @override
+  String get autoSaveFor => 'Suggested for';
+
+  @override
+  String get autoSaveChange => 'Change';
+
+  @override
+  String get autoSaveNotBaby => 'Not my baby';
+
+  @override
+  String get autoSaveSelected => 'Ticked';
+
+  @override
+  String get autoSaveSelect => 'Tick';
+
+  @override
+  String get autoSaveRejected => 'Removed from suggestions';
+
+  @override
+  String get autoSaveUndo => 'Undo';
+
+  @override
+  String get autoSaveWhose => 'Who is in this photo?';
+
+  @override
+  String get autoSaveSuggestedNow => 'Suggested now';
+
+  @override
+  String get autoSaveNotBabyHint => 'Removes it · helps future suggestions';
+
+  @override
+  String get autoSaveDone => 'Done';
+
+  @override
+  String get autoSaveConfirmTitle => 'Check before uploading';
+
+  @override
+  String get autoSaveSource => 'Source';
+
+  @override
+  String autoSaveSourceValue(int count, int photos, int videos) {
+    return 'Photo library on this phone · $count items ($photos photos, $videos videos)';
+  }
+
+  @override
+  String get autoSaveBabyRow => 'Baby';
+
+  @override
+  String get autoSaveSaveTo => 'Save to';
+
+  @override
+  String get autoSaveSaveToValue => 'Journal, by date taken · Album: none';
+
+  @override
+  String get autoSaveWho => 'Who can see';
+
+  @override
+  String get autoSaveParentsOnly => 'Parents only';
+
+  @override
+  String get autoSaveParentsOnlyHint => 'Auto-save default';
+
+  @override
+  String get autoSaveFamily => 'Family';
+
+  @override
+  String get autoSaveFamilyHint => 'The whole family sees it';
+
+  @override
+  String get autoSaveNotify => 'Tell the family';
+
+  @override
+  String get autoSaveNotifyOff => 'Off · no notification';
+
+  @override
+  String get autoSaveNotifyOn => 'One notification, no photos';
+
+  @override
+  String get autoSaveStorageAfter => 'Storage after upload';
+
+  @override
+  String autoSaveUploadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Upload $count items',
+      one: 'Upload 1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveConfirmFootnote =>
+      'Originals stay on your phone. \"Saved\" appears once the upload finishes.';
+
+  @override
+  String autoSaveNoRoom(int count, String need, String left, int fit) {
+    return 'Not enough space: $count items need $need and your family has $left left. You can upload $fit items that fit now; the rest stay on your phone.';
+  }
+
+  @override
+  String autoSaveUploadFit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Upload the $count items that fit',
+      one: 'Upload the 1 item that fits',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveNoRoomFootnote =>
+      'Items not uploaded stay on your phone and in your suggestions.';
+
+  @override
+  String get autoSaveSeeStorage => 'See storage';
+
+  @override
+  String autoSavePreparing(int done, int total) {
+    return 'Preparing $done/$total…';
+  }
+
+  @override
+  String autoSaveQueued(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Uploading $count items to Memories',
+      one: 'Uploading 1 item to Memories',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveSettingsTitle => 'Auto-save settings';
+
+  @override
+  String get autoSaveOnBeta => 'On · Free beta';
+
+  @override
+  String get autoSaveOffValue => 'Off';
+
+  @override
+  String get autoSaveLookIn => 'Look in';
+
+  @override
+  String get autoSavePhotos => 'Photos';
+
+  @override
+  String get autoSaveVideos => 'Videos';
+
+  @override
+  String get autoSaveVideosHint => 'Large videos use a lot of space';
+
+  @override
+  String get autoSaveWifi => 'Upload videos on Wi-Fi only';
+
+  @override
+  String get autoSaveWifiHint => 'Applies to every video upload';
+
+  @override
+  String get autoSaveNotifyNew => 'Tell me about new photos';
+
+  @override
+  String get autoSaveNotifyNewHint =>
+      'At most once a day · never in quiet hours';
+
+  @override
+  String get autoSaveBabies => 'Babies and samples';
+
+  @override
+  String autoSaveSamplesOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count samples · suggesting',
+      one: '1 sample · suggesting',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveSamplesNone => 'No samples · paused';
+
+  @override
+  String get autoSaveAddBaby => 'Add a baby';
+
+  @override
+  String get autoSaveLastStatus => 'Latest status';
+
+  @override
+  String get autoSaveCheckRow => 'Check';
+
+  @override
+  String autoSaveCheckValue(String time, int files, int found) {
+    return '$time · $files files · $found suggestions';
+  }
+
+  @override
+  String get autoSavePermission => 'Photo access';
+
+  @override
+  String get autoSaveAccessFull => 'All photos';
+
+  @override
+  String get autoSaveAccessLimited => 'Selected photos';
+
+  @override
+  String get autoSaveAccessDenied => 'Not allowed';
+
+  @override
+  String get autoSaveOnDevice => 'Recognition data stays on this phone.';
+
+  @override
+  String get autoSaveOffNote =>
+      'Turning Auto-save off doesn\'t delete saved memories. The app just stops looking for new photos.';
+
+  @override
+  String get autoSaveWipe => 'Delete samples and suggestion data';
+
+  @override
+  String get autoSaveWipeBody =>
+      'The face numbers, waiting suggestions and your agreement on this phone are deleted. Saved memories aren\'t affected. To use it again, you set it up from the start.';
+
+  @override
+  String get autoSaveWipeAction => 'Delete';
+
+  @override
+  String get autoSaveWiped => 'Auto-save data deleted from this phone';
+
+  @override
+  String autoSaveSamplesOf(String name) {
+    return '$name\'s samples';
+  }
+
+  @override
+  String get autoSaveSave => 'Save';
+
+  @override
+  String autoSaveRemoveBaby(String name) {
+    return 'Remove $name from Auto-save';
+  }
+
+  @override
+  String autoSaveAnd(String a, String b) {
+    return '$a and $b';
+  }
+
+  @override
+  String get autoSaveSamplesHint =>
+      '3–5 well-lit photos where the face is clear. Samples are only used for suggestions and don\'t appear in Memories.';
 }

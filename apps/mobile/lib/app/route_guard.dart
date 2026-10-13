@@ -60,6 +60,15 @@ abstract final class Routes {
   static const messages = '/messages';
   static const memories = '/memories';
 
+  /// Tự lưu kỷ niệm (D-066): home (or the AS02 intro until set up), `/setup` (AS03 – AS05),
+  /// `/review` (AS07) and `/review/confirm` (AS10), `/settings` (AS19), `/samples/{babyId}`.
+  static const autoSave = '/memories/auto-save';
+  static const autoSaveSetup = '/memories/auto-save/setup';
+  static const autoSaveReview = '/memories/auto-save/review';
+  static const autoSaveConfirm = '/memories/auto-save/review/confirm';
+  static const autoSaveSettings = '/memories/auto-save/settings';
+  static const autoSaveSamples = '/memories/auto-save/samples';
+
   /// Tiện ích tab (v1.0 improvement 450:6597): Sơ cứu, Chi tiêu, Gia đình.
   static const utilities = '/utilities';
   static const family = '/utilities/family';

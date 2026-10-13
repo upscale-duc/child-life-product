@@ -13199,5 +13199,1039 @@
   "emailLinkNeedsEmail": "Nhập email để nhận link đăng nhập.",
   "@emailLinkNeedsEmail": {
     "description": "07: \"Gửi link đăng nhập\" with no email yet (owner, 2026-10-13)"
+  },
+  "autoSaveTitle": "Tự lưu kỷ niệm",
+  "@autoSaveTitle": {
+    "description": "Feature name (AS01–AS19, D-066)"
+  },
+  "autoSaveBeta": "Beta miễn phí",
+  "@autoSaveBeta": {
+    "description": "Badge next to the feature name (D-066: free beta, no end date)"
+  },
+  "autoSaveEntryHint": "Gợi ý ảnh, video có {name} từ thư viện máy",
+  "@autoSaveEntryHint": {
+    "description": "AS01 entry card subtitle",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveEntryPending": "{count, plural, other{{count} ảnh mới chờ duyệt · kiểm tra lúc {time}}}",
+  "@autoSaveEntryPending": {
+    "description": "AR04 entry card with pending suggestions",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveReviewShort": "Duyệt",
+  "@autoSaveReviewShort": {
+    "description": "AR04 entry card button"
+  },
+  "autoSaveIntroLead": "Đỡ công lục thư viện. Child Life tìm ảnh và video có thể có con, bạn xem lại rồi mới tải lên.",
+  "@autoSaveIntroLead": {
+    "description": "AS02 lead"
+  },
+  "autoSaveStep1": "Chọn bé và vài ảnh rõ mặt",
+  "@autoSaveStep1": {
+    "description": "AS02 step 1"
+  },
+  "autoSaveStep1Hint": "Giúp app gợi ý đúng hơn",
+  "@autoSaveStep1Hint": {
+    "description": "AS02 step 1 hint"
+  },
+  "autoSaveStep2": "App tìm trong ảnh mới",
+  "@autoSaveStep2": {
+    "description": "AS02 step 2"
+  },
+  "autoSaveStep2Hint": "Chỉ những ảnh bạn cho phép xem",
+  "@autoSaveStep2Hint": {
+    "description": "AS02 step 2 hint"
+  },
+  "autoSaveStep3": "Bạn duyệt rồi mới tải",
+  "@autoSaveStep3": {
+    "description": "AS02 step 3"
+  },
+  "autoSaveStep3Hint": "Không tự tải, không tự chia sẻ",
+  "@autoSaveStep3Hint": {
+    "description": "AS02 step 3 hint"
+  },
+  "autoSaveIntroFootnote": "Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình ({usage}).",
+  "@autoSaveIntroFootnote": {
+    "description": "AS02 footnote with the family's live usage, e.g. '3,2 / 10 GB'; P-147 adds the on-device sentence",
+    "placeholders": {
+      "usage": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveIntroFootnoteNoUsage": "Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình.",
+  "@autoSaveIntroFootnoteNoUsage": {
+    "description": "AS02 footnote while storage usage is unknown"
+  },
+  "autoSaveStart": "Bắt đầu thiết lập",
+  "@autoSaveStart": {
+    "description": "AS02 primary button"
+  },
+  "autoSavePickBabyTitle": "Gợi ý ảnh của bé nào?",
+  "@autoSavePickBabyTitle": {
+    "description": "AS03 title"
+  },
+  "autoSavePickBabySub": "Bước 1/3 · Có thể thêm bé khác sau trong Cài đặt.",
+  "@autoSavePickBabySub": {
+    "description": "AS03 subtitle"
+  },
+  "autoSaveYouAre": "Bạn là {relation}",
+  "@autoSaveYouAre": {
+    "description": "AS03 row: the user's relation to the baby, after the age",
+    "placeholders": {
+      "relation": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveLockedCaregiver": "bạn là Người chăm sóc nên không bật được tính năng này",
+  "@autoSaveLockedCaregiver": {
+    "description": "AS03 locked row (caregiver)"
+  },
+  "autoSaveLockedRelative": "bạn là Người thân nên không bật được tính năng này",
+  "@autoSaveLockedRelative": {
+    "description": "AS03 locked row (relative); engineering variant of the caregiver copy"
+  },
+  "autoSaveNext": "Tiếp",
+  "@autoSaveNext": {
+    "description": "AS03 primary button"
+  },
+  "autoSaveSamplesTitle": "Chọn vài ảnh rõ mặt {name}",
+  "@autoSaveSamplesTitle": {
+    "description": "AS04 title",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveSamplesSub": "Bước 2/3 · 3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.",
+  "@autoSaveSamplesSub": {
+    "description": "AS04 subtitle"
+  },
+  "autoSaveSamplesCount": "{count}/5 ảnh mẫu · chọn từ Kỷ niệm đã có",
+  "@autoSaveSamplesCount": {
+    "description": "AS04 caption",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveSamplesFromLibrary": "Hoặc chọn từ thư viện máy",
+  "@autoSaveSamplesFromLibrary": {
+    "description": "AS04 link"
+  },
+  "autoSaveSamplesNext": "{count, plural, other{Tiếp · {count} ảnh mẫu}}",
+  "@autoSaveSamplesNext": {
+    "description": "AS04 primary button",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveSamplesNeed": "Chọn ít nhất 3 ảnh mẫu.",
+  "@autoSaveSamplesNeed": {
+    "description": "AS04: fewer than 3 samples"
+  },
+  "autoSaveSampleNoFace": "Ảnh này chưa thấy rõ mặt. Chọn ảnh khác nhé.",
+  "@autoSaveSampleNoFace": {
+    "description": "AS04: the chosen photo has no usable face"
+  },
+  "autoSaveSamplesEmpty": "Kỷ niệm chưa có ảnh của {name}. Chọn từ thư viện máy nhé.",
+  "@autoSaveSamplesEmpty": {
+    "description": "AS04: no photos in Kỷ niệm (engineering state)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveConsentTitle": "Trước khi bắt đầu",
+  "@autoSaveConsentTitle": {
+    "description": "AS05 title (P-147)"
+  },
+  "autoSaveConsentSub": "Bước 3/3 · Đổi được bất cứ lúc nào trong Cài đặt Tự lưu.",
+  "@autoSaveConsentSub": {
+    "description": "AS05 subtitle (P-147)"
+  },
+  "autoSaveFaceTitle": "Nhận ra {name} ngay trên máy này",
+  "@autoSaveFaceTitle": {
+    "description": "AS05 face-analysis consent card title (P-147)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveFaceBody": "Child Life so khuôn mặt trong ảnh mới với ảnh mẫu của {name} để gợi ý. Mọi việc diễn ra trên điện thoại của bạn.",
+  "@autoSaveFaceBody": {
+    "description": "AS05 face card body (P-147)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveFaceNoPhotos": "Không lưu ảnh nào của {name}: ảnh mẫu vẫn nằm trong Kỷ niệm hoặc thư viện của bạn.",
+  "@autoSaveFaceNoPhotos": {
+    "description": "AS05 reassurance 1 (P-147)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveFaceNumbers": "Chỉ ghi nhớ một dãy số về khuôn mặt, nằm trên máy này, không gửi lên Child Life.",
+  "@autoSaveFaceNumbers": {
+    "description": "AS05 reassurance 2 (P-147)"
+  },
+  "autoSaveFaceNoOne": "Child Life không xem được, không dùng cho quảng cáo. Bạn xoá được bất cứ lúc nào.",
+  "@autoSaveFaceNoOne": {
+    "description": "AS05 reassurance 3 (P-147)"
+  },
+  "autoSaveFaceAgree": "Tôi đồng ý để Child Life nhận ra {name} trên máy này",
+  "@autoSaveFaceAgree": {
+    "description": "AS05 consent checkbox, unticked by default (P-147)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveAgreeFirst": "Đánh dấu đồng ý ở thẻ đầu tiên để tiếp tục.",
+  "@autoSaveAgreeFirst": {
+    "description": "AS05: CTA tapped without the consent"
+  },
+  "autoSaveWhatKept": "Child Life lưu gì?",
+  "@autoSaveWhatKept": {
+    "description": "AS05 link to the explanation sheet (P-147)"
+  },
+  "autoSaveLibraryTitle": "Cho Child Life xem thư viện ảnh",
+  "@autoSaveLibraryTitle": {
+    "description": "AS05 card 2"
+  },
+  "autoSaveLibraryBody": "Để tìm ảnh, video mới có thể có {name}. App không xoá hay sửa gì trong thư viện.",
+  "@autoSaveLibraryBody": {
+    "description": "AS05 card 2 body",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveLibraryHint": "Bấm tiếp, điện thoại sẽ hỏi quyền. Bạn có thể cho xem tất cả hoặc chỉ ảnh được chọn.",
+  "@autoSaveLibraryHint": {
+    "description": "AS05 card 2 info strip"
+  },
+  "autoSaveUploadTitle": "Chỉ tải lên mục bạn duyệt",
+  "@autoSaveUploadTitle": {
+    "description": "AS05 card 3 (no background switch, D-066)"
+  },
+  "autoSaveUploadBody": "Ảnh, video bạn bấm duyệt được tải lên Kỷ niệm như khi bạn tự thêm, và vẫn tải tiếp khi bạn khoá máy.",
+  "@autoSaveUploadBody": {
+    "description": "AS05 card 3 body (P-147, D-066 #6)"
+  },
+  "autoSaveAllow": "Cho phép xem ảnh",
+  "@autoSaveAllow": {
+    "description": "AS05 primary button"
+  },
+  "autoSaveLater": "Để sau · thêm ảnh thủ công",
+  "@autoSaveLater": {
+    "description": "AS05 text link"
+  },
+  "autoSaveKeptHere": "Trên máy này",
+  "@autoSaveKeptHere": {
+    "description": "'Child Life lưu gì?' sheet block 1 (P-147)"
+  },
+  "autoSaveKeptHereBody": "Dãy số về khuôn mặt từ ảnh mẫu và ảnh bạn đã duyệt; danh sách ảnh đã kiểm tra hoặc đã bỏ qua; cài đặt Tự lưu. Không nằm trong bản sao lưu iCloud. Gỡ app là xoá hết.",
+  "@autoSaveKeptHereBody": {
+    "description": "'Child Life lưu gì?' block 1 body (P-147)"
+  },
+  "autoSaveKeptNever": "Không bao giờ",
+  "@autoSaveKeptNever": {
+    "description": "'Child Life lưu gì?' block 2"
+  },
+  "autoSaveKeptNeverBody": "Giữ bản sao ảnh mẫu hay ảnh trong thư viện; gửi dữ liệu khuôn mặt lên máy chủ Child Life hay cho bên khác; dùng cho quảng cáo.",
+  "@autoSaveKeptNeverBody": {
+    "description": "'Child Life lưu gì?' block 2 body"
+  },
+  "autoSaveKeptUp": "Tải lên Child Life",
+  "@autoSaveKeptUp": {
+    "description": "'Child Life lưu gì?' block 3"
+  },
+  "autoSaveKeptUpBody": "Chỉ ảnh, video bạn bấm duyệt, với quyền \"Ai thấy\" bạn chọn (mặc định Chỉ ba mẹ).",
+  "@autoSaveKeptUpBody": {
+    "description": "'Child Life lưu gì?' block 3 body"
+  },
+  "autoSaveKeptFooter": "Xoá trong Cài đặt Tự lưu › Xoá ảnh mẫu và dữ liệu gợi ý. Tắt Tự lưu thì dữ liệu trên máy tự xoá sau 30 ngày.",
+  "@autoSaveKeptFooter": {
+    "description": "'Child Life lưu gì?' footer (P-147)"
+  },
+  "autoSaveChecking": "Đang kiểm tra ảnh mới",
+  "@autoSaveChecking": {
+    "description": "AS06 / AS17 status card"
+  },
+  "autoSaveCheckingFirst": "{checked} / {total} tệp · chưa tải gì lên",
+  "@autoSaveCheckingFirst": {
+    "description": "AS06 progress",
+    "placeholders": {
+      "checked": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveCheckingProgress": "{checked} / {total} tệp · tiến độ kiểm tra",
+  "@autoSaveCheckingProgress": {
+    "description": "AS17 progress",
+    "placeholders": {
+      "checked": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveCheckingPause": "Có thể tạm dừng khi bạn rời app; lần mở sau sẽ kiểm tra tiếp.",
+  "@autoSaveCheckingPause": {
+    "description": "AS06 note"
+  },
+  "autoSaveCheckingSeparate": "Tách riêng với tiến độ tải lên bên dưới.",
+  "@autoSaveCheckingSeparate": {
+    "description": "AS17 note"
+  },
+  "autoSaveFound": "{count, plural, other{Đã tìm thấy {count} gợi ý}}",
+  "@autoSaveFound": {
+    "description": "AS06 found card",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveFoundHint": "Bạn có thể xem ngay, kiểm tra vẫn tiếp tục.",
+  "@autoSaveFoundHint": {
+    "description": "AS06 found card hint"
+  },
+  "autoSaveSeeFound": "{count, plural, other{Xem {count} gợi ý}}",
+  "@autoSaveSeeFound": {
+    "description": "AS06 primary button",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveKinds": "Ảnh và video",
+  "@autoSaveKinds": {
+    "description": "AS06 row"
+  },
+  "autoSaveKindsBoth": "Kiểm tra cả hai · chỉ ảnh bạn cho phép xem",
+  "@autoSaveKindsBoth": {
+    "description": "AS06 row value"
+  },
+  "autoSaveLastCheck": "Lần kiểm tra gần nhất: {time}",
+  "@autoSaveLastCheck": {
+    "description": "AS12 status card",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveNewFiles": "{count, plural, other{{count} tệp mới · {names}}}",
+  "@autoSaveNewFiles": {
+    "description": "AS12 status card",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveCheckNow": "Kiểm tra ảnh mới",
+  "@autoSaveCheckNow": {
+    "description": "AS12 / AS16 button"
+  },
+  "autoSaveWhen": "App kiểm tra khi bạn mở và khi điện thoại cho phép chạy nền; thời điểm không cố định.",
+  "@autoSaveWhen": {
+    "description": "AS12 note"
+  },
+  "autoSavePending": "{count, plural, other{{count} gợi ý chờ duyệt}}",
+  "@autoSavePending": {
+    "description": "AS12 suggestions card",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSavePendingMore": "{count, plural, other{{count} gợi ý chờ duyệt · đang tìm thêm}}",
+  "@autoSavePendingMore": {
+    "description": "AS17 suggestions card",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveReview": "Duyệt gợi ý",
+  "@autoSaveReview": {
+    "description": "AS12 primary button"
+  },
+  "autoSaveUploadingRow": "Đang tải lên",
+  "@autoSaveUploadingRow": {
+    "description": "AS12 row"
+  },
+  "autoSaveUploadingValue": "{count, plural, other{{count} mục}}",
+  "@autoSaveUploadingValue": {
+    "description": "AS12 uploading row value",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveSavedRow": "Đã lưu từ Tự lưu",
+  "@autoSaveSavedRow": {
+    "description": "AS12 row"
+  },
+  "autoSaveSavedValue": "{count, plural, other{{count} mục trong {month}}}",
+  "@autoSaveSavedValue": {
+    "description": "AS12 row value, counted on this phone; month like 'tháng 10' / 'October'",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveManual": "Thêm ảnh thủ công",
+  "@autoSaveManual": {
+    "description": "AS12 row"
+  },
+  "autoSaveManualHint": "Chọn từ thư viện như trước",
+  "@autoSaveManualHint": {
+    "description": "AS12 row hint"
+  },
+  "autoSaveLimitedTitle": "Đang xem những ảnh bạn đã chọn",
+  "@autoSaveLimitedTitle": {
+    "description": "AS13 status (the count is not available from iOS)"
+  },
+  "autoSaveLimitedBody": "Child Life chỉ gợi ý trong những ảnh này",
+  "@autoSaveLimitedBody": {
+    "description": "AS13 status body"
+  },
+  "autoSavePickMore": "Chọn thêm ảnh",
+  "@autoSavePickMore": {
+    "description": "AS13 button"
+  },
+  "autoSaveAllowAll": "Cho xem tất cả trong Cài đặt điện thoại",
+  "@autoSaveAllowAll": {
+    "description": "AS13 link"
+  },
+  "autoSaveDeniedTitle": "Child Life chưa được xem ảnh",
+  "@autoSaveDeniedTitle": {
+    "description": "AS14 status"
+  },
+  "autoSaveDeniedBody": "Tự lưu đang tạm dừng. Kỷ niệm đã lưu không bị ảnh hưởng.",
+  "@autoSaveDeniedBody": {
+    "description": "AS14 status body"
+  },
+  "autoSaveOpenSettings": "Mở Cài đặt điện thoại",
+  "@autoSaveOpenSettings": {
+    "description": "AS14 button"
+  },
+  "autoSaveNoSamplesTitle": "{name} chưa có ảnh mẫu",
+  "@autoSaveNoSamplesTitle": {
+    "description": "AS15 status",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveNoSamplesBody": "Thêm 3–5 ảnh rõ mặt để bắt đầu gợi ý ảnh của {name}",
+  "@autoSaveNoSamplesBody": {
+    "description": "AS15 status body",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveAddSamples": "Thêm ảnh mẫu",
+  "@autoSaveAddSamples": {
+    "description": "AS15 button"
+  },
+  "autoSaveNothingTitle": "Chưa có ảnh mới có thể có {names}",
+  "@autoSaveNothingTitle": {
+    "description": "AS16 status",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveNothingBody": "{count, plural, other{Kiểm tra lúc {time} · {count} tệp mới từ lần trước}}",
+  "@autoSaveNothingBody": {
+    "description": "AS16 status body",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveOffTitle": "Tự lưu đang tắt",
+  "@autoSaveOffTitle": {
+    "description": "Home when switched off in AS19 (engineering state)"
+  },
+  "autoSaveOffBody": "Bật lại trong Cài đặt Tự lưu để tìm ảnh mới. Kỷ niệm đã lưu không bị ảnh hưởng.",
+  "@autoSaveOffBody": {
+    "description": "Home when switched off (engineering state)"
+  },
+  "autoSaveNotYet": "Chưa kiểm tra lần nào",
+  "@autoSaveNotYet": {
+    "description": "AS12 before the first check finishes"
+  },
+  "autoSaveReviewTitle": "Có thể có {name}",
+  "@autoSaveReviewTitle": {
+    "description": "AS07 title",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveReviewSub": "{count, plural, other{{count} gợi ý · kiểm tra lúc {time}. Bỏ chọn những mục không muốn lưu.}}",
+  "@autoSaveReviewSub": {
+    "description": "AS07 subtitle",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveGroupedHint": "Ảnh giống nhau được gom lại, app chọn sẵn ảnh rõ nhất.",
+  "@autoSaveGroupedHint": {
+    "description": "AS07 grouping note (P-146, G-102)"
+  },
+  "autoSaveFilterAll": "Tất cả · {count}",
+  "@autoSaveFilterAll": {
+    "description": "AS07 filter chip",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveFilterPhotos": "Ảnh · {count}",
+  "@autoSaveFilterPhotos": {
+    "description": "AS07 filter chip",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveFilterVideos": "Video · {count}",
+  "@autoSaveFilterVideos": {
+    "description": "AS07 filter chip",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveDayToday": "Hôm nay · {date}",
+  "@autoSaveDayToday": {
+    "description": "AS07 day header",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveDayYesterday": "Hôm qua · {date}",
+  "@autoSaveDayYesterday": {
+    "description": "AS07 day header",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveDayCount": "{count, plural, other{{count} mục}}",
+  "@autoSaveDayCount": {
+    "description": "AS07 day header count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveAlready": "Đã có",
+  "@autoSaveAlready": {
+    "description": "AS07 tag: already in Kỷ niệm"
+  },
+  "autoSaveInCloud": "Trên iCloud",
+  "@autoSaveInCloud": {
+    "description": "AS07 tag: original not on the phone"
+  },
+  "autoSaveLegend": "\"Đã có\": tệp trùng với Kỷ niệm, sẽ không tải lại. \"Trên iCloud\": tệp gốc chưa có trong máy, sẽ lấy về khi có mạng.",
+  "@autoSaveLegend": {
+    "description": "AS07 footnote"
+  },
+  "autoSaveGroupTitle": "{count, plural, other{{count} ảnh giống nhau · đã chọn {chosen}}}",
+  "@autoSaveGroupTitle": {
+    "description": "AS07 expanded group header (G-102)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "chosen": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveGroupAll": "Chọn cả nhóm",
+  "@autoSaveGroupAll": {
+    "description": "AS07 expanded group action (G-102)"
+  },
+  "autoSaveGroupCollapse": "Thu gọn",
+  "@autoSaveGroupCollapse": {
+    "description": "AS07 expanded group action (G-102)"
+  },
+  "autoSaveBest": "Rõ nhất",
+  "@autoSaveBest": {
+    "description": "AS07 badge on a group's best photo (G-102)"
+  },
+  "autoSaveChosen": "Đã chọn {count} · {photos} ảnh, {videos} video",
+  "@autoSaveChosen": {
+    "description": "AS07 sticky summary",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "photos": {
+        "type": "int"
+      },
+      "videos": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveMerged": "{count, plural, other{Đã gộp {count} ảnh giống nhau · không xoá gì trong máy}}",
+  "@autoSaveMerged": {
+    "description": "AS07 summary line (P-146)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveContinue": "{count, plural, other{Tiếp tục với {count} mục}}",
+  "@autoSaveContinue": {
+    "description": "AS07 primary button",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveReviewEmpty": "Không còn gợi ý nào chờ duyệt.",
+  "@autoSaveReviewEmpty": {
+    "description": "AS07 empty (engineering state)"
+  },
+  "autoSaveViewerPos": "{index} / {total} · {time}",
+  "@autoSaveViewerPos": {
+    "description": "AS08 top bar",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveFor": "Gợi ý cho",
+  "@autoSaveFor": {
+    "description": "AS08 row"
+  },
+  "autoSaveChange": "Đổi",
+  "@autoSaveChange": {
+    "description": "AS08 row action"
+  },
+  "autoSaveNotBaby": "Không phải ảnh của bé",
+  "@autoSaveNotBaby": {
+    "description": "AS08 / AS09 reject"
+  },
+  "autoSaveSelected": "Đã chọn",
+  "@autoSaveSelected": {
+    "description": "AS08 primary (selected)"
+  },
+  "autoSaveSelect": "Chọn",
+  "@autoSaveSelect": {
+    "description": "AS08 primary (not selected)"
+  },
+  "autoSaveRejected": "Đã bỏ khỏi gợi ý",
+  "@autoSaveRejected": {
+    "description": "Toast after 'Không phải ảnh của bé'"
+  },
+  "autoSaveUndo": "Hoàn tác",
+  "@autoSaveUndo": {
+    "description": "Toast action"
+  },
+  "autoSaveWhose": "Ảnh này của ai?",
+  "@autoSaveWhose": {
+    "description": "AS09 title"
+  },
+  "autoSaveSuggestedNow": "Đang được gợi ý",
+  "@autoSaveSuggestedNow": {
+    "description": "AS09 current baby"
+  },
+  "autoSaveNotBabyHint": "Bỏ khỏi gợi ý · giúp lần sau gợi ý tốt hơn",
+  "@autoSaveNotBabyHint": {
+    "description": "AS09 reject hint"
+  },
+  "autoSaveDone": "Xong",
+  "@autoSaveDone": {
+    "description": "AS09 button"
+  },
+  "autoSaveConfirmTitle": "Kiểm tra trước khi tải",
+  "@autoSaveConfirmTitle": {
+    "description": "AS10 title"
+  },
+  "autoSaveSource": "Nguồn",
+  "@autoSaveSource": {
+    "description": "AS10 row"
+  },
+  "autoSaveSourceValue": "Thư viện ảnh trên máy · {count} mục ({photos} ảnh, {videos} video)",
+  "@autoSaveSourceValue": {
+    "description": "AS10 row value",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "photos": {
+        "type": "int"
+      },
+      "videos": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveBabyRow": "Bé",
+  "@autoSaveBabyRow": {
+    "description": "AS10 row"
+  },
+  "autoSaveSaveTo": "Lưu vào",
+  "@autoSaveSaveTo": {
+    "description": "AS10 row"
+  },
+  "autoSaveSaveToValue": "Nhật ký, theo ngày chụp · Album: không",
+  "@autoSaveSaveToValue": {
+    "description": "AS10 row value (the app's Nhật ký tab, D-052)"
+  },
+  "autoSaveWho": "Ai thấy",
+  "@autoSaveWho": {
+    "description": "AS10 section"
+  },
+  "autoSaveParentsOnly": "Chỉ ba mẹ",
+  "@autoSaveParentsOnly": {
+    "description": "AS10 audience card"
+  },
+  "autoSaveParentsOnlyHint": "Mặc định cho Tự lưu",
+  "@autoSaveParentsOnlyHint": {
+    "description": "AS10 audience card hint (D-066)"
+  },
+  "autoSaveFamily": "Gia đình",
+  "@autoSaveFamily": {
+    "description": "AS10 audience card"
+  },
+  "autoSaveFamilyHint": "Cả nhà cùng xem",
+  "@autoSaveFamilyHint": {
+    "description": "AS10 audience card hint"
+  },
+  "autoSaveNotify": "Báo cho gia đình",
+  "@autoSaveNotify": {
+    "description": "AS10 switch row"
+  },
+  "autoSaveNotifyOff": "Tắt · không gửi thông báo",
+  "@autoSaveNotifyOff": {
+    "description": "AS10 switch row value"
+  },
+  "autoSaveNotifyOn": "1 thông báo chung, không kèm ảnh",
+  "@autoSaveNotifyOn": {
+    "description": "AS10 switch row value when on (R-104)"
+  },
+  "autoSaveStorageAfter": "Dung lượng sau khi tải",
+  "@autoSaveStorageAfter": {
+    "description": "AS10 storage card"
+  },
+  "autoSaveUploadCount": "{count, plural, other{Tải lên {count} mục}}",
+  "@autoSaveUploadCount": {
+    "description": "AS10 primary button",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveConfirmFootnote": "Ảnh gốc vẫn ở trong máy. Tải xong mới hiện \"Đã lưu\".",
+  "@autoSaveConfirmFootnote": {
+    "description": "AS10 footnote"
+  },
+  "autoSaveNoRoom": "Không đủ dung lượng: {count} mục cần {need}, gia đình còn {left}. Bạn có thể tải trước {fit} mục vừa đủ, phần còn lại vẫn giữ trên máy.",
+  "@autoSaveNoRoom": {
+    "description": "AS18 banner",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "need": {
+        "type": "String"
+      },
+      "left": {
+        "type": "String"
+      },
+      "fit": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveUploadFit": "{count, plural, other{Tải trước {count} mục vừa đủ}}",
+  "@autoSaveUploadFit": {
+    "description": "AS18 primary button",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveNoRoomFootnote": "Mục chưa tải vẫn ở trong máy và trong danh sách gợi ý.",
+  "@autoSaveNoRoomFootnote": {
+    "description": "AS18 footnote"
+  },
+  "autoSaveSeeStorage": "Xem dung lượng",
+  "@autoSaveSeeStorage": {
+    "description": "AS18 link"
+  },
+  "autoSavePreparing": "Đang chuẩn bị {done}/{total}…",
+  "@autoSavePreparing": {
+    "description": "AS10 while originals are read (may come from iCloud)",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveQueued": "{count, plural, other{Đang tải {count} mục lên Kỷ niệm}}",
+  "@autoSaveQueued": {
+    "description": "Toast after AS10",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveSettingsTitle": "Cài đặt Tự lưu",
+  "@autoSaveSettingsTitle": {
+    "description": "AS19 title"
+  },
+  "autoSaveOnBeta": "Đang bật · Beta miễn phí",
+  "@autoSaveOnBeta": {
+    "description": "AS19 master switch subtitle"
+  },
+  "autoSaveOffValue": "Đang tắt",
+  "@autoSaveOffValue": {
+    "description": "AS19 master switch subtitle when off"
+  },
+  "autoSaveLookIn": "Tìm trong",
+  "@autoSaveLookIn": {
+    "description": "AS19 section"
+  },
+  "autoSavePhotos": "Ảnh",
+  "@autoSavePhotos": {
+    "description": "AS19 switch"
+  },
+  "autoSaveVideos": "Video",
+  "@autoSaveVideos": {
+    "description": "AS19 switch"
+  },
+  "autoSaveVideosHint": "Video lớn tốn nhiều dung lượng",
+  "@autoSaveVideosHint": {
+    "description": "AS19 switch hint"
+  },
+  "autoSaveWifi": "Video chỉ tải qua Wi-Fi",
+  "@autoSaveWifi": {
+    "description": "AS19 switch; the app-wide setting (Q-056 proposal: videos only)"
+  },
+  "autoSaveWifiHint": "Áp dụng cho mọi video tải lên",
+  "@autoSaveWifiHint": {
+    "description": "AS19 switch hint"
+  },
+  "autoSaveNotifyNew": "Báo khi có ảnh mới",
+  "@autoSaveNotifyNew": {
+    "description": "AS19 switch (AR03)"
+  },
+  "autoSaveNotifyNewHint": "Tối đa 1 lần/ngày · không báo trong giờ yên lặng",
+  "@autoSaveNotifyNewHint": {
+    "description": "AS19 switch hint"
+  },
+  "autoSaveBabies": "Bé & ảnh mẫu",
+  "@autoSaveBabies": {
+    "description": "AS19 section"
+  },
+  "autoSaveSamplesOn": "{count, plural, other{{count} ảnh mẫu · đang gợi ý}}",
+  "@autoSaveSamplesOn": {
+    "description": "AS19 baby row",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveSamplesNone": "Chưa có ảnh mẫu · tạm tắt",
+  "@autoSaveSamplesNone": {
+    "description": "AS19 baby row"
+  },
+  "autoSaveAddBaby": "Thêm bé",
+  "@autoSaveAddBaby": {
+    "description": "AS19 row"
+  },
+  "autoSaveLastStatus": "Trạng thái gần nhất",
+  "@autoSaveLastStatus": {
+    "description": "AS19 section"
+  },
+  "autoSaveCheckRow": "Kiểm tra",
+  "@autoSaveCheckRow": {
+    "description": "AS19 row"
+  },
+  "autoSaveCheckValue": "{time} · {files} tệp · {found} gợi ý",
+  "@autoSaveCheckValue": {
+    "description": "AS19 row value",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "files": {
+        "type": "int"
+      },
+      "found": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSavePermission": "Quyền xem ảnh",
+  "@autoSavePermission": {
+    "description": "AS19 row"
+  },
+  "autoSaveAccessFull": "Toàn bộ thư viện",
+  "@autoSaveAccessFull": {
+    "description": "AS19 row value"
+  },
+  "autoSaveAccessLimited": "Ảnh được chọn",
+  "@autoSaveAccessLimited": {
+    "description": "AS19 row value"
+  },
+  "autoSaveAccessDenied": "Chưa cho phép",
+  "@autoSaveAccessDenied": {
+    "description": "AS19 row value"
+  },
+  "autoSaveOnDevice": "Dữ liệu nhận diện chỉ nằm trên máy này.",
+  "@autoSaveOnDevice": {
+    "description": "AS19 note above the delete link (P-147)"
+  },
+  "autoSaveOffNote": "Tắt Tự lưu không xoá kỷ niệm đã lưu. App chỉ ngừng tìm và gợi ý ảnh mới.",
+  "@autoSaveOffNote": {
+    "description": "AS19 info banner"
+  },
+  "autoSaveWipe": "Xoá ảnh mẫu và dữ liệu gợi ý",
+  "@autoSaveWipe": {
+    "description": "AS19 destructive link"
+  },
+  "autoSaveWipeBody": "Các dãy số về khuôn mặt, gợi ý đang chờ và sự đồng ý trên máy này sẽ bị xoá. Kỷ niệm đã lưu không bị ảnh hưởng. Muốn dùng lại, bạn thiết lập từ đầu.",
+  "@autoSaveWipeBody": {
+    "description": "AS19 delete confirmation body"
+  },
+  "autoSaveWipeAction": "Xoá",
+  "@autoSaveWipeAction": {
+    "description": "AS19 delete confirmation button"
+  },
+  "autoSaveWiped": "Đã xoá dữ liệu Tự lưu trên máy này",
+  "@autoSaveWiped": {
+    "description": "Toast after delete"
+  },
+  "autoSaveSamplesOf": "Ảnh mẫu của {name}",
+  "@autoSaveSamplesOf": {
+    "description": "AS19 › baby samples page title",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveSave": "Lưu",
+  "@autoSaveSave": {
+    "description": "Samples page button"
+  },
+  "autoSaveRemoveBaby": "Bỏ {name} khỏi Tự lưu",
+  "@autoSaveRemoveBaby": {
+    "description": "Samples page destructive action",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveAnd": "{a} và {b}",
+  "@autoSaveAnd": {
+    "description": "Joins two baby names",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveSamplesHint": "3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.",
+  "@autoSaveSamplesHint": {
+    "description": "AS19 › baby samples page subtitle (AS04 copy without the step)"
   }
 }

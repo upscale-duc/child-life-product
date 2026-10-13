@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../core/appearance/appearance_providers.dart';
+import '../auto_save/auto_save_controller.dart';
 import 'background_uploads.dart';
 import 'memory_models.dart';
 import 'memory_repository.dart';
@@ -337,6 +338,7 @@ class PickedMedia {
     this.width,
     this.height,
     this.thumbBytes,
+    this.assetId,
   });
 
   final File file;
@@ -349,6 +351,10 @@ class PickedMedia {
 
   /// What compose shows in its strip (10h).
   final Uint8List? thumbBytes;
+
+  /// PhotoKit id when it came from the library: recorded once queued so Tự lưu never suggests
+  /// it again (P-150).
+  final String? assetId;
 }
 
 /// Copies into the queue folder; photos become JPEG without metadata (SP-3 fallback, P-033),
@@ -669,6 +675,12 @@ class UploadQueue extends Notifier<QueueView> {
           ),
         );
       }
+    }
+    final fromLibrary = [for (final p in picked) ?p.assetId];
+    if (fromLibrary.isNotEmpty) {
+      await ref
+          .read(autoSaveProvider.notifier)
+          .recordUploaded(fromLibrary, babyId);
     }
     _batches.add(
       QueueBatch(

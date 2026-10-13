@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gal/gal.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/design/cl_theme.dart';
@@ -14,6 +13,7 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../auto_save/library_save.dart';
 import '../baby/baby_models.dart';
 import '../home/home_shell.dart';
 import 'media_bytes.dart';
@@ -57,13 +57,13 @@ Future<void> saveToPhotos(BuildContext context, List<MediaItem> items) async {
   final toaster = ClToaster.of(context);
   toaster.show(message: l10n.toastSaving);
   try {
-    if (!await Gal.hasAccess()) await Gal.requestAccess();
     var saved = 0;
     for (final i in items) {
       final path = i.paths?.original;
       if (path == null) continue;
       final file = await mediaBytes.file(path);
-      i.isVideo ? await Gal.putVideo(file.path) : await Gal.putImage(file.path);
+      if (!context.mounted) return;
+      await saveToLibrary(context, file, video: i.isVideo);
       saved++;
     }
     toaster.show(message: l10n.toastSaved(saved));

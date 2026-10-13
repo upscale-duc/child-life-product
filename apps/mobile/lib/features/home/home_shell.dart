@@ -19,6 +19,7 @@ import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../auto_save/auto_save_widgets.dart';
 import '../auth/auth_repository.dart';
 import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
@@ -190,7 +191,8 @@ class HomeShell extends ConsumerWidget {
               hideDock: !_tabRoots.contains(path),
               dockExtra: action == null ? 0 : ClTabDock.actionExtent,
               content: shell,
-              banner: const GlobalUploadPill(),
+              // Keeps Tự lưu loaded so it checks when the app opens (AR01).
+              banner: const AutoSaveKeeper(child: GlobalUploadPill()),
               dock: ClTabDock(
                 role: clRoleOf(membership.role),
                 tabs: tabs,

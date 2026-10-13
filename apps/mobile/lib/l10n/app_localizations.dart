@@ -14664,6 +14664,1080 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nhập email để nhận link đăng nhập.'**
   String get emailLinkNeedsEmail;
+
+  /// Feature name (AS01–AS19, D-066)
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự lưu kỷ niệm'**
+  String get autoSaveTitle;
+
+  /// Badge next to the feature name (D-066: free beta, no end date)
+  ///
+  /// In vi, this message translates to:
+  /// **'Beta miễn phí'**
+  String get autoSaveBeta;
+
+  /// AS01 entry card subtitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý ảnh, video có {name} từ thư viện máy'**
+  String autoSaveEntryHint(String name);
+
+  /// AR04 entry card with pending suggestions
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} ảnh mới chờ duyệt · kiểm tra lúc {time}}}'**
+  String autoSaveEntryPending(int count, String time);
+
+  /// AR04 entry card button
+  ///
+  /// In vi, this message translates to:
+  /// **'Duyệt'**
+  String get autoSaveReviewShort;
+
+  /// AS02 lead
+  ///
+  /// In vi, this message translates to:
+  /// **'Đỡ công lục thư viện. Child Life tìm ảnh và video có thể có con, bạn xem lại rồi mới tải lên.'**
+  String get autoSaveIntroLead;
+
+  /// AS02 step 1
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn bé và vài ảnh rõ mặt'**
+  String get autoSaveStep1;
+
+  /// AS02 step 1 hint
+  ///
+  /// In vi, this message translates to:
+  /// **'Giúp app gợi ý đúng hơn'**
+  String get autoSaveStep1Hint;
+
+  /// AS02 step 2
+  ///
+  /// In vi, this message translates to:
+  /// **'App tìm trong ảnh mới'**
+  String get autoSaveStep2;
+
+  /// AS02 step 2 hint
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ những ảnh bạn cho phép xem'**
+  String get autoSaveStep2Hint;
+
+  /// AS02 step 3
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn duyệt rồi mới tải'**
+  String get autoSaveStep3;
+
+  /// AS02 step 3 hint
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tự tải, không tự chia sẻ'**
+  String get autoSaveStep3Hint;
+
+  /// AS02 footnote with the family's live usage, e.g. '3,2 / 10 GB'; P-147 adds the on-device sentence
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình ({usage}).'**
+  String autoSaveIntroFootnote(String usage);
+
+  /// AS02 footnote while storage usage is unknown
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình.'**
+  String get autoSaveIntroFootnoteNoUsage;
+
+  /// AS02 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu thiết lập'**
+  String get autoSaveStart;
+
+  /// AS03 title
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý ảnh của bé nào?'**
+  String get autoSavePickBabyTitle;
+
+  /// AS03 subtitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước 1/3 · Có thể thêm bé khác sau trong Cài đặt.'**
+  String get autoSavePickBabySub;
+
+  /// AS03 row: the user's relation to the baby, after the age
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn là {relation}'**
+  String autoSaveYouAre(String relation);
+
+  /// AS03 locked row (caregiver)
+  ///
+  /// In vi, this message translates to:
+  /// **'bạn là Người chăm sóc nên không bật được tính năng này'**
+  String get autoSaveLockedCaregiver;
+
+  /// AS03 locked row (relative); engineering variant of the caregiver copy
+  ///
+  /// In vi, this message translates to:
+  /// **'bạn là Người thân nên không bật được tính năng này'**
+  String get autoSaveLockedRelative;
+
+  /// AS03 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp'**
+  String get autoSaveNext;
+
+  /// AS04 title
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn vài ảnh rõ mặt {name}'**
+  String autoSaveSamplesTitle(String name);
+
+  /// AS04 subtitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước 2/3 · 3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.'**
+  String get autoSaveSamplesSub;
+
+  /// AS04 caption
+  ///
+  /// In vi, this message translates to:
+  /// **'{count}/5 ảnh mẫu · chọn từ Kỷ niệm đã có'**
+  String autoSaveSamplesCount(int count);
+
+  /// AS04 link
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoặc chọn từ thư viện máy'**
+  String get autoSaveSamplesFromLibrary;
+
+  /// AS04 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Tiếp · {count} ảnh mẫu}}'**
+  String autoSaveSamplesNext(int count);
+
+  /// AS04: fewer than 3 samples
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ít nhất 3 ảnh mẫu.'**
+  String get autoSaveSamplesNeed;
+
+  /// AS04: the chosen photo has no usable face
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh này chưa thấy rõ mặt. Chọn ảnh khác nhé.'**
+  String get autoSaveSampleNoFace;
+
+  /// AS04: no photos in Kỷ niệm (engineering state)
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm chưa có ảnh của {name}. Chọn từ thư viện máy nhé.'**
+  String autoSaveSamplesEmpty(String name);
+
+  /// AS05 title (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước khi bắt đầu'**
+  String get autoSaveConsentTitle;
+
+  /// AS05 subtitle (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước 3/3 · Đổi được bất cứ lúc nào trong Cài đặt Tự lưu.'**
+  String get autoSaveConsentSub;
+
+  /// AS05 face-analysis consent card title (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận ra {name} ngay trên máy này'**
+  String autoSaveFaceTitle(String name);
+
+  /// AS05 face card body (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life so khuôn mặt trong ảnh mới với ảnh mẫu của {name} để gợi ý. Mọi việc diễn ra trên điện thoại của bạn.'**
+  String autoSaveFaceBody(String name);
+
+  /// AS05 reassurance 1 (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Không lưu ảnh nào của {name}: ảnh mẫu vẫn nằm trong Kỷ niệm hoặc thư viện của bạn.'**
+  String autoSaveFaceNoPhotos(String name);
+
+  /// AS05 reassurance 2 (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ghi nhớ một dãy số về khuôn mặt, nằm trên máy này, không gửi lên Child Life.'**
+  String get autoSaveFaceNumbers;
+
+  /// AS05 reassurance 3 (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life không xem được, không dùng cho quảng cáo. Bạn xoá được bất cứ lúc nào.'**
+  String get autoSaveFaceNoOne;
+
+  /// AS05 consent checkbox, unticked by default (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi đồng ý để Child Life nhận ra {name} trên máy này'**
+  String autoSaveFaceAgree(String name);
+
+  /// AS05: CTA tapped without the consent
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu đồng ý ở thẻ đầu tiên để tiếp tục.'**
+  String get autoSaveAgreeFirst;
+
+  /// AS05 link to the explanation sheet (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life lưu gì?'**
+  String get autoSaveWhatKept;
+
+  /// AS05 card 2
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho Child Life xem thư viện ảnh'**
+  String get autoSaveLibraryTitle;
+
+  /// AS05 card 2 body
+  ///
+  /// In vi, this message translates to:
+  /// **'Để tìm ảnh, video mới có thể có {name}. App không xoá hay sửa gì trong thư viện.'**
+  String autoSaveLibraryBody(String name);
+
+  /// AS05 card 2 info strip
+  ///
+  /// In vi, this message translates to:
+  /// **'Bấm tiếp, điện thoại sẽ hỏi quyền. Bạn có thể cho xem tất cả hoặc chỉ ảnh được chọn.'**
+  String get autoSaveLibraryHint;
+
+  /// AS05 card 3 (no background switch, D-066)
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ tải lên mục bạn duyệt'**
+  String get autoSaveUploadTitle;
+
+  /// AS05 card 3 body (P-147, D-066 #6)
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh, video bạn bấm duyệt được tải lên Kỷ niệm như khi bạn tự thêm, và vẫn tải tiếp khi bạn khoá máy.'**
+  String get autoSaveUploadBody;
+
+  /// AS05 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho phép xem ảnh'**
+  String get autoSaveAllow;
+
+  /// AS05 text link
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau · thêm ảnh thủ công'**
+  String get autoSaveLater;
+
+  /// 'Child Life lưu gì?' sheet block 1 (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Trên máy này'**
+  String get autoSaveKeptHere;
+
+  /// 'Child Life lưu gì?' block 1 body (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Dãy số về khuôn mặt từ ảnh mẫu và ảnh bạn đã duyệt; danh sách ảnh đã kiểm tra hoặc đã bỏ qua; cài đặt Tự lưu. Không nằm trong bản sao lưu iCloud. Gỡ app là xoá hết.'**
+  String get autoSaveKeptHereBody;
+
+  /// 'Child Life lưu gì?' block 2
+  ///
+  /// In vi, this message translates to:
+  /// **'Không bao giờ'**
+  String get autoSaveKeptNever;
+
+  /// 'Child Life lưu gì?' block 2 body
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ bản sao ảnh mẫu hay ảnh trong thư viện; gửi dữ liệu khuôn mặt lên máy chủ Child Life hay cho bên khác; dùng cho quảng cáo.'**
+  String get autoSaveKeptNeverBody;
+
+  /// 'Child Life lưu gì?' block 3
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải lên Child Life'**
+  String get autoSaveKeptUp;
+
+  /// 'Child Life lưu gì?' block 3 body
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ảnh, video bạn bấm duyệt, với quyền \"Ai thấy\" bạn chọn (mặc định Chỉ ba mẹ).'**
+  String get autoSaveKeptUpBody;
+
+  /// 'Child Life lưu gì?' footer (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá trong Cài đặt Tự lưu › Xoá ảnh mẫu và dữ liệu gợi ý. Tắt Tự lưu thì dữ liệu trên máy tự xoá sau 30 ngày.'**
+  String get autoSaveKeptFooter;
+
+  /// AS06 / AS17 status card
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang kiểm tra ảnh mới'**
+  String get autoSaveChecking;
+
+  /// AS06 progress
+  ///
+  /// In vi, this message translates to:
+  /// **'{checked} / {total} tệp · chưa tải gì lên'**
+  String autoSaveCheckingFirst(String checked, String total);
+
+  /// AS17 progress
+  ///
+  /// In vi, this message translates to:
+  /// **'{checked} / {total} tệp · tiến độ kiểm tra'**
+  String autoSaveCheckingProgress(String checked, String total);
+
+  /// AS06 note
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thể tạm dừng khi bạn rời app; lần mở sau sẽ kiểm tra tiếp.'**
+  String get autoSaveCheckingPause;
+
+  /// AS17 note
+  ///
+  /// In vi, this message translates to:
+  /// **'Tách riêng với tiến độ tải lên bên dưới.'**
+  String get autoSaveCheckingSeparate;
+
+  /// AS06 found card
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Đã tìm thấy {count} gợi ý}}'**
+  String autoSaveFound(int count);
+
+  /// AS06 found card hint
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể xem ngay, kiểm tra vẫn tiếp tục.'**
+  String get autoSaveFoundHint;
+
+  /// AS06 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Xem {count} gợi ý}}'**
+  String autoSaveSeeFound(int count);
+
+  /// AS06 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh và video'**
+  String get autoSaveKinds;
+
+  /// AS06 row value
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra cả hai · chỉ ảnh bạn cho phép xem'**
+  String get autoSaveKindsBoth;
+
+  /// AS12 status card
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần kiểm tra gần nhất: {time}'**
+  String autoSaveLastCheck(String time);
+
+  /// AS12 status card
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} tệp mới · {names}}}'**
+  String autoSaveNewFiles(int count, String names);
+
+  /// AS12 / AS16 button
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra ảnh mới'**
+  String get autoSaveCheckNow;
+
+  /// AS12 note
+  ///
+  /// In vi, this message translates to:
+  /// **'App kiểm tra khi bạn mở và khi điện thoại cho phép chạy nền; thời điểm không cố định.'**
+  String get autoSaveWhen;
+
+  /// AS12 suggestions card
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} gợi ý chờ duyệt}}'**
+  String autoSavePending(int count);
+
+  /// AS17 suggestions card
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} gợi ý chờ duyệt · đang tìm thêm}}'**
+  String autoSavePendingMore(int count);
+
+  /// AS12 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'Duyệt gợi ý'**
+  String get autoSaveReview;
+
+  /// AS12 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải lên'**
+  String get autoSaveUploadingRow;
+
+  /// AS12 uploading row value
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} mục}}'**
+  String autoSaveUploadingValue(int count);
+
+  /// AS12 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu từ Tự lưu'**
+  String get autoSaveSavedRow;
+
+  /// AS12 row value, counted on this phone; month like 'tháng 10' / 'October'
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} mục trong {month}}}'**
+  String autoSaveSavedValue(int count, String month);
+
+  /// AS12 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh thủ công'**
+  String get autoSaveManual;
+
+  /// AS12 row hint
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn từ thư viện như trước'**
+  String get autoSaveManualHint;
+
+  /// AS13 status (the count is not available from iOS)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xem những ảnh bạn đã chọn'**
+  String get autoSaveLimitedTitle;
+
+  /// AS13 status body
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life chỉ gợi ý trong những ảnh này'**
+  String get autoSaveLimitedBody;
+
+  /// AS13 button
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn thêm ảnh'**
+  String get autoSavePickMore;
+
+  /// AS13 link
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho xem tất cả trong Cài đặt điện thoại'**
+  String get autoSaveAllowAll;
+
+  /// AS14 status
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life chưa được xem ảnh'**
+  String get autoSaveDeniedTitle;
+
+  /// AS14 status body
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự lưu đang tạm dừng. Kỷ niệm đã lưu không bị ảnh hưởng.'**
+  String get autoSaveDeniedBody;
+
+  /// AS14 button
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Cài đặt điện thoại'**
+  String get autoSaveOpenSettings;
+
+  /// AS15 status
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} chưa có ảnh mẫu'**
+  String autoSaveNoSamplesTitle(String name);
+
+  /// AS15 status body
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm 3–5 ảnh rõ mặt để bắt đầu gợi ý ảnh của {name}'**
+  String autoSaveNoSamplesBody(String name);
+
+  /// AS15 button
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh mẫu'**
+  String get autoSaveAddSamples;
+
+  /// AS16 status
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ảnh mới có thể có {names}'**
+  String autoSaveNothingTitle(String names);
+
+  /// AS16 status body
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Kiểm tra lúc {time} · {count} tệp mới từ lần trước}}'**
+  String autoSaveNothingBody(int count, String time);
+
+  /// Home when switched off in AS19 (engineering state)
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự lưu đang tắt'**
+  String get autoSaveOffTitle;
+
+  /// Home when switched off (engineering state)
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật lại trong Cài đặt Tự lưu để tìm ảnh mới. Kỷ niệm đã lưu không bị ảnh hưởng.'**
+  String get autoSaveOffBody;
+
+  /// AS12 before the first check finishes
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa kiểm tra lần nào'**
+  String get autoSaveNotYet;
+
+  /// AS07 title
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thể có {name}'**
+  String autoSaveReviewTitle(String name);
+
+  /// AS07 subtitle
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} gợi ý · kiểm tra lúc {time}. Bỏ chọn những mục không muốn lưu.}}'**
+  String autoSaveReviewSub(int count, String time);
+
+  /// AS07 grouping note (P-146, G-102)
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh giống nhau được gom lại, app chọn sẵn ảnh rõ nhất.'**
+  String get autoSaveGroupedHint;
+
+  /// AS07 filter chip
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả · {count}'**
+  String autoSaveFilterAll(int count);
+
+  /// AS07 filter chip
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh · {count}'**
+  String autoSaveFilterPhotos(int count);
+
+  /// AS07 filter chip
+  ///
+  /// In vi, this message translates to:
+  /// **'Video · {count}'**
+  String autoSaveFilterVideos(int count);
+
+  /// AS07 day header
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay · {date}'**
+  String autoSaveDayToday(String date);
+
+  /// AS07 day header
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua · {date}'**
+  String autoSaveDayYesterday(String date);
+
+  /// AS07 day header count
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} mục}}'**
+  String autoSaveDayCount(int count);
+
+  /// AS07 tag: already in Kỷ niệm
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có'**
+  String get autoSaveAlready;
+
+  /// AS07 tag: original not on the phone
+  ///
+  /// In vi, this message translates to:
+  /// **'Trên iCloud'**
+  String get autoSaveInCloud;
+
+  /// AS07 footnote
+  ///
+  /// In vi, this message translates to:
+  /// **'\"Đã có\": tệp trùng với Kỷ niệm, sẽ không tải lại. \"Trên iCloud\": tệp gốc chưa có trong máy, sẽ lấy về khi có mạng.'**
+  String get autoSaveLegend;
+
+  /// AS07 expanded group header (G-102)
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} ảnh giống nhau · đã chọn {chosen}}}'**
+  String autoSaveGroupTitle(int count, int chosen);
+
+  /// AS07 expanded group action (G-102)
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn cả nhóm'**
+  String get autoSaveGroupAll;
+
+  /// AS07 expanded group action (G-102)
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu gọn'**
+  String get autoSaveGroupCollapse;
+
+  /// AS07 badge on a group's best photo (G-102)
+  ///
+  /// In vi, this message translates to:
+  /// **'Rõ nhất'**
+  String get autoSaveBest;
+
+  /// AS07 sticky summary
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chọn {count} · {photos} ảnh, {videos} video'**
+  String autoSaveChosen(int count, int photos, int videos);
+
+  /// AS07 summary line (P-146)
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Đã gộp {count} ảnh giống nhau · không xoá gì trong máy}}'**
+  String autoSaveMerged(int count);
+
+  /// AS07 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Tiếp tục với {count} mục}}'**
+  String autoSaveContinue(int count);
+
+  /// AS07 empty (engineering state)
+  ///
+  /// In vi, this message translates to:
+  /// **'Không còn gợi ý nào chờ duyệt.'**
+  String get autoSaveReviewEmpty;
+
+  /// AS08 top bar
+  ///
+  /// In vi, this message translates to:
+  /// **'{index} / {total} · {time}'**
+  String autoSaveViewerPos(int index, int total, String time);
+
+  /// AS08 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho'**
+  String get autoSaveFor;
+
+  /// AS08 row action
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi'**
+  String get autoSaveChange;
+
+  /// AS08 / AS09 reject
+  ///
+  /// In vi, this message translates to:
+  /// **'Không phải ảnh của bé'**
+  String get autoSaveNotBaby;
+
+  /// AS08 primary (selected)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chọn'**
+  String get autoSaveSelected;
+
+  /// AS08 primary (not selected)
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn'**
+  String get autoSaveSelect;
+
+  /// Toast after 'Không phải ảnh của bé'
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ khỏi gợi ý'**
+  String get autoSaveRejected;
+
+  /// Toast action
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác'**
+  String get autoSaveUndo;
+
+  /// AS09 title
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh này của ai?'**
+  String get autoSaveWhose;
+
+  /// AS09 current baby
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang được gợi ý'**
+  String get autoSaveSuggestedNow;
+
+  /// AS09 reject hint
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ khỏi gợi ý · giúp lần sau gợi ý tốt hơn'**
+  String get autoSaveNotBabyHint;
+
+  /// AS09 button
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get autoSaveDone;
+
+  /// AS10 title
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra trước khi tải'**
+  String get autoSaveConfirmTitle;
+
+  /// AS10 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Nguồn'**
+  String get autoSaveSource;
+
+  /// AS10 row value
+  ///
+  /// In vi, this message translates to:
+  /// **'Thư viện ảnh trên máy · {count} mục ({photos} ảnh, {videos} video)'**
+  String autoSaveSourceValue(int count, int photos, int videos);
+
+  /// AS10 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé'**
+  String get autoSaveBabyRow;
+
+  /// AS10 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu vào'**
+  String get autoSaveSaveTo;
+
+  /// AS10 row value (the app's Nhật ký tab, D-052)
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký, theo ngày chụp · Album: không'**
+  String get autoSaveSaveToValue;
+
+  /// AS10 section
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai thấy'**
+  String get autoSaveWho;
+
+  /// AS10 audience card
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ'**
+  String get autoSaveParentsOnly;
+
+  /// AS10 audience card hint (D-066)
+  ///
+  /// In vi, this message translates to:
+  /// **'Mặc định cho Tự lưu'**
+  String get autoSaveParentsOnlyHint;
+
+  /// AS10 audience card
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình'**
+  String get autoSaveFamily;
+
+  /// AS10 audience card hint
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà cùng xem'**
+  String get autoSaveFamilyHint;
+
+  /// AS10 switch row
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo cho gia đình'**
+  String get autoSaveNotify;
+
+  /// AS10 switch row value
+  ///
+  /// In vi, this message translates to:
+  /// **'Tắt · không gửi thông báo'**
+  String get autoSaveNotifyOff;
+
+  /// AS10 switch row value when on (R-104)
+  ///
+  /// In vi, this message translates to:
+  /// **'1 thông báo chung, không kèm ảnh'**
+  String get autoSaveNotifyOn;
+
+  /// AS10 storage card
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng sau khi tải'**
+  String get autoSaveStorageAfter;
+
+  /// AS10 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Tải lên {count} mục}}'**
+  String autoSaveUploadCount(int count);
+
+  /// AS10 footnote
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh gốc vẫn ở trong máy. Tải xong mới hiện \"Đã lưu\".'**
+  String get autoSaveConfirmFootnote;
+
+  /// AS18 banner
+  ///
+  /// In vi, this message translates to:
+  /// **'Không đủ dung lượng: {count} mục cần {need}, gia đình còn {left}. Bạn có thể tải trước {fit} mục vừa đủ, phần còn lại vẫn giữ trên máy.'**
+  String autoSaveNoRoom(int count, String need, String left, int fit);
+
+  /// AS18 primary button
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Tải trước {count} mục vừa đủ}}'**
+  String autoSaveUploadFit(int count);
+
+  /// AS18 footnote
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục chưa tải vẫn ở trong máy và trong danh sách gợi ý.'**
+  String get autoSaveNoRoomFootnote;
+
+  /// AS18 link
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem dung lượng'**
+  String get autoSaveSeeStorage;
+
+  /// AS10 while originals are read (may come from iCloud)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị {done}/{total}…'**
+  String autoSavePreparing(int done, int total);
+
+  /// Toast after AS10
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Đang tải {count} mục lên Kỷ niệm}}'**
+  String autoSaveQueued(int count);
+
+  /// AS19 title
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt Tự lưu'**
+  String get autoSaveSettingsTitle;
+
+  /// AS19 master switch subtitle
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bật · Beta miễn phí'**
+  String get autoSaveOnBeta;
+
+  /// AS19 master switch subtitle when off
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tắt'**
+  String get autoSaveOffValue;
+
+  /// AS19 section
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm trong'**
+  String get autoSaveLookIn;
+
+  /// AS19 switch
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get autoSavePhotos;
+
+  /// AS19 switch
+  ///
+  /// In vi, this message translates to:
+  /// **'Video'**
+  String get autoSaveVideos;
+
+  /// AS19 switch hint
+  ///
+  /// In vi, this message translates to:
+  /// **'Video lớn tốn nhiều dung lượng'**
+  String get autoSaveVideosHint;
+
+  /// AS19 switch; the app-wide setting (Q-056 proposal: videos only)
+  ///
+  /// In vi, this message translates to:
+  /// **'Video chỉ tải qua Wi-Fi'**
+  String get autoSaveWifi;
+
+  /// AS19 switch hint
+  ///
+  /// In vi, this message translates to:
+  /// **'Áp dụng cho mọi video tải lên'**
+  String get autoSaveWifiHint;
+
+  /// AS19 switch (AR03)
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo khi có ảnh mới'**
+  String get autoSaveNotifyNew;
+
+  /// AS19 switch hint
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối đa 1 lần/ngày · không báo trong giờ yên lặng'**
+  String get autoSaveNotifyNewHint;
+
+  /// AS19 section
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé & ảnh mẫu'**
+  String get autoSaveBabies;
+
+  /// AS19 baby row
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} ảnh mẫu · đang gợi ý}}'**
+  String autoSaveSamplesOn(int count);
+
+  /// AS19 baby row
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ảnh mẫu · tạm tắt'**
+  String get autoSaveSamplesNone;
+
+  /// AS19 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm bé'**
+  String get autoSaveAddBaby;
+
+  /// AS19 section
+  ///
+  /// In vi, this message translates to:
+  /// **'Trạng thái gần nhất'**
+  String get autoSaveLastStatus;
+
+  /// AS19 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra'**
+  String get autoSaveCheckRow;
+
+  /// AS19 row value
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} · {files} tệp · {found} gợi ý'**
+  String autoSaveCheckValue(String time, int files, int found);
+
+  /// AS19 row
+  ///
+  /// In vi, this message translates to:
+  /// **'Quyền xem ảnh'**
+  String get autoSavePermission;
+
+  /// AS19 row value
+  ///
+  /// In vi, this message translates to:
+  /// **'Toàn bộ thư viện'**
+  String get autoSaveAccessFull;
+
+  /// AS19 row value
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh được chọn'**
+  String get autoSaveAccessLimited;
+
+  /// AS19 row value
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa cho phép'**
+  String get autoSaveAccessDenied;
+
+  /// AS19 note above the delete link (P-147)
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu nhận diện chỉ nằm trên máy này.'**
+  String get autoSaveOnDevice;
+
+  /// AS19 info banner
+  ///
+  /// In vi, this message translates to:
+  /// **'Tắt Tự lưu không xoá kỷ niệm đã lưu. App chỉ ngừng tìm và gợi ý ảnh mới.'**
+  String get autoSaveOffNote;
+
+  /// AS19 destructive link
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá ảnh mẫu và dữ liệu gợi ý'**
+  String get autoSaveWipe;
+
+  /// AS19 delete confirmation body
+  ///
+  /// In vi, this message translates to:
+  /// **'Các dãy số về khuôn mặt, gợi ý đang chờ và sự đồng ý trên máy này sẽ bị xoá. Kỷ niệm đã lưu không bị ảnh hưởng. Muốn dùng lại, bạn thiết lập từ đầu.'**
+  String get autoSaveWipeBody;
+
+  /// AS19 delete confirmation button
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá'**
+  String get autoSaveWipeAction;
+
+  /// Toast after delete
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá dữ liệu Tự lưu trên máy này'**
+  String get autoSaveWiped;
+
+  /// AS19 › baby samples page title
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh mẫu của {name}'**
+  String autoSaveSamplesOf(String name);
+
+  /// Samples page button
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu'**
+  String get autoSaveSave;
+
+  /// Samples page destructive action
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ {name} khỏi Tự lưu'**
+  String autoSaveRemoveBaby(String name);
+
+  /// Joins two baby names
+  ///
+  /// In vi, this message translates to:
+  /// **'{a} và {b}'**
+  String autoSaveAnd(String a, String b);
+
+  /// AS19 › baby samples page subtitle (AS04 copy without the step)
+  ///
+  /// In vi, this message translates to:
+  /// **'3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.'**
+  String get autoSaveSamplesHint;
 }
 
 class _AppLocalizationsDelegate

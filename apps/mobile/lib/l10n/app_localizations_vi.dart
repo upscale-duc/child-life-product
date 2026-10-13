@@ -8736,4 +8736,770 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get emailLinkNeedsEmail => 'Nhập email để nhận link đăng nhập.';
+
+  @override
+  String get autoSaveTitle => 'Tự lưu kỷ niệm';
+
+  @override
+  String get autoSaveBeta => 'Beta miễn phí';
+
+  @override
+  String autoSaveEntryHint(String name) {
+    return 'Gợi ý ảnh, video có $name từ thư viện máy';
+  }
+
+  @override
+  String autoSaveEntryPending(int count, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ảnh mới chờ duyệt · kiểm tra lúc $time',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveReviewShort => 'Duyệt';
+
+  @override
+  String get autoSaveIntroLead =>
+      'Đỡ công lục thư viện. Child Life tìm ảnh và video có thể có con, bạn xem lại rồi mới tải lên.';
+
+  @override
+  String get autoSaveStep1 => 'Chọn bé và vài ảnh rõ mặt';
+
+  @override
+  String get autoSaveStep1Hint => 'Giúp app gợi ý đúng hơn';
+
+  @override
+  String get autoSaveStep2 => 'App tìm trong ảnh mới';
+
+  @override
+  String get autoSaveStep2Hint => 'Chỉ những ảnh bạn cho phép xem';
+
+  @override
+  String get autoSaveStep3 => 'Bạn duyệt rồi mới tải';
+
+  @override
+  String get autoSaveStep3Hint => 'Không tự tải, không tự chia sẻ';
+
+  @override
+  String autoSaveIntroFootnote(String usage) {
+    return 'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình ($usage).';
+  }
+
+  @override
+  String get autoSaveIntroFootnoteNoUsage =>
+      'Gợi ý có thể sót hoặc nhầm, nhất là khi ảnh tối, nghiêng hay có nhiều bé. Ảnh được kiểm tra ngay trên máy, không gửi đi. Bản beta miễn phí; tệp đã tải vẫn tính vào dung lượng của gia đình.';
+
+  @override
+  String get autoSaveStart => 'Bắt đầu thiết lập';
+
+  @override
+  String get autoSavePickBabyTitle => 'Gợi ý ảnh của bé nào?';
+
+  @override
+  String get autoSavePickBabySub =>
+      'Bước 1/3 · Có thể thêm bé khác sau trong Cài đặt.';
+
+  @override
+  String autoSaveYouAre(String relation) {
+    return 'Bạn là $relation';
+  }
+
+  @override
+  String get autoSaveLockedCaregiver =>
+      'bạn là Người chăm sóc nên không bật được tính năng này';
+
+  @override
+  String get autoSaveLockedRelative =>
+      'bạn là Người thân nên không bật được tính năng này';
+
+  @override
+  String get autoSaveNext => 'Tiếp';
+
+  @override
+  String autoSaveSamplesTitle(String name) {
+    return 'Chọn vài ảnh rõ mặt $name';
+  }
+
+  @override
+  String get autoSaveSamplesSub =>
+      'Bước 2/3 · 3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.';
+
+  @override
+  String autoSaveSamplesCount(int count) {
+    return '$count/5 ảnh mẫu · chọn từ Kỷ niệm đã có';
+  }
+
+  @override
+  String get autoSaveSamplesFromLibrary => 'Hoặc chọn từ thư viện máy';
+
+  @override
+  String autoSaveSamplesNext(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tiếp · $count ảnh mẫu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveSamplesNeed => 'Chọn ít nhất 3 ảnh mẫu.';
+
+  @override
+  String get autoSaveSampleNoFace =>
+      'Ảnh này chưa thấy rõ mặt. Chọn ảnh khác nhé.';
+
+  @override
+  String autoSaveSamplesEmpty(String name) {
+    return 'Kỷ niệm chưa có ảnh của $name. Chọn từ thư viện máy nhé.';
+  }
+
+  @override
+  String get autoSaveConsentTitle => 'Trước khi bắt đầu';
+
+  @override
+  String get autoSaveConsentSub =>
+      'Bước 3/3 · Đổi được bất cứ lúc nào trong Cài đặt Tự lưu.';
+
+  @override
+  String autoSaveFaceTitle(String name) {
+    return 'Nhận ra $name ngay trên máy này';
+  }
+
+  @override
+  String autoSaveFaceBody(String name) {
+    return 'Child Life so khuôn mặt trong ảnh mới với ảnh mẫu của $name để gợi ý. Mọi việc diễn ra trên điện thoại của bạn.';
+  }
+
+  @override
+  String autoSaveFaceNoPhotos(String name) {
+    return 'Không lưu ảnh nào của $name: ảnh mẫu vẫn nằm trong Kỷ niệm hoặc thư viện của bạn.';
+  }
+
+  @override
+  String get autoSaveFaceNumbers =>
+      'Chỉ ghi nhớ một dãy số về khuôn mặt, nằm trên máy này, không gửi lên Child Life.';
+
+  @override
+  String get autoSaveFaceNoOne =>
+      'Child Life không xem được, không dùng cho quảng cáo. Bạn xoá được bất cứ lúc nào.';
+
+  @override
+  String autoSaveFaceAgree(String name) {
+    return 'Tôi đồng ý để Child Life nhận ra $name trên máy này';
+  }
+
+  @override
+  String get autoSaveAgreeFirst =>
+      'Đánh dấu đồng ý ở thẻ đầu tiên để tiếp tục.';
+
+  @override
+  String get autoSaveWhatKept => 'Child Life lưu gì?';
+
+  @override
+  String get autoSaveLibraryTitle => 'Cho Child Life xem thư viện ảnh';
+
+  @override
+  String autoSaveLibraryBody(String name) {
+    return 'Để tìm ảnh, video mới có thể có $name. App không xoá hay sửa gì trong thư viện.';
+  }
+
+  @override
+  String get autoSaveLibraryHint =>
+      'Bấm tiếp, điện thoại sẽ hỏi quyền. Bạn có thể cho xem tất cả hoặc chỉ ảnh được chọn.';
+
+  @override
+  String get autoSaveUploadTitle => 'Chỉ tải lên mục bạn duyệt';
+
+  @override
+  String get autoSaveUploadBody =>
+      'Ảnh, video bạn bấm duyệt được tải lên Kỷ niệm như khi bạn tự thêm, và vẫn tải tiếp khi bạn khoá máy.';
+
+  @override
+  String get autoSaveAllow => 'Cho phép xem ảnh';
+
+  @override
+  String get autoSaveLater => 'Để sau · thêm ảnh thủ công';
+
+  @override
+  String get autoSaveKeptHere => 'Trên máy này';
+
+  @override
+  String get autoSaveKeptHereBody =>
+      'Dãy số về khuôn mặt từ ảnh mẫu và ảnh bạn đã duyệt; danh sách ảnh đã kiểm tra hoặc đã bỏ qua; cài đặt Tự lưu. Không nằm trong bản sao lưu iCloud. Gỡ app là xoá hết.';
+
+  @override
+  String get autoSaveKeptNever => 'Không bao giờ';
+
+  @override
+  String get autoSaveKeptNeverBody =>
+      'Giữ bản sao ảnh mẫu hay ảnh trong thư viện; gửi dữ liệu khuôn mặt lên máy chủ Child Life hay cho bên khác; dùng cho quảng cáo.';
+
+  @override
+  String get autoSaveKeptUp => 'Tải lên Child Life';
+
+  @override
+  String get autoSaveKeptUpBody =>
+      'Chỉ ảnh, video bạn bấm duyệt, với quyền \"Ai thấy\" bạn chọn (mặc định Chỉ ba mẹ).';
+
+  @override
+  String get autoSaveKeptFooter =>
+      'Xoá trong Cài đặt Tự lưu › Xoá ảnh mẫu và dữ liệu gợi ý. Tắt Tự lưu thì dữ liệu trên máy tự xoá sau 30 ngày.';
+
+  @override
+  String get autoSaveChecking => 'Đang kiểm tra ảnh mới';
+
+  @override
+  String autoSaveCheckingFirst(String checked, String total) {
+    return '$checked / $total tệp · chưa tải gì lên';
+  }
+
+  @override
+  String autoSaveCheckingProgress(String checked, String total) {
+    return '$checked / $total tệp · tiến độ kiểm tra';
+  }
+
+  @override
+  String get autoSaveCheckingPause =>
+      'Có thể tạm dừng khi bạn rời app; lần mở sau sẽ kiểm tra tiếp.';
+
+  @override
+  String get autoSaveCheckingSeparate =>
+      'Tách riêng với tiến độ tải lên bên dưới.';
+
+  @override
+  String autoSaveFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đã tìm thấy $count gợi ý',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveFoundHint => 'Bạn có thể xem ngay, kiểm tra vẫn tiếp tục.';
+
+  @override
+  String autoSaveSeeFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Xem $count gợi ý',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveKinds => 'Ảnh và video';
+
+  @override
+  String get autoSaveKindsBoth => 'Kiểm tra cả hai · chỉ ảnh bạn cho phép xem';
+
+  @override
+  String autoSaveLastCheck(String time) {
+    return 'Lần kiểm tra gần nhất: $time';
+  }
+
+  @override
+  String autoSaveNewFiles(int count, String names) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tệp mới · $names',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveCheckNow => 'Kiểm tra ảnh mới';
+
+  @override
+  String get autoSaveWhen =>
+      'App kiểm tra khi bạn mở và khi điện thoại cho phép chạy nền; thời điểm không cố định.';
+
+  @override
+  String autoSavePending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gợi ý chờ duyệt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String autoSavePendingMore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gợi ý chờ duyệt · đang tìm thêm',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveReview => 'Duyệt gợi ý';
+
+  @override
+  String get autoSaveUploadingRow => 'Đang tải lên';
+
+  @override
+  String autoSaveUploadingValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mục',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveSavedRow => 'Đã lưu từ Tự lưu';
+
+  @override
+  String autoSaveSavedValue(int count, String month) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mục trong $month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveManual => 'Thêm ảnh thủ công';
+
+  @override
+  String get autoSaveManualHint => 'Chọn từ thư viện như trước';
+
+  @override
+  String get autoSaveLimitedTitle => 'Đang xem những ảnh bạn đã chọn';
+
+  @override
+  String get autoSaveLimitedBody => 'Child Life chỉ gợi ý trong những ảnh này';
+
+  @override
+  String get autoSavePickMore => 'Chọn thêm ảnh';
+
+  @override
+  String get autoSaveAllowAll => 'Cho xem tất cả trong Cài đặt điện thoại';
+
+  @override
+  String get autoSaveDeniedTitle => 'Child Life chưa được xem ảnh';
+
+  @override
+  String get autoSaveDeniedBody =>
+      'Tự lưu đang tạm dừng. Kỷ niệm đã lưu không bị ảnh hưởng.';
+
+  @override
+  String get autoSaveOpenSettings => 'Mở Cài đặt điện thoại';
+
+  @override
+  String autoSaveNoSamplesTitle(String name) {
+    return '$name chưa có ảnh mẫu';
+  }
+
+  @override
+  String autoSaveNoSamplesBody(String name) {
+    return 'Thêm 3–5 ảnh rõ mặt để bắt đầu gợi ý ảnh của $name';
+  }
+
+  @override
+  String get autoSaveAddSamples => 'Thêm ảnh mẫu';
+
+  @override
+  String autoSaveNothingTitle(String names) {
+    return 'Chưa có ảnh mới có thể có $names';
+  }
+
+  @override
+  String autoSaveNothingBody(int count, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Kiểm tra lúc $time · $count tệp mới từ lần trước',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveOffTitle => 'Tự lưu đang tắt';
+
+  @override
+  String get autoSaveOffBody =>
+      'Bật lại trong Cài đặt Tự lưu để tìm ảnh mới. Kỷ niệm đã lưu không bị ảnh hưởng.';
+
+  @override
+  String get autoSaveNotYet => 'Chưa kiểm tra lần nào';
+
+  @override
+  String autoSaveReviewTitle(String name) {
+    return 'Có thể có $name';
+  }
+
+  @override
+  String autoSaveReviewSub(int count, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count gợi ý · kiểm tra lúc $time. Bỏ chọn những mục không muốn lưu.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveGroupedHint =>
+      'Ảnh giống nhau được gom lại, app chọn sẵn ảnh rõ nhất.';
+
+  @override
+  String autoSaveFilterAll(int count) {
+    return 'Tất cả · $count';
+  }
+
+  @override
+  String autoSaveFilterPhotos(int count) {
+    return 'Ảnh · $count';
+  }
+
+  @override
+  String autoSaveFilterVideos(int count) {
+    return 'Video · $count';
+  }
+
+  @override
+  String autoSaveDayToday(String date) {
+    return 'Hôm nay · $date';
+  }
+
+  @override
+  String autoSaveDayYesterday(String date) {
+    return 'Hôm qua · $date';
+  }
+
+  @override
+  String autoSaveDayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mục',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveAlready => 'Đã có';
+
+  @override
+  String get autoSaveInCloud => 'Trên iCloud';
+
+  @override
+  String get autoSaveLegend =>
+      '\"Đã có\": tệp trùng với Kỷ niệm, sẽ không tải lại. \"Trên iCloud\": tệp gốc chưa có trong máy, sẽ lấy về khi có mạng.';
+
+  @override
+  String autoSaveGroupTitle(int count, int chosen) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ảnh giống nhau · đã chọn $chosen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveGroupAll => 'Chọn cả nhóm';
+
+  @override
+  String get autoSaveGroupCollapse => 'Thu gọn';
+
+  @override
+  String get autoSaveBest => 'Rõ nhất';
+
+  @override
+  String autoSaveChosen(int count, int photos, int videos) {
+    return 'Đã chọn $count · $photos ảnh, $videos video';
+  }
+
+  @override
+  String autoSaveMerged(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đã gộp $count ảnh giống nhau · không xoá gì trong máy',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String autoSaveContinue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tiếp tục với $count mục',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveReviewEmpty => 'Không còn gợi ý nào chờ duyệt.';
+
+  @override
+  String autoSaveViewerPos(int index, int total, String time) {
+    return '$index / $total · $time';
+  }
+
+  @override
+  String get autoSaveFor => 'Gợi ý cho';
+
+  @override
+  String get autoSaveChange => 'Đổi';
+
+  @override
+  String get autoSaveNotBaby => 'Không phải ảnh của bé';
+
+  @override
+  String get autoSaveSelected => 'Đã chọn';
+
+  @override
+  String get autoSaveSelect => 'Chọn';
+
+  @override
+  String get autoSaveRejected => 'Đã bỏ khỏi gợi ý';
+
+  @override
+  String get autoSaveUndo => 'Hoàn tác';
+
+  @override
+  String get autoSaveWhose => 'Ảnh này của ai?';
+
+  @override
+  String get autoSaveSuggestedNow => 'Đang được gợi ý';
+
+  @override
+  String get autoSaveNotBabyHint =>
+      'Bỏ khỏi gợi ý · giúp lần sau gợi ý tốt hơn';
+
+  @override
+  String get autoSaveDone => 'Xong';
+
+  @override
+  String get autoSaveConfirmTitle => 'Kiểm tra trước khi tải';
+
+  @override
+  String get autoSaveSource => 'Nguồn';
+
+  @override
+  String autoSaveSourceValue(int count, int photos, int videos) {
+    return 'Thư viện ảnh trên máy · $count mục ($photos ảnh, $videos video)';
+  }
+
+  @override
+  String get autoSaveBabyRow => 'Bé';
+
+  @override
+  String get autoSaveSaveTo => 'Lưu vào';
+
+  @override
+  String get autoSaveSaveToValue => 'Nhật ký, theo ngày chụp · Album: không';
+
+  @override
+  String get autoSaveWho => 'Ai thấy';
+
+  @override
+  String get autoSaveParentsOnly => 'Chỉ ba mẹ';
+
+  @override
+  String get autoSaveParentsOnlyHint => 'Mặc định cho Tự lưu';
+
+  @override
+  String get autoSaveFamily => 'Gia đình';
+
+  @override
+  String get autoSaveFamilyHint => 'Cả nhà cùng xem';
+
+  @override
+  String get autoSaveNotify => 'Báo cho gia đình';
+
+  @override
+  String get autoSaveNotifyOff => 'Tắt · không gửi thông báo';
+
+  @override
+  String get autoSaveNotifyOn => '1 thông báo chung, không kèm ảnh';
+
+  @override
+  String get autoSaveStorageAfter => 'Dung lượng sau khi tải';
+
+  @override
+  String autoSaveUploadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tải lên $count mục',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveConfirmFootnote =>
+      'Ảnh gốc vẫn ở trong máy. Tải xong mới hiện \"Đã lưu\".';
+
+  @override
+  String autoSaveNoRoom(int count, String need, String left, int fit) {
+    return 'Không đủ dung lượng: $count mục cần $need, gia đình còn $left. Bạn có thể tải trước $fit mục vừa đủ, phần còn lại vẫn giữ trên máy.';
+  }
+
+  @override
+  String autoSaveUploadFit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tải trước $count mục vừa đủ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveNoRoomFootnote =>
+      'Mục chưa tải vẫn ở trong máy và trong danh sách gợi ý.';
+
+  @override
+  String get autoSaveSeeStorage => 'Xem dung lượng';
+
+  @override
+  String autoSavePreparing(int done, int total) {
+    return 'Đang chuẩn bị $done/$total…';
+  }
+
+  @override
+  String autoSaveQueued(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Đang tải $count mục lên Kỷ niệm',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveSettingsTitle => 'Cài đặt Tự lưu';
+
+  @override
+  String get autoSaveOnBeta => 'Đang bật · Beta miễn phí';
+
+  @override
+  String get autoSaveOffValue => 'Đang tắt';
+
+  @override
+  String get autoSaveLookIn => 'Tìm trong';
+
+  @override
+  String get autoSavePhotos => 'Ảnh';
+
+  @override
+  String get autoSaveVideos => 'Video';
+
+  @override
+  String get autoSaveVideosHint => 'Video lớn tốn nhiều dung lượng';
+
+  @override
+  String get autoSaveWifi => 'Video chỉ tải qua Wi-Fi';
+
+  @override
+  String get autoSaveWifiHint => 'Áp dụng cho mọi video tải lên';
+
+  @override
+  String get autoSaveNotifyNew => 'Báo khi có ảnh mới';
+
+  @override
+  String get autoSaveNotifyNewHint =>
+      'Tối đa 1 lần/ngày · không báo trong giờ yên lặng';
+
+  @override
+  String get autoSaveBabies => 'Bé & ảnh mẫu';
+
+  @override
+  String autoSaveSamplesOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ảnh mẫu · đang gợi ý',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get autoSaveSamplesNone => 'Chưa có ảnh mẫu · tạm tắt';
+
+  @override
+  String get autoSaveAddBaby => 'Thêm bé';
+
+  @override
+  String get autoSaveLastStatus => 'Trạng thái gần nhất';
+
+  @override
+  String get autoSaveCheckRow => 'Kiểm tra';
+
+  @override
+  String autoSaveCheckValue(String time, int files, int found) {
+    return '$time · $files tệp · $found gợi ý';
+  }
+
+  @override
+  String get autoSavePermission => 'Quyền xem ảnh';
+
+  @override
+  String get autoSaveAccessFull => 'Toàn bộ thư viện';
+
+  @override
+  String get autoSaveAccessLimited => 'Ảnh được chọn';
+
+  @override
+  String get autoSaveAccessDenied => 'Chưa cho phép';
+
+  @override
+  String get autoSaveOnDevice => 'Dữ liệu nhận diện chỉ nằm trên máy này.';
+
+  @override
+  String get autoSaveOffNote =>
+      'Tắt Tự lưu không xoá kỷ niệm đã lưu. App chỉ ngừng tìm và gợi ý ảnh mới.';
+
+  @override
+  String get autoSaveWipe => 'Xoá ảnh mẫu và dữ liệu gợi ý';
+
+  @override
+  String get autoSaveWipeBody =>
+      'Các dãy số về khuôn mặt, gợi ý đang chờ và sự đồng ý trên máy này sẽ bị xoá. Kỷ niệm đã lưu không bị ảnh hưởng. Muốn dùng lại, bạn thiết lập từ đầu.';
+
+  @override
+  String get autoSaveWipeAction => 'Xoá';
+
+  @override
+  String get autoSaveWiped => 'Đã xoá dữ liệu Tự lưu trên máy này';
+
+  @override
+  String autoSaveSamplesOf(String name) {
+    return 'Ảnh mẫu của $name';
+  }
+
+  @override
+  String get autoSaveSave => 'Lưu';
+
+  @override
+  String autoSaveRemoveBaby(String name) {
+    return 'Bỏ $name khỏi Tự lưu';
+  }
+
+  @override
+  String autoSaveAnd(String a, String b) {
+    return '$a và $b';
+  }
+
+  @override
+  String get autoSaveSamplesHint =>
+      '3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.';
 }

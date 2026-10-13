@@ -18,6 +18,7 @@ import '../../core/widgets/cl_misc.dart';
 import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
+import '../auto_save/auto_save_widgets.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
@@ -771,6 +772,8 @@ class JournalView extends ConsumerWidget {
                     style: cl.text.label.copyWith(color: cl.colors.inkMuted),
                   ),
                 const SizedBox(height: ClSpace.s3),
+                if (c.parentView)
+                  AutoSaveEntryCard(babyId: c.babyId, name: c.nickname),
                 if (memories != null && order.isEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: ClSpace.s8),
@@ -1236,6 +1239,9 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                 ),
                 sliver: SliverList.list(
                   children: [
+                    // AS01: the way into Tự lưu (D-066), for parents.
+                    if (c.parentView)
+                      AutoSaveEntryCard(babyId: c.babyId, name: c.nickname),
                     if (landing.isNotEmpty) _LandingLine(count: landing.length),
                     if (widget.media != null &&
                         items.isEmpty &&

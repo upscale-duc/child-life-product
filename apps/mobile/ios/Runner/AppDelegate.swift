@@ -62,6 +62,10 @@ import UserNotifications
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "ScreenshotChannel") {
       ScreenshotChannel.register(with: registrar.messenger())
     }
+    // Tự lưu kỷ niệm (D-066): library scan and on-device face matching inputs.
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "AutoSave") {
+      AutoSave.register(with: registrar.messenger())
+    }
   }
 }
 

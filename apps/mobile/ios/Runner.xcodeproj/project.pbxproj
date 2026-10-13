@@ -32,6 +32,7 @@
 		B32BDE0DC85A40AE3BBF835E /* GlanceFirestore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24A0ECE9B00725C6FC131D9 /* GlanceFirestore.swift */; };
 		BBD6DAB97FE7F819B7FCB2BD /* UploadAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C3BFDE1287465919732A05 /* UploadAttributes.swift */; };
 		BD8182D5D4824E61699FDC8C /* GlanceAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54F7A49F1314623601C2661 /* GlanceAuth.swift */; };
+		C3F6153840F258FC7B988676 /* AutoSave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D618821BD543DCAE511D2F9 /* AutoSave.swift */; };
 		CCAEF9567BA0AC156952B976 /* BackgroundUploads.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4C96963E5EE870246A9BA3F /* BackgroundUploads.swift */; };
 		D7357982DCDD10F0E711AF34 /* GlanceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2A0870821DA7145DF6CF70 /* GlanceStore.swift */; };
 		DC4361A7FC4B05C4B265A407 /* GlanceIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9348597E7EA32D40BCC9352 /* GlanceIntents.swift */; };
@@ -119,6 +120,7 @@
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		8AEFCFC2F4539EA518A5030C /* Debug-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Debug-dev.xcconfig"; path = "Flutter/Debug-dev.xcconfig"; sourceTree = "<group>"; };
+		8D618821BD543DCAE511D2F9 /* AutoSave.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AutoSave.swift; sourceTree = "<group>"; };
 		9391CBAB0D2C9C6300FABE24 /* Pods-Runner.release-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release-prod.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release-prod.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 				F4C96963E5EE870246A9BA3F /* BackgroundUploads.swift */,
 				DBC72B376D0CCE5AA23BE249 /* RuleNotifications.swift */,
 				229AE04233D004C605197F5E /* CameraCapture.swift */,
+				8D618821BD543DCAE511D2F9 /* AutoSave.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -696,6 +699,7 @@
 				47F02B84492E9DBB1D25111B /* UploadAttributes.swift in Sources */,
 				F14C252BC4FA6B4DF730E4F5 /* RuleNotifications.swift in Sources */,
 				0C2ADB12E4D33B5271D023B1 /* CameraCapture.swift in Sources */,
+				C3F6153840F258FC7B988676 /* AutoSave.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
