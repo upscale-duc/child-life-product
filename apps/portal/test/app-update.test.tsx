@@ -83,15 +83,31 @@ const view: AppUpdateView = {
 };
 
 describe('Cập nhật ứng dụng', () => {
-  it('shows what is in use, the release and the history', () => {
+  it('shows what is in use on one line; history one click away; three tabs', () => {
     const raw = render(<AppUpdateBody view={view} canEdit />);
     const html = text(raw);
     expect(html).toContain('Bản au_20261012_01');
+    expect(html).toContain('iOS 1.0.5 → 1.2.0');
+    expect(html).toContain('Lịch sử (1)');
+    expect(html).toContain('Phiên bản Có gì mới');
+    expect(html).toContain('Trang giới thiệu');
+    // Phiên bản: both stores in one table, the publish bar at the bottom.
     expect(html).toContain('iOS · App Store');
-    expect(raw).toContain('value="Sơ cứu trẻ em, luôn trong túi bạn"');
-    expect(html).toContain('1.0.5 → 1.2.0');
+    expect(html).toContain('Android · Google Play');
+    expect(html).toContain('Chưa có thay đổi');
     expect(html).toContain('Xuất bản…');
     expect(appUpdateConfigSchema.safeParse(config).success).toBe(true);
+  });
+
+  it('Có gì mới and Trang giới thiệu: lists that open one item at a time', () => {
+    const release = text(render(<AppUpdateBody view={view} canEdit initialTab="release" />));
+    expect(release).toContain('Hiện trong app');
+    expect(release).toMatch(/Điểm nổi bật · \d\/4/);
+    const pagesRaw = render(<AppUpdateBody view={view} canEdit initialTab="pages" />);
+    expect(text(pagesRaw)).toMatch(/Trang giới thiệu · \d\/5/);
+    // The first page is open with its fields; the others show their title only.
+    expect(pagesRaw).toContain('value="Sơ cứu trẻ em, luôn trong túi bạn"');
+    expect(pagesRaw).toContain('aria-expanded="true"');
   });
 
   it('only Kỹ sư, Admin and Owner publish; others read', () => {
@@ -101,7 +117,11 @@ describe('Cập nhật ứng dụng', () => {
     expect(staffCan(levelsForRoles(['support']), 'release.view')).toBe(false);
     const html = text(render(<AppUpdateBody view={view} canEdit={false} />, ['ops']));
     expect(html).not.toContain('Xuất bản…');
-    expect(html).not.toContain('Thêm trang');
+    const pages = text(
+      render(<AppUpdateBody view={view} canEdit={false} initialTab="pages" />, ['ops']),
+    );
+    expect(pages).not.toContain('Thêm trang');
+    expect(pages).not.toContain('Chọn tệp');
   });
 
   it('a raised minimum is flagged; a new one with no previous minimum too', () => {
@@ -112,7 +132,7 @@ describe('Cập nhật ứng dụng', () => {
   });
 
   it('uses the shadcn controls: selects, file button, icon buttons (D-063)', () => {
-    const html = render(<AppUpdateBody view={view} canEdit />);
+    const html = render(<AppUpdateBody view={view} canEdit initialTab="pages" />);
     expect(html).not.toMatch(
       /<select[^>]*class="field__input|<input[^>]*type="file"[^>]*class="field__input/,
     );

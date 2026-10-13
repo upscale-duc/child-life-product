@@ -1,10 +1,11 @@
 import type { AppUpdateConfig, AppUpdateHighlight, AppUpdateText } from '@child-life/contracts';
-import { useState, type CSSProperties, type ReactNode } from 'react';
+import { Moon, Sun } from 'lucide-react';
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { FormattedMessage, IntlProvider, useIntl } from 'react-intl';
 import { appIcons, appMark, appPalettes } from '../app-icons';
 import type { FirstAidImage } from '../api';
 import { messages } from '../messages';
-import { Segmented } from '../ui';
+import { Segmented, SelectMenu } from '../ui';
 
 /**
  * A phone showing what the app will show (D-061, v1.0 improvement UP1–UP6), drawn at the
@@ -17,10 +18,13 @@ export function AppUpdatePreview({
   config,
   images,
   initial = 'available',
+  reserve = 395,
 }: {
   config: AppUpdateConfig;
   images: FirstAidImage[];
   initial?: PreviewScreen;
+  /** Window height the phone cannot use (header, controls, the publish bar). */
+  reserve?: number;
 }) {
   const intl = useIntl();
   const [screen, setScreen] = useState<PreviewScreen>(initial);
@@ -29,53 +33,68 @@ export function AppUpdatePreview({
   // The app's own palette, whatever the portal's light / dark theme.
   const [palette, setPalette] = useState<'light' | 'night'>('light');
   const [page, setPage] = useState(0);
+  const scale = usePhoneScale(reserve);
   const pages = config.release?.pages ?? [];
   const pageIndex = Math.min(page, Math.max(pages.length - 1, 0));
   return (
     <div className="aup">
-      <Segmented
-        label={intl.formatMessage({ id: 'au.pv.screen' })}
-        value={screen}
-        onChange={setScreen}
-        options={(['required', 'available', 'banner', 'pages', 'version'] as const).map((s) => ({
-          value: s,
-          label: <FormattedMessage id={`au.pv.tab.${s}`} />,
-        }))}
-      />
       <div className="aup__controls">
-        <Segmented
-          label={intl.formatMessage({ id: 'au.pv.lang' })}
-          value={lang}
-          onChange={setLang}
-          options={[
-            { value: 'vi', label: 'Tiếng Việt' },
-            { value: 'en', label: 'English' },
-          ]}
-        />
-        <Segmented
-          label={intl.formatMessage({ id: 'au.pv.palette' })}
-          value={palette}
-          onChange={setPalette}
-          options={[
-            { value: 'light', label: <FormattedMessage id="au.pv.light" /> },
-            { value: 'night', label: <FormattedMessage id="au.pv.night" /> },
-          ]}
-        />
-        <Segmented
-          label={intl.formatMessage({ id: 'au.pv.platform' })}
-          value={platform}
-          onChange={setPlatform}
-          options={[
-            { value: 'ios', label: 'iOS' },
-            { value: 'android', label: 'Android' },
-          ]}
-        />
+        <div className="aup__row">
+          <SelectMenu
+            value={screen}
+            onChange={setScreen}
+            label={intl.formatMessage({ id: 'au.pv.screen' })}
+            className="min-w-0 flex-1"
+            options={(['required', 'available', 'banner', 'pages', 'version'] as const).map(
+              (s) => ({ value: s, label: intl.formatMessage({ id: `au.pv.tab.${s}` }) }),
+            )}
+          />
+          <Segmented
+            label={intl.formatMessage({ id: 'au.pv.palette' })}
+            value={palette}
+            onChange={setPalette}
+            options={[
+              {
+                value: 'light',
+                label: (
+                  <Sun className="size-4" aria-label={intl.formatMessage({ id: 'au.pv.light' })} />
+                ),
+              },
+              {
+                value: 'night',
+                label: (
+                  <Moon className="size-4" aria-label={intl.formatMessage({ id: 'au.pv.night' })} />
+                ),
+              },
+            ]}
+          />
+        </div>
+        <div className="aup__row aup__row--center">
+          <Segmented
+            label={intl.formatMessage({ id: 'au.pv.lang' })}
+            value={lang}
+            onChange={setLang}
+            options={[
+              { value: 'vi', label: 'VI' },
+              { value: 'en', label: 'EN' },
+            ]}
+          />
+          <Segmented
+            label={intl.formatMessage({ id: 'au.pv.platform' })}
+            value={platform}
+            onChange={setPlatform}
+            options={[
+              { value: 'ios', label: 'iOS' },
+              { value: 'android', label: 'Android' },
+            ]}
+          />
+        </div>
       </div>
       <div
         className="aup__frame"
         aria-label={intl.formatMessage({ id: 'au.pv.label' })}
         role="img"
-        style={appPalettes[palette] as CSSProperties}
+        style={{ ...appPalettes[palette], '--aup-scale': scale } as CSSProperties}
       >
         <div className="aup__screen">
           <IntlProvider locale={lang} defaultLocale="vi" messages={messages[lang]}>
@@ -96,6 +115,25 @@ export function AppUpdatePreview({
       </p>
     </div>
   );
+}
+
+/**
+ * The phone's scale: as large as the window's height allows (0.4–0.72 of the design's
+ * 375 × 812), so a 720-px-tall laptop still sees the whole screen without scrolling.
+ */
+function usePhoneScale(reserve: number) {
+  const fit = () =>
+    typeof window === 'undefined'
+      ? 0.7
+      : Math.max(0.4, Math.min(0.72, (window.innerHeight - reserve) / 812));
+  const [scale, setScale] = useState(fit);
+  useEffect(() => {
+    const onResize = () => setScale(fit());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+    // `fit` reads only the window and `reserve`.
+  }, [reserve]);
+  return scale;
 }
 
 /** The app's line icon (24 grid, 1.8 stroke) at [size]. */

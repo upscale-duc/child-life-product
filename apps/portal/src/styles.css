@@ -2080,22 +2080,274 @@ td.down {
   align-items: flex-end;
 }
 
-/* Cập nhật ứng dụng (D-061). */
-.au-item {
+/* Cập nhật ứng dụng (D-061), laid out for small desktops (owner, 2026-10-13): tabs, the publish
+   bar pinned at the bottom, the preview beside the form when the content area allows it. */
+.au {
+  container: au / inline-size;
   display: grid;
+  gap: 16px;
+}
+.au-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  background: var(--card);
+}
+.au-status__label {
+  font: 500 12px/16px var(--font-family);
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.au-status__line {
+  font: 500 14px/20px var(--font-family);
+  margin-top: 2px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.au-status__ranges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  color: var(--muted-foreground);
+  font-weight: 400;
+}
+.au-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.au-main {
+  display: grid;
+}
+/* Narrow content area: the phone opens in a sheet from "Xem trước". */
+.au-aside {
+  display: none;
+}
+/* Wide enough for both: the form and a sticky phone under the 56-px header. */
+@container au (min-width: 900px) {
+  .au-layout {
+    grid-template-columns: minmax(0, 1fr) 316px;
+  }
+  .au-aside {
+    display: block;
+    position: sticky;
+    top: 72px;
+    max-height: calc(100dvh - 72px - 80px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  .au-aside .panel {
+    padding: 16px;
+  }
+  .au-aside .panel__head {
+    margin-bottom: 12px;
+  }
+}
+.au-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  margin: 12px 0;
+  flex-wrap: wrap;
+  margin: 0 -16px -48px;
+  padding: 12px 16px;
+  background: color-mix(in oklab, var(--background) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid var(--border);
+}
+@media (min-width: 768px) {
+  .au-bar {
+    margin: 0 -32px -56px;
+    padding: 12px 32px;
+  }
+}
+.au-bar__state {
+  font: 500 14px/20px var(--font-family);
+  color: var(--muted-foreground);
+}
+.au-versions {
+  container-type: inline-size;
+  display: grid;
+  gap: 4px;
+}
+.au-versions__head {
+  display: none;
+}
+.au-versions__row {
+  display: grid;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.au-versions__row:first-of-type {
+  border-top: 0;
+}
+.au-versions__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font: 600 14px/20px var(--font-family);
+}
+@container (min-width: 520px) {
+  /* A table: the column headers name the fields (the labels stay for screen readers). */
+  .au-versions__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .au-versions__head,
+  .au-versions__row {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 1.6fr);
+    gap: 12px;
+    align-items: start;
+  }
+  .au-versions__head {
+    font: 500 13px/18px var(--font-family);
+    color: var(--muted-foreground);
+    padding-bottom: 4px;
+  }
+  .au-versions__name {
+    padding-top: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+.au-legend {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 16px;
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--muted);
+  font: 400 13px/18px var(--font-family);
+  color: var(--muted-foreground);
+}
+.au-legend dt {
+  font-weight: 600;
+  color: var(--foreground);
+}
+.au-legend dd {
+  margin: 0;
+}
+.au-number .field__input {
+  width: 96px;
+}
+.au-release-version .field__input {
+  max-width: 200px;
+}
+.au-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.au-list {
+  display: grid;
+  gap: 8px;
+}
+.au-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.au-item--open {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+}
+.au-item--invalid {
+  border-color: color-mix(in oklab, var(--destructive) 60%, transparent);
+}
+.au-item__head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px 4px 4px;
+}
+.au-item__toggle {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: calc(var(--radius) - 4px);
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.au-item__toggle:hover {
+  background: var(--accent);
+}
+.au-item__chevron {
+  flex: none;
+  color: var(--muted-foreground);
+  transition: transform 150ms;
+}
+.au-item--open .au-item__chevron {
+  transform: rotate(90deg);
+}
+.au-item__kicker {
+  display: block;
+  font: 500 12px/16px var(--font-family);
+  color: var(--muted-foreground);
+}
+.au-item__title {
+  display: block;
+  font: 500 14px/20px var(--font-family);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.au-item__actions {
+  display: flex;
+  flex: none;
+}
+.au-item__body {
+  padding: 4px 16px 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.au-list__thumb {
+  width: 36px;
+  height: 32px;
+  flex: none;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--muted);
+}
+.au-list__thumb--empty {
+  display: inline-block;
+  border: 1px dashed var(--border);
 }
 .au-page {
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 160px minmax(0, 1fr);
   gap: 16px;
   align-items: start;
 }
 .au-page__image {
   aspect-ratio: 335 / 300;
-  border-radius: 16px;
-  background: var(--surface-2, #eef6f5);
+  border-radius: var(--radius);
+  background: var(--muted);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -2105,56 +2357,106 @@ td.down {
   height: 100%;
   object-fit: cover;
 }
-
-/* Cập nhật ứng dụng · xem trước (D-061): the phone at the design's 375 × 812, scaled to 70 %. */
-.au-layout {
+.au-loc {
+  container-type: inline-size;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 24px;
-  align-items: start;
+  gap: 6px;
 }
-.au-layout__aside {
-  position: sticky;
-  top: 24px;
-  max-height: calc(100vh - 48px);
-  overflow-y: auto;
+.au-loc > legend {
+  margin-bottom: 6px;
 }
-@media (max-width: 1180px) {
-  .au-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .au-layout__aside {
-    position: static;
-    order: -1;
+.au-loc__grid {
+  display: grid;
+  gap: 10px;
+}
+@container (min-width: 520px) {
+  .au-loc__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 }
+.au-loc .field {
+  gap: 4px;
+}
+.au-loc__lang {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font: 500 12px/16px var(--font-family);
+  color: var(--muted-foreground);
+}
+.field__error {
+  color: var(--destructive);
+  font: 500 13px/18px var(--font-family);
+}
+.field__input[aria-invalid='true'] {
+  border-color: var(--destructive);
+}
+.field__input[aria-invalid='true']:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 25%, transparent);
+}
+.au-diff th[scope='row'] {
+  background: none;
+  color: var(--foreground);
+  font-weight: 500;
+}
+.au-diff__changed td:last-child {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Cập nhật ứng dụng · xem trước (D-061): the phone at the design's 375 × 812, scaled to fit. */
 .aup {
   display: grid;
   gap: 12px;
   justify-items: center;
 }
-.aup .seg {
+.aup__controls {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+.aup__row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.aup__row--center {
+  justify-content: center;
   flex-wrap: wrap;
 }
-.aup__controls {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
+.aup__row .seg {
+  flex-wrap: nowrap;
+}
+.aup__row .seg__item {
+  padding: 3px 10px;
+  display: inline-flex;
+  align-items: center;
+}
+.aup > .field__help {
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
 }
 .aup__frame {
-  width: 279px;
-  height: 585px;
-  border-radius: 40px;
+  --aup-scale: 0.7;
+  width: calc(375px * var(--aup-scale) + 16px);
+  height: calc(812px * var(--aup-scale) + 16px);
+  border-radius: calc(56px * var(--aup-scale));
   border: 8px solid #0c1719;
   background: var(--cloud);
   overflow: hidden;
   box-shadow: 0 12px 30px rgb(23 61 68 / 0.18);
+  flex: none;
 }
 .aup__screen {
   width: 375px;
   height: 812px;
-  transform: scale(0.7);
+  transform: scale(var(--aup-scale));
   transform-origin: top left;
   position: relative;
   overflow: hidden;
