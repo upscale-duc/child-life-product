@@ -16240,5 +16240,994 @@
   "pmGateOk": "Đã hiểu",
   "@pmGateOk": {
     "description": "Gate sheet close button."
+  },
+  "rhSectionForYou": "Dành cho bé hôm nay",
+  "@rhSectionForYou": {
+    "description": "Tuỳ chỉnh Hôm nay: the Nhịp lớn lên section (H01 / H02)."
+  },
+  "rhSectionForYouSub": "Gợi ý, tuần tuổi và lịch tham khảo",
+  "@rhSectionForYouSub": {
+    "description": "Tuỳ chỉnh Hôm nay: what the section holds."
+  },
+  "rhReviewPending": "Nội dung minh hoạ · chờ chuyên môn duyệt",
+  "@rhReviewPending": {
+    "description": "Footnote on content with review null (D-073 #2, PS01 590:6474)."
+  },
+  "rhReviewedBy": "Đã duyệt bởi {reviewer} · {credential}",
+  "@rhReviewedBy": {
+    "description": "Footnote on reviewed content.",
+    "placeholders": {
+      "reviewer": {
+        "type": "String"
+      },
+      "credential": {
+        "type": "String"
+      }
+    }
+  },
+  "rhJoinTwo": "{a} và {b}",
+  "@rhJoinTwo": {
+    "description": "Joins the last two names of a list (\"Ba và Cô Lan\").",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "rhQuoted": "“{text}”",
+  "@rhQuoted": {
+    "description": "Quotes a summary or note.",
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWhoYou": "bạn",
+  "@rhWhoYou": {
+    "description": "The current user mid-sentence (\"Vì hôm nay bạn ghi nhận…\")."
+  },
+  "rhDateRange": "{start} – {end}",
+  "@rhDateRange": {
+    "description": "A date range (\"11/10 – 18/10\").",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "rhDone": "Xong",
+  "@rhDone": {
+    "description": "Closes a result screen (PS01F 590:6481)."
+  },
+  "rhContinue": "Tiếp tục",
+  "@rhContinue": {
+    "description": "C01 primary button (589:6451)."
+  },
+  "rhRetry": "Thử lại",
+  "@rhRetry": {
+    "description": "Retry a failed suggestion."
+  },
+  "rhSources": "Nguồn tham khảo",
+  "@rhSources": {
+    "description": "Heading of a content source list."
+  },
+  "rhObsSleep": "Khó vào giấc / hay thức",
+  "@rhObsSleep": {
+    "description": "C01 option: sleep."
+  },
+  "rhObsFeeding": "Bú / ăn khác thường",
+  "@rhObsFeeding": {
+    "description": "C01 option: feeding."
+  },
+  "rhObsSoothing": "Cần được dỗ nhiều hơn",
+  "@rhObsSoothing": {
+    "description": "C01 option: soothing."
+  },
+  "rhObsNewSkill": "Con có điều mới",
+  "@rhObsNewSkill": {
+    "description": "C01 option: a new skill."
+  },
+  "rhObsUsual": "Như mọi ngày",
+  "@rhObsUsual": {
+    "description": "C01 option: a usual day."
+  },
+  "rhObsHealth": "Mình lo về sức khoẻ của con",
+  "@rhObsHealth": {
+    "description": "C01 health row → NL05b → HL01 (free)."
+  },
+  "rhObsShortSleep": "Khó vào giấc",
+  "@rhObsShortSleep": {
+    "description": "Saved banner summary (PS01 \"Khó vào giấc · giấc đêm · 2–3 ngày\")."
+  },
+  "rhObsShortFeeding": "Bú / ăn khác thường",
+  "@rhObsShortFeeding": {
+    "description": "Saved banner summary: feeding."
+  },
+  "rhObsShortSoothing": "Cần dỗ nhiều hơn",
+  "@rhObsShortSoothing": {
+    "description": "Saved banner summary: soothing."
+  },
+  "rhObsShortNewSkill": "Điều mới",
+  "@rhObsShortNewSkill": {
+    "description": "Saved banner summary: new skill."
+  },
+  "rhObsShortUsual": "Như mọi ngày",
+  "@rhObsShortUsual": {
+    "description": "Saved banner summary: usual."
+  },
+  "rhObsShortHealth": "Lo về sức khoẻ",
+  "@rhObsShortHealth": {
+    "description": "Saved banner summary: health."
+  },
+  "rhWhatSleep": "con khó vào giấc",
+  "@rhWhatSleep": {
+    "description": "Reason line: what was noted (H02 \"Vì tối qua Ba ghi nhận con khó vào giấc\").",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWhatFeeding": "con bú / ăn khác thường",
+  "@rhWhatFeeding": {
+    "description": "Reason line: feeding.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWhatSoothing": "con cần được dỗ nhiều hơn",
+  "@rhWhatSoothing": {
+    "description": "Reason line: soothing.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWhatNewSkill": "con có điều mới",
+  "@rhWhatNewSkill": {
+    "description": "Reason line: new skill.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWhatOther": "điều con cần",
+  "@rhWhatOther": {
+    "description": "Reason line: any other observation.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWhenToday": "hôm nay",
+  "@rhWhenToday": {
+    "description": "Reason line: the check-in is from today."
+  },
+  "rhWhenLastNight": "tối qua",
+  "@rhWhenLastNight": {
+    "description": "Reason line: yesterday, about the night."
+  },
+  "rhWhenYesterday": "hôm qua",
+  "@rhWhenYesterday": {
+    "description": "Reason line: yesterday."
+  },
+  "rhWhenOn": "ngày {date}",
+  "@rhWhenOn": {
+    "description": "Reason line: an earlier day.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhReasonNoted": "Vì {when} {who} ghi nhận {what}.",
+  "@rhReasonNoted": {
+    "description": "H02 reason from a check-in (SELF_REPORTED_NEED).",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      },
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "rhReasonHelpful": "Lần trước {who} đánh giá cách này “Có ích”.",
+  "@rhReasonHelpful": {
+    "description": "H02 reason from earlier feedback (PREVIOUS_HELPFUL).",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "rhReasonData": "Vì giấc ngủ mấy ngày gần đây khác với thường ngày của con (từ nhật ký).",
+  "@rhReasonData": {
+    "description": "H02 reason from logged facts (DATA_INSIGHT).",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhReasonAge": "Vì phù hợp với tuổi của con.",
+  "@rhReasonAge": {
+    "description": "Reason: age content.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhReasonInterest": "Vì bạn quan tâm đến chủ đề này.",
+  "@rhReasonInterest": {
+    "description": "Reason: the person’s interests (EN01)."
+  },
+  "rhReasonFallback": "Vì nhà mình vừa ghi nhận điều con cần.",
+  "@rhReasonFallback": {
+    "description": "Reason when the check-in is not on this phone.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhAgeHeading": "Tuần này của {baby}",
+  "@rhAgeHeading": {
+    "description": "Section heading of the free age card (Q-067).",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhAgeFree": "Nội dung theo tuổi · luôn miễn phí",
+  "@rhAgeFree": {
+    "description": "H01 age card footer."
+  },
+  "rhCalendarPill": "LỊCH THAM KHẢO",
+  "@rhCalendarPill": {
+    "description": "H01 reference-calendar pill (D-072 #7)."
+  },
+  "rhStageName": "Giai đoạn {n} (Wonder Weeks)",
+  "@rhStageName": {
+    "description": "A reference stage label (D-072 #7).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhStageExpected": "{stage} dự kiến {range}",
+  "@rhStageExpected": {
+    "description": "H01: the next stage window.",
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "rhStageNow": "{stage} · {range} · tham khảo",
+  "@rhStageNow": {
+    "description": "H02 strip: the current window.",
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "rhSupportTitle": "Hỗ trợ phù hợp với con",
+  "@rhSupportTitle": {
+    "description": "H01 optional card (only with PREMIUM_REQUIRED)."
+  },
+  "rhSupportBody": "Gợi ý một việc dựa trên điều nhà mình ghi nhận, nhớ cách đã có ích, bản bàn giao cho người chăm tiếp theo.",
+  "@rhSupportBody": {
+    "description": "H01 optional card body."
+  },
+  "rhLearnMore": "Tìm hiểu thêm",
+  "@rhLearnMore": {
+    "description": "H01 optional card link → household plan."
+  },
+  "rhKickerToday": "VIỆC CÓ THỂ THỬ HÔM NAY",
+  "@rhKickerToday": {
+    "description": "H02 card kicker."
+  },
+  "rhKickerTonight": "VIỆC CÓ THỂ THỬ TỐI NAY",
+  "@rhKickerTonight": {
+    "description": "PS02 card kicker for an evening activity."
+  },
+  "rhTryToday": "Thử hôm nay",
+  "@rhTryToday": {
+    "description": "H02 primary (feedback started)."
+  },
+  "rhTryTonight": "Thử tối nay",
+  "@rhTryTonight": {
+    "description": "PS01 primary for an evening activity (feedback started)."
+  },
+  "rhTryAgainToday": "Thử lại hôm nay",
+  "@rhTryAgainToday": {
+    "description": "PS02 primary when it helped before."
+  },
+  "rhTryAgainTonight": "Thử lại tối nay",
+  "@rhTryAgainTonight": {
+    "description": "PS02 primary when it helped before (evening)."
+  },
+  "rhNotToday": "Không phải hôm nay",
+  "@rhNotToday": {
+    "description": "H02 secondary (feedback not_today → cooldown)."
+  },
+  "rhSomethingElse": "Gợi ý khác",
+  "@rhSomethingElse": {
+    "description": "PS02 secondary (feedback not_today → cooldown)."
+  },
+  "rhBasedOnFeedback": "Dựa trên phản hồi của bạn",
+  "@rhBasedOnFeedback": {
+    "description": "PS02 box title."
+  },
+  "rhFeedbackUsedEvening": "Tối {date} {who} chọn “{kind}” cho “{title}”",
+  "@rhFeedbackUsedEvening": {
+    "description": "PS02: the feedback behind the suggestion (evening activity).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "rhFeedbackUsedDay": "Ngày {date} {who} chọn “{kind}” cho “{title}”",
+  "@rhFeedbackUsedDay": {
+    "description": "PS02: the feedback behind the suggestion.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "rhChangedTitle": "Đã thay đổi",
+  "@rhChangedTitle": {
+    "description": "PS02 \"what changed\" box."
+  },
+  "rhChangePrefersHelpful": "Ưu tiên cách đã có ích thay vì gợi ý mới",
+  "@rhChangePrefersHelpful": {
+    "description": "PS02 change: prefers_helpful."
+  },
+  "rhChangeExcluded": "Không gợi ý lại cách đã được chọn “Không phù hợp”",
+  "@rhChangeExcluded": {
+    "description": "PS02 change: excluded_not_suitable."
+  },
+  "rhChangeCooling": "Tạm nghỉ vài ngày cách đã chọn “Không phải hôm nay”",
+  "@rhChangeCooling": {
+    "description": "PS02 change: cooling_down."
+  },
+  "rhCheckInEntry": "Hôm nay con có gì khác?",
+  "@rhCheckInEntry": {
+    "description": "H02 check-in entry row → C01."
+  },
+  "rhStartedLabel": "Đang thử",
+  "@rhStartedLabel": {
+    "description": "H02 card when the activity was started."
+  },
+  "rhHealthCardTitle": "Hôm nay có dấu hiệu cần chú ý",
+  "@rhHealthCardTitle": {
+    "description": "Home health card (health > everything, brief p.11)."
+  },
+  "rhHealthCardBody": "Gợi ý theo lịch tạm dừng. Xem hướng dẫn và cách gọi hỗ trợ.",
+  "@rhHealthCardBody": {
+    "description": "Home health card body."
+  },
+  "rhHealthCardAction": "Xem hướng dẫn sức khoẻ",
+  "@rhHealthCardAction": {
+    "description": "Home health card link → HL01."
+  },
+  "rhPutOffToast": "Đã để sau. Gợi ý này nghỉ vài ngày.",
+  "@rhPutOffToast": {
+    "description": "Toast after \"Không phải hôm nay\" / \"Để sau\"."
+  },
+  "rhCheckInTitle": "Hôm nay con có gì khác?",
+  "@rhCheckInTitle": {
+    "description": "C01 title."
+  },
+  "rhCheckInSubtitle": "Chọn một điều bạn để ý. Không cần trả lời hết.",
+  "@rhCheckInSubtitle": {
+    "description": "C01 subtitle."
+  },
+  "rhUsualSaved": "Đã lưu: hôm nay như mọi ngày",
+  "@rhUsualSaved": {
+    "description": "Toast after \"Như mọi ngày\" (saved quietly)."
+  },
+  "rhMoreTitle": "Thêm một chút để gợi ý đúng hơn",
+  "@rhMoreTitle": {
+    "description": "C02 title."
+  },
+  "rhSkipQuestions": "Bỏ qua câu hỏi",
+  "@rhSkipQuestions": {
+    "description": "C02 top-right link: save without follow-ups."
+  },
+  "rhQWhen": "Khi nào?",
+  "@rhQWhen": {
+    "description": "C02 question."
+  },
+  "rhWhenNightSleep": "Giấc đêm",
+  "@rhWhenNightSleep": {
+    "description": "C02 sleep: when = night."
+  },
+  "rhWhenDaySleep": "Giấc ngày",
+  "@rhWhenDaySleep": {
+    "description": "C02 sleep: when = day."
+  },
+  "rhWhenNight": "Ban đêm",
+  "@rhWhenNight": {
+    "description": "C02 feeding / soothing: when = night."
+  },
+  "rhWhenDay": "Ban ngày",
+  "@rhWhenDay": {
+    "description": "C02 feeding / soothing: when = day."
+  },
+  "rhWhenBoth": "Cả hai",
+  "@rhWhenBoth": {
+    "description": "C02: when = both."
+  },
+  "rhQSince": "Từ bao giờ?",
+  "@rhQSince": {
+    "description": "C02 question."
+  },
+  "rhSinceToday": "Hôm nay",
+  "@rhSinceToday": {
+    "description": "C02 since = today."
+  },
+  "rhSince23": "2–3 ngày",
+  "@rhSince23": {
+    "description": "C02 since = 2–3 days."
+  },
+  "rhSinceLonger": "Lâu hơn",
+  "@rhSinceLonger": {
+    "description": "C02 since = longer."
+  },
+  "rhQTried": "Đã thử gì chưa? (tuỳ chọn)",
+  "@rhQTried": {
+    "description": "C02 question."
+  },
+  "rhTriedRocking": "Bế ru",
+  "@rhTriedRocking": {
+    "description": "C02 tried: rocking."
+  },
+  "rhTriedWhiteNoise": "Tiếng ồn trắng",
+  "@rhTriedWhiteNoise": {
+    "description": "C02 tried: white noise."
+  },
+  "rhTriedFeeding": "Cho bú",
+  "@rhTriedFeeding": {
+    "description": "C02 tried: feeding."
+  },
+  "rhTriedSkin": "Áp da",
+  "@rhTriedSkin": {
+    "description": "C02 tried: skin to skin."
+  },
+  "rhTriedSwaddle": "Quấn chũn",
+  "@rhTriedSwaddle": {
+    "description": "C02 tried: swaddle."
+  },
+  "rhTriedNone": "Chưa",
+  "@rhTriedNone": {
+    "description": "C02 tried: nothing yet."
+  },
+  "rhSumNightSleep": "giấc đêm",
+  "@rhSumNightSleep": {
+    "description": "Summary: when = night (sleep)."
+  },
+  "rhSumDaySleep": "giấc ngày",
+  "@rhSumDaySleep": {
+    "description": "Summary: when = day (sleep)."
+  },
+  "rhSumNight": "ban đêm",
+  "@rhSumNight": {
+    "description": "Summary: when = night."
+  },
+  "rhSumDay": "ban ngày",
+  "@rhSumDay": {
+    "description": "Summary: when = day."
+  },
+  "rhSumBoth": "cả ngày lẫn đêm",
+  "@rhSumBoth": {
+    "description": "Summary: when = both."
+  },
+  "rhSumToday": "hôm nay",
+  "@rhSumToday": {
+    "description": "Summary: since today."
+  },
+  "rhSumLonger": "lâu hơn",
+  "@rhSumLonger": {
+    "description": "Summary: since longer."
+  },
+  "rhFromLogSleep": "Từ nhật ký: giấc đêm qua được ghi {duration} ({who} ghi). Bạn không cần nhập lại.",
+  "@rhFromLogSleep": {
+    "description": "C02 context box (sleep): Care facts reused.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "rhFromLogFeeds": "Từ nhật ký: hôm nay đã ghi {count} cữ bú. Bạn không cần nhập lại.",
+  "@rhFromLogFeeds": {
+    "description": "C02 context box (feeding).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhNewSkillLabel": "Con làm được gì mới?",
+  "@rhNewSkillLabel": {
+    "description": "C02 new skill: text field label."
+  },
+  "rhNewSkillHint": "Ví dụ: lần đầu lẫy",
+  "@rhNewSkillHint": {
+    "description": "C02 new skill: placeholder."
+  },
+  "rhSaveToMilestones": "Lưu vào Mốc",
+  "@rhSaveToMilestones": {
+    "description": "C02 new skill: link to milestones (MS01, next step)."
+  },
+  "rhSaveNote": "Lưu ghi nhận",
+  "@rhSaveNote": {
+    "description": "C02 primary."
+  },
+  "rhAlwaysFree": "Ghi nhận luôn miễn phí · cả nhà cùng thấy",
+  "@rhAlwaysFree": {
+    "description": "C02 helper below the button."
+  },
+  "rhHealthQHeading": "Ghi nhận hôm nay",
+  "@rhHealthQHeading": {
+    "description": "NL05b heading."
+  },
+  "rhHealthQTitle": "Trước khi tiếp tục",
+  "@rhHealthQTitle": {
+    "description": "NL05b card title."
+  },
+  "rhHealthQAsk": "{baby} có dấu hiệu nào sau đây không?",
+  "@rhHealthQAsk": {
+    "description": "NL05b question.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhHealthQHelper": "Nếu có, Child Life sẽ dừng gợi ý theo lịch và chỉ cho bạn hướng dẫn đã được chuyên môn duyệt.",
+  "@rhHealthQHelper": {
+    "description": "NL05b helper."
+  },
+  "rhHealthUnsureHint": "Không chắc thì cứ hỏi bác sĩ của bé.",
+  "@rhHealthUnsureHint": {
+    "description": "NL05b hint when a sign is \"Không chắc\"."
+  },
+  "rhAnswerYes": "Có",
+  "@rhAnswerYes": {
+    "description": "NL05b answer."
+  },
+  "rhAnswerNo": "Không",
+  "@rhAnswerNo": {
+    "description": "NL05b answer."
+  },
+  "rhAnswerUnsure": "Không chắc",
+  "@rhAnswerUnsure": {
+    "description": "NL05b answer."
+  },
+  "rhSignFeverYoung": "Sốt (bé dưới 3 tháng)",
+  "@rhSignFeverYoung": {
+    "description": "Health sign fever_young (NL05b)."
+  },
+  "rhSignBreathing": "Khó thở, thở rút lõm",
+  "@rhSignBreathing": {
+    "description": "Health sign breathing (NL05b)."
+  },
+  "rhSignLethargic": "Lừ đừ, khó đánh thức",
+  "@rhSignLethargic": {
+    "description": "Health sign lethargic (NL05b)."
+  },
+  "rhSignPoorFeeding": "Bú rất ít hoặc bỏ bú",
+  "@rhSignPoorFeeding": {
+    "description": "Health sign poor_feeding (NL05b)."
+  },
+  "rhSignInconsolable": "Khóc không dỗ được",
+  "@rhSignInconsolable": {
+    "description": "Health sign inconsolable (NL05b)."
+  },
+  "rhSignLostSkill": "Mất kỹ năng đã có",
+  "@rhSignLostSkill": {
+    "description": "Health sign lost_skill (NL05b)."
+  },
+  "rhSignDehydration": "Ít tã ướt, môi khô",
+  "@rhSignDehydration": {
+    "description": "Health sign dehydration (engineering draft)."
+  },
+  "rhSignSeizure": "Co giật",
+  "@rhSignSeizure": {
+    "description": "Health sign seizure (engineering draft)."
+  },
+  "rhHlTitle": "Nên liên hệ hỗ trợ y tế",
+  "@rhHlTitle": {
+    "description": "HL01 title."
+  },
+  "rhHlBody": "Bạn đánh dấu một dấu hiệu cần chú ý trong ghi nhận. Child Life dừng gợi ý theo lịch và không hiển thị nội dung trả phí ở đây.",
+  "@rhHlBody": {
+    "description": "HL01 body."
+  },
+  "rhHlNoted": "Bạn đã ghi",
+  "@rhHlNoted": {
+    "description": "HL01: the signs answered \"Có\"."
+  },
+  "rhHlCallEmergency": "Gọi số khẩn cấp {number}",
+  "@rhHlCallEmergency": {
+    "description": "HL01 primary: the household region number from approved content.",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "rhHlCallDoctor": "Gọi bác sĩ của bé",
+  "@rhHlCallDoctor": {
+    "description": "HL01 secondary (the only call when the region has no approved number)."
+  },
+  "rhHlHelper": "Số khẩn cấp lấy theo quốc gia cư trú của hộ. Khu vực chưa có số trong danh sách thì chỉ hiện nút gọi bác sĩ.",
+  "@rhHlHelper": {
+    "description": "HL01 helper."
+  },
+  "rhHlNoRegion": "Chưa có số khẩn cấp được duyệt cho khu vực của hộ. Nếu con có dấu hiệu nguy hiểm, hãy gọi cấp cứu nơi bạn sống.",
+  "@rhHlNoRegion": {
+    "description": "HL01 when the household region has no approved number (never a default hotline)."
+  },
+  "rhHlWhileWaiting": "Trong lúc chờ",
+  "@rhHlWhileWaiting": {
+    "description": "HL01 while-waiting steps."
+  },
+  "rhHlDisclaimer": "Child Life không chẩn đoán và không kết luận “an toàn”.",
+  "@rhHlDisclaimer": {
+    "description": "HL01 disclaimer when the health pack has none."
+  },
+  "rhHlAlwaysFree": "Luôn miễn phí · không paywall, không upsell",
+  "@rhHlAlwaysFree": {
+    "description": "HL01 footer."
+  },
+  "rhHlDialFailed": "Không mở được ứng dụng Điện thoại.",
+  "@rhHlDialFailed": {
+    "description": "HL01: the dialler did not open."
+  },
+  "rhSavedTitle": "Đã lưu ghi nhận",
+  "@rhSavedTitle": {
+    "description": "PS01 / PS01F saved banner."
+  },
+  "rhSeenBy": "{names} sẽ thấy",
+  "@rhSeenBy": {
+    "description": "Saved banner: who else sees it.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "rhSeenByOnlyYou": "Chỉ bạn thấy",
+  "@rhSeenByOnlyYou": {
+    "description": "Saved banner when no one else reads check-ins."
+  },
+  "rhOneThing": "Một việc có thể thử",
+  "@rhOneThing": {
+    "description": "PS01 section title."
+  },
+  "rhDurationFit": "{duration} · phù hợp {range}",
+  "@rhDurationFit": {
+    "description": "PS01 activity meta.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "rhMonthsRange": "{from}–{to} tháng",
+  "@rhMonthsRange": {
+    "description": "Age range of an activity.",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWhyThis": "Vì sao gợi ý này",
+  "@rhWhyThis": {
+    "description": "PS01 why box label."
+  },
+  "rhWhyJustNoted": "Bạn vừa ghi {summary}.",
+  "@rhWhyJustNoted": {
+    "description": "PS01 why: what was just noted (quoted summary).",
+    "placeholders": {
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWhyTriedOther": "{tried} đã thử rồi nên gợi ý một cách khác.",
+  "@rhWhyTriedOther": {
+    "description": "PS01 why: what was already tried.",
+    "placeholders": {
+      "tried": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWhyHelpedBefore": "Cách này từng được đánh giá “Có ích”.",
+  "@rhWhyHelpedBefore": {
+    "description": "PS01 why: PREVIOUS_HELPFUL."
+  },
+  "rhWhyData": "Từ nhật ký: tổng ngủ được ghi gần đây khoảng {recent} mỗi ngày, mức thường của con {baseline}.",
+  "@rhWhyData": {
+    "description": "PS01 why: DATA_INSIGHT (sleep baseline).",
+    "placeholders": {
+      "recent": {
+        "type": "String"
+      },
+      "baseline": {
+        "type": "String"
+      }
+    }
+  },
+  "rhLater": "Để sau",
+  "@rhLater": {
+    "description": "PS01 secondary (feedback not_today)."
+  },
+  "rhSeeRhythm": "Xem nhịp của con",
+  "@rhSeeRhythm": {
+    "description": "PS01 link → Nhịp lớn lên.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhMoreForAge": "Đọc thêm theo tuổi",
+  "@rhMoreForAge": {
+    "description": "PS01F section title."
+  },
+  "rhFreeAgePill": "Miễn phí · theo tuổi",
+  "@rhFreeAgePill": {
+    "description": "PS01F article pill."
+  },
+  "rhReadMinutes": "Đọc {n} phút",
+  "@rhReadMinutes": {
+    "description": "PS01F article meta.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhUpsellTitle": "Muốn một gợi ý theo đúng tình huống?",
+  "@rhUpsellTitle": {
+    "description": "PS01F optional card (only with PREMIUM_REQUIRED)."
+  },
+  "rhUpsellBody": "Hỗ trợ phù hợp với con chọn một việc từ ghi nhận của nhà mình và nhớ cách đã có ích.",
+  "@rhUpsellBody": {
+    "description": "PS01F optional card body."
+  },
+  "rhLearnMoreOptional": "Tìm hiểu thêm (tuỳ chọn)",
+  "@rhLearnMoreOptional": {
+    "description": "PS01F optional link → household plan."
+  },
+  "rhNoSuggestionTitle": "Chưa có gợi ý phù hợp",
+  "@rhNoSuggestionTitle": {
+    "description": "Result when nothing fits."
+  },
+  "rhNoSuggestionBody": "Ghi nhận đã lưu. Khi có nội dung hợp với con, gợi ý sẽ hiện ở Hôm nay.",
+  "@rhNoSuggestionBody": {
+    "description": "Result when nothing fits."
+  },
+  "rhSeeAgeContent": "Xem nội dung theo tuổi",
+  "@rhSeeAgeContent": {
+    "description": "Link to the age card."
+  },
+  "rhOfflineTitle": "Ghi nhận vẫn lưu trên máy",
+  "@rhOfflineTitle": {
+    "description": "Result offline (ST01 card 4)."
+  },
+  "rhOfflineBody": "Sẽ đồng bộ khi có mạng. Gợi ý mới cần kết nối và sẽ hiện ở Hôm nay sau.",
+  "@rhOfflineBody": {
+    "description": "Result offline (ST01 card 4, adapted)."
+  },
+  "rhErrorTitle": "Chưa lấy được gợi ý",
+  "@rhErrorTitle": {
+    "description": "Result when the suggestion call failed."
+  },
+  "rhErrorBody": "Ghi nhận đã lưu. Thử lại sau một lát.",
+  "@rhErrorBody": {
+    "description": "Result when the suggestion call failed."
+  },
+  "rhLoadingSuggestion": "Đang chọn một việc có thể thử…",
+  "@rhLoadingSuggestion": {
+    "description": "Result while nextAction runs."
+  },
+  "rhNotTried": "Chưa thử",
+  "@rhNotTried": {
+    "description": "AC01 status pill."
+  },
+  "rhTriedOn": "Đã thử · {date}",
+  "@rhTriedOn": {
+    "description": "AC02 status pill.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhSuggestionEyebrow": "Gợi ý · {duration}",
+  "@rhSuggestionEyebrow": {
+    "description": "AC01 hero eyebrow.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "rhBecauseNoted": "Vì: {summary} ({who} ghi {date})",
+  "@rhBecauseNoted": {
+    "description": "AC01 reason (quoted summary, author, date).",
+    "placeholders": {
+      "summary": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhHow": "Cách làm",
+  "@rhHow": {
+    "description": "AC01 steps heading."
+  },
+  "rhWhyItMayHelp": "Vì sao có thể giúp",
+  "@rhWhyItMayHelp": {
+    "description": "AC01 summary heading."
+  },
+  "rhSafety": "Lưu ý an toàn",
+  "@rhSafety": {
+    "description": "AC01 safety heading."
+  },
+  "rhIllTry": "Mình sẽ thử",
+  "@rhIllTry": {
+    "description": "AC01 primary (feedback started)."
+  },
+  "rhNotRight": "Không phù hợp với con",
+  "@rhNotRight": {
+    "description": "AC01 link (feedback not_suitable)."
+  },
+  "rhAnotherIdea": "Gợi ý khác",
+  "@rhAnotherIdea": {
+    "description": "AC01 link (feedback not_today → cooldown)."
+  },
+  "rhTellHow": "Kể lại kết quả",
+  "@rhTellHow": {
+    "description": "AC01 after starting → AC02."
+  },
+  "rhStartedToast": "Chúc cả nhà thuận lợi! Thử xong thì kể lại nhé.",
+  "@rhStartedToast": {
+    "description": "Toast after \"Mình sẽ thử\"."
+  },
+  "rhNotRightToast": "Đã ghi nhận. Sẽ không gợi ý lại cách này cho con.",
+  "@rhNotRightToast": {
+    "description": "Toast after \"Không phù hợp với con\"."
+  },
+  "rhActivityMissing": "Gợi ý này không còn nữa",
+  "@rhActivityMissing": {
+    "description": "An activity id not in the published content."
+  },
+  "rhHowLastNight": "Tối qua thế nào?",
+  "@rhHowLastNight": {
+    "description": "AC02 question for an evening activity tried yesterday."
+  },
+  "rhHowDidItGo": "Lần thử thế nào?",
+  "@rhHowDidItGo": {
+    "description": "AC02 question otherwise."
+  },
+  "rhHelpful": "Có ích",
+  "@rhHelpful": {
+    "description": "AC02 choice (helpful)."
+  },
+  "rhUnsure": "Chưa rõ",
+  "@rhUnsure": {
+    "description": "AC02 choice (unsure)."
+  },
+  "rhNotAFit": "Không phù hợp",
+  "@rhNotAFit": {
+    "description": "AC02 choice (not_suitable)."
+  },
+  "rhNoteHint": "Ghi chú (tuỳ chọn)",
+  "@rhNoteHint": {
+    "description": "AC02 note field."
+  },
+  "rhFeedbackInfo": "Phản hồi này được dùng để chọn gợi ý lần sau. “Có ích” không có nghĩa là cách này gây ra thay đổi.",
+  "@rhFeedbackInfo": {
+    "description": "AC02 info strip (no causality claims)."
+  },
+  "rhSaveFeedback": "Lưu phản hồi",
+  "@rhSaveFeedback": {
+    "description": "AC02 primary."
+  },
+  "rhFeedbackSaved": "Đã lưu phản hồi",
+  "@rhFeedbackSaved": {
+    "description": "Toast after AC02."
+  },
+  "rhAgeTips": "Điều có thể làm",
+  "@rhAgeTips": {
+    "description": "Age card detail: tips."
+  },
+  "rhAgeWatch": "Khi nào nên hỏi bác sĩ",
+  "@rhAgeWatch": {
+    "description": "Age card detail: watch for."
+  },
+  "rhAgeEach": "Mỗi bé mỗi khác. Đây là điều nhiều gia đình thấy ở tuổi này, không phải lịch bắt buộc.",
+  "@rhAgeEach": {
+    "description": "Age card detail footnote (no schedule)."
+  },
+  "rhComingTitle": "Nhịp lớn lên",
+  "@rhComingTitle": {
+    "description": "Placeholder title until the Nhịp lớn lên screens arrive."
+  },
+  "rhComingBody": "Phần này đang được hoàn thiện.",
+  "@rhComingBody": {
+    "description": "Placeholder body until the Nhịp lớn lên screens arrive."
+  },
+  "rhSaveFailed": "Chưa lưu được ghi nhận. Có thể quyền của bạn đã thay đổi.",
+  "@rhSaveFailed": {
+    "description": "A check-in or feedback write was refused."
   }
 }

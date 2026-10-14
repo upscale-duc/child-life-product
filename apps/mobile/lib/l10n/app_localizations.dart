@@ -18066,6 +18066,1139 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã hiểu'**
   String get pmGateOk;
+
+  /// Tuỳ chỉnh Hôm nay: the Nhịp lớn lên section (H01 / H02).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dành cho bé hôm nay'**
+  String get rhSectionForYou;
+
+  /// Tuỳ chỉnh Hôm nay: what the section holds.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý, tuần tuổi và lịch tham khảo'**
+  String get rhSectionForYouSub;
+
+  /// Footnote on content with review null (D-073 #2, PS01 590:6474).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung minh hoạ · chờ chuyên môn duyệt'**
+  String get rhReviewPending;
+
+  /// Footnote on reviewed content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã duyệt bởi {reviewer} · {credential}'**
+  String rhReviewedBy(String reviewer, String credential);
+
+  /// Joins the last two names of a list ("Ba và Cô Lan").
+  ///
+  /// In vi, this message translates to:
+  /// **'{a} và {b}'**
+  String rhJoinTwo(String a, String b);
+
+  /// Quotes a summary or note.
+  ///
+  /// In vi, this message translates to:
+  /// **'“{text}”'**
+  String rhQuoted(String text);
+
+  /// The current user mid-sentence ("Vì hôm nay bạn ghi nhận…").
+  ///
+  /// In vi, this message translates to:
+  /// **'bạn'**
+  String get rhWhoYou;
+
+  /// A date range ("11/10 – 18/10").
+  ///
+  /// In vi, this message translates to:
+  /// **'{start} – {end}'**
+  String rhDateRange(String start, String end);
+
+  /// Closes a result screen (PS01F 590:6481).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get rhDone;
+
+  /// C01 primary button (589:6451).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục'**
+  String get rhContinue;
+
+  /// Retry a failed suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại'**
+  String get rhRetry;
+
+  /// Heading of a content source list.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nguồn tham khảo'**
+  String get rhSources;
+
+  /// C01 option: sleep.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khó vào giấc / hay thức'**
+  String get rhObsSleep;
+
+  /// C01 option: feeding.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú / ăn khác thường'**
+  String get rhObsFeeding;
+
+  /// C01 option: soothing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần được dỗ nhiều hơn'**
+  String get rhObsSoothing;
+
+  /// C01 option: a new skill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Con có điều mới'**
+  String get rhObsNewSkill;
+
+  /// C01 option: a usual day.
+  ///
+  /// In vi, this message translates to:
+  /// **'Như mọi ngày'**
+  String get rhObsUsual;
+
+  /// C01 health row → NL05b → HL01 (free).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình lo về sức khoẻ của con'**
+  String get rhObsHealth;
+
+  /// Saved banner summary (PS01 "Khó vào giấc · giấc đêm · 2–3 ngày").
+  ///
+  /// In vi, this message translates to:
+  /// **'Khó vào giấc'**
+  String get rhObsShortSleep;
+
+  /// Saved banner summary: feeding.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú / ăn khác thường'**
+  String get rhObsShortFeeding;
+
+  /// Saved banner summary: soothing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần dỗ nhiều hơn'**
+  String get rhObsShortSoothing;
+
+  /// Saved banner summary: new skill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều mới'**
+  String get rhObsShortNewSkill;
+
+  /// Saved banner summary: usual.
+  ///
+  /// In vi, this message translates to:
+  /// **'Như mọi ngày'**
+  String get rhObsShortUsual;
+
+  /// Saved banner summary: health.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lo về sức khoẻ'**
+  String get rhObsShortHealth;
+
+  /// Reason line: what was noted (H02 "Vì tối qua Ba ghi nhận con khó vào giấc").
+  ///
+  /// In vi, this message translates to:
+  /// **'con khó vào giấc'**
+  String rhWhatSleep(String baby);
+
+  /// Reason line: feeding.
+  ///
+  /// In vi, this message translates to:
+  /// **'con bú / ăn khác thường'**
+  String rhWhatFeeding(String baby);
+
+  /// Reason line: soothing.
+  ///
+  /// In vi, this message translates to:
+  /// **'con cần được dỗ nhiều hơn'**
+  String rhWhatSoothing(String baby);
+
+  /// Reason line: new skill.
+  ///
+  /// In vi, this message translates to:
+  /// **'con có điều mới'**
+  String rhWhatNewSkill(String baby);
+
+  /// Reason line: any other observation.
+  ///
+  /// In vi, this message translates to:
+  /// **'điều con cần'**
+  String rhWhatOther(String baby);
+
+  /// Reason line: the check-in is from today.
+  ///
+  /// In vi, this message translates to:
+  /// **'hôm nay'**
+  String get rhWhenToday;
+
+  /// Reason line: yesterday, about the night.
+  ///
+  /// In vi, this message translates to:
+  /// **'tối qua'**
+  String get rhWhenLastNight;
+
+  /// Reason line: yesterday.
+  ///
+  /// In vi, this message translates to:
+  /// **'hôm qua'**
+  String get rhWhenYesterday;
+
+  /// Reason line: an earlier day.
+  ///
+  /// In vi, this message translates to:
+  /// **'ngày {date}'**
+  String rhWhenOn(String date);
+
+  /// H02 reason from a check-in (SELF_REPORTED_NEED).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì {when} {who} ghi nhận {what}.'**
+  String rhReasonNoted(String when, String who, String what);
+
+  /// H02 reason from earlier feedback (PREVIOUS_HELPFUL).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần trước {who} đánh giá cách này “Có ích”.'**
+  String rhReasonHelpful(String who);
+
+  /// H02 reason from logged facts (DATA_INSIGHT).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì giấc ngủ mấy ngày gần đây khác với thường ngày của con (từ nhật ký).'**
+  String rhReasonData(String baby);
+
+  /// Reason: age content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì phù hợp với tuổi của con.'**
+  String rhReasonAge(String baby);
+
+  /// Reason: the person’s interests (EN01).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì bạn quan tâm đến chủ đề này.'**
+  String get rhReasonInterest;
+
+  /// Reason when the check-in is not on this phone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì nhà mình vừa ghi nhận điều con cần.'**
+  String rhReasonFallback(String baby);
+
+  /// Section heading of the free age card (Q-067).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này của {baby}'**
+  String rhAgeHeading(String baby);
+
+  /// H01 age card footer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung theo tuổi · luôn miễn phí'**
+  String get rhAgeFree;
+
+  /// H01 reference-calendar pill (D-072 #7).
+  ///
+  /// In vi, this message translates to:
+  /// **'LỊCH THAM KHẢO'**
+  String get rhCalendarPill;
+
+  /// A reference stage label (D-072 #7).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn {n} (Wonder Weeks)'**
+  String rhStageName(int n);
+
+  /// H01: the next stage window.
+  ///
+  /// In vi, this message translates to:
+  /// **'{stage} dự kiến {range}'**
+  String rhStageExpected(String stage, String range);
+
+  /// H02 strip: the current window.
+  ///
+  /// In vi, this message translates to:
+  /// **'{stage} · {range} · tham khảo'**
+  String rhStageNow(String stage, String range);
+
+  /// H01 optional card (only with PREMIUM_REQUIRED).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỗ trợ phù hợp với con'**
+  String get rhSupportTitle;
+
+  /// H01 optional card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý một việc dựa trên điều nhà mình ghi nhận, nhớ cách đã có ích, bản bàn giao cho người chăm tiếp theo.'**
+  String get rhSupportBody;
+
+  /// H01 optional card link → household plan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm hiểu thêm'**
+  String get rhLearnMore;
+
+  /// H02 card kicker.
+  ///
+  /// In vi, this message translates to:
+  /// **'VIỆC CÓ THỂ THỬ HÔM NAY'**
+  String get rhKickerToday;
+
+  /// PS02 card kicker for an evening activity.
+  ///
+  /// In vi, this message translates to:
+  /// **'VIỆC CÓ THỂ THỬ TỐI NAY'**
+  String get rhKickerTonight;
+
+  /// H02 primary (feedback started).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử hôm nay'**
+  String get rhTryToday;
+
+  /// PS01 primary for an evening activity (feedback started).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử tối nay'**
+  String get rhTryTonight;
+
+  /// PS02 primary when it helped before.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại hôm nay'**
+  String get rhTryAgainToday;
+
+  /// PS02 primary when it helped before (evening).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại tối nay'**
+  String get rhTryAgainTonight;
+
+  /// H02 secondary (feedback not_today → cooldown).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không phải hôm nay'**
+  String get rhNotToday;
+
+  /// PS02 secondary (feedback not_today → cooldown).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý khác'**
+  String get rhSomethingElse;
+
+  /// PS02 box title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dựa trên phản hồi của bạn'**
+  String get rhBasedOnFeedback;
+
+  /// PS02: the feedback behind the suggestion (evening activity).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối {date} {who} chọn “{kind}” cho “{title}”'**
+  String rhFeedbackUsedEvening(
+    String date,
+    String who,
+    String kind,
+    String title,
+  );
+
+  /// PS02: the feedback behind the suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày {date} {who} chọn “{kind}” cho “{title}”'**
+  String rhFeedbackUsedDay(String date, String who, String kind, String title);
+
+  /// PS02 "what changed" box.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thay đổi'**
+  String get rhChangedTitle;
+
+  /// PS02 change: prefers_helpful.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ưu tiên cách đã có ích thay vì gợi ý mới'**
+  String get rhChangePrefersHelpful;
+
+  /// PS02 change: excluded_not_suitable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không gợi ý lại cách đã được chọn “Không phù hợp”'**
+  String get rhChangeExcluded;
+
+  /// PS02 change: cooling_down.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm nghỉ vài ngày cách đã chọn “Không phải hôm nay”'**
+  String get rhChangeCooling;
+
+  /// H02 check-in entry row → C01.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay con có gì khác?'**
+  String get rhCheckInEntry;
+
+  /// H02 card when the activity was started.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang thử'**
+  String get rhStartedLabel;
+
+  /// Home health card (health > everything, brief p.11).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay có dấu hiệu cần chú ý'**
+  String get rhHealthCardTitle;
+
+  /// Home health card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý theo lịch tạm dừng. Xem hướng dẫn và cách gọi hỗ trợ.'**
+  String get rhHealthCardBody;
+
+  /// Home health card link → HL01.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem hướng dẫn sức khoẻ'**
+  String get rhHealthCardAction;
+
+  /// Toast after "Không phải hôm nay" / "Để sau".
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã để sau. Gợi ý này nghỉ vài ngày.'**
+  String get rhPutOffToast;
+
+  /// C01 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay con có gì khác?'**
+  String get rhCheckInTitle;
+
+  /// C01 subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn một điều bạn để ý. Không cần trả lời hết.'**
+  String get rhCheckInSubtitle;
+
+  /// Toast after "Như mọi ngày" (saved quietly).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu: hôm nay như mọi ngày'**
+  String get rhUsualSaved;
+
+  /// C02 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm một chút để gợi ý đúng hơn'**
+  String get rhMoreTitle;
+
+  /// C02 top-right link: save without follow-ups.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua câu hỏi'**
+  String get rhSkipQuestions;
+
+  /// C02 question.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi nào?'**
+  String get rhQWhen;
+
+  /// C02 sleep: when = night.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc đêm'**
+  String get rhWhenNightSleep;
+
+  /// C02 sleep: when = day.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngày'**
+  String get rhWhenDaySleep;
+
+  /// C02 feeding / soothing: when = night.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ban đêm'**
+  String get rhWhenNight;
+
+  /// C02 feeding / soothing: when = day.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ban ngày'**
+  String get rhWhenDay;
+
+  /// C02: when = both.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả hai'**
+  String get rhWhenBoth;
+
+  /// C02 question.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ bao giờ?'**
+  String get rhQSince;
+
+  /// C02 since = today.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get rhSinceToday;
+
+  /// C02 since = 2–3 days.
+  ///
+  /// In vi, this message translates to:
+  /// **'2–3 ngày'**
+  String get rhSince23;
+
+  /// C02 since = longer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lâu hơn'**
+  String get rhSinceLonger;
+
+  /// C02 question.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thử gì chưa? (tuỳ chọn)'**
+  String get rhQTried;
+
+  /// C02 tried: rocking.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bế ru'**
+  String get rhTriedRocking;
+
+  /// C02 tried: white noise.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếng ồn trắng'**
+  String get rhTriedWhiteNoise;
+
+  /// C02 tried: feeding.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho bú'**
+  String get rhTriedFeeding;
+
+  /// C02 tried: skin to skin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Áp da'**
+  String get rhTriedSkin;
+
+  /// C02 tried: swaddle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quấn chũn'**
+  String get rhTriedSwaddle;
+
+  /// C02 tried: nothing yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa'**
+  String get rhTriedNone;
+
+  /// Summary: when = night (sleep).
+  ///
+  /// In vi, this message translates to:
+  /// **'giấc đêm'**
+  String get rhSumNightSleep;
+
+  /// Summary: when = day (sleep).
+  ///
+  /// In vi, this message translates to:
+  /// **'giấc ngày'**
+  String get rhSumDaySleep;
+
+  /// Summary: when = night.
+  ///
+  /// In vi, this message translates to:
+  /// **'ban đêm'**
+  String get rhSumNight;
+
+  /// Summary: when = day.
+  ///
+  /// In vi, this message translates to:
+  /// **'ban ngày'**
+  String get rhSumDay;
+
+  /// Summary: when = both.
+  ///
+  /// In vi, this message translates to:
+  /// **'cả ngày lẫn đêm'**
+  String get rhSumBoth;
+
+  /// Summary: since today.
+  ///
+  /// In vi, this message translates to:
+  /// **'hôm nay'**
+  String get rhSumToday;
+
+  /// Summary: since longer.
+  ///
+  /// In vi, this message translates to:
+  /// **'lâu hơn'**
+  String get rhSumLonger;
+
+  /// C02 context box (sleep): Care facts reused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ nhật ký: giấc đêm qua được ghi {duration} ({who} ghi). Bạn không cần nhập lại.'**
+  String rhFromLogSleep(String duration, String who);
+
+  /// C02 context box (feeding).
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ nhật ký: hôm nay đã ghi {count} cữ bú. Bạn không cần nhập lại.'**
+  String rhFromLogFeeds(int count);
+
+  /// C02 new skill: text field label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Con làm được gì mới?'**
+  String get rhNewSkillLabel;
+
+  /// C02 new skill: placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: lần đầu lẫy'**
+  String get rhNewSkillHint;
+
+  /// C02 new skill: link to milestones (MS01, next step).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu vào Mốc'**
+  String get rhSaveToMilestones;
+
+  /// C02 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu ghi nhận'**
+  String get rhSaveNote;
+
+  /// C02 helper below the button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận luôn miễn phí · cả nhà cùng thấy'**
+  String get rhAlwaysFree;
+
+  /// NL05b heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận hôm nay'**
+  String get rhHealthQHeading;
+
+  /// NL05b card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước khi tiếp tục'**
+  String get rhHealthQTitle;
+
+  /// NL05b question.
+  ///
+  /// In vi, this message translates to:
+  /// **'{baby} có dấu hiệu nào sau đây không?'**
+  String rhHealthQAsk(String baby);
+
+  /// NL05b helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nếu có, Child Life sẽ dừng gợi ý theo lịch và chỉ cho bạn hướng dẫn đã được chuyên môn duyệt.'**
+  String get rhHealthQHelper;
+
+  /// NL05b hint when a sign is "Không chắc".
+  ///
+  /// In vi, this message translates to:
+  /// **'Không chắc thì cứ hỏi bác sĩ của bé.'**
+  String get rhHealthUnsureHint;
+
+  /// NL05b answer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có'**
+  String get rhAnswerYes;
+
+  /// NL05b answer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không'**
+  String get rhAnswerNo;
+
+  /// NL05b answer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không chắc'**
+  String get rhAnswerUnsure;
+
+  /// Health sign fever_young (NL05b).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sốt (bé dưới 3 tháng)'**
+  String get rhSignFeverYoung;
+
+  /// Health sign breathing (NL05b).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khó thở, thở rút lõm'**
+  String get rhSignBreathing;
+
+  /// Health sign lethargic (NL05b).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lừ đừ, khó đánh thức'**
+  String get rhSignLethargic;
+
+  /// Health sign poor_feeding (NL05b).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú rất ít hoặc bỏ bú'**
+  String get rhSignPoorFeeding;
+
+  /// Health sign inconsolable (NL05b).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khóc không dỗ được'**
+  String get rhSignInconsolable;
+
+  /// Health sign lost_skill (NL05b).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mất kỹ năng đã có'**
+  String get rhSignLostSkill;
+
+  /// Health sign dehydration (engineering draft).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ít tã ướt, môi khô'**
+  String get rhSignDehydration;
+
+  /// Health sign seizure (engineering draft).
+  ///
+  /// In vi, this message translates to:
+  /// **'Co giật'**
+  String get rhSignSeizure;
+
+  /// HL01 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nên liên hệ hỗ trợ y tế'**
+  String get rhHlTitle;
+
+  /// HL01 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đánh dấu một dấu hiệu cần chú ý trong ghi nhận. Child Life dừng gợi ý theo lịch và không hiển thị nội dung trả phí ở đây.'**
+  String get rhHlBody;
+
+  /// HL01: the signs answered "Có".
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã ghi'**
+  String get rhHlNoted;
+
+  /// HL01 primary: the household region number from approved content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gọi số khẩn cấp {number}'**
+  String rhHlCallEmergency(String number);
+
+  /// HL01 secondary (the only call when the region has no approved number).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gọi bác sĩ của bé'**
+  String get rhHlCallDoctor;
+
+  /// HL01 helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số khẩn cấp lấy theo quốc gia cư trú của hộ. Khu vực chưa có số trong danh sách thì chỉ hiện nút gọi bác sĩ.'**
+  String get rhHlHelper;
+
+  /// HL01 when the household region has no approved number (never a default hotline).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có số khẩn cấp được duyệt cho khu vực của hộ. Nếu con có dấu hiệu nguy hiểm, hãy gọi cấp cứu nơi bạn sống.'**
+  String get rhHlNoRegion;
+
+  /// HL01 while-waiting steps.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong lúc chờ'**
+  String get rhHlWhileWaiting;
+
+  /// HL01 disclaimer when the health pack has none.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life không chẩn đoán và không kết luận “an toàn”.'**
+  String get rhHlDisclaimer;
+
+  /// HL01 footer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Luôn miễn phí · không paywall, không upsell'**
+  String get rhHlAlwaysFree;
+
+  /// HL01: the dialler did not open.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không mở được ứng dụng Điện thoại.'**
+  String get rhHlDialFailed;
+
+  /// PS01 / PS01F saved banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu ghi nhận'**
+  String get rhSavedTitle;
+
+  /// Saved banner: who else sees it.
+  ///
+  /// In vi, this message translates to:
+  /// **'{names} sẽ thấy'**
+  String rhSeenBy(String names);
+
+  /// Saved banner when no one else reads check-ins.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ bạn thấy'**
+  String get rhSeenByOnlyYou;
+
+  /// PS01 section title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một việc có thể thử'**
+  String get rhOneThing;
+
+  /// PS01 activity meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{duration} · phù hợp {range}'**
+  String rhDurationFit(String duration, String range);
+
+  /// Age range of an activity.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from}–{to} tháng'**
+  String rhMonthsRange(int from, int to);
+
+  /// PS01 why box label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì sao gợi ý này'**
+  String get rhWhyThis;
+
+  /// PS01 why: what was just noted (quoted summary).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn vừa ghi {summary}.'**
+  String rhWhyJustNoted(String summary);
+
+  /// PS01 why: what was already tried.
+  ///
+  /// In vi, this message translates to:
+  /// **'{tried} đã thử rồi nên gợi ý một cách khác.'**
+  String rhWhyTriedOther(String tried);
+
+  /// PS01 why: PREVIOUS_HELPFUL.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách này từng được đánh giá “Có ích”.'**
+  String get rhWhyHelpedBefore;
+
+  /// PS01 why: DATA_INSIGHT (sleep baseline).
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ nhật ký: tổng ngủ được ghi gần đây khoảng {recent} mỗi ngày, mức thường của con {baseline}.'**
+  String rhWhyData(String recent, String baseline);
+
+  /// PS01 secondary (feedback not_today).
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau'**
+  String get rhLater;
+
+  /// PS01 link → Nhịp lớn lên.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem nhịp của con'**
+  String rhSeeRhythm(String baby);
+
+  /// PS01F section title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc thêm theo tuổi'**
+  String get rhMoreForAge;
+
+  /// PS01F article pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Miễn phí · theo tuổi'**
+  String get rhFreeAgePill;
+
+  /// PS01F article meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc {n} phút'**
+  String rhReadMinutes(int n);
+
+  /// PS01F optional card (only with PREMIUM_REQUIRED).
+  ///
+  /// In vi, this message translates to:
+  /// **'Muốn một gợi ý theo đúng tình huống?'**
+  String get rhUpsellTitle;
+
+  /// PS01F optional card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỗ trợ phù hợp với con chọn một việc từ ghi nhận của nhà mình và nhớ cách đã có ích.'**
+  String get rhUpsellBody;
+
+  /// PS01F optional link → household plan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm hiểu thêm (tuỳ chọn)'**
+  String get rhLearnMoreOptional;
+
+  /// Result when nothing fits.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có gợi ý phù hợp'**
+  String get rhNoSuggestionTitle;
+
+  /// Result when nothing fits.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận đã lưu. Khi có nội dung hợp với con, gợi ý sẽ hiện ở Hôm nay.'**
+  String get rhNoSuggestionBody;
+
+  /// Link to the age card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem nội dung theo tuổi'**
+  String get rhSeeAgeContent;
+
+  /// Result offline (ST01 card 4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận vẫn lưu trên máy'**
+  String get rhOfflineTitle;
+
+  /// Result offline (ST01 card 4, adapted).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẽ đồng bộ khi có mạng. Gợi ý mới cần kết nối và sẽ hiện ở Hôm nay sau.'**
+  String get rhOfflineBody;
+
+  /// Result when the suggestion call failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lấy được gợi ý'**
+  String get rhErrorTitle;
+
+  /// Result when the suggestion call failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận đã lưu. Thử lại sau một lát.'**
+  String get rhErrorBody;
+
+  /// Result while nextAction runs.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chọn một việc có thể thử…'**
+  String get rhLoadingSuggestion;
+
+  /// AC01 status pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa thử'**
+  String get rhNotTried;
+
+  /// AC02 status pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thử · {date}'**
+  String rhTriedOn(String date);
+
+  /// AC01 hero eyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý · {duration}'**
+  String rhSuggestionEyebrow(String duration);
+
+  /// AC01 reason (quoted summary, author, date).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì: {summary} ({who} ghi {date})'**
+  String rhBecauseNoted(String summary, String who, String date);
+
+  /// AC01 steps heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách làm'**
+  String get rhHow;
+
+  /// AC01 summary heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì sao có thể giúp'**
+  String get rhWhyItMayHelp;
+
+  /// AC01 safety heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu ý an toàn'**
+  String get rhSafety;
+
+  /// AC01 primary (feedback started).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình sẽ thử'**
+  String get rhIllTry;
+
+  /// AC01 link (feedback not_suitable).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không phù hợp với con'**
+  String get rhNotRight;
+
+  /// AC01 link (feedback not_today → cooldown).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý khác'**
+  String get rhAnotherIdea;
+
+  /// AC01 after starting → AC02.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kể lại kết quả'**
+  String get rhTellHow;
+
+  /// Toast after "Mình sẽ thử".
+  ///
+  /// In vi, this message translates to:
+  /// **'Chúc cả nhà thuận lợi! Thử xong thì kể lại nhé.'**
+  String get rhStartedToast;
+
+  /// Toast after "Không phù hợp với con".
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi nhận. Sẽ không gợi ý lại cách này cho con.'**
+  String get rhNotRightToast;
+
+  /// An activity id not in the published content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý này không còn nữa'**
+  String get rhActivityMissing;
+
+  /// AC02 question for an evening activity tried yesterday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối qua thế nào?'**
+  String get rhHowLastNight;
+
+  /// AC02 question otherwise.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần thử thế nào?'**
+  String get rhHowDidItGo;
+
+  /// AC02 choice (helpful).
+  ///
+  /// In vi, this message translates to:
+  /// **'Có ích'**
+  String get rhHelpful;
+
+  /// AC02 choice (unsure).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa rõ'**
+  String get rhUnsure;
+
+  /// AC02 choice (not_suitable).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không phù hợp'**
+  String get rhNotAFit;
+
+  /// AC02 note field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú (tuỳ chọn)'**
+  String get rhNoteHint;
+
+  /// AC02 info strip (no causality claims).
+  ///
+  /// In vi, this message translates to:
+  /// **'Phản hồi này được dùng để chọn gợi ý lần sau. “Có ích” không có nghĩa là cách này gây ra thay đổi.'**
+  String get rhFeedbackInfo;
+
+  /// AC02 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu phản hồi'**
+  String get rhSaveFeedback;
+
+  /// Toast after AC02.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu phản hồi'**
+  String get rhFeedbackSaved;
+
+  /// Age card detail: tips.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều có thể làm'**
+  String get rhAgeTips;
+
+  /// Age card detail: watch for.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi nào nên hỏi bác sĩ'**
+  String get rhAgeWatch;
+
+  /// Age card detail footnote (no schedule).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi bé mỗi khác. Đây là điều nhiều gia đình thấy ở tuổi này, không phải lịch bắt buộc.'**
+  String get rhAgeEach;
+
+  /// Placeholder title until the Nhịp lớn lên screens arrive.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp lớn lên'**
+  String get rhComingTitle;
+
+  /// Placeholder body until the Nhịp lớn lên screens arrive.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phần này đang được hoàn thiện.'**
+  String get rhComingBody;
+
+  /// A check-in or feedback write was refused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được ghi nhận. Có thể quyền của bạn đã thay đổi.'**
+  String get rhSaveFailed;
 }
 
 class _AppLocalizationsDelegate

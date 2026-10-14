@@ -1,0 +1,441 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../core/design/cl_theme.dart';
+import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_button.dart';
+import '../../core/widgets/cl_feedback.dart';
+import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_inputs.dart';
+import '../../l10n/app_localizations.dart';
+import '../care/care_format.dart' show durationLabel;
+import '../family/family_repository.dart';
+import '../home/home_shell.dart';
+import '../onboarding/widgets/onboarding_layout.dart';
+import 'rhythm_access.dart';
+import 'rhythm_actions.dart';
+import 'rhythm_labels.dart';
+import 'rhythm_models.dart';
+import 'rhythm_repository.dart';
+import 'rhythm_widgets.dart';
+
+/// AC01 (590:6515): an activity not tried yet — steps, why it may help, safety, the review label,
+/// "Mình sẽ thử" (started), "Không phù hợp với con" (not_suitable: never suggested again for
+/// this baby) and "Gợi ý khác" (not_today: a cooldown). Once started it offers AC02. Members
+/// who may only read (relatives with "Chăm sóc hằng ngày") see it without the actions.
+class ActivityScreen extends ConsumerWidget {
+  const ActivityScreen({required this.contentId, this.checkInId, super.key});
+  final String contentId;
+
+  /// The check-in the suggestion rests on ("Vì: … (Ba ghi 07/10)").
+  final String? checkInId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = Localizations.localeOf(context);
+    final me = ref.watch(selectedMembershipProvider);
+    final content = ref.watch(rhythmContentProvider);
+    final activity = content.value?.activity(contentId);
+    if (me != null) watchRhythmClock(ref, me.babyId);
+    final canRead = me != null && familyCan(me, FamilyAction.historyRead);
+    final canAct = me != null && familyCan(me, FamilyAction.rhythmFeedback);
+    final feedback = canRead
+        ? ref.watch(recFeedbackProvider(me.babyId)).value ??
+              const <RecFeedback>[]
+        : const <RecFeedback>[];
+    final last = latestFeedback(feedback, contentId);
+    final started = last?.kind == FeedbackKind.started;
+    final checkIn = canRead && checkInId != null
+        ? ref
+              .watch(checkInsProvider(me.babyId))
+              .value
+              ?.where((c) => c.id == checkInId)
+              .firstOrNull
+        : null;
+    final members = me == null
+        ? const []
+        : ref.watch(familyMembersProvider(me.babyId)).value ?? const [];
+
+    final topBar = Row(
+      children: [
+        RhRoundIcon(
+          icon: ClIcons.close,
+          label: l10n.a11yClose,
+          onPressed: () => leaveRhythm(context),
+        ),
+        const Spacer(),
+        if (activity != null)
+          started
+              ? RhPill(
+                  label: l10n.rhTriedOn(shortDay(locale, last!.date)),
+                  icon: ClIcons.check,
+                  mint: true,
+                )
+              : RhPill(label: l10n.rhNotTried, icon: ClIcons.clock),
+      ],
+    );
+    if (activity == null) {
+      return OnboardingScaffold(
+        topBar: topBar,
+        content: [
+          if (!content.isLoading)
+            RhCard(
+              child: Text(l10n.rhActivityMissing, style: cl.text.bodyStrong),
+            ),
+        ],
+      );
+    }
+
+    void feedbackAndLeave(FeedbackKind kind, String message) {
+      final toaster = ClToaster.of(context);
+      giveFeedbackOn(context, ref, me!, kind: kind, activity: activity);
+      leaveRhythm(context);
+      toaster.show(message: message);
+    }
+
+    final steps = activity.steps.of(locale);
+    final safety = activity.safety?.of(locale);
+    final author = checkIn == null
+        ? null
+        : members.where((m) => m.uid == checkIn.authorUid).firstOrNull;
+    return OnboardingScaffold(
+      topBar: topBar,
+      content: [
+        Container(
+          padding: const EdgeInsets.all(ClSpace.s4),
+          decoration: BoxDecoration(
+            color: cl.colors.peachSoft,
+            borderRadius: BorderRadius.circular(rhCardRadius),
+          ),
+          // Ink on soft warm fills, also in Night care.
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.rhSuggestionEyebrow(
+                  durationLabel(l10n, activity.durationMin),
+                ),
+                style: cl.text.caption.copyWith(
+                  color: cl.colors.ink,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: ClSpace.s1),
+              Semantics(
+                header: true,
+                child: Text(
+                  activity.title.of(locale),
+                  style: cl.text.title2.copyWith(
+                    fontSize: 22,
+                    color: cl.colors.ink,
+                  ),
+                ),
+              ),
+              if (checkIn != null) ...[
+                const SizedBox(height: ClSpace.s2),
+                Text(
+                  l10n.rhBecauseNoted(
+                    checkInQuote(l10n, checkIn),
+                    memberLabel(
+                      l10n,
+                      author,
+                      myUid: me!.uid,
+                      uid: checkIn.authorUid,
+                    ),
+                    shortDay(locale, checkIn.date),
+                  ),
+                  style: cl.text.label.copyWith(color: cl.colors.ink),
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        if (steps.isNotEmpty) ...[
+          RhCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RhCardHeading(l10n.rhHow),
+                const SizedBox(height: ClSpace.s3),
+                RhSteps(steps),
+              ],
+            ),
+          ),
+          const SizedBox(height: ClSpace.s3),
+        ],
+        RhInfoBox(
+          icon: null,
+          label: l10n.rhWhyItMayHelp,
+          text: activity.summary.of(locale),
+        ),
+        if (safety != null) ...[
+          const SizedBox(height: ClSpace.s3),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(ClSpace.s3),
+            decoration: BoxDecoration(
+              color: cl.colors.sunshineSoft,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClIcon(ClIcons.alert, size: 16, color: cl.colors.ink),
+                const SizedBox(width: ClSpace.s2),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.rhSafety,
+                        style: cl.text.label.copyWith(
+                          color: cl.colors.ink,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        safety,
+                        style: cl.text.label.copyWith(color: cl.colors.ink),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+        const SizedBox(height: ClSpace.s3),
+        RhReviewNote(activity.review),
+        if (activity.sources.isNotEmpty) ...[
+          const SizedBox(height: ClSpace.s1),
+          Text(
+            '${l10n.rhSources}: ${activity.sources.map((s) => s.label).join(' · ')}',
+            style: cl.text.caption.copyWith(
+              color: cl.colors.inkMuted,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ],
+      bottom: canAct
+          ? [
+              if (started)
+                ClButton(
+                  label: l10n.rhTellHow,
+                  expand: true,
+                  onPressed: () =>
+                      context.push(activityFeedbackLocation(contentId)),
+                )
+              else
+                ClButton(
+                  label: l10n.rhIllTry,
+                  expand: true,
+                  onPressed: () {
+                    giveFeedbackOn(
+                      context,
+                      ref,
+                      me,
+                      kind: FeedbackKind.started,
+                      activity: activity,
+                    );
+                    showClToast(context, message: l10n.rhStartedToast);
+                  },
+                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: RhLink(
+                      label: l10n.rhNotRight,
+                      muted: true,
+                      onTap: () => feedbackAndLeave(
+                        FeedbackKind.notSuitable,
+                        l10n.rhNotRightToast,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '  ·  ',
+                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                  ),
+                  Flexible(
+                    child: RhLink(
+                      label: l10n.rhAnotherIdea,
+                      onTap: () => feedbackAndLeave(
+                        FeedbackKind.notToday,
+                        l10n.rhPutOffToast,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ]
+          : null,
+    );
+  }
+}
+
+/// AC02 (590:6558): after trying — "Có ích / Chưa rõ / Không phù hợp" and an optional note.
+/// The answer only shapes the next suggestion; "Có ích" never claims the activity caused it.
+class ActivityFeedbackScreen extends ConsumerStatefulWidget {
+  const ActivityFeedbackScreen({required this.contentId, super.key});
+  final String contentId;
+
+  @override
+  ConsumerState<ActivityFeedbackScreen> createState() =>
+      _ActivityFeedbackScreenState();
+}
+
+class _ActivityFeedbackScreenState
+    extends ConsumerState<ActivityFeedbackScreen> {
+  FeedbackKind? _kind;
+  final _note = TextEditingController();
+
+  @override
+  void dispose() {
+    _note.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = Localizations.localeOf(context);
+    final me = ref.watch(selectedMembershipProvider);
+    final activity = ref
+        .watch(rhythmContentProvider)
+        .value
+        ?.activity(widget.contentId);
+    final feedback = me == null
+        ? const <RecFeedback>[]
+        : ref.watch(recFeedbackProvider(me.babyId)).value ??
+              const <RecFeedback>[];
+    final startedOn = feedback
+        .where(
+          (r) =>
+              r.contentId == widget.contentId && r.kind == FeedbackKind.started,
+        )
+        .firstOrNull
+        ?.date;
+    if (me != null) watchRhythmClock(ref, me.babyId);
+    final today = me == null ? null : rhythmToday(ref, me.babyId);
+    final lastNight =
+        activity?.timeOfDay == ActivityTime.evening &&
+        startedOn != null &&
+        today != null &&
+        startedOn.compareTo(today) < 0;
+    final canAct = me != null && familyCan(me, FamilyAction.rhythmFeedback);
+
+    void save() {
+      final kind = _kind;
+      if (kind == null || activity == null || me == null) return;
+      final toaster = ClToaster.of(context);
+      giveFeedbackOn(
+        context,
+        ref,
+        me,
+        kind: kind,
+        activity: activity,
+        note: _note.text,
+      );
+      closeFlow(context);
+      toaster.show(message: l10n.rhFeedbackSaved);
+    }
+
+    return OnboardingScaffold(
+      topBar: Row(
+        children: [
+          RhRoundIcon(
+            icon: ClIcons.close,
+            label: l10n.a11yClose,
+            onPressed: () => leaveRhythm(context),
+          ),
+          const Spacer(),
+          if (startedOn != null)
+            RhPill(
+              label: l10n.rhTriedOn(shortDay(locale, startedOn)),
+              icon: ClIcons.check,
+              mint: true,
+            ),
+        ],
+      ),
+      content: [
+        if (activity == null)
+          RhCard(child: Text(l10n.rhActivityMissing, style: cl.text.bodyStrong))
+        else ...[
+          Semantics(
+            header: true,
+            child: Text(
+              activity.title.of(locale),
+              style: cl.text.headline.copyWith(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(height: ClSpace.s4),
+          RhCard(
+            outline: true,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  lastNight ? l10n.rhHowLastNight : l10n.rhHowDidItGo,
+                  style: cl.text.bodyStrong,
+                ),
+                const SizedBox(height: ClSpace.s3),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final (i, k) in const [
+                        FeedbackKind.helpful,
+                        FeedbackKind.unsure,
+                        FeedbackKind.notSuitable,
+                      ].indexed) ...[
+                        if (i > 0) const SizedBox(width: ClSpace.s2),
+                        Expanded(
+                          child: RhChip(
+                            expand: true,
+                            label: feedbackKindLabel(l10n, k),
+                            selected: _kind == k,
+                            onTap: () => setState(() => _kind = k),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: ClSpace.s3),
+                ClTextField(
+                  placeholder: l10n.rhNoteHint,
+                  controller: _note,
+                  maxLines: 3,
+                  maxLength: RecFeedback.noteMaxLength,
+                  textCapitalization: TextCapitalization.sentences,
+                ),
+                const SizedBox(height: ClSpace.s3),
+                RhInfoBox(icon: ClIcons.sliders, text: l10n.rhFeedbackInfo),
+              ],
+            ),
+          ),
+        ],
+      ],
+      bottom: canAct && activity != null
+          ? [
+              ClButton(
+                label: l10n.rhSaveFeedback,
+                expand: true,
+                onPressed: _kind == null ? null : save,
+              ),
+            ]
+          : null,
+    );
+  }
+}

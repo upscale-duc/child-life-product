@@ -258,6 +258,7 @@ void main() {
       });
       // Missing parts go in their default place; the opt-in ones stay hidden.
       expect(layout.order, [
+        TodaySection.forYou,
         TodaySection.rhythm,
         TodaySection.tiles,
         TodaySection.reminders,
@@ -279,7 +280,13 @@ void main() {
           for (final s in d.order)
             if (d.shows(s)) s,
         ],
-        [TodaySection.tiles, TodaySection.reminders, TodaySection.rhythm],
+        // "Dành cho bé hôm nay" draws only with the family's rhythm flag.
+        [
+          TodaySection.forYou,
+          TodaySection.tiles,
+          TodaySection.reminders,
+          TodaySection.rhythm,
+        ],
       );
       expect(
         const TodayLayout(
@@ -461,7 +468,8 @@ void main() {
       await tester.tap(find.text('Xong'));
       await tester.pumpAndSettle();
       final layout = container.read(todayLayoutProvider(teddyId));
-      expect(layout.order.take(2), [
+      // "Dành cho bé hôm nay" (not offered without the rhythm flag) keeps its place.
+      expect(layout.order.where((s) => s != TodaySection.forYou).take(2), [
         TodaySection.reminders,
         TodaySection.rhythm,
       ]);

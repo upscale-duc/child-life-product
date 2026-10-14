@@ -10881,4 +10881,664 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pmGateOk => 'Đã hiểu';
+
+  @override
+  String get rhSectionForYou => 'Dành cho bé hôm nay';
+
+  @override
+  String get rhSectionForYouSub => 'Gợi ý, tuần tuổi và lịch tham khảo';
+
+  @override
+  String get rhReviewPending => 'Nội dung minh hoạ · chờ chuyên môn duyệt';
+
+  @override
+  String rhReviewedBy(String reviewer, String credential) {
+    return 'Đã duyệt bởi $reviewer · $credential';
+  }
+
+  @override
+  String rhJoinTwo(String a, String b) {
+    return '$a và $b';
+  }
+
+  @override
+  String rhQuoted(String text) {
+    return '“$text”';
+  }
+
+  @override
+  String get rhWhoYou => 'bạn';
+
+  @override
+  String rhDateRange(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get rhDone => 'Xong';
+
+  @override
+  String get rhContinue => 'Tiếp tục';
+
+  @override
+  String get rhRetry => 'Thử lại';
+
+  @override
+  String get rhSources => 'Nguồn tham khảo';
+
+  @override
+  String get rhObsSleep => 'Khó vào giấc / hay thức';
+
+  @override
+  String get rhObsFeeding => 'Bú / ăn khác thường';
+
+  @override
+  String get rhObsSoothing => 'Cần được dỗ nhiều hơn';
+
+  @override
+  String get rhObsNewSkill => 'Con có điều mới';
+
+  @override
+  String get rhObsUsual => 'Như mọi ngày';
+
+  @override
+  String get rhObsHealth => 'Mình lo về sức khoẻ của con';
+
+  @override
+  String get rhObsShortSleep => 'Khó vào giấc';
+
+  @override
+  String get rhObsShortFeeding => 'Bú / ăn khác thường';
+
+  @override
+  String get rhObsShortSoothing => 'Cần dỗ nhiều hơn';
+
+  @override
+  String get rhObsShortNewSkill => 'Điều mới';
+
+  @override
+  String get rhObsShortUsual => 'Như mọi ngày';
+
+  @override
+  String get rhObsShortHealth => 'Lo về sức khoẻ';
+
+  @override
+  String rhWhatSleep(String baby) {
+    return 'con khó vào giấc';
+  }
+
+  @override
+  String rhWhatFeeding(String baby) {
+    return 'con bú / ăn khác thường';
+  }
+
+  @override
+  String rhWhatSoothing(String baby) {
+    return 'con cần được dỗ nhiều hơn';
+  }
+
+  @override
+  String rhWhatNewSkill(String baby) {
+    return 'con có điều mới';
+  }
+
+  @override
+  String rhWhatOther(String baby) {
+    return 'điều con cần';
+  }
+
+  @override
+  String get rhWhenToday => 'hôm nay';
+
+  @override
+  String get rhWhenLastNight => 'tối qua';
+
+  @override
+  String get rhWhenYesterday => 'hôm qua';
+
+  @override
+  String rhWhenOn(String date) {
+    return 'ngày $date';
+  }
+
+  @override
+  String rhReasonNoted(String when, String who, String what) {
+    return 'Vì $when $who ghi nhận $what.';
+  }
+
+  @override
+  String rhReasonHelpful(String who) {
+    return 'Lần trước $who đánh giá cách này “Có ích”.';
+  }
+
+  @override
+  String rhReasonData(String baby) {
+    return 'Vì giấc ngủ mấy ngày gần đây khác với thường ngày của con (từ nhật ký).';
+  }
+
+  @override
+  String rhReasonAge(String baby) {
+    return 'Vì phù hợp với tuổi của con.';
+  }
+
+  @override
+  String get rhReasonInterest => 'Vì bạn quan tâm đến chủ đề này.';
+
+  @override
+  String rhReasonFallback(String baby) {
+    return 'Vì nhà mình vừa ghi nhận điều con cần.';
+  }
+
+  @override
+  String rhAgeHeading(String baby) {
+    return 'Tuần này của $baby';
+  }
+
+  @override
+  String get rhAgeFree => 'Nội dung theo tuổi · luôn miễn phí';
+
+  @override
+  String get rhCalendarPill => 'LỊCH THAM KHẢO';
+
+  @override
+  String rhStageName(int n) {
+    return 'Giai đoạn $n (Wonder Weeks)';
+  }
+
+  @override
+  String rhStageExpected(String stage, String range) {
+    return '$stage dự kiến $range';
+  }
+
+  @override
+  String rhStageNow(String stage, String range) {
+    return '$stage · $range · tham khảo';
+  }
+
+  @override
+  String get rhSupportTitle => 'Hỗ trợ phù hợp với con';
+
+  @override
+  String get rhSupportBody =>
+      'Gợi ý một việc dựa trên điều nhà mình ghi nhận, nhớ cách đã có ích, bản bàn giao cho người chăm tiếp theo.';
+
+  @override
+  String get rhLearnMore => 'Tìm hiểu thêm';
+
+  @override
+  String get rhKickerToday => 'VIỆC CÓ THỂ THỬ HÔM NAY';
+
+  @override
+  String get rhKickerTonight => 'VIỆC CÓ THỂ THỬ TỐI NAY';
+
+  @override
+  String get rhTryToday => 'Thử hôm nay';
+
+  @override
+  String get rhTryTonight => 'Thử tối nay';
+
+  @override
+  String get rhTryAgainToday => 'Thử lại hôm nay';
+
+  @override
+  String get rhTryAgainTonight => 'Thử lại tối nay';
+
+  @override
+  String get rhNotToday => 'Không phải hôm nay';
+
+  @override
+  String get rhSomethingElse => 'Gợi ý khác';
+
+  @override
+  String get rhBasedOnFeedback => 'Dựa trên phản hồi của bạn';
+
+  @override
+  String rhFeedbackUsedEvening(
+    String date,
+    String who,
+    String kind,
+    String title,
+  ) {
+    return 'Tối $date $who chọn “$kind” cho “$title”';
+  }
+
+  @override
+  String rhFeedbackUsedDay(String date, String who, String kind, String title) {
+    return 'Ngày $date $who chọn “$kind” cho “$title”';
+  }
+
+  @override
+  String get rhChangedTitle => 'Đã thay đổi';
+
+  @override
+  String get rhChangePrefersHelpful =>
+      'Ưu tiên cách đã có ích thay vì gợi ý mới';
+
+  @override
+  String get rhChangeExcluded =>
+      'Không gợi ý lại cách đã được chọn “Không phù hợp”';
+
+  @override
+  String get rhChangeCooling =>
+      'Tạm nghỉ vài ngày cách đã chọn “Không phải hôm nay”';
+
+  @override
+  String get rhCheckInEntry => 'Hôm nay con có gì khác?';
+
+  @override
+  String get rhStartedLabel => 'Đang thử';
+
+  @override
+  String get rhHealthCardTitle => 'Hôm nay có dấu hiệu cần chú ý';
+
+  @override
+  String get rhHealthCardBody =>
+      'Gợi ý theo lịch tạm dừng. Xem hướng dẫn và cách gọi hỗ trợ.';
+
+  @override
+  String get rhHealthCardAction => 'Xem hướng dẫn sức khoẻ';
+
+  @override
+  String get rhPutOffToast => 'Đã để sau. Gợi ý này nghỉ vài ngày.';
+
+  @override
+  String get rhCheckInTitle => 'Hôm nay con có gì khác?';
+
+  @override
+  String get rhCheckInSubtitle =>
+      'Chọn một điều bạn để ý. Không cần trả lời hết.';
+
+  @override
+  String get rhUsualSaved => 'Đã lưu: hôm nay như mọi ngày';
+
+  @override
+  String get rhMoreTitle => 'Thêm một chút để gợi ý đúng hơn';
+
+  @override
+  String get rhSkipQuestions => 'Bỏ qua câu hỏi';
+
+  @override
+  String get rhQWhen => 'Khi nào?';
+
+  @override
+  String get rhWhenNightSleep => 'Giấc đêm';
+
+  @override
+  String get rhWhenDaySleep => 'Giấc ngày';
+
+  @override
+  String get rhWhenNight => 'Ban đêm';
+
+  @override
+  String get rhWhenDay => 'Ban ngày';
+
+  @override
+  String get rhWhenBoth => 'Cả hai';
+
+  @override
+  String get rhQSince => 'Từ bao giờ?';
+
+  @override
+  String get rhSinceToday => 'Hôm nay';
+
+  @override
+  String get rhSince23 => '2–3 ngày';
+
+  @override
+  String get rhSinceLonger => 'Lâu hơn';
+
+  @override
+  String get rhQTried => 'Đã thử gì chưa? (tuỳ chọn)';
+
+  @override
+  String get rhTriedRocking => 'Bế ru';
+
+  @override
+  String get rhTriedWhiteNoise => 'Tiếng ồn trắng';
+
+  @override
+  String get rhTriedFeeding => 'Cho bú';
+
+  @override
+  String get rhTriedSkin => 'Áp da';
+
+  @override
+  String get rhTriedSwaddle => 'Quấn chũn';
+
+  @override
+  String get rhTriedNone => 'Chưa';
+
+  @override
+  String get rhSumNightSleep => 'giấc đêm';
+
+  @override
+  String get rhSumDaySleep => 'giấc ngày';
+
+  @override
+  String get rhSumNight => 'ban đêm';
+
+  @override
+  String get rhSumDay => 'ban ngày';
+
+  @override
+  String get rhSumBoth => 'cả ngày lẫn đêm';
+
+  @override
+  String get rhSumToday => 'hôm nay';
+
+  @override
+  String get rhSumLonger => 'lâu hơn';
+
+  @override
+  String rhFromLogSleep(String duration, String who) {
+    return 'Từ nhật ký: giấc đêm qua được ghi $duration ($who ghi). Bạn không cần nhập lại.';
+  }
+
+  @override
+  String rhFromLogFeeds(int count) {
+    return 'Từ nhật ký: hôm nay đã ghi $count cữ bú. Bạn không cần nhập lại.';
+  }
+
+  @override
+  String get rhNewSkillLabel => 'Con làm được gì mới?';
+
+  @override
+  String get rhNewSkillHint => 'Ví dụ: lần đầu lẫy';
+
+  @override
+  String get rhSaveToMilestones => 'Lưu vào Mốc';
+
+  @override
+  String get rhSaveNote => 'Lưu ghi nhận';
+
+  @override
+  String get rhAlwaysFree => 'Ghi nhận luôn miễn phí · cả nhà cùng thấy';
+
+  @override
+  String get rhHealthQHeading => 'Ghi nhận hôm nay';
+
+  @override
+  String get rhHealthQTitle => 'Trước khi tiếp tục';
+
+  @override
+  String rhHealthQAsk(String baby) {
+    return '$baby có dấu hiệu nào sau đây không?';
+  }
+
+  @override
+  String get rhHealthQHelper =>
+      'Nếu có, Child Life sẽ dừng gợi ý theo lịch và chỉ cho bạn hướng dẫn đã được chuyên môn duyệt.';
+
+  @override
+  String get rhHealthUnsureHint => 'Không chắc thì cứ hỏi bác sĩ của bé.';
+
+  @override
+  String get rhAnswerYes => 'Có';
+
+  @override
+  String get rhAnswerNo => 'Không';
+
+  @override
+  String get rhAnswerUnsure => 'Không chắc';
+
+  @override
+  String get rhSignFeverYoung => 'Sốt (bé dưới 3 tháng)';
+
+  @override
+  String get rhSignBreathing => 'Khó thở, thở rút lõm';
+
+  @override
+  String get rhSignLethargic => 'Lừ đừ, khó đánh thức';
+
+  @override
+  String get rhSignPoorFeeding => 'Bú rất ít hoặc bỏ bú';
+
+  @override
+  String get rhSignInconsolable => 'Khóc không dỗ được';
+
+  @override
+  String get rhSignLostSkill => 'Mất kỹ năng đã có';
+
+  @override
+  String get rhSignDehydration => 'Ít tã ướt, môi khô';
+
+  @override
+  String get rhSignSeizure => 'Co giật';
+
+  @override
+  String get rhHlTitle => 'Nên liên hệ hỗ trợ y tế';
+
+  @override
+  String get rhHlBody =>
+      'Bạn đánh dấu một dấu hiệu cần chú ý trong ghi nhận. Child Life dừng gợi ý theo lịch và không hiển thị nội dung trả phí ở đây.';
+
+  @override
+  String get rhHlNoted => 'Bạn đã ghi';
+
+  @override
+  String rhHlCallEmergency(String number) {
+    return 'Gọi số khẩn cấp $number';
+  }
+
+  @override
+  String get rhHlCallDoctor => 'Gọi bác sĩ của bé';
+
+  @override
+  String get rhHlHelper =>
+      'Số khẩn cấp lấy theo quốc gia cư trú của hộ. Khu vực chưa có số trong danh sách thì chỉ hiện nút gọi bác sĩ.';
+
+  @override
+  String get rhHlNoRegion =>
+      'Chưa có số khẩn cấp được duyệt cho khu vực của hộ. Nếu con có dấu hiệu nguy hiểm, hãy gọi cấp cứu nơi bạn sống.';
+
+  @override
+  String get rhHlWhileWaiting => 'Trong lúc chờ';
+
+  @override
+  String get rhHlDisclaimer =>
+      'Child Life không chẩn đoán và không kết luận “an toàn”.';
+
+  @override
+  String get rhHlAlwaysFree => 'Luôn miễn phí · không paywall, không upsell';
+
+  @override
+  String get rhHlDialFailed => 'Không mở được ứng dụng Điện thoại.';
+
+  @override
+  String get rhSavedTitle => 'Đã lưu ghi nhận';
+
+  @override
+  String rhSeenBy(String names) {
+    return '$names sẽ thấy';
+  }
+
+  @override
+  String get rhSeenByOnlyYou => 'Chỉ bạn thấy';
+
+  @override
+  String get rhOneThing => 'Một việc có thể thử';
+
+  @override
+  String rhDurationFit(String duration, String range) {
+    return '$duration · phù hợp $range';
+  }
+
+  @override
+  String rhMonthsRange(int from, int to) {
+    return '$from–$to tháng';
+  }
+
+  @override
+  String get rhWhyThis => 'Vì sao gợi ý này';
+
+  @override
+  String rhWhyJustNoted(String summary) {
+    return 'Bạn vừa ghi $summary.';
+  }
+
+  @override
+  String rhWhyTriedOther(String tried) {
+    return '$tried đã thử rồi nên gợi ý một cách khác.';
+  }
+
+  @override
+  String get rhWhyHelpedBefore => 'Cách này từng được đánh giá “Có ích”.';
+
+  @override
+  String rhWhyData(String recent, String baseline) {
+    return 'Từ nhật ký: tổng ngủ được ghi gần đây khoảng $recent mỗi ngày, mức thường của con $baseline.';
+  }
+
+  @override
+  String get rhLater => 'Để sau';
+
+  @override
+  String rhSeeRhythm(String baby) {
+    return 'Xem nhịp của con';
+  }
+
+  @override
+  String get rhMoreForAge => 'Đọc thêm theo tuổi';
+
+  @override
+  String get rhFreeAgePill => 'Miễn phí · theo tuổi';
+
+  @override
+  String rhReadMinutes(int n) {
+    return 'Đọc $n phút';
+  }
+
+  @override
+  String get rhUpsellTitle => 'Muốn một gợi ý theo đúng tình huống?';
+
+  @override
+  String get rhUpsellBody =>
+      'Hỗ trợ phù hợp với con chọn một việc từ ghi nhận của nhà mình và nhớ cách đã có ích.';
+
+  @override
+  String get rhLearnMoreOptional => 'Tìm hiểu thêm (tuỳ chọn)';
+
+  @override
+  String get rhNoSuggestionTitle => 'Chưa có gợi ý phù hợp';
+
+  @override
+  String get rhNoSuggestionBody =>
+      'Ghi nhận đã lưu. Khi có nội dung hợp với con, gợi ý sẽ hiện ở Hôm nay.';
+
+  @override
+  String get rhSeeAgeContent => 'Xem nội dung theo tuổi';
+
+  @override
+  String get rhOfflineTitle => 'Ghi nhận vẫn lưu trên máy';
+
+  @override
+  String get rhOfflineBody =>
+      'Sẽ đồng bộ khi có mạng. Gợi ý mới cần kết nối và sẽ hiện ở Hôm nay sau.';
+
+  @override
+  String get rhErrorTitle => 'Chưa lấy được gợi ý';
+
+  @override
+  String get rhErrorBody => 'Ghi nhận đã lưu. Thử lại sau một lát.';
+
+  @override
+  String get rhLoadingSuggestion => 'Đang chọn một việc có thể thử…';
+
+  @override
+  String get rhNotTried => 'Chưa thử';
+
+  @override
+  String rhTriedOn(String date) {
+    return 'Đã thử · $date';
+  }
+
+  @override
+  String rhSuggestionEyebrow(String duration) {
+    return 'Gợi ý · $duration';
+  }
+
+  @override
+  String rhBecauseNoted(String summary, String who, String date) {
+    return 'Vì: $summary ($who ghi $date)';
+  }
+
+  @override
+  String get rhHow => 'Cách làm';
+
+  @override
+  String get rhWhyItMayHelp => 'Vì sao có thể giúp';
+
+  @override
+  String get rhSafety => 'Lưu ý an toàn';
+
+  @override
+  String get rhIllTry => 'Mình sẽ thử';
+
+  @override
+  String get rhNotRight => 'Không phù hợp với con';
+
+  @override
+  String get rhAnotherIdea => 'Gợi ý khác';
+
+  @override
+  String get rhTellHow => 'Kể lại kết quả';
+
+  @override
+  String get rhStartedToast =>
+      'Chúc cả nhà thuận lợi! Thử xong thì kể lại nhé.';
+
+  @override
+  String get rhNotRightToast =>
+      'Đã ghi nhận. Sẽ không gợi ý lại cách này cho con.';
+
+  @override
+  String get rhActivityMissing => 'Gợi ý này không còn nữa';
+
+  @override
+  String get rhHowLastNight => 'Tối qua thế nào?';
+
+  @override
+  String get rhHowDidItGo => 'Lần thử thế nào?';
+
+  @override
+  String get rhHelpful => 'Có ích';
+
+  @override
+  String get rhUnsure => 'Chưa rõ';
+
+  @override
+  String get rhNotAFit => 'Không phù hợp';
+
+  @override
+  String get rhNoteHint => 'Ghi chú (tuỳ chọn)';
+
+  @override
+  String get rhFeedbackInfo =>
+      'Phản hồi này được dùng để chọn gợi ý lần sau. “Có ích” không có nghĩa là cách này gây ra thay đổi.';
+
+  @override
+  String get rhSaveFeedback => 'Lưu phản hồi';
+
+  @override
+  String get rhFeedbackSaved => 'Đã lưu phản hồi';
+
+  @override
+  String get rhAgeTips => 'Điều có thể làm';
+
+  @override
+  String get rhAgeWatch => 'Khi nào nên hỏi bác sĩ';
+
+  @override
+  String get rhAgeEach =>
+      'Mỗi bé mỗi khác. Đây là điều nhiều gia đình thấy ở tuổi này, không phải lịch bắt buộc.';
+
+  @override
+  String get rhComingTitle => 'Nhịp lớn lên';
+
+  @override
+  String get rhComingBody => 'Phần này đang được hoàn thiện.';
+
+  @override
+  String get rhSaveFailed =>
+      'Chưa lưu được ghi nhận. Có thể quyền của bạn đã thay đổi.';
 }

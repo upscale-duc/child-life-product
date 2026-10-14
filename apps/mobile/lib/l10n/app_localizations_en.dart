@@ -11668,4 +11668,670 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmGateOk => 'Got it';
+
+  @override
+  String get rhSectionForYou => 'For your baby today';
+
+  @override
+  String get rhSectionForYouSub =>
+      'Suggestions, age content and reference calendar';
+
+  @override
+  String get rhReviewPending => 'Illustrative content · pending expert review';
+
+  @override
+  String rhReviewedBy(String reviewer, String credential) {
+    return 'Reviewed by $reviewer · $credential';
+  }
+
+  @override
+  String rhJoinTwo(String a, String b) {
+    return '$a and $b';
+  }
+
+  @override
+  String rhQuoted(String text) {
+    return '“$text”';
+  }
+
+  @override
+  String get rhWhoYou => 'you';
+
+  @override
+  String rhDateRange(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get rhDone => 'Done';
+
+  @override
+  String get rhContinue => 'Continue';
+
+  @override
+  String get rhRetry => 'Try again';
+
+  @override
+  String get rhSources => 'Sources';
+
+  @override
+  String get rhObsSleep => 'Hard to settle / waking more';
+
+  @override
+  String get rhObsFeeding => 'Feeding seems different';
+
+  @override
+  String get rhObsSoothing => 'Needs more soothing';
+
+  @override
+  String get rhObsNewSkill => 'Something new';
+
+  @override
+  String get rhObsUsual => 'Same as usual';
+
+  @override
+  String get rhObsHealth => 'I’m worried about health';
+
+  @override
+  String get rhObsShortSleep => 'Hard to settle';
+
+  @override
+  String get rhObsShortFeeding => 'Feeding different';
+
+  @override
+  String get rhObsShortSoothing => 'Needs more soothing';
+
+  @override
+  String get rhObsShortNewSkill => 'Something new';
+
+  @override
+  String get rhObsShortUsual => 'Same as usual';
+
+  @override
+  String get rhObsShortHealth => 'Health worry';
+
+  @override
+  String rhWhatSleep(String baby) {
+    return '$baby struggled to settle';
+  }
+
+  @override
+  String rhWhatFeeding(String baby) {
+    return '$baby was feeding differently';
+  }
+
+  @override
+  String rhWhatSoothing(String baby) {
+    return '$baby needed more soothing';
+  }
+
+  @override
+  String rhWhatNewSkill(String baby) {
+    return '$baby did something new';
+  }
+
+  @override
+  String rhWhatOther(String baby) {
+    return 'what $baby needs';
+  }
+
+  @override
+  String get rhWhenToday => 'today';
+
+  @override
+  String get rhWhenLastNight => 'last night';
+
+  @override
+  String get rhWhenYesterday => 'yesterday';
+
+  @override
+  String rhWhenOn(String date) {
+    return 'on $date';
+  }
+
+  @override
+  String rhReasonNoted(String when, String who, String what) {
+    return 'Because $who noted $when that $what.';
+  }
+
+  @override
+  String rhReasonHelpful(String who) {
+    return '$who rated this “Helpful” last time.';
+  }
+
+  @override
+  String rhReasonData(String baby) {
+    return 'Because the log shows $baby’s sleep has been different from usual lately.';
+  }
+
+  @override
+  String rhReasonAge(String baby) {
+    return 'Because it fits $baby’s age.';
+  }
+
+  @override
+  String get rhReasonInterest => 'Because you follow this topic.';
+
+  @override
+  String rhReasonFallback(String baby) {
+    return 'Because your family noted what $baby needs.';
+  }
+
+  @override
+  String rhAgeHeading(String baby) {
+    return '$baby’s week';
+  }
+
+  @override
+  String get rhAgeFree => 'Age-based content · always free';
+
+  @override
+  String get rhCalendarPill => 'REFERENCE CALENDAR';
+
+  @override
+  String rhStageName(int n) {
+    return 'Wonder Weeks stage $n';
+  }
+
+  @override
+  String rhStageExpected(String stage, String range) {
+    return '$stage expected $range';
+  }
+
+  @override
+  String rhStageNow(String stage, String range) {
+    return '$stage · $range · reference';
+  }
+
+  @override
+  String get rhSupportTitle => 'Support that fits your baby';
+
+  @override
+  String get rhSupportBody =>
+      'One next step based on what your family logs, remembers what helped, and a handover for the next carer.';
+
+  @override
+  String get rhLearnMore => 'Learn more';
+
+  @override
+  String get rhKickerToday => 'ONE THING TO TRY TODAY';
+
+  @override
+  String get rhKickerTonight => 'ONE THING FOR TONIGHT';
+
+  @override
+  String get rhTryToday => 'Try today';
+
+  @override
+  String get rhTryTonight => 'Try tonight';
+
+  @override
+  String get rhTryAgainToday => 'Do it again today';
+
+  @override
+  String get rhTryAgainTonight => 'Do it again tonight';
+
+  @override
+  String get rhNotToday => 'Not today';
+
+  @override
+  String get rhSomethingElse => 'Something else';
+
+  @override
+  String get rhBasedOnFeedback => 'Based on your feedback';
+
+  @override
+  String rhFeedbackUsedEvening(
+    String date,
+    String who,
+    String kind,
+    String title,
+  ) {
+    return 'On $date $who marked “$title” as $kind';
+  }
+
+  @override
+  String rhFeedbackUsedDay(String date, String who, String kind, String title) {
+    return 'On $date $who marked “$title” as $kind';
+  }
+
+  @override
+  String get rhChangedTitle => 'What changed';
+
+  @override
+  String get rhChangePrefersHelpful =>
+      'Prioritises what helped over a new idea';
+
+  @override
+  String get rhChangeExcluded =>
+      'Ideas marked “Not a fit” aren’t suggested again';
+
+  @override
+  String get rhChangeCooling => 'Ideas put off rest for a few days';
+
+  @override
+  String get rhCheckInEntry => 'Anything different today?';
+
+  @override
+  String get rhStartedLabel => 'Trying';
+
+  @override
+  String get rhHealthCardTitle => 'A sign that needs attention was noted today';
+
+  @override
+  String get rhHealthCardBody =>
+      'Calendar suggestions are paused. See guidance and how to get help.';
+
+  @override
+  String get rhHealthCardAction => 'See health guidance';
+
+  @override
+  String get rhPutOffToast => 'Put off. This idea rests for a few days.';
+
+  @override
+  String get rhCheckInTitle => 'What’s different today?';
+
+  @override
+  String get rhCheckInSubtitle =>
+      'Pick one thing you noticed. No need to answer everything.';
+
+  @override
+  String get rhUsualSaved => 'Saved: a usual day';
+
+  @override
+  String get rhMoreTitle => 'A little more so the suggestion fits';
+
+  @override
+  String get rhSkipQuestions => 'Skip questions';
+
+  @override
+  String get rhQWhen => 'When?';
+
+  @override
+  String get rhWhenNightSleep => 'Night sleep';
+
+  @override
+  String get rhWhenDaySleep => 'Naps';
+
+  @override
+  String get rhWhenNight => 'At night';
+
+  @override
+  String get rhWhenDay => 'In the day';
+
+  @override
+  String get rhWhenBoth => 'Both';
+
+  @override
+  String get rhQSince => 'Since when?';
+
+  @override
+  String get rhSinceToday => 'Today';
+
+  @override
+  String get rhSince23 => '2–3 days';
+
+  @override
+  String get rhSinceLonger => 'Longer';
+
+  @override
+  String get rhQTried => 'Tried anything? (optional)';
+
+  @override
+  String get rhTriedRocking => 'Rocking';
+
+  @override
+  String get rhTriedWhiteNoise => 'White noise';
+
+  @override
+  String get rhTriedFeeding => 'Feeding';
+
+  @override
+  String get rhTriedSkin => 'Skin-to-skin';
+
+  @override
+  String get rhTriedSwaddle => 'Swaddling';
+
+  @override
+  String get rhTriedNone => 'Not yet';
+
+  @override
+  String get rhSumNightSleep => 'night';
+
+  @override
+  String get rhSumDaySleep => 'naps';
+
+  @override
+  String get rhSumNight => 'at night';
+
+  @override
+  String get rhSumDay => 'in the day';
+
+  @override
+  String get rhSumBoth => 'day and night';
+
+  @override
+  String get rhSumToday => 'today';
+
+  @override
+  String get rhSumLonger => 'longer';
+
+  @override
+  String rhFromLogSleep(String duration, String who) {
+    return 'From the log: last night’s sleep was logged as $duration ($who). No need to re-enter.';
+  }
+
+  @override
+  String rhFromLogFeeds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return 'From the log: $_temp0 logged today. No need to re-enter.';
+  }
+
+  @override
+  String get rhNewSkillLabel => 'What’s new?';
+
+  @override
+  String get rhNewSkillHint => 'e.g. rolled over for the first time';
+
+  @override
+  String get rhSaveToMilestones => 'Save to Milestones';
+
+  @override
+  String get rhSaveNote => 'Save note';
+
+  @override
+  String get rhAlwaysFree => 'Logging is always free · shared with family';
+
+  @override
+  String get rhHealthQHeading => 'Today’s note';
+
+  @override
+  String get rhHealthQTitle => 'Before you continue';
+
+  @override
+  String rhHealthQAsk(String baby) {
+    return 'Does $baby have any of these signs?';
+  }
+
+  @override
+  String get rhHealthQHelper =>
+      'If so, Child Life pauses calendar suggestions and shows only guidance for getting help.';
+
+  @override
+  String get rhHealthUnsureHint =>
+      'If you’re not sure, ask your baby’s doctor.';
+
+  @override
+  String get rhAnswerYes => 'Yes';
+
+  @override
+  String get rhAnswerNo => 'No';
+
+  @override
+  String get rhAnswerUnsure => 'Not sure';
+
+  @override
+  String get rhSignFeverYoung => 'Fever (baby under 3 months)';
+
+  @override
+  String get rhSignBreathing => 'Hard breathing, chest pulling in';
+
+  @override
+  String get rhSignLethargic => 'Floppy or hard to wake';
+
+  @override
+  String get rhSignPoorFeeding => 'Feeding very little or refusing feeds';
+
+  @override
+  String get rhSignInconsolable => 'Crying that can’t be soothed';
+
+  @override
+  String get rhSignLostSkill => 'Lost a skill they had';
+
+  @override
+  String get rhSignDehydration => 'Few wet nappies, dry lips';
+
+  @override
+  String get rhSignSeizure => 'Seizure (fit)';
+
+  @override
+  String get rhHlTitle => 'Consider contacting medical help';
+
+  @override
+  String get rhHlBody =>
+      'You flagged a sign that needs attention. Child Life pauses calendar suggestions and shows no paid content here.';
+
+  @override
+  String get rhHlNoted => 'You noted';
+
+  @override
+  String rhHlCallEmergency(String number) {
+    return 'Call emergency $number';
+  }
+
+  @override
+  String get rhHlCallDoctor => 'Call your baby’s doctor';
+
+  @override
+  String get rhHlHelper =>
+      'The emergency number follows the household’s country of residence. Where none is listed, only the doctor button shows.';
+
+  @override
+  String get rhHlNoRegion =>
+      'There’s no approved emergency number for your household’s region yet. If your baby shows danger signs, call your local emergency services.';
+
+  @override
+  String get rhHlWhileWaiting => 'While you wait';
+
+  @override
+  String get rhHlDisclaimer =>
+      'Child Life doesn’t diagnose and never concludes “safe”.';
+
+  @override
+  String get rhHlAlwaysFree => 'Always free · no paywall, no upsell';
+
+  @override
+  String get rhHlDialFailed => 'Couldn’t open the Phone app.';
+
+  @override
+  String get rhSavedTitle => 'Note saved';
+
+  @override
+  String rhSeenBy(String names) {
+    return '$names will see it';
+  }
+
+  @override
+  String get rhSeenByOnlyYou => 'Only you can see it';
+
+  @override
+  String get rhOneThing => 'One thing you could try';
+
+  @override
+  String rhDurationFit(String duration, String range) {
+    return '$duration · fits $range';
+  }
+
+  @override
+  String rhMonthsRange(int from, int to) {
+    return '$from–$to months';
+  }
+
+  @override
+  String get rhWhyThis => 'Why this';
+
+  @override
+  String rhWhyJustNoted(String summary) {
+    return 'You just noted $summary.';
+  }
+
+  @override
+  String rhWhyTriedOther(String tried) {
+    return '$tried was already tried, so this is a different approach.';
+  }
+
+  @override
+  String get rhWhyHelpedBefore => 'This was rated “Helpful” before.';
+
+  @override
+  String rhWhyData(String recent, String baseline) {
+    return 'From the log: total sleep logged lately is about $recent a day; the usual is $baseline.';
+  }
+
+  @override
+  String get rhLater => 'Later';
+
+  @override
+  String rhSeeRhythm(String baby) {
+    return 'See $baby’s rhythm';
+  }
+
+  @override
+  String get rhMoreForAge => 'More for this age';
+
+  @override
+  String get rhFreeAgePill => 'Free · age-based';
+
+  @override
+  String rhReadMinutes(int n) {
+    return '$n-min read';
+  }
+
+  @override
+  String get rhUpsellTitle => 'Want a suggestion for this exact situation?';
+
+  @override
+  String get rhUpsellBody =>
+      'Support that fits your baby picks one step from your family’s notes and remembers what helped.';
+
+  @override
+  String get rhLearnMoreOptional => 'Learn more (optional)';
+
+  @override
+  String get rhNoSuggestionTitle => 'No suitable suggestion yet';
+
+  @override
+  String get rhNoSuggestionBody =>
+      'Your note is saved. When something fits, it shows on Today.';
+
+  @override
+  String get rhSeeAgeContent => 'See age-based content';
+
+  @override
+  String get rhOfflineTitle => 'Notes still save on this device';
+
+  @override
+  String get rhOfflineBody =>
+      'They’ll sync when online. New suggestions need a connection and will show on Today later.';
+
+  @override
+  String get rhErrorTitle => 'Couldn’t get a suggestion yet';
+
+  @override
+  String get rhErrorBody => 'Your note is saved. Try again in a moment.';
+
+  @override
+  String get rhLoadingSuggestion => 'Finding one thing to try…';
+
+  @override
+  String get rhNotTried => 'Not tried yet';
+
+  @override
+  String rhTriedOn(String date) {
+    return 'Tried · $date';
+  }
+
+  @override
+  String rhSuggestionEyebrow(String duration) {
+    return 'Suggestion · $duration';
+  }
+
+  @override
+  String rhBecauseNoted(String summary, String who, String date) {
+    return 'Because: $summary ($who, $date)';
+  }
+
+  @override
+  String get rhHow => 'How';
+
+  @override
+  String get rhWhyItMayHelp => 'Why it may help';
+
+  @override
+  String get rhSafety => 'Safety';
+
+  @override
+  String get rhIllTry => 'I’ll try this';
+
+  @override
+  String get rhNotRight => 'Not right for my baby';
+
+  @override
+  String get rhAnotherIdea => 'Another idea';
+
+  @override
+  String get rhTellHow => 'Tell us how it went';
+
+  @override
+  String get rhStartedToast => 'Good luck! Tell us how it went afterwards.';
+
+  @override
+  String get rhNotRightToast =>
+      'Noted. This won’t be suggested for your baby again.';
+
+  @override
+  String get rhActivityMissing => 'This suggestion is no longer available';
+
+  @override
+  String get rhHowLastNight => 'How did last night go?';
+
+  @override
+  String get rhHowDidItGo => 'How did it go?';
+
+  @override
+  String get rhHelpful => 'Helpful';
+
+  @override
+  String get rhUnsure => 'Not sure';
+
+  @override
+  String get rhNotAFit => 'Not a fit';
+
+  @override
+  String get rhNoteHint => 'Note (optional)';
+
+  @override
+  String get rhFeedbackInfo =>
+      'This feedback shapes your next suggestion. “Helpful” doesn’t mean this caused the change.';
+
+  @override
+  String get rhSaveFeedback => 'Save feedback';
+
+  @override
+  String get rhFeedbackSaved => 'Feedback saved';
+
+  @override
+  String get rhAgeTips => 'Things to try';
+
+  @override
+  String get rhAgeWatch => 'When to ask a doctor';
+
+  @override
+  String get rhAgeEach =>
+      'Every baby is different. This is what many families notice at this age, not a schedule.';
+
+  @override
+  String get rhComingTitle => 'Growing rhythm';
+
+  @override
+  String get rhComingBody => 'This part is on its way.';
+
+  @override
+  String get rhSaveFailed =>
+      'Couldn’t save the note. Your access may have changed.';
 }

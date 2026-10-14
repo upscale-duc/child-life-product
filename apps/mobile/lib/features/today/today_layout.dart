@@ -20,11 +20,22 @@ import '../onboarding/setup_screens.dart' show trackerArt, trackerLabel;
 import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
 import '../care/care_repository.dart';
+import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
 import '../spending/spending_models.dart' show SpendingAccess;
 
 /// The parts of Hôm nay that "Tuỳ chỉnh Hôm nay" arranges (v1.0 improvement 370:1525). The first
 /// three are the design's; the others are opt-in (owner, 2026-10-12) and start hidden.
-enum TodaySection { tiles, reminders, quickActions, vaccine, spending, rhythm }
+/// [forYou] is "Dành cho bé hôm nay" (Nhịp lớn lên, H01 / H02): first by default, as the
+/// suggestion is drawn under the title; it shows only when the family's `rhythm` flag is on.
+enum TodaySection {
+  forYou,
+  tiles,
+  reminders,
+  quickActions,
+  vaccine,
+  spending,
+  rhythm,
+}
 
 /// Shortcuts in "Tạo nhanh" (owner, 2026-10-12), each shown only to who may do it.
 enum QuickAction { reminder, expense, vaccine, memory }
@@ -45,6 +56,7 @@ class TodayLayout {
 
   /// As drawn (370:1525): tiles, reminders, the day's rhythm; the opt-in parts in between.
   static const defaultOrder = [
+    TodaySection.forYou,
     TodaySection.tiles,
     TodaySection.reminders,
     TodaySection.quickActions,
@@ -187,10 +199,16 @@ List<QuickAction> allowedActions(Membership me) => [
       a,
 ];
 
-/// Sections [me] can have: spending needs "Xem toàn bộ" (or Cùng nuôi), shortcuts need one.
-List<TodaySection> allowedSections(Membership me, {required bool hasTiles}) => [
+/// Sections [me] can have: spending needs "Xem toàn bộ" (or Cùng nuôi), shortcuts need one,
+/// "Dành cho bé hôm nay" the family's `rhythm` flag.
+List<TodaySection> allowedSections(
+  Membership me, {
+  required bool hasTiles,
+  bool rhythm = false,
+}) => [
   for (final s in TodaySection.values)
     if (switch (s) {
+      TodaySection.forYou => rhythm,
       TodaySection.tiles => hasTiles,
       TodaySection.quickActions => allowedActions(me).isNotEmpty,
       TodaySection.spending => SpendingAccess.of(me).viewAll,
@@ -252,7 +270,13 @@ class _CustomizeSheetState extends ConsumerState<_CustomizeSheet> {
 
     final sections = [
       for (final s in draft.order)
-        if (allowedSections(me, hasTiles: trackers.isNotEmpty).contains(s)) s,
+        if (allowedSections(
+          me,
+          hasTiles: trackers.isNotEmpty,
+          rhythm:
+              ref.watch(selectedCapabilitiesProvider)?.features.rhythm ?? false,
+        ).contains(s))
+          s,
     ];
     final tiles = draft.tiles(trackers);
     final allowed = allowedActions(me);
@@ -262,6 +286,7 @@ class _CustomizeSheetState extends ConsumerState<_CustomizeSheet> {
     ];
 
     (String, String) sectionLabels(TodaySection s) => switch (s) {
+      TodaySection.forYou => (l10n.rhSectionForYou, l10n.rhSectionForYouSub),
       TodaySection.tiles => (l10n.sectionTiles, l10n.sectionTilesSub),
       TodaySection.reminders => (
         l10n.sectionReminders,

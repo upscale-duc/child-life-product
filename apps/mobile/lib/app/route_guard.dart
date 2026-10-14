@@ -85,6 +85,20 @@ abstract final class Routes {
   static const memoryStoryFinish = '/memories/video/finish';
   static const memoryStoryJob = '/memories/video/job';
 
+  /// Nhịp lớn lên (Slice 2, plan §7.1), full screen above the tabs: the overview (`/rhythm`,
+  /// NL01, next step), check-in C01 → `/more?o=` C02 → `/health` NL05b, the result (PS01 /
+  /// PS01F, check-in as `extra`), HL01 (`?signs=`), an activity `/{id}` (AC01, `?ci=`) and
+  /// `/{id}/feedback` (AC02), an age card `/{id}`, and "Lưu vào Mốc" (MS01, next step).
+  static const rhythm = '/rhythm';
+  static const rhythmCheckIn = '/rhythm/checkin';
+  static const rhythmCheckInMore = '/rhythm/checkin/more';
+  static const rhythmCheckInHealth = '/rhythm/checkin/health';
+  static const rhythmResult = '/rhythm/result';
+  static const rhythmHealth = '/rhythm/health';
+  static const rhythmActivity = '/rhythm/activity';
+  static const rhythmAge = '/rhythm/age';
+  static const rhythmMilestone = '/rhythm/milestone';
+
   /// Tiện ích tab (v1.0 improvement 450:6597): Sơ cứu, Chi tiêu, Gia đình.
   static const utilities = '/utilities';
   static const family = '/utilities/family';

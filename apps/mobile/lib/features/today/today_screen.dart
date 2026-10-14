@@ -30,6 +30,7 @@ import '../care/timer_screens.dart';
 import '../family/family_labels.dart';
 import '../home/home_shell.dart';
 import '../reminders/reminder_screens.dart' show ReminderPeek;
+import '../rhythm/rhythm_home.dart' show ForYouSection;
 import '../app_update/app_update_screens.dart' show WhatsNewBanner;
 import '../home/today_tour.dart';
 import '../spending/spending_models.dart' show SpendingAccess;
@@ -149,6 +150,8 @@ class TodayScreen extends ConsumerWidget {
           for (final section in layout.order)
             if (layout.shows(section))
               ...switch (section) {
+                // Nhịp lớn lên (H01 / H02): draws nothing unless the `rhythm` flag is on.
+                TodaySection.forYou => [const ForYouSection()],
                 TodaySection.tiles => [
                   const SizedBox(height: ClSpace.s4),
                   GridView.count(
