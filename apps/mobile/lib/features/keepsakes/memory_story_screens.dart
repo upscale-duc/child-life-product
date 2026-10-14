@@ -43,7 +43,6 @@ import 'keepsake_preview.dart';
 import 'milestone_card_screens.dart'
     show
         KeepsakeActionTile,
-        KeepsakeKindTabs,
         KeepsakePage,
         KeepsakeRoundIcon,
         OccasionChip,
@@ -276,7 +275,15 @@ String _mmss(int? ms) {
 // MM04 / MM05 (not found in Figma, G-107): choose a template
 
 class MemoryStoryTemplatesScreen extends ConsumerStatefulWidget {
-  const MemoryStoryTemplatesScreen({this.occasion, this.photoIds, super.key});
+  const MemoryStoryTemplatesScreen({
+    this.occasion,
+    this.photoIds,
+    this.embedded = false,
+    super.key,
+  });
+
+  /// A page of [KeepsakeKindsScreen]: no back button or title of its own.
+  final bool embedded;
   final Occasion? occasion;
 
   /// Photos chosen in Kỷ niệm (a selection's "Tạo video kỷ niệm"): they fill the scenes first.
@@ -347,13 +354,7 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
     final assetOf = ref.watch(keepsakeAssetImageProvider);
     return KeepsakePage(
       title: l10n.ksVideoTitle,
-      header: access.cards && c.dob != null
-          ? KeepsakeKindTabs(
-              video: true,
-              occasion: widget.occasion,
-              photoIds: widget.photoIds,
-            )
-          : null,
+      embedded: widget.embedded,
       children: [
         Text(
           l10n.ksVideoPickTemplate,

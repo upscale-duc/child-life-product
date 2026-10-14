@@ -9,6 +9,7 @@ import 'package:child_life/features/keepsakes/keepsake_live.dart';
 import 'package:child_life/features/keepsakes/keepsake_occasions.dart';
 import 'package:child_life/features/keepsakes/keepsake_preview.dart';
 import 'package:child_life/features/keepsakes/memory_story_screens.dart';
+import 'package:child_life/features/keepsakes/milestone_card_screens.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memories_screen.dart';
 import 'package:child_life/features/memories/memory_models.dart';
@@ -58,6 +59,48 @@ void main() {
     for (final m in mockJournal().media)
       if (!m.isVideo) m.id,
   ];
+
+  testWidgets('Thiệp and Video are two pages of one screen, swiped sideways', (
+    tester,
+  ) async {
+    await pumpRouted(
+      tester,
+      const KeepsakeKindsScreen(video: false),
+      overrides: on(),
+    );
+    await tester.pumpAndSettle();
+    // Thiệp first: its dịp chips and formats.
+    expect(find.text('Dọc 4:5'), findsOneWidget);
+    expect(find.text('Tháng đầu tiên'), findsNothing);
+    // Swipe left: Video kỷ niệm, in the same screen (owner, 2026-10-14).
+    await tester.fling(find.byType(PageView), const Offset(-400, 0), 1500);
+    await tester.pumpAndSettle();
+    expect(find.text('Tháng đầu tiên'), findsOneWidget);
+    expect(find.text('Dọc 4:5'), findsNothing);
+    // Tapping "Thiệp" goes back; the page kept its place.
+    await tester.tap(find.text('Thiệp'));
+    await tester.pumpAndSettle();
+    expect(find.text('Dọc 4:5'), findsOneWidget);
+  });
+
+  testWidgets('with videos off, Thiệp stays a screen of its own', (
+    tester,
+  ) async {
+    await pumpRouted(
+      tester,
+      const KeepsakeKindsScreen(video: false),
+      overrides: [
+        ...careOverrides(),
+        ...memoryOverrides(
+          keepsakes: (cards: true, videos: false),
+          keepsakeCatalog: seedCatalog(),
+        ),
+      ],
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(PageView), findsNothing);
+    expect(find.text('Thiệp cột mốc'), findsOneWidget);
+  });
 
   testWidgets(
     'MM04 (G-107): the dịp we came for filters the templates, Tất cả shows all',

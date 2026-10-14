@@ -281,7 +281,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                   // Thiệp cột mốc (D-068, MM10 – MM12).
                   _route(
                     path: 'card',
-                    builder: (_, s) => MilestoneCardScreen(
+                    builder: (_, s) => KeepsakeKindsScreen(
+                      video: false,
                       occasion: Occasion.fromWire(
                         s.uri.queryParameters['occasion'],
                       ),
@@ -312,7 +313,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                   // Video kỷ niệm (D-068, MM04 – MM09, MM13, MM14).
                   _route(
                     path: 'video',
-                    builder: (_, s) => MemoryStoryTemplatesScreen(
+                    builder: (_, s) => KeepsakeKindsScreen(
+                      video: true,
                       occasion: Occasion.fromWire(
                         s.uri.queryParameters['occasion'],
                       ),

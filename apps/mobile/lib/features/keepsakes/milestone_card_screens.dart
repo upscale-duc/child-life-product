@@ -38,6 +38,7 @@ import 'keepsake_card_content.dart';
 import 'keepsake_card_view.dart';
 import 'keepsake_catalog.dart';
 import 'keepsake_occasions.dart';
+import 'memory_story_screens.dart' show MemoryStoryTemplatesScreen;
 
 /// Thiệp cột mốc (D-068; Figma MM10 `530:9515` chọn mẫu, MM11 `530:9663` chỉnh sửa, MM12
 /// `531:9375` thiệp đã sẵn sàng). The card is drawn on the phone from the template's layers
@@ -190,7 +191,15 @@ CardPhoto photoOf(MediaItem m) => CardPhoto(
 // MM10 · chọn mẫu
 
 class MilestoneCardScreen extends ConsumerStatefulWidget {
-  const MilestoneCardScreen({this.occasion, this.photoIds, super.key});
+  const MilestoneCardScreen({
+    this.occasion,
+    this.photoIds,
+    this.embedded = false,
+    super.key,
+  });
+
+  /// A page of [KeepsakeKindsScreen]: no back button or title of its own.
+  final bool embedded;
 
   /// Preselected from MM03's "Tạo thiệp" or MM09's cross-sell.
   final Occasion? occasion;
@@ -262,13 +271,7 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
 
     return KeepsakePage(
       title: l10n.ksCardTitle,
-      header: access.videos
-          ? KeepsakeKindTabs(
-              video: false,
-              occasion: widget.occasion,
-              photoIds: widget.photoIds,
-            )
-          : null,
+      embedded: widget.embedded,
       children: [
         Text(
           l10n.ksChooseOccasion,
@@ -1563,10 +1566,14 @@ class KeepsakePage extends StatelessWidget {
     required this.title,
     required this.children,
     this.header,
+    this.embedded = false,
     super.key,
   });
   final String title;
   final List<Widget> children;
+
+  /// Only the scrolling content, for a page of [KeepsakeKindsScreen].
+  final bool embedded;
 
   /// In place of the title (the Thiệp / Video tabs).
   final Widget? header;
@@ -1575,6 +1582,17 @@ class KeepsakePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
+    if (embedded) {
+      return ListView(
+        padding: EdgeInsets.fromLTRB(
+          ClSpace.s4,
+          0,
+          ClSpace.s4,
+          MediaQuery.paddingOf(context).bottom + ClSpace.s6,
+        ),
+        children: children,
+      );
+    }
     return Scaffold(
       backgroundColor: cl.colors.cloud,
       body: SafeArea(
@@ -1609,59 +1627,183 @@ class KeepsakePage extends StatelessWidget {
   }
 }
 
-/// "Thiệp · Video" as large titles, like Kỷ niệm's "Ảnh · Album" (the open one
-/// in ink): switches between MM10 and the video templates, keeping the dịp and chosen photos.
+/// "Thiệp · Video" as large titles, like Kỷ niệm's "Ảnh · Album": the page in view in ink.
+/// They follow the swipe between the two pages and move to one when tapped.
 class KeepsakeKindTabs extends StatelessWidget {
-  const KeepsakeKindTabs({
+  const KeepsakeKindTabs({required this.pages, super.key});
+  final PageController pages;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    return AnimatedBuilder(
+      animation: pages,
+      builder: (context, _) {
+        final page = pages.hasClients && pages.position.haveDimensions
+            ? pages.page ?? pages.initialPage.toDouble()
+            : pages.initialPage.toDouble();
+        Widget tab(String label, int index) {
+          final t = (1 - (page - index).abs()).clamp(0.0, 1.0);
+          return ClPressable(
+            onPressed: () => unawaited(
+              pages.animateToPage(
+                index,
+                duration: ClMotion.gentle,
+                curve: Curves.easeOutCubic,
+              ),
+            ),
+            selected: t > 0.5,
+            semanticLabel: label,
+            pressedOpacity: 1,
+            minSize: Size.zero,
+            child: Semantics(
+              header: t > 0.5,
+              child: Text(
+                label,
+                style: cl.text.title.copyWith(
+                  color: Color.lerp(
+                    cl.colors.inkMuted.withValues(alpha: 0.55),
+                    cl.colors.ink,
+                    t,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        return Row(
+          children: [
+            tab(l10n.ksTabCards, 0),
+            const SizedBox(width: ClSpace.s4),
+            tab(l10n.ksTabVideos, 1),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Thiệp cột mốc and Video kỷ niệm as two pages of one screen, swiped sideways (owner,
+/// 2026-10-14: "swipe giữa hai tab thiệp và video"); each page scrolls as before and keeps its
+/// place. Someone allowed only one of them gets that screen alone.
+class KeepsakeKindsScreen extends ConsumerStatefulWidget {
+  const KeepsakeKindsScreen({
     required this.video,
     this.occasion,
     this.photoIds,
     super.key,
   });
 
-  /// The open one: Video kỷ niệm (else Thiệp cột mốc).
+  /// Opens on Video kỷ niệm (else Thiệp cột mốc).
   final bool video;
   final Occasion? occasion;
   final List<String>? photoIds;
 
   @override
+  ConsumerState<KeepsakeKindsScreen> createState() => _KindsState();
+}
+
+class _KindsState extends ConsumerState<KeepsakeKindsScreen> {
+  late final _pages = PageController(initialPage: widget.video ? 1 : 0);
+
+  @override
+  void dispose() {
+    _pages.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final c = memoryCtx(context, ref);
+    final access = ref.watch(selectedKeepsakeAccessProvider);
+    final both =
+        c != null &&
+        c.isParent &&
+        c.dob != null &&
+        access.cards &&
+        access.videos;
+    if (!both) {
+      return widget.video
+          ? MemoryStoryTemplatesScreen(
+              occasion: widget.occasion,
+              photoIds: widget.photoIds,
+            )
+          : MilestoneCardScreen(
+              occasion: widget.occasion,
+              photoIds: widget.photoIds,
+            );
+    }
     final cl = context.cl;
-    Widget tab(String label, bool open, String route) => ClPressable(
-      // The open one stays enabled (a disabled control is drawn faded).
-      onPressed: open
-          ? () {}
-          : () => context.pushReplacement(
-              occasion == null ? route : '$route?occasion=${occasion!.wire}',
-              extra: photoIds,
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: cl.colors.cloud,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClBackButton(
+                    semanticLabel: l10n.a11yBack,
+                    onPressed: () => Navigator.of(context).maybePop(),
+                  ),
+                  const SizedBox(height: ClSpace.s3),
+                  KeepsakeKindTabs(pages: _pages),
+                  const SizedBox(height: ClSpace.s4),
+                ],
+              ),
             ),
-      selected: open,
-      semanticLabel: label,
-      pressedOpacity: 1,
-      minSize: Size.zero,
-      child: Semantics(
-        header: open,
-        child: Text(
-          label,
-          style: cl.text.title.copyWith(
-            color: open
-                ? cl.colors.ink
-                : cl.colors.inkMuted.withValues(alpha: 0.55),
-          ),
+            Expanded(
+              child: PageView(
+                controller: _pages,
+                children: [
+                  _KeepAlive(
+                    child: MilestoneCardScreen(
+                      occasion: widget.occasion,
+                      photoIds: widget.photoIds,
+                      embedded: true,
+                    ),
+                  ),
+                  _KeepAlive(
+                    child: MemoryStoryTemplatesScreen(
+                      occasion: widget.occasion,
+                      photoIds: widget.photoIds,
+                      embedded: true,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      clipBehavior: Clip.none,
-      child: Row(
-        children: [
-          tab(l10n.ksTabCards, !video, Routes.milestoneCard),
-          const SizedBox(width: ClSpace.s4),
-          tab(l10n.ksTabVideos, video, Routes.memoryStory),
-        ],
-      ),
-    );
+  }
+}
+
+/// Keeps a page's state (the dịp, the format, the scroll) while the other one is in view.
+class _KeepAlive extends StatefulWidget {
+  const _KeepAlive({required this.child});
+  final Widget child;
+
+  @override
+  State<_KeepAlive> createState() => _KeepAliveState();
+}
+
+class _KeepAliveState extends State<_KeepAlive>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }
