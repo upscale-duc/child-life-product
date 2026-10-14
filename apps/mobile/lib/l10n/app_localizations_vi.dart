@@ -10053,10 +10053,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ksVideoTileHint => 'Ảnh + chữ + nhạc';
 
   @override
-  String get ksVideoPickTemplate =>
-      'Chọn một mẫu, rồi chọn ảnh của bé. Child Life ghép thành video 9:16.';
-
-  @override
   String ksVideoNeeds(int min, int max) {
     return 'Cần $min–$max ảnh';
   }
