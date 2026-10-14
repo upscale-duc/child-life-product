@@ -423,6 +423,39 @@ Slice = delivery slice in the implementation plan. "Must verify" lists the state
 | ◐   | UP5 · Hôm nay · banner            | `469:54000`              | —          | —     | Only when the installed version is the release and an older one ran before (fresh installs see nothing); "Xem" or × ends it (P-143)                                                           | `apps/mobile/lib/features/app_update/app_update_screens.dart` (`WhatsNewBanner`)                                                      | `test/features/app_update_test.dart`; `test/golden/app_update_golden_test.dart`                                                  |
 | ◐   | UP6 · Tôi · phiên bản             | `469:54010`, `469:54094` | —          | —     | "Phiên bản x.y.z", "Có bản mới …" + "Cập nhật" → store; build and environment outside prod; the up-to-date state is engineering copy (P-143)                                                  | `apps/mobile/lib/features/app_update/app_update_screens.dart` (`AppVersionRow`); `apps/mobile/lib/features/me/me_screen.dart`         | `test/features/app_update_test.dart`; `test/golden/app_update_golden_test.dart`                                                  |
 
+### 21 · Premium & Cá nhân hoá (Nhịp lớn lên)
+
+Figma page `568:18`, v2.0 frames win over v1.1 (extract `docs/discovery/figma-extract/30-personalization-premium.md`, plan `premium-personalization-plan.md`, D-072). Light column = VI node, Night care column = EN node (no Night care twins are drawn; built from the same tokens). Server gate first: every row also needs its API test, not only the screen (brief p.19).
+
+| ✓   | Screen | Light | Night care | Slice | Must verify (states / rules) | Code | Tests |
+| --- | ------ | ----- | ---------- | ----- | ---------------------------- | ---- | ----- |
+| ☐ | H01 · Home · Free | `589:6281` | `589:6544` | S2 R5 | Age content "Tuần này của {bé}" (Q-067), reminders, reference calendar; "Hỗ trợ phù hợp" → PR01 only on `PREMIUM_REQUIRED`; free cards never disappear when advanced is gated | — | — |
+| ☐ | H02 · Home · Beta / Premium | `589:6368` | `589:6631` | S2 R5 | One primary action from the reported need near the top (`SELF_REPORTED_NEED` vs `DATA_INSIGHT`), "Thử hôm nay" / "Không phải hôm nay" (cooldown); calendar never wins by default | — | — |
+| ☐ | C01 · Check-in · một quan sát | `589:6451` | `589:6714` | S2 R5 | Free (`rhythm.checkin`), caregiver too (D-072 #2); "Mình lo về sức khoẻ" → HL01 without paywall; offline save | — | — |
+| ☐ | C02 · Check-in · hỏi thêm | `589:6492` | `589:6755` | S2 R5 | Follow-ups per observation, skippable; idempotent save; "Từ nhật ký" only from valid days | — | — |
+| ☐ | PS01 · Kết quả sau khi lưu · A | `590:6445` | `590:6593` | S2 R5 | Saved → one suggestion + why → Thử / Để sau; "Nội dung minh hoạ" until reviewed; "Như thường" completes quietly | — | — |
+| ☐ | PS01F · Kết quả sau khi lưu · Free | `590:6481` | `590:6629` | S2 R5 | Age content + optional "Tìm hiểu thêm"; no blurred AI | — | — |
+| ☐ | AC01 · Hoạt động · Chưa thử | `590:6515` | `590:6663` | S2 R5 | "Mình sẽ thử" / "Không phù hợp với con" (exclude) / "Gợi ý khác" | — | — |
+| ☐ | AC02 · Đã thử → phản hồi | `590:6558` | `590:6706` | S2 R5 | Có ích / Chưa rõ / Không phù hợp saved once; no causality claims | — | — |
+| ☐ | PS02 · Lần sau · phản hồi đã dùng | `591:6495` | `591:6761` | S2 R5 | The next open shows what changed and why (M18); edit / reset feedback history | — | — |
+| ☐ | SU01 · Bàn giao gia đình | `591:6564` | `591:6830` | S3 A3 | Three parts, readable record links (no `[F1]`), AI label, consent / quota / fallback; caregiver reads, cannot generate | — | — |
+| ☐ | MS01 · Mốc đã lưu → Moments | `591:6632` | `591:6898` | S2 R5 | Milestone linked by id, no photo copy; Premium card gated by `templates.premium` | — | — |
+| ☐ | MO01 · Moments · thư viện mẫu | `591:6681` | `591:6947` | S1 Q1 | Text badges Miễn phí / Premium; `premium.access` everyone / hidden / subscribers | — | — |
+| ☐ | MO02 · Mẫu Premium · cần quyền | `592:6782` | `592:6906` | S1 Q1 | Beta A does not open it (E03); photo selection kept; "Dùng mẫu miễn phí"; server `PREMIUM_REQUIRED` | `firebase/functions/src/memories.ts`, `keepsake-jobs.ts` | `firebase/tests/memories.integration.test.ts`, `keepsake-jobs.integration.test.ts` |
+| ☐ | PR01 · Quyền lợi & paywall | `592:6826` | `592:6950` | S4 B4 | One SKU, entry A/B emphasis, storefront price, restore; owner only (D-072 #1) | — | — |
+| ☐ | PR02 · Mua · pending / success / error / restore | `592:6885` | `592:7009` | S4 B4 | Pending grants nothing; success once; restore never rebinds to another family (M06) | — | — |
+| ☐ | MO03 · Sau khi mua · tiếp tục | `593:6797` | `593:7045` | S4 B4 | Exact template + photos resumed (M17) | — | — |
+| ☐ | MO04 · Video · xuất & quota | `593:6843` | `593:7091` | S4 Q2 | Queued / rendering / done / failed; used + reserved ≤ limit; release once on failure (M10–M12) | — | — |
+| ☐ | PR03 · Gói của hộ | `593:6931` | `593:7179` | S1 E4 | Free / Beta / Pending / Premium / Expired; only the owner manages; others see "Hộ đã có Premium" | — | — |
+| ☐ | PR04 · Hết gói · lịch sử vẫn giữ | `593:6990` | `593:7238` | S1 E4 | History, summaries and exports stay; new advanced gated (M09) | — | — |
+| ☐ | ST01 · Thiếu dữ liệu · AI tắt / lỗi | `594:6967` | `594:7096` | S3 A3 | `insufficient_data`, AI off / error → template, no AI quota on errors, offline | — | — |
+| ☐ | ST02 · Vai trò · khu vực | `594:7020` | `594:7149` | S1 E4 | `ROLE_DENIED` / `REGION_UNAVAILABLE` never shown as a paywall; country asked of the owner (D-072 #3) | `firebase/functions/src/entitlements.ts` | `firebase/tests/entitlements.integration.test.ts` |
+| ☐ | HL01 · Sức khoẻ · luôn miễn phí | `594:7066` | `594:7195` | S2 R5 | No paywall or upsell in any plan state; region-approved content only, no default hotline | — | — |
+| ☐ | NL01–NL10b · Nhịp lớn lên v1.1 | `569:973`…`574:1317` | — | S2 R5 | Superseded where v2.0 differs; reference calendar "Lịch tham khảo" + "Giai đoạn N (Wonder Weeks)" (D-072 #7); missing due date / sparse states honest | — | — |
+| ☐ | EN01 / EN02 · Sở thích, giờ nhận gợi ý | `559:2288`, `559:2383` | — | S2 R2 | Free, per person; enduring interests vs current need | — | — |
+| ☐ | EN09 · Tóm tắt tuần | `561:3102` | — | later | Free records vs premium interpretation; coverage labels | — | — |
+| ☐ | PN01–PN04 · Portal Nhịp lớn lên | `576:3116`…`576:3679` | — | S2 R3 | Versioned, two-person publish, kill switches | — | — |
+
 ## C. Widgets & native states (Slice S8 unless noted)
 
 | ✓   | Item                                                                                                                           | Figma                                           | Must verify                                                                                                            | Code                                                                                                                                                     | Tests                                                                                                                                                                                      |

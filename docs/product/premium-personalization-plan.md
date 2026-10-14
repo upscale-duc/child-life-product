@@ -300,10 +300,10 @@ Android. Sizes: S ≤ 2 days, M ≤ 1 week, L > 1 week.
 
 | Step | Scope | Size |
 |---|---|---|
-| **P0.1** | Extract `568:18` into `figma-extract/30-personalization-premium.md` (v2.0 frames first, VI+EN text, annotations, the mapping table) | M |
-| **P0.2** | Add §21 to `figma-coverage-checklist.md` (rows per v2.0 frame) and the D/P/Q/G ids to `business-map.md` (by hand, no prettier) | S |
+| **P0.1** | ✅ Extract `568:18` into `figma-extract/30-personalization-premium.md` (v2.0 frames first, VI+EN text, annotations, the mapping table) | M |
+| **P0.2** | ✅ Add §21 to `figma-coverage-checklist.md` (rows per v2.0 frame) and the D/P/Q/G ids to `business-map.md` (by hand, no prettier) | S |
 | **P0.3** | Owner answers the open Q-ids before their step (§10) | — |
-| **P0.4** | Copy `fixtures.json` into `packages/contracts/test/fixtures/premium-v2.json` (synthetic, `not_production_seed`) and a Dart copy under `apps/mobile/test/fixtures/` | S |
+| **P0.4** | ✅ `fixtures.json` copied once to `packages/contracts/test/vectors/premium-v2.json` (synthetic); Dart tests read the same file, as `care_calc_test.dart` reads `care-day.json` | S |
 
 ### Slice 1 — capabilities, template gating, fixture harness (brief "Slice 1")
 
@@ -414,7 +414,8 @@ Answered: D-072 and Q-067 (2026-10-14). Still open, in the order the steps need 
 
 Slice 1 is not blocked: Q1 ships the `subscribers` mode with the catalog still on `everyone`.
 
-**Design gaps to log (G-108…)**
+**Design gaps to log (G-108…)** — the extract's "Open questions" lists 20 cross-cutting design inconsistencies (mock dates, quota numbers, badge colours, VI/EN drift, entry-A return after purchase); fix them in Figma or log as G-ids before the matching step.
+
 
 - "Ghi đủ" day confirmation UI (Q-068); household profile screen (country, time zone) and the first-open country
   question (D-072 #3); PR02 variants exist only as a component sheet; portal Premium screen not drawn; EN09
