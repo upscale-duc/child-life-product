@@ -15870,21 +15870,5 @@
   "ksVideoFieldClosing": "Lời kết",
   "@ksVideoFieldClosing": {
     "description": "MM07: a Chapter 01 video text (E-9)."
-  },
-  "ksUseTemplate": "Dùng mẫu này",
-  "@ksUseTemplate": {
-    "description": "Template pickers: open the template in view (owner, 2026-10-14)"
-  },
-  "ksTemplateOf": "Mẫu {n} trên {total}",
-  "@ksTemplateOf": {
-    "description": "Carousel position for screen readers",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
   }
 }

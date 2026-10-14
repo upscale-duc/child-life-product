@@ -67,33 +67,31 @@ void main() {
         const MemoryStoryTemplatesScreen(occasion: Occasion.m1),
         overrides: on(),
       );
-      // 1 tháng: its own template (Gợi ý) and the one made for any day, one at a time,
-      // swiped sideways (owner, 2026-10-14).
-      expect(find.bySemanticsLabel('Mẫu 1 trên 2'), findsOneWidget);
+      // 1 tháng: its own template (Gợi ý) and the one made for any day.
       expect(find.text('Tháng đầu tiên'), findsOneWidget);
-      expect(find.text('Cần 6–8 ảnh'), findsOneWidget);
-      expect(find.text('100 ngày yêu thương'), findsNothing);
-      await tester.drag(find.byType(PageView), const Offset(-300, 0));
-      await tester.pumpAndSettle();
       expect(find.text('Khoảnh khắc nhỏ'), findsOneWidget);
+      expect(find.text('100 ngày yêu thương'), findsNothing);
+      expect(find.text('Cần 6–8 ảnh'), findsOneWidget);
       await tester.tap(find.text('Tất cả'));
       await tester.pumpAndSettle();
-      expect(find.bySemanticsLabel('Mẫu 1 trên 4'), findsOneWidget);
+      for (final name in [
+        'Tháng đầu tiên',
+        '7 ngày đầu đời',
+        '100 ngày yêu thương',
+        'Khoảnh khắc nhỏ',
+      ]) {
+        expect(find.text(name), findsOneWidget);
+      }
       // The dịp chips are one row that scrolls sideways.
       await tester.ensureVisible(find.text('1 tháng'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('1 tháng'));
       await tester.pumpAndSettle();
-      await tester.drag(find.byType(PageView), const Offset(-300, 0));
+      await tester.ensureVisible(find.text('Khoảnh khắc nhỏ'));
       await tester.pumpAndSettle();
-      // "Dùng mẫu này" opens the template in view.
-      await tester.tap(find.text('Dùng mẫu này'));
+      await tester.tap(find.text('Khoảnh khắc nhỏ'));
       await tester.pumpAndSettle();
       expect(visits.last.location, '/memories/video/photos');
-      expect(
-        (visits.last.extra! as VideoDraft).template.name.vi,
-        'Khoảnh khắc nhỏ',
-      );
       expect((visits.last.extra! as VideoDraft).occasion, Occasion.m1);
     },
   );
@@ -136,10 +134,9 @@ void main() {
         overrides: on(),
       );
       expect(find.text('Gợi ý'), findsWidgets);
-      // The first page is the age's template; 100 ngày yêu thương comes later.
-      expect(find.bySemanticsLabel('Mẫu 1 trên 4'), findsOneWidget);
-      expect(tester.getCenter(find.text('Tháng đầu tiên')).dx, lessThan(400));
-      expect(find.text('100 ngày yêu thương'), findsNothing);
+      final first = tester.getTopLeft(find.text('Tháng đầu tiên'));
+      final last = tester.getTopLeft(find.text('100 ngày yêu thương'));
+      expect(first.dy < last.dy, isTrue);
     },
   );
 

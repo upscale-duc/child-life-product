@@ -2910,7 +2910,5 @@
   "ksVideoFieldHeadline": "Headline",
   "ksVideoFieldLines": "A line for each photo (one per line)",
   "ksVideoFieldLetter": "Letter to your baby",
-  "ksVideoFieldClosing": "Closing line",
-  "ksUseTemplate": "Use this template",
-  "ksTemplateOf": "Template {n} of {total}"
+  "ksVideoFieldClosing": "Closing line"
 }

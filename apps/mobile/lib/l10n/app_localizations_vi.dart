@@ -10602,12 +10602,4 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get ksVideoFieldClosing => 'Lời kết';
-
-  @override
-  String get ksUseTemplate => 'Dùng mẫu này';
-
-  @override
-  String ksTemplateOf(int n, int total) {
-    return 'Mẫu $n trên $total';
-  }
 }
