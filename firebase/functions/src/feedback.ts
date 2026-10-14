@@ -129,8 +129,27 @@ export async function myTickets(db: Firestore, caller: AccountCaller): Promise<M
 /** FB5 "prompt_eligible" / "prompt_requested", Tự lưu (P-148): a daily count, nothing about who. */
 export async function recordAppEvent(db: Firestore, data: unknown, now: Date) {
   const req = parse(recordAppEventSchema, data);
-  await db
-    .doc(`appEventsDaily/${dayOf(now)}`)
-    .set({ day: dayOf(now), [req.event]: FieldValue.increment(req.n) }, { merge: true });
+  await countAppEvent(db, now, req.event, req.dim, req.n);
   return { ok: true };
+}
+
+/**
+ * Adds to today's aggregate counters (`appEventsDaily/{day}`): `event`, and `event__dim` when a
+ * closed dimension is given. Also used by the server for authoritative events (purchases, usage).
+ */
+export async function countAppEvent(
+  db: Firestore,
+  now: Date,
+  event: string,
+  dim?: string,
+  n = 1,
+): Promise<void> {
+  await db.doc(`appEventsDaily/${dayOf(now)}`).set(
+    {
+      day: dayOf(now),
+      [event]: FieldValue.increment(n),
+      ...(dim ? { [`${event}__${dim}`]: FieldValue.increment(n) } : {}),
+    },
+    { merge: true },
+  );
 }

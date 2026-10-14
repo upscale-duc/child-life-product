@@ -275,13 +275,79 @@ export const appEvents = [
   'autoSaveNotified',
   'autoSaveTurnedOff',
   'autoSaveWiped',
+  // Premium & Cá nhân hoá (brief p.20): UX counters from the phone; purchases, usage and
+  // summaries are counted by the server, which is authoritative for them.
+  'capabilityGateSeen',
+  'checkinSaved',
+  'nextActionShown',
+  'suggestionStarted',
+  'feedbackSaved',
+  'paywallSeen',
+  'purchaseStarted',
+  'premiumTemplateSelected',
+  'summaryOpened',
+  // Grounded AI (plan §5.5): counted by the server only (`generateSummary`).
+  'summaryGenerated',
+  'summaryFallback',
 ] as const;
 export type AppEvent = (typeof appEvents)[number];
+
+/**
+ * Closed dimension values per event (counted as `event__dim` next to `event`): reasons, entry
+ * points, kinds, methods. Never free text, child data, notes or transaction tokens.
+ */
+export const appEventDims: Partial<Record<AppEvent, readonly string[]>> = {
+  capabilityGateSeen: [
+    'NOT_MEMBER',
+    'ROLE_DENIED',
+    'FEATURE_DISABLED',
+    'REGION_UNAVAILABLE',
+    'PREMIUM_REQUIRED',
+    'CONSENT_REQUIRED',
+    'QUOTA_EXCEEDED',
+  ],
+  nextActionShown: [
+    'SELF_REPORTED_NEED',
+    'DATA_INSIGHT',
+    'PREVIOUS_HELPFUL',
+    'AGE_CONTENT',
+    'INTEREST',
+    'normal',
+    'health',
+    'no_suggestion',
+  ],
+  feedbackSaved: ['started', 'helpful', 'unsure', 'not_suitable', 'not_today'],
+  paywallSeen: ['rhythm', 'templates', 'plan'],
+  purchaseStarted: ['rhythm', 'templates', 'plan'],
+  summaryOpened: ['ai', 'cache', 'fallback'],
+  summaryGenerated: ['ai', 'cache', 'fallback'],
+  summaryFallback: [
+    'HEALTH_FLOW',
+    'NOT_MEMBER',
+    'ROLE_DENIED',
+    'FEATURE_DISABLED',
+    'REGION_UNAVAILABLE',
+    'PREMIUM_REQUIRED',
+    'CONSENT_REQUIRED',
+    'QUOTA_EXCEEDED',
+    'timeout',
+    'invalid',
+    'unavailable',
+  ],
+};
+
 /** [n]: how many at once (e.g. 15 photos approved in one go). */
-export const recordAppEventSchema = z.object({
-  event: z.enum(appEvents),
-  n: z.number().int().min(1).max(1000).default(1),
-});
+export const recordAppEventSchema = z
+  .object({
+    event: z.enum(appEvents),
+    n: z.number().int().min(1).max(1000).default(1),
+    /** One of `appEventDims[event]`; anything else is refused. */
+    dim: z.string().max(40).optional(),
+  })
+  .refine((r) => r.dim === undefined || (appEventDims[r.event] ?? []).includes(r.dim), {
+    message: 'Unknown dimension for this event',
+    path: ['dim'],
+  });
 
 /** FB3 "Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ": what this person sent. */
 export interface MyTicket {
