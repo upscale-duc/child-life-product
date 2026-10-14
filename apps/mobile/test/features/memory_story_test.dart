@@ -116,6 +116,9 @@ void main() {
       expect(find.text('Khoảnh khắc nhỏ'), findsOneWidget);
       expect(find.text('100 ngày yêu thương'), findsNothing);
       expect(find.text('Cần 6–8 ảnh'), findsOneWidget);
+      // The row opened on 1 tháng; Tất cả is back at its start.
+      await tester.ensureVisible(find.text('Tất cả'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Tất cả'));
       await tester.pumpAndSettle();
       for (final name in [
