@@ -392,8 +392,8 @@ free in every plan state, sparse data honest (ST01).
 | Step | Scope | Figma | Size |
 |---|---|---|---|
 | **B1** | `billing.ts` normalisers + fake provider; `startPurchase`, `verifyPurchase`, `restorePurchase`, event ledger, reconciler; M05–M08 against the fake | — | L |
-| **B2** | Apple: App Store Server Library, Notifications V2 endpoint (sandbox URL on dev, prod URL on prod) | — | M |
-| **B3** | Google: Play Developer API, RTDN Pub/Sub, acknowledge | — | M |
+| **B2** | *Postponed (D-074)*: Apple App Store Server Library, Notifications V2 endpoint (sandbox URL on dev, prod URL on prod) | — | M |
+| **B3** | *Postponed (D-074)*: Google Play Developer API, RTDN Pub/Sub, acknowledge | — | M |
 | **B4** | Flutter `in_app_purchase`: PR01 (entry A/B emphasis, same SKU, storefront price), PR02 pending/success/error/restore, PR03 household plan, PR04 expiry, MO03 resume exact template + media (M17) | PR01–PR04, MO03 | L |
 | **Q2** | Quota ledger for video: reserve/commit/release with fencing in `keepsake-jobs.ts` + renderer; MO04 states; M10 (20 concurrent), M11, M12 | MO04 | L |
 | **I1** | EN/VI parity of all new strings, date formats via `intl` (no ambiguous dd/mm in EN), units, region content routing, no default hotline; M16 | all | M |
