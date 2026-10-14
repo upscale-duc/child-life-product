@@ -3474,3 +3474,59 @@ button.aup-btn {
   flex: 1 1 320px;
   min-width: 0;
 }
+
+/* Nhịp lớn lên (PN01–PN04) */
+.rh-counter {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.rh-num {
+  width: 120px;
+}
+.rh-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+.rh-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px 18px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 2px;
+}
+.rh-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.rh-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.rh-sources,
+.rh-list,
+.rh-hits {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+.rh-hits {
+  margin-top: 8px;
+}
+.rh-sources a {
+  color: var(--primary);
+  overflow-wrap: anywhere;
+}
+.rh-rules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px 20px;
+  align-items: start;
+}

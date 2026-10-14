@@ -412,6 +412,12 @@ export function AuditActionText({
     'premium.config',
     'premium.grant',
     'premium.revoke',
+    ...['reference', 'content'].flatMap((doc) =>
+      ['draft', 'submit', 'approve', 'reject', 'discard', 'rollback'].map(
+        (a) => `content.rhythm.${doc}.${a}`,
+      ),
+    ),
+    'features.rhythm.rules',
   ];
   return (
     <FormattedMessage

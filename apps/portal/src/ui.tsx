@@ -532,6 +532,7 @@ export const reasonMessages = [
   'image-missing',
   'image-unreadable',
   'review-required',
+  'invalid-content',
   'no-contact',
   'no-screenshot',
   'too-large',

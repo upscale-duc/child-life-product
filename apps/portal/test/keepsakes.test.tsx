@@ -300,7 +300,7 @@ describe('Mẫu kỷ niệm', () => {
           roles,
         ),
       );
-    expect(sidebar(['ops'])).toContain('NỘI DUNG Sơ cứu Mẫu kỷ niệm');
+    expect(sidebar(['ops'])).toContain('NỘI DUNG Sơ cứu Nhịp lớn lên Mẫu kỷ niệm');
     expect(sidebar(['analyst'])).not.toContain('Mẫu kỷ niệm');
   });
 });

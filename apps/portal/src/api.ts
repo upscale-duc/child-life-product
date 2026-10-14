@@ -9,6 +9,9 @@ import type {
   Flags,
   GrantEnvironment,
   Limits,
+  ReferenceModel,
+  RhythmContent,
+  RhythmRules,
   QaCaseContent,
   QaEnvironment,
   QaStatus,
@@ -78,6 +81,11 @@ export type Callable =
   | 'staffFamilyPremium'
   | 'staffGrantPromo'
   | 'staffRevokeGrant'
+  | 'staffRhythm'
+  | 'staffRhythmDraft'
+  | 'staffRhythmAct'
+  | 'staffRhythmRules'
+  | 'staffSetRhythmRules'
   | 'sendAuthEmail';
 
 export interface Api {
@@ -662,4 +670,55 @@ export interface StaffPremiumView {
   /** Which grants count on this server (store sandbox and dev = `test`). */
   environment: GrantEnvironment;
   recent: Array<{ action: string; target: string; by: string; at: string; reason: string }>;
+}
+
+// ---------- Nhịp lớn lên (PN01–PN04, mirrors rhythm-content.ts) ----------
+
+export type RhythmStatus = 'draft' | 'pending' | 'published' | 'retired' | 'discarded';
+export type RhythmReview = { reviewer: string; credential: string; reviewedOn: string } | null;
+
+/** What the draft of each document holds: the published shape without `version`/`publishedAt`. */
+export type ReferenceDraftData = Omit<ReferenceModel, 'version' | 'publishedAt'>;
+export type ContentDraftData = Omit<RhythmContent, 'version' | 'publishedAt'>;
+
+export interface RhythmVersion {
+  versionId: string;
+  status: RhythmStatus;
+  /** `ref_YYYYMMDD_NN` / `rc_YYYYMMDD_NN` once published. */
+  label: string | null;
+  notes: string;
+  authorName: string;
+  approverName: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  approvedAt: string | null;
+  rejection: { by: string; reason: string } | null;
+  /** The review recorded at approval (null = not reviewed by a qualified person). */
+  review: RhythmReview;
+  /** Reference: number of stages. */
+  stages?: number;
+  /** Content: number of activities and age cards. */
+  activities?: number;
+  ageCards?: number;
+}
+
+export interface RhythmDocView<Current, Data> {
+  current: Current | null;
+  draft: (RhythmVersion & { status: 'draft' | 'pending'; data: Data }) | null;
+  history: RhythmVersion[];
+}
+
+export interface RhythmView {
+  reference: RhythmDocView<ReferenceModel, ReferenceDraftData>;
+  content: RhythmDocView<RhythmContent, ContentDraftData>;
+  /** Prod: approving records the qualified review (reviewer, credential, date). */
+  requireReview: boolean;
+}
+
+/** `staffRhythmRules` (PN04): the thresholds in use, or the shipped default while none is stored. */
+export interface RhythmRulesView {
+  rules: RhythmRules;
+  stored: boolean;
+  updatedAt: string | null;
+  updatedByName: string | null;
 }
