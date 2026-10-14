@@ -370,3 +370,61 @@ export const familySettingsRequestSchema = z
   })
   .refine((v) => v.country !== undefined || v.timeZone !== undefined, 'Nothing to change');
 export type FamilySettingsRequest = z.infer<typeof familySettingsRequestSchema>;
+
+// ---------- Portal "Premium" (plan §5.6, staff only) ----------
+
+const staffReason = z.string().trim().min(3).max(500);
+/** "F-7Q2K": families are shown and picked by code, never by id (A04). */
+const familyCodeSchema = z.string().regex(/^F-[A-Z2-9]{4}$/);
+
+/** Campaign families travel as codes between portal and server. */
+export const staffEntitlementsConfigSchema = entitlementsConfigSchema.extend({
+  betaCampaigns: z
+    .array(betaCampaignSchema.extend({ families: z.array(familyCodeSchema).max(500).optional() }))
+    .max(20),
+});
+export const setEntitlementsConfigSchema = z.object({
+  config: staffEntitlementsConfigSchema,
+  reason: staffReason,
+});
+
+export const familyPremiumSchema = z.object({ code: familyCodeSchema });
+
+/** A promo grant (support, partners, QA on dev): capabilities until a date, with a reason. */
+export const grantPromoSchema = z.object({
+  code: familyCodeSchema,
+  capabilities: z
+    .array(z.enum(capabilities))
+    .min(1)
+    .refine((c) => c.every((x) => !isFreeCapability(x)), 'Free capabilities need no grant'),
+  validUntil: z.iso.datetime(),
+  reason: staffReason,
+});
+
+export const revokeGrantSchema = z.object({
+  code: familyCodeSchema,
+  grantId: z.string().regex(/^(promo|beta)_[A-Za-z0-9_-]{1,80}$/),
+  reason: staffReason,
+});
+
+/** What the portal shows for one family: no uid, no transaction ids in clear. */
+export interface StaffFamilyPremium {
+  code: string;
+  country: string | null;
+  plan: HouseholdPlan;
+  validUntil: string | null;
+  entitlementVersion: number;
+  grants: {
+    id: string;
+    source: GrantSource;
+    status: GrantStatus;
+    environment: GrantEnvironment;
+    capabilities: Capability[];
+    validFrom: string;
+    validUntil: string;
+    provider: 'apple' | 'google' | 'staff' | null;
+    autoRenew: boolean | null;
+    /** From open campaigns, not stored: cannot be revoked one family at a time. */
+    fromCampaign: boolean;
+  }[];
+}

@@ -205,6 +205,12 @@ export const staffActions = [
   'qa.view',
   'qa.test',
   'qa.manage',
+  /** Premium & Cá nhân hoá (plan §5.6): see plans, campaigns and a family's grants. */
+  'premium.view',
+  /** Regions, quotas and Beta A campaigns (`config/entitlements`). */
+  'premium.config',
+  /** Promo grants and revoking staff-written grants; never a paid grant (brief p.17). */
+  'premium.grant',
 ] as const;
 export type StaffAction = (typeof staffActions)[number];
 
@@ -250,6 +256,10 @@ export const staffActionLevel: Record<StaffAction, readonly [StaffFunction, Staf
   'qa.view': ['qa', 'view'],
   'qa.test': ['qa', 'edit'],
   'qa.manage': ['qa', 'full'],
+  'premium.view': ['features', 'view'],
+  'premium.config': ['features', 'edit'],
+  // A grant gives paid capabilities for free: owners and admins only, reason + audit (brief p.17).
+  'premium.grant': ['features', 'full'],
 };
 
 export function staffCan(levels: StaffLevels, action: StaffAction): boolean {
@@ -334,6 +344,7 @@ export const auditCategories = [
   'reference',
   'content',
   'analytics',
+  'premium',
 ] as const;
 export type AuditCategory = (typeof auditCategories)[number];
 export const listAuditSchema = z.object({

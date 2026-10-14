@@ -85,8 +85,10 @@ export interface EntitlementContext {
   flags: Flags;
   config: EntitlementsConfig;
   environment: GrantEnvironment;
-  /** Stored grants (paid / promo / any beta written by staff) plus open beta campaigns. */
-  grants: (GrantView & Partial<Pick<Grant, 'autoRenew' | 'billingOwnerUid'>>)[];
+  /** Stored grants (paid / promo / any beta written by staff) plus open beta campaigns
+   * (`id` = `campaign:<campaignId>`). */
+  grants: (GrantView &
+    Partial<Pick<Grant, 'autoRenew' | 'billingOwnerUid' | 'provider'>> & { id: string })[];
 }
 
 const toDate = (v: unknown): Date | null =>
@@ -142,7 +144,7 @@ export async function loadEntitlementContext(
       updatedAt: toDate(d.updatedAt),
     });
     // A malformed grant gives nothing; it never blocks the others (E11).
-    if (parsed.success) grants.push(parsed.data);
+    if (parsed.success) grants.push({ ...parsed.data, id: doc.id });
   }
   // Beta A (brief p.3): an open campaign in the family's country is a grant of its own.
   if (family.country) {
@@ -152,6 +154,7 @@ export async function loadEntitlementContext(
       if (!countries.includes(family.country)) continue;
       if (!campaignOpen(c, now, familyId, bucket, family.internal)) continue;
       grants.push({
+        id: `campaign:${c.id}`,
         source: 'beta',
         status: 'active',
         environment,

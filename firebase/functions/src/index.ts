@@ -46,6 +46,13 @@ import {
   serverGrantEnvironment,
   setFamilySettings as saveFamilySettings,
 } from './entitlements.js';
+import {
+  familyPremium,
+  grantPromo,
+  readPremium,
+  revokeGrant,
+  setEntitlementsConfig,
+} from './premium-staff.js';
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { resendSender } from './mail-resend.js';
 import {
@@ -1651,6 +1658,21 @@ export const staffAi = staffCall('staffAi', (s) => aiStats(getFirestore(), s, ne
 export const staffFlags = staffCall('staffFlags', (s) => readFlags(getFirestore(), s));
 export const staffSetFlag = staffCall('staffSetFlag', (s, d) =>
   setFlag(getFirestore(), s, d, new Date()),
+);
+
+// Premium & Cá nhân hoá (plan §5.6): regions, quotas, Beta A campaigns, promo grants.
+export const staffPremium = staffCall('staffPremium', (s) => readPremium(getFirestore(), s));
+export const staffSetPremiumConfig = staffCall('staffSetPremiumConfig', (s, d) =>
+  setEntitlementsConfig(getFirestore(), s, d, new Date()),
+);
+export const staffFamilyPremium = staffCall('staffFamilyPremium', (s, d) =>
+  familyPremium(getFirestore(), s, d, new Date()),
+);
+export const staffGrantPromo = staffCall('staffGrantPromo', (s, d) =>
+  grantPromo(getFirestore(), s, d, new Date()),
+);
+export const staffRevokeGrant = staffCall('staffRevokeGrant', (s, d) =>
+  revokeGrant(getFirestore(), s, d, new Date()),
 );
 export const staffAudit = staffCall('staffAudit', (s, d) =>
   listAudit(getFirestore(), s, d, new Date()),

@@ -1152,7 +1152,7 @@ function withCodes(flags: Flags): Flags {
 }
 
 /** "Một vài gia đình" (A10): codes to family ids, every code must exist. */
-async function familyIdsOf(db: Firestore, codes: string[]): Promise<string[]> {
+export async function familyIdsOf(db: Firestore, codes: string[]): Promise<string[]> {
   const ids: string[] = [];
   for (const code of [...new Set(codes)]) {
     const hit = await db.collection('familyDirectory').where('code', '==', code).limit(1).get();
