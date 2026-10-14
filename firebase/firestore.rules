@@ -39,7 +39,8 @@ service cloud.firestore {
     // way: published by Functions after a second person approves; the app falls back to its copy.
     match /publicConfig/{docId} {
       allow get: if docId in ['flags', 'limits', 'reference_growth_weight', 'reference_growth_length',
-        'reference_bottle', 'reference_vaccines', 'content_firstAid', 'appUpdate', 'keepsakes'];
+        'reference_bottle', 'reference_vaccines', 'content_firstAid', 'appUpdate', 'keepsakes',
+        'rhythm_reference', 'content_rhythm'];
       allow list, write: if false;
     }
 
@@ -77,8 +78,26 @@ service cloud.firestore {
           request.resource.data.updatedAt == request.time) || (docId == 'firstAid' &&
           request.resource.data.keys().hasOnly(['saved', 'updatedAt']) &&
           request.resource.data.saved is list && request.resource.data.saved.size() <= 40 &&
-          request.resource.data.updatedAt == request.time));
+          request.resource.data.updatedAt == request.time) || (docId == 'personalization' &&
+          validPersonalization(request.resource.data)));
       }
+    }
+
+    // Nhịp lớn lên EN01 / EN02 / EN05 (per person, free): mirrors `userPreferencesSchema`.
+    function validPersonalization(d) {
+      let interests = ['sleep', 'feeding', 'milestones', 'vaccines', 'nutrition', 'moments'];
+      let hhmm = '^([01][0-9]|2[0-3]):[0-5][0-9]$';
+      return d.keys().hasOnly(['interests', 'digestTime', 'quietHours', 'fewer', 'updatedAt']) &&
+        d.keys().hasAll(['interests', 'digestTime', 'quietHours', 'fewer', 'updatedAt']) &&
+        d.interests is list && d.interests.size() <= 6 && d.interests.hasOnly(interests) &&
+        d.fewer is list && d.fewer.size() <= 6 && d.fewer.hasOnly(interests) &&
+        (d.digestTime == null || (d.digestTime is string && d.digestTime.matches(hhmm))) &&
+        (d.quietHours == null || (d.quietHours is map &&
+          d.quietHours.keys().hasOnly(['from', 'to']) && d.quietHours.keys().hasAll(['from', 'to']) &&
+          d.quietHours.from is string && d.quietHours.from.matches(hhmm) &&
+          d.quietHours.to is string && d.quietHours.to.matches(hhmm))) &&
+        (d.updatedAt == request.time || d.updatedAt == null ||
+          (d.updatedAt is string && d.updatedAt.size() <= 40));
     }
 
     // P-137: `lastActiveAt` (once a local day, the analytics heartbeat), `osVersion` and a coarse
@@ -247,6 +266,38 @@ service cloud.firestore {
         allow write: if false;
       }
 
+      // ---------- Nhịp lớn lên (plan §6.1, §7.1, D-072 #2, D-073) ----------
+      // Check-ins (C01, C02, NL05b): written by the phone (offline-safe; the id is the
+      // idempotency key) by Cùng nuôi and Người chăm sóc, as themselves (M03, M04); edits keep
+      // who, which baby and which day and bump `revision`; only the author deletes. Read by
+      // `history.read` roles (relatives only with "Chăm sóc hằng ngày"). Mirrors `checkInSchema`.
+      match /checkins/{checkInId} {
+        allow read: if canReadCare(babyId);
+        allow create: if canLog(babyId) && babyOpen(babyId) && validNewCheckIn(babyId, checkInId);
+        allow update: if canLog(babyId) && babyOpen(babyId) &&
+          resource.data.authorUid == request.auth.uid && validCheckInUpdate();
+        allow delete: if canLog(babyId) && resource.data.authorUid == request.auth.uid;
+      }
+
+      // Feedback on a suggestion (AC01, AC02): free data, immutable once written; the author may
+      // take it back. Mirrors `recFeedbackSchema`.
+      match /recFeedback/{feedbackId} {
+        allow read: if canReadCare(babyId);
+        allow create: if canLog(babyId) && babyOpen(babyId) && validNewFeedback(babyId, feedbackId);
+        allow update: if false;
+        allow delete: if canLog(babyId) && resource.data.authorUid == request.auth.uid;
+      }
+
+      // Suggestions (nextAction / composeHome) and the facts version: Functions only (M04).
+      match /recommendations/{recommendationId} {
+        allow read: if canReadCare(babyId);
+        allow write: if false;
+      }
+      match /facts/{factId} {
+        allow read: if canReadCare(babyId);
+        allow write: if false;
+      }
+
       // Running timers (S5, P-011): one slot per type, shared live ("Cả nhà đang thấy"). The
       // first start owns it; a second device's start is refused and it joins the running one.
       match /timers/{type} {
@@ -402,6 +453,63 @@ service cloud.firestore {
         role(babyId) in ['coParent', 'caregiver'] ||
         get(memberDoc(babyId)).data.get('extraRights', {}).get('viewDailyCare', false) == true
       );
+    }
+
+    // ---------- Nhịp lớn lên shapes (packages/contracts/src/rhythm.ts, personalization.ts) ----------
+
+    function isoDate(v) {
+      return v is string && v.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$');
+    }
+
+    function checkInFields() {
+      return ['id', 'babyId', 'date', 'authorUid', 'observation', 'when', 'since', 'tried',
+        'healthSigns', 'note', 'revision', 'createdAt', 'updatedAt'];
+    }
+
+    function validCheckInBody(d) {
+      return d.keys().hasOnly(checkInFields()) && d.keys().hasAll(checkInFields()) &&
+        isoDate(d.date) &&
+        d.observation in ['sleep', 'feeding', 'soothing', 'new_skill', 'usual', 'health'] &&
+        d.when in [null, 'night', 'day', 'both'] &&
+        d.since in [null, 'today', 'days_2_3', 'longer'] &&
+        d.tried is list && d.tried.size() <= 6 &&
+        d.tried.hasOnly(['rocking', 'white_noise', 'feeding', 'skin_to_skin', 'swaddle', 'none']) &&
+        d.healthSigns is list && d.healthSigns.size() <= 8 &&
+        d.healthSigns.hasOnly(['fever_young', 'breathing', 'lethargic', 'poor_feeding',
+          'inconsolable', 'lost_skill', 'dehydration', 'seizure']) &&
+        (d.note == null || (d.note is string && d.note.size() <= 500)) &&
+        d.revision is int && d.updatedAt == request.time;
+    }
+
+    function validNewCheckIn(babyId, checkInId) {
+      let d = request.resource.data;
+      return checkInId.matches('^ci_[a-f0-9]{32}$') && d.id == checkInId && d.babyId == babyId &&
+        d.authorUid == request.auth.uid && d.revision == 1 && d.createdAt == request.time &&
+        validCheckInBody(d);
+    }
+
+    // The same check-in, edited: who, which baby, which day and when it was made never change.
+    function validCheckInUpdate() {
+      let d = request.resource.data;
+      let o = resource.data;
+      return d.id == o.id && d.babyId == o.babyId && d.authorUid == o.authorUid &&
+        d.date == o.date && d.createdAt == o.createdAt && d.revision == o.revision + 1 &&
+        validCheckInBody(d);
+    }
+
+    function validNewFeedback(babyId, feedbackId) {
+      let d = request.resource.data;
+      let fields = ['id', 'babyId', 'authorUid', 'contentId', 'contentVersion', 'kind', 'date',
+        'note', 'createdAt'];
+      return feedbackId.matches('^fb_[a-f0-9]{32}$') &&
+        d.keys().hasOnly(fields) && d.keys().hasAll(fields) &&
+        d.id == feedbackId && d.babyId == babyId && d.authorUid == request.auth.uid &&
+        d.contentId is string && d.contentId.size() >= 1 && d.contentId.size() <= 60 &&
+        d.contentVersion is int && d.contentVersion >= 1 &&
+        d.kind in ['started', 'helpful', 'unsure', 'not_suitable', 'not_today'] &&
+        isoDate(d.date) &&
+        (d.note == null || (d.note is string && d.note.size() <= 300)) &&
+        d.createdAt == request.time;
     }
 
     // Relatives never log (12a, 7b: no "+").

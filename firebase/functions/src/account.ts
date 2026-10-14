@@ -566,6 +566,9 @@ const authoredCollections: Array<[string, string]> = [
   ['milestones', 'createdBy'],
   ['reminders', 'createdBy'],
   ['messages', 'from'],
+  // Nhịp lớn lên check-ins and suggestion feedback stay with the family too (plan §7.1).
+  ['checkins', 'authorUid'],
+  ['recFeedback', 'authorUid'],
 ];
 
 async function accountStep(

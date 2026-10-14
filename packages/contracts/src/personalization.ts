@@ -285,6 +285,9 @@ export function feedbackMemory(
         break;
     }
     if (r.kind === 'started' || r.kind === 'not_today') m.lastShown.set(r.contentId, r.date);
+    // "Có ích" after trying it: the family may want it again tonight (PS02 "Thử lại tối nay"), so
+    // the recently-shown penalty no longer applies; "Để sau" still cools it down.
+    if (r.kind === 'helpful') m.lastShown.delete(r.contentId);
   }
   return m;
 }
@@ -483,3 +486,36 @@ export const rhythmActSchema = z
 
 /** `config/rhythm` (server): versioned rules, edited in PN04. */
 export const rhythmConfigSchema = z.object({ rules: rhythmRulesSchema });
+
+// ---------- Slice 2 server answers (added 2026-10-15) ----------
+
+/** The stored recommendation a check-in produced: one id per check-in (idempotent `nextAction`). */
+export function recommendationIdFor(checkInId: string): string {
+  return `rec_${checkInId.replace(/^ci_/, '')}`;
+}
+
+/** The feedback a recommendation rests on, for PS02 ("Tối 08/10 Mẹ chọn Có ích…"). */
+export interface FeedbackRef {
+  id: string;
+  contentId: string;
+  kind: FeedbackKind;
+  /** Baby-local date the feedback is about. */
+  date: string;
+  authorUid: string;
+}
+
+/** `composeHome` (H02 / PS02): the current primary recommendation plus the feedback behind it. */
+export interface ComposeHomeAnswer extends NextActionAnswer {
+  lastFeedback: FeedbackRef | null;
+}
+
+/** `staffSetRhythmRules` (PN04): the thresholds in `config/rhythm`, with a reason for the audit. */
+export const setRhythmRulesSchema = z
+  .object({
+    rules: rhythmRulesSchema
+      .refine((r) => r.baselineMinDays <= r.baselineMaxDays, 'baselineMinDays > baselineMaxDays')
+      .refine((r) => r.recentMinDays <= r.recentDays, 'recentMinDays > recentDays')
+      .refine((r) => r.baselineMaxDays <= r.baselineLookbackDays, 'baseline window too long'),
+    reason: z.string().trim().min(3).max(500),
+  })
+  .strict();

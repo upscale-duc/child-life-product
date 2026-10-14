@@ -47,6 +47,22 @@ import {
   setFamilySettings as saveFamilySettings,
 } from './entitlements.js';
 import {
+  bumpDataVersion,
+  composeHome as composeRhythmHome,
+  nextAction as rhythmNextAction,
+  onCheckInWritten,
+  RhythmError,
+  setDueDate as saveDueDate,
+} from './rhythm.js';
+import {
+  rhythmAct,
+  rhythmDraft,
+  rhythmRulesView,
+  rhythmView,
+  setRhythmRules,
+  type RhythmContentDeps,
+} from './rhythm-content.js';
+import {
   familyPremium,
   grantPromo,
   readPremium,
@@ -313,7 +329,8 @@ function asHttpsError(operation: string, error: unknown): HttpsError {
     error instanceof FamilyError ||
     error instanceof SpendingError ||
     error instanceof FeatureError ||
-    error instanceof EntitlementError
+    error instanceof EntitlementError ||
+    error instanceof RhythmError
   ) {
     return new HttpsError(error.code, error.reason, { reason: error.reason });
   }
@@ -433,6 +450,26 @@ export const setFamilySettings = familyCall('setFamilySettings', (r) =>
   saveFamilySettings(getFirestore(), requireAccount(r), r.data, new Date()),
 );
 
+// Nhịp lớn lên (plan §7.1, D-073): due date, the next action after a check-in, the Home card.
+/** NL02b: Cùng nuôi set or clear the due date (stored with the date of birth). */
+export const setDueDate = familyCall('setDueDate', (r) =>
+  saveDueDate(getFirestore(), requireAccount(r), r.data, new Date(), serverGrantEnvironment()),
+);
+/** PS01 / PS01F / HL01 after a saved check-in; idempotent per check-in. */
+export const nextAction = familyCall('nextAction', (r) =>
+  rhythmNextAction(getFirestore(), requireAccount(r), r.data, new Date(), serverGrantEnvironment()),
+);
+/** H01 / H02 / PS02: the current suggestion and the feedback behind it; never fails free Home. */
+export const composeHome = familyCall('composeHome', (r) =>
+  composeRhythmHome(
+    getFirestore(),
+    requireAccount(r),
+    r.data,
+    new Date(),
+    serverGrantEnvironment(),
+  ),
+);
+
 export const createFamilyInvite = familyCall('createFamilyInvite', (r) =>
   createInvite(getFirestore(), callerOf(r), r.data, new Date()),
 );
@@ -502,7 +539,34 @@ export const onCareRecordWrite = onDocumentWritten(
       change.after.exists ? change.after : null,
       new Date(),
     );
+    // The rhythm facts read care records too (plan §7.1: dataVersion on every care write).
+    await bumpDataVersion(getFirestore(), event.params.babyId, new Date());
     logger.debug('care summaries recomputed', { days: days.length });
+  },
+);
+
+/** Nhịp lớn lên facts: a check-in was saved, edited or deleted (M14). */
+export const onCheckInWrite = onDocumentWritten(
+  'babies/{babyId}/checkins/{checkInId}',
+  async (event) => {
+    const change = event.data;
+    if (!change) return;
+    const { dates } = await onCheckInWritten(
+      getFirestore(),
+      event.params.babyId,
+      change.before.exists ? change.before : null,
+      change.after.exists ? change.after : null,
+      new Date(),
+    );
+    logger.debug('rhythm facts bumped', { days: dates.length });
+  },
+);
+
+/** Feedback changes what the ranking uses: bump the facts version (AC02, M18). */
+export const onRecFeedbackWrite = onDocumentWritten(
+  'babies/{babyId}/recFeedback/{feedbackId}',
+  async (event) => {
+    await bumpDataVersion(getFirestore(), event.params.babyId, new Date());
   },
 );
 
@@ -1845,6 +1909,27 @@ export const staffFirstAidAct = staffCall('staffFirstAidAct', (s, d) =>
 );
 export const staffFirstAidImage = staffCall('staffFirstAidImage', (s, d) =>
   firstAidUploadImage(getFirestore(), contentDeps(), s, d, new Date()),
+);
+
+// Nhịp lớn lên (PN01–PN04, D-073 #2): reference model and content pack on the Sơ cứu workflow
+// (a second person approves, a qualified reviewer on prod); rules in config/rhythm.
+function rhythmContentDeps(): RhythmContentDeps {
+  return { requireReview: environmentForProject(currentProjectId()) === 'prod' };
+}
+export const staffRhythm = staffCall('staffRhythm', (s) =>
+  rhythmView(getFirestore(), rhythmContentDeps(), s),
+);
+export const staffRhythmDraft = staffCall('staffRhythmDraft', (s, d) =>
+  rhythmDraft(getFirestore(), s, d, new Date()),
+);
+export const staffRhythmAct = staffCall('staffRhythmAct', (s, d) =>
+  rhythmAct(getFirestore(), rhythmContentDeps(), s, d, new Date()),
+);
+export const staffRhythmRules = staffCall('staffRhythmRules', (s) =>
+  rhythmRulesView(getFirestore(), s),
+);
+export const staffSetRhythmRules = staffCall('staffSetRhythmRules', (s, d) =>
+  setRhythmRules(getFirestore(), s, d, new Date()),
 );
 
 // Mẫu kỷ niệm (D-068 #7): the template catalog and its artwork are managed in the portal and

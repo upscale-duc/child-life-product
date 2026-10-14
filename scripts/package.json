@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "seed:dev": "tsx src/seed-config.ts --project child-life-dev",
+    "seed:rhythm": "tsx src/seed-rhythm.ts --project child-life-dev",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
