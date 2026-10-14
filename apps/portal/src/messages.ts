@@ -26,7 +26,7 @@ const vi: Record<string, string> = {
   'state.retry': 'Thử lại',
   'reason.label': 'Lý do (ghi vào nhật ký thao tác)',
   'reason.labelRequired': 'Lý do (bắt buộc, ghi vào nhật ký)',
-  'error.role': 'Vai trò của bạn chưa được làm việc này. Nhờ trưởng nhóm nếu cần.',
+  'error.role': 'Vai trò của bạn chưa được làm việc này. Nhờ Admin hoặc Owner nếu cần.',
   'error.notStaff': 'Phiên đăng nhập không còn quyền vận hành. Đăng nhập lại nhé.',
   'error.alreadyClaimed': 'Yêu cầu này vừa có người nhận xử lý.',
   'error.alreadyDecided': 'Yêu cầu này vừa được người khác duyệt hoặc từ chối.',
@@ -60,7 +60,7 @@ const vi: Record<string, string> = {
   'signIn.resetSentBody': 'Nếu {email} có tài khoản vận hành, email sẽ đến trong vài phút.',
   'signIn.useOther': 'Dùng email khác',
   'signIn.notice.denied':
-    'Tài khoản này chưa được cấp quyền vào trang vận hành. Liên hệ trưởng nhóm để được cấp.',
+    'Tài khoản này chưa được cấp quyền vào trang vận hành. Nhờ Admin hoặc Owner gửi lời mời.',
   'signIn.notice.linkInvalid': 'Link đăng nhập đã hết hạn hoặc đã được dùng. Gửi link mới nhé.',
   'signIn.error.credentials': 'Email hoặc mật khẩu chưa đúng.',
   'signIn.error.email': 'Email chưa đúng định dạng.',
@@ -438,7 +438,7 @@ const vi: Record<string, string> = {
   'storage.guide5': 'Gia đình 1 bé, dùng ổn định',
   'storage.guide10': 'Có từ 2 bé hoặc nhiều video',
   'storage.custom': 'Tuỳ chỉnh',
-  'storage.guideCustom': 'Trên 20 GB cần trưởng nhóm duyệt',
+  'storage.guideCustom': 'Trên 20 GB cần người có quyền Duyệt (Admin, Owner)',
   'storage.lock': 'Duyệt chỉ thay đổi dung lượng. Không mở ảnh, video hay ghi chép của gia đình.',
   'storage.grantTitle': 'Duyệt thêm dung lượng cho {code}',
   'storage.declineTitle': 'Từ chối mở rộng +{n} GB cho {code}?',
@@ -446,7 +446,7 @@ const vi: Record<string, string> = {
   'storage.amount': 'Dung lượng thêm',
   'storage.customGb': 'Số GB thêm',
   'storage.leadNeeded':
-    'Trên 20 GB hoặc số tuỳ chỉnh cần trưởng nhóm duyệt. Nhờ trưởng nhóm mở yêu cầu này.',
+    'Trên 20 GB hoặc số tuỳ chỉnh cần người có quyền Duyệt. Nhờ Admin hoặc Owner mở yêu cầu này.',
   'storage.familyMessage': 'Lời nhắn gửi gia đình',
   'storage.grantMessage':
     'Chúng mình đã thêm dung lượng cho gia đình bạn. Chúc cả nhà thêm thật nhiều khoảnh khắc đẹp bên con!',
@@ -607,7 +607,7 @@ const vi: Record<string, string> = {
   'features.switches': 'Công tắc tính năng',
   'features.lock':
     'Công tắc chỉ bật hoặc tắt tính năng, không thay đổi quyền xem của ai. Khi tắt tải lên, gia đình vẫn ghi chăm sóc, xem kỷ niệm cũ, xuất và xoá dữ liệu bình thường.',
-  'features.toggleRole': 'Chỉ Kỹ thuật hoặc trưởng nhóm bật, tắt tính năng',
+  'features.toggleRole': 'Chỉ Kỹ sư, Admin hoặc Owner bật, tắt tính năng',
   'features.rollout': 'Mở dần · AI gợi ý câu chuyện',
   'features.guardReports': 'Báo nội dung chưa phù hợp',
   'features.guardReportsValue': '{n} báo cáo · dưới 0,1%',
@@ -747,7 +747,7 @@ const vi: Record<string, string> = {
   'qa.run.none':
     'Chưa có lượt kiểm thử nào. Tạo lượt mới cho bản build cần kiểm thử để bắt đầu ghi kết quả.',
   'qa.run.noneAsk':
-    'Chưa có lượt kiểm thử nào. Nhờ Kiểm thử hoặc Kỹ thuật tạo lượt cho bản build cần kiểm thử.',
+    'Chưa có lượt kiểm thử nào. Nhờ Kiểm thử hoặc Kỹ sư tạo lượt cho bản build cần kiểm thử.',
   'qa.nav.label': 'Mục lục sổ tay',
   'qa.nav.start': 'Bắt đầu',
   'qa.nav.all': 'Tất cả ca kiểm thử',
@@ -865,7 +865,7 @@ const vi: Record<string, string> = {
   'qa.start.accounts.guest':
     '<b>Danh tính tạm và khách</b> — người nhận lời mời chọn "Vào ngay" (chưa có tài khoản), hoặc người mở website, link câu chuyện mà không đăng nhập.',
   'qa.start.accounts.staff':
-    '<b>Nhân viên</b> — tài khoản portal tạo bằng create-staff.mjs với vai trò Vận hành, Hỗ trợ, Kỹ thuật, Trưởng nhóm hoặc Kiểm thử (Kiểm thử chỉ vào sổ tay này).',
+    '<b>Nhân viên</b> — tài khoản portal được mời trong "Nhân sự & phân quyền" (Owner đầu tiên tạo bằng create-staff.mjs), với vai trò Owner, Admin, Vận hành, Hỗ trợ, Kỹ sư, Phân tích, Chuyên gia hoặc Kiểm thử (Kiểm thử chỉ vào sổ tay này).',
   'qa.start.accounts.devices':
     'Ca có app di động phải đạt trên cả iOS và Android, ở cả Light và Night care. Ghi thiết bị và phiên bản hệ điều hành vào bình luận khi có lỗi.',
   'qa.start.bugs.title': 'Báo lỗi',
@@ -923,7 +923,28 @@ const vi: Record<string, string> = {
     'Trang giới thiệu công khai (vi/en): các mục nội dung, câu hỏi thường gặp, nút tải app, SEO và ảnh chia sẻ, trang chính sách.',
   'qa.module.portal': 'Cổng vận hành',
   'qa.module.portal.about':
-    'Portal cho nhân viên: đăng nhập, tự đăng xuất sau 30 phút, Tổng quan, Hỗ trợ, Mở rộng dung lượng, Yêu cầu dữ liệu, Hệ thống & AI, Tính năng & phát hành, Nhật ký thao tác — chỉ thấy email đã che và mã gia đình ẩn danh.',
+    'Portal cho nhân viên (giữ phiên đến khi đăng xuất): Tổng quan, Phân tích, Gia đình, Hỗ trợ và Góp ý, Mở rộng dung lượng, Yêu cầu dữ liệu, Dữ liệu tham chiếu, Nội dung › Sơ cứu và Mẫu kỷ niệm, Hệ thống & AI, Tính năng & phát hành, Cập nhật ứng dụng, Nhân sự & phân quyền, Nhật ký thao tác và Sổ tay kiểm thử. Mỗi vai trò chỉ thấy phần được cấp; chỉ thấy email đã che và mã gia đình ẩn danh; việc nhạy cảm cần người thứ hai duyệt.',
+  'qa.module.vaccines': 'Sổ tiêm chủng',
+  'qa.module.vaccines.about':
+    'Sổ tiêm chủng trong Chăm sóc: lịch tham khảo 30 mũi từ sơ sinh đến 24 tháng (33 mũi khi chọn 5in1), thiết lập lần đầu, ghi nhanh hoặc ghi đầy đủ kèm ảnh sổ tiêm, xử lý mũi quá hạn (dời lịch, không tiêm). Nhắc lịch tiêm gửi tới máy ba mẹ và người chăm sóc được chọn, không kèm tên bé. Cùng nuôi sửa mọi mũi và quản lý kế hoạch, Người chăm sóc ghi và sửa mũi của mình, Người thân có "Chăm sóc hằng ngày" chỉ xem.',
+  'qa.module.spending': 'Chi tiêu',
+  'qa.module.spending.about':
+    'Chi tiêu trong Tiện ích: khoản chi theo bé và theo tháng, ngân sách tháng với nhắc 80%, khoản định kỳ tự thêm, danh mục dùng chung cho cả gia đình, chi phí mũi tiêm, thống kê và xuất CSV. Nhập chi tiêu từ CSV, Excel, văn bản dán hoặc ảnh: xem trước, nhập trên máy chủ, báo qua email và thông báo, hoàn tác trong 7 ngày. Mặc định chỉ Cùng nuôi thấy; "Ghi khoản đã chi" và "Xem toàn bộ chi tiêu" được bật riêng cho từng người.',
+  'qa.module.firstAid': 'Sơ cứu',
+  'qa.module.firstAid.about':
+    'Sơ cứu trẻ em trong Tiện ích: các tình huống theo 4 nhóm, tìm kiếm, lưu tình huống, gọi 115 một chạm, đọc to hướng dẫn, nhịp ép CPR tự phát và bấm giờ cơn giật. Nội dung được soạn và duyệt trên cổng vận hành; app giữ trọn gói và hình trên máy nên dùng được khi không có mạng, kể cả khi app buộc phải cập nhật.',
+  'qa.module.autosave': 'Tự lưu kỷ niệm (beta iOS)',
+  'qa.module.autosave.about':
+    'Tự lưu gợi ý ảnh, video có bé từ thư viện iPhone. Ba mẹ chọn bé và ảnh mẫu, đồng ý cho nhận diện khuôn mặt ngay trên máy, rồi duyệt từng nhóm ảnh trước khi tải lên Kỷ niệm (mặc định Chỉ ba mẹ, không báo cho gia đình). Gồm kiểm tra khi mở app và khi chạy nền, dải trên Hôm nay, tối đa một thông báo mỗi ngày, tối đa 200 mục mỗi lần tải và một thông báo gia đình cho mỗi lần tải. Chỉ có trên iOS, cho Cùng nuôi, khi cờ Tự lưu được mở cho gia đình ở "Tính năng & phát hành › Ai được dùng".',
+  'qa.module.keepsakes': 'Thiệp cột mốc & video kỷ niệm',
+  'qa.module.keepsakes.about':
+    'Kỷ niệm 2.0: ba mẹ làm thiệp cột mốc theo dịp (7 ngày, 1 tháng, 100 ngày, 1 tuổi, lần đầu…) ngay trên máy, và video kỷ niệm 9:16 từ ảnh, chữ, nhạc do máy chủ tạo. Cả hai tự lưu vào Kỷ niệm ở chế độ Chỉ ba mẹ và hiện trong Câu chuyện. Gồm lối vào ở Ảnh, nút "+", ảnh đã chọn và thẻ nhắc dịp, thông báo khi video xong, Live Activity trên iPhone, một video mỗi lúc cho một bé, và bộ mẫu do portal quản lý (người thứ hai duyệt).',
+  'qa.module.notifications': 'Thông báo & email',
+  'qa.module.notifications.about':
+    'Mọi thông báo đẩy, thông báo trên máy và email Child Life gửi: ai nhận theo vai trò, nội dung (thông báo từ máy chủ không kèm ảnh và tên bé), chạm vào mở đâu, giờ yên lặng và giới hạn mỗi ngày. Kiểm tra cả công tắc Tôi › Thông báo, ngôn ngữ theo từng máy, gia đình nhiều bé và email từ hello@childlife.app (xác minh, link đăng nhập, lời mời, dung lượng, chủ hồ sơ, nhân sự). Người đã rời gia đình, danh tính tạm và máy đã đăng xuất không nhận gì.',
+  'qa.module.help': 'Trợ giúp, góp ý & cập nhật app',
+  'qa.module.help.about':
+    'Trợ giúp & liên hệ (gửi yêu cầu theo chủ đề, chẩn đoán chỉ khi đồng ý, xem lại các yêu cầu và góp ý đã gửi cùng trạng thái), Góp ý cho Child Life (ý tưởng, báo lỗi, ảnh chụp màn hình, cho phép liên hệ lại), báo lỗi nhanh sau khi chụp màn hình và lời mời đánh giá của hệ thống. Cập nhật ứng dụng do portal điều khiển: bắt buộc cập nhật (vẫn mở được Sơ cứu), thông báo có bản mới, "Có gì mới" sau khi cập nhật và dòng phiên bản trong Tôi.',
 
   // v1.0 shell, Nhân sự & phân quyền, re-run approval (P-134, P-135, P-139)
   'nav.analytics': 'Phân tích',
@@ -1013,6 +1034,7 @@ const vi: Record<string, string> = {
   'staff.roleTitle': 'Vai trò · {name}',
   'staff.group.overview': 'TỔNG QUAN',
   'staff.group.ops': 'VẬN HÀNH',
+  'staff.group.content': 'NỘI DUNG',
   'staff.group.system': 'HỆ THỐNG',
   'staff.group.develop': 'PHÁT TRIỂN',
   'staff.invites.empty': 'Không có lời mời nào đang chờ.',
@@ -1374,6 +1396,15 @@ const vi: Record<string, string> = {
     'Cột: from_day, to_day, pick1, pick2, pick3, pick4, step_ml · to_day để trống ở dòng cuối.',
   'reference.csvRows': '{name} · {n} dòng hợp lệ',
   'reference.csvError': 'Dòng {line}: {message}',
+  'reference.csv.unsupported': 'Bảng này không nhập bằng CSV.',
+  'reference.csv.header': 'hàng đầu phải là {cols}',
+  'reference.csv.lowMedianHigh': 'P3 phải nhỏ hơn trung vị, trung vị nhỏ hơn P97',
+  'reference.csv.toDay': 'ngày kết thúc phải sau ngày bắt đầu',
+  'reference.csv.picks': 'bốn mức gợi ý phải tăng dần',
+  'reference.csv.empty': 'tệp không có dòng dữ liệu nào',
+  'reference.csv.bandsGap': 'khoảng tuổi phải bắt đầu đúng chỗ dòng trên kết thúc',
+  'reference.csv.agesOrder': 'tuổi phải tăng dần, không trùng',
+  'reference.csv.invalid': 'giá trị không hợp lệ (cần số)',
   'reference.csvDiffers': 'Khác bản hiện tại {n} dòng',
   'reference.saveDraft': 'Lưu bản nháp',
   'reference.editTitle': 'Sửa bảng',
@@ -1399,6 +1430,22 @@ const vi: Record<string, string> = {
   'audit.family.view': 'Mở hồ sơ gia đình',
   'audit.family.transferOpen': 'Mở yêu cầu chuyển chủ gia đình',
   'audit.family.transferCancel': 'Huỷ yêu cầu chuyển chủ gia đình',
+  'audit.content.firstAid.draft': 'Lưu bản nháp Sơ cứu',
+  'audit.content.firstAid.submit': 'Gửi duyệt nội dung Sơ cứu',
+  'audit.content.firstAid.approve': 'Duyệt và xuất bản Sơ cứu',
+  'audit.content.firstAid.reject': 'Từ chối bản Sơ cứu',
+  'audit.content.firstAid.discard': 'Bỏ bản nháp Sơ cứu',
+  'audit.content.firstAid.rollback': 'Quay về bản Sơ cứu trước',
+  'audit.content.firstAid.image': 'Tải ảnh lên cho Sơ cứu',
+  'audit.content.keepsakes.draft': 'Lưu bản nháp mẫu kỷ niệm',
+  'audit.content.keepsakes.submit': 'Gửi duyệt mẫu kỷ niệm',
+  'audit.content.keepsakes.approve': 'Duyệt và xuất bản mẫu kỷ niệm',
+  'audit.content.keepsakes.reject': 'Từ chối mẫu kỷ niệm',
+  'audit.content.keepsakes.discard': 'Bỏ bản nháp mẫu kỷ niệm',
+  'audit.content.keepsakes.rollback': 'Quay về mẫu kỷ niệm trước',
+  'audit.content.keepsakes.asset': 'Tải tệp cho mẫu kỷ niệm',
+  'audit.release.publish': 'Xuất bản cập nhật ứng dụng',
+  'audit.release.image': 'Tải ảnh cho “Có gì mới”',
   'audit.analytics.export': 'Xuất CSV phân tích',
   'audit.reference.draft': 'Lưu bản nháp dữ liệu tham chiếu',
   'audit.reference.submit': 'Gửi duyệt dữ liệu tham chiếu',
@@ -1919,7 +1966,7 @@ const en: Record<string, string> = {
   'state.retry': 'Try again',
   'reason.label': 'Reason (written to the action log)',
   'reason.labelRequired': 'Reason (required, written to the log)',
-  'error.role': "Your role can't do this yet. Ask a team lead if needed.",
+  'error.role': "Your role can't do this yet. Ask an Admin or Owner if needed.",
   'error.notStaff': 'This session no longer has operations access. Please sign in again.',
   'error.alreadyClaimed': 'Someone has just claimed this request.',
   'error.alreadyDecided': 'Someone else has just approved or declined this request.',
@@ -1953,7 +2000,7 @@ const en: Record<string, string> = {
     'If {email} has an operations account, the email arrives in a few minutes.',
   'signIn.useOther': 'Use another email',
   'signIn.notice.denied':
-    "This account doesn't have operations access. Ask a team lead to grant it.",
+    "This account doesn't have operations access. Ask an Admin or Owner to invite you.",
   'signIn.notice.linkInvalid': 'This sign-in link has expired or was already used. Send a new one.',
   'signIn.error.credentials': 'Email or password is incorrect.',
   'signIn.error.email': "That email address doesn't look right.",
@@ -2328,7 +2375,7 @@ const en: Record<string, string> = {
   'storage.guide5': 'One baby, steady use',
   'storage.guide10': 'Two or more babies, or lots of video',
   'storage.custom': 'Custom',
-  'storage.guideCustom': 'Above 20 GB needs a team lead',
+  'storage.guideCustom': 'Above 20 GB needs someone who can approve (Admin, Owner)',
   'storage.lock':
     "Approval only changes the quota. It never opens the family's photos, videos or records.",
   'storage.grantTitle': 'Approve more storage for {code}',
@@ -2338,7 +2385,7 @@ const en: Record<string, string> = {
   'storage.amount': 'Extra storage',
   'storage.customGb': 'Extra GB',
   'storage.leadNeeded':
-    'Above 20 GB or a custom amount needs a team lead. Ask a team lead to open this request.',
+    'Above 20 GB or a custom amount needs someone who can approve. Ask an Admin or Owner to open this request.',
   'storage.familyMessage': 'Message to the family',
   'storage.grantMessage':
     "We've added more storage for your family. Wishing you many more lovely moments with your little one!",
@@ -2495,7 +2542,7 @@ const en: Record<string, string> = {
   'features.switches': 'Feature switches',
   'features.lock':
     'Switches only turn features on or off; they never change who can see what. With uploads off, families still log care, see old memories, and export or delete data as usual.',
-  'features.toggleRole': 'Only Engineering or a team lead can turn features on or off',
+  'features.toggleRole': 'Only an Engineer, Admin or Owner can turn features on or off',
   'features.rollout': 'Rollout · AI story suggestions',
   'features.guardReports': 'Inappropriate-content reports',
   'features.guardReportsValue': '{n} reports · below 0.1%',
@@ -2636,7 +2683,7 @@ const en: Record<string, string> = {
   'qa.run.count': '{status}: {n}',
   'qa.run.none': 'No test run yet. Create one for the build under test to start recording results.',
   'qa.run.noneAsk':
-    'No test run yet. Ask QA or Engineering to create one for the build under test.',
+    'No test run yet. Ask QA or an Engineer to create one for the build under test.',
   'qa.nav.label': 'Handbook contents',
   'qa.nav.start': 'Start here',
   'qa.nav.all': 'All test cases',
@@ -2756,7 +2803,7 @@ const en: Record<string, string> = {
   'qa.start.accounts.guest':
     '<b>Temporary identity and guests</b> — an invitee who chose "Vào ngay" (no account yet), or someone opening the website or a story link without signing in.',
   'qa.start.accounts.staff':
-    '<b>Staff</b> — portal accounts created with create-staff.mjs, with the Operations, Support, Engineering, Team lead or QA role (QA only reaches this handbook).',
+    '<b>Staff</b> — portal accounts invited in "Staff & permissions" (the first Owner is created with create-staff.mjs), with the Owner, Admin, Operations, Support, Engineer, Analyst, Expert or QA role (QA only reaches this handbook).',
   'qa.start.accounts.devices':
     'Mobile cases must pass on both iOS and Android, in both Light and Night care. Put the device and OS version in a comment when something fails.',
   'qa.start.bugs.title': 'Reporting a bug',
@@ -2814,7 +2861,28 @@ const en: Record<string, string> = {
     'The public landing site (vi/en): content sections, FAQ, app download buttons, SEO and share images, and policy pages.',
   'qa.module.portal': 'Staff portal',
   'qa.module.portal.about':
-    'The staff portal: sign-in, sign-out after 30 idle minutes, Overview, Support, Storage requests, Data requests, System & AI, Features & releases and the audit log — only masked emails and anonymous family codes.',
+    'The staff portal (the session stays until sign-out): Overview, Analytics, Families, Support and feedback, Storage requests, Data requests, Reference data, Content › First aid and keepsake templates, System & AI, Features & releases, App updates, Staff & permissions, the action log and the QA handbook. Each role sees only what it is granted; only masked emails and anonymous family codes; sensitive steps need a second person to approve.',
+  'qa.module.vaccines': 'Vaccination book',
+  'qa.module.vaccines.about':
+    "The vaccination book in Chăm sóc: a reference schedule of 30 doses from birth to 24 months (33 on the 5-in-1 path), first-time setup, quick or full logging with a photo of the book, and overdue doses (reschedule or decline). Reminder pushes go to the chosen parents and caregivers, without the baby's name. Co-parents edit any dose and own the plan, caregivers log and edit their own doses, relatives with daily care only view.",
+  'qa.module.spending': 'Spending',
+  'qa.module.spending.about':
+    'Spending in Tiện ích: expenses per baby and per month, a monthly budget with an 80% alert, recurring items added automatically, family-wide categories, vaccine costs, statistics and CSV export. Importing from CSV, Excel, pasted text or photos: a preview, a server-side import, an email and a push when done, and undo within 7 days. Only co-parents see spending by default; "Ghi khoản đã chi" and "Xem toàn bộ chi tiêu" are turned on per person.',
+  'qa.module.firstAid': 'First aid',
+  'qa.module.firstAid.about':
+    'Child first aid in Tiện ích: situations in 4 groups, search, saved situations, one-tap 115, the guide read aloud, a CPR beat that plays by itself and a seizure timer. Content is written and approved in the staff portal; the app keeps the whole guide and its pictures on the phone, so it works offline, even while an update is required.',
+  'qa.module.autosave': 'Auto-save memories (iOS beta)',
+  'qa.module.autosave.about':
+    'Auto-save suggests photos and videos from the iPhone library that may show the baby. A parent picks the baby and sample photos, agrees to face recognition on the phone, and reviews grouped suggestions before anything is uploaded to Memories (Parents only and no family notice by default). It covers checks on opening and in the background, the Today banner, at most one notification a day, at most 200 items per upload and one family notice per upload. iOS only, for co-parents, when the Auto-save flag is on for the family in "Features & releases › Who can use it".',
+  'qa.module.keepsakes': 'Milestone cards & memory videos',
+  'qa.module.keepsakes.about':
+    'Memories 2.0: parents make milestone cards for an occasion (7 days, 1 month, 100 days, 1 year, firsts) on the phone, and 9:16 memory videos from photos, text and music rendered on the server. Both are saved to Memories as Parents only and listed in Stories. It covers the entries on Photos, the "+" sheet, a selection and the occasion nudges, the ready notification, the iPhone Live Activity, one video at a time per baby, and the template set managed in the portal (approved by a second person).',
+  'qa.module.notifications': 'Notifications & email',
+  'qa.module.notifications.about':
+    'Every push, on-device notification and email Child Life sends: who gets it by role, what it says (server pushes never carry photos or the baby’s name), where a tap leads, quiet hours and daily limits. Also covers the Me › Notifications switches, language per device, families with several babies and mail from hello@childlife.app (verification, sign-in links, invites, storage, profile ownership, staff). People who left the family, temporary identities and signed-out devices get nothing.',
+  'qa.module.help': 'Help, feedback & app updates',
+  'qa.module.help.about':
+    'Help & contact (requests by topic, diagnostics only with consent, and the list of requests and feedback already sent with their status), Feedback for Child Life (idea, bug, screenshot, allow a reply), the quick bug report after a screenshot and the system review prompt. App updates driven from the portal: a required update (first aid stays reachable), the new-version sheet, "What\'s new" after an update and the version row in Me.',
 
   // v1.0 shell, Nhân sự & phân quyền, re-run approval (P-134, P-135, P-139)
   'nav.analytics': 'Analytics',
@@ -2904,6 +2972,7 @@ const en: Record<string, string> = {
   'staff.roleTitle': 'Role · {name}',
   'staff.group.overview': 'OVERVIEW',
   'staff.group.ops': 'OPERATIONS',
+  'staff.group.content': 'CONTENT',
   'staff.group.system': 'SYSTEM',
   'staff.group.develop': 'DEVELOPMENT',
   'staff.invites.empty': 'No pending invitations.',
@@ -3267,6 +3336,15 @@ const en: Record<string, string> = {
     'Columns: from_day, to_day, pick1, pick2, pick3, pick4, step_ml · leave to_day empty on the last row.',
   'reference.csvRows': '{name} · {n} valid rows',
   'reference.csvError': 'Line {line}: {message}',
+  'reference.csv.unsupported': 'This table cannot be imported from CSV.',
+  'reference.csv.header': 'the first row must be {cols}',
+  'reference.csv.lowMedianHigh': 'P3 must be below the median, and the median below P97',
+  'reference.csv.toDay': 'the end day must be after the start day',
+  'reference.csv.picks': 'the four picks must increase',
+  'reference.csv.empty': 'the file has no data rows',
+  'reference.csv.bandsGap': 'each age band must start where the one above ends',
+  'reference.csv.agesOrder': 'ages must increase with no repeats',
+  'reference.csv.invalid': 'invalid value (a number is expected)',
   'reference.csvDiffers': 'Differs from the current table in {n} rows',
   'reference.saveDraft': 'Save draft',
   'reference.editTitle': 'Edit table',
@@ -3294,6 +3372,22 @@ const en: Record<string, string> = {
   'audit.family.view': 'Opened a family profile',
   'audit.family.transferOpen': 'Opened an ownership transfer request',
   'audit.family.transferCancel': 'Cancelled an ownership transfer request',
+  'audit.content.firstAid.draft': 'Saved a first-aid draft',
+  'audit.content.firstAid.submit': 'Sent first-aid content for approval',
+  'audit.content.firstAid.approve': 'Approved and published first aid',
+  'audit.content.firstAid.reject': 'Rejected a first-aid version',
+  'audit.content.firstAid.discard': 'Discarded a first-aid draft',
+  'audit.content.firstAid.rollback': 'Rolled first aid back',
+  'audit.content.firstAid.image': 'Uploaded a first-aid image',
+  'audit.content.keepsakes.draft': 'Saved a keepsake template draft',
+  'audit.content.keepsakes.submit': 'Sent keepsake templates for approval',
+  'audit.content.keepsakes.approve': 'Approved and published keepsake templates',
+  'audit.content.keepsakes.reject': 'Rejected keepsake templates',
+  'audit.content.keepsakes.discard': 'Discarded a keepsake template draft',
+  'audit.content.keepsakes.rollback': 'Rolled keepsake templates back',
+  'audit.content.keepsakes.asset': 'Uploaded a keepsake template file',
+  'audit.release.publish': 'Published an app update',
+  'audit.release.image': 'Uploaded a “What’s new” image',
   'audit.analytics.export': 'Exported analytics CSV',
   'audit.reference.draft': 'Saved a reference data draft',
   'audit.reference.submit': 'Submitted reference data for approval',

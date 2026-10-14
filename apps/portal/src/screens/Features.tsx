@@ -393,6 +393,22 @@ export function AuditActionText({
     'reference.reject',
     'reference.discard',
     'reference.rollback',
+    'content.firstAid.draft',
+    'content.firstAid.submit',
+    'content.firstAid.approve',
+    'content.firstAid.reject',
+    'content.firstAid.discard',
+    'content.firstAid.rollback',
+    'content.firstAid.image',
+    'content.keepsakes.draft',
+    'content.keepsakes.submit',
+    'content.keepsakes.approve',
+    'content.keepsakes.reject',
+    'content.keepsakes.discard',
+    'content.keepsakes.rollback',
+    'content.keepsakes.asset',
+    'release.publish',
+    'release.image',
   ];
   return (
     <FormattedMessage

@@ -19,12 +19,20 @@ import { FamilyDetailView, FamilyListView, TransferDialog } from '../src/screens
 import { RerunDialog } from '../src/screens/Jobs';
 import {
   BottleTable,
+  CsvError,
   GrowthTable,
   ReferenceFor,
   VaccineTable,
   bandLabel,
 } from '../src/screens/Reference';
-import { MemberTable, RoleMatrix, maxLevel, memberActions, scopeOf } from '../src/screens/Staff';
+import {
+  MemberTable,
+  RoleMatrix,
+  functionGroups,
+  maxLevel,
+  memberActions,
+  scopeOf,
+} from '../src/screens/Staff';
 import { Sidebar } from '../src/Shell';
 import {
   bottleQuickPicksV1,
@@ -255,6 +263,9 @@ describe('Nhân sự & phân quyền (A18–A21)', () => {
     expect(html).toContain('PHÁT TRIỂN Phát triển · Sổ tay kiểm thử');
     expect(html).toContain('Toàn quyền');
     expect(html).toContain('Xem · che');
+    // Every portal function has its row, Sơ cứu included (D-058).
+    expect(html).toContain('NỘI DUNG Nội dung · Sơ cứu');
+    expect(functionGroups.flatMap((g) => g.fns).sort()).toEqual([...staffFunctions].sort());
   });
 
   it('editing never grants above the editor, the role ceiling, or people management', () => {
@@ -561,6 +572,18 @@ describe('Dữ liệu tham chiếu (C01–C04)', () => {
     );
   });
 
+  it('CSV row problems read in words, not parser codes (D-012)', () => {
+    expect(text(render(<CsvError line={3} message="low < median < high" />))).toContain(
+      'Dòng 3: P3 phải nhỏ hơn trung vị, trung vị nhỏ hơn P97',
+    );
+    expect(text(render(<CsvError line={1} message="header:age,low,median,high" />))).toContain(
+      'Dòng 1: hàng đầu phải là age,low,median,high',
+    );
+    expect(
+      text(render(<CsvError line={4} message="Invalid input: expected number" />, ['admin'], 'en')),
+    ).toContain('Line 4: invalid value (a number is expected)');
+  });
+
   it('a tab switch waits for the new table instead of drawing it with the old rows', () => {
     const lengthView = {
       dataset: 'growth.length',
@@ -639,7 +662,9 @@ describe('two-person re-run (P-139) and the v1.0 sidebar', () => {
     );
     expect(sidebar(['analyst'])).toContain('Tổng quan Phân tích PHÁT TRIỂN Sổ tay kiểm thử');
     expect(sidebar(['analyst'])).not.toContain('Gia đình');
-    expect(sidebar(['expert'])).toContain('VẬN HÀNH Dữ liệu tham chiếu NỘI DUNG Sơ cứu Mẫu kỷ niệm PHÁT TRIỂN');
+    expect(sidebar(['expert'])).toContain(
+      'VẬN HÀNH Dữ liệu tham chiếu NỘI DUNG Sơ cứu Mẫu kỷ niệm PHÁT TRIỂN',
+    );
     expect(sidebar(['admin'])).toContain('Admin');
   });
 });

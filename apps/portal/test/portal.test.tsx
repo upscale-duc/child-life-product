@@ -181,6 +181,7 @@ describe('message catalogs (D-012)', () => {
             {
               n: 1,
               p: 1,
+              cols: 'x',
               babies: 1,
               people: 1,
               flag: 'x',
@@ -578,7 +579,7 @@ describe('A04/A05 storage', () => {
     );
     expect(support).not.toContain('Từ chối Duyệt');
   });
-  it('more than 20 GB or a custom amount needs a team lead (P-120)', () => {
+  it('more than 20 GB or a custom amount needs the Duyệt level (P-120)', () => {
     expect(needsLead(5)).toBe(false);
     expect(needsLead(20)).toBe(false);
     expect(needsLead(15)).toBe(true);
@@ -588,7 +589,7 @@ describe('A04/A05 storage', () => {
       <DecideDialog row={big} kind="grant" onClose={() => undefined} onDone={() => undefined} />,
       ['ops'],
     );
-    expect(text(ops)).toContain('cần trưởng nhóm duyệt');
+    expect(text(ops)).toContain('cần người có quyền Duyệt');
     expect(ops).toMatch(/<button[^>]*disabled=""[^>]*>Duyệt và báo gia đình/);
     const lead = text(
       render(
@@ -596,7 +597,7 @@ describe('A04/A05 storage', () => {
         ['lead'],
       ),
     );
-    expect(lead).not.toContain('Nhờ trưởng nhóm');
+    expect(lead).not.toContain('Nhờ Admin hoặc Owner');
     expect(lead).toContain('10 GB → 40 GB');
   });
   it('a routine grant starts on the requested amount with the new quota shown', () => {

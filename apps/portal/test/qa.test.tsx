@@ -209,7 +209,7 @@ describe('run panel', () => {
       ),
     );
     expect(html).not.toContain('Lượt kiểm thử mới');
-    expect(html).toContain('Nhờ Kiểm thử hoặc Kỹ thuật tạo lượt');
+    expect(html).toContain('Nhờ Kiểm thử hoặc Kỹ sư tạo lượt');
   });
 });
 

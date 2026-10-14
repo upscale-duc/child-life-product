@@ -828,10 +828,7 @@ export function CsvDialog({
           {parsed.errors.slice(0, 8).map((e, i) => (
             <li key={i} className="steps__item steps__item--failed">
               <span aria-hidden="true">✕</span>
-              <FormattedMessage
-                id="reference.csvError"
-                values={{ line: e.line, message: e.message }}
-              />
+              <CsvError line={e.line} message={e.message} />
             </li>
           ))}
           {merged && (
@@ -1147,4 +1144,24 @@ function EditDialog({
       </div>
     </Modal>
   );
+}
+
+/** The parser's row problems (codes from packages/contracts/src/reference.ts) in words (D-012). */
+const csvMessage: Record<string, string> = {
+  'csv-unsupported': 'reference.csv.unsupported',
+  'low < median < high': 'reference.csv.lowMedianHigh',
+  'toDay > fromDay': 'reference.csv.toDay',
+  'picks increase': 'reference.csv.picks',
+  empty: 'reference.csv.empty',
+  'bands-gap': 'reference.csv.bandsGap',
+  'ages-order': 'reference.csv.agesOrder',
+};
+
+export function CsvError({ line, message }: { line: number; message: string }) {
+  const intl = useIntl();
+  const id = message.startsWith('header:')
+    ? 'reference.csv.header'
+    : (csvMessage[message] ?? 'reference.csv.invalid');
+  const text = intl.formatMessage({ id }, { cols: message.slice('header:'.length) });
+  return <FormattedMessage id="reference.csvError" values={{ line, message: text }} />;
 }

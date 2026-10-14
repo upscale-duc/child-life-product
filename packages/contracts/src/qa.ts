@@ -9,7 +9,7 @@ import { z } from 'zod';
  * carries who and when instead).
  */
 
-/** Modules in the order the handbook lists them (follows the Figma coverage checklist §B–§G). */
+/** Modules in the order the handbook lists them (the app's features first, then platform and portal). */
 export const qaModules = [
   'onboarding',
   'baby',
@@ -19,12 +19,23 @@ export const qaModules = [
   'care',
   'history',
   'reminders',
+  // v1.1 (review 2026-10-14): Sổ tiêm chủng, Chi tiêu, Sơ cứu.
+  'vaccines',
+  'spending',
+  'firstAid',
   'offline',
   'widgets',
   'memories',
+  // Tự lưu kỷ niệm (D-066) and Thiệp cột mốc & Video kỷ niệm (D-068).
+  'autosave',
   'albums',
   'stories',
+  'keepsakes',
+  // Every push and email the product sends (owner, 2026-10-14).
+  'notifications',
   'me',
+  // Trợ giúp, Góp ý (D-065) and app updates in the app (D-061).
+  'help',
   'platform',
   'landing',
   'portal',
@@ -41,12 +52,19 @@ export const qaModulePrefix: Record<QaModule, string> = {
   care: 'CARE',
   history: 'HIST',
   reminders: 'REM',
+  vaccines: 'VAX',
+  spending: 'SPEND',
+  firstAid: 'AID',
   offline: 'SYNC',
   widgets: 'WID',
   memories: 'MEM',
+  autosave: 'AUTO',
   albums: 'ALB',
   stories: 'STORY',
+  keepsakes: 'KEEP',
+  notifications: 'NOTI',
   me: 'ME',
+  help: 'HELP',
   platform: 'PLAT',
   landing: 'WEB',
   portal: 'ADM',
