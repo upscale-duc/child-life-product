@@ -115,6 +115,19 @@ service cloud.firestore {
       allow get: if signedIn() && resource.data.ownerUid == request.auth.uid;
       allow list, write: if false;
 
+      // Premium & Cá nhân hoá (plan §6.1, M04): entitlement grants and quota ledgers are written by
+      // Functions only and never read by clients; the app asks `getCapabilities`. A client flag
+      // such as premium=true grants nothing.
+      match /grants/{grantId} {
+        allow read, write: if false;
+      }
+      match /quota/{windowKey} {
+        allow read, write: if false;
+      }
+      match /quotaOps/{opKey} {
+        allow read, write: if false;
+      }
+
       // Chi tiêu categories, shared by the family's babies (8m–8o, P-140): read by whoever may
       // see or record spending for one of them; Cùng nuôi add, edit, reorder and hide. Delete
       // moves expenses across babies, so it goes through deleteSpendingCategory (Functions).

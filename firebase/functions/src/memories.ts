@@ -15,7 +15,8 @@ import {
   flagsSchema,
   isFlagOnForFamily,
   keepsakePublicCatalogSchema,
-  keepsakeTemplateAllowed,
+  keepsakeNeedsPremiumCheck,
+  keepsakeTemplateAccess,
   limitsSchema,
   memoryLimits,
   reserveUploadsRequestSchema,
@@ -36,6 +37,7 @@ import {
  */
 
 import { familyNotice, recomputeAlbum, recomputeEffective } from './albums.js';
+import { hasPremiumTemplates } from './entitlements.js';
 import { familyBucket } from './features.js';
 
 export class MemoryError extends Error {
@@ -203,14 +205,21 @@ export async function createMemory(
       const t = pub.success
         ? pub.data.templates.find((x) => x.id === generated.templateId)
         : undefined;
-      if (
-        !pub.success ||
-        !t ||
-        t.kind !== 'card' ||
-        generated.templateVersion > t.version ||
-        !keepsakeTemplateAllowed(t, pub.data.premium)
-      ) {
+      if (!pub.success || !t || t.kind !== 'card' || generated.templateVersion > t.version) {
         throw new MemoryError('failed-precondition', 'template-unavailable');
+      }
+      // Cao cấp in `subscribers` mode needs the family's `templates.premium` (Q1, MO02, E03).
+      const access = keepsakeTemplateAccess(
+        t,
+        pub.data.premium,
+        keepsakeNeedsPremiumCheck(t, pub.data.premium) &&
+          (await hasPremiumTemplates(db, uid, req.babyId, now)),
+      );
+      if (access === 'unavailable') {
+        throw new MemoryError('failed-precondition', 'template-unavailable');
+      }
+      if (access === 'premium-required') {
+        throw new MemoryError('permission-denied', 'PREMIUM_REQUIRED');
       }
     }
   }

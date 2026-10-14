@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import { deleteApp, initializeApp, type App } from 'firebase-admin/app';
-import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { Timestamp, getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import {
+  defaultEntitlementsConfig,
   keepsakeChapter1Videos,
   keepsakeSeedV1,
   type KeepsakeJobInput,
@@ -243,6 +244,51 @@ describe('requestMemoryStory', () => {
     expect(await reason(requestMemoryStory(db, null, 'mom', request(), now))).toBe(
       'template-unavailable',
     );
+  });
+
+  it('subscribers mode: a Cao cấp video needs templates.premium, never from Beta A (Q1, E03)', async () => {
+    await db.doc('publicConfig/keepsakes').set({
+      version: 'ks_test',
+      templates: keepsakeSeedV1.templates.map((t) =>
+        t.id === 'video_first_month' ? { ...t, tier: 'premium' } : t,
+      ),
+      premium: { access: 'subscribers', badges: true },
+    });
+    await db.doc(`families/${familyId}`).set({ country: 'VN' }, { merge: true });
+    await db.doc('config/entitlements').set({
+      ...defaultEntitlementsConfig,
+      regions: { advanced: ['VN'] },
+      betaCampaigns: [
+        {
+          id: 'beta-a',
+          capabilities: ['personalization.cross_module', 'rhythm.advanced', 'ai.assistance'],
+          validFrom: '2026-10-01T00:00:00Z',
+          validUntil: '2026-12-01T00:00:00Z',
+          countries: [],
+          scope: 'all',
+          percent: 0,
+        },
+      ],
+    });
+    expect(await reason(requestMemoryStory(db, null, 'mom', request(), now))).toBe(
+      'PREMIUM_REQUIRED',
+    );
+    await db.doc(`families/${familyId}/grants/promo_test`).set({
+      familyId,
+      source: 'promo',
+      status: 'active',
+      environment: 'test',
+      capabilities: ['templates.premium'],
+      validFrom: Timestamp.fromDate(new Date('2026-10-01T00:00:00Z')),
+      validUntil: Timestamp.fromDate(new Date('2026-11-01T00:00:00Z')),
+      billingOwnerUid: null,
+      provider: 'staff',
+      sourceRef: null,
+      campaignId: 'audit_test',
+      autoRenew: null,
+      updatedAt: Timestamp.fromDate(new Date('2026-10-01T00:00:00Z')),
+    });
+    expect(await reason(requestMemoryStory(db, null, 'mom', request(), now))).toBe('ok');
   });
 });
 

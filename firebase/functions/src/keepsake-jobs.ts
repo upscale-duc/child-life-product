@@ -9,7 +9,8 @@ import {
   keepsakePublicCatalogSchema,
   keepsakeJobLimits,
   keepsakeJobLiveSchema,
-  keepsakeTemplateAllowed,
+  keepsakeNeedsPremiumCheck,
+  keepsakeTemplateAccess,
   limitsSchema,
   defaultLimits,
   memoryStoryRequestSchema,
@@ -21,6 +22,7 @@ import {
   type KeepsakeTemplate,
 } from '@child-life/contracts';
 import { FieldValue, Timestamp, type Firestore } from 'firebase-admin/firestore';
+import { hasPremiumTemplates } from './entitlements.js';
 import { familyBucket } from './features.js';
 import { mediaPaths, type ImageOps, type MediaStore } from './memories.js';
 
@@ -136,14 +138,21 @@ export async function requestMemoryStory(
   const live = catalog.success
     ? catalog.data.templates.find((t) => t.id === req.templateId)
     : undefined;
-  if (
-    !catalog.success ||
-    !live ||
-    live.kind !== 'video' ||
-    req.templateVersion > live.version ||
-    !keepsakeTemplateAllowed(live, catalog.data.premium)
-  ) {
+  if (!catalog.success || !live || live.kind !== 'video' || req.templateVersion > live.version) {
     throw new KeepsakeJobError('failed-precondition', 'template-unavailable');
+  }
+  // Cao cấp in `subscribers` mode needs the family's `templates.premium` (Q1, MO02, E03).
+  const access = keepsakeTemplateAccess(
+    live,
+    catalog.data.premium,
+    keepsakeNeedsPremiumCheck(live, catalog.data.premium) &&
+      (await hasPremiumTemplates(db, uid, req.babyId, now)),
+  );
+  if (access === 'unavailable') {
+    throw new KeepsakeJobError('failed-precondition', 'template-unavailable');
+  }
+  if (access === 'premium-required') {
+    throw new KeepsakeJobError('permission-denied', 'PREMIUM_REQUIRED');
   }
   // An older version still on the phone renders as the published one (only one is kept live).
   const template: KeepsakeTemplate = live;

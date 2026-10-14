@@ -8,6 +8,8 @@ import {
   keepsakeSeedV1,
   keepsakeTemplateSchema,
   listTemplates,
+  keepsakeNeedsPremiumCheck,
+  keepsakeTemplateAccess,
 } from '../src/index.js';
 
 const round = keepsakeSeedV1.templates.find((t) => t.id === 'card_round')!;
@@ -183,5 +185,26 @@ describe('Chapter 01 set (docs/product/remember-2-templates.md)', () => {
     expect(keepsakeBirthStats(3.2, 50, 'vi')).toBe('3,2 kg · 50 cm');
     expect(keepsakeBirthStats(3.2, null, 'en')).toBe('3.2 kg');
     expect(keepsakeBirthStats(null, null, 'en')).toBe(null);
+  });
+});
+
+describe('keepsakeTemplateAccess (Q1, D-068 #8)', () => {
+  const free = { tier: 'free' as const };
+  const premium = { tier: 'premium' as const };
+  const mode = (access: 'everyone' | 'hidden' | 'subscribers') => ({ access, badges: true });
+
+  it('free templates are always ok; everyone mode keeps the beta open', () => {
+    for (const m of ['everyone', 'hidden', 'subscribers'] as const) {
+      expect(keepsakeTemplateAccess(free, mode(m), false)).toBe('ok');
+    }
+    expect(keepsakeTemplateAccess(premium, mode('everyone'), false)).toBe('ok');
+  });
+
+  it('hidden is unavailable; subscribers needs templates.premium', () => {
+    expect(keepsakeTemplateAccess(premium, mode('hidden'), true)).toBe('unavailable');
+    expect(keepsakeTemplateAccess(premium, mode('subscribers'), false)).toBe('premium-required');
+    expect(keepsakeTemplateAccess(premium, mode('subscribers'), true)).toBe('ok');
+    expect(keepsakeNeedsPremiumCheck(premium, mode('subscribers'))).toBe(true);
+    expect(keepsakeNeedsPremiumCheck(free, mode('subscribers'))).toBe(false);
   });
 });

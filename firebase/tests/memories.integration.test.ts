@@ -3,7 +3,7 @@ import { deleteApp, initializeApp, type App } from 'firebase-admin/app';
 import { Timestamp, getFirestore, type Firestore } from 'firebase-admin/firestore';
 import sharp from 'sharp';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { keepsakeSeedV1 } from '@child-life/contracts';
+import { defaultEntitlementsConfig, keepsakeSeedV1 } from '@child-life/contracts';
 import { sharpImages } from '../functions/src/images.js';
 import {
   cancelUploads,
@@ -548,7 +548,7 @@ describe('Thiệp cột mốc saved to Kỷ niệm (D-068)', () => {
     notice: null,
   });
   /** The catalog as published from the portal: card_round at version 2. */
-  const publish = (access: 'everyone' | 'hidden' = 'everyone') =>
+  const publish = (access: 'everyone' | 'hidden' | 'subscribers' = 'everyone') =>
     db.doc('publicConfig/keepsakes').set({
       version: 'ks_20261013_01',
       templates: keepsakeSeedV1.templates.map((t) =>
@@ -622,5 +622,53 @@ describe('Thiệp cột mốc saved to Kỷ niệm (D-068)', () => {
     await publish('hidden');
     await expect(save(blush)).rejects.toMatchObject({ reason: 'template-unavailable' });
     await save(generated);
+  });
+
+  it('subscribers mode: Cao cấp needs templates.premium; Beta A never opens it (Q1, E03, MO02)', async () => {
+    await db.doc('config/flags').set({ media_upload: on(true), milestone_cards: on(true) });
+    await db.doc(`families/${familyId}`).set({ country: 'VN' }, { merge: true });
+    await db.doc('config/entitlements').set({
+      ...defaultEntitlementsConfig,
+      regions: { advanced: ['VN'] },
+      betaCampaigns: [
+        {
+          id: 'beta-a',
+          capabilities: ['personalization.cross_module', 'rhythm.advanced', 'ai.assistance'],
+          validFrom: '2026-10-01T00:00:00Z',
+          validUntil: '2026-12-01T00:00:00Z',
+          countries: [],
+          scope: 'all',
+          percent: 0,
+        },
+      ],
+    });
+    await publish('subscribers');
+    const save = (g: Record<string, unknown>) =>
+      createMemory(db, 'mom', request([photo(id('med'), 1000)], { generated: g }), now);
+    const blush = { ...generated, templateId: 'card_blush', templateVersion: 1 };
+    await expect(save(blush)).rejects.toMatchObject({ reason: 'PREMIUM_REQUIRED' });
+    // A free template never needs a plan.
+    await save(generated);
+    await db.doc(`families/${familyId}/grants/paid_test`).set({
+      familyId,
+      source: 'paid',
+      status: 'active',
+      environment: 'test',
+      capabilities: [
+        'personalization.cross_module',
+        'rhythm.advanced',
+        'ai.assistance',
+        'templates.premium',
+      ],
+      validFrom: Timestamp.fromDate(new Date('2026-10-01T00:00:00Z')),
+      validUntil: Timestamp.fromDate(new Date('2026-11-01T00:00:00Z')),
+      billingOwnerUid: 'mom',
+      provider: 'apple',
+      sourceRef: 'apple_test',
+      campaignId: null,
+      autoRenew: true,
+      updatedAt: Timestamp.fromDate(new Date('2026-10-01T00:00:00Z')),
+    });
+    await save(blush);
   });
 });

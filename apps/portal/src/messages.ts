@@ -694,6 +694,23 @@ const vi: Record<string, string> = {
   'flag.memory_story.desc': 'Kỷ niệm 2.0: video 9:16 từ ảnh, chữ và nhạc, tạo trên máy chủ',
   'flag.memory_story.offEffect':
     'Ẩn Video kỷ niệm và không nhận yêu cầu mới; video đã có không đổi.',
+  'flag.rhythm': 'Nhịp lớn lên (lịch tham khảo & check-in)',
+  'flag.rhythm.desc':
+    'Lớp miễn phí: lịch tham khảo theo ngày dự sinh và ghi nhận "Hôm nay con có gì khác?"',
+  'flag.rhythm.offEffect':
+    'Ẩn Nhịp lớn lên và không nhận ghi nhận mới; ghi nhận đã lưu vẫn xem được.',
+  'flag.personalization': 'Gợi ý theo nhu cầu (nhóm A)',
+  'flag.personalization.desc':
+    'Gợi ý một việc từ điều nhà mình vừa ghi, học từ phản hồi; cần quyền beta hoặc Premium',
+  'flag.personalization.offEffect':
+    'Ẩn gợi ý theo nhu cầu; nội dung theo tuổi, ghi nhận và hỗ trợ sức khoẻ vẫn hoạt động.',
+  'flag.ai_assist': 'Tóm tắt AI có căn cứ',
+  'flag.ai_assist.desc': 'Bàn giao và giải thích gợi ý do AI diễn đạt từ ghi nhận đã lưu',
+  'flag.ai_assist.offEffect': 'Dùng tóm tắt theo mẫu, không gọi AI; tóm tắt đã lưu không đổi.',
+  'flag.premium_billing': 'Mua Child Life Premium',
+  'flag.premium_billing.desc': 'Nút mua gói trong app (App Store / Google Play)',
+  'flag.premium_billing.offEffect':
+    'Ẩn nút mua; gia đình đã có Premium giữ quyền đến hết hạn, khôi phục vẫn hoạt động.',
 
   // A12
   'audit.title': 'Nhật ký thao tác',
@@ -1505,8 +1522,10 @@ const vi: Record<string, string> = {
     'Áp dụng cho cả bộ mẫu; máy chủ cũng kiểm tra khi lưu thiệp hay tạo video. Mỗi mẫu chọn Miễn phí hay Cao cấp ở danh sách bên dưới.',
   'ks.premium.everyone': 'Mẫu Cao cấp: mọi gia đình dùng được (beta)',
   'ks.premium.hidden': 'Mẫu Cao cấp: ẩn',
+  'ks.premium.subscribers': 'Mẫu Cao cấp: chỉ gia đình có Premium',
   'ks.premium.badges': 'Hiện nhãn "Miễn phí" / "Cao cấp" trên mẫu',
-  'ks.premium.later': 'Chế độ "Chỉ người đã mua gói" sẽ có khi có gói trả phí (Q-058).',
+  'ks.premium.later':
+    '"Chỉ gia đình có Premium": beta nhóm A không mở mẫu Cao cấp; báo trước cho gia đình đang dùng beta (Q-072).',
   'ks.list.title': 'Mẫu ({n})',
   'ks.col.preview': 'Xem trước',
   'ks.col.name': 'Tên',
@@ -2631,6 +2650,22 @@ const en: Record<string, string> = {
     'Memories 2.0: 9:16 videos from photos, text and music, rendered on the server',
   'flag.memory_story.offEffect':
     'Hides memory videos and refuses new requests; existing videos stay.',
+  'flag.rhythm': 'Growing Rhythm (reference calendar & check-in)',
+  'flag.rhythm.desc':
+    'Free layer: reference calendar from the due date and "Anything different today?" notes',
+  'flag.rhythm.offEffect': 'Hides Growing Rhythm and refuses new notes; saved notes stay readable.',
+  'flag.personalization': 'Need-based suggestions (group A)',
+  'flag.personalization.desc':
+    'One next step from what the family just noted, learning from feedback; needs beta or Premium',
+  'flag.personalization.offEffect':
+    'Hides need-based suggestions; age content, notes and health support keep working.',
+  'flag.ai_assist': 'Grounded AI summaries',
+  'flag.ai_assist.desc': 'Handover and suggestion explanations worded by AI from saved notes',
+  'flag.ai_assist.offEffect': 'Uses template summaries without AI; saved summaries stay.',
+  'flag.premium_billing': 'Buy Child Life Premium',
+  'flag.premium_billing.desc': 'In-app purchase button (App Store / Google Play)',
+  'flag.premium_billing.offEffect':
+    'Hides the buy button; families with Premium keep it until it ends, restore still works.',
 
   'audit.title': 'Action log',
   'audit.sub':
@@ -3448,8 +3483,10 @@ const en: Record<string, string> = {
     'Applies to the whole set; the server checks it too when a card is saved or a video requested. Each template is Free or Premium in the list below.',
   'ks.premium.everyone': 'Premium templates: every family may use them (beta)',
   'ks.premium.hidden': 'Premium templates: hidden',
+  'ks.premium.subscribers': 'Premium templates: Premium families only',
   'ks.premium.badges': 'Show "Free" / "Premium" badges on templates',
-  'ks.premium.later': 'A "Subscribers only" mode comes with the paid plan (Q-058).',
+  'ks.premium.later':
+    '"Premium families only": the group A beta does not open Premium templates; tell beta families first (Q-072).',
   'ks.list.title': 'Templates ({n})',
   'ks.col.preview': 'Preview',
   'ks.col.name': 'Name',

@@ -24,3 +24,5 @@ export * from './links.js';
 export * from './staff.js';
 export * from './qa.js';
 export * from './reference.js';
+export * from './family-actions.js';
+export * from './entitlements.js';

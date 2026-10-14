@@ -19,6 +19,15 @@ export const flagKeys = [
   'milestone_cards',
   /** Kỷ niệm 2.0 free beta (D-068 #3): Video kỷ niệm, per family through `featureAccess`. */
   'memory_story',
+  /** Nhịp lớn lên (free layer): reference calendar and check-in (PN01 kill switch; plan §5). */
+  'rhythm',
+  /** Group A: need-based suggestions and advanced rhythm (`personalization.cross_module`,
+   * `rhythm.advanced`). A kill switch only; access also needs a grant. */
+  'personalization',
+  /** Grounded AI handover / explanations (`ai.assistance`), independent of entitlement (brief p.14). */
+  'ai_assist',
+  /** In-app purchase of Child Life Premium (D-072 #6); off = no paywall purchase button. */
+  'premium_billing',
 ] as const;
 export type FlagKey = (typeof flagKeys)[number];
 
@@ -60,6 +69,10 @@ export const defaultFlags: Flags = {
   auto_save: off('internal'),
   milestone_cards: off('internal'),
   memory_story: off('internal'),
+  rhythm: off('internal'),
+  personalization: off('internal'),
+  ai_assist: off('internal'),
+  premium_billing: off('internal'),
 };
 
 /**

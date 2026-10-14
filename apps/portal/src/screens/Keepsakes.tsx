@@ -559,7 +559,7 @@ function PremiumPanel({
                 c.premium.access = v;
               })
             }
-            options={(['everyone', 'hidden'] as const).map((v) => ({
+            options={(['everyone', 'subscribers', 'hidden'] as const).map((v) => ({
               value: v,
               label: <FormattedMessage id={`ks.premium.${v}`} />,
             }))}

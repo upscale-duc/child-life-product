@@ -447,12 +447,14 @@ export function keepsakeTemplateAssets(t: {
  * Owner (D-068 #8): Miễn phí / Cao cấp is controlled in the portal — each template's `tier`, and
  * for the whole catalog what a Cao cấp template means:
  * - `everyone`: anyone in the beta may use it (D-068 #3, the default while there is no paid plan);
- * - `hidden`: Cao cấp templates are not offered at all.
- * A `subscribers` mode comes with the paid plan (Q-058; it needs an entitlement and a paywall).
+ * - `hidden`: Cao cấp templates are not offered at all;
+ * - `subscribers`: shown with their badge, used only by families whose plan gives
+ *   `templates.premium` (paid or promo; Beta A never does). The switch from `everyone` waits for the
+ *   owner (Q-072) and a notice to beta families.
  * `badges`: show "Miễn phí" / "★ Cao cấp" on the templates (MM10).
  * `createMemorySession` and the video request enforce it on the server.
  */
-export const keepsakePremiumAccess = ['everyone', 'hidden'] as const;
+export const keepsakePremiumAccess = ['everyone', 'hidden', 'subscribers'] as const;
 export const keepsakePremiumSchema = z.object({
   access: z.enum(keepsakePremiumAccess),
   badges: z.boolean(),
@@ -460,12 +462,27 @@ export const keepsakePremiumSchema = z.object({
 export type KeepsakePremium = z.infer<typeof keepsakePremiumSchema>;
 export const defaultKeepsakePremium: KeepsakePremium = { access: 'everyone', badges: true };
 
-/** Whether a template may be used under the catalog's premium setting. */
-export function keepsakeTemplateAllowed(
+/**
+ * Whether a template may be used under the catalog's premium setting: `ok`, `premium-required`
+ * (subscribers mode without `templates.premium`: MO02, the paywall may show) or `unavailable`.
+ * [hasPremiumTemplates] comes from the server capability resolver, never from the app.
+ */
+export function keepsakeTemplateAccess(
+  t: { tier: (typeof keepsakeTiers)[number] },
+  premium: KeepsakePremium,
+  hasPremiumTemplates: boolean,
+): 'ok' | 'premium-required' | 'unavailable' {
+  if (t.tier === 'free' || premium.access === 'everyone') return 'ok';
+  if (premium.access === 'hidden') return 'unavailable';
+  return hasPremiumTemplates ? 'ok' : 'premium-required';
+}
+
+/** Whether a premium check is needed at all (only Cao cấp templates in `subscribers` mode). */
+export function keepsakeNeedsPremiumCheck(
   t: { tier: (typeof keepsakeTiers)[number] },
   premium: KeepsakePremium,
 ): boolean {
-  return t.tier === 'free' || premium.access === 'everyone';
+  return t.tier === 'premium' && premium.access === 'subscribers';
 }
 
 const catalogOf = <M extends z.ZodType<{ id: string; status: string }>>(music: M) =>

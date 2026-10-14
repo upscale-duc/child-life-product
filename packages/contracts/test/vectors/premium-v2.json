@@ -1,0 +1,1250 @@
+{
+  "schema_version": "2.0",
+  "synthetic_only": true,
+  "policy_version": "qa-policy-v2",
+  "clock": "2026-10-14",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "not_production_seed": true,
+  "cases": [
+    {
+      "id": "E01",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "personalization.cross_module",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": []
+      },
+      "expected": "PREMIUM_REQUIRED",
+      "note": ""
+    },
+    {
+      "id": "E02",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "personalization.cross_module",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "beta",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-10-20T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance"
+            ]
+          }
+        ]
+      },
+      "expected": "ALLOWED",
+      "note": ""
+    },
+    {
+      "id": "E03",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "templates.premium",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "beta",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-10-20T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance"
+            ]
+          }
+        ]
+      },
+      "expected": "PREMIUM_REQUIRED",
+      "note": ""
+    },
+    {
+      "id": "E04",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "templates.premium",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "paid",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-11-01T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance",
+              "templates.premium"
+            ]
+          }
+        ]
+      },
+      "expected": "ALLOWED",
+      "note": ""
+    },
+    {
+      "id": "E05",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-11-01T00:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "personalization.cross_module",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "paid",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-11-01T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance",
+              "templates.premium"
+            ]
+          }
+        ]
+      },
+      "expected": "PREMIUM_REQUIRED",
+      "note": ""
+    },
+    {
+      "id": "E06",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": false,
+        "role": "editor",
+        "capability": "personalization.cross_module",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "paid",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-11-01T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance",
+              "templates.premium"
+            ]
+          }
+        ]
+      },
+      "expected": "NOT_MEMBER",
+      "note": ""
+    },
+    {
+      "id": "E07",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "viewer",
+        "capability": "personalization.cross_module",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "paid",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-11-01T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance",
+              "templates.premium"
+            ]
+          }
+        ]
+      },
+      "expected": "ROLE_DENIED",
+      "note": ""
+    },
+    {
+      "id": "E08",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "personalization.cross_module",
+        "region_supported": true,
+        "feature_enabled": false,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "paid",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-11-01T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance",
+              "templates.premium"
+            ]
+          }
+        ]
+      },
+      "expected": "FEATURE_DISABLED",
+      "note": ""
+    },
+    {
+      "id": "E09",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "personalization.cross_module",
+        "region_supported": false,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "paid",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-11-01T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance",
+              "templates.premium"
+            ]
+          }
+        ]
+      },
+      "expected": "REGION_UNAVAILABLE",
+      "note": ""
+    },
+    {
+      "id": "E10",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "personalization.cross_module",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "production",
+        "grants": [
+          {
+            "source": "paid",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-11-01T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance",
+              "templates.premium"
+            ]
+          }
+        ]
+      },
+      "expected": "PREMIUM_REQUIRED",
+      "note": ""
+    },
+    {
+      "id": "E11",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "personalization.cross_module",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "paid",
+            "status": "revoked",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-11-01T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance",
+              "templates.premium"
+            ]
+          },
+          {
+            "source": "beta",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-10-20T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance"
+            ]
+          }
+        ]
+      },
+      "expected": "ALLOWED",
+      "note": ""
+    },
+    {
+      "id": "E12",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "rhythm.checkin",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": []
+      },
+      "expected": "ALLOWED",
+      "note": ""
+    },
+    {
+      "id": "E13",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "viewer",
+        "capability": "history.read",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": []
+      },
+      "expected": "ALLOWED",
+      "note": ""
+    },
+    {
+      "id": "E14",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "personalization.cross_module",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "paid",
+            "status": "active",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-11-01T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance",
+              "templates.premium"
+            ],
+            "autoRenew": false
+          }
+        ]
+      },
+      "expected": "ALLOWED",
+      "note": ""
+    },
+    {
+      "id": "E15",
+      "kind": "entitlement",
+      "input": {
+        "now": "2026-10-14T12:00:00Z",
+        "member": true,
+        "role": "editor",
+        "capability": "personalization.cross_module",
+        "region_supported": true,
+        "feature_enabled": true,
+        "environment": "test",
+        "grants": [
+          {
+            "source": "paid",
+            "status": "grace",
+            "environment": "test",
+            "from": "2026-10-01T00:00:00Z",
+            "until": "2026-11-01T00:00:00Z",
+            "capabilities": [
+              "personalization.cross_module",
+              "rhythm.advanced",
+              "ai.assistance",
+              "templates.premium"
+            ]
+          }
+        ]
+      },
+      "expected": "ALLOWED",
+      "note": ""
+    },
+    {
+      "id": "B01",
+      "kind": "baseline",
+      "input": {
+        "baseline_minutes": [
+          780,
+          780,
+          800,
+          760,
+          790,
+          770
+        ],
+        "recent_minutes": [
+          660,
+          650,
+          670
+        ]
+      },
+      "expected": {
+        "status": "change_detected",
+        "baseline": 780,
+        "recent": 660,
+        "delta": -120
+      },
+      "note": "Arrays are already aggregated disjoint completed days; None means invalid/missing, never zero. Production adapter must enforce coverage/windows."
+    },
+    {
+      "id": "B02",
+      "kind": "baseline",
+      "input": {
+        "baseline_minutes": [
+          780,
+          780,
+          800,
+          760
+        ],
+        "recent_minutes": [
+          660,
+          650,
+          670
+        ]
+      },
+      "expected": {
+        "status": "insufficient_data"
+      },
+      "note": "Arrays are already aggregated disjoint completed days; None means invalid/missing, never zero. Production adapter must enforce coverage/windows."
+    },
+    {
+      "id": "B03",
+      "kind": "baseline",
+      "input": {
+        "baseline_minutes": [
+          780,
+          780,
+          780,
+          780,
+          780
+        ],
+        "recent_minutes": [
+          780,
+          null,
+          null
+        ]
+      },
+      "expected": {
+        "status": "insufficient_data"
+      },
+      "note": "Arrays are already aggregated disjoint completed days; None means invalid/missing, never zero. Production adapter must enforce coverage/windows."
+    },
+    {
+      "id": "B04",
+      "kind": "baseline",
+      "input": {
+        "baseline_minutes": [
+          780,
+          780,
+          780,
+          780,
+          780
+        ],
+        "recent_minutes": [
+          750,
+          760,
+          780
+        ]
+      },
+      "expected": {
+        "status": "no_change",
+        "baseline": 780,
+        "recent": 760,
+        "delta": -20
+      },
+      "note": "Arrays are already aggregated disjoint completed days; None means invalid/missing, never zero. Production adapter must enforce coverage/windows."
+    },
+    {
+      "id": "B05",
+      "kind": "baseline",
+      "input": {
+        "baseline_minutes": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "recent_minutes": [
+          340,
+          340,
+          400
+        ]
+      },
+      "expected": {
+        "status": "change_detected",
+        "baseline": 400,
+        "recent": 340,
+        "delta": -60
+      },
+      "note": "Arrays are already aggregated disjoint completed days; None means invalid/missing, never zero. Production adapter must enforce coverage/windows."
+    },
+    {
+      "id": "B06",
+      "kind": "baseline",
+      "input": {
+        "baseline_minutes": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "recent_minutes": [
+          341,
+          341,
+          400
+        ]
+      },
+      "expected": {
+        "status": "no_change",
+        "baseline": 400,
+        "recent": 341,
+        "delta": -59
+      },
+      "note": "Arrays are already aggregated disjoint completed days; None means invalid/missing, never zero. Production adapter must enforce coverage/windows."
+    },
+    {
+      "id": "C01",
+      "kind": "calendar",
+      "input": {
+        "due_date": "2026-09-21",
+        "today": "2026-10-14",
+        "start_offset_days": 21,
+        "end_offset_days": 30
+      },
+      "expected": "in_reference_window",
+      "note": "Technical fixture offsets, NOT approved clinical or Wonder Weeks schedule."
+    },
+    {
+      "id": "C02",
+      "kind": "calendar",
+      "input": {
+        "due_date": null,
+        "today": "2026-10-14",
+        "start_offset_days": 21,
+        "end_offset_days": 30
+      },
+      "expected": "unset",
+      "note": "Technical fixture offsets, NOT approved clinical or Wonder Weeks schedule."
+    },
+    {
+      "id": "C03",
+      "kind": "calendar",
+      "input": {
+        "due_date": "2026-09-21",
+        "today": "2026-10-11",
+        "start_offset_days": 21,
+        "end_offset_days": 30
+      },
+      "expected": "upcoming",
+      "note": "Technical fixture offsets, NOT approved clinical or Wonder Weeks schedule."
+    },
+    {
+      "id": "C04",
+      "kind": "calendar",
+      "input": {
+        "due_date": "2026-09-21",
+        "today": "2026-10-12",
+        "start_offset_days": 21,
+        "end_offset_days": 30
+      },
+      "expected": "in_reference_window",
+      "note": "Technical fixture offsets, NOT approved clinical or Wonder Weeks schedule."
+    },
+    {
+      "id": "C05",
+      "kind": "calendar",
+      "input": {
+        "due_date": "2026-09-21",
+        "today": "2026-10-21",
+        "start_offset_days": 21,
+        "end_offset_days": 30
+      },
+      "expected": "in_reference_window",
+      "note": "Technical fixture offsets, NOT approved clinical or Wonder Weeks schedule."
+    },
+    {
+      "id": "C06",
+      "kind": "calendar",
+      "input": {
+        "due_date": "2026-09-21",
+        "today": "2026-10-22",
+        "start_offset_days": 21,
+        "end_offset_days": 30
+      },
+      "expected": "completed_reference_range",
+      "note": "Technical fixture offsets, NOT approved clinical or Wonder Weeks schedule."
+    },
+    {
+      "id": "R01",
+      "kind": "ranking",
+      "input": {
+        "locale": "en",
+        "candidates": [
+          {
+            "id": "sleep-A",
+            "published": true,
+            "locale": "en",
+            "needMatch": true,
+            "interestMatch": true,
+            "previousHelpful": false,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": false,
+            "ageEligible": true
+          },
+          {
+            "id": "moments-B",
+            "published": true,
+            "locale": "en",
+            "needMatch": false,
+            "interestMatch": true,
+            "previousHelpful": true,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": false,
+            "ageEligible": true
+          }
+        ]
+      },
+      "expected": "sleep-A",
+      "note": ""
+    },
+    {
+      "id": "R02",
+      "kind": "ranking",
+      "input": {
+        "locale": "en",
+        "candidates": [
+          {
+            "id": "sleep-A",
+            "published": false,
+            "locale": "en",
+            "needMatch": true,
+            "interestMatch": true,
+            "previousHelpful": false,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": false,
+            "ageEligible": true
+          },
+          {
+            "id": "moments-B",
+            "published": true,
+            "locale": "en",
+            "needMatch": false,
+            "interestMatch": true,
+            "previousHelpful": true,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": false,
+            "ageEligible": true
+          }
+        ]
+      },
+      "expected": "moments-B",
+      "note": ""
+    },
+    {
+      "id": "R03",
+      "kind": "ranking",
+      "input": {
+        "locale": "en",
+        "candidates": [
+          {
+            "id": "sleep-A",
+            "published": true,
+            "locale": "en",
+            "needMatch": true,
+            "interestMatch": true,
+            "previousHelpful": false,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": true,
+            "ageEligible": true
+          },
+          {
+            "id": "moments-B",
+            "published": true,
+            "locale": "en",
+            "needMatch": false,
+            "interestMatch": true,
+            "previousHelpful": true,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": false,
+            "ageEligible": true
+          }
+        ]
+      },
+      "expected": "moments-B",
+      "note": ""
+    },
+    {
+      "id": "R04",
+      "kind": "ranking",
+      "input": {
+        "locale": "vi",
+        "candidates": [
+          {
+            "id": "sleep-A",
+            "published": true,
+            "locale": "en",
+            "needMatch": true,
+            "interestMatch": true,
+            "previousHelpful": false,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": false,
+            "ageEligible": true
+          },
+          {
+            "id": "moments-B",
+            "published": true,
+            "locale": "en",
+            "needMatch": false,
+            "interestMatch": true,
+            "previousHelpful": true,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": false,
+            "ageEligible": true
+          }
+        ]
+      },
+      "expected": null,
+      "note": ""
+    },
+    {
+      "id": "R05",
+      "kind": "ranking",
+      "input": {
+        "locale": "en",
+        "candidates": [
+          {
+            "id": "sleep-A",
+            "published": true,
+            "locale": "en",
+            "needMatch": true,
+            "interestMatch": true,
+            "previousHelpful": false,
+            "recentlyShown": false,
+            "notSuitable": true,
+            "cooldown": false,
+            "ageEligible": true
+          },
+          {
+            "id": "moments-B",
+            "published": true,
+            "locale": "en",
+            "needMatch": false,
+            "interestMatch": true,
+            "previousHelpful": true,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": false,
+            "ageEligible": true
+          }
+        ]
+      },
+      "expected": "moments-B",
+      "note": ""
+    },
+    {
+      "id": "R06",
+      "kind": "ranking",
+      "input": {
+        "locale": "en",
+        "candidates": [
+          {
+            "id": "b",
+            "published": true,
+            "locale": "en",
+            "needMatch": true,
+            "interestMatch": true,
+            "previousHelpful": false,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": false,
+            "ageEligible": true
+          },
+          {
+            "id": "a",
+            "published": true,
+            "locale": "en",
+            "needMatch": true,
+            "interestMatch": true,
+            "previousHelpful": false,
+            "recentlyShown": false,
+            "notSuitable": false,
+            "cooldown": false,
+            "ageEligible": true
+          }
+        ]
+      },
+      "expected": "a",
+      "note": ""
+    },
+    {
+      "id": "A01",
+      "kind": "ai_gate",
+      "input": {
+        "entitled": true,
+        "consent": true,
+        "health_flag": false,
+        "cached": false,
+        "schema_valid": true,
+        "timeout": false,
+        "locale": "en",
+        "output_locale": "en",
+        "allowed_facts": [
+          "F1",
+          "F2"
+        ],
+        "output_fact_ids": [
+          "F1"
+        ],
+        "allowed_content": [
+          "sleep-A"
+        ],
+        "suggestion_id": "sleep-A"
+      },
+      "expected": "AI_VALID",
+      "note": "Gate checks do not validate semantics of generated prose; human/model eval required."
+    },
+    {
+      "id": "A02",
+      "kind": "ai_gate",
+      "input": {
+        "entitled": true,
+        "consent": false,
+        "health_flag": false,
+        "cached": false,
+        "schema_valid": true,
+        "timeout": false,
+        "locale": "en",
+        "output_locale": "en",
+        "allowed_facts": [
+          "F1",
+          "F2"
+        ],
+        "output_fact_ids": [
+          "F1"
+        ],
+        "allowed_content": [
+          "sleep-A"
+        ],
+        "suggestion_id": "sleep-A"
+      },
+      "expected": "FALLBACK",
+      "note": "Gate checks do not validate semantics of generated prose; human/model eval required."
+    },
+    {
+      "id": "A03",
+      "kind": "ai_gate",
+      "input": {
+        "entitled": true,
+        "consent": true,
+        "health_flag": false,
+        "cached": false,
+        "schema_valid": true,
+        "timeout": false,
+        "locale": "en",
+        "output_locale": "en",
+        "allowed_facts": [
+          "F1",
+          "F2"
+        ],
+        "output_fact_ids": [
+          "F99"
+        ],
+        "allowed_content": [
+          "sleep-A"
+        ],
+        "suggestion_id": "sleep-A"
+      },
+      "expected": "FALLBACK",
+      "note": "Gate checks do not validate semantics of generated prose; human/model eval required."
+    },
+    {
+      "id": "A04",
+      "kind": "ai_gate",
+      "input": {
+        "entitled": true,
+        "consent": true,
+        "health_flag": false,
+        "cached": false,
+        "schema_valid": true,
+        "timeout": false,
+        "locale": "en",
+        "output_locale": "en",
+        "allowed_facts": [
+          "F1",
+          "F2"
+        ],
+        "output_fact_ids": [
+          "F1"
+        ],
+        "allowed_content": [
+          "sleep-A"
+        ],
+        "suggestion_id": "draft-Z"
+      },
+      "expected": "FALLBACK",
+      "note": "Gate checks do not validate semantics of generated prose; human/model eval required."
+    },
+    {
+      "id": "A05",
+      "kind": "ai_gate",
+      "input": {
+        "entitled": true,
+        "consent": true,
+        "health_flag": false,
+        "cached": false,
+        "schema_valid": true,
+        "timeout": true,
+        "locale": "en",
+        "output_locale": "en",
+        "allowed_facts": [
+          "F1",
+          "F2"
+        ],
+        "output_fact_ids": [
+          "F1"
+        ],
+        "allowed_content": [
+          "sleep-A"
+        ],
+        "suggestion_id": "sleep-A"
+      },
+      "expected": "FALLBACK",
+      "note": "Gate checks do not validate semantics of generated prose; human/model eval required."
+    },
+    {
+      "id": "A06",
+      "kind": "ai_gate",
+      "input": {
+        "entitled": true,
+        "consent": true,
+        "health_flag": false,
+        "cached": true,
+        "schema_valid": true,
+        "timeout": false,
+        "locale": "en",
+        "output_locale": "en",
+        "allowed_facts": [
+          "F1",
+          "F2"
+        ],
+        "output_fact_ids": [
+          "F1"
+        ],
+        "allowed_content": [
+          "sleep-A"
+        ],
+        "suggestion_id": "sleep-A"
+      },
+      "expected": "CACHE",
+      "note": "Gate checks do not validate semantics of generated prose; human/model eval required."
+    },
+    {
+      "id": "A07",
+      "kind": "ai_gate",
+      "input": {
+        "entitled": true,
+        "consent": true,
+        "health_flag": true,
+        "cached": false,
+        "schema_valid": true,
+        "timeout": false,
+        "locale": "en",
+        "output_locale": "en",
+        "allowed_facts": [
+          "F1",
+          "F2"
+        ],
+        "output_fact_ids": [
+          "F1"
+        ],
+        "allowed_content": [
+          "sleep-A"
+        ],
+        "suggestion_id": "sleep-A"
+      },
+      "expected": "HEALTH_FLOW",
+      "note": "Gate checks do not validate semantics of generated prose; human/model eval required."
+    },
+    {
+      "id": "A08",
+      "kind": "ai_gate",
+      "input": {
+        "entitled": true,
+        "consent": true,
+        "health_flag": false,
+        "cached": false,
+        "schema_valid": true,
+        "timeout": false,
+        "locale": "en",
+        "output_locale": "vi",
+        "allowed_facts": [
+          "F1",
+          "F2"
+        ],
+        "output_fact_ids": [
+          "F1"
+        ],
+        "allowed_content": [
+          "sleep-A"
+        ],
+        "suggestion_id": "sleep-A"
+      },
+      "expected": "FALLBACK",
+      "note": "Gate checks do not validate semantics of generated prose; human/model eval required."
+    },
+    {
+      "id": "Q01",
+      "kind": "quota",
+      "input": {
+        "limit": 1,
+        "operations": [
+          [
+            "reserve",
+            "j1"
+          ],
+          [
+            "reserve",
+            "j1"
+          ],
+          [
+            "success",
+            "j1"
+          ],
+          [
+            "success",
+            "j1"
+          ]
+        ]
+      },
+      "expected": {
+        "used": 1,
+        "reserved": 0,
+        "accepted_jobs": [
+          "j1"
+        ],
+        "denied": 0
+      },
+      "note": "Sequential state-machine fixture; requires real transaction concurrency tests on staging."
+    },
+    {
+      "id": "Q02",
+      "kind": "quota",
+      "input": {
+        "limit": 1,
+        "operations": [
+          [
+            "reserve",
+            "j1"
+          ],
+          [
+            "reserve",
+            "j2"
+          ]
+        ]
+      },
+      "expected": {
+        "used": 0,
+        "reserved": 1,
+        "accepted_jobs": [
+          "j1"
+        ],
+        "denied": 1
+      },
+      "note": "Sequential state-machine fixture; requires real transaction concurrency tests on staging."
+    },
+    {
+      "id": "Q03",
+      "kind": "quota",
+      "input": {
+        "limit": 1,
+        "operations": [
+          [
+            "reserve",
+            "j1"
+          ],
+          [
+            "fail",
+            "j1"
+          ],
+          [
+            "fail",
+            "j1"
+          ],
+          [
+            "reserve",
+            "j2"
+          ],
+          [
+            "success",
+            "j2"
+          ]
+        ]
+      },
+      "expected": {
+        "used": 1,
+        "reserved": 0,
+        "accepted_jobs": [
+          "j1",
+          "j2"
+        ],
+        "denied": 0
+      },
+      "note": "Sequential state-machine fixture; requires real transaction concurrency tests on staging."
+    },
+    {
+      "id": "Q04",
+      "kind": "quota",
+      "input": {
+        "limit": 1,
+        "operations": [
+          [
+            "reserve",
+            "j1"
+          ],
+          [
+            "success",
+            "j1"
+          ],
+          [
+            "reserve",
+            "j2"
+          ]
+        ]
+      },
+      "expected": {
+        "used": 1,
+        "reserved": 0,
+        "accepted_jobs": [
+          "j1"
+        ],
+        "denied": 1
+      },
+      "note": "Sequential state-machine fixture; requires real transaction concurrency tests on staging."
+    },
+    {
+      "id": "X01",
+      "kind": "observations",
+      "input": {
+        "rows": [
+          {
+            "author": "test_mom",
+            "date": "2026-10-14",
+            "state": "normal"
+          },
+          {
+            "author": "test_dad",
+            "date": "2026-10-14",
+            "state": "changed"
+          }
+        ]
+      },
+      "expected": "mixed",
+      "note": ""
+    },
+    {
+      "id": "X02",
+      "kind": "observations",
+      "input": {
+        "rows": [
+          {
+            "author": "test_mom",
+            "date": "2026-10-14",
+            "state": "changed"
+          }
+        ]
+      },
+      "expected": "reported_change",
+      "note": ""
+    },
+    {
+      "id": "X03",
+      "kind": "observations",
+      "input": {
+        "rows": [
+          {
+            "author": "test_mom",
+            "date": "2026-10-14",
+            "state": "normal"
+          }
+        ]
+      },
+      "expected": "normal",
+      "note": ""
+    }
+  ]
+}

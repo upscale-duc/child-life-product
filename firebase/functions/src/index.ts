@@ -40,6 +40,12 @@ import {
   type Caller,
 } from './family.js';
 import { FeatureError, featureAccess } from './features.js';
+import {
+  EntitlementError,
+  getCapabilities as capabilitiesOf,
+  serverGrantEnvironment,
+  setFamilySettings as saveFamilySettings,
+} from './entitlements.js';
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { resendSender } from './mail-resend.js';
 import {
@@ -299,7 +305,8 @@ function asHttpsError(operation: string, error: unknown): HttpsError {
     error instanceof BabyError ||
     error instanceof FamilyError ||
     error instanceof SpendingError ||
-    error instanceof FeatureError
+    error instanceof FeatureError ||
+    error instanceof EntitlementError
   ) {
     return new HttpsError(error.code, error.reason, { reason: error.reason });
   }
@@ -407,6 +414,16 @@ const familyCall = <T>(name: string, run: (request: CallableRequest) => Promise<
 /** P-148: per-family features (Tự lưu kỷ niệm's `auto_save` rollout) for one of my babies. */
 export const getFeatureAccess = familyCall('getFeatureAccess', (r) =>
   featureAccess(getFirestore(), requireAccount(r), r.data, new Date()),
+);
+
+/** Premium & Cá nhân hoá (plan §5.1): plan, capabilities and gate reasons for one of my babies. */
+export const getCapabilities = familyCall('getCapabilities', (r) =>
+  capabilitiesOf(getFirestore(), requireAccount(r), r.data, new Date(), serverGrantEnvironment()),
+);
+
+/** The family owner sets the household country / time zone (D-072 #1, #3). */
+export const setFamilySettings = familyCall('setFamilySettings', (r) =>
+  saveFamilySettings(getFirestore(), requireAccount(r), r.data, new Date()),
 );
 
 export const createFamilyInvite = familyCall('createFamilyInvite', (r) =>
