@@ -17712,6 +17712,360 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'{count} bảng màu'**
   String ksPalettesCount(int count);
+
+  /// Plan badge: paid Premium (588:6290).
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium'**
+  String get pmBadgePremium;
+
+  /// Plan badge: personalisation beta (588:6290).
+  ///
+  /// In vi, this message translates to:
+  /// **'Beta'**
+  String get pmBadgeBeta;
+
+  /// Plan badge: free (588:6290).
+  ///
+  /// In vi, this message translates to:
+  /// **'Miễn phí'**
+  String get pmBadgeFree;
+
+  /// Plan badge: purchase being verified (588:6290).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xác minh'**
+  String get pmBadgePending;
+
+  /// Plan badge: Premium ended (588:6290).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết hạn'**
+  String get pmBadgeExpired;
+
+  /// PR03 title; also the Tôi row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gói của hộ'**
+  String get pmPlanTitle;
+
+  /// PR03 free state title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang dùng miễn phí'**
+  String get pmPlanFree;
+
+  /// PR03 free state body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chép, lịch tham khảo, mẫu cơ bản, hướng dẫn sức khoẻ.'**
+  String get pmPlanFreeBody;
+
+  /// PR03 beta state title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Beta cá nhân hoá đang mở'**
+  String get pmPlanBeta;
+
+  /// PR03 beta state body; group A named in plain words (extract 30 Q19).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý theo nhu cầu, nhịp riêng của con và tóm tắt AI miễn phí đến {date}. Không gồm mẫu Premium. Không tự trừ tiền khi beta kết thúc.'**
+  String pmPlanBetaBody(String date);
+
+  /// PR03 Premium state title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life Premium'**
+  String get pmPlanPremium;
+
+  /// PR03 Premium with auto-renew on.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia hạn tự động {date}'**
+  String pmPlanRenews(String date);
+
+  /// PR03 Premium with auto-renew off: access stays until then (brief p.9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng đến {date} · đã tắt gia hạn'**
+  String pmPlanEnds(String date);
+
+  /// PR03 Premium note (D-072 #1: owner only).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà thấy “Hộ đã có Premium”. Chỉ chủ hộ quản lý gói.'**
+  String get pmPlanShared;
+
+  /// PR03 for members who do not manage the plan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hộ đã có Premium'**
+  String get pmPlanHouseholdHas;
+
+  /// PR03 pending state title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xác minh giao dịch'**
+  String get pmPlanPending;
+
+  /// PR03 pending state body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở quyền mới; dữ liệu và lựa chọn vẫn giữ.'**
+  String get pmPlanPendingBody;
+
+  /// PR03 expired state title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium đã hết hạn {date}'**
+  String pmPlanExpired(String date);
+
+  /// PR03 expired state body (PR04).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn xem dữ liệu, tóm tắt đã lưu, kỷ niệm và file đã xuất. Tạo mới nội dung Premium cần gia hạn.'**
+  String get pmPlanExpiredBody;
+
+  /// PR03 owner note while in-app purchase is not built (engineering state, Slice 4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mua và quản lý gói ngay trong app sẽ có ở bản sau.'**
+  String get pmPlanBuySoon;
+
+  /// PR03 for non-owners (D-072 #1).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ chủ hộ mua và quản lý gói. Nhờ chủ hộ nếu cả nhà cần Premium.'**
+  String get pmPlanOwnerOnly;
+
+  /// PR03 section: what never needs a plan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Luôn miễn phí'**
+  String get pmPlanAlwaysFree;
+
+  /// PR03 always-free list (PR01 592:6826).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chép, lịch sử, nhắc việc, lịch tham khảo, hướng dẫn sức khoẻ và mọi thứ đã lưu.'**
+  String get pmPlanAlwaysFreeBody;
+
+  /// PR03 row: country of residence.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khu vực của hộ'**
+  String get pmRegionRow;
+
+  /// Region not chosen yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa chọn'**
+  String get pmRegionUnset;
+
+  /// Region sheet title (D-072 #3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình đang sống ở đâu?'**
+  String get pmRegionTitle;
+
+  /// Region sheet body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng để chọn nội dung sức khoẻ và hỗ trợ đã duyệt cho khu vực. Child Life không đoán từ ngôn ngữ hay vị trí.'**
+  String get pmRegionBody;
+
+  /// Region row note for non-owners.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ hộ chọn khu vực của hộ.'**
+  String get pmRegionOwnerOnly;
+
+  /// Toast after saving the region.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu khu vực'**
+  String get pmRegionSaved;
+
+  /// Country name for VN in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việt Nam'**
+  String get pmCountryVN;
+
+  /// Country name for US in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoa Kỳ'**
+  String get pmCountryUS;
+
+  /// Country name for GB in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vương quốc Anh'**
+  String get pmCountryGB;
+
+  /// Country name for AU in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Úc'**
+  String get pmCountryAU;
+
+  /// Country name for CA in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Canada'**
+  String get pmCountryCA;
+
+  /// Country name for SG in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Singapore'**
+  String get pmCountrySG;
+
+  /// Country name for NZ in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'New Zealand'**
+  String get pmCountryNZ;
+
+  /// Country name for DE in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đức'**
+  String get pmCountryDE;
+
+  /// Country name for FR in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Pháp'**
+  String get pmCountryFR;
+
+  /// Country name for JP in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật Bản'**
+  String get pmCountryJP;
+
+  /// Country name for KR in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hàn Quốc'**
+  String get pmCountryKR;
+
+  /// Country name for TW in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đài Loan'**
+  String get pmCountryTW;
+
+  /// MO02 primary button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở với Premium'**
+  String get pmUnlockPremium;
+
+  /// MO02 secondary button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng mẫu miễn phí'**
+  String get pmUseFreeTemplate;
+
+  /// MO02 footnote for cards.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thẻ Premium không trừ lượt xuất video'**
+  String get pmCardNoQuota;
+
+  /// MO02 sheet body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu này dành cho gia đình có Child Life Premium.'**
+  String get pmTemplatePremiumBody;
+
+  /// MO02 note for beta families (brief p.3, extract 30 Q2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Beta cá nhân hoá không gồm mẫu Premium.'**
+  String get pmTemplateBetaNote;
+
+  /// ROLE_DENIED (ST02 594:7020).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần quyền của ba mẹ'**
+  String get pmGateRoleTitle;
+
+  /// ROLE_DENIED body (ST02).
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium không đổi vai trò. Tạo thẻ, tạo tóm tắt AI hoặc sửa ghi nhận cần quyền của ba mẹ.'**
+  String get pmGateRoleBody;
+
+  /// REGION_UNAVAILABLE (ST02).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỗ trợ phù hợp chưa mở ở khu vực này'**
+  String get pmGateRegionTitle;
+
+  /// REGION_UNAVAILABLE body (ST02).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có nội dung sức khoẻ được duyệt cho khu vực của hộ. Ghi chép, lịch tham khảo, Kỷ niệm và mẫu cơ bản vẫn dùng bình thường.'**
+  String get pmGateRegionBody;
+
+  /// REGION_UNAVAILABLE action (ST02).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi khu vực trong hồ sơ hộ'**
+  String get pmGateRegionAction;
+
+  /// FEATURE_DISABLED.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính năng đang tạm tắt'**
+  String get pmGateDisabledTitle;
+
+  /// FEATURE_DISABLED body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chép, nội dung miễn phí và hướng dẫn sức khoẻ vẫn dùng bình thường.'**
+  String get pmGateDisabledBody;
+
+  /// QUOTA_EXCEEDED (MO04 "Khi hết lượt").
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hết lượt trong kỳ này'**
+  String get pmGateQuotaTitle;
+
+  /// QUOTA_EXCEEDED body (MO04).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn vẫn xem mẫu và tạo thẻ ảnh.'**
+  String get pmGateQuotaBody;
+
+  /// CONSENT_REQUIRED.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần bạn đồng ý dùng AI'**
+  String get pmGateConsentTitle;
+
+  /// CONSENT_REQUIRED body (ST01).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản tóm tắt theo mẫu vẫn dùng được khi chưa bật AI.'**
+  String get pmGateConsentBody;
+
+  /// NOT_MEMBER.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn không còn trong gia đình này'**
+  String get pmGateNotMemberTitle;
+
+  /// Gate sheet close button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hiểu'**
+  String get pmGateOk;
 }
 
 class _AppLocalizationsDelegate

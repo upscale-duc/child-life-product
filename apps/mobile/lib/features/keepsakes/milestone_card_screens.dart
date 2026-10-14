@@ -33,6 +33,7 @@ import '../memories/memory_models.dart';
 import '../memories/memory_repository.dart';
 import '../memories/memory_sheets.dart' show presetName;
 import '../memories/upload_queue.dart';
+import '../premium/premium_gate.dart';
 import 'keepsake_access.dart';
 import 'keepsake_card_content.dart';
 import 'keepsake_card_view.dart';
@@ -609,12 +610,12 @@ class CardPreviewArgs {
 /// A template before it is used (owner, 2026-10-14: "ấn vào item thì mở màn hình xem trước"):
 /// the card large with the baby's details, its name and tier, what it needs and offers, and
 /// "Dùng mẫu này" on to MM11. Not drawn in Figma.
-class CardTemplatePreviewScreen extends StatelessWidget {
+class CardTemplatePreviewScreen extends ConsumerWidget {
   const CardTemplatePreviewScreen({required this.args, super.key});
   final CardPreviewArgs args;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final t = args.draft.template;
     final format = args.draft.format;
@@ -651,7 +652,19 @@ class CardTemplatePreviewScreen extends StatelessWidget {
         if (t.palettes.length > 1)
           (l10n.ksInfoPalettes, l10n.ksPalettesCount(t.palettes.length)),
       ],
-      onUse: () => context.push(Routes.milestoneCardEdit, extra: args.draft),
+      onUse: () async {
+        // MO02 (Q1): a Cao cấp card in `subscribers` mode needs templates.premium.
+        final ok = await ensureTemplateAllowed(
+          context,
+          ref,
+          template: t,
+          catalog: ref.read(keepsakeCatalogProvider).value,
+          babyId: args.draft.babyId,
+        );
+        if (ok && context.mounted) {
+          await context.push(Routes.milestoneCardEdit, extra: args.draft);
+        }
+      },
     );
   }
 }

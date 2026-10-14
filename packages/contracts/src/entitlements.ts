@@ -355,6 +355,9 @@ export interface CapabilitiesAnswer {
   /** Null until the owner answers the first-open question (D-072 #3). */
   country: string | null;
   capabilities: Record<Capability, CapabilityState>;
+  /** Rollout flags on for this family: the app shows Nhịp lớn lên, suggestions, AI and the plan
+   * screens only while they are (everything ships dark). */
+  features: { rhythm: boolean; personalization: boolean; aiAssist: boolean; billing: boolean };
 }
 
 /**

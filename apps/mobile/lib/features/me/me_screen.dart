@@ -27,6 +27,8 @@ import '../memories/memory_repository.dart';
 import '../memories/push_registration.dart';
 import '../memories/upload_queue.dart';
 import '../onboarding/setup_screens.dart';
+import '../premium/premium_models.dart';
+import '../premium/premium_repository.dart';
 import '../care/care_repository.dart';
 import '../stories/share_repository.dart';
 import 'me_models.dart';
@@ -137,6 +139,10 @@ class MeScreen extends ConsumerWidget {
                   : l10n.meSome,
               onTap: () => context.push(Routes.meNotifications),
             ),
+            // PR03 Gói của hộ (D-072): only once a Premium / Nhịp lớn lên rollout reaches the family.
+            if (ref.watch(selectedCapabilitiesProvider) case final caps?
+                when caps.features.any || caps.plan != HouseholdPlan.free)
+              _PlanRow(caps: caps),
             MeRow(
               icon: ClIcons.globe,
               title: l10n.meAppearance,
@@ -208,6 +214,28 @@ class MeScreen extends ConsumerWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class _PlanRow extends StatelessWidget {
+  const _PlanRow({required this.caps});
+  final Capabilities caps;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return MeRow(
+      icon: ClIcons.star,
+      title: l10n.pmPlanTitle,
+      value: switch (caps.plan) {
+        HouseholdPlan.free => l10n.pmBadgeFree,
+        HouseholdPlan.beta => l10n.pmBadgeBeta,
+        HouseholdPlan.premium => l10n.pmBadgePremium,
+        HouseholdPlan.pending => l10n.pmBadgePending,
+        HouseholdPlan.expired => l10n.pmBadgeExpired,
+      },
+      onTap: () => context.push(Routes.mePlan),
     );
   }
 }

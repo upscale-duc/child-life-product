@@ -39,6 +39,7 @@ import '../features/me/baby_profile_screens.dart';
 import '../features/me/help_screen.dart';
 import '../features/me/me_screen.dart';
 import '../features/me/notifications_screen.dart';
+import '../features/premium/plan_screen.dart';
 import '../features/me/profile_screen.dart';
 import '../features/me/storage_screens.dart';
 import '../features/reminders/reminder_screens.dart';
@@ -622,6 +623,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'notifications',
             builder: (_, _) => const NotificationsScreen(),
           ),
+          _route(path: 'plan', builder: (_, _) => const HouseholdPlanScreen()),
           _route(path: 'help', builder: (_, _) => const HelpScreen()),
           // FB2 / FB3 Góp ý (D-065); FB4 "Báo lỗi" opens it with `?type=bug`.
           _route(

@@ -128,6 +128,9 @@ abstract final class Routes {
   static const meProfile = '/me/profile';
   static const meAccount = '/me/account';
   static const meNotifications = '/me/notifications';
+
+  /// PR03 · Gói của hộ and the household region (Premium & Cá nhân hoá, D-072).
+  static const mePlan = '/me/plan';
   static const meHelp = '/me/help';
 
   /// FB2 Góp ý and FB3 Đã gửi (D-065).

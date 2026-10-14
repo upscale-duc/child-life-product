@@ -10683,4 +10683,202 @@ class AppLocalizationsVi extends AppLocalizations {
   String ksPalettesCount(int count) {
     return '$count bảng màu';
   }
+
+  @override
+  String get pmBadgePremium => 'Premium';
+
+  @override
+  String get pmBadgeBeta => 'Beta';
+
+  @override
+  String get pmBadgeFree => 'Miễn phí';
+
+  @override
+  String get pmBadgePending => 'Đang xác minh';
+
+  @override
+  String get pmBadgeExpired => 'Hết hạn';
+
+  @override
+  String get pmPlanTitle => 'Gói của hộ';
+
+  @override
+  String get pmPlanFree => 'Đang dùng miễn phí';
+
+  @override
+  String get pmPlanFreeBody =>
+      'Ghi chép, lịch tham khảo, mẫu cơ bản, hướng dẫn sức khoẻ.';
+
+  @override
+  String get pmPlanBeta => 'Beta cá nhân hoá đang mở';
+
+  @override
+  String pmPlanBetaBody(String date) {
+    return 'Gợi ý theo nhu cầu, nhịp riêng của con và tóm tắt AI miễn phí đến $date. Không gồm mẫu Premium. Không tự trừ tiền khi beta kết thúc.';
+  }
+
+  @override
+  String get pmPlanPremium => 'Child Life Premium';
+
+  @override
+  String pmPlanRenews(String date) {
+    return 'Gia hạn tự động $date';
+  }
+
+  @override
+  String pmPlanEnds(String date) {
+    return 'Dùng đến $date · đã tắt gia hạn';
+  }
+
+  @override
+  String get pmPlanShared =>
+      'Cả nhà thấy “Hộ đã có Premium”. Chỉ chủ hộ quản lý gói.';
+
+  @override
+  String get pmPlanHouseholdHas => 'Hộ đã có Premium';
+
+  @override
+  String get pmPlanPending => 'Đang xác minh giao dịch';
+
+  @override
+  String get pmPlanPendingBody =>
+      'Chưa mở quyền mới; dữ liệu và lựa chọn vẫn giữ.';
+
+  @override
+  String pmPlanExpired(String date) {
+    return 'Premium đã hết hạn $date';
+  }
+
+  @override
+  String get pmPlanExpiredBody =>
+      'Vẫn xem dữ liệu, tóm tắt đã lưu, kỷ niệm và file đã xuất. Tạo mới nội dung Premium cần gia hạn.';
+
+  @override
+  String get pmPlanBuySoon =>
+      'Mua và quản lý gói ngay trong app sẽ có ở bản sau.';
+
+  @override
+  String get pmPlanOwnerOnly =>
+      'Chỉ chủ hộ mua và quản lý gói. Nhờ chủ hộ nếu cả nhà cần Premium.';
+
+  @override
+  String get pmPlanAlwaysFree => 'Luôn miễn phí';
+
+  @override
+  String get pmPlanAlwaysFreeBody =>
+      'Ghi chép, lịch sử, nhắc việc, lịch tham khảo, hướng dẫn sức khoẻ và mọi thứ đã lưu.';
+
+  @override
+  String get pmRegionRow => 'Khu vực của hộ';
+
+  @override
+  String get pmRegionUnset => 'Chưa chọn';
+
+  @override
+  String get pmRegionTitle => 'Gia đình đang sống ở đâu?';
+
+  @override
+  String get pmRegionBody =>
+      'Dùng để chọn nội dung sức khoẻ và hỗ trợ đã duyệt cho khu vực. Child Life không đoán từ ngôn ngữ hay vị trí.';
+
+  @override
+  String get pmRegionOwnerOnly => 'Chủ hộ chọn khu vực của hộ.';
+
+  @override
+  String get pmRegionSaved => 'Đã lưu khu vực';
+
+  @override
+  String get pmCountryVN => 'Việt Nam';
+
+  @override
+  String get pmCountryUS => 'Hoa Kỳ';
+
+  @override
+  String get pmCountryGB => 'Vương quốc Anh';
+
+  @override
+  String get pmCountryAU => 'Úc';
+
+  @override
+  String get pmCountryCA => 'Canada';
+
+  @override
+  String get pmCountrySG => 'Singapore';
+
+  @override
+  String get pmCountryNZ => 'New Zealand';
+
+  @override
+  String get pmCountryDE => 'Đức';
+
+  @override
+  String get pmCountryFR => 'Pháp';
+
+  @override
+  String get pmCountryJP => 'Nhật Bản';
+
+  @override
+  String get pmCountryKR => 'Hàn Quốc';
+
+  @override
+  String get pmCountryTW => 'Đài Loan';
+
+  @override
+  String get pmUnlockPremium => 'Mở với Premium';
+
+  @override
+  String get pmUseFreeTemplate => 'Dùng mẫu miễn phí';
+
+  @override
+  String get pmCardNoQuota => 'Thẻ Premium không trừ lượt xuất video';
+
+  @override
+  String get pmTemplatePremiumBody =>
+      'Mẫu này dành cho gia đình có Child Life Premium.';
+
+  @override
+  String get pmTemplateBetaNote => 'Beta cá nhân hoá không gồm mẫu Premium.';
+
+  @override
+  String get pmGateRoleTitle => 'Cần quyền của ba mẹ';
+
+  @override
+  String get pmGateRoleBody =>
+      'Premium không đổi vai trò. Tạo thẻ, tạo tóm tắt AI hoặc sửa ghi nhận cần quyền của ba mẹ.';
+
+  @override
+  String get pmGateRegionTitle => 'Hỗ trợ phù hợp chưa mở ở khu vực này';
+
+  @override
+  String get pmGateRegionBody =>
+      'Chưa có nội dung sức khoẻ được duyệt cho khu vực của hộ. Ghi chép, lịch tham khảo, Kỷ niệm và mẫu cơ bản vẫn dùng bình thường.';
+
+  @override
+  String get pmGateRegionAction => 'Đổi khu vực trong hồ sơ hộ';
+
+  @override
+  String get pmGateDisabledTitle => 'Tính năng đang tạm tắt';
+
+  @override
+  String get pmGateDisabledBody =>
+      'Ghi chép, nội dung miễn phí và hướng dẫn sức khoẻ vẫn dùng bình thường.';
+
+  @override
+  String get pmGateQuotaTitle => 'Đã hết lượt trong kỳ này';
+
+  @override
+  String get pmGateQuotaBody => 'Bạn vẫn xem mẫu và tạo thẻ ảnh.';
+
+  @override
+  String get pmGateConsentTitle => 'Cần bạn đồng ý dùng AI';
+
+  @override
+  String get pmGateConsentBody =>
+      'Bản tóm tắt theo mẫu vẫn dùng được khi chưa bật AI.';
+
+  @override
+  String get pmGateNotMemberTitle => 'Bạn không còn trong gia đình này';
+
+  @override
+  String get pmGateOk => 'Đã hiểu';
 }

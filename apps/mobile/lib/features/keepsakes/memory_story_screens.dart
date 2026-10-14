@@ -31,6 +31,7 @@ import '../memories/memory_models.dart';
 import '../memories/memory_repository.dart';
 import '../memories/memory_widgets.dart' show PlayGlyph;
 import '../memories/upload_queue.dart';
+import '../premium/premium_gate.dart';
 import 'keepsake_access.dart';
 import 'keepsake_card_content.dart' show keepsakeVideoLabel;
 import 'keepsake_card_view.dart' show keepsakeAssetImageProvider;
@@ -469,7 +470,19 @@ Future<void> playVideoTemplate(
               l10n.ksVideoNeeds(t.photosMin, t.photosMax),
               if (t.durationSec != null) _mmss(t.durationSec! * 1000),
             ].join(' · '),
-            onUse: () => context.push(Routes.memoryStoryPhotos, extra: use),
+            onUse: () async {
+              // MO02 (Q1): a Cao cấp video in `subscribers` mode needs templates.premium.
+              final ok = await ensureTemplateAllowed(
+                context,
+                ref,
+                template: t,
+                catalog: ref.read(keepsakeCatalogProvider).value,
+                babyId: use.babyId,
+              );
+              if (ok && context.mounted) {
+                await context.push(Routes.memoryStoryPhotos, extra: use);
+              }
+            },
           ),
   );
 }
@@ -2038,6 +2051,8 @@ String _reasonText(AppLocalizations l10n, String reason) => switch (reason) {
   'quota-full' => l10n.ksVideoErrQuota,
   'photo-unavailable' => l10n.ksVideoErrPhoto,
   'template-unavailable' => l10n.ksVideoErrTemplate,
+  // Q1: the household's plan changed since the template was picked.
+  'PREMIUM_REQUIRED' => l10n.pmTemplatePremiumBody,
   'not-enabled' => l10n.ksUnavailableTitle,
   _ => l10n.toastActionFailed,
 };

@@ -11467,4 +11467,205 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get pmBadgePremium => 'Premium';
+
+  @override
+  String get pmBadgeBeta => 'Beta';
+
+  @override
+  String get pmBadgeFree => 'Free';
+
+  @override
+  String get pmBadgePending => 'Verifying';
+
+  @override
+  String get pmBadgeExpired => 'Expired';
+
+  @override
+  String get pmPlanTitle => 'Household plan';
+
+  @override
+  String get pmPlanFree => 'Using Free';
+
+  @override
+  String get pmPlanFreeBody =>
+      'Logging, reference calendar, basic templates, health guidance.';
+
+  @override
+  String get pmPlanBeta => 'Personalisation beta active';
+
+  @override
+  String pmPlanBetaBody(String date) {
+    return 'Need-based suggestions, your baby\'s own rhythm and AI summaries are free until $date. Premium templates aren\'t included. No automatic charge when the beta ends.';
+  }
+
+  @override
+  String get pmPlanPremium => 'Child Life Premium';
+
+  @override
+  String pmPlanRenews(String date) {
+    return 'Renews $date';
+  }
+
+  @override
+  String pmPlanEnds(String date) {
+    return 'Active until $date · renewal off';
+  }
+
+  @override
+  String get pmPlanShared =>
+      'Everyone in the family sees “Household has Premium”. Only the family owner manages it.';
+
+  @override
+  String get pmPlanHouseholdHas => 'Household has Premium';
+
+  @override
+  String get pmPlanPending => 'Verifying purchase';
+
+  @override
+  String get pmPlanPendingBody =>
+      'No new access yet; your data and selections are kept.';
+
+  @override
+  String pmPlanExpired(String date) {
+    return 'Premium ended $date';
+  }
+
+  @override
+  String get pmPlanExpiredBody =>
+      'You keep data, saved summaries, moments and exports. Creating new Premium content needs renewal.';
+
+  @override
+  String get pmPlanBuySoon =>
+      'Buying and managing the plan in the app comes in a later version.';
+
+  @override
+  String get pmPlanOwnerOnly =>
+      'Only the family owner buys and manages the plan. Ask them if the family needs Premium.';
+
+  @override
+  String get pmPlanAlwaysFree => 'Always free';
+
+  @override
+  String get pmPlanAlwaysFreeBody =>
+      'Logging, history, reminders, reference calendar, health guidance and everything saved.';
+
+  @override
+  String get pmRegionRow => 'Household region';
+
+  @override
+  String get pmRegionUnset => 'Not set';
+
+  @override
+  String get pmRegionTitle => 'Where does your family live?';
+
+  @override
+  String get pmRegionBody =>
+      'Used to pick health content and support approved for your region. Child Life never guesses it from language or location.';
+
+  @override
+  String get pmRegionOwnerOnly => 'The family owner sets the household region.';
+
+  @override
+  String get pmRegionSaved => 'Region saved';
+
+  @override
+  String get pmCountryVN => 'Vietnam';
+
+  @override
+  String get pmCountryUS => 'United States';
+
+  @override
+  String get pmCountryGB => 'United Kingdom';
+
+  @override
+  String get pmCountryAU => 'Australia';
+
+  @override
+  String get pmCountryCA => 'Canada';
+
+  @override
+  String get pmCountrySG => 'Singapore';
+
+  @override
+  String get pmCountryNZ => 'New Zealand';
+
+  @override
+  String get pmCountryDE => 'Germany';
+
+  @override
+  String get pmCountryFR => 'France';
+
+  @override
+  String get pmCountryJP => 'Japan';
+
+  @override
+  String get pmCountryKR => 'South Korea';
+
+  @override
+  String get pmCountryTW => 'Taiwan';
+
+  @override
+  String get pmUnlockPremium => 'Unlock with Premium';
+
+  @override
+  String get pmUseFreeTemplate => 'Use a free template';
+
+  @override
+  String get pmCardNoQuota => 'Premium cards don’t use video export quota';
+
+  @override
+  String get pmTemplatePremiumBody =>
+      'This template is for families with Child Life Premium.';
+
+  @override
+  String get pmTemplateBetaNote =>
+      'The personalisation beta doesn’t include Premium templates.';
+
+  @override
+  String get pmGateRoleTitle => 'Needs a parent role';
+
+  @override
+  String get pmGateRoleBody =>
+      'Premium doesn’t change roles. Creating cards, AI summaries or editing notes needs a parent role.';
+
+  @override
+  String get pmGateRegionTitle =>
+      'Personalised support isn’t available in your region yet';
+
+  @override
+  String get pmGateRegionBody =>
+      'Health content for your region isn’t approved yet. Logging, reference calendar, Moments and basic templates work as usual.';
+
+  @override
+  String get pmGateRegionAction => 'Change region in household profile';
+
+  @override
+  String get pmGateDisabledTitle => 'This feature is paused';
+
+  @override
+  String get pmGateDisabledBody =>
+      'Logging, free content and health guidance keep working.';
+
+  @override
+  String get pmGateQuotaTitle => 'No exports left this period';
+
+  @override
+  String get pmGateQuotaBody =>
+      'You can still browse templates and make photo cards.';
+
+  @override
+  String get pmGateConsentTitle => 'AI needs your consent';
+
+  @override
+  String get pmGateConsentBody =>
+      'The template summary still works without AI.';
+
+  @override
+  String get pmGateNotMemberTitle => 'You’re no longer in this family';
+
+  @override
+  String get pmGateOk => 'Got it';
 }

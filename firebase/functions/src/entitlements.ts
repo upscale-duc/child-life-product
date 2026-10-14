@@ -22,6 +22,7 @@ import {
   type CapabilityState,
   type EntitlementsConfig,
   type FamilyAction,
+  type FlagKey,
   type Flags,
   type GateReason,
   type Grant,
@@ -186,6 +187,15 @@ export async function loadEntitlementContext(
   };
 }
 
+function flagOn(ctx: EntitlementContext, key: FlagKey): boolean {
+  return isFlagOnForFamily(
+    ctx.flags[key],
+    ctx.familyId,
+    familyBucket(ctx.familyId),
+    ctx.family.internal,
+  );
+}
+
 /** Membership → role → kill switch → free → region → grants, for one capability. */
 export function checkCapability(
   ctx: EntitlementContext,
@@ -194,14 +204,7 @@ export function checkCapability(
   action: FamilyAction = capabilityAction[capability],
 ): CapabilityResult {
   const flagKey = capabilityFlag[capability];
-  const featureEnabled =
-    flagKey === null ||
-    isFlagOnForFamily(
-      ctx.flags[flagKey],
-      ctx.familyId,
-      familyBucket(ctx.familyId),
-      ctx.family.internal,
-    );
+  const featureEnabled = flagKey === null || flagOn(ctx, flagKey);
   return resolveCapability({
     capability,
     now,
@@ -266,6 +269,12 @@ export async function getCapabilities(
     canManageBilling: familyCan(ctx.member, 'billing.manage'),
     country: ctx.family.country,
     capabilities: states,
+    features: {
+      rhythm: flagOn(ctx, 'rhythm'),
+      personalization: flagOn(ctx, 'personalization'),
+      aiAssist: flagOn(ctx, 'ai_assist'),
+      billing: flagOn(ctx, 'premium_billing'),
+    },
   };
 }
 

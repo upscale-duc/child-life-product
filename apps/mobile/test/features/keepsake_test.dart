@@ -122,7 +122,7 @@ void main() {
     );
 
     test(
-      'the portal decides Cao cấp: open, hidden, or an unknown mode = hidden',
+      'the portal decides Cao cấp: open, hidden, subscribers, or an unknown mode = hidden',
       () {
         final raw =
             jsonDecode(
@@ -138,7 +138,10 @@ void main() {
         final hidden = withPremium({'access': 'hidden', 'badges': false});
         expect(hidden.cards.map((t) => t.name.vi), ['Tròn trịa', 'Toàn ảnh']);
         expect(hidden.badges, isFalse);
-        expect(withPremium({'access': 'subscribers'}).cards, hasLength(2));
+        // Q1: subscribers keeps Cao cấp listed (gated when picked, MO02); a newer unknown
+        // mode still reads as hidden.
+        expect(withPremium({'access': 'subscribers'}).cards, hasLength(4));
+        expect(withPremium({'access': 'later-mode'}).cards, hasLength(2));
         // A catalog published before the setting existed: the beta default.
         expect(withPremium(null).cards, hasLength(4));
       },

@@ -614,8 +614,9 @@ class KeepsakeMusic {
 }
 
 /// What a Cao cấp template means, set in the portal for the whole catalog (D-068 #8):
-/// `everyone` (the free beta) or `hidden`; the server enforces it too.
-enum PremiumAccess { everyone, hidden }
+/// `everyone` (the free beta), `hidden`, or `subscribers` (shown with its badge, used only with
+/// the household's `templates.premium`: MO02, Q1). The server enforces it too.
+enum PremiumAccess { everyone, hidden, subscribers }
 
 @immutable
 class KeepsakeCatalog {
@@ -647,9 +648,10 @@ class KeepsakeCatalog {
           for (final t in (json['templates'] as List? ?? const []))
             ?KeepsakeTemplate.fromJson(t),
       ],
-      // Unknown (a newer mode such as "subscribers"): treat as hidden, never as open.
+      // Unknown (a newer mode): treat as hidden, never as open.
       premiumAccess: switch (premium['access']) {
         null || 'everyone' => PremiumAccess.everyone,
+        'subscribers' => PremiumAccess.subscribers,
         _ => PremiumAccess.hidden,
       },
       badges: premium['badges'] != false,
@@ -661,7 +663,8 @@ class KeepsakeCatalog {
     );
   }
 
-  /// MM10's grid, in display order, without the Cao cấp ones when the portal hides them.
+  /// MM10's grid, in display order, without the Cao cấp ones when the portal hides them. In
+  /// `subscribers` mode they stay listed and are gated when picked (`ensureTemplateAllowed`).
   List<KeepsakeTemplate> get cards => _of(KeepsakeKind.card);
   List<KeepsakeTemplate> get videos => _of(KeepsakeKind.video);
 
@@ -669,7 +672,7 @@ class KeepsakeCatalog {
       [
         for (final t in templates)
           if (t.kind == kind &&
-              (!t.premium || premiumAccess == PremiumAccess.everyone))
+              (!t.premium || premiumAccess != PremiumAccess.hidden))
             t,
       ]..sort((a, b) {
         final o = a.order.compareTo(b.order);
