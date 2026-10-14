@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,21 +78,25 @@ class AutoSaveTodayBanner extends ConsumerWidget {
           children: [
             Row(
               children: [
+                // 486:7227: up to three thumbs side by side, each ringed in the banner's own
+                // colour so an overlap reads as a stack, not one blurred picture.
                 SizedBox(
-                  width: 56,
-                  height: 40,
+                  width: 36.0 + (math.min(pending.length, 3) - 1) * 24,
+                  height: 36,
                   child: Stack(
                     children: [
                       for (final (i, c) in pending.take(3).indexed)
                         Positioned(
-                          left: i * 8.0,
-                          child: SizedBox.square(
-                            dimension: 40,
-                            child: LibraryTile(
-                              assetId: c.asset.id,
-                              video: c.asset.video,
-                              radius: 8,
+                          left: i * 24.0,
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              color: cl.colors.sunshineSoft,
+                              borderRadius: BorderRadius.circular(10),
                             ),
+                            child: LibraryTile(assetId: c.asset.id, radius: 8),
                           ),
                         ),
                     ],
@@ -140,6 +145,8 @@ class AutoSaveTodayBanner extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(right: 10),
               child: Row(
+                // The main button takes the room, "Để sau" its own width (486:7227), so
+                // "Xem & chọn ảnh" is never cut.
                 children: [
                   Expanded(
                     child: ClButton(
@@ -150,13 +157,10 @@ class AutoSaveTodayBanner extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: ClSpace.s2),
-                  Expanded(
-                    child: ClButton(
-                      label: l10n.autoSaveBannerLater,
-                      style: ClButtonStyle.secondary,
-                      expand: true,
-                      onPressed: () => unawaited(later()),
-                    ),
+                  ClButton(
+                    label: l10n.autoSaveBannerLater,
+                    style: ClButtonStyle.secondary,
+                    onPressed: () => unawaited(later()),
                   ),
                 ],
               ),

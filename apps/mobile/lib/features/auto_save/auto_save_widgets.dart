@@ -71,7 +71,22 @@ Future<Uint8List?> _loadThumb(String id) {
   return _thumbs[id] ??= () async {
     try {
       final a = await AssetEntity.fromId(id);
-      return a?.thumbnailDataWithSize(const ThumbnailSize.square(300));
+      // The finished picture, cropped to the square, not iOS's quick blurry first pass
+      // (owner, 2026-10-14: "đừng làm thumbnail mờ").
+      return a?.thumbnailDataWithOption(
+        defaultTargetPlatform == TargetPlatform.iOS
+            ? ThumbnailOption.ios(
+                size: const ThumbnailSize.square(400),
+                quality: 90,
+                deliveryMode: DeliveryMode.highQualityFormat,
+                resizeMode: ResizeMode.exact,
+                resizeContentMode: ResizeContentMode.fill,
+              )
+            : const ThumbnailOption(
+                size: ThumbnailSize.square(400),
+                quality: 90,
+              ),
+      );
     } on Object {
       return null;
     }
@@ -312,26 +327,21 @@ class AutoSaveEntryCard extends ConsumerWidget {
       child: ClPressable(
         semanticLabel: '${l10n.autoSaveTitle}, ${l10n.autoSaveBeta}. $subtitle',
         onPressed: () => context.push(Routes.autoSave),
+        // AS01 (479:7358): one row on the surface, the spark on a sunshine-soft tile, a
+        // chevron; waiting suggestions add a count, not a second button (owner, 2026-10-14).
         child: Container(
-          padding: const EdgeInsets.fromLTRB(
-            ClSpace.s3,
-            ClSpace.s3,
-            ClSpace.s3,
-            ClSpace.s3,
-          ),
+          padding: const EdgeInsets.fromLTRB(ClSpace.s3, 10, ClSpace.s2, 10),
           decoration: BoxDecoration(
-            color: pending > 0 ? cl.colors.sunshineSoft : cl.colors.surface,
+            color: cl.colors.surface,
             borderRadius: BorderRadius.circular(ClRadius.card - 6),
           ),
           child: Row(
             children: [
               Container(
-                width: 30,
-                height: 30,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
-                  color: pending > 0
-                      ? cl.colors.surface
-                      : cl.colors.sunshineSoft,
+                  color: cl.colors.sunshineSoft,
                   borderRadius: BorderRadius.circular(ClRadius.control),
                 ),
                 alignment: Alignment.center,
@@ -344,6 +354,7 @@ class AutoSaveEntryCard extends ConsumerWidget {
                   children: [
                     Wrap(
                       spacing: 6,
+                      runSpacing: 2,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(l10n.autoSaveTitle, style: cl.text.bodyStrong),
@@ -353,36 +364,41 @@ class AutoSaveEntryCard extends ConsumerWidget {
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: cl.text.caption.copyWith(
+                        color: pending > 0
+                            ? cl.colors.mintText
+                            : cl.colors.inkMuted,
+                      ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: ClSpace.s2),
-              if (pending > 0)
+              if (pending > 0) ...[
                 Container(
+                  constraints: const BoxConstraints(minWidth: 24),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                    horizontal: 7,
+                    vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: cl.colors.ink,
+                    color: cl.colors.mintDeep,
                     borderRadius: BorderRadius.circular(ClRadius.pill),
                   ),
                   child: Text(
-                    l10n.autoSaveReviewShort,
-                    style: cl.text.label.copyWith(
-                      color: cl.colors.surface,
-                      fontWeight: FontWeight.w600,
+                    pending > 99 ? '99+' : '$pending',
+                    textAlign: TextAlign.center,
+                    style: cl.text.caption.copyWith(
+                      color: cl.colors.onMintDeep,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                )
-              else
-                ClIcon(
-                  ClIcons.chevronRight,
-                  size: 16,
-                  color: cl.colors.inkMuted,
                 ),
+                const SizedBox(width: 4),
+              ],
+              ClIcon(ClIcons.chevronRight, size: 16, color: cl.colors.inkMuted),
             ],
           ),
         ),
