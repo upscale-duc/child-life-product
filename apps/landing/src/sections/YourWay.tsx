@@ -40,23 +40,17 @@ function NightChip() {
   );
 }
 
-/** Theo cách của bạn (22-landing-v4-home §5): copy left, "Tuỳ chỉnh Hôm nay" mock right; on
+/** Theo cách của bạn (22 §5; a white card in the Chặng 1 frame since 28 §3.4): copy left, mock right; on
  *  mobile the panel is re-composed in flow between the head and the bullets. */
 export function YourWay() {
   const { c } = useSite();
   const y = c.home.yourWay;
   return (
-    <section
-      id="theo-cach-cua-ban"
-      className="section feature container split"
-      aria-labelledby="your-way-title"
-    >
+    <div id="theo-cach-cua-ban" className="your-way split">
       <div className="split__copy">
         <header className="section-head reveal">
           <Eyebrow tone="sun-ink">{y.eyebrow}</Eyebrow>
-          <h2 id="your-way-title" className="h2 h2--flat feature__title">
-            {y.title}
-          </h2>
+          <h3 className="h2 h2--flat feature__title your-way__title">{y.title}</h3>
           <p className="lead split__lead">{y.lead}</p>
         </header>
         <div
@@ -85,6 +79,6 @@ export function YourWay() {
           </div>
         </Fit>
       </div>
-    </section>
+    </div>
   );
 }

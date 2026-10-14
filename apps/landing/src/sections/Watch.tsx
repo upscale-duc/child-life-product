@@ -113,21 +113,21 @@ function NotifyFace() {
   );
 }
 
-/** Trên cổ tay (25-landing-v5-home §3): full-bleed dark band, copy left and three watch faces
+/** Trên cổ tay (25-landing-v5-home §3; a dark card in the Chặng 1 frame since 28 §3.5), copy left and three watch faces
  *  right; mobile shows the home face alone at real size. The faces are illustrative. */
 export function WatchSection() {
   const { c } = useSite();
   const w = c.home.watch;
   return (
-    <section id="apple-watch" className="watch-band" aria-labelledby="watch-title">
-      <div className="watch-band__inner container">
+    <div id="apple-watch" className="watch-band">
+      <div className="watch-band__inner">
         <div className="watch-band__copy">
           <Eyebrow tone="sunshine" className="reveal">
             {w.eyebrow}
           </Eyebrow>
-          <h2 id="watch-title" className="h2 h2--flat watch-band__title reveal">
+          <h3 className="h2 h2--flat watch-band__title reveal">
             <span>{w.title[0]}</span> <span>{w.title[1]}</span>
-          </h2>
+          </h3>
           <p className="watch-band__lead reveal">{w.lead}</p>
           <div className="watch-band__solo only-mobile reveal" aria-hidden="true">
             <span className="watch-band__glow" />
@@ -161,6 +161,6 @@ export function WatchSection() {
           </Fit>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

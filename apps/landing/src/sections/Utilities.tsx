@@ -1,17 +1,16 @@
 import firstAidArt from '../assets/figma/first-aid-bandage.webp';
 import { IconBox, type Tint } from '../components/kit';
-import { Eyebrow, Icon, type IconName } from '../components/primitives';
+import { Icon, type IconName } from '../components/primitives';
 import { useSite } from '../context';
 import { staggerStyle } from '../motion';
 
 const cards: { tint: Tint; icon: IconName }[] = [
   { tint: 'peach', icon: 'alert' },
   { tint: 'growth', icon: 'grid' },
-  { tint: 'mint', icon: 'family' },
 ];
 
-/** Tiện ích cho ba mẹ (22-landing-v4-home §4): first aid, spending and family cards. The
- *  first-aid art is the app's own "Băng bó cơ bản" illustration. */
+/** Tiện ích cho ba mẹ (28-landing-v5b-home §3.3): first aid and spending cards inside the
+ *  Chặng 1 frame. The first-aid art is the app's own "Băng bó cơ bản" illustration. */
 export function Utilities() {
   const { c } = useSite();
   const u = c.home.utilities;
@@ -56,29 +55,13 @@ export function Utilities() {
         {s.together}
       </span>
     </div>,
-    <ul key="members" className="member-list" aria-hidden="true">
-      {u.members.map((member) => (
-        <li key={member.name}>
-          <span className="member-list__avatar">{member.initial}</span>
-          <strong>{member.name}</strong>
-          <span>{member.role}</span>
-        </li>
-      ))}
-    </ul>,
   ];
   return (
-    <section
-      id="tien-ich"
-      className="section utilities container"
-      aria-labelledby="utilities-title"
-    >
-      <header className="section-head section-head--center reveal">
-        <Eyebrow tone="mint">{u.eyebrow}</Eyebrow>
-        <h2 id="utilities-title" className="h2 h2--flat utilities__title">
-          <span>{u.title[0]}</span> <span>{u.title[1]}</span>
-        </h2>
-        <p className="lead">{u.lead}</p>
-      </header>
+    <div id="tien-ich" className="utilities">
+      <div className="utilities__head reveal">
+        <h3>{u.title}</h3>
+        <p>{u.lead}</p>
+      </div>
       <ul className="utilities__cards">
         {u.cards.map((card, i) => (
           <li
@@ -93,6 +76,6 @@ export function Utilities() {
           </li>
         ))}
       </ul>
-    </section>
+    </div>
   );
 }

@@ -16,7 +16,7 @@ export function buildHead(route: Route, content: Content, environment: Environme
   const en = alternateOf(route, 'en');
   // Each stage page has its own preview image (scripts/render-brand-assets.mjs).
   // `v` changes with the artwork so link previews and the CDN (24 h) refetch it.
-  const ogImage = `${origin}/og/${route.locale}${isStage(route.page) ? `-${route.page}` : ''}.png?v=3`;
+  const ogImage = `${origin}/og/${route.locale}${isStage(route.page) ? `-${route.page}` : ''}.png?v=4`;
 
   const tags = [
     `<title>${escape(page.title)}</title>`,

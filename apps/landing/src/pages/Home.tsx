@@ -4,13 +4,10 @@ import { Cta } from '../sections/Cta';
 import { Faq } from '../sections/Faq';
 import { FirstYear } from '../sections/FirstYear';
 import { GrowUp } from '../sections/GrowUp';
-import { Health } from '../sections/Health';
 import { JourneyHero } from '../sections/JourneyHero';
-import { Utilities } from '../sections/Utilities';
-import { WatchSection } from '../sections/Watch';
-import { YourWay } from '../sections/YourWay';
+import { NextStages } from '../sections/NextStages';
 
-/** Home page, section order per Figma v5 475:3726 (v3 mobile 362:3398 for the shared sections). */
+/** Home page, section order per Figma v5b 475:3726 (2026-10-13) (v3 mobile 362:3398 for the shared sections). */
 export function Home() {
   const { c } = useSite();
   return (
@@ -18,10 +15,7 @@ export function Home() {
       <JourneyHero />
       <Chapters />
       <FirstYear />
-      <Health />
-      <Utilities />
-      <WatchSection />
-      <YourWay />
+      <NextStages />
       <GrowUp />
       <Cta title={c.journey.ctaTitle} compact />
       <Faq items={c.home.faq.items} />

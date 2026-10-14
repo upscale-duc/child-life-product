@@ -2,8 +2,10 @@ import type { CSSProperties, ReactNode } from 'react';
 // Line icons are shared with the app (apps/mobile/assets/icons, stroke = currentColor).
 import alert from '../../../mobile/assets/icons/alert.svg?raw';
 import arrowRight from '../../../mobile/assets/icons/arrow-right.svg?raw';
+import back from '../../../mobile/assets/icons/back.svg?raw';
 import bookmark from '../../../mobile/assets/icons/bookmark.svg?raw';
 import cake from '../../../mobile/assets/icons/cake.svg?raw';
+import camera from '../../../mobile/assets/icons/camera.svg?raw';
 import check from '../../../mobile/assets/icons/check.svg?raw';
 import chevronDown from '../../../mobile/assets/icons/chevron-down.svg?raw';
 import chevronRight from '../../../mobile/assets/icons/chevron-right.svg?raw';
@@ -28,8 +30,10 @@ import search from '../../../mobile/assets/icons/search.svg?raw';
 import sleep from '../../../mobile/assets/icons/sleep.svg?raw';
 import sliders from '../../../mobile/assets/icons/sliders.svg?raw';
 import spark from '../../../mobile/assets/icons/spark.svg?raw';
+import speaker from '../../../mobile/assets/icons/speaker.svg?raw';
 import star from '../../../mobile/assets/icons/star.svg?raw';
 import today from '../../../mobile/assets/icons/today.svg?raw';
+import upload from '../../../mobile/assets/icons/upload.svg?raw';
 import babyFace from '../../../mobile/assets/illustrations/baby-face.svg';
 import miniBottle from '../../../mobile/assets/illustrations/mini-bottle.svg';
 import miniDiaper from '../../../mobile/assets/illustrations/mini-diaper.svg';
@@ -37,16 +41,14 @@ import miniDrop from '../../../mobile/assets/illustrations/mini-drop.svg';
 import miniMoon from '../../../mobile/assets/illustrations/mini-moon.svg';
 import miniPump from '../../../mobile/assets/illustrations/mini-pump.svg';
 import miniRuler from '../../../mobile/assets/illustrations/mini-ruler.svg';
-import baby0d3f8 from '../assets/figma/baby-0d3f8.jpg';
-import baby1025f from '../assets/figma/baby-1025f.jpg';
-import baby22456 from '../assets/figma/baby-22456.jpg';
-import baby2d978 from '../assets/figma/baby-2d978.jpg';
-import baby4222e from '../assets/figma/baby-4222e.jpg';
-import baby4470d from '../assets/figma/baby-4470d.jpg';
-import baby5d2ff from '../assets/figma/baby-5d2ff.jpg';
-import baby61240 from '../assets/figma/baby-61240.jpg';
-import babyAe95e from '../assets/figma/baby-ae95e.jpg';
 import appIcon from '../assets/figma/logo-app-icon.svg';
+import teddyCouch from '../assets/photos/teddy-one-couch.jpg';
+import teddyEight from '../assets/photos/teddy-eight-months.jpg';
+import teddyPlush from '../assets/photos/teddy-one-plush.jpg';
+import teddySleep from '../assets/photos/teddy-newborn-sleep.jpg';
+import teddyStroller from '../assets/photos/teddy-one-stroller.jpg';
+import teddyTwoMonths from '../assets/photos/teddy-two-months.jpg';
+import teddyYawn from '../assets/photos/teddy-newborn-yawn.jpg';
 import logoMark from '../assets/figma/nav-logo-mark.svg';
 import logoWordmark from '../assets/figma/nav-logo-wordmark.svg';
 import type { CareKind } from '../content/types';
@@ -57,8 +59,10 @@ const clean = (svg: string) => svg.replace(/\sid="[^"]*"/g, '').trim();
 const icons = {
   alert,
   'arrow-right': arrowRight,
+  back,
   bookmark,
   cake,
+  camera,
   check,
   'chevron-down': chevronDown,
   'chevron-right': chevronRight,
@@ -83,8 +87,10 @@ const icons = {
   sleep,
   sliders,
   spark,
+  speaker,
   star,
   today,
+  upload,
 };
 const cleaned = Object.fromEntries(Object.entries(icons).map(([k, v]) => [k, clean(v)])) as Record<
   IconName,
@@ -124,17 +130,18 @@ export const careArt: Record<CareKind, string> = {
   growth: miniRuler,
 };
 
-/** Illustration/Photo tones → the raster baby photos used in Figma (spec §14). */
+/** Illustration/Photo tones (Figma's 220 px library photos) → one real baby's first year, so every
+ *  baby on the site is the same "Teddy" (Minnie Zhou's album, assets/photos/CREDITS.md). */
 export const photos = {
-  mint: baby61240,
-  peach: baby0d3f8,
-  sun: baby22456,
-  sky: baby4222e,
-  lilac: baby1025f,
-  sand: baby5d2ff,
-  leaf: babyAe95e,
-  rose: baby4470d,
-  night: baby2d978,
+  peach: teddyEight,
+  sun: teddyCouch,
+  sky: teddySleep,
+  mint: teddyYawn,
+  lilac: teddyPlush,
+  rose: teddyStroller,
+  sand: teddyTwoMonths,
+  leaf: teddySleep,
+  night: teddyYawn,
 };
 export type PhotoTone = keyof typeof photos;
 

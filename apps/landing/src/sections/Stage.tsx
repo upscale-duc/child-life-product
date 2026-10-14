@@ -1,4 +1,5 @@
-import { Eyebrow, Icon, Photo, type IconName, type PhotoTone } from '../components/primitives';
+import { Eyebrow, Icon, Photo, type IconName } from '../components/primitives';
+import { scenes, type Scene } from '../components/scenes';
 import { useSite } from '../context';
 import { pathOf, stageIds, type StageId } from '../routes';
 import { staggerStyle } from '../motion';
@@ -11,13 +12,34 @@ const stageArt: Record<
     tone: 'mint' | 'sun-ink' | 'sleep' | 'peach';
     icon: IconName;
     highlights: [IconName, IconName, IconName];
-    photo: PhotoTone;
+    /** Quote band photo (Chặng 2–4): a child of that age. */
+    photo: Scene;
   }
 > = {
-  stage1: { tone: 'mint', icon: 'star', highlights: ['star', 'clock', 'heart'], photo: 'peach' },
-  stage2: { tone: 'sun-ink', icon: 'star', highlights: ['star', 'clock', 'heart'], photo: 'sun' },
-  stage3: { tone: 'sleep', icon: 'spark', highlights: ['spark', 'journal', 'heart'], photo: 'sky' },
-  stage4: { tone: 'peach', icon: 'globe', highlights: ['star', 'check', 'lock'], photo: 'leaf' },
+  stage1: {
+    tone: 'mint',
+    icon: 'star',
+    highlights: ['star', 'clock', 'heart'],
+    photo: 'parentNewborn',
+  },
+  stage2: {
+    tone: 'sun-ink',
+    icon: 'star',
+    highlights: ['star', 'clock', 'heart'],
+    photo: 'toddler',
+  },
+  stage3: {
+    tone: 'sleep',
+    icon: 'spark',
+    highlights: ['spark', 'journal', 'heart'],
+    photo: 'preschool',
+  },
+  stage4: {
+    tone: 'peach',
+    icon: 'globe',
+    highlights: ['star', 'check', 'lock'],
+    photo: 'schoolAge',
+  },
 };
 
 export const stageIndex = (stage: StageId) => stageIds.indexOf(stage);
@@ -114,7 +136,13 @@ export function StageHighlights({ stage }: { stage: StageId }) {
         ))}
       </ul>
       <div className="stage-quote reveal">
-        <Photo tone={look.photo} className="stage-quote__photo" />
+        <img
+          className="stage-quote__photo"
+          src={scenes[look.photo]}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
         <p>{s.quote}</p>
       </div>
     </section>

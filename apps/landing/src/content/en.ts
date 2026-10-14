@@ -19,9 +19,9 @@ export const en: Content = {
     links: {
       journey: 'Journey',
       firstYear: 'First year',
-      health: 'Health',
-      utilities: 'Tools',
       watch: 'Apple Watch',
+      stages: 'Stages',
+      memories: 'Memories',
       faq: 'FAQ',
     },
     download: 'Get it free',
@@ -254,45 +254,113 @@ export const en: Content = {
       title: "Your baby's first year, gentler for the whole family.",
       lead: 'Everyday care, understanding your baby week by week and keeping the firsts — all in one app.',
       leadShort: 'Everyday care, understanding your baby week by week and keeping the firsts.',
-      familyTitle: 'Caring as a family — everyone has a place by your baby',
-      familyTitleShort: 'Caring as a family',
-      roles: [
-        {
-          role: 'Parents',
-          title: 'Less to remember',
-          body: 'Care together and decide together who sees what.',
-        },
-        {
-          role: 'Caregivers',
-          title: 'Clear teamwork',
-          body: 'Log and get reminders for the baby in their care, without double logging.',
-        },
-        {
-          role: 'Grandparents, relatives',
-          title: 'Close even when far away',
-          body: 'See new photos of their grandchild, send love, save photos.',
-        },
-      ],
-      trust: [
-        { text: 'Private, not a social network', short: 'Private' },
-        { text: 'No pressure to log everything', short: 'No pressure to log everything' },
-        { text: 'No scores, no comparisons', short: 'No scores' },
-        { text: 'Content reviewed by experts', short: 'Expert reviewed' },
-        { text: "Your child's data, your rights", short: "Your child's data, your rights" },
-      ],
-      nextTitle: 'The stages ahead',
-      preparing: 'Being prepared with care',
       more: 'See the first year in detail',
+      detail: {
+        eyebrow: 'Stage 1 · 0–12 months',
+        title: 'See the whole first year',
+        body: 'Every part in detail: quick logging, reminders, vaccine schedule, solids, first aid, night mode and who sees what.',
+      },
+    },
+    stages: {
+      eyebrow: 'Next stages',
+      title: 'As your child grows, Child Life grows too.',
+      lead: 'After the first year, each stage brings new ways to care, new things to watch for and new memories. These stages are on the way.',
+      firstName: 'First year',
+      current: 'available',
+      soon: 'Coming soon',
+      preview: 'Preview stage {n}',
+    },
+    keepsakes: {
+      eyebrow: "Your child's memories",
+      title: 'Not just kept, but told.',
+      lead: "Videos, cards, journals, messages and even a book — made from your family's own photos and words.",
+      cards: [
+        {
+          format: 'MP4 video',
+          title: 'Memory story',
+          body: "A memory video from ready-made templates, with photos, words, music and your child's milestones.",
+        },
+        {
+          format: 'PNG/JPG image',
+          title: 'Milestone magic',
+          body: 'Beautiful milestone cards: one month, 100 days, first roll-over… save the image or send it to the family.',
+        },
+        {
+          format: 'Journal',
+          title: 'Little moments',
+          body: "A short post with photos or videos, saved straight to your child's memory timeline.",
+        },
+        {
+          format: 'Photo / Video',
+          title: 'Then and now',
+          body: "Compare your child's photos from two moments, and make a transition video from then to now.",
+        },
+        {
+          format: 'Voice + text',
+          title: 'Love from the family',
+          body: 'Voice or written messages from parents and grandparents — kept for your child to hear when they grow up.',
+        },
+        {
+          format: 'PDF / Printed book',
+          title: 'First-year book',
+          body: "A book of your child's first 12 months — download the PDF or order a printed photo book.",
+        },
+      ],
+      mock: {
+        video: {
+          template: 'Template · First year',
+          caption: 'First roll-over · 4 months',
+          time: '0:16 / 0:45',
+          music: 'Music: Gentle lullaby',
+          milestones: '3 milestones',
+        },
+        card: {
+          title: '100 days',
+          sub: 'Teddy · 18.01.2027',
+          options: ['1 month', '100 days', 'First roll-over'],
+          save: 'Save PNG',
+        },
+        journal: {
+          initial: 'M',
+          name: 'Mum',
+          time: '12/10 · 21:30',
+          text: 'Today you watched me all morning and giggled when I sang.',
+          duration: '0:18',
+          saved: 'Saved to the memory timeline',
+        },
+        thenNow: {
+          then: '1 month',
+          now: '12 months',
+          video: 'Make a transition video',
+          collage: 'Save collage',
+        },
+        voice: {
+          initial: 'G',
+          length: '0:32',
+          from: 'Grandma · voice message',
+          textInitial: 'D',
+          textName: 'Dad',
+          text: '“My boy, every day with you is a happy day.”',
+          privacy: 'Only family can listen',
+        },
+        book: {
+          cover: ['First year', 'of Teddy'],
+          month: 'Month 6',
+          caption: 'First solid meal',
+          pdf: 'PDF · 48 pages',
+          print: 'Order a photo book',
+        },
+      },
     },
     growUp: {
       eyebrow: 'One record that grows with them',
       title: 'What you save today, they will look back on when they grow up.',
-      body: 'From the very first photo to the drawing they made for grandma — their whole journey in one place, never lost as they grow.',
-      bodyShort: 'Their whole journey in one place, never lost as they grow.',
+      body: "From the first birthday to the first day of school and the dreams at twelve — your child's story stays in one place and never gets lost as they grow.",
+      bodyShort: 'From the first birthday to the dreams at twelve — all in one place.',
       years: [
-        { year: '2026', caption: 'The day they were born' },
-        { year: '2027', caption: 'First steps' },
-        { year: '2029', caption: 'First day at school' },
+        { year: 'Age 1', caption: '2027 · First birthday' },
+        { year: 'Age 6', caption: '2032 · First day of school' },
+        { year: 'Age 12', caption: '2038 · Dreams of their own' },
       ],
     },
     faq: {
@@ -344,43 +412,9 @@ export const en: Content = {
         },
       ],
     },
-    health: {
-      eyebrow: "Your child's health",
-      title: 'Vaccines and growth, clear at a glance.',
-      lead: "Know which shots they've had, what's next and how they're growing — no digging through the record book.",
-      bullets: [
-        {
-          title: 'Vaccine schedule by month of age',
-          sub: 'Mark the shots given and get reminded before each one, for the whole family.',
-          subShort: 'Mark the shots given and get reminded before each one, for the whole family.',
-        },
-        {
-          title: 'Weight and length against the WHO standard',
-          sub: 'Easy-to-read charts, no scores and no comparing your child.',
-          subShort: 'Easy-to-read charts, no scores and no comparing your child.',
-        },
-        {
-          title: 'Nutrition by stage',
-          sub: 'Reference milk amounts and the nutrients to watch at each age.',
-          subShort: 'Reference milk amounts and the nutrients to watch at each age.',
-        },
-      ],
-      footnote:
-        'For reference, reviewed by experts. Follow your health clinic for the exact vaccine schedule.',
-      mock: {
-        title: 'Vaccines · Teddy',
-        columns: ['Birth', '2 mo', '3 mo', '4 mo', '6 mo', '9 mo'],
-        rows: ['Hepatitis B', 'BCG', '6-in-1', 'Pneumococcal', 'Rotavirus', 'Measles'],
-        next: 'Next shot: 6-in-1 · dose 3 · Nov 17',
-        growthLabel: 'Weight',
-        growthValue: '7.8 kg',
-        growthChip: 'Within the WHO range',
-      },
-    },
     utilities: {
-      eyebrow: 'Tools for parents',
-      title: ['The little things that make', 'parenting days lighter.'],
-      lead: 'Ready in the Tools tab, open and use.',
+      title: 'Tools for parents',
+      lead: 'Small things that make parenting lighter — ready in the Tools tab.',
       cards: [
         {
           title: 'Child first aid',
@@ -389,10 +423,6 @@ export const en: Content = {
         {
           title: 'A shared spending book',
           body: 'Everything you spend on your child in one place. Both parents log and see the same book — what your child needs and what the family has covered.',
-        },
-        {
-          title: 'Family & sharing',
-          body: 'Invite grandparents and caregivers to follow along. Everyone has their own rights; parents decide who sees what.',
         },
       ],
       spending: {
@@ -405,12 +435,6 @@ export const en: Content = {
         initials: ['M', 'D'],
         together: 'Mum and Dad see the same book',
       },
-      members: [
-        { initial: 'M', name: 'Mum', role: 'Full access' },
-        { initial: 'D', name: 'Dad', role: 'Full access' },
-        { initial: 'L', name: 'Lan (nanny)', role: 'Logs care' },
-        { initial: 'G', name: 'Grandma', role: 'Sees memories' },
-      ],
     },
     watch: {
       eyebrow: 'Apple Watch',

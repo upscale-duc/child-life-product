@@ -89,9 +89,9 @@ describe('SEO head', () => {
     expect(head).toContain('hreflang="vi" href="https://childlife.app/"');
     expect(head).toContain('hreflang="en" href="https://childlife.app/en/"');
     expect(head).toContain('hreflang="x-default" href="https://childlife.app/"');
-    expect(head).toContain('og:image" content="https://childlife.app/og/en.png?v=3"');
+    expect(head).toContain('og:image" content="https://childlife.app/og/en.png?v=4"');
     const stage = buildHead(routeFor('/hanh-trinh/con-tap-kham-pha/'), viContent, 'prod');
-    expect(stage).toContain('og:image" content="https://childlife.app/og/vi-stage2.png?v=3"');
+    expect(stage).toContain('og:image" content="https://childlife.app/og/vi-stage2.png?v=4"');
     expect(stage).toContain('<title>Con tập khám phá (1–3 tuổi) — Child Life</title>');
     expect(head).toContain('og:locale" content="en_US"');
   });

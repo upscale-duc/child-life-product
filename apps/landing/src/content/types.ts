@@ -48,21 +48,10 @@ export interface WatchTile {
   caption: string;
 }
 
-export interface MemberText {
-  initial: string;
-  name: string;
-  role: string;
-}
-
-export interface RoleText {
-  role: string;
+export interface KeepsakeText {
+  format: string;
   title: string;
   body: string;
-}
-
-export interface ShortText {
-  text: string;
-  short: string;
 }
 
 export interface YearText {
@@ -126,9 +115,9 @@ export interface Content {
     links: {
       journey: string;
       firstYear: string;
-      health: string;
-      utilities: string;
       watch: string;
+      stages: string;
+      memories: string;
       faq: string;
     };
     download: string;
@@ -249,14 +238,62 @@ export interface Content {
       title: string;
       lead: string;
       leadShort: string;
-      familyTitle: string;
-      familyTitleShort: string;
-      roles: [RoleText, RoleText, RoleText];
-      /** The last chip is desktop only. */
-      trust: [ShortText, ShortText, ShortText, ShortText, ShortText];
-      nextTitle: string;
-      preparing: string;
       more: string;
+      /** "Xem đầy đủ năm đầu đời" card at the bottom of the Chặng 1 frame. */
+      detail: { eyebrow: string; title: string; body: string };
+    };
+    /** "Các chặng tiếp theo" (Figma 516:57063, 28-landing-v5b-home §4). */
+    stages: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      firstName: string;
+      current: string;
+      soon: string;
+      /** "{n}" is the stage number. */
+      preview: string;
+    };
+    /** "Kỷ niệm của con" (Figma 517:56217, §5.2). Mock strings are illustrative. */
+    keepsakes: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      cards: [KeepsakeText, KeepsakeText, KeepsakeText, KeepsakeText, KeepsakeText, KeepsakeText];
+      mock: {
+        video: {
+          template: string;
+          caption: string;
+          time: string;
+          music: string;
+          milestones: string;
+        };
+        card: { title: string; sub: string; options: [string, string, string]; save: string };
+        journal: {
+          initial: string;
+          name: string;
+          time: string;
+          text: string;
+          duration: string;
+          saved: string;
+        };
+        thenNow: { then: string; now: string; video: string; collage: string };
+        voice: {
+          initial: string;
+          length: string;
+          from: string;
+          textInitial: string;
+          textName: string;
+          text: string;
+          privacy: string;
+        };
+        book: {
+          cover: [string, string];
+          month: string;
+          caption: string;
+          pdf: string;
+          print: string;
+        };
+      };
     };
     growUp: {
       eyebrow: string;
@@ -265,28 +302,11 @@ export interface Content {
       bodyShort: string;
       years: [YearText, YearText, YearText];
     };
-    /** v4 sections (Figma 459:3538, 22-landing-v4-home). Mock strings are illustrative app UI. */
-    health: {
-      eyebrow: string;
+    /** Chặng 1 frame blocks (v4 459:3538 → v5b 524:4030). Mock strings are illustrative app UI. */
+    utilities: {
       title: string;
       lead: string;
-      bullets: [CompactBullet, CompactBullet, CompactBullet];
-      footnote: string;
-      mock: {
-        title: string;
-        columns: [string, string, string, string, string, string];
-        rows: [string, string, string, string, string, string];
-        next: string;
-        growthLabel: string;
-        growthValue: string;
-        growthChip: string;
-      };
-    };
-    utilities: {
-      eyebrow: string;
-      title: [string, string];
-      lead: string;
-      cards: [TitledText, TitledText, TitledText];
+      cards: [TitledText, TitledText];
       spending: {
         header: string;
         total: string;
@@ -294,7 +314,6 @@ export interface Content {
         initials: [string, string];
         together: string;
       };
-      members: [MemberText, MemberText, MemberText, MemberText];
     };
     yourWay: {
       eyebrow: string;

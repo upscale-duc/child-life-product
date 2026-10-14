@@ -12,6 +12,7 @@ const chrome = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/M
 const work = mkdtempSync(join(tmpdir(), 'cl-brand-'));
 const pub = (...p) => join(root, 'public', ...p);
 const asset = (name) => pathToFileURL(join(root, 'src/assets/figma', name)).href;
+const photo = (name) => pathToFileURL(join(root, 'src/assets/photos', name)).href;
 const font = (name) => pathToFileURL(pub('fonts', name)).href;
 mkdirSync(pub('icons'), { recursive: true });
 mkdirSync(pub('og'), { recursive: true });
@@ -149,7 +150,7 @@ for (const [locale, t] of Object.entries(og)) {
     .map(
       ([x, y, size, colour], i) =>
         `<span class="ring" style="left:${(x - 50) * k}px;top:${(y - 20) * k}px;width:${size * k}px;height:${size * k}px;border-color:${colour}">${
-          i === 0 ? `<img src="${asset('baby-0d3f8.jpg')}">` : ''
+          i === 0 ? `<img src="${photo('teddy-eight-months.jpg')}">` : ''
         }</span>`,
     )
     .join('');
@@ -175,7 +176,7 @@ for (const [locale, t] of Object.entries(og)) {
     const look = stageLook[i];
     const centre = look.icon
       ? `<span class="disc">${icon(look.icon, look.ink)}</span>`
-      : `<span class="photo"><img src="${asset('baby-0d3f8.jpg')}"></span>`;
+      : `<span class="photo"><img src="${photo('teddy-eight-months.jpg')}"></span>`;
     shoot(
       `og-${locale}-stage${i + 1}`,
       page(

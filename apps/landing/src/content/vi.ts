@@ -20,9 +20,9 @@ export const vi: Content = {
     links: {
       journey: 'Hành trình',
       firstYear: 'Năm đầu đời',
-      health: 'Sức khoẻ',
-      utilities: 'Tiện ích',
       watch: 'Apple Watch',
+      stages: 'Các chặng',
+      memories: 'Kỷ niệm',
       faq: 'Hỏi đáp',
     },
     download: 'Tải miễn phí',
@@ -262,45 +262,114 @@ export const vi: Content = {
       title: 'Năm đầu đời của con, nhẹ nhàng hơn cho cả nhà.',
       lead: 'Chăm con mỗi ngày, hiểu con từng tuần và giữ lại những lần đầu tiên — tất cả trong một ứng dụng.',
       leadShort: 'Chăm con mỗi ngày, hiểu con từng tuần và giữ lại những lần đầu tiên.',
-      familyTitle: 'Cả nhà cùng chăm — ai cũng có chỗ bên con',
-      familyTitleShort: 'Cả nhà cùng chăm',
-      roles: [
-        {
-          role: 'Ba mẹ',
-          title: 'Bớt phải nhớ',
-          body: 'Cùng chăm, cùng quyết định ai được xem gì.',
-        },
-        {
-          role: 'Người chăm sóc',
-          title: 'Phối hợp rõ ràng',
-          body: 'Ghi và nhận nhắc cho bé được giao, không lo ghi trùng.',
-        },
-        {
-          role: 'Ông bà, người thân',
-          title: 'Gần con dù ở xa',
-          body: 'Xem ảnh mới của cháu, thả thương, tải ảnh về.',
-        },
-      ],
-      trust: [
-        { text: 'Riêng tư, không mạng xã hội', short: 'Riêng tư' },
-        { text: 'Không áp lực ghi đủ', short: 'Không áp lực ghi đủ' },
-        { text: 'Không chấm điểm hay so sánh con', short: 'Không chấm điểm con' },
-        { text: 'Nội dung được chuyên môn rà soát', short: 'Chuyên môn rà soát' },
-        { text: 'Dữ liệu của con, quyền của bạn', short: 'Dữ liệu của con, quyền của bạn' },
-      ],
-      nextTitle: 'Những chặng tiếp theo',
-      preparing: 'Đang cùng con chuẩn bị',
       more: 'Xem chi tiết năm đầu đời',
+      detail: {
+        eyebrow: 'Chặng 1 · 0–12 tháng',
+        title: 'Xem đầy đủ năm đầu đời',
+        body: 'Từng phần chi tiết: ghi nhanh, nhắc nhở, lịch tiêm, ăn dặm, sơ cứu, chế độ đêm và quyền xem của cả nhà.',
+      },
+    },
+    // v5b (Figma 475:3726, 2026-10-13). Q-039: stages 2–4 and the keepsake products are not in V1.
+    stages: {
+      eyebrow: 'Các chặng tiếp theo',
+      title: 'Con lớn, Child Life lớn theo con.',
+      lead: 'Sau năm đầu đời, mỗi chặng mang đến cách chăm mới, điều mới cần để ý và những kỷ niệm mới. Các chặng này đang được chuẩn bị.',
+      firstName: 'Năm đầu đời',
+      current: 'đang có',
+      soon: 'Sắp ra mắt',
+      preview: 'Xem trước chặng {n}',
+    },
+    keepsakes: {
+      eyebrow: 'Kỷ niệm của con',
+      title: 'Không chỉ để lưu, mà để kể lại.',
+      lead: 'Video, thiệp, nhật ký, lời nhắn và cả một cuốn sách — tạo từ chính ảnh và câu chữ của gia đình bạn.',
+      cards: [
+        {
+          format: 'Video MP4',
+          title: 'Câu chuyện kỷ niệm',
+          body: 'Video kỷ niệm theo mẫu có sẵn, kết hợp ảnh, chữ, nhạc và các cột mốc của con.',
+        },
+        {
+          format: 'Ảnh PNG/JPG',
+          title: 'Phép màu cột mốc',
+          body: 'Thiệp cột mốc thật đẹp: tròn 1 tháng, 100 ngày, lần đầu biết lẫy… lưu ảnh hoặc gửi cho cả nhà.',
+        },
+        {
+          format: 'Nhật ký',
+          title: 'Khoảnh khắc nhỏ',
+          body: 'Một bài viết ngắn kèm ảnh hoặc video, lưu thẳng vào dòng thời gian kỷ niệm của con.',
+        },
+        {
+          format: 'Ảnh / Video',
+          title: 'Ngày ấy và bây giờ',
+          body: 'So sánh ảnh của con ở hai thời điểm, có thể tạo video chuyển cảnh từ ngày ấy sang bây giờ.',
+        },
+        {
+          format: 'Giọng nói + chữ',
+          title: 'Lời yêu thương của gia đình',
+          body: 'Lời nhắn bằng giọng nói hoặc chữ từ ba mẹ, ông bà — giữ lại để con nghe khi lớn.',
+        },
+        {
+          format: 'PDF / Sách ảnh in',
+          title: 'Sách năm đầu đời',
+          body: 'Cuốn sách tổng hợp hành trình 12 tháng đầu đời của con — tải PDF hoặc đặt in thành sách ảnh.',
+        },
+      ],
+      mock: {
+        video: {
+          template: 'Mẫu · Năm đầu đời',
+          caption: 'Lần đầu biết lẫy · 4 tháng',
+          time: '0:16 / 0:45',
+          music: 'Nhạc: Ru con nhẹ nhàng',
+          milestones: '3 cột mốc',
+        },
+        card: {
+          title: '100 ngày',
+          sub: 'Teddy · 18.01.2027',
+          options: ['1 tháng', '100 ngày', 'Lần đầu biết lẫy'],
+          save: 'Lưu ảnh PNG',
+        },
+        journal: {
+          initial: 'M',
+          name: 'Mẹ',
+          time: '12/10 · 21:30',
+          text: 'Hôm nay con nhìn theo mẹ cả buổi, cười khúc khích khi nghe mẹ hát.',
+          duration: '0:18',
+          saved: 'Đã lưu vào dòng thời gian kỷ niệm',
+        },
+        thenNow: {
+          then: '1 tháng',
+          now: '12 tháng',
+          video: 'Tạo video chuyển cảnh',
+          collage: 'Lưu ảnh ghép',
+        },
+        voice: {
+          initial: 'B',
+          length: '0:32',
+          from: 'Bà nội · lời nhắn giọng nói',
+          textInitial: 'Ba',
+          textName: 'Ba',
+          text: '“Con trai của ba, mỗi ngày bên con là một ngày vui.”',
+          privacy: 'Chỉ gia đình nghe được',
+        },
+        book: {
+          cover: ['Năm đầu đời', 'của Teddy'],
+          month: 'Tháng 6',
+          caption: 'Bữa ăn dặm đầu tiên',
+          pdf: 'PDF · 48 trang',
+          print: 'Đặt in sách ảnh',
+        },
+      },
     },
     growUp: {
       eyebrow: 'Một hồ sơ, lớn lên cùng con',
       title: 'Những gì bạn lưu hôm nay, con sẽ còn xem lại khi lớn.',
-      body: 'Từ tấm ảnh đầu tiên đến bức tranh con vẽ tặng bà — hành trình của con nằm trọn ở một nơi, không mất đi khi con lớn.',
-      bodyShort: 'Hành trình của con nằm trọn ở một nơi, không mất đi khi con lớn.',
+      body: 'Từ sinh nhật đầu tiên đến ngày con vào lớp 1, rồi những ước mơ tuổi 12 — hành trình của con nằm trọn ở một nơi, không mất đi khi con lớn.',
+      bodyShort: 'Từ sinh nhật đầu tiên đến những ước mơ tuổi 12 — tất cả ở một nơi.',
       years: [
-        { year: '2026', caption: 'Ngày con chào đời' },
-        { year: '2027', caption: 'Bước đi đầu tiên' },
-        { year: '2029', caption: 'Ngày đầu đi học' },
+        { year: '1 tuổi', caption: '2027 · Sinh nhật đầu tiên' },
+        { year: '6 tuổi', caption: '2032 · Ngày đầu vào lớp 1' },
+        { year: '12 tuổi', caption: '2038 · Những ước mơ riêng' },
       ],
     },
     faq: {
@@ -353,44 +422,10 @@ export const vi: Content = {
         },
       ],
     },
-    // v4 (Figma 459:3538). Q-039: some claims here go beyond the app (22-landing-v4-home §12).
-    health: {
-      eyebrow: 'Sức khoẻ của con',
-      title: 'Lịch tiêm và tăng trưởng, nhìn là hiểu.',
-      lead: 'Biết con đã tiêm gì, sắp tiêm gì, lớn lên ra sao — không cần lục sổ.',
-      bullets: [
-        {
-          title: 'Lịch tiêm theo tháng tuổi',
-          sub: 'Đánh dấu mũi đã tiêm, nhắc trước ngày tiêm cho cả nhà.',
-          subShort: 'Đánh dấu mũi đã tiêm, nhắc trước ngày tiêm cho cả nhà.',
-        },
-        {
-          title: 'Cân nặng, chiều dài theo chuẩn WHO',
-          sub: 'Biểu đồ dễ đọc, không chấm điểm hay so sánh con.',
-          subShort: 'Biểu đồ dễ đọc, không chấm điểm hay so sánh con.',
-        },
-        {
-          title: 'Dinh dưỡng theo giai đoạn',
-          sub: 'Lượng sữa tham khảo và nhóm chất cần chú ý theo tuổi.',
-          subShort: 'Lượng sữa tham khảo và nhóm chất cần chú ý theo tuổi.',
-        },
-      ],
-      footnote:
-        'Nội dung tham khảo, được chuyên môn rà soát. Lịch tiêm cụ thể theo hướng dẫn của cơ sở y tế.',
-      mock: {
-        title: 'Lịch tiêm chủng · Teddy',
-        columns: ['Sơ sinh', '2 th', '3 th', '4 th', '6 th', '9 th'],
-        rows: ['Viêm gan B', 'Lao', '6 trong 1', 'Phế cầu', 'Rota', 'Sởi'],
-        next: 'Mũi tiếp theo: 6 trong 1 · lần 3 · 17/11',
-        growthLabel: 'Cân nặng',
-        growthValue: '7,8 kg',
-        growthChip: 'Trong khoảng chuẩn WHO',
-      },
-    },
+    // Chặng 1 frame (Figma 524:4030). Q-039: some claims go beyond the app (22 §12, 28 §12).
     utilities: {
-      eyebrow: 'Tiện ích cho ba mẹ',
-      title: ['Những thứ nhỏ giúp', 'ngày làm cha mẹ nhẹ hơn.'],
-      lead: 'Có sẵn trong tab Tiện ích, mở ra là dùng được.',
+      title: 'Tiện ích cho ba mẹ',
+      lead: 'Những thứ nhỏ giúp ngày làm cha mẹ nhẹ hơn — có sẵn trong tab Tiện ích.',
       cards: [
         {
           title: 'Sơ cứu trẻ em',
@@ -399,10 +434,6 @@ export const vi: Content = {
         {
           title: 'Sổ chi tiêu chung cho bé',
           body: 'Mọi khoản chi cho con ở một chỗ. Ba và mẹ cùng ghi, cùng xem một sổ như nhau — biết con cần gì, cả nhà đã lo đến đâu.',
-        },
-        {
-          title: 'Gia đình & chia sẻ',
-          body: 'Mời ông bà, người chăm cùng theo dõi bé. Mỗi người một quyền riêng, ba mẹ quyết định ai thấy gì.',
         },
       ],
       spending: {
@@ -415,12 +446,6 @@ export const vi: Content = {
         initials: ['M', 'B'],
         together: 'Ba và mẹ cùng xem như nhau',
       },
-      members: [
-        { initial: 'M', name: 'Mẹ', role: 'Toàn quyền' },
-        { initial: 'B', name: 'Ba', role: 'Toàn quyền' },
-        { initial: 'L', name: 'Cô Lan', role: 'Ghi chăm sóc' },
-        { initial: 'B', name: 'Bà ngoại', role: 'Xem kỷ niệm' },
-      ],
     },
     // v5 (Figma 475:4503). Q-039: the watch app is not released yet.
     watch: {
