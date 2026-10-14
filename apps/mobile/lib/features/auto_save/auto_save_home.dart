@@ -24,6 +24,7 @@ import '../memories/memories_screen.dart' show memoryCtx, openUploads;
 import '../memories/memory_sheets.dart' show showAddSheet;
 import '../memories/upload_queue.dart';
 import 'auto_save_controller.dart';
+import 'auto_save_engine.dart' show SuggestionGroup;
 import 'auto_save_native.dart';
 import 'auto_save_setup.dart';
 import 'auto_save_widgets.dart';
@@ -323,24 +324,7 @@ class _Home extends ConsumerWidget {
                         : l10n.autoSavePending(pending),
                   ),
                 const SizedBox(height: ClSpace.s3),
-                SizedBox(
-                  height: 56,
-                  child: Row(
-                    children: [
-                      for (final g in view.groups().take(5))
-                        Padding(
-                          padding: const EdgeInsets.only(right: 6),
-                          child: SizedBox.square(
-                            dimension: 56,
-                            child: LibraryTile(
-                              assetId: g.best.asset.id,
-                              video: g.best.asset.video,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+                _Thumbs(groups: view.groups(), total: pending),
                 const SizedBox(height: ClSpace.s3),
                 ClButton(
                   label: scan != null && last == null
@@ -383,6 +367,64 @@ class _Home extends ConsumerWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+/// AS12's strip: the best of the first groups; when more wait, the last tile says "+n" (owner,
+/// 2026-10-14), n counting the suggestions not shown.
+class _Thumbs extends StatelessWidget {
+  const _Thumbs({required this.groups, required this.total});
+  final List<SuggestionGroup> groups;
+  final int total;
+
+  static const _max = 5;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final more = groups.length > _max;
+    final shown = groups.take(more ? _max - 1 : _max).toList();
+    final rest = total - shown.fold<int>(0, (n, g) => n + g.items.length);
+    return SizedBox(
+      height: 56,
+      child: Row(
+        children: [
+          for (final g in shown)
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: SizedBox.square(
+                dimension: 56,
+                child: LibraryTile(
+                  assetId: g.best.asset.id,
+                  video: g.best.asset.video,
+                ),
+              ),
+            ),
+          if (more && rest > 0)
+            SizedBox.square(
+              dimension: 56,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  LibraryTile(assetId: groups[_max - 1].best.asset.id),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '+$rest',
+                        style: cl.text.bodyStrong.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

@@ -202,6 +202,9 @@ class LibraryTile extends ConsumerWidget {
         ],
       ),
     );
+    // A tile with nothing to do is a plain picture: ClPressable shows a disabled control at 40 %
+    // opacity, which washed the thumbnails out on AS12 and AR02 (owner, 2026-10-14).
+    if (onTap == null && onLongPress == null) return tile;
     return ClPressable(
       onPressed: onTap,
       onLongPress: onLongPress,

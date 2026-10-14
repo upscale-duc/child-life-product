@@ -7,6 +7,7 @@ import 'package:child_life/features/auto_save/auto_save_native.dart';
 import 'package:child_life/features/auto_save/auto_save_review.dart';
 import 'package:child_life/features/auto_save/auto_save_store.dart';
 import 'package:child_life/features/auto_save/auto_save_today.dart';
+import 'package:child_life/core/widgets/cl_pressable.dart';
 import 'package:child_life/features/auto_save/auto_save_widgets.dart';
 import 'package:child_life/features/me/me_widgets.dart';
 import 'package:child_life/features/me/me_repository.dart';
@@ -179,6 +180,35 @@ void main() {
       );
     },
   );
+
+  testWidgets('AS12: five sharp thumbs, the last one "+n" when more wait', (
+    tester,
+  ) async {
+    await store().save(
+      ready(
+        pending: [
+          for (var i = 0; i < 9; i++)
+            candidate('p$i', Duration(hours: i), v([i.toDouble(), 1, 0]), 0.5),
+        ],
+      ),
+    );
+    await pumpRouted(
+      tester,
+      const AutoSaveHomeScreen(),
+      overrides: overrides(),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(LibraryTile), findsNWidgets(5));
+    expect(find.text('+5'), findsOneWidget);
+    // Not a disabled button: ClPressable would draw it at 40 % (owner, 2026-10-14).
+    expect(
+      find.ancestor(
+        of: find.byType(LibraryTile).first,
+        matching: find.byType(ClPressable),
+      ),
+      findsNothing,
+    );
+  });
 
   testWidgets('AS14: paused without photo access, manual add still there', (
     tester,
