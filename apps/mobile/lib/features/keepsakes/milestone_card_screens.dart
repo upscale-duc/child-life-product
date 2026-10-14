@@ -210,9 +210,24 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
   /// The template in view in the carousel.
   var _index = 0;
 
+  /// The chosen dịp, scrolled into view once the chips are there (it may be past the edge).
+  final _chosenChip = GlobalKey();
+  var _chipShown = false;
+
+  void _showChosenChip() {
+    if (_chipShown) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final chip = _chosenChip.currentContext;
+      if (_chipShown || chip == null || !chip.mounted) return;
+      _chipShown = true;
+      unawaited(Scrollable.ensureVisible(chip, alignment: 0.5));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
     final c = memoryCtx(context, ref);
     final access = ref.watch(selectedKeepsakeAccessProvider);
     if (c == null || !c.isParent || !access.cards || c.dob == null) {
@@ -276,6 +291,7 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
       ),
     );
     final index = cards.isEmpty ? 0 : _index.clamp(0, cards.length - 1);
+    _showChosenChip();
 
     return KeepsakePage(
       title: l10n.ksCardTitle,
@@ -288,16 +304,35 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
             )
           : null,
       children: [
-        OccasionFilter(
-          occasions: Occasion.chipsFor(
-            dob,
-            c.now,
-            milestones,
-            current: occasion,
+        Text(
+          l10n.ksChooseOccasion,
+          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        // One row that scrolls sideways, as on the video tab: the templates keep the room.
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          child: Row(
+            children: [
+              for (final (i, o) in Occasion.chipsFor(
+                dob,
+                c.now,
+                milestones,
+                current: occasion,
+              ).indexed) ...[
+                if (i > 0) const SizedBox(width: ClSpace.s2),
+                OccasionChip(
+                  key: o == occasion ? _chosenChip : null,
+                  label: o.label(l10n),
+                  icon: o.icon,
+                  selected: o == occasion,
+                  suggested: o == suggested,
+                  onTap: () => setState(() => _occasion = o),
+                ),
+              ],
+            ],
           ),
-          selected: occasion,
-          suggested: suggested,
-          onSelect: (o) => setState(() => _occasion = o),
         ),
         const SizedBox(height: ClSpace.s4),
         ClSegmented<KeepsakeFormat>(
@@ -366,92 +401,6 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
             onPressed: () => open(cards[index]),
           ),
         ],
-      ],
-    );
-  }
-}
-
-/// "Chọn dịp" and its chips in one sideways row, the same on Thiệp and Video (owner,
-/// 2026-10-14); the chosen chip is scrolled into view when it first appears. With [allLabel]
-/// (Video, where the dịp filters the templates) "Tất cả" comes first and stands for null;
-/// Thiệp has none, its dịp fills the card.
-class OccasionFilter extends StatefulWidget {
-  const OccasionFilter({
-    required this.occasions,
-    required this.selected,
-    required this.suggested,
-    required this.onSelect,
-    this.allLabel,
-    super.key,
-  });
-
-  final List<Occasion> occasions;
-  final Occasion? selected;
-  final Occasion? suggested;
-  final ValueChanged<Occasion?> onSelect;
-  final String? allLabel;
-
-  @override
-  State<OccasionFilter> createState() => _OccasionFilterState();
-}
-
-class _OccasionFilterState extends State<OccasionFilter> {
-  final _chosen = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final chip = _chosen.currentContext;
-      if (chip != null && chip.mounted) {
-        unawaited(Scrollable.ensureVisible(chip, alignment: 0.5));
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
-    final all = widget.allLabel;
-    final chips = [
-      if (all != null)
-        OccasionChip(
-          key: widget.selected == null ? _chosen : null,
-          label: all,
-          selected: widget.selected == null,
-          onTap: () => widget.onSelect(null),
-        ),
-      for (final o in widget.occasions)
-        OccasionChip(
-          key: o == widget.selected ? _chosen : null,
-          label: o.label(l10n),
-          icon: o.icon,
-          selected: o == widget.selected,
-          suggested: o == widget.suggested,
-          onTap: () => widget.onSelect(o),
-        ),
-    ];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.ksChooseOccasion,
-          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-        ),
-        const SizedBox(height: ClSpace.s3),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          clipBehavior: Clip.none,
-          child: Row(
-            children: [
-              for (final (i, chip) in chips.indexed) ...[
-                if (i > 0) const SizedBox(width: ClSpace.s2),
-                chip,
-              ],
-            ],
-          ),
-        ),
       ],
     );
   }

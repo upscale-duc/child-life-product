@@ -2761,6 +2761,7 @@
   "ksNudgeBackBody": "{n, plural, =1{1 photo from it is in Memories. Make a card?} other{{n} photos from it are in Memories. Make a card?}}",
   "ksVideoTitle": "Memory video",
   "ksVideoTileHint": "Photos + words + music",
+  "ksVideoPickTemplate": "Pick a template, then your baby’s photos. Child Life makes a 9:16 video.",
   "ksVideoNeeds": "Needs {min}–{max} photos",
   "ksUnavailableBodyVideo": "Memory videos are in beta and coming to every family soon.",
   "ksFromMemories": "From Memories",

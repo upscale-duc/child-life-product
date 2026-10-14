@@ -76,9 +76,6 @@ void main() {
       await tester.drag(find.byType(PageView), const Offset(-300, 0));
       await tester.pumpAndSettle();
       expect(find.text('Khoảnh khắc nhỏ'), findsOneWidget);
-      // The row opened on 1 tháng; Tất cả is back at its start.
-      await tester.ensureVisible(find.text('Tất cả'));
-      await tester.pumpAndSettle();
       await tester.tap(find.text('Tất cả'));
       await tester.pumpAndSettle();
       expect(find.bySemanticsLabel('Mẫu 1 trên 4'), findsOneWidget);

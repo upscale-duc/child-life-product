@@ -47,7 +47,7 @@ import 'milestone_card_screens.dart'
         KeepsakeKindTabs,
         KeepsakePage,
         KeepsakeRoundIcon,
-        OccasionFilter,
+        OccasionChip,
         TierBadge;
 
 /// Video kỷ niệm (D-068; Figma MM06 `529:9070` chọn ảnh, MM07 `530:9248` hoàn thiện, MM08
@@ -297,6 +297,7 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
     final c = memoryCtx(context, ref);
     final access = ref.watch(selectedKeepsakeAccessProvider);
     if (c == null || !c.isParent || !access.videos) {
@@ -378,23 +379,51 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
             )
           : null,
       children: [
-        // The same "Chọn dịp" row as Thiệp; "Tất cả" first, since here it filters.
-        if (dob != null)
-          OccasionFilter(
-            occasions: Occasion.chipsFor(
-              dob,
-              c.now,
-              milestones,
-              current: _filter,
+        Text(
+          l10n.ksVideoPickTemplate,
+          style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+        ),
+        if (dob != null) ...[
+          const SizedBox(height: ClSpace.s4),
+          // One row that scrolls sideways: the templates stay in view.
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            clipBehavior: Clip.none,
+            child: Row(
+              children: [
+                for (final (i, chip) in [
+                  OccasionChip(
+                    label: l10n.filterAll,
+                    selected: _filter == null,
+                    onTap: () => setState(() {
+                      _filter = null;
+                      _index = 0;
+                    }),
+                  ),
+                  for (final o in Occasion.chipsFor(
+                    dob,
+                    c.now,
+                    milestones,
+                    current: _filter,
+                  ))
+                    OccasionChip(
+                      label: o.label(l10n),
+                      icon: o.icon,
+                      selected: o == _filter,
+                      suggested: o == near,
+                      onTap: () => setState(() {
+                        _filter = o;
+                        _index = 0;
+                      }),
+                    ),
+                ].indexed) ...[
+                  if (i > 0) const SizedBox(width: ClSpace.s2),
+                  chip,
+                ],
+              ],
             ),
-            selected: _filter,
-            suggested: near,
-            allLabel: l10n.filterAll,
-            onSelect: (o) => setState(() {
-              _filter = o;
-              _index = 0;
-            }),
           ),
+        ],
         const SizedBox(height: ClSpace.s4),
         // One template at a time, swiped sideways (owner, 2026-10-14), as on the Thiệp tab.
         Expanded(

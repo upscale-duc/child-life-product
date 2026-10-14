@@ -15039,6 +15039,10 @@
   "@ksVideoTileHint": {
     "description": "MM01 / MM02 tile."
   },
+  "ksVideoPickTemplate": "Chọn một mẫu, rồi chọn ảnh của bé. Child Life ghép thành video 9:16.",
+  "@ksVideoPickTemplate": {
+    "description": "Template list (MM04 / MM05 not found, G-107)."
+  },
   "ksVideoNeeds": "Cần {min}–{max} ảnh",
   "@ksVideoNeeds": {
     "description": "Template list.",

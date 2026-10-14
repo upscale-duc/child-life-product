@@ -10754,6 +10754,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ksVideoTileHint => 'Photos + words + music';
 
   @override
+  String get ksVideoPickTemplate =>
+      'Pick a template, then your baby’s photos. Child Life makes a 9:16 video.';
+
+  @override
   String ksVideoNeeds(int min, int max) {
     return 'Needs $min–$max photos';
   }

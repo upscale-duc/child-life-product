@@ -16669,6 +16669,12 @@ abstract class AppLocalizations {
   /// **'Ảnh + chữ + nhạc'**
   String get ksVideoTileHint;
 
+  /// Template list (MM04 / MM05 not found, G-107).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn một mẫu, rồi chọn ảnh của bé. Child Life ghép thành video 9:16.'**
+  String get ksVideoPickTemplate;
+
   /// Template list.
   ///
   /// In vi, this message translates to:
