@@ -14,7 +14,7 @@ matrix), Figma page **"Cá nhân hoá & Nhịp lớn lên"** `568:18`. The page 
 Owner request: "Tôi cần 1 kế hoạch chi tiết để triển khai chức năng này … design có thể là bản tham khảo, không cần
 theo 100%, chỉ cần phù hợp với logic và thực tế."
 
-Status (2026-10-15): **Phase 0 and Slice 1 built, deployed on dev with every new flag off** (§10). Owner decisions **D-072** (seven answers, §2.1) and Q-067 (name);
+Status (2026-10-15): **Phase 0, Slice 1 and Slice 2 built; server, portal and draft content on dev, every new flag off** (§10). Owner decisions **D-072** (seven answers, §2.1) and Q-067 (name);
 open questions **Q-068 – Q-073** (§11). Figma extract: `docs/discovery/figma-extract/30-personalization-premium.md`.
 Proposals will take **P-151…**, gaps **G-108…**.
 
@@ -488,6 +488,44 @@ the Kỷ niệm catalog stays on `everyone` until Q-072.
 - Beta-end notice job: waits for Q-071 (beta dates, notice policy).
 - MO02 "Mở với Premium" opens PR03; purchase arrives with B1–B4 (Slice 4).
 - Country picker offers 12 countries; other countries need a list decision (G).
+
+### 10.2 Slice 2 · Nhịp lớn lên (2026-10-15, dev)
+
+Owner answers D-073: valid days are automatic (no "ghi đủ"), engineering drafts the expert content now.
+Commits `68b0c16` (contracts), `b27f54e` (spec), `a99fb89` (server), `a3ca9a8` (content), `da573e5` (portal),
+`6057f7b` / `029454c` (app), `ef2b5e6` (stage reminder). Deployed to dev: rules, indexes, `setDueDate`,
+`nextAction`, `composeHome`, data-version triggers, `runDeletion`, staff publishing callables, portal; content
+`ref_20261015_01` / `rc_20261015_01` and `config/rhythm` seeded on dev with `seed:rhythm`. Two callables lost the
+public invoker on deploy (memory note) and were re-bound on dev. `rhythm` / `personalization` flags still off.
+
+- **Contracts**: `rhythm.ts`, `personalization.ts` (calendar, automatic valid days, baseline, check-ins,
+  ranking, feedback memory, `recommend`, publishing schemas). Feedback "Có ích" after trying lifts the
+  recently-shown penalty so PS02 can repeat it.
+- **Server**: `rhythm.ts`, `rhythm-content.ts`; Rules for check-ins / feedback / preferences; check-ins and
+  feedback anonymized on account deletion.
+- **Content**: `content/rhythm/*.seed.json` (10 stages, 37 activities, 35 age cards, health pack, 12 region
+  numbers), all `review: null`; `SEED-NOTES.md` §6 lists 18 points for the reviewer.
+- **Portal**: Nhịp lớn lên screen (PN01–PN04) on the first-aid workflow.
+- **App**: `lib/features/rhythm/` — Home section, check-in → PS01 / PS01F / HL01, AC01 / AC02, PS02, NL01 /
+  NL01b / NL02a–c / NL03 / NL04 / own rhythm, MS01, Cá nhân hoá (EN01, EN02, feedback history), stage reminders.
+
+**Tests (actual runs)**
+
+| Layer | Result |
+|---|---|
+| Contracts (fixtures E, B, C, R, X + seed) | 174 pass |
+| Emulator: rhythm rules 16, rhythm integration 34 (M13, M14, M18 server side, health first, idempotency, staff publishing) | pass |
+| Portal vitest | 117 pass |
+| Flutter `test/features` + `test/app` | 688 pass; Dart ports run fixtures B, C, X |
+| Goldens rhythm (Light / Night × vi / en) | pass; only pre-existing family / first-aid golden failures remain |
+
+**Not done / BLOCKED**
+
+- Not run on a real iPhone / Android against dev; checklist rows stay ◐.
+- NL07b observation episodes, NL02c "Hỏi lại sau khi thử" / "Ai nhận", evening check-in notification, EN03.
+- Content review by a qualified reviewer (Q-069) before any prod publish; points in SEED-NOTES §6
+  (fever measuring, emergency numbers, swaddling, bed-sharing, "mất kỹ năng" routing, content after 12 months).
+- MS01 guesses the occasion from the note's words; corrected age is not used anywhere (actual age only).
 
 ## 11. Open questions for the owner and design gaps
 
