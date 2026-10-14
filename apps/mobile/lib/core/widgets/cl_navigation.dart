@@ -223,6 +223,9 @@ class _ClNavBarState extends State<ClNavBar>
 /// One tab at selection progress [t] (0 = plain, 1 = on the active fill): the icon over the label
 /// (Tab/* in NavBar v1.0.1: 20 px icon, 3 px gap, 11 px label, Bold when active).
 class _NavTab extends StatelessWidget {
+  /// The active fill: a little wider than Figma's 64 so longer labels ("Chăm sóc") breathe.
+  static const _fillWidth = 76.0;
+
   const _NavTab({
     required this.t,
     required this.active,
@@ -250,41 +253,52 @@ class _NavTab extends StatelessWidget {
         onPressed: onTap,
         pressedOpacity: 1,
         isButton: false,
-        child: Container(
-          height: 56,
-          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
-          decoration: BoxDecoration(
-            color: cl.colors.navActive.withValues(
-              alpha: cl.colors.navActive.a * t,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              icon(ink),
-              const SizedBox(height: 3),
-              // Large text sizes shrink the label rather than cut it.
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: cl.text.caption.copyWith(
-                    fontSize: 11,
-                    height: 16 / 11,
-                    letterSpacing: 0.2,
-                    fontWeight: FontWeight.lerp(
-                      FontWeight.w500,
-                      FontWeight.w700,
-                      t,
-                    ),
-                    color: ink,
+        // The whole share of the bar takes the tap; the fill is a fixed 76 wide in its middle,
+        // so the label never touches its edges (owner, 2026-10-14).
+        child: LayoutBuilder(
+          builder: (context, constraints) => SizedBox(
+            width: constraints.maxWidth,
+            height: 56,
+            child: Center(
+              child: Container(
+                width: math.min(constraints.maxWidth, _fillWidth),
+                height: 56,
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                decoration: BoxDecoration(
+                  color: cl.colors.navActive.withValues(
+                    alpha: cl.colors.navActive.a * t,
                   ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    icon(ink),
+                    const SizedBox(height: 3),
+                    // Large text sizes shrink the label rather than cut it.
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: cl.text.caption.copyWith(
+                          fontSize: 11,
+                          height: 16 / 11,
+                          letterSpacing: 0.2,
+                          fontWeight: FontWeight.lerp(
+                            FontWeight.w500,
+                            FontWeight.w700,
+                            t,
+                          ),
+                          color: ink,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
