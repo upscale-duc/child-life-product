@@ -293,6 +293,15 @@ final routerProvider = Provider<GoRouter>((ref) {
                     ),
                     routes: [
                       _route(
+                        path: 'preview',
+                        redirect: (_, s) => argsOf<CardPreviewArgs>(s) == null
+                            ? Routes.milestoneCard
+                            : null,
+                        builder: (_, s) => CardTemplatePreviewScreen(
+                          args: argsOf<CardPreviewArgs>(s)!,
+                        ),
+                      ),
+                      _route(
                         path: 'edit',
                         // argsOf: go_router rebuilds pushed pages without `extra` when it
                         // refreshes; a null draft crashed (owner, 2026-10-14).
@@ -328,6 +337,15 @@ final routerProvider = Provider<GoRouter>((ref) {
                           : null,
                     ),
                     routes: [
+                      _route(
+                        path: 'preview',
+                        redirect: (_, s) => argsOf<VideoPreviewArgs>(s) == null
+                            ? Routes.memoryStory
+                            : null,
+                        builder: (_, s) => VideoTemplatePreviewScreen(
+                          args: argsOf<VideoPreviewArgs>(s)!,
+                        ),
+                      ),
                       _route(
                         path: 'photos',
                         redirect: (_, s) => argsOf<VideoDraft>(s) == null

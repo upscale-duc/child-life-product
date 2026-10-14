@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:child_life/features/keepsakes/keepsake_card_content.dart';
 import 'package:child_life/features/keepsakes/keepsake_card_view.dart';
 import 'package:child_life/features/keepsakes/keepsake_catalog.dart';
 import 'package:child_life/features/keepsakes/keepsake_entries.dart';
@@ -134,8 +135,87 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Khoảnh khắc nhỏ'));
       await tester.pumpAndSettle();
+      // A template opens its preview first (owner, 2026-10-14).
+      expect(visits.last.location, '/memories/video/preview');
+      expect(
+        (visits.last.extra! as VideoPreviewArgs).draft.occasion,
+        Occasion.m1,
+      );
+    },
+  );
+
+  testWidgets('a card template’s preview: the card, its facts, then MM11', (
+    tester,
+  ) async {
+    final t = seedCatalog().cards.first; // Tròn trịa
+    final draft = CardDraft(
+      babyId: teddyId,
+      occasion: Occasion.m1,
+      date: DateTime(2026, 10, 17),
+      format: KeepsakeFormat.portrait,
+      template: t,
+      palette: t.palette,
+      quote: 'Một tháng yêu thương',
+      photos: const [],
+    );
+    final (visits, _) = await pumpRouted(
+      tester,
+      Builder(
+        builder: (context) => CardTemplatePreviewScreen(
+          args: CardPreviewArgs(
+            draft: draft,
+            content: keepsakeCardContent(
+              l10n: AppLocalizations.of(context),
+              locale: const Locale('vi'),
+              template: t,
+              occasion: Occasion.m1,
+              name: 'Teddy',
+              dob: DateTime(2026, 9, 17),
+              date: DateTime(2026, 10, 17),
+              note: 'Một tháng yêu thương',
+              photos: const [],
+            ),
+          ),
+        ),
+      ),
+      overrides: on(),
+    );
+    expect(find.byType(KeepsakeCardView), findsOneWidget);
+    expect(find.text('Tròn trịa'), findsOneWidget);
+    expect(find.text('Miễn phí'), findsOneWidget);
+    expect(find.text('Ảnh cần'), findsOneWidget);
+    expect(find.text('Dọc 4:5 · Vuông · Story 9:16'), findsOneWidget);
+    await tester.tap(find.text('Dùng mẫu này'));
+    await tester.pumpAndSettle();
+    expect(visits.last.location, '/memories/card/edit');
+    expect(visits.last.extra, same(draft));
+  });
+
+  testWidgets(
+    'a video template’s preview: what it needs, then "Dùng mẫu này"',
+    (tester) async {
+      final draft = VideoDraft(babyId: teddyId, template: template);
+      final (visits, _) = await pumpRouted(
+        tester,
+        VideoTemplatePreviewScreen(
+          args: VideoPreviewArgs(draft: draft, name: 'Teddy', suggested: true),
+        ),
+        overrides: on(),
+      );
+      expect(find.text('Tháng đầu tiên'), findsOneWidget);
+      expect(find.text('Gợi ý'), findsOneWidget);
+      expect(find.text('6–8 ảnh'), findsOneWidget);
+      expect(find.text('Story 9:16'), findsOneWidget);
+      expect(find.text('1 tháng'), findsOneWidget);
+      // "Xem mẫu" on the cover plays the template with sample pictures.
+      expect(
+        find.byWidgetPredicate((w) => w.runtimeType.toString() == 'PlayGlyph'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Dùng mẫu này'));
+      await tester.pumpAndSettle();
       expect(visits.last.location, '/memories/video/photos');
-      expect((visits.last.extra! as VideoDraft).occasion, Occasion.m1);
+      expect(visits.last.extra, same(draft));
     },
   );
 

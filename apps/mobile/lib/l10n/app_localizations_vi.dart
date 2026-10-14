@@ -10602,4 +10602,40 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get ksVideoFieldClosing => 'Lời kết';
+
+  @override
+  String get ksUseTemplate => 'Dùng mẫu này';
+
+  @override
+  String get ksInfoPhotos => 'Ảnh cần';
+
+  @override
+  String get ksInfoFormat => 'Khổ';
+
+  @override
+  String get ksInfoOccasion => 'Dịp';
+
+  @override
+  String get ksInfoDuration => 'Thời lượng';
+
+  @override
+  String get ksInfoPalettes => 'Bảng màu';
+
+  @override
+  String get ksAnyOccasion => 'Mọi dịp';
+
+  @override
+  String ksPhotosCount(int count) {
+    return '$count ảnh';
+  }
+
+  @override
+  String ksPhotosRange(int min, int max) {
+    return '$min–$max ảnh';
+  }
+
+  @override
+  String ksPalettesCount(int count) {
+    return '$count bảng màu';
+  }
 }

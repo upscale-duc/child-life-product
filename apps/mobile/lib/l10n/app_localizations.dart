@@ -17568,6 +17568,66 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Lời kết'**
   String get ksVideoFieldClosing;
+
+  /// Template preview: go on with it (owner, 2026-10-14)
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng mẫu này'**
+  String get ksUseTemplate;
+
+  /// Template preview fact
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh cần'**
+  String get ksInfoPhotos;
+
+  /// Template preview fact
+  ///
+  /// In vi, this message translates to:
+  /// **'Khổ'**
+  String get ksInfoFormat;
+
+  /// Template preview fact
+  ///
+  /// In vi, this message translates to:
+  /// **'Dịp'**
+  String get ksInfoOccasion;
+
+  /// Template preview fact
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời lượng'**
+  String get ksInfoDuration;
+
+  /// Template preview fact
+  ///
+  /// In vi, this message translates to:
+  /// **'Bảng màu'**
+  String get ksInfoPalettes;
+
+  /// Video template made for every dịp
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi dịp'**
+  String get ksAnyOccasion;
+
+  /// Template preview: exactly this many photos
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ảnh'**
+  String ksPhotosCount(int count);
+
+  /// Template preview: a range of photos
+  ///
+  /// In vi, this message translates to:
+  /// **'{min}–{max} ảnh'**
+  String ksPhotosRange(int min, int max);
+
+  /// Template preview: colour sets to choose from
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} bảng màu'**
+  String ksPalettesCount(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -286,6 +286,8 @@ void main() {
       tester,
     ) async {
       await pumpScreen(tester, const MilestoneCardScreen());
+      await tester.ensureVisible(find.text('100 ngày').first);
+      await tester.pumpAndSettle();
       await tester.tap(find.text('100 ngày').first);
       await tester.pumpAndSettle();
       expect(find.text('26.12.2026'), findsWidgets);
@@ -309,6 +311,15 @@ void main() {
       expect(find.text('Đêm sao'), findsOneWidget);
       expect(find.text('Miễn phí'), findsNothing);
       expect(find.text('Cao cấp'), findsNothing);
+    });
+
+    testWidgets('the dịp chips are one row that scrolls sideways, like Video', (
+      tester,
+    ) async {
+      await pumpScreen(tester, const MilestoneCardScreen());
+      final first = tester.getTopLeft(find.text('Chào đời'));
+      final last = tester.getTopLeft(find.text('Bước đi đầu tiên'));
+      expect(last.dy, first.dy);
     });
 
     testWidgets('empty catalog and beta off', (tester) async {

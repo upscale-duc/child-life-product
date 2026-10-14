@@ -11374,4 +11374,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ksVideoFieldClosing => 'Closing line';
+
+  @override
+  String get ksUseTemplate => 'Use this template';
+
+  @override
+  String get ksInfoPhotos => 'Photos';
+
+  @override
+  String get ksInfoFormat => 'Format';
+
+  @override
+  String get ksInfoOccasion => 'Occasion';
+
+  @override
+  String get ksInfoDuration => 'Length';
+
+  @override
+  String get ksInfoPalettes => 'Colours';
+
+  @override
+  String get ksAnyOccasion => 'Any occasion';
+
+  @override
+  String ksPhotosCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos',
+      one: '1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksPhotosRange(int min, int max) {
+    return '$min–$max photos';
+  }
+
+  @override
+  String ksPalettesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count colour sets',
+      one: '1 colour set',
+    );
+    return '$_temp0';
+  }
 }

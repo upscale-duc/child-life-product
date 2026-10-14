@@ -15870,5 +15870,63 @@
   "ksVideoFieldClosing": "Lời kết",
   "@ksVideoFieldClosing": {
     "description": "MM07: a Chapter 01 video text (E-9)."
+  },
+  "ksUseTemplate": "Dùng mẫu này",
+  "@ksUseTemplate": {
+    "description": "Template preview: go on with it (owner, 2026-10-14)"
+  },
+  "ksInfoPhotos": "Ảnh cần",
+  "@ksInfoPhotos": {
+    "description": "Template preview fact"
+  },
+  "ksInfoFormat": "Khổ",
+  "@ksInfoFormat": {
+    "description": "Template preview fact"
+  },
+  "ksInfoOccasion": "Dịp",
+  "@ksInfoOccasion": {
+    "description": "Template preview fact"
+  },
+  "ksInfoDuration": "Thời lượng",
+  "@ksInfoDuration": {
+    "description": "Template preview fact"
+  },
+  "ksInfoPalettes": "Bảng màu",
+  "@ksInfoPalettes": {
+    "description": "Template preview fact"
+  },
+  "ksAnyOccasion": "Mọi dịp",
+  "@ksAnyOccasion": {
+    "description": "Video template made for every dịp"
+  },
+  "ksPhotosCount": "{count} ảnh",
+  "@ksPhotosCount": {
+    "description": "Template preview: exactly this many photos",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ksPhotosRange": "{min}–{max} ảnh",
+  "@ksPhotosRange": {
+    "description": "Template preview: a range of photos",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "ksPalettesCount": "{count} bảng màu",
+  "@ksPalettesCount": {
+    "description": "Template preview: colour sets to choose from",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

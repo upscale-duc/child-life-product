@@ -216,6 +216,20 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
   Occasion? _occasion;
   var _format = KeepsakeFormat.portrait;
 
+  /// The chosen dịp's chip, scrolled into view once it is there (it may be past the edge).
+  final _chosenChip = GlobalKey();
+  var _chipShown = false;
+
+  void _showChosenChip() {
+    if (_chipShown) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final chip = _chosenChip.currentContext;
+      if (_chipShown || chip == null || !chip.mounted) return;
+      _chipShown = true;
+      unawaited(Scrollable.ensureVisible(chip, alignment: 0.5));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -268,6 +282,7 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
     final growth =
         ref.watch(growthRecordsProvider(c.babyId)).value ??
         const <CareRecord>[];
+    _showChosenChip();
 
     return KeepsakePage(
       title: l10n.ksCardTitle,
@@ -278,24 +293,31 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
           style: cl.text.label.copyWith(color: cl.colors.inkMuted),
         ),
         const SizedBox(height: ClSpace.s3),
-        Wrap(
-          spacing: ClSpace.s2,
-          runSpacing: ClSpace.s2,
-          children: [
-            for (final o in Occasion.chipsFor(
-              dob,
-              c.now,
-              milestones,
-              current: occasion,
-            ))
-              OccasionChip(
-                label: o.label(l10n),
-                icon: o.icon,
-                selected: o == occasion,
-                suggested: o == suggested,
-                onTap: () => setState(() => _occasion = o),
-              ),
-          ],
+        // One row that scrolls sideways, like Video kỷ niệm's (owner, 2026-10-14); the chosen
+        // dịp is brought into view.
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          child: Row(
+            children: [
+              for (final (i, o) in Occasion.chipsFor(
+                dob,
+                c.now,
+                milestones,
+                current: occasion,
+              ).indexed) ...[
+                if (i > 0) const SizedBox(width: ClSpace.s2),
+                OccasionChip(
+                  key: o == occasion ? _chosenChip : null,
+                  label: o.label(l10n),
+                  icon: o.icon,
+                  selected: o == occasion,
+                  suggested: o == suggested,
+                  onTap: () => setState(() => _occasion = o),
+                ),
+              ],
+            ],
+          ),
         ),
         const SizedBox(height: ClSpace.s4),
         ClSegmented<KeepsakeFormat>(
@@ -334,12 +356,8 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
                 runSpacing: ClSpace.s3,
                 children: [
                   for (final t in cards)
-                    _TemplateTile(
-                      template: t,
-                      format: _format,
-                      width: w,
-                      badge: catalog.value!.badges,
-                      content: keepsakeCardContent(
+                    () {
+                      final content = keepsakeCardContent(
                         l10n: l10n,
                         locale: Localizations.localeOf(context),
                         template: t,
@@ -350,23 +368,37 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
                         note: occasion.quote(l10n),
                         photos: previews,
                         growth: growth,
-                      ),
-                      onTap: () => context.push(
-                        Routes.milestoneCardEdit,
-                        extra: CardDraft(
-                          babyId: c.babyId,
-                          occasion: occasion,
-                          date: date,
-                          format: _format,
-                          template: t,
-                          palette: t.palette,
-                          quote: occasion.quote(l10n),
-                          photos: [
-                            for (final m in best.take(t.photosMax)) photoOf(m),
-                          ],
+                      );
+                      return _TemplateTile(
+                        template: t,
+                        format: _format,
+                        width: w,
+                        badge: catalog.value!.badges,
+                        content: content,
+                        // The template first, larger and with what it needs; "Dùng mẫu
+                        // này" there goes on to MM11 (owner, 2026-10-14).
+                        onTap: () => context.push(
+                          Routes.milestoneCardPreview,
+                          extra: CardPreviewArgs(
+                            draft: CardDraft(
+                              babyId: c.babyId,
+                              occasion: occasion,
+                              date: date,
+                              format: _format,
+                              template: t,
+                              palette: t.palette,
+                              quote: occasion.quote(l10n),
+                              photos: [
+                                for (final m in best.take(t.photosMax))
+                                  photoOf(m),
+                              ],
+                            ),
+                            content: content,
+                            badge: catalog.value!.badges,
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    }(),
                 ],
               );
             },
@@ -480,6 +512,229 @@ class TierBadge extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// What a template's preview needs: the draft "Dùng mẫu này" goes on with, and the card as
+/// drawn in the grid.
+class CardPreviewArgs {
+  const CardPreviewArgs({
+    required this.draft,
+    required this.content,
+    this.badge = true,
+  });
+  final CardDraft draft;
+  final CardContent content;
+
+  /// The portal's "Hiện nhãn Miễn phí / Cao cấp" (D-068 #8).
+  final bool badge;
+}
+
+/// A template before it is used (owner, 2026-10-14: "ấn vào item thì mở màn hình xem trước"):
+/// the card large with the baby's details, its name and tier, what it needs and offers, and
+/// "Dùng mẫu này" on to MM11. Not drawn in Figma.
+class CardTemplatePreviewScreen extends StatelessWidget {
+  const CardTemplatePreviewScreen({required this.args, super.key});
+  final CardPreviewArgs args;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final t = args.draft.template;
+    final format = args.draft.format;
+    return KeepsakePreviewPage(
+      name: t.name.of(Localizations.localeOf(context)),
+      premium: t.premium,
+      badge: args.badge,
+      preview: LayoutBuilder(
+        builder: (context, box) {
+          final width = math.min(box.maxWidth - ClSpace.s8, 300.0);
+          return Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: KeepsakeCardView(
+                template: t,
+                format: format,
+                content: args.content,
+                width: width,
+              ),
+            ),
+          );
+        },
+      ),
+      facts: [
+        (
+          l10n.ksInfoPhotos,
+          keepsakePhotosLabel(l10n, t.photosMin, t.photosMax),
+        ),
+        (
+          l10n.ksInfoFormat,
+          [for (final f in t.formats) keepsakeFormatLabel(l10n, f)].join(' · '),
+        ),
+        (l10n.ksInfoOccasion, args.draft.occasion.label(l10n)),
+        if (t.palettes.length > 1)
+          (l10n.ksInfoPalettes, l10n.ksPalettesCount(t.palettes.length)),
+      ],
+      onUse: () => context.push(Routes.milestoneCardEdit, extra: args.draft),
+    );
+  }
+}
+
+String keepsakeFormatLabel(AppLocalizations l10n, KeepsakeFormat f) =>
+    switch (f) {
+      KeepsakeFormat.portrait => l10n.ksFormatPortrait,
+      KeepsakeFormat.square => l10n.ksFormatSquare,
+      KeepsakeFormat.story => l10n.ksFormatStory,
+    };
+
+/// "4 ảnh" / "1–4 ảnh".
+String keepsakePhotosLabel(AppLocalizations l10n, int min, int max) =>
+    min == max ? l10n.ksPhotosCount(max) : l10n.ksPhotosRange(min, max);
+
+/// The shared layout of the template previews: back, the picture, the name with its tier,
+/// a card of facts, and "Dùng mẫu này" pinned at the bottom.
+class KeepsakePreviewPage extends StatelessWidget {
+  const KeepsakePreviewPage({
+    required this.name,
+    required this.premium,
+    required this.preview,
+    required this.facts,
+    required this.onUse,
+    this.badge = true,
+    this.note,
+    super.key,
+  });
+
+  final String name;
+  final bool premium;
+  final bool badge;
+  final Widget preview;
+
+  /// Label and value, one row each.
+  final List<(String, String)> facts;
+  final VoidCallback onUse;
+
+  /// A line under the name (e.g. "Gợi ý cho tuổi của bé").
+  final String? note;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final bottom = MediaQuery.paddingOf(context).bottom;
+    return Scaffold(
+      backgroundColor: cl.colors.cloud,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: ClBackButton(
+                  semanticLabel: l10n.a11yBack,
+                  onPressed: () => Navigator.of(context).maybePop(),
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  ClSpace.s3,
+                  ClSpace.s4,
+                  ClSpace.s6,
+                ),
+                children: [
+                  preview,
+                  const SizedBox(height: ClSpace.s6),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Semantics(
+                          header: true,
+                          child: Text(name, style: cl.text.title2),
+                        ),
+                      ),
+                      if (badge) ...[
+                        const SizedBox(width: ClSpace.s2),
+                        TierBadge(premium: premium),
+                      ],
+                    ],
+                  ),
+                  if (note != null) ...[
+                    const SizedBox(height: ClSpace.s1),
+                    Text(
+                      note!,
+                      style: cl.text.label.copyWith(color: cl.colors.mintText),
+                    ),
+                  ],
+                  const SizedBox(height: ClSpace.s4),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: cl.colors.surface,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      children: [
+                        for (final (i, (label, value)) in facts.indexed) ...[
+                          if (i > 0)
+                            Divider(
+                              height: 1,
+                              indent: ClSpace.s4,
+                              color: cl.colors.separator,
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: ClSpace.s4,
+                              vertical: ClSpace.s3,
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  label,
+                                  style: cl.text.body.copyWith(
+                                    color: cl.colors.inkMuted,
+                                  ),
+                                ),
+                                const SizedBox(width: ClSpace.s4),
+                                Expanded(
+                                  child: Text(
+                                    value,
+                                    textAlign: TextAlign.end,
+                                    style: cl.text.body,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                ClSpace.s4,
+                ClSpace.s2,
+                ClSpace.s4,
+                bottom > 0 ? bottom : ClSpace.s4,
+              ),
+              child: ClButton(
+                label: l10n.ksUseTemplate,
+                expand: true,
+                onPressed: onUse,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

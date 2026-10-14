@@ -73,12 +73,16 @@ abstract final class Routes {
   /// draft or result as `extra`.
   static const milestoneCard = '/memories/card';
   static const milestoneCardEdit = '/memories/card/edit';
+
+  /// A template before it is used (owner, 2026-10-14).
+  static const milestoneCardPreview = '/memories/card/preview';
   static const milestoneCardDone = '/memories/card/done';
 
   /// Video kỷ niệm (D-068): templates (`?occasion=m1`), `/photos` (MM06) and `/finish` (MM07)
   /// with the draft as `extra`, `/job/{jobId}?baby=…` (MM08 / MM09 / MM14).
   static const memoryStory = '/memories/video';
   static const memoryStoryPhotos = '/memories/video/photos';
+  static const memoryStoryPreview = '/memories/video/preview';
   static const memoryStoryFinish = '/memories/video/finish';
   static const memoryStoryJob = '/memories/video/job';
 
