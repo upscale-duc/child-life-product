@@ -38,6 +38,8 @@ final _screens = <String, Widget Function()>{
   '06_sign_in': () => const SignInScreen(),
   // v1.0 R1 (368:1266): a device that has signed in before.
   'r1_welcome_back': () => const SignInScreen(returning: true),
+  // Android has no Apple button; people with an Apple account get an email link (D-071, Q-063).
+  '06_sign_in_android': () => const SignInScreen(),
   // Đăng nhập: password first, "Gửi link đăng nhập" second (D-067).
   '07_email': () => const EmailScreen(),
   '07b_link_sent': () =>
@@ -75,6 +77,10 @@ void main() {
                   (ref) => Stream.value(DateTime(2026, 10, 8, 10)),
                 ),
                 setupDraftProvider.overrideWith(_FixedDraft.new),
+                // Figma draws iOS; the `_android` cases draw Android (D-071).
+                appleSignInShownProvider.overrideWithValue(
+                  !name.endsWith('_android'),
+                ),
               ],
               child: MediaQuery(
                 data: const MediaQueryData(

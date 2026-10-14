@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- assets/icons/camera.svg (the app's line icon) for the camera shortcut widget. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M4 8.5H7L8.5 6H15.5L17 8.5H20V18.5H4V8.5Z"
+        android:strokeColor="@color/cl_on_mint"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M15.2 13C15.2 14.7673 13.7673 16.2 12 16.2C10.2327 16.2 8.8 14.7673 8.8 13C8.8 11.2327 10.2327 9.8 12 9.8C13.7673 9.8 15.2 11.2327 15.2 13Z"
+        android:strokeColor="@color/cl_on_mint"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

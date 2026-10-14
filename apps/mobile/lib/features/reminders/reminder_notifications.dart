@@ -10,6 +10,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../../app/route_guard.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
+import '../../core/platform/android_channels.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
@@ -101,7 +102,7 @@ class PluginReminderNotifications implements ReminderNotifications {
     );
     await _plugin.initialize(
       settings: const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings(AndroidChannels.icon),
         iOS: darwin,
       ),
       onDidReceiveNotificationResponse: (r) => onTap(r.payload),
@@ -160,7 +161,7 @@ class PluginReminderNotifications implements ReminderNotifications {
     }
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
-        'reminders',
+        AndroidChannels.reminders,
         l10n.notifChannel,
         channelDescription: l10n.notifChannelDescription,
         importance: Importance.high,
@@ -294,7 +295,8 @@ class _ReminderNotificationSyncState
     if (nudge != null && mounted) {
       final (babyId, occasion) = nudge;
       final session = ref.read(sessionProvider);
-      if (session is! SessionSignedIn || session.membershipFor(babyId) == null) {
+      if (session is! SessionSignedIn ||
+          session.membershipFor(babyId) == null) {
         return;
       }
       ref.read(selectedBabyIdProvider.notifier).select(babyId);

@@ -70,8 +70,9 @@ writeFileSync(
     : 'User-agent: *\nDisallow: /\n',
 );
 
-// Android App Links for invite links /i/{token} (plan §3.6). Dev is signed with the debug key;
-// prod fingerprints are added when the release signing key exists.
+// Android App Links for invite links /i/{token} and email sign-in links /auth/link/ (plan §3.6,
+// D-064). Dev lists the debug key that builds it here and, once it exists, the upload key CI signs
+// testers' dev builds with; prod waits for the upload key and the Play App Signing key (android-plan A2).
 const androidApps = {
   dev: [
     {

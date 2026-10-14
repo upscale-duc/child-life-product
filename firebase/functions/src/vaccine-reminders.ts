@@ -233,6 +233,8 @@ async function pushTo(
       const rejected = await sender.send(tokens, {
         ...vaccineCopy(r.kind, r.doses, language),
         data: { kind: 'vaccine', babyId, date: r.date, months: String(months) },
+        // VX 8 actions: the iOS category, drawn by the app on Android (A6).
+        androidDraws: true,
         apns: {
           category: 'CL_VACCINE',
           collapseId: `vx-${babyId}-${r.date}`,

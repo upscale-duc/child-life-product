@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application>
+        <activity android:name=".MainActivity" tools:node="merge">
+            <!-- Invite links /i/{token} and email sign-in links /auth/link/ on childlife.app (A2), as
+                 iOS (Runner-prod.entitlements). Verified once the prod landing's
+                 /.well-known/assetlinks.json lists app.childlife with the Play App Signing and upload
+                 key fingerprints (apps/landing/scripts/prerender.mjs); until then they open in the browser. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <data android:host="childlife.app" />
+                <data android:pathPrefix="/i/" />
+                <data android:pathPrefix="/auth/link/" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

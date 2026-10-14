@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Reminders (S7, R-091): local notifications, rescheduled after a reboot. Inexact
          while-idle alarms, so no exact-alarm permission is requested. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
@@ -8,14 +9,21 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+    <!-- "Tải về" (10f) through gal: Android 8–10 still need write access to the gallery. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <!-- FB4: Android 14+ reports a screenshot of the app (no image, normal permission). -->
     <uses-permission android:name="android.permission.DETECT_SCREEN_CAPTURE"/>
+    <!-- 10j: memory uploads go on in the background as a data-sync foreground job (A3). -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
     <application
         android:label="${appName}"
         android:localeConfig="@xml/locales_config"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true"
+        android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -38,6 +46,27 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- 10k "Chia sẻ từ app Ảnh" (A4, Q-065): photos and videos shared from another app open
+             Child Life with them; ShareActivity hands them to MainActivity and closes. -->
+        <activity
+            android:name=".ShareActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+            </intent-filter>
+        </activity>
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
             <intent-filter>
@@ -47,6 +76,130 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
             </intent-filter>
         </receiver>
+        <!-- Pushes the app draws itself (A6): reminders with actions, Video kỷ niệm progress.
+             PushService extends the firebase_messaging plugin's service, which it replaces. -->
+        <service
+            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingService"
+            tools:node="remove" />
+        <service
+            android:name=".PushService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <receiver
+            android:name=".PushActionReceiver"
+            android:exported="false" />
+        <!-- Home-screen widgets (S8 W1–W5 on Android, A5): GlanceUi.kt draws them; buttons log
+             through GlanceActionReceiver without opening the app. -->
+        <receiver
+            android:name=".BottleWidget"
+            android:exported="false"
+            android:label="@string/widget_bottle_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_bottle_info" />
+        </receiver>
+        <receiver
+            android:name=".BreastWidget"
+            android:exported="false"
+            android:label="@string/widget_breast_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_breast_info" />
+        </receiver>
+        <receiver
+            android:name=".SleepWidget"
+            android:exported="false"
+            android:label="@string/widget_sleep_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_sleep_info" />
+        </receiver>
+        <receiver
+            android:name=".DiaperWidget"
+            android:exported="false"
+            android:label="@string/widget_diaper_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_diaper_info" />
+        </receiver>
+        <receiver
+            android:name=".QuickWidget"
+            android:exported="false"
+            android:label="@string/widget_quick_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_quick_info" />
+        </receiver>
+        <receiver
+            android:name=".TodayWidget"
+            android:exported="false"
+            android:label="@string/widget_today_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_today_info" />
+        </receiver>
+        <receiver
+            android:name=".CameraWidget"
+            android:exported="false"
+            android:label="@string/widget_camera_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_camera_info" />
+        </receiver>
+        <receiver
+            android:name=".LibraryWidget"
+            android:exported="false"
+            android:label="@string/widget_library_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_library_info" />
+        </receiver>
+        <receiver
+            android:name=".GlanceActionReceiver"
+            android:exported="false" />
+        <!-- WorkManager's foreground service runs UploadWorker (10j, A3). -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
+        <!-- Pushes (11b): the status-bar icon, accent and default channel when a message names
+             none. Channels are created by the app in the app language (push_registration). -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_notify" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/notify_accent" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="family" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

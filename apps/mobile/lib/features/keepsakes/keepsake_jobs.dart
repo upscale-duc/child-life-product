@@ -185,10 +185,11 @@ class KeepsakeJobRepository {
       _call('deleteMemoryStory', {'babyId': babyId, 'jobId': jobId});
 
   /// MM08 on iPhone: the job's Live Activity (its push token and this device's FCM token).
+  /// [token]: the Live Activity's (iPhone); null on Android, which follows by FCM (A6).
   Future<void> attachLive({
     required String babyId,
     required String jobId,
-    required String token,
+    required String? token,
     required String fcm,
   }) => _call('attachMemoryStoryLive', {
     'babyId': babyId,

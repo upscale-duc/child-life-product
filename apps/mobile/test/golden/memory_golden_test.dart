@@ -374,6 +374,13 @@ final _cases = <String, _Case>{
     prefs: const {},
     act: (t) async => t.tap(find.bySemanticsLabel(_l10n(t).a11yAddMemory)),
   ),
+  // Android takes a photo only until A4 (android-plan.md); Figma draws iOS.
+  '10a2_add_android': (
+    build: _tab,
+    overrides: _base,
+    prefs: const {},
+    act: (t) async => t.tap(find.bySemanticsLabel(_l10n(t).a11yAddMemory)),
+  ),
   '10h_compose': (
     build: () => _Host(
       (c, r, m) => showComposeSheet(c, r, m, [
@@ -477,6 +484,12 @@ final _cases = <String, _Case>{
   ),
 };
 
+/// Figma draws iOS: a case whose content differs on Android renders as iOS here, beside an
+/// `_android` twin (Android plan A1).
+TestVariant<Object?> _variant(String name) => name == '10a2_add'
+    ? TargetPlatformVariant.only(TargetPlatform.iOS)
+    : const DefaultTestVariant();
+
 void main() {
   for (final MapEntry(key: name, value: c) in _cases.entries) {
     for (final palette in ClPalette.values) {
@@ -551,7 +564,7 @@ void main() {
           } finally {
             debugDisableShadows = true;
           }
-        });
+        }, variant: _variant(name));
       }
     }
   }

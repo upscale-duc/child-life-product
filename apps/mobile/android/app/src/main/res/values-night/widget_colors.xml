@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Widget colours (Night care): the design tokens ios/widget/GlanceTheme.swift uses. -->
+<resources>
+    <color name="cl_ink">#E6F2F1</color>
+    <color name="cl_muted">#9DB3B4</color>
+    <color name="cl_surface">#15242A</color>
+    <color name="cl_surface2">#1C2E33</color>
+    <color name="cl_mint_deep">#3FD0C3</color>
+    <color name="cl_on_mint">#062A2C</color>
+    <color name="cl_mint">#2CBFB3</color>
+    <color name="cl_mint_text">#3FD0C3</color>
+    <color name="cl_pending">#FFD166</color>
+    <color name="care_bottle_soft">#16314A</color>
+    <color name="care_bottle_ink">#9CCBF5</color>
+    <color name="care_bottle_accent">#5AA6E8</color>
+    <color name="care_breast_soft">#3A1F2A</color>
+    <color name="care_breast_ink">#F5B3C8</color>
+    <color name="care_breast_accent">#E88AA8</color>
+    <color name="care_sleep_soft">#23244A</color>
+    <color name="care_sleep_ink">#BDBFF7</color>
+    <color name="care_sleep_accent">#8A8DEB</color>
+    <color name="care_diaper_soft">#1E3320</color>
+    <color name="care_diaper_ink">#A8DA9C</color>
+    <color name="care_diaper_accent">#74BF63</color>
+</resources>

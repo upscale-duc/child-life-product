@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- W2 large "Hôm nay": header with the day, the sleep card (start / wake), four tiles, the three
+     latest entries and today's totals; filled by GlanceUi.kt (iOS: LargeCareView). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
+
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/widget_art_baby" />
+
+            <TextView
+                android:id="@+id/nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:maxLines="1"
+                android:textColor="@color/cl_ink"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/header_right"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/toast"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/widget_toast"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/toast_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textColor="@color/cl_surface"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/toast_undo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingStart="8dp"
+                android:textColor="@color/cl_mint"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/sleep_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/widget_card_sleep"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/widget_art_sleep" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/sleep_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="@color/cl_ink"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <Chronometer
+                android:id="@+id/sleep_chrono"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/care_sleep_ink"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/sleep_sub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/sleep_button"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/widget_pill_sleep"
+            android:gravity="center"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textColor="#FFFFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tiles"
+        android:layout_width="match_parent"
+        android:layout_height="86dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/tile_bottle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_tile_bottle"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/widget_art_bottle" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tile_bottle_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tile_bottle_label"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:maxLines="1"
+                android:textColor="@color/care_bottle_ink"
+                android:autoSizeMaxTextSize="12sp"                android:autoSizeMinTextSize="9sp"                android:autoSizeTextType="uniform"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tile_bottle_meta"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:autoSizeMaxTextSize="11sp"                android:autoSizeMinTextSize="8sp"                android:autoSizeTextType="uniform" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/tile_breast"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_tile_breast"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/widget_art_breast" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tile_breast_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tile_breast_label"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:maxLines="1"
+                android:textColor="@color/care_breast_ink"
+                android:autoSizeMaxTextSize="12sp"                android:autoSizeMinTextSize="9sp"                android:autoSizeTextType="uniform"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tile_breast_meta"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:autoSizeMaxTextSize="11sp"                android:autoSizeMinTextSize="8sp"                android:autoSizeTextType="uniform" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/tile_sleep"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_tile_sleep"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/widget_art_sleep" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tile_sleep_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tile_sleep_label"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:maxLines="1"
+                android:textColor="@color/care_sleep_ink"
+                android:autoSizeMaxTextSize="12sp"                android:autoSizeMinTextSize="9sp"                android:autoSizeTextType="uniform"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tile_sleep_meta"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:autoSizeMaxTextSize="11sp"                android:autoSizeMinTextSize="8sp"                android:autoSizeTextType="uniform" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/tile_diaper"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_tile_diaper"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/widget_art_diaper" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tile_diaper_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tile_diaper_label"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:maxLines="1"
+                android:textColor="@color/care_diaper_ink"
+                android:autoSizeMaxTextSize="12sp"                android:autoSizeMinTextSize="9sp"                android:autoSizeTextType="uniform"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tile_diaper_meta"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:autoSizeMaxTextSize="11sp"                android:autoSizeMinTextSize="8sp"                android:autoSizeTextType="uniform" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/recent_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/cl_muted"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/recent1"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/recent1_dot"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:id="@+id/recent1_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/cl_muted"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/recent1_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:textColor="@color/cl_ink"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/recent1_by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:maxLines="1"
+            android:textColor="@color/cl_muted"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/recent2"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/recent2_dot"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:id="@+id/recent2_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/cl_muted"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/recent2_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:textColor="@color/cl_ink"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/recent2_by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:maxLines="1"
+            android:textColor="@color/cl_muted"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/recent3"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/recent3_dot"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:id="@+id/recent3_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/cl_muted"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/recent3_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:textColor="@color/cl_ink"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/recent3_by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:maxLines="1"
+            android:textColor="@color/cl_muted"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/totals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:textColor="@color/cl_muted"
+        android:textSize="11sp" />
+</LinearLayout>

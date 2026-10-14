@@ -479,12 +479,14 @@ class DeviceMediaPreparer implements MediaPreparer {
   }
 }
 
-/// iOS sends through a background URLSession (10j, background_uploads.dart); elsewhere the
-/// Storage SDK uploads while the app runs.
+/// iOS sends through a background URLSession and Android through WorkManager (10j,
+/// background_uploads.dart); elsewhere the Storage SDK uploads while the app runs.
 final uploadTransportProvider = Provider<UploadTransport>(
-  (ref) => defaultTargetPlatform == TargetPlatform.iOS
-      ? BackgroundTransport.forApp()
-      : StorageTransport(),
+  (ref) => switch (defaultTargetPlatform) {
+    TargetPlatform.iOS ||
+    TargetPlatform.android => BackgroundTransport.forApp(),
+    _ => StorageTransport(),
+  },
 );
 final mediaPreparerProvider = Provider<MediaPreparer>(
   (ref) => DeviceMediaPreparer(),

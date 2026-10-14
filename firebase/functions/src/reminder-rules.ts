@@ -585,7 +585,9 @@ async function pushRule(
           type: rang.type,
           dueAt: String(rang.dueAt.getTime()),
         },
-        // 1f actions (iOS categories registered by the app); one notification per rule.
+        // 1f actions (iOS categories registered by the app; Android draws them, A6); one
+        // notification per rule.
+        androidDraws: true,
         apns: {
           category: `CL_RULE_${rang.type.toUpperCase()}`,
           collapseId: `rr-${ruleId}`,

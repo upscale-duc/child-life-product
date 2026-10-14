@@ -93,6 +93,7 @@ class TimerScreen extends ConsumerStatefulWidget {
 
 class _TimerScreenState extends ConsumerState<TimerScreen> {
   Timer? _tick;
+  Timer? _gone;
   String? _sessionSeen;
   bool _leaving = false;
 
@@ -104,6 +105,14 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
         if (mounted) setState(() {});
       });
     }
+    // Opened from a widget, notification or Live Activity after the timer ended elsewhere: no
+    // timer ever shows up, so leave rather than stay blank.
+    _gone = Timer(const Duration(seconds: 3), () {
+      final me = ref.read(selectedMembershipProvider);
+      if (!mounted || _leaving || _sessionSeen != null || me == null) return;
+      final timer = ref.read(careTimerProvider((me.babyId, widget.type)));
+      if (timer.hasValue && timer.value == null) context.popOrToday();
+    });
   }
 
   DateTime _now() => ref.read(timerClockProvider)();
@@ -111,6 +120,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
   @override
   void dispose() {
     _tick?.cancel();
+    _gone?.cancel();
     super.dispose();
   }
 

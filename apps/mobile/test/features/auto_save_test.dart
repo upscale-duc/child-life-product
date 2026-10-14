@@ -398,6 +398,8 @@ void main() {
           [null, null, 3],
         );
         expect(batches.every((b) => b.request['notifyFamily'] == true), isTrue);
+        // The scan approve starts writes its state into the temp folder tearDown deletes.
+        await ctl.scan();
       },
     );
 

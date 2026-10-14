@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status-bar icon (white on transparent; Android tints it): the Child Life mark's sun over two
+     hills, from assets/logo/mark-mono-white.svg. Android has no Figma for it (D-004). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+    <group
+        android:translateX="12"
+        android:translateY="12"
+        android:scaleX="0.85"
+        android:scaleY="0.85">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M111,72C121.49,72 130,63.49 130,53C130,42.51 121.49,34 111,34C100.51,34 92,42.51 92,53C92,63.49 100.51,72 111,72Z" />
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M0,98C42,86 86,116 160,92V117C104,123 52,111 0,121Z" />
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M0,133C52,123 104,135 160,129V160H0Z" />
+    </group>
+</vector>

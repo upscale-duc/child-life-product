@@ -6,6 +6,8 @@ Map<String, String> glanceCopy(AppLocalizations l) => {
   'appName': l.glanceAppName,
   'memCamera': l.glanceMemCamera,
   'memLibrary': l.glanceMemLibrary,
+  // Android's camera widget takes a photo (videos are on the add sheet, Q-066).
+  'memCameraPhoto': l.addCameraPhoto,
   'memFor': l.glanceMemFor('{name}'),
   'you': l.glanceYou,
   'bottle': l.glanceBottle,
@@ -89,4 +91,14 @@ Map<String, String> glanceCopy(AppLocalizations l) => {
   'upload.wifiTitle.one': l.glanceUploadWifiOne,
   'upload.wifiTitle': l.glanceUploadWifi('{n}'),
   'upload.wifiBody': l.glanceUploadWifiBody,
+  // Android draws the reminder pushes with these buttons (Push.kt, A6); iOS registers its own.
+  'rule.log.feed': l.ruleLogFeed,
+  'rule.log.sleep': l.ruleLogSleep,
+  'rule.log.diaper': l.ruleLogDiaper,
+  'rule.log.pump': l.ruleLogPump,
+  'rule.snooze': l.notifSnooze15,
+  'rule.skip': l.ruleSkip,
+  'vx.view': l.notifVxView,
+  'vx.snooze': l.notifVxSnooze,
+  'vx.move': l.vxReschedule,
 };

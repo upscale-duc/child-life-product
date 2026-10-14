@@ -294,6 +294,14 @@
   "@signInApple": {
     "description": "Apple button label."
   },
+  "signInAppleElsewhere": "Đã đăng ký bằng Apple trên iPhone?",
+  "@signInAppleElsewhere": {
+    "description": "Android sign-in (no Apple button, D-071): lead-in for people with an Apple account (Q-063)"
+  },
+  "signInAppleElsewhereAction": "Nhận link đăng nhập qua email Apple",
+  "@signInAppleElsewhereAction": {
+    "description": "Android sign-in: opens email sign-in, where 'Gửi link đăng nhập' sends a link to the Apple email (Q-063)"
+  },
   "signInGoogle": "Tiếp tục với Google",
   "@signInGoogle": {
     "description": "Google button label."
@@ -3952,6 +3960,50 @@
   "@notifChannelDescription": {
     "description": "Android channel description."
   },
+  "notifChannelFamily": "Gia đình & kỷ niệm",
+  "@notifChannelFamily": {
+    "description": "Android channel for family notices: new memories, messages, loves, videos (Android plan A1)."
+  },
+  "notifChannelFamilyDescription": "Ảnh mới, lời nhắn và tin từ gia đình",
+  "@notifChannelFamilyDescription": {
+    "description": "Android channel description."
+  },
+  "notifChannelSpending": "Chi tiêu",
+  "@notifChannelSpending": {
+    "description": "Android channel for spending notices (recurring items, budget)."
+  },
+  "notifChannelSpendingDescription": "Khoản chi định kỳ và ngân sách tháng",
+  "@notifChannelSpendingDescription": {
+    "description": "Android channel description."
+  },
+  "notifSnooze15": "Báo lại sau 15 phút",
+  "@notifSnooze15": {
+    "description": "Android reminder notice button (1f, A6); iOS has the same in RuleNotifications.swift."
+  },
+  "notifVxView": "Xem lịch tiêm",
+  "@notifVxView": {
+    "description": "Android vaccine notice button (VX 8, A6)."
+  },
+  "notifVxSnooze": "Nhắc lại sáng mai",
+  "@notifVxSnooze": {
+    "description": "Android vaccine notice button (VX 8, A6)."
+  },
+  "notifChannelTimers": "Bộ đếm giờ",
+  "@notifChannelTimers": {
+    "description": "Android channel for a running sleep or breastfeeding timer (A5)."
+  },
+  "notifChannelTimersDescription": "Giấc ngủ và cữ bú đang chạy",
+  "@notifChannelTimersDescription": {
+    "description": "Android channel description."
+  },
+  "notifChannelUploads": "Tải lên",
+  "@notifChannelUploads": {
+    "description": "Android channel for upload progress and the done notice (10j, A3)."
+  },
+  "notifChannelUploadsDescription": "Tiến độ tải ảnh, video và báo khi xong",
+  "@notifChannelUploadsDescription": {
+    "description": "Android channel description."
+  },
   "a11yMarkDone": "Đánh dấu xong: {title}",
   "@a11yMarkDone": {
     "description": "Row check.",
@@ -4234,6 +4286,14 @@
   "addCamera": "Chụp ảnh hoặc quay video",
   "@addCamera": {
     "description": "10a2."
+  },
+  "addCameraPhoto": "Chụp ảnh",
+  "@addCameraPhoto": {
+    "description": "10a2 camera row on Android: the system camera takes photos here, videos on the next row (Q-066)."
+  },
+  "addCameraVideo": "Quay video",
+  "@addCameraVideo": {
+    "description": "10a2 on Android: the system video camera, length capped by the server limit (Q-066)."
   },
   "addCameraHint": "Lưu thẳng vào Kỷ niệm",
   "@addCameraHint": {

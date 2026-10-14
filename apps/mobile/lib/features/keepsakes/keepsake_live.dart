@@ -12,6 +12,8 @@ import 'keepsake_jobs.dart';
 /// Dynamic Island (ios/Runner/KeepsakeLive.swift, ios/widget/KeepsakeLive.swift). Started on
 /// "Tạo video"; its push token goes to Functions (`attachMemoryStoryLive`), which move it on as
 /// the job renders, even with the app closed; while the app is open the job moves it on too.
+/// On Android (Push.kt, A6) the same moments arrive as data pushes to the phone's FCM token and
+/// keep an ongoing progress notice.
 /// Step and percent only — never a photo, a text or the baby's name (R-116).
 class KeepsakeLive {
   KeepsakeLive(
@@ -25,11 +27,17 @@ class KeepsakeLive {
   final MethodChannel _channel;
   final Future<String?> Function() _fcmToken;
 
-  static bool get _on => !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+  static bool get _on =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.android);
+
+  static bool get _android =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
 
   /// Hands Functions each activity's push token, also the ones still running after a relaunch.
   void listen() {
-    if (!_on) return;
+    if (!_on || _android) return;
     _channel.setMethodCallHandler((call) async {
       if (call.method != 'token' || call.arguments is! Map) return;
       final a = (call.arguments as Map).cast<String, Object?>();
@@ -50,19 +58,35 @@ class KeepsakeLive {
     unawaited(_invoke('resume', const {}));
   }
 
-  /// "Tạo video": the activity for [jobId], in the app's language.
+  /// "Tạo video": the activity for [jobId], in the app's language. Android shows its progress
+  /// notice and has Functions send the moments to this phone.
   Future<void> start({
     required String babyId,
     required String jobId,
     required String? templateName,
     required AppLocalizations l10n,
-  }) => _invoke('start', {
-    'jobId': jobId,
-    'babyId': babyId,
-    'status': 'queued',
-    'progress': 0,
-    'copy': keepsakeLiveCopy(l10n, templateName),
-  });
+  }) async {
+    await _invoke('start', {
+      'jobId': jobId,
+      'babyId': babyId,
+      'status': 'queued',
+      'progress': 0,
+      'copy': keepsakeLiveCopy(l10n, templateName),
+    });
+    if (!_android) return;
+    try {
+      final fcm = await _fcmToken();
+      if (fcm == null) return;
+      await _jobs.attachLive(
+        babyId: babyId,
+        jobId: jobId,
+        token: null,
+        fcm: fcm,
+      );
+    } on Object {
+      // The job still finishes and tells them by push; the notice follows while the app is open.
+    }
+  }
 
   /// The job as the app sees it (ends the activity once it finishes).
   Future<void> update(KeepsakeJob job) => _invoke('update', {

@@ -221,6 +221,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get signInApple => 'Tiếp tục với Apple';
 
   @override
+  String get signInAppleElsewhere => 'Đã đăng ký bằng Apple trên iPhone?';
+
+  @override
+  String get signInAppleElsewhereAction =>
+      'Nhận link đăng nhập qua email Apple';
+
+  @override
   String get signInGoogle => 'Tiếp tục với Google';
 
   @override
@@ -2619,6 +2626,42 @@ class AppLocalizationsVi extends AppLocalizations {
   String get notifChannelDescription => 'Nhắc việc của gia đình';
 
   @override
+  String get notifChannelFamily => 'Gia đình & kỷ niệm';
+
+  @override
+  String get notifChannelFamilyDescription =>
+      'Ảnh mới, lời nhắn và tin từ gia đình';
+
+  @override
+  String get notifChannelSpending => 'Chi tiêu';
+
+  @override
+  String get notifChannelSpendingDescription =>
+      'Khoản chi định kỳ và ngân sách tháng';
+
+  @override
+  String get notifSnooze15 => 'Báo lại sau 15 phút';
+
+  @override
+  String get notifVxView => 'Xem lịch tiêm';
+
+  @override
+  String get notifVxSnooze => 'Nhắc lại sáng mai';
+
+  @override
+  String get notifChannelTimers => 'Bộ đếm giờ';
+
+  @override
+  String get notifChannelTimersDescription => 'Giấc ngủ và cữ bú đang chạy';
+
+  @override
+  String get notifChannelUploads => 'Tải lên';
+
+  @override
+  String get notifChannelUploadsDescription =>
+      'Tiến độ tải ảnh, video và báo khi xong';
+
+  @override
   String a11yMarkDone(String title) {
     return 'Đánh dấu xong: $title';
   }
@@ -2802,6 +2845,12 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get addCamera => 'Chụp ảnh hoặc quay video';
+
+  @override
+  String get addCameraPhoto => 'Chụp ảnh';
+
+  @override
+  String get addCameraVideo => 'Quay video';
 
   @override
   String get addCameraHint => 'Lưu thẳng vào Kỷ niệm';

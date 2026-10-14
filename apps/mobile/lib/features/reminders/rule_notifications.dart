@@ -21,11 +21,35 @@ RulePush? rulePushOf(Map<String, dynamic> data) {
 }
 
 /// The iOS side (ios/Runner/RuleNotifications.swift): which lock-screen action opened the app,
-/// and re-registering the action titles after a language change.
+/// and re-registering the action titles after a language change. On Android (Push.kt, A6) the
+/// app draws reminder pushes itself, so it also hands over the push a tap opened it with.
 class RuleNotificationChannel {
   const RuleNotificationChannel();
 
   static const _channel = MethodChannel('childlife/rules');
+
+  /// Android: the data of the drawn notice that opened the app, taken once.
+  Future<Map<String, dynamic>?> takeTappedPush() async {
+    try {
+      final r = await _channel.invokeMapMethod<String, Object?>(
+        'takeTappedPush',
+      );
+      return r?.cast<String, dynamic>();
+    } on Object {
+      return null; // iOS, tests.
+    }
+  }
+
+  /// Android: [onTapped] runs when a drawn notice is tapped while the app runs.
+  void listen(void Function() onTapped) {
+    try {
+      _channel.setMethodCallHandler((call) async {
+        if (call.method == 'tapped') onTapped();
+      });
+    } on Object {
+      // Tests.
+    }
+  }
 
   Future<String?> takeLaunchAction() async {
     try {

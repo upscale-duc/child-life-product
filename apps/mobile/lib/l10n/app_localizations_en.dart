@@ -221,6 +221,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInApple => 'Continue with Apple';
 
   @override
+  String get signInAppleElsewhere => 'Signed up with Apple on an iPhone?';
+
+  @override
+  String get signInAppleElsewhereAction =>
+      'Get a sign-in link at your Apple email';
+
+  @override
   String get signInGoogle => 'Continue with Google';
 
   @override
@@ -2744,6 +2751,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifChannelDescription => 'Family reminders';
 
   @override
+  String get notifChannelFamily => 'Family & memories';
+
+  @override
+  String get notifChannelFamilyDescription =>
+      'New photos, messages and news from the family';
+
+  @override
+  String get notifChannelSpending => 'Spending';
+
+  @override
+  String get notifChannelSpendingDescription =>
+      'Recurring expenses and the monthly budget';
+
+  @override
+  String get notifSnooze15 => 'Remind me in 15 minutes';
+
+  @override
+  String get notifVxView => 'View the schedule';
+
+  @override
+  String get notifVxSnooze => 'Remind me in the morning';
+
+  @override
+  String get notifChannelTimers => 'Timers';
+
+  @override
+  String get notifChannelTimersDescription => 'Sleep and feeds in progress';
+
+  @override
+  String get notifChannelUploads => 'Uploads';
+
+  @override
+  String get notifChannelUploadsDescription =>
+      'Photo and video upload progress, and when it is done';
+
+  @override
   String a11yMarkDone(String title) {
     return 'Mark done: $title';
   }
@@ -2971,6 +3014,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addCamera => 'Take a photo or video';
+
+  @override
+  String get addCameraPhoto => 'Take a photo';
+
+  @override
+  String get addCameraVideo => 'Record a video';
 
   @override
   String get addCameraHint => 'Saves straight to Memories';

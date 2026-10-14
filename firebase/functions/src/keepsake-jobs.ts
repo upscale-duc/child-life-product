@@ -543,7 +543,10 @@ export async function deleteMemoryStory(
   return { jobId, status: deleted ? 'deleted' : 'unchanged' };
 }
 
-/** MM08 on iPhone: the job's Live Activity, from the person who asked only. */
+/**
+ * MM08: the job's Live Activity on iPhone, or (no token) the phone's FCM token on Android, from
+ * the person who asked only.
+ */
 export async function attachKeepsakeLive(
   db: Firestore,
   uid: string,
@@ -569,6 +572,16 @@ export interface LiveSender {
     event: 'update' | 'end',
     state: KeepsakeLiveState,
     now: Date,
+  ): Promise<boolean>;
+  /**
+   * Android (A6): the same moments as a data message to the phone, which keeps an ongoing
+   * progress notice; false: the token is gone.
+   */
+  android(
+    fcm: string,
+    job: { babyId: string; jobId: string },
+    event: 'update' | 'end',
+    state: KeepsakeLiveState,
   ): Promise<boolean>;
 }
 
@@ -613,9 +626,9 @@ export async function keepsakeJobChanged(
       })
       .catch(() => undefined);
   }
-  const target = after.get('live') as { token?: string; fcm?: string } | undefined;
-  if (!live || !target?.token || !target.fcm) return;
-  const attached = !(before?.get('live') as { token?: string } | undefined)?.token;
+  const target = after.get('live') as { token?: string | null; fcm?: string } | undefined;
+  if (!live || !target?.fcm) return;
+  const attached = !(before?.get('live') as { fcm?: string } | undefined)?.fcm;
   const changed =
     attached ||
     !was ||
@@ -624,12 +637,9 @@ export async function keepsakeJobChanged(
     Math.floor(was.progress / 10) !== Math.floor(is.progress / 10);
   if (!changed) return;
   const done = is.status === 'completed' || is.status === 'failed';
-  const ok = await live.send(
-    { token: target.token, fcm: target.fcm },
-    done ? 'end' : 'update',
-    is,
-    now,
-  );
+  const ok = target.token
+    ? await live.send({ token: target.token, fcm: target.fcm }, done ? 'end' : 'update', is, now)
+    : await live.android(target.fcm, { babyId, jobId }, done ? 'end' : 'update', is);
   if (!ok) await jobRef(db, babyId, jobId).update({ live: FieldValue.delete() });
 }
 

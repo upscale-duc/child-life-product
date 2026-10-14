@@ -334,6 +334,9 @@ describe('completion, retry and the sweeper', () => {
         sent.push(`${event}:${state.status}:${state.step}:${state.progress}`);
         return !gone;
       },
+      async android() {
+        throw new Error('an iPhone job does not go to Android');
+      },
     };
     // Each write: what the trigger sees before and after.
     const step = async (update: Record<string, unknown>) => {
@@ -360,6 +363,40 @@ describe('completion, retry and the sweeper', () => {
     gone = true;
     await step({ status: 'queued', step: null, progress: 0, retries: 1 });
     expect((await ref.get()).get('live')).toBeUndefined();
+  });
+
+  it('MM08 on Android: no activity token, the same moments go to the phone (A6)', async () => {
+    const { jobId } = await requestMemoryStory(db, new FakeDispatcher(), 'mom', request(), now);
+    const ref = db.doc(`babies/${babyId}/keepsakeJobs/${jobId}`);
+    const fcm = 'a'.repeat(40);
+    await attachKeepsakeLive(db, 'mom', { babyId, jobId, fcm }, now);
+    expect((await ref.get()).get('live.token')).toBeNull();
+    const sent: string[] = [];
+    const sender: LiveSender = {
+      async send() {
+        throw new Error('an Android job has no Live Activity');
+      },
+      async android(to, job, event, state) {
+        expect(to).toBe(fcm);
+        expect(job).toEqual({ babyId, jobId });
+        sent.push(`${event}:${state.status}:${state.step}:${state.progress}`);
+        return true;
+      },
+    };
+    const step = async (update: Record<string, unknown>) => {
+      const before = await ref.get();
+      await ref.update(update);
+      await keepsakeJobChanged(db, sender, babyId, jobId, before, await ref.get(), now);
+    };
+    await step({ status: 'rendering', step: 'arrange', progress: 3 });
+    await step({ progress: 8 });
+    await step({ step: 'export', progress: 64 });
+    await step({ status: 'completed', progress: 100 });
+    expect(sent).toEqual([
+      'update:rendering:arrange:3',
+      'update:rendering:export:64',
+      'end:completed:export:100',
+    ]);
   });
 
   it('music: the template’s default, the parent’s pick, or none (MM07)', async () => {

@@ -68,8 +68,74 @@ export interface PushSender {
       data: Record<string, string>;
       /** iOS notification category (actions), collapse id and thread. */
       apns?: { category?: string; collapseId?: string; threadId?: string };
+      /**
+       * Android draws this one itself, with the iOS category's actions (Android plan A6): a
+       * system-drawn FCM notification cannot carry buttons.
+       */
+      androidDraws?: boolean;
     },
   ): Promise<string[]>;
+}
+
+/**
+ * The FCM message for a push. iOS shows the alert with its category; Android shows the
+ * notification block (Android plan A1) — or, for pushes with actions (`androidDraws`, A6), gets
+ * the title, body and tag as data and draws it in the app (PushService.kt), since a system-drawn
+ * FCM notification cannot carry buttons.
+ */
+export function pushPayload(message: Parameters<PushSender['send']>[1]) {
+  const apns = {
+    ...(message.apns?.collapseId
+      ? { headers: { 'apns-collapse-id': message.apns.collapseId } }
+      : {}),
+    payload: {
+      aps: {
+        sound: 'default',
+        ...(message.androidDraws ? { alert: { title: message.title, body: message.body } } : {}),
+        ...(message.apns?.category ? { category: message.apns.category } : {}),
+        ...(message.apns?.threadId ? { threadId: message.apns.threadId } : {}),
+      },
+    },
+  };
+  if (message.androidDraws) {
+    return {
+      data: {
+        ...message.data,
+        title: message.title,
+        body: message.body,
+        draw: '1',
+        tag: message.apns?.collapseId ?? '',
+      },
+      apns,
+      android: { priority: 'high' as const },
+    };
+  }
+  return {
+    notification: { title: message.title, body: message.body },
+    data: message.data,
+    apns,
+    android: { priority: 'high' as const, notification: androidNotification(message) },
+  };
+}
+
+/**
+ * The Android side of a push (Android plan A1): the channel the app created in its language, the
+ * status-bar icon and accent, and a tag so a newer notice for the same rule or day replaces the
+ * earlier one, as `apns-collapse-id` does on iOS.
+ */
+export function androidNotification(message: Parameters<PushSender['send']>[1]) {
+  const kind = message.data.kind;
+  return {
+    channelId:
+      kind === 'reminderRule' || kind === 'vaccine'
+        ? 'reminders'
+        : kind === 'spending'
+          ? 'spending'
+          : 'family',
+    icon: 'ic_stat_notify',
+    color: '#087F7B',
+    ...(message.apns?.collapseId ? { tag: message.apns.collapseId } : {}),
+  };
 }
 
 type Copy = { title: string; body: string };

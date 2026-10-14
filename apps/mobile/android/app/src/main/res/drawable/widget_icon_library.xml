@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- assets/icons/memories.svg (the app's line icon) for the library shortcut widget. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M8 3H16C18.7614 3 21 5.23858 21 8V16C21 18.7614 18.7614 21 16 21H8C5.23858 21 3 18.7614 3 16V8C3 5.23858 5.23858 3 8 3Z"
+        android:strokeColor="@color/cl_on_mint"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M12 16C12 16 8 13.5 8 10.8C7.99241 10.3294 8.13592 9.86882 8.40946 9.48584C8.68299 9.10286 9.07214 8.8177 9.51972 8.67223C9.96731 8.52676 10.4498 8.52866 10.8962 8.67766C11.3426 8.82665 11.7295 9.11487 12 9.5C12.2705 9.11487 12.6574 8.82665 13.1038 8.67766C13.5502 8.52866 14.0327 8.52676 14.4803 8.67223C14.9279 8.8177 15.317 9.10286 15.5905 9.48584C15.8641 9.86882 16.0076 10.3294 16 10.8C16 13.5 12 16 12 16Z"
+        android:strokeColor="@color/cl_on_mint"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

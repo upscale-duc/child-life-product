@@ -7,6 +7,7 @@ import 'package:child_life/app/session.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
+import 'package:child_life/features/auth/auth_screens.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/baby/baby_repository.dart';
 import 'package:child_life/features/family/family_models.dart';
@@ -279,6 +280,8 @@ void main() {
                 minuteClockProvider.overrideWith(
                   (ref) => Stream.value(DateTime(2026, 10, 8, 10)),
                 ),
+                // Figma draws iOS, with Sign in with Apple (D-071).
+                appleSignInShownProvider.overrideWithValue(true),
                 ...c.overrides(),
               ],
               child: MediaQuery(

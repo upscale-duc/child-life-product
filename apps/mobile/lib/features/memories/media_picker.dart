@@ -13,6 +13,7 @@ import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
+import '../../core/platform/external_apps.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_misc.dart';
@@ -757,29 +758,37 @@ Future<List<PickedMedia>?> pickFromFiles(
 // ---------- 10a3 camera (until the in-app burst camera lands) ----------
 
 /// The system camera (ios/Runner/CameraCapture.swift): photo or video in one screen, video
-/// length capped by the server limit (D-011). Elsewhere (Android) one photo via image_picker.
+/// length capped by the server limit (D-011). Android's system camera does one or the other, so
+/// the add sheet offers "Chụp ảnh" and "Quay video" (Q-066) through image_picker, and
+/// `childlife/camera` "probe" (MediaProbe.kt) reads the recording's length and size.
 const _camera = MethodChannel('childlife/camera');
 
-/// The system camera; the in-app burst camera (10a3) replaces this.
+Future<VideoLimits> _videoLimits(BuildContext context) async {
+  final container = ProviderScope.containerOf(context, listen: false);
+  final sub = container.listen(videoLimitsProvider, (_, _) {});
+  try {
+    return await container
+        .read(videoLimitsProvider.future)
+        .timeout(const Duration(seconds: 2));
+  } on Object {
+    // Offline: no length cap from here; the size check still applies.
+    return const VideoLimits();
+  } finally {
+    sub.close();
+  }
+}
+
+/// The system camera; the in-app burst camera (10a3) replaces this. [video] chooses Android's
+/// video camera (iOS offers both in one screen).
 Future<List<PickedMedia>?> captureWithCamera(
   BuildContext context,
-  String nickname,
-) async {
+  String nickname, {
+  bool video = false,
+}) async {
   final l10n = AppLocalizations.of(context);
   final toaster = ClToaster.of(context);
   if (Platform.isIOS) {
-    final container = ProviderScope.containerOf(context, listen: false);
-    var limits = const VideoLimits();
-    final sub = container.listen(videoLimitsProvider, (_, _) {});
-    try {
-      limits = await container
-          .read(videoLimitsProvider.future)
-          .timeout(const Duration(seconds: 2));
-    } on Object {
-      // Offline: no length cap from here; the size check below still applies.
-    } finally {
-      sub.close();
-    }
+    final limits = await _videoLimits(context);
     try {
       final r = await _camera.invokeMapMethod<String, Object?>('capture', {
         'maxDurationSec': limits.maxDuration?.inSeconds,
@@ -808,6 +817,39 @@ Future<List<PickedMedia>?> captureWithCamera(
     }
   }
   try {
+    if (video) {
+      final limits = await _videoLimits(context);
+      final clip = await ImagePicker().pickVideo(
+        source: ImageSource.camera,
+        maxDuration: limits.maxDuration,
+      );
+      if (clip == null) return null;
+      final file = File(clip.path);
+      if (await file.length() > limits.maxBytes) {
+        toaster.show(message: l10n.pickVideoTooBig(_size(limits.maxBytes)));
+        return null;
+      }
+      Map<String, Object?>? info;
+      try {
+        info = await _camera.invokeMapMethod<String, Object?>('probe', {
+          'path': clip.path,
+          'video': true,
+        });
+      } on Object {
+        // Length and size stay unknown; the server takes it without them.
+      }
+      return [
+        PickedMedia(
+          file: file,
+          type: MediaKind.video,
+          name: clip.name,
+          captureAt: DateTime.now(),
+          durationMs: (info?['durationMs'] as num?)?.toInt(),
+          width: (info?['width'] as num?)?.toInt(),
+          height: (info?['height'] as num?)?.toInt(),
+        ),
+      ];
+    }
     final shot = await ImagePicker().pickImage(source: ImageSource.camera);
     if (shot == null) return null;
     return [
@@ -818,6 +860,15 @@ Future<List<PickedMedia>?> captureWithCamera(
         captureAt: DateTime.now(),
       ),
     ];
+  } on PlatformException catch (e) {
+    // Camera permission refused: say so, with the way to Settings (as 11c and VX do).
+    final denied = e.code.contains('denied') || e.code.contains('access');
+    toaster.show(
+      message: denied ? l10n.avatarCameraDenied : l10n.camUnavailable,
+      actionLabel: denied ? l10n.actionOpenSettings : null,
+      onAction: denied ? openAppSettings : null,
+    );
+    return null;
   } on Object {
     toaster.show(message: l10n.camUnavailable);
     return null;

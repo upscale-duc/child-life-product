@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- W2 medium "Ghi nhanh": header (or the undo toast, or "Chưa đồng bộ") and four tiles that open the
+     app's own log; filled by GlanceUi.kt (iOS: MediumCareView). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
+
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/widget_art_baby" />
+
+            <TextView
+                android:id="@+id/nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:maxLines="1"
+                android:textColor="@color/cl_ink"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/header_right"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/toast"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/widget_toast"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/toast_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textColor="@color/cl_surface"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/toast_undo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingStart="8dp"
+                android:textColor="@color/cl_mint"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/tiles"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/tile_bottle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_tile_bottle"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/widget_art_bottle" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tile_bottle_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tile_bottle_label"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:maxLines="1"
+                android:textColor="@color/care_bottle_ink"
+                android:autoSizeMaxTextSize="12sp"                android:autoSizeMinTextSize="9sp"                android:autoSizeTextType="uniform"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tile_bottle_meta"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:autoSizeMaxTextSize="11sp"                android:autoSizeMinTextSize="8sp"                android:autoSizeTextType="uniform" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/tile_breast"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_tile_breast"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/widget_art_breast" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tile_breast_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tile_breast_label"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:maxLines="1"
+                android:textColor="@color/care_breast_ink"
+                android:autoSizeMaxTextSize="12sp"                android:autoSizeMinTextSize="9sp"                android:autoSizeTextType="uniform"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tile_breast_meta"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:autoSizeMaxTextSize="11sp"                android:autoSizeMinTextSize="8sp"                android:autoSizeTextType="uniform" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/tile_sleep"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_tile_sleep"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/widget_art_sleep" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tile_sleep_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tile_sleep_label"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:maxLines="1"
+                android:textColor="@color/care_sleep_ink"
+                android:autoSizeMaxTextSize="12sp"                android:autoSizeMinTextSize="9sp"                android:autoSizeTextType="uniform"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tile_sleep_meta"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:autoSizeMaxTextSize="11sp"                android:autoSizeMinTextSize="8sp"                android:autoSizeTextType="uniform" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/tile_diaper"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_tile_diaper"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/widget_art_diaper" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tile_diaper_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tile_diaper_label"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:maxLines="1"
+                android:textColor="@color/care_diaper_ink"
+                android:autoSizeMaxTextSize="12sp"                android:autoSizeMinTextSize="9sp"                android:autoSizeTextType="uniform"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tile_diaper_meta"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:maxLines="1"
+                android:textColor="@color/cl_muted"
+                android:autoSizeMaxTextSize="11sp"                android:autoSizeMinTextSize="8sp"                android:autoSizeTextType="uniform" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

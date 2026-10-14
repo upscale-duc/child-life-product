@@ -102,7 +102,12 @@ export const keepsakeJobLiveSchema = z
   .object({
     babyId: z.string().min(1).max(128),
     jobId: keepsakeJobIdSchema,
-    token: z.string().regex(/^[0-9a-f]{32,512}$/),
+    /** The Live Activity's push token (iPhone); Android has none and follows by FCM (A6). */
+    token: z
+      .string()
+      .regex(/^[0-9a-f]{32,512}$/)
+      .nullable()
+      .default(null),
     fcm: z.string().min(20).max(4096),
   })
   .strict();

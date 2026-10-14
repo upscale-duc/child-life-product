@@ -18,10 +18,10 @@ usual 16 screen.
 
 ## What makes a link open the app
 
-| Platform | Declared in                                                                   | Served by the landing build                            |
-| -------- | ----------------------------------------------------------------------------- | ------------------------------------------------------ |
-| iOS      | `tool/ios_flavors.rb` → `applinks:` both landing domains (profile allows `*`) | `/.well-known/apple-app-site-association`, `/i/*` and `/auth/link/*` |
-| Android  | `android/app/src/dev/AndroidManifest.xml`, both hosts, `/i/` and `/auth/link/` | `/.well-known/assetlinks.json` (debug key on dev)      |
+| Platform | Declared in                                                                                       | Served by the landing build                                                             |
+| -------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| iOS      | `tool/ios_flavors.rb` → `applinks:` both landing domains (profile allows `*`)                     | `/.well-known/apple-app-site-association`, `/i/*` and `/auth/link/*`                    |
+| Android  | `android/app/src/{dev,prod}/AndroidManifest.xml`, `/i/` and `/auth/link/` (prod: `childlife.app`) | `/.well-known/assetlinks.json` (debug key on dev; prod empty until the Play keys exist) |
 
 The same files also open the app for email sign-in links `/auth/link/?mode=signIn&…` (07a, D-064);
 in a browser that path is the `signInLinkLanding` page, whose button opens the app through the other

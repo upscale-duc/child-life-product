@@ -46,7 +46,7 @@ MemoryCtx? memoryCtxNow(BuildContext context, WidgetRef ref) {
 /// A context inside the root navigator's overlay. The navigator's own context has no Overlay
 /// above it, and the pickers, sheets and toasts need one (a link may arrive on a cold start,
 /// before any screen of ours is at hand).
-BuildContext? _insideOverlay(GoRouter router) {
+BuildContext? contextInsideOverlay(GoRouter router) {
   final overlay = router.routerDelegate.navigatorKey.currentState?.overlay;
   if (overlay == null || !overlay.mounted) return null;
   BuildContext? child;
@@ -60,7 +60,7 @@ Future<void> openQuickAdd(
   WidgetRef ref,
   QuickAdd source,
 ) async {
-  final context = _insideOverlay(router);
+  final context = contextInsideOverlay(router);
   if (context == null || !context.mounted) return;
   final c = memoryCtxNow(context, ref);
   if (c == null || !c.isParent) return;

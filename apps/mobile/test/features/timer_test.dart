@@ -253,6 +253,22 @@ void main() {
     );
 
     testWidgets(
+      'a widget tap after the timer ended elsewhere leaves for Hôm nay',
+      (tester) async {
+        final (visits, _) = await pumpRouted(
+          tester,
+          const TimerScreen(type: TimerType.sleep),
+          overrides: careOverrides(repo: FakeCareRepository()),
+        );
+        await tester.pump(const Duration(seconds: 2));
+        expect(visits, isEmpty);
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pumpAndSettle();
+        expect(visits.single.location, '/today');
+      },
+    );
+
+    testWidgets(
       '9c: a timer not yet on the server says so; cancel asks first',
       (tester) async {
         final repo = FakeCareRepository();

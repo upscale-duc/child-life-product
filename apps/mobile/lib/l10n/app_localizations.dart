@@ -500,6 +500,18 @@ abstract class AppLocalizations {
   /// **'Tiếp tục với Apple'**
   String get signInApple;
 
+  /// Android sign-in (no Apple button, D-071): lead-in for people with an Apple account (Q-063)
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đăng ký bằng Apple trên iPhone?'**
+  String get signInAppleElsewhere;
+
+  /// Android sign-in: opens email sign-in, where 'Gửi link đăng nhập' sends a link to the Apple email (Q-063)
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận link đăng nhập qua email Apple'**
+  String get signInAppleElsewhereAction;
+
   /// Google button label.
   ///
   /// In vi, this message translates to:
@@ -4502,6 +4514,72 @@ abstract class AppLocalizations {
   /// **'Nhắc việc của gia đình'**
   String get notifChannelDescription;
 
+  /// Android channel for family notices: new memories, messages, loves, videos (Android plan A1).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình & kỷ niệm'**
+  String get notifChannelFamily;
+
+  /// Android channel description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh mới, lời nhắn và tin từ gia đình'**
+  String get notifChannelFamilyDescription;
+
+  /// Android channel for spending notices (recurring items, budget).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu'**
+  String get notifChannelSpending;
+
+  /// Android channel description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản chi định kỳ và ngân sách tháng'**
+  String get notifChannelSpendingDescription;
+
+  /// Android reminder notice button (1f, A6); iOS has the same in RuleNotifications.swift.
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo lại sau 15 phút'**
+  String get notifSnooze15;
+
+  /// Android vaccine notice button (VX 8, A6).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem lịch tiêm'**
+  String get notifVxView;
+
+  /// Android vaccine notice button (VX 8, A6).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc lại sáng mai'**
+  String get notifVxSnooze;
+
+  /// Android channel for a running sleep or breastfeeding timer (A5).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bộ đếm giờ'**
+  String get notifChannelTimers;
+
+  /// Android channel description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ và cữ bú đang chạy'**
+  String get notifChannelTimersDescription;
+
+  /// Android channel for upload progress and the done notice (10j, A3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải lên'**
+  String get notifChannelUploads;
+
+  /// Android channel description.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiến độ tải ảnh, video và báo khi xong'**
+  String get notifChannelUploadsDescription;
+
   /// Row check.
   ///
   /// In vi, this message translates to:
@@ -4771,6 +4849,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chụp ảnh hoặc quay video'**
   String get addCamera;
+
+  /// 10a2 camera row on Android: the system camera takes photos here, videos on the next row (Q-066).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp ảnh'**
+  String get addCameraPhoto;
+
+  /// 10a2 on Android: the system video camera, length capped by the server limit (Q-066).
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay video'**
+  String get addCameraVideo;
 
   /// 10a2.
   ///

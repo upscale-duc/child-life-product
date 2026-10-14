@@ -12,6 +12,7 @@ import '../../app/route_guard.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
 import '../../core/appearance/appearance_providers.dart';
+import '../../core/platform/android_channels.dart';
 import '../../core/platform/device_heartbeat.dart';
 import '../../core/platform/install_source.dart';
 import '../../core/widgets/cl_feedback.dart';
@@ -94,6 +95,17 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
       _opened = FirebaseMessaging.onMessageOpenedApp.listen(
         (m) => unawaited(_open(m)),
       );
+      // Android draws reminder pushes itself (A6): their taps come through Push.kt.
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        const rules = RuleNotificationChannel();
+        Future<void> tapped() async {
+          final data = await rules.takeTappedPush();
+          if (data != null && mounted) await _open(RemoteMessage(data: data));
+        }
+
+        rules.listen(() => unawaited(tapped()));
+        unawaited(tapped());
+      }
       // A rule reminder that rings while the app is open shows 1g at once; a Video kỷ niệm that
       // finishes (or fails) while it is open says so, with "Xem".
       _foreground = FirebaseMessaging.onMessage.listen((m) {
@@ -176,6 +188,14 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
       onAction: () => _openJob(job),
       visibleFor: const Duration(seconds: 6),
     );
+  }
+
+  Future<void> _channels(AppLocalizations l10n) async {
+    try {
+      await AndroidChannels.sync(l10n);
+    } on Object {
+      // No plugin (tests) or an old system: pushes fall back to the default channel.
+    }
   }
 
   Future<void> _register(String uid, String language) async {
@@ -315,10 +335,11 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
       _heartbeat = null;
       _installFor = null;
     }
-    // The lock-screen action titles follow the app language (1f).
+    // The lock-screen action titles and Android channel names follow the app language (1f).
     if (_categoriesFor != language) {
       _categoriesFor = language;
       unawaited(const RuleNotificationChannel().refreshCategories());
+      unawaited(_channels(AppLocalizations.of(context)));
     }
     if (session is SessionSignedIn && session.hasBaby && !session.isAnonymous) {
       WidgetsBinding.instance.addPostFrameCallback(

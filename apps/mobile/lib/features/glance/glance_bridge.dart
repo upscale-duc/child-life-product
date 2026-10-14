@@ -26,6 +26,7 @@ import '../care/timer_models.dart';
 import '../care/timer_screens.dart' show showSleepChooser;
 import '../home/home_shell.dart';
 import '../onboarding/setup_screens.dart' show relationLabel;
+import '../memories/background_uploads.dart' show emulatorHost;
 import '../memories/quick_add.dart';
 
 /// S8 glanceables (Figma W1–W5): keeps the iOS widgets and Live Activities in step with the app.
@@ -63,10 +64,12 @@ class MethodGlanceChannel implements GlanceChannel {
   Future<void> refresh() => _channel.invokeMethod<void>('refresh');
 }
 
+/// iOS: widgets, Live Activities, upload notices; Android: the same through Glance.kt (A3, A5).
 final glanceChannelProvider = Provider<GlanceChannel?>(
-  (ref) => defaultTargetPlatform == TargetPlatform.iOS
-      ? MethodGlanceChannel()
-      : null,
+  (ref) => switch (defaultTargetPlatform) {
+    TargetPlatform.iOS || TargetPlatform.android => MethodGlanceChannel(),
+    _ => null,
+  },
 );
 
 const _useEmulators = bool.fromEnvironment('CL_EMULATORS');
@@ -365,6 +368,17 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
   }
 
   void _session(GlanceChannel channel, User? user) {
+    // Android's Firebase Auth keeps the session for native code (AuthToken.kt) and gives Dart
+    // no refresh token: only a sign-out is passed on.
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      final key = user == null ? '' : user.uid;
+      if (key == _sentSession) return;
+      _sentSession = key;
+      if (key.isEmpty) {
+        unawaited(channel.clearSession().catchError((Object _) {}));
+      }
+      return;
+    }
     final token = user?.refreshToken;
     final key = user == null || token == null ? '' : '${user.uid}:$token';
     if (key == _sentSession) return;
@@ -419,7 +433,7 @@ class _GlanceSyncState extends ConsumerState<GlanceSync>
       now: DateTime.now(),
       projectId: options.projectId,
       apiKey: options.apiKey,
-      emulatorHost: _useEmulators ? 'localhost' : null,
+      emulatorHost: _useEmulators ? emulatorHost : null,
       me: usable ? me : null,
       nickname: baby?.nickname,
       zone: baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh',

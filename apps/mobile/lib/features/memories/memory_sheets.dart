@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -186,11 +187,25 @@ Future<void> showAddSheet(
       ),
       _EntryOption(
         icon: ClIcons.camera,
-        title: l10n.addCamera,
+        // Android's system camera does photo or video, not both in one screen: two rows
+        // (Q-066).
+        title: defaultTargetPlatform == TargetPlatform.android
+            ? l10n.addCameraPhoto
+            : l10n.addCamera,
         subtitle: l10n.addCameraHint,
         primary: true,
         onTap: () => Navigator.of(sheet).pop('camera'),
       ),
+      if (defaultTargetPlatform == TargetPlatform.android) ...[
+        const SizedBox(height: ClSpace.s2),
+        _EntryOption(
+          icon: ClIcons.video,
+          title: l10n.addCameraVideo,
+          subtitle: l10n.addCameraHint,
+          // Not 'video': that is "Video kỷ niệm" below.
+          onTap: () => Navigator.of(sheet).pop('cameraVideo'),
+        ),
+      ],
       const SizedBox(height: ClSpace.s2),
       _EntryOption(
         icon: ClIcons.memories,
@@ -270,6 +285,8 @@ Future<void> showAddSheet(
       picked = await pickFromFiles(context, ref);
     case 'camera':
       picked = await captureWithCamera(context, c.nickname);
+    case 'cameraVideo':
+      picked = await captureWithCamera(context, c.nickname, video: true);
     case 'recent':
       picked = lastRecentPick;
   }

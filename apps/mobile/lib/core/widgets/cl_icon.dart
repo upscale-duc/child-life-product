@@ -69,7 +69,10 @@ enum ClIcons {
 
   /// Memories delete (S9, engineering icon in the Figma line style).
   trash,
-  upload;
+  upload,
+
+  /// "Quay video" on Android's add sheet (A4, engineering icon in the Figma line style).
+  video;
 
   const ClIcons([this._file]);
   final String? _file;

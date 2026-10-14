@@ -23,7 +23,7 @@ class _Bridge implements ShareBridge {
   Future<void> finish(String id) async => finished.add(id);
 }
 
-SharedBatch _batch(String id, String babyId, {String audience = 'family'}) =>
+SharedBatch _batch(String id, String? babyId, {String audience = 'family'}) =>
     SharedBatch.fromJson({
       'id': id,
       'dir': '/group/ShareInbox/$id',
@@ -50,6 +50,34 @@ SharedBatch _batch(String id, String babyId, {String audience = 'family'}) =>
     });
 
 void main() {
+  test(
+    '10k on Android: a share without a baby waits for the app to ask (Q-065)',
+    () async {
+      final bridge = _Bridge([
+        _batch('share_android', null),
+        _batch('share_ios', 'b_1'),
+      ]);
+      final calls = <String>[];
+      final queued = await importSharedBatches(
+        bridge: bridge,
+        parentOf: {'b_1'},
+        enqueue: ({required babyId, required request, required picked}) async =>
+            calls.add(babyId),
+      );
+      expect(queued, 2);
+      expect(calls, ['b_1']);
+      // Left in the inbox for offerSharedBatch, with its files as picked media.
+      expect(bridge.finished, ['share_ios']);
+      final android = bridge.batches.first;
+      expect(android.babyId, isNull);
+      expect(android.picked.map((p) => p.file.path), [
+        '/group/ShareInbox/share_android/0.heic',
+        '/group/ShareInbox/share_android/1.mov',
+      ]);
+      expect(android.picked.last.durationMs, 12500);
+    },
+  );
+
   test(
     '10k: shares for a Cùng nuôi baby join the queue like 10h, by capture date',
     () async {

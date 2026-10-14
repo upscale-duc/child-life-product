@@ -59,7 +59,7 @@ class FakeKeepsakeJobs implements KeepsakeJobRepository {
   Future<void> attachLive({
     required String babyId,
     required String jobId,
-    required String token,
+    required String? token,
     required String fcm,
   }) async => live.add('$jobId:$token');
   final _jobs = <String, KeepsakeJob>{};

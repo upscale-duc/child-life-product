@@ -119,11 +119,13 @@ class _SaveAccountSheetState extends ConsumerState<_SaveAccountSheet> {
           style: cl.text.body.copyWith(color: cl.colors.inkMuted),
         ),
         const SizedBox(height: ClSpace.s6),
-        AppleSignInButton(
-          onPressed: _busy ? null : () => _provider(apple: true),
-          loading: _busy && _apple,
-        ),
-        const SizedBox(height: ClSpace.s3),
+        if (ref.watch(appleSignInShownProvider)) ...[
+          AppleSignInButton(
+            onPressed: _busy ? null : () => _provider(apple: true),
+            loading: _busy && _apple,
+          ),
+          const SizedBox(height: ClSpace.s3),
+        ],
         GoogleSignInButton(
           onPressed: _busy ? null : () => _provider(apple: false),
           loading: _busy && !_apple,

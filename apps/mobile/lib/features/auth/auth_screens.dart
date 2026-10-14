@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -69,8 +70,15 @@ Future<bool> _runProvider(
   }
 }
 
+/// Sign in with Apple is offered on iOS only (D-071); Android has Google, email and email link.
+/// A provider so goldens can draw either platform.
+final appleSignInShownProvider = Provider<bool>(
+  (ref) => defaultTargetPlatform == TargetPlatform.iOS,
+);
+
 /// "Tiếp tục với Apple" as drawn in Figma (Button style apple, 8:33): black pill with Apple's
 /// logo (`assets/brands/apple.svg`) in place of the design's placeholder mark (brand-mark 22:197).
+/// Shown only where [appleSignInShownProvider] says so.
 class AppleSignInButton extends StatelessWidget {
   const AppleSignInButton({
     required this.onPressed,
@@ -223,16 +231,18 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       large: false,
                     ),
                     const SizedBox(height: ClSpace.s6),
-                    AppleSignInButton(
-                      onPressed: _busy
-                          ? null
-                          : () => _provider(
-                              (r) => r.signInWithApple(),
-                              via: 'apple',
-                            ),
-                      loading: _busy && _via == 'apple',
-                    ),
-                    const SizedBox(height: ClSpace.s3),
+                    if (ref.watch(appleSignInShownProvider)) ...[
+                      AppleSignInButton(
+                        onPressed: _busy
+                            ? null
+                            : () => _provider(
+                                (r) => r.signInWithApple(),
+                                via: 'apple',
+                              ),
+                        loading: _busy && _via == 'apple',
+                      ),
+                      const SizedBox(height: ClSpace.s3),
+                    ],
                     GoogleSignInButton(
                       onPressed: _busy
                           ? null
@@ -273,7 +283,44 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: ClSpace.s3),
+                    // Q-063: an Apple account from an iPhone is entered here through an email
+                    // link to its Apple address.
+                    if (!ref.watch(appleSignInShownProvider))
+                      ClPressable(
+                        key: const Key('appleOnAndroid'),
+                        semanticLabel:
+                            '${l10n.signInAppleElsewhere} ${l10n.signInAppleElsewhereAction}',
+                        onPressed: _busy
+                            ? null
+                            : () => context.push(
+                                '${Routes.email}?mode=${EmailMode.signIn.name}',
+                              ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: ClSpace.s3,
+                          ),
+                          child: Text.rich(
+                            TextSpan(
+                              text: '${l10n.signInAppleElsewhere} ',
+                              children: [
+                                TextSpan(
+                                  text: l10n.signInAppleElsewhereAction,
+                                  style: TextStyle(
+                                    color: cl.colors.mintText,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                            style: cl.text.caption.copyWith(
+                              color: cl.colors.inkMuted,
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      const SizedBox(height: ClSpace.s3),
                     // Joining someone's baby starts from the code too (owner, 2026-10-11).
                     ClButton(
                       label: l10n.signInHaveCode,
@@ -870,13 +917,15 @@ class _AccountExistsScreenState extends ConsumerState<AccountExistsScreen> {
         ],
       ],
       bottom: [
-        AppleSignInButton(
-          onPressed: _busy
-              ? null
-              : () => _provider((r) => r.signInWithApple(), via: 'apple'),
-          loading: _busy && _via == 'apple',
-        ),
-        const SizedBox(height: ClSpace.s3),
+        if (ref.watch(appleSignInShownProvider)) ...[
+          AppleSignInButton(
+            onPressed: _busy
+                ? null
+                : () => _provider((r) => r.signInWithApple(), via: 'apple'),
+            loading: _busy && _via == 'apple',
+          ),
+          const SizedBox(height: ClSpace.s3),
+        ],
         GoogleSignInButton(
           onPressed: _busy
               ? null

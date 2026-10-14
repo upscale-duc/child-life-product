@@ -10,9 +10,10 @@ import 'upload_queue.dart';
 
 const _useEmulators = bool.fromEnvironment('CL_EMULATORS');
 
-/// 10j "Khoá máy · tải nền & báo xong" on iOS: files go through the app's background URLSession
-/// (ios/Runner/BackgroundUploads.swift), so they keep uploading with the phone locked or the app
-/// closed, and iOS shows the upload Live Activity and the "Đã tải xong" notice.
+/// 10j "Khoá máy · tải nền & báo xong": files go through the app's background URLSession on iOS
+/// (ios/Runner/BackgroundUploads.swift) and WorkManager on Android (BackgroundUploads.kt), so they
+/// keep uploading with the phone locked or the app closed; iOS shows the upload Live Activity,
+/// Android an ongoing progress notice, and both the "Đã tải xong" notice.
 ///
 /// The native side remembers each file's outcome by storage path. Before sending, this asks for
 /// it: a file that finished while the app was gone is not sent again (Storage would refuse it —
@@ -31,7 +32,7 @@ class BackgroundTransport implements UploadTransport {
     token: (refresh) async =>
         FirebaseAuth.instance.currentUser?.getIdToken(refresh),
     bucket: Firebase.app().options.storageBucket ?? '',
-    host: _useEmulators ? 'localhost' : null,
+    host: _useEmulators ? emulatorHost : null,
   );
 
   /// The person's Firebase ID token (refreshed when asked).
@@ -182,10 +183,15 @@ class BackgroundTransport implements UploadTransport {
   }
 }
 
-/// iOS: rewrites the recording at [src] to [dst] with its index first, without re-encoding.
-/// False elsewhere or when it fails (the caller copies the file instead).
+/// The host machine as the phone sees it, for the local emulators (Android: 10.0.2.2).
+String get emulatorHost =>
+    defaultTargetPlatform == TargetPlatform.android ? '10.0.2.2' : 'localhost';
+
+/// Rewrites the recording at [src] to [dst] with its index first, without re-encoding (iOS:
+/// AVFoundation; Android: FastStart.kt). False elsewhere or when it fails (the caller copies the
+/// file instead).
 Future<bool> faststartVideo(String src, String dst) async {
-  if (kIsWeb || !Platform.isIOS) return false;
+  if (kIsWeb || !(Platform.isIOS || Platform.isAndroid)) return false;
   try {
     return await const MethodChannel(
           'childlife/uploads',

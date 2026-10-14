@@ -556,10 +556,12 @@ class _JoinHowSheetState extends ConsumerState<_JoinHowSheet> {
           ],
         ),
         const SizedBox(height: ClSpace.s3),
-        AppleSignInButton(
-          onPressed: _busy ? null : () => _enter((r) => r.signInWithApple()),
-        ),
-        const SizedBox(height: ClSpace.s3),
+        if (ref.watch(appleSignInShownProvider)) ...[
+          AppleSignInButton(
+            onPressed: _busy ? null : () => _enter((r) => r.signInWithApple()),
+          ),
+          const SizedBox(height: ClSpace.s3),
+        ],
         GoogleSignInButton(
           onPressed: _busy ? null : () => _enter((r) => r.signInWithGoogle()),
         ),

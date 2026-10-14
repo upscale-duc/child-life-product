@@ -117,7 +117,13 @@ import {
   type JobDeps,
 } from './account.js';
 import { addToAlbum, createAlbum, deleteAlbum, removeFromAlbum, updateAlbum } from './albums.js';
-import { deliverNotice, onMessageCreated, onReactionWritten, type PushSender } from './social.js';
+import {
+  deliverNotice,
+  onMessageCreated,
+  onReactionWritten,
+  pushPayload,
+  type PushSender,
+} from './social.js';
 import {
   ReminderRuleError,
   answerReminderRule,
@@ -769,21 +775,7 @@ const pushSender = (): PushSender | null => {
     async send(tokens, message) {
       const result = await getMessaging().sendEachForMulticast({
         tokens,
-        notification: { title: message.title, body: message.body },
-        data: message.data,
-        apns: {
-          ...(message.apns?.collapseId
-            ? { headers: { 'apns-collapse-id': message.apns.collapseId } }
-            : {}),
-          payload: {
-            aps: {
-              sound: 'default',
-              ...(message.apns?.category ? { category: message.apns.category } : {}),
-              ...(message.apns?.threadId ? { threadId: message.apns.threadId } : {}),
-            },
-          },
-        },
-        android: { priority: 'high' },
+        ...pushPayload(message),
       });
       return result.responses
         .map((r, i) => ({ r, token: tokens[i]! }))
@@ -1907,7 +1899,7 @@ export const retryMemoryStory = keepsakeCall('retryMemoryStory', (uid, data) =>
 export const deleteMemoryStory = keepsakeCall('deleteMemoryStory', (uid, data) =>
   deleteMemoryStoryJob(getFirestore(), bucketStore(getStorage().bucket()), uid, data),
 );
-/** MM08 on iPhone: the job's Live Activity token. */
+/** MM08: the job's Live Activity token (iPhone) or the phone's FCM token (Android, A6). */
 export const attachMemoryStoryLive = keepsakeCall('attachMemoryStoryLive', (uid, data) =>
   attachKeepsakeLive(getFirestore(), uid, data, new Date()),
 );
@@ -1938,6 +1930,32 @@ const liveSender = (): LiveSender | null => {
       } catch (error) {
         const code = (error as { code?: string }).code ?? '';
         logger.warn('keepsake live push failed', { code });
+        return ![
+          'messaging/registration-token-not-registered',
+          'messaging/invalid-argument',
+        ].includes(code);
+      }
+    },
+    async android(fcm, job, event, state) {
+      try {
+        await getMessaging().send({
+          token: fcm,
+          // Ids, status and percent only (R-116); PushService.kt draws the progress notice.
+          data: {
+            kind: 'keepsakeProgress',
+            babyId: job.babyId,
+            jobId: job.jobId,
+            event,
+            status: state.status,
+            step: state.step ?? '',
+            progress: String(state.progress),
+          },
+          android: { priority: event === 'end' ? 'high' : 'normal' },
+        });
+        return true;
+      } catch (error) {
+        const code = (error as { code?: string }).code ?? '';
+        logger.warn('keepsake android push failed', { code });
         return ![
           'messaging/registration-token-not-registered',
           'messaging/invalid-argument',
