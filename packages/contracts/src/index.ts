@@ -26,3 +26,5 @@ export * from './qa.js';
 export * from './reference.js';
 export * from './family-actions.js';
 export * from './entitlements.js';
+export * from './rhythm.js';
+export * from './personalization.js';
