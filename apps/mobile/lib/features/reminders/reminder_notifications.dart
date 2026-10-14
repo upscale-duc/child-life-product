@@ -17,6 +17,11 @@ import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_nudges.dart';
+import '../rhythm/rhythm_local.dart'
+    show
+        rhythmOfPayload,
+        rhythmStageNotification,
+        rhythmStageReminderPlanProvider;
 import 'device_identity.dart';
 import 'reminder_models.dart';
 import 'reminder_repository.dart';
@@ -290,6 +295,20 @@ class _ReminderNotificationSyncState
   }
 
   void _open(String? payload) {
+    // Nhịp lớn lên stage reminder (NL02c): open the overview of that baby.
+    final rhythmBaby = rhythmOfPayload(payload);
+    if (rhythmBaby != null && mounted) {
+      final session = ref.read(sessionProvider);
+      if (session is! SessionSignedIn ||
+          session.membershipFor(rhythmBaby) == null) {
+        return;
+      }
+      ref.read(selectedBabyIdProvider.notifier).select(rhythmBaby);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) ref.read(routerProvider).push(Routes.rhythm);
+      });
+      return;
+    }
     // Kỷ niệm 2.0 milestone nudges (D-068 #9): open Thiệp cột mốc on that occasion.
     final nudge = nudgeOfPayload(payload);
     if (nudge != null && mounted) {
@@ -357,6 +376,11 @@ class _ReminderNotificationSyncState
     } on Object {
       // Nudges are best effort; reminders are scheduled regardless.
     }
+    // Nhịp lớn lên stage reminders (NL02c), best effort too.
+    final where = Localizations.localeOf(context);
+    for (final p in ref.read(rhythmStageReminderPlanProvider)) {
+      out.add(rhythmStageNotification(where, p));
+    }
     return out;
   }
 
@@ -394,6 +418,7 @@ class _ReminderNotificationSyncState
       ref.watch(babyProvider(r.babyId));
     }
     ref.watch(nudgePlanProvider);
+    ref.watch(rhythmStageReminderPlanProvider);
     if (enabled == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_sync()));
     } else {

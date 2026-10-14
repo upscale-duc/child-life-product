@@ -1,9 +1,14 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/appearance/appearance_providers.dart';
+import '../care/care_repository.dart' show timerClockProvider;
+import '../home/home_shell.dart';
+import '../premium/premium_repository.dart';
+import '../reminders/reminder_notifications.dart' show LocalReminder;
+import 'rhythm_repository.dart';
 import 'rhythm_calc.dart';
 import 'rhythm_models.dart';
 
@@ -142,4 +147,82 @@ List<({ReferenceStage stage, DateTime fireAt})> stageReminderPlan({
           fireAt: DateTime(day.year, day.month, day.day, stageReminderHour),
         ),
   ];
+}
+
+/// NL02c "Trước giai đoạn tham khảo · 3 ngày trước": the selected baby's stage reminders this
+/// phone should schedule, for the reminder sync (it cancels anything it is not given). Only for a
+/// member who may read the due date, with the rhythm rollout on and the switch on; stages without
+/// a published notice are skipped. Best effort: a problem here never stops other reminders.
+final rhythmStageReminderPlanProvider =
+    Provider.autoDispose<
+      List<({String babyId, ReferenceStage stage, DateTime fireAt})>
+    >((ref) {
+      try {
+        final me = ref.watch(selectedMembershipProvider);
+        final caps = ref.watch(selectedCapabilitiesProvider);
+        if (me == null ||
+            caps == null ||
+            !caps.features.rhythm ||
+            !me.canViewBabyInfo) {
+          return const [];
+        }
+        final due = ref.watch(rhythmProfileProvider(me.babyId)).value?.dueDate;
+        final model = ref.watch(rhythmReferenceProvider).value;
+        if (due == null || model == null) return const [];
+        final plan = stageReminderPlan(
+          dueDate: due.date,
+          stages: model.stages,
+          now: ref.read(timerClockProvider)(),
+          enabled: ref.watch(rhythmRemindersProvider(me.uid)).stage,
+        );
+        return [
+          for (final p in plan)
+            if (p.stage.noticeTitle != null && p.stage.noticeBody != null)
+              (babyId: me.babyId, stage: p.stage, fireAt: p.fireAt),
+        ];
+      } on Object {
+        return const [];
+      }
+    });
+
+/// One stage reminder as a local notification; no baby name in the text (R-120). Ids apart
+/// from reminders (28 bits) and keepsake nudges (bit 30): bit 29 set.
+LocalReminder rhythmStageNotification(
+  Locale locale,
+  ({String babyId, ReferenceStage stage, DateTime fireAt}) p,
+) {
+  final title = p.stage.noticeTitle!.of(locale);
+  final body = p.stage.noticeBody!.of(locale);
+  final hash = '${p.babyId}/${p.stage.id}'.codeUnits.fold<int>(
+    17,
+    (h, c) => (h * 31 + c) & 0x0fffffff,
+  );
+  return LocalReminder(
+    id: (1 << 29) | hash,
+    fireAt: p.fireAt,
+    title: title,
+    body: body,
+    payload: jsonEncode({
+      'k': 'rhythm',
+      'b': p.babyId,
+      's': p.stage.id,
+      'at': p.fireAt.millisecondsSinceEpoch,
+      't': title,
+      'x': body,
+    }),
+  );
+}
+
+/// The baby id of a stage-reminder payload, or null for anything else.
+String? rhythmOfPayload(String? payload) {
+  if (payload == null) return null;
+  try {
+    final json = jsonDecode(payload);
+    if (json is Map && json['k'] == 'rhythm' && json['b'] is String) {
+      return json['b'] as String;
+    }
+  } on FormatException {
+    return null;
+  }
+  return null;
 }

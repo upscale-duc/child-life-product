@@ -370,6 +370,33 @@ void main() {
         isEmpty,
       );
     });
+
+    test(
+      'a stage reminder becomes one local notification: notice text, no name, own id range',
+      () {
+        const stage = ReferenceStage(
+          id: 'stage_1',
+          number: 1,
+          startOffsetDays: 28,
+          endOffsetDays: 38,
+          name: Localized('Giai đoạn 1', 'Stage 1'),
+          noticeTitle: Localized('Sắp đến giai đoạn 1', 'Stage 1 coming up'),
+          noticeBody: Localized('Mỗi bé mỗi khác.', 'Every baby is different.'),
+        );
+        final n = rhythmStageNotification(const Locale('vi'), (
+          babyId: teddyId,
+          stage: stage,
+          fireAt: DateTime(2026, 10, 9, stageReminderHour),
+        ));
+        expect(n.title, stage.noticeTitle!.vi);
+        expect(n.body, stage.noticeBody!.vi);
+        expect(n.id & (1 << 29), isNonZero);
+        expect(n.id & (1 << 30), isZero);
+        expect(rhythmOfPayload(n.payload), teddyId);
+        expect(rhythmOfPayload('{"k":"reminder","b":"x"}'), isNull);
+        expect(rhythmOfPayload('not json'), isNull);
+      },
+    );
   });
 
   group('NL03 / NL04', () {
