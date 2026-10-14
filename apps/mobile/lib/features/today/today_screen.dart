@@ -154,6 +154,10 @@ class TodayScreen extends ConsumerWidget {
                   GridView.count(
                     crossAxisCount: 2,
                     shrinkWrap: true,
+                    // Without it the grid pads itself by the home indicator, so the gap below
+                    // the tiles was ~34 pt taller than between the other sections (owner,
+                    // 2026-10-14).
+                    padding: EdgeInsets.zero,
                     physics: const NeverScrollableScrollPhysics(),
                     mainAxisSpacing: ClSpace.s3,
                     crossAxisSpacing: ClSpace.s3,

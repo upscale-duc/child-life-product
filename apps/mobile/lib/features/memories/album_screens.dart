@@ -270,16 +270,23 @@ class AlbumsView extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: ClSpace.s3),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: ClSpace.s4,
-            crossAxisSpacing: ClSpace.s3,
-            childAspectRatio: 0.74,
-            children: cards,
-          ),
+          // Rows of two at the cards' own height: a fixed aspect ratio left a gap under each
+          // caption that grew with the screen width (owner, 2026-10-14).
+          for (var i = 0; i < cards.length; i += 2) ...[
+            if (i > 0) const SizedBox(height: ClSpace.s4),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: cards[i]),
+                const SizedBox(width: ClSpace.s3),
+                Expanded(
+                  child: i + 1 < cards.length
+                      ? cards[i + 1]
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ),
+          ],
           if (albums.isEmpty && c.parentView) ...[
             const SizedBox(height: ClSpace.s3),
             Text(

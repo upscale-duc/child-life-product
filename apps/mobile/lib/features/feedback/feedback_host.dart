@@ -13,6 +13,7 @@ import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import 'feedback_repository.dart';
@@ -147,8 +148,8 @@ class _FeedbackHostState extends ConsumerState<FeedbackHost> {
           Positioned(
             left: ClSpace.s4,
             right: ClSpace.s4,
-            // Above the tab dock (FB4 sits at y 604 of 812).
-            bottom: MediaQuery.paddingOf(context).bottom + 116 - 34,
+            // Above the tab dock and its "+", never on them (owner, 2026-10-14).
+            bottom: _aboveDock(context),
             child: ScreenshotToast(
               shot: shot,
               onReport: _report,
@@ -158,6 +159,15 @@ class _FeedbackHostState extends ConsumerState<FeedbackHost> {
       ],
     );
   }
+}
+
+/// The tab dock's bar (68) and "+" sit on the home indicator inset (or 24 without one).
+double _aboveDock(BuildContext context) {
+  final inset = MediaQuery.paddingOf(context).bottom;
+  return (inset > 0 ? inset : ClSpace.s6) +
+      68 +
+      ClTabDock.actionExtent +
+      ClSpace.s2;
 }
 
 /// FB4 (477:6564): ink card, the screenshot as a 36 × 64 thumbnail, "Báo lỗi" and close.
