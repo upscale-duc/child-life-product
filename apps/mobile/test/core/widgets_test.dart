@@ -89,41 +89,61 @@ void main() {
       expect(selected, ClTab.utilities);
     });
 
-    testWidgets('the pill, label and icon move together on a tab change '
-        '(D-048)', (tester) async {
-      Widget bar(ClTab active) => SizedBox(
-        width: 360,
-        child: ClNavBar(role: ClRole.parent, active: active, onSelect: (_) {}),
+    testWidgets('every tab shows its label under its icon, chosen or not '
+        '(D-069)', (tester) async {
+      await pumpCl(
+        tester,
+        SizedBox(
+          width: 360,
+          child: ClNavBar(
+            role: ClRole.parent,
+            active: ClTab.today,
+            onSelect: (_) {},
+          ),
+        ),
       );
-      double width(String label) =>
-          tester.getSize(find.bySemanticsLabel(label)).width;
-      await pumpCl(tester, bar(ClTab.today));
-      final full = width('Hôm nay');
-      await tester.pumpWidget(clHarness(bar(ClTab.memories)));
-      await tester.pump(const Duration(milliseconds: 80));
-      expect(width('Hôm nay'), lessThan(full));
-      expect(width('Kỷ niệm'), greaterThan(52));
-      await tester.pumpAndSettle();
-      expect(width('Kỷ niệm'), closeTo(full, 0.5));
+      final widths = <double>{};
+      for (final label in ['Hôm nay', 'Kỷ niệm', 'Chăm sóc', 'Tiện ích']) {
+        expect(find.text(label), findsOneWidget);
+        widths.add(tester.getSize(find.bySemanticsLabel(label)).width);
+        final icon = find.descendant(
+          of: find.bySemanticsLabel(label),
+          matching: find.byType(ClIcon),
+        );
+        expect(
+          tester.getCenter(find.text(label)).dy,
+          greaterThan(tester.getCenter(icon).dy),
+        );
+      }
+      expect(widths, hasLength(1), reason: 'the tabs share the bar equally');
     });
 
-    testWidgets('first to last tab: the tabs in between stay icon-only', (
-      tester,
-    ) async {
+    testWidgets('the fill, label and icon move together on a tab change '
+        '(D-048); tabs in between stay plain', (tester) async {
       Widget bar(ClTab active) => SizedBox(
         width: 360,
         child: ClNavBar(role: ClRole.parent, active: active, onSelect: (_) {}),
       );
-      double width(String label) =>
-          tester.getSize(find.bySemanticsLabel(label)).width;
+      int? ink(String label) =>
+          tester.widget<Text>(find.text(label)).style?.color?.toARGB32();
       await pumpCl(tester, bar(ClTab.today));
+      final c = tester.element(find.text('Hôm nay')).cl.colors;
+      final active = c.onNavActive.toARGB32();
+      final plain = c.navIcon.toARGB32();
+      expect(ink('Hôm nay'), active);
+      expect(ink('Tiện ích'), plain);
       await tester.pumpWidget(clHarness(bar(ClTab.utilities)));
+      await tester.pump(const Duration(milliseconds: 80));
+      expect(ink('Hôm nay'), isNot(active));
+      expect(ink('Tiện ích'), isNot(plain));
       for (var ms = 0; ms < 400; ms += 40) {
+        expect(ink('Kỷ niệm'), plain);
+        expect(ink('Chăm sóc'), plain);
         await tester.pump(const Duration(milliseconds: 40));
-        expect(width('Kỷ niệm'), closeTo(52, 0.5));
-        expect(width('Chăm sóc'), closeTo(52, 0.5));
       }
-      expect(width('Tiện ích'), greaterThan(150));
+      await tester.pumpAndSettle();
+      expect(ink('Tiện ích'), active);
+      expect(ink('Hôm nay'), plain);
     });
   });
 

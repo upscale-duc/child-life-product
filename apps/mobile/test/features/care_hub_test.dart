@@ -110,9 +110,9 @@ void main() {
         const Scaffold(body: CareHubScreen()),
         overrides: careOverrides(),
       );
-      await tester.ensureVisible(find.text('Wonder Week'));
+      await tester.ensureVisible(find.text('Wonder Weeks'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Wonder Week'));
+      await tester.tap(find.text('Wonder Weeks'));
       await tester.pump();
       expect(
         find.text('Phần này sẽ có trong bản cập nhật tới.'),
@@ -120,6 +120,35 @@ void main() {
       );
       expect(visits, isEmpty);
       await tester.pumpAndSettle(const Duration(seconds: 5));
+    });
+
+    testWidgets('grouped as the owner asked (D-069)', (tester) async {
+      await pumpRouted(
+        tester,
+        const Scaffold(body: CareHubScreen()),
+        overrides: careOverrides(),
+      );
+      double y(String text) => tester.getTopLeft(find.text(text)).dy;
+      for (final t in [
+        'Chăm hằng ngày',
+        'Hiểu con & phát triển',
+        'Kiến thức chăm bé',
+      ]) {
+        await tester.scrollUntilVisible(
+          find.text(t),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+      }
+      await tester.scrollUntilVisible(
+        find.text('Thư viện chăm bé'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(y('Ăn dặm'), lessThan(y('Kiến thức chăm bé')));
+      expect(y('Kiến thức chăm bé'), lessThan(y('Thư viện chăm bé')));
+      expect(find.text('Theo tuổi của bé'), findsOneWidget);
+      expect(find.text('Dinh dưỡng'), findsNothing);
     });
 
     testWidgets('caregiver: no Tăng trưởng (370:2174)', (tester) async {

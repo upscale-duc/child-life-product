@@ -6220,16 +6220,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get careSoonToast => 'This arrives in a coming update.';
 
   @override
-  String get careWonderWeek => 'Wonder Week';
+  String get careWonderWeek => 'Wonder Weeks';
 
   @override
   String get careWonderWeekSub => 'Expected developmental phases';
 
   @override
-  String get careAgeCards => 'Cards by age';
+  String get careAgeCards => 'By your baby’s age';
 
   @override
-  String get careAgeCardsSub => 'Ideas for your baby’s age';
+  String get careAgeCardsSub => 'Ideas week by week, month by month';
 
   @override
   String get careMilestones => 'Milestones';
@@ -8586,9 +8586,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get utTitle => 'Utilities';
 
   @override
-  String get utForBaby => 'For the baby';
-
-  @override
   String utSpendingMonth(String amount) {
     return 'This month $amount';
   }
@@ -8633,12 +8630,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get utInviteSub =>
       'Grandparents and caregivers follow the baby with you';
-
-  @override
-  String get careNutrition => 'Nutrition';
-
-  @override
-  String get careNutritionSub => 'Milk and nutrients by stage';
 
   @override
   String get inviteLinkJoining => 'Accepting the invite…';
@@ -10252,4 +10243,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoSaveTabDot => 'New photos to review';
+
+  @override
+  String get careDevelop => 'Understanding your baby';
+
+  @override
+  String get careKnowledge => 'Baby-care know-how';
+
+  @override
+  String get utTools => 'Tools';
 }

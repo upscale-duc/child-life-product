@@ -9700,7 +9700,7 @@ abstract class AppLocalizations {
   /// Coming-soon tile.
   ///
   /// In vi, this message translates to:
-  /// **'Wonder Week'**
+  /// **'Wonder Weeks'**
   String get careWonderWeek;
 
   /// Coming-soon tile.
@@ -9712,13 +9712,13 @@ abstract class AppLocalizations {
   /// Coming-soon tile.
   ///
   /// In vi, this message translates to:
-  /// **'Thẻ theo tuổi'**
+  /// **'Theo tuổi của bé'**
   String get careAgeCards;
 
   /// Coming-soon tile.
   ///
   /// In vi, this message translates to:
-  /// **'Gợi ý theo tuổi của bé'**
+  /// **'Gợi ý cho từng tuần, từng tháng'**
   String get careAgeCardsSub;
 
   /// Coming-soon tile.
@@ -13483,12 +13483,6 @@ abstract class AppLocalizations {
   /// **'Tiện ích'**
   String get utTitle;
 
-  /// Tiện ích section.
-  ///
-  /// In vi, this message translates to:
-  /// **'Cho bé'**
-  String get utForBaby;
-
   /// Chi tiêu row (full amount).
   ///
   /// In vi, this message translates to:
@@ -13542,18 +13536,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Ông bà, người chăm cùng theo dõi bé'**
   String get utInviteSub;
-
-  /// Chăm sóc coming-soon tile (450:6424).
-  ///
-  /// In vi, this message translates to:
-  /// **'Dinh dưỡng'**
-  String get careNutrition;
-
-  /// Tile subline.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sữa, vi chất theo giai đoạn'**
-  String get careNutritionSub;
 
   /// While an invite link joins.
   ///
@@ -15822,6 +15804,24 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Có ảnh mới chờ duyệt'**
   String get autoSaveTabDot;
+
+  /// Chăm sóc section (owner, 2026-10-14, D-069)
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiểu con & phát triển'**
+  String get careDevelop;
+
+  /// Chăm sóc section (owner, 2026-10-14, D-069)
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiến thức chăm bé'**
+  String get careKnowledge;
+
+  /// Tiện ích section (owner, 2026-10-14, D-069)
+  ///
+  /// In vi, this message translates to:
+  /// **'Công cụ'**
+  String get utTools;
 }
 
 class _AppLocalizationsDelegate

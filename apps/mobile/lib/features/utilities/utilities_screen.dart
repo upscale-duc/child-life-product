@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
-import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
@@ -22,8 +21,8 @@ import '../spending/spending_models.dart';
 import '../spending/spending_repository.dart';
 
 /// Tiện ích tab (v1.0 improvement 450:6597; caregiver 450:6873), which replaced the Gia đình tab:
-/// "Cho bé" (Sơ cứu trẻ em, Chi tiêu, Thư viện chăm bé — coming soon) and "Gia đình" (Thành viên &
-/// chia sẻ; Mời người thân for Cùng nuôi). Rows show only what this member may open: Sơ cứu once a
+/// "Công cụ" (Sơ cứu trẻ em, Chi tiêu) and "Gia đình" (Thành viên & chia sẻ; Mời người thân for
+/// Cùng nuôi). Thư viện chăm bé moved to Chăm sóc (owner, 2026-10-14, D-069). Rows show only what this member may open: Sơ cứu once a
 /// guide is on the device, Chi tiêu with a spending right (D-055).
 class UtilitiesScreen extends ConsumerWidget {
   const UtilitiesScreen({super.key});
@@ -102,7 +101,7 @@ class UtilitiesScreen extends ConsumerWidget {
             header: true,
             child: Text(l10n.utTitle, style: cl.text.largeTitle),
           ),
-          _Section(l10n.utForBaby),
+          _Section(l10n.utTools),
           _Group(
             children: [
               if (pack != null)
@@ -114,13 +113,6 @@ class UtilitiesScreen extends ConsumerWidget {
                   onTap: () => context.push(Routes.firstAid),
                 ),
               ?spendingRow,
-              _Row(
-                icon: ClIcons.bookmark,
-                title: l10n.careLibrary,
-                subtitle: l10n.careLibrarySub,
-                soon: true,
-                onTap: () => showClToast(context, message: l10n.careSoonToast),
-              ),
             ],
           ),
           _Section(l10n.tabFamily),
@@ -194,7 +186,6 @@ class _Row extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
-    this.soon = false,
     super.key,
   });
 
@@ -202,15 +193,13 @@ class _Row extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
-  final bool soon;
 
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
-    final l10n = AppLocalizations.of(context);
     return ClPressable(
       onPressed: onTap,
-      semanticLabel: soon ? '$title. ${l10n.careSoon}' : '$title. $subtitle',
+      semanticLabel: '$title. $subtitle',
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
@@ -247,10 +236,7 @@ class _Row extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            if (soon)
-              const CareSoonBadge()
-            else
-              ClIcon(ClIcons.chevronRight, size: 16, color: cl.colors.inkMuted),
+            ClIcon(ClIcons.chevronRight, size: 16, color: cl.colors.inkMuted),
           ],
         ),
       ),
@@ -276,7 +262,8 @@ class CareSoonBadge extends StatelessWidget {
         style: cl.text.caption.copyWith(
           fontSize: 11,
           fontWeight: FontWeight.w700,
-          color: cl.colors.ink,
+          // onWarm: the text colour of the bright sunshine fill, dark in Night care too.
+          color: cl.colors.onWarm,
         ),
       ),
     );

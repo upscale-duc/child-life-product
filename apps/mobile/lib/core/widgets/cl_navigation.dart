@@ -43,8 +43,10 @@ List<ClTab> tabsForRole(ClRole role, {bool relativeSeesToday = false}) =>
 /// Quick log is available to parents and caregivers only (no "+" for relatives).
 bool roleCanQuickLog(ClRole role) => role != ClRole.relative;
 
-/// Floating tab bar (44:362): active tab is a labelled pill, others icon-only 52 wide. The pill,
-/// label and icon colours move together on one spring when the tab changes (D-048).
+/// Floating tab bar (NavBar v1.0.1, 369:2540): every tab shows its icon over its label, always
+/// (owner, 2026-10-14, D-069); the tabs share the bar equally and the active one sits on a light
+/// rounded fill. The fill, label and icon colours move together on one spring when the tab
+/// changes (D-048).
 class ClNavBar extends StatefulWidget {
   const ClNavBar({
     required this.role,
@@ -76,9 +78,8 @@ class ClNavBar extends StatefulWidget {
 class _ClNavBarState extends State<ClNavBar>
     with SingleTickerProviderStateMixin {
   static const _pad = 6.0;
-  static const _inactiveWidth = 52.0;
 
-  // Each tab's selection progress (0 = icon only, 1 = pill). A change hands progress straight
+  // Each tab's selection progress (0 = plain, 1 = on the active fill). A change hands progress straight
   // from the tabs as they are now to the new tab, so tabs in between never grow.
   late List<double> _from = _oneHot(_activeIndex);
   late List<double> _to = _from;
@@ -153,28 +154,22 @@ class _ClNavBarState extends State<ClNavBar>
         borderRadius: BorderRadius.circular(ClRadius.pill),
         boxShadow: cl.shadows.nav,
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final activeWidth =
-              constraints.maxWidth - _inactiveWidth * (tabs.length - 1);
-          return AnimatedBuilder(
-            animation: _move,
-            builder: (context, _) {
-              final progress = _current;
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  for (var i = 0; i < tabs.length; i++)
-                    _tabAt(
-                      tab: tabs[i],
-                      t: progress[i],
-                      activeWidth: activeWidth,
-                      label: label(tabs[i]),
-                      icon: icon(tabs[i]),
-                    ),
-                ],
-              );
-            },
+      child: AnimatedBuilder(
+        animation: _move,
+        builder: (context, _) {
+          final progress = _current;
+          return Row(
+            children: [
+              for (var i = 0; i < tabs.length; i++)
+                Expanded(
+                  child: _tabAt(
+                    tab: tabs[i],
+                    t: progress[i],
+                    label: label(tabs[i]),
+                    icon: icon(tabs[i]),
+                  ),
+                ),
+            ],
           );
         },
       ),
@@ -184,12 +179,9 @@ class _ClNavBarState extends State<ClNavBar>
   Widget _tabAt({
     required ClTab tab,
     required double t,
-    required double activeWidth,
     required String label,
     required ClIcons icon,
   }) => _NavTab(
-    inactiveWidth: _inactiveWidth,
-    activeWidth: activeWidth,
     t: t,
     active: tab == widget.active,
     label: label,
@@ -201,7 +193,7 @@ class _ClNavBarState extends State<ClNavBar>
         ? Stack(
             clipBehavior: Clip.none,
             children: [
-              ClIcon(icon, size: 22, color: ink),
+              ClIcon(icon, size: 20, color: ink),
               Positioned(
                 top: -1,
                 right: -2,
@@ -224,16 +216,14 @@ class _ClNavBarState extends State<ClNavBar>
               ),
             ],
           )
-        : ClIcon(icon, size: 22, color: ink),
+        : ClIcon(icon, size: 20, color: ink),
   );
 }
 
-/// One tab at selection progress [t] (0 = icon only, 1 = labelled pill). Neighbouring tabs'
-/// progress sums to 1, so the tabs always fill the bar.
+/// One tab at selection progress [t] (0 = plain, 1 = on the active fill): the icon over the label
+/// (Tab/* in NavBar v1.0.1: 20 px icon, 3 px gap, 11 px label, Bold when active).
 class _NavTab extends StatelessWidget {
   const _NavTab({
-    required this.inactiveWidth,
-    required this.activeWidth,
     required this.t,
     required this.active,
     required this.label,
@@ -241,8 +231,6 @@ class _NavTab extends StatelessWidget {
     required this.icon,
   });
 
-  final double inactiveWidth;
-  final double activeWidth;
   final double t;
   final bool active;
   final String label;
@@ -253,8 +241,6 @@ class _NavTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final cl = context.cl;
     final ink = Color.lerp(cl.colors.navIcon, cl.colors.onNavActive, t)!;
-    // The label fades in over the second half of the pill's growth, once there is room.
-    final labelOpacity = ((t - 0.5) * 2).clamp(0.0, 1.0);
     return Semantics(
       selected: active,
       button: true,
@@ -265,38 +251,39 @@ class _NavTab extends StatelessWidget {
         pressedOpacity: 1,
         isButton: false,
         child: Container(
-          width: inactiveWidth + (activeWidth - inactiveWidth) * t,
           height: 56,
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
           decoration: BoxDecoration(
             color: cl.colors.navActive.withValues(
               alpha: cl.colors.navActive.a * t,
             ),
-            borderRadius: BorderRadius.circular(ClRadius.pill),
+            borderRadius: BorderRadius.circular(20),
           ),
-          clipBehavior: Clip.antiAlias,
-          child: Row(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               icon(ink),
-              if (labelOpacity > 0) ...[
-                SizedBox(width: 6 * labelOpacity),
-                Flexible(
-                  child: Opacity(
-                    opacity: labelOpacity,
-                    child: Text(
-                      label,
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                      softWrap: false,
-                      style: cl.text.label.copyWith(
-                        height: 16 / 14,
-                        letterSpacing: 0.2,
-                        color: cl.colors.onNavActive,
-                      ),
+              const SizedBox(height: 3),
+              // Large text sizes shrink the label rather than cut it.
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: cl.text.caption.copyWith(
+                    fontSize: 11,
+                    height: 16 / 11,
+                    letterSpacing: 0.2,
+                    fontWeight: FontWeight.lerp(
+                      FontWeight.w500,
+                      FontWeight.w700,
+                      t,
                     ),
+                    color: ink,
                   ),
                 ),
-              ],
+              ),
             ],
           ),
         ),

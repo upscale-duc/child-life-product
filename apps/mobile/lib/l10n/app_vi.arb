@@ -8842,7 +8842,7 @@
   "@careSoonToast": {
     "description": "Tap on a coming-soon tile."
   },
-  "careWonderWeek": "Wonder Week",
+  "careWonderWeek": "Wonder Weeks",
   "@careWonderWeek": {
     "description": "Coming-soon tile."
   },
@@ -8850,11 +8850,11 @@
   "@careWonderWeekSub": {
     "description": "Coming-soon tile."
   },
-  "careAgeCards": "Thẻ theo tuổi",
+  "careAgeCards": "Theo tuổi của bé",
   "@careAgeCards": {
     "description": "Coming-soon tile."
   },
-  "careAgeCardsSub": "Gợi ý theo tuổi của bé",
+  "careAgeCardsSub": "Gợi ý cho từng tuần, từng tháng",
   "@careAgeCardsSub": {
     "description": "Coming-soon tile."
   },
@@ -12176,10 +12176,6 @@
   "@utTitle": {
     "description": "Tiện ích title."
   },
-  "utForBaby": "Cho bé",
-  "@utForBaby": {
-    "description": "Tiện ích section."
-  },
   "utSpendingMonth": "Tháng này {amount}",
   "@utSpendingMonth": {
     "description": "Chi tiêu row (full amount).",
@@ -12230,14 +12226,6 @@
   "utInviteSub": "Ông bà, người chăm cùng theo dõi bé",
   "@utInviteSub": {
     "description": "Invite row subline."
-  },
-  "careNutrition": "Dinh dưỡng",
-  "@careNutrition": {
-    "description": "Chăm sóc coming-soon tile (450:6424)."
-  },
-  "careNutritionSub": "Sữa, vi chất theo giai đoạn",
-  "@careNutritionSub": {
-    "description": "Tile subline."
   },
   "inviteLinkJoining": "Đang nhận lời mời…",
   "@inviteLinkJoining": {
@@ -14315,5 +14303,17 @@
   "autoSaveTabDot": "Có ảnh mới chờ duyệt",
   "@autoSaveTabDot": {
     "description": "Screen-reader label of the dot on the Kỷ niệm tab (AR02)"
+  },
+  "careDevelop": "Hiểu con & phát triển",
+  "@careDevelop": {
+    "description": "Chăm sóc section (owner, 2026-10-14, D-069)"
+  },
+  "careKnowledge": "Kiến thức chăm bé",
+  "@careKnowledge": {
+    "description": "Chăm sóc section (owner, 2026-10-14, D-069)"
+  },
+  "utTools": "Công cụ",
+  "@utTools": {
+    "description": "Tiện ích section (owner, 2026-10-14, D-069)"
   }
 }

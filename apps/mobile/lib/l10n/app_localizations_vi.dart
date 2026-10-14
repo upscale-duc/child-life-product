@@ -5831,16 +5831,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get careSoonToast => 'Phần này sẽ có trong bản cập nhật tới.';
 
   @override
-  String get careWonderWeek => 'Wonder Week';
+  String get careWonderWeek => 'Wonder Weeks';
 
   @override
   String get careWonderWeekSub => 'Giai đoạn phát triển dự kiến';
 
   @override
-  String get careAgeCards => 'Thẻ theo tuổi';
+  String get careAgeCards => 'Theo tuổi của bé';
 
   @override
-  String get careAgeCardsSub => 'Gợi ý theo tuổi của bé';
+  String get careAgeCardsSub => 'Gợi ý cho từng tuần, từng tháng';
 
   @override
   String get careMilestones => 'Mốc phát triển';
@@ -8044,9 +8044,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get utTitle => 'Tiện ích';
 
   @override
-  String get utForBaby => 'Cho bé';
-
-  @override
   String utSpendingMonth(String amount) {
     return 'Tháng này $amount';
   }
@@ -8078,12 +8075,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get utInviteSub => 'Ông bà, người chăm cùng theo dõi bé';
-
-  @override
-  String get careNutrition => 'Dinh dưỡng';
-
-  @override
-  String get careNutritionSub => 'Sữa, vi chất theo giai đoạn';
 
   @override
   String get inviteLinkJoining => 'Đang nhận lời mời…';
@@ -9568,4 +9559,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get autoSaveTabDot => 'Có ảnh mới chờ duyệt';
+
+  @override
+  String get careDevelop => 'Hiểu con & phát triển';
+
+  @override
+  String get careKnowledge => 'Kiến thức chăm bé';
+
+  @override
+  String get utTools => 'Công cụ';
 }

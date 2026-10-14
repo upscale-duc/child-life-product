@@ -22,10 +22,11 @@ import '../vaccines/vaccine_format.dart';
 import 'care_repository.dart';
 import 'history_screen.dart' show HistoryFilter;
 
-/// Chăm sóc tab (v1.0 improvement 450:6424; caregiver 370:2174): search, daily care (Nhắc nhở ·
-/// Tiêm chủng · Thống kê · Lịch sử · Tăng trưởng) and the coming-soon teasers (Wonder Week, Thẻ
-/// theo tuổi, Mốc phát triển, Ăn dặm, Dinh dưỡng). Sơ cứu, Chi tiêu and Thư viện are in Tiện ích. Caregivers see no Tăng trưởng
-/// tile. No "Cài đặt" section (owner, 2026-10-11): Tuỳ chỉnh lives on Hôm nay, Thông báo in Tôi.
+/// Chăm sóc tab (v1.0 improvement 450:6424; caregiver 370:2174), grouped as the owner asked
+/// (2026-10-14, D-069): "Chăm hằng ngày" (Nhắc nhở · Tiêm chủng · Thống kê · Lịch sử · Tăng
+/// trưởng), "Hiểu con & phát triển" (Wonder Weeks · Theo tuổi của bé · Mốc phát triển · Ăn dặm)
+/// and "Kiến thức chăm bé" (Thư viện chăm bé), the last two still coming soon. Sơ cứu and Chi
+/// tiêu are in Tiện ích. Caregivers see no Tăng trưởng tile. No "Cài đặt" section (owner, 2026-10-11): Tuỳ chỉnh lives on Hôm nay, Thông báo in Tôi.
 class CareHubScreen extends ConsumerStatefulWidget {
   const CareHubScreen({super.key});
 
@@ -136,50 +137,49 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
 
     void soon() => showClToast(context, message: l10n.careSoonToast);
     // 450:6424: drawn like the live tiles, each with its own chip; only the badge marks them.
-    final teasers = [
-      for (final (icon, tint, title, subtitle) in [
-        (
-          ClIcons.spark,
-          cl.care.sleep.soft,
-          l10n.careWonderWeek,
-          l10n.careWonderWeekSub,
-        ),
-        (
-          ClIcons.cake,
-          cl.colors.sunshineSoft,
-          l10n.careAgeCards,
-          l10n.careAgeCardsSub,
-        ),
-        (
-          ClIcons.star,
-          cl.colors.peachSoft,
-          l10n.careMilestones,
-          l10n.careMilestonesSub,
-        ),
-        (
-          ClIcons.feed,
-          cl.care.bottle.soft,
-          l10n.careSolids,
-          l10n.careSolidsSub,
-        ),
-        (
-          ClIcons.spark,
-          cl.colors.mintSoft,
-          l10n.careNutrition,
-          l10n.careNutritionSub,
-        ),
-      ])
-        _Tile(
-          icon: icon,
-          tint: tint,
-          title: title,
-          subtitle: subtitle,
-          soon: true,
-          onTap: soon,
-        ),
-    ].where((t) => _matches(t.title, t.subtitle)).toList();
+    List<_Tile> teasers(List<(ClIcons, Color, String, String)> items) => [
+      for (final (icon, tint, title, subtitle) in items)
+        if (_matches(title, subtitle))
+          _Tile(
+            icon: icon,
+            tint: tint,
+            title: title,
+            subtitle: subtitle,
+            soon: true,
+            onTap: soon,
+          ),
+    ];
+    final develop = teasers([
+      (
+        ClIcons.spark,
+        cl.care.sleep.soft,
+        l10n.careWonderWeek,
+        l10n.careWonderWeekSub,
+      ),
+      (
+        ClIcons.cake,
+        cl.colors.sunshineSoft,
+        l10n.careAgeCards,
+        l10n.careAgeCardsSub,
+      ),
+      (
+        ClIcons.star,
+        cl.colors.peachSoft,
+        l10n.careMilestones,
+        l10n.careMilestonesSub,
+      ),
+      (ClIcons.feed, cl.care.bottle.soft, l10n.careSolids, l10n.careSolidsSub),
+    ]);
+    final knowledge = teasers([
+      (
+        ClIcons.bookmark,
+        cl.colors.mintSoft,
+        l10n.careLibrary,
+        l10n.careLibrarySub,
+      ),
+    ]);
 
-    final nothing = daily.isEmpty && teasers.isEmpty;
+    final nothing = daily.isEmpty && develop.isEmpty && knowledge.isEmpty;
     // Like Hôm nay: the baby header stays, with no collapsed title over it (it overlapped).
     return ClPinnedHeaderScaffold(
       header: const BabyHeader(),
@@ -232,7 +232,14 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
             ),
           ],
           if (daily.isNotEmpty) ...[_Section(l10n.careDaily), _Grid(daily)],
-          if (teasers.isNotEmpty) ...[_Section(l10n.careSoon), _Grid(teasers)],
+          if (develop.isNotEmpty) ...[
+            _Section(l10n.careDevelop),
+            _Grid(develop),
+          ],
+          if (knowledge.isNotEmpty) ...[
+            _Section(l10n.careKnowledge),
+            _Grid(knowledge),
+          ],
         ],
       ),
     );
