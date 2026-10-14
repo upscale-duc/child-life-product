@@ -88,16 +88,65 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
   final _expanded = <String>{};
   var _filter = _Filter.all;
 
+  /// Items one "Tải lên" may hold (D-070), from `publicConfig/limits`.
+  var _cap = 200;
+
+  /// What this review can still tick: its items, less those already in Kỷ niệm.
+  var _live = <String>{};
+
+  int get _picked => _selected.where(_live.contains).length;
+
+  /// D-070: one review holds at most [_cap] picks. Groups already on screen stay; new ones join,
+  /// in order, while their picks fit; the rest wait for the next review.
+  List<SuggestionGroup> _round(
+    List<SuggestionGroup> groups,
+    Set<String> already,
+  ) {
+    final out = <SuggestionGroup>[];
+    var picks = 0;
+    var full = false;
+    for (final g in groups) {
+      final n = g.preselected.where((id) => !already.contains(id)).length;
+      final shown = g.items.any((c) => _known.contains(c.asset.id));
+      if (!shown && (full || (out.isNotEmpty && picks + n > _cap))) {
+        full = true;
+        continue;
+      }
+      out.add(g);
+      picks += n;
+    }
+    return out;
+  }
+
   /// New suggestions (a check still running) arrive with their group's pick ticked.
   void _learn(List<SuggestionGroup> groups, Set<String> already) {
+    var picked = _picked;
     for (final g in groups) {
       for (final c in g.items) {
         if (_known.add(c.asset.id) &&
             g.preselected.contains(c.asset.id) &&
-            !already.contains(c.asset.id)) {
+            !already.contains(c.asset.id) &&
+            picked < _cap) {
           _selected.add(c.asset.id);
+          picked++;
         }
       }
+    }
+  }
+
+  /// Ticks [ids] while there is room; says so once the limit is reached (D-070).
+  void _add(Iterable<String> ids) {
+    var picked = _picked;
+    for (final id in ids) {
+      if (_selected.contains(id)) continue;
+      if (picked >= _cap) {
+        ClToaster.of(
+          context,
+        ).show(message: AppLocalizations.of(context).autoSaveRoundFull(_cap));
+        return;
+      }
+      _selected.add(id);
+      picked++;
     }
   }
 
@@ -108,7 +157,7 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
   };
 
   void _toggle(String id) => setState(
-    () => _selected.contains(id) ? _selected.remove(id) : _selected.add(id),
+    () => _selected.contains(id) ? _selected.remove(id) : _add([id]),
   );
 
   @override
@@ -117,8 +166,17 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
     final cl = context.cl;
     final view = ref.watch(autoSaveProvider);
     final already = ref.watch(_alreadySavedProvider);
-    final groups = view.groups();
+    _cap =
+        ref.watch(publicLimitsProvider).value?.autoSaveItemsPerApprove ?? _cap;
+    final everything = view.groups();
+    final groups = _round(everything, already);
+    _live = {
+      for (final g in groups)
+        for (final c in g.items)
+          if (!already.contains(c.asset.id)) c.asset.id,
+    };
     _learn(groups, already);
+    final total = everything.fold<int>(0, (n, g) => n + g.items.length);
     final all = [for (final g in groups) ...g.items];
     final photos = all.where((c) => !c.asset.video).length;
     final shown = [
@@ -322,9 +380,7 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
                         label: l10n.autoSaveGroupAll,
                         style: ClButtonStyle.plain,
                         onPressed: () => setState(
-                          () => _selected.addAll([
-                            for (final x in g.items) x.asset.id,
-                          ]),
+                          () => _add([for (final x in g.items) x.asset.id]),
                         ),
                       ),
                       ClButton(
@@ -367,11 +423,46 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
         ),
     ];
 
+    // "Bỏ chọn tất cả" to pick a few by hand; once nothing is ticked, "Chọn tất cả" ticks the
+    // suggested picks again. Both follow the Ảnh / Video filter.
+    final scope = {
+      for (final c in all)
+        if (_keep(c) && !already.contains(c.asset.id)) c.asset.id,
+    };
+    final anyPicked = scope.any(_selected.contains);
+    final selectLabel = anyPicked
+        ? l10n.autoSaveDeselectAll
+        : l10n.autoSaveSelectAll;
+
     return AutoSavePage(
       title: l10n.autoSaveReviewTitle(name),
+      trailing: scope.isEmpty
+          ? null
+          : ClPressable(
+              key: const Key('autoSaveSelectAll'),
+              semanticLabel: selectLabel,
+              onPressed: () => setState(
+                () => anyPicked
+                    ? _selected.removeAll(scope)
+                    : _add([
+                        for (final g in groups)
+                          for (final id in g.preselected)
+                            if (scope.contains(id)) id,
+                      ]),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: ClSpace.s2),
+                child: Center(
+                  child: Text(
+                    selectLabel,
+                    style: cl.text.label.copyWith(color: cl.colors.mintText),
+                  ),
+                ),
+              ),
+            ),
       subtitle: last == null
           ? null
-          : l10n.autoSaveReviewSub(all.length, checkedAt(context, last, now)),
+          : l10n.autoSaveReviewSub(total, checkedAt(context, last, now)),
       bottom: all.isEmpty
           ? null
           : Column(
@@ -401,11 +492,17 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
                     l10n.autoSaveMerged(merged),
                     style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
                   ),
+                if (total > all.length)
+                  Text(
+                    l10n.autoSaveRoundRest(total - all.length, _cap),
+                    key: const Key('autoSaveRoundRest'),
+                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                  ),
                 const SizedBox(height: ClSpace.s2),
                 ClButton(
                   label: l10n.autoSaveContinue(chosen.length),
                   expand: true,
-                  onPressed: chosen.isEmpty
+                  onPressed: chosen.isEmpty || chosen.length > _cap
                       ? null
                       : () => context.push(
                           Routes.autoSaveConfirm,
@@ -800,6 +897,9 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
               if (a == Audience.parents) _notify = false;
             }),
             child: Container(
+              // Each card fills its half and both match the taller one.
+              width: double.infinity,
+              height: double.infinity,
               padding: const EdgeInsets.all(ClSpace.s3),
               decoration: BoxDecoration(
                 color: cl.colors.surface,
@@ -894,22 +994,25 @@ class _AutoSaveConfirmScreenState extends ConsumerState<AutoSaveConfirmScreen> {
           ],
         ),
         MeSection(l10n.autoSaveWho),
-        Row(
-          children: [
-            audience(
-              Audience.parents,
-              ClIcons.lock,
-              l10n.autoSaveParentsOnly,
-              l10n.autoSaveParentsOnlyHint,
-            ),
-            const SizedBox(width: ClSpace.s2),
-            audience(
-              Audience.family,
-              ClIcons.family,
-              l10n.autoSaveFamily,
-              l10n.autoSaveFamilyHint,
-            ),
-          ],
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              audience(
+                Audience.parents,
+                ClIcons.lock,
+                l10n.autoSaveParentsOnly,
+                l10n.autoSaveParentsOnlyHint,
+              ),
+              const SizedBox(width: ClSpace.s2),
+              audience(
+                Audience.family,
+                ClIcons.family,
+                l10n.autoSaveFamily,
+                l10n.autoSaveFamilyHint,
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: ClSpace.s3),
         ClCardGroup(

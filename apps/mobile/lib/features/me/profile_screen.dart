@@ -65,21 +65,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final toaster = ClToaster.of(context);
     setState(() => _busy = true);
     try {
-      await ref
-          .read(meRepositoryProvider)
-          .updateProfile(
-            displayName: name != _memberships.firstOrNull?.displayName
-                ? name
-                : null,
-            relations: [
-              for (final e in _changed.entries)
-                (
-                  babyId: e.key,
-                  relation: e.value.relation,
-                  custom: e.value.custom.trim(),
-                ),
-            ],
-          );
+      await withClProgress(
+        context,
+        () => ref
+            .read(meRepositoryProvider)
+            .updateProfile(
+              displayName: name != _memberships.firstOrNull?.displayName
+                  ? name
+                  : null,
+              relations: [
+                for (final e in _changed.entries)
+                  (
+                    babyId: e.key,
+                    relation: e.value.relation,
+                    custom: e.value.custom.trim(),
+                  ),
+              ],
+            ),
+      );
       _changed.clear();
       toaster.show(message: l10n.pfSaved);
     } on Object {

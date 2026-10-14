@@ -74,7 +74,8 @@ class RecentItem {
   final Future<PickedMedia?> Function() resolve;
 }
 
-/// Today's newest 10, only when the library is already shared (never prompts here).
+/// Today's newest 10 (no screenshots), only when the library is already shared (never prompts
+/// here).
 Future<List<RecentItem>> loadRecentToday() async {
   try {
     final state = await PhotoManager.getPermissionState(
@@ -92,7 +93,12 @@ Future<List<RecentItem>> loadRecentToday() async {
       ),
     );
     if (paths.isEmpty) return const [];
-    final assets = await paths.first.getAssetListRange(start: 0, end: 10);
+    // Screenshots and screen recordings are not moments (iOS subtypes, as Tự lưu skips them).
+    const screen = 1 << 2 | 1 << 15;
+    final assets = [
+      for (final a in await paths.first.getAssetListRange(start: 0, end: 30))
+        if (a.subtype & screen == 0) a,
+    ].take(10).toList();
     return [
       for (final a in assets)
         await () async {

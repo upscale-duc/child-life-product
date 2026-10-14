@@ -276,12 +276,33 @@ class MediaTile extends StatelessWidget {
                   ),
                 ),
               ),
-            if (item.isPrivate)
+            // MM17: "☆ Thiệp" on a milestone card (D-068), with the lock when private.
+            if (item.isPrivate || item.generatedKind == 'card')
               Positioned(
                 left: 6,
                 top: 6,
                 child: _Badge(
-                  child: ClIcon(ClIcons.lock, size: 12, color: Colors.white),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (item.isPrivate)
+                        ClIcon(ClIcons.lock, size: 12, color: Colors.white),
+                      if (item.isPrivate && item.generatedKind == 'card')
+                        const SizedBox(width: 4),
+                      if (item.generatedKind == 'card' && box.maxWidth >= 72) ...[
+                        ClIcon(ClIcons.star, size: 11, color: Colors.white),
+                        const SizedBox(width: 3),
+                        Text(
+                          l10n.ksCardBadge,
+                          style: cl.text.caption.copyWith(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               ),
             if (selecting)

@@ -1509,11 +1509,14 @@ class SpendingImportResultScreen extends ConsumerWidget {
         ],
       ),
     );
-    if (sure != true) return;
+    if (sure != true || !context.mounted) return;
     try {
-      final removed = await ref
-          .read(spendingImportRepositoryProvider)
-          .undo(scope.babyId, im.id);
+      final removed = await withClProgress(
+        context,
+        () => ref
+            .read(spendingImportRepositoryProvider)
+            .undo(scope.babyId, im.id),
+      );
       toaster.show(message: l10n.imUndone(removed));
     } on ImportException catch (e) {
       toaster.show(message: importFailureLabel(l10n, e.reason));

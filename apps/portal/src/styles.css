@@ -2877,3 +2877,600 @@ button.aup-btn {
   cursor: pointer;
   color: inherit;
 }
+
+/* Mẫu kỷ niệm (D-068): the catalog editor. */
+.ks-editbar {
+  position: sticky;
+  top: 12px;
+  z-index: 5;
+  border: 1px solid var(--mint-deep);
+}
+.ks-issues {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  font: var(--text-caption);
+  max-height: 180px;
+  overflow: auto;
+}
+.ks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+.ks-num {
+  width: 88px;
+}
+
+.ks-json {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  min-height: 320px;
+  white-space: pre;
+  tab-size: 2;
+  height: auto;
+}
+.ks-card {
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+  flex: none;
+}
+.ks-missing {
+  outline: 1px dashed var(--error, #d14);
+}
+
+/* Tabs and counts */
+.ks-tabcount {
+  margin-left: 6px;
+  font: 500 11px/16px var(--font-family);
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border-radius: var(--radius-pill);
+  padding: 0 6px;
+}
+.seg__item--on .ks-tabcount {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Template gallery */
+.ks-group {
+  display: grid;
+  gap: 12px;
+}
+.ks-group__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font: 600 14px/20px var(--font-family);
+}
+.ks-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+  gap: 16px;
+}
+.ks-tile {
+  display: grid;
+  text-align: left;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  background: var(--card);
+  color: inherit;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    box-shadow 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+.ks-tile:hover {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.08);
+  transform: translateY(-1px);
+}
+.ks-tile__media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: var(--muted);
+  overflow: hidden;
+}
+.ks-tile__phone {
+  position: relative;
+  height: calc(100% - 24px);
+  aspect-ratio: 9 / 16;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.18);
+  display: grid;
+  place-items: center;
+}
+.ks-tile__phone > img,
+.ks-tile__phone > video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ks-tile__hover {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.ks-tile:hover .ks-tile__hover {
+  opacity: 1;
+}
+.ks-tile__placeholder {
+  padding: 8px;
+  text-align: center;
+  font: 600 12px/16px var(--font-family);
+}
+.ks-tile__duration {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.6);
+  color: #fff;
+  font: 600 10px/16px var(--font-family);
+}
+.ks-tile__badge,
+.ks-tile__state {
+  position: absolute;
+  top: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font: 600 11px/18px var(--font-family);
+}
+.ks-tile__badge {
+  left: 8px;
+  background: #6d4bd8;
+  color: #fff;
+}
+.ks-tile__state {
+  right: 8px;
+  background: var(--background);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+}
+.ks-tile__body {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--border);
+}
+.ks-tile__name {
+  font: 600 14px/20px var(--font-family);
+}
+.ks-tile__meta {
+  font: 400 12px/16px var(--font-family);
+  color: var(--muted-foreground);
+}
+.ks-tile__changed {
+  font: 500 12px/16px var(--font-family);
+  color: var(--warning);
+}
+
+/* Template editor */
+.ks-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 16px;
+  align-items: start;
+}
+.ks-editor__side {
+  position: sticky;
+  top: 12px;
+}
+.ks-editor__title {
+  font: 600 16px/24px var(--font-family);
+}
+.ks-grid--video {
+  grid-template-columns: minmax(0, 2fr) minmax(120px, 1fr) minmax(0, 1.5fr);
+}
+.ks-editor__side .field,
+.ks-cover > * {
+  min-width: 0;
+}
+.ks-editor__side [data-slot='select-trigger'],
+.ks-grid [data-slot='select-trigger'] {
+  min-width: 0;
+  max-width: 100%;
+}
+[data-slot='select-trigger'] > [data-slot='select-value'] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+.ks-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.ks-stage {
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: var(--muted);
+  border-radius: var(--radius);
+}
+.ks-preview-video {
+  width: 200px;
+  aspect-ratio: 9 / 16;
+  border-radius: 12px;
+  background: #000;
+}
+.ks-preview-video--empty {
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  text-align: center;
+  background: var(--background);
+  color: var(--muted-foreground);
+  font: var(--text-caption);
+}
+.ks-cover {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 12px;
+  align-items: end;
+}
+.ks-cover > img,
+.ks-cover__empty {
+  width: 64px;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--muted);
+}
+.ks-cover__empty {
+  display: grid;
+  place-items: center;
+  font: 500 10px/12px var(--font-family);
+  color: var(--muted-foreground);
+  text-align: center;
+  padding: 4px;
+}
+.ks-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: 500 13px/18px var(--font-family);
+}
+.ks-swatch input[type='color'] {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  padding: 0;
+  background: none;
+}
+.ks-details > summary {
+  cursor: pointer;
+  font: 500 14px/20px var(--font-family);
+  margin-bottom: 8px;
+}
+
+/* Music */
+.ks-tracks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.ks-track {
+  display: grid;
+  grid-template-columns: 40px minmax(160px, 2fr) minmax(140px, 1.4fr) minmax(140px, 1.6fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.ks-track:first-child {
+  border-top: 0;
+}
+.ks-track__play {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0;
+  display: grid;
+  place-items: center;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  cursor: pointer;
+}
+.ks-track__play:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ks-track__main,
+.ks-track__licence {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.ks-track__licence {
+  justify-items: start;
+}
+.ks-track__meta {
+  font: 400 12px/16px var(--font-family);
+  color: var(--muted-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.ks-track__uses {
+  font: 400 13px/18px var(--font-family);
+}
+.ks-track--form {
+  display: block;
+}
+.ks-trackform__done {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+.ks-tile--add {
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  min-height: 260px;
+  border-style: dashed;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: 500 14px/20px var(--font-family);
+}
+.ks-tile--add:hover {
+  color: var(--primary);
+}
+.ks-hint {
+  color: var(--muted-foreground);
+  font: 400 13px/18px var(--font-family);
+}
+.ks-trackform {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px 16px;
+  margin: 0;
+}
+.ks-trackform > legend {
+  padding: 0 6px;
+}
+
+/* Files */
+.ks-upload {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+.ks-upload > p {
+  flex-basis: 100%;
+}
+.ks-assets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 16px;
+}
+.ks-asset {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+}
+.ks-asset__media {
+  display: grid;
+  place-items: center;
+  height: 168px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: repeating-conic-gradient(var(--muted) 0 25%, var(--background) 0 50%) 0 0 / 16px 16px;
+  border: 1px solid var(--border);
+}
+.ks-asset__media img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.ks-asset__media--video {
+  background: #111;
+}
+.ks-asset__video {
+  position: relative;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  display: block;
+}
+.ks-asset__video > img,
+.ks-asset__video > video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ks-asset__play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 0.55);
+  color: #fff;
+}
+.ks-asset__media--audio {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  align-content: center;
+  gap: 12px;
+  padding: 0 8px;
+}
+.ks-asset__media audio {
+  width: 100%;
+  height: 32px;
+}
+.ks-asset__name {
+  font-size: 11px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  color: var(--foreground);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: copy;
+}
+.ks-asset__uses {
+  font: 400 12px/16px var(--font-family);
+  color: var(--muted-foreground);
+}
+.ks-asset__uses:not(.muted) {
+  color: var(--success);
+}
+
+@media (max-width: 1000px) {
+  .ks-editor {
+    grid-template-columns: 1fr;
+  }
+  .ks-editor__side {
+    position: static;
+  }
+  .ks-track {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+  .ks-track > :nth-child(n + 3) {
+    grid-column: 2;
+  }
+}
+.ks-brand > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Card preview faces (the app's keepsake fonts; SIL OFL 1.1, public/fonts/keepsake). */
+@font-face {
+  font-family: 'Lora';
+  src: url('/fonts/keepsake/Lora-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lora';
+  src: url('/fonts/keepsake/Lora-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lora';
+  src: url('/fonts/keepsake/Lora-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lora';
+  src: url('/fonts/keepsake/Lora-SemiBoldItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Dancing Script';
+  src: url('/fonts/keepsake/DancingScript-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Dancing Script';
+  src: url('/fonts/keepsake/DancingScript-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/fonts/keepsake/PlayfairDisplay-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/fonts/keepsake/PlayfairDisplay-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/fonts/keepsake/PlayfairDisplay-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('/fonts/keepsake/Baloo2-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('/fonts/keepsake/Baloo2-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('/fonts/keepsake/Baloo2-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Patrick Hand';
+  src: url('/fonts/keepsake/PatrickHand-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+.ks-stale {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in oklab, var(--warning) 50%, var(--border));
+  background: color-mix(in oklab, var(--warning) 10%, var(--card));
+}
+.ks-stale > p {
+  flex: 1 1 320px;
+  min-width: 0;
+}

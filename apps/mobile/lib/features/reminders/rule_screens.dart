@@ -652,7 +652,10 @@ class RuleDetailScreen extends ConsumerWidget {
     final toaster = ClToaster.of(context);
     final router = GoRouter.of(context);
     try {
-      await ref.read(ruleRepositoryProvider).delete(r.babyId, r.id);
+      await withClProgress(
+        context,
+        () => ref.read(ruleRepositoryProvider).delete(r.babyId, r.id),
+      );
       toaster.show(message: l10n.ruleDeleted);
       if (router.canPop()) router.pop();
     } on Object {
@@ -2082,9 +2085,12 @@ class _DueSheetState extends ConsumerState<_DueSheet> {
         'Asia/Ho_Chi_Minh';
     setState(() => _busy = true);
     try {
-      final done = await ref
-          .read(ruleRepositoryProvider)
-          .answer(r.babyId, r.id, due, snoozeMinutes: snooze);
+      final done = await withClProgress(
+        context,
+        () => ref
+            .read(ruleRepositoryProvider)
+            .answer(r.babyId, r.id, due, snoozeMinutes: snooze),
+      );
       if (!mounted) return;
       Navigator.of(context).pop();
       toaster.show(

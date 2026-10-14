@@ -5,6 +5,7 @@ import 'package:intl/intl.dart' hide TextDirection;
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import '../care/care_repository.dart';
 import '../memories/media_bytes.dart';
@@ -114,3 +115,95 @@ Color storyPaper(BuildContext context) =>
     Theme.of(context).brightness == Brightness.dark
     ? const Color(0xFF2A2620)
     : const Color(0xFFFBF6ED);
+
+/// The cover's frame: the photo's own shape (between 4:5 and 16:9), so it shows whole instead
+/// of a strip of it; 4:3 while there is none.
+double storyCoverRatio(MediaItem? cover) {
+  final w = cover?.width;
+  final h = cover?.height;
+  if (w == null || h == null || w <= 0 || h <= 0) return 4 / 3;
+  return (w / h).clamp(4 / 5, 16 / 9);
+}
+
+/// A story's blocks as the reader shows them (14g), also in 14f "Xem trước", so the preview is
+/// the story itself: paragraphs, photos with captions, milestones and quotes.
+List<Widget> storyBlockWidgets(
+  BuildContext context,
+  Story s,
+  Map<String, MediaItem> media, {
+  required String locale,
+  void Function(String mediaId)? onView,
+}) {
+  final l10n = AppLocalizations.of(context);
+  final cl = context.cl;
+  return [
+    for (final b in s.blocks) ...[
+      switch (b) {
+        ParagraphBlock() => Text(
+          b.text,
+          style: cl.text.body.copyWith(height: 1.6, fontSize: 17),
+        ),
+        PhotosBlock() => SizedBox(
+          height: b.items.length == 1 ? 240 : 160,
+          child: Row(
+            children: [
+              for (final (i, p) in b.items.indexed) ...[
+                if (i > 0) const SizedBox(width: 4),
+                Expanded(
+                  child: ClPressable(
+                    onPressed: media[p.mediaId] == null || onView == null
+                        ? null
+                        : () => onView(p.mediaId),
+                    semanticLabel: p.caption ?? l10n.sryAddPhotos,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: StoryImage(
+                            item: media[p.mediaId],
+                            display: b.items.length == 1,
+                            radius: 12,
+                          ),
+                        ),
+                        if (p.caption != null)
+                          Text(
+                            p.caption!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: cl.text.caption.copyWith(
+                              color: cl.colors.inkMuted,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        MilestoneBlock() => Align(
+          alignment: Alignment.centerLeft,
+          child: StoryMilestoneChip(
+            label: l10n.sryMilestoneOn(
+              b.name,
+              DateFormat('d MMM', locale).format(b.date),
+            ),
+          ),
+        ),
+        // Pull quote: Lora italic 20, mint (206:301).
+        QuoteBlock() => Text(
+          '“${b.text}”',
+          style: TextStyle(
+            fontFamily: 'Lora',
+            fontStyle: FontStyle.italic,
+            fontSize: 20,
+            height: 1.4,
+            color: cl.colors.mintText,
+          ),
+        ),
+      },
+      const SizedBox(height: ClSpace.s4),
+    ],
+  ];
+}

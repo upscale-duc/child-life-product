@@ -141,6 +141,21 @@ class AutoSaveIntro extends ConsumerWidget {
 
 // ---------- AS03 – AS05 ----------
 
+/// What AS03 – AS05 collect; saved only when the parent agrees in AS05.
+class _SetupDraft {
+  final chosen = <String>[];
+  final samples = <String, List<SampleFace>>{};
+}
+
+String _name(WidgetRef ref, String babyId) =>
+    ref.read(babyProvider(babyId)).value?.nickname ?? '';
+
+/// Each step is a page of its own, pushed on the navigator: the platform's slide and swipe-back
+/// (D-013), like every other screen.
+Route<void> _stepRoute(Widget page) =>
+    MaterialPageRoute<void>(builder: (_) => page);
+
+/// AS03 "Gợi ý ảnh của bé nào?" (route `/memories/auto-save/setup`).
 class AutoSaveSetupScreen extends ConsumerStatefulWidget {
   const AutoSaveSetupScreen({super.key});
 
@@ -150,13 +165,7 @@ class AutoSaveSetupScreen extends ConsumerStatefulWidget {
 }
 
 class _AutoSaveSetupScreenState extends ConsumerState<AutoSaveSetupScreen> {
-  /// 0 = babies, 1 … n = samples per chosen baby, n + 1 = consent.
-  var _step = 0;
-  final _chosen = <String>[];
-  final _samples = <String, List<SampleFace>>{};
-  var _agree = false;
-  var _agreeError = false;
-  var _busy = false;
+  final _draft = _SetupDraft();
 
   @override
   void initState() {
@@ -166,86 +175,19 @@ class _AutoSaveSetupScreenState extends ConsumerState<AutoSaveSetupScreen> {
     if (session is SessionSignedIn &&
         selected != null &&
         session.membershipFor(selected)?.role == MemberRole.coParent) {
-      _chosen.add(selected);
+      _draft.chosen.add(selected);
     }
   }
 
-  int get _consentStep => _chosen.length + 1;
-
-  void _back() {
-    if (_step == 0) {
-      Navigator.of(context).maybePop();
-    } else {
-      setState(() => _step--);
-    }
-  }
-
-  String _name(String babyId) =>
-      ref.read(babyProvider(babyId)).value?.nickname ?? '';
-
-  Future<void> _finish() async {
-    if (!_agree) {
-      setState(() => _agreeError = true);
-      return;
-    }
-    setState(() => _busy = true);
-    final c = ref.read(autoSaveProvider.notifier);
-    final access = await c.requestAccess();
-    // P-148 funnel: finished with the consent, and which photo access was given.
-    unawaited(c.track('autoSaveSetupDone'));
-    unawaited(
-      c.track(switch (access) {
-        LibraryAccess.full => 'autoSaveAccessFull',
-        LibraryAccess.limited => 'autoSaveAccessLimited',
-        _ => 'autoSaveAccessDenied',
-      }),
-    );
-    await c.setUp(
-      samples: {for (final id in _chosen) id: _samples[id] ?? const []},
-      scanFrom: autoSaveScanFrom(ref, _chosen, DateTime.now()),
-    );
-    if (!mounted) return;
-    setState(() => _busy = false);
-    // Back to the home, which now shows the first check (AS06).
-    Navigator.of(context).pop();
-  }
+  void _next() => unawaited(
+    Navigator.of(
+      context,
+    ).push(_stepRoute(_SamplesStep(draft: _draft, index: 0))),
+  );
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    if (_step == 0) return _babies(l10n);
-    if (_step < _consentStep) {
-      final babyId = _chosen[_step - 1];
-      final picked = _samples[babyId] ?? const [];
-      return AutoSavePage(
-        title: l10n.autoSaveSamplesTitle(_name(babyId)),
-        subtitle: l10n.autoSaveSamplesSub,
-        onBack: _back,
-        bottom: ClButton(
-          label: l10n.autoSaveSamplesNext(picked.length),
-          expand: true,
-          onPressed: () {
-            if (picked.length < autoSaveMinSamples) {
-              ClToaster.of(context).show(message: l10n.autoSaveSamplesNeed);
-              return;
-            }
-            setState(() => _step++);
-          },
-        ),
-        children: [
-          SamplePicker(
-            babyId: babyId,
-            name: _name(babyId),
-            picked: picked,
-            onChanged: (next) => setState(() => _samples[babyId] = next),
-          ),
-        ],
-      );
-    }
-    return _consent(l10n);
-  }
-
-  Widget _babies(AppLocalizations l10n) {
     final cl = context.cl;
     final session = ref.watch(sessionProvider);
     final members = session is SessionSignedIn
@@ -255,11 +197,10 @@ class _AutoSaveSetupScreenState extends ConsumerState<AutoSaveSetupScreen> {
     return AutoSavePage(
       title: l10n.autoSavePickBabyTitle,
       subtitle: l10n.autoSavePickBabySub,
-      onBack: _back,
       bottom: ClButton(
         label: l10n.autoSaveNext,
         expand: true,
-        onPressed: _chosen.isEmpty ? null : () => setState(() => _step = 1),
+        onPressed: _draft.chosen.isEmpty ? null : _next,
       ),
       children: [
         for (final m in members)
@@ -268,7 +209,7 @@ class _AutoSaveSetupScreenState extends ConsumerState<AutoSaveSetupScreen> {
               final baby = ref.watch(babyProvider(m.babyId)).value;
               final name = baby?.nickname ?? '';
               final parent = m.role == MemberRole.coParent;
-              final on = _chosen.contains(m.babyId);
+              final on = _draft.chosen.contains(m.babyId);
               final dob = m.canViewBabyInfo
                   ? ref
                         .watch(babyPrivateProfileProvider(m.babyId))
@@ -337,8 +278,8 @@ class _AutoSaveSetupScreenState extends ConsumerState<AutoSaveSetupScreen> {
                       selected: on,
                       onPressed: () => setState(
                         () => on
-                            ? _chosen.remove(m.babyId)
-                            : _chosen.add(m.babyId),
+                            ? _draft.chosen.remove(m.babyId)
+                            : _draft.chosen.add(m.babyId),
                       ),
                       child: row,
                     )
@@ -348,10 +289,113 @@ class _AutoSaveSetupScreenState extends ConsumerState<AutoSaveSetupScreen> {
       ],
     );
   }
+}
 
-  Widget _consent(AppLocalizations l10n) {
+/// AS04 "Chọn vài ảnh rõ mặt {bé}", once per chosen baby.
+class _SamplesStep extends ConsumerStatefulWidget {
+  const _SamplesStep({required this.draft, required this.index});
+  final _SetupDraft draft;
+  final int index;
+
+  @override
+  ConsumerState<_SamplesStep> createState() => _SamplesStepState();
+}
+
+class _SamplesStepState extends ConsumerState<_SamplesStep> {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final draft = widget.draft;
+    final babyId = draft.chosen[widget.index];
+    final picked = draft.samples[babyId] ?? const [];
+    return AutoSavePage(
+      title: l10n.autoSaveSamplesTitle(_name(ref, babyId)),
+      subtitle: l10n.autoSaveSamplesSub,
+      bottom: ClButton(
+        label: l10n.autoSaveSamplesNext(picked.length),
+        expand: true,
+        onPressed: () {
+          if (picked.length < autoSaveMinSamples) {
+            ClToaster.of(context).show(message: l10n.autoSaveSamplesNeed);
+            return;
+          }
+          final last = widget.index + 1 >= draft.chosen.length;
+          unawaited(
+            Navigator.of(context).push(
+              _stepRoute(
+                last
+                    ? _ConsentStep(draft: draft)
+                    : _SamplesStep(draft: draft, index: widget.index + 1),
+              ),
+            ),
+          );
+        },
+      ),
+      children: [
+        SamplePicker(
+          babyId: babyId,
+          name: _name(ref, babyId),
+          picked: picked,
+          onChanged: (next) => setState(() => draft.samples[babyId] = next),
+        ),
+      ],
+    );
+  }
+}
+
+/// AS05 "Trước khi bắt đầu" with the face-analysis consent (P-147).
+class _ConsentStep extends ConsumerStatefulWidget {
+  const _ConsentStep({required this.draft});
+  final _SetupDraft draft;
+
+  @override
+  ConsumerState<_ConsentStep> createState() => _ConsentStepState();
+}
+
+class _ConsentStepState extends ConsumerState<_ConsentStep> {
+  var _agree = false;
+  var _agreeError = false;
+  var _busy = false;
+
+  Future<void> _finish() async {
+    if (!_agree) {
+      setState(() => _agreeError = true);
+      return;
+    }
+    setState(() => _busy = true);
+    final chosen = widget.draft.chosen;
+    final c = ref.read(autoSaveProvider.notifier);
+    final access = await c.requestAccess();
+    // P-148 funnel: finished with the consent, and which photo access was given.
+    unawaited(c.track('autoSaveSetupDone'));
+    unawaited(
+      c.track(switch (access) {
+        LibraryAccess.full => 'autoSaveAccessFull',
+        LibraryAccess.limited => 'autoSaveAccessLimited',
+        _ => 'autoSaveAccessDenied',
+      }),
+    );
+    await c.setUp(
+      samples: {
+        for (final id in chosen) id: widget.draft.samples[id] ?? const [],
+      },
+      scanFrom: autoSaveScanFrom(ref, chosen, DateTime.now()),
+    );
+    if (!mounted) return;
+    setState(() => _busy = false);
+    // Back to the home, which now shows the first check (AS06): this page, one per baby's
+    // samples, and AS03.
+    var pages = chosen.length + 2;
+    Navigator.of(context).popUntil((_) => pages-- == 0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    final names = joinNames(l10n, [for (final id in _chosen) _name(id)]);
+    final names = joinNames(l10n, [
+      for (final id in widget.draft.chosen) _name(ref, id),
+    ]);
     Widget point(String text) => Padding(
       padding: const EdgeInsets.only(top: ClSpace.s2),
       child: Row(
@@ -393,7 +437,6 @@ class _AutoSaveSetupScreenState extends ConsumerState<AutoSaveSetupScreen> {
     return AutoSavePage(
       title: l10n.autoSaveConsentTitle,
       subtitle: l10n.autoSaveConsentSub,
-      onBack: _back,
       bottom: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

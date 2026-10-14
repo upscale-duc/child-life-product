@@ -243,7 +243,7 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
       navigator.pop();
       toaster.show(message: l10n.stReqSent);
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
       if (mounted) setState(() => _busy = false);
     }
   }

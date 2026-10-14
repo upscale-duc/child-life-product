@@ -7,6 +7,9 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/dist/**',
       'firebase/functions/deploy/**',
+      'apps/renderer/build/**',
+      'apps/renderer/out/**',
+      'apps/renderer/dist-player/**',
       'apps/mobile/**',
       'docs/**',
     ],
@@ -14,7 +17,7 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ['**/*.mjs', 'scripts/**', 'firebase/**'],
+    files: ['**/*.mjs', 'scripts/**', 'firebase/**', 'apps/renderer/**'],
     languageOptions: { globals: { console: 'readonly', process: 'readonly' } },
   },
 );

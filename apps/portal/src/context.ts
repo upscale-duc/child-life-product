@@ -18,6 +18,7 @@ export type Route =
   | 'jobs'
   | 'reference'
   | 'firstAid'
+  | 'keepsakes'
   | 'system'
   | 'systemAi'
   | 'appUpdate'
@@ -35,6 +36,7 @@ export const routePaths: Record<Route, string> = {
   jobs: '/jobs',
   reference: '/reference',
   firstAid: '/first-aid',
+  keepsakes: '/keepsakes',
   system: '/system',
   systemAi: '/system/ai',
   appUpdate: '/app-update',

@@ -13,6 +13,9 @@ import {
   defaultLimits,
   effectiveAudience,
   flagsSchema,
+  isFlagOnForFamily,
+  keepsakePublicCatalogSchema,
+  keepsakeTemplateAllowed,
   limitsSchema,
   memoryLimits,
   reserveUploadsRequestSchema,
@@ -33,6 +36,7 @@ import {
  */
 
 import { familyNotice, recomputeAlbum, recomputeEffective } from './albums.js';
+import { familyBucket } from './features.js';
 
 export class MemoryError extends Error {
   constructor(
@@ -173,6 +177,42 @@ export async function createMemory(
         throw new MemoryError('failed-precondition', 'uploads-paused');
       }
     }
+    // D-068 #3: a milestone card is saved only while its beta flag is on for the family.
+    const generated = req.generated;
+    if (generated) {
+      const familyId = (await db.doc(`babies/${req.babyId}`).get()).get('familyId') as
+        string | undefined;
+      const flag = flags.success ? flags.data.milestone_cards : null;
+      const internal =
+        flag?.enabled && flag.scope === 'internal' && familyId
+          ? (await db.doc(`families/${familyId}`).get()).get('internal') === true
+          : false;
+      if (
+        !flag ||
+        !familyId ||
+        !isFlagOnForFamily(flag, familyId, familyBucket(familyId), internal)
+      ) {
+        throw new MemoryError('failed-precondition', 'not-enabled');
+      }
+      // The template must be a published card, at a version that was published (a phone may
+      // still hold the one before the latest), and allowed by the portal's Cao cấp setting
+      // (D-068 #8). Never trusts what the app says about the template.
+      const pub = keepsakePublicCatalogSchema.safeParse(
+        (await db.doc('publicConfig/keepsakes').get()).data(),
+      );
+      const t = pub.success
+        ? pub.data.templates.find((x) => x.id === generated.templateId)
+        : undefined;
+      if (
+        !pub.success ||
+        !t ||
+        t.kind !== 'card' ||
+        generated.templateVersion > t.version ||
+        !keepsakeTemplateAllowed(t, pub.data.premium)
+      ) {
+        throw new MemoryError('failed-precondition', 'template-unavailable');
+      }
+    }
   }
   const memoryRef = db.doc(`babies/${req.babyId}/memories/${req.memoryId}`);
 
@@ -210,6 +250,17 @@ export async function createMemory(
     const used = (family.get('usedBytes') as number | undefined) ?? 0;
     const reservedNow = (family.get('reservedBytes') as number | undefined) ?? 0;
     let free = quota - used - reservedNow;
+    // D-070: a later part of a batch joins it; only the same person, sharing the same way.
+    const batchRef = db.doc(`babies/${req.babyId}/uploadBatches/${req.batchId}`);
+    const batch = await tx.get(batchRef);
+    if (
+      batch.exists &&
+      (batch.get('createdBy') !== uid ||
+        batch.get('audience') !== req.audience ||
+        batch.get('notifyFamily') !== req.notifyFamily)
+    ) {
+      throw new MemoryError('invalid-argument', 'taken');
+    }
 
     const author = {
       name: me.displayName,
@@ -271,6 +322,7 @@ export async function createMemory(
         effectiveAudience: effectiveAudience(req.audience, albumAudiences),
         albumIds: req.albumIds,
         milestone: req.milestone,
+        generated: req.generated,
         status: (fits ? 'uploading' : 'waitingQuota') satisfies MediaStatus,
         clientState: null,
         paths: null,
@@ -302,6 +354,7 @@ export async function createMemory(
       dateMode: req.dateMode,
       occurredAt,
       milestone: req.milestone,
+      generated: req.generated,
       mediaIds: req.items.map((i) => i.mediaId),
       counts: { photos: 0, videos: 0 },
       coverMediaId: null,
@@ -313,20 +366,48 @@ export async function createMemory(
       updatedAt: now,
       deleted: false,
     });
-    tx.set(db.doc(`babies/${req.babyId}/uploadBatches/${req.batchId}`), {
-      id: req.batchId,
-      babyId: req.babyId,
-      memoryId: req.memoryId,
-      mediaIds: req.items.map((i) => i.mediaId),
-      audience: req.audience,
-      notifyFamily: req.notifyFamily,
-      createdBy: uid,
-      author,
-      createdAt: now,
-      notifiedAt: null,
-      notified: [],
-      closed: false,
-    });
+    const mediaIds = req.items.map((i) => i.mediaId);
+    const known = batch.get('parts') as number | null | undefined;
+    const parts = typeof known === 'number' ? known : req.batchParts;
+    const joined = batch.exists ? batchMemoryIds(batch).length + 1 : 1;
+    if (!batch.exists) {
+      tx.set(batchRef, {
+        id: req.batchId,
+        babyId: req.babyId,
+        memoryId: req.memoryId,
+        memoryIds: [req.memoryId],
+        parts,
+        mediaIds,
+        audience: req.audience,
+        notifyFamily: req.notifyFamily,
+        createdBy: uid,
+        author,
+        createdAt: now,
+        notifiedAt: null,
+        notified: [],
+        closed: false,
+      });
+    } else {
+      tx.update(batchRef, {
+        memoryIds: FieldValue.arrayUnion(req.memoryId),
+        ...(mediaIds.length ? { mediaIds: FieldValue.arrayUnion(...mediaIds) } : {}),
+        parts,
+      });
+    }
+    // A batch still waiting for parts is tracked, so one whose last part never comes (the phone
+    // was closed mid-way) is still closed and told about (closeWaitingBatches).
+    const waitRef = db.doc(`uploadBatchesWaiting/${req.batchId}`);
+    if (parts === null || joined < parts) {
+      if (!batch.exists) {
+        tx.set(waitRef, {
+          babyId: req.babyId,
+          batchId: req.batchId,
+          dueAt: new Date(now.getTime() + memoryLimits.batchPartsWaitHours * HOUR_MS),
+        });
+      }
+    } else if (batch.exists) {
+      tx.delete(waitRef);
+    }
     if (reservedTotal > 0) {
       tx.update(familyRef, { reservedBytes: FieldValue.increment(reservedTotal) });
     }
@@ -719,9 +800,50 @@ async function familyRecipients(db: Firestore, babyId: string, except: string, n
     }));
 }
 
+/** The memories a batch was sent as (one, for a batch from before D-070). */
+function batchMemoryIds(batch: DocumentSnapshot): string[] {
+  const ids = batch.get('memoryIds') as string[] | undefined;
+  return ids ?? [batch.get('memoryId') as string];
+}
+
+/** Every part of the batch has arrived (D-070); a batch from before then is one part. */
+function batchComplete(batch: DocumentSnapshot): boolean {
+  const parts = batch.get('parts') as number | null | undefined;
+  if (parts === undefined) return true;
+  return parts !== null && batchMemoryIds(batch).length >= parts;
+}
+
+/**
+ * D-070: a batch still missing parts after `batchPartsWaitHours` (the phone stopped mid-way, or a
+ * part was removed before it was sent) is closed with the parts that arrived, so its one notice
+ * still goes out. Runs with the hourly sweep; safe to run twice.
+ */
+export async function closeWaitingBatches(db: Firestore, now: Date): Promise<number> {
+  const due = await db
+    .collection('uploadBatchesWaiting')
+    .where('dueAt', '<=', now)
+    .limit(200)
+    .get();
+  for (const doc of due.docs) {
+    const babyId = doc.get('babyId') as string;
+    const batchId = doc.get('batchId') as string;
+    const batchRef = db.doc(`babies/${babyId}/uploadBatches/${batchId}`);
+    await db.runTransaction(async (tx) => {
+      const batch = await tx.get(batchRef);
+      if (batch.exists && !batchComplete(batch)) {
+        tx.update(batchRef, { parts: batchMemoryIds(batch).length });
+      }
+      tx.delete(doc.ref);
+    });
+    await maybeNotifyBatch(db, babyId, batchId, now);
+  }
+  return due.size;
+}
+
 /**
  * P-030: one generic notification per batch — "Có 7 khoảnh khắc mới / Mai vừa chia sẻ với gia
- * đình" (R-120) — once every item is terminal or only Wi-Fi waits remain. Recorded in
+ * đình" (R-120) — once every item is terminal or only Wi-Fi waits remain; a batch sent in parts
+ * (D-070) once every part has arrived, counting all of them. Recorded in
  * `babies/{b}/notifications/{batchId}` (delivery to devices comes with S10); idempotent.
  */
 export async function maybeNotifyBatch(
@@ -733,6 +855,8 @@ export async function maybeNotifyBatch(
   const batchRef = db.doc(`babies/${babyId}/uploadBatches/${batchId}`);
   const batch = await batchRef.get();
   if (!batch.exists || batch.get('closed') === true) return 'done';
+  // D-070: one notice for the whole batch, so not before every part has arrived.
+  if (!batchComplete(batch)) return 'waiting';
   const items = await db.collection(`babies/${babyId}/media`).where('batchId', '==', batchId).get();
   const states = items.docs.map((d) => ({
     status: d.get('status') as MediaStatus,

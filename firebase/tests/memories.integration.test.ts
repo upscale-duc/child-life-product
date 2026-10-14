@@ -3,6 +3,7 @@ import { deleteApp, initializeApp, type App } from 'firebase-admin/app';
 import { Timestamp, getFirestore, type Firestore } from 'firebase-admin/firestore';
 import sharp from 'sharp';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { keepsakeSeedV1 } from '@child-life/contracts';
 import { sharpImages } from '../functions/src/images.js';
 import {
   cancelUploads,
@@ -529,5 +530,97 @@ describe('batch actions (10b3, 10b4, 10o)', () => {
     expect(await releaseStaleUploads(db, new FakeStore(), later)).toBe(1);
     expect((await db.doc(`babies/${babyId}/media/${a}`).get()).get('status')).toBe('cancelled');
     expect((await family()).reservedBytes).toBe(0);
+  });
+});
+
+describe('Thiệp cột mốc saved to Kỷ niệm (D-068)', () => {
+  const generated = {
+    kind: 'card',
+    templateId: 'card_round',
+    templateVersion: 2,
+    occasion: 'm1',
+    format: 'portrait',
+  };
+  const on = (enabled: boolean) => ({
+    enabled,
+    scope: 'all',
+    percent: 0,
+    notice: null,
+  });
+  /** The catalog as published from the portal: card_round at version 2. */
+  const publish = (access: 'everyone' | 'hidden' = 'everyone') =>
+    db.doc('publicConfig/keepsakes').set({
+      version: 'ks_20261013_01',
+      templates: keepsakeSeedV1.templates.map((t) =>
+        t.id === 'card_round' ? { ...t, version: 2 } : t,
+      ),
+      premium: { access, badges: true },
+    });
+  beforeEach(() => publish());
+
+  it('needs the milestone_cards beta flag for the family', async () => {
+    const a = id('med');
+    await expect(
+      createMemory(db, 'mom', request([photo(a, 900_000)], { generated }), now),
+    ).rejects.toMatchObject({ reason: 'not-enabled' });
+    await db.doc('config/flags').set({ media_upload: on(true), milestone_cards: on(false) });
+    await expect(
+      createMemory(db, 'mom', request([photo(a, 900_000)], { generated }), now),
+    ).rejects.toMatchObject({ reason: 'not-enabled' });
+  });
+
+  it('keeps the template and version on the memory and its item; quota is reserved as usual', async () => {
+    await db.doc('config/flags').set({ media_upload: on(true), milestone_cards: on(true) });
+    const a = id('med');
+    const req = request([photo(a, 900_000)], {
+      generated,
+      audience: 'parents',
+      notifyFamily: false,
+      dateMode: 'single',
+      date: '2026-10-08',
+      caption: null,
+    });
+    const r = await createMemory(db, 'mom', req, now);
+    expect(r.reserved).toEqual([a]);
+    expect(
+      (await db.doc(`babies/${babyId}/memories/${req.memoryId}`).get()).get('generated'),
+    ).toEqual(generated);
+    expect((await db.doc(`babies/${babyId}/media/${a}`).get()).get('generated')).toEqual(generated);
+    expect((await family()).reservedBytes).toBeGreaterThan(0);
+  });
+
+  it('a card is one photo', async () => {
+    await db.doc('config/flags').set({ media_upload: on(true), milestone_cards: on(true) });
+    await expect(
+      createMemory(
+        db,
+        'mom',
+        request([photo(id('med'), 1000), photo(id('med'), 1000)], { generated }),
+        now,
+      ),
+    ).rejects.toMatchObject({ reason: 'malformed' });
+  });
+
+  it('only a published card at a published version, under the portal’s Cao cấp setting (D-068 #8)', async () => {
+    await db.doc('config/flags').set({ media_upload: on(true), milestone_cards: on(true) });
+    const save = (g: Record<string, unknown>) =>
+      createMemory(db, 'mom', request([photo(id('med'), 1000)], { generated: g }), now);
+    await expect(save({ ...generated, templateVersion: 3 })).rejects.toMatchObject({
+      reason: 'template-unavailable',
+    });
+    await expect(save({ ...generated, templateId: 'card_nope' })).rejects.toMatchObject({
+      reason: 'template-unavailable',
+    });
+    await expect(save({ ...generated, templateId: 'video_first_month' })).rejects.toMatchObject({
+      reason: 'template-unavailable',
+    });
+    // An older version the phone still holds is fine.
+    await save({ ...generated, templateVersion: 1 });
+    // Cao cấp: open to everyone in the beta; refused once the portal hides it.
+    const blush = { ...generated, templateId: 'card_blush', templateVersion: 1 };
+    await save(blush);
+    await publish('hidden');
+    await expect(save(blush)).rejects.toMatchObject({ reason: 'template-unavailable' });
+    await save(generated);
   });
 });

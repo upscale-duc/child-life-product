@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/design/tokens.g.dart';
+import '../features/keepsakes/keepsake_occasions.dart';
+import '../features/keepsakes/memory_story_screens.dart';
+import '../features/keepsakes/milestone_card_screens.dart';
 import '../features/appearance/appearance_screen.dart';
 import '../features/auth/auth_screens.dart';
 import '../features/auth/email_link.dart';
@@ -274,6 +277,75 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (_, s) => AlbumDetailScreen(
                       albumKey: s.pathParameters['key'] ?? '',
                     ),
+                  ),
+                  // Thiệp cột mốc (D-068, MM10 – MM12).
+                  _route(
+                    path: 'card',
+                    builder: (_, s) => MilestoneCardScreen(
+                      occasion: Occasion.fromWire(
+                        s.uri.queryParameters['occasion'],
+                      ),
+                      // Photos chosen in Kỷ niệm ("Tạo thiệp cột mốc" on a selection).
+                      photoIds: s.extra is List<String>
+                          ? s.extra! as List<String>
+                          : null,
+                    ),
+                    routes: [
+                      _route(
+                        path: 'edit',
+                        redirect: (_, s) =>
+                            s.extra is CardDraft ? null : Routes.milestoneCard,
+                        builder: (_, s) => MilestoneCardEditScreen(
+                          draft: s.extra! as CardDraft,
+                        ),
+                      ),
+                      _route(
+                        path: 'done',
+                        redirect: (_, s) =>
+                            s.extra is CardResult ? null : Routes.memories,
+                        builder: (_, s) => MilestoneCardDoneScreen(
+                          result: s.extra! as CardResult,
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Video kỷ niệm (D-068, MM04 – MM09, MM13, MM14).
+                  _route(
+                    path: 'video',
+                    builder: (_, s) => MemoryStoryTemplatesScreen(
+                      occasion: Occasion.fromWire(
+                        s.uri.queryParameters['occasion'],
+                      ),
+                      // Photos chosen in Kỷ niệm ("Tạo video kỷ niệm" on a selection).
+                      photoIds: s.extra is List<String>
+                          ? s.extra! as List<String>
+                          : null,
+                    ),
+                    routes: [
+                      _route(
+                        path: 'photos',
+                        redirect: (_, s) =>
+                            s.extra is VideoDraft ? null : Routes.memoryStory,
+                        builder: (_, s) => MemoryStoryPhotosScreen(
+                          draft: s.extra! as VideoDraft,
+                        ),
+                      ),
+                      _route(
+                        path: 'finish',
+                        redirect: (_, s) =>
+                            s.extra is VideoDraft ? null : Routes.memoryStory,
+                        builder: (_, s) => MemoryStoryFinishScreen(
+                          draft: s.extra! as VideoDraft,
+                        ),
+                      ),
+                      _route(
+                        path: 'job/:jobId',
+                        builder: (_, s) => MemoryStoryJobScreen(
+                          babyId: s.uri.queryParameters['baby'] ?? '',
+                          jobId: s.pathParameters['jobId'] ?? '',
+                        ),
+                      ),
+                    ],
                   ),
                   // Tự lưu kỷ niệm (D-066, AS02 – AS19).
                   _route(

@@ -25,6 +25,8 @@ class LibraryChanges {
     required this.ids,
     this.token,
     this.fromHistory = false,
+    this.inserted = -1,
+    this.videos = 0,
   });
   final List<String> ids;
 
@@ -34,6 +36,10 @@ class LibraryChanges {
   /// True when [ids] came from the change history; false when they are everything created since
   /// a date and may include items already seen.
   final bool fromHistory;
+
+  /// Dev diagnostics: ids the change history reported (−1 when it was not used), and videos in [ids].
+  final int inserted;
+  final int videos;
 }
 
 /// The phone's side (ios/Runner/AutoSave.swift). Every call fails soft: a broken library read
@@ -89,6 +95,8 @@ class AutoSaveNative {
       ids: [for (final id in (out?['ids'] as List?) ?? const []) id as String],
       token: out?['token'] as Uint8List?,
       fromHistory: out?['fromHistory'] == true,
+      inserted: (out?['inserted'] as num?)?.toInt() ?? -1,
+      videos: (out?['videos'] as num?)?.toInt() ?? 0,
     );
   }
 
@@ -124,6 +132,15 @@ class AutoSaveNative {
       'album': album,
     });
     return out?['id'] as String?;
+  }
+
+  /// Dev diagnostics: the newest library items with their file names and dates.
+  Future<List<Map<String, Object?>>> inspectRecent() async {
+    final out = await _channel.invokeListMethod<Object?>('inspectRecent');
+    return [
+      for (final m in out ?? const [])
+        (m! as Map<Object?, Object?>).cast<String, Object?>(),
+    ];
   }
 
   Future<void> excludeFromBackup(String path) =>

@@ -15,6 +15,12 @@ import 'auto_save_engine.dart';
 /// Version of the consent copy the parent agreed to (P-147). Bump it when the copy changes.
 const autoSaveConsentVersion = 1;
 
+/// How library items are listed and described. A phone that checked with an older pass looks
+/// at the last 30 days again, once. 2: videos read as several frames, not the poster frame.
+/// 3: videos are listed at all (a subtype filter in the PhotoKit query left every video out on
+/// the owner's phone, 2026-10-14), and a "utility" score no longer hides a face like the baby.
+const autoSaveVideoPass = 3;
+
 /// What happened to a library item for one baby (P-150).
 enum LedgerState {
   /// Queued for upload to Kỷ niệm (by Tự lưu or by hand).
@@ -139,6 +145,7 @@ class AutoSaveState {
     this.bannerHidden = const {},
     this.allowed = const {},
     this.unsent = const {},
+    this.videoPass = autoSaveVideoPass,
   });
 
   /// Master switch (AS19).
@@ -198,6 +205,9 @@ class AutoSaveState {
   /// check has no Firebase, so they wait here for the app.
   final Map<String, int> unsent;
 
+  /// The [autoSaveVideoPass] this phone's checks of videos were made with.
+  final int videoPass;
+
   bool get consented => consentVersion == autoSaveConsentVersion;
 
   /// Whether this item is done for this baby (or for every baby).
@@ -233,6 +243,7 @@ class AutoSaveState {
     Set<String>? bannerHidden,
     Map<String, bool>? allowed,
     Map<String, int>? unsent,
+    int? videoPass,
   }) => AutoSaveState(
     enabled: enabled ?? this.enabled,
     consentVersion: clearConsent ? null : consentVersion ?? this.consentVersion,
@@ -255,6 +266,7 @@ class AutoSaveState {
     bannerHidden: bannerHidden ?? this.bannerHidden,
     allowed: allowed ?? this.allowed,
     unsent: unsent ?? this.unsent,
+    videoPass: videoPass ?? this.videoPass,
   );
 
   /// "Xoá ảnh mẫu và dữ liệu gợi ý" (AS19) or withdrawing the consent: every face number,
@@ -309,6 +321,7 @@ class AutoSaveState {
     'bannerHidden': bannerHidden.toList(),
     'allowed': allowed,
     'unsent': unsent,
+    'videoPass': videoPass,
   };
 
   static AutoSaveState fromJson(Map<String, Object?> j) {
@@ -359,6 +372,7 @@ class AutoSaveState {
         for (final e in map(j['unsent']).entries)
           e.key: (e.value! as num).toInt(),
       },
+      videoPass: (j['videoPass'] as num?)?.toInt() ?? 1,
     );
   }
 }
@@ -473,6 +487,20 @@ class AutoSaveStore {
     });
     _last = next.catchError((_) {});
     return next;
+  }
+
+  /// Dev builds: the last check, item by item, for reading off the phone (`trace.json`).
+  Future<void> saveTrace(
+    Map<String, Object?> trace, {
+    String name = 'trace.json',
+  }) async {
+    try {
+      final dir = await _dir();
+      if (!dir.existsSync()) await dir.create(recursive: true);
+      await File('${dir.path}/$name').writeAsString(jsonEncode(trace));
+    } on Object {
+      // Diagnostics only.
+    }
   }
 
   /// Removes the whole folder (account sign-out, or tests).

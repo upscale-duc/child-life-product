@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:child_life/app/session.dart';
+import 'package:child_life/features/keepsakes/keepsake_nudges.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/baby/baby_repository.dart';
 import 'package:child_life/features/care/care_models.dart';
@@ -225,9 +226,14 @@ List<Override> familyOverrides({
   Budget budget = Budget.empty,
   List<RecurringExpense> recurring = const [],
   SpendingRepository? spendingRepo,
+
+  /// Kỷ niệm 2.0 milestone nudges (D-068 #9) among this device's notifications; off unless a
+  /// test is about them.
+  bool nudges = false,
 }) {
   final self = me ?? mai;
   return [
+    if (!nudges) nudgeBabiesProvider.overrideWith((ref) => const []),
     // S11 account documents (no Firebase in widget tests).
     notificationPrefsProvider.overrideWith((ref, uid) => Stream.value(prefs)),
     accountDocProvider.overrideWith((ref, uid) => Stream.value(account)),

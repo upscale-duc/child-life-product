@@ -15,6 +15,10 @@ export const flagKeys = [
   'night_auto',
   /** Tự lưu kỷ niệm beta on iOS (D-066, P-148); evaluated per family by `featureAccess`. */
   'auto_save',
+  /** Kỷ niệm 2.0 free beta (D-068 #3): Thiệp cột mốc, per family through `featureAccess`. */
+  'milestone_cards',
+  /** Kỷ niệm 2.0 free beta (D-068 #3): Video kỷ niệm, per family through `featureAccess`. */
+  'memory_story',
 ] as const;
 export type FlagKey = (typeof flagKeys)[number];
 
@@ -54,6 +58,8 @@ export const defaultFlags: Flags = {
   lock_widgets: off(),
   night_auto: off('internal'),
   auto_save: off('internal'),
+  milestone_cards: off('internal'),
+  memory_story: off('internal'),
 };
 
 /**
@@ -79,6 +85,9 @@ export const limitsSchema = z.object({
   mediaItemsPerAdd: z.number().int().positive(),
   exportLinkTtlHours: z.number().int().positive(),
   storageRequestAmountsGb: z.array(z.number().int().positive()).nonempty(),
+  /** Tự lưu: at most this many items per "Tải lên" (D-070); the rest wait for the next round.
+   * A missing key reads as the default, so a `config/limits` written before it still parses. */
+  autoSaveItemsPerApprove: z.number().int().positive().default(200),
 });
 export type Limits = z.infer<typeof limitsSchema>;
 
@@ -92,6 +101,7 @@ export const defaultLimits: Limits = {
   mediaItemsPerAdd: 30, // R-102
   exportLinkTtlHours: 24, // R-187
   storageRequestAmountsGb: [10, 20], // D-010
+  autoSaveItemsPerApprove: 200, // D-070
 };
 
 /**
@@ -103,6 +113,11 @@ export type FeatureAccessRequest = z.infer<typeof featureAccessRequestSchema>;
 export interface FeatureAccess {
   /** Tự lưu kỷ niệm (D-066): the flag is on for this family and the caller is a Cùng nuôi. */
   autoSave: boolean;
+  /** Thiệp cột mốc (D-068): the `milestone_cards` flag is on for this family and the caller is a
+   * Cùng nuôi. */
+  milestoneCards: boolean;
+  /** Video kỷ niệm (D-068): the `memory_story` flag, as above. */
+  memoryStory: boolean;
 }
 
 /** Whether a flag is on for a given family (stable hash bucket 0–99); a family picked in A10

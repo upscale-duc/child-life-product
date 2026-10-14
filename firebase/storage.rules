@@ -110,6 +110,25 @@ service firebase.storage {
       allow write: if false;
     }
 
+    // Mẫu kỷ niệm artwork and music (D-068 #7): template assets, never child media; public with
+    // the catalog in publicConfig/keepsakes. Functions only; immutable (named by content hash).
+    match /content/keepsakes/{file} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Large Mẫu kỷ niệm uploads (a template's preview video, music; D-068): a staff member puts the
+    // file under their own uid, once; `staffKeepsakesAsset` checks it, stores it under
+    // content/keepsakes/ and deletes it. Nobody reads it from a client.
+    match /content/keepsakes-incoming/{uid}/{file} {
+      allow create: if request.auth != null && request.auth.uid == uid &&
+        request.auth.token.get('staff', false) == true && resource == null &&
+        file.matches('^[a-z0-9-]{2,60}[.](mp4|mp3|m4a|png|jpg|webp)$') &&
+        request.resource.size <= 50 * 1024 * 1024 &&
+        request.resource.contentType.matches('^(video/mp4|audio/(mpeg|mp4|x-m4a)|image/(png|jpeg|webp))$');
+      allow read, update, delete: if false;
+    }
+
     // Exports (R-187, P-123): the requester only, until the link expires, and only while they
     // still have the right (Cùng nuôi for care; the owner for media) — re-checked at download.
     match /exports/{uid}/{jobId}/{file} {

@@ -681,13 +681,16 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
     try {
-      await ref
-          .read(memoryRepositoryProvider)
-          .removeFromAlbum(c.babyId, album.id, ids);
+      await withClProgress(
+        context,
+        () => ref
+            .read(memoryRepositoryProvider)
+            .removeFromAlbum(c.babyId, album.id, ids),
+      );
       toaster.show(message: l10n.albRemoved(ids.length));
       if (mounted) setState(() => _selected = null);
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
     }
   }
 
@@ -706,12 +709,15 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
     if (picked == null || picked.isEmpty || !mounted) return;
     final toaster = ClToaster.of(context);
     try {
-      await ref
-          .read(memoryRepositoryProvider)
-          .addToAlbum(c.babyId, album.id, picked);
+      await withClProgress(
+        context,
+        () => ref
+            .read(memoryRepositoryProvider)
+            .addToAlbum(c.babyId, album.id, picked),
+      );
       toaster.show(message: l10n.albAdded(picked.length, album.name));
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
     }
   }
 
@@ -1016,11 +1022,15 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
     final toaster = ClToaster.of(context);
     final router = GoRouter.of(context);
     try {
-      await ref.read(memoryRepositoryProvider).deleteAlbum(c.babyId, album.id);
+      await withClProgress(
+        context,
+        () =>
+            ref.read(memoryRepositoryProvider).deleteAlbum(c.babyId, album.id),
+      );
       toaster.show(message: l10n.albDeleted);
       router.pop();
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
     }
   }
 
@@ -1033,12 +1043,15 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
     try {
-      await ref
-          .read(memoryRepositoryProvider)
-          .updateAlbum(c.babyId, album.id, change);
+      await withClProgress(
+        context,
+        () => ref
+            .read(memoryRepositoryProvider)
+            .updateAlbum(c.babyId, album.id, change),
+      );
       if (done != null) toaster.show(message: done);
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
     }
   }
 }
@@ -1178,7 +1191,7 @@ class _AlbumNameSheetState extends ConsumerState<_AlbumNameSheet> {
         if (mounted) Navigator.of(context).pop(id);
       }
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
       if (mounted) setState(() => _busy = false);
     }
   }
@@ -1341,20 +1354,21 @@ Future<void> showAlbumAudienceSheet(
   if (result == null || result.$1 == album.audience || !context.mounted) return;
   final toaster = ClToaster.of(context);
   try {
-    final staying = await ref
-        .read(memoryRepositoryProvider)
-        .updateAlbum(c.babyId, album.id, {
-          'kind': 'audience',
-          'audience': result.$1.name,
-          'notifyFamily': result.$1 == Audience.family && result.$2,
-        });
+    final staying = await withClProgress(
+      context,
+      () => ref.read(memoryRepositoryProvider).updateAlbum(c.babyId, album.id, {
+        'kind': 'audience',
+        'audience': result.$1.name,
+        'notifyFamily': result.$1 == Audience.family && result.$2,
+      }),
+    );
     toaster.show(
       message: result.$1 == Audience.parents && staying > 0
           ? l10n.albStayShared(staying)
           : l10n.albAudienceSaved,
     );
   } on Object {
-    toaster.show(message: l10n.toastActionFailed);
+    toaster.show(message: l10n.toastActionFailed, error: true);
   }
 }
 

@@ -16,6 +16,8 @@ import UserNotifications
     BackgroundUploads.shared.resume()
     // Tự lưu (D-066, AR03): checks iOS runs while the app is in the background or closed.
     AutoSaveBackground.registerTask()
+    // Apple Watch (P-142): the watch gets the session and snapshot from here.
+    PhoneWatchLink.shared.activate()
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
@@ -70,6 +72,10 @@ import UserNotifications
     }
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "ScreenshotChannel") {
       ScreenshotChannel.register(with: registrar.messenger())
+    }
+    // Video kỷ niệm being made (MM08) as a Live Activity.
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "KeepsakeLive") {
+      KeepsakeLive.register(with: registrar.messenger())
     }
     // Tự lưu kỷ niệm (D-066): library scan and on-device face matching inputs.
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "AutoSave") {
@@ -162,6 +168,7 @@ enum GlanceChannel {
             GlanceAuth.save(GlanceSession(uid: uid, refreshToken: token))
           }
         }
+        PhoneWatchLink.shared.push()
         result(nil)
       case "clearSession":
         GlanceAuth.clear()
@@ -174,6 +181,7 @@ enum GlanceChannel {
         }
         GlanceActions.reload()
         Task { await GlanceLive.sync() }
+        PhoneWatchLink.shared.push()
         result(nil)
       case "setSnapshot":
         guard let json = (call.arguments as? String)?.data(using: .utf8),
@@ -191,6 +199,7 @@ enum GlanceChannel {
         next.save()
         GlanceActions.reload()
         Task { await GlanceLive.sync() }
+        PhoneWatchLink.shared.push()
         result(nil)
       case "refresh":
         Task {

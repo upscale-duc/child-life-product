@@ -134,10 +134,13 @@ Future<void> changeReaders(BuildContext context, WidgetRef ref, Story s) async {
   if (next == null || next == s.audience || !context.mounted) return;
   final toaster = ClToaster.of(context);
   try {
-    await ref.read(storyRepositoryProvider).save(s.babyId, s.id, next, false);
+    await withClProgress(
+      context,
+      () => ref.read(storyRepositoryProvider).save(s.babyId, s.id, next, false),
+    );
     toaster.show(message: l10n.sryAudienceChanged);
   } on Object {
-    toaster.show(message: l10n.toastActionFailed);
+    toaster.show(message: l10n.toastActionFailed, error: true);
   }
 }
 
@@ -594,12 +597,16 @@ class _CardScreenState extends ConsumerState<CardScreen> {
           subject: widget.story.title,
         ),
       );
-      await ref
-          .read(shareRepositoryProvider)
-          .recordCard(widget.story, _template);
+      if (!mounted) return;
+      await withClProgress(
+        context,
+        () => ref
+            .read(shareRepositoryProvider)
+            .recordCard(widget.story, _template),
+      );
       toaster.show(message: l10n.cdSaved);
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -887,7 +894,7 @@ class _LinkScreenState extends ConsumerState<LinkScreen> {
         ShareParams(text: '${widget.story.title}\n${link.url}'),
       );
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -1194,10 +1201,13 @@ class SharedOutScreen extends ConsumerWidget {
     if (ok != true || !context.mounted) return;
     final toaster = ClToaster.of(context);
     try {
-      await ref.read(shareRepositoryProvider).revoke(r.token!);
+      await withClProgress(
+        context,
+        () => ref.read(shareRepositoryProvider).revoke(r.token!),
+      );
       toaster.show(message: l10n.soRevoked);
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
     }
   }
 }

@@ -22,9 +22,9 @@ export function familyBucket(familyId: string): number {
 }
 
 /**
- * P-148: per-family features for one of the caller's babies. Tự lưu (D-066) is for Cùng nuôi and
- * follows the `auto_save` flag: off, the families picked in A10 (and families marked `internal`),
- * a share of families, or all.
+ * P-148: per-family features for one of the caller's babies. Tự lưu (D-066) and Kỷ niệm 2.0
+ * (D-068) are for Cùng nuôi and follow their flags (`auto_save`, `milestone_cards`, `memory_story`):
+ * off, the families picked in A10 (and families marked `internal`), a share of families, or all.
  */
 export async function featureAccess(
   db: Firestore,
@@ -48,15 +48,20 @@ export async function featureAccess(
   if (!familyId) throw new FeatureError('not-found', 'no-family');
   // A missing or older document reads as every flag off (or its default), never as an error.
   const flags = flagsSchema.safeParse((await db.doc('config/flags').get()).data() ?? {});
-  if (!flags.success) return { autoSave: false };
-  const flag = flags.data.auto_save;
-  const internal =
-    flag.enabled && flag.scope === 'internal'
-      ? (await db.doc(`families/${familyId}`).get()).get('internal') === true
-      : false;
+  if (!flags.success || member.get('role') !== 'coParent') {
+    return { autoSave: false, milestoneCards: false, memoryStory: false };
+  }
+  let internal: boolean | undefined;
+  const on = async (key: 'auto_save' | 'milestone_cards' | 'memory_story') => {
+    const flag = flags.data[key];
+    if (flag.enabled && flag.scope === 'internal' && internal === undefined) {
+      internal = (await db.doc(`families/${familyId}`).get()).get('internal') === true;
+    }
+    return isFlagOnForFamily(flag, familyId, familyBucket(familyId), internal ?? false);
+  };
   return {
-    autoSave:
-      member.get('role') === 'coParent' &&
-      isFlagOnForFamily(flag, familyId, familyBucket(familyId), internal),
+    autoSave: await on('auto_save'),
+    milestoneCards: await on('milestone_cards'),
+    memoryStory: await on('memory_story'),
   };
 }

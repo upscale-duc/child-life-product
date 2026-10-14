@@ -824,9 +824,12 @@ class _CantScanSheetState extends ConsumerState<_CantScanSheet> {
     final l10n = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
-      final ticket = await ref
-          .read(familyRepositoryProvider)
-          .regenerateInvite(_ticket.inviteId);
+      final ticket = await withClProgress(
+        context,
+        () => ref
+            .read(familyRepositoryProvider)
+            .regenerateInvite(_ticket.inviteId),
+      );
       widget.onRegenerated(ticket);
       if (!mounted) return;
       setState(() => _ticket = ticket);
@@ -846,7 +849,10 @@ class _CantScanSheetState extends ConsumerState<_CantScanSheet> {
     final toaster = ClToaster.of(context);
     setState(() => _busy = true);
     try {
-      await ref.read(familyRepositoryProvider).revokeInvite(_ticket.inviteId);
+      await withClProgress(
+        context,
+        () => ref.read(familyRepositoryProvider).revokeInvite(_ticket.inviteId),
+      );
       navigator.pop();
       widget.onRevoked();
       toaster.show(message: l10n.inviteRevoked);
@@ -1045,6 +1051,7 @@ class _NotReceivedSheetState extends ConsumerState<_NotReceivedSheet> {
           label: l10n.notReceivedResend,
           style: ClButtonStyle.secondary,
           expand: true,
+          loading: _busy,
           onPressed: _busy ? null : _resend,
         ),
         Builder(

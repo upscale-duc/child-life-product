@@ -1,0 +1,26 @@
+{
+  "licence": "Original artwork made for Child Life (2026). Owned by Child Life; no third-party material.",
+  "style": "Flat, rounded, pastel. Fixed palette: white #FFFFFF, cream #FFF6EA, blush #F4B6B8, peach #F7C59F, butter #F7D67A, sage #A8C3A0, mint #9FD8CB, sky #A9CBEB, lilac #C9B8E8, caramel #C8925A, cocoa #6E4A33, gold #E8B94A, line ink #3A2E2A.",
+  "assets": [
+    { "name": "cloud-soft", "use": ["card", "video"], "description": "One soft white cloud with a lilac ground shadow", "templates": ["C02", "C06", "V04"] },
+    { "name": "cloud-pair", "use": ["card", "video"], "description": "Two white clouds, large and small", "templates": ["C02", "C06"] },
+    { "name": "sparkle", "use": ["card", "video"], "description": "One white four-point sparkle", "templates": ["C02", "C06", "C07", "V06"] },
+    { "name": "stars-scatter", "use": ["card", "video"], "description": "White and butter sparkles and dots around the edges, centre clear (for dark or mid backgrounds)", "templates": ["C02", "C06", "V01"] },
+    { "name": "moon-crescent", "use": ["card", "video"], "description": "Butter crescent moon", "templates": ["C02", "C06"] },
+    { "name": "sun-rays", "use": ["card", "video"], "description": "Butter sun with peach rays", "templates": ["C07", "V06"] },
+    { "name": "heart-soft", "use": ["card", "video"], "description": "Blush heart with a highlight", "templates": ["C04", "V03", "V10"] },
+    { "name": "hearts-scatter", "use": ["card", "video"], "description": "Small blush and peach hearts around the edges, centre clear", "templates": ["C07", "V03"] },
+    { "name": "balloons", "use": ["card", "video"], "description": "Bunch of five pastel balloons with strings", "templates": ["C12", "V12"] },
+    { "name": "confetti", "use": ["card", "video"], "description": "Pastel confetti, dots and squiggles on a 9:16 field, centre clear", "templates": ["C08", "C12", "V07", "V12"] },
+    { "name": "bunting", "use": ["card", "video"], "description": "Pastel pennant bunting on a sagging string, full width", "templates": ["C12", "V12"] },
+    { "name": "cake-one-candle", "use": ["card", "video"], "description": "Two-tier cake with one candle", "templates": ["C12", "V12"] },
+    { "name": "leaf-sprig", "use": ["card", "video"], "description": "Sage leaf sprig", "templates": ["C01", "C05"] },
+    { "name": "flower-bloom", "use": ["card", "video"], "description": "Blush five-petal flower with two leaves", "templates": ["C05", "C11"] },
+    { "name": "medal-rosette", "use": ["card", "video"], "description": "Gold rosette medal with sky and blush ribbons, cream centre for text", "templates": ["C08", "V07"] },
+    { "name": "washi-tape", "use": ["card", "video"], "description": "Translucent butter washi tape with torn ends", "templates": ["C08", "C09"] },
+    { "name": "polaroid-frame", "use": ["card", "video"], "description": "Polaroid overlay: white border, transparent 4:5 window, soft shadow", "templates": ["C09", "V02", "V12"] },
+    { "name": "paper-grain", "use": ["card", "video"], "description": "Subtle warm paper grain, 7 % (tileable texture)", "templates": ["C01", "C09", "V02", "V10"] },
+    { "name": "teddy-face", "use": ["card", "video"], "description": "Caramel teddy bear face", "templates": ["C04"] },
+    { "name": "smiley-doodle", "use": ["card", "video"], "description": "Hand-drawn butter smiley", "templates": ["C07", "V06"] }
+  ]
+}

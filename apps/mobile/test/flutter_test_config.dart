@@ -18,6 +18,25 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
       ['Lora-Regular', 'Lora-Italic', 'Lora-SemiBold', 'Lora-SemiBoldItalic'],
     ),
     ('Dancing Script', ['DancingScript-Regular', 'DancingScript-SemiBold']),
+    (
+      'Be Vietnam Pro Keepsake',
+      [
+        'BeVietnamPro-Regular',
+        'BeVietnamPro-Medium',
+        'BeVietnamPro-SemiBold',
+        'BeVietnamPro-Bold',
+      ],
+    ),
+    (
+      'Playfair Display Keepsake',
+      [
+        'PlayfairDisplay-Regular',
+        'PlayfairDisplay-Italic',
+        'PlayfairDisplay-Bold',
+      ],
+    ),
+    ('Baloo 2 Keepsake', ['Baloo2-Medium', 'Baloo2-Bold', 'Baloo2-ExtraBold']),
+    ('Patrick Hand Keepsake', ['PatrickHand-Regular']),
   ]) {
     final loader = FontLoader(family);
     for (final file in files) {

@@ -15,6 +15,7 @@ import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
+import '../keepsakes/keepsake_nudges.dart';
 import 'device_identity.dart';
 import 'reminder_models.dart';
 import 'reminder_repository.dart';
@@ -288,6 +289,24 @@ class _ReminderNotificationSyncState
   }
 
   void _open(String? payload) {
+    // Kỷ niệm 2.0 milestone nudges (D-068 #9): open Thiệp cột mốc on that occasion.
+    final nudge = nudgeOfPayload(payload);
+    if (nudge != null && mounted) {
+      final (babyId, occasion) = nudge;
+      final session = ref.read(sessionProvider);
+      if (session is! SessionSignedIn || session.membershipFor(babyId) == null) {
+        return;
+      }
+      ref.read(selectedBabyIdProvider.notifier).select(babyId);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref
+              .read(routerProvider)
+              .push('${Routes.milestoneCard}?occasion=${occasion.wire}');
+        }
+      });
+      return;
+    }
     final target = reminderOfPayload(payload);
     if (target == null || !mounted) return;
     final (babyId, reminderId) = target;
@@ -322,6 +341,19 @@ class _ReminderNotificationSyncState
           payload: reminderPayload(r, r.title, body),
         ),
       );
+    }
+    // Kỷ niệm 2.0 milestone nudges (D-068 #9) share this device's notifications: the sync
+    // cancels anything it was not given. Look-back slots handed out now are kept for good.
+    try {
+      final plan = ref.read(nudgePlanProvider);
+      if (plan.newSlots.isNotEmpty) {
+        unawaited(ref.read(nudgeStoreProvider).addSlots(plan.newSlots));
+      }
+      for (final n in plan.nudges) {
+        out.add(nudgeNotification(l10n, n));
+      }
+    } on Object {
+      // Nudges are best effort; reminders are scheduled regardless.
     }
     return out;
   }
@@ -359,6 +391,7 @@ class _ReminderNotificationSyncState
     for (final r in ref.watch(deviceRemindersProvider)) {
       ref.watch(babyProvider(r.babyId));
     }
+    ref.watch(nudgePlanProvider);
     if (enabled == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_sync()));
     } else {

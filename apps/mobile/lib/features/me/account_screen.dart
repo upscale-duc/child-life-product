@@ -79,10 +79,10 @@ class AccountScreen extends ConsumerWidget {
         return;
       }
       try {
-        await user.unlink(providerId);
+        await withClProgress(context, () => user.unlink(providerId));
         toaster.show(message: l10n.acUnlinked(label));
       } on Object {
-        toaster.show(message: l10n.toastActionFailed);
+        toaster.show(message: l10n.toastActionFailed, error: true);
       }
     }
 
@@ -107,12 +107,15 @@ class AccountScreen extends ConsumerWidget {
                 onTap: () async {
                   final toaster = ClToaster.of(context);
                   try {
-                    await ref
-                        .read(authRepositoryProvider)
-                        .sendPasswordReset(user.email!);
+                    await withClProgress(
+                      context,
+                      () => ref
+                          .read(authRepositoryProvider)
+                          .sendPasswordReset(user.email!),
+                    );
                     toaster.show(message: l10n.acPasswordSent(user.email!));
                   } on Object {
-                    toaster.show(message: l10n.toastActionFailed);
+                    toaster.show(message: l10n.toastActionFailed, error: true);
                   }
                 },
               ),
@@ -151,16 +154,22 @@ class AccountScreen extends ConsumerWidget {
                         onPressed: () async {
                           final toaster = ClToaster.of(context);
                           try {
-                            await ref
-                                .read(meRepositoryProvider)
-                                .signOutDevice(d.id);
+                            await withClProgress(
+                              context,
+                              () => ref
+                                  .read(meRepositoryProvider)
+                                  .signOutDevice(d.id),
+                            );
                             toaster.show(
                               message: l10n.acDeviceSignedOut(
                                 d.name.isEmpty ? d.platform : d.name,
                               ),
                             );
                           } on Object {
-                            toaster.show(message: l10n.toastActionFailed);
+                            toaster.show(
+                              message: l10n.toastActionFailed,
+                              error: true,
+                            );
                           }
                         },
                       ),
@@ -181,9 +190,12 @@ class AccountScreen extends ConsumerWidget {
                   title: l10n.acTransferPending(offeredName ?? ''),
                   trailing: MeRowAction(
                     label: l10n.acTransferCancel,
-                    onPressed: () => ref
-                        .read(meRepositoryProvider)
-                        .answerOwnership(familyId, 'cancel'),
+                    onPressed: () => withClProgress(
+                      context,
+                      () => ref
+                          .read(meRepositoryProvider)
+                          .answerOwnership(familyId, 'cancel'),
+                    ),
                   ),
                 )
               else
@@ -313,9 +325,12 @@ Future<void> _showTransferSheet(
                           final toaster = ClToaster.of(context);
                           final navigator = Navigator.of(sheet);
                           try {
-                            await ref
-                                .read(meRepositoryProvider)
-                                .offerOwnership(m.uid);
+                            await withClProgress(
+                              context,
+                              () => ref
+                                  .read(meRepositoryProvider)
+                                  .offerOwnership(m.uid),
+                            );
                             navigator.pop();
                             toaster.show(
                               message: l10n.acTransferSent(m.displayName),
@@ -465,7 +480,7 @@ Future<void> _confirmDeleteAccount(
                 await ref.read(authRepositoryProvider).signOut();
               } on Object {
                 setState(() => busy = false);
-                toaster.show(message: l10n.toastActionFailed);
+                toaster.show(message: l10n.toastActionFailed, error: true);
               }
             },
             loading: busy,

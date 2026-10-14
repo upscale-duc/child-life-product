@@ -115,7 +115,7 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
       toaster.show(message: l10n.hpSent(ticket));
       router.pop();
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
       if (mounted) setState(() => _busy = false);
     }
   }
@@ -185,6 +185,7 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
           label: l10n.messageSend,
           icon: ClIcons.arrowRight,
           expand: true,
+          loading: _busy,
           onPressed: ready ? _send : null,
         ),
         const _SentTickets(),

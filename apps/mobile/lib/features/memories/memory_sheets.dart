@@ -5,8 +5,10 @@ import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
+import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/format/age.dart';
@@ -23,6 +25,7 @@ import '../baby/baby_models.dart';
 import '../care/care_repository.dart';
 import '../family/family_repository.dart';
 import '../feedback/review_prompt.dart';
+import '../keepsakes/keepsake_access.dart';
 import 'album_screens.dart' show albumsValue, showAlbumPicker;
 import 'media_picker.dart';
 import 'media_viewer.dart';
@@ -79,12 +82,16 @@ class _EntryOption extends StatelessWidget {
     required this.subtitle,
     required this.onTap,
     this.primary = false,
+    this.badge,
   });
   final ClIcons icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
   final bool primary;
+
+  /// "Mới" next to the title.
+  final String? badge;
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +129,31 @@ class _EntryOption extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: cl.text.bodyStrong),
+                  Row(
+                    children: [
+                      Flexible(child: Text(title, style: cl.text.bodyStrong)),
+                      if (badge != null) ...[
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 1,
+                          ),
+                          decoration: BoxDecoration(
+                            color: cl.colors.mintSoft,
+                            borderRadius: BorderRadius.circular(ClRadius.pill),
+                          ),
+                          child: Text(
+                            badge!,
+                            style: cl.text.caption.copyWith(
+                              color: cl.colors.mintText,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                   Text(
                     subtitle,
                     style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
@@ -144,6 +175,7 @@ Future<void> showAddSheet(
   MemoryCtx c,
 ) async {
   final l10n = AppLocalizations.of(context);
+  final keepsakes = ref.read(selectedKeepsakeAccessProvider);
   final choice = await showClSheet<String>(
     context: context,
     builder: (sheet) => _sheet([
@@ -180,9 +212,53 @@ Future<void> showAddSheet(
         subtitle: l10n.addNoteHint,
         onTap: () => Navigator.of(sheet).pop('note'),
       ),
+      // MM02 "SÁNG TẠO & TỰ ĐỘNG" (D-068): in the beta, for parents.
+      if (c.isParent && (keepsakes.cards || keepsakes.videos)) ...[
+        const SizedBox(height: ClSpace.s4),
+        Padding(
+          padding: const EdgeInsets.only(left: ClSpace.s1),
+          child: Text(
+            l10n.ksCreateGroup,
+            style: context.cl.text.caption.copyWith(
+              color: context.cl.colors.inkMuted,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.4,
+            ),
+          ),
+        ),
+        // The same rows as above (on the sheet's own surface, a card tile would vanish).
+        if (keepsakes.videos) ...[
+          const SizedBox(height: ClSpace.s2),
+          _EntryOption(
+            icon: ClIcons.camera,
+            title: l10n.ksVideoTitle,
+            subtitle: l10n.ksVideoTileHint,
+            badge: l10n.ksNew,
+            onTap: () => Navigator.of(sheet).pop('video'),
+          ),
+        ],
+        if (keepsakes.cards) ...[
+          const SizedBox(height: ClSpace.s2),
+          _EntryOption(
+            icon: ClIcons.star,
+            title: l10n.ksCardTitle,
+            subtitle: l10n.ksCardTileHintShort,
+            badge: l10n.ksNew,
+            onTap: () => Navigator.of(sheet).pop('card'),
+          ),
+        ],
+      ],
     ]),
   );
   if (choice == null || !context.mounted) return;
+  if (choice == 'card' || choice == 'video') {
+    unawaited(
+      context.push(
+        choice == 'card' ? Routes.milestoneCard : Routes.memoryStory,
+      ),
+    );
+    return;
+  }
   List<PickedMedia>? picked;
   switch (choice) {
     case 'note':
@@ -987,7 +1063,7 @@ class _CreateMilestoneState extends ConsumerState<_CreateMilestone> {
           );
       if (mounted) Navigator.of(context).pop(ref0);
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
       if (mounted) setState(() => _busy = false);
     }
   }
@@ -1407,7 +1483,8 @@ List<MediaItem> _selectedItems(WidgetRef ref, MemoryCtx c) {
   ];
 }
 
-Future<void> _update(
+/// True when the change was saved.
+Future<bool> _update(
   BuildContext context,
   WidgetRef ref,
   MemoryCtx c,
@@ -1419,17 +1496,22 @@ Future<void> _update(
   final l10n = AppLocalizations.of(context);
   final toaster = ClToaster.of(context);
   try {
-    await ref.read(memoryRepositoryProvider).update(c.babyId, [
-      for (final i in items) i.id,
-    ], change);
+    await withClProgress(
+      context,
+      () => ref.read(memoryRepositoryProvider).update(c.babyId, [
+        for (final i in items) i.id,
+      ], change),
+    );
     ref.read(memorySelectionProvider.notifier).end();
     toaster.show(
       message: done,
       actionLabel: undo == null ? null : l10n.undo,
       onAction: undo,
     );
+    return true;
   } on Object {
-    toaster.show(message: l10n.toastActionFailed);
+    toaster.show(message: l10n.toastActionFailed, error: true);
+    return false;
   }
 }
 
@@ -1442,6 +1524,12 @@ Future<void> showSelectionActions(
   if (items.isEmpty) return;
   final l10n = AppLocalizations.of(context);
   final parent = c.isParent;
+  // Thiệp cột mốc / Video kỷ niệm from the chosen photos (D-068), when the family has them.
+  final keepsakes = ref.read(selectedKeepsakeAccessProvider);
+  final photos = [
+    for (final i in items)
+      if (!i.isVideo && i.generatedKind == null) i.id,
+  ];
   final action = await showClSheet<String>(
     context: context,
     builder: (sheet) {
@@ -1557,6 +1645,20 @@ Future<void> showSelectionActions(
               l10n.actDateHint,
               parent ? 'date' : null,
             ),
+            if (parent && keepsakes.cards)
+              row(
+                ClIcons.star,
+                l10n.actMakeCard,
+                l10n.actMakeCardHint,
+                photos.isEmpty ? null : 'card',
+              ),
+            if (parent && keepsakes.videos)
+              row(
+                ClIcons.camera,
+                l10n.actMakeVideo,
+                l10n.actMakeVideoHint,
+                photos.isEmpty ? null : 'video',
+              ),
             row(ClIcons.spark, l10n.actStory, l10n.actSoon, null),
             row(
               ClIcons.memories,
@@ -1573,6 +1675,14 @@ Future<void> showSelectionActions(
   );
   if (action == null || !context.mounted) return;
   switch (action) {
+    case 'card' || 'video':
+      ref.read(memorySelectionProvider.notifier).end();
+      unawaited(
+        context.push(
+          action == 'card' ? Routes.milestoneCard : Routes.memoryStory,
+          extra: photos,
+        ),
+      );
     case 'album':
       final picked = await showAlbumPicker(
         context,
@@ -1586,9 +1696,11 @@ Future<void> showSelectionActions(
       final albums =
           ref.read(albumsProvider((c.babyId, true))).value ?? const [];
       try {
-        for (final a in picked) {
-          await repo.addToAlbum(c.babyId, a, [for (final i in items) i.id]);
-        }
+        await withClProgress(context, () async {
+          for (final a in picked) {
+            await repo.addToAlbum(c.babyId, a, [for (final i in items) i.id]);
+          }
+        });
         ref.read(memorySelectionProvider.notifier).end();
         toaster.show(
           message: l10n.albAdded(
@@ -1597,11 +1709,12 @@ Future<void> showSelectionActions(
           ),
         );
       } on Object {
-        toaster.show(message: l10n.toastActionFailed);
+        toaster.show(message: l10n.toastActionFailed, error: true);
       }
     case 'favorite':
       final toaster = ClToaster.of(context);
       try {
+        // A Firestore write (instant, also offline): no spinner, it would wait for the network.
         for (final i in items) {
           await ref
               .read(memoryRepositoryProvider)
@@ -1610,7 +1723,7 @@ Future<void> showSelectionActions(
         ref.read(memorySelectionProvider.notifier).end();
         toaster.show(message: l10n.favAdded);
       } on Object {
-        toaster.show(message: l10n.toastActionFailed);
+        toaster.show(message: l10n.toastActionFailed, error: true);
       }
     case 'cover':
       final picked = await showAlbumPicker(context, ref, c);
@@ -1618,15 +1731,17 @@ Future<void> showSelectionActions(
       final repo = ref.read(memoryRepositoryProvider);
       final toaster = ClToaster.of(context);
       try {
-        await repo.addToAlbum(c.babyId, picked.first, [items.single.id]);
-        await repo.updateAlbum(c.babyId, picked.first, {
-          'kind': 'cover',
-          'mediaId': items.single.id,
+        await withClProgress(context, () async {
+          await repo.addToAlbum(c.babyId, picked.first, [items.single.id]);
+          await repo.updateAlbum(c.babyId, picked.first, {
+            'kind': 'cover',
+            'mediaId': items.single.id,
+          });
         });
         ref.read(memorySelectionProvider.notifier).end();
         toaster.show(message: l10n.albCoverSet);
       } on Object {
-        toaster.show(message: l10n.toastActionFailed);
+        toaster.show(message: l10n.toastActionFailed, error: true);
       }
     case 'download':
       await saveToPhotos(context, items);
@@ -1849,8 +1964,18 @@ Future<void> confirmDeleteSelection(
   WidgetRef ref,
   MemoryCtx c,
 ) async {
-  final items = _selectedItems(ref, c);
-  if (items.isEmpty) return;
+  await confirmDeleteMedia(context, ref, c, _selectedItems(ref, c));
+}
+
+/// 10b4 for [items] (the selection, or the one open in the viewer): true once deleted (Thùng
+/// rác keeps them 30 days, "Hoàn tác" on the toast).
+Future<bool> confirmDeleteMedia(
+  BuildContext context,
+  WidgetRef ref,
+  MemoryCtx c,
+  List<MediaItem> items,
+) async {
+  if (items.isEmpty) return false;
   final l10n = AppLocalizations.of(context);
   final ok = await showClSheet<bool>(
     context: context,
@@ -1913,9 +2038,9 @@ Future<void> confirmDeleteSelection(
       ]);
     },
   );
-  if (ok != true || !context.mounted) return;
+  if (ok != true || !context.mounted) return false;
   final repo = ref.read(memoryRepositoryProvider);
-  await _update(
+  return _update(
     context,
     ref,
     c,

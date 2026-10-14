@@ -39,7 +39,7 @@ service cloud.firestore {
     // way: published by Functions after a second person approves; the app falls back to its copy.
     match /publicConfig/{docId} {
       allow get: if docId in ['flags', 'limits', 'reference_growth_weight', 'reference_growth_length',
-        'reference_bottle', 'reference_vaccines', 'content_firstAid', 'appUpdate'];
+        'reference_bottle', 'reference_vaccines', 'content_firstAid', 'appUpdate', 'keepsakes'];
       allow list, write: if false;
     }
 
@@ -276,6 +276,13 @@ service cloud.firestore {
       // The uploader's own batches ("Đã báo cho Bà nội, Ông ngoại", R-115).
       match /uploadBatches/{batchId} {
         allow read: if isParent(babyId) && resource.data.createdBy == request.auth.uid;
+        allow write: if false;
+      }
+
+      // Video kỷ niệm render jobs (D-068; MM08, MM14, MM15 drafts): the Cùng nuôi who asked follows
+      // them; Functions and the renderer write them.
+      match /keepsakeJobs/{jobId} {
+        allow read: if isParent(babyId) && resource.data.uid == request.auth.uid;
         allow write: if false;
       }
 

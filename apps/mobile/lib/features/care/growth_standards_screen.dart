@@ -155,7 +155,10 @@ class _GrowthStandardsScreenState extends ConsumerState<GrowthStandardsScreen> {
                 children: [
                   Semantics(
                     header: true,
-                    child: Text(l10n.whoStandardsTitle, style: cl.text.largeTitle),
+                    child: Text(
+                      l10n.whoStandardsTitle,
+                      style: cl.text.largeTitle,
+                    ),
                   ),
                   const SizedBox(height: ClSpace.s2),
                   Text(

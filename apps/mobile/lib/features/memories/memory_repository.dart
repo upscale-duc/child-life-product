@@ -363,9 +363,13 @@ class PublicLimits {
   const PublicLimits({
     this.mediaItemsPerAdd = 30,
     this.familyQuotaBytes = 10 * 1024 * 1024 * 1024,
+    this.autoSaveItemsPerApprove = 200,
   });
   final int mediaItemsPerAdd;
   final int familyQuotaBytes;
+
+  /// Tự lưu: at most this many items per "Tải lên" (D-070).
+  final int autoSaveItemsPerApprove;
 }
 
 final publicLimitsProvider = StreamProvider<PublicLimits>(
@@ -380,6 +384,8 @@ final publicLimitsProvider = StreamProvider<PublicLimits>(
           familyQuotaBytes:
               (d['familyQuotaBytes'] as num?)?.toInt() ??
               10 * 1024 * 1024 * 1024,
+          autoSaveItemsPerApprove:
+              (d['autoSaveItemsPerApprove'] as num?)?.toInt() ?? 200,
         );
       }),
 );

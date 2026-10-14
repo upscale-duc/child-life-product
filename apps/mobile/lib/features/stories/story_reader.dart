@@ -69,75 +69,13 @@ class StoryReaderScreen extends ConsumerWidget {
       start: photos.indexWhere((m) => m.id == id),
     );
 
-    final children = <Widget>[];
-    for (final b in s.blocks) {
-      children.add(switch (b) {
-        ParagraphBlock() => Text(
-          b.text,
-          style: cl.text.body.copyWith(height: 1.6, fontSize: 17),
-        ),
-        PhotosBlock() => SizedBox(
-          height: b.items.length == 1 ? 240 : 160,
-          child: Row(
-            children: [
-              for (final (i, p) in b.items.indexed) ...[
-                if (i > 0) const SizedBox(width: 4),
-                Expanded(
-                  child: ClPressable(
-                    onPressed: media[p.mediaId] == null
-                        ? null
-                        : () => view(p.mediaId),
-                    semanticLabel: p.caption ?? l10n.sryAddPhotos,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: StoryImage(
-                            item: media[p.mediaId],
-                            display: b.items.length == 1,
-                            radius: 12,
-                          ),
-                        ),
-                        if (p.caption != null)
-                          Text(
-                            p.caption!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: cl.text.caption.copyWith(
-                              color: cl.colors.inkMuted,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-        MilestoneBlock() => Align(
-          alignment: Alignment.centerLeft,
-          child: StoryMilestoneChip(
-            label: l10n.sryMilestoneOn(
-              b.name,
-              DateFormat('d MMM', locale).format(b.date),
-            ),
-          ),
-        ),
-        // Pull quote: Lora italic 20, mint (206:301).
-        QuoteBlock() => Text(
-          '“${b.text}”',
-          style: TextStyle(
-            fontFamily: 'Lora',
-            fontStyle: FontStyle.italic,
-            fontSize: 20,
-            height: 1.4,
-            color: cl.colors.mintText,
-          ),
-        ),
-      });
-      children.add(const SizedBox(height: ClSpace.s4));
-    }
+    final children = storyBlockWidgets(
+      context,
+      s,
+      media,
+      locale: locale,
+      onView: view,
+    );
 
     return Scaffold(
       backgroundColor: s.kind == StoryKind.letter
@@ -153,7 +91,7 @@ class StoryReaderScreen extends ConsumerWidget {
                   children: [
                     if (s.kind == StoryKind.story)
                       AspectRatio(
-                        aspectRatio: 4 / 3,
+                        aspectRatio: storyCoverRatio(media[s.coverMediaId]),
                         child: ClPressable(
                           onPressed:
                               s.coverMediaId == null ||
@@ -377,10 +315,13 @@ Future<void> _confirmDelete(
   final toaster = ClToaster.of(context);
   final router = GoRouter.of(context);
   try {
-    await ref.read(storyRepositoryProvider).delete(s.babyId, s.id);
+    await withClProgress(
+      context,
+      () => ref.read(storyRepositoryProvider).delete(s.babyId, s.id),
+    );
     toaster.show(message: l10n.sryDeleted);
     router.pop();
   } on Object {
-    toaster.show(message: l10n.toastActionFailed);
+    toaster.show(message: l10n.toastActionFailed, error: true);
   }
 }

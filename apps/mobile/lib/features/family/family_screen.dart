@@ -240,7 +240,10 @@ class _PendingCardState extends ConsumerState<_PendingCard> {
     try {
       var ticket = invite.ticket;
       if (invite.isExpiredAt(DateTime.now())) {
-        ticket = await repo.regenerateInvite(invite.inviteId);
+        ticket = await withClProgress(
+          context,
+          () => repo.regenerateInvite(invite.inviteId),
+        );
       }
       final email = invite.recipientEmail;
       if (email == null) {
@@ -250,10 +253,14 @@ class _PendingCardState extends ConsumerState<_PendingCard> {
         return;
       }
       if (!mounted) return;
-      await repo.sendInviteEmail(
-        inviteId: invite.inviteId,
-        email: email,
-        locale: Localizations.localeOf(context).languageCode,
+      final locale = Localizations.localeOf(context).languageCode;
+      await withClProgress(
+        context,
+        () => repo.sendInviteEmail(
+          inviteId: invite.inviteId,
+          email: email,
+          locale: locale,
+        ),
       );
       if (mounted) showClToast(context, message: l10n.familyResent(email));
     } on FamilyException catch (e) {
@@ -368,9 +375,12 @@ class _PendingCardState extends ConsumerState<_PendingCard> {
     final toaster = ClToaster.of(context);
     setState(() => _busy = true);
     try {
-      await ref
-          .read(familyRepositoryProvider)
-          .revokeInvite(widget.invite.inviteId);
+      await withClProgress(
+        context,
+        () => ref
+            .read(familyRepositoryProvider)
+            .revokeInvite(widget.invite.inviteId),
+      );
       toaster.show(message: l10n.inviteRevoked);
     } on FamilyException catch (e) {
       toaster.show(message: familyMessage(l10n, e.failure));
@@ -407,7 +417,10 @@ class _MemberSheetState extends ConsumerState<_MemberSheet> {
     final l10n = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
-      await action(ref.read(familyRepositoryProvider));
+      await withClProgress(
+        context,
+        () => action(ref.read(familyRepositoryProvider)),
+      );
       if (mounted) showClToast(context, message: l10n.memberUpdated);
     } on FamilyException catch (e) {
       if (mounted) {

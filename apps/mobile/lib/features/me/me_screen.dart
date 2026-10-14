@@ -375,7 +375,7 @@ class _OwnershipOfferCardState extends ConsumerState<OwnershipOfferCard> {
           .answerOwnership(widget.offer.familyId, answer);
       if (answer == 'accept') toaster.show(message: l10n.acOfferAccepted);
     } on AccountActionException {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

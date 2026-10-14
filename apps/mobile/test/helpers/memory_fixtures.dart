@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/keepsakes/keepsake_access.dart';
+import 'package:child_life/features/keepsakes/keepsake_catalog.dart';
 import 'package:child_life/features/memories/album_models.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memory_models.dart';
@@ -62,6 +64,7 @@ MediaItem mediaItem(
   MilestoneRef? milestone,
   int position = 0,
   MediaStatus status = MediaStatus.ready,
+  String? generated,
 }) {
   final author = by ?? mai;
   final audience = private ? Audience.parents : Audience.family;
@@ -81,6 +84,7 @@ MediaItem mediaItem(
     width: 1200,
     height: 900,
     milestone: milestone,
+    generatedKind: generated,
     paths: MediaPaths(
       original: 'mock/$colour',
       display: 'mock/$colour',
@@ -537,6 +541,8 @@ List<Override> memoryOverrides({
   Set<String>? favorites,
   List<Love> loves = const [],
   List<ParentMessage> messages = const [],
+  KeepsakeAccess keepsakes = (cards: false, videos: false),
+  KeepsakeCatalog keepsakeCatalog = const KeepsakeCatalog([]),
 }) {
   final j = journal ?? mockJournal();
   final a = withAlbums
@@ -597,6 +603,11 @@ List<Override> memoryOverrides({
     queueStoreProvider.overrideWithValue(store ?? MemoryQueueStore()),
     uploadTransportProvider.overrideWithValue(transport ?? FakeTransport()),
     mediaPreparerProvider.overrideWithValue(FakePreparer()),
+    // Kỷ niệm 2.0 (D-068): off unless a test turns it on; never asks Firebase.
+    keepsakeAccessProvider.overrideWith((ref, id) async => keepsakes),
+    keepsakeCatalogProvider.overrideWith(
+      (ref) => Stream.value(keepsakeCatalog),
+    ),
   ];
 }
 

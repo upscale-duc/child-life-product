@@ -47,11 +47,19 @@ beforeEach(async () => {
 
 describe('getFeatureAccess · auto_save', () => {
   it('is off with no config, and with a document written before the flag existed', async () => {
-    expect(await featureAccess(db, 'mom', { babyId: 'b1' }, now)).toEqual({ autoSave: false });
+    expect(await featureAccess(db, 'mom', { babyId: 'b1' }, now)).toEqual({
+      autoSave: false,
+      milestoneCards: false,
+      memoryStory: false,
+    });
     await db.doc('config/flags').set({
       media_upload: { ...defaultFlags.media_upload, enabled: true },
     });
-    expect(await featureAccess(db, 'mom', { babyId: 'b1' }, now)).toEqual({ autoSave: false });
+    expect(await featureAccess(db, 'mom', { babyId: 'b1' }, now)).toEqual({
+      autoSave: false,
+      milestoneCards: false,
+      memoryStory: false,
+    });
   });
 
   it('internal: staff families only, and only for Cùng nuôi', async () => {
@@ -87,5 +95,27 @@ describe('getFeatureAccess · auto_save', () => {
     expect(await reason(featureAccess(db, 'stranger', { babyId: 'b1' }, now))).toBe('not-a-member');
     expect(await reason(featureAccess(db, 'gone', { babyId: 'b1' }, now))).toBe('not-a-member');
     expect(await reason(featureAccess(db, 'mom', { babyId: '' }, now))).toBe('bad-request');
+  });
+});
+
+describe('getFeatureAccess · Kỷ niệm 2.0 (D-068)', () => {
+  it('each flag stands alone, for Cùng nuôi only', async () => {
+    await db.doc('config/flags').set({
+      milestone_cards: { ...defaultFlags.milestone_cards, enabled: true, scope: 'all' },
+    });
+    expect(await featureAccess(db, 'mom', { babyId: 'b1' }, now)).toEqual({
+      autoSave: false,
+      milestoneCards: true,
+      memoryStory: false,
+    });
+    expect((await featureAccess(db, 'nanny', { babyId: 'b1' }, now)).milestoneCards).toBe(false);
+    await db.doc('config/flags').set({
+      memory_story: { ...defaultFlags.memory_story, enabled: true, scope: 'internal' },
+    });
+    expect(await featureAccess(db, 'mom', { babyId: 'b1' }, now)).toEqual({
+      autoSave: false,
+      milestoneCards: false,
+      memoryStory: true,
+    });
   });
 });

@@ -656,7 +656,7 @@ class _DeleteBabySheetState extends ConsumerState<_DeleteBabySheet> {
       }
       router.go(Routes.meBabies);
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
       if (mounted) setState(() => _busy = false);
     }
   }

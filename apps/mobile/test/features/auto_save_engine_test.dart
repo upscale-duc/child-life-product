@@ -115,6 +115,55 @@ void main() {
     );
   });
 
+  group('explainMatch (dev diagnostics)', () {
+    final teddy = BabyFaces(
+      samples: [
+        v([1, 0, 0]),
+        v([0.98, 0.2, 0]),
+      ],
+    );
+    test('says why a photo is not suggested', () {
+      expect(
+        explainMatch(photo('n'), {'teddy': teddy}).reason,
+        MatchReason.noFace,
+      );
+      expect(
+        explainMatch(
+          photo(
+            's',
+            faces: [
+              FaceInfo(size: 0.02, print: v([1, 0, 0])),
+            ],
+          ),
+          {'teddy': teddy},
+        ).reason,
+        MatchReason.small,
+      );
+      final far = explainMatch(
+        photo(
+          'f',
+          faces: [
+            FaceInfo(size: 0.3, print: v([0, 0, 1])),
+          ],
+        ),
+        {'teddy': teddy},
+      );
+      expect(far.reason, MatchReason.far);
+      expect(far.distance, greaterThan(far.threshold!));
+      final ok = explainMatch(
+        photo(
+          'm',
+          faces: [
+            FaceInfo(size: 0.3, print: v([0.99, 0.1, 0])),
+          ],
+        ),
+        {'teddy': teddy},
+      );
+      expect(ok.reason, MatchReason.match);
+      expect(ok.distance, lessThanOrEqualTo(ok.threshold!));
+    });
+  });
+
   group('groupAndRank', () {
     Candidate c(AssetInfo a) => Candidate(
       asset: a,

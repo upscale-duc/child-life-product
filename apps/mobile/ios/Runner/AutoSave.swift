@@ -1,3 +1,4 @@
+import AVFoundation
 import BackgroundTasks
 import Flutter
 import Photos
@@ -14,6 +15,11 @@ enum AutoSave {
   /// Longest side of the image Vision looks at. Local thumbnails are enough; iCloud originals are
   /// only fetched for upload (`isNetworkAccessAllowed = false`).
   static let side: CGFloat = 512
+  /// Videos are read as a few frames at this longest side: a baby's face is a smaller part of a
+  /// video frame than of a photo, and the poster frame alone (often the first, often blurred or
+  /// without the baby) matched no video at all.
+  static let videoSide: CGFloat = 1024
+  static let videoFrames = 5
   private static let work = DispatchQueue(label: "childlife.autosave", qos: .utility)
 
   /// [headless]: the engine started only for a background check (AutoSaveBackground).
@@ -41,6 +47,8 @@ enum AutoSave {
       case "analyze":
         let ids = args["ids"] as? [String] ?? []
         work.async { reply(analyze(ids: ids)) }
+      case "inspectRecent":
+        work.async { reply(inspectRecent()) }
       case "analyzeFile":
         let path = args["path"] as? String ?? ""
         work.async { reply(analyzeFile(path: path)) }
@@ -107,28 +115,80 @@ enum AutoSave {
     if photos { kinds.append(NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)) }
     if videos { kinds.append(NSPredicate(format: "mediaType == %d", PHAssetMediaType.video.rawValue)) }
     if kinds.isEmpty { return ["ids": [String](), "token": current.map(FlutterStandardTypedData.init(bytes:)) as Any] }
-    let skip = PHAssetMediaSubtype.photoScreenshot.rawValue | PHAssetMediaSubtype.videoScreenRecording.rawValue
-    var parts: [NSPredicate] = [
-      NSCompoundPredicate(orPredicateWithSubpredicates: kinds),
-      NSPredicate(format: "(mediaSubtypes & %d) == 0", skip),
-    ]
+    // Screenshots and screen recordings are left out below, not in the query: a bitwise
+    // `mediaSubtypes` predicate left out every video on the owner's phone (2026-10-14).
+    var parts: [NSPredicate] = [NSCompoundPredicate(orPredicateWithSubpredicates: kinds)]
     let fetched: PHFetchResult<PHAsset>
     if let ids {
       options.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: parts)
       fetched = PHAsset.fetchAssets(withLocalIdentifiers: ids, options: options)
     } else {
-      parts.append(NSPredicate(format: "creationDate >= %@", (since ?? Date().addingTimeInterval(-30 * 86_400)) as NSDate))
+      // Saved from Zalo, Messenger or AirDrop: the date taken can be old or missing, so a recent
+      // addition counts too (Photos sets the modification date when an item comes in).
+      let from = (since ?? Date().addingTimeInterval(-30 * 86_400)) as NSDate
+      parts.append(
+        NSCompoundPredicate(orPredicateWithSubpredicates: [
+          NSPredicate(format: "creationDate >= %@", from),
+          NSPredicate(format: "modificationDate >= %@", from),
+        ]))
       options.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: parts)
       fetched = PHAsset.fetchAssets(with: options)
     }
     var out: [String] = []
+    var listedVideos = 0
     out.reserveCapacity(fetched.count)
-    fetched.enumerateObjects { asset, _, _ in out.append(asset.localIdentifier) }
+    let skip: PHAssetMediaSubtype = [.photoScreenshot, .videoScreenRecording]
+    fetched.enumerateObjects { asset, _, _ in
+      guard asset.mediaSubtypes.intersection(skip).isEmpty else { return }
+      out.append(asset.localIdentifier)
+      if asset.mediaType == .video { listedVideos += 1 }
+    }
     return [
       "ids": out,
+      // Dev diagnostics: what the history or the date filter returned before any filtering in Dart.
+      "inserted": ids?.count ?? -1,
+      "videos": listedVideos,
       "fromHistory": ids != nil,
       "token": current.map(FlutterStandardTypedData.init(bytes:)) as Any,
     ]
+  }
+
+  /// Dev diagnostics: the newest library items by date taken and by last change, with what the
+  /// check's filter makes of them (file name, kind, dates, source, hidden).
+  static func inspectRecent() -> [[String: Any]] {
+    func fetch(_ key: String) -> PHFetchResult<PHAsset> {
+      let options = PHFetchOptions()
+      options.includeHiddenAssets = true
+      options.includeAssetSourceTypes = [.typeUserLibrary, .typeCloudShared, .typeiTunesSynced]
+      options.sortDescriptors = [NSSortDescriptor(key: key, ascending: false)]
+      options.fetchLimit = 40
+      return PHAsset.fetchAssets(with: options)
+    }
+    let skip = PHAssetMediaSubtype.photoScreenshot.rawValue | PHAssetMediaSubtype.videoScreenRecording.rawValue
+    var seen = Set<String>()
+    var out: [[String: Any]] = []
+    for result in [fetch("creationDate"), fetch("modificationDate")] {
+      result.enumerateObjects { asset, _, _ in
+        guard seen.insert(asset.localIdentifier).inserted else { return }
+        let ms = { (d: Date?) in d.map { Int64(($0.timeIntervalSince1970 * 1000).rounded()) } as Any }
+        out.append([
+          "id": asset.localIdentifier,
+          "name": PHAssetResource.assetResources(for: asset).first?.originalFilename ?? "",
+          "video": asset.mediaType == .video,
+          "mediaType": asset.mediaType.rawValue,
+          "subtypes": asset.mediaSubtypes.rawValue,
+          "source": asset.sourceType.rawValue,
+          "hidden": asset.isHidden,
+          "created": ms(asset.creationDate),
+          "modified": ms(asset.modificationDate),
+          "passes": (asset.mediaType == .image || asset.mediaType == .video)
+            && (asset.mediaSubtypes.rawValue & skip) == 0
+            && (asset.sourceType.contains(.typeUserLibrary) || asset.sourceType.contains(.typeiTunesSynced))
+            && !asset.isHidden,
+        ])
+      }
+    }
+    return out
   }
 
   // MARK: Describing photos
@@ -142,6 +202,8 @@ enum AutoSave {
         guard let asset = byId[id] else { return ["id": id, "missing": true] }
         var out: [String: Any] = [
           "id": id,
+          // Diagnostics: the name the parent sees in Photos (IMG_3859), never a caption or a face.
+          "name": PHAssetResource.assetResources(for: asset).first?.originalFilename ?? "",
           "captureAt": Int64(((asset.creationDate ?? Date()).timeIntervalSince1970 * 1000).rounded()),
           "video": asset.mediaType == .video,
           "durationMs": Int(asset.duration * 1000),
@@ -151,11 +213,21 @@ enum AutoSave {
           "burstPick": asset.burstSelectionTypes.contains(.userPick),
         ]
         if let burst = asset.burstIdentifier { out["burst"] = burst }
+        if asset.mediaType == .video {
+          let shots = frames(asset)
+          out["frames"] = shots.count
+          if !shots.isEmpty {
+            describe(frames: shots, into: &out)
+            return out
+          }
+        }
         guard let image = thumbnail(asset) else {
           out["unreadable"] = true
           return out
         }
         describe(image, into: &out)
+        // "Utility" (receipts, documents) is judged on photos; a video's poster frame says little.
+        if asset.mediaType == .video { out.removeValue(forKey: "utility") }
         return out
       }
     }
@@ -193,6 +265,74 @@ enum AutoSave {
       }
     }
     return image
+  }
+
+  /// Up to [videoFrames] upright frames spread over a video, from a file already on the phone. An
+  /// iCloud-only video gives none and is described from its poster frame instead.
+  private static func frames(_ asset: PHAsset) -> [CGImage] {
+    let options = PHVideoRequestOptions()
+    options.isNetworkAccessAllowed = false
+    options.version = .current
+    options.deliveryMode = .highQualityFormat
+    let got = DispatchSemaphore(value: 0)
+    var video: AVAsset?
+    PHImageManager.default().requestAVAsset(forVideo: asset, options: options) { av, _, _ in
+      video = av
+      got.signal()
+    }
+    guard got.wait(timeout: .now() + 10) == .success, let video else { return [] }
+    let length = asset.duration
+    guard length > 0 else { return [] }
+    let count = length < 2 ? 1 : min(videoFrames, max(3, Int(length / 3)))
+    let generator = AVAssetImageGenerator(asset: video)
+    generator.appliesPreferredTrackTransform = true
+    generator.maximumSize = CGSize(width: videoSide, height: videoSide)
+    let tolerance = CMTime(seconds: min(0.5, length / Double(count * 2)), preferredTimescale: 600)
+    generator.requestedTimeToleranceBefore = tolerance
+    generator.requestedTimeToleranceAfter = tolerance
+    let times = (0..<count).map {
+      NSValue(time: CMTime(seconds: length * (Double($0) + 0.5) / Double(count), preferredTimescale: 600))
+    }
+    let lock = NSLock()
+    var images: [CGImage] = []
+    let done = DispatchGroup()
+    times.forEach { _ in done.enter() }
+    generator.generateCGImagesAsynchronously(forTimes: times) { _, image, _, _, _ in
+      if let image {
+        lock.lock()
+        images.append(image)
+        lock.unlock()
+      }
+      done.leave()
+    }
+    if done.wait(timeout: .now() + 20) == .timedOut { generator.cancelAllCGImageGeneration() }
+    lock.lock()
+    defer { lock.unlock() }
+    return images
+  }
+
+  /// A video as one item: the faces of every frame (the Dart side keeps the closest to a baby),
+  /// and the whole-image print and aesthetics of the frame with the largest face.
+  private static func describe(frames: [CGImage], into out: inout [String: Any]) {
+    var faces: [[String: Any]] = []
+    var lead: [String: Any]?
+    var leadSize = -1.0
+    for frame in frames {
+      autoreleasepool {
+        var one: [String: Any] = [:]
+        describe(UIImage(cgImage: frame), into: &one)
+        let found = one["faces"] as? [[String: Any]] ?? []
+        faces.append(contentsOf: found)
+        let largest = found.compactMap { $0["size"] as? Double }.max() ?? 0
+        if lead == nil || largest > leadSize {
+          lead = one
+          leadSize = largest
+        }
+      }
+    }
+    if let print = lead?["print"] { out["print"] = print }
+    if let score = lead?["aesthetics"] { out["aesthetics"] = score }
+    out["faces"] = Array(faces.sorted { ($0["size"] as? Double ?? 0) > ($1["size"] as? Double ?? 0) }.prefix(16))
   }
 
   /// Faces (each with its own print and capture quality), a print of the whole image for

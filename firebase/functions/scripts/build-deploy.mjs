@@ -3,7 +3,7 @@
 // Cloud Build can install from npm. Workspace protocol dependencies never reach Cloud Build.
 import { build } from 'esbuild';
 import { execFileSync } from 'node:child_process';
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -49,6 +49,13 @@ await writeFile(
   // OPENAI_MODEL: the story model behind the adapter (D-003, S12); the key is a secret.
   'MAIL_FROM=Child Life <hello@childlife.app>\nMAIL_REPLY_TO=hello@childlife.app\nSUPPORT_INBOX=support@childlife.app\nOPENAI_MODEL=gpt-4.1-mini\n',
 );
+// Per-project params written by other deploy steps (e.g. KEEPSAKE_RENDERER_URL from
+// scripts/deploy-renderer.sh, D-068): `.env.<projectId>` beside package.json, never committed.
+for (const name of await readdir(root)) {
+  if (/^\.env\.child-life-(dev|prod)$/.test(name)) {
+    await writeFile(join(out, name), await readFile(join(root, name)));
+  }
+}
 // The Firebase CLI loads firebase-functions from the source dir to discover triggers, and Cloud Build
 // installs from the generated lockfile, so both see exactly the pinned runtime versions.
 execFileSync('npm', ['install', '--omit=dev', '--no-audit', '--no-fund', '--loglevel=error'], {

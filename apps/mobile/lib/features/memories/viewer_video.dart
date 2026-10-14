@@ -65,6 +65,27 @@ abstract class ViewerVideo {
   Future<void> dispose();
 }
 
+/// A media_kit player set up for streaming from Storage: a larger read-ahead and, after a
+/// stall, waiting for a few seconds of video instead of one, so a slow connection plays in
+/// longer runs rather than stopping every second (mpv: cache-pause-wait, cache-secs).
+Player streamingPlayer() {
+  final player = Player(
+    configuration: const PlayerConfiguration(bufferSize: 128 * 1024 * 1024),
+  );
+  final native = player.platform;
+  if (native is NativePlayer) {
+    for (final (name, value) in const [
+      ('cache-pause-initial', 'yes'),
+      ('cache-pause-wait', '3'),
+      ('cache-secs', '60'),
+      ('demuxer-readahead-secs', '60'),
+    ]) {
+      unawaited(native.setProperty(name, value).catchError((Object _) {}));
+    }
+  }
+  return player;
+}
+
 /// Makes a player per video page; overridden in tests.
 final viewerVideoProvider = Provider<ViewerVideo Function()>(
   (_) => MediaKitViewerVideo.new,
@@ -111,7 +132,7 @@ class MediaKitViewerVideo implements ViewerVideo {
     SchedulerBinding.instance.scheduleFrame();
   }
 
-  final _player = Player();
+  final _player = streamingPlayer();
   late final VideoController _controller;
   final _subs = <StreamSubscription<Object?>>[];
   final _state = ValueNotifier(const ViewerVideoState());

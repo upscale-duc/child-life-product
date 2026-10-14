@@ -306,10 +306,14 @@ class AutoSaveEntryCard extends ConsumerWidget {
   const AutoSaveEntryCard({
     required this.babyId,
     required this.name,
+    this.padding = const EdgeInsets.only(bottom: ClSpace.s3),
     super.key,
   });
   final String babyId;
   final String name;
+
+  /// Around the card, so the gaps above and below match the tab it sits in.
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -326,7 +330,7 @@ class AutoSaveEntryCard extends ConsumerWidget {
           )
         : l10n.autoSaveEntryHint(name);
     return Padding(
-      padding: const EdgeInsets.only(bottom: ClSpace.s3),
+      padding: padding,
       child: ClPressable(
         semanticLabel: '${l10n.autoSaveTitle}, ${l10n.autoSaveBeta}. $subtitle',
         onPressed: () => context.push(Routes.autoSave),

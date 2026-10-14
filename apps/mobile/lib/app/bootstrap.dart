@@ -52,6 +52,11 @@ Future<ResolvedEnvironment> bootstrap() async {
     ReviewSession.afterError = true;
     crashlytics.recordFlutterFatalError(details);
   };
+  // Dev builds show what broke instead of the grey release error box, so testers can send a
+  // screenshot (no child data in an exception message; prod keeps the default).
+  if (resolved.environment == AppEnvironment.dev) {
+    ErrorWidget.builder = (details) => DevErrorBox(details);
+  }
   PlatformDispatcher.instance.onError = (error, stack) {
     ReviewSession.afterError = true;
     unawaited(crashlytics.recordError(error, stack, fatal: true));
@@ -85,4 +90,45 @@ Future<void> _useEmulatorsIfRequested(AppEnvironment environment) async {
     region: functionsRegion,
   ).useFunctionsEmulator(host, 5001);
   await FirebaseStorage.instance.useStorageEmulator(host, 9199);
+}
+
+/// What a dev build shows in place of a widget that failed to build.
+class DevErrorBox extends StatelessWidget {
+  const DevErrorBox(this.details, {super.key});
+  final FlutterErrorDetails details;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = [
+      details.exceptionAsString(),
+      ...?details.stack
+          ?.toString()
+          .split('\n')
+          .where((l) => l.contains('package:child_life'))
+          .take(8),
+    ].join('\n');
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: ColoredBox(
+        color: const Color(0xFF3A1F1F),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: GestureDetector(
+              onLongPress: () => Clipboard.setData(ClipboardData(text: text)),
+              child: Text(
+                'Lỗi (bản dev · giữ để sao chép)\n\n$text',
+                style: const TextStyle(
+                  fontSize: 12,
+                  height: 1.35,
+                  color: Color(0xFFFFE4E4),
+                  decoration: TextDecoration.none,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

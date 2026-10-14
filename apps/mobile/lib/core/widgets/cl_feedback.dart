@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../design/cl_theme.dart';
 import '../design/motion.dart';
 import '../design/tokens.g.dart';
@@ -17,11 +18,13 @@ OverlayEntry showClToast(
   String? actionLabel,
   VoidCallback? onAction,
   Duration visibleFor = const Duration(seconds: 4),
+  bool error = false,
 }) => ClToaster.of(context).show(
   message: message,
   actionLabel: actionLabel,
   onAction: onAction,
   visibleFor: visibleFor,
+  error: error,
 )!;
 
 /// Shows toasts after the screen that asked for them has gone (a sheet that closed on save,
@@ -47,6 +50,9 @@ class ClToaster {
     String? actionLabel,
     VoidCallback? onAction,
     Duration visibleFor = const Duration(seconds: 4),
+
+    /// Something did not work: an alert instead of the check.
+    bool error = false,
   }) {
     if (!_overlay.mounted) return null;
     // One toast at a time: a new one replaces the last.
@@ -58,6 +64,7 @@ class ClToaster {
         actionLabel: actionLabel,
         onAction: onAction,
         visibleFor: visibleFor,
+        error: error,
         onDone: () {
           _visible.remove(entry);
           if (entry.mounted) entry.remove();
@@ -72,6 +79,77 @@ class ClToaster {
 }
 
 final _visible = <OverlayEntry>{};
+
+/// Runs [work] (a save or delete that calls the server) with a spinner over the whole screen,
+/// for actions started from a sheet, a row or an icon, which have no button of their own to
+/// spin: the app never looks frozen, and nothing else can be tapped meanwhile. A quick call
+/// (under 150 ms) shows nothing. Capture it while the context is alive, like [ClToaster].
+Future<T> withClProgress<T>(
+  BuildContext context,
+  Future<T> Function() work,
+) async {
+  final overlay =
+      Overlay.maybeOf(context, rootOverlay: true) ??
+      Navigator.of(context, rootNavigator: true).overlay!;
+  final theme = Theme.of(context);
+  OverlayEntry? entry;
+  final timer = Timer(const Duration(milliseconds: 150), () {
+    if (!overlay.mounted) return;
+    entry = OverlayEntry(builder: (_) => _Progress(theme: theme));
+    overlay.insert(entry!);
+  });
+  try {
+    return await work();
+  } finally {
+    timer.cancel();
+    if (entry?.mounted ?? false) entry!.remove();
+  }
+}
+
+class _Progress extends StatelessWidget {
+  const _Progress({required this.theme});
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) => Theme(
+    data: theme,
+    child: Builder(
+      builder: (context) {
+        final cl = context.cl;
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            const ModalBarrier(dismissible: false, color: Color(0x33000000)),
+            Center(
+              child: Semantics(
+                liveRegion: true,
+                label: AppLocalizations.of(context).a11yWorking,
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: cl.colors.surface,
+                    borderRadius: BorderRadius.circular(ClRadius.card - 8),
+                    boxShadow: cl.shadows.card,
+                  ),
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      color: cl.colors.mintDeep,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
 
 /// Removes visible toasts at once — e.g. when a sheet opens, so an "Hoàn tác" toast never
 /// sits over the sheet's primary button.
@@ -90,9 +168,11 @@ class _ToastHost extends StatefulWidget {
     required this.theme,
     this.actionLabel,
     this.onAction,
+    this.error = false,
   });
 
   final String message;
+  final bool error;
   final String? actionLabel;
   final VoidCallback? onAction;
   final Duration visibleFor;
@@ -165,9 +245,13 @@ class _ToastHostState extends State<_ToastHost>
               mainAxisSize: MainAxisSize.min,
               children: [
                 ClIcon(
-                  ClIcons.check,
+                  widget.error ? ClIcons.alert : ClIcons.check,
                   size: 18,
-                  color: cl.isNightCare ? cl.colors.mintText : cl.colors.mint,
+                  color: widget.error
+                      ? cl.colors.peach
+                      : cl.isNightCare
+                      ? cl.colors.mintText
+                      : cl.colors.mint,
                 ),
                 const SizedBox(width: ClSpace.s2),
                 Flexible(

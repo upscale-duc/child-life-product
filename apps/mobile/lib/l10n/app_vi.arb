@@ -90,6 +90,10 @@
   "@a11yBack": {
     "description": "Accessibility label of the round back button (8:37)."
   },
+  "a11yWorking": "Đang xử lý",
+  "@a11yWorking": {
+    "description": "Screen reader: a save or delete is running (full-screen spinner)."
+  },
   "a11yClose": "Đóng",
   "@a11yClose": {
     "description": "Accessibility label of sheet close buttons (37:293)."
@@ -4830,6 +4834,22 @@
   "actDateHint": "Khi ngày chụp bị sai",
   "@actDateHint": {
     "description": "10b3."
+  },
+  "actMakeCard": "Tạo thiệp cột mốc",
+  "@actMakeCard": {
+    "description": "Selection action: a card from the chosen photos."
+  },
+  "actMakeCardHint": "Dùng tối đa 4 ảnh đã chọn",
+  "@actMakeCardHint": {
+    "description": "Selection action hint."
+  },
+  "actMakeVideo": "Tạo video kỷ niệm",
+  "@actMakeVideo": {
+    "description": "Selection action: a video from the chosen photos."
+  },
+  "actMakeVideoHint": "Ảnh đã chọn vào sẵn các cảnh",
+  "@actMakeVideoHint": {
+    "description": "Selection action hint."
   },
   "actStory": "Kể thành câu chuyện",
   "@actStory": {
@@ -12797,6 +12817,232 @@
   "@upFirstAid": {
     "description": "UP1: the offline Sơ cứu guide stays reachable while blocked (owner, 2026-10-12)."
   },
+  "watchTileBottle": "Bú bình",
+  "@watchTileBottle": {
+    "description": "Watch W01 tile title."
+  },
+  "watchTileBreast": "Bú mẹ",
+  "@watchTileBreast": {
+    "description": "Watch W01 tile title."
+  },
+  "watchTileSleep": "Ngủ",
+  "@watchTileSleep": {
+    "description": "Watch W01 tile title."
+  },
+  "watchTileDiaper": "Tã",
+  "@watchTileDiaper": {
+    "description": "Watch W01 tile title."
+  },
+  "watchTilePump": "Hút sữa",
+  "@watchTilePump": {
+    "description": "Watch W01 tile title."
+  },
+  "watchTileReminder": "Nhắc",
+  "@watchTileReminder": {
+    "description": "Watch W01 tile title."
+  },
+  "watchSinceFeed": "từ cữ trước",
+  "@watchSinceFeed": {
+    "description": "Watch W01 tile caption under the time since the last feed."
+  },
+  "watchSinceLast": "từ lần trước",
+  "@watchSinceLast": {
+    "description": "Watch W01 tile caption (diaper, pump)."
+  },
+  "watchSleeping": "đang ngủ",
+  "@watchSleeping": {
+    "description": "Watch W01 sleep tile caption while a sleep runs."
+  },
+  "watchAwake": "đã thức",
+  "@watchAwake": {
+    "description": "Watch W01 sleep tile caption after waking (engineering, not drawn)."
+  },
+  "watchFeedReminder": "nhắc bú",
+  "@watchFeedReminder": {
+    "description": "Watch W01 reminder tile caption."
+  },
+  "watchNoneYet": "chưa ghi",
+  "@watchNoneYet": {
+    "description": "Watch W01 tile caption when nothing is logged (engineering, G-093)."
+  },
+  "watchAgo": "{t} trước",
+  "@watchAgo": {
+    "description": "Watch W11 night list: time since the last entry.",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "watchChooseBabyRow": "Chọn bé",
+  "@watchChooseBabyRow": {
+    "description": "Watch W01 last row, opens W12."
+  },
+  "watchCrownHint": "ml · xoay núm để chỉnh",
+  "@watchCrownHint": {
+    "description": "Watch W02 under the amount."
+  },
+  "watchSave": "Lưu",
+  "@watchSave": {
+    "description": "Watch W02 / W08 primary button."
+  },
+  "watchBreastStartHint": "Bắt đầu bên nào?",
+  "@watchBreastStartHint": {
+    "description": "Watch breast start screen (engineering, G-094)."
+  },
+  "watchSideLeft": "Trái",
+  "@watchSideLeft": {
+    "description": "Watch W03 side card."
+  },
+  "watchSideRight": "Phải",
+  "@watchSideRight": {
+    "description": "Watch W03 side card."
+  },
+  "watchSuggested": "gợi ý",
+  "@watchSuggested": {
+    "description": "Watch breast start: the side opposite the last feed (engineering)."
+  },
+  "watchBreastTotalLeft": "Tổng {t} · đang bú bên trái",
+  "@watchBreastTotalLeft": {
+    "description": "Watch W03 caption.",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "watchBreastTotalRight": "Tổng {t} · đang bú bên phải",
+  "@watchBreastTotalRight": {
+    "description": "Watch W03 caption.",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "watchSwitchSide": "Đổi bên",
+  "@watchSwitchSide": {
+    "description": "Watch W03 button."
+  },
+  "watchStop": "Dừng",
+  "@watchStop": {
+    "description": "Watch W03 button."
+  },
+  "watchSleepSince": "từ {time}",
+  "@watchSleepSince": {
+    "description": "Watch W04 under the sleep timer.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "watchWokeUp": "Bé đã dậy",
+  "@watchWokeUp": {
+    "description": "Watch W04 button."
+  },
+  "watchDiaperTitle": "Thay tã",
+  "@watchDiaperTitle": {
+    "description": "Watch W05 title."
+  },
+  "watchDiaperWet": "Ướt",
+  "@watchDiaperWet": {
+    "description": "Watch W05 button."
+  },
+  "watchDiaperDirty": "Bẩn",
+  "@watchDiaperDirty": {
+    "description": "Watch W05 button."
+  },
+  "watchDiaperBoth": "Cả hai",
+  "@watchDiaperBoth": {
+    "description": "Watch W05 button."
+  },
+  "watchLoggedWet": "Đã ghi tã ướt",
+  "@watchLoggedWet": {
+    "description": "Watch W06 title."
+  },
+  "watchLoggedDirty": "Đã ghi tã bẩn",
+  "@watchLoggedDirty": {
+    "description": "Watch W06 title (engineering)."
+  },
+  "watchLoggedBoth": "Đã ghi tã ướt và bẩn",
+  "@watchLoggedBoth": {
+    "description": "Watch W06 title (engineering)."
+  },
+  "watchLoggedBottle": "Đã ghi bú bình {ml} ml",
+  "@watchLoggedBottle": {
+    "description": "Watch W06 title (engineering).",
+    "placeholders": {
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "watchLoggedBreast": "Đã ghi cữ bú mẹ",
+  "@watchLoggedBreast": {
+    "description": "Watch W06 title (engineering)."
+  },
+  "watchLoggedSleep": "Đã ghi giấc ngủ",
+  "@watchLoggedSleep": {
+    "description": "Watch W06 title (engineering)."
+  },
+  "watchLoggedBy": "{time} · {name} ghi",
+  "@watchLoggedBy": {
+    "description": "Watch W06 line under the title (R-022).",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "watchUndo": "Hoàn tác",
+  "@watchUndo": {
+    "description": "Watch W06 button."
+  },
+  "watchFailed": "Chưa lưu được. Thử lại sau.",
+  "@watchFailed": {
+    "description": "Watch save refused (engineering, G-097)."
+  },
+  "watchChooseBaby": "Chọn bé",
+  "@watchChooseBaby": {
+    "description": "Watch W12 title."
+  },
+  "watchOneBabyNote": "Đổi sang bé khác trên iPhone.",
+  "@watchOneBabyNote": {
+    "description": "Watch W12 note while the phone sends one baby (engineering)."
+  },
+  "watchOffline": "Đã lưu trên đồng hồ. Sẽ gửi lên khi có mạng.",
+  "@watchOffline": {
+    "description": "Watch W13 banner."
+  },
+  "watchPending": "{n} lần ghi chờ gửi",
+  "@watchPending": {
+    "description": "Watch W13 row.",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "watchLinkTitle": "Kết nối iPhone",
+  "@watchLinkTitle": {
+    "description": "Watch first run, not linked yet (engineering, G-092)."
+  },
+  "watchLinkBody": "Mở Child Life trên iPhone và đăng nhập, đồng hồ sẽ tự kết nối.",
+  "@watchLinkBody": {
+    "description": "Watch first run body (engineering, G-092)."
+  },
+  "watchCannotLog": "Bạn chưa có bé nào để ghi trên đồng hồ.",
+  "@watchCannotLog": {
+    "description": "Watch empty state for a member who cannot log (engineering, G-093)."
+  },
+  "watchDemo": "Xem thử",
+  "@watchDemo": {
+    "description": "Watch first run, debug builds only: opens sample data."
+  },
   "imTotal": "Tổng {amount}",
   "@imTotal": {
     "description": "Nhập chi tiêu (D-060), review.",
@@ -13183,10 +13429,6 @@
   "signInRegister": "Đăng ký",
   "@signInRegister": {
     "description": "06 / R1: create an account with email (owner, 2026-10-13, D-067)"
-  },
-  "emailLinkNeedsEmail": "Nhập email để nhận link đăng nhập.",
-  "@emailLinkNeedsEmail": {
-    "description": "07: \"Gửi link đăng nhập\" with no email yet (owner, 2026-10-13)"
   },
   "autoSaveTitle": "Tự lưu kỷ niệm",
   "@autoSaveTitle": {
@@ -13844,6 +14086,35 @@
       }
     }
   },
+  "autoSaveDeselectAll": "Bỏ chọn tất cả",
+  "@autoSaveDeselectAll": {
+    "description": "AS07 top bar: untick everything shown, to pick a few by hand"
+  },
+  "autoSaveSelectAll": "Chọn tất cả",
+  "@autoSaveSelectAll": {
+    "description": "AS07 top bar once nothing is ticked: tick the suggested picks again (up to the limit, D-070)"
+  },
+  "autoSaveRoundRest": "{rest, plural, other{Mỗi lần tải tối đa {cap} mục · {rest} gợi ý còn lại chờ lần sau}}",
+  "@autoSaveRoundRest": {
+    "description": "AS07 note when suggestions exceed one upload (D-070)",
+    "placeholders": {
+      "rest": {
+        "type": "int"
+      },
+      "cap": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveRoundFull": "{cap, plural, other{Mỗi lần tải tối đa {cap} mục}}",
+  "@autoSaveRoundFull": {
+    "description": "AS07 toast when ticking past the per-upload limit (D-070)",
+    "placeholders": {
+      "cap": {
+        "type": "int"
+      }
+    }
+  },
   "autoSaveContinue": "{count, plural, other{Tiếp tục với {count} mục}}",
   "@autoSaveContinue": {
     "description": "AS07 primary button",
@@ -14222,6 +14493,10 @@
   "@autoSaveSamplesHint": {
     "description": "AS19 › baby samples page subtitle (AS04 copy without the step)"
   },
+  "emailLinkNeedsEmail": "Nhập email để nhận link đăng nhập.",
+  "@emailLinkNeedsEmail": {
+    "description": "07: \"Gửi link đăng nhập\" with no email yet (owner, 2026-10-13)"
+  },
   "autoSavePushTitle": "{count, plural, other{Có {count} ảnh mới có thể có {name}}}",
   "@autoSavePushTitle": {
     "description": "AR03 notification title, at most once a day, never in quiet hours",
@@ -14304,6 +14579,981 @@
   "@autoSaveTabDot": {
     "description": "Screen-reader label of the dot on the Kỷ niệm tab (AR02)"
   },
+  "autoSaveDiagTitle": "Chẩn đoán (bản dev)",
+  "@autoSaveDiagTitle": {
+    "description": "AS19 dev-only section: why each scanned item was or was not suggested"
+  },
+  "autoSaveDiagHow": "Lần kiểm tra gần nhất: {how} · {count} tệp",
+  "@autoSaveDiagHow": {
+    "description": "Dev diagnostics: how the last check found new items",
+    "placeholders": {
+      "how": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "autoSaveDiagHistory": "ảnh mới thêm vào thư viện",
+  "@autoSaveDiagHistory": {
+    "description": "Dev diagnostics: found through the library's change history"
+  },
+  "autoSaveDiagByDate": "theo ngày",
+  "@autoSaveDiagByDate": {
+    "description": "Dev diagnostics: found by date"
+  },
+  "autoSaveDiagNone": "Chưa kiểm tra lần nào từ lúc mở app.",
+  "@autoSaveDiagNone": {
+    "description": "Dev diagnostics: nothing yet"
+  },
+  "autoSaveDiagMatch": "Gợi ý · {d} ≤ {t}",
+  "@autoSaveDiagMatch": {
+    "description": "Dev diagnostics: matched; distance and threshold",
+    "placeholders": {
+      "d": {
+        "type": "String"
+      },
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveDiagFar": "Không giống bé · {d} > {t}",
+  "@autoSaveDiagFar": {
+    "description": "Dev diagnostics: closest face too far; distance and threshold",
+    "placeholders": {
+      "d": {
+        "type": "String"
+      },
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "autoSaveDiagNegative": "Giống ảnh đã bấm “Không phải ảnh của bé”",
+  "@autoSaveDiagNegative": {
+    "description": "Dev diagnostics"
+  },
+  "autoSaveDiagNoFace": "Không thấy khuôn mặt",
+  "@autoSaveDiagNoFace": {
+    "description": "Dev diagnostics"
+  },
+  "autoSaveDiagSmall": "Khuôn mặt quá nhỏ",
+  "@autoSaveDiagSmall": {
+    "description": "Dev diagnostics"
+  },
+  "autoSaveDiagUtility": "Giống giấy tờ hoặc ảnh chụp màn hình",
+  "@autoSaveDiagUtility": {
+    "description": "Dev diagnostics"
+  },
+  "autoSaveDiagUnreadable": "Không đọc được ảnh",
+  "@autoSaveDiagUnreadable": {
+    "description": "Dev diagnostics"
+  },
+  "autoSaveDiagHandled": "Đã tải lên hoặc đã bỏ qua trước đó",
+  "@autoSaveDiagHandled": {
+    "description": "Dev diagnostics"
+  },
+  "autoSaveDiagRescan": "Kiểm tra lại 30 ngày gần nhất",
+  "@autoSaveDiagRescan": {
+    "description": "Dev diagnostics action: forget what was looked at and check again"
+  },
+  "ksCardTitle": "Thiệp cột mốc",
+  "@ksCardTitle": {
+    "description": "MM10 title (D-068)."
+  },
+  "ksChooseOccasion": "Chọn dịp",
+  "@ksChooseOccasion": {
+    "description": "MM10 section label."
+  },
+  "ksSuggested": "Gợi ý",
+  "@ksSuggested": {
+    "description": "MM10 badge on the nearest age occasion."
+  },
+  "ksOccD7": "7 ngày",
+  "@ksOccD7": {
+    "description": "Occasion chip and card title."
+  },
+  "ksOccM1": "1 tháng",
+  "@ksOccM1": {
+    "description": "Occasion chip and card title."
+  },
+  "ksOccD100": "100 ngày",
+  "@ksOccD100": {
+    "description": "Occasion chip and card title."
+  },
+  "ksOccFirstSmile": "Lần đầu cười",
+  "@ksOccFirstSmile": {
+    "description": "Occasion chip and card title."
+  },
+  "ksOccRollsOver": "Lần đầu biết lẫy",
+  "@ksOccRollsOver": {
+    "description": "Occasion chip and card title."
+  },
+  "ksOccCrawls": "Biết bò",
+  "@ksOccCrawls": {
+    "description": "Occasion chip and card title."
+  },
+  "ksOccFirstSteps": "Bước đi đầu tiên",
+  "@ksOccFirstSteps": {
+    "description": "Occasion chip and card title."
+  },
+  "ksOccY1": "Sinh nhật 1 tuổi",
+  "@ksOccY1": {
+    "description": "Occasion chip."
+  },
+  "ksTitleY1": "1 tuổi",
+  "@ksTitleY1": {
+    "description": "Big words on a first-birthday card (engineering, for design review)."
+  },
+  "ksQuoteD7": "Bảy ngày đầu bên con",
+  "@ksQuoteD7": {
+    "description": "Default card message (engineering, for design review)."
+  },
+  "ksQuoteM1": "Một tháng yêu thương",
+  "@ksQuoteM1": {
+    "description": "Default card message (MM11)."
+  },
+  "ksQuoteD100": "Trăm ngày hạnh phúc",
+  "@ksQuoteD100": {
+    "description": "Default card message (engineering, for design review)."
+  },
+  "ksQuoteFirstSmile": "Nụ cười đầu tiên của con",
+  "@ksQuoteFirstSmile": {
+    "description": "Default card message (engineering, for design review)."
+  },
+  "ksQuoteRollsOver": "Con biết lẫy rồi!",
+  "@ksQuoteRollsOver": {
+    "description": "Default card message (engineering, for design review)."
+  },
+  "ksQuoteCrawls": "Bò khắp nhà thôi!",
+  "@ksQuoteCrawls": {
+    "description": "Default card message (engineering, for design review)."
+  },
+  "ksQuoteFirstSteps": "Những bước chân đầu tiên",
+  "@ksQuoteFirstSteps": {
+    "description": "Default card message (engineering, for design review)."
+  },
+  "ksQuoteY1": "Một năm yêu thương",
+  "@ksQuoteY1": {
+    "description": "Default card message (engineering, for design review)."
+  },
+  "ksFormatPortrait": "Dọc 4:5",
+  "@ksFormatPortrait": {
+    "description": "MM10 format."
+  },
+  "ksFormatSquare": "Vuông",
+  "@ksFormatSquare": {
+    "description": "MM10 format."
+  },
+  "ksFormatStory": "Story 9:16",
+  "@ksFormatStory": {
+    "description": "MM10 format."
+  },
+  "ksFree": "Miễn phí",
+  "@ksFree": {
+    "description": "Template badge (MM10)."
+  },
+  "ksPremium": "Cao cấp",
+  "@ksPremium": {
+    "description": "Template badge (MM10); free during the beta (D-068 #3)."
+  },
+  "ksNoTemplates": "Chưa có mẫu thiệp",
+  "@ksNoTemplates": {
+    "description": "MM10 empty state (G-107)."
+  },
+  "ksNoTemplatesBody": "Mẫu mới sẽ có sớm. Bạn quay lại sau nhé.",
+  "@ksNoTemplatesBody": {
+    "description": "MM10 empty state (G-107)."
+  },
+  "ksLoadFailed": "Chưa tải được mẫu thiệp",
+  "@ksLoadFailed": {
+    "description": "MM10 error state (G-107)."
+  },
+  "ksUnavailableTitle": "Chưa mở cho gia đình bạn",
+  "@ksUnavailableTitle": {
+    "description": "Shown when the beta flag is off or the person is not a Cùng nuôi."
+  },
+  "ksUnavailableBody": "Thiệp cột mốc đang thử nghiệm và sẽ sớm có cho mọi gia đình.",
+  "@ksUnavailableBody": {
+    "description": "Shown when the beta flag is off."
+  },
+  "ksPreview": "Xem trước",
+  "@ksPreview": {
+    "description": "MM11 top link."
+  },
+  "ksPhotoHint": "Chạm ảnh để đổi · kéo để căn",
+  "@ksPhotoHint": {
+    "description": "MM11 hint on the photo."
+  },
+  "ksChoosePhoto": "Chọn ảnh",
+  "@ksChoosePhoto": {
+    "description": "Empty photo slot (engineering)."
+  },
+  "ksToolPhoto": "Ảnh",
+  "@ksToolPhoto": {
+    "description": "MM11 tool."
+  },
+  "ksToolLayout": "Bố cục",
+  "@ksToolLayout": {
+    "description": "MM11 tool."
+  },
+  "ksToolMessage": "Lời nhắn",
+  "@ksToolMessage": {
+    "description": "MM11 tool."
+  },
+  "ksToolColor": "Màu",
+  "@ksToolColor": {
+    "description": "MM11 tool."
+  },
+  "ksFromDevice": "Thư viện máy",
+  "@ksFromDevice": {
+    "description": "MM11 Ảnh panel: pick from the phone."
+  },
+  "ksMessageLabel": "Lời nhắn trên thiệp",
+  "@ksMessageLabel": {
+    "description": "MM11 Lời nhắn panel (not drawn, G-107)."
+  },
+  "ksSaveCard": "Lưu thiệp",
+  "@ksSaveCard": {
+    "description": "MM11 primary button."
+  },
+  "ksSaveFailed": "Chưa lưu được thiệp. Thử lại nhé.",
+  "@ksSaveFailed": {
+    "description": "MM11 save error."
+  },
+  "ksCardReady": "Thiệp đã sẵn sàng!",
+  "@ksCardReady": {
+    "description": "MM12 title."
+  },
+  "ksSavedParents": "Đã lưu vào Kỷ niệm · Chỉ ba mẹ",
+  "@ksSavedParents": {
+    "description": "MM12 chip."
+  },
+  "ksExport": "Xuất ảnh",
+  "@ksExport": {
+    "description": "MM12 PNG / JPG."
+  },
+  "ksSaveDevice": "Lưu vào máy",
+  "@ksSaveDevice": {
+    "description": "MM12 action."
+  },
+  "ksShare": "Chia sẻ",
+  "@ksShare": {
+    "description": "MM12 action."
+  },
+  "ksSavedToDevice": "Đã lưu vào máy",
+  "@ksSavedToDevice": {
+    "description": "MM12 toast."
+  },
+  "ksEditAgain": "Sửa thiệp",
+  "@ksEditAgain": {
+    "description": "MM12 pencil (a11y); saves a new card."
+  },
+  "ksPrefilled": "Tên, tuổi và ngày được điền sẵn từ hồ sơ của {name}",
+  "@ksPrefilled": {
+    "description": "MM11 note under Lưu thiệp.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ksCreateFrom": "Tạo từ kỷ niệm của {name}",
+  "@ksCreateFrom": {
+    "description": "MM01 section title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ksSeeTemplates": "Xem mẫu",
+  "@ksSeeTemplates": {
+    "description": "MM01 link."
+  },
+  "ksNew": "Mới",
+  "@ksNew": {
+    "description": "Badge on the new creation tiles (MM01, MM02)."
+  },
+  "ksCardTileHint": "Ảnh PNG để chia sẻ",
+  "@ksCardTileHint": {
+    "description": "MM01 Thiệp cột mốc tile."
+  },
+  "ksCardTileHintShort": "Ảnh để chia sẻ",
+  "@ksCardTileHintShort": {
+    "description": "MM02 Thiệp cột mốc tile."
+  },
+  "ksCreateGroup": "SÁNG TẠO & TỰ ĐỘNG",
+  "@ksCreateGroup": {
+    "description": "MM02 group label."
+  },
+  "ksCardBadge": "Thiệp",
+  "@ksCardBadge": {
+    "description": "MM17 badge on a card in the Ảnh grid."
+  },
+  "ksStoriesSection": "Câu chuyện của gia đình",
+  "@ksStoriesSection": {
+    "description": "Câu chuyện tab: title over today's stories (D-068 #2; not drawn, G-107)."
+  },
+  "ksCardCount": "{n} thiệp",
+  "@ksCardCount": {
+    "description": "Count of milestone cards (MM15 section, MM17 week caption).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksNudgeSoon": "{name} sắp tròn {occasion}! Cùng tạo một kỷ niệm thật đẹp nhé.",
+  "@ksNudgeSoon": {
+    "description": "MM03 message before an age occasion.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "occasion": {
+        "type": "String"
+      }
+    }
+  },
+  "ksNudgeToday": "Hôm nay {name} tròn {occasion}! Cùng tạo một kỷ niệm thật đẹp nhé.",
+  "@ksNudgeToday": {
+    "description": "MM03 message on the day (engineering).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "occasion": {
+        "type": "String"
+      }
+    }
+  },
+  "ksNudgeJust": "{name} vừa tròn {occasion}! Lưu lại bằng một tấm thiệp nhé.",
+  "@ksNudgeJust": {
+    "description": "MM03 message after the day (engineering).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "occasion": {
+        "type": "String"
+      }
+    }
+  },
+  "ksNudgeFirst": "{occasion} của {name}! Làm một tấm thiệp kỷ niệm nhé.",
+  "@ksNudgeFirst": {
+    "description": "MM03 message after a first-time milestone is tagged (engineering).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "occasion": {
+        "type": "String"
+      }
+    }
+  },
+  "ksThisWeekday": "{weekday} này · {day}",
+  "@ksThisWeekday": {
+    "description": "MM03 date line, e.g. 'Thứ Bảy này · 14/11'.",
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "ksToday": "Hôm nay",
+  "@ksToday": {
+    "description": "MM03 date line."
+  },
+  "ksTomorrow": "Ngày mai",
+  "@ksTomorrow": {
+    "description": "MM03 date line."
+  },
+  "ksMakeCard": "Tạo thiệp",
+  "@ksMakeCard": {
+    "description": "MM03 button."
+  },
+  "ksLater": "Để sau",
+  "@ksLater": {
+    "description": "MM03: hides the card for 3 days."
+  },
+  "ksNudgeTodayTitle": "Hôm nay {name} tròn {occasion} 🎂",
+  "@ksNudgeTodayTitle": {
+    "description": "Local notification at 09:00 on an age occasion (D-068 #9).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "occasion": {
+        "type": "String"
+      }
+    }
+  },
+  "ksNudgeTodayBody": "Làm một tấm thiệp kỷ niệm thật xinh nhé.",
+  "@ksNudgeTodayBody": {
+    "description": "Local notification body (D-068 #9)."
+  },
+  "ksNudgeBackAgeTitle": "Nhìn lại ngày {name} tròn {occasion}",
+  "@ksNudgeBackAgeTitle": {
+    "description": "Look-back notification for a passed age occasion (D-068 #9).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "occasion": {
+        "type": "String"
+      }
+    }
+  },
+  "ksNudgeBackFirstTitle": "Nhìn lại: {occasion} của {name}",
+  "@ksNudgeBackFirstTitle": {
+    "description": "Look-back notification for a first-time occasion (D-068 #9).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "occasion": {
+        "type": "String"
+      }
+    }
+  },
+  "ksNudgeBackBody": "Có {n} ảnh từ dịp này trong Kỷ niệm. Làm một tấm thiệp nhé?",
+  "@ksNudgeBackBody": {
+    "description": "Look-back notification body (D-068 #9).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoTitle": "Video kỷ niệm",
+  "@ksVideoTitle": {
+    "description": "MM01 / MM02 tile and the template list title."
+  },
+  "ksVideoTileHint": "Ảnh + chữ + nhạc",
+  "@ksVideoTileHint": {
+    "description": "MM01 / MM02 tile."
+  },
+  "ksVideoPickTemplate": "Chọn một mẫu, rồi chọn ảnh của bé. Child Life ghép thành video 9:16.",
+  "@ksVideoPickTemplate": {
+    "description": "Template list (MM04 / MM05 not found, G-107)."
+  },
+  "ksVideoNeeds": "Cần {min}–{max} ảnh",
+  "@ksVideoNeeds": {
+    "description": "Template list.",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "ksUnavailableBodyVideo": "Video kỷ niệm đang thử nghiệm và sẽ sớm có cho mọi gia đình.",
+  "@ksUnavailableBodyVideo": {
+    "description": "Shown when the beta flag is off."
+  },
+  "ksFromMemories": "Từ Kỷ niệm",
+  "@ksFromMemories": {
+    "description": "MM06 segment."
+  },
+  "ksVideoPhotosTitle": "Chọn ảnh cho video",
+  "@ksVideoPhotosTitle": {
+    "description": "MM06 title."
+  },
+  "ksVideoScenesFilled": "{n}/{total} cảnh đã có ảnh",
+  "@ksVideoScenesFilled": {
+    "description": "MM06 progress.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoMinimum": "Tối thiểu {n}",
+  "@ksVideoMinimum": {
+    "description": "MM06 progress.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoScene": "Cảnh {n}: {hint}",
+  "@ksVideoScene": {
+    "description": "MM06 scene hint.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "hint": {
+        "type": "String"
+      }
+    }
+  },
+  "ksVideoSceneN": "Cảnh {n}",
+  "@ksVideoSceneN": {
+    "description": "MM06 scene card label.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoSceneOptionalTag": "Tuỳ chọn",
+  "@ksVideoSceneOptionalTag": {
+    "description": "MM06 optional scene tag."
+  },
+  "ksVideoForScene": "Gợi ý cho cảnh {n} · {hint}",
+  "@ksVideoForScene": {
+    "description": "MM06 header over the photos suggested for the chosen scene.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "hint": {
+        "type": "String"
+      }
+    }
+  },
+  "ksVideoSceneWindow": "Ảnh chụp từ {from} đến {to}",
+  "@ksVideoSceneWindow": {
+    "description": "MM06: when the chosen scene's photo was taken.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "ksVideoSceneAny": "Ảnh nào cũng hợp, ảnh mới nhất trước",
+  "@ksVideoSceneAny": {
+    "description": "MM06: a scene with no time window."
+  },
+  "ksVideoSceneEmpty": "Chưa có ảnh nào trong khoảng này. Chọn trong Ảnh khác bên dưới hoặc thêm từ thư viện máy.",
+  "@ksVideoSceneEmpty": {
+    "description": "MM06: nothing suits the chosen scene."
+  },
+  "ksVideoSceneEmptyOptional": "Chưa có ảnh nào trong khoảng này. Cảnh này tuỳ chọn, có thể để trống.",
+  "@ksVideoSceneEmptyOptional": {
+    "description": "MM06: nothing suits the chosen optional scene."
+  },
+  "ksVideoOtherPhotos": "Ảnh khác",
+  "@ksVideoOtherPhotos": {
+    "description": "MM06 section under the suggestions."
+  },
+  "ksVideoClearScene": "Bỏ ảnh ở cảnh {n}",
+  "@ksVideoClearScene": {
+    "description": "MM06 a11y: clear a scene.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoPicked": "Đã chọn {n} ảnh",
+  "@ksVideoPicked": {
+    "description": "MM06 bottom bar.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoCanAdd": "Có thể thêm {n}",
+  "@ksVideoCanAdd": {
+    "description": "MM06 bottom bar.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoNeedMore": "Cần thêm {n}",
+  "@ksVideoNeedMore": {
+    "description": "MM13 bottom bar.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoNotEnough": "Kỷ niệm của {name} hiện chỉ có {have} ảnh phù hợp. Mẫu này cần ít nhất {need} ảnh.",
+  "@ksVideoNotEnough": {
+    "description": "MM13 banner.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "have": {
+        "type": "int"
+      },
+      "need": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoMoreFromDevice": "Chọn thêm từ thư viện máy",
+  "@ksVideoMoreFromDevice": {
+    "description": "MM13 option."
+  },
+  "ksVideoMoreFromDeviceHint": "Chỉ ảnh bạn chọn mới được dùng",
+  "@ksVideoMoreFromDeviceHint": {
+    "description": "MM13 option."
+  },
+  "ksVideoShorter": "Đổi sang mẫu ngắn hơn",
+  "@ksVideoShorter": {
+    "description": "MM13 option."
+  },
+  "ksVideoShorterHint": "“{name}” · cần {n} ảnh",
+  "@ksVideoShorterHint": {
+    "description": "MM13 option.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoImporting": "Đang thêm {n} ảnh vào Kỷ niệm (Chỉ ba mẹ). Ảnh sẽ được chọn khi tải xong.",
+  "@ksVideoImporting": {
+    "description": "MM06: photos from the phone are uploaded first (engineering).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoFinishTitle": "Hoàn thiện video",
+  "@ksVideoFinishTitle": {
+    "description": "MM07 title."
+  },
+  "ksVideoPrefilled": "Điền sẵn từ hồ sơ của bé",
+  "@ksVideoPrefilled": {
+    "description": "MM07 chip."
+  },
+  "ksVideoBaby": "Bé",
+  "@ksVideoBaby": {
+    "description": "MM07 summary."
+  },
+  "ksVideoDay": "Ngày mốc",
+  "@ksVideoDay": {
+    "description": "MM07 summary."
+  },
+  "ksVideoFieldTitle": "Tiêu đề",
+  "@ksVideoFieldTitle": {
+    "description": "MM07 field."
+  },
+  "ksVideoFieldMessage": "Lời nhắn cuối video",
+  "@ksVideoFieldMessage": {
+    "description": "MM07 field."
+  },
+  "ksVideoOrder": "{n} ảnh · thứ tự xuất hiện",
+  "@ksVideoOrder": {
+    "description": "MM07 strip.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoReorderHint": "Giữ và kéo để đổi",
+  "@ksVideoReorderHint": {
+    "description": "MM07 strip."
+  },
+  "ksVideoAddPhotos": "Thêm ảnh",
+  "@ksVideoAddPhotos": {
+    "description": "MM07 '+' (a11y)."
+  },
+  "ksVideoMusic": "Nhạc nền",
+  "@ksVideoMusic": {
+    "description": "MM07 row."
+  },
+  "ksVideoMusicTemplate": "Nhạc của mẫu",
+  "@ksVideoMusicTemplate": {
+    "description": "MM07 row (no picker in V1, Q-062)."
+  },
+  "ksVideoMusicNone": "Chưa có nhạc cho mẫu này",
+  "@ksVideoMusicNone": {
+    "description": "MM07 row (Q-062)."
+  },
+  "ksVideoWho": "Ai xem được",
+  "@ksVideoWho": {
+    "description": "MM07 row."
+  },
+  "ksVideoWhoParents": "Chỉ ba mẹ · lưu vào Kỷ niệm",
+  "@ksVideoWhoParents": {
+    "description": "MM07 row."
+  },
+  "ksVideoWhoFamily": "Gia đình · lưu vào Kỷ niệm",
+  "@ksVideoWhoFamily": {
+    "description": "MM07 row."
+  },
+  "ksAudienceParents": "Chỉ ba mẹ",
+  "@ksAudienceParents": {
+    "description": "Audience label."
+  },
+  "ksAudienceFamily": "Gia đình",
+  "@ksAudienceFamily": {
+    "description": "Audience label."
+  },
+  "ksVideoCreate": "Tạo video",
+  "@ksVideoCreate": {
+    "description": "MM07 primary."
+  },
+  "ksVideoTakes": "Mất khoảng 1–2 phút · bạn có thể rời màn hình",
+  "@ksVideoTakes": {
+    "description": "MM07 note."
+  },
+  "ksVideoErrBusy": "Đang có một video được tạo cho bé. Đợi xong rồi tạo tiếp nhé.",
+  "@ksVideoErrBusy": {
+    "description": "Request refused: one at a time."
+  },
+  "ksVideoErrDaily": "Hôm nay gia đình đã tạo nhiều video. Mai thử lại nhé.",
+  "@ksVideoErrDaily": {
+    "description": "Request refused: daily cap."
+  },
+  "ksVideoErrQuota": "Dung lượng gia đình sắp đầy. Giải phóng bớt rồi tạo video nhé.",
+  "@ksVideoErrQuota": {
+    "description": "Request refused: quota."
+  },
+  "ksVideoErrPhoto": "Có ảnh vừa bị xoá hoặc chưa tải xong. Chọn lại ảnh nhé.",
+  "@ksVideoErrPhoto": {
+    "description": "Request refused: photo unavailable."
+  },
+  "ksVideoErrTemplate": "Mẫu này vừa được cập nhật. Chọn lại mẫu nhé.",
+  "@ksVideoErrTemplate": {
+    "description": "Request refused: template."
+  },
+  "ksVideoMaking": "Đang tạo video cho {name}…",
+  "@ksVideoMaking": {
+    "description": "MM08 title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ksVideoMakingBody": "Thường mất 1–2 phút. Bạn có thể rời màn hình này, Child Life sẽ báo khi video sẵn sàng.",
+  "@ksVideoMakingBody": {
+    "description": "MM08 body."
+  },
+  "ksVideoStepArrange": "Sắp xếp {n} ảnh theo mẫu",
+  "@ksVideoStepArrange": {
+    "description": "MM08 step.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoStepCompose": "Thêm chữ, lời nhắn và nhạc",
+  "@ksVideoStepCompose": {
+    "description": "MM08 step."
+  },
+  "ksVideoStepExport": "Xuất video 9:16",
+  "@ksVideoStepExport": {
+    "description": "MM08 step."
+  },
+  "ksVideoBackToMemories": "Về Kỷ niệm",
+  "@ksVideoBackToMemories": {
+    "description": "MM08 button."
+  },
+  "ksLiveQueued": "Đang chờ tạo video",
+  "@ksLiveQueued": {
+    "description": "MM08 Live Activity: queued."
+  },
+  "ksLiveArrange": "Đang sắp xếp ảnh",
+  "@ksLiveArrange": {
+    "description": "MM08 Live Activity: arrange step."
+  },
+  "ksLiveCompose": "Đang ghép chữ và nhạc",
+  "@ksLiveCompose": {
+    "description": "MM08 Live Activity: compose step."
+  },
+  "ksLiveExport": "Đang xuất video",
+  "@ksLiveExport": {
+    "description": "MM08 Live Activity: export step."
+  },
+  "ksLiveReadySub": "Chạm để xem, lưu và chia sẻ",
+  "@ksLiveReadySub": {
+    "description": "MM08 Live Activity: ready."
+  },
+  "ksLiveFailedSub": "Chạm để thử lại",
+  "@ksLiveFailedSub": {
+    "description": "MM08 Live Activity: failed."
+  },
+  "ksVideoActive": "Đang tạo video · {percent}%",
+  "@ksVideoActive": {
+    "description": "Kỷ niệm banner: a Video kỷ niệm being made.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoActiveQueued": "Đang chờ tạo video",
+  "@ksVideoActiveQueued": {
+    "description": "Kỷ niệm banner: queued."
+  },
+  "ksVideoReadyToast": "Video kỷ niệm đã sẵn sàng",
+  "@ksVideoReadyToast": {
+    "description": "Toast when a video finishes while the app is open."
+  },
+  "ksVideoFailedToast": "Chưa tạo được video kỷ niệm",
+  "@ksVideoFailedToast": {
+    "description": "Toast when a video fails while the app is open."
+  },
+  "ksVideoOpenJob": "Xem",
+  "@ksVideoOpenJob": {
+    "description": "Toast action: open the video job."
+  },
+  "ksVideoDeleteDraft": "Xoá bản nháp",
+  "@ksVideoDeleteDraft": {
+    "description": "MM14: delete a video that could not be made."
+  },
+  "ksVideoDeleteDraftTitle": "Xoá bản nháp video này?",
+  "@ksVideoDeleteDraftTitle": {
+    "description": "MM14 confirm title."
+  },
+  "ksVideoDeleteDraftBody": "Ảnh của bé vẫn ở trong Kỷ niệm, chỉ bản nháp video bị xoá.",
+  "@ksVideoDeleteDraftBody": {
+    "description": "MM14 confirm body."
+  },
+  "ksVideoDraftDeleted": "Đã xoá bản nháp",
+  "@ksVideoDraftDeleted": {
+    "description": "Toast after deleting a video draft."
+  },
+  "ksTabCards": "Thiệp",
+  "@ksTabCards": {
+    "description": "Thiệp / Video tab: milestone cards."
+  },
+  "ksTabVideos": "Video",
+  "@ksTabVideos": {
+    "description": "Thiệp / Video tab: memory videos."
+  },
+  "ksVideoReady": "Video đã sẵn sàng!",
+  "@ksVideoReady": {
+    "description": "MM09 title; MM17 banner."
+  },
+  "ksVideoSaved": "Đã lưu vào Kỷ niệm",
+  "@ksVideoSaved": {
+    "description": "MM09 chip."
+  },
+  "ksVideoFiling": "Đang lưu vào Kỷ niệm…",
+  "@ksVideoFiling": {
+    "description": "MM09 chip until filed."
+  },
+  "ksVideoWeek": "Tuần {n}",
+  "@ksVideoWeek": {
+    "description": "MM09 chip.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksVideoWatch": "Xem video",
+  "@ksVideoWatch": {
+    "description": "MM09 cover (a11y)."
+  },
+  "ksVideoOpen": "Xem trong Kỷ niệm",
+  "@ksVideoOpen": {
+    "description": "MM09 action."
+  },
+  "ksVideoAlsoCard": "Tạo thêm thiệp “{occasion}”",
+  "@ksVideoAlsoCard": {
+    "description": "MM09 cross-sell.",
+    "placeholders": {
+      "occasion": {
+        "type": "String"
+      }
+    }
+  },
+  "ksVideoAlsoCardHint": "Dùng lại ảnh vừa chọn",
+  "@ksVideoAlsoCardHint": {
+    "description": "MM09 cross-sell."
+  },
+  "ksVideoFailed": "Chưa tạo được video",
+  "@ksVideoFailed": {
+    "description": "MM14 title."
+  },
+  "ksVideoFailedNetwork": "Kết nối bị gián đoạn khi xuất video. Ảnh, chữ và lời nhắn bạn đã chọn vẫn được giữ nguyên.",
+  "@ksVideoFailedNetwork": {
+    "description": "MM14 body."
+  },
+  "ksVideoFailedBusy": "Máy chủ đang bận nên chưa tạo xong. Ảnh, chữ và lời nhắn bạn đã chọn vẫn được giữ nguyên.",
+  "@ksVideoFailedBusy": {
+    "description": "MM14 body for timeout (engineering)."
+  },
+  "ksVideoFailedPhoto": "Có ảnh đã bị xoá khỏi Kỷ niệm. Chỉnh lại lựa chọn để tạo video.",
+  "@ksVideoFailedPhoto": {
+    "description": "MM14 body for a missing photo (engineering)."
+  },
+  "ksVideoEditChoices": "Chỉnh lại lựa chọn",
+  "@ksVideoEditChoices": {
+    "description": "MM14 secondary."
+  },
+  "ksVideoDraftNote": "Bản nháp được lưu trong Câu chuyện · Bản nháp",
+  "@ksVideoDraftNote": {
+    "description": "MM14 note."
+  },
+  "ksMakeVideo": "Tạo video",
+  "@ksMakeVideo": {
+    "description": "MM03 button."
+  },
+  "ksMakeVideoFor": "Tạo video {occasion}",
+  "@ksMakeVideoFor": {
+    "description": "MM12 action.",
+    "placeholders": {
+      "occasion": {
+        "type": "String"
+      }
+    }
+  },
+  "ksVideoDraftTile": "Bản nháp",
+  "@ksVideoDraftTile": {
+    "description": "MM15 draft tile."
+  },
+  "ksVideoContinue": "Làm tiếp",
+  "@ksVideoContinue": {
+    "description": "MM15 draft tile."
+  },
+  "ksVideoInProgress": "Đang tạo · {p}%",
+  "@ksVideoInProgress": {
+    "description": "MM15 tile while rendering (engineering).",
+    "placeholders": {
+      "p": {
+        "type": "int"
+      }
+    }
+  },
+  "ksBannerView": "Xem",
+  "@ksBannerView": {
+    "description": "MM17 banner button."
+  },
+  "ksVideoCount": "{n} video",
+  "@ksVideoCount": {
+    "description": "MM15 section count.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "careDevelop": "Hiểu con & phát triển",
   "@careDevelop": {
     "description": "Chăm sóc section (owner, 2026-10-14, D-069)"
@@ -14315,5 +15565,310 @@
   "utTools": "Công cụ",
   "@utTools": {
     "description": "Tiện ích section (owner, 2026-10-14, D-069)"
+  },
+  "ksPreviewSample": "Xem mẫu",
+  "@ksPreviewSample": {
+    "description": "Template list: play the template with sample pictures (MM04 / MM05 not found, G-107)."
+  },
+  "ksPreviewNote": "Bản xem trước chạy ngay trên máy. Video thật được xuất 1080×1920 sau khi bấm “Tạo video”.",
+  "@ksPreviewNote": {
+    "description": "Preview screen note (engineering)."
+  },
+  "ksPreviewFailed": "Chưa mở được bản xem trước. Kiểm tra mạng rồi thử lại nhé.",
+  "@ksPreviewFailed": {
+    "description": "Preview screen error (engineering)."
+  },
+  "ksMusicNone": "Không dùng nhạc",
+  "@ksMusicNone": {
+    "description": "MM07 music sheet: no track."
+  },
+  "ksMusicDefault": "Mặc định của mẫu",
+  "@ksMusicDefault": {
+    "description": "MM07 music sheet: the template’s default track."
+  },
+  "ksMusicStop": "Dừng nghe thử",
+  "@ksMusicStop": {
+    "description": "MM07 music sheet: a11y, stop the sample."
+  },
+  "ksMusicNote": "Nhạc có bản quyền do Child Life chọn. Bạn có thể đổi bài bất cứ lúc nào trước khi tạo video.",
+  "@ksMusicNote": {
+    "description": "MM07 music sheet footer (engineering)."
+  },
+  "ksPreviewVideoNote": "Video mẫu dùng ảnh minh hoạ. Video của bé sẽ dùng ảnh và lời bạn chọn.",
+  "@ksPreviewVideoNote": {
+    "description": "Preview screen note when the template has a real preview video."
+  },
+  "ksMusicListen": "Nghe thử {title}",
+  "@ksMusicListen": {
+    "description": "MM07 music sheet: a11y, play a sample.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "ksOccBirth": "Chào đời",
+  "@ksOccBirth": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksOccLaughs": "Tiếng cười đầu tiên",
+  "@ksOccLaughs": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksOccSitsUp": "Biết ngồi",
+  "@ksOccSitsUp": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksOccStands": "Đứng vững",
+  "@ksOccStands": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksOccFirstTooth": "Chiếc răng đầu tiên",
+  "@ksOccFirstTooth": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksOccFirstSolids": "Bữa ăn dặm đầu tiên",
+  "@ksOccFirstSolids": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksOccFirstWord": "Tiếng gọi đầu tiên",
+  "@ksOccFirstWord": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksAchieveRollsOver": "Con biết lẫy rồi!",
+  "@ksAchieveRollsOver": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksAchieveSitsUp": "Con ngồi vững rồi!",
+  "@ksAchieveSitsUp": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksAchieveCrawls": "Con biết bò rồi!",
+  "@ksAchieveCrawls": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksAchieveStands": "Con đứng được rồi!",
+  "@ksAchieveStands": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksAchieveFirstSteps": "Con đi được rồi!",
+  "@ksAchieveFirstSteps": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksAchieveAny": "Nhìn con làm được nè!",
+  "@ksAchieveAny": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksQuoteBirth": "Chào con đến với thế giới",
+  "@ksQuoteBirth": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksQuoteLaughs": "Cười giòn tan cả nhà",
+  "@ksQuoteLaughs": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksQuoteSitsUp": "Con ngồi vững rồi!",
+  "@ksQuoteSitsUp": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksQuoteStands": "Con đứng được rồi!",
+  "@ksQuoteStands": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksQuoteFirstTooth": "Chiếc răng xinh đầu tiên",
+  "@ksQuoteFirstTooth": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksQuoteFirstSolids": "Măm măm ngon quá!",
+  "@ksQuoteFirstSolids": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksQuoteFirstWord": "Con đã gọi ba mẹ!",
+  "@ksQuoteFirstWord": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksLabelFirstDay": "Ngày đầu",
+  "@ksLabelFirstDay": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksLabelThen": "Lúc ấy",
+  "@ksLabelThen": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksLabelNow": "Bây giờ",
+  "@ksLabelNow": {
+    "description": "Chapter 01 cards (remember-2-templates.md)."
+  },
+  "ksOccMonth": "{n} tháng",
+  "@ksOccMonth": {
+    "description": "MM10 chip / card: a monthly occasion.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksQuoteMonth": "Tròn {n} tháng yêu thương",
+  "@ksQuoteMonth": {
+    "description": "Default card note for a monthly occasion.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksAgeDays": "{n} ngày",
+  "@ksAgeDays": {
+    "description": "Card {age}.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksAgeWeeks": "{n} tuần",
+  "@ksAgeWeeks": {
+    "description": "Card {age}.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksAgeMonths": "{n} tháng",
+  "@ksAgeMonths": {
+    "description": "Card {age}.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksAgeYears": "{n} tuổi",
+  "@ksAgeYears": {
+    "description": "Card {age}.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksUnitDays": "ngày",
+  "@ksUnitDays": {
+    "description": "Card ageUnit (big number + unit).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksUnitWeeks": "tuần",
+  "@ksUnitWeeks": {
+    "description": "Card ageUnit.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksUnitMonths": "tháng",
+  "@ksUnitMonths": {
+    "description": "Card ageUnit.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksUnitYears": "tuổi",
+  "@ksUnitYears": {
+    "description": "Card ageUnit.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksLabelDay": "Ngày {n}",
+  "@ksLabelDay": {
+    "description": "Card photo label (Then & Now).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksLabelWeek": "Tuần {n}",
+  "@ksLabelWeek": {
+    "description": "Card photo label.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksLabelMonth": "Tháng {n}",
+  "@ksLabelMonth": {
+    "description": "Card photo label.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksLabelYear": "{n} tuổi",
+  "@ksLabelYear": {
+    "description": "Card photo label.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ksBirthStats": "{weight} kg · {length} cm",
+  "@ksBirthStats": {
+    "description": "C01 birth weight and length.",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "ksBirthWeight": "{weight} kg",
+  "@ksBirthWeight": {
+    "description": "C01 birth weight only.",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "ksBirthLength": "{length} cm",
+  "@ksBirthLength": {
+    "description": "C01 birth length only.",
+    "placeholders": {
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "ksVideoFieldHeadline": "Tiêu đề lớn",
+  "@ksVideoFieldHeadline": {
+    "description": "MM07: a Chapter 01 video text (E-9)."
+  },
+  "ksVideoFieldLines": "Lời cho từng ảnh (mỗi dòng một câu)",
+  "@ksVideoFieldLines": {
+    "description": "MM07: a Chapter 01 video text (E-9)."
+  },
+  "ksVideoFieldLetter": "Lá thư gửi con",
+  "@ksVideoFieldLetter": {
+    "description": "MM07: a Chapter 01 video text (E-9)."
+  },
+  "ksVideoFieldClosing": "Lời kết",
+  "@ksVideoFieldClosing": {
+    "description": "MM07: a Chapter 01 video text (E-9)."
   }
 }

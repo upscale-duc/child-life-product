@@ -103,7 +103,10 @@ Future<bool> declineMyInvite(
   if (confirmed != true || !context.mounted) return false;
   final toaster = ClToaster.of(context);
   try {
-    await ref.read(familyRepositoryProvider).declineInvite(invite.inviteId);
+    await withClProgress(
+      context,
+      () => ref.read(familyRepositoryProvider).declineInvite(invite.inviteId),
+    );
     toaster.show(message: l10n.myInviteDeclined(preview.babyNickname));
     return true;
   } on FamilyException catch (e) {

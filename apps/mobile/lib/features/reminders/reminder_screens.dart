@@ -515,7 +515,8 @@ void setReminderDone(
   final l10n = AppLocalizations.of(context);
   final repo = ref.read(reminderRepositoryProvider);
   final toaster = ClToaster.of(context);
-  void failed(Object _) => toaster.show(message: l10n.careSaveFailed);
+  void failed(Object _) =>
+      toaster.show(message: l10n.careSaveFailed, error: true);
   if (done) ClHaptics.success();
   repo.setDone(r, me, done: done, onError: failed);
   toaster.show(
@@ -737,7 +738,8 @@ class ReminderDetailScreen extends ConsumerWidget {
         .moveNotifications(
           r,
           here,
-          onError: (_) => toaster.show(message: l10n.careSaveFailed),
+          onError: (_) =>
+              toaster.show(message: l10n.careSaveFailed, error: true),
         );
     toaster.show(message: l10n.reminderMoved);
     await maybeAskForNotifications(context, ref);
@@ -848,7 +850,8 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     }
     final repo = ref.read(reminderRepositoryProvider);
     final toaster = ClToaster.of(context);
-    void failed(Object _) => toaster.show(message: l10n.careSaveFailed);
+    void failed(Object _) =>
+        toaster.show(message: l10n.careSaveFailed, error: true);
     final before = widget.edit;
     if (before != null) {
       repo.edit(
@@ -917,7 +920,11 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     final toaster = ClToaster.of(context);
     ref
         .read(reminderRepositoryProvider)
-        .delete(r, onError: (_) => toaster.show(message: l10n.careSaveFailed));
+        .delete(
+          r,
+          onError: (_) =>
+              toaster.show(message: l10n.careSaveFailed, error: true),
+        );
     toaster.show(message: l10n.reminderDeleted);
     final router = GoRouter.of(context);
     Navigator.of(context).pop(false);

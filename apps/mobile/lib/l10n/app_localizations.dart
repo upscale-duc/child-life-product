@@ -194,6 +194,12 @@ abstract class AppLocalizations {
   /// **'Quay lại'**
   String get a11yBack;
 
+  /// Screen reader: a save or delete is running (full-screen spinner).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xử lý'**
+  String get a11yWorking;
+
   /// Accessibility label of sheet close buttons (37:293).
   ///
   /// In vi, this message translates to:
@@ -5455,6 +5461,30 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Khi ngày chụp bị sai'**
   String get actDateHint;
+
+  /// Selection action: a card from the chosen photos.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo thiệp cột mốc'**
+  String get actMakeCard;
+
+  /// Selection action hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng tối đa 4 ảnh đã chọn'**
+  String get actMakeCardHint;
+
+  /// Selection action: a video from the chosen photos.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo video kỷ niệm'**
+  String get actMakeVideo;
+
+  /// Selection action hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh đã chọn vào sẵn các cảnh'**
+  String get actMakeVideoHint;
 
   /// 10b3 (S12).
   ///
@@ -14191,6 +14221,288 @@ abstract class AppLocalizations {
   /// **'Sơ cứu'**
   String get upFirstAid;
 
+  /// Watch W01 tile title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình'**
+  String get watchTileBottle;
+
+  /// Watch W01 tile title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ'**
+  String get watchTileBreast;
+
+  /// Watch W01 tile title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ'**
+  String get watchTileSleep;
+
+  /// Watch W01 tile title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã'**
+  String get watchTileDiaper;
+
+  /// Watch W01 tile title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hút sữa'**
+  String get watchTilePump;
+
+  /// Watch W01 tile title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc'**
+  String get watchTileReminder;
+
+  /// Watch W01 tile caption under the time since the last feed.
+  ///
+  /// In vi, this message translates to:
+  /// **'từ cữ trước'**
+  String get watchSinceFeed;
+
+  /// Watch W01 tile caption (diaper, pump).
+  ///
+  /// In vi, this message translates to:
+  /// **'từ lần trước'**
+  String get watchSinceLast;
+
+  /// Watch W01 sleep tile caption while a sleep runs.
+  ///
+  /// In vi, this message translates to:
+  /// **'đang ngủ'**
+  String get watchSleeping;
+
+  /// Watch W01 sleep tile caption after waking (engineering, not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'đã thức'**
+  String get watchAwake;
+
+  /// Watch W01 reminder tile caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'nhắc bú'**
+  String get watchFeedReminder;
+
+  /// Watch W01 tile caption when nothing is logged (engineering, G-093).
+  ///
+  /// In vi, this message translates to:
+  /// **'chưa ghi'**
+  String get watchNoneYet;
+
+  /// Watch W11 night list: time since the last entry.
+  ///
+  /// In vi, this message translates to:
+  /// **'{t} trước'**
+  String watchAgo(String t);
+
+  /// Watch W01 last row, opens W12.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn bé'**
+  String get watchChooseBabyRow;
+
+  /// Watch W02 under the amount.
+  ///
+  /// In vi, this message translates to:
+  /// **'ml · xoay núm để chỉnh'**
+  String get watchCrownHint;
+
+  /// Watch W02 / W08 primary button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu'**
+  String get watchSave;
+
+  /// Watch breast start screen (engineering, G-094).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu bên nào?'**
+  String get watchBreastStartHint;
+
+  /// Watch W03 side card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trái'**
+  String get watchSideLeft;
+
+  /// Watch W03 side card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phải'**
+  String get watchSideRight;
+
+  /// Watch breast start: the side opposite the last feed (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'gợi ý'**
+  String get watchSuggested;
+
+  /// Watch W03 caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng {t} · đang bú bên trái'**
+  String watchBreastTotalLeft(String t);
+
+  /// Watch W03 caption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng {t} · đang bú bên phải'**
+  String watchBreastTotalRight(String t);
+
+  /// Watch W03 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi bên'**
+  String get watchSwitchSide;
+
+  /// Watch W03 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng'**
+  String get watchStop;
+
+  /// Watch W04 under the sleep timer.
+  ///
+  /// In vi, this message translates to:
+  /// **'từ {time}'**
+  String watchSleepSince(String time);
+
+  /// Watch W04 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé đã dậy'**
+  String get watchWokeUp;
+
+  /// Watch W05 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thay tã'**
+  String get watchDiaperTitle;
+
+  /// Watch W05 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ướt'**
+  String get watchDiaperWet;
+
+  /// Watch W05 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bẩn'**
+  String get watchDiaperDirty;
+
+  /// Watch W05 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả hai'**
+  String get watchDiaperBoth;
+
+  /// Watch W06 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi tã ướt'**
+  String get watchLoggedWet;
+
+  /// Watch W06 title (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi tã bẩn'**
+  String get watchLoggedDirty;
+
+  /// Watch W06 title (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi tã ướt và bẩn'**
+  String get watchLoggedBoth;
+
+  /// Watch W06 title (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi bú bình {ml} ml'**
+  String watchLoggedBottle(String ml);
+
+  /// Watch W06 title (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi cữ bú mẹ'**
+  String get watchLoggedBreast;
+
+  /// Watch W06 title (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi giấc ngủ'**
+  String get watchLoggedSleep;
+
+  /// Watch W06 line under the title (R-022).
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} · {name} ghi'**
+  String watchLoggedBy(String time, String name);
+
+  /// Watch W06 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác'**
+  String get watchUndo;
+
+  /// Watch save refused (engineering, G-097).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Thử lại sau.'**
+  String get watchFailed;
+
+  /// Watch W12 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn bé'**
+  String get watchChooseBaby;
+
+  /// Watch W12 note while the phone sends one baby (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi sang bé khác trên iPhone.'**
+  String get watchOneBabyNote;
+
+  /// Watch W13 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu trên đồng hồ. Sẽ gửi lên khi có mạng.'**
+  String get watchOffline;
+
+  /// Watch W13 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} lần ghi chờ gửi'**
+  String watchPending(String n);
+
+  /// Watch first run, not linked yet (engineering, G-092).
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết nối iPhone'**
+  String get watchLinkTitle;
+
+  /// Watch first run body (engineering, G-092).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Child Life trên iPhone và đăng nhập, đồng hồ sẽ tự kết nối.'**
+  String get watchLinkBody;
+
+  /// Watch empty state for a member who cannot log (engineering, G-093).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chưa có bé nào để ghi trên đồng hồ.'**
+  String get watchCannotLog;
+
+  /// Watch first run, debug builds only: opens sample data.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thử'**
+  String get watchDemo;
+
   /// Nhập chi tiêu (D-060), review.
   ///
   /// In vi, this message translates to:
@@ -14640,12 +14952,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đăng ký'**
   String get signInRegister;
-
-  /// 07: "Gửi link đăng nhập" with no email yet (owner, 2026-10-13)
-  ///
-  /// In vi, this message translates to:
-  /// **'Nhập email để nhận link đăng nhập.'**
-  String get emailLinkNeedsEmail;
 
   /// Feature name (AS01–AS19, D-066)
   ///
@@ -15301,6 +15607,30 @@ abstract class AppLocalizations {
   /// **'{count, plural, other{Đã gộp {count} ảnh giống nhau · không xoá gì trong máy}}'**
   String autoSaveMerged(int count);
 
+  /// AS07 top bar: untick everything shown, to pick a few by hand
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ chọn tất cả'**
+  String get autoSaveDeselectAll;
+
+  /// AS07 top bar once nothing is ticked: tick the suggested picks again (up to the limit, D-070)
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn tất cả'**
+  String get autoSaveSelectAll;
+
+  /// AS07 note when suggestions exceed one upload (D-070)
+  ///
+  /// In vi, this message translates to:
+  /// **'{rest, plural, other{Mỗi lần tải tối đa {cap} mục · {rest} gợi ý còn lại chờ lần sau}}'**
+  String autoSaveRoundRest(int rest, int cap);
+
+  /// AS07 toast when ticking past the per-upload limit (D-070)
+  ///
+  /// In vi, this message translates to:
+  /// **'{cap, plural, other{Mỗi lần tải tối đa {cap} mục}}'**
+  String autoSaveRoundFull(int cap);
+
   /// AS07 primary button
   ///
   /// In vi, this message translates to:
@@ -15721,6 +16051,12 @@ abstract class AppLocalizations {
   /// **'3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.'**
   String get autoSaveSamplesHint;
 
+  /// 07: "Gửi link đăng nhập" with no email yet (owner, 2026-10-13)
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập email để nhận link đăng nhập.'**
+  String get emailLinkNeedsEmail;
+
   /// AR03 notification title, at most once a day, never in quiet hours
   ///
   /// In vi, this message translates to:
@@ -15805,6 +16141,1098 @@ abstract class AppLocalizations {
   /// **'Có ảnh mới chờ duyệt'**
   String get autoSaveTabDot;
 
+  /// AS19 dev-only section: why each scanned item was or was not suggested
+  ///
+  /// In vi, this message translates to:
+  /// **'Chẩn đoán (bản dev)'**
+  String get autoSaveDiagTitle;
+
+  /// Dev diagnostics: how the last check found new items
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần kiểm tra gần nhất: {how} · {count} tệp'**
+  String autoSaveDiagHow(String how, int count);
+
+  /// Dev diagnostics: found through the library's change history
+  ///
+  /// In vi, this message translates to:
+  /// **'ảnh mới thêm vào thư viện'**
+  String get autoSaveDiagHistory;
+
+  /// Dev diagnostics: found by date
+  ///
+  /// In vi, this message translates to:
+  /// **'theo ngày'**
+  String get autoSaveDiagByDate;
+
+  /// Dev diagnostics: nothing yet
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa kiểm tra lần nào từ lúc mở app.'**
+  String get autoSaveDiagNone;
+
+  /// Dev diagnostics: matched; distance and threshold
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý · {d} ≤ {t}'**
+  String autoSaveDiagMatch(String d, String t);
+
+  /// Dev diagnostics: closest face too far; distance and threshold
+  ///
+  /// In vi, this message translates to:
+  /// **'Không giống bé · {d} > {t}'**
+  String autoSaveDiagFar(String d, String t);
+
+  /// Dev diagnostics
+  ///
+  /// In vi, this message translates to:
+  /// **'Giống ảnh đã bấm “Không phải ảnh của bé”'**
+  String get autoSaveDiagNegative;
+
+  /// Dev diagnostics
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thấy khuôn mặt'**
+  String get autoSaveDiagNoFace;
+
+  /// Dev diagnostics
+  ///
+  /// In vi, this message translates to:
+  /// **'Khuôn mặt quá nhỏ'**
+  String get autoSaveDiagSmall;
+
+  /// Dev diagnostics
+  ///
+  /// In vi, this message translates to:
+  /// **'Giống giấy tờ hoặc ảnh chụp màn hình'**
+  String get autoSaveDiagUtility;
+
+  /// Dev diagnostics
+  ///
+  /// In vi, this message translates to:
+  /// **'Không đọc được ảnh'**
+  String get autoSaveDiagUnreadable;
+
+  /// Dev diagnostics
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tải lên hoặc đã bỏ qua trước đó'**
+  String get autoSaveDiagHandled;
+
+  /// Dev diagnostics action: forget what was looked at and check again
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra lại 30 ngày gần nhất'**
+  String get autoSaveDiagRescan;
+
+  /// MM10 title (D-068).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp cột mốc'**
+  String get ksCardTitle;
+
+  /// MM10 section label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn dịp'**
+  String get ksChooseOccasion;
+
+  /// MM10 badge on the nearest age occasion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý'**
+  String get ksSuggested;
+
+  /// Occasion chip and card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'7 ngày'**
+  String get ksOccD7;
+
+  /// Occasion chip and card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 tháng'**
+  String get ksOccM1;
+
+  /// Occasion chip and card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'100 ngày'**
+  String get ksOccD100;
+
+  /// Occasion chip and card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu cười'**
+  String get ksOccFirstSmile;
+
+  /// Occasion chip and card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đầu biết lẫy'**
+  String get ksOccRollsOver;
+
+  /// Occasion chip and card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Biết bò'**
+  String get ksOccCrawls;
+
+  /// Occasion chip and card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước đi đầu tiên'**
+  String get ksOccFirstSteps;
+
+  /// Occasion chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sinh nhật 1 tuổi'**
+  String get ksOccY1;
+
+  /// Big words on a first-birthday card (engineering, for design review).
+  ///
+  /// In vi, this message translates to:
+  /// **'1 tuổi'**
+  String get ksTitleY1;
+
+  /// Default card message (engineering, for design review).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bảy ngày đầu bên con'**
+  String get ksQuoteD7;
+
+  /// Default card message (MM11).
+  ///
+  /// In vi, this message translates to:
+  /// **'Một tháng yêu thương'**
+  String get ksQuoteM1;
+
+  /// Default card message (engineering, for design review).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trăm ngày hạnh phúc'**
+  String get ksQuoteD100;
+
+  /// Default card message (engineering, for design review).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nụ cười đầu tiên của con'**
+  String get ksQuoteFirstSmile;
+
+  /// Default card message (engineering, for design review).
+  ///
+  /// In vi, this message translates to:
+  /// **'Con biết lẫy rồi!'**
+  String get ksQuoteRollsOver;
+
+  /// Default card message (engineering, for design review).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bò khắp nhà thôi!'**
+  String get ksQuoteCrawls;
+
+  /// Default card message (engineering, for design review).
+  ///
+  /// In vi, this message translates to:
+  /// **'Những bước chân đầu tiên'**
+  String get ksQuoteFirstSteps;
+
+  /// Default card message (engineering, for design review).
+  ///
+  /// In vi, this message translates to:
+  /// **'Một năm yêu thương'**
+  String get ksQuoteY1;
+
+  /// MM10 format.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dọc 4:5'**
+  String get ksFormatPortrait;
+
+  /// MM10 format.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vuông'**
+  String get ksFormatSquare;
+
+  /// MM10 format.
+  ///
+  /// In vi, this message translates to:
+  /// **'Story 9:16'**
+  String get ksFormatStory;
+
+  /// Template badge (MM10).
+  ///
+  /// In vi, this message translates to:
+  /// **'Miễn phí'**
+  String get ksFree;
+
+  /// Template badge (MM10); free during the beta (D-068 #3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cao cấp'**
+  String get ksPremium;
+
+  /// MM10 empty state (G-107).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có mẫu thiệp'**
+  String get ksNoTemplates;
+
+  /// MM10 empty state (G-107).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu mới sẽ có sớm. Bạn quay lại sau nhé.'**
+  String get ksNoTemplatesBody;
+
+  /// MM10 error state (G-107).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được mẫu thiệp'**
+  String get ksLoadFailed;
+
+  /// Shown when the beta flag is off or the person is not a Cùng nuôi.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở cho gia đình bạn'**
+  String get ksUnavailableTitle;
+
+  /// Shown when the beta flag is off.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp cột mốc đang thử nghiệm và sẽ sớm có cho mọi gia đình.'**
+  String get ksUnavailableBody;
+
+  /// MM11 top link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trước'**
+  String get ksPreview;
+
+  /// MM11 hint on the photo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm ảnh để đổi · kéo để căn'**
+  String get ksPhotoHint;
+
+  /// Empty photo slot (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh'**
+  String get ksChoosePhoto;
+
+  /// MM11 tool.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get ksToolPhoto;
+
+  /// MM11 tool.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bố cục'**
+  String get ksToolLayout;
+
+  /// MM11 tool.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn'**
+  String get ksToolMessage;
+
+  /// MM11 tool.
+  ///
+  /// In vi, this message translates to:
+  /// **'Màu'**
+  String get ksToolColor;
+
+  /// MM11 Ảnh panel: pick from the phone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thư viện máy'**
+  String get ksFromDevice;
+
+  /// MM11 Lời nhắn panel (not drawn, G-107).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn trên thiệp'**
+  String get ksMessageLabel;
+
+  /// MM11 primary button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu thiệp'**
+  String get ksSaveCard;
+
+  /// MM11 save error.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được thiệp. Thử lại nhé.'**
+  String get ksSaveFailed;
+
+  /// MM12 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp đã sẵn sàng!'**
+  String get ksCardReady;
+
+  /// MM12 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu vào Kỷ niệm · Chỉ ba mẹ'**
+  String get ksSavedParents;
+
+  /// MM12 PNG / JPG.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất ảnh'**
+  String get ksExport;
+
+  /// MM12 action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu vào máy'**
+  String get ksSaveDevice;
+
+  /// MM12 action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ'**
+  String get ksShare;
+
+  /// MM12 toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu vào máy'**
+  String get ksSavedToDevice;
+
+  /// MM12 pencil (a11y); saves a new card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa thiệp'**
+  String get ksEditAgain;
+
+  /// MM11 note under Lưu thiệp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên, tuổi và ngày được điền sẵn từ hồ sơ của {name}'**
+  String ksPrefilled(String name);
+
+  /// MM01 section title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo từ kỷ niệm của {name}'**
+  String ksCreateFrom(String name);
+
+  /// MM01 link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem mẫu'**
+  String get ksSeeTemplates;
+
+  /// Badge on the new creation tiles (MM01, MM02).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới'**
+  String get ksNew;
+
+  /// MM01 Thiệp cột mốc tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh PNG để chia sẻ'**
+  String get ksCardTileHint;
+
+  /// MM02 Thiệp cột mốc tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh để chia sẻ'**
+  String get ksCardTileHintShort;
+
+  /// MM02 group label.
+  ///
+  /// In vi, this message translates to:
+  /// **'SÁNG TẠO & TỰ ĐỘNG'**
+  String get ksCreateGroup;
+
+  /// MM17 badge on a card in the Ảnh grid.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp'**
+  String get ksCardBadge;
+
+  /// Câu chuyện tab: title over today's stories (D-068 #2; not drawn, G-107).
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu chuyện của gia đình'**
+  String get ksStoriesSection;
+
+  /// Count of milestone cards (MM15 section, MM17 week caption).
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} thiệp'**
+  String ksCardCount(int n);
+
+  /// MM03 message before an age occasion.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} sắp tròn {occasion}! Cùng tạo một kỷ niệm thật đẹp nhé.'**
+  String ksNudgeSoon(String name, String occasion);
+
+  /// MM03 message on the day (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay {name} tròn {occasion}! Cùng tạo một kỷ niệm thật đẹp nhé.'**
+  String ksNudgeToday(String name, String occasion);
+
+  /// MM03 message after the day (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} vừa tròn {occasion}! Lưu lại bằng một tấm thiệp nhé.'**
+  String ksNudgeJust(String name, String occasion);
+
+  /// MM03 message after a first-time milestone is tagged (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'{occasion} của {name}! Làm một tấm thiệp kỷ niệm nhé.'**
+  String ksNudgeFirst(String name, String occasion);
+
+  /// MM03 date line, e.g. 'Thứ Bảy này · 14/11'.
+  ///
+  /// In vi, this message translates to:
+  /// **'{weekday} này · {day}'**
+  String ksThisWeekday(String weekday, String day);
+
+  /// MM03 date line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get ksToday;
+
+  /// MM03 date line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày mai'**
+  String get ksTomorrow;
+
+  /// MM03 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo thiệp'**
+  String get ksMakeCard;
+
+  /// MM03: hides the card for 3 days.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau'**
+  String get ksLater;
+
+  /// Local notification at 09:00 on an age occasion (D-068 #9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay {name} tròn {occasion} 🎂'**
+  String ksNudgeTodayTitle(String name, String occasion);
+
+  /// Local notification body (D-068 #9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm một tấm thiệp kỷ niệm thật xinh nhé.'**
+  String get ksNudgeTodayBody;
+
+  /// Look-back notification for a passed age occasion (D-068 #9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhìn lại ngày {name} tròn {occasion}'**
+  String ksNudgeBackAgeTitle(String name, String occasion);
+
+  /// Look-back notification for a first-time occasion (D-068 #9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhìn lại: {occasion} của {name}'**
+  String ksNudgeBackFirstTitle(String name, String occasion);
+
+  /// Look-back notification body (D-068 #9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Có {n} ảnh từ dịp này trong Kỷ niệm. Làm một tấm thiệp nhé?'**
+  String ksNudgeBackBody(int n);
+
+  /// MM01 / MM02 tile and the template list title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video kỷ niệm'**
+  String get ksVideoTitle;
+
+  /// MM01 / MM02 tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh + chữ + nhạc'**
+  String get ksVideoTileHint;
+
+  /// Template list (MM04 / MM05 not found, G-107).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn một mẫu, rồi chọn ảnh của bé. Child Life ghép thành video 9:16.'**
+  String get ksVideoPickTemplate;
+
+  /// Template list.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần {min}–{max} ảnh'**
+  String ksVideoNeeds(int min, int max);
+
+  /// Shown when the beta flag is off.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video kỷ niệm đang thử nghiệm và sẽ sớm có cho mọi gia đình.'**
+  String get ksUnavailableBodyVideo;
+
+  /// MM06 segment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ Kỷ niệm'**
+  String get ksFromMemories;
+
+  /// MM06 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh cho video'**
+  String get ksVideoPhotosTitle;
+
+  /// MM06 progress.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n}/{total} cảnh đã có ảnh'**
+  String ksVideoScenesFilled(int n, int total);
+
+  /// MM06 progress.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối thiểu {n}'**
+  String ksVideoMinimum(int n);
+
+  /// MM06 scene hint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảnh {n}: {hint}'**
+  String ksVideoScene(int n, String hint);
+
+  /// MM06 scene card label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảnh {n}'**
+  String ksVideoSceneN(int n);
+
+  /// MM06 optional scene tag.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chọn'**
+  String get ksVideoSceneOptionalTag;
+
+  /// MM06 header over the photos suggested for the chosen scene.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho cảnh {n} · {hint}'**
+  String ksVideoForScene(int n, String hint);
+
+  /// MM06: when the chosen scene's photo was taken.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh chụp từ {from} đến {to}'**
+  String ksVideoSceneWindow(String from, String to);
+
+  /// MM06: a scene with no time window.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh nào cũng hợp, ảnh mới nhất trước'**
+  String get ksVideoSceneAny;
+
+  /// MM06: nothing suits the chosen scene.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ảnh nào trong khoảng này. Chọn trong Ảnh khác bên dưới hoặc thêm từ thư viện máy.'**
+  String get ksVideoSceneEmpty;
+
+  /// MM06: nothing suits the chosen optional scene.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ảnh nào trong khoảng này. Cảnh này tuỳ chọn, có thể để trống.'**
+  String get ksVideoSceneEmptyOptional;
+
+  /// MM06 section under the suggestions.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh khác'**
+  String get ksVideoOtherPhotos;
+
+  /// MM06 a11y: clear a scene.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ ảnh ở cảnh {n}'**
+  String ksVideoClearScene(int n);
+
+  /// MM06 bottom bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã chọn {n} ảnh'**
+  String ksVideoPicked(int n);
+
+  /// MM06 bottom bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thể thêm {n}'**
+  String ksVideoCanAdd(int n);
+
+  /// MM13 bottom bar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần thêm {n}'**
+  String ksVideoNeedMore(int n);
+
+  /// MM13 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm của {name} hiện chỉ có {have} ảnh phù hợp. Mẫu này cần ít nhất {need} ảnh.'**
+  String ksVideoNotEnough(String name, int have, int need);
+
+  /// MM13 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn thêm từ thư viện máy'**
+  String get ksVideoMoreFromDevice;
+
+  /// MM13 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ảnh bạn chọn mới được dùng'**
+  String get ksVideoMoreFromDeviceHint;
+
+  /// MM13 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi sang mẫu ngắn hơn'**
+  String get ksVideoShorter;
+
+  /// MM13 option.
+  ///
+  /// In vi, this message translates to:
+  /// **'“{name}” · cần {n} ảnh'**
+  String ksVideoShorterHint(String name, int n);
+
+  /// MM06: photos from the phone are uploaded first (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang thêm {n} ảnh vào Kỷ niệm (Chỉ ba mẹ). Ảnh sẽ được chọn khi tải xong.'**
+  String ksVideoImporting(int n);
+
+  /// MM07 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn thiện video'**
+  String get ksVideoFinishTitle;
+
+  /// MM07 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điền sẵn từ hồ sơ của bé'**
+  String get ksVideoPrefilled;
+
+  /// MM07 summary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé'**
+  String get ksVideoBaby;
+
+  /// MM07 summary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày mốc'**
+  String get ksVideoDay;
+
+  /// MM07 field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu đề'**
+  String get ksVideoFieldTitle;
+
+  /// MM07 field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời nhắn cuối video'**
+  String get ksVideoFieldMessage;
+
+  /// MM07 strip.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} ảnh · thứ tự xuất hiện'**
+  String ksVideoOrder(int n);
+
+  /// MM07 strip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ và kéo để đổi'**
+  String get ksVideoReorderHint;
+
+  /// MM07 '+' (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh'**
+  String get ksVideoAddPhotos;
+
+  /// MM07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhạc nền'**
+  String get ksVideoMusic;
+
+  /// MM07 row (no picker in V1, Q-062).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhạc của mẫu'**
+  String get ksVideoMusicTemplate;
+
+  /// MM07 row (Q-062).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có nhạc cho mẫu này'**
+  String get ksVideoMusicNone;
+
+  /// MM07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai xem được'**
+  String get ksVideoWho;
+
+  /// MM07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ · lưu vào Kỷ niệm'**
+  String get ksVideoWhoParents;
+
+  /// MM07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình · lưu vào Kỷ niệm'**
+  String get ksVideoWhoFamily;
+
+  /// Audience label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ'**
+  String get ksAudienceParents;
+
+  /// Audience label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình'**
+  String get ksAudienceFamily;
+
+  /// MM07 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo video'**
+  String get ksVideoCreate;
+
+  /// MM07 note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mất khoảng 1–2 phút · bạn có thể rời màn hình'**
+  String get ksVideoTakes;
+
+  /// Request refused: one at a time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang có một video được tạo cho bé. Đợi xong rồi tạo tiếp nhé.'**
+  String get ksVideoErrBusy;
+
+  /// Request refused: daily cap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay gia đình đã tạo nhiều video. Mai thử lại nhé.'**
+  String get ksVideoErrDaily;
+
+  /// Request refused: quota.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng gia đình sắp đầy. Giải phóng bớt rồi tạo video nhé.'**
+  String get ksVideoErrQuota;
+
+  /// Request refused: photo unavailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có ảnh vừa bị xoá hoặc chưa tải xong. Chọn lại ảnh nhé.'**
+  String get ksVideoErrPhoto;
+
+  /// Request refused: template.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu này vừa được cập nhật. Chọn lại mẫu nhé.'**
+  String get ksVideoErrTemplate;
+
+  /// MM08 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tạo video cho {name}…'**
+  String ksVideoMaking(String name);
+
+  /// MM08 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thường mất 1–2 phút. Bạn có thể rời màn hình này, Child Life sẽ báo khi video sẵn sàng.'**
+  String get ksVideoMakingBody;
+
+  /// MM08 step.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp xếp {n} ảnh theo mẫu'**
+  String ksVideoStepArrange(int n);
+
+  /// MM08 step.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm chữ, lời nhắn và nhạc'**
+  String get ksVideoStepCompose;
+
+  /// MM08 step.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất video 9:16'**
+  String get ksVideoStepExport;
+
+  /// MM08 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Về Kỷ niệm'**
+  String get ksVideoBackToMemories;
+
+  /// MM08 Live Activity: queued.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chờ tạo video'**
+  String get ksLiveQueued;
+
+  /// MM08 Live Activity: arrange step.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang sắp xếp ảnh'**
+  String get ksLiveArrange;
+
+  /// MM08 Live Activity: compose step.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ghép chữ và nhạc'**
+  String get ksLiveCompose;
+
+  /// MM08 Live Activity: export step.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xuất video'**
+  String get ksLiveExport;
+
+  /// MM08 Live Activity: ready.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để xem, lưu và chia sẻ'**
+  String get ksLiveReadySub;
+
+  /// MM08 Live Activity: failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để thử lại'**
+  String get ksLiveFailedSub;
+
+  /// Kỷ niệm banner: a Video kỷ niệm being made.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tạo video · {percent}%'**
+  String ksVideoActive(int percent);
+
+  /// Kỷ niệm banner: queued.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chờ tạo video'**
+  String get ksVideoActiveQueued;
+
+  /// Toast when a video finishes while the app is open.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video kỷ niệm đã sẵn sàng'**
+  String get ksVideoReadyToast;
+
+  /// Toast when a video fails while the app is open.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tạo được video kỷ niệm'**
+  String get ksVideoFailedToast;
+
+  /// Toast action: open the video job.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem'**
+  String get ksVideoOpenJob;
+
+  /// MM14: delete a video that could not be made.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá bản nháp'**
+  String get ksVideoDeleteDraft;
+
+  /// MM14 confirm title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá bản nháp video này?'**
+  String get ksVideoDeleteDraftTitle;
+
+  /// MM14 confirm body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh của bé vẫn ở trong Kỷ niệm, chỉ bản nháp video bị xoá.'**
+  String get ksVideoDeleteDraftBody;
+
+  /// Toast after deleting a video draft.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá bản nháp'**
+  String get ksVideoDraftDeleted;
+
+  /// Thiệp / Video tab: milestone cards.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiệp'**
+  String get ksTabCards;
+
+  /// Thiệp / Video tab: memory videos.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video'**
+  String get ksTabVideos;
+
+  /// MM09 title; MM17 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video đã sẵn sàng!'**
+  String get ksVideoReady;
+
+  /// MM09 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu vào Kỷ niệm'**
+  String get ksVideoSaved;
+
+  /// MM09 chip until filed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang lưu vào Kỷ niệm…'**
+  String get ksVideoFiling;
+
+  /// MM09 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần {n}'**
+  String ksVideoWeek(int n);
+
+  /// MM09 cover (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem video'**
+  String get ksVideoWatch;
+
+  /// MM09 action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trong Kỷ niệm'**
+  String get ksVideoOpen;
+
+  /// MM09 cross-sell.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo thêm thiệp “{occasion}”'**
+  String ksVideoAlsoCard(String occasion);
+
+  /// MM09 cross-sell.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng lại ảnh vừa chọn'**
+  String get ksVideoAlsoCardHint;
+
+  /// MM14 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tạo được video'**
+  String get ksVideoFailed;
+
+  /// MM14 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết nối bị gián đoạn khi xuất video. Ảnh, chữ và lời nhắn bạn đã chọn vẫn được giữ nguyên.'**
+  String get ksVideoFailedNetwork;
+
+  /// MM14 body for timeout (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Máy chủ đang bận nên chưa tạo xong. Ảnh, chữ và lời nhắn bạn đã chọn vẫn được giữ nguyên.'**
+  String get ksVideoFailedBusy;
+
+  /// MM14 body for a missing photo (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Có ảnh đã bị xoá khỏi Kỷ niệm. Chỉnh lại lựa chọn để tạo video.'**
+  String get ksVideoFailedPhoto;
+
+  /// MM14 secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh lại lựa chọn'**
+  String get ksVideoEditChoices;
+
+  /// MM14 note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp được lưu trong Câu chuyện · Bản nháp'**
+  String get ksVideoDraftNote;
+
+  /// MM03 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo video'**
+  String get ksMakeVideo;
+
+  /// MM12 action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo video {occasion}'**
+  String ksMakeVideoFor(String occasion);
+
+  /// MM15 draft tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp'**
+  String get ksVideoDraftTile;
+
+  /// MM15 draft tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm tiếp'**
+  String get ksVideoContinue;
+
+  /// MM15 tile while rendering (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tạo · {p}%'**
+  String ksVideoInProgress(int p);
+
+  /// MM17 banner button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem'**
+  String get ksBannerView;
+
+  /// MM15 section count.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} video'**
+  String ksVideoCount(int n);
+
   /// Chăm sóc section (owner, 2026-10-14, D-069)
   ///
   /// In vi, this message translates to:
@@ -15822,6 +17250,324 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Công cụ'**
   String get utTools;
+
+  /// Template list: play the template with sample pictures (MM04 / MM05 not found, G-107).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem mẫu'**
+  String get ksPreviewSample;
+
+  /// Preview screen note (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản xem trước chạy ngay trên máy. Video thật được xuất 1080×1920 sau khi bấm “Tạo video”.'**
+  String get ksPreviewNote;
+
+  /// Preview screen error (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở được bản xem trước. Kiểm tra mạng rồi thử lại nhé.'**
+  String get ksPreviewFailed;
+
+  /// MM07 music sheet: no track.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không dùng nhạc'**
+  String get ksMusicNone;
+
+  /// MM07 music sheet: the template’s default track.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mặc định của mẫu'**
+  String get ksMusicDefault;
+
+  /// MM07 music sheet: a11y, stop the sample.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng nghe thử'**
+  String get ksMusicStop;
+
+  /// MM07 music sheet footer (engineering).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhạc có bản quyền do Child Life chọn. Bạn có thể đổi bài bất cứ lúc nào trước khi tạo video.'**
+  String get ksMusicNote;
+
+  /// Preview screen note when the template has a real preview video.
+  ///
+  /// In vi, this message translates to:
+  /// **'Video mẫu dùng ảnh minh hoạ. Video của bé sẽ dùng ảnh và lời bạn chọn.'**
+  String get ksPreviewVideoNote;
+
+  /// MM07 music sheet: a11y, play a sample.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nghe thử {title}'**
+  String ksMusicListen(String title);
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào đời'**
+  String get ksOccBirth;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếng cười đầu tiên'**
+  String get ksOccLaughs;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Biết ngồi'**
+  String get ksOccSitsUp;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đứng vững'**
+  String get ksOccStands;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiếc răng đầu tiên'**
+  String get ksOccFirstTooth;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa ăn dặm đầu tiên'**
+  String get ksOccFirstSolids;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếng gọi đầu tiên'**
+  String get ksOccFirstWord;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Con biết lẫy rồi!'**
+  String get ksAchieveRollsOver;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Con ngồi vững rồi!'**
+  String get ksAchieveSitsUp;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Con biết bò rồi!'**
+  String get ksAchieveCrawls;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Con đứng được rồi!'**
+  String get ksAchieveStands;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Con đi được rồi!'**
+  String get ksAchieveFirstSteps;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhìn con làm được nè!'**
+  String get ksAchieveAny;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào con đến với thế giới'**
+  String get ksQuoteBirth;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cười giòn tan cả nhà'**
+  String get ksQuoteLaughs;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Con ngồi vững rồi!'**
+  String get ksQuoteSitsUp;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Con đứng được rồi!'**
+  String get ksQuoteStands;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiếc răng xinh đầu tiên'**
+  String get ksQuoteFirstTooth;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Măm măm ngon quá!'**
+  String get ksQuoteFirstSolids;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Con đã gọi ba mẹ!'**
+  String get ksQuoteFirstWord;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày đầu'**
+  String get ksLabelFirstDay;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lúc ấy'**
+  String get ksLabelThen;
+
+  /// Chapter 01 cards (remember-2-templates.md).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bây giờ'**
+  String get ksLabelNow;
+
+  /// MM10 chip / card: a monthly occasion.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} tháng'**
+  String ksOccMonth(int n);
+
+  /// Default card note for a monthly occasion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tròn {n} tháng yêu thương'**
+  String ksQuoteMonth(int n);
+
+  /// Card {age}.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} ngày'**
+  String ksAgeDays(int n);
+
+  /// Card {age}.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} tuần'**
+  String ksAgeWeeks(int n);
+
+  /// Card {age}.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} tháng'**
+  String ksAgeMonths(int n);
+
+  /// Card {age}.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} tuổi'**
+  String ksAgeYears(int n);
+
+  /// Card ageUnit (big number + unit).
+  ///
+  /// In vi, this message translates to:
+  /// **'ngày'**
+  String ksUnitDays(int n);
+
+  /// Card ageUnit.
+  ///
+  /// In vi, this message translates to:
+  /// **'tuần'**
+  String ksUnitWeeks(int n);
+
+  /// Card ageUnit.
+  ///
+  /// In vi, this message translates to:
+  /// **'tháng'**
+  String ksUnitMonths(int n);
+
+  /// Card ageUnit.
+  ///
+  /// In vi, this message translates to:
+  /// **'tuổi'**
+  String ksUnitYears(int n);
+
+  /// Card photo label (Then & Now).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày {n}'**
+  String ksLabelDay(int n);
+
+  /// Card photo label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần {n}'**
+  String ksLabelWeek(int n);
+
+  /// Card photo label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {n}'**
+  String ksLabelMonth(int n);
+
+  /// Card photo label.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} tuổi'**
+  String ksLabelYear(int n);
+
+  /// C01 birth weight and length.
+  ///
+  /// In vi, this message translates to:
+  /// **'{weight} kg · {length} cm'**
+  String ksBirthStats(String weight, String length);
+
+  /// C01 birth weight only.
+  ///
+  /// In vi, this message translates to:
+  /// **'{weight} kg'**
+  String ksBirthWeight(String weight);
+
+  /// C01 birth length only.
+  ///
+  /// In vi, this message translates to:
+  /// **'{length} cm'**
+  String ksBirthLength(String length);
+
+  /// MM07: a Chapter 01 video text (E-9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu đề lớn'**
+  String get ksVideoFieldHeadline;
+
+  /// MM07: a Chapter 01 video text (E-9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời cho từng ảnh (mỗi dòng một câu)'**
+  String get ksVideoFieldLines;
+
+  /// MM07: a Chapter 01 video text (E-9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lá thư gửi con'**
+  String get ksVideoFieldLetter;
+
+  /// MM07: a Chapter 01 video text (E-9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời kết'**
+  String get ksVideoFieldClosing;
 }
 
 class _AppLocalizationsDelegate

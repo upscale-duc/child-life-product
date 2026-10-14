@@ -1,0 +1,2459 @@
+{
+  "premium": {
+    "access": "everyone",
+    "badges": true
+  },
+  "music": [],
+  "templates": [
+    {
+      "id": "card_round",
+      "version": 1,
+      "kind": "card",
+      "name": {
+        "vi": "Tròn trịa",
+        "en": "Round"
+      },
+      "description": null,
+      "tier": "free",
+      "status": "published",
+      "order": 10,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.19,
+              "y": 0.08,
+              "w": 0.62,
+              "h": 0.496
+            },
+            "shape": "circle",
+            "radius": 0
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0,
+              "y": 0.606,
+              "w": 1,
+              "h": 0.17
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.164,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "name",
+            "rect": {
+              "x": 0,
+              "y": 0.7725,
+              "w": 1,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.064,
+            "color": "ink",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "date",
+            "rect": {
+              "x": 0,
+              "y": 0.8464,
+              "w": 1,
+              "h": 0.07
+            },
+            "font": "beVietnamPro",
+            "weight": 500,
+            "size": 0.052,
+            "color": "ink",
+            "opacity": 0.6,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "quote",
+            "rect": {
+              "x": 0.06,
+              "y": 0.912,
+              "w": 0.88,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.052,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.05,
+              "y": 0.03,
+              "w": 0.16,
+              "h": 0.0247
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "square": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.28,
+              "y": 0.06,
+              "w": 0.44,
+              "h": 0.44
+            },
+            "shape": "circle",
+            "radius": 0
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0,
+              "y": 0.52,
+              "w": 1,
+              "h": 0.17
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.13,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "name",
+            "rect": {
+              "x": 0,
+              "y": 0.7,
+              "w": 1,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.056,
+            "color": "ink",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "date",
+            "rect": {
+              "x": 0,
+              "y": 0.77,
+              "w": 1,
+              "h": 0.07
+            },
+            "font": "beVietnamPro",
+            "weight": 500,
+            "size": 0.046,
+            "color": "ink",
+            "opacity": 0.6,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "quote",
+            "rect": {
+              "x": 0.06,
+              "y": 0.86,
+              "w": 0.88,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.048,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.05,
+              "y": 0.03,
+              "w": 0.16,
+              "h": 0.0309
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.15,
+              "y": 0.18,
+              "w": 0.7,
+              "h": 0.394
+            },
+            "shape": "circle",
+            "radius": 0
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0,
+              "y": 0.61,
+              "w": 1,
+              "h": 0.17
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.18,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "name",
+            "rect": {
+              "x": 0,
+              "y": 0.73,
+              "w": 1,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.07,
+            "color": "ink",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "date",
+            "rect": {
+              "x": 0,
+              "y": 0.79,
+              "w": 1,
+              "h": 0.07
+            },
+            "font": "beVietnamPro",
+            "weight": 500,
+            "size": 0.056,
+            "color": "ink",
+            "opacity": 0.6,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "quote",
+            "rect": {
+              "x": 0.06,
+              "y": 0.86,
+              "w": 0.88,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.056,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.05,
+              "y": 0.03,
+              "w": 0.16,
+              "h": 0.0174
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {},
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Yêu con thật nhiều",
+            "en": "Loved so much"
+          },
+          "max": 60
+        }
+      ],
+      "palette": {
+        "background": "#FCF5E5",
+        "ink": "#21333D",
+        "accent": "#D97359"
+      },
+      "palettes": [
+        {
+          "background": "#FCF5E5",
+          "ink": "#21333D",
+          "accent": "#D97359"
+        },
+        {
+          "background": "#FCE8E3",
+          "ink": "#21333D",
+          "accent": "#D97359"
+        },
+        {
+          "background": "#1C2938",
+          "ink": "#FFFFFF",
+          "accent": "#FAD173"
+        },
+        {
+          "background": "#E4F4F1",
+          "ink": "#173D44",
+          "accent": "#2BA89A"
+        },
+        {
+          "background": "#E6F0FA",
+          "ink": "#21333D",
+          "accent": "#4F7FB8"
+        }
+      ],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_full_photo",
+      "version": 1,
+      "kind": "card",
+      "name": {
+        "vi": "Toàn ảnh",
+        "en": "Full photo"
+      },
+      "description": null,
+      "tier": "free",
+      "status": "published",
+      "order": 20,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "shape": "rect",
+            "radius": 0
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0,
+              "y": 0.45,
+              "w": 1,
+              "h": 0.55
+            },
+            "color": "#00000000",
+            "gradientTo": "#00000099",
+            "radius": 0,
+            "stroke": 0
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.68,
+              "w": 0.875,
+              "h": 0.2
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.188,
+            "color": "#FFFFFF",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "nameDate",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.92,
+              "w": 0.875,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.0545,
+            "color": "#FFFFFF",
+            "opacity": 0.9,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.035,
+              "w": 0.16,
+              "h": 0.0247
+            },
+            "color": "#FFFFFF",
+            "opacity": 0.85
+          }
+        ],
+        "square": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "shape": "rect",
+            "radius": 0
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0,
+              "y": 0.45,
+              "w": 1,
+              "h": 0.55
+            },
+            "color": "#00000000",
+            "gradientTo": "#00000099",
+            "radius": 0,
+            "stroke": 0
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.66,
+              "w": 0.875,
+              "h": 0.2
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.15,
+            "color": "#FFFFFF",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "nameDate",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.9,
+              "w": 0.875,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.05,
+            "color": "#FFFFFF",
+            "opacity": 0.9,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.035,
+              "w": 0.16,
+              "h": 0.0309
+            },
+            "color": "#FFFFFF",
+            "opacity": 0.85
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "shape": "rect",
+            "radius": 0
+          },
+          {
+            "type": "shape",
+            "shape": "rect",
+            "rect": {
+              "x": 0,
+              "y": 0.45,
+              "w": 1,
+              "h": 0.55
+            },
+            "color": "#00000000",
+            "gradientTo": "#00000099",
+            "radius": 0,
+            "stroke": 0
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.74,
+              "w": 0.875,
+              "h": 0.2
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.17,
+            "color": "#FFFFFF",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "nameDate",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.86,
+              "w": 0.875,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.05,
+            "color": "#FFFFFF",
+            "opacity": 0.9,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.035,
+              "w": 0.16,
+              "h": 0.0174
+            },
+            "color": "#FFFFFF",
+            "opacity": 0.85
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {},
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Yêu con thật nhiều",
+            "en": "Loved so much"
+          },
+          "max": 60
+        }
+      ],
+      "palette": {
+        "background": "#FCF5E5",
+        "ink": "#21333D",
+        "accent": "#D97359"
+      },
+      "palettes": [
+        {
+          "background": "#FCF5E5",
+          "ink": "#21333D",
+          "accent": "#D97359"
+        },
+        {
+          "background": "#FCE8E3",
+          "ink": "#21333D",
+          "accent": "#D97359"
+        },
+        {
+          "background": "#1C2938",
+          "ink": "#FFFFFF",
+          "accent": "#FAD173"
+        },
+        {
+          "background": "#E4F4F1",
+          "ink": "#173D44",
+          "accent": "#2BA89A"
+        },
+        {
+          "background": "#E6F0FA",
+          "ink": "#21333D",
+          "accent": "#4F7FB8"
+        }
+      ],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_blush",
+      "version": 1,
+      "kind": "card",
+      "name": {
+        "vi": "Hồng phấn",
+        "en": "Blush"
+      },
+      "description": null,
+      "tier": "premium",
+      "status": "published",
+      "order": 30,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.0625,
+              "y": 0.05,
+              "w": 0.875,
+              "h": 0.6
+            },
+            "shape": "rect",
+            "radius": 0.05
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.68,
+              "w": 0.875,
+              "h": 0.16
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.1515,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "nameDate",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.845,
+              "w": 0.7,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.0545,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "quote",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.91,
+              "w": 0.875,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 500,
+            "size": 0.05,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.7775,
+              "y": 0.8626,
+              "w": 0.16,
+              "h": 0.0247
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "square": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.0625,
+              "y": 0.05,
+              "w": 0.875,
+              "h": 0.55
+            },
+            "shape": "rect",
+            "radius": 0.05
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.64,
+              "w": 0.875,
+              "h": 0.16
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.12,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "nameDate",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.8,
+              "w": 0.7,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.05,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "quote",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.88,
+              "w": 0.875,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 500,
+            "size": 0.046,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.7775,
+              "y": 0.8145,
+              "w": 0.16,
+              "h": 0.0309
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.0625,
+              "y": 0.05,
+              "w": 0.875,
+              "h": 0.58
+            },
+            "shape": "rect",
+            "radius": 0.05
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.68,
+              "w": 0.875,
+              "h": 0.16
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.15,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "nameDate",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.8,
+              "w": 0.7,
+              "h": 0.06
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.05,
+            "color": "ink",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "quote",
+            "rect": {
+              "x": 0.0625,
+              "y": 0.86,
+              "w": 0.875,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 500,
+            "size": 0.05,
+            "color": "accent",
+            "opacity": 1,
+            "align": "left",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.7775,
+              "y": 0.8213,
+              "w": 0.16,
+              "h": 0.0174
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {},
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Yêu con thật nhiều",
+            "en": "Loved so much"
+          },
+          "max": 60
+        }
+      ],
+      "palette": {
+        "background": "#FCE8E3",
+        "ink": "#21333D",
+        "accent": "#D97359"
+      },
+      "palettes": [
+        {
+          "background": "#FCE8E3",
+          "ink": "#21333D",
+          "accent": "#D97359"
+        },
+        {
+          "background": "#FCF5E5",
+          "ink": "#21333D",
+          "accent": "#D97359"
+        },
+        {
+          "background": "#1C2938",
+          "ink": "#FFFFFF",
+          "accent": "#FAD173"
+        },
+        {
+          "background": "#E4F4F1",
+          "ink": "#173D44",
+          "accent": "#2BA89A"
+        },
+        {
+          "background": "#E6F0FA",
+          "ink": "#21333D",
+          "accent": "#4F7FB8"
+        }
+      ],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "card_starry_night",
+      "version": 1,
+      "kind": "card",
+      "name": {
+        "vi": "Đêm sao",
+        "en": "Starry night"
+      },
+      "description": null,
+      "tier": "premium",
+      "status": "published",
+      "order": 40,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": {
+        "portrait": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.19,
+              "y": 0.08,
+              "w": 0.62,
+              "h": 0.496
+            },
+            "shape": "circle",
+            "radius": 0
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0,
+              "y": 0.606,
+              "w": 1,
+              "h": 0.17
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.164,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "name",
+            "rect": {
+              "x": 0,
+              "y": 0.7725,
+              "w": 1,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.064,
+            "color": "ink",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "date",
+            "rect": {
+              "x": 0,
+              "y": 0.8464,
+              "w": 1,
+              "h": 0.07
+            },
+            "font": "beVietnamPro",
+            "weight": 500,
+            "size": 0.052,
+            "color": "ink",
+            "opacity": 0.6,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "quote",
+            "rect": {
+              "x": 0.06,
+              "y": 0.912,
+              "w": 0.88,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.052,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.08
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.05,
+              "y": 0.03,
+              "w": 0.16,
+              "h": 0.0247
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "square": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.28,
+              "y": 0.06,
+              "w": 0.44,
+              "h": 0.44
+            },
+            "shape": "circle",
+            "radius": 0
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0,
+              "y": 0.52,
+              "w": 1,
+              "h": 0.17
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.13,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "name",
+            "rect": {
+              "x": 0,
+              "y": 0.7,
+              "w": 1,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.056,
+            "color": "ink",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "date",
+            "rect": {
+              "x": 0,
+              "y": 0.77,
+              "w": 1,
+              "h": 0.07
+            },
+            "font": "beVietnamPro",
+            "weight": 500,
+            "size": 0.046,
+            "color": "ink",
+            "opacity": 0.6,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "quote",
+            "rect": {
+              "x": 0.06,
+              "y": 0.86,
+              "w": 0.88,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.048,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.064
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.05,
+              "y": 0.03,
+              "w": 0.16,
+              "h": 0.0309
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ],
+        "story": [
+          {
+            "type": "background",
+            "color": "background",
+            "asset": null
+          },
+          {
+            "type": "photo",
+            "slot": 0,
+            "rect": {
+              "x": 0.15,
+              "y": 0.18,
+              "w": 0.7,
+              "h": 0.394
+            },
+            "shape": "circle",
+            "radius": 0
+          },
+          {
+            "type": "text",
+            "field": "occasion",
+            "rect": {
+              "x": 0,
+              "y": 0.61,
+              "w": 1,
+              "h": 0.17
+            },
+            "font": "beVietnamPro",
+            "weight": 700,
+            "size": 0.18,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "name",
+            "rect": {
+              "x": 0,
+              "y": 0.73,
+              "w": 1,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.07,
+            "color": "ink",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "date",
+            "rect": {
+              "x": 0,
+              "y": 0.79,
+              "w": 1,
+              "h": 0.07
+            },
+            "font": "beVietnamPro",
+            "weight": 500,
+            "size": 0.056,
+            "color": "ink",
+            "opacity": 0.6,
+            "align": "center",
+            "italic": false,
+            "maxLines": 1
+          },
+          {
+            "type": "text",
+            "field": "quote",
+            "rect": {
+              "x": 0.06,
+              "y": 0.86,
+              "w": 0.88,
+              "h": 0.08
+            },
+            "font": "beVietnamPro",
+            "weight": 600,
+            "size": 0.056,
+            "color": "accent",
+            "opacity": 1,
+            "align": "center",
+            "italic": false,
+            "maxLines": 2
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.86,
+              "y": 0.04,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.06,
+              "y": 0.5,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "shape",
+            "shape": "star",
+            "rect": {
+              "x": 0.9,
+              "y": 0.62,
+              "w": 0.064,
+              "h": 0.11377777777777777
+            },
+            "color": "accent",
+            "gradientTo": null,
+            "radius": 0,
+            "stroke": 0.006
+          },
+          {
+            "type": "brand",
+            "kind": "lockup",
+            "rect": {
+              "x": 0.05,
+              "y": 0.03,
+              "w": 0.16,
+              "h": 0.0174
+            },
+            "color": "ink",
+            "opacity": 0.6
+          }
+        ]
+      },
+      "composition": null,
+      "assets": {},
+      "photos": {
+        "min": 1,
+        "max": 1
+      },
+      "scenes": [],
+      "texts": [
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Yêu con thật nhiều",
+            "en": "Loved so much"
+          },
+          "max": 60
+        }
+      ],
+      "palette": {
+        "background": "#1C2938",
+        "ink": "#FFFFFF",
+        "accent": "#FAD173"
+      },
+      "palettes": [
+        {
+          "background": "#1C2938",
+          "ink": "#FFFFFF",
+          "accent": "#FAD173"
+        },
+        {
+          "background": "#FCF5E5",
+          "ink": "#21333D",
+          "accent": "#D97359"
+        },
+        {
+          "background": "#FCE8E3",
+          "ink": "#21333D",
+          "accent": "#D97359"
+        },
+        {
+          "background": "#E4F4F1",
+          "ink": "#173D44",
+          "accent": "#2BA89A"
+        },
+        {
+          "background": "#E6F0FA",
+          "ink": "#21333D",
+          "accent": "#4F7FB8"
+        }
+      ],
+      "durationSec": null,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": null
+    },
+    {
+      "id": "video_first_month",
+      "version": 1,
+      "kind": "video",
+      "name": {
+        "vi": "Tháng đầu tiên",
+        "en": "The first month"
+      },
+      "description": null,
+      "tier": "free",
+      "status": "published",
+      "order": 10,
+      "occasions": [
+        "m1"
+      ],
+      "ageDays": {
+        "min": 0,
+        "max": 45
+      },
+      "layouts": null,
+      "composition": "FirstMonth",
+      "assets": {},
+      "photos": {
+        "min": 6,
+        "max": 8
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ngày chào đời",
+            "en": "The day you were born"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 0,
+            "max": 3
+          }
+        },
+        {
+          "hint": {
+            "vi": "Tuần đầu",
+            "en": "The first week"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 4,
+            "max": 10
+          }
+        },
+        {
+          "hint": {
+            "vi": "Tuần thứ 2",
+            "en": "Week 2"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 11,
+            "max": 17
+          }
+        },
+        {
+          "hint": {
+            "vi": "Tuần thứ 3",
+            "en": "Week 3"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 18,
+            "max": 24
+          }
+        },
+        {
+          "hint": {
+            "vi": "Tròn một tháng",
+            "en": "One month old"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 25,
+            "max": 45
+          },
+          "occasion": "m1"
+        },
+        {
+          "hint": {
+            "vi": "Bé cười",
+            "en": "A smile"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 0,
+            "max": 45
+          },
+          "occasion": "first_smile"
+        },
+        {
+          "hint": {
+            "vi": "Cả nhà",
+            "en": "The whole family"
+          },
+          "optional": true,
+          "ageDays": {
+            "min": 0,
+            "max": 45
+          }
+        },
+        {
+          "hint": {
+            "vi": "Khoảnh khắc yêu thích",
+            "en": "A favourite moment"
+          },
+          "optional": true,
+          "ageDays": {
+            "min": 0,
+            "max": 45
+          }
+        }
+      ],
+      "texts": [
+        {
+          "key": "title",
+          "default": {
+            "vi": "Tháng đầu tiên của {name}",
+            "en": "{name}'s first month"
+          },
+          "max": 60
+        },
+        {
+          "key": "message",
+          "default": {
+            "vi": "Một tháng qua, con dạy ba mẹ biết yêu thương nhiều hơn.",
+            "en": "In one month, you taught us to love even more."
+          },
+          "max": 140
+        }
+      ],
+      "palette": {
+        "background": "#E4F4F1",
+        "ink": "#173D44",
+        "accent": "#2BA89A"
+      },
+      "palettes": [],
+      "durationSec": 45,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_first_week",
+      "version": 1,
+      "kind": "video",
+      "name": {
+        "vi": "7 ngày đầu đời",
+        "en": "The first 7 days"
+      },
+      "description": null,
+      "tier": "free",
+      "status": "published",
+      "order": 20,
+      "occasions": [
+        "d7"
+      ],
+      "ageDays": {
+        "min": 0,
+        "max": 21
+      },
+      "layouts": null,
+      "composition": "FirstWeek",
+      "assets": {},
+      "photos": {
+        "min": 4,
+        "max": 6
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ngày đầu tiên",
+            "en": "Day one"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 0,
+            "max": 1
+          }
+        },
+        {
+          "hint": {
+            "vi": "Ngày 2–3",
+            "en": "Days 2–3"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 1,
+            "max": 3
+          }
+        },
+        {
+          "hint": {
+            "vi": "Ngày 4–5",
+            "en": "Days 4–5"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 3,
+            "max": 5
+          }
+        },
+        {
+          "hint": {
+            "vi": "Ngày 6–7",
+            "en": "Days 6–7"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 5,
+            "max": 8
+          },
+          "occasion": "d7"
+        },
+        {
+          "hint": {
+            "vi": "Ngày về nhà",
+            "en": "Coming home"
+          },
+          "optional": true,
+          "ageDays": {
+            "min": 0,
+            "max": 10
+          }
+        },
+        {
+          "hint": {
+            "vi": "Cả nhà bên con",
+            "en": "The family together"
+          },
+          "optional": true,
+          "ageDays": {
+            "min": 0,
+            "max": 21
+          }
+        }
+      ],
+      "texts": [
+        {
+          "key": "title",
+          "default": {
+            "vi": "7 ngày đầu đời của {name}",
+            "en": "{name}'s first 7 days"
+          },
+          "max": 60
+        },
+        {
+          "key": "message",
+          "default": {
+            "vi": "Chào mừng con đến với gia đình mình.",
+            "en": "Welcome to our family."
+          },
+          "max": 140
+        }
+      ],
+      "palette": {
+        "background": "#FCF5E5",
+        "ink": "#21333D",
+        "accent": "#D97359"
+      },
+      "palettes": [],
+      "durationSec": 30,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_hundred_days",
+      "version": 1,
+      "kind": "video",
+      "name": {
+        "vi": "100 ngày yêu thương",
+        "en": "100 days of love"
+      },
+      "description": null,
+      "tier": "free",
+      "status": "published",
+      "order": 30,
+      "occasions": [
+        "d100"
+      ],
+      "ageDays": {
+        "min": 60,
+        "max": 130
+      },
+      "layouts": null,
+      "composition": "HundredDays",
+      "assets": {},
+      "photos": {
+        "min": 8,
+        "max": 10
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Ngày chào đời",
+            "en": "The day you were born"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 0,
+            "max": 3
+          }
+        },
+        {
+          "hint": {
+            "vi": "Tuần đầu",
+            "en": "The first week"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 4,
+            "max": 10
+          }
+        },
+        {
+          "hint": {
+            "vi": "Tròn 1 tháng",
+            "en": "One month"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 21,
+            "max": 40
+          }
+        },
+        {
+          "hint": {
+            "vi": "Ngày 50",
+            "en": "Day 50"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 41,
+            "max": 55
+          }
+        },
+        {
+          "hint": {
+            "vi": "Tròn 2 tháng",
+            "en": "Two months"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 56,
+            "max": 70
+          }
+        },
+        {
+          "hint": {
+            "vi": "Ngày 80",
+            "en": "Day 80"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 71,
+            "max": 85
+          }
+        },
+        {
+          "hint": {
+            "vi": "Tròn 3 tháng",
+            "en": "Three months"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 86,
+            "max": 95
+          }
+        },
+        {
+          "hint": {
+            "vi": "Ngày 100",
+            "en": "Day 100"
+          },
+          "optional": false,
+          "ageDays": {
+            "min": 96,
+            "max": 115
+          },
+          "occasion": "d100"
+        },
+        {
+          "hint": {
+            "vi": "Tiệc 100 ngày",
+            "en": "The 100-day party"
+          },
+          "optional": true,
+          "ageDays": {
+            "min": 96,
+            "max": 130
+          }
+        },
+        {
+          "hint": {
+            "vi": "Cả nhà chúc mừng",
+            "en": "Wishes from the family"
+          },
+          "optional": true,
+          "ageDays": {
+            "min": 96,
+            "max": 130
+          }
+        }
+      ],
+      "texts": [
+        {
+          "key": "title",
+          "default": {
+            "vi": "100 ngày của {name}",
+            "en": "{name}'s first 100 days"
+          },
+          "max": 60
+        },
+        {
+          "key": "message",
+          "default": {
+            "vi": "100 ngày bên con là 100 ngày hạnh phúc.",
+            "en": "100 days with you, 100 happy days."
+          },
+          "max": 140
+        }
+      ],
+      "palette": {
+        "background": "#FCE8E3",
+        "ink": "#21333D",
+        "accent": "#D97359"
+      },
+      "palettes": [],
+      "durationSec": 60,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    },
+    {
+      "id": "video_little_moments",
+      "version": 1,
+      "kind": "video",
+      "name": {
+        "vi": "Khoảnh khắc nhỏ",
+        "en": "Little moments"
+      },
+      "description": null,
+      "tier": "free",
+      "status": "published",
+      "order": 40,
+      "occasions": [],
+      "ageDays": null,
+      "layouts": null,
+      "composition": "LittleMoments",
+      "assets": {},
+      "photos": {
+        "min": 3,
+        "max": 5
+      },
+      "scenes": [
+        {
+          "hint": {
+            "vi": "Gương mặt con",
+            "en": "Your little face"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Giờ chơi",
+            "en": "Playtime"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Ngủ ngon",
+            "en": "Sweet dreams"
+          },
+          "optional": false
+        },
+        {
+          "hint": {
+            "vi": "Cùng cả nhà",
+            "en": "With the family"
+          },
+          "optional": true
+        },
+        {
+          "hint": {
+            "vi": "Ảnh bạn thích nhất",
+            "en": "Your favourite photo"
+          },
+          "optional": true
+        }
+      ],
+      "texts": [
+        {
+          "key": "title",
+          "default": {
+            "vi": "Khoảnh khắc nhỏ của {name}",
+            "en": "{name}'s little moments"
+          },
+          "max": 60
+        },
+        {
+          "key": "message",
+          "default": {
+            "vi": "Những điều nhỏ bé làm nên hạnh phúc.",
+            "en": "Little things make us happy."
+          },
+          "max": 140
+        }
+      ],
+      "palette": {
+        "background": "#E6F0FA",
+        "ink": "#21333D",
+        "accent": "#4F7FB8"
+      },
+      "palettes": [],
+      "durationSec": 25,
+      "thumb": null,
+      "defaultMusic": null,
+      "preview": null,
+      "brand": {
+        "corner": true,
+        "endCard": true,
+        "opacity": 0.75
+      }
+    }
+  ]
+}

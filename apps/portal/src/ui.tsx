@@ -535,6 +535,11 @@ export const reasonMessages = [
   'no-contact',
   'no-screenshot',
   'too-large',
+  'asset-missing',
+  'asset-unreadable',
+  'invalid-catalog',
+  'not-yours',
+  'stale-draft',
 ];
 
 export function errorMessageId(error: ApiError): string {

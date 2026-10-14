@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/environment.dart';
 import '../../app/locale.dart';
 import '../../app/providers.dart';
 import '../../app/session.dart';
@@ -68,6 +69,8 @@ class AutoSaveView {
     this.state = const AutoSaveState(),
     this.access = LibraryAccess.notDetermined,
     this.scan,
+    this.trace = const [],
+    this.fromHistory,
   });
 
   final bool loaded;
@@ -76,6 +79,12 @@ class AutoSaveView {
 
   /// Null when no check is running.
   final ScanProgress? scan;
+
+  /// The last checks' items, newest first (dev diagnostics).
+  final List<AutoSaveTrace> trace;
+
+  /// How the last check found new items: the library's change history (true) or by date.
+  final bool? fromHistory;
 
   /// Set up and switched on (the consent is part of setup).
   bool get active => state.enabled && state.consented;
@@ -95,6 +104,38 @@ class AutoSaveView {
   int pendingFor([String? babyId]) => babyId == null
       ? state.pending.length
       : state.pending.where((c) => c.match.babyId == babyId).length;
+}
+
+/// One library item looked at in a check and what became of it (AS19 dev diagnostics). Kept in
+/// memory only, never saved or sent.
+@immutable
+class AutoSaveTrace {
+  const AutoSaveTrace({
+    required this.assetId,
+    required this.reason,
+    this.video = false,
+    this.distance,
+    this.threshold,
+    this.captureAt,
+    this.faces = const [],
+    this.frames,
+    this.name,
+  });
+  final String assetId;
+  final String? name;
+  final bool video;
+  final DateTime? captureAt;
+
+  /// Face sizes found (share of the image), largest first.
+  final List<double> faces;
+
+  /// Videos: frames read (0: poster frame only).
+  final int? frames;
+
+  /// A [MatchReason] name, or `utility`, `unreadable`, `handled`.
+  final String reason;
+  final double? distance;
+  final double? threshold;
 }
 
 /// What "Bỏ qua lần này" and "Không phải ảnh của bé" undo ("Hoàn tác", AR08).
@@ -177,13 +218,31 @@ class AutoSaveController extends Notifier<AutoSaveView> {
   Future<void>? _loading;
   Future<void>? _running;
   var _stop = false;
+  final _trace = <AutoSaveTrace>[];
+  bool? _fromHistory;
   AppLifecycleListener? _lifecycle;
 
   static const _batch = 24;
+
+  /// How far back each check looks (by date taken or date added).
+  static const _window = Duration(days: 30);
   static const _maxApprovedSamples = 40;
   static const _maxNegatives = 50;
 
+  /// The server's `memoryLimits.batchPartsMax`; a longer run starts a new batch.
+  static const _maxBatchParts = 1000;
+
   AutoSaveNative get _native => ref.read(autoSaveNativeProvider);
+
+  /// Dev builds keep a diagnostics file of the last check (never in production builds).
+  bool get _devTrace {
+    try {
+      return ref.read(environmentProvider) == AppEnvironment.dev;
+    } on Object {
+      return false;
+    }
+  }
+
   AutoSaveStore get _store => ref.read(autoSaveStoreProvider);
 
   @override
@@ -218,7 +277,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
       s = s.wipeFaces();
       await _store.save(s);
     }
-    final old = now.subtract(const Duration(days: 90));
+    final old = now.subtract(_window + const Duration(days: 15));
     _s = s.copyWith(
       seen: {
         for (final e in s.seen.entries)
@@ -231,7 +290,14 @@ class AutoSaveController extends Notifier<AutoSaveView> {
 
   void _publish() {
     if (!ref.mounted) return;
-    state = AutoSaveView(loaded: true, state: _s, access: _access, scan: _scan);
+    state = AutoSaveView(
+      loaded: true,
+      state: _s,
+      access: _access,
+      scan: _scan,
+      trace: List.unmodifiable(_trace),
+      fromHistory: _fromHistory,
+    );
   }
 
   Future<void> _save() async {
@@ -553,20 +619,35 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     final tuning = ref.read(autoSaveTuningProvider);
     final now = DateTime.now();
     {
+      // Every check lists what was taken or added in the last 30 days (or since setup's start)
+      // and leaves out what it already looked at. iOS's change history reported nothing new
+      // for videos and photos saved from Zalo on the owner's phone (2026-10-14), so it is not
+      // used: listing ids by date is cheap, and an item saved today with an old date taken
+      // still counts by its modification date.
+      final window = now.subtract(_window);
       final from = _s.scanFrom;
       final changes = await _native.changes(
-        token: from == null ? _s.token : null,
-        since:
-            from ??
-            _s.lastScanAt?.subtract(const Duration(days: 1)) ??
-            now.subtract(const Duration(days: 30)),
+        since: from != null && from.isBefore(window) ? from : window,
         photos: _s.photos,
         videos: _s.videos,
       );
+      // Checked with an older pass: everything listed is looked at once more.
+      final recheck = _s.videoPass < autoSaveVideoPass
+          ? changes.ids.toSet()
+          : const <String>{};
+      _fromHistory = changes.fromHistory;
       final waiting = {for (final c in _s.pending) c.asset.id};
+      final listed = {...changes.ids, ...recheck};
+      final skipped = {
+        'seen': listed
+            .where((id) => _s.seen.containsKey(id) && !recheck.contains(id))
+            .length,
+        'handled': listed.where(_s.handled).length,
+        'waiting': listed.where(waiting.contains).length,
+      };
       final todo = [
-        for (final id in changes.ids)
-          if (!_s.seen.containsKey(id) &&
+        for (final id in {...changes.ids, ...recheck})
+          if ((!_s.seen.containsKey(id) || recheck.contains(id)) &&
               !_s.handled(id) &&
               !waiting.contains(id))
             id,
@@ -581,10 +662,27 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         final seen = {..._s.seen};
         final pending = [..._s.pending];
         for (final a in infos) {
-          seen[a.id] = a.captureAt;
-          if (a.unreadable || a.utility) continue;
-          final m = matchBaby(a, babies, tuning: tuning);
-          if (m == null || _s.handled(a.id, m.babyId)) continue;
+          // When it was looked at: kept a little longer than the window.
+          seen[a.id] = now;
+          if (a.unreadable) {
+            _note(a, 'unreadable');
+            continue;
+          }
+          final why = explainMatch(a, babies, tuning: tuning);
+          // "Utility" (documents, screenshots of things) only explains a miss: a photo with a
+          // face like the baby is suggested anyway, parents review it (D-066 #8).
+          if (a.utility && why.reason != MatchReason.match) {
+            _note(a, 'utility', why);
+            continue;
+          }
+          final m = why.reason == MatchReason.match
+              ? matchBaby(a, babies, tuning: tuning)
+              : null;
+          if (m == null || _s.handled(a.id, m.babyId)) {
+            _note(a, m == null ? why.reason.name : 'handled', why);
+            continue;
+          }
+          _note(a, 'match', why);
           pending.add(Candidate(asset: a, match: m));
           _count('autoSaveSuggested');
         }
@@ -596,6 +694,38 @@ class AutoSaveController extends Notifier<AutoSaveView> {
         _scan = ScanProgress(checked, todo.length);
         await _save();
       }
+      if (_devTrace) {
+        unawaited(
+          _store.saveTrace({
+            'at': now.toIso8601String(),
+            'fromHistory': changes.fromHistory,
+            'inserted': changes.inserted,
+            'listed': changes.ids.length,
+            'listedVideos': changes.videos,
+            'recheckVideos': recheck.length,
+            'todo': todo.length,
+            'skipped': skipped,
+            'stopped': _stop,
+            'thresholds': {
+              for (final e in babies.entries) e.key: e.value.threshold(tuning),
+            },
+            'items': [
+              for (final t in _trace.take(checked))
+                {
+                  'id': t.assetId,
+                  'name': t.name,
+                  'video': t.video,
+                  'captureAt': t.captureAt?.toIso8601String(),
+                  'reason': t.reason,
+                  'distance': t.distance,
+                  'threshold': t.threshold,
+                  'faces': t.faces,
+                  'frames': t.frames,
+                },
+            ],
+          }),
+        );
+      }
       if (!_stop) {
         _s = _s.copyWith(
           token: changes.token,
@@ -603,6 +733,7 @@ class AutoSaveController extends Notifier<AutoSaveView> {
           lastScanCount: todo.length,
           clearScanFrom: true,
           names: _names(),
+          videoPass: autoSaveVideoPass,
         );
         await _save();
         unawaited(_native.schedule());
@@ -610,10 +741,96 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     }
   }
 
+  /// Dev diagnostics "Kiểm tra lại 30 ngày gần nhất": forgets what was looked at and checks the
+  /// last 30 days again (suggestions already waiting, uploads and skips are kept).
+  Future<void> rescan() async {
+    await _load();
+    // A check already running (the app just came back) finishes first; asking during it used to
+    // be swallowed by it.
+    final running = _running;
+    if (running != null) {
+      stop();
+      await running;
+    }
+    _s = _s.copyWith(
+      seen: const {},
+      scanFrom: DateTime.now().subtract(_window),
+    );
+    _trace.clear();
+    await _save();
+    await scan();
+    if (_devTrace) await _inspect();
+  }
+
+  /// Dev diagnostics (`inspect.json`): the newest library items with file names, what the
+  /// filter makes of them, whether a check looked at them, and what matching says now.
+  Future<void> _inspect() async {
+    try {
+      final recent = await _native.inspectRecent();
+      final waiting = {for (final c in _s.pending) c.asset.id};
+      final ids = [
+        for (final r in recent)
+          if (r['passes'] == true && !waiting.contains(r['id']))
+            r['id']! as String,
+      ];
+      final infos = {for (final a in await _native.analyze(ids)) a.id: a};
+      final tuning = ref.read(autoSaveTuningProvider);
+      final babies = {
+        for (final e in _s.babies.entries)
+          if (e.value.samples.isNotEmpty) e.key: e.value.faces,
+      };
+      await _store.saveTrace({
+        'at': DateTime.now().toIso8601String(),
+        'items': [
+          for (final r in recent)
+            {
+              ...r,
+              'seen': _s.seen.containsKey(r['id']),
+              'waiting': waiting.contains(r['id']),
+              'ledger': _s.ledger[r['id']]?.map((k, v) => MapEntry(k, v.code)),
+              if (infos[r['id']] case final a?) ...{
+                'faces': [for (final f in a.faces) f.size],
+                'frames': a.frames,
+                'utility': a.utility,
+                'unreadable': a.unreadable,
+                if (explainMatch(a, babies, tuning: tuning) case final why)
+                  'match': {
+                    'reason': why.reason.name,
+                    'distance': why.distance,
+                    'threshold': why.threshold,
+                  },
+              },
+            },
+        ],
+      }, name: 'inspect.json');
+    } on Object {
+      // Diagnostics only.
+    }
+  }
+
+  void _note(AssetInfo a, String reason, [MatchTrace? why]) {
+    _trace.insert(
+      0,
+      AutoSaveTrace(
+        assetId: a.id,
+        video: a.video,
+        reason: reason,
+        distance: why?.distance,
+        threshold: why?.threshold,
+        captureAt: a.captureAt,
+        faces: [for (final f in a.faces) f.size],
+        frames: a.frames,
+        name: a.name,
+      ),
+    );
+    if (_trace.length > 500) _trace.removeRange(500, _trace.length);
+  }
+
   // ---------- Review (AS07 – AS10) ----------
 
-  /// Queues the chosen suggestions (one memory per baby, split by the per-add limit, R-102) and
-  /// marks the others of this review as seen so they are not suggested again. Approved faces
+  /// Queues the chosen suggestions (one batch per baby, as memories split by the per-add limit,
+  /// R-102; one family notice per batch, D-070) and marks the others of this review as seen so
+  /// they are not suggested again. Approved faces
   /// become extra samples (P-149). Returns how many items were queued.
   Future<int> approve({
     required List<Candidate> chosen,
@@ -633,35 +850,23 @@ class AutoSaveController extends Notifier<AutoSaveView> {
     }
     var queued = 0, prepared = 0;
     final missing = <String>{};
+    final resolve = ref.read(libraryResolverProvider);
     for (final entry in byBaby.entries) {
-      for (var i = 0; i < entry.value.length; i += perAdd) {
-        final part = entry.value.sublist(
-          i,
-          math.min(i + perAdd, entry.value.length),
-        );
-        final picked = <PickedMedia>[];
-        final resolve = ref.read(libraryResolverProvider);
-        for (final c in part) {
-          PickedMedia? p;
-          try {
-            p = await resolve(c.asset.id);
-          } on Object {
-            p = null;
-          }
-          if (p == null) {
-            missing.add(c.asset.id);
-          } else {
-            picked.add(p);
-          }
-          onPrepared?.call(++prepared, chosen.length);
-        }
-        if (picked.isEmpty) continue;
+      // D-070: one batch per baby, sent as memories of up to `perAdd` items that share its id;
+      // the last part says how many there are, so the family hears once, about all of them.
+      var batchId = newBatchId();
+      var parts = 0;
+      var buffer = <PickedMedia>[];
+      Future<void> send({required bool last}) async {
+        parts++;
+        final closes = last || parts == _maxBatchParts;
         await queue.enqueue(
           babyId: entry.key,
           request: {
             'babyId': entry.key,
             'memoryId': newMemoryId(),
-            'batchId': newBatchId(),
+            'batchId': batchId,
+            'batchParts': closes ? parts : null,
             'caption': null,
             'audience': audience.name,
             'notifyFamily': audience == Audience.family && notifyFamily,
@@ -670,10 +875,33 @@ class AutoSaveController extends Notifier<AutoSaveView> {
             'milestone': null,
             'albumIds': const <String>[],
           },
-          picked: picked,
+          picked: buffer,
         );
-        queued += picked.length;
+        queued += buffer.length;
+        buffer = [];
+        if (closes) {
+          batchId = newBatchId();
+          parts = 0;
+        }
       }
+
+      for (final c in entry.value) {
+        PickedMedia? p;
+        try {
+          p = await resolve(c.asset.id);
+        } on Object {
+          p = null;
+        }
+        onPrepared?.call(++prepared, chosen.length);
+        if (p == null) {
+          missing.add(c.asset.id);
+          continue;
+        }
+        // A full part goes once another item follows it, so the last one is always known.
+        if (buffer.length == perAdd) await send(last: false);
+        buffer.add(p);
+      }
+      if (buffer.isNotEmpty) await send(last: true);
     }
     final chosenIds = {for (final c in chosen) c.asset.id};
     final reviewedIds = {for (final c in reviewed) c.asset.id};

@@ -25,6 +25,7 @@ import {
   Server,
   ShieldCheck,
   Smartphone,
+  Sparkles,
   Sun,
   ToggleRight,
   Users,
@@ -91,6 +92,7 @@ import { AuditScreen } from './screens/Audit';
 import { FamiliesScreen } from './screens/Families';
 import { FeaturesScreen } from './screens/Features';
 import { FirstAidScreen } from './screens/FirstAid';
+import { KeepsakesScreen } from './screens/Keepsakes';
 import { JobsScreen } from './screens/Jobs';
 import { OverviewScreen } from './screens/Overview';
 import { QaScreen } from './screens/Qa';
@@ -110,7 +112,7 @@ type NavItem = {
   /** What a member needs to see the item (P-134); Kiểm thử only reaches the QA handbook. */
   can: StaffAction;
 };
-/** The v1.0 sidebar (`253:467`), NỘI DUNG › Sơ cứu (D-058), PHÁT TRIỂN › Sổ tay kiểm thử (P-132). */
+/** The v1.0 sidebar (`253:467`), NỘI DUNG › Sơ cứu (D-058) and Mẫu kỷ niệm (D-068, not drawn: G-107), PHÁT TRIỂN › Sổ tay kiểm thử (P-132). */
 const nav: NavItem[] = [
   { route: 'overview', icon: LayoutDashboard, group: 'main', can: 'overview.view' },
   { route: 'analytics', icon: ChartColumn, group: 'main', can: 'analytics.view' },
@@ -120,6 +122,7 @@ const nav: NavItem[] = [
   { route: 'jobs', icon: DatabaseBackup, badge: 'jobs', group: 'ops', can: 'jobs.view' },
   { route: 'reference', icon: BookOpen, group: 'ops', can: 'reference.view' },
   { route: 'firstAid', icon: HeartPulse, group: 'content', can: 'content.view' },
+  { route: 'keepsakes', icon: Sparkles, group: 'content', can: 'content.view' },
   { route: 'system', icon: Server, group: 'system', can: 'system.view' },
   { route: 'features', icon: ToggleRight, group: 'system', can: 'features.view' },
   { route: 'appUpdate', icon: Smartphone, group: 'system', can: 'release.view' },
@@ -310,6 +313,8 @@ function Screen({ route }: { route: Route }) {
       return <ReferenceScreen />;
     case 'firstAid':
       return <FirstAidScreen />;
+    case 'keepsakes':
+      return <KeepsakesScreen />;
     case 'staff':
       return <StaffScreen />;
     case 'support':

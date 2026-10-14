@@ -1,10 +1,12 @@
 import 'dart:typed_data';
 
+import 'package:child_life/core/widgets/cl_button.dart';
 import 'package:child_life/features/auto_save/auto_save_controller.dart';
 import 'package:child_life/features/auto_save/auto_save_engine.dart';
 import 'package:child_life/features/auto_save/auto_save_home.dart';
 import 'package:child_life/features/auto_save/auto_save_native.dart';
 import 'package:child_life/features/auto_save/auto_save_review.dart';
+import 'package:child_life/features/auto_save/auto_save_setup.dart';
 import 'package:child_life/features/auto_save/auto_save_store.dart';
 import 'package:child_life/features/auto_save/auto_save_today.dart';
 import 'package:child_life/core/widgets/cl_pressable.dart';
@@ -265,6 +267,135 @@ void main() {
     },
   );
 
+  testWidgets('AS07 holds one upload; the rest wait for the next (D-070)', (
+    tester,
+  ) async {
+    await store().save(
+      ready(
+        pending: [
+          for (var i = 0; i < 205; i++)
+            candidate('p$i', Duration(minutes: 10 * i), v([1, 0]), 0.5),
+        ],
+      ),
+    );
+    final (visits, _) = await pumpRouted(
+      tester,
+      const AutoSaveReviewScreen(),
+      overrides: overrides(),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Đã chọn 200 · 200 ảnh, 0 video'), findsOneWidget);
+    expect(
+      find.text('Mỗi lần tải tối đa 200 mục · 5 gợi ý còn lại chờ lần sau'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Tiếp tục với 200 mục'));
+    await tester.pumpAndSettle();
+    final decision = visits.last.extra! as AutoSaveDecision;
+    expect(decision.chosen, hasLength(200));
+    expect(decision.reviewed, hasLength(200), reason: 'the rest stay pending');
+  });
+
+  testWidgets('AS07 "Bỏ chọn tất cả" clears the picks to choose a few', (
+    tester,
+  ) async {
+    await store().save(
+      ready(
+        pending: [
+          for (var i = 0; i < 3; i++)
+            candidate('p$i', Duration(minutes: 10 * i), v([1, 0]), 0.5),
+        ],
+      ),
+    );
+    final (visits, _) = await pumpRouted(
+      tester,
+      const AutoSaveReviewScreen(),
+      overrides: overrides(),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Đã chọn 3 · 3 ảnh, 0 video'), findsOneWidget);
+
+    await tester.tap(find.text('Bỏ chọn tất cả'));
+    await tester.pumpAndSettle();
+    expect(find.text('Đã chọn 0 · 0 ảnh, 0 video'), findsOneWidget);
+    expect(find.text('Bỏ chọn tất cả'), findsNothing);
+
+    // One picked by hand, then on.
+    await tester.tap(find.bySemanticsLabel('Chọn').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Đã chọn 1 · 1 ảnh, 0 video'), findsOneWidget);
+    await tester.tap(find.text('Tiếp tục với 1 mục'));
+    await tester.pumpAndSettle();
+    final decision = visits.last.extra! as AutoSaveDecision;
+    expect(decision.chosen, hasLength(1));
+    expect(decision.reviewed, hasLength(3));
+  });
+
+  testWidgets('AS07 "Chọn tất cả" ticks the suggested picks again', (
+    tester,
+  ) async {
+    await store().save(
+      ready(
+        pending: [
+          for (var i = 0; i < 3; i++)
+            candidate('p$i', Duration(minutes: 10 * i), v([1, 0]), 0.5),
+        ],
+      ),
+    );
+    await pumpRouted(
+      tester,
+      const AutoSaveReviewScreen(),
+      overrides: overrides(),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Bỏ chọn tất cả'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Chọn tất cả'));
+    await tester.pumpAndSettle();
+    expect(find.text('Đã chọn 3 · 3 ảnh, 0 video'), findsOneWidget);
+    expect(find.text('Bỏ chọn tất cả'), findsOneWidget);
+  });
+
+  testWidgets('AS07: ticking past the limit says so (D-070)', (tester) async {
+    await store().save(
+      ready(
+        pending: [
+          for (var i = 0; i < 199; i++)
+            candidate('p$i', Duration(minutes: 10 * i), v([1, 0]), 0.5),
+          candidate('pair-a', const Duration(days: 3), v([1, 0]), 0.9),
+          candidate(
+            'pair-b',
+            const Duration(days: 3, seconds: 5),
+            v([1, 0.01]),
+            0.5,
+          ),
+        ],
+      ),
+    );
+    await pumpRouted(
+      tester,
+      const AutoSaveReviewScreen(),
+      overrides: overrides(),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Đã chọn 200 · 200 ảnh, 0 video'), findsOneWidget);
+    expect(find.byKey(const Key('autoSaveRoundRest')), findsNothing);
+
+    await tester.ensureVisible(find.text('+1'));
+    await tester.tap(find.text('+1'));
+    await tester.pumpAndSettle();
+    final second = find.byWidgetPredicate(
+      (w) => w is LibraryTile && w.assetId == 'pair-b',
+    );
+    await tester.ensureVisible(second);
+    await tester.tap(second);
+    await tester.pump();
+    expect(find.text('Mỗi lần tải tối đa 200 mục'), findsOneWidget);
+    expect(find.text('Đã chọn 200 · 200 ảnh, 0 video'), findsOneWidget);
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+  });
+
   testWidgets('AR02 → AR05 → AR08: banner, quick review, skip with undo', (
     tester,
   ) async {
@@ -301,6 +432,31 @@ void main() {
     await tester.pumpAndSettle();
     expect(saved.state.pending, hasLength(3));
     expect(find.byKey(const Key('autoSaveBanner')), findsOneWidget);
+  });
+
+  testWidgets('AR02: more groups than the quick sheet holds opens AS07', (
+    tester,
+  ) async {
+    await store().save(
+      ready(
+        pending: [
+          for (var i = 0; i < 9; i++)
+            candidate('p$i', Duration(minutes: 10 * i), v([1, 0]), 0.5),
+        ],
+      ),
+    );
+    final (visits, _) = await pumpRouted(
+      tester,
+      Scaffold(body: ListView(children: const [AutoSaveTodayBanner()])),
+      overrides: overrides(),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('9 ảnh mới có thể có Teddy'), findsOneWidget);
+
+    await tester.tap(find.text('Xem & chọn ảnh'));
+    await tester.pumpAndSettle();
+    expect(visits.last.location, '/memories/auto-save/review');
+    expect(find.text('Tải lên 8 mục'), findsNothing);
   });
 
   testWidgets('AR02 "Để sau" hides the banner until new suggestions', (
@@ -346,6 +502,53 @@ void main() {
         .skip(container.read(autoSaveProvider).state.pending);
     await tester.pumpAndSettle();
     expect(dot.read(), isFalse);
+  });
+
+  testWidgets('AS10: "Chỉ ba mẹ" and "Gia đình" share the width equally', (
+    tester,
+  ) async {
+    final c = candidate('a', Duration.zero, v([1, 0]), 0.5);
+    await pumpRouted(
+      tester,
+      AutoSaveConfirmScreen(
+        decision: AutoSaveDecision(chosen: [c], reviewed: [c]),
+      ),
+      overrides: overrides(),
+    );
+    await tester.pumpAndSettle();
+    Size card(String title) => tester.getSize(
+      find
+          .ancestor(of: find.text(title), matching: find.byType(Container))
+          .first,
+    );
+    final parents = card('Chỉ ba mẹ');
+    final family = card('Gia đình');
+    expect(parents, family);
+    // 375 pt wide, 16 pt margins, 8 pt between.
+    expect(parents.width, closeTo((375 - 32 - 8) / 2, 0.5));
+  });
+
+  testWidgets('AS03 → AS04 → AS05 are pages of their own (slide, swipe back)', (
+    tester,
+  ) async {
+    await pumpRouted(
+      tester,
+      const AutoSaveSetupScreen(),
+      overrides: overrides(),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Gợi ý ảnh của bé nào?'), findsWidgets);
+    await tester.tap(find.text('Tiếp'));
+    await tester.pump();
+    // Mid-transition both pages are on screen: a real route, not a swapped body.
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.text('Gợi ý ảnh của bé nào?'), findsWidgets);
+    await tester.pumpAndSettle();
+    expect(find.text('Chọn vài ảnh rõ mặt Teddy'), findsWidgets);
+    await tester.tap(find.byType(ClBackButton).last);
+    await tester.pumpAndSettle();
+    expect(find.text('Gợi ý ảnh của bé nào?'), findsWidgets);
+    expect(find.text('Chọn vài ảnh rõ mặt Teddy'), findsNothing);
   });
 }
 

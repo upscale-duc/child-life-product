@@ -738,7 +738,8 @@ class RecordDetailScreen extends ConsumerWidget {
     if (confirmed != true || !context.mounted) return;
     final repo = ref.read(careRepositoryProvider);
     final toaster = ClToaster.of(context);
-    void failed(Object _) => toaster.show(message: l10n.careSaveFailed);
+    void failed(Object _) =>
+        toaster.show(message: l10n.careSaveFailed, error: true);
 
     repo.softDelete(record, me.uid, onError: failed);
     context.popOrToday();

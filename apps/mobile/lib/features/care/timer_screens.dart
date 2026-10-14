@@ -71,7 +71,8 @@ void openOrStartTimer(
         .read(careRepositoryProvider)
         .startTimer(
           CareTimer.start(type: type, me: me, now: DateTime.now(), side: side),
-          onError: (_) => toaster.show(message: l10n.careSaveFailed),
+          onError: (_) =>
+              toaster.show(message: l10n.careSaveFailed, error: true),
         );
   }
   final location = '${Routes.timer}/${type.name}';
@@ -120,6 +121,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       showClToast(
         context,
         message: AppLocalizations.of(context).careSaveFailed,
+        error: true,
       );
     }
   }
@@ -144,7 +146,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     }
     final me = ref.read(selectedMembershipProvider);
     if (me == null) return;
-    final record = timer.toRecord(_now());
+    final record = timer.toRecord(
+      _now(),
+      by: (uid: me.uid, author: CareAuthor.of(me)),
+    );
     final toaster = ClToaster.of(context);
     _leaving = true;
     _repo.endTimer(timer, record, onError: _failed);
@@ -1215,6 +1220,7 @@ class _OverlapScreenState extends ConsumerState<OverlapScreen> {
         ClButton(
           label: l10n.keepSelected,
           expand: true,
+          loading: _busy,
           onPressed: _keep == null || _busy ? null : () => _resolve(me.babyId),
         ),
         if (mine != null)

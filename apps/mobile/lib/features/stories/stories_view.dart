@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../keepsakes/keepsake_entries.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
@@ -88,6 +89,8 @@ class _StoriesViewState extends ConsumerState<StoriesView> {
               ClTabDock.contentBottomPadding + 144,
             ),
             children: [
+              // D-068 #2: Thiệp cột mốc (and later Video kỷ niệm) first, then today's stories.
+              KeepsakeStorySections(ctx: c),
               if (suggestion != null) ...[
                 _SuggestionCard(story: suggestion, media: media),
                 const SizedBox(height: ClSpace.s4),

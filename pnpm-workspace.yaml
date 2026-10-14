@@ -1,6 +1,7 @@
 packages:
   - apps/landing
   - apps/portal
+  - apps/renderer
   - packages/*
   - firebase/functions
   - firebase/tests

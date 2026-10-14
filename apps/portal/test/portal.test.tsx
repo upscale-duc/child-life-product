@@ -242,6 +242,11 @@ describe('message catalogs (D-012)', () => {
               rate: 1,
               compressions: 1,
               breaths: 1,
+              label: 'x',
+              names: 'x',
+              replaced: 1,
+              missing: 1,
+              title: 'x',
               b: (chunks: ReactNode[]) => chunks,
             },
           ),
@@ -638,6 +643,7 @@ describe('A06 jobs, A10 features, A12 audit', () => {
       mediaItemsPerAdd: 30,
       exportLinkTtlHours: 24,
       storageRequestAmountsGb: [10, 20],
+      autoSaveItemsPerApprove: 200,
     },
     lastEdit: { ai_story_drafts: { by: 'Linh Trần', at: '2026-10-02T07:05:00Z' } },
     recent: [
@@ -670,6 +676,7 @@ describe('A06 jobs, A10 features, A12 audit', () => {
     expect(text(ops)).toContain('Mở cho 100% gia đình');
     expect(text(ops)).toContain('Linh · 2/10');
     expect(text(ops)).toContain('Mở “AI gợi ý câu chuyện” lên 50%');
+    expect(text(ops)).toContain('Tự lưu kỷ niệm · mỗi lần tải lên Tối đa 200 mục');
     expect(ops.match(/role="switch"[^>]*disabled=""/g)?.length).toBe(flagKeys.length);
     const eng = render(<FeaturesView data={flags} ai={null} onChanged={() => undefined} />, [
       'eng',

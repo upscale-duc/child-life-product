@@ -65,6 +65,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get a11yBack => 'Back';
 
   @override
+  String get a11yWorking => 'Working on it';
+
+  @override
   String get a11yClose => 'Close';
 
   @override
@@ -3390,6 +3393,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actDateHint => 'When the capture date is wrong';
+
+  @override
+  String get actMakeCard => 'Make a milestone card';
+
+  @override
+  String get actMakeCardHint => 'Uses up to 4 of the chosen photos';
+
+  @override
+  String get actMakeVideo => 'Make a memory video';
+
+  @override
+  String get actMakeVideoHint => 'The chosen photos fill the scenes';
 
   @override
   String get actStory => 'Make it a story';
@@ -9087,6 +9102,163 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upFirstAid => 'First aid';
 
   @override
+  String get watchTileBottle => 'Bottle';
+
+  @override
+  String get watchTileBreast => 'Breast';
+
+  @override
+  String get watchTileSleep => 'Sleep';
+
+  @override
+  String get watchTileDiaper => 'Diaper';
+
+  @override
+  String get watchTilePump => 'Pumping';
+
+  @override
+  String get watchTileReminder => 'Reminder';
+
+  @override
+  String get watchSinceFeed => 'since last feed';
+
+  @override
+  String get watchSinceLast => 'since last time';
+
+  @override
+  String get watchSleeping => 'asleep';
+
+  @override
+  String get watchAwake => 'awake';
+
+  @override
+  String get watchFeedReminder => 'feed reminder';
+
+  @override
+  String get watchNoneYet => 'none yet';
+
+  @override
+  String watchAgo(String t) {
+    return '$t ago';
+  }
+
+  @override
+  String get watchChooseBabyRow => 'Choose baby';
+
+  @override
+  String get watchCrownHint => 'ml · turn the crown to adjust';
+
+  @override
+  String get watchSave => 'Save';
+
+  @override
+  String get watchBreastStartHint => 'Which side first?';
+
+  @override
+  String get watchSideLeft => 'Left';
+
+  @override
+  String get watchSideRight => 'Right';
+
+  @override
+  String get watchSuggested => 'suggested';
+
+  @override
+  String watchBreastTotalLeft(String t) {
+    return 'Total $t · on the left';
+  }
+
+  @override
+  String watchBreastTotalRight(String t) {
+    return 'Total $t · on the right';
+  }
+
+  @override
+  String get watchSwitchSide => 'Switch side';
+
+  @override
+  String get watchStop => 'Stop';
+
+  @override
+  String watchSleepSince(String time) {
+    return 'since $time';
+  }
+
+  @override
+  String get watchWokeUp => 'Baby woke up';
+
+  @override
+  String get watchDiaperTitle => 'Diaper change';
+
+  @override
+  String get watchDiaperWet => 'Wet';
+
+  @override
+  String get watchDiaperDirty => 'Dirty';
+
+  @override
+  String get watchDiaperBoth => 'Both';
+
+  @override
+  String get watchLoggedWet => 'Wet diaper logged';
+
+  @override
+  String get watchLoggedDirty => 'Dirty diaper logged';
+
+  @override
+  String get watchLoggedBoth => 'Wet and dirty diaper logged';
+
+  @override
+  String watchLoggedBottle(String ml) {
+    return '$ml ml bottle logged';
+  }
+
+  @override
+  String get watchLoggedBreast => 'Breastfeed logged';
+
+  @override
+  String get watchLoggedSleep => 'Sleep logged';
+
+  @override
+  String watchLoggedBy(String time, String name) {
+    return '$time · logged by $name';
+  }
+
+  @override
+  String get watchUndo => 'Undo';
+
+  @override
+  String get watchFailed => 'Couldn\'t save. Try again later.';
+
+  @override
+  String get watchChooseBaby => 'Choose baby';
+
+  @override
+  String get watchOneBabyNote => 'Switch to another baby on the iPhone.';
+
+  @override
+  String get watchOffline =>
+      'Saved on the watch. It will be sent once you\'re online.';
+
+  @override
+  String watchPending(String n) {
+    return '$n entries waiting to send';
+  }
+
+  @override
+  String get watchLinkTitle => 'Connect your iPhone';
+
+  @override
+  String get watchLinkBody =>
+      'Open Child Life on your iPhone and sign in; the watch connects by itself.';
+
+  @override
+  String get watchCannotLog => 'There\'s no baby you can log for on the watch.';
+
+  @override
+  String get watchDemo => 'Try it out';
+
+  @override
   String imTotal(String amount) {
     return 'Total $amount';
   }
@@ -9386,9 +9558,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signInRegister => 'Sign up';
-
-  @override
-  String get emailLinkNeedsEmail => 'Enter your email to get a sign-in link.';
 
   @override
   String get autoSaveTitle => 'Auto-save memories';
@@ -9904,6 +10073,35 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get autoSaveDeselectAll => 'Deselect all';
+
+  @override
+  String get autoSaveSelectAll => 'Select all';
+
+  @override
+  String autoSaveRoundRest(int rest, int cap) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rest,
+      locale: localeName,
+      other:
+          'Up to $cap items per upload · $rest more suggestions wait for next time',
+      one:
+          'Up to $cap items per upload · 1 more suggestion waits for next time',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String autoSaveRoundFull(int cap) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cap,
+      locale: localeName,
+      other: 'Up to $cap items per upload',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String autoSaveContinue(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -10176,6 +10374,9 @@ class AppLocalizationsEn extends AppLocalizations {
       '3–5 well-lit photos where the face is clear. Samples are only used for suggestions and don\'t appear in Memories.';
 
   @override
+  String get emailLinkNeedsEmail => 'Enter your email to get a sign-in link.';
+
+  @override
   String autoSavePushTitle(int count, String name) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -10245,6 +10446,662 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoSaveTabDot => 'New photos to review';
 
   @override
+  String get autoSaveDiagTitle => 'Diagnostics (dev build)';
+
+  @override
+  String autoSaveDiagHow(String how, int count) {
+    return 'Last check: $how · $count files';
+  }
+
+  @override
+  String get autoSaveDiagHistory => 'items added to the library';
+
+  @override
+  String get autoSaveDiagByDate => 'by date';
+
+  @override
+  String get autoSaveDiagNone => 'No check since the app opened.';
+
+  @override
+  String autoSaveDiagMatch(String d, String t) {
+    return 'Suggested · $d ≤ $t';
+  }
+
+  @override
+  String autoSaveDiagFar(String d, String t) {
+    return 'Not like the baby · $d > $t';
+  }
+
+  @override
+  String get autoSaveDiagNegative => 'Like a photo marked “Not my baby”';
+
+  @override
+  String get autoSaveDiagNoFace => 'No face found';
+
+  @override
+  String get autoSaveDiagSmall => 'Face too small';
+
+  @override
+  String get autoSaveDiagUtility => 'Looks like a document or screenshot';
+
+  @override
+  String get autoSaveDiagUnreadable => 'Could not read it';
+
+  @override
+  String get autoSaveDiagHandled => 'Already uploaded or skipped';
+
+  @override
+  String get autoSaveDiagRescan => 'Check the last 30 days again';
+
+  @override
+  String get ksCardTitle => 'Milestone cards';
+
+  @override
+  String get ksChooseOccasion => 'Choose the occasion';
+
+  @override
+  String get ksSuggested => 'Suggested';
+
+  @override
+  String get ksOccD7 => '7 days';
+
+  @override
+  String get ksOccM1 => '1 month';
+
+  @override
+  String get ksOccD100 => '100 days';
+
+  @override
+  String get ksOccFirstSmile => 'First smile';
+
+  @override
+  String get ksOccRollsOver => 'First roll';
+
+  @override
+  String get ksOccCrawls => 'Crawling';
+
+  @override
+  String get ksOccFirstSteps => 'First steps';
+
+  @override
+  String get ksOccY1 => 'First birthday';
+
+  @override
+  String get ksTitleY1 => '1 year';
+
+  @override
+  String get ksQuoteD7 => 'Our first seven days';
+
+  @override
+  String get ksQuoteM1 => 'A month of love';
+
+  @override
+  String get ksQuoteD100 => 'A hundred happy days';
+
+  @override
+  String get ksQuoteFirstSmile => 'Your very first smile';
+
+  @override
+  String get ksQuoteRollsOver => 'Look who rolled over!';
+
+  @override
+  String get ksQuoteCrawls => 'Off to explore!';
+
+  @override
+  String get ksQuoteFirstSteps => 'Your first steps';
+
+  @override
+  String get ksQuoteY1 => 'A year of love';
+
+  @override
+  String get ksFormatPortrait => 'Portrait 4:5';
+
+  @override
+  String get ksFormatSquare => 'Square';
+
+  @override
+  String get ksFormatStory => 'Story 9:16';
+
+  @override
+  String get ksFree => 'Free';
+
+  @override
+  String get ksPremium => 'Premium';
+
+  @override
+  String get ksNoTemplates => 'No card templates yet';
+
+  @override
+  String get ksNoTemplatesBody =>
+      'New templates are coming soon. Check back later.';
+
+  @override
+  String get ksLoadFailed => 'Couldn’t load the templates';
+
+  @override
+  String get ksUnavailableTitle => 'Not available for your family yet';
+
+  @override
+  String get ksUnavailableBody =>
+      'Milestone cards are in beta and coming to every family soon.';
+
+  @override
+  String get ksPreview => 'Preview';
+
+  @override
+  String get ksPhotoHint => 'Tap to change · drag to position';
+
+  @override
+  String get ksChoosePhoto => 'Choose a photo';
+
+  @override
+  String get ksToolPhoto => 'Photo';
+
+  @override
+  String get ksToolLayout => 'Layout';
+
+  @override
+  String get ksToolMessage => 'Message';
+
+  @override
+  String get ksToolColor => 'Colour';
+
+  @override
+  String get ksFromDevice => 'Phone library';
+
+  @override
+  String get ksMessageLabel => 'Message on the card';
+
+  @override
+  String get ksSaveCard => 'Save card';
+
+  @override
+  String get ksSaveFailed => 'Couldn’t save the card. Please try again.';
+
+  @override
+  String get ksCardReady => 'Your card is ready!';
+
+  @override
+  String get ksSavedParents => 'Saved to Memories · Parents only';
+
+  @override
+  String get ksExport => 'Export as';
+
+  @override
+  String get ksSaveDevice => 'Save to phone';
+
+  @override
+  String get ksShare => 'Share';
+
+  @override
+  String get ksSavedToDevice => 'Saved to your phone';
+
+  @override
+  String get ksEditAgain => 'Edit card';
+
+  @override
+  String ksPrefilled(String name) {
+    return 'Name, age and date are filled in from $name’s profile';
+  }
+
+  @override
+  String ksCreateFrom(String name) {
+    return 'Make something from $name’s memories';
+  }
+
+  @override
+  String get ksSeeTemplates => 'See templates';
+
+  @override
+  String get ksNew => 'New';
+
+  @override
+  String get ksCardTileHint => 'A PNG picture to share';
+
+  @override
+  String get ksCardTileHintShort => 'A picture to share';
+
+  @override
+  String get ksCreateGroup => 'CREATE & AUTOMATE';
+
+  @override
+  String get ksCardBadge => 'Card';
+
+  @override
+  String get ksStoriesSection => 'Family stories';
+
+  @override
+  String ksCardCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n cards',
+      one: '1 card',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksNudgeSoon(String name, String occasion) {
+    return '$name turns $occasion soon! Let’s make something lovely.';
+  }
+
+  @override
+  String ksNudgeToday(String name, String occasion) {
+    return '$name is $occasion today! Let’s make something lovely.';
+  }
+
+  @override
+  String ksNudgeJust(String name, String occasion) {
+    return '$name just turned $occasion! Keep it with a card.';
+  }
+
+  @override
+  String ksNudgeFirst(String name, String occasion) {
+    return '$name’s $occasion! Make a card to remember it.';
+  }
+
+  @override
+  String ksThisWeekday(String weekday, String day) {
+    return 'This $weekday · $day';
+  }
+
+  @override
+  String get ksToday => 'Today';
+
+  @override
+  String get ksTomorrow => 'Tomorrow';
+
+  @override
+  String get ksMakeCard => 'Make a card';
+
+  @override
+  String get ksLater => 'Later';
+
+  @override
+  String ksNudgeTodayTitle(String name, String occasion) {
+    return '$name is $occasion today 🎂';
+  }
+
+  @override
+  String get ksNudgeTodayBody => 'Make a lovely card to remember it.';
+
+  @override
+  String ksNudgeBackAgeTitle(String name, String occasion) {
+    return 'Look back: $name at $occasion';
+  }
+
+  @override
+  String ksNudgeBackFirstTitle(String name, String occasion) {
+    return 'Look back: $name’s $occasion';
+  }
+
+  @override
+  String ksNudgeBackBody(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n photos from it are in Memories. Make a card?',
+      one: '1 photo from it is in Memories. Make a card?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ksVideoTitle => 'Memory video';
+
+  @override
+  String get ksVideoTileHint => 'Photos + words + music';
+
+  @override
+  String get ksVideoPickTemplate =>
+      'Pick a template, then your baby’s photos. Child Life makes a 9:16 video.';
+
+  @override
+  String ksVideoNeeds(int min, int max) {
+    return 'Needs $min–$max photos';
+  }
+
+  @override
+  String get ksUnavailableBodyVideo =>
+      'Memory videos are in beta and coming to every family soon.';
+
+  @override
+  String get ksFromMemories => 'From Memories';
+
+  @override
+  String get ksVideoPhotosTitle => 'Choose photos for the video';
+
+  @override
+  String ksVideoScenesFilled(int n, int total) {
+    return '$n/$total scenes have a photo';
+  }
+
+  @override
+  String ksVideoMinimum(int n) {
+    return 'At least $n';
+  }
+
+  @override
+  String ksVideoScene(int n, String hint) {
+    return 'Scene $n: $hint';
+  }
+
+  @override
+  String ksVideoSceneN(int n) {
+    return 'Scene $n';
+  }
+
+  @override
+  String get ksVideoSceneOptionalTag => 'Optional';
+
+  @override
+  String ksVideoForScene(int n, String hint) {
+    return 'For scene $n · $hint';
+  }
+
+  @override
+  String ksVideoSceneWindow(String from, String to) {
+    return 'Photos taken $from – $to';
+  }
+
+  @override
+  String get ksVideoSceneAny => 'Any photo fits; newest first';
+
+  @override
+  String get ksVideoSceneEmpty =>
+      'No photos from this time yet. Pick one from Other photos below or add one from your phone.';
+
+  @override
+  String get ksVideoSceneEmptyOptional =>
+      'No photos from this time yet. This scene is optional, so you can leave it empty.';
+
+  @override
+  String get ksVideoOtherPhotos => 'Other photos';
+
+  @override
+  String ksVideoClearScene(int n) {
+    return 'Remove the photo from scene $n';
+  }
+
+  @override
+  String ksVideoPicked(int n) {
+    return '$n photos chosen';
+  }
+
+  @override
+  String ksVideoCanAdd(int n) {
+    return '$n more allowed';
+  }
+
+  @override
+  String ksVideoNeedMore(int n) {
+    return '$n more needed';
+  }
+
+  @override
+  String ksVideoNotEnough(String name, int have, int need) {
+    return '$name’s Memories have only $have suitable photos. This template needs at least $need.';
+  }
+
+  @override
+  String get ksVideoMoreFromDevice => 'Add more from the phone';
+
+  @override
+  String get ksVideoMoreFromDeviceHint => 'Only the photos you pick are used';
+
+  @override
+  String get ksVideoShorter => 'Switch to a shorter template';
+
+  @override
+  String ksVideoShorterHint(String name, int n) {
+    return '“$name” · needs $n photos';
+  }
+
+  @override
+  String ksVideoImporting(int n) {
+    return 'Adding $n photos to Memories (parents only). They are picked once uploaded.';
+  }
+
+  @override
+  String get ksVideoFinishTitle => 'Finish the video';
+
+  @override
+  String get ksVideoPrefilled => 'Filled in from the baby’s profile';
+
+  @override
+  String get ksVideoBaby => 'Baby';
+
+  @override
+  String get ksVideoDay => 'Day';
+
+  @override
+  String get ksVideoFieldTitle => 'Title';
+
+  @override
+  String get ksVideoFieldMessage => 'Closing message';
+
+  @override
+  String ksVideoOrder(int n) {
+    return '$n photos · in order';
+  }
+
+  @override
+  String get ksVideoReorderHint => 'Hold and drag to reorder';
+
+  @override
+  String get ksVideoAddPhotos => 'Add photos';
+
+  @override
+  String get ksVideoMusic => 'Music';
+
+  @override
+  String get ksVideoMusicTemplate => 'The template’s music';
+
+  @override
+  String get ksVideoMusicNone => 'No music for this template yet';
+
+  @override
+  String get ksVideoWho => 'Who can see';
+
+  @override
+  String get ksVideoWhoParents => 'Parents only · saved to Memories';
+
+  @override
+  String get ksVideoWhoFamily => 'Family · saved to Memories';
+
+  @override
+  String get ksAudienceParents => 'Parents only';
+
+  @override
+  String get ksAudienceFamily => 'Family';
+
+  @override
+  String get ksVideoCreate => 'Make the video';
+
+  @override
+  String get ksVideoTakes => 'About 1–2 minutes · you can leave this screen';
+
+  @override
+  String get ksVideoErrBusy =>
+      'A video is already being made for your baby. Try again when it’s done.';
+
+  @override
+  String get ksVideoErrDaily =>
+      'Your family has made many videos today. Try again tomorrow.';
+
+  @override
+  String get ksVideoErrQuota =>
+      'Your family’s storage is almost full. Free some up first.';
+
+  @override
+  String get ksVideoErrPhoto =>
+      'A photo was removed or is still uploading. Choose again.';
+
+  @override
+  String get ksVideoErrTemplate =>
+      'This template has just changed. Choose it again.';
+
+  @override
+  String ksVideoMaking(String name) {
+    return 'Making $name’s video…';
+  }
+
+  @override
+  String get ksVideoMakingBody =>
+      'Usually 1–2 minutes. You can leave this screen; Child Life will tell you when it’s ready.';
+
+  @override
+  String ksVideoStepArrange(int n) {
+    return 'Arranging $n photos';
+  }
+
+  @override
+  String get ksVideoStepCompose => 'Adding words, message and music';
+
+  @override
+  String get ksVideoStepExport => 'Exporting the 9:16 video';
+
+  @override
+  String get ksVideoBackToMemories => 'Back to Memories';
+
+  @override
+  String get ksLiveQueued => 'Waiting to make your video';
+
+  @override
+  String get ksLiveArrange => 'Arranging the photos';
+
+  @override
+  String get ksLiveCompose => 'Adding words and music';
+
+  @override
+  String get ksLiveExport => 'Exporting the video';
+
+  @override
+  String get ksLiveReadySub => 'Tap to watch, save and share';
+
+  @override
+  String get ksLiveFailedSub => 'Tap to try again';
+
+  @override
+  String ksVideoActive(int percent) {
+    return 'Making your video · $percent%';
+  }
+
+  @override
+  String get ksVideoActiveQueued => 'Waiting to make your video';
+
+  @override
+  String get ksVideoReadyToast => 'Your memory video is ready';
+
+  @override
+  String get ksVideoFailedToast => 'Your memory video couldn’t be made';
+
+  @override
+  String get ksVideoOpenJob => 'View';
+
+  @override
+  String get ksVideoDeleteDraft => 'Delete draft';
+
+  @override
+  String get ksVideoDeleteDraftTitle => 'Delete this video draft?';
+
+  @override
+  String get ksVideoDeleteDraftBody =>
+      'Your baby’s photos stay in Memories; only this video draft is deleted.';
+
+  @override
+  String get ksVideoDraftDeleted => 'Draft deleted';
+
+  @override
+  String get ksTabCards => 'Cards';
+
+  @override
+  String get ksTabVideos => 'Videos';
+
+  @override
+  String get ksVideoReady => 'Your video is ready!';
+
+  @override
+  String get ksVideoSaved => 'Saved to Memories';
+
+  @override
+  String get ksVideoFiling => 'Saving to Memories…';
+
+  @override
+  String ksVideoWeek(int n) {
+    return 'Week $n';
+  }
+
+  @override
+  String get ksVideoWatch => 'Watch the video';
+
+  @override
+  String get ksVideoOpen => 'See in Memories';
+
+  @override
+  String ksVideoAlsoCard(String occasion) {
+    return 'Also make a “$occasion” card';
+  }
+
+  @override
+  String get ksVideoAlsoCardHint => 'Reuse these photos';
+
+  @override
+  String get ksVideoFailed => 'Couldn’t make the video';
+
+  @override
+  String get ksVideoFailedNetwork =>
+      'The connection dropped while exporting. Your photos, words and message are kept.';
+
+  @override
+  String get ksVideoFailedBusy =>
+      'Our server was busy and couldn’t finish. Your photos, words and message are kept.';
+
+  @override
+  String get ksVideoFailedPhoto =>
+      'A photo was removed from Memories. Edit your choices to make the video.';
+
+  @override
+  String get ksVideoEditChoices => 'Edit choices';
+
+  @override
+  String get ksVideoDraftNote => 'The draft is kept in Stories · Drafts';
+
+  @override
+  String get ksMakeVideo => 'Make a video';
+
+  @override
+  String ksMakeVideoFor(String occasion) {
+    return 'Make a $occasion video';
+  }
+
+  @override
+  String get ksVideoDraftTile => 'Draft';
+
+  @override
+  String get ksVideoContinue => 'Continue';
+
+  @override
+  String ksVideoInProgress(int p) {
+    return 'Making · $p%';
+  }
+
+  @override
+  String get ksBannerView => 'View';
+
+  @override
+  String ksVideoCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n videos',
+      one: '1 video',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get careDevelop => 'Understanding your baby';
 
   @override
@@ -10252,4 +11109,269 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get utTools => 'Tools';
+
+  @override
+  String get ksPreviewSample => 'Play the template';
+
+  @override
+  String get ksPreviewNote =>
+      'This preview plays on your phone. The real video is made at 1080×1920 after “Make the video”.';
+
+  @override
+  String get ksPreviewFailed =>
+      'Couldn’t open the preview. Check your connection and try again.';
+
+  @override
+  String get ksMusicNone => 'No music';
+
+  @override
+  String get ksMusicDefault => 'Template default';
+
+  @override
+  String get ksMusicStop => 'Stop listening';
+
+  @override
+  String get ksMusicNote =>
+      'Licensed music chosen by Child Life. You can change the track any time before creating the video.';
+
+  @override
+  String get ksPreviewVideoNote =>
+      'This sample uses illustration photos. Your video uses the photos and words you choose.';
+
+  @override
+  String ksMusicListen(String title) {
+    return 'Listen to $title';
+  }
+
+  @override
+  String get ksOccBirth => 'Birth';
+
+  @override
+  String get ksOccLaughs => 'First laugh';
+
+  @override
+  String get ksOccSitsUp => 'Sits up';
+
+  @override
+  String get ksOccStands => 'Stands up';
+
+  @override
+  String get ksOccFirstTooth => 'First tooth';
+
+  @override
+  String get ksOccFirstSolids => 'First meal';
+
+  @override
+  String get ksOccFirstWord => 'First word';
+
+  @override
+  String get ksAchieveRollsOver => 'I rolled over!';
+
+  @override
+  String get ksAchieveSitsUp => 'I can sit up!';
+
+  @override
+  String get ksAchieveCrawls => 'I can crawl!';
+
+  @override
+  String get ksAchieveStands => 'I can stand!';
+
+  @override
+  String get ksAchieveFirstSteps => 'I took my first steps!';
+
+  @override
+  String get ksAchieveAny => 'Look what I can do!';
+
+  @override
+  String get ksQuoteBirth => 'Welcome to the world';
+
+  @override
+  String get ksQuoteLaughs => 'Giggles all day';
+
+  @override
+  String get ksQuoteSitsUp => 'Sitting tall!';
+
+  @override
+  String get ksQuoteStands => 'Standing strong!';
+
+  @override
+  String get ksQuoteFirstTooth => 'A tiny new smile';
+
+  @override
+  String get ksQuoteFirstSolids => 'Yum, first bites!';
+
+  @override
+  String get ksQuoteFirstWord => 'You said our names!';
+
+  @override
+  String get ksLabelFirstDay => 'Day 1';
+
+  @override
+  String get ksLabelThen => 'Then';
+
+  @override
+  String get ksLabelNow => 'Now';
+
+  @override
+  String ksOccMonth(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n months',
+      one: '1 month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksQuoteMonth(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n months',
+      one: 'One month',
+    );
+    return '$_temp0 of love';
+  }
+
+  @override
+  String ksAgeDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksAgeWeeks(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n weeks',
+      one: '1 week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksAgeMonths(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n months',
+      one: '1 month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksAgeYears(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n years',
+      one: '1 year',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksUnitDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'days',
+      one: 'day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksUnitWeeks(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'weeks',
+      one: 'week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksUnitMonths(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'months',
+      one: 'month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksUnitYears(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'years',
+      one: 'year',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksLabelDay(int n) {
+    return 'Day $n';
+  }
+
+  @override
+  String ksLabelWeek(int n) {
+    return 'Week $n';
+  }
+
+  @override
+  String ksLabelMonth(int n) {
+    return 'Month $n';
+  }
+
+  @override
+  String ksLabelYear(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Year $n',
+      one: 'Year 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String ksBirthStats(String weight, String length) {
+    return '$weight kg · $length cm';
+  }
+
+  @override
+  String ksBirthWeight(String weight) {
+    return '$weight kg';
+  }
+
+  @override
+  String ksBirthLength(String length) {
+    return '$length cm';
+  }
+
+  @override
+  String get ksVideoFieldHeadline => 'Headline';
+
+  @override
+  String get ksVideoFieldLines => 'A line for each photo (one per line)';
+
+  @override
+  String get ksVideoFieldLetter => 'Letter to your baby';
+
+  @override
+  String get ksVideoFieldClosing => 'Closing line';
 }

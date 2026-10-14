@@ -43,6 +43,8 @@ class AssetInfo {
     this.print,
     this.faces = const [],
     this.unreadable = false,
+    this.frames,
+    this.name,
   });
 
   final String id;
@@ -65,6 +67,12 @@ class AssetInfo {
   final Float32List? print;
   final List<FaceInfo> faces;
   final bool unreadable;
+
+  /// Videos: how many frames were read (0: none on the phone, the poster was used instead).
+  final int? frames;
+
+  /// The file name in Photos (IMG_3859), for dev diagnostics only.
+  final String? name;
 
   /// Null for items the library no longer has.
   static AssetInfo? fromMap(Map<Object?, Object?> m) {
@@ -89,6 +97,8 @@ class AssetInfo {
           FaceInfo.fromMap(f as Map<Object?, Object?>),
       ],
       unreadable: m['unreadable'] == true,
+      frames: (m['frames'] as num?)?.toInt(),
+      name: m['name'] as String?,
     );
   }
 
@@ -162,6 +172,10 @@ class BabyFaces {
   final List<Float32List> samples;
   final List<Float32List> negatives;
 
+  /// How close a face must be to count as this baby.
+  double threshold(AutoSaveTuning t) =>
+      (spread * t.spreadFactor).clamp(t.minMatch, t.maxMatch);
+
   /// The furthest two samples are from each other: v1 prints have no fixed scale, so the
   /// threshold follows the baby's own samples.
   double get spread {
@@ -202,10 +216,7 @@ FaceMatch? matchBaby(
   for (final entry in babies.entries) {
     final faces = entry.value;
     if (faces.samples.isEmpty) continue;
-    final threshold = (faces.spread * tuning.spreadFactor).clamp(
-      tuning.minMatch,
-      tuning.maxMatch,
-    );
+    final threshold = faces.threshold(tuning);
     for (var i = 0; i < asset.faces.length; i++) {
       final face = asset.faces[i];
       final p = face.print;
@@ -343,4 +354,62 @@ SuggestionGroup _rank(List<Candidate> group, AutoSaveTuning t) {
     pre.add(ranked[1].asset.id);
   }
   return SuggestionGroup(items: ranked, preselected: pre);
+}
+
+/// Why a photo was or was not suggested (the dev diagnostics in AS19).
+enum MatchReason { match, noFace, small, far, negative }
+
+@immutable
+class MatchTrace {
+  const MatchTrace(this.reason, {this.babyId, this.distance, this.threshold});
+  final MatchReason reason;
+  final String? babyId;
+
+  /// The closest any face came to a baby's samples, and that baby's threshold.
+  final double? distance;
+  final double? threshold;
+}
+
+/// [matchBaby] with the reason when it says no.
+MatchTrace explainMatch(
+  AssetInfo asset,
+  Map<String, BabyFaces> babies, {
+  AutoSaveTuning tuning = const AutoSaveTuning(),
+}) {
+  final m = matchBaby(asset, babies, tuning: tuning);
+  if (m != null) {
+    return MatchTrace(
+      MatchReason.match,
+      babyId: m.babyId,
+      distance: m.distance,
+      threshold: babies[m.babyId]!.threshold(tuning),
+    );
+  }
+  if (asset.faces.isEmpty) return const MatchTrace(MatchReason.noFace);
+  final usable = [
+    for (final f in asset.faces)
+      if (f.print != null && f.size >= tuning.minFaceSize) f,
+  ];
+  if (usable.isEmpty) return const MatchTrace(MatchReason.small);
+  MatchTrace? closest;
+  for (final e in babies.entries) {
+    if (e.value.samples.isEmpty) continue;
+    final threshold = e.value.threshold(tuning);
+    for (final f in usable) {
+      final d = e.value.samples
+          .map((s) => printDistance(f.print!, s))
+          .reduce(math.min);
+      if (closest != null && d >= closest.distance!) continue;
+      final rejected =
+          d <= threshold &&
+          e.value.negatives.any((n) => printDistance(f.print!, n) < d);
+      closest = MatchTrace(
+        rejected ? MatchReason.negative : MatchReason.far,
+        babyId: e.key,
+        distance: d,
+        threshold: threshold,
+      );
+    }
+  }
+  return closest ?? const MatchTrace(MatchReason.far);
 }

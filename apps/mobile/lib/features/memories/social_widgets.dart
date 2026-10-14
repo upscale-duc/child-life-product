@@ -61,6 +61,7 @@ Future<void> toggleLove(
       showClToast(
         context,
         message: AppLocalizations.of(context).toastActionFailed,
+        error: true,
       );
     }
   }
@@ -177,7 +178,7 @@ class FavoriteButton extends ConsumerWidget {
             .setFavorite(me.babyId, me.uid, mediaId, !on);
         toaster.show(message: on ? l10n.favRemoved : l10n.favAdded);
       } on Object {
-        toaster.show(message: l10n.toastActionFailed);
+        toaster.show(message: l10n.toastActionFailed, error: true);
       }
     }
 

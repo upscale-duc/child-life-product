@@ -12,6 +12,7 @@ enum AppEnvironment {
     siteHost: 'dev.childlife.app',
     // The custom domain: iOS opens invite links only from the Associated Domains (D-059).
     webOrigin: 'https://dev.childlife.app',
+    keepsakePlayerOrigin: 'https://child-life-dev-keepsake.web.app',
   ),
   prod(
     androidAppId: 'app.childlife',
@@ -19,6 +20,7 @@ enum AppEnvironment {
     firebaseProjectId: 'child-life-prod',
     siteHost: 'childlife.app',
     webOrigin: 'https://childlife.app',
+    keepsakePlayerOrigin: 'https://child-life-prod-keepsake.web.app',
   );
 
   const AppEnvironment({
@@ -27,6 +29,7 @@ enum AppEnvironment {
     required this.firebaseProjectId,
     required this.siteHost,
     required this.webOrigin,
+    required this.keepsakePlayerOrigin,
   });
 
   /// Android application id and iOS bundle id of this environment's builds.
@@ -42,6 +45,10 @@ enum AppEnvironment {
 
   /// Public website of this environment (legal pages, later invite landing).
   final String webOrigin;
+
+  /// Video kỷ niệm preview page (D-068; `apps/renderer/player`, Hosting target "player"): the
+  /// renderer's compositions played in a WebView, so a new one needs no app release.
+  final String keepsakePlayerOrigin;
 }
 
 class EnvironmentConfigError implements Exception {

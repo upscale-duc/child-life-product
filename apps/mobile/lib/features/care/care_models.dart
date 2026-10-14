@@ -186,6 +186,20 @@ class CareRecord {
   }
 
   /// Breastfeeds and pumping with a duration end that many minutes after they start.
+  /// When a bú mẹ / hút sữa logged with its length started. Logged at "now" right after it, the
+  /// end would be in the future, which Rules refuse (G-021, 5 min of skew): it is taken to have
+  /// just ended, so it started [minutes] before [now].
+  static DateTime spanStart(
+    CareType type,
+    DateTime time,
+    int? minutes,
+    DateTime now,
+  ) {
+    final end = _endFor(type, time, minutes);
+    if (end == null || !end.isAfter(now)) return time;
+    return now.subtract(Duration(minutes: minutes!));
+  }
+
   static DateTime? _endFor(CareType type, DateTime start, int? minutes) =>
       (type == CareType.breast || type == CareType.pump) && minutes != null
       ? start.add(Duration(minutes: minutes))

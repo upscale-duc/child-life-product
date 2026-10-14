@@ -265,6 +265,15 @@ export function FeaturesView({
                 values={{ n: data.limits.exportLinkTtlHours }}
               />
             </dd>
+            <dt>
+              <FormattedMessage id="limits.autoSave" />
+            </dt>
+            <dd>
+              <FormattedMessage
+                id="limits.autoSaveValue"
+                values={{ n: data.limits.autoSaveItemsPerApprove }}
+              />
+            </dd>
           </dl>
         </Panel>
         <Panel title={<FormattedMessage id="features.recent" />}>

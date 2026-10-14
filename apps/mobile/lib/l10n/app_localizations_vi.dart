@@ -65,6 +65,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get a11yBack => 'Quay lại';
 
   @override
+  String get a11yWorking => 'Đang xử lý';
+
+  @override
   String get a11yClose => 'Đóng';
 
   @override
@@ -3188,6 +3191,18 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get actDateHint => 'Khi ngày chụp bị sai';
+
+  @override
+  String get actMakeCard => 'Tạo thiệp cột mốc';
+
+  @override
+  String get actMakeCardHint => 'Dùng tối đa 4 ảnh đã chọn';
+
+  @override
+  String get actMakeVideo => 'Tạo video kỷ niệm';
+
+  @override
+  String get actMakeVideoHint => 'Ảnh đã chọn vào sẵn các cảnh';
 
   @override
   String get actStory => 'Kể thành câu chuyện';
@@ -8463,6 +8478,162 @@ class AppLocalizationsVi extends AppLocalizations {
   String get upFirstAid => 'Sơ cứu';
 
   @override
+  String get watchTileBottle => 'Bú bình';
+
+  @override
+  String get watchTileBreast => 'Bú mẹ';
+
+  @override
+  String get watchTileSleep => 'Ngủ';
+
+  @override
+  String get watchTileDiaper => 'Tã';
+
+  @override
+  String get watchTilePump => 'Hút sữa';
+
+  @override
+  String get watchTileReminder => 'Nhắc';
+
+  @override
+  String get watchSinceFeed => 'từ cữ trước';
+
+  @override
+  String get watchSinceLast => 'từ lần trước';
+
+  @override
+  String get watchSleeping => 'đang ngủ';
+
+  @override
+  String get watchAwake => 'đã thức';
+
+  @override
+  String get watchFeedReminder => 'nhắc bú';
+
+  @override
+  String get watchNoneYet => 'chưa ghi';
+
+  @override
+  String watchAgo(String t) {
+    return '$t trước';
+  }
+
+  @override
+  String get watchChooseBabyRow => 'Chọn bé';
+
+  @override
+  String get watchCrownHint => 'ml · xoay núm để chỉnh';
+
+  @override
+  String get watchSave => 'Lưu';
+
+  @override
+  String get watchBreastStartHint => 'Bắt đầu bên nào?';
+
+  @override
+  String get watchSideLeft => 'Trái';
+
+  @override
+  String get watchSideRight => 'Phải';
+
+  @override
+  String get watchSuggested => 'gợi ý';
+
+  @override
+  String watchBreastTotalLeft(String t) {
+    return 'Tổng $t · đang bú bên trái';
+  }
+
+  @override
+  String watchBreastTotalRight(String t) {
+    return 'Tổng $t · đang bú bên phải';
+  }
+
+  @override
+  String get watchSwitchSide => 'Đổi bên';
+
+  @override
+  String get watchStop => 'Dừng';
+
+  @override
+  String watchSleepSince(String time) {
+    return 'từ $time';
+  }
+
+  @override
+  String get watchWokeUp => 'Bé đã dậy';
+
+  @override
+  String get watchDiaperTitle => 'Thay tã';
+
+  @override
+  String get watchDiaperWet => 'Ướt';
+
+  @override
+  String get watchDiaperDirty => 'Bẩn';
+
+  @override
+  String get watchDiaperBoth => 'Cả hai';
+
+  @override
+  String get watchLoggedWet => 'Đã ghi tã ướt';
+
+  @override
+  String get watchLoggedDirty => 'Đã ghi tã bẩn';
+
+  @override
+  String get watchLoggedBoth => 'Đã ghi tã ướt và bẩn';
+
+  @override
+  String watchLoggedBottle(String ml) {
+    return 'Đã ghi bú bình $ml ml';
+  }
+
+  @override
+  String get watchLoggedBreast => 'Đã ghi cữ bú mẹ';
+
+  @override
+  String get watchLoggedSleep => 'Đã ghi giấc ngủ';
+
+  @override
+  String watchLoggedBy(String time, String name) {
+    return '$time · $name ghi';
+  }
+
+  @override
+  String get watchUndo => 'Hoàn tác';
+
+  @override
+  String get watchFailed => 'Chưa lưu được. Thử lại sau.';
+
+  @override
+  String get watchChooseBaby => 'Chọn bé';
+
+  @override
+  String get watchOneBabyNote => 'Đổi sang bé khác trên iPhone.';
+
+  @override
+  String get watchOffline => 'Đã lưu trên đồng hồ. Sẽ gửi lên khi có mạng.';
+
+  @override
+  String watchPending(String n) {
+    return '$n lần ghi chờ gửi';
+  }
+
+  @override
+  String get watchLinkTitle => 'Kết nối iPhone';
+
+  @override
+  String get watchLinkBody =>
+      'Mở Child Life trên iPhone và đăng nhập, đồng hồ sẽ tự kết nối.';
+
+  @override
+  String get watchCannotLog => 'Bạn chưa có bé nào để ghi trên đồng hồ.';
+
+  @override
+  String get watchDemo => 'Xem thử';
+
+  @override
   String imTotal(String amount) {
     return 'Tổng $amount';
   }
@@ -8724,9 +8895,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get signInRegister => 'Đăng ký';
-
-  @override
-  String get emailLinkNeedsEmail => 'Nhập email để nhận link đăng nhập.';
 
   @override
   String get autoSaveTitle => 'Tự lưu kỷ niệm';
@@ -9227,6 +9395,32 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get autoSaveDeselectAll => 'Bỏ chọn tất cả';
+
+  @override
+  String get autoSaveSelectAll => 'Chọn tất cả';
+
+  @override
+  String autoSaveRoundRest(int rest, int cap) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rest,
+      locale: localeName,
+      other: 'Mỗi lần tải tối đa $cap mục · $rest gợi ý còn lại chờ lần sau',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String autoSaveRoundFull(int cap) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cap,
+      locale: localeName,
+      other: 'Mỗi lần tải tối đa $cap mục',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String autoSaveContinue(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -9495,6 +9689,9 @@ class AppLocalizationsVi extends AppLocalizations {
       '3–5 ảnh nhìn rõ mặt, đủ sáng. Ảnh mẫu chỉ dùng để gợi ý, không hiện trong Kỷ niệm.';
 
   @override
+  String get emailLinkNeedsEmail => 'Nhập email để nhận link đăng nhập.';
+
+  @override
   String autoSavePushTitle(int count, String name) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -9561,6 +9758,644 @@ class AppLocalizationsVi extends AppLocalizations {
   String get autoSaveTabDot => 'Có ảnh mới chờ duyệt';
 
   @override
+  String get autoSaveDiagTitle => 'Chẩn đoán (bản dev)';
+
+  @override
+  String autoSaveDiagHow(String how, int count) {
+    return 'Lần kiểm tra gần nhất: $how · $count tệp';
+  }
+
+  @override
+  String get autoSaveDiagHistory => 'ảnh mới thêm vào thư viện';
+
+  @override
+  String get autoSaveDiagByDate => 'theo ngày';
+
+  @override
+  String get autoSaveDiagNone => 'Chưa kiểm tra lần nào từ lúc mở app.';
+
+  @override
+  String autoSaveDiagMatch(String d, String t) {
+    return 'Gợi ý · $d ≤ $t';
+  }
+
+  @override
+  String autoSaveDiagFar(String d, String t) {
+    return 'Không giống bé · $d > $t';
+  }
+
+  @override
+  String get autoSaveDiagNegative => 'Giống ảnh đã bấm “Không phải ảnh của bé”';
+
+  @override
+  String get autoSaveDiagNoFace => 'Không thấy khuôn mặt';
+
+  @override
+  String get autoSaveDiagSmall => 'Khuôn mặt quá nhỏ';
+
+  @override
+  String get autoSaveDiagUtility => 'Giống giấy tờ hoặc ảnh chụp màn hình';
+
+  @override
+  String get autoSaveDiagUnreadable => 'Không đọc được ảnh';
+
+  @override
+  String get autoSaveDiagHandled => 'Đã tải lên hoặc đã bỏ qua trước đó';
+
+  @override
+  String get autoSaveDiagRescan => 'Kiểm tra lại 30 ngày gần nhất';
+
+  @override
+  String get ksCardTitle => 'Thiệp cột mốc';
+
+  @override
+  String get ksChooseOccasion => 'Chọn dịp';
+
+  @override
+  String get ksSuggested => 'Gợi ý';
+
+  @override
+  String get ksOccD7 => '7 ngày';
+
+  @override
+  String get ksOccM1 => '1 tháng';
+
+  @override
+  String get ksOccD100 => '100 ngày';
+
+  @override
+  String get ksOccFirstSmile => 'Lần đầu cười';
+
+  @override
+  String get ksOccRollsOver => 'Lần đầu biết lẫy';
+
+  @override
+  String get ksOccCrawls => 'Biết bò';
+
+  @override
+  String get ksOccFirstSteps => 'Bước đi đầu tiên';
+
+  @override
+  String get ksOccY1 => 'Sinh nhật 1 tuổi';
+
+  @override
+  String get ksTitleY1 => '1 tuổi';
+
+  @override
+  String get ksQuoteD7 => 'Bảy ngày đầu bên con';
+
+  @override
+  String get ksQuoteM1 => 'Một tháng yêu thương';
+
+  @override
+  String get ksQuoteD100 => 'Trăm ngày hạnh phúc';
+
+  @override
+  String get ksQuoteFirstSmile => 'Nụ cười đầu tiên của con';
+
+  @override
+  String get ksQuoteRollsOver => 'Con biết lẫy rồi!';
+
+  @override
+  String get ksQuoteCrawls => 'Bò khắp nhà thôi!';
+
+  @override
+  String get ksQuoteFirstSteps => 'Những bước chân đầu tiên';
+
+  @override
+  String get ksQuoteY1 => 'Một năm yêu thương';
+
+  @override
+  String get ksFormatPortrait => 'Dọc 4:5';
+
+  @override
+  String get ksFormatSquare => 'Vuông';
+
+  @override
+  String get ksFormatStory => 'Story 9:16';
+
+  @override
+  String get ksFree => 'Miễn phí';
+
+  @override
+  String get ksPremium => 'Cao cấp';
+
+  @override
+  String get ksNoTemplates => 'Chưa có mẫu thiệp';
+
+  @override
+  String get ksNoTemplatesBody => 'Mẫu mới sẽ có sớm. Bạn quay lại sau nhé.';
+
+  @override
+  String get ksLoadFailed => 'Chưa tải được mẫu thiệp';
+
+  @override
+  String get ksUnavailableTitle => 'Chưa mở cho gia đình bạn';
+
+  @override
+  String get ksUnavailableBody =>
+      'Thiệp cột mốc đang thử nghiệm và sẽ sớm có cho mọi gia đình.';
+
+  @override
+  String get ksPreview => 'Xem trước';
+
+  @override
+  String get ksPhotoHint => 'Chạm ảnh để đổi · kéo để căn';
+
+  @override
+  String get ksChoosePhoto => 'Chọn ảnh';
+
+  @override
+  String get ksToolPhoto => 'Ảnh';
+
+  @override
+  String get ksToolLayout => 'Bố cục';
+
+  @override
+  String get ksToolMessage => 'Lời nhắn';
+
+  @override
+  String get ksToolColor => 'Màu';
+
+  @override
+  String get ksFromDevice => 'Thư viện máy';
+
+  @override
+  String get ksMessageLabel => 'Lời nhắn trên thiệp';
+
+  @override
+  String get ksSaveCard => 'Lưu thiệp';
+
+  @override
+  String get ksSaveFailed => 'Chưa lưu được thiệp. Thử lại nhé.';
+
+  @override
+  String get ksCardReady => 'Thiệp đã sẵn sàng!';
+
+  @override
+  String get ksSavedParents => 'Đã lưu vào Kỷ niệm · Chỉ ba mẹ';
+
+  @override
+  String get ksExport => 'Xuất ảnh';
+
+  @override
+  String get ksSaveDevice => 'Lưu vào máy';
+
+  @override
+  String get ksShare => 'Chia sẻ';
+
+  @override
+  String get ksSavedToDevice => 'Đã lưu vào máy';
+
+  @override
+  String get ksEditAgain => 'Sửa thiệp';
+
+  @override
+  String ksPrefilled(String name) {
+    return 'Tên, tuổi và ngày được điền sẵn từ hồ sơ của $name';
+  }
+
+  @override
+  String ksCreateFrom(String name) {
+    return 'Tạo từ kỷ niệm của $name';
+  }
+
+  @override
+  String get ksSeeTemplates => 'Xem mẫu';
+
+  @override
+  String get ksNew => 'Mới';
+
+  @override
+  String get ksCardTileHint => 'Ảnh PNG để chia sẻ';
+
+  @override
+  String get ksCardTileHintShort => 'Ảnh để chia sẻ';
+
+  @override
+  String get ksCreateGroup => 'SÁNG TẠO & TỰ ĐỘNG';
+
+  @override
+  String get ksCardBadge => 'Thiệp';
+
+  @override
+  String get ksStoriesSection => 'Câu chuyện của gia đình';
+
+  @override
+  String ksCardCount(int n) {
+    return '$n thiệp';
+  }
+
+  @override
+  String ksNudgeSoon(String name, String occasion) {
+    return '$name sắp tròn $occasion! Cùng tạo một kỷ niệm thật đẹp nhé.';
+  }
+
+  @override
+  String ksNudgeToday(String name, String occasion) {
+    return 'Hôm nay $name tròn $occasion! Cùng tạo một kỷ niệm thật đẹp nhé.';
+  }
+
+  @override
+  String ksNudgeJust(String name, String occasion) {
+    return '$name vừa tròn $occasion! Lưu lại bằng một tấm thiệp nhé.';
+  }
+
+  @override
+  String ksNudgeFirst(String name, String occasion) {
+    return '$occasion của $name! Làm một tấm thiệp kỷ niệm nhé.';
+  }
+
+  @override
+  String ksThisWeekday(String weekday, String day) {
+    return '$weekday này · $day';
+  }
+
+  @override
+  String get ksToday => 'Hôm nay';
+
+  @override
+  String get ksTomorrow => 'Ngày mai';
+
+  @override
+  String get ksMakeCard => 'Tạo thiệp';
+
+  @override
+  String get ksLater => 'Để sau';
+
+  @override
+  String ksNudgeTodayTitle(String name, String occasion) {
+    return 'Hôm nay $name tròn $occasion 🎂';
+  }
+
+  @override
+  String get ksNudgeTodayBody => 'Làm một tấm thiệp kỷ niệm thật xinh nhé.';
+
+  @override
+  String ksNudgeBackAgeTitle(String name, String occasion) {
+    return 'Nhìn lại ngày $name tròn $occasion';
+  }
+
+  @override
+  String ksNudgeBackFirstTitle(String name, String occasion) {
+    return 'Nhìn lại: $occasion của $name';
+  }
+
+  @override
+  String ksNudgeBackBody(int n) {
+    return 'Có $n ảnh từ dịp này trong Kỷ niệm. Làm một tấm thiệp nhé?';
+  }
+
+  @override
+  String get ksVideoTitle => 'Video kỷ niệm';
+
+  @override
+  String get ksVideoTileHint => 'Ảnh + chữ + nhạc';
+
+  @override
+  String get ksVideoPickTemplate =>
+      'Chọn một mẫu, rồi chọn ảnh của bé. Child Life ghép thành video 9:16.';
+
+  @override
+  String ksVideoNeeds(int min, int max) {
+    return 'Cần $min–$max ảnh';
+  }
+
+  @override
+  String get ksUnavailableBodyVideo =>
+      'Video kỷ niệm đang thử nghiệm và sẽ sớm có cho mọi gia đình.';
+
+  @override
+  String get ksFromMemories => 'Từ Kỷ niệm';
+
+  @override
+  String get ksVideoPhotosTitle => 'Chọn ảnh cho video';
+
+  @override
+  String ksVideoScenesFilled(int n, int total) {
+    return '$n/$total cảnh đã có ảnh';
+  }
+
+  @override
+  String ksVideoMinimum(int n) {
+    return 'Tối thiểu $n';
+  }
+
+  @override
+  String ksVideoScene(int n, String hint) {
+    return 'Cảnh $n: $hint';
+  }
+
+  @override
+  String ksVideoSceneN(int n) {
+    return 'Cảnh $n';
+  }
+
+  @override
+  String get ksVideoSceneOptionalTag => 'Tuỳ chọn';
+
+  @override
+  String ksVideoForScene(int n, String hint) {
+    return 'Gợi ý cho cảnh $n · $hint';
+  }
+
+  @override
+  String ksVideoSceneWindow(String from, String to) {
+    return 'Ảnh chụp từ $from đến $to';
+  }
+
+  @override
+  String get ksVideoSceneAny => 'Ảnh nào cũng hợp, ảnh mới nhất trước';
+
+  @override
+  String get ksVideoSceneEmpty =>
+      'Chưa có ảnh nào trong khoảng này. Chọn trong Ảnh khác bên dưới hoặc thêm từ thư viện máy.';
+
+  @override
+  String get ksVideoSceneEmptyOptional =>
+      'Chưa có ảnh nào trong khoảng này. Cảnh này tuỳ chọn, có thể để trống.';
+
+  @override
+  String get ksVideoOtherPhotos => 'Ảnh khác';
+
+  @override
+  String ksVideoClearScene(int n) {
+    return 'Bỏ ảnh ở cảnh $n';
+  }
+
+  @override
+  String ksVideoPicked(int n) {
+    return 'Đã chọn $n ảnh';
+  }
+
+  @override
+  String ksVideoCanAdd(int n) {
+    return 'Có thể thêm $n';
+  }
+
+  @override
+  String ksVideoNeedMore(int n) {
+    return 'Cần thêm $n';
+  }
+
+  @override
+  String ksVideoNotEnough(String name, int have, int need) {
+    return 'Kỷ niệm của $name hiện chỉ có $have ảnh phù hợp. Mẫu này cần ít nhất $need ảnh.';
+  }
+
+  @override
+  String get ksVideoMoreFromDevice => 'Chọn thêm từ thư viện máy';
+
+  @override
+  String get ksVideoMoreFromDeviceHint => 'Chỉ ảnh bạn chọn mới được dùng';
+
+  @override
+  String get ksVideoShorter => 'Đổi sang mẫu ngắn hơn';
+
+  @override
+  String ksVideoShorterHint(String name, int n) {
+    return '“$name” · cần $n ảnh';
+  }
+
+  @override
+  String ksVideoImporting(int n) {
+    return 'Đang thêm $n ảnh vào Kỷ niệm (Chỉ ba mẹ). Ảnh sẽ được chọn khi tải xong.';
+  }
+
+  @override
+  String get ksVideoFinishTitle => 'Hoàn thiện video';
+
+  @override
+  String get ksVideoPrefilled => 'Điền sẵn từ hồ sơ của bé';
+
+  @override
+  String get ksVideoBaby => 'Bé';
+
+  @override
+  String get ksVideoDay => 'Ngày mốc';
+
+  @override
+  String get ksVideoFieldTitle => 'Tiêu đề';
+
+  @override
+  String get ksVideoFieldMessage => 'Lời nhắn cuối video';
+
+  @override
+  String ksVideoOrder(int n) {
+    return '$n ảnh · thứ tự xuất hiện';
+  }
+
+  @override
+  String get ksVideoReorderHint => 'Giữ và kéo để đổi';
+
+  @override
+  String get ksVideoAddPhotos => 'Thêm ảnh';
+
+  @override
+  String get ksVideoMusic => 'Nhạc nền';
+
+  @override
+  String get ksVideoMusicTemplate => 'Nhạc của mẫu';
+
+  @override
+  String get ksVideoMusicNone => 'Chưa có nhạc cho mẫu này';
+
+  @override
+  String get ksVideoWho => 'Ai xem được';
+
+  @override
+  String get ksVideoWhoParents => 'Chỉ ba mẹ · lưu vào Kỷ niệm';
+
+  @override
+  String get ksVideoWhoFamily => 'Gia đình · lưu vào Kỷ niệm';
+
+  @override
+  String get ksAudienceParents => 'Chỉ ba mẹ';
+
+  @override
+  String get ksAudienceFamily => 'Gia đình';
+
+  @override
+  String get ksVideoCreate => 'Tạo video';
+
+  @override
+  String get ksVideoTakes => 'Mất khoảng 1–2 phút · bạn có thể rời màn hình';
+
+  @override
+  String get ksVideoErrBusy =>
+      'Đang có một video được tạo cho bé. Đợi xong rồi tạo tiếp nhé.';
+
+  @override
+  String get ksVideoErrDaily =>
+      'Hôm nay gia đình đã tạo nhiều video. Mai thử lại nhé.';
+
+  @override
+  String get ksVideoErrQuota =>
+      'Dung lượng gia đình sắp đầy. Giải phóng bớt rồi tạo video nhé.';
+
+  @override
+  String get ksVideoErrPhoto =>
+      'Có ảnh vừa bị xoá hoặc chưa tải xong. Chọn lại ảnh nhé.';
+
+  @override
+  String get ksVideoErrTemplate =>
+      'Mẫu này vừa được cập nhật. Chọn lại mẫu nhé.';
+
+  @override
+  String ksVideoMaking(String name) {
+    return 'Đang tạo video cho $name…';
+  }
+
+  @override
+  String get ksVideoMakingBody =>
+      'Thường mất 1–2 phút. Bạn có thể rời màn hình này, Child Life sẽ báo khi video sẵn sàng.';
+
+  @override
+  String ksVideoStepArrange(int n) {
+    return 'Sắp xếp $n ảnh theo mẫu';
+  }
+
+  @override
+  String get ksVideoStepCompose => 'Thêm chữ, lời nhắn và nhạc';
+
+  @override
+  String get ksVideoStepExport => 'Xuất video 9:16';
+
+  @override
+  String get ksVideoBackToMemories => 'Về Kỷ niệm';
+
+  @override
+  String get ksLiveQueued => 'Đang chờ tạo video';
+
+  @override
+  String get ksLiveArrange => 'Đang sắp xếp ảnh';
+
+  @override
+  String get ksLiveCompose => 'Đang ghép chữ và nhạc';
+
+  @override
+  String get ksLiveExport => 'Đang xuất video';
+
+  @override
+  String get ksLiveReadySub => 'Chạm để xem, lưu và chia sẻ';
+
+  @override
+  String get ksLiveFailedSub => 'Chạm để thử lại';
+
+  @override
+  String ksVideoActive(int percent) {
+    return 'Đang tạo video · $percent%';
+  }
+
+  @override
+  String get ksVideoActiveQueued => 'Đang chờ tạo video';
+
+  @override
+  String get ksVideoReadyToast => 'Video kỷ niệm đã sẵn sàng';
+
+  @override
+  String get ksVideoFailedToast => 'Chưa tạo được video kỷ niệm';
+
+  @override
+  String get ksVideoOpenJob => 'Xem';
+
+  @override
+  String get ksVideoDeleteDraft => 'Xoá bản nháp';
+
+  @override
+  String get ksVideoDeleteDraftTitle => 'Xoá bản nháp video này?';
+
+  @override
+  String get ksVideoDeleteDraftBody =>
+      'Ảnh của bé vẫn ở trong Kỷ niệm, chỉ bản nháp video bị xoá.';
+
+  @override
+  String get ksVideoDraftDeleted => 'Đã xoá bản nháp';
+
+  @override
+  String get ksTabCards => 'Thiệp';
+
+  @override
+  String get ksTabVideos => 'Video';
+
+  @override
+  String get ksVideoReady => 'Video đã sẵn sàng!';
+
+  @override
+  String get ksVideoSaved => 'Đã lưu vào Kỷ niệm';
+
+  @override
+  String get ksVideoFiling => 'Đang lưu vào Kỷ niệm…';
+
+  @override
+  String ksVideoWeek(int n) {
+    return 'Tuần $n';
+  }
+
+  @override
+  String get ksVideoWatch => 'Xem video';
+
+  @override
+  String get ksVideoOpen => 'Xem trong Kỷ niệm';
+
+  @override
+  String ksVideoAlsoCard(String occasion) {
+    return 'Tạo thêm thiệp “$occasion”';
+  }
+
+  @override
+  String get ksVideoAlsoCardHint => 'Dùng lại ảnh vừa chọn';
+
+  @override
+  String get ksVideoFailed => 'Chưa tạo được video';
+
+  @override
+  String get ksVideoFailedNetwork =>
+      'Kết nối bị gián đoạn khi xuất video. Ảnh, chữ và lời nhắn bạn đã chọn vẫn được giữ nguyên.';
+
+  @override
+  String get ksVideoFailedBusy =>
+      'Máy chủ đang bận nên chưa tạo xong. Ảnh, chữ và lời nhắn bạn đã chọn vẫn được giữ nguyên.';
+
+  @override
+  String get ksVideoFailedPhoto =>
+      'Có ảnh đã bị xoá khỏi Kỷ niệm. Chỉnh lại lựa chọn để tạo video.';
+
+  @override
+  String get ksVideoEditChoices => 'Chỉnh lại lựa chọn';
+
+  @override
+  String get ksVideoDraftNote =>
+      'Bản nháp được lưu trong Câu chuyện · Bản nháp';
+
+  @override
+  String get ksMakeVideo => 'Tạo video';
+
+  @override
+  String ksMakeVideoFor(String occasion) {
+    return 'Tạo video $occasion';
+  }
+
+  @override
+  String get ksVideoDraftTile => 'Bản nháp';
+
+  @override
+  String get ksVideoContinue => 'Làm tiếp';
+
+  @override
+  String ksVideoInProgress(int p) {
+    return 'Đang tạo · $p%';
+  }
+
+  @override
+  String get ksBannerView => 'Xem';
+
+  @override
+  String ksVideoCount(int n) {
+    return '$n video';
+  }
+
+  @override
   String get careDevelop => 'Hiểu con & phát triển';
 
   @override
@@ -9568,4 +10403,203 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get utTools => 'Công cụ';
+
+  @override
+  String get ksPreviewSample => 'Xem mẫu';
+
+  @override
+  String get ksPreviewNote =>
+      'Bản xem trước chạy ngay trên máy. Video thật được xuất 1080×1920 sau khi bấm “Tạo video”.';
+
+  @override
+  String get ksPreviewFailed =>
+      'Chưa mở được bản xem trước. Kiểm tra mạng rồi thử lại nhé.';
+
+  @override
+  String get ksMusicNone => 'Không dùng nhạc';
+
+  @override
+  String get ksMusicDefault => 'Mặc định của mẫu';
+
+  @override
+  String get ksMusicStop => 'Dừng nghe thử';
+
+  @override
+  String get ksMusicNote =>
+      'Nhạc có bản quyền do Child Life chọn. Bạn có thể đổi bài bất cứ lúc nào trước khi tạo video.';
+
+  @override
+  String get ksPreviewVideoNote =>
+      'Video mẫu dùng ảnh minh hoạ. Video của bé sẽ dùng ảnh và lời bạn chọn.';
+
+  @override
+  String ksMusicListen(String title) {
+    return 'Nghe thử $title';
+  }
+
+  @override
+  String get ksOccBirth => 'Chào đời';
+
+  @override
+  String get ksOccLaughs => 'Tiếng cười đầu tiên';
+
+  @override
+  String get ksOccSitsUp => 'Biết ngồi';
+
+  @override
+  String get ksOccStands => 'Đứng vững';
+
+  @override
+  String get ksOccFirstTooth => 'Chiếc răng đầu tiên';
+
+  @override
+  String get ksOccFirstSolids => 'Bữa ăn dặm đầu tiên';
+
+  @override
+  String get ksOccFirstWord => 'Tiếng gọi đầu tiên';
+
+  @override
+  String get ksAchieveRollsOver => 'Con biết lẫy rồi!';
+
+  @override
+  String get ksAchieveSitsUp => 'Con ngồi vững rồi!';
+
+  @override
+  String get ksAchieveCrawls => 'Con biết bò rồi!';
+
+  @override
+  String get ksAchieveStands => 'Con đứng được rồi!';
+
+  @override
+  String get ksAchieveFirstSteps => 'Con đi được rồi!';
+
+  @override
+  String get ksAchieveAny => 'Nhìn con làm được nè!';
+
+  @override
+  String get ksQuoteBirth => 'Chào con đến với thế giới';
+
+  @override
+  String get ksQuoteLaughs => 'Cười giòn tan cả nhà';
+
+  @override
+  String get ksQuoteSitsUp => 'Con ngồi vững rồi!';
+
+  @override
+  String get ksQuoteStands => 'Con đứng được rồi!';
+
+  @override
+  String get ksQuoteFirstTooth => 'Chiếc răng xinh đầu tiên';
+
+  @override
+  String get ksQuoteFirstSolids => 'Măm măm ngon quá!';
+
+  @override
+  String get ksQuoteFirstWord => 'Con đã gọi ba mẹ!';
+
+  @override
+  String get ksLabelFirstDay => 'Ngày đầu';
+
+  @override
+  String get ksLabelThen => 'Lúc ấy';
+
+  @override
+  String get ksLabelNow => 'Bây giờ';
+
+  @override
+  String ksOccMonth(int n) {
+    return '$n tháng';
+  }
+
+  @override
+  String ksQuoteMonth(int n) {
+    return 'Tròn $n tháng yêu thương';
+  }
+
+  @override
+  String ksAgeDays(int n) {
+    return '$n ngày';
+  }
+
+  @override
+  String ksAgeWeeks(int n) {
+    return '$n tuần';
+  }
+
+  @override
+  String ksAgeMonths(int n) {
+    return '$n tháng';
+  }
+
+  @override
+  String ksAgeYears(int n) {
+    return '$n tuổi';
+  }
+
+  @override
+  String ksUnitDays(int n) {
+    return 'ngày';
+  }
+
+  @override
+  String ksUnitWeeks(int n) {
+    return 'tuần';
+  }
+
+  @override
+  String ksUnitMonths(int n) {
+    return 'tháng';
+  }
+
+  @override
+  String ksUnitYears(int n) {
+    return 'tuổi';
+  }
+
+  @override
+  String ksLabelDay(int n) {
+    return 'Ngày $n';
+  }
+
+  @override
+  String ksLabelWeek(int n) {
+    return 'Tuần $n';
+  }
+
+  @override
+  String ksLabelMonth(int n) {
+    return 'Tháng $n';
+  }
+
+  @override
+  String ksLabelYear(int n) {
+    return '$n tuổi';
+  }
+
+  @override
+  String ksBirthStats(String weight, String length) {
+    return '$weight kg · $length cm';
+  }
+
+  @override
+  String ksBirthWeight(String weight) {
+    return '$weight kg';
+  }
+
+  @override
+  String ksBirthLength(String length) {
+    return '$length cm';
+  }
+
+  @override
+  String get ksVideoFieldHeadline => 'Tiêu đề lớn';
+
+  @override
+  String get ksVideoFieldLines => 'Lời cho từng ảnh (mỗi dòng một câu)';
+
+  @override
+  String get ksVideoFieldLetter => 'Lá thư gửi con';
+
+  @override
+  String get ksVideoFieldClosing => 'Lời kết';
 }

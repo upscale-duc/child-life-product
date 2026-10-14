@@ -213,8 +213,14 @@ class CareTimer {
     pending: true,
   );
 
-  /// The record "Kết thúc" writes (one per session).
-  CareRecord toRecord(DateTime now, {int? pumpAmountMl}) {
+  /// The record "Kết thúc" writes (one per session). Written by whoever ends it ([by]: the
+  /// timer is shared, and Rules want the writer's own uid and author, like the widget's "Thức
+  /// dậy" in GlanceActions.swift); a sleep ends at most 24 h after it started.
+  CareRecord toRecord(
+    DateTime now, {
+    int? pumpAmountMl,
+    ({String uid, CareAuthor author})? by,
+  }) {
     final total = totalAt(now);
     final minutes = (total.inSeconds / 60).round().clamp(
       1,
@@ -235,10 +241,12 @@ class CareTimer {
       type: type.careType,
       occurredAt: startedAt,
       endedAt: type == TimerType.sleep
-          ? now
+          ? (now.isAfter(startedAt.add(const Duration(hours: 24)))
+                ? startedAt.add(const Duration(hours: 24))
+                : now)
           : startedAt.add(Duration(minutes: minutes)),
-      createdBy: startedBy,
-      author: author,
+      createdBy: by?.uid ?? startedBy,
+      author: by?.author ?? author,
       side: type == TimerType.sleep ? null : side,
       durationMin: type == TimerType.sleep ? null : minutes,
       leftMin: type == TimerType.breast ? leftMin : null,

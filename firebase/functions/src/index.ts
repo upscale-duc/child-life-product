@@ -76,6 +76,26 @@ import {
 } from './content.js';
 import { appUpdateSave, appUpdateUploadImage, appUpdateView } from './app-update.js';
 import {
+  KeepsakeJobError,
+  attachKeepsakeLive,
+  cloudTasksDispatcher,
+  deleteMemoryStory as deleteMemoryStoryJob,
+  completeKeepsakeJob,
+  keepsakeJobChanged,
+  requestMemoryStory as requestMemoryStoryJob,
+  retryMemoryStory as retryMemoryStoryJob,
+  sweepKeepsakeJobs,
+  type LiveSender,
+  type RenderDispatcher,
+} from './keepsake-jobs.js';
+import {
+  keepsakeAct,
+  keepsakeDraft,
+  keepsakeUploadAsset,
+  keepsakeView,
+  type KeepsakeContentDeps,
+} from './keepsake-content.js';
+import {
   AccountError,
   answerOwnership,
   createSupportTicket,
@@ -206,6 +226,7 @@ import {
 import {
   MemoryError,
   cancelUploads,
+  closeWaitingBatches,
   createMemory,
   onMediaWritten,
   processUpload,
@@ -675,7 +696,10 @@ export const purgeMemoryBin = onSchedule(
   },
 );
 
-/** Unused reservations go back after 24 h (P-031). */
+/**
+ * Unused reservations go back after 24 h (P-031); a batch whose last part never came is closed
+ * (D-070).
+ */
 export const releaseStaleMemoryUploads = onSchedule('every 60 minutes', async () => {
   const released = await releaseStaleUploads(
     getFirestore(),
@@ -683,6 +707,8 @@ export const releaseStaleMemoryUploads = onSchedule('every 60 minutes', async ()
     new Date(),
   );
   if (released > 0) logger.info('stale uploads released', { count: released });
+  const closed = await closeWaitingBatches(getFirestore(), new Date());
+  if (closed > 0) logger.info('waiting batches closed', { count: closed });
 });
 
 // ---------- Albums, loves, messages, notices (S10) ----------
@@ -1789,6 +1815,170 @@ export const staffFirstAidAct = staffCall('staffFirstAidAct', (s, d) =>
 export const staffFirstAidImage = staffCall('staffFirstAidImage', (s, d) =>
   firstAidUploadImage(getFirestore(), contentDeps(), s, d, new Date()),
 );
+
+// Mẫu kỷ niệm (D-068 #7): the template catalog and its artwork are managed in the portal and
+// published to publicConfig/keepsakes; assets are public and immutable under content/keepsakes/.
+function keepsakeDeps(): KeepsakeContentDeps {
+  const bucket = getStorage().bucket();
+  const prefix = 'content/keepsakes/';
+  return {
+    assets: {
+      exists: async (asset) => (await bucket.file(prefix + asset).exists())[0],
+      save: (asset, bytes, contentType) =>
+        bucket.file(prefix + asset).save(bytes, {
+          contentType,
+          metadata: { cacheControl: 'public, max-age=31536000, immutable' },
+        }),
+      list: async () =>
+        (await bucket.getFiles({ prefix }))[0]
+          .map((f) => f.name.slice(prefix.length))
+          .filter((a) => /^[a-z0-9-]{2,40}_[a-f0-9]{8}\.(webp|mp3|m4a|mp4)$/.test(a)),
+      readIncoming: async (path) => {
+        const file = bucket.file(path);
+        if (!(await file.exists())[0]) return null;
+        return (await file.download())[0];
+      },
+      deleteIncoming: async (path) => {
+        await bucket.file(path).delete({ ignoreNotFound: true });
+      },
+      publicUrl: (asset) =>
+        `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(prefix + asset)}?alt=media`,
+      encodeImage: (bytes) =>
+        sharp(bytes)
+          .resize({ width: 2160, withoutEnlargement: true })
+          .webp({ quality: 85 })
+          .toBuffer(),
+    },
+  };
+}
+export const staffKeepsakes = staffCall('staffKeepsakes', (s) =>
+  keepsakeView(getFirestore(), keepsakeDeps(), s),
+);
+export const staffKeepsakesDraft = staffCall('staffKeepsakesDraft', (s, d) =>
+  keepsakeDraft(getFirestore(), keepsakeDeps(), s, d, new Date()),
+);
+export const staffKeepsakesAct = staffCall('staffKeepsakesAct', (s, d) =>
+  keepsakeAct(getFirestore(), s, d, new Date()),
+);
+export const staffKeepsakesAsset = staffCall('staffKeepsakesAsset', (s, d) =>
+  keepsakeUploadAsset(getFirestore(), keepsakeDeps(), s, d, new Date()),
+);
+
+// Video kỷ niệm (D-068): render jobs handed to the private Cloud Run renderer (Remotion) via Cloud
+// Tasks; nothing is dispatched until KEEPSAKE_RENDERER_URL is set for the project (plan §5).
+const keepsakeRendererUrl = defineString('KEEPSAKE_RENDERER_URL', { default: '' });
+function keepsakeDispatcher(): RenderDispatcher | null {
+  const url = keepsakeRendererUrl.value();
+  if (!url || process.env.FUNCTIONS_EMULATOR === 'true') return null;
+  const project = currentProjectId();
+  if (!project) return null;
+  return cloudTasksDispatcher({
+    project,
+    region: 'asia-southeast1',
+    queue: 'keepsake-render',
+    rendererUrl: url,
+    serviceAccount: `keepsake-tasks@${project}.iam.gserviceaccount.com`,
+  });
+}
+function keepsakeCall<T>(name: string, run: (uid: string, data: unknown) => Promise<T>) {
+  return onCall(async (request) => {
+    if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
+    try {
+      return await run(request.auth.uid, request.data);
+    } catch (error) {
+      if (error instanceof KeepsakeJobError) {
+        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+      }
+      // Never the payload: names, texts and photo paths are child data.
+      logger.error(`${name} failed`, { error: String(error) });
+      throw new HttpsError('internal', `${name} failed`);
+    }
+  });
+}
+/** MM07 "Tạo video". */
+export const requestMemoryStory = keepsakeCall('requestMemoryStory', (uid, data) =>
+  requestMemoryStoryJob(getFirestore(), keepsakeDispatcher(), uid, data, new Date()),
+);
+/** MM14 "Thử lại". */
+export const retryMemoryStory = keepsakeCall('retryMemoryStory', (uid, data) =>
+  retryMemoryStoryJob(getFirestore(), keepsakeDispatcher(), uid, data, new Date()),
+);
+/** MM14 "Xoá bản nháp". */
+export const deleteMemoryStory = keepsakeCall('deleteMemoryStory', (uid, data) =>
+  deleteMemoryStoryJob(getFirestore(), bucketStore(getStorage().bucket()), uid, data),
+);
+/** MM08 on iPhone: the job's Live Activity token. */
+export const attachMemoryStoryLive = keepsakeCall('attachMemoryStoryLive', (uid, data) =>
+  attachKeepsakeLive(getFirestore(), uid, data, new Date()),
+);
+/** Live Activity pushes through FCM (the activity's ActivityKit token, the device's FCM token). */
+const liveSender = (): LiveSender | null => {
+  if (process.env.FUNCTIONS_EMULATOR === 'true') return null;
+  return {
+    async send(live, event, state, now) {
+      const ts = Math.floor(now.getTime() / 1000);
+      try {
+        await getMessaging().send({
+          token: live.fcm,
+          apns: {
+            liveActivityToken: live.token,
+            headers: { 'apns-priority': event === 'end' ? '10' : '5' },
+            payload: {
+              aps: {
+                timestamp: ts,
+                event,
+                'content-state': state,
+                // Finished: the result stays on the lock screen for a while, then goes.
+                ...(event === 'end' ? { 'dismissal-date': ts + 30 * 60 } : {}),
+              },
+            },
+          },
+        });
+        return true;
+      } catch (error) {
+        const code = (error as { code?: string }).code ?? '';
+        logger.warn('keepsake live push failed', { code });
+        return ![
+          'messaging/registration-token-not-registered',
+          'messaging/invalid-argument',
+        ].includes(code);
+      }
+    },
+  };
+};
+/**
+ * A job changed: its Live Activity follows, a failure tells the person who asked, and a job the
+ * renderer marked completed is filed in Kỷ niệm (and tells them it is ready).
+ */
+export const onKeepsakeJobWritten = onDocumentWritten(
+  'babies/{babyId}/keepsakeJobs/{jobId}',
+  async (event) => {
+    const before = event.data?.before;
+    const after = event.data?.after;
+    await keepsakeJobChanged(
+      getFirestore(),
+      liveSender(),
+      event.params.babyId,
+      event.params.jobId,
+      before,
+      after,
+      new Date(),
+    );
+    if (!after?.exists || after.get('status') !== 'completed' || after.get('memoryId')) return;
+    await completeKeepsakeJob(
+      getFirestore(),
+      bucketStore(getStorage().bucket()),
+      sharpImages,
+      event.params.babyId,
+      event.params.jobId,
+      new Date(),
+    );
+  },
+);
+/** Jobs stuck rendering or never picked up fail, so "Thử lại" is offered (MM14). */
+export const sweepKeepsakeJobsEvery15 = onSchedule('every 15 minutes', async () => {
+  await sweepKeepsakeJobs(getFirestore(), bucketStore(getStorage().bucket()), new Date());
+});
 
 // Cập nhật ứng dụng (D-061): store versions, the oldest allowed, "Có gì mới"; the app reads
 // publicConfig/appUpdate.

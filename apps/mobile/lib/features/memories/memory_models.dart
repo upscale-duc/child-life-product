@@ -116,6 +116,7 @@ class MediaItem {
     this.sizeBytes = 0,
     this.albumIds = const [],
     this.loveCount = 0,
+    this.generatedKind,
   });
 
   final String id;
@@ -147,6 +148,9 @@ class MediaItem {
 
   /// "♥ 4": the whole family's loves (counts for everyone, names for parents).
   final int loveCount;
+
+  /// Made in Kỷ niệm 2.0 (D-068): `card` (Thiệp cột mốc) or `video` (Video kỷ niệm).
+  final String? generatedKind;
 
   bool get isVideo => type == MediaKind.video;
   bool get isReady => status == MediaStatus.ready;
@@ -195,6 +199,9 @@ class MediaItem {
           if (a is String) a,
       ],
       loveCount: (j['loveCount'] as num?)?.toInt() ?? 0,
+      generatedKind: j['generated'] is Map
+          ? (j['generated'] as Map)['kind'] as String?
+          : null,
     );
   }
 }
@@ -316,7 +323,10 @@ int ageMonthOf(DateTime dateOfBirth, DateTime day) {
 }
 
 /// The calendar days of age-month [month] (1-based).
-({DateTime first, DateTime last}) ageMonthRange(DateTime dateOfBirth, int month) {
+({DateTime first, DateTime last}) ageMonthRange(
+  DateTime dateOfBirth,
+  int month,
+) {
   final dob = DateTime(dateOfBirth.year, dateOfBirth.month, dateOfBirth.day);
   return (
     first: DateTime(dob.year, dob.month + month - 1, dob.day),

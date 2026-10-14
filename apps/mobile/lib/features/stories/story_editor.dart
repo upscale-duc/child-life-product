@@ -684,144 +684,155 @@ class _StoryEditorScreenState extends ConsumerState<StoryEditorScreen> {
                 ),
               ),
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(
-                    ClSpace.s4,
-                    ClSpace.s2,
-                    ClSpace.s4,
-                    ClSpace.s6,
-                  ),
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(ClSpace.s3),
-                      decoration: BoxDecoration(
-                        color: cl.colors.mintSoft,
-                        borderRadius: BorderRadius.circular(
-                          ClRadius.control + 4,
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClIcon(
-                            ClIcons.spark,
-                            size: 18,
-                            color: cl.colors.mintText,
-                          ),
-                          const SizedBox(width: ClSpace.s2),
-                          Expanded(
-                            child: Text(
-                              s.origin == 'ai'
-                                  ? l10n.sryAiTip(s.sourcePhotos)
-                                  : l10n.sryTip,
-                              style: cl.text.label.copyWith(
-                                color: cl.colors.mintText,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                // A tap outside the fields, or a scroll, puts the keyboard away.
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: ListView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: const EdgeInsets.fromLTRB(
+                      ClSpace.s4,
+                      ClSpace.s2,
+                      ClSpace.s4,
+                      ClSpace.s6,
                     ),
-                    const SizedBox(height: ClSpace.s3),
-                    if (s.kind == StoryKind.story)
-                      AspectRatio(
-                        aspectRatio: 4 / 3,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            StoryImage(item: cover, display: true, radius: 16),
-                            Positioned(
-                              right: ClSpace.s3,
-                              bottom: ClSpace.s3,
-                              child: ClButton(
-                                label: cover == null
-                                    ? l10n.sryAddCover
-                                    : l10n.sryChangeCover,
-                                icon: ClIcons.camera,
-                                style: ClButtonStyle.secondary,
-                                onPressed: () async {
-                                  final ids = await _pick(max: 1);
-                                  if (ids != null && ids.isNotEmpty) {
-                                    _set(s.copyWith(coverMediaId: ids.first));
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    const SizedBox(height: ClSpace.s3),
-                    TextField(
-                      controller: _title,
-                      maxLength: StoryLimits.titleMax,
-                      maxLines: null,
-                      textCapitalization: TextCapitalization.sentences,
-                      style: cl.text.title,
-                      decoration: InputDecoration.collapsed(
-                        hintText: l10n.sryTitleHint,
-                        hintStyle: cl.text.title.copyWith(
-                          color: cl.colors.inkMuted,
-                        ),
-                      ).copyWith(counterText: ''),
-                    ),
-                    if (meta.isNotEmpty)
-                      Text(
-                        meta,
-                        style: cl.text.label.copyWith(
-                          color: cl.colors.inkMuted,
-                        ),
-                      ),
-                    const SizedBox(height: ClSpace.s3),
-                    for (final b in s.blocks) ...[
-                      block(b),
-                      const SizedBox(height: ClSpace.s2),
-                    ],
-                    ClPressable(
-                      onPressed: _addBlock,
-                      semanticLabel: l10n.sryAddBlock,
-                      child: Container(
-                        height: 52,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(ClSpace.s3),
                         decoration: BoxDecoration(
+                          color: cl.colors.mintSoft,
                           borderRadius: BorderRadius.circular(
                             ClRadius.control + 4,
                           ),
-                          border: Border.all(
-                            color: cl.colors.separator,
-                            width: 1.5,
-                          ),
                         ),
-                        alignment: Alignment.center,
                         child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ClIcon(
-                              ClIcons.plus,
+                              ClIcons.spark,
                               size: 18,
                               color: cl.colors.mintText,
                             ),
                             const SizedBox(width: ClSpace.s2),
-                            Text(
-                              l10n.sryAddBlock,
-                              style: cl.text.label.copyWith(
-                                color: cl.colors.mintText,
-                                fontWeight: FontWeight.w600,
+                            Expanded(
+                              child: Text(
+                                s.origin == 'ai'
+                                    ? l10n.sryAiTip(s.sourcePhotos)
+                                    : l10n.sryTip,
+                                style: cl.text.label.copyWith(
+                                  color: cl.colors.mintText,
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    if (!s.saved) ...[
-                      const SizedBox(height: ClSpace.s6),
-                      Center(
-                        child: ClButton(
-                          label: l10n.sryDiscardDraft,
-                          style: ClButtonStyle.plain,
-                          onPressed: _discardDraft,
+                      const SizedBox(height: ClSpace.s3),
+                      if (s.kind == StoryKind.story)
+                        AspectRatio(
+                          aspectRatio: storyCoverRatio(cover),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              StoryImage(
+                                item: cover,
+                                display: true,
+                                radius: 16,
+                              ),
+                              Positioned(
+                                right: ClSpace.s3,
+                                bottom: ClSpace.s3,
+                                child: ClButton(
+                                  label: cover == null
+                                      ? l10n.sryAddCover
+                                      : l10n.sryChangeCover,
+                                  icon: ClIcons.camera,
+                                  style: ClButtonStyle.secondary,
+                                  onPressed: () async {
+                                    final ids = await _pick(max: 1);
+                                    if (ids != null && ids.isNotEmpty) {
+                                      _set(s.copyWith(coverMediaId: ids.first));
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      const SizedBox(height: ClSpace.s3),
+                      TextField(
+                        controller: _title,
+                        maxLength: StoryLimits.titleMax,
+                        maxLines: null,
+                        textCapitalization: TextCapitalization.sentences,
+                        style: cl.text.title,
+                        decoration: InputDecoration.collapsed(
+                          hintText: l10n.sryTitleHint,
+                          hintStyle: cl.text.title.copyWith(
+                            color: cl.colors.inkMuted,
+                          ),
+                        ).copyWith(counterText: ''),
+                      ),
+                      if (meta.isNotEmpty)
+                        Text(
+                          meta,
+                          style: cl.text.label.copyWith(
+                            color: cl.colors.inkMuted,
+                          ),
+                        ),
+                      const SizedBox(height: ClSpace.s3),
+                      for (final b in s.blocks) ...[
+                        block(b),
+                        const SizedBox(height: ClSpace.s2),
+                      ],
+                      ClPressable(
+                        onPressed: _addBlock,
+                        semanticLabel: l10n.sryAddBlock,
+                        child: Container(
+                          height: 52,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              ClRadius.control + 4,
+                            ),
+                            border: Border.all(
+                              color: cl.colors.separator,
+                              width: 1.5,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ClIcon(
+                                ClIcons.plus,
+                                size: 18,
+                                color: cl.colors.mintText,
+                              ),
+                              const SizedBox(width: ClSpace.s2),
+                              Text(
+                                l10n.sryAddBlock,
+                                style: cl.text.label.copyWith(
+                                  color: cl.colors.mintText,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+                      if (!s.saved) ...[
+                        const SizedBox(height: ClSpace.s6),
+                        Center(
+                          child: ClButton(
+                            label: l10n.sryDiscardDraft,
+                            style: ClButtonStyle.plain,
+                            onPressed: _discardDraft,
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
               Padding(
@@ -1439,10 +1450,7 @@ class _StoryPreviewScreenState extends ConsumerState<StoryPreviewScreen> {
       for (final id in s.mediaIds)
         if (media[id]?.effectiveAudience == Audience.parents) id,
     ].length;
-    final text = s.blocks
-        .whereType<ParagraphBlock>()
-        .map((b) => b.text)
-        .join('\n\n');
+    final locale = Localizations.localeOf(context).toLanguageTag();
     return Scaffold(
       backgroundColor: cl.colors.cloud,
       body: SafeArea(
@@ -1456,7 +1464,7 @@ class _StoryPreviewScreenState extends ConsumerState<StoryPreviewScreen> {
                   Stack(
                     children: [
                       AspectRatio(
-                        aspectRatio: 1,
+                        aspectRatio: storyCoverRatio(media[s.coverMediaId]),
                         child: StoryImage(
                           item: media[s.coverMediaId],
                           display: true,
@@ -1494,13 +1502,21 @@ class _StoryPreviewScreenState extends ConsumerState<StoryPreviewScreen> {
                         ),
                         const SizedBox(height: ClSpace.s2),
                         Text(s.title, style: cl.text.title),
-                        const SizedBox(height: ClSpace.s2),
-                        Text(
-                          text,
-                          maxLines: 6,
-                          overflow: TextOverflow.ellipsis,
-                          style: cl.text.body.copyWith(height: 1.55),
-                        ),
+                        // The whole story, as it will read (14g).
+                        if (s.milestone != null) ...[
+                          const SizedBox(height: ClSpace.s2),
+                          StoryMilestoneChip(
+                            label: l10n.sryMilestoneOn(
+                              s.milestone!.name,
+                              DateFormat(
+                                'd MMM',
+                                locale,
+                              ).format(s.milestone!.date),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: ClSpace.s3),
+                        ...storyBlockWidgets(context, s, media, locale: locale),
                       ],
                     ),
                   ),

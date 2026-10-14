@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../app/environment.dart';
+import '../../app/providers.dart';
 import '../../app/route_guard.dart';
 import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
@@ -569,6 +571,9 @@ class AutoSaveSettingsScreen extends ConsumerWidget {
             ),
           ],
         ),
+        // Dev builds only: why each item of the last checks was or was not suggested.
+        if (ref.watch(environmentProvider) == AppEnvironment.dev)
+          const _Diagnostics(),
         const SizedBox(height: ClSpace.s4),
         MeNotice(
           icon: ClIcons.lock,
@@ -624,5 +629,90 @@ class AutoSaveSettingsScreen extends ConsumerWidget {
     await ref.read(autoSaveProvider.notifier).wipe();
     toaster.show(message: l10n.autoSaveWiped);
     if (context.mounted) context.go(Routes.memories);
+  }
+}
+
+class _Diagnostics extends ConsumerWidget {
+  const _Diagnostics();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final view = ref.watch(autoSaveProvider);
+    String n(double? x) => x == null ? '–' : x.toStringAsFixed(3);
+    String why(AutoSaveTrace t) => switch (t.reason) {
+      'match' => l10n.autoSaveDiagMatch(n(t.distance), n(t.threshold)),
+      'far' => l10n.autoSaveDiagFar(n(t.distance), n(t.threshold)),
+      'negative' => l10n.autoSaveDiagNegative,
+      'noFace' => l10n.autoSaveDiagNoFace,
+      'small' => l10n.autoSaveDiagSmall,
+      'utility' => l10n.autoSaveDiagUtility,
+      'unreadable' => l10n.autoSaveDiagUnreadable,
+      _ => l10n.autoSaveDiagHandled,
+    };
+    final how = view.fromHistory;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        MeSection(l10n.autoSaveDiagTitle),
+        AutoSaveCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                how == null
+                    ? l10n.autoSaveDiagNone
+                    : l10n.autoSaveDiagHow(
+                        how
+                            ? l10n.autoSaveDiagHistory
+                            : l10n.autoSaveDiagByDate,
+                        view.state.lastScanCount,
+                      ),
+                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+              ),
+              for (final t in view.trace)
+                Padding(
+                  padding: const EdgeInsets.only(top: ClSpace.s2),
+                  child: Row(
+                    children: [
+                      SizedBox.square(
+                        dimension: 40,
+                        child: LibraryTile(
+                          assetId: t.assetId,
+                          video: t.video,
+                          radius: 6,
+                        ),
+                      ),
+                      const SizedBox(width: ClSpace.s3),
+                      Expanded(
+                        child: Text(
+                          why(t),
+                          style: cl.text.label.copyWith(
+                            color: t.reason == 'match'
+                                ? cl.colors.mintText
+                                : cl.colors.ink,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: ClSpace.s3),
+              ClButton(
+                label: l10n.autoSaveDiagRescan,
+                style: ClButtonStyle.secondary,
+                expand: true,
+                onPressed: view.scan != null
+                    ? null
+                    : () => unawaited(
+                        ref.read(autoSaveProvider.notifier).rescan(),
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

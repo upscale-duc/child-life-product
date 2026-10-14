@@ -118,6 +118,20 @@ void main() {
       expect(r.dataJson(), isEmpty);
     });
 
+    test(
+      'a shared timer is written by whoever ends it; a sleep stops at 24 h',
+      () {
+        final t = CareTimer.start(type: TimerType.sleep, me: minh, now: t0);
+        final r = t.toRecord(
+          at(30 * 3600),
+          by: (uid: mai.uid, author: CareAuthor.of(mai)),
+        );
+        expect(r.createdBy, mai.uid);
+        expect(r.author.name, CareAuthor.of(mai).name);
+        expect(r.endedAt, t0.add(const Duration(hours: 24)));
+      },
+    );
+
     test('the document matches the Rules shape', () {
       final t = CareTimer.start(type: TimerType.breast, me: mai, now: t0);
       expect(t.toJson('u_mai').keys.toSet(), {

@@ -241,9 +241,12 @@ void main() {
       expect(find.byType(Slider), findsNothing);
 
       await tester.tap(find.bySemanticsLabel('Phát video'));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
 
       expect(video.calls, ['open']);
+      // Waiting for the first frame: a spinner, not a frozen picture.
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
       // Streamed, not downloaded first (owner, 2026-10-12).
       expect(video.opened?.uri, startsWith('https://storage.test/'));
       expect(find.byType(Slider), findsOneWidget);
@@ -275,7 +278,7 @@ void main() {
         expect(find.text(label), findsNothing);
       }
       final rail = find.byType(RailButton);
-      expect(rail, findsNWidgets(4));
+      expect(rail, findsNWidgets(5)); // ♥, Yêu thích, Tải về, Chia sẻ, Xoá
       final xs = {
         for (final e in rail.evaluate())
           tester.getCenter(find.byWidget(e.widget)).dx,

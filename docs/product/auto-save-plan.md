@@ -224,6 +224,9 @@ Tự lưu is one more source for the existing queue (`QueueBatch`, `createMemory
 - Partial upload when space is short, using the existing `QuotaReservation`. Photos come before videos, then
   the best-ranked items first.
 - The 30-items-per-add rule (R-102). A larger approval is split into several sessions on its own.
+  Since D-070 those sessions share one `batchId` (the last carries `batchParts`), so the family gets one
+  notice for the whole upload, and one review holds at most `autoSaveItemsPerApprove` (200) items; the
+  rest stay pending for the next review.
 - **One baby per photo** (P-149). A memory carries a single `babyId`, so several babies would need a copy per
   baby (counted twice against the quota unless stored objects can be shared). That waits until after the beta.
 - Approved items always keep uploading in the background through `BackgroundUploads.swift`, as manual uploads
@@ -272,8 +275,11 @@ Where it differs from the frames, and why:
   chọn" without the count.
 - **AS19 "Chỉ tải qua Wi-Fi":** the app-wide video rule (the Q-056 proposal), labelled "Video chỉ tải qua
   Wi-Fi".
-- **Not yet:** background checks, the push and AR01 – AR08 banners (M2); videos are matched on their
-  poster frame only; face crops are not turned upright; matching and grouping thresholds are guesses in
+- **Videos:** first matched on their poster frame only, which matched none (owner, 2026-10-13). They are
+  now read as 3 – 5 frames spread over the clip at 1024 px when the file is on the phone (an iCloud-only
+  video still uses its poster); every frame's faces count, and the last 30 days of videos are checked once
+  more after the update (`videoPass`).
+- **Not yet:** face crops are not turned upright; matching and grouping thresholds are guesses in
   `AutoSaveTuning` until beta photos calibrate them; Tự lưu data stays on the phone after sign-out (the
   ledger and samples of the previous account; to decide).
 

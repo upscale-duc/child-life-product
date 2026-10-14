@@ -235,6 +235,15 @@ void main() {
       ).load();
       expect(s.enabled, isFalse);
     });
+
+    test('videos checked from the poster frame alone are looked at again', () {
+      final old = AutoSaveState.fromJson({'enabled': true});
+      expect(old.videoPass, lessThan(autoSaveVideoPass));
+      final now = AutoSaveState.fromJson(
+        const AutoSaveState(enabled: true).toJson(),
+      );
+      expect(now.videoPass, autoSaveVideoPass);
+    });
   });
 
   group('AutoSaveController', () {
@@ -262,12 +271,25 @@ void main() {
           reason: 'setup looks back by date',
         );
 
-        // The next check follows the change history and skips what it already saw.
+        // The next check lists the last 30 days by date again (no change history: it missed
+        // videos and Zalo saves on a phone) and skips what it already looked at.
         calls.clear();
         await c.read(autoSaveProvider.notifier).scan();
         final next = calls.firstWhere((m) => m.method == 'changes');
-        expect((next.arguments as Map)['token'], [7]);
+        expect((next.arguments as Map)['token'], isNull);
+        expect((next.arguments as Map)['since'], isNotNull);
         expect(calls.where((m) => m.method == 'analyze'), isEmpty);
+        // Something saved later (a Zalo photo, a video) is picked up by the same listing.
+        library = ['zalo', ...library];
+        described['zalo'] = photo(
+          'zalo',
+          at: const Duration(hours: 1),
+          face: teddyFace,
+        );
+        await c.read(autoSaveProvider.notifier).scan();
+        expect([
+          for (final p in c.read(autoSaveProvider).state.pending) p.asset.id,
+        ], contains('zalo'));
       },
     );
 
@@ -336,6 +358,46 @@ void main() {
           hasLength(1),
         );
         expect(s.savedByMonth.values.single, 1);
+      },
+    );
+
+    test(
+      'a big approve goes as one batch in parts; the last says how many (D-070)',
+      () async {
+        library = [];
+        described = {};
+        final c = await container();
+        final ctl = await setUpTeddy(c);
+        final chosen = [
+          for (var i = 0; i < 65; i++)
+            Candidate(
+              asset: AssetInfo(
+                id: 'p$i',
+                captureAt: t0.add(Duration(minutes: i)),
+                width: 4032,
+                height: 3024,
+                print: teddyFace,
+                faces: [FaceInfo(size: 0.3, quality: 0.5, print: teddyFace)],
+              ),
+              match: const FaceMatch(babyId: teddyId, distance: 0.05, face: 0),
+            ),
+        ];
+        final n = await ctl.approve(
+          chosen: chosen,
+          reviewed: chosen,
+          audience: Audience.family,
+          notifyFamily: true,
+        );
+        expect(n, 65);
+        final batches = c.read(uploadQueueProvider).batches;
+        expect([for (final b in batches) b.items.length], [30, 30, 5]);
+        expect({for (final b in batches) b.batchId}, hasLength(1));
+        expect({for (final b in batches) b.memoryId}, hasLength(3));
+        expect(
+          [for (final b in batches) b.request['batchParts']],
+          [null, null, 3],
+        );
+        expect(batches.every((b) => b.request['notifyFamily'] == true), isTrue);
       },
     );
 
@@ -612,4 +674,63 @@ void main() {
       },
     );
   });
+
+  test(
+    'every checked item is traced; "Kiểm tra lại" looks at seen items again',
+    () async {
+      library = ['a', 'z'];
+      described = {
+        'a': photo('a', face: teddyFace),
+        'z': photo('z', at: const Duration(minutes: 5), face: strangerFace),
+      };
+      final c = await container();
+      final ctl = await setUpTeddy(c);
+      final trace = c.read(autoSaveProvider).trace;
+      expect(
+        {for (final t in trace) t.assetId: t.reason},
+        {'a': 'match', 'z': 'far'},
+      );
+      expect(
+        c.read(autoSaveProvider).fromHistory,
+        isFalse,
+        reason: 'setup looks back by date',
+      );
+      calls.clear();
+      await ctl.rescan();
+      final analyzed = [
+        for (final m in calls.where((m) => m.method == 'analyze'))
+          ...((m.arguments as Map)['ids'] as List),
+      ];
+      expect(analyzed, contains('z'), reason: 'seen before, looked at again');
+      expect(
+        analyzed,
+        isNot(contains('a')),
+        reason: 'already waiting as a suggestion',
+      );
+    },
+  );
+
+  test(
+    'a "utility" score does not hide a face like the baby; it still explains a miss',
+    () async {
+      library = ['u', 'doc'];
+      described = {
+        'u': {...photo('u', face: teddyFace), 'utility': true},
+        'doc': {
+          ...photo('doc', at: const Duration(minutes: 5)),
+          'utility': true,
+        },
+      };
+      final c = await container();
+      await setUpTeddy(c);
+      expect(
+        [for (final p in c.read(autoSaveProvider).state.pending) p.asset.id],
+        ['u'],
+      );
+      expect(
+        {for (final t in c.read(autoSaveProvider).trace) t.assetId: t.reason},
+        {'u': 'match', 'doc': 'utility'},
+      );
+    },
+  );
 }

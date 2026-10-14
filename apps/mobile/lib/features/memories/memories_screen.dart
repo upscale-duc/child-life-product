@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
+import '../keepsakes/keepsake_entries.dart';
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
@@ -309,8 +310,13 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
     final media = ref.watch(mediaProvider(key)).value;
     final bottom = MediaQuery.paddingOf(context).bottom;
     // The dock sits in a SafeArea and floats 24 above it (ClTabDock), and is 68 tall: the
-    // tabs / selection pill float 12 above the dock.
-    final pillBottom = bottom + ClSpace.s6 + 68 + ClSpace.s3;
+    // tabs / selection pill float 12 above the dock, and above its "+" (parents' add).
+    final pillBottom =
+        bottom +
+        ClSpace.s6 +
+        68 +
+        ClSpace.s3 +
+        (c.isParent ? ClTabDock.actionExtent : 0);
 
     final body = PageView.builder(
       key: const Key('memoryPages'),
@@ -371,6 +377,14 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> {
                   .read(memoryViewProvider.notifier)
                   .set(view.copyWith(asRelative: false)),
             ),
+          ),
+        // MM17 "Video đã sẵn sàng" (D-068), above the dock while nothing is selected.
+        if (selection == null)
+          Positioned(
+            left: ClSpace.s4,
+            right: ClSpace.s4,
+            bottom: pillBottom,
+            child: KeepsakeReadyBanner(ctx: c),
           ),
         if (selection != null)
           Positioned(
@@ -773,7 +787,12 @@ class JournalView extends ConsumerWidget {
                   ),
                 const SizedBox(height: ClSpace.s3),
                 if (c.parentView)
-                  AutoSaveEntryCard(babyId: c.babyId, name: c.nickname),
+                  // 20 pt above (8 + 12) and below (8 + the first week's 12).
+                  AutoSaveEntryCard(
+                    babyId: c.babyId,
+                    name: c.nickname,
+                    padding: const EdgeInsets.only(bottom: ClSpace.s2),
+                  ),
                 if (memories != null && order.isEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: ClSpace.s8),
@@ -1026,12 +1045,22 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
     }
 
     String sectionCaption(Object k, List<PhotoCell> cells) {
-      final counts = countsLabel(
-        l10n,
-        cells.where((x) => x.item?.isVideo == false).length,
-        cells.where((x) => x.item?.isVideo == true).length,
-        ', ',
-      );
+      // MM17 "18 ảnh, 1 video, 1 thiệp": milestone cards are counted apart (D-068).
+      final cards = cells.where((x) => x.item?.generatedKind == 'card').length;
+      final counts = [
+        countsLabel(
+          l10n,
+          cells
+              .where(
+                (x) =>
+                    x.item?.isVideo == false && x.item?.generatedKind != 'card',
+              )
+              .length,
+          cells.where((x) => x.item?.isVideo == true).length,
+          ', ',
+        ),
+        if (cards > 0) l10n.ksCardCount(cards),
+      ].where((s) => s.isNotEmpty).join(', ');
       final range = sectionRange(k);
       return range == null ? counts : '$range · $counts';
     }
@@ -1241,7 +1270,14 @@ class _PhotosViewState extends ConsumerState<PhotosView> {
                   children: [
                     // AS01: the way into Tự lưu (D-066), for parents.
                     if (c.parentView)
-                      AutoSaveEntryCard(babyId: c.babyId, name: c.nickname),
+                      // 4 pt left under the pills + 12 = the 16 pt the section header adds below.
+                      AutoSaveEntryCard(
+                        babyId: c.babyId,
+                        name: c.nickname,
+                        padding: const EdgeInsets.only(top: ClSpace.s3),
+                      ),
+                    // MM01 "Tạo từ kỷ niệm" (D-068); shows only in the beta, for parents.
+                    KeepsakeCreateSection(ctx: c),
                     if (landing.isNotEmpty) _LandingLine(count: landing.length),
                     if (widget.media != null &&
                         items.isEmpty &&

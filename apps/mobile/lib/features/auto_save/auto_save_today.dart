@@ -152,8 +152,14 @@ class AutoSaveTodayBanner extends ConsumerWidget {
                     child: ClButton(
                       label: l10n.autoSaveBannerOpen,
                       expand: true,
-                      onPressed: () =>
-                          unawaited(showAutoSaveQuickSheet(context, babyId)),
+                      // The quick sheet only when every group fits in it; a bigger batch
+                      // goes straight to the full review (AS07), not to 8 of 200.
+                      onPressed: () => unawaited(
+                        ref.read(autoSaveProvider).groups(babyId).length >
+                                _quickTiles
+                            ? GoRouter.of(context).push(Routes.autoSaveReview)
+                            : showAutoSaveQuickSheet(context, babyId),
+                      ),
                     ),
                   ),
                   const SizedBox(width: ClSpace.s2),
@@ -196,12 +202,25 @@ class _QuickSheetState extends ConsumerState<_QuickSheet> {
   Set<String>? _selected;
   var _busy = false;
 
+  /// What the sheet showed when "Tải lên" was tapped: approving takes the items out of the live
+  /// list before the sheet closes, which drew "0 ảnh mới" and "Tải lên 0 mục" meanwhile.
+  List<SuggestionGroup>? _frozen;
+  var _closing = false;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final view = ref.watch(autoSaveProvider);
-    final groups = view.groups(widget.babyId).take(_quickTiles).toList();
+    final live = view.groups(widget.babyId).take(_quickTiles).toList();
+    final groups = _busy ? (_frozen ?? live) : live;
+    // Nothing left to review (handled elsewhere): the sheet goes instead of showing 0.
+    if (groups.isEmpty && !_busy && !_closing) {
+      _closing = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) Navigator.of(context).maybePop();
+      });
+    }
     final shown = [for (final g in groups) ...g.items];
     final selected = _selected ??= {for (final g in groups) ...g.preselected};
     final chosen = [
@@ -217,15 +236,24 @@ class _QuickSheetState extends ConsumerState<_QuickSheet> {
     final controller = ref.read(autoSaveProvider.notifier);
 
     Future<void> upload() async {
-      setState(() => _busy = true);
-      final n = await controller.approve(
-        chosen: chosen,
-        reviewed: shown,
-        audience: Audience.parents,
-        notifyFamily: false,
-      );
-      navigator.pop();
-      toaster.show(message: l10n.autoSaveQueued(n));
+      setState(() {
+        _busy = true;
+        _frozen = groups;
+      });
+      try {
+        final n = await controller.approve(
+          chosen: chosen,
+          reviewed: shown,
+          audience: Audience.parents,
+          notifyFamily: false,
+        );
+        _closing = true;
+        navigator.pop();
+        toaster.show(message: l10n.autoSaveQueued(n));
+      } on Object {
+        if (mounted) setState(() => _busy = false);
+        toaster.show(message: l10n.toastActionFailed, error: true);
+      }
     }
 
     Future<void> skip() async {

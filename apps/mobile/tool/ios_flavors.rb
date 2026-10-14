@@ -42,6 +42,13 @@ EXTENSIONS = {
   'widgetExtension' => { suffix: 'widgets', deployment: '17.0', dir: 'widget', shared: true },
   'share' => { suffix: 'share', deployment: DEPLOYMENT_TARGET, dir: 'share' },
 }.freeze
+# Apple Watch app (Figma "Apple Watch" 464:18, plan docs/product/apple-watch-plan.md, P-142): a
+# single-target SwiftUI watchOS app, bundle id = app bundle id + ".watchkitapp", compiling
+# ios/watch and ios/Shared without the iOS-only Live Activity intents. Not embedded in Runner
+# yet, so `flutter run` does not build it; build and run it with the `watch-<flavor>` scheme.
+WATCH = { name: 'watch', suffix: 'watchkitapp', deployment: '10.0', dir: 'watch' }.freeze
+WATCH_SKIPS_SHARED = %w[GlanceIntents.swift].freeze
+APP_VERSION = File.read(File.expand_path('../pubspec.yaml', __dir__), encoding: 'UTF-8')[/^version:\s*(\S+)/, 1].to_s
 
 root = File.expand_path('../ios', __dir__)
 
@@ -84,6 +91,11 @@ FLAVORS.each do |flavor, info|
       'com.apple.security.application-groups' => [info[:app_group]],
     }.merge(ext[:shared] ? { 'keychain-access-groups' => keychain } : {}))
   end
+  # The watch keeps its own copy of the session and snapshot (it cannot read the phone's).
+  write_entitlements(File.join(root, WATCH[:dir], "#{WATCH[:dir]}-#{flavor}.entitlements"), {
+    'com.apple.security.application-groups' => [info[:app_group]],
+    'keychain-access-groups' => keychain,
+  })
 end
 project = Xcodeproj::Project.open(File.join(root, 'Runner.xcodeproj'))
 runner = project.targets.find { |t| t.name == 'Runner' }
@@ -226,6 +238,62 @@ shared_targets.each do |target|
   shared_files.each { |ref| phase.add_file_reference(ref, true) }
 end
 
+# Apple Watch target: flavored configurations like the extensions, watchOS settings, its own
+# sources and resources plus ios/Shared.
+watch = project.targets.find { |t| t.name == WATCH[:name] } ||
+        project.new_target(:application, WATCH[:name], :watchos, WATCH[:deployment])
+watch_list = watch.build_configuration_list
+marketing_version, build_number = APP_VERSION.split('+')
+BASES.each do |base|
+  template = watch_list.build_configurations.find { |c| c.name == base } ||
+             watch_list.build_configurations.find { |c| c.name.start_with?("#{base}-") } ||
+             watch_list.build_configurations.find { |c| c.name == 'Release' }
+  FLAVORS.each do |flavor, info|
+    config = ensure_config(watch_list, "#{base}-#{flavor}", template)
+    config.base_configuration_reference = nil
+    s = config.build_settings
+    s['PRODUCT_NAME'] = 'ChildLifeWatch'
+    s['PRODUCT_BUNDLE_IDENTIFIER'] = "#{info[:bundle_id]}.#{WATCH[:suffix]}"
+    s['INFOPLIST_FILE'] = "#{WATCH[:dir]}/Info.plist"
+    s['GENERATE_INFOPLIST_FILE'] = 'NO'
+    s['SDKROOT'] = 'watchos'
+    s['SUPPORTED_PLATFORMS'] = 'watchos watchsimulator'
+    s['TARGETED_DEVICE_FAMILY'] = '4'
+    s['WATCHOS_DEPLOYMENT_TARGET'] = WATCH[:deployment]
+    s.delete('IPHONEOS_DEPLOYMENT_TARGET')
+    s['SWIFT_VERSION'] = '5.0'
+    s['SWIFT_ACTIVE_COMPILATION_CONDITIONS'] = base == 'Debug' ? 'DEBUG $(inherited)' : '$(inherited)'
+    s['ASSETCATALOG_COMPILER_APPICON_NAME'] = "AppIcon-#{flavor}"
+    s['CODE_SIGN_ENTITLEMENTS'] = "#{WATCH[:dir]}/#{WATCH[:dir]}-#{flavor}.entitlements"
+    s['CL_APP_GROUP'] = info[:app_group]
+    s['CL_KEYCHAIN_GROUP'] = "#{info[:bundle_id]}.shared"
+    s['CL_COMPANION_BUNDLE_ID'] = info[:bundle_id]
+    s['FLAVOR_APP_NAME'] = info[:name]
+    s['MARKETING_VERSION'] = marketing_version
+    s['CURRENT_PROJECT_VERSION'] = build_number || '1'
+    s['LD_RUNPATH_SEARCH_PATHS'] = ['$(inherited)', '@executable_path/Frameworks']
+    s['ENABLE_PREVIEWS'] = 'YES'
+    sign(config, nil, info[:team])
+  end
+end
+watch_list.build_configurations.select { |c| BASES.include?(c.name) }.each(&:remove_from_project)
+watch_list.default_configuration_name = 'Release-prod'
+
+watch_group = project.main_group[WATCH[:dir]] || project.main_group.new_group(WATCH[:dir], WATCH[:dir])
+watch_dir = File.join(root, WATCH[:dir])
+watch_names = Dir[File.join(watch_dir, '*.swift')].map { |p| File.basename(p) }.sort +
+              %w[Info.plist Assets.xcassets Localizable.xcstrings] +
+              Dir[File.join(watch_dir, '*.entitlements')].map { |p| File.basename(p) }.sort
+watch_refs = watch_names.map { |name| watch_group.files.find { |f| f.path == name } || watch_group.new_file(name) }
+watch_group.files.reject { |f| watch_refs.include?(f) }.each(&:remove_from_project)
+watch_sources = watch_refs.select { |f| f.path.end_with?('.swift') } +
+                shared_files.reject { |f| WATCH_SKIPS_SHARED.include?(f.path) }
+watch.source_build_phase.files.reject { |bf| watch_sources.include?(bf.file_ref) }.each(&:remove_from_project)
+watch_sources.each { |ref| watch.source_build_phase.add_file_reference(ref, true) }
+%w[Assets.xcassets Localizable.xcstrings].each do |name|
+  watch.resources_build_phase.add_file_reference(watch_refs.find { |f| f.path == name }, true)
+end
+
 # App-only native code next to AppDelegate (background uploads, 10j): every ios/Runner/*.swift.
 runner_group = project.main_group['Runner']
 Dir[File.join(root, 'Runner', '*.swift')].sort.each do |path|
@@ -286,6 +354,15 @@ FLAVORS.each_key do |flavor|
   scheme.profile_action.build_configuration = "Profile-#{flavor}"
   scheme.archive_action.build_configuration = "Release-#{flavor}"
   scheme.save_as(File.join(root, 'Runner.xcodeproj'), flavor, true)
+end
+FLAVORS.each_key do |flavor|
+  scheme = Xcodeproj::XCScheme.new
+  scheme.configure_with_targets(watch, nil, launch_target: true)
+  scheme.launch_action.build_configuration = "Debug-#{flavor}"
+  scheme.analyze_action.build_configuration = "Debug-#{flavor}"
+  scheme.profile_action.build_configuration = "Profile-#{flavor}"
+  scheme.archive_action.build_configuration = "Release-#{flavor}"
+  scheme.save_as(File.join(root, 'Runner.xcodeproj'), "watch-#{flavor}", true)
 end
 runner_scheme = File.join(schemes_dir, 'Runner.xcscheme')
 File.delete(runner_scheme) if File.exist?(runner_scheme)

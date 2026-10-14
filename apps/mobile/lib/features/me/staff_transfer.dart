@@ -91,10 +91,10 @@ class _StaffTransferCardState extends ConsumerState<StaffTransferCard> {
         case 'receiver-owns-family':
           toaster.show(message: l10n.acReceiverOwns);
         default:
-          toaster.show(message: l10n.toastActionFailed);
+          toaster.show(message: l10n.toastActionFailed, error: true);
       }
     } on Object {
-      toaster.show(message: l10n.toastActionFailed);
+      toaster.show(message: l10n.toastActionFailed, error: true);
     } finally {
       if (mounted) setState(() => _answering = null);
     }

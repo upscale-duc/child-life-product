@@ -90,6 +90,19 @@ export function noticeCopy(kind: string, count: number, actorName: string, langu
             title: count === 1 ? '1 new moment' : `${count} new moments`,
             body: `${actorName} just shared with the family. Open to see.`,
           };
+    // Video kỷ niệm ready (D-068 #4, MM17), to the person who asked only.
+    case 'keepsakeVideo':
+      return vi
+        ? { title: 'Video kỷ niệm đã sẵn sàng', body: 'Mở Child Life để xem, lưu và chia sẻ.' }
+        : {
+            title: 'Your memory video is ready',
+            body: 'Open Child Life to watch, save and share.',
+          };
+    // Video kỷ niệm could not be made (MM14), to the person who asked only.
+    case 'keepsakeVideoFailed':
+      return vi
+        ? { title: 'Chưa tạo được video kỷ niệm', body: 'Mở Child Life để thử lại.' }
+        : { title: 'Your memory video couldn’t be made', body: 'Open Child Life to try again.' };
     case 'story':
       return vi
         ? { title: 'Có 1 câu chuyện mới', body: 'Từ Kỷ niệm của gia đình' }
@@ -151,6 +164,7 @@ export async function deliverNotice(
   const actor = (claimed.get('actor') as { name?: string } | null)?.name ?? '';
   const kind = claimed.get('kind') as string;
   const count = (claimed.get('count') as number | undefined) ?? 1;
+  const context = claimed.get('context') as Record<string, unknown> | null | undefined;
   let sent = 0;
   const recipients = (claimed.get('recipients') as string[] | undefined) ?? [];
   // "Thông báo" settings (G-056): a muted kind is recorded but not pushed.
@@ -176,7 +190,13 @@ export async function deliverNotice(
       const copy = noticeCopy(kind, count, actor, language);
       const rejected = await sender.send(tokens, {
         ...copy,
-        data: { babyId, kind, noticeId },
+        // The job a Video kỷ niệm notice opens (MM09 / MM14); ids only.
+        data: {
+          babyId,
+          kind,
+          noticeId,
+          ...(typeof context?.jobId === 'string' ? { jobId: context.jobId } : {}),
+        },
       });
       sent += tokens.length - rejected.length;
       for (const t of rejected) await refs.get(t)?.ref.delete();

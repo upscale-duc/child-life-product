@@ -543,10 +543,7 @@ class _Rows extends StatelessWidget {
         ],
       ),
       const _Gap(),
-      const ClAccountRow(
-        email: 'mai.nguyen@email.com',
-        provider: 'Apple',
-      ),
+      const ClAccountRow(email: 'mai.nguyen@email.com', provider: 'Apple'),
     ],
   );
 }

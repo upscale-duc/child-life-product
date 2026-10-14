@@ -19,8 +19,15 @@ esac
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
 echo ">>> Deploying [$only] to $env ($project)"
-if [[ "$only" == *hosting* ]]; then
+# Build only what is deployed: plain "hosting" is every site; "hosting:<target>" one of them.
+all_hosting=false
+[[ ",$only," == *",hosting,"* ]] && all_hosting=true
+if $all_hosting || [[ "$only" == *hosting:landing* || "$only" == *hosting:admin* ]]; then
   pnpm --dir "$root" --filter child-life-landing --filter child-life-portal run "build:$env"
+fi
+# Video kỷ niệm preview page (D-068): the renderer's compositions with @remotion/player.
+if $all_hosting || [[ "$only" == *hosting:player* ]]; then
+  pnpm --dir "$root" --filter child-life-renderer run build:player
 fi
 cd "$root"
 # Function updates sometimes fail on transient network errors; a re-run only redeploys what changed.

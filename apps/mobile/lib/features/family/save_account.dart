@@ -73,12 +73,18 @@ class _SaveAccountSheet extends ConsumerStatefulWidget {
 class _SaveAccountSheetState extends ConsumerState<_SaveAccountSheet> {
   bool _busy = false;
 
+  /// Which provider button is saving, for its spinner (as on the sign-in screen).
+  bool _apple = false;
+
   Future<void> _provider({required bool apple}) async {
     final l10n = AppLocalizations.of(context);
     final container = ProviderScope.containerOf(context, listen: false);
     final navigator = Navigator.of(context);
     final toaster = ClToaster.of(context);
-    setState(() => _busy = true);
+    setState(() {
+      _busy = true;
+      _apple = apple;
+    });
     try {
       final linked = await ref
           .read(authRepositoryProvider)
@@ -115,10 +121,12 @@ class _SaveAccountSheetState extends ConsumerState<_SaveAccountSheet> {
         const SizedBox(height: ClSpace.s6),
         AppleSignInButton(
           onPressed: _busy ? null : () => _provider(apple: true),
+          loading: _busy && _apple,
         ),
         const SizedBox(height: ClSpace.s3),
         GoogleSignInButton(
           onPressed: _busy ? null : () => _provider(apple: false),
+          loading: _busy && !_apple,
         ),
         const SizedBox(height: ClSpace.s3),
         ClButton(

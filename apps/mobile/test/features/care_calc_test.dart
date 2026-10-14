@@ -113,6 +113,28 @@ List<CareRecord> _week() {
 void main() {
   setUpAll(ensureTimeZones);
 
+  test(
+    'a feed logged "now" with its length ended now, never in the future (G-021)',
+    () {
+      final now = DateTime(2026, 10, 14, 17, 14);
+      // Just finished: 20 minutes before now.
+      expect(
+        CareRecord.spanStart(CareType.breast, now, 20, now),
+        DateTime(2026, 10, 14, 16, 54),
+      );
+      expect(
+        CareRecord.spanStart(CareType.pump, now, 15, now),
+        DateTime(2026, 10, 14, 16, 59),
+      );
+      // An earlier start the parent picked stays as it is.
+      final earlier = DateTime(2026, 10, 14, 15);
+      expect(CareRecord.spanStart(CareType.breast, earlier, 20, now), earlier);
+      // No length, or a bottle: the time is the time.
+      expect(CareRecord.spanStart(CareType.breast, now, null, now), now);
+      expect(CareRecord.spanStart(CareType.bottle, now, 20, now), now);
+    },
+  );
+
   group('shared day vectors (TS ↔ Dart)', () {
     for (final v in _vectors.cast<Map<String, dynamic>>()) {
       test(v['name'] as String, () {

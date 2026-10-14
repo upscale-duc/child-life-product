@@ -21,13 +21,15 @@ import 'album_models.dart';
 import 'memories_screen.dart';
 import 'memory_models.dart';
 import 'memory_repository.dart';
+import 'memory_sheets.dart' show confirmDeleteMedia;
 import 'memory_widgets.dart';
 import 'social_widgets.dart';
 import 'viewer_video.dart';
 
 /// 10f Xem toàn màn hình (135:18156): swipe through items, audience pill, milestone, caption,
 /// "Thứ Hai, 5 tháng 10 · Mẹ đăng", Tải về and Chia sẻ (R-114). Thương and Yêu thích come
-/// with S10; edit and delete are not in the viewer (delete is a selection action).
+/// with S10; parents can also delete the item open (10b4, as from a selection); edit is not in
+/// the viewer.
 Future<void> openViewer(
   BuildContext context, {
   required List<MediaItem> items,
@@ -86,7 +88,7 @@ Future<void> shareItems(BuildContext context, List<MediaItem> items) async {
     if (files.isEmpty) return;
     await SharePlus.instance.share(ShareParams(files: files));
   } on Object {
-    toaster.show(message: l10n.toastActionFailed);
+    toaster.show(message: l10n.toastActionFailed, error: true);
   }
 }
 
@@ -281,13 +283,27 @@ class _MediaViewerState extends ConsumerState<MediaViewer> {
           ),
         ],
         const SizedBox(height: ClSpace.s3),
-        if (parent)
+        if (parent) ...[
           RailButton(
             icon: ClIcons.upload,
             semanticLabel: l10n.viewerShare,
             onPressed: () => shareItems(context, [item]),
-          )
-        else
+          ),
+          if (c != null && c.isParent) ...[
+            const SizedBox(height: ClSpace.s3),
+            RailButton(
+              icon: ClIcons.trash,
+              semanticLabel: l10n.delN(1),
+              onPressed: () async {
+                final navigator = Navigator.of(context);
+                // Gone from Kỷ niệm (Thùng rác keeps it 30 days): the viewer closes.
+                if (await confirmDeleteMedia(context, ref, c, [item])) {
+                  navigator.pop();
+                }
+              },
+            ),
+          ],
+        ] else
           RailButton(
             icon: ClIcons.mail,
             semanticLabel: l10n.messageAction,
@@ -780,7 +796,12 @@ class _VideoPageState extends ConsumerState<_VideoPage> {
                   ? _PlayButton(onTap: _play)
                   : ValueListenableBuilder(
                       valueListenable: v.state,
-                      builder: (_, s, _) => s.playing
+                      // Waiting for data (at the start or after a stall): a spinner, not a
+                      // frozen frame.
+                      builder: (_, s, _) =>
+                          s.buffering || (s.playing && !s.rendered)
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : s.playing
                           ? const SizedBox.shrink()
                           : _PlayButton(onTap: _play),
                     ),

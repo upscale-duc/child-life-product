@@ -14,8 +14,11 @@ import '../../app/session.dart';
 import '../../core/appearance/appearance_providers.dart';
 import '../../core/platform/device_heartbeat.dart';
 import '../../core/platform/install_source.dart';
+import '../../core/widgets/cl_feedback.dart';
+import '../../l10n/app_localizations.dart';
 import '../auth/auth_repository.dart';
 import '../home/home_shell.dart';
+import '../keepsakes/keepsake_live.dart';
 import '../reminders/device_identity.dart';
 import '../reminders/rule_notifications.dart';
 import '../vaccines/vaccine_notifications.dart';
@@ -91,11 +94,16 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
       _opened = FirebaseMessaging.onMessageOpenedApp.listen(
         (m) => unawaited(_open(m)),
       );
-      // A rule reminder that rings while the app is open shows 1g at once.
+      // A rule reminder that rings while the app is open shows 1g at once; a Video kỷ niệm that
+      // finishes (or fails) while it is open says so, with "Xem".
       _foreground = FirebaseMessaging.onMessage.listen((m) {
         final push = rulePushOf(m.data);
         if (push != null && mounted) unawaited(openRulePush(ref, push));
+        final job = keepsakeJobPushOf(m.data);
+        if (job != null && mounted) _toastJob(job);
       });
+      // Live Activities of videos still being made hand their tokens over again (iPhone).
+      ref.read(keepsakeLiveProvider);
     } on Object {
       // No messaging on this device (simulator without APNs, tests).
     }
@@ -136,7 +144,38 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
       }
       return;
     }
+    // Video kỷ niệm ready or not made (D-068 #4): MM09 / MM14 for that job.
+    final job = keepsakeJobPushOf(message.data);
+    if (job != null) {
+      _openJob(job);
+      return;
+    }
     ref.read(routerProvider).go(Routes.memories);
+  }
+
+  void _openJob(KeepsakeJobPush job) {
+    if (ref.read(selectedBabyIdProvider) != job.babyId) {
+      ref.read(selectedBabyIdProvider.notifier).select(job.babyId);
+    }
+    ref.read(routerProvider)
+      ..go(Routes.memories)
+      ..push('${Routes.memoryStoryJob}/${job.jobId}?baby=${job.babyId}');
+  }
+
+  void _toastJob(KeepsakeJobPush job) {
+    final context = ref
+        .read(routerProvider)
+        .routerDelegate
+        .navigatorKey
+        .currentContext;
+    if (context == null) return;
+    final l10n = AppLocalizations.of(context);
+    ClToaster.of(context).show(
+      message: job.failed ? l10n.ksVideoFailedToast : l10n.ksVideoReadyToast,
+      actionLabel: l10n.ksVideoOpenJob,
+      onAction: () => _openJob(job),
+      visibleFor: const Duration(seconds: 6),
+    );
   }
 
   Future<void> _register(String uid, String language) async {
@@ -311,4 +350,27 @@ Future<void> signOutThisDevice(WidgetRef ref) async {
     }
   }
   await ref.read(authRepositoryProvider).signOut();
+}
+
+/// A Video kỷ niệm push (ready or not made): the job it opens.
+typedef KeepsakeJobPush = ({String babyId, String jobId, bool failed});
+
+KeepsakeJobPush? keepsakeJobPushOf(Map<String, dynamic> data) {
+  final kind = data['kind'];
+  final babyId = data['babyId'];
+  if ((kind != 'keepsakeVideo' && kind != 'keepsakeVideoFailed') ||
+      babyId is! String) {
+    return null;
+  }
+  // `jobId` since the failure notice; before it, the notice id was keepsake_<jobId>.
+  final notice = data['noticeId'];
+  final jobId =
+      data['jobId'] ??
+      (notice is String && notice.startsWith('keepsake_')
+          ? notice.substring('keepsake_'.length).split('_failed').first
+          : null);
+  if (jobId is! String || !RegExp(r'^ksj_[a-f0-9]{32}$').hasMatch(jobId)) {
+    return null;
+  }
+  return (babyId: babyId, jobId: jobId, failed: kind == 'keepsakeVideoFailed');
 }

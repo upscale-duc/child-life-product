@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { authorSchema } from './care.js';
+import { generatedSchema } from './keepsakes.js';
 
 /**
  * Memories (Slice S9; Figma 10a–10o; business map §6.5, R-100…R-118, D-001, D-002, P-030…P-035).
@@ -44,6 +45,10 @@ export const memoryLimits = {
   binDays: 30,
   /** Unfinished reservations are released after this (P-031). */
   reservationHours: 24,
+  /** A batch sent in parts (D-070) that is still missing some after this is closed with what
+   * arrived, so its one family notice still goes out. */
+  batchPartsWaitHours: 2,
+  batchPartsMax: 1000,
 } as const;
 
 export const memoryIdSchema = z.string().regex(/^mem_[a-f0-9]{32}$/);
@@ -100,6 +105,12 @@ export const createMemoryRequestSchema = z
     caption: z.string().trim().max(memoryLimits.captionMax).nullable(),
     audience: z.enum(audiences),
     notifyFamily: z.boolean(),
+    /**
+     * One batch sent as several memories (Tự lưu, D-070): every part carries the same `batchId`,
+     * the last one says how many parts there are (null on the others), and the family hears once
+     * when all of them are in. A plain upload is one part.
+     */
+    batchParts: z.number().int().min(1).max(memoryLimits.batchPartsMax).nullable().default(1),
     /** "Theo ngày chụp" (default) or "Một ngày cho tất cả" (10h2). */
     dateMode: z.enum(['capture', 'single']),
     date: isoDate.nullable(),
@@ -107,6 +118,8 @@ export const createMemoryRequestSchema = z
     /** 10h5 "Thêm vào album" (several allowed; D-002). */
     albumIds: z.array(albumIdSchema).max(20).default([]),
     items: z.array(uploadItemSchema).max(memoryLimits.itemsPerAdd),
+    /** A milestone card made in the app (D-068, MM12): one photo, kept with the template used. */
+    generated: generatedSchema.nullable().default(null),
   })
   .refine((r) => r.dateMode === 'capture' || r.date !== null, {
     message: 'single date mode needs a date',
@@ -116,7 +129,13 @@ export const createMemoryRequestSchema = z
   })
   .refine((r) => new Set(r.items.map((i) => i.mediaId)).size === r.items.length, {
     message: 'duplicate media ids',
-  });
+  })
+  .refine(
+    (r) =>
+      r.generated === null ||
+      (r.generated.kind === 'card' && r.items.length === 1 && r.items[0]!.type === 'photo'),
+    { message: 'a card is one photo' },
+  );
 export type CreateMemoryRequest = z.infer<typeof createMemoryRequestSchema>;
 
 export interface CreateMemoryResponse {

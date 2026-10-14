@@ -69,6 +69,19 @@ abstract final class Routes {
   static const autoSaveSettings = '/memories/auto-save/settings';
   static const autoSaveSamples = '/memories/auto-save/samples';
 
+  /// Thiệp cột mốc (D-068): MM10 (`?occasion=m1`), `/edit` (MM11) and `/done` (MM12) with the
+  /// draft or result as `extra`.
+  static const milestoneCard = '/memories/card';
+  static const milestoneCardEdit = '/memories/card/edit';
+  static const milestoneCardDone = '/memories/card/done';
+
+  /// Video kỷ niệm (D-068): templates (`?occasion=m1`), `/photos` (MM06) and `/finish` (MM07)
+  /// with the draft as `extra`, `/job/{jobId}?baby=…` (MM08 / MM09 / MM14).
+  static const memoryStory = '/memories/video';
+  static const memoryStoryPhotos = '/memories/video/photos';
+  static const memoryStoryFinish = '/memories/video/finish';
+  static const memoryStoryJob = '/memories/video/job';
+
   /// Tiện ích tab (v1.0 improvement 450:6597): Sơ cứu, Chi tiêu, Gia đình.
   static const utilities = '/utilities';
   static const family = '/utilities/family';

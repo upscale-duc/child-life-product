@@ -647,7 +647,10 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen>
   Future<void> _resend() async {
     final l10n = AppLocalizations.of(context);
     try {
-      await ref.read(authRepositoryProvider).sendVerificationEmail();
+      await withClProgress(
+        context,
+        () => ref.read(authRepositoryProvider).sendVerificationEmail(),
+      );
       if (mounted) showClToast(context, message: l10n.verifyResent);
       _startCooldown();
     } on AuthException catch (e) {

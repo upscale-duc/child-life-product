@@ -69,13 +69,14 @@ enum GlanceActions {
 
   // MARK: One-tap logs (Hoàn tác ~5 s)
 
-  /// Small Bottle "+ 120 ml" / Medium "Bú bình": the last amount and milk again.
-  static func logBottle() async -> Result {
+  /// Small Bottle "+ 120 ml" / Medium "Bú bình": the last amount and milk again. The watch (W02)
+  /// passes the amount picked with the crown and its milk.
+  static func logBottle(amountMl: Int? = nil, milk chosenMilk: String? = nil) async -> Result {
     guard let (s, babyId, uid, a) = ready() else { return .signedOut }
     let now = Date()
     let id = "r_\(newHex())"
-    let amount = s.lastBottle?.amountMl
-    let milk = s.lastBottle?.milk ?? "formula"
+    let amount = amountMl ?? s.lastBottle?.amountMl
+    let milk = chosenMilk ?? s.lastBottle?.milk ?? "formula"
     GlanceSnapshot.update { snap in
       let previous = snap.lastBottle
       snap.lastBottle = GlanceLast(at: now, by: snap.text("you", "Bạn"), amountMl: amount, milk: milk)
@@ -181,6 +182,17 @@ enum GlanceActions {
       ],
       serverTime: ["updatedAt"])
     let outcome = await GlanceFirestore.commit(s, [write])
+    await GlanceLive.sync()
+    return finish(outcome)
+  }
+
+  /// "Hủy, không lưu" (the app's cancel): the timer goes, no record. The watch's "Hoàn tác" right
+  /// after starting a sleep (P-142).
+  static func cancel(_ type: String) async -> Result {
+    guard let (s, babyId, _, _) = ready() else { return .signedOut }
+    GlanceSnapshot.update { snap in if type == "sleep" { snap.sleep = nil } else { snap.breast = nil } }
+    reload()
+    let outcome = await GlanceFirestore.commit(s, [.delete("\(GlanceFirestore.root(s))/babies/\(babyId)/timers/\(type)")])
     await GlanceLive.sync()
     return finish(outcome)
   }

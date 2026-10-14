@@ -118,7 +118,7 @@ void commitRecord(
   void failed(Object _) {
     // FB5: no rating prompt after an error (D-065).
     ReviewSession.afterError = true;
-    toaster.show(message: l10n.careSaveFailed);
+    toaster.show(message: l10n.careSaveFailed, error: true);
   }
 
   if (isEdit) {
@@ -697,10 +697,11 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
     memory
       ..set(me.babyId, 'feedType', _type)
       ..set(me.babyId, 'milk', _milk);
+    final start = CareRecord.spanStart(_type, time, minutes, DateTime.now());
     final edit = widget.edit;
     final record = edit != null
         ? edit.copyWith(
-            occurredAt: time,
+            occurredAt: start,
             amountMl: amount,
             clearAmount: amount == null,
             milk: _milk,
@@ -712,7 +713,7 @@ class _FeedSheetState extends ConsumerState<FeedSheet>
             id: recordId,
             babyId: me.babyId,
             type: _type,
-            occurredAt: time,
+            occurredAt: start,
             me: me,
             amountMl: amount,
             milk: bottle ? _milk : null,
@@ -891,8 +892,21 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
     final timer = widget.timer;
     if (timer != null) {
       final record = timer
-          .toRecord(DateTime.now(), pumpAmountMl: amount)
-          .copyWith(side: _side, durationMin: _minutes, occurredAt: time);
+          .toRecord(
+            DateTime.now(),
+            pumpAmountMl: amount,
+            by: (uid: me.uid, author: CareAuthor.of(me)),
+          )
+          .copyWith(
+            side: _side,
+            durationMin: _minutes,
+            occurredAt: CareRecord.spanStart(
+              CareType.pump,
+              time,
+              _minutes,
+              DateTime.now(),
+            ),
+          );
       final toaster = ClToaster.of(context);
       final l10n = AppLocalizations.of(context);
       ref
@@ -900,7 +914,8 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
           .endTimer(
             timer,
             record,
-            onError: (_) => toaster.show(message: l10n.careSaveFailed),
+            onError: (_) =>
+                toaster.show(message: l10n.careSaveFailed, error: true),
           );
       ClHaptics.success();
       ref.read(lastSavedProvider.notifier).mark(CareType.pump);
@@ -918,9 +933,15 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
       return;
     }
     final edit = widget.edit;
+    final start = CareRecord.spanStart(
+      CareType.pump,
+      time,
+      _minutes,
+      DateTime.now(),
+    );
     final record = edit != null
         ? edit.copyWith(
-            occurredAt: time,
+            occurredAt: start,
             side: _side,
             amountMl: amount,
             durationMin: _minutes,
@@ -930,7 +951,7 @@ class _PumpSheetState extends ConsumerState<PumpSheet>
             id: recordId,
             babyId: me.babyId,
             type: CareType.pump,
-            occurredAt: time,
+            occurredAt: start,
             me: me,
             side: _side,
             amountMl: amount,

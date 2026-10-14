@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ArrowDown, ArrowUp, X } from 'lucide-react';
 import { Button as UiButton } from '@/components/ui/button';
@@ -91,11 +91,14 @@ export function FilePicker({
   id,
   accept,
   disabled,
+  label,
   onFile,
 }: {
   id: string;
   accept: string;
   disabled?: boolean;
+  /** The button's words; "Chọn tệp" by default. */
+  label?: ReactNode;
   onFile: (file: File | null) => void;
 }) {
   const input = useRef<HTMLInputElement>(null);
@@ -119,7 +122,7 @@ export function FilePicker({
         }}
       />
       <Button disabled={disabled} onClick={() => input.current?.click()}>
-        <FormattedMessage id="form.chooseFile" />
+        {label ?? <FormattedMessage id="form.chooseFile" />}
       </Button>
       <span className="min-w-0 truncate text-sm text-muted-foreground">
         {name ?? <FormattedMessage id="form.noFile" />}
