@@ -14,9 +14,9 @@ matrix), Figma page **"Cá nhân hoá & Nhịp lớn lên"** `568:18`. The page 
 Owner request: "Tôi cần 1 kế hoạch chi tiết để triển khai chức năng này … design có thể là bản tham khảo, không cần
 theo 100%, chỉ cần phù hợp với logic và thực tế."
 
-Status (2026-10-14): **plan only, nothing built.** Owner decisions **D-072** (seven answers, §2.1) and Q-067 (name);
-open questions **Q-068 – Q-073** (§10). No extract of `568:18` yet (next file is
-`docs/discovery/figma-extract/30-personalization-premium.md`). Proposals will take **P-151…**, gaps **G-108…**.
+Status (2026-10-15): **Phase 0 and Slice 1 built, deployed on dev with every new flag off** (§10). Owner decisions **D-072** (seven answers, §2.1) and Q-067 (name);
+open questions **Q-068 – Q-073** (§11). Figma extract: `docs/discovery/figma-extract/30-personalization-premium.md`.
+Proposals will take **P-151…**, gaps **G-108…**.
 
 Order of precedence (brief p.7): owner decisions → business invariants of the brief → approved design →
 implementation detail. Where Figma and the brief differ, the brief wins and the difference is logged as a G-id.
@@ -302,7 +302,7 @@ Android. Sizes: S ≤ 2 days, M ≤ 1 week, L > 1 week.
 |---|---|---|
 | **P0.1** | ✅ Extract `568:18` into `figma-extract/30-personalization-premium.md` (v2.0 frames first, VI+EN text, annotations, the mapping table) | M |
 | **P0.2** | ✅ Add §21 to `figma-coverage-checklist.md` (rows per v2.0 frame) and the D/P/Q/G ids to `business-map.md` (by hand, no prettier) | S |
-| **P0.3** | Owner answers the open Q-ids before their step (§10) | — |
+| **P0.3** | Owner answers the open Q-ids before their step (§11) | — |
 | **P0.4** | ✅ `fixtures.json` copied once to `packages/contracts/test/vectors/premium-v2.json` (synthetic); Dart tests read the same file, as `care_calc_test.dart` reads `care-day.json` | S |
 
 ### Slice 1 — capabilities, template gating, fixture harness (brief "Slice 1")
@@ -399,7 +399,51 @@ PASS / FAIL / **BLOCKED** (missing credentials or content). `verify_reference.py
 
 ---
 
-## 10. Open questions for the owner and design gaps
+## 10. As built
+
+### 10.1 Phase 0 + Slice 1 (2026-10-15, dev)
+
+Commits `4aef871` (plan, D-072), `2b492bb` (E1/E2/Q1 server), `ea63d91` (E3 server), `53f6499` (extract 30),
+`03ce1a5` (checklist §21), `a54bd8e` (E3 portal), `10d3ccd` (E4 / Q1 app). Deployed to `child-life-dev`:
+rules, `getCapabilities`, `setFamilySettings`, `staffPremium`, `staffSetPremiumConfig`, `staffFamilyPremium`,
+`staffGrantPromo`, `staffRevokeGrant`, updated `createMemorySession` / `requestMemoryStory`, portal. All
+callables answer JSON 401 unauthenticated (invoker check). Flags `rhythm`, `personalization`, `ai_assist`,
+`premium_billing` are off and `config/entitlements` is unset (no region open), so nothing changes for families yet;
+the Kỷ niệm catalog stays on `everyone` until Q-072.
+
+- **Contracts**: `entitlements.ts` (capabilities, reasons, grants, `resolveCapability`, `householdPlan`,
+  `config/entitlements` with Beta A campaigns that can never include templates, staff request schemas),
+  `family-actions.ts` (`familyCan`, D-072 #1–#2), `keepsakes.ts` (`subscribers`, `keepsakeTemplateAccess`),
+  four flags, staff actions `premium.view / config / grant`, audit category `premium`.
+- **Functions**: `entitlements.ts` (context with stored grants + open campaigns per country, test vs production
+  grants by project), `premium-staff.ts`; Cao cấp in `subscribers` mode refused with `PREMIUM_REQUIRED`.
+- **Rules**: `families/{f}/grants|quota|quotaOps` closed to clients.
+- **Portal**: Premium & Cá nhân hoá screen (regions, quotas, campaigns by family code, family lookup, promo
+  grant / revoke with reason).
+- **App**: `lib/features/premium/` (capabilities, gate sheets per reason, PR03 Gói của hộ with the owner's
+  region picker, MO02 for Cao cấp in `subscribers` mode), Tôi row only when a rollout reaches the family.
+
+**Tests (actual runs, 2026-10-15)**
+
+| Layer | Result |
+|---|---|
+| Fixture pack E01–E15 through the real resolver (`packages/contracts/test/entitlements.test.ts`) | 15/15 pass; contracts suite 109 pass |
+| Emulator integration M01, M02, M05, M08, M09, E03/E11 end to end, staff E3 (`entitlements`, `premium-staff`, `memories`, `keepsake-jobs`) | pass |
+| Rules M03, M04 (`entitlements.rules.test.ts`) | pass |
+| Portal vitest | 100/100 |
+| Flutter `premium_test.dart` + `premium_golden_test.dart` (PR03, MO02; Light / Night × vi / en) | pass |
+| Full `firebase/tests` suite | 6–8 failures in account / links / stories / reminders that also fail on a clean HEAD worktree (pre-existing, order-dependent) |
+| Full Flutter suite | only pre-existing golden failures (family 14a/14f/9x, first aid fa7b/fa7h), unchanged without this work |
+| `verify_reference.py` | not used as evidence; reference simulation only |
+
+**Not done / BLOCKED**
+
+- No end-to-end run on a real iPhone / Android against dev yet (checklist rows stay ☐).
+- Beta-end notice job: waits for Q-071 (beta dates, notice policy).
+- MO02 "Mở với Premium" opens PR03; purchase arrives with B1–B4 (Slice 4).
+- Country picker offers 12 countries; other countries need a list decision (G).
+
+## 11. Open questions for the owner and design gaps
 
 Answered: D-072 and Q-067 (2026-10-14). Still open, in the order the steps need them:
 
