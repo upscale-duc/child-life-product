@@ -1,0 +1,528 @@
+{
+  "version": "ref_20261015_01",
+  "label": "Wonder Weeks",
+  "stages": [
+    {
+      "id": "stage_01",
+      "number": 1,
+      "startOffsetDays": 28,
+      "endOffsetDays": 38,
+      "name": {
+        "vi": "Giai đoạn 1 · Giác quan nhạy hơn",
+        "en": "Stage 1 · Senses sharpening"
+      },
+      "signs": {
+        "vi": [
+          "Có thể cần được bế, dỗ nhiều hơn",
+          "Giấc ngủ và cữ bú có thể xáo trộn vài hôm",
+          "Một số bé có thể khóc nhiều hơn vào chiều tối",
+          "Một số bé không có thay đổi rõ — điều đó bình thường"
+        ],
+        "en": [
+          "May want more holding and soothing",
+          "Sleep and feeds may be unsettled for a few days",
+          "Some babies may cry more in the evening",
+          "Some babies show no clear change — that is normal"
+        ]
+      },
+      "skills": {
+        "vi": [
+          "Nhìn gương mặt người ở gần lâu hơn",
+          "Giật mình hoặc quay đầu khi nghe tiếng động",
+          "Dịu lại khi được bế hay nghe giọng quen"
+        ],
+        "en": [
+          "Looks at a nearby face for longer",
+          "Startles or turns at sounds",
+          "Calms when held or hearing a familiar voice"
+        ]
+      },
+      "activityIds": [
+        "act_skin_to_skin",
+        "act_sing_softly",
+        "act_face_to_face",
+        "act_gentle_rocking"
+      ],
+      "notice": {
+        "title": {
+          "vi": "Sắp đến giai đoạn 1 (lịch tham khảo)",
+          "en": "Stage 1 coming up (reference calendar)"
+        },
+        "body": {
+          "vi": "Vài ngày tới con có thể cần được bế, dỗ nhiều hơn. Mỗi bé mỗi khác.",
+          "en": "Your baby may want more holding and comfort for a few days. Every baby is different."
+        }
+      }
+    },
+    {
+      "id": "stage_02",
+      "number": 2,
+      "startOffsetDays": 49,
+      "endOffsetDays": 60,
+      "name": {
+        "vi": "Giai đoạn 2 · Nhìn và nghe kỹ hơn",
+        "en": "Stage 2 · Looking and listening closely"
+      },
+      "signs": {
+        "vi": [
+          "Có thể quấy hơn hoặc đòi bú thường hơn vài hôm",
+          "Có thể khó vào giấc hơn mọi khi",
+          "Một số bé có thể chỉ muốn được bế sát",
+          "Một số bé không có thay đổi rõ — điều đó bình thường"
+        ],
+        "en": [
+          "May be fussier or want to feed more often for a few days",
+          "May find it harder than usual to settle to sleep",
+          "Some babies may only want to be held close",
+          "Some babies show no clear change — that is normal"
+        ]
+      },
+      "skills": {
+        "vi": [
+          "Cười khi được trò chuyện",
+          "Ê a, phát ra âm thanh ngoài tiếng khóc",
+          "Nhìn theo người hoặc đồ vật di chuyển",
+          "Ngẩng đầu một lúc khi nằm sấp"
+        ],
+        "en": [
+          "Smiles when talked to",
+          "Coos and makes sounds other than crying",
+          "Watches people or things as they move",
+          "Lifts head briefly during tummy time"
+        ]
+      },
+      "activityIds": [
+        "act_face_to_face",
+        "act_tummy_time",
+        "act_high_contrast",
+        "act_white_noise_low"
+      ],
+      "notice": {
+        "title": {
+          "vi": "Sắp đến giai đoạn 2 (lịch tham khảo)",
+          "en": "Stage 2 coming up (reference calendar)"
+        },
+        "body": {
+          "vi": "Con có thể quấy hơn hoặc ngủ khác đi ít hôm. Có bé không thay đổi gì.",
+          "en": "Your baby may be fussier or sleep differently for a few days. Some show no change."
+        }
+      }
+    },
+    {
+      "id": "stage_03",
+      "number": 3,
+      "startOffsetDays": 77,
+      "endOffsetDays": 87,
+      "name": {
+        "vi": "Giai đoạn 3 · Cử động và tiếng nói",
+        "en": "Stage 3 · Movement and voice"
+      },
+      "signs": {
+        "vi": [
+          "Có thể đòi bế nhiều hơn vài hôm",
+          "Cữ bú có thể ngắn hơn hoặc dễ bị phân tâm",
+          "Một số bé có thể thức giấc đêm nhiều hơn",
+          "Một số bé không có thay đổi rõ — điều đó bình thường"
+        ],
+        "en": [
+          "May want to be held more for a few days",
+          "Feeds may be shorter or more easily distracted",
+          "Some babies may wake more at night",
+          "Some babies show no clear change — that is normal"
+        ]
+      },
+      "skills": {
+        "vi": [
+          "Chống khuỷu tay, nâng đầu khi nằm sấp",
+          "Đưa tay lên miệng, ngắm bàn tay",
+          "“Trò chuyện” bằng tiếng ê a qua lại"
+        ],
+        "en": [
+          "Pushes up on forearms during tummy time",
+          "Brings hands to mouth and studies them",
+          "Coos back and forth in “conversation”"
+        ]
+      },
+      "activityIds": [
+        "act_tummy_time",
+        "act_reach_and_grab",
+        "act_narrate_day",
+        "act_wind_down_night"
+      ],
+      "notice": {
+        "title": {
+          "vi": "Sắp đến giai đoạn 3 (lịch tham khảo)",
+          "en": "Stage 3 coming up (reference calendar)"
+        },
+        "body": {
+          "vi": "Con có thể đòi bế nhiều hơn vài hôm. Xem vài gợi ý nhẹ nhàng nếu cần.",
+          "en": "Your baby may want to be held more for a few days. Gentle ideas are here if needed."
+        }
+      }
+    },
+    {
+      "id": "stage_04",
+      "number": 4,
+      "startOffsetDays": 119,
+      "endOffsetDays": 139,
+      "name": {
+        "vi": "Giai đoạn 4 · Với tay, cầm nắm",
+        "en": "Stage 4 · Reaching and grasping"
+      },
+      "signs": {
+        "vi": [
+          "Giấc ngủ có thể xáo trộn ít hôm, ngủ ngày ngắn hơn",
+          "Có thể quấy hơn khi ở với người lạ",
+          "Một số bé có thể đòi bú đêm nhiều hơn",
+          "Một số bé không có thay đổi rõ — điều đó bình thường"
+        ],
+        "en": [
+          "Sleep may be unsettled for a few days, with shorter naps",
+          "May be fussier with unfamiliar people",
+          "Some babies may want more night feeds",
+          "Some babies show no clear change — that is normal"
+        ]
+      },
+      "skills": {
+        "vi": ["Với lấy và cầm đồ chơi", "Cười thành tiếng", "Giữ đầu vững khi được bế thẳng"],
+        "en": [
+          "Reaches for and holds toys",
+          "Laughs out loud",
+          "Holds head steady when held upright"
+        ]
+      },
+      "activityIds": [
+        "act_reach_and_grab",
+        "act_mirror_play",
+        "act_read_together",
+        "act_drowsy_but_awake"
+      ],
+      "notice": {
+        "title": {
+          "vi": "Sắp đến giai đoạn 4 (lịch tham khảo)",
+          "en": "Stage 4 coming up (reference calendar)"
+        },
+        "body": {
+          "vi": "Giấc ngủ của con có thể xáo trộn ít hôm, cũng có thể không. Mỗi bé mỗi khác.",
+          "en": "Sleep may be unsettled for a few days, or not at all. Every baby is different."
+        }
+      }
+    },
+    {
+      "id": "stage_05",
+      "number": 5,
+      "startOffsetDays": 168,
+      "endOffsetDays": 188,
+      "name": {
+        "vi": "Giai đoạn 5 · Gần, xa và người quen",
+        "en": "Stage 5 · Near, far and familiar faces"
+      },
+      "signs": {
+        "vi": [
+          "Có thể bám ba mẹ hơn, không muốn rời tay",
+          "Có thể khóc khi ba mẹ đi khỏi tầm mắt",
+          "Giấc ngủ hoặc ăn uống có thể thất thường vài hôm",
+          "Một số bé không có thay đổi rõ — điều đó bình thường"
+        ],
+        "en": [
+          "May be clingier and not want to be put down",
+          "May cry when you leave their sight",
+          "Sleep or eating may be up and down for a few days",
+          "Some babies show no clear change — that is normal"
+        ]
+      },
+      "skills": {
+        "vi": ["Lật từ sấp sang ngửa", "Nhận ra người quen", "Đưa đồ vật lên miệng để khám phá"],
+        "en": [
+          "Rolls from tummy to back",
+          "Knows familiar people",
+          "Explores things by mouthing them"
+        ]
+      },
+      "activityIds": ["act_floor_play", "act_peekaboo", "act_first_foods", "act_bedtime_routine"],
+      "notice": {
+        "title": {
+          "vi": "Sắp đến giai đoạn 5 (lịch tham khảo)",
+          "en": "Stage 5 coming up (reference calendar)"
+        },
+        "body": {
+          "vi": "Con có thể bám ba mẹ hơn vài hôm. Một số bé không có thay đổi rõ.",
+          "en": "Your baby may be clingier for a few days. Some babies show no clear change."
+        }
+      }
+    },
+    {
+      "id": "stage_06",
+      "number": 6,
+      "startOffsetDays": 245,
+      "endOffsetDays": 265,
+      "name": {
+        "vi": "Giai đoạn 6 · Khám phá đồ vật",
+        "en": "Stage 6 · Exploring objects"
+      },
+      "signs": {
+        "vi": [
+          "Có thể bám ba mẹ hoặc ngại người lạ hơn",
+          "Có thể thức giấc đêm nhiều hơn ít hôm",
+          "Một số bé có thể kén ăn hơn vài hôm",
+          "Một số bé không có thay đổi rõ — điều đó bình thường"
+        ],
+        "en": [
+          "May be clingier or warier of strangers",
+          "May wake more at night for a few days",
+          "Some babies may be fussier with food for a few days",
+          "Some babies show no clear change — that is normal"
+        ]
+      },
+      "skills": {
+        "vi": ["Ngồi vững không cần đỡ", "Tìm đồ vật khi thấy bị giấu", "Đập hai đồ vật vào nhau"],
+        "en": [
+          "Sits without support",
+          "Looks for a toy that has been hidden",
+          "Bangs two things together"
+        ]
+      },
+      "activityIds": [
+        "act_put_in_take_out",
+        "act_peekaboo",
+        "act_finger_foods",
+        "act_name_and_point"
+      ],
+      "notice": {
+        "title": {
+          "vi": "Sắp đến giai đoạn 6 (lịch tham khảo)",
+          "en": "Stage 6 coming up (reference calendar)"
+        },
+        "body": {
+          "vi": "Con có thể quấy hoặc bám hơn ít hôm. Xem vài gợi ý chơi cùng con.",
+          "en": "Your baby may be fussier or clingier for a few days. See some play ideas."
+        }
+      }
+    },
+    {
+      "id": "stage_07",
+      "number": 7,
+      "startOffsetDays": 308,
+      "endOffsetDays": 328,
+      "name": {
+        "vi": "Giai đoạn 7 · Bắt chước và kết hợp",
+        "en": "Stage 7 · Copying and combining"
+      },
+      "signs": {
+        "vi": [
+          "Có thể cần ba mẹ ở gần nhiều hơn",
+          "Có thể dễ cáu khi không làm được điều mình muốn",
+          "Giấc ngủ có thể xáo trộn ít hôm",
+          "Một số bé không có thay đổi rõ — điều đó bình thường"
+        ],
+        "en": [
+          "May want you close by more often",
+          "May get frustrated more easily when things don’t work",
+          "Sleep may be unsettled for a few days",
+          "Some babies show no clear change — that is normal"
+        ]
+      },
+      "skills": {
+        "vi": [
+          "Vịn đứng, đi men theo đồ đạc",
+          "Nhặt đồ nhỏ bằng ngón cái và ngón trỏ",
+          "Vẫy tay chào, bắt chước cử chỉ"
+        ],
+        "en": [
+          "Pulls to stand and cruises along furniture",
+          "Picks up small things with thumb and finger",
+          "Waves bye-bye and copies gestures"
+        ]
+      },
+      "activityIds": ["act_name_and_point", "act_floor_play", "act_read_together"],
+      "notice": {
+        "title": {
+          "vi": "Sắp đến giai đoạn 7 (lịch tham khảo)",
+          "en": "Stage 7 coming up (reference calendar)"
+        },
+        "body": {
+          "vi": "Con có thể cần ba mẹ nhiều hơn vài hôm. Mỗi bé mỗi khác.",
+          "en": "Your baby may need you a little more for a few days. Every baby is different."
+        }
+      }
+    },
+    {
+      "id": "stage_08",
+      "number": 8,
+      "startOffsetDays": 371,
+      "endOffsetDays": 391,
+      "name": {
+        "vi": "Giai đoạn 8 · Thói quen hằng ngày",
+        "en": "Stage 8 · Everyday routines"
+      },
+      "signs": {
+        "vi": [
+          "Có thể dễ cáu hoặc bám ba mẹ hơn",
+          "Có thể phản đối những việc quen như thay đồ, đi ngủ",
+          "Ăn uống có thể thất thường vài hôm",
+          "Một số bé không có thay đổi rõ — điều đó bình thường"
+        ],
+        "en": [
+          "May be crankier or clingier",
+          "May protest familiar routines like dressing or bedtime",
+          "Eating may be up and down for a few days",
+          "Some babies show no clear change — that is normal"
+        ]
+      },
+      "skills": {
+        "vi": [
+          "Đi men hoặc chập chững vài bước",
+          "Gọi “ba”, “mẹ” hoặc tên riêng cho người thân",
+          "Bỏ đồ vào hộp, lấy ra"
+        ],
+        "en": [
+          "Cruises or takes a few wobbly steps",
+          "Calls you “mama”, “dada” or a special name",
+          "Puts things in a container and takes them out"
+        ]
+      },
+      "activityIds": [
+        "act_put_in_take_out",
+        "act_read_together",
+        "act_big_feelings",
+        "act_narrate_day"
+      ],
+      "notice": {
+        "title": {
+          "vi": "Sắp đến giai đoạn 8 (lịch tham khảo)",
+          "en": "Stage 8 coming up (reference calendar)"
+        },
+        "body": {
+          "vi": "Con có thể dễ cáu hoặc bám hơn ít hôm, cũng có thể không. Xem gợi ý.",
+          "en": "Your toddler may be crankier or clingier for a few days, or not. See ideas."
+        }
+      }
+    },
+    {
+      "id": "stage_09",
+      "number": 9,
+      "startOffsetDays": 434,
+      "endOffsetDays": 454,
+      "name": {
+        "vi": "Giai đoạn 9 · Thử theo cách của con",
+        "en": "Stage 9 · Trying their own way"
+      },
+      "signs": {
+        "vi": [
+          "Có thể có những hôm dễ giận dỗi hơn",
+          "Có thể muốn tự làm và phản đối khi được giúp",
+          "Một số bé có thể ngủ không yên vài hôm",
+          "Một số bé không có thay đổi rõ — điều đó bình thường"
+        ],
+        "en": [
+          "May have some crosser days",
+          "May want to do it alone and protest help",
+          "Some toddlers may sleep restlessly for a few days",
+          "Some babies show no clear change — that is normal"
+        ]
+      },
+      "skills": {
+        "vi": [
+          "Đi vài bước một mình",
+          "Nói 1–2 từ ngoài “ba”, “mẹ”",
+          "Chỉ tay để đòi thứ mình muốn"
+        ],
+        "en": [
+          "Takes a few steps alone",
+          "Says one or two words besides “mama” or “dada”",
+          "Points to ask for something"
+        ]
+      },
+      "activityIds": [
+        "act_two_choices",
+        "act_big_feelings",
+        "act_name_and_point",
+        "act_outdoor_walk"
+      ],
+      "notice": {
+        "title": {
+          "vi": "Sắp đến giai đoạn 9 (lịch tham khảo)",
+          "en": "Stage 9 coming up (reference calendar)"
+        },
+        "body": {
+          "vi": "Con có thể có những hôm dễ giận dỗi hơn. Ở bên con là đủ.",
+          "en": "Your toddler may have some crosser days. Staying close is enough."
+        }
+      }
+    },
+    {
+      "id": "stage_10",
+      "number": 10,
+      "startOffsetDays": 511,
+      "endOffsetDays": 531,
+      "name": {
+        "vi": "Giai đoạn 10 · Tự lập hơn",
+        "en": "Stage 10 · Growing independence"
+      },
+      "signs": {
+        "vi": [
+          "Có thể cần ba mẹ nhiều hơn dù rất muốn tự làm",
+          "Có thể có những cơn giận dỗi mạnh hơn",
+          "Giấc ngủ có thể xáo trộn ít hôm",
+          "Một số bé không có thay đổi rõ — điều đó bình thường"
+        ],
+        "en": [
+          "May need you more while also wanting independence",
+          "Tantrums may feel bigger",
+          "Sleep may be unsettled for a few days",
+          "Some babies show no clear change — that is normal"
+        ]
+      },
+      "skills": {
+        "vi": [
+          "Tự đi không cần vịn",
+          "Vẽ nguệch ngoạc",
+          "Làm theo lời nhờ một bước",
+          "Tập dùng thìa"
+        ],
+        "en": [
+          "Walks without holding on",
+          "Scribbles",
+          "Follows one-step instructions",
+          "Tries to use a spoon"
+        ]
+      },
+      "activityIds": [
+        "act_big_feelings",
+        "act_read_together",
+        "act_two_choices",
+        "act_outdoor_walk"
+      ],
+      "notice": {
+        "title": {
+          "vi": "Sắp đến giai đoạn 10 (lịch tham khảo)",
+          "en": "Stage 10 coming up (reference calendar)"
+        },
+        "body": {
+          "vi": "Con có thể cần ba mẹ nhiều hơn ít hôm. Mỗi bé mỗi khác.",
+          "en": "Your toddler may need you more for a few days. Every child is different."
+        }
+      }
+    }
+  ],
+  "sources": [
+    {
+      "label": "The Wonder Weeks (reference only; not a partner)",
+      "url": "https://thewonderweeks.com/"
+    },
+    {
+      "label": "de Weerth & van Geert (1998), British Journal of Developmental Psychology: independent study; timing varied between babies and fixed periods were not confirmed",
+      "url": "https://onlinelibrary.wiley.com/doi/10.1111/j.2044-835X.1998.tb00748.x/abstract"
+    },
+    {
+      "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html"
+    },
+    {
+      "label": "WHO Child Growth Standards: motor development milestones",
+      "url": "https://www.who.int/tools/child-growth-standards/standards/motor-development-milestones"
+    }
+  ],
+  "review": null,
+  "publishedAt": null
+}
