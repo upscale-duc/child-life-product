@@ -44,9 +44,7 @@ import 'milestone_card_screens.dart'
     show
         KeepsakeActionTile,
         KeepsakePage,
-        KeepsakePreviewPage,
         KeepsakeRoundIcon,
-        keepsakePhotosLabel,
         OccasionFilter,
         TierBadge;
 
@@ -406,39 +404,28 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
                       suggested: suggested(t),
                       badge: catalog.value!.badges,
                       locale: locale,
-                      // The template first, with what it needs; "Dùng mẫu này" there goes
-                      // on to MM06 (owner, 2026-10-14).
-                      onTap: () => context.push(
-                        Routes.memoryStoryPreview,
-                        extra: VideoPreviewArgs(
-                          draft: VideoDraft(
-                            babyId: c.babyId,
-                            template: t,
-                            mediaIds: [...?widget.photoIds?.take(t.photosMax)],
-                            occasion:
-                                (_filter != null &&
-                                        (t.occasions.isEmpty ||
-                                            t.occasions.contains(_filter!.wire))
-                                    ? _filter
-                                    : null) ??
-                                (focus != null &&
-                                        t.occasions.contains(focus.wire)
-                                    ? focus
-                                    : t.occasions.length == 1
-                                    ? Occasion.fromWire(t.occasions.first)
-                                    : null),
-                          ),
-                          name: c.nickname,
-                          cover: t.thumb == null ? null : assetOf(t.thumb!),
-                          photo: t.thumb != null
-                              ? null
-                              : suitedPhotos(
-                                  media,
-                                  t,
-                                  c.dob,
-                                ).firstOrNull?.displayPath,
-                          suggested: suggested(t),
-                          badge: catalog.value!.badges,
+                      // Straight to the template playing, with "Dùng mẫu này" on to MM06
+                      // (owner, 2026-10-14: "ấn vào là sang màn hình play luôn").
+                      onTap: () => playVideoTemplate(
+                        context,
+                        ref,
+                        t,
+                        name: c.nickname,
+                        use: VideoDraft(
+                          babyId: c.babyId,
+                          template: t,
+                          mediaIds: [...?widget.photoIds?.take(t.photosMax)],
+                          occasion:
+                              (_filter != null &&
+                                      (t.occasions.isEmpty ||
+                                          t.occasions.contains(_filter!.wire))
+                                  ? _filter
+                                  : null) ??
+                              (focus != null && t.occasions.contains(focus.wire)
+                                  ? focus
+                                  : t.occasions.length == 1
+                                  ? Occasion.fromWire(t.occasions.first)
+                                  : null),
                         ),
                       ),
                     ),
@@ -451,117 +438,40 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
   }
 }
 
-/// What a video template's preview needs: the draft "Dùng mẫu này" goes on with, and the
-/// cover as drawn in the grid.
-class VideoPreviewArgs {
-  const VideoPreviewArgs({
-    required this.draft,
-    required this.name,
-    this.cover,
-    this.photo,
-    this.suggested = false,
-    this.badge = true,
-  });
-  final VideoDraft draft;
-  final String name;
-  final ImageProvider? cover;
-  final String? photo;
-  final bool suggested;
-  final bool badge;
-}
-
-/// A video template before it is used (owner, 2026-10-14): the cover large with "Xem mẫu", its
-/// name and tier, length, photos, format and dịp, and "Dùng mẫu này" on to MM06. Not drawn
-/// in Figma.
-class VideoTemplatePreviewScreen extends ConsumerWidget {
-  const VideoTemplatePreviewScreen({required this.args, super.key});
-  final VideoPreviewArgs args;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final locale = Localizations.localeOf(context);
-    final t = args.draft.template;
-    final title = _fill(
-      t.text('title')?.defaultText.of(locale) ?? '',
-      args.name,
-    );
-    final mark = t.occasions.length == 1
-        ? Occasion.fromWire(t.occasions.first)?.title(l10n).split(' ').first
-        : null;
-    final number = mark != null && int.tryParse(mark) != null ? mark : null;
-    final occasions = [
-      for (final o in t.occasions) ?Occasion.fromWire(o)?.label(l10n),
-    ];
-    return KeepsakePreviewPage(
-      name: t.name.of(locale),
-      premium: t.premium,
-      badge: args.badge,
-      note: args.suggested ? l10n.ksSuggested : null,
-      preview: Center(
-        child: Stack(
-          children: [
-            VideoCover(
-              width: 220,
-              title: args.cover != null ? '' : title,
-              image: args.cover,
-              photoPath: args.photo,
-              mark: args.cover == null ? number : null,
-              duration: t.durationSec == null
-                  ? null
-                  : _mmss(t.durationSec! * 1000),
-            ),
-            // "Xem mẫu": the template playing with sample pictures (MM04 / MM05).
-            Positioned.fill(
-              child: Center(
-                child: ClPressable(
-                  onPressed: () => ref.read(keepsakePreviewLauncherProvider)(
-                    context,
-                    demoPreview(
-                      t,
-                      name: args.name,
-                      locale: locale,
-                      track: ref
-                          .read(keepsakeCatalogProvider)
-                          .value
-                          ?.track(t.defaultMusic),
-                      mark: number,
-                    ),
-                  ),
-                  semanticLabel: l10n.ksPreviewSample,
-                  child: Container(
-                    width: 56,
-                    height: 56,
-                    decoration: const BoxDecoration(
-                      color: Color(0xE6FFFFFF),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Center(
-                      child: PlayGlyph(size: 20, color: Colors.black87),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      facts: [
-        if (t.durationSec != null)
-          (l10n.ksInfoDuration, _mmss(t.durationSec! * 1000)),
-        (
-          l10n.ksInfoPhotos,
-          keepsakePhotosLabel(l10n, t.photosMin, t.photosMax),
-        ),
-        (l10n.ksInfoFormat, l10n.ksFormatStory),
-        (
-          l10n.ksInfoOccasion,
-          occasions.isEmpty ? l10n.ksAnyOccasion : occasions.join(' · '),
-        ),
-      ],
-      onUse: () => context.push(Routes.memoryStoryPhotos, extra: args.draft),
-    );
-  }
+/// "Xem mẫu": the template playing with sample pictures (MM04 / MM05, G-107). With [use] it is
+/// how a template is picked: its name, what it needs and "Dùng mẫu này" on to MM06.
+Future<void> playVideoTemplate(
+  BuildContext context,
+  WidgetRef ref,
+  KeepsakeTemplate t, {
+  required String name,
+  VideoDraft? use,
+}) {
+  final l10n = AppLocalizations.of(context);
+  final locale = Localizations.localeOf(context);
+  final mark = t.occasions.length == 1
+      ? Occasion.fromWire(t.occasions.first)?.title(l10n).split(' ').first
+      : null;
+  final request = demoPreview(
+    t,
+    name: name,
+    locale: locale,
+    track: ref.read(keepsakeCatalogProvider).value?.track(t.defaultMusic),
+    mark: mark != null && int.tryParse(mark) != null ? mark : null,
+  );
+  return ref.read(keepsakePreviewLauncherProvider)(
+    context,
+    use == null
+        ? request
+        : request.withUse(
+            title: t.name.of(locale),
+            info: [
+              l10n.ksVideoNeeds(t.photosMin, t.photosMax),
+              if (t.durationSec != null) _mmss(t.durationSec! * 1000),
+            ].join(' · '),
+            onUse: () => context.push(Routes.memoryStoryPhotos, extra: use),
+          ),
+  );
 }
 
 class _VideoTemplateTile extends StatelessWidget {
@@ -631,38 +541,19 @@ class _VideoTemplateTile extends StatelessWidget {
                     top: 6,
                     child: TierBadge(premium: template.premium),
                   ),
-                // "Xem mẫu": the template playing with sample pictures (MM04 / MM05, G-107).
+                // The play mark only: a tap anywhere plays the template (playVideoTemplate).
                 Positioned.fill(
-                  child: Center(
-                    child: Consumer(
-                      builder: (context, ref, _) => ClPressable(
-                        onPressed: () =>
-                            ref.read(keepsakePreviewLauncherProvider)(
-                              context,
-                              demoPreview(
-                                template,
-                                name: name,
-                                locale: locale,
-                                track: ref
-                                    .read(keepsakeCatalogProvider)
-                                    .value
-                                    ?.track(template.defaultMusic),
-                                mark: mark != null && int.tryParse(mark) != null
-                                    ? mark
-                                    : null,
-                              ),
-                            ),
-                        semanticLabel: l10n.ksPreviewSample,
-                        child: Container(
-                          width: 44,
-                          height: 44,
-                          decoration: const BoxDecoration(
-                            color: Color(0xE6FFFFFF),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Center(
-                            child: PlayGlyph(size: 16, color: Colors.black87),
-                          ),
+                  child: IgnorePointer(
+                    child: Center(
+                      child: Container(
+                        width: 44,
+                        height: 44,
+                        decoration: const BoxDecoration(
+                          color: Color(0xE6FFFFFF),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Center(
+                          child: PlayGlyph(size: 16, color: Colors.black87),
                         ),
                       ),
                     ),

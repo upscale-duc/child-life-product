@@ -338,15 +338,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                     ),
                     routes: [
                       _route(
-                        path: 'preview',
-                        redirect: (_, s) => argsOf<VideoPreviewArgs>(s) == null
-                            ? Routes.memoryStory
-                            : null,
-                        builder: (_, s) => VideoTemplatePreviewScreen(
-                          args: argsOf<VideoPreviewArgs>(s)!,
-                        ),
-                      ),
-                      _route(
                         path: 'photos',
                         redirect: (_, s) => argsOf<VideoDraft>(s) == null
                             ? Routes.memoryStory

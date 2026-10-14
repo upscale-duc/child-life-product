@@ -398,17 +398,39 @@ class OccasionFilter extends StatefulWidget {
 
 class _OccasionFilterState extends State<OccasionFilter> {
   final _chosen = GlobalKey();
+  final _row = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final chip = _chosen.currentContext;
-      if (chip != null && chip.mounted) {
-        unawaited(Scrollable.ensureVisible(chip, alignment: 0.5));
-      }
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _centreChosen());
   }
+
+  @override
+  void dispose() {
+    _row.dispose();
+    super.dispose();
+  }
+
+  /// Brings the chosen chip into the middle of the row, sideways only and only the first time:
+  /// Scrollable.ensureVisible also scrolled the list around it, so the screen jumped whenever
+  /// the row was rebuilt on the way back up (owner, 2026-10-14: "scroll gần lên đầu thì bị
+  /// giật"). The row's own offset is kept (PageStorage) when it is rebuilt.
+  void _centreChosen() {
+    if (!mounted || !_row.hasClients) return;
+    final storage = PageStorage.maybeOf(context);
+    if (storage?.readState(context, identifier: _centred) == true) return;
+    storage?.writeState(context, true, identifier: _centred);
+    final chip = _chosen.currentContext?.findRenderObject() as RenderBox?;
+    final row = _row.position.context.notificationContext?.findRenderObject();
+    if (chip == null || row is! RenderBox) return;
+    final x = chip.localToGlobal(Offset.zero, ancestor: row).dx + _row.offset;
+    final target =
+        x + chip.size.width / 2 - _row.position.viewportDimension / 2;
+    _row.jumpTo(target.clamp(0.0, _row.position.maxScrollExtent));
+  }
+
+  String get _centred => 'occasionCentred.${widget.allLabel != null}';
 
   @override
   Widget build(BuildContext context) {
@@ -442,6 +464,8 @@ class _OccasionFilterState extends State<OccasionFilter> {
         ),
         const SizedBox(height: ClSpace.s3),
         SingleChildScrollView(
+          key: PageStorageKey('occasionRow.${all != null}'),
+          controller: _row,
           scrollDirection: Axis.horizontal,
           clipBehavior: Clip.none,
           child: Row(

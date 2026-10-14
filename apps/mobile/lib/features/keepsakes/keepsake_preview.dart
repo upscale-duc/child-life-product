@@ -11,6 +11,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../app/providers.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../l10n/app_localizations.dart';
 import '../memories/media_bytes.dart';
@@ -32,8 +33,31 @@ class KeepsakePreviewRequest {
     required this.props,
     this.startFrame = 0,
     this.videoUrl,
+    this.title,
+    this.info,
+    this.onUse,
   });
   final String composition;
+
+  /// Picking a template (owner, 2026-10-14: "ấn vào là sang màn hình play luôn"): its name in
+  /// the top bar, what it needs under the player, and "Dùng mẫu này" (the player closes first).
+  final String? title;
+  final String? info;
+  final VoidCallback? onUse;
+
+  KeepsakePreviewRequest withUse({
+    required String title,
+    required String info,
+    required VoidCallback onUse,
+  }) => KeepsakePreviewRequest(
+    composition: composition,
+    props: props,
+    startFrame: startFrame,
+    videoUrl: videoUrl,
+    title: title,
+    info: info,
+    onUse: onUse,
+  );
 
   /// "Xem mẫu" of a template with a portal-made `.mp4`: played as is, no WebView.
   final String? videoUrl;
@@ -292,9 +316,13 @@ class _PreviewState extends State<KeepsakePreviewScreen> {
                     onTap: () => Navigator.of(context).maybePop(),
                   ),
                   const SizedBox(width: ClSpace.s3),
-                  Text(
-                    l10n.ksPreview,
-                    style: cl.text.headline.copyWith(color: Colors.white),
+                  Expanded(
+                    child: Text(
+                      widget.request.title ?? l10n.ksPreview,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: cl.text.headline.copyWith(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -342,12 +370,36 @@ class _PreviewState extends State<KeepsakePreviewScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(ClSpace.s4),
-              child: Text(
-                widget.request.videoUrl != null
-                    ? l10n.ksPreviewVideoNote
-                    : l10n.ksPreviewNote,
-                textAlign: TextAlign.center,
-                style: cl.text.caption.copyWith(color: Colors.white60),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (widget.request.info case final info?) ...[
+                    Text(
+                      info,
+                      textAlign: TextAlign.center,
+                      style: cl.text.label.copyWith(color: Colors.white),
+                    ),
+                    const SizedBox(height: ClSpace.s1),
+                  ],
+                  Text(
+                    widget.request.videoUrl != null
+                        ? l10n.ksPreviewVideoNote
+                        : l10n.ksPreviewNote,
+                    textAlign: TextAlign.center,
+                    style: cl.text.caption.copyWith(color: Colors.white60),
+                  ),
+                  if (widget.request.onUse case final use?) ...[
+                    const SizedBox(height: ClSpace.s3),
+                    ClButton(
+                      label: l10n.ksUseTemplate,
+                      expand: true,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        use();
+                      },
+                    ),
+                  ],
+                ],
               ),
             ),
           ],

@@ -106,10 +106,16 @@ void main() {
   testWidgets(
     'MM04 (G-107): the dịp we came for filters the templates, Tất cả shows all',
     (tester) async {
+      final seen = <KeepsakePreviewRequest>[];
       final (visits, _) = await pumpRouted(
         tester,
         const MemoryStoryTemplatesScreen(occasion: Occasion.m1),
-        overrides: on(),
+        overrides: [
+          ...on(),
+          keepsakePreviewLauncherProvider.overrideWithValue(
+            (context, r) async => seen.add(r),
+          ),
+        ],
       );
       // 1 tháng: its own template (Gợi ý) and the one made for any day.
       expect(find.text('Tháng đầu tiên'), findsOneWidget);
@@ -138,12 +144,13 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Khoảnh khắc nhỏ'));
       await tester.pumpAndSettle();
-      // A template opens its preview first (owner, 2026-10-14).
-      expect(visits.last.location, '/memories/video/preview');
-      expect(
-        (visits.last.extra! as VideoPreviewArgs).draft.occasion,
-        Occasion.m1,
-      );
+      // A template plays at once, with what it needs and "Dùng mẫu này" (owner, 2026-10-14).
+      expect(seen.last.title, 'Khoảnh khắc nhỏ');
+      expect(seen.last.info, startsWith('Cần '));
+      seen.last.onUse!();
+      await tester.pumpAndSettle();
+      expect(visits.last.location, '/memories/video/photos');
+      expect((visits.last.extra! as VideoDraft).occasion, Occasion.m1);
     },
   );
 
@@ -194,33 +201,35 @@ void main() {
     expect(visits.last.extra, same(draft));
   });
 
-  testWidgets(
-    'a video template’s preview: what it needs, then "Dùng mẫu này"',
-    (tester) async {
-      final draft = VideoDraft(babyId: teddyId, template: template);
-      final (visits, _) = await pumpRouted(
-        tester,
-        VideoTemplatePreviewScreen(
-          args: VideoPreviewArgs(draft: draft, name: 'Teddy', suggested: true),
+  testWidgets('scrolling back up does not jump to the dịp row', (tester) async {
+    // A short screen, so the list scrolls far enough to drop the row.
+    await pumpRouted(
+      tester,
+      const Align(
+        alignment: Alignment.topCenter,
+        child: SizedBox(
+          height: 420,
+          child: MemoryStoryTemplatesScreen(occasion: Occasion.m1),
         ),
-        overrides: on(),
-      );
-      expect(find.text('Tháng đầu tiên'), findsOneWidget);
-      expect(find.text('Gợi ý'), findsOneWidget);
-      expect(find.text('6–8 ảnh'), findsOneWidget);
-      expect(find.text('Story 9:16'), findsOneWidget);
-      expect(find.text('1 tháng'), findsOneWidget);
-      // "Xem mẫu" on the cover plays the template with sample pictures.
-      expect(
-        find.byWidgetPredicate((w) => w.runtimeType.toString() == 'PlayGlyph'),
-        findsOneWidget,
-      );
-      await tester.tap(find.text('Dùng mẫu này'));
-      await tester.pumpAndSettle();
-      expect(visits.last.location, '/memories/video/photos');
-      expect(visits.last.extra, same(draft));
-    },
-  );
+      ),
+      overrides: on(catalog: manyVideos()),
+    );
+    await tester.tap(find.text('Tất cả'));
+    await tester.pumpAndSettle();
+    final list = find.byWidgetPredicate(
+      (w) => w is Scrollable && w.axisDirection == AxisDirection.down,
+    );
+    double offset() => tester.state<ScrollableState>(list).position.pixels;
+    // Far enough down that the row is dropped, then back near the top: it is built again
+    // and must not scroll the list (owner, 2026-10-14: "scroll gần lên đầu thì bị giật").
+    await tester.drag(list, const Offset(0, -600));
+    await tester.pumpAndSettle();
+    final far = offset();
+    expect(far, greaterThan(400));
+    await tester.drag(list, Offset(0, far - 20));
+    await tester.pumpAndSettle();
+    expect(offset(), closeTo(20, 1));
+  });
 
   testWidgets('MM04: a template’s own cover, not the baby’s photos', (
     tester,
@@ -524,7 +533,7 @@ void main() {
           ),
         ],
       );
-      await tester.tap(find.bySemanticsLabel('Xem mẫu').first);
+      await tester.tap(find.text('Tháng đầu tiên'));
       await tester.pumpAndSettle();
       expect(seen.single.videoUrl, isNotNull);
     });
@@ -797,7 +806,7 @@ void main() {
             ),
           ],
         );
-        await tester.tap(find.bySemanticsLabel('Xem mẫu').first);
+        await tester.tap(find.text('Tháng đầu tiên'));
         await tester.pumpAndSettle();
         final r = seen.single;
         expect(r.composition, 'FirstMonth');
@@ -863,4 +872,21 @@ class FakeTrackSampler implements TrackSampler {
 
   @override
   void dispose() {}
+}
+
+/// The seed's video templates three times over, for a list long enough to scroll.
+KeepsakeCatalog manyVideos() {
+  final raw =
+      jsonDecode(File('test/helpers/keepsake_seed.json').readAsStringSync())
+          as Map<String, Object?>;
+  final templates = (raw['templates']! as List).cast<Map<String, Object?>>();
+  return KeepsakeCatalog.fromJson({
+    ...raw,
+    'templates': [
+      ...templates,
+      for (final copy in [2, 3])
+        for (final t in templates)
+          if (t['kind'] == 'video') {...t, 'id': '${t['id']}_$copy'},
+    ],
+  });
 }

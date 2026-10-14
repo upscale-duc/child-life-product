@@ -82,7 +82,6 @@ abstract final class Routes {
   /// with the draft as `extra`, `/job/{jobId}?baby=…` (MM08 / MM09 / MM14).
   static const memoryStory = '/memories/video';
   static const memoryStoryPhotos = '/memories/video/photos';
-  static const memoryStoryPreview = '/memories/video/preview';
   static const memoryStoryFinish = '/memories/video/finish';
   static const memoryStoryJob = '/memories/video/job';
 
