@@ -540,6 +540,11 @@ export const reasonMessages = [
   'invalid-catalog',
   'not-yours',
   'stale-draft',
+  'bad-dates',
+  'duplicate-campaign',
+  'no-grant',
+  'paid-grant',
+  'no-baby',
 ];
 
 export function errorMessageId(error: ApiError): string {

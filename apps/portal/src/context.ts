@@ -23,6 +23,7 @@ export type Route =
   | 'systemAi'
   | 'appUpdate'
   | 'features'
+  | 'premium'
   | 'staff'
   | 'audit'
   | 'qa';
@@ -41,6 +42,7 @@ export const routePaths: Record<Route, string> = {
   systemAi: '/system/ai',
   appUpdate: '/app-update',
   features: '/features',
+  premium: '/premium',
   staff: '/staff',
   audit: '/audit',
   qa: '/qa',

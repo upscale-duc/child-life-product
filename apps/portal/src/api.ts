@@ -2,10 +2,12 @@ import type {
   AppUpdateConfig,
   AppUpdatePublic,
   AuditCategory,
+  EntitlementsConfig,
   FeedbackType,
   FirstAidPack,
   FlagKey,
   Flags,
+  GrantEnvironment,
   Limits,
   QaCaseContent,
   QaEnvironment,
@@ -71,6 +73,11 @@ export type Callable =
   | 'staffAppUpdate'
   | 'staffAppUpdateSave'
   | 'staffAppUpdateImage'
+  | 'staffPremium'
+  | 'staffSetPremiumConfig'
+  | 'staffFamilyPremium'
+  | 'staffGrantPromo'
+  | 'staffRevokeGrant'
   | 'sendAuthEmail';
 
 export interface Api {
@@ -641,4 +648,18 @@ export interface AppUpdateView {
     config: AppUpdateConfig;
   }>;
   images: FirstAidImage[];
+}
+
+// ---------- Premium & Cá nhân hoá (plan §5.6, mirrors premium-staff.ts) ----------
+
+/** `config/entitlements` as the portal sees it: campaign families are family codes (F-XXXX). */
+export type StaffPremiumConfig = EntitlementsConfig;
+
+export interface StaffPremiumView {
+  config: StaffPremiumConfig;
+  /** False while nothing valid is stored: `config` is then the shipped default. */
+  stored: boolean;
+  /** Which grants count on this server (store sandbox and dev = `test`). */
+  environment: GrantEnvironment;
+  recent: Array<{ action: string; target: string; by: string; at: string; reason: string }>;
 }

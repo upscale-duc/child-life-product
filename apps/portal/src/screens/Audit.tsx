@@ -33,6 +33,7 @@ const categoryTone: Record<AuditRow['category'], PillTone> = {
   reference: 'ok',
   content: 'purple',
   analytics: 'info',
+  premium: 'high',
 };
 
 /** A12 Nhật ký thao tác: append-only; only codes, actions and reasons, never family content. */

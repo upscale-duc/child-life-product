@@ -409,6 +409,9 @@ export function AuditActionText({
     'content.keepsakes.asset',
     'release.publish',
     'release.image',
+    'premium.config',
+    'premium.grant',
+    'premium.revoke',
   ];
   return (
     <FormattedMessage
@@ -581,7 +584,13 @@ export function defaultNotice(key: FlagKey): string {
  * "Một vài gia đình": by family code (F-XXXX, as Gia đình shows it) or a parent's exact email,
  * matched on the server and never shown back.
  */
-function FamilyPicker({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
+export function FamilyPicker({
+  value,
+  onChange,
+}: {
+  value: string[];
+  onChange: (v: string[]) => void;
+}) {
   const intl = useIntl();
   const api = useApi();
   const [q, setQ] = useState('');

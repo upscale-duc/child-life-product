@@ -11,6 +11,7 @@ import {
   ChartColumn,
   ChevronsUpDown,
   ClipboardCheck,
+  Crown,
   DatabaseBackup,
   HardDrive,
   HeartPulse,
@@ -95,6 +96,7 @@ import { FirstAidScreen } from './screens/FirstAid';
 import { KeepsakesScreen } from './screens/Keepsakes';
 import { JobsScreen } from './screens/Jobs';
 import { OverviewScreen } from './screens/Overview';
+import { PremiumScreen } from './screens/Premium';
 import { QaScreen } from './screens/Qa';
 import { ReferenceScreen } from './screens/Reference';
 import { StaffScreen } from './screens/Staff';
@@ -125,6 +127,7 @@ const nav: NavItem[] = [
   { route: 'keepsakes', icon: Sparkles, group: 'content', can: 'content.view' },
   { route: 'system', icon: Server, group: 'system', can: 'system.view' },
   { route: 'features', icon: ToggleRight, group: 'system', can: 'features.view' },
+  { route: 'premium', icon: Crown, group: 'system', can: 'premium.view' },
   { route: 'appUpdate', icon: Smartphone, group: 'system', can: 'release.view' },
   { route: 'staff', icon: ShieldCheck, group: 'system', can: 'staff.view' },
   { route: 'audit', icon: ScrollText, group: 'system', can: 'audit.view' },
@@ -329,6 +332,8 @@ function Screen({ route }: { route: Route }) {
       return <SystemScreen tab="ai" />;
     case 'features':
       return <FeaturesScreen />;
+    case 'premium':
+      return <PremiumScreen />;
     case 'appUpdate':
       return <AppUpdateScreen />;
     case 'audit':
