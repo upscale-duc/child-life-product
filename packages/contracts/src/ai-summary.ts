@@ -1,0 +1,186 @@
+import { z } from 'zod';
+import type { GateReason } from './entitlements.js';
+import type { QuotaSnapshot } from './quota.js';
+
+/**
+ * Grounded AI (brief p.14, plan §5.5): a handover for the next carer (SU01 / NL10), an explanation
+ * of one suggestion, and a nudge to keep a confirmed milestone. The model may only reword facts
+ * the engine produced and pick a suggestion from approved candidates; every number comes from the
+ * engine. Anything else falls back to the free template summary built from the same facts.
+ */
+
+export const aiSummaryKinds = ['handover', 'explain', 'moment'] as const;
+export type AiSummaryKind = (typeof aiSummaryKinds)[number];
+
+/** Bumped when the consent text changes; older consents no longer count (brief p.14). */
+export const aiConsentVersion = 'ai-consent-v1';
+
+/**
+ * `users/{uid}/settings/ai`: per person; a household's Premium never replaces it. Notes written
+ * by someone else are sent only when that person's own consent allows it (`shareMyNotes`).
+ */
+export const aiConsentSchema = z.object({
+  consent: z
+    .object({
+      version: z.string().min(1).max(40),
+      grantedAt: z.string(),
+      /** Let my own free-text notes be included when someone in the family asks for a summary. */
+      shareMyNotes: z.boolean(),
+    })
+    .nullable(),
+  updatedAt: z.string().nullable(),
+});
+export type AiConsent = z.infer<typeof aiConsentSchema>;
+
+/** One fact the engine extracted; the only thing a summary may talk about. */
+export interface SummaryFact {
+  /** `ci_…` check-in, `fb_…` feedback, `ms_…` milestone, `sleep` comparison. */
+  id: string;
+  kind: 'checkin' | 'feedback' | 'milestone' | 'sleep';
+  date: string;
+  authorUid: string | null;
+  /** Short engine-written line (template), e.g. "Khó vào giấc · giấc đêm · 2–3 ngày". */
+  text: string;
+}
+
+export const summarySectionKinds = ['noticed', 'helped', 'next', 'note'] as const;
+
+/** What the model must return (JSON schema mode). */
+export const aiOutputSchema = z
+  .object({
+    sections: z
+      .array(
+        z.object({
+          kind: z.enum(summarySectionKinds),
+          text: z.string().min(1).max(600),
+          factIds: z.array(z.string().min(1).max(60)).max(12),
+        }),
+      )
+      .min(1)
+      .max(6),
+    suggestionContentId: z.string().max(60).nullable(),
+    language: z.enum(['vi', 'en']),
+  })
+  .strict();
+export type AiOutput = z.infer<typeof aiOutputSchema>;
+
+export type AiGateResult = 'AI_VALID' | 'FALLBACK' | 'CACHE' | 'HEALTH_FLOW';
+
+export interface AiGateInput {
+  entitled: boolean;
+  consent: boolean;
+  healthFlag: boolean;
+  cached: boolean;
+  schemaValid: boolean;
+  timeout: boolean;
+  locale: string;
+  outputLocale: string;
+  allowedFacts: readonly string[];
+  outputFactIds: readonly string[];
+  allowedContent: readonly string[];
+  suggestionId: string | null;
+}
+
+/**
+ * A01–A08: health first (no model at all), then entitlement + consent, cache, then the output
+ * checks (time, schema, language, fact ids within the snapshot, suggestion within the approved
+ * candidates). ID checks do not prove the sentences are right: a human audit is still required.
+ */
+export function aiGate(x: AiGateInput): AiGateResult {
+  if (x.healthFlag) return 'HEALTH_FLOW';
+  if (!x.entitled || !x.consent) return 'FALLBACK';
+  if (x.cached) return 'CACHE';
+  if (x.timeout || !x.schemaValid || x.outputLocale !== x.locale) return 'FALLBACK';
+  const facts = new Set(x.allowedFacts);
+  if (!x.outputFactIds.every((f) => facts.has(f))) return 'FALLBACK';
+  if (x.suggestionId !== null && !x.allowedContent.includes(x.suggestionId)) return 'FALLBACK';
+  return 'AI_VALID';
+}
+
+/** Claims a summary must never make (brief p.6, p.14); checked on every section before use. */
+export const forbiddenClaimPatterns: readonly RegExp[] = [
+  /không (có gì )?đáng lo/iu,
+  /\bnothing to worry\b/i,
+  /\b(definitely|certainly|guaranteed?)\b/i,
+  /chắc chắn/iu,
+  /\b(because of|caused by|due to) (the )?(leap|wonder week)/i,
+  /(do|vì) (giai đoạn|wonder week|bước nhảy)/iu,
+  /\bdiagnos/i,
+  /chẩn đoán (là|bé bị)/iu,
+];
+
+export function claimProblems(output: AiOutput): string[] {
+  const out: string[] = [];
+  for (const s of output.sections) {
+    for (const p of forbiddenClaimPatterns) if (p.test(s.text)) out.push(p.source);
+    // Any digit in a sentence must come from a fact (numbers belong to the engine).
+    if (/\d/u.test(s.text) && s.factIds.length === 0) out.push('number-without-fact');
+  }
+  return out;
+}
+
+/** Cache key (brief p.14): same facts in another language never answer from this one. */
+export function aiCacheKey(k: {
+  babyId: string;
+  kind: AiSummaryKind;
+  dataVersion: number;
+  contentVersion: string;
+  locale: 'vi' | 'en';
+  promptVersion: string;
+  model: string;
+  consentVersion: string;
+}): string {
+  return [
+    k.babyId,
+    k.kind,
+    `d${k.dataVersion}`,
+    k.contentVersion,
+    k.locale,
+    k.promptVersion,
+    k.model,
+    k.consentVersion,
+  ].join('|');
+}
+
+export const generateSummaryRequestSchema = z.object({
+  babyId: z.string().min(1).max(128),
+  kind: z.enum(aiSummaryKinds),
+  locale: z.enum(['vi', 'en']),
+  /** Idempotency: retrying with the same id returns the same snapshot, one quota use at most. */
+  requestId: z.uuid(),
+  /** `explain`: the recommendation to explain. */
+  recommendationId: z.string().max(80).optional(),
+  /** `moment`: the confirmed milestone. */
+  milestoneId: z.string().max(80).optional(),
+});
+
+export const setAiConsentRequestSchema = z.object({
+  /** null withdraws consent: queued work stops, cached AI summaries are deleted. */
+  consent: z.object({ version: z.string().min(1).max(40), shareMyNotes: z.boolean() }).nullable(),
+});
+
+export const reportSummaryRequestSchema = z.object({
+  babyId: z.string().min(1).max(128),
+  summaryId: z.string().min(1).max(80),
+  /** "Chưa đúng? Báo lại": what was wrong, chosen, never free text about the child. */
+  problem: z.enum(['wrong_fact', 'wrong_person', 'unsafe_advice', 'language', 'other']),
+});
+
+export interface SummaryAnswer {
+  id: string;
+  kind: AiSummaryKind;
+  /** `ai` (validated model output), `cache`, or `fallback` (template; free, no quota used). */
+  method: 'ai' | 'cache' | 'fallback';
+  /** Why the template was used: CONSENT_REQUIRED, PREMIUM_REQUIRED, QUOTA_EXCEEDED, FEATURE_DISABLED,
+   * or the technical `timeout` / `invalid` / `unavailable`. */
+  fallbackReason: GateReason | 'timeout' | 'invalid' | 'unavailable' | null;
+  sections: { kind: (typeof summarySectionKinds)[number]; text: string; factIds: string[] }[];
+  facts: SummaryFact[];
+  suggestionContentId: string | null;
+  range: { from: string; to: string };
+  authorUids: string[];
+  language: 'vi' | 'en';
+  generatedAt: string;
+  dataVersion: number;
+  quota: { day: QuotaSnapshot; month: QuotaSnapshot } | null;
+}
