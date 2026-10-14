@@ -17568,6 +17568,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Lời kết'**
   String get ksVideoFieldClosing;
+
+  /// Template pickers: open the template in view (owner, 2026-10-14)
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng mẫu này'**
+  String get ksUseTemplate;
+
+  /// Carousel position for screen readers
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu {n} trên {total}'**
+  String ksTemplateOf(int n, int total);
 }
 
 class _AppLocalizationsDelegate

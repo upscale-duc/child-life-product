@@ -43,6 +43,7 @@ import 'keepsake_preview.dart';
 import 'milestone_card_screens.dart'
     show
         KeepsakeActionTile,
+        KeepsakeCarousel,
         KeepsakeKindTabs,
         KeepsakePage,
         KeepsakeRoundIcon,
@@ -290,6 +291,9 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
   /// The dịp chip; null is "Tất cả". Starts on the occasion we came for (MM03, MM12).
   late Occasion? _filter = widget.occasion;
 
+  /// The template in view in the carousel.
+  var _index = 0;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -345,8 +349,28 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
         });
     final locale = Localizations.localeOf(context);
     final assetOf = ref.watch(keepsakeAssetImageProvider);
+    void open(KeepsakeTemplate t) => context.push(
+      Routes.memoryStoryPhotos,
+      extra: VideoDraft(
+        babyId: c.babyId,
+        template: t,
+        mediaIds: [...?widget.photoIds?.take(t.photosMax)],
+        occasion:
+            (_filter != null &&
+                    (t.occasions.isEmpty || t.occasions.contains(_filter!.wire))
+                ? _filter
+                : null) ??
+            (focus != null && t.occasions.contains(focus.wire)
+                ? focus
+                : t.occasions.length == 1
+                ? Occasion.fromWire(t.occasions.first)
+                : null),
+      ),
+    );
+    final index = videos.isEmpty ? 0 : _index.clamp(0, videos.length - 1);
     return KeepsakePage(
       title: l10n.ksVideoTitle,
+      fill: true,
       header: access.cards && c.dob != null
           ? KeepsakeKindTabs(
               video: true,
@@ -371,7 +395,10 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
                   OccasionChip(
                     label: l10n.filterAll,
                     selected: _filter == null,
-                    onTap: () => setState(() => _filter = null),
+                    onTap: () => setState(() {
+                      _filter = null;
+                      _index = 0;
+                    }),
                   ),
                   for (final o in Occasion.chipsFor(
                     dob,
@@ -384,7 +411,10 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
                       icon: o.icon,
                       selected: o == _filter,
                       suggested: o == near,
-                      onTap: () => setState(() => _filter = o),
+                      onTap: () => setState(() {
+                        _filter = o;
+                        _index = 0;
+                      }),
                     ),
                 ].indexed) ...[
                   if (i > 0) const SizedBox(width: ClSpace.s2),
@@ -395,24 +425,25 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
           ),
         ],
         const SizedBox(height: ClSpace.s4),
-        if (catalog.isLoading && !catalog.hasValue)
-          const ClSkeleton(height: 280)
-        else if (videos.isEmpty)
-          ClEmptyState(
-            icon: ClIcons.camera,
-            title: l10n.ksNoTemplates,
-            message: l10n.ksNoTemplatesBody,
-          )
-        else
-          LayoutBuilder(
-            builder: (context, box) {
-              final w = (box.maxWidth - ClSpace.s3) / 2;
-              return Wrap(
-                spacing: ClSpace.s3,
-                runSpacing: ClSpace.s4,
-                children: [
-                  for (final t in videos)
-                    _VideoTemplateTile(
+        // One template at a time, swiped sideways (owner, 2026-10-14), as on the Thiệp tab.
+        Expanded(
+          child: catalog.isLoading && !catalog.hasValue
+              ? const ClSkeleton(height: 280)
+              : videos.isEmpty
+              ? ClEmptyState(
+                  icon: ClIcons.camera,
+                  title: l10n.ksNoTemplates,
+                  message: l10n.ksNoTemplatesBody,
+                )
+              : KeepsakeCarousel(
+                  key: ValueKey(_filter),
+                  count: videos.length,
+                  aspect: 9 / 16,
+                  below: 48,
+                  onChanged: (i) => setState(() => _index = i),
+                  itemBuilder: (context, i, w) {
+                    final t = videos[i];
+                    return _VideoTemplateTile(
                       template: t,
                       width: w,
                       name: c.nickname,
@@ -429,30 +460,19 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
                       suggested: suggested(t),
                       badge: catalog.value!.badges,
                       locale: locale,
-                      onTap: () => context.push(
-                        Routes.memoryStoryPhotos,
-                        extra: VideoDraft(
-                          babyId: c.babyId,
-                          template: t,
-                          mediaIds: [...?widget.photoIds?.take(t.photosMax)],
-                          occasion:
-                              (_filter != null &&
-                                      (t.occasions.isEmpty ||
-                                          t.occasions.contains(_filter!.wire))
-                                  ? _filter
-                                  : null) ??
-                              (focus != null && t.occasions.contains(focus.wire)
-                                  ? focus
-                                  : t.occasions.length == 1
-                                  ? Occasion.fromWire(t.occasions.first)
-                                  : null),
-                        ),
-                      ),
-                    ),
-                ],
-              );
-            },
+                      onTap: () => open(t),
+                    );
+                  },
+                ),
+        ),
+        if (videos.isNotEmpty) ...[
+          const SizedBox(height: ClSpace.s3),
+          ClButton(
+            label: l10n.ksUseTemplate,
+            expand: true,
+            onPressed: () => open(videos[index]),
           ),
+        ],
       ],
     );
   }

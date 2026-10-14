@@ -253,45 +253,48 @@ void main() {
 
   group('MM10 · chọn mẫu', () {
     for (final palette in [ClPalette.light, ClPalette.nightCare]) {
-      testWidgets(
-        'occasions, formats and the four templates (${palette.name})',
-        (tester) async {
-          await pumpScreen(
-            tester,
-            const MilestoneCardScreen(),
-            palette: palette,
-          );
-          expect(find.text('Thiệp cột mốc'), findsOneWidget);
-          expect(find.text('Gợi ý'), findsOneWidget);
-          expect(find.text('Sinh nhật 1 tuổi'), findsOneWidget);
-          expect(find.text('Dọc 4:5'), findsOneWidget);
-          for (final name in [
-            'Tròn trịa',
-            'Toàn ảnh',
-            'Hồng phấn',
-            'Đêm sao',
-          ]) {
-            expect(find.text(name), findsOneWidget);
-          }
-          expect(find.text('Miễn phí'), findsNWidgets(2));
-          expect(find.text('Cao cấp'), findsNWidgets(2));
-          // Teddy (17.9) turns one month on 17.10: the cards say so.
-          expect(find.text('17.10.2026'), findsWidgets);
-          expect(tester.takeException(), isNull);
-        },
-      );
+      testWidgets('one screen: occasions, formats, the templates swiped sideways '
+          '(${palette.name})', (tester) async {
+        await pumpScreen(tester, const MilestoneCardScreen(), palette: palette);
+        expect(find.text('Thiệp cột mốc'), findsOneWidget);
+        expect(find.text('Gợi ý'), findsOneWidget);
+        expect(find.text('Sinh nhật 1 tuổi'), findsOneWidget);
+        expect(find.text('Dọc 4:5'), findsOneWidget);
+        // Nothing scrolls up and down; the button stays on screen (owner, 2026-10-14).
+        expect(find.byType(ListView), findsNothing);
+        expect(find.text('Dùng mẫu này'), findsOneWidget);
+        expect(find.bySemanticsLabel('Mẫu 1 trên 4'), findsOneWidget);
+        expect(find.text('Tròn trịa'), findsOneWidget);
+        expect(find.text('Miễn phí'), findsWidgets);
+        // Teddy (17.9) turns one month on 17.10: the cards say so.
+        expect(find.text('17.10.2026'), findsWidgets);
+        for (final name in ['Toàn ảnh', 'Hồng phấn', 'Đêm sao']) {
+          await tester.drag(find.byType(PageView), const Offset(-300, 0));
+          await tester.pumpAndSettle();
+          expect(find.text(name), findsOneWidget);
+        }
+        expect(find.bySemanticsLabel('Mẫu 4 trên 4'), findsOneWidget);
+        expect(find.text('Cao cấp'), findsWidgets);
+        expect(tester.takeException(), isNull);
+      });
     }
 
     testWidgets('a chosen occasion and format re-draw the previews', (
       tester,
     ) async {
       await pumpScreen(tester, const MilestoneCardScreen());
+      await tester.ensureVisible(find.text('100 ngày').first);
+      await tester.pumpAndSettle();
       await tester.tap(find.text('100 ngày').first);
       await tester.pumpAndSettle();
       expect(find.text('26.12.2026'), findsWidgets);
+      await tester.drag(find.byType(PageView), const Offset(-300, 0));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Vuông'));
       await tester.pumpAndSettle();
-      expect(find.byType(KeepsakeCardView), findsNWidgets(4));
+      // A new format starts again from the first template.
+      expect(find.bySemanticsLabel('Mẫu 1 trên 4'), findsOneWidget);
+      expect(find.byType(KeepsakeCardView), findsWidgets);
     });
 
     testWidgets('no badges when the portal turns them off', (tester) async {
@@ -306,7 +309,7 @@ void main() {
           'premium': {'access': 'everyone', 'badges': false},
         }),
       );
-      expect(find.text('Đêm sao'), findsOneWidget);
+      expect(find.text('Tròn trịa'), findsOneWidget);
       expect(find.text('Miễn phí'), findsNothing);
       expect(find.text('Cao cấp'), findsNothing);
     });

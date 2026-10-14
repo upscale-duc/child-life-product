@@ -207,6 +207,23 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
   Occasion? _occasion;
   var _format = KeepsakeFormat.portrait;
 
+  /// The template in view in the carousel.
+  var _index = 0;
+
+  /// The chosen dịp, scrolled into view once the chips are there (it may be past the edge).
+  final _chosenChip = GlobalKey();
+  var _chipShown = false;
+
+  void _showChosenChip() {
+    if (_chipShown) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final chip = _chosenChip.currentContext;
+      if (_chipShown || chip == null || !chip.mounted) return;
+      _chipShown = true;
+      unawaited(Scrollable.ensureVisible(chip, alignment: 0.5));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -260,8 +277,25 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
         ref.watch(growthRecordsProvider(c.babyId)).value ??
         const <CareRecord>[];
 
+    void open(KeepsakeTemplate t) => context.push(
+      Routes.milestoneCardEdit,
+      extra: CardDraft(
+        babyId: c.babyId,
+        occasion: occasion,
+        date: date,
+        format: _format,
+        template: t,
+        palette: t.palette,
+        quote: occasion.quote(l10n),
+        photos: [for (final m in best.take(t.photosMax)) photoOf(m)],
+      ),
+    );
+    final index = cards.isEmpty ? 0 : _index.clamp(0, cards.length - 1);
+    _showChosenChip();
+
     return KeepsakePage(
       title: l10n.ksCardTitle,
+      fill: true,
       header: access.videos
           ? KeepsakeKindTabs(
               video: false,
@@ -275,30 +309,39 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
           style: cl.text.label.copyWith(color: cl.colors.inkMuted),
         ),
         const SizedBox(height: ClSpace.s3),
-        Wrap(
-          spacing: ClSpace.s2,
-          runSpacing: ClSpace.s2,
-          children: [
-            for (final o in Occasion.chipsFor(
-              dob,
-              c.now,
-              milestones,
-              current: occasion,
-            ))
-              OccasionChip(
-                label: o.label(l10n),
-                icon: o.icon,
-                selected: o == occasion,
-                suggested: o == suggested,
-                onTap: () => setState(() => _occasion = o),
-              ),
-          ],
+        // One row that scrolls sideways, as on the video tab: the templates keep the room.
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          child: Row(
+            children: [
+              for (final (i, o) in Occasion.chipsFor(
+                dob,
+                c.now,
+                milestones,
+                current: occasion,
+              ).indexed) ...[
+                if (i > 0) const SizedBox(width: ClSpace.s2),
+                OccasionChip(
+                  key: o == occasion ? _chosenChip : null,
+                  label: o.label(l10n),
+                  icon: o.icon,
+                  selected: o == occasion,
+                  suggested: o == suggested,
+                  onTap: () => setState(() => _occasion = o),
+                ),
+              ],
+            ],
+          ),
         ),
         const SizedBox(height: ClSpace.s4),
         ClSegmented<KeepsakeFormat>(
           options: KeepsakeFormat.values,
           selected: _format,
-          onChanged: (f) => setState(() => _format = f),
+          onChanged: (f) => setState(() {
+            _format = f;
+            _index = 0;
+          }),
           labelOf: (f) => switch (f) {
             KeepsakeFormat.portrait => l10n.ksFormatPortrait,
             KeepsakeFormat.square => l10n.ksFormatSquare,
@@ -306,68 +349,58 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
           },
         ),
         const SizedBox(height: ClSpace.s4),
-        if (catalog.isLoading && !catalog.hasValue)
-          const _GridSkeleton()
-        else if (catalog.hasError && !catalog.hasValue)
-          ClEmptyState(
-            icon: ClIcons.alert,
-            title: l10n.ksLoadFailed,
-            message: l10n.toastActionFailed,
-            actionLabel: l10n.actionRetry,
-            onAction: () => ref.invalidate(keepsakeCatalogProvider),
-          )
-        else if (cards.isEmpty)
-          ClEmptyState(
-            icon: ClIcons.star,
-            title: l10n.ksNoTemplates,
-            message: l10n.ksNoTemplatesBody,
-          )
-        else
-          LayoutBuilder(
-            builder: (context, box) {
-              final w = (box.maxWidth - ClSpace.s3) / 2;
-              return Wrap(
-                spacing: ClSpace.s3,
-                runSpacing: ClSpace.s3,
-                children: [
-                  for (final t in cards)
-                    _TemplateTile(
-                      template: t,
-                      format: _format,
-                      width: w,
-                      badge: catalog.value!.badges,
-                      content: keepsakeCardContent(
-                        l10n: l10n,
-                        locale: Localizations.localeOf(context),
-                        template: t,
-                        occasion: occasion,
-                        name: c.nickname,
-                        dob: dob,
-                        date: date,
-                        note: occasion.quote(l10n),
-                        photos: previews,
-                        growth: growth,
-                      ),
-                      onTap: () => context.push(
-                        Routes.milestoneCardEdit,
-                        extra: CardDraft(
-                          babyId: c.babyId,
-                          occasion: occasion,
-                          date: date,
-                          format: _format,
-                          template: t,
-                          palette: t.palette,
-                          quote: occasion.quote(l10n),
-                          photos: [
-                            for (final m in best.take(t.photosMax)) photoOf(m),
-                          ],
-                        ),
-                      ),
+        Expanded(
+          child: catalog.isLoading && !catalog.hasValue
+              ? const _GridSkeleton()
+              : catalog.hasError && !catalog.hasValue
+              ? ClEmptyState(
+                  icon: ClIcons.alert,
+                  title: l10n.ksLoadFailed,
+                  message: l10n.toastActionFailed,
+                  actionLabel: l10n.actionRetry,
+                  onAction: () => ref.invalidate(keepsakeCatalogProvider),
+                )
+              : cards.isEmpty
+              ? ClEmptyState(
+                  icon: ClIcons.star,
+                  title: l10n.ksNoTemplates,
+                  message: l10n.ksNoTemplatesBody,
+                )
+              : KeepsakeCarousel(
+                  key: ValueKey(_format),
+                  count: cards.length,
+                  aspect: _format.aspect,
+                  below: 28,
+                  onChanged: (i) => setState(() => _index = i),
+                  itemBuilder: (context, i, w) => _TemplateTile(
+                    template: cards[i],
+                    format: _format,
+                    width: w,
+                    badge: catalog.value!.badges,
+                    content: keepsakeCardContent(
+                      l10n: l10n,
+                      locale: Localizations.localeOf(context),
+                      template: cards[i],
+                      occasion: occasion,
+                      name: c.nickname,
+                      dob: dob,
+                      date: date,
+                      note: occasion.quote(l10n),
+                      photos: previews,
+                      growth: growth,
                     ),
-                ],
-              );
-            },
+                    onTap: () => open(cards[i]),
+                  ),
+                ),
+        ),
+        if (cards.isNotEmpty) ...[
+          const SizedBox(height: ClSpace.s3),
+          ClButton(
+            label: l10n.ksUseTemplate,
+            expand: true,
+            onPressed: () => open(cards[index]),
           ),
+        ],
       ],
     );
   }
@@ -552,14 +585,9 @@ class _GridSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, box) {
-      final w = (box.maxWidth - ClSpace.s3) / 2;
-      return Wrap(
-        spacing: ClSpace.s3,
-        runSpacing: ClSpace.s3,
-        children: [
-          for (var i = 0; i < 4; i++)
-            ClSkeleton(width: w, height: w * 5 / 4, radius: 12),
-        ],
+      final w = math.min(box.maxWidth * 0.8, box.maxHeight * 4 / 5);
+      return Center(
+        child: ClSkeleton(width: w, height: w * 5 / 4, radius: 12),
       );
     },
   );
@@ -1563,10 +1591,15 @@ class KeepsakePage extends StatelessWidget {
     required this.title,
     required this.children,
     this.header,
+    this.fill = false,
     super.key,
   });
   final String title;
   final List<Widget> children;
+
+  /// One screen, no scrolling: [children] fill the height (an [Expanded] among them takes the
+  /// rest), for the template pickers swiped sideways (owner, 2026-10-14).
+  final bool fill;
 
   /// In place of the title (the Thiệp / Video tabs).
   final Widget? header;
@@ -1575,36 +1608,158 @@ class KeepsakePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
+    final top = [
+      Align(
+        alignment: Alignment.centerLeft,
+        child: ClBackButton(
+          semanticLabel: l10n.a11yBack,
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
+      ),
+      const SizedBox(height: ClSpace.s3),
+      header ??
+          Semantics(
+            header: true,
+            child: Text(title, style: cl.text.largeTitle),
+          ),
+      const SizedBox(height: ClSpace.s4),
+    ];
+    final bottom = MediaQuery.paddingOf(context).bottom;
     return Scaffold(
       backgroundColor: cl.colors.cloud,
       body: SafeArea(
         bottom: false,
-        child: ListView(
-          padding: EdgeInsets.fromLTRB(
-            ClSpace.s4,
-            0,
-            ClSpace.s4,
-            MediaQuery.paddingOf(context).bottom + ClSpace.s6,
-          ),
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: ClBackButton(
-                semanticLabel: l10n.a11yBack,
-                onPressed: () => Navigator.of(context).maybePop(),
-              ),
-            ),
-            const SizedBox(height: ClSpace.s3),
-            header ??
-                Semantics(
-                  header: true,
-                  child: Text(title, style: cl.text.largeTitle),
+        child: fill
+            ? Padding(
+                padding: EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  0,
+                  ClSpace.s4,
+                  bottom > 0 ? bottom : ClSpace.s4,
                 ),
-            const SizedBox(height: ClSpace.s4),
-            ...children,
-          ],
-        ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [...top, ...children],
+                ),
+              )
+            : ListView(
+                padding: EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  0,
+                  ClSpace.s4,
+                  bottom + ClSpace.s6,
+                ),
+                children: [...top, ...children],
+              ),
       ),
+    );
+  }
+}
+
+/// The template pickers (MM10, video templates) as one screen: one big preview at a time, swiped
+/// sideways, sized to the room left, with its place under it (owner, 2026-10-14: "1 màn hình
+/// swipe qua lại"). [itemBuilder] gets the picture's width; [below] is the height of the lines
+/// a tile shows under its picture.
+class KeepsakeCarousel extends StatefulWidget {
+  const KeepsakeCarousel({
+    required this.count,
+    required this.aspect,
+    required this.below,
+    required this.itemBuilder,
+    required this.onChanged,
+    super.key,
+  });
+
+  final int count;
+
+  /// Width / height of the picture.
+  final double aspect;
+  final double below;
+  final Widget Function(BuildContext context, int index, double width)
+  itemBuilder;
+  final ValueChanged<int> onChanged;
+
+  @override
+  State<KeepsakeCarousel> createState() => _KeepsakeCarouselState();
+}
+
+class _KeepsakeCarouselState extends State<KeepsakeCarousel> {
+  static const _fraction = 0.8;
+  final _pages = PageController(viewportFraction: _fraction);
+  var _page = 0;
+
+  @override
+  void dispose() {
+    _pages.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final l10n = AppLocalizations.of(context);
+    final page = math.min(_page, math.max(widget.count - 1, 0));
+    return Column(
+      children: [
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, box) {
+              final width = math.max(
+                0.0,
+                math.min(
+                  box.maxWidth * _fraction - ClSpace.s3,
+                  (box.maxHeight - widget.below) * widget.aspect,
+                ),
+              );
+              return PageView.builder(
+                controller: _pages,
+                itemCount: widget.count,
+                // The neighbours peek in on both sides.
+                clipBehavior: Clip.none,
+                onPageChanged: (i) {
+                  setState(() => _page = i);
+                  widget.onChanged(i);
+                },
+                itemBuilder: (context, i) => Center(
+                  child: SizedBox(
+                    width: width,
+                    child: widget.itemBuilder(context, i, width),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: ClSpace.s2),
+        // Dots for a few templates; "3 / 24" when there are many.
+        Semantics(
+          label: l10n.ksTemplateOf(page + 1, widget.count),
+          excludeSemantics: true,
+          child: widget.count <= 8
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (var i = 0; i < widget.count; i++)
+                      AnimatedContainer(
+                        duration: ClMotion.quick,
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        width: i == page ? 18 : 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: i == page
+                              ? cl.colors.mintDeep
+                              : cl.colors.separator,
+                          borderRadius: BorderRadius.circular(ClRadius.pill),
+                        ),
+                      ),
+                  ],
+                )
+              : Text(
+                  '${page + 1} / ${widget.count}',
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
+        ),
+      ],
     );
   }
 }

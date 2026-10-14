@@ -11374,4 +11374,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ksVideoFieldClosing => 'Closing line';
+
+  @override
+  String get ksUseTemplate => 'Use this template';
+
+  @override
+  String ksTemplateOf(int n, int total) {
+    return 'Template $n of $total';
+  }
 }
