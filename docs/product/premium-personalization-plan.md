@@ -296,6 +296,52 @@ screens), Rules tests (`pnpm test:rules`), functions integration on an isolated 
 "parallel sessions"), `flutter analyze`, ARB vi/en parity. Checklist rows only after end-to-end on dev, iOS and
 Android. Sizes: S ≤ 2 days, M ≤ 1 week, L > 1 week.
 
+### 7.1 Slice 2 build spec (2026-10-15, D-073)
+
+Contracts are done (`rhythm.ts`, `personalization.ts`, commit `68b0c16`; fixtures B/C/R/X pass). Everything
+below builds on them; nobody duplicates their logic.
+
+**Firestore** (✍ = written by the phone, Rules-validated; everything else server-only)
+
+| Path | Who | Notes |
+|---|---|---|
+| `babies/{b}/restricted/profile.dueDate` | `setDueDate` callable (Cùng nuôi, `rhythm.setup`) | `dueDateSchema`; read with the profile as today |
+| ✍ `babies/{b}/checkins/{ci_<32 hex>}` | create/update: author = caller, `rhythm.checkin` roles (Cùng nuôi, Người chăm sóc), baby open; delete: author | `checkInSchema` + `createdAt`/`updatedAt` server timestamps; offline-safe |
+| ✍ `babies/{b}/recFeedback/{fb_<32 hex>}` | create: author = caller, `rhythm.feedback` roles | `recFeedbackSchema` + `createdAt` |
+| ✍ `users/{uid}/settings/personalization` | owner only | `userPreferencesSchema` |
+| `babies/{b}/recommendations/{id}` | server | `Recommendation`; read by `history.read` |
+| `babies/{b}/facts/state` | trigger | `{dataVersion}` bumped on every check-in, feedback or care record write |
+| `publicConfig/rhythm_reference`, `publicConfig/content_rhythm` | staff workflow | readable by signed-in users (add to the whitelist) |
+| `content/rhythm/{doc}` + versions | staff workflow | drafts and history, like `content/firstAid` |
+| `config/rhythm` | staff (PN04) | `rhythmConfigSchema`; default `defaultRhythmRules` |
+
+Reads of check-ins, feedback and recommendations follow `familyCan(…, 'history.read')`: Cùng nuôi, Người chăm
+sóc, Người thân with "Chăm sóc hằng ngày".
+
+**Callables**
+
+- `setDueDate({babyId, dueDate|null})`.
+- `nextAction({babyId, checkInId, locale}) → NextActionAnswer`: `rhythm` flag on; health signs → `health`;
+  `usual` → `normal`; else with `personalization.cross_module` → `recommend()` over the published content and the
+  baby's feedback → store a `recommendations` doc → `suggestion` / `no_suggestion`; without it → `free_content`
+  with the age card and `gate` (the reason code). `sleep` filled from `dayQuality` + `sleepWindows` +
+  `sleepBaseline` over the last 17 days of records (DATA_INSIGHT only when `change_detected`).
+- `composeHome({babyId, locale})`: the current primary recommendation (H02 / PS02) with `changes` and the last
+  feedback behind it; `gate` when the household has no group A; never fails the free Home.
+- Staff: `staffRhythm` (view), `staffRhythmDraft`, `staffRhythmAct` (`rhythmDraftSchema`, `rhythmActSchema`),
+  `staffRhythmRules` / `staffSetRhythmRules` — the first-aid pattern (`content.ts`).
+- Dev seed: `scripts/src/seed-rhythm.ts` publishes `content/rhythm/*.seed.json` to dev only.
+
+**Content** (`content/rhythm/reference.seed.json`, `content/rhythm/content.seed.json`, `content/rhythm/SEED-NOTES.md`):
+reference stages, activities, weekly / monthly age cards ("Tuần này của {bé}"), health signs, while-waiting steps,
+region emergency numbers. Drafted by engineering from public guidance with sources, every item `review: null`.
+
+**App** (no new tab): Home section "Dành cho bé hôm nay" (H01 free / H02 with group A, check-in entry "Hôm nay
+con có gì khác?"), check-in C01 → C02 → NL05b → save → PS01 / PS01F / HL01, AC01 / AC02, PS02 on the next open;
+Nhịp lớn lên from the Chăm sóc tile "Wonder Weeks" (NL01, NL01b, NL02a–c, NL03, NL04, NL07, NL07b), MS01; EN01 /
+EN02 preferences; the owner's country question on first open (D-072 #3). Everything behind the `rhythm` flag
+(per family, from `getCapabilities.features`).
+
 ### Phase 0 — prepare (no app code)
 
 | Step | Scope | Size |

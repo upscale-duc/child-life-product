@@ -3,6 +3,8 @@ import {
   addDaysIso,
   contentReviewSchema,
   contentSourceSchema,
+  referenceModelSchema,
+  rhythmRulesSchema,
   type Observation,
 } from './rhythm.js';
 
@@ -433,3 +435,51 @@ export interface NextActionAnswer {
     validDays: number;
   } | null;
 }
+
+// ---------- Publishing (portal PN01–PN04; first-aid workflow, D-058 / D-073 #2) ----------
+
+/** Two published documents: the reference model and the content pack. */
+export const rhythmDocs = ['reference', 'content'] as const;
+export type RhythmDoc = (typeof rhythmDocs)[number];
+export const rhythmPublicDocIds: Record<RhythmDoc, string> = {
+  reference: 'rhythm_reference',
+  content: 'content_rhythm',
+};
+
+export const rhythmVersionIdSchema = z.string().regex(/^rv_[a-f0-9]{16}$/);
+
+/** Save the open draft of one document (editing a version under review withdraws it). */
+export const rhythmDraftSchema = z.discriminatedUnion('doc', [
+  z
+    .object({
+      doc: z.literal('reference'),
+      data: referenceModelSchema.omit({ version: true, publishedAt: true }),
+      notes: z.string().trim().max(500),
+    })
+    .strict(),
+  z
+    .object({
+      doc: z.literal('content'),
+      data: rhythmContentSchema.omit({ version: true, publishedAt: true }),
+      notes: z.string().trim().max(500),
+    })
+    .strict(),
+]);
+
+/**
+ * Gửi duyệt · Duyệt & xuất bản (a second person) · Trả lại · Huỷ nháp · Dùng lại bản này.
+ * On prod, approving needs `review` (a qualified reviewer); on dev, drafts may publish with items
+ * still `review: null`, shown in the app as "Nội dung minh hoạ · chờ chuyên môn duyệt".
+ */
+export const rhythmActSchema = z
+  .object({
+    doc: z.enum(rhythmDocs),
+    versionId: rhythmVersionIdSchema,
+    action: z.enum(['submit', 'approve', 'reject', 'discard', 'rollback']),
+    reason: z.string().trim().min(3).max(500),
+    review: contentReviewSchema,
+  })
+  .strict();
+
+/** `config/rhythm` (server): versioned rules, edited in PN04. */
+export const rhythmConfigSchema = z.object({ rules: rhythmRulesSchema });
