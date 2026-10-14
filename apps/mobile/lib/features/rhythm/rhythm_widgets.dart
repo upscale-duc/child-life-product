@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import 'rhythm_labels.dart';
 import 'rhythm_models.dart';
@@ -447,11 +449,15 @@ class RhLink extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.muted = false,
+    this.start = false,
     super.key,
   });
   final String label;
   final VoidCallback onTap;
   final bool muted;
+
+  /// Left-aligned (a footer line that may wrap) instead of centred.
+  final bool start;
 
   @override
   Widget build(BuildContext context) {
@@ -461,11 +467,12 @@ class RhLink extends StatelessWidget {
       semanticLabel: label,
       child: ConstrainedBox(
         constraints: const BoxConstraints(minHeight: ClSpace.tapMin),
-        child: Center(
+        child: Align(
+          alignment: start ? Alignment.centerLeft : Alignment.center,
           widthFactor: 1,
           child: Text(
             label,
-            textAlign: TextAlign.center,
+            textAlign: start ? TextAlign.start : TextAlign.center,
             style: cl.text.label.copyWith(
               color: muted ? cl.colors.inkMuted : cl.colors.mintText,
               fontWeight: FontWeight.w600,
@@ -484,11 +491,15 @@ class RhPillButton extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.primary = true,
+    this.onCard = false,
     super.key,
   });
   final String label;
   final VoidCallback onTap;
   final bool primary;
+
+  /// A secondary button on a tinted card (NL01b "Không nhớ"): white instead of surface-2.
+  final bool onCard;
 
   @override
   Widget build(BuildContext context) {
@@ -500,7 +511,11 @@ class RhPillButton extends StatelessWidget {
         height: ClSpace.tapMin,
         padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
         decoration: BoxDecoration(
-          color: primary ? cl.colors.mintDeep : cl.colors.surface2,
+          color: primary
+              ? cl.colors.mintDeep
+              : onCard
+              ? cl.colors.surface
+              : cl.colors.surface2,
           borderRadius: BorderRadius.circular(ClRadius.pill),
         ),
         child: Center(
@@ -651,3 +666,222 @@ ClIcons activityIcon(Activity? a) => switch (a?.needs.firstOrNull) {
   Need.milestone || Need.play => ClIcons.star,
   _ => ClIcons.heart,
 };
+
+/// The layer label of the two NL colour languages: "LỊCH THAM KHẢO" (clock, indigo on white,
+/// inside the `care-sleep-soft` card) and "NHỊP RIÊNG CỦA CON" (heart, mint-text on mint-soft).
+class RhLayerPill extends StatelessWidget {
+  const RhLayerPill({required this.label, this.calendar = true, super.key});
+  final String label;
+  final bool calendar;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final ink = calendar ? cl.care.sleep.ink : cl.colors.mintText;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: ClSpace.s2, vertical: 4),
+      decoration: BoxDecoration(
+        color: calendar ? cl.colors.surface : cl.colors.mintSoft,
+        borderRadius: BorderRadius.circular(ClRadius.pill),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClIcon(
+            calendar ? ClIcons.clock : ClIcons.heart,
+            size: 12,
+            color: ink,
+          ),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: cl.text.caption.copyWith(
+                color: ink,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A round initial for who logged something (NL01 / NL07 rows).
+class RhInitial extends StatelessWidget {
+  const RhInitial(this.name, {this.size = 28, super.key});
+  final String name;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final initial = name.trim().isEmpty ? '?' : name.trim()[0].toUpperCase();
+    return ExcludeSemantics(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: cl.colors.surface2,
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          initial,
+          style: cl.text.caption.copyWith(
+            color: cl.colors.ink,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A small muted line with a leading icon (NL01 footer, NL02c lock note).
+class RhNote extends StatelessWidget {
+  const RhNote(this.text, {this.icon = ClIcons.lock, super.key});
+  final String text;
+  final ClIcons icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 1),
+          child: ClIcon(icon, size: 14, color: cl.colors.inkMuted),
+        ),
+        const SizedBox(width: ClSpace.s2),
+        Expanded(
+          child: Text(
+            text,
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// A yes / no sheet; true when confirmed.
+Future<bool> rhConfirm(
+  BuildContext context, {
+  required String title,
+  required String body,
+  required String confirm,
+  required String cancel,
+  bool destructive = false,
+}) async {
+  final ok = await showClSheet<bool>(
+    context: context,
+    builder: (sheet) {
+      final cl = sheet.cl;
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: title),
+          Text(body, style: cl.text.body.copyWith(color: cl.colors.inkMuted)),
+          const SizedBox(height: ClSpace.s4),
+          ClButton(
+            label: confirm,
+            expand: true,
+            style: destructive
+                ? ClButtonStyle.destructive
+                : ClButtonStyle.primary,
+            onPressed: () => Navigator.of(sheet).pop(true),
+          ),
+          const SizedBox(height: ClSpace.s2),
+          ClButton(
+            label: cancel,
+            expand: true,
+            style: ClButtonStyle.secondary,
+            onPressed: () => Navigator.of(sheet).pop(false),
+          ),
+          const SizedBox(height: ClSpace.s4),
+        ],
+      );
+    },
+  );
+  return ok ?? false;
+}
+
+/// PS01 / H02 "Cách khác có thể thử": the ≤2 secondary activities under the primary one.
+class RhSecondaryIdeas extends StatelessWidget {
+  const RhSecondaryIdeas({
+    required this.activities,
+    required this.onOpen,
+    super.key,
+  });
+
+  final List<Activity> activities;
+  final void Function(Activity activity) onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = Localizations.localeOf(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.rhOtherIdeas,
+          style: cl.text.label.copyWith(
+            color: cl.colors.inkMuted,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        for (final a in activities.take(2))
+          ClPressable(
+            onPressed: () => onOpen(a),
+            pressedOpacity: ClPressable.surfaceOpacity,
+            semanticLabel: a.title.of(locale),
+            child: Padding(
+              padding: const EdgeInsets.only(top: ClSpace.s2),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: ClSpace.tapMin),
+                child: Row(
+                  children: [
+                    RhIconTile(icon: activityIcon(a), size: 32),
+                    const SizedBox(width: ClSpace.s3),
+                    Expanded(
+                      child: Text(
+                        a.title.of(locale),
+                        style: cl.text.label.copyWith(color: cl.colors.ink),
+                      ),
+                    ),
+                    ClIcon(
+                      ClIcons.chevronRight,
+                      size: 16,
+                      color: cl.colors.inkMuted,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// The published secondary activities of an answer, without the primary one.
+List<Activity> secondaryActivities(
+  RhythmContent? content,
+  NextActionAnswer answer,
+) => [
+  for (final (id, _) in answer.secondary)
+    if (content?.activity(id) case final a?
+        when a.status == ContentStatus.published &&
+            a.id != answer.recommendation?.contentId)
+      a,
+];

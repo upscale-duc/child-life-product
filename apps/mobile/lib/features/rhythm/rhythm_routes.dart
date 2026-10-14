@@ -6,14 +6,44 @@ import 'activity_screens.dart';
 import 'age_screens.dart';
 import 'checkin_screens.dart';
 import 'health_screen.dart';
+import 'milestone_screen.dart';
+import 'preferences_screens.dart';
 import 'result_screen.dart';
+import 'rhythm_calendar.dart';
 import 'rhythm_models.dart';
+import 'rhythm_overview.dart';
+import 'rhythm_setup.dart';
 
 /// Nhịp lớn lên routes, full screen above the tabs (no new tab, plan §7.1). Flat on purpose:
 /// each is pushed on top of Hôm nay, and leaving the flow pops back to it (`closeFlow`).
-/// The flow screens slide up with a close button (C01, PS01, HL01, AC01).
+/// The flow screens slide up with a close button (C01, PS01, HL01, AC01, NL02, MS01).
 List<RouteBase> rhythmRoutes() => [
-  _page(Routes.rhythm, (_, _) => const RhythmComingScreen()),
+  _page(Routes.rhythm, (_, _) => const RhythmOverviewScreen()),
+  _page(Routes.rhythmSetup, modal: true, (_, _) => const RhythmSetupScreen()),
+  _page(
+    Routes.rhythmDueDate,
+    modal: true,
+    (_, s) => RhythmSetupScreen(
+      start: RhythmSetupStep.dueDate,
+      single: true,
+      estimate: s.uri.queryParameters['estimate'] == '1',
+    ),
+  ),
+  _page(
+    Routes.rhythmReminders,
+    modal: true,
+    (_, _) =>
+        const RhythmSetupScreen(start: RhythmSetupStep.reminders, single: true),
+  ),
+  _page(Routes.rhythmCalendar, (_, _) => const ReferenceCalendarScreen()),
+  _page(
+    '${Routes.rhythmCalendar}/:id',
+    (_, s) => StageDetailScreen(stageId: s.pathParameters['id'] ?? ''),
+  ),
+  _page(Routes.rhythmPersonalize, (_, _) => const PersonalizeScreen()),
+  _page(Routes.rhythmInterests, (_, _) => const InterestsScreen()),
+  _page(Routes.rhythmDigest, (_, _) => const DigestScreen()),
+  _page(Routes.rhythmFeedbackHistory, (_, _) => const FeedbackHistoryScreen()),
   _page(Routes.rhythmCheckIn, modal: true, (_, _) => const CheckInScreen()),
   _page(
     Routes.rhythmCheckInMore,
@@ -56,7 +86,13 @@ List<RouteBase> rhythmRoutes() => [
     '${Routes.rhythmAge}/:id',
     (_, s) => AgeCardScreen(cardId: s.pathParameters['id'] ?? ''),
   ),
-  _page(Routes.rhythmMilestone, (_, _) => const RhythmComingScreen()),
+  _page(
+    Routes.rhythmMilestone,
+    modal: true,
+    (_, s) => RhythmMilestoneScreen(
+      note: s.extra is String ? s.extra! as String : null,
+    ),
+  ),
 ];
 
 GoRoute _page(

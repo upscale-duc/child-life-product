@@ -353,6 +353,17 @@ class _Suggestion extends ConsumerWidget {
             },
           ),
         ],
+        if (secondaryActivities(ref.watch(rhythmContentProvider).value, answer)
+            case final others when others.isNotEmpty) ...[
+          const SizedBox(height: ClSpace.s4),
+          RhSecondaryIdeas(
+            activities: others,
+            onOpen: (a) => closeFlow(
+              context,
+              then: activityLocation(a.id, checkInId: checkIn.id),
+            ),
+          ),
+        ],
         const SizedBox(height: ClSpace.s2),
         RhLink(
           label: l10n.rhSeeRhythm(baby?.nickname ?? ''),

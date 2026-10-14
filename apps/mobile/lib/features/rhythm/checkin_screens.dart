@@ -16,6 +16,7 @@ import '../care/care_repository.dart';
 import '../family/family_labels.dart' show relationLabel;
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
+import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_calc.dart';
 import 'rhythm_labels.dart';
@@ -301,16 +302,19 @@ class _CheckInMoreScreenState extends ConsumerState<CheckInMoreScreen> {
             maxLength: CheckIn.noteMaxLength,
             textCapitalization: TextCapitalization.sentences,
           ),
-          const SizedBox(height: ClSpace.s2),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: RhLink(
-              label: l10n.rhSaveToMilestones,
-              // MS01 (milestone → Moments) is the next step; the text travels as data only.
-              onTap: () =>
-                  context.push(Routes.rhythmMilestone, extra: _note.text),
+          // MS01: milestones are confirmed by a Cùng nuôi; the text travels as data only.
+          if (ref.watch(selectedMembershipProvider) case final me?
+              when familyCan(me, FamilyAction.momentsCreate)) ...[
+            const SizedBox(height: ClSpace.s2),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: RhLink(
+                label: l10n.rhSaveToMilestones,
+                onTap: () =>
+                    context.push(Routes.rhythmMilestone, extra: _note.text),
+              ),
             ),
-          ),
+          ],
         ],
         if (fromLog != null) ...[
           const SizedBox(height: ClSpace.s3),

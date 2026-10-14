@@ -12326,12 +12326,681 @@ class AppLocalizationsEn extends AppLocalizations {
       'Every baby is different. This is what many families notice at this age, not a schedule.';
 
   @override
-  String get rhComingTitle => 'Growing rhythm';
-
-  @override
-  String get rhComingBody => 'This part is on its way.';
-
-  @override
   String get rhSaveFailed =>
       'Couldn’t save the note. Your access may have changed.';
+
+  @override
+  String get rhTitle => 'Growing rhythm';
+
+  @override
+  String rhBabyAge(String baby, String age) {
+    return '$baby · $age';
+  }
+
+  @override
+  String get rhCalendarUnsetPill => 'REFERENCE CALENDAR · not set up';
+
+  @override
+  String get rhCalendarUnsetTitle =>
+      'Add the due date to see the reference calendar';
+
+  @override
+  String rhCalendarUnsetBody(String baby) {
+    return 'Without a due date you can still check in and see content for $baby’s actual age.';
+  }
+
+  @override
+  String get rhAddDueDate => 'Add due date';
+
+  @override
+  String get rhDontRemember => 'Don’t remember';
+
+  @override
+  String get rhCalendarUnsetOthers =>
+      'A co-parent can add the due date to open the reference calendar.';
+
+  @override
+  String get rhCalendarNoAccess =>
+      'The reference calendar counts from the due date, part of the baby’s details you can’t see.';
+
+  @override
+  String get rhCalendarNoModel => 'The reference calendar isn’t published yet.';
+
+  @override
+  String get rhSeeCalendar => 'See calendar';
+
+  @override
+  String rhStageComingN(int n) {
+    return 'Wonder Weeks stage $n coming up';
+  }
+
+  @override
+  String rhStageInN(int n) {
+    return 'Within Wonder Weeks stage $n';
+  }
+
+  @override
+  String rhStageExpectedLine(String range, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return 'Expected $range · $_temp0 to go';
+  }
+
+  @override
+  String rhStageNowLine(String range) {
+    return 'Expected $range · within the reference window';
+  }
+
+  @override
+  String get rhStagesDone => 'All stages of the reference calendar have passed';
+
+  @override
+  String get rhCalendarDisclaimer =>
+      'This is an expected window from the reference calendar. It may not match your baby’s experience.';
+
+  @override
+  String rhByDueDate(String date) {
+    return 'From the due date $date';
+  }
+
+  @override
+  String rhByDueDateEstimated(String date) {
+    return 'From the estimated due date $date';
+  }
+
+  @override
+  String get rhOwnPill => 'YOUR BABY’S OWN RHYTHM';
+
+  @override
+  String get rhOwnSparsePill => 'OWN RHYTHM · not enough data';
+
+  @override
+  String get rhOwnTitle => 'What your family noticed';
+
+  @override
+  String get rhOwnEmpty => 'No recent notes yet. You can still add one today.';
+
+  @override
+  String get rhOwnNoAccess =>
+      'Family notes show only to members who can see daily care.';
+
+  @override
+  String get rhMixedDay => 'Different notes';
+
+  @override
+  String get rhMixedNote =>
+      'When two people note different things on the same day, both are kept.';
+
+  @override
+  String rhWhoDay(String who, String date) {
+    return '$who · $date';
+  }
+
+  @override
+  String get rhRecordToday => 'Add today’s note';
+
+  @override
+  String rhSleepHeading(int days) {
+    return 'Logged total sleep · $days days';
+  }
+
+  @override
+  String get rhSleepSparseTitle => 'Not enough logs to compare yet.';
+
+  @override
+  String rhSleepSparseBody(int valid, int need, int more) {
+    return '$valid/$need days with complete sleep logs · $more more needed to compare. Missing logs don’t mean less sleep.';
+  }
+
+  @override
+  String rhSleepSparseRecent(int need, int days) {
+    return 'At least $need of the last $days days need complete logs to compare. Missing logs don’t mean less sleep.';
+  }
+
+  @override
+  String rhSleepLower(String delta) {
+    return 'On recent complete days, logged total sleep is about $delta lower than before.';
+  }
+
+  @override
+  String rhSleepHigher(String delta) {
+    return 'On recent complete days, logged total sleep is about $delta higher than before.';
+  }
+
+  @override
+  String get rhSleepSame =>
+      'On recent complete days, logged total sleep is close to your baby’s usual.';
+
+  @override
+  String rhSleepBasis(int recent, String range, int baseline) {
+    return 'Basis: the last $recent days ($range) vs the $baseline complete days before. Not a diagnosis.';
+  }
+
+  @override
+  String rhSleepUsual(String value) {
+    return 'usual $value';
+  }
+
+  @override
+  String get rhSleepMissingLegend => 'incomplete day, not counted';
+
+  @override
+  String get rhSleepGateTitle => 'Sleep comparison from your log';
+
+  @override
+  String get rhSleepGatePremium =>
+      'Comparing with your baby’s usual is part of personalised support. Notes, the reference calendar and health guidance stay free.';
+
+  @override
+  String get rhSleepGateOther =>
+      'The sleep comparison isn’t open to you. Notes and the reference calendar still work.';
+
+  @override
+  String get rhWhy => 'Why?';
+
+  @override
+  String get rhTriedHeading => 'What your family has tried';
+
+  @override
+  String get rhFooterFacts =>
+      'This is what your family noted, not a diagnosis.';
+
+  @override
+  String get rhOutOfAge =>
+      'Growing rhythm supports babies 0–12 months. For older babies, recorded data stays viewable; new content isn’t supported yet.';
+
+  @override
+  String get rhOfflineNote =>
+      'Offline: showing what’s saved on this phone · notes will sync when you’re back online.';
+
+  @override
+  String get rhRegionOwnerBody =>
+      'Choose your region so Child Life uses the right content and emergency number. The reference calendar and notes still work.';
+
+  @override
+  String get rhRegionPick => 'Choose region';
+
+  @override
+  String get rhRegionWaiting =>
+      'Waiting for the family owner to choose a region. Notes, the reference calendar and free content still work.';
+
+  @override
+  String get rhSetupIntro =>
+      'Look ahead to what may come, understand what your baby is going through.';
+
+  @override
+  String get rhLayerCalendarTitle => 'Reference calendar';
+
+  @override
+  String get rhLayerCalendarBody =>
+      'Expected windows from the Wonder Weeks model, counted from the due date. Every baby is different — the calendar is only a reference.';
+
+  @override
+  String get rhLayerCalendarBasis =>
+      'Basis: the due date + the published reference model';
+
+  @override
+  String get rhLayerOwnTitle => 'Your baby’s own rhythm';
+
+  @override
+  String get rhLayerOwnBody =>
+      'What the whole family notes: sleep, soothing, new things. Child Life sums up changes and what you’ve tried.';
+
+  @override
+  String get rhLayerOwnBasis => 'Basis: check-ins and the care log';
+
+  @override
+  String get rhSetupDisclaimer =>
+      'Child Life doesn’t predict fussy days with certainty or diagnose causes.';
+
+  @override
+  String get rhStart => 'Start';
+
+  @override
+  String rhDueTitle(String baby) {
+    return '$baby’s due date';
+  }
+
+  @override
+  String rhDueBody(String baby, String dob) {
+    return 'The reference calendar counts from the due date, not the birth date. $baby was born on $dob.';
+  }
+
+  @override
+  String get rhDueBodyNoDob =>
+      'The reference calendar counts from the due date, not the birth date.';
+
+  @override
+  String get rhDueField => 'Due date';
+
+  @override
+  String get rhDuePick => 'Pick a date';
+
+  @override
+  String get rhEstimateTitle => 'Don’t remember the due date?';
+
+  @override
+  String get rhEstimateBody => 'Estimate from the gestational age at birth:';
+
+  @override
+  String rhWeeks(int n) {
+    return '$n weeks';
+  }
+
+  @override
+  String rhPlusDays(int n) {
+    return '+ $n days';
+  }
+
+  @override
+  String rhEstimateResult(String date) {
+    return 'Estimated due date: $date · labelled “estimated”';
+  }
+
+  @override
+  String get rhEstimateAdvice =>
+      'Very premature or special needs: ask a doctor before using the calendar.';
+
+  @override
+  String get rhEstimateNeedsDob =>
+      'The baby’s date of birth is needed to estimate.';
+
+  @override
+  String get rhDueOutOfRange =>
+      'The due date must be between 4 weeks before and 18 weeks after birth.';
+
+  @override
+  String get rhSkipOwnOnly => 'Skip — use only your baby’s own rhythm';
+
+  @override
+  String get rhDueHelper =>
+      'You can change it any time · the calendar and reminders recalculate';
+
+  @override
+  String get rhDueSaved => 'Due date saved';
+
+  @override
+  String get rhDueRemove => 'Remove due date';
+
+  @override
+  String get rhDueRemoved => 'Due date removed';
+
+  @override
+  String get rhDueSaveFailed =>
+      'Couldn’t save the due date. Check your connection and try again.';
+
+  @override
+  String get rhDueSetupOnly => 'Only a co-parent can set the due date.';
+
+  @override
+  String get rhEstimatedTag => 'estimated';
+
+  @override
+  String get rhWeeksPickerTitle => 'Gestational age at birth';
+
+  @override
+  String get rhDaysPickerTitle => 'Extra days';
+
+  @override
+  String get rhRemindTitle => 'When should we remind you?';
+
+  @override
+  String get rhRemindBody =>
+      'All optional. At most 1 growing-rhythm notification a day.';
+
+  @override
+  String get rhRemindStage => 'Before a reference stage';
+
+  @override
+  String get rhRemindStageSub => '3 days before · at most once per stage';
+
+  @override
+  String get rhRemindEvening => 'Evening check-in';
+
+  @override
+  String get rhRemindEveningSub =>
+      '20:30 · skipped if you already noted something that day';
+
+  @override
+  String get rhQuietHours => 'Quiet hours';
+
+  @override
+  String rhQuietRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String get rhQuietOff => 'Off';
+
+  @override
+  String get rhQuietSub => 'No suggestions, only reminders you set';
+
+  @override
+  String get rhQuietTo => 'to';
+
+  @override
+  String get rhRemindDevice =>
+      'Reminders are saved on this phone; quiet hours follow your account.';
+
+  @override
+  String get rhNoLeapRisk => 'No “high leap risk” style notifications.';
+
+  @override
+  String rhCalendarBasis(String model, String date) {
+    return '$model model · from the due date $date';
+  }
+
+  @override
+  String rhCalendarBasisEstimated(String model, String date) {
+    return '$model model · from the estimated due date $date';
+  }
+
+  @override
+  String get rhChange => 'Change';
+
+  @override
+  String rhTodayBefore(String date, int n) {
+    return 'Today · $date · before stage $n';
+  }
+
+  @override
+  String rhTodayIn(String date, int n) {
+    return 'Today · $date · within stage $n';
+  }
+
+  @override
+  String rhTodayPlain(String date) {
+    return 'Today · $date';
+  }
+
+  @override
+  String rhStageUpcoming(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return 'Upcoming · $_temp0 left';
+  }
+
+  @override
+  String get rhStageCurrent => 'Within the expected window';
+
+  @override
+  String get rhStagePast => 'Passed';
+
+  @override
+  String rhStagesOverlap(int a, int b) {
+    return 'Stages $a and $b overlap · both are only a reference';
+  }
+
+  @override
+  String rhStageShort(int n) {
+    return 'Stage $n';
+  }
+
+  @override
+  String rhCalendarFooter(String version) {
+    return 'The calendar is a reference model, not proven accurate for each baby. Model $version.';
+  }
+
+  @override
+  String rhNotPartner(String label) {
+    return '$label is used as a reference, not a partner.';
+  }
+
+  @override
+  String rhStageDetailExpected(String range, String baby) {
+    return 'Expected $range · may not match $baby’s experience';
+  }
+
+  @override
+  String get rhSignsTitle => 'Signs you might see';
+
+  @override
+  String get rhSignsNormal =>
+      'Some babies show no clear change — that’s normal';
+
+  @override
+  String get rhSkillsTitle => 'Skills by age, for reference';
+
+  @override
+  String get rhSkillsNote =>
+      'Skills don’t have to line up with this stage. Following skills by age isn’t a professional screening.';
+
+  @override
+  String get rhActivitiesTitle => 'Activities that fit';
+
+  @override
+  String get rhSourcesReview => 'Sources & review';
+
+  @override
+  String rhModelVersion(String version) {
+    return 'Model $version';
+  }
+
+  @override
+  String get rhSameAsUsual => 'Same as usual today';
+
+  @override
+  String get rhStageMissing =>
+      'This stage is no longer in the reference calendar.';
+
+  @override
+  String get rhMsConfirmTitle => 'Save this as a milestone?';
+
+  @override
+  String rhMsConfirmBody(String baby) {
+    return 'The milestone goes to $baby’s Moments, ready for photos and a milestone card. No photo is copied.';
+  }
+
+  @override
+  String get rhMsName => 'Milestone';
+
+  @override
+  String get rhMsSavedTitle => 'New milestone saved';
+
+  @override
+  String rhMsSavedSub(String name, String date, String who) {
+    return '$name · $date · confirmed by $who';
+  }
+
+  @override
+  String get rhMsKeepTitle => 'Keep this moment?';
+
+  @override
+  String get rhMsBasic => 'Basic milestone card';
+
+  @override
+  String get rhMsPremium => 'Premium milestone card';
+
+  @override
+  String get rhMsCreateCard => 'Create milestone card';
+
+  @override
+  String get rhMsPhotoNote =>
+      'Pick photos from Moments when you make the card.';
+
+  @override
+  String get rhMsRoleTitle => 'Only co-parents can save milestones';
+
+  @override
+  String get rhMsRoleBody =>
+      'You can still note something new; a co-parent confirms milestones.';
+
+  @override
+  String get rhMsSaveFailed => 'Couldn’t save the milestone. Try again later.';
+
+  @override
+  String get rhPersonalize => 'Personalisation';
+
+  @override
+  String get rhPersonalizeSub => 'Interests, suggestion time, feedback';
+
+  @override
+  String get rhPersonalizeNote =>
+      'These choices are yours alone; they don’t change anyone else’s.';
+
+  @override
+  String get rhInterestsRow => 'Your interests';
+
+  @override
+  String get rhDigestRow => 'Suggestion time';
+
+  @override
+  String get rhRemindRow => 'Growing-rhythm reminders';
+
+  @override
+  String get rhHistoryRow => 'Feedback history';
+
+  @override
+  String get rhInterestsNone => 'None yet';
+
+  @override
+  String rhInterestsTitle(String baby) {
+    return 'What would you like to follow with $baby?';
+  }
+
+  @override
+  String get rhInterestsBody =>
+      'Today and suggestions will put these first. Change them any time.';
+
+  @override
+  String get rhInterestsToday =>
+      'These are lasting interests. What your baby needs today goes in “Anything different today?”.';
+
+  @override
+  String get rhIntSleep => 'Sleep';
+
+  @override
+  String get rhIntSleepSub => 'Sleep and growing rhythm';
+
+  @override
+  String get rhIntFeeding => 'Feeding & milk';
+
+  @override
+  String get rhIntFeedingSub => 'Milk by age';
+
+  @override
+  String get rhIntMilestones => 'Milestones';
+
+  @override
+  String get rhIntMilestonesSub => 'Milestones by week of age';
+
+  @override
+  String get rhIntVaccines => 'Vaccines';
+
+  @override
+  String get rhIntVaccinesSub => 'Reminders before vaccine dates';
+
+  @override
+  String get rhIntNutrition => 'Nutrition';
+
+  @override
+  String get rhIntNutritionSub => 'Micronutrients and vitamins by month';
+
+  @override
+  String get rhIntMoments => 'Moments';
+
+  @override
+  String get rhIntMomentsSub => 'Prompts to capture moments';
+
+  @override
+  String get rhFewerTitle => 'Showing fewer ideas about';
+
+  @override
+  String get rhFewerUndo => 'Undo';
+
+  @override
+  String rhSaveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count topics',
+      one: '1 topic',
+    );
+    return 'Save · $_temp0';
+  }
+
+  @override
+  String get rhSkip => 'Skip';
+
+  @override
+  String get rhPrefsSaved => 'Your choices are saved';
+
+  @override
+  String get rhDigestTitle => 'When is a good time to read suggestions?';
+
+  @override
+  String get rhDigestBody =>
+      'Child Life gathers the day’s suggestions into one, at the time you choose. Reminders you set (feeds, vaccines…) still arrive on time.';
+
+  @override
+  String get rhDigestMorning => 'Morning';
+
+  @override
+  String get rhDigestNoon => 'Lunch break';
+
+  @override
+  String get rhDigestEvening => 'Evening';
+
+  @override
+  String get rhDigestNone => 'No daily round-up';
+
+  @override
+  String get rhEditHistoryLink =>
+      'You can change or delete your feedback history';
+
+  @override
+  String get rhHistoryTitle => 'Feedback history';
+
+  @override
+  String rhHistoryBody(int days) {
+    return 'Your feedback from the last $days days. Delete one and later suggestions no longer use it.';
+  }
+
+  @override
+  String get rhHistoryEmpty => 'You haven’t given any feedback lately.';
+
+  @override
+  String get rhDelete => 'Delete';
+
+  @override
+  String get rhDeleteFeedbackTitle => 'Delete this feedback?';
+
+  @override
+  String get rhDeleteFeedbackBody =>
+      'Later suggestions won’t use this feedback any more.';
+
+  @override
+  String get rhFeedbackDeleted => 'Feedback deleted';
+
+  @override
+  String get rhResetInterests => 'Reset your interests';
+
+  @override
+  String get rhResetInterestsBody =>
+      'Clears every topic and every “Fewer ideas like this”.';
+
+  @override
+  String get rhResetDone => 'Your interests were reset';
+
+  @override
+  String get rhUnknownActivity => 'An idea that’s no longer published';
+
+  @override
+  String get rhFewerLikeThis => 'Fewer ideas like this';
+
+  @override
+  String rhFewerToast(String topic) {
+    return 'Got it. You’ll see fewer ideas about $topic.';
+  }
+
+  @override
+  String get rhOtherIdeas => 'Other things to try';
 }

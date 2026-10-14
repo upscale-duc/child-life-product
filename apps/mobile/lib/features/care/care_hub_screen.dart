@@ -15,6 +15,7 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
+import '../premium/premium_repository.dart';
 import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
 import '../utilities/utilities_screen.dart' show CareSoonBadge;
@@ -149,27 +150,47 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
             onTap: soon,
           ),
     ];
-    final develop = teasers([
-      (
-        ClIcons.spark,
-        cl.care.sleep.soft,
-        l10n.careWonderWeek,
-        l10n.careWonderWeekSub,
-      ),
-      (
-        ClIcons.cake,
-        cl.colors.sunshineSoft,
-        l10n.careAgeCards,
-        l10n.careAgeCardsSub,
-      ),
-      (
-        ClIcons.star,
-        cl.colors.peachSoft,
-        l10n.careMilestones,
-        l10n.careMilestonesSub,
-      ),
-      (ClIcons.feed, cl.care.bottle.soft, l10n.careSolids, l10n.careSolidsSub),
-    ]);
+    // Nhịp lớn lên (plan §7.1): the "Wonder Weeks" tile opens NL01 once the family's `rhythm`
+    // flag is on; until then it stays a teaser.
+    final rhythm =
+        ref.watch(selectedCapabilitiesProvider)?.features.rhythm ?? false;
+    final develop = [
+      if (rhythm && _matches(l10n.careWonderWeek, l10n.careWonderWeekSub))
+        _Tile(
+          icon: ClIcons.spark,
+          tint: cl.care.sleep.soft,
+          title: l10n.careWonderWeek,
+          subtitle: l10n.careWonderWeekSub,
+          onTap: () => context.push(Routes.rhythm),
+        ),
+      ...teasers([
+        if (!rhythm)
+          (
+            ClIcons.spark,
+            cl.care.sleep.soft,
+            l10n.careWonderWeek,
+            l10n.careWonderWeekSub,
+          ),
+        (
+          ClIcons.cake,
+          cl.colors.sunshineSoft,
+          l10n.careAgeCards,
+          l10n.careAgeCardsSub,
+        ),
+        (
+          ClIcons.star,
+          cl.colors.peachSoft,
+          l10n.careMilestones,
+          l10n.careMilestonesSub,
+        ),
+        (
+          ClIcons.feed,
+          cl.care.bottle.soft,
+          l10n.careSolids,
+          l10n.careSolidsSub,
+        ),
+      ]),
+    ];
     final knowledge = teasers([
       (
         ClIcons.bookmark,

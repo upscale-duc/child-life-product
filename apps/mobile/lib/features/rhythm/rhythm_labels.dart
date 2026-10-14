@@ -195,3 +195,62 @@ String activityMeta(AppLocalizations l10n, Activity a) => l10n.rhDurationFit(
 String reviewLabel(AppLocalizations l10n, ContentReview? r) => r == null
     ? l10n.rhReviewPending
     : l10n.rhReviewedBy(r.reviewer, r.credential);
+
+/// "21/09/2026" (vi) / "21 Sept 2026" (en).
+String longDay(Locale locale, String isoDate) {
+  final d = DateTime.parse(isoDate);
+  return locale.languageCode == 'en'
+      ? DateFormat('d MMM yyyy', 'en').format(d)
+      : DateFormat('dd/MM/yyyy', 'vi').format(d);
+}
+
+/// EN01 interest (enduring, per person).
+String interestLabel(AppLocalizations l10n, Interest i) => switch (i) {
+  Interest.sleep => l10n.rhIntSleep,
+  Interest.feeding => l10n.rhIntFeeding,
+  Interest.milestones => l10n.rhIntMilestones,
+  Interest.vaccines => l10n.rhIntVaccines,
+  Interest.nutrition => l10n.rhIntNutrition,
+  Interest.moments => l10n.rhIntMoments,
+};
+
+String interestSub(AppLocalizations l10n, Interest i) => switch (i) {
+  Interest.sleep => l10n.rhIntSleepSub,
+  Interest.feeding => l10n.rhIntFeedingSub,
+  Interest.milestones => l10n.rhIntMilestonesSub,
+  Interest.vaccines => l10n.rhIntVaccinesSub,
+  Interest.nutrition => l10n.rhIntNutritionSub,
+  Interest.moments => l10n.rhIntMomentsSub,
+};
+
+/// The topics "Ít gợi ý kiểu này hơn" turns down for an activity (EN05): its own interests, else
+/// the ones its needs map to.
+List<Interest> topicsOf(Activity a) => a.interests.isNotEmpty
+    ? a.interests
+    : {
+        for (final n in a.needs)
+          ?switch (n) {
+            Need.sleep => Interest.sleep,
+            Need.feeding => Interest.feeding,
+            Need.milestone => Interest.milestones,
+            _ => null,
+          },
+      }.toList();
+
+/// Quiet hours as "22:00 – 06:00", or "Tắt".
+String quietLabel(AppLocalizations l10n, UserPreferences p) =>
+    p.quietFrom == null || p.quietTo == null
+    ? l10n.rhQuietOff
+    : l10n.rhQuietRange(p.quietFrom!, p.quietTo!);
+
+/// A reference stage's window as "12/10 – 21/10".
+String stageRange(
+  AppLocalizations l10n,
+  Locale locale,
+  String dueDate,
+  ReferenceStage s,
+) => dayRange(l10n, locale, windowOf(dueDate, s));
+
+/// [text] with its first letter in capitals ("you · 7 Oct" → "You · 7 Oct").
+String capitalized(String text) =>
+    text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);

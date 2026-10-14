@@ -86,10 +86,21 @@ abstract final class Routes {
   static const memoryStoryJob = '/memories/video/job';
 
   /// Nhịp lớn lên (Slice 2, plan §7.1), full screen above the tabs: the overview (`/rhythm`,
-  /// NL01, next step), check-in C01 → `/more?o=` C02 → `/health` NL05b, the result (PS01 /
+  /// NL01 / NL01b), check-in C01 → `/more?o=` C02 → `/health` NL05b, the result (PS01 /
   /// PS01F, check-in as `extra`), HL01 (`?signs=`), an activity `/{id}` (AC01, `?ci=`) and
-  /// `/{id}/feedback` (AC02), an age card `/{id}`, and "Lưu vào Mốc" (MS01, next step).
+  /// `/{id}/feedback` (AC02), an age card `/{id}`, "Lưu vào Mốc" (MS01, the note as `extra`),
+  /// the setup NL02a–c (`/setup`), the due date alone (NL02b, `?estimate=1`), the reminders
+  /// alone (NL02c), the reference calendar NL03 and a stage `/calendar/{id}` (NL04), and the
+  /// person's preferences: "Cá nhân hoá" (`/personalize`), EN01, EN02 and the feedback history.
   static const rhythm = '/rhythm';
+  static const rhythmSetup = '/rhythm/setup';
+  static const rhythmDueDate = '/rhythm/due-date';
+  static const rhythmReminders = '/rhythm/reminders';
+  static const rhythmCalendar = '/rhythm/calendar';
+  static const rhythmPersonalize = '/rhythm/personalize';
+  static const rhythmInterests = '/rhythm/interests';
+  static const rhythmDigest = '/rhythm/digest';
+  static const rhythmFeedbackHistory = '/rhythm/feedback-history';
   static const rhythmCheckIn = '/rhythm/checkin';
   static const rhythmCheckInMore = '/rhythm/checkin/more';
   static const rhythmCheckInHealth = '/rhythm/checkin/health';

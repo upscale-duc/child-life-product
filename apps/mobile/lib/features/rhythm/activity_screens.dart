@@ -13,6 +13,7 @@ import '../care/care_format.dart' show durationLabel;
 import '../family/family_repository.dart';
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
+import 'preferences_screens.dart' show fewerLikeThis;
 import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_labels.dart';
@@ -96,6 +97,14 @@ class ActivityScreen extends ConsumerWidget {
       toaster.show(message: message);
     }
 
+    final fewer = me == null
+        ? const <Interest>[]
+        : ref.watch(userPreferencesProvider(me.uid)).value?.fewer ??
+              const <Interest>[];
+    final fewerTopics = [
+      for (final t in topicsOf(activity))
+        if (!fewer.contains(t)) t,
+    ];
     final steps = activity.steps.of(locale);
     final safety = activity.safety?.of(locale);
     final author = checkIn == null
@@ -221,6 +230,17 @@ class ActivityScreen extends ConsumerWidget {
             ),
           ),
         ],
+        // EN05: turns this kind of idea down for this person at once; free forever.
+        if (me != null && fewerTopics.isNotEmpty)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: RhLink(
+              label: l10n.rhFewerLikeThis,
+              muted: true,
+              start: true,
+              onTap: () => fewerLikeThis(context, ref, me, activity),
+            ),
+          ),
       ],
       bottom: canAct
           ? [

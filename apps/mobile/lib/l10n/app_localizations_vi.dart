@@ -11533,12 +11533,658 @@ class AppLocalizationsVi extends AppLocalizations {
       'Mỗi bé mỗi khác. Đây là điều nhiều gia đình thấy ở tuổi này, không phải lịch bắt buộc.';
 
   @override
-  String get rhComingTitle => 'Nhịp lớn lên';
-
-  @override
-  String get rhComingBody => 'Phần này đang được hoàn thiện.';
-
-  @override
   String get rhSaveFailed =>
       'Chưa lưu được ghi nhận. Có thể quyền của bạn đã thay đổi.';
+
+  @override
+  String get rhTitle => 'Nhịp lớn lên';
+
+  @override
+  String rhBabyAge(String baby, String age) {
+    return '$baby · $age';
+  }
+
+  @override
+  String get rhCalendarUnsetPill => 'LỊCH THAM KHẢO · chưa thiết lập';
+
+  @override
+  String get rhCalendarUnsetTitle => 'Thêm ngày dự sinh để xem lịch tham khảo';
+
+  @override
+  String rhCalendarUnsetBody(String baby) {
+    return 'Không có ngày dự sinh, bạn vẫn check-in và xem nội dung theo tuổi thực của $baby.';
+  }
+
+  @override
+  String get rhAddDueDate => 'Thêm ngày dự sinh';
+
+  @override
+  String get rhDontRemember => 'Không nhớ';
+
+  @override
+  String get rhCalendarUnsetOthers =>
+      'Ba mẹ (Cùng nuôi) có thể thêm ngày dự sinh để mở lịch tham khảo.';
+
+  @override
+  String get rhCalendarNoAccess =>
+      'Lịch tham khảo tính từ ngày dự sinh, thuộc thông tin bé mà bạn chưa có quyền xem.';
+
+  @override
+  String get rhCalendarNoModel => 'Lịch tham khảo chưa được phát hành.';
+
+  @override
+  String get rhSeeCalendar => 'Xem lịch';
+
+  @override
+  String rhStageComingN(int n) {
+    return 'Sắp đến giai đoạn $n (Wonder Weeks)';
+  }
+
+  @override
+  String rhStageInN(int n) {
+    return 'Đang trong giai đoạn $n (Wonder Weeks)';
+  }
+
+  @override
+  String rhStageExpectedLine(String range, int days) {
+    return 'Dự kiến $range · còn $days ngày đến giai đoạn';
+  }
+
+  @override
+  String rhStageNowLine(String range) {
+    return 'Dự kiến $range · trong khoảng tham khảo';
+  }
+
+  @override
+  String get rhStagesDone => 'Đã qua các giai đoạn trong lịch tham khảo';
+
+  @override
+  String get rhCalendarDisclaimer =>
+      'Đây là khoảng thời gian dự kiến theo lịch tham khảo. Lịch có thể không trùng với trải nghiệm của con.';
+
+  @override
+  String rhByDueDate(String date) {
+    return 'Theo ngày dự sinh $date';
+  }
+
+  @override
+  String rhByDueDateEstimated(String date) {
+    return 'Theo ngày dự sinh ước tính $date';
+  }
+
+  @override
+  String get rhOwnPill => 'NHỊP RIÊNG CỦA CON';
+
+  @override
+  String get rhOwnSparsePill => 'NHỊP RIÊNG CỦA CON · chưa đủ dữ liệu';
+
+  @override
+  String get rhOwnTitle => 'Điều nhà mình ghi nhận';
+
+  @override
+  String get rhOwnEmpty =>
+      'Chưa có ghi nhận nào gần đây. Bạn vẫn có thể ghi nhận hôm nay.';
+
+  @override
+  String get rhOwnNoAccess =>
+      'Ghi nhận của gia đình chỉ hiện với người được xem chăm sóc hằng ngày.';
+
+  @override
+  String get rhMixedDay => 'Ghi khác nhau';
+
+  @override
+  String get rhMixedNote =>
+      'Hai người ghi khác nhau trong cùng ngày được giữ nguyên cả hai.';
+
+  @override
+  String rhWhoDay(String who, String date) {
+    return '$who · $date';
+  }
+
+  @override
+  String get rhRecordToday => 'Ghi nhận hôm nay';
+
+  @override
+  String rhSleepHeading(int days) {
+    return 'Tổng ngủ được ghi · $days ngày';
+  }
+
+  @override
+  String get rhSleepSparseTitle => 'Nhà mình chưa có đủ nhật ký để so sánh.';
+
+  @override
+  String rhSleepSparseBody(int valid, int need, int more) {
+    return '$valid/$need ngày ghi đủ giấc ngủ · cần thêm $more ngày để so sánh. Không ghi không có nghĩa là bé ngủ ít.';
+  }
+
+  @override
+  String rhSleepSparseRecent(int need, int days) {
+    return 'Cần ít nhất $need trong $days ngày gần nhất được ghi đủ để so sánh. Không ghi không có nghĩa là bé ngủ ít.';
+  }
+
+  @override
+  String rhSleepLower(String delta) {
+    return 'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi thấp hơn khoảng $delta so với trước.';
+  }
+
+  @override
+  String rhSleepHigher(String delta) {
+    return 'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi cao hơn khoảng $delta so với trước.';
+  }
+
+  @override
+  String get rhSleepSame =>
+      'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi gần với mức thường của con.';
+
+  @override
+  String rhSleepBasis(int recent, String range, int baseline) {
+    return 'Căn cứ: $recent ngày gần nhất ($range) so với $baseline ngày ghi đủ trước đó. Không phải chẩn đoán.';
+  }
+
+  @override
+  String rhSleepUsual(String value) {
+    return 'mức thường $value';
+  }
+
+  @override
+  String get rhSleepMissingLegend => 'ngày ghi thiếu, không tính';
+
+  @override
+  String get rhSleepGateTitle => 'So sánh giấc ngủ từ nhật ký';
+
+  @override
+  String get rhSleepGatePremium =>
+      'So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn miễn phí.';
+
+  @override
+  String get rhSleepGateOther =>
+      'Phần so sánh giấc ngủ chưa mở cho bạn. Ghi nhận và lịch tham khảo vẫn dùng được.';
+
+  @override
+  String get rhWhy => 'Vì sao?';
+
+  @override
+  String get rhTriedHeading => 'Cách nhà mình đã thử';
+
+  @override
+  String get rhFooterFacts =>
+      'Thông tin là ghi nhận của gia đình, không phải chẩn đoán.';
+
+  @override
+  String get rhOutOfAge =>
+      'Nhịp lớn lên đang hỗ trợ bé 0–12 tháng. Với bé lớn hơn, dữ liệu đã ghi vẫn xem được; nội dung mới chưa hỗ trợ.';
+
+  @override
+  String get rhOfflineNote =>
+      'Ngoại tuyến: đang hiện dữ liệu đã lưu trên máy · ghi nhận sẽ được gửi khi có mạng.';
+
+  @override
+  String get rhRegionOwnerBody =>
+      'Chọn khu vực để Child Life dùng đúng nội dung và số khẩn cấp. Lịch tham khảo và ghi nhận vẫn dùng được.';
+
+  @override
+  String get rhRegionPick => 'Chọn khu vực';
+
+  @override
+  String get rhRegionWaiting =>
+      'Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung miễn phí vẫn dùng được.';
+
+  @override
+  String get rhSetupIntro =>
+      'Tham khảo điều có thể đến, hiểu điều con đang trải qua.';
+
+  @override
+  String get rhLayerCalendarTitle => 'Lịch tham khảo';
+
+  @override
+  String get rhLayerCalendarBody =>
+      'Khoảng thời gian dự kiến theo mô hình Wonder Weeks, tính từ ngày dự sinh. Mỗi bé mỗi khác — lịch chỉ để tham khảo.';
+
+  @override
+  String get rhLayerCalendarBasis =>
+      'Căn cứ: ngày dự sinh + mô hình tham khảo đã phát hành';
+
+  @override
+  String get rhLayerOwnTitle => 'Nhịp riêng của con';
+
+  @override
+  String get rhLayerOwnBody =>
+      'Những gì cả nhà ghi nhận: giấc ngủ, nhu cầu được dỗ, điều mới. Child Life tóm tắt thay đổi và cách nhà mình đã thử.';
+
+  @override
+  String get rhLayerOwnBasis => 'Căn cứ: check-in và nhật ký chăm sóc';
+
+  @override
+  String get rhSetupDisclaimer =>
+      'Child Life không dự đoán chắc chắn ngày quấy hay chẩn đoán nguyên nhân.';
+
+  @override
+  String get rhStart => 'Bắt đầu';
+
+  @override
+  String rhDueTitle(String baby) {
+    return 'Ngày dự sinh của $baby';
+  }
+
+  @override
+  String rhDueBody(String baby, String dob) {
+    return 'Lịch tham khảo tính từ ngày dự sinh, không phải ngày sinh. Bé sinh ngày $dob.';
+  }
+
+  @override
+  String get rhDueBodyNoDob =>
+      'Lịch tham khảo tính từ ngày dự sinh, không phải ngày sinh.';
+
+  @override
+  String get rhDueField => 'Ngày dự sinh';
+
+  @override
+  String get rhDuePick => 'Chọn ngày';
+
+  @override
+  String get rhEstimateTitle => 'Không nhớ ngày dự sinh?';
+
+  @override
+  String get rhEstimateBody => 'Ước tính từ tuổi thai khi sinh:';
+
+  @override
+  String rhWeeks(int n) {
+    return '$n tuần';
+  }
+
+  @override
+  String rhPlusDays(int n) {
+    return '+ $n ngày';
+  }
+
+  @override
+  String rhEstimateResult(String date) {
+    return 'Dự sinh ước tính: $date · gắn nhãn “ước tính”';
+  }
+
+  @override
+  String get rhEstimateAdvice =>
+      'Bé sinh rất non hoặc có nhu cầu đặc biệt: hỏi bác sĩ trước khi dùng lịch.';
+
+  @override
+  String get rhEstimateNeedsDob => 'Cần ngày sinh của bé để ước tính.';
+
+  @override
+  String get rhDueOutOfRange =>
+      'Ngày dự sinh cần trong khoảng 4 tuần trước đến 18 tuần sau ngày sinh.';
+
+  @override
+  String get rhSkipOwnOnly => 'Bỏ qua — chỉ dùng nhịp riêng của con';
+
+  @override
+  String get rhDueHelper =>
+      'Sửa lại lúc nào cũng được · lịch và nhắc sẽ tính lại';
+
+  @override
+  String get rhDueSaved => 'Đã lưu ngày dự sinh';
+
+  @override
+  String get rhDueRemove => 'Xoá ngày dự sinh';
+
+  @override
+  String get rhDueRemoved => 'Đã xoá ngày dự sinh';
+
+  @override
+  String get rhDueSaveFailed =>
+      'Chưa lưu được ngày dự sinh. Kiểm tra kết nối rồi thử lại.';
+
+  @override
+  String get rhDueSetupOnly => 'Chỉ ba mẹ (Cùng nuôi) đặt được ngày dự sinh.';
+
+  @override
+  String get rhEstimatedTag => 'ước tính';
+
+  @override
+  String get rhWeeksPickerTitle => 'Tuổi thai khi sinh';
+
+  @override
+  String get rhDaysPickerTitle => 'Thêm số ngày';
+
+  @override
+  String get rhRemindTitle => 'Nhắc bạn khi nào?';
+
+  @override
+  String get rhRemindBody =>
+      'Tất cả đều tuỳ chọn. Tối đa 1 thông báo Nhịp lớn lên mỗi ngày.';
+
+  @override
+  String get rhRemindStage => 'Trước giai đoạn tham khảo';
+
+  @override
+  String get rhRemindStageSub => '3 ngày trước · tối đa 1 lần mỗi giai đoạn';
+
+  @override
+  String get rhRemindEvening => 'Check-in buổi tối';
+
+  @override
+  String get rhRemindEveningSub => '20:30 · bỏ qua nếu đã ghi trong ngày';
+
+  @override
+  String get rhQuietHours => 'Giờ yên lặng';
+
+  @override
+  String rhQuietRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String get rhQuietOff => 'Tắt';
+
+  @override
+  String get rhQuietSub => 'Không gửi gợi ý, chỉ nhắc việc bạn đặt';
+
+  @override
+  String get rhQuietTo => 'đến';
+
+  @override
+  String get rhRemindDevice =>
+      'Nhắc được lưu trên máy này; giờ yên lặng theo tài khoản của bạn.';
+
+  @override
+  String get rhNoLeapRisk => 'Không có thông báo kiểu “nguy cơ leap cao”.';
+
+  @override
+  String rhCalendarBasis(String model, String date) {
+    return 'Mô hình $model · theo ngày dự sinh $date';
+  }
+
+  @override
+  String rhCalendarBasisEstimated(String model, String date) {
+    return 'Mô hình $model · theo ngày dự sinh ước tính $date';
+  }
+
+  @override
+  String get rhChange => 'Đổi';
+
+  @override
+  String rhTodayBefore(String date, int n) {
+    return 'Hôm nay · $date · trước giai đoạn $n';
+  }
+
+  @override
+  String rhTodayIn(String date, int n) {
+    return 'Hôm nay · $date · trong giai đoạn $n';
+  }
+
+  @override
+  String rhTodayPlain(String date) {
+    return 'Hôm nay · $date';
+  }
+
+  @override
+  String rhStageUpcoming(int days) {
+    return 'Sắp tới · còn $days ngày';
+  }
+
+  @override
+  String get rhStageCurrent => 'Đang trong khoảng dự kiến';
+
+  @override
+  String get rhStagePast => 'Đã qua';
+
+  @override
+  String rhStagesOverlap(int a, int b) {
+    return 'Giai đoạn $a và $b chồng nhau · cả hai đều chỉ là tham khảo';
+  }
+
+  @override
+  String rhStageShort(int n) {
+    return 'Giai đoạn $n';
+  }
+
+  @override
+  String rhCalendarFooter(String version) {
+    return 'Lịch là mô hình tham khảo, chưa được chứng minh chính xác cho từng bé. Mô hình $version.';
+  }
+
+  @override
+  String rhNotPartner(String label) {
+    return '$label được dùng làm tham khảo, không phải đối tác.';
+  }
+
+  @override
+  String rhStageDetailExpected(String range, String baby) {
+    return 'Dự kiến $range · có thể không trùng với trải nghiệm của $baby';
+  }
+
+  @override
+  String get rhSignsTitle => 'Dấu hiệu có thể gặp';
+
+  @override
+  String get rhSignsNormal =>
+      'Một số bé không có thay đổi rõ — điều đó bình thường';
+
+  @override
+  String get rhSkillsTitle => 'Kỹ năng tham khảo theo tuổi';
+
+  @override
+  String get rhSkillsNote =>
+      'Kỹ năng không bắt buộc khớp với giai đoạn này. Theo dõi kỹ năng theo tuổi không thay cho sàng lọc chuyên môn.';
+
+  @override
+  String get rhActivitiesTitle => 'Hoạt động phù hợp';
+
+  @override
+  String get rhSourcesReview => 'Nguồn & duyệt';
+
+  @override
+  String rhModelVersion(String version) {
+    return 'Mô hình $version';
+  }
+
+  @override
+  String get rhSameAsUsual => 'Con vẫn như mọi ngày';
+
+  @override
+  String get rhStageMissing => 'Giai đoạn này không còn trong lịch tham khảo.';
+
+  @override
+  String get rhMsConfirmTitle => 'Lưu điều mới thành mốc?';
+
+  @override
+  String rhMsConfirmBody(String baby) {
+    return 'Mốc được lưu vào Kỷ niệm của $baby để gắn ảnh và làm thẻ mốc. Ảnh không bị sao chép.';
+  }
+
+  @override
+  String get rhMsName => 'Tên mốc';
+
+  @override
+  String get rhMsSavedTitle => 'Đã lưu điều mới';
+
+  @override
+  String rhMsSavedSub(String name, String date, String who) {
+    return '$name · $date · $who xác nhận';
+  }
+
+  @override
+  String get rhMsKeepTitle => 'Giữ khoảnh khắc này?';
+
+  @override
+  String get rhMsBasic => 'Thẻ mốc cơ bản';
+
+  @override
+  String get rhMsPremium => 'Thẻ mốc Premium';
+
+  @override
+  String get rhMsCreateCard => 'Tạo thẻ mốc';
+
+  @override
+  String get rhMsPhotoNote => 'Chọn ảnh từ Kỷ niệm khi tạo thẻ.';
+
+  @override
+  String get rhMsRoleTitle => 'Chỉ ba mẹ lưu được mốc';
+
+  @override
+  String get rhMsRoleBody =>
+      'Bạn vẫn ghi được điều mới trong ghi nhận; ba mẹ (Cùng nuôi) xác nhận mốc.';
+
+  @override
+  String get rhMsSaveFailed => 'Chưa lưu được mốc. Thử lại sau.';
+
+  @override
+  String get rhPersonalize => 'Cá nhân hoá';
+
+  @override
+  String get rhPersonalizeSub => 'Điều bạn quan tâm, giờ nhận gợi ý, phản hồi';
+
+  @override
+  String get rhPersonalizeNote =>
+      'Các lựa chọn này của riêng bạn, không đổi cài đặt của người khác trong nhà.';
+
+  @override
+  String get rhInterestsRow => 'Điều bạn quan tâm';
+
+  @override
+  String get rhDigestRow => 'Giờ nhận gợi ý';
+
+  @override
+  String get rhRemindRow => 'Nhắc Nhịp lớn lên';
+
+  @override
+  String get rhHistoryRow => 'Lịch sử phản hồi';
+
+  @override
+  String get rhInterestsNone => 'Chưa chọn';
+
+  @override
+  String rhInterestsTitle(String baby) {
+    return 'Bạn muốn đồng hành cùng $baby ở những gì?';
+  }
+
+  @override
+  String get rhInterestsBody =>
+      'Hôm nay và gợi ý sẽ ưu tiên những mục này. Đổi lại lúc nào cũng được.';
+
+  @override
+  String get rhInterestsToday =>
+      'Đây là điều bạn quan tâm lâu dài. Điều con cần hôm nay thì ghi ở “Hôm nay con có gì khác?”.';
+
+  @override
+  String get rhIntSleep => 'Giấc ngủ';
+
+  @override
+  String get rhIntSleepSub => 'Nhịp ngủ, nhịp lớn lên';
+
+  @override
+  String get rhIntFeeding => 'Bú & sữa';
+
+  @override
+  String get rhIntFeedingSub => 'Lượng sữa theo tuổi';
+
+  @override
+  String get rhIntMilestones => 'Mốc phát triển';
+
+  @override
+  String get rhIntMilestonesSub => 'Gợi ý mốc theo tuần tuổi';
+
+  @override
+  String get rhIntVaccines => 'Tiêm chủng';
+
+  @override
+  String get rhIntVaccinesSub => 'Nhắc trước lịch tiêm';
+
+  @override
+  String get rhIntNutrition => 'Dinh dưỡng';
+
+  @override
+  String get rhIntNutritionSub => 'Vi chất, vitamin theo tháng';
+
+  @override
+  String get rhIntMoments => 'Kỷ niệm';
+
+  @override
+  String get rhIntMomentsSub => 'Gợi ý ghi lại khoảnh khắc';
+
+  @override
+  String get rhFewerTitle => 'Đang ít gợi ý hơn về';
+
+  @override
+  String get rhFewerUndo => 'Bỏ';
+
+  @override
+  String rhSaveCount(int count) {
+    return 'Lưu · $count mục';
+  }
+
+  @override
+  String get rhSkip => 'Bỏ qua';
+
+  @override
+  String get rhPrefsSaved => 'Đã lưu lựa chọn của bạn';
+
+  @override
+  String get rhDigestTitle => 'Khi nào bạn tiện đọc gợi ý?';
+
+  @override
+  String get rhDigestBody =>
+      'Child Life gom gợi ý trong ngày vào một lần, đúng giờ bạn chọn. Nhắc việc bạn tự đặt (bú, tiêm…) vẫn đến đúng giờ.';
+
+  @override
+  String get rhDigestMorning => 'Buổi sáng';
+
+  @override
+  String get rhDigestNoon => 'Giờ nghỉ trưa';
+
+  @override
+  String get rhDigestEvening => 'Buổi tối';
+
+  @override
+  String get rhDigestNone => 'Không gom gợi ý';
+
+  @override
+  String get rhEditHistoryLink => 'Bạn có thể chỉnh hoặc xoá lịch sử phản hồi';
+
+  @override
+  String get rhHistoryTitle => 'Lịch sử phản hồi';
+
+  @override
+  String rhHistoryBody(int days) {
+    return 'Phản hồi của bạn trong $days ngày gần đây. Xoá một phản hồi thì gợi ý lần sau không dựa vào nó nữa.';
+  }
+
+  @override
+  String get rhHistoryEmpty => 'Bạn chưa có phản hồi nào gần đây.';
+
+  @override
+  String get rhDelete => 'Xoá';
+
+  @override
+  String get rhDeleteFeedbackTitle => 'Xoá phản hồi này?';
+
+  @override
+  String get rhDeleteFeedbackBody =>
+      'Gợi ý lần sau sẽ không dựa vào phản hồi này nữa.';
+
+  @override
+  String get rhFeedbackDeleted => 'Đã xoá phản hồi';
+
+  @override
+  String get rhResetInterests => 'Đặt lại điều bạn quan tâm';
+
+  @override
+  String get rhResetInterestsBody =>
+      'Bỏ chọn mọi chủ đề và các mục “Ít gợi ý kiểu này hơn”.';
+
+  @override
+  String get rhResetDone => 'Đã đặt lại điều bạn quan tâm';
+
+  @override
+  String get rhUnknownActivity => 'Gợi ý không còn trong nội dung';
+
+  @override
+  String get rhFewerLikeThis => 'Ít gợi ý kiểu này hơn';
+
+  @override
+  String rhFewerToast(String topic) {
+    return 'Đã ghi nhận. Bạn sẽ thấy ít gợi ý về $topic hơn.';
+  }
+
+  @override
+  String get rhOtherIdeas => 'Cách khác có thể thử';
 }

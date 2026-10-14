@@ -6,13 +6,20 @@ import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/core/design/tokens.g.dart';
+import 'package:child_life/features/premium/premium_repository.dart';
 import 'package:child_life/features/rhythm/activity_screens.dart';
 import 'package:child_life/features/rhythm/checkin_screens.dart';
 import 'package:child_life/features/rhythm/health_screen.dart';
+import 'package:child_life/features/rhythm/milestone_screen.dart';
+import 'package:child_life/features/rhythm/preferences_screens.dart';
 import 'package:child_life/features/rhythm/result_screen.dart';
+import 'package:child_life/features/rhythm/rhythm_calendar.dart';
 import 'package:child_life/features/rhythm/rhythm_home.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
+import 'package:child_life/features/rhythm/rhythm_overview.dart';
+import 'package:child_life/features/rhythm/rhythm_own.dart';
 import 'package:child_life/features/rhythm/rhythm_repository.dart';
+import 'package:child_life/features/rhythm/rhythm_setup.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,8 +31,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/rhythm_fixtures.dart';
 
-/// Nhịp lớn lên, Slice 2 part 1 (plan §7.1): H01, H02, PS02, C01, C02, NL05b, PS01, PS01F, AC01,
-/// AC02 and HL01 in Light / Night care × vi / en. Synthetic data only (review: null content).
+/// Nhịp lớn lên, Slice 2 (plan §7.1): part 1 — H01, H02, PS02, C01, C02, NL05b, PS01, PS01F,
+/// AC01, AC02, HL01; part 2 — NL01 (free / advanced), NL01b (no due date, sparse), NL02b, NL03,
+/// NL04, the NL07 section, EN01, EN02, MS01 — in Light / Night care × vi / en. Synthetic data
+/// only (review: null content). Long screens are drawn taller ([_heights]).
 /// Regenerate on macOS: flutter test --tags golden --update-goldens test/golden/rhythm_golden_test.dart
 
 typedef _Case = ({
@@ -42,6 +51,35 @@ Widget _home() => Builder(
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
         children: const [ForYouSection()],
+      ),
+    ),
+  ),
+);
+
+/// Screens drawn taller than a phone, to see them whole.
+const _heights = {
+  'nl01_free': 1500.0,
+  'nl01_advanced': 1700.0,
+  'nl01b_sparse': 1200.0,
+  'nl04_stage': 1200.0,
+  'en01_interests': 1000.0,
+};
+
+/// NL07's own-rhythm card alone.
+Widget _ownCard() => Consumer(
+  builder: (context, ref, _) => Scaffold(
+    backgroundColor: context.cl.colors.cloud,
+    body: SafeArea(
+      child: ListView(
+        padding: const EdgeInsets.all(ClSpace.s4),
+        children: [
+          OwnRhythmCard(
+            me: mai,
+            caps: ref.watch(capabilitiesProvider(teddyId)).value,
+            zone: 'Asia/Ho_Chi_Minh',
+            today: rhythmToday,
+          ),
+        ],
       ),
     ),
   ),
@@ -201,6 +239,111 @@ final _cases = <String, _Case>{
     ),
     act: null,
   ),
+  // NL01 569:973: free household (no rhythm.advanced), due date set, a mixed day, feedback.
+  'nl01_free': (
+    build: () => const RhythmOverviewScreen(),
+    overrides: () => rhythmOverrides(
+      repo: FakeRhythmRepository(
+        checkIns: recentCheckIns(),
+        feedback: familyFeedback(),
+      ),
+    ),
+    act: null,
+  ),
+  // NL01 with rhythm.advanced: the sleep comparison computed on the phone (NL07).
+  'nl01_advanced': (
+    build: () => const RhythmOverviewScreen(),
+    overrides: () => rhythmOverrides(
+      me: minh,
+      caps: rhythmCaps(plan: 'beta', groupA: true),
+      sleepRecords: sleepLog(),
+      repo: FakeRhythmRepository(
+        checkIns: recentCheckIns(),
+        feedback: familyFeedback(),
+      ),
+    ),
+    act: null,
+  ),
+  // NL01b 570:1002: no due date, 2/5 valid days (counted automatically), offline.
+  'nl01b_sparse': (
+    build: () => const RhythmOverviewScreen(),
+    overrides: () => rhythmOverrides(
+      caps: rhythmCaps(plan: 'beta', groupA: true),
+      sleepRecords: sleepLog(days: 5, sparseDay: null),
+      online: false,
+      repo: FakeRhythmRepository(profile: teddyRhythmProfile(dueDate: false)),
+    ),
+    act: null,
+  ),
+  // NL02b 570:1108: "Không nhớ" → estimate from 39 weeks + 3 days.
+  'nl02b_due_date': (
+    build: () => const RhythmSetupScreen(
+      start: RhythmSetupStep.dueDate,
+      single: true,
+      estimate: true,
+    ),
+    overrides: () => rhythmOverrides(
+      repo: FakeRhythmRepository(profile: teddyRhythmProfile(dueDate: false)),
+    ),
+    act: null,
+  ),
+  // NL03 571:1054: the stages from the due date (1 and 2 overlap).
+  'nl03_calendar': (
+    build: () => const ReferenceCalendarScreen(),
+    overrides: () => rhythmOverrides(repo: FakeRhythmRepository()),
+    act: null,
+  ),
+  // NL04 571:1158: stage 1 with signs, skills, a linked activity and sources.
+  'nl04_stage': (
+    build: () => const StageDetailScreen(stageId: 'stage_1'),
+    overrides: () => rhythmOverrides(repo: FakeRhythmRepository()),
+    act: null,
+  ),
+  // NL07 573:1109: the own-rhythm section with rhythm.advanced.
+  'nl07_own_rhythm': (
+    build: _ownCard,
+    overrides: () => rhythmOverrides(
+      caps: rhythmCaps(plan: 'beta', groupA: true),
+      sleepRecords: sleepLog(),
+      repo: FakeRhythmRepository(checkIns: recentCheckIns()),
+    ),
+    act: null,
+  ),
+  // EN01 559:2288: three interests chosen, one topic turned down (EN05).
+  'en01_interests': (
+    build: () => const InterestsScreen(),
+    overrides: () => rhythmOverrides(
+      repo: FakeRhythmRepository(
+        preferences: const UserPreferences(
+          interests: [Interest.sleep, Interest.feeding, Interest.milestones],
+          fewer: [Interest.nutrition],
+        ),
+      ),
+    ),
+    act: null,
+  ),
+  // EN02 559:2383: the evening round-up and quiet hours.
+  'en02_digest': (
+    build: () => const DigestScreen(),
+    overrides: () => rhythmOverrides(
+      repo: FakeRhythmRepository(
+        preferences: const UserPreferences(digestTime: '20:30'),
+      ),
+    ),
+    act: null,
+  ),
+  // MS01 591:6632: "Lần đầu lẫy" saved as a milestone → "Giữ khoảnh khắc này?".
+  'ms01_milestone': (
+    build: () => const RhythmMilestoneScreen(note: 'Lần đầu lẫy'),
+    overrides: () => rhythmOverrides(repo: FakeRhythmRepository()),
+    act: (t) async {
+      final l10n = AppLocalizations.of(
+        t.element(find.byType(RhythmMilestoneScreen)),
+      );
+      await t.tap(find.text(l10n.rhSaveToMilestones));
+      await t.pumpAndSettle();
+    },
+  ),
 };
 
 void main() {
@@ -210,9 +353,14 @@ void main() {
         testWidgets('$name ${palette.name} ${locale.languageCode}', (
           tester,
         ) async {
-          SharedPreferences.setMockInitialValues({});
+          // NL01's first-open setup already ran for these people.
+          SharedPreferences.setMockInitialValues({
+            'rhythm.setupSeen.u_mai.$teddyId': true,
+            'rhythm.setupSeen.u_minh.$teddyId': true,
+          });
           final prefs = await SharedPreferences.getInstance();
-          tester.view.physicalSize = const Size(375, 812);
+          final height = _heights[name] ?? 812;
+          tester.view.physicalSize = Size(375, height);
           tester.view.devicePixelRatio = 1;
           addTearDown(tester.view.reset);
           await tester.pumpWidget(
@@ -223,10 +371,10 @@ void main() {
                 ...c.overrides(),
               ],
               child: MediaQuery(
-                data: const MediaQueryData(
-                  size: Size(375, 812),
+                data: MediaQueryData(
+                  size: Size(375, height),
                   disableAnimations: true,
-                  padding: EdgeInsets.only(top: 47, bottom: 34),
+                  padding: const EdgeInsets.only(top: 47, bottom: 34),
                 ),
                 child: RepaintBoundary(
                   key: const ValueKey('golden'),

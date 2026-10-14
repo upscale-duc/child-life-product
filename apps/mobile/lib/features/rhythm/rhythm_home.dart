@@ -131,7 +131,7 @@ class ForYouSection extends ConsumerWidget {
             GateReason.premiumRequired;
 
     final children = <Widget>[
-      if (health != null) _HealthCard(signs: health.healthSigns),
+      if (health != null) RhHealthCard(signs: health.healthSigns),
       if (showPrimary)
         _PrimaryCard(
           me: me,
@@ -145,6 +145,7 @@ class ForYouSection extends ConsumerWidget {
               (afterRec && last.kind == FeedbackKind.started),
           today: today,
           babyName: name,
+          secondary: secondaryActivities(content, home!),
         ),
       if (canCheckIn) const _CheckInEntry(),
       if (ageCard != null) ...[
@@ -176,9 +177,9 @@ class ForYouSection extends ConsumerWidget {
   }
 }
 
-/// Today's check-ins flagged a health sign: first, before anything else, and free.
-class _HealthCard extends StatelessWidget {
-  const _HealthCard({required this.signs});
+/// Today's check-ins flagged a health sign: first, before anything else, and free (Home, NL01).
+class RhHealthCard extends StatelessWidget {
+  const RhHealthCard({required this.signs, super.key});
   final List<HealthSign> signs;
 
   @override
@@ -234,6 +235,7 @@ class _PrimaryCard extends ConsumerWidget {
     required this.started,
     required this.today,
     required this.babyName,
+    this.secondary = const [],
   });
 
   final Membership me;
@@ -245,6 +247,9 @@ class _PrimaryCard extends ConsumerWidget {
   final bool started;
   final String today;
   final String babyName;
+
+  /// ≤2 other activities from `composeHome` (drawn small under the primary).
+  final List<Activity> secondary;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -394,6 +399,17 @@ class _PrimaryCard extends ConsumerWidget {
                 ],
               ),
             ),
+            // PS02 footer: the person's own answers can be changed or deleted.
+            if (canAct)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: RhLink(
+                  label: l10n.rhEditHistoryLink,
+                  muted: true,
+                  start: true,
+                  onTap: () => context.push(Routes.rhythmFeedbackHistory),
+                ),
+              ),
           ] else
             RhInfoBox(text: reasons.join(' ')),
           const SizedBox(height: ClSpace.s2),
@@ -443,6 +459,17 @@ class _PrimaryCard extends ConsumerWidget {
           ] else ...[
             const SizedBox(height: ClSpace.s1),
             RhLink(label: l10n.rhHow, onTap: open),
+          ],
+          if (secondary.isNotEmpty) ...[
+            const SizedBox(height: ClSpace.s3),
+            Container(height: 1, color: cl.colors.separator),
+            const SizedBox(height: ClSpace.s3),
+            RhSecondaryIdeas(
+              activities: secondary,
+              onOpen: (a) => context.push(
+                activityLocation(a.id, checkInId: rec.checkInId),
+              ),
+            ),
           ],
         ],
       ),

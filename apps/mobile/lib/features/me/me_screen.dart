@@ -143,6 +143,15 @@ class MeScreen extends ConsumerWidget {
             if (ref.watch(selectedCapabilitiesProvider) case final caps?
                 when caps.features.any || caps.plan != HouseholdPlan.free)
               _PlanRow(caps: caps),
+            // Nhịp lớn lên EN01 / EN02 / feedback history: per person, free.
+            if (ref.watch(selectedCapabilitiesProvider)?.features.rhythm ??
+                false)
+              MeRow(
+                icon: ClIcons.sliders,
+                title: l10n.rhPersonalize,
+                subtitle: l10n.rhPersonalizeSub,
+                onTap: () => context.push(Routes.rhythmPersonalize),
+              ),
             MeRow(
               icon: ClIcons.globe,
               title: l10n.meAppearance,

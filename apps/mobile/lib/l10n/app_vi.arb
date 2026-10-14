@@ -17218,16 +17218,978 @@
   "@rhAgeEach": {
     "description": "Age card detail footnote (no schedule)."
   },
-  "rhComingTitle": "Nhịp lớn lên",
-  "@rhComingTitle": {
-    "description": "Placeholder title until the Nhịp lớn lên screens arrive."
-  },
-  "rhComingBody": "Phần này đang được hoàn thiện.",
-  "@rhComingBody": {
-    "description": "Placeholder body until the Nhịp lớn lên screens arrive."
-  },
   "rhSaveFailed": "Chưa lưu được ghi nhận. Có thể quyền của bạn đã thay đổi.",
   "@rhSaveFailed": {
     "description": "A check-in or feedback write was refused."
+  },
+  "rhTitle": "Nhịp lớn lên",
+  "@rhTitle": {
+    "description": "NL01 title."
+  },
+  "rhBabyAge": "{baby} · {age}",
+  "@rhBabyAge": {
+    "description": "NL01 subtitle: name and actual age.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "rhCalendarUnsetPill": "LỊCH THAM KHẢO · chưa thiết lập",
+  "@rhCalendarUnsetPill": {
+    "description": "NL01b pill without a due date."
+  },
+  "rhCalendarUnsetTitle": "Thêm ngày dự sinh để xem lịch tham khảo",
+  "@rhCalendarUnsetTitle": {
+    "description": "NL01b calendar card title."
+  },
+  "rhCalendarUnsetBody": "Không có ngày dự sinh, bạn vẫn check-in và xem nội dung theo tuổi thực của {baby}.",
+  "@rhCalendarUnsetBody": {
+    "description": "NL01b calendar card body.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhAddDueDate": "Thêm ngày dự sinh",
+  "@rhAddDueDate": {
+    "description": "NL01b → NL02b."
+  },
+  "rhDontRemember": "Không nhớ",
+  "@rhDontRemember": {
+    "description": "NL01b → NL02b estimate from gestational age."
+  },
+  "rhCalendarUnsetOthers": "Ba mẹ (Cùng nuôi) có thể thêm ngày dự sinh để mở lịch tham khảo.",
+  "@rhCalendarUnsetOthers": {
+    "description": "NL01b for members who may not set it (rhythm.setup)."
+  },
+  "rhCalendarNoAccess": "Lịch tham khảo tính từ ngày dự sinh, thuộc thông tin bé mà bạn chưa có quyền xem.",
+  "@rhCalendarNoAccess": {
+    "description": "NL01 for members who may not read the restricted profile."
+  },
+  "rhCalendarNoModel": "Lịch tham khảo chưa được phát hành.",
+  "@rhCalendarNoModel": {
+    "description": "NL01 when no reference model is published."
+  },
+  "rhSeeCalendar": "Xem lịch",
+  "@rhSeeCalendar": {
+    "description": "NL01 link → NL03."
+  },
+  "rhStageComingN": "Sắp đến giai đoạn {n} (Wonder Weeks)",
+  "@rhStageComingN": {
+    "description": "NL01 headline: the next stage (D-072 #7).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhStageInN": "Đang trong giai đoạn {n} (Wonder Weeks)",
+  "@rhStageInN": {
+    "description": "NL01 headline: the current stage (D-072 #7).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhStageExpectedLine": "Dự kiến {range} · còn {days} ngày đến giai đoạn",
+  "@rhStageExpectedLine": {
+    "description": "NL01: the next window and days left.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "rhStageNowLine": "Dự kiến {range} · trong khoảng tham khảo",
+  "@rhStageNowLine": {
+    "description": "NL01: the current window.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "rhStagesDone": "Đã qua các giai đoạn trong lịch tham khảo",
+  "@rhStagesDone": {
+    "description": "NL01 when every stage is behind."
+  },
+  "rhCalendarDisclaimer": "Đây là khoảng thời gian dự kiến theo lịch tham khảo. Lịch có thể không trùng với trải nghiệm của con.",
+  "@rhCalendarDisclaimer": {
+    "description": "NL01 calendar disclaimer."
+  },
+  "rhByDueDate": "Theo ngày dự sinh {date}",
+  "@rhByDueDate": {
+    "description": "NL01 basis line.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhByDueDateEstimated": "Theo ngày dự sinh ước tính {date}",
+  "@rhByDueDateEstimated": {
+    "description": "NL01 basis line when estimated (the label stays, brief p.13).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhOwnPill": "NHỊP RIÊNG CỦA CON",
+  "@rhOwnPill": {
+    "description": "NL01 own-rhythm pill."
+  },
+  "rhOwnSparsePill": "NHỊP RIÊNG CỦA CON · chưa đủ dữ liệu",
+  "@rhOwnSparsePill": {
+    "description": "NL01b own-rhythm pill."
+  },
+  "rhOwnTitle": "Điều nhà mình ghi nhận",
+  "@rhOwnTitle": {
+    "description": "NL01 own-rhythm card title."
+  },
+  "rhOwnEmpty": "Chưa có ghi nhận nào gần đây. Bạn vẫn có thể ghi nhận hôm nay.",
+  "@rhOwnEmpty": {
+    "description": "NL01 without recent check-ins."
+  },
+  "rhOwnNoAccess": "Ghi nhận của gia đình chỉ hiện với người được xem chăm sóc hằng ngày.",
+  "@rhOwnNoAccess": {
+    "description": "NL01 for members without history.read."
+  },
+  "rhMixedDay": "Ghi khác nhau",
+  "@rhMixedDay": {
+    "description": "NL01 pill on a day where two people noted different things (X03)."
+  },
+  "rhMixedNote": "Hai người ghi khác nhau trong cùng ngày được giữ nguyên cả hai.",
+  "@rhMixedNote": {
+    "description": "NL07 footer."
+  },
+  "rhWhoDay": "{who} · {date}",
+  "@rhWhoDay": {
+    "description": "Author and day of a note.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhRecordToday": "Ghi nhận hôm nay",
+  "@rhRecordToday": {
+    "description": "NL01 / NL04 primary → C01."
+  },
+  "rhSleepHeading": "Tổng ngủ được ghi · {days} ngày",
+  "@rhSleepHeading": {
+    "description": "NL07 chart heading.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "rhSleepSparseTitle": "Nhà mình chưa có đủ nhật ký để so sánh.",
+  "@rhSleepSparseTitle": {
+    "description": "NL01b / ST01 not enough data."
+  },
+  "rhSleepSparseBody": "{valid}/{need} ngày ghi đủ giấc ngủ · cần thêm {more} ngày để so sánh. Không ghi không có nghĩa là bé ngủ ít.",
+  "@rhSleepSparseBody": {
+    "description": "NL01b: valid baseline days, counted automatically (D-073 #1).",
+    "placeholders": {
+      "valid": {
+        "type": "int"
+      },
+      "need": {
+        "type": "int"
+      },
+      "more": {
+        "type": "int"
+      }
+    }
+  },
+  "rhSleepSparseRecent": "Cần ít nhất {need} trong {days} ngày gần nhất được ghi đủ để so sánh. Không ghi không có nghĩa là bé ngủ ít.",
+  "@rhSleepSparseRecent": {
+    "description": "NL01b: not enough recent valid days.",
+    "placeholders": {
+      "need": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "rhSleepLower": "Trong các ngày ghi đủ gần đây, tổng ngủ được ghi thấp hơn khoảng {delta} so với trước.",
+  "@rhSleepLower": {
+    "description": "NL07 fact (change_detected, lower).",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "rhSleepHigher": "Trong các ngày ghi đủ gần đây, tổng ngủ được ghi cao hơn khoảng {delta} so với trước.",
+  "@rhSleepHigher": {
+    "description": "NL07 fact (change_detected, higher).",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "rhSleepSame": "Trong các ngày ghi đủ gần đây, tổng ngủ được ghi gần với mức thường của con.",
+  "@rhSleepSame": {
+    "description": "NL07 fact (no_change)."
+  },
+  "rhSleepBasis": "Căn cứ: {recent} ngày gần nhất ({range}) so với {baseline} ngày ghi đủ trước đó. Không phải chẩn đoán.",
+  "@rhSleepBasis": {
+    "description": "NL07 basis line.",
+    "placeholders": {
+      "recent": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      },
+      "baseline": {
+        "type": "int"
+      }
+    }
+  },
+  "rhSleepUsual": "mức thường {value}",
+  "@rhSleepUsual": {
+    "description": "NL07 chart legend: the baseline median.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "rhSleepMissingLegend": "ngày ghi thiếu, không tính",
+  "@rhSleepMissingLegend": {
+    "description": "NL07 chart legend: an invalid day."
+  },
+  "rhSleepGateTitle": "So sánh giấc ngủ từ nhật ký",
+  "@rhSleepGateTitle": {
+    "description": "NL01 own rhythm without rhythm.advanced."
+  },
+  "rhSleepGatePremium": "So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn miễn phí.",
+  "@rhSleepGatePremium": {
+    "description": "NL01 gate (PREMIUM_REQUIRED): no blurred fake insight."
+  },
+  "rhSleepGateOther": "Phần so sánh giấc ngủ chưa mở cho bạn. Ghi nhận và lịch tham khảo vẫn dùng được.",
+  "@rhSleepGateOther": {
+    "description": "NL01 gate (any other reason)."
+  },
+  "rhWhy": "Vì sao?",
+  "@rhWhy": {
+    "description": "Link that explains a gate reason."
+  },
+  "rhTriedHeading": "Cách nhà mình đã thử",
+  "@rhTriedHeading": {
+    "description": "NL01 section from feedback."
+  },
+  "rhFooterFacts": "Thông tin là ghi nhận của gia đình, không phải chẩn đoán.",
+  "@rhFooterFacts": {
+    "description": "NL01 footer."
+  },
+  "rhOutOfAge": "Nhịp lớn lên đang hỗ trợ bé 0–12 tháng. Với bé lớn hơn, dữ liệu đã ghi vẫn xem được; nội dung mới chưa hỗ trợ.",
+  "@rhOutOfAge": {
+    "description": "NL01b out-of-age state."
+  },
+  "rhOfflineNote": "Ngoại tuyến: đang hiện dữ liệu đã lưu trên máy · ghi nhận sẽ được gửi khi có mạng.",
+  "@rhOfflineNote": {
+    "description": "NL01b offline state."
+  },
+  "rhRegionOwnerBody": "Chọn khu vực để Child Life dùng đúng nội dung và số khẩn cấp. Lịch tham khảo và ghi nhận vẫn dùng được.",
+  "@rhRegionOwnerBody": {
+    "description": "NL01 for the owner while the country is unset (D-072 #3)."
+  },
+  "rhRegionPick": "Chọn khu vực",
+  "@rhRegionPick": {
+    "description": "NL01 owner → region sheet."
+  },
+  "rhRegionWaiting": "Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung miễn phí vẫn dùng được.",
+  "@rhRegionWaiting": {
+    "description": "NL01 for other members while the country is unset (D-072 #3)."
+  },
+  "rhSetupIntro": "Tham khảo điều có thể đến, hiểu điều con đang trải qua.",
+  "@rhSetupIntro": {
+    "description": "NL02a intro."
+  },
+  "rhLayerCalendarTitle": "Lịch tham khảo",
+  "@rhLayerCalendarTitle": {
+    "description": "NL02a card 1 / NL03 title."
+  },
+  "rhLayerCalendarBody": "Khoảng thời gian dự kiến theo mô hình Wonder Weeks, tính từ ngày dự sinh. Mỗi bé mỗi khác — lịch chỉ để tham khảo.",
+  "@rhLayerCalendarBody": {
+    "description": "NL02a card 1 body."
+  },
+  "rhLayerCalendarBasis": "Căn cứ: ngày dự sinh + mô hình tham khảo đã phát hành",
+  "@rhLayerCalendarBasis": {
+    "description": "NL02a card 1 basis."
+  },
+  "rhLayerOwnTitle": "Nhịp riêng của con",
+  "@rhLayerOwnTitle": {
+    "description": "NL02a card 2 title."
+  },
+  "rhLayerOwnBody": "Những gì cả nhà ghi nhận: giấc ngủ, nhu cầu được dỗ, điều mới. Child Life tóm tắt thay đổi và cách nhà mình đã thử.",
+  "@rhLayerOwnBody": {
+    "description": "NL02a card 2 body."
+  },
+  "rhLayerOwnBasis": "Căn cứ: check-in và nhật ký chăm sóc",
+  "@rhLayerOwnBasis": {
+    "description": "NL02a card 2 basis."
+  },
+  "rhSetupDisclaimer": "Child Life không dự đoán chắc chắn ngày quấy hay chẩn đoán nguyên nhân.",
+  "@rhSetupDisclaimer": {
+    "description": "NL02a disclaimer."
+  },
+  "rhStart": "Bắt đầu",
+  "@rhStart": {
+    "description": "NL02a primary."
+  },
+  "rhDueTitle": "Ngày dự sinh của {baby}",
+  "@rhDueTitle": {
+    "description": "NL02b heading.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhDueBody": "Lịch tham khảo tính từ ngày dự sinh, không phải ngày sinh. Bé sinh ngày {dob}.",
+  "@rhDueBody": {
+    "description": "NL02b body.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      },
+      "dob": {
+        "type": "String"
+      }
+    }
+  },
+  "rhDueBodyNoDob": "Lịch tham khảo tính từ ngày dự sinh, không phải ngày sinh.",
+  "@rhDueBodyNoDob": {
+    "description": "NL02b body without a date of birth."
+  },
+  "rhDueField": "Ngày dự sinh",
+  "@rhDueField": {
+    "description": "NL02b field label."
+  },
+  "rhDuePick": "Chọn ngày",
+  "@rhDuePick": {
+    "description": "NL02b field placeholder."
+  },
+  "rhEstimateTitle": "Không nhớ ngày dự sinh?",
+  "@rhEstimateTitle": {
+    "description": "NL02b estimate card."
+  },
+  "rhEstimateBody": "Ước tính từ tuổi thai khi sinh:",
+  "@rhEstimateBody": {
+    "description": "NL02b estimate card."
+  },
+  "rhWeeks": "{n} tuần",
+  "@rhWeeks": {
+    "description": "NL02b gestational weeks chip.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhPlusDays": "+ {n} ngày",
+  "@rhPlusDays": {
+    "description": "NL02b gestational days chip.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhEstimateResult": "Dự sinh ước tính: {date} · gắn nhãn “ước tính”",
+  "@rhEstimateResult": {
+    "description": "NL02b result banner.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhEstimateAdvice": "Bé sinh rất non hoặc có nhu cầu đặc biệt: hỏi bác sĩ trước khi dùng lịch.",
+  "@rhEstimateAdvice": {
+    "description": "NL02b advice."
+  },
+  "rhEstimateNeedsDob": "Cần ngày sinh của bé để ước tính.",
+  "@rhEstimateNeedsDob": {
+    "description": "NL02b without a date of birth."
+  },
+  "rhDueOutOfRange": "Ngày dự sinh cần trong khoảng 4 tuần trước đến 18 tuần sau ngày sinh.",
+  "@rhDueOutOfRange": {
+    "description": "NL02b validation, as setDueDate checks."
+  },
+  "rhSkipOwnOnly": "Bỏ qua — chỉ dùng nhịp riêng của con",
+  "@rhSkipOwnOnly": {
+    "description": "NL02b skip link."
+  },
+  "rhDueHelper": "Sửa lại lúc nào cũng được · lịch và nhắc sẽ tính lại",
+  "@rhDueHelper": {
+    "description": "NL02b helper."
+  },
+  "rhDueSaved": "Đã lưu ngày dự sinh",
+  "@rhDueSaved": {
+    "description": "Toast after setDueDate."
+  },
+  "rhDueRemove": "Xoá ngày dự sinh",
+  "@rhDueRemove": {
+    "description": "NL02b (edit): clears it, the calendar goes back to \"chưa thiết lập\"."
+  },
+  "rhDueRemoved": "Đã xoá ngày dự sinh",
+  "@rhDueRemoved": {
+    "description": "Toast after clearing the due date."
+  },
+  "rhDueSaveFailed": "Chưa lưu được ngày dự sinh. Kiểm tra kết nối rồi thử lại.",
+  "@rhDueSaveFailed": {
+    "description": "setDueDate failed."
+  },
+  "rhDueSetupOnly": "Chỉ ba mẹ (Cùng nuôi) đặt được ngày dự sinh.",
+  "@rhDueSetupOnly": {
+    "description": "NL02b for members without rhythm.setup."
+  },
+  "rhEstimatedTag": "ước tính",
+  "@rhEstimatedTag": {
+    "description": "Tag on an estimated due date."
+  },
+  "rhWeeksPickerTitle": "Tuổi thai khi sinh",
+  "@rhWeeksPickerTitle": {
+    "description": "NL02b weeks picker."
+  },
+  "rhDaysPickerTitle": "Thêm số ngày",
+  "@rhDaysPickerTitle": {
+    "description": "NL02b days picker."
+  },
+  "rhRemindTitle": "Nhắc bạn khi nào?",
+  "@rhRemindTitle": {
+    "description": "NL02c heading."
+  },
+  "rhRemindBody": "Tất cả đều tuỳ chọn. Tối đa 1 thông báo Nhịp lớn lên mỗi ngày.",
+  "@rhRemindBody": {
+    "description": "NL02c body."
+  },
+  "rhRemindStage": "Trước giai đoạn tham khảo",
+  "@rhRemindStage": {
+    "description": "NL02c toggle."
+  },
+  "rhRemindStageSub": "3 ngày trước · tối đa 1 lần mỗi giai đoạn",
+  "@rhRemindStageSub": {
+    "description": "NL02c toggle subtitle."
+  },
+  "rhRemindEvening": "Check-in buổi tối",
+  "@rhRemindEvening": {
+    "description": "NL02c toggle."
+  },
+  "rhRemindEveningSub": "20:30 · bỏ qua nếu đã ghi trong ngày",
+  "@rhRemindEveningSub": {
+    "description": "NL02c toggle subtitle."
+  },
+  "rhQuietHours": "Giờ yên lặng",
+  "@rhQuietHours": {
+    "description": "NL02c / EN02 quiet hours."
+  },
+  "rhQuietRange": "{from} – {to}",
+  "@rhQuietRange": {
+    "description": "Quiet hours range.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "rhQuietOff": "Tắt",
+  "@rhQuietOff": {
+    "description": "Quiet hours off."
+  },
+  "rhQuietSub": "Không gửi gợi ý, chỉ nhắc việc bạn đặt",
+  "@rhQuietSub": {
+    "description": "EN02 quiet hours subtitle."
+  },
+  "rhQuietTo": "đến",
+  "@rhQuietTo": {
+    "description": "EN02 between the two quiet-hours chips."
+  },
+  "rhRemindDevice": "Nhắc được lưu trên máy này; giờ yên lặng theo tài khoản của bạn.",
+  "@rhRemindDevice": {
+    "description": "NL02c note on where the choices live."
+  },
+  "rhNoLeapRisk": "Không có thông báo kiểu “nguy cơ leap cao”.",
+  "@rhNoLeapRisk": {
+    "description": "NL02c note."
+  },
+  "rhCalendarBasis": "Mô hình {model} · theo ngày dự sinh {date}",
+  "@rhCalendarBasis": {
+    "description": "NL03 basis row.",
+    "placeholders": {
+      "model": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhCalendarBasisEstimated": "Mô hình {model} · theo ngày dự sinh ước tính {date}",
+  "@rhCalendarBasisEstimated": {
+    "description": "NL03 basis row (estimated).",
+    "placeholders": {
+      "model": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhChange": "Đổi",
+  "@rhChange": {
+    "description": "NL03 → NL02b."
+  },
+  "rhTodayBefore": "Hôm nay · {date} · trước giai đoạn {n}",
+  "@rhTodayBefore": {
+    "description": "NL03 today marker.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhTodayIn": "Hôm nay · {date} · trong giai đoạn {n}",
+  "@rhTodayIn": {
+    "description": "NL03 today marker.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhTodayPlain": "Hôm nay · {date}",
+  "@rhTodayPlain": {
+    "description": "NL03 today marker after every stage.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhStageUpcoming": "Sắp tới · còn {days} ngày",
+  "@rhStageUpcoming": {
+    "description": "NL03 stage state.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "rhStageCurrent": "Đang trong khoảng dự kiến",
+  "@rhStageCurrent": {
+    "description": "NL03 stage state."
+  },
+  "rhStagePast": "Đã qua",
+  "@rhStagePast": {
+    "description": "NL03 stage state."
+  },
+  "rhStagesOverlap": "Giai đoạn {a} và {b} chồng nhau · cả hai đều chỉ là tham khảo",
+  "@rhStagesOverlap": {
+    "description": "NL03 overlap note.",
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "int"
+      }
+    }
+  },
+  "rhStageShort": "Giai đoạn {n}",
+  "@rhStageShort": {
+    "description": "NL03 stage row title.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhCalendarFooter": "Lịch là mô hình tham khảo, chưa được chứng minh chính xác cho từng bé. Mô hình {version}.",
+  "@rhCalendarFooter": {
+    "description": "NL03 footer.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "rhNotPartner": "{label} được dùng làm tham khảo, không phải đối tác.",
+  "@rhNotPartner": {
+    "description": "Source block (D-072 #7).",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "rhStageDetailExpected": "Dự kiến {range} · có thể không trùng với trải nghiệm của {baby}",
+  "@rhStageDetailExpected": {
+    "description": "NL04 header.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhSignsTitle": "Dấu hiệu có thể gặp",
+  "@rhSignsTitle": {
+    "description": "NL04 card."
+  },
+  "rhSignsNormal": "Một số bé không có thay đổi rõ — điều đó bình thường",
+  "@rhSignsNormal": {
+    "description": "NL04 signs footnote (possible, never certain)."
+  },
+  "rhSkillsTitle": "Kỹ năng tham khảo theo tuổi",
+  "@rhSkillsTitle": {
+    "description": "NL04 card."
+  },
+  "rhSkillsNote": "Kỹ năng không bắt buộc khớp với giai đoạn này. Theo dõi kỹ năng theo tuổi không thay cho sàng lọc chuyên môn.",
+  "@rhSkillsNote": {
+    "description": "NL04 skills footnote."
+  },
+  "rhActivitiesTitle": "Hoạt động phù hợp",
+  "@rhActivitiesTitle": {
+    "description": "NL04 card."
+  },
+  "rhSourcesReview": "Nguồn & duyệt",
+  "@rhSourcesReview": {
+    "description": "NL04 card."
+  },
+  "rhModelVersion": "Mô hình {version}",
+  "@rhModelVersion": {
+    "description": "NL04 sources: the model version.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "rhSameAsUsual": "Con vẫn như mọi ngày",
+  "@rhSameAsUsual": {
+    "description": "NL04 secondary: saves a usual check-in."
+  },
+  "rhStageMissing": "Giai đoạn này không còn trong lịch tham khảo.",
+  "@rhStageMissing": {
+    "description": "NL04 with an unknown stage id."
+  },
+  "rhMsConfirmTitle": "Lưu điều mới thành mốc?",
+  "@rhMsConfirmTitle": {
+    "description": "MS01 before saving: a parent confirms."
+  },
+  "rhMsConfirmBody": "Mốc được lưu vào Kỷ niệm của {baby} để gắn ảnh và làm thẻ mốc. Ảnh không bị sao chép.",
+  "@rhMsConfirmBody": {
+    "description": "MS01 before saving.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhMsName": "Tên mốc",
+  "@rhMsName": {
+    "description": "MS01 name field."
+  },
+  "rhMsSavedTitle": "Đã lưu điều mới",
+  "@rhMsSavedTitle": {
+    "description": "MS01 banner."
+  },
+  "rhMsSavedSub": "{name} · {date} · {who} xác nhận",
+  "@rhMsSavedSub": {
+    "description": "MS01 banner subtitle.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "rhMsKeepTitle": "Giữ khoảnh khắc này?",
+  "@rhMsKeepTitle": {
+    "description": "MS01 heading."
+  },
+  "rhMsBasic": "Thẻ mốc cơ bản",
+  "@rhMsBasic": {
+    "description": "MS01 tile."
+  },
+  "rhMsPremium": "Thẻ mốc Premium",
+  "@rhMsPremium": {
+    "description": "MS01 tile."
+  },
+  "rhMsCreateCard": "Tạo thẻ mốc",
+  "@rhMsCreateCard": {
+    "description": "MS01 primary → Thiệp cột mốc."
+  },
+  "rhMsPhotoNote": "Chọn ảnh từ Kỷ niệm khi tạo thẻ.",
+  "@rhMsPhotoNote": {
+    "description": "MS01 helper (photos are linked, never copied)."
+  },
+  "rhMsRoleTitle": "Chỉ ba mẹ lưu được mốc",
+  "@rhMsRoleTitle": {
+    "description": "MS01 for members without moments.create (ROLE_DENIED, not a paywall)."
+  },
+  "rhMsRoleBody": "Bạn vẫn ghi được điều mới trong ghi nhận; ba mẹ (Cùng nuôi) xác nhận mốc.",
+  "@rhMsRoleBody": {
+    "description": "MS01 role body."
+  },
+  "rhMsSaveFailed": "Chưa lưu được mốc. Thử lại sau.",
+  "@rhMsSaveFailed": {
+    "description": "MS01 save failed."
+  },
+  "rhPersonalize": "Cá nhân hoá",
+  "@rhPersonalize": {
+    "description": "Tôi row and hub title."
+  },
+  "rhPersonalizeSub": "Điều bạn quan tâm, giờ nhận gợi ý, phản hồi",
+  "@rhPersonalizeSub": {
+    "description": "Tôi row subtitle."
+  },
+  "rhPersonalizeNote": "Các lựa chọn này của riêng bạn, không đổi cài đặt của người khác trong nhà.",
+  "@rhPersonalizeNote": {
+    "description": "Hub note (per person, never a household fact)."
+  },
+  "rhInterestsRow": "Điều bạn quan tâm",
+  "@rhInterestsRow": {
+    "description": "Hub row → EN01."
+  },
+  "rhDigestRow": "Giờ nhận gợi ý",
+  "@rhDigestRow": {
+    "description": "Hub row → EN02."
+  },
+  "rhRemindRow": "Nhắc Nhịp lớn lên",
+  "@rhRemindRow": {
+    "description": "Hub row → NL02c."
+  },
+  "rhHistoryRow": "Lịch sử phản hồi",
+  "@rhHistoryRow": {
+    "description": "Hub row → feedback history."
+  },
+  "rhInterestsNone": "Chưa chọn",
+  "@rhInterestsNone": {
+    "description": "Hub row value without interests."
+  },
+  "rhInterestsTitle": "Bạn muốn đồng hành cùng {baby} ở những gì?",
+  "@rhInterestsTitle": {
+    "description": "EN01 title.",
+    "placeholders": {
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhInterestsBody": "Hôm nay và gợi ý sẽ ưu tiên những mục này. Đổi lại lúc nào cũng được.",
+  "@rhInterestsBody": {
+    "description": "EN01 body."
+  },
+  "rhInterestsToday": "Đây là điều bạn quan tâm lâu dài. Điều con cần hôm nay thì ghi ở “Hôm nay con có gì khác?”.",
+  "@rhInterestsToday": {
+    "description": "EN01: enduring interests vs today’s need."
+  },
+  "rhIntSleep": "Giấc ngủ",
+  "@rhIntSleep": {
+    "description": "EN01 interest."
+  },
+  "rhIntSleepSub": "Nhịp ngủ, nhịp lớn lên",
+  "@rhIntSleepSub": {
+    "description": "EN01 interest subtitle."
+  },
+  "rhIntFeeding": "Bú & sữa",
+  "@rhIntFeeding": {
+    "description": "EN01 interest."
+  },
+  "rhIntFeedingSub": "Lượng sữa theo tuổi",
+  "@rhIntFeedingSub": {
+    "description": "EN01 interest subtitle."
+  },
+  "rhIntMilestones": "Mốc phát triển",
+  "@rhIntMilestones": {
+    "description": "EN01 interest."
+  },
+  "rhIntMilestonesSub": "Gợi ý mốc theo tuần tuổi",
+  "@rhIntMilestonesSub": {
+    "description": "EN01 interest subtitle."
+  },
+  "rhIntVaccines": "Tiêm chủng",
+  "@rhIntVaccines": {
+    "description": "EN01 interest."
+  },
+  "rhIntVaccinesSub": "Nhắc trước lịch tiêm",
+  "@rhIntVaccinesSub": {
+    "description": "EN01 interest subtitle."
+  },
+  "rhIntNutrition": "Dinh dưỡng",
+  "@rhIntNutrition": {
+    "description": "EN01 interest."
+  },
+  "rhIntNutritionSub": "Vi chất, vitamin theo tháng",
+  "@rhIntNutritionSub": {
+    "description": "EN01 interest subtitle."
+  },
+  "rhIntMoments": "Kỷ niệm",
+  "@rhIntMoments": {
+    "description": "EN01 interest."
+  },
+  "rhIntMomentsSub": "Gợi ý ghi lại khoảnh khắc",
+  "@rhIntMomentsSub": {
+    "description": "EN01 interest subtitle."
+  },
+  "rhFewerTitle": "Đang ít gợi ý hơn về",
+  "@rhFewerTitle": {
+    "description": "EN01: topics marked \"Ít gợi ý kiểu này hơn\" (EN05)."
+  },
+  "rhFewerUndo": "Bỏ",
+  "@rhFewerUndo": {
+    "description": "EN01: removes a topic from \"fewer\"."
+  },
+  "rhSaveCount": "Lưu · {count} mục",
+  "@rhSaveCount": {
+    "description": "EN01 primary with the selection count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhSkip": "Bỏ qua",
+  "@rhSkip": {
+    "description": "EN01 / EN02 top-right link."
+  },
+  "rhPrefsSaved": "Đã lưu lựa chọn của bạn",
+  "@rhPrefsSaved": {
+    "description": "Toast after EN01 / EN02 / NL02c."
+  },
+  "rhDigestTitle": "Khi nào bạn tiện đọc gợi ý?",
+  "@rhDigestTitle": {
+    "description": "EN02 title."
+  },
+  "rhDigestBody": "Child Life gom gợi ý trong ngày vào một lần, đúng giờ bạn chọn. Nhắc việc bạn tự đặt (bú, tiêm…) vẫn đến đúng giờ.",
+  "@rhDigestBody": {
+    "description": "EN02 body."
+  },
+  "rhDigestMorning": "Buổi sáng",
+  "@rhDigestMorning": {
+    "description": "EN02 option 08:00."
+  },
+  "rhDigestNoon": "Giờ nghỉ trưa",
+  "@rhDigestNoon": {
+    "description": "EN02 option 12:30."
+  },
+  "rhDigestEvening": "Buổi tối",
+  "@rhDigestEvening": {
+    "description": "EN02 option 20:30."
+  },
+  "rhDigestNone": "Không gom gợi ý",
+  "@rhDigestNone": {
+    "description": "EN02 option: no digest."
+  },
+  "rhEditHistoryLink": "Bạn có thể chỉnh hoặc xoá lịch sử phản hồi",
+  "@rhEditHistoryLink": {
+    "description": "PS02 footer → feedback history."
+  },
+  "rhHistoryTitle": "Lịch sử phản hồi",
+  "@rhHistoryTitle": {
+    "description": "Feedback history title."
+  },
+  "rhHistoryBody": "Phản hồi của bạn trong {days} ngày gần đây. Xoá một phản hồi thì gợi ý lần sau không dựa vào nó nữa.",
+  "@rhHistoryBody": {
+    "description": "Feedback history body.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "rhHistoryEmpty": "Bạn chưa có phản hồi nào gần đây.",
+  "@rhHistoryEmpty": {
+    "description": "Feedback history empty."
+  },
+  "rhDelete": "Xoá",
+  "@rhDelete": {
+    "description": "Feedback history row action."
+  },
+  "rhDeleteFeedbackTitle": "Xoá phản hồi này?",
+  "@rhDeleteFeedbackTitle": {
+    "description": "Confirm sheet."
+  },
+  "rhDeleteFeedbackBody": "Gợi ý lần sau sẽ không dựa vào phản hồi này nữa.",
+  "@rhDeleteFeedbackBody": {
+    "description": "Confirm sheet."
+  },
+  "rhFeedbackDeleted": "Đã xoá phản hồi",
+  "@rhFeedbackDeleted": {
+    "description": "Toast after deleting."
+  },
+  "rhResetInterests": "Đặt lại điều bạn quan tâm",
+  "@rhResetInterests": {
+    "description": "Feedback history: clears interests and \"fewer\"."
+  },
+  "rhResetInterestsBody": "Bỏ chọn mọi chủ đề và các mục “Ít gợi ý kiểu này hơn”.",
+  "@rhResetInterestsBody": {
+    "description": "Reset confirm body."
+  },
+  "rhResetDone": "Đã đặt lại điều bạn quan tâm",
+  "@rhResetDone": {
+    "description": "Toast after reset."
+  },
+  "rhUnknownActivity": "Gợi ý không còn trong nội dung",
+  "@rhUnknownActivity": {
+    "description": "Feedback history row for retired content."
+  },
+  "rhFewerLikeThis": "Ít gợi ý kiểu này hơn",
+  "@rhFewerLikeThis": {
+    "description": "EN05 action on an activity (free forever)."
+  },
+  "rhFewerToast": "Đã ghi nhận. Bạn sẽ thấy ít gợi ý về {topic} hơn.",
+  "@rhFewerToast": {
+    "description": "Toast after EN05.",
+    "placeholders": {
+      "topic": {
+        "type": "String"
+      }
+    }
+  },
+  "rhOtherIdeas": "Cách khác có thể thử",
+  "@rhOtherIdeas": {
+    "description": "PS01 / H02 secondary suggestions (≤2)."
   }
 }

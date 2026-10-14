@@ -2,14 +2,17 @@ import 'dart:async';
 
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/memories/memory_repository.dart';
 import 'package:child_life/features/premium/premium_models.dart';
 import 'package:child_life/features/premium/premium_repository.dart';
+import 'package:child_life/features/rhythm/rhythm_calc.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
 import 'package:child_life/features/rhythm/rhythm_repository.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
 import 'care_fixtures.dart';
 import 'family_fixtures.dart';
+import 'memory_fixtures.dart';
 
 /// Nhịp lớn lên fixtures (synthetic, labelled like the dev seed: every item `review: null`).
 /// "Today" is Thứ Năm 8/10/2026 as on the Figma Home frames; Teddy was born 17/09 (3 weeks)
@@ -272,9 +275,27 @@ Map<String, Object?> referenceModelJson() => {
         'startOffsetDays': from,
         'endOffsetDays': to,
         'name': _l('Giai đoạn $n', 'Stage $n'),
-        'signs': _ll(<String>[], <String>[]),
-        'skills': _ll(<String>[], <String>[]),
-        'activityIds': <String>[],
+        'signs': n == 1
+            ? _ll(
+                [
+                  'Có thể cần được bế, dỗ nhiều hơn',
+                  'Giấc ngủ và cữ bú có thể xáo trộn vài hôm',
+                ],
+                [
+                  'May want more holding and soothing',
+                  'Sleep and feeds may be unsettled for a few days',
+                ],
+              )
+            : _ll(<String>[], <String>[]),
+        'skills': n == 1
+            ? _ll(
+                ['Nhìn theo khuôn mặt, phản ứng với âm thanh'],
+                ['Follows faces, reacts to sounds'],
+              )
+            : _ll(<String>[], <String>[]),
+        'activityIds': n == 1
+            ? ['act_skin_to_skin', 'act_missing']
+            : <String>[],
         'notice': null,
       },
   ],
@@ -454,7 +475,9 @@ class FakeRhythmRepository implements RhythmRepository {
     this.home,
     this.answer,
     this.answerError,
-  }) : content = content ?? rhythmContent(),
+    UserPreferences preferences = UserPreferences.defaults,
+  }) : _preferences = _Live(preferences),
+       content = content ?? rhythmContent(),
        reference = reference ?? referenceModel(),
        profile = profile ?? teddyRhythmProfile(),
        _checkIns = _Live([...checkIns]),
@@ -469,8 +492,14 @@ class FakeRhythmRepository implements RhythmRepository {
 
   final _Live<List<CheckIn>> _checkIns;
   final _Live<List<RecFeedback>> _feedback;
+  final _Live<UserPreferences> _preferences;
   final savedCheckIns = <CheckIn>[];
   final savedFeedback = <RecFeedback>[];
+  final savedPreferences = <UserPreferences>[];
+  final deletedFeedback = <String>[];
+  Object? dueDateError;
+
+  UserPreferences get preferences => _preferences.value;
   final nextActionCalls = <String>[];
   final dueDates = <DueDate?>[];
   int composeCalls = 0;
@@ -546,12 +575,37 @@ class FakeRhythmRepository implements RhythmRepository {
   HomeComposition? cachedHome(String babyId, String locale) => home;
 
   @override
-  Future<void> setDueDate(String babyId, DueDate? dueDate) async =>
-      dueDates.add(dueDate);
+  Future<void> setDueDate(String babyId, DueDate? dueDate) async {
+    if (dueDateError case final e?) throw e;
+    dueDates.add(dueDate);
+    profile = RhythmProfile(dateOfBirth: profile.dateOfBirth, dueDate: dueDate);
+  }
 
   @override
-  Stream<UserPreferences> watchPreferences(String uid) =>
-      Stream.value(UserPreferences.defaults);
+  Stream<UserPreferences> watchPreferences(String uid) => _preferences.stream;
+
+  @override
+  void savePreferences(
+    String uid,
+    UserPreferences preferences, {
+    void Function(Object error)? onError,
+  }) {
+    savedPreferences.add(preferences);
+    _preferences.set(preferences);
+  }
+
+  @override
+  void deleteFeedback(
+    String babyId,
+    String id, {
+    void Function(Object error)? onError,
+  }) {
+    deletedFeedback.add(id);
+    _feedback.set([
+      for (final f in _feedback.value)
+        if (f.id != id) f,
+    ]);
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -565,6 +619,10 @@ List<Override> rhythmOverrides({
   List<String>? dialled,
   bool online = true,
   List<CareRecord> records = const [],
+
+  /// The care log the sleep comparison reads (NL01 / NL07).
+  List<CareRecord> sleepRecords = const [],
+  MemoryRepository? memories,
 }) => [
   ...familyOverrides(
     me: me ?? mai,
@@ -573,6 +631,12 @@ List<Override> rhythmOverrides({
     records: records,
   ),
   rhythmRepositoryProvider.overrideWithValue(repo),
+  rhythmSleepRecordsProvider.overrideWith(
+    (ref, key) => Stream.value(sleepRecords),
+  ),
+  memoryRepositoryProvider.overrideWithValue(
+    memories ?? FakeMemoryRepository(),
+  ),
   capabilitiesProvider.overrideWith(
     (ref, babyId) async => Capabilities.fromJson(caps ?? rhythmCaps()),
   ),
@@ -586,3 +650,61 @@ List<Override> rhythmOverrides({
 List<CareRecord> lastNightSleep() => [
   rec(CareType.sleep, vn(7, 20, 10), minh, endedAt: vn(8, 4, 0)),
 ];
+
+/// Recent check-ins for NL01: Mẹ and Ba noted different things on 7/10 (a mixed day), Cô Lan
+/// today, Mẹ on 6/10.
+List<CheckIn> recentCheckIns() {
+  CheckIn ci(String uid, String date, Observation o) => CheckIn(
+    id: checkInIdFor(babyId: teddyId, uid: uid, date: date, observation: o),
+    babyId: teddyId,
+    date: date,
+    authorUid: uid,
+    observation: o,
+  );
+  return [
+    ci('u_lan', rhythmToday, Observation.soothing),
+    sleepCheckIn(uid: 'u_minh'),
+    ci('u_mai', '2026-10-07', Observation.usual),
+    ci('u_mai', '2026-10-06', Observation.soothing),
+  ];
+}
+
+/// Ba's "Chưa rõ" on skin-to-skin (5/10), next to Mẹ's "Có ích" on the wind-down.
+List<RecFeedback> familyFeedback() => [
+  helpfulFeedback(),
+  RecFeedback(
+    id: 'fb_${'c' * 32}',
+    babyId: teddyId,
+    authorUid: 'u_minh',
+    contentId: 'act_skin_to_skin',
+    contentVersion: 2,
+    kind: FeedbackKind.unsure,
+    date: '2026-10-05',
+    createdAt: DateTime.utc(2026, 10, 5, 13),
+  ),
+];
+
+/// A care log of the [days] days before [rhythmToday]: two sleeps and five bottles a day,
+/// [usualHours] of sleep (the last three days [recentHours]); on [sparseDay] days back only the
+/// sleeps are logged (a day with long gaps: not counted, never zero).
+List<CareRecord> sleepLog({
+  int days = 17,
+  int usualHours = 13,
+  int recentHours = 11,
+  int? sparseDay = 6,
+}) {
+  final out = <CareRecord>[];
+  for (var d = days; d >= 1; d--) {
+    final p = addDaysIso(rhythmToday, -d).split('-').map(int.parse).toList();
+    DateTime at(int h, [int m = 0]) => DateTime.utc(p[0], p[1], p[2], h - 7, m);
+    final hours = d <= 3 ? recentHours : usualHours;
+    final night = hours ~/ 2;
+    out.addAll([
+      rec(CareType.sleep, at(0), mai, endedAt: at(night)),
+      if (d != sparseDay)
+        for (final h in [7, 10, 13, 16, 19]) rec(CareType.bottle, at(h), mai),
+      rec(CareType.sleep, at(24 - (hours - night)), mai, endedAt: at(23, 59)),
+    ]);
+  }
+  return out;
+}

@@ -11,7 +11,9 @@ import 'package:uuid/uuid.dart';
 
 import '../../app/providers.dart';
 import '../../core/appearance/appearance_providers.dart';
-import '../care/care_repository.dart' show babyToday;
+import '../care/care_models.dart';
+import '../care/care_repository.dart';
+import '../care/timer_models.dart';
 import '../premium/premium_models.dart' show GateReason;
 import 'rhythm_calc.dart';
 import 'rhythm_models.dart';
@@ -159,6 +161,16 @@ class RhythmRepository {
       onError,
     );
     return feedback;
+  }
+
+  /// Takes back one of my own answers (the Rules let only its author delete it). Like every
+  /// write here it never waits for the server.
+  void deleteFeedback(
+    String babyId,
+    String id, {
+    void Function(Object error)? onError,
+  }) {
+    _track(id, _db.doc('babies/$babyId/recFeedback/$id').delete(), onError);
   }
 
   /// The household's stored suggestions (`history.read`), newest first.
@@ -406,3 +418,48 @@ final rhythmDialerProvider = Provider<Future<bool> Function(String number)>(
     }
   },
 );
+
+// ---------- Sleep facts on the phone (NL01 / NL07, `rhythm.advanced`) ----------
+
+typedef SleepKey = ({String babyId, String zone, String today});
+
+/// The care log the sleep comparison reads: the baseline lookback and the recent window, plus a
+/// day before (a sleep crossing midnight) and the point-cover after (as `sleepFacts` reads it).
+final rhythmSleepRecordsProvider =
+    StreamProvider.family<List<CareRecord>, SleepKey>((ref, k) {
+      const rules = defaultRhythmRules;
+      final span = rules.baselineLookbackDays + rules.recentDays;
+      final from = dayBoundsIn(
+        k.zone,
+        addDaysIso(k.today, -span),
+      ).start.subtract(const Duration(days: 1));
+      final to = dayBoundsIn(
+        k.zone,
+        k.today,
+      ).start.add(Duration(minutes: rules.pointCoverMinutes));
+      return ref.watch(careRepositoryProvider).watchRange(k.babyId, from, to);
+    });
+
+/// [sleepSummary] over what this phone has of the log (works offline); null while it loads.
+/// Computed only for members who read care (`history.read`) in a household with
+/// `rhythm.advanced`; the screen decides.
+final sleepSummaryProvider = Provider.autoDispose
+    .family<SleepSummary?, SleepKey>((ref, k) {
+      final records = ref.watch(rhythmSleepRecordsProvider(k)).value;
+      if (records == null) return null;
+      final timer = ref
+          .watch(careTimerProvider((k.babyId, TimerType.sleep)))
+          .value;
+      final conflicts =
+          ref.watch(openConflictsProvider(k.babyId)).value ??
+          const <SleepConflict>[];
+      final now = ref.watch(careClockProvider).value ?? DateTime.now();
+      return sleepSummary(
+        zone: k.zone,
+        today: k.today,
+        now: now,
+        records: records,
+        openSleepTimerSince: timer?.startedAt,
+        conflicts: [for (final c in conflicts) c.recordIds],
+      );
+    });

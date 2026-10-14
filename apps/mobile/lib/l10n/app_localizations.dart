@@ -19182,23 +19182,1085 @@ abstract class AppLocalizations {
   /// **'Mỗi bé mỗi khác. Đây là điều nhiều gia đình thấy ở tuổi này, không phải lịch bắt buộc.'**
   String get rhAgeEach;
 
-  /// Placeholder title until the Nhịp lớn lên screens arrive.
-  ///
-  /// In vi, this message translates to:
-  /// **'Nhịp lớn lên'**
-  String get rhComingTitle;
-
-  /// Placeholder body until the Nhịp lớn lên screens arrive.
-  ///
-  /// In vi, this message translates to:
-  /// **'Phần này đang được hoàn thiện.'**
-  String get rhComingBody;
-
   /// A check-in or feedback write was refused.
   ///
   /// In vi, this message translates to:
   /// **'Chưa lưu được ghi nhận. Có thể quyền của bạn đã thay đổi.'**
   String get rhSaveFailed;
+
+  /// NL01 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp lớn lên'**
+  String get rhTitle;
+
+  /// NL01 subtitle: name and actual age.
+  ///
+  /// In vi, this message translates to:
+  /// **'{baby} · {age}'**
+  String rhBabyAge(String baby, String age);
+
+  /// NL01b pill without a due date.
+  ///
+  /// In vi, this message translates to:
+  /// **'LỊCH THAM KHẢO · chưa thiết lập'**
+  String get rhCalendarUnsetPill;
+
+  /// NL01b calendar card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ngày dự sinh để xem lịch tham khảo'**
+  String get rhCalendarUnsetTitle;
+
+  /// NL01b calendar card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có ngày dự sinh, bạn vẫn check-in và xem nội dung theo tuổi thực của {baby}.'**
+  String rhCalendarUnsetBody(String baby);
+
+  /// NL01b → NL02b.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ngày dự sinh'**
+  String get rhAddDueDate;
+
+  /// NL01b → NL02b estimate from gestational age.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không nhớ'**
+  String get rhDontRemember;
+
+  /// NL01b for members who may not set it (rhythm.setup).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba mẹ (Cùng nuôi) có thể thêm ngày dự sinh để mở lịch tham khảo.'**
+  String get rhCalendarUnsetOthers;
+
+  /// NL01 for members who may not read the restricted profile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch tham khảo tính từ ngày dự sinh, thuộc thông tin bé mà bạn chưa có quyền xem.'**
+  String get rhCalendarNoAccess;
+
+  /// NL01 when no reference model is published.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch tham khảo chưa được phát hành.'**
+  String get rhCalendarNoModel;
+
+  /// NL01 link → NL03.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem lịch'**
+  String get rhSeeCalendar;
+
+  /// NL01 headline: the next stage (D-072 #7).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp đến giai đoạn {n} (Wonder Weeks)'**
+  String rhStageComingN(int n);
+
+  /// NL01 headline: the current stage (D-072 #7).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang trong giai đoạn {n} (Wonder Weeks)'**
+  String rhStageInN(int n);
+
+  /// NL01: the next window and days left.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dự kiến {range} · còn {days} ngày đến giai đoạn'**
+  String rhStageExpectedLine(String range, int days);
+
+  /// NL01: the current window.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dự kiến {range} · trong khoảng tham khảo'**
+  String rhStageNowLine(String range);
+
+  /// NL01 when every stage is behind.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã qua các giai đoạn trong lịch tham khảo'**
+  String get rhStagesDone;
+
+  /// NL01 calendar disclaimer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đây là khoảng thời gian dự kiến theo lịch tham khảo. Lịch có thể không trùng với trải nghiệm của con.'**
+  String get rhCalendarDisclaimer;
+
+  /// NL01 basis line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo ngày dự sinh {date}'**
+  String rhByDueDate(String date);
+
+  /// NL01 basis line when estimated (the label stays, brief p.13).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo ngày dự sinh ước tính {date}'**
+  String rhByDueDateEstimated(String date);
+
+  /// NL01 own-rhythm pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'NHỊP RIÊNG CỦA CON'**
+  String get rhOwnPill;
+
+  /// NL01b own-rhythm pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'NHỊP RIÊNG CỦA CON · chưa đủ dữ liệu'**
+  String get rhOwnSparsePill;
+
+  /// NL01 own-rhythm card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều nhà mình ghi nhận'**
+  String get rhOwnTitle;
+
+  /// NL01 without recent check-ins.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ghi nhận nào gần đây. Bạn vẫn có thể ghi nhận hôm nay.'**
+  String get rhOwnEmpty;
+
+  /// NL01 for members without history.read.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận của gia đình chỉ hiện với người được xem chăm sóc hằng ngày.'**
+  String get rhOwnNoAccess;
+
+  /// NL01 pill on a day where two people noted different things (X03).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi khác nhau'**
+  String get rhMixedDay;
+
+  /// NL07 footer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hai người ghi khác nhau trong cùng ngày được giữ nguyên cả hai.'**
+  String get rhMixedNote;
+
+  /// Author and day of a note.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} · {date}'**
+  String rhWhoDay(String who, String date);
+
+  /// NL01 / NL04 primary → C01.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận hôm nay'**
+  String get rhRecordToday;
+
+  /// NL07 chart heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng ngủ được ghi · {days} ngày'**
+  String rhSleepHeading(int days);
+
+  /// NL01b / ST01 not enough data.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình chưa có đủ nhật ký để so sánh.'**
+  String get rhSleepSparseTitle;
+
+  /// NL01b: valid baseline days, counted automatically (D-073 #1).
+  ///
+  /// In vi, this message translates to:
+  /// **'{valid}/{need} ngày ghi đủ giấc ngủ · cần thêm {more} ngày để so sánh. Không ghi không có nghĩa là bé ngủ ít.'**
+  String rhSleepSparseBody(int valid, int need, int more);
+
+  /// NL01b: not enough recent valid days.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần ít nhất {need} trong {days} ngày gần nhất được ghi đủ để so sánh. Không ghi không có nghĩa là bé ngủ ít.'**
+  String rhSleepSparseRecent(int need, int days);
+
+  /// NL07 fact (change_detected, lower).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi thấp hơn khoảng {delta} so với trước.'**
+  String rhSleepLower(String delta);
+
+  /// NL07 fact (change_detected, higher).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi cao hơn khoảng {delta} so với trước.'**
+  String rhSleepHigher(String delta);
+
+  /// NL07 fact (no_change).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong các ngày ghi đủ gần đây, tổng ngủ được ghi gần với mức thường của con.'**
+  String get rhSleepSame;
+
+  /// NL07 basis line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Căn cứ: {recent} ngày gần nhất ({range}) so với {baseline} ngày ghi đủ trước đó. Không phải chẩn đoán.'**
+  String rhSleepBasis(int recent, String range, int baseline);
+
+  /// NL07 chart legend: the baseline median.
+  ///
+  /// In vi, this message translates to:
+  /// **'mức thường {value}'**
+  String rhSleepUsual(String value);
+
+  /// NL07 chart legend: an invalid day.
+  ///
+  /// In vi, this message translates to:
+  /// **'ngày ghi thiếu, không tính'**
+  String get rhSleepMissingLegend;
+
+  /// NL01 own rhythm without rhythm.advanced.
+  ///
+  /// In vi, this message translates to:
+  /// **'So sánh giấc ngủ từ nhật ký'**
+  String get rhSleepGateTitle;
+
+  /// NL01 gate (PREMIUM_REQUIRED): no blurred fake insight.
+  ///
+  /// In vi, this message translates to:
+  /// **'So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn miễn phí.'**
+  String get rhSleepGatePremium;
+
+  /// NL01 gate (any other reason).
+  ///
+  /// In vi, this message translates to:
+  /// **'Phần so sánh giấc ngủ chưa mở cho bạn. Ghi nhận và lịch tham khảo vẫn dùng được.'**
+  String get rhSleepGateOther;
+
+  /// Link that explains a gate reason.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì sao?'**
+  String get rhWhy;
+
+  /// NL01 section from feedback.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách nhà mình đã thử'**
+  String get rhTriedHeading;
+
+  /// NL01 footer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin là ghi nhận của gia đình, không phải chẩn đoán.'**
+  String get rhFooterFacts;
+
+  /// NL01b out-of-age state.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp lớn lên đang hỗ trợ bé 0–12 tháng. Với bé lớn hơn, dữ liệu đã ghi vẫn xem được; nội dung mới chưa hỗ trợ.'**
+  String get rhOutOfAge;
+
+  /// NL01b offline state.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngoại tuyến: đang hiện dữ liệu đã lưu trên máy · ghi nhận sẽ được gửi khi có mạng.'**
+  String get rhOfflineNote;
+
+  /// NL01 for the owner while the country is unset (D-072 #3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn khu vực để Child Life dùng đúng nội dung và số khẩn cấp. Lịch tham khảo và ghi nhận vẫn dùng được.'**
+  String get rhRegionOwnerBody;
+
+  /// NL01 owner → region sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn khu vực'**
+  String get rhRegionPick;
+
+  /// NL01 for other members while the country is unset (D-072 #3).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung miễn phí vẫn dùng được.'**
+  String get rhRegionWaiting;
+
+  /// NL02a intro.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tham khảo điều có thể đến, hiểu điều con đang trải qua.'**
+  String get rhSetupIntro;
+
+  /// NL02a card 1 / NL03 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch tham khảo'**
+  String get rhLayerCalendarTitle;
+
+  /// NL02a card 1 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng thời gian dự kiến theo mô hình Wonder Weeks, tính từ ngày dự sinh. Mỗi bé mỗi khác — lịch chỉ để tham khảo.'**
+  String get rhLayerCalendarBody;
+
+  /// NL02a card 1 basis.
+  ///
+  /// In vi, this message translates to:
+  /// **'Căn cứ: ngày dự sinh + mô hình tham khảo đã phát hành'**
+  String get rhLayerCalendarBasis;
+
+  /// NL02a card 2 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp riêng của con'**
+  String get rhLayerOwnTitle;
+
+  /// NL02a card 2 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Những gì cả nhà ghi nhận: giấc ngủ, nhu cầu được dỗ, điều mới. Child Life tóm tắt thay đổi và cách nhà mình đã thử.'**
+  String get rhLayerOwnBody;
+
+  /// NL02a card 2 basis.
+  ///
+  /// In vi, this message translates to:
+  /// **'Căn cứ: check-in và nhật ký chăm sóc'**
+  String get rhLayerOwnBasis;
+
+  /// NL02a disclaimer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life không dự đoán chắc chắn ngày quấy hay chẩn đoán nguyên nhân.'**
+  String get rhSetupDisclaimer;
+
+  /// NL02a primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu'**
+  String get rhStart;
+
+  /// NL02b heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày dự sinh của {baby}'**
+  String rhDueTitle(String baby);
+
+  /// NL02b body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch tham khảo tính từ ngày dự sinh, không phải ngày sinh. Bé sinh ngày {dob}.'**
+  String rhDueBody(String baby, String dob);
+
+  /// NL02b body without a date of birth.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch tham khảo tính từ ngày dự sinh, không phải ngày sinh.'**
+  String get rhDueBodyNoDob;
+
+  /// NL02b field label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày dự sinh'**
+  String get rhDueField;
+
+  /// NL02b field placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày'**
+  String get rhDuePick;
+
+  /// NL02b estimate card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không nhớ ngày dự sinh?'**
+  String get rhEstimateTitle;
+
+  /// NL02b estimate card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ước tính từ tuổi thai khi sinh:'**
+  String get rhEstimateBody;
+
+  /// NL02b gestational weeks chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} tuần'**
+  String rhWeeks(int n);
+
+  /// NL02b gestational days chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'+ {n} ngày'**
+  String rhPlusDays(int n);
+
+  /// NL02b result banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dự sinh ước tính: {date} · gắn nhãn “ước tính”'**
+  String rhEstimateResult(String date);
+
+  /// NL02b advice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé sinh rất non hoặc có nhu cầu đặc biệt: hỏi bác sĩ trước khi dùng lịch.'**
+  String get rhEstimateAdvice;
+
+  /// NL02b without a date of birth.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần ngày sinh của bé để ước tính.'**
+  String get rhEstimateNeedsDob;
+
+  /// NL02b validation, as setDueDate checks.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày dự sinh cần trong khoảng 4 tuần trước đến 18 tuần sau ngày sinh.'**
+  String get rhDueOutOfRange;
+
+  /// NL02b skip link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua — chỉ dùng nhịp riêng của con'**
+  String get rhSkipOwnOnly;
+
+  /// NL02b helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa lại lúc nào cũng được · lịch và nhắc sẽ tính lại'**
+  String get rhDueHelper;
+
+  /// Toast after setDueDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu ngày dự sinh'**
+  String get rhDueSaved;
+
+  /// NL02b (edit): clears it, the calendar goes back to "chưa thiết lập".
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá ngày dự sinh'**
+  String get rhDueRemove;
+
+  /// Toast after clearing the due date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá ngày dự sinh'**
+  String get rhDueRemoved;
+
+  /// setDueDate failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được ngày dự sinh. Kiểm tra kết nối rồi thử lại.'**
+  String get rhDueSaveFailed;
+
+  /// NL02b for members without rhythm.setup.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ (Cùng nuôi) đặt được ngày dự sinh.'**
+  String get rhDueSetupOnly;
+
+  /// Tag on an estimated due date.
+  ///
+  /// In vi, this message translates to:
+  /// **'ước tính'**
+  String get rhEstimatedTag;
+
+  /// NL02b weeks picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuổi thai khi sinh'**
+  String get rhWeeksPickerTitle;
+
+  /// NL02b days picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm số ngày'**
+  String get rhDaysPickerTitle;
+
+  /// NL02c heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc bạn khi nào?'**
+  String get rhRemindTitle;
+
+  /// NL02c body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả đều tuỳ chọn. Tối đa 1 thông báo Nhịp lớn lên mỗi ngày.'**
+  String get rhRemindBody;
+
+  /// NL02c toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước giai đoạn tham khảo'**
+  String get rhRemindStage;
+
+  /// NL02c toggle subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'3 ngày trước · tối đa 1 lần mỗi giai đoạn'**
+  String get rhRemindStageSub;
+
+  /// NL02c toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Check-in buổi tối'**
+  String get rhRemindEvening;
+
+  /// NL02c toggle subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'20:30 · bỏ qua nếu đã ghi trong ngày'**
+  String get rhRemindEveningSub;
+
+  /// NL02c / EN02 quiet hours.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ yên lặng'**
+  String get rhQuietHours;
+
+  /// Quiet hours range.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from} – {to}'**
+  String rhQuietRange(String from, String to);
+
+  /// Quiet hours off.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tắt'**
+  String get rhQuietOff;
+
+  /// EN02 quiet hours subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không gửi gợi ý, chỉ nhắc việc bạn đặt'**
+  String get rhQuietSub;
+
+  /// EN02 between the two quiet-hours chips.
+  ///
+  /// In vi, this message translates to:
+  /// **'đến'**
+  String get rhQuietTo;
+
+  /// NL02c note on where the choices live.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc được lưu trên máy này; giờ yên lặng theo tài khoản của bạn.'**
+  String get rhRemindDevice;
+
+  /// NL02c note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có thông báo kiểu “nguy cơ leap cao”.'**
+  String get rhNoLeapRisk;
+
+  /// NL03 basis row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô hình {model} · theo ngày dự sinh {date}'**
+  String rhCalendarBasis(String model, String date);
+
+  /// NL03 basis row (estimated).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô hình {model} · theo ngày dự sinh ước tính {date}'**
+  String rhCalendarBasisEstimated(String model, String date);
+
+  /// NL03 → NL02b.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi'**
+  String get rhChange;
+
+  /// NL03 today marker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay · {date} · trước giai đoạn {n}'**
+  String rhTodayBefore(String date, int n);
+
+  /// NL03 today marker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay · {date} · trong giai đoạn {n}'**
+  String rhTodayIn(String date, int n);
+
+  /// NL03 today marker after every stage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay · {date}'**
+  String rhTodayPlain(String date);
+
+  /// NL03 stage state.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp tới · còn {days} ngày'**
+  String rhStageUpcoming(int days);
+
+  /// NL03 stage state.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang trong khoảng dự kiến'**
+  String get rhStageCurrent;
+
+  /// NL03 stage state.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã qua'**
+  String get rhStagePast;
+
+  /// NL03 overlap note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn {a} và {b} chồng nhau · cả hai đều chỉ là tham khảo'**
+  String rhStagesOverlap(int a, int b);
+
+  /// NL03 stage row title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn {n}'**
+  String rhStageShort(int n);
+
+  /// NL03 footer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch là mô hình tham khảo, chưa được chứng minh chính xác cho từng bé. Mô hình {version}.'**
+  String rhCalendarFooter(String version);
+
+  /// Source block (D-072 #7).
+  ///
+  /// In vi, this message translates to:
+  /// **'{label} được dùng làm tham khảo, không phải đối tác.'**
+  String rhNotPartner(String label);
+
+  /// NL04 header.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dự kiến {range} · có thể không trùng với trải nghiệm của {baby}'**
+  String rhStageDetailExpected(String range, String baby);
+
+  /// NL04 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dấu hiệu có thể gặp'**
+  String get rhSignsTitle;
+
+  /// NL04 signs footnote (possible, never certain).
+  ///
+  /// In vi, this message translates to:
+  /// **'Một số bé không có thay đổi rõ — điều đó bình thường'**
+  String get rhSignsNormal;
+
+  /// NL04 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỹ năng tham khảo theo tuổi'**
+  String get rhSkillsTitle;
+
+  /// NL04 skills footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỹ năng không bắt buộc khớp với giai đoạn này. Theo dõi kỹ năng theo tuổi không thay cho sàng lọc chuyên môn.'**
+  String get rhSkillsNote;
+
+  /// NL04 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoạt động phù hợp'**
+  String get rhActivitiesTitle;
+
+  /// NL04 card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nguồn & duyệt'**
+  String get rhSourcesReview;
+
+  /// NL04 sources: the model version.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô hình {version}'**
+  String rhModelVersion(String version);
+
+  /// NL04 secondary: saves a usual check-in.
+  ///
+  /// In vi, this message translates to:
+  /// **'Con vẫn như mọi ngày'**
+  String get rhSameAsUsual;
+
+  /// NL04 with an unknown stage id.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn này không còn trong lịch tham khảo.'**
+  String get rhStageMissing;
+
+  /// MS01 before saving: a parent confirms.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu điều mới thành mốc?'**
+  String get rhMsConfirmTitle;
+
+  /// MS01 before saving.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc được lưu vào Kỷ niệm của {baby} để gắn ảnh và làm thẻ mốc. Ảnh không bị sao chép.'**
+  String rhMsConfirmBody(String baby);
+
+  /// MS01 name field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên mốc'**
+  String get rhMsName;
+
+  /// MS01 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu điều mới'**
+  String get rhMsSavedTitle;
+
+  /// MS01 banner subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · {date} · {who} xác nhận'**
+  String rhMsSavedSub(String name, String date, String who);
+
+  /// MS01 heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ khoảnh khắc này?'**
+  String get rhMsKeepTitle;
+
+  /// MS01 tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thẻ mốc cơ bản'**
+  String get rhMsBasic;
+
+  /// MS01 tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thẻ mốc Premium'**
+  String get rhMsPremium;
+
+  /// MS01 primary → Thiệp cột mốc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo thẻ mốc'**
+  String get rhMsCreateCard;
+
+  /// MS01 helper (photos are linked, never copied).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh từ Kỷ niệm khi tạo thẻ.'**
+  String get rhMsPhotoNote;
+
+  /// MS01 for members without moments.create (ROLE_DENIED, not a paywall).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ lưu được mốc'**
+  String get rhMsRoleTitle;
+
+  /// MS01 role body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn vẫn ghi được điều mới trong ghi nhận; ba mẹ (Cùng nuôi) xác nhận mốc.'**
+  String get rhMsRoleBody;
+
+  /// MS01 save failed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được mốc. Thử lại sau.'**
+  String get rhMsSaveFailed;
+
+  /// Tôi row and hub title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cá nhân hoá'**
+  String get rhPersonalize;
+
+  /// Tôi row subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều bạn quan tâm, giờ nhận gợi ý, phản hồi'**
+  String get rhPersonalizeSub;
+
+  /// Hub note (per person, never a household fact).
+  ///
+  /// In vi, this message translates to:
+  /// **'Các lựa chọn này của riêng bạn, không đổi cài đặt của người khác trong nhà.'**
+  String get rhPersonalizeNote;
+
+  /// Hub row → EN01.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều bạn quan tâm'**
+  String get rhInterestsRow;
+
+  /// Hub row → EN02.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ nhận gợi ý'**
+  String get rhDigestRow;
+
+  /// Hub row → NL02c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc Nhịp lớn lên'**
+  String get rhRemindRow;
+
+  /// Hub row → feedback history.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử phản hồi'**
+  String get rhHistoryRow;
+
+  /// Hub row value without interests.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa chọn'**
+  String get rhInterestsNone;
+
+  /// EN01 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn muốn đồng hành cùng {baby} ở những gì?'**
+  String rhInterestsTitle(String baby);
+
+  /// EN01 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay và gợi ý sẽ ưu tiên những mục này. Đổi lại lúc nào cũng được.'**
+  String get rhInterestsBody;
+
+  /// EN01: enduring interests vs today’s need.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đây là điều bạn quan tâm lâu dài. Điều con cần hôm nay thì ghi ở “Hôm nay con có gì khác?”.'**
+  String get rhInterestsToday;
+
+  /// EN01 interest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ'**
+  String get rhIntSleep;
+
+  /// EN01 interest subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp ngủ, nhịp lớn lên'**
+  String get rhIntSleepSub;
+
+  /// EN01 interest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú & sữa'**
+  String get rhIntFeeding;
+
+  /// EN01 interest subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng sữa theo tuổi'**
+  String get rhIntFeedingSub;
+
+  /// EN01 interest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc phát triển'**
+  String get rhIntMilestones;
+
+  /// EN01 interest subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý mốc theo tuần tuổi'**
+  String get rhIntMilestonesSub;
+
+  /// EN01 interest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm chủng'**
+  String get rhIntVaccines;
+
+  /// EN01 interest subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc trước lịch tiêm'**
+  String get rhIntVaccinesSub;
+
+  /// EN01 interest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dinh dưỡng'**
+  String get rhIntNutrition;
+
+  /// EN01 interest subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vi chất, vitamin theo tháng'**
+  String get rhIntNutritionSub;
+
+  /// EN01 interest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm'**
+  String get rhIntMoments;
+
+  /// EN01 interest subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý ghi lại khoảnh khắc'**
+  String get rhIntMomentsSub;
+
+  /// EN01: topics marked "Ít gợi ý kiểu này hơn" (EN05).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ít gợi ý hơn về'**
+  String get rhFewerTitle;
+
+  /// EN01: removes a topic from "fewer".
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ'**
+  String get rhFewerUndo;
+
+  /// EN01 primary with the selection count.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu · {count} mục'**
+  String rhSaveCount(int count);
+
+  /// EN01 / EN02 top-right link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua'**
+  String get rhSkip;
+
+  /// Toast after EN01 / EN02 / NL02c.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu lựa chọn của bạn'**
+  String get rhPrefsSaved;
+
+  /// EN02 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi nào bạn tiện đọc gợi ý?'**
+  String get rhDigestTitle;
+
+  /// EN02 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life gom gợi ý trong ngày vào một lần, đúng giờ bạn chọn. Nhắc việc bạn tự đặt (bú, tiêm…) vẫn đến đúng giờ.'**
+  String get rhDigestBody;
+
+  /// EN02 option 08:00.
+  ///
+  /// In vi, this message translates to:
+  /// **'Buổi sáng'**
+  String get rhDigestMorning;
+
+  /// EN02 option 12:30.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ nghỉ trưa'**
+  String get rhDigestNoon;
+
+  /// EN02 option 20:30.
+  ///
+  /// In vi, this message translates to:
+  /// **'Buổi tối'**
+  String get rhDigestEvening;
+
+  /// EN02 option: no digest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không gom gợi ý'**
+  String get rhDigestNone;
+
+  /// PS02 footer → feedback history.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể chỉnh hoặc xoá lịch sử phản hồi'**
+  String get rhEditHistoryLink;
+
+  /// Feedback history title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử phản hồi'**
+  String get rhHistoryTitle;
+
+  /// Feedback history body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phản hồi của bạn trong {days} ngày gần đây. Xoá một phản hồi thì gợi ý lần sau không dựa vào nó nữa.'**
+  String rhHistoryBody(int days);
+
+  /// Feedback history empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chưa có phản hồi nào gần đây.'**
+  String get rhHistoryEmpty;
+
+  /// Feedback history row action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá'**
+  String get rhDelete;
+
+  /// Confirm sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá phản hồi này?'**
+  String get rhDeleteFeedbackTitle;
+
+  /// Confirm sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý lần sau sẽ không dựa vào phản hồi này nữa.'**
+  String get rhDeleteFeedbackBody;
+
+  /// Toast after deleting.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá phản hồi'**
+  String get rhFeedbackDeleted;
+
+  /// Feedback history: clears interests and "fewer".
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt lại điều bạn quan tâm'**
+  String get rhResetInterests;
+
+  /// Reset confirm body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ chọn mọi chủ đề và các mục “Ít gợi ý kiểu này hơn”.'**
+  String get rhResetInterestsBody;
+
+  /// Toast after reset.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đặt lại điều bạn quan tâm'**
+  String get rhResetDone;
+
+  /// Feedback history row for retired content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý không còn trong nội dung'**
+  String get rhUnknownActivity;
+
+  /// EN05 action on an activity (free forever).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ít gợi ý kiểu này hơn'**
+  String get rhFewerLikeThis;
+
+  /// Toast after EN05.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi nhận. Bạn sẽ thấy ít gợi ý về {topic} hơn.'**
+  String rhFewerToast(String topic);
+
+  /// PS01 / H02 secondary suggestions (≤2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách khác có thể thử'**
+  String get rhOtherIdeas;
 }
 
 class _AppLocalizationsDelegate

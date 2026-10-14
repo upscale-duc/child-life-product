@@ -110,36 +110,3 @@ class AgeCardScreen extends ConsumerWidget {
     );
   }
 }
-
-/// Stand-in for the Nhịp lớn lên overview ("Xem nhịp của con", NL01) and "Lưu vào Mốc" (MS01)
-/// until those screens are built (next step of Slice 2).
-class RhythmComingScreen extends StatelessWidget {
-  const RhythmComingScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
-    return OnboardingScaffold(
-      topBar: Align(
-        alignment: Alignment.centerLeft,
-        child: RhRoundIcon(
-          icon: ClIcons.back,
-          label: l10n.a11yBack,
-          onPressed: () => leaveRhythm(context),
-        ),
-      ),
-      content: [
-        Semantics(
-          header: true,
-          child: Text(l10n.rhComingTitle, style: cl.text.title2),
-        ),
-        const SizedBox(height: ClSpace.s2),
-        Text(
-          l10n.rhComingBody,
-          style: cl.text.body.copyWith(color: cl.colors.inkMuted),
-        ),
-      ],
-    );
-  }
-}
