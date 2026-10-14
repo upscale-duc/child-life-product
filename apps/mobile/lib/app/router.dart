@@ -294,18 +294,22 @@ final routerProvider = Provider<GoRouter>((ref) {
                     routes: [
                       _route(
                         path: 'edit',
-                        redirect: (_, s) =>
-                            s.extra is CardDraft ? null : Routes.milestoneCard,
+                        // argsOf: go_router rebuilds pushed pages without `extra` when it
+                        // refreshes; a null draft crashed (owner, 2026-10-14).
+                        redirect: (_, s) => argsOf<CardDraft>(s) == null
+                            ? Routes.milestoneCard
+                            : null,
                         builder: (_, s) => MilestoneCardEditScreen(
-                          draft: s.extra! as CardDraft,
+                          draft: argsOf<CardDraft>(s)!,
                         ),
                       ),
                       _route(
                         path: 'done',
-                        redirect: (_, s) =>
-                            s.extra is CardResult ? null : Routes.memories,
+                        redirect: (_, s) => argsOf<CardResult>(s) == null
+                            ? Routes.memories
+                            : null,
                         builder: (_, s) => MilestoneCardDoneScreen(
-                          result: s.extra! as CardResult,
+                          result: argsOf<CardResult>(s)!,
                         ),
                       ),
                     ],
@@ -326,18 +330,20 @@ final routerProvider = Provider<GoRouter>((ref) {
                     routes: [
                       _route(
                         path: 'photos',
-                        redirect: (_, s) =>
-                            s.extra is VideoDraft ? null : Routes.memoryStory,
+                        redirect: (_, s) => argsOf<VideoDraft>(s) == null
+                            ? Routes.memoryStory
+                            : null,
                         builder: (_, s) => MemoryStoryPhotosScreen(
-                          draft: s.extra! as VideoDraft,
+                          draft: argsOf<VideoDraft>(s)!,
                         ),
                       ),
                       _route(
                         path: 'finish',
-                        redirect: (_, s) =>
-                            s.extra is VideoDraft ? null : Routes.memoryStory,
+                        redirect: (_, s) => argsOf<VideoDraft>(s) == null
+                            ? Routes.memoryStory
+                            : null,
                         builder: (_, s) => MemoryStoryFinishScreen(
-                          draft: s.extra! as VideoDraft,
+                          draft: argsOf<VideoDraft>(s)!,
                         ),
                       ),
                       _route(
@@ -364,11 +370,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                         routes: [
                           _route(
                             path: 'confirm',
-                            redirect: (_, s) => s.extra is AutoSaveDecision
-                                ? null
-                                : Routes.autoSaveReview,
+                            redirect: (_, s) =>
+                                argsOf<AutoSaveDecision>(s) == null
+                                ? Routes.autoSaveReview
+                                : null,
                             builder: (_, s) => AutoSaveConfirmScreen(
-                              decision: s.extra! as AutoSaveDecision,
+                              decision: argsOf<AutoSaveDecision>(s)!,
                             ),
                           ),
                         ],
