@@ -1638,6 +1638,21 @@ describe('feedback, history, deletion, sweeper', () => {
     expect(await win()).toMatchObject({ used: 1, reserved: 0 });
   });
 
+  it('usage "Gần đây": newest credit lines with kind, state and author, never content', async () => {
+    await prepared();
+    await start('9 giờ con bú 100 ml', { gw: fakeModelGateway({ extract: [textBatch()] }) });
+    const u = (await getAssistantUsage(deps(), MOM, E({ babyId: B }))).data;
+    expect(u.recent).toHaveLength(2);
+    expect(u.recent!.map((r) => [r.kind, r.state, r.credits])).toEqual(
+      expect.arrayContaining([
+        ['text', 'committed', 1],
+        ['text', 'reserved', 1],
+      ]),
+    );
+    expect(u.recent!.every((r) => typeof r.who === 'string' && r.who.length > 0)).toBe(true);
+    expect(JSON.stringify(u.recent)).not.toMatch(/bú|ml/);
+  });
+
   it('sweeper: a task left queued is nudged three times, then failed with its credits released', async () => {
     const r = await start(TEXT, { gw: fakeModelGateway({ extract: [textBatch()] }) });
     expect(await win()).toMatchObject({ reserved: 1 });

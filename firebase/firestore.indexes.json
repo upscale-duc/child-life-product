@@ -15,6 +15,20 @@
       ]
     },
     {
+      "collectionGroup": "quotaOps",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "windowId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "reservedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "members",
       "queryScope": "COLLECTION_GROUP",
       "fields": [

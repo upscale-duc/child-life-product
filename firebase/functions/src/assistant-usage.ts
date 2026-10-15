@@ -6,6 +6,7 @@ import {
   grantGives,
   type AssistantCreditPolicy,
   type AssistantUsage,
+  type AssistantUsageEntry,
   type EntitlementsConfig,
 } from '@child-life/contracts';
 import { toDate, type TrustedScope } from './assistant-common.js';
@@ -149,4 +150,54 @@ export async function assistantUsage(
     imageCredits: policy.imageCredits,
     windowId: w.windowId,
   };
+}
+
+/**
+ * CH19 "Gần đây": the newest [limit] credit lines of the pool window (ledger ops), with the kind
+ * and the asking member's label from the task — never text, drafts or photos. Summary credits
+ * (`su_*`, D-075 #1) have no author on the ledger and show without one.
+ */
+export async function recentUsage(
+  db: Firestore,
+  familyId: string,
+  windowId: string,
+  limit = 20,
+): Promise<AssistantUsageEntry[]> {
+  const ops = await db
+    .collection(`families/${familyId}/quotaOps`)
+    .where('windowId', '==', windowId)
+    .orderBy('reservedAt', 'desc')
+    .limit(limit)
+    .get();
+  // Chat tasks reserve as `assistant_<taskId>` (`reservationIdFor`); summaries as `su_*`.
+  const taskIdOf = (opId: string) => (opId.startsWith('assistant_tk_') ? opId.slice(10) : null);
+  const taskIds = ops.docs.map((d) => taskIdOf(d.id)).filter((id): id is string => id !== null);
+  const tasks = taskIds.length
+    ? await db.getAll(...taskIds.map((id) => db.doc(`assistantTasks/${id}`)), {
+        fieldMask: ['modality', 'author'],
+      })
+    : [];
+  const byId = new Map(tasks.filter((s) => s.exists).map((s) => [s.id, s]));
+  const out: AssistantUsageEntry[] = [];
+  for (const d of ops.docs) {
+    const at = toDate(d.get('reservedAt'));
+    const state = d.get('state') as AssistantUsageEntry['state'];
+    if (!at || !['reserved', 'committed', 'released'].includes(state)) continue;
+    const taskId = taskIdOf(d.id);
+    const task = taskId ? byId.get(taskId) : undefined;
+    const author = task?.get('author') as
+      { name?: string | null; relationCustom?: string | null } | null | undefined;
+    out.push({
+      kind: d.id.startsWith('su_')
+        ? 'summary'
+        : task?.get('modality') === 'image'
+          ? 'image'
+          : 'text',
+      state,
+      credits: (d.get('units') as number | undefined) ?? 1,
+      at: at.toISOString(),
+      who: author?.relationCustom || author?.name || null,
+    });
+  }
+  return out;
 }

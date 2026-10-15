@@ -81,7 +81,7 @@ import {
 import { healthSignalsIn, moduleAllows, reviewFields } from './assistant-tools.js';
 // Slice A5 (care): health support with the approved number; CH17 feedback rules.
 import { careFeedbackFields, careFeedbackGate, healthSupportPart } from './assistant-care.js';
-import { assistantPool, assistantUsage, creditPolicy } from './assistant-usage.js';
+import { assistantPool, assistantUsage, creditPolicy, recentUsage } from './assistant-usage.js';
 import { buildRecFeedback, confirmDraftItem, draftView } from './assistant-writers.js';
 import { releaseQuota, reserveQuota } from './quota.js';
 // Slice A3 (photos): attachments verified and bound at start; retention when a task stops.
@@ -1147,9 +1147,9 @@ export async function getAssistantUsage(
     now,
     deps.environment,
   );
-  const { windowId: _w, ...usage } = await assistantUsage(db, s, now);
-  void _w;
-  return respond(req.clientRequestId, now, usage);
+  const { windowId, ...usage } = await assistantUsage(db, s, now);
+  const recent = await recentUsage(db, s.familyId, windowId);
+  return respond(req.clientRequestId, now, { ...usage, recent });
 }
 
 /**

@@ -799,6 +799,22 @@ export interface AssistantUsage {
   policyVersion: string;
   textCredits: number;
   imageCredits: number;
+  /**
+   * `getAssistantUsage` only: the newest credit lines of this period (≤ 20), never content —
+   * kind, ledger state, credits held or counted, when, and who asked (task author label).
+   */
+  recent?: AssistantUsageEntry[];
+}
+
+/** One credit line of the household pool ("Gần đây", CH19). */
+export interface AssistantUsageEntry {
+  /** `summary`: an AI summary (D-075 #1); `text` / `image`: a chat task. */
+  kind: 'text' | 'image' | 'summary';
+  state: 'reserved' | 'committed' | 'released';
+  credits: number;
+  at: string;
+  /** The asking member's custom relation or name; null when unknown (summaries, old tasks). */
+  who: string | null;
 }
 
 export interface AssistantQuote {
