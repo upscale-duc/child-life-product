@@ -470,8 +470,8 @@ export async function staleReservations(
     .map((d) => d.id);
 }
 
-/** Exposed for tests: the window a request would use at [now] (no write). */
-export const _resolveWindowForTest = (
+/** The window a request would use at [now], with its counters (no write; quotes, usage). */
+export const peekQuotaWindow = (
   db: Firestore,
   familyId: string,
   req: QuotaWindowRequest,
@@ -480,3 +480,6 @@ export const _resolveWindowForTest = (
   db
     .runTransaction((tx) => resolveWindow(tx, db, familyId, req, now), { readOnly: true })
     .then((r) => ({ windowId: r.window.windowId, exists: r.exists, window: r.window }));
+
+/** Exposed for tests: the window a request would use at [now] (no write). */
+export const _resolveWindowForTest = peekQuotaWindow;

@@ -660,6 +660,9 @@ export const patchDraftRequestSchema = z.object({
 export const confirmDraftsRequestSchema = z.object({
   ...envelope,
   taskId: z.string().min(1).max(80),
+  /** The scope the app is showing (M05): a different one than the task's → SCOPE_CHANGED, so a
+   * draft never lands on the child the person switched to. Optional for older clients. */
+  scope: assistantScopeSchema.optional(),
   selected: z
     .array(
       z.object({
@@ -734,3 +737,142 @@ export const taskEventTypes = [
   'item_failed',
   'task_failed',
 ] as const;
+export type TaskEventType = (typeof taskEventTypes)[number];
+
+// ---------- Server core (slice A2; docs/assistant/api.md) ----------
+
+/** `setAssistantConsent` (P-160): the current version, or null to withdraw. */
+export const setAssistantConsentRequestSchema = z.object({
+  ...envelope,
+  consent: z.object({ version: z.string().min(1).max(40) }).nullable(),
+});
+
+/** `getAssistantTask`: the authoritative snapshot (M11); events after [afterSequence] only. */
+export const getAssistantTaskRequestSchema = z.object({
+  ...envelope,
+  taskId: z.string().min(1).max(80),
+  afterSequence: z.number().int().min(0).nullable(),
+});
+
+/**
+ * `listAssistantHistory` (CH03): the caller's own conversations about [babyId] (newest first), or
+ * the messages of one of them (newest first). `cursor` is the `nextCursor` of the previous page.
+ */
+export const listAssistantHistoryRequestSchema = z.object({
+  ...envelope,
+  babyId: z.string().min(1).max(128),
+  conversationId: z.string().min(1).max(80).nullable(),
+  cursor: z.string().min(1).max(200).nullable(),
+  limit: z.number().int().min(1).max(50),
+});
+
+/** `deleteAssistantConversation` (CH03 "Xoá cuộc trò chuyện"): explicit confirmation required. */
+export const deleteAssistantConversationRequestSchema = z.object({
+  ...envelope,
+  conversationId: z.string().min(1).max(80),
+  confirm: z.literal(true),
+});
+
+/**
+ * Every assistant callable answers with this envelope (brief p.10). Hard failures are errors with
+ * `details: { reason: AssistantError, retryable }`; `blocked` (e.g. USAGE_EXHAUSTED at start, kept
+ * for resume) and `partial` (some confirmed items not saved) are answers, not errors.
+ */
+export interface AssistantResponse<T> {
+  contractVersion: typeof assistantContractVersion;
+  /** Echo of `clientRequestId`. */
+  requestId: string;
+  taskId: string | null;
+  serverTime: string;
+  /** Version of what `data` describes (task version, draft revision, …); 0 when not versioned. */
+  dataVersion: number;
+  status: 'ok' | 'blocked' | 'partial';
+  reasonCode: AssistantError | null;
+  retryable: boolean;
+  data: T;
+}
+
+/** Where the reservation of a task stands (never the model cost). */
+export type TaskUsageState = 'none' | 'reserved' | 'committed' | 'released';
+
+export interface AssistantTaskView {
+  id: string;
+  conversationId: string;
+  scope: AssistantScope;
+  state: TaskState;
+  version: number;
+  modality: TaskModality;
+  /** Credits quoted for this task (0 for health support). */
+  credits: number;
+  plan: 'free' | 'premium';
+  usage: TaskUsageState;
+  errorCode: AssistantError | null;
+  round: number;
+  /** The open question while `awaiting_clarification`. */
+  clarification: Clarification | null;
+  clarificationExpiresAt: string | null;
+  anchorInstant: string;
+  timezone: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AssistantDraftView extends ActionDraft {
+  /** Same checks as the form (`draftProblems`), against the confirm time. */
+  problems: DraftProblem[];
+}
+
+export interface AssistantEvent {
+  taskId: string;
+  eventId: string;
+  sequence: number;
+  type: TaskEventType;
+  emittedAt: string;
+  payload: Record<string, unknown>;
+}
+
+export interface AssistantMessage {
+  id: string;
+  conversationId: string;
+  role: 'user' | 'assistant';
+  parts: AssistantPart[];
+  taskId: string | null;
+  sequence: number;
+  createdAt: string;
+  attachmentIds: string[];
+}
+
+export interface AssistantTaskSnapshot {
+  task: AssistantTaskView;
+  drafts: AssistantDraftView[];
+  /** Ordered by `sequence`; the snapshot (not the events) is the authority. */
+  events: AssistantEvent[];
+  /** The task's messages (user input, clarification answers, results), ordered. */
+  messages: AssistantMessage[];
+}
+
+export interface ConfirmItemResult {
+  draftId: string;
+  status: 'saved' | 'failed' | 'conflict';
+  revision: number;
+  recordId: string | null;
+  recordLink: string | null;
+  errorCode: AssistantError | null;
+  /** `VALIDATION_FAILED` details (field-level, never values). */
+  problems: DraftProblem[];
+}
+
+export interface ConfirmDraftsResult {
+  items: ConfirmItemResult[];
+  /** Some selected items were not saved; saved ones stay saved (CH07). */
+  partial: boolean;
+}
+
+export interface AssistantConversationView extends AssistantConversation {
+  lastTaskId: string | null;
+}
+
+export interface AssistantHistoryPage<T> {
+  items: T[];
+  nextCursor: string | null;
+}

@@ -1244,18 +1244,23 @@ export async function setAiConsent(
     const before = await tx.get(ref);
     const prev = before.get('consent') as { version?: string; grantedAt?: unknown } | null;
     const at = Timestamp.fromDate(now);
-    tx.set(ref, {
-      consent: req.consent
-        ? {
-            version: req.consent.version,
-            // Changing "share my notes" keeps when consent was first given for this version.
-            grantedAt:
-              prev?.version === req.consent.version && prev.grantedAt ? prev.grantedAt : at,
-            shareMyNotes: req.consent.shareMyNotes,
-          }
-        : null,
-      updatedAt: at,
-    });
+    // Only the summaries consent: the assistant consent (P-160) on the same document is kept.
+    tx.set(
+      ref,
+      {
+        consent: req.consent
+          ? {
+              version: req.consent.version,
+              // Changing "share my notes" keeps when consent was first given for this version.
+              grantedAt:
+                prev?.version === req.consent.version && prev.grantedAt ? prev.grantedAt : at,
+              shareMyNotes: req.consent.shareMyNotes,
+            }
+          : null,
+        updatedAt: at,
+      },
+      { mergeFields: ['consent', 'updatedAt'] },
+    );
   });
   let cleared = 0;
   if (!req.consent) cleared = await clearAiText(db, uid, 'aiTextOwners', now);

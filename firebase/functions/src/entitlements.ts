@@ -187,7 +187,8 @@ export async function loadEntitlementContext(
   };
 }
 
-function flagOn(ctx: EntitlementContext, key: FlagKey): boolean {
+/** Whether flag [key] is on for the context's family (rollout bucket, internal families). */
+export function flagOn(ctx: EntitlementContext, key: FlagKey): boolean {
   return isFlagOnForFamily(
     ctx.flags[key],
     ctx.familyId,

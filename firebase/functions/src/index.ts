@@ -292,6 +292,27 @@ import {
   setAiConsent as runSetAiConsent,
 } from './ai-summary.js';
 import { sweepAiReservations } from './quota-sweeper.js';
+// ---- Child Life Assistant, slice A2 server core (docs/assistant/) ----
+import {
+  cancelTask as runCancelTask,
+  confirmDrafts as runConfirmDrafts,
+  deleteAssistantConversation as runDeleteAssistantConversation,
+  discardDraft as runDiscardDraft,
+  getAssistantTask as runGetAssistantTask,
+  getAssistantUsage as runGetAssistantUsage,
+  listAssistantHistory as runListAssistantHistory,
+  patchDraft as runPatchDraft,
+  quoteTask as runQuoteTask,
+  setAssistantConsent as runSetAssistantConsent,
+  startTask as runStartTask,
+  submitAssistantFeedback as runSubmitAssistantFeedback,
+  submitClarification as runSubmitClarification,
+  type AssistantDeps,
+} from './assistant.js';
+import { AssistantFailure, httpsCodeOf } from './assistant-common.js';
+import { openAiModelGateway, type ModelGateway } from './assistant-model.js';
+import { runAssistantTask as runAssistantWorker, sweepAssistantTasks } from './assistant-worker.js';
+// ---- end Child Life Assistant imports ----
 
 initializeApp();
 setGlobalOptions({ region: functionsRegion, maxInstances: 10 });
@@ -2309,3 +2330,129 @@ export const staffQaCase = staffCall('staffQaCase', (s, d) => qaCaseComments(get
 export const staffQaUpdate = staffCall('staffQaUpdate', (s, d) =>
   qaUpdate(getFirestore(), s, d, new Date()),
 );
+
+// ---- Child Life Assistant, slice A2 server core (docs/assistant/api.md, P-155–P-161) ----------
+// Callables answer with the contracts `AssistantResponse` envelope; failures are HttpsErrors
+// with `details: { reason, retryable }` (contracts `assistantErrors`), never payloads or provider
+// text. The worker runs on `assistantTasks/{taskId}` reaching `queued`. The images slice (A3)
+// adds its own callables after this block.
+
+/** The model gateway behind the assistant: OpenAI when the secret is set, else none (blocked). */
+function assistantGateway(): ModelGateway | null {
+  const key = openAiKey.value();
+  return !key || key === 'unset' ? null : openAiModelGateway(key, openAiModel.value());
+}
+
+/** Only functions bound to the secret read it; the others never need the model. */
+const assistantDeps = (withModel: boolean): AssistantDeps => ({
+  db: getFirestore(),
+  now: new Date(),
+  environment: serverGrantEnvironment(),
+  gateway: withModel ? assistantGateway() : null,
+});
+
+function assistantHttpsError(operation: string, error: unknown): HttpsError {
+  if (error instanceof HttpsError) return error;
+  if (error instanceof AssistantFailure) {
+    return new HttpsError(httpsCodeOf(error.reason), error.reason, {
+      reason: error.reason,
+      retryable: error.retryable,
+      ...error.details,
+    });
+  }
+  // Never the payload: chat text and drafts are family content.
+  logger.error(`${operation} failed`, { error: String(error) });
+  return new HttpsError('internal', `${operation} failed`, { reason: 'internal', retryable: true });
+}
+
+const assistantCall = <T>(
+  name: string,
+  run: (deps: AssistantDeps, uid: string, data: unknown) => Promise<T>,
+  options: { secrets?: ReturnType<typeof defineSecret>[]; timeoutSeconds?: number } = {},
+) =>
+  onCall(options, async (request) => {
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'AUTH_REQUIRED', {
+        reason: 'AUTH_REQUIRED',
+        retryable: false,
+      });
+    }
+    const uid = requireAccount(request);
+    try {
+      return await run(
+        assistantDeps(options.secrets?.includes(openAiKey) ?? false),
+        uid,
+        request.data,
+      );
+    } catch (error) {
+      throw assistantHttpsError(name, error);
+    }
+  });
+
+/** CH26: the assistant consent (separate from summaries); withdrawing stops queued work. */
+export const setAssistantConsent = assistantCall('setAssistantConsent', runSetAssistantConsent);
+/** Exact credits, the household pool and the first failing gate; no model, no reservation. */
+export const quoteTask = assistantCall('quoteTask', runQuoteTask, { secrets: [openAiKey] });
+/** Quote → reserve → task `queued` in one transaction; health support free at once. */
+export const startTask = assistantCall('startTask', runStartTask, { secrets: [openAiKey] });
+/** Same task, same reservation: the answer goes back to the worker. */
+export const submitClarification = assistantCall('submitClarification', runSubmitClarification);
+/** CH06 edit: revision + 1, validated, no model, no credits. */
+export const patchDraft = assistantCall('patchDraft', runPatchDraft);
+/** CH07: per-item save through the domain writers; partial success kept. */
+export const confirmDrafts = assistantCall('confirmDrafts', runConfirmDrafts);
+export const discardDraft = assistantCall('discardDraft', runDiscardDraft);
+export const cancelTask = assistantCall('cancelTask', runCancelTask);
+/** CH17: feedback, 0 credits. */
+export const submitAssistantFeedback = assistantCall(
+  'submitAssistantFeedback',
+  runSubmitAssistantFeedback,
+);
+/** CH19 "Mức dùng". */
+export const getAssistantUsage = assistantCall('getAssistantUsage', runGetAssistantUsage);
+/** CH03: own conversations or one conversation's messages, cursor paged. */
+export const listAssistantHistory = assistantCall('listAssistantHistory', runListAssistantHistory);
+/** Reconnect: the authoritative task snapshot (task, drafts, events, messages). */
+export const getAssistantTask = assistantCall('getAssistantTask', runGetAssistantTask);
+/** CH03 "Xoá": chat, tasks and drafts; never saved domain records. */
+export const deleteAssistantConversation = assistantCall(
+  'deleteAssistantConversation',
+  runDeleteAssistantConversation,
+  { timeoutSeconds: 120 },
+);
+
+/** The worker: a task that becomes `queued` is claimed (lease + fencing) and run once. */
+export const runAssistantTask = onDocumentWritten(
+  { document: 'assistantTasks/{taskId}', timeoutSeconds: 300, secrets: [openAiKey] },
+  async (event) => {
+    const after = event.data?.after;
+    if (!after?.exists || after.get('state') !== 'queued') return;
+    const before = event.data?.before;
+    if (
+      before?.exists &&
+      before.get('state') === 'queued' &&
+      before.get('version') === after.get('version')
+    ) {
+      return;
+    }
+    const { taskId } = event.params;
+    const r = await runAssistantWorker(
+      {
+        db: getFirestore(),
+        now: new Date(),
+        environment: serverGrantEnvironment(),
+        gateway: assistantGateway(),
+      },
+      taskId,
+    );
+    // Ids and states only: never the text, drafts or records.
+    if (r.ran) logger.info('assistant task settled', { taskId, state: r.state, fenced: r.fenced });
+  },
+);
+
+/** Requeues tasks whose worker died, expires unanswered clarifications, drops old quotes. */
+export const sweepAssistant = onSchedule('every 10 minutes', async () => {
+  const r = await sweepAssistantTasks(getFirestore(), new Date());
+  if (r.requeued + r.expired + r.quotes > 0) logger.info('assistant sweep', r);
+});
+// ---- end Child Life Assistant --------------------------------------------------------------

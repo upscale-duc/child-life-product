@@ -144,6 +144,45 @@ service cloud.firestore {
     }
     // ---- end Premium billing ----
 
+    // ---- Child Life Assistant (docs/assistant/data.md, P-158) ----
+    // Conversations, tasks, drafts, events and quotes are written by Functions only and read by
+    // their owner while still an active member of the scope's baby (chats are private; domain
+    // records are shared by role). Executions and the request ledger are never readable. Domain
+    // records written for a confirmed draft keep the module's own rules (clients still write
+    // `source: 'app'` only).
+    function assistantOwner(d) {
+      return signedIn() && d.ownerUid == request.auth.uid && activeMember(d.scope.babyId);
+    }
+    match /assistantConversations/{conversationId} {
+      allow read: if assistantOwner(resource.data);
+      allow write: if false;
+      match /messages/{messageId} {
+        allow read: if assistantOwner(
+          get(/databases/$(database)/documents/assistantConversations/$(conversationId)).data);
+        allow write: if false;
+      }
+    }
+    match /assistantTasks/{taskId} {
+      allow read: if assistantOwner(resource.data);
+      allow write: if false;
+      match /{sub}/{docId} {
+        allow read: if sub in ['drafts', 'events'] && assistantOwner(
+          get(/databases/$(database)/documents/assistantTasks/$(taskId)).data);
+        allow write: if false;
+      }
+    }
+    match /assistantQuotes/{quoteId} {
+      allow read: if assistantOwner(resource.data);
+      allow write: if false;
+    }
+    match /assistantExecutions/{executionId} {
+      allow read, write: if false;
+    }
+    match /assistantRequests/{requestKey} {
+      allow read, write: if false;
+    }
+    // ---- end Child Life Assistant ----
+
     // Family = ownership + quota container (P-001). Owner only until storage views (S11, P-003).
     match /families/{familyId} {
       allow get: if signedIn() && resource.data.ownerUid == request.auth.uid;
