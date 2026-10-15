@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../baby/baby_models.dart';
+import 'who_growth.dart' show GrowthMeasure;
 
 /// Mirrors `packages/contracts/src/care.ts` (S4). Records live in
 /// `babies/{babyId}/records/{id}`; Firestore Rules enforce the same shapes and ranges.
@@ -21,6 +22,9 @@ abstract final class CareLimits {
   static const durationMin = (min: 1, max: 240);
   static const weightKg = (min: 0.3, max: 40.0);
   static const lengthCm = (min: 20.0, max: 150.0);
+
+  /// Head circumference ("Vòng đầu", owner 2026-10-16): optional, contracts `careLimits.headCm`.
+  static const headCm = (min: 20.0, max: 60.0);
 }
 
 /// `r_` + 32 hex: generated once per sheet so a double tap or a retry writes the same doc.
@@ -93,6 +97,7 @@ class CareRecord {
     this.diaper,
     this.weightKg,
     this.lengthCm,
+    this.headCm,
     this.measuredOn,
     this.leftMin,
     this.rightMin,
@@ -121,6 +126,9 @@ class CareRecord {
   final double? weightKg;
   final double? lengthCm;
 
+  /// Growth "Vòng đầu" (cm, one decimal); absent on records from before 2026-10-16.
+  final double? headCm;
+
   /// Growth "Ngày đo" (baby-local calendar date).
   final DateTime? measuredOn;
 
@@ -137,6 +145,13 @@ class CareRecord {
   /// Saved on this device, waiting to sync ("Chờ đồng bộ", 9a / 9b).
   final bool pending;
 
+  /// A growth measurement's value of [m] (null when not measured).
+  double? measure(GrowthMeasure m) => switch (m) {
+    GrowthMeasure.weight => weightKg,
+    GrowthMeasure.length => lengthCm,
+    GrowthMeasure.head => headCm,
+  };
+
   /// "Ghi lúc": the server time, or the device time while pending.
   DateTime get loggedAt => createdAt ?? clientCreatedAt ?? occurredAt;
 
@@ -152,10 +167,12 @@ class CareRecord {
     DiaperKind? diaper,
     double? weightKg,
     double? lengthCm,
+    double? headCm,
     DateTime? measuredOn,
     bool clearAmount = false,
     bool clearDuration = false,
     bool clearLength = false,
+    bool clearHead = false,
   }) {
     final start = occurredAt ?? this.occurredAt;
     final minutes = clearDuration ? null : (durationMin ?? this.durationMin);
@@ -174,6 +191,7 @@ class CareRecord {
       diaper: diaper ?? this.diaper,
       weightKg: weightKg ?? this.weightKg,
       lengthCm: clearLength ? null : (lengthCm ?? this.lengthCm),
+      headCm: clearHead ? null : (headCm ?? this.headCm),
       measuredOn: measuredOn ?? this.measuredOn,
       leftMin: leftMin,
       rightMin: rightMin,
@@ -218,6 +236,7 @@ class CareRecord {
     DiaperKind? diaper,
     double? weightKg,
     double? lengthCm,
+    double? headCm,
     DateTime? measuredOn,
   }) => CareRecord(
     id: id,
@@ -234,6 +253,7 @@ class CareRecord {
     diaper: diaper,
     weightKg: weightKg,
     lengthCm: lengthCm,
+    headCm: headCm,
     measuredOn: measuredOn,
     clientCreatedAt: DateTime.now(),
     pending: true,
@@ -261,6 +281,9 @@ class CareRecord {
       'weightKg': weightKg,
       'lengthCm': lengthCm,
       'measuredOn': isoDate(measuredOn ?? occurredAt),
+      // Owner 2026-10-16: only when entered, so Rules of before the field (and older readers)
+      // still take the record.
+      if (headCm != null) 'headCm': headCm,
     },
     CareType.sleep => const {},
   };
@@ -317,6 +340,7 @@ class CareRecord {
       diaper: DiaperKind.values.asNameMap()[data['kind']],
       weightKg: number('weightKg')?.toDouble(),
       lengthCm: number('lengthCm')?.toDouble(),
+      headCm: number('headCm')?.toDouble(),
       measuredOn: DateTime.tryParse(data['measuredOn'] as String? ?? ''),
       leftMin: number('leftMin')?.toInt(),
       rightMin: number('rightMin')?.toInt(),

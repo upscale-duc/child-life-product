@@ -293,7 +293,9 @@ export function spendingSignalsIn(text: string): ('amount' | 'keyword')[] {
     // LUMI-16: goods counted by the box / pack ("Con Cưng hôm nay hai hộp sữa").
     /(?<![\p{L}\d])(?:\d+|mot|hai|ba|bon|nam|sau|muoi)\s+(?:hop|lon|goi|bich|thung|loc|chai|tui|bao)\s+(?:sua|bim|ta|khan|banh|bot|nuoc)(?![\p{L}])/u.test(
       f,
-    );
+    ) ||
+    // LUMI-16 (owner 2026-10-16): "đặt tã online", "order diapers".
+    purchasesIn(text).length > 0;
   if (keyword) out.push('keyword');
   return out;
 }
@@ -1203,7 +1205,7 @@ export function diaperIn(text: string): { kind: 'wet' | 'dirty' | 'both' | null 
 export interface GrowthMeasure {
   weightKg: number | null;
   lengthCm: number | null;
-  /** "vòng đầu 40cm" / "head 40 cm": said, but the growth module cannot store it. */
+  /** "vòng đầu 40cm" / "head 40 cm" (saved with the growth record since 2026-10-16). */
   headCm: number | null;
 }
 
@@ -1347,4 +1349,242 @@ export function feedingConcernIn(text: string): boolean {
   return /(?<![\p{L}])(?:bieng an|bieng bu|an it|bu it|an kem|bu kem|luoi an|luoi bu|an khong ngon|eats? less|eating less|feeding less|poor appetite)(?![\p{L}])/u.test(
     foldVi(text),
   );
+}
+
+// ---------- Purchases (LUMI-16, owner 2026-10-16) ----------
+
+/** Whether a purchase in the words was made, is planned / a to-do, or is asked about. */
+export type PurchaseMood = 'done' | 'plan' | 'question';
+
+export interface Purchase {
+  mood: PurchaseMood;
+  /** The words from the verb on ("mua hai hộp sữa", "đặt tã online"), lower case, ≤ 60. */
+  phrase: string;
+  /** The words as a to-do ("mua sữa", "buy diapers"): the phrase without a trailing day / price. */
+  title: string;
+  /** What was bought ("hai hộp sữa", "tã"), without the store; null when nothing follows. */
+  what: string | null;
+  /** "ở Con Cưng" / "tại Kids Plaza" / "at Target" → the store's words as written. */
+  merchant: string | null;
+}
+
+/** A word in folded text, or (in a text with diacritics) only as written with its marks. */
+type Cue = readonly [marked: string, folded: string | null];
+
+const buyCues: readonly Cue[] = [
+  ['mua', 'mua'],
+  ['đặt mua', 'dat mua'],
+  ['đặt hàng', 'dat hang'],
+  ['đặt online', 'dat online'],
+  ['đặt tã', 'dat ta'],
+  ['đặt bỉm', 'dat bim'],
+  ['đặt sữa', 'dat sua'],
+  ['đặt đồ', 'dat do'],
+  ['đặt khăn', 'dat khan'],
+  ['đặt quần áo', 'dat quan ao'],
+  ['order', 'order'],
+  ['ordered', 'ordered'],
+  ['bought', 'bought'],
+  ['buy', 'buy'],
+  ['buying', 'buying'],
+  ['purchase', 'purchase'],
+  ['purchased', 'purchased'],
+];
+
+/**
+ * A plan, a to-do or a purchase that did not happen ("nhớ mua", "cần mua", "sẽ mua", "chưa mua",
+ * "quên mua", "need to buy"): never an expense, whatever day is said.
+ */
+const planCues: readonly Cue[] = [
+  ['nhớ', 'nho mua'],
+  ['nhắc', 'nhac'],
+  ['cần', 'can mua'],
+  ['cần đặt', 'can dat'],
+  ['phải mua', 'phai mua'],
+  ['muốn mua', 'muon mua'],
+  ['chưa mua', 'chua mua'],
+  ['quên mua', 'quen mua'],
+  ['không mua', 'khong mua'],
+  ['sẽ', null],
+  ['định', 'dinh mua'],
+  ['sắp', 'sap mua'],
+  ['để mua', 'de mua'],
+  ['need to', 'need to'],
+  ['needs to', 'needs to'],
+  ['have to', 'have to'],
+  ['has to', 'has to'],
+  ['will', 'will'],
+  ['going to', 'going to'],
+  ['gonna', 'gonna'],
+  ['remember', 'remember'],
+  ['remind', 'remind'],
+  ['plan to', 'plan to'],
+  ['want to', 'want to'],
+  ['forgot', 'forgot'],
+];
+
+/**
+ * A later day or time ("ngày mai", "tuần sau", "lát nữa", "tomorrow"): a plan unless a past day
+ * is said too. A bare "mai" / "mốt" counts only before the buying word ("mai đi mua sữa"), so
+ * "mua sữa cho bé Mai" is not a plan.
+ */
+const laterCues: readonly Cue[] = [
+  ['ngày mai', 'ngay mai'],
+  ['sáng mai', 'sang mai'],
+  ['trưa mai', 'trua mai'],
+  ['chiều mai', 'chieu mai'],
+  ['tối mai', 'toi mai'],
+  ['tuần sau', 'tuan sau'],
+  ['tháng sau', 'thang sau'],
+  ['lát nữa', 'lat nua'],
+  ['tí nữa', 'ti nua'],
+  ['chút nữa', 'chut nua'],
+  ['tomorrow', 'tomorrow'],
+  ['later', 'later'],
+  ['next week', 'next week'],
+];
+const laterBeforeVerb: readonly Cue[] = [
+  ['mai', 'mai'],
+  ['mốt', null],
+];
+
+/** It happened: these win over every plan word ("vừa mua", "đã mua", "mua rồi", "just bought"). */
+const doneCues: readonly Cue[] = [
+  ['vừa', 'vua'],
+  ['mới mua', 'moi mua'],
+  ['đã', 'da mua'],
+  ['rồi', 'roi'],
+  ['xong', 'xong'],
+  ['lúc nãy', null],
+  ['hồi nãy', null],
+  ['ban nãy', null],
+  ['just', 'just'],
+  ['already', 'already'],
+  ['bought', 'bought'],
+  ['ordered', 'ordered'],
+  ['purchased', 'purchased'],
+  ['got', 'got'],
+];
+
+/** A day already gone or today ("hôm qua", "sáng nay"): no "later" plan then. */
+const pastDayCues: readonly Cue[] = [
+  ['hôm qua', 'hom qua'],
+  ['hôm kia', 'hom kia'],
+  ['hôm nay', 'hom nay'],
+  ['sáng nay', 'sang nay'],
+  ['trưa nay', 'trua nay'],
+  ['chiều nay', 'chieu nay'],
+  ['today', 'today'],
+  ['yesterday', 'yesterday'],
+];
+
+/** Asking which / where / whether to buy ("mua sữa nào tốt", "nên mua bỉm gì"). */
+const questionCues: readonly Cue[] = [
+  ['nào', 'nao'],
+  ['gì', 'gi'],
+  ['ở đâu', 'o dau'],
+  ['có nên', 'co nen'],
+  ['nên mua', 'nen mua'],
+  ['nên chọn', 'nen chon'],
+  ['tốt không', 'tot khong'],
+  ['được không', 'duoc khong'],
+  ['bao nhiêu', 'bao nhieu'],
+  ['which', 'which'],
+  ['what', 'what'],
+  ['where', 'where'],
+  ['should', 'should'],
+  ['recommend', 'recommend'],
+];
+
+const cueRe = (w: string) =>
+  new RegExp(String.raw`(?<![\p{L}\d])${w.replace(/\s+/g, String.raw`\s+`)}(?![\p{L}])`, 'u');
+
+/** Where the first of [cues] is in a clause ([lower] / [folded] of the same text), or -1. */
+function cueAt(cues: readonly Cue[], lower: string, folded: string, marked: boolean): number {
+  let at = -1;
+  for (const [m, f] of cues) {
+    // With diacritics the word must be written with its marks ("mua", never "mưa" / "múa");
+    // without any, the folded spelling is taken as written.
+    const hit =
+      (marked ? cueRe(m).exec(lower) : null) ?? (f && !marked ? cueRe(f).exec(folded) : null);
+    if (hit && (at < 0 || hit.index < at)) at = hit.index;
+  }
+  return at;
+}
+
+const storeRe = /(?<![\p{L}])(?:ở|tại|o|tai|at|from|on)\s+(.+)$/u;
+const tailRe =
+  /\s*(?:(?<![\p{L}])(?:hết|het|mất|mat|giá|gia|tổng|tong|cost|for)(?![\p{L}]).*|(?<![\p{L}])(?:hôm nay|hom nay|hôm qua|hom qua|ngày mai|ngay mai|tối nay|toi nay|tomorrow|today|yesterday|tonight|next week|mai)(?:\s+(?:nhé|nhe|nha|nhá))?)\s*$/u;
+
+/**
+ * LUMI-16 (owner 2026-10-16): the purchases in [text], one per clause with a buying word ("mua",
+ * "đặt hàng / tã…", "order", "bought"): done ("mua hai hộp sữa", "vừa mua bỉm ở Con Cưng", "đặt
+ * tã online") — an expense even without an amount —, a plan or a to-do ("mai đi mua sữa", "nhớ
+ * mua bỉm", "cần mua…") — a reminder or nothing —, or a question ("mua sữa nào tốt?") — help,
+ * never an expense. A "?" makes the clause a question; a plan word wins over a done word only
+ * when no done word is said; a question word counts only without an amount or a done word.
+ */
+export function purchasesIn(text: string): Purchase[] {
+  const lower = lowerVi(text);
+  const folded = foldVi(text);
+  const marked = lower !== folded;
+  const out: Purchase[] = [];
+  // Clauses: punctuation, "và", "nhưng", "and", "but"; each keeps its own "?".
+  const sep = /(?<!\d)[,.](?!\d)|[;!?\n]|\s(?:và|va|nhưng|nhung|and|but|then)\s/gu;
+  let start = 0;
+  const clauses: { from: number; to: number; asked: boolean }[] = [];
+  for (const m of folded.matchAll(sep)) {
+    clauses.push({ from: start, to: m.index, asked: m[0] === '?' });
+    start = m.index + m[0].length;
+  }
+  clauses.push({ from: start, to: folded.length, asked: false });
+  for (const c of clauses) {
+    const l = lower.slice(c.from, c.to);
+    const f = folded.slice(c.from, c.to);
+    const verb = cueAt(buyCues, l, f, marked);
+    if (verb < 0) continue;
+    const phrase = l.slice(verb).trim().replace(/\s+/g, ' ').slice(0, 60);
+    // What follows the verb ("đặt tã online" → "tã online"; "mua hai hộp sữa" → "hai hộp sữa").
+    const verbWord =
+      /^(?:đặt|dat|mua|order(?:ed)?|bought|buy(?:ing)?|purchased?)\s*(?:mua\s+|hàng\s+|hang\s+)?/u;
+    let rest = phrase.replace(verbWord, '').trim();
+    let merchant: string | null = null;
+    const store = storeRe.exec(rest);
+    if (store && store.index > 0) {
+      merchant = store[1]!.replace(tailRe, '').trim().slice(0, 60) || null;
+      // As written in the message (its case), from the same place.
+      if (merchant) {
+        const at = l.indexOf(merchant);
+        merchant =
+          at >= 0
+            ? text.normalize('NFC').slice(c.from + at, c.from + at + merchant.length)
+            : merchant;
+      }
+      rest = rest.slice(0, store.index).trim();
+    }
+    // An amount said with it ("bỉm 350.000đ") is the price, not what was bought.
+    const price = moneyAmountsIn(rest)[0];
+    if (price) rest = rest.slice(0, price.index);
+    rest = rest.replace(tailRe, '').trim();
+    const what = rest.length > 0 ? rest.slice(0, 60) : null;
+    const amount = moneyAmountsIn(text.slice(c.from, c.to)).length > 0;
+    const done = cueAt(doneCues, l, f, marked) >= 0;
+    const before = cueAt(laterBeforeVerb, l, f, marked);
+    const later =
+      (cueAt(laterCues, l, f, marked) >= 0 || (before >= 0 && before < verb)) &&
+      cueAt(pastDayCues, l, f, marked) < 0;
+    const plan = cueAt(planCues, l, f, marked) >= 0 || later;
+    const question = !done && !amount && cueAt(questionCues, l, f, marked) >= 0;
+    const mood: PurchaseMood = c.asked
+      ? 'question'
+      : done
+        ? 'done'
+        : plan
+          ? 'plan'
+          : question
+            ? 'question'
+            : 'done';
+    out.push({ mood, phrase, title: phrase.replace(tailRe, '').trim() || phrase, what, merchant });
+  }
+  return out;
 }

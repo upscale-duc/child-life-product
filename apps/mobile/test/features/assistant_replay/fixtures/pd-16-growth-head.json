@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_acd761c21a843ef40b0bf83974bcb5fe",
+     "id": "tk_496697691001b1743cff71534d40cde5",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_acd761c21a843ef40b0bf83974bcb5fe_0",
-      "taskId": "tk_acd761c21a843ef40b0bf83974bcb5fe",
+      "id": "dr_496697691001b1743cff71534d40cde5_0",
+      "taskId": "tk_496697691001b1743cff71534d40cde5",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -51,7 +51,8 @@
        "kind": "growth",
        "weightKg": 6,
        "lengthCm": 61,
-       "measuredOn": "2026-10-15"
+       "measuredOn": "2026-10-15",
+       "headCm": 40
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -59,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_acd761c21a843ef40b0bf83974bcb5fe"
+       "task:tk_496697691001b1743cff71534d40cde5"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +82,7 @@
         "text": "bé nặng 6kg, dài 61cm, vòng đầu 40cm"
        }
       ],
-      "taskId": "tk_acd761c21a843ef40b0bf83974bcb5fe",
+      "taskId": "tk_496697691001b1743cff71534d40cde5",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -98,20 +99,13 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "Mục Tăng trưởng chưa có vòng đầu, nên mình chưa ghi số đo vòng đầu. Cân nặng và chiều dài ở bản nháp bên dưới.",
-        "code": "PART_NOT_SAVED",
-        "link": "/care/growth"
-       },
-       {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_acd761c21a843ef40b0bf83974bcb5fe_0",
+        "draftId": "dr_496697691001b1743cff71534d40cde5_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_acd761c21a843ef40b0bf83974bcb5fe",
+      "taskId": "tk_496697691001b1743cff71534d40cde5",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -122,11 +116,11 @@
    }
   },
   {
-   "label": "probe · after save",
+   "label": "turn 2 · after save",
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_acd761c21a843ef40b0bf83974bcb5fe",
+     "id": "tk_496697691001b1743cff71534d40cde5",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -157,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_acd761c21a843ef40b0bf83974bcb5fe_0",
-      "taskId": "tk_acd761c21a843ef40b0bf83974bcb5fe",
+      "id": "dr_496697691001b1743cff71534d40cde5_0",
+      "taskId": "tk_496697691001b1743cff71534d40cde5",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -168,7 +162,8 @@
        "kind": "growth",
        "weightKg": 6,
        "lengthCm": 61,
-       "measuredOn": "2026-10-15"
+       "measuredOn": "2026-10-15",
+       "headCm": 40
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -176,10 +171,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_acd761c21a843ef40b0bf83974bcb5fe"
+       "task:tk_496697691001b1743cff71534d40cde5"
       ],
-      "recordId": "r_851c463ab9729449f1ff46ccadcd8504",
-      "recordLink": "/care/records/b_00000000000000000001/r_851c463ab9729449f1ff46ccadcd8504",
+      "recordId": "r_092ee46f5c9f86d758129bacaab0ac93",
+      "recordLink": "/care/records/b_00000000000000000001/r_092ee46f5c9f86d758129bacaab0ac93",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -203,7 +198,7 @@
         "text": "bé nặng 6kg, dài 61cm, vòng đầu 40cm"
        }
       ],
-      "taskId": "tk_acd761c21a843ef40b0bf83974bcb5fe",
+      "taskId": "tk_496697691001b1743cff71534d40cde5",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -220,20 +215,13 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "Mục Tăng trưởng chưa có vòng đầu, nên mình chưa ghi số đo vòng đầu. Cân nặng và chiều dài ở bản nháp bên dưới.",
-        "code": "PART_NOT_SAVED",
-        "link": "/care/growth"
-       },
-       {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_acd761c21a843ef40b0bf83974bcb5fe_0",
+        "draftId": "dr_496697691001b1743cff71534d40cde5_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_acd761c21a843ef40b0bf83974bcb5fe",
+      "taskId": "tk_496697691001b1743cff71534d40cde5",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -249,15 +237,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_acd761c21a843ef40b0bf83974bcb5fe_0",
+          "draftId": "dr_496697691001b1743cff71534d40cde5_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_851c463ab9729449f1ff46ccadcd8504",
+          "recordLink": "/care/records/b_00000000000000000001/r_092ee46f5c9f86d758129bacaab0ac93",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_acd761c21a843ef40b0bf83974bcb5fe",
+      "taskId": "tk_496697691001b1743cff71534d40cde5",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

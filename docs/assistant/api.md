@@ -299,7 +299,7 @@ unsaved draft; the same words never do.
 
 Bugs of [`test-report-lumi-2026-10-16.md`](test-report-lumi-2026-10-16.md); every one is a case in
 `firebase/tests/assistant-e2e/cases/` first (device / live replies scripted as the model gave them).
-Prompt `assistant-extract-v5`.
+Prompt `assistant-extract-v5` (`v6` since the owner decisions of 2026-10-16: head circumference, purchases without an amount).
 
 **New draft kinds — the care module's other logs (LUMI-01).** "hút sữa 120ml", "thay tã ướt",
 "bé nặng 5,2kg" are drafted as the app's own forms write them (never a bottle feed, an observation,
@@ -312,22 +312,25 @@ an expense or "no place to save"):
 { kind: 'diaper', diaper: 'wet' | 'dirty' | 'both' | null, occurredAt: iso | null }   // DiaperSheet
 { kind: 'growth', weightKg: number | null,  // 0.3…40, one decimal (GrowthScreen)
   lengthCm: number | null,                  // 20…150, one decimal, optional
-  measuredOn: 'YYYY-MM-DD' | null }         // "Ngày đo"; the module has no head circumference
+  measuredOn: 'YYYY-MM-DD' | null,          // "Ngày đo"
+  headCm?: number | null }                  // 20…60, one decimal, optional (owner 2026-10-16)
 ```
 
 | | pump | diaper | growth |
 |---|---|---|---|
 | Required (`requiredDraftFields`) | `amountMl`, `occurredAt` | `diaper`, `occurredAt` | `weightKg`, `measuredOn` |
 | Defaults | side: as said, else the last pump's side, else `both` (never flagged) | none: wet / dirty not said → `diaper` missing (the person picks; never a guess) | `measuredOn`: the day said ("hôm qua đi khám"), else today |
-| Problems | `MISSING_AMOUNT`, `INVALID_AMOUNT` (amount, or length > 240 — names the value out of range), `MISSING_TIME`, `FUTURE_TIME` | `MISSING_TIME`, `FUTURE_TIME` | `MISSING_AMOUNT`, `INVALID_AMOUNT` (weight or length out of range — names it), `MISSING_DATE`, `FUTURE_TIME` |
-| Record (`careRecordFromDraft`, Rules `validCareData`) | `type: 'pump'`, `data { side, amountMl, durationMin }`, `endedAt = start + durationMin` | `type: 'diaper'`, `data { kind }` | `type: 'growth'`, `data { weightKg, lengthCm, measuredOn }` (one decimal), `occurredAt` = now when measured today, else noon of that day in the baby's zone |
+| Problems | `MISSING_AMOUNT`, `INVALID_AMOUNT` (amount, or length > 240 — names the value out of range), `MISSING_TIME`, `FUTURE_TIME` | `MISSING_TIME`, `FUTURE_TIME` | `MISSING_AMOUNT`, `INVALID_AMOUNT` (weight, length or head circumference out of range — names it), `MISSING_DATE`, `FUTURE_TIME` |
+| Record (`careRecordFromDraft`, Rules `validCareData`) | `type: 'pump'`, `data { side, amountMl, durationMin }`, `endedAt = start + durationMin` | `type: 'diaper'`, `data { kind }` | `type: 'growth'`, `data { weightKg, lengthCm, measuredOn, headCm? }` (one decimal; `headCm` only when given, as GrowthScreen writes it), `occurredAt` = now when measured today, else noon of that day in the baby's zone |
 
 Role: `rhythm.checkin` (Rules `canLog`), like the other care logs. A breastfeed or pumping session
 with a length now ends `durationMin` after it starts (the app's record); one logged right after it
 ended starts that long before now (the form's `CareRecord.spanStart`), so the Rules accept it.
 Duplicates: a pump within 10 min and 10 % of the amount, a diaper of the same kind within 10 min →
-`duplicate_suspected`. Head circumference said → `PART_NOT_SAVED` notice ("Mục Tăng trưởng chưa có
-vòng đầu…", `link` `/care/growth`), weight and length still drafted.
+`duplicate_suspected`. Head circumference (owner decision 2026-10-16): "vòng đầu 39cm" is re-read
+from the words (`growthIn`) and saved with the record; the server no longer sends `PART_NOT_SAVED`
+for it (the code stays for messages already stored). The model's length equal to the head's number
+with no length in the words is dropped. A draft prepared before the field has no `headCm` (null).
 
 **Backstops (deterministic, contracts `assistant-text.ts`; functions `careBackstops`).** Whatever
 the model named it: pumping words (`pumpCueIn`: hút sữa, vắt sữa, pumped) turn a bottle / breast /
@@ -370,6 +373,7 @@ fallback (`ready`, 0 credits). New notice codes: `APP_UPDATE_NEEDED`, `PART_NOT_
 | LUMI-13 | Notices name their item ("Ứng dụng chưa có mục ghi bữa ăn…", "Mình chưa hiểu rõ phần nhắc việc…"); pump / diaper / growth are drafted, never dropped. |
 | LUMI-14 | Every read tool is offered to the model; the server answers `READ_DENIED` (free) for a read the member may not use, and never answers a care question with the credit balance (`usage_snapshot` on words about feeds / sleep and not about credits → `READ_DENIED`, or `care_summary` for a member who may read). |
 | LUMI-16 | Goods counted by the box / pack ("hai hộp sữa") are a spending signal: the task is private from `startTask`. The prompt says goods bought at a shop are an expense even with no amount (amount `null` → missing, reviewed). |
+| LUMI-16 (owner decision 2026-10-16, prompt `assistant-extract-v6`) | Contracts `purchasesIn` reads each clause with a buying word (mua, đặt hàng / tã…, order, bought): **done** ("mua hai hộp sữa", "vừa mua bỉm ở Con Cưng", "đặt tã online") → an expense draft with `totalMinor` missing, in the household currency, private (D-075 #2; "đặt …" is a spending signal at `startTask`); the app asks "Hết bao nhiêu tiền?" on the card (amount field, currency picker, thousands chips) and saves in the same tap once an amount is typed (`patchDraft` with `totalMinor`, `currency` confirmed, then `confirmDrafts`). **Plan / to-do** ("mai đi mua sữa", "nhớ mua bỉm", "cần mua…", "chưa mua", "need to buy") → never an expense: the model's expense becomes a reminder in the person's words ("mua sữa", the day from the words) unless the model returned one; nothing from the model → nothing. **Question** ("mua sữa nào tốt?", "nên mua bỉm gì") → no expense, `HELP` "Mình chưa so sánh hay gợi ý sản phẩm được…", 0 credits, never the `intent` question. A purchase made that the model missed is drafted from the words; one it returned as an undated reminder is the expense. A later day in a mixed message ("…, mai nhớ mua sữa") is never the date of the money spent. Functions `checkPurchases`. |
 | P2 | "Bé khó vào giấc hay thức giấc?" (no "hay hay"); the credit answer's reset date reads "1/11/2026" / "1 Nov 2026". |
 
 ## Commands

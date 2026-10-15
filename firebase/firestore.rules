@@ -758,10 +758,13 @@ service cloud.firestore {
           optionalDuration(x)) ||
         (type == 'diaper' && x.keys().hasOnly(['kind']) &&
           x.kind in ['wet', 'dirty', 'both']) ||
-        (type == 'growth' && x.keys().hasOnly(['weightKg', 'lengthCm', 'measuredOn']) &&
+        // Head circumference (owner 2026-10-16): optional key, absent on older records and apps.
+        (type == 'growth' &&
+          x.keys().hasOnly(['weightKg', 'lengthCm', 'measuredOn', 'headCm']) &&
           x.keys().hasAll(['weightKg', 'lengthCm', 'measuredOn']) &&
           numIn(x.weightKg, 0.3, 40) &&
           (x.lengthCm == null || numIn(x.lengthCm, 20, 150)) &&
+          (x.get('headCm', null) == null || numIn(x.headCm, 20, 60)) &&
           x.measuredOn is string && x.measuredOn.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$'));
     }
 

@@ -116,9 +116,11 @@ class _GrowthPainter extends CustomPainter {
       hi = math.max(hi, p.$2);
     }
     if (!lo.isFinite) return;
-    final step = measure == GrowthMeasure.weight
-        ? ((hi - lo) / 2 > 2 ? 4.0 : 2.0)
-        : ((hi - lo) / 2 > 10 ? 10.0 : 5.0);
+    final step = switch (measure) {
+      GrowthMeasure.weight => (hi - lo) / 2 > 2 ? 4.0 : 2.0,
+      GrowthMeasure.length => (hi - lo) / 2 > 10 ? 10.0 : 5.0,
+      GrowthMeasure.head => (hi - lo) / 2 > 5 ? 5.0 : 2.0,
+    };
     lo = (lo / step).floor() * step;
     hi = (hi / step).ceil() * step;
 

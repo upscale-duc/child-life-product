@@ -984,6 +984,7 @@ class _TimelineRow extends StatelessWidget {
         recordSummary(l10n, locale, r),
         [
           if (r.lengthCm != null) l10n.lengthCm(decimal(locale, r.lengthCm!)),
+          if (r.headCm != null) l10n.headCm(decimal(locale, r.headCm!)),
           who,
         ].join(' · '),
       ),
@@ -1258,7 +1259,8 @@ class _GrowthPanel extends ConsumerStatefulWidget {
 }
 
 class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
-  bool _length = false;
+  /// Cân nặng / Chiều dài / Vòng đầu (owner 2026-10-16).
+  GrowthMeasure _measure = GrowthMeasure.weight;
 
   @override
   Widget build(BuildContext context) {
@@ -1304,28 +1306,35 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
         signed(r.weightKg! - prev.weightKg!, 'kg'),
         if (r.lengthCm != null && prev.lengthCm != null)
           signed(r.lengthCm! - prev.lengthCm!, 'cm'),
+        if (r.headCm != null && prev.headCm != null)
+          l10n.headCm(signed(r.headCm! - prev.headCm!, '').trim()),
       ].join(' · ');
     }
 
+    final m = _measure;
+    String valueLabel(double v) => m == GrowthMeasure.weight
+        ? l10n.weightKg(decimal(locale, v))
+        : l10n.lengthCm(decimal(locale, v));
     final points = [
       for (final r in all.reversed)
-        if ((_length ? r.lengthCm : r.weightKg) != null)
-          (r.measuredOn ?? r.occurredAt, _length ? r.lengthCm! : r.weightKg!),
+        if (r.measure(m) != null) (r.measuredOn ?? r.occurredAt, r.measure(m)!),
     ];
-    final primary = _length
-        ? l10n.lengthCm(decimal(locale, latest.lengthCm ?? 0))
-        : l10n.weightKg(decimal(locale, latest.weightKg ?? 0));
-    final secondary = _length
+    final primary = latest.measure(m) == null
+        ? '—'
+        : valueLabel(latest.measure(m)!);
+    final secondary = m != GrowthMeasure.weight
         ? l10n.weightKg(decimal(locale, latest.weightKg ?? 0))
         : (latest.lengthCm == null
               ? null
               : l10n.lengthCm(decimal(locale, latest.lengthCm!)));
-    final delta = previous == null
+    final delta = previous == null || latest.measure(m) == null
         ? null
         : l10n.growthDeltaVs(
             [
-              _length && latest.lengthCm != null && previous.lengthCm != null
-                  ? signed(latest.lengthCm! - previous.lengthCm!, 'cm')
+              m != GrowthMeasure.weight &&
+                      latest.measure(m) != null &&
+                      previous.measure(m) != null
+                  ? signed(latest.measure(m)! - previous.measure(m)!, 'cm')
                   : signed(
                       (latest.weightKg ?? 0) - (previous.weightKg ?? 0),
                       'kg',
@@ -1336,7 +1345,7 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
 
     // v1.0 improvement 20d: the latest value with the baby's age, its place against the WHO
     // normal band (347:935 when outside it), the WHO chart and the way to 20i.
-    final measure = _length ? GrowthMeasure.length : GrowthMeasure.weight;
+    final measure = m;
     final boy = switch (widget.gender) {
       Gender.boy => true,
       Gender.girl => false,
@@ -1348,13 +1357,9 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
         : DateUtils.dateOnly(
             r.measuredOn ?? r.occurredAt,
           ).difference(dob).inDays;
-    final shown = all
-        .where((r) => (_length ? r.lengthCm : r.weightKg) != null)
-        .toList();
+    final shown = all.where((r) => r.measure(m) != null).toList();
     final current = shown.firstOrNull;
-    final currentValue = current == null
-        ? null
-        : (_length ? current.lengthCm! : current.weightKg!);
+    final currentValue = current?.measure(m);
     final currentAge = current == null ? null : ageOn(current);
     final band = boy == null || currentAge == null || currentValue == null
         ? null
@@ -1372,11 +1377,10 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
         : days < 13 * 7
         ? l10n.ageWeeks(days ~/ 7)
         : l10n.ageMonths((days / 30.4375).floor());
-    final unit = _length ? 'cm' : 'kg';
+    final unit = m == GrowthMeasure.weight ? 'kg' : 'cm';
     final whoPoints = [
       for (final r in shown.reversed)
-        if (ageOn(r) != null && ageOn(r)! >= 0)
-          (ageOn(r)!, _length ? r.lengthCm! : r.weightKg!),
+        if (ageOn(r) != null && ageOn(r)! >= 0) (ageOn(r)!, r.measure(m)!),
     ];
     final outside = band != null && band != GrowthBand.normal;
     Widget pill(String text, Color bg, Color ink, {ClIcons? icon}) => Container(
@@ -1419,36 +1423,37 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClSegmented<bool>(
-                options: const [false, true],
-                selected: _length,
-                labelOf: (l) => l ? l10n.growthLengthTab : l10n.growthWeightTab,
-                onChanged: (l) => setState(() => _length = l),
+              ClSegmented<GrowthMeasure>(
+                options: GrowthMeasure.values,
+                selected: m,
+                labelOf: (x) => growthMeasureTab(l10n, x),
+                onChanged: (x) => setState(() => _measure = x),
               ),
               const SizedBox(height: ClSpace.s3),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    currentValue == null
-                        ? primary
-                        : (_length
-                              ? l10n.lengthCm(decimal(locale, currentValue))
-                              : l10n.weightKg(decimal(locale, currentValue))),
-                    style: cl.text.title.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  Flexible(
-                    child: Text(
-                      currentAge != null && currentAge >= 0
-                          ? ' · ${ageText(currentAge)}'
-                          : (secondary == null ? '' : ' · $secondary'),
-                      style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-                      overflow: TextOverflow.ellipsis,
+              if (shown.isNotEmpty)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Text(
+                      currentValue == null ? primary : valueLabel(currentValue),
+                      style: cl.text.title.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                    Flexible(
+                      child: Text(
+                        currentAge != null && currentAge >= 0
+                            ? ' · ${ageText(currentAge)}'
+                            : (secondary == null ? '' : ' · $secondary'),
+                        style: cl.text.label.copyWith(
+                          color: cl.colors.inkMuted,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               const SizedBox(height: ClSpace.s2),
               Wrap(
                 spacing: ClSpace.s2,
@@ -1498,17 +1503,22 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
                       ClIcon(ClIcons.heart, size: 16, color: cl.colors.ink),
                       const SizedBox(width: ClSpace.s2),
                       Expanded(
-                        child: Text(switch ((band, _length)) {
-                          (GrowthBand.below, false) => l10n.whoBelowWeightNote(
+                        child: Text(switch ((band, m)) {
+                          (GrowthBand.below, GrowthMeasure.weight) =>
+                            l10n.whoBelowWeightNote(widget.nickname),
+                          (GrowthBand.below, GrowthMeasure.length) =>
+                            l10n.whoBelowLengthNote(widget.nickname),
+                          (GrowthBand.below, GrowthMeasure.head) =>
+                            l10n.whoBelowHeadNote(widget.nickname),
+                          (_, GrowthMeasure.weight) => l10n.whoAboveWeightNote(
                             widget.nickname,
                           ),
-                          (GrowthBand.below, true) => l10n.whoBelowLengthNote(
+                          (_, GrowthMeasure.length) => l10n.whoAboveLengthNote(
                             widget.nickname,
                           ),
-                          (_, false) => l10n.whoAboveWeightNote(
+                          (_, GrowthMeasure.head) => l10n.whoAboveHeadNote(
                             widget.nickname,
                           ),
-                          (_, true) => l10n.whoAboveLengthNote(widget.nickname),
                         }, style: cl.text.label.copyWith(color: cl.colors.ink)),
                       ),
                     ],
@@ -1516,7 +1526,13 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
                 ),
               ],
               const SizedBox(height: ClSpace.s3),
-              if (boy != null && whoPoints.isNotEmpty) ...[
+              // Nothing measured of this kind yet (a head circumference before 2026-10-16).
+              if (shown.isEmpty)
+                Text(
+                  l10n.growthMeasureNone,
+                  style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                )
+              else if (boy != null && whoPoints.isNotEmpty) ...[
                 ExcludeSemantics(
                   child: WhoGrowthChart(
                     measure: measure,
@@ -1584,7 +1600,7 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
               const SizedBox(height: ClSpace.s3),
               ClPressable(
                 onPressed: () =>
-                    GrowthStandardsScreen.open(context, length: _length),
+                    GrowthStandardsScreen.open(context, measure: m),
                 pressedOpacity: ClPressable.surfaceOpacity,
                 semanticLabel: l10n.whoOpen,
                 child: Container(
@@ -1668,6 +1684,8 @@ class _GrowthPanelState extends ConsumerState<_GrowthPanel> {
                                 l10n.weightKg(decimal(locale, r.weightKg ?? 0)),
                                 if (r.lengthCm != null)
                                   l10n.lengthCm(decimal(locale, r.lengthCm!)),
+                                if (r.headCm != null)
+                                  l10n.headCm(decimal(locale, r.headCm!)),
                               ].join(' · '),
                               style: cl.text.bodyStrong,
                             ),

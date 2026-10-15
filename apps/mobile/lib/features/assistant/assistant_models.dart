@@ -1050,6 +1050,7 @@ sealed class DraftPayload {
         weightKg: _num(m['weightKg']),
         lengthCm: _num(m['lengthCm']),
         measuredOn: _date(m['measuredOn']),
+        headCm: _num(m['headCm']),
       ),
       null => UnknownPayload('${m['kind']}', m),
     };
@@ -1414,10 +1415,15 @@ class DiaperPayload extends DraftPayload {
   };
 }
 
-/// Lumi fixes 2026-10-16 (LUMI-01): "bé nặng 5,2kg" as the GrowthScreen writes it (no head
-/// circumference: the module has none).
+/// Lumi fixes 2026-10-16 (LUMI-01): "bé nặng 5,2kg" as the GrowthScreen writes it, with the
+/// head circumference since the owner's decision of 2026-10-16.
 class GrowthPayload extends DraftPayload {
-  const GrowthPayload({this.weightKg, this.lengthCm, this.measuredOn});
+  const GrowthPayload({
+    this.weightKg,
+    this.lengthCm,
+    this.measuredOn,
+    this.headCm,
+  });
 
   /// Kilograms, one decimal (0.3…40); required.
   final num? weightKg;
@@ -1428,19 +1434,34 @@ class GrowthPayload extends DraftPayload {
   /// The form's "Ngày đo", `YYYY-MM-DD` (baby-local).
   final String? measuredOn;
 
+  /// Head circumference ("Vòng đầu"), centimetres, one decimal (20…60); optional.
+  final num? headCm;
+
   @override
   DraftKind get kind => DraftKind.growth;
 
-  GrowthPayload copyWith({num? weightKg, num? lengthCm, String? measuredOn}) =>
-      GrowthPayload(
-        weightKg: weightKg ?? this.weightKg,
-        lengthCm: lengthCm ?? this.lengthCm,
-        measuredOn: measuredOn ?? this.measuredOn,
-      );
+  GrowthPayload copyWith({
+    num? weightKg,
+    num? lengthCm,
+    String? measuredOn,
+    num? headCm,
+  }) => GrowthPayload(
+    weightKg: weightKg ?? this.weightKg,
+    lengthCm: lengthCm ?? this.lengthCm,
+    measuredOn: measuredOn ?? this.measuredOn,
+    headCm: headCm ?? this.headCm,
+  );
 
   /// The same measurement without a length (it is optional).
   GrowthPayload withoutLength() =>
-      GrowthPayload(weightKg: weightKg, measuredOn: measuredOn);
+      GrowthPayload(weightKg: weightKg, measuredOn: measuredOn, headCm: headCm);
+
+  /// The same measurement without a head circumference (it is optional).
+  GrowthPayload withoutHead() => GrowthPayload(
+    weightKg: weightKg,
+    lengthCm: lengthCm,
+    measuredOn: measuredOn,
+  );
 
   @override
   Map<String, Object?> toJson() => {
@@ -1448,6 +1469,7 @@ class GrowthPayload extends DraftPayload {
     'weightKg': weightKg,
     'lengthCm': lengthCm,
     'measuredOn': measuredOn,
+    'headCm': headCm,
   };
 }
 

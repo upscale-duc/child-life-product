@@ -308,3 +308,24 @@ For the owner to decide:
 3. **Old app builds**: they now get "Phiên bản ứng dụng này chưa …" with a link instead of a timer /
    pump / diaper / growth draft. Server and app can ship in either order; the new app must be in
    the stores before the copy asks people to update.
+
+## Owner decisions 2026-10-16 (items 1 and 2 above) — run of the same day
+
+1. **Head circumference** is now part of Tăng trưởng: contracts `growthDataSchema.headCm`
+   (optional, 20…60 cm, one decimal), Rules `validCareData` (optional key, old records and old
+   apps unchanged), GrowthScreen / record detail / history (a "Vòng đầu" tab with the WHO
+   head-circumference-for-age band from `hcanthro`) / 20i / the baby profile, Lumi's growth draft
+   (writer, review fields, editor, inline fix). `PART_NOT_SAVED` is no longer sent for it.
+2. **A purchase without an amount** is an expense draft whose amount Lumi asks on the card ("Hết
+   bao nhiêu tiền?"); plans / to-dos become a reminder or nothing, questions get help (functions
+   `checkPurchases`, contracts `purchasesIn`, prompt `assistant-extract-v6`).
+
+| Run                                  | Cases                                            | Result             | Model calls | Tokens in / out | Est. cost (gpt-4.1-mini) |
+| ------------------------------------ | ------------------------------------------------ | ------------------ | ----------- | --------------- | ------------------------ |
+| fake, full catalogue, strict         | 272 (28 new)                                     | 272 / 272, 0 known | 0 (free)    | —               | 0                        |
+| live, new cases only (§5a test plan) | 20 (`pd-16`, `pd-23…28`, `ex-30…35`, `ex-40…46`) | 18 / 20            | 20          | 95 485 / 3 950  | ≈ US$0.045               |
+| live, the two fixed cases again      | 2 (`ex-32`, `ex-42`)                             | 2 / 2              | 2           | 9 579 / 375     | ≈ US$0.005               |
+
+Live findings, fixed and scripted as fake cases: the model returned "đặt tã online" as an undated
+reminder (now the expense, `ex-37`); "cần mua thêm tã" as a reminder (accepted: a to-do is a
+reminder or nothing, `ex-42`). App replay strict: 0 violations (new check `NO_AMOUNT_ASK`).

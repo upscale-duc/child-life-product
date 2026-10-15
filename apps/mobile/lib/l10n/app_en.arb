@@ -4492,5 +4492,20 @@
   "asFieldWeight": "Weight",
   "asFieldLength": "Length · optional",
   "asFieldMeasuredOn": "Measuring date",
-  "asFieldDiaper": "Diaper"
+  "asFieldDiaper": "Diaper",
+  "growthHeadOptional": "Head circumference · optional",
+  "growthHeadRange": "Head circumference from 20 to 60 cm.",
+  "headCm": "head {v} cm",
+  "growthHeadTab": "Head",
+  "detailHead": "Head circumference",
+  "bpHead": "Head · {when}",
+  "whoBelowHeadNote": "{name}’s head circumference is below the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.",
+  "whoAboveHeadNote": "{name}’s head circumference is above the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.",
+  "asFieldHead": "Head circumference · optional",
+  "asGapHead": "No head circumference yet (cm)",
+  "asGapHeadUnsure": "Is the head circumference {cm} cm right?",
+  "asFixEnterHead": "Enter head circumference",
+  "asFixDropHead": "Remove head circumference",
+  "asAskAmount": "How much did it cost?",
+  "growthMeasureNone": "Nothing measured yet. Add it at the next measurement."
 }

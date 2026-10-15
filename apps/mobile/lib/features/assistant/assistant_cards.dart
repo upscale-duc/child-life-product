@@ -401,11 +401,15 @@ class AsReceiptCard extends StatelessWidget {
     this.saving = false,
     this.primary,
     this.privateHint,
+    this.ask,
     super.key,
   });
 
   final String title;
   final String stateLabel;
+
+  /// LUMI-16: Lumi's question with its answer field ("Hết bao nhiêu tiền?"), above the fields.
+  final Widget? ask;
 
   /// The card's main action as a filled button ("Lưu chi tiêu"); [actions] stay links.
   final AsCardAction? primary;
@@ -542,6 +546,7 @@ class AsReceiptCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
+            if (ask case final a?) ...[const SizedBox(height: 6), a],
             for (final f in fields) field(f),
             if (footnote != null) ...[
               const SizedBox(height: 8),

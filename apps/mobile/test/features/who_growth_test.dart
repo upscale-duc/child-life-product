@@ -38,6 +38,16 @@ void main() {
       expect(median(GrowthMeasure.length, true, 365), 75.7);
       expect(median(GrowthMeasure.weight, false, 365), 8.9);
       expect(median(GrowthMeasure.length, false, 365), 74.0);
+      // Owner 2026-10-16, head circumference-for-age (WHO hcanthro): birth boys 34.5 / girls
+      // 33.9 cm; 12 months boys 46.1 / girls 44.9 cm.
+      expect(median(GrowthMeasure.head, true, 0), 34.5);
+      expect(median(GrowthMeasure.head, false, 0), 33.9);
+      expect(median(GrowthMeasure.head, true, 365), 46.1);
+      expect(median(GrowthMeasure.head, false, 365), 44.9);
+      expect(
+        WhoGrowth.band(GrowthMeasure.head, boy: true, ageDays: 0, value: 30),
+        GrowthBand.below,
+      );
     });
 
     test('a measurement is placed against the band', () {

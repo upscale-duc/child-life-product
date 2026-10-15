@@ -194,6 +194,47 @@ describe('logging (12a: parents and caregivers; relatives never)', () => {
   });
 });
 
+describe('growth head circumference (owner 2026-10-16)', () => {
+  const growth = (data: Record<string, unknown>) => ({
+    type: 'growth',
+    data: { weightKg: 5.2, lengthCm: 58, measuredOn: '2026-10-08', ...data },
+  });
+  const seedOld = async (id: string) =>
+    env.withSecurityRulesDisabled(async (ctx) => {
+      // A record written before the field (no headCm key), as older apps still write it.
+      await setDoc(doc(ctx.firestore(), `babies/b1/records/${id}`), {
+        ...record('mom', id, growth({})),
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      });
+    });
+
+  it('old records and old apps (no key) keep working; new apps may add 20…60 cm', async () => {
+    for (const data of [{}, { headCm: 39 }, { headCm: 38.5 }, { headCm: null }, { headCm: 20 }]) {
+      const id = newId();
+      await assertSucceeds(setDoc(rec('mom', id), record('mom', id, growth(data))));
+    }
+    for (const data of [{ headCm: 19.9 }, { headCm: 61 }, { headCm: '39' }, { head: 39 }]) {
+      const id = newId();
+      await assertFails(setDoc(rec('mom', id), record('mom', id, growth(data))));
+    }
+  });
+
+  it('editing an old record may add the head circumference, or keep it absent', async () => {
+    await seedOld('r_growth_old');
+    const edit = (data: Record<string, unknown>) =>
+      updateDoc(rec('dad', 'r_growth_old'), {
+        data: growth(data).data,
+        updatedAt: serverTimestamp(),
+        updatedBy: 'dad',
+      });
+    await assertSucceeds(edit({ headCm: 40.2 }));
+    // An older app's edit sends the three keys only.
+    await assertSucceeds(edit({}));
+    await assertFails(edit({ headCm: 75 }));
+  });
+});
+
 describe('reading (D-018: relatives only with daily care)', () => {
   it('parents, caregivers and relatives with "Chăm sóc hằng ngày" read records and days', async () => {
     for (const uid of ['mom', 'nanny', 'aunt']) {

@@ -27,6 +27,7 @@ import {
   B,
   confirmNow,
   countRecords,
+  savedRecordData,
   dateSpec,
   db,
   describeLocal,
@@ -181,6 +182,19 @@ for (const c of cases) {
     if (!c.noProbe) await probe(c, run, violations);
     violations.push(...(await checkSharedThread(run, 'end')));
     violations.push(...(await checkSaves(run, env)));
+    // 2026-10-16: what the saved records hold (e.g. the head circumference of a measurement).
+    for (const [key, want] of Object.entries(c.expect.recordData ?? {})) {
+      const [type, field] = key.split('.') as [string, string];
+      const rows = await savedRecordData(type);
+      if (!rows.some((d) => JSON.stringify(d[field] ?? null) === JSON.stringify(want))) {
+        violations.push({
+          code: 'EXPECT_RECORD',
+          severity: 'P1',
+          at: 'expect',
+          detail: `no saved ${type} record has ${field} = ${JSON.stringify(want)} (got ${JSON.stringify(rows.map((d) => d[field] ?? null))})`,
+        });
+      }
+    }
     const q1 = await quota();
     credits = q1.used - q0.used;
     saved = (await countRecords()) - r0;

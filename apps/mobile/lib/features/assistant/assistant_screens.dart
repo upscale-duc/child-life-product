@@ -40,6 +40,7 @@ import '../rhythm/rhythm_repository.dart'
 import '../rhythm/rhythm_labels.dart' show memberLabel;
 import '../rhythm/rhythm_widgets.dart' show rhConfirm;
 import '../spending/spending_models.dart' show SpendingAccess;
+import 'assistant_amount.dart';
 import 'assistant_cards.dart';
 import 'assistant_controller.dart';
 import 'assistant_editor.dart';
@@ -2851,9 +2852,15 @@ class _ThreadView {
       ],
       if (!canSave) l10n.asViewerDraftNote,
     ];
-    return AsReceiptCard(
+    Widget card({
+      Widget? ask,
+      List<AsField>? shown,
+      AsCardAction? save,
+      List<String>? said,
+    }) => AsReceiptCard(
       // A typed expense is not a receipt: its category and store (or what was bought).
       title: t.photo ? l10n.asReceiptTitle : draftTitle(l10n, d),
+      ask: ask,
       stateLabel: saving
           ? l10n.asStateSaving
           : expired
@@ -2866,7 +2873,7 @@ class _ThreadView {
             ),
       review: flagged.isNotEmpty || problems.isNotEmpty,
       saving: saving,
-      fields: fields,
+      fields: shown ?? fields,
       footnote: p.taxMinor != null && p.totalMinor != null
           ? l10n.asTaxIncluded(moneyLabel(locale, p.totalMinor!, p.currency))
           : null,
@@ -2878,15 +2885,16 @@ class _ThreadView {
               onAcknowledge: editable ? () => ctl.acknowledge(d.id) : null,
             )
           : null,
-      notes: notes,
+      notes: said ?? notes,
       privateHint: l10n.asOnlyYouSpending,
       primary: editable
-          ? (
-              label: l10n.asSaveExpense,
-              onPressed: blocked
-                  ? null
-                  : () async => onToast(await ctl.saveOne(t.taskId, d)),
-            )
+          ? save ??
+                (
+                  label: l10n.asSaveExpense,
+                  onPressed: blocked
+                      ? null
+                      : () async => onToast(await ctl.saveOne(t.taskId, d)),
+                )
           : null,
       actions: [
         if (editable) ...[
@@ -2898,6 +2906,65 @@ class _ThreadView {
         ],
       ],
     );
+    // LUMI-16 (owner 2026-10-16): a typed purchase without an amount — Lumi asks for it on the
+    // card; "Lưu chi tiêu" enables as soon as an amount is typed (the amount and its currency go
+    // in as checked, then it saves in the same tap when nothing else is left to check).
+    if (!t.photo && p.totalMinor == null && editable && !expired) {
+      final others = {...flagged}..removeAll(const ['totalMinor', 'currency']);
+      final otherProblems = [
+        for (final pr in problems)
+          if (pr != DraftProblem.missingAmount &&
+              pr != DraftProblem.currencyUnsupported)
+            pr,
+      ];
+      return AsAmountAsk(
+        key: ValueKey('as.amount:${d.id}'),
+        currency: p.currency ?? 'VND',
+        builder: (context, ask, typed) => card(
+          ask: ask,
+          shown: [
+            for (final f in fields)
+              if (f.label != l10n.asFieldTotal) f,
+          ],
+          said: [
+            if (chat.stale.contains(d.id)) l10n.asErrStale,
+            for (final pr in otherProblems) problemLabel(l10n, pr),
+            if (others.isNotEmpty && !others.every((f) => f == 'date'))
+              l10n.asNeedsReview,
+            if (others.contains('date')) l10n.asConfirmDate,
+          ],
+          save: (
+            label: l10n.asSaveExpense,
+            onPressed:
+                typed == null ||
+                    others.isNotEmpty ||
+                    otherProblems.isNotEmpty ||
+                    (duplicate && !acknowledged)
+                ? null
+                : () async => onToast(
+                    await ctl.fillAndSave(
+                      t.taskId,
+                      d,
+                      ExpensePayload(
+                        merchant: p.merchant,
+                        totalMinor: typed.minor,
+                        currency: typed.currency,
+                        date: p.date,
+                        subtotalMinor: p.subtotalMinor,
+                        taxMinor: p.taxMinor,
+                        categoryId: p.categoryId,
+                        babyId: p.babyId,
+                        keepReceipt: p.keepReceipt,
+                        note: p.note,
+                      ),
+                      const ['totalMinor', 'currency'],
+                    ),
+                  ),
+          ),
+        ),
+      );
+    }
+    return card();
   }
 
   List<Widget> _batch(

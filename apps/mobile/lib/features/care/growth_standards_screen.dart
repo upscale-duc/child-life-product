@@ -13,6 +13,7 @@ import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../home/home_shell.dart';
+import 'care_format.dart' show growthMeasureTab;
 import 'care_models.dart';
 import 'care_repository.dart';
 import 'who_growth.dart';
@@ -21,17 +22,19 @@ import 'who_growth.dart';
 /// by week (0–13) or month (0–24), boys or girls, with the baby's own row marked from their latest
 /// measurement. Opened from the growth card on 20d.
 class GrowthStandardsScreen extends ConsumerStatefulWidget {
-  const GrowthStandardsScreen({this.length = false, super.key});
+  const GrowthStandardsScreen({this.measure = GrowthMeasure.weight, super.key});
 
-  /// Open on Chiều dài instead of Cân nặng (follows the 20d tab).
-  final bool length;
+  /// Open on Cân nặng, Chiều dài or Vòng đầu (follows the 20d tab).
+  final GrowthMeasure measure;
 
-  static Future<void> open(BuildContext context, {bool length = false}) =>
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => GrowthStandardsScreen(length: length),
-        ),
-      );
+  static Future<void> open(
+    BuildContext context, {
+    GrowthMeasure measure = GrowthMeasure.weight,
+  }) => Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (_) => GrowthStandardsScreen(measure: measure),
+    ),
+  );
 
   @override
   ConsumerState<GrowthStandardsScreen> createState() =>
@@ -39,9 +42,7 @@ class GrowthStandardsScreen extends ConsumerStatefulWidget {
 }
 
 class _GrowthStandardsScreenState extends ConsumerState<GrowthStandardsScreen> {
-  late GrowthMeasure _measure = widget.length
-      ? GrowthMeasure.length
-      : GrowthMeasure.weight;
+  late GrowthMeasure _measure = widget.measure;
   bool? _boy;
   bool? _weeks;
 
@@ -82,13 +83,7 @@ class _GrowthStandardsScreenState extends ConsumerState<GrowthStandardsScreen> {
                 a.measuredOn ?? a.occurredAt,
               ),
             ))
-            .where(
-              (r) =>
-                  (_measure == GrowthMeasure.weight
-                      ? r.weightKg
-                      : r.lengthCm) !=
-                  null,
-            )
+            .where((r) => r.measure(_measure) != null)
             .firstOrNull;
     int? youRow;
     String? youLabel;
@@ -96,9 +91,7 @@ class _GrowthStandardsScreenState extends ConsumerState<GrowthStandardsScreen> {
     if (latest != null && dob != null && babyBoy == boy) {
       final on = DateUtils.dateOnly(latest.measuredOn ?? latest.occurredAt);
       final days = on.difference(dob).inDays;
-      final value = _measure == GrowthMeasure.weight
-          ? latest.weightKg!
-          : latest.lengthCm!;
+      final value = latest.measure(_measure)!;
       youBand = WhoGrowth.band(_measure, boy: boy, ageDays: days, value: value);
       if (youBand != null && days <= ages.last.days + (weeks ? 6 : 30)) {
         youRow = WhoGrowth.rowFor(ages, days);
@@ -169,9 +162,7 @@ class _GrowthStandardsScreenState extends ConsumerState<GrowthStandardsScreen> {
                   ClSegmented<GrowthMeasure>(
                     options: GrowthMeasure.values,
                     selected: _measure,
-                    labelOf: (m) => m == GrowthMeasure.weight
-                        ? l10n.growthWeightTab
-                        : l10n.growthLengthTab,
+                    labelOf: (m) => growthMeasureTab(l10n, m),
                     onChanged: (m) => setState(() => _measure = m),
                   ),
                   const SizedBox(height: ClSpace.s3),

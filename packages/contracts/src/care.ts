@@ -23,6 +23,12 @@ export const careLimits = {
   durationMin: { min: 1, max: 240 },
   weightKg: { min: 0.3, max: 40 },
   lengthCm: { min: 20, max: 150 },
+  /**
+   * Head circumference ("Vòng đầu", owner 2026-10-16): optional, one decimal. 20 cm covers the
+   * smallest premature babies the weight range admits (0.3 kg); WHO's 97th percentile at 5 years
+   * is under 55 cm.
+   */
+  headCm: { min: 20, max: 60 },
   /** Clock skew allowed for "now" (G-021: no future times). */
   futureSkewMinutes: 5,
 } as const;
@@ -56,6 +62,11 @@ export const growthDataSchema = z.object({
   weightKg: z.number().min(careLimits.weightKg.min).max(careLimits.weightKg.max),
   lengthCm: z.number().min(careLimits.lengthCm.min).max(careLimits.lengthCm.max).nullable(),
   measuredOn: z.iso.date(),
+  /**
+   * Owner 2026-10-16: head circumference, optional. Absent on records written before it (and by
+   * older apps); the app writes the key only when a value is entered.
+   */
+  headCm: z.number().min(careLimits.headCm.min).max(careLimits.headCm.max).nullable().optional(),
 });
 /** Sleep is a span (`occurredAt` → `endedAt`), from the timer (25) or entered (26). */
 export const sleepDataSchema = z.object({});

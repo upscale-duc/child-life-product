@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_8dfec90cb5b3426503cbefcf0d682522",
+     "id": "tk_ab47681c63b50e6205cc01766302dd54",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_8dfec90cb5b3426503cbefcf0d682522_0",
-      "taskId": "tk_8dfec90cb5b3426503cbefcf0d682522",
+      "id": "dr_ab47681c63b50e6205cc01766302dd54_0",
+      "taskId": "tk_ab47681c63b50e6205cc01766302dd54",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -51,7 +51,8 @@
        "kind": "growth",
        "weightKg": 5.4,
        "lengthCm": null,
-       "measuredOn": "2026-10-15"
+       "measuredOn": "2026-10-15",
+       "headCm": null
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -59,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_8dfec90cb5b3426503cbefcf0d682522"
+       "task:tk_ab47681c63b50e6205cc01766302dd54"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +82,7 @@
         "text": "baby weighs 5.4 kg today"
        }
       ],
-      "taskId": "tk_8dfec90cb5b3426503cbefcf0d682522",
+      "taskId": "tk_ab47681c63b50e6205cc01766302dd54",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_8dfec90cb5b3426503cbefcf0d682522_0",
+        "draftId": "dr_ab47681c63b50e6205cc01766302dd54_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_8dfec90cb5b3426503cbefcf0d682522",
+      "taskId": "tk_ab47681c63b50e6205cc01766302dd54",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,7 +120,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_8dfec90cb5b3426503cbefcf0d682522",
+     "id": "tk_ab47681c63b50e6205cc01766302dd54",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -150,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_8dfec90cb5b3426503cbefcf0d682522_0",
-      "taskId": "tk_8dfec90cb5b3426503cbefcf0d682522",
+      "id": "dr_ab47681c63b50e6205cc01766302dd54_0",
+      "taskId": "tk_ab47681c63b50e6205cc01766302dd54",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -161,7 +162,8 @@
        "kind": "growth",
        "weightKg": 5.4,
        "lengthCm": null,
-       "measuredOn": "2026-10-15"
+       "measuredOn": "2026-10-15",
+       "headCm": null
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -169,10 +171,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_8dfec90cb5b3426503cbefcf0d682522"
+       "task:tk_ab47681c63b50e6205cc01766302dd54"
       ],
-      "recordId": "r_901f2fdda43725f42a3bc55e50d5730d",
-      "recordLink": "/care/records/b_00000000000000000001/r_901f2fdda43725f42a3bc55e50d5730d",
+      "recordId": "r_cca3645b15995ac9db33ea22a8358516",
+      "recordLink": "/care/records/b_00000000000000000001/r_cca3645b15995ac9db33ea22a8358516",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +198,7 @@
         "text": "baby weighs 5.4 kg today"
        }
       ],
-      "taskId": "tk_8dfec90cb5b3426503cbefcf0d682522",
+      "taskId": "tk_ab47681c63b50e6205cc01766302dd54",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +217,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_8dfec90cb5b3426503cbefcf0d682522_0",
+        "draftId": "dr_ab47681c63b50e6205cc01766302dd54_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_8dfec90cb5b3426503cbefcf0d682522",
+      "taskId": "tk_ab47681c63b50e6205cc01766302dd54",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +237,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_8dfec90cb5b3426503cbefcf0d682522_0",
+          "draftId": "dr_ab47681c63b50e6205cc01766302dd54_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_901f2fdda43725f42a3bc55e50d5730d",
+          "recordLink": "/care/records/b_00000000000000000001/r_cca3645b15995ac9db33ea22a8358516",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_8dfec90cb5b3426503cbefcf0d682522",
+      "taskId": "tk_ab47681c63b50e6205cc01766302dd54",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

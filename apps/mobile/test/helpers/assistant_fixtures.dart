@@ -1545,11 +1545,45 @@ Map<String, Object?> growthDraftJson({
   String state = 'draft',
   int revision = 1,
   String? recordId,
+  num? head,
 }) => _careLogDraft(
-  {'kind': 'growth', 'weightKg': kg, 'lengthCm': cm, 'measuredOn': on},
+  {
+    'kind': 'growth',
+    'weightKg': kg,
+    'lengthCm': cm,
+    'measuredOn': on,
+    // Owner 2026-10-16: the head circumference (absent on older drafts).
+    'headCm': ?head,
+  },
   taskId: taskId,
   index: index,
   state: state,
   revision: revision,
   recordId: recordId,
 );
+
+/// LUMI-16 (owner 2026-10-16): "mua hai hộp sữa" — a private expense draft without an amount.
+Map<String, Object?> purchaseDraftJson({int? total, int revision = 1}) => {
+  ...expenseDraftJson(
+    uncertain: const [],
+    warnings: const [],
+    date: '2026-10-15',
+    revision: revision,
+    state: total == null ? 'needs_review' : 'draft',
+  ),
+  'payload': {
+    'kind': 'expense',
+    'merchant': null,
+    'totalMinor': total,
+    'currency': 'VND',
+    'date': '2026-10-15',
+    'subtotalMinor': null,
+    'taxMinor': null,
+    'categoryId': 'c_milk',
+    'babyId': teddyId,
+    'keepReceipt': false,
+    'note': 'hai hộp sữa',
+  },
+  'missingFields': total == null ? const ['totalMinor'] : const <String>[],
+  'problems': total == null ? const ['MISSING_AMOUNT'] : const <String>[],
+};

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import 'care_models.dart';
+import 'who_growth.dart' show GrowthMeasure;
 
 /// Copy rules for care (S4): relative times (Q-029 → D-023), attribution (Q-030 → D-024),
 /// amounts with the locale's decimal comma (28: "4,3 kg").
@@ -137,3 +138,10 @@ String recordSummary(AppLocalizations l10n, String locale, CareRecord r) =>
       CareType.diaper => diaperChoice(l10n, r.diaper ?? DiaperKind.wet),
       _ => recordValue(l10n, locale, r),
     }}';
+
+/// The 20d / 20i tab of a growth measure: "Cân nặng" / "Chiều dài" / "Vòng đầu".
+String growthMeasureTab(AppLocalizations l10n, GrowthMeasure m) => switch (m) {
+  GrowthMeasure.weight => l10n.growthWeightTab,
+  GrowthMeasure.length => l10n.growthLengthTab,
+  GrowthMeasure.head => l10n.growthHeadTab,
+};

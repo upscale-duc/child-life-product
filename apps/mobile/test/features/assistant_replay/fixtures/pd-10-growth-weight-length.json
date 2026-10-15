@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_10df2a57ff81b3c690b94ff642dec482",
+     "id": "tk_4e9e62f94519855f55e408690c1bf6e8",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_10df2a57ff81b3c690b94ff642dec482_0",
-      "taskId": "tk_10df2a57ff81b3c690b94ff642dec482",
+      "id": "dr_4e9e62f94519855f55e408690c1bf6e8_0",
+      "taskId": "tk_4e9e62f94519855f55e408690c1bf6e8",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -51,7 +51,8 @@
        "kind": "growth",
        "weightKg": 6.2,
        "lengthCm": 62,
-       "measuredOn": "2026-10-15"
+       "measuredOn": "2026-10-15",
+       "headCm": null
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -59,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_10df2a57ff81b3c690b94ff642dec482"
+       "task:tk_4e9e62f94519855f55e408690c1bf6e8"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +82,7 @@
         "text": "bé nặng 6kg2, dài 62cm"
        }
       ],
-      "taskId": "tk_10df2a57ff81b3c690b94ff642dec482",
+      "taskId": "tk_4e9e62f94519855f55e408690c1bf6e8",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_10df2a57ff81b3c690b94ff642dec482_0",
+        "draftId": "dr_4e9e62f94519855f55e408690c1bf6e8_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_10df2a57ff81b3c690b94ff642dec482",
+      "taskId": "tk_4e9e62f94519855f55e408690c1bf6e8",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,7 +120,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_10df2a57ff81b3c690b94ff642dec482",
+     "id": "tk_4e9e62f94519855f55e408690c1bf6e8",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -150,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_10df2a57ff81b3c690b94ff642dec482_0",
-      "taskId": "tk_10df2a57ff81b3c690b94ff642dec482",
+      "id": "dr_4e9e62f94519855f55e408690c1bf6e8_0",
+      "taskId": "tk_4e9e62f94519855f55e408690c1bf6e8",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -161,7 +162,8 @@
        "kind": "growth",
        "weightKg": 6.2,
        "lengthCm": 62,
-       "measuredOn": "2026-10-15"
+       "measuredOn": "2026-10-15",
+       "headCm": null
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -169,10 +171,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_10df2a57ff81b3c690b94ff642dec482"
+       "task:tk_4e9e62f94519855f55e408690c1bf6e8"
       ],
-      "recordId": "r_ca0da90d4ce01bbd11f1955776dcecf1",
-      "recordLink": "/care/records/b_00000000000000000001/r_ca0da90d4ce01bbd11f1955776dcecf1",
+      "recordId": "r_aaa74e735cd247378f392574e0f7bce9",
+      "recordLink": "/care/records/b_00000000000000000001/r_aaa74e735cd247378f392574e0f7bce9",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +198,7 @@
         "text": "bé nặng 6kg2, dài 62cm"
        }
       ],
-      "taskId": "tk_10df2a57ff81b3c690b94ff642dec482",
+      "taskId": "tk_4e9e62f94519855f55e408690c1bf6e8",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +217,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_10df2a57ff81b3c690b94ff642dec482_0",
+        "draftId": "dr_4e9e62f94519855f55e408690c1bf6e8_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_10df2a57ff81b3c690b94ff642dec482",
+      "taskId": "tk_4e9e62f94519855f55e408690c1bf6e8",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +237,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_10df2a57ff81b3c690b94ff642dec482_0",
+          "draftId": "dr_4e9e62f94519855f55e408690c1bf6e8_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_ca0da90d4ce01bbd11f1955776dcecf1",
+          "recordLink": "/care/records/b_00000000000000000001/r_aaa74e735cd247378f392574e0f7bce9",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_10df2a57ff81b3c690b94ff642dec482",
+      "taskId": "tk_4e9e62f94519855f55e408690c1bf6e8",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

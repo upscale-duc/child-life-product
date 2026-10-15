@@ -238,8 +238,9 @@ export const assistantNoticeCodes = [
   'SAME_AS_PENDING',
   // ---- Lumi fixes 2026-10-16 (LUMI-05, LUMI-13) ----
   /**
-   * Part of the message was not drafted (named in the words: "vòng đầu", a meal, an item this app
-   * build cannot show yet); `link` opens the module where the person can add it directly.
+   * Part of the message was not drafted (named in the words); `link` opens the module where the
+   * person can add it directly. Since 2026-10-16 head circumference is saved with the growth
+   * record, so the server no longer sends it for "vòng đầu"; kept for messages already stored.
    */
   'PART_NOT_SAVED',
   /**
@@ -585,10 +586,15 @@ export const growthDraftSchema = z.object({
   kind: z.literal('growth'),
   /** Kilograms, one decimal as the form keeps it (0.3…40); required by the module. */
   weightKg: z.number().positive().nullable(),
-  /** Centimetres, one decimal (20…150); optional. The module has no head circumference. */
+  /** Centimetres, one decimal (20…150); optional. */
   lengthCm: z.number().positive().nullable(),
   /** The form's "Ngày đo" (baby-local date). */
   measuredOn: z.iso.date().nullable(),
+  /**
+   * Owner 2026-10-16: head circumference ("vòng đầu"), centimetres, one decimal (20…60); optional.
+   * Absent on drafts prepared before it (read as null).
+   */
+  headCm: z.number().positive().nullable().optional(),
 });
 
 export const draftPayloadSchema = z.discriminatedUnion('kind', [
@@ -737,7 +743,8 @@ export function draftProblems(p: DraftPayload, anchor: Date): DraftProblem[] {
       if (p.weightKg === null) out.push('MISSING_AMOUNT');
       if (
         (p.weightKg !== null && !growthWeightOk(p.weightKg)) ||
-        (p.lengthCm !== null && !growthLengthOk(p.lengthCm))
+        (p.lengthCm !== null && !growthLengthOk(p.lengthCm)) ||
+        (p.headCm != null && !growthHeadOk(p.headCm))
       ) {
         out.push('INVALID_AMOUNT');
       }
@@ -757,6 +764,8 @@ export const growthWeightOk = (kg: number) =>
   kg >= careLimits.weightKg.min && kg <= careLimits.weightKg.max;
 export const growthLengthOk = (cm: number) =>
   cm >= careLimits.lengthCm.min && cm <= careLimits.lengthCm.max;
+export const growthHeadOk = (cm: number) =>
+  cm >= careLimits.headCm.min && cm <= careLimits.headCm.max;
 
 /** How long a timer may already have run when it is started from chat (`timerRecordAt` caps). */
 export const timerMaxRunMs = { sleep: 24 * 3_600_000, breast: 240 * 60_000 } as const;
@@ -1005,6 +1014,7 @@ export function draftReviewFields(
     if (p.kind === 'growth' && pr === 'INVALID_AMOUNT') {
       if (p.weightKg !== null && !growthWeightOk(p.weightKg)) uncertain.add('weightKg');
       if (p.lengthCm !== null && !growthLengthOk(p.lengthCm)) uncertain.add('lengthCm');
+      if (p.headCm != null && !growthHeadOk(p.headCm)) uncertain.add('headCm');
       continue;
     }
     // LUMI-11: a reminder for a time already gone names the time when one is set.

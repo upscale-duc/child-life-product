@@ -233,6 +233,7 @@ String draftLine(
         l10n.weightKg(decimal(locale, p.weightKg!.toDouble())),
       if (p.lengthCm != null)
         l10n.lengthCm(decimal(locale, p.lengthCm!.toDouble())),
+      if (p.headCm != null) l10n.headCm(decimal(locale, p.headCm!.toDouble())),
       p.measuredOn == null
           ? l10n.asNoDate
           : l10n.asMeasuredOnLine(date(p.measuredOn)),

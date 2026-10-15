@@ -52,8 +52,9 @@ String loggedBy(AppLocalizations l10n, CareRecord r, String myUid) =>
       ),
     );
 
-/// 28 Tăng trưởng (47:3210): date, weight (required), length (optional), the change since
-/// the last measurement — "không bách phân vị, không đánh giá" — and previous measurements.
+/// 28 Tăng trưởng (47:3210): date, weight (required), length (optional), head circumference
+/// (optional, owner 2026-10-16), the change since the last measurement — "không bách phân vị,
+/// không đánh giá" — and previous measurements.
 class GrowthScreen extends ConsumerStatefulWidget {
   const GrowthScreen({this.edit, super.key});
   final CareRecord? edit;
@@ -69,6 +70,7 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
   );
   final _weight = TextEditingController();
   final _length = TextEditingController();
+  final _head = TextEditingController();
   String? _error;
 
   @override
@@ -79,14 +81,17 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
     final edit = widget.edit;
     if (edit?.weightKg != null) _weight.text = decimal(locale, edit!.weightKg!);
     if (edit?.lengthCm != null) _length.text = decimal(locale, edit!.lengthCm!);
+    if (edit?.headCm != null) _head.text = decimal(locale, edit!.headCm!);
     _weight.addListener(() => setState(() => _error = null));
     _length.addListener(() => setState(() => _error = null));
+    _head.addListener(() => setState(() => _error = null));
   }
 
   @override
   void dispose() {
     _weight.dispose();
     _length.dispose();
+    _head.dispose();
     super.dispose();
   }
 
@@ -98,6 +103,7 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
     final length = _length.text.trim().isEmpty
         ? null
         : parseDecimal(_length.text);
+    final head = _head.text.trim().isEmpty ? null : parseDecimal(_head.text);
     if (weight == null ||
         weight < CareLimits.weightKg.min ||
         weight > CareLimits.weightKg.max) {
@@ -109,9 +115,16 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
             length > CareLimits.lengthCm.max)) {
       return setState(() => _error = l10n.growthLengthRange);
     }
+    if (_head.text.trim().isNotEmpty &&
+        (head == null ||
+            head < CareLimits.headCm.min ||
+            head > CareLimits.headCm.max)) {
+      return setState(() => _error = l10n.growthHeadRange);
+    }
     // One decimal, as the field shows ("4,3 kg").
     final w = (weight * 10).round() / 10;
     final l = length == null ? null : (length * 10).round() / 10;
+    final h = head == null ? null : (head * 10).round() / 10;
     final today = DateUtils.dateOnly(ref.read(timerClockProvider)());
     final at = _date == today
         ? DateTime.now()
@@ -123,6 +136,8 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
             weightKg: w,
             lengthCm: l,
             clearLength: l == null,
+            headCm: h,
+            clearHead: h == null,
             measuredOn: _date,
           )
         : CareRecord.create(
@@ -133,6 +148,7 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
             me: me,
             weightKg: w,
             lengthCm: l,
+            headCm: h,
             measuredOn: _date,
           );
     commitRecord(context, ref, record, isEdit: edit != null);
@@ -213,6 +229,7 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
         .firstOrNull;
     final weight = parseDecimal(_weight.text);
     final length = parseDecimal(_length.text);
+    final head = parseDecimal(_head.text);
     String? delta;
     if (before != null && weight != null) {
       String signed(double v, String unit) =>
@@ -221,6 +238,8 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
         signed(weight - (before.weightKg ?? 0), 'kg'),
         if (length != null && before.lengthCm != null)
           signed(length - before.lengthCm!, 'cm'),
+        if (head != null && before.headCm != null)
+          l10n.headCm(signed(head - before.headCm!, '').trim()),
       ];
       delta = l10n.growthDeltaSince(
         parts.join(' · '),
@@ -302,6 +321,30 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: ClSpace.s2),
+              // Owner 2026-10-16: head circumference, optional (same width as the fields above).
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        FieldLabel(l10n.growthHeadOptional),
+                        AmountInput(
+                          key: const ValueKey('growth.head'),
+                          controller: _head,
+                          unit: 'cm',
+                          decimal: true,
+                          semanticLabel: l10n.growthHeadOptional,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: ClSpace.s3),
+                  const Expanded(child: SizedBox.shrink()),
+                ],
+              ),
               if (_error != null) ...[
                 const SizedBox(height: ClSpace.s2),
                 Semantics(
@@ -345,6 +388,8 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
                     l10n.weightKg(decimal(locale, r.weightKg ?? 0)),
                     if (r.lengthCm != null)
                       l10n.lengthCm(decimal(locale, r.lengthCm!)),
+                    if (r.headCm != null)
+                      l10n.headCm(decimal(locale, r.headCm!)),
                   ].join(' · '),
                   subtitle: [
                     shortDate(context, r.measuredOn ?? r.occurredAt),
@@ -617,6 +662,11 @@ class RecordDetailScreen extends ConsumerWidget {
                   row(
                     l10n.detailLength,
                     text(l10n.lengthCm(decimal(locale, record.lengthCm!))),
+                  ),
+                if (record.type == CareType.growth && record.headCm != null)
+                  row(
+                    l10n.detailHead,
+                    text(l10n.lengthCm(decimal(locale, record.headCm!))),
                   ),
                 row(
                   l10n.detailBy,

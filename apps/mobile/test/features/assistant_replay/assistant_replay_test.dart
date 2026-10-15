@@ -288,6 +288,21 @@ Future<List<_Violation>> _check(
       if (r.actions.any((a) => _enabled(a) && !_isDiscard(a.label))) {
         fixControl = true;
       }
+      // LUMI-16 (owner 2026-10-16): a typed purchase without an amount asks for it on the card
+      // ("Hết bao nhiêu tiền?" + the amount field), never only "Sửa".
+      if (payload['totalMinor'] == null && task['modality'] != 'image') {
+        if (r.ask == null) {
+          out.add(
+            _Violation(
+              'NO_AMOUNT_ASK',
+              'P1',
+              'a typed expense without an amount has no "Hết bao nhiêu tiền?" on its card',
+            ),
+          );
+        } else {
+          fixControl = true;
+        }
+      }
       // A suspected duplicate saves after "Vẫn lưu" (an explicit acknowledgement): forward.
       saveable =
           _enabled(r.primary) ||
@@ -402,6 +417,8 @@ void main() {
       'asFieldWeight': l10n.asFieldWeight,
       'asFieldLength': l10n.asFieldLength,
       'asFieldMeasuredOn': l10n.asFieldMeasuredOn,
+      // Owner 2026-10-16: the head circumference.
+      'asFieldHead': l10n.asFieldHead,
     };
     for (final k in (_controls['kinds'] as Map<String, dynamic>).values) {
       for (final f in ((k as Map)['fields'] as Map).values) {

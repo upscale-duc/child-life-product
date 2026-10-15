@@ -619,6 +619,26 @@ List<AsFixRow> fixRowsFor({
             ],
           ),
         );
+      // Owner 2026-10-16: the head circumference (optional, 20…60 cm).
+      case (final GrowthPayload x, 'headCm'):
+        final cm = x.headCm;
+        final bad = g.problem == DraftProblem.invalidAmount;
+        rows.add(
+          row(
+            cm == null || g.missing
+                ? l10n.asGapHead
+                : bad
+                ? l10n.growthHeadRange
+                : l10n.asGapHeadUnsure(decimal(locale, cm.toDouble())),
+            [
+              if (cm != null && !g.missing && !bad) confirm(f),
+              opener(l10n.asFixEnterHead, act.edit),
+              // Optional: keep the weight and length without it.
+              if (cm != null)
+                chip(l10n.asFixDropHead, () => act.patch(x.withoutHead(), [f])),
+            ],
+          ),
+        );
       case (final GrowthPayload x, 'measuredOn'):
         final wall = inBabyZone(zone, now);
         final today = DateTime(wall.year, wall.month, wall.day);

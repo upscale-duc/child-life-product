@@ -33,6 +33,17 @@ describe('care record shapes (S4)', () => {
     ).toBe(true);
   });
 
+  it('head circumference is optional, 20…60 cm (owner 2026-10-16; old records have no key)', () => {
+    const base = { weightKg: 5.2, lengthCm: 58, measuredOn: '2026-10-08' };
+    expect(growthDataSchema.strict().safeParse(base).success).toBe(true);
+    expect(growthDataSchema.strict().safeParse({ ...base, headCm: 39 }).success).toBe(true);
+    expect(growthDataSchema.strict().safeParse({ ...base, headCm: 38.5 }).success).toBe(true);
+    expect(growthDataSchema.strict().safeParse({ ...base, headCm: null }).success).toBe(true);
+    expect(growthDataSchema.safeParse({ ...base, headCm: 19.9 }).success).toBe(false);
+    expect(growthDataSchema.safeParse({ ...base, headCm: 61 }).success).toBe(false);
+    expect(growthDataSchema.safeParse({ ...base, headCm: '39' }).success).toBe(false);
+  });
+
   it('record ids are client uuids', () => {
     expect(recordIdSchema.safeParse(`r_${'a'.repeat(32)}`).success).toBe(true);
     expect(recordIdSchema.safeParse('r_123').success).toBe(false);

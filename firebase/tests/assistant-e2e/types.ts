@@ -112,6 +112,13 @@ export interface Expect {
   error?: string;
   /** Notice codes that must appear. */
   codes?: string[];
+  /** Notice codes that must NOT appear (2026-10-16: "vòng đầu" is saved, never PART_NOT_SAVED). */
+  notCodes?: string[];
+  /**
+   * Values in the saved care records' `data` (2026-10-16): "growth.headCm": 39 = some growth
+   * record this case saved has `data.headCm` 39; null = the key is absent or null.
+   */
+  recordData?: Record<string, unknown>;
   /** Fake mode: model calls for the whole case. */
   calls?: number;
   /** Invariants this case is allowed to break by design (rare; documented). */

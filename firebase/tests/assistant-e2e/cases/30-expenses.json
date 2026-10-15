@@ -798,6 +798,544 @@
       },
       "group": "expense",
       "title": "Live reply: the model doubts the category the words name (\"wipes\") and the day it was not given → nothing to review"
+    },
+    {
+      "id": "ex-30-buy-two-boxes-no-amount",
+      "group": "expense",
+      "title": "LUMI-16 (owner 2026-10-16): a purchase without an amount is a private expense draft with the amount missing (asked on the card)",
+      "turns": [
+        {
+          "say": "mua hai hộp sữa",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "hai hộp sữa",
+                  "categoryId": "c_milk",
+                  "amount": null
+                },
+                "ev": {
+                  "title": "hai hộp sữa"
+                },
+                "miss": ["amount"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "review": ["totalMinor"],
+        "values": {
+          "0.totalMinor": null,
+          "0.currency": "VND",
+          "0.categoryId": "c_milk",
+          "0.note": "hai hộp sữa",
+          "0.date": "D0"
+        },
+        "visibility": "private",
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-31-bought-diapers-at-store",
+      "group": "expense",
+      "turns": [
+        {
+          "say": "vừa mua bỉm ở Con Cưng",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "bỉm",
+                  "merchant": "Con Cưng",
+                  "categoryId": "c_diaper",
+                  "amount": null
+                },
+                "ev": {
+                  "title": "bỉm",
+                  "merchant": "Con Cưng"
+                },
+                "miss": ["amount"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "review": ["totalMinor"],
+        "values": {
+          "0.totalMinor": null,
+          "0.merchant": "Con Cưng",
+          "0.categoryId": "c_diaper",
+          "0.currency": "VND"
+        },
+        "visibility": "private",
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-32-order-diapers-online",
+      "group": "expense",
+      "title": "\"đặt tã online\" has no money word: private from the start all the same (D-075 #2)",
+      "turns": [
+        {
+          "say": "đặt tã online",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "tã",
+                  "categoryId": "c_diaper",
+                  "amount": null
+                },
+                "ev": {
+                  "title": "tã"
+                },
+                "miss": ["amount"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "review": ["totalMinor"],
+        "values": {
+          "0.totalMinor": null,
+          "0.categoryId": "c_diaper"
+        },
+        "visibility": "private",
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-33-purchase-model-missed",
+      "group": "expense",
+      "title": "The model returns only the feed: the purchase made is still drafted from the words (no amount, asked on the card)",
+      "turns": [
+        {
+          "say": "bé bú 90ml lúc 13h, vừa mua bỉm ở Con Cưng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "expense"],
+        "review": ["totalMinor"],
+        "values": {
+          "1.merchant": "Con Cưng",
+          "1.note": "bỉm",
+          "1.totalMinor": null,
+          "1.categoryId": "c_diaper"
+        },
+        "visibility": "private",
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-34-buy-no-diacritics",
+      "group": "expense",
+      "turns": [
+        {
+          "say": "mua 2 hop sua",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "2 hop sua",
+                  "categoryId": "c_milk",
+                  "amount": null
+                },
+                "ev": {
+                  "title": "2 hop sua"
+                },
+                "miss": ["amount"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "review": ["totalMinor"],
+        "values": {
+          "0.totalMinor": null,
+          "0.categoryId": "c_milk"
+        },
+        "visibility": "private",
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-35-bought-english",
+      "group": "expense",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "bought diapers at Target",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "diapers",
+                  "merchant": "Target",
+                  "categoryId": "c_diaper",
+                  "amount": null
+                },
+                "ev": {
+                  "title": "diapers",
+                  "merchant": "Target"
+                },
+                "miss": ["amount"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "review": ["totalMinor"],
+        "values": {
+          "0.totalMinor": null,
+          "0.merchant": "Target"
+        },
+        "visibility": "private",
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-40-plan-tomorrow-not-expense",
+      "group": "expense",
+      "title": "LUMI-16 negative: \"mai đi mua sữa\" is a plan — the model's expense becomes a reminder in the person's words, never an expense",
+      "turns": [
+        {
+          "say": "mai đi mua sữa",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "sữa",
+                  "categoryId": "c_milk",
+                  "amount": null
+                },
+                "ev": {
+                  "title": "sữa"
+                },
+                "miss": ["amount"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "ready": true,
+        "values": {
+          "0.title": "mua sữa",
+          "0.date": "D1",
+          "0.time": null
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-41-remember-to-buy-reminder",
+      "group": "expense",
+      "title": "\"nhớ mua bỉm\" read as a reminder by the model stays a reminder (the day is asked on the card)",
+      "turns": [
+        {
+          "say": "nhớ mua bỉm",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "mua bỉm"
+                },
+                "ev": {
+                  "title": "mua bỉm"
+                },
+                "miss": ["date"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "review": ["date"],
+        "values": {
+          "0.title": "mua bỉm"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-42-need-to-buy-nothing",
+      "group": "expense",
+      "title": "\"cần mua thêm tã\" is a to-do: a reminder (the live model, 2026-10-16) or nothing — never an expense",
+      "turns": [
+        {
+          "say": "cần mua thêm tã",
+          "model": {
+            "oos": true
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["help", "drafts"],
+        "kinds": [[], ["reminder"]]
+      }
+    },
+    {
+      "id": "ex-43-question-which-milk",
+      "group": "expense",
+      "title": "LUMI-16 negative: \"mua sữa nào tốt?\" is a question — the model's expense is dropped; help, 0 credits",
+      "turns": [
+        {
+          "say": "mua sữa nào tốt?",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "sữa",
+                  "categoryId": "c_milk",
+                  "amount": null
+                },
+                "ev": {
+                  "title": "sữa"
+                },
+                "miss": ["amount"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "help",
+        "codes": ["HELP"],
+        "credits": 0
+      }
+    },
+    {
+      "id": "ex-44-question-which-diapers",
+      "group": "expense",
+      "turns": [
+        {
+          "say": "nên mua bỉm loại nào cho bé",
+          "model": {
+            "oos": true
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "help",
+        "codes": ["HELP"],
+        "credits": 0
+      }
+    },
+    {
+      "id": "ex-45-plan-english",
+      "group": "expense",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "need to buy diapers tomorrow",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "diapers",
+                  "categoryId": "c_diaper",
+                  "amount": null
+                },
+                "ev": {
+                  "title": "diapers"
+                },
+                "miss": ["amount"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "ready": true,
+        "values": {
+          "0.title": "buy diapers",
+          "0.date": "D1"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-46-bought-and-plan",
+      "group": "expense",
+      "title": "One purchase made and one planned: an expense without an amount and a reminder",
+      "turns": [
+        {
+          "say": "vừa mua bỉm ở Con Cưng, mai nhớ mua sữa",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "bỉm",
+                  "merchant": "Con Cưng",
+                  "categoryId": "c_diaper",
+                  "amount": null
+                },
+                "ev": {
+                  "title": "bỉm",
+                  "merchant": "Con Cưng"
+                },
+                "miss": ["amount"]
+              },
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "mua sữa",
+                  "date": "2026-10-16"
+                },
+                "ev": {
+                  "title": "mua sữa",
+                  "date": "mai"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense", "reminder"],
+        "review": ["totalMinor"],
+        "values": {
+          "0.merchant": "Con Cưng",
+          "0.totalMinor": null,
+          "1.title": "mua sữa",
+          "1.date": "D1"
+        },
+        "visibility": "private",
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-36-buy-amount-entered-saves",
+      "group": "expense",
+      "title": "LUMI-16: the amount typed on the card (with its currency) and the expense saves in the same tap",
+      "turns": [
+        {
+          "say": "mua hai hộp sữa",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "hai hộp sữa",
+                  "categoryId": "c_milk",
+                  "amount": null
+                },
+                "ev": {
+                  "title": "hai hộp sữa"
+                },
+                "miss": ["amount"]
+              }
+            ]
+          }
+        },
+        {
+          "patch": {
+            "set": {
+              "totalMinor": 700000,
+              "currency": "VND"
+            },
+            "confirm": ["totalMinor", "currency"]
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "kinds": ["expense"],
+        "values": {
+          "0.totalMinor": 700000,
+          "0.currency": "VND"
+        },
+        "visibility": "private",
+        "saved": 1,
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-37-order-online-read-as-reminder-live",
+      "group": "expense",
+      "title": "LUMI-16 live 2026-10-16: \"đặt tã online\" returned as a reminder with no day → the purchase made, an expense without an amount",
+      "turns": [
+        {
+          "say": "đặt tã online",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "đặt tã online"
+                },
+                "ev": {
+                  "title": "đặt tã online"
+                },
+                "miss": ["date"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "review": ["totalMinor"],
+        "values": {
+          "0.totalMinor": null,
+          "0.categoryId": "c_diaper",
+          "0.note": "tã online"
+        },
+        "visibility": "private",
+        "credits": 1
+      }
     }
   ]
 }

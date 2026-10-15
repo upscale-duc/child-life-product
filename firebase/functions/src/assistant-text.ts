@@ -15,6 +15,7 @@ import {
   growthIn,
   looksLikeSpending,
   pumpCueIn,
+  purchasesIn,
   type ClockToken,
   draftPayloadSchema,
   draftProblems,
@@ -138,8 +139,7 @@ export type TextNoticeCode =
   | 'CORRECTION_APPLIED'
   | 'TIMER_RUNNING'
   // ---- Lumi fixes 2026-10-16 ----
-  | 'APP_UPDATE_NEEDED'
-  | 'PART_NOT_SAVED';
+  | 'APP_UPDATE_NEEDED';
 
 export interface TextNotice {
   kind: DraftKind;
@@ -147,8 +147,6 @@ export interface TextNotice {
   link?: string;
   /** TIMER_RUNNING: which timer and since when; APP_UPDATE_NEEDED for a timer: which one. */
   timer?: { type: 'sleep' | 'breast'; since: Date };
-  /** PART_NOT_SAVED: what was said but cannot be stored. */
-  what?: 'head_circumference';
 }
 
 export type TextPlan =
@@ -193,6 +191,7 @@ const draftField: Record<string, Partial<Record<DraftKind, string>>> = {
   diaper: { diaper: 'diaper' },
   weightKg: { growth: 'weightKg' },
   lengthCm: { growth: 'lengthCm' },
+  headCm: { growth: 'headCm' },
   observation: { observation: 'observation' },
   when: { observation: 'when' },
   note: { observation: 'note' },
@@ -979,7 +978,10 @@ export async function planTextIntents(
         } else {
           currency = ctx.currency;
         }
-        const d = relativeDateIn(ctx.text, today, 'past');
+        // A later day in the words ("…, mai nhớ mua sữa") belongs to a plan, never to money
+        // already spent (LUMI-16, 2026-10-16): the expense keeps today.
+        const said = relativeDateIn(ctx.text, today, 'past');
+        const d = said && said.date <= today ? said : null;
         let date: string | null = d?.date ?? null;
         if (d && !d.certain) uncertain.add('date');
         if (!date && f.date && /^\d{4}-\d{2}-\d{2}$/.test(f.date) && f.date !== today) {
@@ -1171,15 +1173,13 @@ export async function planTextIntents(
           return (x(base, key) as number | null) ?? null;
         };
         const weightKg = pick(g?.weightKg, f.weightKg, 'weightKg');
-        const lengthCm = pick(g?.lengthCm, f.lengthCm, 'lengthCm');
-        if ((g?.headCm ?? f.headCm ?? null) !== null) {
-          notices.push({
-            kind: 'growth',
-            code: 'PART_NOT_SAVED',
-            what: 'head_circumference',
-            link: '/care/growth',
-          });
-        }
+        // The head's number read as the length by the model ("vòng đầu 39cm") is not a length.
+        const lengthCm =
+          g && g.lengthCm === null && g.headCm !== null && f.lengthCm === g.headCm
+            ? null
+            : pick(g?.lengthCm, f.lengthCm, 'lengthCm');
+        // Owner 2026-10-16: head circumference is saved with the record (no PART_NOT_SAVED).
+        const headCm = pick(g?.headCm, f.headCm, 'headCm');
         // The measuring day: as said ("hôm qua đi khám"), else the model's day, else today.
         const d = relativeDateIn(ctx.text, today, 'past');
         const measuredOn =
@@ -1188,7 +1188,7 @@ export async function planTextIntents(
             ? addDaysIso(today, f.dayOffset)
             : ((x(base, 'measuredOn') as string | null) ?? today));
         if (d && !d.certain) uncertain.add('measuredOn');
-        payload = { kind: 'growth', weightKg, lengthCm, measuredOn };
+        payload = { kind: 'growth', weightKg, lengthCm, measuredOn, headCm };
         break;
       }
       default:
@@ -1453,7 +1453,11 @@ export function careBackstops(text: string, raw: ModelIntent[]): ModelIntent[] {
   }
   // ---- Growth ----
   const g = growthCue(text);
-  if (g && (g.weightKg !== null || g.lengthCm !== null) && !out.some((i) => i.kind === 'growth')) {
+  if (
+    g &&
+    (g.weightKg !== null || g.lengthCm !== null || g.headCm !== null) &&
+    !out.some((i) => i.kind === 'growth')
+  ) {
     // A clinic visit read as an expense with no money said is the measurement, not a cost.
     const noMoney = moneyAmountsIn(text).length === 0;
     out = out.filter(
@@ -1476,6 +1480,83 @@ export function careBackstops(text: string, raw: ModelIntent[]): ModelIntent[] {
     );
   }
   return out;
+}
+
+/**
+ * LUMI-16 (owner 2026-10-16): purchases checked against the words (contracts `purchasesIn`),
+ * before anything is planned:
+ * - only plans / to-dos and questions ("mai đi mua sữa", "nhớ mua bỉm", "mua sữa nào tốt?") →
+ *   no expense; a plan the model read as an expense becomes a reminder in the person's words
+ *   (unless the model already returned one);
+ * - a purchase made ("mua hai hộp sữa", "vừa mua bỉm ở Con Cưng", "đặt tã online") the model
+ *   missed → an expense with no amount (the person adds it on the card);
+ * `shopping`: only a question about buying is left, so the reply says what Lumi can do with it.
+ */
+export function checkPurchases(
+  text: string,
+  raw: ModelIntent[],
+): { intents: ModelIntent[]; shopping: boolean } {
+  const buys = purchasesIn(text);
+  if (buys.length === 0) return { intents: raw, shopping: false };
+  let out = [...raw];
+  const item = (
+    kind: DraftKind,
+    fields: Partial<ModelIntent['fields']>,
+    evidence: ModelIntent['evidence'],
+  ): ModelIntent => ({
+    kind,
+    fields: { ...blankFields, ...fields },
+    evidence,
+    uncertainFields: [],
+    missingFields: [],
+    correctsPrevious: false,
+  });
+  // Every purchase in the words was made ("đặt tã online"): a reminder the model made of it, with
+  // no day or time said, is that purchase misread (live 2026-10-16), never a to-do.
+  if (buys.every((b) => b.mood === 'done')) {
+    const f = (t: string) => foldVi(t).replace(/\s+/g, ' ').trim();
+    out = out.map((i) => {
+      if (i.kind !== 'reminder' || i.fields.date || i.fields.time) return i;
+      const title = f(i.fields.title ?? '');
+      const b = buys.find(
+        (x) =>
+          x.what !== null &&
+          title !== '' &&
+          (f(x.phrase).includes(title) || title.includes(f(x.what!))),
+      );
+      return b
+        ? item('expense', { title: b.what, merchant: b.merchant }, [
+            { field: 'title', text: b.what! },
+            ...(b.merchant ? [{ field: 'merchant' as const, text: b.merchant }] : []),
+          ])
+        : i;
+    });
+  }
+  const hadExpense = out.some((i) => i.kind === 'expense');
+  const hasReminder = out.some((i) => i.kind === 'reminder');
+  if (buys.every((b) => b.mood !== 'done')) {
+    out = out.filter((i) => i.kind !== 'expense');
+    if (hadExpense && !hasReminder) {
+      for (const b of buys) {
+        if (b.mood !== 'plan' || b.what === null) continue;
+        out.push(item('reminder', { title: b.title }, [{ field: 'title', text: b.title }]));
+      }
+    }
+  } else if (!hadExpense && !hasReminder) {
+    const b = buys.find((x) => x.mood === 'done' && x.what !== null);
+    if (b) {
+      out.push(
+        item('expense', { title: b.what, merchant: b.merchant }, [
+          { field: 'title', text: b.what! },
+          ...(b.merchant ? [{ field: 'merchant' as const, text: b.merchant }] : []),
+        ]),
+      );
+    }
+  }
+  const shopping =
+    buys.some((b) => b.mood === 'question') &&
+    !out.some((i) => i.kind === 'expense' || i.kind === 'reminder');
+  return { intents: out, shopping };
 }
 
 /** A value of the previous draft's payload (corrections keep what was not corrected). */

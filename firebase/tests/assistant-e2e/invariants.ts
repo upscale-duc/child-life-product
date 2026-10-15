@@ -782,6 +782,13 @@ export function checkExpect(
     for (const code of e.codes)
       if (!codes.has(code)) out.push(v('EXPECT_CODE', 'P2', at, `notice ${code} missing`));
   }
+  if (e.notCodes && last) {
+    const codes = new Set(
+      run.steps.filter((s) => s.taskId === run.lastTaskId).flatMap((s) => noticeCodes(s.snapshot)),
+    );
+    for (const code of e.notCodes)
+      if (codes.has(code)) out.push(v('EXPECT_CODE', 'P1', at, `notice ${code} should not show`));
+  }
   if (mode === 'fake' && e.calls !== undefined && run.modelCalls !== e.calls) {
     out.push(v('EXPECT_CALLS', 'P2', at, `${run.modelCalls} model call(s), expected ${e.calls}`));
   }

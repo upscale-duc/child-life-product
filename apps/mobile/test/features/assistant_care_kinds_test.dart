@@ -245,7 +245,34 @@ void main() {
         'weightKg': 5.2,
         'lengthCm': 62,
         'measuredOn': '2026-10-15',
+        'headCm': null,
       });
+      // Owner 2026-10-16: the head circumference rides along (absent = null).
+      final withHead =
+          DraftPayload.fromJson({
+                'kind': 'growth',
+                'weightKg': 5.2,
+                'measuredOn': '2026-10-15',
+                'headCm': 39,
+              })
+              as GrowthPayload;
+      expect(withHead.headCm, 39);
+      expect(withHead.withoutLength().headCm, 39);
+      expect(withHead.withoutHead().headCm, isNull);
+      expect(
+        draftProblems(
+          withHead.copyWith(headCm: 75),
+          DateTime.utc(2026, 10, 15, 8),
+        ),
+        [DraftProblem.invalidAmount],
+      );
+      expect(
+        problemFields(
+          withHead.copyWith(headCm: 75),
+          DraftProblem.invalidAmount,
+        ),
+        ['headCm'],
+      );
       final g2 =
           DraftPayload.fromJson({
                 'kind': 'growth',
@@ -757,6 +784,62 @@ void main() {
       );
     });
 
+    testWidgets(
+      'LUMI-16: a purchase without an amount asks "Hết bao nhiêu tiền?" and saves once typed',
+      (tester) async {
+        Map<String, Object?> draft({int? total, int revision = 1}) => {
+          ...expenseDraftJson(
+            uncertain: const [],
+            warnings: const [],
+            date: '2026-10-15',
+            revision: revision,
+            state: total == null ? 'needs_review' : 'draft',
+          ),
+          'payload': {
+            'kind': 'expense',
+            'merchant': null,
+            'totalMinor': total,
+            'currency': 'VND',
+            'date': '2026-10-15',
+            'subtotalMinor': null,
+            'taxMinor': null,
+            'categoryId': 'c_milk',
+            'babyId': teddyId,
+            'keepReceipt': false,
+            'note': 'hai hộp sữa',
+          },
+          'missingFields': total == null ? const ['totalMinor'] : const [],
+          'problems': total == null ? const ['MISSING_AMOUNT'] : const [],
+        };
+        final repo = FakeAssistantRepository(
+          tasks: {taskA: one(draft(), 'mua hai hộp sữa')},
+          patchAnswer: (_) => draft(total: 350000, revision: 2),
+        );
+        await pump(tester, repo);
+        expect(find.text(_vi.asAskAmount), findsOneWidget);
+        AsReceiptCard card() =>
+            tester.widget<AsReceiptCard>(find.byType(AsReceiptCard));
+        expect(card().primary?.onPressed, isNull);
+        // "35" → the thousands as people say them; a chip fills the field only.
+        await tester.enterText(find.byKey(const Key('spAmount')), '35');
+        await tester.pumpAndSettle();
+        expect(find.text('35.000'), findsOneWidget);
+        expect(find.text('3.500.000'), findsOneWidget);
+        await tester.tap(find.text('350.000'));
+        await tester.pumpAndSettle();
+        expect(repo.named('patchDraft'), isEmpty);
+        expect(card().primary?.onPressed, isNotNull);
+        await tester.tap(find.text(_vi.asSaveExpense));
+        await tester.pumpAndSettle();
+        final patch = repo.named('patchDraft').single.args;
+        final payload = patch['payload']! as Map<String, Object?>;
+        expect((payload['totalMinor'], payload['currency']), (350000, 'VND'));
+        expect(patch['confirmedFields'], ['totalMinor', 'currency']);
+        // Nothing else to check: saved in the same tap.
+        expect(repo.named('confirmDrafts'), hasLength(1));
+      },
+    );
+
     testWidgets('growth editor: decimals either way, the care form ranges', (
       tester,
     ) async {
@@ -782,6 +865,18 @@ void main() {
       expect(find.text(_vi.growthWeightRequired), findsOneWidget);
       expect(repo.named('patchDraft'), isEmpty);
       await tester.enterText(weight, '5.43');
+      // Owner 2026-10-16: the head circumference, optional, 20…60 cm.
+      expect(find.text(_vi.asFieldHead), findsOneWidget);
+      final head = find.descendant(
+        of: find.byKey(const ValueKey('as.edit.head')),
+        matching: find.byType(TextField),
+      );
+      await tester.enterText(head, '75');
+      await tester.tap(find.text('Cập nhật bản nháp'));
+      await tester.pumpAndSettle();
+      expect(find.text(_vi.growthHeadRange), findsOneWidget);
+      expect(repo.named('patchDraft'), isEmpty);
+      await tester.enterText(head, '39,5');
       await tester.tap(find.text('Cập nhật bản nháp'));
       await tester.pumpAndSettle();
       final p =
@@ -792,6 +887,7 @@ void main() {
         'weightKg': 5.4,
         'lengthCm': 62,
         'measuredOn': '2026-10-15',
+        'headCm': 39.5,
       });
     });
 

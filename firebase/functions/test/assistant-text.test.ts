@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseExtraction } from '../src/assistant-model.js';
+import { parseExtraction, type ModelIntent } from '../src/assistant-model.js';
 import {
   helpPart,
   noticePart,
@@ -9,6 +9,7 @@ import {
 } from '../src/assistant-talk.js';
 import {
   calendarAround,
+  checkPurchases,
   previousForModel,
   timeMissingQuestion,
   timeStartQuestion,
@@ -190,5 +191,79 @@ describe('server replies', () => {
     expect(privateConversationId('u1', 'b1')).toBe(privateConversationId('u1', 'b1'));
     expect(privateConversationId('u1', 'b1')).not.toBe(privateConversationId('u2', 'b1'));
     expect(privateConversationId('u1', 'b1')).toMatch(/^cv_p_[a-f0-9]{32}$/);
+  });
+});
+
+describe('LUMI-16: purchases checked against the words (owner 2026-10-16)', () => {
+  const intent = (kind: ModelIntent['kind'], fields: Partial<ModelIntent['fields']>) =>
+    ({
+      kind,
+      fields: {
+        amountMl: null,
+        milk: null,
+        time: null,
+        dayOffset: null,
+        endTime: null,
+        endDayOffset: null,
+        durationMin: null,
+        side: null,
+        observation: null,
+        when: null,
+        note: null,
+        title: null,
+        ...fields,
+      },
+      evidence: [],
+      uncertainFields: [],
+      missingFields: [],
+      correctsPrevious: false,
+    }) as ModelIntent;
+
+  it('a purchase made stays an expense; one the model missed is added without an amount', () => {
+    const model = [intent('expense', { title: 'hai hộp sữa', amount: null })];
+    expect(checkPurchases('mua hai hộp sữa', model)).toEqual({ intents: model, shopping: false });
+    const added = checkPurchases('bé bú 90ml, vừa mua bỉm ở Con Cưng', [
+      intent('bottle', { amountMl: 90 }),
+    ]);
+    expect(added.intents.map((i) => i.kind)).toEqual(['bottle', 'expense']);
+    expect(added.intents[1]!.fields).toMatchObject({
+      title: 'bỉm',
+      merchant: 'Con Cưng',
+    });
+    expect(added.intents[1]!.fields.amount ?? null).toBeNull();
+  });
+
+  it('a purchase made that the model read as a to-do is the expense (live 2026-10-16)', () => {
+    const r = checkPurchases('đặt tã online', [intent('reminder', { title: 'đặt tã online' })]);
+    expect(r.intents.map((i) => [i.kind, i.fields.title])).toEqual([['expense', 'tã online']]);
+    // A reminder with a day said is left alone; so is any reminder of a plan.
+    const dated = [intent('reminder', { title: 'mua bỉm', date: '2026-10-16' })];
+    expect(checkPurchases('mua bỉm', dated).intents).toEqual(dated);
+    const plan = [intent('reminder', { title: 'mua bỉm' })];
+    expect(checkPurchases('nhắc mua bỉm', plan).intents).toEqual(plan);
+  });
+
+  it('a plan the model read as an expense becomes a reminder in the person’s words', () => {
+    const r = checkPurchases('mai đi mua sữa', [intent('expense', { title: 'sữa' })]);
+    expect(r.intents.map((i) => [i.kind, i.fields.title])).toEqual([['reminder', 'mua sữa']]);
+    // The model's own reminder is kept, the expense dropped.
+    const both = checkPurchases('nhớ mua bỉm', [
+      intent('expense', { title: 'bỉm' }),
+      intent('reminder', { title: 'mua bỉm' }),
+    ]);
+    expect(both.intents.map((i) => i.kind)).toEqual(['reminder']);
+    // Nothing from the model: nothing added (no reminder nobody asked for).
+    expect(checkPurchases('cần mua thêm tã', []).intents).toEqual([]);
+  });
+
+  it('a question about buying is never an expense (help instead)', () => {
+    expect(checkPurchases('mua sữa nào tốt?', [intent('expense', { title: 'sữa' })])).toEqual({
+      intents: [],
+      shopping: true,
+    });
+    expect(checkPurchases('mua sữa nào tốt?', []).shopping).toBe(true);
+    const help = helpPart('vi', 'shopping');
+    expect(help).toMatchObject({ code: 'HELP' });
+    expect(help.type === 'text' ? help.text : '').toContain('Không tính lượt');
   });
 });

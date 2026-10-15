@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_84cb8f9cae03c2d4be9382c3cac8a162",
+     "id": "tk_16c6963a8e9e3df23bc798c0b810233f",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_84cb8f9cae03c2d4be9382c3cac8a162_0",
-      "taskId": "tk_84cb8f9cae03c2d4be9382c3cac8a162",
+      "id": "dr_16c6963a8e9e3df23bc798c0b810233f_0",
+      "taskId": "tk_16c6963a8e9e3df23bc798c0b810233f",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -51,7 +51,8 @@
        "kind": "growth",
        "weightKg": 5.8,
        "lengthCm": null,
-       "measuredOn": "2026-10-14"
+       "measuredOn": "2026-10-14",
+       "headCm": null
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -59,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_84cb8f9cae03c2d4be9382c3cac8a162"
+       "task:tk_16c6963a8e9e3df23bc798c0b810233f"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +82,7 @@
         "text": "hôm qua đi khám bé nặng 5kg8"
        }
       ],
-      "taskId": "tk_84cb8f9cae03c2d4be9382c3cac8a162",
+      "taskId": "tk_16c6963a8e9e3df23bc798c0b810233f",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_84cb8f9cae03c2d4be9382c3cac8a162_0",
+        "draftId": "dr_16c6963a8e9e3df23bc798c0b810233f_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_84cb8f9cae03c2d4be9382c3cac8a162",
+      "taskId": "tk_16c6963a8e9e3df23bc798c0b810233f",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,7 +120,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_84cb8f9cae03c2d4be9382c3cac8a162",
+     "id": "tk_16c6963a8e9e3df23bc798c0b810233f",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -150,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_84cb8f9cae03c2d4be9382c3cac8a162_0",
-      "taskId": "tk_84cb8f9cae03c2d4be9382c3cac8a162",
+      "id": "dr_16c6963a8e9e3df23bc798c0b810233f_0",
+      "taskId": "tk_16c6963a8e9e3df23bc798c0b810233f",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -161,7 +162,8 @@
        "kind": "growth",
        "weightKg": 5.8,
        "lengthCm": null,
-       "measuredOn": "2026-10-14"
+       "measuredOn": "2026-10-14",
+       "headCm": null
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -169,10 +171,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_84cb8f9cae03c2d4be9382c3cac8a162"
+       "task:tk_16c6963a8e9e3df23bc798c0b810233f"
       ],
-      "recordId": "r_8f9d58a304765f04003cc9e9aa6255a2",
-      "recordLink": "/care/records/b_00000000000000000001/r_8f9d58a304765f04003cc9e9aa6255a2",
+      "recordId": "r_08bbdd24d67b32238efc3ccfe33a68b7",
+      "recordLink": "/care/records/b_00000000000000000001/r_08bbdd24d67b32238efc3ccfe33a68b7",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +198,7 @@
         "text": "hôm qua đi khám bé nặng 5kg8"
        }
       ],
-      "taskId": "tk_84cb8f9cae03c2d4be9382c3cac8a162",
+      "taskId": "tk_16c6963a8e9e3df23bc798c0b810233f",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +217,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_84cb8f9cae03c2d4be9382c3cac8a162_0",
+        "draftId": "dr_16c6963a8e9e3df23bc798c0b810233f_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_84cb8f9cae03c2d4be9382c3cac8a162",
+      "taskId": "tk_16c6963a8e9e3df23bc798c0b810233f",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +237,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_84cb8f9cae03c2d4be9382c3cac8a162_0",
+          "draftId": "dr_16c6963a8e9e3df23bc798c0b810233f_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_8f9d58a304765f04003cc9e9aa6255a2",
+          "recordLink": "/care/records/b_00000000000000000001/r_08bbdd24d67b32238efc3ccfe33a68b7",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_84cb8f9cae03c2d4be9382c3cac8a162",
+      "taskId": "tk_16c6963a8e9e3df23bc798c0b810233f",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

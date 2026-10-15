@@ -27065,6 +27065,96 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Loại tã'**
   String get asFieldDiaper;
+
+  /// 28 head circumference label. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vòng đầu · tùy chọn'**
+  String get growthHeadOptional;
+
+  /// Head circumference out of range. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vòng đầu từ 20 đến 60 cm.'**
+  String get growthHeadRange;
+
+  /// Head circumference in a measurement line ("vòng đầu 39 cm"). Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'vòng đầu {v} cm'**
+  String headCm(String v);
+
+  /// 20d / 20i toggle. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vòng đầu'**
+  String get growthHeadTab;
+
+  /// 21 record detail row. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vòng đầu'**
+  String get detailHead;
+
+  /// 13 baby profile tile. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vòng đầu · {when}'**
+  String bpHead(String when);
+
+  /// 20d note. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vòng đầu của {name} đang nhỏ hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.'**
+  String whoBelowHeadNote(String name);
+
+  /// 20d note. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vòng đầu của {name} đang lớn hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.'**
+  String whoAboveHeadNote(String name);
+
+  /// Lumi growth editor field. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vòng đầu · tùy chọn'**
+  String get asFieldHead;
+
+  /// Lumi inline fix: head circumference missing. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có vòng đầu (cm)'**
+  String get asGapHead;
+
+  /// Lumi inline fix: head circumference to check. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vòng đầu {cm} cm có đúng không?'**
+  String asGapHeadUnsure(String cm);
+
+  /// Lumi inline fix chip: opens the editor. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập vòng đầu'**
+  String get asFixEnterHead;
+
+  /// Lumi inline fix chip: keep the measurement without it. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ vòng đầu'**
+  String get asFixDropHead;
+
+  /// Lumi on a typed purchase without an amount, above the amount field. LUMI-16, owner decision 2026-10-16 (a purchase without an amount). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết bao nhiêu tiền?'**
+  String get asAskAmount;
+
+  /// 20d: the selected measure (e.g. head circumference) has no value yet. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có số đo này. Thêm khi đo cho bé lần tới.'**
+  String get growthMeasureNone;
 }
 
 class _AppLocalizationsDelegate

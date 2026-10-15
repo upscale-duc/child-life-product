@@ -45,10 +45,18 @@ const help = {
     'Bạn nhắn giúp mình việc cần ghi nhé, ví dụ “bé bú 120ml lúc 8h” hoặc “mua sữa hết 500k”. Không tính lượt.',
     'Tell me what to log, e.g. “fed 120 ml at 8” or “$20 diapers”. No credit was used.',
   ),
+  // LUMI-16 (owner 2026-10-16): "mua sữa nào tốt?" is a question, never an expense.
+  shopping: L(
+    'Mình chưa so sánh hay gợi ý sản phẩm được. Khi đã mua, bạn nhắn “mua sữa hết 500k” để ghi chi tiêu, hoặc “nhắc mai mua sữa” để đặt nhắc việc. Không tính lượt.',
+    'I can’t compare or recommend products yet. Once you’ve bought something, send “$20 formula” to log the expense, or “remind me tomorrow to buy formula” for a reminder. No credit was used.',
+  ),
 };
 
 /** Nothing to log or read: what Lumi can do, never a dead end (0 credits). */
-export function helpPart(locale: Locale, variant: 'help' | 'write' = 'help'): AssistantPart {
+export function helpPart(
+  locale: Locale,
+  variant: 'help' | 'write' | 'shopping' = 'help',
+): AssistantPart {
   return { type: 'text', schemaVersion: 1, text: help[variant][locale], code: 'HELP' };
 }
 
@@ -248,28 +256,6 @@ export function appUpdatePart(kind: DraftKind, locale: Locale, link: string | nu
     schemaVersion: 1,
     text: words[locale],
     code: 'APP_UPDATE_NEEDED',
-    ...(link ? { link } : {}),
-  };
-}
-
-/**
- * LUMI-13: part of the message that got no draft, named: "vòng đầu" (the growth module has no
- * head circumference), with [link] to the module where it can be added.
- */
-export function partNotSavedPart(
-  what: 'head_circumference',
-  locale: Locale,
-  link: string | null,
-): AssistantPart {
-  void what;
-  return {
-    type: 'text',
-    schemaVersion: 1,
-    text: L(
-      'Mục Tăng trưởng chưa có vòng đầu, nên mình chưa ghi số đo vòng đầu. Cân nặng và chiều dài ở bản nháp bên dưới.',
-      'Growth has no head circumference yet, so that measurement was not saved. Weight and length are in the draft below.',
-    )[locale],
-    code: 'PART_NOT_SAVED',
     ...(link ? { link } : {}),
   };
 }

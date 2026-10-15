@@ -17197,4 +17197,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asFieldDiaper => 'Diaper';
+
+  @override
+  String get growthHeadOptional => 'Head circumference · optional';
+
+  @override
+  String get growthHeadRange => 'Head circumference from 20 to 60 cm.';
+
+  @override
+  String headCm(String v) {
+    return 'head $v cm';
+  }
+
+  @override
+  String get growthHeadTab => 'Head';
+
+  @override
+  String get detailHead => 'Head circumference';
+
+  @override
+  String bpHead(String when) {
+    return 'Head · $when';
+  }
+
+  @override
+  String whoBelowHeadNote(String name) {
+    return '$name’s head circumference is below the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.';
+  }
+
+  @override
+  String whoAboveHeadNote(String name) {
+    return '$name’s head circumference is above the usual range for this age. Every baby grows at their own pace — it’s worth raising at the next check-up.';
+  }
+
+  @override
+  String get asFieldHead => 'Head circumference · optional';
+
+  @override
+  String get asGapHead => 'No head circumference yet (cm)';
+
+  @override
+  String asGapHeadUnsure(String cm) {
+    return 'Is the head circumference $cm cm right?';
+  }
+
+  @override
+  String get asFixEnterHead => 'Enter head circumference';
+
+  @override
+  String get asFixDropHead => 'Remove head circumference';
+
+  @override
+  String get asAskAmount => 'How much did it cost?';
+
+  @override
+  String get growthMeasureNone =>
+      'Nothing measured yet. Add it at the next measurement.';
 }

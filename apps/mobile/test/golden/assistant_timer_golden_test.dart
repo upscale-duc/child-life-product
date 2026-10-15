@@ -22,6 +22,8 @@ import '../helpers/assistant_fixtures.dart';
 /// review card that explains and fixes in place (a breastfeed missing its side, the single-draft
 /// layout with its own save) and, with several drafts, a fixed draft ticked by itself ("Lưu 2
 /// mục"). Lumi fixes (LUMI-01): pump, diaper and growth drafts, ready and needing review.
+/// Owner decisions 2026-10-16: the growth draft with its head circumference (and one to check),
+/// and a purchase without an amount asking "Hết bao nhiêu tiền?" (empty, then "35" typed).
 /// Synthetic data only.
 /// Regenerate on macOS: flutter test --tags golden --update-goldens test/golden/assistant_timer_golden_test.dart
 
@@ -158,26 +160,48 @@ final _cases = <String, _Case>{
     timers: const {},
     act: null,
   ),
+  // Owner 2026-10-16: the head circumference is part of the draft (no "chưa có vòng đầu").
   'care_growth': (
     repo: () => FakeAssistantRepository(
       tasks: {
         taskA: _one(
-          growthDraftJson(),
-          'bé nặng 5,2kg dài 62cm vòng đầu 40cm',
-          before: [
-            {
-              ...codedText(
-                'Mục Tăng trưởng chưa có vòng đầu, nên mình chưa ghi số đo vòng đầu. Cân nặng và chiều dài ở bản nháp bên dưới.',
-                'PART_NOT_SAVED',
-              ),
-              'link': '/care/growth',
-            },
-          ],
+          growthDraftJson(cm: 58, head: 39),
+          'bé nặng 5,2kg dài 58cm vòng đầu 39cm',
         ),
       },
     ),
     timers: const {},
     act: null,
+  ),
+  'care_growth_head_review': (
+    repo: () => FakeAssistantRepository(
+      tasks: {
+        taskA: _one(
+          reviewed(growthDraftJson(head: 75), uncertain: ['headCm']),
+          'bé nặng 5,2kg dài 62cm vòng đầu 75cm',
+        ),
+      },
+    ),
+    timers: const {},
+    act: null,
+  ),
+  // LUMI-16: "Hết bao nhiêu tiền?" on the card, the amount typed, the thousands offered.
+  'expense_amount_ask': (
+    repo: () => FakeAssistantRepository(
+      tasks: {taskA: _one(purchaseDraftJson(), 'mua hai hộp sữa')},
+    ),
+    timers: const {},
+    act: null,
+  ),
+  'expense_amount_typed': (
+    repo: () => FakeAssistantRepository(
+      tasks: {taskA: _one(purchaseDraftJson(), 'mua hai hộp sữa')},
+    ),
+    timers: const {},
+    act: (tester) async {
+      await tester.enterText(find.byKey(const Key('spAmount')), '35');
+      await tester.pumpAndSettle();
+    },
   ),
   'care_growth_review': (
     repo: () => FakeAssistantRepository(

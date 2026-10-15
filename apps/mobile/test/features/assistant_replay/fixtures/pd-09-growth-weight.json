@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_6c585a88f1e8758a552ac263c260a8fd",
+     "id": "tk_4c5fc3768023120a7063cc567b0c9c98",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_6c585a88f1e8758a552ac263c260a8fd_0",
-      "taskId": "tk_6c585a88f1e8758a552ac263c260a8fd",
+      "id": "dr_4c5fc3768023120a7063cc567b0c9c98_0",
+      "taskId": "tk_4c5fc3768023120a7063cc567b0c9c98",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -51,7 +51,8 @@
        "kind": "growth",
        "weightKg": 6.1,
        "lengthCm": null,
-       "measuredOn": "2026-10-15"
+       "measuredOn": "2026-10-15",
+       "headCm": null
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -59,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_6c585a88f1e8758a552ac263c260a8fd"
+       "task:tk_4c5fc3768023120a7063cc567b0c9c98"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +82,7 @@
         "text": "cân bé được 6.1 kg"
        }
       ],
-      "taskId": "tk_6c585a88f1e8758a552ac263c260a8fd",
+      "taskId": "tk_4c5fc3768023120a7063cc567b0c9c98",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_6c585a88f1e8758a552ac263c260a8fd_0",
+        "draftId": "dr_4c5fc3768023120a7063cc567b0c9c98_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_6c585a88f1e8758a552ac263c260a8fd",
+      "taskId": "tk_4c5fc3768023120a7063cc567b0c9c98",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,7 +120,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_6c585a88f1e8758a552ac263c260a8fd",
+     "id": "tk_4c5fc3768023120a7063cc567b0c9c98",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -150,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_6c585a88f1e8758a552ac263c260a8fd_0",
-      "taskId": "tk_6c585a88f1e8758a552ac263c260a8fd",
+      "id": "dr_4c5fc3768023120a7063cc567b0c9c98_0",
+      "taskId": "tk_4c5fc3768023120a7063cc567b0c9c98",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -161,7 +162,8 @@
        "kind": "growth",
        "weightKg": 6.1,
        "lengthCm": null,
-       "measuredOn": "2026-10-15"
+       "measuredOn": "2026-10-15",
+       "headCm": null
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -169,10 +171,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_6c585a88f1e8758a552ac263c260a8fd"
+       "task:tk_4c5fc3768023120a7063cc567b0c9c98"
       ],
-      "recordId": "r_cd46b7859ad10c28a2995e14e531858c",
-      "recordLink": "/care/records/b_00000000000000000001/r_cd46b7859ad10c28a2995e14e531858c",
+      "recordId": "r_4476caa40067c1f5e1688f5b831416a6",
+      "recordLink": "/care/records/b_00000000000000000001/r_4476caa40067c1f5e1688f5b831416a6",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +198,7 @@
         "text": "cân bé được 6.1 kg"
        }
       ],
-      "taskId": "tk_6c585a88f1e8758a552ac263c260a8fd",
+      "taskId": "tk_4c5fc3768023120a7063cc567b0c9c98",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +217,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_6c585a88f1e8758a552ac263c260a8fd_0",
+        "draftId": "dr_4c5fc3768023120a7063cc567b0c9c98_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_6c585a88f1e8758a552ac263c260a8fd",
+      "taskId": "tk_4c5fc3768023120a7063cc567b0c9c98",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +237,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_6c585a88f1e8758a552ac263c260a8fd_0",
+          "draftId": "dr_4c5fc3768023120a7063cc567b0c9c98_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_cd46b7859ad10c28a2995e14e531858c",
+          "recordLink": "/care/records/b_00000000000000000001/r_4476caa40067c1f5e1688f5b831416a6",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_6c585a88f1e8758a552ac263c260a8fd",
+      "taskId": "tk_4c5fc3768023120a7063cc567b0c9c98",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

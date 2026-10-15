@@ -173,7 +173,15 @@ describe('OpenAI extraction request', () => {
       expect(prompt).toContain(words);
     }
     // Lumi fixes 2026-10-16 (v5): pump / diaper / growth, "12h" is noon, each time its period.
-    expect(assistantPromptVersion).toBe('assistant-extract-v5');
+    expect(assistantPromptVersion).toBe('assistant-extract-v6');
+    // Owner 2026-10-16 (v6): head circumference is stored; plans / questions are not expenses.
+    for (const words of [
+      'headCm = head circumference',
+      'NEVER a plan or a to-do',
+      'mua sữa nào tốt?',
+    ]) {
+      expect(prompt).toContain(words);
+    }
     for (const words of ['pump (', 'diaper (', 'growth (', '"12h" / "12 giờ" alone is noon']) {
       expect(prompt).toContain(words);
     }

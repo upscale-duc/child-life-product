@@ -25,12 +25,16 @@ const careMaxMinutes = 240;
 const growthWeightKg = (min: 0.3, max: 40.0);
 const growthLengthCm = (min: 20.0, max: 150.0);
 
+/// Owner 2026-10-16: head circumference, optional (contracts `careLimits.headCm`).
+const growthHeadCm = (min: 20.0, max: 60.0);
+
 /// The pump form's amount: whole ml, 1…[pumpMaxMl].
 bool pumpMlOk(num ml) => ml == ml.roundToDouble() && ml >= 1 && ml <= pumpMaxMl;
 bool growthWeightOk(num kg) =>
     kg >= growthWeightKg.min && kg <= growthWeightKg.max;
 bool growthLengthOk(num cm) =>
     cm >= growthLengthCm.min && cm <= growthLengthCm.max;
+bool growthHeadOk(num cm) => cm >= growthHeadCm.min && cm <= growthHeadCm.max;
 
 String _ymd(DateTime d) =>
     '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
@@ -133,7 +137,8 @@ List<DraftProblem> draftProblems(DraftPayload p, DateTime anchor) {
     case GrowthPayload():
       if (p.weightKg == null) out.add(DraftProblem.missingAmount);
       if ((p.weightKg != null && !growthWeightOk(p.weightKg!)) ||
-          (p.lengthCm != null && !growthLengthOk(p.lengthCm!))) {
+          (p.lengthCm != null && !growthLengthOk(p.lengthCm!)) ||
+          (p.headCm != null && !growthHeadOk(p.headCm!))) {
         out.add(DraftProblem.invalidAmount);
       }
       if (p.measuredOn == null) {
@@ -185,6 +190,7 @@ List<String> problemFields(DraftPayload p, DraftProblem pr) =>
       (final GrowthPayload x, DraftProblem.invalidAmount) => [
         if (x.weightKg != null && !growthWeightOk(x.weightKg!)) 'weightKg',
         if (x.lengthCm != null && !growthLengthOk(x.lengthCm!)) 'lengthCm',
+        if (x.headCm != null && !growthHeadOk(x.headCm!)) 'headCm',
       ],
       (final ReminderPayload x, DraftProblem.pastTime) => [
         x.time != null ? 'time' : 'date',

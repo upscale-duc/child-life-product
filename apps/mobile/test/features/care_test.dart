@@ -353,5 +353,39 @@ void main() {
         );
       },
     );
+
+    testWidgets(
+      '28: head circumference is optional, 20…60 cm, saved with the measurement (owner 2026-10-16)',
+      (tester) async {
+        final repo = FakeCareRepository();
+        await pumpRouted(
+          tester,
+          const GrowthScreen(),
+          overrides: careOverrides(repo: repo, growth: mockGrowth()),
+        );
+        expect(find.text('Vòng đầu · tùy chọn'), findsOneWidget);
+        final head = find.descendant(
+          of: find.byKey(const ValueKey('growth.head')),
+          matching: find.byType(EditableText),
+        );
+        await tester.enterText(find.byType(EditableText).at(0), '4,3');
+        await tester.enterText(head, '75');
+        await tester.tap(find.text('Lưu số đo'));
+        await tester.pumpAndSettle();
+        expect(find.text('Vòng đầu từ 20 đến 60 cm.'), findsOneWidget);
+        expect(repo.created, isEmpty);
+        await tester.enterText(head, '38,54');
+        await tester.tap(find.text('Lưu số đo'));
+        await tester.pumpAndSettle();
+        final saved = repo.created.single;
+        expect(saved.headCm, 38.5);
+        expect(saved.dataJson()['headCm'], 38.5);
+        // Without a value the key is left out (older Rules and readers keep working).
+        expect(
+          saved.copyWith(clearHead: true).dataJson().containsKey('headCm'),
+          isFalse,
+        );
+      },
+    );
   });
 }

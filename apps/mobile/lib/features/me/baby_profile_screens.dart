@@ -234,6 +234,8 @@ class BabyProfileViewScreen extends ConsumerWidget {
         : const [];
     final weight = growth.where((g) => g.weightKg != null).firstOrNull;
     final length = growth.where((g) => g.lengthCm != null).firstOrNull;
+    // Owner 2026-10-16: the latest head circumference, when one was measured.
+    final head = growth.where((g) => g.headCm != null).firstOrNull;
     final storage = parent
         ? ref.watch(familyStorageProvider(babyId)).value
         : null;
@@ -306,28 +308,33 @@ class BabyProfileViewScreen extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 style: cl.text.label.copyWith(color: cl.colors.inkMuted),
               ),
-            if (weight != null || length != null) ...[
+            if (weight != null || length != null || head != null) ...[
               const SizedBox(height: ClSpace.s4),
               Row(
                 children: [
-                  if (weight != null)
-                    Expanded(
-                      child: _StatCard(
+                  for (final (i, tile) in [
+                    if (weight != null)
+                      _StatCard(
                         value: '${number(weight.weightKg!)} kg',
                         label: l10n.bpWeight(when(weight.occurredAt)),
                         color: cl.colors.peachSoft,
                       ),
-                    ),
-                  if (weight != null && length != null)
-                    const SizedBox(width: ClSpace.s3),
-                  if (length != null)
-                    Expanded(
-                      child: _StatCard(
+                    if (length != null)
+                      _StatCard(
                         value: '${number(length.lengthCm!)} cm',
                         label: l10n.bpLength(when(length.occurredAt)),
                         color: cl.colors.sunshineSoft,
                       ),
-                    ),
+                    if (head != null)
+                      _StatCard(
+                        value: '${number(head.headCm!)} cm',
+                        label: l10n.bpHead(when(head.occurredAt)),
+                        color: cl.colors.mintSoft,
+                      ),
+                  ].indexed) ...[
+                    if (i > 0) const SizedBox(width: ClSpace.s3),
+                    Expanded(child: tile),
+                  ],
                 ],
               ),
             ],

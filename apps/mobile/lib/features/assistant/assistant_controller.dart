@@ -1601,6 +1601,36 @@ class AssistantChat extends Notifier<ChatState> {
   void acknowledge(String draftId) =>
       state = state.copyWith(acknowledged: {...state.acknowledged, draftId});
 
+  /// LUMI-16 (owner 2026-10-16): "Hết bao nhiêu tiền?" answered on the card — the amount (and
+  /// its currency) goes into the draft as checked, then the card saves in the same tap when
+  /// nothing else is left to check. Returns the patch's outcome when it did not save.
+  Future<ActionOutcome> fillAndSave(
+    String taskId,
+    AssistantDraft d,
+    DraftPayload payload,
+    List<String> confirmed,
+  ) async {
+    final (outcome, _) = await patch(d, payload, confirmed: confirmed);
+    if (outcome != ActionOutcome.ok) return outcome;
+    final next = state
+        .thread(taskId)
+        ?.snapshot
+        ?.drafts
+        .where((x) => x.id == d.id)
+        .firstOrNull;
+    if (next == null ||
+        next.revision == d.revision ||
+        next.missingFields.isNotEmpty ||
+        next.uncertainFields.isNotEmpty ||
+        draftProblems(next.payload, _now()).isNotEmpty ||
+        // A possible duplicate is answered on the card first ("Vẫn lưu").
+        (next.warnings.contains(DraftWarning.duplicateSuspected) &&
+            !state.acknowledged.contains(next.id))) {
+      return ActionOutcome.ok;
+    }
+    return saveOne(taskId, next);
+  }
+
   /// One card's own save ("Lưu chi tiêu", "Lưu ghi nhận"); a duplicate the person answered
   /// "Vẫn lưu" goes with its acknowledgement.
   Future<ActionOutcome> saveOne(String taskId, AssistantDraft d) => confirm(

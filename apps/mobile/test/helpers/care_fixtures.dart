@@ -37,6 +37,7 @@ CareRecord rec(
   DiaperKind? diaper,
   double? weightKg,
   double? lengthCm,
+  double? headCm,
   DateTime? measuredOn,
   Side? endSide,
   int? leftMin,
@@ -56,6 +57,7 @@ CareRecord rec(
   durationMin: durationMin,
   diaper: diaper,
   weightKg: weightKg,
+  headCm: headCm,
   lengthCm: lengthCm,
   measuredOn: measuredOn,
   endSide: endSide,
@@ -186,6 +188,28 @@ List<CareRecord> mockWeek() {
 }
 
 /// 28's previous measurements: 1 Oct and at birth (17 Sep).
+/// Owner 2026-10-16: the same two measurements with a head circumference.
+List<CareRecord> mockGrowthWithHead() => [
+  rec(
+    CareType.growth,
+    vn(1, 12, 0),
+    mai,
+    weightKg: 3.9,
+    lengthCm: 53,
+    headCm: 37.2,
+    measuredOn: DateTime(2026, 10, 1),
+  ),
+  rec(
+    CareType.growth,
+    DateTime.utc(2026, 9, 17, 5).toLocal(),
+    minh,
+    weightKg: 3.2,
+    lengthCm: 50,
+    headCm: 35.1,
+    measuredOn: DateTime(2026, 9, 17),
+  ),
+];
+
 List<CareRecord> mockGrowth() => [
   rec(
     CareType.growth,

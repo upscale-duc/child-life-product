@@ -536,7 +536,7 @@
     },
     {
       "id": "pd-16-growth-head",
-      "title": "Head circumference is said but the growth module cannot store it: named, weight and length drafted",
+      "title": "Owner 2026-10-16: head circumference is saved with weight and length (no PART_NOT_SAVED)",
       "turns": [
         {
           "say": "bé nặng 6kg, dài 61cm, vòng đầu 40cm",
@@ -557,6 +557,9 @@
               }
             ]
           }
+        },
+        {
+          "confirm": "all"
         }
       ],
       "expect": {
@@ -565,9 +568,15 @@
         "ready": true,
         "values": {
           "0.weightKg": 6,
-          "0.lengthCm": 61
+          "0.lengthCm": 61,
+          "0.headCm": 40
         },
-        "codes": ["PART_NOT_SAVED"],
+        "notCodes": ["PART_NOT_SAVED"],
+        "saved": 1,
+        "recordData": {
+          "growth.headCm": 40,
+          "growth.lengthCm": 61
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -789,6 +798,277 @@
         "credits": 1
       },
       "group": "care.types"
+    },
+    {
+      "id": "pd-23-growth-head-owner",
+      "group": "care.types",
+      "title": "Owner 2026-10-16 example: weight, length and head circumference in one message → one growth record with all three",
+      "turns": [
+        {
+          "say": "bé nặng 5,2kg dài 58cm vòng đầu 39cm",
+          "model": {
+            "i": [
+              {
+                "k": "growth",
+                "f": {
+                  "weightKg": 5.2,
+                  "lengthCm": 58,
+                  "headCm": 39
+                },
+                "ev": {
+                  "weightKg": "5,2kg",
+                  "lengthCm": "58cm",
+                  "headCm": "vòng đầu 39cm"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 5.2,
+          "0.lengthCm": 58,
+          "0.headCm": 39,
+          "0.measuredOn": "D0"
+        },
+        "notCodes": ["PART_NOT_SAVED"],
+        "saved": 1,
+        "recordData": {
+          "growth.headCm": 39,
+          "growth.weightKg": 5.2
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "pd-24-growth-head-no-diacritics",
+      "group": "care.types",
+      "turns": [
+        {
+          "say": "be nang 5,2kg dai 58cm vong dau 39cm",
+          "model": {
+            "i": [
+              {
+                "k": "growth",
+                "f": {
+                  "weightKg": 5.2,
+                  "lengthCm": 58,
+                  "headCm": 39
+                },
+                "ev": {
+                  "weightKg": "5,2kg",
+                  "lengthCm": "58cm",
+                  "headCm": "vong dau 39cm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 5.2,
+          "0.lengthCm": 58,
+          "0.headCm": 39
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "pd-25-growth-head-only",
+      "group": "care.types",
+      "title": "Only the head circumference: drafted with it, the weight (required by the form) asked on the card",
+      "turns": [
+        {
+          "say": "vòng đầu bé hôm nay 38,5 cm",
+          "model": {
+            "i": [
+              {
+                "k": "growth",
+                "f": {
+                  "headCm": 38.5
+                },
+                "ev": {
+                  "headCm": "vòng đầu bé hôm nay 38,5 cm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "review": ["weightKg"],
+        "values": {
+          "0.headCm": 38.5,
+          "0.weightKg": null,
+          "0.lengthCm": null
+        },
+        "notCodes": ["PART_NOT_SAVED"],
+        "credits": 1
+      }
+    },
+    {
+      "id": "pd-26-growth-head-read-as-length",
+      "group": "care.types",
+      "title": "The model puts the head's 39 cm in the length: the words win (length empty, head 39)",
+      "turns": [
+        {
+          "say": "bé nặng 5kg, vòng đầu 39cm",
+          "model": {
+            "i": [
+              {
+                "k": "growth",
+                "f": {
+                  "weightKg": 5,
+                  "lengthCm": 39
+                },
+                "ev": {
+                  "weightKg": "5kg",
+                  "lengthCm": "39cm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 5,
+          "0.lengthCm": null,
+          "0.headCm": 39
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "pd-27-growth-head-out-of-range",
+      "group": "care.types",
+      "title": "A head circumference outside 20…60 cm is named for review, never saved as is",
+      "turns": [
+        {
+          "say": "bé nặng 6kg, vòng đầu 75cm",
+          "model": {
+            "i": [
+              {
+                "k": "growth",
+                "f": {
+                  "weightKg": 6,
+                  "headCm": 75
+                },
+                "ev": {
+                  "weightKg": "6kg",
+                  "headCm": "75cm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "review": ["headCm", "problem:INVALID_AMOUNT"],
+        "values": {
+          "0.headCm": 75
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "pd-28-growth-head-english",
+      "group": "care.types",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "weight 6.1 kg, head circumference 40.5 cm",
+          "model": {
+            "i": [
+              {
+                "k": "growth",
+                "f": {
+                  "weightKg": 6.1,
+                  "headCm": 40.5
+                },
+                "ev": {
+                  "weightKg": "6.1 kg",
+                  "headCm": "40.5 cm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 6.1,
+          "0.headCm": 40.5,
+          "0.lengthCm": null
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "pd-29-growth-head-added-in-editor",
+      "group": "care.types",
+      "title": "A weight drafted from chat, the head circumference added in the editor, then saved",
+      "turns": [
+        {
+          "say": "bé nặng 6,4kg",
+          "model": {
+            "i": [
+              {
+                "k": "growth",
+                "f": {
+                  "weightKg": 6.4
+                },
+                "ev": {
+                  "weightKg": "6,4kg"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "patch": {
+            "set": {
+              "headCm": 41.2
+            },
+            "confirm": "flagged"
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "kinds": ["growth"],
+        "values": {
+          "0.weightKg": 6.4
+        },
+        "saved": 1,
+        "recordData": {
+          "growth.headCm": 41.2
+        },
+        "credits": 1
+      }
     }
   ]
 }

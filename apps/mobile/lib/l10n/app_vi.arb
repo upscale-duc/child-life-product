@@ -23940,5 +23940,90 @@
   "asFieldDiaper": "Loại tã",
   "@asFieldDiaper": {
     "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "growthHeadOptional": "Vòng đầu · tùy chọn",
+  "@growthHeadOptional": {
+    "description": "28 head circumference label. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review."
+  },
+  "growthHeadRange": "Vòng đầu từ 20 đến 60 cm.",
+  "@growthHeadRange": {
+    "description": "Head circumference out of range. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review."
+  },
+  "headCm": "vòng đầu {v} cm",
+  "@headCm": {
+    "description": "Head circumference in a measurement line (\"vòng đầu 39 cm\"). Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "growthHeadTab": "Vòng đầu",
+  "@growthHeadTab": {
+    "description": "20d / 20i toggle. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review."
+  },
+  "detailHead": "Vòng đầu",
+  "@detailHead": {
+    "description": "21 record detail row. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review."
+  },
+  "bpHead": "Vòng đầu · {when}",
+  "@bpHead": {
+    "description": "13 baby profile tile. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "whoBelowHeadNote": "Vòng đầu của {name} đang nhỏ hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.",
+  "@whoBelowHeadNote": {
+    "description": "20d note. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "whoAboveHeadNote": "Vòng đầu của {name} đang lớn hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.",
+  "@whoAboveHeadNote": {
+    "description": "20d note. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asFieldHead": "Vòng đầu · tùy chọn",
+  "@asFieldHead": {
+    "description": "Lumi growth editor field. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review."
+  },
+  "asGapHead": "Chưa có vòng đầu (cm)",
+  "@asGapHead": {
+    "description": "Lumi inline fix: head circumference missing. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review."
+  },
+  "asGapHeadUnsure": "Vòng đầu {cm} cm có đúng không?",
+  "@asGapHeadUnsure": {
+    "description": "Lumi inline fix: head circumference to check. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "cm": {
+        "type": "String"
+      }
+    }
+  },
+  "asFixEnterHead": "Nhập vòng đầu",
+  "@asFixEnterHead": {
+    "description": "Lumi inline fix chip: opens the editor. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review."
+  },
+  "asFixDropHead": "Bỏ vòng đầu",
+  "@asFixDropHead": {
+    "description": "Lumi inline fix chip: keep the measurement without it. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review."
+  },
+  "asAskAmount": "Hết bao nhiêu tiền?",
+  "@asAskAmount": {
+    "description": "Lumi on a typed purchase without an amount, above the amount field. LUMI-16, owner decision 2026-10-16 (a purchase without an amount). EN is an engineering draft for owner review."
+  },
+  "growthMeasureNone": "Chưa có số đo này. Thêm khi đo cho bé lần tới.",
+  "@growthMeasureNone": {
+    "description": "20d: the selected measure (e.g. head circumference) has no value yet. Owner decision 2026-10-16 (head circumference). EN is an engineering draft for owner review."
   }
 }

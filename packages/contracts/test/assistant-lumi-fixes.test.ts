@@ -13,6 +13,7 @@ import {
   legacyClientDraftKinds,
   looksLikeSpending,
   pumpCueIn,
+  purchasesIn,
   quoteTaskRequestSchema,
   sleepConcernIn,
   type DraftPayload,
@@ -70,6 +71,18 @@ describe('LUMI-01: pump, diaper and growth drafts mirror the care forms', () => 
       'lengthCm',
     ]);
     expect(draftProblems({ ...growth, measuredOn: '2026-10-20' }, anchor)).toEqual(['FUTURE_TIME']);
+  });
+  it('growth: head circumference is optional, 20…60 cm, names itself (owner 2026-10-16)', () => {
+    const withHead = { ...growth, headCm: 39 } as DraftPayload;
+    expect(draftPayloadSchema.safeParse(withHead).success).toBe(true);
+    expect(draftProblems(withHead, anchor)).toEqual([]);
+    // A draft prepared before the field (no key) is still a growth draft.
+    expect(draftPayloadSchema.safeParse(growth).success).toBe(true);
+    const badHead = { ...growth, headCm: 3.9 } as DraftPayload;
+    expect(draftProblems(badHead, anchor)).toEqual(['INVALID_AMOUNT']);
+    expect(draftReviewFields(badHead, draftProblems(badHead, anchor)).uncertain).toEqual([
+      'headCm',
+    ]);
   });
   it('a reminder already past names its time (LUMI-11)', () => {
     const r: DraftPayload = {
@@ -186,6 +199,12 @@ describe('LUMI-01 / LUMI-15 backstop readers', () => {
       headCm: 40,
     });
     expect(growthIn('bé bú 120ml lúc 8h')).toBeNull();
+    expect(growthIn('bé nặng 5,2kg dài 58cm vòng đầu 39cm')).toEqual({
+      weightKg: 5.2,
+      lengthCm: 58,
+      headCm: 39,
+    });
+    expect(growthIn('head circumference 40.5 cm, weight 6 kg')?.headCm).toBe(40.5);
   });
   it('"bé bu 120m" is millilitres; "bú mẹ 20m" is not', () => {
     expect(bareMAmountIn('bé bu 120m lúc 8h sang')).toBe(120);
@@ -211,5 +230,63 @@ describe('LUMI-10 / -12 / -16 words', () => {
     expect(asksWhatLumiDoes('bé bú được bao nhiêu')).toBe(false);
     expect(looksLikeSpending('Con Cưng hôm nay hai hộp sữa, bé bú 90ml lúc 13h')).toBe(true);
     expect(looksLikeSpending('bé bú 90ml lúc 13h')).toBe(false);
+  });
+});
+
+describe('LUMI-16: a purchase without an amount (owner 2026-10-16)', () => {
+  const moods = (t: string) => purchasesIn(t).map((p) => p.mood);
+  it('done: an expense even without an amount', () => {
+    expect(purchasesIn('mua hai hộp sữa')).toEqual([
+      {
+        mood: 'done',
+        phrase: 'mua hai hộp sữa',
+        title: 'mua hai hộp sữa',
+        what: 'hai hộp sữa',
+        merchant: null,
+      },
+    ]);
+    expect(purchasesIn('vừa mua bỉm ở Con Cưng')[0]).toMatchObject({
+      mood: 'done',
+      what: 'bỉm',
+      merchant: 'Con Cưng',
+    });
+    expect(purchasesIn('đặt tã online')[0]).toMatchObject({ mood: 'done', what: 'tã online' });
+    expect(purchasesIn('hôm qua mua bỉm 350.000đ ở Con Cưng')[0]).toMatchObject({
+      mood: 'done',
+      what: 'bỉm',
+      merchant: 'Con Cưng',
+    });
+    expect(moods('mua sữa cho bé Mai')).toEqual(['done']);
+    expect(moods('bought diapers at Target')).toEqual(['done']);
+    expect(moods('mua gì đó cho bé hết 200k')).toEqual(['done']);
+    expect(moods('mua bim o con cung')).toEqual(['done']);
+  });
+  it('plans and to-dos: never an expense', () => {
+    expect(purchasesIn('mai đi mua sữa')[0]).toMatchObject({ mood: 'plan', title: 'mua sữa' });
+    expect(purchasesIn('nhớ mua bỉm')[0]).toMatchObject({ mood: 'plan', title: 'mua bỉm' });
+    expect(moods('cần mua thêm tã cho bé')).toEqual(['plan']);
+    expect(moods('hôm nay nhớ mua sữa')).toEqual(['plan']);
+    expect(moods('chưa mua sữa')).toEqual(['plan']);
+    expect(moods('hết sữa rồi, mai đi mua')).toEqual(['plan']);
+    expect(purchasesIn('need to buy diapers tomorrow')[0]).toMatchObject({
+      mood: 'plan',
+      title: 'buy diapers',
+    });
+  });
+  it('questions: help, never an expense', () => {
+    expect(moods('mua sữa nào tốt?')).toEqual(['question']);
+    expect(moods('mua sữa nào tốt')).toEqual(['question']);
+    expect(moods('nên mua bỉm gì')).toEqual(['question']);
+    expect(moods('which formula should I buy?')).toEqual(['question']);
+  });
+  it('mixed clauses keep their own mood; no buying word → nothing', () => {
+    expect(moods('vừa mua bỉm ở Con Cưng, mai nhớ mua sữa')).toEqual(['done', 'plan']);
+    expect(purchasesIn('trời mưa quá')).toEqual([]);
+    expect(purchasesIn('bé múa đẹp')).toEqual([]);
+    expect(purchasesIn('đặt lịch khám')).toEqual([]);
+  });
+  it('"đặt tã online" keeps the message private (D-075 #2)', () => {
+    expect(looksLikeSpending('đặt tã online')).toBe(true);
+    expect(looksLikeSpending('đặt lịch khám')).toBe(false);
   });
 });

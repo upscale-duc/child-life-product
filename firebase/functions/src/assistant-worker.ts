@@ -54,6 +54,7 @@ import {
 import {
   calendarAround,
   careCueIn,
+  checkPurchases,
   householdCurrencyOf,
   planTextIntents,
   previousForModel,
@@ -65,7 +66,6 @@ import {
   appUpdatePart,
   helpPart,
   noticePart,
-  partNotSavedPart,
   privateConversationId,
   smallTalkPart,
   spendingPrivatePart,
@@ -482,6 +482,10 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       };
     }
   }
+  // LUMI-16 (owner 2026-10-16): a purchase made is an expense even without an amount (the card
+  // asks "Hết bao nhiêu tiền?"); a plan or a question about buying never is.
+  const bought = checkPurchases(text, ext.intents);
+  ext = { ...ext, intents: bought.intents };
   let bareLog = false;
   // rd-09: two bare words of a feed or a sleep ("bú sữa", "bé ngủ") with nothing said about it —
   // no amount, time, length or "đang / vừa / rồi" — may be a question about the log: asked once.
@@ -566,7 +570,10 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
     // Rework 2026-10-15: times are the server's questions (with chips), never the model's.
     !ext.clarification.field.startsWith('time.') &&
     // Small talk and out-of-scope messages are answered, never questioned.
-    !(ext.clarification.field === 'intent' && (!nothing || ext.smallTalk || ext.outOfScope))
+    !(
+      ext.clarification.field === 'intent' &&
+      (!nothing || ext.smallTalk || ext.outOfScope || bought.shopping)
+    )
   ) {
     ask = ext.clarification.field;
   }
@@ -587,11 +594,11 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   // Rework 2026-10-15: small talk and messages Lumi cannot help with get a short answer for
   // 0 credits — never a question, never a dead end.
   if (nothing) {
-    const talk = ext.smallTalk && !ext.outOfScope;
+    const talk = ext.smallTalk && !ext.outOfScope && !bought.shopping;
     return {
       ...fallback(
         t.locale,
-        talk ? 'talk' : intentAnswer === 'write' ? 'write' : 'help',
+        talk ? 'talk' : bought.shopping ? 'shopping' : intentAnswer === 'write' ? 'write' : 'help',
         lead,
         smallTalkIn(text) ?? 'ack',
       ),
@@ -727,11 +734,6 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       parts.push(appUpdatePart(n.kind, t.locale, link));
       continue;
     }
-    // LUMI-13: a part said but not storable, named, with its module.
-    if (n.code === 'PART_NOT_SAVED') {
-      parts.push(partNotSavedPart(n.what ?? 'head_circumference', t.locale, n.link ?? null));
-      continue;
-    }
     if (n.code === 'TIMER_RUNNING' && n.timer) {
       const since = n.timer.since;
       parts.push(
@@ -825,15 +827,13 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       ? first
       : first === 'PREVIOUS_SAVED' ||
           first === 'MEDICINE_NOT_SCHEDULED' ||
-          first === 'APP_UPDATE_NEEDED' ||
-          first === 'PART_NOT_SAVED'
+          first === 'APP_UPDATE_NEEDED'
         ? 'MODULE_UNAVAILABLE'
         : 'VALIDATION_FAILED';
   if (
     first === 'PREVIOUS_SAVED' ||
     first === 'MEDICINE_NOT_SCHEDULED' ||
-    first === 'APP_UPDATE_NEEDED' ||
-    first === 'PART_NOT_SAVED'
+    first === 'APP_UPDATE_NEEDED'
   ) {
     // An honest answer, not a failure: ready, released.
     return {
@@ -864,14 +864,11 @@ export const textReadingRef = (db: Firestore, taskId: string) =>
 /** Small talk / help: an answer without a draft, released (0 credits). */
 function fallback(
   locale: 'vi' | 'en',
-  kind: 'talk' | 'help' | 'write',
+  kind: 'talk' | 'help' | 'write' | 'shopping',
   lead: AssistantPart[],
   talk: Parameters<typeof smallTalkPart>[0] = 'ack',
 ): WorkResult {
-  const part =
-    kind === 'talk'
-      ? smallTalkPart(talk, locale)
-      : helpPart(locale, kind === 'write' ? 'write' : 'help');
+  const part = kind === 'talk' ? smallTalkPart(talk, locale) : helpPart(locale, kind);
   const parts = [...lead, part];
   return {
     outcome: { kind: 'fallback', parts },

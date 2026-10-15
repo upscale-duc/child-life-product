@@ -260,6 +260,13 @@
             "ngày đo",
             "ngày"
           ]
+        },
+        "headCm": {
+          "control": "asFieldHead",
+          "words": [
+            "vòng đầu",
+            "cm"
+          ]
         }
       }
     }

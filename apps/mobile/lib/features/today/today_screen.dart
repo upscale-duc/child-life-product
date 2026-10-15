@@ -629,6 +629,7 @@ class _CareTileState extends ConsumerState<CareTile>
             : shortDate(context, measured);
         return [
           if (r.lengthCm != null) l10n.lengthCm(decimal(locale, r.lengthCm!)),
+          if (r.headCm != null) l10n.headCm(decimal(locale, r.headCm!)),
           if (prev?.weightKg != null && r.weightKg != null)
             l10n.growthDeltaToday(
               '${r.weightKg! >= prev!.weightKg! ? '+' : '−'}${decimal(locale, (r.weightKg! - prev.weightKg!).abs())} kg',

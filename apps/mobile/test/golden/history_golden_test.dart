@@ -36,14 +36,21 @@ typedef _Case = ({
 _Case _history(
   HistoryFilter filter, {
   List<CareRecord>? range,
+  List<CareRecord> Function() growth = mockGrowth,
   Membership? me,
   Future<void> Function(WidgetTester tester)? act,
 }) => (
   build: () => HistoryScreen(filter: filter),
-  overrides: () => careOverrides(range: range, growth: mockGrowth(), me: me),
+  overrides: () => careOverrides(range: range, growth: growth(), me: me),
   prefs: const {},
   act: act,
 );
+
+Future<void> _headTab(WidgetTester t) async {
+  final vi = find.text('Vòng đầu');
+  await t.tap(vi.evaluate().isNotEmpty ? vi : find.text('Head'));
+  await t.pumpAndSettle();
+}
 
 final _cases = <String, _Case>{
   '20_history': _history(HistoryFilter.all),
@@ -51,6 +58,13 @@ final _cases = <String, _Case>{
   '20b_history_sleep': _history(HistoryFilter.sleep),
   '20c_history_diaper': _history(HistoryFilter.diaper),
   '20d_history_growth': _history(HistoryFilter.growth),
+  // Owner 2026-10-16: the "Vòng đầu" tab, measured and not measured yet.
+  '20d_history_growth_head': _history(
+    HistoryFilter.growth,
+    growth: mockGrowthWithHead,
+    act: _headTab,
+  ),
+  '20d_history_growth_head_none': _history(HistoryFilter.growth, act: _headTab),
   '20e_history_empty': _history(HistoryFilter.diaper, range: const []),
   '20f_date_picker': _history(
     HistoryFilter.all,

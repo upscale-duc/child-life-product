@@ -823,15 +823,17 @@ export function fixedPayload(
     // LUMI-01: what the app's fix rows / editors let the person fill.
     pump: { amountMl: 100, occurredAt: ago(30), side: 'both' },
     diaper: { diaper: 'wet', occurredAt: ago(10) },
-    growth: { weightKg: 6.2, measuredOn: DAY },
+    // 2026-10-16: the head circumference (optional: filled only when it is the flagged field).
+    growth: { weightKg: 6.2, measuredOn: DAY, headCm: 40 },
   };
   for (const [k, v] of Object.entries(fill[p.kind as string] ?? {})) {
+    if (k === 'headCm' && !flagged.has(k)) continue;
     if (p[k] === null || p[k] === undefined) {
       if (flagged.has(k) || d.problems.length > 0) p[k] = v;
     } else if (
       flagged.has(k) &&
       d.problems.some((x) => x === 'INVALID_AMOUNT') &&
-      (k === 'amountMl' || k === 'durationMin' || k === 'totalMinor')
+      (k === 'amountMl' || k === 'durationMin' || k === 'totalMinor' || k === 'headCm')
     ) {
       // An amount over the limit: the person types a sensible one.
       p[k] = v;
@@ -1006,6 +1008,14 @@ export async function countRecords() {
     ).length;
   }
   return n;
+}
+
+/** The `data` of the care records of [type] a case saved (seeded ones are `source: 'app'`). */
+export async function savedRecordData(type: string): Promise<Record<string, unknown>[]> {
+  const s = await db.collection(`babies/${B}/records`).where('type', '==', type).get();
+  return s.docs
+    .filter((d) => d.get('source') !== 'app' && d.get('deleted') !== true)
+    .map((d) => (d.get('data') as Record<string, unknown> | undefined) ?? {});
 }
 
 // ---------- Outcome ----------

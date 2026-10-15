@@ -7,6 +7,7 @@ import {
 import {
   careLimits,
   confirmBlocker,
+  growthHeadOk,
   growthLengthOk,
   growthWeightOk,
   draftProblems,
@@ -235,6 +236,8 @@ export function careRecordFromDraft(
       if (p.weightKg === null) problems.push('MISSING_AMOUNT');
       else if (!growthWeightOk(p.weightKg)) problems.push('INVALID_AMOUNT');
       if (p.lengthCm !== null && !growthLengthOk(p.lengthCm)) problems.push('INVALID_AMOUNT');
+      const head = p.headCm ?? null;
+      if (head !== null && !growthHeadOk(head)) problems.push('INVALID_AMOUNT');
       if (p.measuredOn === null) problems.push('MISSING_DATE');
       else if (p.measuredOn > localDateIn(zone, now)) problems.push('FUTURE_TIME');
       if (problems.length) return { ok: false, problems: [...new Set(problems)] };
@@ -250,6 +253,8 @@ export function careRecordFromDraft(
           weightKg: one(p.weightKg!),
           lengthCm: p.lengthCm === null ? null : one(p.lengthCm),
           measuredOn: p.measuredOn,
+          // Owner 2026-10-16: like GrowthScreen, the key only when a value was given.
+          ...(head !== null ? { headCm: one(head) } : {}),
         },
       };
     }

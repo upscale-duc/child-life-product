@@ -1565,8 +1565,8 @@ class _SideChip extends StatelessWidget {
 
 /// LUMI-01: a pump, a diaper change or a measurement from chat, with the care forms' own fields
 /// and ranges (PumpSheet: amount 1…1000 ml, side, length 1…240 min, start; DiaperSheet: the
-/// three tiles and the time; GrowthScreen: weight 0,3…40 kg, optional length 20…150 cm, the
-/// measuring date). Updates the draft only; saving stays on the card.
+/// three tiles and the time; GrowthScreen: weight 0,3…40 kg, optional length 20…150 cm and
+/// head circumference 20…60 cm, the measuring date). Updates the draft only; saving stays on the card.
 class _CareLogEditor extends ConsumerStatefulWidget {
   const _CareLogEditor({
     required this.scopeKey,
@@ -1592,6 +1592,9 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
 
   /// A pump's minutes, a measurement's cm.
   final _second = TextEditingController();
+
+  /// A measurement's head circumference (cm, owner 2026-10-16).
+  final _third = TextEditingController();
   var _filled = false;
   var _problems = <DraftProblem>[];
   var _busy = false;
@@ -1610,13 +1613,14 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
       case PumpPayload(:final amountMl, :final durationMin):
         _first.text = amountMl == null ? '' : '${amountMl.round()}';
         _second.text = durationMin == null ? '' : '$durationMin';
-      case GrowthPayload(:final weightKg, :final lengthCm):
+      case GrowthPayload(:final weightKg, :final lengthCm, :final headCm):
         _first.text = weightKg == null
             ? ''
             : decimal(locale, weightKg.toDouble());
         _second.text = lengthCm == null
             ? ''
             : decimal(locale, lengthCm.toDouble());
+        _third.text = headCm == null ? '' : decimal(locale, headCm.toDouble());
       default:
         break;
     }
@@ -1626,6 +1630,7 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
   void dispose() {
     _first.dispose();
     _second.dispose();
+    _third.dispose();
     super.dispose();
   }
 
@@ -1655,6 +1660,7 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
       weightKg: _decimal(_first),
       lengthCm: _decimal(_second),
       measuredOn: p.measuredOn,
+      headCm: _decimal(_third),
     ),
     final p => p,
   };
@@ -1710,7 +1716,9 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
       (GrowthPayload(), DraftProblem.invalidAmount) =>
         fields.contains('weightKg')
             ? l10n.growthWeightRequired
-            : l10n.growthLengthRange,
+            : fields.contains('lengthCm')
+            ? l10n.growthLengthRange
+            : l10n.growthHeadRange,
       (GrowthPayload(), DraftProblem.missingDate) => l10n.asGapMeasuredOn,
       (GrowthPayload(), DraftProblem.futureTime) => l10n.asGapMeasuredOnFuture,
       _ => null,
@@ -1901,6 +1909,12 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
             key: const ValueKey('as.edit.length'),
             label: l10n.asFieldLength,
             controller: _second,
+            unit: 'cm',
+          ),
+          _DecimalRow(
+            key: const ValueKey('as.edit.head'),
+            label: l10n.asFieldHead,
+            controller: _third,
             unit: 'cm',
           ),
           ..._measuredOn(context, p, now),

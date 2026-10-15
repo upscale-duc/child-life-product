@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+     "id": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_6bec00d460ab2e0c786ac95a8e5b39bf_0",
-      "taskId": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+      "id": "dr_d5c6a9c346ab2d8914534c447a93e3e1_0",
+      "taskId": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -58,7 +58,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_6bec00d460ab2e0c786ac95a8e5b39bf"
+       "task:tk_d5c6a9c346ab2d8914534c447a93e3e1"
       ],
       "recordId": null,
       "recordLink": null,
@@ -68,8 +68,8 @@
       "confirmedBy": null
      },
      {
-      "id": "dr_6bec00d460ab2e0c786ac95a8e5b39bf_1",
-      "taskId": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+      "id": "dr_d5c6a9c346ab2d8914534c447a93e3e1_1",
+      "taskId": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -79,7 +79,8 @@
        "kind": "growth",
        "weightKg": 6.3,
        "lengthCm": null,
-       "measuredOn": "2026-10-15"
+       "measuredOn": "2026-10-15",
+       "headCm": null
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -87,7 +88,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_6bec00d460ab2e0c786ac95a8e5b39bf"
+       "task:tk_d5c6a9c346ab2d8914534c447a93e3e1"
       ],
       "recordId": null,
       "recordLink": null,
@@ -109,7 +110,7 @@
         "text": "thay tã bẩn lúc 13h, cân bé được 6,3 kg"
        }
       ],
-      "taskId": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+      "taskId": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -128,17 +129,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_6bec00d460ab2e0c786ac95a8e5b39bf_0",
+        "draftId": "dr_d5c6a9c346ab2d8914534c447a93e3e1_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_6bec00d460ab2e0c786ac95a8e5b39bf_1",
+        "draftId": "dr_d5c6a9c346ab2d8914534c447a93e3e1_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+      "taskId": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -153,7 +154,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+     "id": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -184,8 +185,8 @@
     },
     "drafts": [
      {
-      "id": "dr_6bec00d460ab2e0c786ac95a8e5b39bf_0",
-      "taskId": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+      "id": "dr_d5c6a9c346ab2d8914534c447a93e3e1_0",
+      "taskId": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -202,10 +203,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_6bec00d460ab2e0c786ac95a8e5b39bf"
+       "task:tk_d5c6a9c346ab2d8914534c447a93e3e1"
       ],
-      "recordId": "r_dd8c97ea07f793e2f6dbf82375bbe8d7",
-      "recordLink": "/care/records/b_00000000000000000001/r_dd8c97ea07f793e2f6dbf82375bbe8d7",
+      "recordId": "r_0c283cefdddede20c2dad013193abc6b",
+      "recordLink": "/care/records/b_00000000000000000001/r_0c283cefdddede20c2dad013193abc6b",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -217,8 +218,8 @@
       }
      },
      {
-      "id": "dr_6bec00d460ab2e0c786ac95a8e5b39bf_1",
-      "taskId": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+      "id": "dr_d5c6a9c346ab2d8914534c447a93e3e1_1",
+      "taskId": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -228,7 +229,8 @@
        "kind": "growth",
        "weightKg": 6.3,
        "lengthCm": null,
-       "measuredOn": "2026-10-15"
+       "measuredOn": "2026-10-15",
+       "headCm": null
       },
       "missingFields": [],
       "uncertainFields": [],
@@ -236,10 +238,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_6bec00d460ab2e0c786ac95a8e5b39bf"
+       "task:tk_d5c6a9c346ab2d8914534c447a93e3e1"
       ],
-      "recordId": "r_53164899584e6bdacabb381c10678708",
-      "recordLink": "/care/records/b_00000000000000000001/r_53164899584e6bdacabb381c10678708",
+      "recordId": "r_9acdc2345e07044e0bc3261f18c0e264",
+      "recordLink": "/care/records/b_00000000000000000001/r_9acdc2345e07044e0bc3261f18c0e264",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -263,7 +265,7 @@
         "text": "thay tã bẩn lúc 13h, cân bé được 6,3 kg"
        }
       ],
-      "taskId": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+      "taskId": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -282,17 +284,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_6bec00d460ab2e0c786ac95a8e5b39bf_0",
+        "draftId": "dr_d5c6a9c346ab2d8914534c447a93e3e1_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_6bec00d460ab2e0c786ac95a8e5b39bf_1",
+        "draftId": "dr_d5c6a9c346ab2d8914534c447a93e3e1_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+      "taskId": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -308,21 +310,21 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_6bec00d460ab2e0c786ac95a8e5b39bf_0",
+          "draftId": "dr_d5c6a9c346ab2d8914534c447a93e3e1_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_dd8c97ea07f793e2f6dbf82375bbe8d7",
+          "recordLink": "/care/records/b_00000000000000000001/r_0c283cefdddede20c2dad013193abc6b",
           "errorCode": null
          },
          {
-          "draftId": "dr_6bec00d460ab2e0c786ac95a8e5b39bf_1",
+          "draftId": "dr_d5c6a9c346ab2d8914534c447a93e3e1_1",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_53164899584e6bdacabb381c10678708",
+          "recordLink": "/care/records/b_00000000000000000001/r_9acdc2345e07044e0bc3261f18c0e264",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_6bec00d460ab2e0c786ac95a8e5b39bf",
+      "taskId": "tk_d5c6a9c346ab2d8914534c447a93e3e1",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

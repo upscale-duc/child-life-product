@@ -16152,4 +16152,60 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asFieldDiaper => 'Loại tã';
+
+  @override
+  String get growthHeadOptional => 'Vòng đầu · tùy chọn';
+
+  @override
+  String get growthHeadRange => 'Vòng đầu từ 20 đến 60 cm.';
+
+  @override
+  String headCm(String v) {
+    return 'vòng đầu $v cm';
+  }
+
+  @override
+  String get growthHeadTab => 'Vòng đầu';
+
+  @override
+  String get detailHead => 'Vòng đầu';
+
+  @override
+  String bpHead(String when) {
+    return 'Vòng đầu · $when';
+  }
+
+  @override
+  String whoBelowHeadNote(String name) {
+    return 'Vòng đầu của $name đang nhỏ hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.';
+  }
+
+  @override
+  String whoAboveHeadNote(String name) {
+    return 'Vòng đầu của $name đang lớn hơn khoảng thường gặp ở tuổi này. Mỗi bé lớn theo nhịp riêng — bạn nên trao đổi với bác sĩ ở lần khám tới.';
+  }
+
+  @override
+  String get asFieldHead => 'Vòng đầu · tùy chọn';
+
+  @override
+  String get asGapHead => 'Chưa có vòng đầu (cm)';
+
+  @override
+  String asGapHeadUnsure(String cm) {
+    return 'Vòng đầu $cm cm có đúng không?';
+  }
+
+  @override
+  String get asFixEnterHead => 'Nhập vòng đầu';
+
+  @override
+  String get asFixDropHead => 'Bỏ vòng đầu';
+
+  @override
+  String get asAskAmount => 'Hết bao nhiêu tiền?';
+
+  @override
+  String get growthMeasureNone =>
+      'Chưa có số đo này. Thêm khi đo cho bé lần tới.';
 }
