@@ -554,6 +554,7 @@ class _RhythmSetupScreenState extends ConsumerState<RhythmSetupScreen> {
     final prefs = _prefs ?? stored ?? UserPreferences.defaults;
     final canCheckIn = familyCan(me, FamilyAction.rhythmCheckin);
     final canSetup = familyCan(me, FamilyAction.rhythmSetup);
+    final canRead = familyCan(me, FamilyAction.historyRead);
 
     Widget toggle(
       String title,
@@ -605,7 +606,7 @@ class _RhythmSetupScreenState extends ConsumerState<RhythmSetupScreen> {
           style: cl.text.body.copyWith(color: cl.colors.inkMuted),
         ),
         const SizedBox(height: ClSpace.s4),
-        if (canSetup || canCheckIn) ...[
+        if (canSetup || canCheckIn || canRead) ...[
           ClCardGroup(
             children: [
               if (canSetup)
@@ -623,6 +624,16 @@ class _RhythmSetupScreenState extends ConsumerState<RhythmSetupScreen> {
                   reminders.evening,
                   (v) => setState(
                     () => _reminders = reminders.copyWith(evening: v),
+                  ),
+                ),
+              // EN07 "Tóm tắt tuần · Chủ nhật 20:30" → EN09.
+              if (canRead)
+                toggle(
+                  l10n.rhWeekTitle,
+                  l10n.rhWeekRemindSub,
+                  reminders.weekly,
+                  (v) => setState(
+                    () => _reminders = reminders.copyWith(weekly: v),
                   ),
                 ),
             ],

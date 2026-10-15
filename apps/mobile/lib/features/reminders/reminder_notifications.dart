@@ -25,7 +25,10 @@ import '../rhythm/rhythm_local.dart'
         rhythmEveningPlanProvider,
         rhythmOfPayload,
         rhythmStageNotification,
-        rhythmStageReminderPlanProvider;
+        rhythmStageReminderPlanProvider,
+        rhythmWeekOfPayload,
+        rhythmWeeklyNotification,
+        rhythmWeeklyPlanProvider;
 import 'device_identity.dart';
 import 'reminder_models.dart';
 import 'reminder_repository.dart';
@@ -299,6 +302,20 @@ class _ReminderNotificationSyncState
   }
 
   void _open(String? payload) {
+    // Nhịp lớn lên weekly summary (EN07 → EN09): open the week of that baby.
+    final weekBaby = rhythmWeekOfPayload(payload);
+    if (weekBaby != null && mounted) {
+      final session = ref.read(sessionProvider);
+      final m = session is SessionSignedIn
+          ? session.membershipFor(weekBaby)
+          : null;
+      if (m == null || !familyCan(m, FamilyAction.historyRead)) return;
+      ref.read(selectedBabyIdProvider.notifier).select(weekBaby);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) ref.read(routerProvider).push(Routes.rhythmWeek);
+      });
+      return;
+    }
     // Nhịp lớn lên evening prompt (NL02c): open the check-in C01 for that baby.
     final checkInBaby = rhythmCheckInOfPayload(payload);
     if (checkInBaby != null && mounted) {
@@ -403,6 +420,10 @@ class _ReminderNotificationSyncState
     for (final p in ref.read(rhythmEveningPlanProvider)) {
       out.add(rhythmEveningNotification(l10n, p));
     }
+    // The weekly summary, Sunday 20:30 (EN07), before the person's quiet hours.
+    for (final p in ref.read(rhythmWeeklyPlanProvider)) {
+      out.add(rhythmWeeklyNotification(l10n, p));
+    }
     return out;
   }
 
@@ -442,6 +463,7 @@ class _ReminderNotificationSyncState
     ref.watch(nudgePlanProvider);
     ref.watch(rhythmStageReminderPlanProvider);
     ref.watch(rhythmEveningPlanProvider);
+    ref.watch(rhythmWeeklyPlanProvider);
     if (enabled == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_sync()));
     } else {

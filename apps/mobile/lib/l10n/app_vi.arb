@@ -19170,5 +19170,351 @@
   "pmQuotaReleased": "Đã hoàn lượt giữ chỗ · Thử lại không trừ thêm lượt",
   "@pmQuotaReleased": {
     "description": "MO04 failed job."
+  },
+  "rhWeekTitle": "Tóm tắt tuần",
+  "@rhWeekTitle": {
+    "description": "EN09 kicker, NL01 / Home entry, notification title and NL02c switch."
+  },
+  "rhWeekOf": "Tuần {n} của {baby}",
+  "@rhWeekOf": {
+    "description": "EN09 title: the week of life counted from the date of birth (days 0–6 = week 1) on the week’s Sunday.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekInProgress": "Tuần đang diễn ra · số liệu đến lúc này",
+  "@rhWeekInProgress": {
+    "description": "EN09 note on a Sunday: the week ends tonight, today’s sleep is not counted yet."
+  },
+  "rhWeekShare": "Gửi cho…",
+  "@rhWeekShare": {
+    "description": "EN09 top pill: shares the logged figures as plain text."
+  },
+  "rhWeekRecordedTitle": "Đã ghi trong tuần",
+  "@rhWeekRecordedTitle": {
+    "description": "EN09 free section heading."
+  },
+  "rhWeekRecordedSub": "Từ nhật ký của cả nhà · luôn miễn phí",
+  "@rhWeekRecordedSub": {
+    "description": "EN09 free section subtitle."
+  },
+  "rhWeekFeeds": "Bú",
+  "@rhWeekFeeds": {
+    "description": "EN09 tile label."
+  },
+  "rhWeekFeedCount": "{count} cữ",
+  "@rhWeekFeedCount": {
+    "description": "EN09 feeds tile value.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekBottle": "Bú bình {ml} ml",
+  "@rhWeekBottle": {
+    "description": "EN09 feeds tile: bottle millilitres (never converted from minutes).",
+    "placeholders": {
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekBreast": "Bú mẹ {time}",
+  "@rhWeekBreast": {
+    "description": "EN09 feeds tile: breastfeeding time (never converted to ml).",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekNone": "Chưa ghi",
+  "@rhWeekNone": {
+    "description": "EN09 tile value when nothing of that kind was logged."
+  },
+  "rhWeekSleep": "Ngủ",
+  "@rhWeekSleep": {
+    "description": "EN09 tile label."
+  },
+  "rhWeekSleepAvg": "trung bình ngày ghi đủ",
+  "@rhWeekSleepAvg": {
+    "description": "EN09 sleep tile: what the value is."
+  },
+  "rhWeekCoverage": "{valid}/{days} ngày ghi đủ",
+  "@rhWeekCoverage": {
+    "description": "EN09 coverage label: valid days counted automatically (D-073 #1).",
+    "placeholders": {
+      "valid": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekSleepSparse": "Chưa đủ dữ liệu",
+  "@rhWeekSleepSparse": {
+    "description": "EN09 sleep tile value under the rules’ minimum of valid days."
+  },
+  "rhWeekSleepNeed": "cần ít nhất {need} ngày",
+  "@rhWeekSleepNeed": {
+    "description": "EN09 sleep tile: the minimum of valid days.",
+    "placeholders": {
+      "need": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekDiapers": "Thay tã",
+  "@rhWeekDiapers": {
+    "description": "EN09 tile label."
+  },
+  "rhWeekDiaperCount": "{count} lần",
+  "@rhWeekDiaperCount": {
+    "description": "EN09 diapers tile value.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekDiaperKinds": "Ướt {wet} · Bẩn {dirty}",
+  "@rhWeekDiaperKinds": {
+    "description": "EN09 diapers tile detail (“Cả hai” counts in both).",
+    "placeholders": {
+      "wet": {
+        "type": "int"
+      },
+      "dirty": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekGrowth": "Tăng trưởng",
+  "@rhWeekGrowth": {
+    "description": "EN09 tile label (only when measured this week)."
+  },
+  "rhWeekGrowthSince": "{delta} so với {date}",
+  "@rhWeekGrowthSince": {
+    "description": "EN09 growth tile: change against the previous weighing, with its date.",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekGrowthOn": "đo ngày {date}",
+  "@rhWeekGrowthOn": {
+    "description": "EN09 growth tile without an earlier weighing.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekMemories": "Kỷ niệm",
+  "@rhWeekMemories": {
+    "description": "EN09 tile label (only when something was saved this week)."
+  },
+  "rhWeekPhotos": "{count} ảnh",
+  "@rhWeekPhotos": {
+    "description": "EN09 moments tile value.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekVideos": "{count} video",
+  "@rhWeekVideos": {
+    "description": "EN09 moments tile detail.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekNotes": "{count} ghi chú",
+  "@rhWeekNotes": {
+    "description": "EN09 moments tile detail.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekCoverageNote": "Ngủ trung bình chỉ tính những ngày được ghi đủ, tự đếm theo nhật ký. Ngày thiếu ghi không bị tính là 0.",
+  "@rhWeekCoverageNote": {
+    "description": "EN09 note under the tiles (missing is never zero)."
+  },
+  "rhWeekFamilyTitle": "Cả nhà đã cùng chăm",
+  "@rhWeekFamilyTitle": {
+    "description": "EN09 family card title."
+  },
+  "rhWeekFamilyCount": "{who} {count} lần",
+  "@rhWeekFamilyCount": {
+    "description": "EN09 family card: log entries by one person.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekFamilyEmpty": "Tuần này chưa có ghi chép nào.",
+  "@rhWeekFamilyEmpty": {
+    "description": "EN09 family card without entries."
+  },
+  "rhWeekFamilyNote": "Số lần ghi trong nhật ký, không xếp hạng.",
+  "@rhWeekFamilyNote": {
+    "description": "EN09 family card footnote."
+  },
+  "rhWeekNextTitle": "Tuần tới",
+  "@rhWeekNextTitle": {
+    "description": "EN09 heading of what is already set for the next Monday–Sunday."
+  },
+  "rhWeekNextEmpty": "Chưa có nhắc việc hay mũi tiêm nào đặt cho tuần tới.",
+  "@rhWeekNextEmpty": {
+    "description": "EN09 next week without items."
+  },
+  "rhWeekReference": "{range} · tham khảo",
+  "@rhWeekReference": {
+    "description": "EN09 next week: a reference-calendar window (never a forecast).",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekNoScore": "Không chấm điểm, không so sánh với bé khác.",
+  "@rhWeekNoScore": {
+    "description": "EN09 footer (561:3102)."
+  },
+  "rhWeekInsightTitle": "Nhìn lại tuần qua",
+  "@rhWeekInsightTitle": {
+    "description": "EN09 group A section heading."
+  },
+  "rhWeekInsightSub": "Từ ghi nhận và nhật ký của nhà mình · không phải chẩn đoán",
+  "@rhWeekInsightSub": {
+    "description": "EN09 group A section subtitle."
+  },
+  "rhWeekNotesTitle": "Ghi nhận trong tuần",
+  "@rhWeekNotesTitle": {
+    "description": "EN09 group A: the week’s check-ins."
+  },
+  "rhWeekChangedDays": "{count} ngày có ghi nhận thay đổi",
+  "@rhWeekChangedDays": {
+    "description": "EN09 group A: days whose check-ins report a change.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekObsDays": "{what} · {count} ngày",
+  "@rhWeekObsDays": {
+    "description": "EN09 group A: one reported change and on how many days.",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekUsualDays": "{count} ngày như mọi ngày",
+  "@rhWeekUsualDays": {
+    "description": "EN09 group A: days noted as usual.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekMixedDays": "{count} ngày mỗi người thấy khác nhau · giữ cả hai ghi nhận",
+  "@rhWeekMixedDays": {
+    "description": "EN09 group A: mixed days (X03).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekNoNotes": "Tuần này chưa có ghi nhận nào.",
+  "@rhWeekNoNotes": {
+    "description": "EN09 group A without check-ins."
+  },
+  "rhWeekTriedTitle": "Đã thử trong tuần",
+  "@rhWeekTriedTitle": {
+    "description": "EN09 group A: activities tried and how they went."
+  },
+  "rhWeekNoTried": "Tuần này nhà mình chưa đánh dấu cách nào đã thử.",
+  "@rhWeekNoTried": {
+    "description": "EN09 group A without feedback."
+  },
+  "rhWeekNextIdea": "Một ý tưởng cho tuần tới",
+  "@rhWeekNextIdea": {
+    "description": "EN09 group A: the current suggestion (PS02)."
+  },
+  "rhWeekGatePremium": "Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp. Số liệu đã ghi ở trên luôn miễn phí.",
+  "@rhWeekGatePremium": {
+    "description": "EN09 gate, PREMIUM_REQUIRED."
+  },
+  "rhWeekGateOther": "Phần nhìn lại chưa mở cho bạn. Số liệu đã ghi ở trên vẫn dùng được.",
+  "@rhWeekGateOther": {
+    "description": "EN09 gate, any other reason."
+  },
+  "rhWeekNoAccess": "Tóm tắt tuần chỉ hiện với người được xem chăm sóc hằng ngày.",
+  "@rhWeekNoAccess": {
+    "description": "EN09 for a relative without “Chăm sóc hằng ngày” (history.read)."
+  },
+  "rhWeekShareFrom": "Đã ghi trong tuần (nhật ký Child Life):",
+  "@rhWeekShareFrom": {
+    "description": "Shared text: heading of the figures."
+  },
+  "rhWeekShareLine": "{label}: {value}",
+  "@rhWeekShareLine": {
+    "description": "Shared text: one figure.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekShareSleep": "trung bình {time} mỗi ngày ghi đủ",
+  "@rhWeekShareSleep": {
+    "description": "Shared text: the sleep average.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "rhWeekOpen": "Xem lại tuần",
+  "@rhWeekOpen": {
+    "description": "NL01 / Home entry action."
+  },
+  "rhWeekRemindSub": "Chủ nhật 20:30 · trước giờ yên lặng",
+  "@rhWeekRemindSub": {
+    "description": "NL02c switch subtitle (EN07 “Chủ nhật 20:30”)."
+  },
+  "rhWeekNotifBody": "Xem lại những gì cả nhà đã ghi trong tuần.",
+  "@rhWeekNotifBody": {
+    "description": "Sunday notification body: no baby name, no figures (R-120)."
   }
 }

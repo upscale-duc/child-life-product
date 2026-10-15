@@ -20,36 +20,50 @@ import 'rhythm_models.dart';
 /// `userPreferencesSchema` has no field for them; quiet hours live in the person's preferences)
 /// and whether the setup (NL02a–c) was already shown for a baby.
 
-/// NL02c switches: the stage reminder on, the evening prompt off (Figma `570:1183`).
+/// NL02c switches: the stage reminder on, the evening prompt off (Figma `570:1183`), the
+/// weekly summary on (EN07 560:2981 "Tóm tắt tuần · Chủ nhật 20:30" is drawn on).
 @immutable
 class RhythmReminders {
-  const RhythmReminders({this.stage = true, this.evening = false});
+  const RhythmReminders({
+    this.stage = true,
+    this.evening = false,
+    this.weekly = true,
+  });
   final bool stage;
   final bool evening;
+  final bool weekly;
 
-  RhythmReminders copyWith({bool? stage, bool? evening}) => RhythmReminders(
-    stage: stage ?? this.stage,
-    evening: evening ?? this.evening,
-  );
+  RhythmReminders copyWith({bool? stage, bool? evening, bool? weekly}) =>
+      RhythmReminders(
+        stage: stage ?? this.stage,
+        evening: evening ?? this.evening,
+        weekly: weekly ?? this.weekly,
+      );
 
   static RhythmReminders fromJson(Object? json) {
     if (json is! Map) return const RhythmReminders();
     return RhythmReminders(
       stage: json['stage'] != false,
       evening: json['evening'] == true,
+      weekly: json['weekly'] != false,
     );
   }
 
-  Map<String, Object?> toJson() => {'stage': stage, 'evening': evening};
+  Map<String, Object?> toJson() => {
+    'stage': stage,
+    'evening': evening,
+    'weekly': weekly,
+  };
 
   @override
   bool operator ==(Object other) =>
       other is RhythmReminders &&
       other.stage == stage &&
-      other.evening == evening;
+      other.evening == evening &&
+      other.weekly == weekly;
 
   @override
-  int get hashCode => Object.hash(stage, evening);
+  int get hashCode => Object.hash(stage, evening, weekly);
 }
 
 /// The reminder switches of one person ([uid]) on this phone.
@@ -324,6 +338,12 @@ final rhythmEveningPlanProvider =
         final mine =
             checkIns?.any((c) => c.authorUid == me.uid && c.date == today) ??
             false;
+        // NL02c "tối đa 1 thông báo Nhịp lớn lên mỗi ngày": on a Sunday with the weekly summary,
+        // the summary takes the evening.
+        final weekly = {
+          for (final w in ref.watch(rhythmWeeklyPlanProvider))
+            DateTime(w.fireAt.year, w.fireAt.month, w.fireAt.day),
+        };
         return [
           for (final at in eveningCheckInPlan(
             enabled: true,
@@ -332,7 +352,8 @@ final rhythmEveningPlanProvider =
             quietFrom: prefs.quietFrom,
             quietTo: prefs.quietTo,
           ))
-            (babyId: me.babyId, fireAt: at),
+            if (!weekly.contains(DateTime(at.year, at.month, at.day)))
+              (babyId: me.babyId, fireAt: at),
         ];
       } on Object {
         return const [];
@@ -373,6 +394,144 @@ String? rhythmCheckInOfPayload(String? payload) {
   try {
     final json = jsonDecode(payload);
     if (json is Map && json['k'] == 'rhythm_checkin' && json['b'] is String) {
+      return json['b'] as String;
+    }
+  } on FormatException {
+    return null;
+  }
+  return null;
+}
+
+// ---------- Weekly summary (EN07 "Tóm tắt tuần · Chủ nhật 20:30" → EN09) ----------
+
+/// Sunday 20:30, local time on the phone (EN07).
+const weeklySummaryHour = 20;
+const weeklySummaryMinute = 30;
+
+/// How many Sundays ahead are scheduled; each sync renews them.
+const weeklySummaryWeeks = 2;
+
+/// The next [weeks] Sundays at 20:30 (moved before the person's quiet hours like the evening
+/// prompt, or dropped when no evening time is left), none before [earliest] (the first Sunday
+/// that closes a whole week of the baby's life) and nothing in the past. Pure, so it is tested
+/// without a phone.
+List<DateTime> weeklySummaryPlan({
+  required bool enabled,
+  required DateTime now,
+  String? quietFrom,
+  String? quietTo,
+  DateTime? earliest,
+  int weeks = weeklySummaryWeeks,
+}) {
+  if (!enabled) return const [];
+  final toSunday = (DateTime.sunday - now.weekday) % 7;
+  final out = <DateTime>[];
+  // One more Sunday than asked, in case this Sunday's 20:30 has passed.
+  for (var i = 0; i <= weeks && out.length < weeks; i++) {
+    final day = DateTime(now.year, now.month, now.day + toSunday + 7 * i);
+    if (earliest != null &&
+        day.isBefore(DateTime(earliest.year, earliest.month, earliest.day))) {
+      continue;
+    }
+    final at = eveningTimeOutsideQuiet(
+      DateTime(
+        day.year,
+        day.month,
+        day.day,
+        weeklySummaryHour,
+        weeklySummaryMinute,
+      ),
+      quietFrom,
+      quietTo,
+    );
+    if (at != null && at.isAfter(now)) out.add(at);
+  }
+  return out;
+}
+
+/// The first Sunday whose Monday–Sunday the baby lived whole (born by that Monday).
+DateTime firstWeeklySummaryDay(DateTime dateOfBirth) {
+  // Day 7 of life, then the Sunday on or after it.
+  final seventh = DateTime.parse(addDaysIso(isoOf(dateOfBirth), 6));
+  return DateTime.parse(
+    addDaysIso(isoOf(seventh), (DateTime.sunday - seventh.weekday) % 7),
+  );
+}
+
+/// The weekly summaries this phone should schedule for the selected baby: only for a person who
+/// may read the week (`history.read`), with the rhythm rollout and their own switch on, and once
+/// a whole week of life has passed (date of birth, when they may read it). Best effort, like the
+/// other Nhịp lớn lên reminders.
+final rhythmWeeklyPlanProvider =
+    Provider.autoDispose<List<({String babyId, DateTime fireAt})>>((ref) {
+      try {
+        final me = ref.watch(selectedMembershipProvider);
+        final caps = ref.watch(selectedCapabilitiesProvider);
+        if (me == null ||
+            caps == null ||
+            !caps.features.rhythm ||
+            !familyCan(me, FamilyAction.historyRead)) {
+          return const [];
+        }
+        if (!ref.watch(rhythmRemindersProvider(me.uid)).weekly) {
+          return const [];
+        }
+        final prefs =
+            ref.watch(userPreferencesProvider(me.uid)).value ??
+            UserPreferences.defaults;
+        final dob = me.canViewBabyInfo
+            ? ref.watch(rhythmProfileProvider(me.babyId)).value?.dateOfBirth
+            : null;
+        return [
+          for (final at in weeklySummaryPlan(
+            enabled: true,
+            now: ref.read(timerClockProvider)(),
+            quietFrom: prefs.quietFrom,
+            quietTo: prefs.quietTo,
+            // The Sunday ending the first Monday–Sunday the baby lived whole.
+            earliest: dob == null ? null : firstWeeklySummaryDay(dob),
+          ))
+            (babyId: me.babyId, fireAt: at),
+        ];
+      } on Object {
+        return const [];
+      }
+    });
+
+/// One weekly summary as a local notification: no baby name and no figures (R-120). Ids: bits 30
+/// and 29 together (keepsake nudges use bit 30 alone, the other rhythm reminders bit 29 alone).
+LocalReminder rhythmWeeklyNotification(
+  AppLocalizations l10n,
+  ({String babyId, DateTime fireAt}) p,
+) {
+  final title = l10n.rhWeekTitle;
+  final body = l10n.rhWeekNotifBody;
+  final day = '${p.fireAt.year}-${p.fireAt.month}-${p.fireAt.day}';
+  final hash = '${p.babyId}/week/$day'.codeUnits.fold<int>(
+    17,
+    (h, c) => (h * 31 + c) & 0x0fffffff,
+  );
+  return LocalReminder(
+    id: (1 << 30) | (1 << 29) | hash,
+    fireAt: p.fireAt,
+    title: title,
+    body: body,
+    payload: jsonEncode({
+      'k': 'rhythm_week',
+      'b': p.babyId,
+      'at': p.fireAt.millisecondsSinceEpoch,
+      't': title,
+      'x': body,
+    }),
+  );
+}
+
+/// The baby id of a weekly-summary payload, or null for anything else.
+String? rhythmWeekOfPayload(String? payload) {
+  if (payload == null) return null;
+  try {
+    final json = jsonDecode(payload);
+    if (json is Map && json['k'] == 'rhythm_week' && json['b'] is String) {
       return json['b'] as String;
     }
   } on FormatException {

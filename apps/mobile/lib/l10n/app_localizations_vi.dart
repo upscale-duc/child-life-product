@@ -12886,4 +12886,218 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get pmQuotaReleased =>
       'Đã hoàn lượt giữ chỗ · Thử lại không trừ thêm lượt';
+
+  @override
+  String get rhWeekTitle => 'Tóm tắt tuần';
+
+  @override
+  String rhWeekOf(int n, String baby) {
+    return 'Tuần $n của $baby';
+  }
+
+  @override
+  String get rhWeekInProgress => 'Tuần đang diễn ra · số liệu đến lúc này';
+
+  @override
+  String get rhWeekShare => 'Gửi cho…';
+
+  @override
+  String get rhWeekRecordedTitle => 'Đã ghi trong tuần';
+
+  @override
+  String get rhWeekRecordedSub => 'Từ nhật ký của cả nhà · luôn miễn phí';
+
+  @override
+  String get rhWeekFeeds => 'Bú';
+
+  @override
+  String rhWeekFeedCount(int count) {
+    return '$count cữ';
+  }
+
+  @override
+  String rhWeekBottle(String ml) {
+    return 'Bú bình $ml ml';
+  }
+
+  @override
+  String rhWeekBreast(String time) {
+    return 'Bú mẹ $time';
+  }
+
+  @override
+  String get rhWeekNone => 'Chưa ghi';
+
+  @override
+  String get rhWeekSleep => 'Ngủ';
+
+  @override
+  String get rhWeekSleepAvg => 'trung bình ngày ghi đủ';
+
+  @override
+  String rhWeekCoverage(int valid, int days) {
+    return '$valid/$days ngày ghi đủ';
+  }
+
+  @override
+  String get rhWeekSleepSparse => 'Chưa đủ dữ liệu';
+
+  @override
+  String rhWeekSleepNeed(int need) {
+    return 'cần ít nhất $need ngày';
+  }
+
+  @override
+  String get rhWeekDiapers => 'Thay tã';
+
+  @override
+  String rhWeekDiaperCount(int count) {
+    return '$count lần';
+  }
+
+  @override
+  String rhWeekDiaperKinds(int wet, int dirty) {
+    return 'Ướt $wet · Bẩn $dirty';
+  }
+
+  @override
+  String get rhWeekGrowth => 'Tăng trưởng';
+
+  @override
+  String rhWeekGrowthSince(String delta, String date) {
+    return '$delta so với $date';
+  }
+
+  @override
+  String rhWeekGrowthOn(String date) {
+    return 'đo ngày $date';
+  }
+
+  @override
+  String get rhWeekMemories => 'Kỷ niệm';
+
+  @override
+  String rhWeekPhotos(int count) {
+    return '$count ảnh';
+  }
+
+  @override
+  String rhWeekVideos(int count) {
+    return '$count video';
+  }
+
+  @override
+  String rhWeekNotes(int count) {
+    return '$count ghi chú';
+  }
+
+  @override
+  String get rhWeekCoverageNote =>
+      'Ngủ trung bình chỉ tính những ngày được ghi đủ, tự đếm theo nhật ký. Ngày thiếu ghi không bị tính là 0.';
+
+  @override
+  String get rhWeekFamilyTitle => 'Cả nhà đã cùng chăm';
+
+  @override
+  String rhWeekFamilyCount(String who, int count) {
+    return '$who $count lần';
+  }
+
+  @override
+  String get rhWeekFamilyEmpty => 'Tuần này chưa có ghi chép nào.';
+
+  @override
+  String get rhWeekFamilyNote => 'Số lần ghi trong nhật ký, không xếp hạng.';
+
+  @override
+  String get rhWeekNextTitle => 'Tuần tới';
+
+  @override
+  String get rhWeekNextEmpty =>
+      'Chưa có nhắc việc hay mũi tiêm nào đặt cho tuần tới.';
+
+  @override
+  String rhWeekReference(String range) {
+    return '$range · tham khảo';
+  }
+
+  @override
+  String get rhWeekNoScore => 'Không chấm điểm, không so sánh với bé khác.';
+
+  @override
+  String get rhWeekInsightTitle => 'Nhìn lại tuần qua';
+
+  @override
+  String get rhWeekInsightSub =>
+      'Từ ghi nhận và nhật ký của nhà mình · không phải chẩn đoán';
+
+  @override
+  String get rhWeekNotesTitle => 'Ghi nhận trong tuần';
+
+  @override
+  String rhWeekChangedDays(int count) {
+    return '$count ngày có ghi nhận thay đổi';
+  }
+
+  @override
+  String rhWeekObsDays(String what, int count) {
+    return '$what · $count ngày';
+  }
+
+  @override
+  String rhWeekUsualDays(int count) {
+    return '$count ngày như mọi ngày';
+  }
+
+  @override
+  String rhWeekMixedDays(int count) {
+    return '$count ngày mỗi người thấy khác nhau · giữ cả hai ghi nhận';
+  }
+
+  @override
+  String get rhWeekNoNotes => 'Tuần này chưa có ghi nhận nào.';
+
+  @override
+  String get rhWeekTriedTitle => 'Đã thử trong tuần';
+
+  @override
+  String get rhWeekNoTried =>
+      'Tuần này nhà mình chưa đánh dấu cách nào đã thử.';
+
+  @override
+  String get rhWeekNextIdea => 'Một ý tưởng cho tuần tới';
+
+  @override
+  String get rhWeekGatePremium =>
+      'Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp. Số liệu đã ghi ở trên luôn miễn phí.';
+
+  @override
+  String get rhWeekGateOther =>
+      'Phần nhìn lại chưa mở cho bạn. Số liệu đã ghi ở trên vẫn dùng được.';
+
+  @override
+  String get rhWeekNoAccess =>
+      'Tóm tắt tuần chỉ hiện với người được xem chăm sóc hằng ngày.';
+
+  @override
+  String get rhWeekShareFrom => 'Đã ghi trong tuần (nhật ký Child Life):';
+
+  @override
+  String rhWeekShareLine(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String rhWeekShareSleep(String time) {
+    return 'trung bình $time mỗi ngày ghi đủ';
+  }
+
+  @override
+  String get rhWeekOpen => 'Xem lại tuần';
+
+  @override
+  String get rhWeekRemindSub => 'Chủ nhật 20:30 · trước giờ yên lặng';
+
+  @override
+  String get rhWeekNotifBody => 'Xem lại những gì cả nhà đã ghi trong tuần.';
 }

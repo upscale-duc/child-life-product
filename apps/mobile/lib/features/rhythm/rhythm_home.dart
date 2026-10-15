@@ -27,6 +27,8 @@ import 'rhythm_labels.dart';
 import 'rhythm_models.dart';
 import 'rhythm_repository.dart';
 import 'rhythm_widgets.dart';
+import 'rhythm_week.dart';
+import 'week_screen.dart' show WeekSummaryEntry;
 
 /// Hôm nay · "Dành cho bé hôm nay" ([TodaySection.forYou]), only when the family's `rhythm` flag
 /// is on. Order (brief p.11): health → the current-need suggestion (group A, H02 589:6368 /
@@ -165,6 +167,9 @@ class ForYouSection extends ConsumerWidget {
       ],
       if (stageLine != null)
         _CalendarCard(line: stageLine, compact: showPrimary),
+      // EN09 once a whole week of the baby's life has passed (who reads care).
+      if (canRead && weekHasPassed(dob, summaryWeekFor(today)))
+        WeekSummaryEntry(me: me),
       if (showSupport) const _SupportCard(),
     ];
     if (children.isEmpty) return const SizedBox.shrink();

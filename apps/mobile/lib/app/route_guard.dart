@@ -110,6 +110,9 @@ abstract final class Routes {
   static const rhythmAge = '/rhythm/age';
   static const rhythmMilestone = '/rhythm/milestone';
 
+  /// EN09 "Tóm tắt tuần" (from NL01, Hôm nay and the Sunday notification).
+  static const rhythmWeek = '/rhythm/week';
+
   /// Premium Slice 3 (plan §5.5): SU01 "Bàn giao cho người chăm tiếp" and the person's AI consent.
   static const rhythmHandover = '/rhythm/handover';
   static const rhythmAiConsent = '/rhythm/ai-consent';

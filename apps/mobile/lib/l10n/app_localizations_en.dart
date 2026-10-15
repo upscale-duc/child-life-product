@@ -13724,4 +13724,276 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pmQuotaReleased =>
       'Reservation released · retry doesn’t use another export';
+
+  @override
+  String get rhWeekTitle => 'Weekly summary';
+
+  @override
+  String rhWeekOf(int n, String baby) {
+    return '$baby’s week $n';
+  }
+
+  @override
+  String get rhWeekInProgress => 'Week in progress · figures so far';
+
+  @override
+  String get rhWeekShare => 'Send to…';
+
+  @override
+  String get rhWeekRecordedTitle => 'Logged this week';
+
+  @override
+  String get rhWeekRecordedSub => 'From the family’s log · always free';
+
+  @override
+  String get rhWeekFeeds => 'Feeds';
+
+  @override
+  String rhWeekFeedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rhWeekBottle(String ml) {
+    return 'Bottle $ml ml';
+  }
+
+  @override
+  String rhWeekBreast(String time) {
+    return 'Breast $time';
+  }
+
+  @override
+  String get rhWeekNone => 'None logged';
+
+  @override
+  String get rhWeekSleep => 'Sleep';
+
+  @override
+  String get rhWeekSleepAvg => 'average per fully logged day';
+
+  @override
+  String rhWeekCoverage(int valid, int days) {
+    return '$valid/$days fully logged days';
+  }
+
+  @override
+  String get rhWeekSleepSparse => 'Not enough data';
+
+  @override
+  String rhWeekSleepNeed(int need) {
+    return 'needs at least $need days';
+  }
+
+  @override
+  String get rhWeekDiapers => 'Diapers';
+
+  @override
+  String rhWeekDiaperCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count changes',
+      one: '1 change',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rhWeekDiaperKinds(int wet, int dirty) {
+    return 'Wet $wet · Dirty $dirty';
+  }
+
+  @override
+  String get rhWeekGrowth => 'Growth';
+
+  @override
+  String rhWeekGrowthSince(String delta, String date) {
+    return '$delta since $date';
+  }
+
+  @override
+  String rhWeekGrowthOn(String date) {
+    return 'measured $date';
+  }
+
+  @override
+  String get rhWeekMemories => 'Moments';
+
+  @override
+  String rhWeekPhotos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos',
+      one: '1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rhWeekVideos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count videos',
+      one: '1 video',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rhWeekNotes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rhWeekCoverageNote =>
+      'Average sleep counts only fully logged days, counted automatically from the log. A day with gaps is never counted as zero.';
+
+  @override
+  String get rhWeekFamilyTitle => 'Caring together';
+
+  @override
+  String rhWeekFamilyCount(String who, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times',
+      one: 'once',
+    );
+    return '$who $_temp0';
+  }
+
+  @override
+  String get rhWeekFamilyEmpty => 'Nothing was logged this week.';
+
+  @override
+  String get rhWeekFamilyNote => 'Entries in the log, not a ranking.';
+
+  @override
+  String get rhWeekNextTitle => 'Next week';
+
+  @override
+  String get rhWeekNextEmpty => 'No reminders or vaccines set for next week.';
+
+  @override
+  String rhWeekReference(String range) {
+    return '$range · reference';
+  }
+
+  @override
+  String get rhWeekNoScore => 'No scores, no comparison with other babies.';
+
+  @override
+  String get rhWeekInsightTitle => 'Looking back on the week';
+
+  @override
+  String get rhWeekInsightSub =>
+      'From your family’s notes and log · not a diagnosis';
+
+  @override
+  String get rhWeekNotesTitle => 'Notes this week';
+
+  @override
+  String rhWeekChangedDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days with a change noted',
+      one: '1 day with a change noted',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rhWeekObsDays(String what, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$what · $_temp0';
+  }
+
+  @override
+  String rhWeekUsualDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count usual days',
+      one: '1 usual day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rhWeekMixedDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0 where people saw it differently · both notes kept';
+  }
+
+  @override
+  String get rhWeekNoNotes => 'No notes this week.';
+
+  @override
+  String get rhWeekTriedTitle => 'Tried this week';
+
+  @override
+  String get rhWeekNoTried => 'Nothing was marked as tried this week.';
+
+  @override
+  String get rhWeekNextIdea => 'One idea for next week';
+
+  @override
+  String get rhWeekGatePremium =>
+      'The look-back (sleep against your baby’s usual level, notes and what you tried) is part of Support that fits your baby. The figures above are always free.';
+
+  @override
+  String get rhWeekGateOther =>
+      'The look-back isn’t open to you yet. The figures above still work.';
+
+  @override
+  String get rhWeekNoAccess =>
+      'The weekly summary is only shown to people who can see daily care.';
+
+  @override
+  String get rhWeekShareFrom => 'Logged this week (Child Life log):';
+
+  @override
+  String rhWeekShareLine(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String rhWeekShareSleep(String time) {
+    return 'average $time per fully logged day';
+  }
+
+  @override
+  String get rhWeekOpen => 'Look back at the week';
+
+  @override
+  String get rhWeekRemindSub => 'Sunday 20:30 · before quiet hours';
+
+  @override
+  String get rhWeekNotifBody => 'See what the family logged this week.';
 }

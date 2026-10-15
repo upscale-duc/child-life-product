@@ -29,6 +29,7 @@ import 'rhythm_models.dart';
 import 'rhythm_own.dart';
 import 'rhythm_repository.dart';
 import 'rhythm_widgets.dart';
+import 'week_screen.dart' show WeekSummaryEntry;
 
 /// Nhịp lớn lên supports babies up to 12 months (NL01b); older babies keep what was logged.
 const rhythmMaxAgeDays = 365;
@@ -155,6 +156,11 @@ class _RhythmOverviewScreenState extends ConsumerState<RhythmOverviewScreen> {
           const SizedBox(height: ClSpace.s3),
         ],
         OwnRhythmCard(me: me, caps: caps, zone: zone, today: today),
+        // EN09 "Tóm tắt tuần" (who reads care).
+        if (canRead) ...[
+          const SizedBox(height: ClSpace.s3),
+          WeekSummaryEntry(me: me),
+        ],
         // SU01 (Premium Slice 3): the handover for the next carer.
         if (HandoverEntry.visibleFor(
           ref,

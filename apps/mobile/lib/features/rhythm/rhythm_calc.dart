@@ -499,19 +499,13 @@ class SleepSummary {
   final List<String> recentDates;
 }
 
-/// The facts builder of `nextAction` on the phone: quality of each day over the baseline
-/// lookback plus the recent window, then [sleepBaseline]. An unresolved overlap invalidates every
-/// day either record touches ([conflicts]: the record ids of each open conflict).
-SleepSummary sleepSummary({
-  required String zone,
-  required String today,
-  required DateTime now,
-  required List<CareRecord> records,
-  DateTime? openSleepTimerSince,
-  List<List<String>> conflicts = const [],
-  RhythmRules rules = defaultRhythmRules,
-}) {
-  final spans = careSpansOf(records);
+/// How many unresolved overlaps touch each local date: every day either record of an open
+/// conflict touches ([conflicts]: the record ids of each one).
+Map<String, int> overlapDaysOf(
+  String zone,
+  List<CareRecord> records,
+  List<List<String>> conflicts,
+) {
   final byId = {for (final r in records) r.id: r};
   final overlapDays = <String, int>{};
   for (final ids in conflicts) {
@@ -528,6 +522,23 @@ SleepSummary sleepSummary({
       overlapDays[d] = (overlapDays[d] ?? 0) + 1;
     }
   }
+  return overlapDays;
+}
+
+/// The facts builder of `nextAction` on the phone: quality of each day over the baseline
+/// lookback plus the recent window, then [sleepBaseline]. An unresolved overlap invalidates every
+/// day either record touches ([conflicts]: the record ids of each open conflict).
+SleepSummary sleepSummary({
+  required String zone,
+  required String today,
+  required DateTime now,
+  required List<CareRecord> records,
+  DateTime? openSleepTimerSince,
+  List<List<String>> conflicts = const [],
+  RhythmRules rules = defaultRhythmRules,
+}) {
+  final spans = careSpansOf(records);
+  final overlapDays = overlapDaysOf(zone, records, conflicts);
   final span = rules.baselineLookbackDays + rules.recentDays;
   final days = [
     for (var i = 0; i < span; i++)

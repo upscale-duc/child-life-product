@@ -21443,6 +21443,336 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã hoàn lượt giữ chỗ · Thử lại không trừ thêm lượt'**
   String get pmQuotaReleased;
+
+  /// EN09 kicker, NL01 / Home entry, notification title and NL02c switch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt tuần'**
+  String get rhWeekTitle;
+
+  /// EN09 title: the week of life counted from the date of birth (days 0–6 = week 1) on the week’s Sunday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần {n} của {baby}'**
+  String rhWeekOf(int n, String baby);
+
+  /// EN09 note on a Sunday: the week ends tonight, today’s sleep is not counted yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần đang diễn ra · số liệu đến lúc này'**
+  String get rhWeekInProgress;
+
+  /// EN09 top pill: shares the logged figures as plain text.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi cho…'**
+  String get rhWeekShare;
+
+  /// EN09 free section heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi trong tuần'**
+  String get rhWeekRecordedTitle;
+
+  /// EN09 free section subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ nhật ký của cả nhà · luôn miễn phí'**
+  String get rhWeekRecordedSub;
+
+  /// EN09 tile label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú'**
+  String get rhWeekFeeds;
+
+  /// EN09 feeds tile value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} cữ'**
+  String rhWeekFeedCount(int count);
+
+  /// EN09 feeds tile: bottle millilitres (never converted from minutes).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình {ml} ml'**
+  String rhWeekBottle(String ml);
+
+  /// EN09 feeds tile: breastfeeding time (never converted to ml).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ {time}'**
+  String rhWeekBreast(String time);
+
+  /// EN09 tile value when nothing of that kind was logged.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi'**
+  String get rhWeekNone;
+
+  /// EN09 tile label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ'**
+  String get rhWeekSleep;
+
+  /// EN09 sleep tile: what the value is.
+  ///
+  /// In vi, this message translates to:
+  /// **'trung bình ngày ghi đủ'**
+  String get rhWeekSleepAvg;
+
+  /// EN09 coverage label: valid days counted automatically (D-073 #1).
+  ///
+  /// In vi, this message translates to:
+  /// **'{valid}/{days} ngày ghi đủ'**
+  String rhWeekCoverage(int valid, int days);
+
+  /// EN09 sleep tile value under the rules’ minimum of valid days.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đủ dữ liệu'**
+  String get rhWeekSleepSparse;
+
+  /// EN09 sleep tile: the minimum of valid days.
+  ///
+  /// In vi, this message translates to:
+  /// **'cần ít nhất {need} ngày'**
+  String rhWeekSleepNeed(int need);
+
+  /// EN09 tile label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thay tã'**
+  String get rhWeekDiapers;
+
+  /// EN09 diapers tile value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} lần'**
+  String rhWeekDiaperCount(int count);
+
+  /// EN09 diapers tile detail (“Cả hai” counts in both).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ướt {wet} · Bẩn {dirty}'**
+  String rhWeekDiaperKinds(int wet, int dirty);
+
+  /// EN09 tile label (only when measured this week).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng trưởng'**
+  String get rhWeekGrowth;
+
+  /// EN09 growth tile: change against the previous weighing, with its date.
+  ///
+  /// In vi, this message translates to:
+  /// **'{delta} so với {date}'**
+  String rhWeekGrowthSince(String delta, String date);
+
+  /// EN09 growth tile without an earlier weighing.
+  ///
+  /// In vi, this message translates to:
+  /// **'đo ngày {date}'**
+  String rhWeekGrowthOn(String date);
+
+  /// EN09 tile label (only when something was saved this week).
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm'**
+  String get rhWeekMemories;
+
+  /// EN09 moments tile value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ảnh'**
+  String rhWeekPhotos(int count);
+
+  /// EN09 moments tile detail.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} video'**
+  String rhWeekVideos(int count);
+
+  /// EN09 moments tile detail.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ghi chú'**
+  String rhWeekNotes(int count);
+
+  /// EN09 note under the tiles (missing is never zero).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ trung bình chỉ tính những ngày được ghi đủ, tự đếm theo nhật ký. Ngày thiếu ghi không bị tính là 0.'**
+  String get rhWeekCoverageNote;
+
+  /// EN09 family card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà đã cùng chăm'**
+  String get rhWeekFamilyTitle;
+
+  /// EN09 family card: log entries by one person.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} {count} lần'**
+  String rhWeekFamilyCount(String who, int count);
+
+  /// EN09 family card without entries.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này chưa có ghi chép nào.'**
+  String get rhWeekFamilyEmpty;
+
+  /// EN09 family card footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số lần ghi trong nhật ký, không xếp hạng.'**
+  String get rhWeekFamilyNote;
+
+  /// EN09 heading of what is already set for the next Monday–Sunday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần tới'**
+  String get rhWeekNextTitle;
+
+  /// EN09 next week without items.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có nhắc việc hay mũi tiêm nào đặt cho tuần tới.'**
+  String get rhWeekNextEmpty;
+
+  /// EN09 next week: a reference-calendar window (never a forecast).
+  ///
+  /// In vi, this message translates to:
+  /// **'{range} · tham khảo'**
+  String rhWeekReference(String range);
+
+  /// EN09 footer (561:3102).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không chấm điểm, không so sánh với bé khác.'**
+  String get rhWeekNoScore;
+
+  /// EN09 group A section heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhìn lại tuần qua'**
+  String get rhWeekInsightTitle;
+
+  /// EN09 group A section subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ ghi nhận và nhật ký của nhà mình · không phải chẩn đoán'**
+  String get rhWeekInsightSub;
+
+  /// EN09 group A: the week’s check-ins.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận trong tuần'**
+  String get rhWeekNotesTitle;
+
+  /// EN09 group A: days whose check-ins report a change.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ngày có ghi nhận thay đổi'**
+  String rhWeekChangedDays(int count);
+
+  /// EN09 group A: one reported change and on how many days.
+  ///
+  /// In vi, this message translates to:
+  /// **'{what} · {count} ngày'**
+  String rhWeekObsDays(String what, int count);
+
+  /// EN09 group A: days noted as usual.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ngày như mọi ngày'**
+  String rhWeekUsualDays(int count);
+
+  /// EN09 group A: mixed days (X03).
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ngày mỗi người thấy khác nhau · giữ cả hai ghi nhận'**
+  String rhWeekMixedDays(int count);
+
+  /// EN09 group A without check-ins.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này chưa có ghi nhận nào.'**
+  String get rhWeekNoNotes;
+
+  /// EN09 group A: activities tried and how they went.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thử trong tuần'**
+  String get rhWeekTriedTitle;
+
+  /// EN09 group A without feedback.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này nhà mình chưa đánh dấu cách nào đã thử.'**
+  String get rhWeekNoTried;
+
+  /// EN09 group A: the current suggestion (PS02).
+  ///
+  /// In vi, this message translates to:
+  /// **'Một ý tưởng cho tuần tới'**
+  String get rhWeekNextIdea;
+
+  /// EN09 gate, PREMIUM_REQUIRED.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp. Số liệu đã ghi ở trên luôn miễn phí.'**
+  String get rhWeekGatePremium;
+
+  /// EN09 gate, any other reason.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phần nhìn lại chưa mở cho bạn. Số liệu đã ghi ở trên vẫn dùng được.'**
+  String get rhWeekGateOther;
+
+  /// EN09 for a relative without “Chăm sóc hằng ngày” (history.read).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt tuần chỉ hiện với người được xem chăm sóc hằng ngày.'**
+  String get rhWeekNoAccess;
+
+  /// Shared text: heading of the figures.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi trong tuần (nhật ký Child Life):'**
+  String get rhWeekShareFrom;
+
+  /// Shared text: one figure.
+  ///
+  /// In vi, this message translates to:
+  /// **'{label}: {value}'**
+  String rhWeekShareLine(String label, String value);
+
+  /// Shared text: the sleep average.
+  ///
+  /// In vi, this message translates to:
+  /// **'trung bình {time} mỗi ngày ghi đủ'**
+  String rhWeekShareSleep(String time);
+
+  /// NL01 / Home entry action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem lại tuần'**
+  String get rhWeekOpen;
+
+  /// NL02c switch subtitle (EN07 “Chủ nhật 20:30”).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ nhật 20:30 · trước giờ yên lặng'**
+  String get rhWeekRemindSub;
+
+  /// Sunday notification body: no baby name, no figures (R-120).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem lại những gì cả nhà đã ghi trong tuần.'**
+  String get rhWeekNotifBody;
 }
 
 class _AppLocalizationsDelegate

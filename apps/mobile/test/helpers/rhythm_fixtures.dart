@@ -4,6 +4,7 @@ import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/memories/memory_repository.dart';
 import 'package:child_life/features/premium/premium_models.dart';
+import 'package:child_life/features/reminders/reminder_models.dart';
 import 'package:child_life/features/premium/premium_repository.dart';
 import 'package:child_life/features/rhythm/rhythm_calc.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
@@ -654,12 +655,17 @@ List<Override> rhythmOverrides({
   /// The care log the sleep comparison reads (NL01 / NL07).
   List<CareRecord> sleepRecords = const [],
   MemoryRepository? memories,
+  List<CareRecord> growth = const [],
+  List<Reminder> reminders = const [],
+  DateTime? now,
 }) => [
   ...familyOverrides(
     me: me ?? mai,
-    now: rhythmNow,
+    now: now ?? rhythmNow,
     online: online,
     records: records,
+    growth: growth,
+    reminders: reminders,
   ),
   rhythmRepositoryProvider.overrideWithValue(repo),
   rhythmSleepRecordsProvider.overrideWith(

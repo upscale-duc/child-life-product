@@ -15,6 +15,7 @@ import 'rhythm_calendar.dart';
 import 'rhythm_models.dart';
 import 'rhythm_overview.dart';
 import 'rhythm_setup.dart';
+import 'week_screen.dart';
 
 /// Nhịp lớn lên routes, full screen above the tabs (no new tab, plan §7.1). Flat on purpose:
 /// each is pushed on top of Hôm nay, and leaving the flow pops back to it (`closeFlow`).
@@ -88,6 +89,7 @@ List<RouteBase> rhythmRoutes() => [
     '${Routes.rhythmAge}/:id',
     (_, s) => AgeCardScreen(cardId: s.pathParameters['id'] ?? ''),
   ),
+  _page(Routes.rhythmWeek, modal: true, (_, _) => const WeekSummaryScreen()),
   _page(Routes.rhythmHandover, (_, _) => const HandoverScreen()),
   _page(Routes.rhythmAiConsent, (_, _) => const AiConsentScreen()),
   _page(
