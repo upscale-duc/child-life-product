@@ -223,26 +223,55 @@ export function AiPolicyView({
               </Button>
             }
           >
-            <dl className="kv">
-              <dt>
-                <FormattedMessage id="premium.quota.aiBaby" />
-              </dt>
-              <dd>
-                <FormattedMessage
-                  id="premium.quota.uses"
-                  values={{ n: data.quotas.perBabyPerDay }}
-                />
-              </dd>
-              <dt>
-                <FormattedMessage id="premium.quota.aiFamily" />
-              </dt>
-              <dd>
-                <FormattedMessage
-                  id="premium.quota.uses"
-                  values={{ n: data.quotas.perFamilyPerMonth }}
-                />
-              </dd>
-            </dl>
+            {data.quotas.assistant ? (
+              // D-075 #1: summaries charge the household assistant credit pool.
+              <>
+                <dl className="kv">
+                  <dt>
+                    <FormattedMessage id="premium.credits.free" />
+                  </dt>
+                  <dd>
+                    <FormattedMessage
+                      id="premium.credits.value"
+                      values={{ n: data.quotas.assistant.free }}
+                    />
+                  </dd>
+                  <dt>
+                    <FormattedMessage id="premium.credits.premium" />
+                  </dt>
+                  <dd>
+                    <FormattedMessage
+                      id="premium.credits.value"
+                      values={{ n: data.quotas.assistant.premium }}
+                    />
+                  </dd>
+                </dl>
+                <p className="muted">
+                  <FormattedMessage id="premium.ai.creditsNote" />
+                </p>
+              </>
+            ) : (
+              <dl className="kv">
+                <dt>
+                  <FormattedMessage id="premium.quota.aiBaby" />
+                </dt>
+                <dd>
+                  <FormattedMessage
+                    id="premium.quota.uses"
+                    values={{ n: data.quotas.perBabyPerDay }}
+                  />
+                </dd>
+                <dt>
+                  <FormattedMessage id="premium.quota.aiFamily" />
+                </dt>
+                <dd>
+                  <FormattedMessage
+                    id="premium.quota.uses"
+                    values={{ n: data.quotas.perFamilyPerMonth }}
+                  />
+                </dd>
+              </dl>
+            )}
             {!data.quotas.stored && (
               <p className="muted">
                 <FormattedMessage id="premium.ai.quotasDefault" />

@@ -45,10 +45,11 @@ import { CheckRow, FieldSelect } from './form-controls';
 import { AiPolicyLoader, FamilyQuotaView } from './PremiumOps';
 
 /**
- * Premium & Cá nhân hoá (plan §5.6): advanced regions, quotas and Beta A campaigns in
- * `config/entitlements`, and one family's plan and grants with promo grants and revokes.
- * Every number is configuration, not a commercial commitment (Q-071); Beta A never opens
- * `templates.premium`; health and logging stay free in every plan state (brief p.3).
+ * Premium & Cá nhân hoá (plan §5.6): advanced regions, quotas, the assistant credit pool and beta
+ * campaigns in `config/entitlements`, and one family's plan and grants with promo grants and
+ * revokes. Every number is configuration, not a commercial commitment (Q-071); a beta campaign may
+ * open any Premium feature — group A, Cao cấp templates, the Premium credit budget (D-075 #1);
+ * health and logging stay free in every plan state (brief p.3).
  * Staff actions: `premium.view` / `premium.config` / `premium.grant` (owner, admin).
  */
 export function PremiumScreen() {
@@ -183,13 +184,26 @@ export function blankCampaign(now: Date): BetaCampaign {
   };
 }
 
+/**
+ * What a beta campaign may open (D-075 #1), grouped for the form: group A, Cao cấp templates, the
+ * Premium assistant credit budget. Free capabilities never need a grant.
+ */
+export const campaignCapabilityGroups: readonly {
+  id: 'groupA' | 'templates' | 'assistant';
+  capabilities: readonly Capability[];
+}[] = [
+  { id: 'groupA', capabilities: groupACapabilities },
+  { id: 'templates', capabilities: ['templates.premium'] },
+  { id: 'assistant', capabilities: ['assistant.premium_budget'] },
+];
+
 /** Families travel only with "Gia đình được chọn"; the percent follows the scope. */
 export function normalizeCampaign(c: BetaCampaign): BetaCampaign {
   const { families, ...rest } = c;
   return {
     ...rest,
-    // Beta A never opens Cao cấp templates (brief p.3): only group A is ever kept.
-    capabilities: groupACapabilities.filter((x) => c.capabilities.includes(x)),
+    // Any Premium capability, in the canonical order; never a free one.
+    capabilities: premiumCapabilities.filter((x) => c.capabilities.includes(x)),
     percent: c.scope === 'all' ? 100 : c.scope === 'internal' ? 0 : c.percent,
     ...(c.scope === 'internal' && families?.length ? { families: [...families] } : {}),
   };
@@ -217,7 +231,7 @@ export function campaignIssues(
   const out: string[] = [];
   if (!/^[a-z0-9_-]{2,40}$/.test(c.id)) out.push('premium.issue.id');
   else if (all.some((x, i) => i !== index && x.id === c.id)) out.push('premium.issue.duplicate');
-  if (!c.capabilities.some((x) => groupACapabilities.includes(x))) out.push('premium.issue.caps');
+  if (!c.capabilities.some((x) => premiumCapabilities.includes(x))) out.push('premium.issue.caps');
   if (!(Date.parse(c.validUntil) > Date.parse(c.validFrom))) out.push('premium.issue.dates');
   if (c.scope === 'percent' && !(Number.isInteger(c.percent) && c.percent >= 1 && c.percent <= 100))
     out.push('premium.issue.percent');
@@ -440,14 +454,16 @@ function RegionsPanel({
     if (!regions.includes(c)) onChange({ ...config, regions: { advanced: [...regions, c] } });
   };
   const video = config.quotas.video;
-  const ai = config.quotas.ai;
+  const credits = config.quotas.assistant;
   const setVideo = (plan: 'free' | 'premium', v: Partial<typeof video.free>) =>
     onChange({
       ...config,
       quotas: { ...config.quotas, video: { ...video, [plan]: { ...video[plan], ...v } } },
     });
-  const setAi = (v: Partial<typeof ai>) =>
-    onChange({ ...config, quotas: { ...config.quotas, ai: { ...ai, ...v } } });
+  // D-075 #1: one assistant credit pool for the chat and the AI summaries (the legacy
+  // `quotas.ai` stays in the document untouched; nothing uses it any more).
+  const setCredits = (v: Partial<typeof credits>) =>
+    onChange({ ...config, quotas: { ...config.quotas, assistant: { ...credits, ...v } } });
   const windowOptions = windows.map((w) => ({
     value: w,
     label: intl.formatMessage({ id: `premium.window.${w}` }),
@@ -556,17 +572,41 @@ function RegionsPanel({
                   ariaLabel={intl.formatMessage({ id: 'premium.quota.videoPremiumWindow' })}
                 />
               </div>
-              <NumberField
-                label={<FormattedMessage id="premium.quota.aiBaby" />}
-                value={ai.perBabyPerDay}
-                onChange={(perBabyPerDay) => setAi({ perBabyPerDay })}
-              />
-              <NumberField
-                label={<FormattedMessage id="premium.quota.aiFamily" />}
-                value={ai.perFamilyPerMonth}
-                onChange={(perFamilyPerMonth) => setAi({ perFamilyPerMonth })}
-              />
             </div>
+            <fieldset className="stack">
+              <legend className="field__label">
+                <FormattedMessage id="premium.credits.title" />
+              </legend>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <NumberField
+                  label={<FormattedMessage id="premium.credits.free" />}
+                  value={credits.free}
+                  onChange={(free) => setCredits({ free })}
+                />
+                <NumberField
+                  label={<FormattedMessage id="premium.credits.premium" />}
+                  value={credits.premium}
+                  onChange={(premium) => setCredits({ premium })}
+                />
+                <NumberField
+                  label={<FormattedMessage id="premium.credits.text" />}
+                  value={credits.textCredits}
+                  max={20}
+                  onChange={(textCredits) => setCredits({ textCredits: Math.min(20, textCredits) })}
+                />
+                <NumberField
+                  label={<FormattedMessage id="premium.credits.image" />}
+                  value={credits.imageCredits}
+                  max={20}
+                  onChange={(imageCredits) =>
+                    setCredits({ imageCredits: Math.min(20, imageCredits) })
+                  }
+                />
+              </div>
+              <p className="field__help">
+                <FormattedMessage id="premium.credits.note" />
+              </p>
+            </fieldset>
             <div className="field">
               <label className="field__label" htmlFor={policyId}>
                 <FormattedMessage id="premium.policyVersion" />
@@ -606,16 +646,28 @@ function RegionsPanel({
               />
             </dd>
             <dt>
-              <FormattedMessage id="premium.quota.aiBaby" />
+              <FormattedMessage id="premium.credits.free" />
             </dt>
             <dd>
-              <FormattedMessage id="premium.quota.uses" values={{ n: ai.perBabyPerDay }} />
+              <FormattedMessage id="premium.credits.value" values={{ n: credits.free }} />
             </dd>
             <dt>
-              <FormattedMessage id="premium.quota.aiFamily" />
+              <FormattedMessage id="premium.credits.premium" />
             </dt>
             <dd>
-              <FormattedMessage id="premium.quota.uses" values={{ n: ai.perFamilyPerMonth }} />
+              <FormattedMessage id="premium.credits.value" values={{ n: credits.premium }} />
+            </dd>
+            <dt>
+              <FormattedMessage id="premium.credits.text" />
+            </dt>
+            <dd>
+              <FormattedMessage id="premium.credits.value" values={{ n: credits.textCredits }} />
+            </dd>
+            <dt>
+              <FormattedMessage id="premium.credits.image" />
+            </dt>
+            <dd>
+              <FormattedMessage id="premium.credits.value" values={{ n: credits.imageCredits }} />
             </dd>
             <dt>
               <FormattedMessage id="premium.policyVersion" />
@@ -862,16 +914,34 @@ export function CampaignDialog({
         <span className="field__label">
           <FormattedMessage id="premium.col.capabilities" />
         </span>
-        {groupACapabilities.map((cap) => (
-          <CheckRow
-            key={cap}
-            label={<FormattedMessage id={`premium.cap.${cap}`} />}
-            checked={c.capabilities.includes(cap)}
-            onChange={(on) => setC({ ...c, capabilities: toggle(c.capabilities, cap, on) })}
-          />
+        {/* D-075 #1: any Premium feature, grouped; roles never change with a plan. */}
+        {campaignCapabilityGroups.map((g) => (
+          <div
+            key={g.id}
+            className="stack"
+            role="group"
+            aria-label={intl.formatMessage({ id: `premium.capGroup.${g.id}` })}
+          >
+            <span className="muted">
+              <FormattedMessage id={`premium.capGroup.${g.id}`} />
+            </span>
+            {g.capabilities.map((cap) => (
+              <CheckRow
+                key={cap}
+                label={<FormattedMessage id={`premium.cap.${cap}`} />}
+                checked={c.capabilities.includes(cap)}
+                onChange={(on) => setC({ ...c, capabilities: toggle(c.capabilities, cap, on) })}
+              />
+            ))}
+            {g.id !== 'groupA' && (
+              <p className="field__help">
+                <FormattedMessage id={`premium.capHelp.${g.id}`} />
+              </p>
+            )}
+          </div>
         ))}
         <p className="field__help">
-          <FormattedMessage id="premium.beta.noTemplates" />
+          <FormattedMessage id="premium.beta.capsHelp" />
         </p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">

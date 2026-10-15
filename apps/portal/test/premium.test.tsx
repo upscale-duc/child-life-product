@@ -185,7 +185,7 @@ describe('Premium: configuration', () => {
     expect(html).toContain('Việt Nam · VN');
     expect(html).toContain('Singapore · SG');
     expect(raw).toContain('value="policy-v2"');
-    expect(html).toContain('Beta nhóm A');
+    expect(html).toContain('Chiến dịch beta');
     expect(html).toContain('beta-a-vn');
     expect(html).toContain('Đang chạy');
     expect(html).toContain('Sắp chạy');
@@ -200,7 +200,13 @@ describe('Premium: configuration', () => {
     expect(html).toContain('Linh · 13/10 · Hỗ trợ khiếu nại');
     expect(html).toContain('Thêm chiến dịch');
     expect(html).toContain('Lưu thay đổi…');
-    expect(html).toContain('Beta nhóm A chỉ mở nhóm A, không bao giờ mở mẫu Cao cấp');
+    expect(html).toContain('Mỗi chiến dịch beta tự chọn tính năng Premium mở miễn phí');
+    // D-075 #1: the assistant credit pool is editable here (shared by chat and AI summaries).
+    expect(html).toContain('Credit trợ lý AI · một quỹ chung cho trò chuyện và tóm tắt AI');
+    expect(html).toContain('Credit · Miễn phí (mỗi tháng lịch)');
+    expect(raw).toContain('value="200"');
+    expect(html).toContain('Mỗi tóm tắt AI tạo mới dùng 1 credit');
+    expect(html).not.toContain('AI · mỗi bé mỗi ngày');
     expect(text(render(<EnvPill env="test" />))).toContain('Môi trường quyền: thử nghiệm (test)');
     expect(text(render(<EnvPill env="production" />, ['admin'], 'en'))).toContain(
       'Grant environment: production',
@@ -218,6 +224,8 @@ describe('Premium: configuration', () => {
     expect(html).toContain('Bạn chỉ xem được');
     expect(html).toContain('1 video · mỗi tháng lịch');
     expect(html).toContain('5 video · mỗi kỳ thanh toán');
+    expect(html).toContain('Credit · Premium (kỳ thanh toán; beta: mỗi tháng) 200 credit');
+    expect(html).toContain('Credit cho một tác vụ ảnh 3 credit');
     expect(html).toContain('policy-v2');
     expect(html).toContain('beta-a-vn');
     expect(html).not.toContain('Lưu thay đổi');
@@ -236,8 +244,13 @@ describe('Premium: configuration', () => {
     const campaign: BetaCampaign = {
       ...blankCampaign(now),
       id: 'beta-a-internal',
-      // Even if a template capability slipped in, Beta A never carries it.
-      capabilities: ['ai.assistance', 'templates.premium'],
+      // D-075 #1: a beta may open templates and the Premium budget; free ones are dropped.
+      capabilities: [
+        'assistant.premium_budget',
+        'templates.premium',
+        'ai.assistance',
+        'rhythm.checkin',
+      ],
       countries: ['SG'],
       families: ['F-ABCD', 'F-7Q2K'],
     };
@@ -252,7 +265,11 @@ describe('Premium: configuration', () => {
     expect(sent.config.betaCampaigns).toHaveLength(3);
     const added = sent.config.betaCampaigns[2]!;
     expect(added.families).toEqual(['F-ABCD', 'F-7Q2K']);
-    expect(added.capabilities).toEqual(['ai.assistance']);
+    expect(added.capabilities).toEqual([
+      'ai.assistance',
+      'templates.premium',
+      'assistant.premium_budget',
+    ]);
     expect(added.validFrom).toBe('2026-10-13T17:00:00.000Z');
     expect(added.validUntil).toBe('2026-11-12T17:00:00.000Z');
     expect(sent.config.betaCampaigns[0]!.families).toEqual(['F-7Q2K']);
@@ -281,7 +298,7 @@ describe('Premium: configuration', () => {
     expect(campaignIssues(c, view.config.betaCampaigns, 1)).toEqual([]);
     expect(
       campaignIssues(
-        { ...c, id: 'X', capabilities: ['templates.premium'], validUntil: c.validFrom, percent: 0 },
+        { ...c, id: 'X', capabilities: ['rhythm.checkin'], validUntil: c.validFrom, percent: 0 },
         [],
         null,
       ),
@@ -291,9 +308,43 @@ describe('Premium: configuration', () => {
       'premium.issue.dates',
       'premium.issue.percent',
     ]);
+    // A templates-only (or budget-only) beta is a valid campaign now.
+    for (const cap of ['templates.premium', 'assistant.premium_budget'] as const) {
+      expect(campaignIssues({ ...c, capabilities: [cap] }, view.config.betaCampaigns, 1)).toEqual(
+        [],
+      );
+    }
   });
 
-  it('the campaign form offers group A only, never Cao cấp templates', () => {
+  it('D-075 #1: assistant credits edited in the draft are saved with the config', async () => {
+    const { api, calls } = fakeApi({ staffSetPremiumConfig: null });
+    const next = {
+      ...view.config,
+      quotas: {
+        ...view.config.quotas,
+        assistant: { free: 30, premium: 300, textCredits: 1, imageCredits: 3 },
+      },
+    };
+    expect((await savePremiumConfig(api, next, 'Tăng credit cho QA')).ok).toBe(true);
+    const sent = calls[0]!.data as { config: typeof view.config };
+    expect(sent.config.quotas.assistant).toEqual({
+      free: 30,
+      premium: 300,
+      textCredits: 1,
+      imageCredits: 3,
+    });
+    // The legacy summary pair is kept untouched in the document.
+    expect(sent.config.quotas.ai).toEqual(view.config.quotas.ai);
+    // Over the per-task maximum is refused before sending.
+    const bad = {
+      ...next,
+      quotas: { ...next.quotas, assistant: { ...next.quotas.assistant, imageCredits: 21 } },
+    };
+    expect((await savePremiumConfig(api, bad, 'Tăng credit cho QA')).ok).toBe(false);
+    expect(calls).toHaveLength(1);
+  });
+
+  it('D-075 #1: the campaign form offers every Premium feature, grouped and labelled', () => {
     const html = text(
       render(
         <CampaignDialog
@@ -306,13 +357,38 @@ describe('Premium: configuration', () => {
         />,
       ),
     );
-    expect(html).toContain('Thêm chiến dịch beta nhóm A');
-    for (const label of ['Gợi ý xuyên mô-đun', 'Nhịp lớn lên nâng cao', 'Trợ lý AI']) {
+    expect(html).toContain('Thêm chiến dịch beta');
+    for (const label of [
+      'Nhóm A · Nhịp lớn lên và AI',
+      'Gợi ý xuyên mô-đun',
+      'Nhịp lớn lên nâng cao',
+      'Trợ lý AI',
+      'Kỷ niệm',
+      'Mẫu kỷ niệm Cao cấp',
+      'Hạn mức trợ lý Premium',
+      'Dùng hạn mức credit Premium thay cho Miễn phí',
+    ]) {
       expect(html).toContain(label);
     }
-    expect(html).not.toContain('Mẫu kỷ niệm Cao cấp');
+    expect(html).not.toContain('Check-in Nhịp lớn lên');
     expect(html).toContain('Việt Nam');
     expect(html).toContain('Không chọn gia đình nào = chỉ gia đình nội bộ.');
+    const en = text(
+      render(
+        <CampaignDialog
+          initial={blankCampaign(now)}
+          index={null}
+          all={[]}
+          regions={['VN']}
+          onClose={() => {}}
+          onApply={() => {}}
+        />,
+        ['admin'],
+        'en',
+      ),
+    );
+    expect(en).toContain('Premium memory templates');
+    expect(en).toContain('Premium assistant budget');
   });
 
   it('server reasons read as friendly messages', () => {
@@ -342,7 +418,7 @@ describe('Premium: one family', () => {
 
   it('shows the plan, country, version and every grant', () => {
     const html = text(body(['ops']));
-    expect(html).toContain('Beta nhóm A đến hết 1/12/2026');
+    expect(html).toContain('Beta đến hết 1/12/2026');
     expect(html).toContain('Việt Nam · VN');
     expect(html).toContain('Phiên bản quyền 4');
     expect(html).toContain('Trả phí');
@@ -390,6 +466,8 @@ describe('Premium: messages', () => {
   it('every dynamic id exists in both catalogs', () => {
     const ids = [
       ...capabilities.map((c) => `premium.cap.${c}`),
+      ...['groupA', 'templates', 'assistant'].map((g) => `premium.capGroup.${g}`),
+      ...['templates', 'assistant'].map((g) => `premium.capHelp.${g}`),
       ...householdPlans.map((p) => `premium.plan.${p}`),
       ...grantStatuses.map((s) => `premium.status.${s}`),
       ...['paid', 'beta', 'promo'].map((s) => `premium.source.${s}`),

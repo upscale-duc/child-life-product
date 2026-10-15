@@ -290,6 +290,23 @@ describe('Premium › AI', () => {
     expect(en).toContain('On for internal families and 2 picked families');
   });
 
+  it('D-075 #1: with the assistant pool, AI limits read as credits shared with chat', () => {
+    const data = {
+      ...policy,
+      quotas: {
+        ...policy.quotas,
+        assistant: { free: 20, premium: 200, textCredits: 1, imageCredits: 3 },
+      },
+    };
+    const t = text(html(<AiPolicyView data={data} onOpenLimits={() => {}} />, ['ops']));
+    expect(t).toContain('Credit · Miễn phí (mỗi tháng lịch) 20 credit');
+    expect(t).toContain('Credit · Premium (kỳ thanh toán; beta: mỗi tháng) 200 credit');
+    expect(t).toContain('mỗi tóm tắt AI tạo mới dùng 1 credit');
+    expect(t).not.toContain('AI · mỗi bé mỗi ngày');
+    const en = text(html(<AiPolicyView data={data} onOpenLimits={() => {}} />, ['ops'], 'en'));
+    expect(en).toContain('200 credits');
+  });
+
   it('a template provider, the switch off and default limits read as such', () => {
     const t = text(
       html(
