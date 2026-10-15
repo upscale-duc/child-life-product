@@ -22,7 +22,6 @@ import {
   type GrantEnvironment,
   type MemoryStoryAnswer,
   type MemberRole,
-  type QuotaSnapshot,
   type KeepsakeJobErrorCode,
   type KeepsakeJobInput,
   type KeepsakeLiveState,
