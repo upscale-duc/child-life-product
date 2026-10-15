@@ -14,7 +14,7 @@ matrix), Figma page **"Cá nhân hoá & Nhịp lớn lên"** `568:18`. The page 
 Owner request: "Tôi cần 1 kế hoạch chi tiết để triển khai chức năng này … design có thể là bản tham khảo, không cần
 theo 100%, chỉ cần phù hợp với logic và thực tế."
 
-Status (2026-10-15): **Phase 0, Slice 1 and Slice 2 built; server, portal and draft content on dev, every new flag off** (§10). Owner decisions **D-072** (seven answers, §2.1) and Q-067 (name);
+Status (2026-10-15): **Phase 0 and Slices 1–4 built (real store payments postponed, D-074); everything on dev with every new flag off** (§10; report `docs/development/premium-test-report.md`; runbook `docs/operations/premium-rollout.md`). Owner decisions **D-072** (seven answers, §2.1) and Q-067 (name);
 open questions **Q-068 – Q-073** (§11). Figma extract: `docs/discovery/figma-extract/30-personalization-premium.md`.
 Proposals will take **P-151…**, gaps **G-108…**.
 
@@ -526,6 +526,26 @@ public invoker on deploy (memory note) and were re-bound on dev. `rhythm` / `per
 - Content review by a qualified reviewer (Q-069) before any prod publish; points in SEED-NOTES §6
   (fever measuring, emergency numbers, swaddling, bed-sharing, "mất kỹ năng" routing, content after 12 months).
 - MS01 guesses the occasion from the note's words; corrected age is not used anywhere (actual age only).
+
+### 10.3 Slices 3–4 · AI, quota, billing core, ops (2026-10-15, dev)
+
+Owner: "làm tiếp cho xong"; D-074 postpones real Apple / Google payment; P-151–P-154 hold the defaults for
+Q-070–Q-073. Commits `87ab61b` (contracts), `adfe7a5` (events, runbook), `39978a2` (D-074), `ffc1034` (server),
+`0b71760` (portal ops), `8d39d4f`, `8d41bda` (app), `0a33f29`. Dev: renderer with lease fencing, rules,
+indexes, all functions, portal; `config/entitlements` written on dev with a generous video budget (60 / month)
+so the new ledger does not cut the Kỷ niệm 2.0 beta before Q-071; regions still closed, flags off.
+
+- **Contracts**: `quota.ts`, `ai-summary.ts`, `billing.ts`, `premium-ops.ts`; Premium app events with closed
+  dimensions, server-only events refused from the app. All 48 fixture cases pass through real code.
+- **Server**: quota ledger (`quota.ts`, AI) + video ledger (`video-quota.ts`, fenced by the renderer's lease);
+  grounded AI (`ai-summary.ts`); billing core with an adapter interface and no store adapters (`billing.ts`,
+  answers `billing-not-configured`); hourly AI reservation sweep; staff ops callables; episodes.
+- **Portal**: Premium › AI tab, family quota & billing, Video kỷ niệm render view.
+- **App**: `lib/features/ai/` (consent, SU01 + states, explain, moment), NL07b episodes, evening prompt;
+  `lib/features/premium/` (StoreGateway "unavailable", PR01–PR04, MO03 resume, MO04 quota).
+
+Remaining, by owner choice or outside engineering: real payments (D-074, B2 / B3 and the app plugin), device
+runs, OpenAI secret on dev and the bilingual AI audit, content review, Q-069–Q-073 decisions.
 
 ## 11. Open questions for the owner and design gaps
 
