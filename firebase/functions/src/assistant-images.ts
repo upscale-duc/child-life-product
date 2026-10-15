@@ -8,7 +8,9 @@ import {
   localDateIn,
   noteActions,
   otherCategoryId,
+  reminderAssigneeRoles,
   reminderAssigneeSupported,
+  reminderNeedsTime,
   weekdayMatches,
   type AssistantError,
   type AssistantPart,
@@ -16,7 +18,13 @@ import {
   type DraftPayload,
   type TaskOutcome,
 } from '@child-life/contracts';
-import { assistantFlagOn, taskRef, type TrustedScope } from './assistant-common.js';
+import {
+  assistantFlagOn,
+  memberOf,
+  taskRef,
+  type ScopeMember,
+  type TrustedScope,
+} from './assistant-common.js';
 import { loadTaskImages, type AttachmentStore } from './assistant-attachments.js';
 import {
   imagePromptVersion,
@@ -53,9 +61,11 @@ import { chargeAi } from './staff.js';
  *   (I02, CH11); a suspected duplicate in the household is a warning to acknowledge (I03);
  * - note → per-line classification; only action candidates, only into one-off reminders, only
  *   after the person explicitly chooses "Lưu thành nhắc việc" (no Tasks module, I06, CH13);
- *   a weekday that does not match the date is asked, never picked (G03, I07); no time → the
- *   person fills it (never a silent 09:00); no assignee (P-157); medicine lines, remarks and
- *   unclear lines are listed as excluded and never scheduled;
+ *   a weekday that does not match the date is asked, never picked (G03, I07); no time → an
+ *   all-day reminder (D-075 #5; never a silent 09:00); a name written next to a line is never
+ *   turned into a uid: the person picks the assignee among the members who may receive
+ *   reminders, or nobody (D-075 #5); medicine lines, remarks and unclear lines are listed as
+ *   excluded and never scheduled;
  * - mixed (e.g. receipt + prescription) → ask what to do; prescription only → nothing scheduled.
  * Credits: committed only when at least one draft exists (readable, actionable result); a
  * question holds them; unreadable, refused, declined or nothing actionable → released.
@@ -160,13 +170,26 @@ const t = {
     'Không tạo nhắc việc nào. Không tính lượt.',
     'No reminders were created. No credit was used.',
   ),
+  // ---- D-075 #5 (reminders): all day and assignee ----
   noAssignee: L(
     'Nhắc việc chưa có người phụ trách: tên ghi trong ảnh không được gán cho ai.',
     'Reminders have no assignee yet: names written in the photo aren’t assigned to anyone.',
   ),
+  assigneeLater: L(
+    'Tên ghi trong ảnh không tự gán cho ai: bạn chọn người phụ trách khi sửa nhắc việc.',
+    'Names written in the photo aren’t assigned automatically: pick who does it when you edit the reminder.',
+  ),
   needTime: L(
     'Nhắc việc cần ngày và giờ: bạn chọn trước khi lưu (mình không tự đặt giờ).',
     'Reminders need a date and a time: pick them before saving (no time is set for you).',
+  ),
+  needDate: L(
+    'Nhắc việc cần ngày: bạn chọn trước khi lưu. Không có giờ thì là nhắc cả ngày.',
+    'Reminders need a date: pick it before saving. Without a time it’s an all-day reminder.',
+  ),
+  allDay: L(
+    'Việc không ghi giờ được lưu thành nhắc cả ngày, báo theo giờ nhắc cả ngày bạn chọn trong Nhắc việc (mình không tự đặt giờ).',
+    'To-dos without a time are saved as all-day reminders, notified at the all-day time you chose in Reminders (no time is set for you).',
   ),
 };
 
@@ -260,6 +283,69 @@ export function reminderDateQuestion(index: number, line: NoteLineReading): Clar
     allowText: false,
   };
 }
+
+// ---- D-075 #5: who does a note line (reminders) ----
+
+/** Members who may be assigned a reminder (`reminderAssigneeRoles`), the asker first. */
+export async function assignableMembers(
+  db: Firestore,
+  s: Pick<TrustedScope, 'babyId' | 'uid'>,
+  now: Date,
+): Promise<ScopeMember[]> {
+  const snaps = await db.collection(`babies/${s.babyId}/members`).get();
+  const rank = (m: ScopeMember) => (m.uid === s.uid ? 0 : m.role === 'coParent' ? 1 : 2);
+  return snaps.docs
+    .map((d) => memberOf(d, now))
+    .filter(
+      (m): m is ScopeMember =>
+        m !== null &&
+        (reminderAssigneeRoles as readonly string[]).includes(m.role) &&
+        // A choice id is at most 40 characters; 'none' is "Không giao".
+        m.uid.length <= 40 &&
+        m.uid !== 'none',
+    )
+    .sort((a, b) => rank(a) - rank(b) || a.displayName.localeCompare(b.displayName))
+    .slice(0, 5);
+}
+
+/**
+ * "Ảnh ghi “Mẹ” cạnh “Đặt lịch khám”. Giao việc này cho ai?": the written name is shown, never
+ * matched to a member; the person picks one of the eligible members or nobody.
+ */
+export function reminderAssigneeQuestion(
+  index: number,
+  line: NoteLineReading,
+  members: readonly ScopeMember[],
+  meUid: string,
+): Clarification {
+  const title = clip(line.title.trim(), 50);
+  const written = clip((line.assigneeText ?? '').trim(), 20);
+  const name = (m: ScopeMember, locale: Locale) =>
+    m.displayName.trim() ||
+    (m.role === 'caregiver' ? L('Người chăm sóc', 'Caregiver') : L('Cùng nuôi', 'Co-parent'))[
+      locale
+    ];
+  return {
+    id: 'pending',
+    field: `reminder.assignee.${index}`,
+    question: L(
+      `Ảnh ghi “${written}” cạnh “${title}”. Giao việc này cho ai?`,
+      `The photo says “${written}” next to “${title}”. Who should do it?`,
+    ),
+    choices: [
+      ...members.map((m) => ({
+        id: m.uid,
+        label:
+          m.uid === meUid
+            ? L(`Bạn (${name(m, 'vi')})`, `You (${name(m, 'en')})`)
+            : L(name(m, 'vi'), name(m, 'en')),
+      })),
+      { id: 'none', label: L('Không giao', 'No one') },
+    ],
+    allowText: false,
+  };
+}
+// ---- end D-075 #5 ----
 
 // ---------- Run ----------
 
@@ -464,13 +550,13 @@ async function decide(
           ? receiptDrafts(deps, task, s, stored, r.receipt)
           : nothingToSave([say(t.noReceipt, locale)], 0);
       }
-      if (choice === 'reminders') return noteDrafts(task, s, r, answers);
+      if (choice === 'reminders') return noteDrafts(deps, task, s, r, answers);
       return nothingToSave([say(t.nothing, locale)], 0);
     }
     case 'receipt':
       return receiptDrafts(deps, task, s, stored, r.receipt!);
     case 'note':
-      return noteDrafts(task, s, r, answers);
+      return noteDrafts(deps, task, s, r, answers);
   }
 }
 
@@ -546,6 +632,8 @@ async function receiptDrafts(
     babyIds: await householdBabyIds(deps.db, s.familyId, s.babyId),
     date,
     total: payload.totalMinor,
+    // D-075 #4: a duplicate is the same amount in the same currency.
+    currency: payload.currency,
     merchant,
     sha256s: stored.sha256s,
     excludeExpenseId: expenseIdForDraft(draftId),
@@ -571,12 +659,13 @@ async function receiptDrafts(
 
 const LINK = /(https?:\/\/|www\.|[\w.+-]+@[\w-]+\.[\w.]+|\b[\w-]+\.(com|net|org|vn|io)\b)/i;
 
-function noteDrafts(
+async function noteDrafts(
+  deps: ImageWorkDeps,
   task: StoredTask,
   s: TrustedScope,
   r: ImageReading,
   answers: Map<string, string>,
-): ImageWork {
+): Promise<ImageWork> {
   const locale = task.locale;
   const lines = r.noteLines;
   // A line carrying a link or an address is never a task (photo text is data, brief p.15).
@@ -621,6 +710,12 @@ function noteDrafts(
   const today = localDateIn(s.zone, anchor);
   const rounds = task.round ?? 0;
   const drafts: PreparedDraft[] = [];
+  // D-075 #5: the members a written name may be given to, read once, only when one is written.
+  const assignable =
+    reminderAssigneeSupported() && selected.some((l) => l.assigneeText?.trim())
+      ? await assignableMembers(deps.db, s, deps.now)
+      : [];
+  let assigneeLater = false;
   for (const line of selected) {
     let date = line.date;
     const uncertain = new Set<string>();
@@ -657,14 +752,32 @@ function noteDrafts(
     if (date !== null && (date < today || daysBetweenIso(today, date) > 366)) uncertain.add('date');
     const time = line.time;
     if (time !== null && needsPeriod([line.timeText ?? time])) uncertain.add('time');
+    // ---- D-075 #5: a name read from the photo is never turned into a uid; the person picks ----
+    let assigneeUid: string | null = null;
+    if (reminderAssigneeSupported() && line.assigneeText?.trim()) {
+      const field = `reminder.assignee.${line.index}`;
+      const answer = answers.get(field);
+      if (answer === undefined) {
+        if (rounds < 4 && assignable.length > 0) {
+          const q = reminderAssigneeQuestion(line.index, line, assignable, s.uid);
+          return empty({
+            outcome: { kind: 'clarification', clarification: q },
+            ask: q,
+            parts: [],
+          });
+        }
+        assigneeLater = true;
+      } else {
+        // Re-checked against the members read now (and again at confirm).
+        assigneeUid = assignable.find((m) => m.uid === answer)?.uid ?? null;
+      }
+    }
     const payload: DraftPayload = {
       kind: 'reminder',
       title: line.title.trim().slice(0, 120),
       date,
       time,
-      // A name read from the photo is never turned into a uid; while reminders take no assignee
-      // (`reminderAssigneeSupported`, D-075 #5 follow-up) none is set at all.
-      assigneeUid: null,
+      assigneeUid,
     };
     const checked = draftPayloadSchema.safeParse(payload);
     if (!checked.success) continue;
@@ -682,9 +795,20 @@ function noteDrafts(
   }
   if (drafts.length === 0) return refuse('VALIDATION_FAILED', excluded, 0);
   const parts = [...excluded];
-  if (drafts.some((d) => d.missingFields.length > 0)) parts.push(say(t.needTime, locale));
+  // ---- D-075 #5: date-only reminders are all day; say so, never a silent time ----
+  if (drafts.some((d) => d.missingFields.length > 0)) {
+    parts.push(say(reminderNeedsTime() ? t.needTime : t.needDate, locale));
+  }
+  if (
+    !reminderNeedsTime() &&
+    drafts.some((d) => d.payload.kind === 'reminder' && d.payload.time === null)
+  ) {
+    parts.push(say(t.allDay, locale));
+  }
   if (!reminderAssigneeSupported() && selected.some((l) => l.assigneeText)) {
     parts.push(say(t.noAssignee, locale));
+  } else if (assigneeLater) {
+    parts.push(say(t.assigneeLater, locale));
   }
   return empty({
     outcome: { kind: 'drafts', items: drafts.map((d) => d.payload) },

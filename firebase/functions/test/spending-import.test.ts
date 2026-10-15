@@ -10,6 +10,7 @@ import {
   duplicateKey,
   importedExpenseId,
   parseGrid,
+  previewOf,
   readRows,
   signsAndDates,
   suggestCategory,
@@ -196,6 +197,7 @@ describe('reading rows', () => {
         ['01/10/2026', '0', 'Không đồng', '', ''],
         ['01/10/2026', '2 tỷ', 'Quá lớn', '', ''],
         ['01/10/2026', '$12.50', 'Đô', '', ''],
+        ['01/10/2026', '500 INR', 'Rupee', '', ''],
       ],
       mapping,
       all,
@@ -208,7 +210,10 @@ describe('reading rows', () => {
       category: 'Sữa',
       payer: 'Mẹ',
       issue: null,
+      currency: 'VND',
     });
+    // D-075 #4: a supported currency is kept in its minor units; another one is skipped.
+    expect(rows[8]).toMatchObject({ amount: 1250, currency: 'USD', issue: null });
     expect(rows.map((r) => [r.row, r.issue])).toEqual([
       [2, null],
       [4, 'future-date'],
@@ -218,9 +223,10 @@ describe('reading rows', () => {
       [8, 'bad-amount'],
       [9, 'bad-amount'],
       [10, 'too-large'],
-      [11, 'other-currency'],
+      [11, null],
+      [12, 'other-currency'],
     ]);
-    expect(countRows(rows)).toEqual({ rows: 9, ready: 1, duplicates: 0, income: 0, errors: 8 });
+    expect(countRows(rows)).toEqual({ rows: 10, ready: 2, duplicates: 0, income: 0, errors: 8 });
   });
 
   it('chooses spending by sign when a file mixes them', () => {
@@ -251,19 +257,49 @@ describe('reading rows', () => {
     expect(countRows(neg)).toMatchObject({ ready: 2, income: 1, errors: 0 });
   });
 
-  it('skips rows whose currency is not VND', () => {
+  it('keeps each row in its currency column (D-075 #4), skipping the ones Chi tiêu does not keep', () => {
     const grid: Grid = [
       ['Date', 'Category', 'Amount', 'Currency', 'Note'],
       ['01/10/2026', 'Milk', '-100000', 'VND', 'a'],
       ['01/10/2026', 'Milk', '-12', 'USD', 'b'],
       ['01/10/2026', 'Milk', '-100000', '₫', 'c'],
+      ['01/10/2026', 'Milk', '-1,500', 'JPY', 'd'],
+      ['01/10/2026', 'Milk', '-300', 'INR', 'e'],
+      ['01/10/2026', 'Milk', '-9.99', '', 'f'],
     ];
     const l = detectLayout(grid);
-    expect(read(grid, l.mapping, defaultOptions(grid, l.mapping)).map((r) => r.issue)).toEqual([
-      null,
-      'other-currency',
-      null,
+    const rows = read(grid, l.mapping, defaultOptions(grid, l.mapping));
+    expect(rows.map((r) => [r.amount, r.currency, r.issue])).toEqual([
+      [100_000, 'VND', null],
+      [1200, 'USD', null],
+      [100_000, 'VND', null],
+      [1500, 'JPY', null],
+      [300, 'VND', 'other-currency'],
+      // No currency named: the household's (VND here, so 9.99 rounds to 10 đ).
+      [10, 'VND', null],
     ]);
+    // A USD household reads unmarked rows (and "$") in dollars.
+    const usd = readRows(grid, l.mapping, defaultOptions(grid, l.mapping), {
+      today,
+      existing: new Set(),
+      currency: l.currency,
+      household: 'USD',
+    });
+    expect(usd[5]).toMatchObject({ amount: 999, currency: 'USD', issue: null });
+    // The preview never adds currencies together.
+    expect(previewOf(rows, 'VND').total).toMatchObject({
+      amount: 200_010,
+      currency: 'VND',
+      others: [
+        { currency: 'USD', amount: 1200 },
+        { currency: 'JPY', amount: 1500 },
+      ],
+    });
+  });
+
+  it('keys duplicates by currency, VND keys unchanged', () => {
+    expect(duplicateKey('2026-10-01', 1250, 'Sữa')).toBe('2026-10-01|1250|sua');
+    expect(duplicateKey('2026-10-01', 1250, 'Sữa', 'USD')).toBe('2026-10-01|1250|sua|USD');
   });
 
   it('reads 03/04 by the chosen order and flags ambiguity', () => {
@@ -462,8 +498,15 @@ describe('the AI reading (D-003 adapter)', () => {
     const ai = openAiExpenseExtractor('sk-test', 'gpt-4.1-mini', fetchImpl);
     const rows = await ai.extractExpenses({ text: '1/10 sữa 120k', today, locale: 'vi' });
     expect(rows).toEqual([
-      { date: '2026-10-01', amount: 120000, note: 'Sữa', category: 'Sữa', payer: 'Mẹ' },
-      { date: null, amount: null, note: 'Tã', category: '', payer: '' },
+      {
+        date: '2026-10-01',
+        amount: 120000,
+        note: 'Sữa',
+        category: 'Sữa',
+        payer: 'Mẹ',
+        currency: null,
+      },
+      { date: null, amount: null, note: 'Tã', category: '', payer: '', currency: null },
     ]);
     expect(calls[0]!.body.store).toBe(false);
     const messages = calls[0]!.body.messages as { role: string; content: unknown }[];

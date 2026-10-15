@@ -37,6 +37,8 @@ Owner (2026-10-12):
   the payer is kept as a snapshot so a departed member still reads right.
 - **D-057** A recurring item is **added automatically** on its due day (server, in the baby's time zone) and
   stays editable; parents get a push. Full scope in one go.
+- **D-075 #4** (2026-10-15) Other currencies: see [`spending-currency-plan.md`](spending-currency-plan.md)
+  (P-162); amounts are minor units of the expense's `currency`, absent = VND.
 
 Engineering defaults (P-140, owner to confirm):
 - Money is whole VND (`int`, 1 … 1 000 000 000). Full form "1.020.000 ₫" (vi) / "1,020,000 ₫" (en); short form

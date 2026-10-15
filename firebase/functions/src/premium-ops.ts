@@ -108,6 +108,8 @@ export async function aiPolicy(
   const flag = flags.success ? flags.data.ai_assist : launchedFlags.ai_assist;
   const ent = entitlementsConfigSchema.safeParse(entDoc.data());
   const ai = (ent.success ? ent.data : defaultEntitlementsConfig).quotas.ai;
+  // D-075 #1: summaries charge the assistant credit pool.
+  const assistant = (ent.success ? ent.data : defaultEntitlementsConfig).quotas.assistant;
 
   const days = daySnaps.map((d, i) => ({
     day: dayIds[i]!,
@@ -146,7 +148,7 @@ export async function aiPolicy(
       percent: flag.percent,
       families: flag.families?.length ?? 0,
     },
-    quotas: { ...ai, stored: ent.success },
+    quotas: { ...ai, stored: ent.success, assistant },
     budget,
     days,
     totals: {

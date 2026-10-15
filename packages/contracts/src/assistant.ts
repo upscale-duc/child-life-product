@@ -1,4 +1,6 @@
 import { z } from 'zod';
+// Chi tiêu currencies (D-075 #4).
+import { amountMaxFor, expenseCurrencies, isExpenseCurrency, legacyCurrency } from './spending.js';
 
 /**
  * Child Life Assistant v3 (brief "Child-Life-Chat-Assistant-Implementation-v3", Figma CH01–CH28,
@@ -53,12 +55,17 @@ export const assistantScopeSchema = z.discriminatedUnion('type', [
 export type AssistantScope = z.infer<typeof assistantScopeSchema>;
 
 /**
- * `assistantConversations/{id}`: private to its owner by default (brief p.8); domain records are
- * shared by role, chats are not. The owner must still be a member of the scope to use it.
+ * `assistantConversations/{id}`. D-075 #2: one SHARED thread per baby (`shared: true`, id
+ * `sharedConversationIdFor(babyId)`, `ownerUid` null) for Cùng nuôi and Người chăm sóc; every
+ * other conversation (household / spending, relatives, threads from before D-075) stays private
+ * to its owner, who must still be a member of the scope to use it.
  */
 export interface AssistantConversation {
   id: string;
-  ownerUid: string;
+  /** Null for the shared baby thread (D-075 #2). */
+  ownerUid: string | null;
+  /** D-075 #2: the baby's shared thread (absent / false = private to `ownerUid`). */
+  shared?: boolean;
   familyId: string;
   scope: AssistantScope;
   title: string | null;
@@ -468,21 +475,12 @@ export type DraftProblem =
   /** Slice A3: a reminder title longer than the module allows (80). */
   | 'INVALID_TITLE'
   /** Slice A3: a reminder due before now (reminders are set for later, D-031). */
-  | 'PAST_TIME';
+  | 'PAST_TIME'
+  /** D-075 #5: the reminder's assignee is no longer an active Cùng nuôi / Người chăm sóc. */
+  | 'INVALID_ASSIGNEE';
 
-export const supportedCurrencies = [
-  'VND',
-  'USD',
-  'EUR',
-  'SGD',
-  'AUD',
-  'GBP',
-  'JPY',
-  'KRW',
-  'TWD',
-  'NZD',
-  'CAD',
-] as const;
+/** The currencies a draft may carry: exactly the ones Chi tiêu keeps (D-075 #4, `currencyInfo`). */
+export const supportedCurrencies = expenseCurrencies;
 
 /** Technical limits for a single bottle feed (module-level; not a clinical norm). */
 export const bottleLimits = { maxMl: 500 };
@@ -844,8 +842,9 @@ export const getAssistantTaskRequestSchema = z.object({
 });
 
 /**
- * `listAssistantHistory` (CH03): the caller's own conversations about [babyId] (newest first), or
- * the messages of one of them (newest first). `cursor` is the `nextCursor` of the previous page.
+ * `listAssistantHistory` (CH03): the baby's shared thread first (D-075 #2, Cùng nuôi and Người
+ * chăm sóc) then the caller's own private conversations about [babyId] (newest first), or the
+ * messages of one of them (newest first). `cursor` is the `nextCursor` of the previous page.
  */
 export const listAssistantHistoryRequestSchema = z.object({
   ...envelope,
@@ -855,7 +854,11 @@ export const listAssistantHistoryRequestSchema = z.object({
   limit: z.number().int().min(1).max(50),
 });
 
-/** `deleteAssistantConversation` (CH03 "Xoá cuộc trò chuyện"): explicit confirmation required. */
+/**
+ * `deleteAssistantConversation` (CH03 "Xoá cuộc trò chuyện"): explicit confirmation required. A
+ * private one by its owner; the shared baby thread by a Cùng nuôi only (D-075 #2), for everyone.
+ * Saved records (care, check-ins, reminders, expenses) always stay in their modules.
+ */
 export const deleteAssistantConversationRequestSchema = z.object({
   ...envelope,
   conversationId: z.string().min(1).max(80),
@@ -906,11 +909,17 @@ export interface AssistantTaskView {
   updatedAt: string;
   /** Slice A5: the care thread of this task (CH15–CH18); absent for other tasks. */
   care?: AssistantCareView | null;
+  /** D-075 #2: `shared` = in the baby's shared thread (absent on tasks from before D-075). */
+  visibility?: AssistantVisibility;
+  /** D-075 #2: who asked (the task's author); absent on tasks from before D-075. */
+  author?: AssistantAuthor | null;
 }
 
 export interface AssistantDraftView extends ActionDraft {
   /** Same checks as the form (`draftProblems`), against the confirm time. */
   problems: DraftProblem[];
+  /** D-075 #2: who saved it (the confirmer, maybe not the task's author); null until saved. */
+  confirmedBy?: AssistantAuthor | null;
 }
 
 export interface AssistantEvent {
@@ -931,6 +940,11 @@ export interface AssistantMessage {
   sequence: number;
   createdAt: string;
   attachmentIds: string[];
+  /**
+   * D-075 #2: who wrote it — the sender of a user message, the confirmer of an `action_result`;
+   * null for the assistant's own replies; absent on messages from before D-075.
+   */
+  author?: AssistantAuthor | null;
 }
 
 export interface AssistantTaskSnapshot {
@@ -1013,33 +1027,44 @@ export interface AssistantAttachmentView {
 /** D-075 #3: receipt photos are kept with the expense unless the person chose otherwise. */
 export const defaultAttachmentRetention: AttachmentRetention = 'keep_with_record';
 
-/** Chi tiêu stores whole VND only today (P-157): other currencies stay in review. */
-export const expenseModuleCurrency = 'VND';
+// ---- Chi tiêu currencies (D-075 #4; owned by Chi tiêu, `spending.ts` `currencyInfo`) ----
+/** What an expense without a currency is in (older documents); not a limit any more. */
+export const expenseModuleCurrency = legacyCurrency;
 
-// The three module limits below are the ONLY places the assistant encodes them; the D-075 #4 / #5
-// follow-up (Chi tiêu currencies, date-only reminders with an assignee) flips these functions.
+// The three module limits below are the ONLY places the assistant encodes them; the D-075 #5
+// follow-up (date-only reminders with an assignee) flips the two reminder functions.
 
-/** Whether Chi tiêu can store an expense in [currency] today (VND only; D-075 #4 follow-up). */
+/** Whether Chi tiêu can store an expense in [currency]: any of `expenseCurrencies` (D-075 #4). */
 export function expenseCurrencySupported(currency: string | null): boolean {
-  return currency === expenseModuleCurrency;
+  return isExpenseCurrency(currency);
 }
+// ---- end Chi tiêu currencies ----
 
-/** Whether a one-off reminder needs a time today (no date-only yet; D-075 #5 follow-up). */
+// ---- One-off reminders: date-only and assignee (D-075 #5; owned by reminders) ----
+/**
+ * Whether a one-off reminder needs a time: no since D-075 #5 — a date without a time is an
+ * all-day reminder, notified at the person's chosen time (never a silent 09:00).
+ */
 export function reminderNeedsTime(): boolean {
-  return true;
-}
-
-/** Whether one-off reminders take an assignee today (none yet, P-157; D-075 #5 follow-up). */
-export function reminderAssigneeSupported(): boolean {
   return false;
 }
+
+/**
+ * Whether one-off reminders take an assignee: yes since D-075 #5 — a member the person picks
+ * (Cùng nuôi or Người chăm sóc, `reminderAssigneeRoles`), never a name read from a photo.
+ */
+export function reminderAssigneeSupported(): boolean {
+  return true;
+}
+// ---- end one-off reminders ----
 /** One-off reminders: title length the module accepts (Rules `validReminderFields`). */
 export const reminderModuleTitleMax = 80;
 
 /**
  * Module checks beyond the form checks (`draftProblems`) for what a module can store today:
- * Chi tiêu takes VND only and at most 1 000 000 000 đ; a one-off reminder needs a time (no
- * date-only reminders, never a silent 09:00) and a title of at most 80 characters.
+ * Chi tiêu takes the currencies of `currencyInfo`, each up to its own ceiling in minor units
+ * (1 000 000 000 đ for VND); a one-off reminder takes a date with or without a time (no time =
+ * all day, D-075 #5; never a silent 09:00) and a title of at most 80 characters.
  */
 export function assistantModuleProblems(p: DraftPayload): DraftProblem[] {
   const out: DraftProblem[] = [];
@@ -1047,7 +1072,9 @@ export function assistantModuleProblems(p: DraftPayload): DraftProblem[] {
     if (p.currency !== null && !expenseCurrencySupported(p.currency)) {
       out.push('CURRENCY_UNSUPPORTED');
     }
-    if (p.totalMinor !== null && p.totalMinor > 1_000_000_000) out.push('INVALID_AMOUNT');
+    // Chi tiêu currencies (D-075 #4): the ceiling of the receipt's currency, VND when unknown.
+    const ceiling = amountMaxFor(isExpenseCurrency(p.currency) ? p.currency : legacyCurrency);
+    if (p.totalMinor !== null && p.totalMinor > ceiling) out.push('INVALID_AMOUNT');
   } else if (p.kind === 'reminder') {
     if (p.time === null && reminderNeedsTime()) out.push('MISSING_TIME');
     if (p.title.trim().length > reminderModuleTitleMax) out.push('INVALID_TITLE');
@@ -1123,4 +1150,50 @@ export function ageInFullMonths(dateOfBirth: string, today: string): number {
   const [by, bm, bd] = dateOfBirth.slice(0, 10).split('-').map(Number) as [number, number, number];
   const [ty, tm, td] = today.slice(0, 10).split('-').map(Number) as [number, number, number];
   return Math.max(0, (ty - by) * 12 + (tm - bm) - (td < bd ? 1 : 0));
+}
+
+// ---------- D-075 #2: one shared conversation per baby (docs/assistant/data.md) ----------
+
+/** Who wrote a message / asked a task / saved a draft: the member block the app labels. */
+export interface AssistantAuthor {
+  uid: string;
+  name: string;
+  /** `mother`, `father`, `nanny`… (the app shows "Mẹ", "Ba", "Cô Hoa"). */
+  relation: string;
+  relationCustom: string | null;
+}
+
+export const assistantVisibilities = ['shared', 'private'] as const;
+export type AssistantVisibility = (typeof assistantVisibilities)[number];
+
+/** Roles that read and write the baby's shared thread; relatives never do. */
+export const sharedThreadRoles = ['coParent', 'caregiver'] as const;
+
+export function inSharedThread(role: string): boolean {
+  return (sharedThreadRoles as readonly string[]).includes(role);
+}
+
+/**
+ * Where a new task goes (D-075 #2, spending excluded): a TEXT task about a child, asked by a Cùng
+ * nuôi or Người chăm sóc and not hinted as an expense, joins the baby's shared thread. Household
+ * scope, an `expense` hint and every photo task (a photo may be a receipt; that is known only
+ * after reading it) stay private to their author, as do all tasks of a relative.
+ */
+export function taskVisibilityFor(x: {
+  scope: AssistantScope;
+  modality: TaskModality;
+  intentHint: string | null;
+  role: string;
+}): AssistantVisibility {
+  return x.scope.type === 'child' &&
+    x.modality === 'text' &&
+    x.intentHint !== 'expense' &&
+    inSharedThread(x.role)
+    ? 'shared'
+    : 'private';
+}
+
+/** The baby's shared thread id (deterministic: every member lands on the same document). */
+export function sharedConversationIdFor(babyId: string): string {
+  return `cv_${babyId}`;
 }

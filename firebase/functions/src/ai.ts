@@ -328,6 +328,8 @@ export interface AiExpenseRow {
   note: string;
   category: string;
   payer: string;
+  /** D-075 #4: the ISO 4217 code written on the row, or null (the household's currency). */
+  currency?: string | null;
 }
 
 export interface ExpenseExtractInput {
@@ -337,6 +339,8 @@ export interface ExpenseExtractInput {
   /** The baby's local day: dates without a year are in this year, never after it. */
   today: string;
   locale: 'vi' | 'en';
+  /** D-075 #4: the household's currency (ISO 4217), for rows that write none. Default VND. */
+  currency?: string;
 }
 
 /**
@@ -359,23 +363,26 @@ const expenseRowsSchema = {
       items: {
         type: 'object',
         additionalProperties: false,
-        required: ['date', 'amount', 'note', 'category', 'payer'],
+        required: ['date', 'amount', 'note', 'category', 'payer', 'currency'],
         properties: {
           date: { type: ['string', 'null'] },
           amount: { type: ['number', 'null'] },
           note: { type: 'string' },
           category: { type: 'string' },
           payer: { type: 'string' },
+          currency: { type: ['string', 'null'] },
         },
       },
     },
   },
 } as const;
 
-const expenseRules = (today: string, locale: 'vi' | 'en') => [
+const expenseRules = (today: string, locale: 'vi' | 'en', currency = 'VND') => [
   'You read a family’s spending notes (pasted text or photos of a notebook, receipts or a screenshot) and list each expense as one row.',
   `Today is ${today}. Dates are day first (12/10 = 12 October). A date without a year is in the year of today and never after today. Write dates as YYYY-MM-DD, or null when the row has no date.`,
-  'Amounts are Vietnamese đồng (VND), whole numbers, positive. "k" or "nghìn" = thousand, "tr" or "triệu" = million, "1tr2" = 1 200 000. Use null when no amount is readable.',
+  // D-075 #4: rows keep the currency they are written in.
+  `Amounts are positive numbers in the currency written on the row; when none is written they are in ${currency}. Vietnamese đồng (VND) are whole numbers: "k" or "nghìn" = thousand, "tr" or "triệu" = million, "1tr2" = 1 200 000. Currencies with cents keep them (12.50). Use null when no amount is readable.`,
+  'currency: the ISO 4217 code written or shown by a clear symbol on the row (₫ or đ → VND, € → EUR, £ → GBP, US$ → USD), else null. "$" or "¥" alone → null.',
   'note: what was bought, copied from the source in its own language, short. category: a category written in the source (for example "Sữa", "Tã", "Y tế"), else "". payer: who paid when written (for example "Mẹ", "Ba"), else "".',
   'Do not invent rows, dates or amounts. Skip totals, balances and income. Keep the order of the source.',
   locale === 'vi'
@@ -394,6 +401,7 @@ function readExpenseRows(out: unknown, max: number): AiExpenseRow[] {
     note: text(r?.note),
     category: text(r?.category),
     payer: text(r?.payer),
+    currency: typeof r?.currency === 'string' && /^[A-Z]{3}$/.test(r.currency) ? r.currency : null,
   }));
 }
 
@@ -429,7 +437,10 @@ export function openAiExpenseExtractor(
             temperature: 0,
             max_completion_tokens: 16_000,
             messages: [
-              { role: 'system', content: expenseRules(input.today, input.locale).join('\n') },
+              {
+                role: 'system',
+                content: expenseRules(input.today, input.locale, input.currency).join('\n'),
+              },
               { role: 'user', content },
             ],
             response_format: {

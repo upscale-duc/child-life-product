@@ -144,29 +144,46 @@ service cloud.firestore {
     }
     // ---- end Premium billing ----
 
-    // ---- Child Life Assistant (docs/assistant/data.md, P-158) ----
+    // ---- Child Life Assistant (docs/assistant/data.md, P-158, D-075 #2) ----
     // Conversations, tasks, drafts, events and quotes are written by Functions only and read by
-    // their owner while still an active member of the scope's baby (chats are private; domain
-    // records are shared by role). Executions and the request ledger are never readable. Domain
+    // their owner while still an active member of the scope's baby; the baby's shared thread is
+    // read by its Cùng nuôi and Người chăm sóc (below; domain records are shared by role). Executions and the request ledger are never readable. Domain
     // records written for a confirmed draft keep the module's own rules (clients still write
     // `source: 'app'` only).
     function assistantOwner(d) {
       return signedIn() && d.ownerUid == request.auth.uid && activeMember(d.scope.babyId);
     }
+    // ---- D-075 #2: the baby's shared thread (Cùng nuôi + Người chăm sóc; relatives never) ----
+    // A conversation with `shared: true` and the tasks with `visibility: 'shared'` (with their
+    // drafts and events) are readable by every active Cùng nuôi / Người chăm sóc of the scope's
+    // baby. Household / spending tasks, photo tasks and relatives' tasks stay private (owner).
+    function assistantSharer(babyId) {
+      return activeMember(babyId) && role(babyId) in ['coParent', 'caregiver'];
+    }
+    function assistantConversationReadable(d) {
+      return assistantOwner(d) ||
+        (signedIn() && d.get('shared', false) == true && assistantSharer(d.scope.babyId));
+    }
+    function assistantTaskReadable(d) {
+      return assistantOwner(d) ||
+        (signedIn() && d.get('visibility', 'private') == 'shared' &&
+          assistantSharer(d.scope.babyId));
+    }
+    // ---- end D-075 #2 helpers ----
     match /assistantConversations/{conversationId} {
-      allow read: if assistantOwner(resource.data);
+      allow read: if assistantConversationReadable(resource.data);
       allow write: if false;
       match /messages/{messageId} {
-        allow read: if assistantOwner(
+        allow read: if assistantConversationReadable(
           get(/databases/$(database)/documents/assistantConversations/$(conversationId)).data);
         allow write: if false;
       }
     }
     match /assistantTasks/{taskId} {
-      allow read: if assistantOwner(resource.data);
+      allow read: if assistantTaskReadable(resource.data);
       allow write: if false;
       match /{sub}/{docId} {
-        allow read: if sub in ['drafts', 'events'] && assistantOwner(
+        allow read: if sub in ['drafts', 'events'] && assistantTaskReadable(
           get(/databases/$(database)/documents/assistantTasks/$(taskId)).data);
         allow write: if false;
       }
@@ -218,6 +235,17 @@ service cloud.firestore {
         allow update: if spendingManagerOf(familyId) && validCategoryUpdate(categoryId);
         allow delete: if false;
       }
+
+      // ---- Chi tiêu currencies (D-075 #4) ----
+      // The household's currency (`main`): the add form's default and new budgets' currency.
+      // Read like the categories; any Cùng nuôi of one of the family's babies sets it.
+      match /spendingSettings/{docId} {
+        allow read: if docId == 'main' && spendingReaderOf(familyId);
+        allow create, update: if docId == 'main' && spendingManagerOf(familyId) &&
+          validSpendingSettings();
+        allow delete: if false;
+      }
+      // ---- end Chi tiêu currencies ----
     }
 
     // Member-visible profile: nickname, avatar ref, trackers, time zone ("Người thân chỉ thấy
@@ -505,6 +533,7 @@ service cloud.firestore {
       // Reminders (S7, 8a–8e, 12f). Cùng nuôi create, edit and delete (D-030, D-031); caregivers
       // view and mark done; relatives never see them (D-018). Notifications are local to the
       // device in notifyDevice (R-091); any viewer may move it to their own device (D-029).
+      // D-075 #5: all day (`allDay`, `dueDate`) and an assignee, set by Cùng nuôi.
       match /reminders/{reminderId} {
         allow read: if canSeeReminders(babyId);
         allow create: if canSeeReminders(babyId) && role(babyId) == 'coParent' && babyOpen(babyId) &&
@@ -1021,8 +1050,40 @@ service cloud.firestore {
         (p.relationCustom == null || (p.relationCustom is string && p.relationCustom.size() <= 24)));
     }
 
+    // ---- Chi tiêu currencies (D-075 #4; contracts `currencyInfo`, keep in step) ----
+    // Each currency's ceiling in minor units (VND đồng, USD cents, JPY yen).
+    function currencyMax() {
+      return {'VND': 1000000000, 'USD': 100000000, 'EUR': 100000000, 'GBP': 100000000,
+        'AUD': 200000000, 'CAD': 200000000, 'NZD': 200000000, 'SGD': 200000000,
+        'JPY': 200000000, 'KRW': 2000000000, 'TWD': 5000000000, 'THB': 5000000000,
+        'HKD': 1000000000, 'CNY': 1000000000, 'CHF': 100000000, 'MYR': 500000000};
+    }
+
+    // A document without `currency` is VND (old apps keep writing it that way).
+    function currencyOf(d) {
+      return d.get('currency', 'VND');
+    }
+
+    function validCurrency(d) {
+      return currencyOf(d) is string && currencyOf(d) in currencyMax();
+    }
+
+    // 1 … the ceiling of the document's currency.
+    function amountFits(v, d) {
+      return validCurrency(d) && intIn(v, 1, currencyMax()[currencyOf(d)]);
+    }
+
+    function validSpendingSettings() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['currency', 'updatedAt', 'updatedBy']) &&
+        d.keys().hasAll(['currency', 'updatedAt', 'updatedBy']) &&
+        d.currency is string && d.currency in currencyMax() &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time;
+    }
+    // ---- end Chi tiêu currencies ----
+
     function validExpenseBody(babyId, d) {
-      return intIn(d.amount, 1, 1000000000) && categoryRef(d.categoryId) &&
+      return amountFits(d.amount, d) && categoryRef(d.categoryId) &&
         d.note is string && d.note.size() <= 80 && isoDay(d.spentOn) && validPayer(d.payer) &&
         (d.receiptPath == null || (d.receiptPath is string &&
           d.receiptPath.matches('^babies/' + babyId + '/expenses/[A-Za-z0-9_-]{8,64}[.]jpg$')));
@@ -1033,7 +1094,8 @@ service cloud.firestore {
       let keys = ['amount', 'categoryId', 'note', 'spentOn', 'payer', 'receiptPath', 'source',
         'sourceRef', 'createdBy', 'author', 'createdAt', 'updatedAt', 'updatedBy', 'deleted',
         'deletedAt', 'deletedBy'];
-      return d.keys().hasOnly(keys) && d.keys().hasAll(keys) &&
+      // `currency` is optional (D-075 #4): absent = VND, as old apps write it.
+      return d.keys().hasOnly(keys.concat(['currency'])) && d.keys().hasAll(keys) &&
         expenseId.matches('^x_[a-f0-9]{32}$') &&
         d.createdBy == request.auth.uid && d.updatedBy == request.auth.uid &&
         d.createdAt == request.time && d.updatedAt == request.time &&
@@ -1049,9 +1111,9 @@ service cloud.firestore {
     // Edit, soft delete ("Xoá khoản chi", 8g) and its undo; who and where it came from stay.
     function validExpenseUpdate(babyId) {
       let d = request.resource.data;
-      return d.diff(resource.data).affectedKeys().hasOnly(['amount', 'categoryId', 'note',
-          'spentOn', 'payer', 'receiptPath', 'updatedAt', 'updatedBy', 'deleted', 'deletedAt',
-          'deletedBy']) &&
+      return d.diff(resource.data).affectedKeys().hasOnly(['amount', 'currency', 'categoryId',
+          'note', 'spentOn', 'payer', 'receiptPath', 'updatedAt', 'updatedBy', 'deleted',
+          'deletedAt', 'deletedBy']) &&
         d.updatedBy == request.auth.uid && d.updatedAt == request.time &&
         d.deleted is bool &&
         (d.deleted == resource.data.deleted ||
@@ -1064,10 +1126,12 @@ service cloud.firestore {
     function validBudget() {
       let d = request.resource.data;
       let before = resource == null ? null : resource.data.get('alertedMonth', null);
+      // `currency` (D-075 #4): what the budget counts; absent = VND.
       return d.keys().hasOnly(['monthlyTotal', 'caps', 'alert80', 'updatedAt', 'updatedBy',
-          'alertedMonth']) &&
+          'alertedMonth', 'currency']) &&
         d.keys().hasAll(['monthlyTotal', 'caps', 'alert80', 'updatedAt', 'updatedBy']) &&
-        (d.monthlyTotal == null || intIn(d.monthlyTotal, 0, 1000000000)) &&
+        validCurrency(d) &&
+        (d.monthlyTotal == null || intIn(d.monthlyTotal, 0, currencyMax()[currencyOf(d)])) &&
         d.caps is map && d.caps.size() <= 60 && d.alert80 is bool &&
         d.updatedBy == request.auth.uid && d.updatedAt == request.time &&
         d.get('alertedMonth', null) == before;
@@ -1088,7 +1152,7 @@ service cloud.firestore {
 
     function validRecurringBody(d) {
       return d.title is string && d.title.size() >= 1 && d.title.size() <= 60 &&
-        categoryRef(d.categoryId) && intIn(d.amount, 1, 1000000000) && validPayer(d.payer) &&
+        categoryRef(d.categoryId) && amountFits(d.amount, d) && validPayer(d.payer) &&
         validSchedule(d.schedule) && d.enabled is bool;
     }
 
@@ -1097,7 +1161,7 @@ service cloud.firestore {
       let keys = ['title', 'categoryId', 'amount', 'payer', 'schedule', 'enabled', 'createdBy',
         'author', 'createdAt', 'updatedAt', 'updatedBy'];
       // `lastOn` only from 8c "Lặp lại hằng tháng": that day's expense is already recorded.
-      return d.keys().hasOnly(keys.concat(['lastOn'])) && d.keys().hasAll(keys) &&
+      return d.keys().hasOnly(keys.concat(['lastOn', 'currency'])) && d.keys().hasAll(keys) &&
         (!('lastOn' in d) || isoDay(d.lastOn)) &&
         recurringId.matches('^rx_[a-f0-9]{32}$') &&
         d.createdBy == request.auth.uid && d.updatedBy == request.auth.uid &&
@@ -1109,7 +1173,7 @@ service cloud.firestore {
     function validRecurringUpdate() {
       let d = request.resource.data;
       return d.diff(resource.data).affectedKeys().hasOnly(['title', 'categoryId', 'amount',
-          'payer', 'schedule', 'enabled', 'updatedAt', 'updatedBy']) &&
+          'currency', 'payer', 'schedule', 'enabled', 'updatedAt', 'updatedBy']) &&
         d.updatedBy == request.auth.uid && d.updatedAt == request.time && validRecurringBody(d);
     }
 
@@ -1164,15 +1228,46 @@ service cloud.firestore {
         d.title.trim().size() >= 1 &&
         d.dueAt is timestamp && d.dueAt <= request.time + duration.value(366, 'd') &&
         (!dueChanged || d.dueAt >= request.time - duration.value(5, 'm')) &&
-        d.leadMinutes in [0, 10, 30, 60, 120, 1440];
+        d.leadMinutes in [0, 10, 30, 60, 120, 1440] &&
+        validReminderDay(d);
     }
+
+    // ---- D-075 #5: date-only (all day) and an assignee (docs/product/reminders-allday-
+    // assignee-plan.md). Optional keys: absent `allDay` = timed, absent `assigneeUid` = nobody,
+    // so older apps and documents are unaffected.
+    function validReminderDay(d) {
+      return (d.get('allDay', false) == false && d.get('dueDate', null) == null) ||
+        (d.get('allDay', false) == true && d.get('dueDate', null) is string &&
+          d.dueDate.matches('^20[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$') &&
+          d.leadMinutes in [0, 1440] && allDayDueMatches(d));
+    }
+
+    // `dueAt` of an all-day reminder is 23:59 on `dueDate` in the baby's zone: between 09:59 and
+    // 11:59 the next day in UTC for zones UTC−12 … UTC+14. `timestamp.date` refuses 31/11.
+    function allDayDueMatches(d) {
+      let p = d.dueDate.split('-');
+      let day = timestamp.date(int(p[0]), int(p[1]), int(p[2]));
+      return d.dueAt >= day + duration.value(9, 'h') && d.dueAt <= day + duration.value(36, 'h');
+    }
+
+    // The assignee: an active Cùng nuôi or Người chăm sóc of the baby (the roles that see
+    // reminders, D-018), or nobody.
+    function validReminderAssignee(babyId, d) {
+      let a = d.get('assigneeUid', null);
+      return a == null || (a is string && a.size() >= 1 && a.size() <= 128 &&
+        exists(/databases/$(database)/documents/babies/$(babyId)/members/$(a)) &&
+        isActive(get(/databases/$(database)/documents/babies/$(babyId)/members/$(a)).data) &&
+        get(/databases/$(database)/documents/babies/$(babyId)/members/$(a)).data.role in
+          ['coParent', 'caregiver']);
+    }
+    // ---- end D-075 #5 ----
 
     function validNewReminder(babyId, reminderId) {
       let d = request.resource.data;
       let me = get(memberDoc(babyId)).data;
       return d.keys().hasOnly(['id', 'babyId', 'title', 'dueAt', 'leadMinutes', 'notifyDevice',
           'createdBy', 'author', 'createdAt', 'updatedAt', 'updatedBy', 'done', 'doneAt',
-          'doneBy', 'doneAuthor']) &&
+          'doneBy', 'doneAuthor', 'allDay', 'dueDate', 'assigneeUid']) &&
         d.keys().hasAll(['id', 'babyId', 'title', 'dueAt', 'leadMinutes', 'notifyDevice',
           'createdBy', 'author', 'createdAt', 'updatedAt', 'updatedBy', 'done', 'doneAt',
           'doneBy', 'doneAuthor']) &&
@@ -1181,7 +1276,7 @@ service cloud.firestore {
         d.createdAt == request.time && d.updatedAt == request.time &&
         d.done == false && d.doneAt == null && d.doneBy == null && d.doneAuthor == null &&
         ownAuthor(d.author, me) && ownDevice(d.notifyDevice, me) &&
-        validReminderFields(d, true);
+        validReminderFields(d, true) && validReminderAssignee(babyId, d);
     }
 
     function validReminderUpdate(babyId) {
@@ -1191,12 +1286,13 @@ service cloud.firestore {
       let changed = d.diff(o).affectedKeys();
       let doneKeys = ['done', 'doneAt', 'doneBy', 'doneAuthor', 'updatedAt', 'updatedBy'];
       return d.updatedBy == request.auth.uid && d.updatedAt == request.time && (
-        // "Sửa nhắc việc": Cùng nuôi only (D-031).
+        // "Sửa nhắc việc": Cùng nuôi only (D-031), incl. all day and the assignee (D-075 #5).
         (role(babyId) == 'coParent' &&
           changed.hasOnly(['title', 'dueAt', 'leadMinutes', 'notifyDevice', 'updatedAt',
-            'updatedBy']) &&
+            'updatedBy', 'allDay', 'dueDate', 'assigneeUid']) &&
           (!changed.hasAny(['notifyDevice']) || ownDevice(d.notifyDevice, me)) &&
-          validReminderFields(d, changed.hasAny(['dueAt']))) ||
+          (!changed.hasAny(['assigneeUid']) || validReminderAssignee(babyId, d)) &&
+          validReminderFields(d, changed.hasAny(['dueAt', 'dueDate', 'allDay']))) ||
         // "Thông báo" → this device (D-029).
         (changed.hasOnly(['notifyDevice', 'updatedAt', 'updatedBy']) &&
           d.notifyDevice != null && ownDevice(d.notifyDevice, me)) ||

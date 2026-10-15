@@ -103,10 +103,10 @@ deletes a saved expense, reminder, record or check-in — the app explains this 
 - App Check enforcement on the assistant callables (rollout decision).
 - D-075 #3 (was Q-076): receipts are kept with the expense by default; the provider retention text
   (G05) is still the owner's copy — it must not promise deletion before it is confirmed.
-- D-075 #4 / #5 (were Q-077 / Q-078): Chi tiêu currencies and date-only reminders with an assignee
-  are follow-up work; until then other currencies stay in review and reminders need a date **and** a
-  time with no assignee. The limits are isolated in contracts `expenseCurrencySupported`,
-  `reminderNeedsTime`, `reminderAssigneeSupported`.
+- D-075 #4 / #5 (were Q-077 / Q-078): done. A receipt in any Chi tiêu currency (`expenseCurrencies`,
+  16 codes) is drafted in that currency's minor units; others stay in review. A note line may become
+  a date-only reminder, and an assignee is only ever picked from eligible members (never a name read
+  from the photo); the writer re-checks the assignee at confirm (`INVALID_ASSIGNEE`).
 - HEIC: accepted at upload, but the server decodes only what its sharp build supports; the app
   should convert HEIC to JPEG before upload (a refused photo costs nothing).
 - Live provider behaviour on real receipts / notes is not proven by these tests (fake gateway).

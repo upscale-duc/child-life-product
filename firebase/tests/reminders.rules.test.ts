@@ -281,6 +281,141 @@ describe('notification device (R-091, D-029)', () => {
   });
 });
 
+// D-075 #5: date-only (all day) and an assignee; optional keys so older apps are unaffected.
+describe('all day and assignee (D-075 #5)', () => {
+  /** The calendar date in Vietnam (the test baby's zone) [days] from now. */
+  const vnDate = (days: number) =>
+    new Date(Date.now() + 7 * 3_600_000 + days * 86_400_000).toISOString().slice(0, 10);
+  /** 23:59 on [date] in Vietnam: the `dueAt` an all-day reminder carries. */
+  const endOf = (date: string) => Timestamp.fromDate(new Date(`${date}T16:59:00Z`));
+  const nextFeb = Number(vnDate(0).slice(0, 4)) + (Number(vnDate(0).slice(5, 7)) >= 2 ? 1 : 0);
+  const allDay = (days: number, over: Record<string, unknown> = {}) => ({
+    allDay: true,
+    dueDate: vnDate(days),
+    dueAt: endOf(vnDate(days)),
+    leadMinutes: 0,
+    ...over,
+  });
+
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(
+        doc(ctx.firestore(), 'babies/b1/members/temp'),
+        member('temp', 'caregiver', { accessUntilAt: Timestamp.fromMillis(Date.now() - 60_000) }),
+      );
+    });
+  });
+
+  it('a parent creates an all-day reminder (today or later) assigned to a caregiver or parent', async () => {
+    for (const [days, assignee] of [
+      [0, 'nanny'],
+      [3, 'mom'],
+      [10, 'dad'],
+      [5, null],
+    ] as const) {
+      const id = newId();
+      await assertSucceeds(
+        setDoc(rem('dad', id), reminder('dad', id, { ...allDay(days), assigneeUid: assignee })),
+      );
+    }
+    const id = newId();
+    await assertSucceeds(
+      setDoc(rem('dad', id), reminder('dad', id, { ...allDay(2), leadMinutes: 1440 })),
+    );
+    // A timed reminder with an assignee and an explicit `allDay: false`.
+    const timed = newId();
+    await assertSucceeds(
+      setDoc(
+        rem('mom', timed),
+        reminder('mom', timed, { allDay: false, dueDate: null, assigneeUid: 'nanny' }),
+      ),
+    );
+  });
+
+  it('refuses inconsistent days, leads and dates in the past', async () => {
+    const bad: Record<string, unknown>[] = [
+      { allDay: true, leadMinutes: 0 },
+      { dueDate: vnDate(2) },
+      { ...allDay(2), allDay: 'yes' },
+      { ...allDay(2), dueDate: '2026-1-5' },
+      { ...allDay(2), dueDate: `${vnDate(2)}T00:00` },
+      // 30 February of the next February: refused even though `dueAt` is "2 March".
+      { ...allDay(2), dueDate: `${nextFeb}-02-30`, dueAt: endOf(`${nextFeb}-03-02`) },
+      { ...allDay(5), dueAt: endOf(vnDate(2)) },
+      { ...allDay(2), leadMinutes: 60 },
+      allDay(-1),
+      allDay(400),
+    ];
+    for (const overrides of bad) {
+      const id = newId();
+      await assertFails(setDoc(rem('dad', id), reminder('dad', id, overrides)));
+    }
+  });
+
+  it('the assignee is an active Cùng nuôi or Người chăm sóc of this baby', async () => {
+    for (const assigneeUid of ['aunt', 'gone', 'temp', 'stranger', '', 42]) {
+      const id = newId();
+      await assertFails(setDoc(rem('dad', id), reminder('dad', id, { assigneeUid })));
+    }
+  });
+
+  it('old documents (no new keys) still read and edit as before', async () => {
+    await assertSucceeds(getDoc(rem('nanny', SEEDED)));
+    await assertSucceeds(updateDoc(rem('dad', SEEDED), { title: 'Mua sữa', ...stamp('dad') }));
+  });
+
+  it('a parent switches to all day, assigns, reassigns and unassigns', async () => {
+    await assertSucceeds(updateDoc(rem('dad', SEEDED), { ...allDay(4), ...stamp('dad') }));
+    await assertSucceeds(updateDoc(rem('dad', SEEDED), { assigneeUid: 'nanny', ...stamp('dad') }));
+    await assertSucceeds(updateDoc(rem('mom', SEEDED), { assigneeUid: 'dad', ...stamp('mom') }));
+    await assertFails(updateDoc(rem('mom', SEEDED), { assigneeUid: 'aunt', ...stamp('mom') }));
+    await assertSucceeds(updateDoc(rem('mom', SEEDED), { assigneeUid: null, ...stamp('mom') }));
+    // Back to a timed reminder.
+    await assertSucceeds(
+      updateDoc(rem('mom', SEEDED), {
+        allDay: false,
+        dueDate: null,
+        dueAt: inHours(30),
+        leadMinutes: 60,
+        ...stamp('mom'),
+      }),
+    );
+  });
+
+  it('an older app moving an all-day reminder to an hourly lead is refused', async () => {
+    await assertSucceeds(updateDoc(rem('dad', SEEDED), { ...allDay(4), ...stamp('dad') }));
+    await assertFails(updateDoc(rem('dad', SEEDED), { leadMinutes: 60, ...stamp('dad') }));
+  });
+
+  it('an assignee who left does not block an edit that keeps them', async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await updateDoc(doc(ctx.firestore(), `babies/b1/reminders/${SEEDED}`), {
+        assigneeUid: 'gone',
+      });
+    });
+    await assertSucceeds(updateDoc(rem('mom', SEEDED), { title: 'Mua tã', ...stamp('mom') }));
+  });
+
+  it('caregivers neither assign nor change the day; the assignee marks done', async () => {
+    await assertFails(updateDoc(rem('nanny', SEEDED), { assigneeUid: 'nanny', ...stamp('nanny') }));
+    await assertFails(updateDoc(rem('nanny', SEEDED), { ...allDay(4), ...stamp('nanny') }));
+    const id = newId();
+    await assertFails(
+      setDoc(rem('nanny', id), reminder('nanny', id, { ...allDay(1), assigneeUid: 'nanny' })),
+    );
+    await assertSucceeds(updateDoc(rem('dad', SEEDED), { assigneeUid: 'nanny', ...stamp('dad') }));
+    await assertSucceeds(
+      updateDoc(rem('nanny', SEEDED), {
+        done: true,
+        doneAt: serverTimestamp(),
+        doneBy: 'nanny',
+        doneAuthor: author('nanny'),
+        ...stamp('nanny'),
+      }),
+    );
+  });
+});
+
 describe('rule reminders (v1.0 1a–1h, D-051)', () => {
   const RULE = `babies/b1/reminderRules/rr_${'a'.repeat(32)}`;
   beforeEach(async () => {

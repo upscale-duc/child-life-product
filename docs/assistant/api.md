@@ -42,6 +42,32 @@ details }` (field names / problem codes only, never values, stacks or provider t
 A task or conversation that does not exist or belongs to someone else answers `NOT_MEMBER` (no
 enumeration).
 
+## D-075 changes (2026-10-15)
+
+- **#1 credits**: `getAssistantUsage` / quotes use the Premium limit while any valid grant gives
+  `assistant.premium_budget` (paid, promo, or a beta campaign; legacy paid / promo grants with
+  `templates.premium` too), else Free (`usage.md`). AI summaries (`generateSummary`,
+  `listSummaries`) charge / show the same pool: answers gain `credits: SummaryCredits`, `quota` is
+  `{ day: null, month: <pool window> }`; `ai.assistance` no longer answers `PREMIUM_REQUIRED` for
+  Free (role, `ai_assist`, region and consent still apply). `getCapabilities` lists the new
+  capability `assistant.premium_budget`.
+- **#2 shared thread** (`data.md` "Shared conversation per baby"): `startTask` routes a shared task
+  (child scope, text, not `expense`, Cùng nuôi / Người chăm sóc) to `cv_<babyId>` whatever
+  `conversationId` the app sent (a readable conversation of the same scope, or the shared id
+  before it exists; another person's private one → `NOT_MEMBER`); a private task continues the
+  caller's own private conversation, else a new one — never the shared thread. `quoteTask` accepts
+  the shared thread's id. `getAssistantTask`, `confirmDrafts`, `patchDraft`, `discardDraft` accept
+  any active Cùng nuôi / Người chăm sóc for a **shared** task (patch / discard only for a draft
+  whose module their role may save; confirm re-checks each item against the confirmer's role);
+  private tasks stay owner-only (`NOT_MEMBER`). `submitClarification`, `cancelTask`,
+  `submitAssistantFeedback`, `planAssistantActivity` stay author-only. Views gain `task.visibility`,
+  `task.author`, `message.author`, `draft.confirmedBy`, `conversation.shared` (`ownerUid` null for
+  the shared thread). `listAssistantHistory` (conversations) puts the shared thread first on the
+  first page (for Cùng nuôi / Người chăm sóc) and pages the caller's private ones after it (cursor
+  `private` = the private list from its start). `deleteAssistantConversation` on the shared thread:
+  Cùng nuôi only (`WRITE_DENIED` for a caregiver), deletes every member's tasks of it; answers
+  `{ deletedTasks, domainRecordsKept: true }`.
+
 ## Commands
 
 | Callable | Request (beyond the envelope) | `data` | Notes |
@@ -56,9 +82,9 @@ enumeration).
 | `cancelTask` | `taskId` | `{ task }` | Unfinished (`blocked`, `queued`, `processing`, `awaiting_clarification`) → `canceled`, reservation released once; a late worker is fenced. `ready` / `failed` / `canceled` unchanged (no refund for a ready answer). |
 | `submitAssistantFeedback` | `taskId, contentId, contentVersion, outcome` | `{ feedbackId \| null, outcome }` | 0 credits, no model. Role `rhythm.feedback` (Cùng nuôi, Người chăm sóc) else `WRITE_DENIED`. `contentId`/`contentVersion` must be a published activity of `publicConfig/content_rhythm`. `helpful` / `unsure` / `not_suitable` → `babies/{b}/recFeedback/fb_<hash(uid,task,content,version)>`; the same again is idempotent, another outcome → `DOMAIN_CONFLICT`. `not_tried` ("Chưa thử") writes nothing to the module, only `feedback[]` on the task. |
 | `getAssistantUsage` | `babyId` | `AssistantUsage` | Household pool now (an unused window reads empty). |
-| `listAssistantHistory` | `babyId, conversationId \| null, cursor \| null, limit ≤ 50` | `AssistantHistoryPage<AssistantConversationView \| AssistantMessage>` | `conversationId: null` → the caller's own conversations about `babyId`, newest `updatedAt` first, cursor = last conversation id. Otherwise that conversation's messages, newest first, cursor = last sequence. Other members' chats are never listed (P-158). |
-| `getAssistantTask` | `taskId, afterSequence \| null` | `AssistantTaskSnapshot` | Task, drafts (with `problems`), events after `afterSequence` (ordered), the task's messages. The authority on reconnect (M11). Owner and still a member. |
-| `deleteAssistantConversation` | `conversationId, confirm: true` | `{ deletedTasks }` | Cancels unfinished tasks (credits released), deletes the conversation, its messages, its tasks with drafts and events. Never touches care records, check-ins, feedback, the credit ledger or execution rows. An already deleted conversation answers `deletedTasks: 0`. |
+| `listAssistantHistory` | `babyId, conversationId \| null, cursor \| null, limit ≤ 50` | `AssistantHistoryPage<AssistantConversationView \| AssistantMessage>` | `conversationId: null` → the baby's shared thread first (Cùng nuôi / Người chăm sóc, first page only, D-075 #2), then the caller's own private conversations about `babyId`, newest `updatedAt` first, cursor = last conversation id (or `private`). Otherwise a readable conversation's messages (with `author`), newest first, cursor = last sequence. Other members' private chats are never listed (P-158). |
+| `getAssistantTask` | `taskId, afterSequence \| null` | `AssistantTaskSnapshot` | Task (with `visibility`, `author`), drafts (with `problems`, `confirmedBy`), events after `afterSequence` (ordered), the task's messages (with `author`). The authority on reconnect (M11). Owner — or, for a shared task, any active Cùng nuôi / Người chăm sóc — still a member. |
+| `deleteAssistantConversation` | `conversationId, confirm: true` | `{ deletedTasks, domainRecordsKept: true }` | Private: its owner. Shared thread: a Cùng nuôi only (`WRITE_DENIED` otherwise), for everyone (D-075 #2). Cancels unfinished tasks (credits released), deletes the conversation, its messages, its tasks with drafts and events. Never touches care records, check-ins, feedback, reminders, expenses, the credit ledger or execution rows. An already deleted conversation answers `deletedTasks: 0`. |
 
 ## Start (`startTask`)
 

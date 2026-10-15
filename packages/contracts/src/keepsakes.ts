@@ -449,7 +449,7 @@ export function keepsakeTemplateAssets(t: {
  * - `everyone`: anyone in the beta may use it (D-068 #3, the default while there is no paid plan);
  * - `hidden`: Cao cấp templates are not offered at all;
  * - `subscribers`: shown with their badge, used only by families whose plan gives
- *   `templates.premium` (paid or promo; Beta A never does). The switch from `everyone` waits for the
+ *   `templates.premium` (paid, promo, or a beta that includes it, D-075 #1). The switch from `everyone` waits for the
  *   owner (Q-072) and a notice to beta families.
  * `badges`: show "Miễn phí" / "★ Cao cấp" on the templates (MM10).
  * `createMemorySession` and the video request enforce it on the server.

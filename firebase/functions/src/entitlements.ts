@@ -320,7 +320,8 @@ export async function setFamilySettings(
 
 /**
  * Kỷ niệm 2.0 Cao cấp templates in `subscribers` mode (Q1): the caller's family has
- * `templates.premium` (paid or promo; Beta A never). Role and flags are checked by the caller.
+ * `templates.premium` (paid, promo, or a beta campaign that includes it, D-075 #1). Role and
+ * flags are checked by the caller.
  */
 export async function hasPremiumTemplates(
   db: Firestore,

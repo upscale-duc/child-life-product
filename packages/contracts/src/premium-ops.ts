@@ -42,8 +42,15 @@ export interface StaffAiPolicy {
     percent: number;
     families: number;
   };
-  /** `config/entitlements.quotas.ai` (portal Premium); `stored` false = shipped defaults. */
-  quotas: { perBabyPerDay: number; perFamilyPerMonth: number; stored: boolean };
+  /** `config/entitlements.quotas.ai` (portal Premium); `stored` false = shipped defaults. The
+   * `ai` pair is legacy since D-075 #1: summaries charge `assistant` credits (1 each). */
+  quotas: {
+    perBabyPerDay: number;
+    perFamilyPerMonth: number;
+    stored: boolean;
+    /** D-075 #1: the assistant credit pool (absent from servers before D-075). */
+    assistant?: { free: number; premium: number; textCredits: number; imageCredits: number };
+  };
   budget: AiBudget;
   /** One row per Vietnam day, oldest first (`appEventsDaily`). */
   days: Array<{ day: string; generated: number; ai: number; cache: number; fallback: number }>;

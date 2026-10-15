@@ -184,8 +184,13 @@ const expensePayload = (): DraftPayload => ({
   keepReceipt: true,
 });
 
-function expenseDoc(who: typeof mom, source: 'manual' | 'assistant', receipt = false) {
-  const e = expenseFromDraft(expensePayload(), now(), ZONE);
+function expenseDoc(
+  who: typeof mom,
+  source: 'manual' | 'assistant',
+  receipt = false,
+  over: Partial<DraftPayload> = {},
+) {
+  const e = expenseFromDraft({ ...expensePayload(), ...over } as DraftPayload, now(), ZONE);
   if (!e.ok) throw new Error('expense');
   const id = expenseIdForDraft(DR);
   return {
@@ -199,6 +204,7 @@ function expenseDoc(who: typeof mom, source: 'manual' | 'assistant', receipt = f
           relationCustom: who.relationCustom,
         },
         amount: e.amount,
+        currency: e.currency,
         categoryId: e.categoryId,
         note: e.note,
         spentOn: e.spentOn,
@@ -212,11 +218,21 @@ function expenseDoc(who: typeof mom, source: 'manual' | 'assistant', receipt = f
   };
 }
 
-function reminderDoc(who: typeof mom) {
+function reminderDoc(
+  who: typeof mom,
+  // D-075 #5: `time: null` = all day; an assignee the person picked.
+  o: { time?: string | null; assigneeUid?: string | null } = {},
+) {
   const tomorrow = new Date(now().getTime() + 86_400_000);
   const date = new Intl.DateTimeFormat('en-CA', { timeZone: ZONE }).format(tomorrow);
   const r = reminderFromDraft(
-    { kind: 'reminder', title: 'Mua bỉm', date, time: '17:00', assigneeUid: null },
+    {
+      kind: 'reminder',
+      title: 'Mua bỉm',
+      date,
+      time: o.time === undefined ? '17:00' : o.time,
+      assigneeUid: o.assigneeUid ?? null,
+    },
     now(),
     ZONE,
   );
@@ -236,7 +252,10 @@ function reminderDoc(who: typeof mom) {
         },
         title: r.title,
         dueAt: r.dueAt,
-        leadMinutes: 60,
+        leadMinutes: r.allDay ? 0 : 60,
+        allDay: r.allDay,
+        dueDate: r.dueDate,
+        assigneeUid: o.assigneeUid ?? null,
       },
       serverTimestamp(),
     ),
@@ -252,6 +271,7 @@ describe('writer documents pass the app’s create rules (P-156)', () => {
       'categoryId',
       'createdAt',
       'createdBy',
+      'currency',
       'deleted',
       'deletedAt',
       'deletedBy',
@@ -291,14 +311,52 @@ describe('writer documents pass the app’s create rules (P-156)', () => {
     await assertFails(setDoc(doc(as('nanny'), `babies/b1/reminders/rm_${'2'.repeat(32)}`), n.data));
   });
 
-  it('the writers refuse what the forms refuse (USD, no time, past due, title too long)', () => {
+  // D-075 #5: a date-only draft is an all-day reminder; the assignee must be able to receive it.
+  it('reminder all day with an assignee: accepted for a caregiver, refused for a relative', async () => {
+    const r = reminderDoc(mom, { time: null, assigneeUid: 'nanny' });
+    expect(r.data).toMatchObject({ allDay: true, leadMinutes: 0, assigneeUid: 'nanny' });
+    expect(r.data.dueDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    await assertSucceeds(setDoc(doc(as('mom'), `babies/b1/reminders/${r.id}`), r.data));
+    const bad = reminderDoc(mom, { time: null, assigneeUid: 'aunt' });
+    await assertFails(
+      setDoc(doc(as('mom'), `babies/b1/reminders/rm_${'3'.repeat(32)}`), {
+        ...bad.data,
+        id: `rm_${'3'.repeat(32)}`,
+      }),
+    );
+  });
+
+  // D-075 #4: a USD receipt is saved in cents with its currency, and passes the app's rules.
+  it('expense in USD: cents and the currency, accepted by the create rules', async () => {
+    const e = expenseDoc(mom, 'manual', false, { currency: 'USD', totalMinor: 1250 });
+    expect(e.data).toMatchObject({ amount: 1250, currency: 'USD' });
+    await assertSucceeds(setDoc(doc(as('mom'), `babies/b1/expenses/${e.id}`), e.data));
+  });
+
+  it('the writers refuse what the forms refuse (unknown currency, no time, past due, title too long)', () => {
     expect(
-      expenseFromDraft({ ...expensePayload(), currency: 'USD' } as DraftPayload, now(), ZONE).ok,
+      expenseFromDraft({ ...expensePayload(), currency: 'XAF' } as DraftPayload, now(), ZONE).ok,
+    ).toBe(false);
+    expect(
+      expenseFromDraft({ ...expensePayload(), currency: null } as DraftPayload, now(), ZONE).ok,
+    ).toBe(false);
+    expect(
+      expenseFromDraft(
+        { ...expensePayload(), currency: 'USD', totalMinor: 100_000_001 } as DraftPayload,
+        now(),
+        ZONE,
+      ).ok,
     ).toBe(false);
     const base = { kind: 'reminder' as const, title: 'Mua bỉm', date: today(), assigneeUid: null };
-    expect(reminderFromDraft({ ...base, time: null }, now(), ZONE)).toEqual({
+    // D-075 #5: no time is no longer refused — it is all day (today is still allowed).
+    expect(reminderFromDraft({ ...base, time: null }, now(), ZONE)).toMatchObject({
+      ok: true,
+      allDay: true,
+      dueDate: today(),
+    });
+    expect(reminderFromDraft({ ...base, date: '2020-01-01', time: null }, now(), ZONE)).toEqual({
       ok: false,
-      problems: ['MISSING_TIME'],
+      problems: ['PAST_TIME'],
     });
     expect(reminderFromDraft({ ...base, date: '2020-01-01', time: '09:00' }, now(), ZONE)).toEqual({
       ok: false,

@@ -6,6 +6,7 @@ import {
   aiConsentVersion,
   aiGate,
   aiOutputSchema,
+  aiSummaryCredits,
   aiSummaryLimits,
   aiSummaryPromptVersion,
   checkInSchema,
@@ -27,10 +28,10 @@ import {
   type CheckIn,
   type GrantEnvironment,
   type Need,
-  type QuotaSnapshot,
   type RecFeedback,
   type RhythmContent,
   type SummaryAnswer,
+  type SummaryCredits,
   type SummaryFact,
   type SummaryFallbackReason,
   type SummaryView,
@@ -45,13 +46,14 @@ import {
 import { countAppEvent } from './feedback.js';
 import {
   commitQuota,
+  peekQuotaWindow,
   quotaSnapshot,
-  readQuotaSnapshot,
   releaseQuota,
   reserveQuota,
-  type QuotaWindowRequest,
   type StoredQuotaWindow,
 } from './quota.js';
+// D-075 #1: summaries charge the household assistant credit pool (chat and summaries share it).
+import { assistantPool, type AssistantPool, type PoolScope } from './assistant-usage.js';
 import { readRhythmContent, readRhythmRules, sleepFacts } from './rhythm.js';
 import { aiBudgetLeft, chargeAi } from './staff.js';
 
@@ -62,11 +64,14 @@ import { aiBudgetLeft, chargeAi } from './staff.js';
  * Pipeline of `generateSummary`, in this order: auth → membership + `ai.generate` (Cùng nuôi;
  * caregivers and relatives read stored summaries with `history.read`, never generate, D-072 #2)
  * → health rule (health signs in the range: no model, a pointer to health support) → facts
- * snapshot → approved suggestion candidates → `ai.assistance` (entitlement + `ai_assist` kill
- * switch) and the caller's consent → cache → quota (per baby per day AND per family per month, in
- * one transaction) → provider with a timeout → `aiOutputSchema` + `aiGate` + `claimProblems` →
- * snapshot + commit; any failure releases the quota and answers with the free template built
- * from the same facts. Idempotent per `requestId`. No child data, notes or text in logs.
+ * snapshot → approved suggestion candidates → `ai.assistance` (role + `ai_assist` kill switch +
+ * region; no longer Premium-only, D-075 #1) and the caller's consent → cache (free) → 1 credit
+ * reserved in the household assistant pool (Free or Premium budget, shared with the chat) →
+ * provider with a timeout → `aiOutputSchema` + `aiGate` + `claimProblems` → snapshot + commit;
+ * any failure releases the credit and answers with the free template built from the same facts
+ * (also at 0 credits: QUOTA_EXCEEDED). Summaries stored before D-075 keep their `ai_day` /
+ * `ai_month` reservations, settled as before. Idempotent per `requestId`. No child data, notes or
+ * text in logs.
  */
 
 export class AiSummaryError extends Error {
@@ -639,6 +644,7 @@ function viewOf(d: DocumentSnapshot, dataVersion: number): SummaryView {
     generatedAt: x.generatedAt,
     dataVersion: x.dataVersion ?? 0,
     quota: x.quota ?? null,
+    credits: x.credits ?? null,
     requestedBy: x.requestedBy,
     stale: (x.dataVersion ?? 0) < dataVersion,
   };
@@ -668,6 +674,8 @@ function storedDoc(
     suggestionContentId: string | null;
     facts?: SummaryFact[];
     quota: SummaryAnswer['quota'];
+    /** D-075 #1: the assistant pool after this answer. */
+    credits?: SummaryCredits | null;
     cacheKey?: string | null;
     cachedFrom?: string | null;
     modelVersion?: string | null;
@@ -693,6 +701,7 @@ function storedDoc(
     generatedAt: now.toISOString(),
     dataVersion: d.dataVersion,
     quota: out.quota,
+    credits: out.credits ?? null,
     requestId: d.requestId,
     requestedBy: d.uid,
     target: d.target,
@@ -729,6 +738,7 @@ const answerFromDoc = (doc: ReturnType<typeof storedDoc>): SummaryView => ({
   generatedAt: doc.generatedAt,
   dataVersion: doc.dataVersion,
   quota: doc.quota,
+  credits: doc.credits,
   requestedBy: doc.requestedBy,
   stale: false,
 });
@@ -759,6 +769,7 @@ async function storeFallback(
     sections: template.sections,
     suggestionContentId: template.suggestionContentId,
     quota,
+    credits: null,
   });
   const out = await db.runTransaction(async (tx) => {
     const s = await tx.get(ref);
@@ -821,25 +832,44 @@ export function outputProblem(
   return { output: parsed.data };
 }
 
-function aiQuotaWindows(
+/** D-075 #1: the household pool a summary charges (same zone rule as the chat's credits). */
+async function summaryPool(
+  db: Firestore,
   ctx: EntitlementContext,
   babyId: string,
-  zone: string,
-): QuotaWindowRequest[] {
-  return [
-    {
-      window: { kind: 'day', feature: 'ai_day', babyId, zone },
-      limit: ctx.config.quotas.ai.perBabyPerDay,
-    },
-    {
-      window: { kind: 'calendar_month', feature: 'ai_month', zone },
-      limit: ctx.config.quotas.ai.perFamilyPerMonth,
-    },
-  ];
+  now: Date,
+): Promise<{ pool: AssistantPool; scope: PoolScope }> {
+  const babyZone = (await db.doc(`babies/${babyId}`).get()).get('timeZone.zone') as
+    string | undefined;
+  const scope: PoolScope = {
+    ctx,
+    familyId: ctx.familyId,
+    householdZone: ctx.family.timeZone ?? babyZone ?? DEFAULT_ZONE,
+  };
+  return { pool: await assistantPool(db, scope, now), scope };
 }
 
-const quotaPair = (w: StoredQuotaWindow[]): SummaryAnswer['quota'] =>
-  w.length === 2 ? { day: quotaSnapshot(w[0]!), month: quotaSnapshot(w[1]!) } : null;
+/** The pool window after an operation, as the answer shows it (old apps read `quota.month`). */
+function creditsOf(
+  plan: AssistantPool['plan'],
+  w: StoredQuotaWindow | undefined,
+  charged: number,
+): { quota: SummaryAnswer['quota']; credits: SummaryCredits | null } {
+  if (!w) return { quota: null, credits: null };
+  return {
+    quota: { day: null, month: quotaSnapshot(w) },
+    credits: {
+      pool: 'assistant',
+      plan,
+      charged,
+      limit: w.limit,
+      used: w.used,
+      reserved: w.reserved,
+      remaining: Math.max(0, w.limit - w.used - w.reserved),
+      resetsAt: w.resetsAt.toISOString(),
+    },
+  };
+}
 
 // ---------- generateSummary ----------
 
@@ -971,19 +1001,20 @@ export async function generateSummary(
     return finish(answerFromDoc(doc));
   }
 
-  // A09: the monthly AI budget pauses model calls; the template still answers.
+  // A09: the monthly AI budget pauses model calls; the template still answers (no credit).
   if (!provider.summarize || provider.name === 'template' || !(await aiBudgetLeft(db, now))) {
     return finish(await storeFallback(db, draft, now, 'unavailable'));
   }
 
-  const zone = ctx.family.timeZone ?? DEFAULT_ZONE;
-  const windows = aiQuotaWindows(ctx, req.babyId, zone);
+  // D-075 #1: one credit from the household assistant pool (Free or Premium budget).
+  const { pool } = await summaryPool(db, ctx, req.babyId, now);
   const reserved = await db.runTransaction(async (tx) => {
     const r = await reserveQuota(tx, db, {
       familyId: ctx.familyId,
       reservationId: id,
-      windows,
+      windows: [pool.request],
       requestId: req.requestId,
+      units: aiSummaryCredits,
       now,
     });
     if (r.outcome === 'denied') {
@@ -992,7 +1023,7 @@ export async function generateSummary(
         fallbackReason: 'QUOTA_EXCEEDED',
         sections: draft.template.sections,
         suggestionContentId: draft.template.suggestionContentId,
-        quota: quotaPair(r.windows),
+        ...creditsOf(pool.plan, r.windows[0], 0),
       });
       tx.set(ref, doc);
       return { done: answerFromDoc(doc) };
@@ -1064,7 +1095,7 @@ export async function generateSummary(
         fallbackReason: null,
         sections: checked.output.sections,
         suggestionContentId: checked.output.suggestionContentId,
-        quota: quotaPair(r.windows),
+        ...creditsOf(pool.plan, r.windows[0], aiSummaryCredits),
         cacheKey,
         modelVersion: model,
         noteAuthorUids,
@@ -1084,7 +1115,7 @@ export async function generateSummary(
       fallbackReason: reason ?? 'invalid',
       sections: draft.template.sections,
       suggestionContentId: draft.template.suggestionContentId,
-      quota: quotaPair(r.windows),
+      ...creditsOf(pool.plan, r.windows[0], 0),
     });
     tx.set(ref, doc);
     return answerFromDoc(doc);
@@ -1105,7 +1136,11 @@ export async function listSummaries(
   data: unknown,
   now: Date,
   environment: GrantEnvironment,
-): Promise<{ summaries: SummaryView[]; quota: SummaryAnswer['quota'] }> {
+): Promise<{
+  summaries: SummaryView[];
+  quota: SummaryAnswer['quota'];
+  credits: SummaryCredits | null;
+}> {
   const req = parseOr(listSummariesRequestSchema, data);
   const ctx = await loadEntitlementContext(db, uid, req.babyId, now, environment);
   if (!ctx.member) throw gateError('NOT_MEMBER');
@@ -1131,18 +1166,19 @@ export async function listSummaries(
     }
   }
   if (marks) await batch.commit();
-  // The caller's own AI quota (MO04-like line under "Tạo tóm tắt"), for those who may generate.
-  let quota: SummaryAnswer['quota'] = null;
+  // The household's assistant credits (line under "Tạo tóm tắt", D-075 #1), for those who may
+  // generate; an unused window reads as empty.
+  let credit: ReturnType<typeof creditsOf> = { quota: null, credits: null };
   if (familyCan(ctx.member, 'ai.generate')) {
-    const zone = ctx.family.timeZone ?? DEFAULT_ZONE;
-    const [day, month] = aiQuotaWindows(ctx, req.babyId, zone);
-    const [d, m]: QuotaSnapshot[] = await Promise.all([
-      readQuotaSnapshot(db, ctx.familyId, day!, now),
-      readQuotaSnapshot(db, ctx.familyId, month!, now),
-    ]);
-    quota = { day: d!, month: m! };
+    const { pool } = await summaryPool(db, ctx, req.babyId, now);
+    const w = await peekQuotaWindow(db, ctx.familyId, pool.request, now);
+    credit = creditsOf(pool.plan, w.window, 0);
   }
-  return { summaries: docs.map((d) => viewOf(d, dataVersion)), quota };
+  return {
+    summaries: docs.map((d) => viewOf(d, dataVersion)),
+    quota: credit.quota,
+    credits: credit.credits,
+  };
 }
 
 /**

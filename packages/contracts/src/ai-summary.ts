@@ -193,14 +193,39 @@ export interface SummaryAnswer {
   language: 'vi' | 'en';
   generatedAt: string;
   dataVersion: number;
-  quota: { day: QuotaSnapshot; month: QuotaSnapshot } | null;
+  /**
+   * The credit window after this answer, for older apps: `month` is the household's assistant
+   * pool window (D-075 #1), `day` is always null now. Summaries stored before D-075 carry the old
+   * `ai_day` / `ai_month` pair. Null when no credit was involved (cache, template before credits).
+   */
+  quota: { day: QuotaSnapshot | null; month: QuotaSnapshot } | null;
+  /** D-075 #1: the assistant credit pool after this answer (null when no credit was involved). */
+  credits?: SummaryCredits | null;
+}
+
+/** D-075 #1: one generated summary costs this many assistant credits (cache and template: 0). */
+export const aiSummaryCredits = 1;
+
+/** The household assistant pool as a summary answer shows it ("Còn 12 lượt"). */
+export interface SummaryCredits {
+  pool: 'assistant';
+  plan: 'free' | 'premium';
+  /** Credits this answer used (0 for cache / template). */
+  charged: number;
+  limit: number;
+  used: number;
+  reserved: number;
+  remaining: number;
+  /** Exclusive end of the window (ISO instant). */
+  resetsAt: string;
 }
 
 /** Why a summary is the template (`SummaryAnswer.fallbackReason`). */
 export type SummaryFallbackReason =
   GateReason | 'HEALTH_FLOW' | 'timeout' | 'invalid' | 'unavailable';
 
-/** Server pipeline settings (plan §5.5); quotas live in `config/entitlements.quotas.ai`. */
+/** Server pipeline settings (plan §5.5); credits live in `config/entitlements.quotas.assistant`
+ * (D-075 #1; `quotas.ai` is legacy). */
 export const aiSummaryLimits = {
   /** Facts come from the last N baby-local days, today included (brief "3–7 ngày"). */
   rangeDays: 7,

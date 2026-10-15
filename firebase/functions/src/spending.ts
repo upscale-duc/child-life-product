@@ -1,12 +1,17 @@
 import { createHash } from 'node:crypto';
 import {
+  amountMaxFor,
   builtInCategories,
+  currencyForCountry,
+  currencyOfDoc,
   deleteSpendingCategoryRequestSchema,
   dueDatesBetween,
+  isExpenseCurrency,
   localDateIn,
   otherCategoryId,
   recurringExpenseSchema,
   spendingLimits,
+  type ExpenseCurrency,
 } from '@child-life/contracts';
 import {
   FieldPath,
@@ -144,7 +149,10 @@ export async function deleteSpendingCategory(
     const caps = (budget.get('caps') as Record<string, number> | undefined) ?? {};
     const cap = caps[categoryId];
     if (budget.exists && typeof cap === 'number') {
-      const merged = Math.min((caps[moveTo] ?? 0) + cap, spendingLimits.amountMax);
+      const merged = Math.min(
+        (caps[moveTo] ?? 0) + cap,
+        amountMaxFor(currencyOfDoc(budget.get('currency'))),
+      );
       // One update per baby: the cap moves atomically, so a retry never adds it twice.
       await batcher.add((b) =>
         b.update(
@@ -195,6 +203,22 @@ export async function deleteSpendingCategory(
   return { moved };
 }
 
+// ---------- Currencies (D-075 #4) ----------
+
+/**
+ * The household's currency: `families/{f}/spendingSettings/main`, else the family's country's
+ * currency, else VND. Rows of an import that name no currency are read in it.
+ */
+export async function householdCurrency(db: Firestore, familyId: string): Promise<ExpenseCurrency> {
+  const [settings, family] = await db.getAll(
+    db.doc(`families/${familyId}/spendingSettings/main`),
+    db.doc(`families/${familyId}`),
+  );
+  const chosen = settings?.get('currency') as unknown;
+  if (isExpenseCurrency(chosen)) return chosen;
+  return currencyForCountry(family?.get('country') as string | null | undefined);
+}
+
 // ---------- 8i: recurring occurrences (D-057) ----------
 
 /** `x_` + 32 hex: one occurrence per (item, day), so a retry never doubles it. */
@@ -216,6 +240,7 @@ const recurringFields = recurringExpenseSchema.pick({
   title: true,
   categoryId: true,
   amount: true,
+  currency: true,
   payer: true,
   schedule: true,
   createdBy: true,
@@ -281,6 +306,8 @@ async function addOccurrences(
   const parsed = recurringFields.safeParse(item.data());
   if (!parsed.success) return 0;
   const r = parsed.data;
+  // An amount over its currency's ceiling never becomes an expense (Rules would refuse it).
+  if (r.amount > amountMaxFor(currencyOfDoc(r.currency))) return 0;
   const created = item.get('createdAt') as Timestamp | undefined;
   const createdOn = created ? localDateIn(zone, created.toDate()) : today;
   const dates = dueDatesBetween(r.schedule, catchUpAfter(lastOn, createdOn, today), today);
@@ -300,6 +327,8 @@ function occurrence(
 ) {
   return {
     amount: r.amount,
+    // The item's currency (D-075 #4); an item from before it is VND.
+    currency: currencyOfDoc(r.currency),
     categoryId: r.categoryId,
     note: r.title.slice(0, spendingLimits.noteMax),
     spentOn: date,
@@ -347,7 +376,7 @@ export function recurringCopy(count: number, language: string) {
 // ---------- 8h: the 80 % budget push ----------
 
 export interface BudgetAlertInput {
-  /** Non-deleted expenses of [month]. */
+  /** Non-deleted expenses of [month] in the budget's currency (D-075 #4: never mixed). */
   total: number;
   month: string;
   /** The current month in the baby's zone; older months never alert. */
@@ -390,10 +419,12 @@ export async function spendingBudgetAlert(
   const amount = (after.get('amount') as number | undefined) ?? 0;
   const spentOn = after.get('spentOn') as string | undefined;
   if (!spentOn) return none;
+  const currency = currencyOfDoc(after.get('currency'));
   if (
     before?.exists &&
     before.get('deleted') !== true &&
     before.get('spentOn') === spentOn &&
+    currencyOfDoc(before.get('currency')) === currency &&
     ((before.get('amount') as number | undefined) ?? 0) >= amount
   ) {
     return none;
@@ -405,6 +436,9 @@ export async function spendingBudgetAlert(
   const currentMonth = localDateIn(zoneOf(baby), now).slice(0, 7);
   const budgetRef = babyRef.collection('spending').doc('budget');
   const budget = await budgetRef.get();
+  // The budget counts its own currency only (D-075 #4): another currency never raises it.
+  const budgetCurrency = currencyOfDoc(budget.get('currency'));
+  if (budget.exists && currency !== budgetCurrency) return none;
   const read = (b: DocumentSnapshot) =>
     b.exists
       ? {
@@ -418,10 +452,11 @@ export async function spendingBudgetAlert(
     !budgetAlertDue({ total: Number.MAX_SAFE_INTEGER, month, currentMonth, budget: read(budget) })
   )
     return none;
-  const total = await monthTotal(babyRef, month);
+  const total = await monthTotal(babyRef, month, budgetCurrency);
   if (!budgetAlertDue({ total, month, currentMonth, budget: read(budget) })) return none;
   const claimed = await db.runTransaction(async (tx) => {
     const fresh = await tx.get(budgetRef);
+    if (currencyOfDoc(fresh.get('currency')) !== budgetCurrency) return false;
     if (!budgetAlertDue({ total, month, currentMonth, budget: read(fresh) })) return false;
     tx.update(budgetRef, { alertedMonth: month });
     return true;
@@ -435,14 +470,18 @@ export async function spendingBudgetAlert(
   return { alerted: true, sent };
 }
 
-async function monthTotal(babyRef: DocumentReference, month: string): Promise<number> {
+async function monthTotal(
+  babyRef: DocumentReference,
+  month: string,
+  currency: ExpenseCurrency,
+): Promise<number> {
   const docs = await babyRef
     .collection('expenses')
     .where('spentOn', '>=', `${month}-01`)
     .where('spentOn', '<=', `${month}-31`)
     .get();
   return docs.docs
-    .filter((d) => d.get('deleted') !== true)
+    .filter((d) => d.get('deleted') !== true && currencyOfDoc(d.get('currency')) === currency)
     .reduce((sum, d) => sum + ((d.get('amount') as number | undefined) ?? 0), 0);
 }
 

@@ -23,6 +23,9 @@ components Thẻ nháp `611:7695`, Mức dùng `611:7726`, Ô nhập `611:7763` 
 
 ### 1.1 Owner answers (D-075, 2026-10-15) — override the table above
 
+Status: #1–#5 are implemented (server, Rules, portal, app); P-157's currency and reminder limits and P-158 / P-159 below
+no longer hold where this section says otherwise.
+
 1. **One credit pool for all AI**: handover / explain / moment summaries charge assistant credits too
    (Free and Premium, different budgets); `ai.assistance` is no longer Premium-only. **A beta campaign may give
    every Premium feature** (group A, Cao cấp templates, the Premium credit budget), chosen per campaign in the
@@ -48,7 +51,12 @@ components Thẻ nháp `611:7695`, Mức dùng `611:7726`, Ô nhập `611:7763` 
 | `assistantExecutions/{dr}_{rev}` | `draftId, revision, requestId, payloadHash, status, recordId, errorCode, createdAt` | none |
 | `assistant/{uid}/{at_*}` (Storage) | owner uploads once (`resource == null`), allowlisted MIME, ≤ 8 MB; no client read | — |
 
-Ledger: `families/{f}/quota/{assistant_*}` + `quotaOps` (shared `quota.ts`, `units`).
+Ledger: `families/{f}/quota/{assistant_*}` + `quotaOps` (shared `quota.ts`, `units`); AI summaries
+charge the same pool (D-075 #1, `usage.md`).
+
+D-075 #2: the baby's shared thread `cv_<babyId>` (`shared: true`, `ownerUid` null) and its tasks
+(`visibility: 'shared'`, with drafts and events) are read by every active Cùng nuôi / Người chăm
+sóc of the baby; household / spending, photo and relatives' tasks stay owner-only (`data.md`).
 
 ## 3. Flow
 

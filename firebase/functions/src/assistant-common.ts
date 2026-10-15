@@ -3,6 +3,9 @@ import { Timestamp, type DocumentSnapshot, type Firestore } from 'firebase-admin
 import {
   assistantConsentVersion,
   assistantContractVersion,
+  inSharedThread,
+  sharedConversationIdFor,
+  type AssistantAuthor,
   type AssistantError,
   type AssistantResponse,
   type AssistantScope,
@@ -294,4 +297,41 @@ export async function withRequest<T>(
     createdAt: Timestamp.fromDate(now),
   });
   return out;
+}
+
+// ---------- D-075 #2: the baby's shared thread (docs/assistant/data.md) ----------
+
+/** The shared thread of [babyId]: `cv_<babyId>` (contracts), hashed if the id would not fit. */
+export function sharedConversationId(babyId: string): string {
+  return /^[A-Za-z0-9_-]{1,70}$/.test(babyId)
+    ? sharedConversationIdFor(babyId)
+    : `cv_s_${hex32(`shared|${babyId}`)}`;
+}
+
+/** The member block shown next to a message, a task or a saved draft. */
+export function authorOf(m: ScopeMember): AssistantAuthor {
+  return {
+    uid: m.uid,
+    name: m.displayName,
+    relation: m.relation,
+    relationCustom: m.relationCustom,
+  };
+}
+
+/** Cùng nuôi and Người chăm sóc read and write the shared thread; relatives never (D-075 #2). */
+export const sharesThread = (m: Pick<ScopeMember, 'role'> | null): boolean =>
+  m !== null && inSharedThread(m.role);
+
+/** A conversation document the caller may read: their own, or the shared thread of a baby they
+ * share (still an active Cùng nuôi / Người chăm sóc of it). */
+export async function canReadConversation(
+  db: Firestore,
+  uid: string,
+  conv: DocumentSnapshot,
+  now: Date,
+): Promise<boolean> {
+  if (!conv.exists) return false;
+  if (conv.get('shared') !== true) return conv.get('ownerUid') === uid;
+  const babyId = conv.get('scope.babyId') as string;
+  return sharesThread(memberOf(await db.doc(`babies/${babyId}/members/${uid}`).get(), now));
 }

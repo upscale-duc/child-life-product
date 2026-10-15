@@ -22,6 +22,11 @@ export const capabilities = [
   'templates.premium',
   /** Every plan, limited by its own quota (free / premium budget), not by a grant. */
   'render.video',
+  /**
+   * D-075 #1: the Premium assistant credit budget (one household pool for chat and AI summaries).
+   * Only a paid, promo or beta grant gives it; without it the household uses the Free budget.
+   */
+  'assistant.premium_budget',
 ] as const;
 export type Capability = (typeof capabilities)[number];
 
@@ -42,11 +47,20 @@ export const groupACapabilities: readonly Capability[] = [
   'rhythm.advanced',
   'ai.assistance',
 ];
-/** What a verified paid subscription grants: A + B (one SKU, two entry points). */
+/** What a verified paid subscription grants: A + B (one SKU, two entry points) + the Premium
+ * assistant credit budget (D-075 #1). A beta campaign may give any of these (portal). */
 export const premiumCapabilities: readonly Capability[] = [
   ...groupACapabilities,
   'templates.premium',
+  'assistant.premium_budget',
 ];
+
+/**
+ * D-075 #1: capabilities open to every plan in an advanced region, limited by the household's
+ * assistant credits instead of a grant (AI summaries use the same pool as the chat). Role, kill
+ * switch, region and consent are still checked; a grant only changes the budget.
+ */
+export const creditCapabilities: readonly Capability[] = ['ai.assistance'];
 
 export function isFreeCapability(c: Capability): boolean {
   return freeCapabilities.includes(c);
@@ -66,6 +80,8 @@ export const capabilityAction: Record<Capability, FamilyAction> = {
   'ai.assistance': 'ai.generate',
   'templates.premium': 'moments.create',
   'render.video': 'moments.create',
+  // A household budget, not a member action: every member may see which budget applies.
+  'assistant.premium_budget': 'preferences.own',
 };
 
 /**
@@ -85,6 +101,7 @@ export const capabilityFlag: Record<Capability, FlagKey | null> = {
   'ai.assistance': 'ai_assist',
   'templates.premium': null,
   'render.video': 'memory_story',
+  'assistant.premium_budget': null,
 };
 
 /** Reason codes (brief p.8). The app maps each to its own state; only PREMIUM_REQUIRED may show a paywall. */
@@ -198,6 +215,8 @@ export function resolveCapability(x: CapabilityCheck): CapabilityResult {
       return { allowed: true, via: source };
     }
   }
+  // D-075 #1: AI is no longer Premium-only; the credit pool limits it (the caller checks credits).
+  if (creditCapabilities.includes(x.capability)) return { allowed: true, via: 'free' };
   return { allowed: false, reason: 'PREMIUM_REQUIRED' };
 }
 
@@ -255,11 +274,15 @@ export const countryCodeSchema = z.string().regex(/^[A-Z]{2}$/);
 
 const betaCampaignSchema = z.object({
   id: z.string().regex(/^[a-z0-9_-]{2,40}$/),
-  /** Beta A never includes `templates.premium` unless a distinct promo says so (brief p.3). */
+  /**
+   * Any Premium capability, chosen per campaign in the portal (D-075 #1, replaces "Beta A never
+   * opens templates"): group A, `templates.premium`, `assistant.premium_budget`. Free
+   * capabilities need no grant.
+   */
   capabilities: z
     .array(z.enum(capabilities))
     .min(1)
-    .refine((c) => !c.includes('templates.premium'), 'A beta campaign never opens templates'),
+    .refine((c) => c.every((x) => !isFreeCapability(x)), 'Free capabilities need no grant'),
   validFrom: z.iso.datetime(),
   validUntil: z.iso.datetime(),
   /** Countries the campaign runs in; empty = every advanced region. */
@@ -289,11 +312,17 @@ export const entitlementsConfigSchema = z.object({
       free: z.object({ limit: z.number().int().min(0), window: z.enum(quotaWindows) }),
       premium: z.object({ limit: z.number().int().min(0), window: z.enum(quotaWindows) }),
     }),
+    /** Legacy (before D-075 #1): AI summaries now charge the `assistant` pool. Kept so stored
+     * configs stay valid; nothing reads it for new summaries. */
     ai: z.object({
       perBabyPerDay: z.number().int().min(0),
       perFamilyPerMonth: z.number().int().min(0),
     }),
-    /** Assistant credits (P-159; QA values, not an offer): one household pool per window. */
+    /**
+     * Assistant credits (P-159, D-075 #1; QA values, not an offer): one household pool per window
+     * for the chat AND the AI summaries (1 credit each). `premium` applies while a grant gives
+     * `assistant.premium_budget`.
+     */
     assistant: z
       .object({
         free: z.number().int().min(0),

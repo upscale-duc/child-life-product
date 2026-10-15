@@ -209,6 +209,124 @@ describe('assistant collections: owner read-only', () => {
   });
 });
 
+// ---------- D-075 #2: the baby's shared thread ----------
+
+describe('D-075 #2: shared thread readable by Cùng nuôi and Người chăm sóc, never relatives', () => {
+  const SCV = 'cv_b1';
+  const STK = 'tk_00000000000000000000000000000002';
+  const SDR = 'dr_00000000000000000000000000000002_0';
+  const PTK = 'tk_00000000000000000000000000000003';
+  const PDR = 'dr_00000000000000000000000000000003_0';
+  const author = { uid: 'mom', name: 'Mai', relation: 'mother', relationCustom: null };
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, `assistantConversations/${SCV}`), {
+        id: SCV,
+        ownerUid: null,
+        shared: true,
+        createdBy: 'mom',
+        familyId: 'f1',
+        scope,
+        messageSeq: 1,
+      });
+      await setDoc(doc(db, `assistantConversations/${SCV}/messages/00000001`), {
+        conversationId: SCV,
+        role: 'user',
+        parts: [{ type: 'text', schemaVersion: 1, text: 'test' }],
+        taskId: STK,
+        sequence: 1,
+        author,
+      });
+      await setDoc(doc(db, `assistantTasks/${STK}`), {
+        id: STK,
+        ownerUid: 'mom',
+        familyId: 'f1',
+        scope,
+        conversationId: SCV,
+        visibility: 'shared',
+        author,
+        state: 'ready',
+      });
+      await setDoc(doc(db, `assistantTasks/${STK}/drafts/${SDR}`), {
+        id: SDR,
+        taskId: STK,
+        state: 'draft',
+      });
+      await setDoc(doc(db, `assistantTasks/${STK}/events/00000001`), { taskId: STK, sequence: 1 });
+      // A household / spending task: private to its author.
+      await setDoc(doc(db, `assistantTasks/${PTK}`), {
+        id: PTK,
+        ownerUid: 'mom',
+        familyId: 'f1',
+        scope: { type: 'household', babyId: 'b1' },
+        conversationId: CV,
+        visibility: 'private',
+        state: 'ready',
+      });
+      await setDoc(doc(db, `assistantTasks/${PTK}/drafts/${PDR}`), {
+        id: PDR,
+        taskId: PTK,
+        payload: { kind: 'expense' },
+      });
+    });
+  });
+  const shared = [
+    `assistantConversations/${SCV}`,
+    `assistantConversations/${SCV}/messages/00000001`,
+    `assistantTasks/${STK}`,
+    `assistantTasks/${STK}/drafts/${SDR}`,
+    `assistantTasks/${STK}/events/00000001`,
+  ];
+
+  it('Cùng nuôi and Người chăm sóc read the shared thread, its tasks, drafts and events', async () => {
+    for (const uid of ['mom', 'dad', 'nanny']) {
+      for (const p of shared) await assertSucceeds(getDoc(doc(as(uid), p)));
+      await assertSucceeds(getDocs(collection(as(uid), `assistantConversations/${SCV}/messages`)));
+      await assertSucceeds(getDocs(collection(as(uid), `assistantTasks/${STK}/drafts`)));
+    }
+  });
+
+  it('relatives, strangers, signed-out clients and ex-members read nothing of it', async () => {
+    for (const p of shared) {
+      await assertFails(getDoc(doc(as('grandma'), p)));
+      await assertFails(getDoc(doc(as('stranger'), p)));
+      await assertFails(getDoc(doc(env.unauthenticatedContext().firestore(), p)));
+    }
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await updateDoc(doc(ctx.firestore(), 'babies/b1/members/nanny'), { status: 'removed' });
+    });
+    for (const p of shared) await assertFails(getDoc(doc(as('nanny'), p)));
+  });
+
+  it('a household / spending task and its drafts stay private to their author', async () => {
+    await assertSucceeds(getDoc(doc(as('mom'), `assistantTasks/${PTK}`)));
+    await assertSucceeds(getDoc(doc(as('mom'), `assistantTasks/${PTK}/drafts/${PDR}`)));
+    for (const uid of ['dad', 'nanny', 'grandma']) {
+      await assertFails(getDoc(doc(as(uid), `assistantTasks/${PTK}`)));
+      await assertFails(getDoc(doc(as(uid), `assistantTasks/${PTK}/drafts/${PDR}`)));
+    }
+  });
+
+  it('nobody writes the shared thread from a client', async () => {
+    for (const uid of ['mom', 'nanny']) {
+      const db = as(uid);
+      await assertFails(
+        setDoc(doc(db, `assistantConversations/${SCV}/messages/00000002`), {
+          conversationId: SCV,
+          role: 'user',
+          parts: [],
+          sequence: 2,
+        }),
+      );
+      await assertFails(
+        updateDoc(doc(db, `assistantTasks/${STK}/drafts/${SDR}`), { state: 'saved' }),
+      );
+      await assertFails(deleteDoc(doc(db, `assistantConversations/${SCV}`)));
+    }
+  });
+});
+
 // ---------- Shape: writer output == what the app may write ----------
 
 const nowMs = () => Date.now();

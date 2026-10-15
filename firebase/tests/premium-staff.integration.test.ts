@@ -85,7 +85,7 @@ describe('config/entitlements from the portal', () => {
     ).toBe('ok');
   });
 
-  it('refuses support staff, unknown codes, bad dates and a campaign with templates', async () => {
+  it('refuses support staff, unknown codes, bad dates and a campaign with a free capability', async () => {
     const config = {
       ...defaultEntitlementsConfig,
       regions: { advanced: ['VN'] },
@@ -129,7 +129,8 @@ describe('config/entitlements from the portal', () => {
             config: {
               ...config,
               betaCampaigns: [
-                { ...campaign, capabilities: [...campaign.capabilities, 'templates.premium'] },
+                // D-075 #1: templates are allowed in a beta now; a free capability never is.
+                { ...campaign, capabilities: [...campaign.capabilities, 'rhythm.checkin'] },
               ],
             },
             reason: 'thử lại',
@@ -138,6 +139,22 @@ describe('config/entitlements from the portal', () => {
         ),
       ),
     ).toBe('malformed');
+    // D-075 #1: a beta campaign may open every Premium feature (templates, the credit budget).
+    const all = {
+      ...config,
+      betaCampaigns: [
+        {
+          ...campaign,
+          capabilities: [...campaign.capabilities, 'templates.premium', 'assistant.premium_budget'],
+        },
+      ],
+    };
+    expect(
+      await reason(setEntitlementsConfig(db, eng, { config: all, reason: 'beta đủ Premium' }, now)),
+    ).toBe('ok');
+    expect(
+      (await db.doc('config/entitlements').get()).get('betaCampaigns')[0].capabilities,
+    ).toEqual(expect.arrayContaining(['templates.premium', 'assistant.premium_budget']));
   });
 });
 

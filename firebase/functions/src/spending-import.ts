@@ -1,7 +1,11 @@
 import { createHash, randomBytes } from 'node:crypto';
 import {
+  amountMaxFor,
   analyzeImportRequestSchema,
   builtInCategories,
+  currencyOfDoc,
+  detectCurrency,
+  toMinorUnits,
   categoryTints,
   confirmImportRequestSchema,
   foldText,
@@ -23,6 +27,7 @@ import {
   type ImportOptions,
   type ImportPreviewRow,
   type ImportStatus,
+  type ExpenseCurrency,
 } from '@child-life/contracts';
 import type {
   DocumentReference,
@@ -34,7 +39,7 @@ import { AiUnavailable, type ExpenseExtractor } from './ai.js';
 import { isActiveMember } from './family.js';
 import { importSummary, type Locale } from './mail-templates.js';
 import type { PushSender } from './social.js';
-import { SpendingError, pushUsers } from './spending.js';
+import { SpendingError, householdCurrency, pushUsers } from './spending.js';
 import { aiBudgetLeft, chargeAi } from './staff.js';
 
 /**
@@ -399,11 +404,6 @@ function guessCurrency(grid: Grid, from: number, width: number, used: Set<number
   return null;
 }
 
-const isVnd = (c: string) => {
-  const f = foldText(c).replace(/[^a-z₫]/g, '');
-  return f === '' || f === 'vnd' || f === 'd' || f === '₫' || f === 'dong';
-};
-
 // ---------- Rows ----------
 
 export type ReadRow = ImportPreviewRow;
@@ -413,11 +413,19 @@ export interface ReadContext {
   today: string;
   /** `${spentOn}|${amount}|${folded note}` of live expenses (this import's own excluded). */
   existing: Set<string>;
+  /** The column naming each row's currency, if the file has one. */
   currency?: number | null;
+  /** D-075 #4: the household's currency, for rows that name none (default VND). */
+  household?: ExpenseCurrency;
 }
 
-export const duplicateKey = (spentOn: string, amount: number, note: string) =>
-  `${spentOn}|${amount}|${foldText(note)}`;
+/** VND keys stay as before D-075 #4; another currency is part of the key. */
+export const duplicateKey = (
+  spentOn: string,
+  amount: number,
+  note: string,
+  currency: ExpenseCurrency = 'VND',
+) => `${spentOn}|${amount}|${foldText(note)}${currency === 'VND' ? '' : `|${currency}`}`;
 
 /** A spreadsheet's formula guard ("'-500"): the quote is not part of the text. */
 const cleanText = (s: string) =>
@@ -455,26 +463,32 @@ export function readRows(
     const dateRaw = cell(row, mapping.date);
     const amountRaw = cleanText(cell(row, mapping.amount));
     const spentOn = dateRaw ? parseDay(dateRaw, options.dateOrder) : null;
-    const parsed = amountRaw ? parseAmount(amountRaw) : null;
-    const foreign =
-      parsed?.foreign === true || (ctx.currency != null && !isVnd(cell(row, ctx.currency)));
+    const household = ctx.household ?? 'VND';
+    const parsed = amountRaw ? parseAmount(amountRaw, household) : null;
+    // D-075 #4: the currency named in the amount, else in the currency column, else the
+    // household's; a currency Chi tiêu does not keep is still skipped.
+    const named =
+      parsed?.currency ??
+      (ctx.currency != null ? detectCurrency(cell(row, ctx.currency), household) : null);
+    const currency: ExpenseCurrency = named == null || named === 'other' ? household : named;
+    const minor = parsed ? Math.abs(toMinorUnits(parsed.major, currency)) : 0;
 
     let amount: number | null = null;
     let issue: ImportIssue | null = null;
     if (!amountRaw) issue = 'no-amount';
-    else if (!parsed || parsed.value === 0) issue = 'bad-amount';
-    else if (foreign) issue = 'other-currency';
+    else if (!parsed || minor === 0) issue = 'bad-amount';
+    else if (named === 'other') issue = 'other-currency';
     else if (options.rows === 'negative' && parsed.value > 0) issue = 'income';
     else if (options.rows === 'positive' && parsed.value < 0) issue = 'income';
-    else if (Math.abs(parsed.value) > spendingLimits.amountMax) issue = 'too-large';
+    else if (minor > amountMaxFor(currency)) issue = 'too-large';
     else if (!dateRaw) issue = 'no-date';
     else if (!spentOn) issue = 'bad-date';
     else if (spentOn > ctx.today) issue = 'future-date';
-    if (parsed && parsed.value !== 0) amount = Math.abs(parsed.value);
+    if (parsed && minor !== 0) amount = minor;
     if (
       issue == null &&
       options.skipDuplicates &&
-      ctx.existing.has(duplicateKey(spentOn!, amount!, note))
+      ctx.existing.has(duplicateKey(spentOn!, amount!, note, currency))
     )
       issue = 'duplicate';
     out.push({
@@ -485,6 +499,7 @@ export function readRows(
       category: cleanText(cell(row, mapping.category)),
       payer: cleanText(cell(row, mapping.payer)),
       issue,
+      currency,
     });
   }
   return out;
@@ -727,12 +742,26 @@ export function summarize(
  * What the review shows: the first rows that will be imported, the rows left out with why, and
  * the total and days of what will be imported.
  */
-export function previewOf(rows: ReadRow[]): {
+export function previewOf(
+  rows: ReadRow[],
+  household: ExpenseCurrency = 'VND',
+): {
   preview: ReadRow[];
   skipped: ReadRow[];
-  total: { amount: number; from: string | null; to: string | null };
+  total: {
+    amount: number;
+    from: string | null;
+    to: string | null;
+    currency: ExpenseCurrency;
+    others: { currency: ExpenseCurrency; amount: number }[];
+  };
 } {
   const ready = rows.filter((r) => r.issue == null);
+  const sums = new Map<ExpenseCurrency, number>();
+  for (const r of ready) {
+    const c = r.currency ?? 'VND';
+    sums.set(c, (sums.get(c) ?? 0) + (r.amount ?? 0));
+  }
   const days = ready
     .map((r) => r.spentOn)
     .filter((d): d is string => d != null)
@@ -741,9 +770,14 @@ export function previewOf(rows: ReadRow[]): {
     preview: ready.slice(0, importLimits.previewRows),
     skipped: rows.filter((r) => r.issue != null).slice(0, importLimits.skippedRows),
     total: {
-      amount: ready.reduce((sum, r) => sum + (r.amount ?? 0), 0),
+      // D-075 #4: never summed across currencies; the household's first, the others apart.
+      amount: sums.get(household) ?? 0,
       from: days[0] ?? null,
       to: days[days.length - 1] ?? null,
+      currency: household,
+      others: [...sums]
+        .filter(([c]) => c !== household)
+        .map(([currency, amount]) => ({ currency, amount })),
     },
   };
 }
@@ -840,7 +874,14 @@ async function existingKeys(
     if (d.get('deleted') === true || d.get('sourceRef') === importId) continue;
     const spentOn = d.get('spentOn') as string;
     const amount = d.get('amount') as number;
-    keys.add(duplicateKey(spentOn, amount, (d.get('note') as string | undefined) ?? ''));
+    keys.add(
+      duplicateKey(
+        spentOn,
+        amount,
+        (d.get('note') as string | undefined) ?? '',
+        currencyOfDoc(d.get('currency')),
+      ),
+    );
   }
   return keys;
 }
@@ -855,16 +896,25 @@ async function readWithDuplicates(
   options: ImportOptions,
   today: string,
   currency: number | null,
+  household: ExpenseCurrency,
 ): Promise<ReadRow[]> {
-  const first = readRows(grid, mapping, options, { today, existing: new Set(), currency });
+  const first = readRows(grid, mapping, options, {
+    today,
+    existing: new Set(),
+    currency,
+    household,
+  });
   if (!options.skipDuplicates) return first;
   const existing = await existingKeys(db, babyId, importId, first);
   return existing.size === 0
     ? first
-    : readRows(grid, mapping, options, { today, existing, currency });
+    : readRows(grid, mapping, options, { today, existing, currency, household });
 }
 
-const AI_HEADER = ['Ngày', 'Danh mục', 'Nội dung', 'Số tiền', 'Ai trả'];
+const AI_HEADER = ['Ngày', 'Danh mục', 'Nội dung', 'Số tiền', 'Ai trả', 'Tiền tệ'];
+
+/** An AI amount as a cell: whole numbers as is, others with two decimals ("12.50"). */
+const aiAmount = (a: number) => (Number.isInteger(a) ? String(a) : a.toFixed(2));
 
 /** The grid of an import: the uploaded / stored JSON, else (text, photos) read by AI and stored. */
 async function loadGrid(
@@ -875,6 +925,7 @@ async function loadGrid(
   today: string,
   locale: Locale,
   now: Date,
+  household: ExpenseCurrency = 'VND',
 ): Promise<Grid> {
   const path = gridPath(owner, importId);
   const size = await deps.store.size(path);
@@ -913,6 +964,7 @@ async function loadGrid(
       ...(req.kind === 'text' ? { text: req.text! } : { images: images! }),
       today,
       locale,
+      currency: household,
     });
   } catch (error) {
     if (error instanceof AiUnavailable) throw new SpendingError('unavailable', 'ai-failed');
@@ -931,8 +983,9 @@ async function loadGrid(
         r.date ?? '',
         r.category.slice(0, importLimits.cellMax),
         r.note.slice(0, importLimits.cellMax),
-        r.amount == null ? '' : String(Math.round(r.amount)),
+        r.amount == null ? '' : aiAmount(r.amount),
         r.payer.slice(0, importLimits.cellMax),
+        r.currency ?? '',
       ]),
   ];
   if (grid.length === 1) throw new SpendingError('invalid-argument', 'empty');
@@ -1024,9 +1077,20 @@ export async function analyzeSpendingImport(
   }
 
   const today = localDateIn(zoneOf(baby), now);
+  const familyId = baby.get('familyId') as string;
+  const household = await householdCurrency(db, familyId);
   let grid: Grid;
   try {
-    grid = await loadGrid(deps, owner, req.importId, req, today, await localeOf(db, uid), now);
+    grid = await loadGrid(
+      deps,
+      owner,
+      req.importId,
+      req,
+      today,
+      await localeOf(db, uid),
+      now,
+      household,
+    );
   } catch (error) {
     const reason =
       error instanceof SpendingError && ANALYSIS_FAILURES.has(error.reason)
@@ -1047,7 +1111,6 @@ export async function analyzeSpendingImport(
   const layout = detectLayout(grid);
   const mapping = req.mapping ?? layout.mapping;
   const options = req.options ?? defaultOptions(grid, mapping);
-  const familyId = baby.get('familyId') as string;
   const [categories, members] = await Promise.all([
     familyCategories(db, familyId),
     activeMembers(db, req.babyId, now),
@@ -1061,6 +1124,7 @@ export async function analyzeSpendingImport(
     options,
     today,
     layout.currency,
+    household,
   );
   const { mixedSigns, ambiguousDates } = signsAndDates(grid, mapping);
   const summary = summarize(rows, categories, members.map(labelOf));
@@ -1074,7 +1138,9 @@ export async function analyzeSpendingImport(
     mixedSigns,
     ambiguousDates,
     counts: countRows(rows),
-    ...previewOf(rows),
+    ...previewOf(rows, household),
+    // D-075 #4: the currency of rows that name none, kept for the import itself.
+    currency: household,
     categories: summary.categories,
     payers: summary.payers,
   };
@@ -1310,6 +1376,7 @@ export async function runSpendingImport(
       options,
       today,
       layout.currency,
+      currencyOfDoc(claimed.get('currency')),
     );
     const counts = countRows(rows);
     await ref.update({ counts, updatedAt: now });
@@ -1356,6 +1423,7 @@ export async function runSpendingImport(
         if (snaps[j]!.exists) return;
         batch.create(refs[j]!, {
           amount: r.amount,
+          currency: r.currency ?? 'VND',
           categoryId: categoryOf(r.category),
           note: r.note,
           spentOn: r.spentOn,
@@ -1449,6 +1517,7 @@ export async function importPage(
       doc.get('options') as ImportOptions,
       localDateIn(zoneOf(baby), now),
       detectLayout(grid).currency,
+      currencyOfDoc(doc.get('currency')),
     )
   ).filter((r) => r.issue == null);
   const pages = Math.max(1, Math.ceil(rows.length / importLimits.pageRows));

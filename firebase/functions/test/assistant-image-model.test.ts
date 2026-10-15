@@ -225,9 +225,14 @@ describe('module rules', () => {
     babyId: 'b1',
     keepReceipt: false,
   };
-  it('Chi tiêu is VND only; a reminder needs a time and a short title', () => {
+  it('Chi tiêu keeps its currencies; a reminder needs a short title (date-only allowed, D-075 #5)', () => {
     expect(assistantModuleProblems(expense)).toEqual([]);
-    expect(assistantModuleProblems({ ...expense, currency: 'USD' })).toEqual([
+    // D-075 #4: USD is kept (cents, its own ceiling); an unknown currency stays in review.
+    expect(assistantModuleProblems({ ...expense, currency: 'USD', totalMinor: 1250 })).toEqual([]);
+    expect(
+      assistantModuleProblems({ ...expense, currency: 'USD', totalMinor: 100_000_001 }),
+    ).toEqual(['INVALID_AMOUNT']);
+    expect(assistantModuleProblems({ ...expense, currency: 'XAF' })).toEqual([
       'CURRENCY_UNSUPPORTED',
     ]);
     expect(
@@ -238,7 +243,7 @@ describe('module rules', () => {
         time: null,
         assigneeUid: null,
       }),
-    ).toEqual(['MISSING_TIME', 'INVALID_TITLE']);
+    ).toEqual(['INVALID_TITLE']);
     expect(
       imageReviewFields({ ...expense, currency: null, date: null, totalMinor: null }, [
         'MISSING_AMOUNT',
@@ -251,14 +256,18 @@ describe('module rules', () => {
         { kind: 'reminder', title: 'Mua bỉm', date: null, time: null, assigneeUid: null },
         ['MISSING_DATE'],
       ),
-    ).toEqual({ missing: ['date', 'time'], uncertain: [] });
+    ).toEqual({ missing: ['date'], uncertain: [] });
   });
 
-  it('D-075: today VND only, reminders need a time and take no assignee; receipts kept by default', () => {
+  it('D-075: Chi tiêu keeps other currencies, reminders may be date-only with an assignee; receipts kept by default', () => {
     expect(expenseCurrencySupported('VND')).toBe(true);
-    expect(expenseCurrencySupported('USD')).toBe(false);
-    expect(reminderNeedsTime()).toBe(true);
-    expect(reminderAssigneeSupported()).toBe(false);
+    // D-075 #4: Chi tiêu keeps other currencies.
+    expect(expenseCurrencySupported('USD')).toBe(true);
+    expect(expenseCurrencySupported('JPY')).toBe(true);
+    expect(expenseCurrencySupported('XAF')).toBe(false);
+    expect(expenseCurrencySupported(null)).toBe(false);
+    expect(reminderNeedsTime()).toBe(false);
+    expect(reminderAssigneeSupported()).toBe(true);
     const req = createAttachmentUploadRequestSchema.parse({
       contractVersion: 1,
       clientRequestId: '6f1d6c1e-3a52-4c1f-9a39-0d6c4e0b8a11',

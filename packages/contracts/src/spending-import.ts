@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { categoryIdSchema } from './spending.js';
+import { categoryIdSchema, isExpenseCurrency, type ExpenseCurrency } from './spending.js';
 
 /**
  * Nhập chi tiêu (D-060, P-144, plan `docs/product/spending-import-plan.md`): spending kept
@@ -156,6 +156,8 @@ export interface ImportPreviewRow {
   category: string;
   payer: string;
   issue: ImportIssue | null;
+  /** D-075 #4: the row's currency (`amount` is in its minor units); absent on older imports: VND. */
+  currency?: ExpenseCurrency;
 }
 
 export interface ImportCounts {
@@ -189,8 +191,19 @@ export interface SpendingImportDoc {
   preview: ImportPreviewRow[];
   /** The first rows left out, with why. */
   skipped: ImportPreviewRow[];
-  /** What will be imported: the sum and the first and last day. */
-  total: { amount: number; from: string | null; to: string | null };
+  /**
+   * What will be imported: the sum in [currency] (D-075 #4: rows in other currencies are summed
+   * apart in `others`, never added) and the first and last day.
+   */
+  total: {
+    amount: number;
+    from: string | null;
+    to: string | null;
+    currency?: ExpenseCurrency;
+    others?: { currency: ExpenseCurrency; amount: number }[];
+  };
+  /** The household's currency when read: rows that name none are in it (absent: VND). */
+  currency?: ExpenseCurrency;
   /** Categories named in the file with a suggestion (folded name as key). */
   categories: { key: string; name: string; rows: number; suggested: CategoryChoice | null }[];
   payers: { key: string; name: string; rows: number; suggested: string | null }[];
@@ -231,8 +244,19 @@ function validDay(y: number, m: number, d: number): string | null {
 }
 
 const monthNames: Record<string, number> = {
-  jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, sept: 9, oct: 10,
-  nov: 11, dec: 12,
+  jan: 1,
+  feb: 2,
+  mar: 3,
+  apr: 4,
+  may: 5,
+  jun: 6,
+  jul: 7,
+  aug: 8,
+  sep: 9,
+  sept: 9,
+  oct: 10,
+  nov: 11,
+  dec: 12,
 };
 
 /**
@@ -289,10 +313,69 @@ export function guessDateOrder(cells: string[]): 'dmy' | 'mdy' {
 }
 
 export interface ParsedAmount {
-  /** Whole VND, sign kept. */
+  /** The number as written, rounded to a whole unit, sign kept. */
   value: number;
+  /** The number as written (major units, sign kept, not rounded): 12.5 for "$12.50". */
+  major: number;
   /** A currency other than VND was named. */
   foreign: boolean;
+  /**
+   * D-075 #4: the currency named in the cell (`other` = one Chi tiêu does not keep), or null when
+   * none is named. "$" and "¥" alone are [dollar] / [yen] (the household's own when it uses one).
+   */
+  currency: ExpenseCurrency | 'other' | null;
+}
+
+const dollarCurrencies: ExpenseCurrency[] = ['USD', 'AUD', 'CAD', 'NZD', 'SGD', 'HKD', 'TWD'];
+/** Prefixed dollars and other symbols, longest first (matched on the folded, spaceless text). */
+const currencyMarks: [RegExp, ExpenseCurrency | 'other' | '$' | '¥'][] = [
+  [/us\$/, 'USD'],
+  [/a\$|au\$/, 'AUD'],
+  [/c\$|ca\$/, 'CAD'],
+  [/nz\$/, 'NZD'],
+  [/s\$/, 'SGD'],
+  [/hk\$/, 'HKD'],
+  [/nt\$/, 'TWD'],
+  [/\$/, '$'],
+  [/€/, 'EUR'],
+  [/£/, 'GBP'],
+  [/₩/, 'KRW'],
+  [/฿/, 'THB'],
+  [/rmb|cn¥|元/, 'CNY'],
+  [/円|jp¥/, 'JPY'],
+  [/¥|￥/, '¥'],
+  [/(^|[^a-z])rm(?=\d|$)/, 'MYR'],
+  [/₹|₱|₽|rp(?=\d)/, 'other'],
+];
+/** ISO codes people write that Chi tiêu does not keep (a row naming one is skipped). */
+const otherCodes =
+  /(^|[^a-z])(inr|idr|php|rub|brl|mxn|zar|sek|nok|dkk|pln|try|aed|sar|khr|lak|mmk|bnd)([^a-z]|$)/;
+
+/**
+ * The currency a cell names: an ISO code (`usd`, `VND`), a symbol (₫ đ € £ ₩ ฿ US$ S$…), or
+ * `other` for one Chi tiêu does not keep; null when none. "$" alone is [household] when it is a
+ * dollar, else USD; "¥" alone is CNY for a CNY household, else JPY.
+ */
+export function detectCurrency(
+  raw: string,
+  household: ExpenseCurrency = 'VND',
+): ExpenseCurrency | 'other' | null {
+  const f = foldText(raw).replace(/\s+/g, '');
+  if (!f) return null;
+  const codes = f.match(/[a-z]{3}/g) ?? [];
+  for (const c of codes) {
+    const up = c.toUpperCase();
+    if (isExpenseCurrency(up) && new RegExp(`(^|[^a-z])${c}([^a-z]|$)`).test(f)) return up;
+  }
+  if (otherCodes.test(f)) return 'other';
+  if (/₫|vnđ|vnd|dong/.test(f) || /^d$|\dd$|^d\d/.test(f)) return 'VND';
+  for (const [re, c] of currencyMarks) {
+    if (!re.test(f)) continue;
+    if (c === '$') return dollarCurrencies.includes(household) ? household : 'USD';
+    if (c === '¥') return household === 'CNY' ? 'CNY' : 'JPY';
+    return c;
+  }
+  return null;
 }
 
 /**
@@ -300,7 +383,7 @@ export interface ParsedAmount {
  * (500.000) · 1.020.000 ₫ / đ / VND · 500k · 1tr2 · 1,5 tr · 2 triệu · 300 nghìn. Null when
  * unreadable.
  */
-export function parseAmount(raw: string): ParsedAmount | null {
+export function parseAmount(raw: string, household: ExpenseCurrency = 'VND'): ParsedAmount | null {
   let s = raw.trim();
   if (!s) return null;
   let negative = false;
@@ -318,11 +401,16 @@ export function parseAmount(raw: string): ParsedAmount | null {
     s = s.slice(0, -1);
   }
   const f = foldText(s).replace(/\s+/g, '');
-  const foreign = /(usd|\$|eur|€|£|jpy|¥|sgd|aud|thb)/.test(f);
-  // Folded, "đ" is already "d".
+  const currency = detectCurrency(s, household);
+  const foreign = currency != null && currency !== 'VND';
+  // Folded, "đ" is already "d". Currency codes and symbols go before the number is read.
   const body = f
-    .replace(/(usd|\$|eur|€|£|jpy|¥|sgd|aud|thb|₫)/g, '')
-    .replace(/(vnd|dong|d)$/, '')
+    .replace(/[a-z]{0,2}\$|[€£¥￥₩฿₹₱₽₫円元]/g, '')
+    .replace(/^(rmb|rm|rp)|(rmb|rm)$/g, '')
+    .replace(/^[a-z]{3}(?=[\d(+])|(?<=[\d.,])[a-z]{3}$/g, (code) =>
+      /^(tr|ty)/.test(code) ? code : '',
+    )
+    .replace(/(vnd|vnđ|dong|d)$/, '')
     .replace(/^(vnd|d)/, '')
     .replace(/^\+/, '');
   // "1tr2", "1,5tr", "2trieu", "500k", "300nghin", "1ty".
@@ -340,7 +428,12 @@ export function parseAmount(raw: string): ParsedAmount | null {
   }
   if (value == null || !Number.isFinite(value)) return null;
   const rounded = Math.round(value);
-  return { value: negative ? -rounded : rounded, foreign };
+  return {
+    value: negative ? -rounded : rounded,
+    major: negative ? -value : value,
+    foreign,
+    currency,
+  };
 }
 
 /** "1.020.000" / "1,020,000" / "1020000.5" / "1.020.000,50" → number. */

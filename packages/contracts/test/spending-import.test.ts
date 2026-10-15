@@ -3,6 +3,7 @@ import {
   foldText,
   guessDateOrder,
   isAmbiguousDay,
+  detectCurrency,
   parseAmount,
   parseDay,
 } from '../src/spending-import.js';
@@ -54,6 +55,39 @@ describe('reading money', () => {
     expect(v('120')).toBe(120);
     expect(v('abc')).toBeUndefined();
     expect(parseAmount('$12.50')?.foreign).toBe(true);
+  });
+
+  it('names the currency of a cell (D-075 #4)', () => {
+    const c = (s: string, household?: Parameters<typeof detectCurrency>[1]) =>
+      parseAmount(s, household)?.currency;
+    expect(c('1.020.000 ₫')).toBe('VND');
+    expect(c('1.020.000đ')).toBe('VND');
+    expect(c('500k')).toBeNull();
+    expect(c('2 triệu')).toBeNull();
+    expect(c('$12.50')).toBe('USD');
+    expect(c('$12.50', 'AUD')).toBe('AUD');
+    expect(c('US$12.50', 'AUD')).toBe('USD');
+    expect(c('S$ 8.90')).toBe('SGD');
+    expect(c('12,50 €')).toBe('EUR');
+    expect(c('£3.20')).toBe('GBP');
+    expect(c('¥1,500')).toBe('JPY');
+    expect(c('¥1,500', 'CNY')).toBe('CNY');
+    expect(c('₩12,000')).toBe('KRW');
+    expect(c('฿120')).toBe('THB');
+    expect(c('NT$300')).toBe('TWD');
+    expect(c('RM 25.90')).toBe('MYR');
+    expect(c('12.50 usd')).toBe('USD');
+    expect(c('EUR 7')).toBe('EUR');
+    expect(c('500 INR')).toBe('other');
+    expect(parseAmount('$12.50')).toMatchObject({ major: 12.5, value: 13 });
+    expect(parseAmount('12,50 €')?.major).toBe(12.5);
+    expect(parseAmount('-1,500 JPY')?.major).toBe(-1500);
+    expect(parseAmount('1tr2 VND')?.major).toBe(1_200_000);
+    expect(detectCurrency('')).toBeNull();
+    expect(detectCurrency('VND')).toBe('VND');
+    expect(detectCurrency('đ')).toBe('VND');
+    expect(detectCurrency('usd')).toBe('USD');
+    expect(detectCurrency('Rp')).toBeNull();
   });
 
   it('folds Vietnamese for matching', () => {

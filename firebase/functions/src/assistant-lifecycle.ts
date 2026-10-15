@@ -13,7 +13,8 @@ import { releaseQuota } from './quota.js';
  * Child Life Assistant, slice A3: data lifecycle (brief p.19; docs/assistant/data.md
  * "Retention", security.md).
  *
- * - Account deletion (`account.ts` step `personal`): the person's own conversations, messages,
+ * - Account deletion (`account.ts` step `personal`): the person's own conversations, messages
+ *   (also their tasks' messages in a baby's shared thread, D-075 #2),
  *   tasks (drafts, events, cached readings), quotes, photos (Storage prefix `assistant/{uid}/`
  *   and their documents), execution rows and request ledger go. Open reservations are released
  *   first. Domain records they confirmed stay with the family like any record they wrote
@@ -91,6 +92,8 @@ export async function purgeAssistantForUser(
   uid: string,
   now: Date,
 ): Promise<{ tasks: number; conversations: number; attachments: number }> {
+  // D-075 #2: their messages in a baby's shared thread go with their tasks (the thread stays).
+  await purgeSharedMessages(db, uid);
   const tasks = await purgeTasks(
     db,
     db.collection('assistantTasks').where('ownerUid', '==', uid),
@@ -117,6 +120,26 @@ export async function purgeAssistantForUser(
   await deleteAll(db, db.collection('assistantExecutions').where('ownerUid', '==', uid));
   await deleteAll(db, db.collection('assistantRequests').where('uid', '==', uid));
   return { tasks: tasks.length, conversations, attachments };
+}
+
+/**
+ * D-075 #2: the messages of [uid]'s tasks in shared threads (their questions, the answers to
+ * them, confirmations), found through their tasks; the thread and other members' messages stay.
+ */
+async function purgeSharedMessages(db: Firestore, uid: string): Promise<void> {
+  const tasks = await db
+    .collection('assistantTasks')
+    .where('ownerUid', '==', uid)
+    .where('visibility', '==', 'shared')
+    .get();
+  for (const t of tasks.docs) {
+    const conv = t.get('conversationId') as string | undefined;
+    if (!conv) continue;
+    await deleteAll(
+      db,
+      db.collection(`assistantConversations/${conv}/messages`).where('taskId', '==', t.id),
+    );
+  }
 }
 
 /** Baby deletion: every member's assistant data scoped to [babyId]. */

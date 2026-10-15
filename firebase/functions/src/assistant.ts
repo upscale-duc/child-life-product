@@ -21,6 +21,8 @@ import {
   startTaskRequestSchema,
   submitClarificationRequestSchema,
   taskInputKey,
+  taskVisibilityFor,
+  type AssistantAuthor,
   type AssistantConversationView,
   type AssistantDraftView,
   type AssistantError,
@@ -39,6 +41,8 @@ import {
 import {
   assistantConsentGranted,
   assistantFlagOn,
+  authorOf,
+  canReadConversation,
   canonical,
   consentRef,
   conversationIdFor,
@@ -47,6 +51,7 @@ import {
   fail,
   feedbackIdFor,
   loadTrustedScope,
+  memberOf,
   parseRequest,
   quoteRef,
   requireAssistant,
@@ -54,6 +59,8 @@ import {
   respond,
   sameScope,
   sha,
+  sharedConversationId,
+  sharesThread,
   taskIdFor,
   taskIdOfDraft,
   taskRef,
@@ -71,7 +78,7 @@ import {
   taskSnapshot,
   taskView,
 } from './assistant-store.js';
-import { healthSignalsIn, reviewFields } from './assistant-tools.js';
+import { healthSignalsIn, moduleAllows, reviewFields } from './assistant-tools.js';
 // Slice A5 (care): health support with the approved number; CH17 feedback rules.
 import { careFeedbackFields, careFeedbackGate, healthSupportPart } from './assistant-care.js';
 import { assistantPool, assistantUsage, creditPolicy } from './assistant-usage.js';
@@ -113,6 +120,22 @@ const terminal = new Set(['ready', 'failed', 'canceled']);
 async function ownTask(db: Firestore, uid: string, taskId: string) {
   const snap = await taskRef(db, taskId).get();
   if (!snap.exists || snap.get('ownerUid') !== uid) throw fail('NOT_MEMBER');
+  return snap;
+}
+
+/**
+ * D-075 #2: a task the caller may read and act on — their own, or a task of the baby's shared
+ * thread while they are an active Cùng nuôi / Người chăm sóc of that baby. Private tasks
+ * (household, spending, photos, relatives, before D-075) stay with their author only.
+ */
+async function readableTask(db: Firestore, uid: string, taskId: string, now: Date) {
+  const snap = await taskRef(db, taskId).get();
+  if (!snap.exists) throw fail('NOT_MEMBER');
+  if (snap.get('ownerUid') === uid) return snap;
+  if (snap.get('visibility') !== 'shared') throw fail('NOT_MEMBER');
+  const babyId = snap.get('scope.babyId') as string;
+  const m = memberOf(await db.doc(`babies/${babyId}/members/${uid}`).get(), now);
+  if (!sharesThread(m)) throw fail('NOT_MEMBER');
   return snap;
 }
 
@@ -202,8 +225,13 @@ export async function quoteTask(
   }
   if (req.conversationId) {
     const conv = await conversationRef(db, req.conversationId).get();
-    if (!conv.exists || conv.get('ownerUid') !== uid) throw fail('NOT_MEMBER');
-    if (!sameScope(conv.get('scope'), req.scope)) throw fail('SCOPE_CHANGED');
+    if (conv.exists) {
+      // D-075 #2: the caller's own conversation or the baby's shared thread.
+      if (!(await canReadConversation(db, uid, conv, now))) throw fail('NOT_MEMBER');
+      if (!sameScope(conv.get('scope'), req.scope)) throw fail('SCOPE_CHANGED');
+    } else if (req.conversationId !== sharedConversationId(req.scope.babyId)) {
+      throw fail('NOT_MEMBER');
+    }
   }
   return withRequest(db, uid, 'quote', req.clientRequestId, req, now, async () => {
     const pool = await assistantPool(db, s, now);
@@ -328,6 +356,39 @@ export async function startTask(
   const credits = signs.length > 0 ? 0 : creditsFor(modality, policy);
   const ref = taskRef(db, taskId);
   const at = Timestamp.fromDate(now);
+  // ---- D-075 #2: the baby's shared thread, spending excluded ----
+  const visibility = taskVisibilityFor({
+    scope: req.scope,
+    modality,
+    intentHint: quoteSnap.exists ? ((quoteSnap.get('intentHint') as string | null) ?? null) : null,
+    role: s.member.role,
+  });
+  const author: AssistantAuthor = authorOf(s.member);
+  const sharedId = sharedConversationId(req.scope.babyId);
+  // The conversation the app is showing: the caller's own or the shared thread (validated).
+  const requested = req.conversationId ? await conversationRef(db, req.conversationId).get() : null;
+  if (requested && req.conversationId) {
+    if (requested.exists) {
+      if (!(await canReadConversation(db, uid, requested, now))) throw fail('NOT_MEMBER');
+      if (!sameScope(requested.get('scope'), req.scope)) throw fail('SCOPE_CHANGED');
+    } else if (req.conversationId !== sharedId) {
+      throw fail('NOT_MEMBER');
+    }
+  }
+  // A shared task always lands in the shared thread (also when the app shows an older private
+  // thread of this baby: it stays readable, new messages go to the shared one). A private task
+  // continues the caller's own thread, else starts a new private one (never the shared thread).
+  const ownPrivate =
+    requested?.exists === true &&
+    requested.get('shared') !== true &&
+    requested.get('ownerUid') === uid;
+  const targetConvId =
+    visibility === 'shared'
+      ? sharedId
+      : ownPrivate
+        ? req.conversationId!
+        : conversationIdFor(taskId);
+  // ---- end D-075 #2 ----
 
   const out = await db.runTransaction(async (tx) => {
     const existing = await tx.get(ref);
@@ -336,9 +397,7 @@ export async function startTask(
       if (existing.get('state') !== 'blocked') return { replay: true };
     }
     const resume = existing.exists;
-    const convId = resume
-      ? (existing.get('conversationId') as string)
-      : (req.conversationId ?? conversationIdFor(taskId));
+    const convId = resume ? (existing.get('conversationId') as string) : targetConvId;
     const [quote, conv] = await Promise.all([
       tx.get(quoteRef(db, req.quoteId)),
       tx.get(conversationRef(db, convId)),
@@ -347,10 +406,12 @@ export async function startTask(
     const attachmentSnaps =
       verified.length > 0 ? await readAttachmentsTx(tx, db, req.attachmentIds) : [];
     if (conv.exists) {
-      if (conv.get('ownerUid') !== uid) throw fail('NOT_MEMBER');
+      // D-075 #2: the shared thread takes shared tasks only; a private one, its owner's.
+      const sharedConv = conv.get('shared') === true;
+      if (sharedConv ? !sharesThread(s.member) : conv.get('ownerUid') !== uid) {
+        throw fail('NOT_MEMBER');
+      }
       if (!sameScope(conv.get('scope'), req.scope)) throw fail('SCOPE_CHANGED');
-    } else if (req.conversationId && !resume) {
-      throw fail('NOT_MEMBER');
     }
 
     const base = {
@@ -359,6 +420,11 @@ export async function startTask(
       familyId: s.familyId,
       scope: req.scope,
       conversationId: convId,
+      // D-075 #2: a resumed task keeps where it started.
+      visibility: resume
+        ? ((existing.get('visibility') as string | undefined) ?? 'private')
+        : visibility,
+      author: resume ? (existing.get('author') ?? author) : author,
       requestId: req.clientRequestId,
       inputKey,
       input: { text, attachmentIds: req.attachmentIds },
@@ -383,9 +449,13 @@ export async function startTask(
       if (conv.exists) {
         tx.update(conv.ref, { messageSeq: lastMsg, updatedAt: at, lastTaskId });
       } else {
+        const shared = convId === sharedId && visibility === 'shared';
         tx.set(conv.ref, {
           id: convId,
-          ownerUid: uid,
+          // D-075 #2: the shared thread has no owner; its creator is kept for audit only.
+          ownerUid: shared ? null : uid,
+          shared,
+          createdBy: uid,
           familyId: s.familyId,
           scope: req.scope,
           title: null,
@@ -407,7 +477,7 @@ export async function startTask(
         convId,
         lastMsg,
         [
-          { role: 'user', parts: userParts(text), taskId },
+          { role: 'user', parts: userParts(text), taskId, author },
           {
             role: 'assistant',
             parts: [healthPart!],
@@ -492,9 +562,18 @@ export async function startTask(
       parts: AssistantPart[];
       taskId: string;
       attachmentIds?: string[];
+      author?: AssistantAuthor | null;
     }[] = resume
       ? []
-      : [{ role: 'user', parts: userParts(text), taskId, attachmentIds: req.attachmentIds }];
+      : [
+          {
+            role: 'user',
+            parts: userParts(text),
+            taskId,
+            attachmentIds: req.attachmentIds,
+            author,
+          },
+        ];
     if (blocked === 'USAGE_EXHAUSTED') {
       newMessages.push({
         role: 'assistant',
@@ -637,7 +716,14 @@ export async function submitClarification(
         db,
         t.conversationId,
         (conv.get('messageSeq') as number | undefined) ?? 0,
-        [{ role: 'user', parts: [{ type: 'text', schemaVersion: 1, text: shown }], taskId: t.id }],
+        [
+          {
+            role: 'user',
+            parts: [{ type: 'text', schemaVersion: 1, text: shown }],
+            taskId: t.id,
+            author: authorOf(s.member),
+          },
+        ],
         now,
       );
       tx.update(conv.ref, { messageSeq: msg, updatedAt: at });
@@ -684,7 +770,8 @@ export async function submitClarification(
 async function draftContext(deps: AssistantDeps, uid: string, draftId: string) {
   const taskId = taskIdOfDraft(draftId);
   if (!taskId) throw fail('VALIDATION_FAILED', { field: 'draftId' });
-  const task = await ownTask(deps.db, uid, taskId);
+  // D-075 #2: a shared task's drafts may be edited by the members who may save that module.
+  const task = await readableTask(deps.db, uid, taskId, deps.now);
   const s = await loadTrustedScope(
     deps.db,
     uid,
@@ -693,7 +780,12 @@ async function draftContext(deps: AssistantDeps, uid: string, draftId: string) {
     deps.environment,
   );
   if (s.familyId !== task.get('familyId')) throw fail('SCOPE_CHANGED');
-  return { taskId, task, s, ref: draftRef(deps.db, taskId, draftId) };
+  const ref = draftRef(deps.db, taskId, draftId);
+  if (task.get('ownerUid') !== uid) {
+    const kind = (await ref.get()).get('payload.kind') as Parameters<typeof moduleAllows>[0];
+    if (!kind || !moduleAllows(kind, s.member)) throw fail('WRITE_DENIED');
+  }
+  return { taskId, task, s, ref };
 }
 
 /**
@@ -787,7 +879,9 @@ export async function confirmDrafts(
   void _c;
   void _l;
   return withRequest(db, uid, 'confirm', clientRequestId, input, now, async () => {
-    const task = await ownTask(db, uid, req.taskId);
+    // D-075 #2: any member of the shared thread may save a shared task's drafts; each item is
+    // re-checked against the CONFIRMER's role for that module (`confirmDraftItem`).
+    const task = await readableTask(db, uid, req.taskId, now);
     const t = storedTask(task);
     if (req.scope && !sameScope(req.scope, t.scope)) throw fail('SCOPE_CHANGED');
     const s = await loadTrustedScope(db, uid, t.scope, now, deps.environment);
@@ -816,9 +910,19 @@ export async function confirmDrafts(
         }),
       );
     }
-    // One result card in the conversation (typed; links built by the module adapter).
+    // One result card in the conversation (typed; links built by the module adapter), signed by
+    // the confirmer; newly saved drafts remember who saved them (D-075 #2).
+    const confirmer = authorOf(s.member);
     await db.runTransaction(async (tx) => {
       const conv = await tx.get(conversationRef(db, t.conversationId));
+      const saved = await Promise.all(
+        items
+          .filter((i) => i.status === 'saved')
+          .map((i) => tx.get(draftRef(db, req.taskId, i.draftId))),
+      );
+      for (const d of saved) {
+        if (d.exists && !d.get('confirmedBy')) tx.update(d.ref, { confirmedBy: confirmer });
+      }
       if (!conv.exists) return;
       const seq = appendMessages(
         tx,
@@ -841,6 +945,7 @@ export async function confirmDrafts(
               },
             ],
             taskId: req.taskId,
+            author: confirmer,
           },
         ],
         now,
@@ -1047,7 +1152,10 @@ export async function getAssistantUsage(
   return respond(req.clientRequestId, now, usage);
 }
 
-/** `getAssistantTask`: the authoritative snapshot (reconnect, M11). Owner, still a member. */
+/**
+ * `getAssistantTask`: the authoritative snapshot (reconnect, M11). The owner, or any Cùng nuôi /
+ * Người chăm sóc for a task of the shared thread (D-075 #2); still a member.
+ */
 export async function getAssistantTask(
   deps: AssistantDeps,
   uid: string,
@@ -1055,7 +1163,7 @@ export async function getAssistantTask(
 ): Promise<AssistantResponse<AssistantTaskSnapshot>> {
   const { db, now } = deps;
   const req = parseRequest(getAssistantTaskRequestSchema, data);
-  const task = await ownTask(db, uid, req.taskId);
+  const task = await readableTask(db, uid, req.taskId, now);
   await loadTrustedScope(db, uid, storedTask(task).scope, now, deps.environment);
   const snap = await taskSnapshot(db, req.taskId, now, req.afterSequence ?? 0);
   return respond(req.clientRequestId, now, snap, {
@@ -1067,7 +1175,8 @@ export async function getAssistantTask(
 function conversationView(d: FirebaseFirestore.DocumentSnapshot): AssistantConversationView {
   return {
     id: d.id,
-    ownerUid: d.get('ownerUid'),
+    ownerUid: d.get('ownerUid') ?? null,
+    shared: d.get('shared') === true,
     familyId: d.get('familyId'),
     scope: d.get('scope'),
     title: d.get('title') ?? null,
@@ -1080,8 +1189,12 @@ function conversationView(d: FirebaseFirestore.DocumentSnapshot): AssistantConve
 }
 
 /**
- * `listAssistantHistory` (CH03, P-158): the caller's own conversations about one baby, newest
- * first, or one conversation's messages, newest first. Other members' chats are never listed.
+ * `listAssistantHistory` (CH03, D-075 #2): the baby's shared thread first (Cùng nuôi and Người
+ * chăm sóc), then the caller's own private conversations about one baby (household / spending
+ * threads, threads from before D-075), newest first; or one readable conversation's messages,
+ * newest first. Other members' private chats are never listed. Cursors: a private conversation id,
+ * or `private` (the private list from its start, after a first page that held only the shared
+ * thread).
  */
 export async function listAssistantHistory(
   deps: AssistantDeps,
@@ -1094,29 +1207,47 @@ export async function listAssistantHistory(
 > {
   const { db, now } = deps;
   const req = parseRequest(listAssistantHistoryRequestSchema, data);
-  await loadTrustedScope(db, uid, { type: 'child', babyId: req.babyId }, now, deps.environment);
+  const s = await loadTrustedScope(
+    db,
+    uid,
+    { type: 'child', babyId: req.babyId },
+    now,
+    deps.environment,
+  );
   if (req.conversationId === null) {
+    const items: AssistantConversationView[] = [];
+    if (req.cursor === null && sharesThread(s.member)) {
+      const shared = await conversationRef(db, sharedConversationId(req.babyId)).get();
+      if (shared.exists) items.push(conversationView(shared));
+    }
+    const room = req.limit - items.length;
     let q = db
       .collection('assistantConversations')
       .where('ownerUid', '==', uid)
       .where('scope.babyId', '==', req.babyId)
       .orderBy('updatedAt', 'desc')
-      .limit(req.limit + 1);
-    if (req.cursor) {
+      .limit(room + 1);
+    if (req.cursor && req.cursor !== 'private') {
       const c = await conversationRef(db, req.cursor).get();
       if (!c.exists || c.get('ownerUid') !== uid)
         throw fail('VALIDATION_FAILED', { field: 'cursor' });
       q = q.startAfter(c);
     }
     const docs = (await q.get()).docs;
-    const page = docs.slice(0, req.limit);
+    const page = docs.slice(0, room);
+    items.push(...page.map(conversationView));
+    const more = docs.length > room;
     return respond(req.clientRequestId, now, {
-      items: page.map(conversationView),
-      nextCursor: docs.length > req.limit ? page[page.length - 1]!.id : null,
+      items,
+      nextCursor: !more ? null : page.length > 0 ? page[page.length - 1]!.id : 'private',
     });
   }
   const conv = await conversationRef(db, req.conversationId).get();
-  if (!conv.exists || conv.get('ownerUid') !== uid || conv.get('scope.babyId') !== req.babyId) {
+  if (
+    !conv.exists ||
+    conv.get('scope.babyId') !== req.babyId ||
+    !(await canReadConversation(db, uid, conv, now))
+  ) {
     throw fail('NOT_MEMBER');
   }
   let q = conv.ref
@@ -1141,32 +1272,47 @@ export async function listAssistantHistory(
 }
 
 /**
- * `deleteAssistantConversation` (CH03, brief p.19): confirmed by the request. Unfinished tasks are
- * cancelled (credits released once), then the conversation, its messages, its tasks, drafts and
- * events are deleted. Saved domain records (care, check-ins, feedback) are never touched; the
- * credit ledger and the execution rows (ids and hashes only) are kept.
+ * `deleteAssistantConversation` (CH03, brief p.19): confirmed by the request. A private
+ * conversation by its owner; the baby's shared thread (D-075 #2) by a Cùng nuôi only, for every
+ * member (a caregiver is WRITE_DENIED). Unfinished tasks are cancelled (credits released once),
+ * then the conversation, its messages, its tasks, drafts and events are deleted. Saved domain
+ * records (care, check-ins, feedback, reminders, expenses) are never touched
+ * (`domainRecordsKept`); the credit ledger and the execution rows (ids and hashes only) are kept.
  */
 export async function deleteAssistantConversation(
   deps: AssistantDeps,
   uid: string,
   data: unknown,
-): Promise<AssistantResponse<{ deletedTasks: number }>> {
+): Promise<AssistantResponse<{ deletedTasks: number; domainRecordsKept: true }>> {
   const { db, now } = deps;
   const req = parseRequest(deleteAssistantConversationRequestSchema, data);
   const conv = await conversationRef(db, req.conversationId).get();
   if (!conv.exists) {
-    return respond(req.clientRequestId, now, { deletedTasks: 0 });
+    return respond(req.clientRequestId, now, { deletedTasks: 0, domainRecordsKept: true });
   }
-  if (conv.get('ownerUid') !== uid) throw fail('NOT_MEMBER');
-  const tasks = await db
-    .collection('assistantTasks')
-    .where('conversationId', '==', req.conversationId)
-    .where('ownerUid', '==', uid)
-    .get();
+  const shared = conv.get('shared') === true;
+  if (shared) {
+    const babyId = conv.get('scope.babyId') as string;
+    const m = memberOf(await db.doc(`babies/${babyId}/members/${uid}`).get(), now);
+    if (!sharesThread(m)) throw fail('NOT_MEMBER');
+    if (m!.role !== 'coParent') throw fail('WRITE_DENIED');
+  } else if (conv.get('ownerUid') !== uid) {
+    throw fail('NOT_MEMBER');
+  }
+  const tasks = shared
+    ? await db.collection('assistantTasks').where('conversationId', '==', req.conversationId).get()
+    : await db
+        .collection('assistantTasks')
+        .where('conversationId', '==', req.conversationId)
+        .where('ownerUid', '==', uid)
+        .get();
   for (const t of tasks.docs) await stopTask(db, t.id, now, 'canceled', null);
   // Slice A3: the photos go too (Storage-confirmed; a pending one is retried by the sweeper).
   for (const t of tasks.docs) await purgeTaskAttachments(db, deps.files, t.id, now);
   for (const t of tasks.docs) await db.recursiveDelete(t.ref);
   await db.recursiveDelete(conv.ref);
-  return respond(req.clientRequestId, now, { deletedTasks: tasks.size });
+  return respond(req.clientRequestId, now, {
+    deletedTasks: tasks.size,
+    domainRecordsKept: true,
+  });
 }

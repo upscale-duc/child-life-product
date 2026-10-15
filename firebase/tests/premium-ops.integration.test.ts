@@ -205,7 +205,13 @@ describe('staffAiPolicy', () => {
     expect(p.consentVersion).toBe(aiConsentVersion);
     expect(p.promptVersion).toBe(aiSummaryPromptVersion);
     expect(p.flag).toEqual({ enabled: true, scope: 'internal', percent: 0, families: 1 });
-    expect(p.quotas).toEqual({ perBabyPerDay: 2, perFamilyPerMonth: 20, stored: true });
+    expect(p.quotas).toEqual({
+      perBabyPerDay: 2,
+      perFamilyPerMonth: 20,
+      stored: true,
+      // D-075 #1: summaries charge the assistant credit pool.
+      assistant: defaultEntitlementsConfig.quotas.assistant,
+    });
     expect(p.budget).toMatchObject({ monthlyBudgetVnd: 1_000_000, spentVnd: 4500 });
     expect(p.days).toHaveLength(30);
     expect(p.days.at(-1)).toEqual({
@@ -245,7 +251,11 @@ describe('staffAiPolicy', () => {
     const p = await aiPolicy(db, owner, { name: 'template', model: 'gpt-4.1-mini' }, now);
     expect(p.provider).toEqual({ name: 'template', model: null });
     expect(p.flag.enabled).toBe(false);
-    expect(p.quotas).toEqual({ ...defaultEntitlementsConfig.quotas.ai, stored: false });
+    expect(p.quotas).toEqual({
+      ...defaultEntitlementsConfig.quotas.ai,
+      stored: false,
+      assistant: defaultEntitlementsConfig.quotas.assistant,
+    });
     expect(p.totals.fallbackRate).toBeNull();
     expect(p.fallbackReasons).toEqual([]);
     expect(p.reports.open).toBe(0);

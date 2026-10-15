@@ -27,7 +27,8 @@ import { bumpDataVersion } from '../functions/src/rhythm.js';
 // Premium Slice 3, grounded AI (plan §5.5, P-151) against the Firestore emulator with a FAKE
 // provider: M15 (consent, timeout, invalid output, prompt injection, health first), A01–A08 end
 // to end, cache without quota, quota exhausted, roles (D-072 #2), cross-family (M03),
-// idempotency, consent withdrawal. Its own project. Synthetic `test_` data only. A passing run
+// idempotency, consent withdrawal. D-075 #1: summaries charge 1 credit from the household
+// assistant pool (Free here, limit 1 to keep the old day-quota cases meaningful). Its own project. Synthetic `test_` data only. A passing run
 // proves the ids and the plumbing, not the prose: the bilingual human audit (A4) is still required.
 const projectId = 'demo-child-life-ai-summary';
 let app: App;
@@ -157,8 +158,19 @@ const consent = (uid: string, shareMyNotes = true) =>
   setAiConsent(db, uid, { consent: { version: aiConsentVersion, shareMyNotes } }, now);
 const quotaDocs = async () => (await db.collection(`families/${F}/quota`).get()).docs;
 const windowOf = async (id: string) => (await db.doc(`families/${F}/quota/${id}`).get()).data();
-const DAY = 'ai_day_test_b1_2026-10-14';
-const MONTH = 'ai_month_cal_2026-10';
+/** D-075 #1: the household assistant credit pool (Free budget, calendar month). */
+const POOL = 'assistant_cal_2026-10';
+const setFreeCredits = (free: number, extra: Record<string, unknown> = {}) =>
+  db.doc('config/entitlements').set(
+    {
+      quotas: {
+        ...defaultEntitlementsConfig.quotas,
+        assistant: { ...defaultEntitlementsConfig.quotas.assistant, free },
+      },
+      ...extra,
+    },
+    { merge: true },
+  );
 
 beforeAll(() => {
   app = initializeApp({ projectId }, `ai-summary-${randomUUID()}`);
@@ -196,6 +208,7 @@ beforeEach(async () => {
       },
     ],
   });
+  await setFreeCredits(1);
   await db.doc('publicConfig/content_rhythm').set(content());
   for (const [baby, family, owner] of [
     [B, F, 'test_mom'],
@@ -226,7 +239,7 @@ beforeEach(async () => {
 });
 
 describe('A01–A08 end to end (fake provider)', () => {
-  it('A01: a grounded answer is stored as AI and both quota windows are used once', async () => {
+  it('A01: a grounded answer is stored as AI and charges 1 credit of the household pool', async () => {
     const f = fake((i) => good(i));
     const a = await ask(f.provider);
     expect(a).toMatchObject({
@@ -238,9 +251,14 @@ describe('A01–A08 end to end (fake provider)', () => {
       requestedBy: 'test_mom',
     });
     expect(a.sections[0]!.factIds).toEqual([a.facts[0]!.id]);
-    expect(a.quota).toMatchObject({
-      day: { limit: 1, used: 1, reserved: 0 },
-      month: { limit: 10, used: 1, reserved: 0 },
+    expect(a.quota).toMatchObject({ day: null, month: { limit: 1, used: 1, reserved: 0 } });
+    expect(a.credits).toMatchObject({
+      pool: 'assistant',
+      plan: 'free',
+      charged: 1,
+      limit: 1,
+      used: 1,
+      remaining: 0,
     });
     expect(f.calls).toHaveLength(1);
     // Only approved candidates for the baby's age and locale; sleep first (the reported need).
@@ -258,7 +276,7 @@ describe('A01–A08 end to end (fake provider)', () => {
     expect(stored.cacheKey).toMatch(/^test_b1\|handover\|d0\|rc_20261014_01\|vi\|/);
     expect(stored.fallbackSections.length).toBeGreaterThan(0);
     const op = (await db.doc(`families/${F}/quotaOps/${a.id}`).get()).data();
-    expect(op).toMatchObject({ state: 'committed', windowIds: [DAY, MONTH] });
+    expect(op).toMatchObject({ state: 'committed', windowIds: [POOL], units: 1 });
     // The AI budget is charged in one transaction (A09).
     expect((await db.doc('config/ai').get()).get('spentVnd')).toBe(150);
     const events = (await db.doc('appEventsDaily/2026-10-14').get()).data();
@@ -285,7 +303,7 @@ describe('A01–A08 end to end (fake provider)', () => {
     );
     const a = await ask(f.provider);
     expect(a).toMatchObject({ method: 'fallback', fallbackReason: 'invalid' });
-    expect(await windowOf(DAY)).toMatchObject({ used: 0, reserved: 0 });
+    expect(await windowOf(POOL)).toMatchObject({ used: 0, reserved: 0 });
     expect((await db.doc(`families/${F}/quotaOps/${a.id}`).get()).get('state')).toBe('released');
   });
 
@@ -298,10 +316,8 @@ describe('A01–A08 end to end (fake provider)', () => {
     const f = fake(() => new Promise((r) => setTimeout(() => r(null), 2_000)));
     const a = await ask(f.provider, 'test_mom', {}, now, 50);
     expect(a).toMatchObject({ method: 'fallback', fallbackReason: 'timeout' });
-    expect(a.quota).toMatchObject({
-      day: { used: 0, reserved: 0 },
-      month: { used: 0, reserved: 0 },
-    });
+    expect(a.quota).toMatchObject({ day: null, month: { used: 0, reserved: 0 } });
+    expect(a.credits).toMatchObject({ charged: 0, remaining: 1 });
     expect((await db.doc(`families/${F}/quotaOps/${a.id}`).get()).data()).toMatchObject({
       state: 'released',
       releaseReason: 'timeout',
@@ -312,11 +328,16 @@ describe('A01–A08 end to end (fake provider)', () => {
     const f = fake((i) => good(i));
     const first = await ask(f.provider);
     const second = await ask(f.provider);
-    expect(second).toMatchObject({ method: 'cache', fallbackReason: null, quota: null });
+    expect(second).toMatchObject({
+      method: 'cache',
+      fallbackReason: null,
+      quota: null,
+      credits: null,
+    });
     expect(second.id).not.toBe(first.id);
     expect(second.sections).toEqual(first.sections);
     expect(f.calls).toHaveLength(1);
-    expect(await windowOf(DAY)).toMatchObject({ used: 1, reserved: 0 });
+    expect(await windowOf(POOL)).toMatchObject({ used: 1, reserved: 0 });
     // Another language never answers from this cache entry.
     const en = await ask(f.provider, 'test_mom', { locale: 'en' });
     expect(en).toMatchObject({ method: 'fallback', fallbackReason: 'QUOTA_EXCEEDED' });
@@ -373,7 +394,7 @@ describe('M15: output checks and prompt injection', () => {
       expect(['invalid', 'unavailable']).toContain(a.fallbackReason);
     }
     // Nothing was used: every reservation was released.
-    expect(await windowOf(DAY)).toMatchObject({ used: 0, reserved: 0 });
+    expect(await windowOf(POOL)).toMatchObject({ used: 0, reserved: 0 });
   });
 
   it('a note is sent only as data and cannot change the schema of the answer', async () => {
@@ -445,7 +466,7 @@ describe('M15: output checks and prompt injection', () => {
     expect(f.calls[0]!.notes.map((n) => n.text)).toEqual(['Bé quấy từ 2 giờ sáng']);
     await consent('test_dad', true);
     await bumpDataVersion(db, B, now);
-    await db.doc(`families/${F}/quota/${DAY}`).update({ limit: 5 });
+    await db.doc(`families/${F}/quota/${POOL}`).update({ limit: 5 });
     await ask(f.provider);
     expect(f.calls[1]!.notes.map((n) => n.text).sort()).toEqual([
       'Bé quấy từ 2 giờ sáng',
@@ -461,29 +482,109 @@ describe('gates, quota and roles', () => {
     await bumpDataVersion(db, B, now);
     const a = await ask(f.provider);
     expect(a).toMatchObject({ method: 'fallback', fallbackReason: 'QUOTA_EXCEEDED' });
-    expect(a.quota).toMatchObject({ day: { limit: 1, used: 1 }, month: { used: 1 } });
+    expect(a.quota).toMatchObject({ day: null, month: { limit: 1, used: 1 } });
+    expect(a.credits).toMatchObject({ charged: 0, remaining: 0 });
     expect(f.calls).toHaveLength(1);
   });
 
-  it('a free family, the kill switch and a template-only provider fall back with their reason', async () => {
+  it('D-075 #1: one pool with the chat — 1 credit per summary, cache free, template free at 0', async () => {
+    await setFreeCredits(3);
+    // The chat already used 1 credit this month (same window, same ledger).
+    await db.doc(`families/${F}/quota/${POOL}`).set({
+      windowId: POOL,
+      feature: 'assistant',
+      scope: 'calendar_month',
+      babyId: null,
+      grantId: null,
+      zone: 'Asia/Ho_Chi_Minh',
+      startDate: '2026-10-01',
+      endDate: '2026-11-01',
+      startsAt: Timestamp.fromDate(new Date('2026-09-30T17:00:00Z')),
+      resetsAt: Timestamp.fromDate(new Date('2026-10-31T17:00:00Z')),
+      limit: 3,
+      used: 1,
+      reserved: 0,
+    });
     const f = fake((i) => good(i));
-    const free = await generateSummary(deps(f.provider), 'test_mom2', {
-      babyId: B2,
-      kind: 'handover',
-      locale: 'en',
-      requestId: randomUUID(),
+    const a = await ask(f.provider);
+    expect(a).toMatchObject({ method: 'ai', credits: { charged: 1, used: 2, remaining: 1 } });
+    // The same facts again: the cache answers, no credit.
+    expect(await ask(f.provider)).toMatchObject({ method: 'cache', credits: null });
+    await bumpDataVersion(db, B, now);
+    expect(await ask(f.provider)).toMatchObject({
+      method: 'ai',
+      credits: { used: 3, remaining: 0 },
     });
-    expect(free).toMatchObject({
+    // At 0 credits the template still answers, free, without calling the model.
+    await bumpDataVersion(db, B, now);
+    const zero = await ask(f.provider);
+    expect(zero).toMatchObject({
       method: 'fallback',
-      fallbackReason: 'PREMIUM_REQUIRED',
-      language: 'en',
+      fallbackReason: 'QUOTA_EXCEEDED',
+      credits: { charged: 0, remaining: 0 },
     });
-    expect(free.sections[0]!.text).toBe('Nothing was noted in the last few days.');
+    expect(zero.sections.length).toBeGreaterThan(0);
+    expect(f.calls).toHaveLength(2);
+    expect(await windowOf(POOL)).toMatchObject({ used: 3, reserved: 0, limit: 3 });
+    // The handover screen reads the same pool.
+    const list = await listSummaries(db, 'test_mom', { babyId: B }, now, 'test');
+    expect(list.credits).toMatchObject({ plan: 'free', limit: 3, used: 3, remaining: 0 });
+    // Nothing is charged to the pre-D-075 windows any more.
+    expect((await quotaDocs()).map((d) => d.id)).toEqual([POOL]);
+  });
+
+  it('D-075 #1: a beta giving the Premium budget charges the Premium pool (200)', async () => {
+    await setFreeCredits(1, {
+      betaCampaigns: [
+        {
+          id: 'beta-a',
+          capabilities: ['ai.assistance', 'assistant.premium_budget'],
+          validFrom: '2026-10-01T00:00:00Z',
+          validUntil: '2026-10-20T00:00:00Z',
+          countries: [],
+          scope: 'internal',
+          percent: 0,
+          families: [F],
+        },
+      ],
+    });
+    const a = await ask(fake((i) => good(i)).provider);
+    expect(a).toMatchObject({
+      method: 'ai',
+      credits: { plan: 'premium', limit: 200, used: 1, remaining: 199 },
+    });
+    expect(await windowOf(POOL)).toBeUndefined();
+  });
+
+  it('D-075 #1: a Free family gets AI with Free credits; outside the regions, the kill switch and a template-only provider fall back', async () => {
+    const f = fake((i) => good(i));
+    const ask2 = () =>
+      generateSummary(deps(f.provider), 'test_mom2', {
+        babyId: B2,
+        kind: 'handover',
+        locale: 'en',
+        requestId: randomUUID(),
+      });
+    await checkIn('test_mom2', {}, B2);
+    const free = await ask2();
+    expect(free).toMatchObject({
+      method: 'ai',
+      language: 'en',
+      credits: { plan: 'free', charged: 1, limit: 1, used: 1 },
+    });
+    expect((await db.doc(`families/test_f2/quota/${POOL}`).get()).get('used')).toBe(1);
+    // Not Premium-only any more, but still only in an advanced region.
+    await db.doc('families/test_f2').set({ country: 'DE' }, { merge: true });
+    await bumpDataVersion(db, B2, now);
+    expect(await ask2()).toMatchObject({
+      method: 'fallback',
+      fallbackReason: 'REGION_UNAVAILABLE',
+    });
     await db.doc('config/flags').set({ ai_assist: { ...on, enabled: false } }, { merge: true });
     expect(await ask(f.provider)).toMatchObject({ fallbackReason: 'FEATURE_DISABLED' });
     await db.doc('config/flags').set({ ai_assist: on }, { merge: true });
     expect(await ask(templateProvider)).toMatchObject({ fallbackReason: 'unavailable' });
-    expect(f.calls).toHaveLength(0);
+    expect(f.calls).toHaveLength(1);
     expect(await quotaDocs()).toHaveLength(0);
   });
 
@@ -508,7 +609,9 @@ describe('gates, quota and roles', () => {
       'ROLE_DENIED',
     );
     const mom = await listSummaries(db, 'test_mom', { babyId: B }, now, 'test');
-    expect(mom.quota).toMatchObject({ day: { used: 1, limit: 1 }, month: { used: 1 } });
+    expect(mom.quota).toMatchObject({ day: null, month: { used: 1, limit: 1 } });
+    expect(mom.credits).toMatchObject({ pool: 'assistant', used: 1, limit: 1, remaining: 0 });
+    expect(nanny.credits).toBeNull();
   });
 
   it('M03: another family can neither generate, read nor report', async () => {
@@ -540,14 +643,14 @@ describe('gates, quota and roles', () => {
     expect(b).toEqual(a);
     expect(a.id).toBe(summaryIdFor('test_mom', B, requestId));
     expect(f.calls).toHaveLength(1);
-    expect(await windowOf(DAY)).toMatchObject({ used: 1, reserved: 0 });
+    expect(await windowOf(POOL)).toMatchObject({ used: 1, reserved: 0 });
     // Two at once: one runs, the other is told it is in progress or gets the same snapshot.
     const r2 = randomUUID();
     const slow = fake(async (i) => {
       await new Promise((r) => setTimeout(r, 100));
       return good(i);
     });
-    await db.doc(`families/${F}/quota/${DAY}`).update({ limit: 5 });
+    await db.doc(`families/${F}/quota/${POOL}`).update({ limit: 5 });
     await bumpDataVersion(db, B, now);
     const both = await Promise.allSettled([
       ask(slow.provider, 'test_mom', { requestId: r2 }),
@@ -613,7 +716,7 @@ describe('consent (A1)', () => {
     });
     const a = await ask(f.provider);
     expect(a).toMatchObject({ method: 'fallback', fallbackReason: 'CONSENT_REQUIRED' });
-    expect(await windowOf(DAY)).toMatchObject({ used: 0, reserved: 0 });
+    expect(await windowOf(POOL)).toMatchObject({ used: 0, reserved: 0 });
   });
 
   it('only the current consent version is accepted; grantedAt is kept when only sharing changes', async () => {
@@ -656,7 +759,7 @@ describe('kinds: explain, moment; reports', () => {
     expect(f.calls[0]!.candidates.map((c) => c.id)).toEqual(['act_sleep_dim']);
     expect(f.calls[0]!.focus).toEqual({ contentId: 'act_sleep_dim' });
     const wrong = fake((i) => good(i, { suggestionContentId: 'act_feed_calm' }));
-    await db.doc(`families/${F}/quota/${DAY}`).update({ limit: 5 });
+    await db.doc(`families/${F}/quota/${POOL}`).update({ limit: 5 });
     const b = await generateSummary(deps(wrong.provider), 'test_mom', {
       babyId: B,
       kind: 'explain',

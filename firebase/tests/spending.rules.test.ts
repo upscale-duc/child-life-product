@@ -342,3 +342,139 @@ describe("categories (the family's)", () => {
     await assertFails(deleteDoc(doc(as('mom'), 'families/f1/spendingCategories/c_milk')));
   });
 });
+
+// ---- Chi tiêu currencies (D-075 #4) ----
+describe('currencies (D-075 #4)', () => {
+  const at = (uid: string, n: number) => doc(as(uid), `babies/b1/expenses/${id(n)}`);
+
+  it('old documents without a currency stay valid (VND) and old apps keep editing them', async () => {
+    // The seeded expenses have no `currency`: an old app's edit still passes.
+    await assertSucceeds(
+      updateDoc(at('dad', 1), {
+        amount: 1_000_000_000,
+        updatedAt: serverTimestamp(),
+        updatedBy: 'dad',
+      }),
+    );
+    await assertFails(
+      updateDoc(at('dad', 1), {
+        amount: 1_000_000_001,
+        updatedAt: serverTimestamp(),
+        updatedBy: 'dad',
+      }),
+    );
+    await assertSucceeds(setDoc(at('mom', 20), expense('mom')));
+  });
+
+  it('a new expense may name a supported currency, in its minor units and under its ceiling', async () => {
+    await assertSucceeds(setDoc(at('mom', 21), expense('mom', { amount: 1250, currency: 'USD' })));
+    await assertSucceeds(setDoc(at('mom', 22), expense('mom', { amount: 1500, currency: 'JPY' })));
+    await assertSucceeds(
+      setDoc(at('mom', 23), expense('mom', { amount: 1_020_000, currency: 'VND' })),
+    );
+    await assertSucceeds(
+      setDoc(at('grandma', 24), expense('grandma', { amount: 999, currency: 'EUR' })),
+    );
+    // USD ceiling: 1 000 000.00 (100 000 000 cents).
+    await assertFails(
+      setDoc(at('mom', 25), expense('mom', { amount: 100_000_001, currency: 'USD' })),
+    );
+    await assertSucceeds(
+      setDoc(at('mom', 26), expense('mom', { amount: 2_000_000_000, currency: 'KRW' })),
+    );
+    await assertFails(setDoc(at('mom', 27), expense('mom', { amount: 100, currency: 'XAF' })));
+    await assertFails(setDoc(at('mom', 28), expense('mom', { amount: 100, currency: 'usd' })));
+    await assertFails(setDoc(at('mom', 29), expense('mom', { amount: 100, currency: null })));
+    await assertFails(setDoc(at('mom', 30), expense('mom', { amount: 12.5, currency: 'USD' })));
+  });
+
+  it('an edit may change the currency, checked against the new one', async () => {
+    await assertSucceeds(
+      updateDoc(at('mom', 2), {
+        amount: 4_500,
+        currency: 'USD',
+        updatedAt: serverTimestamp(),
+        updatedBy: 'mom',
+      }),
+    );
+    await assertFails(
+      updateDoc(at('mom', 2), {
+        amount: 500_000_000,
+        currency: 'EUR',
+        updatedAt: serverTimestamp(),
+        updatedBy: 'mom',
+      }),
+    );
+    await assertFails(
+      updateDoc(at('mom', 2), { currency: 'ABC', updatedAt: serverTimestamp(), updatedBy: 'mom' }),
+    );
+  });
+
+  it('the budget and recurring items take an optional currency', async () => {
+    await assertSucceeds(
+      setDoc(
+        doc(as('mom'), 'babies/b1/spending/budget'),
+        budget('mom', {
+          monthlyTotal: 150_000,
+          caps: { c_milk: 40_000 },
+          currency: 'USD',
+          alertedMonth: '2026-10',
+        }),
+      ),
+    );
+    await assertFails(
+      setDoc(
+        doc(as('mom'), 'babies/b1/spending/budget'),
+        budget('mom', { monthlyTotal: 100_000_001, currency: 'USD', alertedMonth: '2026-10' }),
+      ),
+    );
+    await assertFails(
+      setDoc(
+        doc(as('mom'), 'babies/b1/spending/budget'),
+        budget('mom', { currency: 'XYZ', alertedMonth: '2026-10' }),
+      ),
+    );
+    await assertSucceeds(
+      setDoc(
+        doc(as('mom'), `babies/b1/recurringExpenses/${id(7, 'rx_')}`),
+        recurring('mom', { amount: 120_000, currency: 'AUD' }),
+      ),
+    );
+    await assertFails(
+      setDoc(
+        doc(as('mom'), `babies/b1/recurringExpenses/${id(8, 'rx_')}`),
+        recurring('mom', { amount: 300_000_000, currency: 'AUD' }),
+      ),
+    );
+    await assertSucceeds(
+      updateDoc(doc(as('mom'), `babies/b1/recurringExpenses/${id(1, 'rx_')}`), {
+        amount: 5_000,
+        currency: 'SGD',
+        updatedAt: serverTimestamp(),
+        updatedBy: 'mom',
+      }),
+    );
+  });
+
+  it("the household's currency: read with a spending right, set by Cùng nuôi only", async () => {
+    const settings = (uid: string, over: Record<string, unknown> = {}) => ({
+      currency: 'USD',
+      updatedAt: serverTimestamp(),
+      updatedBy: uid,
+      ...over,
+    });
+    const ref = (uid: string, docId = 'main') =>
+      doc(as(uid), `families/f1/spendingSettings/${docId}`);
+    await assertSucceeds(setDoc(ref('dad'), settings('dad')));
+    await assertSucceeds(getDoc(ref('grandma')));
+    await assertSucceeds(getDoc(ref('aunt')));
+    await assertFails(getDoc(ref('nanny')));
+    await assertFails(setDoc(ref('grandma'), settings('grandma')));
+    await assertFails(setDoc(ref('aunt'), settings('aunt')));
+    await assertFails(setDoc(ref('dad'), settings('dad', { currency: 'XAF' })));
+    await assertFails(setDoc(ref('dad'), settings('dad', { extra: 1 })));
+    await assertFails(setDoc(ref('dad', 'other'), settings('dad')));
+    await assertFails(deleteDoc(ref('mom')));
+  });
+});
+// ---- end Chi tiêu currencies ----

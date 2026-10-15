@@ -229,7 +229,12 @@ export async function runAssistantTask(
   });
   if (!claim) return { ran: false, fenced: false, state: null };
 
-  const work = await process(deps, claim.t);
+  let work = await process(deps, claim.t);
+  // D-075 #2: spending never enters the shared thread (defence in depth: shared tasks are text
+  // tasks, which never draft an expense).
+  if (claim.t.visibility === 'shared' && work.drafts.some((d) => d.payload.kind === 'expense')) {
+    work = failWith('WRITE_DENIED', 'rejected');
+  }
   const done = await finalize(deps, claim.t, claim.holder, work);
   // Slice A3: once settled (or fenced), photos go per their retention (G05); a failure here is
   // retried by the sweeper and never fails the task.

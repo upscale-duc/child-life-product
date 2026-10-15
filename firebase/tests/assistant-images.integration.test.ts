@@ -684,7 +684,8 @@ describe('I: photo tasks (pack I01–I07)', () => {
     expect(other.snap.drafts[0]!.warnings).toEqual([]);
   });
 
-  it('I04: another currency stays in review (Chi tiêu is VND only) and is never saved', async () => {
+  // D-075 #4: Chi tiêu keeps other currencies; an unknown or missing one still needs review.
+  it('I04: a USD receipt is saved in cents with its currency; an unknown one stays in review', async () => {
     const usd = receipt({
       currency: 'USD',
       totalMinor: 2150,
@@ -699,17 +700,39 @@ describe('I: photo tasks (pack I01–I07)', () => {
     const { snap, taskId } = await photo(RECEIPT, [reading({ receipt: usd })]);
     const d = snap.drafts[0]!;
     expect(d.payload).toMatchObject({ currency: 'USD', totalMinor: 2150 });
-    expect(d.state).toBe('needs_review');
-    expect(d.uncertainFields).toContain('currency');
-    expect(d.problems).toContain('CURRENCY_UNSUPPORTED');
-    expect(texts(snap)).toContain('chưa hỗ trợ ngoại tệ');
-    // Confirming the field does not make USD storable.
-    const p = await patch(d.id, 1, d.payload, ['currency']);
+    expect(d.problems).not.toContain('CURRENCY_UNSUPPORTED');
+    expect(texts(snap)).not.toContain('chưa hỗ trợ ngoại tệ');
+    const r = await confirm(taskId, [{ draftId: d.id, revision: 1 }]);
+    expect(r.data.items[0]).toMatchObject({ status: 'saved' });
+    const [e] = await expenses();
+    expect(e!.data()).toMatchObject({ amount: 2150, currency: 'USD', spentOn: '2026-10-14' });
+    // An unsupported currency stays in review and is never saved.
+    await db.recursiveDelete(db.collection(`babies/${B}/expenses`));
+    await db.recursiveDelete(db.collection('assistantAttachments'));
+    const xaf = await photo(RECEIPT, [
+      reading({
+        receipt: receipt({
+          currency: 'XAF',
+          totalMinor: 2150,
+          dateUncertain: false,
+          evidence: [
+            { field: 'currency', text: 'XAF' },
+            { field: 'totalMinor', text: 'TOTAL 2150 XAF' },
+            { field: 'documentDate', text: '14/10/2026' },
+            { field: 'merchant', text: 'ConCung' },
+          ],
+        }),
+      }),
+    ]);
+    const x = xaf.snap.drafts[0]!;
+    expect(x.state).toBe('needs_review');
+    expect(x.problems).toContain('CURRENCY_UNSUPPORTED');
+    const p = await patch(x.id, 1, x.payload, ['currency']);
     expect(p.data.draft.state).toBe('needs_review');
-    const r = await confirm(taskId, [{ draftId: d.id, revision: 2 }]);
-    expect(r.data.items[0]).toMatchObject({ status: 'failed', errorCode: 'REVIEW_REQUIRED' });
+    const refused = await confirm(xaf.taskId, [{ draftId: x.id, revision: 2 }]);
+    expect(refused.data.items[0]).toMatchObject({ status: 'failed', errorCode: 'REVIEW_REQUIRED' });
     expect(await expenses()).toHaveLength(0);
-    // An unknown or missing currency is the same.
+    // A missing currency ("$" alone) is the same.
     const none = await photo(RECEIPT, [reading({ receipt: receipt({ currency: null }) })]);
     expect(none.snap.drafts[0]!.missingFields).toContain('currency');
   });
@@ -799,7 +822,7 @@ describe('I: photo tasks (pack I01–I07)', () => {
     expect(texts(snap)).toContain('Chỉ Cùng nuôi tạo được nhắc việc');
   });
 
-  it('I07: "Thứ Hai 20/10" (a Tuesday) is asked, never picked; no time → the person sets it (no 09:00)', async () => {
+  it('I07: "Thứ Hai 20/10" (a Tuesday) is asked, never picked; no time → all day (no 09:00)', async () => {
     const dated = line('actionCandidate', 'Đặt lịch khám 2 tháng', {
       dateText: 'Thứ Hai 20/10',
       date: '2026-10-20',
@@ -819,7 +842,10 @@ describe('I: photo tasks (pack I01–I07)', () => {
         { id: 'later' },
       ],
     });
-    const done = await answer(taskId, 'weekday', gw);
+    // D-075 #5: "Mẹ" written next to the line is asked, never matched to a member.
+    const who = await answer(taskId, 'weekday', gw);
+    expect(who.task.clarification).toMatchObject({ field: 'reminder.assignee.0' });
+    const done = await answer(taskId, MOM, gw);
     expect(done.task).toMatchObject({ state: 'ready', usage: 'committed' });
     const d = done.drafts[0]!;
     expect(d.payload).toEqual({
@@ -827,16 +853,14 @@ describe('I: photo tasks (pack I01–I07)', () => {
       title: 'Đặt lịch khám 2 tháng',
       date: '2026-10-19',
       time: null,
-      assigneeUid: null,
+      assigneeUid: MOM,
     });
-    expect(d).toMatchObject({ state: 'needs_review', missingFields: ['time'] });
-    expect(d.problems).toContain('MISSING_TIME');
-    expect(texts(done)).toContain('chưa có người phụ trách');
-    const r = await confirm(taskId, [{ draftId: d.id, revision: 1 }]);
-    expect(r.data.items[0]).toMatchObject({ status: 'failed', errorCode: 'REVIEW_REQUIRED' });
-    expect(await reminders()).toHaveLength(0);
-    await patch(d.id, 1, { ...(d.payload as DraftPayload & { kind: 'reminder' }), time: '09:30' });
-    const saved = await confirm(taskId, [{ draftId: d.id, revision: 2 }]);
+    // A date without a time is an all-day reminder: nothing missing, no time set for the person.
+    expect(d).toMatchObject({ state: 'draft', missingFields: [] });
+    expect(d.problems).not.toContain('MISSING_TIME');
+    expect(texts(done)).toContain('nhắc cả ngày');
+    expect(texts(done)).not.toContain('09:00');
+    const saved = await confirm(taskId, [{ draftId: d.id, revision: 1 }]);
     expect(saved.data.items[0]).toMatchObject({
       status: 'saved',
       recordId: reminderIdForDraft(d.id),
@@ -846,14 +870,75 @@ describe('I: photo tasks (pack I01–I07)', () => {
       id: reminderIdForDraft(d.id),
       babyId: B,
       title: 'Đặt lịch khám 2 tháng',
-      leadMinutes: 60,
+      allDay: true,
+      dueDate: '2026-10-19',
+      leadMinutes: 0,
+      assigneeUid: MOM,
       notifyDevice: null,
       createdBy: MOM,
       author: { name: 'Mai', relation: 'mother', relationCustom: null },
       done: false,
     });
-    expect((rm!.get('dueAt') as Timestamp).toDate().toISOString()).toBe('2026-10-19T02:30:00.000Z');
+    // 23:59 on the 19th in the baby's zone.
+    expect((rm!.get('dueAt') as Timestamp).toDate().toISOString()).toBe('2026-10-19T16:59:00.000Z');
     expect(await win()).toMatchObject({ used: 3, reserved: 0 });
+  });
+
+  it('D-075 #5: a written name → the person picks among Cùng nuôi and caregivers, or nobody', async () => {
+    const lines = [
+      line('actionCandidate', 'Mua bỉm size S', { date: '2026-10-17', assigneeText: 'Cô Hoa' }),
+      line('actionCandidate', 'Gọi bác sĩ', { date: '2026-10-18', time: '17:00' }),
+      line('actionCandidate', 'Mua sữa', { date: '2026-10-18', assigneeText: 'Bà' }),
+    ];
+    const { taskId, gw } = await photo(NOTE, [
+      reading({ documentKind: 'note', contains: ['note'], receipt: null, noteLines: lines }),
+    ]);
+    const first = await answer(taskId, 'reminders', gw);
+    const q = first.task.clarification!;
+    expect(q.field).toBe('reminder.assignee.0');
+    expect(q.question.vi).toBe('Ảnh ghi “Cô Hoa” cạnh “Mua bỉm size S”. Giao việc này cho ai?');
+    // The asker first, then Cùng nuôi, then caregivers; never relatives; "Không giao" last.
+    expect(q.choices.map((c) => c.id)).toEqual([MOM, DAD, NANNY, 'none']);
+    expect(q.choices[0]!.label.vi).toBe('Bạn (Mai)');
+    expect(q.choices.map((c) => c.id)).not.toContain(AUNT);
+    expect(q.choices.map((c) => c.id)).not.toContain(GRANDMA);
+    const second = await answer(taskId, NANNY, gw);
+    expect(second.task.clarification).toMatchObject({ field: 'reminder.assignee.2' });
+    const done = await answer(taskId, 'none', gw);
+    expect(
+      done.drafts.map((d) => (d.payload as { assigneeUid: string | null }).assigneeUid),
+    ).toEqual([NANNY, null, null]);
+    const [bim, call] = done.drafts;
+    // The caregiver leaves before the save: the assignee is re-checked at confirm.
+    await db.doc(`babies/${B}/members/${NANNY}`).update({ status: 'removed' });
+    const refused = await confirm(taskId, [{ draftId: bim!.id, revision: 1 }]);
+    expect(refused.data.items[0]).toMatchObject({
+      status: 'failed',
+      errorCode: 'VALIDATION_FAILED',
+    });
+    expect(await reminders()).toHaveLength(0);
+    await patch(bim!.id, 1, {
+      ...(bim!.payload as DraftPayload & { kind: 'reminder' }),
+      assigneeUid: DAD,
+    });
+    const saved = await confirm(taskId, [
+      { draftId: bim!.id, revision: 2 },
+      { draftId: call!.id, revision: 1 },
+    ]);
+    expect(saved.data.items.map((i) => i.status)).toEqual(['saved', 'saved']);
+    const byTitle = new Map((await reminders()).map((d) => [d.get('title') as string, d.data()]));
+    expect(byTitle.get('Mua bỉm size S')).toMatchObject({
+      allDay: true,
+      dueDate: '2026-10-17',
+      assigneeUid: DAD,
+    });
+    // A timed line stays timed, with the default lead and nobody assigned.
+    expect(byTitle.get('Gọi bác sĩ')).toMatchObject({
+      allDay: false,
+      dueDate: null,
+      leadMinutes: 60,
+      assigneeUid: null,
+    });
   });
 });
 
@@ -894,7 +979,8 @@ describe('J: golden journeys (photos)', () => {
     );
     expect(done.drafts.every((d) => d.payload.kind === 'reminder')).toBe(true);
     expect(done.drafts.every((d) => (d.payload as { date: unknown }).date === null)).toBe(true);
-    expect(done.drafts.every((d) => d.missingFields.join() === 'date,time')).toBe(true);
+    // D-075 #5: only the date is missing; no time = all day.
+    expect(done.drafts.every((d) => d.missingFields.join() === 'date')).toBe(true);
     expect(JSON.stringify(done.drafts)).not.toContain('MEDICINE');
     const [first, second] = done.drafts;
     await patch(first!.id, 1, {

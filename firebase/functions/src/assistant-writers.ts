@@ -265,6 +265,8 @@ export function draftView(snap: DocumentSnapshot, now: Date): AssistantDraftView
   return {
     ...draft,
     problems: draft.state === 'saved' ? [] : allDraftProblems(draftProblems(payload, now), payload),
+    // D-075 #2: who saved it (set by `confirmDrafts`).
+    confirmedBy: (d.confirmedBy as AssistantDraftView['confirmedBy'] | undefined) ?? null,
   };
 }
 

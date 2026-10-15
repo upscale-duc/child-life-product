@@ -1,5 +1,7 @@
 import type { Firestore } from 'firebase-admin/firestore';
 import {
+  calendarMonthWindow,
+  dayBoundsIn,
   defaultAssistantCreditPolicy,
   grantGives,
   type AssistantCreditPolicy,
@@ -7,16 +9,22 @@ import {
   type EntitlementsConfig,
 } from '@child-life/contracts';
 import { toDate, type TrustedScope } from './assistant-common.js';
+import type { EntitlementContext } from './entitlements.js';
 import { peekQuotaWindow, type QuotaWindowRef, type QuotaWindowRequest } from './quota.js';
 
 /**
- * Assistant credits (P-159, brief p.17–18): one household pool `assistant` in the shared quota
- * ledger (`families/{f}/quota/assistant_*`, multi-unit reservations). Free: calendar month in the
- * household zone. Premium: the paid period of a valid paid or promo grant (the one that makes the
- * household Premium, `householdPlan`); a repeated verified purchase event keeps the same grant id
- * and period, hence the same window (no second pool, M08). Limits come from
- * `config/entitlements.quotas.assistant` (QA values, not an offer) and are frozen into each window
- * when it is created.
+ * Assistant credits (P-159, D-075 #1, brief p.17–18): ONE household pool `assistant` in the shared
+ * quota ledger (`families/{f}/quota/assistant_*`, multi-unit reservations) for the chat and the
+ * AI summaries. The Premium budget applies while a valid grant gives `assistant.premium_budget`
+ * (paid, promo or a beta campaign that includes it); a paid or promo grant stored before D-075
+ * (templates without the new capability) still counts. Otherwise the Free budget, per calendar
+ * month in the household zone.
+ *
+ * Windows: a paid / promo grant — its paid period (a repeated verified purchase event keeps the
+ * same grant id and period, hence the same window: no second pool, M08); a beta grant — the
+ * calendar month in the household zone, cut to the grant's validity, keyed by the grant (never
+ * the Free window, whose limit is frozen). Limits come from `config/entitlements.quotas.assistant`
+ * (QA values, not an offer) and are frozen into each window when it is created.
  */
 
 export function creditPolicy(config: EntitlementsConfig): AssistantCreditPolicy {
@@ -39,21 +47,58 @@ export interface AssistantPool {
   grantId: string | null;
 }
 
+/** What the pool needs: the trusted scope of a chat task, or an AI summary's context. */
+export type PoolScope = Pick<TrustedScope, 'familyId' | 'householdZone'> & {
+  ctx: EntitlementContext;
+};
+
+const sourceRank = { paid: 0, promo: 1, beta: 2 } as const;
+
+/** The grant giving the Premium budget now (paid over promo over beta, then the latest end). */
+export function premiumBudgetGrant(ctx: EntitlementContext, now: Date) {
+  return ctx.grants
+    .filter(
+      (g) =>
+        grantGives(g, 'assistant.premium_budget', ctx.environment, now) ||
+        // Paid / promo grants written before D-075 #1 (templates, no budget capability).
+        (g.source !== 'beta' && grantGives(g, 'templates.premium', ctx.environment, now)),
+    )
+    .sort(
+      (a, b) =>
+        sourceRank[a.source] - sourceRank[b.source] ||
+        b.validUntil.getTime() - a.validUntil.getTime(),
+    )[0];
+}
+
 /**
- * The pool a new task counts against right now. Never from the client: the plan is read from the
- * stored grants (paid / promo, valid in this environment, giving the Premium capabilities).
+ * The pool a new task (or AI summary) counts against right now. Never from the client: the plan
+ * is read from the stored grants and the open beta campaigns.
  */
 export async function assistantPool(
   db: Firestore,
-  s: TrustedScope,
+  s: PoolScope,
   now: Date,
 ): Promise<AssistantPool> {
   const policy = creditPolicy(s.ctx.config);
-  const premium = s.ctx.grants
-    .filter(
-      (g) => g.source !== 'beta' && grantGives(g, 'templates.premium', s.ctx.environment, now),
-    )
-    .sort((a, b) => b.validUntil.getTime() - a.validUntil.getTime())[0];
+  const premium = premiumBudgetGrant(s.ctx, now);
+  if (premium && premium.source === 'beta') {
+    // A beta: monthly, in the household zone, inside the campaign's validity.
+    const m = calendarMonthWindow(s.householdZone, now);
+    const monthStart = dayBoundsIn(s.householdZone, m.startDate).start;
+    const monthEnd = dayBoundsIn(s.householdZone, m.endDate).start;
+    const window: QuotaWindowRef = {
+      kind: 'paid',
+      feature: 'assistant',
+      grantId: premium.id.replace(/[^A-Za-z0-9_-]/g, '-'),
+      periodStart: new Date(Math.max(monthStart.getTime(), premium.validFrom.getTime())),
+      periodEnd: new Date(Math.min(monthEnd.getTime(), premium.validUntil.getTime())),
+    };
+    return {
+      plan: 'premium',
+      request: { window, limit: policy.premium.limit },
+      grantId: premium.id,
+    };
+  }
   if (premium) {
     const stored = await db.doc(`families/${s.familyId}/grants/${premium.id}`).get();
     const periodStart = toDate(stored.get('periodStart'));
@@ -85,7 +130,7 @@ export async function assistantPool(
 /** CH19 "Mức dùng": the household pool now (an unused window reads as empty). */
 export async function assistantUsage(
   db: Firestore,
-  s: TrustedScope,
+  s: PoolScope,
   now: Date,
   pool?: AssistantPool,
 ): Promise<AssistantUsage & { windowId: string }> {

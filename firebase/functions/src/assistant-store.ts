@@ -5,6 +5,7 @@ import {
   type Transaction,
 } from 'firebase-admin/firestore';
 import type {
+  AssistantAuthor,
   AssistantError,
   AssistantEvent,
   AssistantMessage,
@@ -67,6 +68,9 @@ export interface StoredTask {
   eventSeq: number;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  /** D-075 #2: absent on tasks from before D-075 (private). */
+  visibility?: 'shared' | 'private';
+  author?: AssistantAuthor | null;
 }
 
 export const storedTask = (snap: DocumentSnapshot) => snap.data() as StoredTask;
@@ -94,6 +98,9 @@ export function taskView(snap: DocumentSnapshot, now: Date | null = null): Assis
     createdAt: toIso(t.createdAt) ?? '',
     updatedAt: toIso(t.updatedAt) ?? '',
     ...(care ? { care } : {}),
+    // D-075 #2: shared thread or private, and who asked.
+    visibility: t.visibility ?? 'private',
+    author: t.author ?? null,
   };
 }
 
@@ -120,6 +127,7 @@ export function messageView(snap: DocumentSnapshot): AssistantMessage {
     sequence: d.sequence as number,
     createdAt: toIso(d.createdAt) ?? '',
     attachmentIds: (d.attachmentIds as string[] | undefined) ?? [],
+    author: (d.author as AssistantAuthor | null | undefined) ?? null,
   };
 }
 
@@ -159,6 +167,8 @@ export function appendMessages(
     taskId: string | null;
     /** Slice A3: the photos a user message carried. */
     attachmentIds?: string[];
+    /** D-075 #2: who wrote it (sender / confirmer); null for the assistant's replies. */
+    author?: AssistantAuthor | null;
   }[],
   now: Date,
 ): number {
@@ -173,6 +183,7 @@ export function appendMessages(
       sequence: seq,
       createdAt: Timestamp.fromDate(now),
       attachmentIds: m.attachmentIds ?? [],
+      author: m.author ?? null,
     });
   }
   return seq;

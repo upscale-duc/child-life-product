@@ -9,6 +9,7 @@ import { getFirestore, Timestamp, type Firestore } from 'firebase-admin/firestor
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import {
   getCapabilities,
+  hasPremiumTemplates,
   requireCapability,
   setFamilySettings,
 } from '../functions/src/entitlements.js';
@@ -102,7 +103,9 @@ beforeEach(async () => {
 describe('M01 · free family', () => {
   it('advanced is PREMIUM_REQUIRED; check-in, health, history and video budget stay open', async () => {
     expect(await allowed('test_mom', 'personalization.cross_module')).toBe('PREMIUM_REQUIRED');
-    expect(await allowed('test_mom', 'ai.assistance')).toBe('PREMIUM_REQUIRED');
+    // D-075 #1: AI is open to Free (the credit pool limits it); the Premium budget is not.
+    expect(await allowed('test_mom', 'ai.assistance')).toBe('ok');
+    expect(await allowed('test_mom', 'assistant.premium_budget')).toBe('PREMIUM_REQUIRED');
     expect(await allowed('test_mom', 'templates.premium')).toBe('PREMIUM_REQUIRED');
     for (const c of [
       'rhythm.checkin',
@@ -196,6 +199,34 @@ describe('grants, beta and environment', () => {
     await db.doc('families/test_f1').set({ country: 'DE' }, { merge: true });
     expect(await allowed('test_mom', 'rhythm.advanced')).toBe('REGION_UNAVAILABLE');
     expect(await allowed('test_mom', 'rhythm.checkin')).toBe('ok');
+  });
+
+  it('D-075 #1: a beta with templates opens Cao cấp templates and the Premium credit budget', async () => {
+    await db.doc('config/entitlements').set({
+      ...defaultEntitlementsConfig,
+      regions: { advanced: ['VN'] },
+      betaCampaigns: [{ ...betaA, id: 'beta-all', capabilities: [...premiumCapabilities] }],
+    });
+    expect(await allowed('test_mom', 'templates.premium')).toBe('ok');
+    expect(await allowed('test_mom', 'assistant.premium_budget')).toBe('ok');
+    expect(await hasPremiumTemplates(db, 'test_mom', 'test_b1', now, 'test')).toBe(true);
+    const a = await getCapabilities(db, 'test_mom', { babyId: 'test_b1' }, now, 'test');
+    expect(a.plan).toBe('beta');
+    expect(a.capabilities['templates.premium']).toEqual({
+      allowed: true,
+      reason: null,
+      via: 'beta',
+    });
+    expect(a.capabilities['assistant.premium_budget']).toMatchObject({
+      allowed: true,
+      via: 'beta',
+    });
+    // Roles are unchanged: a caregiver never creates a card, whatever the plan.
+    expect(await allowed('test_nanny', 'templates.premium')).toBe('ROLE_DENIED');
+    // After the campaign, templates close again.
+    expect(await allowed('test_mom', 'templates.premium', new Date('2026-10-20T00:00:00Z'))).toBe(
+      'PREMIUM_REQUIRED',
+    );
   });
 
   it('M09 · after the beta ends, new advanced requests are gated; free stays', async () => {

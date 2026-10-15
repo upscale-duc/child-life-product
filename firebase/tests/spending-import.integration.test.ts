@@ -108,14 +108,14 @@ const member = (uid: string, role: string, extra: object = {}) =>
     ...extra,
   });
 
-/** A Money Lover-like export: spending negative, one income row, one USD row. */
+/** A Money Lover-like export: spending negative, one income row, one INR row (not kept, D-075 #4). */
 const moneyLover = [
   ['Id', 'Date', 'Category', 'Amount', 'Currency', 'Note', 'Wallet', 'Paid by'],
   ['1', '01/10/2026', 'Sữa', '-1,020,000', 'VND', 'Sữa công thức', 'Cash', 'Mẹ'],
   ['2', '02/10/2026', 'Bỉm', '-350,000', 'VND', 'Tã dán', 'Cash', 'Ba'],
   ['3', '03/10/2026', 'Bơi lội', '-200,000', 'VND', 'Học bơi', 'Cash', 'Mẹ'],
   ['4', '04/10/2026', 'Salary', '20,000,000', 'VND', 'Lương', 'Bank', ''],
-  ['5', '05/10/2026', 'Sữa', '-12', 'USD', 'Online', 'Card', ''],
+  ['5', '05/10/2026', 'Sữa', '-12', 'INR', 'Online', 'Card', ''],
   ['6', '06/10/2026', 'Khám', '-300,000', 'VND', 'Khám tai', 'Cash', 'Bà'],
   ['7', '20/10/2026', 'Sữa', '-100,000', 'VND', 'Ngày mai', 'Cash', ''],
   [],
@@ -256,7 +256,11 @@ describe('analyze (file)', () => {
       category: 'Sữa',
       payer: 'Mẹ',
       issue: null,
+      currency: 'VND',
     });
+    // D-075 #4: the household's currency, and a total that never mixes currencies.
+    expect(d.currency).toBe('VND');
+    expect(d.total).toMatchObject({ currency: 'VND', others: [] });
     expect(d.categories).toEqual([
       { key: 'sua', name: 'Sữa', rows: 1, suggested: { kind: 'existing', id: 'c_milk' } },
       // No match: a category of its own by default (owner, 2026-10-12).
@@ -352,7 +356,7 @@ describe('analyze (AI)', () => {
     await analyzeSpendingImport(deps(), 'mom', req, now);
     expect(aiCalls).toEqual([{ text: req.text, images: undefined, today: '2026-10-12' }]);
     const grid = JSON.parse(store.files.get(`imports/mom/${im(6)}.json`)!.bytes.toString());
-    expect(grid[0]).toEqual(['Ngày', 'Danh mục', 'Nội dung', 'Số tiền', 'Ai trả']);
+    expect(grid[0]).toEqual(['Ngày', 'Danh mục', 'Nội dung', 'Số tiền', 'Ai trả', 'Tiền tệ']);
     const d = await importDoc(im(6));
     expect(d).toMatchObject({
       kind: 'text',
@@ -484,6 +488,7 @@ describe('confirm → import → undo', () => {
     ).data()!;
     expect(milk).toEqual({
       amount: 1_020_000,
+      currency: 'VND',
       categoryId: 'c_milk',
       note: 'Sữa công thức',
       spentOn: '2026-10-01',
@@ -625,3 +630,63 @@ describe('daily cleanup', () => {
     expect(await cleanupSpendingImports(db, store, now)).toEqual({ files: 0, expired: 0 });
   });
 });
+
+// ---- Chi tiêu currencies (D-075 #4) ----
+describe('currencies (D-075 #4)', () => {
+  it("rows keep the currency they name; unmarked rows are the household's", async () => {
+    await db
+      .doc(`families/${familyId}/spendingSettings/main`)
+      .set({ currency: 'EUR', updatedAt: now, updatedBy: 'mom' });
+    store.put(`imports/mom/${im(3)}.json`, [
+      ['Date', 'Amount', 'Note'],
+      ['01/10/2026', '12,50', 'Milk'],
+      ['02/10/2026', '$30', 'Online'],
+      ['03/10/2026', '150.000 ₫', 'Tã'],
+    ]);
+    await analyzeSpendingImport(deps(), 'mom', { babyId, importId: im(3), kind: 'file' }, now);
+    const d = await importDoc(im(3));
+    expect(d.currency).toBe('EUR');
+    expect(
+      d.preview.map((r: { amount: number; currency: string }) => [r.amount, r.currency]),
+    ).toEqual([
+      [1250, 'EUR'],
+      [3000, 'USD'],
+      [150_000, 'VND'],
+    ]);
+    expect(d.total).toMatchObject({
+      amount: 1250,
+      currency: 'EUR',
+      others: [
+        { currency: 'USD', amount: 3000 },
+        { currency: 'VND', amount: 150_000 },
+      ],
+    });
+    await confirmSpendingImport(
+      db,
+      'mom',
+      {
+        babyId,
+        importId: im(3),
+        mapping: d.mapping,
+        options: d.options,
+        categories: {},
+        payers: {},
+      },
+      now,
+    );
+    // The household changing in between does not change what was previewed.
+    await db
+      .doc(`families/${familyId}/spendingSettings/main`)
+      .set({ currency: 'VND', updatedAt: now, updatedBy: 'mom' });
+    expect(await runSpendingImport(runDeps(), babyId, im(3), now)).toMatchObject({ imported: 3 });
+    const saved = (await liveImported(im(3)))
+      .map((e) => [e.get('amount'), e.get('currency'), e.get('spentOn')])
+      .sort((a, b) => String(a[2]).localeCompare(String(b[2])));
+    expect(saved).toEqual([
+      [1250, 'EUR', '2026-10-01'],
+      [3000, 'USD', '2026-10-02'],
+      [150_000, 'VND', '2026-10-03'],
+    ]);
+  });
+});
+// ---- end Chi tiêu currencies ----

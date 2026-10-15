@@ -9,6 +9,7 @@ import {
   addRecurringExpenses,
   budgetAlertDue,
   deleteSpendingCategory,
+  householdCurrency,
   occurrenceId,
   spendingBudgetAlert,
 } from '../functions/src/spending.js';
@@ -510,3 +511,100 @@ describe('the 80 % budget push (8h)', () => {
     expect(sent.map((s) => s.tokens[0])).toEqual(['t-mom']);
   });
 });
+
+// ---- Chi tiêu currencies (D-075 #4) ----
+describe('currencies (D-075 #4)', () => {
+  it("recurring occurrences carry their item's currency; an old item writes VND", async () => {
+    await recurring(b1, rx(1), { amount: 150_000, currency: 'USD' });
+    await recurring(b1, rx(2), {});
+    await addRecurringExpenses(db, sender, now);
+    const spent = await db.collection(`babies/${b1}/expenses`).get();
+    const of = (id: string) => spent.docs.filter((d) => d.get('sourceRef') === id);
+    expect(of(rx(1)).map((d) => [d.get('amount'), d.get('currency')])).toEqual([
+      [150_000, 'USD'],
+      [150_000, 'USD'],
+    ]);
+    expect(of(rx(2)).every((d) => d.get('currency') === 'VND')).toBe(true);
+  });
+
+  it('the 80 % push counts the budget currency only', async () => {
+    const at = vn('2026-10-20', 10);
+    await db.doc(`babies/${b1}/spending/budget`).set({
+      monthlyTotal: 100_000,
+      caps: {},
+      alert80: true,
+      currency: 'USD',
+      updatedAt: at,
+      updatedBy: 'mom',
+    });
+    const write = async (id: string, data: object) => {
+      const ref = db.doc(`babies/${b1}/expenses/${id}`);
+      const before = await ref.get();
+      await expense(b1, id, { spentOn: '2026-10-19', ...data });
+      return spendingBudgetAlert(db, sender, b1, before, await ref.get(), at);
+    };
+    // 5 000 000 đ never counts against a USD budget (nor an old document without a currency).
+    expect((await write(xid(1), { amount: 5_000_000, currency: 'VND' })).alerted).toBe(false);
+    expect((await write(xid(2), { amount: 5_000_000 })).alerted).toBe(false);
+    expect((await write(xid(3), { amount: 50_000, currency: 'USD' })).alerted).toBe(false);
+    expect((await write(xid(4), { amount: 30_000, currency: 'USD' })).alerted).toBe(true);
+    expect((await db.doc(`babies/${b1}/spending/budget`).get()).get('alertedMonth')).toBe(
+      '2026-10',
+    );
+  });
+
+  it('a budget without a currency (old) counts VND only', async () => {
+    const at = vn('2026-10-20', 10);
+    await db.doc(`babies/${b1}/spending/budget`).set({
+      monthlyTotal: 1_000_000,
+      caps: {},
+      alert80: true,
+      updatedAt: at,
+      updatedBy: 'mom',
+    });
+    const ref = db.doc(`babies/${b1}/expenses/${xid(1)}`);
+    await expense(b1, xid(1), { amount: 90_000_000, currency: 'KRW', spentOn: '2026-10-19' });
+    expect((await spendingBudgetAlert(db, sender, b1, null, await ref.get(), at)).alerted).toBe(
+      false,
+    );
+    const ref2 = db.doc(`babies/${b1}/expenses/${xid(2)}`);
+    await expense(b1, xid(2), { amount: 800_000, spentOn: '2026-10-19' });
+    expect((await spendingBudgetAlert(db, sender, b1, null, await ref2.get(), at)).alerted).toBe(
+      true,
+    );
+  });
+
+  it("the household's currency: the setting, else the country's, else VND", async () => {
+    expect(await householdCurrency(db, familyId)).toBe('VND');
+    await db.doc(`families/${familyId}`).update({ country: 'AU' });
+    expect(await householdCurrency(db, familyId)).toBe('AUD');
+    await db
+      .doc(`families/${familyId}/spendingSettings/main`)
+      .set({ currency: 'EUR', updatedAt: now, updatedBy: 'mom' });
+    expect(await householdCurrency(db, familyId)).toBe('EUR');
+  });
+
+  it("deleting a category caps the merged cap at the budget currency's ceiling", async () => {
+    await db.doc(`babies/${b1}/spending/budget`).set({
+      monthlyTotal: null,
+      caps: { [`c_${'a'.repeat(20)}`]: 90_000_000, c_milk: 50_000_000 },
+      alert80: false,
+      currency: 'USD',
+      updatedAt: now,
+      updatedBy: 'mom',
+    });
+    await db
+      .doc(`families/${familyId}/spendingCategories/c_${'a'.repeat(20)}`)
+      .set({ name: 'Bơi', icon: 'drop', tint: 'mint', order: 7, hidden: false, builtIn: false });
+    await deleteSpendingCategory(
+      db,
+      'mom',
+      { babyId: b1, categoryId: `c_${'a'.repeat(20)}`, moveTo: 'c_milk' },
+      now,
+    );
+    expect((await db.doc(`babies/${b1}/spending/budget`).get()).get('caps')).toEqual({
+      c_milk: 100_000_000,
+    });
+  });
+});
+// ---- end Chi tiêu currencies ----

@@ -478,7 +478,7 @@ All bucketing in the **baby's timezone** (R-074). Detailed formulas: [`../discov
 
 ### 7.6 Reminders
 
-- **R-090** Fields: "Việc cần nhớ", "Ngày giờ", "Báo trước"; "Theo giờ của Teddy (GMT+7)"; no repeat, no assignee (`127:13728`).
+- **R-090** Fields: "Việc cần nhớ", "Ngày giờ", "Báo trước"; "Theo giờ của Teddy (GMT+7)"; no repeat, no assignee (`127:13728`). *Assignee and date-only ("Cả ngày") superseded by D-075 #5 (`docs/product/reminders-allday-assignee-plan.md`).*
 - **R-091** "Gia đình thấy nhắc việc trong app. Thông báo chỉ được đặt trên máy tạo nhắc việc." — **local notifications on the creating device only; never push to all devices instead** (`127:13602`, plan flow C).
 - **R-092** Permission pre-prompt only **after** the first save; denial keeps the reminder: "Đã lưu nhắc việc. Chưa bật thông báo trên máy này." + "Cài đặt" (`127:13809`, `127:13867`).
 - **R-093** Groups Quá hạn / Sắp tới / Đã xong; "X tạo"; "X đánh dấu xong · date"; detail rows Ngày giờ, Múi giờ, Báo trước, Thông báo ("iPhone của Mai"), Người tạo; "✓ Đánh dấu đã xong", "Sửa nhắc việc" (`127:13910`).
@@ -780,11 +780,12 @@ Rules that gate ordering: no sharing (family or external) before audience/permis
 | P-154 | Cao cấp switch (Q-072): code ships with `subscribers` mode ready and the catalog on `everyone`; switching is a portal change made only after the owner sets the date and a ≥14-day in-app notice (P-148). |
 | P-155 | Assistant v3 (brief 15/10): no Genkit for now — a `ModelGateway` (OpenAI raw fetch, JSON schema, `store:false`, D-003) plus a scripted fake; the server runs read / prepare tools, the model only extracts and words. (docs/assistant/architecture.md) |
 | P-156 | Assistant confirm writes through server domain writers that produce exactly the documents the client Rules accept (same keys, limits, author), `source:'assistant'`, deterministic ids per draft; per-item results, partial success kept. |
-| P-157 | Assistant uses modules as they exist: care (bottle, breast, sleep), Chi tiêu VND only, one-off reminders (Cùng nuôi, date + time, no assignee), observations = check-ins, feedback = recFeedback; no Tasks, meal log or recipes yet → MODULE_UNAVAILABLE / "chưa có công thức được duyệt". |
-| P-158 | Assistant conversations are private to their owner; domain records stay role-shared. |
-| P-159 | One household credit pool `assistant` (text 1, photo 3, health 0; Free 20 / calendar month, Premium 200 / paid period — QA config in `config/entitlements.quotas.assistant`). AI summaries keep their v2 quota until Q-074. |
+| P-157 | Assistant uses modules as they exist: care (bottle, breast, sleep), Chi tiêu VND only, one-off reminders (Cùng nuôi, date + time, no assignee), observations = check-ins, feedback = recFeedback; no Tasks, meal log or recipes yet → MODULE_UNAVAILABLE / "chưa có công thức được duyệt". *Currencies and reminder date-only + assignee superseded by D-075 #4 / #5.* |
+| P-158 | Assistant conversations are private to their owner; domain records stay role-shared. *Superseded for child scope by D-075 #2: one shared thread per baby (Cùng nuôi + Người chăm sóc); household / expense tasks stay private.* |
+| P-159 | One household credit pool `assistant` (text 1, photo 3, health 0; Free 20 / calendar month, Premium 200 / paid period — QA config in `config/entitlements.quotas.assistant`). AI summaries keep their v2 quota until Q-074. *Superseded by D-075 #1: summaries charge 1 credit from this pool; beta campaigns may grant the Premium budget.* |
 | P-160 | Separate assistant consent (`assistant-consent-v1`) for messages, photos and context; declining keeps the app usable. Photos to the provider follow the D-060 precedent (spending import). |
 | P-161 | Assistant kill switches: `assistant`, `assistant_images`, `assistant_care`, `assistant_live`, `assistant_writes`, `assistant_upsell`. |
+| P-162 | Chi tiêu currencies (D-075 #4, plan `docs/product/spending-currency-plan.md`): an expense, a recurring item and a budget carry an optional ISO 4217 `currency` (absent = VND, so old data and old apps keep working); `amount` is in the currency's minor units (VND 0, USD 2, JPY 0) under a per-currency ceiling; 16 currencies (VND USD EUR GBP AUD CAD NZD SGD JPY KRW TWD THB HKD CNY CHF MYR). The household currency (`families/{f}/spendingSettings/main`, set by any Cùng nuôi from 8h "Tiền tệ chính"; default the family's country, else VND) is the add form's default and what totals, statistics and the budget count; other currencies show apart, never converted or added. A budget counts its own currency only (the 80 % push too); after the household changes currency the old budget starts over. Imports keep a row's named currency ("$" = the household's dollar, else USD), unmarked rows are the household's, unsupported ones are skipped. The assistant saves any supported currency; unknown or unclear ones stay in review. Owner to confirm. |
 
 ---
 

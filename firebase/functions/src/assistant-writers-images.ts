@@ -7,19 +7,27 @@ import {
 } from 'firebase-admin/firestore';
 import {
   addDaysIso,
+  amountFits,
   assistantModuleProblems,
   builtInCategories,
   categoryIdSchema,
+  currencyOfDoc,
+  defaultReminderAllDayLeadMinutes,
   defaultReminderLeadMinutes,
   draftProblems,
   foldText,
+  isExpenseCurrency,
   localDateIn,
   otherCategoryId,
+  reminderAllDayDueAt,
+  reminderAssigneeRoles,
   reminderLimits,
   reminderModuleTitleMax,
+  reminderNeedsTime,
   spendingLimits,
   type DraftPayload,
   type DraftProblem,
+  type ExpenseCurrency,
 } from '@child-life/contracts';
 import { draftRef, memberOf, taskRef, type ScopeMember } from './assistant-common.js';
 import {
@@ -39,10 +47,12 @@ import { localInstant } from './assistant-tools.js';
 
 /**
  * Child Life Assistant, slice A3 domain writers (P-156, P-157): a confirmed expense draft becomes
- * exactly the Chi tiêu document the app's form writes (`validNewExpense`: same keys, whole VND,
- * the confirmer as author) with `source: 'assistant'` and `sourceRef` = the draft id; a confirmed
+ * exactly the Chi tiêu document the app's form writes (`validNewExpense`: same keys, the
+ * receipt's currency and its minor units (D-075 #4), the confirmer as author) with `source: 'assistant'` and `sourceRef` = the draft id; a confirmed
  * reminder draft becomes exactly the one-off reminder the app writes (`validNewReminder`: same
- * keys, Cùng nuôi only, a due time in the baby's zone, the module's default lead, no device).
+ * keys, Cùng nuôi only, a due time in the baby's zone, the module's default lead, no device;
+ * D-075 #5: a date without a time is all day, lead "Đúng ngày", and the assignee the person
+ * picked, re-checked here).
  * Reminders have no `source` field in their Rules key set, so none is added: provenance is the
  * execution row (`assistantExecutions`). Deterministic ids (`x_` / `rm_` + hash of the draft id)
  * make a replayed confirm adopt the record instead of writing it twice. Never logs a payload.
@@ -62,6 +72,8 @@ export function buildExpense<S>(
     uid: string;
     author: Author;
     amount: number;
+    /** D-075 #4: the expense's currency (`amount` in its minor units). */
+    currency: ExpenseCurrency;
     categoryId: string;
     note: string;
     spentOn: string;
@@ -74,6 +86,7 @@ export function buildExpense<S>(
 ) {
   return {
     amount: x.amount,
+    currency: x.currency,
     categoryId: x.categoryId,
     note: x.note,
     spentOn: x.spentOn,
@@ -102,6 +115,10 @@ export function buildReminder<S>(
     title: string;
     dueAt: Date;
     leadMinutes: number;
+    // ---- D-075 #5 (reminders): all day and assignee ----
+    allDay?: boolean;
+    dueDate?: string | null;
+    assigneeUid?: string | null;
   },
   serverTime: S,
 ) {
@@ -121,6 +138,9 @@ export function buildReminder<S>(
     doneAt: null,
     doneBy: null,
     doneAuthor: null,
+    allDay: x.allDay === true,
+    dueDate: x.allDay === true ? (x.dueDate ?? null) : null,
+    assigneeUid: x.assigneeUid ?? null,
   };
 }
 
@@ -132,26 +152,31 @@ export function payerOf(m: ScopeMember): (Author & { uid: string }) | null {
 }
 
 /**
- * Same checks as the Chi tiêu form and Rules: whole VND only (other currencies stay in review,
- * Q-077), 1 đ … 1 000 000 000 đ, a date not after today (baby zone), a valid category id. The
- * total is the receipt's total — subtotal, tax and discount are never added (brief p.14).
+ * Same checks as the Chi tiêu form and Rules: a currency Chi tiêu keeps (D-075 #4; an unknown or
+ * uncertain one stays in review), 1 … that currency's ceiling in minor units (1 000 000 000 đ for
+ * VND), a date not after today (baby zone), a valid category id. The total is the receipt's
+ * total — subtotal, tax and discount are never added (brief p.14).
  */
 export function expenseFromDraft(
   p: DraftPayload,
   now: Date,
   zone: string,
 ):
-  | { ok: true; amount: number; spentOn: string; note: string; categoryId: string }
+  | {
+      ok: true;
+      amount: number;
+      currency: ExpenseCurrency;
+      spentOn: string;
+      note: string;
+      categoryId: string;
+    }
   | { ok: false; problems: DraftProblem[] } {
   if (p.kind !== 'expense') return { ok: false, problems: [] };
   const problems = new Set<DraftProblem>([...draftProblems(p, now), ...assistantModuleProblems(p)]);
   const amount = p.totalMinor;
-  if (
-    amount !== null &&
-    (!Number.isInteger(amount) || amount < 1 || amount > spendingLimits.amountMax)
-  ) {
-    problems.add('INVALID_AMOUNT');
-  }
+  if (!isExpenseCurrency(p.currency)) problems.add('CURRENCY_UNSUPPORTED');
+  const currency = currencyOfDoc(p.currency);
+  if (amount !== null && !amountFits(amount, currency)) problems.add('INVALID_AMOUNT');
   if (p.date !== null && p.date > localDateIn(zone, now)) problems.add('FUTURE_TIME');
   const categoryId = p.categoryId ?? otherCategoryId;
   // A malformed category id has no problem code of its own: VALIDATION_FAILED, field-level only.
@@ -161,6 +186,7 @@ export function expenseFromDraft(
   return {
     ok: true,
     amount: amount!,
+    currency,
     spentOn: p.date!,
     note: (p.merchant ?? '').trim().slice(0, spendingLimits.noteMax),
     categoryId,
@@ -168,22 +194,25 @@ export function expenseFromDraft(
 }
 
 /**
- * Same checks as the reminder form and Rules: a title of 1–80 characters, a date AND a time
- * (no date-only reminders, never a default 09:00), due not before now (5 min skew) and at most
- * 366 days ahead, computed in the baby's zone.
+ * Same checks as the reminder form and Rules: a title of 1–80 characters, a date, due not before
+ * now (5 min skew) and at most 366 days ahead, computed in the baby's zone. D-075 #5: a date
+ * without a time is an all-day reminder (due all that day, `dueAt` 23:59 there; never a default
+ * 09:00 — the person's own notification time applies on their devices).
  */
 export function reminderFromDraft(
   p: DraftPayload,
   now: Date,
   zone: string,
-): { ok: true; title: string; dueAt: Date } | { ok: false; problems: DraftProblem[] } {
+):
+  | { ok: true; title: string; dueAt: Date; allDay: boolean; dueDate: string | null }
+  | { ok: false; problems: DraftProblem[] } {
   if (p.kind !== 'reminder') return { ok: false, problems: [] };
   const problems = new Set<DraftProblem>([...draftProblems(p, now), ...assistantModuleProblems(p)]);
   const title = p.title.trim();
   if (!title) problems.add('MISSING_TITLE');
   else if (title.length > reminderModuleTitleMax) problems.add('INVALID_TITLE');
   let dueAt: Date | null = null;
-  // Date AND time while `reminderNeedsTime()` (contracts; date-only is the D-075 #5 follow-up).
+  const allDay = p.date !== null && p.time === null && !reminderNeedsTime();
   if (p.date !== null && p.time !== null) {
     dueAt = localInstant(zone, p.date, p.time);
     if (dueAt.getTime() < now.getTime() - reminderLimits.pastSkewMinutes * 60_000) {
@@ -191,9 +220,16 @@ export function reminderFromDraft(
     } else if (dueAt.getTime() > now.getTime() + reminderLimits.maxDaysAhead * 86_400_000) {
       problems.add('INVALID_TIME');
     }
+  } else if (allDay) {
+    // ---- D-075 #5: all day, by date in the baby's zone ----
+    dueAt = reminderAllDayDueAt(zone, p.date!);
+    if (p.date! < localDateIn(zone, now)) problems.add('PAST_TIME');
+    else if (dueAt.getTime() > now.getTime() + reminderLimits.maxDaysAhead * 86_400_000) {
+      problems.add('INVALID_TIME');
+    }
   }
   if (problems.size > 0 || !dueAt) return { ok: false, problems: [...problems] };
-  return { ok: true, title, dueAt };
+  return { ok: true, title, dueAt, allDay, dueDate: allDay ? p.date : null };
 }
 
 /** App routes that open a saved expense / reminder (built here, never by the model). */
@@ -211,6 +247,8 @@ export interface DuplicateQuery {
   babyIds: readonly string[];
   date: string | null;
   total: number | null;
+  /** D-075 #4: when given, only expenses in it are compared (absent: any currency). */
+  currency?: string | null;
   merchant: string | null;
   /** Server-computed content hashes of this task's photos. */
   sha256s: readonly string[];
@@ -243,6 +281,7 @@ export async function expenseDuplicateSuspected(
       );
       for (const d of snap.docs) {
         if (d.id === q.excludeExpenseId || d.get('deleted') === true) continue;
+        if (q.currency && currencyOfDoc(d.get('currency')) !== q.currency) continue;
         if (!close(d.get('amount') as number, q.total)) continue;
         const note = foldText((d.get('note') as string | undefined) ?? '');
         if (!m || !note || note.includes(m) || m.includes(note)) return true;
@@ -326,7 +365,18 @@ export async function planImageWrite<S>(
     if (!r.ok) return { kind: 'fail', errorCode: 'VALIDATION_FAILED', problems: r.problems };
     const id = reminderIdForDraft(x.draftId);
     const target = db.doc(`babies/${x.babyId}/reminders/${id}`);
-    if ((await tx.get(target)).exists) return { kind: 'adopt', target };
+    // ---- D-075 #5: the assignee is re-read now (Rules `validReminderAssignee`) ----
+    const assignee = p.assigneeUid
+      ? tx.get(db.doc(`babies/${x.babyId}/members/${p.assigneeUid}`))
+      : Promise.resolve(null);
+    const [existing, assigneeSnap] = await Promise.all([tx.get(target), assignee]);
+    if (existing.exists) return { kind: 'adopt', target };
+    if (assigneeSnap) {
+      const m = memberOf(assigneeSnap, x.now);
+      if (!m || !(reminderAssigneeRoles as readonly string[]).includes(m.role)) {
+        return { kind: 'fail', errorCode: 'VALIDATION_FAILED', problems: ['INVALID_ASSIGNEE'] };
+      }
+    }
     return {
       kind: 'write',
       target,
@@ -338,7 +388,10 @@ export async function planImageWrite<S>(
           author: authorOf(x.member),
           title: r.title,
           dueAt: r.dueAt,
-          leadMinutes: defaultReminderLeadMinutes,
+          leadMinutes: r.allDay ? defaultReminderAllDayLeadMinutes : defaultReminderLeadMinutes,
+          allDay: r.allDay,
+          dueDate: r.dueDate,
+          assigneeUid: p.assigneeUid,
         },
         serverTime,
       ),
@@ -392,6 +445,7 @@ export async function planImageWrite<S>(
       babyIds: await householdBabyIds(db, x.familyId, babyId, tx),
       date: e.spentOn,
       total: e.amount,
+      currency: e.currency,
       merchant: p.merchant,
       sha256s,
       excludeExpenseId: id,
@@ -410,6 +464,7 @@ export async function planImageWrite<S>(
         uid: x.uid,
         author: authorOf(x.member),
         amount: e.amount,
+        currency: e.currency,
         categoryId: e.categoryId,
         note: e.note,
         spentOn: e.spentOn,

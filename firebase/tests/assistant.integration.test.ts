@@ -44,6 +44,7 @@ import {
 } from '../functions/src/assistant-model.js';
 import { localClock } from '../functions/src/assistant-tools.js';
 import { runAssistantTask, sweepAssistantTasks } from '../functions/src/assistant-worker.js';
+import { purgeAssistantForUser } from '../functions/src/assistant-lifecycle.js';
 import { buildCareRecord } from '../functions/src/assistant-writers.js';
 
 // Child Life Assistant, slice A2 server core, against the Firestore emulator with a FAKE model
@@ -869,8 +870,11 @@ describe('S: scope, role, consent', () => {
     );
   });
 
-  it('only the owner sees a task; another member of the same baby cannot read or confirm it', async () => {
-    const { taskId, snap } = await prepared();
+  it('D-075 #2: a private task (household scope) stays with its owner: no read, no confirm', async () => {
+    const { taskId, snap } = await prepared([textBatch()], TEXT, {
+      scope: { type: 'household', babyId: B },
+    });
+    expect(snap.task.visibility).toBe('private');
     expect(await reason(getAssistantTask(deps(), DAD, E({ taskId, afterSequence: null })))).toBe(
       'NOT_MEMBER',
     );
@@ -1519,50 +1523,56 @@ describe('feedback, history, deletion, sweeper', () => {
     ).toBe('WRITE_DENIED');
   });
 
-  it('history: own conversations only, newest first, messages paged by sequence', async () => {
+  it('history: the shared thread first, then own private ones; messages paged by sequence', async () => {
     const a = await prepared();
-    await prepared([summaryAsk()], 'Hôm nay con bú thế nào?', {
+    const SHARED = `cv_${B}`;
+    expect(a.snap.task.conversationId).toBe(SHARED);
+    const h = await prepared([summaryAsk()], 'Hôm nay con bú thế nào?', {
       at: new Date(now.getTime() + 60_000),
+      scope: { type: 'household', babyId: B },
     });
     await prepared([summaryAsk()], 'Hôm nay con bú thế nào?', { uid: DAD });
+    // DAD's private household thread is never listed for MOM.
+    await prepared([summaryAsk()], 'Hôm nay con bú thế nào?', {
+      uid: DAD,
+      scope: { type: 'household', babyId: B },
+    });
     const page = await listAssistantHistory(
       deps(),
       MOM,
       E({ babyId: B, conversationId: null, cursor: null, limit: 1 }),
     );
-    expect(page.data.items).toHaveLength(1);
-    expect(page.data.nextCursor).not.toBeNull();
+    expect(page.data.items.map((c) => (c as { id: string }).id)).toEqual([SHARED]);
+    expect(page.data.items[0]).toMatchObject({ shared: true, ownerUid: null });
+    expect(page.data.nextCursor).toBe('private');
     const page2 = await listAssistantHistory(
       deps(),
       MOM,
       E({ babyId: B, conversationId: null, cursor: page.data.nextCursor, limit: 5 }),
     );
     expect(page2.data.items.map((c) => (c as { id: string }).id)).toEqual([
-      a.snap.task.conversationId,
+      h.snap.task.conversationId,
     ]);
+    expect(page2.data.nextCursor).toBeNull();
+    // Messages of the shared thread: MOM's question + answer, then DAD's (4), newest first.
     const msgs = await listAssistantHistory(
       deps(),
       MOM,
-      E({ babyId: B, conversationId: a.snap.task.conversationId, cursor: null, limit: 1 }),
+      E({ babyId: B, conversationId: SHARED, cursor: null, limit: 1 }),
     );
-    expect(msgs.data.items.map((m) => (m as { sequence: number }).sequence)).toEqual([2]);
+    expect(msgs.data.items.map((m) => (m as { sequence: number }).sequence)).toEqual([4]);
     const older = await listAssistantHistory(
       deps(),
       MOM,
-      E({
-        babyId: B,
-        conversationId: a.snap.task.conversationId,
-        cursor: msgs.data.nextCursor,
-        limit: 5,
-      }),
+      E({ babyId: B, conversationId: SHARED, cursor: msgs.data.nextCursor, limit: 5 }),
     );
-    expect(older.data.items.map((m) => (m as { sequence: number }).sequence)).toEqual([1]);
+    expect(older.data.items.map((m) => (m as { sequence: number }).sequence)).toEqual([3, 2, 1]);
     expect(
       await reason(
         listAssistantHistory(
           deps(),
           DAD,
-          E({ babyId: B, conversationId: a.snap.task.conversationId, cursor: null, limit: 5 }),
+          E({ babyId: B, conversationId: h.snap.task.conversationId, cursor: null, limit: 5 }),
         ),
       ),
     ).toBe('NOT_MEMBER');
@@ -1571,14 +1581,24 @@ describe('feedback, history, deletion, sweeper', () => {
   it('delete conversation: chat, tasks and drafts go; saved records stay; open work released', async () => {
     const { taskId, snap } = await prepared();
     await confirm(taskId, [{ draftId: drafts(snap)[0]!.id, revision: 1 }]);
-    const open = await start(TEXT, { conversationId: snap.task.conversationId });
+    const open = await start(TEXT, { conversationId: snap.task.conversationId, uid: DAD });
     expect(await win()).toMatchObject({ used: 1, reserved: 1 });
+    // D-075 #2: the shared thread is deleted by a Cùng nuôi only, for everyone.
+    expect(
+      await reason(
+        deleteAssistantConversation(
+          deps(),
+          NANNY,
+          E({ conversationId: snap.task.conversationId, confirm: true }),
+        ),
+      ),
+    ).toBe('WRITE_DENIED');
     const del = await deleteAssistantConversation(
       deps(),
       MOM,
       E({ conversationId: snap.task.conversationId, confirm: true }),
     );
-    expect(del.data.deletedTasks).toBe(2);
+    expect(del.data).toEqual({ deletedTasks: 2, domainRecordsKept: true });
     expect((await db.doc(`assistantTasks/${taskId}`).get()).exists).toBe(false);
     expect((await db.doc(`assistantTasks/${open.taskId}`).get()).exists).toBe(false);
     expect(
@@ -1616,5 +1636,298 @@ describe('feedback, history, deletion, sweeper', () => {
       errorCode: 'QUOTE_EXPIRED',
     });
     expect(await win()).toMatchObject({ used: 1, reserved: 0 });
+  });
+});
+
+// =====================================================================================
+// D-075: one credit pool with a Premium budget from any grant (#1); one shared conversation per
+// baby for Cùng nuôi and Người chăm sóc, spending excluded (#2).
+describe('D-075 #1: credit budgets', () => {
+  it('Free is 20; a beta campaign giving the Premium budget makes it 200 (monthly, its own window)', async () => {
+    const free = (await getAssistantUsage(deps(), MOM, E({ babyId: B }))).data;
+    expect(free).toMatchObject({ plan: 'free', limit: 20, remaining: 20 });
+    await db.doc('config/entitlements').set(
+      {
+        betaCampaigns: [
+          {
+            id: 'beta-all',
+            capabilities: [...premiumCapabilities],
+            validFrom: '2026-09-01T00:00:00Z',
+            validUntil: '2026-12-01T00:00:00Z',
+            countries: [],
+            scope: 'all',
+            percent: 100,
+          },
+        ],
+      },
+      { merge: true },
+    );
+    const beta = (await getAssistantUsage(deps(), MOM, E({ babyId: B }))).data;
+    expect(beta).toMatchObject({ plan: 'premium', limit: 200, remaining: 200 });
+    // The beta window resets with the household month, not at the end of the campaign.
+    expect(beta.resetsAt).toBe('2026-10-31T17:00:00.000Z');
+    await prepared();
+    expect(await win('assistant_paid_campaign-beta-all_2026-09-30')).toMatchObject({
+      used: 1,
+      limit: 200,
+    });
+    expect(await win()).toMatchObject({ used: 0 });
+    // A beta with group A only keeps the Free budget.
+    await db.doc('config/entitlements').set(
+      {
+        betaCampaigns: [
+          {
+            id: 'beta-a',
+            capabilities: ['personalization.cross_module', 'rhythm.advanced', 'ai.assistance'],
+            validFrom: '2026-09-01T00:00:00Z',
+            validUntil: '2026-12-01T00:00:00Z',
+            countries: [],
+            scope: 'all',
+            percent: 100,
+          },
+        ],
+      },
+      { merge: true },
+    );
+    expect((await getAssistantUsage(deps(), MOM, E({ babyId: B }))).data).toMatchObject({
+      plan: 'free',
+      limit: 20,
+    });
+  });
+});
+
+describe('D-075 #2: one shared conversation per baby, spending excluded', () => {
+  const SHARED = `cv_${B}`;
+  const mom = { uid: MOM, name: 'Mai', relation: 'mother', relationCustom: null };
+  const nanny = { uid: NANNY, name: 'Cô Hoa', relation: 'nanny', relationCustom: null };
+
+  /** A synthetic expense draft (as a receipt reading leaves it) on [taskId]. */
+  async function seedExpenseDraft(taskId: string, scope: { type: string; babyId: string }) {
+    const id = `dr_${taskId.slice(3)}_0`;
+    await db.doc(`assistantTasks/${taskId}/drafts/${id}`).set({
+      id,
+      taskId,
+      ownerUid: MOM,
+      itemIndex: 0,
+      scope,
+      payload: {
+        kind: 'expense',
+        merchant: 'Test Mart',
+        totalMinor: 120_000,
+        currency: 'VND',
+        date: '2026-10-15',
+        subtotalMinor: null,
+        taxMinor: null,
+        categoryId: null,
+        babyId: B,
+        keepReceipt: false,
+      },
+      missingFields: [],
+      uncertainFields: [],
+      revision: 1,
+      state: 'draft',
+      expiresAt: Timestamp.fromMillis(now.getTime() + 3_600_000),
+      sourceRefs: [],
+      recordId: null,
+      recordLink: null,
+      errorCode: null,
+      warnings: [],
+      createdAt: Timestamp.fromDate(now),
+      updatedAt: Timestamp.fromDate(now),
+    });
+    return id;
+  }
+
+  it('a child text task joins the shared thread with its author; Cùng nuôi and caregiver read it, relatives never', async () => {
+    const a = await prepared();
+    expect(a.snap.task).toMatchObject({
+      conversationId: SHARED,
+      visibility: 'shared',
+      author: mom,
+    });
+    expect(a.snap.messages[0]).toMatchObject({ role: 'user', author: mom });
+    expect(a.snap.messages.at(-1)).toMatchObject({ role: 'assistant', author: null });
+    const conv = (await db.doc(`assistantConversations/${SHARED}`).get()).data()!;
+    expect(conv).toMatchObject({ shared: true, ownerUid: null, createdBy: MOM });
+    for (const uid of [DAD, NANNY]) {
+      const s = await snapshot(a.taskId, uid);
+      expect(s.task.author).toEqual(mom);
+      expect(s.drafts).toHaveLength(2);
+    }
+    for (const uid of [AUNT, GRANDMA, STRANGER]) {
+      expect(
+        await reason(getAssistantTask(deps(), uid, E({ taskId: a.taskId, afterSequence: null }))),
+      ).toBe('NOT_MEMBER');
+    }
+    // The caregiver writes into the same thread.
+    const n = await prepared([summaryAsk()], 'Hôm nay con bú thế nào?', { uid: NANNY });
+    expect(n.snap.task).toMatchObject({ conversationId: SHARED, author: nanny });
+    const msgs = await listAssistantHistory(
+      deps(),
+      DAD,
+      E({ babyId: B, conversationId: SHARED, cursor: null, limit: 10 }),
+    );
+    expect(
+      (msgs.data.items as { role: string; author: { uid: string } | null }[])
+        .filter((m) => m.role === 'user')
+        .map((m) => m.author?.uid),
+    ).toEqual([NANNY, MOM]);
+    // A relative's own task stays private (their thread), and the shared thread is not listed.
+    const r = await prepared([summaryAsk()], 'Hôm nay con bú thế nào?', { uid: AUNT });
+    expect(r.snap.task.visibility).toBe('private');
+    expect(r.snap.task.conversationId).not.toBe(SHARED);
+    const auntList = await listAssistantHistory(
+      deps(),
+      AUNT,
+      E({ babyId: B, conversationId: null, cursor: null, limit: 10 }),
+    );
+    expect(auntList.data.items.map((c) => (c as { id: string }).id)).toEqual([
+      r.snap.task.conversationId,
+    ]);
+    expect(
+      await reason(
+        listAssistantHistory(
+          deps(),
+          AUNT,
+          E({ babyId: B, conversationId: SHARED, cursor: null, limit: 10 }),
+        ),
+      ),
+    ).toBe('NOT_MEMBER');
+    expect(await reason(quote(AUNT, { conversationId: SHARED }))).toBe('NOT_MEMBER');
+  });
+
+  it('a caregiver confirms a shared care draft (as the confirmer); never an expense, never a private task', async () => {
+    const a = await prepared();
+    const d = drafts(a.snap)[0]!;
+    const r = await confirm(a.taskId, [{ draftId: d.id, revision: 1 }], { uid: NANNY });
+    expect(r.data.items[0]!.status).toBe('saved');
+    const rec = (await assistantRecords())[0]!;
+    expect(rec.get('createdBy')).toBe(NANNY);
+    expect(rec.get('author')).toEqual({ name: 'Cô Hoa', relation: 'nanny', relationCustom: null });
+    const after = await snapshot(a.taskId, MOM);
+    expect(after.drafts[0]).toMatchObject({ state: 'saved', confirmedBy: nanny });
+    expect(after.messages.at(-1)).toMatchObject({ author: nanny });
+    expect(after.messages.at(-1)!.parts[0]!.type).toBe('action_result');
+    // A relative can never confirm or edit a shared draft.
+    const sleepDraft = drafts(a.snap)[1]!;
+    expect(
+      await reason(confirm(a.taskId, [{ draftId: sleepDraft.id, revision: 1 }], { uid: GRANDMA })),
+    ).toBe('NOT_MEMBER');
+
+    // Spending stays private: a household task and an expense-hinted child task.
+    const h = await start('Chi tiêu tuần này', { scope: { type: 'household', babyId: B } });
+    const q = await quote(MOM, { intentHint: 'expense' });
+    const x = await start('Chi tiêu tuần này', { quoteId: q.quoteId });
+    for (const t of [h, x]) {
+      const snap = await snapshot(t.taskId!, MOM);
+      expect(snap.task.visibility).toBe('private');
+      expect(snap.task.conversationId).not.toBe(SHARED);
+      const draftId = await seedExpenseDraft(t.taskId!, snap.task.scope);
+      for (const uid of [NANNY, DAD]) {
+        expect(
+          await reason(getAssistantTask(deps(), uid, E({ taskId: t.taskId, afterSequence: null }))),
+        ).toBe('NOT_MEMBER');
+        expect(await reason(confirm(t.taskId!, [{ draftId, revision: 1 }], { uid }))).toBe(
+          'NOT_MEMBER',
+        );
+      }
+    }
+    // Nothing of them reached the shared thread.
+    const shared = await db.collection(`assistantConversations/${SHARED}/messages`).get();
+    expect(shared.docs.map((m) => m.get('taskId'))).not.toContain(h.taskId);
+    expect(shared.docs.map((m) => m.get('taskId'))).not.toContain(x.taskId);
+    // Defence in depth: an expense draft on a shared task is refused to a caregiver.
+    const s2 = await prepared([textBatch()], TEXT, { uid: DAD });
+    const ex = await seedExpenseDraft(s2.taskId, SCOPE);
+    const res = await confirm(s2.taskId, [{ draftId: ex, revision: 1 }], { uid: NANNY });
+    expect(res.data.items[0]).toMatchObject({ status: 'failed', errorCode: 'WRITE_DENIED' });
+  });
+
+  it('a thread from before D-075 stays readable by its owner; new messages go to the shared thread', async () => {
+    const LEGACY = 'cv_00000000000000000000000000000abc';
+    await db.doc(`assistantConversations/${LEGACY}`).set({
+      id: LEGACY,
+      ownerUid: MOM,
+      familyId: F,
+      scope: SCOPE,
+      title: null,
+      locale: 'vi',
+      createdAt: Timestamp.fromDate(new Date(now.getTime() - 86_400_000)),
+      updatedAt: Timestamp.fromDate(new Date(now.getTime() - 86_400_000)),
+      archivedAt: null,
+      messageSeq: 1,
+      lastTaskId: null,
+    });
+    await db.doc(`assistantConversations/${LEGACY}/messages/00000001`).set({
+      conversationId: LEGACY,
+      role: 'user',
+      parts: [{ type: 'text', schemaVersion: 1, text: 'test' }],
+      taskId: null,
+      sequence: 1,
+      createdAt: Timestamp.fromDate(now),
+      attachmentIds: [],
+    });
+    const r = await start(TEXT, { conversationId: LEGACY });
+    expect(r.data.task).toMatchObject({ conversationId: SHARED, visibility: 'shared' });
+    const old = await listAssistantHistory(
+      deps(),
+      MOM,
+      E({ babyId: B, conversationId: LEGACY, cursor: null, limit: 5 }),
+    );
+    expect(old.data.items).toHaveLength(1);
+    expect(old.data.items[0]).toMatchObject({ author: null });
+    const list = await listAssistantHistory(
+      deps(),
+      MOM,
+      E({ babyId: B, conversationId: null, cursor: null, limit: 5 }),
+    );
+    expect(list.data.items.map((c) => (c as { id: string }).id)).toEqual([SHARED, LEGACY]);
+    expect(
+      await reason(
+        listAssistantHistory(
+          deps(),
+          DAD,
+          E({ babyId: B, conversationId: LEGACY, cursor: null, limit: 5 }),
+        ),
+      ),
+    ).toBe('NOT_MEMBER');
+  });
+
+  it('a shared draft is edited only by members who may save it; clarifications stay with the author', async () => {
+    const a = await prepared();
+    const d = drafts(a.snap)[0]!;
+    const edited = await patchDraft(
+      deps(),
+      NANNY,
+      E({
+        draftId: d.id,
+        expectedRevision: 1,
+        payload: { ...(d.payload as Extract<DraftPayload, { kind: 'bottle' }>), amountMl: 150 },
+        confirmedFields: [],
+      }),
+    );
+    expect(edited.data.draft.revision).toBe(2);
+    expect(
+      await reason(
+        patchDraft(
+          deps(),
+          AUNT,
+          E({ draftId: d.id, expectedRevision: 2, payload: d.payload, confirmedFields: [] }),
+        ),
+      ),
+    ).toBe('NOT_MEMBER');
+    expect(await reason(cancelTask(deps(null), NANNY, E({ taskId: a.taskId })))).toBe('NOT_MEMBER');
+  });
+
+  it('account deletion removes that person’s messages from the shared thread; the thread stays', async () => {
+    await prepared();
+    await prepared([summaryAsk()], 'Hôm nay con bú thế nào?', { uid: DAD });
+    await purgeAssistantForUser(db, { deletePrefix: async () => undefined }, DAD, now);
+    const left = await db.collection(`assistantConversations/${SHARED}/messages`).get();
+    expect(left.size).toBe(2);
+    expect(left.docs.every((m) => m.get('author') === null || m.get('author').uid === MOM)).toBe(
+      true,
+    );
+    expect((await db.doc(`assistantConversations/${SHARED}`).get()).exists).toBe(true);
   });
 });

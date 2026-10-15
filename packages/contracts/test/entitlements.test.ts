@@ -141,10 +141,47 @@ describe('resolveCapability', () => {
     ).toEqual({ allowed: false, reason: 'PREMIUM_REQUIRED' });
   });
 
+  it('D-075 #1: AI is open to Free in an advanced region (credits limit it), never elsewhere', () => {
+    expect(resolveCapability({ ...base, capability: 'ai.assistance', grants: [] })).toEqual({
+      allowed: true,
+      via: 'free',
+    });
+    expect(resolveCapability({ ...base, capability: 'ai.assistance', grants: [grant()] })).toEqual({
+      allowed: true,
+      via: 'paid',
+    });
+    expect(
+      resolveCapability({
+        ...base,
+        capability: 'ai.assistance',
+        regionSupported: false,
+        grants: [],
+      }),
+    ).toEqual({ allowed: false, reason: 'REGION_UNAVAILABLE' });
+    expect(
+      resolveCapability({ ...base, capability: 'ai.assistance', roleAllows: false, grants: [] }),
+    ).toEqual({ allowed: false, reason: 'ROLE_DENIED' });
+    expect(
+      resolveCapability({ ...base, capability: 'assistant.premium_budget', grants: [] }),
+    ).toEqual({ allowed: false, reason: 'PREMIUM_REQUIRED' });
+  });
+
+  it('D-075 #1: a beta grant may open templates and the Premium credit budget', () => {
+    const beta = grant({ source: 'beta', capabilities: [...premiumCapabilities] });
+    for (const c of ['templates.premium', 'assistant.premium_budget'] as const) {
+      expect(resolveCapability({ ...base, capability: c, grants: [beta] })).toEqual({
+        allowed: true,
+        via: 'beta',
+      });
+    }
+    // Still a beta in PR03: only a paid or promo grant with templates shows Premium.
+    expect(householdPlan([beta], 'production', base.now).plan).toBe('beta');
+  });
+
   it('validUntil is exclusive and validFrom inclusive', () => {
     const g = grant();
     const at = (now: Date) =>
-      resolveCapability({ ...base, now, capability: 'ai.assistance', grants: [g] }).allowed;
+      resolveCapability({ ...base, now, capability: 'templates.premium', grants: [g] }).allowed;
     expect(at(g.validFrom)).toBe(true);
     expect(at(new Date(g.validUntil.getTime() - 1))).toBe(true);
     expect(at(g.validUntil)).toBe(false);
@@ -213,22 +250,37 @@ describe('entitlements config', () => {
     expect(defaultEntitlementsConfig.regions.advanced).toEqual([]);
   });
 
-  it('a beta campaign can never include premium templates', () => {
+  it('D-075 #1: a beta campaign may give every Premium capability, never a free one', () => {
     const campaign = {
       id: 'beta-a',
-      capabilities: ['personalization.cross_module', 'templates.premium'],
+      capabilities: [...premiumCapabilities],
       validFrom: '2026-10-01T00:00:00Z',
       validUntil: '2026-12-01T00:00:00Z',
       countries: ['VN'],
       scope: 'all',
       percent: 0,
     };
-    expect(
-      entitlementsConfigSchema.safeParse({
-        ...defaultEntitlementsConfig,
-        betaCampaigns: [campaign],
-      }).success,
-    ).toBe(false);
+    const parse = (c: object) =>
+      entitlementsConfigSchema.safeParse({ ...defaultEntitlementsConfig, betaCampaigns: [c] })
+        .success;
+    expect(premiumCapabilities).toEqual(
+      expect.arrayContaining(['templates.premium', 'assistant.premium_budget']),
+    );
+    expect(parse(campaign)).toBe(true);
+    expect(parse({ ...campaign, capabilities: ['templates.premium'] })).toBe(true);
+    expect(parse({ ...campaign, capabilities: ['rhythm.checkin'] })).toBe(false);
+  });
+
+  it('a stored config without assistant credits reads the shipped defaults', () => {
+    const { assistant: _a, ...quotas } = defaultEntitlementsConfig.quotas;
+    void _a;
+    const parsed = entitlementsConfigSchema.parse({ ...defaultEntitlementsConfig, quotas });
+    expect(parsed.quotas.assistant).toEqual({
+      free: 20,
+      premium: 200,
+      textCredits: 1,
+      imageCredits: 3,
+    });
   });
 
   it('campaignOpen follows validity and scope', () => {

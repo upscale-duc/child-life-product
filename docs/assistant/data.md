@@ -2,18 +2,63 @@
 
 All documents below are written by Functions only (Admin SDK). Client Rules
 (`firebase/firestore.rules`, block "Child Life Assistant"): the owner (`ownerUid == auth.uid`) reads
-while still an active member of `scope.babyId` (P-158); nobody else reads; no client writes. Executions
+while still an active member of `scope.babyId` (P-158); the baby's shared thread and its tasks are
+read by every active Cùng nuôi / Người chăm sóc of the baby (D-075 #2, below); no client writes. Executions
 and the request ledger are never readable. Synthetic data in tests uses the `test_` prefix.
+
+## Shared conversation per baby (D-075 #2)
+
+Owner answer: one conversation per baby for Ba, Mẹ and Người chăm sóc; spending stays out.
+
+- **Thread**: `assistantConversations/cv_<babyId>` (contracts `sharedConversationIdFor`; a hash
+  `cv_s_<hash>` only for an id that would not fit) with `shared: true, ownerUid: null, createdBy`
+  (audit only), `scope { type: 'child', babyId }`. Created by the first shared task.
+- **Who**: active **Cùng nuôi** and **Người chăm sóc** of the baby read it (Rules
+  `assistantConversationReadable` / `assistantTaskReadable`, callables `canReadConversation` /
+  `readableTask`) and write into it through the callables; **relatives never** (their tasks stay in
+  their own private thread, as before).
+- **Which tasks** (contracts `taskVisibilityFor`, stored as `assistantTasks/{tk}.visibility`):
+  `shared` = child scope + **text** + not hinted `expense` + a Cùng nuôi / Người chăm sóc. `private`
+  = household scope (Chi tiêu), an `expense` hint, **every photo task** (a photo may be a receipt,
+  known only after reading it), and every relative's task. Private tasks never touch the shared
+  thread: they continue the caller's own private conversation of that scope, else start a new one
+  `cv_<hash(taskId)>`. Defence in depth: a shared task that would ever draft an expense is refused
+  (`WRITE_DENIED`, released) by the worker.
+- **Authors**: tasks store `author { uid, name, relation, relationCustom }` (the asker, from the
+  member document); messages store `author` — the sender of a user message (also clarification
+  answers), the **confirmer** of an `action_result`, `null` for the assistant's own replies; saved
+  drafts store `confirmedBy` (who saved them — any shared member whose role allows that module; the
+  domain record's author is the confirmer too).
+- **Acting on a shared task**: read (`getAssistantTask`, history), patch / discard a draft (only
+  members whose role may save that draft's module), confirm (each item re-checked against the
+  **confirmer's** role: care / check-ins for Cùng nuôi and Người chăm sóc; reminders Cùng nuôi only;
+  expenses never appear). Clarification answers, cancel, care feedback and "Thử tối nay" stay with
+  the task's author.
+- **Deletion**: `deleteAssistantConversation` on the shared thread — Cùng nuôi only (a caregiver
+  gets `WRITE_DENIED`), for everyone: every task of the thread (all authors) is cancelled (credits
+  released) and deleted with its drafts, events and photos; domain records stay
+  (`domainRecordsKept: true`). Account deletion removes that person's tasks **and their messages in
+  the shared thread** (found through their shared tasks); the thread and the others' messages stay.
+  Baby deletion removes the thread with the baby's other assistant data.
+- **Threads from before D-075** (private child conversations, `ownerUid` set, no `shared`): **kept
+  and readable by their owner only** (history lists them after the shared thread; messages page as
+  before). Nothing is migrated or copied: copying private messages into a thread others read would
+  disclose what was written as private. A new shared task sent while the app shows such a thread
+  lands in the shared thread (the answer's `task.conversationId` says where); private tasks may
+  still continue it.
+- **Reads (Rules)**: shared thread, its messages, shared tasks and their drafts / events — any active
+  Cùng nuôi / Người chăm sóc of `scope.babyId`; everything else owner-only as before. Quotes and
+  attachments stay owner-only. No client writes anywhere.
 
 ## Collections
 
 | Path | Written by | Fields |
 |---|---|---|
-| `assistantConversations/{cv_*}` | `startTask`, worker, confirm, `deleteAssistantConversation` | `id, ownerUid, familyId, scope{type, babyId}, title (null), locale, createdAt, updatedAt, archivedAt (null), messageSeq, lastTaskId`. Id `cv_<hash(taskId)>` for a conversation started by a task. |
-| `…/{cv}/messages/{seq:8}` | same | `conversationId, role user\|assistant, parts[] (typed, contracts AssistantPart), taskId, sequence, createdAt, attachmentIds[]`. User text is stored here (owner-private). |
+| `assistantConversations/{cv_*}` | `startTask`, worker, confirm, `deleteAssistantConversation` | `id, ownerUid (null for the shared thread), shared (D-075 #2), createdBy, familyId, scope{type, babyId}, title (null), locale, createdAt, updatedAt, archivedAt (null), messageSeq, lastTaskId`. Id `cv_<babyId>` for the baby's shared thread, `cv_<hash(taskId)>` for a private conversation started by a task. |
+| `…/{cv}/messages/{seq:8}` | same | `conversationId, role user\|assistant, parts[] (typed, contracts AssistantPart), taskId, sequence, createdAt, attachmentIds[], author ({uid, name, relation, relationCustom} \| null; D-075 #2)`. User text is stored here (owner-private, or the shared thread's members). |
 | `assistantQuotes/{qt_*}` | `quoteTask` | `id, ownerUid, familyId, scope, modality, attachmentCount, intentHint, credits, plan free\|premium, grantId, windowId, policyVersion, allowed, reason, expiresAt, usedBy (taskId\|null), createdAt`. |
-| `assistantTasks/{tk_*}` | `startTask`, worker, clarification, cancel, confirm (events) | `id, ownerUid, familyId, scope, conversationId, requestId, inputKey (sha256 of contracts taskInputKey), input{text, attachmentIds}, anchorInstant (original send instant), timezone (baby zone), locale, modality, quoteId, credits, plan, windowId, reservationId (assistant_<taskId>\|null), usage none\|reserved\|committed\|released, state, version, round, clarifications[{id, field, round, answer{choiceId,text}\|null, answeredAt}], pendingClarification, clarificationExpiresAt, lease{holder, until}\|null, attempt, errorCode, health (signs\|null), eventSeq, draftIds, outcome{kind, drafts, parts}, modelCalls, model, promptVersion, policyVersion, feedback[], createdAt, updatedAt, readyAt`. |
-| `…/{tk}/drafts/{dr_<task hex>_<i>}` | worker, patch, discard, confirm | `ActionDraft` (`id, taskId, itemIndex, scope, payload, missingFields, uncertainFields, revision, state, expiresAt, sourceRefs, recordId, recordLink, errorCode, warnings`) + `ownerUid, createdAt, updatedAt, savedAt, savedBy`. |
+| `assistantTasks/{tk_*}` | `startTask`, worker, clarification, cancel, confirm (events) | `id, ownerUid, familyId, scope, conversationId, requestId, inputKey (sha256 of contracts taskInputKey), input{text, attachmentIds}, anchorInstant (original send instant), timezone (baby zone), locale, modality, quoteId, credits, plan, windowId, reservationId (assistant_<taskId>\|null), usage none\|reserved\|committed\|released, state, version, round, clarifications[{id, field, round, answer{choiceId,text}\|null, answeredAt}], pendingClarification, clarificationExpiresAt, lease{holder, until}\|null, attempt, errorCode, health (signs\|null), eventSeq, draftIds, outcome{kind, drafts, parts}, modelCalls, model, promptVersion, policyVersion, feedback[], createdAt, updatedAt, readyAt, visibility shared\|private, author{uid, name, relation, relationCustom}` (D-075 #2; absent = private). |
+| `…/{tk}/drafts/{dr_<task hex>_<i>}` | worker, patch, discard, confirm | `ActionDraft` (`id, taskId, itemIndex, scope, payload, missingFields, uncertainFields, revision, state, expiresAt, sourceRefs, recordId, recordLink, errorCode, warnings`) + `ownerUid, createdAt, updatedAt, savedAt, savedBy, confirmedBy (author block of whoever saved it, D-075 #2)`. |
 | `…/{tk}/events/{seq:8}` | all task transitions | `taskId, eventId, sequence, type, emittedAt, payload`. |
 | `assistantExecutions/{draftId}_{revision}` | confirm | `draftId, taskId, ownerUid, revision, requestId, payloadHash (sha256 of canonical payload), status saved\|conflict, recordId, errorCode, createdAt`. No content. |
 | `assistantRequests/{sha(uid\|op\|clientRequestId)}` | idempotent commands (quote, clarify, patch, confirm, feedback) | `uid, op, inputHash, response (JSON of the answer), createdAt`. Same id + other input → `IDEMPOTENCY_CONFLICT`. |
@@ -35,7 +80,9 @@ conflicts exactly as for app writes.
 
 - `assistantConversations`: `ownerUid ASC, scope.babyId ASC, updatedAt DESC` (history list).
 - `assistantTasks`: `ownerUid ASC, state ASC` (consent withdrawal); `conversationId ASC, ownerUid ASC`
-  (conversation deletion).
+  (private conversation deletion). The shared thread's deletion (`conversationId` only) and the
+  account purge of shared messages (`ownerUid` + `visibility` equalities, then `messages.taskId`)
+  use single-field indexes (D-075 #2).
 - Existing `records (type, deleted, occurredAt)` serves the overlap check; single-field indexes serve
   `assistantTasks.state` (sweeper), `assistantQuotes.expiresAt`, `events.sequence`,
   `messages.sequence` / `messages.taskId`.
