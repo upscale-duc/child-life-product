@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Policy | fixture pack v2.0, `qa-policy-v2` (synthetic only, `not_production_seed`) |
-| Commit | `0a33f29` (branch `s2-onboarding`) |
+| Commit | `e9e8272` (branch `s2-onboarding`); server deployed to dev at `0a33f29` |
 | Clock | fixture clock 2026-10-14 (Asia/Ho_Chi_Minh); tests use fixed instants |
 | Environments | contracts vitest (Node 22); Firestore + Storage emulators on an isolated config; Flutter tests on macOS (iOS / Android not run); dev Firebase `child-life-dev` for deploy checks |
 | Locales | vi and en (goldens per screen in both; Light and Night care) |
@@ -56,7 +56,7 @@ simulation only and is not used as evidence here.
 | `firebase/tests` (rules + integration, isolated emulator) | all Premium / Rhythm / AI / quota / billing files pass; 7 failures in account ×3, links ×2, stories ×1, reminder-rules ×1, which fail the same way on a clean checkout of the pre-Premium HEAD |
 | `apps/portal` vitest | 126 pass |
 | `apps/renderer` vitest | 22 pass |
-| Flutter `test/features` + `test/app` | 790 pass |
+| Flutter `test/features` + `test/app` | 818 pass (incl. EN09 weekly summary) |
 | Flutter goldens | Premium, Rhythm, AI goldens pass (Light / Night × vi / en); only pre-existing family 14a / 14f / 9x and first-aid fa7b / fa7h goldens fail |
 | `flutter analyze`, `pnpm lint`, typechecks | clean |
 
