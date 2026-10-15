@@ -155,6 +155,29 @@ void main() {
     expect(container.read(uploadQueueProvider).batches, isEmpty);
   });
 
+  test(
+    'a finished batch floats "Đã tải xong" once, not again after a restart',
+    () async {
+      container = await start();
+      final queue = container.read(uploadQueueProvider.notifier);
+      await queue.enqueue(
+        babyId: teddyId,
+        request: request(),
+        picked: [pickedPhoto('IMG_3605.HEIC')],
+      );
+      await pumpEventQueue();
+      final batch = container.read(uploadQueueProvider).batches.single;
+      expect(batch.done, isTrue);
+      expect(batch.resultShown, isFalse);
+
+      await queue.markResultShown(batch.batchId);
+      final shown = container.read(uploadQueueProvider).batches.single;
+      // Still listed in "Đang tải lên", but marked shown and saved for the next app start.
+      expect(shown.resultShown, isTrue);
+      expect(QueueBatch.fromJson(shown.toJson()).resultShown, isTrue);
+    },
+  );
+
   test('a new batch takes the place of the finished ones', () async {
     // "Đang tải lên" counted an earlier, finished batch with the new one: 4 chosen showed
     // "2 / 5" (owner, 2026-10-15).

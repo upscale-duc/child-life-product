@@ -165,6 +165,7 @@ class QueueBatch {
     required this.createdAt,
     this.sessionCreated = false,
     this.dismissed = false,
+    this.resultShown = false,
     this.blocked,
   });
 
@@ -178,6 +179,11 @@ class QueueBatch {
   final DateTime createdAt;
   bool sessionCreated;
   bool dismissed;
+
+  /// The floating pill has shown this finished batch's result ("Đã tải xong N mục") once;
+  /// kept on the phone so it does not come back on every app start. The batch itself stays in
+  /// "Đang tải lên" until a new batch replaces it.
+  bool resultShown;
 
   /// Why the server refused the upload session: `uploads-paused` (A11 kill switch, retried by
   /// itself) or a refusal shown as "Chưa tải lên được" with "Thử lại" (`not-allowed`, ...).
@@ -199,6 +205,7 @@ class QueueBatch {
     'createdAt': createdAt.toUtc().toIso8601String(),
     'sessionCreated': sessionCreated,
     'dismissed': dismissed,
+    'resultShown': resultShown,
     'blocked': blocked,
   };
 
@@ -214,6 +221,7 @@ class QueueBatch {
     createdAt: DateTime.parse(j['createdAt']! as String),
     sessionCreated: j['sessionCreated'] == true,
     dismissed: j['dismissed'] == true,
+    resultShown: j['resultShown'] == true,
     blocked: j['blocked'] as String?,
   );
 }
@@ -781,6 +789,18 @@ class UploadQueue extends Notifier<QueueView> {
       }
     }
     await _persist();
+  }
+
+  /// The floating pill showed a finished batch's result; never float it again (saved).
+  Future<void> markResultShown(String batchId) async {
+    var changed = false;
+    for (final b in _batches) {
+      if (b.batchId == batchId && b.done && !b.resultShown) {
+        b.resultShown = true;
+        changed = true;
+      }
+    }
+    if (changed) await _persist();
   }
 
   /// Hide a finished batch's pill ("Đã tải xong 7 mục").

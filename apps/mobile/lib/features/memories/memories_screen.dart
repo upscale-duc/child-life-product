@@ -2060,10 +2060,18 @@ class _GlobalUploadPillState extends ConsumerState<GlobalUploadPill> {
       if (b.babyId != c.babyId || !b.done || _hidden.contains(b.batchId)) {
         continue;
       }
+      // Shown once already (an earlier app session): stay hidden, no second 4 s show.
+      if (b.resultShown) {
+        _hidden.add(b.batchId);
+        continue;
+      }
       _timers.putIfAbsent(
         b.batchId,
         () => Timer(_showDone, () {
           if (mounted) setState(() => _hidden.add(b.batchId));
+          unawaited(
+            ref.read(uploadQueueProvider.notifier).markResultShown(b.batchId),
+          );
         }),
       );
     }
