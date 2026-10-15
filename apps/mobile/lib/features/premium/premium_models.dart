@@ -44,9 +44,12 @@ enum HouseholdPlan { free, beta, premium, pending, expired }
 
 @immutable
 class CapabilityState {
-  const CapabilityState({required this.allowed, this.reason});
+  const CapabilityState({required this.allowed, this.reason, this.via});
   final bool allowed;
   final GateReason? reason;
+
+  /// What gives it: `paid`, `beta`, `promo` or `free`.
+  final String? via;
 }
 
 @immutable
@@ -62,6 +65,7 @@ class Capabilities {
     this.country,
     this.entitlementVersion = 0,
     this.features = const PremiumFeatures(),
+    this.billingProvider,
   });
 
   final String familyId;
@@ -78,6 +82,17 @@ class Capabilities {
   final int entitlementVersion;
   final Map<Capability, CapabilityState> states;
   final PremiumFeatures features;
+
+  /// The store the paid plan was bought in (`apple` / `google`), when the server says so: PR03
+  /// links to that store's subscription management only.
+  final String? billingProvider;
+
+  /// The Premium plan comes from a store subscription (not a staff promo): there is something
+  /// to manage in the store. Unknown counts as paid.
+  bool get paidPlan {
+    final via = states[Capability.templatesPremium]?.via;
+    return via == null || via == 'paid';
+  }
 
   bool allows(Capability c) => states[c]?.allowed ?? false;
   GateReason? reasonFor(Capability c) =>
@@ -105,6 +120,7 @@ class Capabilities {
             c: CapabilityState(
               allowed: s['allowed'] == true,
               reason: GateReason.fromWire(s['reason']),
+              via: s['via'] as String?,
             ),
       },
       features: PremiumFeatures(
@@ -113,6 +129,9 @@ class Capabilities {
         aiAssist: f['aiAssist'] == true,
         billing: f['billing'] == true,
       ),
+      billingProvider: json['provider'] is String
+          ? json['provider'] as String
+          : null,
     );
   }
 
@@ -131,6 +150,7 @@ class Capabilities {
         e.key.wire: {
           'allowed': e.value.allowed,
           'reason': e.value.reason?.wire,
+          'via': e.value.via,
         },
     },
     'features': {
@@ -139,6 +159,7 @@ class Capabilities {
       'aiAssist': features.aiAssist,
       'billing': features.billing,
     },
+    'provider': billingProvider,
   };
 }
 

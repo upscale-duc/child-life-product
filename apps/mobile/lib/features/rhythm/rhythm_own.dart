@@ -16,11 +16,15 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../care/care_format.dart' show durationLabel;
 import '../family/family_repository.dart';
+import '../premium/billing_models.dart' show PaywallEntry;
+import '../premium/paywall_screen.dart' show openPaywall;
 import '../premium/premium_gate.dart';
+import '../premium/premium_widgets.dart' show PremiumExpiredStrip;
 import '../premium/premium_models.dart';
 import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_calc.dart';
+import 'rhythm_episodes.dart';
 import 'rhythm_labels.dart';
 import 'rhythm_models.dart';
 import 'rhythm_repository.dart';
@@ -79,7 +83,14 @@ class OwnRhythmCard extends ConsumerWidget {
               style: cl.text.label.copyWith(color: cl.colors.inkMuted),
             )
           else ...[
+            // PR04: the plan ended, history stays (593:6990).
+            if (caps?.plan == HouseholdPlan.expired) ...[
+              PremiumExpiredStrip(canRenew: caps!.canManageBilling),
+              const SizedBox(height: ClSpace.s3),
+            ],
             RecentCheckIns(me: me, today: today),
+            // NL07b: the open observation episode, or the suggestion to group recent days.
+            EpisodeBlock(me: me, today: today),
             const SizedBox(height: ClSpace.s3),
             if (advanced)
               summary == null
@@ -463,7 +474,7 @@ class _SleepGate extends StatelessWidget {
         child: RhLink(
           label: premium ? l10n.rhLearnMore : l10n.rhWhy,
           onTap: () => premium
-              ? context.push(Routes.mePlan)
+              ? openPaywall(context, entry: PaywallEntry.rhythm)
               : showGateSheet(context, reason),
         ),
       ),

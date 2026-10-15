@@ -4,10 +4,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/appearance/appearance_providers.dart';
+import '../../l10n/app_localizations.dart';
+import '../baby/baby_repository.dart';
 import '../care/care_repository.dart' show timerClockProvider;
 import '../home/home_shell.dart';
 import '../premium/premium_repository.dart';
 import '../reminders/reminder_notifications.dart' show LocalReminder;
+import 'rhythm_access.dart';
 import 'rhythm_repository.dart';
 import 'rhythm_calc.dart';
 import 'rhythm_models.dart';
@@ -219,6 +222,157 @@ String? rhythmOfPayload(String? payload) {
   try {
     final json = jsonDecode(payload);
     if (json is Map && json['k'] == 'rhythm' && json['b'] is String) {
+      return json['b'] as String;
+    }
+  } on FormatException {
+    return null;
+  }
+  return null;
+}
+
+// ---------- Evening check-in prompt (NL02c "Check-in buổi tối") ----------
+
+/// "20:30 · bỏ qua nếu đã ghi trong ngày" (Figma 570:1183), local time on the phone.
+const eveningCheckInHour = 20;
+const eveningCheckInMinute = 30;
+
+/// How many evenings ahead are scheduled; each sync (a check-in, a switch, a restart) renews them,
+/// so a phone left unopened stops asking after a few days.
+const eveningPromptDays = 3;
+
+/// The earliest an evening prompt may move to when 20:30 falls in the person's quiet hours.
+const _eveningEarliestMinutes = 18 * 60;
+
+int _minutes(String hhmm) =>
+    int.parse(hhmm.substring(0, 2)) * 60 + int.parse(hhmm.substring(3, 5));
+
+/// [at] (20:30) when it is outside the quiet hours [from]–[to] (either may wrap past midnight);
+/// else 30 minutes before they start, if that is still the evening (18:00 or later); else null.
+DateTime? eveningTimeOutsideQuiet(DateTime at, String? from, String? to) {
+  if (from == null || to == null) return at;
+  final f = _minutes(from), t = _minutes(to), m = at.hour * 60 + at.minute;
+  final inside = f == t
+      ? false
+      : f < t
+      ? (m >= f && m < t)
+      : (m >= f || m < t);
+  if (!inside) return at;
+  final earlier = f - 30;
+  if (earlier >= _eveningEarliestMinutes && earlier < m) {
+    return DateTime(at.year, at.month, at.day, earlier ~/ 60, earlier % 60);
+  }
+  return null;
+}
+
+/// NL02c evening prompt: the next [days] evenings at 20:30 (moved before the person's quiet
+/// hours, or dropped when no evening time is left), today skipped once this person already noted
+/// something for the baby, nothing in the past. Pure, so it is tested without a phone.
+List<DateTime> eveningCheckInPlan({
+  required bool enabled,
+  required DateTime now,
+  required bool checkedInToday,
+  String? quietFrom,
+  String? quietTo,
+  int days = eveningPromptDays,
+}) {
+  if (!enabled) return const [];
+  return [
+    for (var i = 0; i < days; i++)
+      if (!(i == 0 && checkedInToday))
+        if (eveningTimeOutsideQuiet(
+              DateTime(
+                now.year,
+                now.month,
+                now.day + i,
+                eveningCheckInHour,
+                eveningCheckInMinute,
+              ),
+              quietFrom,
+              quietTo,
+            )
+            case final at? when at.isAfter(now))
+          at,
+  ];
+}
+
+/// The evening prompts this phone should schedule for the selected baby: only for a person who
+/// may check in, with the rhythm rollout and their own switch on. Best effort, like the stage
+/// reminders: a problem here never stops other reminders.
+final rhythmEveningPlanProvider =
+    Provider.autoDispose<List<({String babyId, DateTime fireAt})>>((ref) {
+      try {
+        final me = ref.watch(selectedMembershipProvider);
+        final caps = ref.watch(selectedCapabilitiesProvider);
+        if (me == null ||
+            caps == null ||
+            !caps.features.rhythm ||
+            !familyCan(me, FamilyAction.rhythmCheckin)) {
+          return const [];
+        }
+        if (!ref.watch(rhythmRemindersProvider(me.uid)).evening) {
+          return const [];
+        }
+        final prefs =
+            ref.watch(userPreferencesProvider(me.uid)).value ??
+            UserPreferences.defaults;
+        final checkIns = ref.watch(checkInsProvider(me.babyId)).value;
+        final zone =
+            ref.watch(babyProvider(me.babyId)).value?.timeZone.zone ??
+            'Asia/Ho_Chi_Minh';
+        final now = ref.read(timerClockProvider)();
+        final today = babyTodayIso(zone, now);
+        final mine =
+            checkIns?.any((c) => c.authorUid == me.uid && c.date == today) ??
+            false;
+        return [
+          for (final at in eveningCheckInPlan(
+            enabled: true,
+            now: now,
+            checkedInToday: mine,
+            quietFrom: prefs.quietFrom,
+            quietTo: prefs.quietTo,
+          ))
+            (babyId: me.babyId, fireAt: at),
+        ];
+      } on Object {
+        return const [];
+      }
+    });
+
+/// One evening prompt as a local notification; no baby name (R-120). Ids: bit 29 (Nhịp lớn lên)
+/// and bit 28 (apart from the stage reminders, whose hash stays under bit 28).
+LocalReminder rhythmEveningNotification(
+  AppLocalizations l10n,
+  ({String babyId, DateTime fireAt}) p,
+) {
+  final title = l10n.rhCheckInEntry;
+  final body = l10n.rhEveningBody;
+  final day = '${p.fireAt.year}-${p.fireAt.month}-${p.fireAt.day}';
+  final hash = '${p.babyId}/evening/$day'.codeUnits.fold<int>(
+    17,
+    (h, c) => (h * 31 + c) & 0x0fffffff,
+  );
+  return LocalReminder(
+    id: (1 << 29) | (1 << 28) | hash,
+    fireAt: p.fireAt,
+    title: title,
+    body: body,
+    payload: jsonEncode({
+      'k': 'rhythm_checkin',
+      'b': p.babyId,
+      'at': p.fireAt.millisecondsSinceEpoch,
+      't': title,
+      'x': body,
+    }),
+  );
+}
+
+/// The baby id of an evening-prompt payload, or null for anything else.
+String? rhythmCheckInOfPayload(String? payload) {
+  if (payload == null) return null;
+  try {
+    final json = jsonDecode(payload);
+    if (json is Map && json['k'] == 'rhythm_checkin' && json['b'] is String) {
       return json['b'] as String;
     }
   } on FormatException {

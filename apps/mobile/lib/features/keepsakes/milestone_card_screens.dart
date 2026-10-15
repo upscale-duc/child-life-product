@@ -34,11 +34,14 @@ import '../memories/memory_repository.dart';
 import '../memories/memory_sheets.dart' show presetName;
 import '../memories/upload_queue.dart';
 import '../premium/premium_gate.dart';
+import '../premium/premium_widgets.dart' show ResumedBanner;
+import '../premium/purchase_resume.dart' show takeJustResumed;
 import 'keepsake_access.dart';
 import 'keepsake_card_content.dart';
 import 'keepsake_card_view.dart';
 import 'keepsake_catalog.dart';
 import 'keepsake_occasions.dart';
+import 'keepsake_resume.dart' show keepCardDraft;
 import 'memory_story_screens.dart' show MemoryStoryTemplatesScreen;
 
 /// Thiệp cột mốc (D-068; Figma MM10 `530:9515` chọn mẫu, MM11 `530:9663` chỉnh sửa, MM12
@@ -660,6 +663,8 @@ class CardTemplatePreviewScreen extends ConsumerWidget {
           template: t,
           catalog: ref.read(keepsakeCatalogProvider).value,
           babyId: args.draft.babyId,
+          // MO03: the same template and photos after a purchase.
+          keep: () => keepCardDraft(ref, args.draft),
         );
         if (ok && context.mounted) {
           await context.push(Routes.milestoneCardEdit, extra: args.draft);
@@ -930,6 +935,9 @@ class _EditState extends ConsumerState<MilestoneCardEditScreen> {
   var _tool = _Tool.layout;
   var _busy = false;
 
+  /// MO03: opened again after a verified purchase from this template.
+  late final _resumed = takeJustResumed(ref, widget.draft.template.id);
+
   @override
   void dispose() {
     _quote.dispose();
@@ -1096,6 +1104,16 @@ class _EditState extends ConsumerState<MilestoneCardEditScreen> {
                 ],
               ),
             ),
+            if (_resumed)
+              const Padding(
+                padding: EdgeInsets.fromLTRB(
+                  ClSpace.s4,
+                  ClSpace.s3,
+                  ClSpace.s4,
+                  0,
+                ),
+                child: ResumedBanner(),
+              ),
             const SizedBox(height: ClSpace.s3),
             Expanded(
               child: LayoutBuilder(

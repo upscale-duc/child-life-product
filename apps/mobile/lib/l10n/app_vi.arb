@@ -18191,5 +18191,984 @@
   "rhOtherIdeas": "Cách khác có thể thử",
   "@rhOtherIdeas": {
     "description": "PS01 / H02 secondary suggestions (≤2)."
+  },
+  "aiHandoverTitle": "Bàn giao cho người chăm tiếp",
+  "@aiHandoverTitle": {
+    "description": "SU01 title; also the entry on Home and NL01."
+  },
+  "aiHandoverEntrySub": "Tóm tắt 3 phần từ ghi nhận của cả nhà",
+  "@aiHandoverEntrySub": {
+    "description": "Home / NL01 entry subtitle for a Cùng nuôi. EN is an engineering draft for owner review."
+  },
+  "aiHandoverEntryLatest": "Bản mới nhất · {date}",
+  "@aiHandoverEntryLatest": {
+    "description": "Home / NL01 entry subtitle for a caregiver (reads the latest stored handover). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "aiHandoverFrom": "{range} · từ {count} ghi nhận của {names}",
+  "@aiHandoverFrom": {
+    "description": "SU01 subtitle (\"06/10 – 08/10 · từ 6 ghi nhận của Mẹ, Ba, Cô Lan\").",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "aiHandoverFromCount": "{range} · từ {count} ghi nhận",
+  "@aiHandoverFromCount": {
+    "description": "SU01 subtitle when the authors are unknown.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "aiGeneratedAt": "Tạo lúc {when}",
+  "@aiGeneratedAt": {
+    "description": "SU01: when this version was made (NL10 \"08/10 · 20:12\"). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSectionNoticed": "Điều đã thấy",
+  "@aiSectionNoticed": {
+    "description": "SU01 section 1."
+  },
+  "aiSectionHelped": "Cách từng có ích",
+  "@aiSectionHelped": {
+    "description": "SU01 section 2."
+  },
+  "aiSectionNext": "Việc có thể chọn tiếp",
+  "@aiSectionNext": {
+    "description": "SU01 section 3."
+  },
+  "aiSectionNote": "Lưu ý",
+  "@aiSectionNote": {
+    "description": "SU01 closing note section. EN is an engineering draft for owner review."
+  },
+  "aiWordedByAi": "Diễn đạt bởi AI từ ghi nhận đã lưu · số liệu lấy từ nhật ký",
+  "@aiWordedByAi": {
+    "description": "SU01 AI label (only on AI-worded text)."
+  },
+  "aiWordedShort": "Diễn đạt bởi AI từ ghi nhận đã lưu",
+  "@aiWordedShort": {
+    "description": "Short AI label (explanation, milestone nudge)."
+  },
+  "aiTemplateLine": "Đây là tóm tắt từ những ghi nhận đã lưu.",
+  "@aiTemplateLine": {
+    "description": "Template label (NL10b / ST01)."
+  },
+  "aiReport": "Chưa đúng? Báo lại",
+  "@aiReport": {
+    "description": "SU01 report button."
+  },
+  "aiSendTo": "Gửi cho {name}",
+  "@aiSendTo": {
+    "description": "SU01 share button naming the caregiver (\"Gửi cho Cô Lan\").",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "aiShare": "Gửi bản bàn giao",
+  "@aiShare": {
+    "description": "SU01 share button without a caregiver. EN is an engineering draft for owner review."
+  },
+  "aiShareAiLine": "(Diễn đạt bởi AI từ ghi nhận đã lưu)",
+  "@aiShareAiLine": {
+    "description": "Shared text footer for AI text."
+  },
+  "aiShareTemplateLine": "(Tóm tắt theo mẫu từ ghi nhận đã lưu)",
+  "@aiShareTemplateLine": {
+    "description": "Shared text footer for the template. EN is an engineering draft for owner review."
+  },
+  "aiLoading": "Đang tổng hợp ghi nhận…",
+  "@aiLoading": {
+    "description": "SU01 while generating. EN is an engineering draft for owner review."
+  },
+  "aiNoSections": "Chưa có đủ ghi nhận để bàn giao. Ghi nhận hôm nay để bắt đầu.",
+  "@aiNoSections": {
+    "description": "SU01 with no section. EN is an engineering draft for owner review."
+  },
+  "aiChipCheckIn": "Ghi nhận của {who} · {date}",
+  "@aiChipCheckIn": {
+    "description": "SU01 link to a check-in.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "aiChipCheckInMine": "Ghi nhận của bạn · {date}",
+  "@aiChipCheckInMine": {
+    "description": "SU01 link to my own check-in.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "aiChipFeedback": "Phản hồi của {who} · {date}",
+  "@aiChipFeedback": {
+    "description": "SU01 link to feedback.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "aiChipFeedbackMine": "Phản hồi của bạn · {date}",
+  "@aiChipFeedbackMine": {
+    "description": "SU01 link to my own feedback.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "aiChipMilestone": "Điều mới · {date}",
+  "@aiChipMilestone": {
+    "description": "SU01 link to a milestone.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "aiChipSleep": "Nhật ký giấc ngủ",
+  "@aiChipSleep": {
+    "description": "SU01 link to the sleep comparison."
+  },
+  "aiRecordWho": "{who} · {date}",
+  "@aiRecordWho": {
+    "description": "Record sheet: author and date.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "aiRecordCheckIn": "Ghi nhận",
+  "@aiRecordCheckIn": {
+    "description": "Record sheet title for a check-in."
+  },
+  "aiRecordFeedback": "Phản hồi",
+  "@aiRecordFeedback": {
+    "description": "Record sheet title for feedback."
+  },
+  "aiRecordMilestone": "Điều mới",
+  "@aiRecordMilestone": {
+    "description": "Record sheet title for a milestone."
+  },
+  "aiRecordOpenActivity": "Xem hoạt động",
+  "@aiRecordOpenActivity": {
+    "description": "Record sheet action for feedback. EN is an engineering draft for owner review."
+  },
+  "aiRecordGone": "Ghi nhận này không còn trên máy hoặc đã được xoá.",
+  "@aiRecordGone": {
+    "description": "Record sheet when the record is not found. EN is an engineering draft for owner review."
+  },
+  "aiStateTemplateTitle": "Đang hiển thị bản theo mẫu",
+  "@aiStateTemplateTitle": {
+    "description": "ST01 card 3 headline; template states."
+  },
+  "aiStateConsentEyebrow": "AI CHƯA BẬT",
+  "@aiStateConsentEyebrow": {
+    "description": "Consent missing: eyebrow. EN is an engineering draft for owner review."
+  },
+  "aiStateConsentBody": "Bản này dùng mẫu cố định, vẫn đủ 3 phần. Nếu bạn đồng ý, AI chỉ diễn đạt lại những ghi nhận đã lưu.",
+  "@aiStateConsentBody": {
+    "description": "Consent missing: body. EN is an engineering draft for owner review."
+  },
+  "aiStateConsentAction": "Xem và đồng ý dùng AI",
+  "@aiStateConsentAction": {
+    "description": "Consent missing: link to the consent screen. EN is an engineering draft for owner review."
+  },
+  "aiStateOffEyebrow": "AI ĐANG TẮT",
+  "@aiStateOffEyebrow": {
+    "description": "ST01 card 2 eyebrow."
+  },
+  "aiStateWithdrawnBody": "Bạn đã tắt AI. Bàn giao dùng mẫu cố định, vẫn đủ 3 phần: điều đã thấy, cách từng có ích, việc có thể chọn tiếp.",
+  "@aiStateWithdrawnBody": {
+    "description": "ST01 card 2 body (consent withdrawn)."
+  },
+  "aiStateWithdrawnAction": "Bật AI trong Cài đặt",
+  "@aiStateWithdrawnAction": {
+    "description": "ST01 card 2 link → consent screen."
+  },
+  "aiStateDisabledBody": "Tóm tắt bằng AI đang tạm dừng. Bàn giao dùng mẫu cố định, vẫn đủ 3 phần.",
+  "@aiStateDisabledBody": {
+    "description": "FEATURE_DISABLED (kill switch). EN is an engineering draft for owner review."
+  },
+  "aiStateErrorEyebrow": "AI CHƯA PHẢN HỒI",
+  "@aiStateErrorEyebrow": {
+    "description": "ST01 card 3 eyebrow."
+  },
+  "aiStateErrorBody": "Không trừ lượt AI khi lỗi. Ghi nhận và hướng dẫn sức khoẻ không bị ảnh hưởng.",
+  "@aiStateErrorBody": {
+    "description": "ST01 card 3 body."
+  },
+  "aiStateQuotaEyebrow": "ĐÃ DÙNG HẾT LƯỢT AI",
+  "@aiStateQuotaEyebrow": {
+    "description": "QUOTA_EXCEEDED eyebrow. EN is an engineering draft for owner review."
+  },
+  "aiStateQuotaDay": "Đã dùng {used}/{limit} lượt AI hôm nay cho bé. Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.",
+  "@aiStateQuotaDay": {
+    "description": "QUOTA_EXCEEDED, daily window. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "aiStateQuotaMonth": "Nhà mình đã dùng {used}/{limit} lượt AI tháng này. Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.",
+  "@aiStateQuotaMonth": {
+    "description": "QUOTA_EXCEEDED, monthly window. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "aiStateQuotaPlain": "Nhà mình đã dùng hết lượt AI trong kỳ này. Bản theo mẫu luôn miễn phí.",
+  "@aiStateQuotaPlain": {
+    "description": "QUOTA_EXCEEDED without numbers. EN is an engineering draft for owner review."
+  },
+  "aiStateTemplateEyebrow": "BẢN THEO MẪU",
+  "@aiStateTemplateEyebrow": {
+    "description": "PREMIUM_REQUIRED / other reasons eyebrow. EN is an engineering draft for owner review."
+  },
+  "aiStatePremiumBody": "Tóm tắt bằng AI nằm trong Child Life Premium. Bản theo mẫu luôn miễn phí.",
+  "@aiStatePremiumBody": {
+    "description": "PREMIUM_REQUIRED body (the only state with a plan link). EN is an engineering draft for owner review."
+  },
+  "aiStateOtherBody": "AI chưa dùng được cho nhà mình lúc này. Bản theo mẫu vẫn đủ 3 phần.",
+  "@aiStateOtherBody": {
+    "description": "ROLE_DENIED / REGION_UNAVAILABLE body. EN is an engineering draft for owner review."
+  },
+  "aiStateStaleTitle": "Có ghi nhận mới",
+  "@aiStateStaleTitle": {
+    "description": "Stale (dataVersion changed). EN is an engineering draft for owner review."
+  },
+  "aiStateStaleBody": "Bản này được tạo trước những ghi nhận mới nhất.",
+  "@aiStateStaleBody": {
+    "description": "Stale body. EN is an engineering draft for owner review."
+  },
+  "aiStateStaleRead": "Bản này được tạo trước những ghi nhận mới nhất. Ba mẹ có thể tạo lại.",
+  "@aiStateStaleRead": {
+    "description": "Stale body for a caregiver (reads only). EN is an engineering draft for owner review."
+  },
+  "aiStateStaleAction": "Tạo lại",
+  "@aiStateStaleAction": {
+    "description": "Stale: regenerate. EN is an engineering draft for owner review."
+  },
+  "aiStateOfflineEyebrow": "NGOẠI TUYẾN",
+  "@aiStateOfflineEyebrow": {
+    "description": "ST01 card 4 eyebrow."
+  },
+  "aiStateOfflineTitle": "Đang xem bản đã lưu",
+  "@aiStateOfflineTitle": {
+    "description": "Offline with a stored handover. EN is an engineering draft for owner review."
+  },
+  "aiStateOfflineBody": "Bản mới và AI cần kết nối. Ghi nhận vẫn lưu trên máy và sẽ đồng bộ khi có mạng.",
+  "@aiStateOfflineBody": {
+    "description": "Offline body (ST01 card 4)."
+  },
+  "aiStateOfflineEmptyTitle": "Chưa có bản bàn giao trên máy",
+  "@aiStateOfflineEmptyTitle": {
+    "description": "Offline, nothing stored. EN is an engineering draft for owner review."
+  },
+  "aiStateFailedTitle": "Chưa tạo được bản bàn giao",
+  "@aiStateFailedTitle": {
+    "description": "The call failed with nothing stored. EN is an engineering draft for owner review."
+  },
+  "aiStateFailedBody": "Ghi nhận của nhà mình vẫn giữ nguyên. Không trừ lượt AI khi lỗi.",
+  "@aiStateFailedBody": {
+    "description": "The call failed body. EN is an engineering draft for owner review."
+  },
+  "aiReadEmptyTitle": "Chưa có bản bàn giao",
+  "@aiReadEmptyTitle": {
+    "description": "Caregiver, nothing stored. EN is an engineering draft for owner review."
+  },
+  "aiReadEmptyBody": "Khi ba mẹ tạo bản bàn giao, bản mới nhất sẽ hiện ở đây.",
+  "@aiReadEmptyBody": {
+    "description": "Caregiver, nothing stored. EN is an engineering draft for owner review."
+  },
+  "aiHealthBody": "Hôm nay có dấu hiệu sức khoẻ được ghi nhận, nên bàn giao không dùng AI. Hãy xem hướng dẫn sức khoẻ trước.",
+  "@aiHealthBody": {
+    "description": "Health first: no AI text (P-151). EN is an engineering draft for owner review."
+  },
+  "aiReportTitle": "Điều gì chưa đúng?",
+  "@aiReportTitle": {
+    "description": "Report sheet title. EN is an engineering draft for owner review."
+  },
+  "aiReportBody": "Chọn một lý do. Không cần viết thêm về bé.",
+  "@aiReportBody": {
+    "description": "Report sheet body. EN is an engineering draft for owner review."
+  },
+  "aiProblemWrongFact": "Không khớp với điều nhà mình ghi",
+  "@aiProblemWrongFact": {
+    "description": "Report reason wrong_fact. EN is an engineering draft for owner review."
+  },
+  "aiProblemWrongPerson": "Nhầm người ghi",
+  "@aiProblemWrongPerson": {
+    "description": "Report reason wrong_person. EN is an engineering draft for owner review."
+  },
+  "aiProblemUnsafe": "Lời khuyên không an toàn",
+  "@aiProblemUnsafe": {
+    "description": "Report reason unsafe_advice. EN is an engineering draft for owner review."
+  },
+  "aiProblemLanguage": "Diễn đạt khó hiểu",
+  "@aiProblemLanguage": {
+    "description": "Report reason language. EN is an engineering draft for owner review."
+  },
+  "aiProblemOther": "Lý do khác",
+  "@aiProblemOther": {
+    "description": "Report reason other. EN is an engineering draft for owner review."
+  },
+  "aiReportSend": "Gửi báo lại",
+  "@aiReportSend": {
+    "description": "Report sheet primary. EN is an engineering draft for owner review."
+  },
+  "aiReportThanks": "Cảm ơn bạn. Bản tóm tắt này sẽ được xem lại.",
+  "@aiReportThanks": {
+    "description": "Toast after a report. EN is an engineering draft for owner review."
+  },
+  "aiReportFailed": "Chưa gửi được. Kiểm tra kết nối và thử lại.",
+  "@aiReportFailed": {
+    "description": "Toast when a report fails. EN is an engineering draft for owner review."
+  },
+  "aiConsentTitle": "Tóm tắt bằng AI",
+  "@aiConsentTitle": {
+    "description": "Consent screen title; Cá nhân hoá row. EN is an engineering draft for owner review."
+  },
+  "aiConsentIntro": "Khi bạn đồng ý, Child Life có thể nhờ một dịch vụ AI bên ngoài diễn đạt lại những ghi nhận đã lưu thành bản bàn giao và lời giải thích. AI không thêm điều mới; mọi số liệu vẫn lấy từ nhật ký.",
+  "@aiConsentIntro": {
+    "description": "Consent intro. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentSentTitle": "Được gửi đi",
+  "@aiConsentSentTitle": {
+    "description": "Consent: what is sent. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentSent1": "Những ghi nhận dạng chữ đã lưu: điều đã thấy, cách đã thử, phản hồi, điều mới",
+  "@aiConsentSent1": {
+    "description": "Consent: sent item. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentSent2": "Tên gọi ở nhà của bé và ngày của từng ghi nhận",
+  "@aiConsentSent2": {
+    "description": "Consent: sent item (D-003 nickname, never the real name). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentNeverTitle": "Không bao giờ gửi",
+  "@aiConsentNeverTitle": {
+    "description": "Consent: never sent. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentNever1": "Ảnh và video",
+  "@aiConsentNever1": {
+    "description": "Consent: never sent (D-003). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentNever2": "Họ tên đầy đủ và ngày sinh của bé",
+  "@aiConsentNever2": {
+    "description": "Consent: never sent (plan §5.5). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentNever3": "Ghi nhận về dấu hiệu sức khoẻ",
+  "@aiConsentNever3": {
+    "description": "Consent: never sent (P-151). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentWhereTitle": "Ai xử lý, lưu ở đâu",
+  "@aiConsentWhereTitle": {
+    "description": "Consent: provider and retention. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentWhere1": "Một dịch vụ AI bên ngoài diễn đạt lại; máy chủ Child Life gửi yêu cầu, điện thoại không gửi trực tiếp.",
+  "@aiConsentWhere1": {
+    "description": "Consent: external provider, server-side only (D-003). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentWhere2": "Nhà cung cấp AI không được lưu giữ dữ liệu này.",
+  "@aiConsentWhere2": {
+    "description": "Consent: provider retention (D-003 \"provider must not retain data\"). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentWhere3": "Bản tóm tắt được lưu trong nhà mình. Thu hồi đồng ý sẽ xoá phần chữ do AI viết; bản theo mẫu vẫn dùng được.",
+  "@aiConsentWhere3": {
+    "description": "Consent: what withdrawal does. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentShareNotes": "Cho phép ghi chú của tôi được dùng khi người khác trong nhà tạo tóm tắt",
+  "@aiConsentShareNotes": {
+    "description": "Consent toggle shareMyNotes. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentShareNotesSub": "Nếu tắt, ghi chú bạn tự viết không được gửi khi người khác tạo tóm tắt.",
+  "@aiConsentShareNotesSub": {
+    "description": "Consent toggle subtitle. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentPersonal": "Đồng ý này là của riêng bạn; gói của hộ không thay cho nó. Bạn đổi ý lúc nào cũng được.",
+  "@aiConsentPersonal": {
+    "description": "Consent: per person. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiConsentVersion": "Phiên bản đồng ý: {version}",
+  "@aiConsentVersion": {
+    "description": "Consent: version line.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aiConsentAgree": "Đồng ý dùng AI",
+  "@aiConsentAgree": {
+    "description": "Consent primary. EN is an engineering draft for owner review."
+  },
+  "aiConsentGranted": "Bạn đã đồng ý ngày {date}",
+  "@aiConsentGranted": {
+    "description": "Consent given line. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "aiConsentOutdated": "Nội dung đồng ý đã cập nhật. Hãy xem lại để tiếp tục dùng AI.",
+  "@aiConsentOutdated": {
+    "description": "Consent for an older version. EN is an engineering draft for owner review."
+  },
+  "aiConsentWithdraw": "Thu hồi đồng ý",
+  "@aiConsentWithdraw": {
+    "description": "Consent: withdraw (NL10 \"Thu hồi đồng ý\")."
+  },
+  "aiWithdrawTitle": "Thu hồi đồng ý?",
+  "@aiWithdrawTitle": {
+    "description": "Withdraw confirm title. EN is an engineering draft for owner review."
+  },
+  "aiWithdrawBody": "AI sẽ không được dùng cho tóm tắt bạn tạo nữa. Phần chữ do AI viết sẽ bị xoá; bản theo mẫu vẫn dùng được.",
+  "@aiWithdrawBody": {
+    "description": "Withdraw confirm body. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070."
+  },
+  "aiWithdrawConfirm": "Thu hồi",
+  "@aiWithdrawConfirm": {
+    "description": "Withdraw confirm button. EN is an engineering draft for owner review."
+  },
+  "aiConsentSaved": "Đã lưu lựa chọn của bạn",
+  "@aiConsentSaved": {
+    "description": "Toast after consent. EN is an engineering draft for owner review."
+  },
+  "aiWithdrawn": "Đã thu hồi đồng ý",
+  "@aiWithdrawn": {
+    "description": "Toast after withdrawal. EN is an engineering draft for owner review."
+  },
+  "aiConsentFailed": "Chưa lưu được. Kiểm tra kết nối và thử lại.",
+  "@aiConsentFailed": {
+    "description": "Toast when consent fails. EN is an engineering draft for owner review."
+  },
+  "aiConsentOn": "Đang bật",
+  "@aiConsentOn": {
+    "description": "Cá nhân hoá row value. EN is an engineering draft for owner review."
+  },
+  "aiConsentOff": "Đang tắt",
+  "@aiConsentOff": {
+    "description": "Cá nhân hoá row value. EN is an engineering draft for owner review."
+  },
+  "aiExplainMore": "Giải thích thêm",
+  "@aiExplainMore": {
+    "description": "PS01 / AC01 link under \"Vì sao gợi ý này\". EN is an engineering draft for owner review."
+  },
+  "aiExplainLoading": "Đang chuẩn bị lời giải thích…",
+  "@aiExplainLoading": {
+    "description": "Explain loading. EN is an engineering draft for owner review."
+  },
+  "aiExplainFailed": "Chưa giải thích thêm được lúc này. Lý do ở trên vẫn đầy đủ.",
+  "@aiExplainFailed": {
+    "description": "Explain failed. EN is an engineering draft for owner review."
+  },
+  "aiExplainConsent": "Cần bạn đồng ý dùng AI để giải thích thêm.",
+  "@aiExplainConsent": {
+    "description": "Explain without consent. EN is an engineering draft for owner review."
+  },
+  "aiExplainQuota": "Đã dùng hết lượt AI trong kỳ này. Lý do ở trên vẫn đầy đủ.",
+  "@aiExplainQuota": {
+    "description": "Explain over quota. EN is an engineering draft for owner review."
+  },
+  "aiExplainUnavailable": "Giải thích thêm chưa dùng được cho nhà mình lúc này.",
+  "@aiExplainUnavailable": {
+    "description": "Explain for other gate reasons. EN is an engineering draft for owner review."
+  },
+  "rhEpSuggestTitle": "Nhóm thành một đợt quan sát?",
+  "@rhEpSuggestTitle": {
+    "description": "NL07b title."
+  },
+  "rhEpSuggestBody": "{count} ngày gần đây có ghi nhận thay đổi: {people} thấy {what}.",
+  "@rhEpSuggestBody": {
+    "description": "NL07b body (\"2 ngày gần đây có ghi nhận thay đổi: Mẹ (06/10) và Ba (07/10) thấy …\").",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "people": {
+        "type": "String"
+      },
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "rhEpPersonDay": "{who} ({date})",
+  "@rhEpPersonDay": {
+    "description": "NL07b: who and when.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhEpNotWonder": "Đây chỉ là cách nhà mình theo dõi, không phải xác nhận một giai đoạn Wonder Weeks.",
+  "@rhEpNotWonder": {
+    "description": "NL07b disclaimer."
+  },
+  "rhEpCreate": "Tạo đợt quan sát",
+  "@rhEpCreate": {
+    "description": "NL07b primary."
+  },
+  "rhEpNoNeed": "Không cần",
+  "@rhEpNoNeed": {
+    "description": "NL07b secondary."
+  },
+  "rhEpOpenTitle": "Đợt quan sát {start} – nay",
+  "@rhEpOpenTitle": {
+    "description": "NL07 episode card title.",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      }
+    }
+  },
+  "rhEpUpdating": "Đang cập nhật",
+  "@rhEpUpdating": {
+    "description": "NL07 episode status pill."
+  },
+  "rhEpOpenBody": "{who} xác nhận nhóm {count} ghi nhận thành một đợt. Đợt kết thúc khi cả nhà xác nhận “con đã ổn hơn”.",
+  "@rhEpOpenBody": {
+    "description": "NL07 episode card body.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rhEpBetter": "Con đã ổn hơn",
+  "@rhEpBetter": {
+    "description": "NL07: closes the episode (never automatic)."
+  },
+  "rhEpCloseTitle": "Kết thúc đợt quan sát?",
+  "@rhEpCloseTitle": {
+    "description": "Close confirm title. EN is an engineering draft for owner review."
+  },
+  "rhEpCloseBody": "Đợt sẽ được lưu từ {start} đến hôm nay. Child Life không tự kết thúc đợt khi không có ghi nhận.",
+  "@rhEpCloseBody": {
+    "description": "Close confirm body. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      }
+    }
+  },
+  "rhEpNotYet": "Chưa",
+  "@rhEpNotYet": {
+    "description": "Close confirm cancel. EN is an engineering draft for owner review."
+  },
+  "rhEpCreated": "Đã tạo đợt quan sát",
+  "@rhEpCreated": {
+    "description": "Toast after NL07b. EN is an engineering draft for owner review."
+  },
+  "rhEpClosed": "Đã kết thúc đợt quan sát",
+  "@rhEpClosed": {
+    "description": "Toast after \"Con đã ổn hơn\". EN is an engineering draft for owner review."
+  },
+  "rhEveningBody": "Ghi lại một điều trong vài giây, nếu có. Không có gì khác cũng không sao.",
+  "@rhEveningBody": {
+    "description": "Evening check-in notification body (title is rhCheckInEntry). EN is an engineering draft for owner review."
+  },
+  "pmPaywallSubtitle": "Một gói cho cả hộ. Mở cả hai nhóm quyền lợi.",
+  "@pmPaywallSubtitle": {
+    "description": "PR01 subtitle."
+  },
+  "pmPaywallHere": "Bạn đang xem",
+  "@pmPaywallHere": {
+    "description": "PR01 pill on the benefit group the paywall was opened from (entry A or B)."
+  },
+  "pmGroupATitle": "A · Cá nhân hoá & Nhịp lớn lên nâng cao",
+  "@pmGroupATitle": {
+    "description": "PR01 benefit group A."
+  },
+  "pmGroupA1": "Một việc phù hợp mỗi ngày từ ghi nhận của nhà mình",
+  "@pmGroupA1": {
+    "description": "PR01 group A benefit 1."
+  },
+  "pmGroupA2": "Nhớ cách đã có ích, bàn giao cho người chăm",
+  "@pmGroupA2": {
+    "description": "PR01 group A benefit 2."
+  },
+  "pmGroupA3": "Tóm tắt AI có căn cứ (có hạn mức)",
+  "@pmGroupA3": {
+    "description": "PR01 group A benefit 3."
+  },
+  "pmGroupBTitle": "B · Mẫu thẻ & video Premium",
+  "@pmGroupBTitle": {
+    "description": "PR01 benefit group B."
+  },
+  "pmGroupB1": "Toàn bộ thư viện mẫu Premium",
+  "@pmGroupB1": {
+    "description": "PR01 group B benefit 1."
+  },
+  "pmGroupB2": "Thêm lượt xuất video mỗi kỳ",
+  "@pmGroupB2": {
+    "description": "PR01 group B benefit 2 (numbers are config, not shown)."
+  },
+  "pmPaywallFreeBody": "Ghi chép, lịch sử, nhắc việc, lịch tham khảo (Wonder Weeks), mẫu cơ bản, hướng dẫn sức khoẻ thiết yếu. Hết gói vẫn xem dữ liệu, kỷ niệm và file đã xuất.",
+  "@pmPaywallFreeBody": {
+    "description": "PR01 always-free box (D-072 #7 label)."
+  },
+  "pmPeriodMonthly": "Theo tháng",
+  "@pmPeriodMonthly": {
+    "description": "PR01 plan tile: monthly."
+  },
+  "pmPeriodYearly": "Theo năm",
+  "@pmPeriodYearly": {
+    "description": "PR01 plan tile: yearly."
+  },
+  "pmRenewMonthly": "{price} mỗi tháng, tự động gia hạn đến khi bạn huỷ.",
+  "@pmRenewMonthly": {
+    "description": "PR01 renewal sentence; price from the storefront.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "pmRenewYearly": "{price} mỗi năm, tự động gia hạn đến khi bạn huỷ.",
+  "@pmRenewYearly": {
+    "description": "PR01 renewal sentence; price from the storefront.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "pmRenewTerms": "Thanh toán qua tài khoản {store} khi bạn xác nhận. Gói tự gia hạn trừ khi bạn tắt ít nhất 24 giờ trước khi kỳ hiện tại kết thúc; quản lý và huỷ trong cài đặt {store}.",
+  "@pmRenewTerms": {
+    "description": "PR01 auto-renewal disclosure required by the stores (not drawn in Figma).",
+    "placeholders": {
+      "store": {
+        "type": "String"
+      }
+    }
+  },
+  "pmStoreApple": "App Store",
+  "@pmStoreApple": {
+    "description": "Store name."
+  },
+  "pmStoreGoogle": "Google Play",
+  "@pmStoreGoogle": {
+    "description": "Store name."
+  },
+  "pmContinuePremium": "Tiếp tục với Premium",
+  "@pmContinuePremium": {
+    "description": "PR01 primary button."
+  },
+  "pmStoreLegal": "Giá, kỳ hạn và gia hạn hiển thị theo cửa hàng · huỷ trong cài đặt cửa hàng",
+  "@pmStoreLegal": {
+    "description": "PR01 legal line under the button."
+  },
+  "pmTerms": "Điều khoản sử dụng",
+  "@pmTerms": {
+    "description": "PR01 link to the terms (store guidelines)."
+  },
+  "pmPrivacy": "Quyền riêng tư",
+  "@pmPrivacy": {
+    "description": "PR01 link to the privacy policy (store guidelines)."
+  },
+  "pmRestore": "Khôi phục",
+  "@pmRestore": {
+    "description": "PR01 / PR03 restore purchases."
+  },
+  "pmBuyClosedTitle": "Mua trong app sắp có",
+  "@pmBuyClosedTitle": {
+    "description": "PR01 owner: purchase not open yet (D-074, premium_billing off or no products)."
+  },
+  "pmBuyClosedBody": "Child Life Premium chưa bán trong app. Mọi thứ miễn phí vẫn dùng bình thường; Child Life sẽ báo khi mở.",
+  "@pmBuyClosedBody": {
+    "description": "PR01 owner: purchase not open yet."
+  },
+  "pmAskOwnerTitle": "Nhờ chủ hộ nâng cấp",
+  "@pmAskOwnerTitle": {
+    "description": "PR01 for members who are not the owner (D-072 #1)."
+  },
+  "pmAskOwnerBody": "Chỉ chủ hộ mua và quản lý gói. Khi hộ có Premium, cả nhà cùng dùng.",
+  "@pmAskOwnerBody": {
+    "description": "PR01 for members who are not the owner."
+  },
+  "pmHouseholdHasBody": "Premium đang mở cho cả nhà. Chỉ chủ hộ quản lý gói.",
+  "@pmHouseholdHasBody": {
+    "description": "PR01 when the household already has Premium."
+  },
+  "pmPendingTitle": "Đang chờ xác nhận thanh toán",
+  "@pmPendingTitle": {
+    "description": "PR02 Pending title."
+  },
+  "pmPendingBody": "Cửa hàng chưa xác nhận giao dịch. Premium chưa được mở. Lựa chọn mẫu và ảnh của bạn vẫn được giữ.",
+  "@pmPendingBody": {
+    "description": "PR02 Pending body from a template."
+  },
+  "pmPendingBodyPlain": "Cửa hàng chưa xác nhận giao dịch. Premium chưa được mở. Bạn có thể đóng và kiểm tra lại sau.",
+  "@pmPendingBodyPlain": {
+    "description": "PR02 Pending body outside a template."
+  },
+  "pmCheckAgain": "Kiểm tra lại",
+  "@pmCheckAgain": {
+    "description": "PR02 Pending primary."
+  },
+  "pmClose": "Đóng",
+  "@pmClose": {
+    "description": "PR02 close."
+  },
+  "pmSuccessTitle": "Hộ đã có Premium",
+  "@pmSuccessTitle": {
+    "description": "PR02 Success title."
+  },
+  "pmSuccessTemplate": "Tiếp tục đúng mẫu “{name}” với ảnh bạn đã chọn.",
+  "@pmSuccessTemplate": {
+    "description": "PR02 Success body from a template.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pmSuccessRhythm": "Gợi ý theo nhu cầu, nhịp riêng của con và tóm tắt AI đã mở cho cả nhà.",
+  "@pmSuccessRhythm": {
+    "description": "PR02 Success body from Nhịp lớn lên or the plan."
+  },
+  "pmContinueCard": "Tiếp tục tạo thẻ",
+  "@pmContinueCard": {
+    "description": "PR02 Success primary for a card."
+  },
+  "pmContinueVideo": "Tiếp tục tạo video",
+  "@pmContinueVideo": {
+    "description": "PR02 Success primary for a video."
+  },
+  "pmBackToRhythm": "Về Nhịp lớn lên",
+  "@pmBackToRhythm": {
+    "description": "PR02 Success primary from entry A (extract open question: return to Nhịp lớn lên)."
+  },
+  "pmDone": "Xong",
+  "@pmDone": {
+    "description": "PR02 Success primary from the plan."
+  },
+  "pmErrorTitle": "Chưa mua được",
+  "@pmErrorTitle": {
+    "description": "PR02 Error title."
+  },
+  "pmErrorBody": "Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu miễn phí.",
+  "@pmErrorBody": {
+    "description": "PR02 Error body from a template."
+  },
+  "pmErrorBodyPlain": "Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại sau nhé.",
+  "@pmErrorBodyPlain": {
+    "description": "PR02 Error body outside a template."
+  },
+  "pmErrorVerifyBody": "Child Life chưa xác minh được giao dịch với cửa hàng. Premium chưa được mở. Nếu cửa hàng đã trừ tiền, bấm Thử lại hoặc Khôi phục.",
+  "@pmErrorVerifyBody": {
+    "description": "PR02 Error: the server could not verify."
+  },
+  "pmErrorNetworkBody": "Chưa kết nối được Child Life. Giao dịch của cửa hàng vẫn được giữ để kiểm tra lại.",
+  "@pmErrorNetworkBody": {
+    "description": "PR02 Error: network while verifying."
+  },
+  "pmTryAgain": "Thử lại",
+  "@pmTryAgain": {
+    "description": "PR02 Error primary."
+  },
+  "pmNotOwnerTitle": "Chỉ chủ hộ mua và khôi phục gói",
+  "@pmNotOwnerTitle": {
+    "description": "PR02 not_owner (D-072 #1)."
+  },
+  "pmNotOwnerBody": "Nhờ chủ hộ mở Gói của hộ để nâng cấp hoặc khôi phục.",
+  "@pmNotOwnerBody": {
+    "description": "PR02 not_owner body."
+  },
+  "pmRestoreTitle": "Khôi phục giao dịch",
+  "@pmRestoreTitle": {
+    "description": "PR02 Restore confirm title."
+  },
+  "pmRestoreBody": "Child Life kiểm tra giao dịch thuộc tài khoản này và gắn lại cho hộ của bạn. Không chuyển gói từ hộ khác.",
+  "@pmRestoreBody": {
+    "description": "PR02 Restore confirm body."
+  },
+  "pmCancel": "Huỷ",
+  "@pmCancel": {
+    "description": "PR02 Restore confirm secondary."
+  },
+  "pmRestoredTitle": "Đã khôi phục Premium",
+  "@pmRestoredTitle": {
+    "description": "Restore result: re-linked (not drawn)."
+  },
+  "pmRestoredBody": "Gói của bạn đã gắn lại với hộ này. Cả nhà thấy “Hộ đã có Premium”.",
+  "@pmRestoredBody": {
+    "description": "Restore result: re-linked."
+  },
+  "pmRestoreNoneTitle": "Không có giao dịch để khôi phục",
+  "@pmRestoreNoneTitle": {
+    "description": "Restore result: nothing found (not drawn)."
+  },
+  "pmRestoreNoneBody": "Tài khoản cửa hàng này chưa có gói Child Life Premium còn hiệu lực.",
+  "@pmRestoreNoneBody": {
+    "description": "Restore result: nothing found."
+  },
+  "pmRestoreBoundTitle": "Gói đang dùng cho hộ khác",
+  "@pmRestoreBoundTitle": {
+    "description": "Restore result: already bound to another family (not drawn)."
+  },
+  "pmRestoreBoundBody": "Giao dịch này đã gắn với một hộ khác. Child Life không chuyển gói giữa các hộ; liên hệ hỗ trợ nếu cần.",
+  "@pmRestoreBoundBody": {
+    "description": "Restore result: already bound."
+  },
+  "pmTemplateKeepsPhotos": "Ảnh bạn đã chọn sẽ được giữ sau khi mua",
+  "@pmTemplateKeepsPhotos": {
+    "description": "MO02 note: the selection survives the purchase."
+  },
+  "pmResumedBanner": "Đã mở Premium · tiếp tục chỗ bạn đang làm",
+  "@pmResumedBanner": {
+    "description": "MO03 banner on the template after purchase."
+  },
+  "pmManageApple": "Quản lý trong App Store",
+  "@pmManageApple": {
+    "description": "PR03 owner: subscription management (Apple)."
+  },
+  "pmManageGoogle": "Quản lý trong Google Play",
+  "@pmManageGoogle": {
+    "description": "PR03 owner: subscription management (Google)."
+  },
+  "pmSeePremium": "Xem Premium",
+  "@pmSeePremium": {
+    "description": "PR03 / quota sheet: open PR01."
+  },
+  "pmRenewPremium": "Gia hạn Premium",
+  "@pmRenewPremium": {
+    "description": "PR04 renew link."
+  },
+  "pmExpiredStrip": "Premium đã hết hạn. Mọi ghi nhận, phản hồi và bản tóm tắt đã lưu vẫn ở đây.",
+  "@pmExpiredStrip": {
+    "description": "PR04 strip where history stays."
+  },
+  "pmQuotaTitle": "Lượt xuất video kỳ này",
+  "@pmQuotaTitle": {
+    "description": "MO04 quota card title."
+  },
+  "pmQuotaDetail": "{used} đã dùng · {reserved} đang giữ chỗ · làm mới {date}",
+  "@pmQuotaDetail": {
+    "description": "MO04 quota detail.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "reserved": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pmQuotaDetailNoDate": "{used} đã dùng · {reserved} đang giữ chỗ",
+  "@pmQuotaDetailNoDate": {
+    "description": "MO04 quota detail without a reset date.",
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "reserved": {
+        "type": "int"
+      }
+    }
+  },
+  "pmQuotaCards": "Thẻ ảnh không tính lượt.",
+  "@pmQuotaCards": {
+    "description": "MO04 note."
+  },
+  "pmQuotaOutTitle": "Đã hết lượt xuất video kỳ này",
+  "@pmQuotaOutTitle": {
+    "description": "QUOTA_EXCEEDED sheet title (MO04 \"Khi hết lượt\")."
+  },
+  "pmQuotaOutBody": "Vẫn xem mẫu và tạo thẻ ảnh. Video mới chờ kỳ sau, làm mới {date}.",
+  "@pmQuotaOutBody": {
+    "description": "QUOTA_EXCEEDED sheet body.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pmQuotaOutBodyNoDate": "Vẫn xem mẫu và tạo thẻ ảnh. Video mới chờ kỳ sau.",
+  "@pmQuotaOutBodyNoDate": {
+    "description": "QUOTA_EXCEEDED sheet body without a date."
+  },
+  "pmQuotaMakeCard": "Tạo thẻ ảnh",
+  "@pmQuotaMakeCard": {
+    "description": "QUOTA_EXCEEDED sheet: go to cards."
+  },
+  "pmQuotaPremiumNote": "Premium có {limit} lượt xuất video mỗi kỳ.",
+  "@pmQuotaPremiumNote": {
+    "description": "QUOTA_EXCEEDED sheet note for free families, only when Premium has more.",
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "pmQuotaReserved": "Giữ 1 lượt · bạn có thể rời màn hình",
+  "@pmQuotaReserved": {
+    "description": "MO04 queued job."
+  },
+  "pmQuotaReleased": "Đã hoàn lượt giữ chỗ · Thử lại không trừ thêm lượt",
+  "@pmQuotaReleased": {
+    "description": "MO04 failed job."
   }
 }

@@ -10,6 +10,7 @@ import '../../core/design/tokens.g.dart';
 import '../../core/format/age.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../l10n/app_localizations.dart';
+import '../ai/handover_screen.dart' show HandoverEntry;
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
@@ -154,6 +155,16 @@ class _RhythmOverviewScreenState extends ConsumerState<RhythmOverviewScreen> {
           const SizedBox(height: ClSpace.s3),
         ],
         OwnRhythmCard(me: me, caps: caps, zone: zone, today: today),
+        // SU01 (Premium Slice 3): the handover for the next carer.
+        if (HandoverEntry.visibleFor(
+          ref,
+          me,
+          caps,
+          Localizations.localeOf(context).languageCode,
+        )) ...[
+          const SizedBox(height: ClSpace.s3),
+          const HandoverEntry(),
+        ],
         if (canRead) ...[
           const SizedBox(height: ClSpace.s4),
           TriedSection(me: me),

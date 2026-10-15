@@ -60,7 +60,7 @@ void main() {
         expect(repo.composeCalls, 0);
         await tester.tap(find.text(l10n.rhSupportTitle));
         await tester.pumpAndSettle();
-        expect(visits.last.location, Routes.mePlan);
+        expect(visits.last.location, '${Routes.premium}?entry=rhythm');
       },
     );
 
@@ -474,7 +474,7 @@ void main() {
         expect(find.text(l10n.rhDone), findsOneWidget);
         await tester.tap(find.text(l10n.rhLearnMoreOptional));
         await tester.pumpAndSettle();
-        expect(visits.last.location, Routes.mePlan);
+        expect(visits.last.location, '${Routes.premium}?entry=rhythm');
       },
     );
 

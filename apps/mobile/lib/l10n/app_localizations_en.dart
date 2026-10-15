@@ -13003,4 +13003,725 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rhOtherIdeas => 'Other things to try';
+
+  @override
+  String get aiHandoverTitle => 'Handover for the next carer';
+
+  @override
+  String get aiHandoverEntrySub =>
+      'A three-part summary from the family’s notes';
+
+  @override
+  String aiHandoverEntryLatest(String date) {
+    return 'Latest · $date';
+  }
+
+  @override
+  String aiHandoverFrom(String range, int count, String names) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+    );
+    return '$range · from $_temp0 by $names';
+  }
+
+  @override
+  String aiHandoverFromCount(String range, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+    );
+    return '$range · from $_temp0';
+  }
+
+  @override
+  String aiGeneratedAt(String when) {
+    return 'Made $when';
+  }
+
+  @override
+  String get aiSectionNoticed => 'What was noticed';
+
+  @override
+  String get aiSectionHelped => 'What helped';
+
+  @override
+  String get aiSectionNext => 'What you could do next';
+
+  @override
+  String get aiSectionNote => 'Note';
+
+  @override
+  String get aiWordedByAi =>
+      'Worded by AI from saved notes · numbers come from the log';
+
+  @override
+  String get aiWordedShort => 'Worded by AI from saved notes';
+
+  @override
+  String get aiTemplateLine => 'This summary is built from your saved notes.';
+
+  @override
+  String get aiReport => 'Not right? Tell us';
+
+  @override
+  String aiSendTo(String name) {
+    return 'Send to $name';
+  }
+
+  @override
+  String get aiShare => 'Share handover';
+
+  @override
+  String get aiShareAiLine => '(Worded by AI from saved notes)';
+
+  @override
+  String get aiShareTemplateLine => '(Template summary from saved notes)';
+
+  @override
+  String get aiLoading => 'Putting the notes together…';
+
+  @override
+  String get aiNoSections =>
+      'Not enough notes for a handover yet. Add today’s note to start.';
+
+  @override
+  String aiChipCheckIn(String who, String date) {
+    return '$who’s note · $date';
+  }
+
+  @override
+  String aiChipCheckInMine(String date) {
+    return 'Your note · $date';
+  }
+
+  @override
+  String aiChipFeedback(String who, String date) {
+    return '$who’s feedback · $date';
+  }
+
+  @override
+  String aiChipFeedbackMine(String date) {
+    return 'Your feedback · $date';
+  }
+
+  @override
+  String aiChipMilestone(String date) {
+    return 'Something new · $date';
+  }
+
+  @override
+  String get aiChipSleep => 'Sleep log';
+
+  @override
+  String aiRecordWho(String who, String date) {
+    return '$who · $date';
+  }
+
+  @override
+  String get aiRecordCheckIn => 'Note';
+
+  @override
+  String get aiRecordFeedback => 'Feedback';
+
+  @override
+  String get aiRecordMilestone => 'Something new';
+
+  @override
+  String get aiRecordOpenActivity => 'Open the activity';
+
+  @override
+  String get aiRecordGone =>
+      'This note is no longer on this phone or was deleted.';
+
+  @override
+  String get aiStateTemplateTitle => 'Showing the template version';
+
+  @override
+  String get aiStateConsentEyebrow => 'AI NOT ON';
+
+  @override
+  String get aiStateConsentBody =>
+      'This uses a fixed template with the same three parts. If you agree, AI only rewords the saved notes.';
+
+  @override
+  String get aiStateConsentAction => 'Review and allow AI';
+
+  @override
+  String get aiStateOffEyebrow => 'AI IS OFF';
+
+  @override
+  String get aiStateWithdrawnBody =>
+      'You turned AI off. The handover uses a fixed template with the same three parts.';
+
+  @override
+  String get aiStateWithdrawnAction => 'Turn on AI in Settings';
+
+  @override
+  String get aiStateDisabledBody =>
+      'AI summaries are paused. The handover uses a fixed template with the same three parts.';
+
+  @override
+  String get aiStateErrorEyebrow => 'AI DIDN’T RESPOND';
+
+  @override
+  String get aiStateErrorBody =>
+      'No AI quota is used on errors. Logging and health guidance are unaffected.';
+
+  @override
+  String get aiStateQuotaEyebrow => 'AI LIMIT REACHED';
+
+  @override
+  String aiStateQuotaDay(int used, int limit, String when) {
+    return 'Used $used of $limit AI summaries today for this baby. More from $when. The template is always free.';
+  }
+
+  @override
+  String aiStateQuotaMonth(int used, int limit, String when) {
+    return 'Your household used $used of $limit AI summaries this month. More from $when. The template is always free.';
+  }
+
+  @override
+  String get aiStateQuotaPlain =>
+      'Your household has used this period’s AI summaries. The template is always free.';
+
+  @override
+  String get aiStateTemplateEyebrow => 'TEMPLATE VERSION';
+
+  @override
+  String get aiStatePremiumBody =>
+      'AI summaries are part of Child Life Premium. The template version is always free.';
+
+  @override
+  String get aiStateOtherBody =>
+      'AI isn’t available for your household right now. The template has the same three parts.';
+
+  @override
+  String get aiStateStaleTitle => 'New notes since this';
+
+  @override
+  String get aiStateStaleBody => 'This was made before the latest notes.';
+
+  @override
+  String get aiStateStaleRead =>
+      'This was made before the latest notes. A parent can make it again.';
+
+  @override
+  String get aiStateStaleAction => 'Make it again';
+
+  @override
+  String get aiStateOfflineEyebrow => 'OFFLINE';
+
+  @override
+  String get aiStateOfflineTitle => 'Showing the saved version';
+
+  @override
+  String get aiStateOfflineBody =>
+      'A new version and AI need a connection. Notes still save on this device and sync when online.';
+
+  @override
+  String get aiStateOfflineEmptyTitle => 'No handover on this phone yet';
+
+  @override
+  String get aiStateFailedTitle => 'Couldn’t make the handover';
+
+  @override
+  String get aiStateFailedBody =>
+      'Your family’s notes are unchanged. No AI quota is used on errors.';
+
+  @override
+  String get aiReadEmptyTitle => 'No handover yet';
+
+  @override
+  String get aiReadEmptyBody =>
+      'When a parent makes a handover, the latest one shows here.';
+
+  @override
+  String get aiHealthBody =>
+      'A health sign was noted today, so the handover doesn’t use AI. See the health guidance first.';
+
+  @override
+  String get aiReportTitle => 'What’s not right?';
+
+  @override
+  String get aiReportBody =>
+      'Pick one reason. No need to write anything about your baby.';
+
+  @override
+  String get aiProblemWrongFact => 'Doesn’t match what we noted';
+
+  @override
+  String get aiProblemWrongPerson => 'Wrong person';
+
+  @override
+  String get aiProblemUnsafe => 'Unsafe advice';
+
+  @override
+  String get aiProblemLanguage => 'Hard to understand';
+
+  @override
+  String get aiProblemOther => 'Something else';
+
+  @override
+  String get aiReportSend => 'Send';
+
+  @override
+  String get aiReportThanks => 'Thank you. This summary will be reviewed.';
+
+  @override
+  String get aiReportFailed =>
+      'Couldn’t send. Check the connection and try again.';
+
+  @override
+  String get aiConsentTitle => 'AI summaries';
+
+  @override
+  String get aiConsentIntro =>
+      'If you agree, Child Life may ask an external AI service to reword saved notes into a handover or an explanation. AI adds nothing new; every number still comes from the log.';
+
+  @override
+  String get aiConsentSentTitle => 'What is sent';
+
+  @override
+  String get aiConsentSent1 =>
+      'Saved text notes: what was noticed, what was tried, feedback, new things';
+
+  @override
+  String get aiConsentSent2 => 'Your baby’s nickname and the date of each note';
+
+  @override
+  String get aiConsentNeverTitle => 'Never sent';
+
+  @override
+  String get aiConsentNever1 => 'Photos and videos';
+
+  @override
+  String get aiConsentNever2 => 'Your baby’s full name and date of birth';
+
+  @override
+  String get aiConsentNever3 => 'Notes about health signs';
+
+  @override
+  String get aiConsentWhereTitle => 'Who handles it, where it’s kept';
+
+  @override
+  String get aiConsentWhere1 =>
+      'An external AI service does the wording; Child Life’s server sends the request, never your phone.';
+
+  @override
+  String get aiConsentWhere2 => 'The AI provider must not keep this data.';
+
+  @override
+  String get aiConsentWhere3 =>
+      'Summaries are kept in your family. Withdrawing consent deletes the AI-written text; the template keeps working.';
+
+  @override
+  String get aiConsentShareNotes =>
+      'Let my notes be used when someone else in the family makes a summary';
+
+  @override
+  String get aiConsentShareNotesSub =>
+      'If off, notes you write aren’t sent when someone else makes a summary.';
+
+  @override
+  String get aiConsentPersonal =>
+      'This consent is yours alone; the household plan doesn’t replace it. You can change your mind any time.';
+
+  @override
+  String aiConsentVersion(String version) {
+    return 'Consent version: $version';
+  }
+
+  @override
+  String get aiConsentAgree => 'Allow AI';
+
+  @override
+  String aiConsentGranted(String date) {
+    return 'You agreed on $date';
+  }
+
+  @override
+  String get aiConsentOutdated =>
+      'The consent text changed. Review it to keep using AI.';
+
+  @override
+  String get aiConsentWithdraw => 'Withdraw consent';
+
+  @override
+  String get aiWithdrawTitle => 'Withdraw consent?';
+
+  @override
+  String get aiWithdrawBody =>
+      'AI won’t be used for summaries you make. AI-written text will be deleted; the template keeps working.';
+
+  @override
+  String get aiWithdrawConfirm => 'Withdraw';
+
+  @override
+  String get aiConsentSaved => 'Your choice is saved';
+
+  @override
+  String get aiWithdrawn => 'Consent withdrawn';
+
+  @override
+  String get aiConsentFailed =>
+      'Couldn’t save. Check the connection and try again.';
+
+  @override
+  String get aiConsentOn => 'On';
+
+  @override
+  String get aiConsentOff => 'Off';
+
+  @override
+  String get aiExplainMore => 'Explain more';
+
+  @override
+  String get aiExplainLoading => 'Preparing an explanation…';
+
+  @override
+  String get aiExplainFailed =>
+      'Couldn’t explain more right now. The reason above still stands.';
+
+  @override
+  String get aiExplainConsent => 'AI needs your consent to explain more.';
+
+  @override
+  String get aiExplainQuota =>
+      'This period’s AI summaries are used up. The reason above still stands.';
+
+  @override
+  String get aiExplainUnavailable =>
+      'Explaining more isn’t available for your household right now.';
+
+  @override
+  String get rhEpSuggestTitle => 'Group into one observation period?';
+
+  @override
+  String rhEpSuggestBody(int count, String people, String what) {
+    return '$count recent days had changes noted by $people: $what.';
+  }
+
+  @override
+  String rhEpPersonDay(String who, String date) {
+    return '$who ($date)';
+  }
+
+  @override
+  String get rhEpNotWonder =>
+      'This is just how your family keeps track, not confirmation of a Wonder Weeks stage.';
+
+  @override
+  String get rhEpCreate => 'Create observation period';
+
+  @override
+  String get rhEpNoNeed => 'No need';
+
+  @override
+  String rhEpOpenTitle(String start) {
+    return 'Observation period $start – now';
+  }
+
+  @override
+  String get rhEpUpdating => 'Updating';
+
+  @override
+  String rhEpOpenBody(String who, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+    );
+    return '$who grouped $_temp0 into one period. It ends only when your family taps “Better now”.';
+  }
+
+  @override
+  String get rhEpBetter => 'Better now';
+
+  @override
+  String get rhEpCloseTitle => 'End this observation period?';
+
+  @override
+  String rhEpCloseBody(String start) {
+    return 'It will be kept from $start to today. Child Life never ends a period on its own.';
+  }
+
+  @override
+  String get rhEpNotYet => 'Not yet';
+
+  @override
+  String get rhEpCreated => 'Observation period created';
+
+  @override
+  String get rhEpClosed => 'Observation period ended';
+
+  @override
+  String get rhEveningBody =>
+      'Note one thing in a few seconds, if there is one. Nothing different is fine too.';
+
+  @override
+  String get pmPaywallSubtitle =>
+      'One plan for the whole household. Unlocks both benefit groups.';
+
+  @override
+  String get pmPaywallHere => 'You’re here';
+
+  @override
+  String get pmGroupATitle => 'A · Personalisation & advanced rhythm';
+
+  @override
+  String get pmGroupA1 => 'One step a day from your family’s notes';
+
+  @override
+  String get pmGroupA2 => 'Remembers what helped, handover for carers';
+
+  @override
+  String get pmGroupA3 => 'Grounded AI summaries (with limits)';
+
+  @override
+  String get pmGroupBTitle => 'B · Premium card & video templates';
+
+  @override
+  String get pmGroupB1 => 'The full Premium template library';
+
+  @override
+  String get pmGroupB2 => 'More video exports each period';
+
+  @override
+  String get pmPaywallFreeBody =>
+      'Logging, history, reminders, reference calendar (Wonder Weeks), basic templates, essential health guidance. After Premium ends you keep your data, moments and exported files.';
+
+  @override
+  String get pmPeriodMonthly => 'Monthly';
+
+  @override
+  String get pmPeriodYearly => 'Yearly';
+
+  @override
+  String pmRenewMonthly(String price) {
+    return '$price per month, renews automatically until you cancel.';
+  }
+
+  @override
+  String pmRenewYearly(String price) {
+    return '$price per year, renews automatically until you cancel.';
+  }
+
+  @override
+  String pmRenewTerms(String store) {
+    return 'Payment is charged to your $store account when you confirm. The plan renews unless you turn it off at least 24 hours before the current period ends; manage or cancel in $store settings.';
+  }
+
+  @override
+  String get pmStoreApple => 'App Store';
+
+  @override
+  String get pmStoreGoogle => 'Google Play';
+
+  @override
+  String get pmContinuePremium => 'Continue with Premium';
+
+  @override
+  String get pmStoreLegal =>
+      'Price, period and renewal shown by the store · cancel in store settings';
+
+  @override
+  String get pmTerms => 'Terms of Use';
+
+  @override
+  String get pmPrivacy => 'Privacy Policy';
+
+  @override
+  String get pmRestore => 'Restore';
+
+  @override
+  String get pmBuyClosedTitle => 'In-app purchase is coming soon';
+
+  @override
+  String get pmBuyClosedBody =>
+      'Child Life Premium isn’t sold in the app yet. Everything free keeps working; we’ll let you know when it opens.';
+
+  @override
+  String get pmAskOwnerTitle => 'Ask the family owner to upgrade';
+
+  @override
+  String get pmAskOwnerBody =>
+      'Only the family owner buys and manages the plan. Once the household has Premium, everyone uses it.';
+
+  @override
+  String get pmHouseholdHasBody =>
+      'Premium is on for the whole family. Only the family owner manages it.';
+
+  @override
+  String get pmPendingTitle => 'Waiting for payment confirmation';
+
+  @override
+  String get pmPendingBody =>
+      'The store hasn’t confirmed yet. Premium isn’t active. Your template and photo selection are kept.';
+
+  @override
+  String get pmPendingBodyPlain =>
+      'The store hasn’t confirmed yet. Premium isn’t active. You can close this and check again later.';
+
+  @override
+  String get pmCheckAgain => 'Check again';
+
+  @override
+  String get pmClose => 'Close';
+
+  @override
+  String get pmSuccessTitle => 'Your household has Premium';
+
+  @override
+  String pmSuccessTemplate(String name) {
+    return 'Continuing with “$name” and the photos you chose.';
+  }
+
+  @override
+  String get pmSuccessRhythm =>
+      'Need-based suggestions, your baby’s own rhythm and AI summaries are on for the whole family.';
+
+  @override
+  String get pmContinueCard => 'Continue creating';
+
+  @override
+  String get pmContinueVideo => 'Continue your video';
+
+  @override
+  String get pmBackToRhythm => 'Back to Growing rhythm';
+
+  @override
+  String get pmDone => 'Done';
+
+  @override
+  String get pmErrorTitle => 'Purchase didn’t complete';
+
+  @override
+  String get pmErrorBody =>
+      'You aren’t charged unless the store confirms. Try again or use a free template.';
+
+  @override
+  String get pmErrorBodyPlain =>
+      'You aren’t charged unless the store confirms. Please try again.';
+
+  @override
+  String get pmErrorVerifyBody =>
+      'We couldn’t confirm the purchase with the store yet. Premium isn’t active. If you were charged, tap Try again or Restore.';
+
+  @override
+  String get pmErrorNetworkBody =>
+      'Couldn’t reach Child Life. The store’s transaction is kept so it can be checked again.';
+
+  @override
+  String get pmTryAgain => 'Try again';
+
+  @override
+  String get pmNotOwnerTitle => 'Only the family owner can buy or restore';
+
+  @override
+  String get pmNotOwnerBody =>
+      'Ask the family owner to open Household plan to upgrade or restore.';
+
+  @override
+  String get pmRestoreTitle => 'Restore purchase';
+
+  @override
+  String get pmRestoreBody =>
+      'We check purchases on this account and re-link them to your household. Plans aren’t moved from other households.';
+
+  @override
+  String get pmCancel => 'Cancel';
+
+  @override
+  String get pmRestoredTitle => 'Premium restored';
+
+  @override
+  String get pmRestoredBody =>
+      'Your plan is linked to this household again. Everyone sees “Household has Premium”.';
+
+  @override
+  String get pmRestoreNoneTitle => 'Nothing to restore';
+
+  @override
+  String get pmRestoreNoneBody =>
+      'This store account has no active Child Life Premium plan.';
+
+  @override
+  String get pmRestoreBoundTitle => 'This plan belongs to another household';
+
+  @override
+  String get pmRestoreBoundBody =>
+      'This purchase is linked to another household. Plans aren’t moved between households; contact support if you need help.';
+
+  @override
+  String get pmTemplateKeepsPhotos =>
+      'Your selected photos are kept after purchase';
+
+  @override
+  String get pmResumedBanner =>
+      'Premium unlocked · picking up where you left off';
+
+  @override
+  String get pmManageApple => 'Manage in App Store';
+
+  @override
+  String get pmManageGoogle => 'Manage in Google Play';
+
+  @override
+  String get pmSeePremium => 'See Premium';
+
+  @override
+  String get pmRenewPremium => 'Renew Premium';
+
+  @override
+  String get pmExpiredStrip =>
+      'Premium has ended. All notes, feedback and saved summaries are still here.';
+
+  @override
+  String get pmQuotaTitle => 'Video exports this period';
+
+  @override
+  String pmQuotaDetail(int used, int reserved, String date) {
+    return '$used used · $reserved reserved · resets $date';
+  }
+
+  @override
+  String pmQuotaDetailNoDate(int used, int reserved) {
+    return '$used used · $reserved reserved';
+  }
+
+  @override
+  String get pmQuotaCards => 'Cards don’t count.';
+
+  @override
+  String get pmQuotaOutTitle => 'No video exports left this period';
+
+  @override
+  String pmQuotaOutBody(String date) {
+    return 'You can still browse templates and make cards. New videos wait for the next period, starting $date.';
+  }
+
+  @override
+  String get pmQuotaOutBodyNoDate =>
+      'You can still browse templates and make cards. New videos wait for the next period.';
+
+  @override
+  String get pmQuotaMakeCard => 'Make a card';
+
+  @override
+  String pmQuotaPremiumNote(int limit) {
+    return 'Premium includes $limit video exports each period.';
+  }
+
+  @override
+  String get pmQuotaReserved => '1 export reserved · you can leave this screen';
+
+  @override
+  String get pmQuotaReleased =>
+      'Reservation released · retry doesn’t use another export';
 }

@@ -9,13 +9,20 @@ import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../keepsakes/keepsake_catalog.dart';
+import 'billing_models.dart';
+import 'paywall_screen.dart';
 import 'premium_models.dart';
 import 'premium_repository.dart';
+import 'purchase_resume.dart';
 
 /// Explains a refused action by its reason (brief p.8, ST01 / ST02). Never a paywall: only
-/// [GateReason.premiumRequired] offers Premium, and only through [showPremiumTemplateSheet] or
-/// the plan screen. Health and logging never reach here (brief p.13).
-Future<void> showGateSheet(BuildContext context, GateReason reason) {
+/// [GateReason.premiumRequired] offers Premium (PR01, opened from [entry]). Health and logging
+/// never reach here (brief p.13).
+Future<void> showGateSheet(
+  BuildContext context,
+  GateReason reason, {
+  PaywallEntry entry = PaywallEntry.rhythm,
+}) {
   final l10n = AppLocalizations.of(context);
   final (title, body, action) = switch (reason) {
     GateReason.roleDenied => (l10n.pmGateRoleTitle, l10n.pmGateRoleBody, null),
@@ -43,7 +50,7 @@ Future<void> showGateSheet(BuildContext context, GateReason reason) {
     GateReason.premiumRequired => (
       l10n.pmPlanTitle,
       l10n.pmTemplatePremiumBody,
-      (l10n.pmUnlockPremium, Routes.mePlan),
+      (l10n.pmUnlockPremium, paywallLocation(entry)),
     ),
   };
   return showClSheet<void>(
@@ -65,18 +72,19 @@ Future<void> showGateSheet(BuildContext context, GateReason reason) {
   );
 }
 
-/// What MO02 decided.
-enum PremiumTemplateChoice { unlock, useFree, dismissed }
+/// What MO02 decided. [unlocked]: PR01 came back with the household on Premium.
+enum PremiumTemplateChoice { unlock, unlocked, useFree, dismissed }
 
 /// MO02 (592:6782): a Cao cấp template in `subscribers` mode without `templates.premium`.
-/// "Mở với Premium" goes to the household plan (the purchase itself comes in Slice 4);
-/// "Dùng mẫu miễn phí" goes back to the library. Beta families are told the beta does not include
-/// Premium templates (brief p.3).
+/// "Mở với Premium" opens PR01 from the templates (entry B) with the draft kept by [keep]
+/// (MO03: same template and photos after the purchase); "Dùng mẫu miễn phí" goes back to the
+/// library. Beta families are told the beta does not include Premium templates (brief p.3).
 Future<PremiumTemplateChoice> showPremiumTemplateSheet(
   BuildContext context, {
   required String templateName,
   required bool card,
   required Capabilities? caps,
+  PurchaseResume Function()? keep,
 }) async {
   final l10n = AppLocalizations.of(context);
   final choice = await showClSheet<PremiumTemplateChoice>(
@@ -87,6 +95,7 @@ Future<PremiumTemplateChoice> showPremiumTemplateSheet(
       body: [
         l10n.pmTemplatePremiumBody,
         if (caps?.plan == HouseholdPlan.beta) l10n.pmTemplateBetaNote,
+        if (keep != null) l10n.pmTemplateKeepsPhotos,
       ].join('\n'),
       primary: (
         l10n.pmUnlockPremium,
@@ -100,13 +109,20 @@ Future<PremiumTemplateChoice> showPremiumTemplateSheet(
     ),
   );
   if (choice == PremiumTemplateChoice.unlock && context.mounted) {
-    await context.push(Routes.mePlan);
+    final done = await openPaywall(
+      context,
+      entry: PaywallEntry.templates,
+      resume: keep?.call(),
+    );
+    if (done) return PremiumTemplateChoice.unlocked;
   }
   return choice ?? PremiumTemplateChoice.dismissed;
 }
 
 /// Whether [t] may be used now. In `subscribers` mode a Cao cấp template needs the household's
-/// `templates.premium`; otherwise MO02 is shown and false returned. The server refuses it too
+/// `templates.premium`; otherwise MO02 is shown and false returned, unless the parent buys
+/// Premium from there: then true, and the next screen shows MO03's "tiếp tục" banner. [keep]
+/// keeps the draft for the purchase (MO03 / M17). The server refuses it too
 /// (`PREMIUM_REQUIRED`), so a stale answer here can only cost a retry, never unlock anything.
 Future<bool> ensureTemplateAllowed(
   BuildContext context,
@@ -114,6 +130,7 @@ Future<bool> ensureTemplateAllowed(
   required KeepsakeTemplate template,
   required KeepsakeCatalog? catalog,
   required String babyId,
+  PurchaseResume Function()? keep,
 }) async {
   if (!template.premium ||
       catalog?.premiumAccess != PremiumAccess.subscribers) {
@@ -124,16 +141,23 @@ Future<bool> ensureTemplateAllowed(
   if (!context.mounted) return false;
   final reason = caps?.reasonFor(Capability.templatesPremium);
   if (reason != null && reason != GateReason.premiumRequired) {
-    await showGateSheet(context, reason);
+    await showGateSheet(context, reason, entry: PaywallEntry.templates);
     return false;
   }
-  await showPremiumTemplateSheet(
+  final choice = await showPremiumTemplateSheet(
     context,
     templateName: template.name.of(Localizations.localeOf(context)),
     card: template.kind == KeepsakeKind.card,
     caps: caps,
+    keep: keep,
   );
-  return false;
+  if (choice != PremiumTemplateChoice.unlocked) return false;
+  // Access is what getCapabilities says now (the paywall already read it back).
+  if (!context.mounted) return false;
+  final now = await readCapabilities(ref, babyId);
+  if (!(now?.allows(Capability.templatesPremium) ?? false)) return false;
+  ref.read(justResumedProvider.notifier).set(template.id);
+  return true;
 }
 
 class _GateBody extends StatelessWidget {

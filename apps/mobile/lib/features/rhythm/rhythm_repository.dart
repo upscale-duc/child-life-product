@@ -173,6 +173,43 @@ class RhythmRepository {
     _track(id, _db.doc('babies/$babyId/recFeedback/$id').delete(), onError);
   }
 
+  // ---------- Observation episodes (NL07b) ----------
+
+  /// The baby's episodes, the newest start first.
+  Stream<List<ObservationEpisode>> watchEpisodes(String babyId) => _db
+      .collection('babies/$babyId/episodes')
+      .orderBy('startDate', descending: true)
+      .limit(20)
+      .snapshots(includeMetadataChanges: true)
+      .map(
+        (s) => [
+          for (final d in s.docs)
+            ?ObservationEpisode.fromJson(
+              d.data(),
+              pending: d.metadata.hasPendingWrites,
+            ),
+        ],
+      );
+
+  /// Confirms (NL07b) or closes ("Con đã ổn hơn") an episode without waiting for the server.
+  ObservationEpisode saveEpisode(
+    ObservationEpisode episode, {
+    bool create = false,
+    void Function(Object error)? onError,
+  }) {
+    final doc = _db.doc('babies/${episode.babyId}/episodes/${episode.id}');
+    _track(
+      episode.id,
+      doc.set({
+        ...episode.toJson(),
+        'updatedAt': FieldValue.serverTimestamp(),
+        if (create) 'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: !create)),
+      onError,
+    );
+    return episode;
+  }
+
   /// The household's stored suggestions (`history.read`), newest first.
   Stream<List<Recommendation>> watchRecommendations(String babyId) => _db
       .collection('babies/$babyId/recommendations')
@@ -358,6 +395,13 @@ final recommendationsProvider =
     StreamProvider.family<List<Recommendation>, String>(
       (ref, babyId) =>
           ref.watch(rhythmRepositoryProvider).watchRecommendations(babyId),
+    );
+
+/// Observation episodes of a baby (NL07b), newest start first.
+final episodesProvider =
+    StreamProvider.family<List<ObservationEpisode>, String>(
+      (ref, babyId) =>
+          ref.watch(rhythmRepositoryProvider).watchEpisodes(babyId),
     );
 
 final userPreferencesProvider = StreamProvider.family<UserPreferences, String>(

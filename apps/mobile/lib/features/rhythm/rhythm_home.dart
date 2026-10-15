@@ -10,11 +10,14 @@ import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
+import '../ai/handover_screen.dart' show HandoverEntry;
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import '../family/family_repository.dart';
 import '../home/home_shell.dart';
+import '../premium/billing_models.dart' show PaywallEntry;
+import '../premium/paywall_screen.dart' show openPaywall;
 import '../premium/premium_models.dart';
 import '../premium/premium_repository.dart';
 import 'rhythm_access.dart';
@@ -148,6 +151,10 @@ class ForYouSection extends ConsumerWidget {
           secondary: secondaryActivities(content, home!),
         ),
       if (canCheckIn) const _CheckInEntry(),
+      // SU01 (Premium Slice 3): a Cùng nuôi makes the handover, a caregiver reads the latest.
+      if (health == null &&
+          HandoverEntry.visibleFor(ref, me, caps, locale.languageCode))
+        const HandoverEntry(),
       if (ageCard != null) ...[
         const SizedBox(height: ClSpace.s3),
         ClSectionHeader(title: l10n.rhAgeHeading(name)),
@@ -612,7 +619,8 @@ class _SupportCard extends StatelessWidget {
     final cl = context.cl;
     return RhCard(
       hairline: true,
-      onTap: () => context.push(Routes.mePlan),
+      // PR01 from Nhịp lớn lên (entry A).
+      onTap: () => openPaywall(context, entry: PaywallEntry.rhythm),
       semanticLabel: '${l10n.rhSupportTitle}. ${l10n.rhLearnMore}',
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

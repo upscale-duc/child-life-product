@@ -39,6 +39,7 @@ import '../features/me/baby_profile_screens.dart';
 import '../features/me/help_screen.dart';
 import '../features/me/me_screen.dart';
 import '../features/me/notifications_screen.dart';
+import '../features/premium/paywall_screen.dart';
 import '../features/premium/plan_screen.dart';
 import '../features/rhythm/rhythm_routes.dart';
 import '../features/me/profile_screen.dart';
@@ -699,6 +700,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             OverlapScreen(conflictId: s.pathParameters['id'] ?? ''),
       ),
       ...rhythmRoutes(),
+      ...premiumRoutes(),
       _route(
         path: '${Routes.record}/:id',
         builder: (_, s) =>

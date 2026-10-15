@@ -13,6 +13,7 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
+import '../ai/ai_widgets.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart' show babyToday, careClockProvider;
@@ -22,6 +23,7 @@ import '../keepsakes/keepsake_occasions.dart';
 import '../keepsakes/milestone_card_screens.dart' show TierBadge;
 import '../memories/memory_repository.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
+import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
 import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_calc.dart';
@@ -70,6 +72,9 @@ class RhythmMilestoneScreen extends ConsumerStatefulWidget {
 class _RhythmMilestoneScreenState extends ConsumerState<RhythmMilestoneScreen> {
   late final _name = TextEditingController(text: _initialName());
   ({String name, DateTime date})? _saved;
+
+  /// The milestone's id once the write landed (the MS01 moment nudge needs it).
+  String? _savedId;
   var _saving = false;
 
   String _initialName() {
@@ -99,7 +104,7 @@ class _RhythmMilestoneScreenState extends ConsumerState<RhythmMilestoneScreen> {
         .read(memoryRepositoryProvider)
         .createMilestone(me.babyId, me, name, today);
     try {
-      await write.timeout(const Duration(seconds: 4));
+      _savedId = (await write.timeout(const Duration(seconds: 4))).id;
     } on TimeoutException {
       // Offline: the write waits in Firestore's queue and lands later.
       write.ignore();
@@ -203,6 +208,14 @@ class _RhythmMilestoneScreenState extends ConsumerState<RhythmMilestoneScreen> {
     }
 
     final cards = ref.watch(selectedKeepsakeAccessProvider).cards;
+    // Premium Slice 3 (kind moment): a sentence from the family's notes when AI is available;
+    // the screen's own copy stays whatever happens.
+    final savedId = _savedId;
+    final nudge =
+        savedId != null &&
+            aiAvailable(ref.watch(selectedCapabilitiesProvider), me)
+        ? AiMomentNudge(babyId: me.babyId, milestoneId: savedId)
+        : null;
     final occasion = occasionFor(saved.name);
     final growth = cl.care.growth;
     void createCard() => context.push(
@@ -304,12 +317,17 @@ class _RhythmMilestoneScreenState extends ConsumerState<RhythmMilestoneScreen> {
             ),
           ),
         ),
+        if (!cards && nudge != null) ...[
+          const SizedBox(height: ClSpace.s4),
+          nudge,
+        ],
         if (cards) ...[
           const SizedBox(height: ClSpace.s6),
           Semantics(
             header: true,
             child: Text(l10n.rhMsKeepTitle, style: cl.text.title2),
           ),
+          ?nudge,
           const SizedBox(height: ClSpace.s3),
           RhCard(
             child: Column(

@@ -10,13 +10,17 @@ import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../l10n/app_localizations.dart';
+import '../ai/ai_widgets.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_format.dart' show durationLabel;
 import '../care/care_repository.dart';
 import '../family/family_repository.dart';
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
+import '../premium/billing_models.dart' show PaywallEntry;
+import '../premium/paywall_screen.dart' show openPaywall;
 import '../premium/premium_models.dart' show GateReason;
+import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
 import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_calc.dart';
@@ -310,6 +314,12 @@ class _Suggestion extends ConsumerWidget {
                 label: l10n.rhWhyThis,
                 text: whyThis(l10n, checkIn, rec, answer.sleep),
               ),
+              // "Giải thích thêm" (Premium Slice 3, kind explain): the reason above stays.
+              if (aiAvailable(ref.watch(selectedCapabilitiesProvider), me))
+                AiExplainBlock(
+                  babyId: checkIn.babyId,
+                  recommendationId: rec.id,
+                ),
               const SizedBox(height: ClSpace.s2),
               RhReviewNote(activity.review),
             ],
@@ -476,7 +486,9 @@ class _FreeContent extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: RhLink(
                           label: l10n.rhLearnMoreOptional,
-                          onTap: () => context.push(Routes.mePlan),
+                          // PR01 entry A, only on tap (PS01F).
+                          onTap: () =>
+                              openPaywall(context, entry: PaywallEntry.rhythm),
                         ),
                       ),
                     ],

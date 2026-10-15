@@ -107,6 +107,19 @@ final capabilitiesProvider = FutureProvider.autoDispose
       }
     }, retry: (_, _) => null);
 
+/// [babyId]'s capabilities now, from a callback (not a build): held while they load, since an
+/// auto-dispose provider nobody watches would be dropped.
+Future<Capabilities?> readCapabilities(WidgetRef ref, String babyId) async {
+  final hold = ref.listenManual(capabilitiesProvider(babyId).future, (_, _) {});
+  try {
+    return await hold.read();
+  } on Object {
+    return null;
+  } finally {
+    hold.close();
+  }
+}
+
 /// The selected baby's household.
 final selectedCapabilitiesProvider = Provider<Capabilities?>((ref) {
   final me = ref.watch(selectedMembershipProvider);

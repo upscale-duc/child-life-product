@@ -33,7 +33,8 @@ import '../helpers/rhythm_fixtures.dart';
 
 /// Nhịp lớn lên, Slice 2 (plan §7.1): part 1 — H01, H02, PS02, C01, C02, NL05b, PS01, PS01F,
 /// AC01, AC02, HL01; part 2 — NL01 (free / advanced), NL01b (no due date, sparse), NL02b, NL03,
-/// NL04, the NL07 section, EN01, EN02, MS01 — in Light / Night care × vi / en. Synthetic data
+/// NL04, the NL07 section (with the NL07b suggestion, Premium Slice 3 leftovers), EN01, EN02,
+/// MS01 — in Light / Night care × vi / en. Synthetic data
 /// only (review: null content). Long screens are drawn taller ([_heights]).
 /// Regenerate on macOS: flutter test --tags golden --update-goldens test/golden/rhythm_golden_test.dart
 
@@ -58,8 +59,8 @@ Widget _home() => Builder(
 
 /// Screens drawn taller than a phone, to see them whole.
 const _heights = {
-  'nl01_free': 1500.0,
-  'nl01_advanced': 1700.0,
+  'nl01_free': 1760.0,
+  'nl01_advanced': 1960.0,
   'nl01b_sparse': 1200.0,
   'nl04_stage': 1200.0,
   'en01_interests': 1000.0,

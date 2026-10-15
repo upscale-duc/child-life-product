@@ -1,4 +1,4 @@
-# Premium & Cá nhân hoá, Slice 1 (plan docs/product/premium-personalization-plan.md, D-072).
+# Premium & Cá nhân hoá, Slices 1 and 4 (plan docs/product/premium-personalization-plan.md, D-072, D-074).
 # Vietnamese = Figma v2.0 copy (page 568:18) where drawn, English = Figma EN frames or engineering
 # draft (D-012). Idempotent. Usage: python3 tool/premium_strings.py
 import json, collections, pathlib
@@ -70,6 +70,94 @@ s('pmGateConsentTitle', 'Cần bạn đồng ý dùng AI', 'AI needs your consen
 s('pmGateConsentBody', 'Bản tóm tắt theo mẫu vẫn dùng được khi chưa bật AI.', 'The template summary still works without AI.', 'CONSENT_REQUIRED body (ST01).')
 s('pmGateNotMemberTitle', 'Bạn không còn trong gia đình này', 'You’re no longer in this family', 'NOT_MEMBER.')
 s('pmGateOk', 'Đã hiểu', 'Got it', 'Gate sheet close button.')
+
+# ---------------------------------------------------------------------------------------------
+# Slice 4 (B4 / Q2): PR01 paywall, PR02 purchase states, MO03 resume, PR03 manage, PR04, MO04 quota.
+# Real Apple / Google payment comes later (D-074): the paywall says "Mua trong app sắp có".
+
+# PR01 Quyền lợi & paywall (592:6826 / 592:6950).
+s('pmPaywallSubtitle', 'Một gói cho cả hộ. Mở cả hai nhóm quyền lợi.', 'One plan for the whole household. Unlocks both benefit groups.', 'PR01 subtitle.')
+s('pmPaywallHere', 'Bạn đang xem', 'You’re here', 'PR01 pill on the benefit group the paywall was opened from (entry A or B).')
+s('pmGroupATitle', 'A · Cá nhân hoá & Nhịp lớn lên nâng cao', 'A · Personalisation & advanced rhythm', 'PR01 benefit group A.')
+s('pmGroupA1', 'Một việc phù hợp mỗi ngày từ ghi nhận của nhà mình', 'One step a day from your family’s notes', 'PR01 group A benefit 1.')
+s('pmGroupA2', 'Nhớ cách đã có ích, bàn giao cho người chăm', 'Remembers what helped, handover for carers', 'PR01 group A benefit 2.')
+s('pmGroupA3', 'Tóm tắt AI có căn cứ (có hạn mức)', 'Grounded AI summaries (with limits)', 'PR01 group A benefit 3.')
+s('pmGroupBTitle', 'B · Mẫu thẻ & video Premium', 'B · Premium card & video templates', 'PR01 benefit group B.')
+s('pmGroupB1', 'Toàn bộ thư viện mẫu Premium', 'The full Premium template library', 'PR01 group B benefit 1.')
+s('pmGroupB2', 'Thêm lượt xuất video mỗi kỳ', 'More video exports each period', 'PR01 group B benefit 2 (numbers are config, not shown).')
+s('pmPaywallFreeBody', 'Ghi chép, lịch sử, nhắc việc, lịch tham khảo (Wonder Weeks), mẫu cơ bản, hướng dẫn sức khoẻ thiết yếu. Hết gói vẫn xem dữ liệu, kỷ niệm và file đã xuất.', 'Logging, history, reminders, reference calendar (Wonder Weeks), basic templates, essential health guidance. After Premium ends you keep your data, moments and exported files.', 'PR01 always-free box (D-072 #7 label).')
+s('pmPeriodMonthly', 'Theo tháng', 'Monthly', 'PR01 plan tile: monthly.')
+s('pmPeriodYearly', 'Theo năm', 'Yearly', 'PR01 plan tile: yearly.')
+s('pmRenewMonthly', '{price} mỗi tháng, tự động gia hạn đến khi bạn huỷ.', '{price} per month, renews automatically until you cancel.', 'PR01 renewal sentence; price from the storefront.', price='String')
+s('pmRenewYearly', '{price} mỗi năm, tự động gia hạn đến khi bạn huỷ.', '{price} per year, renews automatically until you cancel.', 'PR01 renewal sentence; price from the storefront.', price='String')
+s('pmRenewTerms', 'Thanh toán qua tài khoản {store} khi bạn xác nhận. Gói tự gia hạn trừ khi bạn tắt ít nhất 24 giờ trước khi kỳ hiện tại kết thúc; quản lý và huỷ trong cài đặt {store}.', 'Payment is charged to your {store} account when you confirm. The plan renews unless you turn it off at least 24 hours before the current period ends; manage or cancel in {store} settings.', 'PR01 auto-renewal disclosure required by the stores (not drawn in Figma).', store='String')
+s('pmStoreApple', 'App Store', 'App Store', 'Store name.')
+s('pmStoreGoogle', 'Google Play', 'Google Play', 'Store name.')
+s('pmContinuePremium', 'Tiếp tục với Premium', 'Continue with Premium', 'PR01 primary button.')
+s('pmStoreLegal', 'Giá, kỳ hạn và gia hạn hiển thị theo cửa hàng · huỷ trong cài đặt cửa hàng', 'Price, period and renewal shown by the store · cancel in store settings', 'PR01 legal line under the button.')
+s('pmTerms', 'Điều khoản sử dụng', 'Terms of Use', 'PR01 link to the terms (store guidelines).')
+s('pmPrivacy', 'Quyền riêng tư', 'Privacy Policy', 'PR01 link to the privacy policy (store guidelines).')
+s('pmRestore', 'Khôi phục', 'Restore', 'PR01 / PR03 restore purchases.')
+s('pmBuyClosedTitle', 'Mua trong app sắp có', 'In-app purchase is coming soon', 'PR01 owner: purchase not open yet (D-074, premium_billing off or no products).')
+s('pmBuyClosedBody', 'Child Life Premium chưa bán trong app. Mọi thứ miễn phí vẫn dùng bình thường; Child Life sẽ báo khi mở.', 'Child Life Premium isn’t sold in the app yet. Everything free keeps working; we’ll let you know when it opens.', 'PR01 owner: purchase not open yet.')
+s('pmAskOwnerTitle', 'Nhờ chủ hộ nâng cấp', 'Ask the family owner to upgrade', 'PR01 for members who are not the owner (D-072 #1).')
+s('pmAskOwnerBody', 'Chỉ chủ hộ mua và quản lý gói. Khi hộ có Premium, cả nhà cùng dùng.', 'Only the family owner buys and manages the plan. Once the household has Premium, everyone uses it.', 'PR01 for members who are not the owner.')
+s('pmHouseholdHasBody', 'Premium đang mở cho cả nhà. Chỉ chủ hộ quản lý gói.', 'Premium is on for the whole family. Only the family owner manages it.', 'PR01 when the household already has Premium.')
+
+# PR02 Mua/Trạng thái (592:6781): Pending, Success, Error, Restore + restore results (not drawn).
+s('pmPendingTitle', 'Đang chờ xác nhận thanh toán', 'Waiting for payment confirmation', 'PR02 Pending title.')
+s('pmPendingBody', 'Cửa hàng chưa xác nhận giao dịch. Premium chưa được mở. Lựa chọn mẫu và ảnh của bạn vẫn được giữ.', 'The store hasn’t confirmed yet. Premium isn’t active. Your template and photo selection are kept.', 'PR02 Pending body from a template.')
+s('pmPendingBodyPlain', 'Cửa hàng chưa xác nhận giao dịch. Premium chưa được mở. Bạn có thể đóng và kiểm tra lại sau.', 'The store hasn’t confirmed yet. Premium isn’t active. You can close this and check again later.', 'PR02 Pending body outside a template.')
+s('pmCheckAgain', 'Kiểm tra lại', 'Check again', 'PR02 Pending primary.')
+s('pmClose', 'Đóng', 'Close', 'PR02 close.')
+s('pmSuccessTitle', 'Hộ đã có Premium', 'Your household has Premium', 'PR02 Success title.')
+s('pmSuccessTemplate', 'Tiếp tục đúng mẫu “{name}” với ảnh bạn đã chọn.', 'Continuing with “{name}” and the photos you chose.', 'PR02 Success body from a template.', name='String')
+s('pmSuccessRhythm', 'Gợi ý theo nhu cầu, nhịp riêng của con và tóm tắt AI đã mở cho cả nhà.', 'Need-based suggestions, your baby’s own rhythm and AI summaries are on for the whole family.', 'PR02 Success body from Nhịp lớn lên or the plan.')
+s('pmContinueCard', 'Tiếp tục tạo thẻ', 'Continue creating', 'PR02 Success primary for a card.')
+s('pmContinueVideo', 'Tiếp tục tạo video', 'Continue your video', 'PR02 Success primary for a video.')
+s('pmBackToRhythm', 'Về Nhịp lớn lên', 'Back to Growing rhythm', 'PR02 Success primary from entry A (extract open question: return to Nhịp lớn lên).')
+s('pmDone', 'Xong', 'Done', 'PR02 Success primary from the plan.')
+s('pmErrorTitle', 'Chưa mua được', 'Purchase didn’t complete', 'PR02 Error title.')
+s('pmErrorBody', 'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu miễn phí.', 'You aren’t charged unless the store confirms. Try again or use a free template.', 'PR02 Error body from a template.')
+s('pmErrorBodyPlain', 'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại sau nhé.', 'You aren’t charged unless the store confirms. Please try again.', 'PR02 Error body outside a template.')
+s('pmErrorVerifyBody', 'Child Life chưa xác minh được giao dịch với cửa hàng. Premium chưa được mở. Nếu cửa hàng đã trừ tiền, bấm Thử lại hoặc Khôi phục.', 'We couldn’t confirm the purchase with the store yet. Premium isn’t active. If you were charged, tap Try again or Restore.', 'PR02 Error: the server could not verify.')
+s('pmErrorNetworkBody', 'Chưa kết nối được Child Life. Giao dịch của cửa hàng vẫn được giữ để kiểm tra lại.', 'Couldn’t reach Child Life. The store’s transaction is kept so it can be checked again.', 'PR02 Error: network while verifying.')
+s('pmTryAgain', 'Thử lại', 'Try again', 'PR02 Error primary.')
+s('pmNotOwnerTitle', 'Chỉ chủ hộ mua và khôi phục gói', 'Only the family owner can buy or restore', 'PR02 not_owner (D-072 #1).')
+s('pmNotOwnerBody', 'Nhờ chủ hộ mở Gói của hộ để nâng cấp hoặc khôi phục.', 'Ask the family owner to open Household plan to upgrade or restore.', 'PR02 not_owner body.')
+s('pmRestoreTitle', 'Khôi phục giao dịch', 'Restore purchase', 'PR02 Restore confirm title.')
+s('pmRestoreBody', 'Child Life kiểm tra giao dịch thuộc tài khoản này và gắn lại cho hộ của bạn. Không chuyển gói từ hộ khác.', 'We check purchases on this account and re-link them to your household. Plans aren’t moved from other households.', 'PR02 Restore confirm body.')
+s('pmCancel', 'Huỷ', 'Cancel', 'PR02 Restore confirm secondary.')
+s('pmRestoredTitle', 'Đã khôi phục Premium', 'Premium restored', 'Restore result: re-linked (not drawn).')
+s('pmRestoredBody', 'Gói của bạn đã gắn lại với hộ này. Cả nhà thấy “Hộ đã có Premium”.', 'Your plan is linked to this household again. Everyone sees “Household has Premium”.', 'Restore result: re-linked.')
+s('pmRestoreNoneTitle', 'Không có giao dịch để khôi phục', 'Nothing to restore', 'Restore result: nothing found (not drawn).')
+s('pmRestoreNoneBody', 'Tài khoản cửa hàng này chưa có gói Child Life Premium còn hiệu lực.', 'This store account has no active Child Life Premium plan.', 'Restore result: nothing found.')
+s('pmRestoreBoundTitle', 'Gói đang dùng cho hộ khác', 'This plan belongs to another household', 'Restore result: already bound to another family (not drawn).')
+s('pmRestoreBoundBody', 'Giao dịch này đã gắn với một hộ khác. Child Life không chuyển gói giữa các hộ; liên hệ hỗ trợ nếu cần.', 'This purchase is linked to another household. Plans aren’t moved between households; contact support if you need help.', 'Restore result: already bound.')
+
+# MO02 / MO03.
+s('pmTemplateKeepsPhotos', 'Ảnh bạn đã chọn sẽ được giữ sau khi mua', 'Your selected photos are kept after purchase', 'MO02 note: the selection survives the purchase.')
+s('pmResumedBanner', 'Đã mở Premium · tiếp tục chỗ bạn đang làm', 'Premium unlocked · picking up where you left off', 'MO03 banner on the template after purchase.')
+
+# PR03 manage, PR04 hết gói (593:6931, 593:6990).
+s('pmManageApple', 'Quản lý trong App Store', 'Manage in App Store', 'PR03 owner: subscription management (Apple).')
+s('pmManageGoogle', 'Quản lý trong Google Play', 'Manage in Google Play', 'PR03 owner: subscription management (Google).')
+s('pmSeePremium', 'Xem Premium', 'See Premium', 'PR03 / quota sheet: open PR01.')
+s('pmRenewPremium', 'Gia hạn Premium', 'Renew Premium', 'PR04 renew link.')
+s('pmExpiredStrip', 'Premium đã hết hạn. Mọi ghi nhận, phản hồi và bản tóm tắt đã lưu vẫn ở đây.', 'Premium has ended. All notes, feedback and saved summaries are still here.', 'PR04 strip where history stays.')
+
+# MO04 Video · trạng thái xuất & quota (593:6843).
+s('pmQuotaTitle', 'Lượt xuất video kỳ này', 'Video exports this period', 'MO04 quota card title.')
+s('pmQuotaDetail', '{used} đã dùng · {reserved} đang giữ chỗ · làm mới {date}', '{used} used · {reserved} reserved · resets {date}', 'MO04 quota detail.', used='int', reserved='int', date='String')
+s('pmQuotaDetailNoDate', '{used} đã dùng · {reserved} đang giữ chỗ', '{used} used · {reserved} reserved', 'MO04 quota detail without a reset date.', used='int', reserved='int')
+s('pmQuotaCards', 'Thẻ ảnh không tính lượt.', 'Cards don’t count.', 'MO04 note.')
+s('pmQuotaOutTitle', 'Đã hết lượt xuất video kỳ này', 'No video exports left this period', 'QUOTA_EXCEEDED sheet title (MO04 "Khi hết lượt").')
+s('pmQuotaOutBody', 'Vẫn xem mẫu và tạo thẻ ảnh. Video mới chờ kỳ sau, làm mới {date}.', 'You can still browse templates and make cards. New videos wait for the next period, starting {date}.', 'QUOTA_EXCEEDED sheet body.', date='String')
+s('pmQuotaOutBodyNoDate', 'Vẫn xem mẫu và tạo thẻ ảnh. Video mới chờ kỳ sau.', 'You can still browse templates and make cards. New videos wait for the next period.', 'QUOTA_EXCEEDED sheet body without a date.')
+s('pmQuotaMakeCard', 'Tạo thẻ ảnh', 'Make a card', 'QUOTA_EXCEEDED sheet: go to cards.')
+s('pmQuotaPremiumNote', 'Premium có {limit} lượt xuất video mỗi kỳ.', 'Premium includes {limit} video exports each period.', 'QUOTA_EXCEEDED sheet note for free families, only when Premium has more.', limit='int')
+s('pmQuotaReserved', 'Giữ 1 lượt · bạn có thể rời màn hình', '1 export reserved · you can leave this screen', 'MO04 queued job.')
+s('pmQuotaReleased', 'Đã hoàn lượt giữ chỗ · Thử lại không trừ thêm lượt', 'Reservation released · retry doesn’t use another export', 'MO04 failed job.')
 
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'
 for locale, idx in (('vi', 0), ('en', 1)):

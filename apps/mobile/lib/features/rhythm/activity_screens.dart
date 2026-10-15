@@ -9,10 +9,12 @@ import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
 import '../../l10n/app_localizations.dart';
+import '../ai/ai_widgets.dart';
 import '../care/care_format.dart' show durationLabel;
 import '../family/family_repository.dart';
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
+import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
 import 'preferences_screens.dart' show fewerLikeThis;
 import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
@@ -105,6 +107,13 @@ class ActivityScreen extends ConsumerWidget {
       for (final t in topicsOf(activity))
         if (!fewer.contains(t)) t,
     ];
+    final explainFor = aiAvailable(ref.watch(selectedCapabilitiesProvider), me)
+        ? ref
+              .watch(recommendationsProvider(me!.babyId))
+              .value
+              ?.where((r) => r.contentId == contentId && r.active)
+              .firstOrNull
+        : null;
     final steps = activity.steps.of(locale);
     final safety = activity.safety?.of(locale);
     final author = checkIn == null
@@ -181,6 +190,9 @@ class ActivityScreen extends ConsumerWidget {
           label: l10n.rhWhyItMayHelp,
           text: activity.summary.of(locale),
         ),
+        // "Giải thích thêm" (Premium Slice 3, kind explain) of the household's suggestion of it.
+        if (explainFor case final rec?)
+          AiExplainBlock(babyId: me!.babyId, recommendationId: rec.id),
         if (safety != null) ...[
           const SizedBox(height: ClSpace.s3),
           Container(

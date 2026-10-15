@@ -11,11 +11,13 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
+import '../ai/ai_repository.dart' show aiSettingsProvider;
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
+import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
 import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_labels.dart';
@@ -88,6 +90,14 @@ class PersonalizeScreen extends ConsumerWidget {
         ref.watch(userPreferencesProvider(me.uid)).value ??
         UserPreferences.defaults;
     final canFeedback = familyCan(me, FamilyAction.rhythmFeedback);
+    // A1: my own AI consent (per person), with the `ai_assist` rollout. Someone who consented
+    // can always come back to withdraw it, even after the rollout is switched off.
+    final granted =
+        ref.watch(aiSettingsProvider(me.uid)).value?.granted ?? false;
+    final ai =
+        granted ||
+        (ref.watch(selectedCapabilitiesProvider)?.features.aiAssist ?? false);
+    final aiOn = granted;
     return MePage(
       title: l10n.rhPersonalize,
       children: [
@@ -120,6 +130,13 @@ class PersonalizeScreen extends ConsumerWidget {
                 icon: ClIcons.journal,
                 title: l10n.rhHistoryRow,
                 onTap: () => context.push(Routes.rhythmFeedbackHistory),
+              ),
+            if (ai)
+              MeRow(
+                icon: ClIcons.spark,
+                title: l10n.aiConsentTitle,
+                value: aiOn ? l10n.aiConsentOn : l10n.aiConsentOff,
+                onTap: () => context.push(Routes.rhythmAiConsent),
               ),
           ],
         ),

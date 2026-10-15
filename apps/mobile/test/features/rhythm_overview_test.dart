@@ -8,6 +8,7 @@ import 'package:child_life/features/rhythm/activity_screens.dart';
 import 'package:child_life/features/rhythm/milestone_screen.dart';
 import 'package:child_life/features/rhythm/preferences_screens.dart';
 import 'package:child_life/features/rhythm/rhythm_calendar.dart';
+import 'package:child_life/features/ai/ai_repository.dart';
 import 'package:child_life/features/rhythm/rhythm_local.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
 import 'package:child_life/features/rhythm/rhythm_overview.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/care_fixtures.dart';
+import '../helpers/ai_fixtures.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/me_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
@@ -81,7 +83,8 @@ void main() {
       expect(find.text(l10n.rhTriedHeading), findsOneWidget);
       expect(find.text(l10n.rhHelpful), findsOneWidget);
       await _tap(tester, find.text(l10n.rhLearnMore));
-      expect(visits.last.location, Routes.mePlan);
+      // PR01 from Nhịp lớn lên (entry A).
+      expect(visits.last.location, '${Routes.premium}?entry=rhythm');
     });
 
     testWidgets(
@@ -591,7 +594,11 @@ void main() {
       final (visits, _) = await pumpRouted(
         tester,
         const PersonalizeScreen(),
-        overrides: rhythmOverrides(repo: FakeRhythmRepository()),
+        overrides: [
+          ...rhythmOverrides(repo: FakeRhythmRepository()),
+          // The consent row reads the person's AI settings even with the rollout off.
+          aiRepositoryProvider.overrideWithValue(FakeAiRepository()),
+        ],
       );
       for (final (label, route) in [
         (l10n.rhInterestsRow, Routes.rhythmInterests),

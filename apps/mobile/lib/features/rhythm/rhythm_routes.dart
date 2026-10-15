@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/route_guard.dart';
+import '../ai/ai_consent_screen.dart';
+import '../ai/handover_screen.dart';
 import 'activity_screens.dart';
 import 'age_screens.dart';
 import 'checkin_screens.dart';
@@ -86,6 +88,8 @@ List<RouteBase> rhythmRoutes() => [
     '${Routes.rhythmAge}/:id',
     (_, s) => AgeCardScreen(cardId: s.pathParameters['id'] ?? ''),
   ),
+  _page(Routes.rhythmHandover, (_, _) => const HandoverScreen()),
+  _page(Routes.rhythmAiConsent, (_, _) => const AiConsentScreen()),
   _page(
     Routes.rhythmMilestone,
     modal: true,

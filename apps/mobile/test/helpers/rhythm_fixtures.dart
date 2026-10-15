@@ -476,7 +476,10 @@ class FakeRhythmRepository implements RhythmRepository {
     this.answer,
     this.answerError,
     UserPreferences preferences = UserPreferences.defaults,
+    List<ObservationEpisode> episodes = const [],
+    this.recommendations = const [],
   }) : _preferences = _Live(preferences),
+       _episodes = _Live([...episodes]),
        content = content ?? rhythmContent(),
        reference = reference ?? referenceModel(),
        profile = profile ?? teddyRhythmProfile(),
@@ -493,6 +496,9 @@ class FakeRhythmRepository implements RhythmRepository {
   final _Live<List<CheckIn>> _checkIns;
   final _Live<List<RecFeedback>> _feedback;
   final _Live<UserPreferences> _preferences;
+  final _Live<List<ObservationEpisode>> _episodes;
+  final savedEpisodes = <ObservationEpisode>[];
+  List<Recommendation> recommendations;
   final savedCheckIns = <CheckIn>[];
   final savedFeedback = <RecFeedback>[];
   final savedPreferences = <UserPreferences>[];
@@ -606,6 +612,31 @@ class FakeRhythmRepository implements RhythmRepository {
         if (f.id != id) f,
     ]);
   }
+
+  List<ObservationEpisode> get episodes => _episodes.value;
+
+  @override
+  Stream<List<ObservationEpisode>> watchEpisodes(String babyId) =>
+      _episodes.stream;
+
+  @override
+  ObservationEpisode saveEpisode(
+    ObservationEpisode episode, {
+    bool create = false,
+    void Function(Object error)? onError,
+  }) {
+    savedEpisodes.add(episode);
+    _episodes.set([
+      episode,
+      for (final e in _episodes.value)
+        if (e.id != episode.id) e,
+    ]);
+    return episode;
+  }
+
+  @override
+  Stream<List<Recommendation>> watchRecommendations(String babyId) =>
+      Stream.value(recommendations);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

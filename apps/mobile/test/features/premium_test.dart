@@ -21,6 +21,10 @@ Map<String, Object?> answer({
   String? country = 'VN',
   String? validUntil,
   bool? autoRenew,
+  bool billing = false,
+  String? provider,
+  String via = 'paid',
+  String? rhythmReason,
 }) => {
   'familyId': 'f_test',
   'policyVersion': 'policy-v2-draft',
@@ -31,12 +35,20 @@ Map<String, Object?> answer({
   'isBillingOwner': false,
   'canManageBilling': owner,
   'country': country,
+  'provider': provider,
   'capabilities': {
     'rhythm.checkin': {'allowed': true, 'reason': null, 'via': 'free'},
+    'rhythm.advanced': {
+      'allowed': templates && rhythmReason == null,
+      'reason': templates && rhythmReason == null
+          ? null
+          : (rhythmReason ?? 'PREMIUM_REQUIRED'),
+      'via': templates ? via : null,
+    },
     'templates.premium': {
       'allowed': templates,
       'reason': templates ? null : 'PREMIUM_REQUIRED',
-      'via': templates ? 'paid' : null,
+      'via': templates ? via : null,
     },
     'ai.assistance': {'allowed': false, 'reason': 'ROLE_DENIED', 'via': null},
   },
@@ -44,7 +56,7 @@ Map<String, Object?> answer({
     'rhythm': true,
     'personalization': true,
     'aiAssist': false,
-    'billing': false,
+    'billing': billing,
   },
 };
 
@@ -63,7 +75,7 @@ void main() {
       );
       expect(caps.reasonFor(Capability.aiAssistance), GateReason.roleDenied);
       // Unknown to the answer: never allowed.
-      expect(caps.allows(Capability.rhythmAdvanced), isFalse);
+      expect(caps.allows(Capability.personalizationCrossModule), isFalse);
       expect(caps.features.rhythm, isTrue);
       final again = Capabilities.fromJson(caps.toJson())!;
       expect(again.plan, caps.plan);
@@ -201,7 +213,10 @@ void main() {
       expect(find.text('Đang dùng miễn phí'), findsOneWidget);
       expect(find.text('Luôn miễn phí'), findsWidgets);
       expect(find.text('Việt Nam'), findsOneWidget);
-      expect(find.textContaining('sẽ có ở bản sau'), findsOneWidget);
+      // Slice 4: the owner opens PR01; restore waits for the store (D-074).
+      expect(find.text('Xem Premium'), findsOneWidget);
+      expect(find.text('Khôi phục'), findsNothing);
+      expect(find.textContaining('sẽ có ở bản sau'), findsNothing);
     });
 
     testWidgets('premium with renewal off keeps access until the date', (

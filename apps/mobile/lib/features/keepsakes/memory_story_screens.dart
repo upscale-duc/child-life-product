@@ -31,7 +31,11 @@ import '../memories/memory_models.dart';
 import '../memories/memory_repository.dart';
 import '../memories/memory_widgets.dart' show PlayGlyph;
 import '../memories/upload_queue.dart';
+import '../premium/billing_repository.dart' show videoQuotaProvider;
 import '../premium/premium_gate.dart';
+import '../premium/premium_repository.dart' show readCapabilities;
+import '../premium/premium_widgets.dart';
+import '../premium/purchase_resume.dart' show takeJustResumed;
 import 'keepsake_access.dart';
 import 'keepsake_card_content.dart' show keepsakeVideoLabel;
 import 'keepsake_card_view.dart' show keepsakeAssetImageProvider;
@@ -41,6 +45,7 @@ import 'keepsake_jobs.dart';
 import 'keepsake_live.dart';
 import 'keepsake_occasions.dart';
 import 'keepsake_preview.dart';
+import 'keepsake_resume.dart' show keepVideoDraft;
 import 'milestone_card_screens.dart'
     show
         KeepsakeActionTile,
@@ -370,6 +375,11 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
             allLabel: l10n.filterAll,
             onSelect: (o) => setState(() => _filter = o),
           ),
+        // MO04: this period's exports, when the server keeps a ledger for the household.
+        if (ref.watch(videoQuotaProvider(c.babyId)).value case final q?) ...[
+          const SizedBox(height: ClSpace.s3),
+          VideoQuotaCard(quota: q),
+        ],
         const SizedBox(height: ClSpace.s4),
         if (catalog.isLoading && !catalog.hasValue)
           const ClSkeleton(height: 280)
@@ -478,6 +488,8 @@ Future<void> playVideoTemplate(
                 template: t,
                 catalog: ref.read(keepsakeCatalogProvider).value,
                 babyId: use.babyId,
+                // MO03: the same template and photos after a purchase.
+                keep: () => keepVideoDraft(ref, use),
               );
               if (ok && context.mounted) {
                 await context.push(Routes.memoryStoryPhotos, extra: use);
@@ -678,6 +690,9 @@ List<MediaItem> scenePhotos(
 
 class _PhotosState extends ConsumerState<MemoryStoryPhotosScreen> {
   late VideoDraft _d = widget.draft;
+
+  /// MO03: opened again after a verified purchase from this template.
+  late final _resumed = takeJustResumed(ref, widget.draft.template.id);
 
   /// The photo of each scene (null: empty), in scene order.
   late var _slots = _slotted(widget.draft.mediaIds, _d.template.photosMax);
@@ -881,6 +896,10 @@ class _PhotosState extends ConsumerState<MemoryStoryPhotosScreen> {
                             ),
                           ],
                         ),
+                        if (_resumed) ...[
+                          const SizedBox(height: ClSpace.s3),
+                          const ResumedBanner(),
+                        ],
                         const SizedBox(height: ClSpace.s3),
                         Text(
                           l10n.ksVideoPhotosTitle,
@@ -1695,7 +1714,25 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
           audience: _d.audience,
         ),
       );
+      ref.invalidate(videoQuotaProvider(c.babyId));
     } on KeepsakeJobException catch (e) {
+      if (e.reason == 'QUOTA_EXCEEDED') {
+        // MO04 "Khi hết lượt": never a paywall by itself (brief p.10).
+        ref.invalidate(videoQuotaProvider(c.babyId));
+        final quota = await ref
+            .read(videoQuotaProvider(c.babyId).future)
+            .catchError((Object _) => null);
+        final caps = await readCapabilities(ref, c.babyId);
+        if (!mounted) return;
+        setState(() => _busy = false);
+        await showVideoQuotaSheet(
+          context,
+          quota: quota,
+          caps: caps,
+          occasion: _d.occasion?.wire,
+        );
+        return;
+      }
       toaster.show(message: _reasonText(l10n, e.reason));
     } on Object {
       toaster.show(message: l10n.toastActionFailed, error: true);
@@ -1999,6 +2036,12 @@ class _FinishState extends ConsumerState<MemoryStoryFinishScreen> {
                       ),
                     ],
                   ),
+                  // MO04: what "Tạo video" takes from this period's exports.
+                  if (ref.watch(videoQuotaProvider(c.babyId)).value
+                      case final q?) ...[
+                    const SizedBox(height: ClSpace.s4),
+                    VideoQuotaCard(quota: q),
+                  ],
                   const SizedBox(height: ClSpace.s6),
                 ],
               ),
@@ -2053,6 +2096,7 @@ String _reasonText(AppLocalizations l10n, String reason) => switch (reason) {
   'template-unavailable' => l10n.ksVideoErrTemplate,
   // Q1: the household's plan changed since the template was picked.
   'PREMIUM_REQUIRED' => l10n.pmTemplatePremiumBody,
+  'QUOTA_EXCEEDED' => l10n.pmQuotaOutTitle,
   'not-enabled' => l10n.ksUnavailableTitle,
   _ => l10n.toastActionFailed,
 };
@@ -2200,6 +2244,16 @@ class _JobState extends ConsumerState<MemoryStoryJobScreen> {
         ? null
         : byId[job.mediaIds.first]?.displayPath;
     final video = job.outputMediaId == null ? null : byId[job.outputMediaId];
+    // MO04: the household's export ledger, when the server keeps one (null: say nothing).
+    final ledger = ref.watch(videoQuotaProvider(widget.babyId)).value != null;
+    Widget quotaNote(String text) => Padding(
+      padding: const EdgeInsets.only(top: ClSpace.s2),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+      ),
+    );
 
     Widget body;
     switch (job.status) {
@@ -2229,6 +2283,8 @@ class _JobState extends ConsumerState<MemoryStoryJobScreen> {
               textAlign: TextAlign.center,
               style: cl.text.body.copyWith(color: cl.colors.inkMuted),
             ),
+            if (ledger && job.status == KeepsakeJobStatus.queued)
+              quotaNote(l10n.pmQuotaReserved),
             const SizedBox(height: ClSpace.s4),
             Container(
               padding: const EdgeInsets.all(ClSpace.s3),
@@ -2418,6 +2474,8 @@ class _JobState extends ConsumerState<MemoryStoryJobScreen> {
               textAlign: TextAlign.center,
               style: cl.text.body.copyWith(color: cl.colors.inkMuted),
             ),
+            // A failed export gives its reservation back; a retry takes no extra one.
+            if (ledger) quotaNote(l10n.pmQuotaReleased),
             const SizedBox(height: ClSpace.s4),
             ClButton(
               label: l10n.actionRetry,

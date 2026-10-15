@@ -110,6 +110,10 @@ abstract final class Routes {
   static const rhythmAge = '/rhythm/age';
   static const rhythmMilestone = '/rhythm/milestone';
 
+  /// Premium Slice 3 (plan §5.5): SU01 "Bàn giao cho người chăm tiếp" and the person's AI consent.
+  static const rhythmHandover = '/rhythm/handover';
+  static const rhythmAiConsent = '/rhythm/ai-consent';
+
   /// Tiện ích tab (v1.0 improvement 450:6597): Sơ cứu, Chi tiêu, Gia đình.
   static const utilities = '/utilities';
   static const family = '/utilities/family';
@@ -156,6 +160,10 @@ abstract final class Routes {
 
   /// PR03 · Gói của hộ and the household region (Premium & Cá nhân hoá, D-072).
   static const mePlan = '/me/plan';
+
+  /// PR01 · Quyền lợi & paywall above the tabs (`?entry=rhythm|templates|plan`, resume record in
+  /// the query: `&kind=card&template=…&draft=…`).
+  static const premium = '/premium';
   static const meHelp = '/me/help';
 
   /// FB2 Góp ý and FB3 Đã gửi (D-065).

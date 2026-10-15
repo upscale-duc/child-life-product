@@ -20261,6 +20261,1188 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Cách khác có thể thử'**
   String get rhOtherIdeas;
+
+  /// SU01 title; also the entry on Home and NL01.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bàn giao cho người chăm tiếp'**
+  String get aiHandoverTitle;
+
+  /// Home / NL01 entry subtitle for a Cùng nuôi. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt 3 phần từ ghi nhận của cả nhà'**
+  String get aiHandoverEntrySub;
+
+  /// Home / NL01 entry subtitle for a caregiver (reads the latest stored handover). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản mới nhất · {date}'**
+  String aiHandoverEntryLatest(String date);
+
+  /// SU01 subtitle ("06/10 – 08/10 · từ 6 ghi nhận của Mẹ, Ba, Cô Lan").
+  ///
+  /// In vi, this message translates to:
+  /// **'{range} · từ {count} ghi nhận của {names}'**
+  String aiHandoverFrom(String range, int count, String names);
+
+  /// SU01 subtitle when the authors are unknown.
+  ///
+  /// In vi, this message translates to:
+  /// **'{range} · từ {count} ghi nhận'**
+  String aiHandoverFromCount(String range, int count);
+
+  /// SU01: when this version was made (NL10 "08/10 · 20:12"). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo lúc {when}'**
+  String aiGeneratedAt(String when);
+
+  /// SU01 section 1.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều đã thấy'**
+  String get aiSectionNoticed;
+
+  /// SU01 section 2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách từng có ích'**
+  String get aiSectionHelped;
+
+  /// SU01 section 3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc có thể chọn tiếp'**
+  String get aiSectionNext;
+
+  /// SU01 closing note section. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu ý'**
+  String get aiSectionNote;
+
+  /// SU01 AI label (only on AI-worded text).
+  ///
+  /// In vi, this message translates to:
+  /// **'Diễn đạt bởi AI từ ghi nhận đã lưu · số liệu lấy từ nhật ký'**
+  String get aiWordedByAi;
+
+  /// Short AI label (explanation, milestone nudge).
+  ///
+  /// In vi, this message translates to:
+  /// **'Diễn đạt bởi AI từ ghi nhận đã lưu'**
+  String get aiWordedShort;
+
+  /// Template label (NL10b / ST01).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đây là tóm tắt từ những ghi nhận đã lưu.'**
+  String get aiTemplateLine;
+
+  /// SU01 report button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đúng? Báo lại'**
+  String get aiReport;
+
+  /// SU01 share button naming the caregiver ("Gửi cho Cô Lan").
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi cho {name}'**
+  String aiSendTo(String name);
+
+  /// SU01 share button without a caregiver. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi bản bàn giao'**
+  String get aiShare;
+
+  /// Shared text footer for AI text.
+  ///
+  /// In vi, this message translates to:
+  /// **'(Diễn đạt bởi AI từ ghi nhận đã lưu)'**
+  String get aiShareAiLine;
+
+  /// Shared text footer for the template. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'(Tóm tắt theo mẫu từ ghi nhận đã lưu)'**
+  String get aiShareTemplateLine;
+
+  /// SU01 while generating. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tổng hợp ghi nhận…'**
+  String get aiLoading;
+
+  /// SU01 with no section. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có đủ ghi nhận để bàn giao. Ghi nhận hôm nay để bắt đầu.'**
+  String get aiNoSections;
+
+  /// SU01 link to a check-in.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận của {who} · {date}'**
+  String aiChipCheckIn(String who, String date);
+
+  /// SU01 link to my own check-in.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận của bạn · {date}'**
+  String aiChipCheckInMine(String date);
+
+  /// SU01 link to feedback.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phản hồi của {who} · {date}'**
+  String aiChipFeedback(String who, String date);
+
+  /// SU01 link to my own feedback.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phản hồi của bạn · {date}'**
+  String aiChipFeedbackMine(String date);
+
+  /// SU01 link to a milestone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều mới · {date}'**
+  String aiChipMilestone(String date);
+
+  /// SU01 link to the sleep comparison.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký giấc ngủ'**
+  String get aiChipSleep;
+
+  /// Record sheet: author and date.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} · {date}'**
+  String aiRecordWho(String who, String date);
+
+  /// Record sheet title for a check-in.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận'**
+  String get aiRecordCheckIn;
+
+  /// Record sheet title for feedback.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phản hồi'**
+  String get aiRecordFeedback;
+
+  /// Record sheet title for a milestone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều mới'**
+  String get aiRecordMilestone;
+
+  /// Record sheet action for feedback. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem hoạt động'**
+  String get aiRecordOpenActivity;
+
+  /// Record sheet when the record is not found. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận này không còn trên máy hoặc đã được xoá.'**
+  String get aiRecordGone;
+
+  /// ST01 card 3 headline; template states.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang hiển thị bản theo mẫu'**
+  String get aiStateTemplateTitle;
+
+  /// Consent missing: eyebrow. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'AI CHƯA BẬT'**
+  String get aiStateConsentEyebrow;
+
+  /// Consent missing: body. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản này dùng mẫu cố định, vẫn đủ 3 phần. Nếu bạn đồng ý, AI chỉ diễn đạt lại những ghi nhận đã lưu.'**
+  String get aiStateConsentBody;
+
+  /// Consent missing: link to the consent screen. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem và đồng ý dùng AI'**
+  String get aiStateConsentAction;
+
+  /// ST01 card 2 eyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'AI ĐANG TẮT'**
+  String get aiStateOffEyebrow;
+
+  /// ST01 card 2 body (consent withdrawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã tắt AI. Bàn giao dùng mẫu cố định, vẫn đủ 3 phần: điều đã thấy, cách từng có ích, việc có thể chọn tiếp.'**
+  String get aiStateWithdrawnBody;
+
+  /// ST01 card 2 link → consent screen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật AI trong Cài đặt'**
+  String get aiStateWithdrawnAction;
+
+  /// FEATURE_DISABLED (kill switch). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt bằng AI đang tạm dừng. Bàn giao dùng mẫu cố định, vẫn đủ 3 phần.'**
+  String get aiStateDisabledBody;
+
+  /// ST01 card 3 eyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'AI CHƯA PHẢN HỒI'**
+  String get aiStateErrorEyebrow;
+
+  /// ST01 card 3 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không trừ lượt AI khi lỗi. Ghi nhận và hướng dẫn sức khoẻ không bị ảnh hưởng.'**
+  String get aiStateErrorBody;
+
+  /// QUOTA_EXCEEDED eyebrow. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'ĐÃ DÙNG HẾT LƯỢT AI'**
+  String get aiStateQuotaEyebrow;
+
+  /// QUOTA_EXCEEDED, daily window. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng {used}/{limit} lượt AI hôm nay cho bé. Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.'**
+  String aiStateQuotaDay(int used, int limit, String when);
+
+  /// QUOTA_EXCEEDED, monthly window. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình đã dùng {used}/{limit} lượt AI tháng này. Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.'**
+  String aiStateQuotaMonth(int used, int limit, String when);
+
+  /// QUOTA_EXCEEDED without numbers. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà mình đã dùng hết lượt AI trong kỳ này. Bản theo mẫu luôn miễn phí.'**
+  String get aiStateQuotaPlain;
+
+  /// PREMIUM_REQUIRED / other reasons eyebrow. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'BẢN THEO MẪU'**
+  String get aiStateTemplateEyebrow;
+
+  /// PREMIUM_REQUIRED body (the only state with a plan link). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt bằng AI nằm trong Child Life Premium. Bản theo mẫu luôn miễn phí.'**
+  String get aiStatePremiumBody;
+
+  /// ROLE_DENIED / REGION_UNAVAILABLE body. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'AI chưa dùng được cho nhà mình lúc này. Bản theo mẫu vẫn đủ 3 phần.'**
+  String get aiStateOtherBody;
+
+  /// Stale (dataVersion changed). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có ghi nhận mới'**
+  String get aiStateStaleTitle;
+
+  /// Stale body. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản này được tạo trước những ghi nhận mới nhất.'**
+  String get aiStateStaleBody;
+
+  /// Stale body for a caregiver (reads only). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản này được tạo trước những ghi nhận mới nhất. Ba mẹ có thể tạo lại.'**
+  String get aiStateStaleRead;
+
+  /// Stale: regenerate. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo lại'**
+  String get aiStateStaleAction;
+
+  /// ST01 card 4 eyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'NGOẠI TUYẾN'**
+  String get aiStateOfflineEyebrow;
+
+  /// Offline with a stored handover. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xem bản đã lưu'**
+  String get aiStateOfflineTitle;
+
+  /// Offline body (ST01 card 4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản mới và AI cần kết nối. Ghi nhận vẫn lưu trên máy và sẽ đồng bộ khi có mạng.'**
+  String get aiStateOfflineBody;
+
+  /// Offline, nothing stored. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bản bàn giao trên máy'**
+  String get aiStateOfflineEmptyTitle;
+
+  /// The call failed with nothing stored. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tạo được bản bàn giao'**
+  String get aiStateFailedTitle;
+
+  /// The call failed body. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận của nhà mình vẫn giữ nguyên. Không trừ lượt AI khi lỗi.'**
+  String get aiStateFailedBody;
+
+  /// Caregiver, nothing stored. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bản bàn giao'**
+  String get aiReadEmptyTitle;
+
+  /// Caregiver, nothing stored. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi ba mẹ tạo bản bàn giao, bản mới nhất sẽ hiện ở đây.'**
+  String get aiReadEmptyBody;
+
+  /// Health first: no AI text (P-151). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay có dấu hiệu sức khoẻ được ghi nhận, nên bàn giao không dùng AI. Hãy xem hướng dẫn sức khoẻ trước.'**
+  String get aiHealthBody;
+
+  /// Report sheet title. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều gì chưa đúng?'**
+  String get aiReportTitle;
+
+  /// Report sheet body. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn một lý do. Không cần viết thêm về bé.'**
+  String get aiReportBody;
+
+  /// Report reason wrong_fact. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không khớp với điều nhà mình ghi'**
+  String get aiProblemWrongFact;
+
+  /// Report reason wrong_person. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhầm người ghi'**
+  String get aiProblemWrongPerson;
+
+  /// Report reason unsafe_advice. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời khuyên không an toàn'**
+  String get aiProblemUnsafe;
+
+  /// Report reason language. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Diễn đạt khó hiểu'**
+  String get aiProblemLanguage;
+
+  /// Report reason other. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lý do khác'**
+  String get aiProblemOther;
+
+  /// Report sheet primary. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi báo lại'**
+  String get aiReportSend;
+
+  /// Toast after a report. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn bạn. Bản tóm tắt này sẽ được xem lại.'**
+  String get aiReportThanks;
+
+  /// Toast when a report fails. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa gửi được. Kiểm tra kết nối và thử lại.'**
+  String get aiReportFailed;
+
+  /// Consent screen title; Cá nhân hoá row. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt bằng AI'**
+  String get aiConsentTitle;
+
+  /// Consent intro. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi bạn đồng ý, Child Life có thể nhờ một dịch vụ AI bên ngoài diễn đạt lại những ghi nhận đã lưu thành bản bàn giao và lời giải thích. AI không thêm điều mới; mọi số liệu vẫn lấy từ nhật ký.'**
+  String get aiConsentIntro;
+
+  /// Consent: what is sent. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Được gửi đi'**
+  String get aiConsentSentTitle;
+
+  /// Consent: sent item. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Những ghi nhận dạng chữ đã lưu: điều đã thấy, cách đã thử, phản hồi, điều mới'**
+  String get aiConsentSent1;
+
+  /// Consent: sent item (D-003 nickname, never the real name). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên gọi ở nhà của bé và ngày của từng ghi nhận'**
+  String get aiConsentSent2;
+
+  /// Consent: never sent. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không bao giờ gửi'**
+  String get aiConsentNeverTitle;
+
+  /// Consent: never sent (D-003). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh và video'**
+  String get aiConsentNever1;
+
+  /// Consent: never sent (plan §5.5). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Họ tên đầy đủ và ngày sinh của bé'**
+  String get aiConsentNever2;
+
+  /// Consent: never sent (P-151). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận về dấu hiệu sức khoẻ'**
+  String get aiConsentNever3;
+
+  /// Consent: provider and retention. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai xử lý, lưu ở đâu'**
+  String get aiConsentWhereTitle;
+
+  /// Consent: external provider, server-side only (D-003). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một dịch vụ AI bên ngoài diễn đạt lại; máy chủ Child Life gửi yêu cầu, điện thoại không gửi trực tiếp.'**
+  String get aiConsentWhere1;
+
+  /// Consent: provider retention (D-003 "provider must not retain data"). Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà cung cấp AI không được lưu giữ dữ liệu này.'**
+  String get aiConsentWhere2;
+
+  /// Consent: what withdrawal does. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản tóm tắt được lưu trong nhà mình. Thu hồi đồng ý sẽ xoá phần chữ do AI viết; bản theo mẫu vẫn dùng được.'**
+  String get aiConsentWhere3;
+
+  /// Consent toggle shareMyNotes. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho phép ghi chú của tôi được dùng khi người khác trong nhà tạo tóm tắt'**
+  String get aiConsentShareNotes;
+
+  /// Consent toggle subtitle. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nếu tắt, ghi chú bạn tự viết không được gửi khi người khác tạo tóm tắt.'**
+  String get aiConsentShareNotesSub;
+
+  /// Consent: per person. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng ý này là của riêng bạn; gói của hộ không thay cho nó. Bạn đổi ý lúc nào cũng được.'**
+  String get aiConsentPersonal;
+
+  /// Consent: version line.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phiên bản đồng ý: {version}'**
+  String aiConsentVersion(String version);
+
+  /// Consent primary. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng ý dùng AI'**
+  String get aiConsentAgree;
+
+  /// Consent given line. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã đồng ý ngày {date}'**
+  String aiConsentGranted(String date);
+
+  /// Consent for an older version. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung đồng ý đã cập nhật. Hãy xem lại để tiếp tục dùng AI.'**
+  String get aiConsentOutdated;
+
+  /// Consent: withdraw (NL10 "Thu hồi đồng ý").
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu hồi đồng ý'**
+  String get aiConsentWithdraw;
+
+  /// Withdraw confirm title. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu hồi đồng ý?'**
+  String get aiWithdrawTitle;
+
+  /// Withdraw confirm body. Consent text draft: only what P-151 / D-003 state; legal review Q-020 / Q-070.
+  ///
+  /// In vi, this message translates to:
+  /// **'AI sẽ không được dùng cho tóm tắt bạn tạo nữa. Phần chữ do AI viết sẽ bị xoá; bản theo mẫu vẫn dùng được.'**
+  String get aiWithdrawBody;
+
+  /// Withdraw confirm button. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu hồi'**
+  String get aiWithdrawConfirm;
+
+  /// Toast after consent. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu lựa chọn của bạn'**
+  String get aiConsentSaved;
+
+  /// Toast after withdrawal. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thu hồi đồng ý'**
+  String get aiWithdrawn;
+
+  /// Toast when consent fails. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Kiểm tra kết nối và thử lại.'**
+  String get aiConsentFailed;
+
+  /// Cá nhân hoá row value. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bật'**
+  String get aiConsentOn;
+
+  /// Cá nhân hoá row value. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tắt'**
+  String get aiConsentOff;
+
+  /// PS01 / AC01 link under "Vì sao gợi ý này". EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giải thích thêm'**
+  String get aiExplainMore;
+
+  /// Explain loading. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị lời giải thích…'**
+  String get aiExplainLoading;
+
+  /// Explain failed. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa giải thích thêm được lúc này. Lý do ở trên vẫn đầy đủ.'**
+  String get aiExplainFailed;
+
+  /// Explain without consent. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần bạn đồng ý dùng AI để giải thích thêm.'**
+  String get aiExplainConsent;
+
+  /// Explain over quota. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng hết lượt AI trong kỳ này. Lý do ở trên vẫn đầy đủ.'**
+  String get aiExplainQuota;
+
+  /// Explain for other gate reasons. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giải thích thêm chưa dùng được cho nhà mình lúc này.'**
+  String get aiExplainUnavailable;
+
+  /// NL07b title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhóm thành một đợt quan sát?'**
+  String get rhEpSuggestTitle;
+
+  /// NL07b body ("2 ngày gần đây có ghi nhận thay đổi: Mẹ (06/10) và Ba (07/10) thấy …").
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ngày gần đây có ghi nhận thay đổi: {people} thấy {what}.'**
+  String rhEpSuggestBody(int count, String people, String what);
+
+  /// NL07b: who and when.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} ({date})'**
+  String rhEpPersonDay(String who, String date);
+
+  /// NL07b disclaimer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đây chỉ là cách nhà mình theo dõi, không phải xác nhận một giai đoạn Wonder Weeks.'**
+  String get rhEpNotWonder;
+
+  /// NL07b primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo đợt quan sát'**
+  String get rhEpCreate;
+
+  /// NL07b secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không cần'**
+  String get rhEpNoNeed;
+
+  /// NL07 episode card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đợt quan sát {start} – nay'**
+  String rhEpOpenTitle(String start);
+
+  /// NL07 episode status pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang cập nhật'**
+  String get rhEpUpdating;
+
+  /// NL07 episode card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} xác nhận nhóm {count} ghi nhận thành một đợt. Đợt kết thúc khi cả nhà xác nhận “con đã ổn hơn”.'**
+  String rhEpOpenBody(String who, int count);
+
+  /// NL07: closes the episode (never automatic).
+  ///
+  /// In vi, this message translates to:
+  /// **'Con đã ổn hơn'**
+  String get rhEpBetter;
+
+  /// Close confirm title. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc đợt quan sát?'**
+  String get rhEpCloseTitle;
+
+  /// Close confirm body. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đợt sẽ được lưu từ {start} đến hôm nay. Child Life không tự kết thúc đợt khi không có ghi nhận.'**
+  String rhEpCloseBody(String start);
+
+  /// Close confirm cancel. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa'**
+  String get rhEpNotYet;
+
+  /// Toast after NL07b. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tạo đợt quan sát'**
+  String get rhEpCreated;
+
+  /// Toast after "Con đã ổn hơn". EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã kết thúc đợt quan sát'**
+  String get rhEpClosed;
+
+  /// Evening check-in notification body (title is rhCheckInEntry). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lại một điều trong vài giây, nếu có. Không có gì khác cũng không sao.'**
+  String get rhEveningBody;
+
+  /// PR01 subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một gói cho cả hộ. Mở cả hai nhóm quyền lợi.'**
+  String get pmPaywallSubtitle;
+
+  /// PR01 pill on the benefit group the paywall was opened from (entry A or B).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang xem'**
+  String get pmPaywallHere;
+
+  /// PR01 benefit group A.
+  ///
+  /// In vi, this message translates to:
+  /// **'A · Cá nhân hoá & Nhịp lớn lên nâng cao'**
+  String get pmGroupATitle;
+
+  /// PR01 group A benefit 1.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một việc phù hợp mỗi ngày từ ghi nhận của nhà mình'**
+  String get pmGroupA1;
+
+  /// PR01 group A benefit 2.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhớ cách đã có ích, bàn giao cho người chăm'**
+  String get pmGroupA2;
+
+  /// PR01 group A benefit 3.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt AI có căn cứ (có hạn mức)'**
+  String get pmGroupA3;
+
+  /// PR01 benefit group B.
+  ///
+  /// In vi, this message translates to:
+  /// **'B · Mẫu thẻ & video Premium'**
+  String get pmGroupBTitle;
+
+  /// PR01 group B benefit 1.
+  ///
+  /// In vi, this message translates to:
+  /// **'Toàn bộ thư viện mẫu Premium'**
+  String get pmGroupB1;
+
+  /// PR01 group B benefit 2 (numbers are config, not shown).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm lượt xuất video mỗi kỳ'**
+  String get pmGroupB2;
+
+  /// PR01 always-free box (D-072 #7 label).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chép, lịch sử, nhắc việc, lịch tham khảo (Wonder Weeks), mẫu cơ bản, hướng dẫn sức khoẻ thiết yếu. Hết gói vẫn xem dữ liệu, kỷ niệm và file đã xuất.'**
+  String get pmPaywallFreeBody;
+
+  /// PR01 plan tile: monthly.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo tháng'**
+  String get pmPeriodMonthly;
+
+  /// PR01 plan tile: yearly.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo năm'**
+  String get pmPeriodYearly;
+
+  /// PR01 renewal sentence; price from the storefront.
+  ///
+  /// In vi, this message translates to:
+  /// **'{price} mỗi tháng, tự động gia hạn đến khi bạn huỷ.'**
+  String pmRenewMonthly(String price);
+
+  /// PR01 renewal sentence; price from the storefront.
+  ///
+  /// In vi, this message translates to:
+  /// **'{price} mỗi năm, tự động gia hạn đến khi bạn huỷ.'**
+  String pmRenewYearly(String price);
+
+  /// PR01 auto-renewal disclosure required by the stores (not drawn in Figma).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thanh toán qua tài khoản {store} khi bạn xác nhận. Gói tự gia hạn trừ khi bạn tắt ít nhất 24 giờ trước khi kỳ hiện tại kết thúc; quản lý và huỷ trong cài đặt {store}.'**
+  String pmRenewTerms(String store);
+
+  /// Store name.
+  ///
+  /// In vi, this message translates to:
+  /// **'App Store'**
+  String get pmStoreApple;
+
+  /// Store name.
+  ///
+  /// In vi, this message translates to:
+  /// **'Google Play'**
+  String get pmStoreGoogle;
+
+  /// PR01 primary button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục với Premium'**
+  String get pmContinuePremium;
+
+  /// PR01 legal line under the button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giá, kỳ hạn và gia hạn hiển thị theo cửa hàng · huỷ trong cài đặt cửa hàng'**
+  String get pmStoreLegal;
+
+  /// PR01 link to the terms (store guidelines).
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều khoản sử dụng'**
+  String get pmTerms;
+
+  /// PR01 link to the privacy policy (store guidelines).
+  ///
+  /// In vi, this message translates to:
+  /// **'Quyền riêng tư'**
+  String get pmPrivacy;
+
+  /// PR01 / PR03 restore purchases.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khôi phục'**
+  String get pmRestore;
+
+  /// PR01 owner: purchase not open yet (D-074, premium_billing off or no products).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mua trong app sắp có'**
+  String get pmBuyClosedTitle;
+
+  /// PR01 owner: purchase not open yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life Premium chưa bán trong app. Mọi thứ miễn phí vẫn dùng bình thường; Child Life sẽ báo khi mở.'**
+  String get pmBuyClosedBody;
+
+  /// PR01 for members who are not the owner (D-072 #1).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhờ chủ hộ nâng cấp'**
+  String get pmAskOwnerTitle;
+
+  /// PR01 for members who are not the owner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ chủ hộ mua và quản lý gói. Khi hộ có Premium, cả nhà cùng dùng.'**
+  String get pmAskOwnerBody;
+
+  /// PR01 when the household already has Premium.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium đang mở cho cả nhà. Chỉ chủ hộ quản lý gói.'**
+  String get pmHouseholdHasBody;
+
+  /// PR02 Pending title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chờ xác nhận thanh toán'**
+  String get pmPendingTitle;
+
+  /// PR02 Pending body from a template.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cửa hàng chưa xác nhận giao dịch. Premium chưa được mở. Lựa chọn mẫu và ảnh của bạn vẫn được giữ.'**
+  String get pmPendingBody;
+
+  /// PR02 Pending body outside a template.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cửa hàng chưa xác nhận giao dịch. Premium chưa được mở. Bạn có thể đóng và kiểm tra lại sau.'**
+  String get pmPendingBodyPlain;
+
+  /// PR02 Pending primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra lại'**
+  String get pmCheckAgain;
+
+  /// PR02 close.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get pmClose;
+
+  /// PR02 Success title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hộ đã có Premium'**
+  String get pmSuccessTitle;
+
+  /// PR02 Success body from a template.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục đúng mẫu “{name}” với ảnh bạn đã chọn.'**
+  String pmSuccessTemplate(String name);
+
+  /// PR02 Success body from Nhịp lớn lên or the plan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý theo nhu cầu, nhịp riêng của con và tóm tắt AI đã mở cho cả nhà.'**
+  String get pmSuccessRhythm;
+
+  /// PR02 Success primary for a card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục tạo thẻ'**
+  String get pmContinueCard;
+
+  /// PR02 Success primary for a video.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục tạo video'**
+  String get pmContinueVideo;
+
+  /// PR02 Success primary from entry A (extract open question: return to Nhịp lớn lên).
+  ///
+  /// In vi, this message translates to:
+  /// **'Về Nhịp lớn lên'**
+  String get pmBackToRhythm;
+
+  /// PR02 Success primary from the plan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get pmDone;
+
+  /// PR02 Error title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mua được'**
+  String get pmErrorTitle;
+
+  /// PR02 Error body from a template.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu miễn phí.'**
+  String get pmErrorBody;
+
+  /// PR02 Error body outside a template.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại sau nhé.'**
+  String get pmErrorBodyPlain;
+
+  /// PR02 Error: the server could not verify.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life chưa xác minh được giao dịch với cửa hàng. Premium chưa được mở. Nếu cửa hàng đã trừ tiền, bấm Thử lại hoặc Khôi phục.'**
+  String get pmErrorVerifyBody;
+
+  /// PR02 Error: network while verifying.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa kết nối được Child Life. Giao dịch của cửa hàng vẫn được giữ để kiểm tra lại.'**
+  String get pmErrorNetworkBody;
+
+  /// PR02 Error primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại'**
+  String get pmTryAgain;
+
+  /// PR02 not_owner (D-072 #1).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ chủ hộ mua và khôi phục gói'**
+  String get pmNotOwnerTitle;
+
+  /// PR02 not_owner body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhờ chủ hộ mở Gói của hộ để nâng cấp hoặc khôi phục.'**
+  String get pmNotOwnerBody;
+
+  /// PR02 Restore confirm title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khôi phục giao dịch'**
+  String get pmRestoreTitle;
+
+  /// PR02 Restore confirm body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life kiểm tra giao dịch thuộc tài khoản này và gắn lại cho hộ của bạn. Không chuyển gói từ hộ khác.'**
+  String get pmRestoreBody;
+
+  /// PR02 Restore confirm secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ'**
+  String get pmCancel;
+
+  /// Restore result: re-linked (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã khôi phục Premium'**
+  String get pmRestoredTitle;
+
+  /// Restore result: re-linked.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gói của bạn đã gắn lại với hộ này. Cả nhà thấy “Hộ đã có Premium”.'**
+  String get pmRestoredBody;
+
+  /// Restore result: nothing found (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có giao dịch để khôi phục'**
+  String get pmRestoreNoneTitle;
+
+  /// Restore result: nothing found.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản cửa hàng này chưa có gói Child Life Premium còn hiệu lực.'**
+  String get pmRestoreNoneBody;
+
+  /// Restore result: already bound to another family (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gói đang dùng cho hộ khác'**
+  String get pmRestoreBoundTitle;
+
+  /// Restore result: already bound.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao dịch này đã gắn với một hộ khác. Child Life không chuyển gói giữa các hộ; liên hệ hỗ trợ nếu cần.'**
+  String get pmRestoreBoundBody;
+
+  /// MO02 note: the selection survives the purchase.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh bạn đã chọn sẽ được giữ sau khi mua'**
+  String get pmTemplateKeepsPhotos;
+
+  /// MO03 banner on the template after purchase.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã mở Premium · tiếp tục chỗ bạn đang làm'**
+  String get pmResumedBanner;
+
+  /// PR03 owner: subscription management (Apple).
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản lý trong App Store'**
+  String get pmManageApple;
+
+  /// PR03 owner: subscription management (Google).
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản lý trong Google Play'**
+  String get pmManageGoogle;
+
+  /// PR03 / quota sheet: open PR01.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem Premium'**
+  String get pmSeePremium;
+
+  /// PR04 renew link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia hạn Premium'**
+  String get pmRenewPremium;
+
+  /// PR04 strip where history stays.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium đã hết hạn. Mọi ghi nhận, phản hồi và bản tóm tắt đã lưu vẫn ở đây.'**
+  String get pmExpiredStrip;
+
+  /// MO04 quota card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượt xuất video kỳ này'**
+  String get pmQuotaTitle;
+
+  /// MO04 quota detail.
+  ///
+  /// In vi, this message translates to:
+  /// **'{used} đã dùng · {reserved} đang giữ chỗ · làm mới {date}'**
+  String pmQuotaDetail(int used, int reserved, String date);
+
+  /// MO04 quota detail without a reset date.
+  ///
+  /// In vi, this message translates to:
+  /// **'{used} đã dùng · {reserved} đang giữ chỗ'**
+  String pmQuotaDetailNoDate(int used, int reserved);
+
+  /// MO04 note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thẻ ảnh không tính lượt.'**
+  String get pmQuotaCards;
+
+  /// QUOTA_EXCEEDED sheet title (MO04 "Khi hết lượt").
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hết lượt xuất video kỳ này'**
+  String get pmQuotaOutTitle;
+
+  /// QUOTA_EXCEEDED sheet body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn xem mẫu và tạo thẻ ảnh. Video mới chờ kỳ sau, làm mới {date}.'**
+  String pmQuotaOutBody(String date);
+
+  /// QUOTA_EXCEEDED sheet body without a date.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn xem mẫu và tạo thẻ ảnh. Video mới chờ kỳ sau.'**
+  String get pmQuotaOutBodyNoDate;
+
+  /// QUOTA_EXCEEDED sheet: go to cards.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo thẻ ảnh'**
+  String get pmQuotaMakeCard;
+
+  /// QUOTA_EXCEEDED sheet note for free families, only when Premium has more.
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium có {limit} lượt xuất video mỗi kỳ.'**
+  String pmQuotaPremiumNote(int limit);
+
+  /// MO04 queued job.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ 1 lượt · bạn có thể rời màn hình'**
+  String get pmQuotaReserved;
+
+  /// MO04 failed job.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hoàn lượt giữ chỗ · Thử lại không trừ thêm lượt'**
+  String get pmQuotaReleased;
 }
 
 class _AppLocalizationsDelegate

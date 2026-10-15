@@ -17,8 +17,12 @@ import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_nudges.dart';
+import '../rhythm/rhythm_access.dart';
 import '../rhythm/rhythm_local.dart'
     show
+        rhythmCheckInOfPayload,
+        rhythmEveningNotification,
+        rhythmEveningPlanProvider,
         rhythmOfPayload,
         rhythmStageNotification,
         rhythmStageReminderPlanProvider;
@@ -295,6 +299,20 @@ class _ReminderNotificationSyncState
   }
 
   void _open(String? payload) {
+    // Nhịp lớn lên evening prompt (NL02c): open the check-in C01 for that baby.
+    final checkInBaby = rhythmCheckInOfPayload(payload);
+    if (checkInBaby != null && mounted) {
+      final session = ref.read(sessionProvider);
+      final m = session is SessionSignedIn
+          ? session.membershipFor(checkInBaby)
+          : null;
+      if (m == null || !familyCan(m, FamilyAction.rhythmCheckin)) return;
+      ref.read(selectedBabyIdProvider.notifier).select(checkInBaby);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) ref.read(routerProvider).push(Routes.rhythmCheckIn);
+      });
+      return;
+    }
     // Nhịp lớn lên stage reminder (NL02c): open the overview of that baby.
     final rhythmBaby = rhythmOfPayload(payload);
     if (rhythmBaby != null && mounted) {
@@ -381,6 +399,10 @@ class _ReminderNotificationSyncState
     for (final p in ref.read(rhythmStageReminderPlanProvider)) {
       out.add(rhythmStageNotification(where, p));
     }
+    // The evening check-in prompt (NL02c), skipped once I noted something today.
+    for (final p in ref.read(rhythmEveningPlanProvider)) {
+      out.add(rhythmEveningNotification(l10n, p));
+    }
     return out;
   }
 
@@ -419,6 +441,7 @@ class _ReminderNotificationSyncState
     }
     ref.watch(nudgePlanProvider);
     ref.watch(rhythmStageReminderPlanProvider);
+    ref.watch(rhythmEveningPlanProvider);
     if (enabled == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_sync()));
     } else {

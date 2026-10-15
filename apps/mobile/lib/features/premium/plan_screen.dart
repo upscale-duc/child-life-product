@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_rows.dart';
@@ -11,13 +15,20 @@ import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../home/home_shell.dart';
 import '../me/me_widgets.dart';
+import 'billing_models.dart';
+import 'paywall_screen.dart';
 import 'premium_models.dart';
 import 'premium_repository.dart';
+import 'premium_widgets.dart';
+import 'purchase_controller.dart';
+import 'purchase_sheets.dart';
+import 'store_gateway.dart';
 
 /// PR03 · Gói của hộ (593:6931): the household's plan, who manages it (the family owner only,
-/// D-072 #1) and the household region (D-072 #3). Buying and restoring come with in-app purchase
-/// (Slice 4); until then the owner is told so. Data, saved summaries and exports never depend on
-/// the plan (PR04).
+/// D-072 #1) and the household region (D-072 #3). The owner opens PR01 ("Xem Premium" /
+/// "Gia hạn Premium"), manages a store subscription in the store it was bought in, and restores
+/// where the store is open (D-074: not yet). Everyone else sees "Hộ đã có Premium" or who to
+/// ask. Data, saved summaries and exports never depend on the plan (PR04).
 class HouseholdPlanScreen extends ConsumerWidget {
   const HouseholdPlanScreen({super.key});
 
@@ -70,6 +81,79 @@ class HouseholdPlanScreen extends ConsumerWidget {
       ),
     };
 
+    final owner = caps?.canManageBilling == true;
+    final plan = caps?.plan ?? HouseholdPlan.free;
+    final store = ref.watch(storeGatewayProvider);
+    // Restore after a result sheet; the controller's phase drives it like on PR01.
+    ref.listen(purchaseControllerProvider, (prev, next) async {
+      if (prev?.phase == next.phase || next.source != 'plan') return;
+      final kind = switch (next.phase) {
+        PurchasePhase.restored => PurchaseSheetKind.restored,
+        PurchasePhase.pending => PurchaseSheetKind.pending,
+        PurchasePhase.error => switch (next.problem) {
+          PurchaseProblem.notOwner => PurchaseSheetKind.notOwner,
+          PurchaseProblem.alreadyBound => PurchaseSheetKind.alreadyBound,
+          PurchaseProblem.nothingToRestore =>
+            PurchaseSheetKind.nothingToRestore,
+          PurchaseProblem.network => PurchaseSheetKind.networkError,
+          PurchaseProblem.verify => PurchaseSheetKind.verifyError,
+          _ => PurchaseSheetKind.storeError,
+        },
+        _ => null,
+      };
+      if (kind == null) return;
+      await showPurchaseSheet(context, kind, entry: PaywallEntry.plan);
+      ref.read(purchaseControllerProvider.notifier).reset();
+    });
+    Future<void> restore() async {
+      final ok = await showPurchaseSheet(
+        context,
+        PurchaseSheetKind.restoreConfirm,
+        entry: PaywallEntry.plan,
+      );
+      if (ok == PurchaseSheetAction.primary) {
+        await ref
+            .read(purchaseControllerProvider.notifier)
+            .restore(me.babyId, source: 'plan');
+      }
+    }
+
+    // The store the plan was bought in; unknown: both (PR03 draws App Store only).
+    final providers = switch (caps?.billingProvider) {
+      'apple' => [StoreProvider.apple],
+      'google' => [StoreProvider.google],
+      _ => StoreProvider.values,
+    };
+    final actions = <(String, VoidCallback)>[
+      if (owner && plan == HouseholdPlan.premium && caps!.paidPlan)
+        for (final p in providers)
+          (
+            p == StoreProvider.apple ? l10n.pmManageApple : l10n.pmManageGoogle,
+            () => unawaited(
+              launchUrl(
+                store.manageUri(p),
+                mode: LaunchMode.externalApplication,
+              ),
+            ),
+          ),
+      if (owner &&
+          (plan == HouseholdPlan.free ||
+              plan == HouseholdPlan.beta ||
+              plan == HouseholdPlan.pending))
+        (
+          l10n.pmSeePremium,
+          () => unawaited(openPaywall(context, entry: PaywallEntry.plan)),
+        ),
+      if (owner && plan == HouseholdPlan.expired)
+        (
+          l10n.pmRenewPremium,
+          () => unawaited(openPaywall(context, entry: PaywallEntry.plan)),
+        ),
+      // Only where the store can be asked (D-074: not yet).
+      if (owner && store.available)
+        (l10n.pmRestore, () => unawaited(restore())),
+    ];
+
     return MePage(
       title: l10n.pmPlanTitle,
       onRefresh: () => ref.refresh(capabilitiesProvider(me.babyId).future),
@@ -77,13 +161,16 @@ class HouseholdPlanScreen extends ConsumerWidget {
         if (async.isLoading && caps == null)
           const ClSkeleton(height: 120)
         else ...[
-          _PlanCard(badge: badge, title: title, body: body),
-          const SizedBox(height: ClSpace.s3),
-          MeNotice(
-            title: caps?.canManageBilling == true
-                ? l10n.pmPlanBuySoon
-                : l10n.pmPlanOwnerOnly,
-          ),
+          _PlanCard(badge: badge, title: title, body: body, actions: actions),
+          if (plan == HouseholdPlan.expired) ...[
+            const SizedBox(height: ClSpace.s3),
+            // PR04: history stays; renewing is the card's action.
+            const PremiumExpiredStrip(canRenew: false),
+          ],
+          if (!owner) ...[
+            const SizedBox(height: ClSpace.s3),
+            MeNotice(title: l10n.pmPlanOwnerOnly),
+          ],
           const SizedBox(height: ClSpace.s3),
           MeNotice(
             title: l10n.pmPlanAlwaysFree,
@@ -122,10 +209,14 @@ class _PlanCard extends StatelessWidget {
     required this.badge,
     required this.title,
     required this.body,
+    this.actions = const [],
   });
   final String badge;
   final String title;
   final String body;
+
+  /// The owner's buttons (PR03 pills on the current plan card).
+  final List<(String, VoidCallback)> actions;
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +256,15 @@ class _PlanCard extends StatelessWidget {
           ),
           const SizedBox(height: ClSpace.s2),
           Text(body, style: cl.text.label.copyWith(color: cl.colors.inkMuted)),
+          for (final (label, onTap) in actions) ...[
+            const SizedBox(height: ClSpace.s3),
+            ClButton(
+              label: label,
+              style: ClButtonStyle.secondary,
+              expand: true,
+              onPressed: onTap,
+            ),
+          ],
         ],
       ),
     );

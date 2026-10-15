@@ -1352,3 +1352,116 @@ class UserPreferences {
     );
   }
 }
+
+// ---------- Observation episodes (NL07b; written by the phone) ----------
+
+final _episodeId = RegExp(r'^ep_[a-f0-9]{32}$');
+
+bool isEpisodeId(String id) => _episodeId.hasMatch(id);
+
+enum EpisodeStatus with WireEnum {
+  open('open'),
+  closed('closed');
+
+  const EpisodeStatus(this.wire);
+  @override
+  final String wire;
+}
+
+/// `babies/{b}/episodes/{ep_<32 hex>}` (`observationEpisodeSchema`, contracts `rhythm.ts`): a
+/// member confirms the grouping the app suggested (NL07b); it stays open, whatever the
+/// silence, until someone taps "Con đã ổn hơn" (never auto-closed).
+@immutable
+class ObservationEpisode {
+  const ObservationEpisode({
+    required this.id,
+    required this.babyId,
+    required this.startDate,
+    required this.confirmedBy,
+    this.endDate,
+    this.checkInIds = const [],
+    this.status = EpisodeStatus.open,
+    this.closedBy,
+    this.pending = false,
+  });
+
+  final String id;
+  final String babyId;
+
+  /// Baby-local YYYY-MM-DD of the first changed day grouped in.
+  final String startDate;
+
+  /// Set when closed ("con đã ổn hơn" that day).
+  final String? endDate;
+
+  /// Who confirmed the grouping.
+  final String confirmedBy;
+  final List<String> checkInIds;
+  final EpisodeStatus status;
+  final String? closedBy;
+
+  /// Still queued on this phone.
+  final bool pending;
+
+  bool get open => status == EpisodeStatus.open;
+
+  /// `observationEpisodeSchema.checkInIds`: 1–30.
+  static const maxCheckIns = 30;
+
+  ObservationEpisode close({required String uid, required String date}) =>
+      ObservationEpisode(
+        id: id,
+        babyId: babyId,
+        startDate: startDate,
+        endDate: date,
+        confirmedBy: confirmedBy,
+        checkInIds: checkInIds,
+        status: EpisodeStatus.closed,
+        closedBy: uid,
+      );
+
+  /// Exactly the schema's fields (the repository adds the server timestamps).
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'babyId': babyId,
+    'startDate': startDate,
+    'endDate': endDate,
+    'confirmedBy': confirmedBy,
+    'checkInIds': checkInIds,
+    'status': status.wire,
+    'closedBy': closedBy,
+  };
+
+  static ObservationEpisode? fromJson(
+    Map<String, Object?> json, {
+    bool pending = false,
+  }) {
+    final id = _str(json['id']);
+    final babyId = _str(json['babyId']);
+    final start = _date(json['startDate']);
+    final by = _str(json['confirmedBy']);
+    final status = wireOf(EpisodeStatus.values, json['status']);
+    if (id == null ||
+        !isEpisodeId(id) ||
+        babyId == null ||
+        start == null ||
+        by == null ||
+        status == null) {
+      return null;
+    }
+    return ObservationEpisode(
+      id: id,
+      babyId: babyId,
+      startDate: start,
+      endDate: _date(json['endDate']),
+      confirmedBy: by,
+      checkInIds: [
+        for (final c in _list(json['checkInIds']).take(maxCheckIns))
+          if (_str(c, max: 40) case final String s when isCheckInId(s)) s,
+      ],
+      status: status,
+      closedBy: _str(json['closedBy']),
+      pending: pending,
+    );
+  }
+}

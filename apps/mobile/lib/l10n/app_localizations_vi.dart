@@ -12187,4 +12187,703 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rhOtherIdeas => 'Cách khác có thể thử';
+
+  @override
+  String get aiHandoverTitle => 'Bàn giao cho người chăm tiếp';
+
+  @override
+  String get aiHandoverEntrySub => 'Tóm tắt 3 phần từ ghi nhận của cả nhà';
+
+  @override
+  String aiHandoverEntryLatest(String date) {
+    return 'Bản mới nhất · $date';
+  }
+
+  @override
+  String aiHandoverFrom(String range, int count, String names) {
+    return '$range · từ $count ghi nhận của $names';
+  }
+
+  @override
+  String aiHandoverFromCount(String range, int count) {
+    return '$range · từ $count ghi nhận';
+  }
+
+  @override
+  String aiGeneratedAt(String when) {
+    return 'Tạo lúc $when';
+  }
+
+  @override
+  String get aiSectionNoticed => 'Điều đã thấy';
+
+  @override
+  String get aiSectionHelped => 'Cách từng có ích';
+
+  @override
+  String get aiSectionNext => 'Việc có thể chọn tiếp';
+
+  @override
+  String get aiSectionNote => 'Lưu ý';
+
+  @override
+  String get aiWordedByAi =>
+      'Diễn đạt bởi AI từ ghi nhận đã lưu · số liệu lấy từ nhật ký';
+
+  @override
+  String get aiWordedShort => 'Diễn đạt bởi AI từ ghi nhận đã lưu';
+
+  @override
+  String get aiTemplateLine => 'Đây là tóm tắt từ những ghi nhận đã lưu.';
+
+  @override
+  String get aiReport => 'Chưa đúng? Báo lại';
+
+  @override
+  String aiSendTo(String name) {
+    return 'Gửi cho $name';
+  }
+
+  @override
+  String get aiShare => 'Gửi bản bàn giao';
+
+  @override
+  String get aiShareAiLine => '(Diễn đạt bởi AI từ ghi nhận đã lưu)';
+
+  @override
+  String get aiShareTemplateLine => '(Tóm tắt theo mẫu từ ghi nhận đã lưu)';
+
+  @override
+  String get aiLoading => 'Đang tổng hợp ghi nhận…';
+
+  @override
+  String get aiNoSections =>
+      'Chưa có đủ ghi nhận để bàn giao. Ghi nhận hôm nay để bắt đầu.';
+
+  @override
+  String aiChipCheckIn(String who, String date) {
+    return 'Ghi nhận của $who · $date';
+  }
+
+  @override
+  String aiChipCheckInMine(String date) {
+    return 'Ghi nhận của bạn · $date';
+  }
+
+  @override
+  String aiChipFeedback(String who, String date) {
+    return 'Phản hồi của $who · $date';
+  }
+
+  @override
+  String aiChipFeedbackMine(String date) {
+    return 'Phản hồi của bạn · $date';
+  }
+
+  @override
+  String aiChipMilestone(String date) {
+    return 'Điều mới · $date';
+  }
+
+  @override
+  String get aiChipSleep => 'Nhật ký giấc ngủ';
+
+  @override
+  String aiRecordWho(String who, String date) {
+    return '$who · $date';
+  }
+
+  @override
+  String get aiRecordCheckIn => 'Ghi nhận';
+
+  @override
+  String get aiRecordFeedback => 'Phản hồi';
+
+  @override
+  String get aiRecordMilestone => 'Điều mới';
+
+  @override
+  String get aiRecordOpenActivity => 'Xem hoạt động';
+
+  @override
+  String get aiRecordGone =>
+      'Ghi nhận này không còn trên máy hoặc đã được xoá.';
+
+  @override
+  String get aiStateTemplateTitle => 'Đang hiển thị bản theo mẫu';
+
+  @override
+  String get aiStateConsentEyebrow => 'AI CHƯA BẬT';
+
+  @override
+  String get aiStateConsentBody =>
+      'Bản này dùng mẫu cố định, vẫn đủ 3 phần. Nếu bạn đồng ý, AI chỉ diễn đạt lại những ghi nhận đã lưu.';
+
+  @override
+  String get aiStateConsentAction => 'Xem và đồng ý dùng AI';
+
+  @override
+  String get aiStateOffEyebrow => 'AI ĐANG TẮT';
+
+  @override
+  String get aiStateWithdrawnBody =>
+      'Bạn đã tắt AI. Bàn giao dùng mẫu cố định, vẫn đủ 3 phần: điều đã thấy, cách từng có ích, việc có thể chọn tiếp.';
+
+  @override
+  String get aiStateWithdrawnAction => 'Bật AI trong Cài đặt';
+
+  @override
+  String get aiStateDisabledBody =>
+      'Tóm tắt bằng AI đang tạm dừng. Bàn giao dùng mẫu cố định, vẫn đủ 3 phần.';
+
+  @override
+  String get aiStateErrorEyebrow => 'AI CHƯA PHẢN HỒI';
+
+  @override
+  String get aiStateErrorBody =>
+      'Không trừ lượt AI khi lỗi. Ghi nhận và hướng dẫn sức khoẻ không bị ảnh hưởng.';
+
+  @override
+  String get aiStateQuotaEyebrow => 'ĐÃ DÙNG HẾT LƯỢT AI';
+
+  @override
+  String aiStateQuotaDay(int used, int limit, String when) {
+    return 'Đã dùng $used/$limit lượt AI hôm nay cho bé. Lượt mới từ $when. Bản theo mẫu luôn miễn phí.';
+  }
+
+  @override
+  String aiStateQuotaMonth(int used, int limit, String when) {
+    return 'Nhà mình đã dùng $used/$limit lượt AI tháng này. Lượt mới từ $when. Bản theo mẫu luôn miễn phí.';
+  }
+
+  @override
+  String get aiStateQuotaPlain =>
+      'Nhà mình đã dùng hết lượt AI trong kỳ này. Bản theo mẫu luôn miễn phí.';
+
+  @override
+  String get aiStateTemplateEyebrow => 'BẢN THEO MẪU';
+
+  @override
+  String get aiStatePremiumBody =>
+      'Tóm tắt bằng AI nằm trong Child Life Premium. Bản theo mẫu luôn miễn phí.';
+
+  @override
+  String get aiStateOtherBody =>
+      'AI chưa dùng được cho nhà mình lúc này. Bản theo mẫu vẫn đủ 3 phần.';
+
+  @override
+  String get aiStateStaleTitle => 'Có ghi nhận mới';
+
+  @override
+  String get aiStateStaleBody =>
+      'Bản này được tạo trước những ghi nhận mới nhất.';
+
+  @override
+  String get aiStateStaleRead =>
+      'Bản này được tạo trước những ghi nhận mới nhất. Ba mẹ có thể tạo lại.';
+
+  @override
+  String get aiStateStaleAction => 'Tạo lại';
+
+  @override
+  String get aiStateOfflineEyebrow => 'NGOẠI TUYẾN';
+
+  @override
+  String get aiStateOfflineTitle => 'Đang xem bản đã lưu';
+
+  @override
+  String get aiStateOfflineBody =>
+      'Bản mới và AI cần kết nối. Ghi nhận vẫn lưu trên máy và sẽ đồng bộ khi có mạng.';
+
+  @override
+  String get aiStateOfflineEmptyTitle => 'Chưa có bản bàn giao trên máy';
+
+  @override
+  String get aiStateFailedTitle => 'Chưa tạo được bản bàn giao';
+
+  @override
+  String get aiStateFailedBody =>
+      'Ghi nhận của nhà mình vẫn giữ nguyên. Không trừ lượt AI khi lỗi.';
+
+  @override
+  String get aiReadEmptyTitle => 'Chưa có bản bàn giao';
+
+  @override
+  String get aiReadEmptyBody =>
+      'Khi ba mẹ tạo bản bàn giao, bản mới nhất sẽ hiện ở đây.';
+
+  @override
+  String get aiHealthBody =>
+      'Hôm nay có dấu hiệu sức khoẻ được ghi nhận, nên bàn giao không dùng AI. Hãy xem hướng dẫn sức khoẻ trước.';
+
+  @override
+  String get aiReportTitle => 'Điều gì chưa đúng?';
+
+  @override
+  String get aiReportBody => 'Chọn một lý do. Không cần viết thêm về bé.';
+
+  @override
+  String get aiProblemWrongFact => 'Không khớp với điều nhà mình ghi';
+
+  @override
+  String get aiProblemWrongPerson => 'Nhầm người ghi';
+
+  @override
+  String get aiProblemUnsafe => 'Lời khuyên không an toàn';
+
+  @override
+  String get aiProblemLanguage => 'Diễn đạt khó hiểu';
+
+  @override
+  String get aiProblemOther => 'Lý do khác';
+
+  @override
+  String get aiReportSend => 'Gửi báo lại';
+
+  @override
+  String get aiReportThanks => 'Cảm ơn bạn. Bản tóm tắt này sẽ được xem lại.';
+
+  @override
+  String get aiReportFailed => 'Chưa gửi được. Kiểm tra kết nối và thử lại.';
+
+  @override
+  String get aiConsentTitle => 'Tóm tắt bằng AI';
+
+  @override
+  String get aiConsentIntro =>
+      'Khi bạn đồng ý, Child Life có thể nhờ một dịch vụ AI bên ngoài diễn đạt lại những ghi nhận đã lưu thành bản bàn giao và lời giải thích. AI không thêm điều mới; mọi số liệu vẫn lấy từ nhật ký.';
+
+  @override
+  String get aiConsentSentTitle => 'Được gửi đi';
+
+  @override
+  String get aiConsentSent1 =>
+      'Những ghi nhận dạng chữ đã lưu: điều đã thấy, cách đã thử, phản hồi, điều mới';
+
+  @override
+  String get aiConsentSent2 => 'Tên gọi ở nhà của bé và ngày của từng ghi nhận';
+
+  @override
+  String get aiConsentNeverTitle => 'Không bao giờ gửi';
+
+  @override
+  String get aiConsentNever1 => 'Ảnh và video';
+
+  @override
+  String get aiConsentNever2 => 'Họ tên đầy đủ và ngày sinh của bé';
+
+  @override
+  String get aiConsentNever3 => 'Ghi nhận về dấu hiệu sức khoẻ';
+
+  @override
+  String get aiConsentWhereTitle => 'Ai xử lý, lưu ở đâu';
+
+  @override
+  String get aiConsentWhere1 =>
+      'Một dịch vụ AI bên ngoài diễn đạt lại; máy chủ Child Life gửi yêu cầu, điện thoại không gửi trực tiếp.';
+
+  @override
+  String get aiConsentWhere2 =>
+      'Nhà cung cấp AI không được lưu giữ dữ liệu này.';
+
+  @override
+  String get aiConsentWhere3 =>
+      'Bản tóm tắt được lưu trong nhà mình. Thu hồi đồng ý sẽ xoá phần chữ do AI viết; bản theo mẫu vẫn dùng được.';
+
+  @override
+  String get aiConsentShareNotes =>
+      'Cho phép ghi chú của tôi được dùng khi người khác trong nhà tạo tóm tắt';
+
+  @override
+  String get aiConsentShareNotesSub =>
+      'Nếu tắt, ghi chú bạn tự viết không được gửi khi người khác tạo tóm tắt.';
+
+  @override
+  String get aiConsentPersonal =>
+      'Đồng ý này là của riêng bạn; gói của hộ không thay cho nó. Bạn đổi ý lúc nào cũng được.';
+
+  @override
+  String aiConsentVersion(String version) {
+    return 'Phiên bản đồng ý: $version';
+  }
+
+  @override
+  String get aiConsentAgree => 'Đồng ý dùng AI';
+
+  @override
+  String aiConsentGranted(String date) {
+    return 'Bạn đã đồng ý ngày $date';
+  }
+
+  @override
+  String get aiConsentOutdated =>
+      'Nội dung đồng ý đã cập nhật. Hãy xem lại để tiếp tục dùng AI.';
+
+  @override
+  String get aiConsentWithdraw => 'Thu hồi đồng ý';
+
+  @override
+  String get aiWithdrawTitle => 'Thu hồi đồng ý?';
+
+  @override
+  String get aiWithdrawBody =>
+      'AI sẽ không được dùng cho tóm tắt bạn tạo nữa. Phần chữ do AI viết sẽ bị xoá; bản theo mẫu vẫn dùng được.';
+
+  @override
+  String get aiWithdrawConfirm => 'Thu hồi';
+
+  @override
+  String get aiConsentSaved => 'Đã lưu lựa chọn của bạn';
+
+  @override
+  String get aiWithdrawn => 'Đã thu hồi đồng ý';
+
+  @override
+  String get aiConsentFailed => 'Chưa lưu được. Kiểm tra kết nối và thử lại.';
+
+  @override
+  String get aiConsentOn => 'Đang bật';
+
+  @override
+  String get aiConsentOff => 'Đang tắt';
+
+  @override
+  String get aiExplainMore => 'Giải thích thêm';
+
+  @override
+  String get aiExplainLoading => 'Đang chuẩn bị lời giải thích…';
+
+  @override
+  String get aiExplainFailed =>
+      'Chưa giải thích thêm được lúc này. Lý do ở trên vẫn đầy đủ.';
+
+  @override
+  String get aiExplainConsent => 'Cần bạn đồng ý dùng AI để giải thích thêm.';
+
+  @override
+  String get aiExplainQuota =>
+      'Đã dùng hết lượt AI trong kỳ này. Lý do ở trên vẫn đầy đủ.';
+
+  @override
+  String get aiExplainUnavailable =>
+      'Giải thích thêm chưa dùng được cho nhà mình lúc này.';
+
+  @override
+  String get rhEpSuggestTitle => 'Nhóm thành một đợt quan sát?';
+
+  @override
+  String rhEpSuggestBody(int count, String people, String what) {
+    return '$count ngày gần đây có ghi nhận thay đổi: $people thấy $what.';
+  }
+
+  @override
+  String rhEpPersonDay(String who, String date) {
+    return '$who ($date)';
+  }
+
+  @override
+  String get rhEpNotWonder =>
+      'Đây chỉ là cách nhà mình theo dõi, không phải xác nhận một giai đoạn Wonder Weeks.';
+
+  @override
+  String get rhEpCreate => 'Tạo đợt quan sát';
+
+  @override
+  String get rhEpNoNeed => 'Không cần';
+
+  @override
+  String rhEpOpenTitle(String start) {
+    return 'Đợt quan sát $start – nay';
+  }
+
+  @override
+  String get rhEpUpdating => 'Đang cập nhật';
+
+  @override
+  String rhEpOpenBody(String who, int count) {
+    return '$who xác nhận nhóm $count ghi nhận thành một đợt. Đợt kết thúc khi cả nhà xác nhận “con đã ổn hơn”.';
+  }
+
+  @override
+  String get rhEpBetter => 'Con đã ổn hơn';
+
+  @override
+  String get rhEpCloseTitle => 'Kết thúc đợt quan sát?';
+
+  @override
+  String rhEpCloseBody(String start) {
+    return 'Đợt sẽ được lưu từ $start đến hôm nay. Child Life không tự kết thúc đợt khi không có ghi nhận.';
+  }
+
+  @override
+  String get rhEpNotYet => 'Chưa';
+
+  @override
+  String get rhEpCreated => 'Đã tạo đợt quan sát';
+
+  @override
+  String get rhEpClosed => 'Đã kết thúc đợt quan sát';
+
+  @override
+  String get rhEveningBody =>
+      'Ghi lại một điều trong vài giây, nếu có. Không có gì khác cũng không sao.';
+
+  @override
+  String get pmPaywallSubtitle =>
+      'Một gói cho cả hộ. Mở cả hai nhóm quyền lợi.';
+
+  @override
+  String get pmPaywallHere => 'Bạn đang xem';
+
+  @override
+  String get pmGroupATitle => 'A · Cá nhân hoá & Nhịp lớn lên nâng cao';
+
+  @override
+  String get pmGroupA1 => 'Một việc phù hợp mỗi ngày từ ghi nhận của nhà mình';
+
+  @override
+  String get pmGroupA2 => 'Nhớ cách đã có ích, bàn giao cho người chăm';
+
+  @override
+  String get pmGroupA3 => 'Tóm tắt AI có căn cứ (có hạn mức)';
+
+  @override
+  String get pmGroupBTitle => 'B · Mẫu thẻ & video Premium';
+
+  @override
+  String get pmGroupB1 => 'Toàn bộ thư viện mẫu Premium';
+
+  @override
+  String get pmGroupB2 => 'Thêm lượt xuất video mỗi kỳ';
+
+  @override
+  String get pmPaywallFreeBody =>
+      'Ghi chép, lịch sử, nhắc việc, lịch tham khảo (Wonder Weeks), mẫu cơ bản, hướng dẫn sức khoẻ thiết yếu. Hết gói vẫn xem dữ liệu, kỷ niệm và file đã xuất.';
+
+  @override
+  String get pmPeriodMonthly => 'Theo tháng';
+
+  @override
+  String get pmPeriodYearly => 'Theo năm';
+
+  @override
+  String pmRenewMonthly(String price) {
+    return '$price mỗi tháng, tự động gia hạn đến khi bạn huỷ.';
+  }
+
+  @override
+  String pmRenewYearly(String price) {
+    return '$price mỗi năm, tự động gia hạn đến khi bạn huỷ.';
+  }
+
+  @override
+  String pmRenewTerms(String store) {
+    return 'Thanh toán qua tài khoản $store khi bạn xác nhận. Gói tự gia hạn trừ khi bạn tắt ít nhất 24 giờ trước khi kỳ hiện tại kết thúc; quản lý và huỷ trong cài đặt $store.';
+  }
+
+  @override
+  String get pmStoreApple => 'App Store';
+
+  @override
+  String get pmStoreGoogle => 'Google Play';
+
+  @override
+  String get pmContinuePremium => 'Tiếp tục với Premium';
+
+  @override
+  String get pmStoreLegal =>
+      'Giá, kỳ hạn và gia hạn hiển thị theo cửa hàng · huỷ trong cài đặt cửa hàng';
+
+  @override
+  String get pmTerms => 'Điều khoản sử dụng';
+
+  @override
+  String get pmPrivacy => 'Quyền riêng tư';
+
+  @override
+  String get pmRestore => 'Khôi phục';
+
+  @override
+  String get pmBuyClosedTitle => 'Mua trong app sắp có';
+
+  @override
+  String get pmBuyClosedBody =>
+      'Child Life Premium chưa bán trong app. Mọi thứ miễn phí vẫn dùng bình thường; Child Life sẽ báo khi mở.';
+
+  @override
+  String get pmAskOwnerTitle => 'Nhờ chủ hộ nâng cấp';
+
+  @override
+  String get pmAskOwnerBody =>
+      'Chỉ chủ hộ mua và quản lý gói. Khi hộ có Premium, cả nhà cùng dùng.';
+
+  @override
+  String get pmHouseholdHasBody =>
+      'Premium đang mở cho cả nhà. Chỉ chủ hộ quản lý gói.';
+
+  @override
+  String get pmPendingTitle => 'Đang chờ xác nhận thanh toán';
+
+  @override
+  String get pmPendingBody =>
+      'Cửa hàng chưa xác nhận giao dịch. Premium chưa được mở. Lựa chọn mẫu và ảnh của bạn vẫn được giữ.';
+
+  @override
+  String get pmPendingBodyPlain =>
+      'Cửa hàng chưa xác nhận giao dịch. Premium chưa được mở. Bạn có thể đóng và kiểm tra lại sau.';
+
+  @override
+  String get pmCheckAgain => 'Kiểm tra lại';
+
+  @override
+  String get pmClose => 'Đóng';
+
+  @override
+  String get pmSuccessTitle => 'Hộ đã có Premium';
+
+  @override
+  String pmSuccessTemplate(String name) {
+    return 'Tiếp tục đúng mẫu “$name” với ảnh bạn đã chọn.';
+  }
+
+  @override
+  String get pmSuccessRhythm =>
+      'Gợi ý theo nhu cầu, nhịp riêng của con và tóm tắt AI đã mở cho cả nhà.';
+
+  @override
+  String get pmContinueCard => 'Tiếp tục tạo thẻ';
+
+  @override
+  String get pmContinueVideo => 'Tiếp tục tạo video';
+
+  @override
+  String get pmBackToRhythm => 'Về Nhịp lớn lên';
+
+  @override
+  String get pmDone => 'Xong';
+
+  @override
+  String get pmErrorTitle => 'Chưa mua được';
+
+  @override
+  String get pmErrorBody =>
+      'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu miễn phí.';
+
+  @override
+  String get pmErrorBodyPlain =>
+      'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại sau nhé.';
+
+  @override
+  String get pmErrorVerifyBody =>
+      'Child Life chưa xác minh được giao dịch với cửa hàng. Premium chưa được mở. Nếu cửa hàng đã trừ tiền, bấm Thử lại hoặc Khôi phục.';
+
+  @override
+  String get pmErrorNetworkBody =>
+      'Chưa kết nối được Child Life. Giao dịch của cửa hàng vẫn được giữ để kiểm tra lại.';
+
+  @override
+  String get pmTryAgain => 'Thử lại';
+
+  @override
+  String get pmNotOwnerTitle => 'Chỉ chủ hộ mua và khôi phục gói';
+
+  @override
+  String get pmNotOwnerBody =>
+      'Nhờ chủ hộ mở Gói của hộ để nâng cấp hoặc khôi phục.';
+
+  @override
+  String get pmRestoreTitle => 'Khôi phục giao dịch';
+
+  @override
+  String get pmRestoreBody =>
+      'Child Life kiểm tra giao dịch thuộc tài khoản này và gắn lại cho hộ của bạn. Không chuyển gói từ hộ khác.';
+
+  @override
+  String get pmCancel => 'Huỷ';
+
+  @override
+  String get pmRestoredTitle => 'Đã khôi phục Premium';
+
+  @override
+  String get pmRestoredBody =>
+      'Gói của bạn đã gắn lại với hộ này. Cả nhà thấy “Hộ đã có Premium”.';
+
+  @override
+  String get pmRestoreNoneTitle => 'Không có giao dịch để khôi phục';
+
+  @override
+  String get pmRestoreNoneBody =>
+      'Tài khoản cửa hàng này chưa có gói Child Life Premium còn hiệu lực.';
+
+  @override
+  String get pmRestoreBoundTitle => 'Gói đang dùng cho hộ khác';
+
+  @override
+  String get pmRestoreBoundBody =>
+      'Giao dịch này đã gắn với một hộ khác. Child Life không chuyển gói giữa các hộ; liên hệ hỗ trợ nếu cần.';
+
+  @override
+  String get pmTemplateKeepsPhotos => 'Ảnh bạn đã chọn sẽ được giữ sau khi mua';
+
+  @override
+  String get pmResumedBanner => 'Đã mở Premium · tiếp tục chỗ bạn đang làm';
+
+  @override
+  String get pmManageApple => 'Quản lý trong App Store';
+
+  @override
+  String get pmManageGoogle => 'Quản lý trong Google Play';
+
+  @override
+  String get pmSeePremium => 'Xem Premium';
+
+  @override
+  String get pmRenewPremium => 'Gia hạn Premium';
+
+  @override
+  String get pmExpiredStrip =>
+      'Premium đã hết hạn. Mọi ghi nhận, phản hồi và bản tóm tắt đã lưu vẫn ở đây.';
+
+  @override
+  String get pmQuotaTitle => 'Lượt xuất video kỳ này';
+
+  @override
+  String pmQuotaDetail(int used, int reserved, String date) {
+    return '$used đã dùng · $reserved đang giữ chỗ · làm mới $date';
+  }
+
+  @override
+  String pmQuotaDetailNoDate(int used, int reserved) {
+    return '$used đã dùng · $reserved đang giữ chỗ';
+  }
+
+  @override
+  String get pmQuotaCards => 'Thẻ ảnh không tính lượt.';
+
+  @override
+  String get pmQuotaOutTitle => 'Đã hết lượt xuất video kỳ này';
+
+  @override
+  String pmQuotaOutBody(String date) {
+    return 'Vẫn xem mẫu và tạo thẻ ảnh. Video mới chờ kỳ sau, làm mới $date.';
+  }
+
+  @override
+  String get pmQuotaOutBodyNoDate =>
+      'Vẫn xem mẫu và tạo thẻ ảnh. Video mới chờ kỳ sau.';
+
+  @override
+  String get pmQuotaMakeCard => 'Tạo thẻ ảnh';
+
+  @override
+  String pmQuotaPremiumNote(int limit) {
+    return 'Premium có $limit lượt xuất video mỗi kỳ.';
+  }
+
+  @override
+  String get pmQuotaReserved => 'Giữ 1 lượt · bạn có thể rời màn hình';
+
+  @override
+  String get pmQuotaReleased =>
+      'Đã hoàn lượt giữ chỗ · Thử lại không trừ thêm lượt';
 }
