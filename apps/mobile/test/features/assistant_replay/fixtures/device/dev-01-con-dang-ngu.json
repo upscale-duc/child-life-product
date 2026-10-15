@@ -1,0 +1,127 @@
+{
+ "id": "dev-01-con-dang-ngu",
+ "group": "device",
+ "device": "DEV-1",
+ "serverViolations": [
+  "NR_NO_CONTROL",
+  "NR_MISSING_BUT_SET",
+  "DEAD_END",
+  "EXPECT_KINDS",
+  "EXPECT_READY"
+ ],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_e9ab66014971a1a0704a8244c2148010",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_e9ab66014971a1a0704a8244c2148010_0",
+      "taskId": "tk_e9ab66014971a1a0704a8244c2148010",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "observation",
+       "observation": "sleep",
+       "date": "2026-10-15",
+       "when": null,
+       "note": null
+      },
+      "missingFields": [
+       "date"
+      ],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "needs_review",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_e9ab66014971a1a0704a8244c2148010"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Con đang ngủ"
+       }
+      ],
+      "taskId": "tk_e9ab66014971a1a0704a8244c2148010",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_e9ab66014971a1a0704a8244c2148010_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_e9ab66014971a1a0704a8244c2148010",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

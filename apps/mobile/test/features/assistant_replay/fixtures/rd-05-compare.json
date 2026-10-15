@@ -1,0 +1,141 @@
+{
+ "id": "rd-05-compare",
+ "group": "read",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_0ee97368d51753133c47fdd1f0ddff5e",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "so với hôm qua hôm nay bú nhiều hơn không"
+       }
+      ],
+      "taskId": "tk_0ee97368d51753133c47fdd1f0ddff5e",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "source_summary",
+        "schemaVersion": 1,
+        "summary": {
+         "date": "2026-10-15",
+         "bottle": {
+          "count": 2,
+          "ml": 270
+         },
+         "breast": {
+          "count": 1,
+          "minutes": 15
+         },
+         "sleep": {
+          "count": 2,
+          "minutes": 420
+         },
+         "coverage": "unknown",
+         "until": "2026-10-15T07:20:00.000Z"
+        },
+        "sourceIds": [
+         "r_66666666666666666666666666666666",
+         "r_11111111111111111111111111111111",
+         "r_33333333333333333333333333333333",
+         "r_22222222222222222222222222222222",
+         "r_44444444444444444444444444444444"
+        ]
+       },
+       {
+        "type": "source_summary",
+        "schemaVersion": 1,
+        "summary": {
+         "date": "2026-10-14",
+         "bottle": {
+          "count": 1,
+          "ml": 90
+         },
+         "breast": {
+          "count": 0,
+          "minutes": 0
+         },
+         "sleep": {
+          "count": 2,
+          "minutes": 270
+         },
+         "coverage": "unknown",
+         "until": "2026-10-14T17:00:00.000Z"
+        },
+        "sourceIds": [
+         "r_99999999999999999999999999999999",
+         "r_55555555555555555555555555555555",
+         "r_66666666666666666666666666666666"
+        ]
+       },
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bú bình đã ghi hôm nay (đến 14:20): 2 cữ, 270 ml. Bú mẹ đã ghi hôm nay: 1 lần, 15 phút. Giấc ngủ đã ghi hôm nay: 2 giấc, 420 phút. Bú bình đã ghi 2026-10-14 (đến 00:00): 1 cữ, 90 ml. Bú mẹ đã ghi 2026-10-14: 0 lần, 0 phút. Giấc ngủ đã ghi 2026-10-14: 2 giấc, 270 phút."
+       }
+      ],
+      "taskId": "tk_0ee97368d51753133c47fdd1f0ddff5e",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

@@ -1,0 +1,92 @@
+{
+ "id": "ro-03-relative-daily-care-cannot-log",
+ "group": "roles",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "AUNT",
+   "snapshot": {
+    "task": {
+     "id": "tk_864e93ae53710ba2548c1e1fa9adbb49",
+     "conversationId": "cv_449efd754dbc4f3b29503842dd5c5b70",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "failed",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "released",
+     "errorCode": "WRITE_DENIED",
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_thu",
+      "name": "Dì Thu",
+      "relation": "relative",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_449efd754dbc4f3b29503842dd5c5b70",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé bú 120ml lúc 13h"
+       }
+      ],
+      "taskId": "tk_864e93ae53710ba2548c1e1fa9adbb49",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_thu",
+       "name": "Dì Thu",
+       "relation": "relative",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_449efd754dbc4f3b29503842dd5c5b70",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Vai trò của bạn chỉ xem được, không ghi được mục này."
+       },
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Chưa xử lý được yêu cầu này. Không tính lượt."
+       }
+      ],
+      "taskId": "tk_864e93ae53710ba2548c1e1fa9adbb49",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

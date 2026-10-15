@@ -1,0 +1,149 @@
+{
+  "group": "care.observation",
+  "note": "Observations (Nhịp sinh hoạt check-ins): only something different or new; saved with one tap.",
+  "cases": [
+    {
+      "id": "ob-01-new-skill",
+      "turns": [
+        {
+          "say": "bé biết lẫy rồi",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": {
+                  "observation": "new_skill",
+                  "note": "biết lẫy"
+                },
+                "ev": {
+                  "observation": "biết lẫy"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["observation"],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "care.observation"
+    },
+    {
+      "id": "ob-02-new-skill-prompt-literal",
+      "title": "The model lists a missing time for an observation (as on the device): must not block the one-tap save",
+      "turns": [
+        {
+          "say": "hôm nay bé biết ngồi",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": {
+                  "observation": "new_skill",
+                  "note": "biết ngồi",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "observation": "biết ngồi"
+                },
+                "miss": ["time"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["observation"],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "care.observation"
+    },
+    {
+      "id": "ob-03-fussy",
+      "turns": [
+        {
+          "say": "hôm nay bé quấy hơn mọi ngày",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": {
+                  "observation": "soothing",
+                  "when": "day"
+                },
+                "ev": {
+                  "observation": "quấy hơn"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["drafts", "care", "fallback", "awaiting"]
+      },
+      "group": "care.observation"
+    },
+    {
+      "id": "ob-04-eats-less",
+      "turns": [
+        {
+          "say": "mấy hôm nay bé biếng ăn",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": {
+                  "observation": "feeding"
+                },
+                "ev": {
+                  "observation": "biếng ăn"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["observation"],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "care.observation"
+    },
+    {
+      "id": "ob-05-uncertain-when",
+      "title": "An uncertain detail on an observation (no editor) must not lock the save",
+      "turns": [
+        {
+          "say": "bé hay thức giấc",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": {
+                  "observation": "sleep",
+                  "when": "night"
+                },
+                "ev": {
+                  "observation": "thức giấc"
+                },
+                "unc": ["when"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["drafts", "care", "awaiting"]
+      },
+      "group": "care.observation"
+    }
+  ]
+}

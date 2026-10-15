@@ -1,0 +1,472 @@
+{
+  "group": "reminder",
+  "note": "Typed reminders (Nhắc việc): all-day, a time, an assignee picked by the person, never medicine; Cùng nuôi only.",
+  "cases": [
+    {
+      "id": "rm-01-mai-9h",
+      "turns": [
+        {
+          "say": "nhắc mai 9h mua bỉm",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "mua bỉm",
+                  "date": "2026-10-16",
+                  "time": "09:00"
+                },
+                "ev": {
+                  "title": "mua bỉm",
+                  "time": "9h",
+                  "date": "mai"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.ampm",
+              "choice": "am"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "asks": ["time.ampm"],
+        "ready": true,
+        "values": {
+          "0.date": "D1",
+          "0.time": "09:00"
+        },
+        "credits": 1,
+        "calls": 1
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-02-friday-all-day",
+      "turns": [
+        {
+          "say": "thứ 6 đưa bé đi tiêm",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "đưa bé đi tiêm",
+                  "date": "2026-10-16"
+                },
+                "ev": {
+                  "title": "đưa bé đi tiêm",
+                  "date": "thứ 6"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "ready": true,
+        "visibility": "shared",
+        "values": {
+          "0.date": "D1",
+          "0.time": null
+        },
+        "credits": 1
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-03-assignee-dad",
+      "turns": [
+        {
+          "say": "nhắc bố đi lấy kết quả tối nay",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "đi lấy kết quả",
+                  "date": "2026-10-15",
+                  "assigneeText": "bố"
+                },
+                "ev": {
+                  "title": "đi lấy kết quả",
+                  "assigneeText": "bố",
+                  "date": "tối nay"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "reminder.assignee",
+              "member": "DAD"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "asks": ["reminder.assignee"],
+        "values": {
+          "0.assigneeUid": "u_minh",
+          "0.date": "D0"
+        },
+        "credits": 1
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-04-afternoon-today",
+      "turns": [
+        {
+          "say": "nhắc 4 giờ chiều nay đón bé",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "đón bé",
+                  "date": "2026-10-15",
+                  "time": "16:00"
+                },
+                "ev": {
+                  "title": "đón bé",
+                  "time": "4 giờ chiều"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "ready": true,
+        "values": {
+          "0.time": "16:00",
+          "0.date": "D0"
+        },
+        "credits": 1
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-05-medicine",
+      "turns": [
+        {
+          "say": "nhắc 8h tối cho bé uống siro",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "cho bé uống siro",
+                  "time": "20:00"
+                },
+                "ev": {
+                  "time": "8h tối"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "notice",
+        "kinds": [],
+        "codes": ["MEDICINE_NOT_SCHEDULED"],
+        "credits": 0
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-06-medicine-fever-health",
+      "turns": [
+        {
+          "say": "nhắc 8h tối cho bé uống thuốc hạ sốt"
+        }
+      ],
+      "expect": {
+        "outcome": "health",
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-07-caregiver-denied",
+      "as": "NANNY",
+      "turns": [
+        {
+          "say": "nhắc mai mua sữa",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "mua sữa",
+                  "date": "2026-10-16"
+                },
+                "ev": {
+                  "title": "mua sữa",
+                  "date": "mai"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "denied",
+        "error": "WRITE_DENIED",
+        "credits": 0
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-08-date-20-10",
+      "turns": [
+        {
+          "say": "20/10 tiêm phòng",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "tiêm phòng",
+                  "date": "2026-10-20"
+                },
+                "ev": {
+                  "title": "tiêm phòng",
+                  "date": "20/10"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "ready": true,
+        "values": {
+          "0.date": "2026-10-20"
+        },
+        "credits": 1
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-09-next-monday",
+      "turns": [
+        {
+          "say": "nhắc thứ 2 tuần sau đi khám",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "đi khám",
+                  "date": "2026-10-19"
+                },
+                "ev": {
+                  "title": "đi khám",
+                  "date": "thứ 2 tuần sau"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "ready": true,
+        "values": {
+          "0.date": "2026-10-19"
+        },
+        "credits": 1
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-10-no-diacritics",
+      "turns": [
+        {
+          "say": "nhac mai 7h sang di kham",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "di kham",
+                  "date": "2026-10-16",
+                  "time": "07:00"
+                },
+                "ev": {
+                  "title": "di kham",
+                  "time": "7h sang",
+                  "date": "mai"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "ready": true,
+        "values": {
+          "0.date": "D1",
+          "0.time": "07:00"
+        },
+        "credits": 1
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-11-english",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "remind me tomorrow at 10am to buy wipes",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "buy wipes",
+                  "date": "2026-10-16",
+                  "time": "10:00"
+                },
+                "ev": {
+                  "title": "buy wipes",
+                  "time": "10am",
+                  "date": "tomorrow"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "ready": true,
+        "values": {
+          "0.date": "D1",
+          "0.time": "10:00"
+        },
+        "credits": 1
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-12-no-date",
+      "title": "No date: asked, or the draft names the date to pick — never a silent today",
+      "turns": [
+        {
+          "say": "nhắc mua bỉm",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "mua bỉm"
+                },
+                "ev": {
+                  "title": "mua bỉm"
+                },
+                "miss": ["date"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["drafts", "awaiting"]
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-13-assignee-self",
+      "turns": [
+        {
+          "say": "nhắc mẹ mua sữa lúc 5h chiều",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "mua sữa",
+                  "date": "2026-10-15",
+                  "time": "17:00",
+                  "assigneeText": "mẹ"
+                },
+                "ev": {
+                  "title": "mua sữa",
+                  "assigneeText": "mẹ",
+                  "time": "5h chiều"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "reminder.assignee",
+              "member": "MOM"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "values": {
+          "0.assigneeUid": "u_mai",
+          "0.time": "17:00"
+        },
+        "credits": 1
+      },
+      "group": "reminder"
+    },
+    {
+      "id": "rm-14-past-time-today",
+      "title": "A reminder for a time already gone: flagged or asked, never saved in the past silently",
+      "turns": [
+        {
+          "say": "nhắc 10h sáng nay gọi bác sĩ",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "gọi bác sĩ",
+                  "date": "2026-10-15",
+                  "time": "10:00"
+                },
+                "ev": {
+                  "title": "gọi bác sĩ",
+                  "time": "10h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["drafts", "awaiting"]
+      },
+      "group": "reminder"
+    }
+  ]
+}

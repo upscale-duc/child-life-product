@@ -1,0 +1,264 @@
+{
+ "id": "ro-02-caregiver-confirmed-by-dad",
+ "group": "roles",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "NANNY",
+   "snapshot": {
+    "task": {
+     "id": "tk_a06f765b47f01ea1728972ea16e07928",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_lan",
+      "name": "Cô Lan",
+      "relation": "nanny",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_a06f765b47f01ea1728972ea16e07928_0",
+      "taskId": "tk_a06f765b47f01ea1728972ea16e07928",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "sleep",
+       "startedAt": "2026-10-15T06:00:00.000Z",
+       "endedAt": "2026-10-15T07:00:00.000Z",
+       "durationMin": 60,
+       "linked": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_a06f765b47f01ea1728972ea16e07928"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé ngủ từ 13h đến 14h"
+       }
+      ],
+      "taskId": "tk_a06f765b47f01ea1728972ea16e07928",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_lan",
+       "name": "Cô Lan",
+       "relation": "nanny",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_a06f765b47f01ea1728972ea16e07928_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_a06f765b47f01ea1728972ea16e07928",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 2 · after save",
+   "as": "DAD",
+   "snapshot": {
+    "task": {
+     "id": "tk_a06f765b47f01ea1728972ea16e07928",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_lan",
+      "name": "Cô Lan",
+      "relation": "nanny",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_a06f765b47f01ea1728972ea16e07928_0",
+      "taskId": "tk_a06f765b47f01ea1728972ea16e07928",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "sleep",
+       "startedAt": "2026-10-15T06:00:00.000Z",
+       "endedAt": "2026-10-15T07:00:00.000Z",
+       "durationMin": 60,
+       "linked": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_a06f765b47f01ea1728972ea16e07928"
+      ],
+      "recordId": "r_2ba59fc9fa39de852db9adceffc0642d",
+      "recordLink": "/care/records/b_00000000000000000001/r_2ba59fc9fa39de852db9adceffc0642d",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_minh",
+       "name": "Minh",
+       "relation": "father",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé ngủ từ 13h đến 14h"
+       }
+      ],
+      "taskId": "tk_a06f765b47f01ea1728972ea16e07928",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_lan",
+       "name": "Cô Lan",
+       "relation": "nanny",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_a06f765b47f01ea1728972ea16e07928_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_a06f765b47f01ea1728972ea16e07928",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_a06f765b47f01ea1728972ea16e07928_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_2ba59fc9fa39de852db9adceffc0642d",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_a06f765b47f01ea1728972ea16e07928",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_minh",
+       "name": "Minh",
+       "relation": "father",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

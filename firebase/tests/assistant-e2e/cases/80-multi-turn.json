@@ -1,0 +1,535 @@
+{
+  "group": "flow",
+  "note": "Whole conversations as on the phone: question → chip → save, typed answers, edits, corrections, retries.",
+  "cases": [
+    {
+      "id": "fl-01-sleep-9h-chip-save",
+      "anchor": "07:10",
+      "turns": [
+        {
+          "say": "ngủ 9 tiếng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "durationMin": 540
+                },
+                "ev": {
+                  "durationMin": "9 tiếng"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.start",
+              "choice": 0
+            }
+          ]
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "asks": ["time.start"],
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-02-nurse-just-now-save",
+      "turns": [
+        {
+          "say": "bú mẹ 20 phút",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 20
+                },
+                "ev": {
+                  "durationMin": "20 phút"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "choice": 0
+            }
+          ]
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "asks": ["time.missing"],
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-03-typed-time-answer",
+      "turns": [
+        {
+          "say": "bé bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120
+                },
+                "ev": {
+                  "amountMl": "120ml"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "text": "lúc 1 giờ chiều"
+            }
+          ]
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "values": {
+          "0.occurredAt": "D0 13:00"
+        },
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-04-unreadable-then-edit",
+      "turns": [
+        {
+          "say": "bé bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120
+                },
+                "ev": {
+                  "amountMl": "120ml"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "text": "khoảng nãy"
+            }
+          ]
+        },
+        {
+          "patch": {
+            "set": {}
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-05-edit-amount-save",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "patch": {
+            "set": {
+              "amountMl": 150
+            },
+            "confirm": []
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "values": {
+          "0.amountMl": 150
+        },
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-06-retry-save-no-duplicate",
+      "turns": [
+        {
+          "say": "bé ngủ từ 13h đến 14h",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "endTime": "14:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "13h",
+                  "endTime": "14h"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "confirm": "all",
+          "retry": true
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-07-log-then-ask",
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "confirm": "all"
+        },
+        {
+          "say": "hôm nay bé bú tổng bao nhiêu rồi?",
+          "model": {
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": 0
+              }
+            ]
+          },
+          "at": "+1"
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "saved": 1,
+        "credits": 2
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-08-ampm-then-edit-side",
+      "anchor": "21:30",
+      "turns": [
+        {
+          "say": "8 giờ bú mẹ 10 phút",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 10,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "10 phút",
+                  "time": "8 giờ"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.ampm",
+              "choice": "pm"
+            }
+          ]
+        },
+        {
+          "patch": {
+            "set": {
+              "side": "left"
+            }
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "asks": ["time.ampm"],
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-09-mixed-save-both",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng, ngủ từ 9h đến 10h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              },
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "09:00",
+                  "dayOffset": 0,
+                  "endTime": "10:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "9h",
+                  "endTime": "10h"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "sleep"],
+        "saved": 2,
+        "credits": 1
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-10-reminder-assignee-save",
+      "turns": [
+        {
+          "say": "nhắc bố mai đi lấy kết quả",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "đi lấy kết quả",
+                  "date": "2026-10-16",
+                  "assigneeText": "bố"
+                },
+                "ev": {
+                  "title": "đi lấy kết quả",
+                  "assigneeText": "bố",
+                  "date": "mai"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "reminder.assignee",
+              "member": "DAD"
+            }
+          ]
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-11-expense-save",
+      "turns": [
+        {
+          "say": "mua sữa 500k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 500000,
+                  "currency": "VND",
+                  "categoryId": "c_milk",
+                  "title": "sữa"
+                },
+                "ev": {
+                  "amount": "500k",
+                  "title": "sữa"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "saved": 1,
+        "credits": 1,
+        "visibility": "private"
+      },
+      "group": "flow"
+    },
+    {
+      "id": "fl-12-correction-chain",
+      "title": "A correction of a 13h-14h sleep: \"12h30\" is 12:30, no morning / evening question",
+      "turns": [
+        {
+          "say": "bé ngủ từ 13h đến 14h",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "endTime": "14:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "13h",
+                  "endTime": "14h"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": "à không, ngủ từ 12h30",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "12:30",
+                  "dayOffset": 0,
+                  "endTime": "14:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "12h30"
+                },
+                "cp": true
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.ampm",
+              "choice": "pm"
+            }
+          ],
+          "at": "+1"
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "asks": [],
+        "values": {
+          "0.startedAt": "D0 12:30"
+        },
+        "saved": 1,
+        "credits": 2
+      },
+      "group": "flow"
+    }
+  ]
+}

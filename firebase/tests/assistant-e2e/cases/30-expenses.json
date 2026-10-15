@@ -1,0 +1,726 @@
+{
+  "group": "expense",
+  "note": "Typed expenses (Chi tiêu): shorthand amounts, currencies, categories, dates, roles; always private.",
+  "cases": [
+    {
+      "id": "ex-01-hoc-boi-1tr2",
+      "turns": [
+        {
+          "say": "đóng tiền học bơi 1tr2",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 1200000,
+                  "currency": "VND",
+                  "categoryId": "c_childcare",
+                  "title": "học bơi"
+                },
+                "ev": {
+                  "amount": "1tr2",
+                  "title": "học bơi"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "visibility": "private",
+        "values": {
+          "0.totalMinor": 1200000,
+          "0.categoryId": "c_childcare"
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-02-50-nghin-ta",
+      "turns": [
+        {
+          "say": "50 nghìn tã",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 50000,
+                  "currency": "VND",
+                  "categoryId": "c_diaper",
+                  "title": "tã"
+                },
+                "ev": {
+                  "amount": "50 nghìn",
+                  "title": "tã"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "visibility": "private",
+        "values": {
+          "0.totalMinor": 50000,
+          "0.categoryId": "c_diaper"
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-03-usd",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "$20 diapers",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 20,
+                  "currency": "USD",
+                  "categoryId": "c_diaper",
+                  "title": "diapers"
+                },
+                "ev": {
+                  "amount": "$20",
+                  "title": "diapers"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "visibility": "private",
+        "values": {
+          "0.totalMinor": 2000,
+          "0.currency": "USD"
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-04-yesterday-merchant",
+      "turns": [
+        {
+          "say": "hôm qua mua bỉm 350.000đ ở Con Cưng",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 350000,
+                  "currency": "VND",
+                  "categoryId": "c_diaper",
+                  "title": "bỉm",
+                  "merchant": "Con Cưng",
+                  "date": "2026-10-14"
+                },
+                "ev": {
+                  "amount": "350.000đ",
+                  "merchant": "Con Cưng",
+                  "date": "hôm qua",
+                  "title": "bỉm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "values": {
+          "0.totalMinor": 350000,
+          "0.date": "D-1",
+          "0.merchant": "Con Cưng"
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-05-no-diacritics",
+      "turns": [
+        {
+          "say": "mua sua 300k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 300000,
+                  "currency": "VND",
+                  "categoryId": "c_milk",
+                  "title": "sua"
+                },
+                "ev": {
+                  "amount": "300k",
+                  "title": "sua"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "visibility": "private",
+        "values": {
+          "0.totalMinor": 300000
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-06-bare-number",
+      "turns": [
+        {
+          "say": "trả 200 tiền gửi xe",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 200,
+                  "title": "gửi xe"
+                },
+                "ev": {
+                  "amount": "200"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "review": ["totalMinor"],
+        "visibility": "private",
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-07-doctor",
+      "turns": [
+        {
+          "say": "khám bác sĩ hết 450k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 450000,
+                  "currency": "VND",
+                  "categoryId": "c_health",
+                  "title": "khám bác sĩ"
+                },
+                "ev": {
+                  "amount": "450k",
+                  "title": "khám bác sĩ"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "values": {
+          "0.categoryId": "c_health"
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-08-clothes-2-trieu",
+      "turns": [
+        {
+          "say": "mua quần áo cho bé 2 triệu",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 2000000,
+                  "currency": "VND",
+                  "categoryId": "c_clothes",
+                  "title": "quần áo"
+                },
+                "ev": {
+                  "amount": "2 triệu",
+                  "title": "quần áo"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "values": {
+          "0.totalMinor": 2000000,
+          "0.categoryId": "c_clothes"
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-09-euro",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "€15 for baby wipes",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 15,
+                  "currency": "EUR",
+                  "categoryId": "c_diaper",
+                  "title": "baby wipes"
+                },
+                "ev": {
+                  "amount": "€15",
+                  "title": "baby wipes"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "values": {
+          "0.totalMinor": 1500,
+          "0.currency": "EUR"
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-10-duplicate",
+      "world": {
+        "seed": ["expense500k"]
+      },
+      "turns": [
+        {
+          "say": "mua sữa 500k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 500000,
+                  "currency": "VND",
+                  "categoryId": "c_milk",
+                  "title": "sữa"
+                },
+                "ev": {
+                  "amount": "500k",
+                  "title": "sữa"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "codes": ["DUPLICATE_SUSPECTED"],
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-11-unknown-category",
+      "turns": [
+        {
+          "say": "tiền điện 1tr",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 1000000,
+                  "currency": "VND",
+                  "title": "tiền điện"
+                },
+                "ev": {
+                  "amount": "1tr",
+                  "title": "tiền điện"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "values": {
+          "0.categoryId": "c_other"
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-12-hom-kia",
+      "turns": [
+        {
+          "say": "mua bình sữa 1.5tr hôm kia",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 1500000,
+                  "currency": "VND",
+                  "categoryId": "c_milk",
+                  "title": "bình sữa",
+                  "date": "2026-10-13"
+                },
+                "ev": {
+                  "amount": "1.5tr",
+                  "date": "hôm kia",
+                  "title": "bình sữa"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "values": {
+          "0.totalMinor": 1500000,
+          "0.date": "D-2"
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-13-4-trieu-hoc",
+      "turns": [
+        {
+          "say": "4 triệu tiền học tháng này",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 4000000,
+                  "currency": "VND",
+                  "categoryId": "c_childcare",
+                  "title": "tiền học"
+                },
+                "ev": {
+                  "amount": "4 triệu",
+                  "title": "tiền học"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "values": {
+          "0.totalMinor": 4000000
+        },
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-14-caregiver-denied",
+      "as": "NANNY",
+      "turns": [
+        {
+          "say": "mua sữa 500k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 500000,
+                  "currency": "VND",
+                  "categoryId": "c_milk",
+                  "title": "sữa"
+                },
+                "ev": {
+                  "amount": "500k"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "denied",
+        "error": "WRITE_DENIED",
+        "visibility": "private",
+        "credits": 0
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-15-caregiver-with-right",
+      "as": "NANNY_SPEND",
+      "turns": [
+        {
+          "say": "mua bỉm 200k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 200000,
+                  "currency": "VND",
+                  "categoryId": "c_diaper",
+                  "title": "bỉm"
+                },
+                "ev": {
+                  "amount": "200k",
+                  "title": "bỉm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "visibility": "private",
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-16-relative-denied",
+      "as": "AUNT",
+      "turns": [
+        {
+          "say": "mua đồ chơi 300k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 300000,
+                  "currency": "VND",
+                  "title": "đồ chơi"
+                },
+                "ev": {
+                  "amount": "300k"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "denied",
+        "error": "WRITE_DENIED",
+        "visibility": "private",
+        "credits": 0
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-17-dad-mixed-shared-thread",
+      "as": "DAD",
+      "turns": [
+        {
+          "say": "bé bú 90ml lúc 13h, hết 2 hộp sữa 900k",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "13h"
+                }
+              },
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 900000,
+                  "currency": "VND",
+                  "categoryId": "c_milk",
+                  "title": "2 hộp sữa"
+                },
+                "ev": {
+                  "amount": "900k",
+                  "title": "2 hộp sữa"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "expense"],
+        "visibility": "private",
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-18-model-only-money",
+      "title": "No money words: the model finds an expense; the task moves out of the shared thread",
+      "turns": [
+        {
+          "say": "Con Cưng hôm nay hai hộp sữa, bé bú 90ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "13h"
+                }
+              },
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 900000,
+                  "categoryId": "c_milk",
+                  "title": "hai hộp sữa",
+                  "merchant": "Con Cưng"
+                },
+                "ev": {
+                  "merchant": "Con Cưng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "expense"],
+        "visibility": "private",
+        "review": ["totalMinor"],
+        "codes": ["SPENDING_PRIVATE"],
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-19-bare-500",
+      "turns": [
+        {
+          "say": "hết 500 tiền sữa",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 500,
+                  "categoryId": "c_milk",
+                  "title": "sữa"
+                },
+                "ev": {
+                  "amount": "500"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "review": ["totalMinor"],
+        "credits": 1
+      },
+      "group": "expense"
+    },
+    {
+      "id": "ex-20-hint-private-thread",
+      "turns": [
+        {
+          "say": "mua tã 250k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 250000,
+                  "currency": "VND",
+                  "categoryId": "c_diaper",
+                  "title": "tã"
+                },
+                "ev": {
+                  "amount": "250k",
+                  "title": "tã"
+                }
+              }
+            ]
+          },
+          "intentHint": "expense"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "visibility": "private",
+        "credits": 1
+      },
+      "group": "expense"
+    }
+  ]
+}

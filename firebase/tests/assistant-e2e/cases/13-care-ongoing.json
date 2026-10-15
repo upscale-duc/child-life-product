@@ -1,0 +1,242 @@
+{
+  "group": "care.ongoing",
+  "note": "Ongoing states drive the app's own timers (sleep / breastfeeding): start, stop, already running.",
+  "cases": [
+    {
+      "id": "on-01-dang-ngu-nodiac",
+      "turns": [
+        {
+          "say": "be dang ngu",
+          "model": {
+            "i": [
+              {
+                "k": "sleep|observation",
+                "f": {
+                  "phase": "start",
+                  "observation": null
+                },
+                "ev": {
+                  "phase": "dang ngu"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [["sleep"], ["timer"]],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "care.ongoing"
+    },
+    {
+      "id": "on-02-sleeping-en",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "baby is sleeping now",
+          "model": {
+            "i": [
+              {
+                "k": "sleep|observation",
+                "f": {
+                  "phase": "start"
+                },
+                "ev": {
+                  "phase": "sleeping now"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [["sleep"], ["timer"]],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "care.ongoing"
+    },
+    {
+      "id": "on-03-since-13h",
+      "turns": [
+        {
+          "say": "bé ngủ từ 13h, giờ vẫn đang ngủ",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "phase": "start",
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "time": "13h",
+                  "phase": "vẫn đang ngủ"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [["sleep"], ["timer"]],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "care.ongoing"
+    },
+    {
+      "id": "on-04-woke-up",
+      "world": {
+        "seed": ["sleepTimer1230"]
+      },
+      "turns": [
+        {
+          "say": "bé dậy rồi",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "phase": "stop"
+                },
+                "ev": {
+                  "phase": "dậy rồi"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [["sleep"], ["timer"]],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "care.ongoing"
+    },
+    {
+      "id": "on-05-nursing-left",
+      "turns": [
+        {
+          "say": "đang cho bú bên trái",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "phase": "start",
+                  "side": "left"
+                },
+                "ev": {
+                  "phase": "đang cho bú",
+                  "side": "bên trái"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [["breast"], ["timer"]],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "care.ongoing"
+    },
+    {
+      "id": "on-06-nursing-done",
+      "world": {
+        "seed": ["breastTimerLeft"]
+      },
+      "turns": [
+        {
+          "say": "bú xong rồi",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "phase": "stop"
+                },
+                "ev": {
+                  "phase": "bú xong rồi"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [["breast"], ["timer"]],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "care.ongoing"
+    },
+    {
+      "id": "on-07-sleeping-already-running",
+      "world": {
+        "seed": ["sleepTimer1230"]
+      },
+      "title": "A sleep timer already runs: say so (or offer to end it), never a second timer",
+      "turns": [
+        {
+          "say": "con đang ngủ",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "phase": "start"
+                },
+                "ev": {
+                  "phase": "đang ngủ"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["drafts", "notice", "fallback", "answer"]
+      },
+      "group": "care.ongoing"
+    },
+    {
+      "id": "on-08-woke-no-timer",
+      "title": "Nothing running: ask when it started (or offer a sleep to fill), never a dead end",
+      "turns": [
+        {
+          "say": "con dậy rồi",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "phase": "stop"
+                },
+                "ev": {
+                  "phase": "dậy rồi"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["drafts", "awaiting", "notice", "fallback"]
+      },
+      "group": "care.ongoing"
+    }
+  ]
+}

@@ -1,0 +1,266 @@
+{
+  "group": "care",
+  "note": "Care questions: approved content only, honest fallback, the meal-ideas topic, missing date of birth, kill switch.",
+  "cases": [
+    {
+      "id": "ca-01-sleep-concern",
+      "turns": [
+        {
+          "say": "dạo này bé khó ngủ về đêm",
+          "model": [
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": {
+                  "kind": "falling_asleep",
+                  "when": "night",
+                  "since": null
+                },
+                "evidence": [
+                  {
+                    "field": "kind",
+                    "text": "khó ngủ"
+                  },
+                  {
+                    "field": "when",
+                    "text": "về đêm"
+                  }
+                ]
+              }
+            },
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": {
+                  "kind": "falling_asleep",
+                  "when": "night",
+                  "since": null
+                },
+                "evidence": [
+                  {
+                    "field": "kind",
+                    "text": "khó ngủ"
+                  },
+                  {
+                    "field": "when",
+                    "text": "về đêm"
+                  }
+                ]
+              }
+            },
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": {
+                  "kind": "falling_asleep",
+                  "when": "night",
+                  "since": null
+                },
+                "evidence": [
+                  {
+                    "field": "kind",
+                    "text": "khó ngủ"
+                  },
+                  {
+                    "field": "when",
+                    "text": "về đêm"
+                  }
+                ]
+              }
+            }
+          ],
+          "answers": [
+            {
+              "field": "sleep",
+              "choice": 0
+            },
+            {
+              "field": "sleep",
+              "choice": 0
+            },
+            {
+              "field": "sleep",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": ["care", "fallback"]
+      },
+      "group": "care"
+    },
+    {
+      "id": "ca-02-meal-ideas-7m",
+      "turns": [
+        {
+          "say": "con 7 tháng ăn gì được?",
+          "model": {
+            "care": {
+              "topic": "meal_ideas"
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["care", "fallback"],
+        "asks": []
+      },
+      "group": "care"
+    },
+    {
+      "id": "ca-03-meal-safety-net",
+      "title": "Nothing extracted: still the meal-ideas topic, never \"read or log?\"",
+      "turns": [
+        {
+          "say": "hôm nay bé ăn gì?",
+          "model": {
+            "clar": "intent"
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["care", "fallback"],
+        "asks": []
+      },
+      "group": "care"
+    },
+    {
+      "id": "ca-04-no-dob",
+      "world": {
+        "dob": null
+      },
+      "turns": [
+        {
+          "say": "bé hay thức đêm 3 hôm nay",
+          "model": [
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": {
+                  "kind": "night_waking",
+                  "when": "night",
+                  "since": "days_2_3"
+                },
+                "evidence": [
+                  {
+                    "field": "kind",
+                    "text": "thức đêm"
+                  },
+                  {
+                    "field": "since",
+                    "text": "3 hôm nay"
+                  }
+                ]
+              }
+            },
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": {
+                  "kind": "night_waking",
+                  "when": "night",
+                  "since": "days_2_3"
+                },
+                "evidence": [
+                  {
+                    "field": "kind",
+                    "text": "thức đêm"
+                  },
+                  {
+                    "field": "since",
+                    "text": "3 hôm nay"
+                  }
+                ]
+              }
+            }
+          ],
+          "answers": [
+            {
+              "field": "sleep",
+              "choice": 0
+            },
+            {
+              "field": "sleep",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": ["care", "fallback", "failed:REGION_UNSUPPORTED"]
+      },
+      "group": "care"
+    },
+    {
+      "id": "ca-05-care-off",
+      "world": {
+        "off": ["assistant_care"]
+      },
+      "turns": [
+        {
+          "say": "bé khó ngủ quá",
+          "model": [
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": null,
+                "evidence": []
+              }
+            },
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": null,
+                "evidence": []
+              }
+            },
+            {
+              "care": {
+                "topic": "sleep_concern",
+                "sleep": null,
+                "evidence": []
+              }
+            }
+          ],
+          "answers": [
+            {
+              "field": "sleep",
+              "choice": 0
+            },
+            {
+              "field": "sleep",
+              "choice": 0
+            },
+            {
+              "field": "sleep",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": ["fallback", "care", "failed:FEATURE_DISABLED"]
+      },
+      "group": "care"
+    },
+    {
+      "id": "ca-06-recipe-english",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "what can my baby eat today?",
+          "model": {
+            "care": {
+              "topic": "meal_ideas"
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["care", "fallback"]
+      },
+      "group": "care"
+    }
+  ]
+}

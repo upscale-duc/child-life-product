@@ -1,0 +1,284 @@
+{
+ "id": "rm-11-english",
+ "group": "reminder",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_f8ec96213f2ed88d0f1ea01b0da8b72f",
+     "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": {
+      "reason": "spending",
+      "from": "shared_thread",
+      "at": "start"
+     }
+    },
+    "drafts": [
+     {
+      "id": "dr_f8ec96213f2ed88d0f1ea01b0da8b72f_0",
+      "taskId": "tk_f8ec96213f2ed88d0f1ea01b0da8b72f",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "reminder",
+       "title": "buy wipes",
+       "date": "2026-10-16",
+       "time": "10:00",
+       "assigneeUid": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_f8ec96213f2ed88d0f1ea01b0da8b72f"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "remind me tomorrow at 10am to buy wipes"
+       }
+      ],
+      "taskId": "tk_f8ec96213f2ed88d0f1ea01b0da8b72f",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "This message mentions money, so only you can see it: it’s in your private chat, not in the baby’s shared chat.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_f8ec96213f2ed88d0f1ea01b0da8b72f_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_f8ec96213f2ed88d0f1ea01b0da8b72f",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_f8ec96213f2ed88d0f1ea01b0da8b72f",
+     "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": {
+      "reason": "spending",
+      "from": "shared_thread",
+      "at": "start"
+     }
+    },
+    "drafts": [
+     {
+      "id": "dr_f8ec96213f2ed88d0f1ea01b0da8b72f_0",
+      "taskId": "tk_f8ec96213f2ed88d0f1ea01b0da8b72f",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "reminder",
+       "title": "buy wipes",
+       "date": "2026-10-16",
+       "time": "10:00",
+       "assigneeUid": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_f8ec96213f2ed88d0f1ea01b0da8b72f"
+      ],
+      "recordId": "rm_d9f917e03be7a5f56d73a16e5f1272d5",
+      "recordLink": "/care/reminders/rm_d9f917e03be7a5f56d73a16e5f1272d5?babyId=b_00000000000000000001",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "remind me tomorrow at 10am to buy wipes"
+       }
+      ],
+      "taskId": "tk_f8ec96213f2ed88d0f1ea01b0da8b72f",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "This message mentions money, so only you can see it: it’s in your private chat, not in the baby’s shared chat.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_f8ec96213f2ed88d0f1ea01b0da8b72f_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_f8ec96213f2ed88d0f1ea01b0da8b72f",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_f8ec96213f2ed88d0f1ea01b0da8b72f_0",
+          "status": "saved",
+          "recordLink": "/care/reminders/rm_d9f917e03be7a5f56d73a16e5f1272d5?babyId=b_00000000000000000001",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_f8ec96213f2ed88d0f1ea01b0da8b72f",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

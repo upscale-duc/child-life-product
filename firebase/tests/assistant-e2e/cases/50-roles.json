@@ -1,0 +1,307 @@
+{
+  "group": "roles",
+  "note": "Roles and the shared thread: Cùng nuôi, Người chăm sóc, relatives; who may draft, read and confirm.",
+  "cases": [
+    {
+      "id": "ro-01-caregiver-logs",
+      "as": "NANNY",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "visibility": "shared",
+        "credits": 1
+      },
+      "group": "roles"
+    },
+    {
+      "id": "ro-02-caregiver-confirmed-by-dad",
+      "as": "NANNY",
+      "turns": [
+        {
+          "say": "bé ngủ từ 13h đến 14h",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "endTime": "14:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "13h",
+                  "endTime": "14h"
+                }
+              }
+            ]
+          },
+          "as": "NANNY"
+        },
+        {
+          "confirm": "all",
+          "as": "DAD"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "visibility": "shared",
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "roles"
+    },
+    {
+      "id": "ro-03-relative-daily-care-cannot-log",
+      "as": "AUNT",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "denied",
+        "error": "WRITE_DENIED",
+        "visibility": "private",
+        "credits": 0
+      },
+      "group": "roles"
+    },
+    {
+      "id": "ro-04-relative-cannot-log",
+      "as": "GRANDMA",
+      "turns": [
+        {
+          "say": "bé ngủ từ 13h đến 14h",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "endTime": "14:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "13h",
+                  "endTime": "14h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "denied",
+        "error": "WRITE_DENIED",
+        "visibility": "private",
+        "credits": 0
+      },
+      "group": "roles"
+    },
+    {
+      "id": "ro-05-dad-expense-private",
+      "as": "DAD",
+      "turns": [
+        {
+          "say": "mua bỉm 300k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 300000,
+                  "currency": "VND",
+                  "categoryId": "c_diaper",
+                  "title": "bỉm"
+                },
+                "ev": {
+                  "amount": "300k",
+                  "title": "bỉm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "visibility": "private",
+        "credits": 1
+      },
+      "group": "roles"
+    },
+    {
+      "id": "ro-06-caregiver-observation",
+      "as": "NANNY",
+      "turns": [
+        {
+          "say": "bé biết lẫy rồi",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": {
+                  "observation": "new_skill"
+                },
+                "ev": {
+                  "observation": "biết lẫy"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["observation"],
+        "ready": true,
+        "visibility": "shared",
+        "credits": 1
+      },
+      "group": "roles"
+    },
+    {
+      "id": "ro-07-dad-reminder",
+      "as": "DAD",
+      "turns": [
+        {
+          "say": "nhắc mai đưa bé đi tiêm",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "đưa bé đi tiêm",
+                  "date": "2026-10-16"
+                },
+                "ev": {
+                  "title": "đưa bé đi tiêm",
+                  "date": "mai"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["reminder"],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "roles"
+    },
+    {
+      "id": "ro-08-caregiver-reads",
+      "world": {
+        "seed": ["day"]
+      },
+      "as": "NANNY",
+      "turns": [
+        {
+          "say": "hôm nay bé bú mấy lần?",
+          "model": {
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "visibility": "shared",
+        "credits": 1
+      },
+      "group": "roles"
+    },
+    {
+      "id": "ro-09-caregiver-with-right-mixed",
+      "as": "NANNY_SPEND",
+      "turns": [
+        {
+          "say": "bé bú 90ml lúc 13h, mua sữa 400k",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "13h"
+                }
+              },
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 400000,
+                  "currency": "VND",
+                  "categoryId": "c_milk",
+                  "title": "sữa"
+                },
+                "ev": {
+                  "amount": "400k"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "expense"],
+        "visibility": "private",
+        "credits": 1
+      },
+      "group": "roles"
+    }
+  ]
+}

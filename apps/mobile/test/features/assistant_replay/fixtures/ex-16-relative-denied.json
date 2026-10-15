@@ -1,0 +1,92 @@
+{
+ "id": "ex-16-relative-denied",
+ "group": "expense",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "AUNT",
+   "snapshot": {
+    "task": {
+     "id": "tk_af6c9c07134d0a78cead23784be0c44b",
+     "conversationId": "cv_5e3109bb9723c42153e76c9c6eac6173",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "failed",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "released",
+     "errorCode": "WRITE_DENIED",
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_thu",
+      "name": "Dì Thu",
+      "relation": "relative",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_5e3109bb9723c42153e76c9c6eac6173",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "mua đồ chơi 300k"
+       }
+      ],
+      "taskId": "tk_af6c9c07134d0a78cead23784be0c44b",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_thu",
+       "name": "Dì Thu",
+       "relation": "relative",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_5e3109bb9723c42153e76c9c6eac6173",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Vai trò của bạn chưa được ghi Chi tiêu, nên mình không tạo khoản chi."
+       },
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Chưa xử lý được yêu cầu này. Không tính lượt."
+       }
+      ],
+      "taskId": "tk_af6c9c07134d0a78cead23784be0c44b",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

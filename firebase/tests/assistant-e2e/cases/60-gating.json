@@ -1,0 +1,416 @@
+{
+  "group": "gating",
+  "note": "Consent, credits, flags, expiry, cancel, provider failure: never charged for nothing, always explained.",
+  "cases": [
+    {
+      "id": "ga-01-no-consent",
+      "world": {
+        "noConsent": ["MOM"]
+      },
+      "noProbe": true,
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "error": "CONSENT_REQUIRED",
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-02-out-of-credits",
+      "world": {
+        "quota": 0
+      },
+      "noProbe": true,
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "error": "USAGE_EXHAUSTED",
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-03-out-of-credits-small-talk",
+      "world": {
+        "quota": 0
+      },
+      "turns": [
+        {
+          "say": "cảm ơn Lumi"
+        }
+      ],
+      "expect": {
+        "outcome": ["small_talk", "blocked:USAGE_EXHAUSTED"],
+        "credits": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-04-assistant-off",
+      "world": {
+        "off": ["assistant"]
+      },
+      "noProbe": true,
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "error": "FEATURE_DISABLED",
+        "credits": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-05-model-off",
+      "world": {
+        "off": ["assistant_live"]
+      },
+      "noProbe": true,
+      "live": false,
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "error": "AI_UNAVAILABLE",
+        "credits": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-06-writes-off",
+      "world": {
+        "off": ["assistant_writes"]
+      },
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "credits": 1,
+        "saved": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-07-question-expired",
+      "noProbe": true,
+      "turns": [
+        {
+          "say": "bé bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120
+                },
+                "ev": {
+                  "amountMl": "120ml"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "choice": 0,
+              "afterMin": 31
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "failed:QUOTE_EXPIRED",
+        "error": "QUOTE_EXPIRED",
+        "credits": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-08-cancel-while-asking",
+      "noProbe": true,
+      "turns": [
+        {
+          "say": "bé bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120
+                },
+                "ev": {
+                  "amountMl": "120ml"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "cancel": true
+        }
+      ],
+      "expect": {
+        "outcome": "canceled:-",
+        "credits": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-09-provider-failure",
+      "live": false,
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "error": "http"
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "failed:AI_UNAVAILABLE",
+        "credits": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-10-provider-timeout",
+      "live": false,
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "error": "timeout"
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "failed:AI_UNAVAILABLE",
+        "credits": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-11-rejected-output",
+      "live": false,
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "raw": {
+              "intents": [
+                {
+                  "kind": "delete_all"
+                }
+              ],
+              "reads": [],
+              "clarification": null
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "failed:VALIDATION_FAILED",
+        "credits": 0
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-12-last-credit",
+      "world": {
+        "quota": 1
+      },
+      "noProbe": true,
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": "bé ngủ từ 13h đến 14h",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "endTime": "14:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "13h",
+                  "endTime": "14h"
+                }
+              }
+            ]
+          },
+          "at": "+2"
+        }
+      ],
+      "expect": {
+        "error": "USAGE_EXHAUSTED",
+        "credits": 1
+      },
+      "group": "gating"
+    },
+    {
+      "id": "ga-13-consent-withdrawn-mid-question",
+      "noProbe": true,
+      "turns": [
+        {
+          "say": "bé bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120
+                },
+                "ev": {
+                  "amountMl": "120ml"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "withdrawConsent": "MOM"
+        },
+        {
+          "say": "bé bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120
+                },
+                "ev": {
+                  "amountMl": "120ml"
+                }
+              }
+            ]
+          },
+          "at": "+1"
+        }
+      ],
+      "expect": {
+        "error": "CONSENT_REQUIRED",
+        "credits": 0
+      },
+      "group": "gating"
+    }
+  ]
+}

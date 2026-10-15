@@ -1,0 +1,278 @@
+{
+ "id": "tk-09-help-me",
+ "group": "talk",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_01bef545d3740788983a7bfc39de9ea5",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "awaiting_clarification",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "reserved",
+     "errorCode": null,
+     "round": 1,
+     "clarification": {
+      "id": "cl_1",
+      "field": "intent",
+      "question": {
+       "vi": "Bạn muốn xem nhật ký hay ghi thêm?",
+       "en": "Do you want to see the log or add to it?"
+      },
+      "choices": [
+       {
+        "id": "read",
+        "label": {
+         "vi": "Xem nhật ký",
+         "en": "See the log"
+        }
+       },
+       {
+        "id": "write",
+        "label": {
+         "vi": "Ghi thêm",
+         "en": "Add to the log"
+        }
+       }
+      ],
+      "allowText": false
+     },
+     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "giúp mình với"
+       }
+      ],
+      "taskId": "tk_01bef545d3740788983a7bfc39de9ea5",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "intent",
+         "question": {
+          "vi": "Bạn muốn xem nhật ký hay ghi thêm?",
+          "en": "Do you want to see the log or add to it?"
+         },
+         "choices": [
+          {
+           "id": "read",
+           "label": {
+            "vi": "Xem nhật ký",
+            "en": "See the log"
+           }
+          },
+          {
+           "id": "write",
+           "label": {
+            "vi": "Ghi thêm",
+            "en": "Add to the log"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_01bef545d3740788983a7bfc39de9ea5",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 1 · after answer intent",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_01bef545d3740788983a7bfc39de9ea5",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 6,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "released",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:15.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "giúp mình với"
+       }
+      ],
+      "taskId": "tk_01bef545d3740788983a7bfc39de9ea5",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "intent",
+         "question": {
+          "vi": "Bạn muốn xem nhật ký hay ghi thêm?",
+          "en": "Do you want to see the log or add to it?"
+         },
+         "choices": [
+          {
+           "id": "read",
+           "label": {
+            "vi": "Xem nhật ký",
+            "en": "See the log"
+           }
+          },
+          {
+           "id": "write",
+           "label": {
+            "vi": "Ghi thêm",
+            "en": "Add to the log"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_01bef545d3740788983a7bfc39de9ea5",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Ghi thêm"
+       }
+      ],
+      "taskId": "tk_01bef545d3740788983a7bfc39de9ea5",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bạn nhắn giúp mình việc cần ghi nhé, ví dụ “bé bú 120ml lúc 8h” hoặc “mua sữa hết 500k”. Không tính lượt.",
+        "code": "HELP"
+       }
+      ],
+      "taskId": "tk_01bef545d3740788983a7bfc39de9ea5",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

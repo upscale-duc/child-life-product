@@ -1,0 +1,97 @@
+{
+ "id": "pd-08-diaper-english",
+ "group": "care.types",
+ "device": null,
+ "serverViolations": [
+  "FALSE_UNAVAILABLE",
+  "EXPECT_OUTCOME",
+  "EXPECT_KINDS",
+  "EXPECT_CREDITS"
+ ],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_15408600235fb16ac42a07a8a29932ca",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "failed",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "released",
+     "errorCode": "MODULE_UNAVAILABLE",
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "changed a dirty diaper at 1pm"
+       }
+      ],
+      "taskId": "tk_15408600235fb16ac42a07a8a29932ca",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "This can’t be saved from chat yet. You can open the matching section to add it directly."
+       },
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "This request could not be completed. No credit was used."
+       }
+      ],
+      "taskId": "tk_15408600235fb16ac42a07a8a29932ca",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

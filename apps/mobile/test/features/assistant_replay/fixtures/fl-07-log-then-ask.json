@@ -1,0 +1,370 @@
+{
+ "id": "fl-07-log-then-ask",
+ "group": "flow",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_9ad3dfd9eeb7f794f9bf05acdcde3398_0",
+      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 120,
+       "occurredAt": "2026-10-15T06:00:00.000Z",
+       "milk": "formula"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_9ad3dfd9eeb7f794f9bf05acdcde3398"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé bú 120ml lúc 13h"
+       }
+      ],
+      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_9ad3dfd9eeb7f794f9bf05acdcde3398_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 2 · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_9ad3dfd9eeb7f794f9bf05acdcde3398_0",
+      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 120,
+       "occurredAt": "2026-10-15T06:00:00.000Z",
+       "milk": "formula"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_9ad3dfd9eeb7f794f9bf05acdcde3398"
+      ],
+      "recordId": "r_d069196939c66fa1801969b73ed03241",
+      "recordLink": "/care/records/b_00000000000000000001/r_d069196939c66fa1801969b73ed03241",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé bú 120ml lúc 13h"
+       }
+      ],
+      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_9ad3dfd9eeb7f794f9bf05acdcde3398_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_9ad3dfd9eeb7f794f9bf05acdcde3398_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_d069196939c66fa1801969b73ed03241",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 3 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_f4b03ddb0ef5a7f0c8f34a3dee58a963",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "hôm nay bé bú tổng bao nhiêu rồi?"
+       }
+      ],
+      "taskId": "tk_f4b03ddb0ef5a7f0c8f34a3dee58a963",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000005",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "source_summary",
+        "schemaVersion": 1,
+        "summary": {
+         "date": "2026-10-15",
+         "bottle": {
+          "count": 3,
+          "ml": 390
+         },
+         "breast": {
+          "count": 1,
+          "minutes": 15
+         },
+         "sleep": {
+          "count": 2,
+          "minutes": 420
+         },
+         "coverage": "unknown",
+         "until": "2026-10-15T07:20:00.000Z"
+        },
+        "sourceIds": [
+         "r_66666666666666666666666666666666",
+         "r_11111111111111111111111111111111",
+         "r_33333333333333333333333333333333",
+         "r_22222222222222222222222222222222",
+         "r_44444444444444444444444444444444",
+         "r_d069196939c66fa1801969b73ed03241"
+        ]
+       },
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bú bình đã ghi hôm nay (đến 14:21): 3 cữ, 390 ml. Bú mẹ đã ghi hôm nay: 1 lần, 15 phút. Giấc ngủ đã ghi hôm nay: 2 giấc, 420 phút."
+       }
+      ],
+      "taskId": "tk_f4b03ddb0ef5a7f0c8f34a3dee58a963",
+      "sequence": 5,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

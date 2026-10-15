@@ -1,0 +1,109 @@
+{
+ "id": "rd-11-empty-day",
+ "group": "read",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_37fc9c0fb2c2de8e680c2afcd5a45f82",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "hôm nay bé bú bao nhiêu?"
+       }
+      ],
+      "taskId": "tk_37fc9c0fb2c2de8e680c2afcd5a45f82",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "source_summary",
+        "schemaVersion": 1,
+        "summary": {
+         "date": "2026-10-15",
+         "bottle": {
+          "count": 0,
+          "ml": 0
+         },
+         "breast": {
+          "count": 0,
+          "minutes": 0
+         },
+         "sleep": {
+          "count": 0,
+          "minutes": 0
+         },
+         "coverage": "unknown",
+         "until": "2026-10-15T07:20:00.000Z"
+        },
+        "sourceIds": []
+       },
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bú bình đã ghi hôm nay (đến 14:20): 0 cữ, 0 ml. Bú mẹ đã ghi hôm nay: 0 lần, 0 phút. Giấc ngủ đã ghi hôm nay: 0 giấc, 0 phút."
+       }
+      ],
+      "taskId": "tk_37fc9c0fb2c2de8e680c2afcd5a45f82",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

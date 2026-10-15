@@ -1,0 +1,115 @@
+{
+ "id": "rd-10-english",
+ "group": "read",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_03b53b113f2afcb631688e108bd4938a",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "how much did baby drink today?"
+       }
+      ],
+      "taskId": "tk_03b53b113f2afcb631688e108bd4938a",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "source_summary",
+        "schemaVersion": 1,
+        "summary": {
+         "date": "2026-10-15",
+         "bottle": {
+          "count": 2,
+          "ml": 270
+         },
+         "breast": {
+          "count": 1,
+          "minutes": 15
+         },
+         "sleep": {
+          "count": 2,
+          "minutes": 420
+         },
+         "coverage": "unknown",
+         "until": "2026-10-15T07:20:00.000Z"
+        },
+        "sourceIds": [
+         "r_66666666666666666666666666666666",
+         "r_11111111111111111111111111111111",
+         "r_33333333333333333333333333333333",
+         "r_22222222222222222222222222222222",
+         "r_44444444444444444444444444444444"
+        ]
+       },
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bottle feeds logged today (until 14:20): 2, 270 ml. Breastfeeds logged today: 1, 15 min. Sleep logged today: 2, 420 min."
+       }
+      ],
+      "taskId": "tk_03b53b113f2afcb631688e108bd4938a",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

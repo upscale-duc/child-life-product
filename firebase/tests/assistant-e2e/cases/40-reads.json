@@ -1,0 +1,274 @@
+{
+  "group": "read",
+  "note": "Questions about what was logged: figures from the engine, never the model.",
+  "cases": [
+    {
+      "id": "rd-01-today-feeds",
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "hôm nay con bú thế nào?",
+          "model": {
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "credits": 1
+      },
+      "group": "read"
+    },
+    {
+      "id": "rd-02-yesterday-sleep",
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "hôm qua bé ngủ bao nhiêu?",
+          "model": {
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": -1
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "credits": 1
+      },
+      "group": "read"
+    },
+    {
+      "id": "rd-03-week-trend",
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "tuần này bé ngủ ít hơn không?",
+          "model": {
+            "reads": [
+              {
+                "tool": "sleep_facts",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "credits": 1
+      },
+      "group": "read"
+    },
+    {
+      "id": "rd-04-credits-left",
+      "turns": [
+        {
+          "say": "còn bao nhiêu lượt?",
+          "model": {
+            "reads": [
+              {
+                "tool": "usage_snapshot",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "credits": 1
+      },
+      "group": "read"
+    },
+    {
+      "id": "rd-05-compare",
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "so với hôm qua hôm nay bú nhiều hơn không",
+          "model": {
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": 0
+              },
+              {
+                "tool": "care_summary",
+                "dayOffset": -1
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "credits": 1
+      },
+      "group": "read"
+    },
+    {
+      "id": "rd-06-no-diacritics",
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "hom nay be bu bao nhieu ml",
+          "model": {
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "credits": 1
+      },
+      "group": "read"
+    },
+    {
+      "id": "rd-07-relative-daily-care",
+      "world": {
+        "seed": ["day"]
+      },
+      "as": "AUNT",
+      "turns": [
+        {
+          "say": "hôm nay bé ngủ được bao lâu?",
+          "model": {
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "visibility": "private",
+        "credits": 1
+      },
+      "group": "read"
+    },
+    {
+      "id": "rd-08-relative-no-access",
+      "world": {
+        "seed": ["day"]
+      },
+      "as": "GRANDMA",
+      "turns": [
+        {
+          "say": "hôm nay bé bú mấy lần?",
+          "model": {
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "read_denied",
+        "credits": 0
+      },
+      "group": "read"
+    },
+    {
+      "id": "rd-09-ambiguous-read",
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "bú sữa",
+          "model": {
+            "clar": "intent"
+          },
+          "answers": [
+            {
+              "field": "intent",
+              "choice": "read"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "asks": ["intent"],
+        "credits": 1
+      },
+      "group": "read"
+    },
+    {
+      "id": "rd-10-english",
+      "world": {
+        "seed": ["day"]
+      },
+      "locale": "en",
+      "turns": [
+        {
+          "say": "how much did baby drink today?",
+          "model": {
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "credits": 1
+      },
+      "group": "read"
+    },
+    {
+      "id": "rd-11-empty-day",
+      "title": "Nothing logged: an honest answer, never invented numbers",
+      "turns": [
+        {
+          "say": "hôm nay bé bú bao nhiêu?",
+          "model": {
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["answer", "fallback"]
+      },
+      "group": "read"
+    }
+  ]
+}

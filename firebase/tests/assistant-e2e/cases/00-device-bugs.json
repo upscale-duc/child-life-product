@@ -1,0 +1,284 @@
+{
+  "group": "device",
+  "note": "Bugs the owner found on a device (2026-10-15/16). Every device bug becomes a case here first; the model replies are what the deployed model returned.",
+  "cases": [
+    {
+      "id": "dev-01-con-dang-ngu",
+      "device": "DEV-1",
+      "title": "\"Con đang ngủ\" → an ongoing sleep (timer), never an observation stuck in review",
+      "turns": [
+        {
+          "say": "Con đang ngủ",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": {
+                  "observation": "sleep"
+                },
+                "ev": {
+                  "observation": "đang ngủ"
+                },
+                "miss": ["time"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [["sleep"], ["timer"]],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-01b-con-dang-ngu-v4",
+      "device": "DEV-1",
+      "title": "Same message, the reply a v4 model gives (sleep, phase start)",
+      "turns": [
+        {
+          "say": "Con đang ngủ",
+          "model": {
+            "i": [
+              {
+                "k": "sleep|observation",
+                "f": {
+                  "phase": "start",
+                  "observation": null
+                },
+                "ev": {
+                  "phase": "đang ngủ"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [["sleep"], ["timer"]],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-02-bu-me-vua-xong",
+      "anchor": "01:08",
+      "device": "DEV-2",
+      "title": "\"bé bú mẹ\" at 01:08 → a breastfeed (\"Vừa xong (01:08)\") or a running breastfeeding timer that can be saved, never unticked with no hint",
+      "turns": [
+        {
+          "say": "bé bú mẹ",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [["breast"], ["timer"]],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-02b-bu-me-20p-vua-xong",
+      "anchor": "01:08",
+      "device": "DEV-2",
+      "turns": [
+        {
+          "say": "bú mẹ 20 phút",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 20
+                },
+                "ev": {
+                  "durationMin": "20 phút"
+                },
+                "miss": ["time", "side"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "asks": ["time.missing"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 00:48",
+          "0.durationMin": 20
+        },
+        "credits": 1
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-03a-thay-ta-uot",
+      "device": "DEV-3",
+      "turns": [
+        {
+          "say": "thay tã ướt",
+          "model": {
+            "i": [
+              {
+                "k": "diaper|meal",
+                "f": {
+                  "title": "thay tã ướt"
+                },
+                "ev": {
+                  "title": "thay tã ướt"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["diaper"],
+        "credits": 1
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-03b-hut-sua-120",
+      "device": "DEV-3",
+      "turns": [
+        {
+          "say": "hút sữa 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "pump|meal",
+                "f": {
+                  "amountMl": 120,
+                  "title": "hút sữa"
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "title": "hút sữa"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["pump"],
+        "credits": 1
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-03c-be-nang-5-2kg",
+      "device": "DEV-3",
+      "turns": [
+        {
+          "say": "bé nặng 5,2kg",
+          "model": {
+            "i": [
+              {
+                "k": "growth|meal",
+                "f": {
+                  "title": "bé nặng 5,2kg"
+                },
+                "ev": {
+                  "title": "bé nặng 5,2kg"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "credits": 1
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-04-mua-sua-500k",
+      "device": "DEV-4",
+      "title": "Fixed 2026-10-15: kept as a regression",
+      "turns": [
+        {
+          "say": "mua sữa hết 500k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 500000,
+                  "currency": "VND",
+                  "categoryId": "c_milk",
+                  "title": "sữa"
+                },
+                "ev": {
+                  "amount": "500k",
+                  "title": "sữa"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "visibility": "private",
+        "values": {
+          "0.totalMinor": 500000,
+          "0.currency": "VND",
+          "0.categoryId": "c_milk",
+          "0.date": "D0"
+        },
+        "credits": 1,
+        "codes": ["SPENDING_PRIVATE"]
+      },
+      "group": "device"
+    }
+  ]
+}

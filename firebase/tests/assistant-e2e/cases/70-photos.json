@@ -1,0 +1,276 @@
+{
+  "group": "photo",
+  "note": "Photos with a fake image reader: receipts (date to confirm, total incl. tax), blurry, notes, roles.",
+  "cases": [
+    {
+      "id": "ph-01-receipt",
+      "live": false,
+      "turns": [
+        {
+          "photo": "receipt",
+          "reading": [
+            {
+              "documentKind": "receipt",
+              "contains": ["receipt"],
+              "readability": "clear",
+              "receipt": {
+                "merchant": "ConCung",
+                "documentDate": "2026-10-14",
+                "dateUncertain": true,
+                "currency": "VND",
+                "currencyUncertain": false,
+                "totalMinor": 486000,
+                "totalUncertain": false,
+                "subtotalMinor": 450000,
+                "taxMinor": 36000,
+                "discountMinor": null,
+                "categoryHint": "c_diaper",
+                "evidence": [
+                  {
+                    "field": "merchant",
+                    "text": "ConCung"
+                  },
+                  {
+                    "field": "documentDate",
+                    "text": "Date: 14/10/2026"
+                  },
+                  {
+                    "field": "currency",
+                    "text": "VND"
+                  },
+                  {
+                    "field": "totalMinor",
+                    "text": "TOTAL: 486,000 VND"
+                  },
+                  {
+                    "field": "subtotalMinor",
+                    "text": "Subtotal: 450,000 VND"
+                  },
+                  {
+                    "field": "taxMinor",
+                    "text": "Tax: 36,000 VND"
+                  }
+                ]
+              },
+              "noteLines": []
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "review": ["date"],
+        "visibility": "private",
+        "values": {
+          "0.totalMinor": 486000
+        },
+        "credits": 3
+      },
+      "group": "photo"
+    },
+    {
+      "id": "ph-02-receipt-clear-date",
+      "live": false,
+      "turns": [
+        {
+          "photo": "receipt",
+          "reading": [
+            {
+              "documentKind": "receipt",
+              "contains": ["receipt"],
+              "readability": "clear",
+              "receipt": {
+                "merchant": "ConCung",
+                "documentDate": "2026-10-14",
+                "dateUncertain": false,
+                "currency": "VND",
+                "currencyUncertain": false,
+                "totalMinor": 486000,
+                "totalUncertain": false,
+                "subtotalMinor": 450000,
+                "taxMinor": 36000,
+                "discountMinor": null,
+                "categoryHint": "c_diaper",
+                "evidence": [
+                  {
+                    "field": "merchant",
+                    "text": "ConCung"
+                  },
+                  {
+                    "field": "documentDate",
+                    "text": "Date: 14/10/2026"
+                  },
+                  {
+                    "field": "currency",
+                    "text": "VND"
+                  },
+                  {
+                    "field": "totalMinor",
+                    "text": "TOTAL: 486,000 VND"
+                  },
+                  {
+                    "field": "subtotalMinor",
+                    "text": "Subtotal: 450,000 VND"
+                  },
+                  {
+                    "field": "taxMinor",
+                    "text": "Tax: 36,000 VND"
+                  }
+                ]
+              },
+              "noteLines": []
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "credits": 3
+      },
+      "group": "photo"
+    },
+    {
+      "id": "ph-03-blurry",
+      "live": false,
+      "turns": [
+        {
+          "photo": "blurry",
+          "reading": [
+            {
+              "documentKind": "unreadable",
+              "contains": [],
+              "readability": "unreadable",
+              "receipt": null,
+              "noteLines": []
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "failed:OCR_UNREADABLE",
+        "credits": 0
+      },
+      "group": "photo"
+    },
+    {
+      "id": "ph-04-receipt-caregiver",
+      "live": false,
+      "as": "NANNY",
+      "turns": [
+        {
+          "photo": "receipt",
+          "reading": [
+            {
+              "documentKind": "receipt",
+              "contains": ["receipt"],
+              "readability": "clear",
+              "receipt": {
+                "merchant": "ConCung",
+                "documentDate": "2026-10-14",
+                "dateUncertain": true,
+                "currency": "VND",
+                "currencyUncertain": false,
+                "totalMinor": 486000,
+                "totalUncertain": false,
+                "subtotalMinor": 450000,
+                "taxMinor": 36000,
+                "discountMinor": null,
+                "categoryHint": "c_diaper",
+                "evidence": [
+                  {
+                    "field": "merchant",
+                    "text": "ConCung"
+                  },
+                  {
+                    "field": "documentDate",
+                    "text": "Date: 14/10/2026"
+                  },
+                  {
+                    "field": "currency",
+                    "text": "VND"
+                  },
+                  {
+                    "field": "totalMinor",
+                    "text": "TOTAL: 486,000 VND"
+                  },
+                  {
+                    "field": "subtotalMinor",
+                    "text": "Subtotal: 450,000 VND"
+                  },
+                  {
+                    "field": "taxMinor",
+                    "text": "Tax: 36,000 VND"
+                  }
+                ]
+              },
+              "noteLines": []
+            }
+          ],
+          "as": "NANNY"
+        }
+      ],
+      "expect": {
+        "outcome": ["denied", "failed:WRITE_DENIED"],
+        "credits": 0
+      },
+      "group": "photo"
+    },
+    {
+      "id": "ph-05-receipt-usd",
+      "live": false,
+      "turns": [
+        {
+          "photo": "receipt",
+          "reading": [
+            {
+              "documentKind": "receipt",
+              "contains": ["receipt"],
+              "readability": "clear",
+              "receipt": {
+                "merchant": "ConCung",
+                "documentDate": "2026-10-14",
+                "dateUncertain": false,
+                "currency": "USD",
+                "currencyUncertain": false,
+                "totalMinor": 2450,
+                "totalUncertain": false,
+                "subtotalMinor": null,
+                "taxMinor": null,
+                "discountMinor": null,
+                "categoryHint": "c_diaper",
+                "evidence": [
+                  {
+                    "field": "totalMinor",
+                    "text": "TOTAL $24.50"
+                  },
+                  {
+                    "field": "currency",
+                    "text": "$"
+                  },
+                  {
+                    "field": "documentDate",
+                    "text": "10/14/2026"
+                  }
+                ]
+              },
+              "noteLines": []
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "values": {
+          "0.currency": "USD",
+          "0.totalMinor": 2450
+        },
+        "credits": 3
+      },
+      "group": "photo"
+    }
+  ]
+}

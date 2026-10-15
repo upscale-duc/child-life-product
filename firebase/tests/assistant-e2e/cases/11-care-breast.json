@@ -1,0 +1,537 @@
+{
+  "group": "care.breast",
+  "note": "Breastfeeding: minutes and side, never ml; missing time / side, AM-PM, ends, future, corrections, duplicates.",
+  "cases": [
+    {
+      "id": "br-01-complete",
+      "turns": [
+        {
+          "say": "bé bú mẹ 15 phút bên trái lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 15,
+                  "side": "left",
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "15 phút",
+                  "side": "bên trái",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "ready": true,
+        "values": {
+          "0.durationMin": 15,
+          "0.side": "left",
+          "0.occurredAt": "D0 13:00"
+        },
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-02-just-now",
+      "turns": [
+        {
+          "say": "vừa bú mẹ 20 phút cả hai bên",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 20,
+                  "side": "both",
+                  "time": "14:20",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "20 phút",
+                  "side": "cả hai bên",
+                  "time": "vừa"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 14:00",
+          "0.side": "both"
+        },
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-03-no-side",
+      "title": "Side not said: the form's default or one question, never an unexplained review",
+      "turns": [
+        {
+          "say": "bú mẹ 15 phút lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 15,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "15 phút",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-04-missing-time-chip",
+      "turns": [
+        {
+          "say": "bú mẹ 20 phút bên phải",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 20,
+                  "side": "right"
+                },
+                "ev": {
+                  "durationMin": "20 phút",
+                  "side": "bên phải"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "asks": ["time.missing"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 14:00"
+        },
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-05-missing-time-typed",
+      "turns": [
+        {
+          "say": "cho bú mẹ bên trái 10 phút",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 10,
+                  "side": "left"
+                },
+                "ev": {
+                  "durationMin": "10 phút",
+                  "side": "bên trái"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "text": "13h30"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 13:30"
+        },
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-06-end-time",
+      "turns": [
+        {
+          "say": "bú 15 phút bên trái, xong lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 15,
+                  "side": "left",
+                  "endTime": "08:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "15 phút",
+                  "side": "bên trái",
+                  "endTime": "8h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 07:45"
+        },
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-07-ampm",
+      "anchor": "21:30",
+      "turns": [
+        {
+          "say": "8 giờ bú mẹ 10 phút bên trái",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 10,
+                  "side": "left",
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "10 phút",
+                  "side": "bên trái",
+                  "time": "8 giờ"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.ampm",
+              "choice": "pm"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "asks": ["time.ampm"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 20:00"
+        },
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-08-future",
+      "turns": [
+        {
+          "say": "bú mẹ lúc 15h bên phải 10 phút",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 10,
+                  "side": "right",
+                  "time": "15:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "10 phút",
+                  "side": "bên phải",
+                  "time": "15h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "review": ["occurredAt"],
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-09-correction-side",
+      "turns": [
+        {
+          "say": "bú mẹ 15 phút bên trái lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 15,
+                  "side": "left",
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "15 phút",
+                  "side": "bên trái",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": "bên phải chứ",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 15,
+                  "side": "right",
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "side": "bên phải"
+                },
+                "cp": true
+              }
+            ]
+          },
+          "at": "+1"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "ready": true,
+        "values": {
+          "0.side": "right",
+          "0.occurredAt": "D0 13:00"
+        },
+        "codes": ["CORRECTION_APPLIED"],
+        "credits": 2
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-10-duplicate",
+      "world": {
+        "seed": ["breast1400"]
+      },
+      "turns": [
+        {
+          "say": "vừa cho bú mẹ bên trái 15 phút",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 15,
+                  "side": "left",
+                  "time": "14:20",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "15 phút",
+                  "side": "bên trái",
+                  "time": "vừa"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "codes": ["DUPLICATE_SUSPECTED"],
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-11-no-diacritics",
+      "turns": [
+        {
+          "say": "cho bu me ben trai 12 phut luc 11h trua",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 12,
+                  "side": "left",
+                  "time": "11:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "12 phut",
+                  "side": "ben trai",
+                  "time": "11h trua"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 11:00"
+        },
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-12-english",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "nursed on the right side for 18 minutes at 10am",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 18,
+                  "side": "right",
+                  "time": "10:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "18 minutes",
+                  "side": "right side",
+                  "time": "10am"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 10:00",
+          "0.durationMin": 18
+        },
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-13-too-long",
+      "turns": [
+        {
+          "say": "bú mẹ 200 phút bên trái lúc 9h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 200,
+                  "side": "left",
+                  "time": "09:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "200 phút",
+                  "side": "bên trái",
+                  "time": "9h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "review": ["durationMin"],
+        "credits": 1
+      },
+      "group": "care.breast"
+    },
+    {
+      "id": "br-14-never-ml",
+      "title": "Breast milk is minutes, never ml: a breast draft without ml, or a bottle",
+      "turns": [
+        {
+          "say": "bé bú mẹ 100ml lúc 10h",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "time": "10:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "time": "10h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [["breast"], ["bottle"]],
+        "credits": 1
+      },
+      "group": "care.breast"
+    }
+  ]
+}

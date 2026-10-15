@@ -1,0 +1,184 @@
+{
+  "note": "Lumi draft field -> the app control that fixes it, for the CURRENT app: the inline fix panel (assistant_fix.dart fixRowsFor, 2026-10-16) and the editor sheet (assistant_editor.dart). Shared by the server harness (firebase/tests/assistant-e2e: NR_NO_CONTROL, DEAD_END, the fix probe) and the app replay test. 'words' are the plain Vietnamese words a person must see to know what to fix. 'editor': the card opens the full editor; a field listed under 'fields' has its own control (inline row or editor). Update this file with the app; the replay test checks the labels. The map of app 1440e8a (before the inline fixes: no milk control, nothing for observations or timers) is in docs/assistant/test-report-lumi-2026-10-16.md.",
+  "kinds": {
+    "bottle": {
+      "editor": true,
+      "fields": {
+        "amountMl": {
+          "control": "asFieldAmount",
+          "words": [
+            "lượng",
+            "ml"
+          ]
+        },
+        "occurredAt": {
+          "control": "asFieldWhen",
+          "words": [
+            "giờ",
+            "thời gian"
+          ]
+        },
+        "milk": {
+          "control": "fix:milk",
+          "words": [
+            "sữa"
+          ]
+        }
+      }
+    },
+    "breast": {
+      "editor": true,
+      "fields": {
+        "occurredAt": {
+          "control": "asFieldWhen",
+          "words": [
+            "giờ",
+            "thời gian"
+          ]
+        },
+        "durationMin": {
+          "control": "asFieldMinutes",
+          "words": [
+            "phút",
+            "bao lâu"
+          ]
+        },
+        "side": {
+          "control": "asFieldSide",
+          "words": [
+            "bên"
+          ]
+        }
+      }
+    },
+    "sleep": {
+      "editor": true,
+      "fields": {
+        "startedAt": {
+          "control": "asFieldSleepStart",
+          "words": [
+            "bắt đầu",
+            "giờ ngủ"
+          ]
+        },
+        "endedAt": {
+          "control": "asFieldSleepEnd",
+          "words": [
+            "kết thúc",
+            "giờ dậy",
+            "dậy"
+          ]
+        },
+        "durationMin": {
+          "control": "asFieldDuration",
+          "words": [
+            "bao lâu",
+            "thời lượng",
+            "tiếng",
+            "phút"
+          ]
+        }
+      }
+    },
+    "reminder": {
+      "editor": true,
+      "fields": {
+        "title": {
+          "control": "asFieldTitle",
+          "words": [
+            "tên việc",
+            "việc"
+          ]
+        },
+        "date": {
+          "control": "asFieldDate",
+          "words": [
+            "ngày"
+          ]
+        },
+        "time": {
+          "control": "asFieldTime",
+          "words": [
+            "giờ"
+          ]
+        },
+        "assigneeUid": {
+          "control": "assignee",
+          "words": [
+            "giao"
+          ]
+        }
+      }
+    },
+    "expense": {
+      "editor": true,
+      "fields": {
+        "merchant": {
+          "control": "asFieldStore",
+          "words": [
+            "cửa hàng"
+          ]
+        },
+        "date": {
+          "control": "asFieldDate",
+          "words": [
+            "ngày"
+          ]
+        },
+        "totalMinor": {
+          "control": "asFieldTotal",
+          "words": [
+            "tổng tiền",
+            "số tiền"
+          ]
+        },
+        "currency": {
+          "control": "asFieldTotal",
+          "words": [
+            "tiền"
+          ]
+        },
+        "categoryId": {
+          "control": "asFieldCategory",
+          "words": [
+            "danh mục"
+          ]
+        }
+      }
+    },
+    "observation": {
+      "editor": false,
+      "fields": {
+        "date": {
+          "control": "fix:date",
+          "words": [
+            "ngày"
+          ]
+        },
+        "when": {
+          "control": "fix:when (only while empty)",
+          "words": [
+            "ban ngày",
+            "ban đêm"
+          ]
+        }
+      }
+    },
+    "meal": {
+      "editor": false,
+      "fields": {}
+    },
+    "timer": {
+      "editor": false,
+      "fields": {
+        "at": {
+          "control": "fix:at",
+          "words": [
+            "giờ",
+            "lúc"
+          ]
+        }
+      }
+    }
+  }
+}

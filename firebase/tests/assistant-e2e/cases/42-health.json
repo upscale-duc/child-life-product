@@ -1,0 +1,109 @@
+{
+  "group": "health",
+  "note": "Health signs: health support first, free, no model, whatever the credits.",
+  "cases": [
+    {
+      "id": "he-01-fever",
+      "turns": [
+        {
+          "say": "bé sốt cao 39 độ"
+        }
+      ],
+      "expect": {
+        "outcome": "health",
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "health"
+    },
+    {
+      "id": "he-02-breathing",
+      "turns": [
+        {
+          "say": "bé khó thở"
+        }
+      ],
+      "expect": {
+        "outcome": "health",
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "health"
+    },
+    {
+      "id": "he-03-seizure-no-diacritics",
+      "turns": [
+        {
+          "say": "be co giat"
+        }
+      ],
+      "expect": {
+        "outcome": "health",
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "health"
+    },
+    {
+      "id": "he-04-english",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "baby has trouble breathing"
+        }
+      ],
+      "expect": {
+        "outcome": "health",
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "health"
+    },
+    {
+      "id": "he-05-log-with-fever",
+      "turns": [
+        {
+          "say": "bé bú 120ml, hơi sốt"
+        }
+      ],
+      "expect": {
+        "outcome": "health",
+        "credits": 0,
+        "calls": 0
+      },
+      "group": "health"
+    },
+    {
+      "id": "he-06-at-zero-credits",
+      "world": {
+        "quota": 0
+      },
+      "turns": [
+        {
+          "say": "bé li bì không tỉnh"
+        }
+      ],
+      "expect": {
+        "outcome": "health",
+        "credits": 0
+      },
+      "group": "health"
+    },
+    {
+      "id": "he-07-model-sign",
+      "turns": [
+        {
+          "say": "bé không chịu bú cả ngày nay",
+          "model": {
+            "health": ["poor_feeding"]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "health",
+        "credits": 0
+      },
+      "group": "health"
+    }
+  ]
+}

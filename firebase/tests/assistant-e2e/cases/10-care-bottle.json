@@ -1,0 +1,926 @@
+{
+  "group": "care.bottle",
+  "note": "Bottle feeds: complete, missing time / amount, AM-PM, past day, future refusal, oz, duplicates, corrections.",
+  "cases": [
+    {
+      "id": "bot-01-complete",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "visibility": "shared",
+        "values": {
+          "0.amountMl": 120,
+          "0.occurredAt": "D0 08:00"
+        },
+        "credits": 1,
+        "calls": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-02-no-diacritics",
+      "turns": [
+        {
+          "say": "be bu binh 150ml luc 9h sang",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 150,
+                  "time": "09:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "150ml",
+                  "time": "9h sang"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 150,
+          "0.occurredAt": "D0 09:00"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-03-voice-run-on",
+      "turns": [
+        {
+          "say": "ờ bé vừa bú bình xong được một trăm hai mươi ml á",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "14:20",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "một trăm hai mươi ml",
+                  "time": "vừa"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 120,
+          "0.occurredAt": "D0 14:20"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-04-missing-time-chip",
+      "turns": [
+        {
+          "say": "bé bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120
+                },
+                "ev": {
+                  "amountMl": "120ml"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "choice": 1
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "asks": ["time.missing"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 13:50"
+        },
+        "credits": 1,
+        "calls": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-05-missing-time-chip-prompt-literal",
+      "title": "The model follows the prompt and lists \"time\" in missingFields; the answered time must clear it",
+      "turns": [
+        {
+          "say": "bé bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120
+                },
+                "ev": {
+                  "amountMl": "120ml"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "asks": ["time.missing"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 14:20"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-06-missing-time-typed",
+      "turns": [
+        {
+          "say": "bé bú 90ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90
+                },
+                "ev": {
+                  "amountMl": "90ml"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "text": "13h"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 13:00"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-07-missing-time-unreadable",
+      "title": "An answer the server cannot read leaves the time to fill in (review), never a second question",
+      "turns": [
+        {
+          "say": "bé bú 90ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90
+                },
+                "ev": {
+                  "amountMl": "90ml"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "text": "lúc nãy"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "review": ["occurredAt"],
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-08-missing-amount",
+      "turns": [
+        {
+          "say": "bé vừa bú bình",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": null,
+                  "time": "14:20",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "time": "vừa"
+                },
+                "miss": ["amountMl"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "review": ["amountMl"],
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-09-ampm-ask-evening",
+      "anchor": "21:30",
+      "turns": [
+        {
+          "say": "8 giờ bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8 giờ"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.ampm",
+              "choice": "pm"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "asks": ["time.ampm"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 20:00"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-10-ampm-resolved-afternoon",
+      "turns": [
+        {
+          "say": "8 giờ bú 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8 giờ"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 08:00"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-11-last-night-said-morning",
+      "anchor": "07:10",
+      "turns": [
+        {
+          "say": "10 giờ tối bú 90ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "22:00",
+                  "dayOffset": -1
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "10 giờ tối"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D-1 22:00"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-12-oz-ago",
+      "turns": [
+        {
+          "say": "2 tiếng trước bé bú 4oz",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 118,
+                  "time": "12:20",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "4oz",
+                  "time": "2 tiếng trước"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 118,
+          "0.occurredAt": "D0 12:20"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-13-future-refused",
+      "title": "A completed feed later than now is never saved silently",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 16h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "16:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "16h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "review": ["occurredAt"],
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-14-yesterday",
+      "turns": [
+        {
+          "say": "hôm qua lúc 9h tối bé bú 150ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 150,
+                  "time": "21:00",
+                  "dayOffset": -1
+                },
+                "ev": {
+                  "amountMl": "150ml",
+                  "time": "9h tối"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D-1 21:00"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-15-two-days-ago",
+      "turns": [
+        {
+          "say": "hôm kia bé bú 100ml lúc 10h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 100,
+                  "time": "10:00",
+                  "dayOffset": -2
+                },
+                "ev": {
+                  "amountMl": "100ml",
+                  "time": "10h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D-2 10:00"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-16-duplicate",
+      "world": {
+        "seed": ["bottle0800"]
+      },
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "codes": ["DUPLICATE_SUSPECTED"],
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-17-correction-unsaved",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": "à không, 150ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 150,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "150ml",
+                  "time": "8h sáng"
+                },
+                "cp": true
+              }
+            ]
+          },
+          "at": "+1"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 150,
+          "0.occurredAt": "D0 08:00"
+        },
+        "codes": ["CORRECTION_APPLIED"],
+        "credits": 2
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-18-correction-after-save",
+      "turns": [
+        {
+          "say": "bé bú 90ml lúc 9h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "09:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "9h sáng"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "confirm": "all"
+        },
+        {
+          "say": "à 100ml chứ",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 100,
+                  "time": "09:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "100ml"
+                },
+                "cp": true
+              }
+            ]
+          },
+          "at": "+1"
+        }
+      ],
+      "expect": {
+        "outcome": "notice",
+        "kinds": [],
+        "codes": ["PREVIOUS_SAVED"],
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-19-other-milk",
+      "turns": [
+        {
+          "say": "bé bú 100ml sữa dê lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 100,
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "milk": "other"
+                },
+                "ev": {
+                  "amountMl": "100ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-20-over-limit",
+      "turns": [
+        {
+          "say": "bé bú 600ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 600,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "600ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "review": ["amountMl"],
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-21-english",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "Baby had 120 ml formula at 1pm",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "milk": "formula"
+                },
+                "ev": {
+                  "amountMl": "120 ml",
+                  "time": "1pm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 120,
+          "0.occurredAt": "D0 13:00",
+          "0.milk": "formula"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-22-replay-same-request",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          },
+          "replay": true
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "credits": 1,
+        "calls": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-23-8g-sang",
+      "turns": [
+        {
+          "say": "8g sáng bé uống 110ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 110,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "110ml",
+                  "time": "8g sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 08:00"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-24-half-past-words",
+      "anchor": "07:10",
+      "turns": [
+        {
+          "say": "tám giờ rưỡi tối qua bú 100ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 100,
+                  "time": "20:30",
+                  "dayOffset": -1
+                },
+                "ev": {
+                  "amountMl": "100ml",
+                  "time": "tám giờ rưỡi tối qua"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D-1 20:30"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    },
+    {
+      "id": "bot-25-midnight-morning",
+      "anchor": "07:10",
+      "turns": [
+        {
+          "say": "nửa đêm bú 60ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 60,
+                  "time": "00:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "60ml",
+                  "time": "nửa đêm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 00:00"
+        },
+        "credits": 1
+      },
+      "group": "care.bottle"
+    }
+  ]
+}

@@ -1,0 +1,296 @@
+{
+ "id": "ex-15-caregiver-with-right",
+ "group": "expense",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "NANNY_SPEND",
+   "snapshot": {
+    "task": {
+     "id": "tk_bd7967cbd1af1377bb0786369eb24d33",
+     "conversationId": "cv_p_fd92e58d066f2650604b72f635ed81aa",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_lan2",
+      "name": "Cô Hằng",
+      "relation": "nanny",
+      "relationCustom": null
+     },
+     "routing": {
+      "reason": "spending",
+      "from": "shared_thread",
+      "at": "start"
+     }
+    },
+    "drafts": [
+     {
+      "id": "dr_bd7967cbd1af1377bb0786369eb24d33_0",
+      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "expense",
+       "merchant": null,
+       "totalMinor": 200000,
+       "currency": "VND",
+       "date": "2026-10-15",
+       "subtotalMinor": null,
+       "taxMinor": null,
+       "categoryId": "c_diaper",
+       "babyId": "b_00000000000000000001",
+       "keepReceipt": false,
+       "note": "bỉm"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_bd7967cbd1af1377bb0786369eb24d33"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_p_fd92e58d066f2650604b72f635ed81aa",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "mua bỉm 200k"
+       }
+      ],
+      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_lan2",
+       "name": "Cô Hằng",
+       "relation": "nanny",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_p_fd92e58d066f2650604b72f635ed81aa",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_bd7967cbd1af1377bb0786369eb24d33_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "NANNY_SPEND",
+   "snapshot": {
+    "task": {
+     "id": "tk_bd7967cbd1af1377bb0786369eb24d33",
+     "conversationId": "cv_p_fd92e58d066f2650604b72f635ed81aa",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_lan2",
+      "name": "Cô Hằng",
+      "relation": "nanny",
+      "relationCustom": null
+     },
+     "routing": {
+      "reason": "spending",
+      "from": "shared_thread",
+      "at": "start"
+     }
+    },
+    "drafts": [
+     {
+      "id": "dr_bd7967cbd1af1377bb0786369eb24d33_0",
+      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "expense",
+       "merchant": null,
+       "totalMinor": 200000,
+       "currency": "VND",
+       "date": "2026-10-15",
+       "subtotalMinor": null,
+       "taxMinor": null,
+       "categoryId": "c_diaper",
+       "babyId": "b_00000000000000000001",
+       "keepReceipt": false,
+       "note": "bỉm"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_bd7967cbd1af1377bb0786369eb24d33"
+      ],
+      "recordId": "x_676b9a2625f8ca33621351629f9967fc",
+      "recordLink": "/utilities/spending/expense/x_676b9a2625f8ca33621351629f9967fc?babyId=b_00000000000000000001",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_lan2",
+       "name": "Cô Hằng",
+       "relation": "nanny",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_p_fd92e58d066f2650604b72f635ed81aa",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "mua bỉm 200k"
+       }
+      ],
+      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_lan2",
+       "name": "Cô Hằng",
+       "relation": "nanny",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_p_fd92e58d066f2650604b72f635ed81aa",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_bd7967cbd1af1377bb0786369eb24d33_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_p_fd92e58d066f2650604b72f635ed81aa",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_bd7967cbd1af1377bb0786369eb24d33_0",
+          "status": "saved",
+          "recordLink": "/utilities/spending/expense/x_676b9a2625f8ca33621351629f9967fc?babyId=b_00000000000000000001",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_lan2",
+       "name": "Cô Hằng",
+       "relation": "nanny",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

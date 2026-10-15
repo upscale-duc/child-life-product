@@ -1,0 +1,368 @@
+{
+  "group": "care.types",
+  "note": "Care types the app logs (care_models.dart CareType: pump, diaper, growth) that chat does not draft yet: never \"no place to save\".",
+  "cases": [
+    {
+      "id": "pd-01-pump-complete",
+      "turns": [
+        {
+          "say": "hút sữa 120ml lúc 10h",
+          "model": {
+            "i": [
+              {
+                "k": "pump|meal",
+                "f": {
+                  "amountMl": 120,
+                  "time": "10:00",
+                  "dayOffset": 0,
+                  "title": "hút sữa"
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "10h",
+                  "title": "hút sữa"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["pump"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-02-pump-no-time",
+      "turns": [
+        {
+          "say": "vừa hút được 80ml cả 2 bên",
+          "model": {
+            "i": [
+              {
+                "k": "pump|meal",
+                "f": {
+                  "amountMl": 80,
+                  "time": "14:20",
+                  "dayOffset": 0,
+                  "side": "both",
+                  "title": "hút sữa"
+                },
+                "ev": {
+                  "amountMl": "80ml",
+                  "time": "vừa",
+                  "side": "cả 2 bên"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["pump"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-03-pump-yesterday",
+      "turns": [
+        {
+          "say": "hôm qua hút 150ml lúc 9h tối",
+          "model": {
+            "i": [
+              {
+                "k": "pump|meal",
+                "f": {
+                  "amountMl": 150,
+                  "time": "21:00",
+                  "dayOffset": -1,
+                  "title": "hút sữa"
+                },
+                "ev": {
+                  "amountMl": "150ml",
+                  "time": "9h tối"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["pump"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-04-pump-no-diacritics",
+      "turns": [
+        {
+          "say": "hut sua 100ml luc 7h sang",
+          "model": {
+            "i": [
+              {
+                "k": "pump|meal",
+                "f": {
+                  "amountMl": 100,
+                  "time": "07:00",
+                  "dayOffset": 0,
+                  "title": "hut sua"
+                },
+                "ev": {
+                  "amountMl": "100ml",
+                  "time": "7h sang"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["pump"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-05-diaper-wet-time",
+      "turns": [
+        {
+          "say": "thay tã ướt lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "diaper|meal",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "title": "thay tã ướt"
+                },
+                "ev": {
+                  "time": "13h",
+                  "title": "tã ướt"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["diaper"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-06-diaper-dirty-now",
+      "turns": [
+        {
+          "say": "bé vừa ị, thay bỉm rồi",
+          "model": {
+            "i": [
+              {
+                "k": "diaper|meal",
+                "f": {
+                  "time": "14:20",
+                  "dayOffset": 0,
+                  "title": "ị"
+                },
+                "ev": {
+                  "time": "vừa",
+                  "title": "ị"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["diaper"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-07-diaper-no-diacritics",
+      "turns": [
+        {
+          "say": "thay ta uot",
+          "model": {
+            "i": [
+              {
+                "k": "diaper|meal",
+                "f": {
+                  "title": "thay ta uot"
+                },
+                "ev": {
+                  "title": "thay ta uot"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.missing",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["diaper"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-08-diaper-english",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "changed a dirty diaper at 1pm",
+          "model": {
+            "i": [
+              {
+                "k": "diaper|meal",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "title": "dirty diaper"
+                },
+                "ev": {
+                  "time": "1pm",
+                  "title": "dirty diaper"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["diaper"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-09-growth-weight",
+      "turns": [
+        {
+          "say": "cân bé được 6.1 kg",
+          "model": {
+            "i": [
+              {
+                "k": "growth|meal",
+                "f": {
+                  "title": "6.1 kg"
+                },
+                "ev": {
+                  "title": "6.1 kg"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-10-growth-weight-length",
+      "turns": [
+        {
+          "say": "bé nặng 6kg2, dài 62cm",
+          "model": {
+            "i": [
+              {
+                "k": "growth|meal",
+                "f": {
+                  "title": "nặng 6kg2, dài 62cm"
+                },
+                "ev": {
+                  "title": "nặng 6kg2, dài 62cm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-11-growth-yesterday-clinic",
+      "turns": [
+        {
+          "say": "hôm qua đi khám bé nặng 5kg8",
+          "model": {
+            "i": [
+              {
+                "k": "growth|meal",
+                "f": {
+                  "dayOffset": -1,
+                  "title": "nặng 5kg8"
+                },
+                "ev": {
+                  "title": "nặng 5kg8"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-12-growth-english",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "baby weighs 5.4 kg today",
+          "model": {
+            "i": [
+              {
+                "k": "growth|meal",
+                "f": {
+                  "title": "5.4 kg"
+                },
+                "ev": {
+                  "title": "5.4 kg"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "credits": 1
+      },
+      "group": "care.types"
+    }
+  ]
+}

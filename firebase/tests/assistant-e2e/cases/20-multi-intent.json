@@ -1,0 +1,469 @@
+{
+  "group": "multi",
+  "note": "Several things in one message: each its own draft, one question at a time, money keeps it private.",
+  "cases": [
+    {
+      "id": "mi-01-bottle-sleep",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng, ngủ từ 9h đến 10h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              },
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "09:00",
+                  "dayOffset": 0,
+                  "endTime": "10:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "9h",
+                  "endTime": "10h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "sleep"],
+        "ready": true,
+        "values": {
+          "1.startedAt": "D0 09:00"
+        },
+        "credits": 1
+      },
+      "group": "multi"
+    },
+    {
+      "id": "mi-02-two-bottles",
+      "turns": [
+        {
+          "say": "8h bú 120ml, 11h bú 150ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h"
+                }
+              },
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 150,
+                  "time": "11:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "150ml",
+                  "time": "11h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 08:00",
+          "1.occurredAt": "D0 11:00"
+        },
+        "credits": 1
+      },
+      "group": "multi"
+    },
+    {
+      "id": "mi-03-feed-and-money",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 8h sáng, mua sữa 500k",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8h sáng"
+                }
+              },
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 500000,
+                  "categoryId": "c_milk",
+                  "title": "sữa"
+                },
+                "ev": {
+                  "amount": "500k"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "expense"],
+        "visibility": "private",
+        "credits": 1
+      },
+      "group": "multi"
+    },
+    {
+      "id": "mi-04-second-without-time",
+      "title": "A batch where one feed has no time: left to fill, no question; the other saves",
+      "turns": [
+        {
+          "say": "sáng nay 7h bú 100ml rồi bú thêm 60ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 100,
+                  "time": "07:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "100ml",
+                  "time": "7h"
+                }
+              },
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 60
+                },
+                "ev": {
+                  "amountMl": "60ml"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "bottle"],
+        "asks": [],
+        "review": ["occurredAt"],
+        "credits": 1
+      },
+      "group": "multi"
+    },
+    {
+      "id": "mi-05-sleep-then-nurse",
+      "turns": [
+        {
+          "say": "ngủ từ 13h đến 14h rồi bú mẹ 10 phút bên trái lúc 14h",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "endTime": "14:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "13h",
+                  "endTime": "14h"
+                }
+              },
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 10,
+                  "side": "left",
+                  "time": "14:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "durationMin": "10 phút",
+                  "side": "bên trái",
+                  "time": "14h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep", "breast"],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "multi"
+    },
+    {
+      "id": "mi-06-diaper-and-bottle",
+      "turns": [
+        {
+          "say": "thay tã rồi cho bú 90ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "diaper|meal",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "title": "thay tã"
+                },
+                "ev": {
+                  "title": "thay tã"
+                }
+              },
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["diaper", "bottle"],
+        "credits": 1
+      },
+      "group": "multi"
+    },
+    {
+      "id": "mi-07-feed-and-reminder",
+      "title": "\"9h sáng\" said once: the reminder's \"9h\" should not need a morning / evening question",
+      "turns": [
+        {
+          "say": "bú 120ml lúc 9h sáng và nhắc mai 9h mua bỉm",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "09:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "9h sáng"
+                }
+              },
+              {
+                "k": "reminder",
+                "f": {
+                  "title": "mua bỉm",
+                  "time": "09:00",
+                  "date": "2026-10-16"
+                },
+                "ev": {
+                  "title": "mua bỉm",
+                  "time": "9h",
+                  "date": "mai"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "reminder"],
+        "values": {
+          "1.time": "09:00",
+          "1.date": "D1"
+        },
+        "credits": 1
+      },
+      "group": "multi"
+    },
+    {
+      "id": "mi-08-three-feeds",
+      "title": "\"12h\" at 14:20 is noon; no morning / evening question for a batch of past feeds",
+      "turns": [
+        {
+          "say": "bé bú 3 lần: 6h 90ml, 9h 120ml, 12h 100ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "06:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "6h"
+                }
+              },
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "09:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "9h"
+                }
+              },
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 100,
+                  "time": "12:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "100ml",
+                  "time": "12h"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.ampm",
+              "choice": "am"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "bottle", "bottle"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "2.occurredAt": "D0 12:00"
+        },
+        "credits": 1
+      },
+      "group": "multi"
+    },
+    {
+      "id": "mi-09-english",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "fed 4oz at 7am and napped 9 to 10am",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 118,
+                  "time": "07:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "4oz",
+                  "time": "7am"
+                }
+              },
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "09:00",
+                  "dayOffset": 0,
+                  "endTime": "10:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "9",
+                  "endTime": "10am"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "sleep"],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "multi"
+    },
+    {
+      "id": "mi-10-log-and-question",
+      "world": {
+        "seed": ["day"]
+      },
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 13h, hôm nay bú tổng bao nhiêu rồi?",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "13h"
+                }
+              }
+            ],
+            "reads": [
+              {
+                "tool": "care_summary",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "credits": 1
+      },
+      "group": "multi"
+    }
+  ]
+}

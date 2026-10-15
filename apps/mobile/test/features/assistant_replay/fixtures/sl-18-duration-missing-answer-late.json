@@ -1,0 +1,238 @@
+{
+ "id": "sl-18-duration-missing-answer-late",
+ "group": "care.sleep",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_974622281290a86e786c4b79c2e00901",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "awaiting_clarification",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "reserved",
+     "errorCode": null,
+     "round": 1,
+     "clarification": {
+      "id": "cl_1",
+      "field": "time.start",
+      "question": {
+       "vi": "Bé bắt đầu ngủ lúc mấy giờ?",
+       "en": "When did the sleep start?"
+      },
+      "choices": [
+       {
+        "id": "at_2026-10-15_11:00",
+        "label": {
+         "vi": "11:00 hôm nay",
+         "en": "11:00 today"
+        }
+       },
+       {
+        "id": "at_2026-10-15_12:00",
+        "label": {
+         "vi": "12:00 hôm nay",
+         "en": "12:00 today"
+        }
+       }
+      ],
+      "allowText": true
+     },
+     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "ngủ 2 tiếng"
+       }
+      ],
+      "taskId": "tk_974622281290a86e786c4b79c2e00901",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "time.start",
+         "question": {
+          "vi": "Bé bắt đầu ngủ lúc mấy giờ?",
+          "en": "When did the sleep start?"
+         },
+         "choices": [
+          {
+           "id": "at_2026-10-15_11:00",
+           "label": {
+            "vi": "11:00 hôm nay",
+            "en": "11:00 today"
+           }
+          },
+          {
+           "id": "at_2026-10-15_12:00",
+           "label": {
+            "vi": "12:00 hôm nay",
+            "en": "12:00 today"
+           }
+          }
+         ],
+         "allowText": true
+        }
+       }
+      ],
+      "taskId": "tk_974622281290a86e786c4b79c2e00901",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 1 · after answer time.start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_974622281290a86e786c4b79c2e00901",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "failed",
+     "version": 4,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "released",
+     "errorCode": "QUOTE_EXPIRED",
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:51:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "ngủ 2 tiếng"
+       }
+      ],
+      "taskId": "tk_974622281290a86e786c4b79c2e00901",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "time.start",
+         "question": {
+          "vi": "Bé bắt đầu ngủ lúc mấy giờ?",
+          "en": "When did the sleep start?"
+         },
+         "choices": [
+          {
+           "id": "at_2026-10-15_11:00",
+           "label": {
+            "vi": "11:00 hôm nay",
+            "en": "11:00 today"
+           }
+          },
+          {
+           "id": "at_2026-10-15_12:00",
+           "label": {
+            "vi": "12:00 hôm nay",
+            "en": "12:00 today"
+           }
+          }
+         ],
+         "allowText": true
+        }
+       }
+      ],
+      "taskId": "tk_974622281290a86e786c4b79c2e00901",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

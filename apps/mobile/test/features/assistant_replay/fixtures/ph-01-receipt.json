@@ -1,0 +1,431 @@
+{
+ "id": "ph-01-receipt",
+ "group": "photo",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+     "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "image",
+     "credits": 3,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "expense",
+       "merchant": "ConCung",
+       "totalMinor": 486000,
+       "currency": "VND",
+       "date": "2026-10-14",
+       "subtotalMinor": 450000,
+       "taxMinor": 36000,
+       "categoryId": "c_diaper",
+       "babyId": "b_00000000000000000001",
+       "keepReceipt": true
+      },
+      "missingFields": [],
+      "uncertainFields": [
+       "date"
+      ],
+      "revision": 1,
+      "state": "needs_review",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_10a6f62f28db3d3b38de123fb4b9f7aa"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "role": "user",
+      "parts": [],
+      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [
+       "at_840d141de9551b5149daf04ea0f62a16"
+      ],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tổng tiền đã gồm thuế: chỉ ghi một khoản, không cộng thêm tạm tính hay thuế."
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "attachments": [
+     {
+      "id": "at_840d141de9551b5149daf04ea0f62a16",
+      "mime": "image/png",
+      "bytes": 30592,
+      "retention": "keep_with_record",
+      "state": "ready",
+      "keptWithRecord": false,
+      "deletedAt": null,
+      "rejected": false
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after fix",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+     "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "image",
+     "credits": 3,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "expense",
+       "merchant": "ConCung",
+       "totalMinor": 486000,
+       "currency": "VND",
+       "date": "2026-10-14",
+       "subtotalMinor": 450000,
+       "taxMinor": 36000,
+       "categoryId": "c_diaper",
+       "babyId": "b_00000000000000000001",
+       "keepReceipt": true
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_10a6f62f28db3d3b38de123fb4b9f7aa"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "role": "user",
+      "parts": [],
+      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [
+       "at_840d141de9551b5149daf04ea0f62a16"
+      ],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tổng tiền đã gồm thuế: chỉ ghi một khoản, không cộng thêm tạm tính hay thuế."
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "attachments": [
+     {
+      "id": "at_840d141de9551b5149daf04ea0f62a16",
+      "mime": "image/png",
+      "bytes": 30592,
+      "retention": "keep_with_record",
+      "state": "ready",
+      "keptWithRecord": false,
+      "deletedAt": null,
+      "rejected": false
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+     "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "image",
+     "credits": 3,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:40.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "expense",
+       "merchant": "ConCung",
+       "totalMinor": 486000,
+       "currency": "VND",
+       "date": "2026-10-14",
+       "subtotalMinor": 450000,
+       "taxMinor": 36000,
+       "categoryId": "c_diaper",
+       "babyId": "b_00000000000000000001",
+       "keepReceipt": true
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_10a6f62f28db3d3b38de123fb4b9f7aa"
+      ],
+      "recordId": "x_26ecacb3ec64ed0341696b38483e7146",
+      "recordLink": "/utilities/spending/expense/x_26ecacb3ec64ed0341696b38483e7146?babyId=b_00000000000000000001",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "role": "user",
+      "parts": [],
+      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [
+       "at_840d141de9551b5149daf04ea0f62a16"
+      ],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tổng tiền đã gồm thuế: chỉ ghi một khoản, không cộng thêm tạm tính hay thuế."
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+          "status": "saved",
+          "recordLink": "/utilities/spending/expense/x_26ecacb3ec64ed0341696b38483e7146?babyId=b_00000000000000000001",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:40.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "attachments": [
+     {
+      "id": "at_840d141de9551b5149daf04ea0f62a16",
+      "mime": "image/png",
+      "bytes": 30592,
+      "retention": "keep_with_record",
+      "state": "ready",
+      "keptWithRecord": false,
+      "deletedAt": null,
+      "rejected": false
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

@@ -1,0 +1,100 @@
+{
+ "id": "ph-04-receipt-caregiver",
+ "group": "photo",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "NANNY",
+   "snapshot": {
+    "task": {
+     "id": "tk_f4219093ff009bffaa9932b5529fc009",
+     "conversationId": "cv_3ba71844e632101c6f05c630d53b0bda",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "failed",
+     "version": 3,
+     "modality": "image",
+     "credits": 3,
+     "plan": "free",
+     "usage": "released",
+     "errorCode": "WRITE_DENIED",
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_lan",
+      "name": "Cô Lan",
+      "relation": "nanny",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_3ba71844e632101c6f05c630d53b0bda",
+      "role": "user",
+      "parts": [],
+      "taskId": "tk_f4219093ff009bffaa9932b5529fc009",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [
+       "at_111a26c955835733c9f03b7b3d30e201"
+      ],
+      "author": {
+       "uid": "u_lan",
+       "name": "Cô Lan",
+       "relation": "nanny",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_3ba71844e632101c6f05c630d53b0bda",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Vai trò của bạn chưa được ghi Chi tiêu, nên mình không tạo khoản chi."
+       },
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Chưa xử lý được yêu cầu này. Không tính lượt."
+       }
+      ],
+      "taskId": "tk_f4219093ff009bffaa9932b5529fc009",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "attachments": [
+     {
+      "id": "at_111a26c955835733c9f03b7b3d30e201",
+      "mime": "image/png",
+      "bytes": 30592,
+      "retention": "keep_with_record",
+      "state": "deleted",
+      "keptWithRecord": false,
+      "deletedAt": "2026-10-15T07:20:00.000Z",
+      "rejected": false
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

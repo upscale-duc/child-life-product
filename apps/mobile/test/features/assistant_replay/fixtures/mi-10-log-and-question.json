@@ -1,0 +1,328 @@
+{
+ "id": "mi-10-log-and-question",
+ "group": "multi",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_2c179b1d22874001d252f9233d87676f",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_2c179b1d22874001d252f9233d87676f_0",
+      "taskId": "tk_2c179b1d22874001d252f9233d87676f",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 120,
+       "occurredAt": "2026-10-15T06:00:00.000Z",
+       "milk": "formula"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_2c179b1d22874001d252f9233d87676f"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé bú 120ml lúc 13h, hôm nay bú tổng bao nhiêu rồi?"
+       }
+      ],
+      "taskId": "tk_2c179b1d22874001d252f9233d87676f",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "source_summary",
+        "schemaVersion": 1,
+        "summary": {
+         "date": "2026-10-15",
+         "bottle": {
+          "count": 2,
+          "ml": 270
+         },
+         "breast": {
+          "count": 1,
+          "minutes": 15
+         },
+         "sleep": {
+          "count": 2,
+          "minutes": 420
+         },
+         "coverage": "unknown",
+         "until": "2026-10-15T07:20:00.000Z"
+        },
+        "sourceIds": [
+         "r_66666666666666666666666666666666",
+         "r_11111111111111111111111111111111",
+         "r_33333333333333333333333333333333",
+         "r_22222222222222222222222222222222",
+         "r_44444444444444444444444444444444"
+        ]
+       },
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bú bình đã ghi hôm nay (đến 14:20): 2 cữ, 270 ml. Bú mẹ đã ghi hôm nay: 1 lần, 15 phút. Giấc ngủ đã ghi hôm nay: 2 giấc, 420 phút."
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_2c179b1d22874001d252f9233d87676f_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_2c179b1d22874001d252f9233d87676f",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_2c179b1d22874001d252f9233d87676f",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_2c179b1d22874001d252f9233d87676f_0",
+      "taskId": "tk_2c179b1d22874001d252f9233d87676f",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 120,
+       "occurredAt": "2026-10-15T06:00:00.000Z",
+       "milk": "formula"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_2c179b1d22874001d252f9233d87676f"
+      ],
+      "recordId": "r_e749d0d094cc277f14a2d6ef7daa9364",
+      "recordLink": "/care/records/b_00000000000000000001/r_e749d0d094cc277f14a2d6ef7daa9364",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé bú 120ml lúc 13h, hôm nay bú tổng bao nhiêu rồi?"
+       }
+      ],
+      "taskId": "tk_2c179b1d22874001d252f9233d87676f",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "source_summary",
+        "schemaVersion": 1,
+        "summary": {
+         "date": "2026-10-15",
+         "bottle": {
+          "count": 2,
+          "ml": 270
+         },
+         "breast": {
+          "count": 1,
+          "minutes": 15
+         },
+         "sleep": {
+          "count": 2,
+          "minutes": 420
+         },
+         "coverage": "unknown",
+         "until": "2026-10-15T07:20:00.000Z"
+        },
+        "sourceIds": [
+         "r_66666666666666666666666666666666",
+         "r_11111111111111111111111111111111",
+         "r_33333333333333333333333333333333",
+         "r_22222222222222222222222222222222",
+         "r_44444444444444444444444444444444"
+        ]
+       },
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bú bình đã ghi hôm nay (đến 14:20): 2 cữ, 270 ml. Bú mẹ đã ghi hôm nay: 1 lần, 15 phút. Giấc ngủ đã ghi hôm nay: 2 giấc, 420 phút."
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_2c179b1d22874001d252f9233d87676f_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_2c179b1d22874001d252f9233d87676f",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_2c179b1d22874001d252f9233d87676f_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_e749d0d094cc277f14a2d6ef7daa9364",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_2c179b1d22874001d252f9233d87676f",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

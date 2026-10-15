@@ -1,0 +1,695 @@
+{
+  "group": "care.sleep",
+  "note": "Sleep spans: both ends, duration-only (asks the start), woke time + length, overnight, future end, AM-PM, overlap, corrections.",
+  "cases": [
+    {
+      "id": "sl-01-span",
+      "turns": [
+        {
+          "say": "bé ngủ từ 13h đến 14h",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "endTime": "14:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "13h",
+                  "endTime": "14h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D0 13:00",
+          "0.endedAt": "D0 14:00"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-02-overnight",
+      "anchor": "07:10",
+      "turns": [
+        {
+          "say": "đêm qua bé ngủ từ 9h tối đến 6h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "21:00",
+                  "dayOffset": -1,
+                  "endTime": "06:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "9h tối",
+                  "endTime": "6h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D-1 21:00",
+          "0.endedAt": "D0 06:00"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-03-duration-chip",
+      "anchor": "07:10",
+      "turns": [
+        {
+          "say": "ngủ 9 tiếng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "durationMin": 540
+                },
+                "ev": {
+                  "durationMin": "9 tiếng"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.start",
+              "choice": 0
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "asks": ["time.start"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D-1 21:00",
+          "0.endedAt": "D0 06:00"
+        },
+        "credits": 1,
+        "calls": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-04-duration-chip-prompt-literal",
+      "anchor": "07:10",
+      "title": "The model lists \"time\" as missing (as the prompt says); the chip must clear it",
+      "turns": [
+        {
+          "say": "ngủ 9 tiếng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "durationMin": 540
+                },
+                "ev": {
+                  "durationMin": "9 tiếng"
+                },
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.start",
+              "choice": 1
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "asks": ["time.start"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D-1 22:00",
+          "0.endedAt": "D0 07:00"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-05-duration-typed",
+      "anchor": "07:10",
+      "turns": [
+        {
+          "say": "Báo ngủ 9 tiếng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "durationMin": 540
+                },
+                "ev": {
+                  "durationMin": "9 tiếng"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.start",
+              "text": "22h"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D-1 22:00",
+          "0.endedAt": "D0 07:00"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-06-woke-and-length",
+      "anchor": "07:10",
+      "turns": [
+        {
+          "say": "dậy lúc 6h, ngủ 9 tiếng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "endTime": "06:00",
+                  "endDayOffset": 0,
+                  "durationMin": 540
+                },
+                "ev": {
+                  "endTime": "6h",
+                  "durationMin": "9 tiếng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D-1 21:00",
+          "0.endedAt": "D0 06:00"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-07-nap-duration",
+      "turns": [
+        {
+          "say": "bé ngủ trưa 1 tiếng rưỡi",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "durationMin": 90
+                },
+                "ev": {
+                  "durationMin": "1 tiếng rưỡi"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.start",
+              "choice": 1
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "asks": ["time.start"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D0 12:30",
+          "0.endedAt": "D0 14:00"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-08-just-woke",
+      "turns": [
+        {
+          "say": "vừa ngủ dậy, ngủ được 2 tiếng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "endTime": "14:20",
+                  "endDayOffset": 0,
+                  "durationMin": 120
+                },
+                "ev": {
+                  "endTime": "vừa ngủ dậy",
+                  "durationMin": "2 tiếng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D0 12:20",
+          "0.endedAt": "D0 14:20"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-09-future-end",
+      "turns": [
+        {
+          "say": "bé ngủ từ 13h đến 15h",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "endTime": "15:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "13h",
+                  "endTime": "15h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "review": ["endedAt"],
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-10-end-before-start",
+      "title": "Kept for review or asked, never flipped silently",
+      "turns": [
+        {
+          "say": "ngủ từ 10h đến 9h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "10:00",
+                  "dayOffset": 0,
+                  "endTime": "09:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "10h",
+                  "endTime": "9h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["drafts", "awaiting"],
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-11-ampm",
+      "anchor": "21:30",
+      "turns": [
+        {
+          "say": "bé ngủ từ 7 giờ đến 8 giờ",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "07:00",
+                  "dayOffset": 0,
+                  "endTime": "08:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "7 giờ",
+                  "endTime": "8 giờ"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.ampm",
+              "choice": "pm"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "asks": ["time.ampm"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D0 19:00",
+          "0.endedAt": "D0 20:00"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-12-overlap",
+      "anchor": "07:10",
+      "world": {
+        "seed": ["sleepNight"]
+      },
+      "turns": [
+        {
+          "say": "tối qua bé ngủ từ 10h tối đến 5h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "22:00",
+                  "dayOffset": -1,
+                  "endTime": "05:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "10h tối",
+                  "endTime": "5h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-13-correction",
+      "anchor": "07:10",
+      "turns": [
+        {
+          "say": "bé ngủ từ 9h tối đến 6h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "21:00",
+                  "dayOffset": -1,
+                  "endTime": "06:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "9h tối",
+                  "endTime": "6h sáng"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "say": "nhầm, 6h30 mới dậy",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "21:00",
+                  "dayOffset": -1,
+                  "endTime": "06:30",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "endTime": "6h30"
+                },
+                "cp": true
+              }
+            ]
+          },
+          "at": "+1"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D-1 21:00",
+          "0.endedAt": "D0 06:30"
+        },
+        "codes": ["CORRECTION_APPLIED"],
+        "credits": 2
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-14-no-diacritics",
+      "turns": [
+        {
+          "say": "be ngu tu 1h trua den 2h chieu",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "endTime": "14:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "1h trua",
+                  "endTime": "2h chieu"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D0 13:00",
+          "0.endedAt": "D0 14:00"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-15-english",
+      "anchor": "07:10",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "slept from 9pm to 6am",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "21:00",
+                  "dayOffset": -1,
+                  "endTime": "06:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "9pm",
+                  "endTime": "6am"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D-1 21:00",
+          "0.endedAt": "D0 06:00"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-16-yesterday-nap",
+      "turns": [
+        {
+          "say": "hôm qua bé ngủ trưa từ 12h đến 14h",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "12:00",
+                  "dayOffset": -1,
+                  "endTime": "14:00",
+                  "endDayOffset": -1
+                },
+                "ev": {
+                  "time": "12h",
+                  "endTime": "14h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D-1 12:00",
+          "0.endedAt": "D-1 14:00"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-17-voice-run-on",
+      "turns": [
+        {
+          "say": "à mà hôm nay bé ngủ trưa từ mười hai giờ rưỡi đến một giờ rưỡi chiều nha",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "12:30",
+                  "dayOffset": 0,
+                  "endTime": "13:30",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "mười hai giờ rưỡi",
+                  "endTime": "một giờ rưỡi chiều"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D0 12:30",
+          "0.endedAt": "D0 13:30"
+        },
+        "credits": 1
+      },
+      "group": "care.sleep"
+    },
+    {
+      "id": "sl-18-duration-missing-answer-late",
+      "noProbe": true,
+      "title": "A question answered after 30 min: released, explained, the words kept to resend",
+      "turns": [
+        {
+          "say": "ngủ 2 tiếng",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "durationMin": 120
+                },
+                "ev": {
+                  "durationMin": "2 tiếng"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.start",
+              "choice": 0,
+              "afterMin": 31
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "failed:QUOTE_EXPIRED",
+        "error": "QUOTE_EXPIRED",
+        "credits": 0
+      },
+      "group": "care.sleep"
+    }
+  ]
+}

@@ -1,0 +1,345 @@
+{
+ "id": "mi-01-bottle-sleep",
+ "group": "multi",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_1cd3734aea7f3ce2de208d1e4b707d64_0",
+      "taskId": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 120,
+       "occurredAt": "2026-10-15T01:00:00.000Z",
+       "milk": "breast_milk"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_1cd3734aea7f3ce2de208d1e4b707d64"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     },
+     {
+      "id": "dr_1cd3734aea7f3ce2de208d1e4b707d64_1",
+      "taskId": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+      "itemIndex": 1,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "sleep",
+       "startedAt": "2026-10-15T02:00:00.000Z",
+       "endedAt": "2026-10-15T03:00:00.000Z",
+       "durationMin": 60,
+       "linked": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_1cd3734aea7f3ce2de208d1e4b707d64"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé bú 120ml lúc 8h sáng, ngủ từ 9h đến 10h"
+       }
+      ],
+      "taskId": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_1cd3734aea7f3ce2de208d1e4b707d64_0",
+        "revision": 1
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_1cd3734aea7f3ce2de208d1e4b707d64_1",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_1cd3734aea7f3ce2de208d1e4b707d64_0",
+      "taskId": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 120,
+       "occurredAt": "2026-10-15T01:00:00.000Z",
+       "milk": "breast_milk"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_1cd3734aea7f3ce2de208d1e4b707d64"
+      ],
+      "recordId": "r_178d5af34fe86b09de36de2070659108",
+      "recordLink": "/care/records/b_00000000000000000001/r_178d5af34fe86b09de36de2070659108",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "dr_1cd3734aea7f3ce2de208d1e4b707d64_1",
+      "taskId": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+      "itemIndex": 1,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "sleep",
+       "startedAt": "2026-10-15T02:00:00.000Z",
+       "endedAt": "2026-10-15T03:00:00.000Z",
+       "durationMin": 60,
+       "linked": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_1cd3734aea7f3ce2de208d1e4b707d64"
+      ],
+      "recordId": "r_27ddd1ee09d6cb4d5ac7a7c2f2fd0d6b",
+      "recordLink": "/care/records/b_00000000000000000001/r_27ddd1ee09d6cb4d5ac7a7c2f2fd0d6b",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé bú 120ml lúc 8h sáng, ngủ từ 9h đến 10h"
+       }
+      ],
+      "taskId": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_1cd3734aea7f3ce2de208d1e4b707d64_0",
+        "revision": 1
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_1cd3734aea7f3ce2de208d1e4b707d64_1",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_1cd3734aea7f3ce2de208d1e4b707d64_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_178d5af34fe86b09de36de2070659108",
+          "errorCode": null
+         },
+         {
+          "draftId": "dr_1cd3734aea7f3ce2de208d1e4b707d64_1",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_27ddd1ee09d6cb4d5ac7a7c2f2fd0d6b",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_1cd3734aea7f3ce2de208d1e4b707d64",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

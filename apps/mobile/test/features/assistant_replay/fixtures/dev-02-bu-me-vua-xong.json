@@ -1,0 +1,543 @@
+{
+ "id": "dev-02-bu-me-vua-xong",
+ "group": "device",
+ "device": "DEV-2",
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "awaiting_clarification",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "reserved",
+     "errorCode": null,
+     "round": 1,
+     "clarification": {
+      "id": "cl_1",
+      "field": "time.missing",
+      "question": {
+       "vi": "Việc này lúc mấy giờ?",
+       "en": "What time was it?"
+      },
+      "choices": [
+       {
+        "id": "ago_0",
+        "label": {
+         "vi": "Vừa xong (01:08)",
+         "en": "Just now (01:08)"
+        }
+       },
+       {
+        "id": "ago_30",
+        "label": {
+         "vi": "30 phút trước (00:38)",
+         "en": "30 min ago (00:38)"
+        }
+       },
+       {
+        "id": "ago_60",
+        "label": {
+         "vi": "1 tiếng trước (00:08)",
+         "en": "1 hour ago (00:08)"
+        }
+       }
+      ],
+      "allowText": true
+     },
+     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé bú mẹ"
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "time.missing",
+         "question": {
+          "vi": "Việc này lúc mấy giờ?",
+          "en": "What time was it?"
+         },
+         "choices": [
+          {
+           "id": "ago_0",
+           "label": {
+            "vi": "Vừa xong (01:08)",
+            "en": "Just now (01:08)"
+           }
+          },
+          {
+           "id": "ago_30",
+           "label": {
+            "vi": "30 phút trước (00:38)",
+            "en": "30 min ago (00:38)"
+           }
+          },
+          {
+           "id": "ago_60",
+           "label": {
+            "vi": "1 tiếng trước (00:08)",
+            "en": "1 hour ago (00:08)"
+           }
+          }
+         ],
+         "allowText": true
+        }
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 1 · after answer time.missing",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 6,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:15.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_61a4fd40b71c732b739ed31a38eef0dd_0",
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "breast",
+       "occurredAt": "2026-10-15T07:20:00.000Z",
+       "durationMin": null,
+       "side": "both"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "sourceRefs": [
+       "task:tk_61a4fd40b71c732b739ed31a38eef0dd"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé bú mẹ"
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "time.missing",
+         "question": {
+          "vi": "Việc này lúc mấy giờ?",
+          "en": "What time was it?"
+         },
+         "choices": [
+          {
+           "id": "ago_0",
+           "label": {
+            "vi": "Vừa xong (01:08)",
+            "en": "Just now (01:08)"
+           }
+          },
+          {
+           "id": "ago_30",
+           "label": {
+            "vi": "30 phút trước (00:38)",
+            "en": "30 min ago (00:38)"
+           }
+          },
+          {
+           "id": "ago_60",
+           "label": {
+            "vi": "1 tiếng trước (00:08)",
+            "en": "1 hour ago (00:08)"
+           }
+          }
+         ],
+         "allowText": true
+        }
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Vừa xong (01:08)"
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_61a4fd40b71c732b739ed31a38eef0dd_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 6,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:35.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_61a4fd40b71c732b739ed31a38eef0dd_0",
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "breast",
+       "occurredAt": "2026-10-15T07:20:00.000Z",
+       "durationMin": null,
+       "side": "both"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "sourceRefs": [
+       "task:tk_61a4fd40b71c732b739ed31a38eef0dd"
+      ],
+      "recordId": "r_14e30c9f08b1dbe3abe9a6ac14278890",
+      "recordLink": "/care/records/b_00000000000000000001/r_14e30c9f08b1dbe3abe9a6ac14278890",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bé bú mẹ"
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "time.missing",
+         "question": {
+          "vi": "Việc này lúc mấy giờ?",
+          "en": "What time was it?"
+         },
+         "choices": [
+          {
+           "id": "ago_0",
+           "label": {
+            "vi": "Vừa xong (01:08)",
+            "en": "Just now (01:08)"
+           }
+          },
+          {
+           "id": "ago_30",
+           "label": {
+            "vi": "30 phút trước (00:38)",
+            "en": "30 min ago (00:38)"
+           }
+          },
+          {
+           "id": "ago_60",
+           "label": {
+            "vi": "1 tiếng trước (00:08)",
+            "en": "1 hour ago (00:08)"
+           }
+          }
+         ],
+         "allowText": true
+        }
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Vừa xong (01:08)"
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_61a4fd40b71c732b739ed31a38eef0dd_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000005",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_61a4fd40b71c732b739ed31a38eef0dd_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_14e30c9f08b1dbe3abe9a6ac14278890",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_61a4fd40b71c732b739ed31a38eef0dd",
+      "sequence": 5,
+      "createdAt": "2026-10-15T07:20:35.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

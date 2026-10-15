@@ -1,0 +1,601 @@
+{
+ "id": "fl-10-reminder-assignee-save",
+ "group": "flow",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "awaiting_clarification",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "reserved",
+     "errorCode": null,
+     "round": 1,
+     "clarification": {
+      "id": "cl_1",
+      "field": "reminder.assignee.0",
+      "question": {
+       "vi": "Tin nhắn ghi “bố” cho việc “đi lấy kết quả”. Giao việc này cho ai?",
+       "en": "The message says “bố” for “đi lấy kết quả”. Who should do it?"
+      },
+      "choices": [
+       {
+        "id": "u_mai",
+        "label": {
+         "vi": "Bạn (Mai)",
+         "en": "You (Mai)"
+        }
+       },
+       {
+        "id": "u_minh",
+        "label": {
+         "vi": "Minh",
+         "en": "Minh"
+        }
+       },
+       {
+        "id": "u_lan2",
+        "label": {
+         "vi": "Cô Hằng",
+         "en": "Cô Hằng"
+        }
+       },
+       {
+        "id": "u_lan",
+        "label": {
+         "vi": "Cô Lan",
+         "en": "Cô Lan"
+        }
+       },
+       {
+        "id": "none",
+        "label": {
+         "vi": "Không giao",
+         "en": "No one"
+        }
+       }
+      ],
+      "allowText": false
+     },
+     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "nhắc bố mai đi lấy kết quả"
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "reminder.assignee.0",
+         "question": {
+          "vi": "Tin nhắn ghi “bố” cho việc “đi lấy kết quả”. Giao việc này cho ai?",
+          "en": "The message says “bố” for “đi lấy kết quả”. Who should do it?"
+         },
+         "choices": [
+          {
+           "id": "u_mai",
+           "label": {
+            "vi": "Bạn (Mai)",
+            "en": "You (Mai)"
+           }
+          },
+          {
+           "id": "u_minh",
+           "label": {
+            "vi": "Minh",
+            "en": "Minh"
+           }
+          },
+          {
+           "id": "u_lan2",
+           "label": {
+            "vi": "Cô Hằng",
+            "en": "Cô Hằng"
+           }
+          },
+          {
+           "id": "u_lan",
+           "label": {
+            "vi": "Cô Lan",
+            "en": "Cô Lan"
+           }
+          },
+          {
+           "id": "none",
+           "label": {
+            "vi": "Không giao",
+            "en": "No one"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 1 · after answer reminder.assignee.0",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 6,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:15.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_e7205f1d77f7af7869be9c97b223b3b9_0",
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "reminder",
+       "title": "đi lấy kết quả",
+       "date": "2026-10-16",
+       "time": null,
+       "assigneeUid": "u_minh"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "sourceRefs": [
+       "task:tk_e7205f1d77f7af7869be9c97b223b3b9"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "nhắc bố mai đi lấy kết quả"
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "reminder.assignee.0",
+         "question": {
+          "vi": "Tin nhắn ghi “bố” cho việc “đi lấy kết quả”. Giao việc này cho ai?",
+          "en": "The message says “bố” for “đi lấy kết quả”. Who should do it?"
+         },
+         "choices": [
+          {
+           "id": "u_mai",
+           "label": {
+            "vi": "Bạn (Mai)",
+            "en": "You (Mai)"
+           }
+          },
+          {
+           "id": "u_minh",
+           "label": {
+            "vi": "Minh",
+            "en": "Minh"
+           }
+          },
+          {
+           "id": "u_lan2",
+           "label": {
+            "vi": "Cô Hằng",
+            "en": "Cô Hằng"
+           }
+          },
+          {
+           "id": "u_lan",
+           "label": {
+            "vi": "Cô Lan",
+            "en": "Cô Lan"
+           }
+          },
+          {
+           "id": "none",
+           "label": {
+            "vi": "Không giao",
+            "en": "No one"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Minh"
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_e7205f1d77f7af7869be9c97b223b3b9_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 2 · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 6,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:35.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_e7205f1d77f7af7869be9c97b223b3b9_0",
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "reminder",
+       "title": "đi lấy kết quả",
+       "date": "2026-10-16",
+       "time": null,
+       "assigneeUid": "u_minh"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "sourceRefs": [
+       "task:tk_e7205f1d77f7af7869be9c97b223b3b9"
+      ],
+      "recordId": "rm_deb6600147a15b2225065205de379c84",
+      "recordLink": "/care/reminders/rm_deb6600147a15b2225065205de379c84?babyId=b_00000000000000000001",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "nhắc bố mai đi lấy kết quả"
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "reminder.assignee.0",
+         "question": {
+          "vi": "Tin nhắn ghi “bố” cho việc “đi lấy kết quả”. Giao việc này cho ai?",
+          "en": "The message says “bố” for “đi lấy kết quả”. Who should do it?"
+         },
+         "choices": [
+          {
+           "id": "u_mai",
+           "label": {
+            "vi": "Bạn (Mai)",
+            "en": "You (Mai)"
+           }
+          },
+          {
+           "id": "u_minh",
+           "label": {
+            "vi": "Minh",
+            "en": "Minh"
+           }
+          },
+          {
+           "id": "u_lan2",
+           "label": {
+            "vi": "Cô Hằng",
+            "en": "Cô Hằng"
+           }
+          },
+          {
+           "id": "u_lan",
+           "label": {
+            "vi": "Cô Lan",
+            "en": "Cô Lan"
+           }
+          },
+          {
+           "id": "none",
+           "label": {
+            "vi": "Không giao",
+            "en": "No one"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Minh"
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_e7205f1d77f7af7869be9c97b223b3b9_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000005",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_e7205f1d77f7af7869be9c97b223b3b9_0",
+          "status": "saved",
+          "recordLink": "/care/reminders/rm_deb6600147a15b2225065205de379c84?babyId=b_00000000000000000001",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "sequence": 5,
+      "createdAt": "2026-10-15T07:20:35.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

@@ -1,0 +1,270 @@
+{
+  "group": "robust",
+  "note": "Voice-like and messy input: fillers, caps, emoji, mixed languages, typos.",
+  "cases": [
+    {
+      "id": "rb-01-caps",
+      "turns": [
+        {
+          "say": "BÉ BÚ 120ML LÚC 8H SÁNG",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ML",
+                  "time": "8H SÁNG"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 08:00"
+        },
+        "credits": 1
+      },
+      "group": "robust"
+    },
+    {
+      "id": "rb-02-emoji",
+      "turns": [
+        {
+          "say": "bé bú 120ml lúc 13h 🍼",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "robust"
+    },
+    {
+      "id": "rb-03-mixed-language",
+      "turns": [
+        {
+          "say": "bé uống 120ml formula lúc 8am",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0,
+                  "milk": "formula"
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "8am"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 08:00"
+        },
+        "credits": 1
+      },
+      "group": "robust"
+    },
+    {
+      "id": "rb-04-typo",
+      "turns": [
+        {
+          "say": "bé bu 120m lúc 8h sang",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120m",
+                  "time": "8h sang"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "values": {
+          "0.occurredAt": "D0 08:00"
+        },
+        "credits": 1
+      },
+      "group": "robust"
+    },
+    {
+      "id": "rb-05-voice-fillers",
+      "turns": [
+        {
+          "say": "ừm thì là bé nhà mình á vừa nãy khoảng hai giờ chiều bú được chừng một trăm mililit",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 100,
+                  "time": "14:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "một trăm mililit",
+                  "time": "hai giờ chiều"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "values": {
+          "0.occurredAt": "D0 14:00"
+        },
+        "credits": 1
+      },
+      "group": "robust"
+    },
+    {
+      "id": "rb-06-9h15",
+      "turns": [
+        {
+          "say": "9h15 bé bú 130ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 130,
+                  "time": "09:15",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "130ml",
+                  "time": "9h15"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 09:15"
+        },
+        "credits": 1
+      },
+      "group": "robust"
+    },
+    {
+      "id": "rb-07-kem",
+      "turns": [
+        {
+          "say": "9 giờ kém 15 sáng bú 100ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 100,
+                  "time": "08:45",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "100ml",
+                  "time": "9 giờ kém 15 sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 08:45"
+        },
+        "credits": 1
+      },
+      "group": "robust"
+    },
+    {
+      "id": "rb-08-long-text",
+      "turns": [
+        {
+          "say": "hôm nay bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bú 120ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "credits": 1
+      },
+      "group": "robust"
+    }
+  ]
+}

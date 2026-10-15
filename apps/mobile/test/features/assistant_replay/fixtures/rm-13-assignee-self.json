@@ -1,0 +1,856 @@
+{
+ "id": "rm-13-assignee-self",
+ "group": "reminder",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+     "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "awaiting_clarification",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "reserved",
+     "errorCode": null,
+     "round": 1,
+     "clarification": {
+      "id": "cl_1",
+      "field": "reminder.assignee.0",
+      "question": {
+       "vi": "Tin nhắn ghi “mẹ” cho việc “mua sữa”. Giao việc này cho ai?",
+       "en": "The message says “mẹ” for “mua sữa”. Who should do it?"
+      },
+      "choices": [
+       {
+        "id": "u_mai",
+        "label": {
+         "vi": "Bạn (Mai)",
+         "en": "You (Mai)"
+        }
+       },
+       {
+        "id": "u_minh",
+        "label": {
+         "vi": "Minh",
+         "en": "Minh"
+        }
+       },
+       {
+        "id": "u_lan2",
+        "label": {
+         "vi": "Cô Hằng",
+         "en": "Cô Hằng"
+        }
+       },
+       {
+        "id": "u_lan",
+        "label": {
+         "vi": "Cô Lan",
+         "en": "Cô Lan"
+        }
+       },
+       {
+        "id": "none",
+        "label": {
+         "vi": "Không giao",
+         "en": "No one"
+        }
+       }
+      ],
+      "allowText": false
+     },
+     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": {
+      "reason": "spending",
+      "from": "shared_thread",
+      "at": "start"
+     }
+    },
+    "drafts": [],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "nhắc mẹ mua sữa lúc 5h chiều"
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "reminder.assignee.0",
+         "question": {
+          "vi": "Tin nhắn ghi “mẹ” cho việc “mua sữa”. Giao việc này cho ai?",
+          "en": "The message says “mẹ” for “mua sữa”. Who should do it?"
+         },
+         "choices": [
+          {
+           "id": "u_mai",
+           "label": {
+            "vi": "Bạn (Mai)",
+            "en": "You (Mai)"
+           }
+          },
+          {
+           "id": "u_minh",
+           "label": {
+            "vi": "Minh",
+            "en": "Minh"
+           }
+          },
+          {
+           "id": "u_lan2",
+           "label": {
+            "vi": "Cô Hằng",
+            "en": "Cô Hằng"
+           }
+          },
+          {
+           "id": "u_lan",
+           "label": {
+            "vi": "Cô Lan",
+            "en": "Cô Lan"
+           }
+          },
+          {
+           "id": "none",
+           "label": {
+            "vi": "Không giao",
+            "en": "No one"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "turn 1 · after answer reminder.assignee.0",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+     "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 6,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:15.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": {
+      "reason": "spending",
+      "from": "shared_thread",
+      "at": "start"
+     }
+    },
+    "drafts": [
+     {
+      "id": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "reminder",
+       "title": "mua sữa",
+       "date": "2026-10-15",
+       "time": "17:00",
+       "assigneeUid": "u_mai"
+      },
+      "missingFields": [],
+      "uncertainFields": [
+       "date"
+      ],
+      "revision": 1,
+      "state": "needs_review",
+      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "sourceRefs": [
+       "task:tk_e6a557ff51d0d9d1432b9895fb845ca6"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "nhắc mẹ mua sữa lúc 5h chiều"
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "reminder.assignee.0",
+         "question": {
+          "vi": "Tin nhắn ghi “mẹ” cho việc “mua sữa”. Giao việc này cho ai?",
+          "en": "The message says “mẹ” for “mua sữa”. Who should do it?"
+         },
+         "choices": [
+          {
+           "id": "u_mai",
+           "label": {
+            "vi": "Bạn (Mai)",
+            "en": "You (Mai)"
+           }
+          },
+          {
+           "id": "u_minh",
+           "label": {
+            "vi": "Minh",
+            "en": "Minh"
+           }
+          },
+          {
+           "id": "u_lan2",
+           "label": {
+            "vi": "Cô Hằng",
+            "en": "Cô Hằng"
+           }
+          },
+          {
+           "id": "u_lan",
+           "label": {
+            "vi": "Cô Lan",
+            "en": "Cô Lan"
+           }
+          },
+          {
+           "id": "none",
+           "label": {
+            "vi": "Không giao",
+            "en": "No one"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bạn (Mai)"
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after fix",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+     "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 6,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:15.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": {
+      "reason": "spending",
+      "from": "shared_thread",
+      "at": "start"
+     }
+    },
+    "drafts": [
+     {
+      "id": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "reminder",
+       "title": "mua sữa",
+       "date": "2026-10-15",
+       "time": "17:00",
+       "assigneeUid": "u_mai"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "sourceRefs": [
+       "task:tk_e6a557ff51d0d9d1432b9895fb845ca6"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "nhắc mẹ mua sữa lúc 5h chiều"
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "reminder.assignee.0",
+         "question": {
+          "vi": "Tin nhắn ghi “mẹ” cho việc “mua sữa”. Giao việc này cho ai?",
+          "en": "The message says “mẹ” for “mua sữa”. Who should do it?"
+         },
+         "choices": [
+          {
+           "id": "u_mai",
+           "label": {
+            "vi": "Bạn (Mai)",
+            "en": "You (Mai)"
+           }
+          },
+          {
+           "id": "u_minh",
+           "label": {
+            "vi": "Minh",
+            "en": "Minh"
+           }
+          },
+          {
+           "id": "u_lan2",
+           "label": {
+            "vi": "Cô Hằng",
+            "en": "Cô Hằng"
+           }
+          },
+          {
+           "id": "u_lan",
+           "label": {
+            "vi": "Cô Lan",
+            "en": "Cô Lan"
+           }
+          },
+          {
+           "id": "none",
+           "label": {
+            "vi": "Không giao",
+            "en": "No one"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bạn (Mai)"
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+     "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 6,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 1,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:55.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": {
+      "reason": "spending",
+      "from": "shared_thread",
+      "at": "start"
+     }
+    },
+    "drafts": [
+     {
+      "id": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "reminder",
+       "title": "mua sữa",
+       "date": "2026-10-15",
+       "time": "17:00",
+       "assigneeUid": "u_mai"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "sourceRefs": [
+       "task:tk_e6a557ff51d0d9d1432b9895fb845ca6"
+      ],
+      "recordId": "rm_e25793ae433ef4561eae0381bc640094",
+      "recordLink": "/care/reminders/rm_e25793ae433ef4561eae0381bc640094?babyId=b_00000000000000000001",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "nhắc mẹ mua sữa lúc 5h chiều"
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "clarification",
+        "schemaVersion": 1,
+        "clarification": {
+         "id": "cl_1",
+         "field": "reminder.assignee.0",
+         "question": {
+          "vi": "Tin nhắn ghi “mẹ” cho việc “mua sữa”. Giao việc này cho ai?",
+          "en": "The message says “mẹ” for “mua sữa”. Who should do it?"
+         },
+         "choices": [
+          {
+           "id": "u_mai",
+           "label": {
+            "vi": "Bạn (Mai)",
+            "en": "You (Mai)"
+           }
+          },
+          {
+           "id": "u_minh",
+           "label": {
+            "vi": "Minh",
+            "en": "Minh"
+           }
+          },
+          {
+           "id": "u_lan2",
+           "label": {
+            "vi": "Cô Hằng",
+            "en": "Cô Hằng"
+           }
+          },
+          {
+           "id": "u_lan",
+           "label": {
+            "vi": "Cô Lan",
+            "en": "Cô Lan"
+           }
+          },
+          {
+           "id": "none",
+           "label": {
+            "vi": "Không giao",
+            "en": "No one"
+           }
+          }
+         ],
+         "allowText": false
+        }
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bạn (Mai)"
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000004",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:15.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000005",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+          "status": "saved",
+          "recordLink": "/care/reminders/rm_e25793ae433ef4561eae0381bc640094?babyId=b_00000000000000000001",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "sequence": 5,
+      "createdAt": "2026-10-15T07:20:55.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

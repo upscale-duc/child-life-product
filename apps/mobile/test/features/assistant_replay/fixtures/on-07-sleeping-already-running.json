@@ -1,0 +1,282 @@
+{
+ "id": "on-07-sleeping-already-running",
+ "group": "care.ongoing",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_9f291b518cb7472d6a48b5fe17f53b51",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_9f291b518cb7472d6a48b5fe17f53b51_0",
+      "taskId": "tk_9f291b518cb7472d6a48b5fe17f53b51",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "timer",
+       "timer": "sleep",
+       "action": "stop",
+       "at": "2026-10-15T07:20:00.000Z",
+       "side": null,
+       "sessionId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "startedAt": "2026-10-15T05:30:00.000Z"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_9f291b518cb7472d6a48b5fe17f53b51"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "con đang ngủ"
+       }
+      ],
+      "taskId": "tk_9f291b518cb7472d6a48b5fe17f53b51",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bé đang ngủ, đồng hồ đã tính giờ từ 12:30. Kết thúc giấc ngủ bây giờ, hay để đồng hồ tiếp tục?",
+        "code": "TIMER_RUNNING",
+        "link": "/care/timer/sleep?babyId=b_00000000000000000001"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_9f291b518cb7472d6a48b5fe17f53b51_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_9f291b518cb7472d6a48b5fe17f53b51",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_9f291b518cb7472d6a48b5fe17f53b51",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_9f291b518cb7472d6a48b5fe17f53b51_0",
+      "taskId": "tk_9f291b518cb7472d6a48b5fe17f53b51",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "timer",
+       "timer": "sleep",
+       "action": "stop",
+       "at": "2026-10-15T07:20:00.000Z",
+       "side": null,
+       "sessionId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "startedAt": "2026-10-15T05:30:00.000Z"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_9f291b518cb7472d6a48b5fe17f53b51"
+      ],
+      "recordId": "r_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "recordLink": "/care/records/b_00000000000000000001/r_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "con đang ngủ"
+       }
+      ],
+      "taskId": "tk_9f291b518cb7472d6a48b5fe17f53b51",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Bé đang ngủ, đồng hồ đã tính giờ từ 12:30. Kết thúc giấc ngủ bây giờ, hay để đồng hồ tiếp tục?",
+        "code": "TIMER_RUNNING",
+        "link": "/care/timer/sleep?babyId=b_00000000000000000001"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_9f291b518cb7472d6a48b5fe17f53b51_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_9f291b518cb7472d6a48b5fe17f53b51",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_9f291b518cb7472d6a48b5fe17f53b51_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_9f291b518cb7472d6a48b5fe17f53b51",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

@@ -1,0 +1,23 @@
+{
+  "note": "App replay baseline on the working tree of 2026-10-16: fixture id (device/<id> = the frozen snapshots of the server the device bugs came from) → violation codes known today (docs/assistant/test-report-lumi-2026-10-16.md). A new code fails; remove an entry once fixed.",
+  "fixtures": {
+    "device/ob-05-uncertain-when": {
+      "bug": "LUMI-10",
+      "codes": [
+        "FIELD_NOT_NAMED"
+      ]
+    },
+    "device/sl-04-duration-chip-prompt-literal": {
+      "bug": "LUMI-09",
+      "codes": [
+        "FIELD_NOT_NAMED"
+      ]
+    },
+    "ob-05-uncertain-when": {
+      "bug": "LUMI-10",
+      "codes": [
+        "FIELD_NOT_NAMED"
+      ]
+    }
+  }
+}
