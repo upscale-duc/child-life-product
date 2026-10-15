@@ -17076,4 +17076,125 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asGapObservation => 'Is the kind of note right?';
+
+  @override
+  String get asKindGrowth => 'Measurement';
+
+  @override
+  String asMeasuredOnLine(String date) {
+    return 'Measured $date';
+  }
+
+  @override
+  String get asPumpSideLeft => 'Left side';
+
+  @override
+  String get asPumpSideRight => 'Right side';
+
+  @override
+  String get asPumpSideBoth => 'Both sides';
+
+  @override
+  String get asOpenModule => 'Open';
+
+  @override
+  String get asSaveDiaper => 'Save diaper change';
+
+  @override
+  String get asGapPumpTime => 'No pumping time yet';
+
+  @override
+  String get asGapDiaperTime => 'No diaper change time yet';
+
+  @override
+  String asGapSleepStartUnsure(String time) {
+    return 'Fell asleep at $time — is that right?';
+  }
+
+  @override
+  String asGapSleepEndUnsure(String time) {
+    return 'Woke up at $time — is that right?';
+  }
+
+  @override
+  String asFixTomorrowAt(String time) {
+    return 'Tomorrow $time';
+  }
+
+  @override
+  String get asGapPumpAmount => 'No pumped amount yet (ml)';
+
+  @override
+  String get asGapPumpAmountRange => 'The pumped amount must be 1–1000 ml';
+
+  @override
+  String get asGapPumpSide => 'Which side was pumped?';
+
+  @override
+  String get asGapPumpDuration => 'How long did pumping take?';
+
+  @override
+  String get asGapPumpDurationRange =>
+      'Pumping can’t be longer than 240 minutes';
+
+  @override
+  String get asGapDiaper => 'Wet, dirty or both?';
+
+  @override
+  String get asGapWeight => 'No weight yet (kg)';
+
+  @override
+  String asGapWeightUnsure(String kg) {
+    return 'Is the weight of $kg kg right?';
+  }
+
+  @override
+  String get asFixEnterWeight => 'Enter the weight';
+
+  @override
+  String get asGapLength => 'No length yet (cm)';
+
+  @override
+  String asGapLengthUnsure(String cm) {
+    return 'Is the length of $cm cm right?';
+  }
+
+  @override
+  String get asFixEnterLength => 'Enter the length';
+
+  @override
+  String get asFixDropLength => 'Leave out the length';
+
+  @override
+  String get asGapMeasuredOn => 'No measuring date yet';
+
+  @override
+  String get asGapMeasuredOnFuture =>
+      'That day hasn’t come yet. Pick the measuring date again.';
+
+  @override
+  String asGapMeasuredOnUnsure(String date) {
+    return 'Measured on $date — is that right?';
+  }
+
+  @override
+  String get asEditPump => 'Edit pumping';
+
+  @override
+  String get asEditDiaper => 'Edit diaper change';
+
+  @override
+  String get asEditGrowth => 'Edit measurement';
+
+  @override
+  String get asFieldWeight => 'Weight';
+
+  @override
+  String get asFieldLength => 'Length · optional';
+
+  @override
+  String get asFieldMeasuredOn => 'Measuring date';
+
+  @override
+  String get asFieldDiaper => 'Diaper';
 }

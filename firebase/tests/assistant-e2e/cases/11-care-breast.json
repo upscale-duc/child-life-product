@@ -532,6 +532,125 @@
         "credits": 1
       },
       "group": "care.breast"
+    },
+    {
+      "id": "br-15-side-guessed-by-model",
+      "group": "care.breast",
+      "title": "LUMI-07 live: the model guesses side \"both\" (uncertain) when none is said → the form's default side, ready",
+      "turns": [
+        {
+          "say": "bú mẹ 20 phút lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 20,
+                  "time": "13:00",
+                  "dayOffset": 0,
+                  "side": "both"
+                },
+                "ev": {
+                  "durationMin": "20 phút",
+                  "time": "13h"
+                },
+                "unc": ["side"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 13:00",
+          "0.durationMin": 20
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "br-16-end-time-live",
+      "group": "care.breast",
+      "title": "Live reply: \"xong lúc 8h sáng\" as the end, the length, time missing → start 07:45, nothing to review",
+      "turns": [
+        {
+          "say": "bú 15 phút bên trái, xong lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "milk": "breast_milk",
+                  "dayOffset": 0,
+                  "endTime": "08:00",
+                  "endDayOffset": 0,
+                  "durationMin": 15,
+                  "side": "left"
+                },
+                "ev": {
+                  "durationMin": "bú 15 phút",
+                  "side": "bên trái",
+                  "endTime": "xong lúc 8h sáng"
+                },
+                "miss": ["time"],
+                "unc": ["time"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 07:45"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "br-17-end-time-in-time-live",
+      "group": "care.breast",
+      "title": "Live reply (P0 before the fix): the end \"xong lúc 8h sáng\" put in `time` with phase stop → still the end: start 07:45",
+      "turns": [
+        {
+          "say": "bú 15 phút bên trái, xong lúc 8h sáng",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "milk": "breast_milk",
+                  "time": "08:00",
+                  "dayOffset": 0,
+                  "durationMin": 15,
+                  "side": "left",
+                  "phase": "stop"
+                },
+                "ev": {
+                  "durationMin": "bú 15 phút",
+                  "side": "bên trái",
+                  "time": "xong lúc 8h sáng"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["breast"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 07:45"
+        },
+        "credits": 1
+      }
     }
   ]
 }

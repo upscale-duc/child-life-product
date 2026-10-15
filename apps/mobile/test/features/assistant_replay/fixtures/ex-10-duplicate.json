@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_4dd2eb554d4312ec53c9426c1dd3a57a",
+     "id": "tk_52179b5624f1d44143a26c77b2da53c1",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_4dd2eb554d4312ec53c9426c1dd3a57a_0",
-      "taskId": "tk_4dd2eb554d4312ec53c9426c1dd3a57a",
+      "id": "dr_52179b5624f1d44143a26c77b2da53c1_0",
+      "taskId": "tk_52179b5624f1d44143a26c77b2da53c1",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -70,7 +70,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_4dd2eb554d4312ec53c9426c1dd3a57a"
+       "task:tk_52179b5624f1d44143a26c77b2da53c1"
       ],
       "recordId": null,
       "recordLink": null,
@@ -94,7 +94,7 @@
         "text": "mua sữa 500k"
        }
       ],
-      "taskId": "tk_4dd2eb554d4312ec53c9426c1dd3a57a",
+      "taskId": "tk_52179b5624f1d44143a26c77b2da53c1",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -125,11 +125,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_4dd2eb554d4312ec53c9426c1dd3a57a_0",
+        "draftId": "dr_52179b5624f1d44143a26c77b2da53c1_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_4dd2eb554d4312ec53c9426c1dd3a57a",
+      "taskId": "tk_52179b5624f1d44143a26c77b2da53c1",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -144,7 +144,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_4dd2eb554d4312ec53c9426c1dd3a57a",
+     "id": "tk_52179b5624f1d44143a26c77b2da53c1",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -179,8 +179,8 @@
     },
     "drafts": [
      {
-      "id": "dr_4dd2eb554d4312ec53c9426c1dd3a57a_0",
-      "taskId": "tk_4dd2eb554d4312ec53c9426c1dd3a57a",
+      "id": "dr_52179b5624f1d44143a26c77b2da53c1_0",
+      "taskId": "tk_52179b5624f1d44143a26c77b2da53c1",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -205,10 +205,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_4dd2eb554d4312ec53c9426c1dd3a57a"
+       "task:tk_52179b5624f1d44143a26c77b2da53c1"
       ],
-      "recordId": "x_018ab95b95ea308f93d455a551527034",
-      "recordLink": "/utilities/spending/expense/x_018ab95b95ea308f93d455a551527034?babyId=b_00000000000000000001",
+      "recordId": "x_60de5d40bacfb2907c4103bfe5db71fe",
+      "recordLink": "/utilities/spending/expense/x_60de5d40bacfb2907c4103bfe5db71fe?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [
        "duplicate_suspected"
@@ -234,7 +234,7 @@
         "text": "mua sữa 500k"
        }
       ],
-      "taskId": "tk_4dd2eb554d4312ec53c9426c1dd3a57a",
+      "taskId": "tk_52179b5624f1d44143a26c77b2da53c1",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -265,11 +265,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_4dd2eb554d4312ec53c9426c1dd3a57a_0",
+        "draftId": "dr_52179b5624f1d44143a26c77b2da53c1_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_4dd2eb554d4312ec53c9426c1dd3a57a",
+      "taskId": "tk_52179b5624f1d44143a26c77b2da53c1",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -285,15 +285,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_4dd2eb554d4312ec53c9426c1dd3a57a_0",
+          "draftId": "dr_52179b5624f1d44143a26c77b2da53c1_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_018ab95b95ea308f93d455a551527034?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_60de5d40bacfb2907c4103bfe5db71fe?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_4dd2eb554d4312ec53c9426c1dd3a57a",
+      "taskId": "tk_52179b5624f1d44143a26c77b2da53c1",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

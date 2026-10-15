@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_38d7f2adfef806caa4f57bd530c2f9f9",
+     "id": "tk_eb7a1a372c58ce3d2534d4cf693a54ca",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_38d7f2adfef806caa4f57bd530c2f9f9_0",
-      "taskId": "tk_38d7f2adfef806caa4f57bd530c2f9f9",
+      "id": "dr_eb7a1a372c58ce3d2534d4cf693a54ca_0",
+      "taskId": "tk_eb7a1a372c58ce3d2534d4cf693a54ca",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -70,7 +70,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_38d7f2adfef806caa4f57bd530c2f9f9"
+       "task:tk_eb7a1a372c58ce3d2534d4cf693a54ca"
       ],
       "recordId": null,
       "recordLink": null,
@@ -92,7 +92,7 @@
         "text": "mua bình sữa 1.5tr hôm kia"
        }
       ],
-      "taskId": "tk_38d7f2adfef806caa4f57bd530c2f9f9",
+      "taskId": "tk_eb7a1a372c58ce3d2534d4cf693a54ca",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -117,11 +117,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_38d7f2adfef806caa4f57bd530c2f9f9_0",
+        "draftId": "dr_eb7a1a372c58ce3d2534d4cf693a54ca_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_38d7f2adfef806caa4f57bd530c2f9f9",
+      "taskId": "tk_eb7a1a372c58ce3d2534d4cf693a54ca",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_38d7f2adfef806caa4f57bd530c2f9f9",
+     "id": "tk_eb7a1a372c58ce3d2534d4cf693a54ca",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -171,8 +171,8 @@
     },
     "drafts": [
      {
-      "id": "dr_38d7f2adfef806caa4f57bd530c2f9f9_0",
-      "taskId": "tk_38d7f2adfef806caa4f57bd530c2f9f9",
+      "id": "dr_eb7a1a372c58ce3d2534d4cf693a54ca_0",
+      "taskId": "tk_eb7a1a372c58ce3d2534d4cf693a54ca",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -197,10 +197,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_38d7f2adfef806caa4f57bd530c2f9f9"
+       "task:tk_eb7a1a372c58ce3d2534d4cf693a54ca"
       ],
-      "recordId": "x_4294ae9e03dffc1285322ba9022db5d6",
-      "recordLink": "/utilities/spending/expense/x_4294ae9e03dffc1285322ba9022db5d6?babyId=b_00000000000000000001",
+      "recordId": "x_a6b3e570b6e0be82b40a9a7c8969afb0",
+      "recordLink": "/utilities/spending/expense/x_a6b3e570b6e0be82b40a9a7c8969afb0?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -224,7 +224,7 @@
         "text": "mua bình sữa 1.5tr hôm kia"
        }
       ],
-      "taskId": "tk_38d7f2adfef806caa4f57bd530c2f9f9",
+      "taskId": "tk_eb7a1a372c58ce3d2534d4cf693a54ca",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -249,11 +249,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_38d7f2adfef806caa4f57bd530c2f9f9_0",
+        "draftId": "dr_eb7a1a372c58ce3d2534d4cf693a54ca_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_38d7f2adfef806caa4f57bd530c2f9f9",
+      "taskId": "tk_eb7a1a372c58ce3d2534d4cf693a54ca",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -269,15 +269,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_38d7f2adfef806caa4f57bd530c2f9f9_0",
+          "draftId": "dr_eb7a1a372c58ce3d2534d4cf693a54ca_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_4294ae9e03dffc1285322ba9022db5d6?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_a6b3e570b6e0be82b40a9a7c8969afb0?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_38d7f2adfef806caa4f57bd530c2f9f9",
+      "taskId": "tk_eb7a1a372c58ce3d2534d4cf693a54ca",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

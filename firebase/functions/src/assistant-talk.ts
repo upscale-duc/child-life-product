@@ -128,6 +128,39 @@ const codes = new Set<string>([
   'CORRECTION_APPLIED',
 ]);
 
+/** What each kind of item is called in a notice (LUMI-13: a dropped item is always named). */
+export const kindNames: Record<DraftKind, { vi: string; en: string }> = {
+  bottle: L('cữ bú bình', 'bottle feed'),
+  breast: L('cữ bú mẹ', 'breastfeed'),
+  sleep: L('giấc ngủ', 'sleep'),
+  expense: L('khoản chi', 'expense'),
+  reminder: L('nhắc việc', 'reminder'),
+  observation: L('ghi nhận', 'note'),
+  meal: L('bữa ăn', 'meal'),
+  timer: L('đồng hồ', 'timer'),
+  pump: L('lần hút sữa', 'pumping session'),
+  diaper: L('lần thay tã', 'diaper change'),
+  growth: L('số đo tăng trưởng', 'growth measurement'),
+};
+
+/** Kind-specific words for a notice that names the item (LUMI-13, P2 copy 2026-10-16). */
+const namedNotices: Partial<
+  Record<NoticeCode, Partial<Record<DraftKind, { vi: string; en: string }>>>
+> = {
+  MODULE_UNAVAILABLE: {
+    meal: L(
+      'Ứng dụng chưa có mục ghi bữa ăn, nên mình chưa ghi được bữa ăn này.',
+      'The app has no meal log yet, so this meal was not saved.',
+    ),
+  },
+};
+
+const validationNamed = (k: DraftKind) =>
+  L(
+    `Mình chưa hiểu rõ phần ${kindNames[k].vi} để tạo bản nháp. Bạn nhắn lại rõ hơn giúp mình nhé.`,
+    `The ${kindNames[k].en} part was not clear enough to prepare a draft. Could you say it again?`,
+  );
+
 /** One notice part per (code, kind), in the task's language; new codes carry `code` / `link`. */
 export function noticePart(
   n: { code: NoticeCode; kind?: DraftKind | undefined; link?: string | undefined },
@@ -136,7 +169,11 @@ export function noticePart(
   const words =
     n.code === 'WRITE_DENIED' && n.kind && writeDenied[n.kind]
       ? writeDenied[n.kind]!
-      : notices[n.code];
+      : n.kind && namedNotices[n.code]?.[n.kind]
+        ? namedNotices[n.code]![n.kind]!
+        : n.code === 'VALIDATION_FAILED' && n.kind
+          ? validationNamed(n.kind)
+          : notices[n.code];
   return {
     type: 'text',
     schemaVersion: 1,
@@ -186,5 +223,53 @@ export function sameAsPendingPart(locale: Locale): AssistantPart {
       'This is already prepared just above and waiting for you to save it. Check it and tap Save there. No credit was used.',
     )[locale],
     code: 'SAME_AS_PENDING',
+  };
+}
+
+// ---------- Lumi fixes 2026-10-16 ----------
+
+/**
+ * LUMI-05: the app that sent the message cannot show a draft of [kind] (an older build): say what
+ * was not prepared and where to add it directly ([link]); the person can also update the app.
+ */
+export function appUpdatePart(kind: DraftKind, locale: Locale, link: string | null): AssistantPart {
+  const words =
+    kind === 'timer'
+      ? L(
+          'Phiên bản ứng dụng này chưa bật được đồng hồ từ trò chuyện. Bạn mở Đồng hồ trong mục Chăm sóc để bắt đầu hoặc kết thúc, hoặc cập nhật ứng dụng để Lumi làm giúp nhé.',
+          'This version of the app can’t start or stop a timer from chat. Open the timer in Care, or update the app so Lumi can do it for you.',
+        )
+      : L(
+          `Phiên bản ứng dụng này chưa ghi được ${kindNames[kind].vi} qua trò chuyện. Bạn mở mục Chăm sóc để ghi trực tiếp, hoặc cập nhật ứng dụng nhé.`,
+          `This version of the app can’t save a ${kindNames[kind].en} from chat. Add it in Care directly, or update the app.`,
+        );
+  return {
+    type: 'text',
+    schemaVersion: 1,
+    text: words[locale],
+    code: 'APP_UPDATE_NEEDED',
+    ...(link ? { link } : {}),
+  };
+}
+
+/**
+ * LUMI-13: part of the message that got no draft, named: "vòng đầu" (the growth module has no
+ * head circumference), with [link] to the module where it can be added.
+ */
+export function partNotSavedPart(
+  what: 'head_circumference',
+  locale: Locale,
+  link: string | null,
+): AssistantPart {
+  void what;
+  return {
+    type: 'text',
+    schemaVersion: 1,
+    text: L(
+      'Mục Tăng trưởng chưa có vòng đầu, nên mình chưa ghi số đo vòng đầu. Cân nặng và chiều dài ở bản nháp bên dưới.',
+      'Growth has no head circumference yet, so that measurement was not saved. Weight and length are in the draft below.',
+    )[locale],
+    code: 'PART_NOT_SAVED',
+    ...(link ? { link } : {}),
   };
 }

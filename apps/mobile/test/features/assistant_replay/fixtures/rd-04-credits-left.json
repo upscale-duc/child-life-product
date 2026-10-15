@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_8b7942cb7a4ce190e4461b5dfe67c2f6",
+     "id": "tk_398694ff01180091056bf3e394a2619a",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -51,7 +51,7 @@
         "text": "còn bao nhiêu lượt?"
        }
       ],
-      "taskId": "tk_8b7942cb7a4ce190e4461b5dfe67c2f6",
+      "taskId": "tk_398694ff01180091056bf3e394a2619a",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -70,10 +70,10 @@
        {
         "type": "text",
         "schemaVersion": 1,
-        "text": "Hộ còn 999 / 1000 lượt trợ lý, làm mới ngày 2026-11-01."
+        "text": "Hộ còn 999 / 1000 lượt trợ lý, làm mới ngày 1/11/2026."
        }
       ],
-      "taskId": "tk_8b7942cb7a4ce190e4461b5dfe67c2f6",
+      "taskId": "tk_398694ff01180091056bf3e394a2619a",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

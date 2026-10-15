@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_881355f635533ae793ed9da31bb9209d",
+     "id": "tk_a73a64bee245a798ea440b7a6191a7e0",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -82,7 +82,7 @@
         "text": "cho bú mẹ bên trái 10 phút"
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -135,7 +135,7 @@
         }
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -150,7 +150,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_881355f635533ae793ed9da31bb9209d",
+     "id": "tk_a73a64bee245a798ea440b7a6191a7e0",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -181,8 +181,8 @@
     },
     "drafts": [
      {
-      "id": "dr_881355f635533ae793ed9da31bb9209d_0",
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "id": "dr_a73a64bee245a798ea440b7a6191a7e0_0",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -200,7 +200,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_881355f635533ae793ed9da31bb9209d"
+       "task:tk_a73a64bee245a798ea440b7a6191a7e0"
       ],
       "recordId": null,
       "recordLink": null,
@@ -222,7 +222,7 @@
         "text": "cho bú mẹ bên trái 10 phút"
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -275,7 +275,7 @@
         }
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -292,7 +292,7 @@
         "text": "13h30"
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -311,11 +311,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_881355f635533ae793ed9da31bb9209d_0",
+        "draftId": "dr_a73a64bee245a798ea440b7a6191a7e0_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -330,7 +330,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_881355f635533ae793ed9da31bb9209d",
+     "id": "tk_a73a64bee245a798ea440b7a6191a7e0",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -361,8 +361,8 @@
     },
     "drafts": [
      {
-      "id": "dr_881355f635533ae793ed9da31bb9209d_0",
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "id": "dr_a73a64bee245a798ea440b7a6191a7e0_0",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -380,10 +380,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_881355f635533ae793ed9da31bb9209d"
+       "task:tk_a73a64bee245a798ea440b7a6191a7e0"
       ],
-      "recordId": "r_08c18bd8502ce736f1456bf91cc9cf26",
-      "recordLink": "/care/records/b_00000000000000000001/r_08c18bd8502ce736f1456bf91cc9cf26",
+      "recordId": "r_73bb4f89a6b3e0d5e73c7cf91d8c7c78",
+      "recordLink": "/care/records/b_00000000000000000001/r_73bb4f89a6b3e0d5e73c7cf91d8c7c78",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -407,7 +407,7 @@
         "text": "cho bú mẹ bên trái 10 phút"
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -460,7 +460,7 @@
         }
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -477,7 +477,7 @@
         "text": "13h30"
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -496,11 +496,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_881355f635533ae793ed9da31bb9209d_0",
+        "draftId": "dr_a73a64bee245a798ea440b7a6191a7e0_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -516,15 +516,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_881355f635533ae793ed9da31bb9209d_0",
+          "draftId": "dr_a73a64bee245a798ea440b7a6191a7e0_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_08c18bd8502ce736f1456bf91cc9cf26",
+          "recordLink": "/care/records/b_00000000000000000001/r_73bb4f89a6b3e0d5e73c7cf91d8c7c78",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_881355f635533ae793ed9da31bb9209d",
+      "taskId": "tk_a73a64bee245a798ea440b7a6191a7e0",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:35.000Z",
       "attachmentIds": [],

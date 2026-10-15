@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+     "id": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_d2e3999a6365dbc0d140dae33144d4e1_0",
-      "taskId": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+      "id": "dr_4abcc0bda20b3f8b5c5b09a5f572cb1f_0",
+      "taskId": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -61,7 +61,7 @@
       "state": "needs_review",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_d2e3999a6365dbc0d140dae33144d4e1"
+       "task:tk_4abcc0bda20b3f8b5c5b09a5f572cb1f"
       ],
       "recordId": null,
       "recordLink": null,
@@ -85,7 +85,7 @@
         "text": "bé vừa bú bình"
        }
       ],
-      "taskId": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+      "taskId": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -104,11 +104,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_d2e3999a6365dbc0d140dae33144d4e1_0",
+        "draftId": "dr_4abcc0bda20b3f8b5c5b09a5f572cb1f_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+      "taskId": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -123,7 +123,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+     "id": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -154,8 +154,8 @@
     },
     "drafts": [
      {
-      "id": "dr_d2e3999a6365dbc0d140dae33144d4e1_0",
-      "taskId": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+      "id": "dr_4abcc0bda20b3f8b5c5b09a5f572cb1f_0",
+      "taskId": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -173,7 +173,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_d2e3999a6365dbc0d140dae33144d4e1"
+       "task:tk_4abcc0bda20b3f8b5c5b09a5f572cb1f"
       ],
       "recordId": null,
       "recordLink": null,
@@ -195,7 +195,7 @@
         "text": "bé vừa bú bình"
        }
       ],
-      "taskId": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+      "taskId": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -214,11 +214,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_d2e3999a6365dbc0d140dae33144d4e1_0",
+        "draftId": "dr_4abcc0bda20b3f8b5c5b09a5f572cb1f_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+      "taskId": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -233,7 +233,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+     "id": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -264,8 +264,8 @@
     },
     "drafts": [
      {
-      "id": "dr_d2e3999a6365dbc0d140dae33144d4e1_0",
-      "taskId": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+      "id": "dr_4abcc0bda20b3f8b5c5b09a5f572cb1f_0",
+      "taskId": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -283,10 +283,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_d2e3999a6365dbc0d140dae33144d4e1"
+       "task:tk_4abcc0bda20b3f8b5c5b09a5f572cb1f"
       ],
-      "recordId": "r_b018ee67421ce001fc344bf376fbf005",
-      "recordLink": "/care/records/b_00000000000000000001/r_b018ee67421ce001fc344bf376fbf005",
+      "recordId": "r_94c5e96b3547934e812b8e1186347c40",
+      "recordLink": "/care/records/b_00000000000000000001/r_94c5e96b3547934e812b8e1186347c40",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -310,7 +310,7 @@
         "text": "bé vừa bú bình"
        }
       ],
-      "taskId": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+      "taskId": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -329,11 +329,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_d2e3999a6365dbc0d140dae33144d4e1_0",
+        "draftId": "dr_4abcc0bda20b3f8b5c5b09a5f572cb1f_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+      "taskId": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -349,15 +349,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_d2e3999a6365dbc0d140dae33144d4e1_0",
+          "draftId": "dr_4abcc0bda20b3f8b5c5b09a5f572cb1f_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_b018ee67421ce001fc344bf376fbf005",
+          "recordLink": "/care/records/b_00000000000000000001/r_94c5e96b3547934e812b8e1186347c40",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_d2e3999a6365dbc0d140dae33144d4e1",
+      "taskId": "tk_4abcc0bda20b3f8b5c5b09a5f572cb1f",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:40.000Z",
       "attachmentIds": [],

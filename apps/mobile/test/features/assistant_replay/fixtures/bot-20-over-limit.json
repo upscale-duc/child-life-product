@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_0a1f090c1e34a2babf8969cace39e563",
+     "id": "tk_85fadf77ff55c731426635b64c32a297",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_0a1f090c1e34a2babf8969cace39e563_0",
-      "taskId": "tk_0a1f090c1e34a2babf8969cace39e563",
+      "id": "dr_85fadf77ff55c731426635b64c32a297_0",
+      "taskId": "tk_85fadf77ff55c731426635b64c32a297",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -61,7 +61,7 @@
       "state": "needs_review",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_0a1f090c1e34a2babf8969cace39e563"
+       "task:tk_85fadf77ff55c731426635b64c32a297"
       ],
       "recordId": null,
       "recordLink": null,
@@ -85,7 +85,7 @@
         "text": "bé bú 600ml lúc 13h"
        }
       ],
-      "taskId": "tk_0a1f090c1e34a2babf8969cace39e563",
+      "taskId": "tk_85fadf77ff55c731426635b64c32a297",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -104,11 +104,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_0a1f090c1e34a2babf8969cace39e563_0",
+        "draftId": "dr_85fadf77ff55c731426635b64c32a297_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_0a1f090c1e34a2babf8969cace39e563",
+      "taskId": "tk_85fadf77ff55c731426635b64c32a297",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -123,7 +123,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_0a1f090c1e34a2babf8969cace39e563",
+     "id": "tk_85fadf77ff55c731426635b64c32a297",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -154,8 +154,8 @@
     },
     "drafts": [
      {
-      "id": "dr_0a1f090c1e34a2babf8969cace39e563_0",
-      "taskId": "tk_0a1f090c1e34a2babf8969cace39e563",
+      "id": "dr_85fadf77ff55c731426635b64c32a297_0",
+      "taskId": "tk_85fadf77ff55c731426635b64c32a297",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -173,7 +173,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_0a1f090c1e34a2babf8969cace39e563"
+       "task:tk_85fadf77ff55c731426635b64c32a297"
       ],
       "recordId": null,
       "recordLink": null,
@@ -195,7 +195,7 @@
         "text": "bé bú 600ml lúc 13h"
        }
       ],
-      "taskId": "tk_0a1f090c1e34a2babf8969cace39e563",
+      "taskId": "tk_85fadf77ff55c731426635b64c32a297",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -214,11 +214,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_0a1f090c1e34a2babf8969cace39e563_0",
+        "draftId": "dr_85fadf77ff55c731426635b64c32a297_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_0a1f090c1e34a2babf8969cace39e563",
+      "taskId": "tk_85fadf77ff55c731426635b64c32a297",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -233,7 +233,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_0a1f090c1e34a2babf8969cace39e563",
+     "id": "tk_85fadf77ff55c731426635b64c32a297",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -264,8 +264,8 @@
     },
     "drafts": [
      {
-      "id": "dr_0a1f090c1e34a2babf8969cace39e563_0",
-      "taskId": "tk_0a1f090c1e34a2babf8969cace39e563",
+      "id": "dr_85fadf77ff55c731426635b64c32a297_0",
+      "taskId": "tk_85fadf77ff55c731426635b64c32a297",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -283,10 +283,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_0a1f090c1e34a2babf8969cace39e563"
+       "task:tk_85fadf77ff55c731426635b64c32a297"
       ],
-      "recordId": "r_a81cbfd46333346a30b6aee4a5add329",
-      "recordLink": "/care/records/b_00000000000000000001/r_a81cbfd46333346a30b6aee4a5add329",
+      "recordId": "r_c413c166ebd8dd98b95546f6b533dd30",
+      "recordLink": "/care/records/b_00000000000000000001/r_c413c166ebd8dd98b95546f6b533dd30",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -310,7 +310,7 @@
         "text": "bé bú 600ml lúc 13h"
        }
       ],
-      "taskId": "tk_0a1f090c1e34a2babf8969cace39e563",
+      "taskId": "tk_85fadf77ff55c731426635b64c32a297",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -329,11 +329,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_0a1f090c1e34a2babf8969cace39e563_0",
+        "draftId": "dr_85fadf77ff55c731426635b64c32a297_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_0a1f090c1e34a2babf8969cace39e563",
+      "taskId": "tk_85fadf77ff55c731426635b64c32a297",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -349,15 +349,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_0a1f090c1e34a2babf8969cace39e563_0",
+          "draftId": "dr_85fadf77ff55c731426635b64c32a297_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_a81cbfd46333346a30b6aee4a5add329",
+          "recordLink": "/care/records/b_00000000000000000001/r_c413c166ebd8dd98b95546f6b533dd30",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_0a1f090c1e34a2babf8969cace39e563",
+      "taskId": "tk_85fadf77ff55c731426635b64c32a297",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:40.000Z",
       "attachmentIds": [],

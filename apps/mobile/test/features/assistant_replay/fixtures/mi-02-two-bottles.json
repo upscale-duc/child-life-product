@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+     "id": "tk_ba3b2f83503d610897d1582d0c4177f2",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a0aed0d4129a13a207dbdf0b0e9f2055_0",
-      "taskId": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+      "id": "dr_ba3b2f83503d610897d1582d0c4177f2_0",
+      "taskId": "tk_ba3b2f83503d610897d1582d0c4177f2",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a0aed0d4129a13a207dbdf0b0e9f2055"
+       "task:tk_ba3b2f83503d610897d1582d0c4177f2"
       ],
       "recordId": null,
       "recordLink": null,
@@ -69,8 +69,8 @@
       "confirmedBy": null
      },
      {
-      "id": "dr_a0aed0d4129a13a207dbdf0b0e9f2055_1",
-      "taskId": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+      "id": "dr_ba3b2f83503d610897d1582d0c4177f2_1",
+      "taskId": "tk_ba3b2f83503d610897d1582d0c4177f2",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -88,7 +88,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a0aed0d4129a13a207dbdf0b0e9f2055"
+       "task:tk_ba3b2f83503d610897d1582d0c4177f2"
       ],
       "recordId": null,
       "recordLink": null,
@@ -110,7 +110,7 @@
         "text": "8h bú 120ml, 11h bú 150ml"
        }
       ],
-      "taskId": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+      "taskId": "tk_ba3b2f83503d610897d1582d0c4177f2",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -129,17 +129,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a0aed0d4129a13a207dbdf0b0e9f2055_0",
+        "draftId": "dr_ba3b2f83503d610897d1582d0c4177f2_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a0aed0d4129a13a207dbdf0b0e9f2055_1",
+        "draftId": "dr_ba3b2f83503d610897d1582d0c4177f2_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+      "taskId": "tk_ba3b2f83503d610897d1582d0c4177f2",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -154,7 +154,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+     "id": "tk_ba3b2f83503d610897d1582d0c4177f2",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -185,8 +185,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a0aed0d4129a13a207dbdf0b0e9f2055_0",
-      "taskId": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+      "id": "dr_ba3b2f83503d610897d1582d0c4177f2_0",
+      "taskId": "tk_ba3b2f83503d610897d1582d0c4177f2",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -204,10 +204,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a0aed0d4129a13a207dbdf0b0e9f2055"
+       "task:tk_ba3b2f83503d610897d1582d0c4177f2"
       ],
-      "recordId": "r_eece93487899c239cd8cb9f27592eec5",
-      "recordLink": "/care/records/b_00000000000000000001/r_eece93487899c239cd8cb9f27592eec5",
+      "recordId": "r_b0d0ad93cbd2eff4cbfccbd932ec61a6",
+      "recordLink": "/care/records/b_00000000000000000001/r_b0d0ad93cbd2eff4cbfccbd932ec61a6",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -219,8 +219,8 @@
       }
      },
      {
-      "id": "dr_a0aed0d4129a13a207dbdf0b0e9f2055_1",
-      "taskId": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+      "id": "dr_ba3b2f83503d610897d1582d0c4177f2_1",
+      "taskId": "tk_ba3b2f83503d610897d1582d0c4177f2",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -238,10 +238,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a0aed0d4129a13a207dbdf0b0e9f2055"
+       "task:tk_ba3b2f83503d610897d1582d0c4177f2"
       ],
-      "recordId": "r_077c34f1769f649df5d4e345b8443e9b",
-      "recordLink": "/care/records/b_00000000000000000001/r_077c34f1769f649df5d4e345b8443e9b",
+      "recordId": "r_50a92e00fe2743f86140588449a1830b",
+      "recordLink": "/care/records/b_00000000000000000001/r_50a92e00fe2743f86140588449a1830b",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -265,7 +265,7 @@
         "text": "8h bú 120ml, 11h bú 150ml"
        }
       ],
-      "taskId": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+      "taskId": "tk_ba3b2f83503d610897d1582d0c4177f2",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -284,17 +284,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a0aed0d4129a13a207dbdf0b0e9f2055_0",
+        "draftId": "dr_ba3b2f83503d610897d1582d0c4177f2_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a0aed0d4129a13a207dbdf0b0e9f2055_1",
+        "draftId": "dr_ba3b2f83503d610897d1582d0c4177f2_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+      "taskId": "tk_ba3b2f83503d610897d1582d0c4177f2",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -310,21 +310,21 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_a0aed0d4129a13a207dbdf0b0e9f2055_0",
+          "draftId": "dr_ba3b2f83503d610897d1582d0c4177f2_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_eece93487899c239cd8cb9f27592eec5",
+          "recordLink": "/care/records/b_00000000000000000001/r_b0d0ad93cbd2eff4cbfccbd932ec61a6",
           "errorCode": null
          },
          {
-          "draftId": "dr_a0aed0d4129a13a207dbdf0b0e9f2055_1",
+          "draftId": "dr_ba3b2f83503d610897d1582d0c4177f2_1",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_077c34f1769f649df5d4e345b8443e9b",
+          "recordLink": "/care/records/b_00000000000000000001/r_50a92e00fe2743f86140588449a1830b",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_a0aed0d4129a13a207dbdf0b0e9f2055",
+      "taskId": "tk_ba3b2f83503d610897d1582d0c4177f2",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

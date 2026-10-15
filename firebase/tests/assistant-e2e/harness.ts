@@ -148,6 +148,11 @@ const F0 = {
   merchant: null,
   date: null,
   assigneeText: null,
+  // v5 (Lumi fixes 2026-10-16).
+  diaper: null,
+  weightKg: null,
+  lengthCm: null,
+  headCm: null,
 };
 
 const known = new Set<string>(intentFieldNames);
@@ -192,6 +197,8 @@ export interface LiveMeter {
   promptTokens: number;
   completionTokens: number;
   latencies: number[];
+  /** `LUMI_E2E_DUMP=1`: the raw model readings, in call order (synthetic cases only). */
+  raw?: unknown[];
 }
 
 /** The real gateway with a hard call budget; wording is skipped (the engine's template). */
@@ -219,7 +226,12 @@ export function liveGateway(apiKey: string, model: string, meter: LiveMeter): Mo
     name: 'openai',
     model: real.model,
     promptVersion: real.promptVersion,
-    extract: (i, s) => real.extract(i, s),
+    extract: async (i, s) => {
+      const out = await real.extract(i, s);
+      // Debugging a live run: the raw readings of the synthetic cases (never real data).
+      if (process.env.LUMI_E2E_DUMP) meter.raw = [...(meter.raw ?? []), out];
+      return out;
+    },
     word: async () => {
       throw new ModelUnavailable('script');
     },
@@ -241,10 +253,15 @@ const on = (key: keyof typeof defaultFlags) => ({
   scope: 'all' as const,
 });
 const off = (key: keyof typeof defaultFlags) => ({ ...defaultFlags[key], enabled: false });
-export const E = (locale: string, over: Record<string, unknown>) => ({
+/**
+ * The callable envelope. LUMI-05: the current app declares every kind it can show
+ * (`clientDraftKinds`); `legacy` = an app from before 2026-10-16 (no declaration).
+ */
+export const E = (locale: string, over: Record<string, unknown>, legacy = false) => ({
   contractVersion: 1,
   clientRequestId: randomUUID(),
   locale,
+  ...(legacy ? {} : { clientDraftKinds: [...draftKinds] }),
   ...over,
 });
 const L = (vi: string, en = vi) => ({ vi, en });
@@ -628,6 +645,8 @@ async function runMessage(
   const uid = UID[who];
   run.lastUid = uid;
   const gw = gatewayFor(ctx, turn);
+  // LUMI-05: a turn sent by an app from before 2026-10-16.
+  const legacy = 'client' in turn && turn.client === 'legacy';
   const scope = { type: 'child' as const, babyId: B };
   const isPhoto = 'photo' in turn;
   const hint = isPhoto
@@ -660,13 +679,17 @@ async function runMessage(
     const q = await quoteTask(
       deps(gw, run.clock, ctx.files),
       uid,
-      E(locale, {
-        conversationId,
-        scope,
-        modality: isPhoto ? 'image' : 'text',
-        attachmentCount: isPhoto ? 1 : 0,
-        intentHint: hint,
-      }),
+      E(
+        locale,
+        {
+          conversationId,
+          scope,
+          modality: isPhoto ? 'image' : 'text',
+          attachmentCount: isPhoto ? 1 : 0,
+          intentHint: hint,
+        },
+        legacy,
+      ),
     );
     if (!q.data.allowed) {
       run.quoteBlocks.push(q.data.reason ?? 'blocked');
@@ -696,14 +719,18 @@ async function runMessage(
       attachmentIds.push(up.data.attachmentId);
     }
     const requestId = randomUUID();
-    const body = E(locale, {
-      clientRequestId: requestId,
-      conversationId,
-      scope,
-      quoteId: q.data.quoteId,
-      text: isPhoto ? null : turn.say,
-      attachmentIds,
-    });
+    const body = E(
+      locale,
+      {
+        clientRequestId: requestId,
+        conversationId,
+        scope,
+        quoteId: q.data.quoteId,
+        text: isPhoto ? null : turn.say,
+        attachmentIds,
+      },
+      legacy,
+    );
     const r = await startTask(deps(gw, run.clock, ctx.files), uid, body);
     if (!r.taskId) {
       run.refusals.push({ turn: ti, op: 'startTask', reason: r.reasonCode ?? r.status });
@@ -742,13 +769,17 @@ async function runMessage(
       await submitClarification(
         deps(gw, run.clock, ctx.files),
         uid,
-        E(locale, {
-          taskId,
-          expectedVersion: snap.task.version,
-          clarificationId: cl.id,
-          choiceId,
-          text,
-        }),
+        E(
+          locale,
+          {
+            taskId,
+            expectedVersion: snap.task.version,
+            clarificationId: cl.id,
+            choiceId,
+            text,
+          },
+          legacy,
+        ),
       );
       await work(taskId);
     } catch (e) {
@@ -789,6 +820,10 @@ export function fixedPayload(
     reminder: { date: addDays(DAY, 1), title: 'việc thử' },
     observation: { date: DAY },
     timer: { at: ago(5) },
+    // LUMI-01: what the app's fix rows / editors let the person fill.
+    pump: { amountMl: 100, occurredAt: ago(30), side: 'both' },
+    diaper: { diaper: 'wet', occurredAt: ago(10) },
+    growth: { weightKg: 6.2, measuredOn: DAY },
   };
   for (const [k, v] of Object.entries(fill[p.kind as string] ?? {})) {
     if (p[k] === null || p[k] === undefined) {
@@ -802,6 +837,8 @@ export function fixedPayload(
       p[k] = v;
     }
   }
+  // LUMI-11: a reminder time already gone is moved to tomorrow (the app's date row).
+  if (p.kind === 'reminder' && d.problems.includes('PAST_TIME')) p.date = addDays(DAY, 1);
   if (
     p.kind === 'sleep' &&
     p.startedAt &&
@@ -989,7 +1026,12 @@ export function outcomeOf(s: AssistantTaskSnapshot): string {
   if (codes.includes('CARE_NO_APPROVED_CONTENT') || codes.includes('RECIPES_NONE_APPROVED'))
     return 'fallback';
   if (parts.some((p) => p.type === 'approved_content' || p.type === 'recipe_list')) return 'care';
-  if (codes.includes('MEDICINE_NOT_SCHEDULED') || codes.includes('PREVIOUS_SAVED')) return 'notice';
+  if (
+    codes.includes('MEDICINE_NOT_SCHEDULED') ||
+    codes.includes('PREVIOUS_SAVED') ||
+    codes.includes('APP_UPDATE_NEEDED')
+  )
+    return 'notice';
   if (
     s.task.state === 'ready' &&
     parts.some((p) => p.type === 'source_summary' || p.type === 'text')

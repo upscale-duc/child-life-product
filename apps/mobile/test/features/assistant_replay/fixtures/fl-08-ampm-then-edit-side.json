@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+     "id": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -27,8 +27,8 @@
       "id": "cl_1",
       "field": "time.ampm",
       "question": {
-       "vi": "Giờ đó là buổi sáng hay chiều tối?",
-       "en": "Was that in the morning or the evening?"
+       "vi": "8:00 là buổi sáng hay chiều tối?",
+       "en": "Was 8:00 in the morning or the evening?"
       },
       "choices": [
        {
@@ -75,7 +75,7 @@
         "text": "8 giờ bú mẹ 10 phút"
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -98,8 +98,8 @@
          "id": "cl_1",
          "field": "time.ampm",
          "question": {
-          "vi": "Giờ đó là buổi sáng hay chiều tối?",
-          "en": "Was that in the morning or the evening?"
+          "vi": "8:00 là buổi sáng hay chiều tối?",
+          "en": "Was 8:00 in the morning or the evening?"
          },
          "choices": [
           {
@@ -121,7 +121,7 @@
         }
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+     "id": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -167,8 +167,8 @@
     },
     "drafts": [
      {
-      "id": "dr_dd9455a7fc9a88cb74f7370c2224c6fa_0",
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "id": "dr_efbdb724bb9c7bd64c8fa4d11c06dfc3_0",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -186,7 +186,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_dd9455a7fc9a88cb74f7370c2224c6fa"
+       "task:tk_efbdb724bb9c7bd64c8fa4d11c06dfc3"
       ],
       "recordId": null,
       "recordLink": null,
@@ -208,7 +208,7 @@
         "text": "8 giờ bú mẹ 10 phút"
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -231,8 +231,8 @@
          "id": "cl_1",
          "field": "time.ampm",
          "question": {
-          "vi": "Giờ đó là buổi sáng hay chiều tối?",
-          "en": "Was that in the morning or the evening?"
+          "vi": "8:00 là buổi sáng hay chiều tối?",
+          "en": "Was 8:00 in the morning or the evening?"
          },
          "choices": [
           {
@@ -254,7 +254,7 @@
         }
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -271,7 +271,7 @@
         "text": "Chiều / tối"
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -290,11 +290,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_dd9455a7fc9a88cb74f7370c2224c6fa_0",
+        "draftId": "dr_efbdb724bb9c7bd64c8fa4d11c06dfc3_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -309,7 +309,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+     "id": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -340,8 +340,8 @@
     },
     "drafts": [
      {
-      "id": "dr_dd9455a7fc9a88cb74f7370c2224c6fa_0",
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "id": "dr_efbdb724bb9c7bd64c8fa4d11c06dfc3_0",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -359,7 +359,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_dd9455a7fc9a88cb74f7370c2224c6fa"
+       "task:tk_efbdb724bb9c7bd64c8fa4d11c06dfc3"
       ],
       "recordId": null,
       "recordLink": null,
@@ -381,7 +381,7 @@
         "text": "8 giờ bú mẹ 10 phút"
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -404,8 +404,8 @@
          "id": "cl_1",
          "field": "time.ampm",
          "question": {
-          "vi": "Giờ đó là buổi sáng hay chiều tối?",
-          "en": "Was that in the morning or the evening?"
+          "vi": "8:00 là buổi sáng hay chiều tối?",
+          "en": "Was 8:00 in the morning or the evening?"
          },
          "choices": [
           {
@@ -427,7 +427,7 @@
         }
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -444,7 +444,7 @@
         "text": "Chiều / tối"
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -463,11 +463,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_dd9455a7fc9a88cb74f7370c2224c6fa_0",
+        "draftId": "dr_efbdb724bb9c7bd64c8fa4d11c06dfc3_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -482,7 +482,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+     "id": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -513,8 +513,8 @@
     },
     "drafts": [
      {
-      "id": "dr_dd9455a7fc9a88cb74f7370c2224c6fa_0",
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "id": "dr_efbdb724bb9c7bd64c8fa4d11c06dfc3_0",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -532,10 +532,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_dd9455a7fc9a88cb74f7370c2224c6fa"
+       "task:tk_efbdb724bb9c7bd64c8fa4d11c06dfc3"
       ],
-      "recordId": "r_6203a3b767f92354b4f323959d7ea175",
-      "recordLink": "/care/records/b_00000000000000000001/r_6203a3b767f92354b4f323959d7ea175",
+      "recordId": "r_c5637db9364f3f2f944b3028c2e0523c",
+      "recordLink": "/care/records/b_00000000000000000001/r_c5637db9364f3f2f944b3028c2e0523c",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -559,7 +559,7 @@
         "text": "8 giờ bú mẹ 10 phút"
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -582,8 +582,8 @@
          "id": "cl_1",
          "field": "time.ampm",
          "question": {
-          "vi": "Giờ đó là buổi sáng hay chiều tối?",
-          "en": "Was that in the morning or the evening?"
+          "vi": "8:00 là buổi sáng hay chiều tối?",
+          "en": "Was 8:00 in the morning or the evening?"
          },
          "choices": [
           {
@@ -605,7 +605,7 @@
         }
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -622,7 +622,7 @@
         "text": "Chiều / tối"
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -641,11 +641,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_dd9455a7fc9a88cb74f7370c2224c6fa_0",
+        "draftId": "dr_efbdb724bb9c7bd64c8fa4d11c06dfc3_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -661,15 +661,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_dd9455a7fc9a88cb74f7370c2224c6fa_0",
+          "draftId": "dr_efbdb724bb9c7bd64c8fa4d11c06dfc3_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_6203a3b767f92354b4f323959d7ea175",
+          "recordLink": "/care/records/b_00000000000000000001/r_c5637db9364f3f2f944b3028c2e0523c",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_dd9455a7fc9a88cb74f7370c2224c6fa",
+      "taskId": "tk_efbdb724bb9c7bd64c8fa4d11c06dfc3",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:55.000Z",
       "attachmentIds": [],

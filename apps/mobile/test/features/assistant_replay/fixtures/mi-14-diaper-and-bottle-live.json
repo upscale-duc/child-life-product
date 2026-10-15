@@ -1,0 +1,490 @@
+{
+ "id": "mi-14-diaper-and-bottle-live",
+ "group": "multi",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_ace7c2664be94d6d35e38c4e2a0c7231_0",
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 90,
+       "occurredAt": "2026-10-15T06:00:00.000Z",
+       "milk": "breast_milk"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_ace7c2664be94d6d35e38c4e2a0c7231"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     },
+     {
+      "id": "dr_ace7c2664be94d6d35e38c4e2a0c7231_1",
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "itemIndex": 1,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": null,
+       "occurredAt": null
+      },
+      "missingFields": [
+       "diaper",
+       "occurredAt"
+      ],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "needs_review",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_ace7c2664be94d6d35e38c4e2a0c7231"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [
+       "MISSING_TIME"
+      ],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "thay tã rồi cho bú 90ml lúc 13h"
+       }
+      ],
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_ace7c2664be94d6d35e38c4e2a0c7231_0",
+        "revision": 1
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_ace7c2664be94d6d35e38c4e2a0c7231_1",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after fix",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_ace7c2664be94d6d35e38c4e2a0c7231_0",
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 90,
+       "occurredAt": "2026-10-15T06:00:00.000Z",
+       "milk": "breast_milk"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_ace7c2664be94d6d35e38c4e2a0c7231"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     },
+     {
+      "id": "dr_ace7c2664be94d6d35e38c4e2a0c7231_1",
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "itemIndex": 1,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": "wet",
+       "occurredAt": "2026-10-15T07:10:20.000Z"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_ace7c2664be94d6d35e38c4e2a0c7231"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "thay tã rồi cho bú 90ml lúc 13h"
+       }
+      ],
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_ace7c2664be94d6d35e38c4e2a0c7231_0",
+        "revision": 1
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_ace7c2664be94d6d35e38c4e2a0c7231_1",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:40.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_ace7c2664be94d6d35e38c4e2a0c7231_0",
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 90,
+       "occurredAt": "2026-10-15T06:00:00.000Z",
+       "milk": "breast_milk"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_ace7c2664be94d6d35e38c4e2a0c7231"
+      ],
+      "recordId": "r_59d10cdb308af9d8b2d46dbab031e65d",
+      "recordLink": "/care/records/b_00000000000000000001/r_59d10cdb308af9d8b2d46dbab031e65d",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "dr_ace7c2664be94d6d35e38c4e2a0c7231_1",
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "itemIndex": 1,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": "wet",
+       "occurredAt": "2026-10-15T07:10:20.000Z"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_ace7c2664be94d6d35e38c4e2a0c7231"
+      ],
+      "recordId": "r_a07b792f7b1d1162db1841b10d309802",
+      "recordLink": "/care/records/b_00000000000000000001/r_a07b792f7b1d1162db1841b10d309802",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "thay tã rồi cho bú 90ml lúc 13h"
+       }
+      ],
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_ace7c2664be94d6d35e38c4e2a0c7231_0",
+        "revision": 1
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_ace7c2664be94d6d35e38c4e2a0c7231_1",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_ace7c2664be94d6d35e38c4e2a0c7231_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_59d10cdb308af9d8b2d46dbab031e65d",
+          "errorCode": null
+         },
+         {
+          "draftId": "dr_ace7c2664be94d6d35e38c4e2a0c7231_1",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_a07b792f7b1d1162db1841b10d309802",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_ace7c2664be94d6d35e38c4e2a0c7231",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:40.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

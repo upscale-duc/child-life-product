@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_2c850c07ba30335aacdb1f5f5a3a1348",
+     "id": "tk_b3e9bf1264066772d9d8db85a4a4de1b",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -51,7 +51,7 @@
         "text": "chào"
        }
       ],
-      "taskId": "tk_2c850c07ba30335aacdb1f5f5a3a1348",
+      "taskId": "tk_b3e9bf1264066772d9d8db85a4a4de1b",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -74,7 +74,7 @@
         "code": "SMALL_TALK"
        }
       ],
-      "taskId": "tk_2c850c07ba30335aacdb1f5f5a3a1348",
+      "taskId": "tk_b3e9bf1264066772d9d8db85a4a4de1b",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

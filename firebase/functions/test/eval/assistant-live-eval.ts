@@ -24,6 +24,7 @@ import {
   assistantConsentVersion,
   defaultEntitlementsConfig,
   defaultFlags,
+  draftKinds,
   type AssistantPart,
   type AssistantTaskSnapshot,
 } from '@child-life/contracts';
@@ -204,6 +205,8 @@ const E = (locale: string, over: Record<string, unknown>) => ({
   contractVersion: 1,
   clientRequestId: randomUUID(),
   locale,
+  // LUMI-05 (2026-10-16): the current app declares every draft kind it can show.
+  clientDraftKinds: [...draftKinds],
   ...over,
 });
 const on = (key: keyof typeof defaultFlags) => ({

@@ -12,6 +12,13 @@ import '../rhythm/rhythm_models.dart' show WireEnum, wireOf;
 /// `assistantContractVersion`, sent with every request.
 const assistantContractVersion = 1;
 
+/// LUMI-05 (2026-10-16): `clientDraftKinds`, sent with every request next to the contract
+/// version: every draft kind this build can show and save. The server never sends a kind
+/// missing here (it says `APP_UPDATE_NEEDED` instead).
+final List<String> assistantClientDraftKinds = List.unmodifiable([
+  for (final k in DraftKind.values) k.wire,
+]);
+
 /// `assistantConsentVersion` (P-160): an older consent no longer counts.
 const assistantConsentVersion = 'assistant-consent-v1';
 
@@ -191,7 +198,13 @@ enum DraftKind with WireEnum {
   meal('meal'),
 
   /// Lumi 2026-10-16: start / stop the app's sleep or breastfeeding timer ([TimerPayload]).
-  timer('timer');
+  timer('timer'),
+
+  /// Lumi fixes 2026-10-16 (LUMI-01): the care module's other logs, written exactly as the
+  /// care forms write them ([PumpPayload], [DiaperPayload], [GrowthPayload]).
+  pump('pump'),
+  diaper('diaper'),
+  growth('growth');
 
   const DraftKind(this.wire);
   @override
@@ -317,7 +330,14 @@ enum NoticeCode with WireEnum {
   timerRunning('TIMER_RUNNING'),
 
   /// The same message again while its draft still waits above: nothing new, 0 credits.
-  sameAsPending('SAME_AS_PENDING');
+  sameAsPending('SAME_AS_PENDING'),
+  // ---- Lumi fixes 2026-10-16 (LUMI-05, LUMI-13) ----
+
+  /// Part of the message was not drafted ("vòng đầu"); `link` opens the module to add it.
+  partNotSaved('PART_NOT_SAVED'),
+
+  /// Only sent to builds that cannot show a kind; `link` opens the module to add it directly.
+  appUpdateNeeded('APP_UPDATE_NEEDED');
 
   const NoticeCode(this.wire);
   @override
@@ -1009,6 +1029,28 @@ sealed class DraftPayload {
           ),
         _ => UnknownPayload('${m['kind']}', m),
       },
+      DraftKind.pump => PumpPayload(
+        amountMl: _num(m['amountMl']),
+        occurredAt: _instant(m['occurredAt']),
+        side: _side(m['side']),
+        durationMin: _int(m['durationMin']),
+        linkedDerived: switch (m['linked']) {
+          {'derived': final String f} when f == 'occurredAt' => f,
+          _ => null,
+        },
+      ),
+      DraftKind.diaper => DiaperPayload(
+        diaper: switch (m['diaper']) {
+          final String k when diaperKinds.contains(k) => k,
+          _ => null,
+        },
+        occurredAt: _instant(m['occurredAt']),
+      ),
+      DraftKind.growth => GrowthPayload(
+        weightKg: _num(m['weightKg']),
+        lengthCm: _num(m['lengthCm']),
+        measuredOn: _date(m['measuredOn']),
+      ),
       null => UnknownPayload('${m['kind']}', m),
     };
   }
@@ -1282,6 +1324,130 @@ class TimerPayload extends DraftPayload {
     'side': side,
     'sessionId': sessionId,
     'startedAt': _iso(startedAt),
+  };
+}
+
+/// `left` / `right` / `both`, else null.
+String? _side(Object? v) => switch (v) {
+  'left' || 'right' || 'both' => v! as String,
+  _ => null,
+};
+
+/// The diaper sheet's three tiles (Ướt / Bẩn / Cả hai).
+const diaperKinds = ['wet', 'dirty', 'both'];
+
+/// Lumi fixes 2026-10-16 (LUMI-01): "hút sữa 120ml lúc 10h" as the PumpSheet writes it.
+class PumpPayload extends DraftPayload {
+  const PumpPayload({
+    this.amountMl,
+    this.occurredAt,
+    this.side,
+    this.durationMin,
+    this.linkedDerived,
+  });
+
+  /// Whole millilitres pumped (the form: 1…1000).
+  final num? amountMl;
+
+  /// When pumping started (the form's "Bắt đầu").
+  final DateTime? occurredAt;
+
+  /// `left` / `right` / `both`; optional (the form's default).
+  final String? side;
+
+  /// Optional length (1…240).
+  final int? durationMin;
+
+  /// `occurredAt` when the start was computed from "vừa hút xong" + a length (`linked`).
+  final String? linkedDerived;
+
+  @override
+  DraftKind get kind => DraftKind.pump;
+
+  /// A new start drops the server's link (the person set it).
+  PumpPayload copyWith({
+    num? amountMl,
+    DateTime? occurredAt,
+    String? side,
+    int? durationMin,
+  }) => PumpPayload(
+    amountMl: amountMl ?? this.amountMl,
+    occurredAt: occurredAt ?? this.occurredAt,
+    side: side ?? this.side,
+    durationMin: durationMin ?? this.durationMin,
+    linkedDerived: occurredAt == null ? linkedDerived : null,
+  );
+
+  @override
+  Map<String, Object?> toJson() => {
+    'kind': 'pump',
+    'amountMl': amountMl,
+    'occurredAt': _iso(occurredAt),
+    'side': side,
+    'durationMin': durationMin,
+    if (linkedDerived != null) 'linked': {'derived': linkedDerived},
+  };
+}
+
+/// Lumi fixes 2026-10-16 (LUMI-01): "thay tã ướt lúc 13h" as the DiaperSheet writes it.
+class DiaperPayload extends DraftPayload {
+  const DiaperPayload({this.diaper, this.occurredAt});
+
+  /// `wet` / `dirty` / `both` ([diaperKinds]); null when the words do not say.
+  final String? diaper;
+  final DateTime? occurredAt;
+
+  @override
+  DraftKind get kind => DraftKind.diaper;
+
+  DiaperPayload copyWith({String? diaper, DateTime? occurredAt}) =>
+      DiaperPayload(
+        diaper: diaper ?? this.diaper,
+        occurredAt: occurredAt ?? this.occurredAt,
+      );
+
+  @override
+  Map<String, Object?> toJson() => {
+    'kind': 'diaper',
+    'diaper': diaper,
+    'occurredAt': _iso(occurredAt),
+  };
+}
+
+/// Lumi fixes 2026-10-16 (LUMI-01): "bé nặng 5,2kg" as the GrowthScreen writes it (no head
+/// circumference: the module has none).
+class GrowthPayload extends DraftPayload {
+  const GrowthPayload({this.weightKg, this.lengthCm, this.measuredOn});
+
+  /// Kilograms, one decimal (0.3…40); required.
+  final num? weightKg;
+
+  /// Centimetres, one decimal (20…150); optional.
+  final num? lengthCm;
+
+  /// The form's "Ngày đo", `YYYY-MM-DD` (baby-local).
+  final String? measuredOn;
+
+  @override
+  DraftKind get kind => DraftKind.growth;
+
+  GrowthPayload copyWith({num? weightKg, num? lengthCm, String? measuredOn}) =>
+      GrowthPayload(
+        weightKg: weightKg ?? this.weightKg,
+        lengthCm: lengthCm ?? this.lengthCm,
+        measuredOn: measuredOn ?? this.measuredOn,
+      );
+
+  /// The same measurement without a length (it is optional).
+  GrowthPayload withoutLength() =>
+      GrowthPayload(weightKg: weightKg, measuredOn: measuredOn);
+
+  @override
+  Map<String, Object?> toJson() => {
+    'kind': 'growth',
+    'weightKg': weightKg,
+    'lengthCm': lengthCm,
+    'measuredOn': measuredOn,
   };
 }
 

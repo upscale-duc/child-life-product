@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_318ba671501c14063573b220ad1160f6",
+     "id": "tk_ba8337d2b09a39827dd51b054889fa81",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -51,7 +51,7 @@
         "text": "Lumi làm được gì?"
        }
       ],
-      "taskId": "tk_318ba671501c14063573b220ad1160f6",
+      "taskId": "tk_ba8337d2b09a39827dd51b054889fa81",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -74,7 +74,7 @@
         "code": "HELP"
        }
       ],
-      "taskId": "tk_318ba671501c14063573b220ad1160f6",
+      "taskId": "tk_ba8337d2b09a39827dd51b054889fa81",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

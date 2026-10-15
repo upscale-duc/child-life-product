@@ -234,6 +234,29 @@ export function reminderFromDraft(
   return { ok: true, title, dueAt, allDay, dueDate: allDay ? p.date : null };
 }
 
+/**
+ * Lumi fixes 2026-10-16 (LUMI-11): the checks only the baby's zone can make, run when a draft is
+ * PREPARED and every time it is shown or edited, so a draft never looks ready and is then refused
+ * at save: a reminder due before now (`PAST_TIME`) or too far ahead, an expense, observation or
+ * growth date after today there (`FUTURE_TIME`). The same rules as the writers.
+ */
+export function zoneDraftProblems(p: DraftPayload, now: Date, zone: string): DraftProblem[] {
+  const today = localDateIn(zone, now);
+  switch (p.kind) {
+    case 'reminder': {
+      const r = reminderFromDraft(p, now, zone);
+      return r.ok ? [] : r.problems.filter((x) => x === 'PAST_TIME' || x === 'INVALID_TIME');
+    }
+    case 'expense':
+    case 'observation':
+      return p.date !== null && p.date > today ? ['FUTURE_TIME'] : [];
+    case 'growth':
+      return p.measuredOn !== null && p.measuredOn > today ? ['FUTURE_TIME'] : [];
+    default:
+      return [];
+  }
+}
+
 /** App routes that open a saved expense / reminder (built here, never by the model). */
 export function imageRecordLink(kind: 'expense' | 'reminder', babyId: string, id: string): string {
   return kind === 'expense'

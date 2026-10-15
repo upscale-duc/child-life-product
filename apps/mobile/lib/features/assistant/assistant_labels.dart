@@ -5,7 +5,7 @@ import '../../app/route_guard.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart' show Relation;
 import '../baby/time_zones.dart' show ensureTimeZones;
-import '../care/care_format.dart' show durationLabel;
+import '../care/care_format.dart' show decimal, durationLabel;
 import '../care/care_repository.dart' show inBabyZone;
 import '../onboarding/setup_screens.dart' show relationLabel;
 import '../spending/spending_currency.dart' show isSpCurrency;
@@ -35,6 +35,10 @@ String kindLabel(AppLocalizations l10n, DraftKind? k) => switch (k) {
   DraftKind.observation => l10n.asKindObservation,
   DraftKind.meal => l10n.asKindMeal,
   DraftKind.timer => l10n.asKindTimer,
+  // LUMI-01: the care module's own names.
+  DraftKind.pump => l10n.trackerPump,
+  DraftKind.diaper => l10n.trackerDiaper,
+  DraftKind.growth => l10n.asKindGrowth,
   null => l10n.asKindUnknown,
 };
 
@@ -44,7 +48,10 @@ String moduleLabel(AppLocalizations l10n, DraftKind? k, String babyName) =>
       DraftKind.bottle ||
       DraftKind.breast ||
       DraftKind.sleep ||
-      DraftKind.timer => l10n.asModuleCare(babyName),
+      DraftKind.timer ||
+      DraftKind.pump ||
+      DraftKind.diaper ||
+      DraftKind.growth => l10n.asModuleCare(babyName),
       DraftKind.expense => l10n.asModuleSpending,
       DraftKind.reminder => l10n.asModuleReminders,
       DraftKind.observation => l10n.asModuleRhythm(babyName),
@@ -206,9 +213,49 @@ String draftLine(
       ] else
         l10n.asNoTime,
     ].join(' · '),
+    // LUMI-01: "120 ml · Bên trái · 15 phút · Hôm nay 15/10 · 10:00".
+    PumpPayload() => [
+      p.amountMl == null
+          ? l10n.asNoAmount
+          : l10n.asAmountMl(mlLabel(locale, p.amountMl!)),
+      ?pumpSideLabel(l10n, p.side),
+      if (p.durationMin != null) durationLabel(l10n, p.durationMin!),
+      when(p.occurredAt),
+    ].join(' · '),
+    // "Ướt · Hôm nay 15/10 · 13:00".
+    DiaperPayload() => [
+      ?diaperWord(l10n, p.diaper),
+      when(p.occurredAt),
+    ].join(' · '),
+    // "5,2 kg · 62 cm · Ngày đo 15/10".
+    GrowthPayload() => [
+      if (p.weightKg != null)
+        l10n.weightKg(decimal(locale, p.weightKg!.toDouble())),
+      if (p.lengthCm != null)
+        l10n.lengthCm(decimal(locale, p.lengthCm!.toDouble())),
+      p.measuredOn == null
+          ? l10n.asNoDate
+          : l10n.asMeasuredOnLine(date(p.measuredOn)),
+    ].join(' · '),
     UnknownPayload() => l10n.asKindUnknown,
   };
 }
+
+/// "Bên trái" / "Bên phải" / "Cả hai bên" on a pump card.
+String? pumpSideLabel(AppLocalizations l10n, String? side) => switch (side) {
+  'left' => l10n.asPumpSideLeft,
+  'right' => l10n.asPumpSideRight,
+  'both' => l10n.asPumpSideBoth,
+  _ => null,
+};
+
+/// The diaper sheet's tile words (Ướt / Bẩn / Cả hai); null when not said.
+String? diaperWord(AppLocalizations l10n, String? kind) => switch (kind) {
+  'wet' => l10n.diaperWet,
+  'dirty' => l10n.diaperDirty,
+  'both' => l10n.sideBoth,
+  _ => null,
+};
 
 /// Lumi 2026-10-16: the title of a timer draft ("Tính giờ ngủ", "Kết thúc cữ bú").
 String timerTitle(AppLocalizations l10n, TimerPayload p) =>
@@ -345,7 +392,12 @@ String? recordLocation(AssistantDraft d) {
     }
   }
   return switch (d.kind) {
-    DraftKind.bottle || DraftKind.breast || DraftKind.sleep =>
+    DraftKind.bottle ||
+    DraftKind.breast ||
+    DraftKind.sleep ||
+    DraftKind.pump ||
+    DraftKind.diaper ||
+    DraftKind.growth =>
       id != null && safeId.hasMatch(id)
           ? '${Routes.record}/$id'
           : Routes.history,
@@ -364,7 +416,10 @@ String? moduleLocation(DraftKind? k) => switch (k) {
   DraftKind.bottle ||
   DraftKind.breast ||
   DraftKind.sleep ||
-  DraftKind.timer => Routes.history,
+  DraftKind.timer ||
+  DraftKind.pump ||
+  DraftKind.diaper => Routes.history,
+  DraftKind.growth => '${Routes.history}?filter=growth',
   DraftKind.expense => Routes.spending,
   DraftKind.reminder => Routes.reminders,
   DraftKind.observation => Routes.rhythm,

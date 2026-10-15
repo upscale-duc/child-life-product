@@ -12,6 +12,7 @@ import {
   type RulesTestEnvironment,
 } from '@firebase/rules-unit-testing';
 import {
+  careDataSchemas,
   draftProblems,
   expenseSchema,
   looksLikeSpending,
@@ -555,6 +556,14 @@ function contractShape(kind: string, data: Record<string, unknown>): string | nu
     return r.success
       ? null
       : `reminderSchema: ${r.error.issues.map((i) => i.path.join('.')).join(',')}`;
+  }
+  // LUMI-01: a care record's data is exactly the care module's (`careDataSchemas`).
+  const type = data.type as string | undefined;
+  if (type && type in careDataSchemas && 'occurredAt' in data && 'data' in data) {
+    const r = careDataSchemas[type as keyof typeof careDataSchemas].strict().safeParse(data.data);
+    return r.success
+      ? null
+      : `careDataSchemas.${type}: ${r.error.issues.map((i) => i.path.join('.') || i.code).join(',')}`;
   }
   return null;
 }

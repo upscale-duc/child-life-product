@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+     "id": "tk_6cff38b3157200e8800bbbea4cc0894a",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -82,7 +82,7 @@
         "text": "bé bú 120ml"
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -135,7 +135,7 @@
         }
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -150,7 +150,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+     "id": "tk_6cff38b3157200e8800bbbea4cc0894a",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -181,8 +181,8 @@
     },
     "drafts": [
      {
-      "id": "dr_1a6c6d4dc0d0104e9190b7486dbb4794_0",
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "id": "dr_6cff38b3157200e8800bbbea4cc0894a_0",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -200,7 +200,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_1a6c6d4dc0d0104e9190b7486dbb4794"
+       "task:tk_6cff38b3157200e8800bbbea4cc0894a"
       ],
       "recordId": null,
       "recordLink": null,
@@ -222,7 +222,7 @@
         "text": "bé bú 120ml"
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -275,7 +275,7 @@
         }
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -292,7 +292,7 @@
         "text": "30 phút trước (13:50)"
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -311,11 +311,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_1a6c6d4dc0d0104e9190b7486dbb4794_0",
+        "draftId": "dr_6cff38b3157200e8800bbbea4cc0894a_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -330,7 +330,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+     "id": "tk_6cff38b3157200e8800bbbea4cc0894a",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -361,8 +361,8 @@
     },
     "drafts": [
      {
-      "id": "dr_1a6c6d4dc0d0104e9190b7486dbb4794_0",
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "id": "dr_6cff38b3157200e8800bbbea4cc0894a_0",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -380,10 +380,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_1a6c6d4dc0d0104e9190b7486dbb4794"
+       "task:tk_6cff38b3157200e8800bbbea4cc0894a"
       ],
-      "recordId": "r_86b06fa32a31a88440f1fc4584bacac1",
-      "recordLink": "/care/records/b_00000000000000000001/r_86b06fa32a31a88440f1fc4584bacac1",
+      "recordId": "r_774b75d3f94f169b1e6ff79ac46c5985",
+      "recordLink": "/care/records/b_00000000000000000001/r_774b75d3f94f169b1e6ff79ac46c5985",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -407,7 +407,7 @@
         "text": "bé bú 120ml"
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -460,7 +460,7 @@
         }
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -477,7 +477,7 @@
         "text": "30 phút trước (13:50)"
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -496,11 +496,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_1a6c6d4dc0d0104e9190b7486dbb4794_0",
+        "draftId": "dr_6cff38b3157200e8800bbbea4cc0894a_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -516,15 +516,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_1a6c6d4dc0d0104e9190b7486dbb4794_0",
+          "draftId": "dr_6cff38b3157200e8800bbbea4cc0894a_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_86b06fa32a31a88440f1fc4584bacac1",
+          "recordLink": "/care/records/b_00000000000000000001/r_774b75d3f94f169b1e6ff79ac46c5985",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_1a6c6d4dc0d0104e9190b7486dbb4794",
+      "taskId": "tk_6cff38b3157200e8800bbbea4cc0894a",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:35.000Z",
       "attachmentIds": [],

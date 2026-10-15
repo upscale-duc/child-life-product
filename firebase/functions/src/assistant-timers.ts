@@ -86,6 +86,31 @@ export async function nextBreastSideOf(
   return side === 'left' ? 'right' : side === 'right' ? 'left' : 'both';
 }
 
+/**
+ * LUMI-01: the side the pump form starts on — the one it remembers (`pumpSide`, the last pump's
+ * side on this device; the server reads the baby's last pump record), else both.
+ */
+export async function lastPumpSideOf(
+  db: Firestore,
+  babyId: string,
+  before: Date,
+): Promise<'left' | 'right' | 'both'> {
+  const snap = await db
+    .collection(`babies/${babyId}/records`)
+    .where('occurredAt', '>=', new Date(before.getTime() - 14 * 86_400_000))
+    .where('occurredAt', '<=', before)
+    .get();
+  const last = snap.docs
+    .filter((d) => d.get('type') === 'pump' && d.get('deleted') !== true)
+    .sort(
+      (a, b) =>
+        (b.get('occurredAt') as Timestamp).toMillis() -
+        (a.get('occurredAt') as Timestamp).toMillis(),
+    )[0];
+  const side = last?.get('data.side');
+  return side === 'left' || side === 'right' ? side : 'both';
+}
+
 /** A stored timer as contracts `TimerState` (ms). */
 export function timerStateOf(d: DocumentSnapshot): TimerState | null {
   const type = d.get('type');

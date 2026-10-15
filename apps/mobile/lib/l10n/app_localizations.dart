@@ -26855,6 +26855,216 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Loại ghi nhận có đúng không?'**
   String get asGapObservation;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân đo'**
+  String get asKindGrowth;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày đo {date}'**
+  String asMeasuredOnLine(String date);
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên trái'**
+  String get asPumpSideLeft;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên phải'**
+  String get asPumpSideRight;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả hai bên'**
+  String get asPumpSideBoth;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở mục'**
+  String get asOpenModule;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu thay tã'**
+  String get asSaveDiaper;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có giờ hút sữa'**
+  String get asGapPumpTime;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có giờ thay tã'**
+  String get asGapDiaperTime;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ ngủ {time} có đúng không?'**
+  String asGapSleepStartUnsure(String time);
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ dậy {time} có đúng không?'**
+  String asGapSleepEndUnsure(String time);
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày mai {time}'**
+  String asFixTomorrowAt(String time);
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có lượng sữa hút (ml)'**
+  String get asGapPumpAmount;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng sữa hút cần từ 1 đến 1000 ml'**
+  String get asGapPumpAmountRange;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa rõ hút bên nào'**
+  String get asGapPumpSide;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hút bao lâu?'**
+  String get asGapPumpDuration;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi lần hút không quá 240 phút'**
+  String get asGapPumpDurationRange;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tã ướt, bẩn hay cả hai?'**
+  String get asGapDiaper;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có cân nặng (kg)'**
+  String get asGapWeight;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng {kg} kg có đúng không?'**
+  String asGapWeightUnsure(String kg);
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập cân nặng'**
+  String get asFixEnterWeight;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có chiều dài (cm)'**
+  String get asGapLength;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài {cm} cm có đúng không?'**
+  String asGapLengthUnsure(String cm);
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập chiều dài'**
+  String get asFixEnterLength;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ chiều dài'**
+  String get asFixDropLength;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ngày đo'**
+  String get asGapMeasuredOn;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày đo chưa tới. Chọn lại ngày nhé.'**
+  String get asGapMeasuredOnFuture;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày đo {date} có đúng không?'**
+  String asGapMeasuredOnUnsure(String date);
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa hút sữa'**
+  String get asEditPump;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa thay tã'**
+  String get asEditDiaper;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa cân đo'**
+  String get asEditGrowth;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng'**
+  String get asFieldWeight;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài · tùy chọn'**
+  String get asFieldLength;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày đo'**
+  String get asFieldMeasuredOn;
+
+  /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Loại tã'**
+  String get asFieldDiaper;
 }
 
 class _AppLocalizationsDelegate

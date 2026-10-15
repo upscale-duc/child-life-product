@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+     "id": "tk_5a4d07df55944bf1f5ca93d560c7371e",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_9ad3dfd9eeb7f794f9bf05acdcde3398_0",
-      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "id": "dr_5a4d07df55944bf1f5ca93d560c7371e_0",
+      "taskId": "tk_5a4d07df55944bf1f5ca93d560c7371e",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_9ad3dfd9eeb7f794f9bf05acdcde3398"
+       "task:tk_5a4d07df55944bf1f5ca93d560c7371e"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +81,7 @@
         "text": "bé bú 120ml lúc 13h"
        }
       ],
-      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "taskId": "tk_5a4d07df55944bf1f5ca93d560c7371e",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +100,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_9ad3dfd9eeb7f794f9bf05acdcde3398_0",
+        "draftId": "dr_5a4d07df55944bf1f5ca93d560c7371e_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "taskId": "tk_5a4d07df55944bf1f5ca93d560c7371e",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,7 +119,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+     "id": "tk_5a4d07df55944bf1f5ca93d560c7371e",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -150,8 +150,8 @@
     },
     "drafts": [
      {
-      "id": "dr_9ad3dfd9eeb7f794f9bf05acdcde3398_0",
-      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "id": "dr_5a4d07df55944bf1f5ca93d560c7371e_0",
+      "taskId": "tk_5a4d07df55944bf1f5ca93d560c7371e",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -169,10 +169,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_9ad3dfd9eeb7f794f9bf05acdcde3398"
+       "task:tk_5a4d07df55944bf1f5ca93d560c7371e"
       ],
-      "recordId": "r_d069196939c66fa1801969b73ed03241",
-      "recordLink": "/care/records/b_00000000000000000001/r_d069196939c66fa1801969b73ed03241",
+      "recordId": "r_c5b469b80edcbf99823a6f89e3a19250",
+      "recordLink": "/care/records/b_00000000000000000001/r_c5b469b80edcbf99823a6f89e3a19250",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +196,7 @@
         "text": "bé bú 120ml lúc 13h"
        }
       ],
-      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "taskId": "tk_5a4d07df55944bf1f5ca93d560c7371e",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +215,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_9ad3dfd9eeb7f794f9bf05acdcde3398_0",
+        "draftId": "dr_5a4d07df55944bf1f5ca93d560c7371e_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "taskId": "tk_5a4d07df55944bf1f5ca93d560c7371e",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +235,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_9ad3dfd9eeb7f794f9bf05acdcde3398_0",
+          "draftId": "dr_5a4d07df55944bf1f5ca93d560c7371e_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_d069196939c66fa1801969b73ed03241",
+          "recordLink": "/care/records/b_00000000000000000001/r_c5b469b80edcbf99823a6f89e3a19250",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_9ad3dfd9eeb7f794f9bf05acdcde3398",
+      "taskId": "tk_5a4d07df55944bf1f5ca93d560c7371e",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],
@@ -263,7 +263,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_f4b03ddb0ef5a7f0c8f34a3dee58a963",
+     "id": "tk_852e00e832cf14c3aeab8d7b298d8fb7",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -305,7 +305,7 @@
         "text": "hôm nay bé bú tổng bao nhiêu rồi?"
        }
       ],
-      "taskId": "tk_f4b03ddb0ef5a7f0c8f34a3dee58a963",
+      "taskId": "tk_852e00e832cf14c3aeab8d7b298d8fb7",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -347,7 +347,7 @@
          "r_33333333333333333333333333333333",
          "r_22222222222222222222222222222222",
          "r_44444444444444444444444444444444",
-         "r_d069196939c66fa1801969b73ed03241"
+         "r_c5b469b80edcbf99823a6f89e3a19250"
         ]
        },
        {
@@ -356,7 +356,7 @@
         "text": "Bú bình đã ghi hôm nay (đến 14:21): 3 cữ, 390 ml. Bú mẹ đã ghi hôm nay: 1 lần, 15 phút. Giấc ngủ đã ghi hôm nay: 2 giấc, 420 phút."
        }
       ],
-      "taskId": "tk_f4b03ddb0ef5a7f0c8f34a3dee58a963",
+      "taskId": "tk_852e00e832cf14c3aeab8d7b298d8fb7",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

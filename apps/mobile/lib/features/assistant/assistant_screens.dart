@@ -100,6 +100,10 @@ bool canSaveKind(Membership? me, DraftKind? kind) {
     DraftKind.sleep ||
     DraftKind.meal ||
     DraftKind.timer ||
+    // LUMI-01: the care logs, with the same rights as a bottle feed.
+    DraftKind.pump ||
+    DraftKind.diaper ||
+    DraftKind.growth ||
     DraftKind.observation => me.role != MemberRole.relative,
     DraftKind.expense => SpendingAccess.of(me).record,
     DraftKind.reminder => me.role == MemberRole.coParent,
@@ -1939,6 +1943,21 @@ class _ThreadView {
         icon: ClIcons.feed,
         text: text,
       ),
+      // LUMI-13 / LUMI-05: what was not drafted (or what this build cannot show), with the
+      // module where it can be added directly (Back = chat).
+      NoticeCode.partNotSaved || NoticeCode.appUpdateNeeded => AsNoticeCard(
+        icon: code == NoticeCode.partNotSaved ? ClIcons.ruler : ClIcons.alert,
+        text: text,
+        action: switch (timerRoute(link) ?? moduleRoute(link)) {
+          final route? => AsLink(
+            label: timerRoute(link) != null
+                ? l10n.asTimerOpen
+                : l10n.asOpenModule,
+            onPressed: () => GoRouter.of(context).pushSafe(route),
+          ),
+          null => null,
+        },
+      ),
       NoticeCode.careFeatureDisabled ||
       NoticeCode.regionUnsupported => AsNoticeCard(
         icon: code == NoticeCode.regionUnsupported
@@ -2290,6 +2309,9 @@ class _ThreadView {
         DraftKind.sleep => l10n.asSaveSleep,
         DraftKind.observation => l10n.asSaveObservation,
         DraftKind.reminder => l10n.asSaveReminder,
+        DraftKind.pump => l10n.savePump,
+        DraftKind.diaper => l10n.asSaveDiaper,
+        DraftKind.growth => l10n.saveGrowth,
         _ => l10n.asSaveItem,
       };
 
@@ -2329,13 +2351,14 @@ class _ThreadView {
           context,
           initial: initial == null ? null : hm(initial, taskZone),
         ),
-        pickDate: (initial) {
+        pickDate: (initial, {past = false}) {
           final today = DateTime(now.year, now.month, now.day);
           return pickAssistantDate(
             context,
             initial: initial ?? today,
-            first: today.subtract(const Duration(days: 1)),
-            last: today.add(const Duration(days: 366)),
+            // A measurement (LUMI-01) is a day already gone; a reminder from yesterday on.
+            first: today.subtract(Duration(days: past ? 3 * 366 : 1)),
+            last: past ? today : today.add(const Duration(days: 366)),
           );
         },
       ),
@@ -2416,7 +2439,10 @@ class _ThreadView {
         d.payload is BreastPayload ||
         d.payload is SleepPayload ||
         d.payload is ReminderPayload ||
-        d.payload is ExpensePayload;
+        d.payload is ExpensePayload ||
+        d.payload is PumpPayload ||
+        d.payload is DiaperPayload ||
+        d.payload is GrowthPayload;
     final note = d.payload is ObservationPayload;
     final actions = <AsCardAction>[
       if (active) ...[
@@ -4222,6 +4248,19 @@ String sideWord(AppLocalizations l10n, String side) => switch (side) {
   'right' => l10n.sideRight,
   _ => l10n.sideBoth,
 };
+
+/// LUMI-13: the in-app module a notice links to (`/care/growth`, `/care`); null for anything
+/// that is not a plain in-app path (never an outside link).
+String? moduleRoute(String? link) {
+  final uri = link == null ? null : Uri.tryParse(link);
+  if (uri == null || uri.hasScheme || uri.hasAuthority) return null;
+  final path = uri.path;
+  if (!path.startsWith('/care') && !path.startsWith('/rhythm')) return null;
+  final safe = RegExp(r'^[A-Za-z0-9_-]{1,120}$');
+  return uri.pathSegments.isNotEmpty && uri.pathSegments.every(safe.hasMatch)
+      ? path
+      : null;
+}
 
 /// The app route of a timer notice's link (`/care/timer/{sleep|breast}`, query dropped); null
 /// for anything else.

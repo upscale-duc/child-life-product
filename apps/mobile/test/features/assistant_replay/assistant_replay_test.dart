@@ -397,6 +397,11 @@ void main() {
       'asFieldCategory': l10n.asFieldCategory,
       'asFieldTitle': l10n.asFieldTitle,
       'asFieldTime': l10n.asFieldTime,
+      // LUMI-01: the pump's start, the measurement's fields.
+      'asFieldStart': l10n.asFieldStart,
+      'asFieldWeight': l10n.asFieldWeight,
+      'asFieldLength': l10n.asFieldLength,
+      'asFieldMeasuredOn': l10n.asFieldMeasuredOn,
     };
     for (final k in (_controls['kinds'] as Map<String, dynamic>).values) {
       for (final f in ((k as Map)['fields'] as Map).values) {

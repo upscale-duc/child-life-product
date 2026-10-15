@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_7b4a856bec03c80727c12b70cf39511c",
+     "id": "tk_d0181e7696dbd96aba3061c8a486671a",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_7b4a856bec03c80727c12b70cf39511c_0",
-      "taskId": "tk_7b4a856bec03c80727c12b70cf39511c",
+      "id": "dr_d0181e7696dbd96aba3061c8a486671a_0",
+      "taskId": "tk_d0181e7696dbd96aba3061c8a486671a",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -60,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_7b4a856bec03c80727c12b70cf39511c"
+       "task:tk_d0181e7696dbd96aba3061c8a486671a"
       ],
       "recordId": null,
       "recordLink": null,
@@ -84,7 +84,7 @@
         "text": "tối qua bé ngủ từ 10h tối đến 5h sáng"
        }
       ],
-      "taskId": "tk_7b4a856bec03c80727c12b70cf39511c",
+      "taskId": "tk_d0181e7696dbd96aba3061c8a486671a",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -103,11 +103,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_7b4a856bec03c80727c12b70cf39511c_0",
+        "draftId": "dr_d0181e7696dbd96aba3061c8a486671a_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_7b4a856bec03c80727c12b70cf39511c",
+      "taskId": "tk_d0181e7696dbd96aba3061c8a486671a",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -122,7 +122,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_7b4a856bec03c80727c12b70cf39511c",
+     "id": "tk_d0181e7696dbd96aba3061c8a486671a",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -153,8 +153,8 @@
     },
     "drafts": [
      {
-      "id": "dr_7b4a856bec03c80727c12b70cf39511c_0",
-      "taskId": "tk_7b4a856bec03c80727c12b70cf39511c",
+      "id": "dr_d0181e7696dbd96aba3061c8a486671a_0",
+      "taskId": "tk_d0181e7696dbd96aba3061c8a486671a",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -173,10 +173,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_7b4a856bec03c80727c12b70cf39511c"
+       "task:tk_d0181e7696dbd96aba3061c8a486671a"
       ],
-      "recordId": "r_5636bc345f4c5fbe140571d51791e6ac",
-      "recordLink": "/care/records/b_00000000000000000001/r_5636bc345f4c5fbe140571d51791e6ac",
+      "recordId": "r_11448b0c0712a26fa88021759856a368",
+      "recordLink": "/care/records/b_00000000000000000001/r_11448b0c0712a26fa88021759856a368",
       "errorCode": null,
       "warnings": [
        "overlap"
@@ -202,7 +202,7 @@
         "text": "tối qua bé ngủ từ 10h tối đến 5h sáng"
        }
       ],
-      "taskId": "tk_7b4a856bec03c80727c12b70cf39511c",
+      "taskId": "tk_d0181e7696dbd96aba3061c8a486671a",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -221,11 +221,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_7b4a856bec03c80727c12b70cf39511c_0",
+        "draftId": "dr_d0181e7696dbd96aba3061c8a486671a_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_7b4a856bec03c80727c12b70cf39511c",
+      "taskId": "tk_d0181e7696dbd96aba3061c8a486671a",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -241,15 +241,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_7b4a856bec03c80727c12b70cf39511c_0",
+          "draftId": "dr_d0181e7696dbd96aba3061c8a486671a_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_5636bc345f4c5fbe140571d51791e6ac",
+          "recordLink": "/care/records/b_00000000000000000001/r_11448b0c0712a26fa88021759856a368",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_7b4a856bec03c80727c12b70cf39511c",
+      "taskId": "tk_d0181e7696dbd96aba3061c8a486671a",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

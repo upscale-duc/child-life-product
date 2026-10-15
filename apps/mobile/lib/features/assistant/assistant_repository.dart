@@ -96,8 +96,20 @@ String newAssistantRequestId() => const Uuid().v4();
 /// How long the phone waits for a callable before keeping the input for a retry.
 const assistantCallTimeout = Duration(seconds: 30);
 
+/// The common envelope of every assistant callable (`contractVersion`, `clientRequestId`,
+/// `locale`, and since LUMI-05 `clientDraftKinds`: the kinds this build can show).
+Map<String, Object?> assistantEnvelope({
+  required String requestId,
+  required String locale,
+}) => {
+  'contractVersion': assistantContractVersion,
+  'clientRequestId': requestId,
+  'locale': locale == 'en' ? 'en' : 'vi',
+  'clientDraftKinds': assistantClientDraftKinds,
+};
+
 /// The assistant on the phone (slice A4). Every command is a callable with the common envelope
-/// (`contractVersion`, `clientRequestId`, `locale`); the owner's task, drafts and events are read
+/// ([assistantEnvelope]); the owner's task, drafts and events are read
 /// from Firestore for progress and reconnect, and the snapshot from `getAssistantTask` is the
 /// authority. Consent is read from `users/{uid}/settings/ai` and written by the server. Nothing
 /// here logs child data.
@@ -119,9 +131,10 @@ class AssistantRepository {
         options: HttpsCallableOptions(timeout: assistantCallTimeout),
       );
       final r = await callable.call<Object?>({
-        'contractVersion': assistantContractVersion,
-        'clientRequestId': requestId ?? newAssistantRequestId(),
-        'locale': locale == 'en' ? 'en' : 'vi',
+        ...assistantEnvelope(
+          requestId: requestId ?? newAssistantRequestId(),
+          locale: locale,
+        ),
         ...data,
       });
       return AssistantEnvelope.fromJson(r.data);

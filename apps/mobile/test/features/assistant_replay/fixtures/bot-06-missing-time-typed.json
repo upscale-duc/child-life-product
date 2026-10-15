@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+     "id": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -82,7 +82,7 @@
         "text": "bé bú 90ml"
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -135,7 +135,7 @@
         }
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -150,7 +150,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+     "id": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -181,8 +181,8 @@
     },
     "drafts": [
      {
-      "id": "dr_fe8b7f75b1e2c14c2b5fab094af71a58_0",
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "id": "dr_64efcc1e5a5814dbba61d730ee2c87cd_0",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -200,7 +200,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_fe8b7f75b1e2c14c2b5fab094af71a58"
+       "task:tk_64efcc1e5a5814dbba61d730ee2c87cd"
       ],
       "recordId": null,
       "recordLink": null,
@@ -222,7 +222,7 @@
         "text": "bé bú 90ml"
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -275,7 +275,7 @@
         }
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -292,7 +292,7 @@
         "text": "13h"
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -311,11 +311,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_fe8b7f75b1e2c14c2b5fab094af71a58_0",
+        "draftId": "dr_64efcc1e5a5814dbba61d730ee2c87cd_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -330,7 +330,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+     "id": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -361,8 +361,8 @@
     },
     "drafts": [
      {
-      "id": "dr_fe8b7f75b1e2c14c2b5fab094af71a58_0",
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "id": "dr_64efcc1e5a5814dbba61d730ee2c87cd_0",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -380,10 +380,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_fe8b7f75b1e2c14c2b5fab094af71a58"
+       "task:tk_64efcc1e5a5814dbba61d730ee2c87cd"
       ],
-      "recordId": "r_f4cf8bd5b10299b40619073643a6eb76",
-      "recordLink": "/care/records/b_00000000000000000001/r_f4cf8bd5b10299b40619073643a6eb76",
+      "recordId": "r_bf1775b4d304a85780d956ebd6d34204",
+      "recordLink": "/care/records/b_00000000000000000001/r_bf1775b4d304a85780d956ebd6d34204",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -407,7 +407,7 @@
         "text": "bé bú 90ml"
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -460,7 +460,7 @@
         }
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -477,7 +477,7 @@
         "text": "13h"
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -496,11 +496,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_fe8b7f75b1e2c14c2b5fab094af71a58_0",
+        "draftId": "dr_64efcc1e5a5814dbba61d730ee2c87cd_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -516,15 +516,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_fe8b7f75b1e2c14c2b5fab094af71a58_0",
+          "draftId": "dr_64efcc1e5a5814dbba61d730ee2c87cd_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_f4cf8bd5b10299b40619073643a6eb76",
+          "recordLink": "/care/records/b_00000000000000000001/r_bf1775b4d304a85780d956ebd6d34204",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_fe8b7f75b1e2c14c2b5fab094af71a58",
+      "taskId": "tk_64efcc1e5a5814dbba61d730ee2c87cd",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:35.000Z",
       "attachmentIds": [],

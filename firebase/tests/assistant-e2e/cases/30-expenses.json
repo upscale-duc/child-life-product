@@ -650,7 +650,10 @@
       ],
       "expect": {
         "outcome": "drafts",
-        "kinds": ["bottle", "expense"],
+        "kinds": [
+          ["bottle", "expense"],
+          ["expense", "bottle"]
+        ],
         "visibility": "private",
         "review": ["totalMinor"],
         "codes": ["SPENDING_PRIVATE"],
@@ -721,6 +724,80 @@
         "credits": 1
       },
       "group": "expense"
+    },
+    {
+      "id": "ex-21-goods-no-amount-live",
+      "group": "expense",
+      "title": "LUMI-16 live: goods bought with no amount and the model returns only the feed → kept private (never in the shared thread); nothing invented",
+      "turns": [
+        {
+          "say": "Con Cưng hôm nay hai hộp sữa, bé bú 90ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "visibility": "private",
+        "codes": ["SPENDING_PRIVATE"],
+        "credits": 1
+      }
+    },
+    {
+      "id": "ex-22-euro-doubts-live",
+      "locale": "en",
+      "turns": [
+        {
+          "say": "€15 for baby wipes",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "dayOffset": 0,
+                  "title": "baby wipes",
+                  "amount": 15,
+                  "currency": "EUR",
+                  "categoryId": "c_diaper",
+                  "date": "2026-10-15"
+                },
+                "ev": {
+                  "amount": "€15",
+                  "title": "baby wipes"
+                },
+                "unc": ["categoryId", "date"],
+                "miss": ["time"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "ready": true,
+        "values": {
+          "0.totalMinor": 1500,
+          "0.currency": "EUR"
+        },
+        "credits": 1
+      },
+      "group": "expense",
+      "title": "Live reply: the model doubts the category the words name (\"wipes\") and the day it was not given → nothing to review"
     }
   ]
 }

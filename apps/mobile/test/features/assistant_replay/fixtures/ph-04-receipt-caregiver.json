@@ -9,8 +9,8 @@
    "as": "NANNY",
    "snapshot": {
     "task": {
-     "id": "tk_f4219093ff009bffaa9932b5529fc009",
-     "conversationId": "cv_3ba71844e632101c6f05c630d53b0bda",
+     "id": "tk_549d414047f794a30684f1bde8110c85",
+     "conversationId": "cv_797f74675a54d29e3dea9d748ee288cc",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -42,14 +42,14 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_3ba71844e632101c6f05c630d53b0bda",
+      "conversationId": "cv_797f74675a54d29e3dea9d748ee288cc",
       "role": "user",
       "parts": [],
-      "taskId": "tk_f4219093ff009bffaa9932b5529fc009",
+      "taskId": "tk_549d414047f794a30684f1bde8110c85",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [
-       "at_111a26c955835733c9f03b7b3d30e201"
+       "at_caf00aa31b0949e3b547c2f62422e0f0"
       ],
       "author": {
        "uid": "u_lan",
@@ -60,7 +60,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_3ba71844e632101c6f05c630d53b0bda",
+      "conversationId": "cv_797f74675a54d29e3dea9d748ee288cc",
       "role": "assistant",
       "parts": [
        {
@@ -74,7 +74,7 @@
         "text": "Chưa xử lý được yêu cầu này. Không tính lượt."
        }
       ],
-      "taskId": "tk_f4219093ff009bffaa9932b5529fc009",
+      "taskId": "tk_549d414047f794a30684f1bde8110c85",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -83,7 +83,7 @@
     ],
     "attachments": [
      {
-      "id": "at_111a26c955835733c9f03b7b3d30e201",
+      "id": "at_caf00aa31b0949e3b547c2f62422e0f0",
       "mime": "image/png",
       "bytes": 30592,
       "retention": "keep_with_record",

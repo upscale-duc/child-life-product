@@ -1,6 +1,6 @@
 {
   "group": "care.types",
-  "note": "Care types the app logs (care_models.dart CareType: pump, diaper, growth) that chat does not draft yet: never \"no place to save\".",
+  "note": "Care types the app logs (care_models.dart CareType: pump, diaper, growth). LUMI-01 (2026-10-16): chat drafts them as the app's own forms write them; the replies are what a correct v5 model returns. The deployed model's wrong kinds (bottle for pumping, observation for a diaper, an expense for a weight) are in 00-device-bugs.json and the pd-1x cases below.",
   "cases": [
     {
       "id": "pd-01-pump-complete",
@@ -10,17 +10,15 @@
           "model": {
             "i": [
               {
-                "k": "pump|meal",
+                "k": "pump",
                 "f": {
                   "amountMl": 120,
                   "time": "10:00",
-                  "dayOffset": 0,
-                  "title": "hút sữa"
+                  "dayOffset": 0
                 },
                 "ev": {
                   "amountMl": "120ml",
-                  "time": "10h",
-                  "title": "hút sữa"
+                  "time": "10h"
                 }
               }
             ]
@@ -30,6 +28,12 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["pump"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 120,
+          "0.occurredAt": "D0 10:00",
+          "0.side": "both"
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -42,13 +46,12 @@
           "model": {
             "i": [
               {
-                "k": "pump|meal",
+                "k": "pump",
                 "f": {
                   "amountMl": 80,
                   "time": "14:20",
                   "dayOffset": 0,
-                  "side": "both",
-                  "title": "hút sữa"
+                  "side": "both"
                 },
                 "ev": {
                   "amountMl": "80ml",
@@ -63,6 +66,12 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["pump"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 80,
+          "0.occurredAt": "D0 14:20",
+          "0.side": "both"
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -75,12 +84,11 @@
           "model": {
             "i": [
               {
-                "k": "pump|meal",
+                "k": "pump",
                 "f": {
                   "amountMl": 150,
                   "time": "21:00",
-                  "dayOffset": -1,
-                  "title": "hút sữa"
+                  "dayOffset": -1
                 },
                 "ev": {
                   "amountMl": "150ml",
@@ -94,6 +102,11 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["pump"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 150,
+          "0.occurredAt": "D-1 21:00"
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -106,12 +119,11 @@
           "model": {
             "i": [
               {
-                "k": "pump|meal",
+                "k": "pump",
                 "f": {
                   "amountMl": 100,
                   "time": "07:00",
-                  "dayOffset": 0,
-                  "title": "hut sua"
+                  "dayOffset": 0
                 },
                 "ev": {
                   "amountMl": "100ml",
@@ -125,6 +137,11 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["pump"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 100,
+          "0.occurredAt": "D0 07:00"
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -137,15 +154,15 @@
           "model": {
             "i": [
               {
-                "k": "diaper|meal",
+                "k": "diaper",
                 "f": {
+                  "diaper": "wet",
                   "time": "13:00",
-                  "dayOffset": 0,
-                  "title": "thay tã ướt"
+                  "dayOffset": 0
                 },
                 "ev": {
-                  "time": "13h",
-                  "title": "tã ướt"
+                  "diaper": "ướt",
+                  "time": "13h"
                 }
               }
             ]
@@ -155,6 +172,12 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["diaper"],
+        "ready": true,
+        "values": {
+          "0.diaper": "wet",
+          "0.occurredAt": "D0 13:00"
+        },
+        "visibility": "shared",
         "credits": 1
       },
       "group": "care.types"
@@ -167,15 +190,15 @@
           "model": {
             "i": [
               {
-                "k": "diaper|meal",
+                "k": "diaper",
                 "f": {
+                  "diaper": "dirty",
                   "time": "14:20",
-                  "dayOffset": 0,
-                  "title": "ị"
+                  "dayOffset": 0
                 },
                 "ev": {
-                  "time": "vừa",
-                  "title": "ị"
+                  "diaper": "ị",
+                  "time": "vừa"
                 }
               }
             ]
@@ -185,6 +208,11 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["diaper"],
+        "ready": true,
+        "values": {
+          "0.diaper": "dirty",
+          "0.occurredAt": "D0 14:20"
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -197,12 +225,12 @@
           "model": {
             "i": [
               {
-                "k": "diaper|meal",
+                "k": "diaper",
                 "f": {
-                  "title": "thay ta uot"
+                  "diaper": "wet"
                 },
                 "ev": {
-                  "title": "thay ta uot"
+                  "diaper": "uot"
                 },
                 "miss": ["time"]
               }
@@ -219,6 +247,12 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["diaper"],
+        "asks": ["time.missing"],
+        "ready": true,
+        "values": {
+          "0.diaper": "wet",
+          "0.occurredAt": "D0 14:20"
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -232,15 +266,15 @@
           "model": {
             "i": [
               {
-                "k": "diaper|meal",
+                "k": "diaper",
                 "f": {
+                  "diaper": "dirty",
                   "time": "13:00",
-                  "dayOffset": 0,
-                  "title": "dirty diaper"
+                  "dayOffset": 0
                 },
                 "ev": {
-                  "time": "1pm",
-                  "title": "dirty diaper"
+                  "diaper": "dirty",
+                  "time": "1pm"
                 }
               }
             ]
@@ -250,6 +284,11 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["diaper"],
+        "ready": true,
+        "values": {
+          "0.diaper": "dirty",
+          "0.occurredAt": "D0 13:00"
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -262,12 +301,12 @@
           "model": {
             "i": [
               {
-                "k": "growth|meal",
+                "k": "growth",
                 "f": {
-                  "title": "6.1 kg"
+                  "weightKg": 6.1
                 },
                 "ev": {
-                  "title": "6.1 kg"
+                  "weightKg": "6.1 kg"
                 }
               }
             ]
@@ -277,6 +316,12 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 6.1,
+          "0.lengthCm": null,
+          "0.measuredOn": "D0"
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -289,12 +334,14 @@
           "model": {
             "i": [
               {
-                "k": "growth|meal",
+                "k": "growth",
                 "f": {
-                  "title": "nặng 6kg2, dài 62cm"
+                  "weightKg": 6.2,
+                  "lengthCm": 62
                 },
                 "ev": {
-                  "title": "nặng 6kg2, dài 62cm"
+                  "weightKg": "6kg2",
+                  "lengthCm": "62cm"
                 }
               }
             ]
@@ -304,6 +351,12 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 6.2,
+          "0.lengthCm": 62,
+          "0.measuredOn": "D0"
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -316,13 +369,14 @@
           "model": {
             "i": [
               {
-                "k": "growth|meal",
+                "k": "growth",
                 "f": {
-                  "dayOffset": -1,
-                  "title": "nặng 5kg8"
+                  "weightKg": 5.8,
+                  "dayOffset": -1
                 },
                 "ev": {
-                  "title": "nặng 5kg8"
+                  "weightKg": "5kg8",
+                  "dayOffset": "hôm qua"
                 }
               }
             ]
@@ -332,6 +386,11 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 5.8,
+          "0.measuredOn": "D-1"
+        },
         "credits": 1
       },
       "group": "care.types"
@@ -345,12 +404,13 @@
           "model": {
             "i": [
               {
-                "k": "growth|meal",
+                "k": "growth",
                 "f": {
-                  "title": "5.4 kg"
+                  "weightKg": 5.4,
+                  "dayOffset": 0
                 },
                 "ev": {
-                  "title": "5.4 kg"
+                  "weightKg": "5.4 kg"
                 }
               }
             ]
@@ -360,6 +420,372 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 5.4,
+          "0.measuredOn": "D0"
+        },
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-13-growth-read-as-expense",
+      "title": "LUMI-01 live: \"đi khám… nặng 5kg8\" read as an expense with no amount → a growth record, no expense",
+      "turns": [
+        {
+          "say": "hôm qua đi khám bé nặng 5kg8",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "title": "đi khám",
+                  "categoryId": "c_health",
+                  "date": "2026-10-14"
+                },
+                "ev": {
+                  "title": "đi khám"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 5.8,
+          "0.measuredOn": "D-1"
+        },
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-14-diaper-read-as-observation",
+      "title": "LUMI-01 live: \"thay tã ướt lúc 13h\" read as an observation (usual) → a diaper change",
+      "turns": [
+        {
+          "say": "thay tã ướt lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": {
+                  "observation": "usual",
+                  "note": "thay tã ướt"
+                },
+                "ev": {
+                  "note": "thay tã ướt"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["diaper"],
+        "ready": true,
+        "values": {
+          "0.diaper": "wet",
+          "0.occurredAt": "D0 13:00"
+        },
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-15-pump-read-as-bottle",
+      "title": "LUMI-01 live: \"hút sữa 120ml lúc 10h\" read as a bottle feed → a pumping session, never a feed",
+      "turns": [
+        {
+          "say": "hút sữa 120ml lúc 10h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "10:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "10h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["pump"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 120,
+          "0.occurredAt": "D0 10:00"
+        },
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-16-growth-head",
+      "title": "Head circumference is said but the growth module cannot store it: named, weight and length drafted",
+      "turns": [
+        {
+          "say": "bé nặng 6kg, dài 61cm, vòng đầu 40cm",
+          "model": {
+            "i": [
+              {
+                "k": "growth",
+                "f": {
+                  "weightKg": 6,
+                  "lengthCm": 61,
+                  "headCm": 40
+                },
+                "ev": {
+                  "weightKg": "6kg",
+                  "lengthCm": "61cm",
+                  "headCm": "40cm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 6,
+          "0.lengthCm": 61
+        },
+        "codes": ["PART_NOT_SAVED"],
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-17-diaper-kind-unsaid",
+      "title": "\"thay tã lúc 13h\": wet or dirty not said → the person picks (never a guess)",
+      "turns": [
+        {
+          "say": "thay tã lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "diaper",
+                "f": {
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["diaper"],
+        "review": ["diaper"],
+        "values": {
+          "0.occurredAt": "D0 13:00"
+        },
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-18-pump-save",
+      "title": "A pumping session saves as the pump form's record",
+      "turns": [
+        {
+          "say": "hút được 90ml bên trái lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "pump",
+                "f": {
+                  "amountMl": 90,
+                  "side": "left",
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "side": "bên trái",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["pump"],
+        "ready": true,
+        "values": {
+          "0.side": "left"
+        },
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-19-diaper-growth-save",
+      "title": "A diaper change and a weight in one message save as the forms' records",
+      "turns": [
+        {
+          "say": "thay tã bẩn lúc 13h, cân bé được 6,3 kg",
+          "model": {
+            "i": [
+              {
+                "k": "diaper",
+                "f": {
+                  "diaper": "dirty",
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "diaper": "bẩn",
+                  "time": "13h"
+                }
+              },
+              {
+                "k": "growth",
+                "f": {
+                  "weightKg": 6.3
+                },
+                "ev": {
+                  "weightKg": "6,3 kg"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["diaper", "growth"],
+        "ready": true,
+        "values": {
+          "1.weightKg": 6.3
+        },
+        "saved": 2,
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-20-pump-just-finished-length",
+      "title": "\"vừa hút 20 phút được 100ml\": it started 20 minutes ago (the form's span)",
+      "turns": [
+        {
+          "say": "vừa hút 20 phút được 100ml",
+          "model": {
+            "i": [
+              {
+                "k": "pump",
+                "f": {
+                  "amountMl": 100,
+                  "durationMin": 20,
+                  "time": "14:20",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "100ml",
+                  "durationMin": "20 phút",
+                  "time": "vừa"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "confirm": "all"
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["pump"],
+        "ready": true,
+        "values": {
+          "0.durationMin": 20
+        },
+        "saved": 1,
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-21-model-missed-weight",
+      "title": "LUMI-01 live: the model returns nothing for \"bé nặng 5,2kg\" → a growth draft from the words, never HELP",
+      "turns": [
+        {
+          "say": "bé nặng 5,2kg",
+          "model": {
+            "oos": true
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 5.2
+        },
+        "credits": 1
+      },
+      "group": "care.types"
+    },
+    {
+      "id": "pd-22-buying-diapers-is-money",
+      "title": "\"mua bỉm hết 200k\" is an expense, never a diaper change",
+      "turns": [
+        {
+          "say": "mua bỉm hết 200k",
+          "model": {
+            "i": [
+              {
+                "k": "expense",
+                "f": {
+                  "amount": 200000,
+                  "currency": "VND",
+                  "categoryId": "c_diaper",
+                  "title": "bỉm"
+                },
+                "ev": {
+                  "amount": "200k",
+                  "title": "bỉm"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["expense"],
+        "visibility": "private",
         "credits": 1
       },
       "group": "care.types"

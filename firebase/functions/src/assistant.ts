@@ -93,6 +93,8 @@ import {
 } from './assistant-care.js';
 import { assistantPool, assistantUsage, creditPolicy, recentUsage } from './assistant-usage.js';
 import { buildRecFeedback, confirmDraftItem, draftView } from './assistant-writers.js';
+// LUMI-11: zone checks on every edit (a reminder time already gone stays flagged).
+import { zoneDraftProblems } from './assistant-writers-images.js';
 import { releaseQuota, reserveQuota } from './quota.js';
 // Slice A3 (photos): attachments verified and bound at start; retention when a task stops.
 import {
@@ -459,6 +461,10 @@ export async function startTask(
       requestId: req.clientRequestId,
       inputKey,
       input: { text, attachmentIds: req.attachmentIds },
+      // LUMI-05: what this app build can show (a resume keeps the first declaration).
+      clientKinds: resume
+        ? ((existing.get('clientKinds') as string[] | null | undefined) ?? null)
+        : (req.clientDraftKinds ?? null),
       // "Today" is the original send instant (brief p.12); a resume keeps it.
       anchorInstant: resume ? existing.get('anchorInstant') : at,
       timezone: s.zone,
@@ -934,11 +940,12 @@ export async function patchDraft(
   void _c;
   void _l;
   return withRequest(db, uid, 'patch', clientRequestId, input, now, async () => {
-    const { ref, taskId } = await draftContext(deps, uid, req.draftId);
+    const { ref, taskId, task } = await draftContext(deps, uid, req.draftId);
+    const zone = (task.get('timezone') as string | undefined) ?? undefined;
     await db.runTransaction(async (tx) => {
       const d = await tx.get(ref);
       if (!d.exists) throw fail('VALIDATION_FAILED', { field: 'draftId' });
-      const cur = draftView(d, now);
+      const cur = draftView(d, now, zone);
       if (cur.state === 'saved') throw fail('DRAFT_SAVED');
       if (cur.state === 'discarded') throw fail('INVALID_STATE');
       if (now.getTime() >= Date.parse(cur.expiresAt)) throw fail('DRAFT_EXPIRED');
@@ -976,7 +983,13 @@ export async function patchDraft(
           throw fail('VALIDATION_FAILED', { field: 'timer' });
         }
       }
-      const problems = draftProblems(payload, now);
+      // LUMI-11: plus what only the baby's zone can tell (a reminder time already gone).
+      const problems = [
+        ...new Set([
+          ...draftProblems(payload, now),
+          ...(zone ? zoneDraftProblems(payload, now, zone) : []),
+        ]),
+      ];
       // Lumi 2026-10-16: still-unsure fields the person neither changed nor confirmed, plus the
       // problems' fields; missing = the kind's required fields that are empty (contracts).
       const review = reviewFields(
@@ -996,7 +1009,7 @@ export async function patchDraft(
         updatedAt: Timestamp.fromDate(now),
       });
     });
-    const view = draftView(await ref.get(), now);
+    const view = draftView(await ref.get(), now, zone);
     return respond(clientRequestId, now, { draft: view }, { taskId, dataVersion: view.revision });
   });
 }

@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a9475a1e48b2027b78ad2c79452dd238",
+     "id": "tk_6e34a58467044cccc8c1314c4cb725ad",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a9475a1e48b2027b78ad2c79452dd238_0",
-      "taskId": "tk_a9475a1e48b2027b78ad2c79452dd238",
+      "id": "dr_6e34a58467044cccc8c1314c4cb725ad_0",
+      "taskId": "tk_6e34a58467044cccc8c1314c4cb725ad",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -62,7 +62,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a9475a1e48b2027b78ad2c79452dd238"
+       "task:tk_6e34a58467044cccc8c1314c4cb725ad"
       ],
       "recordId": null,
       "recordLink": null,
@@ -84,7 +84,7 @@
         "text": "Con đang ngủ"
        }
       ],
-      "taskId": "tk_a9475a1e48b2027b78ad2c79452dd238",
+      "taskId": "tk_6e34a58467044cccc8c1314c4cb725ad",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -103,11 +103,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a9475a1e48b2027b78ad2c79452dd238_0",
+        "draftId": "dr_6e34a58467044cccc8c1314c4cb725ad_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a9475a1e48b2027b78ad2c79452dd238",
+      "taskId": "tk_6e34a58467044cccc8c1314c4cb725ad",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -122,7 +122,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a9475a1e48b2027b78ad2c79452dd238",
+     "id": "tk_6e34a58467044cccc8c1314c4cb725ad",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -153,8 +153,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a9475a1e48b2027b78ad2c79452dd238_0",
-      "taskId": "tk_a9475a1e48b2027b78ad2c79452dd238",
+      "id": "dr_6e34a58467044cccc8c1314c4cb725ad_0",
+      "taskId": "tk_6e34a58467044cccc8c1314c4cb725ad",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -175,9 +175,9 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a9475a1e48b2027b78ad2c79452dd238"
+       "task:tk_6e34a58467044cccc8c1314c4cb725ad"
       ],
-      "recordId": "r_53f832e6aae18e53a2f9e26a291d037f",
+      "recordId": "r_d24cea529d1c4cd92b53a80523a92ed0",
       "recordLink": "/care/timer/sleep?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
@@ -202,7 +202,7 @@
         "text": "Con đang ngủ"
        }
       ],
-      "taskId": "tk_a9475a1e48b2027b78ad2c79452dd238",
+      "taskId": "tk_6e34a58467044cccc8c1314c4cb725ad",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -221,11 +221,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a9475a1e48b2027b78ad2c79452dd238_0",
+        "draftId": "dr_6e34a58467044cccc8c1314c4cb725ad_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a9475a1e48b2027b78ad2c79452dd238",
+      "taskId": "tk_6e34a58467044cccc8c1314c4cb725ad",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -241,7 +241,7 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_a9475a1e48b2027b78ad2c79452dd238_0",
+          "draftId": "dr_6e34a58467044cccc8c1314c4cb725ad_0",
           "status": "saved",
           "recordLink": "/care/timer/sleep?babyId=b_00000000000000000001",
           "errorCode": null
@@ -249,7 +249,7 @@
         ]
        }
       ],
-      "taskId": "tk_a9475a1e48b2027b78ad2c79452dd238",
+      "taskId": "tk_6e34a58467044cccc8c1314c4cb725ad",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

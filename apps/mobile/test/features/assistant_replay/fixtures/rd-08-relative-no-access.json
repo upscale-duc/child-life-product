@@ -9,8 +9,8 @@
    "as": "GRANDMA",
    "snapshot": {
     "task": {
-     "id": "tk_df54f41c72506e1254273e011c89082f",
-     "conversationId": "cv_e4dbc389f3151257a38a17e7cc667b5a",
+     "id": "tk_b1e545b8a07d39baf6a417d7491d23b4",
+     "conversationId": "cv_8801d6e7fb0522b6a9cafad52b7387dd",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -42,7 +42,7 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_e4dbc389f3151257a38a17e7cc667b5a",
+      "conversationId": "cv_8801d6e7fb0522b6a9cafad52b7387dd",
       "role": "user",
       "parts": [
        {
@@ -51,7 +51,7 @@
         "text": "hôm nay bé bú mấy lần?"
        }
       ],
-      "taskId": "tk_df54f41c72506e1254273e011c89082f",
+      "taskId": "tk_b1e545b8a07d39baf6a417d7491d23b4",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -64,7 +64,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_e4dbc389f3151257a38a17e7cc667b5a",
+      "conversationId": "cv_8801d6e7fb0522b6a9cafad52b7387dd",
       "role": "assistant",
       "parts": [
        {
@@ -78,7 +78,7 @@
         "text": "Chưa xử lý được yêu cầu này. Không tính lượt."
        }
       ],
-      "taskId": "tk_df54f41c72506e1254273e011c89082f",
+      "taskId": "tk_b1e545b8a07d39baf6a417d7491d23b4",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

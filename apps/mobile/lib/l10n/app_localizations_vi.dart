@@ -16033,4 +16033,123 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asGapObservation => 'Loại ghi nhận có đúng không?';
+
+  @override
+  String get asKindGrowth => 'Cân đo';
+
+  @override
+  String asMeasuredOnLine(String date) {
+    return 'Ngày đo $date';
+  }
+
+  @override
+  String get asPumpSideLeft => 'Bên trái';
+
+  @override
+  String get asPumpSideRight => 'Bên phải';
+
+  @override
+  String get asPumpSideBoth => 'Cả hai bên';
+
+  @override
+  String get asOpenModule => 'Mở mục';
+
+  @override
+  String get asSaveDiaper => 'Lưu thay tã';
+
+  @override
+  String get asGapPumpTime => 'Chưa có giờ hút sữa';
+
+  @override
+  String get asGapDiaperTime => 'Chưa có giờ thay tã';
+
+  @override
+  String asGapSleepStartUnsure(String time) {
+    return 'Giờ ngủ $time có đúng không?';
+  }
+
+  @override
+  String asGapSleepEndUnsure(String time) {
+    return 'Giờ dậy $time có đúng không?';
+  }
+
+  @override
+  String asFixTomorrowAt(String time) {
+    return 'Ngày mai $time';
+  }
+
+  @override
+  String get asGapPumpAmount => 'Chưa có lượng sữa hút (ml)';
+
+  @override
+  String get asGapPumpAmountRange => 'Lượng sữa hút cần từ 1 đến 1000 ml';
+
+  @override
+  String get asGapPumpSide => 'Chưa rõ hút bên nào';
+
+  @override
+  String get asGapPumpDuration => 'Hút bao lâu?';
+
+  @override
+  String get asGapPumpDurationRange => 'Mỗi lần hút không quá 240 phút';
+
+  @override
+  String get asGapDiaper => 'Tã ướt, bẩn hay cả hai?';
+
+  @override
+  String get asGapWeight => 'Chưa có cân nặng (kg)';
+
+  @override
+  String asGapWeightUnsure(String kg) {
+    return 'Cân nặng $kg kg có đúng không?';
+  }
+
+  @override
+  String get asFixEnterWeight => 'Nhập cân nặng';
+
+  @override
+  String get asGapLength => 'Chưa có chiều dài (cm)';
+
+  @override
+  String asGapLengthUnsure(String cm) {
+    return 'Chiều dài $cm cm có đúng không?';
+  }
+
+  @override
+  String get asFixEnterLength => 'Nhập chiều dài';
+
+  @override
+  String get asFixDropLength => 'Bỏ chiều dài';
+
+  @override
+  String get asGapMeasuredOn => 'Chưa có ngày đo';
+
+  @override
+  String get asGapMeasuredOnFuture => 'Ngày đo chưa tới. Chọn lại ngày nhé.';
+
+  @override
+  String asGapMeasuredOnUnsure(String date) {
+    return 'Ngày đo $date có đúng không?';
+  }
+
+  @override
+  String get asEditPump => 'Sửa hút sữa';
+
+  @override
+  String get asEditDiaper => 'Sửa thay tã';
+
+  @override
+  String get asEditGrowth => 'Sửa cân đo';
+
+  @override
+  String get asFieldWeight => 'Cân nặng';
+
+  @override
+  String get asFieldLength => 'Chiều dài · tùy chọn';
+
+  @override
+  String get asFieldMeasuredOn => 'Ngày đo';
+
+  @override
+  String get asFieldDiaper => 'Loại tã';
 }

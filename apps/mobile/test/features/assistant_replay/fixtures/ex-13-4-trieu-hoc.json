@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_9d415aa7002f6c346a44a82c732bdfba",
+     "id": "tk_1e739d55671637769c59bf4e556dcdc2",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_9d415aa7002f6c346a44a82c732bdfba_0",
-      "taskId": "tk_9d415aa7002f6c346a44a82c732bdfba",
+      "id": "dr_1e739d55671637769c59bf4e556dcdc2_0",
+      "taskId": "tk_1e739d55671637769c59bf4e556dcdc2",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -70,7 +70,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_9d415aa7002f6c346a44a82c732bdfba"
+       "task:tk_1e739d55671637769c59bf4e556dcdc2"
       ],
       "recordId": null,
       "recordLink": null,
@@ -92,7 +92,7 @@
         "text": "4 triệu tiền học tháng này"
        }
       ],
-      "taskId": "tk_9d415aa7002f6c346a44a82c732bdfba",
+      "taskId": "tk_1e739d55671637769c59bf4e556dcdc2",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -117,11 +117,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_9d415aa7002f6c346a44a82c732bdfba_0",
+        "draftId": "dr_1e739d55671637769c59bf4e556dcdc2_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_9d415aa7002f6c346a44a82c732bdfba",
+      "taskId": "tk_1e739d55671637769c59bf4e556dcdc2",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_9d415aa7002f6c346a44a82c732bdfba",
+     "id": "tk_1e739d55671637769c59bf4e556dcdc2",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -171,8 +171,8 @@
     },
     "drafts": [
      {
-      "id": "dr_9d415aa7002f6c346a44a82c732bdfba_0",
-      "taskId": "tk_9d415aa7002f6c346a44a82c732bdfba",
+      "id": "dr_1e739d55671637769c59bf4e556dcdc2_0",
+      "taskId": "tk_1e739d55671637769c59bf4e556dcdc2",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -197,10 +197,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_9d415aa7002f6c346a44a82c732bdfba"
+       "task:tk_1e739d55671637769c59bf4e556dcdc2"
       ],
-      "recordId": "x_96ef58d3c48b73f4a0fc9ea08f5bf334",
-      "recordLink": "/utilities/spending/expense/x_96ef58d3c48b73f4a0fc9ea08f5bf334?babyId=b_00000000000000000001",
+      "recordId": "x_f5f68c94a4bbc6f328b50fade7388766",
+      "recordLink": "/utilities/spending/expense/x_f5f68c94a4bbc6f328b50fade7388766?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -224,7 +224,7 @@
         "text": "4 triệu tiền học tháng này"
        }
       ],
-      "taskId": "tk_9d415aa7002f6c346a44a82c732bdfba",
+      "taskId": "tk_1e739d55671637769c59bf4e556dcdc2",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -249,11 +249,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_9d415aa7002f6c346a44a82c732bdfba_0",
+        "draftId": "dr_1e739d55671637769c59bf4e556dcdc2_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_9d415aa7002f6c346a44a82c732bdfba",
+      "taskId": "tk_1e739d55671637769c59bf4e556dcdc2",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -269,15 +269,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_9d415aa7002f6c346a44a82c732bdfba_0",
+          "draftId": "dr_1e739d55671637769c59bf4e556dcdc2_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_96ef58d3c48b73f4a0fc9ea08f5bf334?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_f5f68c94a4bbc6f328b50fade7388766?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_9d415aa7002f6c346a44a82c732bdfba",
+      "taskId": "tk_1e739d55671637769c59bf4e556dcdc2",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

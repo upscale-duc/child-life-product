@@ -2,13 +2,20 @@ import type { Firestore, Timestamp } from 'firebase-admin/firestore';
 import {
   addDaysIso,
   agoIn,
+  bareMAmountIn,
   bottleMlIn,
   breastSideIn,
   builtInCategories,
   careStatesIn,
   categoryHintIn,
   clockTimeIn,
+  clockTokensIn,
   completeSpan,
+  diaperIn,
+  growthIn,
+  looksLikeSpending,
+  pumpCueIn,
+  type ClockToken,
   draftPayloadSchema,
   draftProblems,
   durationsIn,
@@ -43,7 +50,11 @@ import {
   reviewFields,
   type PreparedDraft,
 } from './assistant-tools.js';
-import { expenseDuplicateSuspected, householdBabyIds } from './assistant-writers-images.js';
+import {
+  expenseDuplicateSuspected,
+  householdBabyIds,
+  zoneDraftProblems,
+} from './assistant-writers-images.js';
 
 /**
  * Lumi rework 2026-10-15 (docs/assistant/tools.md "Text planning", api.md "Rework 2026-10-15"):
@@ -101,6 +112,13 @@ export interface TextContext {
   timers?: RunningTimers;
   /** The side the next breastfeed starts on by default (the form: other side of the last one). */
   nextBreastSide?: 'left' | 'right' | 'both';
+  /** LUMI-01: the side the pump form remembers (the last pump's), else both. */
+  lastPumpSide?: 'left' | 'right' | 'both';
+  /**
+   * LUMI-05: the draft kinds the sending app can show (contracts `clientDraftKindsOf`); a kind
+   * outside it is never drafted (`APP_UPDATE_NEEDED` instead). Absent = every kind (tests).
+   */
+  clientKinds?: readonly DraftKind[];
 }
 
 /** A running app timer as the planner needs it. */
@@ -118,14 +136,19 @@ export type TextNoticeCode =
   | 'DUPLICATE_SUSPECTED'
   | 'PREVIOUS_SAVED'
   | 'CORRECTION_APPLIED'
-  | 'TIMER_RUNNING';
+  | 'TIMER_RUNNING'
+  // ---- Lumi fixes 2026-10-16 ----
+  | 'APP_UPDATE_NEEDED'
+  | 'PART_NOT_SAVED';
 
 export interface TextNotice {
   kind: DraftKind;
   code: TextNoticeCode;
   link?: string;
-  /** TIMER_RUNNING: which timer and since when. */
+  /** TIMER_RUNNING: which timer and since when; APP_UPDATE_NEEDED for a timer: which one. */
   timer?: { type: 'sleep' | 'breast'; since: Date };
+  /** PART_NOT_SAVED: what was said but cannot be stored. */
+  what?: 'head_circumference';
 }
 
 export type TextPlan =
@@ -142,7 +165,7 @@ const MAX_SLEEP_MS = 18 * 3_600_000;
 
 /** Draft field each model field fills, per kind (for uncertain / missing lists). */
 const draftField: Record<string, Partial<Record<DraftKind, string>>> = {
-  amountMl: { bottle: 'amountMl' },
+  amountMl: { bottle: 'amountMl', pump: 'amountMl' },
   milk: { bottle: 'milk' },
   // Lumi 2026-10-16: an observation has no time; its `date` comes from dayOffset.
   time: {
@@ -150,17 +173,26 @@ const draftField: Record<string, Partial<Record<DraftKind, string>>> = {
     breast: 'occurredAt',
     sleep: 'startedAt',
     reminder: 'time',
+    pump: 'occurredAt',
+    diaper: 'occurredAt',
   },
   dayOffset: {
     bottle: 'occurredAt',
     breast: 'occurredAt',
     sleep: 'startedAt',
     observation: 'date',
+    pump: 'occurredAt',
+    diaper: 'occurredAt',
+    growth: 'measuredOn',
   },
-  endTime: { sleep: 'endedAt', breast: 'occurredAt' },
+  endTime: { sleep: 'endedAt', breast: 'occurredAt', pump: 'occurredAt' },
   endDayOffset: { sleep: 'endedAt' },
-  durationMin: { breast: 'durationMin', sleep: 'durationMin' },
-  side: { breast: 'side' },
+  durationMin: { breast: 'durationMin', sleep: 'durationMin', pump: 'durationMin' },
+  side: { breast: 'side', pump: 'side' },
+  // ---- LUMI-01 ----
+  diaper: { diaper: 'diaper' },
+  weightKg: { growth: 'weightKg' },
+  lengthCm: { growth: 'lengthCm' },
   observation: { observation: 'observation' },
   when: { observation: 'when' },
   note: { observation: 'note' },
@@ -176,14 +208,22 @@ const draftField: Record<string, Partial<Record<DraftKind, string>>> = {
 const pastDayWords =
   /(?<![\p{L}])(?:hom qua|bua qua|toi qua|dem qua|sang qua|trua qua|chieu qua|hom kia|yesterday|last night)(?![\p{L}])/u;
 
-/** One stated clock time and how sure its half of the day is. */
+/**
+ * One stated clock time (LUMI-03 / LUMI-04): the hours its OWN words allow (contracts
+ * `clockTokensIn`: "6h" → 6 or 18, "9h tối" → 21, "12h" → noon), checked against the model's
+ * reading. A model hour the words do not allow is a misreading: the words win and the field is
+ * flagged for review.
+ */
 interface Clock {
-  h: number;
   m: number;
   /** The model's day offset (0, −1, −2). */
   offset: number;
-  /** "8 giờ" with no morning / evening anywhere: both halves are possible. */
-  ambiguous: boolean;
+  /** The possible 24 h hours (two when the words leave morning / evening open). */
+  hours: number[];
+  /** The model read another time than the words say: flag the field. */
+  mismatch: boolean;
+  /** How the question names it ("8:00"). */
+  label: string;
 }
 
 interface Resolved {
@@ -212,7 +252,11 @@ export async function planTextIntents(
   // (no question: none of the quick choices would fit "rồi bú thêm 60ml").
   const timedLogs = intents.filter(
     (i) =>
-      (i.kind === 'bottle' || i.kind === 'breast' || i.kind === 'sleep') &&
+      (i.kind === 'bottle' ||
+        i.kind === 'breast' ||
+        i.kind === 'sleep' ||
+        i.kind === 'pump' ||
+        i.kind === 'diaper') &&
       (i.fields.time !== null || i.fields.endTime !== null),
   ).length;
   const saysPastDay = pastDayWords.test(foldVi(ctx.text));
@@ -228,41 +272,107 @@ export async function planTextIntents(
   const evidenceOf = (i: ModelIntent, field: string) =>
     i.evidence.find((e) => e.field === field)?.text ?? null;
 
+  // LUMI-03 / LUMI-04: every clock time of the message, each with its own period words.
+  const tokens = clockTokensIn(ctx.text);
+  const textFolded = foldVi(ctx.text);
+  const timeFields = intents.reduce(
+    (n, i) => n + (i.fields.time ? 1 : 0) + (i.fields.endTime ? 1 : 0),
+    0,
+  );
+  /** The words a time of [i] was read from: its evidence in the message, else the only match. */
+  const tokenFor = (i: ModelIntent, field: 'time' | 'endTime', h: number, m: number) => {
+    const ev = evidenceOf(i, field);
+    if (ev) {
+      const fe = foldVi(ev).trim();
+      const at = fe ? textFolded.indexOf(fe) : -1;
+      if (at >= 0) {
+        // The words of this time: the one token of its evidence, or the one there that reads as
+        // the model's clock ("9 to 10am" holds two times).
+        const inSpan = tokens.filter(
+          (x) =>
+            (x.index >= at && x.index < at + fe.length) ||
+            (at >= x.index && at < x.index + x.text.length),
+        );
+        if (inSpan.length === 1) {
+          const t = inSpan[0]!;
+          // "9 to 10am" for the start: its own hour is written there too (not a clock form):
+          // that bare number, not the other time, is what the model read.
+          const bare = new RegExp(String.raw`(?<![\d:])${h % 12 || 12}(?![\d:hg])`, 'u');
+          const outside =
+            fe.slice(0, Math.max(0, t.index - at)) + ' ' + fe.slice(t.index - at + t.text.length);
+          if (!allows(t, h, m) && bare.test(outside)) return null;
+          return t;
+        }
+        if (inSpan.length > 1) {
+          const same = inSpan.filter((x) => x.m === m && x.h % 12 === h % 12);
+          return same.length === 1 ? same[0]! : null;
+        }
+      }
+      const own = clockTokensIn(ev)[0];
+      if (own) return own;
+    }
+    if (tokens.length === 1 && timeFields === 1) return tokens[0]!;
+    const same = tokens.filter((x) => x.m === m && x.h % 12 === h % 12);
+    return same.length === 1 ? same[0]! : null;
+  };
+  /** Whether a model hour is one the words allow. */
+  const allows = (t: ClockToken, h: number, m: number) => t.m === m && t.hours.includes(h);
+  // A correction reads its morning / evening from the turn it corrects when its own words are open.
+  const previousPeriod = correcting && hasDayPeriod(ctx.previous!.text);
+
   const clockOf = (i: ModelIntent, field: 'time' | 'endTime'): Clock | null => {
     const v = i.fields[field];
     if (!v) return null;
     const [h, m] = v.split(':').map(Number) as [number, number];
     const offset =
       (field === 'time' ? i.fields.dayOffset : (i.fields.endDayOffset ?? i.fields.dayOffset)) ?? 0;
-    let ambiguous = false;
-    if (!periodSaid && !ampm) {
-      const ev = evidenceOf(i, field);
-      const c = ev ? clockTimeIn(ev) : null;
-      ambiguous = c ? !c.explicit : h >= 1 && h <= 11;
-    }
-    if (ampm && !periodSaid) {
-      const ev = evidenceOf(i, field);
-      const c = ev ? clockTimeIn(ev) : null;
-      if (!c || !c.explicit) {
-        const base = h % 12;
-        return { h: ampm === 'pm' ? base + 12 : base, m, offset, ambiguous: false };
+    const label = (hh: number, mm: number) => `${hh}:${pad(mm)}`;
+    const tok = tokenFor(i, field, h, m);
+    if (tok) {
+      if (!allows(tok, h, m)) {
+        // The model read another time than the words say (LUMI-04): the words win, flagged.
+        return { m: tok.m, offset, hours: tok.hours, mismatch: true, label: label(tok.h, tok.m) };
       }
+      // The words leave the half of the day open but the message (or the turn it corrects) has a
+      // period word somewhere: the model's reading of it stands.
+      if (tok.hours.length > 1 && (periodSaid || previousPeriod)) {
+        return { m, offset, hours: [h], mismatch: false, label: label(tok.h, m) };
+      }
+      return { m, offset, hours: tok.hours, mismatch: false, label: label(tok.h, m) };
     }
-    return { h, m, offset, ambiguous };
+    // No words for this time (an answer, a previous turn): the model's hour; open when it is
+    // 1–11 and nothing anywhere says morning or evening.
+    const open = !periodSaid && !previousPeriod && !ampm && h >= 1 && h <= 11;
+    return {
+      m,
+      offset,
+      hours: open ? [h % 12, (h % 12) + 12] : [h],
+      mismatch: false,
+      label: label(h % 12 === 0 ? 12 : h % 12, m),
+    };
   };
-  const hoursOf = (c: Clock) => (c.ambiguous ? [c.h % 12, (c.h % 12) + 12] : [c.h]);
+  /** The readings of [c] that the person's morning / evening answer keeps (all when none). */
+  const byAnswer = (c: Clock, hours: number[]) =>
+    !ampm || hours.length < 2 ? hours : hours.filter((h) => (ampm === 'pm' ? h >= 12 : h < 12));
   /** A correction that repeats the previous draft's clock keeps that draft's instant. */
   const fromBase = (c: Clock | null, iso: unknown): Date | null =>
-    c && typeof iso === 'string' && localClock(zone, new Date(iso)) === hhmmOf(c.h, c.m)
+    c &&
+    c.hours.length === 1 &&
+    typeof iso === 'string' &&
+    localClock(zone, new Date(iso)) === hhmmOf(c.hours[0]!, c.m)
       ? new Date(iso)
       : null;
+  /** The ambiguous clocks of this message (named in the morning / evening question). */
+  const openClocks: string[] = [];
+  /** Fields whose time the model misread (flagged on their draft). */
+  let misread: string[] = [];
 
   /** A completed log's instant: never silently in the future, last night when said that way. */
   const resolveLog = (c: Clock): Resolved => {
     const days = saysPastDay ? [c.offset] : [0, -1];
     for (const d of days) {
       const date = addDaysIso(today, d);
-      const all = hoursOf(c).map((h) => inst(date, h, c.m));
+      const all = c.hours.map((h) => inst(date, h, c.m));
       const valid = all.filter(
         (t) =>
           t.getTime() <= anchor.getTime() + SKEW_MS &&
@@ -270,14 +380,23 @@ export async function planTextIntents(
       );
       if (valid.length === 1) return { at: valid[0]!, ambiguous: false };
       if (valid.length >= 2) {
-        return { at: valid.sort((a, b) => b.getTime() - a.getTime())[0]!, ambiguous: true };
+        // Only a time that is really open takes the morning / evening answer (LUMI-03).
+        const kept = byAnswer(
+          c,
+          valid.map((t) => Number(localClock(zone, t).slice(0, 2))),
+        );
+        const picked = valid.filter((t) => kept.includes(Number(localClock(zone, t).slice(0, 2))));
+        const latest = (picked.length ? picked : valid).sort((a, b) => b.getTime() - a.getTime());
+        if (ampm) return { at: latest[0]!, ambiguous: false };
+        openClocks.push(c.label);
+        return { at: latest[0]!, ambiguous: true };
       }
       if (d === 0 && !saysPastDay) {
         const near = all.filter((t) => t.getTime() - anchor.getTime() <= NEAR_FUTURE_MS);
         if (near.length > 0) return { at: near[0]!, ambiguous: false };
       }
     }
-    return { at: inst(addDaysIso(today, c.offset), hoursOf(c)[0]!, c.m), ambiguous: false };
+    return { at: inst(addDaysIso(today, c.offset), c.hours[0]!, c.m), ambiguous: false };
   };
 
   /** A sleep start given its end: before it, within 18 h. */
@@ -285,30 +404,39 @@ export async function planTextIntents(
     const endDate = localDateIn(zone, end);
     const cands: Date[] = [];
     for (const d of [0, -1]) {
-      for (const h of hoursOf(c)) cands.push(inst(addDaysIso(endDate, d), h, c.m));
+      for (const h of c.hours) cands.push(inst(addDaysIso(endDate, d), h, c.m));
     }
-    const valid = cands.filter(
+    let valid = cands.filter(
       (t) => t.getTime() < end.getTime() && end.getTime() - t.getTime() <= MAX_SLEEP_MS,
     );
     if (valid.length === 0) {
       // Kept as said (INVALID_TIME for review), never flipped.
-      return { at: inst(addDaysIso(today, c.offset), hoursOf(c)[0]!, c.m), ambiguous: false };
+      return { at: inst(addDaysIso(today, c.offset), c.hours[0]!, c.m), ambiguous: false };
     }
     const halves = new Set(valid.map((t) => Number(localClock(zone, t).slice(0, 2)) >= 12));
+    if (ampm && halves.size > 1) {
+      valid = valid.filter(
+        (t) => Number(localClock(zone, t).slice(0, 2)) >= 12 === (ampm === 'pm'),
+      );
+    }
     valid.sort((a, b) => b.getTime() - a.getTime());
-    return { at: valid[0]!, ambiguous: c.ambiguous && halves.size > 1 };
+    const open = !ampm && halves.size > 1;
+    if (open) openClocks.push(c.label);
+    return { at: valid[0]!, ambiguous: open };
   };
 
   /** A reminder's time on [date] (future): resolved when only one half is still ahead. */
   const resolveReminder = (c: Clock, date: string | null): { hhmm: string; ambiguous: boolean } => {
-    const hours = hoursOf(c);
+    const hours = byAnswer(c, c.hours);
     if (hours.length === 1 || date === null) {
+      if (hours.length > 1) openClocks.push(c.label);
       return { hhmm: hhmmOf(hours[0]!, c.m), ambiguous: hours.length > 1 };
     }
     const ahead = hours.filter(
       (h) => inst(date, h, c.m).getTime() > ctx.now.getTime() - 5 * 60_000,
     );
     if (ahead.length === 1) return { hhmm: hhmmOf(ahead[0]!, c.m), ambiguous: false };
+    if (ahead.length > 1) openClocks.push(c.label);
     return { hhmm: hhmmOf(hours[0]!, c.m), ambiguous: ahead.length > 1 };
   };
 
@@ -316,7 +444,10 @@ export async function planTextIntents(
   const durationFor = (i: ModelIntent): { min: number | null; uncertain: boolean } => {
     const d = i.fields.durationMin;
     if (d !== null && Number.isInteger(d) && d > 0) {
-      if (said.length === 0 || said.includes(d)) return { min: d, uncertain: false };
+      // LUMI-15: a feed or pumping length with no time unit in the words is not trusted past
+      // an hour ("bé bu 120m" is never a two-hour breastfeed).
+      if (said.length === 0) return { min: d, uncertain: i.kind !== 'sleep' && d > 60 };
+      if (said.includes(d)) return { min: d, uncertain: false };
       if (said.length === 1) return { min: said[0]!, uncertain: false };
       return { min: d, uncertain: true };
     }
@@ -325,7 +456,8 @@ export async function planTextIntents(
     if (
       sameKind === 1 &&
       said.length === 1 &&
-      intents.filter((x) => x.kind === 'sleep' || x.kind === 'breast').length === 1
+      intents.filter((x) => x.kind === 'sleep' || x.kind === 'breast' || x.kind === 'pump')
+        .length === 1
     ) {
       return { min: said[0]!, uncertain: false };
     }
@@ -397,11 +529,57 @@ export async function planTextIntents(
     return null;
   };
 
+  /** A point log's time: its words' clock, "2 tiếng trước", a correction's, an answer, else asked. */
+  const pointTime = (c: Clock | null, base: DraftPayload | null): Date | null => {
+    const kept = fromBase(c, x(base, 'occurredAt'));
+    if (c?.mismatch) misread.push('occurredAt');
+    if (kept) return kept;
+    if (c) {
+      const r = resolveLog(c);
+      needsAmpm.push(r.ambiguous);
+      return r.at;
+    }
+    if (ago) return new Date(anchor.getTime() - ago.minutes * 60_000);
+    if (base && 'occurredAt' in base && base.occurredAt) return new Date(base.occurredAt);
+    const at = missingAt();
+    if (!at && timedLogs === 0) askOnce(timeMissingQuestion(ctx, null));
+    return at;
+  };
+
+  /**
+   * A feed / pumping time whose words say it ENDED then ("bú 15 phút, xong lúc 8h sáng") with a
+   * length is the end, whatever field the model put it in (br-06 live: `time` 08:00, phase stop).
+   */
+  const endFirst = (i: ModelIntent, durMin: number | null): [Clock | null, Clock | null] => {
+    const c = clockOf(i, 'time');
+    const endC = clockOf(i, 'endTime');
+    if (c && !endC && durMin) {
+      const ev = foldVi(evidenceOf(i, 'time') ?? '');
+      if (
+        /(?<![\p{L}])(?:xong|het|ket thuc|den|toi|finished|ended|done|until)(?![\p{L}])/u.test(ev)
+      ) {
+        return [null, c];
+      }
+    }
+    return [c, endC];
+  };
+
   const previousOf = (kind: DraftKind) =>
     ctx.previous?.drafts.find((d) => d.payload.kind === kind) ?? null;
 
   let reminderIndex = 0;
   let assignable: ScopeMember[] | null = null;
+  const clientCan = (k: DraftKind) => !ctx.clientKinds || ctx.clientKinds.includes(k);
+  /** A side the words say for [i] (its grounded evidence, or the message when it is the only one). */
+  const sideOf = (i: ModelIntent): 'left' | 'right' | 'both' | null => {
+    const ev = evidenceOf(i, 'side');
+    if (ev && grounded(ev)) {
+      const fromEv = breastSideIn(ev);
+      if (fromEv) return fromEv;
+    }
+    const sameKind = intents.filter((x) => x.kind === i.kind).length;
+    return sameKind === 1 ? breastSideIn(ctx.text) : null;
+  };
 
   /**
    * Lumi 2026-10-16: an ongoing sleep / feed drives the app's timer. `start` ("con đang ngủ",
@@ -416,10 +594,22 @@ export async function planTextIntents(
     kind: 'sleep' | 'breast',
     durMin: number | null,
     base: DraftPayload | null,
-  ): { payload: DraftPayload } | { finishedEnd: Date } | null => {
+  ): { payload: DraftPayload } | { finishedEnd: Date } | { legacy: true } | null => {
     const st = states.find((x) => x.timer === kind) ?? null;
-    const phase = st?.action ?? i.fields.phase ?? null;
+    // The model's phase only with words of something happening now / just over ("bú sữa"
+    // alone is not a running feed, rd-09).
+    const phase =
+      st?.action ?? (i.fields.phase && phaseCue.test(foldVi(ctx.text)) ? i.fields.phase : null);
     if (!phase || durMin !== null || base) return null;
+    // LUMI-05: an app build that cannot show a timer draft gets a notice with the timer's link.
+    const legacy = () => {
+      notices.push({
+        kind: 'timer',
+        code: 'APP_UPDATE_NEEDED',
+        timer: { type: kind, since: anchor },
+      });
+      return { legacy: true as const };
+    };
     let startC = clockOf(i, 'time');
     let endC = clockOf(i, 'endTime');
     if (phase === 'stop' && startC && !endC) {
@@ -436,6 +626,7 @@ export async function planTextIntents(
       if (c) {
         const r = resolveLog(c);
         needsAmpm.push(r.ambiguous);
+        if (c.mismatch) misread.push('at');
         return r.at ?? anchor;
       }
       if (ago && !ago.justNow) return new Date(anchor.getTime() - ago.minutes * 60_000);
@@ -452,6 +643,7 @@ export async function planTextIntents(
     });
     if (phase === 'start') {
       if (endC) return null;
+      if (!clientCan('timer')) return legacy();
       if (running) {
         notices.push({
           kind: 'timer',
@@ -460,8 +652,9 @@ export async function planTextIntents(
         });
         return { payload: stopOf(running, anchor) };
       }
-      const saidSide =
-        st?.side ?? (i.fields.side === 'left' || i.fields.side === 'right' ? i.fields.side : null);
+      // LUMI-07: the side from the words only; else the form's default, never flagged.
+      const evSide = sideOf(i);
+      const saidSide = st?.side ?? (evSide === 'left' || evSide === 'right' ? evSide : null);
       return {
         payload: {
           kind: 'timer',
@@ -478,6 +671,7 @@ export async function planTextIntents(
       };
     }
     if (startC) return null; // "ngủ từ 9h, vừa dậy": a finished sleep with both ends.
+    if (running && !clientCan('timer')) return legacy();
     if (running) return { payload: stopOf(running, when(endC)) };
     return kind === 'sleep' ? { finishedEnd: when(endC) } : null;
   };
@@ -493,6 +687,12 @@ export async function planTextIntents(
       notices.push({ kind, code: 'WRITE_DENIED' });
       continue;
     }
+    // LUMI-05: never a draft the sending app cannot show (an older build): said instead.
+    if (!clientCan(kind)) {
+      notices.push({ kind, code: 'APP_UPDATE_NEEDED' });
+      continue;
+    }
+    misread = [];
     const f = intent.fields;
     const name = (field: string) => draftField[field]?.[kind] ?? null;
     const uncertain = new Set<string>();
@@ -544,23 +744,9 @@ export async function planTextIntents(
         // Lumi 2026-10-16: milk not said takes the form's default (the last bottle's): the
         // model's doubt about a value it was never given must not block the save.
         else if (f.milk === null) uncertain.delete('milk');
-        let at: Date | null;
         const c = clockOf(intent, 'time');
-        const kept = fromBase(c, x(base, 'occurredAt'));
-        if (kept) {
-          at = kept;
-        } else if (c) {
-          const r = resolveLog(c);
-          at = r.at;
-          needsAmpm.push(r.ambiguous);
-        } else if (ago) {
-          at = new Date(anchor.getTime() - ago.minutes * 60_000);
-        } else if (base && 'occurredAt' in base && base.occurredAt) {
-          at = new Date(base.occurredAt);
-        } else {
-          at = missingAt();
-          if (!at && timedLogs === 0) askOnce(timeMissingQuestion(ctx, null));
-        }
+        if (!c) uncertain.delete('occurredAt');
+        const at = pointTime(c, base);
         payload = {
           kind: 'bottle',
           amountMl:
@@ -581,10 +767,10 @@ export async function planTextIntents(
           payload = tp.payload;
           break;
         }
+        if (tp && 'legacy' in tp) continue;
         const durMin = dur.min ?? (x(base, 'durationMin') as number | null) ?? null;
-        const sideSaid =
-          f.side ??
-          (intents.filter((i) => i.kind === 'breast').length === 1 ? breastSideIn(ctx.text) : null);
+        // LUMI-07: a side only from the words (the model's guess is never a value to review).
+        const sideSaid = sideOf(intent);
         // Lumi 2026-10-16: a side not said takes the form's default (the other side of the last
         // feed, else both) — never a blocking gap.
         const side =
@@ -594,9 +780,11 @@ export async function planTextIntents(
           'both';
         if (sideSaid === null) uncertain.delete('side');
         let at: Date | null;
-        const c = clockOf(intent, 'time');
-        const endC = clockOf(intent, 'endTime');
+        const [c, endC] = endFirst(intent, durMin);
         const kept = fromBase(c, x(base, 'occurredAt'));
+        if (c?.mismatch || endC?.mismatch) misread.push('occurredAt');
+        // The model's doubt about a start it did not read (computed from the end) is not kept.
+        if (!c && !(endC?.mismatch ?? false)) uncertain.delete('occurredAt');
         if (kept) {
           at = kept;
         } else if (c) {
@@ -612,6 +800,15 @@ export async function planTextIntents(
           ) {
             at = new Date(anchor.getTime() - durMin * 60_000);
             link = { derived: 'occurredAt' };
+          }
+          // "bú 15 phút, xong lúc 8h": a start the model computed from the end and the length
+          // agrees with the words — nothing for the person to check (LUMI-09).
+          if (at && endC && durMin && !endC.mismatch) {
+            const e = resolveLog(endC).at;
+            if (e && Math.abs(e.getTime() - durMin * 60_000 - at.getTime()) <= SKEW_MS) {
+              uncertain.delete('occurredAt');
+              link = { derived: 'occurredAt' };
+            }
           }
         } else if (endC && durMin) {
           const r = resolveLog(endC);
@@ -651,10 +848,18 @@ export async function planTextIntents(
           payload = tp.payload;
           break;
         }
+        if (tp && 'legacy' in tp) continue;
         const finishedEnd = tp && 'finishedEnd' in tp ? tp.finishedEnd : null;
         let durMin = dur.min;
         const startC = clockOf(intent, 'time');
         const endC = clockOf(intent, 'endTime');
+        if (startC?.mismatch) misread.push('startedAt');
+        if (endC?.mismatch) misread.push('endedAt');
+        // LUMI-09: the model's doubt about an end it did not read (a chip, an answer, a length)
+        // is not a doubt about the person's words.
+        if (!startC) uncertain.delete('startedAt');
+        if (!endC) uncertain.delete('endedAt');
+        if (dur.min !== null && said.includes(dur.min)) uncertain.delete('durationMin');
         let start: Date | null = null;
         let end: Date | null = null;
         const keptEnd = fromBase(endC, x(base, 'endedAt'));
@@ -696,6 +901,16 @@ export async function planTextIntents(
           start = startAt(end, end);
           if (!start && !ctx.asked.has('time.start')) askOnce(sleepStartQuestion(ctx, end));
         }
+        // A length said for another item of the message ("rồi bú mẹ 10 phút") is not this sleep's.
+        if (
+          start &&
+          end &&
+          durMin !== null &&
+          intents.some((o) => o !== intent && o.kind !== 'sleep' && o.fields.durationMin === durMin)
+        ) {
+          durMin = null;
+          uncertain.delete('durationMin');
+        }
         const span = completeSpan({
           start: start?.getTime() ?? null,
           end: end?.getTime() ?? null,
@@ -704,6 +919,9 @@ export async function planTextIntents(
         if (span.inconsistent) {
           uncertain.add('durationMin');
           uncertain.add('endedAt');
+        } else if (span.start !== null && span.end !== null) {
+          // The length follows the two ends (the server recomputes it): never the model's doubt.
+          uncertain.delete('durationMin');
         }
         durMin = span.durationMin;
         link =
@@ -725,6 +943,11 @@ export async function planTextIntents(
         if (f.observation === null) {
           notices.push({ kind, code: 'VALIDATION_FAILED' });
           continue;
+        }
+        // A day the words do not name is today: the model's doubt about it is not kept.
+        const day = relativeDateIn(ctx.text, today, 'past');
+        if (!day || (day.certain && day.date === addDaysIso(today, f.dayOffset ?? 0))) {
+          uncertain.delete('date');
         }
         payload = {
           kind: 'observation',
@@ -763,6 +986,8 @@ export async function planTextIntents(
           date = f.date;
           uncertain.add('date');
         }
+        // No day in the words: today, as the form; the model's doubt about it is not kept.
+        if (!d && date === null) uncertain.delete('date');
         date ??= today;
         const allowed = new Set(ctx.categories.map((c) => c.id));
         let categoryId = f.categoryId && allowed.has(f.categoryId) ? f.categoryId : null;
@@ -770,6 +995,9 @@ export async function planTextIntents(
         if (categoryId === null || !allowed.has(categoryId)) {
           categoryId = otherCategoryId;
           if (!(f.categoryId === otherCategoryId)) uncertain.add('categoryId');
+        } else if (categoryHintIn([f.title ?? '', ctx.text].join(' ')) === categoryId) {
+          // The words point to the same category ("wipes" → Tã & vệ sinh): nothing to check.
+          uncertain.delete('categoryId');
         }
         const merchant =
           f.merchant?.trim() && grounded(f.merchant) ? f.merchant.trim().slice(0, 120) : null;
@@ -813,6 +1041,7 @@ export async function planTextIntents(
           const r = resolveReminder(c, date);
           time = r.hhmm;
           needsAmpm.push(r.ambiguous);
+          if (c.mismatch) misread.push('time');
         }
         // ---- D-075 #5: who does it — the person picks among eligible members ----
         let assigneeUid: string | null = null;
@@ -847,17 +1076,142 @@ export async function planTextIntents(
         payload = { kind: 'reminder', title: title.slice(0, 120), date, time, assigneeUid };
         break;
       }
+      // ---- Lumi fixes 2026-10-16 (LUMI-01): the care module's other logs ----
+      case 'pump': {
+        // Millilitres from the words ("hút được 80ml", "4oz"); the model only says which words.
+        const ev = evidenceOf(intent, 'amountMl');
+        const only =
+          intents.filter((y) => y.kind === 'pump').length === 1 ? bottleMlIn(ctx.text) : null;
+        const parsed = (ev ? bottleMlIn(ev) : null) ?? only;
+        let amount = parsed?.ml ?? f.amountMl ?? (x(base, 'amountMl') as number | null) ?? null;
+        if (parsed && f.amountMl !== null && Math.abs(parsed.ml - f.amountMl) > 2) {
+          amount = parsed.ml;
+        }
+        if (amount !== null && !Number.isInteger(amount)) amount = Math.round(amount);
+        if (amount !== null && !parsed && f.amountMl !== null) uncertain.add('amountMl');
+        const dur = durationFor(intent);
+        if (dur.uncertain) uncertain.add('durationMin');
+        const durMin = dur.min ?? (x(base, 'durationMin') as number | null) ?? null;
+        // The form's side: as said, else the side it remembers (the last pump's), else both.
+        const sideSaid = sideOf(intent);
+        const side =
+          sideSaid ??
+          (x(base, 'side') as 'left' | 'right' | 'both' | null) ??
+          ctx.lastPumpSide ??
+          'both';
+        if (sideSaid === null) uncertain.delete('side');
+        const [c, endC] = endFirst(intent, durMin);
+        if (!c && !(endC?.mismatch ?? false)) uncertain.delete('occurredAt');
+        if (endC?.mismatch) misread.push('occurredAt');
+        let at: Date | null;
+        if (!c && endC && durMin) {
+          // "hút xong lúc 10h, 20 phút": it started 20 minutes before.
+          const r = resolveLog(endC);
+          needsAmpm.push(r.ambiguous);
+          at = r.at ? new Date(r.at.getTime() - durMin * 60_000) : null;
+          link = { derived: 'occurredAt' };
+        } else {
+          at = pointTime(c, base);
+          // "vừa hút 15 phút": it just ended, so it started 15 minutes ago (as a breastfeed).
+          if (
+            durMin &&
+            ago?.justNow &&
+            (!at || Math.abs(at.getTime() - anchor.getTime()) <= SKEW_MS)
+          ) {
+            at = new Date(anchor.getTime() - durMin * 60_000);
+            link = { derived: 'occurredAt' };
+          }
+        }
+        payload = {
+          kind: 'pump',
+          amountMl: amount !== null && amount > 0 ? amount : null,
+          occurredAt: at?.toISOString() ?? null,
+          side,
+          durationMin: durMin !== null && durMin > 0 ? durMin : null,
+          ...(link ? { linked: link } : {}),
+        };
+        break;
+      }
+      case 'diaper': {
+        // Wet / dirty / both from the words; the model's value only with its own words.
+        const words =
+          intents.filter((y) => y.kind === 'diaper').length === 1
+            ? (diaperIn(ctx.text)?.kind ?? null)
+            : null;
+        const ev = evidenceOf(intent, 'diaper');
+        const modelKind = f.diaper && ev && grounded(ev) ? f.diaper : null;
+        const said = words ?? modelKind ?? (x(base, 'diaper') as 'wet' | 'dirty' | 'both' | null);
+        if (f.diaper && said !== f.diaper) uncertain.delete('diaper');
+        const c = clockOf(intent, 'time');
+        if (!c) uncertain.delete('occurredAt');
+        const at = pointTime(c, base);
+        payload = { kind: 'diaper', diaper: said ?? null, occurredAt: at?.toISOString() ?? null };
+        break;
+      }
+      case 'growth': {
+        const g =
+          intents.filter((y) => y.kind === 'growth').length === 1 ? growthIn(ctx.text) : null;
+        const pick = (
+          fromWords: number | null | undefined,
+          model: number | null | undefined,
+          key: string,
+        ) => {
+          if (fromWords !== null && fromWords !== undefined) {
+            if (model !== null && model !== undefined && Math.abs(model - fromWords) > 0.05) {
+              // The model read another number than the words: the words win (checked).
+              uncertain.add(key);
+            }
+            return fromWords;
+          }
+          if (model !== null && model !== undefined && model > 0) {
+            // A number only the model saw: shown for review, never trusted as is.
+            uncertain.add(key);
+            return Math.round(model * 10) / 10;
+          }
+          return (x(base, key) as number | null) ?? null;
+        };
+        const weightKg = pick(g?.weightKg, f.weightKg, 'weightKg');
+        const lengthCm = pick(g?.lengthCm, f.lengthCm, 'lengthCm');
+        if ((g?.headCm ?? f.headCm ?? null) !== null) {
+          notices.push({
+            kind: 'growth',
+            code: 'PART_NOT_SAVED',
+            what: 'head_circumference',
+            link: '/care/growth',
+          });
+        }
+        // The measuring day: as said ("hôm qua đi khám"), else the model's day, else today.
+        const d = relativeDateIn(ctx.text, today, 'past');
+        const measuredOn =
+          d?.date ??
+          (f.dayOffset !== null && f.dayOffset !== undefined
+            ? addDaysIso(today, f.dayOffset)
+            : ((x(base, 'measuredOn') as string | null) ?? today));
+        if (d && !d.certain) uncertain.add('measuredOn');
+        payload = { kind: 'growth', weightKg, lengthCm, measuredOn };
+        break;
+      }
       default:
         notices.push({ kind, code: 'MODULE_UNAVAILABLE' });
         continue;
     }
 
+    // LUMI-07: a timer draft is checked by its time only (its side is the form's default when
+    // not said); LUMI-04: a time the model misread is always flagged.
+    if (payload.kind === 'timer') uncertain.clear();
+    for (const m of misread) uncertain.add(m);
     const checked = draftPayloadSchema.safeParse(payload);
     if (!checked.success) {
       notices.push({ kind, code: 'VALIDATION_FAILED' });
       continue;
     }
-    const problems = draftProblems(checked.data, anchor);
+    // LUMI-11: plus what only the baby's zone tells (a reminder whose time is already gone).
+    const problems = [
+      ...new Set([
+        ...draftProblems(checked.data, anchor),
+        ...zoneDraftProblems(checked.data, ctx.now, zone),
+      ]),
+    ];
     if (checked.data.kind === 'observation' && checked.data.date > today) uncertain.add('date');
     // Lumi 2026-10-16: what is missing comes from the payload (the kind's required fields that
     // are empty), never from the model's list; only the draft's own, filled fields are unsure.
@@ -874,9 +1228,9 @@ export async function planTextIntents(
     if (replaces) notices.push({ kind, code: 'CORRECTION_APPLIED' });
   }
 
-  // Morning or evening first (it changes every ambiguous time at once).
+  // Morning or evening first; the answer applies only to the times it names (LUMI-03).
   if (!ampm && needsAmpm.some(Boolean) && !ctx.asked.has('time.ampm') && ctx.round < 4) {
-    return { kind: 'ask', clarification: ampmQuestion() };
+    return { kind: 'ask', clarification: ampmQuestion([...new Set(openClocks)]) };
   }
   if (ask) return { kind: 'ask', clarification: ask };
 
@@ -966,6 +1320,161 @@ export function checkIntents(
       correctsPrevious: false,
     });
   }
+  return careBackstops(ctx.text, out);
+}
+
+/** Words that something is going on now or has just ended (a timer start / stop). */
+const phaseCue =
+  /(?<![\p{L}])(?:dang|vua|moi|bat dau|roi|rui|xong|day|thuc|tinh|now|currently|just|is|started|woke|awake|done|finished|asleep|sleeping|napping|nursing|feeding)(?![\p{L}])/u;
+
+const feedWords =
+  /(?<![\p{L}])(?:cho (?:be |con )?(?:bu|uong|an|ti)|bu binh|be bu|con bu|be uong|bottle|fed|feed)(?![\p{L}])/u;
+const breastWords = /(?<![\p{L}])(?:bu me|ti me|cho bu me|breastf\w*|nurs\w*)(?![\p{L}])/u;
+const measureWords =
+  /(?<![\p{L}])(?:nang|can nang|can|cao|dai|chieu dai|vong dau|tang truong|weigh\w*|length|tall|head)(?![\p{L}])/u;
+
+/** The words carry a care log the model may have missed or misnamed (pump, diaper, growth). */
+export function careCueIn(text: string): boolean {
+  return pumpCueIn(text) || diaperIn(text) !== null || growthCue(text) !== null;
+}
+
+/** A measurement said about the baby (never "2kg sữa 500k": money without measuring words). */
+function growthCue(text: string) {
+  const g = growthIn(text);
+  if (!g) return null;
+  if (looksLikeSpending(text) && !measureWords.test(foldVi(text))) return null;
+  return g;
+}
+
+/**
+ * Lumi fixes 2026-10-16 (LUMI-01, LUMI-15): the care logs in the words, whatever the model named
+ * them — deterministic, so a reply of the wrong kind never becomes a wrong record one tap away:
+ * - "hút sữa 120ml" is a pumping session, never a bottle feed (nor a breastfeed);
+ * - "thay tã ướt", "bé vừa ị" is a diaper change, never an observation or a meal;
+ * - "bé nặng 5,2kg", "hôm qua đi khám bé nặng 5kg8" is a growth record, never an expense (a
+ *   clinic visit with no amount said is not money);
+ * - a log the model missed entirely gets its item from the words (time from the message's only
+ *   clock when nothing else has one);
+ * - "bé bu 120m" (a bare m after bú, ≥ 50, no "mẹ") is a 120 ml bottle, never a 2-hour breastfeed.
+ */
+export function careBackstops(text: string, raw: ModelIntent[]): ModelIntent[] {
+  let out = [...raw];
+  const f = foldVi(text);
+  const tokens = clockTokensIn(text);
+  const timed = (except: ModelIntent | null) =>
+    out.some((i) => i !== except && (i.fields.time !== null || i.fields.endTime !== null));
+  const soleTime = (except: ModelIntent | null) =>
+    tokens.length === 1 && !timed(except)
+      ? `${String(tokens[0]!.h).padStart(2, '0')}:${String(tokens[0]!.m).padStart(2, '0')}`
+      : null;
+  const item = (kind: DraftKind, fields: Partial<ModelIntent['fields']>): ModelIntent => ({
+    kind,
+    fields: { ...blankFields, ...fields },
+    evidence: [],
+    uncertainFields: [],
+    missingFields: [],
+    correctsPrevious: false,
+  });
+  // ---- LUMI-15: "bé bu 120m" ----
+  const bare = bareMAmountIn(text);
+  if (bare !== null && durationsIn(text).length === 0) {
+    out = out.map((i) =>
+      i.kind === 'breast' && (i.fields.durationMin === bare || i.fields.durationMin === null)
+        ? {
+            ...i,
+            kind: 'bottle' as const,
+            fields: { ...i.fields, amountMl: bare, durationMin: null, side: null },
+            evidence: [...i.evidence.filter((e) => e.field !== 'durationMin')],
+            uncertainFields: i.uncertainFields.filter((u) => u !== 'durationMin' && u !== 'side'),
+          }
+        : i,
+    );
+  }
+  // ---- Pump ----
+  if (pumpCueIn(text) && !out.some((i) => i.kind === 'pump')) {
+    // A feed (or the model's "meal") named for pumping words is the pumping session.
+    const feeds = out.filter(
+      (i) =>
+        i.kind === 'bottle' || i.kind === 'meal' || (i.kind === 'breast' && !breastWords.test(f)),
+    );
+    if (feeds.length === 1 && !feedWords.test(f.replace(/hut sua|vat sua/g, ''))) {
+      const i = feeds[0]!;
+      out = out.map((y) =>
+        y === i
+          ? {
+              ...y,
+              kind: 'pump' as const,
+              fields: {
+                ...y.fields,
+                milk: null,
+                title: null,
+                amountMl: y.fields.amountMl ?? bottleMlIn(text)?.ml ?? null,
+                side: y.fields.side ?? breastSideIn(text),
+              },
+            }
+          : y,
+      );
+    } else if (feeds.length === 0) {
+      out.push(
+        item('pump', {
+          amountMl: bottleMlIn(text)?.ml ?? null,
+          side: breastSideIn(text),
+          time: soleTime(null),
+          durationMin: durationsIn(text).length === 1 ? durationsIn(text)[0]!.minutes : null,
+        }),
+      );
+    } else {
+      out.push(item('pump', { side: breastSideIn(text) }));
+    }
+  }
+  // ---- Diaper ----
+  const dia = diaperIn(text);
+  if (dia && !out.some((i) => i.kind === 'diaper')) {
+    const wrong = out.find(
+      (i) =>
+        i.kind === 'meal' ||
+        (i.kind === 'observation' && (i.fields.observation === 'usual' || !observationCueIn(text))),
+    );
+    if (wrong) {
+      out = out
+        .filter((i) => i === wrong || !(i.kind === 'meal' || i.kind === 'observation'))
+        .map((i) =>
+          i === wrong
+            ? item('diaper', {
+                diaper: dia.kind,
+                time: i.fields.time ?? soleTime(i),
+                dayOffset: i.fields.dayOffset,
+              })
+            : i,
+        );
+    } else {
+      out.push(item('diaper', { diaper: dia.kind, time: soleTime(null) }));
+    }
+  }
+  // ---- Growth ----
+  const g = growthCue(text);
+  if (g && (g.weightKg !== null || g.lengthCm !== null) && !out.some((i) => i.kind === 'growth')) {
+    // A clinic visit read as an expense with no money said is the measurement, not a cost.
+    const noMoney = moneyAmountsIn(text).length === 0;
+    out = out.filter(
+      (i) =>
+        !(i.kind === 'expense' && noMoney && !(i.fields.amount && i.fields.amount > 0)) &&
+        i.kind !== 'meal' &&
+        !(i.kind === 'observation' && !observationCueIn(text)),
+    );
+    out.push(
+      item('growth', {
+        weightKg: g.weightKg,
+        lengthCm: g.lengthCm,
+        headCm: g.headCm,
+        dayOffset: /(?<![\p{L}])(?:hom qua|yesterday)(?![\p{L}])/u.test(f)
+          ? -1
+          : /(?<![\p{L}])hom kia(?![\p{L}])/u.test(f)
+            ? -2
+            : 0,
+      }),
+    );
+  }
   return out;
 }
 
@@ -976,11 +1485,18 @@ function x(base: DraftPayload | null, key: string): unknown {
 
 // ---------- The server's questions (the words and chips are ours) ----------
 
-export function ampmQuestion(): Clarification {
+export function ampmQuestion(clocks: readonly string[] = []): Clarification {
+  // LUMI-03: the question names the time(s) it is about; other times of the message keep theirs.
+  const list = clocks.slice(0, 3).join(', ');
   return {
     id: 'pending',
     field: 'time.ampm',
-    question: L('Giờ đó là buổi sáng hay chiều tối?', 'Was that in the morning or the evening?'),
+    question:
+      clocks.length === 0
+        ? L('Giờ đó là buổi sáng hay chiều tối?', 'Was that in the morning or the evening?')
+        : clocks.length === 1
+          ? L(`${list} là buổi sáng hay chiều tối?`, `Was ${list} in the morning or the evening?`)
+          : L(`${list} là buổi sáng hay chiều tối?`, `Were ${list} in the morning or the evening?`),
     choices: [
       { id: 'am', label: L('Buổi sáng', 'Morning') },
       { id: 'pm', label: L('Chiều / tối', 'Afternoon / evening') },

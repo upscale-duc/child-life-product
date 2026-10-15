@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_32629a1731b57aa75f00f68a717f1961",
+     "id": "tk_106d78cb8c8269634d41e902510adc22",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_32629a1731b57aa75f00f68a717f1961_0",
-      "taskId": "tk_32629a1731b57aa75f00f68a717f1961",
+      "id": "dr_106d78cb8c8269634d41e902510adc22_0",
+      "taskId": "tk_106d78cb8c8269634d41e902510adc22",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -62,7 +62,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_32629a1731b57aa75f00f68a717f1961"
+       "task:tk_106d78cb8c8269634d41e902510adc22"
       ],
       "recordId": null,
       "recordLink": null,
@@ -84,7 +84,7 @@
         "text": "đang cho bú bên trái"
        }
       ],
-      "taskId": "tk_32629a1731b57aa75f00f68a717f1961",
+      "taskId": "tk_106d78cb8c8269634d41e902510adc22",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -103,11 +103,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_32629a1731b57aa75f00f68a717f1961_0",
+        "draftId": "dr_106d78cb8c8269634d41e902510adc22_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_32629a1731b57aa75f00f68a717f1961",
+      "taskId": "tk_106d78cb8c8269634d41e902510adc22",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -122,7 +122,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_32629a1731b57aa75f00f68a717f1961",
+     "id": "tk_106d78cb8c8269634d41e902510adc22",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -153,8 +153,8 @@
     },
     "drafts": [
      {
-      "id": "dr_32629a1731b57aa75f00f68a717f1961_0",
-      "taskId": "tk_32629a1731b57aa75f00f68a717f1961",
+      "id": "dr_106d78cb8c8269634d41e902510adc22_0",
+      "taskId": "tk_106d78cb8c8269634d41e902510adc22",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -175,9 +175,9 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_32629a1731b57aa75f00f68a717f1961"
+       "task:tk_106d78cb8c8269634d41e902510adc22"
       ],
-      "recordId": "r_055c2d612f19419cc7a42558b7167834",
+      "recordId": "r_d6bfa7550e6354ad48a1a795380e0de8",
       "recordLink": "/care/timer/breast?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
@@ -202,7 +202,7 @@
         "text": "đang cho bú bên trái"
        }
       ],
-      "taskId": "tk_32629a1731b57aa75f00f68a717f1961",
+      "taskId": "tk_106d78cb8c8269634d41e902510adc22",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -221,11 +221,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_32629a1731b57aa75f00f68a717f1961_0",
+        "draftId": "dr_106d78cb8c8269634d41e902510adc22_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_32629a1731b57aa75f00f68a717f1961",
+      "taskId": "tk_106d78cb8c8269634d41e902510adc22",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -241,7 +241,7 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_32629a1731b57aa75f00f68a717f1961_0",
+          "draftId": "dr_106d78cb8c8269634d41e902510adc22_0",
           "status": "saved",
           "recordLink": "/care/timer/breast?babyId=b_00000000000000000001",
           "errorCode": null
@@ -249,7 +249,7 @@
         ]
        }
       ],
-      "taskId": "tk_32629a1731b57aa75f00f68a717f1961",
+      "taskId": "tk_106d78cb8c8269634d41e902510adc22",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

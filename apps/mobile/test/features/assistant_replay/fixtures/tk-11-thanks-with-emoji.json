@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a06046487fc450362b688c8a77018922",
+     "id": "tk_acc74eee6b41c71ee50c014eb969fd98",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -51,7 +51,7 @@
         "text": "cảm ơn nha 😊"
        }
       ],
-      "taskId": "tk_a06046487fc450362b688c8a77018922",
+      "taskId": "tk_acc74eee6b41c71ee50c014eb969fd98",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -74,7 +74,7 @@
         "code": "SMALL_TALK"
        }
       ],
-      "taskId": "tk_a06046487fc450362b688c8a77018922",
+      "taskId": "tk_acc74eee6b41c71ee50c014eb969fd98",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

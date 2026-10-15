@@ -9,26 +9,70 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_923fb5c00a39e85f80e606e4b45fca7a",
+     "id": "tk_c41b7af43a07ddb6d42a85f1adfee542",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
-     "state": "ready",
+     "state": "awaiting_clarification",
      "version": 3,
      "modality": "text",
      "credits": 1,
      "plan": "free",
-     "usage": "committed",
+     "usage": "reserved",
      "errorCode": null,
-     "round": 0,
-     "clarification": null,
-     "clarificationExpiresAt": null,
+     "round": 1,
+     "clarification": {
+      "id": "cl_1",
+      "field": "sleep.when",
+      "question": {
+       "vi": "Giấc ngày hay giấc đêm?",
+       "en": "Naps or night sleep?"
+      },
+      "choices": [
+       {
+        "id": "night",
+        "label": {
+         "vi": "Giấc đêm",
+         "en": "Night"
+        }
+       },
+       {
+        "id": "day",
+        "label": {
+         "vi": "Giấc ngày",
+         "en": "Naps"
+        }
+       },
+       {
+        "id": "unsure",
+        "label": {
+         "vi": "Chưa rõ",
+         "en": "Not sure"
+        }
+       }
+      ],
+      "allowText": false
+     },
+     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
      "anchorInstant": "2026-10-15T07:20:00.000Z",
      "timezone": "Asia/Ho_Chi_Minh",
      "createdAt": "2026-10-15T07:20:00.000Z",
      "updatedAt": "2026-10-15T07:20:00.000Z",
+     "care": {
+      "topic": "sleep_concern",
+      "sleep": {
+       "kind": "night_waking",
+       "when": null,
+       "since": null
+      },
+      "guidance": null,
+      "recipeIds": [],
+      "plan": null,
+      "followUp": null,
+      "feedback": null
+     },
      "visibility": "shared",
      "author": {
       "uid": "u_mai",
@@ -38,40 +82,7 @@
      },
      "routing": null
     },
-    "drafts": [
-     {
-      "id": "dr_923fb5c00a39e85f80e606e4b45fca7a_0",
-      "taskId": "tk_923fb5c00a39e85f80e606e4b45fca7a",
-      "itemIndex": 0,
-      "scope": {
-       "type": "child",
-       "babyId": "b_00000000000000000001"
-      },
-      "payload": {
-       "kind": "observation",
-       "observation": "sleep",
-       "date": "2026-10-15",
-       "when": "night",
-       "note": null
-      },
-      "missingFields": [],
-      "uncertainFields": [
-       "when"
-      ],
-      "revision": 1,
-      "state": "needs_review",
-      "expiresAt": "2026-10-16T07:20:00.000Z",
-      "sourceRefs": [
-       "task:tk_923fb5c00a39e85f80e606e4b45fca7a"
-      ],
-      "recordId": null,
-      "recordLink": null,
-      "errorCode": null,
-      "warnings": [],
-      "problems": [],
-      "confirmedBy": null
-     }
-    ],
+    "drafts": [],
     "messages": [
      {
       "id": "00000001",
@@ -84,7 +95,7 @@
         "text": "bé hay thức giấc"
        }
       ],
-      "taskId": "tk_923fb5c00a39e85f80e606e4b45fca7a",
+      "taskId": "tk_c41b7af43a07ddb6d42a85f1adfee542",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -101,273 +112,47 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "draft_reference",
+        "type": "clarification",
         "schemaVersion": 1,
-        "draftId": "dr_923fb5c00a39e85f80e606e4b45fca7a_0",
-        "revision": 1
+        "clarification": {
+         "id": "cl_1",
+         "field": "sleep.when",
+         "question": {
+          "vi": "Giấc ngày hay giấc đêm?",
+          "en": "Naps or night sleep?"
+         },
+         "choices": [
+          {
+           "id": "night",
+           "label": {
+            "vi": "Giấc đêm",
+            "en": "Night"
+           }
+          },
+          {
+           "id": "day",
+           "label": {
+            "vi": "Giấc ngày",
+            "en": "Naps"
+           }
+          },
+          {
+           "id": "unsure",
+           "label": {
+            "vi": "Chưa rõ",
+            "en": "Not sure"
+           }
+          }
+         ],
+         "allowText": false
+        }
        }
       ],
-      "taskId": "tk_923fb5c00a39e85f80e606e4b45fca7a",
+      "taskId": "tk_c41b7af43a07ddb6d42a85f1adfee542",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
       "author": null
-     }
-    ],
-    "events": []
-   }
-  },
-  {
-   "label": "probe · after fix",
-   "as": "MOM",
-   "snapshot": {
-    "task": {
-     "id": "tk_923fb5c00a39e85f80e606e4b45fca7a",
-     "conversationId": "cv_b_00000000000000000001",
-     "scope": {
-      "type": "child",
-      "babyId": "b_00000000000000000001"
-     },
-     "state": "ready",
-     "version": 3,
-     "modality": "text",
-     "credits": 1,
-     "plan": "free",
-     "usage": "committed",
-     "errorCode": null,
-     "round": 0,
-     "clarification": null,
-     "clarificationExpiresAt": null,
-     "anchorInstant": "2026-10-15T07:20:00.000Z",
-     "timezone": "Asia/Ho_Chi_Minh",
-     "createdAt": "2026-10-15T07:20:00.000Z",
-     "updatedAt": "2026-10-15T07:20:00.000Z",
-     "visibility": "shared",
-     "author": {
-      "uid": "u_mai",
-      "name": "Mai",
-      "relation": "mother",
-      "relationCustom": null
-     },
-     "routing": null
-    },
-    "drafts": [
-     {
-      "id": "dr_923fb5c00a39e85f80e606e4b45fca7a_0",
-      "taskId": "tk_923fb5c00a39e85f80e606e4b45fca7a",
-      "itemIndex": 0,
-      "scope": {
-       "type": "child",
-       "babyId": "b_00000000000000000001"
-      },
-      "payload": {
-       "kind": "observation",
-       "observation": "sleep",
-       "date": "2026-10-15",
-       "when": "night",
-       "note": null
-      },
-      "missingFields": [],
-      "uncertainFields": [],
-      "revision": 2,
-      "state": "draft",
-      "expiresAt": "2026-10-16T07:20:00.000Z",
-      "sourceRefs": [
-       "task:tk_923fb5c00a39e85f80e606e4b45fca7a"
-      ],
-      "recordId": null,
-      "recordLink": null,
-      "errorCode": null,
-      "warnings": [],
-      "problems": [],
-      "confirmedBy": null
-     }
-    ],
-    "messages": [
-     {
-      "id": "00000001",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "user",
-      "parts": [
-       {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "bé hay thức giấc"
-       }
-      ],
-      "taskId": "tk_923fb5c00a39e85f80e606e4b45fca7a",
-      "sequence": 1,
-      "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": {
-       "uid": "u_mai",
-       "name": "Mai",
-       "relation": "mother",
-       "relationCustom": null
-      }
-     },
-     {
-      "id": "00000002",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "assistant",
-      "parts": [
-       {
-        "type": "draft_reference",
-        "schemaVersion": 1,
-        "draftId": "dr_923fb5c00a39e85f80e606e4b45fca7a_0",
-        "revision": 1
-       }
-      ],
-      "taskId": "tk_923fb5c00a39e85f80e606e4b45fca7a",
-      "sequence": 2,
-      "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": null
-     }
-    ],
-    "events": []
-   }
-  },
-  {
-   "label": "probe · after save",
-   "as": "MOM",
-   "snapshot": {
-    "task": {
-     "id": "tk_923fb5c00a39e85f80e606e4b45fca7a",
-     "conversationId": "cv_b_00000000000000000001",
-     "scope": {
-      "type": "child",
-      "babyId": "b_00000000000000000001"
-     },
-     "state": "ready",
-     "version": 3,
-     "modality": "text",
-     "credits": 1,
-     "plan": "free",
-     "usage": "committed",
-     "errorCode": null,
-     "round": 0,
-     "clarification": null,
-     "clarificationExpiresAt": null,
-     "anchorInstant": "2026-10-15T07:20:00.000Z",
-     "timezone": "Asia/Ho_Chi_Minh",
-     "createdAt": "2026-10-15T07:20:00.000Z",
-     "updatedAt": "2026-10-15T07:20:40.000Z",
-     "visibility": "shared",
-     "author": {
-      "uid": "u_mai",
-      "name": "Mai",
-      "relation": "mother",
-      "relationCustom": null
-     },
-     "routing": null
-    },
-    "drafts": [
-     {
-      "id": "dr_923fb5c00a39e85f80e606e4b45fca7a_0",
-      "taskId": "tk_923fb5c00a39e85f80e606e4b45fca7a",
-      "itemIndex": 0,
-      "scope": {
-       "type": "child",
-       "babyId": "b_00000000000000000001"
-      },
-      "payload": {
-       "kind": "observation",
-       "observation": "sleep",
-       "date": "2026-10-15",
-       "when": "night",
-       "note": null
-      },
-      "missingFields": [],
-      "uncertainFields": [],
-      "revision": 2,
-      "state": "saved",
-      "expiresAt": "2026-10-16T07:20:00.000Z",
-      "sourceRefs": [
-       "task:tk_923fb5c00a39e85f80e606e4b45fca7a"
-      ],
-      "recordId": "ci_5162cd2fd4b6c68b8e05e558fdd9aa64",
-      "recordLink": "/rhythm/checkins/b_00000000000000000001/ci_5162cd2fd4b6c68b8e05e558fdd9aa64",
-      "errorCode": null,
-      "warnings": [],
-      "problems": [],
-      "confirmedBy": {
-       "uid": "u_mai",
-       "name": "Mai",
-       "relation": "mother",
-       "relationCustom": null
-      }
-     }
-    ],
-    "messages": [
-     {
-      "id": "00000001",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "user",
-      "parts": [
-       {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "bé hay thức giấc"
-       }
-      ],
-      "taskId": "tk_923fb5c00a39e85f80e606e4b45fca7a",
-      "sequence": 1,
-      "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": {
-       "uid": "u_mai",
-       "name": "Mai",
-       "relation": "mother",
-       "relationCustom": null
-      }
-     },
-     {
-      "id": "00000002",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "assistant",
-      "parts": [
-       {
-        "type": "draft_reference",
-        "schemaVersion": 1,
-        "draftId": "dr_923fb5c00a39e85f80e606e4b45fca7a_0",
-        "revision": 1
-       }
-      ],
-      "taskId": "tk_923fb5c00a39e85f80e606e4b45fca7a",
-      "sequence": 2,
-      "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": null
-     },
-     {
-      "id": "00000003",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "assistant",
-      "parts": [
-       {
-        "type": "action_result",
-        "schemaVersion": 1,
-        "items": [
-         {
-          "draftId": "dr_923fb5c00a39e85f80e606e4b45fca7a_0",
-          "status": "saved",
-          "recordLink": "/rhythm/checkins/b_00000000000000000001/ci_5162cd2fd4b6c68b8e05e558fdd9aa64",
-          "errorCode": null
-         }
-        ]
-       }
-      ],
-      "taskId": "tk_923fb5c00a39e85f80e606e4b45fca7a",
-      "sequence": 3,
-      "createdAt": "2026-10-15T07:20:40.000Z",
-      "attachmentIds": [],
-      "author": {
-       "uid": "u_mai",
-       "name": "Mai",
-       "relation": "mother",
-       "relationCustom": null
-      }
      }
     ],
     "events": []

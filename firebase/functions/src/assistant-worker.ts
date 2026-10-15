@@ -8,6 +8,15 @@ import {
   asksWhatToEat,
   careStatesIn,
   localDateIn,
+  // Lumi fixes 2026-10-16.
+  asksAboutCare,
+  asksAboutCredits,
+  asksWhatLumiDoes,
+  clientDraftKindsOf,
+  feedingConcernIn,
+  foldVi,
+  mentionsSleep,
+  sleepConcernIn,
   smallTalkIn,
   taskStateForOutcome,
   usageForOutcome,
@@ -44,6 +53,7 @@ import {
 // Lumi rework 2026-10-15: text planning (expenses, reminders, durations, corrections, questions).
 import {
   calendarAround,
+  careCueIn,
   householdCurrencyOf,
   planTextIntents,
   previousForModel,
@@ -52,15 +62,22 @@ import {
   type TextNotice,
 } from './assistant-text.js';
 import {
+  appUpdatePart,
   helpPart,
   noticePart,
+  partNotSavedPart,
   privateConversationId,
   smallTalkPart,
   spendingPrivatePart,
   timerRunningPart,
 } from './assistant-talk.js';
 // Lumi 2026-10-16: the baby's running timers and the next breastfeed side.
-import { nextBreastSideOf, runningTimersOf, timerLinkFor } from './assistant-timers.js';
+import {
+  lastPumpSideOf,
+  nextBreastSideOf,
+  runningTimersOf,
+  timerLinkFor,
+} from './assistant-timers.js';
 import { appendEvents, appendMessages, storedTask, type StoredTask } from './assistant-store.js';
 import {
   anchorOf,
@@ -308,7 +325,9 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   }
   // ---- end slice A3 ----
   const canRead = familyCan(s.member, 'history.read');
-  const allowedReads: ReadToolName[] = canRead ? [...readToolNames] : ['usage_snapshot'];
+  // LUMI-14: every read is offered; one the member may not use is answered READ_DENIED (free)
+  // by the server, never swapped for the credit balance.
+  const allowedReads: ReadToolName[] = [...readToolNames];
   const today = localDateIn(s.zone, anchor);
   const answerMap = new Map(
     answers.map((a) => [
@@ -355,7 +374,8 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
                 field: a.field,
                 answer: a.answer?.choiceId ?? a.answer?.text ?? '',
               })),
-              allowedIntents: draftKinds,
+              // Timers are the server's (from `phase`), never a kind the model returns.
+              allowedIntents: draftKinds.filter((k) => k !== 'timer'),
               allowedReads,
               currency,
               categories,
@@ -398,6 +418,97 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   ) {
     ext = { ...ext, care: { topic: 'meal_ideas', sleep: null, evidence: [] }, clarification: null };
   }
+  // ---- Lumi fixes 2026-10-16: the words checked against the reading ----
+  // LUMI-12: "Lumi làm được gì?" is what Lumi does (HELP, free), never "read or log?".
+  if (asksWhatLumiDoes(text) && ext.intents.length === 0 && ext.reads.length === 0) {
+    ext = { ...ext, clarification: null, care: null, outOfScope: true };
+  }
+  // LUMI-10: a sleep concern ("dạo này bé khó ngủ về đêm") gets care guidance, never an
+  // observation draft; its facts come from the words (the server asks what they do not say).
+  const concern = sleepConcernIn(text);
+  if (concern && !ext.care && ext.reads.length === 0) {
+    const rest = ext.intents.filter(
+      (i) =>
+        !(
+          i.kind === 'observation' &&
+          (i.fields.observation === 'sleep' || i.fields.observation === 'usual')
+        ),
+    );
+    if (rest.length === 0) {
+      ext = {
+        ...ext,
+        intents: [],
+        clarification: null,
+        care: {
+          topic: 'sleep_concern',
+          sleep: { kind: concern.kind, when: concern.when, since: null },
+          evidence: [
+            ...(concern.kind ? [{ field: 'kind' as const, text }] : []),
+            ...(concern.when ? [{ field: 'when' as const, text }] : []),
+          ],
+        },
+      };
+    }
+  }
+  // LUMI-12: a feeding worry ("mấy hôm nay bé biếng ăn") is not a sleep concern.
+  if (ext.care?.topic === 'sleep_concern' && !mentionsSleep(text)) {
+    ext = { ...ext, care: null };
+    if (feedingConcernIn(text) && ext.intents.length === 0) {
+      ext = {
+        ...ext,
+        intents: [
+          {
+            kind: 'observation',
+            fields: {
+              amountMl: null,
+              milk: null,
+              time: null,
+              dayOffset: null,
+              endTime: null,
+              endDayOffset: null,
+              durationMin: null,
+              side: null,
+              observation: 'feeding',
+              when: null,
+              note: null,
+              title: null,
+            },
+            evidence: [],
+            uncertainFields: [],
+            missingFields: [],
+            correctsPrevious: false,
+          },
+        ],
+      };
+    }
+  }
+  let bareLog = false;
+  // rd-09: two bare words of a feed or a sleep ("bú sữa", "bé ngủ") with nothing said about it —
+  // no amount, time, length or "đang / vừa / rồi" — may be a question about the log: asked once.
+  const bareWords = foldVi(text)
+    .replace(/[^\p{L}\d\s]/gu, ' ')
+    .trim()
+    .split(/\s+/);
+  if (
+    !(t.clarifications ?? []).some((c) => c.field === 'intent') &&
+    bareWords.length <= 2 &&
+    !/\d/.test(text) &&
+    ext.reads.length === 0 &&
+    !ext.care &&
+    ext.intents.length > 0 &&
+    careStatesIn(text).length === 0 &&
+    !careCueIn(text) &&
+    ext.intents.every(
+      (i) =>
+        (i.kind === 'bottle' || i.kind === 'breast' || i.kind === 'sleep') &&
+        i.fields.amountMl === null &&
+        i.fields.time === null &&
+        i.fields.endTime === null &&
+        i.fields.durationMin === null,
+    )
+  ) {
+    bareLog = true;
+  }
   const spending = ext.intents.some((i) => i.kind === 'expense');
   const lead: AssistantPart[] = routing ? [spendingPrivatePart(t.locale)] : [];
 
@@ -433,13 +544,20 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   if (intentAnswer === 'read' && reads.length === 0 && canRead) {
     reads.push({ tool: 'care_summary', dayOffset: 0 });
   }
+  // "Xem nhật ký" answered: the bare log the model guessed is not drafted too (rd-09).
+  if (intentAnswer === 'read') ext = { ...ext, intents: [] };
   // Lumi 2026-10-16: an ongoing state in the words ("con đang ngủ", "bú xong rồi") is something
   // to do even when the model returned nothing (the planner adds its timer item).
   const states = careStatesIn(text);
+  // LUMI-01: so is a pump / diaper / growth log in the words the model did not return.
   const nothing =
-    ext.intents.length === 0 && reads.length === 0 && !careActive && states.length === 0;
+    ext.intents.length === 0 &&
+    reads.length === 0 &&
+    !careActive &&
+    states.length === 0 &&
+    !careCueIn(text);
   // Slice A5: a care question goes first; the care facts (`sleep.*`) are asked by `planCare`.
-  let ask: ClarificationField | null = care.kind === 'ask' ? care.field : null;
+  let ask: ClarificationField | null = care.kind === 'ask' ? care.field : bareLog ? 'intent' : null;
   if (
     !ask &&
     ext.clarification &&
@@ -504,6 +622,9 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       // Lumi 2026-10-16: "con đang ngủ" / "dậy rồi" / "đang cho bú" drive the app's timers.
       timers: await runningTimersOf(db, s.babyId),
       nextBreastSide: await nextBreastSideOf(db, s.babyId, anchor),
+      // Lumi fixes 2026-10-16: the pump form's remembered side; what the app can show (LUMI-05).
+      lastPumpSide: await lastPumpSideOf(db, s.babyId, anchor),
+      clientKinds: clientDraftKindsOf(t.clientKinds),
     },
     ext.intents,
   );
@@ -533,8 +654,19 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
     const key = `${r.tool}:${r.dayOffset}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    if (r.tool !== 'usage_snapshot' && !canRead) {
+    // LUMI-14: the credit balance is never the answer to a question about the baby.
+    const careQuestion =
+      r.tool === 'usage_snapshot' && !asksAboutCredits(text) && asksAboutCare(text);
+    if ((r.tool !== 'usage_snapshot' || careQuestion) && !canRead) {
       if (readDenied.length === 0) readDenied.push(noticePart({ code: 'READ_DENIED' }, t.locale));
+      continue;
+    }
+    if (careQuestion) {
+      const key2 = `care_summary:${r.dayOffset}`;
+      if (!seen.has(key2)) {
+        seen.add(key2);
+        results.push(await careSummaryTool(db, s, anchor, r.dayOffset, t.locale));
+      }
       continue;
     }
     switch (r.tool) {
@@ -581,9 +713,25 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   parts.push(...readDenied);
   const said = new Set<string>();
   for (const n of notices) {
-    const key = `${n.code}:${n.code === 'WRITE_DENIED' ? n.kind : ''}:${n.timer?.type ?? ''}`;
+    const key = `${n.code}:${n.code === 'WRITE_DENIED' || n.code === 'APP_UPDATE_NEEDED' ? n.kind : ''}:${n.timer?.type ?? ''}`;
     if (said.has(key)) continue;
     said.add(key);
+    // LUMI-05: what this app build cannot show, with where to add it directly.
+    if (n.code === 'APP_UPDATE_NEEDED') {
+      const link =
+        n.kind === 'timer' && n.timer
+          ? timerLinkFor(s.babyId, n.timer.type)
+          : n.kind === 'growth'
+            ? '/care/growth'
+            : '/care';
+      parts.push(appUpdatePart(n.kind, t.locale, link));
+      continue;
+    }
+    // LUMI-13: a part said but not storable, named, with its module.
+    if (n.code === 'PART_NOT_SAVED') {
+      parts.push(partNotSavedPart(n.what ?? 'head_circumference', t.locale, n.link ?? null));
+      continue;
+    }
     if (n.code === 'TIMER_RUNNING' && n.timer) {
       const since = n.timer.since;
       parts.push(
@@ -675,10 +823,18 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   const code: AssistantError =
     first === 'WRITE_DENIED' || first === 'MODULE_UNAVAILABLE' || first === 'READ_DENIED'
       ? first
-      : first === 'PREVIOUS_SAVED' || first === 'MEDICINE_NOT_SCHEDULED'
+      : first === 'PREVIOUS_SAVED' ||
+          first === 'MEDICINE_NOT_SCHEDULED' ||
+          first === 'APP_UPDATE_NEEDED' ||
+          first === 'PART_NOT_SAVED'
         ? 'MODULE_UNAVAILABLE'
         : 'VALIDATION_FAILED';
-  if (first === 'PREVIOUS_SAVED' || first === 'MEDICINE_NOT_SCHEDULED') {
+  if (
+    first === 'PREVIOUS_SAVED' ||
+    first === 'MEDICINE_NOT_SCHEDULED' ||
+    first === 'APP_UPDATE_NEEDED' ||
+    first === 'PART_NOT_SAVED'
+  ) {
     // An honest answer, not a failure: ready, released.
     return {
       outcome: { kind: 'fallback', parts },

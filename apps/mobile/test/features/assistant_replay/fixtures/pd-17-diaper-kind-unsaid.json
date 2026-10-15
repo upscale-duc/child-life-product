@@ -1,0 +1,371 @@
+{
+ "id": "pd-17-diaper-kind-unsaid",
+ "group": "care.types",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_0e86840dc8e11ed9faa4d496324c5411",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_0e86840dc8e11ed9faa4d496324c5411_0",
+      "taskId": "tk_0e86840dc8e11ed9faa4d496324c5411",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": null,
+       "occurredAt": "2026-10-15T06:00:00.000Z"
+      },
+      "missingFields": [
+       "diaper"
+      ],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "needs_review",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_0e86840dc8e11ed9faa4d496324c5411"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "thay tã lúc 13h"
+       }
+      ],
+      "taskId": "tk_0e86840dc8e11ed9faa4d496324c5411",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_0e86840dc8e11ed9faa4d496324c5411_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_0e86840dc8e11ed9faa4d496324c5411",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after fix",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_0e86840dc8e11ed9faa4d496324c5411",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_0e86840dc8e11ed9faa4d496324c5411_0",
+      "taskId": "tk_0e86840dc8e11ed9faa4d496324c5411",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": "wet",
+       "occurredAt": "2026-10-15T06:00:00.000Z"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_0e86840dc8e11ed9faa4d496324c5411"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "thay tã lúc 13h"
+       }
+      ],
+      "taskId": "tk_0e86840dc8e11ed9faa4d496324c5411",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_0e86840dc8e11ed9faa4d496324c5411_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_0e86840dc8e11ed9faa4d496324c5411",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_0e86840dc8e11ed9faa4d496324c5411",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:40.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_0e86840dc8e11ed9faa4d496324c5411_0",
+      "taskId": "tk_0e86840dc8e11ed9faa4d496324c5411",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": "wet",
+       "occurredAt": "2026-10-15T06:00:00.000Z"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_0e86840dc8e11ed9faa4d496324c5411"
+      ],
+      "recordId": "r_221b7ff188dcdfd849d18f0e93b8258d",
+      "recordLink": "/care/records/b_00000000000000000001/r_221b7ff188dcdfd849d18f0e93b8258d",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "thay tã lúc 13h"
+       }
+      ],
+      "taskId": "tk_0e86840dc8e11ed9faa4d496324c5411",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_0e86840dc8e11ed9faa4d496324c5411_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_0e86840dc8e11ed9faa4d496324c5411",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_0e86840dc8e11ed9faa4d496324c5411_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_221b7ff188dcdfd849d18f0e93b8258d",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_0e86840dc8e11ed9faa4d496324c5411",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:40.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

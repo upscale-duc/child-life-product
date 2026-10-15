@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+     "id": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -100,7 +100,7 @@
         "text": "nhắc mẹ mua sữa lúc 5h chiều"
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -173,7 +173,7 @@
         }
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -188,7 +188,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+     "id": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -223,8 +223,8 @@
     },
     "drafts": [
      {
-      "id": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "id": "dr_42d738ff5dd59cba4ce3e49e437c47e1_0",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -245,7 +245,7 @@
       "state": "needs_review",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_e6a557ff51d0d9d1432b9895fb845ca6"
+       "task:tk_42d738ff5dd59cba4ce3e49e437c47e1"
       ],
       "recordId": null,
       "recordLink": null,
@@ -267,7 +267,7 @@
         "text": "nhắc mẹ mua sữa lúc 5h chiều"
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -340,7 +340,7 @@
         }
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -357,7 +357,7 @@
         "text": "Bạn (Mai)"
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -382,11 +382,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+        "draftId": "dr_42d738ff5dd59cba4ce3e49e437c47e1_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -401,7 +401,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+     "id": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -436,8 +436,8 @@
     },
     "drafts": [
      {
-      "id": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "id": "dr_42d738ff5dd59cba4ce3e49e437c47e1_0",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -456,7 +456,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_e6a557ff51d0d9d1432b9895fb845ca6"
+       "task:tk_42d738ff5dd59cba4ce3e49e437c47e1"
       ],
       "recordId": null,
       "recordLink": null,
@@ -478,7 +478,7 @@
         "text": "nhắc mẹ mua sữa lúc 5h chiều"
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -551,7 +551,7 @@
         }
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -568,7 +568,7 @@
         "text": "Bạn (Mai)"
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -593,11 +593,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+        "draftId": "dr_42d738ff5dd59cba4ce3e49e437c47e1_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -612,7 +612,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+     "id": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -647,8 +647,8 @@
     },
     "drafts": [
      {
-      "id": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "id": "dr_42d738ff5dd59cba4ce3e49e437c47e1_0",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -667,10 +667,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_e6a557ff51d0d9d1432b9895fb845ca6"
+       "task:tk_42d738ff5dd59cba4ce3e49e437c47e1"
       ],
-      "recordId": "rm_e25793ae433ef4561eae0381bc640094",
-      "recordLink": "/care/reminders/rm_e25793ae433ef4561eae0381bc640094?babyId=b_00000000000000000001",
+      "recordId": "rm_500231faa8aa9134317dd8eeed150aaf",
+      "recordLink": "/care/reminders/rm_500231faa8aa9134317dd8eeed150aaf?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -694,7 +694,7 @@
         "text": "nhắc mẹ mua sữa lúc 5h chiều"
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -767,7 +767,7 @@
         }
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -784,7 +784,7 @@
         "text": "Bạn (Mai)"
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -809,11 +809,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+        "draftId": "dr_42d738ff5dd59cba4ce3e49e437c47e1_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -829,15 +829,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_e6a557ff51d0d9d1432b9895fb845ca6_0",
+          "draftId": "dr_42d738ff5dd59cba4ce3e49e437c47e1_0",
           "status": "saved",
-          "recordLink": "/care/reminders/rm_e25793ae433ef4561eae0381bc640094?babyId=b_00000000000000000001",
+          "recordLink": "/care/reminders/rm_500231faa8aa9134317dd8eeed150aaf?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_e6a557ff51d0d9d1432b9895fb845ca6",
+      "taskId": "tk_42d738ff5dd59cba4ce3e49e437c47e1",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:55.000Z",
       "attachmentIds": [],

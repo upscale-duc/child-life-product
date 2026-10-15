@@ -170,6 +170,24 @@
         "credits": 0
       },
       "group": "talk"
+    },
+    {
+      "id": "tk-12-what-can-you-do-live",
+      "group": "talk",
+      "title": "LUMI-12 live: \"Lumi làm được gì?\" answered with \"Xem nhật ký hay ghi thêm?\" → HELP, 0 credits",
+      "turns": [
+        {
+          "say": "Lumi làm được gì?",
+          "model": {
+            "clar": "intent"
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "help",
+        "asks": [],
+        "credits": 0
+      }
     }
   ]
 }

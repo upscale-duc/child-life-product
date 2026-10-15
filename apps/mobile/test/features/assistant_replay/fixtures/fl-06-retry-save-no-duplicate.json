@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_42d3744d631e50a21fab9414ad508a64",
+     "id": "tk_f97e5956f915cae64cb9816c1f259caa",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_42d3744d631e50a21fab9414ad508a64_0",
-      "taskId": "tk_42d3744d631e50a21fab9414ad508a64",
+      "id": "dr_f97e5956f915cae64cb9816c1f259caa_0",
+      "taskId": "tk_f97e5956f915cae64cb9816c1f259caa",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -60,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_42d3744d631e50a21fab9414ad508a64"
+       "task:tk_f97e5956f915cae64cb9816c1f259caa"
       ],
       "recordId": null,
       "recordLink": null,
@@ -82,7 +82,7 @@
         "text": "bé ngủ từ 13h đến 14h"
        }
       ],
-      "taskId": "tk_42d3744d631e50a21fab9414ad508a64",
+      "taskId": "tk_f97e5956f915cae64cb9816c1f259caa",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -101,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_42d3744d631e50a21fab9414ad508a64_0",
+        "draftId": "dr_f97e5956f915cae64cb9816c1f259caa_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_42d3744d631e50a21fab9414ad508a64",
+      "taskId": "tk_f97e5956f915cae64cb9816c1f259caa",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -120,7 +120,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_42d3744d631e50a21fab9414ad508a64",
+     "id": "tk_f97e5956f915cae64cb9816c1f259caa",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -151,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_42d3744d631e50a21fab9414ad508a64_0",
-      "taskId": "tk_42d3744d631e50a21fab9414ad508a64",
+      "id": "dr_f97e5956f915cae64cb9816c1f259caa_0",
+      "taskId": "tk_f97e5956f915cae64cb9816c1f259caa",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -171,10 +171,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_42d3744d631e50a21fab9414ad508a64"
+       "task:tk_f97e5956f915cae64cb9816c1f259caa"
       ],
-      "recordId": "r_d34f976084f197cdefd2d9cbc4d1ba65",
-      "recordLink": "/care/records/b_00000000000000000001/r_d34f976084f197cdefd2d9cbc4d1ba65",
+      "recordId": "r_16721e9d93aaaf97a191d2afa3d4d69c",
+      "recordLink": "/care/records/b_00000000000000000001/r_16721e9d93aaaf97a191d2afa3d4d69c",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -198,7 +198,7 @@
         "text": "bé ngủ từ 13h đến 14h"
        }
       ],
-      "taskId": "tk_42d3744d631e50a21fab9414ad508a64",
+      "taskId": "tk_f97e5956f915cae64cb9816c1f259caa",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -217,11 +217,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_42d3744d631e50a21fab9414ad508a64_0",
+        "draftId": "dr_f97e5956f915cae64cb9816c1f259caa_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_42d3744d631e50a21fab9414ad508a64",
+      "taskId": "tk_f97e5956f915cae64cb9816c1f259caa",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -237,15 +237,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_42d3744d631e50a21fab9414ad508a64_0",
+          "draftId": "dr_f97e5956f915cae64cb9816c1f259caa_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_d34f976084f197cdefd2d9cbc4d1ba65",
+          "recordLink": "/care/records/b_00000000000000000001/r_16721e9d93aaaf97a191d2afa3d4d69c",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_42d3744d631e50a21fab9414ad508a64",
+      "taskId": "tk_f97e5956f915cae64cb9816c1f259caa",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

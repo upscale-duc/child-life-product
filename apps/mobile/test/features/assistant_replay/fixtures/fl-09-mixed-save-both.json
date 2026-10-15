@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+     "id": "tk_c96ea5a964d92722c041c7d5a804e085",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_4aeafd712513475cf3f203df4c9d9fc5_0",
-      "taskId": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+      "id": "dr_c96ea5a964d92722c041c7d5a804e085_0",
+      "taskId": "tk_c96ea5a964d92722c041c7d5a804e085",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_4aeafd712513475cf3f203df4c9d9fc5"
+       "task:tk_c96ea5a964d92722c041c7d5a804e085"
       ],
       "recordId": null,
       "recordLink": null,
@@ -69,8 +69,8 @@
       "confirmedBy": null
      },
      {
-      "id": "dr_4aeafd712513475cf3f203df4c9d9fc5_1",
-      "taskId": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+      "id": "dr_c96ea5a964d92722c041c7d5a804e085_1",
+      "taskId": "tk_c96ea5a964d92722c041c7d5a804e085",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -89,7 +89,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_4aeafd712513475cf3f203df4c9d9fc5"
+       "task:tk_c96ea5a964d92722c041c7d5a804e085"
       ],
       "recordId": null,
       "recordLink": null,
@@ -111,7 +111,7 @@
         "text": "bé bú 120ml lúc 8h sáng, ngủ từ 9h đến 10h"
        }
       ],
-      "taskId": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+      "taskId": "tk_c96ea5a964d92722c041c7d5a804e085",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -130,17 +130,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_4aeafd712513475cf3f203df4c9d9fc5_0",
+        "draftId": "dr_c96ea5a964d92722c041c7d5a804e085_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_4aeafd712513475cf3f203df4c9d9fc5_1",
+        "draftId": "dr_c96ea5a964d92722c041c7d5a804e085_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+      "taskId": "tk_c96ea5a964d92722c041c7d5a804e085",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -155,7 +155,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+     "id": "tk_c96ea5a964d92722c041c7d5a804e085",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -186,8 +186,8 @@
     },
     "drafts": [
      {
-      "id": "dr_4aeafd712513475cf3f203df4c9d9fc5_0",
-      "taskId": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+      "id": "dr_c96ea5a964d92722c041c7d5a804e085_0",
+      "taskId": "tk_c96ea5a964d92722c041c7d5a804e085",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -205,10 +205,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_4aeafd712513475cf3f203df4c9d9fc5"
+       "task:tk_c96ea5a964d92722c041c7d5a804e085"
       ],
-      "recordId": "r_6ee6b9e0ea8033ff72e40c84a7dc80b7",
-      "recordLink": "/care/records/b_00000000000000000001/r_6ee6b9e0ea8033ff72e40c84a7dc80b7",
+      "recordId": "r_4ce5a0b94de9d99883258ee1ca79c404",
+      "recordLink": "/care/records/b_00000000000000000001/r_4ce5a0b94de9d99883258ee1ca79c404",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -220,8 +220,8 @@
       }
      },
      {
-      "id": "dr_4aeafd712513475cf3f203df4c9d9fc5_1",
-      "taskId": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+      "id": "dr_c96ea5a964d92722c041c7d5a804e085_1",
+      "taskId": "tk_c96ea5a964d92722c041c7d5a804e085",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -240,10 +240,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_4aeafd712513475cf3f203df4c9d9fc5"
+       "task:tk_c96ea5a964d92722c041c7d5a804e085"
       ],
-      "recordId": "r_00b9820310dd2c5e2e2e745a07087a77",
-      "recordLink": "/care/records/b_00000000000000000001/r_00b9820310dd2c5e2e2e745a07087a77",
+      "recordId": "r_224dff297c1de51a58b7ac40c03b1ba4",
+      "recordLink": "/care/records/b_00000000000000000001/r_224dff297c1de51a58b7ac40c03b1ba4",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -267,7 +267,7 @@
         "text": "bé bú 120ml lúc 8h sáng, ngủ từ 9h đến 10h"
        }
       ],
-      "taskId": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+      "taskId": "tk_c96ea5a964d92722c041c7d5a804e085",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -286,17 +286,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_4aeafd712513475cf3f203df4c9d9fc5_0",
+        "draftId": "dr_c96ea5a964d92722c041c7d5a804e085_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_4aeafd712513475cf3f203df4c9d9fc5_1",
+        "draftId": "dr_c96ea5a964d92722c041c7d5a804e085_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+      "taskId": "tk_c96ea5a964d92722c041c7d5a804e085",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -312,21 +312,21 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_4aeafd712513475cf3f203df4c9d9fc5_0",
+          "draftId": "dr_c96ea5a964d92722c041c7d5a804e085_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_6ee6b9e0ea8033ff72e40c84a7dc80b7",
+          "recordLink": "/care/records/b_00000000000000000001/r_4ce5a0b94de9d99883258ee1ca79c404",
           "errorCode": null
          },
          {
-          "draftId": "dr_4aeafd712513475cf3f203df4c9d9fc5_1",
+          "draftId": "dr_c96ea5a964d92722c041c7d5a804e085_1",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_00b9820310dd2c5e2e2e745a07087a77",
+          "recordLink": "/care/records/b_00000000000000000001/r_224dff297c1de51a58b7ac40c03b1ba4",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_4aeafd712513475cf3f203df4c9d9fc5",
+      "taskId": "tk_c96ea5a964d92722c041c7d5a804e085",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

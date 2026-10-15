@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_c63df615a861e210bb62f8667ae80ea4",
+     "id": "tk_5374f8411d71e3b8c9971c8e4109f6d9",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -60,7 +60,7 @@
         "text": "hôm nay bé ăn gì?"
        }
       ],
-      "taskId": "tk_c63df615a861e210bb62f8667ae80ea4",
+      "taskId": "tk_5374f8411d71e3b8c9971c8e4109f6d9",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -92,7 +92,7 @@
         "code": "RECIPES_NONE_APPROVED"
        }
       ],
-      "taskId": "tk_c63df615a861e210bb62f8667ae80ea4",
+      "taskId": "tk_5374f8411d71e3b8c9971c8e4109f6d9",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

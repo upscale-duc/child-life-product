@@ -2,16 +2,14 @@
  "id": "fl-12-correction-chain",
  "group": "flow",
  "device": null,
- "serverViolations": [
-  "EXPECT_ASKS"
- ],
+ "serverViolations": [],
  "steps": [
   {
    "label": "turn 1 · after start",
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_809d5b633f0c2c6fe15bc45db3aaf8ee",
+     "id": "tk_74eeb60e60656312e78178b140678e79",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -42,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_809d5b633f0c2c6fe15bc45db3aaf8ee_0",
-      "taskId": "tk_809d5b633f0c2c6fe15bc45db3aaf8ee",
+      "id": "dr_74eeb60e60656312e78178b140678e79_0",
+      "taskId": "tk_74eeb60e60656312e78178b140678e79",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -62,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_809d5b633f0c2c6fe15bc45db3aaf8ee"
+       "task:tk_74eeb60e60656312e78178b140678e79"
       ],
       "recordId": null,
       "recordLink": null,
@@ -84,7 +82,7 @@
         "text": "bé ngủ từ 13h đến 14h"
        }
       ],
-      "taskId": "tk_809d5b633f0c2c6fe15bc45db3aaf8ee",
+      "taskId": "tk_74eeb60e60656312e78178b140678e79",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -103,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_809d5b633f0c2c6fe15bc45db3aaf8ee_0",
+        "draftId": "dr_74eeb60e60656312e78178b140678e79_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_809d5b633f0c2c6fe15bc45db3aaf8ee",
+      "taskId": "tk_74eeb60e60656312e78178b140678e79",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -122,46 +120,22 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
+     "id": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
-     "state": "awaiting_clarification",
+     "state": "ready",
      "version": 3,
      "modality": "text",
      "credits": 1,
      "plan": "free",
-     "usage": "reserved",
+     "usage": "committed",
      "errorCode": null,
-     "round": 1,
-     "clarification": {
-      "id": "cl_1",
-      "field": "time.ampm",
-      "question": {
-       "vi": "Giờ đó là buổi sáng hay chiều tối?",
-       "en": "Was that in the morning or the evening?"
-      },
-      "choices": [
-       {
-        "id": "am",
-        "label": {
-         "vi": "Buổi sáng",
-         "en": "Morning"
-        }
-       },
-       {
-        "id": "pm",
-        "label": {
-         "vi": "Chiều / tối",
-         "en": "Afternoon / evening"
-        }
-       }
-      ],
-      "allowText": false
-     },
-     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
      "anchorInstant": "2026-10-15T07:20:00.000Z",
      "timezone": "Asia/Ho_Chi_Minh",
      "createdAt": "2026-10-15T07:20:00.000Z",
@@ -175,113 +149,10 @@
      },
      "routing": null
     },
-    "drafts": [],
-    "messages": [
-     {
-      "id": "00000003",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "user",
-      "parts": [
-       {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "à không, ngủ từ 12h30"
-       }
-      ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
-      "sequence": 3,
-      "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": {
-       "uid": "u_mai",
-       "name": "Mai",
-       "relation": "mother",
-       "relationCustom": null
-      }
-     },
-     {
-      "id": "00000004",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "assistant",
-      "parts": [
-       {
-        "type": "clarification",
-        "schemaVersion": 1,
-        "clarification": {
-         "id": "cl_1",
-         "field": "time.ampm",
-         "question": {
-          "vi": "Giờ đó là buổi sáng hay chiều tối?",
-          "en": "Was that in the morning or the evening?"
-         },
-         "choices": [
-          {
-           "id": "am",
-           "label": {
-            "vi": "Buổi sáng",
-            "en": "Morning"
-           }
-          },
-          {
-           "id": "pm",
-           "label": {
-            "vi": "Chiều / tối",
-            "en": "Afternoon / evening"
-           }
-          }
-         ],
-         "allowText": false
-        }
-       }
-      ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
-      "sequence": 4,
-      "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": null
-     }
-    ],
-    "events": []
-   }
-  },
-  {
-   "label": "turn 2 · after answer time.ampm",
-   "as": "MOM",
-   "snapshot": {
-    "task": {
-     "id": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
-     "conversationId": "cv_b_00000000000000000001",
-     "scope": {
-      "type": "child",
-      "babyId": "b_00000000000000000001"
-     },
-     "state": "ready",
-     "version": 6,
-     "modality": "text",
-     "credits": 1,
-     "plan": "free",
-     "usage": "committed",
-     "errorCode": null,
-     "round": 1,
-     "clarification": null,
-     "clarificationExpiresAt": null,
-     "anchorInstant": "2026-10-15T07:20:00.000Z",
-     "timezone": "Asia/Ho_Chi_Minh",
-     "createdAt": "2026-10-15T07:20:00.000Z",
-     "updatedAt": "2026-10-15T07:20:15.000Z",
-     "visibility": "shared",
-     "author": {
-      "uid": "u_mai",
-      "name": "Mai",
-      "relation": "mother",
-      "relationCustom": null
-     },
-     "routing": null
-    },
     "drafts": [
      {
-      "id": "dr_ea0946ad92f6a05e7b518585bb7c7ebd_0",
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
+      "id": "dr_cf1e2ae8f3d73e1b20f12eac847389eb_0",
+      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -298,9 +169,9 @@
       "uncertainFields": [],
       "revision": 1,
       "state": "draft",
-      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_ea0946ad92f6a05e7b518585bb7c7ebd"
+       "task:tk_cf1e2ae8f3d73e1b20f12eac847389eb"
       ],
       "recordId": null,
       "recordLink": null,
@@ -322,7 +193,7 @@
         "text": "à không, ngủ từ 12h30"
        }
       ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
+      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -339,69 +210,6 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "clarification",
-        "schemaVersion": 1,
-        "clarification": {
-         "id": "cl_1",
-         "field": "time.ampm",
-         "question": {
-          "vi": "Giờ đó là buổi sáng hay chiều tối?",
-          "en": "Was that in the morning or the evening?"
-         },
-         "choices": [
-          {
-           "id": "am",
-           "label": {
-            "vi": "Buổi sáng",
-            "en": "Morning"
-           }
-          },
-          {
-           "id": "pm",
-           "label": {
-            "vi": "Chiều / tối",
-            "en": "Afternoon / evening"
-           }
-          }
-         ],
-         "allowText": false
-        }
-       }
-      ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
-      "sequence": 4,
-      "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": null
-     },
-     {
-      "id": "00000005",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "user",
-      "parts": [
-       {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "Chiều / tối"
-       }
-      ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
-      "sequence": 5,
-      "createdAt": "2026-10-15T07:20:15.000Z",
-      "attachmentIds": [],
-      "author": {
-       "uid": "u_mai",
-       "name": "Mai",
-       "relation": "mother",
-       "relationCustom": null
-      }
-     },
-     {
-      "id": "00000006",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "assistant",
-      "parts": [
-       {
         "type": "text",
         "schemaVersion": 1,
         "text": "Mình đã sửa theo ý bạn và bỏ bản nháp trước.",
@@ -410,13 +218,13 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_ea0946ad92f6a05e7b518585bb7c7ebd_0",
+        "draftId": "dr_cf1e2ae8f3d73e1b20f12eac847389eb_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
-      "sequence": 6,
-      "createdAt": "2026-10-15T07:20:15.000Z",
+      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
       "author": null
      }
@@ -429,26 +237,26 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
+     "id": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 6,
+     "version": 3,
      "modality": "text",
      "credits": 1,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
-     "round": 1,
+     "round": 0,
      "clarification": null,
      "clarificationExpiresAt": null,
      "anchorInstant": "2026-10-15T07:20:00.000Z",
      "timezone": "Asia/Ho_Chi_Minh",
      "createdAt": "2026-10-15T07:20:00.000Z",
-     "updatedAt": "2026-10-15T07:20:35.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
      "visibility": "shared",
      "author": {
       "uid": "u_mai",
@@ -460,8 +268,8 @@
     },
     "drafts": [
      {
-      "id": "dr_ea0946ad92f6a05e7b518585bb7c7ebd_0",
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
+      "id": "dr_cf1e2ae8f3d73e1b20f12eac847389eb_0",
+      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -478,12 +286,12 @@
       "uncertainFields": [],
       "revision": 1,
       "state": "saved",
-      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_ea0946ad92f6a05e7b518585bb7c7ebd"
+       "task:tk_cf1e2ae8f3d73e1b20f12eac847389eb"
       ],
-      "recordId": "r_deff3f21cb90e881e78a609baf31abf3",
-      "recordLink": "/care/records/b_00000000000000000001/r_deff3f21cb90e881e78a609baf31abf3",
+      "recordId": "r_3002d20f74220fd9efe360cfd23f397f",
+      "recordLink": "/care/records/b_00000000000000000001/r_3002d20f74220fd9efe360cfd23f397f",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -507,7 +315,7 @@
         "text": "à không, ngủ từ 12h30"
        }
       ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
+      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -524,69 +332,6 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "clarification",
-        "schemaVersion": 1,
-        "clarification": {
-         "id": "cl_1",
-         "field": "time.ampm",
-         "question": {
-          "vi": "Giờ đó là buổi sáng hay chiều tối?",
-          "en": "Was that in the morning or the evening?"
-         },
-         "choices": [
-          {
-           "id": "am",
-           "label": {
-            "vi": "Buổi sáng",
-            "en": "Morning"
-           }
-          },
-          {
-           "id": "pm",
-           "label": {
-            "vi": "Chiều / tối",
-            "en": "Afternoon / evening"
-           }
-          }
-         ],
-         "allowText": false
-        }
-       }
-      ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
-      "sequence": 4,
-      "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": null
-     },
-     {
-      "id": "00000005",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "user",
-      "parts": [
-       {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "Chiều / tối"
-       }
-      ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
-      "sequence": 5,
-      "createdAt": "2026-10-15T07:20:15.000Z",
-      "attachmentIds": [],
-      "author": {
-       "uid": "u_mai",
-       "name": "Mai",
-       "relation": "mother",
-       "relationCustom": null
-      }
-     },
-     {
-      "id": "00000006",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "assistant",
-      "parts": [
-       {
         "type": "text",
         "schemaVersion": 1,
         "text": "Mình đã sửa theo ý bạn và bỏ bản nháp trước.",
@@ -595,18 +340,18 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_ea0946ad92f6a05e7b518585bb7c7ebd_0",
+        "draftId": "dr_cf1e2ae8f3d73e1b20f12eac847389eb_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
-      "sequence": 6,
-      "createdAt": "2026-10-15T07:20:15.000Z",
+      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+      "sequence": 4,
+      "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
       "author": null
      },
      {
-      "id": "00000007",
+      "id": "00000005",
       "conversationId": "cv_b_00000000000000000001",
       "role": "assistant",
       "parts": [
@@ -615,17 +360,17 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_ea0946ad92f6a05e7b518585bb7c7ebd_0",
+          "draftId": "dr_cf1e2ae8f3d73e1b20f12eac847389eb_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_deff3f21cb90e881e78a609baf31abf3",
+          "recordLink": "/care/records/b_00000000000000000001/r_3002d20f74220fd9efe360cfd23f397f",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_ea0946ad92f6a05e7b518585bb7c7ebd",
-      "sequence": 7,
-      "createdAt": "2026-10-15T07:20:35.000Z",
+      "taskId": "tk_cf1e2ae8f3d73e1b20f12eac847389eb",
+      "sequence": 5,
+      "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],
       "author": {
        "uid": "u_mai",

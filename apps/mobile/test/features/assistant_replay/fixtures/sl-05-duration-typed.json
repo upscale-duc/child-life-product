@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+     "id": "tk_c94e104262328a4e8f7cddaee07cc8c2",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -75,7 +75,7 @@
         "text": "Báo ngủ 9 tiếng"
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -121,7 +121,7 @@
         }
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+     "id": "tk_c94e104262328a4e8f7cddaee07cc8c2",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -167,8 +167,8 @@
     },
     "drafts": [
      {
-      "id": "dr_43c3752d42dcaa221fa81f2ef933c45c_0",
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "id": "dr_c94e104262328a4e8f7cddaee07cc8c2_0",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -189,7 +189,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_43c3752d42dcaa221fa81f2ef933c45c"
+       "task:tk_c94e104262328a4e8f7cddaee07cc8c2"
       ],
       "recordId": null,
       "recordLink": null,
@@ -211,7 +211,7 @@
         "text": "Báo ngủ 9 tiếng"
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -257,7 +257,7 @@
         }
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -274,7 +274,7 @@
         "text": "22h"
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -293,11 +293,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_43c3752d42dcaa221fa81f2ef933c45c_0",
+        "draftId": "dr_c94e104262328a4e8f7cddaee07cc8c2_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -312,7 +312,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+     "id": "tk_c94e104262328a4e8f7cddaee07cc8c2",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -343,8 +343,8 @@
     },
     "drafts": [
      {
-      "id": "dr_43c3752d42dcaa221fa81f2ef933c45c_0",
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "id": "dr_c94e104262328a4e8f7cddaee07cc8c2_0",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -365,10 +365,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_43c3752d42dcaa221fa81f2ef933c45c"
+       "task:tk_c94e104262328a4e8f7cddaee07cc8c2"
       ],
-      "recordId": "r_fc058ea8ac093eb99184706b955db04e",
-      "recordLink": "/care/records/b_00000000000000000001/r_fc058ea8ac093eb99184706b955db04e",
+      "recordId": "r_4501f456bbace521567107e7c6702f7d",
+      "recordLink": "/care/records/b_00000000000000000001/r_4501f456bbace521567107e7c6702f7d",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -392,7 +392,7 @@
         "text": "Báo ngủ 9 tiếng"
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -438,7 +438,7 @@
         }
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -455,7 +455,7 @@
         "text": "22h"
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -474,11 +474,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_43c3752d42dcaa221fa81f2ef933c45c_0",
+        "draftId": "dr_c94e104262328a4e8f7cddaee07cc8c2_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -494,15 +494,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_43c3752d42dcaa221fa81f2ef933c45c_0",
+          "draftId": "dr_c94e104262328a4e8f7cddaee07cc8c2_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_fc058ea8ac093eb99184706b955db04e",
+          "recordLink": "/care/records/b_00000000000000000001/r_4501f456bbace521567107e7c6702f7d",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_43c3752d42dcaa221fa81f2ef933c45c",
+      "taskId": "tk_c94e104262328a4e8f7cddaee07cc8c2",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:35.000Z",
       "attachmentIds": [],

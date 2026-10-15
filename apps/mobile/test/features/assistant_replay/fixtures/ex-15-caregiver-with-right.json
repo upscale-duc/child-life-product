@@ -9,7 +9,7 @@
    "as": "NANNY_SPEND",
    "snapshot": {
     "task": {
-     "id": "tk_bd7967cbd1af1377bb0786369eb24d33",
+     "id": "tk_0625cdedeb7e973347dc828c209d9edb",
      "conversationId": "cv_p_fd92e58d066f2650604b72f635ed81aa",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_bd7967cbd1af1377bb0786369eb24d33_0",
-      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "id": "dr_0625cdedeb7e973347dc828c209d9edb_0",
+      "taskId": "tk_0625cdedeb7e973347dc828c209d9edb",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -70,7 +70,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_bd7967cbd1af1377bb0786369eb24d33"
+       "task:tk_0625cdedeb7e973347dc828c209d9edb"
       ],
       "recordId": null,
       "recordLink": null,
@@ -92,7 +92,7 @@
         "text": "mua bỉm 200k"
        }
       ],
-      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "taskId": "tk_0625cdedeb7e973347dc828c209d9edb",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -117,11 +117,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_bd7967cbd1af1377bb0786369eb24d33_0",
+        "draftId": "dr_0625cdedeb7e973347dc828c209d9edb_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "taskId": "tk_0625cdedeb7e973347dc828c209d9edb",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "NANNY_SPEND",
    "snapshot": {
     "task": {
-     "id": "tk_bd7967cbd1af1377bb0786369eb24d33",
+     "id": "tk_0625cdedeb7e973347dc828c209d9edb",
      "conversationId": "cv_p_fd92e58d066f2650604b72f635ed81aa",
      "scope": {
       "type": "child",
@@ -171,8 +171,8 @@
     },
     "drafts": [
      {
-      "id": "dr_bd7967cbd1af1377bb0786369eb24d33_0",
-      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "id": "dr_0625cdedeb7e973347dc828c209d9edb_0",
+      "taskId": "tk_0625cdedeb7e973347dc828c209d9edb",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -197,10 +197,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_bd7967cbd1af1377bb0786369eb24d33"
+       "task:tk_0625cdedeb7e973347dc828c209d9edb"
       ],
-      "recordId": "x_676b9a2625f8ca33621351629f9967fc",
-      "recordLink": "/utilities/spending/expense/x_676b9a2625f8ca33621351629f9967fc?babyId=b_00000000000000000001",
+      "recordId": "x_70f078e1d7c30269dbed806c7a44c7be",
+      "recordLink": "/utilities/spending/expense/x_70f078e1d7c30269dbed806c7a44c7be?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -224,7 +224,7 @@
         "text": "mua bỉm 200k"
        }
       ],
-      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "taskId": "tk_0625cdedeb7e973347dc828c209d9edb",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -249,11 +249,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_bd7967cbd1af1377bb0786369eb24d33_0",
+        "draftId": "dr_0625cdedeb7e973347dc828c209d9edb_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "taskId": "tk_0625cdedeb7e973347dc828c209d9edb",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -269,15 +269,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_bd7967cbd1af1377bb0786369eb24d33_0",
+          "draftId": "dr_0625cdedeb7e973347dc828c209d9edb_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_676b9a2625f8ca33621351629f9967fc?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_70f078e1d7c30269dbed806c7a44c7be?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_bd7967cbd1af1377bb0786369eb24d33",
+      "taskId": "tk_0625cdedeb7e973347dc828c209d9edb",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

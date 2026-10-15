@@ -7,6 +7,8 @@ import {
 import {
   careLimits,
   confirmBlocker,
+  growthLengthOk,
+  growthWeightOk,
   draftProblems,
   localDateIn,
   maxSleepHours,
@@ -31,6 +33,7 @@ import {
 } from './assistant-common.js';
 import {
   careDuplicateIn,
+  localInstant,
   moduleAllows,
   moduleRegistry,
   overlappingSleeps,
@@ -45,6 +48,7 @@ import {
   imageRecordLink,
   planImageWrite,
   prepareReceiptCopy,
+  zoneDraftProblems,
 } from './assistant-writers-images.js';
 
 /**
@@ -65,7 +69,7 @@ export interface AuthorMember {
   relationCustom: string | null;
 }
 
-export type CareRecordType = 'bottle' | 'breast' | 'sleep';
+export type CareRecordType = 'bottle' | 'breast' | 'sleep' | 'pump' | 'diaper' | 'growth';
 
 export interface CareRecordInput {
   recordId: string;
@@ -105,10 +109,29 @@ export function buildCareRecord<S>(x: CareRecordInput, serverTime: S, source = '
   };
 }
 
-/** Same ranges as the form and the Rules (`careLimits`, `validCareBody`); never fixed silently. */
+/**
+ * The start of a feed / pumping session with a length, as the app's form saves it
+ * (`CareRecord.spanStart`, care_models.dart): logged right after it ended, its end would be in the
+ * future (the Rules refuse that), so it is taken to have just ended — it started [minutes] before
+ * [now]. Otherwise the start stays as given.
+ */
+export function spanStartLikeApp(start: Date, minutes: number | null, now: Date): Date {
+  if (minutes === null) return start;
+  const end = start.getTime() + minutes * 60_000;
+  return end > now.getTime() ? new Date(now.getTime() - minutes * 60_000) : start;
+}
+
+/**
+ * Same ranges as the form and the Rules (`careLimits`, `validCareBody`); never fixed silently.
+ * Lumi fixes 2026-10-16 (LUMI-01): every record is the document the app's own form writes
+ * (`CareRecord.create` + `dataJson`, care_models.dart): a breastfeed or a pumping session with a
+ * length ends `durationMin` after it starts; a diaper change is a point; a growth record happens
+ * "now" when measured today, else at noon of the measuring day in the baby's zone ([zone]).
+ */
 export function careRecordFromDraft(
   p: DraftPayload,
   now: Date,
+  zone = 'Asia/Ho_Chi_Minh',
 ):
   | {
       ok: true;
@@ -155,13 +178,79 @@ export function careRecordFromDraft(
       )
         problems.push('INVALID_AMOUNT');
       if (problems.length) return { ok: false, problems };
+      const start = spanStartLikeApp(new Date(p.occurredAt!), d, now);
       return {
         ok: true,
         type: 'breast',
-        occurredAt: new Date(p.occurredAt!),
-        endedAt: null,
+        occurredAt: start,
+        // LUMI-01 (the app's record): a feed with a length ends that many minutes later.
+        endedAt: d === null ? null : new Date(start.getTime() + d * 60_000),
         // Lumi 2026-10-16: a side not given is "both", as the app's record (`side ?? both`).
         data: { side: p.side ?? 'both', durationMin: d },
+      };
+    }
+    // ---- Lumi fixes 2026-10-16 (LUMI-01): PumpSheet, DiaperSheet, GrowthScreen ----
+    case 'pump': {
+      const problems: DraftProblem[] = [];
+      const ml = p.amountMl;
+      if (ml === null) problems.push('MISSING_AMOUNT');
+      else if (!Number.isInteger(ml) || ml < careLimits.pumpMl.min || ml > careLimits.pumpMl.max)
+        problems.push('INVALID_AMOUNT');
+      const d = p.durationMin;
+      if (
+        d !== null &&
+        (!Number.isInteger(d) || d < careLimits.durationMin.min || d > careLimits.durationMin.max)
+      )
+        problems.push('INVALID_AMOUNT');
+      if (p.occurredAt === null) problems.push('MISSING_TIME');
+      else if (future(new Date(p.occurredAt))) problems.push('FUTURE_TIME');
+      if (problems.length) return { ok: false, problems };
+      const start = spanStartLikeApp(new Date(p.occurredAt!), d, now);
+      return {
+        ok: true,
+        type: 'pump',
+        occurredAt: start,
+        endedAt: d === null ? null : new Date(start.getTime() + d * 60_000),
+        // The form's keys exactly (Rules: side, amountMl, durationMin all present).
+        data: { side: p.side ?? 'both', amountMl: ml, durationMin: d },
+      };
+    }
+    case 'diaper': {
+      const problems: DraftProblem[] = [];
+      if (p.occurredAt === null) problems.push('MISSING_TIME');
+      else if (future(new Date(p.occurredAt))) problems.push('FUTURE_TIME');
+      // The sheet always has a kind; a draft without one is never saved as a guess.
+      if (p.diaper === null) problems.push('INVALID_AMOUNT');
+      if (problems.length) return { ok: false, problems };
+      return {
+        ok: true,
+        type: 'diaper',
+        occurredAt: new Date(p.occurredAt!),
+        endedAt: null,
+        data: { kind: p.diaper },
+      };
+    }
+    case 'growth': {
+      const problems: DraftProblem[] = [];
+      if (p.weightKg === null) problems.push('MISSING_AMOUNT');
+      else if (!growthWeightOk(p.weightKg)) problems.push('INVALID_AMOUNT');
+      if (p.lengthCm !== null && !growthLengthOk(p.lengthCm)) problems.push('INVALID_AMOUNT');
+      if (p.measuredOn === null) problems.push('MISSING_DATE');
+      else if (p.measuredOn > localDateIn(zone, now)) problems.push('FUTURE_TIME');
+      if (problems.length) return { ok: false, problems: [...new Set(problems)] };
+      // One decimal, as the form keeps it ("4,3 kg").
+      const one = (n: number) => Math.round(n * 10) / 10;
+      const today = localDateIn(zone, now);
+      return {
+        ok: true,
+        type: 'growth',
+        occurredAt: p.measuredOn === today ? now : localInstant(zone, p.measuredOn!, '12:00'),
+        endedAt: null,
+        data: {
+          weightKg: one(p.weightKg!),
+          lengthCm: p.lengthCm === null ? null : one(p.lengthCm),
+          measuredOn: p.measuredOn,
+        },
       };
     }
     case 'sleep': {
@@ -251,7 +340,7 @@ export const recordLinkFor = (babyId: string, kind: DraftPayload['kind'], id: st
 // ---------- Draft documents ----------
 
 /** `assistantTasks/{t}/drafts/{d}` as the app reads it (timestamps as ISO). */
-export function draftView(snap: DocumentSnapshot, now: Date): AssistantDraftView {
+export function draftView(snap: DocumentSnapshot, now: Date, zone?: string): AssistantDraftView {
   const d = snap.data() ?? {};
   const payload = d.payload as DraftPayload;
   const draft: ActionDraft = {
@@ -274,7 +363,17 @@ export function draftView(snap: DocumentSnapshot, now: Date): AssistantDraftView
   // Slice A3: plus the module's own problems (VND only, a reminder needs a time).
   return {
     ...draft,
-    problems: draft.state === 'saved' ? [] : allDraftProblems(draftProblems(payload, now), payload),
+    problems:
+      draft.state === 'saved'
+        ? []
+        : allDraftProblems(
+            [
+              ...draftProblems(payload, now),
+              // LUMI-11: what only the baby's zone can tell (a reminder already past…).
+              ...(zone ? zoneDraftProblems(payload, now, zone) : []),
+            ],
+            payload,
+          ),
     // D-075 #2: who saved it (set by `confirmDrafts`).
     confirmedBy: (d.confirmedBy as AssistantDraftView['confirmedBy'] | undefined) ?? null,
   };
@@ -333,7 +432,7 @@ export async function confirmDraftItem(
     if (!d.exists || d.get('taskId') !== x.taskId) {
       return result(x, 'failed', { errorCode: 'VALIDATION_FAILED' });
     }
-    const draft = draftView(d, x.now);
+    const draft = draftView(d, x.now, x.zone);
     if (draft.state === 'saved') {
       return result(x, 'saved', {
         revision: draft.revision,
@@ -476,7 +575,7 @@ export async function confirmDraftItem(
         FieldValue.serverTimestamp(),
       );
     } else {
-      const care = careRecordFromDraft(p, x.now);
+      const care = careRecordFromDraft(p, x.now, x.zone);
       if (!care.ok) {
         return result(x, 'failed', { errorCode: 'VALIDATION_FAILED', problems: care.problems });
       }
@@ -498,7 +597,7 @@ export async function confirmDraftItem(
       // Rework 2026-10-15: a feed very like one already logged ("vừa ghi rồi") is a warning to
       // acknowledge ("Vẫn lưu"), re-checked here; never merged.
       if (
-        (p.kind === 'bottle' || p.kind === 'breast') &&
+        (p.kind === 'bottle' || p.kind === 'breast' || p.kind === 'pump' || p.kind === 'diaper') &&
         (await careDuplicateIn(db, x.babyId, p, recordId, tx))
       ) {
         warnings.add('duplicate_suspected');

@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_0185f7fa67e1207a2c6b5a0158954589",
+     "id": "tk_88e93e075e8e68c0c38c786f55b0ce3c",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -51,7 +51,7 @@
         "text": "cảm ơn Lumi"
        }
       ],
-      "taskId": "tk_0185f7fa67e1207a2c6b5a0158954589",
+      "taskId": "tk_88e93e075e8e68c0c38c786f55b0ce3c",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -74,7 +74,7 @@
         "code": "SMALL_TALK"
        }
       ],
-      "taskId": "tk_0185f7fa67e1207a2c6b5a0158954589",
+      "taskId": "tk_88e93e075e8e68c0c38c786f55b0ce3c",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

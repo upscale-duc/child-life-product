@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_891aa266172596418fe207b0d670b6ae",
+     "id": "tk_3dd026b824abc98f88ad7358bd397b7a",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -75,7 +75,7 @@
         "text": "bé ngủ trưa 1 tiếng rưỡi"
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -121,7 +121,7 @@
         }
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_891aa266172596418fe207b0d670b6ae",
+     "id": "tk_3dd026b824abc98f88ad7358bd397b7a",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -167,8 +167,8 @@
     },
     "drafts": [
      {
-      "id": "dr_891aa266172596418fe207b0d670b6ae_0",
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "id": "dr_3dd026b824abc98f88ad7358bd397b7a_0",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -189,7 +189,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_891aa266172596418fe207b0d670b6ae"
+       "task:tk_3dd026b824abc98f88ad7358bd397b7a"
       ],
       "recordId": null,
       "recordLink": null,
@@ -211,7 +211,7 @@
         "text": "bé ngủ trưa 1 tiếng rưỡi"
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -257,7 +257,7 @@
         }
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -274,7 +274,7 @@
         "text": "12:30 hôm nay"
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -293,11 +293,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_891aa266172596418fe207b0d670b6ae_0",
+        "draftId": "dr_3dd026b824abc98f88ad7358bd397b7a_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -312,7 +312,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_891aa266172596418fe207b0d670b6ae",
+     "id": "tk_3dd026b824abc98f88ad7358bd397b7a",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -343,8 +343,8 @@
     },
     "drafts": [
      {
-      "id": "dr_891aa266172596418fe207b0d670b6ae_0",
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "id": "dr_3dd026b824abc98f88ad7358bd397b7a_0",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -365,10 +365,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_891aa266172596418fe207b0d670b6ae"
+       "task:tk_3dd026b824abc98f88ad7358bd397b7a"
       ],
-      "recordId": "r_a5035b1cb6ec7ed021f432bc7f101885",
-      "recordLink": "/care/records/b_00000000000000000001/r_a5035b1cb6ec7ed021f432bc7f101885",
+      "recordId": "r_dfb1a8b41f430f855c62ded5383e1b91",
+      "recordLink": "/care/records/b_00000000000000000001/r_dfb1a8b41f430f855c62ded5383e1b91",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -392,7 +392,7 @@
         "text": "bé ngủ trưa 1 tiếng rưỡi"
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -438,7 +438,7 @@
         }
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -455,7 +455,7 @@
         "text": "12:30 hôm nay"
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -474,11 +474,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_891aa266172596418fe207b0d670b6ae_0",
+        "draftId": "dr_3dd026b824abc98f88ad7358bd397b7a_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -494,15 +494,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_891aa266172596418fe207b0d670b6ae_0",
+          "draftId": "dr_3dd026b824abc98f88ad7358bd397b7a_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_a5035b1cb6ec7ed021f432bc7f101885",
+          "recordLink": "/care/records/b_00000000000000000001/r_dfb1a8b41f430f855c62ded5383e1b91",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_891aa266172596418fe207b0d670b6ae",
+      "taskId": "tk_3dd026b824abc98f88ad7358bd397b7a",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:35.000Z",
       "attachmentIds": [],

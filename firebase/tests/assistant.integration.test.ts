@@ -7,6 +7,7 @@ import {
   defaultFlags,
   premiumCapabilities,
   quotaInvariantHolds,
+  draftKinds,
   type Activity,
   type AssistantPart,
   type AssistantResponse,
@@ -152,10 +153,12 @@ const SLEEP_END = batch[1]!.end!;
 
 // ---------- Helpers ----------
 
+// LUMI-05: the current app declares the draft kinds it can show.
 const E = (over: Record<string, unknown> = {}) => ({
   contractVersion: 1,
   clientRequestId: randomUUID(),
   locale: 'vi',
+  clientDraftKinds: [...draftKinds],
   ...over,
 });
 const placeholder = () => fakeModelGateway({});

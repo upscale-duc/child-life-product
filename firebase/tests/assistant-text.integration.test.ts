@@ -5,6 +5,7 @@ import {
   defaultFlags,
   expenseSchema,
   reminderSchema,
+  draftKinds,
   type AssistantPart,
   type AssistantTaskSnapshot,
   type DraftPayload,
@@ -100,10 +101,12 @@ const extraction = (intents: unknown[] = [], over: Record<string, unknown> = {})
   ...over,
 });
 
+// LUMI-05: the current app declares the draft kinds it can show.
 const E = (over: Record<string, unknown> = {}) => ({
   contractVersion: 1,
   clientRequestId: randomUUID(),
   locale: 'vi',
+  clientDraftKinds: [...draftKinds],
   ...over,
 });
 const deps = (gateway: ModelGateway | null = fakeModelGateway({}), at = NOW): AssistantDeps => ({
@@ -419,7 +422,8 @@ describe('typed expenses (Chi tiêu) — private from the start (D-075 #2)', () 
 describe('privacy: an expense only the model saw moves out of the shared thread', () => {
   it('the task, its message and its drafts land in the author’s private thread; a caregiver never sees the text or the draft', async () => {
     // No money words: the detector lets it into the shared thread; the model finds an expense.
-    const text = 'Con Cưng hôm nay hai hộp sữa, bé bú 90ml lúc 13h';
+    // ("hai hộp sữa" is caught at start since LUMI-16, so the words here say less.)
+    const text = 'Ghé Con Cưng lấy sữa, bé bú 90ml lúc 13h';
     const { taskId, snap } = await run(text, [
       extraction([
         intent('bottle', { amountMl: 90, time: '13:00', dayOffset: 0 }, [

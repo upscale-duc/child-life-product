@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+     "id": "tk_499b6a3442a95ce992cfb3407b8175ec",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_2a6541ed75e7f53b457f77c3016dfd5e_0",
-      "taskId": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+      "id": "dr_499b6a3442a95ce992cfb3407b8175ec_0",
+      "taskId": "tk_499b6a3442a95ce992cfb3407b8175ec",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -62,7 +62,7 @@
       "state": "needs_review",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_2a6541ed75e7f53b457f77c3016dfd5e"
+       "task:tk_499b6a3442a95ce992cfb3407b8175ec"
       ],
       "recordId": null,
       "recordLink": null,
@@ -86,7 +86,7 @@
         "text": "ngủ từ 10h đến 9h sáng"
        }
       ],
-      "taskId": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+      "taskId": "tk_499b6a3442a95ce992cfb3407b8175ec",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -105,11 +105,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_2a6541ed75e7f53b457f77c3016dfd5e_0",
+        "draftId": "dr_499b6a3442a95ce992cfb3407b8175ec_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+      "taskId": "tk_499b6a3442a95ce992cfb3407b8175ec",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -124,7 +124,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+     "id": "tk_499b6a3442a95ce992cfb3407b8175ec",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -155,8 +155,8 @@
     },
     "drafts": [
      {
-      "id": "dr_2a6541ed75e7f53b457f77c3016dfd5e_0",
-      "taskId": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+      "id": "dr_499b6a3442a95ce992cfb3407b8175ec_0",
+      "taskId": "tk_499b6a3442a95ce992cfb3407b8175ec",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -175,7 +175,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_2a6541ed75e7f53b457f77c3016dfd5e"
+       "task:tk_499b6a3442a95ce992cfb3407b8175ec"
       ],
       "recordId": null,
       "recordLink": null,
@@ -197,7 +197,7 @@
         "text": "ngủ từ 10h đến 9h sáng"
        }
       ],
-      "taskId": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+      "taskId": "tk_499b6a3442a95ce992cfb3407b8175ec",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -216,11 +216,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_2a6541ed75e7f53b457f77c3016dfd5e_0",
+        "draftId": "dr_499b6a3442a95ce992cfb3407b8175ec_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+      "taskId": "tk_499b6a3442a95ce992cfb3407b8175ec",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,7 +235,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+     "id": "tk_499b6a3442a95ce992cfb3407b8175ec",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -266,8 +266,8 @@
     },
     "drafts": [
      {
-      "id": "dr_2a6541ed75e7f53b457f77c3016dfd5e_0",
-      "taskId": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+      "id": "dr_499b6a3442a95ce992cfb3407b8175ec_0",
+      "taskId": "tk_499b6a3442a95ce992cfb3407b8175ec",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -286,10 +286,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_2a6541ed75e7f53b457f77c3016dfd5e"
+       "task:tk_499b6a3442a95ce992cfb3407b8175ec"
       ],
-      "recordId": "r_a7efa414e2755d04a2f11f925385d00f",
-      "recordLink": "/care/records/b_00000000000000000001/r_a7efa414e2755d04a2f11f925385d00f",
+      "recordId": "r_4bd91ce5fdf2ad3561984c8b523cc02f",
+      "recordLink": "/care/records/b_00000000000000000001/r_4bd91ce5fdf2ad3561984c8b523cc02f",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -313,7 +313,7 @@
         "text": "ngủ từ 10h đến 9h sáng"
        }
       ],
-      "taskId": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+      "taskId": "tk_499b6a3442a95ce992cfb3407b8175ec",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -332,11 +332,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_2a6541ed75e7f53b457f77c3016dfd5e_0",
+        "draftId": "dr_499b6a3442a95ce992cfb3407b8175ec_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+      "taskId": "tk_499b6a3442a95ce992cfb3407b8175ec",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -352,15 +352,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_2a6541ed75e7f53b457f77c3016dfd5e_0",
+          "draftId": "dr_499b6a3442a95ce992cfb3407b8175ec_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_a7efa414e2755d04a2f11f925385d00f",
+          "recordLink": "/care/records/b_00000000000000000001/r_4bd91ce5fdf2ad3561984c8b523cc02f",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_2a6541ed75e7f53b457f77c3016dfd5e",
+      "taskId": "tk_499b6a3442a95ce992cfb3407b8175ec",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:40.000Z",
       "attachmentIds": [],

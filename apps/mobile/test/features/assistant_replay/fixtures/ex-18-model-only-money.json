@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_0db3720c9b903172ec764a157143bec2",
+     "id": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -39,13 +39,13 @@
      "routing": {
       "reason": "spending",
       "from": "shared_thread",
-      "at": "worker"
+      "at": "start"
      }
     },
     "drafts": [
      {
-      "id": "dr_0db3720c9b903172ec764a157143bec2_0",
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "id": "dr_d03a9c8dec0c0b0770a20742e8d2d191_0",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -63,7 +63,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_0db3720c9b903172ec764a157143bec2"
+       "task:tk_d03a9c8dec0c0b0770a20742e8d2d191"
       ],
       "recordId": null,
       "recordLink": null,
@@ -73,8 +73,8 @@
       "confirmedBy": null
      },
      {
-      "id": "dr_0db3720c9b903172ec764a157143bec2_1",
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "id": "dr_d03a9c8dec0c0b0770a20742e8d2d191_1",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -101,7 +101,7 @@
       "state": "needs_review",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_0db3720c9b903172ec764a157143bec2"
+       "task:tk_d03a9c8dec0c0b0770a20742e8d2d191"
       ],
       "recordId": null,
       "recordLink": null,
@@ -123,7 +123,7 @@
         "text": "Con Cưng hôm nay hai hộp sữa, bé bú 90ml lúc 13h"
        }
       ],
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -148,17 +148,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_0db3720c9b903172ec764a157143bec2_0",
+        "draftId": "dr_d03a9c8dec0c0b0770a20742e8d2d191_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_0db3720c9b903172ec764a157143bec2_1",
+        "draftId": "dr_d03a9c8dec0c0b0770a20742e8d2d191_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -173,7 +173,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_0db3720c9b903172ec764a157143bec2",
+     "id": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -203,13 +203,13 @@
      "routing": {
       "reason": "spending",
       "from": "shared_thread",
-      "at": "worker"
+      "at": "start"
      }
     },
     "drafts": [
      {
-      "id": "dr_0db3720c9b903172ec764a157143bec2_0",
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "id": "dr_d03a9c8dec0c0b0770a20742e8d2d191_0",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -227,7 +227,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_0db3720c9b903172ec764a157143bec2"
+       "task:tk_d03a9c8dec0c0b0770a20742e8d2d191"
       ],
       "recordId": null,
       "recordLink": null,
@@ -237,8 +237,8 @@
       "confirmedBy": null
      },
      {
-      "id": "dr_0db3720c9b903172ec764a157143bec2_1",
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "id": "dr_d03a9c8dec0c0b0770a20742e8d2d191_1",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -263,7 +263,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_0db3720c9b903172ec764a157143bec2"
+       "task:tk_d03a9c8dec0c0b0770a20742e8d2d191"
       ],
       "recordId": null,
       "recordLink": null,
@@ -285,7 +285,7 @@
         "text": "Con Cưng hôm nay hai hộp sữa, bé bú 90ml lúc 13h"
        }
       ],
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -310,17 +310,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_0db3720c9b903172ec764a157143bec2_0",
+        "draftId": "dr_d03a9c8dec0c0b0770a20742e8d2d191_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_0db3720c9b903172ec764a157143bec2_1",
+        "draftId": "dr_d03a9c8dec0c0b0770a20742e8d2d191_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -335,7 +335,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_0db3720c9b903172ec764a157143bec2",
+     "id": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -365,13 +365,13 @@
      "routing": {
       "reason": "spending",
       "from": "shared_thread",
-      "at": "worker"
+      "at": "start"
      }
     },
     "drafts": [
      {
-      "id": "dr_0db3720c9b903172ec764a157143bec2_0",
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "id": "dr_d03a9c8dec0c0b0770a20742e8d2d191_0",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -389,10 +389,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_0db3720c9b903172ec764a157143bec2"
+       "task:tk_d03a9c8dec0c0b0770a20742e8d2d191"
       ],
-      "recordId": "r_72ec9165955a904e8c28f6e9affb3e67",
-      "recordLink": "/care/records/b_00000000000000000001/r_72ec9165955a904e8c28f6e9affb3e67",
+      "recordId": "r_cdc04e044a66fc35e8c4c14fccab342a",
+      "recordLink": "/care/records/b_00000000000000000001/r_cdc04e044a66fc35e8c4c14fccab342a",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -404,8 +404,8 @@
       }
      },
      {
-      "id": "dr_0db3720c9b903172ec764a157143bec2_1",
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "id": "dr_d03a9c8dec0c0b0770a20742e8d2d191_1",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -430,10 +430,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_0db3720c9b903172ec764a157143bec2"
+       "task:tk_d03a9c8dec0c0b0770a20742e8d2d191"
       ],
-      "recordId": "x_c5b320e8578f9dc2d898d03e0cf41f73",
-      "recordLink": "/utilities/spending/expense/x_c5b320e8578f9dc2d898d03e0cf41f73?babyId=b_00000000000000000001",
+      "recordId": "x_0033bf0d6ad033a485fc00a3625f30e8",
+      "recordLink": "/utilities/spending/expense/x_0033bf0d6ad033a485fc00a3625f30e8?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -457,7 +457,7 @@
         "text": "Con Cưng hôm nay hai hộp sữa, bé bú 90ml lúc 13h"
        }
       ],
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -482,17 +482,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_0db3720c9b903172ec764a157143bec2_0",
+        "draftId": "dr_d03a9c8dec0c0b0770a20742e8d2d191_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_0db3720c9b903172ec764a157143bec2_1",
+        "draftId": "dr_d03a9c8dec0c0b0770a20742e8d2d191_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -508,21 +508,21 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_0db3720c9b903172ec764a157143bec2_0",
+          "draftId": "dr_d03a9c8dec0c0b0770a20742e8d2d191_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_72ec9165955a904e8c28f6e9affb3e67",
+          "recordLink": "/care/records/b_00000000000000000001/r_cdc04e044a66fc35e8c4c14fccab342a",
           "errorCode": null
          },
          {
-          "draftId": "dr_0db3720c9b903172ec764a157143bec2_1",
+          "draftId": "dr_d03a9c8dec0c0b0770a20742e8d2d191_1",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_c5b320e8578f9dc2d898d03e0cf41f73?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_0033bf0d6ad033a485fc00a3625f30e8?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_0db3720c9b903172ec764a157143bec2",
+      "taskId": "tk_d03a9c8dec0c0b0770a20742e8d2d191",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:40.000Z",
       "attachmentIds": [],

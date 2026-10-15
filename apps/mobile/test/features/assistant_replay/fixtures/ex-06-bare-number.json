@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_36cab1d04acfb01e03256f9429e7aba6",
+     "id": "tk_01232d779218fb71f1a8521dda277008",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_36cab1d04acfb01e03256f9429e7aba6_0",
-      "taskId": "tk_36cab1d04acfb01e03256f9429e7aba6",
+      "id": "dr_01232d779218fb71f1a8521dda277008_0",
+      "taskId": "tk_01232d779218fb71f1a8521dda277008",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -73,7 +73,7 @@
       "state": "needs_review",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_36cab1d04acfb01e03256f9429e7aba6"
+       "task:tk_01232d779218fb71f1a8521dda277008"
       ],
       "recordId": null,
       "recordLink": null,
@@ -95,7 +95,7 @@
         "text": "trả 200 tiền gửi xe"
        }
       ],
-      "taskId": "tk_36cab1d04acfb01e03256f9429e7aba6",
+      "taskId": "tk_01232d779218fb71f1a8521dda277008",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -120,11 +120,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_36cab1d04acfb01e03256f9429e7aba6_0",
+        "draftId": "dr_01232d779218fb71f1a8521dda277008_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_36cab1d04acfb01e03256f9429e7aba6",
+      "taskId": "tk_01232d779218fb71f1a8521dda277008",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -139,7 +139,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_36cab1d04acfb01e03256f9429e7aba6",
+     "id": "tk_01232d779218fb71f1a8521dda277008",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -174,8 +174,8 @@
     },
     "drafts": [
      {
-      "id": "dr_36cab1d04acfb01e03256f9429e7aba6_0",
-      "taskId": "tk_36cab1d04acfb01e03256f9429e7aba6",
+      "id": "dr_01232d779218fb71f1a8521dda277008_0",
+      "taskId": "tk_01232d779218fb71f1a8521dda277008",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -200,7 +200,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_36cab1d04acfb01e03256f9429e7aba6"
+       "task:tk_01232d779218fb71f1a8521dda277008"
       ],
       "recordId": null,
       "recordLink": null,
@@ -222,7 +222,7 @@
         "text": "trả 200 tiền gửi xe"
        }
       ],
-      "taskId": "tk_36cab1d04acfb01e03256f9429e7aba6",
+      "taskId": "tk_01232d779218fb71f1a8521dda277008",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -247,11 +247,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_36cab1d04acfb01e03256f9429e7aba6_0",
+        "draftId": "dr_01232d779218fb71f1a8521dda277008_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_36cab1d04acfb01e03256f9429e7aba6",
+      "taskId": "tk_01232d779218fb71f1a8521dda277008",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -266,7 +266,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_36cab1d04acfb01e03256f9429e7aba6",
+     "id": "tk_01232d779218fb71f1a8521dda277008",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -301,8 +301,8 @@
     },
     "drafts": [
      {
-      "id": "dr_36cab1d04acfb01e03256f9429e7aba6_0",
-      "taskId": "tk_36cab1d04acfb01e03256f9429e7aba6",
+      "id": "dr_01232d779218fb71f1a8521dda277008_0",
+      "taskId": "tk_01232d779218fb71f1a8521dda277008",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -327,10 +327,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_36cab1d04acfb01e03256f9429e7aba6"
+       "task:tk_01232d779218fb71f1a8521dda277008"
       ],
-      "recordId": "x_fa255969c4becf6a4475f1fc1ef1bf16",
-      "recordLink": "/utilities/spending/expense/x_fa255969c4becf6a4475f1fc1ef1bf16?babyId=b_00000000000000000001",
+      "recordId": "x_769f270d3bab43bd13315498913cc579",
+      "recordLink": "/utilities/spending/expense/x_769f270d3bab43bd13315498913cc579?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -354,7 +354,7 @@
         "text": "trả 200 tiền gửi xe"
        }
       ],
-      "taskId": "tk_36cab1d04acfb01e03256f9429e7aba6",
+      "taskId": "tk_01232d779218fb71f1a8521dda277008",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -379,11 +379,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_36cab1d04acfb01e03256f9429e7aba6_0",
+        "draftId": "dr_01232d779218fb71f1a8521dda277008_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_36cab1d04acfb01e03256f9429e7aba6",
+      "taskId": "tk_01232d779218fb71f1a8521dda277008",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -399,15 +399,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_36cab1d04acfb01e03256f9429e7aba6_0",
+          "draftId": "dr_01232d779218fb71f1a8521dda277008_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_fa255969c4becf6a4475f1fc1ef1bf16?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_769f270d3bab43bd13315498913cc579?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_36cab1d04acfb01e03256f9429e7aba6",
+      "taskId": "tk_01232d779218fb71f1a8521dda277008",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:40.000Z",
       "attachmentIds": [],

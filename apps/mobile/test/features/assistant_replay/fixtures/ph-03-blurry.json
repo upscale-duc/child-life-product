@@ -9,8 +9,8 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_34b53f3c18b489aaca039742fe2ae8fe",
-     "conversationId": "cv_1fcd094d66f001fdcd339d86f72a72e5",
+     "id": "tk_29f12f8d9ff6f53e255efa1a75861811",
+     "conversationId": "cv_8e7260146454ee49173fb075c49aaf2f",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -42,14 +42,14 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_1fcd094d66f001fdcd339d86f72a72e5",
+      "conversationId": "cv_8e7260146454ee49173fb075c49aaf2f",
       "role": "user",
       "parts": [],
-      "taskId": "tk_34b53f3c18b489aaca039742fe2ae8fe",
+      "taskId": "tk_29f12f8d9ff6f53e255efa1a75861811",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [
-       "at_77b1b44777353afa7bacc337e131b8e3"
+       "at_bfcb6d16f65c08babafbc2afa63f1f62"
       ],
       "author": {
        "uid": "u_mai",
@@ -60,7 +60,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_1fcd094d66f001fdcd339d86f72a72e5",
+      "conversationId": "cv_8e7260146454ee49173fb075c49aaf2f",
       "role": "assistant",
       "parts": [
        {
@@ -74,7 +74,7 @@
         "text": "Chưa xử lý được yêu cầu này. Không tính lượt."
        }
       ],
-      "taskId": "tk_34b53f3c18b489aaca039742fe2ae8fe",
+      "taskId": "tk_29f12f8d9ff6f53e255efa1a75861811",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -83,7 +83,7 @@
     ],
     "attachments": [
      {
-      "id": "at_77b1b44777353afa7bacc337e131b8e3",
+      "id": "at_bfcb6d16f65c08babafbc2afa63f1f62",
       "mime": "image/png",
       "bytes": 59047,
       "retention": "keep_with_record",

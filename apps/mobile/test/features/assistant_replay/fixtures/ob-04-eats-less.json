@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_61240e136492a1714e27427d998f2f4c",
+     "id": "tk_61bc0f77ec1be30a4b76f373dc9422cc",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_61240e136492a1714e27427d998f2f4c_0",
-      "taskId": "tk_61240e136492a1714e27427d998f2f4c",
+      "id": "dr_61bc0f77ec1be30a4b76f373dc9422cc_0",
+      "taskId": "tk_61bc0f77ec1be30a4b76f373dc9422cc",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -60,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_61240e136492a1714e27427d998f2f4c"
+       "task:tk_61bc0f77ec1be30a4b76f373dc9422cc"
       ],
       "recordId": null,
       "recordLink": null,
@@ -82,7 +82,7 @@
         "text": "mấy hôm nay bé biếng ăn"
        }
       ],
-      "taskId": "tk_61240e136492a1714e27427d998f2f4c",
+      "taskId": "tk_61bc0f77ec1be30a4b76f373dc9422cc",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -101,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_61240e136492a1714e27427d998f2f4c_0",
+        "draftId": "dr_61bc0f77ec1be30a4b76f373dc9422cc_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_61240e136492a1714e27427d998f2f4c",
+      "taskId": "tk_61bc0f77ec1be30a4b76f373dc9422cc",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -120,7 +120,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_61240e136492a1714e27427d998f2f4c",
+     "id": "tk_61bc0f77ec1be30a4b76f373dc9422cc",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -151,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_61240e136492a1714e27427d998f2f4c_0",
-      "taskId": "tk_61240e136492a1714e27427d998f2f4c",
+      "id": "dr_61bc0f77ec1be30a4b76f373dc9422cc_0",
+      "taskId": "tk_61bc0f77ec1be30a4b76f373dc9422cc",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -171,7 +171,7 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_61240e136492a1714e27427d998f2f4c"
+       "task:tk_61bc0f77ec1be30a4b76f373dc9422cc"
       ],
       "recordId": "ci_d46ab358ffa5b02a47f08c721cd1c777",
       "recordLink": "/rhythm/checkins/b_00000000000000000001/ci_d46ab358ffa5b02a47f08c721cd1c777",
@@ -198,7 +198,7 @@
         "text": "mấy hôm nay bé biếng ăn"
        }
       ],
-      "taskId": "tk_61240e136492a1714e27427d998f2f4c",
+      "taskId": "tk_61bc0f77ec1be30a4b76f373dc9422cc",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -217,11 +217,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_61240e136492a1714e27427d998f2f4c_0",
+        "draftId": "dr_61bc0f77ec1be30a4b76f373dc9422cc_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_61240e136492a1714e27427d998f2f4c",
+      "taskId": "tk_61bc0f77ec1be30a4b76f373dc9422cc",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -237,7 +237,7 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_61240e136492a1714e27427d998f2f4c_0",
+          "draftId": "dr_61bc0f77ec1be30a4b76f373dc9422cc_0",
           "status": "saved",
           "recordLink": "/rhythm/checkins/b_00000000000000000001/ci_d46ab358ffa5b02a47f08c721cd1c777",
           "errorCode": null
@@ -245,7 +245,7 @@
         ]
        }
       ],
-      "taskId": "tk_61240e136492a1714e27427d998f2f4c",
+      "taskId": "tk_61bc0f77ec1be30a4b76f373dc9422cc",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

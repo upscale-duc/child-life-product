@@ -1,0 +1,268 @@
+{
+ "id": "br-17-end-time-in-time-live",
+ "group": "care.breast",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_23d23e057ffcbd496337796d8f5d016f",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_23d23e057ffcbd496337796d8f5d016f_0",
+      "taskId": "tk_23d23e057ffcbd496337796d8f5d016f",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "breast",
+       "occurredAt": "2026-10-15T00:45:00.000Z",
+       "durationMin": 15,
+       "side": "left",
+       "linked": {
+        "derived": "occurredAt"
+       }
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_23d23e057ffcbd496337796d8f5d016f"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bú 15 phút bên trái, xong lúc 8h sáng"
+       }
+      ],
+      "taskId": "tk_23d23e057ffcbd496337796d8f5d016f",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_23d23e057ffcbd496337796d8f5d016f_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_23d23e057ffcbd496337796d8f5d016f",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_23d23e057ffcbd496337796d8f5d016f",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_23d23e057ffcbd496337796d8f5d016f_0",
+      "taskId": "tk_23d23e057ffcbd496337796d8f5d016f",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "breast",
+       "occurredAt": "2026-10-15T00:45:00.000Z",
+       "durationMin": 15,
+       "side": "left",
+       "linked": {
+        "derived": "occurredAt"
+       }
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_23d23e057ffcbd496337796d8f5d016f"
+      ],
+      "recordId": "r_5b69a7eb0af45f4245782cbd5c1c1ffd",
+      "recordLink": "/care/records/b_00000000000000000001/r_5b69a7eb0af45f4245782cbd5c1c1ffd",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "bú 15 phút bên trái, xong lúc 8h sáng"
+       }
+      ],
+      "taskId": "tk_23d23e057ffcbd496337796d8f5d016f",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_23d23e057ffcbd496337796d8f5d016f_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_23d23e057ffcbd496337796d8f5d016f",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_23d23e057ffcbd496337796d8f5d016f_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_5b69a7eb0af45f4245782cbd5c1c1ffd",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_23d23e057ffcbd496337796d8f5d016f",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

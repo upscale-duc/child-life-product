@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_11635b240d3365f44fa46cda1615d839",
+     "id": "tk_c8db914701b5396effa45a17d28ded70",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -82,7 +82,7 @@
         "text": "bú mẹ 20 phút bên phải"
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -135,7 +135,7 @@
         }
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -150,7 +150,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_11635b240d3365f44fa46cda1615d839",
+     "id": "tk_c8db914701b5396effa45a17d28ded70",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -181,8 +181,8 @@
     },
     "drafts": [
      {
-      "id": "dr_11635b240d3365f44fa46cda1615d839_0",
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "id": "dr_c8db914701b5396effa45a17d28ded70_0",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -203,7 +203,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_11635b240d3365f44fa46cda1615d839"
+       "task:tk_c8db914701b5396effa45a17d28ded70"
       ],
       "recordId": null,
       "recordLink": null,
@@ -225,7 +225,7 @@
         "text": "bú mẹ 20 phút bên phải"
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -278,7 +278,7 @@
         }
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -295,7 +295,7 @@
         "text": "Vừa xong (14:20)"
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -314,11 +314,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_11635b240d3365f44fa46cda1615d839_0",
+        "draftId": "dr_c8db914701b5396effa45a17d28ded70_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -333,7 +333,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_11635b240d3365f44fa46cda1615d839",
+     "id": "tk_c8db914701b5396effa45a17d28ded70",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -364,8 +364,8 @@
     },
     "drafts": [
      {
-      "id": "dr_11635b240d3365f44fa46cda1615d839_0",
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "id": "dr_c8db914701b5396effa45a17d28ded70_0",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -386,10 +386,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_11635b240d3365f44fa46cda1615d839"
+       "task:tk_c8db914701b5396effa45a17d28ded70"
       ],
-      "recordId": "r_584d7fc45774d84cc2976395465c8e71",
-      "recordLink": "/care/records/b_00000000000000000001/r_584d7fc45774d84cc2976395465c8e71",
+      "recordId": "r_bf365976a73fcf18054aa31dfe5bc393",
+      "recordLink": "/care/records/b_00000000000000000001/r_bf365976a73fcf18054aa31dfe5bc393",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -413,7 +413,7 @@
         "text": "bú mẹ 20 phút bên phải"
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -466,7 +466,7 @@
         }
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -483,7 +483,7 @@
         "text": "Vừa xong (14:20)"
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -502,11 +502,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_11635b240d3365f44fa46cda1615d839_0",
+        "draftId": "dr_c8db914701b5396effa45a17d28ded70_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -522,15 +522,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_11635b240d3365f44fa46cda1615d839_0",
+          "draftId": "dr_c8db914701b5396effa45a17d28ded70_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_584d7fc45774d84cc2976395465c8e71",
+          "recordLink": "/care/records/b_00000000000000000001/r_bf365976a73fcf18054aa31dfe5bc393",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_11635b240d3365f44fa46cda1615d839",
+      "taskId": "tk_c8db914701b5396effa45a17d28ded70",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:35.000Z",
       "attachmentIds": [],

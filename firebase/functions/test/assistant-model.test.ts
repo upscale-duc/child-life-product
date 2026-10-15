@@ -172,7 +172,14 @@ describe('OpenAI extraction request', () => {
     ]) {
       expect(prompt).toContain(words);
     }
-    expect(assistantPromptVersion).toBe('assistant-extract-v4');
+    // Lumi fixes 2026-10-16 (v5): pump / diaper / growth, "12h" is noon, each time its period.
+    expect(assistantPromptVersion).toBe('assistant-extract-v5');
+    for (const words of ['pump (', 'diaper (', 'growth (', '"12h" / "12 giờ" alone is noon']) {
+      expect(prompt).toContain(words);
+    }
+    for (const k of ['diaper', 'weightKg', 'lengthCm', 'headCm']) {
+      expect(Object.keys(fields)).toContain(k);
+    }
     const body = buildExtractRequest(
       {
         ...input,

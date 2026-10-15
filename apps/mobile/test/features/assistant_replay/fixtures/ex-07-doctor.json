@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b",
+     "id": "tk_b6e4c00d2a64b91a9e7663ddd3610a5e",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_550313bb4dbfdea5c9ddc6b3f3a5cb3b_0",
-      "taskId": "tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b",
+      "id": "dr_b6e4c00d2a64b91a9e7663ddd3610a5e_0",
+      "taskId": "tk_b6e4c00d2a64b91a9e7663ddd3610a5e",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -70,7 +70,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b"
+       "task:tk_b6e4c00d2a64b91a9e7663ddd3610a5e"
       ],
       "recordId": null,
       "recordLink": null,
@@ -92,7 +92,7 @@
         "text": "khám bác sĩ hết 450k"
        }
       ],
-      "taskId": "tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b",
+      "taskId": "tk_b6e4c00d2a64b91a9e7663ddd3610a5e",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -117,11 +117,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_550313bb4dbfdea5c9ddc6b3f3a5cb3b_0",
+        "draftId": "dr_b6e4c00d2a64b91a9e7663ddd3610a5e_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b",
+      "taskId": "tk_b6e4c00d2a64b91a9e7663ddd3610a5e",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b",
+     "id": "tk_b6e4c00d2a64b91a9e7663ddd3610a5e",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -171,8 +171,8 @@
     },
     "drafts": [
      {
-      "id": "dr_550313bb4dbfdea5c9ddc6b3f3a5cb3b_0",
-      "taskId": "tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b",
+      "id": "dr_b6e4c00d2a64b91a9e7663ddd3610a5e_0",
+      "taskId": "tk_b6e4c00d2a64b91a9e7663ddd3610a5e",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -197,10 +197,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b"
+       "task:tk_b6e4c00d2a64b91a9e7663ddd3610a5e"
       ],
-      "recordId": "x_c41bc8d412deda9a1bd66b2ba2bae904",
-      "recordLink": "/utilities/spending/expense/x_c41bc8d412deda9a1bd66b2ba2bae904?babyId=b_00000000000000000001",
+      "recordId": "x_a2a6fbcda9b4cb0542e452bac5c3a582",
+      "recordLink": "/utilities/spending/expense/x_a2a6fbcda9b4cb0542e452bac5c3a582?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -224,7 +224,7 @@
         "text": "khám bác sĩ hết 450k"
        }
       ],
-      "taskId": "tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b",
+      "taskId": "tk_b6e4c00d2a64b91a9e7663ddd3610a5e",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -249,11 +249,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_550313bb4dbfdea5c9ddc6b3f3a5cb3b_0",
+        "draftId": "dr_b6e4c00d2a64b91a9e7663ddd3610a5e_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b",
+      "taskId": "tk_b6e4c00d2a64b91a9e7663ddd3610a5e",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -269,15 +269,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_550313bb4dbfdea5c9ddc6b3f3a5cb3b_0",
+          "draftId": "dr_b6e4c00d2a64b91a9e7663ddd3610a5e_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_c41bc8d412deda9a1bd66b2ba2bae904?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_a2a6fbcda9b4cb0542e452bac5c3a582?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_550313bb4dbfdea5c9ddc6b3f3a5cb3b",
+      "taskId": "tk_b6e4c00d2a64b91a9e7663ddd3610a5e",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

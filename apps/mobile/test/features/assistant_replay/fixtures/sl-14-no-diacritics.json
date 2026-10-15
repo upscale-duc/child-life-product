@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_cb6f097fee02520049e6edcf639d6aac",
+     "id": "tk_61f2c6a58edd2235dab9381756d3451e",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_cb6f097fee02520049e6edcf639d6aac_0",
-      "taskId": "tk_cb6f097fee02520049e6edcf639d6aac",
+      "id": "dr_61f2c6a58edd2235dab9381756d3451e_0",
+      "taskId": "tk_61f2c6a58edd2235dab9381756d3451e",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -60,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_cb6f097fee02520049e6edcf639d6aac"
+       "task:tk_61f2c6a58edd2235dab9381756d3451e"
       ],
       "recordId": null,
       "recordLink": null,
@@ -82,7 +82,7 @@
         "text": "be ngu tu 1h trua den 2h chieu"
        }
       ],
-      "taskId": "tk_cb6f097fee02520049e6edcf639d6aac",
+      "taskId": "tk_61f2c6a58edd2235dab9381756d3451e",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -101,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_cb6f097fee02520049e6edcf639d6aac_0",
+        "draftId": "dr_61f2c6a58edd2235dab9381756d3451e_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_cb6f097fee02520049e6edcf639d6aac",
+      "taskId": "tk_61f2c6a58edd2235dab9381756d3451e",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -120,7 +120,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_cb6f097fee02520049e6edcf639d6aac",
+     "id": "tk_61f2c6a58edd2235dab9381756d3451e",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -151,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_cb6f097fee02520049e6edcf639d6aac_0",
-      "taskId": "tk_cb6f097fee02520049e6edcf639d6aac",
+      "id": "dr_61f2c6a58edd2235dab9381756d3451e_0",
+      "taskId": "tk_61f2c6a58edd2235dab9381756d3451e",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -171,10 +171,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_cb6f097fee02520049e6edcf639d6aac"
+       "task:tk_61f2c6a58edd2235dab9381756d3451e"
       ],
-      "recordId": "r_e015a84931e8cf3e732f75a6e48a74c8",
-      "recordLink": "/care/records/b_00000000000000000001/r_e015a84931e8cf3e732f75a6e48a74c8",
+      "recordId": "r_921db98a8999a440408b349fe6174228",
+      "recordLink": "/care/records/b_00000000000000000001/r_921db98a8999a440408b349fe6174228",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -198,7 +198,7 @@
         "text": "be ngu tu 1h trua den 2h chieu"
        }
       ],
-      "taskId": "tk_cb6f097fee02520049e6edcf639d6aac",
+      "taskId": "tk_61f2c6a58edd2235dab9381756d3451e",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -217,11 +217,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_cb6f097fee02520049e6edcf639d6aac_0",
+        "draftId": "dr_61f2c6a58edd2235dab9381756d3451e_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_cb6f097fee02520049e6edcf639d6aac",
+      "taskId": "tk_61f2c6a58edd2235dab9381756d3451e",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -237,15 +237,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_cb6f097fee02520049e6edcf639d6aac_0",
+          "draftId": "dr_61f2c6a58edd2235dab9381756d3451e_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_e015a84931e8cf3e732f75a6e48a74c8",
+          "recordLink": "/care/records/b_00000000000000000001/r_921db98a8999a440408b349fe6174228",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_cb6f097fee02520049e6edcf639d6aac",
+      "taskId": "tk_61f2c6a58edd2235dab9381756d3451e",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

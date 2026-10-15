@@ -312,7 +312,8 @@ void main() {
         );
         await _pump(tester, repo);
         expect(_text('Lượng 120 ml có đúng không?'), findsOneWidget);
-        expect(_text('Giờ 10:00 có đúng không?'), findsOneWidget);
+        // LUMI-09: the row names which time ("giờ dậy"), never a bare "Giờ 10:00".
+        expect(_text('Giờ dậy 10:00 có đúng không?'), findsOneWidget);
         expect(_text('Còn 2 mục cần bổ sung ở trên'), findsOneWidget);
         await _tap(tester, _text('Đúng rồi').first);
         expect(repo.named('patchDraft').single.args['confirmedFields'], [

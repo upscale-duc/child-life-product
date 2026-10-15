@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_fa6bb752410825c379013ea9e321a6f6",
+     "id": "tk_464441bf2b2d1075f10b1ee7377d1de0",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_fa6bb752410825c379013ea9e321a6f6_0",
-      "taskId": "tk_fa6bb752410825c379013ea9e321a6f6",
+      "id": "dr_464441bf2b2d1075f10b1ee7377d1de0_0",
+      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_fa6bb752410825c379013ea9e321a6f6"
+       "task:tk_464441bf2b2d1075f10b1ee7377d1de0"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +81,7 @@
         "text": "bé bú 90ml lúc 9h sáng"
        }
       ],
-      "taskId": "tk_fa6bb752410825c379013ea9e321a6f6",
+      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +100,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_fa6bb752410825c379013ea9e321a6f6_0",
+        "draftId": "dr_464441bf2b2d1075f10b1ee7377d1de0_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_fa6bb752410825c379013ea9e321a6f6",
+      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,7 +119,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_fa6bb752410825c379013ea9e321a6f6",
+     "id": "tk_464441bf2b2d1075f10b1ee7377d1de0",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -150,8 +150,8 @@
     },
     "drafts": [
      {
-      "id": "dr_fa6bb752410825c379013ea9e321a6f6_0",
-      "taskId": "tk_fa6bb752410825c379013ea9e321a6f6",
+      "id": "dr_464441bf2b2d1075f10b1ee7377d1de0_0",
+      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -169,10 +169,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_fa6bb752410825c379013ea9e321a6f6"
+       "task:tk_464441bf2b2d1075f10b1ee7377d1de0"
       ],
-      "recordId": "r_77d52ad93dbbd33984ef35d99b7debbc",
-      "recordLink": "/care/records/b_00000000000000000001/r_77d52ad93dbbd33984ef35d99b7debbc",
+      "recordId": "r_37596e853e6d4da8a5d8ff97020500a0",
+      "recordLink": "/care/records/b_00000000000000000001/r_37596e853e6d4da8a5d8ff97020500a0",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +196,7 @@
         "text": "bé bú 90ml lúc 9h sáng"
        }
       ],
-      "taskId": "tk_fa6bb752410825c379013ea9e321a6f6",
+      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +215,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_fa6bb752410825c379013ea9e321a6f6_0",
+        "draftId": "dr_464441bf2b2d1075f10b1ee7377d1de0_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_fa6bb752410825c379013ea9e321a6f6",
+      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +235,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_fa6bb752410825c379013ea9e321a6f6_0",
+          "draftId": "dr_464441bf2b2d1075f10b1ee7377d1de0_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_77d52ad93dbbd33984ef35d99b7debbc",
+          "recordLink": "/care/records/b_00000000000000000001/r_37596e853e6d4da8a5d8ff97020500a0",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_fa6bb752410825c379013ea9e321a6f6",
+      "taskId": "tk_464441bf2b2d1075f10b1ee7377d1de0",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],
@@ -263,7 +263,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_b3a49d606e74abca007fc2a718d9b9df",
+     "id": "tk_f40bc6806a0482dbfaa56df7452ddd21",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -305,7 +305,7 @@
         "text": "à 100ml chứ"
        }
       ],
-      "taskId": "tk_b3a49d606e74abca007fc2a718d9b9df",
+      "taskId": "tk_f40bc6806a0482dbfaa56df7452ddd21",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -326,10 +326,10 @@
         "schemaVersion": 1,
         "text": "Mục trước đã được lưu nên mình không đổi nó. Bạn mở mục đó để sửa nhé.",
         "code": "PREVIOUS_SAVED",
-        "link": "/care/records/b_00000000000000000001/r_77d52ad93dbbd33984ef35d99b7debbc"
+        "link": "/care/records/b_00000000000000000001/r_37596e853e6d4da8a5d8ff97020500a0"
        }
       ],
-      "taskId": "tk_b3a49d606e74abca007fc2a718d9b9df",
+      "taskId": "tk_f40bc6806a0482dbfaa56df7452ddd21",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

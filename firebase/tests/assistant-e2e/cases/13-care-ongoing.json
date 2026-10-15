@@ -237,6 +237,40 @@
         "outcome": ["drafts", "awaiting", "notice", "fallback"]
       },
       "group": "care.ongoing"
+    },
+    {
+      "id": "on-09-nursing-side-said",
+      "group": "care.ongoing",
+      "title": "\"đang cho bú bên phải\": the timer starts on the side said",
+      "turns": [
+        {
+          "say": "đang cho bú bên phải",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "phase": "start",
+                  "side": "right"
+                },
+                "ev": {
+                  "phase": "đang cho bú",
+                  "side": "bên phải"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "ready": true,
+        "values": {
+          "0.side": "right"
+        },
+        "credits": 1
+      }
     }
   ]
 }

@@ -215,6 +215,10 @@ describe('clock times, day periods, relative dates', () => {
     ['11h đêm', '23:00', true],
     ['9h', '09:00', false],
     ['9 giờ kém 15', '08:45', false],
+    // LUMI-03: "12h" is noon unless the night is said.
+    ['12h', '12:00', true],
+    ['12h30', '12:30', true],
+    ['12h đêm', '00:00', true],
   ])('%s → %s (explicit %s)', (text, hhmm, explicit) => {
     expect(clockTimeIn(text)).toMatchObject({ hhmm, explicit });
   });

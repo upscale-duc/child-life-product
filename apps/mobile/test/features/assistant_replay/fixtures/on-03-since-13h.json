@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_371530fa09fa2ee8012f3ffccd71ec16",
+     "id": "tk_52517334a053bd8b47549aa85af5de47",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_371530fa09fa2ee8012f3ffccd71ec16_0",
-      "taskId": "tk_371530fa09fa2ee8012f3ffccd71ec16",
+      "id": "dr_52517334a053bd8b47549aa85af5de47_0",
+      "taskId": "tk_52517334a053bd8b47549aa85af5de47",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -62,7 +62,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_371530fa09fa2ee8012f3ffccd71ec16"
+       "task:tk_52517334a053bd8b47549aa85af5de47"
       ],
       "recordId": null,
       "recordLink": null,
@@ -84,7 +84,7 @@
         "text": "bé ngủ từ 13h, giờ vẫn đang ngủ"
        }
       ],
-      "taskId": "tk_371530fa09fa2ee8012f3ffccd71ec16",
+      "taskId": "tk_52517334a053bd8b47549aa85af5de47",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -103,11 +103,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_371530fa09fa2ee8012f3ffccd71ec16_0",
+        "draftId": "dr_52517334a053bd8b47549aa85af5de47_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_371530fa09fa2ee8012f3ffccd71ec16",
+      "taskId": "tk_52517334a053bd8b47549aa85af5de47",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -122,7 +122,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_371530fa09fa2ee8012f3ffccd71ec16",
+     "id": "tk_52517334a053bd8b47549aa85af5de47",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -153,8 +153,8 @@
     },
     "drafts": [
      {
-      "id": "dr_371530fa09fa2ee8012f3ffccd71ec16_0",
-      "taskId": "tk_371530fa09fa2ee8012f3ffccd71ec16",
+      "id": "dr_52517334a053bd8b47549aa85af5de47_0",
+      "taskId": "tk_52517334a053bd8b47549aa85af5de47",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -175,9 +175,9 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_371530fa09fa2ee8012f3ffccd71ec16"
+       "task:tk_52517334a053bd8b47549aa85af5de47"
       ],
-      "recordId": "r_60b411ef7a9b950af3e0afed82e5e99a",
+      "recordId": "r_162334cc50fa47b470bd169547c54fc6",
       "recordLink": "/care/timer/sleep?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
@@ -202,7 +202,7 @@
         "text": "bé ngủ từ 13h, giờ vẫn đang ngủ"
        }
       ],
-      "taskId": "tk_371530fa09fa2ee8012f3ffccd71ec16",
+      "taskId": "tk_52517334a053bd8b47549aa85af5de47",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -221,11 +221,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_371530fa09fa2ee8012f3ffccd71ec16_0",
+        "draftId": "dr_52517334a053bd8b47549aa85af5de47_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_371530fa09fa2ee8012f3ffccd71ec16",
+      "taskId": "tk_52517334a053bd8b47549aa85af5de47",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -241,7 +241,7 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_371530fa09fa2ee8012f3ffccd71ec16_0",
+          "draftId": "dr_52517334a053bd8b47549aa85af5de47_0",
           "status": "saved",
           "recordLink": "/care/timer/sleep?babyId=b_00000000000000000001",
           "errorCode": null
@@ -249,7 +249,7 @@
         ]
        }
       ],
-      "taskId": "tk_371530fa09fa2ee8012f3ffccd71ec16",
+      "taskId": "tk_52517334a053bd8b47549aa85af5de47",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

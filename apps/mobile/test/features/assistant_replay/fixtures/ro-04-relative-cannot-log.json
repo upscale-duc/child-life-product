@@ -9,8 +9,8 @@
    "as": "GRANDMA",
    "snapshot": {
     "task": {
-     "id": "tk_c6852301bb1a721489bc27c4e4481bf0",
-     "conversationId": "cv_7952e5cc2fe325f6fe039d2d0f40ebd0",
+     "id": "tk_2238271b29ad1e8d93f8b54a6c6b229a",
+     "conversationId": "cv_8b0950a3e4c9c7bf05fd54a2e26d5a3e",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -42,7 +42,7 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_7952e5cc2fe325f6fe039d2d0f40ebd0",
+      "conversationId": "cv_8b0950a3e4c9c7bf05fd54a2e26d5a3e",
       "role": "user",
       "parts": [
        {
@@ -51,7 +51,7 @@
         "text": "bé ngủ từ 13h đến 14h"
        }
       ],
-      "taskId": "tk_c6852301bb1a721489bc27c4e4481bf0",
+      "taskId": "tk_2238271b29ad1e8d93f8b54a6c6b229a",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -64,7 +64,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_7952e5cc2fe325f6fe039d2d0f40ebd0",
+      "conversationId": "cv_8b0950a3e4c9c7bf05fd54a2e26d5a3e",
       "role": "assistant",
       "parts": [
        {
@@ -78,7 +78,7 @@
         "text": "Chưa xử lý được yêu cầu này. Không tính lượt."
        }
       ],
-      "taskId": "tk_c6852301bb1a721489bc27c4e4481bf0",
+      "taskId": "tk_2238271b29ad1e8d93f8b54a6c6b229a",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

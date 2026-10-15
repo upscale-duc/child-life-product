@@ -265,6 +265,42 @@
         "credits": 1
       },
       "group": "robust"
+    },
+    {
+      "id": "rb-09-typo-read-as-breastfeed",
+      "group": "robust",
+      "title": "LUMI-15 live: \"bé bu 120m lúc 8h sang\" read as a 120-minute breastfeed → a 120 ml bottle",
+      "turns": [
+        {
+          "say": "bé bu 120m lúc 8h sang",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "durationMin": 120,
+                  "time": "08:00",
+                  "dayOffset": 0,
+                  "side": "both"
+                },
+                "ev": {
+                  "durationMin": "120m",
+                  "time": "8h sang"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "values": {
+          "0.amountMl": 120,
+          "0.occurredAt": "D0 08:00"
+        },
+        "credits": 1
+      }
     }
   ]
 }

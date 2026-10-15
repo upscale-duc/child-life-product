@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_8b41901418592382fc12b90df7fed3f1",
+     "id": "tk_50de7d7b8626997edab4aab49f8f1556",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_8b41901418592382fc12b90df7fed3f1_0",
-      "taskId": "tk_8b41901418592382fc12b90df7fed3f1",
+      "id": "dr_50de7d7b8626997edab4aab49f8f1556_0",
+      "taskId": "tk_50de7d7b8626997edab4aab49f8f1556",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -60,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_8b41901418592382fc12b90df7fed3f1"
+       "task:tk_50de7d7b8626997edab4aab49f8f1556"
       ],
       "recordId": null,
       "recordLink": null,
@@ -70,8 +70,8 @@
       "confirmedBy": null
      },
      {
-      "id": "dr_8b41901418592382fc12b90df7fed3f1_1",
-      "taskId": "tk_8b41901418592382fc12b90df7fed3f1",
+      "id": "dr_50de7d7b8626997edab4aab49f8f1556_1",
+      "taskId": "tk_50de7d7b8626997edab4aab49f8f1556",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -89,7 +89,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_8b41901418592382fc12b90df7fed3f1"
+       "task:tk_50de7d7b8626997edab4aab49f8f1556"
       ],
       "recordId": null,
       "recordLink": null,
@@ -111,7 +111,7 @@
         "text": "ngủ từ 13h đến 14h rồi bú mẹ 10 phút bên trái lúc 14h"
        }
       ],
-      "taskId": "tk_8b41901418592382fc12b90df7fed3f1",
+      "taskId": "tk_50de7d7b8626997edab4aab49f8f1556",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -130,17 +130,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_8b41901418592382fc12b90df7fed3f1_0",
+        "draftId": "dr_50de7d7b8626997edab4aab49f8f1556_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_8b41901418592382fc12b90df7fed3f1_1",
+        "draftId": "dr_50de7d7b8626997edab4aab49f8f1556_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_8b41901418592382fc12b90df7fed3f1",
+      "taskId": "tk_50de7d7b8626997edab4aab49f8f1556",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -155,7 +155,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_8b41901418592382fc12b90df7fed3f1",
+     "id": "tk_50de7d7b8626997edab4aab49f8f1556",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -186,8 +186,8 @@
     },
     "drafts": [
      {
-      "id": "dr_8b41901418592382fc12b90df7fed3f1_0",
-      "taskId": "tk_8b41901418592382fc12b90df7fed3f1",
+      "id": "dr_50de7d7b8626997edab4aab49f8f1556_0",
+      "taskId": "tk_50de7d7b8626997edab4aab49f8f1556",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -206,10 +206,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_8b41901418592382fc12b90df7fed3f1"
+       "task:tk_50de7d7b8626997edab4aab49f8f1556"
       ],
-      "recordId": "r_ad179ed7d85778fe7a16a9a48f838907",
-      "recordLink": "/care/records/b_00000000000000000001/r_ad179ed7d85778fe7a16a9a48f838907",
+      "recordId": "r_7a466ffdb761df4f6646de35bb1b11e1",
+      "recordLink": "/care/records/b_00000000000000000001/r_7a466ffdb761df4f6646de35bb1b11e1",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -221,8 +221,8 @@
       }
      },
      {
-      "id": "dr_8b41901418592382fc12b90df7fed3f1_1",
-      "taskId": "tk_8b41901418592382fc12b90df7fed3f1",
+      "id": "dr_50de7d7b8626997edab4aab49f8f1556_1",
+      "taskId": "tk_50de7d7b8626997edab4aab49f8f1556",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -240,10 +240,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_8b41901418592382fc12b90df7fed3f1"
+       "task:tk_50de7d7b8626997edab4aab49f8f1556"
       ],
-      "recordId": "r_dd6e96abc210ead58dd3b90d32d71dde",
-      "recordLink": "/care/records/b_00000000000000000001/r_dd6e96abc210ead58dd3b90d32d71dde",
+      "recordId": "r_97705f5d082dea992b16bb2f26781f9c",
+      "recordLink": "/care/records/b_00000000000000000001/r_97705f5d082dea992b16bb2f26781f9c",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -267,7 +267,7 @@
         "text": "ngủ từ 13h đến 14h rồi bú mẹ 10 phút bên trái lúc 14h"
        }
       ],
-      "taskId": "tk_8b41901418592382fc12b90df7fed3f1",
+      "taskId": "tk_50de7d7b8626997edab4aab49f8f1556",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -286,17 +286,17 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_8b41901418592382fc12b90df7fed3f1_0",
+        "draftId": "dr_50de7d7b8626997edab4aab49f8f1556_0",
         "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_8b41901418592382fc12b90df7fed3f1_1",
+        "draftId": "dr_50de7d7b8626997edab4aab49f8f1556_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_8b41901418592382fc12b90df7fed3f1",
+      "taskId": "tk_50de7d7b8626997edab4aab49f8f1556",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -312,21 +312,21 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_8b41901418592382fc12b90df7fed3f1_0",
+          "draftId": "dr_50de7d7b8626997edab4aab49f8f1556_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_ad179ed7d85778fe7a16a9a48f838907",
+          "recordLink": "/care/records/b_00000000000000000001/r_7a466ffdb761df4f6646de35bb1b11e1",
           "errorCode": null
          },
          {
-          "draftId": "dr_8b41901418592382fc12b90df7fed3f1_1",
+          "draftId": "dr_50de7d7b8626997edab4aab49f8f1556_1",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_dd6e96abc210ead58dd3b90d32d71dde",
+          "recordLink": "/care/records/b_00000000000000000001/r_97705f5d082dea992b16bb2f26781f9c",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_8b41901418592382fc12b90df7fed3f1",
+      "taskId": "tk_50de7d7b8626997edab4aab49f8f1556",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

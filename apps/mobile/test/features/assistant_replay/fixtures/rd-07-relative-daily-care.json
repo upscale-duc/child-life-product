@@ -9,8 +9,8 @@
    "as": "AUNT",
    "snapshot": {
     "task": {
-     "id": "tk_300bdaff87f42a09b99c1b32b103f8fc",
-     "conversationId": "cv_a804b77b5104a90d61e46ca7d90b8a5d",
+     "id": "tk_418a0999b055938871e9b28735e7fec9",
+     "conversationId": "cv_cd00459ba00cfd2ccd23ad273476deb2",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -42,7 +42,7 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_a804b77b5104a90d61e46ca7d90b8a5d",
+      "conversationId": "cv_cd00459ba00cfd2ccd23ad273476deb2",
       "role": "user",
       "parts": [
        {
@@ -51,7 +51,7 @@
         "text": "hôm nay bé ngủ được bao lâu?"
        }
       ],
-      "taskId": "tk_300bdaff87f42a09b99c1b32b103f8fc",
+      "taskId": "tk_418a0999b055938871e9b28735e7fec9",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -64,7 +64,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_a804b77b5104a90d61e46ca7d90b8a5d",
+      "conversationId": "cv_cd00459ba00cfd2ccd23ad273476deb2",
       "role": "assistant",
       "parts": [
        {
@@ -101,7 +101,7 @@
         "text": "Bú bình đã ghi hôm nay (đến 14:20): 2 cữ, 270 ml. Bú mẹ đã ghi hôm nay: 1 lần, 15 phút. Giấc ngủ đã ghi hôm nay: 2 giấc, 420 phút."
        }
       ],
-      "taskId": "tk_300bdaff87f42a09b99c1b32b103f8fc",
+      "taskId": "tk_418a0999b055938871e9b28735e7fec9",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

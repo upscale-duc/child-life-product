@@ -64,6 +64,8 @@ export type Turn =
       /** Conversation the app sends: the baby's shared thread (default for shared roles) or none. */
       conversation?: 'shared' | 'none';
       intentHint?: 'expense' | null;
+      /** LUMI-05: sent by an app build from before 2026-10-16 (no `clientDraftKinds`). */
+      client?: 'legacy';
     }
   | {
       photo: 'receipt' | 'blurry' | 'note';

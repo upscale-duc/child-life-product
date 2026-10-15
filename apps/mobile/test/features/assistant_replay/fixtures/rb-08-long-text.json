@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_8adcfebfec245612d832edb7aeb13129",
+     "id": "tk_02da58414510b1b9e608ef5425af4314",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_8adcfebfec245612d832edb7aeb13129_0",
-      "taskId": "tk_8adcfebfec245612d832edb7aeb13129",
+      "id": "dr_02da58414510b1b9e608ef5425af4314_0",
+      "taskId": "tk_02da58414510b1b9e608ef5425af4314",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_8adcfebfec245612d832edb7aeb13129"
+       "task:tk_02da58414510b1b9e608ef5425af4314"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +81,7 @@
         "text": "hôm nay bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bú 120ml lúc 13h"
        }
       ],
-      "taskId": "tk_8adcfebfec245612d832edb7aeb13129",
+      "taskId": "tk_02da58414510b1b9e608ef5425af4314",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +100,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_8adcfebfec245612d832edb7aeb13129_0",
+        "draftId": "dr_02da58414510b1b9e608ef5425af4314_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_8adcfebfec245612d832edb7aeb13129",
+      "taskId": "tk_02da58414510b1b9e608ef5425af4314",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,7 +119,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_8adcfebfec245612d832edb7aeb13129",
+     "id": "tk_02da58414510b1b9e608ef5425af4314",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -150,8 +150,8 @@
     },
     "drafts": [
      {
-      "id": "dr_8adcfebfec245612d832edb7aeb13129_0",
-      "taskId": "tk_8adcfebfec245612d832edb7aeb13129",
+      "id": "dr_02da58414510b1b9e608ef5425af4314_0",
+      "taskId": "tk_02da58414510b1b9e608ef5425af4314",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -169,10 +169,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_8adcfebfec245612d832edb7aeb13129"
+       "task:tk_02da58414510b1b9e608ef5425af4314"
       ],
-      "recordId": "r_c812bbeb6bf27a2e456e3d0d659422db",
-      "recordLink": "/care/records/b_00000000000000000001/r_c812bbeb6bf27a2e456e3d0d659422db",
+      "recordId": "r_6d7cdfffcf406f6499815d91e8736a37",
+      "recordLink": "/care/records/b_00000000000000000001/r_6d7cdfffcf406f6499815d91e8736a37",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +196,7 @@
         "text": "hôm nay bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bé ngoan lắm, bú 120ml lúc 13h"
        }
       ],
-      "taskId": "tk_8adcfebfec245612d832edb7aeb13129",
+      "taskId": "tk_02da58414510b1b9e608ef5425af4314",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +215,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_8adcfebfec245612d832edb7aeb13129_0",
+        "draftId": "dr_02da58414510b1b9e608ef5425af4314_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_8adcfebfec245612d832edb7aeb13129",
+      "taskId": "tk_02da58414510b1b9e608ef5425af4314",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +235,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_8adcfebfec245612d832edb7aeb13129_0",
+          "draftId": "dr_02da58414510b1b9e608ef5425af4314_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_c812bbeb6bf27a2e456e3d0d659422db",
+          "recordLink": "/care/records/b_00000000000000000001/r_6d7cdfffcf406f6499815d91e8736a37",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_8adcfebfec245612d832edb7aeb13129",
+      "taskId": "tk_02da58414510b1b9e608ef5425af4314",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

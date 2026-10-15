@@ -77,6 +77,11 @@ export interface StoredTask {
   routing?: AssistantRouting | null;
   /** The conversation's last task when this one started (the sender's previous turn). */
   previousTaskId?: string | null;
+  /**
+   * LUMI-05: the draft kinds the sending app declared (`clientDraftKinds`); null / absent = an app
+   * from before the field (`legacyClientDraftKinds`).
+   */
+  clientKinds?: string[] | null;
 }
 
 export const storedTask = (snap: DocumentSnapshot) => snap.data() as StoredTask;
@@ -219,7 +224,9 @@ export async function taskSnapshot(
   const attachmentIds = t.input?.attachmentIds ?? [];
   return {
     task: taskView(task, now),
-    drafts: drafts.docs.map((d) => draftView(d, now)).sort((a, b) => a.itemIndex - b.itemIndex),
+    drafts: drafts.docs
+      .map((d) => draftView(d, now, (task.get('timezone') as string | undefined) ?? undefined))
+      .sort((a, b) => a.itemIndex - b.itemIndex),
     events: events.docs.map(eventView),
     messages: messages.docs.map(messageView).sort((a, b) => a.sequence - b.sequence),
     ...(attachmentIds.length > 0 ? { attachments: await attachmentViews(db, attachmentIds) } : {}),

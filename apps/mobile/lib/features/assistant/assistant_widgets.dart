@@ -1134,6 +1134,18 @@ class AsLink extends StatelessWidget {
     ),
     DraftKind.meal => (ClIcons.spark, cl.colors.sunshineSoft, cl.colors.ink),
     DraftKind.timer => (ClIcons.clock, cl.care.sleep.soft, cl.care.sleep.ink),
+    // LUMI-01: the care module's own colours (`careColor`).
+    DraftKind.pump => (ClIcons.drop, cl.care.pump.soft, cl.care.pump.ink),
+    DraftKind.diaper => (
+      ClIcons.diaper,
+      cl.care.diaper.soft,
+      cl.care.diaper.ink,
+    ),
+    DraftKind.growth => (
+      ClIcons.ruler,
+      cl.care.growth.soft,
+      cl.care.growth.ink,
+    ),
     null => (ClIcons.alert, cl.colors.surface2, cl.colors.inkMuted),
   };
 }

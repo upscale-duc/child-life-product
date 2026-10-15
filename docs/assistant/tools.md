@@ -132,7 +132,9 @@ without diacritics next to a time), `bottleMlIn` (ml, oz → ml), `breastSideIn`
 | Amounts | the model names the words; the server re-reads them (`parseMoney`, `bottleMlIn`). The model's number without readable words → kept, `uncertainFields` (review). A bare VND number < 1 000 ("hết 500") → uncertain. No written currency → the household's (`spendingSettings/main`, else its country's). |
 | Expense date / category / merchant | "hôm qua / hôm kia / thứ 2" from the words; a model date without words → uncertain; default today. Category must be one of the household's ids, else `categoryHintIn`, else `c_other` + uncertain. Merchant only if its words are in the message. `note` = what was bought (≤ 80). |
 | Reminder | title in the person's words (not grounded → uncertain); date from the words (`relativeDateIn` future side; a weekday equal to today → next week, uncertain); no hour → all day; hour without period → resolved when only one half is still ahead, else `time.ampm`; medicine → `MEDICINE_NOT_SCHEDULED`, no draft; assignee words → `reminder.assignee.<i>` with `assignableMembers` (never a mapping). |
-| Times of completed logs | candidates for an hour without period (h, h + 12) on today, then yesterday: exactly one not in the future → taken; both → `time.ampm` (once; the answer applies to every unmarked time); "10 giờ tối" said in the morning → last night; a time ≤ 3 h ahead stays today (`FUTURE_TIME`, review); explicit past-day words keep the model's day. |
+| Times of completed logs | each model time is matched to its own words (`clockTokensIn`, 2026-10-16): the readings its period allows ("12h" = noon; "9h tối" = 21:00; "6h" alone = 6 or 18); a model hour the words do not allow → the words' reading, flagged. Open readings on today, then yesterday: exactly one not in the future → taken; both → `time.ampm` naming those times only, and the answer applies only to them; "10 giờ tối" said in the morning → last night; a time ≤ 3 h ahead stays today (`FUTURE_TIME`, review); explicit past-day words keep the model's day. |
+| Pump, diaper, growth (2026-10-16) | `careBackstops` (words win over the model's kind: pumping, a diaper change, a measurement); pump amount re-read (`bottleMlIn`), side from the words else the last pump's, length only with a unit; diaper wet / dirty / both from the words (`diaperIn`) else missing; growth weight / length re-read (`growthIn`; a number only the model saw is flagged), `measuredOn` from the words; head circumference → `PART_NOT_SAVED`. |
+| Client kinds (2026-10-16) | a kind the sending app did not declare (`clientDraftKinds`, legacy set when absent) → `APP_UPDATE_NEEDED` notice, no draft. |
 | Spans | `completeSpan`: two of start / end / duration give the third (`linked.derived`); start and end resolved jointly (start before end, ≤ 18 h, overnight on its own days); all three disagreeing by > 10 min → `durationMin` + `endedAt` uncertain. A duration the person did not say (`durationsIn`) → uncertain. |
 | Missing time | no time, no "trước / vừa": `time.missing` (chips) when no other log of the message has a time; else the field stays missing (review). Sleep length without an end point → `time.start` chips (latest = send − length). |
 | Corrections | `correctsPrevious` + the previous turn's unsaved draft of that kind → the new draft carries `replaces`; settle discards the old one (`REPLACED`); fields the model copied keep the old instants. A saved one → `PREVIOUS_SAVED` with its link, nothing drafted. |
@@ -142,7 +144,9 @@ without diacritics next to a time), `bottleMlIn` (ml, oz → ml), `breastSideIn`
 | Reuse | while a server question is open the reading is cached (`assistantTasks/{t}/textReading/current`, never client-readable) and reused for `time.*`, `intent` and `reminder.assignee.*` answers: no second model call. |
 
 Worker order (text): scope → flag → health keywords → consent → live model → reading (model or
-cache) → meal safety net (`asksWhatToEat` with nothing extracted → care meal ideas) → care plan →
+cache) → meal safety net (`asksWhatToEat` with nothing extracted → care meal ideas) → word checks
+(2026-10-16: "Lumi làm được gì?" → help; a sleep concern read as an observation → care; a "sleep
+concern" without sleep words → dropped, a feeding worry → observation) → care plan →
 the model's `intent` question (never for small talk / out of scope / when anything was found) →
 small talk / out of scope / nothing → `SMALL_TALK` / `HELP` (released) → `planTextIntents` →
 reads → notices → drafts. `spending` (any expense intent) on a shared task moves it at settle.
@@ -157,7 +161,8 @@ reads → notices → drafts. `spending` (any expense intent) on a shared task m
 | feedback (not a draft) | `recFeedback` | `rhythm.feedback` |
 | expense (A3 photos; text since the 2026-10-15 rework) | Chi tiêu `babies/{b}/expenses` (D-075 #4 currencies) | `can: canRecordSpending` (Cùng nuôi or 8l "Ghi khoản đã chi") |
 | reminder (A3 photos; text since the 2026-10-15 rework) | one-off reminders `babies/{b}/reminders` (all day, assignee) | `can: canCreateReminders` (Cùng nuôi only) |
-| meal | no module (P-157) | — (`MODULE_UNAVAILABLE`) |
+| pump, diaper, growth (2026-10-16, LUMI-01) | care records `babies/{b}/records` exactly as PumpSheet / DiaperSheet / GrowthScreen write them | `rhythm.checkin` (Rules `canLog`) |
+| meal | no module (P-157) | — (`MODULE_UNAVAILABLE`, named: "Ứng dụng chưa có mục ghi bữa ăn…") |
 
 Kinds without a writer or that the role cannot save are never drafted: the assistant explains it in a
 `text` part, and when nothing else is useful the task fails with that code and the credit is released.

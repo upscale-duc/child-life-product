@@ -69,6 +69,10 @@ export const moduleRegistry: Record<DraftKind, ModuleEntry> = {
   meal: { available: false, action: null },
   // Lumi timers 2026-10-16: the app's running timers (Rules `canLog`, like care records).
   timer: { available: true, action: 'rhythm.checkin' },
+  // Lumi fixes 2026-10-16 (LUMI-01): the care module's other logs (Rules `canLog`).
+  pump: { available: true, action: 'rhythm.checkin' },
+  diaper: { available: true, action: 'rhythm.checkin' },
+  growth: { available: true, action: 'rhythm.checkin' },
 };
 
 /** Slice A3: whether [member] may save a draft of [kind] (family action or module check). */
@@ -297,7 +301,7 @@ export function clarificationFor(field: ClarificationField, id: string): Clarifi
         id,
         field,
         question: L(
-          'Bé khó vào giấc hay hay thức giấc?',
+          'Bé khó vào giấc hay thức giấc?',
           'Is it hard to fall asleep, or waking often?',
         ),
         choices: [
@@ -459,7 +463,25 @@ export async function usageSnapshotTool(
   locale: 'vi' | 'en',
 ): Promise<ReadResult> {
   const u = await assistantUsage(db, s, now);
-  const reset = localDateIn(s.householdZone, new Date(u.resetsAt));
+  // P2 copy (2026-10-16): a date people read ("1/11/2026", "1 Nov 2026"), never an ISO date.
+  const [ry, rm, rd] = localDateIn(s.householdZone, new Date(u.resetsAt))
+    .split('-')
+    .map(Number) as [number, number, number];
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const reset = locale === 'vi' ? `${rd}/${rm}/${ry}` : `${rd} ${months[rm - 1]} ${ry}`;
   const text =
     locale === 'vi'
       ? `Hộ còn ${u.remaining} / ${u.limit} lượt trợ lý, làm mới ngày ${reset}.`
@@ -710,7 +732,12 @@ export async function careDuplicateIn(
   exceptId: string | null,
   tx?: FirebaseFirestore.Transaction,
 ): Promise<boolean> {
-  if ((p.kind !== 'bottle' && p.kind !== 'breast') || !p.occurredAt) return false;
+  if (
+    (p.kind !== 'bottle' && p.kind !== 'breast' && p.kind !== 'pump' && p.kind !== 'diaper') ||
+    !p.occurredAt
+  ) {
+    return false;
+  }
   const at = Date.parse(p.occurredAt);
   const q = db
     .collection(`babies/${babyId}/records`)
@@ -719,7 +746,9 @@ export async function careDuplicateIn(
   const snap = tx ? await tx.get(q) : await q.get();
   return snap.docs.some((d) => {
     if (d.id === exceptId || d.get('deleted') === true || d.get('type') !== p.kind) return false;
-    if (p.kind === 'bottle') {
+    // LUMI-01: a pump like one just logged (within 10 % of the amount); a diaper of the same kind.
+    if (p.kind === 'diaper') return p.diaper === null || d.get('data.kind') === p.diaper;
+    if (p.kind === 'bottle' || p.kind === 'pump') {
       const ml = d.get('data.amountMl') as number | undefined;
       return (
         typeof ml === 'number' &&

@@ -1,0 +1,264 @@
+{
+ "id": "ob-06-eats-less-read-as-sleep",
+ "group": "care.observation",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_2aa8f0c84b81db410adedbfe5a318338",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_2aa8f0c84b81db410adedbfe5a318338_0",
+      "taskId": "tk_2aa8f0c84b81db410adedbfe5a318338",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "observation",
+       "observation": "feeding",
+       "date": "2026-10-15",
+       "when": null,
+       "note": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_2aa8f0c84b81db410adedbfe5a318338"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "mấy hôm nay bé biếng ăn"
+       }
+      ],
+      "taskId": "tk_2aa8f0c84b81db410adedbfe5a318338",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_2aa8f0c84b81db410adedbfe5a318338_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_2aa8f0c84b81db410adedbfe5a318338",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_2aa8f0c84b81db410adedbfe5a318338",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_2aa8f0c84b81db410adedbfe5a318338_0",
+      "taskId": "tk_2aa8f0c84b81db410adedbfe5a318338",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "observation",
+       "observation": "feeding",
+       "date": "2026-10-15",
+       "when": null,
+       "note": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_2aa8f0c84b81db410adedbfe5a318338"
+      ],
+      "recordId": "ci_d46ab358ffa5b02a47f08c721cd1c777",
+      "recordLink": "/rhythm/checkins/b_00000000000000000001/ci_d46ab358ffa5b02a47f08c721cd1c777",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "mấy hôm nay bé biếng ăn"
+       }
+      ],
+      "taskId": "tk_2aa8f0c84b81db410adedbfe5a318338",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_2aa8f0c84b81db410adedbfe5a318338_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_2aa8f0c84b81db410adedbfe5a318338",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_2aa8f0c84b81db410adedbfe5a318338_0",
+          "status": "saved",
+          "recordLink": "/rhythm/checkins/b_00000000000000000001/ci_d46ab358ffa5b02a47f08c721cd1c777",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_2aa8f0c84b81db410adedbfe5a318338",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

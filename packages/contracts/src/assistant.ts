@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { amountMaxFor, expenseCurrencies, isExpenseCurrency, legacyCurrency } from './spending.js';
 // Lumi rework 2026-10-15: the spending detector (D-075 #2).
 import { looksLikeSpending } from './assistant-text.js';
+// Lumi 2026-10-16 (LUMI-01): pump / diaper / growth drafts use the care module's own limits.
+import { careLimits } from './care.js';
 
 /**
  * Child Life Assistant v3 (brief "Child-Life-Chat-Assistant-Implementation-v3", Figma CH01–CH28,
@@ -234,6 +236,18 @@ export const assistantNoticeCodes = [
    * drafted (0 credits); the person saves or fixes the one above.
    */
   'SAME_AS_PENDING',
+  // ---- Lumi fixes 2026-10-16 (LUMI-05, LUMI-13) ----
+  /**
+   * Part of the message was not drafted (named in the words: "vòng đầu", a meal, an item this app
+   * build cannot show yet); `link` opens the module where the person can add it directly.
+   */
+  'PART_NOT_SAVED',
+  /**
+   * The app build that sent the message cannot show this kind of draft (it declared its kinds in
+   * `clientDraftKinds`, or sent none = an app from before 2026-10-16): update the app, or open the
+   * module (`link`) to add it directly. Nothing was drafted for it, 0 credits for that part.
+   */
+  'APP_UPDATE_NEEDED',
 ] as const;
 export type AssistantNoticeCode = (typeof assistantNoticeCodes)[number];
 
@@ -387,8 +401,32 @@ export const draftKinds = [
   'meal',
   // Lumi timers 2026-10-16: start / stop the app's sleep or breastfeeding timer.
   'timer',
+  // Lumi fixes 2026-10-16 (LUMI-01): the care module's other logs (care.ts `careTypes`).
+  'pump',
+  'diaper',
+  'growth',
 ] as const;
 export type DraftKind = (typeof draftKinds)[number];
+
+/**
+ * LUMI-05: the kinds an app build from before 2026-10-16 can show (it sends no
+ * `clientDraftKinds`). The server never sends such a client a draft of another kind.
+ */
+export const legacyClientDraftKinds: readonly DraftKind[] = [
+  'bottle',
+  'breast',
+  'sleep',
+  'expense',
+  'reminder',
+  'observation',
+  'meal',
+];
+
+/** The kinds a client can show: what it declared (known kinds only), else the legacy set. */
+export function clientDraftKindsOf(declared: readonly string[] | null | undefined): DraftKind[] {
+  if (!declared) return [...legacyClientDraftKinds];
+  return draftKinds.filter((k) => declared.includes(k));
+}
 
 /** Draft states map the "Thẻ nháp" component (611:7695). Badge text is never the source of state. */
 export const draftStates = [
@@ -518,6 +556,41 @@ export const timerDraftSchema = z.object({
   startedAt: iso.nullable(),
 });
 
+/**
+ * Lumi fixes 2026-10-16 (LUMI-01): "hút sữa 120ml", "thay tã ướt", "bé nặng 5,2kg" are the app's
+ * own care logs (`care_sheets.dart` PumpSheet / DiaperSheet, `care_screens.dart` GrowthScreen);
+ * confirming writes exactly the record those forms write (contracts `careDataSchemas`, Rules
+ * `validCareData`), never a bottle feed, an observation or an expense.
+ */
+export const pumpDraftSchema = z.object({
+  kind: z.literal('pump'),
+  /** Millilitres pumped (the form: 1…1000, whole ml). */
+  amountMl: z.number().positive().nullable(),
+  /** When pumping started (the form's "Bắt đầu"). */
+  occurredAt: iso.nullable(),
+  /** The form's side (default: the last pump's side, else both). */
+  side: z.enum(['left', 'right', 'both']).nullable(),
+  /** Optional length (the form's "Thời lượng", 1…240). */
+  durationMin: z.number().int().positive().nullable(),
+  /** `{ derived: 'occurredAt' }` when the start was computed from "vừa hút xong" + a length. */
+  linked: spanLinkSchema.optional(),
+});
+export const diaperDraftSchema = z.object({
+  kind: z.literal('diaper'),
+  /** Ướt / Bẩn / Cả hai (the sheet's three tiles); null when the words do not say. */
+  diaper: z.enum(['wet', 'dirty', 'both']).nullable(),
+  occurredAt: iso.nullable(),
+});
+export const growthDraftSchema = z.object({
+  kind: z.literal('growth'),
+  /** Kilograms, one decimal as the form keeps it (0.3…40); required by the module. */
+  weightKg: z.number().positive().nullable(),
+  /** Centimetres, one decimal (20…150); optional. The module has no head circumference. */
+  lengthCm: z.number().positive().nullable(),
+  /** The form's "Ngày đo" (baby-local date). */
+  measuredOn: z.iso.date().nullable(),
+});
+
 export const draftPayloadSchema = z.discriminatedUnion('kind', [
   bottleDraftSchema,
   breastDraftSchema,
@@ -527,6 +600,9 @@ export const draftPayloadSchema = z.discriminatedUnion('kind', [
   observationDraftSchema,
   mealDraftSchema,
   timerDraftSchema,
+  pumpDraftSchema,
+  diaperDraftSchema,
+  growthDraftSchema,
 ]);
 export type DraftPayload = z.infer<typeof draftPayloadSchema>;
 
@@ -638,9 +714,49 @@ export function draftProblems(p: DraftPayload, anchor: Date): DraftProblem[] {
       }
       break;
     }
+    // ---- Lumi fixes 2026-10-16 (LUMI-01): the care forms' own checks ----
+    case 'pump':
+      if (p.amountMl === null) out.push('MISSING_AMOUNT');
+      else if (
+        !Number.isInteger(p.amountMl) ||
+        p.amountMl < careLimits.pumpMl.min ||
+        p.amountMl > careLimits.pumpMl.max
+      )
+        out.push('INVALID_AMOUNT');
+      if (p.durationMin !== null && p.durationMin > careLimits.durationMin.max) {
+        out.push('INVALID_AMOUNT');
+      }
+      if (p.occurredAt === null) out.push('MISSING_TIME');
+      else if (after(p.occurredAt)) out.push('FUTURE_TIME');
+      break;
+    case 'diaper':
+      if (p.occurredAt === null) out.push('MISSING_TIME');
+      else if (after(p.occurredAt)) out.push('FUTURE_TIME');
+      break;
+    case 'growth':
+      if (p.weightKg === null) out.push('MISSING_AMOUNT');
+      if (
+        (p.weightKg !== null && !growthWeightOk(p.weightKg)) ||
+        (p.lengthCm !== null && !growthLengthOk(p.lengthCm))
+      ) {
+        out.push('INVALID_AMOUNT');
+      }
+      if (p.measuredOn === null) out.push('MISSING_DATE');
+      // A date after the anchor's local date in any zone (UTC+14) is in the future.
+      else if (
+        p.measuredOn > new Date(anchor.getTime() + 14 * 3_600_000).toISOString().slice(0, 10)
+      )
+        out.push('FUTURE_TIME');
+      break;
   }
   return out;
 }
+
+/** The growth form's ranges (`careLimits`). */
+export const growthWeightOk = (kg: number) =>
+  kg >= careLimits.weightKg.min && kg <= careLimits.weightKg.max;
+export const growthLengthOk = (cm: number) =>
+  cm >= careLimits.lengthCm.min && cm <= careLimits.lengthCm.max;
 
 /** How long a timer may already have run when it is started from chat (`timerRecordAt` caps). */
 export const timerMaxRunMs = { sleep: 24 * 3_600_000, breast: 240 * 60_000 } as const;
@@ -657,6 +773,9 @@ export const draftFieldKeys: Record<DraftKind, readonly string[]> = {
   observation: Object.keys(observationDraftSchema.shape),
   meal: Object.keys(mealDraftSchema.shape),
   timer: Object.keys(timerDraftSchema.shape),
+  pump: Object.keys(pumpDraftSchema.shape),
+  diaper: Object.keys(diaperDraftSchema.shape),
+  growth: Object.keys(growthDraftSchema.shape),
 };
 
 /**
@@ -675,6 +794,10 @@ export const requiredDraftFields: Record<DraftKind, readonly string[]> = {
   observation: ['observation', 'date'],
   meal: ['title'],
   timer: ['at'],
+  // LUMI-01: what each care form cannot save without (a pump's side takes the form's default).
+  pump: ['amountMl', 'occurredAt'],
+  diaper: ['diaper', 'occurredAt'],
+  growth: ['weightKg', 'measuredOn'],
 };
 
 /**
@@ -788,6 +911,46 @@ export const draftProblemFields: Record<DraftKind, Record<DraftProblem, string |
     PAST_TIME: null,
     INVALID_ASSIGNEE: null,
   },
+  // INVALID_AMOUNT names whichever value is out of range (see `draftReviewFields`).
+  pump: {
+    MISSING_AMOUNT: 'amountMl',
+    INVALID_AMOUNT: 'amountMl',
+    MISSING_TIME: 'occurredAt',
+    FUTURE_TIME: 'occurredAt',
+    INVALID_TIME: 'occurredAt',
+    MISSING_DATE: null,
+    CURRENCY_UNSUPPORTED: null,
+    MISSING_TITLE: null,
+    INVALID_TITLE: null,
+    PAST_TIME: null,
+    INVALID_ASSIGNEE: null,
+  },
+  diaper: {
+    MISSING_AMOUNT: null,
+    INVALID_AMOUNT: null,
+    MISSING_TIME: 'occurredAt',
+    FUTURE_TIME: 'occurredAt',
+    INVALID_TIME: 'occurredAt',
+    MISSING_DATE: null,
+    CURRENCY_UNSUPPORTED: null,
+    MISSING_TITLE: null,
+    INVALID_TITLE: null,
+    PAST_TIME: null,
+    INVALID_ASSIGNEE: null,
+  },
+  growth: {
+    MISSING_AMOUNT: 'weightKg',
+    INVALID_AMOUNT: 'weightKg',
+    MISSING_TIME: null,
+    FUTURE_TIME: 'measuredOn',
+    INVALID_TIME: 'measuredOn',
+    MISSING_DATE: 'measuredOn',
+    CURRENCY_UNSUPPORTED: null,
+    MISSING_TITLE: null,
+    INVALID_TITLE: null,
+    PAST_TIME: null,
+    INVALID_ASSIGNEE: null,
+  },
 };
 
 const isMissingProblem = (pr: DraftProblem) =>
@@ -826,6 +989,27 @@ export function draftReviewFields(
     }
     if (p.kind === 'expense' && pr === 'CURRENCY_UNSUPPORTED' && p.currency === null) {
       missing.add('currency');
+      continue;
+    }
+    // LUMI-01: an out-of-range value names the value that is out of range.
+    if (p.kind === 'pump' && pr === 'INVALID_AMOUNT') {
+      const ml = p.amountMl;
+      if (ml !== null && (!Number.isInteger(ml) || ml < 1 || ml > careLimits.pumpMl.max)) {
+        uncertain.add('amountMl');
+      }
+      if (p.durationMin !== null && p.durationMin > careLimits.durationMin.max) {
+        uncertain.add('durationMin');
+      }
+      continue;
+    }
+    if (p.kind === 'growth' && pr === 'INVALID_AMOUNT') {
+      if (p.weightKg !== null && !growthWeightOk(p.weightKg)) uncertain.add('weightKg');
+      if (p.lengthCm !== null && !growthLengthOk(p.lengthCm)) uncertain.add('lengthCm');
+      continue;
+    }
+    // LUMI-11: a reminder for a time already gone names the time when one is set.
+    if (p.kind === 'reminder' && pr === 'PAST_TIME') {
+      uncertain.add(p.time !== null ? 'time' : 'date');
       continue;
     }
     const f = draftProblemFields[p.kind][pr];
@@ -999,6 +1183,13 @@ const envelope = {
   contractVersion: z.literal(assistantContractVersion),
   clientRequestId: z.uuid(),
   locale: z.enum(['vi', 'en']),
+  /**
+   * LUMI-05 (2026-10-16): the draft kinds this app build can show and save (`draftKinds` it
+   * knows; unknown names are ignored). Absent = an app from before this field
+   * (`legacyClientDraftKinds`): the server never sends it a kind it cannot render (a timer, a
+   * pump / diaper / growth log) and says so instead (`APP_UPDATE_NEEDED`).
+   */
+  clientDraftKinds: z.array(z.string().min(1).max(20)).max(30).optional(),
 };
 
 export const quoteTaskRequestSchema = z.object({

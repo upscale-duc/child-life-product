@@ -19,6 +19,22 @@ const bottleMaxMl = 500;
 /// Longest nursing session the forms accept.
 const breastMaxMinutes = 180;
 
+/// LUMI-01: the care forms' own limits (contracts `careLimits`, app `CareLimits`).
+const pumpMaxMl = 1000;
+const careMaxMinutes = 240;
+const growthWeightKg = (min: 0.3, max: 40.0);
+const growthLengthCm = (min: 20.0, max: 150.0);
+
+/// The pump form's amount: whole ml, 1…[pumpMaxMl].
+bool pumpMlOk(num ml) => ml == ml.roundToDouble() && ml >= 1 && ml <= pumpMaxMl;
+bool growthWeightOk(num kg) =>
+    kg >= growthWeightKg.min && kg <= growthWeightKg.max;
+bool growthLengthOk(num cm) =>
+    cm >= growthLengthCm.min && cm <= growthLengthCm.max;
+
+String _ymd(DateTime d) =>
+    '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
 /// The currencies an expense can be kept in: Chi tiêu's own list (D-075 #4, contracts
 /// `expenseCurrencies`), never a copy.
 final supportedCurrencies = {for (final c in spCurrencies) c.code};
@@ -91,6 +107,44 @@ List<DraftProblem> draftProblems(DraftPayload p, DateTime anchor) {
       } else if (p.startedAt == null || !at.isAfter(p.startedAt!)) {
         out.add(DraftProblem.invalidTime);
       }
+    // ---- LUMI-01: the care forms' own checks (contracts `draftProblems`) ----
+    case PumpPayload():
+      final ml = p.amountMl;
+      if (ml == null) {
+        out.add(DraftProblem.missingAmount);
+      } else if (!pumpMlOk(ml)) {
+        out.add(DraftProblem.invalidAmount);
+      }
+      if ((p.durationMin ?? 0) > careMaxMinutes &&
+          !out.contains(DraftProblem.invalidAmount)) {
+        out.add(DraftProblem.invalidAmount);
+      }
+      if (p.occurredAt == null) {
+        out.add(DraftProblem.missingTime);
+      } else if (after(p.occurredAt)) {
+        out.add(DraftProblem.futureTime);
+      }
+    case DiaperPayload():
+      if (p.occurredAt == null) {
+        out.add(DraftProblem.missingTime);
+      } else if (after(p.occurredAt)) {
+        out.add(DraftProblem.futureTime);
+      }
+    case GrowthPayload():
+      if (p.weightKg == null) out.add(DraftProblem.missingAmount);
+      if ((p.weightKg != null && !growthWeightOk(p.weightKg!)) ||
+          (p.lengthCm != null && !growthLengthOk(p.lengthCm!))) {
+        out.add(DraftProblem.invalidAmount);
+      }
+      if (p.measuredOn == null) {
+        out.add(DraftProblem.missingDate);
+      } else if (p.measuredOn!.compareTo(
+            // A date after the anchor's local date in any zone (UTC+14) is in the future.
+            _ymd(anchor.toUtc().add(const Duration(hours: 14))),
+          ) >
+          0) {
+        out.add(DraftProblem.futureTime);
+      }
     case UnknownPayload():
       break;
   }
@@ -112,7 +166,31 @@ const requiredDraftFields = <DraftKind, List<String>>{
   DraftKind.observation: ['observation', 'date'],
   DraftKind.meal: ['title'],
   DraftKind.timer: ['at'],
+  // LUMI-01: what each care form cannot save without (a pump's side takes the form's default).
+  DraftKind.pump: ['amountMl', 'occurredAt'],
+  DraftKind.diaper: ['diaper', 'occurredAt'],
+  DraftKind.growth: ['weightKg', 'measuredOn'],
 };
+
+/// Contracts `draftReviewFields` / `draftProblemFields`: the fields a form problem points at
+/// — an out-of-range value names the value that is out of range (a pump's amount and / or its
+/// length, a weight and / or a length), a reminder already past its time (LUMI-11) names the
+/// time when one is set.
+List<String> problemFields(DraftPayload p, DraftProblem pr) =>
+    switch ((p, pr)) {
+      (final PumpPayload x, DraftProblem.invalidAmount) => [
+        if (x.amountMl != null && !pumpMlOk(x.amountMl!)) 'amountMl',
+        if ((x.durationMin ?? 0) > careMaxMinutes) 'durationMin',
+      ],
+      (final GrowthPayload x, DraftProblem.invalidAmount) => [
+        if (x.weightKg != null && !growthWeightOk(x.weightKg!)) 'weightKg',
+        if (x.lengthCm != null && !growthLengthOk(x.lengthCm!)) 'lengthCm',
+      ],
+      (final ReminderPayload x, DraftProblem.pastTime) => [
+        x.time != null ? 'time' : 'date',
+      ],
+      _ => [?problemField(p, pr)],
+    };
 
 /// Contracts `draftProblemFields`: the field a form problem points at, for [p]'s kind.
 String? problemField(DraftPayload p, DraftProblem pr) => switch (p) {
@@ -172,6 +250,26 @@ String? problemField(DraftPayload p, DraftProblem pr) => switch (p) {
     DraftProblem.invalidTime => 'at',
     _ => null,
   },
+  PumpPayload() => switch (pr) {
+    DraftProblem.missingAmount || DraftProblem.invalidAmount => 'amountMl',
+    DraftProblem.missingTime ||
+    DraftProblem.futureTime ||
+    DraftProblem.invalidTime => 'occurredAt',
+    _ => null,
+  },
+  DiaperPayload() => switch (pr) {
+    DraftProblem.missingTime ||
+    DraftProblem.futureTime ||
+    DraftProblem.invalidTime => 'occurredAt',
+    _ => null,
+  },
+  GrowthPayload() => switch (pr) {
+    DraftProblem.missingAmount || DraftProblem.invalidAmount => 'weightKg',
+    DraftProblem.missingDate ||
+    DraftProblem.futureTime ||
+    DraftProblem.invalidTime => 'measuredOn',
+    _ => null,
+  },
   UnknownPayload() => null,
 };
 
@@ -209,14 +307,14 @@ List<ReviewGap> reviewGaps(AssistantDraft d, DateTime now) {
     add(f, missing: false);
   }
   for (final pr in problems) {
-    final f = problemField(p, pr);
-    if (f == null) continue;
     final isMissing =
         pr == DraftProblem.missingAmount ||
         pr == DraftProblem.missingTime ||
         pr == DraftProblem.missingDate ||
         pr == DraftProblem.missingTitle;
-    add(f, missing: isMissing, problem: isMissing ? null : pr);
+    for (final f in problemFields(p, pr)) {
+      add(f, missing: isMissing, problem: isMissing ? null : pr);
+    }
   }
   return out.values.toList();
 }

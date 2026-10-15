@@ -289,7 +289,11 @@ export function spendingSignalsIn(text: string): ('amount' | 'keyword')[] {
     // Without any diacritic, "mua" is read as "mua" (buy), "het 500" as spending.
     (!marked && (wordRe('mua').test(f) || /(?<![\p{L}])het\s+\d/u.test(f))) ||
     /(?<![\p{L}])hết\s+\d/u.test(lower) ||
-    spendWordsEn.some((w) => wordRe(w).test(f));
+    spendWordsEn.some((w) => wordRe(w).test(f)) ||
+    // LUMI-16: goods counted by the box / pack ("Con Cưng hôm nay hai hộp sữa").
+    /(?<![\p{L}\d])(?:\d+|mot|hai|ba|bon|nam|sau|muoi)\s+(?:hop|lon|goi|bich|thung|loc|chai|tui|bao)\s+(?:sua|bim|ta|khan|banh|bot|nuoc)(?![\p{L}])/u.test(
+      f,
+    );
   if (keyword) out.push('keyword');
   return out;
 }
@@ -463,6 +467,10 @@ export function clockTimeIn(text: string): ClockMatch | null {
   if (h > 23 || min > 59 || h < 0) return null;
   if (h >= 13 || h === 0) return { hhmm: `${pad(h)}:${pad(min)}`, explicit: true, dayOffset: day };
   const p = periodNear(f);
+  // LUMI-03: "12h" is noon in Vietnamese unless the night is said ("12h đêm", "12h khuya").
+  if (h === 12 && p !== 'night' && !/(?<![\p{L}])(?:am|a\.m)(?![\p{L}])/u.test(f)) {
+    return { hhmm: `12:${pad(min)}`, explicit: true, dayOffset: day };
+  }
   if (p === null) return { hhmm: `${pad(h)}:${pad(min)}`, explicit: false, dayOffset: day };
   if (p === 'am') h = h === 12 ? 0 : h;
   else if (p === 'pm') h = h === 12 ? 12 : h + 12;
@@ -986,3 +994,357 @@ export function sameMessage(a: string | null | undefined, b: string | null | und
 
 /** A repeated message within this many minutes reuses the draft still waiting above it. */
 export const assistantRepeatWindowMin = 10;
+
+// ---------- Lumi fixes 2026-10-16 ----------
+
+// ---- Clock tokens, each with ITS OWN half of the day (LUMI-03 / LUMI-04) ----
+
+/** One clock time written in a message, read on its own (never with another token's period). */
+export interface ClockToken {
+  /** The hour and minute as written (h 0…23). */
+  h: number;
+  m: number;
+  /**
+   * The possible 24 h hours: one when this token's half of the day is known (24 h written,
+   * "12h" = noon, a period word next to it, or the message's single period phrase), else both
+   * readings (h, h + 12).
+   */
+  hours: number[];
+  /** Index in the folded text and the matched words (folded). */
+  index: number;
+  text: string;
+}
+
+const hourWordsVi: Record<string, number> = {
+  mot: 1,
+  hai: 2,
+  ba: 3,
+  bon: 4,
+  tu: 4,
+  nam: 5,
+  sau: 6,
+  bay: 7,
+  tam: 8,
+  chin: 9,
+  muoi: 10,
+  'muoi mot': 11,
+  'muoi hai': 12,
+};
+
+type Period = 'am' | 'pm' | 'noon' | 'night' | 'en_am' | null;
+
+/**
+ * The period a few words AFTER a token says ("9h tối", "8h sang nay", "10 pm", "9 in the morning").
+ * [rest] is folded; [restMarked] the same span with its diacritics, used when the message has any
+ * ("tới 10 giờ" is "until", never "tối").
+ */
+function periodAfter(rest: string, restMarked: string | null): Period {
+  const m =
+    /^\s*(?:,\s*)?(?:buoi\s+)?(sang|trua|chieu|toi|dem|khuya|am|a\.m|pm|p\.m|in the morning|in the afternoon|in the evening|at night|tonight|morning|afternoon|evening|noon)(?![\p{L}])/u.exec(
+      rest,
+    );
+  if (!m) return null;
+  if (restMarked !== null && /^(?:sang|trua|chieu|toi|dem)$/.test(m[1]!)) {
+    const marked = restMarked.slice(m.index, m.index + m[0].length);
+    if (!/(?:sáng|trưa|chiều|tối|đêm)/u.test(marked)) return null;
+  }
+  return periodWord(m[1]!);
+}
+
+/** The period right BEFORE a token ("tối qua lúc 9h", "sáng 7h", "chiều nay 3 giờ"). */
+function periodBefore(head: string, headMarked: string | null): Period {
+  const m =
+    /(?<![\p{L}])(?:buoi\s+)?(sang|trua|chieu|toi|dem|khuya)(?:\s+(?:nay|qua|mai|hom qua))?(?:\s+(?:luc|vao|vao luc|khoang|tam|tu))?\s*$/u.exec(
+      head,
+    );
+  if (!m) return null;
+  if (headMarked !== null && m[1] !== 'khuya') {
+    const marked = headMarked.slice(m.index, m.index + m[0].length);
+    if (!/(?:sáng|trưa|chiều|tối|đêm)/u.test(marked)) return null;
+  }
+  return periodWord(m[1]!);
+}
+
+function periodWord(w: string): Period {
+  if (w === 'am' || w === 'a.m' || w === 'in the morning' || w === 'morning')
+    return w.startsWith('a') ? 'en_am' : 'am';
+  if (w === 'sang') return 'am';
+  if (w === 'trua' || w === 'noon') return 'noon';
+  if (w === 'dem' || w === 'khuya' || w === 'at night') return 'night';
+  return 'pm';
+}
+
+function hoursFor(h: number, p: Period, nightWords: boolean): number[] {
+  if (h >= 13 || h === 0) return [h];
+  if (h === 12) {
+    if (p === 'night' || p === 'en_am' || (p === null && nightWords)) return [0];
+    return [12];
+  }
+  switch (p) {
+    case 'am':
+    case 'en_am':
+      return [h];
+    case 'noon':
+      return [h <= 4 ? h + 12 : h];
+    case 'pm':
+      return [h + 12];
+    case 'night':
+      return [h >= 6 ? h + 12 : h];
+    default:
+      return [h, h + 12];
+  }
+}
+
+/**
+ * Every clock time in [text] in reading order, each with the half of the day ITS words give:
+ * "6h 90ml, 9h 120ml, 12h 100ml" → [6, 18], [9, 21], [12]; "từ 1h trưa đến 2h chiều" → [13], [14];
+ * "sáng nay bú 6h, 9h" → [6], [9] (one period phrase for the message). Forms: 21h, 21:30, 9h15,
+ * 9 giờ rưỡi, 9 giờ kém 15, 8g, 10pm, "lúc 8", "tám giờ rưỡi", "mười hai giờ".
+ */
+export function clockTokensIn(text: string): ClockToken[] {
+  const f = foldVi(text);
+  // Folding keeps the length of the NFC lower-case text: the marked words sit at the same index.
+  const lower = lowerVi(text);
+  const marked = hasVietnameseMarks(text) && lower.length === f.length ? lower : null;
+  const out: ClockToken[] = [];
+  const taken: [number, number][] = [];
+  const nightWords = /(?<![\p{L}])(?:dem|khuya|midnight)(?![\p{L}])/u.test(f);
+  const add = (index: number, len: number, h: number, m: number, matched: string) => {
+    if (h > 23 || m > 59 || h < 0) return;
+    if (taken.some(([a, b]) => index < b && index + len > a)) return;
+    taken.push([index, index + len]);
+    const from = Math.max(0, index - 30);
+    // Only the period words next to THIS time count (never another time's, LUMI-03).
+    const own =
+      periodAfter(f.slice(index + len), marked?.slice(index + len) ?? null) ??
+      periodBefore(f.slice(from, index), marked?.slice(from, index) ?? null);
+    out.push({ h, m, hours: hoursFor(h, own, nightWords && own === null), index, text: matched });
+  };
+  for (const x of f.matchAll(
+    /(?<![\d:.,])(\d{1,2})\s*(?::|gio(?![\p{L}])|h(?![\p{L}])|g(?![\p{L}]))(?:\s?([0-5]\d)(?!\d|\s*(?:ml|oz|cc|kg|g|k|p|phut|tieng|%)(?![\p{L}])))?(?:\s*(ruoi)|\s*kem\s*(\d{1,2}))?(?![\d])/gu,
+  )) {
+    let h = Number(x[1]);
+    let m = x[2] ? Number(x[2]) : x[3] ? 30 : 0;
+    if (x[4]) {
+      h -= 1;
+      m = 60 - Number(x[4]);
+    }
+    add(x.index, x[0].length, h, m, x[0]);
+  }
+  for (const x of f.matchAll(/(?<![\d:.,])(\d{1,2})(?::(\d{2}))?\s*(?=am|pm|a\.m|p\.m)/gu)) {
+    add(x.index, x[0].length, Number(x[1]), x[2] ? Number(x[2]) : 0, x[0]);
+  }
+  for (const x of f.matchAll(
+    /(?<![\p{L}])(muoi mot|muoi hai|mot|hai|ba|bon|tu|nam|sau|bay|tam|chin|muoi)\s+gio(?:\s+(ruoi)|\s+kem\s+(\d{1,2}|muoi lam|muoi))?(?![\p{L}])/gu,
+  )) {
+    let h = hourWordsVi[x[1]!]!;
+    let m = x[2] ? 30 : 0;
+    if (x[3]) {
+      h -= 1;
+      m = 60 - (x[3] === 'muoi lam' ? 15 : x[3] === 'muoi' ? 10 : Number(x[3]));
+    }
+    add(x.index, x[0].length, h, m, x[0]);
+  }
+  // "lúc 8", "at 8" (a bare hour after lúc / at, not an amount or a length).
+  for (const x of f.matchAll(
+    /(?<![\p{L}])(?:luc|at)\s+(\d{1,2})(?![\d:.,]|\s*(?:ml|oz|phut|p\b|tieng|gio|h\b|g\b|kg|cm|k\b|%|lan|cu|ngay|thang))/gu,
+  )) {
+    const at = x.index + x[0].lastIndexOf(x[1]!);
+    add(at, x[1]!.length, Number(x[1]), 0, x[1]!);
+  }
+  if (/(?<![\p{L}])(?:nua dem|midnight)(?![\p{L}])/u.test(f) && out.length === 0) {
+    const i = f.search(/nua dem|midnight/);
+    out.push({ h: 0, m: 0, hours: [0], index: i, text: 'nua dem' });
+  }
+  return out.sort((a, b) => a.index - b.index);
+}
+
+// ---- Pump, diaper, growth in the words (LUMI-01 backstops) ----
+
+/** "hút sữa", "hút được 80ml", "vắt sữa", "pumped", "expressed": pumping, never a feed. */
+export function pumpCueIn(text: string): boolean {
+  const f = foldVi(text);
+  return (
+    /(?<![\p{L}])(?:hut sua|hut duoc|hut ra|hut \d|hut (?:ca )?(?:hai|2) ben|hut ben|vat sua|vat duoc|vat ra|may hut)(?![\p{L}])/u.test(
+      f,
+    ) || /\b(?:pump(?:ed|ing)?|expressed|breast pump)\b/u.test(f)
+  );
+}
+
+/**
+ * A diaper change in the words and what was in it: "thay tã ướt" → wet, "bé vừa ị" / "tã bẩn" /
+ * "poop" → dirty, "cả hai" / "ướt và bẩn" → both, "thay tã" alone → null (the person picks).
+ * Buying diapers ("mua bỉm 200k") is money, not a change: null.
+ */
+export function diaperIn(text: string): { kind: 'wet' | 'dirty' | 'both' | null } | null {
+  const f = foldVi(text);
+  const lower = lowerVi(text);
+  if (looksLikeSpending(text)) return null;
+  const change =
+    /(?<![\p{L}])(?:thay (?:ta|bim|bim cho be|ta cho be)|ta uot|ta ban|bim uot|bim ban|di ve sinh|di tieu|di nang|di phan)(?![\p{L}])/u.test(
+      f,
+    ) ||
+    /(?<![\p{L}])(?:ị|tè|đi ị|đi tè|tã|bỉm)(?![\p{L}])/u.test(lower) ||
+    /\b(?:diaper|nappy|nappies|diapers|pooped|poop|poo|peed|pee|wee)\b/u.test(f);
+  if (!change) return null;
+  const wet =
+    /(?<![\p{L}])(?:uot|tieu)(?![\p{L}])/u.test(f) ||
+    /(?<![\p{L}])tè(?![\p{L}])/u.test(lower) ||
+    /\b(?:wet|pee|peed|wee)\b/u.test(f);
+  const dirty =
+    /(?<![\p{L}])(?:ban|phan|di nang|di cau)(?![\p{L}])/u.test(f) ||
+    /(?<![\p{L}])ị(?![\p{L}])/u.test(lower) ||
+    /\b(?:dirty|poop|pooped|poo|soiled|bm)\b/u.test(f);
+  const both =
+    /(?<![\p{L}])(?:ca hai|ca 2|ca uot (?:va|lan) ban)(?![\p{L}])/u.test(f) || (wet && dirty);
+  return { kind: both ? 'both' : wet ? 'wet' : dirty ? 'dirty' : null };
+}
+
+export interface GrowthMeasure {
+  weightKg: number | null;
+  lengthCm: number | null;
+  /** "vòng đầu 40cm" / "head 40 cm": said, but the growth module cannot store it. */
+  headCm: number | null;
+}
+
+/**
+ * Measurements in the words: "nặng 5,2kg", "5kg2" (5.2), "6.1 kg", "5200g", "5 cân 2", "weighs
+ * 5.4 kg"; "dài 62cm", "cao 62 phân", "length 60 cm"; "vòng đầu 40cm". Null when none.
+ */
+export function growthIn(text: string): GrowthMeasure | null {
+  const f = foldVi(text);
+  let weightKg: number | null = null;
+  let lengthCm: number | null = null;
+  let headCm: number | null = null;
+  const kg =
+    /(?<![\d.,])(\d{1,2}(?:[.,]\d{1,3})?)\s*(?:kg|kgs|ky|ki|ki lo|kilo|kilogram|kilograms|can)(?:\s*(\d{1,3})(?!\d|[.,]\d|\s*(?:cm|g\b|gr)))?(?![\p{L}])/u.exec(
+      f,
+    );
+  if (kg) {
+    const base = Number(kg[1]!.replace(',', '.'));
+    // "5kg2" = 5.2 kg, "5kg250" = 5.25 kg (the grams after the kilos).
+    weightKg = kg[2] ? base + Number(`0.${kg[2]}`) : base;
+  } else {
+    const g = /(?<![\d.,])(\d{3,5})\s*(?:g|gr|gram|grams|gam)(?![\p{L}])/u.exec(f);
+    if (g && /(?<![\p{L}])(?:nang|can|weigh\w*|cân)(?![\p{L}])/u.test(f))
+      weightKg = Number(g[1]) / 1000;
+  }
+  const head =
+    /(?<![\p{L}])(?:vong dau|chu vi dau|head(?: circumference)?)\D{0,12}(\d{2}(?:[.,]\d)?)\s*(?:cm|phan)?/u.exec(
+      f,
+    );
+  if (head) headCm = Number(head[1]!.replace(',', '.'));
+  for (const m of f.matchAll(
+    /(?<![\d.,])(\d{2,3}(?:[.,]\d)?)\s*(?:cm|centimet\w*|phan)(?![\p{L}])/gu,
+  )) {
+    if (head && m.index >= head.index && m.index <= head.index + head[0].length) continue;
+    lengthCm = Number(m[1]!.replace(',', '.'));
+    break;
+  }
+  if (lengthCm === null) {
+    const len =
+      /(?<![\p{L}])(?:dai|cao|chieu dai|length|long|tall)\s*(?:duoc|la|is)?\s*(\d{2,3}(?:[.,]\d)?)(?![\d])/u.exec(
+        f,
+      );
+    if (len && !/kg|ky|can/.test(f.slice(len.index, len.index + len[0].length + 4))) {
+      lengthCm = Number(len[1]!.replace(',', '.'));
+    }
+  }
+  if (weightKg === null && lengthCm === null && headCm === null) return null;
+  const one = (n: number | null) => (n === null ? null : Math.round(n * 10) / 10);
+  return { weightKg: one(weightKg), lengthCm: one(lengthCm), headCm: one(headCm) };
+}
+
+/**
+ * LUMI-15: "bé bu 120m" — a number with a bare "m" after a feed word is millilitres or minutes.
+ * Returns the number when it reads as a bottle amount (≥ 50, no "mẹ" / "ti" / breast word), so a
+ * typo never becomes a two-hour breastfeed.
+ */
+export function bareMAmountIn(text: string): number | null {
+  const f = foldVi(text);
+  const m = /(?<![\d.,])(\d{2,3})\s*m(?![\p{L}\d])/u.exec(f);
+  if (!m) return null;
+  const n = Number(m[1]);
+  if (n < 50) return null;
+  if (/(?<![\p{L}])(?:bu me|ti me|me|ti|breast|nursing|nursed)(?![\p{L}])/u.test(f)) return null;
+  return n;
+}
+
+/** "Lumi làm được gì?", "bạn giúp được gì", "what can you do": what Lumi does (HELP, free). */
+export function asksWhatLumiDoes(text: string): boolean {
+  const f = foldVi(text)
+    .replace(/[?!.]+/g, ' ')
+    .trim();
+  return (
+    /(?<![\p{L}])(?:lam duoc gi|giup duoc gi|biet lam gi|lam gi duoc|co the lam gi|giup gi duoc|dung the nao|dung nhu the nao|huong dan su dung)(?![\p{L}])/u.test(
+      f,
+    ) ||
+    /\b(?:what can you do|what do you do|how do i use|how does this work|what are you)\b/u.test(f)
+  );
+}
+
+/** Words of a question about logged care data (feeds, sleep, diapers…), for read checks. */
+export function asksAboutCare(text: string): boolean {
+  const f = foldVi(text);
+  return /(?<![\p{L}])(?:bu|ngu|an|uong|ta|bim|giac|cu|sleep|slept|feed|fed|nap|diaper|bottle|ml)(?![\p{L}])/u.test(
+    f,
+  );
+}
+
+/** "còn bao nhiêu lượt", "credits": a question about the assistant's credits. */
+export function asksAboutCredits(text: string): boolean {
+  const f = foldVi(text);
+  return /(?<![\p{L}])(?:luot|credit|credits|han muc|quota)(?![\p{L}])/u.test(f);
+}
+
+/**
+ * LUMI-10: a sleep CONCERN to get guidance for ("dạo này bé khó ngủ về đêm", "bé hay thức đêm 3
+ * hôm nay", "bé khó ngủ quá") — not a note about one sleep ("đêm qua bé thức giấc 2 lần" with a
+ * day said is an observation). Returns what the words say, each fact only when said.
+ */
+export function sleepConcernIn(text: string): {
+  kind: 'falling_asleep' | 'night_waking' | 'both' | null;
+  when: 'night' | 'day' | 'both' | null;
+} | null {
+  const f = foldVi(text);
+  const falling =
+    /(?<![\p{L}])(?:kho ngu|kho vao giac|kho du ngu|lau ngu|khong chiu ngu|trouble (?:falling|getting) (?:asleep|to sleep)|hard to (?:get to )?sleep|won'?t (?:fall asleep|go to sleep|sleep))(?![\p{L}])/u.test(
+      f,
+    );
+  const waking =
+    /(?<![\p{L}])(?:hay thuc|thuc giac|thuc dem|giat minh|day dem|wak(?:es|ing) (?:up )?(?:at night|often|a lot)|night waking)(?![\p{L}])/u.test(
+      f,
+    );
+  if (!falling && !waking) return null;
+  // One sleep on a said day is a note (observation), not a concern.
+  if (
+    /(?<![\p{L}])(?:dem qua|toi qua|hom qua|trua nay|sang nay|last night|yesterday)(?![\p{L}])/u.test(
+      f,
+    ) &&
+    !/(?<![\p{L}])(?:dao nay|may hom|may dem|gan day|lately|recently|hay|thuong|luon|every night)(?![\p{L}])/u.test(
+      f,
+    )
+  ) {
+    return null;
+  }
+  const night = /(?<![\p{L}])(?:dem|ve dem|ban dem|toi|night|at night)(?![\p{L}])/u.test(f);
+  const day = /(?<![\p{L}])(?:ngay|ban ngay|trua|nap|naps|giac ngay)(?![\p{L}])/u.test(f);
+  return {
+    kind: falling && waking ? 'both' : falling ? 'falling_asleep' : 'night_waking',
+    when: night && day ? 'both' : night ? 'night' : day ? 'day' : null,
+  };
+}
+
+/** Words that the message is about sleep at all ("ngủ", "giấc", "thức", "sleep", "nap"). */
+export function mentionsSleep(text: string): boolean {
+  return /(?<![\p{L}])(?:ngu|giac|thuc|sleep|slept|nap|naps|asleep|waking|wakes)(?![\p{L}])/u.test(
+    foldVi(text),
+  );
+}
+
+/** A feeding concern ("biếng ăn", "ăn ít", "bú ít hơn"): an observation about feeding. */
+export function feedingConcernIn(text: string): boolean {
+  return /(?<![\p{L}])(?:bieng an|bieng bu|an it|bu it|an kem|bu kem|luoi an|luoi bu|an khong ngon|eats? less|eating less|feeding less|poor appetite)(?![\p{L}])/u.test(
+    foldVi(text),
+  );
+}

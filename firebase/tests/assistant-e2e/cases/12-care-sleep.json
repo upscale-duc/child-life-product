@@ -690,6 +690,86 @@
         "credits": 0
       },
       "group": "care.sleep"
+    },
+    {
+      "id": "sl-19-model-misreads-hour",
+      "group": "care.sleep",
+      "title": "LUMI-04 live: \"1h trua\" read as 12:00 by the model → the server re-reads 13:00 from the words and flags it (scripted misreading: fake only; the live model's reading of the same words is sl-14)",
+      "turns": [
+        {
+          "say": "be ngu tu 1h trua den 2h chieu",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "12:00",
+                  "dayOffset": 0,
+                  "endTime": "14:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "1h trua",
+                  "endTime": "2h chieu"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "review": ["startedAt"],
+        "values": {
+          "0.startedAt": "D0 13:00",
+          "0.endedAt": "D0 14:00"
+        },
+        "credits": 1
+      },
+      "live": false
+    },
+    {
+      "id": "sl-20-answered-start-not-flagged",
+      "group": "care.sleep",
+      "title": "LUMI-09 live: the model doubts the start it never read; the chip answers it → ready",
+      "turns": [
+        {
+          "say": "bé ngủ trưa 1 tiếng rưỡi",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "durationMin": 90
+                },
+                "ev": {
+                  "durationMin": "1 tiếng rưỡi"
+                },
+                "unc": ["time", "endTime"],
+                "miss": ["time"]
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.start",
+              "choice": 1
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["sleep"],
+        "asks": ["time.start"],
+        "ready": true,
+        "values": {
+          "0.startedAt": "D0 12:30",
+          "0.endedAt": "D0 14:00"
+        },
+        "credits": 1
+      }
     }
   ]
 }

@@ -9,8 +9,8 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
-     "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+     "id": "tk_3b926f218466c27283d88ced804a8826",
+     "conversationId": "cv_9783343f03d30a3687e8d625037c3fe6",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
-      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "id": "dr_3b926f218466c27283d88ced804a8826_0",
+      "taskId": "tk_3b926f218466c27283d88ced804a8826",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -67,7 +67,7 @@
       "state": "needs_review",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_10a6f62f28db3d3b38de123fb4b9f7aa"
+       "task:tk_3b926f218466c27283d88ced804a8826"
       ],
       "recordId": null,
       "recordLink": null,
@@ -80,14 +80,14 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "conversationId": "cv_9783343f03d30a3687e8d625037c3fe6",
       "role": "user",
       "parts": [],
-      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "taskId": "tk_3b926f218466c27283d88ced804a8826",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [
-       "at_840d141de9551b5149daf04ea0f62a16"
+       "at_de7be6d6e56e6710bdb06d0ca14cb557"
       ],
       "author": {
        "uid": "u_mai",
@@ -98,7 +98,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "conversationId": "cv_9783343f03d30a3687e8d625037c3fe6",
       "role": "assistant",
       "parts": [
        {
@@ -109,11 +109,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+        "draftId": "dr_3b926f218466c27283d88ced804a8826_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "taskId": "tk_3b926f218466c27283d88ced804a8826",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -122,7 +122,7 @@
     ],
     "attachments": [
      {
-      "id": "at_840d141de9551b5149daf04ea0f62a16",
+      "id": "at_de7be6d6e56e6710bdb06d0ca14cb557",
       "mime": "image/png",
       "bytes": 30592,
       "retention": "keep_with_record",
@@ -140,8 +140,8 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
-     "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+     "id": "tk_3b926f218466c27283d88ced804a8826",
+     "conversationId": "cv_9783343f03d30a3687e8d625037c3fe6",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -171,8 +171,8 @@
     },
     "drafts": [
      {
-      "id": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
-      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "id": "dr_3b926f218466c27283d88ced804a8826_0",
+      "taskId": "tk_3b926f218466c27283d88ced804a8826",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -196,7 +196,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_10a6f62f28db3d3b38de123fb4b9f7aa"
+       "task:tk_3b926f218466c27283d88ced804a8826"
       ],
       "recordId": null,
       "recordLink": null,
@@ -209,14 +209,14 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "conversationId": "cv_9783343f03d30a3687e8d625037c3fe6",
       "role": "user",
       "parts": [],
-      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "taskId": "tk_3b926f218466c27283d88ced804a8826",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [
-       "at_840d141de9551b5149daf04ea0f62a16"
+       "at_de7be6d6e56e6710bdb06d0ca14cb557"
       ],
       "author": {
        "uid": "u_mai",
@@ -227,7 +227,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "conversationId": "cv_9783343f03d30a3687e8d625037c3fe6",
       "role": "assistant",
       "parts": [
        {
@@ -238,11 +238,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+        "draftId": "dr_3b926f218466c27283d88ced804a8826_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "taskId": "tk_3b926f218466c27283d88ced804a8826",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -251,7 +251,7 @@
     ],
     "attachments": [
      {
-      "id": "at_840d141de9551b5149daf04ea0f62a16",
+      "id": "at_de7be6d6e56e6710bdb06d0ca14cb557",
       "mime": "image/png",
       "bytes": 30592,
       "retention": "keep_with_record",
@@ -269,8 +269,8 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
-     "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+     "id": "tk_3b926f218466c27283d88ced804a8826",
+     "conversationId": "cv_9783343f03d30a3687e8d625037c3fe6",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -300,8 +300,8 @@
     },
     "drafts": [
      {
-      "id": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
-      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "id": "dr_3b926f218466c27283d88ced804a8826_0",
+      "taskId": "tk_3b926f218466c27283d88ced804a8826",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -325,10 +325,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_10a6f62f28db3d3b38de123fb4b9f7aa"
+       "task:tk_3b926f218466c27283d88ced804a8826"
       ],
-      "recordId": "x_26ecacb3ec64ed0341696b38483e7146",
-      "recordLink": "/utilities/spending/expense/x_26ecacb3ec64ed0341696b38483e7146?babyId=b_00000000000000000001",
+      "recordId": "x_943abc586d904eb65f9cf6295f983d8e",
+      "recordLink": "/utilities/spending/expense/x_943abc586d904eb65f9cf6295f983d8e?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -343,14 +343,14 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "conversationId": "cv_9783343f03d30a3687e8d625037c3fe6",
       "role": "user",
       "parts": [],
-      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "taskId": "tk_3b926f218466c27283d88ced804a8826",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [
-       "at_840d141de9551b5149daf04ea0f62a16"
+       "at_de7be6d6e56e6710bdb06d0ca14cb557"
       ],
       "author": {
        "uid": "u_mai",
@@ -361,7 +361,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "conversationId": "cv_9783343f03d30a3687e8d625037c3fe6",
       "role": "assistant",
       "parts": [
        {
@@ -372,11 +372,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+        "draftId": "dr_3b926f218466c27283d88ced804a8826_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "taskId": "tk_3b926f218466c27283d88ced804a8826",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -384,7 +384,7 @@
      },
      {
       "id": "00000003",
-      "conversationId": "cv_8f7a4a63ee89504a1a816b4e69130dfb",
+      "conversationId": "cv_9783343f03d30a3687e8d625037c3fe6",
       "role": "assistant",
       "parts": [
        {
@@ -392,15 +392,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_10a6f62f28db3d3b38de123fb4b9f7aa_0",
+          "draftId": "dr_3b926f218466c27283d88ced804a8826_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_26ecacb3ec64ed0341696b38483e7146?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_943abc586d904eb65f9cf6295f983d8e?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_10a6f62f28db3d3b38de123fb4b9f7aa",
+      "taskId": "tk_3b926f218466c27283d88ced804a8826",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:40.000Z",
       "attachmentIds": [],
@@ -414,7 +414,7 @@
     ],
     "attachments": [
      {
-      "id": "at_840d141de9551b5149daf04ea0f62a16",
+      "id": "at_de7be6d6e56e6710bdb06d0ca14cb557",
       "mime": "image/png",
       "bytes": 30592,
       "retention": "keep_with_record",

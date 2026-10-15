@@ -9,8 +9,8 @@
    "as": "AUNT",
    "snapshot": {
     "task": {
-     "id": "tk_864e93ae53710ba2548c1e1fa9adbb49",
-     "conversationId": "cv_449efd754dbc4f3b29503842dd5c5b70",
+     "id": "tk_ec74d243c31c40957fa57dbc10215104",
+     "conversationId": "cv_95fda1d3af9e9990283e6106d005d22d",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -42,7 +42,7 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_449efd754dbc4f3b29503842dd5c5b70",
+      "conversationId": "cv_95fda1d3af9e9990283e6106d005d22d",
       "role": "user",
       "parts": [
        {
@@ -51,7 +51,7 @@
         "text": "bé bú 120ml lúc 13h"
        }
       ],
-      "taskId": "tk_864e93ae53710ba2548c1e1fa9adbb49",
+      "taskId": "tk_ec74d243c31c40957fa57dbc10215104",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -64,7 +64,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_449efd754dbc4f3b29503842dd5c5b70",
+      "conversationId": "cv_95fda1d3af9e9990283e6106d005d22d",
       "role": "assistant",
       "parts": [
        {
@@ -78,7 +78,7 @@
         "text": "Chưa xử lý được yêu cầu này. Không tính lượt."
        }
       ],
-      "taskId": "tk_864e93ae53710ba2548c1e1fa9adbb49",
+      "taskId": "tk_ec74d243c31c40957fa57dbc10215104",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

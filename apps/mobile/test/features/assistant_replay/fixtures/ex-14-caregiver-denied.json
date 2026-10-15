@@ -9,7 +9,7 @@
    "as": "NANNY",
    "snapshot": {
     "task": {
-     "id": "tk_dcc5f135d34e22e740e9f5dd7ddb9e49",
+     "id": "tk_1403c11eced0e3310059113eb7dcf930",
      "conversationId": "cv_p_766e9b4fe8e8a1a99bf6e504d41dd5ad",
      "scope": {
       "type": "child",
@@ -55,7 +55,7 @@
         "text": "mua sữa 500k"
        }
       ],
-      "taskId": "tk_dcc5f135d34e22e740e9f5dd7ddb9e49",
+      "taskId": "tk_1403c11eced0e3310059113eb7dcf930",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -88,7 +88,7 @@
         "text": "Chưa xử lý được yêu cầu này. Không tính lượt."
        }
       ],
-      "taskId": "tk_dcc5f135d34e22e740e9f5dd7ddb9e49",
+      "taskId": "tk_1403c11eced0e3310059113eb7dcf930",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

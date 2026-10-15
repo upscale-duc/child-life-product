@@ -23765,5 +23765,180 @@
   "asGapObservation": "Loại ghi nhận có đúng không?",
   "@asGapObservation": {
     "description": "Lumi 2026-10-16 (inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asKindGrowth": "Cân đo",
+  "@asKindGrowth": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asMeasuredOnLine": "Ngày đo {date}",
+  "@asMeasuredOnLine": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "asPumpSideLeft": "Bên trái",
+  "@asPumpSideLeft": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asPumpSideRight": "Bên phải",
+  "@asPumpSideRight": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asPumpSideBoth": "Cả hai bên",
+  "@asPumpSideBoth": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asOpenModule": "Mở mục",
+  "@asOpenModule": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asSaveDiaper": "Lưu thay tã",
+  "@asSaveDiaper": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapPumpTime": "Chưa có giờ hút sữa",
+  "@asGapPumpTime": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapDiaperTime": "Chưa có giờ thay tã",
+  "@asGapDiaperTime": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapSleepStartUnsure": "Giờ ngủ {time} có đúng không?",
+  "@asGapSleepStartUnsure": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asGapSleepEndUnsure": "Giờ dậy {time} có đúng không?",
+  "@asGapSleepEndUnsure": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asFixTomorrowAt": "Ngày mai {time}",
+  "@asFixTomorrowAt": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asGapPumpAmount": "Chưa có lượng sữa hút (ml)",
+  "@asGapPumpAmount": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapPumpAmountRange": "Lượng sữa hút cần từ 1 đến 1000 ml",
+  "@asGapPumpAmountRange": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapPumpSide": "Chưa rõ hút bên nào",
+  "@asGapPumpSide": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapPumpDuration": "Hút bao lâu?",
+  "@asGapPumpDuration": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapPumpDurationRange": "Mỗi lần hút không quá 240 phút",
+  "@asGapPumpDurationRange": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapDiaper": "Tã ướt, bẩn hay cả hai?",
+  "@asGapDiaper": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapWeight": "Chưa có cân nặng (kg)",
+  "@asGapWeight": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapWeightUnsure": "Cân nặng {kg} kg có đúng không?",
+  "@asGapWeightUnsure": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "asFixEnterWeight": "Nhập cân nặng",
+  "@asFixEnterWeight": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapLength": "Chưa có chiều dài (cm)",
+  "@asGapLength": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapLengthUnsure": "Chiều dài {cm} cm có đúng không?",
+  "@asGapLengthUnsure": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "cm": {
+        "type": "String"
+      }
+    }
+  },
+  "asFixEnterLength": "Nhập chiều dài",
+  "@asFixEnterLength": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asFixDropLength": "Bỏ chiều dài",
+  "@asFixDropLength": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapMeasuredOn": "Chưa có ngày đo",
+  "@asGapMeasuredOn": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapMeasuredOnFuture": "Ngày đo chưa tới. Chọn lại ngày nhé.",
+  "@asGapMeasuredOnFuture": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asGapMeasuredOnUnsure": "Ngày đo {date} có đúng không?",
+  "@asGapMeasuredOnUnsure": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "asEditPump": "Sửa hút sữa",
+  "@asEditPump": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asEditDiaper": "Sửa thay tã",
+  "@asEditDiaper": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asEditGrowth": "Sửa cân đo",
+  "@asEditGrowth": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asFieldWeight": "Cân nặng",
+  "@asFieldWeight": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asFieldLength": "Chiều dài · tùy chọn",
+  "@asFieldLength": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asFieldMeasuredOn": "Ngày đo",
+  "@asFieldMeasuredOn": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  },
+  "asFieldDiaper": "Loại tã",
+  "@asFieldDiaper": {
+    "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
   }
 }

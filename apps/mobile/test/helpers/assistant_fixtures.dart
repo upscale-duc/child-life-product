@@ -1462,3 +1462,94 @@ CareTimer runningTimer({
     right: type == TimerType.sleep ? null : const TimerSide(),
   );
 }
+
+// ---------- LUMI-01: pump, diaper and growth drafts ----------
+
+Map<String, Object?> _careLogDraft(
+  Map<String, Object?> payload, {
+  required String taskId,
+  required int index,
+  required String state,
+  required int revision,
+  String? recordId,
+}) => {
+  'id': draftOf(taskId, index),
+  'taskId': taskId,
+  'itemIndex': index,
+  'scope': {'type': 'child', 'babyId': teddyId},
+  'payload': payload,
+  'missingFields': const <String>[],
+  'uncertainFields': const <String>[],
+  'revision': revision,
+  'state': state,
+  'expiresAt': '2026-10-16T07:20:00.000Z',
+  'sourceRefs': const <String>[],
+  'recordId': recordId,
+  'recordLink': recordId == null ? null : '/care/records/$teddyId/$recordId',
+  'errorCode': null,
+  'warnings': const <String>[],
+  'problems': const <String>[],
+};
+
+/// "hút sữa 120ml bên trái 15 phút lúc 10h" (10:00 Asia/Ho_Chi_Minh).
+Map<String, Object?> pumpDraftJson({
+  String taskId = taskA,
+  int index = 0,
+  num? ml = 120,
+  String? at = '2026-10-15T03:00:00.000Z',
+  String? side = 'left',
+  int? minutes = 15,
+  String state = 'draft',
+  int revision = 1,
+  String? recordId,
+}) => _careLogDraft(
+  {
+    'kind': 'pump',
+    'amountMl': ml,
+    'occurredAt': at,
+    'side': side,
+    'durationMin': minutes,
+  },
+  taskId: taskId,
+  index: index,
+  state: state,
+  revision: revision,
+  recordId: recordId,
+);
+
+/// "thay tã ướt lúc 13h".
+Map<String, Object?> diaperDraftJson({
+  String taskId = taskA,
+  int index = 0,
+  String? diaper = 'wet',
+  String? at = '2026-10-15T06:00:00.000Z',
+  String state = 'draft',
+  int revision = 1,
+  String? recordId,
+}) => _careLogDraft(
+  {'kind': 'diaper', 'diaper': diaper, 'occurredAt': at},
+  taskId: taskId,
+  index: index,
+  state: state,
+  revision: revision,
+  recordId: recordId,
+);
+
+/// "bé nặng 5,2kg dài 62cm".
+Map<String, Object?> growthDraftJson({
+  String taskId = taskA,
+  int index = 0,
+  num? kg = 5.2,
+  num? cm = 62,
+  String? on = '2026-10-15',
+  String state = 'draft',
+  int revision = 1,
+  String? recordId,
+}) => _careLogDraft(
+  {'kind': 'growth', 'weightKg': kg, 'lengthCm': cm, 'measuredOn': on},
+  taskId: taskId,
+  index: index,
+  state: state,
+  revision: revision,
+  recordId: recordId,
+);

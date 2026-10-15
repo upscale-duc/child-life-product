@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_65bf1a812f52f9e973d96a0ddd087d7c",
+     "id": "tk_4901dd50c8f3f86ae7cca9578dcbc54f",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_65bf1a812f52f9e973d96a0ddd087d7c_0",
-      "taskId": "tk_65bf1a812f52f9e973d96a0ddd087d7c",
+      "id": "dr_4901dd50c8f3f86ae7cca9578dcbc54f_0",
+      "taskId": "tk_4901dd50c8f3f86ae7cca9578dcbc54f",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_65bf1a812f52f9e973d96a0ddd087d7c"
+       "task:tk_4901dd50c8f3f86ae7cca9578dcbc54f"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +81,7 @@
         "text": "bé bú 120ml lúc 8h sáng"
        }
       ],
-      "taskId": "tk_65bf1a812f52f9e973d96a0ddd087d7c",
+      "taskId": "tk_4901dd50c8f3f86ae7cca9578dcbc54f",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +100,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_65bf1a812f52f9e973d96a0ddd087d7c_0",
+        "draftId": "dr_4901dd50c8f3f86ae7cca9578dcbc54f_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_65bf1a812f52f9e973d96a0ddd087d7c",
+      "taskId": "tk_4901dd50c8f3f86ae7cca9578dcbc54f",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,7 +119,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_65bf1a812f52f9e973d96a0ddd087d7c",
+     "id": "tk_4901dd50c8f3f86ae7cca9578dcbc54f",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -150,8 +150,8 @@
     },
     "drafts": [
      {
-      "id": "dr_65bf1a812f52f9e973d96a0ddd087d7c_0",
-      "taskId": "tk_65bf1a812f52f9e973d96a0ddd087d7c",
+      "id": "dr_4901dd50c8f3f86ae7cca9578dcbc54f_0",
+      "taskId": "tk_4901dd50c8f3f86ae7cca9578dcbc54f",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -169,7 +169,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_65bf1a812f52f9e973d96a0ddd087d7c"
+       "task:tk_4901dd50c8f3f86ae7cca9578dcbc54f"
       ],
       "recordId": null,
       "recordLink": null,
@@ -191,7 +191,7 @@
         "text": "bé bú 120ml lúc 8h sáng"
        }
       ],
-      "taskId": "tk_65bf1a812f52f9e973d96a0ddd087d7c",
+      "taskId": "tk_4901dd50c8f3f86ae7cca9578dcbc54f",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -210,11 +210,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_65bf1a812f52f9e973d96a0ddd087d7c_0",
+        "draftId": "dr_4901dd50c8f3f86ae7cca9578dcbc54f_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_65bf1a812f52f9e973d96a0ddd087d7c",
+      "taskId": "tk_4901dd50c8f3f86ae7cca9578dcbc54f",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

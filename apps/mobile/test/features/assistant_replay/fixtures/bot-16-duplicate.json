@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a43c3aaec83324690ca09c212fc121dc",
+     "id": "tk_e0335a10d405550cae49dc6ad1a72f87",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a43c3aaec83324690ca09c212fc121dc_0",
-      "taskId": "tk_a43c3aaec83324690ca09c212fc121dc",
+      "id": "dr_e0335a10d405550cae49dc6ad1a72f87_0",
+      "taskId": "tk_e0335a10d405550cae49dc6ad1a72f87",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a43c3aaec83324690ca09c212fc121dc"
+       "task:tk_e0335a10d405550cae49dc6ad1a72f87"
       ],
       "recordId": null,
       "recordLink": null,
@@ -83,7 +83,7 @@
         "text": "bé bú 120ml lúc 8h sáng"
        }
       ],
-      "taskId": "tk_a43c3aaec83324690ca09c212fc121dc",
+      "taskId": "tk_e0335a10d405550cae49dc6ad1a72f87",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -108,11 +108,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a43c3aaec83324690ca09c212fc121dc_0",
+        "draftId": "dr_e0335a10d405550cae49dc6ad1a72f87_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a43c3aaec83324690ca09c212fc121dc",
+      "taskId": "tk_e0335a10d405550cae49dc6ad1a72f87",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -127,7 +127,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a43c3aaec83324690ca09c212fc121dc",
+     "id": "tk_e0335a10d405550cae49dc6ad1a72f87",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -158,8 +158,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a43c3aaec83324690ca09c212fc121dc_0",
-      "taskId": "tk_a43c3aaec83324690ca09c212fc121dc",
+      "id": "dr_e0335a10d405550cae49dc6ad1a72f87_0",
+      "taskId": "tk_e0335a10d405550cae49dc6ad1a72f87",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -177,10 +177,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a43c3aaec83324690ca09c212fc121dc"
+       "task:tk_e0335a10d405550cae49dc6ad1a72f87"
       ],
-      "recordId": "r_332b87076da49f320602e17dda28dfa4",
-      "recordLink": "/care/records/b_00000000000000000001/r_332b87076da49f320602e17dda28dfa4",
+      "recordId": "r_f6d895092a2f2734c2b178c6ddadab7f",
+      "recordLink": "/care/records/b_00000000000000000001/r_f6d895092a2f2734c2b178c6ddadab7f",
       "errorCode": null,
       "warnings": [
        "duplicate_suspected"
@@ -206,7 +206,7 @@
         "text": "bé bú 120ml lúc 8h sáng"
        }
       ],
-      "taskId": "tk_a43c3aaec83324690ca09c212fc121dc",
+      "taskId": "tk_e0335a10d405550cae49dc6ad1a72f87",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -231,11 +231,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a43c3aaec83324690ca09c212fc121dc_0",
+        "draftId": "dr_e0335a10d405550cae49dc6ad1a72f87_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a43c3aaec83324690ca09c212fc121dc",
+      "taskId": "tk_e0335a10d405550cae49dc6ad1a72f87",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -251,15 +251,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_a43c3aaec83324690ca09c212fc121dc_0",
+          "draftId": "dr_e0335a10d405550cae49dc6ad1a72f87_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_332b87076da49f320602e17dda28dfa4",
+          "recordLink": "/care/records/b_00000000000000000001/r_f6d895092a2f2734c2b178c6ddadab7f",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_a43c3aaec83324690ca09c212fc121dc",
+      "taskId": "tk_e0335a10d405550cae49dc6ad1a72f87",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

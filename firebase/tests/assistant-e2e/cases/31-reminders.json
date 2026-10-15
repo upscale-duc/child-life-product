@@ -464,7 +464,8 @@
         }
       ],
       "expect": {
-        "outcome": ["drafts", "awaiting"]
+        "outcome": ["drafts", "awaiting"],
+        "review": ["time"]
       },
       "group": "reminder"
     }

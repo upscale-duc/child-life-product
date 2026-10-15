@@ -269,6 +269,69 @@
         "outcome": ["answer", "fallback"]
       },
       "group": "read"
+    },
+    {
+      "id": "rd-10-relative-credits-picked",
+      "group": "read",
+      "world": {
+        "seed": ["day"]
+      },
+      "as": "GRANDMA",
+      "title": "LUMI-14 live: a relative without daily care asks about feeds and the model picks the credit balance → READ_DENIED, free",
+      "turns": [
+        {
+          "say": "hôm nay bé bú mấy lần?",
+          "model": {
+            "reads": [
+              {
+                "tool": "usage_snapshot",
+                "dayOffset": 0
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "read_denied",
+        "credits": 0
+      }
+    },
+    {
+      "id": "rd-11-bare-feed-live",
+      "group": "read",
+      "world": {
+        "seed": ["day"]
+      },
+      "title": "Live reply: \"bú sữa\" read as a breastfeed that is running now → no timer without words of something going on; asked read or log",
+      "turns": [
+        {
+          "say": "bú sữa",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "phase": "start"
+                },
+                "ev": {
+                  "phase": "bú sữa"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "intent",
+              "choice": "read"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "asks": ["intent"],
+        "credits": 1
+      }
     }
   ]
 }

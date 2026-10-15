@@ -8,14 +8,16 @@ import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_art.dart';
 import '../../core/widgets/cl_button.dart';
+import '../../core/widgets/cl_choices.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart' show Membership;
-import '../care/care_format.dart' show durationLabel;
+import '../care/care_format.dart' show decimal, durationLabel, parseDecimal;
 import '../care/care_repository.dart' show inBabyZone;
 import '../family/family_repository.dart' show familyMembersProvider;
 import '../reminders/reminder_models.dart' show canBeAssignedReminders;
@@ -53,6 +55,12 @@ Future<void> showDraftEditor(
       scopeKey: scopeKey,
       draft: draft,
       babyName: babyName,
+    ),
+    PumpPayload() || DiaperPayload() || GrowthPayload() => _CareLogEditor(
+      scopeKey: scopeKey,
+      draft: draft,
+      babyName: babyName,
+      zone: zone,
     ),
     _ => _DraftEditor(
       scopeKey: scopeKey,
@@ -331,12 +339,16 @@ class _EditorFrame extends StatelessWidget {
     required this.problems,
     required this.busy,
     required this.onSubmit,
+    this.problemText,
   });
   final String title;
   final List<Widget> children;
   final List<DraftProblem> problems;
   final bool busy;
   final VoidCallback onSubmit;
+
+  /// The words of a problem when the generic ones do not fit (a weight is not "Lượng").
+  final String Function(DraftProblem)? problemText;
 
   @override
   Widget build(BuildContext context) {
@@ -386,7 +398,7 @@ class _EditorFrame extends StatelessWidget {
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            problemLabel(l10n, p),
+                            problemText?.call(p) ?? problemLabel(l10n, p),
                             style: cl.text.caption.copyWith(
                               color: cl.colors.error,
                             ),
@@ -1546,6 +1558,485 @@ class _SideChip extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// LUMI-01: a pump, a diaper change or a measurement from chat, with the care forms' own fields
+/// and ranges (PumpSheet: amount 1…1000 ml, side, length 1…240 min, start; DiaperSheet: the
+/// three tiles and the time; GrowthScreen: weight 0,3…40 kg, optional length 20…150 cm, the
+/// measuring date). Updates the draft only; saving stays on the card.
+class _CareLogEditor extends ConsumerStatefulWidget {
+  const _CareLogEditor({
+    required this.scopeKey,
+    required this.draft,
+    required this.babyName,
+    required this.zone,
+  });
+
+  final String scopeKey;
+  final AssistantDraft draft;
+  final String babyName;
+  final String zone;
+
+  @override
+  ConsumerState<_CareLogEditor> createState() => _CareLogEditorState();
+}
+
+class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
+  late DraftPayload _payload = widget.draft.payload;
+
+  /// A pump's ml, a measurement's kg.
+  final _first = TextEditingController();
+
+  /// A pump's minutes, a measurement's cm.
+  final _second = TextEditingController();
+  var _filled = false;
+  var _problems = <DraftProblem>[];
+  var _busy = false;
+  var _wheel = _Wheeling.none;
+
+  DateTime get _now => ref.read(assistantClockProvider)();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_filled) return;
+    _filled = true;
+    // Decimals as the app's language writes them ("5,2" / "5.2"); either separator parses.
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    switch (_payload) {
+      case PumpPayload(:final amountMl, :final durationMin):
+        _first.text = amountMl == null ? '' : '${amountMl.round()}';
+        _second.text = durationMin == null ? '' : '$durationMin';
+      case GrowthPayload(:final weightKg, :final lengthCm):
+        _first.text = weightKg == null
+            ? ''
+            : decimal(locale, weightKg.toDouble());
+        _second.text = lengthCm == null
+            ? ''
+            : decimal(locale, lengthCm.toDouble());
+      default:
+        break;
+    }
+  }
+
+  @override
+  void dispose() {
+    _first.dispose();
+    _second.dispose();
+    super.dispose();
+  }
+
+  int? _int(TextEditingController c) => int.tryParse(c.text.trim());
+
+  void _setInt(TextEditingController c, int n) {
+    c.text = '$n';
+    setState(() {});
+  }
+
+  /// One decimal, as the growth form keeps it; text that is not a number reads as out of range.
+  num? _decimal(TextEditingController c) {
+    if (c.text.trim().isEmpty) return null;
+    final v = parseDecimal(c.text);
+    return v == null ? 0 : (v * 10).round() / 10;
+  }
+
+  DraftPayload _built() => switch (_payload) {
+    final PumpPayload p => PumpPayload(
+      amountMl: _int(_first),
+      occurredAt: p.occurredAt,
+      side: p.side,
+      durationMin: _int(_second),
+      linkedDerived: p.linkedDerived,
+    ),
+    final GrowthPayload p => GrowthPayload(
+      weightKg: _decimal(_first),
+      lengthCm: _decimal(_second),
+      measuredOn: p.measuredOn,
+    ),
+    final p => p,
+  };
+
+  /// A completed log's time: the wall time nearest the current one, never after now.
+  DateTime _pickAt(DateTime? current, int h, int m) {
+    var at = nearestWall(widget.zone, h, m, near: current ?? _now);
+    if (at.isAfter(_now)) at = at.subtract(const Duration(days: 1));
+    return at;
+  }
+
+  Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context);
+    final toaster = ClToaster.of(context);
+    final navigator = Navigator.of(context);
+    final payload = _built();
+    setState(() => _busy = true);
+    final (outcome, problems) = await ref
+        .read(assistantChatProvider(widget.scopeKey).notifier)
+        .patch(widget.draft, payload);
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      _problems = problems;
+      _payload = payload;
+    });
+    switch (outcome) {
+      case ActionOutcome.ok:
+        navigator.pop();
+      case ActionOutcome.offline:
+        toaster.show(message: l10n.asSaveOffline, error: true);
+      case ActionOutcome.stale:
+        navigator.pop();
+        toaster.show(message: l10n.asErrStale, error: true);
+      case ActionOutcome.failed when problems.isEmpty:
+        toaster.show(message: l10n.asEditFailed, error: true);
+      default:
+        break;
+    }
+  }
+
+  /// The care forms' own words for what is out of range.
+  String? _problemText(AppLocalizations l10n, DraftProblem p) {
+    final built = _built();
+    final fields = problemFields(built, p);
+    return switch ((built, p)) {
+      (PumpPayload(), DraftProblem.invalidAmount) =>
+        fields.contains('amountMl')
+            ? l10n.asGapPumpAmountRange
+            : l10n.asGapPumpDurationRange,
+      (GrowthPayload(), DraftProblem.missingAmount) =>
+        l10n.growthWeightRequired,
+      (GrowthPayload(), DraftProblem.invalidAmount) =>
+        fields.contains('weightKg')
+            ? l10n.growthWeightRequired
+            : l10n.growthLengthRange,
+      (GrowthPayload(), DraftProblem.missingDate) => l10n.asGapMeasuredOn,
+      (GrowthPayload(), DraftProblem.futureTime) => l10n.asGapMeasuredOnFuture,
+      _ => null,
+    };
+  }
+
+  void _toggle(_Wheeling w) =>
+      setState(() => _wheel = _wheel == w ? _Wheeling.none : w);
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final now = ref.watch(assistantClockProvider)();
+    String day(DateTime at) => relativeDay(l10n, locale, at, widget.zone, now);
+    Widget timeTile(String label, DateTime? at, void Function(DateTime) set) =>
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _TimeTile(
+              key: const ValueKey('as.edit.at'),
+              label: label,
+              time: at == null ? '--:--' : hm(at, widget.zone),
+              day: at == null ? l10n.asNoTime : day(at),
+              selected: _wheel == _Wheeling.at,
+              onTap: () => _toggle(_Wheeling.at),
+            ),
+            AsSize(
+              duration: context.motion(ClMotion.quick),
+              curve: ClCurves.quick,
+              child: _wheel == _Wheeling.at
+                  ? _ClockWheel(
+                      key: const ValueKey('as.wheel.at'),
+                      wall: inBabyZone(widget.zone, at ?? now),
+                      onChanged: (h, m) =>
+                          setState(() => set(_pickAt(at, h, m))),
+                    )
+                  : const SizedBox(width: double.infinity),
+            ),
+          ],
+        );
+    final baby = Row(
+      children: [
+        ClIcon(ClIcons.lock, size: 12, color: cl.colors.inkMuted),
+        const SizedBox(width: 4),
+        Expanded(
+          child: Text(
+            l10n.asBabyLockedLine(widget.babyName),
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
+        ),
+      ],
+    );
+    final (title, fields) = switch (_payload) {
+      final PumpPayload p => (
+        l10n.asEditPump,
+        <Widget>[
+          _Stepper(
+            label: l10n.asFieldAmount,
+            minusLabel: l10n.asLessMl,
+            plusLabel: l10n.asMoreMl,
+            onMinus: (_int(_first) ?? 0) > 10
+                ? () =>
+                      _setInt(_first, (_int(_first)! - 10).clamp(10, pumpMaxMl))
+                : null,
+            onPlus: (_int(_first) ?? 0) < pumpMaxMl
+                ? () => _setInt(
+                    _first,
+                    ((_int(_first) ?? 0) + 10).clamp(10, pumpMaxMl),
+                  )
+                : null,
+            value: _NumberField(
+              controller: _first,
+              suffix: 'ml',
+              label: l10n.asFieldAmount,
+            ),
+            quick: [
+              for (final ml in const [60, 90, 120, 150, 200])
+                (
+                  label: '$ml ml',
+                  selected: _int(_first) == ml,
+                  onPressed: () => _setInt(_first, ml),
+                ),
+            ],
+          ),
+          _Label(l10n.asFieldSide),
+          Wrap(
+            spacing: ClSpace.s2,
+            runSpacing: ClSpace.s2,
+            children: [
+              for (final (wire, label) in [
+                ('left', l10n.sideLeft),
+                ('right', l10n.sideRight),
+                ('both', l10n.sideBoth),
+              ])
+                _SideChip(
+                  label: label,
+                  selected: p.side == wire,
+                  onPressed: () =>
+                      setState(() => _payload = p.copyWith(side: wire)),
+                ),
+            ],
+          ),
+          _Stepper(
+            label: l10n.asFieldMinutes,
+            minusLabel: l10n.asLessMinutes,
+            plusLabel: l10n.asMoreMinutes,
+            onMinus: (_int(_second) ?? 0) > 1
+                ? () => _setInt(
+                    _second,
+                    (_int(_second)! - 5).clamp(1, careMaxMinutes),
+                  )
+                : null,
+            onPlus: (_int(_second) ?? 0) < careMaxMinutes
+                ? () => _setInt(
+                    _second,
+                    ((_int(_second) ?? 0) + 5).clamp(1, careMaxMinutes),
+                  )
+                : null,
+            value: _NumberField(
+              controller: _second,
+              suffix: l10n.durationMinutes(0).replaceAll('0', '').trim(),
+              label: l10n.asFieldMinutes,
+            ),
+            quick: [
+              for (final m in const [10, 15, 20, 30])
+                (
+                  label: l10n.durationMinutes(m),
+                  selected: _int(_second) == m,
+                  onPressed: () => _setInt(_second, m),
+                ),
+            ],
+          ),
+          timeTile(
+            l10n.asFieldStart,
+            p.occurredAt,
+            (at) =>
+                _payload = (_payload as PumpPayload).copyWith(occurredAt: at),
+          ),
+        ],
+      ),
+      final DiaperPayload p => (
+        l10n.asEditDiaper,
+        <Widget>[
+          _Label(l10n.asFieldDiaper),
+          Row(
+            children: [
+              for (final (i, (kind, art)) in const [
+                ('wet', ClIllustration.miniDrop),
+                ('dirty', ClIllustration.miniDiaper),
+                ('both', ClIllustration.miniWetDirty),
+              ].indexed) ...[
+                if (i > 0) const SizedBox(width: ClSpace.s3),
+                Expanded(
+                  child: FittedBox(
+                    child: ClChoiceTile(
+                      key: ValueKey('as.edit.diaper.$kind'),
+                      label: diaperWord(l10n, kind)!,
+                      art: ClArt(art),
+                      selected: p.diaper == kind,
+                      onTap: () =>
+                          setState(() => _payload = p.copyWith(diaper: kind)),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          timeTile(
+            l10n.asFieldWhen,
+            p.occurredAt,
+            (at) =>
+                _payload = (_payload as DiaperPayload).copyWith(occurredAt: at),
+          ),
+        ],
+      ),
+      final GrowthPayload p => (
+        l10n.asEditGrowth,
+        <Widget>[
+          _DecimalRow(
+            key: const ValueKey('as.edit.weight'),
+            label: l10n.asFieldWeight,
+            controller: _first,
+            unit: 'kg',
+          ),
+          _DecimalRow(
+            key: const ValueKey('as.edit.length'),
+            label: l10n.asFieldLength,
+            controller: _second,
+            unit: 'cm',
+          ),
+          ..._measuredOn(context, p, now),
+        ],
+      ),
+      _ => (l10n.asEdit, const <Widget>[]),
+    };
+    return _EditorFrame(
+      title: title,
+      problems: _problems,
+      problemText: (pr) => _problemText(l10n, pr) ?? problemLabel(l10n, pr),
+      busy: _busy,
+      onSubmit: _submit,
+      children: [...fields, baby],
+    );
+  }
+
+  /// "Ngày đo": a day already gone (up to three years back), on an inline date wheel.
+  List<Widget> _measuredOn(
+    BuildContext context,
+    GrowthPayload p,
+    DateTime now,
+  ) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final wall = inBabyZone(widget.zone, now);
+    final today = DateTime(wall.year, wall.month, wall.day);
+    final first = today.subtract(const Duration(days: 3 * 366));
+    final picked = p.measuredOn == null
+        ? null
+        : DateTime.tryParse(p.measuredOn!);
+    final initial = picked == null || picked.isAfter(today)
+        ? today
+        : (picked.isBefore(first) ? first : picked);
+    String iso(DateTime d) =>
+        '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+    return [
+      _TimeTile(
+        key: const ValueKey('as.edit.measuredOn'),
+        label: l10n.asFieldMeasuredOn,
+        time: picked == null ? '--/--' : fullDate(locale, p.measuredOn!),
+        day: picked == null
+            ? l10n.asNoDate
+            : picked == today
+            ? l10n.asFixToday
+            : weekdayDate(locale, p.measuredOn!),
+        selected: _wheel == _Wheeling.start,
+        onTap: () => _toggle(_Wheeling.start),
+      ),
+      AsSize(
+        duration: context.motion(ClMotion.quick),
+        curve: ClCurves.quick,
+        child: _wheel == _Wheeling.start
+            ? SizedBox(
+                height: 160,
+                child: _Wheel(
+                  child: CupertinoDatePicker(
+                    key: const ValueKey('as.wheel.measuredOn'),
+                    mode: CupertinoDatePickerMode.date,
+                    initialDateTime: initial,
+                    minimumDate: first,
+                    maximumDate: today,
+                    onDateTimeChanged: (d) => setState(
+                      () => _payload = (_payload as GrowthPayload).copyWith(
+                        measuredOn: iso(d),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            : const SizedBox(width: double.infinity),
+      ),
+    ];
+  }
+}
+
+/// A decimal number with its unit ("5,2 kg"), typed with either separator (the growth form).
+class _DecimalRow extends StatelessWidget {
+  const _DecimalRow({
+    required this.label,
+    required this.controller,
+    required this.unit,
+    super.key,
+  });
+  final String label;
+  final TextEditingController controller;
+  final String unit;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final c = cl.colors;
+    final style = cl.text.title2.copyWith(
+      fontSize: 22,
+      fontFeatures: const [FontFeature.tabularFigures()],
+      color: c.ink,
+    );
+    return Container(
+      constraints: const BoxConstraints(minHeight: 56),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: c.cloud,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: c.controlBorder),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: cl.text.label.copyWith(color: c.inkMuted),
+            ),
+          ),
+          const SizedBox(width: ClSpace.s3),
+          IntrinsicWidth(
+            child: TextField(
+              controller: controller,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
+                LengthLimitingTextInputFormatter(5),
+              ],
+              textAlign: TextAlign.end,
+              style: style,
+              cursorColor: c.mintDeep,
+              decoration: InputDecoration.collapsed(
+                hintText: '0',
+                hintStyle: style.copyWith(color: c.inkMuted),
+              ).copyWith(semanticCounterText: label),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(unit, style: cl.text.label.copyWith(color: c.inkMuted)),
+        ],
       ),
     );
   }

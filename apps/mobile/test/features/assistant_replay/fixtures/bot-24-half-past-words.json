@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_021b5ba3ffb096da1b0383e665476d17",
+     "id": "tk_f37c660a8ac3de5f8c2d32d2f05a9423",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_021b5ba3ffb096da1b0383e665476d17_0",
-      "taskId": "tk_021b5ba3ffb096da1b0383e665476d17",
+      "id": "dr_f37c660a8ac3de5f8c2d32d2f05a9423_0",
+      "taskId": "tk_f37c660a8ac3de5f8c2d32d2f05a9423",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_021b5ba3ffb096da1b0383e665476d17"
+       "task:tk_f37c660a8ac3de5f8c2d32d2f05a9423"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +81,7 @@
         "text": "tám giờ rưỡi tối qua bú 100ml"
        }
       ],
-      "taskId": "tk_021b5ba3ffb096da1b0383e665476d17",
+      "taskId": "tk_f37c660a8ac3de5f8c2d32d2f05a9423",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +100,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_021b5ba3ffb096da1b0383e665476d17_0",
+        "draftId": "dr_f37c660a8ac3de5f8c2d32d2f05a9423_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_021b5ba3ffb096da1b0383e665476d17",
+      "taskId": "tk_f37c660a8ac3de5f8c2d32d2f05a9423",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,7 +119,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_021b5ba3ffb096da1b0383e665476d17",
+     "id": "tk_f37c660a8ac3de5f8c2d32d2f05a9423",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -150,8 +150,8 @@
     },
     "drafts": [
      {
-      "id": "dr_021b5ba3ffb096da1b0383e665476d17_0",
-      "taskId": "tk_021b5ba3ffb096da1b0383e665476d17",
+      "id": "dr_f37c660a8ac3de5f8c2d32d2f05a9423_0",
+      "taskId": "tk_f37c660a8ac3de5f8c2d32d2f05a9423",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -169,10 +169,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_021b5ba3ffb096da1b0383e665476d17"
+       "task:tk_f37c660a8ac3de5f8c2d32d2f05a9423"
       ],
-      "recordId": "r_024cf6781c92feb770f97c47d26ef432",
-      "recordLink": "/care/records/b_00000000000000000001/r_024cf6781c92feb770f97c47d26ef432",
+      "recordId": "r_1f64b0c302789cb8c417ad15caefba94",
+      "recordLink": "/care/records/b_00000000000000000001/r_1f64b0c302789cb8c417ad15caefba94",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +196,7 @@
         "text": "tám giờ rưỡi tối qua bú 100ml"
        }
       ],
-      "taskId": "tk_021b5ba3ffb096da1b0383e665476d17",
+      "taskId": "tk_f37c660a8ac3de5f8c2d32d2f05a9423",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +215,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_021b5ba3ffb096da1b0383e665476d17_0",
+        "draftId": "dr_f37c660a8ac3de5f8c2d32d2f05a9423_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_021b5ba3ffb096da1b0383e665476d17",
+      "taskId": "tk_f37c660a8ac3de5f8c2d32d2f05a9423",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +235,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_021b5ba3ffb096da1b0383e665476d17_0",
+          "draftId": "dr_f37c660a8ac3de5f8c2d32d2f05a9423_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_024cf6781c92feb770f97c47d26ef432",
+          "recordLink": "/care/records/b_00000000000000000001/r_1f64b0c302789cb8c417ad15caefba94",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_021b5ba3ffb096da1b0383e665476d17",
+      "taskId": "tk_f37c660a8ac3de5f8c2d32d2f05a9423",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

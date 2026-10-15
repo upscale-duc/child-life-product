@@ -54,7 +54,7 @@ import {
   rulesEnvironment,
 } from './invariants.js';
 import { memoryAttachmentStore } from '../../functions/src/assistant-attachments.js';
-import type { AssistantTaskSnapshot } from '@child-life/contracts';
+import { legacyClientDraftKinds, type AssistantTaskSnapshot } from '@child-life/contracts';
 import type { Case, CaseFile, Violation } from './types.js';
 
 const args = process.argv.slice(2);
@@ -162,6 +162,20 @@ for (const c of cases) {
       violations.push(
         ...checkSnapshot(c, s.snapshot, s.label, new Date(s.at), userTextOf(c, s.turn)),
       );
+      // LUMI-05: an app build from before 2026-10-16 never gets a draft it cannot show.
+      const turn = c.turns[s.turn];
+      if (turn && 'say' in turn && turn.client === 'legacy') {
+        for (const d of s.snapshot.drafts) {
+          if (!(legacyClientDraftKinds as readonly string[]).includes(d.payload.kind)) {
+            violations.push({
+              code: 'CLIENT_KIND_UNSUPPORTED',
+              severity: 'P0',
+              at: s.label,
+              detail: `a ${d.payload.kind} draft sent to an app that cannot show it (dead end)`,
+            });
+          }
+        }
+      }
     }
     // ---- Probe: fix every flagged draft like the app's editor, then save (with a retry) ----
     if (!c.noProbe) await probe(c, run, violations);
@@ -407,8 +421,10 @@ const lines = [
 writeFileSync(resolve(outDir, 'summary.md'), `${lines.join('\n')}\n`);
 writeFileSync(
   resolve(outDir, 'results.json'),
-  `${JSON.stringify({ mode, at: new Date().toISOString(), meter: mode === 'live' ? { ...meter, latencies: undefined } : null, results }, null, 1)}\n`,
+  `${JSON.stringify({ mode, at: new Date().toISOString(), meter: mode === 'live' ? { ...meter, latencies: undefined, raw: undefined } : null, results }, null, 1)}\n`,
 );
+if (meter.raw)
+  writeFileSync(resolve(outDir, 'raw.json'), `${JSON.stringify(meter.raw, null, 1)}\n`);
 console.log(lines.slice(0, 6 + groups.size + 2).join('\n'));
 console.log(
   `\nNew / unexpected failures: ${failedNew.length}${failedNew.length ? ` → ${failedNew.join('; ')}` : ''}`,

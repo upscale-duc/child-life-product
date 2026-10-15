@@ -2,56 +2,29 @@
  "id": "mi-08-three-feeds",
  "group": "multi",
  "device": null,
- "serverViolations": [
-  "WRONG_VALUE_SILENT",
-  "EXPECT_ASKS"
- ],
+ "serverViolations": [],
  "steps": [
   {
    "label": "turn 1 · after start",
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+     "id": "tk_39f56a8fcc27971baf1bdddb83793b32",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
-     "state": "awaiting_clarification",
+     "state": "ready",
      "version": 3,
      "modality": "text",
      "credits": 1,
      "plan": "free",
-     "usage": "reserved",
+     "usage": "committed",
      "errorCode": null,
-     "round": 1,
-     "clarification": {
-      "id": "cl_1",
-      "field": "time.ampm",
-      "question": {
-       "vi": "Giờ đó là buổi sáng hay chiều tối?",
-       "en": "Was that in the morning or the evening?"
-      },
-      "choices": [
-       {
-        "id": "am",
-        "label": {
-         "vi": "Buổi sáng",
-         "en": "Morning"
-        }
-       },
-       {
-        "id": "pm",
-        "label": {
-         "vi": "Chiều / tối",
-         "en": "Afternoon / evening"
-        }
-       }
-      ],
-      "allowText": false
-     },
-     "clarificationExpiresAt": "2026-10-15T07:50:00.000Z",
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
      "anchorInstant": "2026-10-15T07:20:00.000Z",
      "timezone": "Asia/Ho_Chi_Minh",
      "createdAt": "2026-10-15T07:20:00.000Z",
@@ -65,113 +38,10 @@
      },
      "routing": null
     },
-    "drafts": [],
-    "messages": [
-     {
-      "id": "00000001",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "user",
-      "parts": [
-       {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "bé bú 3 lần: 6h 90ml, 9h 120ml, 12h 100ml"
-       }
-      ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
-      "sequence": 1,
-      "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": {
-       "uid": "u_mai",
-       "name": "Mai",
-       "relation": "mother",
-       "relationCustom": null
-      }
-     },
-     {
-      "id": "00000002",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "assistant",
-      "parts": [
-       {
-        "type": "clarification",
-        "schemaVersion": 1,
-        "clarification": {
-         "id": "cl_1",
-         "field": "time.ampm",
-         "question": {
-          "vi": "Giờ đó là buổi sáng hay chiều tối?",
-          "en": "Was that in the morning or the evening?"
-         },
-         "choices": [
-          {
-           "id": "am",
-           "label": {
-            "vi": "Buổi sáng",
-            "en": "Morning"
-           }
-          },
-          {
-           "id": "pm",
-           "label": {
-            "vi": "Chiều / tối",
-            "en": "Afternoon / evening"
-           }
-          }
-         ],
-         "allowText": false
-        }
-       }
-      ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
-      "sequence": 2,
-      "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": null
-     }
-    ],
-    "events": []
-   }
-  },
-  {
-   "label": "turn 1 · after answer time.ampm",
-   "as": "MOM",
-   "snapshot": {
-    "task": {
-     "id": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
-     "conversationId": "cv_b_00000000000000000001",
-     "scope": {
-      "type": "child",
-      "babyId": "b_00000000000000000001"
-     },
-     "state": "ready",
-     "version": 6,
-     "modality": "text",
-     "credits": 1,
-     "plan": "free",
-     "usage": "committed",
-     "errorCode": null,
-     "round": 1,
-     "clarification": null,
-     "clarificationExpiresAt": null,
-     "anchorInstant": "2026-10-15T07:20:00.000Z",
-     "timezone": "Asia/Ho_Chi_Minh",
-     "createdAt": "2026-10-15T07:20:00.000Z",
-     "updatedAt": "2026-10-15T07:20:15.000Z",
-     "visibility": "shared",
-     "author": {
-      "uid": "u_mai",
-      "name": "Mai",
-      "relation": "mother",
-      "relationCustom": null
-     },
-     "routing": null
-    },
     "drafts": [
      {
-      "id": "dr_a291d4cad5b2a8a023e2cb8b170153fe_0",
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+      "id": "dr_39f56a8fcc27971baf1bdddb83793b32_0",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -187,9 +57,9 @@
       "uncertainFields": [],
       "revision": 1,
       "state": "draft",
-      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a291d4cad5b2a8a023e2cb8b170153fe"
+       "task:tk_39f56a8fcc27971baf1bdddb83793b32"
       ],
       "recordId": null,
       "recordLink": null,
@@ -199,8 +69,8 @@
       "confirmedBy": null
      },
      {
-      "id": "dr_a291d4cad5b2a8a023e2cb8b170153fe_1",
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+      "id": "dr_39f56a8fcc27971baf1bdddb83793b32_1",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -216,9 +86,9 @@
       "uncertainFields": [],
       "revision": 1,
       "state": "draft",
-      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a291d4cad5b2a8a023e2cb8b170153fe"
+       "task:tk_39f56a8fcc27971baf1bdddb83793b32"
       ],
       "recordId": null,
       "recordLink": null,
@@ -228,8 +98,8 @@
       "confirmedBy": null
      },
      {
-      "id": "dr_a291d4cad5b2a8a023e2cb8b170153fe_2",
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+      "id": "dr_39f56a8fcc27971baf1bdddb83793b32_2",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
       "itemIndex": 2,
       "scope": {
        "type": "child",
@@ -238,16 +108,16 @@
       "payload": {
        "kind": "bottle",
        "amountMl": 100,
-       "occurredAt": "2026-10-14T17:00:00.000Z",
+       "occurredAt": "2026-10-15T05:00:00.000Z",
        "milk": "breast_milk"
       },
       "missingFields": [],
       "uncertainFields": [],
       "revision": 1,
       "state": "draft",
-      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a291d4cad5b2a8a023e2cb8b170153fe"
+       "task:tk_39f56a8fcc27971baf1bdddb83793b32"
       ],
       "recordId": null,
       "recordLink": null,
@@ -269,7 +139,7 @@
         "text": "bé bú 3 lần: 6h 90ml, 9h 120ml, 12h 100ml"
        }
       ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -286,90 +156,27 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "clarification",
+        "type": "draft_reference",
         "schemaVersion": 1,
-        "clarification": {
-         "id": "cl_1",
-         "field": "time.ampm",
-         "question": {
-          "vi": "Giờ đó là buổi sáng hay chiều tối?",
-          "en": "Was that in the morning or the evening?"
-         },
-         "choices": [
-          {
-           "id": "am",
-           "label": {
-            "vi": "Buổi sáng",
-            "en": "Morning"
-           }
-          },
-          {
-           "id": "pm",
-           "label": {
-            "vi": "Chiều / tối",
-            "en": "Afternoon / evening"
-           }
-          }
-         ],
-         "allowText": false
-        }
+        "draftId": "dr_39f56a8fcc27971baf1bdddb83793b32_0",
+        "revision": 1
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_39f56a8fcc27971baf1bdddb83793b32_1",
+        "revision": 1
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_39f56a8fcc27971baf1bdddb83793b32_2",
+        "revision": 1
        }
       ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
-      "attachmentIds": [],
-      "author": null
-     },
-     {
-      "id": "00000003",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "user",
-      "parts": [
-       {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "Buổi sáng"
-       }
-      ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
-      "sequence": 3,
-      "createdAt": "2026-10-15T07:20:15.000Z",
-      "attachmentIds": [],
-      "author": {
-       "uid": "u_mai",
-       "name": "Mai",
-       "relation": "mother",
-       "relationCustom": null
-      }
-     },
-     {
-      "id": "00000004",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "assistant",
-      "parts": [
-       {
-        "type": "draft_reference",
-        "schemaVersion": 1,
-        "draftId": "dr_a291d4cad5b2a8a023e2cb8b170153fe_0",
-        "revision": 1
-       },
-       {
-        "type": "draft_reference",
-        "schemaVersion": 1,
-        "draftId": "dr_a291d4cad5b2a8a023e2cb8b170153fe_1",
-        "revision": 1
-       },
-       {
-        "type": "draft_reference",
-        "schemaVersion": 1,
-        "draftId": "dr_a291d4cad5b2a8a023e2cb8b170153fe_2",
-        "revision": 1
-       }
-      ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
-      "sequence": 4,
-      "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
       "author": null
      }
@@ -382,26 +189,26 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+     "id": "tk_39f56a8fcc27971baf1bdddb83793b32",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
      "state": "ready",
-     "version": 6,
+     "version": 3,
      "modality": "text",
      "credits": 1,
      "plan": "free",
      "usage": "committed",
      "errorCode": null,
-     "round": 1,
+     "round": 0,
      "clarification": null,
      "clarificationExpiresAt": null,
      "anchorInstant": "2026-10-15T07:20:00.000Z",
      "timezone": "Asia/Ho_Chi_Minh",
      "createdAt": "2026-10-15T07:20:00.000Z",
-     "updatedAt": "2026-10-15T07:20:35.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
      "visibility": "shared",
      "author": {
       "uid": "u_mai",
@@ -413,8 +220,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a291d4cad5b2a8a023e2cb8b170153fe_0",
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+      "id": "dr_39f56a8fcc27971baf1bdddb83793b32_0",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -430,12 +237,12 @@
       "uncertainFields": [],
       "revision": 1,
       "state": "saved",
-      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a291d4cad5b2a8a023e2cb8b170153fe"
+       "task:tk_39f56a8fcc27971baf1bdddb83793b32"
       ],
-      "recordId": "r_0679c93036d8cf32ef06e6da484e7e0c",
-      "recordLink": "/care/records/b_00000000000000000001/r_0679c93036d8cf32ef06e6da484e7e0c",
+      "recordId": "r_e84e002e3783490b0009d80d9f7d3822",
+      "recordLink": "/care/records/b_00000000000000000001/r_e84e002e3783490b0009d80d9f7d3822",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -447,8 +254,8 @@
       }
      },
      {
-      "id": "dr_a291d4cad5b2a8a023e2cb8b170153fe_1",
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+      "id": "dr_39f56a8fcc27971baf1bdddb83793b32_1",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
       "itemIndex": 1,
       "scope": {
        "type": "child",
@@ -464,12 +271,12 @@
       "uncertainFields": [],
       "revision": 1,
       "state": "saved",
-      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a291d4cad5b2a8a023e2cb8b170153fe"
+       "task:tk_39f56a8fcc27971baf1bdddb83793b32"
       ],
-      "recordId": "r_dd6e2a1648f4e048fdd4f47b395d9337",
-      "recordLink": "/care/records/b_00000000000000000001/r_dd6e2a1648f4e048fdd4f47b395d9337",
+      "recordId": "r_abb4b60b93dd694da8ed0d31d47d58c5",
+      "recordLink": "/care/records/b_00000000000000000001/r_abb4b60b93dd694da8ed0d31d47d58c5",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -481,8 +288,8 @@
       }
      },
      {
-      "id": "dr_a291d4cad5b2a8a023e2cb8b170153fe_2",
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+      "id": "dr_39f56a8fcc27971baf1bdddb83793b32_2",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
       "itemIndex": 2,
       "scope": {
        "type": "child",
@@ -491,19 +298,19 @@
       "payload": {
        "kind": "bottle",
        "amountMl": 100,
-       "occurredAt": "2026-10-14T17:00:00.000Z",
+       "occurredAt": "2026-10-15T05:00:00.000Z",
        "milk": "breast_milk"
       },
       "missingFields": [],
       "uncertainFields": [],
       "revision": 1,
       "state": "saved",
-      "expiresAt": "2026-10-16T07:20:15.000Z",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a291d4cad5b2a8a023e2cb8b170153fe"
+       "task:tk_39f56a8fcc27971baf1bdddb83793b32"
       ],
-      "recordId": "r_b0aba29275532b40371ebf6c8c534052",
-      "recordLink": "/care/records/b_00000000000000000001/r_b0aba29275532b40371ebf6c8c534052",
+      "recordId": "r_21e7aaf0f5b79e1d51fbc525b0f81c51",
+      "recordLink": "/care/records/b_00000000000000000001/r_21e7aaf0f5b79e1d51fbc525b0f81c51",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -527,7 +334,7 @@
         "text": "bé bú 3 lần: 6h 90ml, 9h 120ml, 12h 100ml"
        }
       ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -544,36 +351,25 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "clarification",
+        "type": "draft_reference",
         "schemaVersion": 1,
-        "clarification": {
-         "id": "cl_1",
-         "field": "time.ampm",
-         "question": {
-          "vi": "Giờ đó là buổi sáng hay chiều tối?",
-          "en": "Was that in the morning or the evening?"
-         },
-         "choices": [
-          {
-           "id": "am",
-           "label": {
-            "vi": "Buổi sáng",
-            "en": "Morning"
-           }
-          },
-          {
-           "id": "pm",
-           "label": {
-            "vi": "Chiều / tối",
-            "en": "Afternoon / evening"
-           }
-          }
-         ],
-         "allowText": false
-        }
+        "draftId": "dr_39f56a8fcc27971baf1bdddb83793b32_0",
+        "revision": 1
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_39f56a8fcc27971baf1bdddb83793b32_1",
+        "revision": 1
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_39f56a8fcc27971baf1bdddb83793b32_2",
+        "revision": 1
        }
       ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -582,58 +378,6 @@
      {
       "id": "00000003",
       "conversationId": "cv_b_00000000000000000001",
-      "role": "user",
-      "parts": [
-       {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "Buổi sáng"
-       }
-      ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
-      "sequence": 3,
-      "createdAt": "2026-10-15T07:20:15.000Z",
-      "attachmentIds": [],
-      "author": {
-       "uid": "u_mai",
-       "name": "Mai",
-       "relation": "mother",
-       "relationCustom": null
-      }
-     },
-     {
-      "id": "00000004",
-      "conversationId": "cv_b_00000000000000000001",
-      "role": "assistant",
-      "parts": [
-       {
-        "type": "draft_reference",
-        "schemaVersion": 1,
-        "draftId": "dr_a291d4cad5b2a8a023e2cb8b170153fe_0",
-        "revision": 1
-       },
-       {
-        "type": "draft_reference",
-        "schemaVersion": 1,
-        "draftId": "dr_a291d4cad5b2a8a023e2cb8b170153fe_1",
-        "revision": 1
-       },
-       {
-        "type": "draft_reference",
-        "schemaVersion": 1,
-        "draftId": "dr_a291d4cad5b2a8a023e2cb8b170153fe_2",
-        "revision": 1
-       }
-      ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
-      "sequence": 4,
-      "createdAt": "2026-10-15T07:20:15.000Z",
-      "attachmentIds": [],
-      "author": null
-     },
-     {
-      "id": "00000005",
-      "conversationId": "cv_b_00000000000000000001",
       "role": "assistant",
       "parts": [
        {
@@ -641,29 +385,29 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_a291d4cad5b2a8a023e2cb8b170153fe_0",
+          "draftId": "dr_39f56a8fcc27971baf1bdddb83793b32_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_0679c93036d8cf32ef06e6da484e7e0c",
+          "recordLink": "/care/records/b_00000000000000000001/r_e84e002e3783490b0009d80d9f7d3822",
           "errorCode": null
          },
          {
-          "draftId": "dr_a291d4cad5b2a8a023e2cb8b170153fe_1",
+          "draftId": "dr_39f56a8fcc27971baf1bdddb83793b32_1",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_dd6e2a1648f4e048fdd4f47b395d9337",
+          "recordLink": "/care/records/b_00000000000000000001/r_abb4b60b93dd694da8ed0d31d47d58c5",
           "errorCode": null
          },
          {
-          "draftId": "dr_a291d4cad5b2a8a023e2cb8b170153fe_2",
+          "draftId": "dr_39f56a8fcc27971baf1bdddb83793b32_2",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_b0aba29275532b40371ebf6c8c534052",
+          "recordLink": "/care/records/b_00000000000000000001/r_21e7aaf0f5b79e1d51fbc525b0f81c51",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_a291d4cad5b2a8a023e2cb8b170153fe",
-      "sequence": 5,
-      "createdAt": "2026-10-15T07:20:35.000Z",
+      "taskId": "tk_39f56a8fcc27971baf1bdddb83793b32",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],
       "author": {
        "uid": "u_mai",

@@ -114,6 +114,9 @@ describe('care outcome, plan, age', () => {
       // Lumi timers 2026-10-16.
       'TIMER_RUNNING',
       'SAME_AS_PENDING',
+      // Lumi fixes 2026-10-16.
+      'PART_NOT_SAVED',
+      'APP_UPDATE_NEEDED',
     ]);
   });
 });

@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_8b36b49a727a6a78d02f804c24af3678",
+     "id": "tk_988b160edc85a9bef35ead3e5b6ca12f",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_8b36b49a727a6a78d02f804c24af3678_0",
-      "taskId": "tk_8b36b49a727a6a78d02f804c24af3678",
+      "id": "dr_988b160edc85a9bef35ead3e5b6ca12f_0",
+      "taskId": "tk_988b160edc85a9bef35ead3e5b6ca12f",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -60,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_8b36b49a727a6a78d02f804c24af3678"
+       "task:tk_988b160edc85a9bef35ead3e5b6ca12f"
       ],
       "recordId": null,
       "recordLink": null,
@@ -82,7 +82,7 @@
         "text": "à mà hôm nay bé ngủ trưa từ mười hai giờ rưỡi đến một giờ rưỡi chiều nha"
        }
       ],
-      "taskId": "tk_8b36b49a727a6a78d02f804c24af3678",
+      "taskId": "tk_988b160edc85a9bef35ead3e5b6ca12f",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -101,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_8b36b49a727a6a78d02f804c24af3678_0",
+        "draftId": "dr_988b160edc85a9bef35ead3e5b6ca12f_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_8b36b49a727a6a78d02f804c24af3678",
+      "taskId": "tk_988b160edc85a9bef35ead3e5b6ca12f",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -120,7 +120,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_8b36b49a727a6a78d02f804c24af3678",
+     "id": "tk_988b160edc85a9bef35ead3e5b6ca12f",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -151,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_8b36b49a727a6a78d02f804c24af3678_0",
-      "taskId": "tk_8b36b49a727a6a78d02f804c24af3678",
+      "id": "dr_988b160edc85a9bef35ead3e5b6ca12f_0",
+      "taskId": "tk_988b160edc85a9bef35ead3e5b6ca12f",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -171,10 +171,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_8b36b49a727a6a78d02f804c24af3678"
+       "task:tk_988b160edc85a9bef35ead3e5b6ca12f"
       ],
-      "recordId": "r_7694ebf51bfdf9045b3b580237a84c7c",
-      "recordLink": "/care/records/b_00000000000000000001/r_7694ebf51bfdf9045b3b580237a84c7c",
+      "recordId": "r_a876c3b354f6538edcd766fd943f6ec6",
+      "recordLink": "/care/records/b_00000000000000000001/r_a876c3b354f6538edcd766fd943f6ec6",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -198,7 +198,7 @@
         "text": "à mà hôm nay bé ngủ trưa từ mười hai giờ rưỡi đến một giờ rưỡi chiều nha"
        }
       ],
-      "taskId": "tk_8b36b49a727a6a78d02f804c24af3678",
+      "taskId": "tk_988b160edc85a9bef35ead3e5b6ca12f",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -217,11 +217,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_8b36b49a727a6a78d02f804c24af3678_0",
+        "draftId": "dr_988b160edc85a9bef35ead3e5b6ca12f_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_8b36b49a727a6a78d02f804c24af3678",
+      "taskId": "tk_988b160edc85a9bef35ead3e5b6ca12f",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -237,15 +237,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_8b36b49a727a6a78d02f804c24af3678_0",
+          "draftId": "dr_988b160edc85a9bef35ead3e5b6ca12f_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_7694ebf51bfdf9045b3b580237a84c7c",
+          "recordLink": "/care/records/b_00000000000000000001/r_a876c3b354f6538edcd766fd943f6ec6",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_8b36b49a727a6a78d02f804c24af3678",
+      "taskId": "tk_988b160edc85a9bef35ead3e5b6ca12f",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

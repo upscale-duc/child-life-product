@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_946c977107d089b772289020bb6a7f8f",
+     "id": "tk_0bb3507766b8dbb82e0410ce30f40e78",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_946c977107d089b772289020bb6a7f8f_0",
-      "taskId": "tk_946c977107d089b772289020bb6a7f8f",
+      "id": "dr_0bb3507766b8dbb82e0410ce30f40e78_0",
+      "taskId": "tk_0bb3507766b8dbb82e0410ce30f40e78",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -60,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_946c977107d089b772289020bb6a7f8f"
+       "task:tk_0bb3507766b8dbb82e0410ce30f40e78"
       ],
       "recordId": null,
       "recordLink": null,
@@ -82,7 +82,7 @@
         "text": "hôm nay bé quấy hơn mọi ngày"
        }
       ],
-      "taskId": "tk_946c977107d089b772289020bb6a7f8f",
+      "taskId": "tk_0bb3507766b8dbb82e0410ce30f40e78",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -101,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_946c977107d089b772289020bb6a7f8f_0",
+        "draftId": "dr_0bb3507766b8dbb82e0410ce30f40e78_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_946c977107d089b772289020bb6a7f8f",
+      "taskId": "tk_0bb3507766b8dbb82e0410ce30f40e78",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -120,7 +120,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_946c977107d089b772289020bb6a7f8f",
+     "id": "tk_0bb3507766b8dbb82e0410ce30f40e78",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -151,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_946c977107d089b772289020bb6a7f8f_0",
-      "taskId": "tk_946c977107d089b772289020bb6a7f8f",
+      "id": "dr_0bb3507766b8dbb82e0410ce30f40e78_0",
+      "taskId": "tk_0bb3507766b8dbb82e0410ce30f40e78",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -171,7 +171,7 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_946c977107d089b772289020bb6a7f8f"
+       "task:tk_0bb3507766b8dbb82e0410ce30f40e78"
       ],
       "recordId": "ci_51f1ca9ebb07cbf4ca253c901a97612a",
       "recordLink": "/rhythm/checkins/b_00000000000000000001/ci_51f1ca9ebb07cbf4ca253c901a97612a",
@@ -198,7 +198,7 @@
         "text": "hôm nay bé quấy hơn mọi ngày"
        }
       ],
-      "taskId": "tk_946c977107d089b772289020bb6a7f8f",
+      "taskId": "tk_0bb3507766b8dbb82e0410ce30f40e78",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -217,11 +217,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_946c977107d089b772289020bb6a7f8f_0",
+        "draftId": "dr_0bb3507766b8dbb82e0410ce30f40e78_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_946c977107d089b772289020bb6a7f8f",
+      "taskId": "tk_0bb3507766b8dbb82e0410ce30f40e78",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -237,7 +237,7 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_946c977107d089b772289020bb6a7f8f_0",
+          "draftId": "dr_0bb3507766b8dbb82e0410ce30f40e78_0",
           "status": "saved",
           "recordLink": "/rhythm/checkins/b_00000000000000000001/ci_51f1ca9ebb07cbf4ca253c901a97612a",
           "errorCode": null
@@ -245,7 +245,7 @@
         ]
        }
       ],
-      "taskId": "tk_946c977107d089b772289020bb6a7f8f",
+      "taskId": "tk_0bb3507766b8dbb82e0410ce30f40e78",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

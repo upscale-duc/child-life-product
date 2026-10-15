@@ -1,5 +1,5 @@
 import '../../l10n/app_localizations.dart';
-import '../care/care_format.dart' show durationLabel;
+import '../care/care_format.dart' show decimal, durationLabel;
 import '../care/care_repository.dart' show inBabyZone;
 import 'assistant_labels.dart';
 import 'assistant_models.dart';
@@ -33,8 +33,9 @@ class FixActions {
   /// A wall-clock time "HH:mm", or null when closed.
   final Future<String?> Function(DateTime? initial) pickTime;
 
-  /// A local date, or null when closed.
-  final Future<DateTime?> Function(DateTime? initial) pickDate;
+  /// A local date, or null when closed; [past]: a day already gone (a measurement), else one
+  /// from yesterday on (a reminder).
+  final Future<DateTime?> Function(DateTime? initial, {bool past}) pickDate;
 }
 
 String _isoDate(DateTime d) =>
@@ -93,21 +94,47 @@ List<AsFixRow> fixRowsFor({
     AsFixRow row(String reason, List<AsFixChip> chips) =>
         (field: f, reason: reason, chips: chips, optional: false);
     switch ((p, f)) {
-      // ---- A feed's time: "Vừa xong (01:08)" means it ended then (a nursing length is kept).
-      case (BottlePayload(), 'occurredAt') || (BreastPayload(), 'occurredAt'):
-        final cur = p is BottlePayload
-            ? p.occurredAt
-            : (p as BreastPayload).occurredAt;
-        final length = p is BreastPayload ? p.durationMin : null;
+      // ---- A feed's (a pump's, a diaper's, a meal's) time: "Vừa xong (01:08)" means it ended
+      // then (a nursing or pumping length is kept).
+      case (BottlePayload(), 'occurredAt') ||
+          (BreastPayload(), 'occurredAt') ||
+          (PumpPayload(), 'occurredAt') ||
+          (DiaperPayload(), 'occurredAt') ||
+          (MealPayload(), 'occurredAt'):
+        final cur = switch (p) {
+          BottlePayload(:final occurredAt) ||
+          BreastPayload(:final occurredAt) ||
+          PumpPayload(:final occurredAt) ||
+          DiaperPayload(:final occurredAt) ||
+          MealPayload(:final occurredAt) => occurredAt,
+          _ => null,
+        };
+        final length = switch (p) {
+          BreastPayload(:final durationMin) ||
+          PumpPayload(:final durationMin) => durationMin,
+          _ => null,
+        };
         DraftPayload withAt(DateTime t) => switch (p) {
           final BottlePayload b => b.copyWith(occurredAt: t),
           final BreastPayload b => b.copyWith(occurredAt: t),
+          final PumpPayload b => b.copyWith(occurredAt: t),
+          final DiaperPayload b => b.copyWith(occurredAt: t),
+          final MealPayload b => MealPayload(
+            title: b.title,
+            recipeId: b.recipeId,
+            occurredAt: t,
+          ),
           _ => p,
         };
         rows.add(
           row(
             cur == null || g.missing
-                ? l10n.asGapFeedTime
+                ? switch (p) {
+                    PumpPayload() => l10n.asGapPumpTime,
+                    DiaperPayload() => l10n.asGapDiaperTime,
+                    MealPayload() => l10n.asProblemMissingTime,
+                    _ => l10n.asGapFeedTime,
+                  }
                 : future
                 ? l10n.asGapTimeFuture(at(cur))
                 : l10n.asGapTimeUnsure(at(cur)),
@@ -203,7 +230,7 @@ List<AsFixRow> fixRowsFor({
           row(
             s.startedAt == null || g.missing
                 ? l10n.asGapSleepStart
-                : l10n.asGapTimeUnsure(at(s.startedAt!)),
+                : l10n.asGapSleepStartUnsure(at(s.startedAt!)),
             [
               if (s.startedAt != null && !g.missing) confirm(f),
               if (end != null)
@@ -243,7 +270,7 @@ List<AsFixRow> fixRowsFor({
                 ? l10n.asGapSleepOrder
                 : future
                 ? l10n.asGapTimeFuture(at(cur))
-                : l10n.asGapTimeUnsure(at(cur)),
+                : l10n.asGapSleepEndUnsure(at(cur)),
             [
               if (cur != null && !g.missing && !future && !invalid) confirm(f),
               chip(
@@ -402,6 +429,48 @@ List<AsFixRow> fixRowsFor({
         );
       case (ReminderPayload(), 'title'):
         rows.add(row(l10n.asGapTitle, [opener(l10n.asEdit, act.edit)]));
+      // LUMI-11: a reminder time already gone: today → a later time (or the same time
+      // tomorrow); an earlier day → the same time tomorrow or another day.
+      case (final ReminderPayload r, 'time')
+          when g.problem == DraftProblem.pastTime && r.time != null:
+        final wall = inBabyZone(zone, now);
+        final today = DateTime(wall.year, wall.month, wall.day);
+        final tomorrow = today.add(const Duration(days: 1));
+        final onToday = r.date == null || r.date == _isoDate(today);
+        DraftPayload withWhen(String? date, String time) => ReminderPayload(
+          title: r.title,
+          date: date,
+          time: time,
+          assigneeUid: r.assigneeUid,
+        );
+        final again = chip(
+          l10n.asFixTomorrowAt(r.time!),
+          () => act.patch(withWhen(_isoDate(tomorrow), r.time!), [f, 'date']),
+        );
+        rows.add(
+          onToday
+              ? row(problemLabel(l10n, DraftProblem.pastTime), [
+                  opener(l10n.asFixPickTime, () async {
+                    final v = await act.pickTime(null);
+                    if (v != null) {
+                      await act.patch(withWhen(_isoDate(today), v), [f]);
+                    }
+                  }),
+                  again,
+                ])
+              : row(l10n.asGapReminderPast, [
+                  again,
+                  opener(l10n.asFixPickDate, () async {
+                    final day = await act.pickDate(tomorrow);
+                    if (day != null) {
+                      await act.patch(withWhen(_isoDate(day), r.time!), [
+                        f,
+                        'date',
+                      ]);
+                    }
+                  }),
+                ]),
+        );
       // A reminder the server still wants a time for (photo notes before D-075 #5).
       case (ReminderPayload(), 'time'):
         rows.add(
@@ -434,6 +503,165 @@ List<AsFixRow> fixRowsFor({
             ],
           ),
         );
+      // LUMI-07: a nursing timer's first side (one side at a time).
+      case (final TimerPayload t, 'side') when !t.isSleep && t.isStart:
+        rows.add(
+          row(l10n.asGapSide, [
+            if (t.side != null && !g.missing) confirm(f),
+            for (final (side, label) in [
+              ('left', l10n.sideLeft),
+              ('right', l10n.sideRight),
+            ])
+              chip(label, () => act.patch(t.copyWith(side: side), [f])),
+          ]),
+        );
+      // ---- LUMI-01: a pump, a diaper, a measurement (the care forms' fields) ----
+      case (final PumpPayload x, 'amountMl'):
+        final ml = x.amountMl;
+        final bad = g.problem == DraftProblem.invalidAmount;
+        rows.add(
+          row(
+            ml == null || g.missing
+                ? l10n.asGapPumpAmount
+                : bad
+                ? l10n.asGapPumpAmountRange
+                : l10n.asGapAmountUnsure(mlLabel(locale, ml)),
+            [
+              if (ml != null && !g.missing && !bad) confirm(f),
+              for (final v in const [60, 90, 120, 150, 200])
+                chip(
+                  l10n.asFixMl('$v'),
+                  () => act.patch(x.copyWith(amountMl: v), [f]),
+                ),
+              other(),
+            ],
+          ),
+        );
+      case (final PumpPayload x, 'side'):
+        rows.add(
+          row(l10n.asGapPumpSide, [
+            if (x.side != null && !g.missing) confirm(f),
+            for (final (side, label) in [
+              ('left', l10n.sideLeft),
+              ('right', l10n.sideRight),
+              ('both', l10n.sideBoth),
+            ])
+              chip(label, () => act.patch(x.copyWith(side: side), [f])),
+          ]),
+        );
+      case (final PumpPayload x, 'durationMin'):
+        final m = x.durationMin;
+        final tooLong = g.problem == DraftProblem.invalidAmount;
+        rows.add(
+          row(
+            tooLong
+                ? l10n.asGapPumpDurationRange
+                : m == null || g.missing
+                ? l10n.asGapPumpDuration
+                : l10n.asGapDurationUnsure(durationLabel(l10n, m)),
+            [
+              if (m != null && !tooLong && !g.missing) confirm(f),
+              for (final v in const [10, 15, 20, 30])
+                chip(
+                  durationLabel(l10n, v),
+                  () => act.patch(x.copyWith(durationMin: v), [f]),
+                ),
+              other(),
+            ],
+          ),
+        );
+      case (final DiaperPayload x, 'diaper'):
+        rows.add(
+          row(l10n.asGapDiaper, [
+            if (x.diaper != null && !g.missing) confirm(f),
+            for (final k in diaperKinds)
+              chip(
+                diaperWord(l10n, k)!,
+                () => act.patch(x.copyWith(diaper: k), [f]),
+              ),
+          ]),
+        );
+      case (final GrowthPayload x, 'weightKg'):
+        final kg = x.weightKg;
+        final bad = g.problem == DraftProblem.invalidAmount;
+        rows.add(
+          row(
+            kg == null || g.missing
+                ? l10n.asGapWeight
+                : bad
+                ? l10n.growthWeightRequired
+                : l10n.asGapWeightUnsure(decimal(locale, kg.toDouble())),
+            [
+              if (kg != null && !g.missing && !bad) confirm(f),
+              opener(l10n.asFixEnterWeight, act.edit),
+            ],
+          ),
+        );
+      case (final GrowthPayload x, 'lengthCm'):
+        final cm = x.lengthCm;
+        final bad = g.problem == DraftProblem.invalidAmount;
+        rows.add(
+          row(
+            cm == null || g.missing
+                ? l10n.asGapLength
+                : bad
+                ? l10n.growthLengthRange
+                : l10n.asGapLengthUnsure(decimal(locale, cm.toDouble())),
+            [
+              if (cm != null && !g.missing && !bad) confirm(f),
+              opener(l10n.asFixEnterLength, act.edit),
+              // The length is optional: keep the weight without it.
+              if (cm != null)
+                chip(
+                  l10n.asFixDropLength,
+                  () => act.patch(x.withoutLength(), [f]),
+                ),
+            ],
+          ),
+        );
+      case (final GrowthPayload x, 'measuredOn'):
+        final wall = inBabyZone(zone, now);
+        final today = DateTime(wall.year, wall.month, wall.day);
+        final cur = x.measuredOn == null
+            ? null
+            : DateTime.tryParse(x.measuredOn!);
+        rows.add(
+          row(
+            cur == null || g.missing
+                ? l10n.asGapMeasuredOn
+                : future
+                ? l10n.asGapMeasuredOnFuture
+                : l10n.asGapMeasuredOnUnsure(shortDate(locale, cur)),
+            [
+              if (cur != null && !g.missing && !future) confirm(f),
+              chip(
+                l10n.asFixToday,
+                () => act.patch(x.copyWith(measuredOn: _isoDate(today)), [f]),
+              ),
+              chip(
+                l10n.asFixYesterday,
+                () => act.patch(
+                  x.copyWith(
+                    measuredOn: _isoDate(
+                      today.subtract(const Duration(days: 1)),
+                    ),
+                  ),
+                  [f],
+                ),
+              ),
+              opener(l10n.asFixPickDate, () async {
+                final day = await act.pickDate(
+                  cur == null || cur.isAfter(today) ? today : cur,
+                  past: true,
+                );
+                if (day != null) {
+                  await act.patch(x.copyWith(measuredOn: _isoDate(day)), [f]);
+                }
+              }),
+            ],
+          ),
+        );
+      // Last resort: a field no row knows (an older or newer draft) — the editor.
       default:
         rows.add(row(l10n.asNeedsReview, [opener(l10n.asEdit, act.edit)]));
     }

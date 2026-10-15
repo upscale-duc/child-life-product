@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_be385ed00d7c0cd0166e2107ca028c57",
+     "id": "tk_24e6bd94f69e7112622ffda954d9a99e",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -60,7 +60,7 @@
         "text": "con 7 tháng ăn gì được?"
        }
       ],
-      "taskId": "tk_be385ed00d7c0cd0166e2107ca028c57",
+      "taskId": "tk_24e6bd94f69e7112622ffda954d9a99e",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -92,7 +92,7 @@
         "code": "RECIPES_NONE_APPROVED"
        }
       ],
-      "taskId": "tk_be385ed00d7c0cd0166e2107ca028c57",
+      "taskId": "tk_24e6bd94f69e7112622ffda954d9a99e",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

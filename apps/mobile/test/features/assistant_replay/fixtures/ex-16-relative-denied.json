@@ -9,8 +9,8 @@
    "as": "AUNT",
    "snapshot": {
     "task": {
-     "id": "tk_af6c9c07134d0a78cead23784be0c44b",
-     "conversationId": "cv_5e3109bb9723c42153e76c9c6eac6173",
+     "id": "tk_b9e9b3f7685395d457541a844972b6cb",
+     "conversationId": "cv_934db320a5503e767eb2ed3130080370",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -42,7 +42,7 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_5e3109bb9723c42153e76c9c6eac6173",
+      "conversationId": "cv_934db320a5503e767eb2ed3130080370",
       "role": "user",
       "parts": [
        {
@@ -51,7 +51,7 @@
         "text": "mua đồ chơi 300k"
        }
       ],
-      "taskId": "tk_af6c9c07134d0a78cead23784be0c44b",
+      "taskId": "tk_b9e9b3f7685395d457541a844972b6cb",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -64,7 +64,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_5e3109bb9723c42153e76c9c6eac6173",
+      "conversationId": "cv_934db320a5503e767eb2ed3130080370",
       "role": "assistant",
       "parts": [
        {
@@ -78,7 +78,7 @@
         "text": "Chưa xử lý được yêu cầu này. Không tính lượt."
        }
       ],
-      "taskId": "tk_af6c9c07134d0a78cead23784be0c44b",
+      "taskId": "tk_b9e9b3f7685395d457541a844972b6cb",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

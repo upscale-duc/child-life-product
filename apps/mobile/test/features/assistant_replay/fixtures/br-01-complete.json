@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a84604de0e06021d9ac1e66ce9ca919f",
+     "id": "tk_dfb8c7fb2c6bc46ffe839ae31018e7ff",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a84604de0e06021d9ac1e66ce9ca919f_0",
-      "taskId": "tk_a84604de0e06021d9ac1e66ce9ca919f",
+      "id": "dr_dfb8c7fb2c6bc46ffe839ae31018e7ff_0",
+      "taskId": "tk_dfb8c7fb2c6bc46ffe839ae31018e7ff",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -59,7 +59,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a84604de0e06021d9ac1e66ce9ca919f"
+       "task:tk_dfb8c7fb2c6bc46ffe839ae31018e7ff"
       ],
       "recordId": null,
       "recordLink": null,
@@ -81,7 +81,7 @@
         "text": "bé bú mẹ 15 phút bên trái lúc 13h"
        }
       ],
-      "taskId": "tk_a84604de0e06021d9ac1e66ce9ca919f",
+      "taskId": "tk_dfb8c7fb2c6bc46ffe839ae31018e7ff",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -100,11 +100,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a84604de0e06021d9ac1e66ce9ca919f_0",
+        "draftId": "dr_dfb8c7fb2c6bc46ffe839ae31018e7ff_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a84604de0e06021d9ac1e66ce9ca919f",
+      "taskId": "tk_dfb8c7fb2c6bc46ffe839ae31018e7ff",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,7 +119,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a84604de0e06021d9ac1e66ce9ca919f",
+     "id": "tk_dfb8c7fb2c6bc46ffe839ae31018e7ff",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -150,8 +150,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a84604de0e06021d9ac1e66ce9ca919f_0",
-      "taskId": "tk_a84604de0e06021d9ac1e66ce9ca919f",
+      "id": "dr_dfb8c7fb2c6bc46ffe839ae31018e7ff_0",
+      "taskId": "tk_dfb8c7fb2c6bc46ffe839ae31018e7ff",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -169,10 +169,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a84604de0e06021d9ac1e66ce9ca919f"
+       "task:tk_dfb8c7fb2c6bc46ffe839ae31018e7ff"
       ],
-      "recordId": "r_ef4f86ca7bca5c733efbee54370236cf",
-      "recordLink": "/care/records/b_00000000000000000001/r_ef4f86ca7bca5c733efbee54370236cf",
+      "recordId": "r_87fac25204ef150bb0096bada6ab20f7",
+      "recordLink": "/care/records/b_00000000000000000001/r_87fac25204ef150bb0096bada6ab20f7",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -196,7 +196,7 @@
         "text": "bé bú mẹ 15 phút bên trái lúc 13h"
        }
       ],
-      "taskId": "tk_a84604de0e06021d9ac1e66ce9ca919f",
+      "taskId": "tk_dfb8c7fb2c6bc46ffe839ae31018e7ff",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -215,11 +215,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a84604de0e06021d9ac1e66ce9ca919f_0",
+        "draftId": "dr_dfb8c7fb2c6bc46ffe839ae31018e7ff_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a84604de0e06021d9ac1e66ce9ca919f",
+      "taskId": "tk_dfb8c7fb2c6bc46ffe839ae31018e7ff",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -235,15 +235,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_a84604de0e06021d9ac1e66ce9ca919f_0",
+          "draftId": "dr_dfb8c7fb2c6bc46ffe839ae31018e7ff_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_ef4f86ca7bca5c733efbee54370236cf",
+          "recordLink": "/care/records/b_00000000000000000001/r_87fac25204ef150bb0096bada6ab20f7",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_a84604de0e06021d9ac1e66ce9ca919f",
+      "taskId": "tk_dfb8c7fb2c6bc46ffe839ae31018e7ff",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

@@ -2,17 +2,14 @@
  "id": "mi-06-diaper-and-bottle",
  "group": "multi",
  "device": null,
- "serverViolations": [
-  "DROPPED_ITEM",
-  "EXPECT_KINDS"
- ],
+ "serverViolations": [],
  "steps": [
   {
    "label": "turn 1 · after start",
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_afafa12f0fa00d4203f51771179c6958",
+     "id": "tk_c146c8e7ebb3a096477b3044c6f42047",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -43,9 +40,39 @@
     },
     "drafts": [
      {
-      "id": "dr_afafa12f0fa00d4203f51771179c6958_0",
-      "taskId": "tk_afafa12f0fa00d4203f51771179c6958",
+      "id": "dr_c146c8e7ebb3a096477b3044c6f42047_0",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
       "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": null,
+       "occurredAt": "2026-10-15T06:00:00.000Z"
+      },
+      "missingFields": [
+       "diaper"
+      ],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "needs_review",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_c146c8e7ebb3a096477b3044c6f42047"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     },
+     {
+      "id": "dr_c146c8e7ebb3a096477b3044c6f42047_1",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
+      "itemIndex": 1,
       "scope": {
        "type": "child",
        "babyId": "b_00000000000000000001"
@@ -62,7 +89,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_afafa12f0fa00d4203f51771179c6958"
+       "task:tk_c146c8e7ebb3a096477b3044c6f42047"
       ],
       "recordId": null,
       "recordLink": null,
@@ -84,7 +111,7 @@
         "text": "thay tã rồi cho bú 90ml lúc 13h"
        }
       ],
-      "taskId": "tk_afafa12f0fa00d4203f51771179c6958",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -101,18 +128,19 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "text",
+        "type": "draft_reference",
         "schemaVersion": 1,
-        "text": "Mục này chưa ghi được qua trò chuyện. Bạn có thể mở mục tương ứng để ghi trực tiếp."
+        "draftId": "dr_c146c8e7ebb3a096477b3044c6f42047_0",
+        "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_afafa12f0fa00d4203f51771179c6958_0",
+        "draftId": "dr_c146c8e7ebb3a096477b3044c6f42047_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_afafa12f0fa00d4203f51771179c6958",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -123,11 +151,11 @@
    }
   },
   {
-   "label": "probe · after save",
+   "label": "probe · after fix",
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_afafa12f0fa00d4203f51771179c6958",
+     "id": "tk_c146c8e7ebb3a096477b3044c6f42047",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -146,7 +174,7 @@
      "anchorInstant": "2026-10-15T07:20:00.000Z",
      "timezone": "Asia/Ho_Chi_Minh",
      "createdAt": "2026-10-15T07:20:00.000Z",
-     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
      "visibility": "shared",
      "author": {
       "uid": "u_mai",
@@ -158,9 +186,186 @@
     },
     "drafts": [
      {
-      "id": "dr_afafa12f0fa00d4203f51771179c6958_0",
-      "taskId": "tk_afafa12f0fa00d4203f51771179c6958",
+      "id": "dr_c146c8e7ebb3a096477b3044c6f42047_0",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
       "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": "wet",
+       "occurredAt": "2026-10-15T06:00:00.000Z"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_c146c8e7ebb3a096477b3044c6f42047"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     },
+     {
+      "id": "dr_c146c8e7ebb3a096477b3044c6f42047_1",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
+      "itemIndex": 1,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "bottle",
+       "amountMl": 90,
+       "occurredAt": "2026-10-15T06:00:00.000Z",
+       "milk": "breast_milk"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_c146c8e7ebb3a096477b3044c6f42047"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "thay tã rồi cho bú 90ml lúc 13h"
+       }
+      ],
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_c146c8e7ebb3a096477b3044c6f42047_0",
+        "revision": 1
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_c146c8e7ebb3a096477b3044c6f42047_1",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_c146c8e7ebb3a096477b3044c6f42047",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:40.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_c146c8e7ebb3a096477b3044c6f42047_0",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": "wet",
+       "occurredAt": "2026-10-15T06:00:00.000Z"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_c146c8e7ebb3a096477b3044c6f42047"
+      ],
+      "recordId": "r_461e2e7322b073dad27760e53ab16177",
+      "recordLink": "/care/records/b_00000000000000000001/r_461e2e7322b073dad27760e53ab16177",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "dr_c146c8e7ebb3a096477b3044c6f42047_1",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
+      "itemIndex": 1,
       "scope": {
        "type": "child",
        "babyId": "b_00000000000000000001"
@@ -177,10 +382,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_afafa12f0fa00d4203f51771179c6958"
+       "task:tk_c146c8e7ebb3a096477b3044c6f42047"
       ],
-      "recordId": "r_b05bae295d52533ffd11c5442e687f5e",
-      "recordLink": "/care/records/b_00000000000000000001/r_b05bae295d52533ffd11c5442e687f5e",
+      "recordId": "r_bb7f5402c4fa681b3b8cb97c71582548",
+      "recordLink": "/care/records/b_00000000000000000001/r_bb7f5402c4fa681b3b8cb97c71582548",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -204,7 +409,7 @@
         "text": "thay tã rồi cho bú 90ml lúc 13h"
        }
       ],
-      "taskId": "tk_afafa12f0fa00d4203f51771179c6958",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -221,18 +426,19 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "text",
+        "type": "draft_reference",
         "schemaVersion": 1,
-        "text": "Mục này chưa ghi được qua trò chuyện. Bạn có thể mở mục tương ứng để ghi trực tiếp."
+        "draftId": "dr_c146c8e7ebb3a096477b3044c6f42047_0",
+        "revision": 1
        },
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_afafa12f0fa00d4203f51771179c6958_0",
+        "draftId": "dr_c146c8e7ebb3a096477b3044c6f42047_1",
         "revision": 1
        }
       ],
-      "taskId": "tk_afafa12f0fa00d4203f51771179c6958",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -248,17 +454,23 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_afafa12f0fa00d4203f51771179c6958_0",
+          "draftId": "dr_c146c8e7ebb3a096477b3044c6f42047_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_b05bae295d52533ffd11c5442e687f5e",
+          "recordLink": "/care/records/b_00000000000000000001/r_461e2e7322b073dad27760e53ab16177",
+          "errorCode": null
+         },
+         {
+          "draftId": "dr_c146c8e7ebb3a096477b3044c6f42047_1",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_bb7f5402c4fa681b3b8cb97c71582548",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_afafa12f0fa00d4203f51771179c6958",
+      "taskId": "tk_c146c8e7ebb3a096477b3044c6f42047",
       "sequence": 3,
-      "createdAt": "2026-10-15T07:20:20.000Z",
+      "createdAt": "2026-10-15T07:20:40.000Z",
       "attachmentIds": [],
       "author": {
        "uid": "u_mai",

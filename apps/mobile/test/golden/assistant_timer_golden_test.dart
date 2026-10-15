@@ -21,7 +21,8 @@ import '../helpers/assistant_fixtures.dart';
 /// "Bắt đầu tính giờ ngủ · 14:20"), the running timer with "Kết thúc" / "Để tiếp tục", and the
 /// review card that explains and fixes in place (a breastfeed missing its side, the single-draft
 /// layout with its own save) and, with several drafts, a fixed draft ticked by itself ("Lưu 2
-/// mục"). Synthetic data only.
+/// mục"). Lumi fixes (LUMI-01): pump, diaper and growth drafts, ready and needing review.
+/// Synthetic data only.
 /// Regenerate on macOS: flutter test --tags golden --update-goldens test/golden/assistant_timer_golden_test.dart
 
 const _session = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
@@ -108,6 +109,89 @@ final _cases = <String, _Case>{
   ),
   'review_batch': (
     repo: () => FakeAssistantRepository(tasks: {taskA: _batch()}),
+    timers: const {},
+    act: null,
+  ),
+  // LUMI-01: a pump, a diaper change and a measurement from chat, ready (one tap saves) and
+  // needing review (the fix in place); the measurement says what was not saved (LUMI-13).
+  'care_pump': (
+    repo: () => FakeAssistantRepository(
+      tasks: {
+        taskA: _one(pumpDraftJson(), 'hút sữa 120ml bên trái 15 phút lúc 10h'),
+      },
+    ),
+    timers: const {},
+    act: null,
+  ),
+  'care_pump_review': (
+    repo: () => FakeAssistantRepository(
+      tasks: {
+        taskA: _one(
+          reviewed(
+            pumpDraftJson(ml: null, side: 'both'),
+            missing: ['amountMl'],
+            uncertain: ['side'],
+          ),
+          'vừa hút sữa xong',
+        ),
+      },
+    ),
+    timers: const {},
+    act: null,
+  ),
+  'care_diaper': (
+    repo: () => FakeAssistantRepository(
+      tasks: {taskA: _one(diaperDraftJson(), 'thay tã ướt lúc 13h')},
+    ),
+    timers: const {},
+    act: null,
+  ),
+  'care_diaper_review': (
+    repo: () => FakeAssistantRepository(
+      tasks: {
+        taskA: _one(
+          reviewed(diaperDraftJson(diaper: null), missing: ['diaper']),
+          'thay tã lúc 13h',
+        ),
+      },
+    ),
+    timers: const {},
+    act: null,
+  ),
+  'care_growth': (
+    repo: () => FakeAssistantRepository(
+      tasks: {
+        taskA: _one(
+          growthDraftJson(),
+          'bé nặng 5,2kg dài 62cm vòng đầu 40cm',
+          before: [
+            {
+              ...codedText(
+                'Mục Tăng trưởng chưa có vòng đầu, nên mình chưa ghi số đo vòng đầu. Cân nặng và chiều dài ở bản nháp bên dưới.',
+                'PART_NOT_SAVED',
+              ),
+              'link': '/care/growth',
+            },
+          ],
+        ),
+      },
+    ),
+    timers: const {},
+    act: null,
+  ),
+  'care_growth_review': (
+    repo: () => FakeAssistantRepository(
+      tasks: {
+        taskA: _one(
+          reviewed(
+            growthDraftJson(cm: 200, on: null),
+            missing: ['measuredOn'],
+            uncertain: ['weightKg'],
+          ),
+          'bé nặng 5,2kg dài 200cm',
+        ),
+      },
+    ),
     timers: const {},
     act: null,
   ),

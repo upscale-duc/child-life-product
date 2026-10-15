@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_5c3a1d5f83dd1a9ee44a3cebc77c15e7",
+     "id": "tk_172f8c4972959300627359c1728eef97",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -51,7 +51,7 @@
         "text": "vừa ghi rồi"
        }
       ],
-      "taskId": "tk_5c3a1d5f83dd1a9ee44a3cebc77c15e7",
+      "taskId": "tk_172f8c4972959300627359c1728eef97",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -74,7 +74,7 @@
         "code": "SMALL_TALK"
        }
       ],
-      "taskId": "tk_5c3a1d5f83dd1a9ee44a3cebc77c15e7",
+      "taskId": "tk_172f8c4972959300627359c1728eef97",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

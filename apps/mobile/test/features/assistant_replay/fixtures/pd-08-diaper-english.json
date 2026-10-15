@@ -2,31 +2,26 @@
  "id": "pd-08-diaper-english",
  "group": "care.types",
  "device": null,
- "serverViolations": [
-  "FALSE_UNAVAILABLE",
-  "EXPECT_OUTCOME",
-  "EXPECT_KINDS",
-  "EXPECT_CREDITS"
- ],
+ "serverViolations": [],
  "steps": [
   {
    "label": "turn 1 · after start",
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_15408600235fb16ac42a07a8a29932ca",
+     "id": "tk_b1405a089666b6b0e130500ff265bae6",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
      },
-     "state": "failed",
+     "state": "ready",
      "version": 3,
      "modality": "text",
      "credits": 1,
      "plan": "free",
-     "usage": "released",
-     "errorCode": "MODULE_UNAVAILABLE",
+     "usage": "committed",
+     "errorCode": null,
      "round": 0,
      "clarification": null,
      "clarificationExpiresAt": null,
@@ -43,7 +38,36 @@
      },
      "routing": null
     },
-    "drafts": [],
+    "drafts": [
+     {
+      "id": "dr_b1405a089666b6b0e130500ff265bae6_0",
+      "taskId": "tk_b1405a089666b6b0e130500ff265bae6",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": "dirty",
+       "occurredAt": "2026-10-15T06:00:00.000Z"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_b1405a089666b6b0e130500ff265bae6"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
     "messages": [
      {
       "id": "00000001",
@@ -56,7 +80,7 @@
         "text": "changed a dirty diaper at 1pm"
        }
       ],
-      "taskId": "tk_15408600235fb16ac42a07a8a29932ca",
+      "taskId": "tk_b1405a089666b6b0e130500ff265bae6",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -73,21 +97,160 @@
       "role": "assistant",
       "parts": [
        {
-        "type": "text",
+        "type": "draft_reference",
         "schemaVersion": 1,
-        "text": "This can’t be saved from chat yet. You can open the matching section to add it directly."
-       },
-       {
-        "type": "text",
-        "schemaVersion": 1,
-        "text": "This request could not be completed. No credit was used."
+        "draftId": "dr_b1405a089666b6b0e130500ff265bae6_0",
+        "revision": 1
        }
       ],
-      "taskId": "tk_15408600235fb16ac42a07a8a29932ca",
+      "taskId": "tk_b1405a089666b6b0e130500ff265bae6",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
       "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_b1405a089666b6b0e130500ff265bae6",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_b1405a089666b6b0e130500ff265bae6_0",
+      "taskId": "tk_b1405a089666b6b0e130500ff265bae6",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "diaper",
+       "diaper": "dirty",
+       "occurredAt": "2026-10-15T06:00:00.000Z"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_b1405a089666b6b0e130500ff265bae6"
+      ],
+      "recordId": "r_e879608f55b0760ac8b69ec3fd964f3f",
+      "recordLink": "/care/records/b_00000000000000000001/r_e879608f55b0760ac8b69ec3fd964f3f",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "changed a dirty diaper at 1pm"
+       }
+      ],
+      "taskId": "tk_b1405a089666b6b0e130500ff265bae6",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_b1405a089666b6b0e130500ff265bae6_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_b1405a089666b6b0e130500ff265bae6",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_b1405a089666b6b0e130500ff265bae6_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_e879608f55b0760ac8b69ec3fd964f3f",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_b1405a089666b6b0e130500ff265bae6",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
      }
     ],
     "events": []

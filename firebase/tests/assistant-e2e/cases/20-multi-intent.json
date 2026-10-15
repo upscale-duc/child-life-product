@@ -464,6 +464,237 @@
         "credits": 1
       },
       "group": "multi"
+    },
+    {
+      "id": "mi-11-own-period-per-time",
+      "group": "multi",
+      "anchor": "21:30",
+      "title": "LUMI-03: \"6h 90ml, 9h tối 120ml\" — \"tối\" belongs to 9h only: 06:00 and 21:00, no question",
+      "turns": [
+        {
+          "say": "hôm nay bé bú 6h 90ml, 9h tối 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "06:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "6h"
+                }
+              },
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "21:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "9h tối"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "bottle"],
+        "asks": [],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 06:00",
+          "1.occurredAt": "D0 21:00"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "mi-12-two-open-times",
+      "group": "multi",
+      "anchor": "21:30",
+      "title": "LUMI-03: two times open in the evening → one question naming them; the answer moves only those",
+      "turns": [
+        {
+          "say": "bé bú 8h 90ml, 9h 120ml",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "08:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "8h"
+                }
+              },
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 120,
+                  "time": "09:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "120ml",
+                  "time": "9h"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "field": "time.ampm",
+              "choice": "pm"
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "bottle"],
+        "asks": ["time.ampm"],
+        "ready": true,
+        "values": {
+          "0.occurredAt": "D0 20:00",
+          "1.occurredAt": "D0 21:00"
+        },
+        "credits": 1
+      }
+    },
+    {
+      "id": "mi-13-meal-named",
+      "group": "multi",
+      "title": "LUMI-13: a meal (no module) next to a bottle feed: the bottle is drafted, the meal is named",
+      "turns": [
+        {
+          "say": "bé ăn cháo rồi bú 90ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "meal",
+                "f": {
+                  "title": "cháo"
+                },
+                "ev": {
+                  "title": "cháo"
+                }
+              },
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "credits": 1
+      }
+    },
+    {
+      "id": "mi-14-diaper-and-bottle-live",
+      "group": "multi",
+      "title": "LUMI-01 live: only the bottle came back for \"thay tã rồi cho bú 90ml lúc 13h\" → the diaper is drafted from the words",
+      "turns": [
+        {
+          "say": "thay tã rồi cho bú 90ml lúc 13h",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": [
+          ["bottle", "diaper"],
+          ["diaper", "bottle"]
+        ],
+        "credits": 1
+      }
+    },
+    {
+      "id": "mi-15-english-span-evidence",
+      "group": "multi",
+      "locale": "en",
+      "title": "Live reply: one evidence \"9 to 10am\" for both ends → 09:00–10:00, nothing to review",
+      "turns": [
+        {
+          "say": "fed 4oz at 7am and napped 9 to 10am",
+          "model": {
+            "i": [
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 118,
+                  "time": "07:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "4oz",
+                  "time": "7am"
+                }
+              },
+              {
+                "k": "sleep",
+                "f": {
+                  "time": "09:00",
+                  "dayOffset": 0,
+                  "endTime": "10:00",
+                  "endDayOffset": 0
+                },
+                "ev": {
+                  "time": "9 to 10am",
+                  "endTime": "9 to 10am"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle", "sleep"],
+        "ready": true,
+        "values": {
+          "1.startedAt": "D0 09:00",
+          "1.endedAt": "D0 10:00"
+        },
+        "credits": 1
+      }
     }
   ]
 }

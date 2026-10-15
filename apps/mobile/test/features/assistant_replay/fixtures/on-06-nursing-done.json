@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_5931902546ca0db7b8451849ddb924d5",
+     "id": "tk_77f60126086834425507a26a97f50800",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_5931902546ca0db7b8451849ddb924d5_0",
-      "taskId": "tk_5931902546ca0db7b8451849ddb924d5",
+      "id": "dr_77f60126086834425507a26a97f50800_0",
+      "taskId": "tk_77f60126086834425507a26a97f50800",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -62,7 +62,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_5931902546ca0db7b8451849ddb924d5"
+       "task:tk_77f60126086834425507a26a97f50800"
       ],
       "recordId": null,
       "recordLink": null,
@@ -84,7 +84,7 @@
         "text": "bú xong rồi"
        }
       ],
-      "taskId": "tk_5931902546ca0db7b8451849ddb924d5",
+      "taskId": "tk_77f60126086834425507a26a97f50800",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -103,11 +103,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_5931902546ca0db7b8451849ddb924d5_0",
+        "draftId": "dr_77f60126086834425507a26a97f50800_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_5931902546ca0db7b8451849ddb924d5",
+      "taskId": "tk_77f60126086834425507a26a97f50800",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -122,7 +122,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_5931902546ca0db7b8451849ddb924d5",
+     "id": "tk_77f60126086834425507a26a97f50800",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -153,8 +153,8 @@
     },
     "drafts": [
      {
-      "id": "dr_5931902546ca0db7b8451849ddb924d5_0",
-      "taskId": "tk_5931902546ca0db7b8451849ddb924d5",
+      "id": "dr_77f60126086834425507a26a97f50800_0",
+      "taskId": "tk_77f60126086834425507a26a97f50800",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -175,7 +175,7 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_5931902546ca0db7b8451849ddb924d5"
+       "task:tk_77f60126086834425507a26a97f50800"
       ],
       "recordId": "r_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
       "recordLink": "/care/records/b_00000000000000000001/r_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -202,7 +202,7 @@
         "text": "bú xong rồi"
        }
       ],
-      "taskId": "tk_5931902546ca0db7b8451849ddb924d5",
+      "taskId": "tk_77f60126086834425507a26a97f50800",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -221,11 +221,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_5931902546ca0db7b8451849ddb924d5_0",
+        "draftId": "dr_77f60126086834425507a26a97f50800_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_5931902546ca0db7b8451849ddb924d5",
+      "taskId": "tk_77f60126086834425507a26a97f50800",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -241,7 +241,7 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_5931902546ca0db7b8451849ddb924d5_0",
+          "draftId": "dr_77f60126086834425507a26a97f50800_0",
           "status": "saved",
           "recordLink": "/care/records/b_00000000000000000001/r_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
           "errorCode": null
@@ -249,7 +249,7 @@
         ]
        }
       ],
-      "taskId": "tk_5931902546ca0db7b8451849ddb924d5",
+      "taskId": "tk_77f60126086834425507a26a97f50800",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

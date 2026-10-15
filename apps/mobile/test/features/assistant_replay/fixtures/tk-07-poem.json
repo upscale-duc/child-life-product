@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_490fa91c74c9197d010b36002f0afc7c",
+     "id": "tk_8731d38108cca9f172ec2e5808f1b8c9",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -51,7 +51,7 @@
         "text": "viết cho mình bài thơ về mùa thu"
        }
       ],
-      "taskId": "tk_490fa91c74c9197d010b36002f0afc7c",
+      "taskId": "tk_8731d38108cca9f172ec2e5808f1b8c9",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -74,7 +74,7 @@
         "code": "HELP"
        }
       ],
-      "taskId": "tk_490fa91c74c9197d010b36002f0afc7c",
+      "taskId": "tk_8731d38108cca9f172ec2e5808f1b8c9",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],

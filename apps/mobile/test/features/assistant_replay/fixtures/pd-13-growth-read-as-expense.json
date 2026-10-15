@@ -1,0 +1,282 @@
+{
+ "id": "pd-13-growth-read-as-expense",
+ "group": "care.types",
+ "device": null,
+ "serverViolations": [],
+ "steps": [
+  {
+   "label": "turn 1 · after start",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_a9a22dd572e581f74701ea6bef405b15",
+     "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": {
+      "reason": "spending",
+      "from": "shared_thread",
+      "at": "worker"
+     }
+    },
+    "drafts": [
+     {
+      "id": "dr_a9a22dd572e581f74701ea6bef405b15_0",
+      "taskId": "tk_a9a22dd572e581f74701ea6bef405b15",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "growth",
+       "weightKg": 5.8,
+       "lengthCm": null,
+       "measuredOn": "2026-10-14"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "draft",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_a9a22dd572e581f74701ea6bef405b15"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "hôm qua đi khám bé nặng 5kg8"
+       }
+      ],
+      "taskId": "tk_a9a22dd572e581f74701ea6bef405b15",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_a9a22dd572e581f74701ea6bef405b15_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_a9a22dd572e581f74701ea6bef405b15",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after save",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_a9a22dd572e581f74701ea6bef405b15",
+     "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:20.000Z",
+     "visibility": "private",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": {
+      "reason": "spending",
+      "from": "shared_thread",
+      "at": "worker"
+     }
+    },
+    "drafts": [
+     {
+      "id": "dr_a9a22dd572e581f74701ea6bef405b15_0",
+      "taskId": "tk_a9a22dd572e581f74701ea6bef405b15",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "growth",
+       "weightKg": 5.8,
+       "lengthCm": null,
+       "measuredOn": "2026-10-14"
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 1,
+      "state": "saved",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_a9a22dd572e581f74701ea6bef405b15"
+      ],
+      "recordId": "r_8cc22732673ef5f85049313ca91cee01",
+      "recordLink": "/care/records/b_00000000000000000001/r_8cc22732673ef5f85049313ca91cee01",
+      "errorCode": null,
+      "warnings": [],
+      "problems": [],
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "hôm qua đi khám bé nặng 5kg8"
+       }
+      ],
+      "taskId": "tk_a9a22dd572e581f74701ea6bef405b15",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "Tin này có chi tiêu nên chỉ bạn xem được: mình để trong cuộc trò chuyện riêng của bạn, không hiện trong cuộc trò chuyện chung của bé.",
+        "code": "SPENDING_PRIVATE"
+       },
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_a9a22dd572e581f74701ea6bef405b15_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_a9a22dd572e581f74701ea6bef405b15",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     },
+     {
+      "id": "00000003",
+      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "action_result",
+        "schemaVersion": 1,
+        "items": [
+         {
+          "draftId": "dr_a9a22dd572e581f74701ea6bef405b15_0",
+          "status": "saved",
+          "recordLink": "/care/records/b_00000000000000000001/r_8cc22732673ef5f85049313ca91cee01",
+          "errorCode": null
+         }
+        ]
+       }
+      ],
+      "taskId": "tk_a9a22dd572e581f74701ea6bef405b15",
+      "sequence": 3,
+      "createdAt": "2026-10-15T07:20:20.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     }
+    ],
+    "events": []
+   }
+  }
+ ]
+}

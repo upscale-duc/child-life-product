@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_6a67f6c4a0ed645bbab1125e3505871d",
+     "id": "tk_80af3230e336c55b446c53480e9a9ff3",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_6a67f6c4a0ed645bbab1125e3505871d_0",
-      "taskId": "tk_6a67f6c4a0ed645bbab1125e3505871d",
+      "id": "dr_80af3230e336c55b446c53480e9a9ff3_0",
+      "taskId": "tk_80af3230e336c55b446c53480e9a9ff3",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -70,7 +70,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_6a67f6c4a0ed645bbab1125e3505871d"
+       "task:tk_80af3230e336c55b446c53480e9a9ff3"
       ],
       "recordId": null,
       "recordLink": null,
@@ -92,7 +92,7 @@
         "text": "đóng tiền học bơi 1tr2"
        }
       ],
-      "taskId": "tk_6a67f6c4a0ed645bbab1125e3505871d",
+      "taskId": "tk_80af3230e336c55b446c53480e9a9ff3",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -117,11 +117,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_6a67f6c4a0ed645bbab1125e3505871d_0",
+        "draftId": "dr_80af3230e336c55b446c53480e9a9ff3_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_6a67f6c4a0ed645bbab1125e3505871d",
+      "taskId": "tk_80af3230e336c55b446c53480e9a9ff3",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_6a67f6c4a0ed645bbab1125e3505871d",
+     "id": "tk_80af3230e336c55b446c53480e9a9ff3",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -171,8 +171,8 @@
     },
     "drafts": [
      {
-      "id": "dr_6a67f6c4a0ed645bbab1125e3505871d_0",
-      "taskId": "tk_6a67f6c4a0ed645bbab1125e3505871d",
+      "id": "dr_80af3230e336c55b446c53480e9a9ff3_0",
+      "taskId": "tk_80af3230e336c55b446c53480e9a9ff3",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -197,10 +197,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_6a67f6c4a0ed645bbab1125e3505871d"
+       "task:tk_80af3230e336c55b446c53480e9a9ff3"
       ],
-      "recordId": "x_8fb27c55bda39f8d6e56315dccea2292",
-      "recordLink": "/utilities/spending/expense/x_8fb27c55bda39f8d6e56315dccea2292?babyId=b_00000000000000000001",
+      "recordId": "x_c57dda941fed778aace806ef76c0348e",
+      "recordLink": "/utilities/spending/expense/x_c57dda941fed778aace806ef76c0348e?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -224,7 +224,7 @@
         "text": "đóng tiền học bơi 1tr2"
        }
       ],
-      "taskId": "tk_6a67f6c4a0ed645bbab1125e3505871d",
+      "taskId": "tk_80af3230e336c55b446c53480e9a9ff3",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -249,11 +249,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_6a67f6c4a0ed645bbab1125e3505871d_0",
+        "draftId": "dr_80af3230e336c55b446c53480e9a9ff3_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_6a67f6c4a0ed645bbab1125e3505871d",
+      "taskId": "tk_80af3230e336c55b446c53480e9a9ff3",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -269,15 +269,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_6a67f6c4a0ed645bbab1125e3505871d_0",
+          "draftId": "dr_80af3230e336c55b446c53480e9a9ff3_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_8fb27c55bda39f8d6e56315dccea2292?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_c57dda941fed778aace806ef76c0348e?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_6a67f6c4a0ed645bbab1125e3505871d",
+      "taskId": "tk_80af3230e336c55b446c53480e9a9ff3",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

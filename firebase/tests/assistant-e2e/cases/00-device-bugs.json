@@ -1,6 +1,6 @@
 {
   "group": "device",
-  "note": "Bugs the owner found on a device (2026-10-15/16). Every device bug becomes a case here first; the model replies are what the deployed model returned.",
+  "note": "Bugs the owner found on a device (2026-10-15/16). Every device bug becomes a case here first; the model replies are what the deployed model returned. LUMI-05 cases (dev-05*) replay a message from an app build of before 2026-10-16 (no clientDraftKinds): it must never receive a draft it cannot show.",
   "cases": [
     {
       "id": "dev-01-con-dang-ngu",
@@ -147,7 +147,7 @@
           "model": {
             "i": [
               {
-                "k": "diaper|meal",
+                "k": "meal",
                 "f": {
                   "title": "thay tã ướt"
                 },
@@ -169,6 +169,12 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["diaper"],
+        "asks": ["time.missing"],
+        "ready": true,
+        "values": {
+          "0.diaper": "wet",
+          "0.occurredAt": "D0 14:20"
+        },
         "credits": 1
       },
       "group": "device"
@@ -182,7 +188,7 @@
           "model": {
             "i": [
               {
-                "k": "pump|meal",
+                "k": "meal",
                 "f": {
                   "amountMl": 120,
                   "title": "hút sữa"
@@ -206,6 +212,12 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["pump"],
+        "asks": ["time.missing"],
+        "ready": true,
+        "values": {
+          "0.amountMl": 120,
+          "0.occurredAt": "D0 14:20"
+        },
         "credits": 1
       },
       "group": "device"
@@ -219,7 +231,7 @@
           "model": {
             "i": [
               {
-                "k": "growth|meal",
+                "k": "meal",
                 "f": {
                   "title": "bé nặng 5,2kg"
                 },
@@ -234,6 +246,11 @@
       "expect": {
         "outcome": "drafts",
         "kinds": ["growth"],
+        "ready": true,
+        "values": {
+          "0.weightKg": 5.2,
+          "0.measuredOn": "D0"
+        },
         "credits": 1
       },
       "group": "device"
@@ -277,6 +294,143 @@
         },
         "credits": 1,
         "codes": ["SPENDING_PRIVATE"]
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-02c-dang-cho-bu-side-guess",
+      "device": "DEV-2",
+      "title": "LUMI-07 live: the model guesses side \"both\" (uncertain) for \"đang cho bú\" → a timer start with the form's side, ready (never a flagged side with no row)",
+      "turns": [
+        {
+          "say": "đang cho bú",
+          "model": {
+            "i": [
+              {
+                "k": "breast",
+                "f": {
+                  "phase": "start",
+                  "side": "both"
+                },
+                "ev": {
+                  "phase": "đang cho bú"
+                },
+                "unc": ["side"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["timer"],
+        "ready": true,
+        "credits": 1
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-05a-legacy-app-sleep-timer",
+      "device": "LUMI-05",
+      "title": "An app from before timers sends \"Con đang ngủ\": no timer draft it cannot show; a notice with the timer's link, free",
+      "turns": [
+        {
+          "say": "Con đang ngủ",
+          "client": "legacy",
+          "model": {
+            "i": [
+              {
+                "k": "sleep",
+                "f": {
+                  "phase": "start"
+                },
+                "ev": {
+                  "phase": "đang ngủ"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "notice",
+        "kinds": [],
+        "codes": ["APP_UPDATE_NEEDED"],
+        "credits": 0
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-05b-legacy-app-diaper",
+      "device": "LUMI-05",
+      "title": "An old app sends \"thay tã ướt lúc 13h\": no diaper draft it cannot show; a notice, free",
+      "turns": [
+        {
+          "say": "thay tã ướt lúc 13h",
+          "client": "legacy",
+          "model": {
+            "i": [
+              {
+                "k": "diaper",
+                "f": {
+                  "diaper": "wet",
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "diaper": "ướt",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "notice",
+        "kinds": [],
+        "codes": ["APP_UPDATE_NEEDED"],
+        "credits": 0
+      },
+      "group": "device"
+    },
+    {
+      "id": "dev-05c-legacy-app-mixed",
+      "device": "LUMI-05",
+      "title": "An old app sends a diaper and a bottle: the bottle is drafted, the diaper is named with where to add it",
+      "turns": [
+        {
+          "say": "thay tã rồi cho bú 90ml lúc 13h",
+          "client": "legacy",
+          "model": {
+            "i": [
+              {
+                "k": "diaper",
+                "f": {},
+                "ev": {}
+              },
+              {
+                "k": "bottle",
+                "f": {
+                  "amountMl": 90,
+                  "time": "13:00",
+                  "dayOffset": 0
+                },
+                "ev": {
+                  "amountMl": "90ml",
+                  "time": "13h"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["bottle"],
+        "ready": true,
+        "codes": ["APP_UPDATE_NEEDED"],
+        "credits": 1
       },
       "group": "device"
     }

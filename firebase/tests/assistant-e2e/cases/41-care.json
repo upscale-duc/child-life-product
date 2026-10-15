@@ -261,6 +261,36 @@
         "outcome": ["care", "fallback"]
       },
       "group": "care"
+    },
+    {
+      "id": "ca-07-sleep-concern-read-as-observation",
+      "group": "care",
+      "title": "LUMI-10 live: \"dạo này bé khó ngủ về đêm\" read as an observation (when flagged) → care guidance, not an observation draft",
+      "turns": [
+        {
+          "say": "dạo này bé khó ngủ về đêm",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": {
+                  "observation": "sleep",
+                  "when": "night"
+                },
+                "ev": {
+                  "observation": "khó ngủ",
+                  "when": "về đêm"
+                },
+                "unc": ["when"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": ["care", "fallback"],
+        "kinds": []
+      }
     }
   ]
 }

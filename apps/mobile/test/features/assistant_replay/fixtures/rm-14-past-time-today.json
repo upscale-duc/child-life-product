@@ -2,16 +2,14 @@
  "id": "rm-14-past-time-today",
  "group": "reminder",
  "device": null,
- "serverViolations": [
-  "SAVE_REFUSED_READY"
- ],
+ "serverViolations": [],
  "steps": [
   {
    "label": "turn 1 · after start",
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_d71e419506f59aa1070ef39476b94fb7",
+     "id": "tk_4296496bc63a3d0ea20cb62a758f610c",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -42,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_d71e419506f59aa1070ef39476b94fb7_0",
-      "taskId": "tk_d71e419506f59aa1070ef39476b94fb7",
+      "id": "dr_4296496bc63a3d0ea20cb62a758f610c_0",
+      "taskId": "tk_4296496bc63a3d0ea20cb62a758f610c",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -57,12 +55,127 @@
        "assigneeUid": null
       },
       "missingFields": [],
-      "uncertainFields": [],
+      "uncertainFields": [
+       "time"
+      ],
       "revision": 1,
+      "state": "needs_review",
+      "expiresAt": "2026-10-16T07:20:00.000Z",
+      "sourceRefs": [
+       "task:tk_4296496bc63a3d0ea20cb62a758f610c"
+      ],
+      "recordId": null,
+      "recordLink": null,
+      "errorCode": null,
+      "warnings": [],
+      "problems": [
+       "PAST_TIME"
+      ],
+      "confirmedBy": null
+     }
+    ],
+    "messages": [
+     {
+      "id": "00000001",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "user",
+      "parts": [
+       {
+        "type": "text",
+        "schemaVersion": 1,
+        "text": "nhắc 10h sáng nay gọi bác sĩ"
+       }
+      ],
+      "taskId": "tk_4296496bc63a3d0ea20cb62a758f610c",
+      "sequence": 1,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
+     },
+     {
+      "id": "00000002",
+      "conversationId": "cv_b_00000000000000000001",
+      "role": "assistant",
+      "parts": [
+       {
+        "type": "draft_reference",
+        "schemaVersion": 1,
+        "draftId": "dr_4296496bc63a3d0ea20cb62a758f610c_0",
+        "revision": 1
+       }
+      ],
+      "taskId": "tk_4296496bc63a3d0ea20cb62a758f610c",
+      "sequence": 2,
+      "createdAt": "2026-10-15T07:20:00.000Z",
+      "attachmentIds": [],
+      "author": null
+     }
+    ],
+    "events": []
+   }
+  },
+  {
+   "label": "probe · after fix",
+   "as": "MOM",
+   "snapshot": {
+    "task": {
+     "id": "tk_4296496bc63a3d0ea20cb62a758f610c",
+     "conversationId": "cv_b_00000000000000000001",
+     "scope": {
+      "type": "child",
+      "babyId": "b_00000000000000000001"
+     },
+     "state": "ready",
+     "version": 3,
+     "modality": "text",
+     "credits": 1,
+     "plan": "free",
+     "usage": "committed",
+     "errorCode": null,
+     "round": 0,
+     "clarification": null,
+     "clarificationExpiresAt": null,
+     "anchorInstant": "2026-10-15T07:20:00.000Z",
+     "timezone": "Asia/Ho_Chi_Minh",
+     "createdAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "visibility": "shared",
+     "author": {
+      "uid": "u_mai",
+      "name": "Mai",
+      "relation": "mother",
+      "relationCustom": null
+     },
+     "routing": null
+    },
+    "drafts": [
+     {
+      "id": "dr_4296496bc63a3d0ea20cb62a758f610c_0",
+      "taskId": "tk_4296496bc63a3d0ea20cb62a758f610c",
+      "itemIndex": 0,
+      "scope": {
+       "type": "child",
+       "babyId": "b_00000000000000000001"
+      },
+      "payload": {
+       "kind": "reminder",
+       "title": "gọi bác sĩ",
+       "date": "2026-10-16",
+       "time": "10:00",
+       "assigneeUid": null
+      },
+      "missingFields": [],
+      "uncertainFields": [],
+      "revision": 2,
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_d71e419506f59aa1070ef39476b94fb7"
+       "task:tk_4296496bc63a3d0ea20cb62a758f610c"
       ],
       "recordId": null,
       "recordLink": null,
@@ -84,7 +197,7 @@
         "text": "nhắc 10h sáng nay gọi bác sĩ"
        }
       ],
-      "taskId": "tk_d71e419506f59aa1070ef39476b94fb7",
+      "taskId": "tk_4296496bc63a3d0ea20cb62a758f610c",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -103,11 +216,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_d71e419506f59aa1070ef39476b94fb7_0",
+        "draftId": "dr_4296496bc63a3d0ea20cb62a758f610c_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_d71e419506f59aa1070ef39476b94fb7",
+      "taskId": "tk_4296496bc63a3d0ea20cb62a758f610c",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -122,7 +235,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_d71e419506f59aa1070ef39476b94fb7",
+     "id": "tk_4296496bc63a3d0ea20cb62a758f610c",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -141,7 +254,7 @@
      "anchorInstant": "2026-10-15T07:20:00.000Z",
      "timezone": "Asia/Ho_Chi_Minh",
      "createdAt": "2026-10-15T07:20:00.000Z",
-     "updatedAt": "2026-10-15T07:20:00.000Z",
+     "updatedAt": "2026-10-15T07:20:40.000Z",
      "visibility": "shared",
      "author": {
       "uid": "u_mai",
@@ -153,8 +266,8 @@
     },
     "drafts": [
      {
-      "id": "dr_d71e419506f59aa1070ef39476b94fb7_0",
-      "taskId": "tk_d71e419506f59aa1070ef39476b94fb7",
+      "id": "dr_4296496bc63a3d0ea20cb62a758f610c_0",
+      "taskId": "tk_4296496bc63a3d0ea20cb62a758f610c",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -163,24 +276,29 @@
       "payload": {
        "kind": "reminder",
        "title": "gọi bác sĩ",
-       "date": "2026-10-15",
+       "date": "2026-10-16",
        "time": "10:00",
        "assigneeUid": null
       },
       "missingFields": [],
       "uncertainFields": [],
-      "revision": 1,
-      "state": "draft",
+      "revision": 2,
+      "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_d71e419506f59aa1070ef39476b94fb7"
+       "task:tk_4296496bc63a3d0ea20cb62a758f610c"
       ],
-      "recordId": null,
-      "recordLink": null,
+      "recordId": "rm_fa02c55bf5686d83bd451ac4de32c856",
+      "recordLink": "/care/reminders/rm_fa02c55bf5686d83bd451ac4de32c856?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
-      "confirmedBy": null
+      "confirmedBy": {
+       "uid": "u_mai",
+       "name": "Mai",
+       "relation": "mother",
+       "relationCustom": null
+      }
      }
     ],
     "messages": [
@@ -195,7 +313,7 @@
         "text": "nhắc 10h sáng nay gọi bác sĩ"
        }
       ],
-      "taskId": "tk_d71e419506f59aa1070ef39476b94fb7",
+      "taskId": "tk_4296496bc63a3d0ea20cb62a758f610c",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -214,11 +332,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_d71e419506f59aa1070ef39476b94fb7_0",
+        "draftId": "dr_4296496bc63a3d0ea20cb62a758f610c_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_d71e419506f59aa1070ef39476b94fb7",
+      "taskId": "tk_4296496bc63a3d0ea20cb62a758f610c",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -234,17 +352,17 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_d71e419506f59aa1070ef39476b94fb7_0",
-          "status": "failed",
-          "recordLink": null,
-          "errorCode": "VALIDATION_FAILED"
+          "draftId": "dr_4296496bc63a3d0ea20cb62a758f610c_0",
+          "status": "saved",
+          "recordLink": "/care/reminders/rm_fa02c55bf5686d83bd451ac4de32c856?babyId=b_00000000000000000001",
+          "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_d71e419506f59aa1070ef39476b94fb7",
+      "taskId": "tk_4296496bc63a3d0ea20cb62a758f610c",
       "sequence": 3,
-      "createdAt": "2026-10-15T07:20:20.000Z",
+      "createdAt": "2026-10-15T07:20:40.000Z",
       "attachmentIds": [],
       "author": {
        "uid": "u_mai",

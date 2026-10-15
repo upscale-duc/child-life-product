@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+     "id": "tk_f8ad7650849acdcf503819e8d2525193",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -96,7 +96,7 @@
         "text": "nhắc bố mai đi lấy kết quả"
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -163,7 +163,7 @@
         }
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -178,7 +178,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+     "id": "tk_f8ad7650849acdcf503819e8d2525193",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -209,8 +209,8 @@
     },
     "drafts": [
      {
-      "id": "dr_e7205f1d77f7af7869be9c97b223b3b9_0",
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "id": "dr_f8ad7650849acdcf503819e8d2525193_0",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -229,7 +229,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_e7205f1d77f7af7869be9c97b223b3b9"
+       "task:tk_f8ad7650849acdcf503819e8d2525193"
       ],
       "recordId": null,
       "recordLink": null,
@@ -251,7 +251,7 @@
         "text": "nhắc bố mai đi lấy kết quả"
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -318,7 +318,7 @@
         }
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -335,7 +335,7 @@
         "text": "Minh"
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -354,11 +354,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_e7205f1d77f7af7869be9c97b223b3b9_0",
+        "draftId": "dr_f8ad7650849acdcf503819e8d2525193_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -373,7 +373,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+     "id": "tk_f8ad7650849acdcf503819e8d2525193",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -404,8 +404,8 @@
     },
     "drafts": [
      {
-      "id": "dr_e7205f1d77f7af7869be9c97b223b3b9_0",
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "id": "dr_f8ad7650849acdcf503819e8d2525193_0",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -424,10 +424,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_e7205f1d77f7af7869be9c97b223b3b9"
+       "task:tk_f8ad7650849acdcf503819e8d2525193"
       ],
-      "recordId": "rm_deb6600147a15b2225065205de379c84",
-      "recordLink": "/care/reminders/rm_deb6600147a15b2225065205de379c84?babyId=b_00000000000000000001",
+      "recordId": "rm_ba4b54f0640dae538dcd9e03688f463d",
+      "recordLink": "/care/reminders/rm_ba4b54f0640dae538dcd9e03688f463d?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -451,7 +451,7 @@
         "text": "nhắc bố mai đi lấy kết quả"
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -518,7 +518,7 @@
         }
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -535,7 +535,7 @@
         "text": "Minh"
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -554,11 +554,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_e7205f1d77f7af7869be9c97b223b3b9_0",
+        "draftId": "dr_f8ad7650849acdcf503819e8d2525193_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -574,15 +574,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_e7205f1d77f7af7869be9c97b223b3b9_0",
+          "draftId": "dr_f8ad7650849acdcf503819e8d2525193_0",
           "status": "saved",
-          "recordLink": "/care/reminders/rm_deb6600147a15b2225065205de379c84?babyId=b_00000000000000000001",
+          "recordLink": "/care/reminders/rm_ba4b54f0640dae538dcd9e03688f463d?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_e7205f1d77f7af7869be9c97b223b3b9",
+      "taskId": "tk_f8ad7650849acdcf503819e8d2525193",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:35.000Z",
       "attachmentIds": [],

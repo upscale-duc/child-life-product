@@ -3,6 +3,7 @@ import {
   assistantConsentVersion,
   defaultEntitlementsConfig,
   defaultFlags,
+  draftKinds,
   type AssistantPart,
   type AssistantTaskSnapshot,
 } from '@child-life/contracts';
@@ -95,10 +96,12 @@ const extraction = (intents: unknown[] = []) => ({
   outOfScope: false,
 });
 
+// LUMI-05: the current app declares the draft kinds it can show.
 const E = (over: Record<string, unknown> = {}) => ({
   contractVersion: 1,
   clientRequestId: randomUUID(),
   locale: 'vi',
+  clientDraftKinds: [...draftKinds],
   ...over,
 });
 const deps = (gateway: ModelGateway | null = fakeModelGateway({}), at = NIGHT): AssistantDeps => ({
@@ -573,7 +576,8 @@ describe('review fields and repeated messages', () => {
   });
 
   it('an observation the model said was missing "time" is complete; "when" is optional', async () => {
-    const r = await run('dạo này con khó ngủ', [
+    // A note about one night (LUMI-10: "dạo này con khó ngủ" is a care question instead).
+    const r = await run('đêm qua con khó ngủ hơn mọi khi', [
       extraction([
         intent('observation', { observation: 'sleep', note: 'khó ngủ' }, [], {
           missingFields: ['time', 'when', 'date'],
@@ -588,6 +592,22 @@ describe('review fields and repeated messages', () => {
     });
     const s = await confirm(r.taskId, r.snap.drafts[0]!.id);
     expect(s.data.items[0]!.status).toBe('saved');
+  });
+
+  it('LUMI-10: "dạo này con khó ngủ" read as an observation is a sleep concern (care), never a draft', async () => {
+    const r = await run('dạo này con khó ngủ', [
+      extraction([
+        intent('observation', { observation: 'sleep', note: 'khó ngủ' }, [], {
+          missingFields: ['time', 'when', 'date'],
+        }),
+      ]),
+    ]);
+    expect(r.snap.drafts).toHaveLength(0);
+    // Care guidance (or its honest "paused here" when care is off in this world).
+    expect(
+      r.snap.task.care?.topic === 'sleep_concern' ||
+        ['FEATURE_DISABLED', 'REGION_UNSUPPORTED'].includes(r.snap.task.errorCode ?? ''),
+    ).toBe(true);
   });
 
   it('the second report: "Con đã bú mẹ được 20p" + "Vừa xong" is complete (time filled, side defaulted)', async () => {
@@ -648,5 +668,48 @@ describe('review fields and repeated messages', () => {
     ]);
     expect(r.snap.task.clarification?.field).toBe('time.start');
     expect(r.snap.drafts).toHaveLength(0);
+  });
+});
+
+describe('LUMI-05: an app build from before timers (no clientDraftKinds)', () => {
+  it('"Con đang ngủ": no timer draft it cannot show; a notice with the timer link; 0 credits', async () => {
+    const gw = fakeModelGateway({ extract: [extraction([])], word: [] });
+    const old = (over: Record<string, unknown>) => {
+      const { clientDraftKinds: _k, ...rest } = E(over);
+      void _k;
+      return rest;
+    };
+    const q = await quoteTask(
+      deps(gw),
+      MOM,
+      old({
+        conversationId: SHARED,
+        scope: SCOPE,
+        modality: 'text',
+        attachmentCount: 0,
+        intentHint: null,
+      }),
+    );
+    const r = await startTask(
+      deps(gw),
+      MOM,
+      old({
+        conversationId: SHARED,
+        scope: SCOPE,
+        quoteId: q.data.quoteId,
+        text: 'Con đang ngủ',
+        attachmentIds: [],
+      }),
+    );
+    await work(r.taskId!, gw, NIGHT);
+    const snap = await snapshot(r.taskId!);
+    expect(snap.drafts).toHaveLength(0);
+    expect(codes(snap)).toContain('APP_UPDATE_NEEDED');
+    const notice = snap.messages
+      .flatMap((m) => m.parts)
+      .find((p) => p.type === 'text' && p.code === 'APP_UPDATE_NEEDED');
+    expect(notice).toMatchObject({ link: expect.stringContaining('/care/timer/sleep') });
+    expect(snap.task).toMatchObject({ state: 'ready', usage: 'released' });
+    expect((await timer('sleep')).exists).toBe(false);
   });
 });

@@ -144,6 +144,65 @@
         "outcome": ["drafts", "care", "awaiting"]
       },
       "group": "care.observation"
+    },
+    {
+      "id": "ob-06-eats-less-read-as-sleep",
+      "group": "care.observation",
+      "title": "LUMI-12 live: \"mấy hôm nay bé biếng ăn\" read as a sleep concern → a feeding observation, never a sleep question",
+      "turns": [
+        {
+          "say": "mấy hôm nay bé biếng ăn",
+          "model": {
+            "care": {
+              "topic": "sleep_concern",
+              "sleep": null,
+              "evidence": []
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["observation"],
+        "asks": [],
+        "ready": true,
+        "credits": 1
+      }
+    },
+    {
+      "id": "ob-07-day-doubt-live",
+      "group": "care.observation",
+      "title": "Live reply: the model doubts the day of \"mấy hôm nay bé biếng ăn\" (no day said) → today, nothing to review",
+      "turns": [
+        {
+          "say": "mấy hôm nay bé biếng ăn",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": {
+                  "observation": "feeding",
+                  "dayOffset": 0,
+                  "note": "mấy hôm nay bé biếng ăn"
+                },
+                "ev": {
+                  "note": "mấy hôm nay bé biếng ăn"
+                },
+                "unc": ["time", "dayOffset"]
+              }
+            ]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["observation"],
+        "ready": true,
+        "values": {
+          "0.date": "D0"
+        },
+        "credits": 1
+      }
     }
   ]
 }

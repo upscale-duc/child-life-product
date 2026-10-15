@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_376c4fd7794d76bb46d49452ca4bb0aa",
+     "id": "tk_aedf3af9a428824c88b7c1d8a7ee0422",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_376c4fd7794d76bb46d49452ca4bb0aa_0",
-      "taskId": "tk_376c4fd7794d76bb46d49452ca4bb0aa",
+      "id": "dr_aedf3af9a428824c88b7c1d8a7ee0422_0",
+      "taskId": "tk_aedf3af9a428824c88b7c1d8a7ee0422",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -70,7 +70,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_376c4fd7794d76bb46d49452ca4bb0aa"
+       "task:tk_aedf3af9a428824c88b7c1d8a7ee0422"
       ],
       "recordId": null,
       "recordLink": null,
@@ -92,7 +92,7 @@
         "text": "€15 for baby wipes"
        }
       ],
-      "taskId": "tk_376c4fd7794d76bb46d49452ca4bb0aa",
+      "taskId": "tk_aedf3af9a428824c88b7c1d8a7ee0422",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -117,11 +117,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_376c4fd7794d76bb46d49452ca4bb0aa_0",
+        "draftId": "dr_aedf3af9a428824c88b7c1d8a7ee0422_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_376c4fd7794d76bb46d49452ca4bb0aa",
+      "taskId": "tk_aedf3af9a428824c88b7c1d8a7ee0422",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_376c4fd7794d76bb46d49452ca4bb0aa",
+     "id": "tk_aedf3af9a428824c88b7c1d8a7ee0422",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -171,8 +171,8 @@
     },
     "drafts": [
      {
-      "id": "dr_376c4fd7794d76bb46d49452ca4bb0aa_0",
-      "taskId": "tk_376c4fd7794d76bb46d49452ca4bb0aa",
+      "id": "dr_aedf3af9a428824c88b7c1d8a7ee0422_0",
+      "taskId": "tk_aedf3af9a428824c88b7c1d8a7ee0422",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -197,10 +197,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_376c4fd7794d76bb46d49452ca4bb0aa"
+       "task:tk_aedf3af9a428824c88b7c1d8a7ee0422"
       ],
-      "recordId": "x_ddb11b47328691694cae11ec99b24e4b",
-      "recordLink": "/utilities/spending/expense/x_ddb11b47328691694cae11ec99b24e4b?babyId=b_00000000000000000001",
+      "recordId": "x_4d3d10186e9526de8dfd1905845a2e73",
+      "recordLink": "/utilities/spending/expense/x_4d3d10186e9526de8dfd1905845a2e73?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -224,7 +224,7 @@
         "text": "€15 for baby wipes"
        }
       ],
-      "taskId": "tk_376c4fd7794d76bb46d49452ca4bb0aa",
+      "taskId": "tk_aedf3af9a428824c88b7c1d8a7ee0422",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -249,11 +249,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_376c4fd7794d76bb46d49452ca4bb0aa_0",
+        "draftId": "dr_aedf3af9a428824c88b7c1d8a7ee0422_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_376c4fd7794d76bb46d49452ca4bb0aa",
+      "taskId": "tk_aedf3af9a428824c88b7c1d8a7ee0422",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -269,15 +269,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_376c4fd7794d76bb46d49452ca4bb0aa_0",
+          "draftId": "dr_aedf3af9a428824c88b7c1d8a7ee0422_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_ddb11b47328691694cae11ec99b24e4b?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_4d3d10186e9526de8dfd1905845a2e73?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_376c4fd7794d76bb46d49452ca4bb0aa",
+      "taskId": "tk_aedf3af9a428824c88b7c1d8a7ee0422",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

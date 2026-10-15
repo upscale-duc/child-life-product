@@ -333,8 +333,10 @@ const nowMs = () => Date.now();
 const ago = (min: number) => new Date(nowMs() - min * 60_000).toISOString();
 const author = { displayName: 'Mai', relation: 'mother', relationCustom: null };
 
+let seq = 0;
 function careDoc(payload: DraftPayload, uid = 'mom', source = 'app', who = author) {
-  const draftId = `dr_${'0'.repeat(31)}${payload.kind === 'bottle' ? 1 : payload.kind === 'breast' ? 2 : 3}_0`;
+  const n = ['bottle', 'breast', 'sleep', 'pump', 'diaper', 'growth'].indexOf(payload.kind) + 1;
+  const draftId = `dr_${'0'.repeat(31)}${n}_${seq++}`;
   const care = careRecordFromDraft(payload, new Date());
   if (!care.ok) throw new Error(`invalid fixture: ${care.problems.join(',')}`);
   const recordId = recordIdForDraft(draftId);
@@ -394,6 +396,67 @@ describe('writer documents pass the app’s create rules (P-156)', () => {
     const r = careDoc(bottle, 'mom', 'assistant');
     expect(r.data.source).toBe('assistant');
     await assertFails(setDoc(doc(as('mom'), `babies/b1/records/${r.id}`), r.data));
+  });
+
+  it("LUMI-01: pump, diaper and growth records are the care forms' documents (accepted as the member)", async () => {
+    const zone = 'Asia/Ho_Chi_Minh';
+    const today = localDateIn(zone, new Date());
+    const yesterday = localDateIn(zone, new Date(nowMs() - 86_400_000));
+    const payloads: DraftPayload[] = [
+      { kind: 'pump', amountMl: 120, occurredAt: ago(60), side: 'left', durationMin: 15 },
+      { kind: 'pump', amountMl: 80, occurredAt: ago(30), side: null, durationMin: null },
+      { kind: 'diaper', diaper: 'both', occurredAt: ago(10) },
+      { kind: 'growth', weightKg: 5.24, lengthCm: 61.25, measuredOn: today },
+      { kind: 'growth', weightKg: 6.1, lengthCm: null, measuredOn: yesterday },
+      // A breastfeed with a length ends that many minutes later, like the app's record.
+      { kind: 'breast', occurredAt: ago(40), durationMin: 20, side: 'right' },
+    ];
+    for (const p of payloads) {
+      const r = careDoc(p);
+      await assertSucceeds(setDoc(doc(as('mom'), `babies/b1/records/${r.id}`), r.data));
+    }
+    const pump = careRecordFromDraft(payloads[0]!, new Date());
+    expect(pump).toMatchObject({
+      ok: true,
+      type: 'pump',
+      data: { side: 'left', amountMl: 120, durationMin: 15 },
+    });
+    if (pump.ok) expect(pump.endedAt!.getTime() - pump.occurredAt.getTime()).toBe(15 * 60_000);
+    expect(careRecordFromDraft(payloads[1]!, new Date())).toMatchObject({
+      ok: true,
+      endedAt: null,
+      data: { side: 'both', amountMl: 80, durationMin: null },
+    });
+    expect(careRecordFromDraft(payloads[2]!, new Date())).toMatchObject({
+      ok: true,
+      type: 'diaper',
+      data: { kind: 'both' },
+    });
+    expect(careRecordFromDraft(payloads[3]!, new Date())).toMatchObject({
+      ok: true,
+      type: 'growth',
+      data: { weightKg: 5.2, lengthCm: 61.3, measuredOn: today },
+    });
+    const breast = careRecordFromDraft(payloads[5]!, new Date());
+    if (breast.ok)
+      expect(breast.endedAt!.getTime() - breast.occurredAt.getTime()).toBe(20 * 60_000);
+    // A feed logged right after it ended would end in the future: it started that long ago
+    // (the form's `CareRecord.spanStart`), so the Rules accept it.
+    const late = careRecordFromDraft(
+      { kind: 'pump', amountMl: 90, occurredAt: ago(5), side: 'both', durationMin: 20 },
+      new Date(),
+    );
+    expect(late.ok && late.endedAt!.getTime()).toBeLessThanOrEqual(Date.now() + 1000);
+    // Never saved as a guess: a diaper without its kind, a weight out of range, a future day.
+    expect(
+      careRecordFromDraft({ kind: 'diaper', diaper: null, occurredAt: ago(5) }, new Date()).ok,
+    ).toBe(false);
+    expect(
+      careRecordFromDraft(
+        { kind: 'growth', weightKg: 52, lengthCm: null, measuredOn: today },
+        new Date(),
+      ).ok,
+    ).toBe(false);
   });
 
   it('the writer refuses what the Rules refuse (future time, sleep over 24 h, unknown milk)', () => {

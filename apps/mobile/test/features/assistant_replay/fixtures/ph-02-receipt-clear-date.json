@@ -9,8 +9,8 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_3e8cb9ac13fd97803164a66eef28e7c9",
-     "conversationId": "cv_69e1f355453d82681b948d4707b7d0ba",
+     "id": "tk_43460c5410e7c5b3d5226f4f782bf0a0",
+     "conversationId": "cv_f13c2bf5781e5497cdd7f3d97c7682eb",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_3e8cb9ac13fd97803164a66eef28e7c9_0",
-      "taskId": "tk_3e8cb9ac13fd97803164a66eef28e7c9",
+      "id": "dr_43460c5410e7c5b3d5226f4f782bf0a0_0",
+      "taskId": "tk_43460c5410e7c5b3d5226f4f782bf0a0",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -65,7 +65,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_3e8cb9ac13fd97803164a66eef28e7c9"
+       "task:tk_43460c5410e7c5b3d5226f4f782bf0a0"
       ],
       "recordId": null,
       "recordLink": null,
@@ -78,14 +78,14 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_69e1f355453d82681b948d4707b7d0ba",
+      "conversationId": "cv_f13c2bf5781e5497cdd7f3d97c7682eb",
       "role": "user",
       "parts": [],
-      "taskId": "tk_3e8cb9ac13fd97803164a66eef28e7c9",
+      "taskId": "tk_43460c5410e7c5b3d5226f4f782bf0a0",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [
-       "at_60cfb5fd90cae051eac5b270732d4d31"
+       "at_b74bd2cda8d01ed7ea9bcf6995107196"
       ],
       "author": {
        "uid": "u_mai",
@@ -96,7 +96,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_69e1f355453d82681b948d4707b7d0ba",
+      "conversationId": "cv_f13c2bf5781e5497cdd7f3d97c7682eb",
       "role": "assistant",
       "parts": [
        {
@@ -107,11 +107,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_3e8cb9ac13fd97803164a66eef28e7c9_0",
+        "draftId": "dr_43460c5410e7c5b3d5226f4f782bf0a0_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_3e8cb9ac13fd97803164a66eef28e7c9",
+      "taskId": "tk_43460c5410e7c5b3d5226f4f782bf0a0",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -120,7 +120,7 @@
     ],
     "attachments": [
      {
-      "id": "at_60cfb5fd90cae051eac5b270732d4d31",
+      "id": "at_b74bd2cda8d01ed7ea9bcf6995107196",
       "mime": "image/png",
       "bytes": 30592,
       "retention": "keep_with_record",
@@ -138,8 +138,8 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_3e8cb9ac13fd97803164a66eef28e7c9",
-     "conversationId": "cv_69e1f355453d82681b948d4707b7d0ba",
+     "id": "tk_43460c5410e7c5b3d5226f4f782bf0a0",
+     "conversationId": "cv_f13c2bf5781e5497cdd7f3d97c7682eb",
      "scope": {
       "type": "child",
       "babyId": "b_00000000000000000001"
@@ -169,8 +169,8 @@
     },
     "drafts": [
      {
-      "id": "dr_3e8cb9ac13fd97803164a66eef28e7c9_0",
-      "taskId": "tk_3e8cb9ac13fd97803164a66eef28e7c9",
+      "id": "dr_43460c5410e7c5b3d5226f4f782bf0a0_0",
+      "taskId": "tk_43460c5410e7c5b3d5226f4f782bf0a0",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -194,10 +194,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_3e8cb9ac13fd97803164a66eef28e7c9"
+       "task:tk_43460c5410e7c5b3d5226f4f782bf0a0"
       ],
-      "recordId": "x_fdd58a4cc29f7fe0c657b867fa1656d5",
-      "recordLink": "/utilities/spending/expense/x_fdd58a4cc29f7fe0c657b867fa1656d5?babyId=b_00000000000000000001",
+      "recordId": "x_e8796e9838874dbdf0b3b361c19d9ccd",
+      "recordLink": "/utilities/spending/expense/x_e8796e9838874dbdf0b3b361c19d9ccd?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -212,14 +212,14 @@
     "messages": [
      {
       "id": "00000001",
-      "conversationId": "cv_69e1f355453d82681b948d4707b7d0ba",
+      "conversationId": "cv_f13c2bf5781e5497cdd7f3d97c7682eb",
       "role": "user",
       "parts": [],
-      "taskId": "tk_3e8cb9ac13fd97803164a66eef28e7c9",
+      "taskId": "tk_43460c5410e7c5b3d5226f4f782bf0a0",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [
-       "at_60cfb5fd90cae051eac5b270732d4d31"
+       "at_b74bd2cda8d01ed7ea9bcf6995107196"
       ],
       "author": {
        "uid": "u_mai",
@@ -230,7 +230,7 @@
      },
      {
       "id": "00000002",
-      "conversationId": "cv_69e1f355453d82681b948d4707b7d0ba",
+      "conversationId": "cv_f13c2bf5781e5497cdd7f3d97c7682eb",
       "role": "assistant",
       "parts": [
        {
@@ -241,11 +241,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_3e8cb9ac13fd97803164a66eef28e7c9_0",
+        "draftId": "dr_43460c5410e7c5b3d5226f4f782bf0a0_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_3e8cb9ac13fd97803164a66eef28e7c9",
+      "taskId": "tk_43460c5410e7c5b3d5226f4f782bf0a0",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -253,7 +253,7 @@
      },
      {
       "id": "00000003",
-      "conversationId": "cv_69e1f355453d82681b948d4707b7d0ba",
+      "conversationId": "cv_f13c2bf5781e5497cdd7f3d97c7682eb",
       "role": "assistant",
       "parts": [
        {
@@ -261,15 +261,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_3e8cb9ac13fd97803164a66eef28e7c9_0",
+          "draftId": "dr_43460c5410e7c5b3d5226f4f782bf0a0_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_fdd58a4cc29f7fe0c657b867fa1656d5?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_e8796e9838874dbdf0b3b361c19d9ccd?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_3e8cb9ac13fd97803164a66eef28e7c9",
+      "taskId": "tk_43460c5410e7c5b3d5226f4f782bf0a0",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],
@@ -283,7 +283,7 @@
     ],
     "attachments": [
      {
-      "id": "at_60cfb5fd90cae051eac5b270732d4d31",
+      "id": "at_b74bd2cda8d01ed7ea9bcf6995107196",
       "mime": "image/png",
       "bytes": 30592,
       "retention": "keep_with_record",

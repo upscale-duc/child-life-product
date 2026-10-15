@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_cf92838bd56e1aec571b831b1bbee705",
+     "id": "tk_bdf054f4e50bca5cfbd2a1dd33a85c77",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_cf92838bd56e1aec571b831b1bbee705_0",
-      "taskId": "tk_cf92838bd56e1aec571b831b1bbee705",
+      "id": "dr_bdf054f4e50bca5cfbd2a1dd33a85c77_0",
+      "taskId": "tk_bdf054f4e50bca5cfbd2a1dd33a85c77",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -70,7 +70,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_cf92838bd56e1aec571b831b1bbee705"
+       "task:tk_bdf054f4e50bca5cfbd2a1dd33a85c77"
       ],
       "recordId": null,
       "recordLink": null,
@@ -92,7 +92,7 @@
         "text": "hôm qua mua bỉm 350.000đ ở Con Cưng"
        }
       ],
-      "taskId": "tk_cf92838bd56e1aec571b831b1bbee705",
+      "taskId": "tk_bdf054f4e50bca5cfbd2a1dd33a85c77",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -117,11 +117,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_cf92838bd56e1aec571b831b1bbee705_0",
+        "draftId": "dr_bdf054f4e50bca5cfbd2a1dd33a85c77_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_cf92838bd56e1aec571b831b1bbee705",
+      "taskId": "tk_bdf054f4e50bca5cfbd2a1dd33a85c77",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_cf92838bd56e1aec571b831b1bbee705",
+     "id": "tk_bdf054f4e50bca5cfbd2a1dd33a85c77",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -171,8 +171,8 @@
     },
     "drafts": [
      {
-      "id": "dr_cf92838bd56e1aec571b831b1bbee705_0",
-      "taskId": "tk_cf92838bd56e1aec571b831b1bbee705",
+      "id": "dr_bdf054f4e50bca5cfbd2a1dd33a85c77_0",
+      "taskId": "tk_bdf054f4e50bca5cfbd2a1dd33a85c77",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -197,10 +197,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_cf92838bd56e1aec571b831b1bbee705"
+       "task:tk_bdf054f4e50bca5cfbd2a1dd33a85c77"
       ],
-      "recordId": "x_5b131d690c38062704c69548ec8fc136",
-      "recordLink": "/utilities/spending/expense/x_5b131d690c38062704c69548ec8fc136?babyId=b_00000000000000000001",
+      "recordId": "x_75ca2aeb1b5145f9752a9359cf10f3e7",
+      "recordLink": "/utilities/spending/expense/x_75ca2aeb1b5145f9752a9359cf10f3e7?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -224,7 +224,7 @@
         "text": "hôm qua mua bỉm 350.000đ ở Con Cưng"
        }
       ],
-      "taskId": "tk_cf92838bd56e1aec571b831b1bbee705",
+      "taskId": "tk_bdf054f4e50bca5cfbd2a1dd33a85c77",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -249,11 +249,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_cf92838bd56e1aec571b831b1bbee705_0",
+        "draftId": "dr_bdf054f4e50bca5cfbd2a1dd33a85c77_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_cf92838bd56e1aec571b831b1bbee705",
+      "taskId": "tk_bdf054f4e50bca5cfbd2a1dd33a85c77",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -269,15 +269,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_cf92838bd56e1aec571b831b1bbee705_0",
+          "draftId": "dr_bdf054f4e50bca5cfbd2a1dd33a85c77_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_5b131d690c38062704c69548ec8fc136?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_75ca2aeb1b5145f9752a9359cf10f3e7?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_cf92838bd56e1aec571b831b1bbee705",
+      "taskId": "tk_bdf054f4e50bca5cfbd2a1dd33a85c77",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

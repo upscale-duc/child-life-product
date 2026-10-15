@@ -10,7 +10,10 @@ the scope is re-verified on every call (Admin SDK bypasses Rules). Nothing the c
 ## Envelope
 
 Request (every command): `contractVersion: 1`, `clientRequestId` (UUID, the idempotency key),
-`locale: 'vi' | 'en'`.
+`locale: 'vi' | 'en'`, and since 2026-10-16 (LUMI-05) the optional `clientDraftKinds: string[]` —
+the draft kinds this app build can show and save. Absent = an app from before the field
+(`legacyClientDraftKinds`: bottle, breast, sleep, expense, reminder, observation, meal); the server
+never sends a draft of another kind to such a build (see "Lumi fixes 2026-10-16").
 
 Answer (`AssistantResponse<T>`):
 
@@ -291,6 +294,83 @@ unsaved draft; the same words never do.
   "Lưu ghi nhận"); no tick box and no "Chọn mục muốn lưu" bar. Several drafts: complete ones are
   pre-ticked; the bar reads "Lưu 2 mục", or "Còn N mục cần bổ sung ở trên" while none can be saved.
   A disabled save always has its reason next to it.
+
+## Lumi fixes 2026-10-16 (LUMI-01…17)
+
+Bugs of [`test-report-lumi-2026-10-16.md`](test-report-lumi-2026-10-16.md); every one is a case in
+`firebase/tests/assistant-e2e/cases/` first (device / live replies scripted as the model gave them).
+Prompt `assistant-extract-v5`.
+
+**New draft kinds — the care module's other logs (LUMI-01).** "hút sữa 120ml", "thay tã ướt",
+"bé nặng 5,2kg" are drafted as the app's own forms write them (never a bottle feed, an observation,
+an expense or "no place to save"):
+
+```ts
+{ kind: 'pump', amountMl: number | null,   // whole ml 1…1000 (PumpSheet)
+  occurredAt: iso | null, side: 'left' | 'right' | 'both' | null, durationMin: int | null,
+  linked?: { derived: 'occurredAt' } | null }      // "vừa hút 20 phút": started 20 min ago
+{ kind: 'diaper', diaper: 'wet' | 'dirty' | 'both' | null, occurredAt: iso | null }   // DiaperSheet
+{ kind: 'growth', weightKg: number | null,  // 0.3…40, one decimal (GrowthScreen)
+  lengthCm: number | null,                  // 20…150, one decimal, optional
+  measuredOn: 'YYYY-MM-DD' | null }         // "Ngày đo"; the module has no head circumference
+```
+
+| | pump | diaper | growth |
+|---|---|---|---|
+| Required (`requiredDraftFields`) | `amountMl`, `occurredAt` | `diaper`, `occurredAt` | `weightKg`, `measuredOn` |
+| Defaults | side: as said, else the last pump's side, else `both` (never flagged) | none: wet / dirty not said → `diaper` missing (the person picks; never a guess) | `measuredOn`: the day said ("hôm qua đi khám"), else today |
+| Problems | `MISSING_AMOUNT`, `INVALID_AMOUNT` (amount, or length > 240 — names the value out of range), `MISSING_TIME`, `FUTURE_TIME` | `MISSING_TIME`, `FUTURE_TIME` | `MISSING_AMOUNT`, `INVALID_AMOUNT` (weight or length out of range — names it), `MISSING_DATE`, `FUTURE_TIME` |
+| Record (`careRecordFromDraft`, Rules `validCareData`) | `type: 'pump'`, `data { side, amountMl, durationMin }`, `endedAt = start + durationMin` | `type: 'diaper'`, `data { kind }` | `type: 'growth'`, `data { weightKg, lengthCm, measuredOn }` (one decimal), `occurredAt` = now when measured today, else noon of that day in the baby's zone |
+
+Role: `rhythm.checkin` (Rules `canLog`), like the other care logs. A breastfeed or pumping session
+with a length now ends `durationMin` after it starts (the app's record); one logged right after it
+ended starts that long before now (the form's `CareRecord.spanStart`), so the Rules accept it.
+Duplicates: a pump within 10 min and 10 % of the amount, a diaper of the same kind within 10 min →
+`duplicate_suspected`. Head circumference said → `PART_NOT_SAVED` notice ("Mục Tăng trưởng chưa có
+vòng đầu…", `link` `/care/growth`), weight and length still drafted.
+
+**Backstops (deterministic, contracts `assistant-text.ts`; functions `careBackstops`).** Whatever
+the model named it: pumping words (`pumpCueIn`: hút sữa, vắt sữa, pumped) turn a bottle / breast /
+meal item into `pump` (a "sữa vắt" given to the baby stays a bottle); a diaper change (`diaperIn`:
+thay tã / bỉm, tã ướt / bẩn, ị, tè, poop; buying diapers is money) turns an observation (no
+difference cue) or a meal into `diaper`; a measurement (`growthIn`: "5,2kg", "5kg8" = 5.8, "5200g",
+"dài 62cm", "vòng đầu 40cm") turns a meal or an observation into `growth` and drops an expense with
+no money said ("hôm qua đi khám bé nặng 5kg8"). A log the model missed gets its item from the words.
+"bé bu 120m" (a bare `m` ≥ 50 after bú, no "mẹ") is a 120 ml bottle (`bareMAmountIn`), never a
+120-minute breastfeed; a feed / pump length with no time unit in the words over 60 min is flagged.
+
+**Times, one token at a time (LUMI-03 / -04).** Contracts `clockTokensIn` reads every clock time
+of the message with ITS OWN period words (after it: "9h tối", "8h sáng nay", "10pm"; right before
+it: "tối qua lúc 9h"; with diacritics when the message has any — "tới 10 giờ" is "until"). "12h" /
+"12 giờ" is noon unless "đêm / khuya" is said ("12h đêm" = 00:00), also in typed answers
+(`clockTimeIn`). Each model time is matched to its token (its evidence words, else the only match):
+a model hour the words do not allow (`1h trua` read as 12:00) → the words win and the field is
+flagged (`uncertainFields`); a token whose half of the day is open takes the model's reading only
+when the message has a period word somewhere, else the readings are resolved by plausibility (not
+in the future, ≤ 36 h ago). `time.ampm` is asked only for the times still open, its question names
+them ("8:00, 9:00 là buổi sáng hay chiều tối?"), and the answer applies only to them — a time
+already resolved (6h at 14:20) is never moved.
+
+**Client capabilities (LUMI-05).** `startTask` stores `clientDraftKinds` on the task
+(`clientKinds`; a resume keeps the first). The planner never drafts a kind outside
+`clientDraftKindsOf(clientKinds)`: for an app from before 2026-10-16 a timer start / stop or a pump /
+diaper / growth item becomes a text part `APP_UPDATE_NEEDED` ("Phiên bản ứng dụng này chưa …", `link`
+= the timer screen, `/care/growth` or `/care`); with nothing else useful the task is an honest
+fallback (`ready`, 0 credits). New notice codes: `APP_UPDATE_NEEDED`, `PART_NOT_SAVED`.
+
+**Review fields and questions.**
+
+| Bug | Rule now |
+|---|---|
+| LUMI-07 | A breastfeed / pump / timer side comes from the words only (grounded evidence, or `breastSideIn` when it is the only such item); the model's guess is neither a value nor a doubt. A `timer` draft is checked by its time only (plus a misread time). |
+| LUMI-09 | The model's doubt about a time it did not read (a chip, a typed answer, a length, "vừa") is dropped: `startedAt` / `endedAt` / `occurredAt` are flagged only when the model's own time was used (or misread). |
+| LUMI-10 | A sleep concern (`sleepConcernIn`: khó ngủ, hay thức đêm… without a single day said, or with "dạo này / mấy hôm / hay") → care `sleep_concern` with the facts the words give (never an observation draft). A "sleep concern" on words with no sleep at all ("biếng ăn") → dropped; a feeding worry → an `observation` (feeding). |
+| LUMI-11 | `zoneDraftProblems` (the writers' rules in the baby's zone) runs when a draft is prepared, shown (`draftView`) and edited (`patchDraft`): a reminder already past → `PAST_TIME` on `time` (or `date` all day); expense / observation / growth dates after today → `FUTURE_TIME`. A draft never looks ready and is then refused at save. |
+| LUMI-12 | "Lumi làm được gì?" (`asksWhatLumiDoes`) with nothing extracted → `HELP`, 0 credits, never "Xem nhật ký hay ghi thêm?". |
+| LUMI-13 | Notices name their item ("Ứng dụng chưa có mục ghi bữa ăn…", "Mình chưa hiểu rõ phần nhắc việc…"); pump / diaper / growth are drafted, never dropped. |
+| LUMI-14 | Every read tool is offered to the model; the server answers `READ_DENIED` (free) for a read the member may not use, and never answers a care question with the credit balance (`usage_snapshot` on words about feeds / sleep and not about credits → `READ_DENIED`, or `care_summary` for a member who may read). |
+| LUMI-16 | Goods counted by the box / pack ("hai hộp sữa") are a spending signal: the task is private from `startTask`. The prompt says goods bought at a shop are an expense even with no amount (amount `null` → missing, reviewed). |
+| P2 | "Bé khó vào giấc hay thức giấc?" (no "hay hay"); the credit answer's reset date reads "1/11/2026" / "1 Nov 2026". |
 
 ## Commands
 

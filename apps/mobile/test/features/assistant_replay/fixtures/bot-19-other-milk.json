@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+     "id": "tk_ce55c86acd08342eb9b43fe7bac3779c",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a2045ac90c0d2295bf74e2edc094cd69_0",
-      "taskId": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+      "id": "dr_ce55c86acd08342eb9b43fe7bac3779c_0",
+      "taskId": "tk_ce55c86acd08342eb9b43fe7bac3779c",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -61,7 +61,7 @@
       "state": "needs_review",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a2045ac90c0d2295bf74e2edc094cd69"
+       "task:tk_ce55c86acd08342eb9b43fe7bac3779c"
       ],
       "recordId": null,
       "recordLink": null,
@@ -83,7 +83,7 @@
         "text": "bé bú 100ml sữa dê lúc 13h"
        }
       ],
-      "taskId": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+      "taskId": "tk_ce55c86acd08342eb9b43fe7bac3779c",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -102,11 +102,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a2045ac90c0d2295bf74e2edc094cd69_0",
+        "draftId": "dr_ce55c86acd08342eb9b43fe7bac3779c_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+      "taskId": "tk_ce55c86acd08342eb9b43fe7bac3779c",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -121,7 +121,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+     "id": "tk_ce55c86acd08342eb9b43fe7bac3779c",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -152,8 +152,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a2045ac90c0d2295bf74e2edc094cd69_0",
-      "taskId": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+      "id": "dr_ce55c86acd08342eb9b43fe7bac3779c_0",
+      "taskId": "tk_ce55c86acd08342eb9b43fe7bac3779c",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -171,7 +171,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a2045ac90c0d2295bf74e2edc094cd69"
+       "task:tk_ce55c86acd08342eb9b43fe7bac3779c"
       ],
       "recordId": null,
       "recordLink": null,
@@ -193,7 +193,7 @@
         "text": "bé bú 100ml sữa dê lúc 13h"
        }
       ],
-      "taskId": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+      "taskId": "tk_ce55c86acd08342eb9b43fe7bac3779c",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -212,11 +212,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a2045ac90c0d2295bf74e2edc094cd69_0",
+        "draftId": "dr_ce55c86acd08342eb9b43fe7bac3779c_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+      "taskId": "tk_ce55c86acd08342eb9b43fe7bac3779c",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -231,7 +231,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+     "id": "tk_ce55c86acd08342eb9b43fe7bac3779c",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -262,8 +262,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a2045ac90c0d2295bf74e2edc094cd69_0",
-      "taskId": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+      "id": "dr_ce55c86acd08342eb9b43fe7bac3779c_0",
+      "taskId": "tk_ce55c86acd08342eb9b43fe7bac3779c",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -281,10 +281,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a2045ac90c0d2295bf74e2edc094cd69"
+       "task:tk_ce55c86acd08342eb9b43fe7bac3779c"
       ],
-      "recordId": "r_42c53f77ebd014e954caae9e9cee10f0",
-      "recordLink": "/care/records/b_00000000000000000001/r_42c53f77ebd014e954caae9e9cee10f0",
+      "recordId": "r_3ea2366f08bbffe292f0163458926dd8",
+      "recordLink": "/care/records/b_00000000000000000001/r_3ea2366f08bbffe292f0163458926dd8",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -308,7 +308,7 @@
         "text": "bé bú 100ml sữa dê lúc 13h"
        }
       ],
-      "taskId": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+      "taskId": "tk_ce55c86acd08342eb9b43fe7bac3779c",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -327,11 +327,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a2045ac90c0d2295bf74e2edc094cd69_0",
+        "draftId": "dr_ce55c86acd08342eb9b43fe7bac3779c_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+      "taskId": "tk_ce55c86acd08342eb9b43fe7bac3779c",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -347,15 +347,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_a2045ac90c0d2295bf74e2edc094cd69_0",
+          "draftId": "dr_ce55c86acd08342eb9b43fe7bac3779c_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_42c53f77ebd014e954caae9e9cee10f0",
+          "recordLink": "/care/records/b_00000000000000000001/r_3ea2366f08bbffe292f0163458926dd8",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_a2045ac90c0d2295bf74e2edc094cd69",
+      "taskId": "tk_ce55c86acd08342eb9b43fe7bac3779c",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:40.000Z",
       "attachmentIds": [],

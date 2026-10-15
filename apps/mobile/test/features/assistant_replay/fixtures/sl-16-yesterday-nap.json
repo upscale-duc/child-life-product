@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_bae5e03e576bfd12c40c33af6e55bc2e",
+     "id": "tk_6398f6c103fabbae60f78b0de9cd8245",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_bae5e03e576bfd12c40c33af6e55bc2e_0",
-      "taskId": "tk_bae5e03e576bfd12c40c33af6e55bc2e",
+      "id": "dr_6398f6c103fabbae60f78b0de9cd8245_0",
+      "taskId": "tk_6398f6c103fabbae60f78b0de9cd8245",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -60,7 +60,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_bae5e03e576bfd12c40c33af6e55bc2e"
+       "task:tk_6398f6c103fabbae60f78b0de9cd8245"
       ],
       "recordId": null,
       "recordLink": null,
@@ -82,7 +82,7 @@
         "text": "hôm qua bé ngủ trưa từ 12h đến 14h"
        }
       ],
-      "taskId": "tk_bae5e03e576bfd12c40c33af6e55bc2e",
+      "taskId": "tk_6398f6c103fabbae60f78b0de9cd8245",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -101,11 +101,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_bae5e03e576bfd12c40c33af6e55bc2e_0",
+        "draftId": "dr_6398f6c103fabbae60f78b0de9cd8245_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_bae5e03e576bfd12c40c33af6e55bc2e",
+      "taskId": "tk_6398f6c103fabbae60f78b0de9cd8245",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -120,7 +120,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_bae5e03e576bfd12c40c33af6e55bc2e",
+     "id": "tk_6398f6c103fabbae60f78b0de9cd8245",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -151,8 +151,8 @@
     },
     "drafts": [
      {
-      "id": "dr_bae5e03e576bfd12c40c33af6e55bc2e_0",
-      "taskId": "tk_bae5e03e576bfd12c40c33af6e55bc2e",
+      "id": "dr_6398f6c103fabbae60f78b0de9cd8245_0",
+      "taskId": "tk_6398f6c103fabbae60f78b0de9cd8245",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -171,10 +171,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_bae5e03e576bfd12c40c33af6e55bc2e"
+       "task:tk_6398f6c103fabbae60f78b0de9cd8245"
       ],
-      "recordId": "r_c37af871c889f234e36d8f65d44db841",
-      "recordLink": "/care/records/b_00000000000000000001/r_c37af871c889f234e36d8f65d44db841",
+      "recordId": "r_a723d0f8d55b76580220c80cead00d1a",
+      "recordLink": "/care/records/b_00000000000000000001/r_a723d0f8d55b76580220c80cead00d1a",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -198,7 +198,7 @@
         "text": "hôm qua bé ngủ trưa từ 12h đến 14h"
        }
       ],
-      "taskId": "tk_bae5e03e576bfd12c40c33af6e55bc2e",
+      "taskId": "tk_6398f6c103fabbae60f78b0de9cd8245",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -217,11 +217,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_bae5e03e576bfd12c40c33af6e55bc2e_0",
+        "draftId": "dr_6398f6c103fabbae60f78b0de9cd8245_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_bae5e03e576bfd12c40c33af6e55bc2e",
+      "taskId": "tk_6398f6c103fabbae60f78b0de9cd8245",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -237,15 +237,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_bae5e03e576bfd12c40c33af6e55bc2e_0",
+          "draftId": "dr_6398f6c103fabbae60f78b0de9cd8245_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_c37af871c889f234e36d8f65d44db841",
+          "recordLink": "/care/records/b_00000000000000000001/r_a723d0f8d55b76580220c80cead00d1a",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_bae5e03e576bfd12c40c33af6e55bc2e",
+      "taskId": "tk_6398f6c103fabbae60f78b0de9cd8245",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

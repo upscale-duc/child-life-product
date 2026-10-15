@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_013562e9e3aefb716510814231591206",
+     "id": "tk_838851fa7e700c387afefa96ab7b0dbd",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -82,7 +82,7 @@
         "text": "bé bú 90ml"
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -135,7 +135,7 @@
         }
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -150,7 +150,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_013562e9e3aefb716510814231591206",
+     "id": "tk_838851fa7e700c387afefa96ab7b0dbd",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -181,8 +181,8 @@
     },
     "drafts": [
      {
-      "id": "dr_013562e9e3aefb716510814231591206_0",
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "id": "dr_838851fa7e700c387afefa96ab7b0dbd_0",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -202,7 +202,7 @@
       "state": "needs_review",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_013562e9e3aefb716510814231591206"
+       "task:tk_838851fa7e700c387afefa96ab7b0dbd"
       ],
       "recordId": null,
       "recordLink": null,
@@ -226,7 +226,7 @@
         "text": "bé bú 90ml"
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -279,7 +279,7 @@
         }
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -296,7 +296,7 @@
         "text": "lúc nãy"
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -315,11 +315,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_013562e9e3aefb716510814231591206_0",
+        "draftId": "dr_838851fa7e700c387afefa96ab7b0dbd_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -334,7 +334,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_013562e9e3aefb716510814231591206",
+     "id": "tk_838851fa7e700c387afefa96ab7b0dbd",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -365,8 +365,8 @@
     },
     "drafts": [
      {
-      "id": "dr_013562e9e3aefb716510814231591206_0",
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "id": "dr_838851fa7e700c387afefa96ab7b0dbd_0",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -384,7 +384,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_013562e9e3aefb716510814231591206"
+       "task:tk_838851fa7e700c387afefa96ab7b0dbd"
       ],
       "recordId": null,
       "recordLink": null,
@@ -406,7 +406,7 @@
         "text": "bé bú 90ml"
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -459,7 +459,7 @@
         }
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -476,7 +476,7 @@
         "text": "lúc nãy"
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -495,11 +495,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_013562e9e3aefb716510814231591206_0",
+        "draftId": "dr_838851fa7e700c387afefa96ab7b0dbd_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -514,7 +514,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_013562e9e3aefb716510814231591206",
+     "id": "tk_838851fa7e700c387afefa96ab7b0dbd",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -545,8 +545,8 @@
     },
     "drafts": [
      {
-      "id": "dr_013562e9e3aefb716510814231591206_0",
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "id": "dr_838851fa7e700c387afefa96ab7b0dbd_0",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -564,10 +564,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:15.000Z",
       "sourceRefs": [
-       "task:tk_013562e9e3aefb716510814231591206"
+       "task:tk_838851fa7e700c387afefa96ab7b0dbd"
       ],
-      "recordId": "r_361aabda39e0c3ed3ea56a744360db3b",
-      "recordLink": "/care/records/b_00000000000000000001/r_361aabda39e0c3ed3ea56a744360db3b",
+      "recordId": "r_88423bf7e66fb7aa2980a59f988a3923",
+      "recordLink": "/care/records/b_00000000000000000001/r_88423bf7e66fb7aa2980a59f988a3923",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -591,7 +591,7 @@
         "text": "bé bú 90ml"
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -644,7 +644,7 @@
         }
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -661,7 +661,7 @@
         "text": "lúc nãy"
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -680,11 +680,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_013562e9e3aefb716510814231591206_0",
+        "draftId": "dr_838851fa7e700c387afefa96ab7b0dbd_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 4,
       "createdAt": "2026-10-15T07:20:15.000Z",
       "attachmentIds": [],
@@ -700,15 +700,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_013562e9e3aefb716510814231591206_0",
+          "draftId": "dr_838851fa7e700c387afefa96ab7b0dbd_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_361aabda39e0c3ed3ea56a744360db3b",
+          "recordLink": "/care/records/b_00000000000000000001/r_88423bf7e66fb7aa2980a59f988a3923",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_013562e9e3aefb716510814231591206",
+      "taskId": "tk_838851fa7e700c387afefa96ab7b0dbd",
       "sequence": 5,
       "createdAt": "2026-10-15T07:20:55.000Z",
       "attachmentIds": [],

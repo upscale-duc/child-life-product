@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a4ef0eeb945b6afbcd41373dc4bd940e",
+     "id": "tk_e1d04697e6ca310d49d4ede029b8fd4b",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a4ef0eeb945b6afbcd41373dc4bd940e_0",
-      "taskId": "tk_a4ef0eeb945b6afbcd41373dc4bd940e",
+      "id": "dr_e1d04697e6ca310d49d4ede029b8fd4b_0",
+      "taskId": "tk_e1d04697e6ca310d49d4ede029b8fd4b",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -70,7 +70,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a4ef0eeb945b6afbcd41373dc4bd940e"
+       "task:tk_e1d04697e6ca310d49d4ede029b8fd4b"
       ],
       "recordId": null,
       "recordLink": null,
@@ -92,7 +92,7 @@
         "text": "mua sua 300k"
        }
       ],
-      "taskId": "tk_a4ef0eeb945b6afbcd41373dc4bd940e",
+      "taskId": "tk_e1d04697e6ca310d49d4ede029b8fd4b",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -117,11 +117,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a4ef0eeb945b6afbcd41373dc4bd940e_0",
+        "draftId": "dr_e1d04697e6ca310d49d4ede029b8fd4b_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a4ef0eeb945b6afbcd41373dc4bd940e",
+      "taskId": "tk_e1d04697e6ca310d49d4ede029b8fd4b",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -136,7 +136,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_a4ef0eeb945b6afbcd41373dc4bd940e",
+     "id": "tk_e1d04697e6ca310d49d4ede029b8fd4b",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -171,8 +171,8 @@
     },
     "drafts": [
      {
-      "id": "dr_a4ef0eeb945b6afbcd41373dc4bd940e_0",
-      "taskId": "tk_a4ef0eeb945b6afbcd41373dc4bd940e",
+      "id": "dr_e1d04697e6ca310d49d4ede029b8fd4b_0",
+      "taskId": "tk_e1d04697e6ca310d49d4ede029b8fd4b",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -197,10 +197,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_a4ef0eeb945b6afbcd41373dc4bd940e"
+       "task:tk_e1d04697e6ca310d49d4ede029b8fd4b"
       ],
-      "recordId": "x_7b1a5ab918fff3c0188a36f3b52ef14d",
-      "recordLink": "/utilities/spending/expense/x_7b1a5ab918fff3c0188a36f3b52ef14d?babyId=b_00000000000000000001",
+      "recordId": "x_b28b855365d301c162519d5b438c5353",
+      "recordLink": "/utilities/spending/expense/x_b28b855365d301c162519d5b438c5353?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -224,7 +224,7 @@
         "text": "mua sua 300k"
        }
       ],
-      "taskId": "tk_a4ef0eeb945b6afbcd41373dc4bd940e",
+      "taskId": "tk_e1d04697e6ca310d49d4ede029b8fd4b",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -249,11 +249,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_a4ef0eeb945b6afbcd41373dc4bd940e_0",
+        "draftId": "dr_e1d04697e6ca310d49d4ede029b8fd4b_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_a4ef0eeb945b6afbcd41373dc4bd940e",
+      "taskId": "tk_e1d04697e6ca310d49d4ede029b8fd4b",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -269,15 +269,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_a4ef0eeb945b6afbcd41373dc4bd940e_0",
+          "draftId": "dr_e1d04697e6ca310d49d4ede029b8fd4b_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_7b1a5ab918fff3c0188a36f3b52ef14d?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_b28b855365d301c162519d5b438c5353?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_a4ef0eeb945b6afbcd41373dc4bd940e",
+      "taskId": "tk_e1d04697e6ca310d49d4ede029b8fd4b",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],

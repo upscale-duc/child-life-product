@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+     "id": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -44,8 +44,8 @@
     },
     "drafts": [
      {
-      "id": "dr_d8e8a31c6bc7597e783937d6cb2ec69e_0",
-      "taskId": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+      "id": "dr_6d270cd1c2e8c4a37634bc70fb19c9e4_0",
+      "taskId": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -72,7 +72,7 @@
       "state": "needs_review",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_d8e8a31c6bc7597e783937d6cb2ec69e"
+       "task:tk_6d270cd1c2e8c4a37634bc70fb19c9e4"
       ],
       "recordId": null,
       "recordLink": null,
@@ -94,7 +94,7 @@
         "text": "tiền điện 1tr"
        }
       ],
-      "taskId": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+      "taskId": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -119,11 +119,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_d8e8a31c6bc7597e783937d6cb2ec69e_0",
+        "draftId": "dr_6d270cd1c2e8c4a37634bc70fb19c9e4_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+      "taskId": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -138,7 +138,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+     "id": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -173,8 +173,8 @@
     },
     "drafts": [
      {
-      "id": "dr_d8e8a31c6bc7597e783937d6cb2ec69e_0",
-      "taskId": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+      "id": "dr_6d270cd1c2e8c4a37634bc70fb19c9e4_0",
+      "taskId": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -199,7 +199,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_d8e8a31c6bc7597e783937d6cb2ec69e"
+       "task:tk_6d270cd1c2e8c4a37634bc70fb19c9e4"
       ],
       "recordId": null,
       "recordLink": null,
@@ -221,7 +221,7 @@
         "text": "tiền điện 1tr"
        }
       ],
-      "taskId": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+      "taskId": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -246,11 +246,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_d8e8a31c6bc7597e783937d6cb2ec69e_0",
+        "draftId": "dr_6d270cd1c2e8c4a37634bc70fb19c9e4_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+      "taskId": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -265,7 +265,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+     "id": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
      "conversationId": "cv_p_09fcd22ee326f40540b13be486086673",
      "scope": {
       "type": "child",
@@ -300,8 +300,8 @@
     },
     "drafts": [
      {
-      "id": "dr_d8e8a31c6bc7597e783937d6cb2ec69e_0",
-      "taskId": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+      "id": "dr_6d270cd1c2e8c4a37634bc70fb19c9e4_0",
+      "taskId": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -326,10 +326,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_d8e8a31c6bc7597e783937d6cb2ec69e"
+       "task:tk_6d270cd1c2e8c4a37634bc70fb19c9e4"
       ],
-      "recordId": "x_e70eeecda506f0f66b8bd7a45792ae17",
-      "recordLink": "/utilities/spending/expense/x_e70eeecda506f0f66b8bd7a45792ae17?babyId=b_00000000000000000001",
+      "recordId": "x_acbc3669e943f11fff3f0758a8e388ad",
+      "recordLink": "/utilities/spending/expense/x_acbc3669e943f11fff3f0758a8e388ad?babyId=b_00000000000000000001",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -353,7 +353,7 @@
         "text": "tiền điện 1tr"
        }
       ],
-      "taskId": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+      "taskId": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -378,11 +378,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_d8e8a31c6bc7597e783937d6cb2ec69e_0",
+        "draftId": "dr_6d270cd1c2e8c4a37634bc70fb19c9e4_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+      "taskId": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -398,15 +398,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_d8e8a31c6bc7597e783937d6cb2ec69e_0",
+          "draftId": "dr_6d270cd1c2e8c4a37634bc70fb19c9e4_0",
           "status": "saved",
-          "recordLink": "/utilities/spending/expense/x_e70eeecda506f0f66b8bd7a45792ae17?babyId=b_00000000000000000001",
+          "recordLink": "/utilities/spending/expense/x_acbc3669e943f11fff3f0758a8e388ad?babyId=b_00000000000000000001",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_d8e8a31c6bc7597e783937d6cb2ec69e",
+      "taskId": "tk_6d270cd1c2e8c4a37634bc70fb19c9e4",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:40.000Z",
       "attachmentIds": [],

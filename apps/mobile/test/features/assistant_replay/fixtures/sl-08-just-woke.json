@@ -9,7 +9,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_147d4526d682df4c6fe73213641a9173",
+     "id": "tk_60c52dfdd3040f0783e9def79d51719d",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -40,8 +40,8 @@
     },
     "drafts": [
      {
-      "id": "dr_147d4526d682df4c6fe73213641a9173_0",
-      "taskId": "tk_147d4526d682df4c6fe73213641a9173",
+      "id": "dr_60c52dfdd3040f0783e9def79d51719d_0",
+      "taskId": "tk_60c52dfdd3040f0783e9def79d51719d",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -62,7 +62,7 @@
       "state": "draft",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_147d4526d682df4c6fe73213641a9173"
+       "task:tk_60c52dfdd3040f0783e9def79d51719d"
       ],
       "recordId": null,
       "recordLink": null,
@@ -84,7 +84,7 @@
         "text": "vừa ngủ dậy, ngủ được 2 tiếng"
        }
       ],
-      "taskId": "tk_147d4526d682df4c6fe73213641a9173",
+      "taskId": "tk_60c52dfdd3040f0783e9def79d51719d",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -103,11 +103,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_147d4526d682df4c6fe73213641a9173_0",
+        "draftId": "dr_60c52dfdd3040f0783e9def79d51719d_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_147d4526d682df4c6fe73213641a9173",
+      "taskId": "tk_60c52dfdd3040f0783e9def79d51719d",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -122,7 +122,7 @@
    "as": "MOM",
    "snapshot": {
     "task": {
-     "id": "tk_147d4526d682df4c6fe73213641a9173",
+     "id": "tk_60c52dfdd3040f0783e9def79d51719d",
      "conversationId": "cv_b_00000000000000000001",
      "scope": {
       "type": "child",
@@ -153,8 +153,8 @@
     },
     "drafts": [
      {
-      "id": "dr_147d4526d682df4c6fe73213641a9173_0",
-      "taskId": "tk_147d4526d682df4c6fe73213641a9173",
+      "id": "dr_60c52dfdd3040f0783e9def79d51719d_0",
+      "taskId": "tk_60c52dfdd3040f0783e9def79d51719d",
       "itemIndex": 0,
       "scope": {
        "type": "child",
@@ -175,10 +175,10 @@
       "state": "saved",
       "expiresAt": "2026-10-16T07:20:00.000Z",
       "sourceRefs": [
-       "task:tk_147d4526d682df4c6fe73213641a9173"
+       "task:tk_60c52dfdd3040f0783e9def79d51719d"
       ],
-      "recordId": "r_17b32e15ee349e4d648d2f9e5a0e9a82",
-      "recordLink": "/care/records/b_00000000000000000001/r_17b32e15ee349e4d648d2f9e5a0e9a82",
+      "recordId": "r_eaec4e5b88e1545520c48eed05e4df98",
+      "recordLink": "/care/records/b_00000000000000000001/r_eaec4e5b88e1545520c48eed05e4df98",
       "errorCode": null,
       "warnings": [],
       "problems": [],
@@ -202,7 +202,7 @@
         "text": "vừa ngủ dậy, ngủ được 2 tiếng"
        }
       ],
-      "taskId": "tk_147d4526d682df4c6fe73213641a9173",
+      "taskId": "tk_60c52dfdd3040f0783e9def79d51719d",
       "sequence": 1,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -221,11 +221,11 @@
        {
         "type": "draft_reference",
         "schemaVersion": 1,
-        "draftId": "dr_147d4526d682df4c6fe73213641a9173_0",
+        "draftId": "dr_60c52dfdd3040f0783e9def79d51719d_0",
         "revision": 1
        }
       ],
-      "taskId": "tk_147d4526d682df4c6fe73213641a9173",
+      "taskId": "tk_60c52dfdd3040f0783e9def79d51719d",
       "sequence": 2,
       "createdAt": "2026-10-15T07:20:00.000Z",
       "attachmentIds": [],
@@ -241,15 +241,15 @@
         "schemaVersion": 1,
         "items": [
          {
-          "draftId": "dr_147d4526d682df4c6fe73213641a9173_0",
+          "draftId": "dr_60c52dfdd3040f0783e9def79d51719d_0",
           "status": "saved",
-          "recordLink": "/care/records/b_00000000000000000001/r_17b32e15ee349e4d648d2f9e5a0e9a82",
+          "recordLink": "/care/records/b_00000000000000000001/r_eaec4e5b88e1545520c48eed05e4df98",
           "errorCode": null
          }
         ]
        }
       ],
-      "taskId": "tk_147d4526d682df4c6fe73213641a9173",
+      "taskId": "tk_60c52dfdd3040f0783e9def79d51719d",
       "sequence": 3,
       "createdAt": "2026-10-15T07:20:20.000Z",
       "attachmentIds": [],
