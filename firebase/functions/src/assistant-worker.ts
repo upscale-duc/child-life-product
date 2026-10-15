@@ -101,6 +101,9 @@ export interface WorkerDeps {
 
 export const assistantLeaseMs = 300_000;
 const maxAttempts = 3;
+/** A `queued` task untouched this long is nudged by the sweeper (the trigger normally runs in seconds). */
+const queuedStuckMs = 10 * 60_000;
+const maxQueuedNudges = 3;
 /** Internal cost estimate per model call (VND) for the AI budget (A09); never shown in the app. */
 export const assistantCallCostVnd = 300;
 
@@ -756,6 +759,59 @@ export async function sweepAssistantTasks(
         state: 'queued',
         lease: null,
         version: t.version + 1,
+        updatedAt: Timestamp.fromDate(now),
+      });
+      return true;
+    });
+    if (moved) requeued += 1;
+  }
+  // A task left `queued` (its trigger never ran, or gave up retrying) holds its credits: nudge
+  // the trigger by bumping the version; after [maxQueuedNudges] nudges, fail it and release once.
+  const stuckBefore = now.getTime() - queuedStuckMs;
+  const queued = await db.collection('assistantTasks').where('state', '==', 'queued').get();
+  for (const d of queued.docs) {
+    const at = toDate(d.get('updatedAt'));
+    if (!at || at.getTime() > stuckBefore) continue;
+    const moved = await db.runTransaction(async (tx) => {
+      const snap = await tx.get(d.ref);
+      const t = storedTask(snap);
+      const u = toDate(snap.get('updatedAt'));
+      if (t.state !== 'queued' || !u || u.getTime() > stuckBefore) return false;
+      const nudges = (snap.get('queuedNudges') as number | undefined) ?? 0;
+      if (nudges < maxQueuedNudges) {
+        tx.update(d.ref, {
+          queuedNudges: nudges + 1,
+          version: t.version + 1,
+          updatedAt: Timestamp.fromDate(now),
+        });
+        return true;
+      }
+      if (t.reservationId && t.usage === 'reserved') {
+        await releaseQuota(tx, db, {
+          familyId: t.familyId,
+          reservationId: t.reservationId,
+          holder: d.id,
+          reason: 'never_ran',
+          now,
+        });
+      }
+      const seq = appendEvents(
+        tx,
+        db,
+        d.id,
+        t.eventSeq ?? 0,
+        [
+          { type: 'task_failed', payload: { state: 'failed', errorCode: 'AI_UNAVAILABLE' } },
+          { type: 'usage_updated', payload: { usage: 'released', credits: 0 } },
+        ],
+        now,
+      );
+      tx.update(d.ref, {
+        state: 'failed',
+        errorCode: 'AI_UNAVAILABLE',
+        usage: t.usage === 'reserved' ? 'released' : t.usage,
+        version: t.version + 1,
+        eventSeq: seq,
         updatedAt: Timestamp.fromDate(now),
       });
       return true;

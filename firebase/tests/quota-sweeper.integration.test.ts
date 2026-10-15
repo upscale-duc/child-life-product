@@ -63,6 +63,34 @@ describe('sweepAiReservations', () => {
     expect(day).toMatchObject({ used: 0, reserved: 0 });
   });
 
+  it('D-075 #1: releases a stale summary credit (su_*) but leaves assistant tasks to their sweeper', async () => {
+    const pool = (id: string) =>
+      reserveQuotaNow(db, {
+        familyId: 'test_f1',
+        reservationId: id,
+        windows: [
+          {
+            window: { kind: 'calendar_month', feature: 'assistant', zone: 'Asia/Ho_Chi_Minh' },
+            limit: 20,
+          },
+        ],
+        now: t0,
+      });
+    await pool('su_old');
+    await pool('tk_old');
+    expect(await sweepAiReservations(db, later)).toBe(1);
+    const month = await readQuotaSnapshot(
+      db,
+      'test_f1',
+      {
+        window: { kind: 'calendar_month', feature: 'assistant', zone: 'Asia/Ho_Chi_Minh' },
+        limit: 20,
+      },
+      later,
+    );
+    expect(month).toMatchObject({ used: 0, reserved: 1 });
+  });
+
   it('leaves video reservations to the keepsake sweeper', async () => {
     await reserveQuotaNow(db, {
       familyId: 'test_f1',

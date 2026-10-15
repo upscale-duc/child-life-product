@@ -1637,6 +1637,26 @@ describe('feedback, history, deletion, sweeper', () => {
     });
     expect(await win()).toMatchObject({ used: 1, reserved: 0 });
   });
+
+  it('sweeper: a task left queued is nudged three times, then failed with its credits released', async () => {
+    const r = await start(TEXT, { gw: fakeModelGateway({ extract: [textBatch()] }) });
+    expect(await win()).toMatchObject({ reserved: 1 });
+    let at = now;
+    for (let i = 0; i < 3; i++) {
+      at = new Date(at.getTime() + 11 * 60_000);
+      expect((await sweepAssistantTasks(db, at)).requeued).toBe(1);
+      expect((await snapshot(r.taskId!)).task.state).toBe('queued');
+    }
+    // Nudged a minute ago: not stuck yet.
+    expect((await sweepAssistantTasks(db, new Date(at.getTime() + 60_000))).requeued).toBe(0);
+    at = new Date(at.getTime() + 11 * 60_000);
+    expect((await sweepAssistantTasks(db, at)).requeued).toBe(1);
+    expect((await snapshot(r.taskId!)).task).toMatchObject({
+      state: 'failed',
+      errorCode: 'AI_UNAVAILABLE',
+    });
+    expect(await win()).toMatchObject({ used: 0, reserved: 0 });
+  });
 });
 
 // =====================================================================================
