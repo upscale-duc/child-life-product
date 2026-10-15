@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/route_guard.dart';
+import '../assistant/assistant_models.dart' show AssistantScope;
+import '../assistant/assistant_screens.dart' show assistantLocation;
 import '../memories/media_bytes.dart';
 import '../memories/memory_models.dart';
 import '../premium/billing_models.dart';
@@ -206,7 +208,7 @@ Future<Object?> loadResumeDraft(
   return switch (resume.kind) {
     ResumeKind.card => cardDraftFromJson(saved, catalog),
     ResumeKind.video => videoDraftFromJson(saved, catalog),
-    ResumeKind.rhythm => null,
+    ResumeKind.rhythm || ResumeKind.assistant => null,
   };
 }
 
@@ -228,6 +230,13 @@ Future<void> resumeAfterPurchase(
 ) async {
   if (resume.kind == ResumeKind.rhythm) {
     landInRhythm(router);
+    return;
+  }
+  // The chat's kept question (CH23): back to that chat, which resumes it once.
+  if (resume.kind == ResumeKind.assistant) {
+    if (AssistantScope.fromKey(resume.draftRef) case final scope?) {
+      unawaited(router.push(assistantLocation(scope)));
+    }
     return;
   }
   final draft = await loadResumeDraft(container, resume);

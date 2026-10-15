@@ -16,6 +16,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../assistant/assistant_entry.dart' show AssistantModuleEntry;
 import '../care/care_format.dart';
 import '../care/care_repository.dart' show inBabyZone;
 import '../onboarding/setup_screens.dart' show relationLabel;
@@ -296,6 +297,12 @@ class _Month extends ConsumerWidget {
           locale: locale,
         ),
         const SizedBox(height: ClSpace.s3),
+        // CH01b: the assistant's entry (household scope); nothing unless the flag is on.
+        if (scope.access.record)
+          AssistantModuleEntry(
+            babyId: scope.babyId,
+            padding: const EdgeInsets.only(bottom: ClSpace.s3),
+          ),
         Wrap(
           spacing: ClSpace.s2,
           runSpacing: ClSpace.s2,

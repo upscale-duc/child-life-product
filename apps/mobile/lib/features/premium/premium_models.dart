@@ -128,6 +128,8 @@ class Capabilities {
         personalization: f['personalization'] == true,
         aiAssist: f['aiAssist'] == true,
         billing: f['billing'] == true,
+        assistant: f['assistant'] == true,
+        assistantImages: f['assistantImages'] == true,
       ),
       billingProvider: json['provider'] is String
           ? json['provider'] as String
@@ -158,6 +160,8 @@ class Capabilities {
       'personalization': features.personalization,
       'aiAssist': features.aiAssist,
       'billing': features.billing,
+      'assistant': features.assistant,
+      'assistantImages': features.assistantImages,
     },
     'provider': billingProvider,
   };
@@ -171,13 +175,21 @@ class PremiumFeatures {
     this.personalization = false,
     this.aiAssist = false,
     this.billing = false,
+    this.assistant = false,
+    this.assistantImages = false,
   });
   final bool rhythm;
   final bool personalization;
   final bool aiAssist;
   final bool billing;
 
-  bool get any => rhythm || personalization || aiAssist || billing;
+  /// Child Life Assistant chat (P-161 `assistant` flag); read when the server sends it.
+  final bool assistant;
+
+  /// Photo reading in the chat (`assistant_images`).
+  final bool assistantImages;
+
+  bool get any => rhythm || personalization || aiAssist || billing || assistant;
 }
 
 /// Countries offered in the region picker (D-072 #3): the beta markets under discussion (Q-069).

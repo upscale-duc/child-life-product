@@ -19,6 +19,7 @@ import '../../core/widgets/cl_navigation.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../assistant/assistant_entry.dart' show AssistantFloatingEntry;
 import '../auto_save/auto_save_today.dart';
 import '../auto_save/auto_save_widgets.dart';
 import '../auth/auth_repository.dart';
@@ -209,6 +210,20 @@ class HomeShell extends ConsumerWidget {
               ),
             ),
           ),
+          // Chat/Nút trợ lý (628:9074) 12 pt above the "+", on Hôm nay itself; nothing unless
+          // the `assistant` flag is on.
+          if (active == ClTab.today && path == Routes.today && !showTour)
+            Positioned(
+              right: ClSpace.s4,
+              bottom:
+                  (MediaQuery.paddingOf(context).bottom > 0
+                      ? MediaQuery.paddingOf(context).bottom
+                      : ClSpace.s6) +
+                  68 +
+                  (action == null ? 0 : ClTabDock.actionExtent) +
+                  ClSpace.s3,
+              child: const AssistantFloatingEntry(),
+            ),
           if (showTour)
             Positioned.fill(child: TodayTour(babyNickname: nickname)),
         ],

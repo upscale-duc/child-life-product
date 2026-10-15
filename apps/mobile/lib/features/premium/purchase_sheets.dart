@@ -106,6 +106,7 @@ class PurchaseStatusView extends StatelessWidget {
     final continueLabel = switch (resume?.kind) {
       ResumeKind.card when template => l10n.pmContinueCard,
       ResumeKind.video when template => l10n.pmContinueVideo,
+      ResumeKind.assistant => l10n.asContinueQuestion,
       _ when entry == PaywallEntry.rhythm => l10n.pmBackToRhythm,
       _ => l10n.pmDone,
     };

@@ -6,6 +6,7 @@ import '../core/design/tokens.g.dart';
 import '../features/keepsakes/keepsake_occasions.dart';
 import '../features/keepsakes/memory_story_screens.dart';
 import '../features/keepsakes/milestone_card_screens.dart';
+import '../features/assistant/assistant_screens.dart' show assistantRoutes;
 import '../features/appearance/appearance_screen.dart';
 import '../features/auth/auth_screens.dart';
 import '../features/auth/email_link.dart';
@@ -701,6 +702,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       ...rhythmRoutes(),
       ...premiumRoutes(),
+      ...assistantRoutes(),
       _route(
         path: '${Routes.record}/:id',
         builder: (_, s) =>

@@ -15,7 +15,9 @@ enum PaywallEntry {
       values.where((e) => e.name == v).firstOrNull ?? PaywallEntry.plan;
 }
 
-enum ResumeKind { card, video, rhythm }
+/// `assistant`: the chat's kept question (CH21 → CH23); its ref is the chat scope and it stays
+/// on this phone (the server's `purchaseResumeSchema` knows only card / video / rhythm).
+enum ResumeKind { card, video, rhythm, assistant }
 
 /// Where to come back after a purchase (MO03 "tiếp tục đúng mẫu & ảnh", M17): the template and
 /// an opaque key of the draft kept on this phone. Selected photos never leave the phone.

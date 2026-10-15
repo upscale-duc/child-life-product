@@ -21773,6 +21773,1428 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Xem lại những gì cả nhà đã ghi trong tuần.'**
   String get rhWeekNotifBody;
+
+  /// CH01 entry card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ lý Child Life'**
+  String get asEntryTitle;
+
+  /// CH01 entry card usage (server snapshot, never static).
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn {remaining}/{limit} lượt'**
+  String asEntryLeft(int remaining, int limit);
+
+  /// CH01 entry card when the household pool is used up. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết lượt · làm mới {date}'**
+  String asEntryOut(String date);
+
+  /// Chat/Ô nhập placeholder (Trống).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi, ghi nhanh hoặc gửi ảnh…'**
+  String get asComposerHint;
+
+  /// Composer placeholder while photo reading is off (assistant_images). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi hoặc ghi nhanh…'**
+  String get asComposerHintText;
+
+  /// Chat/Ô nhập "Chỉ xem" placeholder: a viewer may ask, never log. Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi về nhật ký của bé…'**
+  String get asComposerViewer;
+
+  /// CH21 composer (Hết lượt, Free).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hết lượt AI tháng này'**
+  String get asComposerOutFree;
+
+  /// CH24 composer (Hết lượt, Premium).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết lượt AI · vẫn ghi trực tiếp được'**
+  String get asComposerOutPremium;
+
+  /// Composer while answering a clarification ("Tự nhập"). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trả lời câu hỏi…'**
+  String get asComposerAnswer;
+
+  /// Composer send button label (a11y) and the kept-input send action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi'**
+  String get asSend;
+
+  /// Composer camera button label (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get asAddPhoto;
+
+  /// CH01 chip and CH21 direct-log button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi cữ bú'**
+  String get asChipLogFeed;
+
+  /// CH01 "Ghi cữ bú" only prefills the composer; never sends. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Con bú bình lúc '**
+  String get asPrefillFeed;
+
+  /// CH01 chip / CH02 example (prefills this question).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay con bú thế nào?'**
+  String get asChipFeedsToday;
+
+  /// CH01 chip (photo reading on only).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp hoá đơn'**
+  String get asChipReceipt;
+
+  /// Floating assistant button a11y label. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở trợ lý'**
+  String get asFabLabel;
+
+  /// CH01b entry in Chi tiêu.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp hoá đơn hoặc nhắn để ghi'**
+  String get asModuleExpenseTitle;
+
+  /// CH01b entry while photo reading is off. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắn để ghi khoản chi'**
+  String get asModuleExpenseTextOnly;
+
+  /// CH01b entry subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ lý đọc và tạo bản nháp · bạn kiểm tra trước khi lưu'**
+  String get asModuleSub;
+
+  /// Chat header scope chip for the household.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình'**
+  String get asScopeHousehold;
+
+  /// Scope picker sheet title. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trò chuyện với'**
+  String get asScopeTitle;
+
+  /// Chat header history button (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử'**
+  String get asHistory;
+
+  /// Chat header new button (a11y) and CH03 "Hội thoại mới".
+  ///
+  /// In vi, this message translates to:
+  /// **'Hội thoại mới'**
+  String get asNewChat;
+
+  /// Usage row link to CH19.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết'**
+  String get asDetails;
+
+  /// Chat/Mức dùng, Còn.
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn {remaining}/{limit} lượt hỗ trợ AI'**
+  String asUsageLeft(int remaining, int limit);
+
+  /// Chat/Mức dùng, Gần hết (CH20).
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn {remaining}/{limit} lượt · làm mới {date}'**
+  String asUsageNear(int remaining, int limit, String date);
+
+  /// Chat/Mức dùng, Hết (CH21 / CH24: same numbers for Free and Premium).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã dùng hết {limit}/{limit} lượt · làm mới {date}'**
+  String asUsageOut(int limit, String date);
+
+  /// Usage pill screen-reader label. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượt hỗ trợ AI của hộ: còn {remaining} trên {limit}, làm mới {date}'**
+  String asUsageA11y(int remaining, int limit, String date);
+
+  /// Plan badge (CH19).
+  ///
+  /// In vi, this message translates to:
+  /// **'Free'**
+  String get asBadgeFree;
+
+  /// Plan badge (CH19).
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium'**
+  String get asBadgePremium;
+
+  /// CH02 heading (child scope).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi, ghi nhanh hoặc gửi ảnh cho {name}'**
+  String asEmptyTitle(String name);
+
+  /// CH02 heading while photo reading is off. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi hoặc ghi nhanh cho {name}'**
+  String asEmptyTitleText(String name);
+
+  /// CH02 heading (household scope). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi hoặc ghi nhanh cho cả nhà'**
+  String get asEmptyTitleHousehold;
+
+  /// CH02 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ lý hiểu và tạo bản nháp. Bạn kiểm tra trước khi lưu vào đúng chỗ.'**
+  String get asEmptyBody;
+
+  /// CH02 example card (prefills [asExampleFeedText]).
+  ///
+  /// In vi, this message translates to:
+  /// **'“8 giờ con bú bình 120 ml”'**
+  String get asExampleFeed;
+
+  /// Text the CH02 example prefills (never sent by itself).
+  ///
+  /// In vi, this message translates to:
+  /// **'8 giờ con bú bình 120 ml'**
+  String get asExampleFeedText;
+
+  /// CH02 example card.
+  ///
+  /// In vi, this message translates to:
+  /// **'“Hôm nay con bú thế nào?”'**
+  String get asExampleFeedsToday;
+
+  /// CH02 example card, household scope (prefills without quotes). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'“Mua bỉm 310.000 đồng hôm qua”'**
+  String get asExampleExpense;
+
+  /// Text the household example prefills. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mua bỉm 310.000 đồng hôm qua'**
+  String get asExampleExpenseText;
+
+  /// CH02 example card (photo reading on only).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp hoá đơn → ghi chi tiêu'**
+  String get asExampleReceipt;
+
+  /// CH02 example card (photo reading on only).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp bảng note → nhắc việc'**
+  String get asExampleNote;
+
+  /// CH02 notice. G05: no deletion claim before deletion is confirmed. Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tin nhắn và ảnh bạn gửi được AI xử lý để tạo bản nháp. Không tự lưu. Ảnh gốc giữ hay xoá theo lựa chọn của bạn.'**
+  String get asPrivacyNote;
+
+  /// CH02 notice while photo reading is off. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tin nhắn bạn gửi được AI xử lý để tạo bản nháp. Không tự lưu.'**
+  String get asPrivacyNoteText;
+
+  /// Task queued / processing. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ lý đang đọc…'**
+  String get asThinking;
+
+  /// Cancel a task still being prepared (no charge without a useful answer). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ'**
+  String get asCancelTask;
+
+  /// A canceled task. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã huỷ. Không trừ lượt.'**
+  String get asCanceled;
+
+  /// Kept input bubble marker (CH21 / CH25). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa gửi'**
+  String get asUnsent;
+
+  /// Input bubble while sending. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang gửi…'**
+  String get asSending;
+
+  /// CH04 assistant line when the server sent drafts without text.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình thấy {count} việc. Kiểm tra rồi chọn mục muốn lưu nhé.'**
+  String asDraftsFound(int count);
+
+  /// UnsupportedCard for an unknown part type (brief p.11). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung này cần bản app mới hơn để hiển thị. Không có gì được lưu.'**
+  String get asUnsupportedPart;
+
+  /// Restoring the last conversation. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang mở cuộc trò chuyện…'**
+  String get asLoadingChat;
+
+  /// Draft card state Nháp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nháp'**
+  String get asStateDraft;
+
+  /// Draft card state Cần kiểm tra.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần kiểm tra'**
+  String get asStateReview;
+
+  /// Draft card state Đang lưu. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang lưu'**
+  String get asStateSaving;
+
+  /// Draft card state Đã lưu.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu'**
+  String get asStateSaved;
+
+  /// Draft card state Lưu lỗi (CH07 label).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu'**
+  String get asStateFailed;
+
+  /// Draft card state Đã bỏ. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ'**
+  String get asStateDiscarded;
+
+  /// Draft card past its TTL (DRAFT_EXPIRED). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hết hạn'**
+  String get asStateExpired;
+
+  /// Draft kind bottle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cữ bú bình'**
+  String get asKindBottle;
+
+  /// Draft kind breast. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cữ bú mẹ'**
+  String get asKindBreast;
+
+  /// Draft kind sleep.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ'**
+  String get asKindSleep;
+
+  /// Draft kind expense. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản chi'**
+  String get asKindExpense;
+
+  /// Draft kind reminder. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc'**
+  String get asKindReminder;
+
+  /// Draft kind observation (CH16 "Ghi nhận").
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận'**
+  String get asKindObservation;
+
+  /// Draft kind meal. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa ăn'**
+  String get asKindMeal;
+
+  /// Draft of a kind this app version does not know (never saveable here). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục chưa hỗ trợ'**
+  String get asKindUnknown;
+
+  /// Draft card scope row (care).
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · Nhật ký chăm sóc'**
+  String asModuleCare(String name);
+
+  /// Draft card scope row (expense). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình · Chi tiêu'**
+  String get asModuleSpending;
+
+  /// Draft card scope row (reminder). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình · Nhắc việc'**
+  String get asModuleReminders;
+
+  /// Draft card scope row (observation).
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · Nhịp lớn lên'**
+  String asModuleRhythm(String name);
+
+  /// Draft card scope row (meal). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · Ăn dặm'**
+  String asModuleMeal(String name);
+
+  /// Draft line day ("Hôm nay 15/10").
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay {date}'**
+  String asDayToday(String date);
+
+  /// Draft line day. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua {date}'**
+  String asDayYesterday(String date);
+
+  /// Bottle amount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{ml} ml'**
+  String asAmountMl(String ml);
+
+  /// Draft line: amount missing. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'chưa có lượng'**
+  String get asNoAmount;
+
+  /// Draft line: time missing. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'chưa có giờ'**
+  String get asNoTime;
+
+  /// Draft line: date missing. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'chưa có ngày'**
+  String get asNoDate;
+
+  /// Draft card action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa'**
+  String get asEdit;
+
+  /// Draft card action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ mục này'**
+  String get asRemove;
+
+  /// Saved card action (care).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở nhật ký'**
+  String get asOpenLog;
+
+  /// Saved card action: opens the record in its module, never deletes by itself (G02).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác'**
+  String get asUndo;
+
+  /// Saved card action (expense).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Chi tiêu'**
+  String get asOpenSpending;
+
+  /// Saved card action (reminder). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở nhắc việc'**
+  String get asOpenReminders;
+
+  /// Saved card action (observation).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem nhịp của con'**
+  String get asOpenRhythm;
+
+  /// Conflict card action (CH07 "Xem bản Ba ghi"; the author is not known here). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem bản đã ghi'**
+  String get asSeeLogged;
+
+  /// Conflict card action (explicit confirm first).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn lưu riêng'**
+  String get asSaveAnyway;
+
+  /// Draft card for a member who may not save that kind. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ xem · không lưu qua chat'**
+  String get asViewerDraftNote;
+
+  /// MISSING_AMOUNT. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm lượng (ml) trước khi lưu.'**
+  String get asProblemMissingAmount;
+
+  /// INVALID_AMOUNT. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng chưa hợp lệ.'**
+  String get asProblemInvalidAmount;
+
+  /// MISSING_TIME. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm giờ trước khi lưu.'**
+  String get asProblemMissingTime;
+
+  /// FUTURE_TIME (CH06 "giờ trong tương lai"). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ này ở tương lai — chỉ ghi việc đã xảy ra.'**
+  String get asProblemFutureTime;
+
+  /// INVALID_TIME. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ kết thúc phải sau giờ bắt đầu.'**
+  String get asProblemInvalidTime;
+
+  /// MISSING_DATE. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày trước khi lưu.'**
+  String get asProblemMissingDate;
+
+  /// CURRENCY_UNSUPPORTED (P-157). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu chưa hỗ trợ đơn vị tiền này.'**
+  String get asProblemCurrency;
+
+  /// MISSING_TITLE. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm tên việc trước khi lưu.'**
+  String get asProblemMissingTitle;
+
+  /// needs_review / uncertain fields line. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra lại mục này rồi lưu.'**
+  String get asNeedsReview;
+
+  /// DOMAIN_CONFLICT (CH07 "Trùng với giấc … Chưa lưu."). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trùng với một bản đã ghi. Chưa lưu.'**
+  String get asErrConflict;
+
+  /// DUPLICATE_SUSPECTED. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có vẻ mục này đã được ghi. Chưa lưu.'**
+  String get asErrDuplicate;
+
+  /// WRITE_DENIED on an item. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vai trò của bạn chưa được lưu mục này.'**
+  String get asErrWriteDenied;
+
+  /// DRAFT_EXPIRED. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp đã hết hạn. Nhắn lại để tạo bản mới.'**
+  String get asErrExpired;
+
+  /// DRAFT_STALE. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp vừa thay đổi. Xem lại rồi lưu.'**
+  String get asErrStale;
+
+  /// A system failure on an item (retryable). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Thử lại không trừ lượt.'**
+  String get asErrSaveFailed;
+
+  /// SCOPE_CHANGED. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé đang chọn đã đổi. Mở lại đúng bé để lưu.'**
+  String get asErrScope;
+
+  /// MODULE_UNAVAILABLE on an item. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục này chưa có nơi lưu trong app.'**
+  String get asErrModule;
+
+  /// CH04 batch primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu {count} mục đã chọn'**
+  String asSaveSelected(int count);
+
+  /// Batch primary with nothing selected (disabled). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn mục muốn lưu'**
+  String get asChooseToSave;
+
+  /// CH04 batch secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ tất cả'**
+  String get asDiscardAll;
+
+  /// CH07 summary (counts from the server results, never a fake 2/2).
+  ///
+  /// In vi, this message translates to:
+  /// **'{saved}/{total} mục đã lưu · {failed} mục chưa lưu'**
+  String asPartial(int saved, int total, int failed);
+
+  /// CH07 retry (system failures only).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại mục lỗi'**
+  String get asRetryFailed;
+
+  /// Under the CH07 retry. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại không trừ lượt.'**
+  String get asRetryFree;
+
+  /// Confirm while offline: drafts stay drafts. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngoại tuyến · chưa lưu gì. Có mạng rồi lưu lại.'**
+  String get asSaveOffline;
+
+  /// Confirm call failed. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Bản nháp vẫn giữ nguyên.'**
+  String get asSaveError;
+
+  /// Confirm sheet for "Vẫn lưu riêng". VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn lưu riêng?'**
+  String get asSaveAnywayTitle;
+
+  /// Confirm sheet body. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục này trùng với một bản đã ghi. Lưu riêng sẽ có hai bản; bạn sửa hoặc xoá trong nhật ký được.'**
+  String get asSaveAnywayBody;
+
+  /// Confirm sheet primary. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu riêng'**
+  String get asSaveSeparately;
+
+  /// Generic cancel in assistant sheets.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ'**
+  String get asCancel;
+
+  /// CH05 footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi làm rõ thuộc cùng tác vụ, không trừ thêm lượt.'**
+  String get asClarifyFree;
+
+  /// CH05 chip for a typed answer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự nhập'**
+  String get asClarifyOwn;
+
+  /// Clarification past its TTL. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi đã hết hạn. Nhắn lại để hỏi tiếp.'**
+  String get asClarifyExpired;
+
+  /// CH06 sheet title (bottle).
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa cữ bú bình'**
+  String get asEditBottle;
+
+  /// CH06 sheet title (breast). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa cữ bú mẹ'**
+  String get asEditBreast;
+
+  /// CH06 sheet title (sleep). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa giấc ngủ'**
+  String get asEditSleep;
+
+  /// CH06 field (locked to the chat scope).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé'**
+  String get asFieldBaby;
+
+  /// CH06 date + time field. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian'**
+  String get asFieldWhen;
+
+  /// CH06 amount field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng (ml)'**
+  String get asFieldAmount;
+
+  /// CH06 sleep start. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu'**
+  String get asFieldStart;
+
+  /// CH06 sleep end. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc'**
+  String get asFieldEnd;
+
+  /// CH06 breast duration. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số phút'**
+  String get asFieldMinutes;
+
+  /// CH06 breast side. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bên'**
+  String get asFieldSide;
+
+  /// CH06 under the locked baby field. Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé giữ theo cuộc trò chuyện; không chuyển bản nháp sang bé khác.'**
+  String get asBabyLocked;
+
+  /// CH06 primary (updates the draft only, never saves).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật bản nháp'**
+  String get asUpdateDraft;
+
+  /// patchDraft failed. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa cập nhật được bản nháp. Thử lại.'**
+  String get asEditFailed;
+
+  /// CH08 meta ("Hôm nay 15/10 · đến 14:20").
+  ///
+  /// In vi, this message translates to:
+  /// **'{day} · đến {time}'**
+  String asSummaryMeta(String day, String time);
+
+  /// CH08 bottle row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú bình · {count} cữ · {ml} ml'**
+  String asSummaryBottle(int count, String ml);
+
+  /// CH08 nursing row (minutes, never ml).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú mẹ · {count} lần · {minutes} phút'**
+  String asSummaryBreast(int count, int minutes);
+
+  /// CH08 nursing note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính theo phút, không quy đổi ra ml'**
+  String get asSummaryBreastNote;
+
+  /// CH08 sleep row. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ · {count} giấc · {duration}'**
+  String asSummarySleep(int count, String duration);
+
+  /// CH08 with no records. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ghi nhận nào trong khoảng này.'**
+  String get asSummaryNone;
+
+  /// CH08 coverage partial / unknown ("các cữ đã ghi"). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính trên các cữ đã ghi — có thể chưa đầy đủ.'**
+  String get asSummaryPartial;
+
+  /// CH08 coverage complete. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính trên các cữ đã ghi trong ngày.'**
+  String get asSummaryComplete;
+
+  /// CH08 source link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở nhật ký nguồn'**
+  String get asOpenSourceLog;
+
+  /// CH08 note under the card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi không tạo cữ bú mới'**
+  String get asNoRecordCreated;
+
+  /// CH19 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượt hỗ trợ AI'**
+  String get asUsageTitle;
+
+  /// CH19 total after the big number.
+  ///
+  /// In vi, this message translates to:
+  /// **'/ {limit} lượt còn lại'**
+  String asUsageOf(int limit);
+
+  /// CH19 reset line (Free, calendar month).
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm mới {date} theo múi giờ của hộ · dùng chung cho cả hộ'**
+  String asUsageResetFree(String date);
+
+  /// CH19 reset line (Premium). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm mới {date} theo kỳ Premium · dùng chung cho cả hộ'**
+  String asUsageResetPremium(String date);
+
+  /// CH19 section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi việc dùng khoảng'**
+  String get asCostTitle;
+
+  /// CH19 cost row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi, ghi nhanh bằng chữ'**
+  String get asCostText;
+
+  /// CH19 cost row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc 1 ảnh (hoá đơn, note)'**
+  String get asCostPhoto;
+
+  /// CH19 cost row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi lại, sửa, xác nhận cùng tác vụ'**
+  String get asCostFollowUp;
+
+  /// CH19 cost row. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi hệ thống, ảnh không đọc được'**
+  String get asCostError;
+
+  /// CH19 cost row (health is free; missing in the frame). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hướng dẫn sức khoẻ thiết yếu'**
+  String get asCostHealth;
+
+  /// CH19 cost value (from the server policy).
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} lượt'**
+  String asCostCredits(int count);
+
+  /// CH19 cost value (G04: never wraps mid-word).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thêm'**
+  String get asCostNoExtra;
+
+  /// CH19 cost value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không trừ'**
+  String get asCostNotCharged;
+
+  /// CH19 cost value (health). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Miễn phí'**
+  String get asCostFree;
+
+  /// CH19 recent tasks section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần đây'**
+  String get asRecentTitle;
+
+  /// CH19 recent row (text task). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi hoặc ghi nhanh'**
+  String get asRecentText;
+
+  /// CH19 recent row (photo task). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc ảnh'**
+  String get asRecentPhoto;
+
+  /// CH19 recent meta ("Mẹ · 15/10 · 3 lượt").
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} · {date} · {credits} lượt'**
+  String asRecentMeta(String who, String date, int credits);
+
+  /// CH19 separate video quota row. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất video kỷ niệm'**
+  String get asVideoQuotaTitle;
+
+  /// CH19 video quota line. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quota riêng, không dùng lượt hỗ trợ AI · còn {left}/{limit}'**
+  String asVideoQuotaSub(int left, int limit);
+
+  /// CH19 Premium card (Free only).
+  ///
+  /// In vi, this message translates to:
+  /// **'Premium có nhiều lượt hơn, cùng cá nhân hoá chủ động và mẫu thẻ/video Premium.'**
+  String get asPremiumTeaser;
+
+  /// CH19 / CH20 link to the paywall.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem Premium'**
+  String get asSeePremium;
+
+  /// CH19 for a Premium household (no upsell). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hộ đang dùng Premium. Không có gói chat riêng.'**
+  String get asPremiumHousehold;
+
+  /// CH19 load error. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được mức dùng.'**
+  String get asUsageFailed;
+
+  /// Retry (CH25, CH03, CH19).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại'**
+  String get asRetry;
+
+  /// CH20 attachment label (nothing uploaded).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh · chưa gửi'**
+  String get asPhotoNotSent;
+
+  /// CH20 warning (exact quote, not an estimate).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc ảnh này cần {credits} lượt, bạn còn {remaining}.'**
+  String asPhotoQuoteTitle(int credits, int remaining);
+
+  /// CH20 body (Free).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể nhập tay, đợi làm mới {date}, hoặc nâng cấp để tiếp tục ngay. Ảnh chưa được gửi đi.'**
+  String asPhotoQuoteFree(String date);
+
+  /// CH20 body (Premium: no other pack). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể nhập tay hoặc đợi làm mới {date}. Ảnh chưa được gửi đi.'**
+  String asPhotoQuotePremium(String date);
+
+  /// CH20 secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tay'**
+  String get asTypeInstead;
+
+  /// Removes the pending photo (never uploaded). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ ảnh'**
+  String get asRemovePhoto;
+
+  /// Photo allowed by the quote while the A5 upload is not in this build. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc ảnh sẽ có ở bản cập nhật tới. Ảnh chưa được gửi đi.'**
+  String get asPhotoSoon;
+
+  /// CH21 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã dùng hết lượt hỗ trợ AI tháng này.'**
+  String get asOutTitleFree;
+
+  /// CH21 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký miễn phí.'**
+  String get asOutBodyFree;
+
+  /// CH21 direct action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở nhật ký hôm nay'**
+  String get asOpenTodayLog;
+
+  /// CH21 primary (paywall; resumes the kept question once after a verified purchase).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nâng cấp & tiếp tục câu hỏi'**
+  String get asUpgradeContinue;
+
+  /// CH21 / CH24 note, now with a link. Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hướng dẫn sức khoẻ thiết yếu vẫn mở, không cần lượt.'**
+  String get asHealthStillOpen;
+
+  /// Link to HL01 (CH21, CH24, CH27, CH28).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Hướng dẫn sức khoẻ'**
+  String get asOpenHealth;
+
+  /// CH24 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hộ đã dùng hết lượt hỗ trợ AI kỳ này.'**
+  String get asOutTitlePremium;
+
+  /// CH24 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm mới {date}. Bạn vẫn ghi trực tiếp, xem nhật ký, dùng mẫu Premium và quota xuất video riêng.'**
+  String asOutBodyPremium(String date);
+
+  /// CH24 button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem chi tiết mức dùng'**
+  String get asSeeUsage;
+
+  /// CH21 / CH24 when ready drafts exist (brief p.17). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản nháp đã sẵn sàng vẫn lưu được, không cần lượt.'**
+  String get asReadyStillSave;
+
+  /// CH23 banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hộ đã có Premium · tiếp tục câu hỏi đang chờ'**
+  String get asResumedBanner;
+
+  /// CH23 note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi được tính 1 lần sau khi có câu trả lời, không tính lúc hết lượt.'**
+  String get asResumedNote;
+
+  /// PR02 success button when the purchase came from the chat. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục câu hỏi'**
+  String get asContinueQuestion;
+
+  /// CH25 error card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ lý chưa phản hồi được'**
+  String get asFailTitle;
+
+  /// CH25 error body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có gì được lưu. Lượt này không bị trừ; thử lại cũng không trừ hai lần.'**
+  String get asFailBody;
+
+  /// CH25 secondary (opens Ghi nhanh).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi trực tiếp'**
+  String get asLogDirectly;
+
+  /// CH25 offline card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngoại tuyến'**
+  String get asOfflineTitle;
+
+  /// CH25 offline body: kept, never auto-sent (no charge without a tap). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tin nhắn được giữ lại, chưa gửi. Khi có mạng, bấm Gửi để gửi. Ghi trực tiếp trong các module vẫn lưu trên máy.'**
+  String get asOfflineBody;
+
+  /// Any other failure. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có lỗi xảy ra. Chưa có gì được lưu.'**
+  String get asGenericError;
+
+  /// CH26 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước khi dùng trợ lý'**
+  String get asConsentTitle;
+
+  /// CH26 row 1.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tin nhắn và ảnh bạn gửi được AI xử lý để hiểu và tạo bản nháp.'**
+  String get asConsent1;
+
+  /// CH26 row 2 (G05: no deletion claim before it is confirmed). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ gửi ảnh bạn chọn. Ảnh gốc giữ hay xoá theo lựa chọn của bạn; app chỉ báo đã xoá khi việc xoá được xác nhận.'**
+  String get asConsent2;
+
+  /// CH26 row 3 (D-003: nickname, never the real name). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ dùng tên gọi của bé; không gửi tên đầy đủ hay ngày sinh chính xác.'**
+  String get asConsent3;
+
+  /// CH26 row 4.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tự lưu. Bạn kiểm tra trước khi ghi vào nhật ký.'**
+  String get asConsent4;
+
+  /// CH26 provider and retention (D-003), replacing the internal "chờ chính sách được duyệt". Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Một dịch vụ AI bên ngoài xử lý qua máy chủ Child Life, điện thoại không gửi trực tiếp; nhà cung cấp không được lưu giữ dữ liệu này.'**
+  String get asConsentProvider;
+
+  /// CH26 privacy (P-158) and withdrawal. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cuộc trò chuyện chỉ bạn xem được. Bạn đổi ý lúc nào cũng được.'**
+  String get asConsentPrivate;
+
+  /// CH26 primary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng ý và bắt đầu'**
+  String get asConsentAgree;
+
+  /// CH26 secondary (the app stays usable).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không dùng trợ lý'**
+  String get asConsentDecline;
+
+  /// Toast after declining. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã không dùng trợ lý. Ghi trực tiếp vẫn dùng như bình thường.'**
+  String get asConsentDeclined;
+
+  /// Consent call failed. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được lựa chọn. Kiểm tra kết nối và thử lại.'**
+  String get asConsentFailed;
+
+  /// CH27 viewer card (second person: the viewer is the one chatting). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang có quyền xem'**
+  String get asViewerTitle;
+
+  /// CH27 viewer body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người chỉ có quyền xem không ghi được qua chat. Bạn vẫn hỏi và xem tổng hợp được.'**
+  String get asViewerBody;
+
+  /// WRITE_DENIED for a member who writes other modules. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được qua chat'**
+  String get asWriteDeniedTitle;
+
+  /// WRITE_DENIED body. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vai trò của bạn chưa được ghi mục này. Bạn vẫn hỏi và xem tổng hợp được.'**
+  String get asWriteDeniedBody;
+
+  /// READ_DENIED body. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vai trò của bạn chưa được xem dữ liệu này.'**
+  String get asReadDeniedBody;
+
+  /// CH27 module unavailable (no direct "Lưu thành nhắc việc": every write is a draft first). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có nơi lưu việc này'**
+  String get asModuleTitle;
+
+  /// CH27 module unavailable body. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'App chưa có module cho loại việc này nên không tạo bản ghi. Bạn có thể nhắn lại thành nhắc việc có ngày giờ để có bản nháp kiểm tra.'**
+  String get asModuleBody;
+
+  /// CH27 region card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khu vực chưa hỗ trợ'**
+  String get asRegionTitle;
+
+  /// CH27 region body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý chăm sóc qua chat chưa mở ở khu vực của hộ. Ghi nhanh và hỏi dữ liệu vẫn dùng được.'**
+  String get asRegionBody;
+
+  /// FEATURE_DISABLED (kill switch, P-161). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ lý đang tạm nghỉ'**
+  String get asOffTitle;
+
+  /// FEATURE_DISABLED body. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử và ghi trực tiếp vẫn dùng được.'**
+  String get asOffBody;
+
+  /// NOT_MEMBER. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn không còn trong gia đình của bé này.'**
+  String get asNotMemberBody;
+
+  /// CH28 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hãy liên hệ hỗ trợ y tế ngay'**
+  String get asHealthTitle;
+
+  /// CH28 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ lý không phải dịch vụ cấp cứu và không đánh giá được tình trạng của bé.'**
+  String get asHealthBody;
+
+  /// CH28 emergency button with the number from the health pack for the household country. Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gọi {number}'**
+  String asHealthCall(String number);
+
+  /// CH28 when the health pack has no number for the household country (never a default hotline).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gọi bác sĩ của bé'**
+  String get asHealthCallDoctor;
+
+  /// CH28 footnote (without the internal "nội dung y tế chờ duyệt theo vùng"). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Miễn phí · không trừ lượt'**
+  String get asHealthFree;
+
+  /// Dialer failed. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở được ứng dụng gọi điện.'**
+  String get asDialFailed;
+
+  /// CH03 title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hội thoại'**
+  String get asHistoryTitle;
+
+  /// CH03 section.
+  ///
+  /// In vi, this message translates to:
+  /// **'HÔM NAY'**
+  String get asHistoryToday;
+
+  /// CH03 section.
+  ///
+  /// In vi, this message translates to:
+  /// **'TUẦN NÀY'**
+  String get asHistoryWeek;
+
+  /// CH03 section. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'TRƯỚC ĐÓ'**
+  String get asHistoryEarlier;
+
+  /// CH03 row without a title. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cuộc trò chuyện'**
+  String get asHistoryUntitled;
+
+  /// CH03 footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi bé có lịch sử riêng. Đổi bé không chuyển bản nháp đang chờ sang bé khác.'**
+  String get asHistoryFootnote;
+
+  /// CH03 privacy line (P-158). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ bạn xem được các cuộc trò chuyện của mình. Bản ghi đã lưu vẫn chia sẻ theo vai trò.'**
+  String get asHistoryPrivate;
+
+  /// CH03 empty. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có cuộc trò chuyện nào.'**
+  String get asHistoryEmpty;
+
+  /// CH03 load error ("tải lỗi → thử lại"). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được lịch sử.'**
+  String get asHistoryFailed;
+
+  /// CH03 row action. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá cuộc trò chuyện'**
+  String get asDeleteChat;
+
+  /// CH03 confirm title. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá cuộc trò chuyện?'**
+  String get asDeleteTitle;
+
+  /// CH03 confirm body (domain records stay). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tin nhắn và bản nháp chưa lưu trong cuộc trò chuyện này sẽ bị xoá. Những gì đã lưu vào nhật ký, Chi tiêu hay nhắc việc vẫn giữ nguyên.'**
+  String get asDeleteBody;
+
+  /// CH03 confirm button. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá'**
+  String get asDeleteConfirm;
+
+  /// Toast after the server confirmed the delete. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá cuộc trò chuyện'**
+  String get asDeleted;
+
+  /// Delete failed. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa xoá được. Thử lại sau.'**
+  String get asDeleteFailed;
 }
 
 class _AppLocalizationsDelegate

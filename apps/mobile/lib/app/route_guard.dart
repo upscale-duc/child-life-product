@@ -113,6 +113,13 @@ abstract final class Routes {
   /// EN09 "Tóm tắt tuần" (from NL01, Hôm nay and the Sunday notification).
   static const rhythmWeek = '/rhythm/week';
 
+  /// Child Life Assistant (docs/assistant/architecture.md, slice A4): the chat
+  /// (`?scope=child:<baby>|household:<baby>&conversation=<cv>`), CH03 history (`?scope=`) and
+  /// CH19 usage (`?baby=`), full screen above the tabs.
+  static const assistant = '/assistant';
+  static const assistantHistory = '/assistant/history';
+  static const assistantUsage = '/assistant/usage';
+
   /// Premium Slice 3 (plan §5.5): SU01 "Bàn giao cho người chăm tiếp" and the person's AI consent.
   static const rhythmHandover = '/rhythm/handover';
   static const rhythmAiConsent = '/rhythm/ai-consent';

@@ -13996,4 +13996,843 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rhWeekNotifBody => 'See what the family logged this week.';
+
+  @override
+  String get asEntryTitle => 'Child Life assistant';
+
+  @override
+  String asEntryLeft(int remaining, int limit) {
+    return '$remaining/$limit left';
+  }
+
+  @override
+  String asEntryOut(String date) {
+    return 'All used · resets $date';
+  }
+
+  @override
+  String get asComposerHint => 'Ask, log or send a photo…';
+
+  @override
+  String get asComposerHintText => 'Ask or log…';
+
+  @override
+  String get asComposerViewer => 'Ask about the logs…';
+
+  @override
+  String get asComposerOutFree => 'AI help used up this month';
+
+  @override
+  String get asComposerOutPremium =>
+      'Out of AI help · direct logging still works';
+
+  @override
+  String get asComposerAnswer => 'Type your answer…';
+
+  @override
+  String get asSend => 'Send';
+
+  @override
+  String get asAddPhoto => 'Photo';
+
+  @override
+  String get asChipLogFeed => 'Log a feed';
+
+  @override
+  String get asPrefillFeed => 'Bottle feed at ';
+
+  @override
+  String get asChipFeedsToday => 'How did feeds go today?';
+
+  @override
+  String get asChipReceipt => 'Scan a receipt';
+
+  @override
+  String get asFabLabel => 'Open the assistant';
+
+  @override
+  String get asModuleExpenseTitle => 'Snap a receipt or type to log';
+
+  @override
+  String get asModuleExpenseTextOnly => 'Type to log an expense';
+
+  @override
+  String get asModuleSub => 'The assistant drafts it · you check before saving';
+
+  @override
+  String get asScopeHousehold => 'Family';
+
+  @override
+  String get asScopeTitle => 'Chat about';
+
+  @override
+  String get asHistory => 'History';
+
+  @override
+  String get asNewChat => 'New chat';
+
+  @override
+  String get asDetails => 'Details';
+
+  @override
+  String asUsageLeft(int remaining, int limit) {
+    return '$remaining/$limit AI help left';
+  }
+
+  @override
+  String asUsageNear(int remaining, int limit, String date) {
+    return '$remaining/$limit left · resets $date';
+  }
+
+  @override
+  String asUsageOut(int limit, String date) {
+    return 'All $limit used · resets $date';
+  }
+
+  @override
+  String asUsageA11y(int remaining, int limit, String date) {
+    return 'Household AI help: $remaining of $limit left, resets $date';
+  }
+
+  @override
+  String get asBadgeFree => 'Free';
+
+  @override
+  String get asBadgePremium => 'Premium';
+
+  @override
+  String asEmptyTitle(String name) {
+    return 'Ask, log or send a photo for $name';
+  }
+
+  @override
+  String asEmptyTitleText(String name) {
+    return 'Ask or log for $name';
+  }
+
+  @override
+  String get asEmptyTitleHousehold => 'Ask or log for the family';
+
+  @override
+  String get asEmptyBody =>
+      'The assistant understands and drafts. You check before it’s saved in the right place.';
+
+  @override
+  String get asExampleFeed => '“Bottle 120 ml at 8am”';
+
+  @override
+  String get asExampleFeedText => 'Bottle 120 ml at 8am';
+
+  @override
+  String get asExampleFeedsToday => '“How did feeds go today?”';
+
+  @override
+  String get asExampleExpense => '“Diapers 310,000 dong yesterday”';
+
+  @override
+  String get asExampleExpenseText => 'Diapers 310,000 dong yesterday';
+
+  @override
+  String get asExampleReceipt => 'Snap a receipt → log an expense';
+
+  @override
+  String get asExampleNote => 'Snap a note → reminders';
+
+  @override
+  String get asPrivacyNote =>
+      'Messages and photos you send are processed by AI to make drafts. Nothing saves automatically. You choose whether original photos are kept.';
+
+  @override
+  String get asPrivacyNoteText =>
+      'Messages you send are processed by AI to make drafts. Nothing saves automatically.';
+
+  @override
+  String get asThinking => 'The assistant is reading…';
+
+  @override
+  String get asCancelTask => 'Cancel';
+
+  @override
+  String get asCanceled => 'Canceled. No AI help used.';
+
+  @override
+  String get asUnsent => 'Not sent';
+
+  @override
+  String get asSending => 'Sending…';
+
+  @override
+  String asDraftsFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'I found $count things',
+      one: 'I found 1 thing',
+    );
+    return '$_temp0. Check them and choose what to save.';
+  }
+
+  @override
+  String get asUnsupportedPart =>
+      'This needs a newer app version to show. Nothing was saved.';
+
+  @override
+  String get asLoadingChat => 'Opening the chat…';
+
+  @override
+  String get asStateDraft => 'Draft';
+
+  @override
+  String get asStateReview => 'Check';
+
+  @override
+  String get asStateSaving => 'Saving';
+
+  @override
+  String get asStateSaved => 'Saved';
+
+  @override
+  String get asStateFailed => 'Not saved';
+
+  @override
+  String get asStateDiscarded => 'Removed';
+
+  @override
+  String get asStateExpired => 'Expired';
+
+  @override
+  String get asKindBottle => 'Bottle feed';
+
+  @override
+  String get asKindBreast => 'Breastfeed';
+
+  @override
+  String get asKindSleep => 'Sleep';
+
+  @override
+  String get asKindExpense => 'Expense';
+
+  @override
+  String get asKindReminder => 'Reminder';
+
+  @override
+  String get asKindObservation => 'Note';
+
+  @override
+  String get asKindMeal => 'Meal';
+
+  @override
+  String get asKindUnknown => 'Unsupported item';
+
+  @override
+  String asModuleCare(String name) {
+    return '$name · Care log';
+  }
+
+  @override
+  String get asModuleSpending => 'Family · Expenses';
+
+  @override
+  String get asModuleReminders => 'Family · Reminders';
+
+  @override
+  String asModuleRhythm(String name) {
+    return '$name · Growing rhythm';
+  }
+
+  @override
+  String asModuleMeal(String name) {
+    return '$name · Solids';
+  }
+
+  @override
+  String asDayToday(String date) {
+    return 'Today $date';
+  }
+
+  @override
+  String asDayYesterday(String date) {
+    return 'Yesterday $date';
+  }
+
+  @override
+  String asAmountMl(String ml) {
+    return '$ml ml';
+  }
+
+  @override
+  String get asNoAmount => 'no amount yet';
+
+  @override
+  String get asNoTime => 'no time yet';
+
+  @override
+  String get asNoDate => 'no date yet';
+
+  @override
+  String get asEdit => 'Edit';
+
+  @override
+  String get asRemove => 'Remove';
+
+  @override
+  String get asOpenLog => 'Open log';
+
+  @override
+  String get asUndo => 'Undo';
+
+  @override
+  String get asOpenSpending => 'Open Expenses';
+
+  @override
+  String get asOpenReminders => 'Open reminders';
+
+  @override
+  String get asOpenRhythm => 'See the rhythm';
+
+  @override
+  String get asSeeLogged => 'See the logged one';
+
+  @override
+  String get asSaveAnyway => 'Save anyway';
+
+  @override
+  String get asViewerDraftNote => 'View only · can’t save from chat';
+
+  @override
+  String get asProblemMissingAmount => 'Add the amount (ml) before saving.';
+
+  @override
+  String get asProblemInvalidAmount => 'That amount isn’t valid.';
+
+  @override
+  String get asProblemMissingTime => 'Add the time before saving.';
+
+  @override
+  String get asProblemFutureTime =>
+      'That time is in the future — only log what happened.';
+
+  @override
+  String get asProblemInvalidTime => 'The end must be after the start.';
+
+  @override
+  String get asProblemMissingDate => 'Pick the date before saving.';
+
+  @override
+  String get asProblemCurrency => 'Expenses don’t support this currency yet.';
+
+  @override
+  String get asProblemMissingTitle => 'Add a title before saving.';
+
+  @override
+  String get asNeedsReview => 'Check this item before saving.';
+
+  @override
+  String get asErrConflict => 'Overlaps something already logged. Not saved.';
+
+  @override
+  String get asErrDuplicate => 'This looks already logged. Not saved.';
+
+  @override
+  String get asErrWriteDenied => 'Your role can’t save this item.';
+
+  @override
+  String get asErrExpired => 'This draft expired. Send it again for a new one.';
+
+  @override
+  String get asErrStale => 'This draft just changed. Check it, then save.';
+
+  @override
+  String get asErrSaveFailed => 'Couldn’t save. Retrying doesn’t use AI help.';
+
+  @override
+  String get asErrScope =>
+      'The selected baby changed. Open the right baby to save.';
+
+  @override
+  String get asErrModule => 'The app has nowhere to save this yet.';
+
+  @override
+  String asSaveSelected(int count) {
+    return 'Save $count selected';
+  }
+
+  @override
+  String get asChooseToSave => 'Choose what to save';
+
+  @override
+  String get asDiscardAll => 'Discard all';
+
+  @override
+  String asPartial(int saved, int total, int failed) {
+    return '$saved of $total saved · $failed not saved';
+  }
+
+  @override
+  String get asRetryFailed => 'Retry failed item';
+
+  @override
+  String get asRetryFree => 'Retrying doesn’t use AI help.';
+
+  @override
+  String get asSaveOffline =>
+      'Offline · nothing saved. Save again when you’re online.';
+
+  @override
+  String get asSaveError => 'Couldn’t save. Your drafts are kept.';
+
+  @override
+  String get asSaveAnywayTitle => 'Save anyway?';
+
+  @override
+  String get asSaveAnywayBody =>
+      'This overlaps something already logged. Saving separately keeps both; you can edit or delete in the log.';
+
+  @override
+  String get asSaveSeparately => 'Save separately';
+
+  @override
+  String get asCancel => 'Cancel';
+
+  @override
+  String get asClarifyFree =>
+      'Clarifying questions are part of the same task and don’t use extra help.';
+
+  @override
+  String get asClarifyOwn => 'Enter manually';
+
+  @override
+  String get asClarifyExpired =>
+      'This question expired. Send it again to continue.';
+
+  @override
+  String get asEditBottle => 'Edit bottle feed';
+
+  @override
+  String get asEditBreast => 'Edit breastfeed';
+
+  @override
+  String get asEditSleep => 'Edit sleep';
+
+  @override
+  String get asFieldBaby => 'Baby';
+
+  @override
+  String get asFieldWhen => 'Time';
+
+  @override
+  String get asFieldAmount => 'Amount (ml)';
+
+  @override
+  String get asFieldStart => 'Start';
+
+  @override
+  String get asFieldEnd => 'End';
+
+  @override
+  String get asFieldMinutes => 'Minutes';
+
+  @override
+  String get asFieldSide => 'Side';
+
+  @override
+  String get asBabyLocked =>
+      'The baby stays as in this chat; drafts never move to another baby.';
+
+  @override
+  String get asUpdateDraft => 'Update draft';
+
+  @override
+  String get asEditFailed => 'Couldn’t update the draft. Try again.';
+
+  @override
+  String asSummaryMeta(String day, String time) {
+    return '$day · to $time';
+  }
+
+  @override
+  String asSummaryBottle(int count, String ml) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count feeds',
+      one: '1 feed',
+    );
+    return 'Bottle · $_temp0 · $ml ml';
+  }
+
+  @override
+  String asSummaryBreast(int count, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times',
+      one: '1 time',
+    );
+    return 'Breastfeeding · $_temp0 · $minutes min';
+  }
+
+  @override
+  String get asSummaryBreastNote => 'Shown in minutes, not converted to ml';
+
+  @override
+  String asSummarySleep(int count, String duration) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sleeps',
+      one: '1 sleep',
+    );
+    return 'Sleep · $_temp0 · $duration';
+  }
+
+  @override
+  String get asSummaryNone => 'Nothing logged in this period.';
+
+  @override
+  String get asSummaryPartial =>
+      'Based on the feeds logged — may be incomplete.';
+
+  @override
+  String get asSummaryComplete => 'Based on the day’s logged feeds.';
+
+  @override
+  String get asOpenSourceLog => 'Open source log';
+
+  @override
+  String get asNoRecordCreated => 'Questions never create new entries';
+
+  @override
+  String get asUsageTitle => 'AI help';
+
+  @override
+  String asUsageOf(int limit) {
+    return '/ $limit left';
+  }
+
+  @override
+  String asUsageResetFree(String date) {
+    return 'Resets $date in household time · shared by the household';
+  }
+
+  @override
+  String asUsageResetPremium(String date) {
+    return 'Resets $date with the Premium period · shared by the household';
+  }
+
+  @override
+  String get asCostTitle => 'Roughly per task';
+
+  @override
+  String get asCostText => 'Questions, quick text logs';
+
+  @override
+  String get asCostPhoto => 'Read 1 photo (receipt, note)';
+
+  @override
+  String get asCostFollowUp => 'Follow-ups, edits, confirm';
+
+  @override
+  String get asCostError => 'System error, unreadable photo';
+
+  @override
+  String get asCostHealth => 'Essential health guidance';
+
+  @override
+  String asCostCredits(int count) {
+    return '$count';
+  }
+
+  @override
+  String get asCostNoExtra => 'No extra';
+
+  @override
+  String get asCostNotCharged => 'Not charged';
+
+  @override
+  String get asCostFree => 'Free';
+
+  @override
+  String get asRecentTitle => 'Recent';
+
+  @override
+  String get asRecentText => 'Question or quick log';
+
+  @override
+  String get asRecentPhoto => 'Read photo';
+
+  @override
+  String asRecentMeta(String who, String date, int credits) {
+    return '$who · $date · $credits';
+  }
+
+  @override
+  String get asVideoQuotaTitle => 'Keepsake video exports';
+
+  @override
+  String asVideoQuotaSub(int left, int limit) {
+    return 'Separate quota, not AI help · $left/$limit left';
+  }
+
+  @override
+  String get asPremiumTeaser =>
+      'Premium has more help, plus proactive personalisation and Premium card/video templates.';
+
+  @override
+  String get asSeePremium => 'See Premium';
+
+  @override
+  String get asPremiumHousehold =>
+      'Your household has Premium. There’s no separate chat plan.';
+
+  @override
+  String get asUsageFailed => 'Couldn’t load usage.';
+
+  @override
+  String get asRetry => 'Try again';
+
+  @override
+  String get asPhotoNotSent => 'Photo · not sent';
+
+  @override
+  String asPhotoQuoteTitle(int credits, int remaining) {
+    return 'Reading this photo needs $credits, you have $remaining.';
+  }
+
+  @override
+  String asPhotoQuoteFree(String date) {
+    return 'You can type it in, wait for $date, or upgrade to continue now. The photo hasn’t been sent.';
+  }
+
+  @override
+  String asPhotoQuotePremium(String date) {
+    return 'You can type it in or wait for $date. The photo hasn’t been sent.';
+  }
+
+  @override
+  String get asTypeInstead => 'Type it in';
+
+  @override
+  String get asRemovePhoto => 'Remove photo';
+
+  @override
+  String get asPhotoSoon =>
+      'Reading photos comes in the next update. The photo hasn’t been sent.';
+
+  @override
+  String get asOutTitleFree => 'You’ve used all AI help this month.';
+
+  @override
+  String get asOutBodyFree =>
+      'Your question is kept. You can still log directly and view logs for free.';
+
+  @override
+  String get asOpenTodayLog => 'Open today’s log';
+
+  @override
+  String get asUpgradeContinue => 'Upgrade & continue';
+
+  @override
+  String get asHealthStillOpen =>
+      'Essential health guidance stays open, no AI help needed.';
+
+  @override
+  String get asOpenHealth => 'Open Health guidance';
+
+  @override
+  String get asOutTitlePremium =>
+      'Your household has used all AI help this period.';
+
+  @override
+  String asOutBodyPremium(String date) {
+    return 'Resets $date. You can still log directly, view logs, use Premium templates and your separate video quota.';
+  }
+
+  @override
+  String get asSeeUsage => 'See usage details';
+
+  @override
+  String get asReadyStillSave =>
+      'Drafts that are ready can still be saved, no AI help needed.';
+
+  @override
+  String get asResumedBanner =>
+      'Household has Premium · continuing your question';
+
+  @override
+  String get asResumedNote =>
+      'The question counts once when answered, not when you were out.';
+
+  @override
+  String get asContinueQuestion => 'Continue my question';
+
+  @override
+  String get asFailTitle => 'The assistant couldn’t respond';
+
+  @override
+  String get asFailBody =>
+      'Nothing was saved. This didn’t use AI help, and retrying won’t charge twice.';
+
+  @override
+  String get asLogDirectly => 'Log directly';
+
+  @override
+  String get asOfflineTitle => 'Offline';
+
+  @override
+  String get asOfflineBody =>
+      'Your message is kept, not sent. When you’re back online, tap Send. Direct logging in modules still saves on device.';
+
+  @override
+  String get asGenericError => 'Something went wrong. Nothing was saved.';
+
+  @override
+  String get asConsentTitle => 'Before you use the assistant';
+
+  @override
+  String get asConsent1 =>
+      'Messages and photos you send are processed by AI to understand and draft.';
+
+  @override
+  String get asConsent2 =>
+      'Only photos you choose are sent. You choose whether originals are kept; the app says a photo was deleted only once that’s confirmed.';
+
+  @override
+  String get asConsent3 =>
+      'Only your baby’s nickname is used; never the full name or exact birth date.';
+
+  @override
+  String get asConsent4 =>
+      'Nothing saves automatically. You check before anything is logged.';
+
+  @override
+  String get asConsentProvider =>
+      'An external AI service handles it through Child Life’s server, never directly from your phone; the provider must not keep this data.';
+
+  @override
+  String get asConsentPrivate =>
+      'Only you can see your chats. You can change your mind any time.';
+
+  @override
+  String get asConsentAgree => 'Agree and start';
+
+  @override
+  String get asConsentDecline => 'Don’t use the assistant';
+
+  @override
+  String get asConsentDeclined =>
+      'Assistant not used. Direct logging works as usual.';
+
+  @override
+  String get asConsentFailed =>
+      'Couldn’t save your choice. Check the connection and try again.';
+
+  @override
+  String get asViewerTitle => 'You have view access';
+
+  @override
+  String get asViewerBody =>
+      'View-only members can’t log through chat. You can still ask and see summaries.';
+
+  @override
+  String get asWriteDeniedTitle => 'Can’t save from chat';
+
+  @override
+  String get asWriteDeniedBody =>
+      'Your role can’t log this. You can still ask and see summaries.';
+
+  @override
+  String get asReadDeniedBody => 'Your role can’t see this data.';
+
+  @override
+  String get asModuleTitle => 'Nowhere to save this yet';
+
+  @override
+  String get asModuleBody =>
+      'The app has no module for this, so nothing was created. You can ask for a reminder with a date and time instead and check the draft.';
+
+  @override
+  String get asRegionTitle => 'Region not supported';
+
+  @override
+  String get asRegionBody =>
+      'Care suggestions via chat aren’t available in your region yet. Quick logging and data questions still work.';
+
+  @override
+  String get asOffTitle => 'The assistant is paused';
+
+  @override
+  String get asOffBody => 'History and direct logging still work.';
+
+  @override
+  String get asNotMemberBody => 'You’re no longer in this baby’s family.';
+
+  @override
+  String get asHealthTitle => 'Contact medical help now';
+
+  @override
+  String get asHealthBody =>
+      'The assistant isn’t an emergency service and can’t assess your baby.';
+
+  @override
+  String asHealthCall(String number) {
+    return 'Call $number';
+  }
+
+  @override
+  String get asHealthCallDoctor => 'Call your baby’s doctor';
+
+  @override
+  String get asHealthFree => 'Free · no AI help used';
+
+  @override
+  String get asDialFailed => 'Couldn’t open the phone app.';
+
+  @override
+  String get asHistoryTitle => 'Conversations';
+
+  @override
+  String get asHistoryToday => 'TODAY';
+
+  @override
+  String get asHistoryWeek => 'THIS WEEK';
+
+  @override
+  String get asHistoryEarlier => 'EARLIER';
+
+  @override
+  String get asHistoryUntitled => 'Chat';
+
+  @override
+  String get asHistoryFootnote =>
+      'Each baby has its own history. Switching baby never moves pending drafts.';
+
+  @override
+  String get asHistoryPrivate =>
+      'Only you can see your chats. Saved records stay shared by role.';
+
+  @override
+  String get asHistoryEmpty => 'No chats yet.';
+
+  @override
+  String get asHistoryFailed => 'Couldn’t load the history.';
+
+  @override
+  String get asDeleteChat => 'Delete chat';
+
+  @override
+  String get asDeleteTitle => 'Delete this chat?';
+
+  @override
+  String get asDeleteBody =>
+      'Its messages and unsaved drafts will be deleted. Anything already saved to the log, Expenses or Reminders stays.';
+
+  @override
+  String get asDeleteConfirm => 'Delete';
+
+  @override
+  String get asDeleted => 'Chat deleted';
+
+  @override
+  String get asDeleteFailed => 'Couldn’t delete. Try again later.';
 }

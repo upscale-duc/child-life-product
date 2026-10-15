@@ -189,7 +189,11 @@ class _PaywallState extends ConsumerState<PaywallScreen> {
   /// The template's name for PR02 Success, from the draft kept for this purchase.
   String? _templateName() {
     final r = widget.resume;
-    if (r == null || r.kind == ResumeKind.rhythm) return null;
+    if (r == null ||
+        r.kind == ResumeKind.rhythm ||
+        r.kind == ResumeKind.assistant) {
+      return null;
+    }
     return resumeTemplateName(ref, r, Localizations.localeOf(context));
   }
 
