@@ -80,7 +80,12 @@ import {
 } from './assistant-store.js';
 import { healthSignalsIn, moduleAllows, reviewFields } from './assistant-tools.js';
 // Slice A5 (care): health support with the approved number; CH17 feedback rules.
-import { careFeedbackFields, careFeedbackGate, healthSupportPart } from './assistant-care.js';
+import {
+  careFeedbackFields,
+  careFeedbackGate,
+  healthSupportPart,
+  startedFeedbackIdFor,
+} from './assistant-care.js';
 import { assistantPool, assistantUsage, creditPolicy, recentUsage } from './assistant-usage.js';
 import { buildRecFeedback, confirmDraftItem, draftView } from './assistant-writers.js';
 import { releaseQuota, reserveQuota } from './quota.js';
@@ -1046,7 +1051,9 @@ export async function cancelTask(
 /**
  * `submitAssistantFeedback` (CH17): 0 credits, no model. Helpful / unsure / not suitable become
  * the module's `recFeedback` (same document as the app's, `source` aside); "Chưa thử" is a valid
- * answer that records nothing in the module (nothing was tried). One per task and content.
+ * answer that records nothing tried in the module (nothing was tried) and takes back this task's
+ * plan there (its `started` row, D-076 #10), as the app's "Chưa thử" on one's own plan does, so
+ * Nhịp lớn lên stops asking about it. One per task and content.
  */
 export async function submitAssistantFeedback(
   deps: AssistantDeps,
@@ -1080,11 +1087,23 @@ export async function submitAssistantFeedback(
       at,
     };
     if (req.outcome === 'not_tried') {
-      await task.ref.update({
+      const plan = db.doc(
+        `babies/${t.scope.babyId}/recFeedback/${startedFeedbackIdFor(
+          uid,
+          req.taskId,
+          req.contentId,
+          req.contentVersion,
+        )}`,
+      );
+      const batch = db.batch();
+      batch.update(task.ref, {
         feedback: FieldValue.arrayUnion(note),
         updatedAt: at,
         ...careFields,
       });
+      // Only this person's plan from this task (the id says so); absent is fine.
+      batch.delete(plan);
+      await batch.commit();
       return respond(
         clientRequestId,
         now,

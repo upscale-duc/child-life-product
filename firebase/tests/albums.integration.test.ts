@@ -352,6 +352,11 @@ describe('loves, messages and notices', () => {
   });
 
   it('delivers once, in each device’s language, and forgets dead tokens', async () => {
+    // Other files on this emulator leave devices for the same uids (vitest orders files by
+    // duration, not name): start from none.
+    for (const uid of ['grandma', 'dad']) {
+      await db.recursiveDelete(db.collection(`users/${uid}/devices`));
+    }
     await db
       .doc(`users/grandma/devices/d_${'1'.repeat(32)}`)
       .set({ token: 't-vi', language: 'vi', platform: 'android' });
@@ -382,7 +387,10 @@ describe('loves, messages and notices', () => {
       body: 'Mai vừa chia sẻ với gia đình. Mở để xem.',
     });
     expect(sent.find((s) => s.tokens.includes('t-en'))?.title).toBe('7 new moments');
-    expect((await db.doc(`users/dad/devices/d_${'3'.repeat(32)}`).get()).exists).toBe(false);
+    // D-076 #2: the dead token goes; the install stays in "Thiết bị đang đăng nhập" (13n).
+    const dead = await db.doc(`users/dad/devices/d_${'3'.repeat(32)}`).get();
+    expect(dead.exists).toBe(true);
+    expect(dead.get('token')).toBeUndefined();
     expect(await deliverNotice(db, sender, babyId, 'n1', now)).toEqual({ sent: 0 });
   });
 

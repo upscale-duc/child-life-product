@@ -345,6 +345,11 @@ describe('recurring items (8i, D-057)', () => {
     await db.doc(`babies/${b2}`).update({ state: 'deleting' });
     await recurring(b2, rx(5), {});
 
+    // The run is at 00:30: inside EN02 / EN07's default quiet hours (22:00–06:00) the push is
+    // held and only the inbox row is written (D-076 #2), so these parents turned them off.
+    for (const uid of ['mom', 'dad']) {
+      await db.doc(`users/${uid}/settings/personalization`).set({ quietHours: null });
+    }
     const first = await addRecurringExpenses(db, sender, now);
     expect(first).toMatchObject({ added: 5, babies: 1 });
     const spent = await db.collection(`babies/${b1}/expenses`).get();
@@ -401,6 +406,8 @@ describe('recurring items (8i, D-057)', () => {
       reason: 'recurring',
       babyId: b1,
       route: '/care/spending',
+      // D-076 #2: the inbox row the push opens.
+      inboxId: expect.stringMatching(/^n_sp-rx-/),
     });
     expect(sent.find((s) => s.tokens[0] === 't-dad')!.title).toBe('5 recurring expenses added');
 

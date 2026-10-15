@@ -546,6 +546,10 @@ export const reasonMessages = [
   'no-grant',
   'paid-grant',
   'no-baby',
+  // Editorial content (D-076 #5–#7).
+  'not-approved',
+  'not-live',
+  'link-missing',
 ];
 
 export function errorMessageId(error: ApiError): string {

@@ -110,6 +110,17 @@ import {
   type ContentDeps,
   type FirstAidImageStore,
 } from './content.js';
+// Editorial content (D-076 #5–#7): articles, stage content, reference milestones (B01–B08).
+import {
+  contentAct,
+  contentImagesList,
+  contentItem,
+  contentList,
+  contentSave,
+  contentSeed,
+  contentUploadImage,
+  type ContentLibraryDeps,
+} from './content-library.js';
 import { appUpdateSave, appUpdateUploadImage, appUpdateView } from './app-update.js';
 import {
   KeepsakeJobError,
@@ -170,6 +181,8 @@ import {
   pushPayload,
   type PushSender,
 } from './social.js';
+// D-076 #2 notification centre: inbox retention.
+import { sweepExpiredInbox } from './notifications.js';
 import {
   ReminderRuleError,
   answerReminderRule,
@@ -956,6 +969,15 @@ export const deliverFamilyNotice = onDocumentCreated(
       new Date(),
     );
     logger.info('family notice delivered', { sent });
+  },
+);
+
+// D-076 #2: inbox rows (`users/{uid}/notifications`) are kept 90 days.
+export const sweepNotificationInbox = onSchedule(
+  { schedule: 'every day 04:15', timeZone: 'Asia/Ho_Chi_Minh' },
+  async () => {
+    const removed = await sweepExpiredInbox(getFirestore(), new Date());
+    if (removed > 0) logger.info('inbox rows expired', { removed });
   },
 );
 
@@ -2081,6 +2103,37 @@ export const staffRhythmRules = staffCall('staffRhythmRules', (s) =>
 );
 export const staffSetRhythmRules = staffCall('staffSetRhythmRules', (s, d) =>
   setRhythmRules(getFirestore(), s, d, new Date()),
+);
+
+// Thư viện chăm bé, Nội dung theo giai đoạn, Mốc phát triển (D-076 #5–#7, B01–B08): one draft per
+// item in contentDrafts; a different person approves (a qualified reviewer on prod), publishing
+// writes contentArticles / contentStages / contentMilestones; pictures under content/library/.
+function contentLibraryDeps(): ContentLibraryDeps {
+  return {
+    requireReview: environmentForProject(currentProjectId()) === 'prod',
+    images: publicImageStore('library'),
+  };
+}
+export const staffContentList = staffCall('staffContentList', (s, d) =>
+  contentList(getFirestore(), contentLibraryDeps(), s, d, new Date()),
+);
+export const staffContentItem = staffCall('staffContentItem', (s, d) =>
+  contentItem(getFirestore(), s, d, new Date()),
+);
+export const staffContentSave = staffCall('staffContentSave', (s, d) =>
+  contentSave(getFirestore(), contentLibraryDeps(), s, d, new Date()),
+);
+export const staffContentAct = staffCall('staffContentAct', (s, d) =>
+  contentAct(getFirestore(), contentLibraryDeps(), s, d, new Date()),
+);
+export const staffContentSeed = staffCall('staffContentSeed', (s, d) =>
+  contentSeed(getFirestore(), s, d, new Date()),
+);
+export const staffContentImage = staffCall('staffContentImage', (s, d) =>
+  contentUploadImage(getFirestore(), contentLibraryDeps(), s, d, new Date()),
+);
+export const staffContentImages = staffCall('staffContentImages', (s) =>
+  contentImagesList(contentLibraryDeps(), s),
 );
 
 // Mẫu kỷ niệm (D-068 #7): the template catalog and its artwork are managed in the portal and

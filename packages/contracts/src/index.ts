@@ -34,3 +34,7 @@ export * from './billing.js';
 export * from './assistant.js';
 export * from './premium-ops.js';
 export * from './assistant-staff.js';
+export * from './content.js';
+export * from './milestones.js';
+// Notification centre (D-076 #2): inbox, EN07 settings, quiet hours.
+export * from './notifications.js';

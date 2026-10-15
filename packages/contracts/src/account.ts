@@ -176,7 +176,7 @@ export const signOutDeviceSchema = z.object({ deviceId: deviceIdSchema });
 /** Which pushes this account receives; reminders are local and read by the app. */
 export const notificationPrefKeys = ['memories', 'messages', 'reminders', 'storage'] as const;
 export type NotificationPrefKey = (typeof notificationPrefKeys)[number];
-/** Notice kind → preference that silences it. */
+/** Notice kind → preference that silences it. Superseded by `notificationSettingOf` (D-076 #2). */
 export const noticePref: Record<string, NotificationPrefKey> = {
   memories: 'memories',
   shared: 'memories',

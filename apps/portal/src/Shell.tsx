@@ -8,8 +8,10 @@ import {
 import type { SupportedLocale } from '@child-life/web-config';
 import {
   BookOpen,
+  BadgeCheck,
   Bot,
   CalendarHeart,
+  CalendarRange,
   ChartColumn,
   ChevronsUpDown,
   ClipboardCheck,
@@ -23,12 +25,14 @@ import {
   LogOut,
   Monitor,
   Moon,
+  Newspaper,
   ScrollText,
   Search,
   Server,
   ShieldCheck,
   Smartphone,
   Sparkles,
+  Star,
   Sun,
   ToggleRight,
   Users,
@@ -92,11 +96,14 @@ import { sortedRoles } from './session';
 import { AnalyticsScreen } from './screens/Analytics';
 import { AppUpdateScreen } from './screens/AppUpdate';
 import { AssistantScreen } from './screens/Assistant';
+import { ArticlesScreen } from './screens/Articles';
 import { AuditScreen } from './screens/Audit';
+import { ContentReviewScreen } from './screens/ContentReview';
 import { FamiliesScreen } from './screens/Families';
 import { FeaturesScreen } from './screens/Features';
 import { FirstAidScreen } from './screens/FirstAid';
 import { KeepsakesScreen } from './screens/Keepsakes';
+import { MilestonesScreen } from './screens/Milestones';
 import { JobsScreen } from './screens/Jobs';
 import { OverviewScreen } from './screens/Overview';
 import { PremiumScreen } from './screens/Premium';
@@ -104,6 +111,7 @@ import { QaScreen } from './screens/Qa';
 import { ReferenceScreen } from './screens/Reference';
 import { RhythmScreen } from './screens/Rhythm';
 import { StaffScreen } from './screens/Staff';
+import { StagesScreen } from './screens/Stages';
 import { StorageScreen } from './screens/Storage';
 import { SupportScreen } from './screens/Support';
 import { SystemScreen } from './screens/System';
@@ -130,6 +138,11 @@ const nav: NavItem[] = [
   { route: 'firstAid', icon: HeartPulse, group: 'content', can: 'content.view' },
   { route: 'rhythm', icon: CalendarHeart, group: 'content', can: 'content.view' },
   { route: 'keepsakes', icon: Sparkles, group: 'content', can: 'content.view' },
+  // Editorial content (D-076 #5–#7): Bài viết, Nội dung theo giai đoạn, Mốc phát triển, Duyệt.
+  { route: 'articles', icon: Newspaper, group: 'content', can: 'content.view' },
+  { route: 'stages', icon: CalendarRange, group: 'content', can: 'content.view' },
+  { route: 'milestones', icon: Star, group: 'content', can: 'content.view' },
+  { route: 'contentReview', icon: BadgeCheck, group: 'content', can: 'content.view' },
   { route: 'system', icon: Server, group: 'system', can: 'system.view' },
   { route: 'features', icon: ToggleRight, group: 'system', can: 'features.view' },
   { route: 'premium', icon: Crown, group: 'system', can: 'premium.view' },
@@ -327,6 +340,14 @@ function Screen({ route }: { route: Route }) {
       return <RhythmScreen />;
     case 'keepsakes':
       return <KeepsakesScreen />;
+    case 'articles':
+      return <ArticlesScreen />;
+    case 'stages':
+      return <StagesScreen />;
+    case 'milestones':
+      return <MilestonesScreen />;
+    case 'contentReview':
+      return <ContentReviewScreen />;
     case 'staff':
       return <StaffScreen />;
     case 'support':

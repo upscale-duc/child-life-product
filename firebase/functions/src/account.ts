@@ -10,7 +10,6 @@ import {
   localDateIn,
   maxBabyAgeYears,
   noteBytesEstimate,
-  noticePref,
   offerOwnershipSchema,
   requestExportSchema,
   requestStorageSchema,
@@ -966,21 +965,6 @@ export async function signOutDevice(
   const device = await ref.get();
   if (!device.exists) throw new AccountError('not-found', 'device');
   await ref.update({ signedOutAt: now, token: FieldValue.delete() });
-}
-
-/** Push recipients who turned a notice kind off in "Thông báo" (G-056). */
-export async function mutedRecipients(
-  db: Firestore,
-  kind: string,
-  uids: string[],
-): Promise<Set<string>> {
-  const pref = noticePref[kind];
-  if (!pref || uids.length === 0) return new Set();
-  const refs = uids.map((u) => db.doc(`users/${u}/settings/notifications`));
-  const snaps = await db.getAll(...refs);
-  return new Set(
-    snaps.filter((s) => s.exists && s.get(pref) === false).map((s) => s.ref.parent.parent!.id),
-  );
 }
 
 // ---------- Data export (R-187, P-123) ----------

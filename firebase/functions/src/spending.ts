@@ -23,6 +23,7 @@ import {
   type WriteBatch,
 } from 'firebase-admin/firestore';
 import { isActiveMember } from './family.js';
+import { notifyUsers } from './notifications.js';
 import type { PushSender } from './social.js';
 
 /**
@@ -487,20 +488,6 @@ async function monthTotal(
 
 // ---------- Push ----------
 
-/**
- * Spending pushes follow "Nhắc việc" in Thông báo (G-056), as the other reminders do; a separate
- * "Chi tiêu" switch would need a `noticePref` entry in contracts.
- */
-async function mutedForSpending(db: Firestore, uids: string[]): Promise<Set<string>> {
-  if (uids.length === 0) return new Set();
-  const snaps = await db.getAll(...uids.map((u) => db.doc(`users/${u}/settings/notifications`)));
-  return new Set(
-    snaps
-      .filter((s) => s.exists && s.get('reminders') === false)
-      .map((s) => s.ref.parent.parent!.id),
-  );
-}
-
 export type PushMessage = Parameters<PushSender['send']>[1];
 
 /** Sends to the baby's active Cùng nuôi (D-055: spending pushes are for parents). */
@@ -511,42 +498,51 @@ async function pushParents(
   now: Date,
   message: (language: string) => PushMessage,
 ): Promise<number> {
-  if (!sender) return 0;
   const members = await db.collection(`babies/${babyId}/members`).get();
   const parents = members.docs
     .filter((m) => isActiveMember(m, now) && m.get('role') === 'coParent')
     .map((m) => m.id);
-  return pushUsers(db, sender, parents, message);
+  return pushUsers(db, sender, parents, message, now);
 }
 
-/** Sends to [uids]' signed-in devices in each device's language, unless "Nhắc việc" is off. */
+/**
+ * Sends to [uids]' signed-in devices in each device's language through the notification centre
+ * (D-076 #2): EN07 "Chi tiêu" (until set, the old "Nhắc việc" switch, G-056), quiet hours and the
+ * inbox row. The push's collapse id names it, so a retried run does not push twice.
+ */
 export async function pushUsers(
   db: Firestore,
   sender: PushSender | null,
   uids: string[],
   message: (language: string) => PushMessage,
+  now: Date = new Date(),
 ): Promise<number> {
-  if (!sender) return 0;
-  const muted = await mutedForSpending(db, uids);
-  let sent = 0;
-  for (const uid of uids) {
-    if (muted.has(uid)) continue;
-    const devices = await db.collection(`users/${uid}/devices`).get();
-    const byLanguage = new Map<string, string[]>();
-    for (const d of devices.docs) {
-      const token = d.get('token') as string | undefined;
-      if (!token || d.get('signedOutAt')) continue;
-      const language = (d.get('language') as string | undefined) ?? 'vi';
-      byLanguage.set(language, [...(byLanguage.get(language) ?? []), token]);
-    }
-    for (const [language, tokens] of byLanguage) {
-      const rejected = await sender.send(tokens, message(language));
-      sent += tokens.length - rejected.length;
-      for (const t of rejected) {
-        const dead = devices.docs.find((d) => d.get('token') === t);
-        if (dead) await dead.ref.delete();
-      }
-    }
-  }
+  const sample = message('vi');
+  const babyId = sample.data.babyId ?? null;
+  const zone = babyId
+    ? ((await db.doc(`babies/${babyId}`).get()).get('timeZone.zone') as string | undefined)
+    : undefined;
+  const { sent } = await notifyUsers(
+    db,
+    sender,
+    uids,
+    {
+      kind: 'spending',
+      id: sample.apns?.collapseId ?? `sp-${babyId ?? 'x'}-${now.getTime()}`,
+      babyId,
+      data: sample.data,
+      message: (language) => {
+        const { title, body, apns, androidDraws } = message(language);
+        return {
+          title,
+          body,
+          ...(apns ? { apns } : {}),
+          ...(androidDraws !== undefined ? { androidDraws } : {}),
+        };
+      },
+      zone,
+    },
+    now,
+  );
   return sent;
 }

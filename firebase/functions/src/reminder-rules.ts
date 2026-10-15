@@ -17,7 +17,7 @@ import {
   type ReminderRuleType,
   type RuleSchedule,
 } from '@child-life/contracts';
-import { mutedRecipients } from './account.js';
+import { notifyUsers } from './notifications.js';
 import type { PushSender } from './social.js';
 
 /**
@@ -547,44 +547,29 @@ async function pushRule(
   rang: { dueAt: Date; type: ReminderRuleType; recipients: string[]; anchorAt: Date | null },
   now: Date,
 ): Promise<number> {
-  if (!sender) return 0;
   // Someone who left, or became a relative, stops receiving.
   const members = await db.getAll(
     ...rang.recipients.map((uid) => db.doc(`babies/${babyId}/members/${uid}`)),
   );
   const eligible = members.filter((m) => canReceive(memberOf(m, now))).map((m) => m.id);
-  const muted = await mutedRecipients(db, 'reminderRule', eligible);
-  let sent = 0;
-  for (const uid of eligible) {
-    if (muted.has(uid)) continue;
-    const devices = await db.collection(`users/${uid}/devices`).get();
-    const byLanguage = new Map<
-      string,
-      { tokens: string[]; refs: Map<string, DocumentReference> }
-    >();
-    for (const d of devices.docs) {
-      const token = d.get('token') as string | undefined;
-      if (!token || d.get('signedOutAt')) continue;
-      const language = (d.get('language') as string | undefined) ?? 'vi';
-      const entry = byLanguage.get(language) ?? {
-        tokens: [] as string[],
-        refs: new Map<string, DocumentReference>(),
-      };
-      entry.tokens.push(token);
-      entry.refs.set(token, d.ref);
-      byLanguage.set(language, entry);
-    }
-    for (const [language, { tokens, refs }] of byLanguage) {
-      const copy = ruleCopy(rang.type, language, zone, rang.anchorAt, now);
-      const rejected = await sender.send(tokens, {
-        ...copy,
-        data: {
-          kind: 'reminderRule',
-          babyId,
-          ruleId,
-          type: rang.type,
-          dueAt: String(rang.dueAt.getTime()),
-        },
+  // D-076 #2: pushed, recorded in the inbox and switched by EN07 "Bú, ngủ, thay tã" in one place.
+  const { sent } = await notifyUsers(
+    db,
+    sender,
+    eligible,
+    {
+      kind: 'reminderRule',
+      id: `rr-${ruleId}-${rang.dueAt.getTime()}`,
+      babyId,
+      data: {
+        kind: 'reminderRule',
+        babyId,
+        ruleId,
+        type: rang.type,
+        dueAt: String(rang.dueAt.getTime()),
+      },
+      message: (language) => ({
+        ...ruleCopy(rang.type, language, zone, rang.anchorAt, now),
         // 1f actions (iOS categories registered by the app; Android draws them, A6); one
         // notification per rule.
         androidDraws: true,
@@ -593,10 +578,10 @@ async function pushRule(
           collapseId: `rr-${ruleId}`,
           threadId: ruleId,
         },
-      });
-      sent += tokens.length - rejected.length;
-      for (const t of rejected) await refs.get(t)?.delete();
-    }
-  }
+      }),
+      zone,
+    },
+    now,
+  );
   return sent;
 }

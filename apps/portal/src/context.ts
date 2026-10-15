@@ -20,6 +20,11 @@ export type Route =
   | 'firstAid'
   | 'rhythm'
   | 'keepsakes'
+  // Editorial content (D-076 #5–#7): B01/B02, B05/B06, B07/B08, B03/B04.
+  | 'articles'
+  | 'stages'
+  | 'milestones'
+  | 'contentReview'
   | 'system'
   | 'systemAi'
   | 'appUpdate'
@@ -41,6 +46,10 @@ export const routePaths: Record<Route, string> = {
   firstAid: '/first-aid',
   rhythm: '/rhythm',
   keepsakes: '/keepsakes',
+  articles: '/articles',
+  stages: '/stages',
+  milestones: '/milestones',
+  contentReview: '/content-review',
   system: '/system',
   systemAi: '/system/ai',
   appUpdate: '/app-update',
@@ -53,7 +62,18 @@ export const routePaths: Record<Route, string> = {
 };
 
 /** v1.0 screens with their own sub-pages: "/families/F-7Q2K", "/staff/roles/support". */
-const nestedRoutes: Route[] = ['analytics', 'families', 'reference', 'firstAid', 'rhythm', 'staff'];
+const nestedRoutes: Route[] = [
+  'analytics',
+  'families',
+  'reference',
+  'firstAid',
+  'rhythm',
+  'staff',
+  'articles',
+  'stages',
+  'milestones',
+  'contentReview',
+];
 
 export function routeOf(pathname: string): Route {
   const clean = pathname.replace(/\/+$/, '') || '/';

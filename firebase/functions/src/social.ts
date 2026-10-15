@@ -1,5 +1,6 @@
 import { FieldValue, type DocumentSnapshot, type Firestore } from 'firebase-admin/firestore';
-import { mutedRecipients } from './account.js';
+import { notificationKinds, type NotificationKind } from '@child-life/contracts';
+import { notifyUsers } from './notifications.js';
 
 /**
  * Loves, messages and family notices (S10). The app writes loves (`reactions`), favourites and
@@ -208,9 +209,20 @@ export function noticeCopy(kind: string, count: number, actorName: string, langu
   }
 }
 
+function isNotificationKind(kind: string): kind is NotificationKind {
+  return (notificationKinds as readonly string[]).includes(kind);
+}
+
+/** The baby's zone, for quiet hours. */
+async function babyZone(db: Firestore, babyId: string): Promise<string | undefined> {
+  const baby = await db.doc(`babies/${babyId}`).get();
+  return (baby.get('timeZone.zone') as string | undefined) ?? undefined;
+}
+
 /**
  * Sends a recorded notice to its recipients' devices (`users/{uid}/devices`), once. Tokens the
- * push service rejects are removed. Without a sender (emulator) it is only marked delivered.
+ * push service rejects are removed. Without a sender (emulator) it is only marked delivered
+ * and recorded in the inbox.
  */
 export async function deliverNotice(
   db: Firestore,
@@ -231,42 +243,28 @@ export async function deliverNotice(
   const kind = claimed.get('kind') as string;
   const count = (claimed.get('count') as number | undefined) ?? 1;
   const context = claimed.get('context') as Record<string, unknown> | null | undefined;
-  let sent = 0;
   const recipients = (claimed.get('recipients') as string[] | undefined) ?? [];
-  // "Thông báo" settings (G-056): a muted kind is recorded but not pushed.
-  const muted = await mutedRecipients(db, kind, recipients);
-  for (const uid of recipients) {
-    if (muted.has(uid)) continue;
-    const devices = await db.collection(`users/${uid}/devices`).get();
-    const byLanguage = new Map<string, { tokens: string[]; refs: Map<string, DocumentSnapshot> }>();
-    for (const d of devices.docs) {
-      const token = d.get('token') as string | undefined;
-      if (!token) continue;
-      const language = (d.get('language') as string | undefined) ?? 'vi';
-      const entry = byLanguage.get(language) ?? {
-        tokens: [] as string[],
-        refs: new Map<string, DocumentSnapshot>(),
-      };
-      entry.tokens.push(token);
-      entry.refs.set(token, d);
-      byLanguage.set(language, entry);
-    }
-    for (const [language, { tokens, refs }] of byLanguage) {
-      if (!sender) continue;
-      const copy = noticeCopy(kind, count, actor, language);
-      const rejected = await sender.send(tokens, {
-        ...copy,
-        // The job a Video kỷ niệm notice opens (MM09 / MM14); ids only.
-        data: {
-          babyId,
-          kind,
-          noticeId,
-          ...(typeof context?.jobId === 'string' ? { jobId: context.jobId } : {}),
-        },
-      });
-      sent += tokens.length - rejected.length;
-      for (const t of rejected) await refs.get(t)?.ref.delete();
-    }
-  }
+  // D-076 #2: one helper pushes, records the inbox row and honours EN07 / quiet hours (the
+  // "Thông báo" switches of G-056 included).
+  const { sent } = await notifyUsers(
+    db,
+    sender,
+    recipients,
+    {
+      kind: isNotificationKind(kind) ? kind : 'memories',
+      id: `bn-${babyId}-${noticeId}`,
+      babyId,
+      // The job a Video kỷ niệm notice opens (MM09 / MM14); ids only.
+      data: {
+        babyId,
+        kind,
+        noticeId,
+        ...(typeof context?.jobId === 'string' ? { jobId: context.jobId } : {}),
+      },
+      message: (language) => noticeCopy(kind, count, actor, language),
+      zone: await babyZone(db, babyId),
+    },
+    now,
+  );
   return { sent };
 }

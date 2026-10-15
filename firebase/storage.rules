@@ -104,6 +104,13 @@ service firebase.storage {
       allow write: if false;
     }
 
+    // Thư viện chăm bé / Giai đoạn của bé pictures (D-076): editorial, never child media; public
+    // like the first-aid pictures. Functions only; immutable (a new picture gets a new name).
+    match /content/library/{file} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // "Có gì mới" pictures (D-061): public with the release notes; Functions only; immutable.
     match /content/app-update/{file} {
       allow read: if true;

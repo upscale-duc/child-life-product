@@ -1,0 +1,1930 @@
+{
+  "version": "mst_20261015_02",
+  "note": "Engineering draft per D-073 #2 (\"làm nội dung như 1 chuyên môn đi. Người duyệt sau\"), written from public guidance (CDC Learn the Signs. Act Early 2022 / Zubler et al. 2022, WHO MGRS motor windows, AAP / HealthyChildren.org, NHS). Not reviewed: every item publishes with review: null and illustrative: true, and the app shows \"Nội dung minh hoạ · chờ chuyên môn duyệt\" until a qualified reviewer signs it. Ranges are typical windows in months from birth, never deadlines. See SEED-NOTES.md.",
+  "milestones": [
+    {
+      "id": "follows_faces",
+      "group": "cognitive",
+      "order": 10,
+      "ageRange": {
+        "unit": "months",
+        "from": 0,
+        "to": 2
+      },
+      "title": {
+        "vi": "Nhìn theo mặt người",
+        "en": "Follows faces with their eyes"
+      },
+      "howToRecognise": {
+        "vi": "Khi bạn ghé mặt lại gần, cách chừng 20–30 cm, bé nhìn chăm chú vào mắt bạn rồi đưa mắt, dần dần cả đầu, dõi theo khi bạn chầm chậm nghiêng sang một bên. Khác với lúc bé nhìn đăm đăm về phía cửa sổ sáng, ở đây ánh mắt bé bám theo bạn: lúc đầu chỉ một đoạn ngắn, rồi mỗi tuần một xa hơn. Bạn thử lúc bé tỉnh táo, vừa bú no: nói chuyện nhẹ nhàng và di chuyển thật chậm.",
+        "en": "When you bring your face close, about 20 to 30 cm away, your baby gazes into your eyes, then moves their eyes, and in time their head, to follow as you slowly lean to one side. Unlike staring at a bright window, their gaze stays with you: only a short way at first, then a little further each week. Try when your baby is awake and content after a feed: talk softly and move slowly."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 2–3 tháng mà bé chưa nhìn vào mặt bạn, chưa đưa mắt nhìn theo khi bạn di chuyển, hoặc hai mắt bé thường không cùng nhìn về một hướng, hãy nhắc với bác sĩ của bé ở lần khám tới để bác sĩ xem kỹ hơn về mắt, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 2 to 3 months your baby doesn't yet look at your face or watch you as you move, or their eyes often seem to point in different directions, mention it to your baby's doctor at the next visit so they can take a closer look at their eyes, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 1–4 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Developmental-Milestones-3-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "calms_when_held",
+      "group": "socialEmotional",
+      "order": 20,
+      "ageRange": {
+        "unit": "months",
+        "from": 0,
+        "to": 2
+      },
+      "title": {
+        "vi": "Dịu lại khi được bế, được trò chuyện",
+        "en": "Calms when held or spoken to"
+      },
+      "howToRecognise": {
+        "vi": "Khi đang quấy, bé dịu dần lúc được bạn bế áp vào người, nghe giọng bạn hoặc được vỗ về nhẹ. Không phải lần nào bé cũng nín ngay, nhất là lúc đói, mệt hay về chiều tối; điều quan trọng là bé dần quen với vòng tay và giọng nói của người chăm mình. Bạn thử bế bé áp ngực, nói khẽ hoặc ầu ơ một câu quen thuộc.",
+        "en": "When fussing, your baby gradually settles as you hold them close, talk to them or pat them gently. They won't stop crying every time, especially when hungry, tired or in the evening; what matters is that they are getting to know your arms and your voice. Try holding them against your chest and humming or saying a familiar phrase."
+      },
+      "talkToDoctor": {
+        "vi": "Bé nào cũng có lúc quấy khóc khó dỗ. Nếu đến khoảng 2–3 tháng mà bé hầu như không dịu lại dù được bế, vỗ về hay nghe giọng bạn, hoặc tiếng khóc làm cả nhà kiệt sức, hãy nói với bác sĩ của bé. Đừng đợi đến lần khám tới nếu bé khóc khác hẳn mọi ngày, bú kém đi hay bị sốt.",
+        "en": "Every baby has times when they are hard to settle. If at around 2 to 3 months your baby hardly ever calms when held, soothed or spoken to, or the crying is wearing the whole family out, talk to your baby's doctor. Don't wait for the next visit if the crying sounds different from usual, or comes with poor feeding or a fever."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Emotional and social development: birth to 3 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Emotional-and-Social-Development-Birth-to-3-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "recognises_voices",
+      "group": "socialEmotional",
+      "order": 30,
+      "ageRange": {
+        "unit": "months",
+        "from": 0,
+        "to": 3
+      },
+      "title": {
+        "vi": "Nhận ra giọng ba mẹ",
+        "en": "Knows your voice"
+      },
+      "howToRecognise": {
+        "vi": "Ngay từ những tuần đầu, giọng ba mẹ là âm thanh quen thuộc nhất với bé. Khác với cái giật mình trước tiếng động lớn, khi nghe giọng bạn bé thường ngừng cựa quậy, mở to mắt hoặc quay về phía bạn, và lúc đang khóc có thể dịu lại. Hãy trò chuyện với bé thật nhiều trong lúc thay tã, tắm hay cho bú, bằng giọng tự nhiên của bạn.",
+        "en": "From the first weeks, your voice is the sound your baby knows best. Unlike the startle at a loud noise, your voice tends to make them go still, open their eyes wide or turn towards you, and it may help them settle when crying. Talk to your baby often while changing, bathing or feeding them, in your everyday voice."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 3 tháng mà bé dường như không phản ứng với giọng nói hay tiếng động lớn (không giật mình, không ngừng cựa quậy, không chớp mắt), hãy hỏi bác sĩ của bé về việc kiểm tra thính lực ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo. Nếu bé chưa được sàng lọc thính lực sau sinh, bạn cũng có thể hỏi về việc này.",
+        "en": "If at around 3 months your baby doesn't seem to react to voices or loud sounds (no startle, no pause, no blink), ask your baby's doctor about a hearing check at the next visit, or sooner if you are worried. If your baby has not had a newborn hearing screen, you can ask about that too."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org · Hearing and making sounds",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Hearing-and-Making-Sounds.aspx"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Emotional and social development: birth to 3 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Emotional-and-Social-Development-Birth-to-3-Months.aspx"
+        },
+        {
+          "label": "NHS · Help your baby learn to talk",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+        }
+      ]
+    },
+    {
+      "id": "first_smile",
+      "group": "communication",
+      "order": 40,
+      "ageRange": {
+        "unit": "months",
+        "from": 1,
+        "to": 3
+      },
+      "title": {
+        "vi": "Mỉm cười đáp lại",
+        "en": "Smiles back at you"
+      },
+      "howToRecognise": {
+        "vi": "Bé cười khi nhìn thấy mặt bạn hoặc nghe bạn nói chuyện — không phải nụ cười lúc đang ngủ. Thường đi kèm ánh mắt nhìn thẳng và tay chân cử động. Bạn thử ghé mặt lại gần, mỉm cười, trò chuyện chậm rãi rồi chờ bé một chút: nụ cười đáp lại thường đến sau vài giây.",
+        "en": "Your baby smiles when they see your face or hear you talking, not the fleeting smile that comes during sleep. It usually comes with eye contact and wriggling arms and legs. Try bringing your face close, smiling and talking slowly, then give them a moment: the smile back often takes a few seconds."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu khoảng 3 tháng tuổi bé vẫn chưa mỉm cười khi bạn trò chuyện và nhìn vào mắt bé, bạn có thể nhắc với bác sĩ của bé ở lần khám tới. Mỗi bé một nhịp; bác sĩ sẽ cùng bạn quan sát thêm.",
+        "en": "If by around 3 months your baby doesn't yet smile when you talk and look into their eyes, mention it to your baby's doctor at the next visit. Every baby has their own pace; the doctor can watch with you."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Emotional and social development: birth to 3 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Emotional-and-Social-Development-Birth-to-3-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "looks_at_toy",
+      "group": "cognitive",
+      "order": 50,
+      "ageRange": {
+        "unit": "months",
+        "from": 1,
+        "to": 3
+      },
+      "title": {
+        "vi": "Nhìn chăm chú một món đồ",
+        "en": "Looks at a toy for a few seconds"
+      },
+      "howToRecognise": {
+        "vi": "Bé dừng lại và nhìn chăm chú vài giây vào một món đồ có màu tương phản, như chiếc khăn kẻ sọc đen trắng hay quả lục lạc màu đỏ, có khi nằm im như đang ngắm nghía. Khác với cái nhìn lướt qua, ánh mắt bé dừng hẳn trên món đồ. Bạn giơ món đồ cách mặt bé khoảng 20–30 cm và đổi món khác khi bé quay đi, vì đó là cách bé nói mình đã đủ rồi.",
+        "en": "Your baby pauses and stares for a few seconds at something with strong contrast, such as a black-and-white striped cloth or a red rattle, sometimes going still as they take it in. Unlike a passing glance, their eyes settle on the object. Hold it about 20 to 30 cm from their face and swap it when they look away, which is their way of saying they have had enough."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 3 tháng mà ánh mắt bé hầu như không dừng lại ở mặt người hay món đồ trước mặt, hãy nhắc với bác sĩ của bé ở lần khám tới để bác sĩ kiểm tra mắt cho bé, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 3 months your baby's eyes hardly ever settle on a face or a toy in front of them, mention it to your baby's doctor at the next visit so they can check your baby's eyes, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 1–4 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Developmental-Milestones-3-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "lifts_head",
+      "group": "motor",
+      "order": 60,
+      "ageRange": {
+        "unit": "months",
+        "from": 1,
+        "to": 4
+      },
+      "title": {
+        "vi": "Giữ đầu khi nằm sấp",
+        "en": "Holds head up during tummy time"
+      },
+      "howToRecognise": {
+        "vi": "Khi nằm sấp trên sàn hoặc trên ngực bạn, bé nâng đầu lên khỏi mặt phẳng, lúc đầu vài giây rồi lâu dần, và có thể quay đầu sang hai bên. Đến khoảng 3–4 tháng, nhiều bé đã ngẩng đầu cao và chống được khuỷu tay. Cho bé nằm sấp chơi vài phút mỗi lần, vài lần mỗi ngày khi bé thức và có người lớn bên cạnh; luôn đặt bé nằm ngửa khi ngủ.",
+        "en": "Lying on their tummy on the floor or on your chest, your baby lifts their head, for a few seconds at first and then for longer, and may turn it from side to side. By around 3 to 4 months many babies hold their head high and lean on their forearms. Offer a few minutes of tummy time several times a day while they are awake and watched; always put them on their back to sleep."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 4 tháng mà bé chưa giữ được đầu khi bạn bế bé thẳng người, đầu bé lúc nào cũng nghiêng về một phía, hoặc bé từng giữ đầu được rồi lại không giữ được nữa, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 4 months your baby can't yet hold their head steady when you hold them upright, their head always tilts to one side, or they could hold it up before and no longer can, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-months.html"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 4 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/4-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Back to sleep, tummy to play",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Back-to-Sleep-Tummy-to-Play.aspx"
+        }
+      ]
+    },
+    {
+      "id": "hands_to_mouth",
+      "group": "motor",
+      "order": 70,
+      "ageRange": {
+        "unit": "months",
+        "from": 2,
+        "to": 4
+      },
+      "title": {
+        "vi": "Đưa tay lên miệng",
+        "en": "Brings hands to mouth"
+      },
+      "howToRecognise": {
+        "vi": "Bé chủ động đưa nắm tay hoặc vài ngón tay lên miệng để mút, liếm hay gặm. Không chỉ vì đói: đây là cách bé tự vỗ về và khám phá chính đôi tay của mình. Để tay bé được tự do khi thức, giữ tay bé sạch và cắt móng gọn để bé không tự cào xước.",
+        "en": "Your baby brings a fist or a few fingers to their mouth to suck, lick or chew. It isn't only hunger: it is how they soothe themselves and discover their own hands. Leave their hands free while awake, keep them clean and keep nails short so they don't scratch themselves."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 4 tháng mà bé chưa đưa tay lên miệng, hai bàn tay lúc nào cũng nắm chặt, hoặc bé dường như chỉ cử động một bên tay, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 4 months your baby doesn't yet bring their hands to their mouth, keeps both hands tightly fisted all the time, or seems to move only one arm, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 4 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/4-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Movement milestones: birth to 3 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Movement-Birth-to-Three-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "coos",
+      "group": "communication",
+      "order": 80,
+      "ageRange": {
+        "unit": "months",
+        "from": 2,
+        "to": 4
+      },
+      "title": {
+        "vi": "Ê a, tạo âm thanh",
+        "en": "Coos and makes sounds"
+      },
+      "howToRecognise": {
+        "vi": "Ngoài tiếng khóc, bé bắt đầu phát ra những âm tròn, mềm như ơ, a, ư, thường lúc thoải mái, sau khi bú hoặc khi nhìn mặt bạn. Đây là những bước đầu của trò chuyện. Khi bé ê a, bạn nhìn bé, nhại lại âm đó rồi dừng một chút như đang chờ bé đáp: nhiều bé sẽ ê a tiếp.",
+        "en": "Besides crying, your baby starts making soft, round sounds like ooh and aah, often when content, after a feed or while looking at your face. These are the first steps towards conversation. When they coo, look at them, copy the sound and pause as if waiting for a reply: many babies coo back."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 4 tháng mà bé hầu như chỉ khóc, chưa ê a khi thoải mái, hãy hỏi bác sĩ của bé ở lần khám tới, kể cả về việc kiểm tra thính lực.",
+        "en": "If at around 4 months your baby mostly cries and isn't yet cooing when content, mention it to your baby's doctor at the next visit and ask about a hearing check."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-months.html"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 4 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/4-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Hearing and making sounds",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Hearing-and-Making-Sounds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "holds_toy",
+      "group": "motor",
+      "order": 90,
+      "ageRange": {
+        "unit": "months",
+        "from": 3,
+        "to": 5
+      },
+      "title": {
+        "vi": "Nắm giữ đồ chơi đặt vào tay",
+        "en": "Holds a toy put in their hand"
+      },
+      "howToRecognise": {
+        "vi": "Khi bạn đặt một chiếc lục lạc nhẹ vào lòng bàn tay, bé nắm lại và giữ được một lúc, có khi lắc lư hoặc đưa lên miệng. Khác với phản xạ nắm của trẻ sơ sinh, giờ bé bắt đầu cầm có chủ ý và vung tay về phía đồ chơi treo trước mặt. Chọn đồ chơi nhẹ, vừa tay, không có chi tiết nhỏ dễ rơi ra.",
+        "en": "When you place a light rattle in their palm, your baby closes their hand and holds it for a while, sometimes shaking it or bringing it to their mouth. Unlike the newborn grasp reflex, this is starting to be on purpose, and they also swing their arms at toys hanging in front of them. Choose light toys that fit their hand, with no small parts that could come off."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 5 tháng mà bé chưa nắm giữ được món đồ đặt vào tay, chưa vung tay về phía đồ chơi, hoặc chỉ dùng một bên tay, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 5 months your baby doesn't yet hold a toy put in their hand or swing an arm at toys, or uses only one hand, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 4 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/4-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 1–4 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Developmental-Milestones-3-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "turns_to_voice",
+      "group": "communication",
+      "order": 100,
+      "ageRange": {
+        "unit": "months",
+        "from": 3,
+        "to": 5
+      },
+      "title": {
+        "vi": "Quay đầu về phía tiếng nói",
+        "en": "Turns towards your voice"
+      },
+      "howToRecognise": {
+        "vi": "Khi bạn gọi từ một bên mà bé không nhìn thấy, bé quay đầu hoặc đưa mắt tìm về phía có tiếng. Bé cũng giật mình, chớp mắt hay ngừng bú khi có tiếng động lớn. Bạn thử đứng lệch sang một bên, gọi tên bé nhẹ nhàng rồi đổi bên, xem bé có tìm theo không.",
+        "en": "When you call from one side, out of sight, your baby turns their head or eyes to find where the sound came from. They also startle, blink or stop feeding at a loud noise. Try standing to one side, saying their name softly, then switching sides to see whether they search for you."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 5 tháng mà bé ít phản ứng với tiếng động lớn hoặc chưa quay về phía giọng nói, hãy hỏi bác sĩ của bé về việc kiểm tra thính lực ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo. Kết quả sàng lọc thính lực tốt lúc mới sinh không loại trừ việc nghe kém xuất hiện về sau.",
+        "en": "If at around 5 months your baby seldom reacts to loud sounds or doesn't yet turn towards voices, ask your baby's doctor about a hearing check at the next visit, or sooner if you are worried. A newborn hearing screen that was passed doesn't rule out hearing changes that develop after birth."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 4 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/4-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Hearing and making sounds",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Hearing-and-Making-Sounds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "smiles_for_attention",
+      "group": "socialEmotional",
+      "order": 110,
+      "ageRange": {
+        "unit": "months",
+        "from": 3,
+        "to": 5
+      },
+      "title": {
+        "vi": "Cười để gọi bạn chơi cùng",
+        "en": "Smiles to get your attention"
+      },
+      "howToRecognise": {
+        "vi": "Bé không chỉ cười đáp lại mà còn tự cười, ê a hoặc cựa quậy để bạn chú ý và chơi tiếp với bé. Khi bạn ngừng nói chuyện, bé có thể nhìn bạn chờ đợi rồi mỉm cười như mời bạn quay lại. Hãy đáp lại những lời mời nhỏ ấy bằng một câu nói, một cái chạm hay một nụ cười.",
+        "en": "Your baby no longer just smiles back: they smile, coo or wriggle on their own to catch your attention and keep you playing. When you stop talking they may look at you expectantly, then smile as if inviting you back. Answer those little invitations with a word, a touch or a smile."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 5 tháng mà bé hiếm khi tự cười, ê a hay cựa quậy để gọi bạn chơi cùng, hoặc ít nhìn vào mặt bạn, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 5 months your baby rarely smiles, coos or wriggles on their own to get you to play, or seldom looks at your face, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 4 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/4-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Emotional and social development: birth to 3 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Emotional-and-Social-Development-Birth-to-3-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "pushes_up_arms",
+      "group": "motor",
+      "order": 120,
+      "ageRange": {
+        "unit": "months",
+        "from": 3,
+        "to": 6
+      },
+      "title": {
+        "vi": "Chống tay khi nằm sấp",
+        "en": "Pushes up on arms during tummy time"
+      },
+      "howToRecognise": {
+        "vi": "Khi nằm sấp, bé chống hai khuỷu tay rồi dần duỗi thẳng tay, nâng cả ngực lên khỏi sàn để nhìn ngó xung quanh. Tư thế này giúp vai và lưng khỏe hơn, chuẩn bị cho việc lẫy và ngồi. Đặt một món đồ chơi hoặc gương an toàn phía trước, hơi cao hơn tầm mắt bé, để bé có lý do ngẩng lên.",
+        "en": "On their tummy, your baby leans on their forearms and then straightens their arms, lifting their chest off the floor to look around. This builds the neck, arm and back strength they will use for rolling and sitting. Put a toy or a baby-safe mirror in front of them, a little above eye level, to give them a reason to look up."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 6 tháng mà bé chưa chống được khuỷu tay hay duỗi thẳng tay nâng ngực khi nằm sấp, hoặc người bé có vẻ quá mềm hay quá cứng khi bế, hãy nhắc với bác sĩ của bé ở lần khám tới. Nếu bé ít được nằm sấp chơi, bạn cũng kể điều đó với bác sĩ.",
+        "en": "If at around 6 months your baby doesn't yet push up on their forearms or straight arms during tummy time, or their body feels very floppy or very stiff when you hold them, mention it to your baby's doctor at the next visit. If they haven't had much tummy time, tell the doctor that too."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 4 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/4-months.html"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 6 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/6-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Back to sleep, tummy to play",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Back-to-Sleep-Tummy-to-Play.aspx"
+        }
+      ]
+    },
+    {
+      "id": "laughs",
+      "group": "socialEmotional",
+      "order": 130,
+      "ageRange": {
+        "unit": "months",
+        "from": 3,
+        "to": 6
+      },
+      "title": {
+        "vi": "Cười thành tiếng",
+        "en": "Laughs out loud"
+      },
+      "howToRecognise": {
+        "vi": "Từ những tiếng khúc khích đầu tiên, bé dần cười thành tiếng khi được chơi đùa: bạn hôn vào bụng, làm mặt ngộ nghĩnh hay chơi ú òa. Mỗi bé thích một kiểu trò khác nhau, và bé cười nhiều hơn với người quen. Chơi lúc bé tỉnh táo, vui vẻ; khi bé quay đi hay nhăn mặt là lúc cho bé nghỉ.",
+        "en": "From the first chuckles, your baby begins to laugh out loud during play: a kiss on the tummy, a silly face, a gentle surprise. Each baby has their own favourite games, and they laugh more with people they know well. Play when they are alert and happy; turning away or grimacing is their signal for a break."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 6 tháng mà bé chưa cười khúc khích hay cười thành tiếng khi được chơi đùa, hoặc bé từng cười đùa nhiều rồi ít dần đi, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 6 months your baby doesn't yet chuckle or laugh during play, or used to laugh a lot and now rarely does, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 4 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/4-months.html"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 6 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/6-months.html"
+        }
+      ]
+    },
+    {
+      "id": "takes_turns_sounds",
+      "group": "communication",
+      "order": 140,
+      "ageRange": {
+        "unit": "months",
+        "from": 4,
+        "to": 6
+      },
+      "title": {
+        "vi": "Đáp lời bằng âm thanh",
+        "en": "Takes turns making sounds with you"
+      },
+      "howToRecognise": {
+        "vi": "Khi bạn nói, bé im lặng lắng nghe; khi bạn dừng, bé đáp lại bằng tiếng ê a, như một cuộc trò chuyện thật. Giọng bé có thể lên xuống, to nhỏ như đang bắt chước bạn. Hãy nói chậm, chừa khoảng lặng để bé có lượt của mình, và đáp lại mọi âm thanh của bé.",
+        "en": "When you talk, your baby listens; when you pause, they answer with their own sounds, like a real conversation. Their voice may rise and fall as if copying yours. Talk slowly, leave gaps for their turn and respond to the sounds they make."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 6 tháng mà bé chưa ê a đáp lại khi bạn trò chuyện, hoặc bé từng ê a nhiều rồi im dần, hãy hỏi bác sĩ của bé ở lần khám tới, kể cả về việc kiểm tra thính lực, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 6 months your baby doesn't yet make sounds back when you talk to them, or used to babble away and has gone quiet, mention it to your baby's doctor at the next visit and ask about a hearing check, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 6 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/6-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 4 to 7 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Language-Development-4-to-7-Months.aspx"
+        },
+        {
+          "label": "NHS · Help your baby learn to talk",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+        }
+      ]
+    },
+    {
+      "id": "reaches_for_toy",
+      "group": "cognitive",
+      "order": 150,
+      "ageRange": {
+        "unit": "months",
+        "from": 4,
+        "to": 6
+      },
+      "title": {
+        "vi": "Với tay lấy đồ chơi",
+        "en": "Reaches for a toy they want"
+      },
+      "howToRecognise": {
+        "vi": "Bé nhìn thấy món đồ mình thích, vươn một hoặc cả hai tay về phía nó và cố nắm lấy. Lúc đầu động tác còn vụng, hay trượt, nhưng mỗi lần thử là một lần bé tập phối hợp mắt và tay. Đặt đồ chơi vừa tầm với, để bé tự cố gắng và vui mừng cùng bé khi bé chạm được.",
+        "en": "Your baby sees something they want, stretches one or both hands towards it and tries to grab it. The first attempts are clumsy and often miss, but each try links what they see with what their hands do. Place toys just within reach, let them work for it and cheer when they touch it."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 6 tháng mà bé chưa với tay lấy đồ vật, chưa đưa đồ lên miệng, hoặc dường như chỉ dùng một bên tay, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 6 months your baby doesn't yet reach for things or bring them to their mouth, or seems to use only one hand, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 6 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/6-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Cognitive development: 4 to 7 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Cognitive-Development-4-to-7-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "rolls_over",
+      "group": "motor",
+      "order": 160,
+      "ageRange": {
+        "unit": "months",
+        "from": 4,
+        "to": 7
+      },
+      "title": {
+        "vi": "Lẫy (lật người)",
+        "en": "Rolls over"
+      },
+      "howToRecognise": {
+        "vi": "Bé lật từ nằm sấp sang nằm ngửa, hoặc từ ngửa sang sấp; nhiều bé lật được một chiều trước rồi mới đến chiều kia. Lúc đầu bé có thể lật tình cờ khi vươn theo đồ chơi, sau đó lật có chủ ý. Cho bé chơi trên sàn nhiều hơn và đặt đồ chơi lệch sang một bên; từ khi bé bắt đầu lẫy, đừng để bé một mình trên giường, ghế sofa hay bàn thay tã.",
+        "en": "Your baby rolls from tummy to back, or back to tummy; many manage one direction before the other. The first rolls may happen by chance while reaching for a toy, then they become deliberate. Give plenty of floor time and place toys to one side; once rolling starts, never leave your baby alone on a bed, sofa or changing table."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 7 tháng mà bé chưa lật được từ sấp sang ngửa, hoặc một bên tay chân của bé có vẻ yếu hơn hay ít cử động hơn bên kia, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 7 months your baby doesn't yet roll from tummy to back, or one side of their body seems weaker or moves less than the other, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 6 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/6-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Movement milestones: 4 to 7 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Movement-4-to-7-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "blows_raspberries",
+      "group": "communication",
+      "order": 170,
+      "ageRange": {
+        "unit": "months",
+        "from": 4,
+        "to": 7
+      },
+      "title": {
+        "vi": "Thổi phì phì, ré lên thích thú",
+        "en": "Blows raspberries and squeals"
+      },
+      "howToRecognise": {
+        "vi": "Bé thổi phì phì làm bắn nước bọt, ré lên cao, rúc rích hay hét nhỏ để thử giọng của mình. Bé thường làm vậy khi vui và khi thấy bạn hưởng ứng. Bạn thổi phì phì lại hoặc bắt chước tiếng ré của bé; trò chơi qua lại ấy giúp bé luyện môi, lưỡi cho việc nói sau này.",
+        "en": "Your baby blows raspberries, squeals, gurgles or shrieks to try out their voice. They often do it when happy and when you react. Blow a raspberry back or copy their squeal; this back-and-forth helps them practise the lip and tongue movements they will one day use for speech."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 7 tháng mà bé vẫn rất ít phát ra âm thanh, chưa thổi phì phì hay ré lên khi vui, hãy hỏi bác sĩ của bé ở lần khám tới, kể cả về việc kiểm tra thính lực, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 7 months your baby makes very few sounds and doesn't yet blow raspberries or squeal when happy, mention it to your baby's doctor at the next visit and ask about a hearing check, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 6 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/6-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 4 to 7 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Language-Development-4-to-7-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "mouths_objects",
+      "group": "cognitive",
+      "order": 180,
+      "ageRange": {
+        "unit": "months",
+        "from": 4,
+        "to": 7
+      },
+      "title": {
+        "vi": "Cho đồ vào miệng để khám phá",
+        "en": "Explores things with their mouth"
+      },
+      "howToRecognise": {
+        "vi": "Món gì cầm được, bé cũng đưa lên miệng: gặm, mút, xoay qua xoay lại. Đây là cách bé tìm hiểu đồ vật cứng hay mềm, hình dạng ra sao, không chỉ vì sắp mọc răng. Đưa bé những món sạch, đủ lớn để không lọt vào miệng, và cất xa các vật nhỏ như cúc áo, pin, đồng xu.",
+        "en": "Whatever your baby can hold goes into their mouth to be chewed, sucked and turned over. This is how they learn about hard and soft, shapes and textures, not only a sign of teething. Offer clean toys too big to fit in the mouth, and keep small things like buttons, batteries and coins out of reach."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 7 tháng mà bé chưa đưa đồ vật lên miệng để khám phá và cũng ít với tay lấy đồ, hãy kể với bác sĩ của bé ở lần khám tới. Nếu bé bị hóc, ho sặc không dứt hay khó thở, hãy gọi cấp cứu 115 ngay.",
+        "en": "If at around 7 months your baby doesn't yet bring things to their mouth to explore them and seldom reaches for things, mention it to your baby's doctor at the next visit. If your baby chokes, keeps coughing or struggles to breathe, call emergency services (115 in Việt Nam) straight away."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 6 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/6-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Cognitive development: 4 to 7 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Cognitive-Development-4-to-7-Months.aspx"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Choking prevention",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx"
+        }
+      ]
+    },
+    {
+      "id": "enjoys_mirror",
+      "group": "socialEmotional",
+      "order": 190,
+      "ageRange": {
+        "unit": "months",
+        "from": 4,
+        "to": 7
+      },
+      "title": {
+        "vi": "Thích ngắm mình trong gương",
+        "en": "Likes looking in the mirror"
+      },
+      "howToRecognise": {
+        "vi": "Trước gương, bé nhìn chăm chú, mỉm cười, đập tay hay ê a với hình ảnh trong đó. Bé chưa biết đó là mình, nhưng rất thích gương mặt biết cử động này. Bế bé đứng trước gương, chỉ vào hình và nói: Con đây, mẹ đây.",
+        "en": "In front of a mirror your baby stares, smiles, pats or babbles at the reflection. They don't yet know it is them, but they love this moving face. Hold them up to a mirror, point and say: there you are, and here's Mum."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 7 tháng mà bé hầu như không chú ý đến gương mặt, cả mặt bạn lẫn hình của bé trong gương, hãy kể với bác sĩ của bé ở lần khám tới để bác sĩ xem chung với các mốc khác, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 7 months your baby shows little interest in faces, yours or their own in the mirror, mention it to your baby's doctor at the next visit so they can look at it alongside other skills, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 6 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/6-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Emotional and social development: 4 to 7 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Emotional-and-Social-Development-4-7-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "knows_familiar_faces",
+      "group": "socialEmotional",
+      "order": 200,
+      "ageRange": {
+        "unit": "months",
+        "from": 4,
+        "to": 7
+      },
+      "title": {
+        "vi": "Nhận ra người quen",
+        "en": "Knows familiar people"
+      },
+      "howToRecognise": {
+        "vi": "Bé tươi tỉnh, cười, đạp chân khi thấy ba mẹ, ông bà hay người thường chăm mình, và phản ứng khác hẳn với người ít gặp. Bé có thể nhìn lâu hơn, chìa tay hoặc ngả người về phía người quen. Hãy để những người thân thiết thường xuyên chơi và trò chuyện với bé.",
+        "en": "Your baby brightens, smiles and kicks when they see you, their grandparents or the people who care for them most, and reacts differently to people they meet less often. They may look longer, reach out or lean towards someone familiar. Let the people closest to them play and talk with them often."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 7 tháng mà bé chưa có vẻ nhận ra người thân, ít tươi tỉnh hay hào hứng khi thấy ba mẹ, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 7 months your baby doesn't yet seem to know familiar people, and rarely brightens or gets excited when they see you, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 6 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/6-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Emotional and social development: 4 to 7 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Emotional-and-Social-Development-4-7-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "sits_up",
+      "group": "motor",
+      "order": 210,
+      "ageRange": {
+        "unit": "months",
+        "from": 5,
+        "to": 9
+      },
+      "title": {
+        "vi": "Ngồi vững không cần đỡ",
+        "en": "Sits steadily without support"
+      },
+      "howToRecognise": {
+        "vi": "Bé ngồi thẳng lưng, đầu vững, được một lúc mà không cần bạn đỡ hay tựa vào gối. Trước đó, nhiều bé ngồi chống hai tay xuống sàn như chiếc kiềng; dần dần bé rảnh tay để cầm đồ chơi. Cho bé tập ngồi trên thảm, có gối mềm xung quanh và luôn có người lớn ngồi cạnh.",
+        "en": "Your baby sits upright with a steady head for a while, without you holding them or leaning on cushions. Before that, many babies prop themselves on both hands like a tripod; gradually their hands come free to hold toys. Let them practise on a mat with soft cushions around and an adult always close by."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 9 tháng mà bé chưa ngồi được dù có người đỡ nhẹ, hoặc người bé có vẻ quá mềm hay quá cứng khi bạn bế, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 9 months your baby can't yet sit even with a little support, or their body feels very floppy or very stiff when you hold them, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "WHO · Child growth standards · Motor development milestones (MGRS)",
+          "url": "https://www.who.int/tools/child-growth-standards/standards/motor-development-milestones"
+        },
+        {
+          "label": "WHO MGRS Group · Windows of achievement for six gross motor development milestones, Acta Paediatrica Suppl 450 (2006)",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/16817682/"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 9 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html"
+        }
+      ]
+    },
+    {
+      "id": "transfers_hands",
+      "group": "motor",
+      "order": 220,
+      "ageRange": {
+        "unit": "months",
+        "from": 6,
+        "to": 9
+      },
+      "title": {
+        "vi": "Chuyền đồ từ tay này sang tay kia",
+        "en": "Passes things from hand to hand"
+      },
+      "howToRecognise": {
+        "vi": "Bé cầm một món đồ, ngắm nghía rồi chuyền sang tay còn lại, có khi lặp đi lặp lại như một trò chơi. Hai tay bé bắt đầu phối hợp với nhau thay vì mỗi tay một việc. Đưa bé những món dễ cầm như khối vải, vòng nhựa lớn, rồi đưa thêm món thứ hai để xem bé xoay xở thế nào.",
+        "en": "Your baby holds an object, looks at it, then passes it to the other hand, sometimes over and over like a game. Their two hands are starting to work together. Offer easy-to-hold things like fabric blocks or large rings, then hand over a second one to see what they do."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 9 tháng mà bé chưa chuyền đồ từ tay này sang tay kia, hoặc gần như chỉ dùng một tay và bỏ quên tay còn lại, hãy nhắc với bác sĩ của bé ở lần khám tới. Ở tuổi này, việc bé thuận hẳn một tay cũng là điều nên kể với bác sĩ.",
+        "en": "If at around 9 months your baby doesn't yet pass things from hand to hand, or uses one hand almost all the time and seems to forget the other, mention it to your baby's doctor at the next visit. At this age, a strong preference for one hand is also worth mentioning."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 9 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 7 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Developmental-Milestones-7-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "responds_to_name",
+      "group": "communication",
+      "order": 230,
+      "ageRange": {
+        "unit": "months",
+        "from": 6,
+        "to": 9
+      },
+      "title": {
+        "vi": "Quay lại khi được gọi tên",
+        "en": "Responds to their name"
+      },
+      "howToRecognise": {
+        "vi": "Khi bạn gọi tên bé, kể cả lúc bé đang mải chơi, bé ngừng lại, quay đầu nhìn bạn hoặc phát ra tiếng đáp. Không phải lần nào bé cũng quay lại, nhất là khi đang rất tập trung. Gọi tên bé bằng giọng vui, ở khoảng cách gần, và tặng bé một nụ cười khi bé nhìn sang.",
+        "en": "When you call your baby's name, even while they are busy playing, they pause, turn to look at you or make a sound. They won't turn every time, especially when deeply absorbed. Call their name cheerfully from nearby, and reward the look with a smile."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 9 tháng mà bé hiếm khi nhìn sang khi được gọi tên, ít nhìn vào mắt người khác, hoặc không còn làm những điều trước đây đã làm, hãy nhắc với bác sĩ của bé ở lần khám tới, kể cả về việc kiểm tra thính lực, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 9 months your baby rarely looks when you call their name, seldom looks at people's eyes, or stops doing things they used to do, mention it to your baby's doctor at the next visit and ask about a hearing check, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 9 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 1 year (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Language-Development-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "babbles",
+      "group": "communication",
+      "order": 240,
+      "ageRange": {
+        "unit": "months",
+        "from": 6,
+        "to": 10
+      },
+      "title": {
+        "vi": "Bập bẹ ba ba, ma ma",
+        "en": "Babbles bababa, mamama"
+      },
+      "howToRecognise": {
+        "vi": "Bé nối các âm thành chuỗi như ba ba ba, ma ma ma, đa đa, thường lúc chơi một mình hay khi trò chuyện với bạn. Lúc này các âm chưa mang nghĩa, dù nghe như đang gọi ba hay mẹ. Hãy đáp lại như thể bé đang nói thật và gọi tên những thứ quanh bé: Ba đây, bóng đây.",
+        "en": "Your baby strings sounds together like bababa, mamama or dadada, often while playing alone or chatting with you. The sounds don't carry meaning yet, even when they sound like a name. Answer as if your baby is really talking, and name the things around them: here's Daddy, here's the ball."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 10 tháng mà bé chưa bập bẹ chuỗi âm như ba ba ba, ma ma ma, hoặc bé từng bập bẹ rồi thôi, hãy hỏi bác sĩ của bé ở lần khám tới, kể cả về việc kiểm tra thính lực, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 10 months your baby isn't yet babbling strings of sounds like bababa or mamama, or used to babble and has stopped, mention it to your baby's doctor at the next visit and ask about a hearing check, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 9 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Language-Development-8-to-12-Months.aspx"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Hearing and making sounds",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Hearing-and-Making-Sounds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "peekaboo",
+      "group": "socialEmotional",
+      "order": 250,
+      "ageRange": {
+        "unit": "months",
+        "from": 6,
+        "to": 10
+      },
+      "title": {
+        "vi": "Thích chơi ú òa",
+        "en": "Enjoys peekaboo"
+      },
+      "howToRecognise": {
+        "vi": "Khi bạn che mặt rồi bất ngờ hiện ra, bé mỉm cười hoặc cười khanh khách, có khi tự kéo khăn ra hay chờ đến lượt mình trốn. Trò chơi này giúp bé hiểu rằng người và vật vẫn còn đó dù tạm khuất. Che mặt bằng khăn mỏng hay bàn tay, giữ nhịp chậm để bé đoán trước, rồi để bé thử che.",
+        "en": "When you hide your face and pop back out, your baby smiles or giggles, and may pull the cloth away or wait for their turn to hide. The game helps them learn that people and things are still there when out of sight. Use a thin cloth or your hands, keep a slow rhythm so they can anticipate, then let them have a go."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 10 tháng mà bé hầu như không cười hay tỏ ra thích thú khi bạn chơi ú òa và những trò qua lại khác, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 10 months your baby rarely smiles or shows any delight when you play peekaboo and other back-and-forth games, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 9 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Cognitive development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Cognitive-Development-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "stranger_wariness",
+      "group": "socialEmotional",
+      "order": 260,
+      "ageRange": {
+        "unit": "months",
+        "from": 6,
+        "to": 10
+      },
+      "title": {
+        "vi": "Ngại người lạ, bám ba mẹ",
+        "en": "Wary of strangers, clings to you"
+      },
+      "howToRecognise": {
+        "vi": "Bé có thể nhìn chằm chằm, quay mặt đi, khóc hay níu chặt bạn khi gặp người lạ hoặc khi bạn bước ra khỏi phòng. Điều này cho thấy bé đã phân biệt được người thân với người lạ và đã gắn bó với bạn. Cho bé thời gian làm quen từ trong vòng tay bạn thay vì vội trao bé cho người mới; khi đi đâu, hãy chào bé thay vì lặng lẽ rời đi.",
+        "en": "Your baby may stare, turn away, cry or cling to you when they meet someone new or when you leave the room. It shows they can tell familiar people from strangers and have formed a bond with you. Give them time to warm up from your arms rather than handing them straight over, and say goodbye instead of slipping away."
+      },
+      "talkToDoctor": {
+        "vi": "Mức độ ngại người lạ rất khác nhau, có bé gần như không ngại. Nếu đến khoảng 10 tháng mà bé không có phản ứng gì khi bạn rời đi và dường như chưa phân biệt người thân với người lạ, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "How wary babies are of strangers varies a lot, and some hardly are at all. If at around 10 months your baby shows no reaction when you leave and doesn't seem to tell familiar people from strangers, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 9 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Emotional and social development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Emotional-and-Social-Development-8-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "crawls",
+      "group": "motor",
+      "order": 270,
+      "ageRange": {
+        "unit": "months",
+        "from": 6,
+        "to": 13
+      },
+      "title": {
+        "vi": "Bò",
+        "en": "Crawls"
+      },
+      "howToRecognise": {
+        "vi": "Bé di chuyển bằng tay và đầu gối, bụng nhấc khỏi sàn. Trước đó, nhiều bé trườn bằng bụng, lết ngồi hay bò lùi; cũng có bé gần như không bò mà chuyển sang vịn đứng. Tạo một khoảng sàn sạch, an toàn để bé khám phá, đặt đồ chơi xa hơn một chút, và chặn cầu thang, che ổ điện.",
+        "en": "Your baby moves on hands and knees with their tummy off the floor. Before that, many babies commando-crawl, bottom-shuffle or crawl backwards, and some barely crawl at all before pulling up to stand. Make a clean, safe stretch of floor to explore, put toys a little further away, and block stairs and cover sockets."
+      },
+      "talkToDoctor": {
+        "vi": "Một số bé bỏ qua giai đoạn bò mà vẫn tự đi tốt sau này, nên chưa bò không đáng lo nếu bé đang di chuyển theo cách khác. Nếu đến khoảng 12–13 tháng mà bé chưa tự di chuyển bằng cách nào (bò, trườn, lết hay vịn đi), hoặc khi bò bé chỉ dùng một bên tay chân và kéo lê bên kia, hãy nhắc với bác sĩ của bé ở lần khám tới.",
+        "en": "Some babies skip crawling and go on to walk well, so not crawling is no worry if your baby gets around another way. If at around 12 to 13 months your baby doesn't yet move around in any way (crawling, creeping, shuffling or cruising), or crawls using one side and drags the other, mention it to your baby's doctor at the next visit."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "WHO · Child growth standards · Motor development milestones (MGRS)",
+          "url": "https://www.who.int/tools/child-growth-standards/standards/motor-development-milestones"
+        },
+        {
+          "label": "WHO MGRS Group · Windows of achievement for six gross motor development milestones, Acta Paediatrica Suppl 450 (2006)",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/16817682/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Movement milestones: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Movement-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "lifts_arms",
+      "group": "communication",
+      "order": 280,
+      "ageRange": {
+        "unit": "months",
+        "from": 7,
+        "to": 10
+      },
+      "title": {
+        "vi": "Giơ tay đòi bế",
+        "en": "Lifts arms to be picked up"
+      },
+      "howToRecognise": {
+        "vi": "Bé nhìn bạn rồi giơ hai tay lên, có khi kèm tiếng ê a hay rướn người, như để nói: bế con đi. Đây là một trong những cử chỉ giao tiếp đầu tiên, có từ trước khi bé biết nói. Khi đáp lại, hãy nói thành lời điều bé muốn: À, con muốn mẹ bế.",
+        "en": "Your baby looks at you and raises both arms, sometimes with a sound or a lean forward, as if to say: pick me up. It is one of the first gestures babies use to communicate, long before words. Put their wish into words as you respond: oh, you want a cuddle."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 10 tháng mà bé chưa dùng cử chỉ nào như giơ tay đòi bế hay với về phía bạn để cho bạn biết bé muốn gì, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 10 months your baby doesn't yet use gestures such as lifting their arms to be picked up or reaching towards you to show what they want, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 9 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Language-Development-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "bangs_objects",
+      "group": "cognitive",
+      "order": 290,
+      "ageRange": {
+        "unit": "months",
+        "from": 7,
+        "to": 10
+      },
+      "title": {
+        "vi": "Đập hai món đồ vào nhau",
+        "en": "Bangs two things together"
+      },
+      "howToRecognise": {
+        "vi": "Bé cầm mỗi tay một món, như hai khối gỗ hay chiếc thìa và cái bát, rồi gõ vào nhau để nghe tiếng. Bé đang tìm hiểu nguyên nhân và kết quả: mình làm thế này thì có tiếng kia. Cho bé vài món an toàn tạo ra những âm thanh khác nhau, và cùng bé gõ theo nhịp.",
+        "en": "Your baby holds an object in each hand, such as two blocks or a spoon and a bowl, and bangs them together to hear the noise. They are exploring cause and effect: I do this, and that sound happens. Give them a few safe things that make different sounds, and bang out a rhythm together."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 10 tháng mà bé chưa gõ hai món đồ vào nhau và ít dùng cả hai tay để chơi, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 10 months your baby doesn't yet bang two things together and seldom uses both hands to play, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 9 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Cognitive development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Cognitive-Development-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "looks_for_dropped",
+      "group": "cognitive",
+      "order": 300,
+      "ageRange": {
+        "unit": "months",
+        "from": 7,
+        "to": 10
+      },
+      "title": {
+        "vi": "Tìm đồ vừa rơi",
+        "en": "Looks for something dropped"
+      },
+      "howToRecognise": {
+        "vi": "Khi một món đồ rơi khỏi ghế ăn hay lăn ra khỏi tầm mắt, bé nhìn theo, nghiêng người tìm thay vì quên ngay. Bé bắt đầu hiểu rằng đồ vật vẫn còn đó dù không thấy, nên trò thả rơi rồi chờ bạn nhặt lên trở nên rất hấp dẫn. Kiên nhẫn chơi cùng bé, vì với bé đó là một thí nghiệm.",
+        "en": "When something falls off the high chair or rolls out of sight, your baby watches where it goes or leans over to search instead of forgetting it at once. They are learning that objects are still there when they can't see them, which is why dropping things for you to pick up becomes such a good game. Play along patiently; to them it is an experiment."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 10 tháng mà bé hầu như không nhìn theo hay tìm món đồ vừa rơi khỏi tầm mắt, hãy kể với bác sĩ của bé ở lần khám tới; bác sĩ có thể xem cả mắt lẫn cách bé chú ý, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 10 months your baby hardly ever watches or searches for something that has dropped out of sight, mention it to your baby's doctor at the next visit; they can look at both your baby's eyes and attention, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 9 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Cognitive development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Cognitive-Development-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "stands",
+      "group": "motor",
+      "order": 310,
+      "ageRange": {
+        "unit": "months",
+        "from": 7,
+        "to": 12
+      },
+      "title": {
+        "vi": "Vịn đứng",
+        "en": "Pulls up to stand"
+      },
+      "howToRecognise": {
+        "vi": "Bé bám vào thành cũi, ghế hay chân bạn để kéo người đứng dậy, rồi đứng vịn một lúc. Ban đầu bé có thể chưa biết cách ngồi xuống và khóc gọi bạn; hãy chỉ cho bé gập gối từ từ. Kiểm tra đồ đạc bé hay vịn có chắc chắn, không bị lật đổ, và hạ đệm cũi xuống thấp.",
+        "en": "Your baby grabs the cot rail, a chair or your legs to pull up to standing, then stands holding on for a while. At first they may not know how to get back down and call for you; show them how to bend their knees slowly. Check that whatever they pull on is sturdy and can't tip over, and lower the cot mattress."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 12 tháng mà bé chưa vịn để kéo người đứng dậy, chưa chịu lực trên hai chân khi được đỡ đứng, hoặc bé dùng một bên người nhiều hơn hẳn bên kia, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 12 months your baby doesn't yet pull up to stand or take weight on their legs when held standing, or clearly favours one side of their body, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "WHO · Child growth standards · Motor development milestones (MGRS)",
+          "url": "https://www.who.int/tools/child-growth-standards/standards/motor-development-milestones"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 1 year (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Movement milestones: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Movement-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "pincer_grasp",
+      "group": "motor",
+      "order": 320,
+      "ageRange": {
+        "unit": "months",
+        "from": 9,
+        "to": 12
+      },
+      "title": {
+        "vi": "Nhặt đồ nhỏ bằng hai ngón tay",
+        "en": "Picks up small things with finger and thumb"
+      },
+      "howToRecognise": {
+        "vi": "Ban đầu bé cào đồ ăn về phía mình bằng cả bàn tay; dần dần bé dùng đầu ngón cái và ngón trỏ để nhón những mẩu nhỏ như miếng bánh, hạt cơm. Động tác khéo léo này giúp bé tự ăn bốc và sau này cầm bút. Cho bé tập với thức ăn mềm cắt nhỏ, luôn ngồi cạnh khi bé ăn, và cất xa những vật nhỏ dễ gây hóc.",
+        "en": "At first your baby rakes food towards them with the whole hand; gradually they use the tips of thumb and first finger to pick up small pieces such as a crumb of bread or a grain of rice. This fine skill helps with finger feeding and, in time, holding a crayon. Practise with soft, small pieces of food, always sit with them while they eat, and keep small choking hazards away."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 12 tháng mà bé chưa nhặt được mẩu nhỏ bằng đầu ngón cái và ngón trỏ, vẫn chỉ cào bằng cả bàn tay, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 12 months your baby doesn't yet pick up small bits between thumb and first finger and still only rakes with the whole hand, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 9 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 1 year (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Choking prevention",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx"
+        }
+      ]
+    },
+    {
+      "id": "understands_no",
+      "group": "communication",
+      "order": 330,
+      "ageRange": {
+        "unit": "months",
+        "from": 9,
+        "to": 12
+      },
+      "title": {
+        "vi": "Dừng lại khi nghe không",
+        "en": "Understands no"
+      },
+      "howToRecognise": {
+        "vi": "Khi bạn nói không bằng giọng rõ ràng, bé dừng tay trong chốc lát hoặc nhìn bạn, dù có khi lại làm tiếp. Bé hiểu giọng điệu và một vài từ quen từ trước khi tự nói được. Dành từ không cho những điều thật sự cần, vừa nói vừa lắc đầu, rồi đưa bé một việc khác để làm.",
+        "en": "When you say no in a clear voice, your baby pauses for a moment or looks at you, even if they then carry on. They understand tone and a few familiar words well before they can say them. Save no for things that really matter, shake your head as you say it, then offer something else to do."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 12 tháng mà bé dường như chưa hiểu từ quen nào, kể cả không, và ít phản ứng với giọng nói của bạn, hãy hỏi bác sĩ của bé ở lần khám tới, kể cả về việc kiểm tra thính lực, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 12 months your baby doesn't seem to understand any familiar words, including no, and seldom reacts to your voice, mention it to your baby's doctor at the next visit and ask about a hearing check, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 1 year (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Language-Development-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "waves_bye",
+      "group": "communication",
+      "order": 340,
+      "ageRange": {
+        "unit": "months",
+        "from": 9,
+        "to": 12
+      },
+      "title": {
+        "vi": "Vẫy tay bai bai",
+        "en": "Waves bye-bye"
+      },
+      "howToRecognise": {
+        "vi": "Khi có người chào tạm biệt, bé vẫy tay; lúc đầu có thể chỉ là nắm mở bàn tay, hoặc vẫy khi người ta đã đi rồi. Bé đang học những cử chỉ gắn với từng tình huống. Mỗi lần có người ra về, bạn vẫy tay và nói bai bai, rồi chờ bé làm theo.",
+        "en": "When someone says goodbye, your baby waves; at first it may be just opening and closing their hand, or waving after the person has gone. They are learning gestures that go with a situation. Each time someone leaves, wave and say bye-bye, then give them a moment to copy you."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 12 tháng mà bé chưa vẫy tay bai bai hay dùng cử chỉ nào khác như giơ tay, lắc đầu, hoặc bé từng dùng cử chỉ rồi thôi, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 12 months your baby doesn't yet wave bye-bye or use other gestures such as lifting their arms or shaking their head, or used gestures and has stopped, mention it to your baby's doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 1 year (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Language-Development-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "finds_hidden",
+      "group": "cognitive",
+      "order": 350,
+      "ageRange": {
+        "unit": "months",
+        "from": 9,
+        "to": 12
+      },
+      "title": {
+        "vi": "Tìm đồ bạn vừa giấu",
+        "en": "Finds a toy you hid"
+      },
+      "howToRecognise": {
+        "vi": "Bạn giấu món đồ chơi dưới chiếc khăn ngay trước mắt bé, bé kéo khăn ra hoặc nhoài người tìm. Bé đã nhớ được đồ vật ở đâu dù không còn nhìn thấy. Bắt đầu bằng cách giấu một nửa món đồ, rồi giấu hết, rồi đổi sang chỗ khác để thử thách hơn.",
+        "en": "When you hide a toy under a cloth while your baby watches, they pull the cloth away or reach over to find it. They now remember where something is even when they can't see it. Start by half-hiding it, then hide it fully, then try a different spot for more of a challenge."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 12 tháng mà bé chưa tìm món đồ bạn vừa giấu ngay trước mắt bé, hãy kể với bác sĩ của bé ở lần khám tới để bác sĩ xem chung với các mốc khác, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 12 months your baby doesn't yet look for a toy they have just watched you hide, mention it to your baby's doctor at the next visit so they can look at it alongside other skills, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 1 year (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Cognitive development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Cognitive-Development-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "cruises",
+      "group": "motor",
+      "order": 360,
+      "ageRange": {
+        "unit": "months",
+        "from": 9,
+        "to": 13
+      },
+      "title": {
+        "vi": "Vịn đi men",
+        "en": "Walks holding on to furniture"
+      },
+      "howToRecognise": {
+        "vi": "Bé đứng vịn vào ghế sofa, bàn thấp hay thành cũi rồi bước ngang từng bước, chuyển tay dọc theo đồ đạc. Đây là bước chuẩn bị để tự đi: bé tập dồn sức nặng từ chân này sang chân kia. Xếp vài món đồ chắc chắn gần nhau để bé đi men từ món này sang món khác; để bé đi chân trần trong nhà để cảm nhận mặt sàn.",
+        "en": "Your baby stands holding the sofa, a low table or the cot rail and steps sideways, moving their hands along the furniture. This prepares them for walking alone as they learn to shift their weight from foot to foot. Arrange a few sturdy pieces close together so they can cruise from one to the next; going barefoot indoors helps them feel the floor."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 13 tháng mà bé chưa vịn đồ đạc để bước đi, hoặc chưa chịu lực trên hai chân, hãy nhắc với bác sĩ của bé ở lần khám tới. Việc bé lúc nào cũng kiễng mũi chân, hay một bên chân có vẻ yếu hơn, cũng là điều nên kể.",
+        "en": "If at around 13 months your baby doesn't yet walk holding on to furniture or take weight on their legs, mention it to your baby's doctor at the next visit. Standing on tiptoe all the time, or one leg seeming weaker, is also worth mentioning."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "WHO · Child growth standards · Motor development milestones (MGRS)",
+          "url": "https://www.who.int/tools/child-growth-standards/standards/motor-development-milestones"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 1 year (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Movement milestones: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Movement-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "first_word",
+      "group": "communication",
+      "order": 370,
+      "ageRange": {
+        "unit": "months",
+        "from": 9,
+        "to": 15
+      },
+      "title": {
+        "vi": "Nói từ đầu tiên",
+        "en": "Says a first word"
+      },
+      "howToRecognise": {
+        "vi": "Bé dùng một từ, hoặc một âm na ná từ, để chỉ đúng một người hay một thứ và lặp lại nhiều lần, như ba, mẹ, bà, măm. Từ đầu tiên thường chưa tròn tiếng, nhưng bé dùng nó nhất quán. Gọi tên mọi thứ trong ngày, nhắc lại rõ ràng từ bé vừa nói và thêm một chút: Bóng! Ừ, quả bóng đỏ.",
+        "en": "Your baby uses a word, or a sound close to one, for one particular person or thing, again and again: mama, dada, nana, a word for milk. First words are rarely clear, but they are used consistently. Name things throughout the day, repeat the word clearly back and add a little: Ball! Yes, the red ball."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 15 tháng mà bé chưa nói được một, hai từ nào ngoài ba, mẹ (kể cả từ chưa tròn tiếng), hoặc bé từng nói vài từ rồi không nói nữa, hãy hỏi bác sĩ của bé ở lần khám tới, kể cả về việc kiểm tra thính lực, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 15 months your child isn't yet saying one or two words besides mama or dada (even unclear ones), or said a few words and has stopped, mention it to their doctor at the next visit and ask about a hearing check, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 1 year (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 15 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/15-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 1 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Development-1-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "first_steps",
+      "group": "motor",
+      "order": 380,
+      "ageRange": {
+        "unit": "months",
+        "from": 9,
+        "to": 18
+      },
+      "title": {
+        "vi": "Tự đi những bước đầu",
+        "en": "Takes first steps alone"
+      },
+      "howToRecognise": {
+        "vi": "Bé buông tay và tự bước vài bước, dang hai tay giữ thăng bằng, chân hơi dạng, rồi ngồi phịch xuống. Độ tuổi bé biết đi rất rộng: có bé đi từ trước 10 tháng, có bé gần 18 tháng mới đi. Ngồi xuống cách bé vài bước và dang tay đón; xe tập đi có bánh không giúp bé biết đi và dễ gây ngã.",
+        "en": "Your baby lets go and takes a few steps alone, arms out for balance and feet wide apart, then sits down with a bump. The age range for walking is wide: some babies walk before 10 months, others closer to 18 months. Sit a few steps away with your arms open; wheeled baby walkers don't help babies learn to walk and can cause falls."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 18 tháng mà bé chưa tự đi được, hoặc bé đã đi được rồi lại thôi, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo. Mỗi bé một nhịp, và khoảng tuổi biết đi rất rộng.",
+        "en": "If at around 18 months your child isn't yet walking on their own, or walked and then stopped, mention it to their doctor at the next visit, or sooner if you are worried. Every child has their own pace, and the age range for walking is wide."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "WHO MGRS Group · Windows of achievement for six gross motor development milestones, Acta Paediatrica Suppl 450 (2006)",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/16817682/"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 15 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/15-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Baby walkers: a dangerous choice",
+          "url": "https://www.healthychildren.org/English/safety-prevention/at-home/Pages/Baby-Walkers-A-Dangerous-Choice.aspx"
+        }
+      ]
+    },
+    {
+      "id": "container_play",
+      "group": "cognitive",
+      "order": 390,
+      "ageRange": {
+        "unit": "months",
+        "from": 10,
+        "to": 13
+      },
+      "title": {
+        "vi": "Bỏ đồ vào hộp, lấy ra",
+        "en": "Puts things into a container"
+      },
+      "howToRecognise": {
+        "vi": "Bé thả khối gỗ, thìa hay quả bóng vào hộp, vào rổ, rồi đổ ra, rồi lại bỏ vào, có khi say sưa rất lâu. Bé đang khám phá trong và ngoài, đầy và rỗng. Một chiếc hộp nhựa và vài món đồ vừa tay đã thành một trò chơi; bạn làm mẫu một lần rồi để bé tự làm.",
+        "en": "Your baby drops blocks, spoons or balls into a box or basket, tips them out and starts again, sometimes for a long time. They are exploring in and out, full and empty. A plastic tub and a few things that fit in a hand make a whole game; show them once, then let them do it."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 13 tháng mà bé chưa bỏ đồ vào hộp hay vào cốc và ít khám phá đồ vật bằng tay, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 13 months your child doesn't yet put things into a box or cup and seldom explores objects with their hands, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 1 year (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Cognitive development: 8 to 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Cognitive-Development-8-to-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "points_to_ask",
+      "group": "communication",
+      "order": 400,
+      "ageRange": {
+        "unit": "months",
+        "from": 12,
+        "to": 15
+      },
+      "title": {
+        "vi": "Chỉ tay khi muốn thứ gì",
+        "en": "Points to ask for something"
+      },
+      "howToRecognise": {
+        "vi": "Bé chỉ ngón tay về phía món đồ chơi, bình sữa hay cánh cửa, thường kèm tiếng ê a và nhìn sang bạn, để nhờ bạn lấy giúp hoặc đưa bé đi. Chỉ tay là một cách giao tiếp quan trọng trước khi bé có nhiều từ. Hãy nhìn theo hướng bé chỉ, gọi tên điều đó và đáp lại: Con muốn uống nước à?",
+        "en": "Your child points at a toy, the milk bottle or the door, often with a sound and a glance at you, to ask you to get it or take them there. Pointing is an important way to communicate before many words arrive. Look where they point, name it and respond: would you like some water?"
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 15 tháng mà bé chưa dùng cử chỉ nào như chỉ tay, vẫy tay hay giơ tay đòi bế để cho bạn biết bé muốn gì, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 15 months your child doesn't yet use gestures such as pointing, waving or lifting their arms to show you what they want, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 15 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/15-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 1 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Development-1-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "uses_objects_right",
+      "group": "cognitive",
+      "order": 410,
+      "ageRange": {
+        "unit": "months",
+        "from": 12,
+        "to": 15
+      },
+      "title": {
+        "vi": "Dùng đồ vật đúng cách",
+        "en": "Uses everyday things the right way"
+      },
+      "howToRecognise": {
+        "vi": "Bé cầm lược chải lên tóc, áp điện thoại lên tai, đưa cốc lên miệng hay lật sách. Nhờ quan sát người lớn, bé đã biết mỗi đồ vật dùng để làm gì. Đưa bé những đồ thật mà an toàn như lược, cốc nhựa, khăn, và vừa chơi vừa nói: Con đang chải tóc à.",
+        "en": "Your child brushes their hair with a brush, holds a phone to their ear, puts a cup to their mouth or turns the pages of a book. From watching you, they have learned what things are for. Give them safe everyday things like a brush, a plastic cup or a cloth, and describe what they do: you're brushing your hair."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 15 tháng mà bé chưa thử dùng đồ vật quen như cốc, lược, điện thoại theo cách người lớn vẫn dùng, mà chủ yếu chỉ gặm, đập hay ném, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 15 months your child doesn't yet try to use familiar things like a cup, brush or phone the way you do, and mostly mouths, bangs or throws them, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 15 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/15-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Developmental-Milestones-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "claps_excited",
+      "group": "socialEmotional",
+      "order": 420,
+      "ageRange": {
+        "unit": "months",
+        "from": 12,
+        "to": 15
+      },
+      "title": {
+        "vi": "Vỗ tay khi vui",
+        "en": "Claps when excited"
+      },
+      "howToRecognise": {
+        "vi": "Khi thấy điều gì thú vị, nghe bài hát quen hay vừa làm được một việc, bé vỗ tay, có khi kèm nhún nhảy và cười. Bé dùng cả cơ thể để chia sẻ niềm vui với bạn. Cùng bé hát những bài hát thiếu nhi có vỗ tay, và vỗ tay theo mỗi khi bé làm được điều gì đó.",
+        "en": "When something exciting happens, a favourite song starts or they manage something new, your child claps, perhaps bouncing and laughing too. They are using their whole body to share their joy with you. Sing clapping songs together, and clap along when they achieve something."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 15 tháng mà bé ít khi chia sẻ niềm vui với bạn, qua vỗ tay, nụ cười hay ánh mắt, hãy kể với bác sĩ của bé ở lần khám tới để bác sĩ xem chung với các mốc khác, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 15 months your child rarely shares their delight with you, by clapping, smiling or catching your eye, mention it to their doctor at the next visit so they can look at it alongside other skills, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 15 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/15-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Emotional development: 1 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Emotional-Development-1-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "stacks_blocks",
+      "group": "cognitive",
+      "order": 430,
+      "ageRange": {
+        "unit": "months",
+        "from": 12,
+        "to": 16
+      },
+      "title": {
+        "vi": "Chồng hai khối lên nhau",
+        "en": "Stacks two blocks"
+      },
+      "howToRecognise": {
+        "vi": "Bé đặt một khối gỗ hay chiếc cốc lên trên một cái khác mà không đổ, rồi thường rất thích xô cho đổ. Việc này cần mắt nhìn chính xác, tay thả nhẹ và hiểu được chuyện cái này nằm trên cái kia. Chơi với khối mềm hoặc bộ cốc lồng nhau, xếp mẫu hai tầng rồi mời bé thử.",
+        "en": "Your child places one block or cup on top of another without it falling, then usually loves knocking it over. It takes careful looking, a gentle release and an idea of one thing on top of another. Play with soft blocks or stacking cups, build a two-high tower and invite them to try."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 16 tháng mà bé chưa chồng được hai món đồ lên nhau và ít dùng tay để xoay xở với đồ chơi, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 16 months your child can't yet stack two things and seldom uses their hands to work things out with toys, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 15 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/15-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 12 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Developmental-Milestones-12-Months.aspx"
+        }
+      ]
+    },
+    {
+      "id": "shows_affection",
+      "group": "socialEmotional",
+      "order": 435,
+      "ageRange": {
+        "unit": "months",
+        "from": 12,
+        "to": 16
+      },
+      "title": {
+        "vi": "Ôm, thơm người thân",
+        "en": "Shows affection with hugs and kisses"
+      },
+      "howToRecognise": {
+        "vi": "Bé chủ động ôm bạn, áp má, thơm hay dụi đầu vào người thân, và cũng có thể ôm gấu bông, búp bê. Bé đang thể hiện tình cảm theo cách bé vẫn được nhận. Ôm lại bé và gọi tên cảm xúc: Con thương mẹ à; đừng ép bé ôm người bé chưa quen.",
+        "en": "Your child hugs you, presses their cheek to yours, gives kisses or nuzzles into family members, and may also cuddle a soft toy or doll. They are showing love the way they have received it. Hug back and name the feeling: you love Mum, don't you. Don't push them to hug people they don't know well."
+      },
+      "talkToDoctor": {
+        "vi": "Mỗi bé thể hiện tình cảm một kiểu. Nếu đến khoảng 16 tháng mà bé hiếm khi tìm đến bạn để được ôm ấp, vỗ về hay để bày tỏ tình cảm, hãy kể với bác sĩ của bé ở lần khám tới; bác sĩ sẽ cùng bạn nhìn tổng thể, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "Every child shows affection in their own way. If at around 16 months your child rarely comes to you for a cuddle, comfort or to show affection, mention it to their doctor at the next visit, who can look at the whole picture with you, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 15 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/15-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Emotional development: 1 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Emotional-Development-1-Year-Olds.aspx"
+        },
+        {
+          "label": "Zubler et al. · Evidence-informed milestones for developmental surveillance tools, Pediatrics 149(3) (2022)",
+          "url": "https://doi.org/10.1542/peds.2021-052138"
+        }
+      ]
+    },
+    {
+      "id": "follows_direction",
+      "group": "communication",
+      "order": 440,
+      "ageRange": {
+        "unit": "months",
+        "from": 12,
+        "to": 18
+      },
+      "title": {
+        "vi": "Làm theo lời dặn đơn giản",
+        "en": "Follows a simple request"
+      },
+      "howToRecognise": {
+        "vi": "Bé làm theo một yêu cầu ngắn như đưa mẹ cái cốc, ngồi xuống nào; lúc đầu cần bạn vừa nói vừa chỉ tay, dần dần chỉ cần lời nói. Bé hiểu nhiều hơn những gì bé nói được. Nói câu ngắn, rõ ràng, mỗi lần một việc, và khen khi bé làm được.",
+        "en": "Your child follows a short request such as give me the cup or sit down, please; at first with you pointing as you speak, then from your words alone. They understand far more than they can say. Use short, clear sentences, one step at a time, and praise them when they manage it."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 18 tháng mà bé chưa làm theo một lời dặn ngắn như đưa mẹ cái cốc, kể cả khi bạn vừa nói vừa chỉ tay, hãy hỏi bác sĩ của bé ở lần khám tới, kể cả về việc kiểm tra thính lực, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 18 months your child doesn't yet follow a short request such as give me the cup, even when you point as you say it, mention it to their doctor at the next visit and ask about a hearing check, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 15 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/15-months.html"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 18 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/18-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 1 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Development-1-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "climbs_furniture",
+      "group": "motor",
+      "order": 460,
+      "ageRange": {
+        "unit": "months",
+        "from": 14,
+        "to": 20
+      },
+      "title": {
+        "vi": "Đi vững, tự trèo lên ghế",
+        "en": "Walks steadily, climbs onto a sofa"
+      },
+      "howToRecognise": {
+        "vi": "Bé đi lại vững hơn, ít ngã hơn, có thể vừa đi vừa cầm đồ hay kéo xe đồ chơi; bé còn tự trèo lên, trèo xuống ghế sofa hay ghế thấp mà không cần giúp. Bé rất thích leo trèo, nên đây cũng là lúc để ý thêm về an toàn. Cố định tủ, kệ vào tường, chặn cầu thang và để đồ nguy hiểm ngoài tầm với.",
+        "en": "Your child walks more steadily, falls less and may carry things or pull a toy along; they also climb on and off a sofa or low chair without help. They love climbing, so this is a good time to think about safety. Fix furniture to the wall, block stairs and move dangerous things out of reach."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 20 tháng mà bé đi còn rất loạng choạng, ngã nhiều hơn hẳn trước, chưa tự trèo lên xuống ghế thấp, hoặc đã đi được rồi lại thôi, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 20 months your child is still very unsteady, falls much more than before, can't yet climb on and off a low chair, or walked and then stopped, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 18 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/18-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 2 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Developmental-Milestones-2-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "points_to_show",
+      "group": "socialEmotional",
+      "order": 470,
+      "ageRange": {
+        "unit": "months",
+        "from": 15,
+        "to": 18
+      },
+      "title": {
+        "vi": "Chỉ cho bạn xem điều thú vị",
+        "en": "Points to show you something"
+      },
+      "howToRecognise": {
+        "vi": "Bé chỉ vào con chim, chiếc máy bay hay chú chó rồi quay sang nhìn bạn, như muốn nói: nhìn kìa. Khác với chỉ tay để đòi đồ, ở đây bé muốn chia sẻ sự chú ý và niềm thích thú với bạn. Hãy nhìn theo, nói về điều bé chỉ và cùng bé ngạc nhiên.",
+        "en": "Your child points at a bird, an aeroplane or a dog, then looks back at you as if to say: look! Unlike pointing to ask for something, this is about sharing their interest with you. Look where they point, talk about it and share their wonder."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 18 tháng mà bé chưa chỉ tay hay đưa đồ cho bạn xem để chia sẻ điều bé thích, ít nhìn theo khi bạn chỉ, hoặc không còn làm những điều trước đây đã làm, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 18 months your child doesn't yet point or bring things to show you what interests them, seldom looks where you point, or stops doing things they used to do, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 18 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/18-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Social development: 1 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Social-Development-1-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "scribbles",
+      "group": "motor",
+      "order": 480,
+      "ageRange": {
+        "unit": "months",
+        "from": 15,
+        "to": 20
+      },
+      "title": {
+        "vi": "Vẽ nguệch ngoạc",
+        "en": "Scribbles"
+      },
+      "howToRecognise": {
+        "vi": "Bé nắm bút sáp bằng cả bàn tay và tạo ra những nét vạch, nét xoáy trên giấy. Bé đang khám phá rằng tay mình có thể để lại dấu vết. Dán một tờ giấy to xuống bàn, đưa bé bút sáp to, an toàn cho trẻ nhỏ, và khen màu sắc thay vì hỏi bé vẽ gì.",
+        "en": "Your child grips a crayon in their fist and makes lines and swirls on paper. They are discovering that their hand can leave a mark. Tape a large sheet of paper to the table, offer chunky crayons made for small children, and comment on the colours rather than asking what it is."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 20 tháng mà bé chưa cầm bút sáp vạch được nét nào và ít dùng tay để cầm nắm, xoay xở với đồ vật, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 20 months your child doesn't yet make any marks with a crayon and seldom uses their hands to grasp and handle things, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 18 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/18-months.html"
+        },
+        {
+          "label": "NHS · Play and learning",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/"
+        }
+      ]
+    },
+    {
+      "id": "says_three_words",
+      "group": "communication",
+      "order": 490,
+      "ageRange": {
+        "unit": "months",
+        "from": 15,
+        "to": 20
+      },
+      "title": {
+        "vi": "Nói được vài từ",
+        "en": "Says a few words"
+      },
+      "howToRecognise": {
+        "vi": "Ngoài ba, mẹ, bé nói thêm ít nhất ba từ khác, có thể chưa tròn tiếng, như bà, nước, bóng, măm, và dùng đúng lúc. Vốn từ của bé tăng dần, có giai đoạn tăng rất nhanh. Đọc sách tranh cùng bé, chỉ và gọi tên rồi chờ bé nói theo; khi bé nói chưa đúng, bạn chỉ cần nhắc lại từ đó một cách tự nhiên.",
+        "en": "Besides mama and dada, your child says at least three other words, perhaps not quite clear, such as a name for grandma, water, ball or a word for food, and uses them at the right time. Their vocabulary grows steadily, sometimes in a sudden burst. Share picture books, point, name things and wait for them to try; if a word comes out differently, simply say it back clearly."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 20 tháng mà bé chưa nói được ba từ nào ngoài ba, mẹ, hoặc bé từng nói rồi lại thôi, hãy hỏi bác sĩ của bé ở lần khám tới, kể cả về việc kiểm tra thính lực, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 20 months your child isn't yet saying three words besides mama and dada, or said words and has stopped, mention it to their doctor at the next visit and ask about a hearing check, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 18 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/18-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 1 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Development-1-Year-Olds.aspx"
+        },
+        {
+          "label": "NHS · Help your baby learn to talk",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+        }
+      ]
+    },
+    {
+      "id": "checks_back",
+      "group": "socialEmotional",
+      "order": 500,
+      "ageRange": {
+        "unit": "months",
+        "from": 15,
+        "to": 20
+      },
+      "title": {
+        "vi": "Đi khám phá rồi ngoái lại tìm bạn",
+        "en": "Explores, then checks you are near"
+      },
+      "howToRecognise": {
+        "vi": "Ở sân chơi hay nơi mới, bé tự đi khám phá một đoạn rồi ngoái lại xem bạn có còn đó không, hoặc chạy về bên bạn rồi lại đi tiếp. Bạn là chỗ dựa an toàn để bé tự tin tìm hiểu thế giới. Hãy ở trong tầm mắt của bé, mỉm cười khi bé ngoái lại và để bé tự quay đi khi đã sẵn sàng.",
+        "en": "At the playground or somewhere new, your child wanders off to explore, then looks back to check you are still there, or runs back to you before setting off again. You are their safe base for exploring the world. Stay within sight, smile when they look back, and let them set off again in their own time."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 20 tháng mà bé hầu như không ngoái lại tìm bạn khi đi khám phá, hoặc không tìm đến bạn khi sợ hay buồn, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 20 months your child hardly ever looks back for you while exploring, or doesn't come to you when scared or upset, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 18 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/18-months.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Emotional development: 1 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Emotional-Development-1-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "kicks_ball",
+      "group": "motor",
+      "order": 510,
+      "ageRange": {
+        "unit": "months",
+        "from": 18,
+        "to": 24
+      },
+      "title": {
+        "vi": "Đá bóng",
+        "en": "Kicks a ball"
+      },
+      "howToRecognise": {
+        "vi": "Bé đứng một chân trong chốc lát để đá quả bóng lăn về phía trước; lúc đầu có thể bé bước vào quả bóng hơn là đá. Động tác này cần thăng bằng tốt và sự phối hợp giữa mắt và chân. Lăn nhẹ một quả bóng to, mềm về phía bé và chơi ở nơi rộng, bằng phẳng.",
+        "en": "Your child balances on one leg for a moment to kick a ball forwards; at first they may walk into the ball rather than kick it. Kicking takes good balance and eye-foot coordination. Roll a large, soft ball gently towards them and play somewhere open and flat."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 24 tháng mà bé chưa đá được quả bóng, đi còn rất loạng choạng, hoặc ngã nhiều hơn hẳn trước, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 24 months your child can't yet kick a ball, is still very unsteady on their feet, or falls much more than before, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 years (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 2 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Developmental-Milestones-2-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "runs",
+      "group": "motor",
+      "order": 520,
+      "ageRange": {
+        "unit": "months",
+        "from": 18,
+        "to": 24
+      },
+      "title": {
+        "vi": "Chạy",
+        "en": "Runs"
+      },
+      "howToRecognise": {
+        "vi": "Bé đi nhanh dần thành chạy, ban đầu còn cứng người, bước ngắn và hay vấp, sau đó uyển chuyển hơn, biết dừng và đổi hướng. Nhiều bé rất thích chạy trốn để được đuổi theo. Cho bé chạy nhảy ngoài trời mỗi ngày ở nơi an toàn, xa đường xe cộ, và luôn nắm tay bé khi ở gần đường.",
+        "en": "Your child's fast walk turns into a run, stiff at first with short steps and plenty of trips, then smoother, with stopping and turning. Many love running away to be chased. Give them time outdoors every day somewhere safe and away from traffic, and hold their hand near roads."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 24 tháng mà bé chưa chạy được, chưa bước lên được vài bậc cầu thang dù có người dắt, hoặc lúc nào cũng đi kiễng mũi chân, hãy nhắc với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 24 months your child can't yet run or walk up a few stairs even with help, or walks on tiptoe all the time, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 years (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 2 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Developmental-Milestones-2-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "two_word_phrases",
+      "group": "communication",
+      "order": 530,
+      "ageRange": {
+        "unit": "months",
+        "from": 18,
+        "to": 24
+      },
+      "title": {
+        "vi": "Nói câu hai từ",
+        "en": "Puts two words together"
+      },
+      "howToRecognise": {
+        "vi": "Bé ghép hai từ thành một ý của riêng mình như uống sữa, bế con, mẹ đi, bóng đâu. Khác với những câu bé thuộc lòng hay nhại lại nguyên văn như cảm ơn ạ, bai bai, đây là hai từ bé tự ghép để nói điều mình muốn. Mở rộng câu của bé thêm một chút: Uống sữa à? Con muốn uống sữa ấm.",
+        "en": "Your child puts two words together to make their own meaning, such as more milk, pick me up, Mum go or where ball. Unlike set phrases learned whole or echoed straight back, such as thank you or bye-bye, these are two words they combine themselves to say what they want. Stretch what they say by a word or two: More milk? You'd like some more warm milk."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 24 tháng mà bé chưa ghép được hai từ có nghĩa (không chỉ nhắc lại lời người khác), chưa bắt chước hành động hay lời nói, hoặc không còn dùng những từ trước đây đã dùng, hãy hỏi bác sĩ của bé ở lần khám tới, kể cả về việc kiểm tra thính lực.",
+        "en": "If at around 24 months your child isn't yet putting two words together with meaning (not just repeating what they hear), doesn't copy actions or words, or has stopped using words they used before, mention it to their doctor at the next visit and ask about a hearing check."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 years (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Language development: 2 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Development-2-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "pretend_play",
+      "group": "cognitive",
+      "order": 540,
+      "ageRange": {
+        "unit": "months",
+        "from": 18,
+        "to": 24
+      },
+      "title": {
+        "vi": "Bắt chước việc nhà, chơi giả vờ đơn giản",
+        "en": "Copies chores, simple pretend play"
+      },
+      "howToRecognise": {
+        "vi": "Bé bắt chước việc bạn làm, như cầm chổi quét nhà, lau bàn, gấp khăn, rồi bắt đầu những trò giả vờ đơn giản với đồ chơi giống đồ thật: đút thìa cho búp bê, bày đồ ăn đồ chơi lên đĩa, ru gấu ngủ. Còn việc lấy một vật thay cho vật khác, như coi khối gỗ là cái bánh, thường đến sau, quanh 2 tuổi rưỡi. Cho bé một cây chổi nhỏ, bộ nồi niêu đồ chơi và cùng tham gia: Gấu đói chưa con?",
+        "en": "Your child copies what you do, such as sweeping, wiping the table or folding a cloth, then starts simple pretend play with realistic toys: spooning food to a doll, putting toy food on a plate, rocking a teddy to sleep. Using one thing to stand for another, like a block for a cake, usually comes after this, around two and a half. Offer a small broom or toy pots and join in: is teddy hungry?"
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 24 tháng mà bé chưa bắt chước những việc bạn làm, chưa chơi với đồ chơi theo cách đơn giản như đẩy ô tô hay cho búp bê ăn, hoặc thôi không chơi những trò trước đây hay chơi, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 24 months your child doesn't yet copy things you do, or play with toys in simple ways like pushing a car or feeding a doll, or has stopped playing games they used to play, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 18 months (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/18-months.html"
+        },
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 years (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 2 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Developmental-Milestones-2-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "two_hands_task",
+      "group": "cognitive",
+      "order": 550,
+      "ageRange": {
+        "unit": "months",
+        "from": 20,
+        "to": 24
+      },
+      "title": {
+        "vi": "Tay giữ, tay làm",
+        "en": "Holds with one hand, works with the other"
+      },
+      "howToRecognise": {
+        "vi": "Bé giữ một món đồ bằng tay này trong khi tay kia làm việc khác, như giữ hộp và mở nắp, giữ sách và lật trang. Bé cũng thích bấm nút, vặn núm, gạt công tắc trên đồ chơi và chơi với nhiều món cùng lúc. Đưa bé hộp có nắp dễ mở, đồ chơi có nút bấm, và để bé tự xoay xở trước khi giúp.",
+        "en": "Your child holds something with one hand while the other does a job, like holding a box and taking off the lid, or holding a book and turning a page. They also enjoy buttons, knobs and switches on toys and playing with more than one toy at a time. Offer boxes with easy lids and toys with buttons, and let them work at it before you help."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 24 tháng mà bé chưa phối hợp hai tay, như một tay giữ hộp, một tay mở nắp, và ít tò mò với nút bấm, núm vặn trên đồ chơi, hãy kể với bác sĩ của bé ở lần khám tới, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 24 months your child doesn't yet use their two hands together, like holding a box with one and opening it with the other, and shows little interest in buttons and knobs on toys, mention it to their doctor at the next visit, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 years (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Developmental milestones: 2 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Developmental-Milestones-2-Year-Olds.aspx"
+        }
+      ]
+    },
+    {
+      "id": "notices_upset",
+      "group": "socialEmotional",
+      "order": 560,
+      "ageRange": {
+        "unit": "months",
+        "from": 20,
+        "to": 24
+      },
+      "title": {
+        "vi": "Để ý khi người khác buồn",
+        "en": "Notices when others are upset"
+      },
+      "howToRecognise": {
+        "vi": "Khi thấy bạn hay một bạn nhỏ khác khóc hoặc ngã đau, bé dừng lại nhìn, có vẻ buồn theo, hoặc lại gần vỗ về, đưa đồ chơi. Bé cũng nhìn nét mặt bạn để biết nên phản ứng thế nào trước điều mới lạ. Gọi tên cảm xúc, như: Bạn đang buồn vì ngã đau đấy, và ghi nhận khi bé quan tâm người khác.",
+        "en": "When you or another child cries or gets hurt, your child stops to look, may seem sad too, or comes over to pat them or offer a toy. They also look at your face to work out how to react to something new. Name the feeling, such as: she's sad because she fell over, and notice out loud when they are kind to others."
+      },
+      "talkToDoctor": {
+        "vi": "Nếu đến khoảng 24 tháng mà bé dường như không để ý khi người khác khóc hay buồn, và ít nhìn mặt bạn để biết nên phản ứng thế nào trước điều mới lạ, hãy kể với bác sĩ của bé ở lần khám tới để bác sĩ xem chung với các mốc khác, hoặc sớm hơn nếu bạn thấy lo.",
+        "en": "If at around 24 months your child doesn't seem to notice when others cry or are upset, and seldom looks at your face to see how to react to something new, mention it to their doctor at the next visit so they can look at it alongside other skills, or sooner if you are worried."
+      },
+      "illustration": null,
+      "sources": [
+        {
+          "label": "CDC · Learn the Signs. Act Early · Milestones by 2 years (2022)",
+          "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org · Social development: 2 year olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Social-Development-2-Year-Olds.aspx"
+        }
+      ]
+    }
+  ]
+}

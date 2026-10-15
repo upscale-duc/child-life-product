@@ -1,7 +1,7 @@
 import { Timestamp, type DocumentSnapshot, type Firestore } from 'firebase-admin/firestore';
 import { z } from 'zod';
 import { localDateIn, plannedDate, scheduleFor, type VaccineDef } from '@child-life/contracts';
-import { mutedRecipients } from './account.js';
+import { notifyUsers } from './notifications.js';
 import type { PushSender } from './social.js';
 
 /**
@@ -124,7 +124,16 @@ const titles: Record<Kind, { vi: string; en: string }> = {
   morning: { vi: 'Hôm nay có lịch tiêm của bé', en: 'A vaccination is due today' },
 };
 
-/** VX 8: "6in1 · Rota · Phế cầu (mũi 1) · Mốc 2 tháng tuổi" — vaccine names, never the baby's. */
+/** EN08 (`561:3011`): the practical line on the eve and the morning of the appointment. */
+const bring = {
+  vi: 'Nhớ mang sổ tiêm và một chiếc khăn mỏng.',
+  en: 'Remember the vaccination book and a thin towel.',
+};
+
+/**
+ * VX 8: "6in1 · Rota · Phế cầu (mũi 1) · Mốc 2 tháng tuổi" — vaccine names, never the baby's
+ * (R-120, so EN08's "Mai Teddy tiêm …" keeps the generic title); EN08 adds what to bring.
+ */
 export function vaccineCopy(kind: Kind, doses: OpenDose[], language: string) {
   const en = language.startsWith('en');
   const name = (d: OpenDose) => (en ? d.def.short.en : d.def.short.vi);
@@ -140,7 +149,11 @@ export function vaccineCopy(kind: Kind, doses: OpenDose[], language: string) {
     : months === 0
       ? 'Mốc sơ sinh'
       : `Mốc ${months} tháng tuổi`;
-  return { title: titles[kind][en ? 'en' : 'vi'], body: `${list} · ${milestone}` };
+  const body = `${list} · ${milestone}`;
+  return {
+    title: titles[kind][en ? 'en' : 'vi'],
+    body: kind === '3d' ? body : `${body}. ${bring[en ? 'en' : 'vi']}`,
+  };
 }
 
 /** Every 5 minutes: ring what is due for every baby with reminders on. */
@@ -204,7 +217,6 @@ async function pushTo(
   r: { date: string; kind: Kind; doses: OpenDose[] },
   now: Date,
 ): Promise<number> {
-  if (!sender) return 0;
   const members = await db.collection(`babies/${babyId}/members`).get();
   const eligible = members.docs
     .filter((m) => {
@@ -216,23 +228,19 @@ async function pushTo(
     .map((m) => m.id);
   const chosen = (plan.get('recipients') as string[] | undefined) ?? [];
   const recipients = chosen.length ? eligible.filter((u) => chosen.includes(u)) : eligible;
-  const muted = await mutedRecipients(db, 'vaccine', recipients);
   const months = Math.min(...r.doses.map((d) => d.months));
-  let sent = 0;
-  for (const uid of recipients) {
-    if (muted.has(uid)) continue;
-    const devices = await db.collection(`users/${uid}/devices`).get();
-    const byLanguage = new Map<string, string[]>();
-    for (const d of devices.docs) {
-      const token = d.get('token') as string | undefined;
-      if (!token || d.get('signedOutAt')) continue;
-      const language = (d.get('language') as string | undefined) ?? 'vi';
-      byLanguage.set(language, [...(byLanguage.get(language) ?? []), token]);
-    }
-    for (const [language, tokens] of byLanguage) {
-      const rejected = await sender.send(tokens, {
+  // D-076 #2: pushed, recorded in the inbox and switched by EN07 "Tiêm chủng" in one place.
+  const { sent } = await notifyUsers(
+    db,
+    sender,
+    recipients,
+    {
+      kind: 'vaccine',
+      id: `vx-${babyId}-${r.date}-${r.kind}`,
+      babyId,
+      data: { kind: 'vaccine', babyId, date: r.date, months: String(months) },
+      message: (language) => ({
         ...vaccineCopy(r.kind, r.doses, language),
-        data: { kind: 'vaccine', babyId, date: r.date, months: String(months) },
         // VX 8 actions: the iOS category, drawn by the app on Android (A6).
         androidDraws: true,
         apns: {
@@ -240,14 +248,10 @@ async function pushTo(
           collapseId: `vx-${babyId}-${r.date}`,
           threadId: `vx-${babyId}`,
         },
-      });
-      sent += tokens.length - rejected.length;
-      for (const t of rejected) {
-        const dead = devices.docs.find((d) => d.get('token') === t);
-        if (dead) await dead.ref.delete();
-      }
-    }
-  }
+      }),
+    },
+    now,
+  );
   return sent;
 }
 

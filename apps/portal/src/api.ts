@@ -92,6 +92,14 @@ export type Callable =
   | 'staffRhythmAct'
   | 'staffRhythmRules'
   | 'staffSetRhythmRules'
+  // Editorial content (D-076 #5–#7, B01–B08; mirrors content-library.ts)
+  | 'staffContentList'
+  | 'staffContentItem'
+  | 'staffContentSave'
+  | 'staffContentAct'
+  | 'staffContentSeed'
+  | 'staffContentImage'
+  | 'staffContentImages'
   | 'sendAuthEmail';
 
 export interface Api {

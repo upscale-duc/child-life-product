@@ -44,6 +44,23 @@ service cloud.firestore {
       allow list, write: if false;
     }
 
+    // Editorial content (D-076 #5–#7): Thư viện chăm bé articles, "Giai đoạn của bé" stage content
+    // and reference Mốc phát triển. Published by staff callables after a second person approves;
+    // signed-in users read published documents only (lists must filter status == 'published').
+    // Drafts (contentDrafts) are staff-only through callables: the catch-all below denies them.
+    match /contentArticles/{id} {
+      allow read: if signedIn() && resource.data.status == 'published';
+      allow write: if false;
+    }
+    match /contentStages/{id} {
+      allow read: if signedIn() && resource.data.status == 'published';
+      allow write: if false;
+    }
+    match /contentMilestones/{id} {
+      allow read: if signedIn() && resource.data.status == 'published';
+      allow write: if false;
+    }
+
     // Own account document only; written by Functions (createBabyProfile, later profile edits).
     match /users/{uid} {
       allow get: if signedIn() && request.auth.uid == uid;
@@ -67,21 +84,64 @@ service cloud.firestore {
         allow write: if false;
       }
 
+      // Hộp thông báo (EN06, D-076 #2): written only by Functions (one row per push). The owner
+      // reads and may only mark a row read or archived, once, at the request time.
+      match /notifications/{id} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow create, delete: if false;
+        allow update: if signedIn() && request.auth.uid == uid &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt', 'archivedAt']) &&
+          (request.resource.data.readAt == resource.data.readAt ||
+            (resource.data.readAt == null && request.resource.data.readAt == request.time)) &&
+          (request.resource.data.archivedAt == resource.data.archivedAt ||
+            (resource.data.archivedAt == null && request.resource.data.archivedAt == request.time));
+      }
+
+      // Thư viện chăm bé "Đã lưu" (4e / 4f, D-076 #7): the articles this person saved, per person
+      // (not per baby or family). Only the article id (the doc id), when it was saved and the
+      // revision last read (the 4f "đã được cập nhật" banner); nothing about a child.
+      match /savedArticles/{articleId} {
+        allow read, delete: if signedIn() && request.auth.uid == uid;
+        allow create, update: if signedIn() && request.auth.uid == uid &&
+          articleId.matches('^art_[a-z0-9_]{2,60}$') &&
+          request.resource.data.keys().hasOnly(['savedAt', 'revision']) &&
+          request.resource.data.keys().hasAll(['savedAt', 'revision']) &&
+          request.resource.data.revision is int && request.resource.data.revision >= 1 &&
+          request.resource.data.revision <= 100000 &&
+          (request.resource.data.savedAt == request.time ||
+            (resource != null && request.resource.data.savedAt == resource.data.savedAt));
+      }
+
       // "Thông báo" (G-056): which pushes this account receives. "firstAid": the situations this
       // account saved in Sơ cứu (D-058), ids only. "ai" (AI consent, NL10, P-151): readable by its
       // owner, written only by the `setAiConsent` callable (no client branch below).
       match /settings/{docId} {
         allow read: if signedIn() && request.auth.uid == uid;
         allow write: if signedIn() && request.auth.uid == uid && ((docId == 'notifications' &&
-          request.resource.data.keys().hasOnly(['memories', 'messages', 'reminders', 'storage', 'updatedAt']) &&
-          request.resource.data.memories is bool && request.resource.data.messages is bool &&
-          request.resource.data.reminders is bool && request.resource.data.storage is bool &&
-          request.resource.data.updatedAt == request.time) || (docId == 'firstAid' &&
+          validNotificationSettings(request.resource.data)) || (docId == 'firstAid' &&
           request.resource.data.keys().hasOnly(['saved', 'updatedAt']) &&
           request.resource.data.saved is list && request.resource.data.saved.size() <= 40 &&
           request.resource.data.updatedAt == request.time) || (docId == 'personalization' &&
           validPersonalization(request.resource.data)));
       }
+    }
+
+    // "Thông báo" EN07 (D-076 #2; G-056 keys first): mirrors `notificationSettingsDocSchema`, every
+    // switch a bool, any subset (a missing one takes its default).
+    function validNotificationSettings(d) {
+      let keys = ['memories', 'messages', 'reminders', 'storage', 'vaccines', 'spending', 'rhythm',
+        'stages', 'milestones', 'articles', 'weeklySummary', 'photoSuggestions', 'keepsakePrompts',
+        'familyActivity'];
+      return d.keys().hasOnly(keys.concat(['updatedAt'])) && d.updatedAt == request.time &&
+        (!('memories' in d) || d.memories is bool) && (!('messages' in d) || d.messages is bool) &&
+        (!('reminders' in d) || d.reminders is bool) && (!('storage' in d) || d.storage is bool) &&
+        (!('vaccines' in d) || d.vaccines is bool) && (!('spending' in d) || d.spending is bool) &&
+        (!('rhythm' in d) || d.rhythm is bool) && (!('stages' in d) || d.stages is bool) &&
+        (!('milestones' in d) || d.milestones is bool) && (!('articles' in d) || d.articles is bool) &&
+        (!('weeklySummary' in d) || d.weeklySummary is bool) &&
+        (!('photoSuggestions' in d) || d.photoSuggestions is bool) &&
+        (!('keepsakePrompts' in d) || d.keepsakePrompts is bool) &&
+        (!('familyActivity' in d) || d.familyActivity is bool);
     }
 
     // Nhịp lớn lên EN01 / EN02 / EN05 (per person, free): mirrors `userPreferencesSchema`.
@@ -459,11 +519,17 @@ service cloud.firestore {
         allow write: if false;
       }
 
-      // "Mốc nhà mình đã tạo" (10h3, 10h4, R-105): reusable by every Cùng nuôi.
+      // The baby's milestones: "Mốc nhà mình đã tạo" (10h3, 10h4, R-105), MS01 "Lưu vào Mốc" and
+      // Mốc phát triển records (3a–3g, D-076 #6; packages/contracts/src/milestones.ts). One
+      // collection: custom `ms_<hex>` and reference `p_<referenceId>`. Written by a Cùng nuôi only
+      // (`moments.create`); caregivers and relatives never read them (a relative sees a milestone
+      // only through a Kỷ niệm memory and its audience). The legacy Kỷ niệm shape is still accepted.
       match /milestones/{milestoneId} {
         allow read: if isParent(babyId);
-        allow create: if isParent(babyId) && babyOpen(babyId) && validNewMilestone(babyId, milestoneId);
-        allow update, delete: if false;
+        allow create: if isParent(babyId) && babyOpen(babyId) &&
+          (validNewMilestone(babyId, milestoneId) || validNewBabyMilestone(babyId, milestoneId));
+        allow update: if isParent(babyId) && babyOpen(babyId) && validMilestoneUpdate(babyId);
+        allow delete: if isParent(babyId) && babyOpen(babyId);
       }
 
       // Family notices (R-120), delivered by Functions.
@@ -816,6 +882,51 @@ service cloud.firestore {
         d.createdAt == request.time && ownAuthor(d.author, me) &&
         d.name is string && d.name.trim().size() >= 1 && d.name.size() <= 60 &&
         d.date is string && d.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+
+    // ---------- Mốc phát triển records (D-076 #6) ----------
+
+    function milestoneRecordKeys() {
+      return ['id', 'babyId', 'kind', 'referenceId', 'name', 'status', 'date', 'note', 'memoryIds',
+        'source', 'createdBy', 'author', 'createdAt', 'updatedBy', 'updatedAt'];
+    }
+
+    // What every stored record holds (contracts `babyMilestoneSchema`): observed ones are dated,
+    // only reference ones are followed, a note of ≤ 500 characters, ≤ 20 memory ids.
+    function validMilestoneBody(d) {
+      return d.keys().hasOnly(milestoneRecordKeys()) && d.keys().hasAll(milestoneRecordKeys()) &&
+        d.name is string && d.name.trim().size() >= 1 && d.name.size() <= 60 &&
+        d.status in ['observed', 'following'] &&
+        ((d.status == 'observed' && d.date is string &&
+            d.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')) ||
+          (d.status == 'following' && d.date == null && d.kind == 'reference')) &&
+        (d.note == null || (d.note is string && d.note.trim().size() >= 1 && d.note.size() <= 500)) &&
+        d.memoryIds is list && d.memoryIds.size() <= 20 &&
+        d.source in ['memories', 'milestones', 'rhythm', 'keepsakes'] &&
+        d.updatedBy == request.auth.uid && d.updatedAt == request.time;
+    }
+
+    function validNewBabyMilestone(babyId, milestoneId) {
+      let d = request.resource.data;
+      let me = get(memberDoc(babyId)).data;
+      return validMilestoneBody(d) &&
+        d.id == milestoneId && d.babyId == babyId && d.createdBy == request.auth.uid &&
+        d.createdAt == request.time && ownAuthor(d.author, me) &&
+        ((d.kind == 'custom' && d.referenceId == null && milestoneId.matches('^ms_[a-f0-9]{32}$')) ||
+          (d.kind == 'reference' && d.referenceId is string &&
+            d.referenceId.matches('^[a-z][a-z0-9_]{1,39}$') && milestoneId == 'p_' + d.referenceId));
+    }
+
+    // Edits (date, note, status, memory links, the denormalised name). Who and when it was first
+    // recorded never change; a legacy Kỷ niệm milestone gains the new fields as a custom one.
+    function validMilestoneUpdate(babyId) {
+      let d = request.resource.data;
+      let o = resource.data;
+      return validMilestoneBody(d) &&
+        d.diff(o).affectedKeys().hasOnly(['name', 'status', 'date', 'note', 'memoryIds', 'updatedBy',
+          'updatedAt', 'kind', 'referenceId', 'source']) &&
+        d.kind == o.get('kind', 'custom') && d.referenceId == o.get('referenceId', null) &&
+        d.source == o.get('source', 'memories');
     }
 
     // ---------- Albums, favourites, loves, messages (S10) ----------

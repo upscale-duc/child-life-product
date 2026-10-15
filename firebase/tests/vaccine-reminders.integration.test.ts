@@ -42,6 +42,8 @@ beforeEach(async () => {
   await db.doc(`babies/${babyId}/members/nanny`).set(member('nanny', 'caregiver'));
   await db.doc(`babies/${babyId}/members/aunt`).set(member('aunt', 'relative'));
   for (const uid of ['mom', 'dad', 'nanny', 'aunt']) {
+    // Other files on this emulator leave devices and settings for the same uids.
+    await db.recursiveDelete(db.doc(`users/${uid}`));
     await db
       .doc(`users/${uid}/devices/d_${uid}`)
       .set({ token: `t-${uid}`, language: uid === 'dad' ? 'en' : 'vi' });
@@ -67,7 +69,10 @@ describe('ringing (VX 8)', () => {
     expect(sent.map((s) => s.tokens[0]).sort()).toEqual(['t-dad', 't-mom']);
     const vi = sent.find((s) => s.tokens[0] === 't-mom')!;
     expect(vi.title).toBe('Ngày mai có lịch tiêm của bé');
-    expect(vi.body).toBe('6in1 · Rota · Phế cầu (mũi 1) · Mốc 2 tháng tuổi');
+    // EN08 (D-076 #2): what to bring.
+    expect(vi.body).toBe(
+      '6in1 · Rota · Phế cầu (mũi 1) · Mốc 2 tháng tuổi. Nhớ mang sổ tiêm và một chiếc khăn mỏng.',
+    );
     expect(vi.data).toMatchObject({ kind: 'vaccine', babyId, date: '2026-11-17', months: '2' });
     expect((await ringVaccineReminders(db, sender, vn('2026-11-16', 19, 5))).rang).toBe(0);
   });

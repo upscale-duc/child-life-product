@@ -593,7 +593,7 @@ describe('J06 sleep: clarify in the same task → approved guidance → optional
     expect(again.snap.drafts).toHaveLength(0);
   });
 
-  it('"Chưa thử" is recorded only on the task: nothing tried is written to the module', async () => {
+  it('"Chưa thử" is recorded on the task and takes the plan back in the module (D-076 #10)', async () => {
     const { taskId } = await run('Con hay thức đêm', [
       sleepConcern({ kind: 'night_waking', when: 'night', since: null }, [
         { field: 'kind', text: 'hay thức' },
@@ -612,7 +612,8 @@ describe('J06 sleep: clarify in the same task → approved guidance → optional
       E({ taskId, contentId: 'act_test_calm', contentVersion: 1, outcome: 'not_tried' }),
     );
     expect(nt.data.feedbackId).toBeNull();
-    expect((await feedbackDocs()).map((d) => d.get('kind'))).toEqual(['started']);
+    // Nothing tried is written; the plan ("Thử tối nay") is taken back, so the module stops asking.
+    expect((await feedbackDocs()).map((d) => d.get('kind'))).toEqual([]);
     const t = (await db.doc(`assistantTasks/${taskId}`).get()).data()!;
     expect(t.feedback).toEqual([
       expect.objectContaining({ contentId: 'act_test_calm', outcome: 'not_tried' }),
