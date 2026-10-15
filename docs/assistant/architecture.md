@@ -21,6 +21,19 @@ components Thẻ nháp `611:7695`, Mức dùng `611:7726`, Ô nhập `611:7763` 
 | P-160 | **Consent**: a separate `assistant` consent (messages, photos, context, provider, retention) on `users/{uid}/settings/ai`, version `assistant-consent-v1`; without it nothing is sent to the provider, the app keeps working. | Chat sends photos; scope differs from summaries. |
 | P-161 | **Kill switches** (flags): `assistant` (chat overall), `assistant_images`, `assistant_care` (guidance/recipes), `assistant_live` (provider; off = no new model calls), `assistant_writes` (confirm), `assistant_upsell`. Turning care off never blocks summaries or logging; turning the model off keeps history and direct modules. | Brief p.26. |
 
+### 1.1 Owner answers (D-075, 2026-10-15) — override the table above
+
+1. **One credit pool for all AI**: handover / explain / moment summaries charge assistant credits too
+   (Free and Premium, different budgets); `ai.assistance` is no longer Premium-only. **A beta campaign may give
+   every Premium feature** (group A, Cao cấp templates, the Premium credit budget), chosen per campaign in the
+   portal (replaces "Beta A never opens templates" and P-159's separate summary quota).
+2. **One shared conversation per baby** for Cùng nuôi and Người chăm sóc (replaces P-158 for child scope);
+   messages show who wrote them; **spending stays out**: household / expense tasks remain private to their
+   author and never appear in the shared thread.
+3. **Receipt photos are kept with the expense** by default (`keep_with_record`).
+4. **Chi tiêu supports other currencies** (expense `currency`, amounts in minor units; VND unchanged).
+5. **Reminders support date-only and an assignee** (a member who may receive reminders).
+
 ## 2. Data (server-written; clients read their own)
 
 | Path | Fields | Read |
