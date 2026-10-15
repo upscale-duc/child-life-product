@@ -30,6 +30,8 @@ Reminder reminder(
   Membership? doneBy,
   DateTime? doneAt,
   DateTime? createdAt,
+  String? allDayOn,
+  Membership? assignee,
 }) => Reminder(
   id: 'rm_${(++_seq).toRadixString(16).padLeft(32, '0')}',
   babyId: teddyId,
@@ -44,7 +46,48 @@ Reminder reminder(
   doneAt: doneAt,
   doneBy: doneBy?.uid,
   doneAuthor: doneBy == null ? null : CareAuthor.of(doneBy),
+  allDay: allDayOn != null,
+  dueDate: allDayOn,
+  assigneeUid: assignee?.uid,
 );
+
+/// An all-day reminder (D-075 #5) on [date] (`YYYY-MM-DD`): `dueAt` is 23:59 there (GMT+7).
+Reminder allDayReminder(
+  String title,
+  String date,
+  Membership by, {
+  int lead = 0,
+  NotifyDevice? device,
+  Membership? assignee,
+  Membership? doneBy,
+}) {
+  final d = DateTime.parse(date);
+  return reminder(
+    title,
+    DateTime.utc(d.year, d.month, d.day, 16, 59).toLocal(),
+    by,
+    lead: lead,
+    device: device,
+    doneBy: doneBy,
+    doneAt: doneBy == null ? null : _vn(8, 9, 0),
+    allDayOn: date,
+    assignee: assignee,
+  );
+}
+
+/// 8a with D-075 #5 on top of [mockReminders]: an all-day job for Cô Lan on Saturday (no
+/// device: it rings on her phones) and a timed one Mai assigned to herself on Monday.
+List<Reminder> mockAssignedReminders() => [
+  ...mockReminders(),
+  allDayReminder('Mua bỉm size S', '2026-10-10', mai, assignee: lan),
+  reminder(
+    'Đặt lịch khám 2 tháng',
+    _vn(12, 17, 0),
+    mai,
+    device: maiPhone(),
+    assignee: mai,
+  ),
+];
 
 /// 8a (127:13602) at Thursday 8 Oct 15:05: one overdue, two upcoming, one done.
 List<Reminder> mockReminders() => [

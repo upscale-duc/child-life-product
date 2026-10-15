@@ -608,13 +608,17 @@ class _NextWeek extends ConsumerWidget {
         }
         if (r.dueAt.isBefore(now)) continue;
         final local = inBabyZone(zone, r.dueAt);
+        // D-075 #5: an all-day reminder shows its day and "Cả ngày", not 23:59.
+        final day = r.dueDay;
         items.add((
-          sortKey: isoOf(local),
+          sortKey: isoOf(day ?? local),
           icon: ClIcons.bell,
           fill: cl.colors.mintSoft,
           ink: cl.colors.mintText,
           title: r.title,
-          sub: '${when(local)} · ${DateFormat('HH:mm', tag).format(local)}',
+          sub: day != null
+              ? '${when(day)} · ${l10n.reminderAllDay}'
+              : '${when(local)} · ${DateFormat('HH:mm', tag).format(local)}',
         ));
       }
     }

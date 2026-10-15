@@ -7,8 +7,10 @@ import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/core/widgets/cl_button.dart';
 import 'package:child_life/core/widgets/cl_icon.dart';
+import 'package:child_life/core/widgets/cl_inputs.dart';
 import 'package:child_life/features/auth/auth_repository.dart';
 import 'package:child_life/features/baby/baby_models.dart';
+import 'package:child_life/features/reminders/reminder_models.dart';
 import 'package:child_life/features/reminders/reminder_screens.dart';
 import 'package:child_life/features/reminders/rule_models.dart';
 import 'package:child_life/features/reminders/rule_screens.dart';
@@ -56,11 +58,13 @@ _Case _list({
   bool on = true,
   Map<String, Object> prefs = const {},
   Future<void> Function(WidgetTester tester)? act,
+  List<Reminder>? reminders,
 }) => (
   build: () => const RemindersScreen(),
   overrides: () => careOverrides(
     me: me,
     notifications: FakeReminderNotifications(on: on),
+    reminders: reminders,
   ),
   prefs: prefs,
   // The dated reminders: the "Một lần" half, which Nhắc nhở opens on (tapping it is a no-op).
@@ -173,6 +177,32 @@ final _cases = <String, _Case>{
     prefs: const {},
     act: null,
   ),
+  // D-075 #5: all day and assignee.
+  '8a_reminders_assigned': _list(reminders: mockAssignedReminders()),
+  '12f_reminders_assigned_caregiver': _list(
+    me: lan,
+    reminders: mockAssignedReminders(),
+  ),
+  '8b_new_reminder_all_day': _list(
+    act: (t) async {
+      await _openNew(t);
+      await t.tap(find.byType(ClToggle));
+      await t.pumpAndSettle();
+    },
+  ),
+  '8b_assignee_picker': _list(
+    act: (t) async {
+      await _openNew(t);
+      await t.tap(find.text(_l10n(t).reminderAssignee));
+      await t.pumpAndSettle();
+    },
+  ),
+  '8e_reminder_all_day_assigned': (
+    build: () => ReminderDetailScreen(reminderId: _assigned[4].id),
+    overrides: () => careOverrides(reminders: _assigned),
+    prefs: const {},
+    act: null,
+  ),
   '8b_edit_reminder': (
     build: () => ReminderDetailScreen(reminderId: _ids[1]),
     overrides: () => careOverrides(reminders: _list8e),
@@ -185,6 +215,7 @@ final _cases = <String, _Case>{
 };
 
 final _list8e = mockReminders();
+final _assigned = mockAssignedReminders();
 final _ids = [for (final r in _list8e) r.id];
 
 void main() {

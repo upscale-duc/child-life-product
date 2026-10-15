@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:timezone/timezone.dart' as tz;
 
 import '../../app/route_guard.dart';
 import '../../core/appearance/appearance_providers.dart';
@@ -26,10 +25,11 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
-import '../baby/time_zones.dart';
+import '../baby/time_zones.dart' show gmtOffsetLabel;
 import '../care/care_format.dart';
 import '../care/care_models.dart';
 import '../care/care_repository.dart';
+import '../family/family_repository.dart';
 import '../home/home_shell.dart';
 import '../onboarding/setup_screens.dart' show relationLabel;
 import 'device_identity.dart';
@@ -51,28 +51,120 @@ String reminderWho(AppLocalizations l10n, CareAuthor author, bool isMe) =>
       relationLabel: (r, c) => relationLabel(l10n, r, c),
     );
 
-/// "1 giờ" / "Đúng giờ" / "1 ngày" (D-031).
-String leadLabel(AppLocalizations l10n, int minutes) => switch (minutes) {
-  0 => l10n.leadOnTime,
-  1440 => l10n.leadOneDay,
-  _ => durationLabel(l10n, minutes),
-};
+/// "1 giờ" / "Đúng giờ" / "1 ngày" (D-031); "Đúng ngày" for an all-day reminder (D-075 #5).
+String leadLabel(AppLocalizations l10n, int minutes, {bool allDay = false}) =>
+    switch (minutes) {
+      0 => allDay ? l10n.leadOnDay : l10n.leadOnTime,
+      1440 => l10n.leadOneDay,
+      _ => durationLabel(l10n, minutes),
+    };
 
 String _cap(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
-/// "T7, 10 thg 10 · 08:30" (8b, 8e).
-String reminderWhenShort(String locale, DateTime wall) {
+/// "T7, 10 thg 10" (8b, 8e).
+String reminderDayShort(String locale, DateTime wall) {
   final day = locale.startsWith('vi')
       ? (wall.weekday == DateTime.sunday ? 'CN' : 'T${wall.weekday + 1}')
       : DateFormat.E(locale).format(wall);
-  return '$day, ${DateFormat('d MMM', locale).format(wall)} · '
-      '${DateFormat('HH:mm').format(wall)}';
+  return '$day, ${DateFormat('d MMM', locale).format(wall)}';
 }
+
+/// "T7, 10 thg 10 · 08:30" (8b, 8e).
+String reminderWhenShort(String locale, DateTime wall) =>
+    '${reminderDayShort(locale, wall)} · ${DateFormat('HH:mm').format(wall)}';
 
 /// "Thứ Bảy, 10 thg 10 · 08:30" (8a upcoming rows).
 String reminderWhenLong(String locale, DateTime wall) =>
     '${_cap(DateFormat('EEEE, d MMM', locale).format(wall))} · '
     '${DateFormat('HH:mm').format(wall)}';
+
+// ---- D-075 #5: all day and assignee labels ----
+
+/// "08:00" from minutes after midnight.
+String reminderClock(int minutes) =>
+    '${(minutes ~/ 60).toString().padLeft(2, '0')}:'
+    '${(minutes % 60).toString().padLeft(2, '0')}';
+
+/// The date row of [r]: "T7, 10 thg 10 · Cả ngày" or "T7, 10 thg 10 · 08:30".
+String reminderWhenOf(AppLocalizations l10n, ReminderCtx c, Reminder r) {
+  final day = r.dueDay;
+  return day != null
+      ? '${reminderDayShort(c.locale, day)} · ${l10n.reminderAllDay}'
+      : reminderWhenShort(c.locale, inBabyZone(c.zone, r.dueAt));
+}
+
+/// The member assigned to [r], if still one who may receive reminders.
+Membership? reminderAssignee(WidgetRef ref, Reminder r, DateTime now) {
+  final uid = r.assigneeUid;
+  if (uid == null) return null;
+  final members = ref.watch(familyMembersProvider(r.babyId)).value;
+  return members
+      ?.where((m) => m.uid == uid && canBeAssignedReminders(m, now))
+      .firstOrNull;
+}
+
+/// "Mẹ" / "Cô Lan" / "Bạn" for an assignee.
+String assigneeName(AppLocalizations l10n, Membership m, String meUid) =>
+    reminderWho(l10n, CareAuthor.of(m), m.uid == meUid);
+
+/// "Giao cho bạn" (highlighted, mint) for the assignee; "Giao cho Cô Lan" (muted) for others.
+class ReminderAssigneeTag extends StatelessWidget {
+  const ReminderAssigneeTag({
+    required this.assignee,
+    required this.meUid,
+    super.key,
+  });
+
+  final Membership assignee;
+  final String meUid;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    if (assignee.uid != meUid) {
+      return Text(
+        l10n.reminderAssignedTo(assigneeName(l10n, assignee, meUid)),
+        style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+      );
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: ClSpace.s2, vertical: 2),
+      decoration: BoxDecoration(
+        color: cl.colors.mintSoft,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClIcon(ClIcons.family, size: 14, color: cl.colors.mintText),
+          const SizedBox(width: ClSpace.s1),
+          Text(
+            l10n.reminderAssignedToYou,
+            style: cl.text.caption.copyWith(
+              color: cl.colors.mintText,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+// ---- end D-075 #5 ----
+
+/// "hôm qua" / "hôm nay" / "5 thg 10" (all-day overdue rows, D-075 #5).
+String reminderDayRelative(
+  AppLocalizations l10n,
+  String locale,
+  DateTime day,
+  DateTime today,
+) => switch (DateTime(day.year, day.month, day.day).difference(today).inDays) {
+  0 => l10n.dayToday,
+  -1 => l10n.dayYesterday,
+  1 => l10n.dayTomorrow,
+  _ => DateFormat('d MMM', locale).format(day),
+};
 
 /// "hôm qua 18:00" / "hôm nay 07:00" / "5 thg 10 18:00" (8a overdue rows).
 String reminderWhenRelative(
@@ -90,23 +182,6 @@ String reminderWhenRelative(
     1 => '${l10n.dayTomorrow} $hm',
     _ => '${DateFormat('d MMM', locale).format(wall)} $hm',
   };
-}
-
-/// Wall-clock time in [zone] → the absolute instant.
-DateTime instantInZone(String zone, DateTime wall) {
-  ensureTimeZones();
-  try {
-    return tz.TZDateTime(
-      tz.getLocation(zone),
-      wall.year,
-      wall.month,
-      wall.day,
-      wall.hour,
-      wall.minute,
-    ).toUtc();
-  } on Object {
-    return wall;
-  }
 }
 
 /// Context every reminder screen needs.
@@ -161,11 +236,13 @@ class RemindersScreen extends ConsumerWidget {
     final c = _context(context, ref);
     if (c == null) return ColoredBox(color: cl.colors.cloud);
     final all = ref.watch(remindersProvider(c.me.babyId)).value;
-    final groups = groupReminders(all ?? const [], c.now);
+    final groups = groupReminders(all ?? const [], c.now, c.zone);
     final parent = c.me.role == MemberRole.coParent;
     final device = ref.watch(deviceIdentityProvider).value;
     final enabled = ref.watch(notificationsEnabledProvider);
-    // 8d: asked already (8c), and this device holds a notification that cannot show.
+    final allDayMinutes = ref.watch(reminderAllDayTimeProvider);
+    // 8d: asked already (8c), and this device holds a notification that cannot show (put here,
+    // or assigned to me, D-075 #5).
     final blocked =
         enabled == false &&
         ref.watch(notificationsAskedProvider) &&
@@ -173,8 +250,8 @@ class RemindersScreen extends ConsumerWidget {
         (all ?? const []).any(
           (r) =>
               !r.done &&
-              r.notifyDevice?.id == device.id &&
-              r.fireAt.isAfter(c.now),
+              r.ringsOn(deviceId: device.id, uid: c.me.uid) &&
+              r.fireAt(c.zone, allDayMinutes: allDayMinutes).isAfter(c.now),
         );
 
     Widget group(String title, List<Reminder> items) => Column(
@@ -394,15 +471,26 @@ class ReminderRow extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final r = reminder;
-    final status = r.statusAt(ctx.now);
+    final status = r.statusAt(ctx.now, ctx.zone);
     final today = babyToday(ctx.zone, ctx.now);
     final wall = inBabyZone(ctx.zone, r.dueAt);
     final who = reminderWho(l10n, r.author, r.createdBy == ctx.me.uid);
+    // D-075 #5: "Thứ Bảy, 10 thg 10 · Cả ngày" / "Quá hạn · hôm qua · cả ngày".
+    final day = r.dueDay;
+    final upcomingWhen = day != null
+        ? '${_cap(DateFormat('EEEE, d MMM', ctx.locale).format(day))} · '
+              '${l10n.reminderAllDay}'
+        : reminderWhenLong(ctx.locale, wall);
+    final overdueWhen = day != null
+        ? '${reminderDayRelative(l10n, ctx.locale, day, today)} · '
+              '${l10n.reminderAllDayLower}'
+        : reminderWhenRelative(l10n, ctx.locale, wall, today);
+    final assignee = reminderAssignee(ref, r, ctx.now);
     final meta = switch (status) {
       ReminderStatus.upcoming =>
-        '${reminderWhenLong(ctx.locale, wall)} · ${l10n.reminderCreatedBy(who)}',
+        '$upcomingWhen · ${l10n.reminderCreatedBy(who)}',
       ReminderStatus.overdue =>
-        '${l10n.reminderOverdueMeta(reminderWhenRelative(l10n, ctx.locale, wall, today))}'
+        '${l10n.reminderOverdueMeta(overdueWhen)}'
             ' · ${l10n.reminderCreatedBy(who)}',
       ReminderStatus.done => l10n.reminderDoneMeta(
         reminderWho(l10n, r.doneAuthor ?? r.author, r.doneBy == ctx.me.uid),
@@ -460,6 +548,10 @@ class ReminderRow extends ConsumerWidget {
                       color: overdue ? cl.colors.error : cl.colors.inkMuted,
                     ),
                   ),
+                  if (assignee != null && !done) ...[
+                    const SizedBox(height: ClSpace.s1),
+                    ReminderAssigneeTag(assignee: assignee, meUid: ctx.me.uid),
+                  ],
                 ],
               ),
             ),
@@ -550,13 +642,21 @@ class ReminderDetailScreen extends ConsumerWidget {
     }
     final parent = c.me.role == MemberRole.coParent;
     final device = ref.watch(deviceIdentityProvider).value;
-    final wall = inBabyZone(c.zone, r.dueAt);
-    final status = r.statusAt(c.now);
+    final status = r.statusAt(c.now, c.zone);
     final mine = device != null && r.notifyDevice?.id == device.id;
-    // "iPhone của Mai"; on that device the row has no chevron (nothing to move).
-    final notify = r.notifyDevice == null
-        ? l10n.reminderNoDevice
-        : l10n.reminderDeviceOf(r.notifyDevice!.label, r.notifyDevice!.owner);
+    final assignee = reminderAssignee(ref, r, c.now);
+    final allDayMinutes = ref.watch(reminderAllDayTimeProvider);
+    // "iPhone của Mai"; on that device the row has no chevron (nothing to move). D-075 #5: the
+    // assignee's own devices ring too ("Các máy của Cô Lan").
+    final notify = [
+      if (r.notifyDevice case final d?) l10n.reminderDeviceOf(d.label, d.owner),
+      if (assignee != null && assignee.uid != r.notifyDevice?.uid)
+        assignee.uid == c.me.uid
+            ? l10n.reminderNotifyMine
+            : l10n.reminderNotifyAssignee(
+                assigneeName(l10n, assignee, c.me.uid),
+              ),
+    ].join(' · ');
     final created = [
       reminderWho(l10n, r.author, r.createdBy == c.me.uid),
       if (r.createdAt != null)
@@ -596,13 +696,24 @@ class ReminderDetailScreen extends ConsumerWidget {
                         style: cl.text.label.copyWith(color: cl.colors.error),
                       ),
                     ),
+                  if (assignee != null && assignee.uid == c.me.uid && !r.done)
+                    Padding(
+                      padding: const EdgeInsets.only(top: ClSpace.s2),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: ReminderAssigneeTag(
+                          assignee: assignee,
+                          meUid: c.me.uid,
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: ClSpace.s4),
                   ClCardGroup(
                     children: [
                       ClDetailRow(
                         icon: ClIcons.today,
-                        label: l10n.reminderWhen,
-                        value: reminderWhenShort(c.locale, wall),
+                        label: r.allDay ? l10n.reminderDay : l10n.reminderWhen,
+                        value: reminderWhenOf(l10n, c, r),
                         onTap: parent && !r.done
                             ? () => showReminderSheet(context, edit: r)
                             : null,
@@ -615,7 +726,29 @@ class ReminderDetailScreen extends ConsumerWidget {
                       ClDetailRow(
                         icon: ClIcons.clock,
                         label: l10n.reminderLead,
-                        value: leadLabel(l10n, r.leadMinutes),
+                        value: leadLabel(l10n, r.leadMinutes, allDay: r.allDay),
+                        onTap: parent && !r.done
+                            ? () => showReminderSheet(context, edit: r)
+                            : null,
+                      ),
+                      // D-075 #5: the person's own all-day time, always shown.
+                      if (r.allDay)
+                        ClDetailRow(
+                          icon: ClIcons.sunrise,
+                          label: l10n.reminderAllDayAt,
+                          value: reminderClock(allDayMinutes),
+                          onTap: r.done
+                              ? null
+                              : () => pickReminderAllDayTime(context, ref),
+                        ),
+                      ClDetailRow(
+                        icon: ClIcons.family,
+                        label: l10n.reminderAssignee,
+                        value: assignee == null
+                            ? l10n.reminderAssignNone
+                            : assigneeName(l10n, assignee, c.me.uid),
+                        valueIsAccent:
+                            assignee != null && assignee.uid == c.me.uid,
                         onTap: parent && !r.done
                             ? () => showReminderSheet(context, edit: r)
                             : null,
@@ -623,7 +756,7 @@ class ReminderDetailScreen extends ConsumerWidget {
                       ClDetailRow(
                         icon: ClIcons.bell,
                         label: l10n.reminderNotify,
-                        value: notify,
+                        value: notify.isEmpty ? l10n.reminderNoDevice : notify,
                         onTap: mine || r.done || device == null
                             ? null
                             : () => _moveHere(context, ref, r, c.me, device),
@@ -652,7 +785,12 @@ class ReminderDetailScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: ClSpace.s4),
-                  _Note(icon: ClIcons.clock, text: l10n.reminderDetailNote),
+                  _Note(
+                    icon: ClIcons.clock,
+                    text: assignee == null
+                        ? l10n.reminderDetailNote
+                        : l10n.reminderDetailNoteAssigned,
+                  ),
                   const SizedBox(height: ClSpace.s6),
                   if (!r.done)
                     ClButton(
@@ -779,6 +917,14 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
   DateTime? _due;
   String? _error;
 
+  // ---- D-075 #5: all day and assignee ----
+  late bool _allDay = widget.edit?.allDay ?? false;
+
+  /// The all-day date (a calendar day in the baby's zone).
+  late DateTime? _day = widget.edit?.dueDay;
+  late String? _assignee = widget.edit?.assigneeUid;
+  // ---- end D-075 #5 ----
+
   @override
   void dispose() {
     _title.dispose();
@@ -794,12 +940,39 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     );
   }
 
-  Future<void> _pickDue(String zone, DateTime now) async {
+  DateTime _timedDue(ReminderCtx c) {
+    final edit = widget.edit;
+    return _due ??
+        (edit != null && !edit.allDay ? edit.dueAt : null) ??
+        _defaultDue(c.zone, c.now);
+  }
+
+  DateTime _allDayDay(ReminderCtx c) {
+    if (_day case final d?) return d;
+    final wall = inBabyZone(c.zone, _timedDue(c));
+    return DateTime(wall.year, wall.month, wall.day);
+  }
+
+  Future<void> _pickDue(ReminderCtx c) async {
+    if (_allDay) {
+      final picked = await pickReminderDay(
+        context,
+        initial: _allDayDay(c),
+        today: babyToday(c.zone, c.now),
+      );
+      if (picked != null) {
+        setState(() {
+          _day = picked;
+          _error = null;
+        });
+      }
+      return;
+    }
     final picked = await pickReminderTime(
       context,
-      zone: zone,
-      initial: _due ?? widget.edit?.dueAt ?? _defaultDue(zone, now),
-      now: now,
+      zone: c.zone,
+      initial: _timedDue(c),
+      now: c.now,
     );
     if (picked != null) {
       setState(() {
@@ -809,8 +982,29 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     }
   }
 
+  void _setAllDay(ReminderCtx c, bool on) {
+    setState(() {
+      if (on) {
+        _day = _allDayDay(c);
+        if (!reminderAllDayLeadMinutes.contains(_lead)) {
+          _lead = defaultReminderAllDayLeadMinutes;
+        }
+      } else if (_day case final d?) {
+        // Back to a time: the same day at the time it had (or the default time).
+        final t = inBabyZone(c.zone, _timedDue(c));
+        _due = instantInZone(
+          c.zone,
+          DateTime(d.year, d.month, d.day, t.hour, t.minute),
+        );
+      }
+      _allDay = on;
+      _error = null;
+    });
+  }
+
   Future<void> _pickLead() async {
     final l10n = AppLocalizations.of(context);
+    final options = _allDay ? reminderAllDayLeadMinutes : reminderLeadMinutes;
     final picked = await showClSheet<int>(
       context: context,
       builder: (sheetContext) => Column(
@@ -821,9 +1015,9 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
           ClCardGroup(
             color: sheetContext.cl.colors.surface2,
             children: [
-              for (final m in reminderLeadMinutes)
+              for (final m in options)
                 ClOptionRow(
-                  title: leadLabel(l10n, m),
+                  title: leadLabel(l10n, m, allDay: _allDay),
                   selected: m == _lead,
                   onTap: () => Navigator.of(sheetContext).pop(m),
                 ),
@@ -835,33 +1029,96 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     if (picked != null) setState(() => _lead = picked);
   }
 
+  /// D-075 #5: "Giao cho" — an active Cùng nuôi or Người chăm sóc, or nobody.
+  Future<void> _pickAssignee(ReminderCtx c, List<Membership> eligible) async {
+    final l10n = AppLocalizations.of(context);
+    final picked = await showClSheet<String>(
+      context: context,
+      builder: (sheetContext) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.reminderAssignee),
+          ClCardGroup(
+            color: sheetContext.cl.colors.surface2,
+            children: [
+              ClOptionRow(
+                title: l10n.reminderAssignNobody,
+                selected: _assignee == null,
+                onTap: () => Navigator.of(sheetContext).pop(''),
+              ),
+              for (final m in eligible)
+                ClOptionRow(
+                  title: assigneeName(l10n, m, c.me.uid),
+                  subtitle: m.uid == c.me.uid ? m.displayName : null,
+                  selected: _assignee == m.uid,
+                  onTap: () => Navigator.of(sheetContext).pop(m.uid),
+                ),
+            ],
+          ),
+          const SizedBox(height: ClSpace.s3),
+          Text(
+            l10n.reminderAssignPickerNote,
+            style: sheetContext.cl.text.caption.copyWith(
+              color: sheetContext.cl.colors.inkMuted,
+            ),
+          ),
+        ],
+      ),
+    );
+    if (picked != null) {
+      setState(() => _assignee = picked.isEmpty ? null : picked);
+    }
+  }
+
   Future<void> _save(ReminderCtx c) async {
     final l10n = AppLocalizations.of(context);
     final title = _title.text.trim();
-    final due = _due ?? widget.edit?.dueAt ?? _defaultDue(c.zone, c.now);
-    final dueChanged = widget.edit == null || due != widget.edit!.dueAt;
+    final before = widget.edit;
+    final day = _allDay ? _allDayDay(c) : null;
+    final due = day != null ? allDayDueAt(c.zone, day) : _timedDue(c);
+    final dueChanged =
+        before == null ||
+        due != before.dueAt ||
+        _allDay != before.allDay ||
+        (day != null && isoDay(day) != before.dueDate);
     if (title.isEmpty) {
       setState(() => _error = l10n.reminderTitleRequired);
       return;
     }
-    if (dueChanged && !due.isAfter(c.now)) {
-      setState(() => _error = l10n.reminderPastTime);
-      return;
+    if (dueChanged) {
+      if (day != null && day.isBefore(babyToday(c.zone, c.now))) {
+        setState(() => _error = l10n.reminderPastDay);
+        return;
+      }
+      if (day == null && !due.isAfter(c.now)) {
+        setState(() => _error = l10n.reminderPastTime);
+        return;
+      }
     }
     final repo = ref.read(reminderRepositoryProvider);
     final toaster = ClToaster.of(context);
     void failed(Object _) =>
         toaster.show(message: l10n.careSaveFailed, error: true);
-    final before = widget.edit;
     if (before != null) {
       repo.edit(
         before,
-        before.copyWith(title: title, dueAt: due, leadMinutes: _lead),
+        before.copyWith(
+          title: title,
+          dueAt: due,
+          leadMinutes: _lead,
+          allDay: _allDay,
+          dueDate: day == null ? null : isoDay(day),
+          assigneeUid: _assignee,
+        ),
         c.me.uid,
         onError: failed,
       );
     } else {
       final device = await ref.read(deviceIdentityProvider.future);
+      // D-075 #5: a job for someone else rings on their devices, not on this one (8e "Thông
+      // báo → máy này" still takes a copy, D-029).
+      final forSomeoneElse = _assignee != null && _assignee != c.me.uid;
       repo.create(
         Reminder(
           id: newReminderId(),
@@ -869,14 +1126,19 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
           title: title,
           dueAt: due,
           leadMinutes: _lead,
-          notifyDevice: NotifyDevice(
-            id: device.id,
-            uid: c.me.uid,
-            label: device.label,
-            owner: c.me.displayName,
-          ),
+          notifyDevice: forSomeoneElse
+              ? null
+              : NotifyDevice(
+                  id: device.id,
+                  uid: c.me.uid,
+                  label: device.label,
+                  owner: c.me.displayName,
+                ),
           createdBy: c.me.uid,
           author: CareAuthor.of(c.me),
+          allDay: _allDay,
+          dueDate: day == null ? null : isoDay(day),
+          assigneeUid: _assignee,
         ),
         onError: failed,
       );
@@ -940,8 +1202,22 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     final cl = context.cl;
     final c = _context(context, ref);
     if (c == null) return const SizedBox.shrink();
-    final due = _due ?? widget.edit?.dueAt ?? _defaultDue(c.zone, c.now);
     final edit = widget.edit;
+    final day = _allDay ? _allDayDay(c) : null;
+    final due = day != null ? allDayDueAt(c.zone, day) : _timedDue(c);
+    final allDayMinutes = ref.watch(reminderAllDayTimeProvider);
+    // D-075 #5: who may be assigned (the current assignee stays listed while still eligible).
+    final eligible =
+        [
+          for (final m
+              in ref.watch(familyMembersProvider(c.me.babyId)).value ??
+                  const <Membership>[])
+            if (canBeAssignedReminders(m, c.now)) m,
+        ]..sort(
+          (a, b) => (a.uid == c.me.uid ? 0 : 1) - (b.uid == c.me.uid ? 0 : 1),
+        );
+    final assignee = eligible.where((m) => m.uid == _assignee).firstOrNull;
+    final forSomeoneElse = assignee != null && assignee.uid != c.me.uid;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -965,23 +1241,52 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
         ClCardGroup(
           color: cl.colors.surface2,
           children: [
+            _ToggleDetailRow(
+              icon: ClIcons.sunrise,
+              label: l10n.reminderAllDay,
+              value: _allDay,
+              onChanged: (on) => _setAllDay(c, on),
+            ),
             ClDetailRow(
               icon: ClIcons.today,
-              label: l10n.reminderWhen,
-              value: reminderWhenShort(c.locale, inBabyZone(c.zone, due)),
-              onTap: () => _pickDue(c.zone, c.now),
+              label: _allDay ? l10n.reminderDay : l10n.reminderWhen,
+              value: day != null
+                  ? reminderDayShort(c.locale, day)
+                  : reminderWhenShort(c.locale, inBabyZone(c.zone, due)),
+              onTap: () => _pickDue(c),
             ),
+            if (_allDay)
+              ClDetailRow(
+                icon: ClIcons.bell,
+                label: l10n.reminderAllDayAt,
+                value: reminderClock(allDayMinutes),
+                onTap: () => pickReminderAllDayTime(context, ref),
+              ),
             ClDetailRow(
               icon: ClIcons.clock,
               label: l10n.reminderLead,
-              value: leadLabel(l10n, _lead),
+              value: leadLabel(l10n, _lead, allDay: _allDay),
               onTap: _pickLead,
+            ),
+            ClDetailRow(
+              icon: ClIcons.family,
+              label: l10n.reminderAssignee,
+              value: assignee == null
+                  ? l10n.reminderAssignNone
+                  : assigneeName(l10n, assignee, c.me.uid),
+              onTap: () => _pickAssignee(c, eligible),
             ),
           ],
         ),
         const SizedBox(height: ClSpace.s3),
         Text(
-          l10n.reminderFootnote(c.nickname, gmtOffsetLabel(c.zone, due)),
+          forSomeoneElse
+              ? l10n.reminderFootnoteAssigned(
+                  c.nickname,
+                  gmtOffsetLabel(c.zone, due),
+                  assigneeName(l10n, assignee, c.me.uid),
+                )
+              : l10n.reminderFootnote(c.nickname, gmtOffsetLabel(c.zone, due)),
           style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
         ),
         if (_error != null) ...[
@@ -1006,6 +1311,54 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
   }
 }
 
+/// A [ClDetailRow]-like row with a switch ("Cả ngày", D-075 #5).
+class _ToggleDetailRow extends StatelessWidget {
+  const _ToggleDetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final ClIcons icon;
+  final String label;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return MergeSemantics(
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 56),
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s4,
+          vertical: ClSpace.s2,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: cl.colors.mintSoft,
+                borderRadius: BorderRadius.circular(ClRadius.control),
+              ),
+              alignment: Alignment.center,
+              child: ClIcon(icon, size: 18, color: cl.colors.mintText),
+            ),
+            const SizedBox(width: ClSpace.s3),
+            Expanded(child: Text(label, style: cl.text.body)),
+            const SizedBox(width: ClSpace.s3),
+            // The row's text labels the switch (one merged node).
+            ClToggle(value: value, onChanged: onChanged),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Date and time wheel in the baby's zone, never in the past (D-031), 5-minute steps.
 Future<DateTime?> pickReminderTime(
   BuildContext context, {
@@ -1023,34 +1376,19 @@ Future<DateTime?> pickReminderTime(
     context: context,
     builder: (sheetContext) {
       final l10n = AppLocalizations.of(sheetContext);
-      final cl = sheetContext.cl;
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ClSheetHeader(title: l10n.reminderWhen),
-          SizedBox(
-            height: 216,
-            child: CupertinoTheme(
-              data: CupertinoThemeData(
-                brightness: cl.isNightCare ? Brightness.dark : Brightness.light,
-                textTheme: CupertinoTextThemeData(
-                  dateTimePickerTextStyle: cl.text.title2.copyWith(
-                    color: cl.colors.ink,
-                  ),
-                ),
-              ),
-              child: CupertinoDatePicker(
-                initialDateTime: picked,
-                minimumDate: minWall,
-                maximumDate: nowWall.add(
-                  const Duration(days: reminderMaxDaysAhead - 1),
-                ),
-                minuteInterval: 5,
-                use24hFormat: true,
-                onDateTimeChanged: (d) => picked = d,
-              ),
+          _Wheel(
+            initial: picked,
+            minimum: minWall,
+            maximum: nowWall.add(
+              const Duration(days: reminderMaxDaysAhead - 1),
             ),
+            mode: CupertinoDatePickerMode.dateAndTime,
+            onChanged: (d) => picked = d,
           ),
           const SizedBox(height: ClSpace.s4),
           ClButton(
@@ -1064,6 +1402,134 @@ Future<DateTime?> pickReminderTime(
     },
   );
 }
+
+// ---- D-075 #5: all-day date and the person's all-day time ----
+
+/// Date wheel for an all-day reminder: today (baby's zone) or later, within a year.
+Future<DateTime?> pickReminderDay(
+  BuildContext context, {
+  required DateTime initial,
+  required DateTime today,
+}) {
+  var picked = initial.isBefore(today) ? today : initial;
+  return showClSheet<DateTime>(
+    context: context,
+    builder: (sheetContext) {
+      final l10n = AppLocalizations.of(sheetContext);
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.reminderDay),
+          _Wheel(
+            initial: picked,
+            minimum: today,
+            maximum: today.add(const Duration(days: reminderMaxDaysAhead - 1)),
+            mode: CupertinoDatePickerMode.date,
+            onChanged: (d) => picked = DateTime(d.year, d.month, d.day),
+          ),
+          const SizedBox(height: ClSpace.s4),
+          ClButton(
+            label: l10n.actionDone,
+            expand: true,
+            onPressed: () => Navigator.of(sheetContext).pop(picked),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+/// "Giờ nhắc việc cả ngày": this person's time for every all-day reminder ringing on this
+/// device, in the baby's zone (default 08:00; never a silent hard-coded time).
+Future<void> pickReminderAllDayTime(BuildContext context, WidgetRef ref) async {
+  final current = ref.read(reminderAllDayTimeProvider);
+  final me = ref.read(selectedMembershipProvider);
+  final nickname = me == null
+      ? ''
+      : ref.read(babyProvider(me.babyId)).value?.nickname ?? '';
+  var picked = DateTime(2000, 1, 1, current ~/ 60, current % 60);
+  final ok = await showClSheet<bool>(
+    context: context,
+    builder: (sheetContext) {
+      final l10n = AppLocalizations.of(sheetContext);
+      final cl = sheetContext.cl;
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClSheetHeader(title: l10n.reminderAllDayTimeTitle),
+          _Wheel(
+            initial: picked,
+            mode: CupertinoDatePickerMode.time,
+            onChanged: (d) => picked = d,
+          ),
+          const SizedBox(height: ClSpace.s2),
+          Text(
+            l10n.reminderAllDayTimeNote(nickname),
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
+          const SizedBox(height: ClSpace.s4),
+          ClButton(
+            label: l10n.actionDone,
+            expand: true,
+            onPressed: () => Navigator.of(sheetContext).pop(true),
+          ),
+        ],
+      );
+    },
+  );
+  if (ok == true) {
+    await ref
+        .read(reminderAllDayTimeProvider.notifier)
+        .set(picked.hour * 60 + picked.minute);
+  }
+}
+
+/// The Cupertino wheel in the app's palette (Light / Night care), 24 h, 5-minute steps.
+class _Wheel extends StatelessWidget {
+  const _Wheel({
+    required this.initial,
+    required this.mode,
+    required this.onChanged,
+    this.minimum,
+    this.maximum,
+  });
+
+  final DateTime initial;
+  final DateTime? minimum;
+  final DateTime? maximum;
+  final CupertinoDatePickerMode mode;
+  final ValueChanged<DateTime> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    return SizedBox(
+      height: 216,
+      child: CupertinoTheme(
+        data: CupertinoThemeData(
+          brightness: cl.isNightCare ? Brightness.dark : Brightness.light,
+          textTheme: CupertinoTextThemeData(
+            dateTimePickerTextStyle: cl.text.title2.copyWith(
+              color: cl.colors.ink,
+            ),
+          ),
+        ),
+        child: CupertinoDatePicker(
+          mode: mode,
+          initialDateTime: initial,
+          minimumDate: minimum,
+          maximumDate: maximum,
+          minuteInterval: 5,
+          use24hFormat: true,
+          onDateTimeChanged: onChanged,
+        ),
+      ),
+    );
+  }
+}
+// ---- end D-075 #5 ----
 
 // ---------- 8c pre-prompt ----------
 
@@ -1155,7 +1621,7 @@ class ReminderPeek extends ConsumerWidget {
     if (all == null) return const SizedBox.shrink();
     final rules =
         ref.watch(reminderRulesProvider(c.me.babyId)).value ?? const [];
-    final groups = groupReminders(all, c.now);
+    final groups = groupReminders(all, c.now, c.zone);
     final babyId = c.me.babyId;
     final items =
         <
@@ -1166,16 +1632,19 @@ class ReminderPeek extends ConsumerWidget {
               ClIcons icon,
               Color tint,
               VoidCallback open,
+              DateTime? day,
             })
           >[
             for (final r in [...groups.overdue, ...groups.upcoming])
               (
                 title: r.title,
                 at: r.dueAt,
-                overdue: r.statusAt(c.now) == ReminderStatus.overdue,
+                overdue: r.statusAt(c.now, c.zone) == ReminderStatus.overdue,
                 icon: ClIcons.bell,
                 tint: cl.colors.mintSoft,
                 open: () => context.push('${Routes.reminders}/${r.id}'),
+                // D-075 #5: an all-day reminder shows its day, no time.
+                day: r.dueDay,
               ),
             for (final r in rules)
               if (!r.enabled)
@@ -1192,6 +1661,7 @@ class ReminderPeek extends ConsumerWidget {
                   open: () => unawaited(
                     showRuleDueSheet(context, babyId: babyId, ruleId: r.id),
                   ),
+                  day: null,
                 )
               else if (r.nextDueAt case final next?)
                 (
@@ -1201,6 +1671,7 @@ class ReminderPeek extends ConsumerWidget {
                   icon: ruleIcon(r.type),
                   tint: ruleTint(cl, r.type),
                   open: () => context.push('${Routes.ruleDetail}/${r.id}'),
+                  day: null,
                 ),
           ]
           ..sort((a, b) {
@@ -1210,7 +1681,26 @@ class ReminderPeek extends ConsumerWidget {
     final parent = c.me.role == MemberRole.coParent;
     final today = babyToday(c.zone, c.now);
 
-    String when(DateTime at, bool overdue) {
+    String when(DateTime at, bool overdue, DateTime? allDay) {
+      // D-075 #5: "Hôm nay · Cả ngày" / "Thứ Bảy · Cả ngày · còn 2 ngày" / "Quá hạn · hôm qua".
+      if (allDay != null) {
+        final days = allDay.difference(today).inDays;
+        if (overdue) {
+          return l10n.reminderOverdueMeta(
+            reminderDayRelative(l10n, c.locale, allDay, today),
+          );
+        }
+        final label = switch (days) {
+          0 => _cap(l10n.dayToday),
+          1 => _cap(l10n.dayTomorrow),
+          _ => _cap(DateFormat('EEEE', c.locale).format(allDay)),
+        };
+        return [
+          label,
+          l10n.reminderAllDayLower,
+          if (days > 0) l10n.reminderInDays(days),
+        ].join(' · ');
+      }
       final wall = inBabyZone(c.zone, at);
       if (overdue) {
         return l10n.reminderOverdueMeta(
@@ -1277,7 +1767,7 @@ class ReminderPeek extends ConsumerWidget {
                 ClListRow(
                   leading: mark(i.icon, i.tint, overdue: i.overdue),
                   title: i.title,
-                  subtitle: when(i.at, i.overdue),
+                  subtitle: when(i.at, i.overdue, i.day),
                   subtitleColor: i.overdue ? cl.colors.error : null,
                   onTap: i.open,
                 ),

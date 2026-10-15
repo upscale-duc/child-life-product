@@ -1,5 +1,6 @@
 import 'package:child_life/app/route_guard.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
+import 'package:child_life/core/widgets/cl_inputs.dart';
 import 'package:child_life/features/baby/time_zones.dart';
 import 'package:child_life/features/reminders/reminder_models.dart';
 import 'package:child_life/features/reminders/reminder_notifications.dart';
@@ -14,6 +15,8 @@ import '../helpers/reminder_fixtures.dart';
 import '../helpers/rule_fixtures.dart';
 import '../helpers/router_pump.dart';
 
+const _zone = 'Asia/Ho_Chi_Minh';
+
 /// Nhắc nhở opens on "Một lần" (the dated reminders); a tap on it changes nothing.
 Future<void> _oneTime(WidgetTester tester) async {
   await tester.tap(find.text('Một lần'));
@@ -25,7 +28,7 @@ void main() {
 
   group('model (R-093, D-032)', () {
     test('groups: overdue oldest first, upcoming soonest first, done', () {
-      final g = groupReminders(mockReminders(), careNow);
+      final g = groupReminders(mockReminders(), careNow, _zone);
       expect(g.overdue.map((r) => r.title), ['Mua sữa công thức']);
       expect(g.upcoming.map((r) => r.title), [
         'Tiêm 6 trong 1',
@@ -36,7 +39,7 @@ void main() {
 
     test('fires once at due time minus "Báo trước"', () {
       final r = mockReminders()[1];
-      expect(r.fireAt, r.dueAt.subtract(const Duration(hours: 1)));
+      expect(r.fireAt(_zone), r.dueAt.subtract(const Duration(hours: 1)));
     });
 
     test('an edit sends the due time only when it changed', () {
@@ -53,7 +56,10 @@ void main() {
       final r = mockReminders()[1];
       expect(notificationIdOf(r.id), notificationIdOf(r.id));
       expect(notificationIdOf(r.id), lessThan(1 << 28));
-      expect(reminderOfPayload(reminderPayload(r, 't', 'b')), (r.babyId, r.id));
+      expect(reminderOfPayload(reminderPayload(r, r.dueAt, 't', 'b')), (
+        r.babyId,
+        r.id,
+      ));
       expect(reminderOfPayload('{"k":"other"}'), isNull);
       expect(reminderOfPayload('not json'), isNull);
     });
@@ -385,5 +391,335 @@ void main() {
         reason: '08:30 GMT+7 minus 1 giờ',
       );
     });
+  });
+
+  // ---------- D-075 #5: date-only (all day) and an assignee ----------
+
+  group('all day and assignee: model (D-075 #5)', () {
+    test(
+      'an all-day reminder is due all its day (baby zone), overdue from the next',
+      () {
+        final r = allDayReminder('Mua bỉm', '2026-10-08', mai);
+        expect(r.dueDay, DateTime(2026, 10, 8));
+        // 23:50 on the 8th in Vietnam.
+        expect(
+          r.statusAt(DateTime.utc(2026, 10, 8, 16, 50), _zone),
+          ReminderStatus.upcoming,
+        );
+        // 00:10 on the 9th.
+        expect(
+          r.statusAt(DateTime.utc(2026, 10, 8, 17, 10), _zone),
+          ReminderStatus.overdue,
+        );
+        final g = groupReminders([r], careNow, _zone);
+        expect(g.upcoming, [r]);
+      },
+    );
+
+    test(
+      'rings at the person’s time on its day, or the day before for "1 ngày"',
+      () {
+        final r = allDayReminder('Mua bỉm', '2026-10-10', mai);
+        expect(
+          r.fireAt(_zone).isAtSameMomentAs(DateTime.utc(2026, 10, 10, 1)),
+          isTrue,
+          reason: '08:00 GMT+7 by default',
+        );
+        expect(
+          r
+              .fireAt(_zone, allDayMinutes: 6 * 60 + 30)
+              .isAtSameMomentAs(DateTime.utc(2026, 10, 9, 23, 30)),
+          isTrue,
+        );
+        final dayBefore = allDayReminder(
+          'Mua bỉm',
+          '2026-11-01',
+          mai,
+          lead: 1440,
+        );
+        expect(
+          dayBefore
+              .fireAt(_zone)
+              .isAtSameMomentAs(DateTime.utc(2026, 10, 31, 1)),
+          isTrue,
+        );
+      },
+    );
+
+    test(
+      'rings on the device it was put on and on every device of its assignee',
+      () {
+        final r = allDayReminder('Mua bỉm', '2026-10-10', mai, assignee: lan);
+        expect(r.ringsOn(deviceId: testDeviceId, uid: 'u_lan'), isTrue);
+        expect(r.ringsOn(deviceId: testDeviceId, uid: 'u_mai'), isFalse);
+        final held = r.copyWith(notifyDevice: maiPhone());
+        expect(held.ringsOn(deviceId: testDeviceId, uid: 'u_mai'), isTrue);
+      },
+    );
+
+    test(
+      'writes the new keys on create; an edit sends them only when they changed',
+      () {
+        final r = allDayReminder('Mua bỉm', '2026-10-10', mai, assignee: lan);
+        expect(r.toCreateJson(), containsPair('allDay', true));
+        expect(r.toCreateJson(), containsPair('dueDate', '2026-10-10'));
+        expect(r.toCreateJson(), containsPair('assigneeUid', 'u_lan'));
+        final timed = mockReminders()[1].toCreateJson();
+        expect(timed, containsPair('allDay', false));
+        expect(timed, containsPair('dueDate', null));
+        expect(timed, containsPair('assigneeUid', null));
+
+        final renamed = r.copyWith(title: 'Mua tã').toEditJson(r, 'u_mai');
+        expect(renamed.keys, isNot(contains('assigneeUid')));
+        expect(renamed.keys, isNot(contains('allDay')));
+        final unassigned = r.copyWith(assigneeUid: null).toEditJson(r, 'u_mai');
+        expect(unassigned, containsPair('assigneeUid', null));
+        final moved = r.copyWith(dueDate: '2026-10-11').toEditJson(r, 'u_mai');
+        expect(moved, containsPair('dueDate', '2026-10-11'));
+        expect(moved, containsPair('allDay', true));
+      },
+    );
+  });
+
+  group('all day and assignee: screens (D-075 #5)', () {
+    testWidgets('8b "Cả ngày": a date, the person’s 08:00 shown, "Đúng ngày"', (
+      tester,
+    ) async {
+      final repo = FakeReminderRepository();
+      await pumpRouted(
+        tester,
+        const RemindersScreen(),
+        overrides: familyOverrides(
+          reminders: const [],
+          reminderRepo: repo,
+          now: careNow,
+        ),
+      );
+      await _oneTime(tester);
+      await tester.tap(find.text('Nhắc việc mới'));
+      await tester.pumpAndSettle();
+      expect(find.text('Giờ báo'), findsNothing);
+      await tester.tap(find.byType(ClToggle));
+      await tester.pumpAndSettle();
+      expect(find.text('Ngày'), findsOneWidget);
+      expect(find.text('T5, 8 thg 10'), findsOneWidget);
+      expect(find.text('Giờ báo'), findsOneWidget);
+      expect(find.text('08:00'), findsOneWidget);
+      expect(find.text('Đúng ngày'), findsOneWidget);
+      await tester.tap(find.text('Báo trước'));
+      await tester.pumpAndSettle();
+      expect(find.text('10 phút'), findsNothing);
+      expect(find.text('1 ngày'), findsOneWidget);
+      await tester.tap(find.text('Đúng ngày').last);
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(EditableText), 'Mua bỉm');
+      await tester.tap(find.text('Lưu nhắc việc'));
+      await tester.pumpAndSettle();
+      final saved = repo.created.single;
+      expect(saved.allDay, isTrue);
+      expect(saved.dueDate, '2026-10-08');
+      expect(saved.leadMinutes, 0);
+      // 23:59 on the 8th in Teddy's zone.
+      expect(saved.dueAt, DateTime.utc(2026, 10, 8, 16, 59));
+      expect(saved.notifyDevice, maiPhone());
+      expect(saved.assigneeUid, isNull);
+    });
+
+    testWidgets(
+      '8b "Giao cho": Cùng nuôi and caregivers only; someone else’s job '
+      'rings on their devices, not here',
+      (tester) async {
+        final repo = FakeReminderRepository();
+        await pumpRouted(
+          tester,
+          const RemindersScreen(),
+          overrides: familyOverrides(
+            reminders: const [],
+            reminderRepo: repo,
+            now: careNow,
+          ),
+        );
+        await _oneTime(tester);
+        await tester.tap(find.text('Nhắc việc mới'));
+        await tester.pumpAndSettle();
+        expect(find.text('Chưa giao'), findsOneWidget);
+        await tester.tap(find.text('Giao cho'));
+        await tester.pumpAndSettle();
+        expect(find.text('Không giao ai'), findsOneWidget);
+        expect(find.text('Bạn'), findsOneWidget);
+        expect(find.text('Ba'), findsOneWidget);
+        expect(find.text('Cô Lan'), findsOneWidget);
+        // A relative is never offered.
+        expect(find.text('Bà nội'), findsNothing);
+        expect(find.text('Bà nội Hoa'), findsNothing);
+        await tester.tap(find.text('Cô Lan'));
+        await tester.pumpAndSettle();
+        expect(
+          find.text(
+            'Theo giờ của Teddy (GMT+7). Gia đình thấy nhắc việc trong app. '
+            'Cô Lan nhận thông báo trên máy của mình khi mở app.',
+          ),
+          findsOneWidget,
+        );
+        await tester.enterText(find.byType(EditableText), 'Mua bỉm');
+        await tester.tap(find.text('Lưu nhắc việc'));
+        await tester.pumpAndSettle();
+        final saved = repo.created.single;
+        expect(saved.assigneeUid, 'u_lan');
+        expect(saved.notifyDevice, isNull);
+        expect(saved.allDay, isFalse);
+      },
+    );
+
+    testWidgets('8a: "Giao cho Cô Lan" for others, all-day meta', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        const RemindersScreen(),
+        overrides: familyOverrides(
+          reminders: mockAssignedReminders(),
+          now: careNow,
+        ),
+      );
+      await _oneTime(tester);
+      expect(
+        find.text('Thứ Bảy, 10 thg 10 · Cả ngày · Bạn tạo'),
+        findsOneWidget,
+      );
+      expect(find.text('Giao cho Cô Lan'), findsOneWidget);
+      // Mai's own job is highlighted for her.
+      expect(find.text('Giao cho bạn'), findsOneWidget);
+    });
+
+    testWidgets(
+      '12f: the caregiver sees her job highlighted and marks it done',
+      (tester) async {
+        final repo = FakeReminderRepository();
+        await pumpRouted(
+          tester,
+          const RemindersScreen(),
+          overrides: familyOverrides(
+            me: lan,
+            reminders: mockAssignedReminders(),
+            reminderRepo: repo,
+            now: careNow,
+          ),
+        );
+        await _oneTime(tester);
+        expect(find.text('Giao cho bạn'), findsOneWidget);
+        expect(find.text('Giao cho Mẹ'), findsOneWidget);
+        await tester.tap(
+          find.bySemanticsLabel('Đánh dấu xong: Mua bỉm size S'),
+        );
+        await tester.pump();
+        expect(repo.done.single.$2, isTrue);
+        await tester.pump(const Duration(seconds: 5));
+      },
+    );
+
+    testWidgets(
+      '8e: all-day rows, the person’s time, the assignee and her devices',
+      (tester) async {
+        final list = mockAssignedReminders();
+        final (_, container) = await pumpRouted(
+          tester,
+          ReminderDetailScreen(reminderId: list[4].id),
+          overrides: familyOverrides(reminders: list, now: careNow),
+          prefs: const {'reminders.allDayMinutes': 7 * 60 + 30},
+        );
+        expect(find.text('T7, 10 thg 10 · Cả ngày'), findsOneWidget);
+        expect(find.text('Đúng ngày'), findsOneWidget);
+        expect(find.text('Giờ báo'), findsOneWidget);
+        expect(find.text('07:30'), findsOneWidget);
+        expect(find.text('Cô Lan'), findsOneWidget);
+        expect(find.text('Các máy của Cô Lan'), findsOneWidget);
+        expect(
+          find.text(
+            'Người được giao nhận thông báo trên máy của mình khi mở app. '
+            'Đánh dấu xong khi đã làm.',
+          ),
+          findsOneWidget,
+        );
+        // The person changes their all-day time from the row.
+        await tester.tap(find.text('07:30'));
+        await tester.pumpAndSettle();
+        expect(find.text('Giờ nhắc việc cả ngày'), findsOneWidget);
+        await tester.tap(find.text('Xong'));
+        await tester.pumpAndSettle();
+        expect(container.read(reminderAllDayTimeProvider), 7 * 60 + 30);
+      },
+    );
+
+    testWidgets(
+      'notifications: an all-day job assigned to me rings at my time on my '
+      'device; someone else’s job does not',
+      (tester) async {
+        final notifications = FakeReminderNotifications();
+        await pumpRouted(
+          tester,
+          const ReminderNotificationSync(child: SizedBox()),
+          overrides: familyOverrides(
+            me: lan,
+            reminders: [
+              ...mockAssignedReminders(),
+              allDayReminder(
+                'Mua sữa',
+                '2026-10-11',
+                mai,
+                lead: 1440,
+                assignee: lan,
+              ),
+            ],
+            notifications: notifications,
+            now: careNow,
+            deviceId: 'd_${'1' * 32}',
+          ),
+          prefs: const {'reminders.allDayMinutes': 6 * 60 + 30},
+        );
+        await tester.pumpAndSettle();
+        final scheduled = notifications.scheduled;
+        expect(scheduled.map((s) => s.title), ['Mua bỉm size S', 'Mua sữa']);
+        expect(scheduled.first.body, 'Teddy · Thứ Bảy · Cả ngày');
+        expect(
+          scheduled.first.fireAt.isAtSameMomentAs(
+            DateTime.utc(2026, 10, 9, 23, 30),
+          ),
+          isTrue,
+          reason: '06:30 GMT+7 on Saturday, the time Lan chose',
+        );
+        expect(
+          scheduled.last.fireAt.isAtSameMomentAs(
+            DateTime.utc(2026, 10, 9, 23, 30),
+          ),
+          isTrue,
+          reason: '"1 ngày": 06:30 the day before Sunday',
+        );
+      },
+    );
+
+    testWidgets(
+      'notifications: the creator’s device keeps the timed ones it holds and '
+      'its own assignments',
+      (tester) async {
+        final notifications = FakeReminderNotifications();
+        await pumpRouted(
+          tester,
+          const ReminderNotificationSync(child: SizedBox()),
+          overrides: familyOverrides(
+            reminders: mockAssignedReminders(),
+            notifications: notifications,
+            now: careNow,
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(notifications.scheduled.map((s) => s.title), [
+          'Tiêm 6 trong 1',
+          'Tái khám rốn',
+          'Đặt lịch khám 2 tháng',
+        ]);
+      },
+    );
   });
 }

@@ -10,6 +10,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../../app/route_guard.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
+import '../../core/appearance/appearance_providers.dart';
 import '../../core/platform/android_channels.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
@@ -58,11 +59,16 @@ class LocalReminder {
 int notificationIdOf(String reminderId) =>
     int.parse(reminderId.substring(3, 10), radix: 16);
 
-String reminderPayload(Reminder r, String title, String body) => jsonEncode({
+String reminderPayload(
+  Reminder r,
+  DateTime fireAt,
+  String title,
+  String body,
+) => jsonEncode({
   'k': 'reminder',
   'b': r.babyId,
   'r': r.id,
-  'at': r.fireAt.millisecondsSinceEpoch,
+  'at': fireAt.millisecondsSinceEpoch,
   't': title,
   'x': body,
 });
@@ -234,8 +240,37 @@ class NotificationsEnabled extends Notifier<bool?> {
   }
 }
 
+// ---- D-075 #5: "Giờ nhắc việc cả ngày" ----
+
+const _kAllDayMinutes = 'reminders.allDayMinutes';
+
+/// When this person's all-day reminders ring, as minutes after midnight in the baby's zone
+/// (default 08:00). Kept on this install like the 8c flag; always shown where it applies
+/// (form, 8e), never a silent hard-coded time.
+final reminderAllDayTimeProvider = NotifierProvider<ReminderAllDayTime, int>(
+  ReminderAllDayTime.new,
+);
+
+class ReminderAllDayTime extends Notifier<int> {
+  @override
+  int build() {
+    final v = ref.read(sharedPreferencesProvider).getInt(_kAllDayMinutes);
+    return v != null && v >= 0 && v < 24 * 60
+        ? v
+        : defaultReminderAllDayMinutes;
+  }
+
+  Future<void> set(int minutes) async {
+    state = minutes;
+    await ref.read(sharedPreferencesProvider).setInt(_kAllDayMinutes, minutes);
+  }
+}
+// ---- end D-075 #5 ----
+
 /// Open reminders whose notification lives on this install, across every baby the account can
-/// see (R-091): what [ReminderNotificationSync] keeps scheduled.
+/// see: the ones put on this device (R-091, D-029) and, since D-075 #5, the ones assigned to
+/// the signed-in person (each of their installs schedules its own local notification once it
+/// has synced). What [ReminderNotificationSync] keeps scheduled.
 final deviceRemindersProvider = Provider<List<Reminder>>((ref) {
   final session = ref.watch(sessionProvider);
   final device = ref.watch(deviceIdentityProvider).value;
@@ -249,7 +284,8 @@ final deviceRemindersProvider = Provider<List<Reminder>>((ref) {
         for (final r
             in ref.watch(remindersProvider(m.babyId)).value ??
                 const <Reminder>[])
-          if (!r.done && r.notifyDevice?.id == device.id) r,
+          if (!r.done && r.ringsOn(deviceId: device.id, uid: session.user.uid))
+            r,
   ];
 });
 
@@ -380,21 +416,29 @@ class _ReminderNotificationSyncState
 
   List<LocalReminder> _desired(AppLocalizations l10n, String locale) {
     final out = <LocalReminder>[];
+    final allDayMinutes = ref.read(reminderAllDayTimeProvider);
     for (final r in ref.read(deviceRemindersProvider)) {
       final baby = ref.read(babyProvider(r.babyId)).value;
       final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
-      final due = inBabyZone(zone, r.dueAt);
+      final day = r.dueDay;
+      // "Teddy · Thứ Bảy 08:30", or "Teddy · Thứ Bảy · Cả ngày" (D-075 #5).
       final body = l10n.notifBody(
         baby?.nickname ?? '',
-        DateFormat('EEEE HH:mm', locale).format(due),
+        day != null
+            ? '${DateFormat('EEEE', locale).format(day)} · ${l10n.reminderAllDay}'
+            : DateFormat(
+                'EEEE HH:mm',
+                locale,
+              ).format(inBabyZone(zone, r.dueAt)),
       );
+      final fireAt = r.fireAt(zone, allDayMinutes: allDayMinutes);
       out.add(
         LocalReminder(
           id: notificationIdOf(r.id),
-          fireAt: r.fireAt,
+          fireAt: fireAt,
           title: r.title,
           body: body,
-          payload: reminderPayload(r, r.title, body),
+          payload: reminderPayload(r, fireAt, r.title, body),
         ),
       );
     }
@@ -460,6 +504,7 @@ class _ReminderNotificationSyncState
     for (final r in ref.watch(deviceRemindersProvider)) {
       ref.watch(babyProvider(r.babyId));
     }
+    ref.watch(reminderAllDayTimeProvider);
     ref.watch(nudgePlanProvider);
     ref.watch(rhythmStageReminderPlanProvider);
     ref.watch(rhythmEveningPlanProvider);

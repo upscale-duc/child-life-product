@@ -73,11 +73,18 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
         (ref.watch(reminderRulesProvider(me.babyId)).value ?? const []).where(
           (r) => r.enabled,
         );
-    // 370:2174: a caregiver sees the reminders assigned to them.
+    // 370:2174: a caregiver sees the reminders assigned to them: on their device, or (D-075 #5)
+    // assigned to them.
     final remindersLine = caregiver
         ? l10n.careRemindersMine(
             rules.where((r) => r.recipients.contains(me.uid)).length +
-                upcoming.where((r) => r.notifyDevice?.uid == me.uid).length,
+                upcoming
+                    .where(
+                      (r) =>
+                          r.notifyDevice?.uid == me.uid ||
+                          r.assigneeUid == me.uid,
+                    )
+                    .length,
           )
         : l10n.careRemindersOn(rules.length + upcoming.length);
 
