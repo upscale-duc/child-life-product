@@ -15,8 +15,15 @@ import {
   type DraftPayload,
   type DraftProblem,
   type FamilyAction,
+  type MemberGrant,
 } from '@child-life/contracts';
 import type { TrustedScope } from './assistant-common.js';
+// Slice A3 (photos): Chi tiêu / reminder role checks and review fields (leaf module).
+import {
+  canCreateReminders,
+  canRecordSpending,
+  imageReviewFields,
+} from './assistant-image-rules.js';
 import type { ClarificationField, ModelIntent, ReadToolName } from './assistant-model.js';
 import { assistantUsage } from './assistant-usage.js';
 import { readRhythmRules, sleepFacts } from './rhythm.js';
@@ -40,6 +47,10 @@ export interface ModuleEntry {
   available: boolean;
   /** Who may save it (Rules `canLog` for care and check-ins: Cùng nuôi and Người chăm sóc). */
   action: FamilyAction | null;
+  /** Slice A3: a role check that is not a family action (Chi tiêu rights, reminders). */
+  can?: (m: MemberGrant) => boolean;
+  /** Slice A3: drafted from photos only (the text extraction has no expense / reminder fields). */
+  photoOnly?: boolean;
 }
 
 export const moduleRegistry: Record<DraftKind, ModuleEntry> = {
@@ -47,12 +58,22 @@ export const moduleRegistry: Record<DraftKind, ModuleEntry> = {
   breast: { available: true, action: 'rhythm.checkin' },
   sleep: { available: true, action: 'rhythm.checkin' },
   observation: { available: true, action: 'rhythm.checkin' },
-  // P-157: Chi tiêu and one-off reminders exist but their writers come with slice A3 (images);
-  // there is no meal log module at all.
-  expense: { available: false, action: null },
-  reminder: { available: false, action: null },
+  // ---- Slice A3 (P-157): Chi tiêu (VND, Rules `canRecordSpending`) and one-off reminders
+  // (Cùng nuôi only), from photos; text messages keep MODULE_UNAVAILABLE for these kinds. ----
+  expense: { available: true, action: null, can: canRecordSpending, photoOnly: true },
+  reminder: { available: true, action: null, can: canCreateReminders, photoOnly: true },
+  // ---- end slice A3 ----
+  // P-157: there is no meal log module at all.
   meal: { available: false, action: null },
 };
+
+/** Slice A3: whether [member] may save a draft of [kind] (family action or module check). */
+export function moduleAllows(kind: DraftKind, member: MemberGrant): boolean {
+  const mod = moduleRegistry[kind];
+  if (!mod.available) return false;
+  if (mod.can) return mod.can(member);
+  return mod.action !== null && familyCan(member, mod.action);
+}
 
 export const availableKinds = (Object.keys(moduleRegistry) as DraftKind[]).filter(
   (k) => moduleRegistry[k].available,
@@ -276,9 +297,38 @@ export function clarificationFor(field: ClarificationField, id: string): Clarifi
         choices: [
           { id: 'falling_asleep', label: L('Khó vào giấc', 'Hard to fall asleep') },
           { id: 'night_waking', label: L('Hay thức giấc', 'Waking often') },
+          // Slice A5 (CH15 "Cả hai").
+          { id: 'both', label: L('Cả hai', 'Both') },
         ],
         allowText: false,
       };
+    // ---- Slice A5 (care, CH15): day / night, optional onset; always skippable ----
+    case 'sleep.when':
+      return {
+        id,
+        field,
+        question: L('Giấc ngày hay giấc đêm?', 'Naps or night sleep?'),
+        choices: [
+          { id: 'night', label: L('Giấc đêm', 'Night') },
+          { id: 'day', label: L('Giấc ngày', 'Naps') },
+          { id: 'unsure', label: L('Chưa rõ', 'Not sure') },
+        ],
+        allowText: false,
+      };
+    case 'sleep.onset':
+      return {
+        id,
+        field,
+        question: L('Việc này bắt đầu từ khi nào?', 'When did this start?'),
+        choices: [
+          { id: 'today', label: L('Hôm nay', 'Today') },
+          { id: 'days_2_3', label: L('2–3 ngày nay', 'The last 2–3 days') },
+          { id: 'longer', label: L('Lâu hơn', 'Longer') },
+          { id: 'unsure', label: L('Chưa rõ', 'Not sure') },
+        ],
+        allowText: false,
+      };
+    // ---- end slice A5 ----
   }
 }
 
@@ -485,7 +535,8 @@ export function prepareDrafts(
   const today = localDateIn(s.zone, x.anchor);
   for (const intent of x.intents) {
     const mod = moduleRegistry[intent.kind];
-    if (!mod.available || !mod.action) {
+    // Slice A3: photo-only kinds (expense, reminder) are not drafted from text.
+    if (!mod.available || !mod.action || mod.photoOnly) {
       notices.push({ kind: intent.kind, code: 'MODULE_UNAVAILABLE' });
       continue;
     }
@@ -593,6 +644,8 @@ export function reviewFields(
   p: DraftPayload,
   problems: readonly DraftProblem[],
 ): { missing: string[]; uncertain: string[] } {
+  // Slice A3: expense / reminder fields and module problems (VND only, a time for reminders).
+  if (p.kind === 'expense' || p.kind === 'reminder') return imageReviewFields(p, problems);
   const missing = new Set<string>();
   const uncertain = new Set<string>();
   if (p.kind === 'bottle' && p.milk === null) uncertain.add('milk');

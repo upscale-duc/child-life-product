@@ -101,7 +101,13 @@ export const clarificationSchema = z.object({
 export type Clarification = z.infer<typeof clarificationSchema>;
 
 export type AssistantPart =
-  | { type: 'text'; schemaVersion: 1; text: string }
+  | {
+      type: 'text';
+      schemaVersion: 1;
+      text: string;
+      /** Slice A5: a notice code the app may attach an action to (`assistantNoticeCodes`). */
+      code?: AssistantNoticeCode;
+    }
   | { type: 'clarification'; schemaVersion: 1; clarification: Clarification }
   | { type: 'draft_reference'; schemaVersion: 1; draftId: string; revision: number }
   | {
@@ -119,8 +125,28 @@ export type AssistantPart =
       /** Why this was chosen (from the facts, e.g. the reported need). */
       reason: string;
       reviewed: boolean;
+      /** Slice A5 (optional; A2 messages lack it): which rule the reason rests on. */
+      reasonCode?: 'SELF_REPORTED_NEED' | 'DATA_INSIGHT' | 'PREVIOUS_HELPFUL';
+      /**
+       * Slice A5: the published item's own words in the task locale, copied from the content pack
+       * (never written by the model) so the card renders even after a newer version is published.
+       */
+      content?: ApprovedContentText;
+      /** Other eligible items for "Gợi ý khác", best first (≤ 2). */
+      alternatives?: { contentId: string; contentVersion: number }[];
     }
-  | { type: 'recipe_list'; schemaVersion: 1; recipeIds: string[]; caveat: string | null }
+  | {
+      type: 'recipe_list';
+      schemaVersion: 1;
+      recipeIds: string[];
+      caveat: string | null;
+      /** Slice A5: the approved candidates (≤ 3) with their content words and why. */
+      items?: RecipeListItem[];
+      /** Approved, age- and region-eligible recipes left out for a recorded reaction. */
+      excludedCount?: number;
+      /** "Ghi bữa ăn" needs a meal-log module (none yet, P-157). */
+      mealLogAvailable?: boolean;
+    }
   | {
       type: 'usage_notice';
       schemaVersion: 1;
@@ -137,7 +163,55 @@ export type AssistantPart =
         errorCode: string | null;
       }[];
     }
-  | { type: 'health_support'; schemaVersion: 1; signs: string[] };
+  | {
+      type: 'health_support';
+      schemaVersion: 1;
+      signs: string[];
+      /**
+       * Slice A5: the emergency number approved for the household's country in the published
+       * health pack. Absent when the country has no entry: the app then says "gọi bác sĩ của bé",
+       * never a default hotline.
+       */
+      emergency?: { country: string; number: string };
+    };
+
+// ---------- Care parts (slice A5, CH15–CH18, CH28) ----------
+
+/** Notice codes on `text` parts; the app may add an action (e.g. open the care library). */
+export const assistantNoticeCodes = [
+  /** No approved guidance fits: "chưa có gợi ý phù hợp", link to the care library. */
+  'CARE_NO_APPROVED_CONTENT',
+  /** No approved recipe fits (or none is published yet): "chưa có công thức được duyệt". */
+  'RECIPES_NONE_APPROVED',
+  /** `assistant_care` is off: guidance and recipes paused; logging and summaries still work. */
+  'CARE_FEATURE_DISABLED',
+  /** The household's country has no care content in chat (CH27). */
+  'REGION_UNSUPPORTED',
+  /** The baby has no date of birth: age-based content cannot be chosen. */
+  'CARE_AGE_UNKNOWN',
+] as const;
+export type AssistantNoticeCode = (typeof assistantNoticeCodes)[number];
+
+export interface ApprovedContentText {
+  title: string;
+  summary: string;
+  steps: string[];
+  /** "Không khi…" from the content, or null. */
+  safety: string | null;
+  durationMin: number;
+  timeOfDay: 'any' | 'evening' | 'day';
+}
+
+export interface RecipeListItem {
+  recipeId: string;
+  recipeVersion: number;
+  title: string;
+  summary: string;
+  durationMin: number;
+  minAgeMonths: number;
+  /** Server-written, from the rule that chose it (age, region, review); never a health claim. */
+  why: string;
+}
 
 // ---------- Tasks ----------
 
@@ -169,7 +243,13 @@ export type TaskOutcome =
   | { kind: 'unreadable' }
   | { kind: 'error'; code: 'AI_UNAVAILABLE' | 'VALIDATION_FAILED' | 'timeout' }
   /** Anything outside the allowlist (an unknown tool, an unknown part): rejected, never executed. */
-  | { kind: 'rejected'; detail: string };
+  | { kind: 'rejected'; detail: string }
+  /**
+   * Slice A5: a care question answered honestly without grounds — no approved guidance or recipe
+   * fits ("chưa có gợi ý phù hợp" / "chưa có công thức được duyệt"). Shown as an answer, but
+   * nothing useful came from the assistant, so the credit is released.
+   */
+  | { kind: 'fallback'; parts: AssistantPart[] };
 
 /**
  * Usage decision for a finished model step (brief p.17): commit exactly once on a useful validated
@@ -189,6 +269,7 @@ export function usageForOutcome(o: TaskOutcome): 'commit' | 'hold' | 'release' {
     case 'unreadable':
     case 'error':
     case 'rejected':
+    case 'fallback':
       return 'release';
   }
 }
@@ -199,6 +280,7 @@ export function taskStateForOutcome(o: TaskOutcome): TaskState {
       return o.items.length > 0 ? 'ready' : 'failed';
     case 'answer':
     case 'health_route':
+    case 'fallback':
       return 'ready';
     case 'clarification':
       return 'awaiting_clarification';
@@ -382,7 +464,11 @@ export type DraftProblem =
   | 'INVALID_TIME'
   | 'MISSING_DATE'
   | 'CURRENCY_UNSUPPORTED'
-  | 'MISSING_TITLE';
+  | 'MISSING_TITLE'
+  /** Slice A3: a reminder title longer than the module allows (80). */
+  | 'INVALID_TITLE'
+  /** Slice A3: a reminder due before now (reminders are set for later, D-031). */
+  | 'PAST_TIME';
 
 export const supportedCurrencies = [
   'VND',
@@ -626,8 +712,11 @@ export const createAttachmentUploadRequestSchema = z.object({
   mime: z.enum(['image/jpeg', 'image/png', 'image/heic', 'image/webp']),
   bytes: z.number().int().positive().max(assistantTaskLimits.maxImageBytes),
   sha256: z.string().regex(/^[a-f0-9]{64}$/),
-  /** "Xoá ảnh sau khi đọc" (default) or keep it with the expense. */
-  retention: z.enum(['delete_after_read', 'keep_with_record']),
+  /**
+   * Keep the receipt with the expense (default, D-075 #3) or "Xoá ảnh sau khi đọc". The uploaded
+   * original is always deleted once a copy is kept (or nothing can use it).
+   */
+  retention: z.enum(['delete_after_read', 'keep_with_record']).default('keep_with_record'),
 });
 
 export const startTaskRequestSchema = z.object({
@@ -815,6 +904,8 @@ export interface AssistantTaskView {
   timezone: string;
   createdAt: string;
   updatedAt: string;
+  /** Slice A5: the care thread of this task (CH15–CH18); absent for other tasks. */
+  care?: AssistantCareView | null;
 }
 
 export interface AssistantDraftView extends ActionDraft {
@@ -849,6 +940,8 @@ export interface AssistantTaskSnapshot {
   events: AssistantEvent[];
   /** The task's messages (user input, clarification answers, results), ordered. */
   messages: AssistantMessage[];
+  /** Slice A3: the task's photos and their real retention state (G05); absent for text tasks. */
+  attachments?: AssistantAttachmentView[];
 }
 
 export interface ConfirmItemResult {
@@ -875,4 +968,159 @@ export interface AssistantConversationView extends AssistantConversation {
 export interface AssistantHistoryPage<T> {
   items: T[];
   nextCursor: string | null;
+}
+
+// ---------- Photos (slice A3; docs/assistant/api.md, security.md) ----------
+
+/** Keep a copy with the saved expense ("Giữ ảnh hoá đơn", default, D-075 #3) or delete after reading. */
+export const attachmentRetentions = ['delete_after_read', 'keep_with_record'] as const;
+export type AttachmentRetention = (typeof attachmentRetentions)[number];
+
+/**
+ * Where an uploaded photo stands. `deleted` is set only once Storage confirmed the deletion;
+ * a failed deletion is `deletion_pending` and retried (G05, M07) — never shown as deleted.
+ */
+export const attachmentStates = ['uploading', 'ready', 'deletion_pending', 'deleted'] as const;
+export type AttachmentState = (typeof attachmentStates)[number];
+
+/** `createAttachmentUpload`: where the app uploads the chosen photo, once, before `startTask`. */
+export interface AssistantUploadTarget {
+  attachmentId: string;
+  /** Owned Storage path `assistant/{uid}/{attachmentId}` (Storage Rules: create once, no read). */
+  uploadPath: string;
+  mime: string;
+  /** The declared size: the upload may not be larger. */
+  maxBytes: number;
+  /** The upload must happen before this instant (then `startTask` with the attachment id). */
+  expiresAt: string;
+  retention: AttachmentRetention;
+}
+
+export interface AssistantAttachmentView {
+  id: string;
+  mime: string;
+  bytes: number;
+  retention: AttachmentRetention;
+  state: AttachmentState;
+  /** A re-encoded copy was kept with the saved expense (its `receiptPath`). */
+  keptWithRecord: boolean;
+  /** Set only once Storage confirmed the deletion of the uploaded original. */
+  deletedAt: string | null;
+  /** The file was refused before any reading (not an image, undecodable, too large). */
+  rejected: boolean;
+}
+
+/** D-075 #3: receipt photos are kept with the expense unless the person chose otherwise. */
+export const defaultAttachmentRetention: AttachmentRetention = 'keep_with_record';
+
+/** Chi tiêu stores whole VND only today (P-157): other currencies stay in review. */
+export const expenseModuleCurrency = 'VND';
+
+// The three module limits below are the ONLY places the assistant encodes them; the D-075 #4 / #5
+// follow-up (Chi tiêu currencies, date-only reminders with an assignee) flips these functions.
+
+/** Whether Chi tiêu can store an expense in [currency] today (VND only; D-075 #4 follow-up). */
+export function expenseCurrencySupported(currency: string | null): boolean {
+  return currency === expenseModuleCurrency;
+}
+
+/** Whether a one-off reminder needs a time today (no date-only yet; D-075 #5 follow-up). */
+export function reminderNeedsTime(): boolean {
+  return true;
+}
+
+/** Whether one-off reminders take an assignee today (none yet, P-157; D-075 #5 follow-up). */
+export function reminderAssigneeSupported(): boolean {
+  return false;
+}
+/** One-off reminders: title length the module accepts (Rules `validReminderFields`). */
+export const reminderModuleTitleMax = 80;
+
+/**
+ * Module checks beyond the form checks (`draftProblems`) for what a module can store today:
+ * Chi tiêu takes VND only and at most 1 000 000 000 đ; a one-off reminder needs a time (no
+ * date-only reminders, never a silent 09:00) and a title of at most 80 characters.
+ */
+export function assistantModuleProblems(p: DraftPayload): DraftProblem[] {
+  const out: DraftProblem[] = [];
+  if (p.kind === 'expense') {
+    if (p.currency !== null && !expenseCurrencySupported(p.currency)) {
+      out.push('CURRENCY_UNSUPPORTED');
+    }
+    if (p.totalMinor !== null && p.totalMinor > 1_000_000_000) out.push('INVALID_AMOUNT');
+  } else if (p.kind === 'reminder') {
+    if (p.time === null && reminderNeedsTime()) out.push('MISSING_TIME');
+    if (p.title.trim().length > reminderModuleTitleMax) out.push('INVALID_TITLE');
+  }
+  return out;
+}
+
+// ---------- Care: guidance, plan, follow-up, recipes (slice A5; docs/assistant/tools.md) ----------
+
+export const sleepConcernKinds = ['falling_asleep', 'night_waking', 'both'] as const;
+export type SleepConcernKind = (typeof sleepConcernKinds)[number];
+
+/** What the person reported about a sleep concern (CH15); a fact they gave, never a cause. */
+export interface SleepConcern {
+  kind: SleepConcernKind | null;
+  when: 'night' | 'day' | 'both' | null;
+  /** Onset, asked only when needed and always skippable ("Chưa rõ"). */
+  since: 'today' | 'days_2_3' | 'longer' | null;
+}
+
+/** The outcomes CH17 offers; "Chưa thử" is always one of them. */
+export const careFeedbackOutcomes = ['helpful', 'unsure', 'not_suitable', 'not_tried'] as const;
+export type CareFeedbackOutcome = (typeof careFeedbackOutcomes)[number];
+
+/**
+ * "Thử tối nay" (CH16) is an **intention**, not "đã thử": the plan and the moment feedback opens
+ * (the next morning after an evening plan). Before it, a tried outcome is refused.
+ */
+export interface AssistantCarePlan {
+  contentId: string;
+  contentVersion: number;
+  /** Baby-local date the person plans to try it. */
+  plannedFor: string;
+  plannedAt: string;
+  feedbackOpensAt: string;
+}
+
+export interface AssistantCareView {
+  topic: 'sleep_concern' | 'meal_ideas';
+  sleep: SleepConcern | null;
+  guidance: {
+    contentId: string;
+    contentVersion: number;
+    reasonCode: 'SELF_REPORTED_NEED' | 'DATA_INSIGHT' | 'PREVIOUS_HELPFUL';
+    reviewed: boolean;
+  } | null;
+  recipeIds: string[];
+  plan: AssistantCarePlan | null;
+  /**
+   * CH17: the question to show once the plan's chance to try has passed and nothing was answered
+   * yet; never phrased as if it was tried, and always with "Chưa thử". Null otherwise.
+   */
+  followUp: {
+    contentId: string;
+    contentVersion: number;
+    question: { vi: string; en: string };
+    choices: { id: CareFeedbackOutcome; label: { vi: string; en: string } }[];
+  } | null;
+  /** The latest answer for this task's guidance (any outcome, "Chưa thử" included). */
+  feedback: { contentId: string; contentVersion: number; outcome: CareFeedbackOutcome } | null;
+}
+
+/** `planAssistantActivity` ("Thử tối nay"): 0 credits, no model; the guidance of this task only. */
+export const planAssistantActivityRequestSchema = z.object({
+  ...envelope,
+  taskId: z.string().min(1).max(80),
+  contentId: z.string().min(1).max(60),
+  contentVersion: z.number().int().min(1),
+});
+
+/** Actual age in full months between two local dates (date of birth, today); never corrected. */
+export function ageInFullMonths(dateOfBirth: string, today: string): number {
+  const [by, bm, bd] = dateOfBirth.slice(0, 10).split('-').map(Number) as [number, number, number];
+  const [ty, tm, td] = today.slice(0, 10).split('-').map(Number) as [number, number, number];
+  return Math.max(0, (ty - by) * 12 + (tm - bm) - (td < bd ? 1 : 0));
 }

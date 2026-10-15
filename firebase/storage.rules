@@ -178,6 +178,27 @@ service firebase.storage {
       allow read, update, delete: if false;
     }
 
+    // Child Life Assistant photos (slice A3, brief p.14 / p.19): the uploader puts the one photo
+    // `createAttachmentUpload` reserved under their own uid, once (`resource == null`), with the
+    // declared type, no larger than declared (≤ 8 MB, image allowlist), before the target expires.
+    // Nobody reads, replaces or deletes it from a client: Functions validate the bytes, read it
+    // for the provider, keep a re-encoded copy with an expense when asked, and delete it.
+    // One Firestore read (the attachment document).
+    match /assistant/{uid}/{attachmentId} {
+      allow create: if request.auth != null && request.auth.uid == uid && resource == null &&
+        attachmentId.matches('^at_[a-f0-9]{32}$') &&
+        request.resource.size <= 8 * 1024 * 1024 &&
+        request.resource.contentType.matches('^image/(jpeg|png|heic|webp)$') &&
+        assistantUploadAllowed(uid, attachmentId);
+      allow read, update, delete: if false;
+    }
+
+    function assistantUploadAllowed(uid, attachmentId) {
+      let a = firestore.get(/databases/(default)/documents/assistantAttachments/$(attachmentId)).data;
+      return a.ownerUid == uid && a.state == 'uploading' && a.uploadExpiresAt > request.time &&
+        request.resource.contentType == a.mime && request.resource.size <= a.bytes;
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

@@ -19,6 +19,10 @@ import type {
 } from '@child-life/contracts';
 import { conversationRef, seqId, taskRef, toIso } from './assistant-common.js';
 import { draftView } from './assistant-writers.js';
+// Slice A3 (photos): the task's attachments and their real retention state.
+import { attachmentViews } from './assistant-attachments.js';
+// Slice A5 (care): the task's care thread (plan, CH17 follow-up).
+import { careView } from './assistant-care.js';
 
 /**
  * Assistant documents (docs/assistant/data.md): views for the app and the ordered, coalesced
@@ -67,8 +71,10 @@ export interface StoredTask {
 
 export const storedTask = (snap: DocumentSnapshot) => snap.data() as StoredTask;
 
-export function taskView(snap: DocumentSnapshot): AssistantTaskView {
+export function taskView(snap: DocumentSnapshot, now: Date | null = null): AssistantTaskView {
   const t = storedTask(snap);
+  // Slice A5: present only on care tasks; the follow-up needs the server clock.
+  const care = careView(t, now);
   return {
     id: snap.id,
     conversationId: t.conversationId,
@@ -87,6 +93,7 @@ export function taskView(snap: DocumentSnapshot): AssistantTaskView {
     timezone: t.timezone,
     createdAt: toIso(t.createdAt) ?? '',
     updatedAt: toIso(t.updatedAt) ?? '',
+    ...(care ? { care } : {}),
   };
 }
 
@@ -146,7 +153,13 @@ export function appendMessages(
   db: Firestore,
   conversationId: string,
   lastSeq: number,
-  messages: { role: 'user' | 'assistant'; parts: AssistantPart[]; taskId: string | null }[],
+  messages: {
+    role: 'user' | 'assistant';
+    parts: AssistantPart[];
+    taskId: string | null;
+    /** Slice A3: the photos a user message carried. */
+    attachmentIds?: string[];
+  }[],
   now: Date,
 ): number {
   let seq = lastSeq;
@@ -159,7 +172,7 @@ export function appendMessages(
       taskId: m.taskId,
       sequence: seq,
       createdAt: Timestamp.fromDate(now),
-      attachmentIds: [],
+      attachmentIds: m.attachmentIds ?? [],
     });
   }
   return seq;
@@ -183,10 +196,13 @@ export async function taskSnapshot(
       .where('taskId', '==', taskId)
       .get(),
   ]);
+  // Slice A3: photo tasks expose each photo's state (deleted only once Storage confirmed it).
+  const attachmentIds = t.input?.attachmentIds ?? [];
   return {
-    task: taskView(task),
+    task: taskView(task, now),
     drafts: drafts.docs.map((d) => draftView(d, now)).sort((a, b) => a.itemIndex - b.itemIndex),
     events: events.docs.map(eventView),
     messages: messages.docs.map(messageView).sort((a, b) => a.sequence - b.sequence),
+    ...(attachmentIds.length > 0 ? { attachments: await attachmentViews(db, attachmentIds) } : {}),
   };
 }

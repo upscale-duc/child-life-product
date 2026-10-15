@@ -133,3 +133,103 @@ transaction). Types: `accepted` (start, resume, clarification answered), `progre
 `item_saved`, `item_failed`, `task_failed` (`{ state: failed | canceled, errorCode }`). No per-token
 writes. Clients ignore duplicates / old sequences; after a reconnect, `getAssistantTask` is the
 authority.
+
+## Care (slice A5, CH15–CH18, CH28)
+
+Details in `tools.md` "Care tools"; credits in `usage.md`. Callable in `index.ts` (block "slice A5
+care"), logic in `firebase/functions/src/assistant-care.ts`.
+
+| Callable | Request (beyond the envelope) | `data` | Notes |
+|---|---|---|---|
+| `planAssistantActivity` | `taskId, contentId, contentVersion` | `{ plan: AssistantCarePlan, feedbackId }` | "Thử tối nay": an intention, not "đã thử". 0 credits, no model, idempotent per `clientRequestId` and per task + item. Owner, member, role `rhythm.feedback` (`WRITE_DENIED`), the task's own published guidance (`VALIDATION_FAILED`). Writes `care.plan` and `recFeedback` kind `started`. |
+
+Changes to A2 callables: `submitAssistantFeedback` on a care task accepts only that task's guidance
+and refuses a tried outcome before the plan's `feedbackOpensAt` (`INVALID_STATE`); `getAssistantTask`
+adds `task.care` (`AssistantCareView`, with the CH17 `followUp` once due); `submitClarification`
+resets the per-run attempt counter. Worker outcome `fallback` (no approved content fits): state
+`ready`, credit released, event `answer_ready`. New parts fields (all optional): `text.code`,
+`approved_content.{reasonCode, content, alternatives}`, `recipe_list.{items, excludedCount,
+mealLogAvailable}`, `health_support.emergency`.
+
+## Photos (slice A3, CH09–CH14)
+
+Logic in `assistant-attachments.ts` (upload targets, verification, image checks, retention),
+`assistant-images.ts` (worker branch), `assistant-image-model.ts` (reading schema / prompt),
+`assistant-writers-images.ts` (Chi tiêu and reminder writers), `assistant-lifecycle.ts` (purges,
+TTL). Callable and schedules in `index.ts` (block "slice A3 photos"). Security: `security.md`.
+
+| Callable | Request (beyond the envelope) | `data` | Notes |
+|---|---|---|---|
+| `createAttachmentUpload` | `quoteId, mime (jpeg/png/heic/webp), bytes (≤ 8 MB), sha256, retention (keep_with_record — default, D-075 #3 \| delete_after_read)` | `AssistantUploadTarget { attachmentId, uploadPath, mime, maxBytes, expiresAt, retention }` | The quote must be the caller's, `image`, unexpired, unused and `allowed`; the household must still have the quoted credits **now**, the photo flag and the consent must hold — else the quote's reason / `USAGE_EXHAUSTED` / `FEATURE_DISABLED` / `CONSENT_REQUIRED` and **no target** (U03). One target per photo the quote counted (`VALIDATION_FAILED` beyond). Idempotent per `clientRequestId` (same `at_*`). Target valid 15 min. Nothing reserved. |
+
+The app uploads the bytes once to `uploadPath` (`assistant/{uid}/{at_*}`) with the declared
+content type, then calls `startTask` with `attachmentIds` and the same (or a fresh) image quote.
+
+**`startTask` with photos** (replaces A2's `MODULE_UNAVAILABLE`): `modality` from the quote must be
+`image` with ≥ 1 attachment (`VALIDATION_FAILED`); before any credit moves each attachment must be
+the caller's (`NOT_MEMBER`), of the same household and scope (`SCOPE_CHANGED`), not used by another
+task / deleted / refused (`VALIDATION_FAILED`, `details.problem: attachment_used | attachment_gone`),
+uploaded before its target expired (`attachment_expired`), and present in Storage with the declared
+type and no more than the declared size (`upload_missing | upload_mismatch`). The verified object
+generation is bound to the task in the reservation transaction (also while `blocked`, for resume).
+A replay of the same request returns the same task even after its photo was deleted. The user
+message carries `attachmentIds`.
+
+**Worker (photo tasks)**: after the A2 gates (scope, flag, health, consent, live model), the photos
+are re-checked (owner, household, task, `ready`, generation), their bytes sniffed (magic numbers must
+match the declared type) and decoded with sharp (≤ 40 MP, ≥ 32 px) **before any provider call**;
+only a re-encoded JPEG (≤ 2048 px, no EXIF / GPS / ICC) goes out, once (`readImages`, 90 s). The
+reading is cached server-side while a question is open; a clarification never re-sends a photo.
+
+| Outcome | State | Credits (3) | Parts |
+|---|---|---|---|
+| refused photo (not an image, undecodable, moved, gone) | `failed` · `VALIDATION_FAILED` | release | `text` (no charge) |
+| provider error / timeout | `failed` · `AI_UNAVAILABLE` | release | `text` |
+| invalid reading (schema, extra key such as a "tool") | `failed` · `VALIDATION_FAILED` | release | `text` |
+| unreadable (I01, J05) | `failed` · `OCR_UNREADABLE` | release | retake / type it in |
+| receipt → one expense draft (I02–I04, J03) | `ready` | commit | notices (tax included, no total, other currency, possible duplicate) + `draft_reference` |
+| note → asks `note.convert` (I06) | `awaiting_clarification` | hold | "Mình thấy N dòng…", "Không chuyển thành việc" list, `clarification` |
+| note, weekday ≠ date (I07, G03) → asks `reminder.date.<line>` | `awaiting_clarification` | hold | `clarification` |
+| note → reminder drafts for action lines (J04) | `ready` | commit | excluded list, "cần ngày và giờ", "chưa có người phụ trách", `draft_reference` × n |
+| mixed (receipt + note / prescription) → asks `image.intent` | `awaiting_clarification` | hold | "nhiều loại nội dung", medicine notice, `clarification` |
+| declined (`none`), nothing actionable, prescription only | `ready` | **release** | `text` ("Không tính lượt") |
+| role cannot save (Chi tiêu right / Cùng nuôi for reminders) | `failed` · `WRITE_DENIED` | release | notice |
+
+Photo clarifications (server catalog, vi/en, `allowText: false`): `image.intent` (`expense` "Ghi chi
+tiêu", `reminders` "Lưu thành nhắc việc", `none` "Không làm gì" — only what the photo holds),
+`note.convert` (`reminders`, `none`), `reminder.date.<i>` (`written` = the date as written,
+`weekday` = the written weekday's date within ±3 days, `later` = leave the date to the person).
+
+**Drafts**: `expense` `{ merchant, totalMinor (printed total only), currency, date, subtotalMinor,
+taxMinor (informational, never added), categoryId (built-in hint or `c_other`), babyId (scope),
+keepReceipt (= retention keep_with_record) }`; `reminder` `{ title, date, time (null unless written —
+never 09:00), assigneeUid: null }`. Review: an uncertain date / total / currency / title, a missing
+total / date / currency / time block confirm until `patchDraft` fixes or confirms them
+(`confirmedFields`). `problems` (snapshot) now include the module's own: `CURRENCY_UNSUPPORTED` for
+any currency other than VND (Q-077), `MISSING_TIME` and `INVALID_TITLE` (> 80) for reminders, plus
+new `PAST_TIME`. These module limits live only in contracts `expenseCurrencySupported`,
+`reminderNeedsTime` and `reminderAssigneeSupported` (D-075 #4 / #5 follow-up flips them). Warning `duplicate_suspected` (I03): confirm answers `conflict` /
+`DUPLICATE_SUSPECTED` unless `acknowledge` contains it; never merged.
+
+**Confirm (expense / reminder)**: role per module — Chi tiêu: Cùng nuôi or `extraRights.recordSpending`
+(Rules `canRecordSpending`); reminders: Cùng nuôi only; else `WRITE_DENIED`. Expense:
+`babies/{b}/expenses/x_<hash(draftId)>` (another baby of the household only with the same right
+there), whole VND 1…1 000 000 000, date not after today, category built-in or existing; duplicate
+re-checked inside the transaction. Reminder: `babies/{b}/reminders/rm_<hash(draftId)>`, due time
+from date + time in the baby's zone, not before now (5 min) and ≤ 366 days, lead 60 min, no device.
+A record already at the id is adopted (replay). Links: `/utilities/spending/expense/{id}?babyId=`,
+`/care/reminders/{id}?babyId=`. With `keepReceipt`, a re-encoded JPEG (≤ 4 MB) is written to
+`babies/{b}/expenses/{x}.jpg` before the transaction and set as `receiptPath`; removed again if the
+expense is not saved.
+
+**Retention in snapshots**: `getAssistantTask` adds `attachments: AssistantAttachmentView[]`
+(`state`, `deletedAt` only once Storage confirmed, `keptWithRecord`, `rejected`). `cancelTask` on an
+unfinished photo task deletes its photos at once; `setAssistantConsent(null)` deletes every photo of
+the caller; `deleteAssistantConversation` deletes the conversation's photos (a failed delete stays
+`deletion_pending` and is retried).
+
+| Schedule | What |
+|---|---|
+| `sweepAssistantFiles` (15 min) | retries due `deletion_pending`; deletes uploads never started (target + 1 h), "xoá sau khi đọc" photos of finished tasks, kept photos no expense can still use (draft discarded / expired / saved), photos of blocked tasks after 24 h |
+| `cleanupAssistant` (daily 03:20 VN) | `assistantExecutions` / `assistantRequests` older than 30 days; cached readings left by an interrupted run (> 1 day, task not asking); attachment rows of deleted tasks once their object is confirmed gone |
+

@@ -8,7 +8,6 @@ import {
   careLimits,
   confirmBlocker,
   draftProblems,
-  familyCan,
   localDateIn,
   maxSleepHours,
   type ActionDraft,
@@ -30,7 +29,16 @@ import {
   toDate,
   type ScopeMember,
 } from './assistant-common.js';
-import { moduleRegistry, overlappingSleeps } from './assistant-tools.js';
+import { moduleAllows, moduleRegistry, overlappingSleeps } from './assistant-tools.js';
+// Slice A3 (photos): expense / reminder writers, the kept receipt, module problems.
+import type { AttachmentStore } from './assistant-attachments.js';
+import { allDraftProblems } from './assistant-image-rules.js';
+import {
+  afterImageConfirm,
+  imageRecordLink,
+  planImageWrite,
+  prepareReceiptCopy,
+} from './assistant-writers-images.js';
 
 /**
  * Domain writers (P-156, brief p.7, p.12): a confirmed draft becomes exactly the document the app
@@ -224,7 +232,11 @@ export function buildRecFeedback<S>(
 
 /** The app routes that open a saved item (built here, never by the model; A4 registers them). */
 export const recordLinkFor = (babyId: string, kind: DraftPayload['kind'], id: string) =>
-  kind === 'observation' ? `/rhythm/checkins/${babyId}/${id}` : `/care/records/${babyId}/${id}`;
+  kind === 'expense' || kind === 'reminder' // Slice A3: the app's own routes.
+    ? imageRecordLink(kind, babyId, id)
+    : kind === 'observation'
+      ? `/rhythm/checkins/${babyId}/${id}`
+      : `/care/records/${babyId}/${id}`;
 
 // ---------- Draft documents ----------
 
@@ -249,7 +261,11 @@ export function draftView(snap: DocumentSnapshot, now: Date): AssistantDraftView
     errorCode: (d.errorCode as string | null | undefined) ?? null,
     warnings: (d.warnings as ActionDraft['warnings'] | undefined) ?? [],
   };
-  return { ...draft, problems: draft.state === 'saved' ? [] : draftProblems(payload, now) };
+  // Slice A3: plus the module's own problems (VND only, a reminder needs a time).
+  return {
+    ...draft,
+    problems: draft.state === 'saved' ? [] : allDraftProblems(draftProblems(payload, now), payload),
+  };
 }
 
 // ---------- Confirm one item ----------
@@ -265,6 +281,8 @@ export interface ConfirmItemInput {
   acknowledge: readonly ('duplicate_suspected' | 'overlap')[];
   requestId: string;
   now: Date;
+  /** Slice A3: the photos' Storage (the kept receipt copy, the temporary original's deletion). */
+  files?: AttachmentStore;
 }
 
 const result = (
@@ -296,7 +314,9 @@ export async function confirmDraftItem(
 ): Promise<ConfirmItemResult> {
   const dRef = draftRef(db, x.taskId, x.draftId);
   const tRef = taskRef(db, x.taskId);
-  return db.runTransaction(async (tx) => {
+  // Slice A3: a kept receipt is copied before the transaction (Storage is not transactional).
+  const receipt = await prepareReceiptCopy(db, x.files, x);
+  const out = await db.runTransaction(async (tx): Promise<ConfirmItemResult> => {
     const [task, d] = await Promise.all([tx.get(tRef), tx.get(dRef)]);
     if (!d.exists || d.get('taskId') !== x.taskId) {
       return result(x, 'failed', { errorCode: 'VALIDATION_FAILED' });
@@ -312,7 +332,7 @@ export async function confirmDraftItem(
     const blocker = confirmBlocker(draft, x.revision, x.now);
     if (blocker) return result(x, 'failed', { errorCode: blocker, revision: draft.revision });
     const mod = moduleRegistry[draft.payload.kind];
-    if (!mod.available || !mod.action) {
+    if (!mod.available || (!mod.action && !mod.can)) {
       return result(x, 'failed', { errorCode: 'MODULE_UNAVAILABLE' });
     }
     const [memberSnap, baby] = await Promise.all([
@@ -321,7 +341,9 @@ export async function confirmDraftItem(
     ]);
     const member = memberOf(memberSnap, x.now);
     if (!member) return result(x, 'failed', { errorCode: 'NOT_MEMBER' });
-    if (!familyCan(member, mod.action)) return result(x, 'failed', { errorCode: 'WRITE_DENIED' });
+    if (!moduleAllows(draft.payload.kind, member)) {
+      return result(x, 'failed', { errorCode: 'WRITE_DENIED' });
+    }
     if (!baby.exists || baby.get('familyId') !== x.familyId) {
       return result(x, 'failed', { errorCode: 'SCOPE_CHANGED' });
     }
@@ -339,7 +361,50 @@ export async function confirmDraftItem(
     let doc: Record<string, unknown>;
     let conflict: AssistantError | null = null;
     const warnings = new Set(draft.warnings);
-    if (p.kind === 'observation') {
+    // ---- Slice A3: Chi tiêu expense / one-off reminder (assistant-writers-images.ts) ----
+    if (p.kind === 'expense' || p.kind === 'reminder') {
+      const plan = await planImageWrite(
+        tx,
+        db,
+        {
+          draftId: x.draftId,
+          taskId: x.taskId,
+          familyId: x.familyId,
+          babyId: x.babyId,
+          uid: x.uid,
+          zone: x.zone,
+          now: x.now,
+          member,
+          acknowledge: x.acknowledge,
+          warnings: draft.warnings,
+          receiptPath: receipt?.path ?? null,
+          attachmentIds: (task.get('input.attachmentIds') as string[] | undefined) ?? [],
+        },
+        p,
+        FieldValue.serverTimestamp(),
+      );
+      if (plan.kind === 'fail') {
+        return result(x, 'failed', { errorCode: plan.errorCode, problems: plan.problems });
+      }
+      if (plan.kind === 'adopt') {
+        // Written by this draft before (the id is the draft's): saved; never overwritten.
+        const recordId = plan.target.id;
+        const link = recordLinkFor(plan.target.parent.parent?.id ?? x.babyId, p.kind, recordId);
+        tx.update(dRef, {
+          state: 'saved',
+          recordId,
+          recordLink: link,
+          errorCode: null,
+          updatedAt: Timestamp.fromDate(x.now),
+        });
+        return result(x, 'saved', { revision: draft.revision, recordId, recordLink: link });
+      }
+      target = plan.target;
+      doc = plan.doc;
+      conflict = plan.conflict;
+      for (const w of plan.warnings) warnings.add(w);
+      // ---- end slice A3 (the observation and care branches below are A2's) ----
+    } else if (p.kind === 'observation') {
       const id = checkInIdFor(x.babyId, x.uid, p.date, p.observation);
       target = db.doc(`babies/${x.babyId}/checkins/${id}`);
       if (p.date > localDateIn(x.zone, x.now)) {
@@ -412,7 +477,7 @@ export async function confirmDraftItem(
     const exec = db.doc(`assistantExecutions/${x.draftId}_${draft.revision}`);
     const payloadHash = sha(canonical(p));
     const recordId = target.id;
-    const link = recordLinkFor(x.babyId, p.kind, recordId);
+    const link = recordLinkFor(target.parent.parent?.id ?? x.babyId, p.kind, recordId);
     const event = (type: 'item_saved' | 'item_failed', payload: Record<string, unknown>) =>
       tx.set(tRef.collection('events').doc(seqId(seq)), {
         taskId: x.taskId,
@@ -472,4 +537,7 @@ export async function confirmDraftItem(
     tx.update(tRef, { eventSeq: seq, updatedAt: at });
     return result(x, 'saved', { revision: draft.revision, recordId, recordLink: link });
   });
+  // Slice A3: mark the photos, let the temporary originals go, drop an unused receipt copy.
+  if (x.files) await afterImageConfirm(db, x.files, x, out, receipt);
+  return out;
 }

@@ -51,6 +51,20 @@ import {
   type ReadResult,
 } from './assistant-tools.js';
 import { commitQuota, releaseQuota } from './quota.js';
+// Slice A5 (care, CH15–CH18, CH28).
+import {
+  blockedPart,
+  careAnswer,
+  careOf,
+  healthSupportPart,
+  planCare,
+  type CareAnswer,
+  type StoredCare,
+} from './assistant-care.js';
+// Slice A3 (photos): image tasks, the cached reading, retention after settle.
+import type { Clarification } from '@child-life/contracts';
+import { settleTaskAttachments, type AttachmentStore } from './assistant-attachments.js';
+import { processImageTask, writeReadingTx, type StoredReading } from './assistant-images.js';
 import { aiBudgetLeft, chargeAi } from './staff.js';
 
 /**
@@ -76,6 +90,13 @@ export interface WorkerDeps {
   timeoutMs?: number;
   /** Lease length (default 300 s, the function's timeout). */
   leaseMs?: number;
+  /**
+   * Slice A5, TEST-ONLY fixture input: ingredient ids with a recorded reaction (no meal / reaction
+   * module exists yet, P-157). Never set in production (`index.ts` does not pass it).
+   */
+  careFixtures?: { reactionIngredientIds?: string[] };
+  /** Slice A3: the photos' Storage (absent → photo tasks fail MODULE_UNAVAILABLE, released). */
+  files?: AttachmentStore;
 }
 
 export const assistantLeaseMs = 300_000;
@@ -91,6 +112,14 @@ interface WorkResult {
   parts: AssistantPart[];
   clarification: ClarificationField | null;
   modelCalls: number;
+  /** Slice A5: the care thread to store on the task (facts so far, guidance, recipes). */
+  care?: StoredCare | null | undefined;
+  /** Slice A3: a server-catalog question of a photo task (id assigned at settle). */
+  ask?: Clarification | null;
+  /** Slice A3: ready with nothing to save (declined, nothing actionable): credits released. */
+  releaseReady?: boolean;
+  /** Slice A3: the photo reading cached while a question is open (deleted otherwise). */
+  reading?: StoredReading | null;
 }
 
 const failWith = (code: AssistantError, kind: 'error' | 'rejected' = 'error'): WorkResult => ({
@@ -201,7 +230,17 @@ export async function runAssistantTask(
   if (!claim) return { ran: false, fenced: false, state: null };
 
   const work = await process(deps, claim.t);
-  return finalize(deps, claim.t, claim.holder, work);
+  const done = await finalize(deps, claim.t, claim.holder, work);
+  // Slice A3: once settled (or fenced), photos go per their retention (G05); a failure here is
+  // retried by the sweeper and never fails the task.
+  if (claim.t.modality === 'image') {
+    try {
+      await settleTaskAttachments(db, deps.files, taskId, now);
+    } catch {
+      // `sweepAssistantFiles` retries.
+    }
+  }
+  return done;
 }
 
 async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
@@ -226,7 +265,8 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       outcome: { kind: 'health_route', signs },
       errorCode: null,
       drafts: [],
-      parts: [{ type: 'health_support', schemaVersion: 1, signs }],
+      // Slice A5: with the household's approved emergency number, when the pack has one.
+      parts: [await healthSupportPart(db, s, signs)],
       clarification: null,
       modelCalls: 0,
     };
@@ -239,6 +279,16 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   }
   const gateway = deps.gateway;
   const anchor = t.anchorInstant.toDate();
+  // ---- Slice A3 (photos): validate, read once, prepare (assistant-images.ts) ----
+  if (t.modality === 'image') {
+    const w = await processImageTask(
+      { db, now, gateway, files: deps.files, timeoutMs: deps.timeoutMs },
+      t,
+      s,
+    );
+    return { ...w, clarification: null };
+  }
+  // ---- end slice A3 ----
   const canRead = familyCan(s.member, 'history.read');
   const allowedReads: ReadToolName[] = canRead ? [...readToolNames] : ['usage_snapshot'];
 
@@ -285,13 +335,50 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
 
   // One question at a time, each field asked once, within the round cap (brief p.9).
   const asked = new Set((t.clarifications ?? []).map((c) => c.field));
+  // ---- Slice A5 (care): health signs from the model, kill switch, region, the care question ----
+  const care = planCare({
+    s,
+    stored: careOf(t),
+    ext,
+    answers: answers.map((a) => ({ field: a.field, choiceId: a.answer?.choiceId ?? null })),
+    asked,
+    texts,
+    round: t.round ?? 0,
+  });
+  if (care.kind === 'health') {
+    return {
+      outcome: { kind: 'health_route', signs: care.signs },
+      errorCode: null,
+      drafts: [],
+      parts: [await healthSupportPart(db, s, care.signs)],
+      clarification: null,
+      modelCalls,
+    };
+  }
+  const careActive = care.kind !== 'none';
+  const careState = care.kind === 'ask' || care.kind === 'ready' ? care.care : undefined;
+  // ---- end slice A5 ----
   const periodAnswer = answers.find((a) => a.field === 'time.ampm')?.answer?.choiceId;
   const period = periodAnswer === 'am' || periodAnswer === 'pm' ? periodAnswer : null;
-  let ask: ClarificationField | null = null;
-  if (ext.clarification && !asked.has(ext.clarification.field)) ask = ext.clarification.field;
+  // Slice A5: a care question goes first; the care facts (`sleep.*`) are asked by `planCare`.
+  let ask: ClarificationField | null = care.kind === 'ask' ? care.field : null;
+  if (
+    !ask &&
+    ext.clarification &&
+    !asked.has(ext.clarification.field) &&
+    !(careActive && ext.clarification.field.startsWith('sleep.'))
+  ) {
+    ask = ext.clarification.field;
+  }
   const timed = ext.intents.some((i) => i.fields.time !== null || i.fields.endTime !== null);
   if (!ask && timed && !period && !asked.has('time.ampm') && needsPeriod(texts)) ask = 'time.ampm';
-  if (!ask && ext.intents.length === 0 && ext.reads.length === 0 && !asked.has('intent')) {
+  if (
+    !ask &&
+    !careActive &&
+    ext.intents.length === 0 &&
+    ext.reads.length === 0 &&
+    !asked.has('intent')
+  ) {
     ask = 'intent';
   }
   if (ask) {
@@ -306,6 +393,7 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       parts: [],
       clarification: ask,
       modelCalls,
+      care: careState,
     };
   }
 
@@ -378,6 +466,27 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
     parts.push({ type: 'text', schemaVersion: 1, text: noticeText[code][t.locale] });
   }
 
+  // ---- Slice A5 (care): guidance / recipes from published content, never from the model ----
+  let careOut: CareAnswer | null = null;
+  if (care.kind === 'blocked') {
+    parts.unshift(blockedPart(care.code, t.locale));
+  } else if (care.kind === 'ready') {
+    careOut = await careAnswer({
+      db,
+      s,
+      care: care.care,
+      anchor,
+      now,
+      locale: t.locale,
+      canRead,
+      reactionIngredientIds: deps.careFixtures?.reactionIngredientIds,
+    });
+    parts.unshift(...careOut.parts);
+    prepared.drafts.push(...careOut.drafts);
+  }
+  const careResult = careOut?.care ?? careState;
+  // ---- end slice A5 ----
+
   if (prepared.drafts.length > 0) {
     return {
       outcome: {
@@ -390,9 +499,10 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       parts,
       clarification: null,
       modelCalls,
+      care: careResult,
     };
   }
-  if (reads.length > 0) {
+  if (reads.length > 0 || careOut?.useful) {
     return {
       outcome: { kind: 'answer', parts },
       errorCode: null,
@@ -400,8 +510,22 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       parts,
       clarification: null,
       modelCalls,
+      care: careResult,
     };
   }
+  // Slice A5: a care question with no approved content fits → an honest answer, released.
+  if (careOut) {
+    return {
+      outcome: { kind: 'fallback', parts },
+      errorCode: null,
+      drafts: [],
+      parts,
+      clarification: null,
+      modelCalls,
+      care: careResult,
+    };
+  }
+  if (care.kind === 'blocked') return { ...failWith(care.code, 'rejected'), parts, modelCalls };
   // Nothing useful (only unsupported modules / denied roles): released, explained.
   const code = (notices[0] ?? 'VALIDATION_FAILED') as AssistantError;
   return { ...failWith(code, 'rejected'), parts, modelCalls };
@@ -445,7 +569,11 @@ async function finalize(
       result = failWith('VALIDATION_FAILED', 'rejected');
     }
     const decision =
-      t.reservationId && t.usage === 'reserved' ? usageForOutcome(result.outcome) : 'none';
+      t.reservationId && t.usage === 'reserved'
+        ? result.releaseReady // Slice A3: nothing to save → released.
+          ? 'release'
+          : usageForOutcome(result.outcome)
+        : 'none';
     if (decision === 'commit') {
       await commitQuota(tx, db, {
         familyId: t.familyId,
@@ -463,7 +591,7 @@ async function finalize(
       });
     }
     const at = Timestamp.fromDate(now);
-    const state = taskStateForOutcome(result.outcome);
+    const state = result.releaseReady ? 'ready' : taskStateForOutcome(result.outcome);
     const usage =
       decision === 'commit'
         ? 'committed'
@@ -505,16 +633,26 @@ async function finalize(
     });
 
     // The assistant message (typed parts only).
-    const round = (t.round ?? 0) + (result.clarification ? 1 : 0);
+    const round = (t.round ?? 0) + (result.clarification || result.ask ? 1 : 0);
     let pending = null;
     let parts: AssistantPart[];
-    if (result.clarification) {
-      pending = clarificationFor(result.clarification, `cl_${round}`);
-      parts = [{ type: 'clarification', schemaVersion: 1, clarification: pending }];
+    if (result.clarification || result.ask) {
+      // Slice A3: a photo question comes prebuilt from its catalog, with context parts first.
+      pending = result.ask
+        ? { ...result.ask, id: `cl_${round}` }
+        : clarificationFor(result.clarification!, `cl_${round}`);
+      parts = [
+        ...result.parts,
+        { type: 'clarification', schemaVersion: 1, clarification: pending },
+      ];
     } else if (state === 'failed') {
       parts = [...result.parts, { type: 'text', schemaVersion: 1, text: failureText[t.locale] }];
     } else {
       parts = [...result.parts, ...draftParts];
+    }
+    // Slice A3: a photo reading is kept only while its question is open.
+    if (t.modality === 'image') {
+      writeReadingTx(tx, db, taskId, result.ask ? (result.reading ?? null) : null, now);
     }
     const messageSeq = appendMessages(
       tx,
@@ -532,7 +670,7 @@ async function finalize(
         ? 'clarification_required'
         : state === 'failed'
           ? 'task_failed'
-          : result.outcome.kind === 'drafts'
+          : result.outcome.kind === 'drafts' && result.drafts.length > 0
             ? 'drafts_ready'
             : 'answer_ready';
     const events: { type: TaskEventType; payload: Record<string, unknown> }[] = [
@@ -581,6 +719,8 @@ async function finalize(
       promptVersion: deps.gateway?.promptVersion ?? null,
       updatedAt: at,
       ...(state === 'ready' ? { readyAt: at } : {}),
+      // Slice A5: the care thread (facts so far, guidance or recipes).
+      ...(result.care ? { care: result.care } : {}),
     });
     return { ran: true, fenced: false, state };
   });

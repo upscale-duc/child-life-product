@@ -17,7 +17,7 @@ child; tools read only `babies/{scope.babyId}/…` and the household's quota win
 
 ```ts
 interface ModelGateway {
-  name: 'openai' | 'fake'; model: string; promptVersion: string; // assistant-extract-v1
+  name: 'openai' | 'fake'; model: string; promptVersion: string; // assistant-extract-v2 (A5)
   extract(input: ExtractInput, signal): Promise<unknown>; // raw JSON, validated by the server
   word(input: WordInput, signal): Promise<unknown>;       // { text }, number-guarded
 }
@@ -49,7 +49,15 @@ reads. `WordInput`: engine-written fact lines only.
                         side, observation, when, note, title },   // all keys, nullable
               evidence: [{ field, text }], uncertainFields: [field], missingFields: [field] }] (≤ 6),
   reads: [{ tool: 'care_summary'|'sleep_facts'|'usage_snapshot', dayOffset: -6..0 }] (≤ 3),
-  clarification: { field: 'time.ampm'|'time.missing'|'intent'|'sleep.period' } | null }
+  clarification: { field: 'time.ampm'|'time.missing'|'intent'|'sleep.period'
+                          |'sleep.when'|'sleep.onset' } | null,
+  // slice A5 (optional in zod so v1-shaped output parses; required in the OpenAI JSON schema):
+  care: { topic: 'sleep_concern'|'meal_ideas',
+          sleep: { kind: 'falling_asleep'|'night_waking'|'both'|null,
+                   when: 'night'|'day'|'both'|null, since: 'today'|'days_2_3'|'longer'|null } | null,
+          evidence: [{ field: 'kind'|'when'|'since', text }] (≤ 6) } | null,
+  healthSigns: ('fever_young'|'breathing'|'lethargic'|'poor_feeding'|'inconsolable'
+                |'lost_skill'|'dehydration'|'seizure')[] }
 ```
 
 Unknown keys, intent kinds, tools or field names fail the schema (E01: `{kind:'tool',
@@ -101,8 +109,198 @@ milk (the form's default). Never writes.
 | bottle, breast, sleep | care records | `rhythm.checkin` (Cùng nuôi, Người chăm sóc; relatives never) |
 | observation | check-ins | `rhythm.checkin` |
 | feedback (not a draft) | `recFeedback` | `rhythm.feedback` |
-| expense, reminder | exist in the app; writers come with A3 | — (`MODULE_UNAVAILABLE` now) |
+| expense (A3, photos only) | Chi tiêu `babies/{b}/expenses` (VND) | `can: canRecordSpending` (Cùng nuôi or 8l "Ghi khoản đã chi") |
+| reminder (A3, photos only) | one-off reminders `babies/{b}/reminders` | `can: canCreateReminders` (Cùng nuôi only) |
 | meal | no module (P-157) | — (`MODULE_UNAVAILABLE`) |
 
 Kinds without a writer or that the role cannot save are never drafted: the assistant explains it in a
 `text` part, and when nothing else is useful the task fails with that code and the credit is released.
+A3: `ModuleEntry` gains `can?(member)` (a role check that is not a family action) and `photoOnly`
+(the text extraction has no expense / reminder fields, so a typed "chi 200k" stays
+`MODULE_UNAVAILABLE`); `moduleAllows(kind, member)` is used by the prepare tools and the writers.
+
+## Care tools (slice A5: CH15–CH18, CH28)
+
+Code: `firebase/functions/src/assistant-care.ts` (plan, tools, answer, plan / feedback rules),
+`assistant-care-model.ts` (the `care` / `healthSigns` schemas plugged into the extraction). The
+model only says *that* a message is a care question and which facts the person gave (each with its
+exact words); it never writes advice, steps, recipes, causes or questions. Anything else in `care`
+fails the strict schema → `rejected`, 0 credits. The wording model is never called for care.
+
+### Round planning (`planCare`, deterministic)
+
+1. **Structured health signs** (`healthSigns` non-empty) → `health_support`, released (0 credits),
+   before the kill switch and the region. The keyword rule (`healthSignalsIn`) still runs first,
+   at `startTask` and in the worker.
+2. A care topic (from the model, or stored on the task by an earlier round) with
+   **`assistant_care` off** → a `text` notice `CARE_FEATURE_DISABLED`; with the household's country
+   **outside the care regions** (`config/entitlements.regions.advanced`, the same list as the
+   advanced capabilities) → `REGION_UNSUPPORTED`. The rest of the message (logs, reads) still
+   runs; if nothing else is useful the task fails with that code and the credit is released.
+   Health support never depends on either.
+3. **Sleep concern**: facts = clarification answers > facts stored by earlier rounds > the model's
+   facts whose evidence text is in the person's words. One question per round from the server
+   catalog: `sleep.period` (Khó vào giấc / Hay thức giấc / Cả hai) if the kind is unknown, then
+   `sleep.when` (Giấc đêm / Giấc ngày / Chưa rõ), then `sleep.onset` (Hôm nay / 2–3 ngày nay / Lâu
+   hơn / Chưa rõ) **only when the model asks for it**. Each field is asked once; "Chưa rõ" leaves it
+   unknown. Same task, same reservation; at the round cap (4) the guidance uses what is known. The
+   model's own `sleep.*` clarifications are ignored while a care topic is active, and the generic
+   `intent` question is never asked for a care message.
+4. **Meal ideas**: no question (there is no meal log, so "món đã ăn" cannot be honoured).
+
+### `findApprovedGuidance` (sleep)
+
+Inputs: `publicConfig/content_rhythm` activities, need `sleep`, the concern's time of day, task
+locale, the baby's **actual age in days** (`restricted/profile.dateOfBirth`; none →
+`CARE_AGE_UNKNOWN` fallback), the household's country, the baby's feedback memory
+(`recFeedback`, contracts `feedbackMemory` with `config/rhythm.cooldownDays`) and the caller's
+interests / "ít hơn" (`users/{uid}/settings/personalization`). Ranking is contracts `recommend()`
+(published only, locale, age range, item `regions` — empty = all —, "Không phù hợp" excluded,
+cooling-down excluded, versioned weights, id order).
+
+Prerequisite in this slice: the item's `timeOfDay` must suit the concern (night → `evening` / `any`;
+naps → `day` / `any`; both / unknown → all). Activities have no other prerequisite field yet.
+
+Output part `approved_content`: `contentId`, `contentVersion`, `reviewed: review != null` (D-073 #2:
+unreviewed published items are shown "Nội dung minh hoạ · chờ chuyên môn duyệt"), `reasonCode`,
+`reason` (server template), `content` = the item's own title / summary / steps / safety / duration /
+time of day in the task locale (copied from the pack, never model text), `alternatives` (≤ 2, for
+"Gợi ý khác").
+
+Reason: "Vì sao: bạn chọn “khó vào giấc, giấc đêm”." (what the person reported). The log supports it
+(`DATA_INSIGHT`) only when the caller has `history.read` **and** the rhythm engine's `sleepFacts`
+(valid days only, D-073 #1) reports `change_detected` with recent **below** baseline; then the
+median minutes are quoted. `PREVIOUS_HELPFUL` when the family rated the item "Có ích". Never a
+cause, never a Wonder Weeks attribution.
+
+No eligible item (none for the need, age, region, time of day, or all excluded / cooling down) →
+`text` `CARE_NO_APPROVED_CONTENT` ("Chưa có gợi ý đã duyệt phù hợp với con lúc này. Bạn có thể
+xem Thư viện chăm bé."), outcome `fallback` (state `ready`, credit **released**), no draft.
+
+### Optional observation draft (G01)
+
+With guidance, when the caller may save check-ins (`rhythm.checkin`: Cùng nuôi, Người chăm sóc)
+and has no check-in for `sleep` today: one `observation` draft `{ observation: 'sleep', date:
+today, when, note: null }` → "Lưu ghi nhận" saves a check-in (A2 writer), "Không cần" discards it.
+An observation, never a reminder.
+
+### `findRecipes` (CH18)
+
+`recipesOf(content)` (contracts `recipeSchema`, optional `recipes` in the pack) → contracts
+`eligibleRecipes`: approved = `status: 'published'` **and** `review != null`; the household's
+country in the recipe's `regions`; `minAgeMonths` ≤ the baby's age in **full months** from the date
+of birth (`ageInFullMonths`); no ingredient id with a recorded reaction. At most 3, closest to the
+age first, then id.
+
+Recorded reactions: `recordedReactionIngredientIds()` returns **none** today — there is no meal log
+or reaction module (P-157). Tests feed reactions through the worker's TEST-ONLY
+`careFixtures.reactionIngredientIds` (never set in production). The caveat is always present:
+with reactions "Đã loại món có nguyên liệu con từng có phản ứng (theo ghi nhận của gia đình, không
+phải chẩn đoán dị ứng)."; without a source "Child Life chưa có nhật ký ăn dặm nên chưa biết con từng
+phản ứng với món nào."; and always "Món chưa có ghi nhận phản ứng không có nghĩa là con đã dung nạp
+tốt."
+
+Part `recipe_list`: `recipeIds`, `caveat`, `items[]` (id, version, title, summary, duration, min age,
+`why` "Từ 6 tháng · đã được chuyên môn duyệt"), `excludedCount`, `mealLogAvailable: false` (no "Ghi
+bữa ăn"; a meal intent stays `MODULE_UNAVAILABLE`). Nothing eligible (or no recipe published) →
+empty `recipe_list` + `text` `RECIPES_NONE_APPROVED` ("Chưa có công thức được duyệt phù hợp với
+con."), outcome `fallback`, released.
+
+### Health support (CH28)
+
+`healthSupportPart`: `{ type: 'health_support', signs, emergency? }` where `emergency = { country,
+number }` comes only from the published health pack's `regions` for the household's country;
+absent when there is no entry (the app says "gọi bác sĩ của bé"), never a default hotline. Free:
+0 credits, no quote, no consent, no model at `startTask`; works with `assistant_care` off, at quota 0
+and in an unsupported region.
+
+### Plan and feedback (CH16 "Thử tối nay" → CH17)
+
+| Callable | Rules |
+|---|---|
+| `planAssistantActivity` (`taskId, contentId, contentVersion`) | 0 credits, no model, idempotent. Owner of the task, still a member, `assistant` on, role `rhythm.feedback` (else `WRITE_DENIED`). Only the guidance this task gave, still published (else `VALIDATION_FAILED`). Stores `care.plan { contentId, contentVersion, plannedFor, plannedAt, feedbackOpensAt }` and writes `recFeedback` kind **`started`** (`fb_<hash('feedback-started', uid, task, content, version)>`). Decision: contracts `feedbackKinds` defines `started` as "Mình sẽ thử" / "Thử tối nay" and `composeHome` reads it as "started", never as tried, so it is the module's intention record; the outcome keeps its own id. `feedbackOpensAt`: evening / any-time items 05:00 the next local morning; daytime items 18:00 the same day if planned before, else the next morning. |
+| `submitAssistantFeedback` (A2, extended) | On a care task: only this task's guidance (else `VALIDATION_FAILED`); `helpful` / `unsure` / `not_suitable` before `feedbackOpensAt` of a plan → `INVALID_STATE` (never asked as tried just because "Thử tối nay" was tapped); `not_tried` ("Chưa thử") always accepted and written only on the task. Tried outcomes write `recFeedback` as in A2. 0 credits, no model. The latest answer is kept in `care.feedback`. |
+
+`getAssistantTask` → `task.care` (`AssistantCareView`): topic, reported sleep facts, guidance (id,
+version, reason code, reviewed), recipe ids, plan, `followUp` and `feedback`. `followUp` appears
+only once `feedbackOpensAt` has passed and nothing was answered: "Bạn có dịp thử “…” chưa? Nếu đã
+thử, thấy thế nào?" with Có ích / Chưa rõ / Không phù hợp / **Chưa thử**.
+
+### Credits (care)
+
+| Step | Credits |
+|---|---|
+| Clarification rounds (same task) | hold the one reservation; 0 extra |
+| Guidance found, or ≥ 1 recipe | commit once (text = 1) |
+| No eligible content / no recipe (`fallback`) | released |
+| Kill switch off, region unsupported (nothing else useful) | released (`failed`) |
+| Health support (keywords or structured signs) | 0 / released |
+| Observation save, plan, feedback | 0 (no model) |
+
+## Photo tools (slice A3: CH09–CH14)
+
+Code: `assistant-image-model.ts` (schema, prompt, request), `assistant-images.ts` (worker branch,
+decisions, clarification catalog), `assistant-image-rules.ts` (roles, review fields, ids),
+`assistant-writers-images.ts` (writers, duplicates, kept receipt), `assistant-attachments.ts`
+(validation, retention).
+
+### `ModelGateway.readImages` (optional method)
+
+`readImages(input: ImageReadInput, signal) → unknown` — `{ images: [{ mime: 'image/jpeg', base64,
+width, height }], intentHint, locale, anchor }`. OpenAI: chat completions, `store: false`,
+temperature 0, the photos as `image_url` data URLs with `detail: 'high'`, strict JSON schema
+`assistant_image_reading`, prompt version `assistant-image-v1`, 90 s deadline in the worker. A gateway
+without the method blocks photo tasks (`AI_UNAVAILABLE`). The fake takes `readImages: [...]` scripts.
+Internal cost per reading: 900 VND on the AI budget (never shown).
+
+### Reading schema (strict; anything else → `rejected`, 0 credits)
+
+```ts
+{ documentKind: 'receipt'|'note'|'prescription'|'mixed'|'unreadable',
+  contains: ('receipt'|'note'|'prescription'|'other')[], readability: 'clear'|'partial'|'unreadable',
+  receipt: { merchant, documentDate (YYYY-MM-DD), dateUncertain, currency (ISO 4217), currencyUncertain,
+             totalMinor (int, printed TOTAL only), totalUncertain, subtotalMinor, taxMinor, discountMinor,
+             categoryHint (built-in id) , evidence: [{ field, text }] } | null,
+  noteLines: [{ kind: 'actionCandidate'|'informational'|'medicalText'|'unclear', title, dateText, date,
+                weekday (0 = Sun, as written), timeText, time (HH:mm only if written), assigneeText,
+                uncertain: ('title'|'date'|'time')[] }] (≤ 20) }
+```
+
+Line kinds follow contracts `noteLineKinds` (`informational`, i.e. the brief's "informationalNote").
+The schema has no field able to name a tool, a path, a uid or a URL; an extra key (the pack's
+`{kind:'tool', name:'deleteAllRecords'}`) fails it.
+
+### Server rules on a reading (deterministic)
+
+1. **Before the provider**: owner / household / task / generation re-checked; magic bytes = declared
+   type; sharp decode within 40 MP, ≥ 32 px; only a re-encoded JPEG is sent (M06).
+2. **Unreadable** (kind or readability) or a receipt / note with nothing in it → `OCR_UNREADABLE`,
+   released, "chụp lại hoặc nhập tay" (I01, J05).
+3. **Receipt** (Chi tiêu right required): one draft; `totalMinor` = printed total, never subtotal +
+   tax (no total → missing, explained); the total is uncertain unless its evidence's digits are
+   exactly the integer (no locale parsing of "486.000"); currency other than VND → kept in review
+   with `CURRENCY_UNSUPPORTED` (`expenseCurrencySupported`, until the D-075 #4 follow-up); date uncertain when flagged, partial, without evidence, after
+   the anchor or > 366 days old; merchant uncertain without evidence; category = hint or `c_other`;
+   `keepReceipt` = the photo's retention; duplicate check (below).
+4. **Note** (reminders: Cùng nuôi only, else `WRITE_DENIED` and no offer): lines with a link or an
+   address, or an empty title, become `unclear`; remarks quoted, medicine lines only counted ("không
+   tạo lịch hay liều", never their text), unclear counted. No action line → nothing to save. Else ask
+   `note.convert` (contracts `noteActions(lines, { tasks: false, reminders: true }, explicit)`); on
+   "Lưu thành nhắc việc": one draft per action line; a written weekday that does not match the date →
+   ask `reminder.date.<i>` (one per round, cap 4 rounds, then left to the person); only a weekday →
+   its next date, uncertain; a date in the past or > 366 days → uncertain; no time → `missingFields:
+   ['time']` (never 09:00); a time without morning / evening ("9h") → uncertain; `assigneeUid` always
+   null (P-157), a name in the photo only triggers the "chưa có người phụ trách" notice.
+5. **Mixed** → ask `image.intent` (choices from what the photo holds); a prescription part is never
+   processed and is called out. **Prescription only** → explained, nothing scheduled.
+6. **Credits**: commit only when ≥ 1 draft exists; a question holds; declined, nothing actionable,
+   prescription only → `ready` but released (`releaseReady` in the worker).
+
+### Duplicate check (I03; `expenseDuplicateSuspected`)
+
+Same household only (the family's babies): a live expense within ±1 day of the receipt date, total
+within 1 % (min 1 đ), and the same merchant (folded, either containing the other) or no merchant on
+either side; or the same photo content (`sha256Server`) already saved as an expense by the
+household. Run at prepare (warning) and again inside the confirm transaction; a warning needs
+`acknowledge: ['duplicate_suspected']` ("Vẫn lưu"); never merged, never global.
+

@@ -175,6 +175,8 @@ function published(doc: RhythmDoc, data: Data, review: Review, version: string, 
     activities: ((data.activities as Data[] | undefined) ?? []).map(withReview),
     ageCards: ((data.ageCards as Data[] | undefined) ?? []).map(withReview),
     health: data.health ? withReview(data.health as Data) : data.health,
+    // Recipes (assistant slice A5) follow the same sign-off when the pack carries them.
+    ...(Array.isArray(data.recipes) ? { recipes: (data.recipes as Data[]).map(withReview) } : {}),
     version,
     publishedAt: at,
   });

@@ -125,7 +125,7 @@ describe('OpenAI extraction request', () => {
     expect(dig(intent, 'properties.fields').required).toEqual(
       Object.keys(dig(intent, 'properties.fields.properties')),
     );
-    expect(schema.required).toEqual(['intents', 'reads', 'clarification']);
+    expect(schema.required).toEqual(['intents', 'reads', 'clarification', 'care', 'healthSigns']);
   });
 
   it('posts to chat completions with the bearer key and parses the JSON content', async () => {

@@ -312,6 +312,15 @@ import {
 import { AssistantFailure, httpsCodeOf } from './assistant-common.js';
 import { openAiModelGateway, type ModelGateway } from './assistant-model.js';
 import { runAssistantTask as runAssistantWorker, sweepAssistantTasks } from './assistant-worker.js';
+// Slice A5 (care).
+import { planAssistantActivity as runPlanAssistantActivity } from './assistant-care.js';
+// Slice A3 (photos, retention, lifecycle).
+import {
+  bucketAttachmentStore,
+  createAttachmentUpload as runCreateAttachmentUpload,
+  sweepAssistantAttachments,
+} from './assistant-attachments.js';
+import { cleanupAssistant as runCleanupAssistant } from './assistant-lifecycle.js';
 // ---- end Child Life Assistant imports ----
 
 initializeApp();
@@ -2349,6 +2358,8 @@ const assistantDeps = (withModel: boolean): AssistantDeps => ({
   now: new Date(),
   environment: serverGrantEnvironment(),
   gateway: withModel ? assistantGateway() : null,
+  // Slice A3: the photos' Storage (default bucket; Rules: `assistant/{uid}/{at_*}`).
+  files: bucketAttachmentStore(getStorage().bucket()),
 });
 
 function assistantHttpsError(operation: string, error: unknown): HttpsError {
@@ -2442,6 +2453,8 @@ export const runAssistantTask = onDocumentWritten(
         now: new Date(),
         environment: serverGrantEnvironment(),
         gateway: assistantGateway(),
+        // Slice A3: photos are read from (and deleted in) the default bucket.
+        files: bucketAttachmentStore(getStorage().bucket()),
       },
       taskId,
     );
@@ -2455,4 +2468,40 @@ export const sweepAssistant = onSchedule('every 10 minutes', async () => {
   const r = await sweepAssistantTasks(getFirestore(), new Date());
   if (r.requeued + r.expired + r.quotes > 0) logger.info('assistant sweep', r);
 });
+
+// ---- Child Life Assistant, slice A5 care (docs/assistant/tools.md "Care tools") ----
+/** CH16 "Thử tối nay": a plan marker + recFeedback `started` (an intention), 0 credits. */
+export const planAssistantActivity = assistantCall(
+  'planAssistantActivity',
+  runPlanAssistantActivity,
+);
+// ---- end slice A5 care ----
+
+// ---- Child Life Assistant, slice A3 photos (docs/assistant/api.md "Photos", security.md) ----
+/** CH09: an owned upload target for one photo of an allowed image quote (no credits → none). */
+export const createAttachmentUpload = assistantCall(
+  'createAttachmentUpload',
+  runCreateAttachmentUpload,
+);
+
+/** Retention (G05, M07): pending deletions retried, unused uploads and finished photos deleted. */
+export const sweepAssistantFiles = onSchedule('every 15 minutes', async () => {
+  const r = await sweepAssistantAttachments(
+    getFirestore(),
+    bucketAttachmentStore(getStorage().bucket()),
+    new Date(),
+  );
+  // Counts only: never a path, a hash or a photo.
+  if (r.deleted + r.pending > 0) logger.info('assistant files swept', r);
+});
+
+/** TTL: execution rows and request ledger after 30 days, stale photo readings, orphan rows. */
+export const cleanupAssistant = onSchedule(
+  { schedule: 'every day 03:20', timeZone: 'Asia/Ho_Chi_Minh' },
+  async () => {
+    const r = await runCleanupAssistant(getFirestore(), new Date());
+    logger.info('assistant cleanup', r);
+  },
+);
+// ---- end slice A3 photos ----
 // ---- end Child Life Assistant --------------------------------------------------------------

@@ -50,6 +50,67 @@ conflicts exactly as for app writes.
 | Credit ledger (`quota`, `quotaOps`) | for the window's life (audit) | as other quota windows |
 | Domain records written by confirm | as any record of the module | never by assistant deletion |
 
-Open (not in A2): account / baby deletion jobs do not yet purge `assistant*` collections; a TTL for
-`assistantExecutions` / `assistantRequests`; attachments (`assistantAttachments`, Storage) arrive with
-A3.
+Open in A2, closed by A3 (see "Photos and lifecycle (slice A3)" below): account / baby deletion
+purges, the TTL for `assistantExecutions` / `assistantRequests`, attachments.
+
+## Care fields (slice A5)
+
+- `assistantTasks/{tk}.care` (server-written, owner-readable like the task): `{ topic:
+  sleep_concern | meal_ideas, sleep: { kind, when, since } | null, guidance: { contentId,
+  contentVersion, reasonCode, reviewed, title{vi,en}, timeOfDay } | null, recipeIds[], plan: {
+  contentId, contentVersion, plannedFor, plannedAt, feedbackOpensAt } | null, feedback: {
+  contentId, contentVersion, outcome, at } | null }`. Facts are what the person reported (choices),
+  never a cause.
+- `babies/{b}/recFeedback/fb_<hash('feedback-started', uid, task, content, version)>`: kind
+  `started` for "Thử tối nay" (same keys as the app's document); the outcome keeps the A2 id.
+- `publicConfig/content_rhythm.recipes[]` (optional; contracts `recipeSchema`): published with the
+  rhythm content; the portal approval records the review on recipes as on activities.
+- No new collection, index or Rules change.
+
+
+## Photos and lifecycle (slice A3)
+
+| Path | Written by | Fields |
+|---|---|---|
+| `assistantAttachments/{at_<hash(uid, clientRequestId)>}` | `createAttachmentUpload`, `startTask` (bind), worker, confirm, retention | `id, ownerUid (= uploaderUid), familyId, scope, quoteId, storagePath (assistant/{uid}/{id}), mime, bytes (declared max), sha256 (client's, informational), sha256Server (computed from the bytes by the worker; household duplicate check), retention delete_after_read\|keep_with_record, state uploading\|ready\|deletion_pending\|deleted, generation (verified at start), taskId, uploadExpiresAt (+15 min), rejected, keptPath (the expense receipt copy), savedExpenseIds[], deletion {attempts, nextAttemptAt, lastError: 'storage'}\|null, deletedAt (set only once Storage confirmed), orphan, createdAt, updatedAt`. Owner-readable (Rules `assistantOwner`), never client-written. |
+| `assistantTasks/{tk}/imageReading/current` | worker settle | The normalized reading (`ImageReading`: document kind, receipt fields with evidence snippets, note lines — medicine lines keep only their kind, no text), `sha256s`, `keepReceipt`, `promptVersion`, `savedAt`. Kept only while a question is open; deleted in the same settle transaction otherwise. Never client-readable. |
+| `assistantQuotes/{qt}.attachmentsIssued` | `createAttachmentUpload` | Upload targets handed out for this quote (≤ `attachmentCount`). |
+| `…/messages/{seq}.attachmentIds` | `startTask` | The photos the user message carried. |
+| Storage `assistant/{uid}/{at_*}` | the app (once) | The uploaded original. Rules: owner, `resource == null`, `at_` + 32 hex, image allowlist, ≤ 8 MB, and the attachment document says `uploading`, same MIME, size ≤ declared, target unexpired. No client read / update / delete. |
+
+Domain documents for confirmed photo drafts (exact Rules key sets; deterministic ids):
+
+| Draft | Document | Id |
+|---|---|---|
+| expense | `babies/{b}/expenses/{x}`: `amount (whole VND), categoryId, note (merchant, ≤ 80), spentOn, payer (the confirmer's label, else null), receiptPath (null or babies/{b}/expenses/{x}.jpg), source: 'assistant', sourceRef: draftId, createdBy, author, createdAt, updatedAt, updatedBy, deleted: false, deletedAt: null, deletedBy: null` (`validNewExpense` key set) | `x_<hash(draftId)>` |
+| expense receipt (keepReceipt) | Storage `babies/{b}/expenses/{x}.jpg`: re-encoded JPEG ≤ 2048 px, ≤ 4 MB, no metadata (the Chi tiêu receipt path and Rules) | — |
+| reminder | `babies/{b}/reminders/{rm}`: `id, babyId, title, dueAt, leadMinutes: 60, notifyDevice: null, createdBy, author, createdAt, updatedAt, updatedBy, done: false, doneAt/doneBy/doneAuthor: null` (`validNewReminder` key set — it has no `source`, so provenance is the execution row) | `rm_<hash(draftId)>` |
+
+Queries (single-field indexes only; no new composite index): attachments by `taskId`, `ownerUid`,
+`scope.babyId`, `sha256Server`, `state in […]`; tasks / conversations / quotes by `ownerUid` or
+`scope.babyId`; executions by `ownerUid`, `taskId`, `createdAt <`; requests by `uid`, `createdAt <`;
+collection group `imageReading` by `savedAt <` (single-field, automatic); expenses by `spentOn`
+range.
+
+### Retention (A3)
+
+| Data | Kept | Removed |
+|---|---|---|
+| Uploaded photo, "xoá sau khi đọc" (opt-out) | until the reading is settled or the task stops | right after settle / cancel / consent withdrawal; `deleted` only when Storage confirms, else `deletion_pending` + retry (backoff 2, 4, 8 … min, ≤ 6 h) |
+| Uploaded photo, "giữ ảnh hoá đơn" (**default**, D-075 #3) | while an unsaved expense draft with `keepReceipt` can still be saved (TTL 24 h), or while a question on a photo with a receipt is open; a photo with no receipt (a note) goes right after reading | after the save (a re-encoded copy stays with the expense), or when the draft is discarded / expires / the task fails or is cancelled |
+| Uploads never started | — | target expiry + 1 h (sweeper) |
+| Photos of a blocked task | 24 h (resume) | then deleted |
+| Cached photo reading | while a question is open | at settle; leftovers after 1 day (daily cleanup) |
+| Expired, unsaved drafts | **kept** (state and payload) with the owner's conversation — the same content is in its messages, so trimming the draft alone would not reduce exposure | with the conversation, the account or the baby |
+| `assistantExecutions`, `assistantRequests` | 30 days | daily cleanup |
+| Attachment rows | with their task | with the conversation / account / baby; a pending deletion keeps its row (`orphan`) until Storage confirms |
+
+Lifecycle jobs (`account.ts`): **account deletion** (step `personal`) releases open reservations and
+deletes the person's conversations, messages, tasks (drafts, events, readings), quotes, Storage prefix
+`assistant/{uid}/`, attachment rows, execution rows and request ledger; the domain records they
+confirmed stay with the family (marked "Người dùng đã xoá" by `authored`). **Baby deletion** (step
+`documents`) deletes every member's assistant tasks, conversations, quotes, attachments (objects one
+by one) and execution rows scoped to that baby. **Consent withdrawal** deletes every photo of the
+person (and A2 stops their open tasks). The provider keeps nothing (`store: false`); device copies
+and backups are outside the server's reach (said in the consent text).
+

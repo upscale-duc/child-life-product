@@ -32,6 +32,8 @@ import type { Readable } from 'node:stream';
 import type { AccountMailData, AccountTemplate, Locale } from './mail.js';
 import { reconcileFamilyUsage } from './memories.js';
 
+// Child Life Assistant, slice A3: assistant data goes with the account / the baby.
+import { purgeAssistantForBaby, purgeAssistantForUser } from './assistant-lifecycle.js';
 /**
  * Me, storage, baby profiles and the account (S11, Figma 13a–13n). Sensitive changes are callables
  * with zod validation; deletions run as resumable jobs (P-110) that only report "done" after a
@@ -500,6 +502,8 @@ async function babyStep(
         db,
         db.collection(`families/${familyId}/reservations`).where('babyId', '==', babyId),
       );
+      // Assistant chats, tasks, drafts and photos about this baby (every member's).
+      await purgeAssistantForBaby(db, deps.store, babyId, now);
       return;
     }
     case 'family': {
@@ -638,6 +642,8 @@ async function accountStep(
           await db.recursiveDelete(family.ref);
         }
       }
+      // Their assistant conversations, tasks, drafts, photos and ledgers (records stay).
+      await purgeAssistantForUser(db, deps.store, uid, now);
       await db.recursiveDelete(user);
       return;
     }

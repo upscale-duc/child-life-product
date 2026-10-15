@@ -165,15 +165,57 @@ export const healthPackSchema = z.object({
 });
 export type HealthPack = z.infer<typeof healthPackSchema>;
 
+/**
+ * A first-foods recipe (assistant CH18 "Hôm nay con ăn gì?", R02; added for slice A5). Published
+ * with the rhythm content like activities; the assistant only offers **approved** recipes
+ * (`status: 'published'` and a recorded `review`), for the household's country, from the baby's
+ * actual age in full months, never one holding an ingredient the family recorded a reaction to.
+ * Ingredient ids are the matching key for recorded reactions (self-reported, never a diagnosis).
+ */
+export const recipeSchema = z.object({
+  id: z.string().regex(/^rcp_[a-z0-9_]{2,40}$/),
+  version: z.number().int().min(1),
+  status: z.enum(contentStatuses),
+  title: localized,
+  summary: localized,
+  /** Stable ingredient ids (e.g. `egg`, `rice`, `pumpkin`): the key for reaction exclusion. */
+  ingredientIds: z
+    .array(z.string().regex(/^[a-z0-9_]{2,40}$/))
+    .min(1)
+    .max(30),
+  /** Actual age in full months from the date of birth (never corrected age). */
+  minAgeMonths: z.number().int().min(0).max(36),
+  /** Countries where the recipe was reviewed (food-safety guidance is regional); never empty. */
+  regions: z
+    .array(z.string().regex(/^[A-Z]{2}$/))
+    .min(1)
+    .max(50),
+  steps: localizedList,
+  durationMin: z.number().int().min(1).max(240),
+  sources: z.array(contentSourceSchema).max(6),
+  review: contentReviewSchema,
+});
+export type Recipe = z.infer<typeof recipeSchema>;
+
 /** `publicConfig/content_rhythm`: activities, age cards and health routing, one version. */
 export const rhythmContentSchema = z.object({
   version: z.string().regex(/^rc_\d{8}_\d{2}$/),
   activities: z.array(activitySchema).max(300),
   ageCards: z.array(ageCardSchema).max(200),
   health: healthPackSchema,
+  /**
+   * Recipes (slice A5). Optional so packs published before it (and the portal editor, which does
+   * not edit recipes yet) stay valid: absent reads as none (`recipesOf`).
+   */
+  recipes: z.array(recipeSchema).max(300).optional(),
   publishedAt: z.string().nullable(),
 });
 export type RhythmContent = z.infer<typeof rhythmContentSchema>;
+
+/** The pack's recipes; a pack without the field has none. */
+export function recipesOf(c: Pick<RhythmContent, 'recipes'> | null | undefined): Recipe[] {
+  return c?.recipes ?? [];
+}
 
 // ---------- Ranking (R01–R06, brief p.11) ----------
 

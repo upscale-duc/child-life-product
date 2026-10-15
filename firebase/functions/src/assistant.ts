@@ -72,9 +72,21 @@ import {
   taskView,
 } from './assistant-store.js';
 import { healthSignalsIn, reviewFields } from './assistant-tools.js';
+// Slice A5 (care): health support with the approved number; CH17 feedback rules.
+import { careFeedbackFields, careFeedbackGate, healthSupportPart } from './assistant-care.js';
 import { assistantPool, assistantUsage, creditPolicy } from './assistant-usage.js';
 import { buildRecFeedback, confirmDraftItem, draftView } from './assistant-writers.js';
 import { releaseQuota, reserveQuota } from './quota.js';
+// Slice A3 (photos): attachments verified and bound at start; retention when a task stops.
+import {
+  bindAttachmentsTx,
+  readAttachmentsTx,
+  settleTaskAttachments,
+  verifyAttachmentsForStart,
+  type AttachmentStore,
+  type VerifiedAttachment,
+} from './assistant-attachments.js';
+import { purgeTaskAttachments, revokeAssistantPhotos } from './assistant-lifecycle.js';
 import { readRhythmContent } from './rhythm.js';
 import { aiBudgetLeft } from './staff.js';
 
@@ -91,6 +103,8 @@ export interface AssistantDeps {
   environment: GrantEnvironment;
   /** Null when no provider key is configured: new work is blocked with AI_UNAVAILABLE. */
   gateway: ModelGateway | null;
+  /** Slice A3: the photos' Storage (absent → photo tasks are MODULE_UNAVAILABLE). */
+  files?: AttachmentStore;
 }
 
 const terminal = new Set(['ready', 'failed', 'canceled']);
@@ -154,6 +168,8 @@ export async function setAssistantConsent(deps: AssistantDeps, uid: string, data
     for (const t of open.docs) {
       if (await stopTask(db, t.id, now, 'failed', 'CONSENT_REQUIRED')) stopped += 1;
     }
+    // Slice A3: withdrawing also lets every photo go (Storage-confirmed, else retried).
+    await revokeAssistantPhotos(db, deps.files, uid, now).catch(() => undefined);
   }
   const after = (await ref.get()).get('assistant') as {
     version: string;
@@ -272,12 +288,27 @@ export async function startTask(
   requireAssistant(s);
   const quoteSnap = await quoteRef(db, req.quoteId).get();
   const modality = quoteSnap.exists ? (quoteSnap.get('modality') as 'text' | 'image') : 'text';
+  const taskId = taskIdFor(uid, req.clientRequestId);
+  // ---- Slice A3 (photos): verified before any credit moves (M06) ----
+  let verified: VerifiedAttachment[] = [];
   if (modality === 'image' || req.attachmentIds.length > 0) {
     if (!assistantFlagOn(s, 'assistant_images')) throw fail('FEATURE_DISABLED');
-    // Photo tasks (attachments, validation, OCR) arrive with slice A3.
-    throw fail('MODULE_UNAVAILABLE');
+    if (modality !== 'image' || req.attachmentIds.length === 0) {
+      throw fail('VALIDATION_FAILED', { field: 'attachmentIds' });
+    }
+    if (!deps.files) throw fail('MODULE_UNAVAILABLE');
+    verified = await verifyAttachmentsForStart(
+      db,
+      deps.files,
+      s,
+      uid,
+      req.scope,
+      taskId,
+      req.attachmentIds,
+      now,
+    );
   }
-  const taskId = taskIdFor(uid, req.clientRequestId);
+  // ---- end slice A3 ----
   const inputKey = sha(
     taskInputKey({
       conversationId: req.conversationId ?? '',
@@ -288,6 +319,8 @@ export async function startTask(
     }),
   );
   const signs = text ? healthSignalsIn(text) : [];
+  // Slice A5: the household's approved emergency number (none when the pack has no entry).
+  const healthPart = signs.length > 0 ? await healthSupportPart(db, s, signs) : null;
   const consent = assistantConsentGranted(await consentRef(db, uid).get());
   const live = await liveAvailable(deps, s);
   const pool = await assistantPool(db, s, now);
@@ -310,6 +343,9 @@ export async function startTask(
       tx.get(quoteRef(db, req.quoteId)),
       tx.get(conversationRef(db, convId)),
     ]);
+    // Slice A3: the photos, re-read inside the transaction (reads before writes).
+    const attachmentSnaps =
+      verified.length > 0 ? await readAttachmentsTx(tx, db, req.attachmentIds) : [];
     if (conv.exists) {
       if (conv.get('ownerUid') !== uid) throw fail('NOT_MEMBER');
       if (!sameScope(conv.get('scope'), req.scope)) throw fail('SCOPE_CHANGED');
@@ -374,7 +410,7 @@ export async function startTask(
           { role: 'user', parts: userParts(text), taskId },
           {
             role: 'assistant',
-            parts: [{ type: 'health_support', schemaVersion: 1, signs }],
+            parts: [healthPart!],
             taskId,
           },
         ],
@@ -451,8 +487,14 @@ export async function startTask(
         if (windowId !== quote.get('windowId')) throw fail('QUOTE_MISMATCH');
       }
     }
-    const newMessages: { role: 'user' | 'assistant'; parts: AssistantPart[]; taskId: string }[] =
-      resume ? [] : [{ role: 'user', parts: userParts(text), taskId }];
+    const newMessages: {
+      role: 'user' | 'assistant';
+      parts: AssistantPart[];
+      taskId: string;
+      attachmentIds?: string[];
+    }[] = resume
+      ? []
+      : [{ role: 'user', parts: userParts(text), taskId, attachmentIds: req.attachmentIds }];
     if (blocked === 'USAGE_EXHAUSTED') {
       newMessages.push({
         role: 'assistant',
@@ -495,6 +537,8 @@ export async function startTask(
       policyVersion: policy.policyVersion,
     });
     if (!blocked) tx.update(quote.ref, { usedBy: taskId });
+    // Slice A3: the photos belong to this task from now on (also while blocked, for resume).
+    if (verified.length > 0) bindAttachmentsTx(tx, attachmentSnaps, verified, taskId, now);
     return { replay: false };
   });
   void out;
@@ -612,6 +656,9 @@ export async function submitClarification(
         ),
         pendingClarification: null,
         clarificationExpiresAt: null,
+        // Slice A5 fix: the attempt cap (3) is per run, not per task — without this reset the
+        // 4th round of a 4-round clarification always failed AI_UNAVAILABLE.
+        attempt: 0,
         version: t.version + 1,
         eventSeq: seq,
         updatedAt: at,
@@ -765,6 +812,7 @@ export async function confirmDrafts(
           acknowledge: sel.acknowledge,
           requestId: clientRequestId,
           now,
+          ...(deps.files ? { files: deps.files } : {}), // Slice A3: kept receipts.
         }),
       );
     }
@@ -872,7 +920,10 @@ export async function cancelTask(
   const { db, now } = deps;
   const req = parseRequest(cancelTaskRequestSchema, data);
   await ownTask(db, uid, req.taskId);
-  await stopTask(db, req.taskId, now, 'canceled', null);
+  // Slice A3: a stopped photo task lets its photos go at once (CH10 cancel: 0 credits).
+  if (await stopTask(db, req.taskId, now, 'canceled', null)) {
+    await settleTaskAttachments(db, deps.files, req.taskId, now, true).catch(() => undefined);
+  }
   const snap = await taskRef(db, req.taskId).get();
   return respond(
     req.clientRequestId,
@@ -913,6 +964,9 @@ export async function submitAssistantFeedback(
       (a) => a.id === req.contentId && a.version === req.contentVersion && a.status === 'published',
     );
     if (!activity) throw fail('VALIDATION_FAILED', { field: 'contentId' });
+    // Slice A5 (CH17): only this task's guidance; a tried outcome only after the chance to try.
+    careFeedbackGate(t, req, now);
+    const careFields = careFeedbackFields(t, req, now);
     const at = Timestamp.fromDate(now);
     const note = {
       contentId: req.contentId,
@@ -921,7 +975,11 @@ export async function submitAssistantFeedback(
       at,
     };
     if (req.outcome === 'not_tried') {
-      await task.ref.update({ feedback: FieldValue.arrayUnion(note), updatedAt: at });
+      await task.ref.update({
+        feedback: FieldValue.arrayUnion(note),
+        updatedAt: at,
+        ...careFields,
+      });
       return respond(
         clientRequestId,
         now,
@@ -952,7 +1010,11 @@ export async function submitAssistantFeedback(
           FieldValue.serverTimestamp(),
         ),
       );
-      tx.update(task.ref, { feedback: FieldValue.arrayUnion(note), updatedAt: at });
+      tx.update(task.ref, {
+        feedback: FieldValue.arrayUnion(note),
+        updatedAt: at,
+        ...careFields,
+      });
     });
     return respond(
       clientRequestId,
@@ -1102,6 +1164,8 @@ export async function deleteAssistantConversation(
     .where('ownerUid', '==', uid)
     .get();
   for (const t of tasks.docs) await stopTask(db, t.id, now, 'canceled', null);
+  // Slice A3: the photos go too (Storage-confirmed; a pending one is retried by the sweeper).
+  for (const t of tasks.docs) await purgeTaskAttachments(db, deps.files, t.id, now);
   for (const t of tasks.docs) await db.recursiveDelete(t.ref);
   await db.recursiveDelete(conv.ref);
   return respond(req.clientRequestId, now, { deletedTasks: tasks.size });

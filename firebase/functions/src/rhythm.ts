@@ -136,7 +136,7 @@ async function rhythmInputs(db: Firestore, babyId: string, now: Date): Promise<R
 }
 
 /** The caller's own preferences (EN01, EN05), or the defaults. */
-async function readPreferences(db: Firestore, uid: string): Promise<UserPreferences> {
+export async function readPreferences(db: Firestore, uid: string): Promise<UserPreferences> {
   const data = (await db.doc(`users/${uid}/settings/personalization`).get()).data();
   if (!data) return defaultUserPreferences;
   const updatedAt =
@@ -145,10 +145,10 @@ async function readPreferences(db: Firestore, uid: string): Promise<UserPreferen
   return parsed.success ? parsed.data : defaultUserPreferences;
 }
 
-type FeedbackRow = RecFeedback & { createdAtMs: number };
+export type FeedbackRow = RecFeedback & { createdAtMs: number };
 
 /** The baby's feedback from every author, newest first (malformed rows are ignored). */
-async function readFeedback(db: Firestore, babyId: string): Promise<FeedbackRow[]> {
+export async function readFeedback(db: Firestore, babyId: string): Promise<FeedbackRow[]> {
   const snap = await db
     .collection(`babies/${babyId}/recFeedback`)
     .orderBy('createdAt', 'desc')

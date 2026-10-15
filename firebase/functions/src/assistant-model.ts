@@ -1,5 +1,15 @@
 import { z } from 'zod';
 import { assistantTaskLimits, draftKinds, type DraftKind } from '@child-life/contracts';
+// Slice A3 (photos): the image reading request builder lives beside its schema.
+import { buildImageReadRequest, type ImageReadInput } from './assistant-image-model.js';
+// Slice A5 (care): the care topic / health signs schemas live beside the care tools.
+import {
+  careExtractionJsonSchema,
+  careExtractionSchema,
+  careSystemPromptLines,
+  healthSignsExtractionSchema,
+  healthSignsJsonSchema,
+} from './assistant-care-model.js';
 
 /**
  * Child Life Assistant model boundary (P-155, brief p.6–7, p.12): the model READS the person's
@@ -15,14 +25,23 @@ import { assistantTaskLimits, draftKinds, type DraftKind } from '@child-life/con
  * heuristics). Bump `assistantPromptVersion` whenever the prompt or schema changes.
  */
 
-export const assistantPromptVersion = 'assistant-extract-v1';
+// v2 (slice A5): `care` topic + facts, structured `healthSigns`, `sleep.when` / `sleep.onset`.
+export const assistantPromptVersion = 'assistant-extract-v2';
 
 /** Read tools the model may request; the server runs them in the trusted scope. */
 export const readToolNames = ['care_summary', 'sleep_facts', 'usage_snapshot'] as const;
 export type ReadToolName = (typeof readToolNames)[number];
 
 /** The only clarifications the model may ask for; the question text is the server's (catalog). */
-export const clarificationFields = ['time.ampm', 'time.missing', 'intent', 'sleep.period'] as const;
+export const clarificationFields = [
+  'time.ampm',
+  'time.missing',
+  'intent',
+  'sleep.period',
+  // Slice A5 (care, CH15): day / night, and the optional onset.
+  'sleep.when',
+  'sleep.onset',
+] as const;
 export type ClarificationField = (typeof clarificationFields)[number];
 
 /** Fields an intent can carry (flat: strict JSON schema needs every key, nullable). */
@@ -89,6 +108,9 @@ export const modelExtractionSchema = z
       .object({ field: z.enum(clarificationFields) })
       .strict()
       .nullable(),
+    // Slice A5 (care): optional so v1-shaped outputs still parse; the JSON schema requires them.
+    care: careExtractionSchema.nullable().optional(),
+    healthSigns: healthSignsExtractionSchema.optional(),
   })
   .strict();
 export type ModelExtraction = z.infer<typeof modelExtractionSchema>;
@@ -136,6 +158,12 @@ export interface ModelGateway {
   extract(input: ExtractInput, signal: AbortSignal): Promise<unknown>;
   /** Raw JSON (unchecked): `{ text }`, validated with `parseWording` and the number guard. */
   word(input: WordInput, signal: AbortSignal): Promise<unknown>;
+  /**
+   * Slice A3: reads photos into a raw image reading (unchecked; the caller validates it with
+   * `parseImageReading`). Optional so a gateway without vision blocks photo tasks
+   * (AI_UNAVAILABLE) instead of failing to compile.
+   */
+  readImages?(input: ImageReadInput, signal: AbortSignal): Promise<unknown>;
 }
 
 /** The provider failed (network, HTTP, timeout, unparsable). Never carries request or reply text. */
@@ -180,10 +208,19 @@ export type FakeStep<I> = unknown | Error | ((input: I, signal: AbortSignal) => 
 export function fakeModelGateway(script: {
   extract?: FakeStep<ExtractInput>[];
   word?: FakeStep<WordInput>[];
-}): ModelGateway & { calls: { extract: ExtractInput[]; word: WordInput[] } } {
+  /** Slice A3: scripted image readings. */
+  readImages?: FakeStep<ImageReadInput>[];
+}): ModelGateway & {
+  calls: { extract: ExtractInput[]; word: WordInput[]; readImages: ImageReadInput[] };
+} {
   const extract = [...(script.extract ?? [])];
   const word = [...(script.word ?? [])];
-  const calls = { extract: [] as ExtractInput[], word: [] as WordInput[] };
+  const images = [...(script.readImages ?? [])];
+  const calls = {
+    extract: [] as ExtractInput[],
+    word: [] as WordInput[],
+    readImages: [] as ImageReadInput[],
+  };
   const next = async <I>(queue: FakeStep<I>[], input: I, signal: AbortSignal) => {
     if (queue.length === 0) throw new ModelUnavailable('script');
     const step = queue.shift();
@@ -205,6 +242,10 @@ export function fakeModelGateway(script: {
       calls.word.push(structuredClone(input));
       return next(word, input, signal);
     },
+    async readImages(input, signal) {
+      calls.readImages.push(structuredClone(input));
+      return next(images, input, signal);
+    },
   };
 }
 
@@ -222,6 +263,8 @@ export function extractionSystemPrompt(): string {
     'Units: bottle amounts in ml (amountMl). Breastfeeding (bú mẹ, nursing) is minutes (durationMin) and a side, never ml.',
     'If you cannot tell whether the parent wants to read the log or add to it, set "clarification" to {"field":"intent"} and return no intents. If a sleep concern needs to know whether the baby has trouble falling asleep or wakes often, set "clarification" to {"field":"sleep.period"}.',
     'Never diagnose, never give medical advice, never mention medicine doses.',
+    // Slice A5 (care).
+    ...careSystemPromptLines(),
   ].join('\n');
 }
 
@@ -243,7 +286,7 @@ export function extractionJsonSchema(
   return {
     type: 'object',
     additionalProperties: false,
-    required: ['intents', 'reads', 'clarification'],
+    required: ['intents', 'reads', 'clarification', 'care', 'healthSigns'],
     properties: {
       intents: {
         type: 'array',
@@ -311,6 +354,9 @@ export function extractionJsonSchema(
           { type: 'null' },
         ],
       },
+      // Slice A5 (care).
+      care: careExtractionJsonSchema,
+      healthSigns: healthSignsJsonSchema,
     },
   };
 }
@@ -421,5 +467,6 @@ export function openAiModelGateway(
     promptVersion: assistantPromptVersion,
     extract: (input, signal) => post(buildExtractRequest(input, model), signal),
     word: (input, signal) => post(buildWordRequest(input, model), signal),
+    readImages: (input, signal) => post(buildImageReadRequest(input, model), signal),
   };
 }

@@ -181,6 +181,14 @@ service cloud.firestore {
     match /assistantRequests/{requestKey} {
       allow read, write: if false;
     }
+    // Slice A3 (photos): an attachment's state (uploading / ready / deletion_pending / deleted,
+    // whether a copy was kept with the expense) is read by its uploader while still a member of
+    // the scope; only Functions write it. The cached reading of a photo task
+    // (`assistantTasks/{t}/imageReading`) is never readable (see the task subcollections above).
+    match /assistantAttachments/{attachmentId} {
+      allow read: if assistantOwner(resource.data);
+      allow write: if false;
+    }
     // ---- end Child Life Assistant ----
 
     // Family = ownership + quota container (P-001). Owner only until storage views (S11, P-003).
