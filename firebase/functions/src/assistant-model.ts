@@ -1,3 +1,4 @@
+import { logger } from 'firebase-functions';
 import { z } from 'zod';
 import { assistantTaskLimits, draftKinds, type DraftKind } from '@child-life/contracts';
 // Slice A3 (photos): the image reading request builder lives beside its schema.
@@ -168,7 +169,12 @@ export interface ModelGateway {
 
 /** The provider failed (network, HTTP, timeout, unparsable). Never carries request or reply text. */
 export class ModelUnavailable extends Error {
-  constructor(readonly kind: 'timeout' | 'http' | 'empty' | 'json' | 'network' | 'script') {
+  constructor(
+    readonly kind: 'timeout' | 'http' | 'empty' | 'json' | 'network' | 'script',
+    /** HTTP status and the provider's error code (e.g. `insufficient_quota`), never content. */
+    readonly status: number | null = null,
+    readonly providerCode: string | null = null,
+  ) {
     super(kind);
   }
 }
@@ -446,7 +452,20 @@ export function openAiModelGateway(
     } catch {
       throw new ModelUnavailable(signal.aborted ? 'timeout' : 'network');
     }
-    if (!res.ok) throw new ModelUnavailable('http');
+    if (!res.ok) {
+      // Only the status and the provider's error code are kept (no prompt, no content), so an
+      // outage, a bad key or an empty balance is visible in the logs (e.g. 429 insufficient_quota).
+      let code: string | null = null;
+      try {
+        const err = ((await res.json()) as { error?: { code?: unknown; type?: unknown } }).error;
+        const c = err?.code ?? err?.type;
+        code = typeof c === 'string' ? c.slice(0, 60) : null;
+      } catch {
+        // No JSON body: the status alone.
+      }
+      logger.warn('assistant model unavailable', { status: res.status, providerCode: code, model });
+      throw new ModelUnavailable('http', res.status, code);
+    }
     let content: string | undefined;
     try {
       const json = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
