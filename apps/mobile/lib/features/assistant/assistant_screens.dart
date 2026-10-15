@@ -1104,10 +1104,11 @@ class _ThreadView {
             if (d != null && shown.add(d.id)) {
               out.add(_draft(context, t, d));
             }
-          case SourceSummaryPart(:final summary):
+          case SourceSummaryPart():
             out.add(
-              AsSummaryCard(
-                summary: summary,
+              _SourceSummary(
+                part: p,
+                babyId: task.scope?.babyId ?? chat.scope.babyId,
                 zone: task.timezone ?? zone,
                 now: now,
                 onOpenSource: () => GoRouter.of(context).push(Routes.history),
@@ -2022,6 +2023,44 @@ class _ThreadView {
 }
 
 /// CH02: nothing asked yet. Examples only prefill the composer; nothing costs until "Gửi".
+/// CH08 with its per-feed times: the records the server listed, or else the ones its
+/// `sourceIds` name, read from the care log on this phone. Times show only while they add up to
+/// the summary ([summaryFeeds]).
+class _SourceSummary extends ConsumerWidget {
+  const _SourceSummary({
+    required this.part,
+    required this.babyId,
+    required this.zone,
+    required this.now,
+    required this.onOpenSource,
+  });
+
+  final SourceSummaryPart part;
+  final String babyId;
+  final String zone;
+  final DateTime now;
+  final VoidCallback onOpenSource;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ids = part.sourceIds;
+    final items =
+        part.items ??
+        (ids.isEmpty || ids.length > summarySourceLimit
+            ? null
+            : ref.watch(summarySourcesProvider((babyId, ids.join(',')))));
+    final feeds = items == null ? null : summaryFeeds(part.summary, items);
+    return AsSummaryCard(
+      summary: part.summary,
+      zone: zone,
+      now: now,
+      onOpenSource: onOpenSource,
+      bottleFeeds: feeds?.bottle,
+      breastFeeds: feeds?.breast,
+    );
+  }
+}
+
 class _EmptyState extends StatelessWidget {
   const _EmptyState({
     required this.scope,
@@ -2587,6 +2626,8 @@ class _HistoryState extends ConsumerState<AssistantHistoryScreen> {
                   child: _HistoryRow(
                     title: shared.title ?? l10n.asSharedThreadTitle,
                     subtitle: l10n.asSharedThreadSub(when(shared)),
+                    lastTaskId: shared.lastTaskId,
+                    now: now,
                     household: false,
                     shared: true,
                     deleting: _deleting.contains(shared.id),
@@ -2624,6 +2665,8 @@ class _HistoryState extends ConsumerState<AssistantHistoryScreen> {
                         _HistoryRow(
                           title: c.title ?? l10n.asHistoryUntitled,
                           subtitle: when(c),
+                          lastTaskId: c.lastTaskId,
+                          now: now,
                           household: c.scope?.household ?? scope.household,
                           deleting: _deleting.contains(c.id),
                           onOpen: () =>
@@ -2693,10 +2736,12 @@ class _ScopeChip extends ConsumerWidget {
   }
 }
 
-class _HistoryRow extends StatelessWidget {
+class _HistoryRow extends ConsumerWidget {
   const _HistoryRow({
     required this.title,
     required this.subtitle,
+    required this.lastTaskId,
+    required this.now,
     required this.household,
     required this.deleting,
     required this.onOpen,
@@ -2705,6 +2750,10 @@ class _HistoryRow extends StatelessWidget {
   });
   final String title;
   final String subtitle;
+
+  /// The conversation's last task: its snapshot gives the row status (CH03).
+  final String? lastTaskId;
+  final DateTime now;
   final bool household;
   final bool shared;
   final bool deleting;
@@ -2714,9 +2763,31 @@ class _HistoryRow extends StatelessWidget {
   final VoidCallback? onDelete;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
+    // CH03 "2 mục đã lưu" / "1 nháp": from the last task's snapshot only; while it loads or if
+    // it can't be read, the row shows its time alone (never a guessed state).
+    final id = lastTaskId;
+    final snap = id == null
+        ? null
+        : ref
+              .watch(
+                assistantTaskSnapshotProvider((
+                  id,
+                  Localizations.localeOf(context).languageCode,
+                )),
+              )
+              .value;
+    final status = snap == null
+        ? const ThreadStatus()
+        : threadStatus(snap, now);
+    final said = [
+      if (status.needsAnswer) l10n.asHistoryNeedsAnswer,
+      if (status.awaitingFeedback) l10n.asHistoryAwaitingFeedback,
+      if (status.saved > 0) l10n.asHistorySaved(status.saved),
+    ].join(' · ');
+    final caption = cl.text.caption.copyWith(color: cl.colors.inkMuted);
     return ClPressable(
       onPressed: deleting ? null : onOpen,
       semanticLabel: title,
@@ -2755,13 +2826,38 @@ class _HistoryRow extends StatelessWidget {
                       color: cl.colors.ink,
                     ),
                   ),
+                  // Figma "2 mục đã lưu · 09:12"; the shared thread keeps its own line.
+                  if (said.isNotEmpty && shared) Text(said, style: caption),
                   Text(
-                    subtitle,
-                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                    said.isNotEmpty && !shared ? '$said · $subtitle' : subtitle,
+                    style: caption,
                   ),
                 ],
               ),
             ),
+            if (status.pending > 0)
+              Padding(
+                padding: const EdgeInsets.only(left: ClSpace.s2),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: cl.colors.sunshineSoft,
+                    borderRadius: BorderRadius.circular(ClRadius.pill),
+                  ),
+                  // Ink on the soft warm fill (Night care too).
+                  child: Text(
+                    l10n.asHistoryDrafts(status.pending),
+                    style: cl.text.caption.copyWith(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: cl.colors.ink,
+                    ),
+                  ),
+                ),
+              ),
             if (onDelete != null)
               ClPressable(
                 onPressed: deleting ? null : onDelete,
@@ -2996,58 +3092,42 @@ class AssistantUsageScreen extends ConsumerWidget {
                       l10n.asCostPhoto,
                       l10n.asCostCredits(v.usage.imageCredits),
                     ),
+                    // D-075 #1: AI summaries take credits from this same pool.
+                    costRow(
+                      l10n.asCostSummary,
+                      l10n.asCostCredits(aiSummaryCredits),
+                    ),
                     costRow(l10n.asCostFollowUp, l10n.asCostNoExtra),
                     costRow(l10n.asCostError, l10n.asCostNotCharged),
                     costRow(l10n.asCostHealth, l10n.asCostFree),
                   ],
                 ),
               ),
-              if (v.usage.recent.isNotEmpty) ...[
+              // CH19 "Gần đây": only what the server listed (chat tasks and, D-075 #1, AI
+              // summaries); nothing at all when it sends no list.
+              if (v.usage.recent case final recent?) ...[
                 const SizedBox(height: ClSpace.s4),
                 Text(l10n.asRecentTitle, style: cl.text.bodyStrong),
                 const SizedBox(height: ClSpace.s2),
                 Container(
+                  width: double.infinity,
                   decoration: card(),
-                  child: Column(
-                    children: [
-                      for (final e in v.usage.recent)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
+                  child: recent.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: Text(
+                            l10n.asRecentEmpty,
+                            style: cl.text.label.copyWith(
+                              color: cl.colors.inkMuted,
+                            ),
                           ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      e.modality == TaskModality.image
-                                          ? l10n.asRecentPhoto
-                                          : l10n.asRecentText,
-                                      style: cl.text.label,
-                                    ),
-                                    Text(
-                                      l10n.asRecentMeta(
-                                        e.who ?? '',
-                                        e.at == null
-                                            ? ''
-                                            : shortDate(tag, e.at!.toLocal()),
-                                        e.credits,
-                                      ),
-                                      style: cl.text.caption.copyWith(
-                                        color: cl.colors.inkMuted,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                        )
+                      : Column(
+                          children: [
+                            for (final e in recent)
+                              _RecentRow(entry: e, locale: tag),
+                          ],
                         ),
-                    ],
-                  ),
                 ),
               ],
               if (video != null) ...[
@@ -3120,6 +3200,59 @@ class AssistantUsageScreen extends ConsumerWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// One CH19 "Gần đây" line: what used (or held) credits, who, when and how many — 0-credit work
+/// says why it was 0 (given back, or free), and running work says it only holds them.
+class _RecentRow extends StatelessWidget {
+  const _RecentRow({required this.entry, required this.locale});
+  final UsageEntry entry;
+  final String locale;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final e = entry;
+    final title = switch (e.source) {
+      UsageSource.text => l10n.asRecentText,
+      UsageSource.image => l10n.asRecentPhoto,
+      UsageSource.handover => l10n.asRecentHandover,
+      UsageSource.explain => l10n.asRecentExplain,
+      UsageSource.moment => l10n.asRecentMoment,
+      UsageSource.summary => l10n.asRecentSummary,
+    };
+    final value = switch (e.state) {
+      TaskUsageState.reserved => l10n.asRecentHeld(e.credits),
+      TaskUsageState.released => l10n.asRecentReleased,
+      _ when e.charged == 0 => l10n.asRecentFree,
+      _ => l10n.asCostCredits(e.charged),
+    };
+    final meta = [
+      if (e.who case final who? when who.isNotEmpty) who,
+      if (e.at case final at?) shortDate(locale, at.toLocal()),
+      value,
+    ].join(' · ');
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: cl.text.label),
+                Text(
+                  meta,
+                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

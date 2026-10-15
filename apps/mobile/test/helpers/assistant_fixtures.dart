@@ -7,6 +7,8 @@ import 'package:child_life/features/assistant/assistant_photos.dart';
 import 'package:child_life/features/assistant/assistant_repository.dart';
 import 'package:child_life/features/assistant/assistant_screens.dart';
 import 'package:child_life/features/baby/baby_models.dart';
+import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/care/care_repository.dart';
 import 'package:child_life/features/premium/billing_models.dart';
 import 'package:child_life/features/premium/billing_repository.dart';
 import 'package:flutter/widgets.dart' show BuildContext;
@@ -209,6 +211,30 @@ Map<String, Object?> summaryPart() => {
   },
   'sourceIds': ['test_b1', 'test_b2', 'test_b3', 'test_n1', 'test_n2'],
 };
+
+/// The care records [summaryPart] counted (Hà Nội time): bottles 08:00 150 ml, 11:10 120 ml,
+/// 13:50 120 ml; nursing 09:30 20 min, 12:40 15 min.
+Map<String, CareRecord> summaryRecords({int firstBottleMl = 150}) {
+  DateTime vn(int h, int m) => DateTime.utc(2026, 10, 15, h - 7, m);
+  CareRecord r(String id, CareType type, DateTime at, {int? ml, int? min}) =>
+      CareRecord(
+        id: id,
+        babyId: teddyId,
+        type: type,
+        occurredAt: at,
+        createdBy: 'u_mai',
+        author: const CareAuthor(name: 'Mai', relation: Relation.mother),
+        amountMl: ml,
+        durationMin: min,
+      );
+  return {
+    'test_b1': r('test_b1', CareType.bottle, vn(8, 0), ml: firstBottleMl),
+    'test_b2': r('test_b2', CareType.bottle, vn(11, 10), ml: 120),
+    'test_b3': r('test_b3', CareType.bottle, vn(13, 50), ml: 120),
+    'test_n1': r('test_n1', CareType.breast, vn(9, 30), min: 20),
+    'test_n2': r('test_n2', CareType.breast, vn(12, 40), min: 15),
+  };
+}
 
 Map<String, Object?> clarificationJson() => {
   'id': 'c1',
@@ -703,6 +729,9 @@ List<Override> assistantOverrides({
   VideoQuota? video,
   Stream<bool>? onlineStream,
   FakeUploader? uploader,
+
+  /// The care log CH08 reads its per-feed times from (by record id); none by default.
+  Map<String, CareRecord> careRecords = const {},
 }) {
   var n = 0;
   return [
@@ -726,6 +755,9 @@ List<Override> assistantOverrides({
     assistantUploaderProvider.overrideWithValue(uploader ?? FakeUploader()),
     assistantPhotoCacheProvider.overrideWithValue(AssistantPhotoCache()),
     videoQuotaProvider.overrideWith((ref, babyId) async => video),
+    careRecordProvider.overrideWith(
+      (ref, key) => Stream.value(careRecords[key.$2]),
+    ),
     if (onlineStream != null)
       assistantOnlineProvider.overrideWith(
         (ref) => ref.watch(_onlineStream(onlineStream)),

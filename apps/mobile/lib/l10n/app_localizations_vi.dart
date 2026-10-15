@@ -13797,11 +13797,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asRecentPhoto => 'Đọc ảnh';
 
   @override
-  String asRecentMeta(String who, String date, int credits) {
-    return '$who · $date · $credits lượt';
-  }
-
-  @override
   String get asVideoQuotaTitle => 'Xuất video kỷ niệm';
 
   @override
@@ -14480,4 +14475,59 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get asDeletedRecordsKept =>
       'Đã xoá cuộc trò chuyện. Bản ghi đã lưu vẫn giữ nguyên.';
+
+  @override
+  String get asCostSummary => 'Tóm tắt bằng AI (bàn giao, giải thích)';
+
+  @override
+  String get asRecentHandover => 'Tóm tắt bàn giao bằng AI';
+
+  @override
+  String get asRecentExplain => 'Giải thích gợi ý bằng AI';
+
+  @override
+  String get asRecentMoment => 'Tóm tắt khoảnh khắc bằng AI';
+
+  @override
+  String get asRecentSummary => 'Tóm tắt bằng AI';
+
+  @override
+  String asRecentHeld(int credits) {
+    return 'đang giữ $credits lượt';
+  }
+
+  @override
+  String get asRecentReleased => '0 lượt · đã hoàn lại';
+
+  @override
+  String get asRecentFree => '0 lượt · miễn phí';
+
+  @override
+  String get asRecentEmpty => 'Chưa dùng lượt nào trong kỳ này.';
+
+  @override
+  String asHistorySaved(int count) {
+    return '$count mục đã lưu';
+  }
+
+  @override
+  String get asHistoryNeedsAnswer => 'Có câu hỏi đang chờ trả lời';
+
+  @override
+  String get asHistoryAwaitingFeedback => 'Đang chờ phản hồi sau khi thử';
+
+  @override
+  String asHistoryDrafts(int count) {
+    return '$count nháp';
+  }
+
+  @override
+  String asSummaryFeedMl(String time, String ml) {
+    return '$time $ml ml';
+  }
+
+  @override
+  String asSummaryFeedMinutes(String time, int minutes) {
+    return '$time $minutes phút';
+  }
 }

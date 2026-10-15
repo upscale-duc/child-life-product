@@ -152,6 +152,113 @@ typedef SummaryRecord = ({String id, String kind, num? ml, num? minutes});
   );
 }
 
+/// CH08 per-feed times ("08:00 150 ml · 11:10 120 ml"): the bottles and nursing sessions the
+/// summary counted, oldest first, per kind — only while they still add up to the summary's own
+/// count and amount. A record edited or deleted since the answer would show times that
+/// contradict the totals, so that kind then shows its totals only (never a guessed list).
+({List<SummaryItem>? bottle, List<SummaryItem>? breast}) summaryFeeds(
+  CareSummary summary,
+  Iterable<SummaryItem> items,
+) {
+  final byId = {for (final i in items) i.id: i};
+  List<SummaryItem>? pick(
+    String kind,
+    CountAmount want,
+    int? Function(SummaryItem) amount,
+  ) {
+    if (want.count == 0) return null;
+    final list = [
+      for (final i in byId.values)
+        if (i.kind == kind) i,
+    ]..sort((a, b) => a.at.compareTo(b.at));
+    final total = list.fold<int>(0, (t, i) => t + (amount(i) ?? 0));
+    return list.length == want.count && total == want.amount ? list : null;
+  }
+
+  return (
+    bottle: pick('bottle', summary.bottle, (i) => i.ml),
+    breast: pick('breast', summary.breast, (i) => i.minutes),
+  );
+}
+
+/// Contracts `aiSummaryCredits` (D-075 #1): an AI summary worded by the model (handover,
+/// explanation, moment) takes 1 credit from the same household pool as the chat; a cached or
+/// template answer takes none.
+const aiSummaryCredits = 1;
+
+/// CH03: where one conversation stands, read from its last task's snapshot only.
+@immutable
+class ThreadStatus {
+  const ThreadStatus({
+    this.saved = 0,
+    this.pending = 0,
+    this.needsAnswer = false,
+    this.awaitingFeedback = false,
+  });
+
+  /// Drafts saved into the modules ("2 mục đã lưu").
+  final int saved;
+
+  /// Drafts still waiting to be saved and not expired ("1 nháp").
+  final int pending;
+
+  /// The assistant asked a question that is still open.
+  final bool needsAnswer;
+
+  /// A care try waiting for "Có ích / Chưa rõ…" (CH17, "Đang chờ phản hồi sau khi thử").
+  final bool awaitingFeedback;
+
+  bool get isEmpty =>
+      saved == 0 && pending == 0 && !needsAnswer && !awaitingFeedback;
+
+  @override
+  bool operator ==(Object other) =>
+      other is ThreadStatus &&
+      other.saved == saved &&
+      other.pending == pending &&
+      other.needsAnswer == needsAnswer &&
+      other.awaitingFeedback == awaitingFeedback;
+
+  @override
+  int get hashCode =>
+      Object.hash(saved, pending, needsAnswer, awaitingFeedback);
+}
+
+/// The CH03 status of a conversation from its last task (never invented): a canceled task shows
+/// nothing; drafts count as saved or as waiting until their 24 h expire; an open question only
+/// while it can still be answered.
+ThreadStatus threadStatus(TaskSnapshot s, DateTime now) {
+  final t = s.task;
+  if (t.state == TaskState.canceled) return const ThreadStatus();
+  var saved = 0;
+  var pending = 0;
+  for (final d in s.drafts) {
+    switch (d.state) {
+      case DraftState.saved:
+        saved++;
+      case DraftState.discarded:
+        break;
+      case DraftState.draft ||
+          DraftState.needsReview ||
+          DraftState.saving ||
+          DraftState.failed:
+        if (d.expiresAt == null || d.expiresAt!.isAfter(now)) pending++;
+    }
+  }
+  final open =
+      t.state == TaskState.awaitingClarification &&
+      (t.clarificationExpiresAt == null ||
+          t.clarificationExpiresAt!.isAfter(now));
+  final care = t.care;
+  return ThreadStatus(
+    saved: saved,
+    pending: pending,
+    needsAnswer: open,
+    awaitingFeedback:
+        care != null && care.followUp != null && care.feedback == null,
+  );
+}
+
 /// Exact charge for a task from the server's policy (text 1, a photo task 3; health is 0 and
 /// decided by the server, never guessed here).
 int creditsFor(TaskModality modality, AssistantUsage? usage) =>

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import '../features/app_update/app_update_screens.dart';
+import '../features/assistant/assistant_device.dart';
 import '../features/feedback/feedback_host.dart';
 import '../features/me/baby_profile_screens.dart';
 import '../features/memories/push_registration.dart';
@@ -62,6 +63,8 @@ class _ChildLifeAppState extends ConsumerState<ChildLifeApp>
   @override
   Widget build(BuildContext context) {
     final palette = ref.watch(paletteProvider);
+    // Sign-out / family switch: the assistant's phone-side state goes (no child data left).
+    ref.watch(assistantDeviceGuardProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,

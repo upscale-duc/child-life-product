@@ -571,7 +571,16 @@ sealed class AssistantPart {
         null => null,
       },
       'source_summary' => switch (CareSummary.fromJson(m['summary'])) {
-        final s? => SourceSummaryPart(s, _strings(m['sourceIds'])),
+        final s? => SourceSummaryPart(
+          s,
+          _strings(m['sourceIds']),
+          items: m['items'] is List
+              ? [
+                  for (final x in _list(m['items']).take(60))
+                    ?SummaryItem.fromJson(x),
+                ]
+              : null,
+        ),
         null => null,
       },
       'approved_content' => switch (_str(m['contentId'], max: 80)) {
@@ -654,9 +663,52 @@ class DraftRefPart extends AssistantPart {
 }
 
 class SourceSummaryPart extends AssistantPart {
-  const SourceSummaryPart(this.summary, this.sourceIds);
+  const SourceSummaryPart(this.summary, this.sourceIds, {this.items});
   final CareSummary summary;
   final List<String> sourceIds;
+
+  /// The counted records with their times, when the server sends them (CH08 "08:00 150 ml ·
+  /// 11:10 120 ml"); the A2 server sends only [sourceIds], so the app reads those records itself.
+  final List<SummaryItem>? items;
+}
+
+/// One record a CH08 summary counted: a bottle (ml) or a nursing session (minutes), never both.
+@immutable
+class SummaryItem {
+  const SummaryItem({
+    required this.id,
+    required this.kind,
+    required this.at,
+    this.ml,
+    this.minutes,
+  });
+
+  final String id;
+
+  /// `bottle` / `breast` (a nursing record); sleep is not listed per item.
+  final String kind;
+  final DateTime at;
+  final int? ml;
+  final int? minutes;
+
+  static SummaryItem? fromJson(Object? json) {
+    final m = _map(json);
+    final id = _str(m['id'], max: 128);
+    final kind = switch (m['kind']) {
+      'bottle' => 'bottle',
+      'breast' || 'nursing' => 'breast',
+      _ => null,
+    };
+    final at = _instant(m['at'] ?? m['occurredAt']);
+    if (id == null || kind == null || at == null) return null;
+    return SummaryItem(
+      id: id,
+      kind: kind,
+      at: at,
+      ml: kind == 'bottle' ? _int(m['ml']) : null,
+      minutes: kind == 'breast' ? _int(m['minutes']) : null,
+    );
+  }
 }
 
 /// One other eligible item for "Gợi ý khác".
@@ -1209,30 +1261,67 @@ class AssistantDraft {
 
 // ---------- Usage and quotes ----------
 
-/// One line of CH19 "Gần đây" when the server sends it (household tasks: role, date, credits;
-/// never content).
+/// What used (or held) credits in one CH19 "Gần đây" line: a chat task or, since D-075 #1, an
+/// AI summary charging the same household pool.
+enum UsageSource { text, image, handover, explain, moment, summary }
+
+/// One line of CH19 "Gần đây" when the server sends it (household pool: what, who, when, how
+/// many and where the reservation stands; never content).
+///
+/// Wire (read leniently): `{ kind: text | image | summary, summaryKind?: handover | explain |
+/// moment, state: reserved | committed | released, credits, at, who }`; the A4 shape
+/// `{ modality, credits, at, who }` reads as committed.
 @immutable
 class UsageEntry {
   const UsageEntry({
-    required this.modality,
+    required this.source,
     required this.credits,
+    this.state = TaskUsageState.committed,
     this.at,
     this.who,
   });
-  final TaskModality modality;
+  final UsageSource source;
+
+  /// The credits this line counts (committed) or holds (reserved); a released line counted 0,
+  /// whatever it held.
   final int credits;
+  final TaskUsageState state;
   final DateTime? at;
 
   /// The member's relation or display label as the server gives it ("Mẹ").
   final String? who;
 
+  TaskModality get modality =>
+      source == UsageSource.image ? TaskModality.image : TaskModality.text;
+
+  /// What counted against the pool: 0 unless committed.
+  int get charged => state == TaskUsageState.committed ? credits : 0;
+
   static UsageEntry? fromJson(Object? json) {
     final m = _map(json);
-    final credits = _int(m['credits']);
+    final credits = _int(m['credits'] ?? m['units']);
     if (credits == null) return null;
+    final kind = m['kind'] ?? m['modality'];
+    final source = switch (kind) {
+      'image' => UsageSource.image,
+      'text' => UsageSource.text,
+      'handover' ||
+      'explain' ||
+      'moment' ||
+      'summary' => switch (m['summaryKind'] ?? kind) {
+        'handover' => UsageSource.handover,
+        'explain' => UsageSource.explain,
+        'moment' => UsageSource.moment,
+        _ => UsageSource.summary,
+      },
+      _ => UsageSource.text,
+    };
     return UsageEntry(
-      modality: wireOf(TaskModality.values, m['modality']) ?? TaskModality.text,
+      source: source,
       credits: credits.clamp(0, 1000),
+      state:
+          wireOf(TaskUsageState.values, m['state'] ?? m['usage']) ??
+          TaskUsageState.committed,
       at: _instant(m['at'] ?? m['createdAt']),
       who: _str(m['who'], max: 60),
     );
@@ -1252,7 +1341,7 @@ class AssistantUsage {
     this.policyVersion = '',
     this.textCredits = 1,
     this.imageCredits = 3,
-    this.recent = const [],
+    this.recent,
   });
 
   final UsagePlan plan;
@@ -1266,7 +1355,10 @@ class AssistantUsage {
   final String policyVersion;
   final int textCredits;
   final int imageCredits;
-  final List<UsageEntry> recent;
+
+  /// CH19 "Gần đây"; null when the server sends no list (then nothing is shown, never an empty
+  /// history that the numbers contradict).
+  final List<UsageEntry>? recent;
 
   static AssistantUsage? fromJson(Object? json) {
     var m = _map(json);
@@ -1289,9 +1381,12 @@ class AssistantUsage {
       policyVersion: _str(m['policyVersion'], max: 40) ?? '',
       textCredits: (_int(m['textCredits']) ?? 1).clamp(0, 20),
       imageCredits: (_int(m['imageCredits']) ?? 3).clamp(0, 20),
-      recent: [
-        for (final x in _list(m['recent']).take(20)) ?UsageEntry.fromJson(x),
-      ],
+      recent: m['recent'] is List
+          ? [
+              for (final x in _list(m['recent']).take(20))
+                ?UsageEntry.fromJson(x),
+            ]
+          : null,
     );
   }
 }

@@ -1101,6 +1101,8 @@ class AsSummaryCard extends StatelessWidget {
     required this.zone,
     required this.now,
     required this.onOpenSource,
+    this.bottleFeeds,
+    this.breastFeeds,
     super.key,
   });
 
@@ -1108,6 +1110,11 @@ class AsSummaryCard extends StatelessWidget {
   final String zone;
   final DateTime now;
   final VoidCallback? onOpenSource;
+
+  /// The counted bottles / nursing sessions with their times ([summaryFeeds]); null shows the
+  /// totals only.
+  final List<SummaryItem>? bottleFeeds;
+  final List<SummaryItem>? breastFeeds;
 
   @override
   Widget build(BuildContext context) {
@@ -1123,41 +1130,43 @@ class AsSummaryCard extends StatelessWidget {
       zone,
       now,
     );
-    Widget row(ClIcons icon, ClCareColor tint, String title, String? sub) =>
-        Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: tint.soft,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                alignment: Alignment.center,
-                child: ClIcon(icon, size: 16, color: tint.ink),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: _semi(context, 14, cl.colors.ink)),
-                    if (sub != null)
-                      Text(
-                        sub,
-                        style: cl.text.caption.copyWith(
-                          color: cl.colors.inkMuted,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
+    Widget row(
+      ClIcons icon,
+      ClCareColor tint,
+      String title,
+      List<String> subs,
+    ) => Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: tint.soft,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            alignment: Alignment.center,
+            child: ClIcon(icon, size: 16, color: tint.ink),
           ),
-        );
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: _semi(context, 14, cl.colors.ink)),
+                for (final sub in subs)
+                  Text(
+                    sub,
+                    style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -1184,7 +1193,17 @@ class AsSummaryCard extends StatelessWidget {
                   summary.bottle.count,
                   mlLabel(locale, summary.bottle.amount),
                 ),
-                null,
+                [
+                  if (bottleFeeds case final feeds? when feeds.isNotEmpty)
+                    feeds
+                        .map(
+                          (f) => l10n.asSummaryFeedMl(
+                            hm(f.at, zone),
+                            mlLabel(locale, f.ml ?? 0),
+                          ),
+                        )
+                        .join(' · '),
+                ],
               ),
             if (summary.breast.count > 0)
               row(
@@ -1194,7 +1213,18 @@ class AsSummaryCard extends StatelessWidget {
                   summary.breast.count,
                   summary.breast.amount,
                 ),
-                l10n.asSummaryBreastNote,
+                [
+                  if (breastFeeds case final feeds? when feeds.isNotEmpty)
+                    feeds
+                        .map(
+                          (f) => l10n.asSummaryFeedMinutes(
+                            hm(f.at, zone),
+                            f.minutes ?? 0,
+                          ),
+                        )
+                        .join(' · '),
+                  l10n.asSummaryBreastNote,
+                ],
               ),
             if (summary.sleep.count > 0)
               row(
@@ -1204,7 +1234,7 @@ class AsSummaryCard extends StatelessWidget {
                   summary.sleep.count,
                   _duration(l10n, summary.sleep.amount),
                 ),
-                null,
+                const [],
               ),
             const SizedBox(height: ClSpace.s3),
             Container(

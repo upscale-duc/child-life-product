@@ -199,7 +199,6 @@ s('asCostFree', 'Miễn phí', 'Free', 'CH19 cost value (health).' + DRAFT)
 s('asRecentTitle', 'Gần đây', 'Recent', 'CH19 recent tasks section.')
 s('asRecentText', 'Câu hỏi hoặc ghi nhanh', 'Question or quick log', 'CH19 recent row (text task).' + VI_DRAFT)
 s('asRecentPhoto', 'Đọc ảnh', 'Read photo', 'CH19 recent row (photo task).' + VI_DRAFT)
-s('asRecentMeta', '{who} · {date} · {credits} lượt', '{who} · {date} · {credits}', 'CH19 recent meta ("Mẹ · 15/10 · 3 lượt").', who='String', date='String', credits='int')
 s('asVideoQuotaTitle', 'Xuất video kỷ niệm', 'Keepsake video exports', 'CH19 separate video quota row.' + VI_DRAFT)
 s('asVideoQuotaSub', 'Quota riêng, không dùng lượt hỗ trợ AI · còn {left}/{limit}', 'Separate quota, not AI help · {left}/{limit} left', 'CH19 video quota line.' + VI_DRAFT, left='int', limit='int')
 s('asPremiumTeaser', 'Premium có nhiều lượt hơn, cùng cá nhân hoá chủ động và mẫu thẻ/video Premium.', 'Premium has more help, plus proactive personalisation and Premium card/video templates.', 'CH19 Premium card (Free only).')
@@ -429,8 +428,26 @@ s('asDeleteSharedTitle', 'Xoá cuộc trò chuyện chung?', 'Delete the shared 
 s('asDeleteSharedBody', 'Cuộc trò chuyện chung sẽ bị xoá cho mọi người, kể cả bản nháp chưa lưu. Những gì đã lưu vào nhật ký, Nhịp lớn lên hay nhắc việc vẫn giữ nguyên.', 'The shared chat is deleted for everyone, including unsaved drafts. Anything saved to the log, Growing rhythm or Reminders stays.', 'CH03 confirm body for the shared thread.' + VI_DRAFT)
 s('asDeletedRecordsKept', 'Đã xoá cuộc trò chuyện. Bản ghi đã lưu vẫn giữ nguyên.', 'Chat deleted. Saved records stay.', 'Toast after delete when the server confirms domainRecordsKept.' + VI_DRAFT)
 
-# Removed with A5 (the photo is uploaded now).
-REMOVED = ['asPhotoSoon']
+# App gaps after A5: CH19 recent list with AI summaries (D-075 #1), CH03 row status, CH08 per-feed
+# times. Recent lines are composed "{who} · {date} · {value}" in code (an absent part is skipped).
+s('asCostSummary', 'Tóm tắt bằng AI (bàn giao, giải thích)', 'AI summaries (handover, explanation)', 'CH19 cost row: an AI summary takes 1 credit from the same pool (D-075 #1); a template or cached one is free.' + VI_DRAFT)
+s('asRecentHandover', 'Tóm tắt bàn giao bằng AI', 'AI handover summary', 'CH19 recent row: an AI handover summary (D-075 #1).' + VI_DRAFT)
+s('asRecentExplain', 'Giải thích gợi ý bằng AI', 'AI explanation of a suggestion', 'CH19 recent row: an AI explanation (D-075 #1).' + VI_DRAFT)
+s('asRecentMoment', 'Tóm tắt khoảnh khắc bằng AI', 'AI moment summary', 'CH19 recent row: an AI moment summary (D-075 #1).' + VI_DRAFT)
+s('asRecentSummary', 'Tóm tắt bằng AI', 'AI summary', 'CH19 recent row: an AI summary of another kind.' + VI_DRAFT)
+s('asRecentHeld', 'đang giữ {credits} lượt', '{credits} held', 'CH19 recent value: credits reserved by work still running (not counted yet).' + VI_DRAFT, credits='int')
+s('asRecentReleased', '0 lượt · đã hoàn lại', '0 · given back', 'CH19 recent value: a reservation released (error, unreadable photo, cancel, template answer).' + VI_DRAFT)
+s('asRecentFree', '0 lượt · miễn phí', '0 · free', 'CH19 recent value: work that never costs credits (health support).' + VI_DRAFT)
+s('asRecentEmpty', 'Chưa dùng lượt nào trong kỳ này.', 'No AI help used this period yet.', 'CH19 recent section when the server sends an empty list.' + VI_DRAFT)
+s('asHistorySaved', '{count} mục đã lưu', '{count, plural, =1{1 item saved} other{{count} items saved}}', 'CH03 row status from the last task: drafts saved ("2 mục đã lưu · 09:12").', count='int')
+s('asHistoryNeedsAnswer', 'Có câu hỏi đang chờ trả lời', 'A question is waiting for an answer', 'CH03 row status: the last task asks a clarification still open.' + VI_DRAFT)
+s('asHistoryAwaitingFeedback', 'Đang chờ phản hồi sau khi thử', 'Waiting for feedback after trying', 'CH03 row status: a care try waiting for feedback (CH17).' + DRAFT)
+s('asHistoryDrafts', '{count} nháp', '{count, plural, =1{1 draft} other{{count} drafts}}', 'CH03 pill: drafts of the last task still waiting to be saved ("1 nháp").', count='int')
+s('asSummaryFeedMl', '{time} {ml} ml', '{time} {ml} ml', 'CH08 one bottle feed in the per-feed line ("08:00 150 ml").', time='String', ml='String')
+s('asSummaryFeedMinutes', '{time} {minutes} phút', '{time} {minutes} min', 'CH08 one nursing session in the per-feed line (minutes, never ml).' + DRAFT, time='String', minutes='int')
+
+# Removed with A5 (the photo is uploaded now); asRecentMeta after the composed recent line.
+REMOVED = ['asPhotoSoon', 'asRecentMeta']
 
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'
 for locale, idx in (('vi', 0), ('en', 1)):

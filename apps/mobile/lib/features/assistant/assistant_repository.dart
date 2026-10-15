@@ -9,6 +9,8 @@ import 'package:uuid/uuid.dart';
 
 import '../../app/providers.dart';
 import '../../core/appearance/appearance_providers.dart';
+import '../care/care_models.dart' show CareType;
+import '../care/care_repository.dart' show careRecordProvider;
 import 'assistant_models.dart';
 
 /// The callables of the assistant server (slice A2, docs/assistant/architecture.md §3). Names in
@@ -676,6 +678,61 @@ final assistantUsageProvider = FutureProvider.autoDispose
         return null;
       }
     }, retry: (_, _) => null);
+
+/// CH03: the authoritative snapshot of a conversation's last task (its row status); null when it
+/// can't be read. A read: no credits.
+final assistantTaskSnapshotProvider = FutureProvider.autoDispose
+    .family<TaskSnapshot?, (String, String)>((ref, key) async {
+      try {
+        return await ref
+            .watch(assistantRepositoryProvider)
+            .task(key.$1, locale: key.$2);
+      } on Object {
+        return null;
+      }
+    }, retry: (_, _) => null);
+
+/// Most source records CH08 reads back for its per-feed times (a day of feeds fits easily).
+const summarySourceLimit = 40;
+
+/// CH08: the bottles and nursing sessions a summary counted, by its `sourceIds`
+/// (`'<id>,<id>'`), read from the baby's care log the app already syncs; deleted or unreadable
+/// records are left out. Null until every one has loaded.
+final summarySourcesProvider = Provider.autoDispose
+    .family<List<SummaryItem>?, (String, String)>((ref, key) {
+      final (babyId, joined) = key;
+      final out = <SummaryItem>[];
+      for (final id in joined.split(',')) {
+        if (id.isEmpty) continue;
+        final v = ref.watch(careRecordProvider((babyId, id)));
+        if (v.isLoading && !v.hasValue) return null;
+        final r = v.hasError ? null : v.value;
+        if (r == null || r.deleted) continue;
+        switch (r.type) {
+          case CareType.bottle:
+            out.add(
+              SummaryItem(
+                id: r.id,
+                kind: 'bottle',
+                at: r.occurredAt,
+                ml: r.amountMl,
+              ),
+            );
+          case CareType.breast:
+            out.add(
+              SummaryItem(
+                id: r.id,
+                kind: 'breast',
+                at: r.occurredAt,
+                minutes: r.durationMin,
+              ),
+            );
+          default:
+            break;
+        }
+      }
+      return out;
+    });
 
 /// New request ids (tests make them predictable).
 final assistantIdsProvider = Provider<String Function()>(

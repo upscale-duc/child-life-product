@@ -13,6 +13,7 @@ import 'package:child_life/features/assistant/assistant_models.dart';
 import 'package:child_life/features/assistant/assistant_repository.dart';
 import 'package:child_life/features/assistant/assistant_screens.dart';
 import 'package:child_life/features/baby/baby_models.dart';
+import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/premium/billing_models.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ import '../helpers/family_fixtures.dart';
 
 /// Child Life Assistant slice A4, Light / Night care × vi / en (the chat frames have no Night
 /// twin; every colour is a token): CH01 Home entry, CH02 empty chat, CH04 drafts, CH05
-/// clarification, CH06 edit sheet, CH07 partial save, CH08 read summary, CH19 usage, CH20 photo
+/// clarification, CH03 history status, CH06 edit sheet, CH07 partial save, CH08 read summary, CH19 usage, CH20 photo
 /// blocked before send, CH21 Free exhausted, CH24 Premium exhausted, CH25 failure and offline,
 /// CH26 consent, CH27 viewer / module / region, CH28 health. Synthetic data only.
 /// Regenerate on macOS: flutter test --tags golden --update-goldens test/golden/assistant_golden_test.dart
@@ -41,6 +42,7 @@ typedef _Case = ({
   bool images,
   String plan,
   VideoQuota? video,
+  Map<String, CareRecord> care,
   Future<void> Function(WidgetTester tester)? act,
 });
 
@@ -113,6 +115,7 @@ _Case _c({
   bool images = false,
   String plan = 'free',
   VideoQuota? video,
+  Map<String, CareRecord> care = const {},
   Future<void> Function(WidgetTester tester)? act,
 }) => (
   height: height,
@@ -124,6 +127,7 @@ _Case _c({
   images: images,
   plan: plan,
   video: video,
+  care: care,
   act: act,
 );
 
@@ -176,7 +180,13 @@ final _cases = <String, _Case>{
     ),
     prefs: () => _thread([taskA]),
   ),
+  'ch03_history': _c(
+    build: () => AssistantHistoryScreen(scopeKey: teddyScope.key),
+    repo: _historyRepo,
+  ),
+  // CH08 with the per-feed times read back from the counted records.
   'ch08_summary': _c(
+    care: summaryRecords(),
     repo: () => _repo(
       tasks: {
         taskA: snapshotWith(
@@ -190,31 +200,59 @@ final _cases = <String, _Case>{
     ),
     prefs: () => _thread([taskA]),
   ),
+  // CH19 with the household's recent list (D-075 #1: an AI summary in the same pool), honest
+  // about work that counted 0 (given back) or only holds credits so far.
   'ch19_usage': _c(
-    height: 1100,
+    height: 1300,
     video: const VideoQuota(limit: 5, used: 1, reserved: 0),
     build: () => const AssistantUsageScreen(babyId: teddyId),
     repo: () => _repo(
       usage: usageJson(
         used: 5,
+        reserved: 1,
         recent: [
           {
-            'modality': 'image',
+            'kind': 'text',
+            'state': 'reserved',
+            'credits': 1,
+            'at': '2026-10-15T07:10:00.000Z',
+            'who': 'Mẹ',
+          },
+          {
+            'kind': 'image',
+            'state': 'committed',
             'credits': 3,
             'at': '2026-10-15T03:00:00.000Z',
             'who': 'Mẹ',
           },
           {
-            'modality': 'text',
+            'kind': 'summary',
+            'summaryKind': 'handover',
+            'state': 'committed',
+            'credits': 1,
+            'at': '2026-10-15T02:30:00.000Z',
+            'who': 'Ba',
+          },
+          {
+            'kind': 'text',
+            'state': 'committed',
             'credits': 1,
             'at': '2026-10-15T02:00:00.000Z',
             'who': 'Mẹ',
           },
           {
-            'modality': 'image',
-            'credits': 0,
+            'kind': 'image',
+            'state': 'released',
+            'credits': 3,
             'at': '2026-10-14T02:00:00.000Z',
             'who': 'Ba',
+          },
+          {
+            'kind': 'text',
+            'state': 'committed',
+            'credits': 0,
+            'at': '2026-10-13T12:00:00.000Z',
+            'who': 'Bà',
           },
         ],
       ),
@@ -334,6 +372,76 @@ final _cases = <String, _Case>{
   ),
 };
 
+const _taskC = 'tk_cccccccccccccccccccccccccccccccc';
+const _taskD = 'tk_dddddddddddddddddddddddddddddddd';
+
+Map<String, Object?> _conversation(
+  String id,
+  String title,
+  String updatedAt,
+  String lastTaskId,
+) => {
+  'id': id,
+  'ownerUid': 'u_mai',
+  'shared': false,
+  'familyId': 'f_1',
+  'scope': {'type': 'child', 'babyId': teddyId},
+  'title': title,
+  'locale': 'vi',
+  'createdAt': updatedAt,
+  'updatedAt': updatedAt,
+  'archivedAt': null,
+  'lastTaskId': lastTaskId,
+};
+
+/// CH03: the shared thread waits for an answer; the morning log saved 2 items; the sleep thread
+/// waits for feedback with 1 draft; a question from Monday has nothing to report.
+FakeAssistantRepository _historyRepo() =>
+    _repo(
+        tasks: {
+          taskA: snapshotWith(
+            task: sharedTaskJson(
+              by: minh,
+              state: 'awaiting_clarification',
+              clarification: clarificationJson(),
+            ),
+          ),
+          taskB: snapshotWith(
+            task: taskJson(id: taskB),
+            drafts: [
+              bottleDraftJson(taskId: taskB, state: 'saved'),
+              sleepDraftJson(taskId: taskB, state: 'saved'),
+            ],
+          ),
+          _taskC: snapshotWith(
+            task: careTaskJson(id: _taskC, care: sleepCare(followUp: true)),
+            drafts: [observationDraftJson()],
+          ),
+          _taskD: snapshotWith(task: taskJson(id: _taskD)),
+        },
+      )
+      ..conversationsAnswer = () => [
+        sharedConversationJson(),
+        _conversation(
+          conversation1,
+          'Ghi bú và ngủ buổi sáng',
+          '2026-10-15T02:12:00.000Z',
+          taskB,
+        ),
+        _conversation(
+          'cv_22222222222222222222222222222222',
+          'Con khó ngủ',
+          '2026-10-15T01:40:00.000Z',
+          _taskC,
+        ),
+        _conversation(
+          'cv_33333333333333333333333333333333',
+          'Hôm nay con bú thế nào?',
+          '2026-10-12T03:00:00.000Z',
+          _taskD,
+        ),
+      ];
+
 /// The bottle card's "Sửa" / "Edit" action.
 bool _editAction(Widget w) =>
     w is Semantics &&
@@ -363,6 +471,7 @@ void main() {
                   images: c.images,
                   plan: c.plan,
                   video: c.video,
+                  careRecords: c.care,
                   paywall: (BuildContext _, PurchaseResume _) async => false,
                 ),
               ],

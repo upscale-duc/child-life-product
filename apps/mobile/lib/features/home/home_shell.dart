@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -195,6 +197,11 @@ class HomeShell extends ConsumerWidget {
               content: shell,
               // Keeps Tự lưu loaded so it checks when the app opens (AR01).
               banner: const AutoSaveKeeper(child: GlobalUploadPill()),
+              // Chat/Nút trợ lý (628:9074) 12 pt above the "+", on Hôm nay itself; nothing
+              // unless the `assistant` flag is on. It rides above the upload pill, never under it.
+              fab: active == ClTab.today && path == Routes.today && !showTour
+                  ? const AssistantFloatingEntry()
+                  : null,
               dock: ClTabDock(
                 role: clRoleOf(membership.role),
                 tabs: tabs,
@@ -210,20 +217,6 @@ class HomeShell extends ConsumerWidget {
               ),
             ),
           ),
-          // Chat/Nút trợ lý (628:9074) 12 pt above the "+", on Hôm nay itself; nothing unless
-          // the `assistant` flag is on.
-          if (active == ClTab.today && path == Routes.today && !showTour)
-            Positioned(
-              right: ClSpace.s4,
-              bottom:
-                  (MediaQuery.paddingOf(context).bottom > 0
-                      ? MediaQuery.paddingOf(context).bottom
-                      : ClSpace.s6) +
-                  68 +
-                  (action == null ? 0 : ClTabDock.actionExtent) +
-                  ClSpace.s3,
-              child: const AssistantFloatingEntry(),
-            ),
           if (showTour)
             Positioned.fill(child: TodayTour(babyNickname: nickname)),
         ],
@@ -787,6 +780,7 @@ class _HideDockOnScroll extends StatefulWidget {
     required this.dock,
     required this.resetKey,
     this.banner,
+    this.fab,
     this.hideDock = false,
     this.dockExtra = 0,
   });
@@ -803,6 +797,10 @@ class _HideDockOnScroll extends StatefulWidget {
   /// Floats above the dock (the upload pill) and drops to the bottom edge while the dock is
   /// hidden, so it is always visible.
   final Widget? banner;
+
+  /// A floating button at the right (Chat/Nút trợ lý), 12 above the banner when the banner shows
+  /// and 12 above the dock's "+" when it doesn't, so the two never overlap; it moves with them.
+  final Widget? fab;
 
   /// Changing it (another tab or screen) shows the dock again.
   final Object resetKey;
@@ -860,6 +858,7 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
     // ClTabDock: 68 tall, 24 above the safe area.
     const dockHeight = 68.0 + ClSpace.s6;
     final banner = widget.banner;
+    final fab = widget.fab;
     final hidden = _hidden || widget.hideDock;
     return Stack(
       children: [
@@ -869,7 +868,7 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
             child: widget.content,
           ),
         ),
-        if (banner != null)
+        if (banner != null || fab != null)
           AnimatedPositioned(
             duration: duration,
             curve: ClCurves.quick,
@@ -879,7 +878,18 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
                 safeBottom +
                 ClSpace.s3 +
                 (hidden ? 0 : dockHeight + widget.dockExtra),
-            child: banner,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (fab != null)
+                  Align(alignment: Alignment.centerRight, child: fab),
+                if (banner != null)
+                  fab == null
+                      ? banner
+                      : GapAboveIfShown(gap: ClSpace.s3, child: banner),
+              ],
+            ),
           ),
         Positioned(
           left: 0,
@@ -904,5 +914,67 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
         ),
       ],
     );
+  }
+}
+
+/// [child] with [gap] above it, or nothing at all while the child lays out empty (the upload pill
+/// with no uploads is a zero-size box): the floating button above it then sits [gap] lower.
+class GapAboveIfShown extends SingleChildRenderObjectWidget {
+  const GapAboveIfShown({required this.gap, required super.child, super.key});
+  final double gap;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      RenderGapAboveIfShown(gap);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    RenderGapAboveIfShown renderObject,
+  ) => renderObject.gap = gap;
+}
+
+/// The render box of [GapAboveIfShown].
+class RenderGapAboveIfShown extends RenderShiftedBox {
+  RenderGapAboveIfShown(this._gap) : super(null);
+
+  double _gap;
+  set gap(double value) {
+    if (value == _gap) return;
+    _gap = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void performLayout() {
+    final c = child;
+    if (c == null) {
+      size = constraints.smallest;
+      return;
+    }
+    c.layout(
+      constraints.copyWith(
+        minHeight: 0,
+        maxHeight: math.max(0, constraints.maxHeight - _gap),
+      ),
+      parentUsesSize: true,
+    );
+    final shown = c.size.height > 0;
+    (c.parentData! as BoxParentData).offset = Offset(0, shown ? _gap : 0);
+    size = constraints.constrain(
+      Size(c.size.width, shown ? c.size.height + _gap : 0),
+    );
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) {
+    final h = child?.getMinIntrinsicHeight(width) ?? 0;
+    return h > 0 ? h + _gap : 0;
+  }
+
+  @override
+  double computeMaxIntrinsicHeight(double width) {
+    final h = child?.getMaxIntrinsicHeight(width) ?? 0;
+    return h > 0 ? h + _gap : 0;
   }
 }

@@ -22998,12 +22998,6 @@ abstract class AppLocalizations {
   /// **'Đọc ảnh'**
   String get asRecentPhoto;
 
-  /// CH19 recent meta ("Mẹ · 15/10 · 3 lượt").
-  ///
-  /// In vi, this message translates to:
-  /// **'{who} · {date} · {credits} lượt'**
-  String asRecentMeta(String who, String date, int credits);
-
   /// CH19 separate video quota row. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
@@ -24161,6 +24155,96 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã xoá cuộc trò chuyện. Bản ghi đã lưu vẫn giữ nguyên.'**
   String get asDeletedRecordsKept;
+
+  /// CH19 cost row: an AI summary takes 1 credit from the same pool (D-075 #1); a template or cached one is free. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt bằng AI (bàn giao, giải thích)'**
+  String get asCostSummary;
+
+  /// CH19 recent row: an AI handover summary (D-075 #1). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt bàn giao bằng AI'**
+  String get asRecentHandover;
+
+  /// CH19 recent row: an AI explanation (D-075 #1). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giải thích gợi ý bằng AI'**
+  String get asRecentExplain;
+
+  /// CH19 recent row: an AI moment summary (D-075 #1). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt khoảnh khắc bằng AI'**
+  String get asRecentMoment;
+
+  /// CH19 recent row: an AI summary of another kind. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt bằng AI'**
+  String get asRecentSummary;
+
+  /// CH19 recent value: credits reserved by work still running (not counted yet). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'đang giữ {credits} lượt'**
+  String asRecentHeld(int credits);
+
+  /// CH19 recent value: a reservation released (error, unreadable photo, cancel, template answer). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'0 lượt · đã hoàn lại'**
+  String get asRecentReleased;
+
+  /// CH19 recent value: work that never costs credits (health support). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'0 lượt · miễn phí'**
+  String get asRecentFree;
+
+  /// CH19 recent section when the server sends an empty list. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa dùng lượt nào trong kỳ này.'**
+  String get asRecentEmpty;
+
+  /// CH03 row status from the last task: drafts saved ("2 mục đã lưu · 09:12").
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mục đã lưu'**
+  String asHistorySaved(int count);
+
+  /// CH03 row status: the last task asks a clarification still open. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có câu hỏi đang chờ trả lời'**
+  String get asHistoryNeedsAnswer;
+
+  /// CH03 row status: a care try waiting for feedback (CH17). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chờ phản hồi sau khi thử'**
+  String get asHistoryAwaitingFeedback;
+
+  /// CH03 pill: drafts of the last task still waiting to be saved ("1 nháp").
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} nháp'**
+  String asHistoryDrafts(int count);
+
+  /// CH08 one bottle feed in the per-feed line ("08:00 150 ml").
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} {ml} ml'**
+  String asSummaryFeedMl(String time, String ml);
+
+  /// CH08 one nursing session in the per-feed line (minutes, never ml). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} {minutes} phút'**
+  String asSummaryFeedMinutes(String time, int minutes);
 }
 
 class _AppLocalizationsDelegate

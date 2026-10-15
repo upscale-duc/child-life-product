@@ -14718,11 +14718,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asRecentPhoto => 'Read photo';
 
   @override
-  String asRecentMeta(String who, String date, int credits) {
-    return '$who · $date · $credits';
-  }
-
-  @override
   String get asVideoQuotaTitle => 'Keepsake video exports';
 
   @override
@@ -15417,4 +15412,71 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asDeletedRecordsKept => 'Chat deleted. Saved records stay.';
+
+  @override
+  String get asCostSummary => 'AI summaries (handover, explanation)';
+
+  @override
+  String get asRecentHandover => 'AI handover summary';
+
+  @override
+  String get asRecentExplain => 'AI explanation of a suggestion';
+
+  @override
+  String get asRecentMoment => 'AI moment summary';
+
+  @override
+  String get asRecentSummary => 'AI summary';
+
+  @override
+  String asRecentHeld(int credits) {
+    return '$credits held';
+  }
+
+  @override
+  String get asRecentReleased => '0 · given back';
+
+  @override
+  String get asRecentFree => '0 · free';
+
+  @override
+  String get asRecentEmpty => 'No AI help used this period yet.';
+
+  @override
+  String asHistorySaved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items saved',
+      one: '1 item saved',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get asHistoryNeedsAnswer => 'A question is waiting for an answer';
+
+  @override
+  String get asHistoryAwaitingFeedback => 'Waiting for feedback after trying';
+
+  @override
+  String asHistoryDrafts(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count drafts',
+      one: '1 draft',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String asSummaryFeedMl(String time, String ml) {
+    return '$time $ml ml';
+  }
+
+  @override
+  String asSummaryFeedMinutes(String time, int minutes) {
+    return '$time $minutes min';
+  }
 }

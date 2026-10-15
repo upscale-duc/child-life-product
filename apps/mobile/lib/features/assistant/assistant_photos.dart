@@ -158,6 +158,9 @@ class AssistantPhotoCache {
 
   Uint8List? operator [](String attachmentId) => _bytes[attachmentId];
 
+  /// Sign-out / family switch (assistant_device.dart).
+  void clear() => _bytes.clear();
+
   void put(String attachmentId, Uint8List bytes) {
     _bytes.remove(attachmentId);
     _bytes[attachmentId] = bytes;

@@ -20551,21 +20551,6 @@
   "@asRecentPhoto": {
     "description": "CH19 recent row (photo task). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "asRecentMeta": "{who} · {date} · {credits} lượt",
-  "@asRecentMeta": {
-    "description": "CH19 recent meta (\"Mẹ · 15/10 · 3 lượt\").",
-    "placeholders": {
-      "who": {
-        "type": "String"
-      },
-      "date": {
-        "type": "String"
-      },
-      "credits": {
-        "type": "int"
-      }
-    }
-  },
   "asVideoQuotaTitle": "Xuất video kỷ niệm",
   "@asVideoQuotaTitle": {
     "description": "CH19 separate video quota row. VI and EN are engineering drafts (no frame draws this state) for owner review."
@@ -21469,5 +21454,96 @@
   "asDeletedRecordsKept": "Đã xoá cuộc trò chuyện. Bản ghi đã lưu vẫn giữ nguyên.",
   "@asDeletedRecordsKept": {
     "description": "Toast after delete when the server confirms domainRecordsKept. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asCostSummary": "Tóm tắt bằng AI (bàn giao, giải thích)",
+  "@asCostSummary": {
+    "description": "CH19 cost row: an AI summary takes 1 credit from the same pool (D-075 #1); a template or cached one is free. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRecentHandover": "Tóm tắt bàn giao bằng AI",
+  "@asRecentHandover": {
+    "description": "CH19 recent row: an AI handover summary (D-075 #1). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRecentExplain": "Giải thích gợi ý bằng AI",
+  "@asRecentExplain": {
+    "description": "CH19 recent row: an AI explanation (D-075 #1). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRecentMoment": "Tóm tắt khoảnh khắc bằng AI",
+  "@asRecentMoment": {
+    "description": "CH19 recent row: an AI moment summary (D-075 #1). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRecentSummary": "Tóm tắt bằng AI",
+  "@asRecentSummary": {
+    "description": "CH19 recent row: an AI summary of another kind. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRecentHeld": "đang giữ {credits} lượt",
+  "@asRecentHeld": {
+    "description": "CH19 recent value: credits reserved by work still running (not counted yet). VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "credits": {
+        "type": "int"
+      }
+    }
+  },
+  "asRecentReleased": "0 lượt · đã hoàn lại",
+  "@asRecentReleased": {
+    "description": "CH19 recent value: a reservation released (error, unreadable photo, cancel, template answer). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRecentFree": "0 lượt · miễn phí",
+  "@asRecentFree": {
+    "description": "CH19 recent value: work that never costs credits (health support). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRecentEmpty": "Chưa dùng lượt nào trong kỳ này.",
+  "@asRecentEmpty": {
+    "description": "CH19 recent section when the server sends an empty list. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asHistorySaved": "{count} mục đã lưu",
+  "@asHistorySaved": {
+    "description": "CH03 row status from the last task: drafts saved (\"2 mục đã lưu · 09:12\").",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "asHistoryNeedsAnswer": "Có câu hỏi đang chờ trả lời",
+  "@asHistoryNeedsAnswer": {
+    "description": "CH03 row status: the last task asks a clarification still open. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asHistoryAwaitingFeedback": "Đang chờ phản hồi sau khi thử",
+  "@asHistoryAwaitingFeedback": {
+    "description": "CH03 row status: a care try waiting for feedback (CH17). EN is an engineering draft for owner review."
+  },
+  "asHistoryDrafts": "{count} nháp",
+  "@asHistoryDrafts": {
+    "description": "CH03 pill: drafts of the last task still waiting to be saved (\"1 nháp\").",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "asSummaryFeedMl": "{time} {ml} ml",
+  "@asSummaryFeedMl": {
+    "description": "CH08 one bottle feed in the per-feed line (\"08:00 150 ml\").",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "asSummaryFeedMinutes": "{time} {minutes} phút",
+  "@asSummaryFeedMinutes": {
+    "description": "CH08 one nursing session in the per-feed line (minutes, never ml). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
   }
 }
