@@ -8,6 +8,7 @@ import {
   type GrantEnvironment,
   type HouseholdPlan,
   type StaffFamilyPremium,
+  type StaffFamilyQuota,
 } from '@child-life/contracts';
 import { useEffect, useId, useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl, type IntlShape } from 'react-intl';
@@ -41,6 +42,7 @@ import {
 } from '../ui';
 import { AuditActionText, FamilyPicker } from './Features';
 import { CheckRow, FieldSelect } from './form-controls';
+import { AiPolicyLoader, FamilyQuotaView } from './PremiumOps';
 
 /**
  * Premium & Cá nhân hoá (plan §5.6): advanced regions, quotas and Beta A campaigns in
@@ -50,17 +52,57 @@ import { CheckRow, FieldSelect } from './form-controls';
  * Staff actions: `premium.view` / `premium.config` / `premium.grant` (owner, admin).
  */
 export function PremiumScreen() {
+  const intl = useIntl();
+  const [tab, setTab] = useState<PremiumTab>('config');
   const [load, reload] = useLoad<StaffPremiumView>('staffPremium', {}, 'premium');
   return (
     <Page
       title={<FormattedMessage id="premium.title" />}
       subtitle={<FormattedMessage id="premium.sub" />}
-      actions={load.status === 'ok' ? <EnvPill env={load.data.environment} /> : undefined}
+      actions={
+        <>
+          <PremiumTabs
+            label={intl.formatMessage({ id: 'premium.tabs' })}
+            value={tab}
+            onChange={setTab}
+          />
+          {load.status === 'ok' && <EnvPill env={load.data.environment} />}
+        </>
+      }
     >
-      <Loaded load={load} reload={reload}>
-        {(data) => <PremiumBody data={data} onChanged={reload} />}
-      </Loaded>
+      {tab === 'ai' ? (
+        // Plan §5.6 "AI policy": the limits themselves are edited on the Cấu hình tab.
+        <AiPolicyLoader onOpenLimits={() => setTab('config')} />
+      ) : (
+        <Loaded load={load} reload={reload}>
+          {(data) => <PremiumBody data={data} onChanged={reload} />}
+        </Loaded>
+      )}
     </Page>
+  );
+}
+
+export type PremiumTab = 'config' | 'ai';
+
+export function PremiumTabs({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: PremiumTab;
+  onChange: (t: PremiumTab) => void;
+}) {
+  return (
+    <Segmented
+      label={label}
+      value={value}
+      onChange={onChange}
+      options={(['config', 'ai'] as const).map((t) => ({
+        value: t,
+        label: <FormattedMessage id={`premium.tab.${t}`} />,
+      }))}
+    />
   );
 }
 
@@ -222,12 +264,15 @@ export function PremiumBody({
   onChanged,
   now = new Date(),
   initialFamily = null,
+  initialQuota = null,
 }: {
   data: StaffPremiumView;
   onChanged: () => void;
   now?: Date;
   /** A looked-up family (tests). */
   initialFamily?: StaffFamilyPremium | null;
+  /** That family's quota and billing (tests). */
+  initialQuota?: StaffFamilyQuota | null;
 }) {
   const staff = useStaff();
   const canConfig = staffCan(staff.levels, 'premium.config');
@@ -285,7 +330,13 @@ export function PremiumBody({
             </div>
           </Panel>
         )}
-        <FamilyLookup canGrant={canGrant} onChanged={onChanged} now={now} initial={initialFamily} />
+        <FamilyLookup
+          canGrant={canGrant}
+          onChanged={onChanged}
+          now={now}
+          initial={initialFamily}
+          initialQuota={initialQuota}
+        />
       </div>
       <div className="stack">
         <Panel title={<FormattedMessage id="premium.rules" />}>
@@ -1017,21 +1068,47 @@ function RecentPanel({ recent }: { recent: StaffPremiumView['recent'] }) {
 
 // ---------- Tra cứu gia đình ----------
 
+/**
+ * One family's grants and, in a call of its own, its quota & billing (plan §5.6): a failure of
+ * the second never hides the first.
+ */
+export async function lookupFamily(
+  api: Api,
+  code: string,
+): Promise<
+  | { ok: true; premium: StaffFamilyPremium; quota: StaffFamilyQuota | 'failed' }
+  | { ok: false; problem: string }
+> {
+  try {
+    const [premium, quota] = await Promise.all([
+      api.call<StaffFamilyPremium>('staffFamilyPremium', { code }),
+      api.call<StaffFamilyQuota>('staffFamilyQuota', { code }).catch(() => 'failed' as const),
+    ]);
+    return { ok: true, premium, quota };
+  } catch (e) {
+    return { ok: false, problem: errorMessageId(asApiError(e)) };
+  }
+}
+
 function FamilyLookup({
   canGrant,
   onChanged,
   now,
   initial,
+  initialQuota,
 }: {
   canGrant: boolean;
   onChanged: () => void;
   now: Date;
   initial: StaffFamilyPremium | null;
+  initialQuota: StaffFamilyQuota | null;
 }) {
   const intl = useIntl();
   const api = useApi();
   const [code, setCode] = useState(initial?.code ?? '');
   const [result, setResult] = useState<StaffFamilyPremium | null>(initial);
+  // Quota & thanh toán: its own call, so a failure there never hides the grants.
+  const [quota, setQuota] = useState<StaffFamilyQuota | 'failed' | null>(initialQuota);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
   const [granting, setGranting] = useState(false);
@@ -1044,14 +1121,16 @@ function FamilyLookup({
     }
     setBusy(true);
     setProblem(null);
-    try {
-      setResult(await api.call<StaffFamilyPremium>('staffFamilyPremium', { code: text }));
-    } catch (e) {
+    const answer = await lookupFamily(api, text);
+    if (answer.ok) {
+      setResult(answer.premium);
+      setQuota(answer.quota);
+    } else {
       setResult(null);
-      setProblem(errorMessageId(asApiError(e)));
-    } finally {
-      setBusy(false);
+      setQuota(null);
+      setProblem(answer.problem);
     }
+    setBusy(false);
   };
   const done = () => {
     setGranting(false);
@@ -1093,6 +1172,14 @@ function FamilyLookup({
           onGrant={() => setGranting(true)}
           onRevoke={setRevoking}
         />
+      )}
+      {result && quota === 'failed' && (
+        <p className="muted mt-4">
+          <FormattedMessage id="premium.fq.error" />
+        </p>
+      )}
+      {result && quota && quota !== 'failed' && quota.code === result.code && (
+        <FamilyQuotaView data={quota} now={now} />
       )}
       {granting && result && (
         <GrantDialog

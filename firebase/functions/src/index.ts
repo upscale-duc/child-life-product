@@ -69,6 +69,7 @@ import {
   revokeGrant,
   setEntitlementsConfig,
 } from './premium-staff.js';
+import { aiPolicy, familyQuota, renderOps } from './premium-ops.js';
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { resendSender } from './mail-resend.js';
 import {
@@ -1726,8 +1727,12 @@ const authAccounts: AccountLister = {
   },
 };
 
-const staffCall = <T>(name: string, run: (staff: Staff | null, data: unknown) => Promise<T>) =>
-  onCall({ timeoutSeconds: 120, memory: '512MiB' }, async (request) => {
+const staffCall = <T>(
+  name: string,
+  run: (staff: Staff | null, data: unknown) => Promise<T>,
+  options: { secrets?: ReturnType<typeof defineSecret>[] } = {},
+) =>
+  onCall({ timeoutSeconds: 120, memory: '512MiB', ...options }, async (request) => {
     if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in first');
     try {
       return await run(await staffOf(request), request.data);
@@ -1819,6 +1824,23 @@ export const staffGrantPromo = staffCall('staffGrantPromo', (s, d) =>
 );
 export const staffRevokeGrant = staffCall('staffRevokeGrant', (s, d) =>
   revokeGrant(getFirestore(), s, d, new Date()),
+);
+
+// Premium operations (plan §5.6, brief "Portal cần thêm"): read-only views; no retry, no charge.
+export const staffAiPolicy = staffCall(
+  'staffAiPolicy',
+  (s) => {
+    // The key decides openai vs template; only the provider name and model leave this function.
+    const live = aiProvider();
+    return aiPolicy(getFirestore(), s, { name: live.name, model: live.model ?? null }, new Date());
+  },
+  { secrets: [openAiKey] },
+);
+export const staffRenderOps = staffCall('staffRenderOps', (s) =>
+  renderOps(getFirestore(), s, new Date()),
+);
+export const staffFamilyQuota = staffCall('staffFamilyQuota', (s, d) =>
+  familyQuota(getFirestore(), s, d, new Date()),
 );
 export const staffAudit = staffCall('staffAudit', (s, d) =>
   listAudit(getFirestore(), s, d, new Date()),

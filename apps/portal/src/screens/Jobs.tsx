@@ -4,6 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { ApiError, useApi, useLoad, type JobList, type JobRow } from '../api';
 import { useRefreshBadges, useStaff } from '../context';
 import { duration, num, pct, when } from '../format';
+import { RenderOpsLoader } from './PremiumOps';
 import {
   Button,
   Empty,
@@ -24,31 +25,79 @@ import {
   type PillTone,
 } from '../ui';
 
-type Kind = 'all' | 'export' | 'deletion';
+type DataKind = 'all' | 'export' | 'deletion';
+/** `render`: keepsake video render jobs (read-only, plan §5.6) instead of data jobs. */
+export type Kind = DataKind | 'render';
 
 /** A06 Yêu cầu dữ liệu: status and re-run only; staff can never open or download an export. */
 export function JobsScreen() {
   const intl = useIntl();
   const [kind, setKind] = useState<Kind>('all');
-  const [load, reload] = useLoad<JobList>('staffJobs', { kind }, kind);
+  const filterLabel = intl.formatMessage({ id: 'jobs.filter' });
   return (
     <Page
       title={<FormattedMessage id="jobs.title" />}
       subtitle={<FormattedMessage id="jobs.sub" />}
     >
-      <Loaded load={load} reload={reload}>
-        {(data) => (
-          <JobsView
-            data={data}
-            kind={kind}
-            onKind={setKind}
-            now={new Date()}
-            onChanged={reload}
-            filterLabel={intl.formatMessage({ id: 'jobs.filter' })}
-          />
-        )}
-      </Loaded>
+      {kind === 'render' ? (
+        <RenderOpsLoader
+          toolbar={<JobKinds label={filterLabel} value={kind} onChange={setKind} />}
+        />
+      ) : (
+        <DataJobs kind={kind} onKind={setKind} filterLabel={filterLabel} />
+      )}
     </Page>
+  );
+}
+
+function DataJobs({
+  kind,
+  onKind,
+  filterLabel,
+}: {
+  kind: DataKind;
+  onKind: (k: Kind) => void;
+  filterLabel: string;
+}) {
+  const [load, reload] = useLoad<JobList>('staffJobs', { kind }, kind);
+  return (
+    <Loaded load={load} reload={reload}>
+      {(data) => (
+        <JobsView
+          data={data}
+          kind={kind}
+          onKind={onKind}
+          now={new Date()}
+          onChanged={reload}
+          filterLabel={filterLabel}
+        />
+      )}
+    </Loaded>
+  );
+}
+
+/** The job filter, shared by data jobs and video renders. */
+export function JobKinds({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: Kind;
+  onChange: (k: Kind) => void;
+}) {
+  return (
+    <Segmented
+      label={label}
+      value={value}
+      onChange={onChange}
+      options={[
+        { value: 'all', label: <FormattedMessage id="jobs.all" /> },
+        { value: 'export', label: <FormattedMessage id="jobs.exports" /> },
+        { value: 'deletion', label: <FormattedMessage id="jobs.deletionsTab" /> },
+        { value: 'render', label: <FormattedMessage id="jobs.render" /> },
+      ]}
+    />
   );
 }
 
@@ -139,16 +188,7 @@ export function JobsView({
       </div>
       <Panel className="panel--flush">
         <div className="panel__pad toolbar">
-          <Segmented
-            label={filterLabel}
-            value={kind}
-            onChange={onKind}
-            options={[
-              { value: 'all', label: <FormattedMessage id="jobs.all" /> },
-              { value: 'export', label: <FormattedMessage id="jobs.exports" /> },
-              { value: 'deletion', label: <FormattedMessage id="jobs.deletionsTab" /> },
-            ]}
-          />
+          <JobKinds label={filterLabel} value={kind} onChange={onKind} />
           <span className="muted">
             <FormattedMessage id="jobs.linkTtl" />
           </span>
