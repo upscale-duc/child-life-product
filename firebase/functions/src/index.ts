@@ -70,6 +70,12 @@ import {
   setEntitlementsConfig,
 } from './premium-staff.js';
 import { aiPolicy, familyQuota, renderOps } from './premium-ops.js';
+// Child Life Assistant portal ops (slice A6).
+import {
+  assistantSwitches,
+  assistantTaskLookup,
+  assistantUsageOverview,
+} from './assistant-staff.js';
 import { deliverMail, unsubscribe, type MailSender } from './mail.js';
 import { resendSender } from './mail-resend.js';
 import {
@@ -1871,6 +1877,17 @@ export const staffRenderOps = staffCall('staffRenderOps', (s) =>
 );
 export const staffFamilyQuota = staffCall('staffFamilyQuota', (s, d) =>
   familyQuota(getFirestore(), s, d, new Date()),
+);
+// Child Life Assistant ops (slice A6, docs/assistant/api.md "Staff"): read-only usage and task
+// lookup; the switches are toggled through `staffSetFlag` (same role, reason and audit).
+export const staffAssistantUsage = staffCall('staffAssistantUsage', (s) =>
+  assistantUsageOverview(getFirestore(), s, new Date()),
+);
+export const staffAssistantTask = staffCall('staffAssistantTask', (s, d) =>
+  assistantTaskLookup(getFirestore(), s, d),
+);
+export const staffAssistantSwitches = staffCall('staffAssistantSwitches', (s) =>
+  assistantSwitches(getFirestore(), s),
 );
 export const staffAudit = staffCall('staffAudit', (s, d) =>
   listAudit(getFirestore(), s, d, new Date()),

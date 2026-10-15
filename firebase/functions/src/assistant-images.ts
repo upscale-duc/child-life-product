@@ -472,10 +472,12 @@ export async function processImageTask(
 
 type StoredHint = 'care' | 'expense' | 'reminder' | 'question' | 'meal';
 
+/** Reading a photo costs about three text calls internally (never shown in the app). */
+export const imageReadCostVnd = 900;
+
 async function charge(db: Firestore, now: Date) {
   try {
-    // Reading a photo costs about three text calls internally (never shown in the app).
-    await chargeAi(db, now, 900);
+    await chargeAi(db, now, imageReadCostVnd);
   } catch {
     // The budget counter never fails a task.
   }

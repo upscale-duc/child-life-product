@@ -33,3 +33,4 @@ export * from './ai-summary.js';
 export * from './billing.js';
 export * from './assistant.js';
 export * from './premium-ops.js';
+export * from './assistant-staff.js';

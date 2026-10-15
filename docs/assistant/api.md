@@ -259,3 +259,30 @@ the caller; `deleteAssistantConversation` deletes the conversation's photos (a f
 | `sweepAssistantFiles` (15 min) | retries due `deletion_pending`; deletes uploads never started (target + 1 h), "xoá sau khi đọc" photos of finished tasks, kept photos no expense can still use (draft discarded / expired / saved), photos of blocked tasks after 24 h |
 | `cleanupAssistant` (daily 03:20 VN) | `assistantExecutions` / `assistantRequests` older than 30 days; cached readings left by an interrupted run (> 1 day, task not asking); attachment rows of deleted tasks once their object is confirmed gone |
 
+
+## Staff (slice A6, portal "Trợ lý AI")
+
+Staff callables (`staffCall`: signed-in staff claim, role levels re-read on every call; `StaffError`
+reasons `not-staff`, `role`, `malformed`, `no-task`). Logic in `firebase/functions/src/assistant-staff.ts`,
+DTOs in `packages/contracts/src/assistant-staff.ts`, screen `apps/portal/src/screens/Assistant.tsx`.
+Answers carry family / baby codes (`F-XXXX`, `B-XXXX`), closed codes, counts and times only — never a
+uid, name, message, draft payload, clarification answer, health sign, photo or Storage path.
+
+| Callable | Role | Request | Answer |
+|---|---|---|---|
+| `staffAssistantUsage` | `premium.view` | — | `StaffAssistantUsage`: last 30 Vietnam days — credit pool by budget (`free` / `premium` / `beta` from the window id; committed split chat / AI summaries, released, held, households, households out of credits), credits committed / released per day, tasks by state / outcome / modality, health-support count, error codes, model calls, estimated cost (calls × 300 đ text / 900 đ photo), created → ready p50 / p95, the monthly AI budget and the credit settings in force. |
+| `staffAssistantTask` | `premium.view` | `{ taskId: 'tk_' + 32 hex }` | `StaffAssistantTask`: state, modality, plan / pool, credits and usage, error code, outcome kind and counts, clarification fields asked (answered or not), attempts, model calls, model / prompt / policy versions, timestamps, the ledger reservation (state, units, times, release reason), drafts (kind, state, revision, field names, warnings), photo states, the 50 newest event types. |
+| `staffAssistantSwitches` | `features.view` | — | `StaffAssistantSwitches`: the six flags (P-161) with family codes, last edit and the 10 latest audit entries for them. |
+
+- **Switching** uses the existing `staffSetFlag` (Features dialog): role `flags.toggle` (Kỹ sư, Admin,
+  Owner) for on / off, `flags.rollout` for scope, reason required, one `staffAudit` entry
+  (`flags.on` / `flags.off`, category `features`). There is no assistant-specific write path.
+- **Credit settings** are edited only in Premium › Cấu hình (`staffSetPremiumConfig`, D-075 #1); the
+  Usage tab shows them and links there.
+- **Cost of the Usage read** (no new counter, no background job): `assistantTasks` with `createdAt`
+  in the period (newest 5 000, selected fields); collection group `quotaOps` with `feature ==
+  'assistant'` and `reservedAt` in the period (newest 5 000; composite index `quotaOps (feature,
+  reservedAt desc)`, collection-group scope, in `firestore.indexes.json`); `getAll` of the distinct
+  windows they touched (≤ 1 000). About 11 000 reads at most per opening; `truncated` says when a cap
+  was hit. Time to ready is created → `readyAt` (queue + model + settle); the worker records no
+  per-call latency.

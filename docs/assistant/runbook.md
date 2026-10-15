@@ -115,12 +115,10 @@ AI"; spent → every model call stops, assistant and summaries).
   the attempt counter caps at 3, then the task fails `AI_UNAVAILABLE` and releases. A late worker is
   fenced (lease holder check) and can neither commit nor write.
 - `awaiting_clarification` older than 30 min → failed `QUOTE_EXPIRED`, released, by the sweeper.
-- **`queued` that never ran** (the trigger did not fire or threw before claiming): **nothing requeues
-  it today** and its reservation stays held. Find them: `assistantTasks` where `state == 'queued'`
-  and `updatedAt` older than 15 min. The worker runs again when the task document changes while
-  `queued` with a new `version`; there is no staff tool for this yet (the portal assistant ops screen
-  is in progress, `assistant-staff.ts`). On dev an engineer may bump `version` with an Admin script on
-  a `test_` task; on prod, ask the owner and prefer a code fix (gap in the test report).
+- **`queued` that never ran** (the trigger did not fire or threw before claiming): `sweepAssistant`
+  nudges a task untouched for 10 min (version bump re-fires the trigger) up to 3 times, then fails it
+  `AI_UNAVAILABLE` and releases its credits once. Look a task up in the portal "Trợ lý AI" › Tasks
+  (`staffAssistantTask`: states, credits, ledger reservation, events — no content).
 - `blocked` tasks hold nothing; they resume only when the person sends the same request again.
 
 ### Quota reservations

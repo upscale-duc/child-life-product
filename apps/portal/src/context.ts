@@ -25,6 +25,7 @@ export type Route =
   | 'appUpdate'
   | 'features'
   | 'premium'
+  | 'assistant'
   | 'staff'
   | 'audit'
   | 'qa';
@@ -45,6 +46,7 @@ export const routePaths: Record<Route, string> = {
   appUpdate: '/app-update',
   features: '/features',
   premium: '/premium',
+  assistant: '/assistant',
   staff: '/staff',
   audit: '/audit',
   qa: '/qa',

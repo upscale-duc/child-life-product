@@ -8,6 +8,7 @@ import {
 import type { SupportedLocale } from '@child-life/web-config';
 import {
   BookOpen,
+  Bot,
   CalendarHeart,
   ChartColumn,
   ChevronsUpDown,
@@ -90,6 +91,7 @@ import {
 import { sortedRoles } from './session';
 import { AnalyticsScreen } from './screens/Analytics';
 import { AppUpdateScreen } from './screens/AppUpdate';
+import { AssistantScreen } from './screens/Assistant';
 import { AuditScreen } from './screens/Audit';
 import { FamiliesScreen } from './screens/Families';
 import { FeaturesScreen } from './screens/Features';
@@ -131,6 +133,8 @@ const nav: NavItem[] = [
   { route: 'system', icon: Server, group: 'system', can: 'system.view' },
   { route: 'features', icon: ToggleRight, group: 'system', can: 'features.view' },
   { route: 'premium', icon: Crown, group: 'system', can: 'premium.view' },
+  // Child Life Assistant ops (slice A6): usage, task lookup, kill switches.
+  { route: 'assistant', icon: Bot, group: 'system', can: 'premium.view' },
   { route: 'appUpdate', icon: Smartphone, group: 'system', can: 'release.view' },
   { route: 'staff', icon: ShieldCheck, group: 'system', can: 'staff.view' },
   { route: 'audit', icon: ScrollText, group: 'system', can: 'audit.view' },
@@ -339,6 +343,8 @@ function Screen({ route }: { route: Route }) {
       return <FeaturesScreen />;
     case 'premium':
       return <PremiumScreen />;
+    case 'assistant':
+      return <AssistantScreen />;
     case 'appUpdate':
       return <AppUpdateScreen />;
     case 'audit':

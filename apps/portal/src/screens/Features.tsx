@@ -51,7 +51,9 @@ export function nextStep(flag: Flag): (typeof ladder)[number] | null {
   return ladder.find((p) => p > flag.percent) ?? null;
 }
 
-type Change = { key: FlagKey; next: Flag; kind: 'off' | 'on' | 'step' | 'scope' };
+/** A switch / scope change confirmed in {@link FlagDialog} (also used by Trợ lý AI › Công tắc). */
+export type FlagChange = { key: FlagKey; next: Flag; kind: 'off' | 'on' | 'step' | 'scope' };
+type Change = FlagChange;
 
 export function FeaturesView({
   data,
@@ -427,7 +429,8 @@ export function AuditActionText({
   );
 }
 
-function FlagDialog({
+/** A10/A11 confirm: reason required, `staffSetFlag` (role `flags.toggle` for on / off), audited. */
+export function FlagDialog({
   change,
   onClose,
   onDone,
