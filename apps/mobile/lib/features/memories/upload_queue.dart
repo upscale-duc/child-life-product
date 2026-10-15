@@ -684,6 +684,15 @@ class UploadQueue extends Notifier<QueueView> {
           .read(autoSaveProvider.notifier)
           .recordUploaded(fromLibrary, babyId);
     }
+    // A new batch takes the place of this baby's finished ones in "Đang tải lên": their result
+    // was shown; kept, "2 / 5" counted them with the new one (owner, 2026-10-15). Parts of
+    // the same batch stay together; a batch with failures is not finished (it retries).
+    for (final b in [
+      for (final b in _batches)
+        if (b.babyId == babyId && b.done && b.batchId != request['batchId']) b,
+    ]) {
+      await dismiss(b.batchId);
+    }
     _batches.add(
       QueueBatch(
         batchId: request['batchId']! as String,

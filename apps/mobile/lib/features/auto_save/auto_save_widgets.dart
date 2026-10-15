@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../app/environment.dart';
@@ -18,6 +20,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import '../home/home_shell.dart';
 import '../memories/memory_widgets.dart' show PlayGlyph;
+import '../memories/viewer_video.dart' show streamingPlayer;
 import 'auto_save_controller.dart';
 
 // Only the phone calls the background entry point; exporting it keeps it in release builds.
@@ -59,6 +62,127 @@ final autoSaveAvailableProvider = Provider<bool>((ref) {
   if (babyId == null) return false;
   return ref.watch(autoSaveFlagProvider(babyId)).value ?? false;
 });
+
+/// A library video's local file, for playing it in the review (null when it cannot be had,
+/// e.g. offline and in iCloud); replaced in tests.
+final libraryVideoPathProvider = Provider<Future<String?> Function(String id)>(
+  (ref) => (id) async {
+    try {
+      final a = await AssetEntity.fromId(id);
+      return (await a?.file)?.path;
+    } on Object {
+      return null;
+    }
+  },
+);
+
+/// A library video in the review (AS08): the poster until it plays, played while its page is
+/// in view, paused by a tap or when swiped away.
+class LibraryVideo extends ConsumerStatefulWidget {
+  const LibraryVideo({
+    required this.assetId,
+    required this.active,
+    required this.poster,
+    super.key,
+  });
+
+  final String assetId;
+  final bool active;
+  final Widget poster;
+
+  @override
+  ConsumerState<LibraryVideo> createState() => _LibraryVideoState();
+}
+
+class _LibraryVideoState extends ConsumerState<LibraryVideo> {
+  Player? _player;
+  VideoController? _video;
+  var _started = false;
+  var _playing = false;
+  final _subs = <StreamSubscription<Object?>>[];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.active) unawaited(_open());
+  }
+
+  @override
+  void didUpdateWidget(LibraryVideo old) {
+    super.didUpdateWidget(old);
+    if (widget.active && _player == null) unawaited(_open());
+    if (!widget.active) unawaited(_player?.pause());
+  }
+
+  Future<void> _open() async {
+    final path = await ref.read(libraryVideoPathProvider)(widget.assetId);
+    if (path == null || !mounted || _player != null) return;
+    final player = _player = streamingPlayer();
+    _video = VideoController(player);
+    _subs
+      ..add(
+        player.stream.position.listen((p) {
+          if (!_started && p > Duration.zero && mounted) {
+            setState(() => _started = true);
+          }
+        }),
+      )
+      ..add(
+        player.stream.playing.listen((p) {
+          if (mounted) setState(() => _playing = p);
+        }),
+      );
+    await player.setPlaylistMode(PlaylistMode.loop);
+    await player.open(Media(path), play: widget.active);
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    for (final s in _subs) {
+      unawaited(s.cancel());
+    }
+    unawaited(_player?.dispose());
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final video = _video;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => unawaited(_player?.playOrPause()),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (video != null)
+            Video(
+              controller: video,
+              controls: NoVideoControls,
+              fill: Colors.transparent,
+            ),
+          // The poster stays until a frame is shown, so there is no black flash.
+          if (!_started) widget.poster,
+          if (video != null && _started && !_playing)
+            const Center(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Color(0xE6FFFFFF),
+                  shape: BoxShape.circle,
+                ),
+                child: SizedBox.square(
+                  dimension: 56,
+                  child: Center(
+                    child: PlayGlyph(size: 20, color: Colors.black87),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
 
 /// Loads a library thumbnail by PhotoKit id; replaced in tests.
 final libraryThumbLoaderProvider =

@@ -9,21 +9,14 @@ import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
-import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
-import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_repository.dart';
 import '../home/home_shell.dart';
-import '../memories/memory_models.dart';
 import 'auto_save_controller.dart';
 import 'auto_save_engine.dart';
-import 'auto_save_review.dart' show AutoSaveDecision;
 import 'auto_save_widgets.dart';
-
-/// At most this many tiles in the quick sheet (AR05); more opens the full review.
-const _quickTiles = 8;
 
 /// Suggestions for the selected baby the Hôm nay banner should mention: pending, and not all
 /// put off with "Để sau" (AR02).
@@ -62,7 +55,9 @@ class AutoSaveTodayBanner extends ConsumerWidget {
     final cl = context.cl;
     final babyId = pending.first.match.babyId;
     final name = ref.watch(babyProvider(babyId)).value?.nickname ?? '';
-    final title = l10n.autoSaveBannerTitle(pending.length, name);
+    // One per group of near-copies, as the review counts them (owner, 2026-10-15).
+    final groups = groupAndRank(pending);
+    final title = l10n.autoSaveBannerTitle(groups.length, name);
     final later = ref.read(autoSaveProvider.notifier).hideBanner;
     return Padding(
       padding: const EdgeInsets.only(top: ClSpace.s3),
@@ -81,11 +76,13 @@ class AutoSaveTodayBanner extends ConsumerWidget {
                 // 486:7227: up to three thumbs side by side, each ringed in the banner's own
                 // colour so an overlap reads as a stack, not one blurred picture.
                 SizedBox(
-                  width: 36.0 + (math.min(pending.length, 3) - 1) * 24,
+                  width: 36.0 + (math.min(groups.length, 3) - 1) * 24,
                   height: 36,
                   child: Stack(
                     children: [
-                      for (final (i, c) in pending.take(3).indexed)
+                      for (final (i, c) in [
+                        for (final g in groups.take(3)) g.best,
+                      ].indexed)
                         Positioned(
                           left: i * 24.0,
                           child: Container(
@@ -152,13 +149,10 @@ class AutoSaveTodayBanner extends ConsumerWidget {
                     child: ClButton(
                       label: l10n.autoSaveBannerOpen,
                       expand: true,
-                      // The quick sheet only when every group fits in it; a bigger batch
-                      // goes straight to the full review (AS07), not to 8 of 200.
+                      // Straight to the review (AS07), where each photo can be seen and
+                      // ticked (owner, 2026-10-15); the AR05 quick sheet is gone.
                       onPressed: () => unawaited(
-                        ref.read(autoSaveProvider).groups(babyId).length >
-                                _quickTiles
-                            ? GoRouter.of(context).push(Routes.autoSaveReview)
-                            : showAutoSaveQuickSheet(context, babyId),
+                        GoRouter.of(context).push(Routes.autoSaveReview),
                       ),
                     ),
                   ),
@@ -176,214 +170,4 @@ class AutoSaveTodayBanner extends ConsumerWidget {
       ),
     );
   }
-}
-
-/// AR05 "Duyệt nhanh": the newest groups, best photos pre-ticked, uploaded with the Tự lưu
-/// defaults; "Đổi" goes to AS10, "Xem lớn từng ảnh" to AS07, "Bỏ qua lần này" drops the batch
-/// with Hoàn tác (AR08).
-Future<void> showAutoSaveQuickSheet(BuildContext context, String babyId) =>
-    showClSheet<void>(
-      context: context,
-      builder: (_) => _QuickSheet(babyId: babyId, host: context),
-    );
-
-class _QuickSheet extends ConsumerStatefulWidget {
-  const _QuickSheet({required this.babyId, required this.host});
-  final String babyId;
-
-  /// The screen under the sheet: navigation and toasts continue there once it closes.
-  final BuildContext host;
-
-  @override
-  ConsumerState<_QuickSheet> createState() => _QuickSheetState();
-}
-
-class _QuickSheetState extends ConsumerState<_QuickSheet> {
-  Set<String>? _selected;
-  var _busy = false;
-
-  /// What the sheet showed when "Tải lên" was tapped: approving takes the items out of the live
-  /// list before the sheet closes, which drew "0 ảnh mới" and "Tải lên 0 mục" meanwhile.
-  List<SuggestionGroup>? _frozen;
-  var _closing = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
-    final view = ref.watch(autoSaveProvider);
-    final live = view.groups(widget.babyId).take(_quickTiles).toList();
-    final groups = _busy ? (_frozen ?? live) : live;
-    // Nothing left to review (handled elsewhere): the sheet goes instead of showing 0.
-    if (groups.isEmpty && !_busy && !_closing) {
-      _closing = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) Navigator.of(context).maybePop();
-      });
-    }
-    final shown = [for (final g in groups) ...g.items];
-    final selected = _selected ??= {for (final g in groups) ...g.preselected};
-    final chosen = [
-      for (final c in shown)
-        if (selected.contains(c.asset.id)) c,
-    ];
-    final name = ref.watch(babyProvider(widget.babyId)).value?.nickname ?? '';
-    final days = [for (final c in shown) c.asset.captureAt]..sort();
-    final range = days.isEmpty ? '' : _range(days.first, days.last);
-    final navigator = Navigator.of(context);
-    final router = GoRouter.of(widget.host);
-    final toaster = ClToaster.of(widget.host);
-    final controller = ref.read(autoSaveProvider.notifier);
-
-    Future<void> upload() async {
-      setState(() {
-        _busy = true;
-        _frozen = groups;
-      });
-      try {
-        final n = await controller.approve(
-          chosen: chosen,
-          reviewed: shown,
-          audience: Audience.parents,
-          notifyFamily: false,
-        );
-        _closing = true;
-        navigator.pop();
-        toaster.show(message: l10n.autoSaveQueued(n));
-      } on Object {
-        if (mounted) setState(() => _busy = false);
-        toaster.show(message: l10n.toastActionFailed, error: true);
-      }
-    }
-
-    Future<void> skip() async {
-      final undo = await controller.skip(shown);
-      navigator.pop();
-      toaster.show(
-        message: l10n.autoSaveSkipped(shown.length),
-        actionLabel: l10n.autoSaveUndo,
-        onAction: () => unawaited(controller.undo(undo)),
-      );
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ClSheetHeader(
-          title: l10n.autoSaveBannerTitle(shown.length, name),
-          onClose: navigator.pop,
-        ),
-        if (range.isNotEmpty)
-          Text(
-            l10n.autoSaveQuickSub(range),
-            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-          ),
-        const SizedBox(height: ClSpace.s3),
-        GridView.count(
-          crossAxisCount: 4,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 6,
-          crossAxisSpacing: 6,
-          children: [
-            for (final g in groups)
-              LibraryTile(
-                assetId: g.best.asset.id,
-                video: g.best.asset.video,
-                durationMs: g.best.asset.durationMs,
-                selected: selected.contains(g.best.asset.id),
-                badge: g.items.length > 1
-                    ? AutoSaveTag('+${g.items.length - 1}', dark: true)
-                    : null,
-                onTap: () => setState(
-                  () => selected.contains(g.best.asset.id)
-                      ? selected.remove(g.best.asset.id)
-                      : selected.add(g.best.asset.id),
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(height: ClSpace.s3),
-        Container(
-          padding: const EdgeInsets.all(ClSpace.s3),
-          decoration: BoxDecoration(
-            color: cl.colors.surface2,
-            borderRadius: BorderRadius.circular(ClRadius.control),
-          ),
-          child: Row(
-            children: [
-              ClIcon(ClIcons.lock, size: 18, color: cl.colors.mintText),
-              const SizedBox(width: ClSpace.s2),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l10n.autoSaveQuickDefaults, style: cl.text.label),
-                    Text(
-                      l10n.autoSaveQuickNoNotify,
-                      style: cl.text.caption.copyWith(
-                        color: cl.colors.inkMuted,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              ClButton(
-                label: l10n.autoSaveChange,
-                style: ClButtonStyle.plain,
-                onPressed: chosen.isEmpty
-                    ? null
-                    : () {
-                        navigator.pop();
-                        unawaited(
-                          router.push(
-                            Routes.autoSaveConfirm,
-                            extra: AutoSaveDecision(
-                              chosen: chosen,
-                              reviewed: shown,
-                            ),
-                          ),
-                        );
-                      },
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: ClSpace.s3),
-        ClButton(
-          label: l10n.autoSaveUploadCount(chosen.length),
-          expand: true,
-          loading: _busy,
-          onPressed: chosen.isEmpty || _busy ? null : () => unawaited(upload()),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ClButton(
-              label: l10n.autoSaveQuickBig,
-              style: ClButtonStyle.plain,
-              onPressed: () {
-                navigator.pop();
-                unawaited(router.push(Routes.autoSaveReview));
-              },
-            ),
-            ClButton(
-              label: l10n.autoSaveSkipBatch,
-              style: ClButtonStyle.plain,
-              onPressed: _busy ? null : () => unawaited(skip()),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-/// "15–18/10", or "18/10" for one day, or "28/9–2/10" across months.
-String _range(DateTime a, DateTime b) {
-  String d(DateTime t) => '${t.day}/${t.month}';
-  if (a.year == b.year && a.month == b.month && a.day == b.day) return d(a);
-  if (a.year == b.year && a.month == b.month) return '${a.day}–${d(b)}';
-  return '${d(a)}–${d(b)}';
 }

@@ -10620,34 +10620,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoSaveBannerLater => 'Later';
 
   @override
-  String autoSaveQuickSub(String range) {
-    return 'Taken $range · untick anything you don\'t want to save';
-  }
-
-  @override
-  String get autoSaveQuickDefaults => 'Journal · Parents only';
-
-  @override
-  String get autoSaveQuickNoNotify => 'Family not told';
-
-  @override
-  String get autoSaveQuickBig => 'View each photo';
-
-  @override
-  String get autoSaveSkipBatch => 'Skip these';
-
-  @override
-  String autoSaveSkipped(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Skipped $count photos · won\'t suggest them again',
-      one: 'Skipped 1 photo · won\'t suggest it again',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get autoSaveTabDot => 'New photos to review';
 
   @override

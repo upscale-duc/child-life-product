@@ -16459,42 +16459,6 @@ abstract class AppLocalizations {
   /// **'Để sau'**
   String get autoSaveBannerLater;
 
-  /// AR05 quick review subtitle; range like '15–18/10'
-  ///
-  /// In vi, this message translates to:
-  /// **'Chụp từ {range} · bỏ chọn ảnh không muốn lưu'**
-  String autoSaveQuickSub(String range);
-
-  /// AR05 defaults row (D-052 Nhật ký, D-066 Chỉ ba mẹ)
-  ///
-  /// In vi, this message translates to:
-  /// **'Nhật ký · Chỉ ba mẹ'**
-  String get autoSaveQuickDefaults;
-
-  /// AR05 defaults row, second line
-  ///
-  /// In vi, this message translates to:
-  /// **'Không báo cho gia đình'**
-  String get autoSaveQuickNoNotify;
-
-  /// AR05 link to the full review
-  ///
-  /// In vi, this message translates to:
-  /// **'Xem lớn từng ảnh'**
-  String get autoSaveQuickBig;
-
-  /// AR05 link: drops the whole batch (AR08)
-  ///
-  /// In vi, this message translates to:
-  /// **'Bỏ qua lần này'**
-  String get autoSaveSkipBatch;
-
-  /// AR08 toast with Hoàn tác
-  ///
-  /// In vi, this message translates to:
-  /// **'{count, plural, other{Đã bỏ qua {count} ảnh · sẽ không gợi ý lại}}'**
-  String autoSaveSkipped(int count);
-
   /// Screen-reader label of the dot on the Kỷ niệm tab (AR02)
   ///
   /// In vi, this message translates to:

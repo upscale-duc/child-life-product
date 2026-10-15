@@ -155,6 +155,34 @@ void main() {
     expect(container.read(uploadQueueProvider).batches, isEmpty);
   });
 
+  test('a new batch takes the place of the finished ones', () async {
+    // "Đang tải lên" counted an earlier, finished batch with the new one: 4 chosen showed
+    // "2 / 5" (owner, 2026-10-15).
+    final preparer = FakePreparer();
+    container = await start(preparer: preparer);
+    final queue = container.read(uploadQueueProvider.notifier);
+    await queue.enqueue(
+      babyId: teddyId,
+      request: request(),
+      picked: [pickedPhoto('IMG_3600.HEIC')],
+    );
+    await pumpEventQueue();
+    expect(items().single.state, QueueState.uploaded);
+    final next = {
+      ...request(),
+      'batchId': newBatchId(),
+      'memoryId': newMemoryId(),
+    };
+    await queue.enqueue(
+      babyId: teddyId,
+      request: next,
+      picked: [pickedPhoto('IMG_3601.HEIC'), pickedPhoto('IMG_3602.HEIC')],
+    );
+    final batches = container.read(uploadQueueProvider).batches;
+    expect(batches.map((b) => b.batchId), [next['batchId']]);
+    expect(batches.single.items, hasLength(2));
+  });
+
   test(
     'everything that may go is handed over at once (10j), videos keep the Wi-Fi rule',
     () async {

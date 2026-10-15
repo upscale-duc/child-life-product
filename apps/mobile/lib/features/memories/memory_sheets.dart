@@ -1179,10 +1179,17 @@ class QueueSheet extends ConsumerWidget {
     final cl = context.cl;
     final view = ref.watch(uploadQueueProvider);
     final queue = ref.read(uploadQueueProvider.notifier);
-    final batches = [
+    final all = [
       for (final b in view.batches)
         if (b.babyId == ctx.babyId) b,
     ];
+    // While something uploads, only what is still going: a finished batch kept for its result
+    // made "2 of 5" out of 4 chosen (owner, 2026-10-15). Once all are done, their results.
+    final active = [
+      for (final b in all)
+        if (!b.done) b,
+    ];
+    final batches = active.isEmpty ? all : active;
     final items = [
       for (final b in batches)
         for (final i in b.items)

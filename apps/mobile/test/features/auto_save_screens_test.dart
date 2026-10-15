@@ -396,47 +396,33 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 5));
   });
 
-  testWidgets('AR02 → AR05 → AR08: banner, quick review, skip with undo', (
+  testWidgets('AR02: "Xem & chọn ảnh" opens the review; counts are the tiles', (
     tester,
   ) async {
     await store().save(
       ready(
         pending: [
-          candidate('a', Duration.zero, v([1, 0]), 0.5),
-          candidate('b', const Duration(minutes: 10), v([0, 1]), 0.5),
-          candidate('c', const Duration(minutes: 20), v([1, 1]), 0.5),
+          // A and its near-copy a2 are one tile; b another (owner, 2026-10-15).
+          candidate('a', Duration.zero, v([1, 0]), 0.9),
+          candidate('a2', const Duration(seconds: 20), v([1, 0]), 0.5),
+          candidate('b', const Duration(hours: 2), v([0, 1]), 0.5),
         ],
       ),
     );
-    await pumpRouted(
+    final (visits, _) = await pumpRouted(
       tester,
       Scaffold(body: ListView(children: const [AutoSaveTodayBanner()])),
       overrides: overrides(),
     );
     await tester.pumpAndSettle();
-    expect(find.text('3 ảnh mới có thể có Teddy'), findsOneWidget);
-    expect(find.text('Từ thư viện máy · chưa tải lên'), findsOneWidget);
-
+    expect(find.text('2 ảnh mới có thể có Teddy'), findsOneWidget);
+    expect(find.byType(LibraryTile), findsNWidgets(2));
     await tester.tap(find.text('Xem & chọn ảnh'));
     await tester.pumpAndSettle();
-    expect(find.text('Tải lên 3 mục'), findsOneWidget);
-    expect(find.text('Nhật ký · Chỉ ba mẹ'), findsOneWidget);
-
-    await tester.tap(find.text('Bỏ qua lần này'));
-    await tester.pumpAndSettle();
-    expect(find.text('Đã bỏ qua 3 ảnh · sẽ không gợi ý lại'), findsOneWidget);
-    expect(saved.state.pending, isEmpty);
-    expect(find.byKey(const Key('autoSaveBanner')), findsNothing);
-
-    await tester.tap(find.text('Hoàn tác'));
-    await tester.pumpAndSettle();
-    expect(saved.state.pending, hasLength(3));
-    expect(find.byKey(const Key('autoSaveBanner')), findsOneWidget);
+    expect(visits.last.location, '/memories/auto-save/review');
   });
 
-  testWidgets('AR02: more groups than the quick sheet holds opens AS07', (
-    tester,
-  ) async {
+  testWidgets('AR02: a big batch opens AS07 too', (tester) async {
     await store().save(
       ready(
         pending: [

@@ -176,9 +176,12 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
           if (!already.contains(c.asset.id)) c.asset.id,
     };
     _learn(groups, already);
-    final total = everything.fold<int>(0, (n, g) => n + g.items.length);
+    // Counted as the tiles shown (a group of near-copies is one), so the title, the chips, the
+    // days and "Tiếp tục với n mục" agree; the grouped copies are told apart below (owner,
+    // 2026-10-15: "4 items mà button nói 3").
+    final total = everything.length;
     final all = [for (final g in groups) ...g.items];
-    final photos = all.where((c) => !c.asset.video).length;
+    final photos = groups.where((g) => !g.best.asset.video).length;
     final shown = [
       for (final g in groups)
         if (g.items.any(_keep)) g,
@@ -300,7 +303,7 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
         spacing: ClSpace.s2,
         children: [
           ClFilterChip(
-            label: l10n.autoSaveFilterAll(all.length),
+            label: l10n.autoSaveFilterAll(groups.length),
             selected: _filter == _Filter.all,
             onTap: () => setState(() => _filter = _Filter.all),
           ),
@@ -310,7 +313,7 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
             onTap: () => setState(() => _filter = _Filter.photos),
           ),
           ClFilterChip(
-            label: l10n.autoSaveFilterVideos(all.length - photos),
+            label: l10n.autoSaveFilterVideos(groups.length - photos),
             selected: _filter == _Filter.videos,
             onTap: () => setState(() => _filter = _Filter.videos),
           ),
@@ -332,7 +335,7 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
             Expanded(child: Text(dayLabel(e.key), style: cl.text.bodyStrong)),
             Text(
               l10n.autoSaveDayCount(
-                e.value.fold(0, (n, g) => n + g.items.where(_keep).length),
+                e.value.where((g) => g.items.any(_keep)).length,
               ),
               style: cl.text.label.copyWith(color: cl.colors.inkMuted),
             ),
@@ -536,16 +539,27 @@ class _AutoSaveReviewScreenState extends ConsumerState<AutoSaveReviewScreen> {
 
 // ---------- AS08 Xem lớn gợi ý / AS09 Ảnh này của ai? ----------
 
-final _bigThumbProvider = FutureProvider.autoDispose.family<Uint8List?, String>(
-  (ref, id) async {
-    try {
-      final a = await AssetEntity.fromId(id);
-      return a?.thumbnailDataWithSize(const ThumbnailSize(1200, 1200));
-    } on Object {
-      return null;
-    }
-  },
-);
+final _bigThumbProvider = FutureProvider.autoDispose.family<Uint8List?, String>((
+  ref,
+  id,
+) async {
+  try {
+    final a = await AssetEntity.fromId(id);
+    // The finished picture, not iOS's quick blurry first pass (owner, 2026-10-14).
+    return a?.thumbnailDataWithOption(
+      defaultTargetPlatform == TargetPlatform.iOS
+          ? ThumbnailOption.ios(
+              size: const ThumbnailSize(1200, 1200),
+              quality: 90,
+              deliveryMode: DeliveryMode.highQualityFormat,
+              resizeMode: ResizeMode.exact,
+            )
+          : const ThumbnailOption(size: ThumbnailSize(1200, 1200), quality: 90),
+    );
+  } on Object {
+    return null;
+  }
+});
 
 class _Viewer extends ConsumerStatefulWidget {
   const _Viewer({
@@ -711,13 +725,22 @@ class _ViewerState extends ConsumerState<_Viewer> {
                   final img = ref
                       .watch(_bigThumbProvider(_items[i].asset.id))
                       .value;
-                  return img == null
+                  final poster = img == null
                       ? const Center(
                           child: CircularProgressIndicator(color: Colors.white),
                         )
-                      : InteractiveViewer(
-                          child: Image.memory(img, fit: BoxFit.contain),
-                        );
+                      : Image.memory(img, fit: BoxFit.contain);
+                  // A video plays here (owner, 2026-10-15: "xem trước video ko play dc").
+                  if (_items[i].asset.video) {
+                    return LibraryVideo(
+                      assetId: _items[i].asset.id,
+                      active: i == _index,
+                      poster: poster,
+                    );
+                  }
+                  return img == null
+                      ? poster
+                      : InteractiveViewer(child: poster);
                 },
               ),
             ),
