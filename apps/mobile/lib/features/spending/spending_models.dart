@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../baby/baby_models.dart';
 import '../care/care_models.dart';
+import 'spending_currency.dart';
 
 /// Chi tiêu (Figma v1.1 8a–8o; D-055 … D-057, P-140). Mirrors
 /// `packages/contracts/src/spending.ts`; plan `docs/product/spending-plan.md`.
@@ -16,6 +17,7 @@ String newRecurringId() => 'rx_${_hex()}';
 String newCategoryId() => 'c_${_hex().substring(0, 20)}';
 
 abstract final class SpendingLimits {
+  /// The VND ceiling; other currencies: [amountMaxFor] (D-075 #4).
   static const amountMax = 1000000000;
   static const noteMax = 80;
   static const categoryNameMax = 24;
@@ -58,7 +60,8 @@ class Payer {
 }
 
 /// `import`: brought in by "Nhập chi tiêu" (D-060); sourceRef = the import id.
-enum ExpenseSource { manual, recurring, vaccine, import }
+/// `assistant`: saved by the Assistant from a confirmed draft (contracts `expenseSources`).
+enum ExpenseSource { manual, recurring, vaccine, import, assistant }
 
 @immutable
 class Expense {
@@ -73,6 +76,7 @@ class Expense {
     required this.source,
     required this.createdBy,
     required this.author,
+    this.currency = legacyCurrency,
     this.receiptPath,
     this.sourceRef,
     this.createdAt,
@@ -84,8 +88,11 @@ class Expense {
   final String id;
   final String babyId;
 
-  /// Whole VND.
+  /// Minor units of [currency] (whole đồng for VND, cents for USD).
   final int amount;
+
+  /// ISO 4217 (D-075 #4); a document without one is VND.
+  final String currency;
   final String categoryId;
   final String note;
 
@@ -115,6 +122,7 @@ class Expense {
       id: d.id,
       babyId: d.reference.parent.parent?.id ?? '',
       amount: (j['amount'] as num?)?.toInt() ?? 0,
+      currency: currencyOf(j['currency']),
       categoryId: j['categoryId'] as String? ?? 'c_other',
       note: j['note'] as String? ?? '',
       spentOn: parseDay(j['spentOn'] as String? ?? ''),
@@ -134,6 +142,7 @@ class Expense {
 
   Expense copyWith({
     int? amount,
+    String? currency,
     String? categoryId,
     String? note,
     DateTime? spentOn,
@@ -143,6 +152,7 @@ class Expense {
     id: id,
     babyId: babyId,
     amount: amount ?? this.amount,
+    currency: currency ?? this.currency,
     categoryId: categoryId ?? this.categoryId,
     note: note ?? this.note,
     spentOn: spentOn ?? this.spentOn,
@@ -354,15 +364,31 @@ List<SpendingCategory> mergeCategories(List<SpendingCategory> stored) {
 /// 8h: one standing monthly total and optional caps per category.
 @immutable
 class Budget {
-  const Budget({this.monthlyTotal, this.caps = const {}, this.alert80 = true});
+  const Budget({
+    this.monthlyTotal,
+    this.caps = const {},
+    this.alert80 = true,
+    this.currency,
+    this.stored = false,
+  });
 
   final int? monthlyTotal;
   final Map<String, int> caps;
   final bool alert80;
 
+  /// What the budget counts (D-075 #4): only expenses in it. Null: none written yet (a new
+  /// budget takes the household's); a stored budget without one is VND.
+  final String? currency;
+
+  /// Written at least once.
+  final bool stored;
+
   static const empty = Budget();
 
   bool get isSet => monthlyTotal != null && monthlyTotal! > 0;
+
+  /// The currency it counts, [household] for a budget not written yet.
+  String currencyOr(String household) => currency ?? household;
 
   factory Budget.fromJson(Map<String, dynamic>? j) => j == null
       ? empty
@@ -373,13 +399,34 @@ class Budget {
               if (e.value is num) '${e.key}': (e.value as num).toInt(),
           },
           alert80: j['alert80'] != false,
+          currency: currencyOf(j['currency']),
+          stored: true,
         );
 
   Map<String, Object?> toJson() => {
     'monthlyTotal': monthlyTotal,
     'caps': caps,
     'alert80': alert80,
+    'currency': ?currency,
   };
+}
+
+/// `families/{familyId}/spendingSettings/main` (D-075 #4): the household's currency.
+@immutable
+class SpendingSettings {
+  const SpendingSettings({this.currency});
+
+  /// Null until a Cùng nuôi picks one (the country's currency, else VND, is used).
+  final String? currency;
+
+  static const empty = SpendingSettings();
+
+  factory SpendingSettings.fromJson(Map<String, dynamic>? j) =>
+      SpendingSettings(
+        currency: isSpCurrency(j?['currency'])
+            ? j!['currency'] as String
+            : null,
+      );
 }
 
 /// 8i: twice a month on fixed days, every N weeks from a date, or once a year.
@@ -495,12 +542,16 @@ class RecurringExpense {
     required this.enabled,
     required this.createdBy,
     required this.author,
+    this.currency = legacyCurrency,
   });
 
   final String id;
   final String title;
   final String categoryId;
+
+  /// Minor units of [currency] (D-075 #4); each occurrence is written in it.
   final int amount;
+  final String currency;
   final Payer? payer;
   final RecurringSchedule schedule;
   final bool enabled;
@@ -517,6 +568,7 @@ class RecurringExpense {
       title: j['title'] as String? ?? '',
       categoryId: j['categoryId'] as String? ?? otherCategoryId,
       amount: (j['amount'] as num?)?.toInt() ?? 0,
+      currency: currencyOf(j['currency']),
       payer: Payer.fromJson(j['payer']),
       schedule: RecurringSchedule.fromJson(j['schedule']),
       enabled: j['enabled'] == true,

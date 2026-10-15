@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../baby/baby_models.dart';
+import 'spending_currency.dart';
 import 'spending_models.dart';
 
 /// Chi tiêu (P-140). Like care records, expenses, the budget, recurring items and categories are
@@ -27,6 +28,9 @@ class SpendingRepository {
 
   DocumentReference<Map<String, dynamic>> _budget(String babyId) =>
       _db.doc('babies/$babyId/spending/budget');
+
+  DocumentReference<Map<String, dynamic>> _settings(String familyId) =>
+      _db.doc('families/$familyId/spendingSettings/main');
 
   /// Every live expense the caller may read, newest first: all of them with "Xem toàn bộ" (or
   /// Cùng nuôi), otherwise only their own (Rules refuse a wider query).
@@ -53,6 +57,26 @@ class SpendingRepository {
   Stream<Budget> watchBudget(String babyId) =>
       _budget(babyId).snapshots().map((s) => Budget.fromJson(s.data()));
 
+  /// The household's currency (D-075 #4).
+  Stream<SpendingSettings> watchSettings(String familyId) => _settings(
+    familyId,
+  ).snapshots().map((s) => SpendingSettings.fromJson(s.data()));
+
+  /// "Tiền tệ chính" (8h, Cùng nuôi): the add form's default and new budgets' currency.
+  void saveCurrency(
+    String familyId,
+    Membership me,
+    String currency, {
+    void Function(Object error)? onError,
+  }) => _run(
+    _settings(familyId).set({
+      'currency': currency,
+      'updatedAt': FieldValue.serverTimestamp(),
+      'updatedBy': me.uid,
+    }),
+    onError,
+  );
+
   Stream<List<RecurringExpense>> watchRecurring(String babyId) =>
       _recurring(babyId).snapshots().map((s) {
         final out = [for (final d in s.docs) ?RecurringExpense.fromSnapshot(d)];
@@ -76,6 +100,7 @@ class SpendingRepository {
     required Membership me,
     String? id,
     required int amount,
+    String currency = legacyCurrency,
     required String categoryId,
     required String note,
     required DateTime spentOn,
@@ -86,6 +111,8 @@ class SpendingRepository {
   }) {
     final fields = <String, Object?>{
       'amount': amount,
+      // D-075 #4: always written by this app (Rules: optional, absent = VND).
+      'currency': currency,
       'categoryId': categoryId,
       'note': note.trim(),
       'spentOn': isoDay(spentOn),
@@ -159,6 +186,7 @@ class SpendingRepository {
     required String title,
     required String categoryId,
     required int amount,
+    String currency = legacyCurrency,
     required Payer? payer,
     required RecurringSchedule schedule,
     required bool enabled,
@@ -171,6 +199,7 @@ class SpendingRepository {
       'title': title.trim(),
       'categoryId': categoryId,
       'amount': amount,
+      'currency': currency,
       'payer': payer?.toJson(),
       'schedule': schedule.toJson(),
       'enabled': enabled,
@@ -277,6 +306,13 @@ final spendingCategoriesProvider =
 final budgetProvider = StreamProvider.family<Budget, String>(
   (ref, babyId) => ref.watch(spendingRepositoryProvider).watchBudget(babyId),
 );
+
+/// `families/{familyId}/spendingSettings/main` (D-075 #4).
+final spendingSettingsProvider =
+    StreamProvider.family<SpendingSettings, String>(
+      (ref, familyId) =>
+          ref.watch(spendingRepositoryProvider).watchSettings(familyId),
+    );
 
 final recurringExpensesProvider =
     StreamProvider.family<List<RecurringExpense>, String>(

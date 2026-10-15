@@ -227,6 +227,9 @@ List<Override> familyOverrides({
   List<RecurringExpense> recurring = const [],
   SpendingRepository? spendingRepo,
 
+  /// Chi tiêu currencies (D-075 #4): the household's pick; null = not set (VND here).
+  String? spendingCurrency,
+
   /// Kỷ niệm 2.0 milestone nudges (D-068 #9) among this device's notifications; off unless a
   /// test is about them.
   bool nudges = false,
@@ -303,6 +306,9 @@ List<Override> familyOverrides({
     ),
     spendingRepositoryProvider.overrideWithValue(
       spendingRepo ?? FakeSpendingRepository(),
+    ),
+    spendingSettingsProvider.overrideWith(
+      (ref, id) => Stream.value(SpendingSettings(currency: spendingCurrency)),
     ),
     // v1.0 rule reminders (D-051).
     reminderRulesProvider.overrideWith((ref, id) => Stream.value(rules)),

@@ -1,9 +1,11 @@
 import 'dart:math' as math;
 
+import 'spending_currency.dart';
 import 'spending_models.dart';
 
 /// Figures for 8b / 8d / 8e / 8h (P-140). Pure functions over the expenses the caller may read;
-/// [today] is the baby's calendar date.
+/// [today] is the baby's calendar date. D-075 #4: a figure counts ONE currency (`currency:`);
+/// the other currencies are only ever summed apart ([otherTotals]), never added in.
 
 typedef YearMonth = ({int year, int month});
 
@@ -21,6 +23,28 @@ bool inMonth(Expense e, YearMonth m) =>
 
 int sumOf(Iterable<Expense> items) => items.fold(0, (s, e) => s + e.amount);
 
+/// [all] in [currency] only; everything when it is null.
+List<Expense> inCurrency(List<Expense> all, String? currency) =>
+    currency == null
+    ? all
+    : [
+        for (final e in all)
+          if (e.currency == currency) e,
+      ];
+
+/// Totals of [items] per currency other than [main], by code (D-075 #4: shown apart).
+Map<String, int> otherTotals(Iterable<Expense> items, String main) =>
+    sumByCurrency([
+      for (final e in items)
+        if (e.currency != main) (currency: e.currency, amount: e.amount),
+    ]);
+
+/// Totals of [items] per currency, [first] first ("1.020.000 ₫ · 12,50 $" day headers).
+Map<String, int> totalsByCurrency(Iterable<Expense> items, {String? first}) =>
+    sumByCurrency([
+      for (final e in items) (currency: e.currency, amount: e.amount),
+    ], first: first);
+
 /// Nearest thousand ("351.250" → "351.000", 8b).
 int roundThousand(double v) => (v / 1000).round() * 1000;
 
@@ -33,9 +57,24 @@ class MonthSummary {
     required this.byCategory,
     required this.daysCounted,
     required this.previousSamePeriod,
+    required this.allItems,
+    required this.others,
+    this.currency,
   });
 
-  factory MonthSummary.of(List<Expense> all, YearMonth month, DateTime today) {
+  /// [currency]: the one the figures count (D-075 #4); null counts every item (single-currency
+  /// callers and tests).
+  factory MonthSummary.of(
+    List<Expense> every,
+    YearMonth month,
+    DateTime today, {
+    String? currency,
+  }) {
+    final all = inCurrency(every, currency);
+    final allItems = [
+      for (final e in every)
+        if (inMonth(e, month)) e,
+    ];
     final items = [
       for (final e in all)
         if (inMonth(e, month)) e,
@@ -63,11 +102,22 @@ class MonthSummary {
       byCategory: byCategory,
       daysCounted: days,
       previousSamePeriod: previous,
+      allItems: allItems,
+      others: currency == null ? const {} : otherTotals(allItems, currency),
+      currency: currency,
     );
   }
 
   final YearMonth month;
+
+  /// The month's items in the counted currency.
   final List<Expense> items;
+
+  /// The month's items in every currency (the recent list).
+  final List<Expense> allItems;
+
+  /// The month's totals in the other currencies, never added to [total].
+  final Map<String, int> others;
   final int total;
   final Map<String, int> byCategory;
   final int daysCounted;
@@ -75,8 +125,15 @@ class MonthSummary {
   /// The previous month over the same number of days (P-140 "So với tháng trước").
   final int previousSamePeriod;
 
-  int get averagePerDay =>
-      daysCounted == 0 ? 0 : roundThousand(total / daysCounted);
+  /// The counted currency (null: every item, VND callers).
+  final String? currency;
+
+  /// VND to the nearest thousand (8b "351.000"); another currency to its minor unit.
+  int get averagePerDay => daysCounted == 0
+      ? 0
+      : currency == null || currency == legacyCurrency
+      ? roundThousand(total / daysCounted)
+      : (total / daysCounted).round();
 
   /// −0.06 = "Thấp hơn 6%"; null when there is nothing to compare with.
   double? get change => previousSamePeriod == 0 || daysCounted == 0
@@ -129,7 +186,13 @@ class SixMonths {
     required this.total,
   });
 
-  factory SixMonths.of(List<Expense> all, DateTime today, {int keep = 4}) {
+  factory SixMonths.of(
+    List<Expense> every,
+    DateTime today, {
+    int keep = 4,
+    String? currency,
+  }) {
+    final all = inCurrency(every, currency);
     final current = monthOf(today);
     final months = [for (var i = 5; i >= 0; i--) addMonths(current, -i)];
     final items = [
@@ -220,7 +283,13 @@ class SinceBirth {
   });
 
   /// Without a date of birth (no right to read it), months count from the first expense.
-  factory SinceBirth.of(List<Expense> all, DateTime today, DateTime? dob) {
+  factory SinceBirth.of(
+    List<Expense> every,
+    DateTime today,
+    DateTime? dob, {
+    String? currency,
+  }) {
+    final all = inCurrency(every, currency);
     final start =
         dob ??
         (all.isEmpty
@@ -272,21 +341,26 @@ int monthsBetween(DateTime from, DateTime to) {
   return m;
 }
 
-/// "Lần trước": the latest amount in [categoryId] (8c suggestion), else the latest overall.
-int? lastAmount(List<Expense> all, String? categoryId) {
+/// "Lần trước": the latest amount in [categoryId] (8c suggestion), else the latest overall;
+/// only in [currency] when given (an amount in another currency would read wrong).
+int? lastAmount(List<Expense> all, String? categoryId, {String? currency}) {
   for (final e in all) {
+    if (currency != null && e.currency != currency) continue;
     if (categoryId == null || e.categoryId == categoryId) return e.amount;
   }
   return null;
 }
 
-/// 8k: the last cost paid for the same vaccine ("hexa6_2" → "hexa6").
-int? lastVaccineCost(List<Expense> all, String doseKey) {
+/// 8k: the last cost paid for the same vaccine ("hexa6_2" → "hexa6"), with its currency.
+({int amount, String currency})? lastVaccineCost(
+  List<Expense> all,
+  String doseKey,
+) {
   final vaccine = doseKey.split('_').first;
   for (final e in all) {
     if (e.source == ExpenseSource.vaccine &&
         (e.sourceRef ?? '').split('_').first == vaccine) {
-      return e.amount;
+      return (amount: e.amount, currency: e.currency);
     }
   }
   return null;
@@ -353,7 +427,8 @@ String foldVietnamese(String s) {
   return out.toString();
 }
 
-/// CSV (P-140): date, category, description, amount, payer, recorded by. No receipts.
+/// CSV (P-140): date, category, description, amount, currency (D-075 #4), payer, recorded by.
+/// The amount is plain in the currency's units ("12.50", "1020000"). No receipts.
 String expensesCsv(
   List<Expense> items, {
   required List<String> header,
@@ -374,7 +449,8 @@ String expensesCsv(
         cell(isoDay(e.spentOn)),
         cell(category(e)),
         cell(e.note),
-        '${e.amount}',
+        minorPlain(e.amount, e.currency),
+        cell(e.currency),
         cell(payer(e)),
         cell(recordedBy(e)),
       ].join(','),
@@ -382,4 +458,13 @@ String expensesCsv(
   }
   // BOM so spreadsheet apps read Vietnamese as UTF-8.
   return '﻿${rows.join('\r\n')}\r\n';
+}
+
+/// 1250 USD → "12.50"; 1020000 VND → "1020000" (CSV: no grouping, `.` as the mark).
+String minorPlain(int amount, String currency) {
+  final c = spCurrency(currency);
+  if (c.exponent == 0) return '$amount';
+  final abs = amount.abs();
+  return '${amount < 0 ? '-' : ''}${abs ~/ c.unit}.'
+      '${(abs % c.unit).toString().padLeft(c.exponent, '0')}';
 }

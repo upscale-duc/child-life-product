@@ -4442,6 +4442,114 @@ abstract class AppLocalizations {
   /// **'Đánh dấu chưa xong'**
   String get reminderUndo;
 
+  /// D-075 #5: all-day reminder (8b toggle, 8e value, notification body).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả ngày'**
+  String get reminderAllDay;
+
+  /// D-075 #5: ReminderRow meta for an all-day reminder.
+  ///
+  /// In vi, this message translates to:
+  /// **'cả ngày'**
+  String get reminderAllDayLower;
+
+  /// D-075 #5: 8b / 8e date row of an all-day reminder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày'**
+  String get reminderDay;
+
+  /// D-075 #5: 8b / 8e row with the person's all-day time.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ báo'**
+  String get reminderAllDayAt;
+
+  /// D-075 #5: time picker title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ nhắc việc cả ngày'**
+  String get reminderAllDayTimeTitle;
+
+  /// D-075 #5: under the all-day time picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Áp dụng cho mọi nhắc việc cả ngày báo trên máy này, theo giờ của {name}.'**
+  String reminderAllDayTimeNote(String name);
+
+  /// D-075 #5: "Báo trước" 0 for an all-day reminder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đúng ngày'**
+  String get leadOnDay;
+
+  /// D-075 #5: 8b / 8e assignee row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao cho'**
+  String get reminderAssignee;
+
+  /// D-075 #5: assignee row value when unassigned.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa giao'**
+  String get reminderAssignNone;
+
+  /// D-075 #5: assignee picker option.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không giao ai'**
+  String get reminderAssignNobody;
+
+  /// D-075 #5: assignee picker note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người được giao nhận thông báo trên máy của họ khi mở app. Chỉ Cùng nuôi và người chăm sóc được giao.'**
+  String get reminderAssignPickerNote;
+
+  /// D-075 #5: highlighted label for the assignee.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao cho bạn'**
+  String get reminderAssignedToYou;
+
+  /// D-075 #5: label others see ("Giao cho Cô Lan").
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao cho {name}'**
+  String reminderAssignedTo(String name);
+
+  /// D-075 #5: 8e "Thông báo" when assigned to me.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các máy của bạn'**
+  String get reminderNotifyMine;
+
+  /// D-075 #5: 8e "Thông báo" when assigned to someone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các máy của {name}'**
+  String reminderNotifyAssignee(String name);
+
+  /// D-075 #5: 8b footnote when assigned to someone else.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo giờ của {name} ({zone}). Gia đình thấy nhắc việc trong app. {who} nhận thông báo trên máy của mình khi mở app.'**
+  String reminderFootnoteAssigned(String name, String zone, String who);
+
+  /// D-075 #5: 8e note for an assigned reminder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người được giao nhận thông báo trên máy của mình khi mở app. Đánh dấu xong khi đã làm.'**
+  String get reminderDetailNoteAssigned;
+
+  /// D-075 #5: all-day date in the past.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn hôm nay hoặc một ngày sau.'**
+  String get reminderPastDay;
+
   /// D-029 sheet.
   ///
   /// In vi, this message translates to:
@@ -11947,6 +12055,162 @@ abstract class AppLocalizations {
   /// **'đồng'**
   String get spCurrencyName;
 
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiền tệ'**
+  String get spCurrency;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn tiền tệ'**
+  String get spCurrencyTitle;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi tiền tệ, đang là {code}'**
+  String spCurrencyPick(String code);
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiền tệ chính'**
+  String get spCurrencyMain;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mặc định khi thêm khoản chi; tổng, thống kê và ngân sách tính theo tiền tệ này. Khoản chi bằng tiền tệ khác được ghi riêng, không quy đổi.'**
+  String get spCurrencyMainSub;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đổi tiền tệ chính'**
+  String get spCurrencyMainSaved;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngoài ra: {amounts}'**
+  String spAlsoSpent(String amounts);
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không cộng vào tổng (tiền tệ khác): {amounts}'**
+  String spOtherCurrenciesNote(String amounts);
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngân sách tính các khoản chi bằng {code}.'**
+  String spBudgetCurrencyNote(String code);
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngân sách đang lưu theo {old}. Đặt lại số tiền rồi lưu để tính theo {code}.'**
+  String spBudgetOldCurrency(String old, String code);
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng Việt Nam'**
+  String get spCurVND;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đô la Mỹ'**
+  String get spCurUSD;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Euro'**
+  String get spCurEUR;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bảng Anh'**
+  String get spCurGBP;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đô la Úc'**
+  String get spCurAUD;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đô la Canada'**
+  String get spCurCAD;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đô la New Zealand'**
+  String get spCurNZD;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đô la Singapore'**
+  String get spCurSGD;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Yên Nhật'**
+  String get spCurJPY;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Won Hàn Quốc'**
+  String get spCurKRW;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đô la Đài Loan'**
+  String get spCurTWD;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Baht Thái'**
+  String get spCurTHB;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đô la Hồng Kông'**
+  String get spCurHKD;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhân dân tệ'**
+  String get spCurCNY;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Franc Thuỵ Sĩ'**
+  String get spCurCHF;
+
+  /// Chi tiêu currencies (D-075 #4).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ringgit Malaysia'**
+  String get spCurMYR;
+
   /// Chi tiêu (v1.1 8a–8o).
   ///
   /// In vi, this message translates to:
@@ -13836,6 +14100,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'nhập từ tệp'**
   String get spFromImport;
+
+  /// Expense row subline: saved by the Assistant from a receipt (source assistant, D-075 #3/#4).
+  ///
+  /// In vi, this message translates to:
+  /// **'từ Trợ lý'**
+  String get spFromAssistant;
 
   /// Nhập chi tiêu (D-060).
   ///
@@ -17986,7 +18256,7 @@ abstract class AppLocalizations {
   /// MO02 note for beta families (brief p.3, extract 30 Q2).
   ///
   /// In vi, this message translates to:
-  /// **'Beta cá nhân hoá không gồm mẫu Premium.'**
+  /// **'Gói beta hiện tại của nhà mình chưa gồm mẫu Premium.'**
   String get pmTemplateBetaNote;
 
   /// ROLE_DENIED (ST02 594:7020).
@@ -20529,7 +20799,7 @@ abstract class AppLocalizations {
   /// QUOTA_EXCEEDED, monthly window. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Nhà mình đã dùng {used}/{limit} lượt AI tháng này. Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.'**
+  /// **'Nhà mình đã dùng {used}/{limit} lượt AI kỳ này (chung cho tóm tắt và trợ lý). Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.'**
   String aiStateQuotaMonth(int used, int limit, String when);
 
   /// QUOTA_EXCEEDED without numbers. EN is an engineering draft for owner review.
@@ -22812,12 +23082,6 @@ abstract class AppLocalizations {
   /// **'Bỏ ảnh'**
   String get asRemovePhoto;
 
-  /// Photo allowed by the quote while the A5 upload is not in this build. VI and EN are engineering drafts (no frame draws this state) for owner review.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đọc ảnh sẽ có ở bản cập nhật tới. Ảnh chưa được gửi đi.'**
-  String get asPhotoSoon;
-
   /// CH21 title.
   ///
   /// In vi, this message translates to:
@@ -22971,7 +23235,7 @@ abstract class AppLocalizations {
   /// CH26 privacy (P-158) and withdrawal. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Cuộc trò chuyện chỉ bạn xem được. Bạn đổi ý lúc nào cũng được.'**
+  /// **'Với Ba, Mẹ và người chăm sóc, câu hỏi về bé nằm trong cuộc trò chuyện chung của bé. Ảnh, chi tiêu và mọi câu hỏi khác chỉ bạn thấy. Bạn đổi ý lúc nào cũng được.'**
   String get asConsentPrivate;
 
   /// CH26 primary.
@@ -23195,6 +23459,708 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chưa xoá được. Thử lại sau.'**
   String get asDeleteFailed;
+
+  /// CH09 sheet title. Slice A5.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi ảnh để trợ lý đọc'**
+  String get asPhotoSheetTitle;
+
+  /// CH09 camera row subtitle. Slice A5.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoá đơn, bảng note'**
+  String get asPhotoCameraSub;
+
+  /// CH09 library row subtitle. Slice A5.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ảnh bạn chọn được gửi'**
+  String get asPhotoLibrarySub;
+
+  /// CH09 estimate heading with the server policy / quote number (exact, not "khoảng"). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc 1 ảnh dùng {credits} lượt hỗ trợ AI'**
+  String asPhotoQuoteExact(int credits);
+
+  /// CH09 sheet body (no deletion promise before reading, G05). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn {remaining} lượt. Bạn thấy đúng số lượt trước khi gửi; ảnh không đọc được thì không trừ.'**
+  String asPhotoSheetBody(int remaining);
+
+  /// CH09 sheet body while usage is unknown. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn thấy đúng số lượt trước khi gửi; ảnh không đọc được thì không trừ.'**
+  String get asPhotoSheetBodyUnknown;
+
+  /// CH09 card after choosing (nothing uploaded yet). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh đã chọn · chưa gửi'**
+  String get asPhotoChosenTitle;
+
+  /// CH09 card: which photo is sent (annotation 618:10251). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ảnh này được gửi để đọc.'**
+  String get asPhotoOnlyThis;
+
+  /// CH09 quote body (G05: no deletion promise here). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn {remaining} lượt. Hỏi lại, sửa và xác nhận trong cùng tác vụ không trừ thêm. Ảnh không đọc được thì không trừ.'**
+  String asPhotoQuoteBody(int remaining);
+
+  /// CH09 retention switch (default on, D-075 #3). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ ảnh hoá đơn cùng khoản chi'**
+  String get asKeepReceipt;
+
+  /// CH09 retention on (keep_with_record). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi bạn lưu khoản chi, ảnh được giữ cùng khoản chi. Không lưu thì ảnh được xoá.'**
+  String get asKeepReceiptOn;
+
+  /// CH09 retention off (delete_after_read; G05). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh được xoá sau khi đọc. App chỉ báo đã xoá khi việc xoá được xác nhận.'**
+  String get asKeepReceiptOff;
+
+  /// CH09 / CH14 notice (618:10251, 614:9037).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chữ trong ảnh là nội dung để đọc, không phải lệnh cho app.'**
+  String get asPhotoTextIsData;
+
+  /// CH09 primary ("Tiếp tục" in the frame): uploads and reads. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi ảnh'**
+  String get asSendPhoto;
+
+  /// Photo bubble while the quote is asked. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tính lượt…'**
+  String get asPhotoQuoting;
+
+  /// Picker failed (not a permission). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa mở được ảnh. Thử lại hoặc chọn ảnh khác.'**
+  String get asPhotoPickFailed;
+
+  /// CH10 attachment label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải lên · {percent}%'**
+  String asUploading(int percent);
+
+  /// CH10 cancel while uploading (0 credits; missing in the frame, annotation 618:10257). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ'**
+  String get asCancelUpload;
+
+  /// CH10 note while uploading. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ khi đang tải lên không trừ lượt.'**
+  String get asUploadFree;
+
+  /// After cancelling an upload. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã huỷ tải lên · không trừ lượt. Ảnh vẫn được chọn.'**
+  String get asUploadCanceled;
+
+  /// CH10 attachment label (neutral: it may not be a receipt). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang đọc ảnh…'**
+  String get asPhotoReading;
+
+  /// CH11 / CH13 attachment label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đọc'**
+  String get asPhotoRead;
+
+  /// CH14 attachment label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh hơi mờ'**
+  String get asPhotoBlurry;
+
+  /// Attachment refused before reading (not an image). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không đọc được tệp này'**
+  String get asPhotoRefused;
+
+  /// Attachment of a cancelled task. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã huỷ'**
+  String get asPhotoCanceled;
+
+  /// CH10 note (no notification promise: none is built). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại. Lỗi hệ thống không trừ lượt.'**
+  String get asPhotoLeaveScreen;
+
+  /// CH25 for a photo upload / start failure. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh chưa được đọc, chưa có gì được lưu và không trừ lượt. Ảnh vẫn được chọn.'**
+  String get asPhotoFailBody;
+
+  /// CH11 card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu từ hoá đơn'**
+  String get asReceiptTitle;
+
+  /// CH11 field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cửa hàng'**
+  String get asFieldStore;
+
+  /// CH11 field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày'**
+  String get asFieldDate;
+
+  /// CH11 field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng tiền'**
+  String get asFieldTotal;
+
+  /// CH11 field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục gợi ý'**
+  String get asFieldCategory;
+
+  /// CH11 field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phạm vi'**
+  String get asFieldScope;
+
+  /// Expense editor field. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đơn vị tiền'**
+  String get asFieldCurrency;
+
+  /// Reminder editor title field. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc'**
+  String get asFieldTitle;
+
+  /// Reminder editor time field. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ'**
+  String get asFieldTime;
+
+  /// Screen-reader label of a flagged receipt field. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{label}: {value}, cần kiểm tra'**
+  String asFieldCheckA11y(String label, String value);
+
+  /// Receipt field the reading did not find. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'chưa đọc được'**
+  String get asNotRead;
+
+  /// CH11 scope value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình · cho {name}'**
+  String asExpenseFor(String name);
+
+  /// CH11 footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ghi tổng tiền {total} (đã gồm thuế), không cộng thêm tạm tính hay thuế.'**
+  String asTaxIncluded(String total);
+
+  /// CH11 "Ngày không chắc → bắt chọn ngày" (618:10262). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày chưa chắc: chạm vào ngày để chọn hoặc xác nhận trước khi lưu.'**
+  String get asConfirmDate;
+
+  /// CH11 duplicate box (author/time not known to the app). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thể trùng với một khoản đã ghi trong gia đình. Mình không tự gộp.'**
+  String get asDuplicateBody;
+
+  /// CH11 duplicate after "Vẫn lưu". VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chọn vẫn lưu riêng · không gộp.'**
+  String get asDuplicateAcknowledged;
+
+  /// CH11 duplicate action (opens Chi tiêu history). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở khoản chi trùng'**
+  String get asOpenDuplicate;
+
+  /// CH11 duplicate acknowledge (annotation "Gộp/Vẫn lưu"; never merged).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn lưu'**
+  String get asSaveAnywayShort;
+
+  /// CH11 save action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu chi tiêu'**
+  String get asSaveExpense;
+
+  /// CH11 discard action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua'**
+  String get asSkip;
+
+  /// Expense editor title. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa khoản chi'**
+  String get asEditExpense;
+
+  /// Expense editor note (brief p.14). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ tổng tiền in trên hoá đơn; không cộng tạm tính và thuế.'**
+  String get asTotalOnly;
+
+  /// Date wheel title. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày'**
+  String get asPickDate;
+
+  /// Time wheel title. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn giờ'**
+  String get asPickTime;
+
+  /// G05: a copy is kept with the saved expense (server confirmed). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh hoá đơn được giữ cùng khoản chi trong Chi tiêu.'**
+  String get asRetentionKept;
+
+  /// G05: keep_with_record, nothing saved yet. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh được giữ cùng khoản chi khi bạn lưu; nếu không lưu, ảnh sẽ được xoá.'**
+  String get asRetentionKeptIfSaved;
+
+  /// G05: deletion requested / pending, not confirmed. Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xoá ảnh gốc. App chỉ báo đã xoá khi việc xoá được xác nhận.'**
+  String get asRetentionDeleting;
+
+  /// G05: Storage confirmed the deletion (replaces CH12 "đã xoá sau khi đọc (theo cài đặt hiện tại)"). Deviates from the frame on purpose (business rule wins; see the A4 report).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh gốc đã được xoá.'**
+  String get asRetentionDeleted;
+
+  /// G05: delete_after_read, not deleted yet. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh gốc sẽ được xoá sau khi đọc; app báo khi xoá xong.'**
+  String get asRetentionWillDelete;
+
+  /// CH13 card line ("Nhắc: Thứ Ba 20/10 · 09:00"; the real weekday, G03).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc: {when}'**
+  String asRemindLine(String when);
+
+  /// CH13 card scope row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · Nhắc việc'**
+  String asModuleRemindersOf(String name);
+
+  /// CH13 action on a reminder that needs a date or time. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày giờ'**
+  String get asCheckReminder;
+
+  /// Reminder editor title. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa nhắc việc'**
+  String get asEditReminder;
+
+  /// Reminder editor: date-only (only while the server accepts it). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không đặt giờ'**
+  String get asAllDay;
+
+  /// Reminder editor note. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc lưu cho {name}; không chuyển sang bé khác.'**
+  String asReminderBaby(String name);
+
+  /// INVALID_TITLE. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên việc dài quá (tối đa 80 ký tự).'**
+  String get asProblemInvalidTitle;
+
+  /// PAST_TIME (D-031). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ nhắc đã qua — chọn một giờ sắp tới.'**
+  String get asProblemPastTime;
+
+  /// CH14 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp lại'**
+  String get asRetake;
+
+  /// Chip after a refused file. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh khác'**
+  String get asOtherPhoto;
+
+  /// CH14 note (0 credits).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần đọc này không trừ lượt.'**
+  String get asUnreadableFree;
+
+  /// CH15 safety box (now with a link).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ (miễn phí).'**
+  String get asSleepSafety;
+
+  /// Sleep concern kind.
+  ///
+  /// In vi, this message translates to:
+  /// **'khó vào giấc'**
+  String get asSleepFalling;
+
+  /// Sleep concern kind.
+  ///
+  /// In vi, this message translates to:
+  /// **'hay thức giấc'**
+  String get asSleepWaking;
+
+  /// Sleep concern kind both. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'khó vào giấc và hay thức giấc'**
+  String get asSleepBoth;
+
+  /// Sleep concern time.
+  ///
+  /// In vi, this message translates to:
+  /// **'giấc đêm'**
+  String get asWhenNight;
+
+  /// Sleep concern time.
+  ///
+  /// In vi, this message translates to:
+  /// **'giấc ngày'**
+  String get asWhenDay;
+
+  /// Sleep concern time both. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'cả ngày và đêm'**
+  String get asWhenBoth;
+
+  /// CH16 kicker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ Thư viện chăm bé'**
+  String get asFromCareLibrary;
+
+  /// CH16 kicker with the content duration. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ Thư viện chăm bé · {minutes} phút'**
+  String asFromCareLibraryMinutes(int minutes);
+
+  /// CH16 disclaimer while reviewed is false (D-073 #2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung minh hoạ · chờ chuyên môn duyệt. Không khẳng định nguyên nhân.'**
+  String get asContentUnreviewed;
+
+  /// CH16 line when the content is reviewed. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung đã được chuyên môn duyệt. Không khẳng định nguyên nhân.'**
+  String get asContentReviewed;
+
+  /// CH16 primary: an intention, not "đã thử".
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử tối nay'**
+  String get asTryTonight;
+
+  /// CH16 primary for a daytime item. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử hôm nay'**
+  String get asTryToday;
+
+  /// CH16 secondary (opens the next approved item in the care library).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý khác'**
+  String get asAnotherIdea;
+
+  /// CH16 after "Thử tối nay" (an intention). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn định thử tối nay'**
+  String get asPlannedTonight;
+
+  /// CH16 after "Thử hôm nay". VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn định thử hôm nay'**
+  String get asPlannedToday;
+
+  /// CH16 → CH17 timing note. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình sẽ hỏi lại từ {day}, sau khi bạn có dịp thử.'**
+  String asPlanFollowUp(String day);
+
+  /// CH16 observation draft title (G01: an observation, not a reminder).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận (tuỳ chọn)'**
+  String get asObservationTitle;
+
+  /// CH16 observation line when nothing more was reported. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'giấc ngủ'**
+  String get asObservationSleep;
+
+  /// CH16 observation save.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu ghi nhận'**
+  String get asSaveObservation;
+
+  /// CH16 observation discard.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không cần'**
+  String get asNoThanks;
+
+  /// Link after "chưa có gợi ý đã duyệt". VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Thư viện chăm bé'**
+  String get asOpenCareLibrary;
+
+  /// CH17 outcome.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có ích'**
+  String get asOutcomeHelpful;
+
+  /// CH17 outcome.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa rõ'**
+  String get asOutcomeUnsure;
+
+  /// CH17 outcome.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không phù hợp'**
+  String get asOutcomeNotSuitable;
+
+  /// CH17 outcome (always offered). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa thử'**
+  String get asOutcomeNotTried;
+
+  /// CH17 after Có ích.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi phản hồi. Lần sau mình sẽ ưu tiên cách này. “Có ích” không có nghĩa cách này là nguyên nhân thay đổi.'**
+  String get asFeedbackHelpful;
+
+  /// CH17 after Chưa rõ. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi phản hồi. Mình sẽ cân nhắc khi gợi ý lần sau.'**
+  String get asFeedbackUnsure;
+
+  /// CH17 after Không phù hợp. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi phản hồi. Lần sau mình sẽ không gợi ý cách này.'**
+  String get asFeedbackNotSuitable;
+
+  /// CH17 after Chưa thử (nothing written to the module). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không sao. Khi nào thử, bạn có thể ghi lại trong Nhịp lớn lên.'**
+  String get asFeedbackNotTried;
+
+  /// CH17 saved card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phản hồi hoạt động'**
+  String get asFeedbackTitle;
+
+  /// CH17 note.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phản hồi không trừ lượt hỗ trợ AI.'**
+  String get asFeedbackFree;
+
+  /// CH18 card label. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý từ Thư viện công thức'**
+  String get asRecipesFrom;
+
+  /// CH18 recipe duration.
+  ///
+  /// In vi, this message translates to:
+  /// **'{minutes} phút'**
+  String asRecipeMinutes(int minutes);
+
+  /// CH18 excluded count.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã loại {count} món có nguyên liệu con từng có phản ứng (phản ứng đã ghi, không phải chẩn đoán dị ứng).'**
+  String asRecipesExcluded(int count);
+
+  /// CH18 caveat when the server sent none.
+  ///
+  /// In vi, this message translates to:
+  /// **'Món chưa có ghi nhận phản ứng không có nghĩa là con đã dung nạp tốt.'**
+  String get asRecipesCaveat;
+
+  /// CH18 meal log button (disabled: no meal log yet). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi bữa ăn'**
+  String get asLogMeal;
+
+  /// CH18 under the disabled "Ghi bữa ăn" (P-157). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có nhật ký bữa ăn trong app nên chưa ghi được từ đây.'**
+  String get asLogMealUnavailable;
+
+  /// INVALID_ASSIGNEE (D-075 #5). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người được giao không còn trong gia đình. Chọn lại người phụ trách.'**
+  String get asProblemInvalidAssignee;
+
+  /// Shared thread: another member confirmed drafts (action_result author, D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} đã lưu {count} mục'**
+  String asSavedBy(String name, int count);
+
+  /// Saved draft card: who saved it when not me (draft.confirmedBy, D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} đã lưu'**
+  String asConfirmedBy(String name);
+
+  /// Shared thread: only the task author answers its clarification (D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ {name} trả lời câu hỏi này.'**
+  String asWaitingFor(String name);
+
+  /// Private photo task in a child chat of a shared-thread member (D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ bạn thấy: ảnh và chi tiêu không vào cuộc trò chuyện chung của bé.'**
+  String get asPrivateTask;
+
+  /// CH03 section for the baby’s shared thread (D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'CUỘC TRÒ CHUYỆN CHUNG'**
+  String get asHistoryShared;
+
+  /// CH03 shared thread title. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trò chuyện chung về bé'**
+  String get asSharedThreadTitle;
+
+  /// CH03 shared thread subtitle. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba, Mẹ và người chăm sóc cùng xem · {when}'**
+  String asSharedThreadSub(String when);
+
+  /// CH03 privacy line for Cùng nuôi / Người chăm sóc (D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi về bé nằm trong cuộc trò chuyện chung của Ba, Mẹ và người chăm sóc. Ảnh, chi tiêu và các cuộc trò chuyện cũ chỉ bạn xem được.'**
+  String get asHistorySharedNote;
+
+  /// CH03 confirm for the shared thread (Cùng nuôi only). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá cuộc trò chuyện chung?'**
+  String get asDeleteSharedTitle;
+
+  /// CH03 confirm body for the shared thread. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cuộc trò chuyện chung sẽ bị xoá cho mọi người, kể cả bản nháp chưa lưu. Những gì đã lưu vào nhật ký, Nhịp lớn lên hay nhắc việc vẫn giữ nguyên.'**
+  String get asDeleteSharedBody;
+
+  /// Toast after delete when the server confirms domainRecordsKept. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá cuộc trò chuyện. Bản ghi đã lưu vẫn giữ nguyên.'**
+  String get asDeletedRecordsKept;
 }
 
 class _AppLocalizationsDelegate

@@ -15,6 +15,8 @@ import '../baby/baby_repository.dart';
 import '../baby/baby_avatar_view.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
+import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
+import 'spending_currency.dart';
 import 'spending_format.dart';
 import 'spending_models.dart';
 import 'spending_repository.dart';
@@ -30,6 +32,7 @@ class SpendingScope {
     required this.expenses,
     required this.categories,
     required this.loading,
+    this.currency = legacyCurrency,
   });
 
   final Membership me;
@@ -43,6 +46,10 @@ class SpendingScope {
   /// Every category of the family (hidden ones included), in order.
   final List<SpendingCategory> categories;
   final bool loading;
+
+  /// The household's currency (D-075 #4): the add form's default, what totals and statistics
+  /// count (other currencies show apart), a new budget's currency.
+  final String currency;
 
   String get babyId => me.babyId;
   String get familyId => baby?.familyId ?? '';
@@ -80,7 +87,15 @@ SpendingScope? _scope(WidgetRef ref, {required bool watch}) {
   final categories = baby == null
       ? null
       : get(spendingCategoriesProvider(baby.familyId)).value;
+  // D-075 #4: the household's pick, else its country's currency, else VND.
+  final settings = baby == null
+      ? null
+      : get(spendingSettingsProvider(baby.familyId)).value;
+  final country = access.any
+      ? get(selectedCapabilitiesProvider)?.country
+      : null;
   return SpendingScope(
+    currency: settings?.currency ?? currencyForCountry(country),
     me: me,
     baby: baby,
     access: access,
@@ -89,6 +104,27 @@ SpendingScope? _scope(WidgetRef ref, {required bool watch}) {
     categories: categories ?? mergeCategories(const []),
     loading: !expenses.hasValue,
   );
+}
+
+/// The household's currency from a callback (D-075 #4): its pick, else its country's, else VND.
+Future<String> householdCurrencyOf(ProviderContainer c, Membership me) async {
+  try {
+    final baby = c.read(babyProvider(me.babyId)).value;
+    if (baby != null) {
+      final p = spendingSettingsProvider(baby.familyId);
+      // Riverpod pauses a provider nobody listens to: hold it while reading.
+      final hold = c.listen(p, (_, _) {});
+      try {
+        final s = await c.read(p.future).timeout(const Duration(seconds: 2));
+        if (s.currency != null) return s.currency!;
+      } finally {
+        hold.close();
+      }
+    }
+  } on Object {
+    // Offline or not loaded: the country's currency below.
+  }
+  return currencyForCountry(c.read(selectedCapabilitiesProvider)?.country);
 }
 
 /// The frame of a pushed spending screen: back (or close), the baby, a scrolling body and an
@@ -397,7 +433,7 @@ class ExpenseRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               ClTabularText(
-                money(locale, expense.amount),
+                money(locale, expense.amount, expense.currency),
                 style: spRowTitle(context),
               ),
               if (expense.hasReceipt)
@@ -417,7 +453,8 @@ class ExpenseRow extends StatelessWidget {
     return ClPressable(
       onPressed: onTap,
       pressedOpacity: ClPressable.surfaceOpacity,
-      semanticLabel: '$title, ${money(locale, expense.amount)}',
+      semanticLabel:
+          '$title, ${money(locale, expense.amount, expense.currency)}',
       child: SizedBox(width: double.infinity, child: row),
     );
   }
@@ -432,11 +469,15 @@ class CategoryShareRow extends StatelessWidget {
     this.subline,
     this.trailing,
     this.barColor,
+    this.currency = legacyCurrency,
     super.key,
   });
 
   final SpendingCategory category;
   final int amount;
+
+  /// What [amount] is in (D-075 #4).
+  final String currency;
   final double share;
   final String? subline;
   final String? trailing;
@@ -471,7 +512,7 @@ class CategoryShareRow extends StatelessWidget {
                       ),
                     ),
                     ClTabularText(
-                      trailing ?? money(spLocale(context), amount),
+                      trailing ?? money(spLocale(context), amount, currency),
                       style: spRowTitle(context).copyWith(fontSize: 14),
                     ),
                   ],

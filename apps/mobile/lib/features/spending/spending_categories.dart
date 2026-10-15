@@ -14,6 +14,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import 'spending_calc.dart' show totalsByCurrency;
 import 'spending_format.dart';
 import 'spending_models.dart';
 import 'spending_repository.dart';
@@ -679,7 +680,8 @@ class _DeleteSheetState extends ConsumerState<_DeleteSheet> {
       for (final e in widget.scope.expenses)
         if (e.categoryId == c.id) e,
     ];
-    final sum = items.fold(0, (s, e) => s + e.amount);
+    // D-075 #4: per currency, never added together.
+    final sums = totalsByCurrency(items, first: widget.scope.currency);
     final otherName = _moveTo == otherCategoryId
         ? null
         : categoryName(l10n, widget.scope.category(_moveTo));
@@ -731,7 +733,10 @@ class _DeleteSheetState extends ConsumerState<_DeleteSheet> {
         Text(
           items.isEmpty
               ? l10n.spDeleteCategoryEmpty
-              : l10n.spDeleteCategoryBody(items.length, money(locale, sum)),
+              : l10n.spDeleteCategoryBody(
+                  items.length,
+                  moneyList(locale, sums),
+                ),
           style: cl.text.body.copyWith(color: cl.colors.inkMuted),
         ),
         const SizedBox(height: ClSpace.s3),

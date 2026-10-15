@@ -65,8 +65,8 @@ s('aiStateErrorEyebrow', 'AI CHƯA PHẢN HỒI', 'AI DIDN’T RESPOND', 'ST01 c
 s('aiStateErrorBody', 'Không trừ lượt AI khi lỗi. Ghi nhận và hướng dẫn sức khoẻ không bị ảnh hưởng.', 'No AI quota is used on errors. Logging and health guidance are unaffected.', 'ST01 card 3 body.')
 s('aiStateQuotaEyebrow', 'ĐÃ DÙNG HẾT LƯỢT AI', 'AI LIMIT REACHED', 'QUOTA_EXCEEDED eyebrow.' + DRAFT)
 s('aiStateQuotaDay', 'Đã dùng {used}/{limit} lượt AI hôm nay cho bé. Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.', 'Used {used} of {limit} AI summaries today for this baby. More from {when}. The template is always free.', 'QUOTA_EXCEEDED, daily window.' + DRAFT, used='int', limit='int', when='String')
-s('aiStateQuotaMonth', 'Nhà mình đã dùng {used}/{limit} lượt AI tháng này. Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.', 'Your household used {used} of {limit} AI summaries this month. More from {when}. The template is always free.', 'QUOTA_EXCEEDED, monthly window.' + DRAFT, used='int', limit='int', when='String')
-s('aiStateQuotaPlain', 'Nhà mình đã dùng hết lượt AI trong kỳ này. Bản theo mẫu luôn miễn phí.', 'Your household has used this period’s AI summaries. The template is always free.', 'QUOTA_EXCEEDED without numbers.' + DRAFT)
+s('aiStateQuotaMonth', 'Nhà mình đã dùng {used}/{limit} lượt AI kỳ này (chung cho tóm tắt và trợ lý). Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.', 'Your household used {used} of {limit} AI credits this period (shared by summaries and the assistant). More from {when}. The template is always free.', 'QUOTA_EXCEEDED, monthly window.' + DRAFT, used='int', limit='int', when='String')
+s('aiStateQuotaPlain', 'Nhà mình đã dùng hết lượt AI trong kỳ này. Bản theo mẫu luôn miễn phí.', 'Your household has used this period’s AI credits. The template is always free.', 'QUOTA_EXCEEDED without numbers.' + DRAFT)
 s('aiStateTemplateEyebrow', 'BẢN THEO MẪU', 'TEMPLATE VERSION', 'PREMIUM_REQUIRED / other reasons eyebrow.' + DRAFT)
 s('aiStatePremiumBody', 'Tóm tắt bằng AI nằm trong Child Life Premium. Bản theo mẫu luôn miễn phí.', 'AI summaries are part of Child Life Premium. The template version is always free.', 'PREMIUM_REQUIRED body (the only state with a plan link).' + DRAFT)
 s('aiStateOtherBody', 'AI chưa dùng được cho nhà mình lúc này. Bản theo mẫu vẫn đủ 3 phần.', 'AI isn’t available for your household right now. The template has the same three parts.', 'ROLE_DENIED / REGION_UNAVAILABLE body.' + DRAFT)
@@ -132,7 +132,7 @@ s('aiExplainMore', 'Giải thích thêm', 'Explain more', 'PS01 / AC01 link unde
 s('aiExplainLoading', 'Đang chuẩn bị lời giải thích…', 'Preparing an explanation…', 'Explain loading.' + DRAFT)
 s('aiExplainFailed', 'Chưa giải thích thêm được lúc này. Lý do ở trên vẫn đầy đủ.', 'Couldn’t explain more right now. The reason above still stands.', 'Explain failed.' + DRAFT)
 s('aiExplainConsent', 'Cần bạn đồng ý dùng AI để giải thích thêm.', 'AI needs your consent to explain more.', 'Explain without consent.' + DRAFT)
-s('aiExplainQuota', 'Đã dùng hết lượt AI trong kỳ này. Lý do ở trên vẫn đầy đủ.', 'This period’s AI summaries are used up. The reason above still stands.', 'Explain over quota.' + DRAFT)
+s('aiExplainQuota', 'Đã dùng hết lượt AI trong kỳ này. Lý do ở trên vẫn đầy đủ.', 'This period’s AI credits are used up. The reason above still stands.', 'Explain over quota.' + DRAFT)
 s('aiExplainUnavailable', 'Giải thích thêm chưa dùng được cho nhà mình lúc này.', 'Explaining more isn’t available for your household right now.', 'Explain for other gate reasons.' + DRAFT)
 
 # NL07b observation episodes (573:1199) and NL07's episode card (573:1109).

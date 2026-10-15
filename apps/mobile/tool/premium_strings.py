@@ -54,7 +54,7 @@ s('pmUnlockPremium', 'Mở với Premium', 'Unlock with Premium', 'MO02 primary 
 s('pmUseFreeTemplate', 'Dùng mẫu miễn phí', 'Use a free template', 'MO02 secondary button.')
 s('pmCardNoQuota', 'Thẻ Premium không trừ lượt xuất video', 'Premium cards don’t use video export quota', 'MO02 footnote for cards.')
 s('pmTemplatePremiumBody', 'Mẫu này dành cho gia đình có Child Life Premium.', 'This template is for families with Child Life Premium.', 'MO02 sheet body.')
-s('pmTemplateBetaNote', 'Beta cá nhân hoá không gồm mẫu Premium.', 'The personalisation beta doesn’t include Premium templates.', 'MO02 note for beta families (brief p.3, extract 30 Q2).')
+s('pmTemplateBetaNote', 'Gói beta hiện tại của nhà mình chưa gồm mẫu Premium.', 'Your current beta doesn’t include Premium templates.', 'MO02 note for beta families (brief p.3, extract 30 Q2).')
 
 # Gate reasons other than PREMIUM_REQUIRED (ST01 / ST02; never a paywall).
 s('pmGateRoleTitle', 'Cần quyền của ba mẹ', 'Needs a parent role', 'ROLE_DENIED (ST02 594:7020).')

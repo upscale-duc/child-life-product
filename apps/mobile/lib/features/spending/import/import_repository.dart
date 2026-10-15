@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../app/providers.dart';
+import '../spending_currency.dart';
 
 /// Nhập chi tiêu (D-060, P-144). Mirrors `packages/contracts/src/spending-import.ts`; the server
 /// writes `babies/{babyId}/spendingImports/{importId}`, the app only reads it.
@@ -188,11 +189,15 @@ class ImportPreviewRow {
     required this.category,
     required this.payer,
     required this.issue,
+    this.currency = legacyCurrency,
   });
 
   final int row;
   final String? spentOn;
+
+  /// Minor units of [currency] (D-075 #4; older imports: VND).
   final int? amount;
+  final String currency;
   final String note;
   final String category;
   final String payer;
@@ -208,6 +213,7 @@ class ImportPreviewRow {
       category: j['category'] as String? ?? '',
       payer: j['payer'] as String? ?? '',
       issue: ImportIssue.of(j['issue']),
+      currency: currencyOf(j['currency']),
     );
   }
 }
@@ -273,6 +279,7 @@ class SpendingImport {
     required this.preview,
     this.skipped = const [],
     this.total = (amount: 0, from: null, to: null),
+    this.totals = const {},
     required this.categories,
     required this.payers,
     required this.progress,
@@ -305,6 +312,9 @@ class SpendingImport {
 
   /// What will be imported: the sum and the first and last day.
   final ({int amount, String? from, String? to}) total;
+
+  /// D-075 #4: what will be imported per currency (the household's first), never added up.
+  final Map<String, int> totals;
   final List<SourceName<CategoryChoice>> categories;
   final List<SourceName<String>> payers;
 
@@ -370,6 +380,15 @@ class SpendingImport {
           to: t['to'] as String?,
         ),
         _ => (amount: 0, from: null, to: null),
+      },
+      totals: switch (j['total']) {
+        final Map<Object?, Object?> t => {
+          currencyOf(t['currency']): (t['amount'] as num?)?.toInt() ?? 0,
+          for (final o in (t['others'] as List? ?? const []))
+            if (o is Map && isSpCurrency(o['currency']))
+              o['currency'] as String: (o['amount'] as num?)?.toInt() ?? 0,
+        },
+        _ => const {},
       },
       categories: [
         for (final c in maps(j['categories']))

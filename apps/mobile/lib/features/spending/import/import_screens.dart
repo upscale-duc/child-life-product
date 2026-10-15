@@ -574,7 +574,15 @@ class _SpendingImportReviewScreenState
                   if (c.ready > 0) ...[
                     const SizedBox(height: ClSpace.s1),
                     ClTabularText(
-                      l10n.imTotal(money(locale, im.total.amount)),
+                      // D-075 #4: per currency, never added up.
+                      l10n.imTotal(
+                        im.totals.isEmpty
+                            ? money(locale, im.total.amount)
+                            : moneyList(locale, {
+                                for (final e in im.totals.entries)
+                                  if (e.value != 0) e.key: e.value,
+                              }),
+                      ),
                       style: cl.text.body.copyWith(fontWeight: FontWeight.w600),
                     ),
                     if (from != null && to != null)
@@ -1202,7 +1210,9 @@ class _PreviewRow extends StatelessWidget {
             ),
             const SizedBox(width: ClSpace.s2),
             ClTabularText(
-              row.amount == null ? '—' : money(locale, row.amount!.abs()),
+              row.amount == null
+                  ? '—'
+                  : money(locale, row.amount!.abs(), row.currency),
               style: spRowTitle(context).copyWith(fontSize: 14),
             ),
           ],

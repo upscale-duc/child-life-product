@@ -12,6 +12,7 @@ import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
 import '../../core/widgets/cl_pressable.dart';
+import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
@@ -20,33 +21,80 @@ import '../vaccines/vaccine_photos.dart';
 import '../vaccines/vaccine_sheets.dart' show pickVxDate;
 import 'spending_calc.dart';
 import 'spending_categories.dart';
+import 'spending_currency.dart';
 import 'spending_format.dart';
 import 'spending_models.dart';
 import 'spending_repository.dart';
 import 'spending_widgets.dart';
 
-/// "1020000" typed → "1.020.000" shown (the locale's grouping), caret at the end.
+/// "1020000" typed → "1.020.000" shown (the locale's grouping), caret at the end. A currency
+/// with cents (D-075 #4) keeps the decimal mark and up to its digits as typed ("12,5" → "12,5").
 class MoneyInputFormatter extends TextInputFormatter {
-  MoneyInputFormatter(this.locale);
+  MoneyInputFormatter(this.locale, [this.currency = legacyCurrency]);
   final String locale;
+  final String currency;
 
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final amount = parseMoney(newValue.text);
+    final c = spCurrency(currency);
+    final amount = parseMoney(newValue.text, currency, locale);
     if (amount == null) return TextEditingValue.empty;
-    final capped = amount > SpendingLimits.amountMax
-        ? SpendingLimits.amountMax
-        : amount;
-    final text = moneyPlain(locale, capped);
+    var text = moneyPlain(locale, amount > c.max ? c.max : amount, currency);
+    if (c.exponent > 0 && amount <= c.max) {
+      // Keep what is being typed after the mark: "12," and "12,5" stay as they are.
+      final split = splitMoney(newValue.text, c.exponent, locale);
+      final whole = NumberFormat(
+        '#,##0',
+        locale,
+      ).format(int.tryParse(split.whole.isEmpty ? '0' : split.whole) ?? 0);
+      final frac = split.frac;
+      text = frac == null
+          ? whole
+          : '$whole${NumberFormat.decimalPattern(locale).symbols.DECIMAL_SEP}'
+                '${frac.length > c.exponent ? frac.substring(0, c.exponent) : frac}';
+    }
     return TextEditingValue(
       text: text,
       selection: TextSelection.collapsed(offset: text.length),
     );
   }
 }
+
+/// The currency picker (D-075 #4): every currency Chi tiêu keeps, [current] ticked.
+Future<String?> pickSpCurrency(BuildContext context, String current) =>
+    showClSheet<String>(
+      context: context,
+      builder: (sheet) {
+        final l10n = AppLocalizations.of(sheet);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClSheetHeader(title: l10n.spCurrencyTitle),
+            Flexible(
+              child: SingleChildScrollView(
+                child: ClCardGroup(
+                  children: [
+                    for (final c in spCurrencies)
+                      ClOptionRow(
+                        key: Key('spCur-${c.code}'),
+                        title: '${c.code} · ${c.symbol}',
+                        subtitle: currencyName(l10n, c.code),
+                        selected: c.code == current,
+                        onTap: () => Navigator.of(sheet).pop(c.code),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: ClSpace.s4),
+          ],
+        );
+      },
+    );
 
 /// The large centred amount ("Số tiền", 8c / 8k / 8h).
 class SpAmountInput extends StatelessWidget {
@@ -55,6 +103,8 @@ class SpAmountInput extends StatelessWidget {
     this.autofocus = false,
     this.large = true,
     this.onChanged,
+    this.currency = legacyCurrency,
+    this.onCurrency,
     super.key,
   });
 
@@ -62,6 +112,10 @@ class SpAmountInput extends StatelessWidget {
   final bool autofocus;
   final bool large;
   final ValueChanged<String>? onChanged;
+
+  /// D-075 #4: what the amount is in; [onCurrency] makes its sign a picker.
+  final String currency;
+  final VoidCallback? onCurrency;
 
   @override
   Widget build(BuildContext context) {
@@ -82,9 +136,11 @@ class SpAmountInput extends StatelessWidget {
             key: const Key('spAmount'),
             controller: controller,
             autofocus: autofocus,
-            keyboardType: TextInputType.number,
+            keyboardType: spCurrency(currency).exponent > 0
+                ? const TextInputType.numberWithOptions(decimal: true)
+                : TextInputType.number,
             textAlign: TextAlign.center,
-            inputFormatters: [MoneyInputFormatter(spLocale(context))],
+            inputFormatters: [MoneyInputFormatter(spLocale(context), currency)],
             onChanged: onChanged,
             style: style,
             cursorColor: cl.colors.mintDeep,
@@ -101,11 +157,45 @@ class SpAmountInput extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 6),
-        Text(
-          '₫',
-          semanticsLabel: l10n.spCurrencyName,
-          style: style.copyWith(color: cl.colors.inkMuted),
-        ),
+        if (onCurrency == null)
+          Text(
+            spCurrency(currency).symbol,
+            semanticsLabel: currency == legacyCurrency
+                ? l10n.spCurrencyName
+                : currencyName(l10n, currency),
+            style: style.copyWith(color: cl.colors.inkMuted),
+          )
+        else
+          ClPressable(
+            key: const Key('spCurrency'),
+            onPressed: onCurrency,
+            semanticLabel: l10n.spCurrencyPick(currency),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: cl.colors.surface2,
+                borderRadius: BorderRadius.circular(ClRadius.pill),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    spCurrency(currency).symbol,
+                    style: style.copyWith(
+                      color: cl.colors.ink,
+                      fontSize: large ? 22 : null,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  ClIcon(
+                    ClIcons.chevronDown,
+                    size: 14,
+                    color: cl.colors.inkMuted,
+                  ),
+                ],
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -328,6 +418,9 @@ class _ExpenseSheetState extends ConsumerState<_ExpenseSheet> {
   late Payer? _payer = _editing == null ? Payer.of(_scope.me) : _editing!.payer;
   late DateTime _day = _editing?.spentOn ?? _scope.today;
   late String? _receipt = _editing?.receiptPath;
+
+  /// D-075 #4: the household's by default; any expense may use another.
+  late String _currency = _editing?.currency ?? _scope.currency;
   bool _repeat = false;
   bool _busy = false;
 
@@ -335,7 +428,11 @@ class _ExpenseSheetState extends ConsumerState<_ExpenseSheet> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_editing != null && _amount.text.isEmpty) {
-      _amount.text = moneyPlain(spLocale(context), _editing!.amount);
+      _amount.text = moneyPlain(
+        spLocale(context),
+        _editing!.amount,
+        _editing!.currency,
+      );
     }
   }
 
@@ -346,11 +443,33 @@ class _ExpenseSheetState extends ConsumerState<_ExpenseSheet> {
     super.dispose();
   }
 
-  int? get _value => parseMoney(_amount.text);
+  int? get _value => parseMoney(_amount.text, _currency, spLocale(context));
 
   void _setAmount(int v) {
-    final capped = v.clamp(0, SpendingLimits.amountMax);
-    setState(() => _amount.text = moneyPlain(spLocale(context), capped));
+    final capped = v.clamp(0, amountMaxFor(_currency));
+    setState(
+      () => _amount.text = moneyPlain(spLocale(context), capped, _currency),
+    );
+  }
+
+  /// Another currency: the typed number stays, read in the new currency's units.
+  Future<void> _pickCurrency() async {
+    final locale = spLocale(context);
+    final picked = await pickSpCurrency(context, _currency);
+    if (picked == null || picked == _currency || !mounted) return;
+    final typed = parseMoney(_amount.text, _currency, locale);
+    setState(() {
+      final from = spCurrency(_currency), to = spCurrency(picked);
+      _currency = picked;
+      if (typed == null) return;
+      // Same number of whole units ("12" stays "12"), within the new ceiling.
+      final whole = typed ~/ from.unit;
+      _amount.text = moneyPlain(
+        locale,
+        (whole * to.unit).clamp(0, to.max),
+        picked,
+      );
+    });
   }
 
   void _dropReceipt() {
@@ -377,6 +496,7 @@ class _ExpenseSheetState extends ConsumerState<_ExpenseSheet> {
       me: _scope.me,
       id: _editing?.id,
       amount: amount,
+      currency: _currency,
       categoryId: _category,
       note: _note.text,
       spentOn: _day,
@@ -393,6 +513,7 @@ class _ExpenseSheetState extends ConsumerState<_ExpenseSheet> {
             : _note.text,
         categoryId: _category,
         amount: amount,
+        currency: _currency,
         payer: _payer,
         schedule: Monthly([_day.day]),
         enabled: true,
@@ -409,8 +530,13 @@ class _ExpenseSheetState extends ConsumerState<_ExpenseSheet> {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final locale = spLocale(context);
-    final last = lastAmount(_scope.expenses, _category);
+    final last = lastAmount(_scope.expenses, _category, currency: _currency);
     final value = _value ?? 0;
+    // "+100.000" / "+500.000" for VND; "+10" / "+50" whole units elsewhere.
+    final unit = spCurrency(_currency).unit;
+    final steps = _currency == legacyCurrency
+        ? const [100000, 500000]
+        : [10 * unit, 50 * unit];
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -433,6 +559,8 @@ class _ExpenseSheetState extends ConsumerState<_ExpenseSheet> {
                   controller: _amount,
                   autofocus: _editing == null,
                   onChanged: (_) => setState(() {}),
+                  currency: _currency,
+                  onCurrency: () => unawaited(_pickCurrency()),
                 ),
                 const SizedBox(height: ClSpace.s3),
                 Wrap(
@@ -442,17 +570,18 @@ class _ExpenseSheetState extends ConsumerState<_ExpenseSheet> {
                   children: [
                     if (last != null)
                       _Suggestion(
-                        label: l10n.spLastTime(moneyPlain(locale, last)),
+                        label: l10n.spLastTime(
+                          moneyPlain(locale, last, _currency),
+                        ),
                         onTap: () => _setAmount(last),
                       ),
-                    _Suggestion(
-                      label: '+${moneyPlain(locale, 100000)}',
-                      onTap: () => _setAmount(value + 100000),
-                    ),
-                    _Suggestion(
-                      label: '+${moneyPlain(locale, 500000)}',
-                      onTap: () => _setAmount(value + 500000),
-                    ),
+                    for (final step in steps)
+                      _Suggestion(
+                        label: _currency == legacyCurrency
+                            ? '+${moneyPlain(locale, step)}'
+                            : '+${step ~/ unit}',
+                        onTap: () => _setAmount(value + step),
+                      ),
                   ],
                 ),
                 SpLabel(
@@ -487,6 +616,7 @@ class _ExpenseSheetState extends ConsumerState<_ExpenseSheet> {
                             expenses: _scope.expenses,
                             categories: cats,
                             loading: false,
+                            currency: _scope.currency,
                           );
                     return CategoryPicker(
                       scope: scope,
@@ -664,6 +794,7 @@ Future<void> offerVaccineCost(
   )) {
     return;
   }
+  final currency = await householdCurrencyOf(container, me);
   if (!context.mounted) return;
   await showClSheet<void>(
     context: context,
@@ -673,6 +804,7 @@ Future<void> offerVaccineCost(
       doseTitle: doseTitle,
       givenOn: givenOn,
       suggested: lastVaccineCost(mine, doseKey),
+      currency: currency,
     ),
   );
 }
@@ -684,13 +816,19 @@ class _VaccineCostSheet extends ConsumerStatefulWidget {
     required this.doseTitle,
     required this.givenOn,
     required this.suggested,
+    required this.currency,
   });
 
   final Membership me;
   final String doseKey;
   final String doseTitle;
   final DateTime givenOn;
-  final int? suggested;
+
+  /// The last cost of the same vaccine, in its own currency (D-075 #4).
+  final ({int amount, String currency})? suggested;
+
+  /// The household's currency (used when nothing was paid before).
+  final String currency;
 
   @override
   ConsumerState<_VaccineCostSheet> createState() => _VaccineCostSheetState();
@@ -702,13 +840,24 @@ class _VaccineCostSheetState extends ConsumerState<_VaccineCostSheet> {
   String? _receipt;
   bool _busy = false;
   bool _saved = false;
+  late String _currency = widget.suggested?.currency ?? widget.currency;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (widget.suggested != null && _amount.text.isEmpty) {
-      _amount.text = moneyPlain(spLocale(context), widget.suggested!);
+    final s = widget.suggested;
+    if (s != null && _amount.text.isEmpty) {
+      _amount.text = moneyPlain(spLocale(context), s.amount, s.currency);
     }
+  }
+
+  Future<void> _pickCurrency() async {
+    final picked = await pickSpCurrency(context, _currency);
+    if (picked == null || picked == _currency || !mounted) return;
+    setState(() {
+      _currency = picked;
+      _amount.clear();
+    });
   }
 
   @override
@@ -723,7 +872,7 @@ class _VaccineCostSheetState extends ConsumerState<_VaccineCostSheet> {
 
   void _save() {
     final l10n = AppLocalizations.of(context);
-    final amount = parseMoney(_amount.text);
+    final amount = parseMoney(_amount.text, _currency, spLocale(context));
     if (amount == null || amount <= 0) {
       showClToast(context, message: l10n.spAmountMissing);
       return;
@@ -735,6 +884,7 @@ class _VaccineCostSheetState extends ConsumerState<_VaccineCostSheet> {
           babyId: widget.me.babyId,
           me: widget.me,
           amount: amount,
+          currency: _currency,
           categoryId: healthCategoryId,
           note: widget.doseTitle.length > SpendingLimits.noteMax
               ? widget.doseTitle.substring(0, SpendingLimits.noteMax)
@@ -780,6 +930,8 @@ class _VaccineCostSheetState extends ConsumerState<_VaccineCostSheet> {
                     controller: _amount,
                     large: false,
                     autofocus: widget.suggested == null,
+                    currency: _currency,
+                    onCurrency: () => unawaited(_pickCurrency()),
                   ),
                 ),
                 SpLabel(l10n.spPayer),

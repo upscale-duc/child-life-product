@@ -43,12 +43,15 @@ typedef _Case = ({
 List<Override> _data({
   List<Expense>? expenses,
   List<SpendingCategory> categories = const [],
+  String? currency,
+  Budget budget = mockBudget,
 }) => familyOverrides(
   now: DateTime(2026, 10, 12, 9),
   expenses: expenses ?? mockSpending(),
   categories: categories,
-  budget: mockBudget,
+  budget: budget,
   recurring: mockRecurring,
+  spendingCurrency: currency,
 );
 
 _Case _screen(
@@ -57,10 +60,17 @@ _Case _screen(
   List<SpendingCategory> categories = const [],
   ImportStatus importStatus = ImportStatus.ready,
   Future<void> Function(WidgetTester tester)? act,
+  String? currency,
+  Budget budget = mockBudget,
 }) => (
   build: build,
   overrides: () => [
-    ..._data(expenses: expenses, categories: categories),
+    ..._data(
+      expenses: expenses,
+      categories: categories,
+      currency: currency,
+      budget: budget,
+    ),
     // Nhập chi tiêu (D-060).
     spendingImportsProvider.overrideWith(
       (ref, id) => Stream.value([mockImport(ImportStatus.done)]),
@@ -87,6 +97,27 @@ final _hidden = SpendingCategory(
   order: 6,
   hidden: true,
 );
+
+/// Chi tiêu currencies (D-075 #4): October with a dollar and a yen purchase.
+List<Expense> _mixed() => [
+  spend(
+    '50',
+    1250,
+    'c_milk',
+    DateTime(2026, 10, 12),
+    note: 'Formula online',
+    currency: 'USD',
+  ),
+  spend(
+    '51',
+    2000,
+    'c_other',
+    DateTime(2026, 10, 11),
+    note: 'Gift shop',
+    currency: 'JPY',
+  ),
+  ...mockSpending(),
+];
 
 final _cases = <String, _Case>{
   '8b_month': _screen(() => const SpendingScreen()),
@@ -163,6 +194,48 @@ final _cases = <String, _Case>{
       await _tap(t, find.byKey(const Key('spDeleteCategory')));
     },
   ),
+  // ---- Chi tiêu currencies (D-075 #4; not drawn) ----
+  'cur_8b_month_mixed': _screen(
+    () => const SpendingScreen(),
+    expenses: _mixed(),
+  ),
+  'cur_8c_add_usd': _screen(
+    () => const SpendingScreen(),
+    act: (t) async {
+      await _tap(t, find.byKey(const Key('spAdd')));
+      await _tap(t, find.byKey(const Key('spCurrency')));
+      await _tap(t, find.byKey(const Key('spCur-USD')));
+      await t.enterText(find.byKey(const Key('spAmount')), '12');
+      await t.tap(find.byKey(const Key('spCat-c_milk')));
+      FocusManager.instance.primaryFocus?.unfocus();
+      await t.pumpAndSettle();
+    },
+  ),
+  'cur_picker': _screen(
+    () => const SpendingScreen(),
+    act: (t) async {
+      await _tap(t, find.byKey(const Key('spAdd')));
+      FocusManager.instance.primaryFocus?.unfocus();
+      await t.pumpAndSettle();
+      await _tap(t, find.byKey(const Key('spCurrency')));
+    },
+  ),
+  'cur_8f_history_mixed': _screen(
+    () => const SpendingHistoryScreen(),
+    expenses: _mixed(),
+  ),
+  'cur_8h_budget_usd': _screen(
+    () => const BudgetScreen(),
+    expenses: _mixed(),
+    currency: 'USD',
+    // Kept in VND before the household moved to dollars.
+    budget: Budget.fromJson(const {
+      'monthlyTotal': 8000000,
+      'caps': {'c_milk': 2200000},
+      'alert80': true,
+    }),
+  ),
+  // ---- end Chi tiêu currencies ----
   // Nhập chi tiêu (D-060; not drawn).
   'im1_sources': _screen(() => const SpendingImportScreen()),
   'im2_review': _screen(

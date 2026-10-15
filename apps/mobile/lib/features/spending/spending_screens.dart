@@ -233,11 +233,17 @@ class _Month extends ConsumerWidget {
     final locale = spLocale(context);
     final current = monthOf(scope.today);
     final isCurrent = month == current;
-    final s = MonthSummary.of(scope.expenses, month, scope.today);
+    // D-075 #4: the figures count the household's currency; the others show apart.
+    final s = MonthSummary.of(
+      scope.expenses,
+      month,
+      scope.today,
+      currency: scope.currency,
+    );
     final budget =
         ref.watch(budgetProvider(scope.babyId)).value ?? Budget.empty;
     final name = scope.baby?.nickname ?? '';
-    final recent = s.items.take(4).toList();
+    final recent = s.allItems.take(4).toList();
     final ranked = s.ranked;
     return SpPage(
       bottom: scope.access.record
@@ -295,6 +301,7 @@ class _Month extends ConsumerWidget {
           summary: s,
           budget: budget,
           locale: locale,
+          currency: scope.currency,
         ),
         const SizedBox(height: ClSpace.s3),
         // CH01b: the assistant's entry (household scope); nothing unless the flag is on.
@@ -340,6 +347,7 @@ class _Month extends ConsumerWidget {
                 CategoryShareRow(
                   category: scope.category(e.key),
                   amount: e.value,
+                  currency: scope.currency,
                   share: s.total == 0 ? 0 : e.value / s.total,
                   subline: _categorySub(l10n, s, e.key),
                 ),
@@ -434,6 +442,7 @@ class _TotalCard extends StatelessWidget {
     required this.summary,
     required this.budget,
     required this.locale,
+    required this.currency,
   });
 
   final String title;
@@ -441,12 +450,18 @@ class _TotalCard extends StatelessWidget {
   final Budget budget;
   final String locale;
 
+  /// What [summary] counts (the household's, D-075 #4).
+  final String currency;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final s = summary;
-    final total = budget.monthlyTotal ?? 0;
+    String m(int v) => money(locale, v, currency);
+    // A budget kept in another currency does not measure this one (D-075 #4).
+    final budgetHere = budget.isSet && budget.currencyOr(currency) == currency;
+    final total = budgetHere ? budget.monthlyTotal ?? 0 : 0;
     final share = total == 0 ? 0.0 : s.total / total;
     final over = total > 0 && s.total > total;
     final change = s.change;
@@ -481,13 +496,19 @@ class _TotalCard extends StatelessWidget {
         children: [
           Text(title, style: cl.text.label.copyWith(color: cl.colors.inkMuted)),
           ClTabularText(
-            money(locale, s.total),
+            m(s.total),
             style: cl.text.largeTitle.copyWith(
               fontSize: 34,
               fontWeight: FontWeight.w700,
             ),
           ),
-          if (budget.isSet) ...[
+          if (s.others.isNotEmpty)
+            Text(
+              l10n.spAlsoSpent(moneyList(locale, s.others)),
+              key: const Key('spOtherCurrencies'),
+              style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+            ),
+          if (budgetHere) ...[
             const SizedBox(height: ClSpace.s2),
             ShareBar(
               share: share,
@@ -499,7 +520,7 @@ class _TotalCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    l10n.spBudgetShare(percent(share), money(locale, total)),
+                    l10n.spBudgetShare(percent(share), m(total)),
                     style: cl.text.label.copyWith(
                       color: cl.colors.inkMuted,
                       fontSize: 13,
@@ -509,8 +530,8 @@ class _TotalCard extends StatelessWidget {
                 const SizedBox(width: ClSpace.s2),
                 Text(
                   over
-                      ? l10n.spOverBy(money(locale, s.total - total))
-                      : l10n.spLeft(money(locale, total - s.total)),
+                      ? l10n.spOverBy(m(s.total - total))
+                      : l10n.spLeft(m(total - s.total)),
                   style: cl.text.label.copyWith(
                     color: over ? cl.colors.error : cl.colors.mintText,
                     fontWeight: FontWeight.w600,
@@ -523,7 +544,7 @@ class _TotalCard extends StatelessWidget {
           const SizedBox(height: ClSpace.s3),
           Row(
             children: [
-              kpi(money(locale, s.averagePerDay), l10n.spAvgPerDay),
+              kpi(m(s.averagePerDay), l10n.spAvgPerDay),
               const SizedBox(width: ClSpace.s2),
               kpi(
                 change == null
@@ -854,7 +875,11 @@ class _DayGroups extends StatelessWidget {
                   ),
                 ),
                 ClTabularText(
-                  money(locale, sumOf(entry.value)),
+                  // D-075 #4: a day's total per currency, never added together.
+                  moneyList(
+                    locale,
+                    totalsByCurrency(entry.value, first: scope.currency),
+                  ),
                   style: cl.text.label.copyWith(color: cl.colors.inkMuted),
                 ),
               ],
@@ -964,7 +989,7 @@ class ExpenseDetailScreen extends ConsumerWidget {
         const SizedBox(height: ClSpace.s3),
         Center(
           child: ClTabularText(
-            money(locale, e.amount),
+            money(locale, e.amount, e.currency),
             style: cl.text.largeTitle.copyWith(
               fontSize: 34,
               fontWeight: FontWeight.w700,

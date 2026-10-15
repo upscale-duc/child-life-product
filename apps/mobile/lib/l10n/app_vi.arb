@@ -3884,6 +3884,104 @@
   "@reminderUndo": {
     "description": "8e for a done reminder (D-030)."
   },
+  "reminderAllDay": "Cả ngày",
+  "@reminderAllDay": {
+    "description": "D-075 #5: all-day reminder (8b toggle, 8e value, notification body)."
+  },
+  "reminderAllDayLower": "cả ngày",
+  "@reminderAllDayLower": {
+    "description": "D-075 #5: ReminderRow meta for an all-day reminder."
+  },
+  "reminderDay": "Ngày",
+  "@reminderDay": {
+    "description": "D-075 #5: 8b / 8e date row of an all-day reminder."
+  },
+  "reminderAllDayAt": "Giờ báo",
+  "@reminderAllDayAt": {
+    "description": "D-075 #5: 8b / 8e row with the person's all-day time."
+  },
+  "reminderAllDayTimeTitle": "Giờ nhắc việc cả ngày",
+  "@reminderAllDayTimeTitle": {
+    "description": "D-075 #5: time picker title."
+  },
+  "reminderAllDayTimeNote": "Áp dụng cho mọi nhắc việc cả ngày báo trên máy này, theo giờ của {name}.",
+  "@reminderAllDayTimeNote": {
+    "description": "D-075 #5: under the all-day time picker.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "leadOnDay": "Đúng ngày",
+  "@leadOnDay": {
+    "description": "D-075 #5: \"Báo trước\" 0 for an all-day reminder."
+  },
+  "reminderAssignee": "Giao cho",
+  "@reminderAssignee": {
+    "description": "D-075 #5: 8b / 8e assignee row."
+  },
+  "reminderAssignNone": "Chưa giao",
+  "@reminderAssignNone": {
+    "description": "D-075 #5: assignee row value when unassigned."
+  },
+  "reminderAssignNobody": "Không giao ai",
+  "@reminderAssignNobody": {
+    "description": "D-075 #5: assignee picker option."
+  },
+  "reminderAssignPickerNote": "Người được giao nhận thông báo trên máy của họ khi mở app. Chỉ Cùng nuôi và người chăm sóc được giao.",
+  "@reminderAssignPickerNote": {
+    "description": "D-075 #5: assignee picker note."
+  },
+  "reminderAssignedToYou": "Giao cho bạn",
+  "@reminderAssignedToYou": {
+    "description": "D-075 #5: highlighted label for the assignee."
+  },
+  "reminderAssignedTo": "Giao cho {name}",
+  "@reminderAssignedTo": {
+    "description": "D-075 #5: label others see (\"Giao cho Cô Lan\").",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderNotifyMine": "Các máy của bạn",
+  "@reminderNotifyMine": {
+    "description": "D-075 #5: 8e \"Thông báo\" when assigned to me."
+  },
+  "reminderNotifyAssignee": "Các máy của {name}",
+  "@reminderNotifyAssignee": {
+    "description": "D-075 #5: 8e \"Thông báo\" when assigned to someone.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderFootnoteAssigned": "Theo giờ của {name} ({zone}). Gia đình thấy nhắc việc trong app. {who} nhận thông báo trên máy của mình khi mở app.",
+  "@reminderFootnoteAssigned": {
+    "description": "D-075 #5: 8b footnote when assigned to someone else.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "zone": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderDetailNoteAssigned": "Người được giao nhận thông báo trên máy của mình khi mở app. Đánh dấu xong khi đã làm.",
+  "@reminderDetailNoteAssigned": {
+    "description": "D-075 #5: 8e note for an assigned reminder."
+  },
+  "reminderPastDay": "Chọn hôm nay hoặc một ngày sau.",
+  "@reminderPastDay": {
+    "description": "D-075 #5: all-day date in the past."
+  },
   "moveNotifTitle": "Nhận thông báo trên máy này?",
   "@moveNotifTitle": {
     "description": "D-029 sheet."
@@ -10788,6 +10886,138 @@
   "@spCurrencyName": {
     "description": "Chi tiêu (v1.1 8a–8o)."
   },
+  "spCurrency": "Tiền tệ",
+  "@spCurrency": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurrencyTitle": "Chọn tiền tệ",
+  "@spCurrencyTitle": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurrencyPick": "Đổi tiền tệ, đang là {code}",
+  "@spCurrencyPick": {
+    "description": "Chi tiêu currencies (D-075 #4).",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "spCurrencyMain": "Tiền tệ chính",
+  "@spCurrencyMain": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurrencyMainSub": "Mặc định khi thêm khoản chi; tổng, thống kê và ngân sách tính theo tiền tệ này. Khoản chi bằng tiền tệ khác được ghi riêng, không quy đổi.",
+  "@spCurrencyMainSub": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurrencyMainSaved": "Đã đổi tiền tệ chính",
+  "@spCurrencyMainSaved": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spAlsoSpent": "Ngoài ra: {amounts}",
+  "@spAlsoSpent": {
+    "description": "Chi tiêu currencies (D-075 #4).",
+    "placeholders": {
+      "amounts": {
+        "type": "String"
+      }
+    }
+  },
+  "spOtherCurrenciesNote": "Không cộng vào tổng (tiền tệ khác): {amounts}",
+  "@spOtherCurrenciesNote": {
+    "description": "Chi tiêu currencies (D-075 #4).",
+    "placeholders": {
+      "amounts": {
+        "type": "String"
+      }
+    }
+  },
+  "spBudgetCurrencyNote": "Ngân sách tính các khoản chi bằng {code}.",
+  "@spBudgetCurrencyNote": {
+    "description": "Chi tiêu currencies (D-075 #4).",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "spBudgetOldCurrency": "Ngân sách đang lưu theo {old}. Đặt lại số tiền rồi lưu để tính theo {code}.",
+  "@spBudgetOldCurrency": {
+    "description": "Chi tiêu currencies (D-075 #4).",
+    "placeholders": {
+      "old": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "spCurVND": "Đồng Việt Nam",
+  "@spCurVND": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurUSD": "Đô la Mỹ",
+  "@spCurUSD": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurEUR": "Euro",
+  "@spCurEUR": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurGBP": "Bảng Anh",
+  "@spCurGBP": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurAUD": "Đô la Úc",
+  "@spCurAUD": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurCAD": "Đô la Canada",
+  "@spCurCAD": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurNZD": "Đô la New Zealand",
+  "@spCurNZD": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurSGD": "Đô la Singapore",
+  "@spCurSGD": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurJPY": "Yên Nhật",
+  "@spCurJPY": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurKRW": "Won Hàn Quốc",
+  "@spCurKRW": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurTWD": "Đô la Đài Loan",
+  "@spCurTWD": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurTHB": "Baht Thái",
+  "@spCurTHB": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurHKD": "Đô la Hồng Kông",
+  "@spCurHKD": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurCNY": "Nhân dân tệ",
+  "@spCurCNY": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurCHF": "Franc Thuỵ Sĩ",
+  "@spCurCHF": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
+  "spCurMYR": "Ringgit Malaysia",
+  "@spCurMYR": {
+    "description": "Chi tiêu currencies (D-075 #4)."
+  },
   "spCatChildcare": "Giữ trẻ & học",
   "@spCatChildcare": {
     "description": "Chi tiêu (v1.1 8a–8o)."
@@ -12474,6 +12704,10 @@
   "spFromImport": "nhập từ tệp",
   "@spFromImport": {
     "description": "Nhập chi tiêu (D-060)."
+  },
+  "spFromAssistant": "từ Trợ lý",
+  "@spFromAssistant": {
+    "description": "Expense row subline: saved by the Assistant from a receipt (source assistant, D-075 #3/#4)."
   },
   "spFromImportFull": "Nhập chi tiêu · xem lần nhập",
   "@spFromImportFull": {
@@ -16185,7 +16419,7 @@
   "@pmTemplatePremiumBody": {
     "description": "MO02 sheet body."
   },
-  "pmTemplateBetaNote": "Beta cá nhân hoá không gồm mẫu Premium.",
+  "pmTemplateBetaNote": "Gói beta hiện tại của nhà mình chưa gồm mẫu Premium.",
   "@pmTemplateBetaNote": {
     "description": "MO02 note for beta families (brief p.3, extract 30 Q2)."
   },
@@ -18452,7 +18686,7 @@
       }
     }
   },
-  "aiStateQuotaMonth": "Nhà mình đã dùng {used}/{limit} lượt AI tháng này. Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.",
+  "aiStateQuotaMonth": "Nhà mình đã dùng {used}/{limit} lượt AI kỳ này (chung cho tóm tắt và trợ lý). Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.",
   "@aiStateQuotaMonth": {
     "description": "QUOTA_EXCEEDED, monthly window. EN is an engineering draft for owner review.",
     "placeholders": {
@@ -20410,10 +20644,6 @@
   "@asRemovePhoto": {
     "description": "Removes the pending photo (never uploaded). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "asPhotoSoon": "Đọc ảnh sẽ có ở bản cập nhật tới. Ảnh chưa được gửi đi.",
-  "@asPhotoSoon": {
-    "description": "Photo allowed by the quote while the A5 upload is not in this build. VI and EN are engineering drafts (no frame draws this state) for owner review."
-  },
   "asOutTitleFree": "Bạn đã dùng hết lượt hỗ trợ AI tháng này.",
   "@asOutTitleFree": {
     "description": "CH21 title."
@@ -20519,7 +20749,7 @@
   "@asConsentProvider": {
     "description": "CH26 provider and retention (D-003), replacing the internal \"chờ chính sách được duyệt\". Deviates from the frame on purpose (business rule wins; see the A4 report)."
   },
-  "asConsentPrivate": "Cuộc trò chuyện chỉ bạn xem được. Bạn đổi ý lúc nào cũng được.",
+  "asConsentPrivate": "Với Ba, Mẹ và người chăm sóc, câu hỏi về bé nằm trong cuộc trò chuyện chung của bé. Ảnh, chi tiêu và mọi câu hỏi khác chỉ bạn thấy. Bạn đổi ý lúc nào cũng được.",
   "@asConsentPrivate": {
     "description": "CH26 privacy (P-158) and withdrawal. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
@@ -20675,5 +20905,569 @@
   "asDeleteFailed": "Chưa xoá được. Thử lại sau.",
   "@asDeleteFailed": {
     "description": "Delete failed. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPhotoSheetTitle": "Gửi ảnh để trợ lý đọc",
+  "@asPhotoSheetTitle": {
+    "description": "CH09 sheet title. Slice A5."
+  },
+  "asPhotoCameraSub": "Hoá đơn, bảng note",
+  "@asPhotoCameraSub": {
+    "description": "CH09 camera row subtitle. Slice A5."
+  },
+  "asPhotoLibrarySub": "Chỉ ảnh bạn chọn được gửi",
+  "@asPhotoLibrarySub": {
+    "description": "CH09 library row subtitle. Slice A5."
+  },
+  "asPhotoQuoteExact": "Đọc 1 ảnh dùng {credits} lượt hỗ trợ AI",
+  "@asPhotoQuoteExact": {
+    "description": "CH09 estimate heading with the server policy / quote number (exact, not \"khoảng\"). Deviates from the frame on purpose (business rule wins; see the A4 report).",
+    "placeholders": {
+      "credits": {
+        "type": "int"
+      }
+    }
+  },
+  "asPhotoSheetBody": "Còn {remaining} lượt. Bạn thấy đúng số lượt trước khi gửi; ảnh không đọc được thì không trừ.",
+  "@asPhotoSheetBody": {
+    "description": "CH09 sheet body (no deletion promise before reading, G05). Deviates from the frame on purpose (business rule wins; see the A4 report).",
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "asPhotoSheetBodyUnknown": "Bạn thấy đúng số lượt trước khi gửi; ảnh không đọc được thì không trừ.",
+  "@asPhotoSheetBodyUnknown": {
+    "description": "CH09 sheet body while usage is unknown. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPhotoChosenTitle": "Ảnh đã chọn · chưa gửi",
+  "@asPhotoChosenTitle": {
+    "description": "CH09 card after choosing (nothing uploaded yet). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPhotoOnlyThis": "Chỉ ảnh này được gửi để đọc.",
+  "@asPhotoOnlyThis": {
+    "description": "CH09 card: which photo is sent (annotation 618:10251). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPhotoQuoteBody": "Còn {remaining} lượt. Hỏi lại, sửa và xác nhận trong cùng tác vụ không trừ thêm. Ảnh không đọc được thì không trừ.",
+  "@asPhotoQuoteBody": {
+    "description": "CH09 quote body (G05: no deletion promise here). Deviates from the frame on purpose (business rule wins; see the A4 report).",
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "asKeepReceipt": "Giữ ảnh hoá đơn cùng khoản chi",
+  "@asKeepReceipt": {
+    "description": "CH09 retention switch (default on, D-075 #3). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asKeepReceiptOn": "Khi bạn lưu khoản chi, ảnh được giữ cùng khoản chi. Không lưu thì ảnh được xoá.",
+  "@asKeepReceiptOn": {
+    "description": "CH09 retention on (keep_with_record). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asKeepReceiptOff": "Ảnh được xoá sau khi đọc. App chỉ báo đã xoá khi việc xoá được xác nhận.",
+  "@asKeepReceiptOff": {
+    "description": "CH09 retention off (delete_after_read; G05). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPhotoTextIsData": "Chữ trong ảnh là nội dung để đọc, không phải lệnh cho app.",
+  "@asPhotoTextIsData": {
+    "description": "CH09 / CH14 notice (618:10251, 614:9037)."
+  },
+  "asSendPhoto": "Gửi ảnh",
+  "@asSendPhoto": {
+    "description": "CH09 primary (\"Tiếp tục\" in the frame): uploads and reads. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPhotoQuoting": "Đang tính lượt…",
+  "@asPhotoQuoting": {
+    "description": "Photo bubble while the quote is asked. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPhotoPickFailed": "Chưa mở được ảnh. Thử lại hoặc chọn ảnh khác.",
+  "@asPhotoPickFailed": {
+    "description": "Picker failed (not a permission). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asUploading": "Đang tải lên · {percent}%",
+  "@asUploading": {
+    "description": "CH10 attachment label.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "asCancelUpload": "Huỷ",
+  "@asCancelUpload": {
+    "description": "CH10 cancel while uploading (0 credits; missing in the frame, annotation 618:10257). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asUploadFree": "Huỷ khi đang tải lên không trừ lượt.",
+  "@asUploadFree": {
+    "description": "CH10 note while uploading. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asUploadCanceled": "Đã huỷ tải lên · không trừ lượt. Ảnh vẫn được chọn.",
+  "@asUploadCanceled": {
+    "description": "After cancelling an upload. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPhotoReading": "Đang đọc ảnh…",
+  "@asPhotoReading": {
+    "description": "CH10 attachment label (neutral: it may not be a receipt). Deviates from the frame on purpose (business rule wins; see the A4 report)."
+  },
+  "asPhotoRead": "Đã đọc",
+  "@asPhotoRead": {
+    "description": "CH11 / CH13 attachment label."
+  },
+  "asPhotoBlurry": "Ảnh hơi mờ",
+  "@asPhotoBlurry": {
+    "description": "CH14 attachment label."
+  },
+  "asPhotoRefused": "Không đọc được tệp này",
+  "@asPhotoRefused": {
+    "description": "Attachment refused before reading (not an image). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPhotoCanceled": "Đã huỷ",
+  "@asPhotoCanceled": {
+    "description": "Attachment of a cancelled task. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPhotoLeaveScreen": "Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại. Lỗi hệ thống không trừ lượt.",
+  "@asPhotoLeaveScreen": {
+    "description": "CH10 note (no notification promise: none is built). Deviates from the frame on purpose (business rule wins; see the A4 report)."
+  },
+  "asPhotoFailBody": "Ảnh chưa được đọc, chưa có gì được lưu và không trừ lượt. Ảnh vẫn được chọn.",
+  "@asPhotoFailBody": {
+    "description": "CH25 for a photo upload / start failure. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asReceiptTitle": "Chi tiêu từ hoá đơn",
+  "@asReceiptTitle": {
+    "description": "CH11 card title."
+  },
+  "asFieldStore": "Cửa hàng",
+  "@asFieldStore": {
+    "description": "CH11 field."
+  },
+  "asFieldDate": "Ngày",
+  "@asFieldDate": {
+    "description": "CH11 field."
+  },
+  "asFieldTotal": "Tổng tiền",
+  "@asFieldTotal": {
+    "description": "CH11 field."
+  },
+  "asFieldCategory": "Danh mục gợi ý",
+  "@asFieldCategory": {
+    "description": "CH11 field."
+  },
+  "asFieldScope": "Phạm vi",
+  "@asFieldScope": {
+    "description": "CH11 field."
+  },
+  "asFieldCurrency": "Đơn vị tiền",
+  "@asFieldCurrency": {
+    "description": "Expense editor field. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asFieldTitle": "Việc",
+  "@asFieldTitle": {
+    "description": "Reminder editor title field. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asFieldTime": "Giờ",
+  "@asFieldTime": {
+    "description": "Reminder editor time field. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asFieldCheckA11y": "{label}: {value}, cần kiểm tra",
+  "@asFieldCheckA11y": {
+    "description": "Screen-reader label of a flagged receipt field. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "asNotRead": "chưa đọc được",
+  "@asNotRead": {
+    "description": "Receipt field the reading did not find. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asExpenseFor": "Gia đình · cho {name}",
+  "@asExpenseFor": {
+    "description": "CH11 scope value.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asTaxIncluded": "Chỉ ghi tổng tiền {total} (đã gồm thuế), không cộng thêm tạm tính hay thuế.",
+  "@asTaxIncluded": {
+    "description": "CH11 footnote.",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "asConfirmDate": "Ngày chưa chắc: chạm vào ngày để chọn hoặc xác nhận trước khi lưu.",
+  "@asConfirmDate": {
+    "description": "CH11 \"Ngày không chắc → bắt chọn ngày\" (618:10262). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asDuplicateBody": "Có thể trùng với một khoản đã ghi trong gia đình. Mình không tự gộp.",
+  "@asDuplicateBody": {
+    "description": "CH11 duplicate box (author/time not known to the app). Deviates from the frame on purpose (business rule wins; see the A4 report)."
+  },
+  "asDuplicateAcknowledged": "Bạn chọn vẫn lưu riêng · không gộp.",
+  "@asDuplicateAcknowledged": {
+    "description": "CH11 duplicate after \"Vẫn lưu\". VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asOpenDuplicate": "Mở khoản chi trùng",
+  "@asOpenDuplicate": {
+    "description": "CH11 duplicate action (opens Chi tiêu history). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asSaveAnywayShort": "Vẫn lưu",
+  "@asSaveAnywayShort": {
+    "description": "CH11 duplicate acknowledge (annotation \"Gộp/Vẫn lưu\"; never merged)."
+  },
+  "asSaveExpense": "Lưu chi tiêu",
+  "@asSaveExpense": {
+    "description": "CH11 save action."
+  },
+  "asSkip": "Bỏ qua",
+  "@asSkip": {
+    "description": "CH11 discard action."
+  },
+  "asEditExpense": "Sửa khoản chi",
+  "@asEditExpense": {
+    "description": "Expense editor title. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asTotalOnly": "Chỉ tổng tiền in trên hoá đơn; không cộng tạm tính và thuế.",
+  "@asTotalOnly": {
+    "description": "Expense editor note (brief p.14). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPickDate": "Chọn ngày",
+  "@asPickDate": {
+    "description": "Date wheel title. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPickTime": "Chọn giờ",
+  "@asPickTime": {
+    "description": "Time wheel title. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRetentionKept": "Ảnh hoá đơn được giữ cùng khoản chi trong Chi tiêu.",
+  "@asRetentionKept": {
+    "description": "G05: a copy is kept with the saved expense (server confirmed). Deviates from the frame on purpose (business rule wins; see the A4 report)."
+  },
+  "asRetentionKeptIfSaved": "Ảnh được giữ cùng khoản chi khi bạn lưu; nếu không lưu, ảnh sẽ được xoá.",
+  "@asRetentionKeptIfSaved": {
+    "description": "G05: keep_with_record, nothing saved yet. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRetentionDeleting": "Đang xoá ảnh gốc. App chỉ báo đã xoá khi việc xoá được xác nhận.",
+  "@asRetentionDeleting": {
+    "description": "G05: deletion requested / pending, not confirmed. Deviates from the frame on purpose (business rule wins; see the A4 report)."
+  },
+  "asRetentionDeleted": "Ảnh gốc đã được xoá.",
+  "@asRetentionDeleted": {
+    "description": "G05: Storage confirmed the deletion (replaces CH12 \"đã xoá sau khi đọc (theo cài đặt hiện tại)\"). Deviates from the frame on purpose (business rule wins; see the A4 report)."
+  },
+  "asRetentionWillDelete": "Ảnh gốc sẽ được xoá sau khi đọc; app báo khi xoá xong.",
+  "@asRetentionWillDelete": {
+    "description": "G05: delete_after_read, not deleted yet. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRemindLine": "Nhắc: {when}",
+  "@asRemindLine": {
+    "description": "CH13 card line (\"Nhắc: Thứ Ba 20/10 · 09:00\"; the real weekday, G03).",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "asModuleRemindersOf": "{name} · Nhắc việc",
+  "@asModuleRemindersOf": {
+    "description": "CH13 card scope row.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asCheckReminder": "Chọn ngày giờ",
+  "@asCheckReminder": {
+    "description": "CH13 action on a reminder that needs a date or time. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asEditReminder": "Sửa nhắc việc",
+  "@asEditReminder": {
+    "description": "Reminder editor title. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asAllDay": "Không đặt giờ",
+  "@asAllDay": {
+    "description": "Reminder editor: date-only (only while the server accepts it). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asReminderBaby": "Nhắc việc lưu cho {name}; không chuyển sang bé khác.",
+  "@asReminderBaby": {
+    "description": "Reminder editor note. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asProblemInvalidTitle": "Tên việc dài quá (tối đa 80 ký tự).",
+  "@asProblemInvalidTitle": {
+    "description": "INVALID_TITLE. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asProblemPastTime": "Giờ nhắc đã qua — chọn một giờ sắp tới.",
+  "@asProblemPastTime": {
+    "description": "PAST_TIME (D-031). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRetake": "Chụp lại",
+  "@asRetake": {
+    "description": "CH14 chip."
+  },
+  "asOtherPhoto": "Chọn ảnh khác",
+  "@asOtherPhoto": {
+    "description": "Chip after a refused file. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asUnreadableFree": "Lần đọc này không trừ lượt.",
+  "@asUnreadableFree": {
+    "description": "CH14 note (0 credits)."
+  },
+  "asSleepSafety": "Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ (miễn phí).",
+  "@asSleepSafety": {
+    "description": "CH15 safety box (now with a link)."
+  },
+  "asSleepFalling": "khó vào giấc",
+  "@asSleepFalling": {
+    "description": "Sleep concern kind."
+  },
+  "asSleepWaking": "hay thức giấc",
+  "@asSleepWaking": {
+    "description": "Sleep concern kind."
+  },
+  "asSleepBoth": "khó vào giấc và hay thức giấc",
+  "@asSleepBoth": {
+    "description": "Sleep concern kind both. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asWhenNight": "giấc đêm",
+  "@asWhenNight": {
+    "description": "Sleep concern time."
+  },
+  "asWhenDay": "giấc ngày",
+  "@asWhenDay": {
+    "description": "Sleep concern time."
+  },
+  "asWhenBoth": "cả ngày và đêm",
+  "@asWhenBoth": {
+    "description": "Sleep concern time both. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asFromCareLibrary": "Từ Thư viện chăm bé",
+  "@asFromCareLibrary": {
+    "description": "CH16 kicker."
+  },
+  "asFromCareLibraryMinutes": "Từ Thư viện chăm bé · {minutes} phút",
+  "@asFromCareLibraryMinutes": {
+    "description": "CH16 kicker with the content duration. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "asContentUnreviewed": "Nội dung minh hoạ · chờ chuyên môn duyệt. Không khẳng định nguyên nhân.",
+  "@asContentUnreviewed": {
+    "description": "CH16 disclaimer while reviewed is false (D-073 #2)."
+  },
+  "asContentReviewed": "Nội dung đã được chuyên môn duyệt. Không khẳng định nguyên nhân.",
+  "@asContentReviewed": {
+    "description": "CH16 line when the content is reviewed. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asTryTonight": "Thử tối nay",
+  "@asTryTonight": {
+    "description": "CH16 primary: an intention, not \"đã thử\"."
+  },
+  "asTryToday": "Thử hôm nay",
+  "@asTryToday": {
+    "description": "CH16 primary for a daytime item. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asAnotherIdea": "Gợi ý khác",
+  "@asAnotherIdea": {
+    "description": "CH16 secondary (opens the next approved item in the care library)."
+  },
+  "asPlannedTonight": "Bạn định thử tối nay",
+  "@asPlannedTonight": {
+    "description": "CH16 after \"Thử tối nay\" (an intention). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPlannedToday": "Bạn định thử hôm nay",
+  "@asPlannedToday": {
+    "description": "CH16 after \"Thử hôm nay\". VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPlanFollowUp": "Mình sẽ hỏi lại từ {day}, sau khi bạn có dịp thử.",
+  "@asPlanFollowUp": {
+    "description": "CH16 → CH17 timing note. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "asObservationTitle": "Ghi nhận (tuỳ chọn)",
+  "@asObservationTitle": {
+    "description": "CH16 observation draft title (G01: an observation, not a reminder)."
+  },
+  "asObservationSleep": "giấc ngủ",
+  "@asObservationSleep": {
+    "description": "CH16 observation line when nothing more was reported. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asSaveObservation": "Lưu ghi nhận",
+  "@asSaveObservation": {
+    "description": "CH16 observation save."
+  },
+  "asNoThanks": "Không cần",
+  "@asNoThanks": {
+    "description": "CH16 observation discard."
+  },
+  "asOpenCareLibrary": "Mở Thư viện chăm bé",
+  "@asOpenCareLibrary": {
+    "description": "Link after \"chưa có gợi ý đã duyệt\". VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asOutcomeHelpful": "Có ích",
+  "@asOutcomeHelpful": {
+    "description": "CH17 outcome."
+  },
+  "asOutcomeUnsure": "Chưa rõ",
+  "@asOutcomeUnsure": {
+    "description": "CH17 outcome."
+  },
+  "asOutcomeNotSuitable": "Không phù hợp",
+  "@asOutcomeNotSuitable": {
+    "description": "CH17 outcome."
+  },
+  "asOutcomeNotTried": "Chưa thử",
+  "@asOutcomeNotTried": {
+    "description": "CH17 outcome (always offered). EN is an engineering draft for owner review."
+  },
+  "asFeedbackHelpful": "Đã ghi phản hồi. Lần sau mình sẽ ưu tiên cách này. “Có ích” không có nghĩa cách này là nguyên nhân thay đổi.",
+  "@asFeedbackHelpful": {
+    "description": "CH17 after Có ích."
+  },
+  "asFeedbackUnsure": "Đã ghi phản hồi. Mình sẽ cân nhắc khi gợi ý lần sau.",
+  "@asFeedbackUnsure": {
+    "description": "CH17 after Chưa rõ. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asFeedbackNotSuitable": "Đã ghi phản hồi. Lần sau mình sẽ không gợi ý cách này.",
+  "@asFeedbackNotSuitable": {
+    "description": "CH17 after Không phù hợp. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asFeedbackNotTried": "Không sao. Khi nào thử, bạn có thể ghi lại trong Nhịp lớn lên.",
+  "@asFeedbackNotTried": {
+    "description": "CH17 after Chưa thử (nothing written to the module). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asFeedbackTitle": "Phản hồi hoạt động",
+  "@asFeedbackTitle": {
+    "description": "CH17 saved card title."
+  },
+  "asFeedbackFree": "Phản hồi không trừ lượt hỗ trợ AI.",
+  "@asFeedbackFree": {
+    "description": "CH17 note."
+  },
+  "asRecipesFrom": "Gợi ý từ Thư viện công thức",
+  "@asRecipesFrom": {
+    "description": "CH18 card label. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asRecipeMinutes": "{minutes} phút",
+  "@asRecipeMinutes": {
+    "description": "CH18 recipe duration.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "asRecipesExcluded": "Đã loại {count} món có nguyên liệu con từng có phản ứng (phản ứng đã ghi, không phải chẩn đoán dị ứng).",
+  "@asRecipesExcluded": {
+    "description": "CH18 excluded count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "asRecipesCaveat": "Món chưa có ghi nhận phản ứng không có nghĩa là con đã dung nạp tốt.",
+  "@asRecipesCaveat": {
+    "description": "CH18 caveat when the server sent none."
+  },
+  "asLogMeal": "Ghi bữa ăn",
+  "@asLogMeal": {
+    "description": "CH18 meal log button (disabled: no meal log yet). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asLogMealUnavailable": "Chưa có nhật ký bữa ăn trong app nên chưa ghi được từ đây.",
+  "@asLogMealUnavailable": {
+    "description": "CH18 under the disabled \"Ghi bữa ăn\" (P-157). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asProblemInvalidAssignee": "Người được giao không còn trong gia đình. Chọn lại người phụ trách.",
+  "@asProblemInvalidAssignee": {
+    "description": "INVALID_ASSIGNEE (D-075 #5). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asSavedBy": "{name} đã lưu {count} mục",
+  "@asSavedBy": {
+    "description": "Shared thread: another member confirmed drafts (action_result author, D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "asConfirmedBy": "{name} đã lưu",
+  "@asConfirmedBy": {
+    "description": "Saved draft card: who saved it when not me (draft.confirmedBy, D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asWaitingFor": "Chờ {name} trả lời câu hỏi này.",
+  "@asWaitingFor": {
+    "description": "Shared thread: only the task author answers its clarification (D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asPrivateTask": "Chỉ bạn thấy: ảnh và chi tiêu không vào cuộc trò chuyện chung của bé.",
+  "@asPrivateTask": {
+    "description": "Private photo task in a child chat of a shared-thread member (D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asHistoryShared": "CUỘC TRÒ CHUYỆN CHUNG",
+  "@asHistoryShared": {
+    "description": "CH03 section for the baby’s shared thread (D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asSharedThreadTitle": "Trò chuyện chung về bé",
+  "@asSharedThreadTitle": {
+    "description": "CH03 shared thread title. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asSharedThreadSub": "Ba, Mẹ và người chăm sóc cùng xem · {when}",
+  "@asSharedThreadSub": {
+    "description": "CH03 shared thread subtitle. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "asHistorySharedNote": "Câu hỏi về bé nằm trong cuộc trò chuyện chung của Ba, Mẹ và người chăm sóc. Ảnh, chi tiêu và các cuộc trò chuyện cũ chỉ bạn xem được.",
+  "@asHistorySharedNote": {
+    "description": "CH03 privacy line for Cùng nuôi / Người chăm sóc (D-075 #2). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asDeleteSharedTitle": "Xoá cuộc trò chuyện chung?",
+  "@asDeleteSharedTitle": {
+    "description": "CH03 confirm for the shared thread (Cùng nuôi only). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asDeleteSharedBody": "Cuộc trò chuyện chung sẽ bị xoá cho mọi người, kể cả bản nháp chưa lưu. Những gì đã lưu vào nhật ký, Nhịp lớn lên hay nhắc việc vẫn giữ nguyên.",
+  "@asDeleteSharedBody": {
+    "description": "CH03 confirm body for the shared thread. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asDeletedRecordsKept": "Đã xoá cuộc trò chuyện. Bản ghi đã lưu vẫn giữ nguyên.",
+  "@asDeletedRecordsKept": {
+    "description": "Toast after delete when the server confirms domainRecordsKept. VI and EN are engineering drafts (no frame draws this state) for owner review."
   }
 }

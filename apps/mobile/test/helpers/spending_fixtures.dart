@@ -12,6 +12,7 @@ class FakeSpendingRepository implements SpendingRepository {
         ({
           String? id,
           int amount,
+          String currency,
           String categoryId,
           String note,
           DateTime spentOn,
@@ -28,6 +29,7 @@ class FakeSpendingRepository implements SpendingRepository {
           String? id,
           String title,
           int amount,
+          String currency,
           RecurringSchedule schedule,
           bool enabled,
           DateTime? recordedOn,
@@ -36,12 +38,16 @@ class FakeSpendingRepository implements SpendingRepository {
   final categories = <List<SpendingCategory>>[];
   final deletedCategories = <(String categoryId, String moveTo)>[];
 
+  /// "Tiền tệ chính" writes (D-075 #4).
+  final currencies = <String>[];
+
   @override
   String saveExpense({
     required String babyId,
     required Membership me,
     String? id,
     required int amount,
+    String currency = 'VND',
     required String categoryId,
     required String note,
     required DateTime spentOn,
@@ -53,6 +59,7 @@ class FakeSpendingRepository implements SpendingRepository {
     expenses.add((
       id: id,
       amount: amount,
+      currency: currency,
       categoryId: categoryId,
       note: note,
       spentOn: spentOn,
@@ -88,6 +95,7 @@ class FakeSpendingRepository implements SpendingRepository {
     required String title,
     required String categoryId,
     required int amount,
+    String currency = 'VND',
     required Payer? payer,
     required RecurringSchedule schedule,
     required bool enabled,
@@ -97,10 +105,19 @@ class FakeSpendingRepository implements SpendingRepository {
     id: id,
     title: title,
     amount: amount,
+    currency: currency,
     schedule: schedule,
     enabled: enabled,
     recordedOn: recordedOn,
   ));
+
+  @override
+  void saveCurrency(
+    String familyId,
+    Membership me,
+    String currency, {
+    void Function(Object error)? onError,
+  }) => currencies.add(currency);
 
   @override
   void saveCategories(
@@ -137,10 +154,12 @@ Expense spend(
   String? receipt,
   ExpenseSource source = ExpenseSource.manual,
   String? sourceRef,
+  String currency = 'VND',
 }) => Expense(
   id: 'x_${id.padLeft(32, '0')}',
   babyId: 'b_00000000000000000001',
   amount: amount,
+  currency: currency,
   categoryId: categoryId,
   note: note,
   spentOn: day,

@@ -6,23 +6,60 @@ import '../../core/design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../care/care_format.dart';
 import '../onboarding/setup_screens.dart' show relationLabel;
+import 'spending_calc.dart' show MonthSummary;
+import 'spending_currency.dart';
 import 'spending_models.dart';
 
-/// Money copy (P-140): whole VND, "1.020.000 ₫" (vi) / "1,020,000 ₫" (en); short "4,2 tr" /
-/// "4.2M" from a million up.
+/// Money copy (P-140): VND as before, "1.020.000 ₫" (vi) / "1,020,000 ₫" (en); short "4,2 tr" /
+/// "4.2M" from a million up. Other currencies (D-075 #4) with intl, in their own decimals and a
+/// symbol that tells the dollars apart: "12,50 $" / "$12.50", "1.500 ¥" / "¥1,500".
 
 String spLocale(BuildContext context) =>
     Localizations.localeOf(context).toLanguageTag();
 
-/// "1.020.000" (no symbol: suggestion chips, budget fractions).
-String moneyPlain(String locale, int amount) =>
-    NumberFormat('#,##0', locale).format(amount);
+/// "1.020.000" / "12,50" (no symbol: the amount field, suggestion chips, budget fractions).
+String moneyPlain(
+  String locale,
+  int amount, [
+  String currency = legacyCurrency,
+]) {
+  final c = spCurrency(currency);
+  if (c.exponent == 0) return NumberFormat('#,##0', locale).format(amount);
+  return NumberFormat(
+    '#,##0.${'0' * c.exponent}',
+    locale,
+  ).format(amount / c.unit);
+}
 
-/// "1.020.000 ₫".
-String money(String locale, int amount) => '${moneyPlain(locale, amount)} ₫';
+/// "1.020.000 ₫"; "12,50 $" (vi) / "$12.50" (en).
+String money(String locale, int amount, [String currency = legacyCurrency]) {
+  final c = spCurrency(currency);
+  if (c.code == legacyCurrency) return '${moneyPlain(locale, amount)} ₫';
+  return NumberFormat.currency(
+    locale: locale,
+    name: c.code,
+    symbol: c.symbol,
+    decimalDigits: c.exponent,
+  ).format(amount / c.unit);
+}
 
-/// "4,2 tr" / "4.2M"; under a million the full form.
-String moneyShort(AppLocalizations l10n, String locale, int amount) {
+/// "4,2 tr" / "4.2M"; under a million the full form. Another currency: compact from 10 000.
+String moneyShort(
+  AppLocalizations l10n,
+  String locale,
+  int amount, [
+  String currency = legacyCurrency,
+]) {
+  final c = spCurrency(currency);
+  if (c.code != legacyCurrency) {
+    final major = amount / c.unit;
+    if (major.abs() < 10000) return money(locale, amount, currency);
+    return NumberFormat.compactCurrency(
+      locale: locale,
+      name: c.code,
+      symbol: c.symbol,
+    ).format(major);
+  }
   if (amount.abs() < 1000000) return money(locale, amount);
   return l10n.spMillions(
     NumberFormat('#,##0.#', locale).format((amount / 100000).round() / 10),
@@ -33,11 +70,74 @@ String moneyShort(AppLocalizations l10n, String locale, int amount) {
 String moneyAxis(AppLocalizations l10n, String locale, double millions) =>
     l10n.spMillions(NumberFormat('#,##0.#', locale).format(millions));
 
-/// Digits typed in the amount field → VND (separators ignored).
-int? parseMoney(String text) {
-  final digits = text.replaceAll(RegExp('[^0-9]'), '');
-  if (digits.isEmpty) return null;
-  return int.tryParse(digits.length > 10 ? digits.substring(0, 10) : digits);
+/// A chart tick for [value] minor units: VND in millions (as before), others compact.
+String moneyTick(
+  AppLocalizations l10n,
+  String locale,
+  double value,
+  String currency,
+) {
+  final c = spCurrency(currency);
+  if (c.code == legacyCurrency) return moneyAxis(l10n, locale, value / 1000000);
+  return NumberFormat.compact(locale: locale).format(value / c.unit);
+}
+
+/// "12,50 $ · 3.000 ¥": totals kept apart by currency (D-075 #4), [first] first.
+String moneyList(String locale, Map<String, int> sums) =>
+    [for (final e in sums.entries) money(locale, e.value, e.key)].join(' · ');
+
+/// The amount field's text split at its decimal mark: the locale's grouping separators are
+/// dropped first, then the first `.` or `,` left is the mark (the decimal keypad types the
+/// locale's own). Without a locale, the last mark followed by at most [exponent] digits.
+({String whole, String? frac}) splitMoney(
+  String text,
+  int exponent, [
+  String? locale,
+]) {
+  var t = text.replaceAll(RegExp('[^0-9.,]'), '');
+  if (locale != null) {
+    t = t.replaceAll(NumberFormat.decimalPattern(locale).symbols.GROUP_SEP, '');
+    final i = t.indexOf(RegExp('[.,]'));
+    if (i < 0) return (whole: t, frac: null);
+    return (
+      whole: t.substring(0, i),
+      frac: t.substring(i + 1).replaceAll(RegExp('[.,]'), ''),
+    );
+  }
+  final m = RegExp('^(.*?)[.,]([0-9]{0,$exponent})\$').firstMatch(t);
+  if (m == null) return (whole: t.replaceAll(RegExp('[.,]'), ''), frac: null);
+  return (whole: m.group(1)!.replaceAll(RegExp('[.,]'), ''), frac: m.group(2));
+}
+
+/// "1.020.000 ₫ · 12,50 $": a month in [currency], then its other currencies apart (tiles).
+String monthMoney(String locale, MonthSummary s, String currency) => moneyList(
+  locale,
+  {if (s.total != 0 || s.others.isEmpty) currency: s.total, ...s.others},
+);
+
+/// What was typed in the amount field → minor units of [currency]. VND (and JPY, KRW): digits
+/// only, separators ignored. A currency with cents: "12,5" (vi) / "12.50" (en) → 1250.
+int? parseMoney(
+  String text, [
+  String currency = legacyCurrency,
+  String? locale,
+]) {
+  final c = spCurrency(currency);
+  if (c.exponent == 0) {
+    final digits = text.replaceAll(RegExp('[^0-9]'), '');
+    if (digits.isEmpty) return null;
+    return int.tryParse(digits.length > 10 ? digits.substring(0, 10) : digits);
+  }
+  final split = splitMoney(text, c.exponent, locale);
+  final frac = split.frac ?? '';
+  if (split.whole.isEmpty && frac.isEmpty) return null;
+  final w = split.whole.length > 10
+      ? split.whole.substring(0, 10)
+      : split.whole;
+  final cents = frac.length > c.exponent
+      ? frac.substring(0, c.exponent)
+      : frac.padRight(c.exponent, '0');
+  return (int.tryParse(w) ?? 0) * c.unit + int.parse(cents);
 }
 
 /// "53%".
@@ -146,6 +246,7 @@ String expenseSubline(AppLocalizations l10n, Expense e, {String? lead}) {
     ExpenseSource.vaccine => l10n.spFromVaccines,
     ExpenseSource.recurring => l10n.spFromRecurring,
     ExpenseSource.import => l10n.spFromImport,
+    ExpenseSource.assistant => l10n.spFromAssistant,
     ExpenseSource.manual => null,
   };
   return [
@@ -168,3 +269,24 @@ String scheduleLabel(AppLocalizations l10n, RecurringSchedule s) => switch (s) {
 
 /// Spacing used by every spending screen.
 const spGap = ClSpace.s4;
+
+/// "Đồng Việt Nam", "Đô la Mỹ" (D-075 #4 picker).
+String currencyName(AppLocalizations l10n, String code) => switch (code) {
+  'VND' => l10n.spCurVND,
+  'USD' => l10n.spCurUSD,
+  'EUR' => l10n.spCurEUR,
+  'GBP' => l10n.spCurGBP,
+  'AUD' => l10n.spCurAUD,
+  'CAD' => l10n.spCurCAD,
+  'NZD' => l10n.spCurNZD,
+  'SGD' => l10n.spCurSGD,
+  'JPY' => l10n.spCurJPY,
+  'KRW' => l10n.spCurKRW,
+  'TWD' => l10n.spCurTWD,
+  'THB' => l10n.spCurTHB,
+  'HKD' => l10n.spCurHKD,
+  'CNY' => l10n.spCurCNY,
+  'CHF' => l10n.spCurCHF,
+  'MYR' => l10n.spCurMYR,
+  _ => code,
+};

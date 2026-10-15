@@ -16,9 +16,11 @@ import '../family/family_repository.dart';
 import '../first_aid/first_aid_repository.dart';
 import '../home/home_shell.dart';
 import '../spending/spending_calc.dart';
+import '../spending/spending_currency.dart' show legacyCurrency;
 import '../spending/spending_format.dart';
 import '../spending/spending_models.dart';
 import '../spending/spending_repository.dart';
+import '../spending/spending_widgets.dart' show watchSpending;
 
 /// Tiện ích tab (v1.0 improvement 450:6597; caregiver 450:6873), which replaced the Gia đình tab:
 /// "Công cụ" (Sơ cứu trẻ em, Chi tiêu) and "Gia đình" (Thành viên & chia sẻ; Mời người thân for
@@ -48,14 +50,21 @@ class UtilitiesScreen extends ConsumerWidget {
           'Asia/Ho_Chi_Minh';
       final now = ref.watch(careClockProvider).value ?? DateTime.now();
       final today = babyToday(zone, now);
-      final total = MonthSummary.of(expenses, monthOf(today), today).total;
+      // Chi tiêu currencies (D-075 #4): the household's first, the others apart.
+      final currency = watchSpending(ref)?.currency ?? legacyCurrency;
+      final month = MonthSummary.of(
+        expenses,
+        monthOf(today),
+        today,
+        currency: currency,
+      );
       spendingRow = _Row(
         key: const Key('utSpending'),
         icon: ClIcons.grid,
         title: l10n.spTitle,
-        subtitle: total == 0
+        subtitle: month.allItems.isEmpty
             ? l10n.spTileEmpty
-            : l10n.utSpendingMonth(money(locale, total)),
+            : l10n.utSpendingMonth(monthMoney(locale, month, currency)),
         onTap: () => context.push(Routes.spending),
       );
     } else if (spending.record) {

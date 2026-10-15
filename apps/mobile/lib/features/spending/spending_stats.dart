@@ -76,17 +76,20 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
   List<Widget> _month(BuildContext context, SpendingScope scope) {
     final l10n = AppLocalizations.of(context);
     final locale = spLocale(context);
+    final cur = scope.currency;
     final s = MonthSummary.of(
       scope.expenses,
       monthOf(scope.today),
       scope.today,
+      currency: cur,
     );
     return [
       _Kpis([
-        (moneyShort(l10n, locale, s.total), l10n.spMonthTotal),
-        (moneyShort(l10n, locale, s.averagePerDay), l10n.spAvgPerDay),
+        (moneyShort(l10n, locale, s.total, cur), l10n.spMonthTotal),
+        (moneyShort(l10n, locale, s.averagePerDay, cur), l10n.spAvgPerDay),
         ('${s.items.length}', l10n.spCount),
       ]),
+      ..._others(context, s.others),
       const SizedBox(height: ClSpace.s6),
       ClSectionHeader(title: l10n.spByCategory),
       const SizedBox(height: ClSpace.s2),
@@ -99,6 +102,7 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
               CategoryShareRow(
                 category: scope.category(e.key),
                 amount: e.value,
+                currency: cur,
                 share: e.value / s.total,
                 subline: percent(e.value / s.total),
               ),
@@ -107,11 +111,33 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
     ];
   }
 
+  /// D-075 #4: what was spent in other currencies over the same period, never added in.
+  List<Widget> _others(BuildContext context, Map<String, int> others) {
+    if (others.isEmpty) return const [];
+    final cl = context.cl;
+    return [
+      const SizedBox(height: ClSpace.s2),
+      Text(
+        AppLocalizations.of(
+          context,
+        ).spOtherCurrenciesNote(moneyList(spLocale(context), others)),
+        key: const Key('spStatsOtherCurrencies'),
+        style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+      ),
+    ];
+  }
+
   List<Widget> _six(BuildContext context, SpendingScope scope) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final locale = spLocale(context);
-    final six = SixMonths.of(scope.expenses, scope.today);
+    final cur = scope.currency;
+    final six = SixMonths.of(scope.expenses, scope.today, currency: cur);
+    final sixOthers = otherTotals(
+      scope.expenses.where((e) => six.months.any((m) => inMonth(e, m))),
+      cur,
+    );
+    String short(int v) => moneyShort(l10n, locale, v, cur);
     final high = six.bars[six.highestIndex];
     final highMonth = six.months[six.highestIndex];
     final colors = [
@@ -131,10 +157,11 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
     ];
     return [
       _Kpis([
-        (moneyShort(l10n, locale, six.total), l10n.spSixTotal),
-        (moneyShort(l10n, locale, six.averagePerMonth), l10n.spAvgPerMonth),
-        (moneyShort(l10n, locale, high.total), l10n.spHighest(highMonth.month)),
+        (short(six.total), l10n.spSixTotal),
+        (short(six.averagePerMonth), l10n.spAvgPerMonth),
+        (short(high.total), l10n.spHighest(highMonth.month)),
       ]),
+      ..._others(context, sixOthers),
       const SizedBox(height: ClSpace.s4),
       SpCard(
         child: Column(
@@ -154,13 +181,11 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
               colors: colors.isEmpty ? [cl.colors.mintDeep] : colors,
               labels: [for (final m in six.months) l10n.spMonthTick(m.month)],
               average: six.averagePerMonth,
-              averageLabel: l10n.spAvgLine(
-                moneyShort(l10n, locale, six.averagePerMonth),
-              ),
-              tickLabel: (v) => moneyAxis(l10n, locale, v / 1000000),
+              averageLabel: l10n.spAvgLine(short(six.averagePerMonth)),
+              tickLabel: (v) => moneyTick(l10n, locale, v, cur),
               tipOf: (i) => l10n.spTip(
                 l10n.spMonthTick(six.months[i].month),
-                moneyShort(l10n, locale, six.bars[i].total),
+                short(six.bars[i].total),
               ),
             ),
             if (six.legend.isNotEmpty) ...[
@@ -185,6 +210,7 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
               CategoryShareRow(
                 category: scope.category(e.key),
                 amount: e.value,
+                currency: cur,
                 share: e.value / six.total,
                 subline: percent(e.value / six.total),
               ),
@@ -238,7 +264,7 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
                         ),
                       ),
                       ClTabularText(
-                        '${money(locale, six.byPayer[i].amount)} · '
+                        '${money(locale, six.byPayer[i].amount, cur)} · '
                         '${percent(six.byPayer[i].amount / six.total)}',
                         style: cl.text.label.copyWith(
                           color: cl.colors.inkMuted,
@@ -262,7 +288,9 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
         .watch(babyPrivateProfileProvider(scope.babyId))
         .value
         ?.dateOfBirth;
-    final b = SinceBirth.of(scope.expenses, scope.today, dob);
+    final cur = scope.currency;
+    final b = SinceBirth.of(scope.expenses, scope.today, dob, currency: cur);
+    final birthOthers = otherTotals(scope.expenses, cur);
     final name = scope.baby?.nickname ?? '';
     return [
       SpCard(
@@ -280,16 +308,17 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
               style: cl.text.label.copyWith(color: cl.colors.inkMuted),
             ),
             ClTabularText(
-              money(locale, b.total),
+              money(locale, b.total, cur),
               style: cl.text.largeTitle.copyWith(fontWeight: FontWeight.w700),
             ),
             Text(
               l10n.spSinceBirthSub(
-                moneyShort(l10n, locale, b.averagePerMonth),
+                moneyShort(l10n, locale, b.averagePerMonth, cur),
                 b.count,
               ),
               style: cl.text.label.copyWith(color: cl.colors.inkMuted),
             ),
+            ..._others(context, birthOthers),
           ],
         ),
       ),
@@ -304,10 +333,10 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
               bars: b.bars,
               colors: [cl.colors.mintDeep],
               labels: [for (final bar in b.bars) bar.label],
-              tickLabel: (v) => moneyAxis(l10n, locale, v / 1000000),
+              tickLabel: (v) => moneyTick(l10n, locale, v, cur),
               tipOf: (i) => l10n.spTip(
                 i == 0 ? l10n.spFirstMonth : l10n.spAgeMonth(i),
-                moneyShort(l10n, locale, b.bars[i].total),
+                moneyShort(l10n, locale, b.bars[i].total, cur),
               ),
             ),
           ],
@@ -364,6 +393,7 @@ class _SpendingStatsScreenState extends ConsumerState<SpendingStatsScreen> {
         l10n.spCategory,
         l10n.spNote,
         l10n.spAmount,
+        l10n.spCurrency,
         l10n.spPayer,
         l10n.spRecordedBy,
       ],

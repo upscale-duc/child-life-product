@@ -18,29 +18,42 @@ import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../vaccines/vaccine_sheets.dart' show pickVxDate;
 import 'spending_calc.dart';
+import 'spending_currency.dart';
 import 'spending_format.dart';
 import 'spending_models.dart';
 import 'spending_repository.dart';
 import 'spending_sheets.dart';
 import 'spending_widgets.dart';
 
-/// An amount typed in a sheet. 0 = "Bỏ mức" ([clearLabel]); null = closed.
+/// An amount typed in a sheet (in [currency]'s minor units). 0 = "Bỏ mức" ([clearLabel]);
+/// null = closed.
 Future<int?> showAmountSheet(
   BuildContext context, {
   required String title,
   int? initial,
   String? clearLabel,
+  String currency = legacyCurrency,
 }) => showClSheet<int>(
   context: context,
-  builder: (_) =>
-      _AmountSheet(title: title, initial: initial, clearLabel: clearLabel),
+  builder: (_) => _AmountSheet(
+    title: title,
+    initial: initial,
+    clearLabel: clearLabel,
+    currency: currency,
+  ),
 );
 
 class _AmountSheet extends StatefulWidget {
-  const _AmountSheet({required this.title, this.initial, this.clearLabel});
+  const _AmountSheet({
+    required this.title,
+    required this.currency,
+    this.initial,
+    this.clearLabel,
+  });
   final String title;
   final int? initial;
   final String? clearLabel;
+  final String currency;
 
   @override
   State<_AmountSheet> createState() => _AmountSheetState();
@@ -53,7 +66,11 @@ class _AmountSheetState extends State<_AmountSheet> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (widget.initial != null && widget.initial! > 0 && _amount.text.isEmpty) {
-      _amount.text = moneyPlain(spLocale(context), widget.initial!);
+      _amount.text = moneyPlain(
+        spLocale(context),
+        widget.initial!,
+        widget.currency,
+      );
     }
   }
 
@@ -72,14 +89,22 @@ class _AmountSheetState extends State<_AmountSheet> {
       children: [
         ClSheetHeader(title: widget.title),
         const SizedBox(height: ClSpace.s2),
-        SpAmountInput(controller: _amount, autofocus: true),
+        SpAmountInput(
+          controller: _amount,
+          autofocus: true,
+          currency: widget.currency,
+        ),
         const SizedBox(height: ClSpace.s6),
         ClButton(
           key: const Key('spAmountDone'),
           label: l10n.actionSave,
           expand: true,
           onPressed: () {
-            final v = parseMoney(_amount.text);
+            final v = parseMoney(
+              _amount.text,
+              widget.currency,
+              spLocale(context),
+            );
             Navigator.of(context).pop(v == null || v <= 0 ? 0 : v);
           },
         ),
@@ -109,15 +134,25 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
   /// The edited budget; null until the stored one has loaded.
   Budget? _draft;
 
+  /// The currency [_draft]'s amounts are in (D-075 #4: the household's).
+  String? _draftCurrency;
+
   void _save(SpendingScope scope) {
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
+    final d = _draft!;
     ref
         .read(spendingRepositoryProvider)
         .saveBudget(
           scope.babyId,
           scope.me,
-          _draft!,
+          // The budget counts the household's currency (D-075 #4).
+          Budget(
+            monthlyTotal: d.monthlyTotal,
+            caps: d.caps,
+            alert80: d.alert80,
+            currency: scope.currency,
+          ),
           onError: (_) => toaster.show(message: l10n.spSaveFailed),
         );
     Navigator.of(context).maybePop();
@@ -135,12 +170,25 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
     if (!stored.hasValue) {
       return SpPage(children: [SpTitle(l10n.spBudgetTitle)]);
     }
-    final b = _draft ??= stored.value!;
+    // D-075 #4: amounts are in the household's currency. A budget kept in another one (the
+    // household changed since) starts empty, with a note, until saved again.
+    final cur = scope.currency;
+    final kept = stored.value!;
+    final keptElsewhere =
+        kept.stored &&
+        kept.currencyOr(cur) != cur &&
+        (kept.isSet || kept.caps.isNotEmpty);
+    if (_draft == null || _draftCurrency != cur) {
+      _draftCurrency = cur;
+      _draft = keptElsewhere ? Budget(alert80: kept.alert80) : kept;
+    }
+    final b = _draft!;
     final canEdit = scope.access.parent;
     final month = MonthSummary.of(
       scope.expenses,
       monthOf(scope.today),
       scope.today,
+      currency: cur,
     );
     final total = b.monthlyTotal ?? 0;
     final used = total == 0 ? 0.0 : month.total / total;
@@ -164,6 +212,51 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
           style: cl.text.body.copyWith(color: cl.colors.inkMuted),
         ),
         const SizedBox(height: ClSpace.s4),
+        // D-075 #4 "Tiền tệ chính": the household's, set by a Cùng nuôi.
+        SpGroup(
+          children: [
+            SpActionRow(
+              key: const Key('spMainCurrency'),
+              icon: ClIcons.globe,
+              label: l10n.spCurrencyMain,
+              value: canEdit
+                  ? '$cur · ${currencyName(l10n, cur)}'
+                  : l10n.spBudgetCurrencyNote(cur),
+              onTap: canEdit
+                  ? () async {
+                      final toaster = ClToaster.of(context);
+                      final picked = await pickSpCurrency(context, cur);
+                      if (picked == null || picked == cur || !mounted) return;
+                      ref
+                          .read(spendingRepositoryProvider)
+                          .saveCurrency(
+                            scope.familyId,
+                            scope.me,
+                            picked,
+                            onError: (_) =>
+                                toaster.show(message: l10n.spSaveFailed),
+                          );
+                      toaster.show(message: l10n.spCurrencyMainSaved);
+                    }
+                  : null,
+            ),
+          ],
+        ),
+        if (canEdit) ...[
+          const SizedBox(height: ClSpace.s2),
+          Text(
+            l10n.spCurrencyMainSub,
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
+        ],
+        if (keptElsewhere) ...[
+          const SizedBox(height: ClSpace.s3),
+          SpBanner(
+            icon: ClIcons.globe,
+            text: l10n.spBudgetOldCurrency(kept.currencyOr(cur), cur),
+          ),
+        ],
+        const SizedBox(height: ClSpace.s4),
         ClPressable(
           onPressed: canEdit
               ? () async {
@@ -172,6 +265,7 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
                     title: l10n.spBudgetPerMonth,
                     initial: b.monthlyTotal,
                     clearLabel: l10n.spClearCap,
+                    currency: cur,
                   );
                   if (v != null && mounted) {
                     setState(
@@ -197,7 +291,7 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
                   children: [
                     Expanded(
                       child: ClTabularText(
-                        total == 0 ? l10n.spNoCap : money(locale, total),
+                        total == 0 ? l10n.spNoCap : money(locale, total, cur),
                         style: cl.text.title.copyWith(
                           fontWeight: FontWeight.w700,
                           color: total == 0 ? cl.colors.inkMuted : null,
@@ -234,6 +328,7 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
                 category: c,
                 spent: month.byCategory[c.id] ?? 0,
                 cap: b.caps[c.id],
+                currency: cur,
                 onTap: canEdit
                     ? () async {
                         final v = await showAmountSheet(
@@ -241,6 +336,7 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
                           title: categoryName(l10n, c),
                           initial: b.caps[c.id],
                           clearLabel: l10n.spClearCap,
+                          currency: cur,
                         );
                         if (v == null || !mounted) return;
                         final caps = {...b.caps};
@@ -294,12 +390,14 @@ class _CapRow extends StatelessWidget {
     required this.category,
     required this.spent,
     required this.cap,
+    required this.currency,
     this.onTap,
   });
 
   final SpendingCategory category;
   final int spent;
   final int? cap;
+  final String currency;
   final VoidCallback? onTap;
 
   @override
@@ -344,7 +442,8 @@ class _CapRow extends StatelessWidget {
                     else
                       // Plain figures: tabular digits would push the name out.
                       Text(
-                        '${moneyPlain(locale, spent)} / ${moneyPlain(locale, cap)}',
+                        '${moneyPlain(locale, spent, currency)} / '
+                        '${moneyPlain(locale, cap, currency)}',
                         style: spRowTitle(
                           context,
                         ).copyWith(fontSize: 13, fontWeight: FontWeight.w600),
@@ -366,10 +465,10 @@ class _CapRow extends StatelessWidget {
                     switch (state) {
                       CapState.fine => l10n.spUsedShare(percent(share)),
                       CapState.near => l10n.spNearCap(
-                        money(locale, cap - spent),
+                        money(locale, cap - spent, currency),
                       ),
                       CapState.over => l10n.spOverCap(
-                        money(locale, spent - cap),
+                        money(locale, spent - cap, currency),
                       ),
                     },
                     style: cl.text.caption.copyWith(
@@ -478,7 +577,7 @@ class RecurringScreen extends ConsumerWidget {
             text: l10n.spRecurringNext(
               DateFormat('d/M').format(next.day),
               next.item.title,
-              money(locale, next.item.amount),
+              money(locale, next.item.amount, next.item.currency),
             ),
           ),
         ],
@@ -528,7 +627,7 @@ class _RecurringRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 ClTabularText(
-                  money(spLocale(context), item.amount),
+                  money(spLocale(context), item.amount, item.currency),
                   style: cl.text.label.copyWith(
                     color: cl.colors.ink,
                     fontWeight: FontWeight.w600,
@@ -591,6 +690,9 @@ class _RecurringSheetState extends ConsumerState<_RecurringSheet> {
 
   late final _title = TextEditingController(text: _item?.title);
   final _amount = TextEditingController();
+
+  /// D-075 #4: each occurrence is written in it.
+  late String _currency = _item?.currency ?? _scope.currency;
   late String _category =
       _item?.categoryId ?? _scope.visible.firstOrNull?.id ?? otherCategoryId;
   late Payer? _payer = _item == null ? Payer.of(_scope.me) : _item!.payer;
@@ -621,8 +723,21 @@ class _RecurringSheetState extends ConsumerState<_RecurringSheet> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_item != null && _amount.text.isEmpty) {
-      _amount.text = moneyPlain(spLocale(context), _item!.amount);
+      _amount.text = moneyPlain(
+        spLocale(context),
+        _item!.amount,
+        _item!.currency,
+      );
     }
+  }
+
+  Future<void> _pickCurrency() async {
+    final picked = await pickSpCurrency(context, _currency);
+    if (picked == null || picked == _currency || !mounted) return;
+    setState(() {
+      _currency = picked;
+      _amount.clear();
+    });
   }
 
   @override
@@ -651,7 +766,7 @@ class _RecurringSheetState extends ConsumerState<_RecurringSheet> {
 
   void _save() {
     final l10n = AppLocalizations.of(context);
-    final amount = parseMoney(_amount.text);
+    final amount = parseMoney(_amount.text, _currency, spLocale(context));
     final title = _title.text.trim();
     if (title.isEmpty) {
       showClToast(context, message: l10n.spRecurringTitleMissing);
@@ -671,6 +786,7 @@ class _RecurringSheetState extends ConsumerState<_RecurringSheet> {
           title: title,
           categoryId: _category,
           amount: amount,
+          currency: _currency,
           payer: _payer,
           schedule: _schedule,
           enabled: _enabled,
@@ -711,7 +827,12 @@ class _RecurringSheetState extends ConsumerState<_RecurringSheet> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SpAmountInput(controller: _amount, autofocus: _item == null),
+                SpAmountInput(
+                  controller: _amount,
+                  autofocus: _item == null,
+                  currency: _currency,
+                  onCurrency: () => unawaited(_pickCurrency()),
+                ),
                 SpLabel(l10n.spRecurringName),
                 ClTextField(
                   key: const Key('spRecurringName'),

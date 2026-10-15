@@ -2699,6 +2699,70 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminderUndo => 'Mark as not done';
 
   @override
+  String get reminderAllDay => 'All day';
+
+  @override
+  String get reminderAllDayLower => 'all day';
+
+  @override
+  String get reminderDay => 'Date';
+
+  @override
+  String get reminderAllDayAt => 'Notify at';
+
+  @override
+  String get reminderAllDayTimeTitle => 'All-day reminder time';
+
+  @override
+  String reminderAllDayTimeNote(String name) {
+    return 'Applies to every all-day reminder on this device, in $name’s time.';
+  }
+
+  @override
+  String get leadOnDay => 'On the day';
+
+  @override
+  String get reminderAssignee => 'Assigned to';
+
+  @override
+  String get reminderAssignNone => 'No one';
+
+  @override
+  String get reminderAssignNobody => 'Don’t assign';
+
+  @override
+  String get reminderAssignPickerNote =>
+      'The assignee gets the notification on their own phone once they open the app. Only co-parents and caregivers can be assigned.';
+
+  @override
+  String get reminderAssignedToYou => 'Assigned to you';
+
+  @override
+  String reminderAssignedTo(String name) {
+    return 'Assigned to $name';
+  }
+
+  @override
+  String get reminderNotifyMine => 'Your devices';
+
+  @override
+  String reminderNotifyAssignee(String name) {
+    return '$name’s devices';
+  }
+
+  @override
+  String reminderFootnoteAssigned(String name, String zone, String who) {
+    return 'In $name’s time ($zone). The family sees reminders in the app. $who gets the notification on their own phone once they open the app.';
+  }
+
+  @override
+  String get reminderDetailNoteAssigned =>
+      'The assignee is notified on their own phone once they open the app. Mark it done when it’s done.';
+
+  @override
+  String get reminderPastDay => 'Pick today or a later day.';
+
+  @override
   String get moveNotifTitle => 'Get notifications on this device?';
 
   @override
@@ -7591,6 +7655,95 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spCurrencyName => 'dong';
 
   @override
+  String get spCurrency => 'Currency';
+
+  @override
+  String get spCurrencyTitle => 'Choose a currency';
+
+  @override
+  String spCurrencyPick(String code) {
+    return 'Change currency, now $code';
+  }
+
+  @override
+  String get spCurrencyMain => 'Main currency';
+
+  @override
+  String get spCurrencyMainSub =>
+      'The default for new expenses; totals, statistics and the budget count this currency. Expenses in other currencies are shown apart, never converted.';
+
+  @override
+  String get spCurrencyMainSaved => 'Main currency changed';
+
+  @override
+  String spAlsoSpent(String amounts) {
+    return 'Also: $amounts';
+  }
+
+  @override
+  String spOtherCurrenciesNote(String amounts) {
+    return 'Not added to the total (other currencies): $amounts';
+  }
+
+  @override
+  String spBudgetCurrencyNote(String code) {
+    return 'The budget counts expenses in $code.';
+  }
+
+  @override
+  String spBudgetOldCurrency(String old, String code) {
+    return 'The budget is kept in $old. Set the amounts again and save to count $code.';
+  }
+
+  @override
+  String get spCurVND => 'Vietnamese dong';
+
+  @override
+  String get spCurUSD => 'US dollar';
+
+  @override
+  String get spCurEUR => 'Euro';
+
+  @override
+  String get spCurGBP => 'British pound';
+
+  @override
+  String get spCurAUD => 'Australian dollar';
+
+  @override
+  String get spCurCAD => 'Canadian dollar';
+
+  @override
+  String get spCurNZD => 'New Zealand dollar';
+
+  @override
+  String get spCurSGD => 'Singapore dollar';
+
+  @override
+  String get spCurJPY => 'Japanese yen';
+
+  @override
+  String get spCurKRW => 'South Korean won';
+
+  @override
+  String get spCurTWD => 'New Taiwan dollar';
+
+  @override
+  String get spCurTHB => 'Thai baht';
+
+  @override
+  String get spCurHKD => 'Hong Kong dollar';
+
+  @override
+  String get spCurCNY => 'Chinese yuan';
+
+  @override
+  String get spCurCHF => 'Swiss franc';
+
+  @override
+  String get spCurMYR => 'Malaysian ringgit';
+
+  @override
   String get spCatChildcare => 'Childcare & learning';
 
   @override
@@ -8809,6 +8962,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spFromImport => 'imported';
+
+  @override
+  String get spFromAssistant => 'from the Assistant';
 
   @override
   String get spFromImportFull => 'Imported · see the import';
@@ -11622,7 +11778,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmTemplateBetaNote =>
-      'The personalisation beta doesn’t include Premium templates.';
+      'Your current beta doesn’t include Premium templates.';
 
   @override
   String get pmGateRoleTitle => 'Needs a parent role';
@@ -13182,12 +13338,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String aiStateQuotaMonth(int used, int limit, String when) {
-    return 'Your household used $used of $limit AI summaries this month. More from $when. The template is always free.';
+    return 'Your household used $used of $limit AI credits this period (shared by summaries and the assistant). More from $when. The template is always free.';
   }
 
   @override
   String get aiStateQuotaPlain =>
-      'Your household has used this period’s AI summaries. The template is always free.';
+      'Your household has used this period’s AI credits. The template is always free.';
 
   @override
   String get aiStateTemplateEyebrow => 'TEMPLATE VERSION';
@@ -13392,7 +13548,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiExplainQuota =>
-      'This period’s AI summaries are used up. The reason above still stands.';
+      'This period’s AI credits are used up. The reason above still stands.';
 
   @override
   String get aiExplainUnavailable =>
@@ -14616,10 +14772,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asRemovePhoto => 'Remove photo';
 
   @override
-  String get asPhotoSoon =>
-      'Reading photos comes in the next update. The photo hasn’t been sent.';
-
-  @override
   String get asOutTitleFree => 'You’ve used all AI help this month.';
 
   @override
@@ -14711,7 +14863,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asConsentPrivate =>
-      'Only you can see your chats. You can change your mind any time.';
+      'For parents and caregivers, questions about the baby go in the baby’s shared chat. Photos, expenses and every other question are only yours. You can change your mind any time.';
 
   @override
   String get asConsentAgree => 'Agree and start';
@@ -14835,4 +14987,434 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asDeleteFailed => 'Couldn’t delete. Try again later.';
+
+  @override
+  String get asPhotoSheetTitle => 'Send a photo to read';
+
+  @override
+  String get asPhotoCameraSub => 'Receipt, note board';
+
+  @override
+  String get asPhotoLibrarySub => 'Only the photo you pick is sent';
+
+  @override
+  String asPhotoQuoteExact(int credits) {
+    return 'Reading 1 photo uses $credits of your AI help';
+  }
+
+  @override
+  String asPhotoSheetBody(int remaining) {
+    return '$remaining left. You see the exact cost before sending; an unreadable photo isn’t charged.';
+  }
+
+  @override
+  String get asPhotoSheetBodyUnknown =>
+      'You see the exact cost before sending; an unreadable photo isn’t charged.';
+
+  @override
+  String get asPhotoChosenTitle => 'Photo chosen · not sent';
+
+  @override
+  String get asPhotoOnlyThis => 'Only this photo is sent to be read.';
+
+  @override
+  String asPhotoQuoteBody(int remaining) {
+    return '$remaining left. Follow-ups, edits and confirming in the same task don’t use more. An unreadable photo isn’t charged.';
+  }
+
+  @override
+  String get asKeepReceipt => 'Keep the receipt with the expense';
+
+  @override
+  String get asKeepReceiptOn =>
+      'When you save the expense, the photo stays with it. If you don’t save, the photo is deleted.';
+
+  @override
+  String get asKeepReceiptOff =>
+      'The photo is deleted after reading. The app says it’s deleted only once that’s confirmed.';
+
+  @override
+  String get asPhotoTextIsData =>
+      'Text in photos is content to read, never a command to the app.';
+
+  @override
+  String get asSendPhoto => 'Send photo';
+
+  @override
+  String get asPhotoQuoting => 'Checking the cost…';
+
+  @override
+  String get asPhotoPickFailed =>
+      'Couldn’t open the photo. Try again or pick another.';
+
+  @override
+  String asUploading(int percent) {
+    return 'Uploading · $percent%';
+  }
+
+  @override
+  String get asCancelUpload => 'Cancel';
+
+  @override
+  String get asUploadFree => 'Cancelling while uploading uses no AI help.';
+
+  @override
+  String get asUploadCanceled =>
+      'Upload cancelled · no AI help used. The photo is still chosen.';
+
+  @override
+  String get asPhotoReading => 'Reading the photo…';
+
+  @override
+  String get asPhotoRead => 'Read ✓';
+
+  @override
+  String get asPhotoBlurry => 'Blurry photo';
+
+  @override
+  String get asPhotoRefused => 'This file can’t be read';
+
+  @override
+  String get asPhotoCanceled => 'Cancelled';
+
+  @override
+  String get asPhotoLeaveScreen =>
+      'You can leave this screen; the result stays here when you come back. System errors use no AI help.';
+
+  @override
+  String get asPhotoFailBody =>
+      'The photo wasn’t read, nothing was saved and no AI help was used. The photo is still chosen.';
+
+  @override
+  String get asReceiptTitle => 'Expense from receipt';
+
+  @override
+  String get asFieldStore => 'Store';
+
+  @override
+  String get asFieldDate => 'Date';
+
+  @override
+  String get asFieldTotal => 'Total';
+
+  @override
+  String get asFieldCategory => 'Suggested category';
+
+  @override
+  String get asFieldScope => 'Scope';
+
+  @override
+  String get asFieldCurrency => 'Currency';
+
+  @override
+  String get asFieldTitle => 'To-do';
+
+  @override
+  String get asFieldTime => 'Time';
+
+  @override
+  String asFieldCheckA11y(String label, String value) {
+    return '$label: $value, needs checking';
+  }
+
+  @override
+  String get asNotRead => 'not read';
+
+  @override
+  String asExpenseFor(String name) {
+    return 'Family · for $name';
+  }
+
+  @override
+  String asTaxIncluded(String total) {
+    return 'Only the total $total (tax included) is logged; subtotal and tax aren’t added again.';
+  }
+
+  @override
+  String get asConfirmDate =>
+      'The date isn’t certain: tap it to pick or confirm before saving.';
+
+  @override
+  String get asDuplicateBody =>
+      'This may duplicate an expense your family logged. Nothing is merged automatically.';
+
+  @override
+  String get asDuplicateAcknowledged =>
+      'You chose to save it separately · nothing merged.';
+
+  @override
+  String get asOpenDuplicate => 'Open the logged one';
+
+  @override
+  String get asSaveAnywayShort => 'Save anyway';
+
+  @override
+  String get asSaveExpense => 'Save expense';
+
+  @override
+  String get asSkip => 'Skip';
+
+  @override
+  String get asEditExpense => 'Edit expense';
+
+  @override
+  String get asTotalOnly =>
+      'The printed total only; subtotal and tax aren’t added.';
+
+  @override
+  String get asPickDate => 'Pick a date';
+
+  @override
+  String get asPickTime => 'Pick a time';
+
+  @override
+  String get asRetentionKept =>
+      'The receipt photo is kept with the expense in Expenses.';
+
+  @override
+  String get asRetentionKeptIfSaved =>
+      'The photo stays with the expense when you save it; otherwise it’s deleted.';
+
+  @override
+  String get asRetentionDeleting =>
+      'Deleting the original photo. The app says it’s deleted only once that’s confirmed.';
+
+  @override
+  String get asRetentionDeleted => 'The original photo was deleted.';
+
+  @override
+  String get asRetentionWillDelete =>
+      'The original photo will be deleted after reading; the app says when it’s done.';
+
+  @override
+  String asRemindLine(String when) {
+    return 'Remind: $when';
+  }
+
+  @override
+  String asModuleRemindersOf(String name) {
+    return '$name · Reminders';
+  }
+
+  @override
+  String get asCheckReminder => 'Pick date & time';
+
+  @override
+  String get asEditReminder => 'Edit reminder';
+
+  @override
+  String get asAllDay => 'No time';
+
+  @override
+  String asReminderBaby(String name) {
+    return 'Saved for $name; never moved to another baby.';
+  }
+
+  @override
+  String get asProblemInvalidTitle =>
+      'The title is too long (80 characters max).';
+
+  @override
+  String get asProblemPastTime =>
+      'That time has passed — pick an upcoming one.';
+
+  @override
+  String get asRetake => 'Retake';
+
+  @override
+  String get asOtherPhoto => 'Pick another photo';
+
+  @override
+  String get asUnreadableFree => 'This attempt used no AI help.';
+
+  @override
+  String get asSleepSafety =>
+      'If baby has a fever, trouble breathing, is very drowsy or refuses feeds — open Health guidance (free).';
+
+  @override
+  String get asSleepFalling => 'hard to fall asleep';
+
+  @override
+  String get asSleepWaking => 'waking often';
+
+  @override
+  String get asSleepBoth => 'hard to fall asleep and waking often';
+
+  @override
+  String get asWhenNight => 'night';
+
+  @override
+  String get asWhenDay => 'naps';
+
+  @override
+  String get asWhenBoth => 'day and night';
+
+  @override
+  String get asFromCareLibrary => 'From the Care library';
+
+  @override
+  String asFromCareLibraryMinutes(int minutes) {
+    return 'From the Care library · $minutes min';
+  }
+
+  @override
+  String get asContentUnreviewed =>
+      'Illustrative content · pending expert review. Doesn’t claim a cause.';
+
+  @override
+  String get asContentReviewed =>
+      'Expert-reviewed content. Doesn’t claim a cause.';
+
+  @override
+  String get asTryTonight => 'Try tonight';
+
+  @override
+  String get asTryToday => 'Try today';
+
+  @override
+  String get asAnotherIdea => 'Another idea';
+
+  @override
+  String get asPlannedTonight => 'You plan to try it tonight';
+
+  @override
+  String get asPlannedToday => 'You plan to try it today';
+
+  @override
+  String asPlanFollowUp(String day) {
+    return 'I’ll ask again from $day, after you’ve had a chance to try.';
+  }
+
+  @override
+  String get asObservationTitle => 'Note (optional)';
+
+  @override
+  String get asObservationSleep => 'sleep';
+
+  @override
+  String get asSaveObservation => 'Save note';
+
+  @override
+  String get asNoThanks => 'No thanks';
+
+  @override
+  String get asOpenCareLibrary => 'Open the Care library';
+
+  @override
+  String get asOutcomeHelpful => 'Helpful';
+
+  @override
+  String get asOutcomeUnsure => 'Not sure';
+
+  @override
+  String get asOutcomeNotSuitable => 'Not a fit';
+
+  @override
+  String get asOutcomeNotTried => 'Didn’t try';
+
+  @override
+  String get asFeedbackHelpful =>
+      'Feedback saved. I’ll prioritise this next time. “Helpful” doesn’t mean it caused the change.';
+
+  @override
+  String get asFeedbackUnsure =>
+      'Feedback saved. I’ll take it into account next time.';
+
+  @override
+  String get asFeedbackNotSuitable =>
+      'Feedback saved. I won’t suggest this again.';
+
+  @override
+  String get asFeedbackNotTried =>
+      'No problem. When you try it, you can note it in Growing rhythm.';
+
+  @override
+  String get asFeedbackTitle => 'Activity feedback';
+
+  @override
+  String get asFeedbackFree => 'Feedback doesn’t use AI help.';
+
+  @override
+  String get asRecipesFrom => 'From the Recipe library';
+
+  @override
+  String asRecipeMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String asRecipesExcluded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dishes',
+      one: '1 dish',
+    );
+    return '$_temp0 with an ingredient your baby had a recorded reaction to left out (a recorded reaction, not an allergy diagnosis).';
+  }
+
+  @override
+  String get asRecipesCaveat =>
+      'No recorded reaction doesn’t mean a food is well tolerated.';
+
+  @override
+  String get asLogMeal => 'Log meal';
+
+  @override
+  String get asLogMealUnavailable =>
+      'There’s no meal log in the app yet, so meals can’t be logged here.';
+
+  @override
+  String get asProblemInvalidAssignee =>
+      'The assignee is no longer in the family. Pick someone else.';
+
+  @override
+  String asSavedBy(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$name saved $_temp0';
+  }
+
+  @override
+  String asConfirmedBy(String name) {
+    return 'Saved by $name';
+  }
+
+  @override
+  String asWaitingFor(String name) {
+    return 'Waiting for $name to answer.';
+  }
+
+  @override
+  String get asPrivateTask =>
+      'Only you see this: photos and expenses stay out of the baby’s shared chat.';
+
+  @override
+  String get asHistoryShared => 'SHARED CHAT';
+
+  @override
+  String get asSharedThreadTitle => 'Shared chat about the baby';
+
+  @override
+  String asSharedThreadSub(String when) {
+    return 'Parents and caregivers see it · $when';
+  }
+
+  @override
+  String get asHistorySharedNote =>
+      'Questions about the baby are in the shared chat of parents and caregivers. Photos, expenses and older chats are only yours.';
+
+  @override
+  String get asDeleteSharedTitle => 'Delete the shared chat?';
+
+  @override
+  String get asDeleteSharedBody =>
+      'The shared chat is deleted for everyone, including unsaved drafts. Anything saved to the log, Growing rhythm or Reminders stays.';
+
+  @override
+  String get asDeletedRecordsKept => 'Chat deleted. Saved records stay.';
 }

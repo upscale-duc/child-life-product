@@ -2580,6 +2580,70 @@ class AppLocalizationsVi extends AppLocalizations {
   String get reminderUndo => 'Đánh dấu chưa xong';
 
   @override
+  String get reminderAllDay => 'Cả ngày';
+
+  @override
+  String get reminderAllDayLower => 'cả ngày';
+
+  @override
+  String get reminderDay => 'Ngày';
+
+  @override
+  String get reminderAllDayAt => 'Giờ báo';
+
+  @override
+  String get reminderAllDayTimeTitle => 'Giờ nhắc việc cả ngày';
+
+  @override
+  String reminderAllDayTimeNote(String name) {
+    return 'Áp dụng cho mọi nhắc việc cả ngày báo trên máy này, theo giờ của $name.';
+  }
+
+  @override
+  String get leadOnDay => 'Đúng ngày';
+
+  @override
+  String get reminderAssignee => 'Giao cho';
+
+  @override
+  String get reminderAssignNone => 'Chưa giao';
+
+  @override
+  String get reminderAssignNobody => 'Không giao ai';
+
+  @override
+  String get reminderAssignPickerNote =>
+      'Người được giao nhận thông báo trên máy của họ khi mở app. Chỉ Cùng nuôi và người chăm sóc được giao.';
+
+  @override
+  String get reminderAssignedToYou => 'Giao cho bạn';
+
+  @override
+  String reminderAssignedTo(String name) {
+    return 'Giao cho $name';
+  }
+
+  @override
+  String get reminderNotifyMine => 'Các máy của bạn';
+
+  @override
+  String reminderNotifyAssignee(String name) {
+    return 'Các máy của $name';
+  }
+
+  @override
+  String reminderFootnoteAssigned(String name, String zone, String who) {
+    return 'Theo giờ của $name ($zone). Gia đình thấy nhắc việc trong app. $who nhận thông báo trên máy của mình khi mở app.';
+  }
+
+  @override
+  String get reminderDetailNoteAssigned =>
+      'Người được giao nhận thông báo trên máy của mình khi mở app. Đánh dấu xong khi đã làm.';
+
+  @override
+  String get reminderPastDay => 'Chọn hôm nay hoặc một ngày sau.';
+
+  @override
   String get moveNotifTitle => 'Nhận thông báo trên máy này?';
 
   @override
@@ -7131,6 +7195,95 @@ class AppLocalizationsVi extends AppLocalizations {
   String get spCurrencyName => 'đồng';
 
   @override
+  String get spCurrency => 'Tiền tệ';
+
+  @override
+  String get spCurrencyTitle => 'Chọn tiền tệ';
+
+  @override
+  String spCurrencyPick(String code) {
+    return 'Đổi tiền tệ, đang là $code';
+  }
+
+  @override
+  String get spCurrencyMain => 'Tiền tệ chính';
+
+  @override
+  String get spCurrencyMainSub =>
+      'Mặc định khi thêm khoản chi; tổng, thống kê và ngân sách tính theo tiền tệ này. Khoản chi bằng tiền tệ khác được ghi riêng, không quy đổi.';
+
+  @override
+  String get spCurrencyMainSaved => 'Đã đổi tiền tệ chính';
+
+  @override
+  String spAlsoSpent(String amounts) {
+    return 'Ngoài ra: $amounts';
+  }
+
+  @override
+  String spOtherCurrenciesNote(String amounts) {
+    return 'Không cộng vào tổng (tiền tệ khác): $amounts';
+  }
+
+  @override
+  String spBudgetCurrencyNote(String code) {
+    return 'Ngân sách tính các khoản chi bằng $code.';
+  }
+
+  @override
+  String spBudgetOldCurrency(String old, String code) {
+    return 'Ngân sách đang lưu theo $old. Đặt lại số tiền rồi lưu để tính theo $code.';
+  }
+
+  @override
+  String get spCurVND => 'Đồng Việt Nam';
+
+  @override
+  String get spCurUSD => 'Đô la Mỹ';
+
+  @override
+  String get spCurEUR => 'Euro';
+
+  @override
+  String get spCurGBP => 'Bảng Anh';
+
+  @override
+  String get spCurAUD => 'Đô la Úc';
+
+  @override
+  String get spCurCAD => 'Đô la Canada';
+
+  @override
+  String get spCurNZD => 'Đô la New Zealand';
+
+  @override
+  String get spCurSGD => 'Đô la Singapore';
+
+  @override
+  String get spCurJPY => 'Yên Nhật';
+
+  @override
+  String get spCurKRW => 'Won Hàn Quốc';
+
+  @override
+  String get spCurTWD => 'Đô la Đài Loan';
+
+  @override
+  String get spCurTHB => 'Baht Thái';
+
+  @override
+  String get spCurHKD => 'Đô la Hồng Kông';
+
+  @override
+  String get spCurCNY => 'Nhân dân tệ';
+
+  @override
+  String get spCurCHF => 'Franc Thuỵ Sĩ';
+
+  @override
+  String get spCurMYR => 'Ringgit Malaysia';
+
+  @override
   String get spCatChildcare => 'Giữ trẻ & học';
 
   @override
@@ -8248,6 +8401,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get spFromImport => 'nhập từ tệp';
+
+  @override
+  String get spFromAssistant => 'từ Trợ lý';
 
   @override
   String get spFromImportFull => 'Nhập chi tiêu · xem lần nhập';
@@ -10837,7 +10993,8 @@ class AppLocalizationsVi extends AppLocalizations {
       'Mẫu này dành cho gia đình có Child Life Premium.';
 
   @override
-  String get pmTemplateBetaNote => 'Beta cá nhân hoá không gồm mẫu Premium.';
+  String get pmTemplateBetaNote =>
+      'Gói beta hiện tại của nhà mình chưa gồm mẫu Premium.';
 
   @override
   String get pmGateRoleTitle => 'Cần quyền của ba mẹ';
@@ -12353,7 +12510,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String aiStateQuotaMonth(int used, int limit, String when) {
-    return 'Nhà mình đã dùng $used/$limit lượt AI tháng này. Lượt mới từ $when. Bản theo mẫu luôn miễn phí.';
+    return 'Nhà mình đã dùng $used/$limit lượt AI kỳ này (chung cho tóm tắt và trợ lý). Lượt mới từ $when. Bản theo mẫu luôn miễn phí.';
   }
 
   @override
@@ -13694,10 +13851,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asRemovePhoto => 'Bỏ ảnh';
 
   @override
-  String get asPhotoSoon =>
-      'Đọc ảnh sẽ có ở bản cập nhật tới. Ảnh chưa được gửi đi.';
-
-  @override
   String get asOutTitleFree => 'Bạn đã dùng hết lượt hỗ trợ AI tháng này.';
 
   @override
@@ -13787,7 +13940,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asConsentPrivate =>
-      'Cuộc trò chuyện chỉ bạn xem được. Bạn đổi ý lúc nào cũng được.';
+      'Với Ba, Mẹ và người chăm sóc, câu hỏi về bé nằm trong cuộc trò chuyện chung của bé. Ảnh, chi tiêu và mọi câu hỏi khác chỉ bạn thấy. Bạn đổi ý lúc nào cũng được.';
 
   @override
   String get asConsentAgree => 'Đồng ý và bắt đầu';
@@ -13911,4 +14064,420 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asDeleteFailed => 'Chưa xoá được. Thử lại sau.';
+
+  @override
+  String get asPhotoSheetTitle => 'Gửi ảnh để trợ lý đọc';
+
+  @override
+  String get asPhotoCameraSub => 'Hoá đơn, bảng note';
+
+  @override
+  String get asPhotoLibrarySub => 'Chỉ ảnh bạn chọn được gửi';
+
+  @override
+  String asPhotoQuoteExact(int credits) {
+    return 'Đọc 1 ảnh dùng $credits lượt hỗ trợ AI';
+  }
+
+  @override
+  String asPhotoSheetBody(int remaining) {
+    return 'Còn $remaining lượt. Bạn thấy đúng số lượt trước khi gửi; ảnh không đọc được thì không trừ.';
+  }
+
+  @override
+  String get asPhotoSheetBodyUnknown =>
+      'Bạn thấy đúng số lượt trước khi gửi; ảnh không đọc được thì không trừ.';
+
+  @override
+  String get asPhotoChosenTitle => 'Ảnh đã chọn · chưa gửi';
+
+  @override
+  String get asPhotoOnlyThis => 'Chỉ ảnh này được gửi để đọc.';
+
+  @override
+  String asPhotoQuoteBody(int remaining) {
+    return 'Còn $remaining lượt. Hỏi lại, sửa và xác nhận trong cùng tác vụ không trừ thêm. Ảnh không đọc được thì không trừ.';
+  }
+
+  @override
+  String get asKeepReceipt => 'Giữ ảnh hoá đơn cùng khoản chi';
+
+  @override
+  String get asKeepReceiptOn =>
+      'Khi bạn lưu khoản chi, ảnh được giữ cùng khoản chi. Không lưu thì ảnh được xoá.';
+
+  @override
+  String get asKeepReceiptOff =>
+      'Ảnh được xoá sau khi đọc. App chỉ báo đã xoá khi việc xoá được xác nhận.';
+
+  @override
+  String get asPhotoTextIsData =>
+      'Chữ trong ảnh là nội dung để đọc, không phải lệnh cho app.';
+
+  @override
+  String get asSendPhoto => 'Gửi ảnh';
+
+  @override
+  String get asPhotoQuoting => 'Đang tính lượt…';
+
+  @override
+  String get asPhotoPickFailed =>
+      'Chưa mở được ảnh. Thử lại hoặc chọn ảnh khác.';
+
+  @override
+  String asUploading(int percent) {
+    return 'Đang tải lên · $percent%';
+  }
+
+  @override
+  String get asCancelUpload => 'Huỷ';
+
+  @override
+  String get asUploadFree => 'Huỷ khi đang tải lên không trừ lượt.';
+
+  @override
+  String get asUploadCanceled =>
+      'Đã huỷ tải lên · không trừ lượt. Ảnh vẫn được chọn.';
+
+  @override
+  String get asPhotoReading => 'Đang đọc ảnh…';
+
+  @override
+  String get asPhotoRead => 'Đã đọc';
+
+  @override
+  String get asPhotoBlurry => 'Ảnh hơi mờ';
+
+  @override
+  String get asPhotoRefused => 'Không đọc được tệp này';
+
+  @override
+  String get asPhotoCanceled => 'Đã huỷ';
+
+  @override
+  String get asPhotoLeaveScreen =>
+      'Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại. Lỗi hệ thống không trừ lượt.';
+
+  @override
+  String get asPhotoFailBody =>
+      'Ảnh chưa được đọc, chưa có gì được lưu và không trừ lượt. Ảnh vẫn được chọn.';
+
+  @override
+  String get asReceiptTitle => 'Chi tiêu từ hoá đơn';
+
+  @override
+  String get asFieldStore => 'Cửa hàng';
+
+  @override
+  String get asFieldDate => 'Ngày';
+
+  @override
+  String get asFieldTotal => 'Tổng tiền';
+
+  @override
+  String get asFieldCategory => 'Danh mục gợi ý';
+
+  @override
+  String get asFieldScope => 'Phạm vi';
+
+  @override
+  String get asFieldCurrency => 'Đơn vị tiền';
+
+  @override
+  String get asFieldTitle => 'Việc';
+
+  @override
+  String get asFieldTime => 'Giờ';
+
+  @override
+  String asFieldCheckA11y(String label, String value) {
+    return '$label: $value, cần kiểm tra';
+  }
+
+  @override
+  String get asNotRead => 'chưa đọc được';
+
+  @override
+  String asExpenseFor(String name) {
+    return 'Gia đình · cho $name';
+  }
+
+  @override
+  String asTaxIncluded(String total) {
+    return 'Chỉ ghi tổng tiền $total (đã gồm thuế), không cộng thêm tạm tính hay thuế.';
+  }
+
+  @override
+  String get asConfirmDate =>
+      'Ngày chưa chắc: chạm vào ngày để chọn hoặc xác nhận trước khi lưu.';
+
+  @override
+  String get asDuplicateBody =>
+      'Có thể trùng với một khoản đã ghi trong gia đình. Mình không tự gộp.';
+
+  @override
+  String get asDuplicateAcknowledged => 'Bạn chọn vẫn lưu riêng · không gộp.';
+
+  @override
+  String get asOpenDuplicate => 'Mở khoản chi trùng';
+
+  @override
+  String get asSaveAnywayShort => 'Vẫn lưu';
+
+  @override
+  String get asSaveExpense => 'Lưu chi tiêu';
+
+  @override
+  String get asSkip => 'Bỏ qua';
+
+  @override
+  String get asEditExpense => 'Sửa khoản chi';
+
+  @override
+  String get asTotalOnly =>
+      'Chỉ tổng tiền in trên hoá đơn; không cộng tạm tính và thuế.';
+
+  @override
+  String get asPickDate => 'Chọn ngày';
+
+  @override
+  String get asPickTime => 'Chọn giờ';
+
+  @override
+  String get asRetentionKept =>
+      'Ảnh hoá đơn được giữ cùng khoản chi trong Chi tiêu.';
+
+  @override
+  String get asRetentionKeptIfSaved =>
+      'Ảnh được giữ cùng khoản chi khi bạn lưu; nếu không lưu, ảnh sẽ được xoá.';
+
+  @override
+  String get asRetentionDeleting =>
+      'Đang xoá ảnh gốc. App chỉ báo đã xoá khi việc xoá được xác nhận.';
+
+  @override
+  String get asRetentionDeleted => 'Ảnh gốc đã được xoá.';
+
+  @override
+  String get asRetentionWillDelete =>
+      'Ảnh gốc sẽ được xoá sau khi đọc; app báo khi xoá xong.';
+
+  @override
+  String asRemindLine(String when) {
+    return 'Nhắc: $when';
+  }
+
+  @override
+  String asModuleRemindersOf(String name) {
+    return '$name · Nhắc việc';
+  }
+
+  @override
+  String get asCheckReminder => 'Chọn ngày giờ';
+
+  @override
+  String get asEditReminder => 'Sửa nhắc việc';
+
+  @override
+  String get asAllDay => 'Không đặt giờ';
+
+  @override
+  String asReminderBaby(String name) {
+    return 'Nhắc việc lưu cho $name; không chuyển sang bé khác.';
+  }
+
+  @override
+  String get asProblemInvalidTitle => 'Tên việc dài quá (tối đa 80 ký tự).';
+
+  @override
+  String get asProblemPastTime => 'Giờ nhắc đã qua — chọn một giờ sắp tới.';
+
+  @override
+  String get asRetake => 'Chụp lại';
+
+  @override
+  String get asOtherPhoto => 'Chọn ảnh khác';
+
+  @override
+  String get asUnreadableFree => 'Lần đọc này không trừ lượt.';
+
+  @override
+  String get asSleepSafety =>
+      'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ (miễn phí).';
+
+  @override
+  String get asSleepFalling => 'khó vào giấc';
+
+  @override
+  String get asSleepWaking => 'hay thức giấc';
+
+  @override
+  String get asSleepBoth => 'khó vào giấc và hay thức giấc';
+
+  @override
+  String get asWhenNight => 'giấc đêm';
+
+  @override
+  String get asWhenDay => 'giấc ngày';
+
+  @override
+  String get asWhenBoth => 'cả ngày và đêm';
+
+  @override
+  String get asFromCareLibrary => 'Từ Thư viện chăm bé';
+
+  @override
+  String asFromCareLibraryMinutes(int minutes) {
+    return 'Từ Thư viện chăm bé · $minutes phút';
+  }
+
+  @override
+  String get asContentUnreviewed =>
+      'Nội dung minh hoạ · chờ chuyên môn duyệt. Không khẳng định nguyên nhân.';
+
+  @override
+  String get asContentReviewed =>
+      'Nội dung đã được chuyên môn duyệt. Không khẳng định nguyên nhân.';
+
+  @override
+  String get asTryTonight => 'Thử tối nay';
+
+  @override
+  String get asTryToday => 'Thử hôm nay';
+
+  @override
+  String get asAnotherIdea => 'Gợi ý khác';
+
+  @override
+  String get asPlannedTonight => 'Bạn định thử tối nay';
+
+  @override
+  String get asPlannedToday => 'Bạn định thử hôm nay';
+
+  @override
+  String asPlanFollowUp(String day) {
+    return 'Mình sẽ hỏi lại từ $day, sau khi bạn có dịp thử.';
+  }
+
+  @override
+  String get asObservationTitle => 'Ghi nhận (tuỳ chọn)';
+
+  @override
+  String get asObservationSleep => 'giấc ngủ';
+
+  @override
+  String get asSaveObservation => 'Lưu ghi nhận';
+
+  @override
+  String get asNoThanks => 'Không cần';
+
+  @override
+  String get asOpenCareLibrary => 'Mở Thư viện chăm bé';
+
+  @override
+  String get asOutcomeHelpful => 'Có ích';
+
+  @override
+  String get asOutcomeUnsure => 'Chưa rõ';
+
+  @override
+  String get asOutcomeNotSuitable => 'Không phù hợp';
+
+  @override
+  String get asOutcomeNotTried => 'Chưa thử';
+
+  @override
+  String get asFeedbackHelpful =>
+      'Đã ghi phản hồi. Lần sau mình sẽ ưu tiên cách này. “Có ích” không có nghĩa cách này là nguyên nhân thay đổi.';
+
+  @override
+  String get asFeedbackUnsure =>
+      'Đã ghi phản hồi. Mình sẽ cân nhắc khi gợi ý lần sau.';
+
+  @override
+  String get asFeedbackNotSuitable =>
+      'Đã ghi phản hồi. Lần sau mình sẽ không gợi ý cách này.';
+
+  @override
+  String get asFeedbackNotTried =>
+      'Không sao. Khi nào thử, bạn có thể ghi lại trong Nhịp lớn lên.';
+
+  @override
+  String get asFeedbackTitle => 'Phản hồi hoạt động';
+
+  @override
+  String get asFeedbackFree => 'Phản hồi không trừ lượt hỗ trợ AI.';
+
+  @override
+  String get asRecipesFrom => 'Gợi ý từ Thư viện công thức';
+
+  @override
+  String asRecipeMinutes(int minutes) {
+    return '$minutes phút';
+  }
+
+  @override
+  String asRecipesExcluded(int count) {
+    return 'Đã loại $count món có nguyên liệu con từng có phản ứng (phản ứng đã ghi, không phải chẩn đoán dị ứng).';
+  }
+
+  @override
+  String get asRecipesCaveat =>
+      'Món chưa có ghi nhận phản ứng không có nghĩa là con đã dung nạp tốt.';
+
+  @override
+  String get asLogMeal => 'Ghi bữa ăn';
+
+  @override
+  String get asLogMealUnavailable =>
+      'Chưa có nhật ký bữa ăn trong app nên chưa ghi được từ đây.';
+
+  @override
+  String get asProblemInvalidAssignee =>
+      'Người được giao không còn trong gia đình. Chọn lại người phụ trách.';
+
+  @override
+  String asSavedBy(String name, int count) {
+    return '$name đã lưu $count mục';
+  }
+
+  @override
+  String asConfirmedBy(String name) {
+    return '$name đã lưu';
+  }
+
+  @override
+  String asWaitingFor(String name) {
+    return 'Chờ $name trả lời câu hỏi này.';
+  }
+
+  @override
+  String get asPrivateTask =>
+      'Chỉ bạn thấy: ảnh và chi tiêu không vào cuộc trò chuyện chung của bé.';
+
+  @override
+  String get asHistoryShared => 'CUỘC TRÒ CHUYỆN CHUNG';
+
+  @override
+  String get asSharedThreadTitle => 'Trò chuyện chung về bé';
+
+  @override
+  String asSharedThreadSub(String when) {
+    return 'Ba, Mẹ và người chăm sóc cùng xem · $when';
+  }
+
+  @override
+  String get asHistorySharedNote =>
+      'Câu hỏi về bé nằm trong cuộc trò chuyện chung của Ba, Mẹ và người chăm sóc. Ảnh, chi tiêu và các cuộc trò chuyện cũ chỉ bạn xem được.';
+
+  @override
+  String get asDeleteSharedTitle => 'Xoá cuộc trò chuyện chung?';
+
+  @override
+  String get asDeleteSharedBody =>
+      'Cuộc trò chuyện chung sẽ bị xoá cho mọi người, kể cả bản nháp chưa lưu. Những gì đã lưu vào nhật ký, Nhịp lớn lên hay nhắc việc vẫn giữ nguyên.';
+
+  @override
+  String get asDeletedRecordsKept =>
+      'Đã xoá cuộc trò chuyện. Bản ghi đã lưu vẫn giữ nguyên.';
 }

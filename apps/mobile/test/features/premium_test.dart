@@ -163,7 +163,7 @@ void main() {
       expect(find.text('Mở với Premium'), findsOneWidget);
       expect(find.text('Dùng mẫu miễn phí'), findsOneWidget);
       expect(
-        find.textContaining('Beta cá nhân hoá không gồm mẫu Premium'),
+        find.textContaining('Gói beta hiện tại của nhà mình chưa gồm mẫu Premium'),
         findsOneWidget,
       );
       expect(

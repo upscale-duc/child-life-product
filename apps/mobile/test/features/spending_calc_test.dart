@@ -204,8 +204,17 @@ void main() {
     final all = mockSpending();
     expect(lastAmount(all, 'c_milk'), 1020000);
     expect(lastAmount(all, null), 1020000);
-    expect(lastVaccineCost(all, 'dtp_3'), 395000);
+    expect(lastVaccineCost(all, 'dtp_3'), (amount: 395000, currency: 'VND'));
     expect(lastVaccineCost(all, 'pcv_1'), isNull);
+    // D-075 #4: "Lần trước" only in the form's currency.
+    final usd = [
+      spend('50', 1250, 'c_milk', DateTime(2026, 10, 13), currency: 'USD'),
+      ...all,
+    ];
+    expect(lastAmount(usd, 'c_milk'), 1250);
+    expect(lastAmount(usd, 'c_milk', currency: 'VND'), 1020000);
+    expect(lastAmount(usd, 'c_milk', currency: 'USD'), 1250);
+    expect(lastAmount(usd, 'c_milk', currency: 'EUR'), isNull);
   });
 
   test('CSV: header, oldest first, quoted, formulas neutralised', () {
@@ -213,8 +222,17 @@ void main() {
       [
         ...mockSpending().take(2),
         spend('99', 1000, 'c_other', DateTime(2026, 1, 1), note: '=SUM(A1)'),
+        spend('98', 1205, 'c_milk', DateTime(2026, 2, 1), currency: 'USD'),
       ],
-      header: ['Ngày', 'Danh mục', 'Nội dung', 'Số tiền', 'Ai trả', 'Ghi bởi'],
+      header: [
+        'Ngày',
+        'Danh mục',
+        'Nội dung',
+        'Số tiền',
+        'Tiền tệ',
+        'Ai trả',
+        'Ghi bởi',
+      ],
       category: (e) => e.categoryId,
       payer: (e) => e.payer?.author.name ?? 'Khác',
       recordedBy: (e) => e.author.name,
@@ -222,9 +240,11 @@ void main() {
     expect(csv, startsWith('\uFEFF"Ngày","Danh mục"'));
     final lines = csv.trim().split('\r\n');
     expect(lines[1], contains('"\'=SUM(A1)"'));
+    // D-075 #4: the amount plain in its currency's units, then the currency.
+    expect(lines[2], contains(',12.05,"USD",'));
     expect(
       lines.last,
-      '"2026-10-12","c_milk","Sữa công thức ×2",1020000,"Mai","Mai"',
+      '"2026-10-12","c_milk","Sữa công thức ×2",1020000,"VND","Mai","Mai"',
     );
   });
 

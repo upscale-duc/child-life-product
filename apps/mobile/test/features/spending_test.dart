@@ -79,6 +79,7 @@ Future<(List<Visit>, ProviderContainer)> _pump(
   List<RecurringExpense>? recurring,
   FakeSpendingRepository? repo,
   Locale locale = const Locale('vi'),
+  String? currency,
 }) {
   return pumpRouted(
     tester,
@@ -92,6 +93,7 @@ Future<(List<Visit>, ProviderContainer)> _pump(
       budget: budget,
       recurring: recurring ?? mockRecurring,
       spendingRepo: repo,
+      spendingCurrency: currency,
     ),
   );
 }
@@ -639,4 +641,170 @@ void main() {
       expect(rights?.viewSpending, isFalse);
     });
   });
+
+  // ---- Chi tiêu currencies (D-075 #4) ----
+  group('currencies (D-075 #4)', () {
+    final mixed = [
+      spend(
+        '50',
+        1250,
+        'c_milk',
+        DateTime(2026, 10, 12),
+        note: 'Formula online',
+        currency: 'USD',
+      ),
+      spend('51', 2000, 'c_other', DateTime(2026, 10, 12), currency: 'JPY'),
+      ...mockSpending(),
+    ];
+
+    testWidgets('8c: another currency from the picker, saved in cents', (
+      tester,
+    ) async {
+      final repo = FakeSpendingRepository();
+      await _pump(tester, const SpendingScreen(), repo: repo);
+      await tester.tap(find.byKey(const Key('spAdd')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('spAmount')), '12');
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('spCurrency')));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const Key('spCur-USD')));
+      await tester.tap(find.byKey(const Key('spCur-USD')));
+      await tester.pumpAndSettle();
+      // The typed number stays, now in dollars; the steps are whole dollars.
+      expect(_amount(tester), '12,00');
+      expect(_t('+10'), findsOneWidget);
+      expect(_t('+100.000'), findsNothing);
+      await tester.enterText(find.byKey(const Key('spAmount')), '12,5');
+      await tester.pump();
+      expect(_amount(tester), '12,5');
+      await tester.ensureVisible(find.byKey(const Key('spSave')));
+      await tester.tap(find.byKey(const Key('spSave')));
+      await tester.pumpAndSettle();
+      final saved = repo.expenses.single;
+      expect(saved.amount, 1250);
+      expect(saved.currency, 'USD');
+    });
+
+    testWidgets('8c: the household currency is the default', (tester) async {
+      final repo = FakeSpendingRepository();
+      await _pump(
+        tester,
+        const SpendingScreen(),
+        repo: repo,
+        currency: 'EUR',
+        locale: const Locale('en'),
+        expenses: const [],
+      );
+      await tester.tap(find.byKey(const Key('spFirstAdd')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('spAmount')), '7.99');
+      await tester.pump();
+      expect(_amount(tester), '7.99');
+      await tester.ensureVisible(find.byKey(const Key('spSave')));
+      await tester.tap(find.byKey(const Key('spSave')));
+      await tester.pumpAndSettle();
+      expect(repo.expenses.single.amount, 799);
+      expect(repo.expenses.single.currency, 'EUR');
+    });
+
+    testWidgets('8b: totals in the household currency, the others apart', (
+      tester,
+    ) async {
+      await _pump(tester, const SpendingScreen(), expenses: mixed);
+      expect(_t('4.215.000 ₫'), findsOneWidget);
+      expect(_t('53% ngân sách 8.000.000 ₫'), findsOneWidget);
+      expect(find.byKey(const Key('spOtherCurrencies')), findsOneWidget);
+      expect(_t('Ngoài ra: 2.000\u00A0¥ · 12,50\u00A0\$'), findsOneWidget);
+      // The recent list shows every currency, each in its own.
+      await _see(tester, _t('Formula online'));
+      expect(_t('12,50\u00A0\$'), findsOneWidget);
+    });
+
+    testWidgets(
+      '8b: a budget kept in another currency does not measure this one',
+      (tester) async {
+        await _pump(
+          tester,
+          const SpendingScreen(),
+          expenses: mixed,
+          currency: 'USD',
+          locale: const Locale('en'),
+          // Stored before D-075 #4: VND.
+          budget: Budget.fromJson({
+            'monthlyTotal': 8000000,
+            'caps': <String, Object?>{},
+            'alert80': true,
+          }),
+        );
+        expect(_t(r'$12.50'), findsWidgets);
+        expect(_t('Also: ¥2,000 · 4,215,000 ₫'), findsOneWidget);
+        expect(find.textContaining('budget'), findsNothing);
+      },
+    );
+
+    testWidgets('8h: main currency row; an old VND budget starts over in USD', (
+      tester,
+    ) async {
+      final repo = FakeSpendingRepository();
+      await _pump(
+        tester,
+        const BudgetScreen(),
+        repo: repo,
+        currency: 'USD',
+        locale: const Locale('en'),
+        expenses: mixed,
+        budget: Budget.fromJson({
+          'monthlyTotal': 8000000,
+          'caps': {'c_milk': 2200000},
+          'alert80': true,
+        }),
+      );
+      expect(_t('Main currency'), findsOneWidget);
+      expect(_t('USD · US dollar'), findsOneWidget);
+      expect(
+        _t(
+          'The budget is kept in VND. Set the amounts again and save to count USD.',
+        ),
+        findsOneWidget,
+      );
+      expect(_t('8,000,000 ₫'), findsNothing);
+      await tester.tap(find.byKey(const Key('spMainCurrency')));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const Key('spCur-EUR')));
+      await tester.tap(find.byKey(const Key('spCur-EUR')));
+      await tester.pumpAndSettle();
+      expect(repo.currencies, ['EUR']);
+      await tester.tap(find.byKey(const Key('spSaveBudget')));
+      await tester.pumpAndSettle();
+      expect(repo.budgets.single.currency, 'USD');
+      expect(repo.budgets.single.monthlyTotal, isNull);
+    });
+
+    testWidgets('8h: caps count the budget currency only', (tester) async {
+      await _pump(tester, const BudgetScreen(), expenses: mixed);
+      // c_milk: 1.020.000 + 100.000 đ; the 12,50 $ is not counted.
+      expect(_t('1.120.000 / 2.200.000'), findsOneWidget);
+    });
+
+    testWidgets('8f: a day sums each currency apart', (tester) async {
+      await _pump(tester, const SpendingHistoryScreen(), expenses: mixed);
+      expect(_t('1.020.000 ₫ · 2.000\u00A0¥ · 12,50\u00A0\$'), findsOneWidget);
+    });
+
+    testWidgets(
+      '8d: statistics count the household currency, note the others',
+      (tester) async {
+        await _pump(tester, const SpendingStatsScreen(), expenses: mixed);
+        expect(find.byKey(const Key('spStatsOtherCurrencies')), findsOneWidget);
+        expect(
+          _t(
+            'Không cộng vào tổng (tiền tệ khác): 2.000\u00A0¥ · 12,50\u00A0\$',
+          ),
+          findsOneWidget,
+        );
+      },
+    );
+  });
+  // ---- end Chi tiêu currencies ----
 }

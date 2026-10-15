@@ -169,13 +169,17 @@ class TodaySpendingCard extends ConsumerWidget {
     final scope = watchSpending(ref);
     if (scope == null || !scope.access.viewAll) return const SizedBox.shrink();
     final locale = spLocale(context);
+    // Chi tiêu currencies (D-075 #4): the household's currency, the others apart.
     final s = MonthSummary.of(
       scope.expenses,
       monthOf(scope.today),
       scope.today,
+      currency: scope.currency,
     );
     final budget =
         ref.watch(budgetProvider(scope.babyId)).value ?? Budget.empty;
+    final budgetHere =
+        budget.isSet && budget.currencyOr(scope.currency) == scope.currency;
     final total = budget.monthlyTotal ?? 0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -187,11 +191,11 @@ class TodaySpendingCard extends ConsumerWidget {
           icon: ClIcons.grid,
           soft: cl.care.growth.soft,
           ink: cl.care.growth.ink,
-          title: money(locale, s.total),
-          subtitle: budget.isSet
+          title: monthMoney(locale, s, scope.currency),
+          subtitle: budgetHere
               ? l10n.spBudgetShare(
                   percent(s.total / total),
-                  money(locale, total),
+                  money(locale, total, scope.currency),
                 )
               : l10n.todaySpendingNoBudget,
           onTap: () => context.push(Routes.spending),
