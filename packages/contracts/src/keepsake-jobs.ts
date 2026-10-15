@@ -100,6 +100,15 @@ export const memoryStoryRetrySchema = z
  */
 export const videoQuotaRequestSchema = z.object({ babyId: z.string().min(1).max(128) }).strict();
 
+/**
+ * `getVideoQuota` (MO04): the window a new video would count in, plus the premium budget when the
+ * household is on the free one ("Khi hết lượt" may then offer Premium; never otherwise).
+ */
+export interface VideoQuotaAnswer extends QuotaSnapshot {
+  /** The paid plan's per-period limit when this household is not on it; null when it is. */
+  premiumLimit: number | null;
+}
+
 /** `requestMemoryStory` / `retryMemoryStory` answer: the job and the quota after it (MO04). */
 export interface MemoryStoryAnswer {
   jobId: string;

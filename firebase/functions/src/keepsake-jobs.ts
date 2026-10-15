@@ -18,6 +18,7 @@ import {
   occasions,
   familyCan,
   videoQuotaRequestSchema,
+  type VideoQuotaAnswer,
   type GrantEnvironment,
   type MemoryStoryAnswer,
   type MemberRole,
@@ -478,7 +479,7 @@ export async function getVideoQuota(
   data: unknown,
   now: Date,
   environment: GrantEnvironment = serverGrantEnvironment(),
-): Promise<QuotaSnapshot> {
+): Promise<VideoQuotaAnswer> {
   const parsed = videoQuotaRequestSchema.safeParse(data);
   if (!parsed.success) throw new KeepsakeJobError('invalid-argument', 'malformed');
   const { babyId } = parsed.data;
@@ -500,15 +501,12 @@ export async function getVideoQuota(
   }
   const familyId = baby.get('familyId') as string | undefined;
   if (!familyId) throw new KeepsakeJobError('not-found', 'not-found');
-  const window: VideoWindow = await videoWindowFor(
-    db,
-    familyId,
-    babyId,
-    await readEntitlementsConfig(db),
-    environment,
-    now,
-  );
-  return readVideoQuota(db, familyId, window);
+  const config = await readEntitlementsConfig(db);
+  const window: VideoWindow = await videoWindowFor(db, familyId, babyId, config, environment, now);
+  return {
+    ...(await readVideoQuota(db, familyId, window)),
+    premiumLimit: window.kind === 'paid' ? null : config.quotas.video.premium.limit,
+  };
 }
 
 /** MM14 "Thử lại": a failed job goes back in the queue with the same inputs. */

@@ -155,7 +155,12 @@ describe('M02 · roles are not changed by Premium (D-072 #2)', () => {
     const dad = await getCapabilities(db, 'test_dad', { babyId: 'test_b1' }, now, 'test');
     expect(dad).toMatchObject({ plan: 'premium', canManageBilling: false, isBillingOwner: false });
     const mom = await getCapabilities(db, 'test_mom', { babyId: 'test_b1' }, now, 'test');
-    expect(mom).toMatchObject({ plan: 'premium', canManageBilling: true, isBillingOwner: true });
+    expect(mom).toMatchObject({
+      plan: 'premium',
+      canManageBilling: true,
+      isBillingOwner: true,
+      provider: 'apple',
+    });
   });
 
   it('ended access and strangers are NOT_MEMBER', async () => {

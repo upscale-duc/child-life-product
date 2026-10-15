@@ -350,6 +350,8 @@ export interface CapabilitiesAnswer {
   validUntil: string | null;
   autoRenew: boolean | null;
   isBillingOwner: boolean;
+  /** Where the plan shown came from, for "Quản lý trong App Store / Google Play" (PR03). */
+  provider: 'apple' | 'google' | 'staff' | null;
   /** The caller may buy / manage (family owner, D-072 #1). */
   canManageBilling: boolean;
   /** Null until the owner answers the first-open question (D-072 #3). */

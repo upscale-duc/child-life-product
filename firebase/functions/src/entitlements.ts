@@ -266,6 +266,12 @@ export async function getCapabilities(
     validUntil: plan.validUntil?.toISOString() ?? null,
     autoRenew: plan.autoRenew,
     isBillingOwner: plan.billingOwnerUid !== null && plan.billingOwnerUid === uid,
+    provider:
+      plan.plan === 'premium' || plan.plan === 'expired' || plan.plan === 'pending'
+        ? (ctx.grants
+            .filter((g) => g.source !== 'beta' && g.validUntil.getTime() === plan.validUntil?.getTime())
+            .map((g) => g.provider ?? null)[0] ?? null)
+        : null,
     canManageBilling: familyCan(ctx.member, 'billing.manage'),
     country: ctx.family.country,
     capabilities: states,

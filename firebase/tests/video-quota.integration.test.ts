@@ -214,6 +214,8 @@ describe('reserve with the job (Q2)', () => {
       used: 1,
       reserved: 0,
       resetsAt: '2026-10-31T17:00:00.000Z',
+      // Free budget: the paid plan's limit is offered for "Khi hết lượt".
+      premiumLimit: 5,
     });
     expect(await reason(getVideoQuota(db, 'test_grandma', { babyId }, now, 'test'))).toBe(
       'not-allowed',
