@@ -210,3 +210,30 @@ describe('billing normalisation (M05, M07, M08)', () => {
     ).toBe('root');
   });
 });
+
+describe('multi-unit reservations (assistant credits: text 1, image 3)', () => {
+  it('reserves, commits and releases the same units; an image does not fit 2 left', () => {
+    const w = { limit: 20, used: 18, reserved: 0 };
+    expect(applyQuotaOp(w, undefined, 'reserve', 3).outcome).toBe('denied');
+    const r = applyQuotaOp(w, undefined, 'reserve', 2);
+    expect(r.window).toEqual({ limit: 20, used: 18, reserved: 2 });
+    expect(applyQuotaOp(r.window, 'reserved', 'commit', 2).window).toEqual({
+      limit: 20,
+      used: 20,
+      reserved: 0,
+    });
+    expect(applyQuotaOp(r.window, 'reserved', 'release', 2).window).toEqual({
+      limit: 20,
+      used: 18,
+      reserved: 0,
+    });
+  });
+  it('a 0-credit task (health support) is allowed even with nothing left', () => {
+    expect(applyQuotaOp({ limit: 0, used: 0, reserved: 0 }, undefined, 'reserve', 0).outcome).toBe(
+      'reserved',
+    );
+    expect(() =>
+      applyQuotaOp({ limit: 1, used: 0, reserved: 0 }, undefined, 'reserve', -1),
+    ).toThrow();
+  });
+});

@@ -293,6 +293,15 @@ export const entitlementsConfigSchema = z.object({
       perBabyPerDay: z.number().int().min(0),
       perFamilyPerMonth: z.number().int().min(0),
     }),
+    /** Assistant credits (P-159; QA values, not an offer): one household pool per window. */
+    assistant: z
+      .object({
+        free: z.number().int().min(0),
+        premium: z.number().int().min(0),
+        textCredits: z.number().int().min(0).max(20),
+        imageCredits: z.number().int().min(0).max(20),
+      })
+      .default(() => ({ free: 20, premium: 200, textCredits: 1, imageCredits: 3 })),
   }),
   betaCampaigns: z.array(betaCampaignSchema).max(20),
 });
@@ -307,6 +316,7 @@ export const defaultEntitlementsConfig: EntitlementsConfig = {
       premium: { limit: 5, window: 'billing_period' },
     },
     ai: { perBabyPerDay: 1, perFamilyPerMonth: 10 },
+    assistant: { free: 20, premium: 200, textCredits: 1, imageCredits: 3 },
   },
   betaCampaigns: [],
 };

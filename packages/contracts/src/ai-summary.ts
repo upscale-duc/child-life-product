@@ -16,6 +16,12 @@ export type AiSummaryKind = (typeof aiSummaryKinds)[number];
 export const aiConsentVersion = 'ai-consent-v1';
 
 /**
+ * Assistant chat consent (P-160): messages, photos and the context read for a task go to the AI
+ * provider. Separate from summaries; stored as `assistant` on `users/{uid}/settings/ai`.
+ */
+export const assistantConsentVersion = 'assistant-consent-v1';
+
+/**
  * `users/{uid}/settings/ai`: per person; a household's Premium never replaces it. Notes written
  * by someone else are sent only when that person's own consent allows it (`shareMyNotes`).
  */
@@ -29,6 +35,10 @@ export const aiConsentSchema = z.object({
     })
     .nullable(),
   updatedAt: z.string().nullable(),
+  assistant: z
+    .object({ version: z.string().min(1).max(40), grantedAt: z.string() })
+    .nullable()
+    .optional(),
 });
 export type AiConsent = z.infer<typeof aiConsentSchema>;
 

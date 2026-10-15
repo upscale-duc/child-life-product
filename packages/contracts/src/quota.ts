@@ -29,22 +29,29 @@ export function applyQuotaOp(
   window: QuotaWindow,
   current: ReservationState | undefined,
   op: QuotaOp,
+  /** Units the reservation holds (assistant credits: text 1, image 3); the same value on every
+   * operation of one reservation. Video and AI summaries use 1. */
+  units = 1,
 ): { window: QuotaWindow; state: ReservationState | undefined; outcome: QuotaOutcome } {
+  if (!Number.isInteger(units) || units < 0)
+    throw new Error('units must be a non-negative integer');
   const w = { ...window };
   switch (op) {
     case 'reserve':
       if (current !== undefined) return { window: w, state: current, outcome: 'noop' };
-      if (w.used + w.reserved >= w.limit) return { window: w, state: undefined, outcome: 'denied' };
-      w.reserved += 1;
+      if (w.used + w.reserved + units > w.limit || (units === 0 && w.used + w.reserved > w.limit)) {
+        return { window: w, state: undefined, outcome: 'denied' };
+      }
+      w.reserved += units;
       return { window: w, state: 'reserved', outcome: 'reserved' };
     case 'commit':
       if (current !== 'reserved') return { window: w, state: current, outcome: 'noop' };
-      w.reserved -= 1;
-      w.used += 1;
+      w.reserved -= units;
+      w.used += units;
       return { window: w, state: 'committed', outcome: 'committed' };
     case 'release':
       if (current !== 'reserved') return { window: w, state: current, outcome: 'noop' };
-      w.reserved -= 1;
+      w.reserved -= units;
       return { window: w, state: 'released', outcome: 'released' };
   }
 }
@@ -53,7 +60,8 @@ export function quotaInvariantHolds(w: QuotaWindow): boolean {
   return w.used >= 0 && w.reserved >= 0 && w.used + w.reserved <= w.limit;
 }
 
-export const quotaFeatures = ['video', 'ai_day', 'ai_month'] as const;
+/** `assistant`: chat credits, one household pool per window (Free calendar month, Premium billing period). */
+export const quotaFeatures = ['video', 'ai_day', 'ai_month', 'assistant'] as const;
 export type QuotaFeature = (typeof quotaFeatures)[number];
 
 /**

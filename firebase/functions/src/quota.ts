@@ -100,6 +100,8 @@ export interface QuotaOpDoc {
   state: ReservationState;
   requestId: string | null;
   holder: string | null;
+  /** Units held (assistant credits); absent on older reservations = 1. */
+  units?: number;
 }
 
 export interface QuotaResult {
@@ -305,6 +307,8 @@ export interface ReserveInput {
   requestId?: string | null;
   /** Fencing token: commit only succeeds with the same holder (e.g. a job attempt / lease). */
   holder?: string | null;
+  /** How many units this use takes in every window (default 1; assistant: text 1, image 3). */
+  units?: number;
   now: Date;
 }
 
@@ -336,7 +340,8 @@ export async function reserveQuota(
   if (new Set(resolved.map((r) => r.ref.path)).size !== resolved.length) {
     throw new QuotaError('invalid-argument', 'duplicate-window');
   }
-  const applied = resolved.map((r) => applyQuotaOp(r.window, undefined, 'reserve'));
+  const units = input.units ?? 1;
+  const applied = resolved.map((r) => applyQuotaOp(r.window, undefined, 'reserve', units));
   if (applied.some((a) => a.outcome === 'denied')) {
     return { outcome: 'denied', state: undefined, windows: resolved.map((r) => r.window) };
   }
@@ -354,6 +359,7 @@ export async function reserveQuota(
     state: 'reserved' satisfies ReservationState,
     requestId: input.requestId ?? null,
     holder: input.holder ?? null,
+    units,
     createdAt: now,
     updatedAt: now,
     reservedAt: now,
@@ -395,7 +401,7 @@ async function settle(
       ? input.holder !== stored.holder
       : input.holder != null && input.holder !== stored.holder);
   if (fenced) return { outcome: 'fenced', state: stored.state, windows };
-  const applied = windows.map((w) => applyQuotaOp(w, stored.state, op));
+  const applied = windows.map((w) => applyQuotaOp(w, stored.state, op, stored.units ?? 1));
   if (applied[0]!.outcome === 'noop') return { outcome: 'noop', state: stored.state, windows };
   const after = windows.map((w, i) => ({ ...w, ...applied[i]!.window }));
   after.forEach((w, i) => {

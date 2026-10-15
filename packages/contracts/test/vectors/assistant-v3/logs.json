@@ -1,0 +1,27 @@
+[
+  {
+    "id": "test_b1",
+    "kind": "bottle",
+    "ml": 150
+  },
+  {
+    "id": "test_b2",
+    "kind": "bottle",
+    "ml": 120
+  },
+  {
+    "id": "test_b3",
+    "kind": "bottle",
+    "ml": 120
+  },
+  {
+    "id": "test_n1",
+    "kind": "nursing",
+    "minutes": 20
+  },
+  {
+    "id": "test_n2",
+    "kind": "nursing",
+    "minutes": 15
+  }
+]

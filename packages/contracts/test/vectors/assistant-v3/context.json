@@ -1,0 +1,22 @@
+{
+  "now": "2026-10-15T07:20:00Z",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "household": "test_h1",
+  "actor": "test_mom",
+  "child": "test_teddy",
+  "birthDate": "2026-09-17",
+  "secondChild": {
+    "id": "test_na",
+    "ageMonths": 7,
+    "recordedReactionIngredientIds": [
+      "egg"
+    ]
+  },
+  "quotaExamples": {
+    "free": 20,
+    "premium": 200,
+    "text": 1,
+    "image": 3
+  },
+  "status": "TEST_ONLY_NOT_COMMERCIAL"
+}

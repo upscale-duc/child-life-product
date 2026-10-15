@@ -1,0 +1,429 @@
+[
+  {
+    "fixtureId": "test_D01_draft_does_not_write",
+    "group": "D",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_D01_draft_does_not_write",
+    "designRefs": [
+      "CH04",
+      "CH05",
+      "CH06",
+      "CH07"
+    ]
+  },
+  {
+    "fixtureId": "test_D02_edit_and_save",
+    "group": "D",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_D02_edit_and_save",
+    "designRefs": [
+      "CH04",
+      "CH05",
+      "CH06",
+      "CH07"
+    ]
+  },
+  {
+    "fixtureId": "test_D03_partial_retry",
+    "group": "D",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_D03_partial_retry",
+    "designRefs": [
+      "CH04",
+      "CH05",
+      "CH06",
+      "CH07"
+    ]
+  },
+  {
+    "fixtureId": "test_D04_stale",
+    "group": "D",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_D04_stale",
+    "designRefs": [
+      "CH04",
+      "CH05",
+      "CH06",
+      "CH07"
+    ]
+  },
+  {
+    "fixtureId": "test_D05_expiry",
+    "group": "D",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_D05_expiry",
+    "designRefs": [
+      "CH04",
+      "CH05",
+      "CH06",
+      "CH07"
+    ]
+  },
+  {
+    "fixtureId": "test_D06_invalid_amount",
+    "group": "D",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_D06_invalid_amount",
+    "designRefs": [
+      "CH04",
+      "CH05",
+      "CH06",
+      "CH07"
+    ]
+  },
+  {
+    "fixtureId": "test_D07_invalid_sleep",
+    "group": "D",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_D07_invalid_sleep",
+    "designRefs": [
+      "CH04",
+      "CH05",
+      "CH06",
+      "CH07"
+    ]
+  },
+  {
+    "fixtureId": "test_D08_confirm_at_zero",
+    "group": "D",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_D08_confirm_at_zero",
+    "designRefs": [
+      "CH04",
+      "CH05",
+      "CH06",
+      "CH07"
+    ]
+  },
+  {
+    "fixtureId": "test_U01_replay",
+    "group": "U",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_U01_replay",
+    "designRefs": [
+      "CH19",
+      "CH20",
+      "CH21",
+      "CH22",
+      "CH23",
+      "CH24",
+      "CH25"
+    ]
+  },
+  {
+    "fixtureId": "test_U02_key_conflict",
+    "group": "U",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_U02_key_conflict",
+    "designRefs": [
+      "CH19",
+      "CH20",
+      "CH21",
+      "CH22",
+      "CH23",
+      "CH24",
+      "CH25"
+    ]
+  },
+  {
+    "fixtureId": "test_U03_block_image_before_dispatch",
+    "group": "U",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_U03_block_image_before_dispatch",
+    "designRefs": [
+      "CH19",
+      "CH20",
+      "CH21",
+      "CH22",
+      "CH23",
+      "CH24",
+      "CH25"
+    ]
+  },
+  {
+    "fixtureId": "test_U04_error_release",
+    "group": "U",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_U04_error_release",
+    "designRefs": [
+      "CH19",
+      "CH20",
+      "CH21",
+      "CH22",
+      "CH23",
+      "CH24",
+      "CH25"
+    ]
+  },
+  {
+    "fixtureId": "test_U05_clarify_same_task",
+    "group": "U",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_U05_clarify_same_task",
+    "designRefs": [
+      "CH19",
+      "CH20",
+      "CH21",
+      "CH22",
+      "CH23",
+      "CH24",
+      "CH25"
+    ]
+  },
+  {
+    "fixtureId": "test_U06_cancel_late_callback",
+    "group": "U",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_U06_cancel_late_callback",
+    "designRefs": [
+      "CH19",
+      "CH20",
+      "CH21",
+      "CH22",
+      "CH23",
+      "CH24",
+      "CH25"
+    ]
+  },
+  {
+    "fixtureId": "test_U07_concurrent_reservation",
+    "group": "U",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_U07_concurrent_reservation",
+    "designRefs": [
+      "CH19",
+      "CH20",
+      "CH21",
+      "CH22",
+      "CH23",
+      "CH24",
+      "CH25"
+    ]
+  },
+  {
+    "fixtureId": "test_U08_upgrade_resume",
+    "group": "U",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_U08_upgrade_resume",
+    "designRefs": [
+      "CH19",
+      "CH20",
+      "CH21",
+      "CH22",
+      "CH23",
+      "CH24",
+      "CH25"
+    ]
+  },
+  {
+    "fixtureId": "test_U09_unverified_purchase",
+    "group": "U",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_U09_unverified_purchase",
+    "designRefs": [
+      "CH19",
+      "CH20",
+      "CH21",
+      "CH22",
+      "CH23",
+      "CH24",
+      "CH25"
+    ]
+  },
+  {
+    "fixtureId": "test_U10_health_zero",
+    "group": "U",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_U10_health_zero",
+    "designRefs": [
+      "CH19",
+      "CH20",
+      "CH21",
+      "CH22",
+      "CH23",
+      "CH24",
+      "CH25"
+    ]
+  },
+  {
+    "fixtureId": "test_S01_viewer_read_not_write",
+    "group": "S",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_S01_viewer_read_not_write",
+    "designRefs": [
+      "CH26",
+      "CH27"
+    ]
+  },
+  {
+    "fixtureId": "test_S02_cross_household",
+    "group": "S",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_S02_cross_household",
+    "designRefs": [
+      "CH26",
+      "CH27"
+    ]
+  },
+  {
+    "fixtureId": "test_S03_cross_child",
+    "group": "S",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_S03_cross_child",
+    "designRefs": [
+      "CH26",
+      "CH27"
+    ]
+  },
+  {
+    "fixtureId": "test_S04_consent",
+    "group": "S",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_S04_consent",
+    "designRefs": [
+      "CH26",
+      "CH27"
+    ]
+  },
+  {
+    "fixtureId": "test_S05_revoked_before_worker",
+    "group": "S",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_S05_revoked_before_worker",
+    "designRefs": [
+      "CH26",
+      "CH27"
+    ]
+  },
+  {
+    "fixtureId": "test_S06_role_revoked_after_draft",
+    "group": "S",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_S06_role_revoked_after_draft",
+    "designRefs": [
+      "CH26",
+      "CH27"
+    ]
+  },
+  {
+    "fixtureId": "test_I01_blurry_no_charge",
+    "group": "I",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_I01_blurry_no_charge",
+    "designRefs": [
+      "CH09",
+      "CH10",
+      "CH11",
+      "CH12",
+      "CH13",
+      "CH14"
+    ]
+  },
+  {
+    "fixtureId": "test_I02_receipt_review",
+    "group": "I",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_I02_receipt_review",
+    "designRefs": [
+      "CH09",
+      "CH10",
+      "CH11",
+      "CH12",
+      "CH13",
+      "CH14"
+    ]
+  },
+  {
+    "fixtureId": "test_I03_duplicate_review",
+    "group": "I",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_I03_duplicate_review",
+    "designRefs": [
+      "CH09",
+      "CH10",
+      "CH11",
+      "CH12",
+      "CH13",
+      "CH14"
+    ]
+  },
+  {
+    "fixtureId": "test_I04_unknown_currency",
+    "group": "I",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_I04_unknown_currency",
+    "designRefs": [
+      "CH09",
+      "CH10",
+      "CH11",
+      "CH12",
+      "CH13",
+      "CH14"
+    ]
+  },
+  {
+    "fixtureId": "test_I05_retention_honest",
+    "group": "I",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_I05_retention_honest",
+    "designRefs": [
+      "CH09",
+      "CH10",
+      "CH11",
+      "CH12",
+      "CH13",
+      "CH14"
+    ]
+  },
+  {
+    "fixtureId": "test_I06_note_fallback",
+    "group": "I",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_I06_note_fallback",
+    "designRefs": [
+      "CH09",
+      "CH10",
+      "CH11",
+      "CH12",
+      "CH13",
+      "CH14"
+    ]
+  },
+  {
+    "fixtureId": "test_I07_note_dates",
+    "group": "I",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_I07_note_dates",
+    "designRefs": [
+      "CH09",
+      "CH10",
+      "CH11",
+      "CH12",
+      "CH13",
+      "CH14"
+    ]
+  },
+  {
+    "fixtureId": "test_R01_summary",
+    "group": "R",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_R01_summary",
+    "designRefs": [
+      "CH08",
+      "CH18"
+    ]
+  },
+  {
+    "fixtureId": "test_R02_recipe_eligibility",
+    "group": "R",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_R02_recipe_eligibility",
+    "designRefs": [
+      "CH08",
+      "CH18"
+    ]
+  },
+  {
+    "fixtureId": "test_R03_read_no_write",
+    "group": "R",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_R03_read_no_write",
+    "designRefs": [
+      "CH08",
+      "CH18"
+    ]
+  },
+  {
+    "fixtureId": "test_E01_unsupported_tool",
+    "group": "E",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_E01_unsupported_tool",
+    "designRefs": [
+      "CH25",
+      "CH28"
+    ]
+  },
+  {
+    "fixtureId": "test_E02_duplicate_finish",
+    "group": "E",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_E02_duplicate_finish",
+    "designRefs": [
+      "CH25",
+      "CH28"
+    ]
+  },
+  {
+    "fixtureId": "test_E03_no_edit_charge",
+    "group": "E",
+    "expectedAndAssertions": "run_simulation.py::Contracts.test_E03_no_edit_charge",
+    "designRefs": [
+      "CH25",
+      "CH28"
+    ]
+  }
+]

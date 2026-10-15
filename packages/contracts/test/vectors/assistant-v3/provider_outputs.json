@@ -1,0 +1,91 @@
+{
+  "text_batch": {
+    "kind": "drafts",
+    "items": [
+      {
+        "kind": "bottle",
+        "ml": 120,
+        "at": "2026-10-15T01:00:00Z"
+      },
+      {
+        "kind": "sleep",
+        "start": "2026-10-15T02:00:00Z",
+        "end": "2026-10-15T03:00:00Z"
+      }
+    ]
+  },
+  "summary": {
+    "kind": "answer",
+    "bottleMl": 390,
+    "nursingMinutes": 35,
+    "sources": [
+      "test_b1",
+      "test_b2",
+      "test_b3",
+      "test_n1",
+      "test_n2"
+    ]
+  },
+  "receipt": {
+    "kind": "drafts",
+    "items": [
+      {
+        "kind": "expense",
+        "merchant": "ConCung",
+        "subtotal": 450000,
+        "tax": 36000,
+        "amount": 486000,
+        "currency": "VND",
+        "date": null,
+        "needsReview": [
+          "date"
+        ]
+      }
+    ]
+  },
+  "note": {
+    "kind": "drafts",
+    "items": [
+      {
+        "kind": "reminder",
+        "title": "Mua bỉm",
+        "date": null
+      },
+      {
+        "kind": "reminder",
+        "title": "Gọi phòng khám hỏi lịch",
+        "date": null
+      }
+    ],
+    "excluded": [
+      {
+        "kind": "informational",
+        "text": "Bé thích bài hát A"
+      },
+      {
+        "kind": "medicalText",
+        "text": "MEDICINE PLACEHOLDER — REVIEW WITH CLINICIAN"
+      }
+    ]
+  },
+  "clarify": {
+    "kind": "clarification",
+    "missing": [
+      "sleep.period"
+    ]
+  },
+  "blurry": {
+    "kind": "unreadable"
+  },
+  "failure": {
+    "kind": "error"
+  },
+  "health": {
+    "kind": "health_route",
+    "contentId": "TEST_ONLY_REVIEW_REQUIRED"
+  },
+  "injection": {
+    "kind": "tool",
+    "name": "deleteAllRecords"
+  }
+}

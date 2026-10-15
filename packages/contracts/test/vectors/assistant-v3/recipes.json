@@ -1,0 +1,48 @@
+[
+  {
+    "id": "test_recipe_1",
+    "ingredientIds": [
+      "rice",
+      "carrot"
+    ],
+    "minAgeMonths": 6,
+    "approved": true,
+    "region": "VN"
+  },
+  {
+    "id": "test_recipe_2",
+    "ingredientIds": [
+      "egg"
+    ],
+    "minAgeMonths": 6,
+    "approved": true,
+    "region": "VN"
+  },
+  {
+    "id": "test_recipe_3",
+    "ingredientIds": [
+      "rice"
+    ],
+    "minAgeMonths": 9,
+    "approved": true,
+    "region": "VN"
+  },
+  {
+    "id": "test_recipe_4",
+    "ingredientIds": [
+      "rice"
+    ],
+    "minAgeMonths": 6,
+    "approved": false,
+    "region": "VN"
+  },
+  {
+    "id": "test_recipe_5",
+    "ingredientIds": [
+      "rice"
+    ],
+    "minAgeMonths": 6,
+    "approved": true,
+    "region": "US"
+  }
+]

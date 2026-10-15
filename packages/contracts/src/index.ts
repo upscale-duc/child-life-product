@@ -31,4 +31,5 @@ export * from './personalization.js';
 export * from './quota.js';
 export * from './ai-summary.js';
 export * from './billing.js';
+export * from './assistant.js';
 export * from './premium-ops.js';

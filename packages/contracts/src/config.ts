@@ -28,6 +28,18 @@ export const flagKeys = [
   'ai_assist',
   /** In-app purchase of Child Life Premium (D-072 #6); off = no paywall purchase button. */
   'premium_billing',
+  /** Assistant chat overall (docs/assistant/architecture.md P-161). Off: history stays readable. */
+  'assistant',
+  /** Assistant photo tasks (receipts, notes). */
+  'assistant_images',
+  /** Assistant care guidance and recipes; off never blocks summaries or logging. */
+  'assistant_care',
+  /** Live model calls; off = no new model calls, drafts already ready can still be saved. */
+  'assistant_live',
+  /** Saving drafts into modules (confirm). */
+  'assistant_writes',
+  /** Upgrade prompts when credits run out. */
+  'assistant_upsell',
 ] as const;
 export type FlagKey = (typeof flagKeys)[number];
 
@@ -73,6 +85,12 @@ export const defaultFlags: Flags = {
   personalization: off('internal'),
   ai_assist: off('internal'),
   premium_billing: off('internal'),
+  assistant: off('internal'),
+  assistant_images: off('internal'),
+  assistant_care: off('internal'),
+  assistant_live: off('internal'),
+  assistant_writes: off('internal'),
+  assistant_upsell: off('internal'),
 };
 
 /**

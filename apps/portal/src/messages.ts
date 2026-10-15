@@ -711,6 +711,25 @@ const vi: Record<string, string> = {
   'flag.premium_billing.desc': 'Nút mua gói trong app (App Store / Google Play)',
   'flag.premium_billing.offEffect':
     'Ẩn nút mua; gia đình đã có Premium giữ quyền đến hết hạn, khôi phục vẫn hoạt động.',
+  'flag.assistant': 'Trợ lý chat',
+  'flag.assistant.desc': 'Nói hoặc gửi ảnh, app chuẩn bị bản nháp để ba mẹ kiểm tra rồi lưu',
+  'flag.assistant.offEffect':
+    'Ẩn trợ lý; lịch sử chat vẫn xem được, các module ghi trực tiếp không đổi.',
+  'flag.assistant_images': 'Trợ lý · đọc ảnh',
+  'flag.assistant_images.desc': 'Ảnh hoá đơn và ảnh ghi chú thành bản nháp chi tiêu, nhắc việc',
+  'flag.assistant_images.offEffect': 'Không nhận ảnh mới; tác vụ chữ vẫn chạy.',
+  'flag.assistant_care': 'Trợ lý · chăm bé',
+  'flag.assistant_care.desc': 'Gợi ý chăm bé và công thức từ nội dung đã duyệt',
+  'flag.assistant_care.offEffect': 'Không gợi ý chăm bé; ghi nhật ký và hỏi tổng hợp vẫn chạy.',
+  'flag.assistant_live': 'Trợ lý · gọi AI',
+  'flag.assistant_live.desc': 'Gọi nhà cung cấp AI cho tác vụ mới',
+  'flag.assistant_live.offEffect': 'Không gọi AI mới; bản nháp đã sẵn sàng vẫn lưu được.',
+  'flag.assistant_writes': 'Trợ lý · lưu vào module',
+  'flag.assistant_writes.desc': 'Lưu bản nháp đã xác nhận vào nhật ký, chi tiêu, nhắc việc',
+  'flag.assistant_writes.offEffect': 'Tạm dừng lưu từ trợ lý; ghi trực tiếp trong module vẫn chạy.',
+  'flag.assistant_upsell': 'Trợ lý · gợi ý nâng cấp',
+  'flag.assistant_upsell.desc': 'Gợi ý Premium khi hết lượt',
+  'flag.assistant_upsell.offEffect': 'Hết lượt chỉ hiện ngày làm mới, không gợi ý mua.',
 
   // A12
   'audit.title': 'Nhật ký thao tác',
@@ -2561,6 +2580,7 @@ const vi: Record<string, string> = {
   'premium.fq.feature.video': 'Video kỷ niệm',
   'premium.fq.feature.ai_day': 'AI · mỗi bé mỗi ngày',
   'premium.fq.feature.ai_month': 'AI · mỗi gia đình mỗi tháng',
+  'premium.fq.feature.assistant': 'Trợ lý chat · credit của hộ',
   'premium.fq.scope.calendar_month': 'Tháng lịch',
   'premium.fq.scope.day': 'Ngày',
   'premium.fq.scope.paid': 'Kỳ thanh toán',
@@ -3333,6 +3353,27 @@ const en: Record<string, string> = {
   'flag.premium_billing.desc': 'In-app purchase button (App Store / Google Play)',
   'flag.premium_billing.offEffect':
     'Hides the buy button; families with Premium keep it until it ends, restore still works.',
+  'flag.assistant': 'Assistant chat',
+  'flag.assistant.desc':
+    'Say it or send a photo; the app prepares drafts for parents to check and save',
+  'flag.assistant.offEffect':
+    'Hides the assistant; chat history stays readable, direct logging is unchanged.',
+  'flag.assistant_images': 'Assistant · photos',
+  'flag.assistant_images.desc': 'Receipt and note photos become expense and reminder drafts',
+  'flag.assistant_images.offEffect': 'No new photos; text tasks keep working.',
+  'flag.assistant_care': 'Assistant · baby care',
+  'flag.assistant_care.desc': 'Care suggestions and recipes from approved content',
+  'flag.assistant_care.offEffect': 'No care suggestions; logging and summaries keep working.',
+  'flag.assistant_live': 'Assistant · AI calls',
+  'flag.assistant_live.desc': 'Calls the AI provider for new tasks',
+  'flag.assistant_live.offEffect': 'No new AI calls; drafts already ready can still be saved.',
+  'flag.assistant_writes': 'Assistant · save to modules',
+  'flag.assistant_writes.desc': 'Saves confirmed drafts into logs, expenses and reminders',
+  'flag.assistant_writes.offEffect':
+    'Saving from the assistant pauses; direct module logging keeps working.',
+  'flag.assistant_upsell': 'Assistant · upgrade prompts',
+  'flag.assistant_upsell.desc': 'Suggests Premium when credits run out',
+  'flag.assistant_upsell.offEffect': 'Running out only shows the reset date, no purchase prompt.',
 
   'audit.title': 'Action log',
   'audit.sub':
@@ -5208,6 +5249,7 @@ const en: Record<string, string> = {
   'premium.fq.feature.video': 'Keepsake videos',
   'premium.fq.feature.ai_day': 'AI · per baby per day',
   'premium.fq.feature.ai_month': 'AI · per family per month',
+  'premium.fq.feature.assistant': 'Assistant · household credits',
   'premium.fq.scope.calendar_month': 'Calendar month',
   'premium.fq.scope.day': 'Day',
   'premium.fq.scope.paid': 'Billing period',
