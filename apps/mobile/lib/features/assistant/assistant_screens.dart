@@ -9,6 +9,7 @@ import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/format/age.dart';
+import '../../core/platform/external_apps.dart' show openAppSettings;
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
@@ -17,23 +18,29 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_models.dart' show CareType;
+import '../care/care_repository.dart' show inBabyZone;
 import '../care/care_sheets.dart' show openCareLog, showQuickLog;
+import '../family/family_repository.dart' show familyMembersProvider;
 import '../premium/billing_models.dart';
 import '../premium/billing_repository.dart' show videoQuotaProvider;
 import '../premium/paywall_screen.dart' show openPaywall;
 import '../premium/premium_repository.dart'
     show capabilitiesProvider, selectedCapabilitiesProvider;
-import '../rhythm/rhythm_actions.dart' show healthLocation;
+import '../rhythm/rhythm_access.dart' show FamilyAction, familyCan;
+import '../rhythm/rhythm_actions.dart' show activityLocation, healthLocation;
 import '../rhythm/rhythm_models.dart' show HealthSign, wireList;
 import '../rhythm/rhythm_repository.dart'
     show rhythmContentProvider, rhythmDialerProvider;
+import '../rhythm/rhythm_labels.dart' show memberLabel;
 import '../rhythm/rhythm_widgets.dart' show rhConfirm;
 import '../spending/spending_models.dart' show SpendingAccess;
+import 'assistant_cards.dart';
 import 'assistant_controller.dart';
 import 'assistant_editor.dart';
 import 'assistant_entry.dart';
 import 'assistant_labels.dart';
 import 'assistant_models.dart';
+import 'assistant_photos.dart';
 import 'assistant_repository.dart';
 import 'assistant_rules.dart';
 import 'assistant_widgets.dart';
@@ -207,6 +214,44 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
     }
   }
 
+  /// CH09: "Gửi ảnh để trợ lý đọc" (camera or library, what it costs), then the exact quote in
+  /// the thread. Nothing is uploaded here.
+  Future<void> _choosePhoto(String key, AssistantUsage? usage) async {
+    final l10n = AppLocalizations.of(context);
+    final toaster = ClToaster.of(context);
+    final source = await showClSheet<PhotoSource>(
+      context: context,
+      builder: (_) => _PhotoSourceSheet(usage: usage),
+    );
+    if (source == null || !mounted) return;
+    final out = await _ctl(key).pickPhoto(source, hint: _hint);
+    switch (out) {
+      case PhotoPick.denied:
+        toaster.show(
+          message: source == PhotoSource.camera
+              ? l10n.avatarCameraDenied
+              : l10n.avatarLibraryDenied,
+          actionLabel: l10n.actionOpenSettings,
+          onAction: openAppSettings,
+        );
+      case PhotoPick.failed:
+        toaster.show(message: l10n.asPhotoPickFailed, error: true);
+      default:
+        break;
+    }
+  }
+
+  /// CH14 "Chụp lại" / CH25 "Thử lại" on a photo task.
+  Future<void> _retakePhoto(
+    String key,
+    String taskId,
+    AssistantUsage? u,
+  ) async {
+    if (!await _ctl(key).retryPhoto(taskId) && mounted) {
+      await _choosePhoto(key, u);
+    }
+  }
+
   void _logDirectly(AssistantScope scope) =>
       scope.household ? context.push(Routes.spending) : showQuickLog(context);
 
@@ -350,7 +395,12 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
               images ? l10n.asComposerHint : l10n.asComposerHintText,
           };
     final babyName = baby?.nickname ?? '';
+    final session = ref.watch(sessionProvider);
     final view = _ThreadView(
+      myUid: session is SessionSignedIn ? session.user.uid : null,
+      members:
+          ref.watch(familyMembersProvider(scope.babyId)).value ??
+          const <Membership>[],
       chat: chat,
       ctl: ctl,
       me: me,
@@ -373,6 +423,13 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
         ctl.typeAnswer(taskId);
         _focus.requestFocus();
       },
+      onChoosePhoto: images && !viewer
+          ? () => _choosePhoto(key, chat.usage)
+          : null,
+      onRetake: images && !viewer
+          ? (taskId) => _retakePhoto(key, taskId, chat.usage)
+          : null,
+      onTypeIn: () => _focus.requestFocus(),
     );
     final children = <Widget>[
       if (chat.empty)
@@ -385,7 +442,9 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
             _text.selection = TextSelection.collapsed(offset: text.length);
             _focus.requestFocus();
           },
-          onPhoto: images && !viewer ? ctl.pickPhoto : null,
+          onPhoto: images && !viewer
+              ? () => _choosePhoto(key, chat.usage)
+              : null,
         ),
       ...view.build(context),
     ];
@@ -461,7 +520,7 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
               sending: chat.sending,
               onSend: () => _send(key),
               onCamera: images && mode == ComposerMode.open
-                  ? ctl.pickPhoto
+                  ? () => _choosePhoto(key, chat.usage)
                   : null,
             ),
           ],
@@ -475,6 +534,8 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
 /// notice that explains it.
 class _ThreadView {
   _ThreadView({
+    required this.myUid,
+    required this.members,
     required this.chat,
     required this.ctl,
     required this.me,
@@ -491,6 +552,9 @@ class _ThreadView {
     required this.onDial,
     required this.onTypeInstead,
     required this.onTypeAnswer,
+    required this.onChoosePhoto,
+    required this.onRetake,
+    required this.onTypeIn,
   });
 
   final ChatState chat;
@@ -509,6 +573,30 @@ class _ThreadView {
   final Future<void> Function(String? number) onDial;
   final VoidCallback onTypeInstead;
   final void Function(String taskId) onTypeAnswer;
+
+  /// CH09 sheet (null: photo reading off, or a viewer).
+  final VoidCallback? onChoosePhoto;
+  final void Function(String taskId)? onRetake;
+
+  /// "Nhập tay": the composer, the photo flow left as it is.
+  final VoidCallback onTypeIn;
+
+  /// Who is reading (D-075 #2: authors, author-only actions).
+  final String? myUid;
+
+  /// The baby's members (reminder assignees, D-075 #5).
+  final List<Membership> members;
+
+  /// A shared-thread reader (Cùng nuôi / Người chăm sóc) in a child chat.
+  bool get _sharedReader =>
+      !chat.scope.household &&
+      (me?.role == MemberRole.coParent || me?.role == MemberRole.caregiver);
+
+  /// Another member's name for a message or a saved draft; null when it is me / unknown.
+  String? _other(BuildContext context, AssistantAuthor? a) =>
+      a == null || a.uid == myUid
+      ? null
+      : authorName(AppLocalizations.of(context), a, myUid: myUid);
 
   List<Widget> build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -550,7 +638,7 @@ class _ThreadView {
       );
     }
     if (chat.photo case final photo?) {
-      out.add(_photoTile(context, photo));
+      out.addAll(_pendingPhoto(context, photo));
     }
     if (chat.block case final block?) {
       out.addAll(_blockCards(context, block));
@@ -584,43 +672,66 @@ class _ThreadView {
     );
   }
 
-  Widget _photoTile(BuildContext context, PendingPhoto photo) {
-    final cl = context.cl;
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Container(
-        padding: const EdgeInsets.all(ClSpace.s2),
-        decoration: BoxDecoration(
-          color: cl.colors.surface,
-          borderRadius: BorderRadius.circular(16),
+  /// The chosen photo before its task exists: CH09 (quote + retention), CH10 uploading, or
+  /// held (CH20 and the other notices explain why; the selection stays).
+  List<Widget> _pendingPhoto(BuildContext context, PendingPhoto photo) {
+    final l10n = AppLocalizations.of(context);
+    final quote = photo.quote;
+    return switch (photo.stage) {
+      PhotoStage.quoting => [
+        AsPhotoBubble(
+          bytes: photo.bytes,
+          dimmed: true,
+          icon: ClIcons.spark,
+          label: l10n.asPhotoQuoting,
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: cl.colors.surface2,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              alignment: Alignment.center,
-              child: ClIcon(
-                ClIcons.camera,
-                size: 18,
-                color: cl.colors.inkMuted,
-              ),
-            ),
-            const SizedBox(width: ClSpace.s2),
-            Text(
-              AppLocalizations.of(context).asPhotoNotSent,
-              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-            ),
-            const SizedBox(width: ClSpace.s2),
-          ],
+      ],
+      PhotoStage.ready when quote != null => [
+        AsPhotoBubble(
+          bytes: photo.bytes,
+          icon: ClIcons.camera,
+          label: l10n.asPhotoNotSent,
         ),
-      ),
-    );
+        AsPhotoReadyCard(
+          bytes: photo.bytes,
+          credits: quote.credits,
+          remaining: quote.usage?.remaining ?? chat.usageView?.remaining ?? 0,
+          keep: photo.keep,
+          canceled: photo.canceled,
+          onKeep: ctl.setKeepPhoto,
+          onSend: online ? () async => onToast(await ctl.sendPhoto()) : null,
+          onRemove: ctl.removePhoto,
+        ),
+      ],
+      PhotoStage.uploading => [
+        AsPhotoBubble(
+          bytes: photo.bytes,
+          dimmed: true,
+          icon: ClIcons.upload,
+          progress: photo.progress,
+          label: l10n.asUploading((photo.progress * 100).round()),
+          onCancel: ctl.cancelUpload,
+          cancelLabel: l10n.asCancelUpload,
+        ),
+        AsFootnote(icon: ClIcons.check, text: l10n.asUploadFree),
+      ],
+      PhotoStage.starting => [
+        AsPhotoBubble(
+          bytes: photo.bytes,
+          dimmed: true,
+          icon: ClIcons.upload,
+          progress: 1,
+          label: l10n.asSending,
+        ),
+      ],
+      _ => [
+        AsPhotoBubble(
+          bytes: photo.bytes,
+          icon: ClIcons.camera,
+          label: l10n.asPhotoNotSent,
+        ),
+      ],
+    };
   }
 
   /// "Hướng dẫn sức khoẻ thiết yếu vẫn mở" with its link (health is never behind credits).
@@ -716,7 +827,7 @@ class _ThreadView {
           tone: AsTone.warn,
           title: l10n.asPhotoQuoteTitle(
             block.quote?.credits ?? creditsFor(TaskModality.image, usage),
-            block.quote?.usage?.remaining ?? chat.usageView?.remaining ?? 0,
+            chat.usageView?.remaining ?? block.quote?.usage?.remaining ?? 0,
           ),
           body: planPremium
               ? l10n.asPhotoQuotePremium(reset)
@@ -741,18 +852,36 @@ class _ThreadView {
           ],
         ),
       ],
-      ChatBlockKind.photoSoon => [
+      ChatBlockKind.photoFailed => [
         AsCard(
-          tone: AsTone.quiet,
-          body: l10n.asPhotoSoon,
+          tone: AsTone.errorEdge,
+          title: l10n.asFailTitle,
+          body: l10n.asPhotoFailBody,
           children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: AsButton(
-                label: l10n.asRemovePhoto,
-                style: AsButtonStyle.outline,
-                onPressed: ctl.removePhoto,
-              ),
+            Wrap(
+              spacing: ClSpace.s2,
+              runSpacing: ClSpace.s2,
+              children: [
+                if (chat.photo != null)
+                  AsButton(
+                    label: l10n.asRetry,
+                    onPressed: online
+                        ? () async {
+                            final q = chat.photo?.quote;
+                            if (q != null && q.allowed) {
+                              onToast(await ctl.sendPhoto());
+                            } else {
+                              await ctl.pickPhotoAgain();
+                            }
+                          }
+                        : null,
+                  ),
+                AsButton(
+                  label: l10n.asRemovePhoto,
+                  style: AsButtonStyle.secondary,
+                  onPressed: ctl.removePhoto,
+                ),
+              ],
             ),
           ],
         ),
@@ -928,12 +1057,16 @@ class _ThreadView {
 
   List<Widget> _thread(BuildContext context, TaskThread t) {
     final l10n = AppLocalizations.of(context);
+    final language = Localizations.localeOf(context).languageCode;
     final s = t.snapshot;
     final out = <Widget>[];
     final messages = s?.messages ?? const <AssistantMessage>[];
-    if (!messages.any((m) => m.role == MessageRole.user) &&
-        t.userText != null) {
-      out.add(AsBubble(text: t.userText!, mine: true));
+    final userShown = messages.any((m) => m.role == MessageRole.user);
+    if (!userShown) {
+      for (final id in t.photoIds) {
+        out.add(_photoBubble(context, s?.task, id, s?.attachments));
+      }
+      if (t.userText != null) out.add(AsBubble(text: t.userText!, mine: true));
     }
     if (s == null) return out;
     final task = s.task;
@@ -945,26 +1078,26 @@ class _ThreadView {
     var openShown = false;
     for (final m in messages) {
       if (m.role == MessageRole.user) {
-        if (m.text.isNotEmpty) out.add(AsBubble(text: m.text, mine: true));
+        for (final id in m.attachmentIds) {
+          out.add(_photoBubble(context, task, id, s.attachments));
+        }
+        if (m.text.isNotEmpty) {
+          final other = _other(context, m.author ?? task.author);
+          out.add(AsBubble(text: m.text, mine: other == null, author: other));
+        }
         continue;
       }
       for (final p in m.parts) {
         switch (p) {
-          case TextPart(:final text):
+          case TextPart(:final text, :final code):
             hasText = true;
-            out.add(AsBubble(text: text));
+            out.add(_notice(context, text, code));
           case ClarificationPart(:final clarification):
             if (open != null && clarification.id == open.id) {
               openShown = true;
               out.addAll(_clarification(context, task, open));
             } else {
-              out.add(
-                AsBubble(
-                  text: clarification.question.of(
-                    Localizations.localeOf(context).languageCode,
-                  ),
-                ),
-              );
+              out.add(AsBubble(text: clarification.question.of(language)));
             }
           case DraftRefPart(:final draftId):
             final d = s.drafts.where((d) => d.id == draftId).firstOrNull;
@@ -980,16 +1113,33 @@ class _ThreadView {
                 onOpenSource: () => GoRouter.of(context).push(Routes.history),
               ),
             );
-          case HealthSupportPart(:final signs):
-            out.add(_health(context, signs));
-          case ApprovedContentPart(:final reason):
-            if (reason.isNotEmpty) out.add(AsBubble(text: reason));
-          case RecipeListPart(:final caveat):
-            if (caveat != null) out.add(AsBubble(text: caveat));
+          case HealthSupportPart(:final signs, :final emergency):
+            out.add(_health(context, signs, emergency?.number));
+          case ApprovedContentPart():
+            out.addAll(_guidance(context, t, p));
+          case RecipeListPart(:final items):
+            if (items.isNotEmpty) {
+              out.add(
+                AsRecipeCard(
+                  items: items,
+                  excludedCount: p.excludedCount,
+                  caveat: p.caveat,
+                  mealLogAvailable: p.mealLogAvailable,
+                ),
+              );
+            } else if (p.caveat case final caveat?) {
+              out.add(AsBubble(text: caveat));
+            }
           case UsageNoticePart():
             break;
-          case ActionResultPart():
-            break;
+          case ActionResultPart(:final items):
+            // D-075 #2: another member saved from the shared thread.
+            final saved = items
+                .where((i) => i.status == ConfirmStatus.saved)
+                .length;
+            if (_other(context, m.author) case final who? when saved > 0) {
+              out.add(AsDayDivider(label: l10n.asSavedBy(who, saved)));
+            }
           case UnsupportedPart():
             out.add(
               AsCard(
@@ -1016,14 +1166,23 @@ class _ThreadView {
       out.add(_draft(context, t, d));
     }
     if (s.drafts.isNotEmpty) out.addAll(_batch(context, t, s.drafts));
+    if (task.care != null) out.addAll(_followUp(context, t, task.care!));
     switch (task.state) {
       case TaskState.received ||
           TaskState.uploading ||
           TaskState.queued ||
           TaskState.processing:
-        out.add(AsWorking(onCancel: () => ctl.cancelTask(task.id)));
+        out.add(
+          AsWorking(
+            // Cancel stays with the task's author (D-075 #2).
+            onCancel: task.authoredBy(myUid)
+                ? () => ctl.cancelTask(task.id)
+                : null,
+          ),
+        );
+        if (t.photo) out.add(AsFootnote(text: l10n.asPhotoLeaveScreen));
       case TaskState.failed:
-        out.add(_taskFailure(context, t));
+        out.addAll(_taskFailure(context, t));
       case TaskState.blocked:
         out.addAll(
           _exhausted(
@@ -1050,52 +1209,365 @@ class _ThreadView {
       case TaskState.awaitingClarification || TaskState.ready:
         break;
     }
+    if (t.photo && !task.state.working) {
+      final forExpense =
+          task.state == TaskState.awaitingClarification ||
+          s.drafts.any((d) => d.kind == DraftKind.expense);
+      if (_retention(context, s.attachments, forExpense) case final note?) {
+        out.add(note);
+      }
+    }
+    // D-075 #2: photos and spending never enter the baby's shared thread.
+    if (t.photo && _sharedReader && task.visibility == TaskVisibility.private) {
+      out.add(AsFootnote(icon: ClIcons.lock, text: l10n.asPrivateTask));
+    }
     return out;
   }
 
-  Widget _taskFailure(BuildContext context, TaskThread t) {
+  /// Chat/Tệp đính kèm for one photo of a task (this phone's copy, else a placeholder).
+  Widget _photoBubble(
+    BuildContext context,
+    AssistantTask? task,
+    String attachmentId,
+    List<AttachmentView>? attachments,
+  ) {
     final l10n = AppLocalizations.of(context);
-    return switch (t.snapshot?.task.error) {
-      AssistantReason.writeDenied => _deniedCard(context),
-      AssistantReason.readDenied => AsCard(
-        tone: AsTone.quiet,
-        icon: ClIcons.lock,
-        title: viewer ? l10n.asViewerTitle : null,
-        body: l10n.asReadDeniedBody,
-        children: const [],
+    final a = attachments?.where((x) => x.id == attachmentId).firstOrNull;
+    final status = task == null ? PhotoStatus.reading : photoStatus(task, a);
+    final bytes = ctl.photoBytes(attachmentId);
+    return switch (status) {
+      PhotoStatus.reading => AsPhotoBubble(
+        bytes: bytes,
+        dimmed: true,
+        icon: ClIcons.spark,
+        progress: null,
+        label: l10n.asPhotoReading,
       ),
-      AssistantReason.moduleUnavailable => _moduleCard(context),
-      AssistantReason.regionUnsupported => _regionCard(context),
-      AssistantReason.featureDisabled => _offCard(context),
-      AssistantReason.aiUnavailable || null => _failureCard(
-        context,
-        onRetry: t.userText == null ? null : () => ctl.retryTask(t.taskId),
+      PhotoStatus.read => AsPhotoBubble(
+        bytes: bytes,
+        icon: ClIcons.check,
+        tone: AsPhotoTone.done,
+        label: l10n.asPhotoRead,
       ),
-      _ => AsCard(
-        tone: AsTone.errorEdge,
-        body: l10n.asGenericError,
-        children: const [],
+      PhotoStatus.blurry => AsPhotoBubble(
+        bytes: bytes,
+        blurred: true,
+        icon: ClIcons.alert,
+        tone: AsPhotoTone.error,
+        label: l10n.asPhotoBlurry,
+      ),
+      PhotoStatus.refused => AsPhotoBubble(
+        bytes: bytes,
+        icon: ClIcons.alert,
+        tone: AsPhotoTone.error,
+        label: l10n.asPhotoRefused,
+      ),
+      PhotoStatus.canceled => AsPhotoBubble(
+        bytes: bytes,
+        icon: ClIcons.close,
+        label: l10n.asPhotoCanceled,
       ),
     };
   }
 
-  Widget _health(BuildContext context, List<String> signs) => Consumer(
-    builder: (context, ref, _) {
-      final pack = ref.watch(rhythmContentProvider).value?.health;
-      final country = ref
-          .watch(capabilitiesProvider(chat.scope.babyId))
-          .value
-          ?.country;
-      final number = pack?.emergencyNumberFor(country);
-      return AsHealthCard(
-        number: number,
-        onCall: () => onDial(number),
-        onOpenHealth: () => GoRouter.of(
+  /// G05: the photo's real retention, from the server's confirmed state only.
+  Widget? _retention(
+    BuildContext context,
+    List<AttachmentView> photos,
+    bool forExpense,
+  ) {
+    final l10n = AppLocalizations.of(context);
+    final line = retentionLine(photos, forExpense: forExpense);
+    if (line == null) return null;
+    return AsFootnote(
+      icon: ClIcons.lock,
+      text: switch (line) {
+        RetentionLine.keptWithExpense => l10n.asRetentionKept,
+        RetentionLine.keptIfSaved => l10n.asRetentionKeptIfSaved,
+        RetentionLine.deleting => l10n.asRetentionDeleting,
+        RetentionLine.deleted => l10n.asRetentionDeleted,
+        RetentionLine.willDelete => l10n.asRetentionWillDelete,
+      },
+    );
+  }
+
+  /// A server text; a coded notice gets its action (care library, health, region).
+  Widget _notice(BuildContext context, String text, NoticeCode? code) {
+    final l10n = AppLocalizations.of(context);
+    return switch (code) {
+      null || NoticeCode.careAgeUnknown => AsBubble(text: text),
+      NoticeCode.careNoApprovedContent => AsNoticeCard(
+        icon: ClIcons.journal,
+        text: text,
+        action: AsLink(
+          label: l10n.asOpenCareLibrary,
+          onPressed: () => GoRouter.of(context).push(Routes.rhythm),
+        ),
+      ),
+      NoticeCode.recipesNoneApproved => AsNoticeCard(
+        icon: ClIcons.feed,
+        text: text,
+      ),
+      NoticeCode.careFeatureDisabled ||
+      NoticeCode.regionUnsupported => AsNoticeCard(
+        icon: code == NoticeCode.regionUnsupported
+            ? ClIcons.globe
+            : ClIcons.lock,
+        text: text,
+        action: AsLink(
+          label: l10n.asOpenHealth,
+          onPressed: () => GoRouter.of(context).push(healthLocation(const [])),
+        ),
+      ),
+    };
+  }
+
+  /// CH16: the approved guidance, "Thử tối nay" (an intention) and "Gợi ý khác".
+  List<Widget> _guidance(
+    BuildContext context,
+    TaskThread t,
+    ApprovedContentPart p,
+  ) {
+    final l10n = AppLocalizations.of(context);
+    final content = p.content;
+    if (content == null) {
+      // An A2 message without the content's words: the reason only.
+      return [if (p.reason.isNotEmpty) AsBubble(text: p.reason)];
+    }
+    final care = t.snapshot?.task.care;
+    final plan = care?.plan;
+    final planned = plan != null && plan.contentId == p.contentId;
+    final canPlan =
+        me != null &&
+        familyCan(me!, FamilyAction.rhythmFeedback) &&
+        (t.snapshot?.task.authoredBy(myUid) ?? true);
+    final busy = chat.busy.contains('plan:${t.taskId}');
+    final day = content.timeOfDay == ContentTimeOfDay.day;
+    return [
+      AsGuidanceCard(
+        content: content,
+        reason: p.reason,
+        reviewed: p.reviewed,
+        children: [
+          if (planned)
+            Row(
+              children: [
+                ClIcon(
+                  ClIcons.check,
+                  size: 14,
+                  color: context.cl.colors.mintText,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    day ? l10n.asPlannedToday : l10n.asPlannedTonight,
+                    style: context.cl.text.label.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: context.cl.colors.mintText,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          else if (canPlan || p.alternatives.isNotEmpty)
+            Wrap(
+              spacing: ClSpace.s2,
+              runSpacing: ClSpace.s2,
+              children: [
+                if (canPlan)
+                  AsButton(
+                    label: day ? l10n.asTryToday : l10n.asTryTonight,
+                    loading: busy,
+                    onPressed: () async =>
+                        onToast(await ctl.planActivity(t.taskId, p)),
+                  ),
+                if (p.alternatives.isNotEmpty)
+                  AsButton(
+                    label: l10n.asAnotherIdea,
+                    style: AsButtonStyle.secondary,
+                    onPressed: () => GoRouter.of(
+                      context,
+                    ).push(activityLocation(p.alternatives.first.contentId)),
+                  ),
+              ],
+            ),
+        ],
+      ),
+      if (planned && care?.followUp == null && care?.feedback == null)
+        AsFootnote(
+          icon: ClIcons.clock,
+          text: l10n.asPlanFollowUp(
+            plan.feedbackOpensAt == null
+                ? ''
+                : dayLabel(
+                    l10n,
+                    Localizations.localeOf(context).toLanguageTag(),
+                    plan.feedbackOpensAt!,
+                    t.snapshot?.task.timezone ?? zone,
+                    now,
+                  ),
+          ),
+        ),
+    ];
+  }
+
+  /// CH17: the question only once the chance to try has passed (the server says when), always
+  /// with "Chưa thử"; the answer costs nothing.
+  List<Widget> _followUp(
+    BuildContext context,
+    TaskThread t,
+    AssistantCareView care,
+  ) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final language = Localizations.localeOf(context).languageCode;
+    final taskZone = t.snapshot?.task.timezone ?? zone;
+    if (care.feedback case final f?) {
+      final saved = f.outcome != FeedbackOutcome.notTried;
+      return [
+        AsBubble(text: outcomeLabel(l10n, f.outcome), mine: true),
+        AsBubble(
+          text: switch (f.outcome) {
+            FeedbackOutcome.helpful => l10n.asFeedbackHelpful,
+            FeedbackOutcome.unsure => l10n.asFeedbackUnsure,
+            FeedbackOutcome.notSuitable => l10n.asFeedbackNotSuitable,
+            FeedbackOutcome.notTried => l10n.asFeedbackNotTried,
+          },
+        ),
+        if (saved)
+          AsDraftCard(
+            state: DraftState.saved,
+            kind: DraftKind.observation,
+            tile: (
+              ClIcons.heart,
+              context.cl.colors.mintSoft,
+              context.cl.colors.mintText,
+            ),
+            title: l10n.asFeedbackTitle,
+            line:
+                '${outcomeLabel(l10n, f.outcome)} · ${shortDate(locale, inBabyZone(taskZone, now))}',
+            module: l10n.asModuleRhythm(babyName),
+            actions: [
+              (
+                label: l10n.asOpenRhythm,
+                onPressed: () => GoRouter.of(context).push(Routes.rhythm),
+              ),
+            ],
+          ),
+        AsFootnote(icon: ClIcons.lock, text: l10n.asFeedbackFree),
+      ];
+    }
+    final q = care.followUp;
+    if (q == null) return const [];
+    final busy = chat.busy.contains('fb:${t.taskId}');
+    final canAnswer =
+        me != null &&
+        familyCan(me!, FamilyAction.rhythmFeedback) &&
+        (t.snapshot?.task.authoredBy(myUid) ?? true);
+    return [
+      AsDayDivider(label: dayLabel(l10n, locale, now, taskZone, now)),
+      AsBubble(text: q.question.of(language)),
+      if (canAnswer)
+        Wrap(
+          spacing: ClSpace.s2,
+          runSpacing: ClSpace.s2,
+          children: [
+            for (final c in q.choices)
+              AsChip(
+                label: c.label.of(language),
+                onPressed: busy
+                    ? null
+                    : () async => onToast(
+                        await ctl.sendFeedback(t.taskId, q, c.outcome),
+                      ),
+              ),
+          ],
+        ),
+      AsFootnote(icon: ClIcons.lock, text: l10n.asFeedbackFree),
+    ];
+  }
+
+  List<Widget> _taskFailure(BuildContext context, TaskThread t) {
+    final l10n = AppLocalizations.of(context);
+    final error = t.snapshot?.task.error;
+    if (t.photo) {
+      switch (error) {
+        case AssistantReason.ocrUnreadable || AssistantReason.validationFailed:
+          // CH14: nothing read, nothing charged; retake or type it in.
+          return [
+            Wrap(
+              spacing: ClSpace.s2,
+              runSpacing: ClSpace.s2,
+              children: [
+                if (onRetake != null)
+                  AsChip(
+                    label: error == AssistantReason.ocrUnreadable
+                        ? l10n.asRetake
+                        : l10n.asOtherPhoto,
+                    onPressed: () => onRetake!(t.taskId),
+                  ),
+                AsChip(label: l10n.asTypeInstead, onPressed: onTypeIn),
+              ],
+            ),
+            AsFootnote(text: l10n.asUnreadableFree),
+          ];
+        case AssistantReason.aiUnavailable || null:
+          return [
+            _failureCard(
+              context,
+              onRetry: onRetake == null ? null : () => onRetake!(t.taskId),
+            ),
+          ];
+        default:
+          break;
+      }
+    }
+    return [
+      switch (error) {
+        AssistantReason.writeDenied => _deniedCard(context),
+        AssistantReason.readDenied => AsCard(
+          tone: AsTone.quiet,
+          icon: ClIcons.lock,
+          title: viewer ? l10n.asViewerTitle : null,
+          body: l10n.asReadDeniedBody,
+          children: const [],
+        ),
+        AssistantReason.moduleUnavailable => _moduleCard(context),
+        AssistantReason.regionUnsupported => _regionCard(context),
+        AssistantReason.featureDisabled => _offCard(context),
+        AssistantReason.aiUnavailable || null => _failureCard(
           context,
-        ).push(healthLocation(wireList(HealthSign.values, signs))),
+          onRetry: t.userText == null ? null : () => ctl.retryTask(t.taskId),
+        ),
+        _ => AsCard(
+          tone: AsTone.errorEdge,
+          body: l10n.asGenericError,
+          children: const [],
+        ),
+      },
+    ];
+  }
+
+  /// CH28: free, never behind credits; the household region's number only (from the server's
+  /// part, else the same health pack), never a default hotline.
+  Widget _health(BuildContext context, List<String> signs, String? emergency) =>
+      Consumer(
+        builder: (context, ref, _) {
+          final pack = ref.watch(rhythmContentProvider).value?.health;
+          final country = ref
+              .watch(capabilitiesProvider(chat.scope.babyId))
+              .value
+              ?.country;
+          final number = emergency ?? pack?.emergencyNumberFor(country);
+          return AsHealthCard(
+            number: number,
+            onCall: () => onDial(number),
+            onOpenHealth: () => GoRouter.of(
+              context,
+            ).push(healthLocation(wireList(HealthSign.values, signs))),
+          );
+        },
       );
-    },
-  );
 
   List<Widget> _clarification(
     BuildContext context,
@@ -1108,10 +1580,16 @@ class _ThreadView {
         task.clarificationExpiresAt != null &&
         !now.isBefore(task.clarificationExpiresAt!);
     final answering = chat.answering == task.id;
+    // D-075 #2: only the task's author answers its questions.
+    final asker = task.authoredBy(myUid)
+        ? null
+        : authorName(l10n, task.author!, myUid: myUid);
     return [
       AsBubble(text: c.question.of(language)),
       if (expired)
         AsFootnote(text: l10n.asClarifyExpired, icon: ClIcons.clock)
+      else if (asker != null)
+        AsFootnote(icon: ClIcons.clock, text: l10n.asWaitingFor(asker))
       else ...[
         Wrap(
           spacing: ClSpace.s2,
@@ -1138,7 +1616,16 @@ class _ThreadView {
               ),
           ],
         ),
+        // CH14: text in a photo is content, never a command.
+        if (c.field == 'image.intent')
+          AsFootnote(icon: ClIcons.lock, text: l10n.asPhotoTextIsData),
         AsFootnote(text: l10n.asClarifyFree),
+        // CH15: red flags go to health guidance, free, whatever the credits.
+        if (task.care?.topic == 'sleep_concern')
+          AsSafetyNote(
+            onOpenHealth: () =>
+                GoRouter.of(context).push(healthLocation(const [])),
+          ),
       ],
     ];
   }
@@ -1152,29 +1639,51 @@ class _ThreadView {
         d.state == DraftState.draft || d.state == DraftState.needsReview;
     final expired = pending && d.expiredAt(now);
     final taskZone = t.snapshot?.task.timezone ?? zone;
-    final problems = pending ? draftProblems(d.payload, now) : const [];
+    final problems = pending
+        ? {...draftProblems(d.payload, now), ...d.problems}.toList()
+        : const <DraftProblem>[];
+    final review =
+        d.state == DraftState.needsReview ||
+        d.uncertainFields.isNotEmpty ||
+        d.missingFields.isNotEmpty;
+    final blocked = confirmBlocker(d, d.revision, now) != null;
+    if (d.payload is ExpensePayload && pending) {
+      return _receipt(context, t, d, problems, expired: expired);
+    }
     final notes = <String>[
       if (d.state == DraftState.failed) failureLabel(l10n, d),
       if (pending && chat.stale.contains(d.id)) l10n.asErrStale,
       if (expired) l10n.asErrExpired,
       if (pending && !expired) ...[
-        if (d.state == DraftState.needsReview ||
-            d.uncertainFields.isNotEmpty ||
-            d.missingFields.isNotEmpty)
-          l10n.asNeedsReview,
+        if (review) l10n.asNeedsReview,
         for (final p in problems) problemLabel(l10n, p),
       ],
       if (pending && !canSave) l10n.asViewerDraftNote,
+      if (d.state == DraftState.saved)
+        if (_other(context, d.confirmedBy) case final who?)
+          l10n.asConfirmedBy(who),
     ];
     final editable =
         d.payload is BottlePayload ||
         d.payload is BreastPayload ||
-        d.payload is SleepPayload;
+        d.payload is SleepPayload ||
+        d.payload is ReminderPayload ||
+        d.payload is ExpensePayload;
+    final single = d.payload is ObservationPayload;
     final actions = <AsCardAction>[
       if (pending && canSave && !expired && !saving) ...[
+        if (single)
+          (
+            label: l10n.asSaveObservation,
+            onPressed: blocked
+                ? null
+                : () async => onToast(await ctl.saveOne(t.taskId, d)),
+          ),
         if (editable)
           (
-            label: l10n.asEdit,
+            label: d.payload is ReminderPayload && review
+                ? l10n.asCheckReminder
+                : l10n.asEdit,
             onPressed: () => showDraftEditor(
               context,
               scopeKey: chat.scope.key,
@@ -1184,21 +1693,34 @@ class _ThreadView {
             ),
           ),
         (
-          label: l10n.asRemove,
+          label: single ? l10n.asNoThanks : l10n.asRemove,
           onPressed: () async => onToast(await ctl.discard(d)),
         ),
       ],
       if (d.state == DraftState.saved) ...[
-        if (moduleLocation(d.kind) case final module?)
+        if (d.kind == DraftKind.expense) ...[
+          if (recordLocation(d) case final record?)
+            (
+              label: l10n.asOpenSpending,
+              onPressed: () => GoRouter.of(context).push(record),
+            ),
+        ] else if (d.kind == DraftKind.observation) ...[
           (
-            label: openModuleLabel(l10n, d.kind),
-            onPressed: () => GoRouter.of(context).push(module),
+            label: l10n.asOpenRhythm,
+            onPressed: () => GoRouter.of(context).push(Routes.rhythm),
           ),
-        if (recordLocation(d) case final record?)
-          (
-            label: l10n.asUndo,
-            onPressed: () => GoRouter.of(context).push(record),
-          ),
+        ] else ...[
+          if (moduleLocation(d.kind) case final module?)
+            (
+              label: openModuleLabel(l10n, d.kind),
+              onPressed: () => GoRouter.of(context).push(module),
+            ),
+          if (recordLocation(d) case final record?)
+            (
+              label: l10n.asUndo,
+              onPressed: () => GoRouter.of(context).push(record),
+            ),
+        ],
       ],
       if (canSaveAnyway(d) && canSave && !saving) ...[
         if (moduleLocation(d.kind) case final module?)
@@ -1221,11 +1743,38 @@ class _ThreadView {
         ),
       ],
     ];
-    return AsDraftCard(
-      state: saving ? DraftState.saving : d.state,
-      kind: d.kind,
-      title: kindLabel(l10n, d.kind),
-      line: draftLine(
+    final line = switch (d.payload) {
+      ObservationPayload(:final date, when: final period) => [
+        if (DateTime.tryParse(date) case final day?)
+          dayLabel(
+            l10n,
+            locale,
+            fromBabyWall(taskZone, DateTime(day.year, day.month, day.day, 12)),
+            taskZone,
+            now,
+          ),
+        sleepConcernLabel(
+          l10n,
+          t.snapshot?.task.care?.sleep?.kind,
+          period,
+        ).ifEmpty(l10n.asObservationSleep),
+      ].join(' · '),
+      ReminderPayload(:final date, :final time, :final assigneeUid) =>
+        l10n.asRemindLine(
+          [
+            date == null ? l10n.asNoDate : weekdayDate(locale, date),
+            // D-075 #5: a date without a time saves as an all-day reminder, unless the server
+            // still asks for a time.
+            time ??
+                (reminderNeedsTimeFor(d) ? l10n.asNoTime : l10n.reminderAllDay),
+            ?_assignee(context, assigneeUid),
+          ].join(' · '),
+        ),
+      ExpensePayload(:final date, :final totalMinor, :final currency) => [
+        if (date != null) fullDate(locale, date),
+        if (totalMinor != null) moneyLabel(locale, totalMinor, currency),
+      ].join(' · '),
+      _ => draftLine(
         l10n,
         locale,
         d.payload,
@@ -1237,15 +1786,194 @@ class _ThreadView {
           _ => l10n.sideBoth,
         },
       ),
-      module: moduleLabel(l10n, d.kind, babyName),
-      selected: pending && canSave && !expired && !saving
-          ? ctl.isSelected(d)
+    };
+    return AsDraftCard(
+      state: saving ? DraftState.saving : d.state,
+      kind: d.kind,
+      title: single && d.state == DraftState.saved
+          ? kindLabel(l10n, d.kind)
+          : draftTitle(l10n, d),
+      line: line,
+      module: switch (d.kind) {
+        DraftKind.reminder => l10n.asModuleRemindersOf(babyName),
+        DraftKind.expense => l10n.asModuleSpending,
+        _ => moduleLabel(l10n, d.kind, babyName),
+      },
+      selected: pending && canSave && !expired && !saving && !single
+          ? (blocked ? false : ctl.isSelected(d))
           : null,
-      onSelected: (v) => ctl.toggle(d.id, v),
+      onSelected: blocked ? null : (v) => ctl.toggle(d.id, v),
       notes: notes,
       noteIsError: d.state == DraftState.failed || expired,
       actions: actions,
       stateLabelOverride: expired ? l10n.asStateExpired : null,
+    );
+  }
+
+  /// "Giao cho Mẹ" from the baby's members (never a name read from a photo).
+  String? _assignee(BuildContext context, String? uid) {
+    if (uid == null) return null;
+    final l10n = AppLocalizations.of(context);
+    if (uid == myUid) return l10n.reminderAssignedToYou;
+    final m = members.where((m) => m.uid == uid).firstOrNull;
+    return l10n.reminderAssignedTo(
+      memberLabel(l10n, m, myUid: myUid ?? '', uid: uid),
+    );
+  }
+
+  /// CH11: the receipt draft. An uncertain or missing field is flagged and must be checked
+  /// (the date row opens a date picker); a suspected duplicate needs "Vẫn lưu" (never merged);
+  /// "Lưu chi tiêu" stays off until nothing blocks it.
+  Widget _receipt(
+    BuildContext context,
+    TaskThread t,
+    AssistantDraft d,
+    List<DraftProblem> problems, {
+    required bool expired,
+  }) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final p = d.payload as ExpensePayload;
+    final canSave = canSaveKind(me, d.kind);
+    final saving = chat.saving.contains(d.id);
+    final flagged = {...d.uncertainFields, ...d.missingFields};
+    final duplicate = d.warnings.contains(DraftWarning.duplicateSuspected);
+    final acknowledged = chat.acknowledged.contains(d.id);
+    final blocked =
+        confirmBlocker(d, d.revision, now) != null ||
+        problems.isNotEmpty ||
+        (duplicate && !acknowledged);
+    final editable = canSave && !expired && !saving;
+    void edit() => showDraftEditor(
+      context,
+      scopeKey: chat.scope.key,
+      draft: d,
+      babyName: babyName,
+      zone: t.snapshot?.task.timezone ?? zone,
+    );
+    Future<void> pickDate() async {
+      final today = DateTime(now.year, now.month, now.day);
+      final current = p.date == null ? null : DateTime.tryParse(p.date!);
+      final picked = await pickAssistantDate(
+        context,
+        initial: current ?? today,
+        first: today.subtract(const Duration(days: 366)),
+        last: today,
+      );
+      if (picked == null) return;
+      final (outcome, _) = await ctl.patch(
+        d,
+        ExpensePayload(
+          merchant: p.merchant,
+          totalMinor: p.totalMinor,
+          currency: p.currency,
+          date:
+              '${picked.year.toString().padLeft(4, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}',
+          subtotalMinor: p.subtotalMinor,
+          taxMinor: p.taxMinor,
+          categoryId: p.categoryId,
+          babyId: p.babyId,
+          keepReceipt: p.keepReceipt,
+        ),
+        confirmed: const ['date'],
+      );
+      onToast(outcome);
+    }
+
+    final category = expenseCategoryName(l10n, p.categoryId);
+    final fields = <AsField>[
+      (
+        label: l10n.asFieldStore,
+        value: p.merchant ?? l10n.asNotRead,
+        flagged: flagged.contains('merchant'),
+        onTap: editable ? edit : null,
+      ),
+      (
+        label: l10n.asFieldDate,
+        value: p.date == null ? l10n.asNoDate : fullDate(locale, p.date!),
+        flagged: flagged.contains('date'),
+        onTap: editable ? pickDate : null,
+      ),
+      (
+        label: l10n.asFieldTotal,
+        value: p.totalMinor == null
+            ? l10n.asNotRead
+            : moneyLabel(locale, p.totalMinor!, p.currency),
+        flagged:
+            flagged.contains('totalMinor') ||
+            flagged.contains('currency') ||
+            problems.contains(DraftProblem.currencyUnsupported),
+        onTap: editable ? edit : null,
+      ),
+      if (category != null)
+        (
+          label: l10n.asFieldCategory,
+          value: category,
+          flagged: false,
+          onTap: null,
+        ),
+      (
+        label: l10n.asFieldScope,
+        value: babyName.isEmpty
+            ? l10n.asScopeHousehold
+            : l10n.asExpenseFor(babyName),
+        flagged: false,
+        onTap: null,
+      ),
+    ];
+    final notes = <String>[
+      if (chat.stale.contains(d.id)) l10n.asErrStale,
+      if (expired) l10n.asErrExpired,
+      if (!expired) ...[
+        if (flagged.contains('date')) l10n.asConfirmDate,
+        for (final pr in problems)
+          if (pr != DraftProblem.missingDate) problemLabel(l10n, pr),
+        if (flagged.isNotEmpty && !flagged.every((f) => f == 'date'))
+          l10n.asNeedsReview,
+      ],
+      if (!canSave) l10n.asViewerDraftNote,
+    ];
+    return AsReceiptCard(
+      title: l10n.asReceiptTitle,
+      stateLabel: saving
+          ? l10n.asStateSaving
+          : expired
+          ? l10n.asStateExpired
+          : stateLabel(
+              l10n,
+              flagged.isNotEmpty || problems.isNotEmpty
+                  ? DraftState.needsReview
+                  : d.state,
+            ),
+      review: flagged.isNotEmpty || problems.isNotEmpty,
+      saving: saving,
+      fields: fields,
+      footnote: p.taxMinor != null && p.totalMinor != null
+          ? l10n.asTaxIncluded(moneyLabel(locale, p.totalMinor!, p.currency))
+          : null,
+      duplicate: duplicate
+          ? (
+              acknowledged: acknowledged,
+              onOpen: () => GoRouter.of(context).push(Routes.spendingHistory),
+              onAcknowledge: editable ? () => ctl.acknowledge(d.id) : null,
+            )
+          : null,
+      notes: notes,
+      actions: [
+        if (editable) ...[
+          (label: l10n.asEdit, onPressed: edit),
+          (
+            label: l10n.asSaveExpense,
+            onPressed: blocked
+                ? null
+                : () async => onToast(await ctl.saveOne(t.taskId, d)),
+          ),
+          (
+            label: l10n.asSkip,
+            onPressed: () async => onToast(await ctl.discard(d)),
+          ),
+        ],
+      ],
     );
   }
 
@@ -1256,6 +1984,11 @@ class _ThreadView {
   ) {
     final writer = drafts.any((d) => canSaveKind(me, d.kind));
     if (!writer) return const [];
+    // A receipt and the CH16 observation save from their own card ("Lưu chi tiêu", "Lưu ghi
+    // nhận"); only several drafts (CH04, CH13) get the batch bar.
+    final ownSave = drafts.every(
+      (d) => d.kind == DraftKind.expense || d.kind == DraftKind.observation,
+    );
     final saved = drafts.where((d) => d.state == DraftState.saved).length;
     final failed = drafts.where((d) => d.state == DraftState.failed).length;
     final pending = drafts
@@ -1277,7 +2010,7 @@ class _ThreadView {
               ? () async => onToast(await ctl.retryFailed(t.taskId))
               : null,
         ),
-      if (pending > 0)
+      if (pending > 0 && !ownSave)
         AsBatchBar(
           count: ctl.selectedDrafts(t.taskId).length,
           saving: busy,
@@ -1391,6 +2124,140 @@ class _EmptyState extends StatelessWidget {
           icon: ClIcons.lock,
           text: images ? l10n.asPrivacyNote : l10n.asPrivacyNoteText,
         ),
+      ],
+    );
+  }
+}
+
+/// CH09 sheet "Gửi ảnh để trợ lý đọc": camera or library (a row opens it at once), what a photo
+/// costs from the household's policy, and "Huỷ" (0 credits). The exact quote follows in the
+/// thread before anything is uploaded.
+class _PhotoSourceSheet extends StatelessWidget {
+  const _PhotoSourceSheet({required this.usage});
+  final AssistantUsage? usage;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final c = cl.colors;
+    Widget row(PhotoSource source, ClIcons icon, String title, String sub) =>
+        ClPressable(
+          onPressed: () => Navigator.of(context).pop(source),
+          semanticLabel: title,
+          pressedOpacity: 0.7,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: c.cloud,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: c.surface,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: ClIcon(icon, size: 20, color: c.mintText),
+                ),
+                const SizedBox(width: ClSpace.s3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: cl.text.label.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: c.ink,
+                        ),
+                      ),
+                      Text(
+                        sub,
+                        style: cl.text.caption.copyWith(color: c.inkMuted),
+                      ),
+                    ],
+                  ),
+                ),
+                ClIcon(ClIcons.chevronRight, size: 18, color: c.inkMuted),
+              ],
+            ),
+          ),
+        );
+    final u = usage;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: l10n.asPhotoSheetTitle),
+        row(
+          PhotoSource.camera,
+          ClIcons.camera,
+          l10n.avatarCamera,
+          l10n.asPhotoCameraSub,
+        ),
+        const SizedBox(height: ClSpace.s2),
+        row(
+          PhotoSource.library,
+          ClIcons.memories,
+          l10n.avatarLibrary,
+          l10n.asPhotoLibrarySub,
+        ),
+        const SizedBox(height: ClSpace.s3),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: c.mintSoft,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 1),
+                child: ClIcon(ClIcons.spark, size: 15, color: c.mintText),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.asPhotoQuoteExact(u?.imageCredits ?? 3),
+                      style: cl.text.label.copyWith(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: c.mintText,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      u == null
+                          ? l10n.asPhotoSheetBodyUnknown
+                          : l10n.asPhotoSheetBody(UsageView.of(u).remaining),
+                      style: cl.text.caption.copyWith(
+                        height: 1.4,
+                        color: c.mintText,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: ClSpace.s3),
+        AsButton(
+          label: l10n.asCancel,
+          style: AsButtonStyle.secondary,
+          expand: true,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        const SizedBox(height: ClSpace.s4),
       ],
     );
   }
@@ -1547,8 +2414,8 @@ class _HistoryState extends ConsumerState<AssistantHistoryScreen> {
     final l10n = AppLocalizations.of(context);
     final ok = await rhConfirm(
       context,
-      title: l10n.asDeleteTitle,
-      body: l10n.asDeleteBody,
+      title: c.shared ? l10n.asDeleteSharedTitle : l10n.asDeleteTitle,
+      body: c.shared ? l10n.asDeleteSharedBody : l10n.asDeleteBody,
       confirm: l10n.asDeleteConfirm,
       cancel: l10n.asCancel,
       destructive: true,
@@ -1557,7 +2424,7 @@ class _HistoryState extends ConsumerState<AssistantHistoryScreen> {
     final toaster = ClToaster.of(context);
     setState(() => _deleting.add(c.id));
     try {
-      await ref
+      final r = await ref
           .read(assistantRepositoryProvider)
           .deleteConversation(
             c.id,
@@ -1569,7 +2436,11 @@ class _HistoryState extends ConsumerState<AssistantHistoryScreen> {
       final scope = c.scope ?? _scope!;
       final chat = assistantChatProvider(scope.key);
       if (ref.exists(chat)) ref.read(chat.notifier).conversationDeleted(c.id);
-      toaster.show(message: l10n.asDeleted);
+      toaster.show(
+        message: r.domainRecordsKept
+            ? l10n.asDeletedRecordsKept
+            : l10n.asDeleted,
+      );
     } on Object {
       toaster.show(message: l10n.asDeleteFailed, error: true);
     } finally {
@@ -1592,10 +2463,20 @@ class _HistoryState extends ConsumerState<AssistantHistoryScreen> {
       for (final m in session.active) AssistantScope.child(m.babyId),
       AssistantScope.household(scope.babyId),
     ];
-    final items = [
+    final me = session.membershipFor(scope.babyId);
+    final all = [
       for (final c in _items ?? const <AssistantConversation>[])
         if (c.scope == null || c.scope == scope) c,
     ];
+    // D-075 #2: the baby's shared thread first, then my own private ones.
+    final shared = all.where((c) => c.shared).firstOrNull;
+    final items = [
+      for (final c in all)
+        if (!c.shared) c,
+    ];
+    final sharedReader =
+        !scope.household &&
+        (me?.role == MemberRole.coParent || me?.role == MemberRole.caregiver);
     final today = DateTime(now.year, now.month, now.day);
     final weekStart = today.subtract(Duration(days: today.weekday - 1));
     String bucket(AssistantConversation c) {
@@ -1681,12 +2562,45 @@ class _HistoryState extends ConsumerState<AssistantHistoryScreen> {
                 padding: EdgeInsets.all(ClSpace.s6),
                 child: Center(child: CircularProgressIndicator.adaptive()),
               )
-            else if (items.isEmpty)
+            else if (items.isEmpty && shared == null)
               Text(
                 l10n.asHistoryEmpty,
                 style: cl.text.body.copyWith(color: cl.colors.inkMuted),
               )
-            else
+            else ...[
+              if (shared != null) ...[
+                Padding(
+                  padding: const EdgeInsets.only(bottom: ClSpace.s2),
+                  child: Text(
+                    l10n.asHistoryShared,
+                    style: cl.text.caption.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: cl.colors.inkMuted,
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: cl.colors.surface,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: _HistoryRow(
+                    title: shared.title ?? l10n.asSharedThreadTitle,
+                    subtitle: l10n.asSharedThreadSub(when(shared)),
+                    household: false,
+                    shared: true,
+                    deleting: _deleting.contains(shared.id),
+                    onOpen: () => context.pop(
+                      HistoryPick(shared.scope ?? scope, shared.id),
+                    ),
+                    // The shared thread is deleted for everyone: Cùng nuôi only.
+                    onDelete: me?.role == MemberRole.coParent
+                        ? () => _delete(shared)
+                        : null,
+                  ),
+                ),
+                const SizedBox(height: ClSpace.s4),
+              ],
               for (final MapEntry(key: label, value: list)
                   in groups.entries) ...[
                 Padding(
@@ -1721,13 +2635,14 @@ class _HistoryState extends ConsumerState<AssistantHistoryScreen> {
                 ),
                 const SizedBox(height: ClSpace.s4),
               ],
+            ],
             Text(
               l10n.asHistoryFootnote,
               style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
             ),
             const SizedBox(height: ClSpace.s2),
             Text(
-              l10n.asHistoryPrivate,
+              sharedReader ? l10n.asHistorySharedNote : l10n.asHistoryPrivate,
               style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
             ),
           ],
@@ -1786,13 +2701,17 @@ class _HistoryRow extends StatelessWidget {
     required this.deleting,
     required this.onOpen,
     required this.onDelete,
+    this.shared = false,
   });
   final String title;
   final String subtitle;
   final bool household;
+  final bool shared;
   final bool deleting;
   final VoidCallback onOpen;
-  final VoidCallback onDelete;
+
+  /// Null hides "Xoá" (the shared thread for a caregiver).
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -1815,7 +2734,9 @@ class _HistoryRow extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: ClIcon(
-                household ? ClIcons.grid : ClIcons.spark,
+                shared
+                    ? ClIcons.family
+                    : (household ? ClIcons.grid : ClIcons.spark),
                 size: 15,
                 color: cl.colors.inkMuted,
               ),
@@ -1841,17 +2762,24 @@ class _HistoryRow extends StatelessWidget {
                 ],
               ),
             ),
-            ClPressable(
-              onPressed: deleting ? null : onDelete,
-              semanticLabel: l10n.asDeleteChat,
-              child: deleting
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-                    )
-                  : ClIcon(ClIcons.trash, size: 18, color: cl.colors.inkMuted),
-            ),
+            if (onDelete != null)
+              ClPressable(
+                onPressed: deleting ? null : onDelete,
+                semanticLabel: l10n.asDeleteChat,
+                child: deleting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator.adaptive(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : ClIcon(
+                        ClIcons.trash,
+                        size: 18,
+                        color: cl.colors.inkMuted,
+                      ),
+              ),
           ],
         ),
       ),

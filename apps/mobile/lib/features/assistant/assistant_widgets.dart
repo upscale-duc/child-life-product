@@ -276,18 +276,23 @@ class AsChatHeader extends StatelessWidget {
 
 // ---------- Chat/Tin nhắn ----------
 
-/// A message bubble: the parent's (right, mint-deep) or the assistant's (left, surface).
+/// A message bubble: mine (right, mint-deep), the assistant's (left, surface) or another
+/// member's in the shared thread (left, surface-2, their label above; D-075 #2).
 class AsBubble extends StatelessWidget {
   const AsBubble({
     required this.text,
     this.mine = false,
     this.status,
     this.statusIcon,
+    this.author,
     super.key,
   });
 
   final String text;
   final bool mine;
+
+  /// Another member's message: who wrote it ("Mẹ", "Cô Lan").
+  final String? author;
 
   /// Under the bubble ("Chưa gửi", "Đang gửi…").
   final String? status;
@@ -298,11 +303,14 @@ class AsBubble extends StatelessWidget {
     final cl = context.cl;
     const r = Radius.circular(18);
     const tail = Radius.circular(6);
+    final other = !mine && author != null;
     final bubble = Container(
       constraints: const BoxConstraints(maxWidth: asBubbleWidth),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: mine ? cl.colors.mintDeep : cl.colors.surface,
+        color: mine
+            ? cl.colors.mintDeep
+            : (other ? cl.colors.surface2 : cl.colors.surface),
         borderRadius: BorderRadius.only(
           topLeft: r,
           topRight: r,
@@ -327,6 +335,16 @@ class AsBubble extends StatelessWidget {
             : CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (other) ...[
+            Padding(
+              padding: const EdgeInsets.only(left: 6),
+              child: Text(
+                author!,
+                style: _semi(context, 12, cl.colors.inkMuted),
+              ),
+            ),
+            const SizedBox(height: 3),
+          ],
           bubble,
           if (status != null) ...[
             const SizedBox(height: 4),
@@ -735,6 +753,7 @@ class AsDraftCard extends StatelessWidget {
     this.noteIsError = false,
     this.actions = const [],
     this.stateLabelOverride,
+    this.tile,
     super.key,
   });
 
@@ -754,6 +773,9 @@ class AsDraftCard extends StatelessWidget {
   /// "Hết hạn" for a draft past its TTL (still from the data, not free text).
   final String? stateLabelOverride;
 
+  /// The icon tile when the kind's own does not fit (CH17 feedback: heart on mint).
+  final (ClIcons, Color, Color)? tile;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -770,7 +792,7 @@ class AsDraftCard extends StatelessWidget {
       DraftState.failed => Border.all(color: c.error, width: 1.5),
       _ => Border.all(color: c.separator),
     };
-    final (icon, tileFill, tileInk) = kindTile(context, kind);
+    final (icon, tileFill, tileInk) = tile ?? kindTile(context, kind);
     final label = stateLabelOverride ?? stateLabel(l10n, state);
     final card = Container(
       width: asCardWidth,
@@ -893,19 +915,25 @@ class AsDraftCard extends StatelessWidget {
               spacing: ClSpace.s4,
               children: [
                 for (final (i, a) in actions.indexed)
-                  ClPressable(
-                    onPressed: a.onPressed,
-                    semanticLabel: a.label,
-                    minSize: const Size(0, 36),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        a.label,
-                        style: _semi(
-                          context,
-                          13.5,
-                          i == 0 ? c.mintText : c.inkMuted,
-                        ).copyWith(fontWeight: i == 0 ? FontWeight.w700 : null),
+                  Opacity(
+                    opacity: a.onPressed == null ? ClMotion.disabledOpacity : 1,
+                    child: ClPressable(
+                      onPressed: a.onPressed,
+                      semanticLabel: a.label,
+                      minSize: const Size(0, 36),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          a.label,
+                          style:
+                              _semi(
+                                context,
+                                13.5,
+                                i == 0 ? c.mintText : c.inkMuted,
+                              ).copyWith(
+                                fontWeight: i == 0 ? FontWeight.w700 : null,
+                              ),
+                        ),
                       ),
                     ),
                   ),

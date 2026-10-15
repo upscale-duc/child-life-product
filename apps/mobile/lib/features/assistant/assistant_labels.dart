@@ -3,9 +3,14 @@ import 'package:timezone/timezone.dart' as tz;
 
 import '../../app/route_guard.dart';
 import '../../l10n/app_localizations.dart';
+import '../baby/baby_models.dart' show Relation;
 import '../baby/time_zones.dart' show ensureTimeZones;
 import '../care/care_format.dart' show durationLabel;
 import '../care/care_repository.dart' show inBabyZone;
+import '../onboarding/setup_screens.dart' show relationLabel;
+import '../spending/spending_currency.dart' show isSpCurrency;
+import '../spending/spending_format.dart' show categoryName, money;
+import '../spending/spending_models.dart' show builtInCategories;
 import 'assistant_models.dart';
 import 'assistant_rules.dart';
 
@@ -54,7 +59,31 @@ String problemLabel(AppLocalizations l10n, DraftProblem p) => switch (p) {
   DraftProblem.missingDate => l10n.asProblemMissingDate,
   DraftProblem.currencyUnsupported => l10n.asProblemCurrency,
   DraftProblem.missingTitle => l10n.asProblemMissingTitle,
+  DraftProblem.invalidTitle => l10n.asProblemInvalidTitle,
+  DraftProblem.pastTime => l10n.asProblemPastTime,
+  DraftProblem.invalidAssignee => l10n.asProblemInvalidAssignee,
 };
+
+/// D-075 #2 author labels, like record authors (D-024): Mẹ / Ba / Bà / Ông read as the
+/// relation, a custom relation as written, anyone else by name; yourself is "Bạn".
+String authorName(
+  AppLocalizations l10n,
+  AssistantAuthor a, {
+  required String? myUid,
+}) {
+  if (a.uid == myUid) return l10n.careYou;
+  final relation = Relation.values.asNameMap()[a.relation];
+  return switch (relation) {
+    Relation.mother ||
+    Relation.father ||
+    Relation.grandmother ||
+    Relation.grandfather => relationLabel(l10n, relation!),
+    _ when (a.relationCustom ?? '').trim().isNotEmpty =>
+      a.relationCustom!.trim(),
+    _ when a.name.trim().isNotEmpty => a.name.trim(),
+    _ => relation == null ? l10n.deletedUser : relationLabel(l10n, relation),
+  };
+}
 
 /// The line under a failed card (CH07 puts the reason in "Dòng 1").
 String failureLabel(AppLocalizations l10n, AssistantDraft d) =>
@@ -141,18 +170,15 @@ String draftLine(
       _ => l10n.asNoTime,
     },
     ExpensePayload() => [
-      ?p.merchant,
-      if (p.totalMinor != null)
-        p.currency == 'VND' || p.currency == null
-            ? '${NumberFormat.decimalPattern('vi').format(p.totalMinor)} ₫'
-            : '${p.totalMinor} ${p.currency}',
       date(p.date),
+      if (p.totalMinor != null) moneyLabel(locale, p.totalMinor!, p.currency),
     ].join(' · '),
-    ReminderPayload() => [
-      if (p.title.trim().isNotEmpty) p.title,
-      date(p.date),
-      ?p.time,
-    ].join(' · '),
+    ReminderPayload() => l10n.asRemindLine(
+      [
+        p.date == null ? l10n.asNoDate : weekdayDate(locale, p.date!),
+        p.time ?? l10n.asNoTime,
+      ].join(' · '),
+    ),
     ObservationPayload() => [date(p.date), ?p.note].join(' · '),
     MealPayload() => [
       p.title,
@@ -161,6 +187,92 @@ String draftLine(
     UnknownPayload() => l10n.asKindUnknown,
   };
 }
+
+/// An amount in minor units with Chi tiêu's own formatting ("486.000 ₫", "$4,860.00"); a code
+/// Chi tiêu does not know stays plain ("12.50 XYZ"). Never a float in the data.
+String moneyLabel(String locale, int minor, String? currency) {
+  final code = currency ?? 'VND';
+  if (isSpCurrency(code)) return money(locale, minor, code);
+  final digits = currencyDigits(code);
+  var unit = 1;
+  for (var i = 0; i < digits; i++) {
+    unit *= 10;
+  }
+  final major = NumberFormat(
+    digits == 0 ? '#,##0' : '#,##0.${'0' * digits}',
+    locale,
+  ).format(minor / unit);
+  return '$major $code';
+}
+
+/// "14/10/2026" (vi) / "14 Oct 2026" (en) for an ISO local date.
+String fullDate(String locale, String iso) {
+  final d = DateTime.tryParse(iso);
+  if (d == null) return iso;
+  return DateFormat(
+    locale.startsWith('en') ? 'd MMM y' : 'dd/MM/y',
+    locale,
+  ).format(d);
+}
+
+/// "Thứ Ba 20/10" (vi) / "Tue 20 Oct" (en): the real weekday of the date (G03).
+String weekdayDate(String locale, String iso) {
+  final d = DateTime.tryParse(iso);
+  if (d == null) return iso;
+  return DateFormat(
+    locale.startsWith('en') ? 'EEE d MMM' : 'EEEE dd/MM',
+    locale,
+  ).format(d);
+}
+
+/// A built-in Chi tiêu category's name ("Sữa & ăn dặm"); null for one this app cannot name.
+String? expenseCategoryName(AppLocalizations l10n, String? categoryId) {
+  final c = builtInCategories.where((c) => c.id == categoryId).firstOrNull;
+  return c == null ? null : categoryName(l10n, c);
+}
+
+/// The card title of a draft: the reminder's own words, "Danh mục · Cửa hàng" for an expense,
+/// else the kind (never text the model wrote).
+String draftTitle(AppLocalizations l10n, AssistantDraft d) =>
+    switch (d.payload) {
+      ReminderPayload(:final title) when title.trim().isNotEmpty =>
+        title.trim(),
+      ExpensePayload(:final merchant, :final categoryId) => [
+        ?expenseCategoryName(l10n, categoryId),
+        ?merchant,
+      ].join(' · ').ifEmpty(l10n.asKindExpense),
+      ObservationPayload() => l10n.asObservationTitle,
+      _ => kindLabel(l10n, d.kind),
+    };
+
+extension AsIfEmpty on String {
+  /// [other] when this is empty.
+  String ifEmpty(String other) => isEmpty ? other : this;
+}
+
+/// CH15 / CH16: what the person reported ("khó vào giấc · giấc đêm").
+String sleepConcernLabel(AppLocalizations l10n, String? kind, String? when) => [
+  ?switch (kind) {
+    'falling_asleep' => l10n.asSleepFalling,
+    'night_waking' => l10n.asSleepWaking,
+    'both' => l10n.asSleepBoth,
+    _ => null,
+  },
+  ?switch (when) {
+    'night' => l10n.asWhenNight,
+    'day' => l10n.asWhenDay,
+    'both' => l10n.asWhenBoth,
+    _ => null,
+  },
+].join(' · ');
+
+/// CH17 outcome words ("Có ích", "Chưa rõ", "Không phù hợp", "Chưa thử").
+String outcomeLabel(AppLocalizations l10n, FeedbackOutcome o) => switch (o) {
+  FeedbackOutcome.helpful => l10n.asOutcomeHelpful,
+  FeedbackOutcome.unsure => l10n.asOutcomeUnsure,
+  FeedbackOutcome.notSuitable => l10n.asOutcomeNotSuitable,
+  FeedbackOutcome.notTried => l10n.asOutcomeNotTried,
+};
 
 /// Where a saved record opens. Only allowlisted in-app locations are followed (the server's
 /// module adapter builds them); anything else falls back to the module, never an arbitrary link.

@@ -3,6 +3,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 
+import '../spending/spending_currency.dart'
+    show isSpCurrency, spCurrencies, spCurrency;
 import 'assistant_models.dart';
 
 /// Pure Dart ports of `packages/contracts/src/assistant.ts` (`draftProblems`, `confirmBlocker`,
@@ -17,19 +19,9 @@ const bottleMaxMl = 500;
 /// Longest nursing session the forms accept.
 const breastMaxMinutes = 180;
 
-const supportedCurrencies = {
-  'VND',
-  'USD',
-  'EUR',
-  'SGD',
-  'AUD',
-  'GBP',
-  'JPY',
-  'KRW',
-  'TWD',
-  'NZD',
-  'CAD',
-};
+/// The currencies an expense can be kept in: Chi tiêu's own list (D-075 #4, contracts
+/// `expenseCurrencies`), never a copy.
+final supportedCurrencies = {for (final c in spCurrencies) c.code};
 
 /// Same checks as the forms, before any save (brief p.12): positive amounts within limits, a
 /// time for completed logs not after [anchor], sleep end after start, an explicit date and a
@@ -243,8 +235,29 @@ class EventCursor {
 }
 
 /// The newer task view wins; an older version (a late listener, a stale response) is ignored.
-AssistantTask mergeTask(AssistantTask current, AssistantTask incoming) =>
-    incoming.version >= current.version ? incoming : current;
+/// The stored task document (live listener) has no computed CH17 `followUp`: a still-open
+/// question survives it until an answer (or a newer snapshot) settles it.
+/// A plan or an answer the server confirmed never goes away (the server writes them without a
+/// new task version, so a snapshot read just before can arrive after).
+AssistantTask mergeTask(AssistantTask current, AssistantTask incoming) {
+  if (incoming.version < current.version) return current;
+  final kept = current.care;
+  final next = incoming.care;
+  if (kept == null) return incoming;
+  if (next == null) return incoming.copyWith(care: kept);
+  final feedback = next.feedback ?? kept.feedback;
+  return incoming.copyWith(
+    care: AssistantCareView(
+      topic: next.topic,
+      sleep: next.sleep ?? kept.sleep,
+      guidance: next.guidance ?? kept.guidance,
+      recipeIds: next.recipeIds.isEmpty ? kept.recipeIds : next.recipeIds,
+      plan: next.plan ?? kept.plan,
+      feedback: feedback,
+      followUp: feedback != null ? null : (next.followUp ?? kept.followUp),
+    ),
+  );
+}
 
 /// How far a draft has come within one revision: a same-revision snapshot never moves it back
 /// (a listener snapshot written before the confirm landed cannot undo "Đã lưu" or "Chưa lưu").
@@ -291,8 +304,112 @@ TaskSnapshot mergeSnapshot(TaskSnapshot current, TaskSnapshot incoming) {
     drafts: mergeDrafts(current.drafts, incoming.drafts),
     events: current.events,
     messages: messages,
+    // Retention moves only forward (G05): a late snapshot never brings "đã xoá" back to pending.
+    attachments: mergeAttachments(current.attachments, incoming.attachments),
   );
 }
+
+int _retentionProgress(AttachmentView a) => switch (a.state) {
+  AttachmentState.uploading => 0,
+  AttachmentState.ready => 1,
+  AttachmentState.deletionPending => 2,
+  AttachmentState.deleted => 3,
+};
+
+List<AttachmentView> mergeAttachments(
+  List<AttachmentView> current,
+  List<AttachmentView> incoming,
+) {
+  if (incoming.isEmpty) return current;
+  final byId = {for (final a in current) a.id: a};
+  return [
+    for (final a in incoming)
+      if (byId[a.id] case final c?
+          when _retentionProgress(c) > _retentionProgress(a) ||
+              (c.keptWithRecord && !a.keptWithRecord))
+        c
+      else
+        a,
+  ];
+}
+
+// ---------- Photos (slice A5: CH09–CH14) ----------
+
+/// The photo limit of `createAttachmentUpload` (`assistantTaskLimits.maxImageBytes`).
+const maxPhotoBytes = 8 * 1024 * 1024;
+
+/// What the attachment bubble says about one photo of a task (Chat/Tệp đính kèm).
+enum PhotoStatus { reading, read, blurry, refused, canceled }
+
+PhotoStatus photoStatus(AssistantTask task, AttachmentView? a) {
+  if (a?.rejected ?? false) return PhotoStatus.refused;
+  return switch (task.state) {
+    TaskState.received ||
+    TaskState.uploading ||
+    TaskState.queued ||
+    TaskState.processing ||
+    TaskState.blocked => PhotoStatus.reading,
+    TaskState.canceled => PhotoStatus.canceled,
+    TaskState.failed => switch (task.error) {
+      AssistantReason.ocrUnreadable => PhotoStatus.blurry,
+      AssistantReason.validationFailed => PhotoStatus.refused,
+      _ => PhotoStatus.read,
+    },
+    TaskState.awaitingClarification || TaskState.ready => PhotoStatus.read,
+  };
+}
+
+/// G05: what the app may say about a task's photo, only from the server's confirmed state.
+enum RetentionLine {
+  /// A copy is kept with the saved expense (D-075 #3).
+  keptWithExpense,
+
+  /// "Giữ ảnh hoá đơn" is on but nothing is saved yet: kept only if the expense is saved.
+  keptIfSaved,
+
+  /// Deletion requested or retried, not confirmed: never "đã xoá".
+  deleting,
+
+  /// Storage confirmed the deletion.
+  deleted,
+
+  /// "Xoá sau khi đọc" chosen, not deleted yet.
+  willDelete,
+}
+
+/// [forExpense]: the task holds (or may still hold) an expense draft; otherwise nothing can keep
+/// a copy, so "giữ cùng khoản chi" never shows (the server deletes the photo).
+RetentionLine? retentionLine(
+  List<AttachmentView> photos, {
+  bool forExpense = true,
+}) {
+  if (photos.isEmpty) return null;
+  if (photos.any((a) => a.keptWithRecord)) return RetentionLine.keptWithExpense;
+  if (photos.every((a) => a.deletionConfirmed)) return RetentionLine.deleted;
+  if (photos.any(
+    (a) =>
+        a.state == AttachmentState.deletionPending ||
+        a.state == AttachmentState.deleted,
+  )) {
+    return RetentionLine.deleting;
+  }
+  return forExpense &&
+          photos.any((a) => a.retention == AttachmentRetention.keepWithRecord)
+      ? RetentionLine.keptIfSaved
+      : RetentionLine.willDelete;
+}
+
+/// ISO 4217 exponent of a currency's minor unit, from Chi tiêu's list (VND, JPY, KRW 0); an
+/// unknown code is shown with 2.
+int currencyDigits(String? currency) => currency == null
+    ? 0
+    : (isSpCurrency(currency) ? spCurrency(currency).exponent : 2);
+
+/// A reminder draft needs a time only while the server says so (MISSING_TIME / a missing
+/// `time`): when the module takes date-only reminders (D-075 #5) the server stops asking.
+bool reminderNeedsTimeFor(AssistantDraft d) =>
+    d.missingFields.contains('time') ||
+    d.problems.contains(DraftProblem.missingTime);
 
 /// Applies `confirmDrafts` results to the drafts they name (per item; never a fake "all saved").
 List<AssistantDraft> applyConfirm(

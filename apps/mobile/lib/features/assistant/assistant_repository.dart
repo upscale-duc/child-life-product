@@ -27,6 +27,12 @@ abstract final class AssistantCallables {
   static const task = 'getAssistantTask';
   static const deleteConversation = 'deleteAssistantConversation';
   static const consent = 'setAssistantConsent';
+
+  /// Slice A3 photos: the owned upload target for one quoted photo.
+  static const upload = 'createAttachmentUpload';
+
+  /// Slice A5 care: "Thử tối nay" (an intention, 0 credits).
+  static const plan = 'planAssistantActivity';
 }
 
 /// A refused or failed assistant call: a closed [AssistantReason] (`details.reason`), or a
@@ -277,6 +283,57 @@ class AssistantRepository {
     return AssistantTask.fromJson(data['task'] is Map ? data['task'] : data);
   }
 
+  /// `createAttachmentUpload` (CH09): the owned path for one photo the quote counted. Refused
+  /// (no target, nothing uploaded) when the household no longer has the quoted credits, the
+  /// consent or the photo flag.
+  Future<AssistantUploadTarget> createUpload({
+    required String quoteId,
+    required String mime,
+    required int bytes,
+    required String sha256,
+    required AttachmentRetention retention,
+    required String requestId,
+    required String locale,
+  }) async {
+    final r = await _call(
+      AssistantCallables.upload,
+      {
+        'quoteId': quoteId,
+        'mime': mime,
+        'bytes': bytes,
+        'sha256': sha256,
+        'retention': retention.wire,
+      },
+      locale: locale,
+      requestId: requestId,
+    );
+    final target = AssistantUploadTarget.fromJson(r.data);
+    if (target == null) throw const AssistantException('invalid');
+    return target;
+  }
+
+  /// `planAssistantActivity` ("Thử tối nay", CH16): an intention, not "đã thử"; 0 credits.
+  Future<AssistantCarePlan?> plan({
+    required String taskId,
+    required String contentId,
+    required int contentVersion,
+    required String requestId,
+    required String locale,
+  }) async {
+    final r = await _call(
+      AssistantCallables.plan,
+      {
+        'taskId': taskId,
+        'contentId': contentId,
+        'contentVersion': contentVersion,
+      },
+      locale: locale,
+      requestId: requestId,
+    );
+    final data = r.data is Map ? r.data! as Map : const {};
+    return AssistantCarePlan.fromJson(data['plan']);
+  }
+
   /// `submitAssistantFeedback` (CH17, 0 credits).
   Future<void> feedback({
     required String taskId,
@@ -355,14 +412,24 @@ class AssistantRepository {
     return TaskSnapshot.fromJson(r.data);
   }
 
-  /// "Xoá cuộc trò chuyện" (explicit confirmation); domain records stay.
-  Future<void> deleteConversation(
+  /// "Xoá cuộc trò chuyện" (explicit confirmation); domain records stay (`domainRecordsKept`).
+  /// The shared baby thread: Cùng nuôi only, for everyone (D-075 #2).
+  Future<({int deletedTasks, bool domainRecordsKept})> deleteConversation(
     String conversationId, {
     required String locale,
-  }) => _call(AssistantCallables.deleteConversation, {
-    'conversationId': conversationId,
-    'confirm': true,
-  }, locale: locale);
+  }) async {
+    final r = await _call(AssistantCallables.deleteConversation, {
+      'conversationId': conversationId,
+      'confirm': true,
+    }, locale: locale);
+    final data = r.data is Map ? r.data! as Map : const {};
+    return (
+      deletedTasks: data['deletedTasks'] is int
+          ? data['deletedTasks'] as int
+          : 0,
+      domainRecordsKept: data['domainRecordsKept'] == true,
+    );
+  }
 
   /// Gives ([agree]) or withdraws the assistant consent (P-160).
   Future<void> setConsent({required bool agree, required String locale}) =>

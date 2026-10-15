@@ -1,4 +1,5 @@
-# Child Life Assistant v3, slice A4 (app chat: CH01–CH08, CH19–CH28; docs/assistant/architecture.md,
+# Child Life Assistant v3, slices A4 (app chat: CH01–CH08, CH19–CH28) and A5 (photos CH09–CH14, care
+# CH15–CH18; docs/assistant/architecture.md,
 # P-155–P-161). Vietnamese = the Figma chat frames (page 568:18, extract
 # docs/discovery/figma-extract/31-chat-assistant.md) where drawn; English = the EN frames, or an
 # engineering draft for owner review (D-012). Where the design contradicts the business rules the
@@ -214,7 +215,6 @@ s('asPhotoQuoteFree', 'Bạn có thể nhập tay, đợi làm mới {date}, ho�
 s('asPhotoQuotePremium', 'Bạn có thể nhập tay hoặc đợi làm mới {date}. Ảnh chưa được gửi đi.', 'You can type it in or wait for {date}. The photo hasn’t been sent.', 'CH20 body (Premium: no other pack).' + VI_DRAFT, date='String')
 s('asTypeInstead', 'Nhập tay', 'Type it in', 'CH20 secondary.')
 s('asRemovePhoto', 'Bỏ ảnh', 'Remove photo', 'Removes the pending photo (never uploaded).' + VI_DRAFT)
-s('asPhotoSoon', 'Đọc ảnh sẽ có ở bản cập nhật tới. Ảnh chưa được gửi đi.', 'Reading photos comes in the next update. The photo hasn’t been sent.', 'Photo allowed by the quote while the A5 upload is not in this build.' + VI_DRAFT)
 
 # CH21 Free exhausted (616:9773 / 616:10125) and CH24 Premium exhausted (616:9936 / 616:10288).
 s('asOutTitleFree', 'Bạn đã dùng hết lượt hỗ trợ AI tháng này.', 'You’ve used all AI help this month.', 'CH21 title.')
@@ -248,7 +248,7 @@ s('asConsent2', 'Chỉ gửi ảnh bạn chọn. Ảnh gốc giữ hay xoá theo
 s('asConsent3', 'Chỉ dùng tên gọi của bé; không gửi tên đầy đủ hay ngày sinh chính xác.', 'Only your baby’s nickname is used; never the full name or exact birth date.', 'CH26 row 3 (D-003: nickname, never the real name).' + RULE)
 s('asConsent4', 'Không tự lưu. Bạn kiểm tra trước khi ghi vào nhật ký.', 'Nothing saves automatically. You check before anything is logged.', 'CH26 row 4.')
 s('asConsentProvider', 'Một dịch vụ AI bên ngoài xử lý qua máy chủ Child Life, điện thoại không gửi trực tiếp; nhà cung cấp không được lưu giữ dữ liệu này.', 'An external AI service handles it through Child Life’s server, never directly from your phone; the provider must not keep this data.', 'CH26 provider and retention (D-003), replacing the internal "chờ chính sách được duyệt".' + RULE)
-s('asConsentPrivate', 'Cuộc trò chuyện chỉ bạn xem được. Bạn đổi ý lúc nào cũng được.', 'Only you can see your chats. You can change your mind any time.', 'CH26 privacy (P-158) and withdrawal.' + VI_DRAFT)
+s('asConsentPrivate', 'Với Ba, Mẹ và người chăm sóc, câu hỏi về bé nằm trong cuộc trò chuyện chung của bé. Ảnh, chi tiêu và mọi câu hỏi khác chỉ bạn thấy. Bạn đổi ý lúc nào cũng được.', 'For parents and caregivers, questions about the baby go in the baby’s shared chat. Photos, expenses and every other question are only yours. You can change your mind any time.', 'CH26 privacy (P-158) and withdrawal.' + VI_DRAFT)
 s('asConsentAgree', 'Đồng ý và bắt đầu', 'Agree and start', 'CH26 primary.')
 s('asConsentDecline', 'Không dùng trợ lý', 'Don’t use the assistant', 'CH26 secondary (the app stays usable).')
 s('asConsentDeclined', 'Đã không dùng trợ lý. Ghi trực tiếp vẫn dùng như bình thường.', 'Assistant not used. Direct logging works as usual.', 'Toast after declining.' + VI_DRAFT)
@@ -293,10 +293,152 @@ s('asDeleteConfirm', 'Xoá', 'Delete', 'CH03 confirm button.' + VI_DRAFT)
 s('asDeleted', 'Đã xoá cuộc trò chuyện', 'Chat deleted', 'Toast after the server confirmed the delete.' + VI_DRAFT)
 s('asDeleteFailed', 'Chưa xoá được. Thử lại sau.', 'Couldn’t delete. Try again later.', 'Delete failed.' + VI_DRAFT)
 
+# ---------- Slice A5: photos (CH09–CH14) and care (CH15–CH18) ----------
+A5 = ' Slice A5.'
+
+# CH09 photo sheet (614:8403 / 614:9053) and the chosen photo with its exact quote.
+s('asPhotoSheetTitle', 'Gửi ảnh để trợ lý đọc', 'Send a photo to read', 'CH09 sheet title.' + A5)
+s('asPhotoCameraSub', 'Hoá đơn, bảng note', 'Receipt, note board', 'CH09 camera row subtitle.' + A5)
+s('asPhotoLibrarySub', 'Chỉ ảnh bạn chọn được gửi', 'Only the photo you pick is sent', 'CH09 library row subtitle.' + A5)
+s('asPhotoQuoteExact', 'Đọc 1 ảnh dùng {credits} lượt hỗ trợ AI', 'Reading 1 photo uses {credits} of your AI help', 'CH09 estimate heading with the server policy / quote number (exact, not "khoảng").' + RULE, credits='int')
+s('asPhotoSheetBody', 'Còn {remaining} lượt. Bạn thấy đúng số lượt trước khi gửi; ảnh không đọc được thì không trừ.', '{remaining} left. You see the exact cost before sending; an unreadable photo isn’t charged.', 'CH09 sheet body (no deletion promise before reading, G05).' + RULE, remaining='int')
+s('asPhotoSheetBodyUnknown', 'Bạn thấy đúng số lượt trước khi gửi; ảnh không đọc được thì không trừ.', 'You see the exact cost before sending; an unreadable photo isn’t charged.', 'CH09 sheet body while usage is unknown.' + VI_DRAFT)
+s('asPhotoChosenTitle', 'Ảnh đã chọn · chưa gửi', 'Photo chosen · not sent', 'CH09 card after choosing (nothing uploaded yet).' + VI_DRAFT)
+s('asPhotoOnlyThis', 'Chỉ ảnh này được gửi để đọc.', 'Only this photo is sent to be read.', 'CH09 card: which photo is sent (annotation 618:10251).' + VI_DRAFT)
+s('asPhotoQuoteBody', 'Còn {remaining} lượt. Hỏi lại, sửa và xác nhận trong cùng tác vụ không trừ thêm. Ảnh không đọc được thì không trừ.', '{remaining} left. Follow-ups, edits and confirming in the same task don’t use more. An unreadable photo isn’t charged.', 'CH09 quote body (G05: no deletion promise here).' + RULE, remaining='int')
+s('asKeepReceipt', 'Giữ ảnh hoá đơn cùng khoản chi', 'Keep the receipt with the expense', 'CH09 retention switch (default on, D-075 #3).' + VI_DRAFT)
+s('asKeepReceiptOn', 'Khi bạn lưu khoản chi, ảnh được giữ cùng khoản chi. Không lưu thì ảnh được xoá.', 'When you save the expense, the photo stays with it. If you don’t save, the photo is deleted.', 'CH09 retention on (keep_with_record).' + VI_DRAFT)
+s('asKeepReceiptOff', 'Ảnh được xoá sau khi đọc. App chỉ báo đã xoá khi việc xoá được xác nhận.', 'The photo is deleted after reading. The app says it’s deleted only once that’s confirmed.', 'CH09 retention off (delete_after_read; G05).' + VI_DRAFT)
+s('asPhotoTextIsData', 'Chữ trong ảnh là nội dung để đọc, không phải lệnh cho app.', 'Text in photos is content to read, never a command to the app.', 'CH09 / CH14 notice (618:10251, 614:9037).')
+s('asSendPhoto', 'Gửi ảnh', 'Send photo', 'CH09 primary ("Tiếp tục" in the frame): uploads and reads.' + VI_DRAFT)
+s('asPhotoQuoting', 'Đang tính lượt…', 'Checking the cost…', 'Photo bubble while the quote is asked.' + VI_DRAFT)
+s('asPhotoPickFailed', 'Chưa mở được ảnh. Thử lại hoặc chọn ảnh khác.', 'Couldn’t open the photo. Try again or pick another.', 'Picker failed (not a permission).' + VI_DRAFT)
+
+# CH10 uploading / reading (614:8480 / 614:9130).
+s('asUploading', 'Đang tải lên · {percent}%', 'Uploading · {percent}%', 'CH10 attachment label.', percent='int')
+s('asCancelUpload', 'Huỷ', 'Cancel', 'CH10 cancel while uploading (0 credits; missing in the frame, annotation 618:10257).' + VI_DRAFT)
+s('asUploadFree', 'Huỷ khi đang tải lên không trừ lượt.', 'Cancelling while uploading uses no AI help.', 'CH10 note while uploading.' + VI_DRAFT)
+s('asUploadCanceled', 'Đã huỷ tải lên · không trừ lượt. Ảnh vẫn được chọn.', 'Upload cancelled · no AI help used. The photo is still chosen.', 'After cancelling an upload.' + VI_DRAFT)
+s('asPhotoReading', 'Đang đọc ảnh…', 'Reading the photo…', 'CH10 attachment label (neutral: it may not be a receipt).' + RULE)
+s('asPhotoRead', 'Đã đọc', 'Read ✓', 'CH11 / CH13 attachment label.')
+s('asPhotoBlurry', 'Ảnh hơi mờ', 'Blurry photo', 'CH14 attachment label.')
+s('asPhotoRefused', 'Không đọc được tệp này', 'This file can’t be read', 'Attachment refused before reading (not an image).' + VI_DRAFT)
+s('asPhotoCanceled', 'Đã huỷ', 'Cancelled', 'Attachment of a cancelled task.' + VI_DRAFT)
+s('asPhotoLeaveScreen', 'Bạn có thể rời màn hình; kết quả vẫn ở đây khi bạn quay lại. Lỗi hệ thống không trừ lượt.', 'You can leave this screen; the result stays here when you come back. System errors use no AI help.', 'CH10 note (no notification promise: none is built).' + RULE)
+s('asPhotoFailBody', 'Ảnh chưa được đọc, chưa có gì được lưu và không trừ lượt. Ảnh vẫn được chọn.', 'The photo wasn’t read, nothing was saved and no AI help was used. The photo is still chosen.', 'CH25 for a photo upload / start failure.' + VI_DRAFT)
+
+# CH11 receipt card (614:8615 / 614:9235) and CH12 saved (614:8738 / 614:9348).
+s('asReceiptTitle', 'Chi tiêu từ hoá đơn', 'Expense from receipt', 'CH11 card title.')
+s('asFieldStore', 'Cửa hàng', 'Store', 'CH11 field.')
+s('asFieldDate', 'Ngày', 'Date', 'CH11 field.')
+s('asFieldTotal', 'Tổng tiền', 'Total', 'CH11 field.')
+s('asFieldCategory', 'Danh mục gợi ý', 'Suggested category', 'CH11 field.')
+s('asFieldScope', 'Phạm vi', 'Scope', 'CH11 field.')
+s('asFieldCurrency', 'Đơn vị tiền', 'Currency', 'Expense editor field.' + VI_DRAFT)
+s('asFieldTitle', 'Việc', 'To-do', 'Reminder editor title field.' + VI_DRAFT)
+s('asFieldTime', 'Giờ', 'Time', 'Reminder editor time field.' + VI_DRAFT)
+s('asFieldCheckA11y', '{label}: {value}, cần kiểm tra', '{label}: {value}, needs checking', 'Screen-reader label of a flagged receipt field.' + VI_DRAFT, label='String', value='String')
+s('asNotRead', 'chưa đọc được', 'not read', 'Receipt field the reading did not find.' + VI_DRAFT)
+s('asExpenseFor', 'Gia đình · cho {name}', 'Family · for {name}', 'CH11 scope value.', name='String')
+s('asTaxIncluded', 'Chỉ ghi tổng tiền {total} (đã gồm thuế), không cộng thêm tạm tính hay thuế.', 'Only the total {total} (tax included) is logged; subtotal and tax aren’t added again.', 'CH11 footnote.', total='String')
+s('asConfirmDate', 'Ngày chưa chắc: chạm vào ngày để chọn hoặc xác nhận trước khi lưu.', 'The date isn’t certain: tap it to pick or confirm before saving.', 'CH11 "Ngày không chắc → bắt chọn ngày" (618:10262).' + VI_DRAFT)
+s('asDuplicateBody', 'Có thể trùng với một khoản đã ghi trong gia đình. Mình không tự gộp.', 'This may duplicate an expense your family logged. Nothing is merged automatically.', 'CH11 duplicate box (author/time not known to the app).' + RULE)
+s('asDuplicateAcknowledged', 'Bạn chọn vẫn lưu riêng · không gộp.', 'You chose to save it separately · nothing merged.', 'CH11 duplicate after "Vẫn lưu".' + VI_DRAFT)
+s('asOpenDuplicate', 'Mở khoản chi trùng', 'Open the logged one', 'CH11 duplicate action (opens Chi tiêu history).' + VI_DRAFT)
+s('asSaveAnywayShort', 'Vẫn lưu', 'Save anyway', 'CH11 duplicate acknowledge (annotation "Gộp/Vẫn lưu"; never merged).')
+s('asSaveExpense', 'Lưu chi tiêu', 'Save expense', 'CH11 save action.')
+s('asSkip', 'Bỏ qua', 'Skip', 'CH11 discard action.')
+s('asEditExpense', 'Sửa khoản chi', 'Edit expense', 'Expense editor title.' + VI_DRAFT)
+s('asTotalOnly', 'Chỉ tổng tiền in trên hoá đơn; không cộng tạm tính và thuế.', 'The printed total only; subtotal and tax aren’t added.', 'Expense editor note (brief p.14).' + VI_DRAFT)
+s('asPickDate', 'Chọn ngày', 'Pick a date', 'Date wheel title.' + VI_DRAFT)
+s('asPickTime', 'Chọn giờ', 'Pick a time', 'Time wheel title.' + VI_DRAFT)
+s('asRetentionKept', 'Ảnh hoá đơn được giữ cùng khoản chi trong Chi tiêu.', 'The receipt photo is kept with the expense in Expenses.', 'G05: a copy is kept with the saved expense (server confirmed).' + RULE)
+s('asRetentionKeptIfSaved', 'Ảnh được giữ cùng khoản chi khi bạn lưu; nếu không lưu, ảnh sẽ được xoá.', 'The photo stays with the expense when you save it; otherwise it’s deleted.', 'G05: keep_with_record, nothing saved yet.' + VI_DRAFT)
+s('asRetentionDeleting', 'Đang xoá ảnh gốc. App chỉ báo đã xoá khi việc xoá được xác nhận.', 'Deleting the original photo. The app says it’s deleted only once that’s confirmed.', 'G05: deletion requested / pending, not confirmed.' + RULE)
+s('asRetentionDeleted', 'Ảnh gốc đã được xoá.', 'The original photo was deleted.', 'G05: Storage confirmed the deletion (replaces CH12 "đã xoá sau khi đọc (theo cài đặt hiện tại)").' + RULE)
+s('asRetentionWillDelete', 'Ảnh gốc sẽ được xoá sau khi đọc; app báo khi xoá xong.', 'The original photo will be deleted after reading; the app says when it’s done.', 'G05: delete_after_read, not deleted yet.' + VI_DRAFT)
+
+# CH13 note → reminders (614:8819 / 614:9428), CH14 unreadable / mixed (614:8948 / 614:9557).
+s('asRemindLine', 'Nhắc: {when}', 'Remind: {when}', 'CH13 card line ("Nhắc: Thứ Ba 20/10 · 09:00"; the real weekday, G03).', when='String')
+s('asModuleRemindersOf', '{name} · Nhắc việc', '{name} · Reminders', 'CH13 card scope row.', name='String')
+s('asCheckReminder', 'Chọn ngày giờ', 'Pick date & time', 'CH13 action on a reminder that needs a date or time.' + VI_DRAFT)
+s('asEditReminder', 'Sửa nhắc việc', 'Edit reminder', 'Reminder editor title.' + VI_DRAFT)
+s('asAllDay', 'Không đặt giờ', 'No time', 'Reminder editor: date-only (only while the server accepts it).' + VI_DRAFT)
+s('asReminderBaby', 'Nhắc việc lưu cho {name}; không chuyển sang bé khác.', 'Saved for {name}; never moved to another baby.', 'Reminder editor note.' + VI_DRAFT, name='String')
+s('asProblemInvalidTitle', 'Tên việc dài quá (tối đa 80 ký tự).', 'The title is too long (80 characters max).', 'INVALID_TITLE.' + VI_DRAFT)
+s('asProblemPastTime', 'Giờ nhắc đã qua — chọn một giờ sắp tới.', 'That time has passed — pick an upcoming one.', 'PAST_TIME (D-031).' + VI_DRAFT)
+s('asRetake', 'Chụp lại', 'Retake', 'CH14 chip.')
+s('asOtherPhoto', 'Chọn ảnh khác', 'Pick another photo', 'Chip after a refused file.' + VI_DRAFT)
+s('asUnreadableFree', 'Lần đọc này không trừ lượt.', 'This attempt used no AI help.', 'CH14 note (0 credits).')
+
+# CH15 sleep (615:9171 / 615:9517), CH16 guidance (615:9243 / 615:9589).
+s('asSleepSafety', 'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ (miễn phí).', 'If baby has a fever, trouble breathing, is very drowsy or refuses feeds — open Health guidance (free).', 'CH15 safety box (now with a link).')
+s('asSleepFalling', 'khó vào giấc', 'hard to fall asleep', 'Sleep concern kind.')
+s('asSleepWaking', 'hay thức giấc', 'waking often', 'Sleep concern kind.')
+s('asSleepBoth', 'khó vào giấc và hay thức giấc', 'hard to fall asleep and waking often', 'Sleep concern kind both.' + VI_DRAFT)
+s('asWhenNight', 'giấc đêm', 'night', 'Sleep concern time.')
+s('asWhenDay', 'giấc ngày', 'naps', 'Sleep concern time.')
+s('asWhenBoth', 'cả ngày và đêm', 'day and night', 'Sleep concern time both.' + VI_DRAFT)
+s('asFromCareLibrary', 'Từ Thư viện chăm bé', 'From the Care library', 'CH16 kicker.')
+s('asFromCareLibraryMinutes', 'Từ Thư viện chăm bé · {minutes} phút', 'From the Care library · {minutes} min', 'CH16 kicker with the content duration.' + VI_DRAFT, minutes='int')
+s('asContentUnreviewed', 'Nội dung minh hoạ · chờ chuyên môn duyệt. Không khẳng định nguyên nhân.', 'Illustrative content · pending expert review. Doesn’t claim a cause.', 'CH16 disclaimer while reviewed is false (D-073 #2).')
+s('asContentReviewed', 'Nội dung đã được chuyên môn duyệt. Không khẳng định nguyên nhân.', 'Expert-reviewed content. Doesn’t claim a cause.', 'CH16 line when the content is reviewed.' + VI_DRAFT)
+s('asTryTonight', 'Thử tối nay', 'Try tonight', 'CH16 primary: an intention, not "đã thử".')
+s('asTryToday', 'Thử hôm nay', 'Try today', 'CH16 primary for a daytime item.' + VI_DRAFT)
+s('asAnotherIdea', 'Gợi ý khác', 'Another idea', 'CH16 secondary (opens the next approved item in the care library).')
+s('asPlannedTonight', 'Bạn định thử tối nay', 'You plan to try it tonight', 'CH16 after "Thử tối nay" (an intention).' + VI_DRAFT)
+s('asPlannedToday', 'Bạn định thử hôm nay', 'You plan to try it today', 'CH16 after "Thử hôm nay".' + VI_DRAFT)
+s('asPlanFollowUp', 'Mình sẽ hỏi lại từ {day}, sau khi bạn có dịp thử.', 'I’ll ask again from {day}, after you’ve had a chance to try.', 'CH16 → CH17 timing note.' + VI_DRAFT, day='String')
+s('asObservationTitle', 'Ghi nhận (tuỳ chọn)', 'Note (optional)', 'CH16 observation draft title (G01: an observation, not a reminder).')
+s('asObservationSleep', 'giấc ngủ', 'sleep', 'CH16 observation line when nothing more was reported.' + VI_DRAFT)
+s('asSaveObservation', 'Lưu ghi nhận', 'Save note', 'CH16 observation save.')
+s('asNoThanks', 'Không cần', 'No thanks', 'CH16 observation discard.')
+s('asOpenCareLibrary', 'Mở Thư viện chăm bé', 'Open the Care library', 'Link after "chưa có gợi ý đã duyệt".' + VI_DRAFT)
+
+# CH17 feedback (615:9326 / 615:9672).
+s('asOutcomeHelpful', 'Có ích', 'Helpful', 'CH17 outcome.')
+s('asOutcomeUnsure', 'Chưa rõ', 'Not sure', 'CH17 outcome.')
+s('asOutcomeNotSuitable', 'Không phù hợp', 'Not a fit', 'CH17 outcome.')
+s('asOutcomeNotTried', 'Chưa thử', 'Didn’t try', 'CH17 outcome (always offered).' + DRAFT)
+s('asFeedbackHelpful', 'Đã ghi phản hồi. Lần sau mình sẽ ưu tiên cách này. “Có ích” không có nghĩa cách này là nguyên nhân thay đổi.', 'Feedback saved. I’ll prioritise this next time. “Helpful” doesn’t mean it caused the change.', 'CH17 after Có ích.')
+s('asFeedbackUnsure', 'Đã ghi phản hồi. Mình sẽ cân nhắc khi gợi ý lần sau.', 'Feedback saved. I’ll take it into account next time.', 'CH17 after Chưa rõ.' + VI_DRAFT)
+s('asFeedbackNotSuitable', 'Đã ghi phản hồi. Lần sau mình sẽ không gợi ý cách này.', 'Feedback saved. I won’t suggest this again.', 'CH17 after Không phù hợp.' + VI_DRAFT)
+s('asFeedbackNotTried', 'Không sao. Khi nào thử, bạn có thể ghi lại trong Nhịp lớn lên.', 'No problem. When you try it, you can note it in Growing rhythm.', 'CH17 after Chưa thử (nothing written to the module).' + VI_DRAFT)
+s('asFeedbackTitle', 'Phản hồi hoạt động', 'Activity feedback', 'CH17 saved card title.')
+s('asFeedbackFree', 'Phản hồi không trừ lượt hỗ trợ AI.', 'Feedback doesn’t use AI help.', 'CH17 note.')
+
+# CH18 recipes (615:9415 / 615:9760).
+s('asRecipesFrom', 'Gợi ý từ Thư viện công thức', 'From the Recipe library', 'CH18 card label.' + VI_DRAFT)
+s('asRecipeMinutes', '{minutes} phút', '{minutes} min', 'CH18 recipe duration.', minutes='int')
+s('asRecipesExcluded', 'Đã loại {count} món có nguyên liệu con từng có phản ứng (phản ứng đã ghi, không phải chẩn đoán dị ứng).', '{count, plural, =1{1 dish} other{{count} dishes}} with an ingredient your baby had a recorded reaction to left out (a recorded reaction, not an allergy diagnosis).', 'CH18 excluded count.', count='int')
+s('asRecipesCaveat', 'Món chưa có ghi nhận phản ứng không có nghĩa là con đã dung nạp tốt.', 'No recorded reaction doesn’t mean a food is well tolerated.', 'CH18 caveat when the server sent none.')
+s('asLogMeal', 'Ghi bữa ăn', 'Log meal', 'CH18 meal log button (disabled: no meal log yet).' + VI_DRAFT)
+s('asLogMealUnavailable', 'Chưa có nhật ký bữa ăn trong app nên chưa ghi được từ đây.', 'There’s no meal log in the app yet, so meals can’t be logged here.', 'CH18 under the disabled "Ghi bữa ăn" (P-157).' + VI_DRAFT)
+
+# D-075 #2 shared conversation per baby, D-075 #5 reminder assignee (A5 follow-ups).
+s('asProblemInvalidAssignee', 'Người được giao không còn trong gia đình. Chọn lại người phụ trách.', 'The assignee is no longer in the family. Pick someone else.', 'INVALID_ASSIGNEE (D-075 #5).' + VI_DRAFT)
+s('asSavedBy', '{name} đã lưu {count} mục', '{name} saved {count, plural, =1{1 item} other{{count} items}}', 'Shared thread: another member confirmed drafts (action_result author, D-075 #2).' + VI_DRAFT, name='String', count='int')
+s('asConfirmedBy', '{name} đã lưu', 'Saved by {name}', 'Saved draft card: who saved it when not me (draft.confirmedBy, D-075 #2).' + VI_DRAFT, name='String')
+s('asWaitingFor', 'Chờ {name} trả lời câu hỏi này.', 'Waiting for {name} to answer.', 'Shared thread: only the task author answers its clarification (D-075 #2).' + VI_DRAFT, name='String')
+s('asPrivateTask', 'Chỉ bạn thấy: ảnh và chi tiêu không vào cuộc trò chuyện chung của bé.', 'Only you see this: photos and expenses stay out of the baby’s shared chat.', 'Private photo task in a child chat of a shared-thread member (D-075 #2).' + VI_DRAFT)
+s('asHistoryShared', 'CUỘC TRÒ CHUYỆN CHUNG', 'SHARED CHAT', 'CH03 section for the baby’s shared thread (D-075 #2).' + VI_DRAFT)
+s('asSharedThreadTitle', 'Trò chuyện chung về bé', 'Shared chat about the baby', 'CH03 shared thread title.' + VI_DRAFT)
+s('asSharedThreadSub', 'Ba, Mẹ và người chăm sóc cùng xem · {when}', 'Parents and caregivers see it · {when}', 'CH03 shared thread subtitle.' + VI_DRAFT, when='String')
+s('asHistorySharedNote', 'Câu hỏi về bé nằm trong cuộc trò chuyện chung của Ba, Mẹ và người chăm sóc. Ảnh, chi tiêu và các cuộc trò chuyện cũ chỉ bạn xem được.', 'Questions about the baby are in the shared chat of parents and caregivers. Photos, expenses and older chats are only yours.', 'CH03 privacy line for Cùng nuôi / Người chăm sóc (D-075 #2).' + VI_DRAFT)
+s('asDeleteSharedTitle', 'Xoá cuộc trò chuyện chung?', 'Delete the shared chat?', 'CH03 confirm for the shared thread (Cùng nuôi only).' + VI_DRAFT)
+s('asDeleteSharedBody', 'Cuộc trò chuyện chung sẽ bị xoá cho mọi người, kể cả bản nháp chưa lưu. Những gì đã lưu vào nhật ký, Nhịp lớn lên hay nhắc việc vẫn giữ nguyên.', 'The shared chat is deleted for everyone, including unsaved drafts. Anything saved to the log, Growing rhythm or Reminders stays.', 'CH03 confirm body for the shared thread.' + VI_DRAFT)
+s('asDeletedRecordsKept', 'Đã xoá cuộc trò chuyện. Bản ghi đã lưu vẫn giữ nguyên.', 'Chat deleted. Saved records stay.', 'Toast after delete when the server confirms domainRecordsKept.' + VI_DRAFT)
+
+# Removed with A5 (the photo is uploaded now).
+REMOVED = ['asPhotoSoon']
+
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'
 for locale, idx in (('vi', 0), ('en', 1)):
     path = root / f'app_{locale}.arb'
     data = json.loads(path.read_text(), object_pairs_hook=collections.OrderedDict)
+    for key in REMOVED:
+        data.pop(key, None)
+        data.pop('@' + key, None)
     for key, (vi, en, desc, ph) in S.items():
         meta = data.get('@' + key)
         if locale == 'vi' and key in data and (meta or {}).get('description') != desc:

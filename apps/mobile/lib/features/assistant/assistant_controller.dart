@@ -2,23 +2,43 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../app/session.dart';
+import '../baby/baby_models.dart' show MemberRole;
 import '../care/care_repository.dart' show onlineProvider;
 import 'assistant_models.dart';
+import 'assistant_photos.dart';
 import 'assistant_repository.dart';
 import 'assistant_rules.dart';
 
 /// One task in the thread: what the person typed and the server's snapshot (null until fetched).
 @immutable
 class TaskThread {
-  const TaskThread({required this.taskId, this.snapshot, this.text});
+  const TaskThread({
+    required this.taskId,
+    this.snapshot,
+    this.text,
+    this.photoIds = const [],
+  });
   final String taskId;
   final TaskSnapshot? snapshot;
 
   /// What was typed on this phone, shown until the server's own message arrives.
   final String? text;
+
+  /// The photos sent from this phone for the task (shown until the server's message arrives).
+  final List<String> photoIds;
+
+  /// The task's photos: the user message's attachments, else what this phone sent.
+  List<String> get attachmentIds {
+    final m = snapshot?.messages
+        .where((m) => m.role == MessageRole.user && m.attachmentIds.isNotEmpty)
+        .firstOrNull;
+    return m?.attachmentIds ?? photoIds;
+  }
+
+  bool get photo =>
+      attachmentIds.isNotEmpty || snapshot?.task.modality == TaskModality.image;
 
   /// The user's words: the server message, else what was typed here.
   String? get userText {
@@ -29,7 +49,7 @@ class TaskThread {
   }
 
   TaskThread withSnapshot(TaskSnapshot s) =>
-      TaskThread(taskId: taskId, snapshot: s, text: text);
+      TaskThread(taskId: taskId, snapshot: s, text: text, photoIds: photoIds);
 }
 
 /// Why the composer's last input is not a task (a call-level state; task failures are drawn
@@ -50,8 +70,8 @@ enum ChatBlockKind {
   /// CH20: the photo's quote is more than what is left; nothing uploaded.
   photoQuote,
 
-  /// The quote allows the photo but this build cannot upload it yet (slice A5).
-  photoSoon,
+  /// CH25 for a photo: the upload or the start failed; nothing charged, the photo is kept.
+  photoFailed,
 
   /// Kill switch (FEATURE_DISABLED).
   featureOff,
@@ -78,13 +98,100 @@ class ChatBlock {
   final AssistantQuote? quote;
 }
 
-/// A photo picked on this phone and not sent (CH20): only its local reference.
+/// Where the chosen photo stands on this phone (CH09 → CH10), before the task exists.
+enum PhotoStage {
+  /// The exact quote is being asked for.
+  quoting,
+
+  /// CH09: quoted and allowed; waiting for "Gửi ảnh".
+  ready,
+
+  /// Not sent (CH20 over the balance, consent, offline, a failure): the selection is kept.
+  held,
+
+  /// CH10 "Đang tải lên": cancellable, 0 credits.
+  uploading,
+
+  /// Uploaded; `startTask` in flight.
+  starting,
+}
+
+/// A photo picked on this phone and not sent yet: its bytes (memory only), the exact quote,
+/// the retention the person chose (D-075 #3 default: keep with the expense) and the upload.
 @immutable
 class PendingPhoto {
-  const PendingPhoto({required this.name, this.path});
+  const PendingPhoto({
+    required this.name,
+    this.path,
+    this.bytes,
+    this.mime = 'image/jpeg',
+    this.sha256 = '',
+    this.stage = PhotoStage.quoting,
+    this.quote,
+    this.keep = true,
+    this.progress = 0,
+    this.requestId = '',
+    this.attachmentId,
+    this.canceled = false,
+    this.hint,
+  });
+
   final String name;
   final String? path;
+  final Uint8List? bytes;
+  final String mime;
+  final String sha256;
+  final PhotoStage stage;
+
+  /// The allowing quote (CH09 shows its exact credits).
+  final AssistantQuote? quote;
+
+  /// "Giữ ảnh hoá đơn cùng khoản chi" (default on, D-075 #3).
+  final bool keep;
+
+  /// Upload progress 0–1.
+  final double progress;
+
+  /// The `startTask` idempotency key of this photo (kept for a resume of a blocked start).
+  final String requestId;
+
+  /// Set once uploaded: a retry or resume starts with the same photo, never a second upload.
+  final String? attachmentId;
+
+  /// The last upload was cancelled ("Đã huỷ tải lên · không trừ lượt").
+  final bool canceled;
+  final IntentHint? hint;
+
+  bool get busy =>
+      stage == PhotoStage.uploading || stage == PhotoStage.starting;
+
+  PendingPhoto copyWith({
+    PhotoStage? stage,
+    AssistantQuote? quote,
+    bool clearQuote = false,
+    bool? keep,
+    double? progress,
+    String? attachmentId,
+    bool? canceled,
+  }) => PendingPhoto(
+    name: name,
+    path: path,
+    bytes: bytes,
+    mime: mime,
+    sha256: sha256,
+    stage: stage ?? this.stage,
+    quote: clearQuote ? null : (quote ?? this.quote),
+    keep: keep ?? this.keep,
+    progress: progress ?? this.progress,
+    requestId: requestId,
+    attachmentId: attachmentId ?? this.attachmentId,
+    canceled: canceled ?? this.canceled,
+    hint: hint,
+  );
 }
+
+/// How picking a photo went (the screen says why when it did not open).
+enum PhotoPick { ok, canceled, denied, failed, busy }
 
 /// What a person's action came to, for the toast the screen shows.
 enum ActionOutcome { ok, partial, offline, stale, failed, nothing }
@@ -108,6 +215,8 @@ class ChatState {
     this.answering,
     this.choosing,
     this.photo,
+    this.acknowledged = const {},
+    this.busy = const {},
   });
 
   final AssistantScope scope;
@@ -140,6 +249,12 @@ class ChatState {
   /// The clarification choice being sent (`taskId/choiceId`).
   final String? choosing;
   final PendingPhoto? photo;
+
+  /// Drafts whose duplicate warning the person answered "Vẫn lưu" (sent as `acknowledge`).
+  final Set<String> acknowledged;
+
+  /// Care calls in flight (`plan:<task>`, `fb:<task>`).
+  final Set<String> busy;
 
   bool get empty =>
       threads.isEmpty &&
@@ -183,6 +298,8 @@ class ChatState {
     bool clearChoosing = false,
     PendingPhoto? photo,
     bool clearPhoto = false,
+    Set<String>? acknowledged,
+    Set<String>? busy,
   }) => ChatState(
     scope: scope,
     conversationId: clearConversation
@@ -202,6 +319,8 @@ class ChatState {
     answering: clearAnswering ? null : (answering ?? this.answering),
     choosing: clearChoosing ? null : (choosing ?? this.choosing),
     photo: clearPhoto ? null : (photo ?? this.photo),
+    acknowledged: acknowledged ?? this.acknowledged,
+    busy: busy ?? this.busy,
   );
 }
 
@@ -211,6 +330,7 @@ bool defaultSelected(AssistantDraft d, DateTime now) =>
     d.state == DraftState.draft &&
     d.uncertainFields.isEmpty &&
     d.missingFields.isEmpty &&
+    d.problems.isEmpty &&
     !d.expiredAt(now) &&
     d.payload is! UnknownPayload &&
     draftProblems(d.payload, now).isEmpty;
@@ -218,14 +338,6 @@ bool defaultSelected(AssistantDraft d, DateTime now) =>
 /// Connectivity as the chat sees it (tests drive it); back online triggers a snapshot refresh.
 final assistantOnlineProvider = Provider<AsyncValue<bool>>(
   (ref) => ref.watch(onlineProvider),
-);
-
-/// Picks one photo from the library (slice A5 uploads it; A4 only quotes). Tests replace it.
-final assistantPhotoPickerProvider = Provider<Future<PendingPhoto?> Function()>(
-  (ref) => () async {
-    final x = await ImagePicker().pickImage(source: ImageSource.gallery);
-    return x == null ? null : PendingPhoto(name: x.name, path: x.path);
-  },
 );
 
 /// The chat of one scope (`child:<babyId>` / `household:<babyId>`): conversation, input, the
@@ -250,10 +362,24 @@ class AssistantChat extends Notifier<ChatState> {
   late AssistantLocalStore _store;
   late DateTime Function() _clock;
   late String Function() _ids;
+  late PhotoPicker _picker;
+  late AssistantUploader _uploader;
+  late AssistantPhotoCache _photos;
+  AssistantUpload? _upload;
   ChatState? _last;
 
   /// `<uid>:<scope key>`: where this person's kept input and open thread live on the phone.
   late String _local;
+
+  /// D-075 #2: a Cùng nuôi / Người chăm sóc in a child chat reads the baby's shared thread.
+  var _sharedRole = false;
+
+  String get _sharedId => sharedConversationIdFor(state.scope.babyId);
+
+  /// The conversation for work that stays private (photos, expenses): never the shared thread
+  /// (the server refuses it), so the caller's own private one or a new one.
+  String? get _privateConversation =>
+      state.conversationId == _sharedId ? null : state.conversationId;
 
   DateTime _now() => _clock();
   String _newId() => _ids();
@@ -277,6 +403,9 @@ class AssistantChat extends Notifier<ChatState> {
     _store = ref.read(assistantLocalStoreProvider);
     _clock = ref.read(assistantClockProvider);
     _ids = ref.read(assistantIdsProvider);
+    _picker = ref.read(assistantPhotoPickerProvider);
+    _uploader = ref.read(assistantUploaderProvider);
+    _photos = ref.read(assistantPhotoCacheProvider);
     ref.onDispose(_closeAll);
     ref.listen(assistantOnlineProvider, (prev, next) {
       if (prev?.value == false && next.value == true) unawaited(_reconnect());
@@ -290,6 +419,12 @@ class AssistantChat extends Notifier<ChatState> {
     _local = session is SessionSignedIn
         ? '${session.user.uid}:$scopeKey'
         : scopeKey;
+    final role = session is SessionSignedIn
+        ? session.membershipFor(scope.babyId)?.role
+        : null;
+    _sharedRole =
+        !scope.household &&
+        (role == MemberRole.coParent || role == MemberRole.caregiver);
     final kept = _store.kept(_local);
     final taskIds = _store.taskIds(_local);
     return ChatState(
@@ -325,6 +460,10 @@ class AssistantChat extends Notifier<ChatState> {
     unawaited(refreshUsage());
     if (conversationId != null && conversationId != state.conversationId) {
       await _loadConversation(conversationId);
+    } else if (_sharedRole) {
+      // D-075 #2: the baby's shared thread brings the other members' tasks too; my own private
+      // tasks (photos) stay in the list. A thread that does not exist yet is just empty.
+      await _loadConversation(_sharedId, quiet: true, keepLocal: true);
     } else if (state.threads.isNotEmpty) {
       await _restore();
     }
@@ -363,14 +502,23 @@ class AssistantChat extends Notifier<ChatState> {
   /// "Thử lại" on a thread that could not be loaded.
   Future<void> reload() => _restore();
 
-  Future<void> _loadConversation(String conversationId) async {
-    _closeAll();
+  Future<void> _loadConversation(
+    String conversationId, {
+    bool quiet = false,
+    bool keepLocal = false,
+  }) async {
+    final local = keepLocal
+        ? [for (final t in state.threads) t.taskId]
+        : const <String>[];
+    if (!keepLocal) _closeAll();
     state = state.copyWith(
-      conversationId: conversationId,
-      threads: const [],
-      restoring: true,
+      conversationId: quiet && state.conversationId == null
+          ? null
+          : conversationId,
+      threads: keepLocal ? state.threads : const [],
+      restoring: !quiet || local.isNotEmpty,
       loadFailed: false,
-      clearBlock: true,
+      clearBlock: !keepLocal,
     );
     try {
       final page = await _repo.messages(
@@ -385,13 +533,30 @@ class AssistantChat extends Notifier<ChatState> {
         if (m.taskId case final id? when !ids.contains(id)) ids.add(id);
       }
       final last = ids.length > 10 ? ids.sublist(ids.length - 10) : ids;
+      final known = {for (final t in state.threads) t.taskId: t};
+      if (ordered.isNotEmpty) {
+        state = state.copyWith(conversationId: conversationId);
+      }
       state = state.copyWith(
-        threads: [for (final id in last) TaskThread(taskId: id)],
+        threads: [
+          for (final id in last) known[id] ?? TaskThread(taskId: id),
+          for (final id in local)
+            if (!last.contains(id)) known[id] ?? TaskThread(taskId: id),
+        ],
       );
       _persistThread();
-      await _restore();
+      if (state.threads.isEmpty) {
+        state = state.copyWith(restoring: false);
+      } else {
+        await _restore();
+      }
     } on Object {
-      state = state.copyWith(restoring: false, loadFailed: true);
+      if (quiet) {
+        state = state.copyWith(restoring: false);
+        if (local.isNotEmpty) await _restore();
+      } else {
+        state = state.copyWith(restoring: false, loadFailed: true);
+      }
     }
   }
 
@@ -452,13 +617,22 @@ class AssistantChat extends Notifier<ChatState> {
     _persistThread();
   }
 
-  void _addThread(TaskSnapshot s, String text) {
+  void _addThread(
+    TaskSnapshot s,
+    String? text, {
+    List<String> photoIds = const [],
+  }) {
     final conversation = s.task.conversationId ?? state.conversationId;
     state = state.copyWith(
       conversationId: conversation,
       threads: [
         ...state.threads.where((t) => t.taskId != s.task.id),
-        TaskThread(taskId: s.task.id, snapshot: s, text: text),
+        TaskThread(
+          taskId: s.task.id,
+          snapshot: s,
+          text: text,
+          photoIds: photoIds,
+        ),
       ],
     );
     _cursors.putIfAbsent(s.task.id, EventCursor.new).accept(s.events);
@@ -467,7 +641,8 @@ class AssistantChat extends Notifier<ChatState> {
   }
 
   void _watch(String taskId) {
-    if (_subs.containsKey(taskId)) return;
+    // A call that outlived the chat (the person left during an upload) only persists the task.
+    if (!ref.mounted || _subs.containsKey(taskId)) return;
     _subs[taskId] = _repo
         .watchTask(taskId)
         .listen((live) => onLive(taskId, live), onError: (Object _) {});
@@ -538,6 +713,8 @@ class AssistantChat extends Notifier<ChatState> {
     }
     if (state.block?.kind == ChatBlockKind.offline && state.kept == null) {
       state = state.copyWith(clearBlock: true);
+      // A photo held while offline gets its exact quote now; it is still sent only on a tap.
+      if (state.photo?.stage == PhotoStage.held) unawaited(_quotePhoto());
     }
   }
 
@@ -641,9 +818,12 @@ class AssistantChat extends Notifier<ChatState> {
       return;
     }
     state = state.copyWith(sending: true, clearBlock: true);
+    // An expense question stays private (D-075 #2: spending never enters the shared thread).
     final conversationId = kept.started
         ? kept.conversationId
-        : state.conversationId;
+        : (hint == IntentHint.expense
+              ? _privateConversation
+              : state.conversationId);
     try {
       final quote = await _repo.quote(
         scope: state.scope,
@@ -780,7 +960,7 @@ class AssistantChat extends Notifier<ChatState> {
       return false;
     }
     state = state.copyWith(clearBlock: true);
-    if (state.photo != null) {
+    if (state.photo != null && !state.photo!.busy) {
       unawaited(_quotePhoto());
     } else if (state.kept case final kept?) {
       unawaited(_dispatch(kept, null));
@@ -788,60 +968,325 @@ class AssistantChat extends Notifier<ChatState> {
     return true;
   }
 
-  // ---------- Photo (quote only in A4) ----------
+  // ---------- Photo (CH09–CH14) ----------
 
-  Future<void> pickPhoto() async {
-    final photo = await ref.read(assistantPhotoPickerProvider)();
-    if (photo == null || !ref.mounted) return;
-    state = state.copyWith(photo: photo);
+  /// CH09: picks one photo ([source]), then asks for the exact quote. Nothing is uploaded yet.
+  Future<PhotoPick> pickPhoto(PhotoSource source, {IntentHint? hint}) async {
+    if (state.photo?.busy ?? false) return PhotoPick.busy;
+    final PickedPhoto? picked;
+    try {
+      picked = await _picker(source);
+    } on PhotoPickError catch (e) {
+      return e.denied ? PhotoPick.denied : PhotoPick.failed;
+    } on Object {
+      return PhotoPick.failed;
+    }
+    if (picked == null) return PhotoPick.canceled;
+    _usePhoto(
+      PendingPhoto(
+        name: picked.name,
+        bytes: picked.bytes,
+        mime: picked.mime,
+        sha256: picked.sha256,
+        requestId: _newId(),
+        hint: hint,
+      ),
+    );
     await _quotePhoto();
+    return PhotoPick.ok;
+  }
+
+  void _usePhoto(PendingPhoto photo) => state = state.copyWith(
+    photo: photo,
+    clearBlock: true,
+    clearAnswering: true,
+  );
+
+  void _holdPhoto(ChatBlock block) {
+    final photo = state.photo;
+    state = state.copyWith(
+      photo: photo?.copyWith(stage: PhotoStage.held),
+      block: block,
+    );
   }
 
   Future<void> _quotePhoto() async {
-    if (!_online) {
-      state = state.copyWith(block: const ChatBlock(ChatBlockKind.offline));
-      return;
-    }
+    final photo = state.photo;
+    if (photo == null || photo.busy) return;
+    if (!_online) return _holdPhoto(const ChatBlock(ChatBlockKind.offline));
     if (!await _consented()) {
-      state = state.copyWith(block: const ChatBlock(ChatBlockKind.consent));
-      return;
+      return _holdPhoto(const ChatBlock(ChatBlockKind.consent));
     }
+    state = state.copyWith(
+      photo: photo.copyWith(stage: PhotoStage.quoting, clearQuote: true),
+      clearBlock: true,
+    );
     try {
       final q = await _repo.quote(
         scope: state.scope,
-        conversationId: state.conversationId,
+        conversationId: _privateConversation,
         modality: TaskModality.image,
         attachmentCount: 1,
+        intentHint: photo.hint,
         locale: _locale,
       );
       _setUsage(q.usage);
-      state = state.copyWith(
-        block: q.allowed
-            ? const ChatBlock(ChatBlockKind.photoSoon)
-            : (q.reason == AssistantReason.usageExhausted
-                  ? ChatBlock(ChatBlockKind.photoQuote, quote: q)
-                  : _blockFor(q.reason)),
-      );
+      final current = state.photo;
+      if (current == null) return;
+      if (q.allowed) {
+        state = state.copyWith(
+          photo: current.copyWith(stage: PhotoStage.ready, quote: q),
+          clearBlock: true,
+        );
+      } else {
+        _holdPhoto(
+          q.reason == AssistantReason.usageExhausted
+              ? ChatBlock(ChatBlockKind.photoQuote, quote: q)
+              : _blockFor(q.reason),
+        );
+      }
     } on AssistantException catch (e) {
-      state = state.copyWith(block: _blockFor(e.reason, offline: e.offline));
+      _holdPhoto(_blockFor(e.reason, offline: e.offline));
     } on Object {
-      state = state.copyWith(block: const ChatBlock(ChatBlockKind.failure));
+      _holdPhoto(const ChatBlock(ChatBlockKind.photoFailed));
     }
   }
 
-  /// After an upgrade from CH20: the same photo is quoted again in the paid pool.
+  /// After an upgrade from CH20, back online or "Thử lại": the same photo is quoted again.
   Future<void> pickPhotoAgain() async {
     if (state.photo != null) await _quotePhoto();
   }
+
+  /// "Giữ ảnh hoá đơn cùng khoản chi" (D-075 #3, on by default).
+  void setKeepPhoto(bool keep) {
+    final photo = state.photo;
+    if (photo == null || photo.busy) return;
+    state = state.copyWith(photo: photo.copyWith(keep: keep));
+  }
+
+  /// CH09 "Gửi ảnh" → CH10: the owned upload target (refused → nothing uploaded), one upload,
+  /// then `startTask` with the photo. Charged only by the server, on a useful reading.
+  Future<ActionOutcome> sendPhoto() async {
+    final photo = state.photo;
+    final bytes = photo?.bytes;
+    var quote = photo?.quote;
+    if (photo == null ||
+        bytes == null ||
+        photo.busy ||
+        quote == null ||
+        !quote.allowed) {
+      return ActionOutcome.nothing;
+    }
+    if (!_online) {
+      _holdPhoto(const ChatBlock(ChatBlockKind.offline));
+      return ActionOutcome.offline;
+    }
+    var attachmentId = photo.attachmentId;
+    state = state.copyWith(
+      photo: photo.copyWith(
+        stage: attachmentId == null
+            ? PhotoStage.uploading
+            : PhotoStage.starting,
+        progress: 0,
+        canceled: false,
+      ),
+      clearBlock: true,
+    );
+    try {
+      if (attachmentId == null) {
+        AssistantUploadTarget? target;
+        for (var attempt = 0; target == null; attempt++) {
+          try {
+            target = await _repo.createUpload(
+              quoteId: quote!.quoteId,
+              mime: photo.mime,
+              bytes: bytes.length,
+              sha256: photo.sha256,
+              retention: retentionFor(keep: photo.keep),
+              requestId: _newId(),
+              locale: _locale,
+            );
+          } on AssistantException catch (e) {
+            if (attempt > 0 || !_staleQuote(e.reason)) rethrow;
+            quote = await _requote(photo);
+            if (quote == null) return ActionOutcome.nothing;
+          }
+        }
+        if (state.photo?.stage != PhotoStage.uploading) {
+          return ActionOutcome.nothing;
+        }
+        final upload = _uploader.start(target.uploadPath, bytes, target.mime);
+        _upload = upload;
+        final progress = upload.progress.listen((v) {
+          final current = state.photo;
+          if (current != null && current.stage == PhotoStage.uploading) {
+            state = state.copyWith(photo: current.copyWith(progress: v));
+          }
+        }, onError: (Object _) {});
+        try {
+          await upload.done;
+        } finally {
+          unawaited(progress.cancel());
+          _upload = null;
+        }
+        attachmentId = target.attachmentId;
+        _photos.put(attachmentId, bytes);
+        state = state.copyWith(
+          photo: state.photo?.copyWith(
+            stage: PhotoStage.starting,
+            progress: 1,
+            attachmentId: attachmentId,
+            quote: quote,
+          ),
+        );
+      }
+      return await _startPhoto(photo, quote!, attachmentId);
+    } on UploadCanceled {
+      // Nothing started: nothing charged; the photo stays chosen.
+      final current = state.photo;
+      if (current != null) {
+        state = state.copyWith(
+          photo: current.copyWith(stage: PhotoStage.ready, canceled: true),
+        );
+      }
+      return ActionOutcome.nothing;
+    } on AssistantException catch (e) {
+      // The pool may have moved since the quote: the card shows the household's balance now.
+      if (e.reason == AssistantReason.usageExhausted) unawaited(refreshUsage());
+      _holdPhoto(switch (e.reason) {
+        AssistantReason.usageExhausted => ChatBlock(
+          ChatBlockKind.photoQuote,
+          quote: quote,
+        ),
+        null => ChatBlock(
+          e.offline ? ChatBlockKind.offline : ChatBlockKind.photoFailed,
+        ),
+        AssistantReason.aiUnavailable => const ChatBlock(
+          ChatBlockKind.photoFailed,
+        ),
+        _ => _blockFor(e.reason),
+      });
+      return e.offline ? ActionOutcome.offline : ActionOutcome.failed;
+    } on Object {
+      _holdPhoto(const ChatBlock(ChatBlockKind.photoFailed));
+      return ActionOutcome.failed;
+    }
+  }
+
+  bool _staleQuote(AssistantReason? r) =>
+      r == AssistantReason.quoteExpired || r == AssistantReason.quoteMismatch;
+
+  /// A fresh image quote for [photo] (an expired one is never reused); null when refused.
+  Future<AssistantQuote?> _requote(PendingPhoto photo) async {
+    final q = await _repo.quote(
+      scope: state.scope,
+      conversationId: _privateConversation,
+      modality: TaskModality.image,
+      attachmentCount: 1,
+      intentHint: photo.hint,
+      locale: _locale,
+    );
+    _setUsage(q.usage);
+    if (q.allowed) return q;
+    _holdPhoto(
+      q.reason == AssistantReason.usageExhausted
+          ? ChatBlock(ChatBlockKind.photoQuote, quote: q)
+          : _blockFor(q.reason),
+    );
+    return null;
+  }
+
+  Future<ActionOutcome> _startPhoto(
+    PendingPhoto photo,
+    AssistantQuote quote,
+    String attachmentId,
+  ) async {
+    var q = quote;
+    for (var attempt = 0; ; attempt++) {
+      try {
+        final a = await _repo.start(
+          requestId: photo.requestId,
+          scope: state.scope,
+          // Photo tasks are private (a photo may be a receipt, D-075 #2).
+          conversationId: _privateConversation,
+          quoteId: q.quoteId,
+          text: null,
+          attachmentIds: [attachmentId],
+          locale: _locale,
+        );
+        _setUsage(a.usage);
+        final snapshot = a.snapshot;
+        if (a.status == ResponseStatus.blocked ||
+            snapshot == null ||
+            snapshot.task.state == TaskState.blocked) {
+          // Kept with its uploaded photo: a resume starts the same task once (no new upload).
+          if (snapshot?.task.conversationId case final c?
+              when state.conversationId == null) {
+            state = state.copyWith(conversationId: c);
+            _persistThread();
+          }
+          final reason = a.reason ?? snapshot?.task.error;
+          _holdPhoto(switch (reason) {
+            null || AssistantReason.usageExhausted => ChatBlock(
+              ChatBlockKind.photoQuote,
+              quote: q,
+            ),
+            AssistantReason.aiUnavailable => const ChatBlock(
+              ChatBlockKind.photoFailed,
+            ),
+            _ => _blockFor(reason),
+          });
+          return ActionOutcome.nothing;
+        }
+        _addThread(snapshot, null, photoIds: [attachmentId]);
+        state = state.copyWith(clearPhoto: true, clearBlock: true);
+        return ActionOutcome.ok;
+      } on AssistantException catch (e) {
+        if (attempt > 0 || !_staleQuote(e.reason)) rethrow;
+        final fresh = await _requote(photo);
+        if (fresh == null) return ActionOutcome.nothing;
+        q = fresh;
+      }
+    }
+  }
+
+  /// CH10 "Huỷ" while uploading: the upload stops, nothing starts, 0 credits.
+  Future<void> cancelUpload() async {
+    await _upload?.cancel();
+  }
+
+  /// CH14 "Chụp lại" / CH25 "Thử lại" on a photo task: the same photo again when this phone
+  /// still has it (a new quote, a new upload); false → the screen opens the picker.
+  Future<bool> retryPhoto(String taskId) async {
+    final ids = state.thread(taskId)?.attachmentIds ?? const <String>[];
+    final bytes = ids.isEmpty ? null : _photos[ids.first];
+    if (bytes == null || (state.photo?.busy ?? false)) return false;
+    _usePhoto(
+      PendingPhoto(
+        name: 'photo.jpg',
+        bytes: bytes,
+        sha256: PickedPhoto(name: '', bytes: bytes).sha256,
+        requestId: _newId(),
+      ),
+    );
+    await _quotePhoto();
+    return true;
+  }
+
+  /// The local thumbnail of a photo sent from this phone (null → a placeholder).
+  Uint8List? photoBytes(String attachmentId) => _photos[attachmentId];
 
   /// CH03 deleted the open conversation (confirmed by the server): start a new one.
   void conversationDeleted(String conversationId) {
     if (state.conversationId == conversationId) newConversation();
   }
 
-  /// "Bỏ ảnh" / "Nhập tay": the photo was never uploaded.
-  void removePhoto() =>
-      state = state.copyWith(clearPhoto: true, clearBlock: true);
+  /// "Bỏ ảnh" / "Nhập tay": the photo is dropped (an upload in flight stops; never started).
+  void removePhoto() {
+    if (state.photo?.stage == PhotoStage.starting) return;
+    unawaited(_upload?.cancel());
+    state = state.copyWith(clearPhoto: true, clearBlock: true);
+  }
 
   // ---------- Clarification (CH05) ----------
 
@@ -1043,8 +1488,12 @@ class AssistantChat extends Notifier<ChatState> {
   /// +1). Updates the draft only; nothing is saved.
   Future<(ActionOutcome, List<DraftProblem>)> patch(
     AssistantDraft d,
-    DraftPayload payload,
-  ) async {
+    DraftPayload payload, {
+
+    /// The fields the person just checked (CH11 date row: `date` only); default every
+    /// uncertain or missing field (the whole form was in front of them).
+    List<String>? confirmed,
+  }) async {
     final problems = draftProblems(payload, _now());
     if (problems.isNotEmpty) return (ActionOutcome.failed, problems);
     if (!_online) return (ActionOutcome.offline, const <DraftProblem>[]);
@@ -1053,7 +1502,8 @@ class AssistantChat extends Notifier<ChatState> {
         draftId: d.id,
         expectedRevision: d.revision,
         payload: payload,
-        confirmedFields: {...d.uncertainFields, ...d.missingFields}.toList(),
+        confirmedFields:
+            confirmed ?? {...d.uncertainFields, ...d.missingFields}.toList(),
         locale: _locale,
       );
       if (next != null) {
@@ -1078,6 +1528,100 @@ class AssistantChat extends Notifier<ChatState> {
       );
     }
   }
+
+  /// CH11 "Vẫn lưu" on a suspected duplicate: saved separately, never merged.
+  void acknowledge(String draftId) =>
+      state = state.copyWith(acknowledged: {...state.acknowledged, draftId});
+
+  /// One card's own save ("Lưu chi tiêu", "Lưu ghi nhận"); a duplicate the person answered
+  /// "Vẫn lưu" goes with its acknowledgement.
+  Future<ActionOutcome> saveOne(String taskId, AssistantDraft d) => confirm(
+    taskId,
+    drafts: [d],
+    acknowledge: {
+      if (state.acknowledged.contains(d.id))
+        d.id: [
+          for (final w in d.warnings)
+            if (w == DraftWarning.duplicateSuspected) w,
+        ],
+    },
+  );
+
+  Future<ActionOutcome> _careCall(
+    String key,
+    String taskId,
+    Future<void> Function() call,
+  ) async {
+    if (state.busy.contains(key)) return ActionOutcome.nothing;
+    if (!_online) return ActionOutcome.offline;
+    state = state.copyWith(busy: {...state.busy, key});
+    try {
+      await call();
+      return ActionOutcome.ok;
+    } on AssistantException catch (e) {
+      if (e.offline) return ActionOutcome.offline;
+      unawaited(_refresh(taskId));
+      return e.reason == AssistantReason.invalidState ||
+              e.reason == AssistantReason.domainConflict
+          ? ActionOutcome.stale
+          : ActionOutcome.failed;
+    } on Object {
+      return ActionOutcome.failed;
+    } finally {
+      state = state.copyWith(busy: {...state.busy}..remove(key));
+    }
+  }
+
+  void _putCare(
+    String taskId,
+    AssistantCareView Function(AssistantCareView) f,
+  ) {
+    final s = state.thread(taskId)?.snapshot;
+    final care = s?.task.care;
+    if (s == null || care == null) return;
+    _putSnapshot(s.copyWith(task: s.task.copyWith(care: f(care))));
+  }
+
+  /// CH16 "Thử tối nay": an intention (`planAssistantActivity`), never "đã thử"; 0 credits.
+  Future<ActionOutcome> planActivity(String taskId, ApprovedContentPart c) =>
+      _careCall('plan:$taskId', taskId, () async {
+        final plan = await _repo.plan(
+          taskId: taskId,
+          contentId: c.contentId,
+          contentVersion: c.contentVersion,
+          requestId: _newId(),
+          locale: _locale,
+        );
+        if (plan != null) _putCare(taskId, (care) => care.copyWith(plan: plan));
+        unawaited(_refresh(taskId));
+      });
+
+  /// CH17: the answer after the chance to try ("Chưa thử" included); 0 credits, no model.
+  Future<ActionOutcome> sendFeedback(
+    String taskId,
+    CareFollowUp f,
+    FeedbackOutcome outcome,
+  ) => _careCall('fb:$taskId', taskId, () async {
+    await _repo.feedback(
+      taskId: taskId,
+      contentId: f.contentId,
+      contentVersion: f.contentVersion,
+      outcome: outcome,
+      locale: _locale,
+    );
+    _putCare(
+      taskId,
+      (care) => care.copyWith(
+        clearFollowUp: true,
+        feedback: (
+          contentId: f.contentId,
+          contentVersion: f.contentVersion,
+          outcome: outcome,
+        ),
+      ),
+    );
+    unawaited(_refresh(taskId));
+  });
 
   /// "Huỷ" while the task is still being prepared (released if nothing useful came out).
   Future<void> cancelTask(String taskId) async {

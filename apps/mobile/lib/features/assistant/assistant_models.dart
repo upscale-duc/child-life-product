@@ -198,7 +198,16 @@ enum DraftProblem with WireEnum {
   invalidTime('INVALID_TIME'),
   missingDate('MISSING_DATE'),
   currencyUnsupported('CURRENCY_UNSUPPORTED'),
-  missingTitle('MISSING_TITLE');
+  missingTitle('MISSING_TITLE'),
+
+  /// Slice A3: a reminder title longer than the module allows (80).
+  invalidTitle('INVALID_TITLE'),
+
+  /// Slice A3: a reminder due before now (reminders are set for later, D-031).
+  pastTime('PAST_TIME'),
+
+  /// D-075 #5: the reminder's assignee is no longer an active Cùng nuôi / Người chăm sóc.
+  invalidAssignee('INVALID_ASSIGNEE');
 
   const DraftProblem(this.wire);
   @override
@@ -274,6 +283,71 @@ enum FeedbackOutcome with WireEnum {
   final String wire;
 }
 
+/// `assistantNoticeCodes` (slice A5): a `text` part the app may attach an action to.
+enum NoticeCode with WireEnum {
+  careNoApprovedContent('CARE_NO_APPROVED_CONTENT'),
+  recipesNoneApproved('RECIPES_NONE_APPROVED'),
+  careFeatureDisabled('CARE_FEATURE_DISABLED'),
+  regionUnsupported('REGION_UNSUPPORTED'),
+  careAgeUnknown('CARE_AGE_UNKNOWN');
+
+  const NoticeCode(this.wire);
+  @override
+  final String wire;
+}
+
+/// `attachmentRetentions` (D-075 #3): keep a copy with the saved expense (default) or delete
+/// after reading.
+enum AttachmentRetention with WireEnum {
+  deleteAfterRead('delete_after_read'),
+  keepWithRecord('keep_with_record');
+
+  const AttachmentRetention(this.wire);
+  @override
+  final String wire;
+}
+
+/// `defaultAttachmentRetention` (D-075 #3): receipts stay with the expense unless the person
+/// chose otherwise.
+const defaultAttachmentRetention = AttachmentRetention.keepWithRecord;
+
+/// `attachmentStates`: `deleted` only once Storage confirmed it; a failed deletion is
+/// `deletion_pending` and retried (G05) — never shown as deleted.
+enum AttachmentState with WireEnum {
+  uploading('uploading'),
+  ready('ready'),
+  deletionPending('deletion_pending'),
+  deleted('deleted');
+
+  const AttachmentState(this.wire);
+  @override
+  final String wire;
+}
+
+/// `ApprovedContentText.timeOfDay`.
+enum ContentTimeOfDay with WireEnum {
+  any('any'),
+  evening('evening'),
+  day('day');
+
+  const ContentTimeOfDay(this.wire);
+  @override
+  final String wire;
+}
+
+/// D-075 #2: `shared` = in the baby's shared thread; `private` = only its author sees it.
+enum TaskVisibility with WireEnum {
+  shared('shared'),
+  private('private');
+
+  const TaskVisibility(this.wire);
+  @override
+  final String wire;
+}
+
+/// D-075 #2 `sharedConversationIdFor`: the baby's shared thread (same id for every member).
+String sharedConversationIdFor(String babyId) => 'cv_$babyId';
+
 // ---------- Small parsers ----------
 
 String? _str(Object? v, {int max = 4000}) =>
@@ -317,6 +391,37 @@ class LocalizedText {
     final en = m['en'] is String ? m['en']! as String : '';
     if (vi.trim().isEmpty && en.trim().isEmpty) return null;
     return LocalizedText(vi: vi, en: en);
+  }
+}
+
+/// `AssistantAuthor` (D-075 #2): who wrote a message, asked a task or saved a draft.
+@immutable
+class AssistantAuthor {
+  const AssistantAuthor({
+    required this.uid,
+    required this.name,
+    required this.relation,
+    this.relationCustom,
+  });
+
+  final String uid;
+  final String name;
+
+  /// `mother`, `father`, `nanny`… (labelled like record authors).
+  final String relation;
+  final String? relationCustom;
+
+  static AssistantAuthor? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final m = _map(json);
+    final uid = _str(m['uid'], max: 128);
+    if (uid == null) return null;
+    return AssistantAuthor(
+      uid: uid,
+      name: _str(m['name'], max: 80) ?? '',
+      relation: _str(m['relation'], max: 20) ?? 'other',
+      relationCustom: _str(m['relationCustom'], max: 40),
+    );
   }
 }
 
@@ -454,7 +559,7 @@ sealed class AssistantPart {
     if (version != 1) return UnsupportedPart('$type');
     final part = switch (type) {
       'text' => switch (_str(m['text'], max: 8000)) {
-        final t? => TextPart(t),
+        final t? => TextPart(t, code: wireOf(NoticeCode.values, m['code'])),
         null => null,
       },
       'clarification' => switch (Clarification.fromJson(m['clarification'])) {
@@ -475,12 +580,29 @@ sealed class AssistantPart {
           contentVersion: _int(m['contentVersion']) ?? 1,
           reason: _str(m['reason'], max: 600) ?? '',
           reviewed: m['reviewed'] == true,
+          reasonCode: _str(m['reasonCode'], max: 40),
+          content: ApprovedContentText.fromJson(m['content']),
+          alternatives: [
+            for (final a in _list(m['alternatives']).take(2))
+              if ((
+                    _str(_map(a)['contentId'], max: 80),
+                    _int(_map(a)['contentVersion']),
+                  )
+                  case (final String cid, final int v))
+                (contentId: cid, contentVersion: v),
+          ],
         ),
         null => null,
       },
       'recipe_list' => RecipeListPart(
         _strings(m['recipeIds'], max: 80),
         _str(m['caveat'], max: 600),
+        items: [
+          for (final x in _list(m['items']).take(3))
+            ?RecipeListItem.fromJson(x),
+        ],
+        excludedCount: (_int(m['excludedCount']) ?? 0).clamp(0, 1000),
+        mealLogAvailable: m['mealLogAvailable'] == true,
       ),
       'usage_notice' => switch (AssistantReason.fromWire(m['reason'])) {
         _ when m['reason'] == 'NEAR_LIMIT' => UsageNoticePart(
@@ -493,7 +615,19 @@ sealed class AssistantPart {
       'action_result' => ActionResultPart([
         for (final x in _list(m['items'])) ?ConfirmItemResult.fromJson(x),
       ]),
-      'health_support' => HealthSupportPart(_strings(m['signs'], max: 40)),
+      'health_support' => HealthSupportPart(
+        _strings(m['signs'], max: 40),
+        emergency: switch ((
+          _str(_map(m['emergency'])['country'], max: 8),
+          _str(_map(m['emergency'])['number'], max: 20),
+        )) {
+          (final String country, final String number) => (
+            country: country,
+            number: number,
+          ),
+          _ => null,
+        },
+      ),
       _ => null,
     };
     return part ?? UnsupportedPart('$type');
@@ -501,8 +635,11 @@ sealed class AssistantPart {
 }
 
 class TextPart extends AssistantPart {
-  const TextPart(this.text);
+  const TextPart(this.text, {this.code});
   final String text;
+
+  /// Slice A5: a notice the app may attach an action to (care library, health…).
+  final NoticeCode? code;
 }
 
 class ClarificationPart extends AssistantPart {
@@ -522,23 +659,131 @@ class SourceSummaryPart extends AssistantPart {
   final List<String> sourceIds;
 }
 
+/// One other eligible item for "Gợi ý khác".
+typedef ContentRef = ({String contentId, int contentVersion});
+
 class ApprovedContentPart extends AssistantPart {
   const ApprovedContentPart({
     required this.contentId,
     required this.contentVersion,
     required this.reason,
     required this.reviewed,
+    this.reasonCode,
+    this.content,
+    this.alternatives = const [],
   });
   final String contentId;
   final int contentVersion;
   final String reason;
+
+  /// False → "Nội dung minh hoạ · chờ chuyên môn duyệt" (D-073 #2).
   final bool reviewed;
+
+  /// `SELF_REPORTED_NEED` / `DATA_INSIGHT` / `PREVIOUS_HELPFUL` (absent on A2 messages).
+  final String? reasonCode;
+
+  /// The published item's own words (never the model's); absent on A2 messages.
+  final ApprovedContentText? content;
+  final List<ContentRef> alternatives;
+}
+
+/// `ApprovedContentText`: copied from the content pack in the task locale.
+@immutable
+class ApprovedContentText {
+  const ApprovedContentText({
+    required this.title,
+    required this.summary,
+    required this.steps,
+    this.safety,
+    this.durationMin = 0,
+    this.timeOfDay = ContentTimeOfDay.any,
+  });
+
+  final String title;
+  final String summary;
+  final List<String> steps;
+
+  /// "Không khi…" from the content, or null.
+  final String? safety;
+  final int durationMin;
+  final ContentTimeOfDay timeOfDay;
+
+  static ApprovedContentText? fromJson(Object? json) {
+    final m = _map(json);
+    final title = _str(m['title'], max: 200);
+    if (title == null) return null;
+    return ApprovedContentText(
+      title: title,
+      summary: _str(m['summary'], max: 1000) ?? '',
+      steps: _strings(m['steps'], max: 600).take(12).toList(),
+      safety: _str(m['safety'], max: 600),
+      durationMin: (_int(m['durationMin']) ?? 0).clamp(0, 600),
+      timeOfDay:
+          wireOf(ContentTimeOfDay.values, m['timeOfDay']) ??
+          ContentTimeOfDay.any,
+    );
+  }
+}
+
+/// `RecipeListItem` (CH18): an approved candidate with its content words and why.
+@immutable
+class RecipeListItem {
+  const RecipeListItem({
+    required this.recipeId,
+    required this.title,
+    this.recipeVersion = 1,
+    this.summary = '',
+    this.durationMin = 0,
+    this.minAgeMonths = 0,
+    this.why = '',
+  });
+
+  final String recipeId;
+  final int recipeVersion;
+  final String title;
+  final String summary;
+  final int durationMin;
+  final int minAgeMonths;
+
+  /// Server-written, from the rule that chose it; never a health claim.
+  final String why;
+
+  static RecipeListItem? fromJson(Object? json) {
+    final m = _map(json);
+    final id = _str(m['recipeId'], max: 80);
+    final title = _str(m['title'], max: 200);
+    if (id == null || title == null) return null;
+    return RecipeListItem(
+      recipeId: id,
+      recipeVersion: _int(m['recipeVersion']) ?? 1,
+      title: title,
+      summary: _str(m['summary'], max: 600) ?? '',
+      durationMin: (_int(m['durationMin']) ?? 0).clamp(0, 600),
+      minAgeMonths: (_int(m['minAgeMonths']) ?? 0).clamp(0, 120),
+      why: _str(m['why'], max: 200) ?? '',
+    );
+  }
 }
 
 class RecipeListPart extends AssistantPart {
-  const RecipeListPart(this.recipeIds, this.caveat);
+  const RecipeListPart(
+    this.recipeIds,
+    this.caveat, {
+    this.items = const [],
+    this.excludedCount = 0,
+    this.mealLogAvailable = false,
+  });
   final List<String> recipeIds;
   final String? caveat;
+
+  /// Slice A5: the approved candidates (≤ 3).
+  final List<RecipeListItem> items;
+
+  /// Eligible recipes left out for a reaction the family recorded (not a diagnosis).
+  final int excludedCount;
+
+  /// "Ghi bữa ăn" needs a meal-log module (none yet, P-157).
+  final bool mealLogAvailable;
 }
 
 /// [reason] null = `NEAR_LIMIT`.
@@ -554,10 +799,14 @@ class ActionResultPart extends AssistantPart {
 }
 
 class HealthSupportPart extends AssistantPart {
-  const HealthSupportPart(this.signs);
+  const HealthSupportPart(this.signs, {this.emergency});
 
   /// Health sign wires (`breathing`, `fever_young`…), as HL01 reads them.
   final List<String> signs;
+
+  /// Slice A5: the number approved for the household's country in the health pack; absent →
+  /// "Gọi bác sĩ của bé", never a default hotline.
+  final ({String country, String number})? emergency;
 }
 
 /// A part this app version does not know (or a newer schema): a safe placeholder, no action.
@@ -861,6 +1110,7 @@ class AssistantDraft {
     this.errorCode,
     this.warnings = const [],
     this.problems = const [],
+    this.confirmedBy,
   });
 
   final String id;
@@ -885,6 +1135,9 @@ class AssistantDraft {
 
   /// Server-side form checks against the confirm time.
   final List<DraftProblem> problems;
+
+  /// D-075 #2: who saved it (maybe not the task's author); null until saved.
+  final AssistantAuthor? confirmedBy;
 
   DraftKind? get kind => payload.kind;
   AssistantReason? get error => AssistantReason.fromWire(errorCode);
@@ -920,6 +1173,7 @@ class AssistantDraft {
     errorCode: clearError ? null : (errorCode ?? this.errorCode),
     warnings: warnings,
     problems: problems ?? this.problems,
+    confirmedBy: confirmedBy,
   );
 
   static AssistantDraft? fromJson(Object? json, {String? id}) {
@@ -948,6 +1202,7 @@ class AssistantDraft {
       problems: [
         for (final p in _list(m['problems'])) ?wireOf(DraftProblem.values, p),
       ],
+      confirmedBy: AssistantAuthor.fromJson(m['confirmedBy']),
     );
   }
 }
@@ -1082,6 +1337,280 @@ class AssistantQuote {
   }
 }
 
+// ---------- Care (slice A5: CH15–CH18) ----------
+
+/// `SleepConcern` (CH15): what the person reported; a fact they gave, never a cause.
+@immutable
+class SleepConcern {
+  const SleepConcern({this.kind, this.when, this.since});
+
+  /// `falling_asleep` / `night_waking` / `both`.
+  final String? kind;
+
+  /// `night` / `day` / `both`.
+  final String? when;
+
+  /// `today` / `days_2_3` / `longer`.
+  final String? since;
+
+  static SleepConcern? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final m = _map(json);
+    return SleepConcern(
+      kind: _str(m['kind'], max: 20),
+      when: _str(m['when'], max: 10),
+      since: _str(m['since'], max: 10),
+    );
+  }
+}
+
+/// "Thử tối nay" (CH16) is an intention, not "đã thử": feedback opens at [feedbackOpensAt].
+@immutable
+class AssistantCarePlan {
+  const AssistantCarePlan({
+    required this.contentId,
+    required this.contentVersion,
+    this.plannedFor,
+    this.plannedAt,
+    this.feedbackOpensAt,
+  });
+
+  final String contentId;
+  final int contentVersion;
+
+  /// Baby-local date the person plans to try it.
+  final String? plannedFor;
+  final DateTime? plannedAt;
+  final DateTime? feedbackOpensAt;
+
+  static AssistantCarePlan? fromJson(Object? json) {
+    final m = _map(json);
+    final id = _str(m['contentId'], max: 80);
+    if (id == null) return null;
+    return AssistantCarePlan(
+      contentId: id,
+      contentVersion: _int(m['contentVersion']) ?? 1,
+      plannedFor: _date(m['plannedFor']),
+      plannedAt: _instant(m['plannedAt']),
+      feedbackOpensAt: _instant(m['feedbackOpensAt']),
+    );
+  }
+}
+
+/// CH17: the question the server shows once the chance to try has passed (always with
+/// "Chưa thử"); never asked as if it was tried.
+@immutable
+class CareFollowUp {
+  const CareFollowUp({
+    required this.contentId,
+    required this.contentVersion,
+    required this.question,
+    required this.choices,
+  });
+
+  final String contentId;
+  final int contentVersion;
+  final LocalizedText question;
+  final List<({FeedbackOutcome outcome, LocalizedText label})> choices;
+
+  static CareFollowUp? fromJson(Object? json) {
+    final m = _map(json);
+    final id = _str(m['contentId'], max: 80);
+    final question = LocalizedText.fromJson(m['question']);
+    if (id == null || question == null) return null;
+    final choices = [
+      for (final c in _list(m['choices']).take(6))
+        if ((
+              wireOf(FeedbackOutcome.values, _map(c)['id']),
+              LocalizedText.fromJson(_map(c)['label']),
+            )
+            case (final FeedbackOutcome o, final LocalizedText label))
+          (outcome: o, label: label),
+    ];
+    if (choices.isEmpty) return null;
+    return CareFollowUp(
+      contentId: id,
+      contentVersion: _int(m['contentVersion']) ?? 1,
+      question: question,
+      choices: choices,
+    );
+  }
+}
+
+/// The latest answer for a care task's guidance ("Chưa thử" included).
+typedef CareFeedback = ({
+  String contentId,
+  int contentVersion,
+  FeedbackOutcome outcome,
+});
+
+/// `AssistantCareView` (`task.care`): the care thread of a task, from `getAssistantTask` (the
+/// stored task document has the same fields without `followUp`).
+@immutable
+class AssistantCareView {
+  const AssistantCareView({
+    required this.topic,
+    this.sleep,
+    this.guidance,
+    this.recipeIds = const [],
+    this.plan,
+    this.followUp,
+    this.feedback,
+  });
+
+  /// `sleep_concern` / `meal_ideas`.
+  final String topic;
+  final SleepConcern? sleep;
+  final ContentRef? guidance;
+  final List<String> recipeIds;
+  final AssistantCarePlan? plan;
+  final CareFollowUp? followUp;
+  final CareFeedback? feedback;
+
+  AssistantCareView copyWith({
+    AssistantCarePlan? plan,
+    CareFeedback? feedback,
+    bool clearFollowUp = false,
+    CareFollowUp? followUp,
+  }) => AssistantCareView(
+    topic: topic,
+    sleep: sleep,
+    guidance: guidance,
+    recipeIds: recipeIds,
+    plan: plan ?? this.plan,
+    followUp: clearFollowUp ? null : (followUp ?? this.followUp),
+    feedback: feedback ?? this.feedback,
+  );
+
+  static AssistantCareView? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final m = _map(json);
+    final topic = _str(m['topic'], max: 40);
+    if (topic == null) return null;
+    final g = _map(m['guidance']);
+    final f = _map(m['feedback']);
+    return AssistantCareView(
+      topic: topic,
+      sleep: SleepConcern.fromJson(m['sleep']),
+      guidance: switch ((
+        _str(g['contentId'], max: 80),
+        _int(g['contentVersion']),
+      )) {
+        (final String id, final int v) => (contentId: id, contentVersion: v),
+        _ => null,
+      },
+      recipeIds: _strings(m['recipeIds'], max: 80),
+      plan: AssistantCarePlan.fromJson(m['plan']),
+      followUp: CareFollowUp.fromJson(m['followUp']),
+      feedback: switch ((
+        _str(f['contentId'], max: 80),
+        _int(f['contentVersion']),
+        wireOf(FeedbackOutcome.values, f['outcome']),
+      )) {
+        (final String id, final int v, final FeedbackOutcome o) => (
+          contentId: id,
+          contentVersion: v,
+          outcome: o,
+        ),
+        _ => null,
+      },
+    );
+  }
+}
+
+// ---------- Photos (slice A3 server, A5 app: CH09–CH14) ----------
+
+/// `AssistantUploadTarget`: where the chosen photo is uploaded once, before `startTask`.
+@immutable
+class AssistantUploadTarget {
+  const AssistantUploadTarget({
+    required this.attachmentId,
+    required this.uploadPath,
+    required this.mime,
+    required this.maxBytes,
+    this.expiresAt,
+    this.retention = defaultAttachmentRetention,
+  });
+
+  final String attachmentId;
+
+  /// Owned Storage path `assistant/{uid}/{attachmentId}` (create once, no client read).
+  final String uploadPath;
+  final String mime;
+  final int maxBytes;
+  final DateTime? expiresAt;
+  final AttachmentRetention retention;
+
+  static final _path = RegExp(
+    r'^assistant/[A-Za-z0-9_-]{1,128}/[A-Za-z0-9_-]{1,120}$',
+  );
+
+  static AssistantUploadTarget? fromJson(Object? json) {
+    final m = _map(json);
+    final id = _str(m['attachmentId'], max: 120);
+    final path = _str(m['uploadPath'], max: 300);
+    // Only the owned assistant folder: the app never uploads to a path it was not meant to.
+    if (id == null || path == null || !_path.hasMatch(path)) return null;
+    return AssistantUploadTarget(
+      attachmentId: id,
+      uploadPath: path,
+      mime: _str(m['mime'], max: 40) ?? 'image/jpeg',
+      maxBytes: (_int(m['maxBytes']) ?? 0).clamp(0, 8 * 1024 * 1024),
+      expiresAt: _instant(m['expiresAt']),
+      retention:
+          wireOf(AttachmentRetention.values, m['retention']) ??
+          defaultAttachmentRetention,
+    );
+  }
+}
+
+/// `AssistantAttachmentView`: a task's photo and its real retention state (G05).
+@immutable
+class AttachmentView {
+  const AttachmentView({
+    required this.id,
+    required this.state,
+    this.retention = defaultAttachmentRetention,
+    this.keptWithRecord = false,
+    this.deletedAt,
+    this.rejected = false,
+  });
+
+  final String id;
+  final AttachmentState state;
+  final AttachmentRetention retention;
+
+  /// A re-encoded copy was kept with the saved expense.
+  final bool keptWithRecord;
+
+  /// Set only once Storage confirmed the deletion of the uploaded original.
+  final DateTime? deletedAt;
+
+  /// The file was refused before any reading.
+  final bool rejected;
+
+  /// "Đã xoá" only with both the state and the confirmed instant (G05).
+  bool get deletionConfirmed =>
+      state == AttachmentState.deleted && deletedAt != null;
+
+  static AttachmentView? fromJson(Object? json) {
+    final m = _map(json);
+    final id = _str(m['id'], max: 120);
+    final state = wireOf(AttachmentState.values, m['state']);
+    if (id == null || state == null) return null;
+    return AttachmentView(
+      id: id,
+      state: state,
+      retention:
+          wireOf(AttachmentRetention.values, m['retention']) ??
+          defaultAttachmentRetention,
+      keptWithRecord: m['keptWithRecord'] == true,
+      deletedAt: _instant(m['deletedAt']),
+      rejected: m['rejected'] == true,
+    );
+  }
+}
+
 // ---------- Tasks, events, messages ----------
 
 @immutable
@@ -1104,6 +1633,9 @@ class AssistantTask {
     this.timezone,
     this.createdAt,
     this.updatedAt,
+    this.care,
+    this.visibility = TaskVisibility.private,
+    this.author,
   });
 
   final String id;
@@ -1130,7 +1662,42 @@ class AssistantTask {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
+  /// Slice A5: the care thread (CH15–CH18); null for other tasks.
+  final AssistantCareView? care;
+
+  /// D-075 #2: in the baby's shared thread, or private to its author (older tasks: private).
+  final TaskVisibility visibility;
+
+  /// D-075 #2: who asked; null on older (private) tasks, whose owner is the reader.
+  final AssistantAuthor? author;
+
+  /// Clarification answers, cancel, care feedback and "Thử tối nay" are the author's only.
+  bool authoredBy(String? uid) => author == null || author!.uid == uid;
+
   AssistantReason? get error => AssistantReason.fromWire(errorCode);
+
+  AssistantTask copyWith({AssistantCareView? care}) => AssistantTask(
+    id: id,
+    state: state,
+    version: version,
+    conversationId: conversationId,
+    scope: scope,
+    modality: modality,
+    credits: credits,
+    plan: plan,
+    usage: usage,
+    errorCode: errorCode,
+    round: round,
+    clarification: clarification,
+    clarificationExpiresAt: clarificationExpiresAt,
+    anchorInstant: anchorInstant,
+    timezone: timezone,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    care: care ?? this.care,
+    visibility: visibility,
+    author: author,
+  );
 
   /// Reads the API view (`AssistantTaskView`) or the stored document (`clarifications[]`).
   static AssistantTask? fromJson(Object? json, {String? id}) {
@@ -1166,6 +1733,11 @@ class AssistantTask {
       timezone: _str(m['timezone'], max: 64),
       createdAt: _instant(m['createdAt']),
       updatedAt: _instant(m['updatedAt']),
+      care: AssistantCareView.fromJson(m['care']),
+      visibility:
+          wireOf(TaskVisibility.values, m['visibility']) ??
+          TaskVisibility.private,
+      author: AssistantAuthor.fromJson(m['author']),
     );
   }
 }
@@ -1222,6 +1794,7 @@ class AssistantMessage {
     this.taskId,
     this.createdAt,
     this.attachmentIds = const [],
+    this.author,
   });
 
   final String id;
@@ -1232,6 +1805,10 @@ class AssistantMessage {
   final int sequence;
   final DateTime? createdAt;
   final List<String> attachmentIds;
+
+  /// D-075 #2: the sender of a user message, the confirmer of an `action_result`; null for the
+  /// assistant's replies and older messages.
+  final AssistantAuthor? author;
 
   /// The plain text of a user message (its text parts).
   String get text => [
@@ -1253,6 +1830,7 @@ class AssistantMessage {
       sequence: _int(m['sequence']) ?? 0,
       createdAt: _instant(m['createdAt']),
       attachmentIds: _strings(m['attachmentIds'], max: 80),
+      author: AssistantAuthor.fromJson(m['author']),
     );
   }
 }
@@ -1265,6 +1843,7 @@ class TaskSnapshot {
     this.drafts = const [],
     this.events = const [],
     this.messages = const [],
+    this.attachments = const [],
   });
 
   final AssistantTask task;
@@ -1274,15 +1853,20 @@ class TaskSnapshot {
   final List<AssistantEvent> events;
   final List<AssistantMessage> messages;
 
+  /// Slice A3: the task's photos and their real retention state (G05); empty for text tasks.
+  final List<AttachmentView> attachments;
+
   TaskSnapshot copyWith({
     AssistantTask? task,
     List<AssistantDraft>? drafts,
     List<AssistantMessage>? messages,
+    List<AttachmentView>? attachments,
   }) => TaskSnapshot(
     task: task ?? this.task,
     drafts: drafts ?? this.drafts,
     events: events,
     messages: messages ?? this.messages,
+    attachments: attachments ?? this.attachments,
   );
 
   /// Reads `{task, drafts, events, messages}`, or a bare task view.
@@ -1304,6 +1888,10 @@ class TaskSnapshot {
       drafts: drafts,
       events: events,
       messages: messages,
+      attachments: [
+        for (final a in _list(m['attachments']).take(10))
+          ?AttachmentView.fromJson(a),
+      ],
     );
   }
 }
@@ -1401,6 +1989,8 @@ class AssistantConversation {
     this.createdAt,
     this.updatedAt,
     this.lastTaskId,
+    this.shared = false,
+    this.ownerUid,
   });
 
   final String id;
@@ -1409,6 +1999,10 @@ class AssistantConversation {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final String? lastTaskId;
+
+  /// D-075 #2: the baby's shared thread (`ownerUid` null).
+  final bool shared;
+  final String? ownerUid;
 
   static AssistantConversation? fromJson(Object? json) {
     final m = _map(json);
@@ -1421,6 +2015,8 @@ class AssistantConversation {
       createdAt: _instant(m['createdAt']),
       updatedAt: _instant(m['updatedAt']),
       lastTaskId: _str(m['lastTaskId'], max: 80),
+      shared: m['shared'] == true,
+      ownerUid: _str(m['ownerUid'], max: 128),
     );
   }
 }

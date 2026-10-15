@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:child_life/features/assistant/assistant_controller.dart';
 import 'package:child_life/features/assistant/assistant_models.dart';
+import 'package:child_life/features/assistant/assistant_photos.dart';
 import 'package:child_life/features/assistant/assistant_repository.dart';
 import 'package:child_life/features/assistant/assistant_screens.dart';
 import 'package:child_life/features/baby/baby_models.dart';
@@ -316,6 +318,8 @@ class FakeAssistantRepository implements AssistantRepository {
     this.error,
     this.conversationsAnswer,
     this.messagesAnswer,
+    this.uploadAnswer,
+    this.planAnswer,
     AssistantConsent consent = const AssistantConsent(
       version: assistantConsentVersion,
     ),
@@ -333,6 +337,8 @@ class FakeAssistantRepository implements AssistantRepository {
   Object? Function(Map<String, Object?> args)? patchAnswer;
   Object? Function()? conversationsAnswer;
   Object? Function()? messagesAnswer;
+  Object? Function(Map<String, Object?> args)? uploadAnswer;
+  Object? Function(Map<String, Object?> args)? planAnswer;
 
   /// Thrown by any call named here (`{'quoteTask': AssistantException(...)}`).
   Map<String, Object>? error;
@@ -375,7 +381,9 @@ class FakeAssistantRepository implements AssistantRepository {
       'intentHint': intentHint?.wire,
     };
     _record(AssistantCallables.quote, args);
-    final json = quoteAnswer?.call(args) ?? quoteJson(usage: usageJsonValue);
+    final json =
+        quoteAnswer?.call(args) ??
+        quoteJson(modality: modality.wire, usage: usageJsonValue);
     return AssistantQuote.fromJson(json)!;
   }
 
@@ -395,6 +403,7 @@ class FakeAssistantRepository implements AssistantRepository {
       'conversationId': conversationId,
       'quoteId': quoteId,
       'text': text,
+      'attachmentIds': attachmentIds,
     };
     _record(AssistantCallables.start, args);
     final e = AssistantEnvelope.fromJson(
@@ -512,7 +521,55 @@ class FakeAssistantRepository implements AssistantRepository {
     required int contentVersion,
     required FeedbackOutcome outcome,
     required String locale,
-  }) async => _record(AssistantCallables.feedback, {'taskId': taskId});
+  }) async => _record(AssistantCallables.feedback, {
+    'taskId': taskId,
+    'contentId': contentId,
+    'contentVersion': contentVersion,
+    'outcome': outcome.wire,
+  });
+
+  @override
+  Future<AssistantUploadTarget> createUpload({
+    required String quoteId,
+    required String mime,
+    required int bytes,
+    required String sha256,
+    required AttachmentRetention retention,
+    required String requestId,
+    required String locale,
+  }) async {
+    final args = {
+      'quoteId': quoteId,
+      'mime': mime,
+      'bytes': bytes,
+      'sha256': sha256,
+      'retention': retention.wire,
+      'requestId': requestId,
+    };
+    _record(AssistantCallables.upload, args);
+    return AssistantUploadTarget.fromJson(
+      uploadAnswer?.call(args) ?? uploadTargetJson(retention: retention.wire),
+    )!;
+  }
+
+  @override
+  Future<AssistantCarePlan?> plan({
+    required String taskId,
+    required String contentId,
+    required int contentVersion,
+    required String requestId,
+    required String locale,
+  }) async {
+    final args = {
+      'taskId': taskId,
+      'contentId': contentId,
+      'contentVersion': contentVersion,
+    };
+    _record(AssistantCallables.plan, args);
+    return AssistantCarePlan.fromJson(
+      planAnswer?.call(args) ?? planJson(contentId: contentId),
+    );
+  }
 
   @override
   Future<AssistantUsage?> usage(String babyId, {required String locale}) async {
@@ -568,12 +625,15 @@ class FakeAssistantRepository implements AssistantRepository {
   }
 
   @override
-  Future<void> deleteConversation(
+  Future<({int deletedTasks, bool domainRecordsKept})> deleteConversation(
     String conversationId, {
     required String locale,
-  }) async => _record(AssistantCallables.deleteConversation, {
-    'conversationId': conversationId,
-  });
+  }) async {
+    _record(AssistantCallables.deleteConversation, {
+      'conversationId': conversationId,
+    });
+    return (deletedTasks: 1, domainRecordsKept: true);
+  }
 
   @override
   Future<void> setConsent({required bool agree, required String locale}) async {
@@ -639,9 +699,10 @@ List<Override> assistantOverrides({
   Map<String, Object?>? caps,
   List<String>? dialled,
   Future<bool> Function(BuildContext, PurchaseResume)? paywall,
-  PendingPhoto? photo,
+  PickedPhoto? photo,
   VideoQuota? video,
   Stream<bool>? onlineStream,
+  FakeUploader? uploader,
 }) {
   var n = 0;
   return [
@@ -660,8 +721,10 @@ List<Override> assistantOverrides({
     ),
     if (paywall != null) assistantPaywallProvider.overrideWithValue(paywall),
     assistantPhotoPickerProvider.overrideWithValue(
-      () async => photo ?? const PendingPhoto(name: 'note.jpg'),
+      (source) async => photo ?? PickedPhoto(name: 'note.jpg', bytes: tinyJpeg),
     ),
+    assistantUploaderProvider.overrideWithValue(uploader ?? FakeUploader()),
+    assistantPhotoCacheProvider.overrideWithValue(AssistantPhotoCache()),
     videoQuotaProvider.overrideWith((ref, babyId) async => video),
     if (onlineStream != null)
       assistantOnlineProvider.overrideWith(
@@ -675,3 +738,510 @@ final _streams = <Stream<bool>, StreamProvider<bool>>{};
 /// One provider per test stream (a connectivity a test switches on and off).
 StreamProvider<bool> _onlineStream(Stream<bool> s) =>
     _streams.putIfAbsent(s, () => StreamProvider<bool>((ref) => s));
+
+// ---------- Slice A5: photos and care ----------
+
+/// A 1×1 JPEG (synthetic; the app shows it as the local thumbnail).
+final tinyJpeg = Uint8List.fromList(const [
+  0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01, //
+  0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0xFF, 0xDB, 0x00, 0x43,
+  0x00, 0x08, 0x06, 0x06, 0x07, 0x06, 0x05, 0x08, 0x07, 0x07, 0x07, 0x09,
+  0x09, 0x08, 0x0A, 0x0C, 0x14, 0x0D, 0x0C, 0x0B, 0x0B, 0x0C, 0x19, 0x12,
+  0x13, 0x0F, 0x14, 0x1D, 0x1A, 0x1F, 0x1E, 0x1D, 0x1A, 0x1C, 0x1C, 0x20,
+  0x24, 0x2E, 0x27, 0x20, 0x22, 0x2C, 0x23, 0x1C, 0x1C, 0x28, 0x37, 0x29,
+  0x2C, 0x30, 0x31, 0x34, 0x34, 0x34, 0x1F, 0x27, 0x39, 0x3D, 0x38, 0x32,
+  0x3C, 0x2E, 0x33, 0x34, 0x32, 0xFF, 0xC0, 0x00, 0x0B, 0x08, 0x00, 0x01,
+  0x00, 0x01, 0x01, 0x01, 0x11, 0x00, 0xFF, 0xC4, 0x00, 0x14, 0x00, 0x01,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0xFF, 0xC4, 0x00, 0x14, 0x10, 0x01,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xDA, 0x00, 0x08, 0x01, 0x01,
+  0x00, 0x00, 0x3F, 0x00, 0x2A, 0x9F, 0xFF, 0xD9,
+]);
+
+const attachment1 = 'at_11111111111111111111111111111111';
+
+Map<String, Object?> uploadTargetJson({
+  String id = attachment1,
+  String retention = 'keep_with_record',
+}) => {
+  'attachmentId': id,
+  'uploadPath': 'assistant/u_mai/$id',
+  'mime': 'image/jpeg',
+  'maxBytes': 1024,
+  'expiresAt': '2026-10-15T07:35:00.000Z',
+  'retention': retention,
+};
+
+Map<String, Object?> planJson({String contentId = 'act_wind_down'}) => {
+  'contentId': contentId,
+  'contentVersion': 1,
+  'plannedFor': '2026-10-15',
+  'plannedAt': '2026-10-15T07:20:00.000Z',
+  'feedbackOpensAt': '2026-10-15T22:00:00.000Z',
+};
+
+/// A scripted upload: progress the test pushes, completion it controls, cancel it sees.
+class FakeUploader implements AssistantUploader {
+  FakeUploader({this.auto = true});
+
+  /// Completes every upload at once (100 %).
+  final bool auto;
+  final uploads = <FakeUpload>[];
+
+  @override
+  AssistantUpload start(String path, Uint8List bytes, String mime) {
+    final u = FakeUpload(path, bytes.length, mime);
+    uploads.add(u);
+    if (auto) u.finish();
+    return u;
+  }
+}
+
+class FakeUpload implements AssistantUpload {
+  FakeUpload(this.path, this.size, this.mime);
+  final String path;
+  final int size;
+  final String mime;
+  final _progress = StreamController<double>.broadcast();
+  final _done = Completer<void>();
+  var canceled = false;
+
+  void push(double v) => _progress.add(v);
+
+  void finish() {
+    if (!_done.isCompleted) _done.complete();
+  }
+
+  void fail(Object e) {
+    if (!_done.isCompleted) _done.completeError(e);
+  }
+
+  @override
+  Stream<double> get progress => _progress.stream;
+
+  @override
+  Future<void> get done => _done.future;
+
+  @override
+  Future<void> cancel() async {
+    canceled = true;
+    if (!_done.isCompleted) _done.completeError(const UploadCanceled());
+  }
+}
+
+Map<String, Object?> photoTaskJson({
+  String id = taskA,
+  String state = 'ready',
+  int version = 3,
+  String? errorCode,
+  Map<String, Object?>? clarification,
+  String scopeType = 'household',
+}) => {
+  ...taskJson(
+    id: id,
+    state: state,
+    version: version,
+    errorCode: errorCode,
+    clarification: clarification,
+    scopeType: scopeType,
+  ),
+  'modality': 'image',
+  'credits': 3,
+  'usage': state == 'failed'
+      ? 'released'
+      : (state == 'awaiting_clarification' || state == 'processing'
+            ? 'reserved'
+            : 'committed'),
+};
+
+/// A care task (text) with its `task.care` view.
+Map<String, Object?> careTaskJson({
+  String id = taskA,
+  String state = 'ready',
+  Map<String, Object?>? clarification,
+  Map<String, Object?>? care,
+}) => {
+  ...taskJson(id: id, state: state, clarification: clarification),
+  'care': care,
+};
+
+Map<String, Object?> photoMessage({
+  String taskId = taskA,
+  String attachmentId = attachment1,
+}) => {
+  'id': 'm_${taskId}_u',
+  'conversationId': conversation1,
+  'role': 'user',
+  'parts': const <Object>[],
+  'taskId': taskId,
+  'sequence': 1,
+  'createdAt': '2026-10-15T07:20:00.000Z',
+  'attachmentIds': [attachmentId],
+};
+
+Map<String, Object?> attachmentJson({
+  String id = attachment1,
+  String state = 'ready',
+  String retention = 'keep_with_record',
+  bool kept = false,
+  String? deletedAt,
+  bool rejected = false,
+}) => {
+  'id': id,
+  'mime': 'image/jpeg',
+  'bytes': 1024,
+  'retention': retention,
+  'state': state,
+  'keptWithRecord': kept,
+  'deletedAt': deletedAt,
+  'rejected': rejected,
+};
+
+/// A photo task snapshot: the user's photo, the assistant's parts, drafts and photo state.
+Map<String, Object?> photoSnapshot({
+  required Map<String, Object?> task,
+  List<Map<String, Object?>> parts = const [],
+  List<Map<String, Object?>> drafts = const [],
+  List<Map<String, Object?>> attachments = const [],
+}) => {
+  'task': task,
+  'drafts': drafts,
+  'events': const <Object>[],
+  'messages': [
+    photoMessage(taskId: task['id']! as String),
+    if (parts.isNotEmpty)
+      assistantMessage(parts, taskId: task['id']! as String),
+  ],
+  'attachments': attachments.isEmpty ? [attachmentJson()] : attachments,
+};
+
+/// CH11: the Con Cưng receipt (486.000 ₫ incl. 36.000 ₫ tax, 14/10 uncertain).
+Map<String, Object?> expenseDraftJson({
+  String taskId = taskA,
+  String state = 'needs_review',
+  List<String> uncertain = const ['date'],
+  List<String> warnings = const ['duplicate_suspected'],
+  List<String> problems = const [],
+  String? currency = 'VND',
+  int revision = 1,
+  String? recordId,
+  String? date = '2026-10-14',
+}) => {
+  'id': draftOf(taskId, 0),
+  'taskId': taskId,
+  'itemIndex': 0,
+  'scope': {'type': 'household', 'babyId': teddyId},
+  'payload': {
+    'kind': 'expense',
+    'merchant': 'Con Cưng',
+    'totalMinor': 486000,
+    'currency': currency,
+    'date': date,
+    'subtotalMinor': 450000,
+    'taxMinor': 36000,
+    'categoryId': 'c_milk',
+    'babyId': teddyId,
+    'keepReceipt': true,
+  },
+  'missingFields': const <String>[],
+  'uncertainFields': uncertain,
+  'revision': revision,
+  'state': state,
+  'expiresAt': '2026-10-16T07:20:00.000Z',
+  'sourceRefs': const <String>[],
+  'recordId': recordId,
+  'recordLink': recordId == null
+      ? null
+      : '/utilities/spending/expense/$recordId?babyId=$teddyId',
+  'errorCode': null,
+  'warnings': warnings,
+  'problems': problems,
+};
+
+Map<String, Object?> reminderDraftJson({
+  String taskId = taskA,
+  int index = 0,
+  String title = 'Đặt lịch khám 2 tháng',
+  String? date = '2026-10-20',
+  String? time = '09:00',
+  String state = 'draft',
+  List<String> missing = const [],
+  List<String> uncertain = const [],
+  List<String> problems = const [],
+  String? assignee,
+}) => {
+  'id': draftOf(taskId, index),
+  'taskId': taskId,
+  'itemIndex': index,
+  'scope': {'type': 'household', 'babyId': teddyId},
+  'payload': {
+    'kind': 'reminder',
+    'title': title,
+    'date': date,
+    'time': time,
+    'assigneeUid': assignee,
+  },
+  'missingFields': missing,
+  'uncertainFields': uncertain,
+  'revision': 1,
+  'state': state,
+  'expiresAt': '2026-10-16T07:20:00.000Z',
+  'sourceRefs': const <String>[],
+  'recordId': null,
+  'recordLink': null,
+  'errorCode': null,
+  'warnings': const <String>[],
+  'problems': problems,
+};
+
+Map<String, Object?> observationDraftJson({
+  String taskId = taskA,
+  String state = 'draft',
+}) => {
+  'id': draftOf(taskId, 0),
+  'taskId': taskId,
+  'itemIndex': 0,
+  'scope': {'type': 'child', 'babyId': teddyId},
+  'payload': {
+    'kind': 'observation',
+    'observation': 'sleep',
+    'date': '2026-10-15',
+    'when': 'night',
+    'note': null,
+  },
+  'missingFields': const <String>[],
+  'uncertainFields': const <String>[],
+  'revision': 1,
+  'state': state,
+  'expiresAt': '2026-10-16T07:20:00.000Z',
+  'sourceRefs': const <String>[],
+  'recordId': state == 'saved' ? 'ci_${'d' * 32}' : null,
+  'recordLink': state == 'saved'
+      ? '/rhythm/checkins/$teddyId/ci_${'d' * 32}'
+      : null,
+  'errorCode': null,
+  'warnings': const <String>[],
+  'problems': const <String>[],
+};
+
+Map<String, Object?> sleepClarification(String field) => {
+  'id': 'c_$field',
+  'field': field,
+  'question': field == 'sleep.period'
+      ? {
+          'vi':
+              'Mình hỏi nhanh để gợi ý đúng hơn nhé. Con khó vào giấc hay hay thức giấc?',
+          'en':
+              'A quick question so I can help. Is it hard to fall asleep, or waking often?',
+        }
+      : {'vi': 'Giấc ngày hay giấc đêm?', 'en': 'Naps or night sleep?'},
+  'choices': field == 'sleep.period'
+      ? [
+          {
+            'id': 'falling_asleep',
+            'label': {'vi': 'Khó vào giấc', 'en': 'Hard to fall asleep'},
+          },
+          {
+            'id': 'night_waking',
+            'label': {'vi': 'Hay thức giấc', 'en': 'Waking often'},
+          },
+          {
+            'id': 'both',
+            'label': {'vi': 'Cả hai', 'en': 'Both'},
+          },
+        ]
+      : [
+          {
+            'id': 'night',
+            'label': {'vi': 'Giấc đêm', 'en': 'Night'},
+          },
+          {
+            'id': 'day',
+            'label': {'vi': 'Giấc ngày', 'en': 'Naps'},
+          },
+          {
+            'id': 'unknown',
+            'label': {'vi': 'Chưa rõ', 'en': 'Not sure'},
+          },
+        ],
+  'allowText': false,
+};
+
+/// CH16: the published wind-down item (illustrative content, unreviewed by default).
+Map<String, Object?> guidancePart({
+  bool reviewed = false,
+  bool alternatives = true,
+}) => {
+  'type': 'approved_content',
+  'schemaVersion': 1,
+  'contentId': 'act_wind_down',
+  'contentVersion': 1,
+  'reason': 'Vì sao: bạn chọn “khó vào giấc, giấc đêm”.',
+  'reviewed': reviewed,
+  'reasonCode': 'SELF_REPORTED_NEED',
+  'content': {
+    'title': 'Giảm kích thích 30 phút trước giấc đêm',
+    'summary': 'Một nếp nhẹ nhàng trước giấc đêm.',
+    'steps': [
+      'Giảm đèn và tiếng ồn.',
+      'Tắm ấm hoặc lau người.',
+      'Cho bú yên tĩnh, đặt xuống khi buồn ngủ.',
+    ],
+    'safety': null,
+    'durationMin': 30,
+    'timeOfDay': 'evening',
+  },
+  'alternatives': alternatives
+      ? [
+          {'contentId': 'act_white_noise', 'contentVersion': 2},
+        ]
+      : const <Object>[],
+};
+
+Map<String, Object?> sleepCare({
+  Map<String, Object?>? plan,
+  bool followUp = false,
+  String? feedback,
+}) => {
+  'topic': 'sleep_concern',
+  'sleep': {'kind': 'falling_asleep', 'when': 'night', 'since': null},
+  'guidance': {
+    'contentId': 'act_wind_down',
+    'contentVersion': 1,
+    'reasonCode': 'SELF_REPORTED_NEED',
+    'reviewed': false,
+  },
+  'recipeIds': const <String>[],
+  'plan': plan,
+  'followUp': followUp
+      ? {
+          'contentId': 'act_wind_down',
+          'contentVersion': 1,
+          'question': {
+            'vi':
+                'Bạn có dịp thử “Giảm kích thích 30 phút trước giấc đêm” chưa? Nếu đã thử, thấy thế nào?',
+            'en':
+                'Did you get a chance to try “Wind down 30 minutes before night sleep”? If you did, how did it go?',
+          },
+          'choices': [
+            {
+              'id': 'helpful',
+              'label': {'vi': 'Có ích', 'en': 'Helpful'},
+            },
+            {
+              'id': 'unsure',
+              'label': {'vi': 'Chưa rõ', 'en': 'Not sure'},
+            },
+            {
+              'id': 'not_suitable',
+              'label': {'vi': 'Không phù hợp', 'en': 'Not a fit'},
+            },
+            {
+              'id': 'not_tried',
+              'label': {'vi': 'Chưa thử', 'en': 'Didn’t try'},
+            },
+          ],
+        }
+      : null,
+  'feedback': feedback == null
+      ? null
+      : {
+          'contentId': 'act_wind_down',
+          'contentVersion': 1,
+          'outcome': feedback,
+        },
+};
+
+Map<String, Object?> recipesPart({bool empty = false, int excluded = 1}) => {
+  'type': 'recipe_list',
+  'schemaVersion': 1,
+  'recipeIds': empty ? const <String>[] : ['rc_pumpkin', 'rc_carrot'],
+  'caveat': empty
+      ? null
+      : 'Đã loại món có nguyên liệu con từng có phản ứng (theo ghi nhận của gia đình, không phải chẩn đoán dị ứng). Món chưa có ghi nhận phản ứng không có nghĩa là con đã dung nạp tốt.',
+  'items': empty
+      ? const <Object>[]
+      : [
+          {
+            'recipeId': 'rc_pumpkin',
+            'recipeVersion': 1,
+            'title': 'Cháo bí đỏ yến mạch',
+            'summary': 'Bí đỏ hấp nghiền với yến mạch nấu mềm.',
+            'durationMin': 15,
+            'minAgeMonths': 6,
+            'why': 'Từ 6 tháng · đã được chuyên môn duyệt',
+          },
+          {
+            'recipeId': 'rc_carrot',
+            'recipeVersion': 1,
+            'title': 'Cà rốt hấp nghiền',
+            'summary': 'Cà rốt hấp chín, nghiền mịn.',
+            'durationMin': 10,
+            'minAgeMonths': 6,
+            'why': 'Từ 6 tháng · đã được chuyên môn duyệt',
+          },
+        ],
+  'excludedCount': empty ? 0 : excluded,
+  'mealLogAvailable': false,
+};
+
+Map<String, Object?> codedText(String text, String code) => {
+  'type': 'text',
+  'schemaVersion': 1,
+  'text': text,
+  'code': code,
+};
+
+// ---------- D-075 #2: the baby's shared thread ----------
+
+final sharedConversation = 'cv_$teddyId';
+
+Map<String, Object?> authorJson(Membership m) => {
+  'uid': m.uid,
+  'name': m.displayName,
+  'relation': m.relation.name,
+  'relationCustom': m.relationCustom,
+};
+
+/// A task of the shared thread asked by [by].
+Map<String, Object?> sharedTaskJson({
+  required Membership by,
+  String id = taskA,
+  String state = 'ready',
+  Map<String, Object?>? clarification,
+  Map<String, Object?>? care,
+}) => {
+  ...taskJson(id: id, state: state, clarification: clarification),
+  'conversationId': sharedConversation,
+  'visibility': 'shared',
+  'author': authorJson(by),
+  'care': ?care,
+};
+
+Map<String, Object?> sharedUserMessage(
+  String text,
+  Membership by, {
+  String taskId = taskA,
+  int sequence = 1,
+}) => {
+  ...userMessage(text, taskId: taskId),
+  'id': 'm_${taskId}_u$sequence',
+  'conversationId': sharedConversation,
+  'sequence': sequence,
+  'author': authorJson(by),
+};
+
+Map<String, Object?> sharedConversationJson() => {
+  'id': sharedConversation,
+  'ownerUid': null,
+  'shared': true,
+  'familyId': 'f_1',
+  'scope': {'type': 'child', 'babyId': teddyId},
+  'title': null,
+  'locale': 'vi',
+  'createdAt': '2026-10-14T01:00:00.000Z',
+  'updatedAt': '2026-10-15T07:00:00.000Z',
+  'archivedAt': null,
+  'lastTaskId': taskA,
+};

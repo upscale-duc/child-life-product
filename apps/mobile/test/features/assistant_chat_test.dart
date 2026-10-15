@@ -698,12 +698,17 @@ void main() {
       await _type(tester, 'Mua bỉm 310k');
       await tester.tap(find.bySemanticsLabel('Ảnh'));
       await tester.pumpAndSettle();
+      // CH09 sheet first: nothing quoted or uploaded until a photo is chosen.
+      expect(repo.named('quoteTask'), isEmpty);
+      await tester.tap(_text('Chọn từ thư viện'));
+      await tester.pumpAndSettle();
       final q = repo.named('quoteTask').single.args;
       expect(q['modality'], 'image');
       expect(q['attachmentCount'], 1);
       expect(_text('Đọc ảnh này cần 3 lượt, bạn còn 2.'), findsOneWidget);
       expect(_text('Ảnh · chưa gửi'), findsOneWidget);
       expect(repo.named('startTask'), isEmpty);
+      expect(repo.named('createAttachmentUpload'), isEmpty);
       // The typed input stays.
       await tester.tap(_text('Nhập tay'));
       await tester.pumpAndSettle();
@@ -1341,7 +1346,11 @@ void main() {
       await tester.tap(_text('Xoá'));
       await tester.pumpAndSettle();
       expect(_text('Con khó ngủ'), findsNothing);
-      expect(_text('Đã xoá cuộc trò chuyện'), findsOneWidget);
+      // The server says the saved records stay (`domainRecordsKept`).
+      expect(
+        _text('Đã xoá cuộc trò chuyện. Bản ghi đã lưu vẫn giữ nguyên.'),
+        findsOneWidget,
+      );
       expect(
         repo.named('deleteAssistantConversation').last.args['conversationId'],
         'cv_2',
@@ -1350,7 +1359,8 @@ void main() {
       await tester.tap(_text('Ghi bú và ngủ buổi sáng'));
       await tester.pumpAndSettle();
       expect(_text('Hội thoại'), findsNothing);
-      expect(repo.named('getAssistantTask').single.args['taskId'], taskA);
+      // (Opening the chat also read the baby's shared thread, D-075 #2.)
+      expect(repo.named('getAssistantTask').last.args['taskId'], taskA);
       expect(_text('Lưu 2 mục đã chọn'), findsOneWidget);
     });
 

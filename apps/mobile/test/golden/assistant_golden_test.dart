@@ -234,6 +234,12 @@ final _cases = <String, _Case>{
     act: (tester) async {
       await tester.tap(find.bySemanticsLabel(RegExp('^(Ảnh|Photo)\$')).first);
       await tester.pumpAndSettle();
+      await tester.tap(
+        find.textContaining(
+          RegExp('^(Chọn từ thư viện|Choose from library)\$'),
+        ),
+      );
+      await tester.pumpAndSettle();
     },
   ),
   'ch21_free_out': _c(
