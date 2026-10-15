@@ -32,6 +32,8 @@ export * from './quota.js';
 export * from './ai-summary.js';
 export * from './billing.js';
 export * from './assistant.js';
+// Lumi rework 2026-10-15: deterministic text rules (money, spending detector, durations, dates).
+export * from './assistant-text.js';
 export * from './premium-ops.js';
 export * from './assistant-staff.js';
 export * from './content.js';

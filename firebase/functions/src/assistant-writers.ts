@@ -29,7 +29,12 @@ import {
   toDate,
   type ScopeMember,
 } from './assistant-common.js';
-import { moduleAllows, moduleRegistry, overlappingSleeps } from './assistant-tools.js';
+import {
+  careDuplicateIn,
+  moduleAllows,
+  moduleRegistry,
+  overlappingSleeps,
+} from './assistant-tools.js';
 // Slice A3 (photos): expense / reminder writers, the kept receipt, module problems.
 import type { AttachmentStore } from './assistant-attachments.js';
 import { allDraftProblems } from './assistant-image-rules.js';
@@ -444,6 +449,15 @@ export async function confirmDraftItem(
           updatedAt: Timestamp.fromDate(x.now),
         });
         return result(x, 'saved', { revision: draft.revision, recordId, recordLink: link });
+      }
+      // Rework 2026-10-15: a feed very like one already logged ("vừa ghi rồi") is a warning to
+      // acknowledge ("Vẫn lưu"), re-checked here; never merged.
+      if (
+        (p.kind === 'bottle' || p.kind === 'breast') &&
+        (await careDuplicateIn(db, x.babyId, p, recordId, tx))
+      ) {
+        warnings.add('duplicate_suspected');
+        if (!x.acknowledge.includes('duplicate_suspected')) conflict = 'DUPLICATE_SUSPECTED';
       }
       if (care.type === 'sleep') {
         const others = await overlappingSleeps(

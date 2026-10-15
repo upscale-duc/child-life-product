@@ -68,6 +68,122 @@ enumeration).
   Cùng nuôi only (`WRITE_DENIED` for a caregiver), deletes every member's tasks of it; answers
   `{ deletedTasks, domainRecordsKept: true }`.
 
+## Rework 2026-10-15 (Lumi on the real model)
+
+Owner feedback after testing on a device with the real OpenAI model on dev. Server, contracts and
+docs only; the app agent adapts the chat UI. Code: `packages/contracts/src/assistant-text.ts`
+(deterministic text rules), `firebase/functions/src/assistant-text.ts` (planning),
+`assistant-talk.ts` (server replies, private thread id), `assistant-model.ts` (prompt
+`assistant-extract-v3`), `assistant-worker.ts`, `assistant.ts`. Evaluation:
+[`eval-2026-10-15.md`](eval-2026-10-15.md). All changes are **additive** (old drafts and old app
+builds still parse); `contractVersion` stays `1`.
+
+### What changed in behaviour
+
+| Message | Before | Now |
+|---|---|---|
+| "Mua sữa hết 500k", "đóng tiền học bơi 1tr2", "$20 diapers", "hôm qua mua bỉm 350.000đ ở Con Cưng" | `MODULE_UNAVAILABLE` (expense was photo-only) | one `expense` draft: amount re-read from the words in minor units (`500k` → 500 000 VND, `1tr2` → 1 200 000, `$20` → 2000 USD), date from "hôm qua / hôm kia" (else today), category from the household's list (unknown → `c_other` + review), merchant, what was bought (`note`) |
+| "nhắc mai 9h mua bỉm", "thứ 6 đưa bé đi tiêm", "nhắc bố đi lấy kết quả tối nay" | `MODULE_UNAVAILABLE` | one `reminder` draft: date from the words ("mai", "thứ 6", "thứ 2 tuần sau", "20/10"), all day without an hour, `time.ampm` asked only when both halves are still ahead, assignee only through the `reminder.assignee.<i>` question (eligible members; a name in the text is never mapped) |
+| Any message with money words (amount or mua / trả tiền / tiền / học phí / hoá đơn / spent / paid / bought…), mixed messages too | could be written to the baby's shared thread | **private from `startTask`**: the task and its user message go to the author's private thread (`task.routing`), never the shared one |
+| "Báo ngủ 9 tiếng" | a sleep draft with no times | asks only the start (`time.start`, chips such as "21:00 tối qua" / "22:00 tối qua", or a typed time), computes the end; `durationMin` + `linked` on the draft |
+| "dậy lúc 6h, ngủ 9 tiếng", "đêm qua 9h tối đến 6h sáng", "10 giờ tối bú 90ml" (said in the morning) | review / wrong day | start computed (21:00 last night), overnight kept on its days, last night's evening |
+| "8 giờ bú 120ml" at 14:20 | always asked morning / evening | 08:00 (20:00 would be in the future); asked only when both are possible (e.g. at 21:30) |
+| "bé bú 120ml" (no time) | the model's free-text "mấy giờ?" | `time.missing` with chips "Vừa xong (14:20)", "30 phút trước (13:50)", "1 tiếng trước (13:20)" and a typed time |
+| "à không, 150ml", "nhầm, 10h30 mới dậy", "bên phải chứ" | a second, separate draft (or a question) | the corrected draft **replaces** the sender's previous unsaved draft (old one `discarded`, `errorCode: 'REPLACED'`); a saved one is never changed (`PREVIOUS_SAVED` + `link`) |
+| A feed like one logged within 10 minutes | saved twice | `warnings: ['duplicate_suspected']`; confirm answers `conflict` / `DUPLICATE_SUSPECTED` unless `acknowledge` has it ("Vẫn lưu") |
+| "cảm ơn Lumi", "chào", "ok", "Thanks!", "vừa ghi rồi" | "Xem nhật ký hay ghi thêm?" (1 credit held) | a short reply at `startTask` (`SMALL_TALK`), **0 credits, no model** |
+| "thời tiết hôm nay?", "giúp mình với", "write me a poem", an injection | "Xem nhật ký hay ghi thêm?" / failed | `HELP` reply (what Lumi can do), `ready`, **0 credits**; never a dead end |
+| "con 7 tháng ăn gì được?" | "Xem nhật ký hay ghi thêm?" | the care meal-ideas topic (approved recipes, else the honest fallback) |
+| Medicine reminder ("nhắc 8h cho bé uống siro") | — | no draft; `MEDICINE_NOT_SCHEDULED` notice (add it yourself in Nhắc việc), released |
+
+Unchanged: health signs first and free (keywords at `startTask`, structured signs in the
+worker), roles per module (Chi tiêu right, reminders Cùng nuôi only, care `rhythm.checkin`),
+confirm-only writes, idempotency, fencing, 30-min clarification TTL, ≤ 4 rounds.
+
+### Contract changes (exact fields)
+
+**Drafts** (`draftPayloadSchema`; all new fields optional, so old drafts parse):
+
+```ts
+type SpanLink = { derived: 'startedAt' | 'endedAt' | 'occurredAt' | 'durationMin' } | null;
+
+// sleep
+{ kind: 'sleep', startedAt: iso | null, endedAt: iso | null,
+  durationMin?: int > 0 | null,   // NEW: minutes; = endedAt − startedAt whenever both are set
+  linked?: SpanLink }             // NEW: which field the server computed
+// breast
+{ kind: 'breast', occurredAt, durationMin, side,
+  linked?: SpanLink }             // NEW: { derived: 'occurredAt' } when the start came from an end
+// expense
+{ kind: 'expense', merchant, totalMinor, currency, date, subtotalMinor, taxMinor, categoryId,
+  babyId, keepReceipt,
+  note?: string (≤ 80) | null }   // NEW: what was bought ("sữa"); saved as "sữa · Con Cưng"
+```
+
+Keeping a span linked while editing (CH06 sheet), recommended:
+
+- **sleep** `linked.derived = 'endedAt'` ("ngủ 9 tiếng" + a start): moving the start moves the end
+  by the same amount (duration kept); editing the end recomputes `durationMin`; editing the
+  duration moves the end. `derived = 'startedAt'` ("dậy lúc 6h, ngủ 9 tiếng"): the end is the
+  fixed point — moving the end moves the start; editing the duration moves the start.
+  `null` / absent: two independent times, `durationMin` is shown read-only as end − start.
+- **breast** `linked.derived = 'occurredAt'` ("vừa bú mẹ 20 phút", "bú 15 phút, xong lúc 8h"):
+  the end (occurredAt + durationMin) is the fixed point — editing the duration moves the start.
+- `patchDraft` accepts `durationMin` / `linked` back; for a sleep with both ends the **server
+  recomputes `durationMin` = end − start** (its figure wins), so the app never has to be exact.
+- The expense `note` is editable (≤ 80); the saved Chi tiêu note is `note · merchant` (≤ 80).
+
+**Clarifications** (server catalog, `Clarification` shape unchanged; the app treats choice ids as
+opaque and sends them back as `choiceId`, or `text` when `allowText`):
+
+| `field` | Question (vi) | Choices | `allowText` | Answer |
+|---|---|---|---|---|
+| `time.ampm` | "Giờ đó là buổi sáng hay chiều tối?" | `am` "Buổi sáng", `pm` "Chiều / tối" | false | applies to every time without a period word in the message |
+| `time.missing` | "Việc này lúc mấy giờ?" | `ago_0` "Vừa xong (14:20)", `ago_30` "30 phút trước (13:50)", `ago_60` "1 tiếng trước (13:20)" | **true** | a chip, or a typed time ("21h", "9h tối", "21:30"); never in the future |
+| `time.start` | "Bé bắt đầu ngủ lúc mấy giờ?" | `at_<YYYY-MM-DD>_<HH:mm>` × 2 on the half hour, latest = send time − length, labels "21:00 tối qua" / "22:00 tối qua" / "12:30 hôm nay" | **true** | a chip, or a typed time; the end is computed (`linked.derived = 'endedAt'`) |
+| `reminder.assignee.<i>` | "Tin nhắn ghi “bố” cho việc “đi lấy kết quả”. Giao việc này cho ai?" | eligible members (uid ids, "Bạn (Mai)" first) + `none` "Không giao" | false | the member's uid on the draft (`assigneeUid`), re-checked at confirm |
+
+`allowText: true` → show a "Khác" entry that opens a time input and sends `text`. An answer the
+server cannot read leaves the field missing on the draft (review), never a second question.
+Server questions reuse the first reading: **no second model call, no extra credit**.
+
+**Task view** (`AssistantTaskView`):
+
+```ts
+routing?: { reason: 'spending'; from: 'shared_thread'; at: 'start' | 'worker' } | null  // NEW
+```
+
+- `at: 'start'`: money in the words → the task's `conversationId` is the author's private thread
+  `cv_p_<32 hex>` (one per person and baby, listed by `listAssistantHistory` with the other private
+  threads) even though the app sent the shared thread id. Show the reply there (or a link to it)
+  and the `SPENDING_PRIVATE` notice; the shared thread never gets the message.
+- `at: 'worker'`: the detector missed it but the model found an expense: in the settle transaction
+  the task, its user message(s) and every later part move to the author's private thread (the
+  shared copy is deleted, the thread's `lastTaskId` goes back to the previous task). A shared-thread
+  listener sees the user message disappear; `getAssistantTask` now answers `NOT_MEMBER` to the
+  other members. The app should refresh the task snapshot (its `conversationId` changed).
+
+**Text parts**: `{ type: 'text', text, code?, link? }` — `link` is NEW (an app route built by the
+server). New `code`s (`assistantNoticeCodes`): `SMALL_TALK`, `HELP`, `SPENDING_PRIVATE`,
+`CORRECTION_APPLIED`, `PREVIOUS_SAVED` (with `link` to the saved record), `MEDICINE_NOT_SCHEDULED`,
+`DUPLICATE_SUSPECTED`. Unknown codes must still render as plain text.
+
+**Outcomes / credits** (additions to the Worker table below):
+
+| Outcome | State | Credits | Parts |
+|---|---|---|---|
+| small talk (at `startTask`, no model) | `ready` | **0** (`usage: none`, no reservation) | `text` `SMALL_TALK` |
+| small talk / out of scope / "Ghi thêm" with nothing (model) | `ready` | **release** | `text` `HELP` (or `SMALL_TALK`) |
+| correction of a saved item / medicine reminder only | `ready` | release | `PREVIOUS_SAVED` / `MEDICINE_NOT_SCHEDULED` |
+| server question (`time.*`, `reminder.assignee.*`) | `awaiting_clarification` | hold (same reservation) | `clarification` |
+| drafts (typed expense / reminder included) | `ready` | commit 1 | notices + `draft_reference` |
+| caregiver: expense / reminder only | `failed` · `WRITE_DENIED` | release | notice ("Vai trò của bạn chưa được ghi Chi tiêu" / "Chỉ Cùng nuôi tạo được nhắc việc") |
+
+**Quote / start**: unchanged requests. `startTask` may now answer a ready task with `credits: 0`
+for small talk (like health). `taskVisibilityFor` (contracts) takes an optional `text`.
+
+**Not changed**: `confirmDrafts`, `discardDraft`, events, history paging, the photo flow.
+
 ## Commands
 
 | Callable | Request (beyond the envelope) | `data` | Notes |

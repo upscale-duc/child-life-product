@@ -22,7 +22,7 @@ switches: [`runbook.md`](runbook.md).
 | Rules / API integration | `firebase/tests/assistant.rules.test.ts`, `assistant-images.rules.test.ts` (Firestore + Storage emulators) | Owner / shared-thread reads, no client writes, writer documents pass the app's create Rules, Storage upload ownership | Indexes (the emulator does not enforce composite indexes), IAM, App Check |
 | Worker integration (fake provider) | `firebase/tests/assistant.integration.test.ts`, `assistant-images.integration.test.ts`, `assistant-care.integration.test.ts`, plus `ai-summary.integration.test.ts` / `entitlements.integration.test.ts` for D-075 #1 | Quote → reserve → worker → settle → confirm on real Firestore transactions with a scripted `ModelGateway`; idempotency, partial save, fencing, leases, retention state | Model quality, latency, cost, real Storage / Cloud Run behaviour, distributed contention on dev |
 | App (widget + golden) | `apps/mobile/test/features/assistant_chat_test.dart`, `assistant_photo_care_test.dart`; goldens `test/golden/assistant_golden_test.dart`, `assistant_a5_golden_test.dart` (Light / Night care × vi / en) with a `FakeAssistantRepository` | Typed cards, per-item results, kept input, reconnect merge, gating copy, both languages, both palettes | The real callables, real devices, keyboard / camera / permissions, store purchase |
-| Model / OCR evaluation | **Not built — design in §5; BLOCKED (§7)** | — | — |
+| Model / OCR evaluation | Text: **built and run live 2026-10-15** (`firebase/functions/test/eval/`, [`eval-2026-10-15.md`](eval-2026-10-15.md)); photos: not built | Typed-message flows on the real model end to end (73 synthetic cases) | Photos, general accuracy beyond the dataset |
 | Store / real device | Not run (D-074 store later; devices not run) | — | — |
 | Race on the real backend | Emulator only (M02, M03); dev run not done (D-072 #4: no staging, dev is the place) | At most one reservation of 20 concurrent starts on the emulator | Contention on Cloud Firestore / Cloud Run |
 
@@ -135,7 +135,16 @@ language or image understanding and has no heuristics pretending to be a model (
 | Tokens and cost per task | The AI budget charges a flat 300 VND per call (`assistantCallCostVnd`), not the real price; tokens are not recorded today | Live eval cost report |
 | Provider-side retention and terms | Consent copy (G05, Q-076) must not promise more than the provider gives | Owner / legal review, not a test |
 
-## 5. Live eval harness (design; not built)
+## 5. Live eval harness (text built 2026-10-15; photos: design)
+
+Built for typed messages: `firebase/functions/test/eval/assistant-live-eval.ts` with the dataset
+`assistant-eval-cases.json` (73 synthetic cases), run through the real callables and worker on
+the Firestore emulator with the real gateway; results in [`eval-2026-10-15.md`](eval-2026-10-15.md).
+Run: `OPENAI_API_KEY=$(gcloud secrets versions access latest --secret=OPENAI_API_KEY --project
+child-life-dev) firebase emulators:exec --only firestore --config <isolated ports> --project
+demo-child-life-eval "node_modules/.bin/tsx test/eval/assistant-live-eval.ts --out <dir>
+[--only ids] [--max-calls N]"` from `firebase/functions` (never echo the key; `--max-calls` is a
+hard cap on provider calls). The photo part below is still a design.
 
 **Where:** a script outside the deployed bundle, e.g. `firebase/functions/eval/assistant-eval.ts`,
 run with `tsx` by an engineer. It is never a Cloud Function and never runs in CI.
@@ -214,7 +223,8 @@ every model or prompt version change; a regression set of every past failure is 
 |---|---|---|
 | Deterministic pack cases (37) through real code | **PASS** | §2; counts in the test report |
 | Pack `model-eval-dataset.json` (21 cases) | **NOT RUN LIVE** | Labels only; never reported as passed because the JSON loads |
-| Live eval run (text, receipts, notes, safety) | **BLOCKED** | No `OPENAI_API_KEY` secret on `child-life-dev` (unset as of the Premium report, 2026-10-15) and no owner approval for the spend or for sending the synthetic images to the provider; harness not built |
+| Live eval run — text (logs, expenses, reminders, durations, corrections, reads, care, health, small talk, safety) | **RUN 2026-10-15** | Owner approved the dev key and ≤ ~150 calls: before 34 % → after 100 % of 73 synthetic cases fully correct ([`eval-2026-10-15.md`](eval-2026-10-15.md)); not yet the §6 thresholds (≥ 120 cases, second labeller) |
+| Live eval run — receipts, notes (photos) | **NOT RUN** | Harness for photos not built; no approval yet to send the synthetic images |
 | Human review, clinical content for care / recipes / health numbers | **BLOCKED** | Reviewer not named (Q-069); content is engineering draft or placeholder |
 | Pilot (time saved vs forms, return days, usefulness, cost per household) | Not started | Needs the live gate first; no assistant analytics events exist yet (runbook §8) |
 

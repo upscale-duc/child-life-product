@@ -6,6 +6,7 @@ import {
   draftPayloadSchema,
   draftProblems,
   familyCan,
+  hasDayPeriod,
   localDateIn,
   spansOverlap,
   type AssistantPart,
@@ -49,7 +50,10 @@ export interface ModuleEntry {
   action: FamilyAction | null;
   /** Slice A3: a role check that is not a family action (Chi tiêu rights, reminders). */
   can?: (m: MemberGrant) => boolean;
-  /** Slice A3: drafted from photos only (the text extraction has no expense / reminder fields). */
+  /**
+   * Slice A3: drafted from photos only. Rework 2026-10-15: no kind is photo-only any more (text
+   * drafts expenses and reminders, `assistant-text.ts`); kept for older callers.
+   */
   photoOnly?: boolean;
 }
 
@@ -58,10 +62,11 @@ export const moduleRegistry: Record<DraftKind, ModuleEntry> = {
   breast: { available: true, action: 'rhythm.checkin' },
   sleep: { available: true, action: 'rhythm.checkin' },
   observation: { available: true, action: 'rhythm.checkin' },
-  // ---- Slice A3 (P-157): Chi tiêu (VND, Rules `canRecordSpending`) and one-off reminders
-  // (Cùng nuôi only), from photos; text messages keep MODULE_UNAVAILABLE for these kinds. ----
-  expense: { available: true, action: null, can: canRecordSpending, photoOnly: true },
-  reminder: { available: true, action: null, can: canCreateReminders, photoOnly: true },
+  // ---- Slice A3 (P-157): Chi tiêu (Rules `canRecordSpending`) and one-off reminders (Cùng
+  // nuôi only). Rework 2026-10-15: from photos AND typed messages ("mua sữa hết 500k",
+  // "nhắc mai 9h mua bỉm"). ----
+  expense: { available: true, action: null, can: canRecordSpending },
+  reminder: { available: true, action: null, can: canCreateReminders },
   // ---- end slice A3 ----
   // P-157: there is no meal log module at all.
   meal: { available: false, action: null },
@@ -220,6 +225,8 @@ const periodWords = [
  * right after a number.
  */
 export function needsPeriod(texts: readonly string[]): boolean {
+  // Rework 2026-10-15: also unaccented periods next to a time ("9h sang", "toi qua").
+  if (hasDayPeriod(texts.join(' '))) return false;
   const t = ` ${fold(texts.join(' '))} `;
   if (periodWords.some((w) => new RegExp(`(^|[^\\p{L}])${w}([^\\p{L}]|$)`, 'u').test(t))) {
     return false;
@@ -476,6 +483,8 @@ export interface PreparedDraft {
   uncertainFields: string[];
   problems: DraftProblem[];
   warnings: ('duplicate_suspected' | 'overlap')[];
+  /** Rework 2026-10-15: the previous turn's unsaved draft this one corrects (discarded at settle). */
+  replaces?: { taskId: string; draftId: string };
 }
 
 export type PrepareNotice = {
@@ -535,7 +544,8 @@ export function prepareDrafts(
   const today = localDateIn(s.zone, x.anchor);
   for (const intent of x.intents) {
     const mod = moduleRegistry[intent.kind];
-    // Slice A3: photo-only kinds (expense, reminder) are not drafted from text.
+    // Slice A3: photo-only kinds are not drafted here. Rework 2026-10-15: text expenses and
+    // reminders are planned by `planTextIntents` (assistant-text.ts), not by this A2 helper.
     if (!mod.available || !mod.action || mod.photoOnly) {
       notices.push({ kind: intent.kind, code: 'MODULE_UNAVAILABLE' });
       continue;
@@ -712,4 +722,35 @@ export async function lastMilkOf(
         (a.get('occurredAt') as Timestamp).toMillis(),
     )[0];
   return last?.get('data.milk') === 'formula' ? 'formula' : 'breast_milk';
+}
+
+// ---- Lumi rework 2026-10-15: care duplicates ("vừa ghi rồi"), a warning, never a merge ----
+
+/** Records of the same kind within 10 minutes (and, for a bottle, within 10 % of the amount). */
+export async function careDuplicateIn(
+  db: Firestore,
+  babyId: string,
+  p: DraftPayload,
+  exceptId: string | null,
+  tx?: FirebaseFirestore.Transaction,
+): Promise<boolean> {
+  if ((p.kind !== 'bottle' && p.kind !== 'breast') || !p.occurredAt) return false;
+  const at = Date.parse(p.occurredAt);
+  const q = db
+    .collection(`babies/${babyId}/records`)
+    .where('occurredAt', '>=', Timestamp.fromMillis(at - 10 * 60_000))
+    .where('occurredAt', '<=', Timestamp.fromMillis(at + 10 * 60_000));
+  const snap = tx ? await tx.get(q) : await q.get();
+  return snap.docs.some((d) => {
+    if (d.id === exceptId || d.get('deleted') === true || d.get('type') !== p.kind) return false;
+    if (p.kind === 'bottle') {
+      const ml = d.get('data.amountMl') as number | undefined;
+      return (
+        typeof ml === 'number' &&
+        p.amountMl !== null &&
+        Math.abs(ml - p.amountMl) <= p.amountMl * 0.1
+      );
+    }
+    return true;
+  });
 }

@@ -48,6 +48,31 @@ it should be switched on with the app's App Check rollout (open item, owner deci
 - **Medicine**: a prescription or a medicine line is never scheduled, never turned into a dose, and
   its text is neither kept (the cached reading keeps only the line kind) nor repeated in the chat.
 
+## 2b. Spending stays out of the shared thread (D-075 #2; rework 2026-10-15)
+
+Typed messages can now draft expenses, so the shared baby thread needs two locks:
+
+1. **At `startTask`, before anything is written**: contracts `spendingSignalsIn` /
+   `looksLikeSpending` (deterministic, vi with and without diacritics, en): a written amount
+   ("500k", "1tr2", "350.000đ", "$20", "20 đô", "€15"; never "39 độ", "6kg", "120ml", "12 trưa")
+   or a spending word (mua, trả tiền, tiền, chi tiêu, chi phí, đóng tiền, học phí, hoá đơn, thanh
+   toán, chuyển khoản; unaccented "mua", "het 500"; spent, paid, bought, buy, cost, price, bill,
+   fee, tuition…). Such a text — a mixed one too ("bé bú 120ml, mua sữa 500k") — starts as a
+   **private** task in the author's own thread (`cv_p_<hash(uid, baby)>`, `task.routing`), so the
+   message never reaches the shared thread. Conservative on purpose: a false positive only keeps a
+   message private.
+2. **In the worker, when only the model saw it** (`work.spending`: any `expense` intent, also one
+   the role cannot save): inside the fenced settle transaction, before the drafts or the reply are
+   written, the task's user message(s) are deleted from the shared thread and re-written in the
+   author's private thread, the shared thread's `lastTaskId` is set back to its previous task, and
+   the task becomes `visibility: 'private'` with `routing.at = 'worker'` — so `getAssistantTask`,
+   history and confirm answer `NOT_MEMBER` to the other members from then on. Tested on the
+   emulator: a caregiver never sees the text or the draft (`assistant-text.integration.test.ts`).
+
+Remaining exposure (documented, not hidden): in case 2 the user message was visible in the shared
+thread between `startTask` and the settle (seconds) to members listening to it. Case 1 covers every
+message with an amount or a spending word; case 2 is the residue.
+
 ## 3. Writes
 
 Every domain write goes through a deterministic writer after the person's confirm, producing exactly
@@ -110,3 +135,11 @@ deletes a saved expense, reminder, record or check-in — the app explains this 
 - HEIC: accepted at upload, but the server decodes only what its sharp build supports; the app
   should convert HEIC to JPEG before upload (a refused photo costs nothing).
 - Live provider behaviour on real receipts / notes is not proven by these tests (fake gateway).
+  Typed messages were measured live on dev's model on 2026-10-15 (73 synthetic cases,
+  [`eval-2026-10-15.md`](eval-2026-10-15.md)); photos were not.
+- Rework 2026-10-15: the request now carries the household's currency, its spending category
+  names (custom names are family data, not child data), a calendar and the sender's previous turn
+  (their own words, ≤ 60 min, same thread). Still no uid, name, birth date or record outside that
+  turn. The cached text reading (`textReading/current`) is never client-readable and is deleted
+  when the question closes, expires or the task stops.
+- The medicine rule now also covers typed reminders ("cho bé uống siro"): never scheduled.

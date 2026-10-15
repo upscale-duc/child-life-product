@@ -563,10 +563,13 @@ describe('D: drafts, validation, revision, partial save, retry', () => {
     ]);
     const { taskId, snap } = await prepared([reversed], 'Con ngủ từ 10 giờ sáng tới 9 giờ.');
     const d = drafts(snap)[0]!;
+    // Rework 2026-10-15: the draft also carries its length (none: the end is before the start).
     expect(d.payload).toEqual({
       kind: 'sleep',
       startedAt: '2026-10-15T03:00:00.000Z',
       endedAt: '2026-10-15T02:00:00.000Z',
+      durationMin: null,
+      linked: null,
     });
     expect(d.state).toBe('needs_review');
     expect(d.uncertainFields).toContain('endedAt');
@@ -913,19 +916,25 @@ describe('E: schema, grounding, model failure', () => {
     expect(await win()).toMatchObject({ used: 1, reserved: 0 });
   });
 
-  it('"8 giờ" with no morning/evening asks first; the answer is applied, never guessed', async () => {
+  it('"8 giờ" with no morning/evening asks when both are possible; the answer is applied, never guessed', async () => {
     const at8 = extraction([
       intent('bottle', { amountMl: 120, time: '08:00', dayOffset: 0 }, [
         { field: 'time', text: '8 giờ' },
       ]),
     ]);
-    const gw = fakeModelGateway({ extract: [at8, at8] });
-    const r = await start('8 giờ con bú bình 120 ml', { gw });
-    await work(r.taskId!, gw);
+    // Rework 2026-10-15: at 14:20, 20:00 would be in the future, so 08:00 needs no question.
+    const day = await prepared([at8], '8 giờ con bú bình 120 ml');
+    expect(day.snap.task.clarification).toBeNull();
+    expect(drafts(day.snap)[0]!.payload).toMatchObject({ occurredAt: '2026-10-15T01:00:00.000Z' });
+    // At 21:30 both 08:00 and 20:00 are past: asked once; the reading is reused (one call).
+    const evening = new Date('2026-10-15T14:30:00Z');
+    const gw = fakeModelGateway({ extract: [at8] });
+    const r = await start('8 giờ con bú bình 120 ml', { gw, at: evening });
+    await work(r.taskId!, gw, evening);
     const s1 = await snapshot(r.taskId!);
     expect(s1.task.clarification).toMatchObject({ field: 'time.ampm' });
     await submitClarification(
-      deps(gw),
+      deps(gw, evening),
       MOM,
       E({
         taskId: r.taskId,
@@ -935,13 +944,12 @@ describe('E: schema, grounding, model failure', () => {
         text: null,
       }),
     );
-    await work(r.taskId!, gw);
+    await work(r.taskId!, gw, evening);
     const d = (await snapshot(r.taskId!)).drafts[0]!;
-    // 20:00 is after the 14:20 anchor: kept for review, never moved to yesterday.
     expect(d.payload).toMatchObject({ occurredAt: '2026-10-15T13:00:00.000Z' });
-    expect(d.state).toBe('needs_review');
-    expect(d.problems).toContain('FUTURE_TIME');
-    expect(await win()).toMatchObject({ used: 1, reserved: 0 });
+    expect(d.state).toBe('draft');
+    expect(gw.calls.extract).toHaveLength(1);
+    expect(await win()).toMatchObject({ used: 2, reserved: 0 });
   });
 
   it('evidence not in the person’s words makes the field uncertain (review before save)', async () => {
@@ -957,11 +965,12 @@ describe('E: schema, grounding, model failure', () => {
     expect(r.data.items[0]!.errorCode).toBe('REVIEW_REQUIRED');
   });
 
-  it('kinds without a module in this slice are not drafted: MODULE_UNAVAILABLE, released', async () => {
+  it('kinds without a module are not drafted: MODULE_UNAVAILABLE, released', async () => {
+    // Rework 2026-10-15: typed expenses and reminders have modules now; meals still do not.
     const exp = extraction([
-      intent('expense', { title: 'Bỉm' }, [{ field: 'title', text: 'bỉm' }]),
+      intent('meal', { title: 'Cháo bí đỏ' }, [{ field: 'title', text: 'cháo bí đỏ' }]),
     ]);
-    const { snap } = await prepared([exp], 'Chi 200 nghìn mua bỉm');
+    const { snap } = await prepared([exp], 'Bé ăn cháo bí đỏ');
     expect(snap.task).toMatchObject({
       state: 'failed',
       errorCode: 'MODULE_UNAVAILABLE',

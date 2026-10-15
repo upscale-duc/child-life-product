@@ -10,6 +10,7 @@ import type {
   AssistantEvent,
   AssistantMessage,
   AssistantPart,
+  AssistantRouting,
   AssistantScope,
   AssistantTaskSnapshot,
   AssistantTaskView,
@@ -71,6 +72,11 @@ export interface StoredTask {
   /** D-075 #2: absent on tasks from before D-075 (private). */
   visibility?: 'shared' | 'private';
   author?: AssistantAuthor | null;
+  // ---- Lumi rework 2026-10-15 ----
+  /** Private because of money although sent from the shared thread. */
+  routing?: AssistantRouting | null;
+  /** The conversation's last task when this one started (the sender's previous turn). */
+  previousTaskId?: string | null;
 }
 
 export const storedTask = (snap: DocumentSnapshot) => snap.data() as StoredTask;
@@ -101,6 +107,8 @@ export function taskView(snap: DocumentSnapshot, now: Date | null = null): Assis
     // D-075 #2: shared thread or private, and who asked.
     visibility: t.visibility ?? 'private',
     author: t.author ?? null,
+    // Rework 2026-10-15: kept private because of money (null otherwise).
+    routing: t.routing ?? null,
   };
 }
 

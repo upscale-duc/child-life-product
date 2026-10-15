@@ -183,12 +183,14 @@ export function expenseFromDraft(
   if (problems.size > 0 || !categoryIdSchema.safeParse(categoryId).success) {
     return { ok: false, problems: [...problems] };
   }
+  // Rework 2026-10-15: a typed expense's "what" (note) and its shop, as the form's one note.
+  const note = [p.note?.trim(), p.merchant?.trim()].filter((v) => !!v).join(' · ');
   return {
     ok: true,
     amount: amount!,
     currency,
     spentOn: p.date!,
-    note: (p.merchant ?? '').trim().slice(0, spendingLimits.noteMax),
+    note: note.slice(0, spendingLimits.noteMax),
     categoryId,
   };
 }

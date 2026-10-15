@@ -18,6 +18,7 @@ import {
   patchDraftRequestSchema,
   quoteTaskRequestSchema,
   setAssistantConsentRequestSchema,
+  smallTalkIn,
   startTaskRequestSchema,
   submitClarificationRequestSchema,
   taskInputKey,
@@ -79,6 +80,8 @@ import {
   taskView,
 } from './assistant-store.js';
 import { healthSignalsIn, moduleAllows, reviewFields } from './assistant-tools.js';
+// Lumi rework 2026-10-15: small talk answered at once; money kept out of the shared thread.
+import { privateConversationId, smallTalkPart } from './assistant-talk.js';
 // Slice A5 (care): health support with the approved number; CH17 feedback rules.
 import {
   careFeedbackFields,
@@ -354,20 +357,28 @@ export async function startTask(
   const signs = text ? healthSignalsIn(text) : [];
   // Slice A5: the household's approved emergency number (none when the pack has no entry).
   const healthPart = signs.length > 0 ? await healthSupportPart(db, s, signs) : null;
+  // Rework 2026-10-15: a message that is only small talk ("cảm ơn Lumi", "ok") gets the
+  // server's short reply at once — no model, no quote, 0 credits.
+  const talk = text && signs.length === 0 && modality === 'text' ? smallTalkIn(text) : null;
   const consent = assistantConsentGranted(await consentRef(db, uid).get());
   const live = await liveAvailable(deps, s);
   const pool = await assistantPool(db, s, now);
   const policy = creditPolicy(s.ctx.config);
-  const credits = signs.length > 0 ? 0 : creditsFor(modality, policy);
+  const credits = signs.length > 0 || talk ? 0 : creditsFor(modality, policy);
   const ref = taskRef(db, taskId);
   const at = Timestamp.fromDate(now);
   // ---- D-075 #2: the baby's shared thread, spending excluded ----
-  const visibility = taskVisibilityFor({
+  const visibilityInput = {
     scope: req.scope,
     modality,
     intentHint: quoteSnap.exists ? ((quoteSnap.get('intentHint') as string | null) ?? null) : null,
     role: s.member.role,
-  });
+  };
+  // Rework 2026-10-15: money in the words ("mua sữa hết 500k", mixed messages too) keeps the
+  // task private from the start: it never reaches the shared thread.
+  const visibility = taskVisibilityFor({ ...visibilityInput, text });
+  const routedForMoney =
+    visibility === 'private' && taskVisibilityFor(visibilityInput) === 'shared';
   const author: AssistantAuthor = authorOf(s.member);
   const sharedId = sharedConversationId(req.scope.babyId);
   // The conversation the app is showing: the caller's own or the shared thread (validated).
@@ -392,7 +403,10 @@ export async function startTask(
       ? sharedId
       : ownPrivate
         ? req.conversationId!
-        : conversationIdFor(taskId);
+        : routedForMoney
+          ? // Rework 2026-10-15: the author's own private thread about this baby.
+            privateConversationId(uid, req.scope.babyId)
+          : conversationIdFor(taskId);
   // ---- end D-075 #2 ----
 
   const out = await db.runTransaction(async (tx) => {
@@ -430,6 +444,16 @@ export async function startTask(
         ? ((existing.get('visibility') as string | undefined) ?? 'private')
         : visibility,
       author: resume ? (existing.get('author') ?? author) : author,
+      // Rework 2026-10-15: why it is private although sent from the shared thread; the
+      // sender's previous turn in this thread (corrections, "à không, 150ml").
+      routing: resume
+        ? (existing.get('routing') ?? null)
+        : routedForMoney
+          ? { reason: 'spending', from: 'shared_thread', at: 'start' }
+          : null,
+      previousTaskId: resume
+        ? (existing.get('previousTaskId') ?? null)
+        : ((conv.get('lastTaskId') as string | undefined) ?? null),
       requestId: req.clientRequestId,
       inputKey,
       input: { text, attachmentIds: req.attachmentIds },
@@ -474,6 +498,49 @@ export async function startTask(
       }
     };
 
+    // Rework 2026-10-15: small talk is answered at once (free, no quote, no model).
+    if (talk && !resume) {
+      lastMsg = appendMessages(
+        tx,
+        db,
+        convId,
+        lastMsg,
+        [
+          { role: 'user', parts: userParts(text), taskId, author },
+          { role: 'assistant', parts: [smallTalkPart(talk, req.locale)], taskId },
+        ],
+        now,
+      );
+      lastEvent = appendEvents(
+        tx,
+        db,
+        taskId,
+        lastEvent,
+        [
+          { type: 'accepted', payload: { state: 'queued', credits: 0 } },
+          { type: 'answer_ready', payload: { state: 'ready' } },
+        ],
+        now,
+      );
+      convWrite(taskId);
+      tx.set(ref, {
+        ...base,
+        quoteId: null,
+        credits: 0,
+        plan: pool.plan,
+        windowId: null,
+        reservationId: null,
+        usage: 'none',
+        state: 'ready',
+        version,
+        errorCode: null,
+        health: null,
+        smallTalk: talk,
+        eventSeq: lastEvent,
+        readyAt: at,
+      });
+      return { replay: false };
+    }
     // Health support first: free, no quote needed, no model (U10, J10).
     if (signs.length > 0 && !resume) {
       lastMsg = appendMessages(
@@ -712,6 +779,7 @@ export async function submitClarification(
           eventSeq: seq,
           updatedAt: at,
         });
+        tx.delete(ref.collection('textReading').doc('current'));
         return { expired: true };
       }
       const answer = { choiceId: req.choiceId, text: answerText };
@@ -818,13 +886,26 @@ export async function patchDraft(
       if (now.getTime() >= Date.parse(cur.expiresAt)) throw fail('DRAFT_EXPIRED');
       if (cur.revision !== req.expectedRevision) throw fail('DRAFT_STALE');
       if (req.payload.kind !== cur.payload.kind) throw fail('VALIDATION_FAILED', { field: 'kind' });
+      // Rework 2026-10-15: a sleep's length follows its two ends (the server's figure wins).
+      let payload = req.payload;
+      if (
+        payload.kind === 'sleep' &&
+        payload.startedAt &&
+        payload.endedAt &&
+        payload.durationMin !== undefined
+      ) {
+        const span = Math.round(
+          (Date.parse(payload.endedAt) - Date.parse(payload.startedAt)) / 60_000,
+        );
+        payload = { ...payload, durationMin: span > 0 ? span : null };
+      }
       const before = cur.payload as Record<string, unknown>;
-      const after = req.payload as Record<string, unknown>;
+      const after = payload as Record<string, unknown>;
       const changed = new Set(
         Object.keys(after).filter((k) => canonical(after[k]) !== canonical(before[k])),
       );
-      const problems = draftProblems(req.payload, now);
-      const review = reviewFields(req.payload, problems);
+      const problems = draftProblems(payload, now);
+      const review = reviewFields(payload, problems);
       const uncertain = new Set(
         cur.uncertainFields.filter((f) => !changed.has(f) && !req.confirmedFields.includes(f)),
       );
@@ -832,7 +913,7 @@ export async function patchDraft(
       for (const m of review.missing) uncertain.delete(m);
       const needsReview = uncertain.size > 0 || review.missing.length > 0;
       tx.update(ref, {
-        payload: req.payload,
+        payload,
         missingFields: review.missing,
         uncertainFields: [...uncertain].sort(),
         revision: cur.revision + 1,
@@ -1006,6 +1087,8 @@ async function stopTask(
     ];
     if (release) events.push({ type: 'usage_updated', payload: { usage: 'released', credits: 0 } });
     const seq = appendEvents(tx, db, taskId, t.eventSeq ?? 0, events, now);
+    // Rework 2026-10-15: a text reading kept for an open question goes with the task's stop.
+    tx.delete(ref.collection('textReading').doc('current'));
     tx.update(ref, {
       state,
       errorCode,

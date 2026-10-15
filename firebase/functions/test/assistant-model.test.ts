@@ -5,6 +5,7 @@ import {
   buildWordRequest,
   callWithTimeout,
   extractionJsonSchema,
+  extractionSystemPrompt,
   fakeModelGateway,
   ModelUnavailable,
   openAiModelGateway,
@@ -102,14 +103,19 @@ describe('OpenAI extraction request', () => {
     expect(user.anchor).toEqual(input.anchor);
     expect(user.allowed_intents).toEqual(input.allowedIntents);
     expect(user.allowed_reads).toEqual(input.allowedReads);
-    // No identity or family data travels with the request.
+    // No identity or family data travels with the request (rework 2026-10-15: the calendar, the
+    // household currency and category names, the sender's previous turn — never a uid or name).
     expect(Object.keys(user).sort()).toEqual(
       [
         'allowed_intents',
         'allowed_reads',
         'anchor',
+        'calendar',
         'clarification_answers',
+        'household_currency',
         'locale',
+        'previous_turn',
+        'spending_categories',
         'task',
         'untrusted_user_text',
       ].sort(),
@@ -125,7 +131,65 @@ describe('OpenAI extraction request', () => {
     expect(dig(intent, 'properties.fields').required).toEqual(
       Object.keys(dig(intent, 'properties.fields.properties')),
     );
-    expect(schema.required).toEqual(['intents', 'reads', 'clarification', 'care', 'healthSigns']);
+    expect(schema.required).toEqual([
+      'intents',
+      'reads',
+      'clarification',
+      'care',
+      'healthSigns',
+      'smallTalk',
+      'outOfScope',
+    ]);
+  });
+
+  it('v3 (rework 2026-10-15): expense / reminder fields, the household categories only, corrections', () => {
+    const schema = extractionJsonSchema(['expense', 'reminder'], [], ['c_milk', 'c_hocboi']);
+    const intent = dig(schema, 'properties.intents.items');
+    expect(intent.required).toContain('correctsPrevious');
+    const fields = dig(intent, 'properties.fields.properties');
+    for (const k of ['amount', 'currency', 'categoryId', 'merchant', 'date', 'assigneeText']) {
+      expect(Object.keys(fields)).toContain(k);
+    }
+    expect(dig(fields, 'categoryId.anyOf.0').enum).toEqual(['c_milk', 'c_hocboi']);
+    expect(dig(fields, 'currency.anyOf.0').enum).toContain('VND');
+    expect(dig(fields, 'dayOffset.anyOf.0').enum).toEqual([0, -1, -2]);
+    // Without categories the model cannot name one.
+    expect(
+      dig(
+        extractionJsonSchema(['expense'], []),
+        'properties.intents.items.properties.fields.properties.categoryId',
+      ),
+    ).toEqual({ type: 'null' });
+    const prompt = extractionSystemPrompt();
+    for (const words of [
+      '"500k" = 500000',
+      '"1tr2" = 1200000',
+      'assigneeText',
+      'correctsPrevious',
+      'smallTalk',
+      'outOfScope',
+      'never move a time',
+    ]) {
+      expect(prompt).toContain(words);
+    }
+    expect(assistantPromptVersion).toBe('assistant-extract-v3');
+    const body = buildExtractRequest(
+      {
+        ...input,
+        currency: 'VND',
+        categories: [{ id: 'c_milk', name: 'Sữa & ăn dặm' }],
+        calendar: [{ date: '2026-10-16', weekday: 'Thứ Sáu (Friday)', label: 'mai' }],
+        previous: { text: 'bé bú 120ml', drafts: [{ kind: 'bottle', amountMl: 120 }] },
+      },
+      'gpt-test',
+    );
+    const user = JSON.parse(dig(body, 'messages.1').content as string);
+    expect(user).toMatchObject({
+      household_currency: 'VND',
+      spending_categories: [{ id: 'c_milk', name: 'Sữa & ăn dặm' }],
+      calendar: [{ date: '2026-10-16', label: 'mai' }],
+      previous_turn: { text: 'bé bú 120ml' },
+    });
   });
 
   it('posts to chat completions with the bearer key and parses the JSON content', async () => {
@@ -223,6 +287,9 @@ describe('fake gateway', () => {
 
 describe('worker rules on model output', () => {
   it('"8 giờ" with no morning / evening anywhere needs a question; explicit forms do not', () => {
+    // Rework 2026-10-15: unaccented periods next to a time count too.
+    expect(needsPeriod(['be bu binh 150ml luc 9h sang'])).toBe(false);
+    expect(needsPeriod(['toi qua 10h bu 90ml'])).toBe(false);
     expect(needsPeriod(['8 giờ con bú bình 120 ml'])).toBe(true);
     expect(needsPeriod(['lúc 8 con ngủ'])).toBe(true);
     expect(needsPeriod(['8 giờ sáng con bú bình 120 ml, 9 giờ ngủ tới 10 giờ'])).toBe(false);

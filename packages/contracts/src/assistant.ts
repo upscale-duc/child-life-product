@@ -1,6 +1,8 @@
 import { z } from 'zod';
 // Chi tiêu currencies (D-075 #4).
 import { amountMaxFor, expenseCurrencies, isExpenseCurrency, legacyCurrency } from './spending.js';
+// Lumi rework 2026-10-15: the spending detector (D-075 #2).
+import { looksLikeSpending } from './assistant-text.js';
 
 /**
  * Child Life Assistant v3 (brief "Child-Life-Chat-Assistant-Implementation-v3", Figma CH01–CH28,
@@ -114,6 +116,11 @@ export type AssistantPart =
       text: string;
       /** Slice A5: a notice code the app may attach an action to (`assistantNoticeCodes`). */
       code?: AssistantNoticeCode;
+      /**
+       * Rework 2026-10-15: an app route the notice points to (e.g. `PREVIOUS_SAVED` → the saved
+       * record to edit in its module); built by the server, never by the model.
+       */
+      link?: string;
     }
   | { type: 'clarification'; schemaVersion: 1; clarification: Clarification }
   | { type: 'draft_reference'; schemaVersion: 1; draftId: string; revision: number }
@@ -196,6 +203,21 @@ export const assistantNoticeCodes = [
   'REGION_UNSUPPORTED',
   /** The baby has no date of birth: age-based content cannot be chosen. */
   'CARE_AGE_UNKNOWN',
+  // ---- Rework 2026-10-15 ----
+  /** A thank-you / hello / ok answered with a short reply: 0 credits. */
+  'SMALL_TALK',
+  /** Nothing to log or read: what Lumi can do (never a dead end): 0 credits. */
+  'HELP',
+  /** Money was mentioned: this task stays in the author's private thread (D-075 #2). */
+  'SPENDING_PRIVATE',
+  /** A correction ("à không, 150ml") replaced the previous unsaved draft. */
+  'CORRECTION_APPLIED',
+  /** A correction of something already saved: edit it in its module (`link`). */
+  'PREVIOUS_SAVED',
+  /** A medicine reminder is never scheduled by the assistant (add it in Nhắc việc). */
+  'MEDICINE_NOT_SCHEDULED',
+  /** Something very similar was just logged: check before saving. */
+  'DUPLICATE_SUSPECTED',
 ] as const;
 export type AssistantNoticeCode = (typeof assistantNoticeCodes)[number];
 
@@ -363,6 +385,16 @@ export type DraftState = (typeof draftStates)[number];
 
 const iso = z.iso.datetime({ offset: true });
 
+/**
+ * Rework 2026-10-15: which field of a span the server computed from the others, so the app keeps
+ * start, end and duration linked while the person edits (`docs/assistant/api.md`). Absent / null
+ * = nothing derived.
+ */
+export const spanLinkSchema = z
+  .object({ derived: z.enum(['startedAt', 'endedAt', 'occurredAt', 'durationMin']) })
+  .nullable();
+export type SpanLink = z.infer<typeof spanLinkSchema>;
+
 export const bottleDraftSchema = z.object({
   kind: z.literal('bottle'),
   /** Positive, within the module's limits. */
@@ -376,11 +408,21 @@ export const breastDraftSchema = z.object({
   /** Nursing is minutes, never converted to ml. */
   durationMin: z.number().int().positive().nullable(),
   side: z.enum(['left', 'right', 'both']).nullable(),
+  /** Rework 2026-10-15: `{ derived: 'occurredAt' }` when the start was computed from an end. */
+  linked: spanLinkSchema.optional(),
 });
+
 export const sleepDraftSchema = z.object({
   kind: z.literal('sleep'),
   startedAt: iso.nullable(),
   endedAt: iso.nullable(),
+  /**
+   * Rework 2026-10-15: the sleep's length in minutes as said ("ngủ 9 tiếng") or as computed from
+   * the two ends; the server keeps it equal to end − start whenever both are set (patchDraft
+   * recomputes it). Optional: drafts from before the rework lack it.
+   */
+  durationMin: z.number().int().positive().nullable().optional(),
+  linked: spanLinkSchema.optional(),
 });
 export const expenseDraftSchema = z.object({
   kind: z.literal('expense'),
@@ -400,6 +442,11 @@ export const expenseDraftSchema = z.object({
   /** Optional child attribution; the expense stays the household's. */
   babyId: z.string().max(128).nullable(),
   keepReceipt: z.boolean(),
+  /**
+   * Rework 2026-10-15: what was bought ("Sữa", "Học bơi") from a typed message; saved as the
+   * expense note (with the merchant, ≤ 80). Optional: photo drafts and older drafts lack it.
+   */
+  note: z.string().max(80).nullable().optional(),
 });
 export const reminderDraftSchema = z.object({
   kind: z.literal('reminder'),
@@ -929,6 +976,21 @@ export interface AssistantTaskView {
   visibility?: AssistantVisibility;
   /** D-075 #2: who asked (the task's author); absent on tasks from before D-075. */
   author?: AssistantAuthor | null;
+  /**
+   * Rework 2026-10-15: why a task is private although it was sent from the shared thread —
+   * `spending` (money in the words, or an expense found by the model): the task, its message and
+   * its drafts live in the author's private thread (`conversationId`), never in the shared one.
+   */
+  routing?: AssistantRouting | null;
+}
+
+/** Rework 2026-10-15: `task.routing` (see `AssistantTaskView`). */
+export interface AssistantRouting {
+  reason: 'spending';
+  /** Where the person sent it from. */
+  from: 'shared_thread';
+  /** `start`: detected in the words at `startTask`; `worker`: moved after the model found an expense. */
+  at: 'start' | 'worker';
 }
 
 export interface AssistantDraftView extends ActionDraft {
@@ -1193,17 +1255,21 @@ export function inSharedThread(role: string): boolean {
  * Where a new task goes (D-075 #2, spending excluded): a TEXT task about a child, asked by a Cùng
  * nuôi or Người chăm sóc and not hinted as an expense, joins the baby's shared thread. Household
  * scope, an `expense` hint and every photo task (a photo may be a receipt; that is known only
- * after reading it) stay private to their author, as do all tasks of a relative.
+ * after reading it) stay private to their author, as do all tasks of a relative. Rework
+ * 2026-10-15: so does a text whose words look like money ([looksLikeSpending]: an amount
+ * "500k" / "$20", or mua, trả tiền, tiền, học phí, spent, paid…), mixed messages included.
  */
 export function taskVisibilityFor(x: {
   scope: AssistantScope;
   modality: TaskModality;
   intentHint: string | null;
   role: string;
+  text?: string | null;
 }): AssistantVisibility {
   return x.scope.type === 'child' &&
     x.modality === 'text' &&
     x.intentHint !== 'expense' &&
+    !(x.text && looksLikeSpending(x.text)) &&
     inSharedThread(x.role)
     ? 'shared'
     : 'private';

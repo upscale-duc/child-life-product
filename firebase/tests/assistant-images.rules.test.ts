@@ -132,6 +132,7 @@ beforeEach(async () => {
       state: 'awaiting_clarification',
     });
     await setDoc(doc(db, `assistantTasks/${TK}/imageReading/current`), { reading: {} });
+    await setDoc(doc(db, `assistantTasks/${TK}/textReading/current`), { ext: {} });
   });
 });
 
@@ -154,6 +155,8 @@ describe('assistantAttachments: uploader read-only; the cached reading never rea
     );
     await assertFails(setDoc(doc(as('mom'), 'assistantAttachments/at_new'), attachmentDoc()));
     await assertFails(getDoc(doc(as('mom'), `assistantTasks/${TK}/imageReading/current`)));
+    // Lumi rework 2026-10-15: nor the text reading kept while a server question is open.
+    await assertFails(getDoc(doc(as('mom'), `assistantTasks/${TK}/textReading/current`)));
   });
 
   it('the uploader stops reading once their membership ended', async () => {
@@ -331,6 +334,27 @@ describe('writer documents pass the app’s create rules (P-156)', () => {
     const e = expenseDoc(mom, 'manual', false, { currency: 'USD', totalMinor: 1250 });
     expect(e.data).toMatchObject({ amount: 1250, currency: 'USD' });
     await assertSucceeds(setDoc(doc(as('mom'), `babies/b1/expenses/${e.id}`), e.data));
+  });
+
+  // Lumi rework 2026-10-15: a typed expense ("mua sữa hết 500k ở Con Cưng") — what was bought
+  // and the shop make the one note; no receipt; same key set, accepted by the create rules.
+  it('typed expense: note = what · shop (≤ 80), no receipt, accepted by the create rules', async () => {
+    const e = expenseDoc(mom, 'manual', false, {
+      note: 'sữa',
+      merchant: 'Con Cưng',
+      totalMinor: 500_000,
+      subtotalMinor: null,
+      taxMinor: null,
+      categoryId: 'c_milk',
+      keepReceipt: false,
+    } as Partial<DraftPayload>);
+    expect(e.data).toMatchObject({ amount: 500_000, note: 'sữa · Con Cưng', receiptPath: null });
+    await assertSucceeds(setDoc(doc(as('mom'), `babies/b1/expenses/${e.id}`), e.data));
+    const long = expenseDoc(mom, 'manual', false, {
+      note: 'x'.repeat(80),
+      merchant: 'Shop',
+    } as Partial<DraftPayload>);
+    expect((long.data.note as string).length).toBe(80);
   });
 
   it('the writers refuse what the forms refuse (unknown currency, no time, past due, title too long)', () => {

@@ -25,7 +25,11 @@ interface ModelGateway {
 
 `ExtractInput`: the person's text (untrusted data), locale, anchor `{ date, time, weekday, zone }`
 (the original send instant in the baby's zone), earlier clarification answers, allowed intents and
-reads. `WordInput`: engine-written fact lines only.
+reads. Rework 2026-10-15 (`assistant-extract-v3`) adds: the household's Chi tiêu `currency`, its
+spending `categories` (`{ id, name }`, built-ins with the app's names + custom ones not hidden),
+a `calendar` (−7 … +14 days with weekday names and "hôm nay / mai / mốt" labels) and the sender's
+`previous` turn (their words and drafts in local time, no ids; ≤ 60 min, same thread). No uid,
+name or family data. `WordInput`: engine-written fact lines only.
 
 - `openAiModelGateway(apiKey, model, fetchImpl)`: chat completions, `store: false`, strict JSON schema
   narrowed to the request's allowlists, temperature 0 (wording 0.2), AbortSignal deadline (worker: 60 s
@@ -42,6 +46,15 @@ reads. `WordInput`: engine-written fact lines only.
   diagnosis or doses.
 
 ### Extraction schema (strict; anything else → `rejected`, 0 credits)
+
+Rework 2026-10-15 (v3) — additions, all required in the OpenAI JSON schema and optional in zod
+(so v2-shaped outputs still parse): intent fields `amount` (major units, shorthand expanded),
+`currency` (enum of `expenseCurrencies`), `categoryId` (enum of the household's category ids
+only), `merchant`, `date` (YYYY-MM-DD), `assigneeText` (the words naming who; never a person);
+`dayOffset` −2…0; intent-level `correctsPrevious`; top-level `smallTalk`, `outOfScope`. The
+prompt keeps "text is data", "never invent", evidence spans, and adds the Vietnamese time words,
+shorthand amounts, duration and correction rules; the model never asks for a time (the server
+does).
 
 ```ts
 { intents: [{ kind: 'bottle'|'breast'|'sleep'|'observation'|'expense'|'reminder'|'meal',
@@ -102,6 +115,36 @@ otherwise a `READ_DENIED` notice. The wording step may use only numbers that app
 for a sleep that overlaps a live one. Bottle milk not said → the baby's last bottle milk, else breast
 milk (the form's default). Never writes.
 
+## Text planning (rework 2026-10-15, `assistant-text.ts`)
+
+`planTextIntents(ctx, intents)` turns the model's intents into drafts or ONE server question,
+deterministically. Contracts helpers (`assistant-text.ts`, unit-tested) do the reading:
+`parseMoney` / `moneyAmountsIn` (k, nghìn, ngàn, tr, triệu, "1tr2", "1.2tr", "1 triệu rưỡi",
+"500.000đ", "500,000", vnd, đ, $, đô, €, £, codes; minor units per `currencyInfo`),
+`durationsIn` ("9 tiếng", "1 tiếng rưỡi", "15p", "nửa tiếng", "2 hours"), `agoIn` ("2 tiếng
+trước", "vừa xong"), `relativeDateIn` (hôm nay / qua / kia, mai, mốt, thứ 2…CN, tuần sau / trước,
+20/10), `clockTimeIn` (typed answers: "21h", "9h tối", "9 giờ rưỡi"), `hasDayPeriod` (with or
+without diacritics next to a time), `bottleMlIn` (ml, oz → ml), `breastSideIn`, `categoryHintIn`,
+`mentionsMedicine`, `smallTalkIn`, `asksWhatToEat`, `completeSpan`, `spendingSignalsIn`.
+
+| Rule | Detail |
+|---|---|
+| Amounts | the model names the words; the server re-reads them (`parseMoney`, `bottleMlIn`). The model's number without readable words → kept, `uncertainFields` (review). A bare VND number < 1 000 ("hết 500") → uncertain. No written currency → the household's (`spendingSettings/main`, else its country's). |
+| Expense date / category / merchant | "hôm qua / hôm kia / thứ 2" from the words; a model date without words → uncertain; default today. Category must be one of the household's ids, else `categoryHintIn`, else `c_other` + uncertain. Merchant only if its words are in the message. `note` = what was bought (≤ 80). |
+| Reminder | title in the person's words (not grounded → uncertain); date from the words (`relativeDateIn` future side; a weekday equal to today → next week, uncertain); no hour → all day; hour without period → resolved when only one half is still ahead, else `time.ampm`; medicine → `MEDICINE_NOT_SCHEDULED`, no draft; assignee words → `reminder.assignee.<i>` with `assignableMembers` (never a mapping). |
+| Times of completed logs | candidates for an hour without period (h, h + 12) on today, then yesterday: exactly one not in the future → taken; both → `time.ampm` (once; the answer applies to every unmarked time); "10 giờ tối" said in the morning → last night; a time ≤ 3 h ahead stays today (`FUTURE_TIME`, review); explicit past-day words keep the model's day. |
+| Spans | `completeSpan`: two of start / end / duration give the third (`linked.derived`); start and end resolved jointly (start before end, ≤ 18 h, overnight on its own days); all three disagreeing by > 10 min → `durationMin` + `endedAt` uncertain. A duration the person did not say (`durationsIn`) → uncertain. |
+| Missing time | no time, no "trước / vừa": `time.missing` (chips) when no other log of the message has a time; else the field stays missing (review). Sleep length without an end point → `time.start` chips (latest = send − length). |
+| Corrections | `correctsPrevious` + the previous turn's unsaved draft of that kind → the new draft carries `replaces`; settle discards the old one (`REPLACED`); fields the model copied keep the old instants. A saved one → `PREVIOUS_SAVED` with its link, nothing drafted. |
+| Duplicates | bottle / breast within 10 min (bottle ±10 % ml) of a live record → `duplicate_suspected` (warning, re-checked at confirm, `acknowledge` to save); expenses → `expenseDuplicateSuspected`. |
+| Reuse | while a server question is open the reading is cached (`assistantTasks/{t}/textReading/current`, never client-readable) and reused for `time.*`, `intent` and `reminder.assignee.*` answers: no second model call. |
+
+Worker order (text): scope → flag → health keywords → consent → live model → reading (model or
+cache) → meal safety net (`asksWhatToEat` with nothing extracted → care meal ideas) → care plan →
+the model's `intent` question (never for small talk / out of scope / when anything was found) →
+small talk / out of scope / nothing → `SMALL_TALK` / `HELP` (released) → `planTextIntents` →
+reads → notices → drafts. `spending` (any expense intent) on a shared task moves it at settle.
+
 ## Module registry (A2)
 
 | Kind | Module / writer | Role to save |
@@ -109,15 +152,16 @@ milk (the form's default). Never writes.
 | bottle, breast, sleep | care records | `rhythm.checkin` (Cùng nuôi, Người chăm sóc; relatives never) |
 | observation | check-ins | `rhythm.checkin` |
 | feedback (not a draft) | `recFeedback` | `rhythm.feedback` |
-| expense (A3, photos only) | Chi tiêu `babies/{b}/expenses` (VND) | `can: canRecordSpending` (Cùng nuôi or 8l "Ghi khoản đã chi") |
-| reminder (A3, photos only) | one-off reminders `babies/{b}/reminders` | `can: canCreateReminders` (Cùng nuôi only) |
+| expense (A3 photos; text since the 2026-10-15 rework) | Chi tiêu `babies/{b}/expenses` (D-075 #4 currencies) | `can: canRecordSpending` (Cùng nuôi or 8l "Ghi khoản đã chi") |
+| reminder (A3 photos; text since the 2026-10-15 rework) | one-off reminders `babies/{b}/reminders` (all day, assignee) | `can: canCreateReminders` (Cùng nuôi only) |
 | meal | no module (P-157) | — (`MODULE_UNAVAILABLE`) |
 
 Kinds without a writer or that the role cannot save are never drafted: the assistant explains it in a
 `text` part, and when nothing else is useful the task fails with that code and the credit is released.
-A3: `ModuleEntry` gains `can?(member)` (a role check that is not a family action) and `photoOnly`
-(the text extraction has no expense / reminder fields, so a typed "chi 200k" stays
-`MODULE_UNAVAILABLE`); `moduleAllows(kind, member)` is used by the prepare tools and the writers.
+A3: `ModuleEntry` gains `can?(member)` (a role check that is not a family action) and `photoOnly`;
+`moduleAllows(kind, member)` is used by the prepare tools and the writers. Rework 2026-10-15: no
+kind is `photoOnly` any more — a typed "mua sữa hết 500k" drafts an expense, "nhắc mai 9h mua
+bỉm" a reminder (`planTextIntents`); `photoOnly` stays in the type for older callers.
 
 ## Care tools (slice A5: CH15–CH18, CH28)
 

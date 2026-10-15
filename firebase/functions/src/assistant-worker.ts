@@ -2,8 +2,12 @@ import { Timestamp, type Firestore } from 'firebase-admin/firestore';
 import {
   assistantPartTypes,
   assistantTaskLimits,
+  currencyForCountry,
   draftKinds,
   familyCan,
+  asksWhatToEat,
+  localDateIn,
+  smallTalkIn,
   taskStateForOutcome,
   usageForOutcome,
   type AssistantError,
@@ -18,7 +22,9 @@ import {
   consentRef,
   conversationRef,
   draftIdFor,
+  draftRef,
   loadTrustedScope,
+  seqId,
   taskRef,
   toDate,
   type TrustedScope,
@@ -30,9 +36,27 @@ import {
   parseWording,
   readToolNames,
   type ClarificationField,
+  type ModelExtraction,
   type ModelGateway,
   type ReadToolName,
 } from './assistant-model.js';
+// Lumi rework 2026-10-15: text planning (expenses, reminders, durations, corrections, questions).
+import {
+  calendarAround,
+  householdCurrencyOf,
+  planTextIntents,
+  previousForModel,
+  previousTurnOf,
+  spendingCategoriesOf,
+  type TextNotice,
+} from './assistant-text.js';
+import {
+  helpPart,
+  noticePart,
+  privateConversationId,
+  smallTalkPart,
+  spendingPrivatePart,
+} from './assistant-talk.js';
 import { appendEvents, appendMessages, storedTask, type StoredTask } from './assistant-store.js';
 import {
   anchorOf,
@@ -40,14 +64,11 @@ import {
   clarificationFor,
   healthSignalsIn,
   lastMilkOf,
-  needsPeriod,
   overlappingSleeps,
-  prepareDrafts,
   sleepFactsTool,
   usageSnapshotTool,
   wordingGrounded,
   type PreparedDraft,
-  type PrepareNotice,
   type ReadResult,
 } from './assistant-tools.js';
 import { commitQuota, releaseQuota } from './quota.js';
@@ -123,6 +144,11 @@ interface WorkResult {
   releaseReady?: boolean;
   /** Slice A3: the photo reading cached while a question is open (deleted otherwise). */
   reading?: StoredReading | null;
+  // ---- Lumi rework 2026-10-15 ----
+  /** The model found money (an expense): a shared task moves to the author's private thread. */
+  spending?: boolean;
+  /** The text extraction kept while a server question is open (no second model call). */
+  textReading?: ModelExtraction | null;
 }
 
 const failWith = (code: AssistantError, kind: 'error' | 'rejected' = 'error'): WorkResult => ({
@@ -136,25 +162,6 @@ const failWith = (code: AssistantError, kind: 'error' | 'rejected' = 'error'): W
   clarification: null,
   modelCalls: 0,
 });
-
-const noticeText: Record<PrepareNotice['code'] | 'READ_DENIED', { vi: string; en: string }> = {
-  MODULE_UNAVAILABLE: {
-    vi: 'Mục này chưa ghi được qua trò chuyện. Bạn có thể mở mục tương ứng để ghi trực tiếp.',
-    en: 'This can’t be saved from chat yet. You can open the matching section to add it directly.',
-  },
-  WRITE_DENIED: {
-    vi: 'Vai trò của bạn chỉ xem được, không ghi được mục này.',
-    en: 'Your role can view but not add this.',
-  },
-  VALIDATION_FAILED: {
-    vi: 'Có một phần mình chưa hiểu rõ để tạo bản nháp.',
-    en: 'Part of this was not clear enough to prepare a draft.',
-  },
-  READ_DENIED: {
-    vi: 'Vai trò của bạn không xem được nhật ký chăm sóc.',
-    en: 'Your role cannot see the care log.',
-  },
-};
 
 const failureText = {
   vi: 'Chưa xử lý được yêu cầu này. Không tính lượt.',
@@ -232,12 +239,10 @@ export async function runAssistantTask(
   });
   if (!claim) return { ran: false, fenced: false, state: null };
 
-  let work = await process(deps, claim.t);
-  // D-075 #2: spending never enters the shared thread (defence in depth: shared tasks are text
-  // tasks, which never draft an expense).
-  if (claim.t.visibility === 'shared' && work.drafts.some((d) => d.payload.kind === 'expense')) {
-    work = failWith('WRITE_DENIED', 'rejected');
-  }
+  const work = await process(deps, claim.t);
+  // D-075 #2: spending never stays in the shared thread. A shared task whose words the detector
+  // missed but where the model found an expense is moved, with its user messages, to the
+  // author's private thread inside the settle transaction, before anything visible is written.
   const done = await finalize(deps, claim.t, claim.holder, work);
   // Slice A3: once settled (or fenced), photos go per their retention (G05); a failure here is
   // retried by the sweeper and never fails the task.
@@ -299,47 +304,97 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   // ---- end slice A3 ----
   const canRead = familyCan(s.member, 'history.read');
   const allowedReads: ReadToolName[] = canRead ? [...readToolNames] : ['usage_snapshot'];
+  const today = localDateIn(s.zone, anchor);
+  const answerMap = new Map(
+    answers.map((a) => [
+      a.field,
+      { choiceId: a.answer?.choiceId ?? null, text: a.answer?.text ?? null },
+    ]),
+  );
+  const routing = t.routing ?? null;
+  // Rework 2026-10-15: the household's currency and categories, the calendar and the sender's
+  // previous turn (corrections) travel with the request; nothing identifies the family.
+  const [currency, categories, previous] = await Promise.all([
+    householdCurrencyOf(db, s, currencyForCountry),
+    spendingCategoriesOf(db, s.familyId, t.locale),
+    previousTurnOf(db, {
+      previousTaskId: t.previousTaskId,
+      ownerUid: t.ownerUid,
+      conversationId: t.conversationId,
+      anchor,
+    }),
+  ]);
 
-  let raw: unknown;
-  try {
-    raw = await callWithTimeout(
-      (signal) =>
-        gateway.extract(
-          {
-            text,
-            locale: t.locale,
-            anchor: anchorOf(s.zone, anchor),
-            clarifications: answers.map((a) => ({
-              field: a.field,
-              answer: a.answer?.choiceId ?? a.answer?.text ?? '',
-            })),
-            allowedIntents: draftKinds,
-            allowedReads,
-          },
-          signal,
-        ),
-      deps.timeoutMs ?? 60_000,
-    );
-  } catch (error) {
-    if (gateway.name === 'openai') await charge(db, now);
-    return {
-      ...failWith('AI_UNAVAILABLE'),
-      outcome: {
-        kind: 'error',
-        code:
-          error instanceof ModelUnavailable && error.kind === 'timeout'
-            ? 'timeout'
-            : 'AI_UNAVAILABLE',
-      },
-      modelCalls: 1,
-    };
+  // Rework 2026-10-15: while a server question is open, the first reading is reused (no second
+  // model call, no second charge) when every answer is one the server applies itself.
+  let ext: ModelExtraction | null = null;
+  let modelCalls = 0;
+  if ((t.round ?? 0) > 0 && answers.every((a) => serverResolvedField(a.field))) {
+    const cached = await textReadingRef(db, t.id).get();
+    if (cached.exists) {
+      const p = parseExtraction(cached.get('ext'));
+      if (p.ok) ext = p.value;
+    }
   }
-  if (gateway.name === 'openai') await charge(db, now);
-  let modelCalls = 1;
-  const parsed = parseExtraction(raw);
-  // Unknown tools, intents, fields or part shapes: rejected, never executed, 0 credits (E01).
-  if (!parsed.ok) return { ...failWith('VALIDATION_FAILED', 'rejected'), modelCalls };
-  const ext = parsed.value;
+  if (!ext) {
+    let raw: unknown;
+    try {
+      raw = await callWithTimeout(
+        (signal) =>
+          gateway.extract(
+            {
+              text,
+              locale: t.locale,
+              anchor: anchorOf(s.zone, anchor),
+              clarifications: answers.map((a) => ({
+                field: a.field,
+                answer: a.answer?.choiceId ?? a.answer?.text ?? '',
+              })),
+              allowedIntents: draftKinds,
+              allowedReads,
+              currency,
+              categories,
+              calendar: calendarAround(today, t.locale),
+              previous: previousForModel(previous, s.zone, today),
+            },
+            signal,
+          ),
+        deps.timeoutMs ?? 60_000,
+      );
+    } catch (error) {
+      if (gateway.name === 'openai') await charge(db, now);
+      return {
+        ...failWith('AI_UNAVAILABLE'),
+        outcome: {
+          kind: 'error',
+          code:
+            error instanceof ModelUnavailable && error.kind === 'timeout'
+              ? 'timeout'
+              : 'AI_UNAVAILABLE',
+        },
+        modelCalls: 1,
+      };
+    }
+    if (gateway.name === 'openai') await charge(db, now);
+    modelCalls = 1;
+    const parsed = parseExtraction(raw);
+    // Unknown tools, intents, fields or part shapes: rejected, never executed, 0 credits (E01).
+    if (!parsed.ok) return { ...failWith('VALIDATION_FAILED', 'rejected'), modelCalls };
+    ext = parsed.value;
+  }
+  // Safety net: "con 7 tháng ăn gì được?" with nothing extracted is the meal-ideas care topic
+  // (approved recipes only), never a "read or log?" question.
+  if (
+    !ext.care &&
+    ext.intents.length === 0 &&
+    ext.reads.length === 0 &&
+    !ext.smallTalk &&
+    asksWhatToEat(text)
+  ) {
+    ext = { ...ext, care: { topic: 'meal_ideas', sleep: null, evidence: [] }, clarification: null };
+  }
+  const spending = ext.intents.some((i) => i.kind === 'expense');
+  const lead: AssistantPart[] = routing ? [spendingPrivatePart(t.locale)] : [];
 
   // One question at a time, each field asked once, within the round cap (brief p.9).
   const asked = new Set((t.clarifications ?? []).map((c) => c.field));
@@ -366,72 +421,124 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   const careActive = care.kind !== 'none';
   const careState = care.kind === 'ask' || care.kind === 'ready' ? care.care : undefined;
   // ---- end slice A5 ----
-  const periodAnswer = answers.find((a) => a.field === 'time.ampm')?.answer?.choiceId;
-  const period = periodAnswer === 'am' || periodAnswer === 'pm' ? periodAnswer : null;
+  const capped = (t.round ?? 0) >= assistantTaskLimits.maxClarificationRounds;
+  const intentAnswer = answerMap.get('intent')?.choiceId ?? null;
+  // "Xem nhật ký" answered: today's summary, without asking the model again.
+  const reads = [...ext.reads];
+  if (intentAnswer === 'read' && reads.length === 0 && canRead) {
+    reads.push({ tool: 'care_summary', dayOffset: 0 });
+  }
+  const nothing = ext.intents.length === 0 && reads.length === 0 && !careActive;
   // Slice A5: a care question goes first; the care facts (`sleep.*`) are asked by `planCare`.
   let ask: ClarificationField | null = care.kind === 'ask' ? care.field : null;
   if (
     !ask &&
     ext.clarification &&
     !asked.has(ext.clarification.field) &&
-    !(careActive && ext.clarification.field.startsWith('sleep.'))
+    !(careActive && ext.clarification.field.startsWith('sleep.')) &&
+    // Rework 2026-10-15: times are the server's questions (with chips), never the model's.
+    !ext.clarification.field.startsWith('time.') &&
+    // Small talk and out-of-scope messages are answered, never questioned.
+    !(ext.clarification.field === 'intent' && (!nothing || ext.smallTalk || ext.outOfScope))
   ) {
     ask = ext.clarification.field;
   }
-  const timed = ext.intents.some((i) => i.fields.time !== null || i.fields.endTime !== null);
-  if (!ask && timed && !period && !asked.has('time.ampm') && needsPeriod(texts)) ask = 'time.ampm';
-  if (
-    !ask &&
-    !careActive &&
-    ext.intents.length === 0 &&
-    ext.reads.length === 0 &&
-    !asked.has('intent')
-  ) {
-    ask = 'intent';
-  }
   if (ask) {
-    if ((t.round ?? 0) >= assistantTaskLimits.maxClarificationRounds) {
-      // Cap reached: manual fallback, never an extra charge.
-      return { ...failWith('VALIDATION_FAILED', 'rejected'), modelCalls };
-    }
+    if (capped) return { ...fallback(t.locale, 'help', lead), modelCalls, care: careState };
     return {
       outcome: { kind: 'clarification', clarification: clarificationFor(ask, 'pending') },
       errorCode: null,
       drafts: [],
-      parts: [],
+      parts: lead,
       clarification: ask,
       modelCalls,
       care: careState,
+      textReading: ext,
+      spending,
+    };
+  }
+  // Rework 2026-10-15: small talk and messages Lumi cannot help with get a short answer for
+  // 0 credits — never a question, never a dead end.
+  if (nothing) {
+    const talk = ext.smallTalk && !ext.outOfScope;
+    return {
+      ...fallback(
+        t.locale,
+        talk ? 'talk' : intentAnswer === 'write' ? 'write' : 'help',
+        lead,
+        smallTalkIn(text) ?? 'ack',
+      ),
+      modelCalls,
     };
   }
 
+  // Prepare: typed drafts or ONE server question (morning / evening, a missing time, a start
+  // for a duration, who does a reminder). Never a write.
+  const plan = await planTextIntents(
+    {
+      db,
+      s,
+      now,
+      anchor,
+      locale: t.locale,
+      text,
+      answerTexts: answers.map((a) => a.answer?.text ?? '').filter(Boolean),
+      answers: answerMap,
+      asked,
+      round: t.round ?? 0,
+      lastMilk: ext.intents.some((i) => i.kind === 'bottle')
+        ? await lastMilkOf(db, s.babyId, anchor)
+        : 'breast_milk',
+      currency,
+      categories,
+      previous,
+    },
+    ext.intents,
+  );
+  if (plan.kind === 'ask') {
+    return {
+      outcome: { kind: 'clarification', clarification: plan.clarification },
+      errorCode: null,
+      drafts: [],
+      parts: lead,
+      clarification: null,
+      ask: plan.clarification,
+      modelCalls,
+      care: careState,
+      textReading: ext,
+      spending,
+    };
+  }
+  const prepared = { drafts: plan.drafts };
+
   // Read tools (trusted scope; role checked per module).
-  const parts: AssistantPart[] = [];
-  const reads: ReadResult[] = [];
-  const notices: (PrepareNotice['code'] | 'READ_DENIED')[] = [];
+  const parts: AssistantPart[] = [...lead];
+  const results: ReadResult[] = [];
+  const notices: TextNotice[] = [...plan.notices];
+  const readDenied: AssistantPart[] = [];
   const seen = new Set<string>();
-  for (const r of ext.reads) {
+  for (const r of reads) {
     const key = `${r.tool}:${r.dayOffset}`;
     if (seen.has(key)) continue;
     seen.add(key);
     if (r.tool !== 'usage_snapshot' && !canRead) {
-      notices.push('READ_DENIED');
+      if (readDenied.length === 0) readDenied.push(noticePart({ code: 'READ_DENIED' }, t.locale));
       continue;
     }
     switch (r.tool) {
       case 'care_summary':
-        reads.push(await careSummaryTool(db, s, anchor, r.dayOffset, t.locale));
+        results.push(await careSummaryTool(db, s, anchor, r.dayOffset, t.locale));
         break;
       case 'sleep_facts':
-        reads.push(await sleepFactsTool(db, s, anchor, t.locale));
+        results.push(await sleepFactsTool(db, s, anchor, t.locale));
         break;
       case 'usage_snapshot':
-        reads.push(await usageSnapshotTool(db, s, now, t.locale));
+        results.push(await usageSnapshotTool(db, s, now, t.locale));
         break;
     }
   }
-  for (const r of reads) parts.push(...r.parts);
-  const facts = reads.flatMap((r) => r.facts);
+  for (const r of results) parts.push(...r.parts);
+  const facts = results.flatMap((r) => r.facts);
   if (facts.length > 0) {
     // The model only words engine facts; any number not in the facts → the template.
     let wording = facts.map((f) => f.text).join(' ');
@@ -451,16 +558,6 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
     parts.push({ type: 'text', schemaVersion: 1, text: wording });
   }
 
-  // Prepare tools: typed drafts, never a write.
-  const prepared = prepareDrafts(s, {
-    intents: ext.intents,
-    texts,
-    anchor,
-    period,
-    lastMilk: ext.intents.some((i) => i.kind === 'bottle')
-      ? await lastMilkOf(db, s.babyId, anchor)
-      : 'breast_milk',
-  });
   for (const d of prepared.drafts) {
     if (d.payload.kind === 'sleep' && d.payload.startedAt && d.payload.endedAt) {
       const span = { start: new Date(d.payload.startedAt), end: new Date(d.payload.endedAt) };
@@ -469,9 +566,13 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       }
     }
   }
-  notices.push(...prepared.notices.map((n) => n.code));
-  for (const code of [...new Set(notices)]) {
-    parts.push({ type: 'text', schemaVersion: 1, text: noticeText[code][t.locale] });
+  parts.push(...readDenied);
+  const said = new Set<string>();
+  for (const n of notices) {
+    const key = `${n.code}:${n.code === 'WRITE_DENIED' ? n.kind : ''}`;
+    if (said.has(key)) continue;
+    said.add(key);
+    parts.push(noticePart(n, t.locale));
   }
 
   // ---- Slice A5 (care): guidance / recipes from published content, never from the model ----
@@ -508,9 +609,10 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       clarification: null,
       modelCalls,
       care: careResult,
+      spending,
     };
   }
-  if (reads.length > 0 || careOut?.useful) {
+  if (results.length > 0 || careOut?.useful) {
     return {
       outcome: { kind: 'answer', parts },
       errorCode: null,
@@ -519,6 +621,7 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       clarification: null,
       modelCalls,
       care: careResult,
+      spending,
     };
   }
   // Slice A5: a care question with no approved content fits → an honest answer, released.
@@ -531,12 +634,69 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       clarification: null,
       modelCalls,
       care: careResult,
+      spending,
     };
   }
-  if (care.kind === 'blocked') return { ...failWith(care.code, 'rejected'), parts, modelCalls };
-  // Nothing useful (only unsupported modules / denied roles): released, explained.
-  const code = (notices[0] ?? 'VALIDATION_FAILED') as AssistantError;
-  return { ...failWith(code, 'rejected'), parts, modelCalls };
+  if (care.kind === 'blocked') {
+    return { ...failWith(care.code, 'rejected'), parts, modelCalls, spending };
+  }
+  // Nothing useful (only unsupported modules / denied roles / a saved previous item): released,
+  // explained.
+  const first = notices[0]?.code ?? (readDenied.length ? 'READ_DENIED' : null);
+  if (!first) return { ...fallback(t.locale, 'help', lead), modelCalls, spending };
+  const code: AssistantError =
+    first === 'WRITE_DENIED' || first === 'MODULE_UNAVAILABLE' || first === 'READ_DENIED'
+      ? first
+      : first === 'PREVIOUS_SAVED' || first === 'MEDICINE_NOT_SCHEDULED'
+        ? 'MODULE_UNAVAILABLE'
+        : 'VALIDATION_FAILED';
+  if (first === 'PREVIOUS_SAVED' || first === 'MEDICINE_NOT_SCHEDULED') {
+    // An honest answer, not a failure: ready, released.
+    return {
+      outcome: { kind: 'fallback', parts },
+      errorCode: null,
+      drafts: [],
+      parts,
+      clarification: null,
+      modelCalls,
+      spending,
+    };
+  }
+  return { ...failWith(code, 'rejected'), parts, modelCalls, spending };
+}
+
+/** Rework 2026-10-15: answers the server applies itself (the first reading is reused). */
+const serverResolvedField = (field: string) =>
+  field === 'time.ampm' ||
+  field === 'time.missing' ||
+  field === 'time.start' ||
+  field === 'intent' ||
+  field.startsWith('reminder.assignee.');
+
+/** The text reading kept while a server question is open (never client-readable). */
+export const textReadingRef = (db: Firestore, taskId: string) =>
+  taskRef(db, taskId).collection('textReading').doc('current');
+
+/** Small talk / help: an answer without a draft, released (0 credits). */
+function fallback(
+  locale: 'vi' | 'en',
+  kind: 'talk' | 'help' | 'write',
+  lead: AssistantPart[],
+  talk: Parameters<typeof smallTalkPart>[0] = 'ack',
+): WorkResult {
+  const part =
+    kind === 'talk'
+      ? smallTalkPart(talk, locale)
+      : helpPart(locale, kind === 'write' ? 'write' : 'help');
+  const parts = [...lead, part];
+  return {
+    outcome: { kind: 'fallback', parts },
+    errorCode: null,
+    drafts: [],
+    parts,
+    clarification: null,
+    modelCalls: 0,
+  };
 }
 
 async function charge(db: Firestore, now: Date) {
@@ -567,6 +727,31 @@ async function finalize(
       tx.get(consentRef(db, t.ownerUid)),
       tx.get(conversationRef(db, t.conversationId)),
     ]);
+    // ---- Lumi rework 2026-10-15 (every read before the first write) ----
+    // D-075 #2: the model found money in a shared task → the task and its user messages move to
+    // the author's private thread before anything visible (drafts, reply) is written.
+    const move = t.visibility === 'shared' && work.spending === true && t.modality === 'text';
+    let target = conversation;
+    let moved: FirebaseFirestore.QueryDocumentSnapshot[] = [];
+    let sharedLast: string | null = null;
+    if (move) {
+      const [priv, mine, recent] = await Promise.all([
+        tx.get(conversationRef(db, privateConversationId(t.ownerUid, t.scope.babyId))),
+        tx.get(conversation.ref.collection('messages').where('taskId', '==', taskId)),
+        tx.get(conversation.ref.collection('messages').orderBy('sequence', 'desc').limit(20)),
+      ]);
+      target = priv;
+      moved = [...mine.docs].sort((a, b) => a.get('sequence') - b.get('sequence'));
+      sharedLast =
+        (recent.docs.find((d) => d.get('taskId') !== taskId)?.get('taskId') as string | null) ??
+        null;
+    }
+    // A correction replaces the previous turn's draft (still unsaved: checked now).
+    const replacing = work.drafts.filter((d) => d.replaces);
+    const replacedSnaps = await Promise.all(
+      replacing.map((d) => tx.get(draftRef(db, d.replaces!.taskId, d.replaces!.draftId))),
+    );
+    // ---- end rework reads ----
     let result = work;
     // M09: consent withdrawn while running → the output is dropped, credits released.
     if (result.outcome.kind !== 'health_route' && !assistantConsentGranted(consent)) {
@@ -642,7 +827,7 @@ async function finalize(
 
     // The assistant message (typed parts only).
     const round = (t.round ?? 0) + (result.clarification || result.ask ? 1 : 0);
-    let pending = null;
+    let pending: Clarification | null = null;
     let parts: AssistantPart[];
     if (result.clarification || result.ask) {
       // Slice A3: a photo question comes prebuilt from its catalog, with context parts first.
@@ -662,15 +847,67 @@ async function finalize(
     if (t.modality === 'image') {
       writeReadingTx(tx, db, taskId, result.ask ? (result.reading ?? null) : null, now);
     }
+    // Rework 2026-10-15: the text reading too (a server question reuses it, no second call).
+    if (t.modality === 'text') {
+      const cache = textReadingRef(db, taskId);
+      if (pending && result.textReading) {
+        tx.set(cache, { ext: result.textReading, savedAt: at });
+      } else tx.delete(cache);
+    }
+    // Rework 2026-10-15: corrections set the previous unsaved draft aside (never a saved one).
+    replacedSnaps.forEach((d) => {
+      const st = d.get('state') as string | undefined;
+      if (d.exists && (st === 'draft' || st === 'needs_review' || st === 'failed')) {
+        tx.update(d.ref, { state: 'discarded', errorCode: 'REPLACED', updatedAt: at });
+      }
+    });
+    let lastSeq = (target.get('messageSeq') as number | undefined) ?? 0;
+    if (move) {
+      // D-075 #2: out of the shared thread (its messages deleted there), into the author's own.
+      if (!target.exists) {
+        tx.set(target.ref, {
+          id: target.id,
+          ownerUid: t.ownerUid,
+          shared: false,
+          createdBy: t.ownerUid,
+          familyId: t.familyId,
+          scope: t.scope,
+          title: null,
+          locale: t.locale,
+          createdAt: at,
+          updatedAt: at,
+          archivedAt: null,
+          messageSeq: 0,
+          lastTaskId: null,
+        });
+      }
+      for (const m of moved) {
+        lastSeq += 1;
+        tx.set(target.ref.collection('messages').doc(seqId(lastSeq)), {
+          ...m.data(),
+          conversationId: target.id,
+          sequence: lastSeq,
+        });
+        tx.delete(m.ref);
+      }
+      tx.update(conversation.ref, { lastTaskId: sharedLast });
+      if (!parts.some((p) => p.type === 'text' && p.code === 'SPENDING_PRIVATE')) {
+        parts = [spendingPrivatePart(t.locale), ...parts];
+      }
+    }
     const messageSeq = appendMessages(
       tx,
       db,
-      t.conversationId,
-      (conversation.get('messageSeq') as number | undefined) ?? 0,
+      target.id,
+      lastSeq,
       [{ role: 'assistant', parts, taskId }],
       now,
     );
-    tx.update(conversation.ref, { messageSeq, updatedAt: at, lastTaskId: taskId });
+    if (target.exists || !move) {
+      tx.update(target.ref, { messageSeq, updatedAt: at, lastTaskId: taskId });
+    } else {
+      tx.set(target.ref, { messageSeq, updatedAt: at, lastTaskId: taskId }, { merge: true });
+    }
 
     // Coalesced events: the result, then usage when it moved.
     const resultEvent: TaskEventType =
@@ -729,6 +966,14 @@ async function finalize(
       ...(state === 'ready' ? { readyAt: at } : {}),
       // Slice A5: the care thread (facts so far, guidance or recipes).
       ...(result.care ? { care: result.care } : {}),
+      // Rework 2026-10-15 (D-075 #2): moved out of the shared thread because of money.
+      ...(move
+        ? {
+            conversationId: target.id,
+            visibility: 'private',
+            routing: { reason: 'spending', from: 'shared_thread', at: 'worker' },
+          }
+        : {}),
     });
     return { ran: true, fenced: false, state };
   });
@@ -880,6 +1125,8 @@ export async function expireClarification(
       eventSeq: seq,
       updatedAt: Timestamp.fromDate(now),
     });
+    // Rework 2026-10-15: the kept text reading goes with the question.
+    tx.delete(textReadingRef(db, taskId));
     return true;
   });
 }

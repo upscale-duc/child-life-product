@@ -103,6 +103,14 @@ describe('care outcome, plan, age', () => {
       'CARE_FEATURE_DISABLED',
       'REGION_UNSUPPORTED',
       'CARE_AGE_UNKNOWN',
+      // Lumi rework 2026-10-15.
+      'SMALL_TALK',
+      'HELP',
+      'SPENDING_PRIVATE',
+      'CORRECTION_APPLIED',
+      'PREVIOUS_SAVED',
+      'MEDICINE_NOT_SCHEDULED',
+      'DUPLICATE_SUSPECTED',
     ]);
   });
 });
