@@ -289,7 +289,19 @@ enum NoticeCode with WireEnum {
   recipesNoneApproved('RECIPES_NONE_APPROVED'),
   careFeatureDisabled('CARE_FEATURE_DISABLED'),
   regionUnsupported('REGION_UNSUPPORTED'),
-  careAgeUnknown('CARE_AGE_UNKNOWN');
+  careAgeUnknown('CARE_AGE_UNKNOWN'),
+  // ---- Lumi rework 2026-10-15 (docs/assistant/api.md "Rework 2026-10-15") ----
+  smallTalk('SMALL_TALK'),
+  help('HELP'),
+
+  /// Money was mentioned: the task stays in the author's private thread (D-075 #2).
+  spendingPrivate('SPENDING_PRIVATE'),
+  correctionApplied('CORRECTION_APPLIED'),
+
+  /// A correction of something already saved: edit it in its module (`link`).
+  previousSaved('PREVIOUS_SAVED'),
+  medicineNotScheduled('MEDICINE_NOT_SCHEDULED'),
+  duplicateSuspected('DUPLICATE_SUSPECTED');
 
   const NoticeCode(this.wire);
   @override
@@ -442,6 +454,8 @@ class Clarification {
     required this.question,
     required this.choices,
     required this.allowText,
+    this.knownMinutes,
+    this.knownAt,
   });
 
   final String id;
@@ -454,11 +468,18 @@ class Clarification {
   /// A typed answer is allowed ("Tự nhập").
   final bool allowText;
 
+  /// What the task already knows for a time question (optional, tolerant: `known` or
+  /// `context` with `durationMin` and / or an instant): the picker starts there and previews
+  /// the other end ("ngủ 9 tiếng" → pick the start, see the wake-up).
+  final int? knownMinutes;
+  final DateTime? knownAt;
+
   static Clarification? fromJson(Object? json) {
     final m = _map(json);
     final id = _str(m['id'], max: 60);
     final question = LocalizedText.fromJson(m['question']);
     if (id == null || question == null) return null;
+    final known = _map(m['known'] ?? m['context']);
     return Clarification(
       id: id,
       field: _str(m['field'], max: 60) ?? '',
@@ -473,6 +494,17 @@ class Clarification {
             ClarificationChoice(id: cid, label: label),
       ],
       allowText: m['allowText'] == true,
+      knownMinutes: switch (_int(known['durationMin']) ??
+          _int(known['durationMinutes']) ??
+          _int(known['minutes'])) {
+        final n? when n > 0 && n <= 24 * 60 => n,
+        _ => null,
+      },
+      knownAt:
+          _instant(known['at']) ??
+          _instant(known['startedAt']) ??
+          _instant(known['endedAt']) ??
+          _instant(known['occurredAt']),
     );
   }
 }
@@ -559,7 +591,15 @@ sealed class AssistantPart {
     if (version != 1) return UnsupportedPart('$type');
     final part = switch (type) {
       'text' => switch (_str(m['text'], max: 8000)) {
-        final t? => TextPart(t, code: wireOf(NoticeCode.values, m['code'])),
+        final t? => TextPart(
+          t,
+          code: wireOf(NoticeCode.values, m['code']),
+          // An app route built by the server (never a URL): '/…' only.
+          link: switch (_str(m['link'], max: 300)) {
+            final l? when l.startsWith('/') && !l.startsWith('//') => l,
+            _ => null,
+          },
+        ),
         null => null,
       },
       'clarification' => switch (Clarification.fromJson(m['clarification'])) {
@@ -644,11 +684,14 @@ sealed class AssistantPart {
 }
 
 class TextPart extends AssistantPart {
-  const TextPart(this.text, {this.code});
+  const TextPart(this.text, {this.code, this.link});
   final String text;
 
   /// Slice A5: a notice the app may attach an action to (care library, health…).
   final NoticeCode? code;
+
+  /// Rework 2026-10-15: the app route the notice points to (`PREVIOUS_SAVED` → the record).
+  final String? link;
 }
 
 class ClarificationPart extends AssistantPart {
@@ -893,6 +936,10 @@ sealed class DraftPayload {
       DraftKind.sleep => SleepPayload(
         startedAt: _instant(m['startedAt']),
         endedAt: _instant(m['endedAt']),
+        durationMin: switch (_int(m['durationMin'])) {
+          final n? when n > 0 && n <= 24 * 60 => n,
+          _ => null,
+        },
       ),
       DraftKind.expense => ExpensePayload(
         merchant: _str(m['merchant'], max: 120),
@@ -904,6 +951,7 @@ sealed class DraftPayload {
         categoryId: _str(m['categoryId'], max: 80),
         babyId: _str(m['babyId'], max: 128),
         keepReceipt: m['keepReceipt'] == true,
+        note: _str(m['note'], max: 80),
       ),
       DraftKind.reminder => ReminderPayload(
         title: m['title'] is String ? m['title']! as String : '',
@@ -990,9 +1038,17 @@ class BreastPayload extends DraftPayload {
 }
 
 class SleepPayload extends DraftPayload {
-  const SleepPayload({this.startedAt, this.endedAt});
+  const SleepPayload({this.startedAt, this.endedAt, this.durationMin});
   final DateTime? startedAt;
   final DateTime? endedAt;
+
+  /// Rework 2026-10-15: the length as said ("ngủ 9 tiếng") or end − start; optional.
+  final int? durationMin;
+
+  /// The length: from both ends when set, else as said.
+  int? get minutes => startedAt != null && endedAt != null
+      ? endedAt!.difference(startedAt!).inMinutes
+      : durationMin;
 
   @override
   DraftKind get kind => DraftKind.sleep;
@@ -1001,6 +1057,7 @@ class SleepPayload extends DraftPayload {
       SleepPayload(
         startedAt: startedAt ?? this.startedAt,
         endedAt: endedAt ?? this.endedAt,
+        durationMin: durationMin,
       );
 
   @override
@@ -1008,6 +1065,8 @@ class SleepPayload extends DraftPayload {
     'kind': 'sleep',
     'startedAt': _iso(startedAt),
     'endedAt': _iso(endedAt),
+    // The server keeps it equal to end − start (patchDraft recomputes it).
+    if (minutes case final m? when m > 0) 'durationMin': m,
   };
 }
 
@@ -1022,9 +1081,13 @@ class ExpensePayload extends DraftPayload {
     this.categoryId,
     this.babyId,
     this.keepReceipt = false,
+    this.note,
   });
 
   final String? merchant;
+
+  /// Rework 2026-10-15: what was bought ("Sữa", "Học bơi"), from a typed message.
+  final String? note;
 
   /// Integer minor units (VND đồng); never a float.
   final int? totalMinor;
@@ -1051,6 +1114,7 @@ class ExpensePayload extends DraftPayload {
     'categoryId': categoryId,
     'babyId': babyId,
     'keepReceipt': keepReceipt,
+    if (note != null) 'note': note,
   };
 }
 
@@ -1731,10 +1795,15 @@ class AssistantTask {
     this.care,
     this.visibility = TaskVisibility.private,
     this.author,
+    this.routedForSpending = false,
   });
 
   final String id;
   final String? conversationId;
+
+  /// Rework 2026-10-15 `task.routing.reason == 'spending'`: sent from the shared thread but kept
+  /// in the author's private one because it is about money (D-075 #2).
+  final bool routedForSpending;
   final AssistantScope? scope;
   final TaskState state;
   final int version;
@@ -1792,6 +1861,7 @@ class AssistantTask {
     care: care ?? this.care,
     visibility: visibility,
     author: author,
+    routedForSpending: routedForSpending,
   );
 
   /// Reads the API view (`AssistantTaskView`) or the stored document (`clarifications[]`).
@@ -1833,6 +1903,7 @@ class AssistantTask {
           wireOf(TaskVisibility.values, m['visibility']) ??
           TaskVisibility.private,
       author: AssistantAuthor.fromJson(m['author']),
+      routedForSpending: _map(m['routing'])['reason'] == 'spending',
     );
   }
 }

@@ -7,9 +7,9 @@ import 'package:child_life/features/rhythm/activity_screens.dart';
 import 'package:child_life/features/rhythm/milestone_screen.dart';
 import 'package:child_life/features/rhythm/preferences_screens.dart';
 import 'package:child_life/features/rhythm/result_screen.dart';
-import 'package:child_life/features/rhythm/rhythm_home.dart';
 import 'package:child_life/features/rhythm/rhythm_labels.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
+import 'package:child_life/features/today/today_for_baby.dart';
 import 'package:child_life/l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart' show CupertinoSwitch;
 import 'package:flutter/material.dart';
@@ -452,7 +452,7 @@ void main() {
     ) async {
       final (visits, _) = await pumpRouted(
         tester,
-        const SingleChildScrollView(child: ForYouSection()),
+        const SingleChildScrollView(child: TodayHandoverRow()),
         overrides: aiOverrides(ai: FakeAiRepository(answer: handover())),
       );
       await _tap(tester, find.text(l10n.aiHandoverTitle));
@@ -462,7 +462,7 @@ void main() {
     testWidgets('Home: hidden without the ai_assist rollout', (tester) async {
       await pumpRouted(
         tester,
-        const SingleChildScrollView(child: ForYouSection()),
+        const SingleChildScrollView(child: TodayHandoverRow()),
         overrides: aiOverrides(
           ai: FakeAiRepository(answer: handover()),
           caps: aiCaps(aiAssist: false),
@@ -474,7 +474,7 @@ void main() {
     testWidgets('Home: a caregiver sees it once one is stored', (tester) async {
       await pumpRouted(
         tester,
-        const SingleChildScrollView(child: ForYouSection()),
+        const SingleChildScrollView(child: TodayHandoverRow()),
         overrides: aiOverrides(
           ai: FakeAiRepository(stored: [handover()]),
           member: lan,
@@ -489,7 +489,7 @@ void main() {
     ) async {
       await pumpRouted(
         tester,
-        const SingleChildScrollView(child: ForYouSection()),
+        const SingleChildScrollView(child: TodayHandoverRow()),
         overrides: aiOverrides(ai: FakeAiRepository(), member: lan),
       );
       expect(find.text(l10n.aiHandoverTitle), findsNothing);

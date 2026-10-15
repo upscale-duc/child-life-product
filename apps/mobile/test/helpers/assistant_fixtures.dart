@@ -6,6 +6,7 @@ import 'package:child_life/features/assistant/assistant_models.dart';
 import 'package:child_life/features/assistant/assistant_photos.dart';
 import 'package:child_life/features/assistant/assistant_repository.dart';
 import 'package:child_life/features/assistant/assistant_screens.dart';
+import 'package:child_life/features/assistant/assistant_voice.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/care_repository.dart';
@@ -369,6 +370,10 @@ class FakeAssistantRepository implements AssistantRepository {
   /// Thrown by any call named here (`{'quoteTask': AssistantException(...)}`).
   Map<String, Object>? error;
 
+  /// Holds `startTask` / `submitClarification` until completed (optimistic UI while waiting).
+  Completer<void>? startGate;
+  Completer<void>? clarifyGate;
+
   /// `getAssistantTask` answers per task id (a snapshot JSON).
   final Map<String, Map<String, Object?>> tasks;
   AssistantConsent consentValue;
@@ -432,6 +437,7 @@ class FakeAssistantRepository implements AssistantRepository {
       'attachmentIds': attachmentIds,
     };
     _record(AssistantCallables.start, args);
+    if (startGate case final g?) await g.future;
     final e = AssistantEnvelope.fromJson(
       startAnswer?.call(args) ?? envelope(batchSnapshot()),
     );
@@ -460,6 +466,7 @@ class FakeAssistantRepository implements AssistantRepository {
       'choiceId': choiceId,
       'text': text,
     });
+    if (clarifyGate case final g?) await g.future;
     return TaskSnapshot.fromJson(tasks[taskId]);
   }
 
@@ -732,6 +739,9 @@ List<Override> assistantOverrides({
 
   /// The care log CH08 reads its per-feed times from (by record id); none by default.
   Map<String, CareRecord> careRecords = const {},
+
+  /// Lumi voice input (a scripted recognizer; ready by default).
+  FakeDictation? dictation,
 }) {
   var n = 0;
   return [
@@ -754,6 +764,7 @@ List<Override> assistantOverrides({
     ),
     assistantUploaderProvider.overrideWithValue(uploader ?? FakeUploader()),
     assistantPhotoCacheProvider.overrideWithValue(AssistantPhotoCache()),
+    assistantDictationProvider.overrideWithValue(dictation ?? FakeDictation()),
     videoQuotaProvider.overrideWith((ref, babyId) async => video),
     careRecordProvider.overrideWith(
       (ref, key) => Stream.value(careRecords[key.$2]),
@@ -1277,3 +1288,59 @@ Map<String, Object?> sharedConversationJson() => {
   'archivedAt': null,
   'lastTaskId': taskA,
 };
+
+// ---------- Voice input ----------
+
+/// A scripted recognizer: [ready] answers `prepare`; a test pushes words, levels and the end
+/// with [say], [level] and [finish], and sees the stops and cancels.
+class FakeDictation implements AssistantDictation {
+  FakeDictation({this.ready = DictationReady.ready});
+
+  DictationReady ready;
+  StreamController<DictationEvent>? _events;
+  final languages = <String>[];
+  var prepared = 0;
+  var stops = 0;
+  var cancels = 0;
+
+  bool get listening => _events != null && !_events!.isClosed;
+
+  @override
+  Future<DictationReady> prepare(String languageCode) async {
+    prepared++;
+    return ready;
+  }
+
+  @override
+  Stream<DictationEvent> listen(String languageCode) {
+    languages.add(languageCode);
+    final c = StreamController<DictationEvent>();
+    _events = c;
+    return c.stream;
+  }
+
+  void say(String words, {bool done = false}) =>
+      _events?.add(DictationWords(words, done: done));
+
+  void level(double v) => _events?.add(DictationLevel(v));
+
+  void finish({bool failed = false}) {
+    final c = _events;
+    if (c == null || c.isClosed) return;
+    c.add(DictationEnded(failed: failed));
+    unawaited(c.close());
+  }
+
+  @override
+  Future<void> stop() async {
+    stops++;
+    finish();
+  }
+
+  @override
+  Future<void> cancel() async {
+    cancels++;
+    final c = _events;
+    if (c != null && !c.isClosed) unawaited(c.close());
+  }
+}

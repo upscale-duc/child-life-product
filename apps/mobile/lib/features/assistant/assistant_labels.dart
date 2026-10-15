@@ -167,6 +167,11 @@ String draftLine(
         '${hm(s, zone)} – ${hm(e, zone)}',
         if (e.isAfter(s)) durationLabel(l10n, e.difference(s).inMinutes),
       ].join(' · '),
+      // Rework 2026-10-15: only the length was said ("ngủ 9 tiếng").
+      _ when p.durationMin != null => [
+        durationLabel(l10n, p.durationMin!),
+        l10n.asNoTime,
+      ].join(' · '),
       _ => l10n.asNoTime,
     },
     ExpensePayload() => [
@@ -237,9 +242,10 @@ String draftTitle(AppLocalizations l10n, AssistantDraft d) =>
     switch (d.payload) {
       ReminderPayload(:final title) when title.trim().isNotEmpty =>
         title.trim(),
-      ExpensePayload(:final merchant, :final categoryId) => [
+      // Rework 2026-10-15: what was bought ("Học bơi") before the store.
+      ExpensePayload(:final merchant, :final categoryId, :final note) => [
         ?expenseCategoryName(l10n, categoryId),
-        ?merchant,
+        ?(note ?? merchant),
       ].join(' · ').ifEmpty(l10n.asKindExpense),
       ObservationPayload() => l10n.asObservationTitle,
       _ => kindLabel(l10n, d.kind),

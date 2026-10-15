@@ -46,6 +46,27 @@ s('hnRhythmSoothing', 'Cả nhà ghi nhận con cần được dỗ nhiều hơn
 s('hnCardPage', 'Thẻ {page} trên {count}', 'Card {page} of {count}', 'Suggestion carousel dots, for screen readers.', page='int', count='int')
 s('hnCardOptions', 'Tuỳ chọn cho thẻ này', 'Options for this card', 'Suggestion card × button, for screen readers.')
 
+# Hôm nay information architecture (owner, 2026-10-15): one compact suggestion with "Vì sao gợi ý
+# này?", "Để ý tuần này", and "Tuần này của {bé}" as one card with a teaser from real content.
+# Numbering: "Tuần thứ N" is the week of life (completed weeks + 1); "N tuần tuổi" counts
+# completed weeks only.
+s('hnWhyLink', 'Vì sao gợi ý này?', 'Why this suggestion?', 'Small link on the Home suggestion card; opens the explanation sheet.')
+s('hnWhyTitle', 'Vì sao gợi ý này', 'Why this suggestion', 'Title of the explanation sheet of the Home suggestion.')
+s('hnWhyFeedbackShort', 'Đã điều chỉnh theo phản hồi của nhà mình.', 'Adjusted to your family’s feedback.', 'One-line reason on the Home suggestion when feedback changed the ranking (PS02); the details are in the sheet.')
+s('hnWhyHow', 'Gợi ý dựa trên điều nhà mình ghi nhận, tuổi của bé và điều bạn quan tâm. Đây không phải chẩn đoán.', 'Suggestions come from what your family noted, your baby’s age and what you care about. This is not a diagnosis.', 'Footnote of the explanation sheet of the Home suggestion.')
+s('hnWatchThisWeek', 'Để ý tuần này', 'Worth a look this week', 'Small heading above the Home carousel (milestones, reads, stage).')
+s('hnWeekKicker', 'Tuần thứ {n} · {age}', 'Week {n} · {age}', 'Home "Tuần này" card: the week of life (completed weeks + 1) and the age ("4 tuần tuổi").', n='int', age='String')
+s('hnWeekKickerOnly', 'Tuần thứ {n}', 'Week {n}', 'Home "Tuần này" card when the age is not readable (caregivers): the week of life of the content.', n='int')
+s('hnMonthKicker', 'Tháng thứ {n} · {age}', 'Month {n} · {age}', 'Home "Tuần này" card from 3 months: the month of life (completed months + 1) and the age.', n='int', age='String')
+s('hnMonthKickerOnly', 'Tháng thứ {n}', 'Month {n}', 'Home "Tuần này" card from 3 months when the age is not readable (caregivers).', n='int')
+s('hnWeekOpen', 'Xem tuần này', 'See this week', 'Action of the Home "Tuần này" card.')
+s('hnWeekOpenIdeas', 'Xem {count} gợi ý cho tuần này', '{count, plural, =1{See 1 idea for this week} other{See {count} ideas for this week}}', 'Action of the Home "Tuần này" card with the number of tips the content holds.', count='int')
+s('hnWeekRhythmSub', 'Wonder Weeks · dự kiến {range}', 'Wonder Weeks · expected {range}', 'Home "Tuần này" card, Nhịp lớn lên row: the reference window.', range='String')
+s('hnRhythmComingDays', 'Còn {days} ngày đến giai đoạn {n}', '{days, plural, =1{Stage {n} in 1 day} other{Stage {n} in {days} days}}', 'Home "Tuần này" card, Nhịp lớn lên row: the next reference stage and the days until its window.', n='int', days='int')
+s('hnRhythmNow', 'Đang trong giai đoạn {n}', 'In stage {n}', 'Home "Tuần này" card, Nhịp lớn lên row: today is inside the reference window.', n='int')
+s('hnWeekSummaryLast', 'Tóm tắt tuần trước', 'Last week’s summary', 'Home "Tuần này" card row opening EN09 (Monday to Saturday: the last completed week).')
+s('hnWeekSummaryThis', 'Tóm tắt tuần này', 'This week’s summary', 'Home "Tuần này" card row opening EN09 on Sunday (the week ending today).')
+
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'
 for locale, idx in (('vi', 0), ('en', 1)):
     path = root / f'app_{locale}.arb'

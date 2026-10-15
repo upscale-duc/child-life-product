@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/route_guard.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../l10n/app_localizations.dart';
+import '../rhythm/rhythm_home.dart' show WeekTeaser;
 import '../rhythm/rhythm_models.dart' show Interest;
 import '../today/today_for_baby.dart';
 import 'content_calc.dart';
@@ -99,3 +100,28 @@ final lbForBabyCardsProvider = Provider.family<List<ForBabyCard>, ForBabyQuery>(
     return cards;
   },
 );
+
+/// Hôm nay · "Tuần này của {bé}" (owner, 2026-10-15): the current stage's first "Bé đang thế nào"
+/// point as the card's teaser, its "Ba mẹ có thể thử" count, and the stage as where the card
+/// goes. Null without a published stage for the age (the card then reads the Nhịp lớn lên age
+/// card) or without the date of birth. The carousel leaves out the same stage (`stage:{id}`).
+final lbWeekTeaserProvider = Provider.family<WeekTeaser?, ForBabyQuery>((
+  ref,
+  q,
+) {
+  final baby = ref.watch(lbBabyProvider);
+  final dob = baby?.dob;
+  if (baby == null || baby.babyId != q.babyId || dob == null) return null;
+  final stages = lbVisibleStages(ref.watch(lbStagesProvider).value, baby);
+  final stage = lbStageFor(stages, dob, baby.today);
+  if (stage == null) return null;
+  final locale = Locale(q.languageCode);
+  final doing = stage.doing.pick(locale);
+  if (doing.isEmpty) return null;
+  return (
+    id: 'stage:${stage.id}',
+    text: doing.first,
+    ideas: stage.tryThis.pick(locale).length,
+    onOpen: (context) => context.push(LbRoutes.stage(stage.id)),
+  );
+});

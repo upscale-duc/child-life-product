@@ -399,11 +399,19 @@ class AsReceiptCard extends StatelessWidget {
     this.notes = const [],
     this.actions = const [],
     this.saving = false,
+    this.primary,
+    this.privateHint,
     super.key,
   });
 
   final String title;
   final String stateLabel;
+
+  /// The card's main action as a filled button ("Lưu chi tiêu"); [actions] stay links.
+  final AsCardAction? primary;
+
+  /// "Chỉ bạn thấy": spending stays out of the baby's shared thread (D-075 #2).
+  final String? privateHint;
 
   /// "Cần kiểm tra": the `sunshine` edge and pill.
   final bool review;
@@ -610,11 +618,38 @@ class AsReceiptCard extends StatelessWidget {
                 ),
               ),
             ],
-            if (actions.isNotEmpty) ...[
-              const SizedBox(height: 2),
+            if (privateHint != null) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  ClIcon(ClIcons.lock, size: 12, color: c.inkMuted),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      privateHint!,
+                      style: cl.text.caption.copyWith(color: c.inkMuted),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            if (actions.isNotEmpty || primary != null) ...[
+              const SizedBox(height: 6),
               Wrap(
                 spacing: ClSpace.s4,
+                runSpacing: 2,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
+                  if (primary case final p?)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: AsButton(
+                        label: p.label,
+                        icon: ClIcons.check,
+                        loading: saving,
+                        onPressed: p.onPressed,
+                      ),
+                    ),
                   for (final (i, a) in actions.indexed)
                     Opacity(
                       opacity: a.onPressed == null
@@ -632,9 +667,13 @@ class AsReceiptCard extends StatelessWidget {
                                 _semi(
                                   context,
                                   13.5,
-                                  i == 0 ? c.mintText : c.inkMuted,
+                                  i == 0 && primary == null
+                                      ? c.mintText
+                                      : c.inkMuted,
                                 ).copyWith(
-                                  fontWeight: i == 0 ? FontWeight.w700 : null,
+                                  fontWeight: i == 0 && primary == null
+                                      ? FontWeight.w700
+                                      : null,
                                 ),
                           ),
                         ),

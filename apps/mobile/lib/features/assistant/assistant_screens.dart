@@ -1,13 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/navigation.dart' show SafePush, SafePushContext;
 import '../../app/route_guard.dart';
 import '../../app/session.dart';
+import '../../core/appearance/appearance_providers.dart'
+    show sharedPreferencesProvider;
 import '../../core/design/cl_theme.dart';
+import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
 import '../../core/format/age.dart';
 import '../../core/platform/external_apps.dart' show openAppSettings;
@@ -44,6 +48,8 @@ import 'assistant_models.dart';
 import 'assistant_photos.dart';
 import 'assistant_repository.dart';
 import 'assistant_rules.dart';
+import 'assistant_time.dart';
+import 'assistant_voice.dart';
 import 'assistant_widgets.dart';
 
 /// What a Home chip or a module entry hands the chat: text that only PREFILLS the composer
@@ -139,27 +145,120 @@ class AssistantChatScreen extends ConsumerStatefulWidget {
   ConsumerState<AssistantChatScreen> createState() => _ChatState();
 }
 
-class _ChatState extends ConsumerState<AssistantChatScreen> {
+class _ChatState extends ConsumerState<AssistantChatScreen>
+    with WidgetsBindingObserver {
   final _text = TextEditingController();
   final _focus = FocusNode();
   final _scroll = ScrollController();
   IntentHint? _hint;
   String? _openedFor;
-  var _lastLength = 0;
+
+  // Scrolling: stick to the newest only while the person is at the bottom; else "↓ Tin mới".
+  var _atBottom = true;
+  var _dragging = false;
+  var _unseen = false;
+  var _forceBottom = false;
+  var _scrolling = false;
+  var _scrollAgain = false;
+
+  // Entrances: an entry animates the first time it is built after the thread was primed.
+  final _seen = <String>{};
+  var _primed = false;
+
+  VoiceSession? _voice;
 
   @override
   void initState() {
     super.initState();
     _text.text = widget.launch?.prefill ?? '';
     _hint = widget.launch?.hint;
+    _scroll.addListener(_onScroll);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _voice?.dispose();
     _text.dispose();
     _focus.dispose();
     _scroll.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // A call or the app going to the background ends a dictation cleanly (words kept).
+    if (state != AppLifecycleState.resumed) _voice?.interrupt();
+  }
+
+  @override
+  void didChangeMetrics() {
+    // The keyboard opening shrinks the list: keep the newest message in view.
+    if (_atBottom && !_dragging) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _jumpToBottom());
+    }
+  }
+
+  void _onScroll() {
+    if (!_scroll.hasClients) return;
+    final p = _scroll.position;
+    final at = p.maxScrollExtent - p.pixels < 72;
+    if (at == _atBottom) return;
+    _atBottom = at;
+    if (at && _unseen) setState(() => _unseen = false);
+  }
+
+  void _jumpToBottom() {
+    if (!mounted || !_scroll.hasClients) return;
+    final p = _scroll.position;
+    if (p.maxScrollExtent - p.pixels > 0.5) p.jumpTo(p.maxScrollExtent);
+  }
+
+  /// Glides to the newest entry (a lazy list learns its true end as it gets there).
+  Future<void> _toBottom() async {
+    if (_scrolling) {
+      _scrollAgain = true;
+      return;
+    }
+    _scrolling = true;
+    try {
+      for (var i = 0; i < 5; i++) {
+        _scrollAgain = false;
+        if (!mounted || !_scroll.hasClients) return;
+        final p = _scroll.position;
+        final target = p.maxScrollExtent;
+        final gap = target - p.pixels;
+        if (gap.abs() < 0.5 && !_scrollAgain) return;
+        if (context.reduceMotion || gap > 1600 || gap < 0) {
+          p.jumpTo(target);
+          // A lazy list learns its true end once the last entries are laid out.
+          await WidgetsBinding.instance.endOfFrame;
+        } else {
+          await p.animateTo(
+            target,
+            duration: ClMotion.standard,
+            curve: ClCurves.quick,
+          );
+        }
+      }
+    } finally {
+      _scrolling = false;
+      if (mounted) _atBottom = true;
+      if (mounted && _unseen) setState(() => _unseen = false);
+    }
+  }
+
+  void _afterBuild({required bool freshLumi}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scroll.hasClients) return;
+      if (_forceBottom || (_atBottom && !_dragging)) {
+        _forceBottom = false;
+        unawaited(_toBottom());
+      } else if (freshLumi && !_unseen) {
+        setState(() => _unseen = true);
+      }
+    });
   }
 
   String? _key() {
@@ -193,13 +292,87 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
     if (message != null) showClToast(context, message: message, error: true);
   }
 
+  /// A light tick where it means "it went" (none in Night care, D-048).
+  void _tick() {
+    if (!context.cl.isNightCare) unawaited(HapticFeedback.lightImpact());
+  }
+
   Future<void> _send(String key) async {
     final text = _text.text;
     if (text.trim().isEmpty) return;
+    _tick();
     _text.clear();
     final hint = _hint;
     _hint = null;
+    // My own message: always shown, even when reading further up.
+    _forceBottom = true;
     await _ctl(key).send(text, hint: hint);
+  }
+
+  void _prefill(String text) {
+    _text.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+    _focus.requestFocus();
+  }
+
+  // ---------- Voice ----------
+
+  VoiceSession _voiceFor() => _voice ??= VoiceSession(
+    dictation: ref.read(assistantDictationProvider),
+    text: _text,
+    onEnd: _voiceEnded,
+  );
+
+  String _uid() {
+    final s = ref.read(sessionProvider);
+    return s is SessionSignedIn ? s.user.uid : '';
+  }
+
+  Future<void> _mic() async {
+    final v = _voiceFor();
+    if (v.active) return;
+    final prefs = ref.read(sharedPreferencesProvider);
+    final introKey = 'assistant.voiceIntro.${_uid()}';
+    if (prefs.getBool(introKey) != true) {
+      final ok = await showVoiceIntro(context);
+      if (!ok || !mounted) return;
+      await prefs.setBool(introKey, true);
+    }
+    if (!mounted) return;
+    // The words go into the field while the keyboard is down, so they stay in view.
+    _focus.unfocus();
+    _tick();
+    await v.start(Localizations.localeOf(context).languageCode);
+  }
+
+  void _voiceEnded(VoiceStop stop) {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    final toaster = ClToaster.of(context);
+    switch (stop) {
+      case VoiceStop.done:
+        _tick();
+      case VoiceStop.canceled:
+        break;
+      case VoiceStop.noSpeech:
+        toaster.show(message: l10n.asVoiceNoSpeech);
+      case VoiceStop.denied:
+        toaster.show(
+          message: l10n.asVoiceDenied,
+          error: true,
+          actionLabel: l10n.actionOpenSettings,
+          onAction: openAppSettings,
+        );
+      case VoiceStop.unavailable:
+        toaster.show(message: l10n.asVoiceUnavailable, error: true);
+      case VoiceStop.language:
+        toaster.show(message: l10n.asVoiceLanguage, error: true);
+      case VoiceStop.failed:
+        toaster.show(message: l10n.asVoiceFailed, error: true);
+    }
+    setState(() {});
   }
 
   Future<void> _upgrade(String key, {bool photo = false}) async {
@@ -220,11 +393,13 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
   Future<void> _choosePhoto(String key, AssistantUsage? usage) async {
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
+    _focus.unfocus();
     final source = await showClSheet<PhotoSource>(
       context: context,
       builder: (_) => _PhotoSourceSheet(usage: usage),
     );
     if (source == null || !mounted) return;
+    _forceBottom = true;
     final out = await _ctl(key).pickPhoto(source, hint: _hint);
     switch (out) {
       case PhotoPick.denied:
@@ -254,7 +429,8 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
   }
 
   // D-076 nav: the chat is above the tabs; Chi tiêu, Lịch sử and reminders are tab pages, so
-  // every link from here to them goes through `pushSafe` (the chat closes first).
+  // every link from here to them goes through `pushSafe`: it opens on top of the chat (its
+  // overlay twin) and Back comes back to the conversation.
   void _logDirectly(AssistantScope scope) => scope.household
       ? context.pushSafe(Routes.spending)
       : showQuickLog(context);
@@ -270,6 +446,7 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
     final session = ref.read(sessionProvider);
     if (session is! SessionSignedIn) return;
     final l10n = AppLocalizations.of(context);
+    _focus.unfocus();
     final options = [
       for (final m in session.active) AssistantScope.child(m.babyId),
       AssistantScope.household(current.babyId),
@@ -323,6 +500,7 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
   }
 
   Future<void> _history(AssistantScope scope) async {
+    _focus.unfocus();
     final pick = await context.push<HistoryPick>(
       Uri(
         path: Routes.assistantHistory,
@@ -347,15 +525,72 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
     }
   }
 
-  void _scrollToEnd(int length) {
-    if (length == _lastLength) return;
-    _lastLength = length;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scroll.hasClients && _scroll.position.maxScrollExtent > 0) {
-        _scroll.jumpTo(_scroll.position.maxScrollExtent);
-      }
-    });
+  /// "Khác…" on a question that asks for a clock time: a picker that starts from what is
+  /// already known (a said duration previews the computed other end), then the time goes as the
+  /// answer (still the same task, 0 credits).
+  Future<void> _answerWithTime(
+    AssistantChat ctl,
+    TaskThread t,
+    Clarification c,
+    String zone,
+  ) async {
+    _focus.unfocus();
+    final now = ref.read(assistantClockProvider)();
+    // What is known, best first: the server's own hint, a sleep draft's said length, the words.
+    final drafted = [
+      for (final d in t.snapshot?.drafts ?? const <AssistantDraft>[])
+        if (d.payload case SleepPayload(:final durationMin?)) durationMin,
+    ].firstOrNull;
+    final known =
+        c.knownMinutes ?? drafted ?? spokenDurationMinutes(t.userText ?? '');
+    final picked = await pickClarifyTime(
+      context,
+      zone: zone,
+      now: now,
+      knownMinutes: known,
+      end: isEndField(c.field),
+      initial: c.knownAt,
+    );
+    if (picked == null || !mounted) return;
+    _forceBottom = true;
+    _toast(await ctl.answerText(t.taskId, picked));
   }
+
+  List<AsSuggestion> _suggestions(
+    AppLocalizations l10n,
+    AssistantScope scope, {
+    required bool viewer,
+    required VoidCallback? onPhoto,
+  }) => [
+    if (scope.household) ...[
+      if (!viewer)
+        (
+          label: l10n.asChipExpense,
+          icon: ClIcons.grid,
+          onPressed: () => _prefill(l10n.asPrefillExpense),
+        ),
+    ] else ...[
+      if (!viewer) ...[
+        (
+          label: l10n.asChipLogFeed,
+          icon: ClIcons.feed,
+          onPressed: () => _prefill(l10n.asPrefillFeed),
+        ),
+        (
+          label: l10n.asChipLogSleep,
+          icon: ClIcons.sleep,
+          onPressed: () => _prefill(l10n.asPrefillSleep),
+        ),
+      ],
+      (
+        label: l10n.asChipFeedsShort,
+        icon: ClIcons.journal,
+        onPressed: () => _prefill(l10n.asChipFeedsToday),
+      ),
+    ],
+    if (onPhoto != null)
+      (label: l10n.asChipReceipt, icon: ClIcons.camera, onPressed: onPhoto),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -400,6 +635,9 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
           };
     final babyName = baby?.nickname ?? '';
     final session = ref.watch(sessionProvider);
+    final onPhoto = images && !viewer
+        ? () => _choosePhoto(key, chat.usage)
+        : null;
     final view = _ThreadView(
       myUid: session is SessionSignedIn ? session.user.uid : null,
       members:
@@ -427,32 +665,47 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
         ctl.typeAnswer(taskId);
         _focus.requestFocus();
       },
-      onChoosePhoto: images && !viewer
-          ? () => _choosePhoto(key, chat.usage)
-          : null,
+      onTimeAnswer: (t, c) => _answerWithTime(ctl, t, c, zone),
+      onChoosePhoto: onPhoto,
       onRetake: images && !viewer
           ? (taskId) => _retakePhoto(key, taskId, chat.usage)
           : null,
       onTypeIn: () => _focus.requestFocus(),
     );
-    final children = <Widget>[
+    final entries = <_Entry>[
       if (chat.empty)
-        _EmptyState(
-          scope: scope,
-          babyName: babyName,
-          images: images,
-          onExample: (text) {
-            _text.text = text;
-            _text.selection = TextSelection.collapsed(offset: text.length);
-            _focus.requestFocus();
-          },
-          onPhoto: images && !viewer
-              ? () => _choosePhoto(key, chat.usage)
-              : null,
+        _Entry(
+          'empty',
+          _Side.note,
+          _EmptyState(
+            scope: scope,
+            babyName: babyName,
+            images: images,
+            onExample: _prefill,
+            onPhoto: onPhoto,
+          ),
         ),
-      ...view.build(context),
+      ...view.entries(context),
     ];
-    _scrollToEnd(children.length + chat.threads.length);
+    // Entrances: nothing animates while a thread is being restored or right after it opened
+    // (history appears at once); afterwards each new entry arrives with its own motion.
+    if (chat.restoring || !_primed) {
+      _primed = !chat.restoring;
+      _seen.addAll(entries.map((e) => e.key));
+    }
+    final fresh = {
+      for (final e in entries)
+        if (!_seen.contains(e.key)) e.key,
+    };
+    _seen.addAll(fresh);
+    _afterBuild(
+      freshLumi: entries.any(
+        (e) => fresh.contains(e.key) && e.side != _Side.me,
+      ),
+    );
+    final items = _layout(entries, fresh);
+    final index = {for (final (i, e) in items.indexed) e.key: i};
+    final voiceOk = mode == ComposerMode.open && chat.answering == null;
     return Scaffold(
       backgroundColor: cl.colors.cloud,
       body: SafeArea(
@@ -464,16 +717,24 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
                 ClSpace.s4,
                 ClSpace.s2,
                 ClSpace.s4,
-                0,
+                ClSpace.s2,
               ),
               child: AsChatHeader(
-                scopeLabel: scopeLabel(context, ref, scope, me),
+                // The baby's name (her age is in the scope sheet); "Gia đình" for the family.
+                scopeLabel: scope.household || babyName.isEmpty
+                    ? scopeLabel(context, ref, scope, me)
+                    : babyName,
                 household: scope.household,
+                privateHint: scope.household,
                 onBack: () =>
                     context.canPop() ? context.pop() : context.go(Routes.today),
                 onScope: () => _pickScope(scope),
                 onHistory: () => _history(scope),
-                onNew: ctl.newConversation,
+                onNew: () {
+                  _seen.clear();
+                  _primed = false;
+                  ctl.newConversation();
+                },
                 // D-076 #12: no credits pill here; the numbers are in CH19 and in the quote
                 // shown before a task that costs any.
                 onUsage: () => context.push(
@@ -484,18 +745,73 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
                 ),
               ),
             ),
+            AsSize(
+              duration: context.motion(ClMotion.quick),
+              curve: ClCurves.quick,
+              child: online
+                  ? const SizedBox(width: double.infinity)
+                  : const Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        ClSpace.s4,
+                        0,
+                        ClSpace.s4,
+                        ClSpace.s2,
+                      ),
+                      child: AsOfflineBanner(),
+                    ),
+            ),
             Expanded(
-              child: ListView.separated(
-                controller: _scroll,
-                padding: const EdgeInsets.fromLTRB(
-                  ClSpace.s4,
-                  ClSpace.s3,
-                  ClSpace.s4,
-                  ClSpace.s4,
-                ),
-                itemCount: children.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 10),
-                itemBuilder: (_, i) => children[i],
+              child: Stack(
+                children: [
+                  NotificationListener<ScrollNotification>(
+                    onNotification: (n) {
+                      if (n is ScrollStartNotification) {
+                        _dragging = n.dragDetails != null;
+                        // Dragging the thread puts the keyboard away (also when the thread
+                        // is too short to scroll).
+                        if (_dragging) FocusScope.of(context).unfocus();
+                      } else if (n is ScrollEndNotification) {
+                        _dragging = false;
+                      }
+                      return false;
+                    },
+                    child: GestureDetector(
+                      // A tap on the thread (outside a control) puts the keyboard away.
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () => FocusScope.of(context).unfocus(),
+                      child: ListView.builder(
+                        key: const ValueKey('as.thread'),
+                        controller: _scroll,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        padding: const EdgeInsets.fromLTRB(
+                          ClSpace.s4,
+                          ClSpace.s2,
+                          ClSpace.s4,
+                          ClSpace.s4,
+                        ),
+                        itemCount: items.length,
+                        findChildIndexCallback: (k) =>
+                            k is ValueKey<String> ? index[k.value] : null,
+                        itemBuilder: (_, i) => items[i].widget,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: ClSpace.s2,
+                    child: Center(
+                      child: AnimatedSwitcher(
+                        duration: context.motion(ClMotion.quick),
+                        child: _unseen
+                            ? AsNewPill(onPressed: () => unawaited(_toBottom()))
+                            : const SizedBox.shrink(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             AsComposer(
@@ -508,12 +824,77 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
               onCamera: images && mode == ComposerMode.open
                   ? () => _choosePhoto(key, chat.usage)
                   : null,
+              voice: voiceOk || (_voice?.active ?? false) ? _voiceFor() : null,
+              onMic: voiceOk ? _mic : null,
+              suggestions: chat.empty || chat.answering != null
+                  ? const []
+                  : _suggestions(l10n, scope, viewer: viewer, onPhoto: onPhoto),
             ),
           ],
         ),
       ),
     );
   }
+
+  /// Runs of the same speaker sit close; Lumi's face and name head each run of hers; my own
+  /// bubble rises from the right; a new entry of Lumi's is read out once.
+  List<({String key, Widget widget})> _layout(
+    List<_Entry> entries,
+    Set<String> fresh,
+  ) {
+    final out = <({String key, Widget widget})>[];
+    _Side? previous;
+    var stagger = 0;
+    for (final (i, e) in entries.indexed) {
+      final runStart =
+          e.side != _Side.note && e.side != previous && e.side != _Side.typing;
+      final header = e.side == _Side.lumi && previous != _Side.lumi;
+      final gap = i == 0
+          ? 0.0
+          : (e.side == _Side.note || !runStart ? 6.0 : 16.0);
+      if (e.side != _Side.note) previous = e.side;
+      final animate = fresh.contains(e.key);
+      Widget child = e.child;
+      if (header) {
+        child = Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [const AsLumiHeader(), e.child],
+        );
+      }
+      if (animate && e.side != _Side.me && e.side != _Side.typing) {
+        child = Semantics(liveRegion: true, container: true, child: child);
+      }
+      out.add((
+        key: e.key,
+        widget: Padding(
+          key: ValueKey(e.key),
+          padding: EdgeInsets.only(top: gap),
+          child: RepaintBoundary(
+            child: AsEnter(
+              animate: animate,
+              delay: animate ? staggerDelay(stagger++) : Duration.zero,
+              fromRight: e.side == _Side.me,
+              child: child,
+            ),
+          ),
+        ),
+      ));
+    }
+    return out;
+  }
+}
+
+/// Who an entry of the thread speaks for (runs, Lumi's header, entrances).
+enum _Side { me, lumi, other, note, typing }
+
+/// One keyed entry of the thread: the key stays the same while the entry is on screen, so an
+/// update re-renders it in place and only a new key animates in.
+class _Entry {
+  const _Entry(this.key, this.side, this.child);
+  final String key;
+  final _Side side;
+  final Widget child;
 }
 
 /// Builds the thread: each task (its messages, drafts and state), then the kept input and the
@@ -538,6 +919,7 @@ class _ThreadView {
     required this.onDial,
     required this.onTypeInstead,
     required this.onTypeAnswer,
+    required this.onTimeAnswer,
     required this.onChoosePhoto,
     required this.onRetake,
     required this.onTypeIn,
@@ -559,6 +941,9 @@ class _ThreadView {
   final Future<void> Function(String? number) onDial;
   final VoidCallback onTypeInstead;
   final void Function(String taskId) onTypeAnswer;
+
+  /// "Khác…" on a question that asks for a clock time: the linked time picker.
+  final void Function(TaskThread thread, Clarification c) onTimeAnswer;
 
   /// CH09 sheet (null: photo reading off, or a viewer).
   final VoidCallback? onChoosePhoto;
@@ -584,50 +969,455 @@ class _ThreadView {
       ? null
       : authorName(AppLocalizations.of(context), a, myUid: myUid);
 
-  List<Widget> build(BuildContext context) {
+  /// Only one "Lumi đang soạn…" keeps the stable key (it moves without a second entrance).
+  var _typingKeyUsed = false;
+
+  _Entry _typing(
+    BuildContext context,
+    String id,
+    String label, {
+    VoidCallback? onCancel,
+  }) {
+    final key = _typingKeyUsed ? 'typing:$id' : 'typing';
+    _typingKeyUsed = true;
+    return _Entry(
+      key,
+      _Side.typing,
+      AsTyping(label: label, onCancel: onCancel),
+    );
+  }
+
+  /// [widgets] as entries `<prefix>#<i>` (a card group that stays together).
+  List<_Entry> _many(String prefix, _Side side, List<Widget> widgets) => [
+    for (final (i, w) in widgets.indexed)
+      // An empty slot keeps the keys after it stable without taking room.
+      if (!(w is SizedBox && w.width == 0 && w.height == 0 && w.child == null))
+        _Entry(
+          '$prefix#$i',
+          w is AsFootnote || w is AsDayDivider ? _Side.note : side,
+          w,
+        ),
+  ];
+
+  String? _time(DateTime? at) => at == null ? null : hm(at, zone);
+
+  List<_Entry> entries(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final out = <Widget>[];
+    _typingKeyUsed = false;
+    final out = <_Entry>[];
     if (chat.loadFailed) {
       out.add(
-        AsCard(
-          tone: AsTone.errorEdge,
-          body: l10n.asGenericError,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: AsButton(label: l10n.asRetry, onPressed: ctl.reload),
-            ),
-          ],
+        _Entry(
+          'loadFailed',
+          _Side.lumi,
+          AsCard(
+            tone: AsTone.errorEdge,
+            body: l10n.asGenericError,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: AsButton(label: l10n.asRetry, onPressed: ctl.reload),
+              ),
+            ],
+          ),
         ),
       );
     }
     for (final (i, t) in chat.threads.indexed) {
       if (chat.resumed && i == chat.threads.length - 1) {
-        out.add(_resumedBanner(context));
+        out.add(_Entry('resumed', _Side.note, _resumedBanner(context)));
       }
-      out.addAll(_thread(context, t));
+      out.addAll(_threadEntries(context, t));
     }
     if (chat.resumed && chat.threads.isNotEmpty) {
-      out.add(AsFootnote(text: l10n.asResumedNote));
+      out.add(
+        _Entry('resumedNote', _Side.note, AsFootnote(text: l10n.asResumedNote)),
+      );
     }
     if (chat.restoring && chat.threads.every((t) => t.snapshot == null)) {
-      out.add(AsBubble(text: l10n.asLoadingChat));
+      out.add(_typing(context, 'restore', l10n.asLoadingChat));
     }
     if (chat.kept case final kept?) {
+      final block = chat.block?.kind;
+      final failed =
+          block == ChatBlockKind.failure || block == ChatBlockKind.generic;
+      final offline = block == ChatBlockKind.offline;
       out.add(
-        AsBubble(
-          text: kept.text,
-          mine: true,
-          status: chat.sending ? l10n.asSending : l10n.asUnsent,
-          statusIcon: chat.sending ? null : ClIcons.cloudOff,
+        _Entry(
+          'u:${kept.requestId}',
+          _Side.me,
+          AsBubble(
+            text: kept.text,
+            mine: true,
+            time: _time(kept.at),
+            sendState: chat.sending
+                ? AsSendState.sending
+                : (failed ? AsSendState.failed : AsSendState.unsent),
+            status: chat.sending
+                ? l10n.asSending
+                : failed
+                ? l10n.asNotSent
+                : offline
+                ? l10n.asUnsentOffline
+                : l10n.asUnsent,
+            statusIcon: chat.sending
+                ? ClIcons.clock
+                : (failed ? ClIcons.alert : ClIcons.cloudOff),
+            action: chat.sending
+                ? null
+                : failed
+                ? (label: l10n.asResend, onPressed: ctl.sendKept)
+                : offline && online
+                ? (label: l10n.asSend, onPressed: ctl.sendKept)
+                : null,
+          ),
+        ),
+      );
+      if (chat.sending) out.add(_typing(context, 'send', l10n.asThinking));
+    }
+    if (chat.photo case final photo?) {
+      out.addAll(
+        _many(
+          'photo:${photo.requestId}',
+          _Side.me,
+          _pendingPhoto(context, photo),
         ),
       );
     }
-    if (chat.photo case final photo?) {
-      out.addAll(_pendingPhoto(context, photo));
-    }
     if (chat.block case final block?) {
-      out.addAll(_blockCards(context, block));
+      out.addAll(
+        _many(
+          'block:${block.kind.name}',
+          _Side.lumi,
+          _blockCards(context, block),
+        ),
+      );
+    }
+    return out;
+  }
+
+  /// One task: my words (and photos), Lumi's parts in order, its drafts with the batch bar,
+  /// then where it stands (typing, failed, used up, cancelled) and the privacy notes.
+  List<_Entry> _threadEntries(BuildContext context, TaskThread t) {
+    final l10n = AppLocalizations.of(context);
+    final language = Localizations.localeOf(context).languageCode;
+    final s = t.snapshot;
+    final out = <_Entry>[];
+    final id = t.taskId;
+    final firstKey = t.requestId == null ? 't:$id:u0' : 'u:${t.requestId}';
+    final messages = s?.messages ?? const <AssistantMessage>[];
+    final userShown = messages.any((m) => m.role == MessageRole.user);
+    if (!userShown) {
+      for (final a in t.photoIds) {
+        out.add(
+          _Entry(
+            't:$id:p:$a',
+            _Side.me,
+            _photoBubble(context, s?.task, a, s?.attachments),
+          ),
+        );
+      }
+      if (t.userText != null) {
+        out.add(
+          _Entry(
+            firstKey,
+            _Side.me,
+            AsBubble(
+              text: t.userText!,
+              mine: true,
+              time: _time(s?.task.createdAt),
+            ),
+          ),
+        );
+      }
+    }
+    if (s == null) return out;
+    final task = s.task;
+    final open = task.state == TaskState.awaitingClarification
+        ? task.clarification
+        : null;
+    final pending =
+        chat.pendingAnswer?.taskId == id &&
+            t.userMessages <= chat.pendingAnswer!.after
+        ? chat.pendingAnswer
+        : null;
+    final shown = <String>{};
+    var hasText = false;
+    var openShown = false;
+    var users = 0;
+    for (final m in messages) {
+      if (m.role == MessageRole.user) {
+        for (final a in m.attachmentIds) {
+          out.add(
+            _Entry(
+              't:$id:p:$a',
+              _Side.me,
+              _photoBubble(context, task, a, s.attachments),
+            ),
+          );
+        }
+        if (m.text.isNotEmpty) {
+          final other = _other(context, m.author ?? task.author);
+          out.add(
+            _Entry(
+              users == 0 ? firstKey : 't:$id:u$users',
+              other == null ? _Side.me : _Side.other,
+              AsBubble(
+                text: m.text,
+                mine: other == null,
+                author: other,
+                time: _time(m.createdAt),
+              ),
+            ),
+          );
+        }
+        users++;
+        continue;
+      }
+      for (final (pi, p) in m.parts.indexed) {
+        final k = 't:$id:m${m.sequence}:$pi';
+        switch (p) {
+          case TextPart(:final text, :final code, :final link):
+            hasText = true;
+            final w = _notice(context, text, code, link: link);
+            out.add(
+              _Entry(
+                k,
+                _Side.lumi,
+                w is AsBubble
+                    ? AsBubble(text: text, time: _time(m.createdAt))
+                    : w,
+              ),
+            );
+          case ClarificationPart(:final clarification):
+            out.add(
+              _Entry(
+                k,
+                _Side.lumi,
+                AsBubble(
+                  text: clarification.question.of(language),
+                  time: _time(m.createdAt),
+                ),
+              ),
+            );
+            if (open != null && clarification.id == open.id) {
+              openShown = true;
+              out.addAll(
+                _many(
+                  '$k:ask',
+                  _Side.lumi,
+                  _clarification(context, t, task, open, questionShown: true),
+                ),
+              );
+            }
+          case DraftRefPart(:final draftId):
+            final d = s.drafts.where((d) => d.id == draftId).firstOrNull;
+            if (d != null && shown.add(d.id)) {
+              out.add(_Entry('d:${d.id}', _Side.lumi, _draft(context, t, d)));
+            }
+          case SourceSummaryPart():
+            out.add(
+              _Entry(
+                k,
+                _Side.lumi,
+                _SourceSummary(
+                  part: p,
+                  babyId: task.scope?.babyId ?? chat.scope.babyId,
+                  zone: task.timezone ?? zone,
+                  now: now,
+                  onOpenSource: () =>
+                      GoRouter.of(context).pushSafe(Routes.history),
+                ),
+              ),
+            );
+          case HealthSupportPart(:final signs, :final emergency):
+            out.add(
+              _Entry(k, _Side.lumi, _health(context, signs, emergency?.number)),
+            );
+          case ApprovedContentPart():
+            out.addAll(_many(k, _Side.lumi, _guidance(context, t, p)));
+          case RecipeListPart(:final items):
+            if (items.isNotEmpty) {
+              out.add(
+                _Entry(
+                  k,
+                  _Side.lumi,
+                  AsRecipeCard(
+                    items: items,
+                    excludedCount: p.excludedCount,
+                    caveat: p.caveat,
+                    mealLogAvailable: p.mealLogAvailable,
+                  ),
+                ),
+              );
+            } else if (p.caveat case final caveat?) {
+              out.add(_Entry(k, _Side.lumi, AsBubble(text: caveat)));
+            }
+          case UsageNoticePart():
+            break;
+          case ActionResultPart(:final items):
+            // D-075 #2: another member saved from the shared thread.
+            final saved = items
+                .where((i) => i.status == ConfirmStatus.saved)
+                .length;
+            if (_other(context, m.author) case final who? when saved > 0) {
+              out.add(
+                _Entry(
+                  k,
+                  _Side.note,
+                  AsDayDivider(label: l10n.asSavedBy(who, saved)),
+                ),
+              );
+            }
+          case UnsupportedPart():
+            out.add(
+              _Entry(
+                k,
+                _Side.lumi,
+                AsCard(
+                  tone: AsTone.quiet,
+                  icon: ClIcons.alert,
+                  body: l10n.asUnsupportedPart,
+                  children: const [],
+                ),
+              ),
+            );
+        }
+      }
+    }
+    if (open != null && !openShown) {
+      out.addAll(
+        _many('t:$id:ask', _Side.lumi, _clarification(context, t, task, open)),
+      );
+    }
+    if (pending != null) {
+      out.add(
+        _Entry(
+          users == 0 ? firstKey : 't:$id:u$users',
+          _Side.me,
+          AsBubble(
+            text: pending.text,
+            mine: true,
+            sendState: AsSendState.sending,
+          ),
+        ),
+      );
+    }
+    final rest = [
+      for (final d in s.drafts)
+        if (!shown.contains(d.id)) d,
+    ];
+    if (rest.isNotEmpty && !hasText && shown.isEmpty) {
+      out.add(
+        _Entry(
+          't:$id:found',
+          _Side.lumi,
+          AsBubble(text: l10n.asDraftsFound(s.drafts.length)),
+        ),
+      );
+    }
+    for (final d in rest) {
+      out.add(_Entry('d:${d.id}', _Side.lumi, _draft(context, t, d)));
+    }
+    if (s.drafts.isNotEmpty) {
+      out.addAll(
+        _many('t:$id:batch', _Side.lumi, _batch(context, t, s.drafts)),
+      );
+    }
+    if (task.care != null) {
+      out.addAll(
+        _many('t:$id:fu', _Side.lumi, _followUp(context, t, task.care!)),
+      );
+    }
+    final answering = chat.choosing?.startsWith('${task.id}/') ?? false;
+    switch (task.state) {
+      case TaskState.received ||
+          TaskState.uploading ||
+          TaskState.queued ||
+          TaskState.processing:
+        out.add(
+          _typing(
+            context,
+            id,
+            t.photo ? l10n.asReadingPhoto : l10n.asThinking,
+            // Cancel stays with the task's author (D-075 #2).
+            onCancel: task.authoredBy(myUid)
+                ? () => ctl.cancelTask(task.id)
+                : null,
+          ),
+        );
+        if (t.photo) {
+          out.add(
+            _Entry(
+              't:$id:leave',
+              _Side.note,
+              AsFootnote(text: l10n.asPhotoLeaveScreen),
+            ),
+          );
+        }
+      case TaskState.failed:
+        out.addAll(_many('t:$id:fail', _Side.lumi, _taskFailure(context, t)));
+      case TaskState.blocked:
+        out.addAll(
+          _many(
+            't:$id:out',
+            _Side.lumi,
+            _exhausted(
+              context,
+              task.plan == UsagePlan.premium || premium,
+              chat.usage == null
+                  ? ''
+                  : resetDate(
+                      Localizations.localeOf(context).toLanguageTag(),
+                      chat.usage!,
+                      zone,
+                    ),
+            ),
+          ),
+        );
+      case TaskState.canceled:
+        out.add(
+          _Entry(
+            't:$id:canceled',
+            _Side.note,
+            Text(
+              l10n.asCanceled,
+              style: context.cl.text.caption.copyWith(
+                color: context.cl.colors.inkMuted,
+              ),
+            ),
+          ),
+        );
+      case TaskState.awaitingClarification || TaskState.ready:
+        if (answering) out.add(_typing(context, id, l10n.asThinking));
+    }
+    if (t.photo && !task.state.working) {
+      final forExpense =
+          task.state == TaskState.awaitingClarification ||
+          s.drafts.any((d) => d.kind == DraftKind.expense);
+      if (_retention(context, s.attachments, forExpense) case final note?) {
+        out.add(_Entry('t:$id:retention', _Side.note, note));
+      }
+    }
+    // Rework 2026-10-15: words about money stay in my private thread, said once.
+    if (task.routedForSpending && !t.photo) {
+      out.add(
+        _Entry(
+          't:$id:routed',
+          _Side.note,
+          AsFootnote(icon: ClIcons.lock, text: l10n.asSpendingMoved),
+        ),
+      );
+    }
+    // D-075 #2: photos and spending never enter the baby's shared thread.
+    if (t.photo && _sharedReader && task.visibility == TaskVisibility.private) {
+      out.add(
+        _Entry(
+          't:$id:private',
+          _Side.note,
+          AsFootnote(icon: ClIcons.lock, text: l10n.asPrivateTask),
+        ),
+      );
     }
     return out;
   }
@@ -771,40 +1561,13 @@ class _ThreadView {
     final reset = usage == null ? '' : resetDate(locale, usage, zone);
     final planPremium = usage?.plan == UsagePlan.premium || premium;
     return switch (block.kind) {
-      ChatBlockKind.offline => [
-        AsCard(
-          tone: AsTone.quiet,
-          icon: ClIcons.cloudOff,
-          title: l10n.asOfflineTitle,
-          body: l10n.asOfflineBody,
-          children: [
-            if (online && chat.kept != null)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: AsButton(
-                  label: l10n.asSend,
-                  loading: chat.sending,
-                  onPressed: ctl.sendKept,
-                ),
-              ),
-          ],
-        ),
-      ],
+      // The banner and my bubble's own "Chưa gửi · Gửi" say it (CH25).
+      ChatBlockKind.offline => const <Widget>[],
       ChatBlockKind.failure => [
         _failureCard(context, onRetry: chat.kept == null ? null : ctl.sendKept),
       ],
       ChatBlockKind.generic => [
-        AsCard(
-          tone: AsTone.errorEdge,
-          body: l10n.asGenericError,
-          children: [
-            if (chat.kept != null)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: AsButton(label: l10n.asRetry, onPressed: ctl.sendKept),
-              ),
-          ],
-        ),
+        _failureCard(context, onRetry: chat.kept == null ? null : ctl.sendKept),
       ],
       ChatBlockKind.consent => [_ConsentCard(ctl: ctl)],
       ChatBlockKind.exhausted => _exhausted(context, planPremium, reset),
@@ -963,29 +1726,29 @@ class _ThreadView {
     ];
   }
 
+  /// CH25 as Lumi says it: no blame, nothing saved, nothing charged; "Thử lại" and "Ghi trực
+  /// tiếp" right under it.
   Widget _failureCard(BuildContext context, {VoidCallback? onRetry}) {
     final l10n = AppLocalizations.of(context);
-    return AsCard(
-      tone: AsTone.errorEdge,
-      title: l10n.asFailTitle,
-      body: l10n.asFailBody,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
+        AsBubble(text: l10n.asErrorFriendly),
+        const SizedBox(height: 8),
         Wrap(
           spacing: ClSpace.s2,
           runSpacing: ClSpace.s2,
           children: [
             if (onRetry != null)
-              AsButton(
+              AsChip(
                 label: l10n.asRetry,
-                loading: chat.sending,
+                icon: ClIcons.retry,
+                busy: chat.sending,
                 onPressed: onRetry,
               ),
             if (!viewer)
-              AsButton(
-                label: l10n.asLogDirectly,
-                style: AsButtonStyle.secondary,
-                onPressed: onLogDirectly,
-              ),
+              AsChip(label: l10n.asLogDirectly, onPressed: onLogDirectly),
           ],
         ),
       ],
@@ -1039,177 +1802,6 @@ class _ThreadView {
       body: l10n.asModuleBody,
       children: const [],
     );
-  }
-
-  List<Widget> _thread(BuildContext context, TaskThread t) {
-    final l10n = AppLocalizations.of(context);
-    final language = Localizations.localeOf(context).languageCode;
-    final s = t.snapshot;
-    final out = <Widget>[];
-    final messages = s?.messages ?? const <AssistantMessage>[];
-    final userShown = messages.any((m) => m.role == MessageRole.user);
-    if (!userShown) {
-      for (final id in t.photoIds) {
-        out.add(_photoBubble(context, s?.task, id, s?.attachments));
-      }
-      if (t.userText != null) out.add(AsBubble(text: t.userText!, mine: true));
-    }
-    if (s == null) return out;
-    final task = s.task;
-    final open = task.state == TaskState.awaitingClarification
-        ? task.clarification
-        : null;
-    final shown = <String>{};
-    var hasText = false;
-    var openShown = false;
-    for (final m in messages) {
-      if (m.role == MessageRole.user) {
-        for (final id in m.attachmentIds) {
-          out.add(_photoBubble(context, task, id, s.attachments));
-        }
-        if (m.text.isNotEmpty) {
-          final other = _other(context, m.author ?? task.author);
-          out.add(AsBubble(text: m.text, mine: other == null, author: other));
-        }
-        continue;
-      }
-      for (final p in m.parts) {
-        switch (p) {
-          case TextPart(:final text, :final code):
-            hasText = true;
-            out.add(_notice(context, text, code));
-          case ClarificationPart(:final clarification):
-            if (open != null && clarification.id == open.id) {
-              openShown = true;
-              out.addAll(_clarification(context, task, open));
-            } else {
-              out.add(AsBubble(text: clarification.question.of(language)));
-            }
-          case DraftRefPart(:final draftId):
-            final d = s.drafts.where((d) => d.id == draftId).firstOrNull;
-            if (d != null && shown.add(d.id)) {
-              out.add(_draft(context, t, d));
-            }
-          case SourceSummaryPart():
-            out.add(
-              _SourceSummary(
-                part: p,
-                babyId: task.scope?.babyId ?? chat.scope.babyId,
-                zone: task.timezone ?? zone,
-                now: now,
-                onOpenSource: () =>
-                    GoRouter.of(context).pushSafe(Routes.history),
-              ),
-            );
-          case HealthSupportPart(:final signs, :final emergency):
-            out.add(_health(context, signs, emergency?.number));
-          case ApprovedContentPart():
-            out.addAll(_guidance(context, t, p));
-          case RecipeListPart(:final items):
-            if (items.isNotEmpty) {
-              out.add(
-                AsRecipeCard(
-                  items: items,
-                  excludedCount: p.excludedCount,
-                  caveat: p.caveat,
-                  mealLogAvailable: p.mealLogAvailable,
-                ),
-              );
-            } else if (p.caveat case final caveat?) {
-              out.add(AsBubble(text: caveat));
-            }
-          case UsageNoticePart():
-            break;
-          case ActionResultPart(:final items):
-            // D-075 #2: another member saved from the shared thread.
-            final saved = items
-                .where((i) => i.status == ConfirmStatus.saved)
-                .length;
-            if (_other(context, m.author) case final who? when saved > 0) {
-              out.add(AsDayDivider(label: l10n.asSavedBy(who, saved)));
-            }
-          case UnsupportedPart():
-            out.add(
-              AsCard(
-                tone: AsTone.quiet,
-                icon: ClIcons.alert,
-                body: l10n.asUnsupportedPart,
-                children: const [],
-              ),
-            );
-        }
-      }
-    }
-    if (open != null && !openShown) {
-      out.addAll(_clarification(context, task, open));
-    }
-    final rest = [
-      for (final d in s.drafts)
-        if (!shown.contains(d.id)) d,
-    ];
-    if (rest.isNotEmpty && !hasText && shown.isEmpty) {
-      out.add(AsBubble(text: l10n.asDraftsFound(s.drafts.length)));
-    }
-    for (final d in rest) {
-      out.add(_draft(context, t, d));
-    }
-    if (s.drafts.isNotEmpty) out.addAll(_batch(context, t, s.drafts));
-    if (task.care != null) out.addAll(_followUp(context, t, task.care!));
-    switch (task.state) {
-      case TaskState.received ||
-          TaskState.uploading ||
-          TaskState.queued ||
-          TaskState.processing:
-        out.add(
-          AsWorking(
-            // Cancel stays with the task's author (D-075 #2).
-            onCancel: task.authoredBy(myUid)
-                ? () => ctl.cancelTask(task.id)
-                : null,
-          ),
-        );
-        if (t.photo) out.add(AsFootnote(text: l10n.asPhotoLeaveScreen));
-      case TaskState.failed:
-        out.addAll(_taskFailure(context, t));
-      case TaskState.blocked:
-        out.addAll(
-          _exhausted(
-            context,
-            task.plan == UsagePlan.premium || premium,
-            chat.usage == null
-                ? ''
-                : resetDate(
-                    Localizations.localeOf(context).toLanguageTag(),
-                    chat.usage!,
-                    zone,
-                  ),
-          ),
-        );
-      case TaskState.canceled:
-        out.add(
-          Text(
-            l10n.asCanceled,
-            style: context.cl.text.caption.copyWith(
-              color: context.cl.colors.inkMuted,
-            ),
-          ),
-        );
-      case TaskState.awaitingClarification || TaskState.ready:
-        break;
-    }
-    if (t.photo && !task.state.working) {
-      final forExpense =
-          task.state == TaskState.awaitingClarification ||
-          s.drafts.any((d) => d.kind == DraftKind.expense);
-      if (_retention(context, s.attachments, forExpense) case final note?) {
-        out.add(note);
-      }
-    }
-    // D-075 #2: photos and spending never enter the baby's shared thread.
-    if (t.photo && _sharedReader && task.visibility == TaskVisibility.private) {
-      out.add(AsFootnote(icon: ClIcons.lock, text: l10n.asPrivateTask));
-    }
-    return out;
   }
 
   /// Chat/Tệp đính kèm for one photo of a task (this phone's copy, else a placeholder).
@@ -1280,10 +1872,44 @@ class _ThreadView {
   }
 
   /// A server text; a coded notice gets its action (care library, health, region).
-  Widget _notice(BuildContext context, String text, NoticeCode? code) {
+  Widget _notice(
+    BuildContext context,
+    String text,
+    NoticeCode? code, {
+    String? link,
+  }) {
     final l10n = AppLocalizations.of(context);
     return switch (code) {
-      null || NoticeCode.careAgeUnknown => AsBubble(text: text),
+      null ||
+      NoticeCode.careAgeUnknown ||
+      NoticeCode.smallTalk ||
+      NoticeCode.help ||
+      NoticeCode.correctionApplied ||
+      NoticeCode.duplicateSuspected => AsBubble(text: text),
+      // Rework 2026-10-15: money keeps the task in my private thread (D-075 #2).
+      NoticeCode.spendingPrivate => AsNoticeCard(
+        icon: ClIcons.lock,
+        text: text,
+      ),
+      // A correction of something already saved: edit it where it lives.
+      NoticeCode.previousSaved => AsNoticeCard(
+        icon: ClIcons.edit,
+        text: text,
+        action: link == null
+            ? null
+            : AsLink(
+                label: l10n.asEditInModule,
+                onPressed: () => GoRouter.of(context).pushSafe(link),
+              ),
+      ),
+      NoticeCode.medicineNotScheduled => AsNoticeCard(
+        icon: ClIcons.bell,
+        text: text,
+        action: AsLink(
+          label: l10n.asOpenReminders,
+          onPressed: () => GoRouter.of(context).pushSafe(Routes.reminders),
+        ),
+      ),
       NoticeCode.careNoApprovedContent => AsNoticeCard(
         icon: ClIcons.journal,
         text: text,
@@ -1559,9 +2185,11 @@ class _ThreadView {
 
   List<Widget> _clarification(
     BuildContext context,
+    TaskThread t,
     AssistantTask task,
-    Clarification c,
-  ) {
+    Clarification c, {
+    bool questionShown = false,
+  }) {
     final l10n = AppLocalizations.of(context);
     final language = Localizations.localeOf(context).languageCode;
     final expired =
@@ -1572,42 +2200,61 @@ class _ThreadView {
     final asker = task.authoredBy(myUid)
         ? null
         : authorName(l10n, task.author!, myUid: myUid);
+    final pending = chat.pendingAnswer?.taskId == task.id;
+    final timePicker = c.allowText && isTimeField(c.field);
     return [
-      AsBubble(text: c.question.of(language)),
+      if (!questionShown) AsBubble(text: c.question.of(language)),
+      // The answer is on its way: my bubble and "Lumi đang soạn…" replace the chips.
       if (expired)
         AsFootnote(text: l10n.asClarifyExpired, icon: ClIcons.clock)
       else if (asker != null)
         AsFootnote(icon: ClIcons.clock, text: l10n.asWaitingFor(asker))
       else ...[
-        Wrap(
-          spacing: ClSpace.s2,
-          runSpacing: ClSpace.s2,
-          children: [
-            for (final choice in c.choices)
-              AsChip(
-                label: choice.label.of(language),
-                busy: chat.choosing == '${task.id}/${choice.id}',
-                selected: chat.choosing == '${task.id}/${choice.id}',
-                onPressed: chat.choosing != null
-                    ? null
-                    : () async {
-                        final o = await ctl.answerChoice(task.id, choice);
-                        onToast(o);
-                      },
-              ),
-            if (c.allowText)
-              AsChip(
-                label: l10n.asClarifyOwn,
-                selected: answering,
-                onPressed: () =>
-                    answering ? ctl.stopTypingAnswer() : onTypeAnswer(task.id),
-              ),
-          ],
-        ),
+        // While the answer is on its way my bubble and "Lumi đang soạn…" stand for the chips;
+        // the slots stay so nothing below moves or enters again.
+        if (pending)
+          const SizedBox.shrink()
+        else
+          Wrap(
+            spacing: ClSpace.s2,
+            runSpacing: ClSpace.s2,
+            children: [
+              for (final choice in c.choices)
+                AsChip(
+                  label: choice.label.of(language),
+                  busy: chat.choosing == '${task.id}/${choice.id}',
+                  selected: chat.choosing == '${task.id}/${choice.id}',
+                  onPressed: chat.choosing != null
+                      ? null
+                      : () async {
+                          final o = await ctl.answerChoice(task.id, choice);
+                          onToast(o);
+                        },
+                ),
+              if (c.allowText)
+                AsChip(
+                  label: l10n.asClarifyOwn,
+                  icon: timePicker ? ClIcons.clock : ClIcons.edit,
+                  selected: answering,
+                  onPressed: chat.choosing != null
+                      ? null
+                      : timePicker
+                      ? () => onTimeAnswer(t, c)
+                      : () => answering
+                            ? ctl.stopTypingAnswer()
+                            : onTypeAnswer(task.id),
+                ),
+            ],
+          ),
         // CH14: text in a photo is content, never a command.
-        if (c.field == 'image.intent')
-          AsFootnote(icon: ClIcons.lock, text: l10n.asPhotoTextIsData),
-        AsFootnote(text: l10n.asClarifyFree),
+        if (c.field == 'image.intent' && !pending)
+          AsFootnote(icon: ClIcons.lock, text: l10n.asPhotoTextIsData)
+        else
+          const SizedBox.shrink(),
+        if (pending)
+          const SizedBox.shrink()
+        else
+          AsFootnote(text: l10n.asClarifyFree),
         // CH15: red flags go to health guidance, free, whatever the credits.
         if (task.care?.topic == 'sleep_concern')
           AsSafetyNote(
@@ -1775,7 +2422,18 @@ class _ThreadView {
         },
       ),
     };
+    final canEdit = editable && pending && canSave && !expired && !saving;
     return AsDraftCard(
+      onTap: canEdit
+          ? () => showDraftEditor(
+              context,
+              scopeKey: chat.scope.key,
+              draft: d,
+              babyName: babyName,
+              zone: taskZone,
+            )
+          : null,
+      privateHint: d.kind == DraftKind.expense ? l10n.asOnlyYou : null,
       state: saving ? DraftState.saving : d.state,
       kind: d.kind,
       title: single && d.state == DraftState.saved
@@ -1862,6 +2520,7 @@ class _ThreadView {
           categoryId: p.categoryId,
           babyId: p.babyId,
           keepReceipt: p.keepReceipt,
+          note: p.note,
         ),
         confirmed: const ['date'],
       );
@@ -1922,7 +2581,8 @@ class _ThreadView {
       if (!canSave) l10n.asViewerDraftNote,
     ];
     return AsReceiptCard(
-      title: l10n.asReceiptTitle,
+      // A typed expense is not a receipt: its category and store (or what was bought).
+      title: t.photo ? l10n.asReceiptTitle : draftTitle(l10n, d),
       stateLabel: saving
           ? l10n.asStateSaving
           : expired
@@ -1948,15 +2608,18 @@ class _ThreadView {
             )
           : null,
       notes: notes,
+      privateHint: l10n.asOnlyYouSpending,
+      primary: editable
+          ? (
+              label: l10n.asSaveExpense,
+              onPressed: blocked
+                  ? null
+                  : () async => onToast(await ctl.saveOne(t.taskId, d)),
+            )
+          : null,
       actions: [
         if (editable) ...[
           (label: l10n.asEdit, onPressed: edit),
-          (
-            label: l10n.asSaveExpense,
-            onPressed: blocked
-                ? null
-                : () async => onToast(await ctl.saveOne(t.taskId, d)),
-          ),
           (
             label: l10n.asSkip,
             onPressed: () async => onToast(await ctl.discard(d)),
@@ -2104,7 +2767,8 @@ class _EmptyState extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: ClSpace.s4),
-        const AsSparkTile(size: 54, circle: true),
+        // Lumi greets (D-076 #11): the assistant has a face, not a spark.
+        const LumiMascot(size: 56),
         const SizedBox(height: ClSpace.s3),
         Semantics(
           header: true,

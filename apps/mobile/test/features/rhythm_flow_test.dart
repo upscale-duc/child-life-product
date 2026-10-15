@@ -40,29 +40,42 @@ void main() {
       expect(find.text(l10n.rhAgeHeading('Teddy')), findsNothing);
     });
 
-    testWidgets(
-      'H01 free: check-in, age card, calendar, optional support → plan',
-      (tester) async {
-        final repo = FakeRhythmRepository();
-        final (visits, _) = await pumpRouted(
-          tester,
-          _home(),
-          overrides: rhythmOverrides(repo: repo),
-        );
-        expect(find.text(l10n.rhCheckInEntry), findsOneWidget);
-        expect(find.text(l10n.rhAgeHeading('Teddy')), findsOneWidget);
-        expect(find.text('3 tuần tuổi'), findsOneWidget);
-        expect(
-          find.text('Giai đoạn 1 (Wonder Weeks) dự kiến 12/10 – 21/10'),
-          findsOneWidget,
-        );
-        // The owner reads the date of birth: the free Home needs no server call.
-        expect(repo.composeCalls, 0);
-        await tester.tap(find.text(l10n.rhSupportTitle));
-        await tester.pumpAndSettle();
-        expect(visits.last.location, '${Routes.premium}?entry=rhythm');
-      },
-    );
+    testWidgets('H01 free: check-in, age card, calendar, optional support → plan', (
+      tester,
+    ) async {
+      final repo = FakeRhythmRepository();
+      final (visits, _) = await pumpRouted(
+        tester,
+        _home(),
+        overrides: rhythmOverrides(repo: repo),
+      );
+      expect(find.text(l10n.rhCheckInEntry), findsOneWidget);
+      expect(find.text(l10n.rhAgeHeading('Teddy')), findsOneWidget);
+      // Week of life 4 (21 days: three completed weeks); the teaser is the age card's
+      // first sentence and the card says what tapping does.
+      expect(find.text('Tuần thứ 4 · 3 tuần tuổi'), findsOneWidget);
+      expect(
+        find.text(
+          'Nhiều bé ở tuần này nhìn theo khuôn mặt ở gần và quay về phía giọng nói quen.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Xem 2 gợi ý cho tuần này'), findsOneWidget);
+      // The reference calendar is a row of the same card, not a card of its own.
+      expect(find.text('Còn 4 ngày đến giai đoạn 1'), findsOneWidget);
+      expect(find.text('Wonder Weeks · dự kiến 12/10 – 21/10'), findsOneWidget);
+      expect(find.text('LỊCH THAM KHẢO'), findsNothing);
+      await tester.tap(find.byKey(const Key('forBabyWeek')));
+      await tester.pumpAndSettle();
+      expect(visits.last.location, '${Routes.rhythmAge}/age_week_3');
+      GoRouter.of(tester.element(find.text('stub'))).pop();
+      await tester.pumpAndSettle();
+      // The owner reads the date of birth: the free Home needs no server call.
+      expect(repo.composeCalls, 0);
+      await tester.tap(find.text(l10n.rhSupportTitle));
+      await tester.pumpAndSettle();
+      expect(visits.last.location, '${Routes.premium}?entry=rhythm');
+    });
 
     testWidgets('no upsell when group A is missing for another reason', (
       tester,
@@ -113,8 +126,12 @@ void main() {
         overrides: rhythmOverrides(me: lan, repo: repo),
       );
       expect(repo.composeCalls, 1);
+      // No date of birth: the week of life comes from the age card's range (days 21–27).
+      expect(find.text('Tuần thứ 4'), findsOneWidget);
       expect(
-        find.text('Bé nhìn theo mặt người và nghe giọng quen'),
+        find.text(
+          'Nhiều bé ở tuần này nhìn theo khuôn mặt ở gần và quay về phía giọng nói quen.',
+        ),
         findsOneWidget,
       );
       expect(find.textContaining('Wonder Weeks'), findsNothing);
@@ -143,8 +160,12 @@ void main() {
         findsOneWidget,
       );
       expect(find.text(l10n.rhReviewPending), findsOneWidget);
-      // The calendar sinks to a strip under the suggestion.
-      expect(find.textContaining('Giai đoạn 1 (Wonder Weeks)'), findsOneWidget);
+      // The calendar is a row of "Tuần này của Teddy", below the suggestion.
+      expect(find.textContaining('đến giai đoạn 1'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.byKey(const Key('forBabySuggestion'))).dy,
+        lessThan(tester.getTopLeft(find.byKey(const Key('forBabyRhythm'))).dy),
+      );
       expect(find.text(l10n.rhSupportTitle), findsNothing);
 
       await tester.tap(find.text(l10n.rhTryTonight));
@@ -183,7 +204,7 @@ void main() {
     testWidgets('PS02: the feedback behind it and what changed', (
       tester,
     ) async {
-      await pumpRouted(
+      final (visits, _) = await pumpRouted(
         tester,
         _home(),
         overrides: rhythmOverrides(
@@ -196,6 +217,14 @@ void main() {
           caps: rhythmCaps(plan: 'beta', groupA: true),
         ),
       );
+      // Compact on Home: one line of why; the feedback behind it is in "Vì sao gợi ý này?".
+      expect(find.text(l10n.hnWhyFeedbackShort), findsOneWidget);
+      expect(find.text(l10n.rhBasedOnFeedback), findsNothing);
+      expect(find.text(l10n.rhTryAgainTonight), findsOneWidget);
+      expect(find.text(l10n.rhSomethingElse), findsOneWidget);
+      await tester.tap(find.byKey(const Key('forBabyWhy')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('forBabyWhySheet')), findsOneWidget);
       expect(find.text(l10n.rhBasedOnFeedback), findsOneWidget);
       expect(
         find.text(
@@ -205,8 +234,11 @@ void main() {
         findsOneWidget,
       );
       expect(find.text(l10n.rhChangePrefersHelpful), findsOneWidget);
-      expect(find.text(l10n.rhTryAgainTonight), findsOneWidget);
-      expect(find.text(l10n.rhSomethingElse), findsOneWidget);
+      // Ba's own answers can be changed: the link leaves the sheet for the history.
+      await tester.tap(find.text(l10n.rhEditHistoryLink));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('forBabyWhySheet')), findsNothing);
+      expect(visits.last.location, Routes.rhythmFeedbackHistory);
     });
 
     testWidgets('a health sign today comes first and pauses suggestions', (

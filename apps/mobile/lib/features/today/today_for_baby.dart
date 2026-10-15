@@ -11,30 +11,32 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
+import '../ai/handover_screen.dart' show HandoverEntry;
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
-import '../library/library_today.dart' show lbForBabyCardsProvider;
+import '../library/library_today.dart'
+    show lbForBabyCardsProvider, lbWeekTeaserProvider;
 import '../milestones/milestone_today.dart' show mtForBabyCardsProvider;
 import '../rhythm/rhythm_access.dart';
 import '../rhythm/rhythm_calc.dart';
 import '../rhythm/rhythm_home.dart' show ForYouSection;
-import '../rhythm/rhythm_labels.dart';
 import '../rhythm/rhythm_models.dart';
 import '../rhythm/rhythm_repository.dart';
-import '../rhythm/rhythm_widgets.dart';
 
-/// Hôm nay · "Dành cho bé hôm nay" (D-076 #4, Figma 559:57583, adapted to the v2.0 rules):
+export '../rhythm/rhythm_home.dart' show soothingDays;
+
+/// Hôm nay · "Dành cho bé hôm nay" (D-076 #4, Figma 559:57583 as a reference; the order is the
+/// owner's of 2026-10-15, see [ForYouSection]):
 ///
 /// 1. heading and "≈ Theo điều bạn quan tâm · Đổi" (Đổi opens EN01, the person's interests);
-/// 2. Nhịp lớn lên's own cards ([ForYouSection]: health first, the current suggestion from
-///    `recommend()` / `composeHome`, check-in, handover, the age card, the week summary,
-///    "Hỗ trợ phù hợp"), with the reference calendar drawn as the large lavender card
-///    "Nhịp lớn lên · Beta" ([ForBabyRhythmCard]) at its place — never first, and hidden on a
-///    health day, as the brief requires;
-/// 3. a carousel of small cards from other modules ([ForBabyCard]), through the providers
-///    below, ranked by the person's interests.
+/// 2. Nhịp lớn lên's suggestion (compact), then "Để ý tuần này": small cards from other modules
+///    ([ForBabyCard]) through the providers below, ranked by the person's interests; then
+///    "Hôm nay con có gì khác?";
+/// 3. "Tuần này của {bé}": one card whose teaser is the current stage's first "Bé đang thế nào"
+///    point ([lbWeekTeaserProvider]; the carousel then leaves that stage out) or the Nhịp lớn lên
+///    age card, with the reference calendar and the week summary as rows.
 ///
 /// The section shows only with the family's `rhythm` rollout (ForYouSection checks it); roles
 /// are those of each card (`familyCan`).
@@ -50,13 +52,12 @@ class TodayForBabySection extends ConsumerWidget {
       return const SizedBox.shrink();
     }
     final language = Localizations.localeOf(context).languageCode;
-    final cards = ref.watch(
-      forBabyCardsProvider((
-        babyId: me.babyId,
-        uid: me.uid,
-        languageCode: language,
-      )),
-    );
+    final query = (babyId: me.babyId, uid: me.uid, languageCode: language);
+    final teaser = ref.watch(lbWeekTeaserProvider(query));
+    final cards = [
+      for (final c in ref.watch(forBabyCardsProvider(query)))
+        if (c.id != teaser?.id) c,
+    ];
     final interests =
         ref.watch(userPreferencesProvider(me.uid)).value?.interests ??
         const <Interest>[];
@@ -65,9 +66,43 @@ class TodayForBabySection extends ConsumerWidget {
       padding: const EdgeInsets.only(top: ClSpace.s2),
       child: ForYouSection(
         header: ForBabyHeader(hasInterests: interests.isNotEmpty),
-        calendar: (compact) => ForBabyRhythmCard(compact: compact),
+        weekTeaser: teaser,
         more: [if (cards.isNotEmpty) ForBabyCarousel(cards: cards)],
       ),
+    );
+  }
+}
+
+/// "Bàn giao cho người chăm tiếp" (SU01) on Hôm nay, with the care tools under the tiles (owner,
+/// 2026-10-15) rather than among the suggestions. As before: only with the `rhythm` rollout and
+/// not on a day a health sign was noted; [HandoverEntry] checks `ai_assist` and the role.
+class TodayHandoverRow extends ConsumerWidget {
+  const TodayHandoverRow({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final me = ref.watch(selectedMembershipProvider);
+    final caps = ref.watch(selectedCapabilitiesProvider);
+    if (me == null || caps == null || !caps.features.rhythm) {
+      return const SizedBox.shrink();
+    }
+    final language = Localizations.localeOf(context).languageCode;
+    if (!HandoverEntry.visibleFor(ref, me, caps, language)) {
+      return const SizedBox.shrink();
+    }
+    final zone =
+        ref.watch(babyProvider(me.babyId)).value?.timeZone.zone ??
+        'Asia/Ho_Chi_Minh';
+    final now = ref.watch(careClockProvider).value ?? DateTime.now();
+    final today = isoOf(babyToday(zone, now));
+    final health = familyCan(me, FamilyAction.historyRead)
+        ? (ref.watch(checkInsProvider(me.babyId)).value ?? const <CheckIn>[])
+              .any((c) => c.date == today && c.needsHealthSupport)
+        : false;
+    if (health) return const SizedBox.shrink();
+    return const Padding(
+      padding: EdgeInsets.only(top: ClSpace.s3),
+      child: HandoverEntry(),
     );
   }
 }
@@ -129,129 +164,6 @@ class ForBabyHeader extends StatelessWidget {
       ],
     );
   }
-}
-
-/// 559:57583 "Nhịp lớn lên · Beta": the reference stage now or next ("Sắp đến giai đoạn 1
-/// (Wonder Weeks)"), its expected window and, for who reads care, how many of the last three
-/// days someone noted "cần được dỗ nhiều hơn". [compact] (a suggestion is shown above it)
-/// leaves out the body. Opens Nhịp lớn lên.
-class ForBabyRhythmCard extends ConsumerWidget {
-  const ForBabyRhythmCard({this.compact = false, super.key});
-  final bool compact;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final me = ref.watch(selectedMembershipProvider);
-    if (me == null) return const SizedBox.shrink();
-    final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
-    final locale = Localizations.localeOf(context);
-    final baby = ref.watch(babyProvider(me.babyId)).value;
-    final zone = baby?.timeZone.zone ?? 'Asia/Ho_Chi_Minh';
-    final now = ref.watch(careClockProvider).value ?? DateTime.now();
-    final today = isoOf(babyToday(zone, now));
-    final due = me.canViewBabyInfo
-        ? ref.watch(rhythmProfileProvider(me.babyId)).value?.dueDate?.date
-        : null;
-    final reference = ref.watch(rhythmReferenceProvider).value;
-    if (due == null || reference == null) return const SizedBox.shrink();
-    final stages = currentStages(due, today, reference.stages);
-    final focus = stages.current.firstOrNull ?? stages.next;
-    if (focus == null) return const SizedBox.shrink();
-    final title = stages.current.isNotEmpty
-        ? l10n.rhStageInN(focus.number)
-        : l10n.rhStageComingN(focus.number);
-    final soothing = familyCan(me, FamilyAction.historyRead)
-        ? soothingDays(
-            ref.watch(checkInsProvider(me.babyId)).value ?? const [],
-            today,
-          )
-        : 0;
-    final body = [
-      l10n.hnRhythmExpected(dayRange(l10n, locale, windowOf(due, focus))),
-      if (soothing > 0) l10n.hnRhythmSoothing(soothing),
-    ].join(' ');
-    final sleep = cl.care.sleep;
-    final see = l10n.rhSeeRhythm(baby?.nickname ?? '');
-    return RhCard(
-      key: const Key('forBabyRhythm'),
-      color: sleep.soft,
-      onTap: () => context.push(Routes.rhythm),
-      semanticLabel: [
-        l10n.hnRhythmPill,
-        title,
-        if (!compact) body,
-        see,
-      ].join('. '),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: ClSpace.s2,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: cl.colors.surface,
-                  borderRadius: BorderRadius.circular(ClRadius.pill),
-                ),
-                child: Text(
-                  l10n.hnRhythmPill,
-                  style: cl.text.caption.copyWith(
-                    color: sleep.ink,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const Spacer(),
-              ClIcon(ClIcons.chevronRight, size: 18, color: sleep.ink),
-            ],
-          ),
-          const SizedBox(height: ClSpace.s2),
-          Text(
-            title,
-            style: (compact ? cl.text.bodyStrong : cl.text.headline).copyWith(
-              color: sleep.ink,
-            ),
-          ),
-          if (!compact) ...[
-            const SizedBox(height: ClSpace.s1),
-            Text(body, style: cl.text.body.copyWith(color: cl.colors.ink)),
-          ],
-          const SizedBox(height: ClSpace.s2),
-          Row(
-            children: [
-              Flexible(
-                child: Text(
-                  see,
-                  style: cl.text.label.copyWith(
-                    color: sleep.ink,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 4),
-              ClIcon(ClIcons.arrowRight, size: 14, color: sleep.ink),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Days among the last three (today included) on which someone noted "cần được dỗ nhiều hơn".
-int soothingDays(List<CheckIn> checkIns, String today) {
-  final from = addDaysIso(today, -2);
-  return {
-    for (final c in checkIns)
-      if (c.observation == Observation.soothing &&
-          c.date.compareTo(from) >= 0 &&
-          c.date.compareTo(today) <= 0)
-        c.date,
-  }.length;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -405,6 +317,22 @@ class _ForBabyCarouselState extends State<ForBabyCarousel> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // "Để ý tuần này" (owner, 2026-10-15): what the cards are, in one small line.
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                ClSpace.s1,
+                ClSpace.s1,
+                ClSpace.s1,
+                ClSpace.s2,
+              ),
+              child: Text(
+                l10n.hnWatchThisWeek,
+                style: cl.text.label.copyWith(
+                  color: cl.colors.inkMuted,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
             SingleChildScrollView(
               key: const Key('forBabyCarousel'),
               controller: _scroll,

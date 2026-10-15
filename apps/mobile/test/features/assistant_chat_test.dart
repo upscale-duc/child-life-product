@@ -542,7 +542,7 @@ void main() {
         },
       );
       await _pump(tester, repo: repo, prefs: _thread([taskA]));
-      await tester.tap(_text('Tự nhập'));
+      await tester.tap(_text('Khác…'));
       await tester.pumpAndSettle();
       expect(_text('Trả lời câu hỏi…'), findsOneWidget);
       await _type(tester, '21:30 đến 6:00');
@@ -869,7 +869,10 @@ void main() {
       // The same request id with a fresh quote: the server runs the blocked task once.
       expect(start['requestId'], 'req-blocked');
       expect(_text('Còn 200/200 lượt hỗ trợ AI'), findsNothing);
-      await tester.drag(find.byType(ListView), const Offset(0, 800));
+      await tester.drag(
+        find.byKey(const ValueKey('as.thread')),
+        const Offset(0, 800),
+      );
       await tester.pumpAndSettle();
       expect(
         _text('Hộ đã có Premium · tiếp tục câu hỏi đang chờ'),
@@ -1004,20 +1007,26 @@ void main() {
         },
       );
       await _pump(tester, repo: repo, prefs: _thread([taskA]));
-      expect(_text('Trợ lý chưa phản hồi được'), findsOneWidget);
+      // CH25 as Lumi says it: no blame, nothing saved, nothing charged.
       expect(
         _text(
-          'Chưa có gì được lưu. Lượt này không bị trừ; thử lại cũng không trừ hai lần.',
+          'Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.',
         ),
         findsOneWidget,
       );
+      expect(_text('Ghi trực tiếp'), findsOneWidget);
       await tester.tap(_text('Thử lại'));
       await tester.pumpAndSettle();
       expect(
         repo.named('startTask').single.args['text'],
         '8 giờ con bú bình 120 ml',
       );
-      expect(_text('Trợ lý chưa phản hồi được'), findsNothing);
+      expect(
+        _text(
+          'Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.',
+        ),
+        findsNothing,
+      );
     });
 
     testWidgets('no answer from the server: kept, retried with the same id', (
@@ -1028,8 +1037,8 @@ void main() {
       await _pump(tester, repo: repo);
       await _type(tester, 'Hôm nay con bú thế nào?');
       await _send(tester);
-      expect(_text('Đang ngoại tuyến'), findsOneWidget);
-      expect(_text('Chưa gửi'), findsOneWidget);
+      // Kept under my bubble with its own "Gửi" (never sent by itself).
+      expect(_text('Chưa gửi · đang ngoại tuyến'), findsOneWidget);
       repo.error = null;
       await tester.tap(_text('Gửi').last);
       await tester.pumpAndSettle();
@@ -1037,7 +1046,7 @@ void main() {
       expect(starts, hasLength(2));
       // The same request id: a replay of a start that did land returns the same task.
       expect(starts[0].args['requestId'], starts[1].args['requestId']);
-      expect(_text('Chưa gửi'), findsNothing);
+      expect(_text('Chưa gửi · đang ngoại tuyến'), findsNothing);
     });
 
     testWidgets('offline: kept, never auto-sent; sent on a tap once online', (
@@ -1052,8 +1061,15 @@ void main() {
       await _type(tester, '8 giờ con bú bình 120 ml');
       await _send(tester);
       expect(repo.named('quoteTask'), isEmpty);
-      expect(_text('Đang ngoại tuyến'), findsOneWidget);
-      expect(_text('Chưa gửi'), findsOneWidget);
+      expect(
+        _text(
+          'Đang ngoại tuyến. Tin nhắn được giữ lại và chỉ gửi khi bạn bấm Gửi. Ghi trực tiếp vẫn dùng được.',
+        ),
+        findsOneWidget,
+      );
+      expect(_text('Chưa gửi · đang ngoại tuyến'), findsOneWidget);
+      // Offline, the bubble offers no "Gửi" yet.
+      expect(_text('Gửi'), findsNothing);
       online.add(true);
       await tester.pumpAndSettle();
       // Back online: nothing goes out by itself (no charge without a tap).
@@ -1208,7 +1224,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(repo.named('getAssistantTask'), hasLength(1));
-      expect(_text('Trợ lý đang đọc…'), findsNothing);
+      expect(_text('Lumi đang soạn…'), findsNothing);
       expect(_text('Lưu 2 mục đã chọn'), findsOneWidget);
       // A new event asks for the authoritative snapshot once; its duplicate does not.
       final saved = AssistantEvent(
@@ -1249,7 +1265,7 @@ void main() {
         prefs: _thread([taskA]),
         onlineStream: online.stream,
       );
-      expect(_text('Trợ lý đang đọc…'), findsOneWidget);
+      expect(_text('Lumi đang soạn…'), findsOneWidget);
       online.add(false);
       await tester.pumpAndSettle();
       repo.tasks[taskA] = batchSnapshot();

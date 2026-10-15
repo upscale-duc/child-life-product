@@ -12,6 +12,8 @@
     <!-- "Tải về" (10f) through gal: Android 8–10 still need write access to the gallery. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Lumi voice input: the phone's speech service turns speech into words (no audio kept). -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <!-- FB4: Android 14+ reports a screenshot of the app (no image, normal permission). -->
     <uses-permission android:name="android.permission.DETECT_SCREEN_CAPTURE"/>
     <!-- 10j: memory uploads go on in the background as a data-sync foreground job (A3). -->
@@ -212,6 +214,10 @@
 
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
+        <!-- Lumi voice input (Android 11+ package visibility of the speech service). -->
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
+        </intent>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>

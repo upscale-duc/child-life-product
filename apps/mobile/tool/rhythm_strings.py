@@ -415,7 +415,7 @@ s('rhOtherIdeas', 'Cách khác có thể thử', 'Other things to try', 'PS01 / 
 # the NL02c switch. Free records apart from the group A look-back; coverage always labelled; the
 # mock's "Tuần 4" and its numbers are not copied (extract 30 Q4–Q5).
 s('rhWeekTitle', 'Tóm tắt tuần', 'Weekly summary', 'EN09 kicker, NL01 / Home entry, notification title and NL02c switch.')
-s('rhWeekOf', 'Tuần {n} của {baby}', '{baby}’s week {n}', 'EN09 title: the week of life counted from the date of birth (days 0–6 = week 1) on the week’s Sunday.', n='int', baby='String')
+s('rhWeekOf', 'Tuần thứ {n} của {baby}', '{baby}’s week {n}', 'EN09 title: the week of life counted from the date of birth (days 0–6 = week 1) on the week’s Sunday.', n='int', baby='String')
 s('rhWeekInProgress', 'Tuần đang diễn ra · số liệu đến lúc này', 'Week in progress · figures so far', 'EN09 note on a Sunday: the week ends tonight, today’s sleep is not counted yet.')
 s('rhWeekShare', 'Gửi cho…', 'Send to…', 'EN09 top pill: shares the logged figures as plain text.')
 s('rhWeekRecordedTitle', 'Đã ghi trong tuần', 'Logged this week', 'EN09 free section heading.')
@@ -494,7 +494,7 @@ s('rhTriedHistoryTitle', 'Các cách đã thử', 'What we’ve tried', 'Activit
 s('rhTriedHistoryBody', 'Gợi ý cả nhà đã lên kế hoạch hoặc trả lời trong {days} ngày qua, ai làm và thấy thế nào.', 'Suggestions the family planned or answered in the last {days} days, who did and how it went.', 'Activity history intro.' + PLAN, days='int')
 s('rhTriedHistoryEmpty', 'Chưa có cách nào được lên kế hoạch hay thử.', 'Nothing planned or tried yet.', 'Activity history without rows.' + PLAN)
 s('rhSeeAllTried', 'Xem tất cả', 'See all', 'NL01 / EN09 link to the activity history.' + PLAN)
-s('rhWeekMakeVideo', 'Tạo video tuần {n}', 'Make a week {n} video', 'EN09 primary button (561:3102 "Tạo video tuần 4"): N is the week of life the title shows.', n='int')
+s('rhWeekMakeVideo', 'Tạo video tuần thứ {n}', 'Make a week {n} video', 'EN09 primary button (561:3102 "Tạo video tuần 4"): N is the week of life the title shows.', n='int')
 s('rhWeekMakeVideoPlain', 'Tạo video của tuần', 'Make a video of the week', 'EN09 primary button when the week of life is unknown.' + PLAN)
 s('rhWeekVideoPhotos', '{count} ảnh trong tuần được chọn sẵn', '{count, plural, =1{1 photo from the week is picked} other{{count} photos from the week are picked}}', 'EN09 caption under "Tạo video tuần N".' + PLAN, count='int')
 

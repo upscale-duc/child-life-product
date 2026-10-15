@@ -65,7 +65,7 @@ s('asPrivacyNote', 'Tin nhắn và ảnh bạn gửi được AI xử lý để 
 s('asPrivacyNoteText', 'Tin nhắn bạn gửi được AI xử lý để tạo bản nháp. Không tự lưu.', 'Messages you send are processed by AI to make drafts. Nothing saves automatically.', 'CH02 notice while photo reading is off.' + VI_DRAFT)
 
 # Thread.
-s('asThinking', 'Trợ lý đang đọc…', 'The assistant is reading…', 'Task queued / processing.' + VI_DRAFT)
+s('asThinking', 'Lumi đang soạn…', 'Lumi is typing…', 'Typing indicator while a text task is sent, queued or processing (chat rework 2026-10-15).' + VI_DRAFT)
 s('asCancelTask', 'Huỷ', 'Cancel', 'Cancel a task still being prepared (no charge without a useful answer).' + VI_DRAFT)
 s('asCanceled', 'Đã huỷ. Không trừ lượt.', 'Canceled. No AI help used.', 'A canceled task.' + VI_DRAFT)
 s('asUnsent', 'Chưa gửi', 'Not sent', 'Kept input bubble marker (CH21 / CH25).' + RULE)
@@ -147,7 +147,7 @@ s('asCancel', 'Huỷ', 'Cancel', 'Generic cancel in assistant sheets.')
 
 # CH05 clarification (613:7904 / 613:8330).
 s('asClarifyFree', 'Câu hỏi làm rõ thuộc cùng tác vụ, không trừ thêm lượt.', 'Clarifying questions are part of the same task and don’t use extra help.', 'CH05 footnote.')
-s('asClarifyOwn', 'Tự nhập', 'Enter manually', 'CH05 chip for a typed answer.')
+s('asClarifyOwn', 'Khác…', 'Other…', 'CH05 chip for another answer: a time picker for a time question (prefilled from what is known), else typing in the composer (chat rework 2026-10-15).' + VI_DRAFT)
 s('asClarifyExpired', 'Câu hỏi đã hết hạn. Nhắn lại để hỏi tiếp.', 'This question expired. Send it again to continue.', 'Clarification past its TTL.' + VI_DRAFT)
 
 # CH06 edit sheet (Chat/Biểu mẫu nháp).
@@ -454,8 +454,74 @@ s('asLumiIntroLater', 'Để sau', 'Later', 'Lumi first-run tooltip: dismiss for
 s('asLumiIntroTry', 'Thử ngay', 'Try it', 'Lumi first-run tooltip: open the chat (669:64442).')
 s('asUsageButton', 'Mức dùng', 'Usage', 'Chat top-bar icon button (tooltip and screen-reader label) that opens CH19; replaces the "Chi tiết" link (612:7741).' + DRAFT)
 
+# Chat rework 2026-10-15 (owner: "Lumi chat khá cứng…"): Lumi identity, optimistic sending,
+# typing, new-message pill, offline banner, friendly error, linked time editing, voice input.
+REWORK = ' Chat rework 2026-10-15.' + VI_DRAFT
+s('asLumiName', 'Lumi', 'Lumi', 'The assistant\'s name in the chat header, above her messages and in screen-reader labels.' + REWORK)
+s('asYou', 'Bạn', 'You', 'Screen-reader speaker of my own bubble ("Bạn: …").' + REWORK)
+s('asOnlyYou', 'Chỉ bạn thấy', 'Only you', 'Privacy hint on private chats and expense drafts (spending never enters the shared thread, D-075 #2).' + REWORK)
+s('asOnlyYouSpending', 'Chỉ bạn thấy · chi tiêu không vào cuộc trò chuyện chung của bé', 'Only you · spending never goes into the baby’s shared chat', 'Privacy line on an expense draft and its editor (D-075 #2).' + REWORK)
+s('asCopy', 'Sao chép', 'Copy', 'Screen-reader hint of a long press on a bubble.' + REWORK)
+s('asCopied', 'Đã sao chép', 'Copied', 'Toast after a long press copied a message.' + REWORK)
+s('asShowTime', 'Xem giờ gửi', 'Show the time', 'Screen-reader hint of a tap on a bubble (shows its time).' + REWORK)
+s('asNewMessages', 'Tin mới', 'New messages', 'Pill shown when Lumi answers while the person reads further up; scrolls down.' + REWORK)
+s('asOfflineBanner', 'Đang ngoại tuyến. Tin nhắn được giữ lại và chỉ gửi khi bạn bấm Gửi. Ghi trực tiếp vẫn dùng được.', 'You’re offline. Messages are kept and sent only when you tap Send. Direct logging still works.', 'Banner under the chat header while offline (CH25).' + REWORK)
+s('asNotSent', 'Chưa gửi được', 'Couldn’t send', 'Under my bubble when sending failed (nothing charged).' + REWORK)
+s('asUnsentOffline', 'Chưa gửi · đang ngoại tuyến', 'Not sent · offline', 'Under my bubble kept while offline (never sent by itself).' + REWORK)
+s('asResend', 'Gửi lại', 'Send again', 'Inline action under a bubble that could not be sent.' + REWORK)
+s('asErrorFriendly', 'Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.', 'I couldn’t answer just now. Nothing was saved and no AI help was used — try again, or log it directly.', 'CH25 as a Lumi bubble (no blame), followed by "Thử lại" and "Ghi trực tiếp".' + REWORK)
+s('asReadingPhoto', 'Lumi đang đọc ảnh…', 'Lumi is reading the photo…', 'Typing indicator of a photo task.' + REWORK)
+s('asChipLogSleep', 'Ghi giấc ngủ', 'Log a sleep', 'Suggestion above the composer (prefills only).' + REWORK)
+s('asPrefillSleep', 'Con ngủ từ ', 'Slept from ', 'Text the "Ghi giấc ngủ" suggestion prefills (never sent by itself).' + REWORK)
+s('asChipFeedsShort', 'Cữ bú hôm nay', 'Today’s feeds', 'Suggestion above the composer; prefills "Hôm nay con bú thế nào?".' + REWORK)
+s('asChipExpense', 'Ghi khoản chi', 'Log an expense', 'Suggestion above the composer in the family chat (prefills only).' + REWORK)
+s('asPrefillExpense', 'Mua ', 'Bought ', 'Text the "Ghi khoản chi" suggestion prefills (never sent by itself).' + REWORK)
+s('asWhenToday', 'Hôm nay', 'Today', 'Day of a time in the editors and the span line.' + REWORK)
+s('asWhenYesterday', 'Hôm qua', 'Yesterday', 'Day of a time in the editors and the span line ("21:00 hôm qua").' + REWORK)
+s('asWhenTomorrow', 'Ngày mai', 'Tomorrow', 'Reminder day chip.' + REWORK)
+s('asTimeOnDay', '{time} {day}', '{time} {day}', 'A time with its day inside the span line ("21:00 hôm qua").' + REWORK, time='String', day='String')
+s('asSpanLine', '{start} – {end} · {duration}', '{start} – {end} · {duration}', 'A sleep with linked times ("21:00 – 06:00 · 9 giờ", the en dash of the draft cards).' + REWORK, start='String', end='String', duration='String')
+s('asSpanInvalid', 'giờ dậy trước giờ ngủ', 'ends before it starts', 'Span line when the end is not after the start.' + REWORK)
+s('asSpanKnown', 'Theo thời lượng bạn nói: {duration}', 'From the length you said: {duration}', 'Note under the preview of a time question when a duration is known.' + REWORK, duration='String')
+s('asPickSleepTitle', 'Bé ngủ lúc mấy giờ?', 'When did the sleep start?', 'Time picker title for "Khác…" when the length is known (start asked).' + REWORK)
+s('asPickWakeTitle', 'Bé dậy lúc mấy giờ?', 'When did baby wake up?', 'Time picker title for "Khác…" when the length is known (end asked).' + REWORK)
+s('asAnswerWith', 'Trả lời: {time}', 'Answer: {time}', 'Button of the clarification time picker (the time goes as the answer, 0 credits).' + REWORK, time='String')
+s('asFieldSleepStart', 'Ngủ lúc', 'Fell asleep', 'Sleep editor start tile.' + REWORK)
+s('asFieldSleepEnd', 'Dậy lúc', 'Woke up', 'Sleep editor end tile.' + REWORK)
+s('asFieldDuration', 'Thời lượng', 'Length', 'Sleep editor length stepper (moves the end).' + REWORK)
+s('asShorter', 'Ngắn hơn 15 phút', '15 minutes shorter', 'Sleep length stepper minus (a11y).' + REWORK)
+s('asLonger', 'Dài hơn 15 phút', '15 minutes longer', 'Sleep length stepper plus (a11y).' + REWORK)
+s('asLessMl', 'Bớt 10 ml', '10 ml less', 'Bottle amount stepper minus (a11y).' + REWORK)
+s('asMoreMl', 'Thêm 10 ml', '10 ml more', 'Bottle amount stepper plus (a11y).' + REWORK)
+s('asLessMinutes', 'Bớt 5 phút', '5 minutes less', 'Nursing minutes stepper minus (a11y).' + REWORK)
+s('asMoreMinutes', 'Thêm 5 phút', '5 minutes more', 'Nursing minutes stepper plus (a11y).' + REWORK)
+s('asBabyLockedLine', 'Ghi cho {name} · không đổi sang bé khác được', 'For {name} · can’t move to another baby', 'Editor footnote: the draft stays with the chat\'s baby.' + REWORK, name='String')
+s('asPickOtherDay', 'Ngày khác', 'Another day', 'Date chip that opens the date picker.' + REWORK)
+s('asEditInModule', 'Sửa trong nhật ký', 'Edit in the log', 'Link of a PREVIOUS_SAVED notice: the saved record opens in its module.' + REWORK)
+s('asSpendingMoved', 'Chỉ bạn thấy: tin nhắn có chi tiêu được giữ trong cuộc trò chuyện riêng của bạn.', 'Only you: a message about spending stays in your private chat.', 'Footnote on a task moved out of the shared thread because it mentions money (task.routing spending).' + REWORK)
+s('asVoiceStart', 'Nói với Lumi', 'Talk to Lumi', 'Mic button of the composer (a11y), shown while the field is empty.' + REWORK)
+s('asVoiceStop', 'Dừng nghe', 'Stop listening', 'Stop button while dictating (a11y); the words stay in the field.' + REWORK)
+s('asVoiceCancel', 'Bỏ lời vừa nói', 'Discard what was said', 'Cancel button while dictating (a11y); the field goes back as it was.' + REWORK)
+s('asVoiceListening', 'Đang nghe…', 'Listening…', 'Composer while dictating.' + REWORK)
+s('asVoiceSwipe', 'Đang nghe… vuốt sang trái để huỷ', 'Listening… swipe left to cancel', 'Composer while dictating, before the first words.' + REWORK)
+s('asVoiceIntroTitle', 'Nói với Lumi thay vì gõ', 'Talk to Lumi instead of typing', 'First-run voice explainer title (before the system permission prompts).' + REWORK)
+s('asVoiceIntroWords', 'Chạm mic rồi nói. Chữ hiện ngay trong ô nhập; bạn sửa được và chỉ gửi khi bấm Gửi.', 'Tap the mic and speak. The words appear in the message box; you can fix them, and they’re sent only when you tap Send.', 'Voice explainer: dictation only fills the field.' + REWORK)
+s('asVoiceIntroServerIos', 'iPhone chuyển giọng nói thành chữ ngay trên máy khi có thể. Khi máy chưa làm được (ví dụ chưa có tiếng Việt ngoại tuyến), dịch vụ nhận dạng của Apple có thể xử lý âm thanh trên máy chủ của Apple.', 'Your iPhone turns speech into words on the device when it can. When it can’t (for example without offline support for the language), Apple’s speech recognition may process the audio on Apple’s servers.', 'Voice explainer on iOS: who turns speech into words, said plainly.' + REWORK)
+s('asVoiceIntroServerAndroid', 'Điện thoại chuyển giọng nói thành chữ ngay trên máy khi có thể. Khi chưa làm được, dịch vụ nhận dạng giọng nói của máy (thường của Google) có thể xử lý âm thanh trên máy chủ của họ.', 'Your phone turns speech into words on the device when it can. When it can’t, the phone’s speech service (usually Google’s) may process the audio on its servers.', 'Voice explainer on Android: who turns speech into words, said plainly.' + REWORK)
+s('asVoiceIntroNothingKept', 'Child Life không ghi âm, không lưu và không gửi âm thanh. Chỉ phần chữ bạn bấm Gửi mới tới Lumi.', 'Child Life doesn’t record, keep or send any audio. Only the words you send reach Lumi.', 'Voice explainer: nothing kept.' + REWORK)
+s('asVoiceIntroFree', 'Nói thay vì gõ không tốn lượt AI.', 'Speaking instead of typing uses no AI help.', 'Voice explainer: dictation is free.' + REWORK)
+s('asVoiceIntroAllow', 'Bật micro', 'Turn on the mic', 'Voice explainer: continue to the system permission prompts.' + REWORK)
+s('asVoiceIntroLater', 'Để sau', 'Not now', 'Voice explainer: close without asking.' + REWORK)
+s('asVoiceDenied', 'Chưa có quyền dùng micro hoặc nhận dạng giọng nói. Bật trong Cài đặt để nói với Lumi.', 'No access to the mic or speech recognition. Turn it on in Settings to talk to Lumi.', 'Toast when the permission is denied (with "Mở Cài đặt").' + REWORK)
+s('asVoiceUnavailable', 'Máy này chưa nhận dạng giọng nói được. Bạn gõ chữ nhé.', 'This phone can’t recognise speech right now. Please type instead.', 'Toast when no speech service is available (the mic then hides).' + REWORK)
+s('asVoiceLanguage', 'Máy chưa nhận dạng được giọng nói tiếng Việt. Thêm ngôn ngữ trong Cài đặt của máy, hoặc gõ chữ nhé.', 'This phone can’t recognise English speech yet. Add the language in the phone’s settings, or type instead.', 'Toast when the phone has no recogniser for the app language (the mic then hides).' + REWORK)
+s('asVoiceNoSpeech', 'Mình chưa nghe thấy gì. Thử nói gần máy hơn nhé.', 'I didn’t hear anything. Try speaking closer to the phone.', 'Toast when a dictation ended without words.' + REWORK)
+s('asVoiceFailed', 'Nhận dạng giọng nói bị gián đoạn. Phần chữ đã có vẫn ở trong ô nhập.', 'Speech recognition stopped. Any words so far stay in the box.', 'Toast when the recogniser failed mid-way.' + REWORK)
+
 # Removed with A5 (the photo is uploaded now); asRecentMeta after the composed recent line.
 # D-076 #12: the chat's credits pill and its "Chi tiết" link are gone (usage stays in CH19).
+# Ids whose words and description changed on purpose (chat rework 2026-10-15).
+REWORDED = {'asThinking', 'asClarifyOwn'}
 REMOVED = ['asPhotoSoon', 'asRecentMeta', 'asDetails', 'asUsageLeft', 'asUsageNear', 'asUsageOut']
 
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'
@@ -467,7 +533,7 @@ for locale, idx in (('vi', 0), ('en', 1)):
         data.pop('@' + key, None)
     for key, (vi, en, desc, ph) in S.items():
         meta = data.get('@' + key)
-        if locale == 'vi' and key in data and (meta or {}).get('description') != desc:
+        if locale == 'vi' and key in data and key not in REWORDED and (meta or {}).get('description') != desc:
             raise SystemExit(f'{key} already exists for something else: pick another id')
         data[key] = (vi, en)[idx]
         if locale == 'vi':

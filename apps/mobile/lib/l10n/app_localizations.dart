@@ -21681,7 +21681,7 @@ abstract class AppLocalizations {
   /// EN09 title: the week of life counted from the date of birth (days 0–6 = week 1) on the week’s Sunday.
   ///
   /// In vi, this message translates to:
-  /// **'Tuần {n} của {baby}'**
+  /// **'Tuần thứ {n} của {baby}'**
   String rhWeekOf(int n, String baby);
 
   /// EN09 note on a Sunday: the week ends tonight, today’s sleep is not counted yet.
@@ -22236,10 +22236,10 @@ abstract class AppLocalizations {
   /// **'Tin nhắn bạn gửi được AI xử lý để tạo bản nháp. Không tự lưu.'**
   String get asPrivacyNoteText;
 
-  /// Task queued / processing. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  /// Typing indicator while a text task is sent, queued or processing (chat rework 2026-10-15). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Trợ lý đang đọc…'**
+  /// **'Lumi đang soạn…'**
   String get asThinking;
 
   /// Cancel a task still being prepared (no charge without a useful answer). VI and EN are engineering drafts (no frame draws this state) for owner review.
@@ -22680,10 +22680,10 @@ abstract class AppLocalizations {
   /// **'Câu hỏi làm rõ thuộc cùng tác vụ, không trừ thêm lượt.'**
   String get asClarifyFree;
 
-  /// CH05 chip for a typed answer.
+  /// CH05 chip for another answer: a time picker for a time question (prefilled from what is known), else typing in the composer (chat rework 2026-10-15). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Tự nhập'**
+  /// **'Khác…'**
   String get asClarifyOwn;
 
   /// Clarification past its TTL. VI and EN are engineering drafts (no frame draws this state) for owner review.
@@ -24825,7 +24825,7 @@ abstract class AppLocalizations {
   /// EN09 primary button (561:3102 "Tạo video tuần 4"): N is the week of life the title shows.
   ///
   /// In vi, this message translates to:
-  /// **'Tạo video tuần {n}'**
+  /// **'Tạo video tuần thứ {n}'**
   String rhWeekMakeVideo(int n);
 
   /// EN09 primary button when the week of life is unknown. VI and EN are engineering drafts (no frame draws this state) for owner review.
@@ -25961,6 +25961,462 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Mốc tham khảo theo tuổi của bé'**
   String get mtEntrySubViewer;
+
+  /// Small link on the Home suggestion card; opens the explanation sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì sao gợi ý này?'**
+  String get hnWhyLink;
+
+  /// Title of the explanation sheet of the Home suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vì sao gợi ý này'**
+  String get hnWhyTitle;
+
+  /// One-line reason on the Home suggestion when feedback changed the ranking (PS02); the details are in the sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã điều chỉnh theo phản hồi của nhà mình.'**
+  String get hnWhyFeedbackShort;
+
+  /// Footnote of the explanation sheet of the Home suggestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý dựa trên điều nhà mình ghi nhận, tuổi của bé và điều bạn quan tâm. Đây không phải chẩn đoán.'**
+  String get hnWhyHow;
+
+  /// Small heading above the Home carousel (milestones, reads, stage).
+  ///
+  /// In vi, this message translates to:
+  /// **'Để ý tuần này'**
+  String get hnWatchThisWeek;
+
+  /// Home "Tuần này" card: the week of life (completed weeks + 1) and the age ("4 tuần tuổi").
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần thứ {n} · {age}'**
+  String hnWeekKicker(int n, String age);
+
+  /// Home "Tuần này" card when the age is not readable (caregivers): the week of life of the content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần thứ {n}'**
+  String hnWeekKickerOnly(int n);
+
+  /// Home "Tuần này" card from 3 months: the month of life (completed months + 1) and the age.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng thứ {n} · {age}'**
+  String hnMonthKicker(int n, String age);
+
+  /// Home "Tuần này" card from 3 months when the age is not readable (caregivers).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng thứ {n}'**
+  String hnMonthKickerOnly(int n);
+
+  /// Action of the Home "Tuần này" card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tuần này'**
+  String get hnWeekOpen;
+
+  /// Action of the Home "Tuần này" card with the number of tips the content holds.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem {count} gợi ý cho tuần này'**
+  String hnWeekOpenIdeas(int count);
+
+  /// Home "Tuần này" card, Nhịp lớn lên row: the reference window.
+  ///
+  /// In vi, this message translates to:
+  /// **'Wonder Weeks · dự kiến {range}'**
+  String hnWeekRhythmSub(String range);
+
+  /// Home "Tuần này" card row opening EN09 (Monday to Saturday: the last completed week).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt tuần trước'**
+  String get hnWeekSummaryLast;
+
+  /// Home "Tuần này" card row opening EN09 on Sunday (the week ending today).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt tuần này'**
+  String get hnWeekSummaryThis;
+
+  /// Home "Tuần này" card, Nhịp lớn lên row: the next reference stage and the days until its window.
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn {days} ngày đến giai đoạn {n}'**
+  String hnRhythmComingDays(int n, int days);
+
+  /// Home "Tuần này" card, Nhịp lớn lên row: today is inside the reference window.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang trong giai đoạn {n}'**
+  String hnRhythmNow(int n);
+
+  /// The assistant's name in the chat header, above her messages and in screen-reader labels. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi'**
+  String get asLumiName;
+
+  /// Screen-reader speaker of my own bubble ("Bạn: …"). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn'**
+  String get asYou;
+
+  /// Privacy hint on private chats and expense drafts (spending never enters the shared thread, D-075 #2). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ bạn thấy'**
+  String get asOnlyYou;
+
+  /// Privacy line on an expense draft and its editor (D-075 #2). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ bạn thấy · chi tiêu không vào cuộc trò chuyện chung của bé'**
+  String get asOnlyYouSpending;
+
+  /// Screen-reader hint of a long press on a bubble. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sao chép'**
+  String get asCopy;
+
+  /// Toast after a long press copied a message. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã sao chép'**
+  String get asCopied;
+
+  /// Screen-reader hint of a tap on a bubble (shows its time). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem giờ gửi'**
+  String get asShowTime;
+
+  /// Pill shown when Lumi answers while the person reads further up; scrolls down. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tin mới'**
+  String get asNewMessages;
+
+  /// Banner under the chat header while offline (CH25). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngoại tuyến. Tin nhắn được giữ lại và chỉ gửi khi bạn bấm Gửi. Ghi trực tiếp vẫn dùng được.'**
+  String get asOfflineBanner;
+
+  /// Under my bubble when sending failed (nothing charged). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa gửi được'**
+  String get asNotSent;
+
+  /// Under my bubble kept while offline (never sent by itself). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa gửi · đang ngoại tuyến'**
+  String get asUnsentOffline;
+
+  /// Inline action under a bubble that could not be sent. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi lại'**
+  String get asResend;
+
+  /// CH25 as a Lumi bubble (no blame), followed by "Thử lại" and "Ghi trực tiếp". Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.'**
+  String get asErrorFriendly;
+
+  /// Typing indicator of a photo task. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lumi đang đọc ảnh…'**
+  String get asReadingPhoto;
+
+  /// Suggestion above the composer (prefills only). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi giấc ngủ'**
+  String get asChipLogSleep;
+
+  /// Text the "Ghi giấc ngủ" suggestion prefills (never sent by itself). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Con ngủ từ '**
+  String get asPrefillSleep;
+
+  /// Suggestion above the composer in the family chat (prefills only). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi khoản chi'**
+  String get asChipExpense;
+
+  /// Text the "Ghi khoản chi" suggestion prefills (never sent by itself). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mua '**
+  String get asPrefillExpense;
+
+  /// Day of a time in the editors and the span line. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get asWhenToday;
+
+  /// Day of a time in the editors and the span line ("21:00 hôm qua"). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua'**
+  String get asWhenYesterday;
+
+  /// Reminder day chip. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày mai'**
+  String get asWhenTomorrow;
+
+  /// A time with its day inside the span line ("21:00 hôm qua"). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} {day}'**
+  String asTimeOnDay(String time, String day);
+
+  /// A sleep with linked times ("21:00 – 06:00 · 9 giờ", the en dash of the draft cards). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{start} – {end} · {duration}'**
+  String asSpanLine(String start, String end, String duration);
+
+  /// Span line when the end is not after the start. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'giờ dậy trước giờ ngủ'**
+  String get asSpanInvalid;
+
+  /// Note under the preview of a time question when a duration is known. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo thời lượng bạn nói: {duration}'**
+  String asSpanKnown(String duration);
+
+  /// Time picker title for "Khác…" when the length is known (start asked). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé ngủ lúc mấy giờ?'**
+  String get asPickSleepTitle;
+
+  /// Time picker title for "Khác…" when the length is known (end asked). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé dậy lúc mấy giờ?'**
+  String get asPickWakeTitle;
+
+  /// Button of the clarification time picker (the time goes as the answer, 0 credits). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trả lời: {time}'**
+  String asAnswerWith(String time);
+
+  /// Sleep editor start tile. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ lúc'**
+  String get asFieldSleepStart;
+
+  /// Sleep editor end tile. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dậy lúc'**
+  String get asFieldSleepEnd;
+
+  /// Sleep editor length stepper (moves the end). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời lượng'**
+  String get asFieldDuration;
+
+  /// Sleep length stepper minus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngắn hơn 15 phút'**
+  String get asShorter;
+
+  /// Sleep length stepper plus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dài hơn 15 phút'**
+  String get asLonger;
+
+  /// Bottle amount stepper minus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bớt 10 ml'**
+  String get asLessMl;
+
+  /// Bottle amount stepper plus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm 10 ml'**
+  String get asMoreMl;
+
+  /// Nursing minutes stepper minus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bớt 5 phút'**
+  String get asLessMinutes;
+
+  /// Nursing minutes stepper plus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm 5 phút'**
+  String get asMoreMinutes;
+
+  /// Editor footnote: the draft stays with the chat's baby. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi cho {name} · không đổi sang bé khác được'**
+  String asBabyLockedLine(String name);
+
+  /// Date chip that opens the date picker. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày khác'**
+  String get asPickOtherDay;
+
+  /// Mic button of the composer (a11y), shown while the field is empty. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nói với Lumi'**
+  String get asVoiceStart;
+
+  /// Stop button while dictating (a11y); the words stay in the field. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng nghe'**
+  String get asVoiceStop;
+
+  /// Cancel button while dictating (a11y); the field goes back as it was. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ lời vừa nói'**
+  String get asVoiceCancel;
+
+  /// Composer while dictating. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang nghe…'**
+  String get asVoiceListening;
+
+  /// Composer while dictating, before the first words. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang nghe… vuốt sang trái để huỷ'**
+  String get asVoiceSwipe;
+
+  /// First-run voice explainer title (before the system permission prompts). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nói với Lumi thay vì gõ'**
+  String get asVoiceIntroTitle;
+
+  /// Voice explainer: dictation only fills the field. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm mic rồi nói. Chữ hiện ngay trong ô nhập; bạn sửa được và chỉ gửi khi bấm Gửi.'**
+  String get asVoiceIntroWords;
+
+  /// Voice explainer on iOS: who turns speech into words, said plainly. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'iPhone chuyển giọng nói thành chữ ngay trên máy khi có thể. Khi máy chưa làm được (ví dụ chưa có tiếng Việt ngoại tuyến), dịch vụ nhận dạng của Apple có thể xử lý âm thanh trên máy chủ của Apple.'**
+  String get asVoiceIntroServerIos;
+
+  /// Voice explainer on Android: who turns speech into words, said plainly. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điện thoại chuyển giọng nói thành chữ ngay trên máy khi có thể. Khi chưa làm được, dịch vụ nhận dạng giọng nói của máy (thường của Google) có thể xử lý âm thanh trên máy chủ của họ.'**
+  String get asVoiceIntroServerAndroid;
+
+  /// Voice explainer: nothing kept. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Child Life không ghi âm, không lưu và không gửi âm thanh. Chỉ phần chữ bạn bấm Gửi mới tới Lumi.'**
+  String get asVoiceIntroNothingKept;
+
+  /// Voice explainer: dictation is free. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nói thay vì gõ không tốn lượt AI.'**
+  String get asVoiceIntroFree;
+
+  /// Voice explainer: continue to the system permission prompts. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật micro'**
+  String get asVoiceIntroAllow;
+
+  /// Voice explainer: close without asking. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau'**
+  String get asVoiceIntroLater;
+
+  /// Toast when the permission is denied (with "Mở Cài đặt"). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có quyền dùng micro hoặc nhận dạng giọng nói. Bật trong Cài đặt để nói với Lumi.'**
+  String get asVoiceDenied;
+
+  /// Toast when no speech service is available (the mic then hides). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Máy này chưa nhận dạng giọng nói được. Bạn gõ chữ nhé.'**
+  String get asVoiceUnavailable;
+
+  /// Toast when the phone has no recogniser for the app language (the mic then hides). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Máy chưa nhận dạng được giọng nói tiếng Việt. Thêm ngôn ngữ trong Cài đặt của máy, hoặc gõ chữ nhé.'**
+  String get asVoiceLanguage;
+
+  /// Toast when a dictation ended without words. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình chưa nghe thấy gì. Thử nói gần máy hơn nhé.'**
+  String get asVoiceNoSpeech;
+
+  /// Toast when the recogniser failed mid-way. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận dạng giọng nói bị gián đoạn. Phần chữ đã có vẫn ở trong ô nhập.'**
+  String get asVoiceFailed;
+
+  /// Suggestion above the composer; prefills "Hôm nay con bú thế nào?". Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cữ bú hôm nay'**
+  String get asChipFeedsShort;
+
+  /// Link of a PREVIOUS_SAVED notice: the saved record opens in its module. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa trong nhật ký'**
+  String get asEditInModule;
+
+  /// Footnote on a task moved out of the shared thread because it mentions money (task.routing spending). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ bạn thấy: tin nhắn có chi tiêu được giữ trong cuộc trò chuyện riêng của bạn.'**
+  String get asSpendingMoved;
 }
 
 class _AppLocalizationsDelegate

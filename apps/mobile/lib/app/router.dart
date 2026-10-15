@@ -67,6 +67,7 @@ import '../features/spending/spending_screens.dart';
 import '../features/spending/spending_stats.dart';
 import '../features/today/today_personalize.dart' show todayRoutes;
 import '../features/today/today_screen.dart';
+import 'navigation.dart' show SafeGoRouter;
 import 'route_guard.dart';
 import 'providers.dart';
 import 'session.dart';
@@ -166,7 +167,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         : JoinArgs(lookup: lookup, preview: preview);
   }
 
-  return GoRouter(
+  // D-076 nav: tab pages opened from above the shell stack on their opener (overlay twins).
+  return SafeGoRouter(
     initialLocation: Routes.splash,
     refreshListenable: refresh,
     redirect: (context, state) => guardRoute(

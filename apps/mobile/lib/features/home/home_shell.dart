@@ -827,6 +827,26 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
   bool _hidden = false;
   double _run = 0; // scrolled in the current direction
 
+  /// What the floating buttons cover from the bottom edge while the dock shows (the larger
+  /// case), for [HomeFloatingClearance].
+  final _clearance = ValueNotifier<double>(0);
+  double _floating = 0; // the height of the banner / button column
+
+  @override
+  void dispose() {
+    _clearance.dispose();
+    super.dispose();
+  }
+
+  void _publish(double safeBottom, double dockHeight) {
+    final value =
+        safeBottom +
+        dockHeight +
+        widget.dockExtra +
+        (_floating > 0 ? ClSpace.s3 + _floating : 0);
+    if (value != _clearance.value) _clearance.value = value;
+  }
+
   @override
   void didUpdateWidget(_HideDockOnScroll old) {
     super.didUpdateWidget(old);
@@ -871,12 +891,20 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
     final banner = widget.banner;
     final fab = widget.fab;
     final hidden = _hidden || widget.hideDock;
+    if (banner == null && fab == null) _floating = 0;
+    // After the frame (the dock's "+" may come or go with the tab); notifies only on a change.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _publish(safeBottom, dockHeight);
+    });
     return Stack(
       children: [
         Positioned.fill(
-          child: NotificationListener<ScrollNotification>(
-            onNotification: _onScroll,
-            child: widget.content,
+          child: HomeFloatingClearance(
+            notifier: _clearance,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: _onScroll,
+              child: widget.content,
+            ),
           ),
         ),
         if (banner != null || fab != null)
@@ -889,17 +917,24 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
                 safeBottom +
                 ClSpace.s3 +
                 (hidden ? 0 : dockHeight + widget.dockExtra),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (fab != null)
-                  Align(alignment: Alignment.centerRight, child: fab),
-                if (banner != null)
-                  fab == null
-                      ? banner
-                      : GapAboveIfShown(gap: ClSpace.s3, child: banner),
-              ],
+            child: _ReportHeight(
+              onHeight: (h) {
+                if (!mounted) return;
+                _floating = h;
+                _publish(safeBottom, dockHeight);
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (fab != null)
+                    Align(alignment: Alignment.centerRight, child: fab),
+                  if (banner != null)
+                    fab == null
+                        ? banner
+                        : GapAboveIfShown(gap: ClSpace.s3, child: banner),
+                ],
+              ),
             ),
           ),
         Positioned(
@@ -925,6 +960,57 @@ class _HideDockOnScrollState extends State<_HideDockOnScroll> {
         ),
       ],
     );
+  }
+}
+
+/// How much of a tab's bottom edge the dock, its "+" and the floating buttons above it (Lumi,
+/// the upload pill) cover while the dock shows, so a tab's scrolling content can end above them
+/// (owner, 2026-10-15: Lumi sat on "Xem tất cả" of Nhắc việc). Null outside the home shell.
+class HomeFloatingClearance extends InheritedNotifier<ValueNotifier<double>> {
+  const HomeFloatingClearance({
+    required super.notifier,
+    required super.child,
+    super.key,
+  });
+
+  static double? of(BuildContext context) {
+    final value = context
+        .dependOnInheritedWidgetOfExactType<HomeFloatingClearance>()
+        ?.notifier
+        ?.value;
+    return value == null || value <= 0 ? null : value;
+  }
+}
+
+/// Calls [onHeight] after layout whenever its child's height changes.
+class _ReportHeight extends SingleChildRenderObjectWidget {
+  const _ReportHeight({required this.onHeight, required super.child});
+  final ValueChanged<double> onHeight;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderReportHeight(onHeight);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderReportHeight renderObject,
+  ) => renderObject.onHeight = onHeight;
+}
+
+class _RenderReportHeight extends RenderProxyBox {
+  _RenderReportHeight(this.onHeight);
+  ValueChanged<double> onHeight;
+  double? _last;
+
+  @override
+  void performLayout() {
+    super.performLayout();
+    final h = size.height;
+    if (h == _last) return;
+    _last = h;
+    // Not during layout: the listeners rebuild.
+    WidgetsBinding.instance.addPostFrameCallback((_) => onHeight(h));
   }
 }
 

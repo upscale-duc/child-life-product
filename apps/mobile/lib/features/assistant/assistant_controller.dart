@@ -19,9 +19,14 @@ class TaskThread {
     this.snapshot,
     this.text,
     this.photoIds = const [],
+    this.requestId,
   });
   final String taskId;
   final TaskSnapshot? snapshot;
+
+  /// The send's request id when the task came from this phone's input: the optimistic bubble
+  /// and the task's first message are the same entry on screen (no second entrance).
+  final String? requestId;
 
   /// What was typed on this phone, shown until the server's own message arrives.
   final String? text;
@@ -48,8 +53,17 @@ class TaskThread {
     return m?.text ?? text;
   }
 
-  TaskThread withSnapshot(TaskSnapshot s) =>
-      TaskThread(taskId: taskId, snapshot: s, text: text, photoIds: photoIds);
+  TaskThread withSnapshot(TaskSnapshot s) => TaskThread(
+    taskId: taskId,
+    snapshot: s,
+    text: text,
+    photoIds: photoIds,
+    requestId: requestId,
+  );
+
+  /// How many messages the person has in this task (the question, then each answer).
+  int get userMessages =>
+      snapshot?.messages.where((m) => m.role == MessageRole.user).length ?? 0;
 }
 
 /// Why the composer's last input is not a task (a call-level state; task failures are drawn
@@ -193,6 +207,9 @@ class PendingPhoto {
 /// How picking a photo went (the screen says why when it did not open).
 enum PhotoPick { ok, canceled, denied, failed, busy }
 
+/// A clarification answer on its way (shown as my bubble until the server's message arrives).
+typedef PendingAnswer = ({String taskId, String text, int after});
+
 /// What a person's action came to, for the toast the screen shows.
 enum ActionOutcome { ok, partial, offline, stale, failed, nothing }
 
@@ -217,6 +234,7 @@ class ChatState {
     this.photo,
     this.acknowledged = const {},
     this.busy = const {},
+    this.pendingAnswer,
   });
 
   final AssistantScope scope;
@@ -255,6 +273,9 @@ class ChatState {
 
   /// Care calls in flight (`plan:<task>`, `fb:<task>`).
   final Set<String> busy;
+
+  /// The answer just chosen or typed for a question, until the task's own message shows it.
+  final PendingAnswer? pendingAnswer;
 
   bool get empty =>
       threads.isEmpty &&
@@ -300,6 +321,8 @@ class ChatState {
     bool clearPhoto = false,
     Set<String>? acknowledged,
     Set<String>? busy,
+    PendingAnswer? pendingAnswer,
+    bool clearPendingAnswer = false,
   }) => ChatState(
     scope: scope,
     conversationId: clearConversation
@@ -321,6 +344,9 @@ class ChatState {
     photo: clearPhoto ? null : (photo ?? this.photo),
     acknowledged: acknowledged ?? this.acknowledged,
     busy: busy ?? this.busy,
+    pendingAnswer: clearPendingAnswer
+        ? null
+        : (pendingAnswer ?? this.pendingAnswer),
   );
 }
 
@@ -601,7 +627,13 @@ class AssistantChat extends Notifier<ChatState> {
         else
           t,
     ];
-    state = state.copyWith(threads: threads);
+    final pending = state.pendingAnswer;
+    final arrived =
+        pending != null &&
+        pending.taskId == id &&
+        (threads.where((t) => t.taskId == id).firstOrNull?.userMessages ?? 0) >
+            pending.after;
+    state = state.copyWith(threads: threads, clearPendingAnswer: arrived);
     final cursor = _cursors.putIfAbsent(id, EventCursor.new);
     cursor.accept(s.events);
   }
@@ -621,6 +653,7 @@ class AssistantChat extends Notifier<ChatState> {
     TaskSnapshot s,
     String? text, {
     List<String> photoIds = const [],
+    String? requestId,
   }) {
     final conversation = s.task.conversationId ?? state.conversationId;
     state = state.copyWith(
@@ -632,6 +665,7 @@ class AssistantChat extends Notifier<ChatState> {
           snapshot: s,
           text: text,
           photoIds: photoIds,
+          requestId: requestId,
         ),
       ],
     );
@@ -790,7 +824,8 @@ class AssistantChat extends Notifier<ChatState> {
       );
     }
     _keep(kept);
-    state = state.copyWith(resumed: false);
+    // Optimistic: my bubble and "Lumi đang soạn…" show at once, before any call returns.
+    state = state.copyWith(resumed: false, sending: true, clearBlock: true);
     await _dispatch(kept, hint);
   }
 
@@ -798,6 +833,7 @@ class AssistantChat extends Notifier<ChatState> {
   Future<void> sendKept() async {
     final kept = state.kept;
     if (kept == null || state.sending) return;
+    state = state.copyWith(sending: true, clearBlock: true);
     await _dispatch(kept, null);
   }
 
@@ -809,12 +845,18 @@ class AssistantChat extends Notifier<ChatState> {
   }) async {
     if (!_online) {
       _keep(kept.copyWith(reason: KeptReason.offline));
-      state = state.copyWith(block: const ChatBlock(ChatBlockKind.offline));
+      state = state.copyWith(
+        sending: false,
+        block: const ChatBlock(ChatBlockKind.offline),
+      );
       return;
     }
     if (!await _consented()) {
       _keep(kept.copyWith(reason: KeptReason.consent));
-      state = state.copyWith(block: const ChatBlock(ChatBlockKind.consent));
+      state = state.copyWith(
+        sending: false,
+        block: const ChatBlock(ChatBlockKind.consent),
+      );
       return;
     }
     state = state.copyWith(sending: true, clearBlock: true);
@@ -881,7 +923,7 @@ class AssistantChat extends Notifier<ChatState> {
         );
         return;
       }
-      _addThread(snapshot, kept.text);
+      _addThread(snapshot, kept.text, requestId: kept.requestId);
       _keep(null);
       if (resumed) state = state.copyWith(resumed: true);
     } on AssistantException catch (e) {
@@ -1238,7 +1280,12 @@ class AssistantChat extends Notifier<ChatState> {
           });
           return ActionOutcome.nothing;
         }
-        _addThread(snapshot, null, photoIds: [attachmentId]);
+        _addThread(
+          snapshot,
+          null,
+          photoIds: [attachmentId],
+          requestId: photo.requestId,
+        );
         state = state.copyWith(clearPhoto: true, clearBlock: true);
         return ActionOutcome.ok;
       } on AssistantException catch (e) {
@@ -1295,15 +1342,16 @@ class AssistantChat extends Notifier<ChatState> {
   void stopTypingAnswer() => state = state.copyWith(clearAnswering: true);
 
   Future<ActionOutcome> answerChoice(String taskId, ClarificationChoice c) =>
-      _clarify(taskId, choiceId: c.id);
+      _clarify(taskId, choiceId: c.id, shown: c.label.of(_locale));
 
   Future<ActionOutcome> answerText(String taskId, String text) =>
-      _clarify(taskId, text: text.trim());
+      _clarify(taskId, text: text.trim(), shown: text.trim());
 
   Future<ActionOutcome> _clarify(
     String taskId, {
     String? choiceId,
     String? text,
+    required String shown,
   }) async {
     final task = state.thread(taskId)?.snapshot?.task;
     final c = task?.clarification;
@@ -1313,7 +1361,16 @@ class AssistantChat extends Notifier<ChatState> {
       return ActionOutcome.nothing;
     }
     if (!_online) return ActionOutcome.offline;
-    state = state.copyWith(choosing: '$taskId/${choiceId ?? ''}');
+    if (state.choosing != null) return ActionOutcome.nothing;
+    state = state.copyWith(
+      choosing: '$taskId/${choiceId ?? ''}',
+      pendingAnswer: (
+        taskId: taskId,
+        text: shown,
+        after: state.thread(taskId)?.userMessages ?? 0,
+      ),
+    );
+    var ok = false;
     try {
       final s = await _repo.clarify(
         taskId: taskId,
@@ -1325,6 +1382,9 @@ class AssistantChat extends Notifier<ChatState> {
       );
       if (s != null) _putSnapshot(s);
       state = state.copyWith(clearAnswering: true);
+      ok = true;
+      // The answer's message and the next round come with the task's snapshot.
+      unawaited(_refresh(taskId));
       return ActionOutcome.ok;
     } on AssistantException catch (e) {
       if (e.offline) return ActionOutcome.offline;
@@ -1332,8 +1392,14 @@ class AssistantChat extends Notifier<ChatState> {
       return e.reason == AssistantReason.invalidState
           ? ActionOutcome.stale
           : ActionOutcome.failed;
+    } on Object {
+      return ActionOutcome.failed;
     } finally {
-      state = state.copyWith(clearChoosing: true);
+      state = state.copyWith(
+        clearChoosing: true,
+        // A refused answer gives the question back (its chips return).
+        clearPendingAnswer: !ok,
+      );
     }
   }
 

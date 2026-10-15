@@ -2,4 +2,5 @@
 "NSCameraUsageDescription" = "Child Life dùng camera để chụp ảnh, quay video cho bé, chụp ảnh đại diện và quét mã QR lời mời. Chỉ người trong gia đình xem được.";
 "NSPhotoLibraryUsageDescription" = "Child Life mở thư viện ảnh để bạn thêm ảnh, video của bé vào Kỷ niệm và chọn ảnh đại diện. Nếu bạn bật Tự lưu kỷ niệm, app tìm ảnh mới có bé ngay trên máy và chỉ tải lên những ảnh bạn duyệt. Chỉ người trong gia đình xem được.";
 "NSPhotoLibraryAddUsageDescription" = "Child Life lưu ảnh, video bạn tải về từ Kỷ niệm vào thư viện ảnh.";
-"NSMicrophoneUsageDescription" = "Child Life ghi âm thanh cùng video bạn quay cho bé.";
+"NSMicrophoneUsageDescription" = "Child Life ghi âm thanh cùng video bạn quay cho bé, và nghe khi bạn nói với Lumi để chữ hiện trong cuộc trò chuyện. Child Life không lưu và không gửi âm thanh.";
+"NSSpeechRecognitionUsageDescription" = "Khi bạn nói với Lumi, lời nói được chuyển thành chữ ngay trên iPhone khi có thể, nếu không thì bằng dịch vụ nhận dạng giọng nói của Apple. Chỉ phần chữ bạn gửi mới tới Lumi.";

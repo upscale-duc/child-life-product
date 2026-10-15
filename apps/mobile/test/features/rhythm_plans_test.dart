@@ -439,9 +439,9 @@ void main() {
 
     testWidgets('opens Video kỷ niệm with the week\'s photos', (tester) async {
       final visits = await pump(tester);
-      expect(find.text('Tạo video tuần 3'), findsOneWidget);
+      expect(find.text('Tạo video tuần thứ 3'), findsOneWidget);
       expect(find.text('2 ảnh trong tuần được chọn sẵn'), findsOneWidget);
-      await tester.tap(find.text('Tạo video tuần 3'));
+      await tester.tap(find.text('Tạo video tuần thứ 3'));
       await tester.pumpAndSettle();
       expect(visits.last.location, Routes.memoryStory);
       expect(visits.last.extra, [inWeek[1].id, inWeek[0].id]);

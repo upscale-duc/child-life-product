@@ -1,18 +1,22 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show MaxLengthEnforcement;
+import 'package:flutter/services.dart';
 
 import '../../core/design/cl_theme.dart';
 import '../../core/design/motion.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import 'assistant_labels.dart';
 import 'assistant_models.dart';
 import 'assistant_rules.dart';
+import 'assistant_voice.dart';
+import 'lumi_button.dart' show LumiMascot;
 
 export 'lumi_button.dart'
     show AsFloatingButton, AsFloatingButtonState, LumiMascot;
@@ -90,9 +94,13 @@ class AsRoundButton extends StatelessWidget {
     required this.onPressed,
     this.glyph,
     this.tooltip = false,
+    this.size = 40,
     super.key,
   });
   final ClIcons icon;
+
+  /// The circle (the tap area stays 44 through [ClPressable]).
+  final double size;
   final String label;
   final VoidCallback? onPressed;
 
@@ -109,11 +117,11 @@ class AsRoundButton extends StatelessWidget {
       onPressed: onPressed,
       semanticLabel: label,
       child: Container(
-        width: 40,
-        height: 40,
+        width: size,
+        height: size,
         decoration: BoxDecoration(color: c.surface, shape: BoxShape.circle),
         alignment: Alignment.center,
-        child: glyph ?? ClIcon(icon, size: 20, color: c.ink),
+        child: glyph ?? ClIcon(icon, size: size / 2, color: c.ink),
       ),
     );
     return tooltip
@@ -122,9 +130,10 @@ class AsRoundButton extends StatelessWidget {
   }
 }
 
-/// Chat/Đầu trang (612:7715): back · scope chip ("Teddy · 3 tuần" / "Gia đình") · Mức dùng ·
-/// Lịch sử · Mới. Mức dùng replaces the credits pill and its "Chi tiết" link (D-076 #12): the
-/// numbers stay in CH19 and in the quote before a task.
+/// Chat/Đầu trang (612:7715), reworked 2026-10-15: back · Lumi (face, name and the baby chip
+/// "Teddy · 3 tuần ▾" / "Gia đình", with "Chỉ bạn thấy" where the chat is private to the
+/// person) · Mức dùng · Lịch sử · Mới. Mức dùng replaces the credits pill and its "Chi tiết"
+/// link (D-076 #12): the numbers stay in CH19 and in the quote before a task.
 class AsChatHeader extends StatelessWidget {
   const AsChatHeader({
     required this.scopeLabel,
@@ -134,6 +143,7 @@ class AsChatHeader extends StatelessWidget {
     required this.onHistory,
     required this.onNew,
     this.onUsage,
+    this.privateHint = false,
     super.key,
   });
 
@@ -147,10 +157,41 @@ class AsChatHeader extends StatelessWidget {
   /// Opens CH19; no button without it.
   final VoidCallback? onUsage;
 
+  /// "Chỉ bạn thấy" under the name (household / spending: never in the shared thread).
+  final bool privateHint;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
+    final c = cl.colors;
+    final chip = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (household) ...[
+          ClIcon(ClIcons.family, size: 13, color: c.mintText),
+          const SizedBox(width: 4),
+        ],
+        Flexible(
+          child: Text(
+            scopeLabel,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: _semi(context, 12.5, c.mintText),
+          ),
+        ),
+        if (onScope != null) ...[
+          const SizedBox(width: 2),
+          ClIcon(ClIcons.chevronDown, size: 13, color: c.mintText),
+        ],
+        // The words "Chỉ bạn thấy" are in the semantics label and on the spending cards; the
+        // header keeps the lock (room for the baby chip and three buttons at 375 pt).
+        if (privateHint) ...[
+          const SizedBox(width: 6),
+          ClIcon(ClIcons.lock, size: 12, color: c.inkMuted),
+        ],
+      ],
+    );
     return Row(
       children: [
         AsRoundButton(
@@ -160,80 +201,65 @@ class AsChatHeader extends StatelessWidget {
         ),
         const SizedBox(width: ClSpace.s2),
         Expanded(
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: ClPressable(
-              onPressed: onScope,
-              semanticLabel: scopeLabel,
-              child: Container(
-                height: 40,
-                padding: const EdgeInsets.fromLTRB(4, 4, 10, 4),
-                decoration: BoxDecoration(
-                  color: cl.colors.surface,
-                  borderRadius: BorderRadius.circular(ClRadius.pill),
-                  border: Border.all(color: cl.colors.separator),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: cl.colors.mintSoft,
-                        shape: BoxShape.circle,
-                      ),
-                      alignment: Alignment.center,
-                      child: ClIcon(
-                        household ? ClIcons.family : ClIcons.cake,
-                        size: 16,
-                        color: cl.colors.mintText,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                        scopeLabel,
+          child: ClPressable(
+            onPressed: onScope,
+            semanticLabel: [
+              l10n.asLumiName,
+              scopeLabel,
+              if (privateHint) l10n.asOnlyYou,
+            ].join(', '),
+            child: Row(
+              children: [
+                const LumiMascot(size: 30),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.asLumiName,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: _semi(context, 13.5, cl.colors.ink),
+                        style: _semi(
+                          context,
+                          16,
+                          c.ink,
+                        ).copyWith(fontWeight: FontWeight.w700, height: 1.2),
                       ),
-                    ),
-                    if (onScope != null) ...[
-                      const SizedBox(width: 4),
-                      ClIcon(
-                        ClIcons.chevronDown,
-                        size: 16,
-                        color: cl.colors.inkMuted,
-                      ),
+                      const SizedBox(height: 1),
+                      chip,
                     ],
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
         if (onUsage != null) ...[
-          const SizedBox(width: ClSpace.s2),
+          const SizedBox(width: 4),
           AsRoundButton(
             key: const ValueKey('as.usage'),
             icon: ClIcons.sliders,
-            glyph: _GaugeGlyph(color: cl.colors.ink),
+            glyph: _GaugeGlyph(color: c.ink),
             label: l10n.asUsageButton,
             tooltip: true,
+            size: 36,
             onPressed: onUsage,
           ),
         ],
-        const SizedBox(width: ClSpace.s2),
+        const SizedBox(width: 4),
         AsRoundButton(
           icon: ClIcons.clock,
           label: l10n.asHistory,
+          size: 36,
           onPressed: onHistory,
         ),
-        const SizedBox(width: ClSpace.s2),
+        const SizedBox(width: 4),
         AsRoundButton(
           icon: ClIcons.edit,
           label: l10n.asNewChat,
+          size: 36,
           onPressed: onNew,
         ),
       ],
@@ -243,15 +269,23 @@ class AsChatHeader extends StatelessWidget {
 
 // ---------- Chat/Tin nhắn ----------
 
-/// A message bubble: mine (right, mint-deep), the assistant's (left, surface) or another
-/// member's in the shared thread (left, surface-2, their label above; D-075 #2).
-class AsBubble extends StatelessWidget {
+/// Where a sent message stands (shown under my bubble).
+enum AsSendState { sending, unsent, failed }
+
+/// A message bubble: mine (right, mint-deep), Lumi's (left, surface) or another member's in
+/// the shared thread (left, surface-2, their label above; D-075 #2). A tap shows its time, a
+/// long press copies the words; my bubble carries its send state with an inline action.
+class AsBubble extends StatefulWidget {
   const AsBubble({
     required this.text,
     this.mine = false,
     this.status,
     this.statusIcon,
     this.author,
+    this.sendState,
+    this.action,
+    this.time,
+    this.live = false,
     super.key,
   });
 
@@ -265,35 +299,70 @@ class AsBubble extends StatelessWidget {
   final String? status;
   final ClIcons? statusIcon;
 
+  /// Colours the status line (failed reads as an error, sending as muted).
+  final AsSendState? sendState;
+
+  /// An inline action after the status ("Thử lại", "Gửi").
+  final AsCardAction? action;
+
+  /// "14:20", shown on a tap (null: no time to show).
+  final String? time;
+
+  /// A new message from Lumi: screen readers read it out once.
+  final bool live;
+
+  @override
+  State<AsBubble> createState() => _AsBubbleState();
+}
+
+class _AsBubbleState extends State<AsBubble> {
+  var _showTime = false;
+
+  void _copy() {
+    final l10n = AppLocalizations.of(context);
+    unawaited(Clipboard.setData(ClipboardData(text: widget.text)));
+    if (!context.cl.isNightCare) unawaited(HapticFeedback.selectionClick());
+    ClToaster.of(context).show(message: l10n.asCopied);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     const r = Radius.circular(18);
     const tail = Radius.circular(6);
-    final other = !mine && author != null;
-    final bubble = Container(
-      constraints: const BoxConstraints(maxWidth: asBubbleWidth),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: mine
-            ? cl.colors.mintDeep
-            : (other ? cl.colors.surface2 : cl.colors.surface),
-        borderRadius: BorderRadius.only(
-          topLeft: r,
-          topRight: r,
-          bottomLeft: mine ? r : tail,
-          bottomRight: mine ? tail : r,
+    final mine = widget.mine;
+    final other = !mine && widget.author != null;
+    final failed = widget.sendState == AsSendState.failed;
+    final bubble = AnimatedOpacity(
+      opacity: widget.sendState == AsSendState.sending ? 0.75 : 1,
+      duration: context.motion(ClMotion.quick),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: asBubbleWidth),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: mine
+              ? cl.colors.mintDeep
+              : (other ? cl.colors.surface2 : cl.colors.surface),
+          borderRadius: BorderRadius.only(
+            topLeft: r,
+            topRight: r,
+            bottomLeft: mine ? r : tail,
+            bottomRight: mine ? tail : r,
+          ),
         ),
-      ),
-      child: Text(
-        text,
-        style: cl.text.label.copyWith(
-          fontSize: 15,
-          height: 1.4,
-          color: mine ? cl.colors.onMintDeep : cl.colors.ink,
+        child: Text(
+          widget.text,
+          style: cl.text.label.copyWith(
+            fontSize: 15,
+            height: 1.4,
+            color: mine ? cl.colors.onMintDeep : cl.colors.ink,
+          ),
         ),
       ),
     );
+    final who = mine ? l10n.asYou : (widget.author ?? l10n.asLumiName);
+    final statusColor = failed ? cl.colors.error : cl.colors.inkMuted;
     return Align(
       alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
       child: Column(
@@ -306,27 +375,83 @@ class AsBubble extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 6),
               child: Text(
-                author!,
+                widget.author!,
                 style: _semi(context, 12, cl.colors.inkMuted),
               ),
             ),
             const SizedBox(height: 3),
           ],
-          bubble,
-          if (status != null) ...[
+          Semantics(
+            container: true,
+            liveRegion: widget.live,
+            label: '$who: ${widget.text}',
+            onLongPressHint: l10n.asCopy,
+            onLongPress: _copy,
+            onTapHint: widget.time == null ? null : l10n.asShowTime,
+            onTap: widget.time == null
+                ? null
+                : () => setState(() => _showTime = !_showTime),
+            child: ExcludeSemantics(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: widget.time == null
+                    ? null
+                    : () => setState(() => _showTime = !_showTime),
+                onLongPress: _copy,
+                child: bubble,
+              ),
+            ),
+          ),
+          AsSize(
+            duration: context.motion(ClMotion.quick),
+            curve: ClCurves.quick,
+            alignment: mine ? Alignment.topRight : Alignment.topLeft,
+            child: _showTime && widget.time != null
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 4, left: 6, right: 6),
+                    child: Text(
+                      widget.time!,
+                      style: cl.text.caption.copyWith(
+                        fontSize: 11.5,
+                        color: cl.colors.inkMuted,
+                      ),
+                    ),
+                  )
+                : const SizedBox(width: 0, height: 0),
+          ),
+          if (widget.status != null) ...[
             const SizedBox(height: 4),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (statusIcon != null) ...[
-                  ClIcon(statusIcon!, size: 12, color: cl.colors.inkMuted),
-                  const SizedBox(width: 4),
+            Semantics(
+              liveRegion: true,
+              child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: mine ? WrapAlignment.end : WrapAlignment.start,
+                spacing: 4,
+                children: [
+                  if (widget.statusIcon != null)
+                    ClIcon(widget.statusIcon!, size: 12, color: statusColor),
+                  Text(
+                    widget.status!,
+                    style: cl.text.caption.copyWith(color: statusColor),
+                  ),
+                  if (widget.action case final a?)
+                    ClPressable(
+                      onPressed: a.onPressed,
+                      semanticLabel: a.label,
+                      minSize: const Size(0, 32),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 6,
+                        ),
+                        child: Text(
+                          a.label,
+                          style: _semi(context, 12.5, cl.colors.mintText),
+                        ),
+                      ),
+                    ),
                 ],
-                Text(
-                  status!,
-                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                ),
-              ],
+              ),
             ),
           ],
         ],
@@ -335,51 +460,350 @@ class AsBubble extends StatelessWidget {
   }
 }
 
-/// "Trợ lý đang đọc…" while the task is queued or processing, with "Huỷ".
-class AsWorking extends StatelessWidget {
-  const AsWorking({this.onCancel, super.key});
-  final VoidCallback? onCancel;
+/// The first entry of a run of Lumi's messages: her face and name (and the time on demand).
+class AsLumiHeader extends StatelessWidget {
+  const AsLumiHeader({this.time, super.key});
+  final String? time;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
+    return ExcludeSemantics(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: Row(
+          children: [
+            const LumiMascot(size: 22),
+            const SizedBox(width: 8),
+            Text(l10n.asLumiName, style: _semi(context, 13, cl.colors.ink)),
+            if (time != null) ...[
+              const SizedBox(width: 6),
+              Text(
+                time!,
+                style: cl.text.caption.copyWith(
+                  fontSize: 11.5,
+                  color: cl.colors.inkMuted,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// "Lumi đang soạn…": her face and a bubble of three dots that rise in turn (still dots with
+/// Reduce Motion), read out once; "Huỷ" for the task's author.
+class AsTyping extends StatefulWidget {
+  const AsTyping({required this.label, this.onCancel, super.key});
+  final String label;
+  final VoidCallback? onCancel;
+
+  @override
+  State<AsTyping> createState() => _AsTypingState();
+}
+
+class _AsTypingState extends State<AsTyping>
+    with SingleTickerProviderStateMixin {
+  late final _dots = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1200),
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (context.reduceMotion) {
+      _dots.stop();
+    } else if (!_dots.isAnimating) {
+      unawaited(_dots.repeat());
+    }
+  }
+
+  @override
+  void dispose() {
+    _dots.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final c = cl.colors;
+    final reduce = context.reduceMotion;
+    Widget dot(int i) => AnimatedBuilder(
+      animation: _dots,
+      builder: (context, _) {
+        // Each dot rises and brightens in its third of the loop.
+        final t = reduce ? 0.0 : ((_dots.value * 3 - i) % 3);
+        final up = t < 1 ? math.sin(math.pi * t) : 0.0;
+        return Transform.translate(
+          offset: Offset(0, -3 * up),
+          child: Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(
+              color: c.inkMuted.withValues(alpha: 0.45 + 0.55 * up),
+              shape: BoxShape.circle,
+            ),
+          ),
+        );
+      },
+    );
     return Align(
       alignment: Alignment.centerLeft,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const LumiMascot(size: 22),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+              decoration: BoxDecoration(
+                color: c.surface,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(18),
+                  topRight: Radius.circular(18),
+                  bottomRight: Radius.circular(18),
+                  bottomLeft: Radius.circular(6),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ExcludeSemantics(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        dot(0),
+                        const SizedBox(width: 4),
+                        dot(1),
+                        const SizedBox(width: 4),
+                        dot(2),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: Semantics(
+                      liveRegion: true,
+                      child: Text(
+                        widget.label,
+                        style: cl.text.label.copyWith(
+                          fontSize: 13.5,
+                          color: c.inkMuted,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (widget.onCancel != null)
+            ClPressable(
+              onPressed: widget.onCancel,
+              semanticLabel: l10n.asCancelTask,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: ClSpace.s3),
+                child: Text(
+                  l10n.asCancelTask,
+                  style: _semi(context, 13, c.mintText),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One entry of the thread arriving: a fade with a short rise (Motion spec: quick, 8 px, 30 ms
+/// stagger); with Reduce Motion a quick fade only, and Night care without the spring. [animate]
+/// false shows it at once (history, an entry seen before).
+class AsEnter extends StatefulWidget {
+  const AsEnter({
+    required this.child,
+    this.animate = true,
+    this.delay = Duration.zero,
+    this.fromRight = false,
+    super.key,
+  });
+  final Widget child;
+  final bool animate;
+  final Duration delay;
+
+  /// My own bubble rises from the right a little.
+  final bool fromRight;
+
+  @override
+  State<AsEnter> createState() => _AsEnterState();
+}
+
+class _AsEnterState extends State<AsEnter> with SingleTickerProviderStateMixin {
+  AnimationController? _c;
+  Timer? _wait;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_c != null || !widget.animate) return;
+    final reduce = context.reduceMotion;
+    final night = context.cl.isNightCare;
+    final c = AnimationController(
+      vsync: this,
+      duration: reduce
+          ? const Duration(milliseconds: 150)
+          : (night ? ClMotion.quick : ClMotion.standard),
+    );
+    _c = c;
+    final delay = reduce ? Duration.zero : widget.delay;
+    if (delay == Duration.zero) {
+      unawaited(c.forward());
+    } else {
+      _wait = Timer(delay, () {
+        if (mounted) unawaited(c.forward());
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _wait?.cancel();
+    _c?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = _c;
+    if (c == null) return widget.child;
+    final reduce = context.reduceMotion;
+    final night = context.cl.isNightCare;
+    final fade = CurvedAnimation(parent: c, curve: ClCurves.quick);
+    if (reduce) return FadeTransition(opacity: fade, child: widget.child);
+    final move = CurvedAnimation(
+      parent: c,
+      curve: night ? ClCurves.quick : ClCurves.standard,
+    );
+    return FadeTransition(
+      opacity: fade,
+      child: AnimatedBuilder(
+        animation: move,
+        child: widget.child,
+        builder: (context, child) {
+          final t = 1 - move.value;
+          return Transform.translate(
+            offset: Offset(
+              widget.fromRight ? ClMotion.shiftChip * t : 0,
+              ClMotion.shiftChip * t,
+            ),
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// [AnimatedSize] that is a plain box with Reduce Motion (a zero-length size animation would
+/// re-dirty its own layout).
+class AsSize extends StatelessWidget {
+  const AsSize({
+    required this.child,
+    required this.duration,
+    this.curve = Curves.linear,
+    this.alignment = Alignment.center,
+    super.key,
+  });
+  final Widget child;
+  final Duration duration;
+  final Curve curve;
+  final AlignmentGeometry alignment;
+
+  @override
+  Widget build(BuildContext context) =>
+      context.reduceMotion || duration == Duration.zero
+      ? child
+      : AnimatedSize(
+          duration: duration,
+          curve: curve,
+          alignment: alignment,
+          child: child,
+        );
+}
+
+/// "↓ Tin mới": new content arrived below while the person reads further up.
+class AsNewPill extends StatelessWidget {
+  const AsNewPill({required this.onPressed, super.key});
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final c = context.cl.colors;
+    return ClPressable(
+      onPressed: onPressed,
+      semanticLabel: l10n.asNewMessages,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(14, 10, 8, 10),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: cl.colors.surface,
-          borderRadius: BorderRadius.circular(18),
+          color: c.mintDeep,
+          borderRadius: BorderRadius.circular(ClRadius.pill),
+          boxShadow: context.cl.shadows.sheet,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Reduce Motion: a still mark instead of the spinner.
-            if (context.reduceMotion)
-              ClIcon(ClIcons.clock, size: 14, color: cl.colors.inkMuted)
-            else
-              CupertinoActivityIndicator(color: cl.colors.inkMuted, radius: 7),
-            const SizedBox(width: ClSpace.s2),
-            Semantics(
-              liveRegion: true,
+            Transform.rotate(
+              angle: math.pi / 2,
+              child: ClIcon(ClIcons.arrowRight, size: 14, color: c.onMintDeep),
+            ),
+            const SizedBox(width: 6),
+            Text(l10n.asNewMessages, style: _semi(context, 13, c.onMintDeep)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The offline line under the header: what still works while there is no network.
+class AsOfflineBanner extends StatelessWidget {
+  const AsOfflineBanner({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    return Semantics(
+      liveRegion: true,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: cl.colors.surface2,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 1),
+              child: ClIcon(ClIcons.cloudOff, size: 14, color: cl.colors.ink),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
               child: Text(
-                l10n.asThinking,
-                style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                l10n.asOfflineBanner,
+                style: cl.text.caption.copyWith(color: cl.colors.ink),
               ),
             ),
-            if (onCancel != null)
-              ClPressable(
-                onPressed: onCancel,
-                semanticLabel: l10n.asCancelTask,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: ClSpace.s3),
-                  child: Text(
-                    l10n.asCancelTask,
-                    style: _semi(context, 13, cl.colors.mintText),
-                  ),
-                ),
-              ),
           ],
         ),
       ),
@@ -395,6 +819,7 @@ class AsChip extends StatelessWidget {
     required this.onPressed,
     this.selected = false,
     this.busy = false,
+    this.icon,
     super.key,
   });
 
@@ -402,6 +827,7 @@ class AsChip extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool selected;
   final bool busy;
+  final ClIcons? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -425,6 +851,13 @@ class AsChip extends StatelessWidget {
           children: [
             if (busy) ...[
               CupertinoActivityIndicator(color: c.mintText, radius: 6),
+              const SizedBox(width: 6),
+            ] else if (icon != null) ...[
+              ClIcon(
+                icon!,
+                size: 14,
+                color: selected ? c.mintText : c.inkMuted,
+              ),
               const SizedBox(width: 6),
             ],
             Flexible(
@@ -663,6 +1096,7 @@ class AsLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Align(
     alignment: Alignment.centerLeft,
+    widthFactor: 1,
     child: ClPressable(
       onPressed: onPressed,
       semanticLabel: label,
@@ -721,6 +1155,8 @@ class AsDraftCard extends StatelessWidget {
     this.actions = const [],
     this.stateLabelOverride,
     this.tile,
+    this.onTap,
+    this.privateHint,
     super.key,
   });
 
@@ -742,6 +1178,12 @@ class AsDraftCard extends StatelessWidget {
 
   /// The icon tile when the kind's own does not fit (CH17 feedback: heart on mint).
   final (ClIcons, Color, Color)? tile;
+
+  /// A tap on the card's facts opens its editor (same as "Sửa").
+  final VoidCallback? onTap;
+
+  /// "Chỉ bạn thấy" next to the module (spending stays out of the shared thread).
+  final String? privateHint;
 
   @override
   Widget build(BuildContext context) {
@@ -843,14 +1285,41 @@ class AsDraftCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: ClSpace.s2),
-          Text(
-            line,
-            style: cl.text.label.copyWith(
-              fontSize: 14,
-              height: 1.35,
-              color: c.ink,
+          if (onTap == null)
+            Text(
+              line,
+              style: cl.text.label.copyWith(
+                fontSize: 14,
+                height: 1.35,
+                color: c.ink,
+              ),
+            )
+          else
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onTap,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      line,
+                      style: cl.text.label.copyWith(
+                        fontSize: 14,
+                        height: 1.35,
+                        fontWeight: FontWeight.w600,
+                        color: c.ink,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: ClIcon(ClIcons.edit, size: 14, color: c.inkMuted),
+                  ),
+                ],
+              ),
             ),
-          ),
           for (final n in notes) ...[
             const SizedBox(height: 4),
             Text(
@@ -874,6 +1343,15 @@ class AsDraftCard extends StatelessWidget {
                   style: cl.text.caption.copyWith(color: c.inkMuted),
                 ),
               ),
+              if (privateHint != null) ...[
+                const SizedBox(width: 6),
+                ClIcon(ClIcons.lock, size: 11, color: c.inkMuted),
+                const SizedBox(width: 3),
+                Text(
+                  privateHint!,
+                  style: cl.text.caption.copyWith(color: c.inkMuted),
+                ),
+              ],
             ],
           ),
           if (actions.isNotEmpty) ...[
@@ -975,21 +1453,18 @@ class AsBatchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final c = context.cl.colors;
-    return Container(
-      width: asCardWidth,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: c.surface,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: asCardWidth),
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: ClSpace.s3,
+        runSpacing: 4,
         children: [
           AsButton(
             label: count == 0
                 ? l10n.asChooseToSave
                 : l10n.asSaveSelected(count),
-            expand: true,
+            icon: count == 0 ? null : ClIcons.check,
             loading: saving,
             onPressed: count == 0 ? null : onSave,
           ),
@@ -1368,6 +1843,14 @@ class AsHealthCard extends StatelessWidget {
 /// from the household's pool and the person's role.
 enum ComposerMode { open, out, viewer }
 
+/// A suggestion above the composer: it only prefills (or opens the photo sheet); never sends.
+typedef AsSuggestion = ({String label, ClIcons icon, VoidCallback onPressed});
+
+/// Chat/Ô nhập, reworked 2026-10-15: a growing field (up to 5 lines), suggestions that step
+/// aside while typing, the camera, and one trailing button that is the mic while the field is
+/// empty and "Gửi" once there are words (messaging-app style). While dictating the camera
+/// becomes "×", the trailing button "Dừng" with a breathing ring, and a level meter with
+/// "Đang nghe…" shows above the words; a swipe to the left cancels too.
 class AsComposer extends StatelessWidget {
   const AsComposer({
     required this.controller,
@@ -1377,6 +1860,9 @@ class AsComposer extends StatelessWidget {
     this.focusNode,
     this.onCamera,
     this.sending = false,
+    this.voice,
+    this.onMic,
+    this.suggestions = const [],
     super.key,
   });
 
@@ -1390,94 +1876,290 @@ class AsComposer extends StatelessWidget {
   final VoidCallback? onCamera;
   final bool sending;
 
+  /// Dictation (null: no mic on this phone / in this mode).
+  final VoiceSession? voice;
+  final VoidCallback? onMic;
+  final List<AsSuggestion> suggestions;
+
   @override
   Widget build(BuildContext context) {
+    final v = voice;
+    if (v == null) return _build(context, null);
+    return ListenableBuilder(
+      listenable: v,
+      builder: (context, _) => _build(context, v),
+    );
+  }
+
+  Widget _build(BuildContext context, VoiceSession? v) {
     final l10n = AppLocalizations.of(context);
-    final c = context.cl.colors;
+    final cl = context.cl;
+    final c = cl.colors;
     final locked = mode == ComposerMode.out;
     final muted = mode != ComposerMode.open;
+    final dictating = v?.active ?? false;
+    final listening = v != null && v.phase == VoicePhase.listening;
+    final micReady = v != null && !v.hidden && onMic != null && !locked;
+    var drag = 0.0;
+    final field = TextField(
+      controller: controller,
+      focusNode: focusNode,
+      readOnly: locked,
+      enabled: !locked,
+      minLines: 1,
+      maxLines: 5,
+      keyboardType: TextInputType.multiline,
+      textInputAction: TextInputAction.newline,
+      maxLength: AssistantLimits.maxTextChars,
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+      textCapitalization: TextCapitalization.sentences,
+      style: cl.text.label.copyWith(fontSize: 15, height: 1.35, color: c.ink),
+      cursorColor: c.mintDeep,
+      decoration: InputDecoration.collapsed(
+        hintText: dictating ? l10n.asVoiceListening : hint,
+        hintStyle: cl.text.label.copyWith(
+          fontSize: 15,
+          height: 1.35,
+          color: c.inkMuted,
+        ),
+      ).copyWith(counterText: ''),
+    );
+    final leading = dictating
+        ? _Circle(
+            key: const ValueKey('as.voice.cancel'),
+            icon: ClIcons.close,
+            label: l10n.asVoiceCancel,
+            fill: c.surface2,
+            ink: c.ink,
+            onPressed: () => unawaited(v!.cancel()),
+          )
+        : (mode != ComposerMode.viewer && (locked || onCamera != null))
+        ? Opacity(
+            opacity: locked || onCamera == null ? ClMotion.disabledOpacity : 1,
+            child: _Circle(
+              icon: ClIcons.camera,
+              label: l10n.asAddPhoto,
+              fill: c.surface2,
+              ink: c.ink,
+              onPressed: locked ? null : onCamera,
+            ),
+          )
+        : null;
+    final trailing = ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        final hasText = controller.text.trim().isNotEmpty;
+        final Widget button;
+        if (dictating) {
+          button = ListeningRing(
+            key: const ValueKey('as.voice.stop'),
+            level: v!.level,
+            color: c.mintDeep,
+            child: _Circle(
+              icon: ClIcons.stop,
+              label: l10n.asVoiceStop,
+              fill: c.mintDeep,
+              ink: c.onMintDeep,
+              busy: !listening && v.phase == VoicePhase.starting,
+              onPressed: listening ? () => unawaited(v.stop()) : null,
+            ),
+          );
+        } else if (!hasText && micReady) {
+          button = _Circle(
+            key: const ValueKey('as.voice.mic'),
+            icon: ClIcons.spark,
+            glyph: MicGlyph(color: c.ink),
+            label: l10n.asVoiceStart,
+            fill: c.surface2,
+            ink: c.ink,
+            onPressed: onMic,
+          );
+        } else {
+          final ready = !locked && hasText && !sending;
+          button = Opacity(
+            key: const ValueKey('as.send'),
+            opacity: locked ? ClMotion.disabledOpacity : 1,
+            child: _Circle(
+              icon: ClIcons.arrowRight,
+              label: l10n.asSend,
+              fill: ready ? c.mintDeep : c.surface2,
+              ink: ready ? c.onMintDeep : c.inkMuted,
+              onPressed: ready ? onSend : null,
+            ),
+          );
+        }
+        return AnimatedSwitcher(
+          duration: context.motion(ClMotion.quick),
+          switchInCurve: ClCurves.quick,
+          switchOutCurve: ClCurves.exit,
+          transitionBuilder: (child, a) => context.reduceMotion
+              ? FadeTransition(opacity: a, child: child)
+              : ScaleTransition(
+                  scale: Tween(begin: 0.8, end: 1.0).animate(a),
+                  child: FadeTransition(opacity: a, child: child),
+                ),
+          child: button,
+        );
+      },
+    );
+    final box = AnimatedContainer(
+      duration: context.motion(ClMotion.quick),
+      constraints: const BoxConstraints(minHeight: 56),
+      padding: const EdgeInsets.all(ClSpace.s2),
+      decoration: BoxDecoration(
+        color: muted ? c.surface2 : c.surface,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: dictating ? c.mintDeep : c.controlBorder,
+          width: dictating ? 1.5 : 1,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          ?leading,
+          const SizedBox(width: ClSpace.s2),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (dictating)
+                    Padding(
+                      key: const ValueKey('as.voice.listening'),
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Semantics(
+                        liveRegion: true,
+                        label: l10n.asVoiceListening,
+                        child: ExcludeSemantics(
+                          child: Row(
+                            children: [
+                              VoiceLevelMeter(
+                                level: v!.level,
+                                color: c.mintText,
+                                height: 14,
+                              ),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  v.heard
+                                      ? l10n.asVoiceListening
+                                      : l10n.asVoiceSwipe,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: cl.text.caption.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: c.mintText,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  field,
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: ClSpace.s2),
+          trailing,
+        ],
+      ),
+    );
+    final chips = ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        final show =
+            suggestions.isNotEmpty &&
+            !dictating &&
+            !locked &&
+            controller.text.isEmpty;
+        return AsSize(
+          duration: context.motion(ClMotion.quick),
+          curve: ClCurves.quick,
+          alignment: Alignment.bottomCenter,
+          child: AnimatedSwitcher(
+            duration: context.motion(ClMotion.quick),
+            child: show
+                ? SizedBox(
+                    key: const ValueKey('as.suggestions'),
+                    height: 44,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.fromLTRB(
+                        ClSpace.s4,
+                        0,
+                        ClSpace.s4,
+                        ClSpace.s2,
+                      ),
+                      itemCount: suggestions.length,
+                      separatorBuilder: (_, _) =>
+                          const SizedBox(width: ClSpace.s2),
+                      itemBuilder: (context, i) {
+                        final s = suggestions[i];
+                        return ClPressable(
+                          onPressed: s.onPressed,
+                          semanticLabel: s.label,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: c.surface,
+                              borderRadius: BorderRadius.circular(
+                                ClRadius.pill,
+                              ),
+                              border: Border.all(color: c.controlBorder),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ClIcon(s.icon, size: 14, color: c.mintText),
+                                const SizedBox(width: 6),
+                                Text(
+                                  s.label,
+                                  maxLines: 1,
+                                  style: _semi(context, 13, c.ink),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                : const SizedBox(width: double.infinity, height: 0),
+          ),
+        );
+      },
+    );
     return Container(
       color: c.cloud,
-      padding: EdgeInsets.fromLTRB(
-        ClSpace.s4,
-        ClSpace.s2,
-        ClSpace.s4,
-        ClSpace.s2 + MediaQuery.paddingOf(context).bottom,
+      padding: EdgeInsets.only(
+        top: ClSpace.s2,
+        bottom: ClSpace.s2 + MediaQuery.paddingOf(context).bottom,
       ),
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 56),
-        padding: const EdgeInsets.all(ClSpace.s2),
-        decoration: BoxDecoration(
-          color: muted ? c.surface2 : c.surface,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: c.controlBorder),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            if (mode != ComposerMode.viewer && (locked || onCamera != null))
-              Opacity(
-                opacity: locked || onCamera == null
-                    ? ClMotion.disabledOpacity
-                    : 1,
-                child: _Circle(
-                  icon: ClIcons.camera,
-                  label: l10n.asAddPhoto,
-                  fill: c.surface2,
-                  ink: c.ink,
-                  onPressed: locked ? null : onCamera,
-                ),
-              ),
-            const SizedBox(width: ClSpace.s2),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: TextField(
-                  controller: controller,
-                  focusNode: focusNode,
-                  readOnly: locked,
-                  enabled: !locked,
-                  minLines: 1,
-                  maxLines: 4,
-                  maxLength: AssistantLimits.maxTextChars,
-                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                  textCapitalization: TextCapitalization.sentences,
-                  style: context.cl.text.label.copyWith(
-                    fontSize: 15,
-                    height: 1.35,
-                    color: c.ink,
-                  ),
-                  decoration: InputDecoration.collapsed(
-                    hintText: hint,
-                    hintStyle: context.cl.text.label.copyWith(
-                      fontSize: 15,
-                      height: 1.35,
-                      color: c.inkMuted,
-                    ),
-                  ).copyWith(counterText: ''),
-                ),
-              ),
-            ),
-            const SizedBox(width: ClSpace.s2),
-            ListenableBuilder(
-              listenable: controller,
-              builder: (context, _) {
-                final ready = !locked && controller.text.trim().isNotEmpty;
-                return Opacity(
-                  opacity: locked ? ClMotion.disabledOpacity : 1,
-                  child: _Circle(
-                    icon: ClIcons.arrowRight,
-                    label: l10n.asSend,
-                    fill: ready ? c.mintDeep : c.surface2,
-                    ink: ready ? c.onMintDeep : c.inkMuted,
-                    busy: sending,
-                    onPressed: ready && !sending ? onSend : null,
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          chips,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+            child: dictating
+                ? GestureDetector(
+                    // Swipe left to cancel the dictation.
+                    onHorizontalDragStart: (_) => drag = 0,
+                    onHorizontalDragUpdate: (d) => drag += d.delta.dx,
+                    onHorizontalDragEnd: (_) {
+                      if (drag < -60) unawaited(v!.cancel());
+                    },
+                    child: box,
+                  )
+                : box,
+          ),
+        ],
       ),
     );
   }
@@ -1491,6 +2173,8 @@ class _Circle extends StatelessWidget {
     required this.ink,
     required this.onPressed,
     this.busy = false,
+    this.glyph,
+    super.key,
   });
   final ClIcons icon;
   final String label;
@@ -1498,20 +2182,22 @@ class _Circle extends StatelessWidget {
   final Color ink;
   final VoidCallback? onPressed;
   final bool busy;
+  final Widget? glyph;
 
   @override
   Widget build(BuildContext context) => ClPressable(
     onPressed: onPressed,
     semanticLabel: label,
     minSize: const Size(40, 40),
-    child: Container(
+    child: AnimatedContainer(
+      duration: context.motion(ClMotion.quick),
       width: 40,
       height: 40,
       decoration: BoxDecoration(color: fill, shape: BoxShape.circle),
       alignment: Alignment.center,
       child: busy
           ? CupertinoActivityIndicator(color: ink, radius: 8)
-          : ClIcon(icon, size: 20, color: ink),
+          : (glyph ?? ClIcon(icon, size: 20, color: ink)),
     ),
   );
 }

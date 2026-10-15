@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
+import '../../app/navigation.dart' show OverlayTwin;
 import '../../app/route_guard.dart';
 import '../../core/appearance/appearance_providers.dart';
 import '../../core/design/cl_theme.dart';
@@ -1190,8 +1191,10 @@ class _ReminderSheetState extends ConsumerState<ReminderSheet> {
     toaster.show(message: l10n.reminderDeleted);
     final router = GoRouter.of(context);
     Navigator.of(context).pop(false);
-    // Leave the detail of a reminder that no longer exists.
-    if (router.state.uri.path.startsWith('${Routes.reminders}/')) {
+    // Leave the detail of a reminder that no longer exists (D-076 nav: or its overlay twin).
+    if (OverlayTwin.original(
+      router.state.uri.path,
+    ).startsWith('${Routes.reminders}/')) {
       router.pop();
     }
   }

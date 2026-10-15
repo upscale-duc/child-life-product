@@ -1119,7 +1119,8 @@ class WeekSummaryEntry extends ConsumerWidget {
     );
     final sub = n == null
         ? range
-        : '${l10n.rhWeekOf(n, baby?.nickname ?? '')} · $range';
+        // "Tuần thứ 3 · 28/09 – 04/10": the week of life without the name keeps one line.
+        : '${l10n.hnWeekKickerOnly(n)} · $range';
     return RhCard(
       onTap: () => context.push(Routes.rhythmWeek),
       semanticLabel: '${l10n.rhWeekTitle}. $sub',

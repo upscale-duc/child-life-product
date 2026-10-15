@@ -114,7 +114,17 @@ class TodayScreen extends ConsumerWidget {
       ),
       // ---- end D-076 #2 ----
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(ClSpace.s4, 0, ClSpace.s4, 140),
+        // The last section ends above the dock, its "+" and Lumi (owner, 2026-10-15: Lumi sat on
+        // "Xem tất cả" of Nhắc việc); 140 outside the home shell.
+        padding: EdgeInsets.fromLTRB(
+          ClSpace.s4,
+          0,
+          ClSpace.s4,
+          switch (HomeFloatingClearance.of(context)) {
+            final c? => c + ClSpace.s4,
+            null => 140,
+          },
+        ),
         children: [
           if (myConflict != null) ...[
             const SizedBox(height: ClSpace.s3),
@@ -211,6 +221,9 @@ class TodayScreen extends ConsumerWidget {
                             ),
                     ],
                   ),
+                  // A care tool, with the tiles rather than among the suggestions (owner,
+                  // 2026-10-15).
+                  const TodayHandoverRow(),
                 ],
                 // ReminderPeek (128:665, R-094); not for relatives (D-018).
                 TodaySection.reminders => [

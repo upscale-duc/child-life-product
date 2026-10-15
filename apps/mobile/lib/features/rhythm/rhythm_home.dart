@@ -8,9 +8,10 @@ import '../../core/design/tokens.g.dart';
 import '../../core/format/age.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
+import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
-import '../ai/handover_screen.dart' show HandoverEntry;
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
@@ -29,32 +30,48 @@ import 'rhythm_plans.dart';
 import 'rhythm_repository.dart';
 import 'rhythm_widgets.dart';
 import 'rhythm_week.dart';
-import 'week_screen.dart' show WeekSummaryEntry;
+
+/// A teaser for "Tuần này của {bé}" from another module (Giai đoạn của bé, D-076 #7): the card's
+/// one or two lines, how many ideas the destination holds, and where it goes. [id] is the small
+/// card it stands for in the Home carousel, which leaves that card out (no duplicates).
+typedef WeekTeaser = ({
+  String id,
+  String text,
+  int ideas,
+  void Function(BuildContext context) onOpen,
+});
 
 /// Hôm nay · "Dành cho bé hôm nay" ([TodaySection.forYou]), only when the family's `rhythm` flag
-/// is on. Order (brief p.11): health → the current-need suggestion (group A, H02 589:6368 /
-/// PS02 591:6495) → "Hôm nay con có gì khác?" (who may check in) → "Tuần này của {bé}" (free,
-/// Q-067) → the reference calendar (free, never first) → "Hỗ trợ phù hợp với con" (H01
-/// 589:6281: only when group A is missing for want of a plan). Health hides the suggestion and
-/// the calendar ("Child Life dừng gợi ý theo lịch").
+/// is on. Two parts, one job each (owner, 2026-10-15; brief p.11 for what shows and when):
+///
+/// 1. **Dành cho bé hôm nay** — what to do today: health first (it pauses suggestions), then ONE
+///    compact suggestion (group A, H02 589:6368 / PS02 591:6495; why it came is behind "Vì sao
+///    gợi ý này?"), the small cards of other modules ([more], "Để ý tuần này"), "Hôm nay con có
+///    gì khác?" (who may check in) and, last, "Hỗ trợ phù hợp với con" (H01 589:6281: only when
+///    group A is missing for want of a plan).
+/// 2. **Tuần này của {bé}** — one card: "Tuần thứ N · N−1 tuần tuổi" with a teaser from real
+///    content ([weekTeaser], else the free age card, Q-067), then compact rows for the reference
+///    calendar (never on a health day) and the week summary (EN09, who reads care).
+///
+/// Numbering everywhere: "Tuần thứ N" is the week of life (completed weeks + 1), "N tuần tuổi"
+/// counts completed weeks only.
 class ForYouSection extends ConsumerWidget {
   const ForYouSection({
     this.header,
-    this.calendar,
     this.more = const [],
+    this.weekTeaser,
     super.key,
   });
 
   // ---- D-076 #4 (Hôm nay "Dành cho bé hôm nay", lib/features/today/today_for_baby.dart) ----
-  /// Drawn above the cards, only when there is at least one.
+  /// Drawn above the first part, only when it has at least one card.
   final Widget? header;
 
-  /// Replaces the reference-calendar card at its place (never first); [compact] = a suggestion
-  /// is shown above it.
-  final Widget Function(bool compact)? calendar;
-
-  /// Cards other modules add at the end (Home's small-card carousel).
+  /// Cards other modules add after the suggestion (Home's small-card carousel).
   final List<Widget> more;
+
+  /// Replaces the age card's teaser in "Tuần này của {bé}" (the current stage).
+  final WeekTeaser? weekTeaser;
   // ---- end D-076 #4 ----
 
   @override
@@ -129,31 +146,69 @@ class ForYouSection extends ConsumerWidget {
         ? null
         : content.ageCard(home!.ageCardId!);
 
-    String? stageLine;
+    // ---- Tuần này của {bé}: the teaser (a stage, else the age card) and its rows ----
+    final teaser =
+        weekTeaser ??
+        (ageCard == null
+            ? null
+            : (
+                id: 'age:${ageCard.id}',
+                text: firstSentence(ageCard.body.of(locale)),
+                ideas: ageCard.tips.of(locale).length,
+                onOpen: (BuildContext c) =>
+                    c.push('${Routes.rhythmAge}/${ageCard.id}'),
+              ));
+    final rows = <WeekRow>[];
     final due = profile?.dueDate?.date;
     if (health == null && reference != null && due != null) {
       final stages = currentStages(due, today, reference.stages);
-      if (stages.current.isNotEmpty) {
-        stageLine = [
-          for (final s in stages.current)
-            l10n.rhStageNow(
-              l10n.rhStageName(s.number),
-              dayRange(l10n, locale, windowOf(due, s)),
-            ),
-        ].join('\n');
-      } else if (stages.next case final s?) {
-        stageLine = l10n.rhStageExpected(
-          l10n.rhStageName(s.number),
-          dayRange(l10n, locale, windowOf(due, s)),
-        );
+      if (stages.current.firstOrNull ?? stages.next case final focus?) {
+        final soothing = canRead ? soothingDays(checkIns, today) : 0;
+        rows.add((
+          key: const Key('forBabyRhythm'),
+          icon: ClIcons.sleep,
+          tone: WeekRowTone.rhythm,
+          title: stages.current.isNotEmpty
+              ? l10n.hnRhythmNow(focus.number)
+              : l10n.hnRhythmComingDays(
+                  focus.number,
+                  DateTime.parse(
+                    windowOf(due, focus).start,
+                  ).difference(DateTime.parse(today)).inDays,
+                ),
+          sub: [
+            l10n.hnWeekRhythmSub(dayRange(l10n, locale, windowOf(due, focus))),
+            if (soothing > 0) l10n.hnRhythmSoothing(soothing),
+          ].join('\n'),
+          onOpen: (c) => c.push(Routes.rhythm),
+        ));
       }
     }
+    // EN09 once a whole week of the baby's life has passed (who reads care). Dates only: the
+    // Mon–Sun week does not line up with the week of life the card above counts.
+    final week = summaryWeekFor(today);
+    if (canRead && weekHasPassed(dob, week)) {
+      rows.add((
+        key: const Key('forBabyWeekSummary'),
+        icon: ClIcons.journal,
+        tone: WeekRowTone.mint,
+        title: week.inProgress
+            ? l10n.hnWeekSummaryThis
+            : l10n.hnWeekSummaryLast,
+        sub: l10n.rhDateRange(
+          shortDay(locale, week.start),
+          shortDay(locale, week.end),
+        ),
+        onOpen: (c) => c.push(Routes.rhythmWeek),
+      ));
+    }
+
     final showSupport =
         !groupA &&
         caps.reasonFor(Capability.personalizationCrossModule) ==
             GateReason.premiumRequired;
 
-    final children = <Widget>[
+    final todayCards = <Widget>[
       if (health != null) RhHealthCard(signs: health.healthSigns),
       if (showPrimary)
         _PrimaryCard(
@@ -172,44 +227,95 @@ class ForYouSection extends ConsumerWidget {
           babyName: name,
           secondary: secondaryActivities(content, home!),
         ),
+      ...more, // D-076 #4
       if (canCheckIn) const _CheckInEntry(),
-      // SU01 (Premium Slice 3): a Cùng nuôi makes the handover, a caregiver reads the latest.
-      if (health == null &&
-          HandoverEntry.visibleFor(ref, me, caps, locale.languageCode))
-        const HandoverEntry(),
-      if (ageCard != null) ...[
-        const SizedBox(height: ClSpace.s3),
-        ClSectionHeader(title: l10n.rhAgeHeading(name)),
-        _AgeCardTile(
-          card: ageCard,
-          ageLabel: dob == null ? null : ageLong(l10n, dob, todayDate),
-        ),
-      ],
-      if (stageLine != null)
-        calendar?.call(showPrimary) ?? // D-076 #4
-            _CalendarCard(line: stageLine, compact: showPrimary),
-      // EN09 once a whole week of the baby's life has passed (who reads care).
-      if (canRead && weekHasPassed(dob, summaryWeekFor(today)))
-        WeekSummaryEntry(me: me),
-      ...more, // D-076 #4 (before the quiet upsell, which stays last)
       if (showSupport) const _SupportCard(),
     ];
-    if (children.isEmpty) return const SizedBox.shrink();
+    final weekCard = teaser == null && rows.isEmpty
+        ? null
+        : WeekCard(
+            kicker: weekKicker(l10n, dob: dob, today: todayDate, card: ageCard),
+            teaser: teaser,
+            rows: rows,
+          );
+    if (todayCards.isEmpty && weekCard == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(top: ClSpace.s4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (header case final h?) ...[h, const SizedBox(height: ClSpace.s3)],
-          for (final (i, c) in children.indexed) ...[
-            if (i > 0 && c is! SizedBox && children[i - 1] is! SizedBox)
+          if (todayCards.isNotEmpty) ...[
+            if (header case final h?) ...[
+              h,
               const SizedBox(height: ClSpace.s3),
-            c,
+            ],
+            for (final (i, c) in todayCards.indexed) ...[
+              if (i > 0) const SizedBox(height: ClSpace.s3),
+              c,
+            ],
+          ],
+          if (weekCard != null) ...[
+            // A section of its own: the gap between Hôm nay's sections.
+            if (todayCards.isNotEmpty) const SizedBox(height: ClSpace.s6),
+            ClSectionHeader(title: l10n.rhAgeHeading(name)),
+            const SizedBox(height: ClSpace.s3),
+            weekCard,
           ],
         ],
       ),
     );
   }
+}
+
+/// Days among the last three (today included) on which someone noted "cần được dỗ nhiều hơn".
+int soothingDays(List<CheckIn> checkIns, String today) {
+  final from = addDaysIso(today, -2);
+  return {
+    for (final c in checkIns)
+      if (c.observation == Observation.soothing &&
+          c.date.compareTo(from) >= 0 &&
+          c.date.compareTo(today) <= 0)
+        c.date,
+  }.length;
+}
+
+/// The first sentence of [text] (the teaser of an age card's body).
+String firstSentence(String text) {
+  final t = text.trim();
+  final end = RegExp(r'[.!?…](?=\s)').firstMatch(t);
+  return end == null ? t : t.substring(0, end.end);
+}
+
+/// Completed calendar months on [today] (a month is complete on the same day of the month).
+int completedMonths(DateTime dob, DateTime today) {
+  var months = (today.year - dob.year) * 12 + today.month - dob.month;
+  if (today.day < dob.day) months -= 1;
+  return months < 0 ? 0 : months;
+}
+
+/// "Tuần thứ 5 · 4 tuần tuổi": the week of life (completed weeks + 1) and the age as the header
+/// chip says it; from 13 weeks (when the age turns to months, as the content does) "Tháng thứ 5 ·
+/// 4 tháng tuổi". Without the date of birth (caregivers) the number comes from the age card's
+/// range ("Tuần thứ 4" for days 21–27). Null when nothing is known.
+String? weekKicker(
+  AppLocalizations l10n, {
+  required DateTime? dob,
+  required DateTime today,
+  AgeCard? card,
+}) {
+  if (dob != null) {
+    final days = ageInDays(dob, today);
+    if (days < 0) return null;
+    final age = ageLong(l10n, dob, today);
+    if (days < 91) return l10n.hnWeekKicker(days ~/ 7 + 1, age);
+    // ageLong never says fewer than 3 months; the month of life follows it.
+    final months = completedMonths(dob, today);
+    return l10n.hnMonthKicker((months < 3 ? 3 : months) + 1, age);
+  }
+  if (card == null) return null;
+  final r = card.ageDays;
+  if (r.to - r.from <= 7) return l10n.hnWeekKickerOnly(r.from ~/ 7 + 1);
+  return l10n.hnMonthKickerOnly((r.from / 30.4375).round() + 1);
 }
 
 /// Today's check-ins flagged a health sign: first, before anything else, and free (Home, NL01).
@@ -257,8 +363,10 @@ class RhHealthCard extends StatelessWidget {
   }
 }
 
-/// H02 "VIỆC CÓ THỂ THỬ HÔM NAY" with "Vì …", or PS02 "Dựa trên phản hồi của bạn" + "Đã thay
-/// đổi" when the ranking changed because of feedback.
+/// H02 "VIỆC CÓ THỂ THỬ HÔM NAY", compact (owner, 2026-10-15): kicker, title, one line of why
+/// (PS02: "Đã điều chỉnh theo phản hồi của nhà mình"), "Vì sao gợi ý này?" (the full reasons,
+/// PS02's "Dựa trên phản hồi của bạn" and "Đã thay đổi", and the edit-history link, in a sheet),
+/// the plan state (D-076 #10) or the two actions, then the review footnote (D-073 #2).
 class _PrimaryCard extends ConsumerWidget {
   const _PrimaryCard({
     required this.me,
@@ -369,6 +477,7 @@ class _PrimaryCard extends ConsumerWidget {
       final note = row?.note;
       usedText = note == null ? '$base.' : '$base — ${l10n.rhQuoted(note)}.';
     }
+    final why = ps02 ? l10n.hnWhyFeedbackShort : reasons.first;
 
     // D-076 #10: after "Thử tối nay" the card waits ("Đã lên kế hoạch · tối nay"); the result
     // is asked only once there was a chance to try (CH17 timing), "Chưa thử" always next to it.
@@ -391,7 +500,21 @@ class _PrimaryCard extends ConsumerWidget {
     void open() =>
         context.push(activityLocation(activity.id, checkInId: rec.checkInId));
 
+    void explain() => showClSheet<void>(
+      context: context,
+      builder: (_) => _WhySheet(
+        reasons: ps02 ? const [] : reasons,
+        usedText: usedText,
+        changes: [for (final c in rec.changes) changeLabel(l10n, c)],
+        // PS02 footer: the person's own answers can be changed or deleted.
+        onEditHistory: ps02 && canAct
+            ? () => context.push(Routes.rhythmFeedbackHistory)
+            : null,
+      ),
+    );
+
     return RhCard(
+      key: const Key('forBabySuggestion'),
       outline: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -422,54 +545,41 @@ class _PrimaryCard extends ConsumerWidget {
               style: cl.text.headline.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
-          const SizedBox(height: ClSpace.s3),
-          if (ps02) ...[
-            if (usedText != null) ...[
-              RhInfoBox(
-                tone: RhInfoTone.mint,
-                icon: ClIcons.check,
-                label: l10n.rhBasedOnFeedback,
-                text: usedText,
-              ),
-              const SizedBox(height: ClSpace.s2),
-            ],
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(ClSpace.s3),
-              decoration: BoxDecoration(
-                color: cl.colors.surface2,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: ClSpace.s1),
+          Text(
+            why,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+          ),
+          ClPressable(
+            key: const Key('forBabyWhy'),
+            onPressed: explain,
+            semanticLabel: l10n.hnWhyLink,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 36),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    l10n.rhChangedTitle,
-                    style: cl.text.label.copyWith(fontWeight: FontWeight.w600),
+                    l10n.hnWhyLink,
+                    style: cl.text.label.copyWith(
+                      color: cl.colors.mintText,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                  RhBullets([
-                    for (final c in rec.changes) changeLabel(l10n, c),
-                  ], color: cl.colors.inkMuted),
+                  const SizedBox(width: 2),
+                  ClIcon(
+                    ClIcons.chevronRight,
+                    size: 14,
+                    color: cl.colors.mintText,
+                  ),
                 ],
               ),
             ),
-            // PS02 footer: the person's own answers can be changed or deleted.
-            if (canAct)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: RhLink(
-                  label: l10n.rhEditHistoryLink,
-                  muted: true,
-                  start: true,
-                  onTap: () => context.push(Routes.rhythmFeedbackHistory),
-                ),
-              ),
-          ] else
-            RhInfoBox(text: reasons.join(' ')),
-          const SizedBox(height: ClSpace.s2),
-          RhReviewNote(activity.review),
+          ),
           if (plan != null) ...[
-            const SizedBox(height: ClSpace.s3),
+            const SizedBox(height: ClSpace.s1),
             PlanStatus(
               me: me,
               plan: plan,
@@ -507,7 +617,7 @@ class _PrimaryCard extends ConsumerWidget {
               ],
             ),
           ] else if (canAct) ...[
-            const SizedBox(height: ClSpace.s3),
+            const SizedBox(height: ClSpace.s2),
             Wrap(
               spacing: ClSpace.s2,
               runSpacing: ClSpace.s2,
@@ -541,10 +651,10 @@ class _PrimaryCard extends ConsumerWidget {
                 ),
               ],
             ),
-          ] else ...[
-            const SizedBox(height: ClSpace.s1),
-            RhLink(label: l10n.rhHow, onTap: open),
-          ],
+          ] else
+            RhLink(label: l10n.rhHow, start: true, onTap: open),
+          const SizedBox(height: ClSpace.s3),
+          RhReviewNote(activity.review),
           if (secondary.isNotEmpty) ...[
             const SizedBox(height: ClSpace.s3),
             Container(height: 1, color: cl.colors.separator),
@@ -562,126 +672,323 @@ class _PrimaryCard extends ConsumerWidget {
   }
 }
 
-/// "Hôm nay con có gì khác?" → C01 (Cùng nuôi, Người chăm sóc).
+/// "Vì sao gợi ý này?": every reason (H02), or PS02's "Dựa trên phản hồi của bạn" and "Đã thay
+/// đổi" with the edit-history link, then how suggestions are made.
+class _WhySheet extends StatelessWidget {
+  const _WhySheet({
+    required this.reasons,
+    required this.usedText,
+    required this.changes,
+    this.onEditHistory,
+  });
+
+  final List<String> reasons;
+  final String? usedText;
+  final List<String> changes;
+  final VoidCallback? onEditHistory;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    return Column(
+      key: const Key('forBabyWhySheet'),
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClSheetHeader(title: l10n.hnWhyTitle),
+        if (reasons.isNotEmpty) RhInfoBox(text: reasons.join(' ')),
+        if (usedText case final used?) ...[
+          RhInfoBox(
+            tone: RhInfoTone.mint,
+            icon: ClIcons.check,
+            label: l10n.rhBasedOnFeedback,
+            text: used,
+          ),
+          const SizedBox(height: ClSpace.s2),
+        ],
+        if (changes.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.all(ClSpace.s3),
+            decoration: BoxDecoration(
+              color: cl.colors.surface2,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.rhChangedTitle,
+                  style: cl.text.label.copyWith(fontWeight: FontWeight.w600),
+                ),
+                RhBullets(changes, color: cl.colors.inkMuted),
+              ],
+            ),
+          ),
+        if (onEditHistory case final edit?)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: RhLink(
+              label: l10n.rhEditHistoryLink,
+              muted: true,
+              start: true,
+              onTap: () {
+                Navigator.of(context).pop();
+                edit();
+              },
+            ),
+          ),
+        const SizedBox(height: ClSpace.s3),
+        Text(
+          l10n.hnWhyHow,
+          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        ),
+      ],
+    );
+  }
+}
+
+/// "Hôm nay con có gì khác?" → C01 (Cùng nuôi, Người chăm sóc): a slim row.
 class _CheckInEntry extends StatelessWidget {
   const _CheckInEntry();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
     return RhCard(
-      onTap: () => context.push(Routes.rhythmCheckIn),
-      semanticLabel: l10n.rhCheckInEntry,
-      child: Row(
-        children: [
-          Expanded(child: Text(l10n.rhCheckInEntry, style: cl.text.bodyStrong)),
-          ClIcon(ClIcons.chevronRight, size: 18, color: cl.colors.inkMuted),
-        ],
+      key: const Key('forBabyCheckIn'),
+      padding: EdgeInsets.zero,
+      child: _RowContent(
+        icon: ClIcons.edit,
+        tone: WeekRowTone.mint,
+        title: l10n.rhCheckInEntry,
+        onTap: () => context.push(Routes.rhythmCheckIn),
       ),
     );
   }
 }
 
-/// H01 age card: "3 tuần tuổi" pill, the card title, "Nội dung theo tuổi · luôn miễn phí".
-class _AgeCardTile extends StatelessWidget {
-  const _AgeCardTile({required this.card, this.ageLabel});
-  final AgeCard card;
-  final String? ageLabel;
+/// The tint of a row's icon tile: lavender only for Nhịp lớn lên (the reference calendar).
+enum WeekRowTone { mint, rhythm }
+
+/// One compact row of the "Tuần này" card: what it is, one or two lines, where it goes.
+typedef WeekRow = ({
+  Key key,
+  ClIcons icon,
+  WeekRowTone tone,
+  String title,
+  String sub,
+  void Function(BuildContext context) onOpen,
+});
+
+/// "Tuần này của {bé}" (owner, 2026-10-15): ONE card. Its top opens the week's content: the
+/// kicker "Tuần thứ 5 · 4 tuần tuổi", a teaser from the content itself and "Xem 3 gợi ý cho
+/// tuần này →"; under it, compact rows (Nhịp lớn lên, Tóm tắt tuần trước).
+class WeekCard extends StatelessWidget {
+  const WeekCard({
+    required this.kicker,
+    required this.teaser,
+    required this.rows,
+    super.key,
+  });
+
+  final String? kicker;
+  final WeekTeaser? teaser;
+  final List<WeekRow> rows;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    final locale = Localizations.localeOf(context);
-    return RhCard(
-      onTap: () => context.push('${Routes.rhythmAge}/${card.id}'),
-      semanticLabel: card.title.of(locale),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (ageLabel != null) ...[
-            RhPill(label: ageLabel!, icon: ClIcons.cake),
-            const SizedBox(height: ClSpace.s2),
-          ],
-          Text(card.title.of(locale), style: cl.text.bodyStrong),
-          const SizedBox(height: ClSpace.s1),
-          Text(
-            l10n.rhAgeFree,
-            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// "LỊCH THAM KHẢO · Giai đoạn 1 (Wonder Weeks) dự kiến 11/10 – 18/10" (H01), or the one-line
-/// strip under a suggestion (H02). Opens Nhịp lớn lên.
-class _CalendarCard extends StatelessWidget {
-  const _CalendarCard({required this.line, required this.compact});
-  final String line;
-  final bool compact;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
-    final sleep = cl.care.sleep;
-    return RhCard(
-      color: sleep.soft,
-      padding: EdgeInsets.all(compact ? ClSpace.s3 : ClSpace.s4),
-      onTap: () => context.push(Routes.rhythm),
-      semanticLabel: '${l10n.rhCalendarPill}. $line',
-      child: compact
-          ? Row(
-              children: [
-                ClIcon(ClIcons.clock, size: 16, color: sleep.ink),
-                const SizedBox(width: ClSpace.s2),
-                Expanded(
-                  child: Text(
-                    line,
-                    style: cl.text.label.copyWith(color: sleep.ink),
-                  ),
-                ),
-              ],
-            )
-          : Column(
+    final t = teaser;
+    final action = t == null
+        ? null
+        : t.ideas > 0
+        ? l10n.hnWeekOpenIdeas(t.ideas)
+        : l10n.hnWeekOpen;
+    final parts = <Widget>[
+      if (t != null)
+        ClPressable(
+          key: const Key('forBabyWeek'),
+          onPressed: () => t.onOpen(context),
+          pressedOpacity: ClPressable.surfaceOpacity,
+          semanticLabel: [?kicker, t.text, ?action].join('. '),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              ClSpace.s4,
+              ClSpace.s4,
+              ClSpace.s4,
+              ClSpace.s3,
+            ),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: ClSpace.s2,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: cl.colors.surface,
-                    borderRadius: BorderRadius.circular(ClRadius.pill),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                if (kicker case final k?) ...[
+                  Row(
                     children: [
-                      ClIcon(ClIcons.clock, size: 12, color: sleep.ink),
-                      const SizedBox(width: 4),
-                      Text(
-                        l10n.rhCalendarPill,
-                        style: cl.text.caption.copyWith(
-                          color: sleep.ink,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.4,
+                      ClIcon(ClIcons.cake, size: 14, color: cl.colors.mintText),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          k,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: cl.text.caption.copyWith(
+                            color: cl.colors.mintText,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: ClSpace.s2),
+                ],
+                Text(
+                  t.text,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: cl.text.bodyStrong,
                 ),
                 const SizedBox(height: ClSpace.s2),
-                Text(
-                  line,
-                  style: cl.text.bodyStrong.copyWith(color: cl.colors.ink),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 28),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          action!,
+                          style: cl.text.label.copyWith(
+                            color: cl.colors.mintText,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      ClIcon(
+                        ClIcons.arrowRight,
+                        size: 14,
+                        color: cl.colors.mintText,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
+          ),
+        ),
+      for (final r in rows)
+        _RowContent(
+          key: r.key,
+          icon: r.icon,
+          tone: r.tone,
+          title: r.title,
+          sub: r.sub,
+          dense: true,
+          onTap: () => r.onOpen(context),
+        ),
+    ];
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: cl.colors.surface,
+        borderRadius: BorderRadius.circular(rhCardRadius),
+        boxShadow: cl.shadows.card,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final (i, p) in parts.indexed) ...[
+            if (i > 0)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
+                child: Container(height: 1, color: cl.colors.separator),
+              ),
+            p,
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Icon tile, title, optional lines and a chevron; the whole row opens [onTap].
+class _RowContent extends StatelessWidget {
+  const _RowContent({
+    required this.icon,
+    required this.tone,
+    required this.title,
+    required this.onTap,
+    this.sub,
+    this.dense = false,
+    super.key,
+  });
+
+  final ClIcons icon;
+  final WeekRowTone tone;
+  final String title;
+  final String? sub;
+  final VoidCallback onTap;
+
+  /// A row under the week card's teaser: one step quieter than the teaser.
+  final bool dense;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final (fill, ink) = switch (tone) {
+      WeekRowTone.mint => (cl.colors.mintSoft, cl.colors.mintText),
+      WeekRowTone.rhythm => (cl.care.sleep.soft, cl.care.sleep.ink),
+    };
+    return ClPressable(
+      onPressed: onTap,
+      pressedOpacity: ClPressable.surfaceOpacity,
+      semanticLabel: [title, ?sub].join('. '),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: ClSpace.s4,
+          vertical: ClSpace.s3,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: fill,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              alignment: Alignment.center,
+              child: ClIcon(icon, size: 18, color: ink),
+            ),
+            const SizedBox(width: ClSpace.s3),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: dense
+                        ? cl.text.body.copyWith(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          )
+                        : cl.text.bodyStrong,
+                  ),
+                  if (sub case final s?)
+                    Text(
+                      s,
+                      style: cl.text.caption.copyWith(
+                        color: cl.colors.inkMuted,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: ClSpace.s2),
+            ClIcon(ClIcons.chevronRight, size: 18, color: cl.colors.inkMuted),
+          ],
+        ),
+      ),
     );
   }
 }

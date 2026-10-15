@@ -444,7 +444,7 @@ void main() {
             reminders: mockReminders(),
           ),
         );
-        expect(find.text('Tuần 3 của Teddy'), findsOneWidget);
+        expect(find.text('Tuần thứ 3 của Teddy'), findsOneWidget);
         expect(find.text('28 tháng 9 – 4 tháng 10'), findsOneWidget);
         expect(find.text(l10n.rhWeekInProgress), findsNothing);
         expect(find.text(l10n.rhWeekFeedCount(20)), findsOneWidget);
@@ -547,7 +547,7 @@ void main() {
             ),
           ),
         );
-        expect(find.text('Tuần 4 của Teddy'), findsOneWidget);
+        expect(find.text('Tuần thứ 4 của Teddy'), findsOneWidget);
         expect(find.text('5 – 11 tháng 10'), findsOneWidget);
         expect(find.text(l10n.rhWeekInProgress), findsOneWidget);
         // Sunday is still running: 6/7.
@@ -630,7 +630,7 @@ void main() {
         ),
       );
       expect(find.text(l10n.rhWeekNoAccess), findsNothing);
-      expect(find.text('Tuần 3 của Teddy'), findsOneWidget);
+      expect(find.text('Tuần thứ 3 của Teddy'), findsOneWidget);
       expect(find.text(l10n.rhWeekFeedCount(20)), findsOneWidget);
     });
 
@@ -657,7 +657,10 @@ void main() {
       );
       await _tap(tester, find.text(l10n.rhWeekShare));
       final text = shared.single;
-      expect(text, startsWith('Tuần 3 của Teddy · 28 tháng 9 – 4 tháng 10'));
+      expect(
+        text,
+        startsWith('Tuần thứ 3 của Teddy · 28 tháng 9 – 4 tháng 10'),
+      );
       expect(text, contains(l10n.rhWeekCoverage(5, 7)));
       expect(text, contains(l10n.rhWeekShareSleep(durationLabel(l10n, 792))));
       expect(text, contains('Bú bình 950 ml'));
@@ -689,7 +692,7 @@ void main() {
         const Scaffold(body: SingleChildScrollView(child: ForYouSection())),
         overrides: weekOverrides(repo: FakeRhythmRepository()),
       );
-      await _tap(tester, find.text(l10n.rhWeekTitle));
+      await _tap(tester, find.text(l10n.hnWeekSummaryLast));
       expect(visits.last.location, Routes.rhythmWeek);
     });
 
@@ -703,7 +706,7 @@ void main() {
           ),
         ),
       );
-      expect(find.text(l10n.rhWeekTitle), findsNothing);
+      expect(find.text(l10n.hnWeekSummaryLast), findsNothing);
     });
 
     testWidgets('not for a relative without daily care', (tester) async {
@@ -715,7 +718,7 @@ void main() {
           repo: FakeRhythmRepository(),
         ),
       );
-      expect(find.text(l10n.rhWeekTitle), findsNothing);
+      expect(find.text(l10n.hnWeekSummaryLast), findsNothing);
     });
 
     testWidgets('NL02c: the "Tóm tắt tuần" switch is stored with the others', (

@@ -19371,7 +19371,7 @@
   "@rhWeekTitle": {
     "description": "EN09 kicker, NL01 / Home entry, notification title and NL02c switch."
   },
-  "rhWeekOf": "Tuần {n} của {baby}",
+  "rhWeekOf": "Tuần thứ {n} của {baby}",
   "@rhWeekOf": {
     "description": "EN09 title: the week of life counted from the date of birth (days 0–6 = week 1) on the week’s Sunday.",
     "placeholders": {
@@ -19903,9 +19903,9 @@
   "@asPrivacyNoteText": {
     "description": "CH02 notice while photo reading is off. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "asThinking": "Trợ lý đang đọc…",
+  "asThinking": "Lumi đang soạn…",
   "@asThinking": {
-    "description": "Task queued / processing. VI and EN are engineering drafts (no frame draws this state) for owner review."
+    "description": "Typing indicator while a text task is sent, queued or processing (chat rework 2026-10-15). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
   "asCancelTask": "Huỷ",
   "@asCancelTask": {
@@ -20250,9 +20250,9 @@
   "@asClarifyFree": {
     "description": "CH05 footnote."
   },
-  "asClarifyOwn": "Tự nhập",
+  "asClarifyOwn": "Khác…",
   "@asClarifyOwn": {
-    "description": "CH05 chip for a typed answer."
+    "description": "CH05 chip for another answer: a time picker for a time question (prefilled from what is known), else typing in the composer (chat rework 2026-10-15). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
   "asClarifyExpired": "Câu hỏi đã hết hạn. Nhắn lại để hỏi tiếp.",
   "@asClarifyExpired": {
@@ -22022,7 +22022,7 @@
   "@rhSeeAllTried": {
     "description": "NL01 / EN09 link to the activity history. VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "rhWeekMakeVideo": "Tạo video tuần {n}",
+  "rhWeekMakeVideo": "Tạo video tuần thứ {n}",
   "@rhWeekMakeVideo": {
     "description": "EN09 primary button (561:3102 \"Tạo video tuần 4\"): N is the week of life the title shows.",
     "placeholders": {
@@ -22965,5 +22965,392 @@
   "mtEntrySubViewer": "Mốc tham khảo theo tuổi của bé",
   "@mtEntrySubViewer": {
     "description": "Tiện ích row subline for caregivers and relatives (they read the guide only)."
+  },
+  "hnWhyLink": "Vì sao gợi ý này?",
+  "@hnWhyLink": {
+    "description": "Small link on the Home suggestion card; opens the explanation sheet."
+  },
+  "hnWhyTitle": "Vì sao gợi ý này",
+  "@hnWhyTitle": {
+    "description": "Title of the explanation sheet of the Home suggestion."
+  },
+  "hnWhyFeedbackShort": "Đã điều chỉnh theo phản hồi của nhà mình.",
+  "@hnWhyFeedbackShort": {
+    "description": "One-line reason on the Home suggestion when feedback changed the ranking (PS02); the details are in the sheet."
+  },
+  "hnWhyHow": "Gợi ý dựa trên điều nhà mình ghi nhận, tuổi của bé và điều bạn quan tâm. Đây không phải chẩn đoán.",
+  "@hnWhyHow": {
+    "description": "Footnote of the explanation sheet of the Home suggestion."
+  },
+  "hnWatchThisWeek": "Để ý tuần này",
+  "@hnWatchThisWeek": {
+    "description": "Small heading above the Home carousel (milestones, reads, stage)."
+  },
+  "hnWeekKicker": "Tuần thứ {n} · {age}",
+  "@hnWeekKicker": {
+    "description": "Home \"Tuần này\" card: the week of life (completed weeks + 1) and the age (\"4 tuần tuổi\").",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "hnWeekKickerOnly": "Tuần thứ {n}",
+  "@hnWeekKickerOnly": {
+    "description": "Home \"Tuần này\" card when the age is not readable (caregivers): the week of life of the content.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hnMonthKicker": "Tháng thứ {n} · {age}",
+  "@hnMonthKicker": {
+    "description": "Home \"Tuần này\" card from 3 months: the month of life (completed months + 1) and the age.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "hnMonthKickerOnly": "Tháng thứ {n}",
+  "@hnMonthKickerOnly": {
+    "description": "Home \"Tuần này\" card from 3 months when the age is not readable (caregivers).",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hnWeekOpen": "Xem tuần này",
+  "@hnWeekOpen": {
+    "description": "Action of the Home \"Tuần này\" card."
+  },
+  "hnWeekOpenIdeas": "Xem {count} gợi ý cho tuần này",
+  "@hnWeekOpenIdeas": {
+    "description": "Action of the Home \"Tuần này\" card with the number of tips the content holds.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hnWeekRhythmSub": "Wonder Weeks · dự kiến {range}",
+  "@hnWeekRhythmSub": {
+    "description": "Home \"Tuần này\" card, Nhịp lớn lên row: the reference window.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "hnWeekSummaryLast": "Tóm tắt tuần trước",
+  "@hnWeekSummaryLast": {
+    "description": "Home \"Tuần này\" card row opening EN09 (Monday to Saturday: the last completed week)."
+  },
+  "hnWeekSummaryThis": "Tóm tắt tuần này",
+  "@hnWeekSummaryThis": {
+    "description": "Home \"Tuần này\" card row opening EN09 on Sunday (the week ending today)."
+  },
+  "hnRhythmComingDays": "Còn {days} ngày đến giai đoạn {n}",
+  "@hnRhythmComingDays": {
+    "description": "Home \"Tuần này\" card, Nhịp lớn lên row: the next reference stage and the days until its window.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hnRhythmNow": "Đang trong giai đoạn {n}",
+  "@hnRhythmNow": {
+    "description": "Home \"Tuần này\" card, Nhịp lớn lên row: today is inside the reference window.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "asLumiName": "Lumi",
+  "@asLumiName": {
+    "description": "The assistant's name in the chat header, above her messages and in screen-reader labels. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asYou": "Bạn",
+  "@asYou": {
+    "description": "Screen-reader speaker of my own bubble (\"Bạn: …\"). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asOnlyYou": "Chỉ bạn thấy",
+  "@asOnlyYou": {
+    "description": "Privacy hint on private chats and expense drafts (spending never enters the shared thread, D-075 #2). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asOnlyYouSpending": "Chỉ bạn thấy · chi tiêu không vào cuộc trò chuyện chung của bé",
+  "@asOnlyYouSpending": {
+    "description": "Privacy line on an expense draft and its editor (D-075 #2). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asCopy": "Sao chép",
+  "@asCopy": {
+    "description": "Screen-reader hint of a long press on a bubble. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asCopied": "Đã sao chép",
+  "@asCopied": {
+    "description": "Toast after a long press copied a message. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asShowTime": "Xem giờ gửi",
+  "@asShowTime": {
+    "description": "Screen-reader hint of a tap on a bubble (shows its time). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asNewMessages": "Tin mới",
+  "@asNewMessages": {
+    "description": "Pill shown when Lumi answers while the person reads further up; scrolls down. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asOfflineBanner": "Đang ngoại tuyến. Tin nhắn được giữ lại và chỉ gửi khi bạn bấm Gửi. Ghi trực tiếp vẫn dùng được.",
+  "@asOfflineBanner": {
+    "description": "Banner under the chat header while offline (CH25). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asNotSent": "Chưa gửi được",
+  "@asNotSent": {
+    "description": "Under my bubble when sending failed (nothing charged). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asUnsentOffline": "Chưa gửi · đang ngoại tuyến",
+  "@asUnsentOffline": {
+    "description": "Under my bubble kept while offline (never sent by itself). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asResend": "Gửi lại",
+  "@asResend": {
+    "description": "Inline action under a bubble that could not be sent. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asErrorFriendly": "Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.",
+  "@asErrorFriendly": {
+    "description": "CH25 as a Lumi bubble (no blame), followed by \"Thử lại\" and \"Ghi trực tiếp\". Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asReadingPhoto": "Lumi đang đọc ảnh…",
+  "@asReadingPhoto": {
+    "description": "Typing indicator of a photo task. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asChipLogSleep": "Ghi giấc ngủ",
+  "@asChipLogSleep": {
+    "description": "Suggestion above the composer (prefills only). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPrefillSleep": "Con ngủ từ ",
+  "@asPrefillSleep": {
+    "description": "Text the \"Ghi giấc ngủ\" suggestion prefills (never sent by itself). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asChipExpense": "Ghi khoản chi",
+  "@asChipExpense": {
+    "description": "Suggestion above the composer in the family chat (prefills only). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPrefillExpense": "Mua ",
+  "@asPrefillExpense": {
+    "description": "Text the \"Ghi khoản chi\" suggestion prefills (never sent by itself). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asWhenToday": "Hôm nay",
+  "@asWhenToday": {
+    "description": "Day of a time in the editors and the span line. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asWhenYesterday": "Hôm qua",
+  "@asWhenYesterday": {
+    "description": "Day of a time in the editors and the span line (\"21:00 hôm qua\"). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asWhenTomorrow": "Ngày mai",
+  "@asWhenTomorrow": {
+    "description": "Reminder day chip. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asTimeOnDay": "{time} {day}",
+  "@asTimeOnDay": {
+    "description": "A time with its day inside the span line (\"21:00 hôm qua\"). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "asSpanLine": "{start} – {end} · {duration}",
+  "@asSpanLine": {
+    "description": "A sleep with linked times (\"21:00 – 06:00 · 9 giờ\", the en dash of the draft cards). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "asSpanInvalid": "giờ dậy trước giờ ngủ",
+  "@asSpanInvalid": {
+    "description": "Span line when the end is not after the start. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asSpanKnown": "Theo thời lượng bạn nói: {duration}",
+  "@asSpanKnown": {
+    "description": "Note under the preview of a time question when a duration is known. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "asPickSleepTitle": "Bé ngủ lúc mấy giờ?",
+  "@asPickSleepTitle": {
+    "description": "Time picker title for \"Khác…\" when the length is known (start asked). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asPickWakeTitle": "Bé dậy lúc mấy giờ?",
+  "@asPickWakeTitle": {
+    "description": "Time picker title for \"Khác…\" when the length is known (end asked). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asAnswerWith": "Trả lời: {time}",
+  "@asAnswerWith": {
+    "description": "Button of the clarification time picker (the time goes as the answer, 0 credits). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asFieldSleepStart": "Ngủ lúc",
+  "@asFieldSleepStart": {
+    "description": "Sleep editor start tile. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asFieldSleepEnd": "Dậy lúc",
+  "@asFieldSleepEnd": {
+    "description": "Sleep editor end tile. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asFieldDuration": "Thời lượng",
+  "@asFieldDuration": {
+    "description": "Sleep editor length stepper (moves the end). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asShorter": "Ngắn hơn 15 phút",
+  "@asShorter": {
+    "description": "Sleep length stepper minus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asLonger": "Dài hơn 15 phút",
+  "@asLonger": {
+    "description": "Sleep length stepper plus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asLessMl": "Bớt 10 ml",
+  "@asLessMl": {
+    "description": "Bottle amount stepper minus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asMoreMl": "Thêm 10 ml",
+  "@asMoreMl": {
+    "description": "Bottle amount stepper plus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asLessMinutes": "Bớt 5 phút",
+  "@asLessMinutes": {
+    "description": "Nursing minutes stepper minus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asMoreMinutes": "Thêm 5 phút",
+  "@asMoreMinutes": {
+    "description": "Nursing minutes stepper plus (a11y). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asBabyLockedLine": "Ghi cho {name} · không đổi sang bé khác được",
+  "@asBabyLockedLine": {
+    "description": "Editor footnote: the draft stays with the chat's baby. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asPickOtherDay": "Ngày khác",
+  "@asPickOtherDay": {
+    "description": "Date chip that opens the date picker. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceStart": "Nói với Lumi",
+  "@asVoiceStart": {
+    "description": "Mic button of the composer (a11y), shown while the field is empty. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceStop": "Dừng nghe",
+  "@asVoiceStop": {
+    "description": "Stop button while dictating (a11y); the words stay in the field. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceCancel": "Bỏ lời vừa nói",
+  "@asVoiceCancel": {
+    "description": "Cancel button while dictating (a11y); the field goes back as it was. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceListening": "Đang nghe…",
+  "@asVoiceListening": {
+    "description": "Composer while dictating. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceSwipe": "Đang nghe… vuốt sang trái để huỷ",
+  "@asVoiceSwipe": {
+    "description": "Composer while dictating, before the first words. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceIntroTitle": "Nói với Lumi thay vì gõ",
+  "@asVoiceIntroTitle": {
+    "description": "First-run voice explainer title (before the system permission prompts). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceIntroWords": "Chạm mic rồi nói. Chữ hiện ngay trong ô nhập; bạn sửa được và chỉ gửi khi bấm Gửi.",
+  "@asVoiceIntroWords": {
+    "description": "Voice explainer: dictation only fills the field. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceIntroServerIos": "iPhone chuyển giọng nói thành chữ ngay trên máy khi có thể. Khi máy chưa làm được (ví dụ chưa có tiếng Việt ngoại tuyến), dịch vụ nhận dạng của Apple có thể xử lý âm thanh trên máy chủ của Apple.",
+  "@asVoiceIntroServerIos": {
+    "description": "Voice explainer on iOS: who turns speech into words, said plainly. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceIntroServerAndroid": "Điện thoại chuyển giọng nói thành chữ ngay trên máy khi có thể. Khi chưa làm được, dịch vụ nhận dạng giọng nói của máy (thường của Google) có thể xử lý âm thanh trên máy chủ của họ.",
+  "@asVoiceIntroServerAndroid": {
+    "description": "Voice explainer on Android: who turns speech into words, said plainly. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceIntroNothingKept": "Child Life không ghi âm, không lưu và không gửi âm thanh. Chỉ phần chữ bạn bấm Gửi mới tới Lumi.",
+  "@asVoiceIntroNothingKept": {
+    "description": "Voice explainer: nothing kept. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceIntroFree": "Nói thay vì gõ không tốn lượt AI.",
+  "@asVoiceIntroFree": {
+    "description": "Voice explainer: dictation is free. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceIntroAllow": "Bật micro",
+  "@asVoiceIntroAllow": {
+    "description": "Voice explainer: continue to the system permission prompts. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceIntroLater": "Để sau",
+  "@asVoiceIntroLater": {
+    "description": "Voice explainer: close without asking. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceDenied": "Chưa có quyền dùng micro hoặc nhận dạng giọng nói. Bật trong Cài đặt để nói với Lumi.",
+  "@asVoiceDenied": {
+    "description": "Toast when the permission is denied (with \"Mở Cài đặt\"). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceUnavailable": "Máy này chưa nhận dạng giọng nói được. Bạn gõ chữ nhé.",
+  "@asVoiceUnavailable": {
+    "description": "Toast when no speech service is available (the mic then hides). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceLanguage": "Máy chưa nhận dạng được giọng nói tiếng Việt. Thêm ngôn ngữ trong Cài đặt của máy, hoặc gõ chữ nhé.",
+  "@asVoiceLanguage": {
+    "description": "Toast when the phone has no recogniser for the app language (the mic then hides). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceNoSpeech": "Mình chưa nghe thấy gì. Thử nói gần máy hơn nhé.",
+  "@asVoiceNoSpeech": {
+    "description": "Toast when a dictation ended without words. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asVoiceFailed": "Nhận dạng giọng nói bị gián đoạn. Phần chữ đã có vẫn ở trong ô nhập.",
+  "@asVoiceFailed": {
+    "description": "Toast when the recogniser failed mid-way. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asChipFeedsShort": "Cữ bú hôm nay",
+  "@asChipFeedsShort": {
+    "description": "Suggestion above the composer; prefills \"Hôm nay con bú thế nào?\". Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asEditInModule": "Sửa trong nhật ký",
+  "@asEditInModule": {
+    "description": "Link of a PREVIOUS_SAVED notice: the saved record opens in its module. Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asSpendingMoved": "Chỉ bạn thấy: tin nhắn có chi tiêu được giữ trong cuộc trò chuyện riêng của bạn.",
+  "@asSpendingMoved": {
+    "description": "Footnote on a task moved out of the shared thread because it mentions money (task.routing spending). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
   }
 }

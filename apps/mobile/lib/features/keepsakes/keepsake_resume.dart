@@ -250,7 +250,8 @@ Future<void> resumeAfterPurchase(
     container.read(resumeDraftsProvider).drop(key);
   }
   // D-076 nav: the paywall has just closed onto whatever opened it, possibly a page above the
-  // tabs (MS01, a Nhịp lớn lên screen); these are Kỷ niệm pages, so never pushed over it.
+  // tabs (MS01, a Nhịp lớn lên screen); these Kỷ niệm pages then open as overlay twins on top of
+  // it (Back returns there), never as a second tab shell.
   switch (draft) {
     case CardDraft():
       container.read(justResumedProvider.notifier).set(draft.template.id);

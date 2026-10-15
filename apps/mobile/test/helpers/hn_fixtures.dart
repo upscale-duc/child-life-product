@@ -6,6 +6,9 @@ import 'package:child_life/features/premium/premium_repository.dart';
 import 'package:child_life/features/reminders/reminder_notifications.dart';
 import 'package:child_life/features/rhythm/rhythm_models.dart';
 import 'package:child_life/features/rhythm/rhythm_repository.dart';
+import 'package:child_life/features/library/library_today.dart'
+    show lbWeekTeaserProvider;
+import 'package:child_life/features/rhythm/rhythm_home.dart' show WeekTeaser;
 import 'package:child_life/features/today/today_for_baby.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 
@@ -65,9 +68,13 @@ List<Override> hnOverrides({
   /// The carousel's sources (Thư viện chăm bé / Giai đoạn, Mốc phát triển); none by default.
   List<ForBabyCard> articles = const [],
   List<ForBabyCard> milestones = const [],
+
+  /// The current stage's teaser for "Tuần này của {bé}" (Giai đoạn của bé); none by default.
+  WeekTeaser? weekTeaser,
 }) => [
   articleForBabyCardsProvider.overrideWith((ref, q) => articles),
   milestoneForBabyCardsProvider.overrideWith((ref, q) => milestones),
+  lbWeekTeaserProvider.overrideWith((ref, q) => weekTeaser),
   ...familyOverrides(
     me: me ?? mai,
     now: rhythmNow,
@@ -110,3 +117,23 @@ List<ForBabyCard> sampleForBabyCards({List<String>? opened}) => [
     onDismiss: (_) => opened?.add('dismiss'),
   ),
 ];
+
+/// Giai đoạn của bé's current stage as the "Tuần này" teaser, and its small card (which the
+/// carousel then leaves out).
+WeekTeaser sampleStageTeaser({List<String>? opened}) => (
+  id: 'stage:stg_3_4w',
+  text: 'Bé bắt đầu nhìn theo mặt người khi được bế gần',
+  ideas: 3,
+  onOpen: (_) => opened?.add('stage'),
+);
+
+ForBabyCard sampleStageCard() => ForBabyCard(
+  id: 'stage:stg_3_4w',
+  kicker: 'Giai đoạn của bé · 3–4 tuần',
+  title: 'Tuần 3–4: nhìn, nghe và được ôm',
+  action: 'Xem giai đoạn',
+  icon: ClIcons.cake,
+  tone: ForBabyTone.sunshine,
+  interest: Interest.milestones,
+  onOpen: (_) {},
+);

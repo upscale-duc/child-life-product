@@ -447,7 +447,7 @@ void main() {
           prefs: _thread([taskA], householdScope),
         );
         expect(_text('Đang đọc ảnh…'), findsOneWidget);
-        expect(_text('Trợ lý đang đọc…'), findsOneWidget);
+        expect(_text('Lumi đang đọc ảnh…'), findsOneWidget);
         repo.tasks[taskA] = photoSnapshot(
           task: photoTaskJson(),
           drafts: [expenseDraftJson()],
@@ -841,8 +841,9 @@ void main() {
         );
         await _tap(tester, _text('Chọn ngày giờ'));
         expect(_text('Sửa nhắc việc'), findsOneWidget);
+        // The time opens on an inline wheel (no sheet on a sheet).
         await _tap(tester, _text('chưa có giờ').last);
-        await _tap(tester, _text('Xong'));
+        expect(find.byKey(const ValueKey('as.reminderWheel')), findsOneWidget);
         await _tap(tester, _text('Cập nhật bản nháp'));
         final payload =
             repo.named('patchDraft').single.args['payload']!
@@ -1367,7 +1368,7 @@ void main() {
         expect(_text('Giảm kích thích 30 phút trước giấc đêm'), findsOneWidget);
         expect(_text('Thử tối nay'), findsNothing);
         expect(_text('Có ích'), findsNothing);
-        expect(_text('Trợ lý đang đọc…'), findsOneWidget);
+        expect(_text('Lumi đang soạn…'), findsOneWidget);
         expect(find.bySemanticsLabel('Huỷ'), findsNothing);
       },
     );

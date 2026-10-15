@@ -14254,7 +14254,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Messages you send are processed by AI to make drafts. Nothing saves automatically.';
 
   @override
-  String get asThinking => 'The assistant is reading…';
+  String get asThinking => 'Lumi is typing…';
 
   @override
   String get asCancelTask => 'Cancel';
@@ -14506,7 +14506,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Clarifying questions are part of the same task and don’t use extra help.';
 
   @override
-  String get asClarifyOwn => 'Enter manually';
+  String get asClarifyOwn => 'Other…';
 
   @override
   String get asClarifyExpired =>
@@ -16528,4 +16528,284 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mtEntrySubViewer => 'Reference milestones for your baby’s age';
+
+  @override
+  String get hnWhyLink => 'Why this suggestion?';
+
+  @override
+  String get hnWhyTitle => 'Why this suggestion';
+
+  @override
+  String get hnWhyFeedbackShort => 'Adjusted to your family’s feedback.';
+
+  @override
+  String get hnWhyHow =>
+      'Suggestions come from what your family noted, your baby’s age and what you care about. This is not a diagnosis.';
+
+  @override
+  String get hnWatchThisWeek => 'Worth a look this week';
+
+  @override
+  String hnWeekKicker(int n, String age) {
+    return 'Week $n · $age';
+  }
+
+  @override
+  String hnWeekKickerOnly(int n) {
+    return 'Week $n';
+  }
+
+  @override
+  String hnMonthKicker(int n, String age) {
+    return 'Month $n · $age';
+  }
+
+  @override
+  String hnMonthKickerOnly(int n) {
+    return 'Month $n';
+  }
+
+  @override
+  String get hnWeekOpen => 'See this week';
+
+  @override
+  String hnWeekOpenIdeas(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'See $count ideas for this week',
+      one: 'See 1 idea for this week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hnWeekRhythmSub(String range) {
+    return 'Wonder Weeks · expected $range';
+  }
+
+  @override
+  String get hnWeekSummaryLast => 'Last week’s summary';
+
+  @override
+  String get hnWeekSummaryThis => 'This week’s summary';
+
+  @override
+  String hnRhythmComingDays(int n, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Stage $n in $days days',
+      one: 'Stage $n in 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hnRhythmNow(int n) {
+    return 'In stage $n';
+  }
+
+  @override
+  String get asLumiName => 'Lumi';
+
+  @override
+  String get asYou => 'You';
+
+  @override
+  String get asOnlyYou => 'Only you';
+
+  @override
+  String get asOnlyYouSpending =>
+      'Only you · spending never goes into the baby’s shared chat';
+
+  @override
+  String get asCopy => 'Copy';
+
+  @override
+  String get asCopied => 'Copied';
+
+  @override
+  String get asShowTime => 'Show the time';
+
+  @override
+  String get asNewMessages => 'New messages';
+
+  @override
+  String get asOfflineBanner =>
+      'You’re offline. Messages are kept and sent only when you tap Send. Direct logging still works.';
+
+  @override
+  String get asNotSent => 'Couldn’t send';
+
+  @override
+  String get asUnsentOffline => 'Not sent · offline';
+
+  @override
+  String get asResend => 'Send again';
+
+  @override
+  String get asErrorFriendly =>
+      'I couldn’t answer just now. Nothing was saved and no AI help was used — try again, or log it directly.';
+
+  @override
+  String get asReadingPhoto => 'Lumi is reading the photo…';
+
+  @override
+  String get asChipLogSleep => 'Log a sleep';
+
+  @override
+  String get asPrefillSleep => 'Slept from ';
+
+  @override
+  String get asChipExpense => 'Log an expense';
+
+  @override
+  String get asPrefillExpense => 'Bought ';
+
+  @override
+  String get asWhenToday => 'Today';
+
+  @override
+  String get asWhenYesterday => 'Yesterday';
+
+  @override
+  String get asWhenTomorrow => 'Tomorrow';
+
+  @override
+  String asTimeOnDay(String time, String day) {
+    return '$time $day';
+  }
+
+  @override
+  String asSpanLine(String start, String end, String duration) {
+    return '$start – $end · $duration';
+  }
+
+  @override
+  String get asSpanInvalid => 'ends before it starts';
+
+  @override
+  String asSpanKnown(String duration) {
+    return 'From the length you said: $duration';
+  }
+
+  @override
+  String get asPickSleepTitle => 'When did the sleep start?';
+
+  @override
+  String get asPickWakeTitle => 'When did baby wake up?';
+
+  @override
+  String asAnswerWith(String time) {
+    return 'Answer: $time';
+  }
+
+  @override
+  String get asFieldSleepStart => 'Fell asleep';
+
+  @override
+  String get asFieldSleepEnd => 'Woke up';
+
+  @override
+  String get asFieldDuration => 'Length';
+
+  @override
+  String get asShorter => '15 minutes shorter';
+
+  @override
+  String get asLonger => '15 minutes longer';
+
+  @override
+  String get asLessMl => '10 ml less';
+
+  @override
+  String get asMoreMl => '10 ml more';
+
+  @override
+  String get asLessMinutes => '5 minutes less';
+
+  @override
+  String get asMoreMinutes => '5 minutes more';
+
+  @override
+  String asBabyLockedLine(String name) {
+    return 'For $name · can’t move to another baby';
+  }
+
+  @override
+  String get asPickOtherDay => 'Another day';
+
+  @override
+  String get asVoiceStart => 'Talk to Lumi';
+
+  @override
+  String get asVoiceStop => 'Stop listening';
+
+  @override
+  String get asVoiceCancel => 'Discard what was said';
+
+  @override
+  String get asVoiceListening => 'Listening…';
+
+  @override
+  String get asVoiceSwipe => 'Listening… swipe left to cancel';
+
+  @override
+  String get asVoiceIntroTitle => 'Talk to Lumi instead of typing';
+
+  @override
+  String get asVoiceIntroWords =>
+      'Tap the mic and speak. The words appear in the message box; you can fix them, and they’re sent only when you tap Send.';
+
+  @override
+  String get asVoiceIntroServerIos =>
+      'Your iPhone turns speech into words on the device when it can. When it can’t (for example without offline support for the language), Apple’s speech recognition may process the audio on Apple’s servers.';
+
+  @override
+  String get asVoiceIntroServerAndroid =>
+      'Your phone turns speech into words on the device when it can. When it can’t, the phone’s speech service (usually Google’s) may process the audio on its servers.';
+
+  @override
+  String get asVoiceIntroNothingKept =>
+      'Child Life doesn’t record, keep or send any audio. Only the words you send reach Lumi.';
+
+  @override
+  String get asVoiceIntroFree => 'Speaking instead of typing uses no AI help.';
+
+  @override
+  String get asVoiceIntroAllow => 'Turn on the mic';
+
+  @override
+  String get asVoiceIntroLater => 'Not now';
+
+  @override
+  String get asVoiceDenied =>
+      'No access to the mic or speech recognition. Turn it on in Settings to talk to Lumi.';
+
+  @override
+  String get asVoiceUnavailable =>
+      'This phone can’t recognise speech right now. Please type instead.';
+
+  @override
+  String get asVoiceLanguage =>
+      'This phone can’t recognise English speech yet. Add the language in the phone’s settings, or type instead.';
+
+  @override
+  String get asVoiceNoSpeech =>
+      'I didn’t hear anything. Try speaking closer to the phone.';
+
+  @override
+  String get asVoiceFailed =>
+      'Speech recognition stopped. Any words so far stay in the box.';
+
+  @override
+  String get asChipFeedsShort => 'Today’s feeds';
+
+  @override
+  String get asEditInModule => 'Edit in the log';
+
+  @override
+  String get asSpendingMoved =>
+      'Only you: a message about spending stays in your private chat.';
 }

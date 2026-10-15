@@ -61,7 +61,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Child Life uses the camera to take your baby's photos and videos, their profile photo, and to scan invite QR codes. Only your family can see them.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Child Life records sound with the videos you take of your baby.</string>
+	<string>Child Life records sound with the videos you take of your baby, and listens while you talk to Lumi so your words appear in the chat. Child Life doesn't keep or send the audio.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>When you talk to Lumi, your words are turned into text on this iPhone when possible, otherwise by Apple's speech recognition. Only the text you send reaches Lumi.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Child Life saves photos and videos you download from Memories to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

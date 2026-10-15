@@ -13019,7 +13019,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String rhWeekOf(int n, String baby) {
-    return 'Tuần $n của $baby';
+    return 'Tuần thứ $n của $baby';
   }
 
   @override
@@ -13360,7 +13360,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Tin nhắn bạn gửi được AI xử lý để tạo bản nháp. Không tự lưu.';
 
   @override
-  String get asThinking => 'Trợ lý đang đọc…';
+  String get asThinking => 'Lumi đang soạn…';
 
   @override
   String get asCancelTask => 'Huỷ';
@@ -13605,7 +13605,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Câu hỏi làm rõ thuộc cùng tác vụ, không trừ thêm lượt.';
 
   @override
-  String get asClarifyOwn => 'Tự nhập';
+  String get asClarifyOwn => 'Khác…';
 
   @override
   String get asClarifyExpired => 'Câu hỏi đã hết hạn. Nhắn lại để hỏi tiếp.';
@@ -14860,7 +14860,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String rhWeekMakeVideo(int n) {
-    return 'Tạo video tuần $n';
+    return 'Tạo video tuần thứ $n';
   }
 
   @override
@@ -15498,4 +15498,272 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get mtEntrySubViewer => 'Mốc tham khảo theo tuổi của bé';
+
+  @override
+  String get hnWhyLink => 'Vì sao gợi ý này?';
+
+  @override
+  String get hnWhyTitle => 'Vì sao gợi ý này';
+
+  @override
+  String get hnWhyFeedbackShort => 'Đã điều chỉnh theo phản hồi của nhà mình.';
+
+  @override
+  String get hnWhyHow =>
+      'Gợi ý dựa trên điều nhà mình ghi nhận, tuổi của bé và điều bạn quan tâm. Đây không phải chẩn đoán.';
+
+  @override
+  String get hnWatchThisWeek => 'Để ý tuần này';
+
+  @override
+  String hnWeekKicker(int n, String age) {
+    return 'Tuần thứ $n · $age';
+  }
+
+  @override
+  String hnWeekKickerOnly(int n) {
+    return 'Tuần thứ $n';
+  }
+
+  @override
+  String hnMonthKicker(int n, String age) {
+    return 'Tháng thứ $n · $age';
+  }
+
+  @override
+  String hnMonthKickerOnly(int n) {
+    return 'Tháng thứ $n';
+  }
+
+  @override
+  String get hnWeekOpen => 'Xem tuần này';
+
+  @override
+  String hnWeekOpenIdeas(int count) {
+    return 'Xem $count gợi ý cho tuần này';
+  }
+
+  @override
+  String hnWeekRhythmSub(String range) {
+    return 'Wonder Weeks · dự kiến $range';
+  }
+
+  @override
+  String get hnWeekSummaryLast => 'Tóm tắt tuần trước';
+
+  @override
+  String get hnWeekSummaryThis => 'Tóm tắt tuần này';
+
+  @override
+  String hnRhythmComingDays(int n, int days) {
+    return 'Còn $days ngày đến giai đoạn $n';
+  }
+
+  @override
+  String hnRhythmNow(int n) {
+    return 'Đang trong giai đoạn $n';
+  }
+
+  @override
+  String get asLumiName => 'Lumi';
+
+  @override
+  String get asYou => 'Bạn';
+
+  @override
+  String get asOnlyYou => 'Chỉ bạn thấy';
+
+  @override
+  String get asOnlyYouSpending =>
+      'Chỉ bạn thấy · chi tiêu không vào cuộc trò chuyện chung của bé';
+
+  @override
+  String get asCopy => 'Sao chép';
+
+  @override
+  String get asCopied => 'Đã sao chép';
+
+  @override
+  String get asShowTime => 'Xem giờ gửi';
+
+  @override
+  String get asNewMessages => 'Tin mới';
+
+  @override
+  String get asOfflineBanner =>
+      'Đang ngoại tuyến. Tin nhắn được giữ lại và chỉ gửi khi bạn bấm Gửi. Ghi trực tiếp vẫn dùng được.';
+
+  @override
+  String get asNotSent => 'Chưa gửi được';
+
+  @override
+  String get asUnsentOffline => 'Chưa gửi · đang ngoại tuyến';
+
+  @override
+  String get asResend => 'Gửi lại';
+
+  @override
+  String get asErrorFriendly =>
+      'Mình chưa trả lời được lúc này. Chưa có gì được lưu và không trừ lượt nào — bạn thử lại nhé, hoặc ghi trực tiếp.';
+
+  @override
+  String get asReadingPhoto => 'Lumi đang đọc ảnh…';
+
+  @override
+  String get asChipLogSleep => 'Ghi giấc ngủ';
+
+  @override
+  String get asPrefillSleep => 'Con ngủ từ ';
+
+  @override
+  String get asChipExpense => 'Ghi khoản chi';
+
+  @override
+  String get asPrefillExpense => 'Mua ';
+
+  @override
+  String get asWhenToday => 'Hôm nay';
+
+  @override
+  String get asWhenYesterday => 'Hôm qua';
+
+  @override
+  String get asWhenTomorrow => 'Ngày mai';
+
+  @override
+  String asTimeOnDay(String time, String day) {
+    return '$time $day';
+  }
+
+  @override
+  String asSpanLine(String start, String end, String duration) {
+    return '$start – $end · $duration';
+  }
+
+  @override
+  String get asSpanInvalid => 'giờ dậy trước giờ ngủ';
+
+  @override
+  String asSpanKnown(String duration) {
+    return 'Theo thời lượng bạn nói: $duration';
+  }
+
+  @override
+  String get asPickSleepTitle => 'Bé ngủ lúc mấy giờ?';
+
+  @override
+  String get asPickWakeTitle => 'Bé dậy lúc mấy giờ?';
+
+  @override
+  String asAnswerWith(String time) {
+    return 'Trả lời: $time';
+  }
+
+  @override
+  String get asFieldSleepStart => 'Ngủ lúc';
+
+  @override
+  String get asFieldSleepEnd => 'Dậy lúc';
+
+  @override
+  String get asFieldDuration => 'Thời lượng';
+
+  @override
+  String get asShorter => 'Ngắn hơn 15 phút';
+
+  @override
+  String get asLonger => 'Dài hơn 15 phút';
+
+  @override
+  String get asLessMl => 'Bớt 10 ml';
+
+  @override
+  String get asMoreMl => 'Thêm 10 ml';
+
+  @override
+  String get asLessMinutes => 'Bớt 5 phút';
+
+  @override
+  String get asMoreMinutes => 'Thêm 5 phút';
+
+  @override
+  String asBabyLockedLine(String name) {
+    return 'Ghi cho $name · không đổi sang bé khác được';
+  }
+
+  @override
+  String get asPickOtherDay => 'Ngày khác';
+
+  @override
+  String get asVoiceStart => 'Nói với Lumi';
+
+  @override
+  String get asVoiceStop => 'Dừng nghe';
+
+  @override
+  String get asVoiceCancel => 'Bỏ lời vừa nói';
+
+  @override
+  String get asVoiceListening => 'Đang nghe…';
+
+  @override
+  String get asVoiceSwipe => 'Đang nghe… vuốt sang trái để huỷ';
+
+  @override
+  String get asVoiceIntroTitle => 'Nói với Lumi thay vì gõ';
+
+  @override
+  String get asVoiceIntroWords =>
+      'Chạm mic rồi nói. Chữ hiện ngay trong ô nhập; bạn sửa được và chỉ gửi khi bấm Gửi.';
+
+  @override
+  String get asVoiceIntroServerIos =>
+      'iPhone chuyển giọng nói thành chữ ngay trên máy khi có thể. Khi máy chưa làm được (ví dụ chưa có tiếng Việt ngoại tuyến), dịch vụ nhận dạng của Apple có thể xử lý âm thanh trên máy chủ của Apple.';
+
+  @override
+  String get asVoiceIntroServerAndroid =>
+      'Điện thoại chuyển giọng nói thành chữ ngay trên máy khi có thể. Khi chưa làm được, dịch vụ nhận dạng giọng nói của máy (thường của Google) có thể xử lý âm thanh trên máy chủ của họ.';
+
+  @override
+  String get asVoiceIntroNothingKept =>
+      'Child Life không ghi âm, không lưu và không gửi âm thanh. Chỉ phần chữ bạn bấm Gửi mới tới Lumi.';
+
+  @override
+  String get asVoiceIntroFree => 'Nói thay vì gõ không tốn lượt AI.';
+
+  @override
+  String get asVoiceIntroAllow => 'Bật micro';
+
+  @override
+  String get asVoiceIntroLater => 'Để sau';
+
+  @override
+  String get asVoiceDenied =>
+      'Chưa có quyền dùng micro hoặc nhận dạng giọng nói. Bật trong Cài đặt để nói với Lumi.';
+
+  @override
+  String get asVoiceUnavailable =>
+      'Máy này chưa nhận dạng giọng nói được. Bạn gõ chữ nhé.';
+
+  @override
+  String get asVoiceLanguage =>
+      'Máy chưa nhận dạng được giọng nói tiếng Việt. Thêm ngôn ngữ trong Cài đặt của máy, hoặc gõ chữ nhé.';
+
+  @override
+  String get asVoiceNoSpeech =>
+      'Mình chưa nghe thấy gì. Thử nói gần máy hơn nhé.';
+
+  @override
+  String get asVoiceFailed =>
+      'Nhận dạng giọng nói bị gián đoạn. Phần chữ đã có vẫn ở trong ô nhập.';
+
+  @override
+  String get asChipFeedsShort => 'Cữ bú hôm nay';
+
+  @override
+  String get asEditInModule => 'Sửa trong nhật ký';
+
+  @override
+  String get asSpendingMoved =>
+      'Chỉ bạn thấy: tin nhắn có chi tiêu được giữ trong cuộc trò chuyện riêng của bạn.';
 }

@@ -6,13 +6,17 @@ import 'package:child_life/features/baby/baby_repository.dart';
 import 'package:child_life/features/onboarding/setup_screens.dart';
 import 'package:child_life/features/reminders/reminder_screens.dart'
     show notificationsAskedProvider;
+import 'package:child_life/features/rhythm/rhythm_home.dart'
+    show firstSentence, weekKicker;
 import 'package:child_life/features/rhythm/rhythm_models.dart';
+import 'package:child_life/l10n/app_localizations.dart';
 import 'package:child_life/features/today/today_for_baby.dart';
 import 'package:child_life/features/today/today_layout.dart';
 import 'package:child_life/features/today/today_personalize.dart';
 import 'package:child_life/features/today/today_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import '../helpers/family_fixtures.dart';
 import '../helpers/hn_fixtures.dart';
@@ -358,11 +362,17 @@ void main() {
       );
       expect(find.text('Dành cho bé hôm nay'), findsOneWidget);
       expect(find.text('Theo điều bạn quan tâm'), findsOneWidget);
-      expect(find.text('Nhịp lớn lên · Beta'), findsOneWidget);
-      expect(find.text('Sắp đến giai đoạn 1 (Wonder Weeks)'), findsOneWidget);
-      expect(find.textContaining('Theo lịch tham khảo, dự kiến'), findsOne);
-      // The calendar card of Nhịp lớn lên is replaced, not doubled.
+      // Nhịp lớn lên is a compact row of "Tuần này của Teddy" (no "Beta" pill to parents).
+      expect(find.text('Tuần này của Teddy'), findsOneWidget);
+      expect(find.text('Nhịp lớn lên · Beta'), findsNothing);
+      expect(find.text('Còn 4 ngày đến giai đoạn 1'), findsOneWidget);
+      expect(find.text('Wonder Weeks · dự kiến 12/10 – 21/10'), findsOne);
       expect(find.text('LỊCH THAM KHẢO'), findsNothing);
+      await tester.tap(find.byKey(const Key('forBabyRhythm')));
+      await tester.pumpAndSettle();
+      expect(visits.last.location, Routes.rhythm);
+      GoRouter.of(tester.element(find.text('stub'))).pop();
+      await tester.pumpAndSettle();
       expect(find.byKey(const Key('forBabyCarousel')), findsNothing);
       await tester.tap(find.byKey(const Key('forBabyChange')));
       await tester.pumpAndSettle();
@@ -448,6 +458,144 @@ void main() {
       await tester.tap(milestone);
       await tester.tap(find.bySemanticsLabel('Tuỳ chọn cho thẻ này'));
       expect(opened, ['milestone', 'dismiss']);
+    });
+
+    testWidgets('Tuần này: the stage teaser first; its small card leaves the '
+        'carousel', (tester) async {
+      final opened = <String>[];
+      await pumpRouted(
+        tester,
+        section(),
+        overrides: hnOverrides(
+          repo: StampingRhythmRepository(preferences: personalized()),
+          articles: [sampleStageCard(), ...sampleForBabyCards().take(1)],
+          milestones: sampleForBabyCards().skip(1).toList(),
+          weekTeaser: sampleStageTeaser(opened: opened),
+        ),
+      );
+      // Week of life 4 = three completed weeks (Teddy is 21 days old on 8/10).
+      expect(find.text('Tuần thứ 4 · 3 tuần tuổi'), findsOneWidget);
+      expect(
+        find.text('Bé bắt đầu nhìn theo mặt người khi được bế gần'),
+        findsOneWidget,
+      );
+      expect(find.text('Xem 3 gợi ý cho tuần này'), findsOneWidget);
+      // Not the age card's teaser, and the stage is not on Home twice.
+      expect(find.textContaining('Nhiều bé ở tuần này'), findsNothing);
+      expect(find.text('Tuần 3–4: nhìn, nghe và được ôm'), findsNothing);
+      expect(find.text('Để ý tuần này'), findsOneWidget);
+      await tester.ensureVisible(find.byKey(const Key('forBabyWeek')));
+      await tester.tap(find.byKey(const Key('forBabyWeek')));
+      expect(opened, ['stage']);
+    });
+
+    testWidgets('order: today (carousel, check-in), then "Tuần này" with its '
+        'rows', (tester) async {
+      final (visits, _) = await pumpRouted(
+        tester,
+        section(),
+        overrides: hnOverrides(
+          repo: StampingRhythmRepository(preferences: personalized()),
+          articles: sampleForBabyCards().take(1).toList(),
+          milestones: sampleForBabyCards().skip(1).toList(),
+        ),
+      );
+      double y(Finder f) => tester.getTopLeft(f).dy;
+      final order = [
+        find.text('Dành cho bé hôm nay'),
+        find.byKey(const Key('forBabyCarousel')),
+        find.byKey(const Key('forBabyCheckIn')),
+        find.text('Tuần này của Teddy'),
+        find.byKey(const Key('forBabyWeek')),
+        find.byKey(const Key('forBabyRhythm')),
+        find.byKey(const Key('forBabyWeekSummary')),
+      ];
+      for (var i = 1; i < order.length; i++) {
+        expect(y(order[i]), greaterThan(y(order[i - 1])), reason: '$i');
+      }
+      // The summary row uses the same dates as EN09 and no week number of its own.
+      expect(find.text('Tóm tắt tuần trước'), findsOneWidget);
+      expect(find.text('28/09 – 04/10'), findsOneWidget);
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -400));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('forBabyWeekSummary')));
+      await tester.pumpAndSettle();
+      expect(visits.last.location, Routes.rhythmWeek);
+    });
+
+    testWidgets('nothing published: no teaser, the rows stay', (tester) async {
+      final repo = StampingRhythmRepository(preferences: personalized())
+        ..content = null;
+      await pumpRouted(tester, section(), overrides: hnOverrides(repo: repo));
+      expect(find.text('Dành cho bé hôm nay'), findsOneWidget);
+      expect(find.byKey(const Key('forBabyCheckIn')), findsOneWidget);
+      expect(find.byKey(const Key('forBabyWeek')), findsNothing);
+      expect(find.text('Tuần này của Teddy'), findsOneWidget);
+      expect(find.byKey(const Key('forBabyRhythm')), findsOneWidget);
+      expect(find.byKey(const Key('forBabyWeekSummary')), findsOneWidget);
+    });
+
+    test('numbering: "Tuần thứ N" is completed weeks + 1, "tuần tuổi" '
+        'completed weeks only', () {
+      final vi = lookupAppLocalizations(const Locale('vi'));
+      final dob = DateTime(2026, 9, 17);
+      String? k(DateTime today) => weekKicker(vi, dob: dob, today: today);
+      expect(k(DateTime(2026, 9, 17)), 'Tuần thứ 1 · mới chào đời');
+      expect(k(DateTime(2026, 9, 22)), 'Tuần thứ 1 · 5 ngày tuổi');
+      expect(k(DateTime(2026, 10, 1)), 'Tuần thứ 3 · 2 tuần tuổi');
+      expect(k(DateTime(2026, 10, 7)), 'Tuần thứ 3 · 2 tuần tuổi');
+      expect(k(DateTime(2026, 10, 8)), 'Tuần thứ 4 · 3 tuần tuổi');
+      expect(k(DateTime(2026, 10, 21)), 'Tuần thứ 5 · 4 tuần tuổi');
+      // From 13 weeks, months, as the age chip and the content say it.
+      expect(k(DateTime(2026, 12, 17)), 'Tháng thứ 4 · 3 tháng tuổi');
+      expect(k(DateTime(2027, 1, 30)), 'Tháng thứ 5 · 4 tháng tuổi');
+      expect(k(DateTime(2026, 9, 1)), isNull);
+      // Without the date of birth (caregivers): from the age card's range.
+      AgeCard card(int from, int to) => AgeCard(
+        id: 'age_x',
+        version: 1,
+        status: ContentStatus.published,
+        ageDays: AgeRange(from, to),
+        title: const Localized('', ''),
+        body: const Localized('', ''),
+      );
+      expect(
+        weekKicker(
+          vi,
+          dob: null,
+          today: DateTime(2026, 10, 8),
+          card: card(28, 34),
+        ),
+        'Tuần thứ 5',
+      );
+      expect(
+        weekKicker(
+          vi,
+          dob: null,
+          today: DateTime(2026, 10, 8),
+          card: card(122, 151),
+        ),
+        'Tháng thứ 5',
+      );
+      expect(weekKicker(vi, dob: null, today: DateTime(2026, 10, 8)), isNull);
+    });
+
+    test('teaser: the first sentence of the content', () {
+      expect(
+        firstSentence(
+          'Khóc thường tăng dần và hay nhiều nhất vào khoảng 6–8 tuần tuổi, rồi giảm dần. '
+          'Nhiều bé quấy nhiều vào chiều tối.',
+        ),
+        'Khóc thường tăng dần và hay nhiều nhất vào khoảng 6–8 tuần tuổi, rồi giảm dần.',
+      );
+      expect(
+        firstSentence(' Một câu không dấu chấm '),
+        'Một câu không dấu chấm',
+      );
+      expect(
+        firstSentence('Cân 3.5 kg là thường gặp. Tiếp.'),
+        'Cân 3.5 kg là thường gặp.',
+      );
     });
 
     test('ranking: interests first, turned-down topics out, at most 3', () {

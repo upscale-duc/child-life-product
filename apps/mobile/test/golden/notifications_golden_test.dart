@@ -36,19 +36,26 @@ typedef _Case = ({
 
 final _now = DateTime(2026, 10, 8, 21);
 
-List<Override> _base(FakeNotificationRepository repo, {bool systemOn = true}) =>
-    [
-      ...familyOverrides(
-        now: _now,
-        notificationRepo: repo,
-        notifications: FakeReminderNotifications(on: systemOn),
-      ),
-      userPreferencesProvider.overrideWith(
-        (ref, uid) => Stream.value(
-          UserPreferences.defaults.copyWith(digestTime: () => '20:30'),
-        ),
-      ),
-    ];
+List<Override> _base(
+  FakeNotificationRepository repo, {
+  bool systemOn = true,
+}) => [
+  ...familyOverrides(
+    now: _now,
+    notificationRepo: repo,
+    notifications: FakeReminderNotifications(on: systemOn),
+  ),
+  // Pin the clock Night care auto reads, so the header's theme toggle does not flip when
+  // the suite runs after 22:00.
+  minuteClockProvider.overrideWith(
+    (ref) => Stream.value(DateTime(2026, 10, 8, 10)),
+  ),
+  userPreferencesProvider.overrideWith(
+    (ref, uid) => Stream.value(
+      UserPreferences.defaults.copyWith(digestTime: () => '20:30'),
+    ),
+  ),
+];
 
 Widget _header() => const Scaffold(
   body: Padding(
