@@ -110,6 +110,7 @@ import {
   cloudTasksDispatcher,
   deleteMemoryStory as deleteMemoryStoryJob,
   completeKeepsakeJob,
+  getVideoQuota as getVideoQuotaJob,
   keepsakeJobChanged,
   requestMemoryStory as requestMemoryStoryJob,
   retryMemoryStory as retryMemoryStoryJob,
@@ -117,6 +118,15 @@ import {
   type LiveSender,
   type RenderDispatcher,
 } from './keepsake-jobs.js';
+import {
+  BillingError,
+  noBillingAdapters,
+  reconcileSubscriptions as reconcileBillingSubscriptions,
+  restorePurchase as restorePurchaseCore,
+  startPurchase as startPurchaseCore,
+  verifyPurchase as verifyPurchaseCore,
+  type BillingAdapters,
+} from './billing.js';
 import {
   keepsakeAct,
   keepsakeDraft,
@@ -272,6 +282,15 @@ import {
   updateMedia,
 } from './memories.js';
 import { isMirroredConfigId, publicProjection } from './config-mirror.js';
+// Premium Slice 3 · grounded AI (plan §5.5, P-151).
+import {
+  AiSummaryError,
+  generateSummary as runGenerateSummary,
+  listSummaries as runListSummaries,
+  reportSummary as runReportSummary,
+  setAiConsent as runSetAiConsent,
+} from './ai-summary.js';
+import { sweepAiReservations } from './quota-sweeper.js';
 
 initializeApp();
 setGlobalOptions({ region: functionsRegion, maxInstances: 10 });
@@ -330,7 +349,8 @@ function asHttpsError(operation: string, error: unknown): HttpsError {
     error instanceof SpendingError ||
     error instanceof FeatureError ||
     error instanceof EntitlementError ||
-    error instanceof RhythmError
+    error instanceof RhythmError ||
+    error instanceof AiSummaryError
   ) {
     return new HttpsError(error.code, error.reason, { reason: error.reason });
   }
@@ -565,6 +585,14 @@ export const onCheckInWrite = onDocumentWritten(
 /** Feedback changes what the ranking uses: bump the facts version (AC02, M18). */
 export const onRecFeedbackWrite = onDocumentWritten(
   'babies/{babyId}/recFeedback/{feedbackId}',
+  async (event) => {
+    await bumpDataVersion(getFirestore(), event.params.babyId, new Date());
+  },
+);
+
+/** NL07b: confirming or closing an observation episode changes the facts (summaries go stale). */
+export const onEpisodeWrite = onDocumentWritten(
+  'babies/{babyId}/episodes/{episodeId}',
   async (event) => {
     await bumpDataVersion(getFirestore(), event.params.babyId, new Date());
   },
@@ -1315,6 +1343,60 @@ export const weeklyStorySuggestions = onSchedule(
   },
 );
 
+// ---------- Premium Slice 3 · grounded AI (plan §5.5, P-151, D-072 #2) ----------
+
+const aiCall = <T>(
+  name: string,
+  run: (request: CallableRequest) => Promise<T>,
+  options: { secrets?: ReturnType<typeof defineSecret>[]; timeoutSeconds?: number } = {},
+) =>
+  onCall(options, async (request) => {
+    try {
+      return await run(request);
+    } catch (error) {
+      // asHttpsError logs only the operation and the error string, never the payload.
+      throw asHttpsError(name, error);
+    }
+  });
+
+/** NL10 privacy: my AI consent (versioned); withdrawing clears AI text, keeps the template. */
+export const setAiConsent = aiCall('setAiConsent', (r) =>
+  runSetAiConsent(getFirestore(), requireAccount(r), r.data, new Date()),
+);
+
+/** SU01 / NL10 / NL10b: handover, explanation or milestone nudge; template on any failure. */
+/** Releases AI quota reservations left behind by a function that died mid-call (hourly). */
+export const sweepAiQuota = onSchedule('every 60 minutes', async () => {
+  const n = await sweepAiReservations(getFirestore(), new Date());
+  if (n > 0) logger.info('ai quota reservations released', { count: n });
+});
+
+export const generateSummary = aiCall(
+  'generateSummary',
+  (r) =>
+    runGenerateSummary(
+      {
+        db: getFirestore(),
+        provider: aiProvider(),
+        now: new Date(),
+        environment: serverGrantEnvironment(),
+      },
+      requireAccount(r),
+      r.data,
+    ),
+  { secrets: [openAiKey], timeoutSeconds: 60 },
+);
+
+/** SU01 history for `history.read` roles; summaries older than the facts come back `stale`. */
+export const listSummaries = aiCall('listSummaries', (r) =>
+  runListSummaries(getFirestore(), requireAccount(r), r.data, new Date(), serverGrantEnvironment()),
+);
+
+/** "Chưa đúng? Báo lại": a closed problem code for staff, no child text. */
+export const reportSummary = aiCall('reportSummary', (r) =>
+  runReportSummary(getFirestore(), requireAccount(r), r.data, new Date(), serverGrantEnvironment()),
+);
+
 // ---------- Nhập chi tiêu (D-060, P-144) ----------
 
 function expenseExtractor(): ExpenseExtractor | null {
@@ -2019,6 +2101,10 @@ export const requestMemoryStory = keepsakeCall('requestMemoryStory', (uid, data)
 export const retryMemoryStory = keepsakeCall('retryMemoryStory', (uid, data) =>
   retryMemoryStoryJob(getFirestore(), keepsakeDispatcher(), uid, data, new Date()),
 );
+/** MO04: the household's video quota (Q2) for the window a new video would count in. */
+export const getVideoQuota = keepsakeCall('getVideoQuota', (uid, data) =>
+  getVideoQuotaJob(getFirestore(), uid, data, new Date()),
+);
 /** MM14 "Xoá bản nháp". */
 export const deleteMemoryStory = keepsakeCall('deleteMemoryStory', (uid, data) =>
   deleteMemoryStoryJob(getFirestore(), bucketStore(getStorage().bucket()), uid, data),
@@ -2121,6 +2207,66 @@ export const onKeepsakeJobWritten = onDocumentWritten(
 export const sweepKeepsakeJobsEvery15 = onSchedule('every 15 minutes', async () => {
   await sweepKeepsakeJobs(getFirestore(), bucketStore(getStorage().bucket()), new Date());
 });
+
+// ---- Premium billing (Slice 4 B1, plan §5.2, D-072 #1 / #6) ---------------------------------
+// Provider-neutral core in billing.ts. Real Apple / Google adapters are postponed by the owner
+// (D-074): the registry is empty, so every purchase call answers failed-precondition
+// 'billing-not-configured' and nothing is granted. A future slice plugs real adapters in here and
+// adds the appStoreNotifications (HTTP) and playRtdn (Pub/Sub) triggers over billing.ts.
+const billingAdapters = (): BillingAdapters => noBillingAdapters;
+function billingCall<T>(name: string, run: (uid: string, data: unknown) => Promise<T>) {
+  return onCall(async (request) => {
+    const uid = requireAccount(request);
+    try {
+      return await run(uid, request.data);
+    } catch (error) {
+      if (error instanceof BillingError || error instanceof EntitlementError) {
+        throw new HttpsError(error.code, error.reason, { reason: error.reason });
+      }
+      // Never the payload: transaction ids and purchase tokens stay out of logs.
+      logger.error(`${name} failed`, { error: error instanceof Error ? error.name : 'unknown' });
+      throw new HttpsError('internal', `${name} failed`);
+    }
+  });
+}
+/** PR01 "Tiếp tục với Premium": the owner's purchase intent (account token for the store). */
+export const startPurchase = billingCall('startPurchase', (uid, data) =>
+  startPurchaseCore(
+    getFirestore(),
+    billingAdapters(),
+    uid,
+    data,
+    new Date(),
+    serverGrantEnvironment(),
+  ),
+);
+/** PR02: the store's answer re-checked with the provider, then the household grant. */
+export const verifyPurchase = billingCall('verifyPurchase', (uid, data) =>
+  verifyPurchaseCore(
+    getFirestore(),
+    billingAdapters(),
+    uid,
+    data,
+    new Date(),
+    serverGrantEnvironment(),
+  ),
+);
+/** PR01 / PR03 "Khôi phục": never moves a subscription to another household. */
+export const restorePurchase = billingCall('restorePurchase', (uid, data) =>
+  restorePurchaseCore(
+    getFirestore(),
+    billingAdapters(),
+    uid,
+    data,
+    new Date(),
+    serverGrantEnvironment(),
+  ),
+);
+/** Subscriptions ending soon, in grace, on hold or pending are refetched (no-op without adapters). */
+export const reconcileSubscriptions = onSchedule('every 6 hours', async () => {
+  await reconcileBillingSubscriptions(getFirestore(), billingAdapters(), new Date());
+});
+// ---- end Premium billing ---------------------------------------------------------------------
 
 // Cập nhật ứng dụng (D-061): store versions, the oldest allowed, "Có gì mới"; the app reads
 // publicConfig/appUpdate.

@@ -172,8 +172,9 @@ export interface SummaryAnswer {
   /** `ai` (validated model output), `cache`, or `fallback` (template; free, no quota used). */
   method: 'ai' | 'cache' | 'fallback';
   /** Why the template was used: CONSENT_REQUIRED, PREMIUM_REQUIRED, QUOTA_EXCEEDED, FEATURE_DISABLED,
-   * or the technical `timeout` / `invalid` / `unavailable`. */
-  fallbackReason: GateReason | 'timeout' | 'invalid' | 'unavailable' | null;
+   * HEALTH_FLOW (health signs in the range: no model, point to health support), or the technical
+   * `timeout` / `invalid` / `unavailable`. */
+  fallbackReason: SummaryFallbackReason | null;
   sections: { kind: (typeof summarySectionKinds)[number]; text: string; factIds: string[] }[];
   facts: SummaryFact[];
   suggestionContentId: string | null;
@@ -184,3 +185,36 @@ export interface SummaryAnswer {
   dataVersion: number;
   quota: { day: QuotaSnapshot; month: QuotaSnapshot } | null;
 }
+
+/** Why a summary is the template (`SummaryAnswer.fallbackReason`). */
+export type SummaryFallbackReason =
+  GateReason | 'HEALTH_FLOW' | 'timeout' | 'invalid' | 'unavailable';
+
+/** Server pipeline settings (plan §5.5); quotas live in `config/entitlements.quotas.ai`. */
+export const aiSummaryLimits = {
+  /** Facts come from the last N baby-local days, today included (brief "3–7 ngày"). */
+  rangeDays: 7,
+  maxFacts: 30,
+  /** Approved activities offered to the model as the only possible suggestions. */
+  maxCandidates: 12,
+  /** The model call is abandoned after this; the template answers (A05). */
+  timeoutMs: 20_000,
+  /** Budget charge per model call (A09 budget in `config/ai`). */
+  costVnd: 150,
+} as const;
+
+/** Bumped with any change to the summary prompt; part of the cache key. */
+export const aiSummaryPromptVersion = 'summary-prompt-v1';
+
+/** A stored summary as read back (SU01 history): `stale` when the facts changed since. */
+export interface SummaryView extends SummaryAnswer {
+  /** Who asked for it (history: "Mẹ đã tạo"). */
+  requestedBy: string;
+  stale: boolean;
+}
+
+export const listSummariesRequestSchema = z.object({
+  babyId: z.string().min(1).max(128),
+  kind: z.enum(aiSummaryKinds).optional(),
+  limit: z.number().int().min(1).max(20).default(5),
+});

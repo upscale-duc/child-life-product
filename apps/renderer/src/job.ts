@@ -20,6 +20,11 @@ import type { MemoryStoryProps } from './compositions/MemoryStory';
  * Cloud Tasks may deliver a task twice and retries a failure: a completed or failed job is left
  * alone, a crash mid-render is picked up again (attempts counted), and the outputs always go to
  * the same paths, so nothing is duplicated.
+ *
+ * Fencing (Q2, plan §5.3): every claim bumps the job's `lease`, which is never reset. The worker
+ * finishes (completed, failed or back in the queue) only while it still holds that lease and the
+ * job is still rendering; a stale worker (the sweeper failed it, or a retry handed it to another
+ * worker) is refused, so its quota unit is never committed or released twice.
  */
 
 export interface RenderStore {
@@ -48,8 +53,11 @@ export interface JobDeps {
   now: () => Date;
 }
 
-/** `done`/`skipped`/`failed`: answer 200 (no retry). `retry`: answer 500 (Cloud Tasks retries). */
-export type JobOutcome = 'done' | 'skipped' | 'failed' | 'retry';
+/**
+ * `done`/`skipped`/`failed`/`stale`: answer 200 (no retry). `retry`: answer 500 (Cloud Tasks
+ * retries). `stale`: this worker lost its lease; whatever it rendered is not recorded.
+ */
+export type JobOutcome = 'done' | 'skipped' | 'failed' | 'retry' | 'stale';
 
 class StepError extends Error {
   constructor(readonly code: KeepsakeJobErrorCode) {
@@ -93,19 +101,31 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
       });
       return 'exhausted' as const;
     }
+    const lease = ((job.get('lease') as number | undefined) ?? 0) + 1;
     tx.update(ref, {
       status: 'rendering',
       step: 'arrange',
       progress: 2,
       attempts,
+      lease,
       startedAt: deps.now(),
       updatedAt: deps.now(),
     });
-    return { input: job.get('input') as KeepsakeJobInput, attempts };
+    return { input: job.get('input') as KeepsakeJobInput, attempts, lease };
   });
   if (claimed === null) return 'skipped';
   if (claimed === 'exhausted') return 'failed';
-  const { input, attempts } = claimed;
+  const { input, attempts, lease } = claimed;
+  /** Writes [update] only while this worker still holds the job (fencing). */
+  const finish = (update: Record<string, unknown>) =>
+    db.runTransaction(async (tx) => {
+      const job = await tx.get(ref);
+      if (!job.exists || job.get('status') !== 'rendering' || job.get('lease') !== lease) {
+        return false;
+      }
+      tx.update(ref, update);
+      return true;
+    });
   const started = Date.now();
   console.info('render started', { jobId, template: input.template.id, attempts });
 
@@ -189,28 +209,36 @@ export async function runJob(deps: JobDeps, babyId: string, jobId: string): Prom
     } catch {
       throw new StepError('upload-failed');
     }
-    await ref.update({
+    const won = await finish({
       status: 'completed',
       step: 'export',
       progress: 100,
-      output: { ...rendered, bytes },
+      output: { ...rendered, bytes, lease },
       error: null,
       updatedAt: deps.now(),
       finishedAt: deps.now(),
     });
+    if (!won) {
+      console.warn('render stale', { jobId, lease });
+      return 'stale';
+    }
     console.info('render done', { jobId, ms: Date.now() - started, bytes });
     return 'done';
   } catch (e) {
     const code = e instanceof StepError ? e.code : 'render-failed';
     // A photo that is gone will not come back: fail now. Anything else is retried.
     const final = code === 'photo-missing' || attempts >= keepsakeJobLimits.attempts;
-    await ref.update({
+    const won = await finish({
       status: final ? 'failed' : 'queued',
       error: final ? code : null,
       step: null,
       updatedAt: deps.now(),
       ...(final ? { finishedAt: deps.now() } : {}),
     });
+    if (!won) {
+      console.warn('render stale', { jobId, lease });
+      return 'stale';
+    }
     console.warn('render stopped', { jobId, code, final });
     return final ? 'failed' : 'retry';
   } finally {

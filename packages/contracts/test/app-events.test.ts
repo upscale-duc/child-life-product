@@ -15,6 +15,11 @@ describe('app events (brief p.20)', () => {
       n: 1,
     });
   });
+  it('server-authoritative events cannot be recorded by the app', () => {
+    expect(recordAppEventSchema.safeParse({ event: 'summaryGenerated', dim: 'ai' }).success).toBe(
+      false,
+    );
+  });
   it('every dimension belongs to a known event', () => {
     for (const e of Object.keys(appEventDims)) expect(appEvents).toContain(e);
   });

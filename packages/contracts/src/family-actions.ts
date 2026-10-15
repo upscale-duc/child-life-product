@@ -9,13 +9,13 @@ import type { MemberRole } from './baby.js';
 export const familyActions = [
   /** Save a check-in ("Hôm nay con có gì khác?", C01/C02). */
   'rhythm.checkin',
-  /** Mark a day as logged completely ("ghi đủ") for the baseline (brief p.12, Q-068). */
+  /** Kept for old callers only: valid days are automatic since D-073 #1, nobody marks "ghi đủ". */
   'rhythm.markDay',
   /** Try / give feedback on a suggestion (AC01, AC02). */
   'rhythm.feedback',
   /** Receive need-based suggestions and the next action after a check-in (H02, PS01). */
   'rhythm.suggestions',
-  /** Due date, reference reminders, confirming observation episodes (NL02a–c, NL07b). */
+  /** Due date and reference reminders (NL02a–c). Episodes (NL07b) follow `rhythm.checkin`. */
   'rhythm.setup',
   /** Read saved check-ins, rhythm facts and summaries (`history.read`). */
   'history.read',

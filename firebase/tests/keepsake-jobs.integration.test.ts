@@ -112,6 +112,17 @@ beforeEach(async () => {
   }
   await db.doc(`families/${familyId}`).set({ quotaBytes: 10 * 1024 ** 3, usedBytes: 0 });
   await db.doc('config/flags').set({ media_upload: on(), memory_story: on() });
+  // A roomy video budget: the ledger itself is covered by video-quota.integration.test.ts (Q2).
+  await db.doc('config/entitlements').set({
+    ...defaultEntitlementsConfig,
+    quotas: {
+      ...defaultEntitlementsConfig.quotas,
+      video: {
+        free: { limit: 50, window: 'calendar_month' },
+        premium: { limit: 50, window: 'billing_period' },
+      },
+    },
+  });
   await db.doc('publicConfig/keepsakes').set({
     version: 'ks_test',
     templates: keepsakeSeedV1.templates,
@@ -194,7 +205,8 @@ describe('requestMemoryStory', () => {
     const tasks = new FakeDispatcher();
     const req = request();
     const r = await requestMemoryStory(db, tasks, 'mom', req, now);
-    expect(r).toEqual({ jobId: jobIdOf('mom', req.requestId), status: 'queued' });
+    expect(r).toMatchObject({ jobId: jobIdOf('mom', req.requestId), status: 'queued' });
+    expect(r.quota).toMatchObject({ limit: 50, used: 0, reserved: 1 });
     const job = await db.doc(`babies/${babyId}/keepsakeJobs/${r.jobId}`).get();
     const input = job.get('input') as KeepsakeJobInput;
     expect(input.template.id).toBe('video_first_month');
@@ -334,9 +346,10 @@ describe('completion, retry and the sweeper', () => {
     expect(await reason(retryMemoryStory(db, tasks, 'dad', { babyId, jobId }, now))).toBe(
       'not-found',
     );
-    expect(await retryMemoryStory(db, tasks, 'mom', { babyId, jobId }, now)).toEqual({
+    expect(await retryMemoryStory(db, tasks, 'mom', { babyId, jobId }, now)).toMatchObject({
       jobId,
       status: 'queued',
+      quota: { used: 0, reserved: 1 },
     });
     expect(tasks.sent.at(-1)).toBe(`${jobId}-10`);
     expect((await ref.get()).get('status')).toBe('queued');

@@ -336,6 +336,9 @@ export const appEventDims: Partial<Record<AppEvent, readonly string[]>> = {
   ],
 };
 
+/** Counted by the server only (authoritative); the app may not record them. */
+export const serverOnlyAppEvents: readonly AppEvent[] = ['summaryGenerated', 'summaryFallback'];
+
 /** [n]: how many at once (e.g. 15 photos approved in one go). */
 export const recordAppEventSchema = z
   .object({
@@ -347,6 +350,10 @@ export const recordAppEventSchema = z
   .refine((r) => r.dim === undefined || (appEventDims[r.event] ?? []).includes(r.dim), {
     message: 'Unknown dimension for this event',
     path: ['dim'],
+  })
+  .refine((r) => !serverOnlyAppEvents.includes(r.event), {
+    message: 'Counted by the server only',
+    path: ['event'],
   });
 
 /** FB3 "Bạn xem lại góp ý trong Tôi › Trợ giúp & liên hệ": what this person sent. */

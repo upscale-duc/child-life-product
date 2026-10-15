@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { keepsakeTemplateIdSchema, occasionIds, type KeepsakeTemplate } from './keepsakes.js';
 import { audiences, mediaIdSchema } from './memories.js';
+import type { QuotaSnapshot } from './quota.js';
 
 /**
  * Video kỷ niệm render jobs (D-068 #1, #4; plan `docs/product/remember-2-plan.md` §4.3, §5).
@@ -92,6 +93,20 @@ export type MemoryStoryRequest = z.infer<typeof memoryStoryRequestSchema>;
 export const memoryStoryRetrySchema = z
   .object({ babyId: z.string().min(1).max(128), jobId: keepsakeJobIdSchema })
   .strict();
+
+/**
+ * MO04 (Q2, brief p.10): the video quota of the caller's household for the window a new video
+ * would count in (paid billing period, else the calendar month in the household zone).
+ */
+export const videoQuotaRequestSchema = z.object({ babyId: z.string().min(1).max(128) }).strict();
+
+/** `requestMemoryStory` / `retryMemoryStory` answer: the job and the quota after it (MO04). */
+export interface MemoryStoryAnswer {
+  jobId: string;
+  status: string;
+  /** Null for a job asked for before the ledger existed. */
+  quota: QuotaSnapshot | null;
+}
 
 /**
  * MM08 on iPhone: the job's Live Activity (lock screen, Dynamic Island). The app sends its

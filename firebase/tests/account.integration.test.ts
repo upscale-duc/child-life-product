@@ -475,6 +475,15 @@ describe('ownership and account deletion (13n, Q-016)', () => {
     await db.doc(`babies/${TEDDY}/reactions/memory__x1__dad`).set({ uid: 'dad' });
     await db.doc(`babies/${TEDDY}/favorites/dad__m1`).set({ uid: 'dad' });
     await db.doc('users/dad/devices/d1').set({ token: 't' });
+    // Premium Slice 3: NL07b episodes (who confirmed, who closed) and stored AI summaries stay.
+    await db
+      .doc(`babies/${TEDDY}/episodes/ep_1`)
+      .set({ confirmedBy: 'dad', closedBy: 'mom', status: 'closed' });
+    await db
+      .doc(`babies/${TEDDY}/episodes/ep_2`)
+      .set({ confirmedBy: 'mom', closedBy: 'dad', status: 'closed' });
+    await db.doc(`babies/${TEDDY}/summaries/su_1`).set({ requestedBy: 'dad', kind: 'handover' });
+    await db.doc('users/dad/settings/ai').set({ consent: null });
 
     const { jobId } = await requestAccountDeletion(db, caller('dad'), { confirm: true }, now);
     expect(await runDeletionJob(db, deps(), jobId, () => now)).toBe('done');
@@ -484,6 +493,15 @@ describe('ownership and account deletion (13n, Q-016)', () => {
       authorDeleted: true,
     });
     expect((await get(`babies/${TEDDY}/memories/x1`))!.authorDeleted).toBe(true);
+    expect((await get(`babies/${TEDDY}/episodes/ep_1`))!).toMatchObject({
+      status: 'closed',
+      authorDeleted: true,
+    });
+    expect((await get(`babies/${TEDDY}/episodes/ep_1`))!.closedByDeleted).toBeUndefined();
+    expect((await get(`babies/${TEDDY}/episodes/ep_2`))!).toMatchObject({ closedByDeleted: true });
+    expect((await get(`babies/${TEDDY}/episodes/ep_2`))!.authorDeleted).toBeUndefined();
+    expect((await get(`babies/${TEDDY}/summaries/su_1`))!.authorDeleted).toBe(true);
+    expect(await get('users/dad/settings/ai')).toBeUndefined();
     expect(await get(`babies/${TEDDY}/reactions/memory__x1__dad`)).toBeUndefined();
     expect(await get(`babies/${TEDDY}/favorites/dad__m1`)).toBeUndefined();
     expect(await get('users/dad')).toBeUndefined();

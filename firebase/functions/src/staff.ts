@@ -1275,8 +1275,17 @@ export async function aiBudgetLeft(db: Firestore, now: Date): Promise<boolean> {
   return b.monthlyBudgetVnd === 0 || b.spentVnd < b.monthlyBudgetVnd;
 }
 
-/** Adds a draft's cost to this month's spend (OpenAI only; the template is free). */
+/**
+ * Adds a model call's cost to this month's spend (OpenAI only; the template is free). One
+ * transaction: concurrent charges (stories, imports, summaries) never overwrite each other.
+ */
 export async function chargeAi(db: Firestore, now: Date, vnd: number): Promise<void> {
-  const b = await readAiBudget(db, now);
-  await db.doc('config/ai').set({ ...b, spentVnd: b.spentVnd + vnd });
+  const ref = db.doc('config/ai');
+  const month = now.toISOString().slice(0, 7);
+  await db.runTransaction(async (tx) => {
+    const parsed = aiBudgetSchema.safeParse((await tx.get(ref)).data());
+    const b = parsed.success ? parsed.data : { monthlyBudgetVnd: 15_000_000, month, spentVnd: 0 };
+    const current = b.month === month ? b : { ...b, month, spentVnd: 0 };
+    tx.set(ref, { ...current, spentVnd: current.spentVnd + vnd });
+  });
 }

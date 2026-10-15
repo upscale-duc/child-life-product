@@ -432,3 +432,34 @@ export function suggestEpisode(
   const lastThree = [...days].sort((a, b) => a.date.localeCompare(b.date)).slice(-3);
   return lastThree.filter((d) => d.state !== 'normal').length >= 2;
 }
+
+// ---------- Observation episodes (NL07b) ----------
+
+/**
+ * `babies/{b}/episodes/{ep_<32 hex>}`: a family-confirmed run of changed days ("Đợt theo dõi"),
+ * written by the phone (Cùng nuôi, Người chăm sóc) and closed only by a person — the server never
+ * closes one, silence never ends it (brief p.12). Read by `history.read` roles. Check-in ids are
+ * this baby's own (`babies/{b}/checkins/{id}`); no cross-baby reference is possible.
+ */
+export const observationEpisodeSchema = z
+  .object({
+    id: z.string().regex(/^ep_[a-f0-9]{32}$/),
+    babyId: z.string().min(1).max(128),
+    startDate: isoDate,
+    /** Set when someone closes it ("Đã ổn hơn"); null while open. */
+    endDate: isoDate.nullable(),
+    /** Who confirmed the suggestion to group the days. */
+    confirmedBy: z.string().min(1).max(128),
+    checkInIds: z
+      .array(z.string().regex(/^ci_[a-f0-9]{32}$/))
+      .min(1)
+      .max(30),
+    status: z.enum(['open', 'closed']),
+    closedBy: z.string().min(1).max(128).nullable(),
+  })
+  .refine((e) => e.endDate === null || e.endDate >= e.startDate, 'Episode ends before it starts')
+  .refine(
+    (e) => (e.status === 'open') === (e.endDate === null && e.closedBy === null),
+    'Open episodes have no end; closed ones have an end and who closed them',
+  );
+export type ObservationEpisode = z.infer<typeof observationEpisodeSchema>;

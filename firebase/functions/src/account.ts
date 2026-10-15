@@ -559,7 +559,7 @@ async function babyStep(
 
 /** Authored content stays with the family as "Người dùng đã xoá" (Q-016). */
 const deletedAuthor = { name: '', relation: 'deleted', relationCustom: null };
-const authoredCollections: Array<[string, string]> = [
+const authoredCollections: Array<[string, string] | [string, string, string]> = [
   ['records', 'createdBy'],
   ['memories', 'createdBy'],
   ['media', 'createdBy'],
@@ -569,6 +569,11 @@ const authoredCollections: Array<[string, string]> = [
   // Nhịp lớn lên check-ins and suggestion feedback stay with the family too (plan §7.1).
   ['checkins', 'authorUid'],
   ['recFeedback', 'authorUid'],
+  // NL07b episodes keep both people: who confirmed it (author) and who closed it, each marked.
+  ['episodes', 'confirmedBy'],
+  ['episodes', 'closedBy', 'closedByDeleted'],
+  // Stored AI summaries (plan §5.5) stay with the family; who asked becomes "đã xoá".
+  ['summaries', 'requestedBy'],
 ];
 
 async function accountStep(
@@ -595,7 +600,7 @@ async function accountStep(
       return;
     }
     case 'authored': {
-      for (const [collection, field] of authoredCollections) {
+      for (const [collection, field, marker = 'authorDeleted'] of authoredCollections) {
         let last: DocumentSnapshot | undefined;
         for (;;) {
           let q = db.collectionGroup(collection).where(field, '==', uid).limit(300);
@@ -605,8 +610,13 @@ async function accountStep(
           const batch = db.batch();
           let n = 0;
           for (const d of snap.docs) {
-            if (d.get('authorDeleted') === true) continue;
-            batch.update(d.ref, { author: deletedAuthor, authorDeleted: true });
+            if (d.get(marker) === true) continue;
+            batch.update(
+              d.ref,
+              marker === 'authorDeleted'
+                ? { author: deletedAuthor, authorDeleted: true }
+                : { [marker]: true },
+            );
             n++;
           }
           if (n > 0) await batch.commit();

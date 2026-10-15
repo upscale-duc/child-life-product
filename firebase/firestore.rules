@@ -68,7 +68,8 @@ service cloud.firestore {
       }
 
       // "Thông báo" (G-056): which pushes this account receives. "firstAid": the situations this
-      // account saved in Sơ cứu (D-058), ids only.
+      // account saved in Sơ cứu (D-058), ids only. "ai" (AI consent, NL10, P-151): readable by its
+      // owner, written only by the `setAiConsent` callable (no client branch below).
       match /settings/{docId} {
         allow read: if signedIn() && request.auth.uid == uid;
         allow write: if signedIn() && request.auth.uid == uid && ((docId == 'notifications' &&
@@ -128,6 +129,20 @@ service cloud.firestore {
       allow read: if signedIn() && resource.data.uid == request.auth.uid;
       allow write: if false;
     }
+
+    // ---- Premium billing (plan §5.2, §6.1; D-072 #6) ----
+    // Purchase intents, store-account bindings and the notification ledger are Functions-only:
+    // a client never reads a store reference or writes a binding (the app asks the callables).
+    match /purchaseIntents/{intentId} {
+      allow read, write: if false;
+    }
+    match /billingAccounts/{accountId} {
+      allow read, write: if false;
+    }
+    match /billingEvents/{eventId} {
+      allow read, write: if false;
+    }
+    // ---- end Premium billing ----
 
     // Family = ownership + quota container (P-001). Owner only until storage views (S11, P-003).
     match /families/{familyId} {
@@ -296,6 +311,25 @@ service cloud.firestore {
       match /facts/{factId} {
         allow read: if canReadCare(babyId);
         allow write: if false;
+      }
+
+      // ---------- Premium Slice 3 · AI summaries, NL07b episodes (plan §5.5, §6.1) ----------
+      // Stored summaries (SU01): written only by `generateSummary` (M04); read by history.read
+      // roles, except the milestone nudge (`moment`), which stays with Cùng nuôi like milestones.
+      match /summaries/{summaryId} {
+        allow read: if canReadCare(babyId) &&
+          (resource.data.kind != 'moment' || isParent(babyId));
+        allow write: if false;
+      }
+
+      // Observation episodes (NL07b): confirmed and closed by people (Cùng nuôi, Người chăm
+      // sóc, as themselves); the server never closes one. Read by history.read roles. Mirrors
+      // `observationEpisodeSchema` + createdAt / updatedAt.
+      match /episodes/{episodeId} {
+        allow read: if canReadCare(babyId);
+        allow create: if canLog(babyId) && babyOpen(babyId) && validNewEpisode(babyId, episodeId);
+        allow update: if canLog(babyId) && babyOpen(babyId) && validEpisodeClose();
+        allow delete: if false;
       }
 
       // Running timers (S5, P-011): one slot per type, shared live ("Cả nhà đang thấy"). The
@@ -510,6 +544,29 @@ service cloud.firestore {
         isoDate(d.date) &&
         (d.note == null || (d.note is string && d.note.size() <= 300)) &&
         d.createdAt == request.time;
+    }
+
+    // NL07b: a new episode is open, confirmed by the caller, over this baby's check-ins.
+    function validNewEpisode(babyId, episodeId) {
+      let d = request.resource.data;
+      let fields = ['id', 'babyId', 'startDate', 'endDate', 'confirmedBy', 'checkInIds', 'status',
+        'closedBy', 'createdAt', 'updatedAt'];
+      return episodeId.matches('^ep_[a-f0-9]{32}$') &&
+        d.keys().hasOnly(fields) && d.keys().hasAll(fields) &&
+        d.id == episodeId && d.babyId == babyId && d.confirmedBy == request.auth.uid &&
+        isoDate(d.startDate) && d.endDate == null && d.status == 'open' && d.closedBy == null &&
+        d.checkInIds is list && d.checkInIds.size() >= 1 && d.checkInIds.size() <= 30 &&
+        d.createdAt == request.time && d.updatedAt == request.time;
+    }
+
+    // Closing, once, by the caller: only status, end date, who closed it and updatedAt change.
+    function validEpisodeClose() {
+      let d = request.resource.data;
+      return resource.data.status == 'open' &&
+        d.diff(resource.data).affectedKeys().hasOnly(['status', 'endDate', 'closedBy', 'updatedAt']) &&
+        d.status == 'closed' && d.closedBy == request.auth.uid &&
+        isoDate(d.endDate) && d.endDate >= resource.data.startDate &&
+        d.updatedAt == request.time;
     }
 
     // Relatives never log (12a, 7b: no "+").

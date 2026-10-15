@@ -96,6 +96,7 @@ describe('runJob', () => {
       width: 1080,
       height: 1920,
       bytes: 1234,
+      lease: 1,
     });
     expect(await runJob(deps({ store }), babyId, jobId)).toBe('skipped');
   });
@@ -145,5 +146,57 @@ describe('runJob', () => {
     await ref().update({ status: 'queued', input: { ...input, template: old }, attempts: 0 });
     expect(await runJob(deps({ renderer }), babyId, jobId)).toBe('done');
     expect(seen[1]).toBe(null);
+  });
+});
+
+describe('fencing (Q2)', () => {
+  it('each claim takes a new lease; the completion carries it', async () => {
+    await ref().set({ status: 'queued', attempts: 0, input, uid: 'mom', lease: 4 });
+    expect(await runJob(deps(), babyId, jobId)).toBe('done');
+    const job = await ref().get();
+    expect(job.get('lease')).toBe(5);
+    expect(job.get('output.lease')).toBe(5);
+  });
+
+  it('a worker whose job was swept and handed to another worker cannot complete it', async () => {
+    const renderer: Renderer = {
+      async render() {
+        // Meanwhile: the sweeper failed the job, "Thử lại" queued it and another worker claimed it.
+        await ref().update({ status: 'rendering', lease: 2, attempts: 1 });
+        return { durationMs: 1, width: 1080, height: 1920 };
+      },
+    };
+    expect(await runJob(deps({ renderer }), babyId, jobId)).toBe('stale');
+    const job = await ref().get();
+    expect(job.get('status')).toBe('rendering');
+    expect(job.get('lease')).toBe(2);
+    expect(job.get('output')).toBeUndefined();
+  });
+
+  it('a worker whose job the sweeper failed cannot complete it nor put it back in the queue', async () => {
+    const swept = async () => {
+      await ref().update({ status: 'failed', error: 'timeout' });
+    };
+    const ok: Renderer = {
+      async render() {
+        await swept();
+        return { durationMs: 1, width: 1080, height: 1920 };
+      },
+    };
+    expect(await runJob(deps({ renderer: ok }), babyId, jobId)).toBe('stale');
+    expect((await ref().get()).get('status')).toBe('failed');
+    expect((await ref().get()).get('output')).toBeUndefined();
+
+    await ref().set({ status: 'queued', attempts: 0, input, uid: 'mom' });
+    const broken: Renderer = {
+      async render() {
+        await swept();
+        throw new Error('chrome');
+      },
+    };
+    expect(await runJob(deps({ renderer: broken }), babyId, jobId)).toBe('stale');
+    const job = await ref().get();
+    expect(job.get('status')).toBe('failed');
+    expect(job.get('error')).toBe('timeout');
   });
 });

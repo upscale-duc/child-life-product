@@ -16,15 +16,36 @@ import {
   memoryStoryRequestSchema,
   memoryStoryRetrySchema,
   occasions,
+  familyCan,
+  videoQuotaRequestSchema,
+  type GrantEnvironment,
+  type MemoryStoryAnswer,
+  type MemberRole,
+  type QuotaSnapshot,
   type KeepsakeJobErrorCode,
   type KeepsakeJobInput,
   type KeepsakeLiveState,
   type KeepsakeTemplate,
 } from '@child-life/contracts';
 import { FieldValue, Timestamp, type Firestore } from 'firebase-admin/firestore';
-import { hasPremiumTemplates } from './entitlements.js';
+import {
+  hasPremiumTemplates,
+  readEntitlementsConfig,
+  serverGrantEnvironment,
+} from './entitlements.js';
 import { familyBucket } from './features.js';
 import { mediaPaths, type ImageOps, type MediaStore } from './memories.js';
+import {
+  countersAfter,
+  readForSettle,
+  readVideoQuota,
+  reserveInTx,
+  settleInTx,
+  snapshotOf,
+  videoWindowFor,
+  windowRef,
+  type VideoWindow,
+} from './video-quota.js';
 
 /**
  * Video kỷ niệm jobs (D-068; contracts `keepsake-jobs.ts`; plan §5). No baby name, text or path
@@ -86,7 +107,8 @@ export async function requestMemoryStory(
   uid: string,
   data: unknown,
   now: Date,
-): Promise<{ jobId: string; status: string }> {
+  environment: GrantEnvironment = serverGrantEnvironment(),
+): Promise<MemoryStoryAnswer> {
   const parsed = memoryStoryRequestSchema.safeParse(data);
   if (!parsed.success) throw new KeepsakeJobError('invalid-argument', 'malformed');
   const req = parsed.data;
@@ -96,7 +118,20 @@ export async function requestMemoryStory(
   const existing = await ref.get();
   if (existing.exists) {
     if (existing.get('uid') !== uid) throw new KeepsakeJobError('permission-denied', 'taken');
-    return { jobId, status: existing.get('status') as string };
+    const familyId = existing.get('familyId') as string;
+    const window = await videoWindowFor(
+      db,
+      familyId,
+      req.babyId,
+      await readEntitlementsConfig(db),
+      environment,
+      now,
+    );
+    return {
+      jobId,
+      status: existing.get('status') as string,
+      quota: await readVideoQuota(db, familyId, window),
+    };
   }
 
   const [member, baby, flagsDoc, catalogDoc] = await Promise.all([
@@ -146,7 +181,7 @@ export async function requestMemoryStory(
     live,
     catalog.data.premium,
     keepsakeNeedsPremiumCheck(live, catalog.data.premium) &&
-      (await hasPremiumTemplates(db, uid, req.babyId, now)),
+      (await hasPremiumTemplates(db, uid, req.babyId, now, environment)),
   );
   if (access === 'unavailable') {
     throw new KeepsakeJobError('failed-precondition', 'template-unavailable');
@@ -304,9 +339,34 @@ export async function requestMemoryStory(
         : `content/keepsakes/${template.assets.music}`,
   };
 
+  // Q2 (brief p.10): one video unit, reserved in the transaction that creates the job, so twenty
+  // presses at once never take more than the window has (M10). Operational caps above still apply.
+  const window = await videoWindowFor(
+    db,
+    familyId,
+    req.babyId,
+    await readEntitlementsConfig(db),
+    environment,
+    now,
+  );
+  const reservationId = reservationIdOf(jobId, 0);
   const created = await db.runTransaction(async (tx) => {
     const again = await tx.get(ref);
-    if (again.exists) return false;
+    if (again.exists) return null;
+    const windowSnap = await tx.get(windowRef(db, familyId, window.id));
+    const held = reserveInTx(
+      tx,
+      db,
+      familyId,
+      window,
+      windowSnap,
+      reservationId,
+      { babyId: req.babyId, jobId },
+      now,
+    );
+    if (held.outcome !== 'reserved') {
+      throw new KeepsakeJobError('resource-exhausted', 'QUOTA_EXCEEDED');
+    }
     tx.create(ref, {
       id: jobId,
       uid,
@@ -328,16 +388,127 @@ export async function requestMemoryStory(
       error: null,
       output: null,
       memoryId: null,
+      // The ledger reservation and the fencing token: the renderer bumps `lease` on each claim
+      // and only the current holder may finish the job.
+      quota: { reservationId, windowId: window.id, seq: 0 },
+      lease: 0,
       createdAt: now,
       updatedAt: now,
       startedAt: null,
       finishedAt: null,
     });
-    return true;
+    return snapshotOf(held.window, window.end);
   });
-  if (created && dispatcher) await dispatcher.dispatch(req.babyId, jobId, 0);
+  if (created === null) {
+    const status = ((await ref.get()).get('status') as string | undefined) ?? 'queued';
+    return { jobId, status, quota: await readVideoQuota(db, familyId, window) };
+  }
+  if (dispatcher) await dispatchOrRelease(db, dispatcher, req.babyId, jobId, 0, now);
   console.info('keepsake job requested', { jobId, template: template.id });
-  return { jobId, status: 'queued' };
+  return { jobId, status: 'queued', quota: created };
+}
+
+/** One reservation per attempt series: the first request is 0, each "Thử lại" the next. */
+export const reservationIdOf = (jobId: string, seq: number) => `video_${jobId}_${seq}`;
+
+/**
+ * Hands the job to the renderer; when that fails before any worker saw it (still queued, never
+ * claimed), the job fails as `unavailable` and its reservation is released ("cancel before the
+ * worker"), so the parent gets "Thử lại" and the unit back.
+ */
+async function dispatchOrRelease(
+  db: Firestore,
+  dispatcher: RenderDispatcher,
+  babyId: string,
+  jobId: string,
+  attempt: number,
+  now: Date,
+): Promise<void> {
+  try {
+    await dispatcher.dispatch(babyId, jobId, attempt);
+  } catch (error) {
+    const ref = jobRef(db, babyId, jobId);
+    await db.runTransaction(async (tx) => {
+      const job = await tx.get(ref);
+      const quota = job.get('quota') as JobQuota | undefined;
+      const familyId = job.get('familyId') as string | undefined;
+      if (!job.exists || job.get('status') !== 'queued' || (job.get('attempts') ?? 0) !== 0) return;
+      const reads =
+        quota && familyId ? await readForSettle(tx, db, familyId, quota.reservationId) : null;
+      tx.update(ref, { status: 'failed', error: 'unavailable', updatedAt: now, finishedAt: now });
+      if (reads && familyId) settleInTx(tx, db, familyId, reads, 'release', now);
+    });
+    throw error;
+  }
+}
+
+interface JobQuota {
+  reservationId: string;
+  windowId: string;
+  seq: number;
+}
+
+/**
+ * Gives back the unit of [reservationId] once its job failed for good, was deleted, or moved on
+ * to a newer reservation (a retry). Safe to call any number of times: only a `reserved`
+ * reservation is released, and never the one a live job still holds.
+ */
+export async function releaseJobQuota(
+  db: Firestore,
+  babyId: string,
+  jobId: string,
+  familyId: string,
+  reservationId: string,
+  now: Date,
+): Promise<'released' | 'noop'> {
+  return db.runTransaction(async (tx) => {
+    const job = await tx.get(jobRef(db, babyId, jobId));
+    const current = (job.get('quota') as JobQuota | undefined)?.reservationId;
+    if (job.exists && current === reservationId && job.get('status') !== 'failed') return 'noop';
+    const reads = await readForSettle(tx, db, familyId, reservationId);
+    const r = settleInTx(tx, db, familyId, reads, 'release', now);
+    return r.outcome === 'released' ? 'released' : 'noop';
+  });
+}
+
+/** MO04: the household's video quota for the window a new video would count in. */
+export async function getVideoQuota(
+  db: Firestore,
+  uid: string,
+  data: unknown,
+  now: Date,
+  environment: GrantEnvironment = serverGrantEnvironment(),
+): Promise<QuotaSnapshot> {
+  const parsed = videoQuotaRequestSchema.safeParse(data);
+  if (!parsed.success) throw new KeepsakeJobError('invalid-argument', 'malformed');
+  const { babyId } = parsed.data;
+  const [member, baby] = await Promise.all([
+    db.doc(`babies/${babyId}/members/${uid}`).get(),
+    db.doc(`babies/${babyId}`).get(),
+  ]);
+  const until = member.get('accessUntilAt') as Timestamp | null | undefined;
+  if (
+    !member.exists ||
+    member.get('status') !== 'active' ||
+    (until && until.toMillis() <= now.getTime()) ||
+    !familyCan(
+      { role: member.get('role') as MemberRole, isOwner: member.get('isOwner') === true },
+      'moments.create',
+    )
+  ) {
+    throw new KeepsakeJobError('permission-denied', 'not-allowed');
+  }
+  const familyId = baby.get('familyId') as string | undefined;
+  if (!familyId) throw new KeepsakeJobError('not-found', 'not-found');
+  const window: VideoWindow = await videoWindowFor(
+    db,
+    familyId,
+    babyId,
+    await readEntitlementsConfig(db),
+    environment,
+    now,
+  );
+  return readVideoQuota(db, familyId, window);
 }
 
 /** MM14 "Thử lại": a failed job goes back in the queue with the same inputs. */
@@ -347,15 +518,55 @@ export async function retryMemoryStory(
   uid: string,
   data: unknown,
   now: Date,
-): Promise<{ jobId: string; status: string }> {
+  environment: GrantEnvironment = serverGrantEnvironment(),
+): Promise<MemoryStoryAnswer> {
   const parsed = memoryStoryRetrySchema.safeParse(data);
   if (!parsed.success) throw new KeepsakeJobError('invalid-argument', 'malformed');
   const { babyId, jobId } = parsed.data;
   const ref = jobRef(db, babyId, jobId);
+  const first = await ref.get();
+  if (!first.exists || first.get('uid') !== uid) {
+    throw new KeepsakeJobError('not-found', 'not-found');
+  }
+  const familyId = first.get('familyId') as string;
+  // A retry is a new render: it takes a new reservation in the window of today (Q03, M12), after
+  // the failed attempt's unit is given back (here, if the failure trigger has not yet).
+  const window = await videoWindowFor(
+    db,
+    familyId,
+    babyId,
+    await readEntitlementsConfig(db),
+    environment,
+    now,
+  );
   const retried = await db.runTransaction(async (tx) => {
     const job = await tx.get(ref);
     if (!job.exists || job.get('uid') !== uid) throw new KeepsakeJobError('not-found', 'not-found');
     if (job.get('status') !== 'failed') return null;
+    const old = job.get('quota') as JobQuota | undefined;
+    const oldReads = old ? await readForSettle(tx, db, familyId, old.reservationId) : null;
+    const windowSnap = await tx.get(windowRef(db, familyId, window.id));
+    const released = oldReads ? settleInTx(tx, db, familyId, oldReads, 'release', now) : null;
+    const base =
+      oldReads && released && old?.windowId === window.id
+        ? (countersAfter(oldReads, released) ?? undefined)
+        : undefined;
+    const seq = (old?.seq ?? -1) + 1;
+    const reservationId = reservationIdOf(jobId, seq);
+    const held = reserveInTx(
+      tx,
+      db,
+      familyId,
+      window,
+      windowSnap,
+      reservationId,
+      { babyId, jobId },
+      now,
+      base,
+    );
+    if (held.outcome !== 'reserved') {
+      throw new KeepsakeJobError('resource-exhausted', 'QUOTA_EXCEEDED');
+    }
     const retries = ((job.get('retries') as number | undefined) ?? 0) + 1;
     tx.update(ref, {
       status: 'queued',
@@ -364,12 +575,16 @@ export async function retryMemoryStory(
       attempts: 0,
       error: null,
       retries,
+      quota: { reservationId, windowId: window.id, seq },
       updatedAt: now,
     });
-    return retries;
+    return { retries, quota: snapshotOf(held.window, window.end) };
   });
-  if (retried !== null && dispatcher) await dispatcher.dispatch(babyId, jobId, retried * 10);
-  return { jobId, status: retried === null ? 'unchanged' : 'queued' };
+  if (retried === null) {
+    return { jobId, status: 'unchanged', quota: await readVideoQuota(db, familyId, window) };
+  }
+  if (dispatcher) await dispatchOrRelease(db, dispatcher, babyId, jobId, retried.retries * 10, now);
+  return { jobId, status: 'queued', quota: retried.quota };
 }
 
 /**
@@ -392,8 +607,16 @@ export async function completeKeepsakeJob(
     width: number;
     height: number;
     bytes: number;
+    lease?: number;
   } | null;
   if (!output) return 'ignored';
+  // Fencing: only the renderer holding the current lease completes a job (a stale worker's
+  // completion is refused by the renderer's own transaction; this is the second check).
+  const lease = job.get('lease') as number | undefined;
+  if (typeof lease === 'number' && lease > 0 && output.lease !== lease) {
+    console.warn('keepsake job stale completion', { jobId });
+    return 'ignored';
+  }
   const ids = outputIdsOf(jobId);
   const dir = mediaPaths(babyId, ids.mediaId).dir;
 
@@ -416,6 +639,9 @@ export async function completeKeepsakeJob(
     const uid = fresh.get('uid') as string;
     const member = await tx.get(db.doc(`babies/${babyId}/members/${uid}`));
     const familyId = fresh.get('familyId') as string;
+    // Q2: the video's unit moves from reserved to used, once (M11).
+    const quota = fresh.get('quota') as JobQuota | undefined;
+    const quotaReads = quota ? await readForSettle(tx, db, familyId, quota.reservationId) : null;
     const audience = fresh.get('audience') as 'parents' | 'family';
     const occasion = fresh.get('occasion') as keyof typeof occasions | null;
     const occasionDate = fresh.get('occasionDate') as string | null;
@@ -504,6 +730,10 @@ export async function completeKeepsakeJob(
     });
     tx.update(db.doc(`families/${familyId}`), { usedBytes: FieldValue.increment(stored) });
     tx.update(ref, { memoryId: ids.memoryId, outputMediaId: ids.mediaId, updatedAt: now });
+    if (quotaReads) {
+      const settled = settleInTx(tx, db, familyId, quotaReads, 'commit', now);
+      if (settled.outcome !== 'committed') console.warn('keepsake quota not committed', { jobId });
+    }
     // MM17 + push to the person who asked only (D-068 #4); generic copy on the lock screen.
     tx.set(db.doc(`babies/${babyId}/notifications/keepsake_${jobId}`), {
       kind: 'keepsakeVideo',
@@ -542,6 +772,12 @@ export async function deleteMemoryStory(
     if (job.get('status') !== 'failed') {
       throw new KeepsakeJobError('failed-precondition', 'not-failed');
     }
+    // A failed job's unit is normally back already; make sure before the job goes.
+    const quota = job.get('quota') as JobQuota | undefined;
+    const familyId = job.get('familyId') as string | undefined;
+    const reads =
+      quota && familyId ? await readForSettle(tx, db, familyId, quota.reservationId) : null;
+    if (reads && familyId) settleInTx(tx, db, familyId, reads, 'release', new Date());
     tx.delete(ref);
     return true;
   });
@@ -634,6 +870,12 @@ export async function keepsakeJobChanged(
         delivered: false,
       })
       .catch(() => undefined);
+    // Q2: a job that failed for good gives its unit back, once (M11).
+    const quota = after.get('quota') as JobQuota | undefined;
+    const familyId = after.get('familyId') as string | undefined;
+    if (quota && familyId) {
+      await releaseJobQuota(db, babyId, jobId, familyId, quota.reservationId, now);
+    }
   }
   const target = after.get('live') as { token?: string | null; fcm?: string } | undefined;
   if (!live || !target?.fcm) return;
@@ -661,14 +903,31 @@ export async function sweepKeepsakeJobs(
   store: MediaStore,
   now: Date,
 ): Promise<number> {
+  // Transactional: a worker that finishes at the same moment either wins (the job is no longer
+  // rendering) or loses its lease; the unit is released in the same write (Q2).
   const fail = async (
     doc: FirebaseFirestore.QueryDocumentSnapshot,
     error: KeepsakeJobErrorCode,
-  ) => {
-    await doc.ref.update({ status: 'failed', error, updatedAt: now, finishedAt: now });
+  ): Promise<boolean> => {
+    const status = doc.get('status') as string;
+    const failed = await db.runTransaction(async (tx) => {
+      const job = await tx.get(doc.ref);
+      if (!job.exists || job.get('status') !== status || job.get('lease') !== doc.get('lease')) {
+        return false;
+      }
+      const quota = job.get('quota') as JobQuota | undefined;
+      const familyId = job.get('familyId') as string | undefined;
+      const reads =
+        quota && familyId ? await readForSettle(tx, db, familyId, quota.reservationId) : null;
+      tx.update(doc.ref, { status: 'failed', error, updatedAt: now, finishedAt: now });
+      if (reads && familyId) settleInTx(tx, db, familyId, reads, 'release', now);
+      return true;
+    });
+    if (!failed) return false;
     const { mediaId } = outputIdsOf(doc.id);
     const dir = mediaPaths(doc.get('babyId') as string, mediaId).dir;
     for (const f of ['original.mp4', 'frame.jpg']) await store.delete(`${dir}/${f}`);
+    return true;
   };
   let n = 0;
   const rendering = await db
@@ -677,8 +936,7 @@ export async function sweepKeepsakeJobs(
     .where('startedAt', '<', new Date(now.getTime() - keepsakeJobLimits.renderMinutes * 60_000))
     .get();
   for (const d of rendering.docs) {
-    await fail(d, 'timeout');
-    n++;
+    if (await fail(d, 'timeout')) n++;
   }
   const queued = await db
     .collectionGroup('keepsakeJobs')
@@ -686,8 +944,7 @@ export async function sweepKeepsakeJobs(
     .where('updatedAt', '<', new Date(now.getTime() - keepsakeJobLimits.queuedMinutes * 60_000))
     .get();
   for (const d of queued.docs) {
-    await fail(d, 'unavailable');
-    n++;
+    if (await fail(d, 'unavailable')) n++;
   }
   if (n) console.info('keepsake jobs swept', { n });
   return n;
