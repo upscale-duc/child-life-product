@@ -876,3 +876,113 @@ export function completeSpan(x: {
   }
   return { start, end, durationMin, derived: null, inconsistent: false };
 }
+
+// ---------- Ongoing states → the app's timers (Lumi 2026-10-16) ----------
+
+export interface CareState {
+  timer: 'sleep' | 'breast';
+  /** start: happening now / just began ("con đang ngủ"); stop: just ended ("dậy rồi"). */
+  action: 'start' | 'stop';
+  /** "đang cho bú bên trái": the side to run first (both → null: one side at a time). */
+  side: 'left' | 'right' | null;
+  /** The matched words (folded), for evidence. */
+  text: string;
+}
+
+const W = (alts: string) => new RegExp(String.raw`(?<![\p{L}])(?:${alts})(?![\p{L}])`, 'u');
+/** A sleep problem or a concern, not a state: "khó ngủ", "chưa ngủ", "hay thức giấc"… */
+const sleepConcern = W(
+  'kho ngu|kho vao giac|khong ngu|chua ngu|chang ngu|khong chiu ngu|it ngu|ngu it|mat ngu|ngu kem|ngu khong ngon|buon ngu|hay thuc|thuc giac|thuc dem|giat minh|quay|khoc',
+);
+const sleepStop = W(
+  'ngu day|day roi|day rui|vua day|moi day|da day|thuc day|tinh day|tinh giac|day luc|day vao luc|day hoi|day nhe',
+);
+const sleepStopEn =
+  /\b(?:woke up|woken up|is awake|awake now|just woke|has woken|wakes up|is up now|up from (?:her|his|the) nap)\b/u;
+const sleepStart = W(
+  'dang ngu|vua ngu|moi ngu|ngu roi|ngu rui|da ngu|di ngu roi|bat dau ngu|vao giac|ngu thiep|ru ngu xong|ru xong roi|ngu say roi|dang ngu trua|dang ngu ngay',
+);
+const sleepStartEn =
+  /\b(?:is asleep|fell asleep|fallen asleep|went to sleep|gone to sleep|started sleeping|is sleeping|sleeping now|is napping|napping now|down for (?:a |her |his )?nap)\b/u;
+const bottleWords = W('binh|bu binh|sua cong thuc|cong thuc|bottle|formula|ml|oz');
+const breastStart = W(
+  'dang (?:cho (?:be |con )?)?(?:bu|ti)(?: me)?|bat dau (?:cho (?:be |con )?)?(?:bu|ti)(?: me)?|dang cho (?:be |con )?an sua me',
+);
+const breastStartEn =
+  /\b(?:nursing now|is nursing|started nursing|breastfeeding now|is breastfeeding|started breastfeeding|feeding on the (?:left|right))\b/u;
+const breastStop = W('(?:cho (?:be |con )?)?(?:bu|ti)(?: me)? xong|xong cu bu|bu no roi|ti no roi');
+const breastStopEn =
+  /\b(?:done nursing|finished nursing|done breastfeeding|finished breastfeeding|stopped nursing)\b/u;
+
+/**
+ * Ongoing care states in [text] that map to the app's running timers (sleep, breastfeeding):
+ * "con đang ngủ", "bé vừa ngủ", "bé ngủ rồi", "bắt đầu ngủ lúc 21h" → sleep start; "con dậy rồi",
+ * "bé vừa dậy", "dậy lúc 6h" → sleep stop; "đang cho bú (trái)" → breast start; "bú xong rồi" →
+ * breast stop. A concern ("khó ngủ", "chưa ngủ", "hay thức giấc"), a bottle, or a finished log
+ * with its length ("ngủ 2 tiếng", "bú 15 phút xong") is not a state. At most one per timer.
+ * "dậy" is matched with its diacritics when the text has any ("dạy", "đầy" are other words).
+ */
+export function careStatesIn(text: string): CareState[] {
+  const f = foldVi(text);
+  const lower = lowerVi(text);
+  const marks = hasVietnameseMarks(text);
+  const said = durationsIn(text).length > 0;
+  const out: CareState[] = [];
+  const hit = (re: RegExp) => re.exec(f)?.[0] ?? null;
+  // Sleep: a stop ("ngủ dậy") is read before a start ("ngủ").
+  if (!sleepConcern.test(f)) {
+    const wakeWord = !marks || /dậy|thức|tỉnh/u.test(lower);
+    const stop = (wakeWord ? hit(sleepStop) : null) ?? hit(sleepStopEn);
+    const start = hit(sleepStart) ?? hit(sleepStartEn);
+    if (stop && !said) out.push({ timer: 'sleep', action: 'stop', side: null, text: stop });
+    else if (start && !stop && !(said && /ngu duoc|slept for/u.test(f))) {
+      out.push({ timer: 'sleep', action: 'start', side: null, text: start });
+    }
+  }
+  if (!bottleWords.test(f)) {
+    const stop = hit(breastStop) ?? hit(breastStopEn);
+    const start = hit(breastStart) ?? hit(breastStartEn);
+    const side = breastSideIn(text);
+    if (stop && !said) out.push({ timer: 'breast', action: 'stop', side: null, text: stop });
+    else if (start && !stop && !said) {
+      out.push({
+        timer: 'breast',
+        action: 'start',
+        side: side === 'left' || side === 'right' ? side : null,
+        text: start,
+      });
+    }
+  }
+  return out;
+}
+
+/**
+ * Words that make a sleep / feeding note an OBSERVATION ("something different noticed"): khó
+ * ngủ, hay thức giấc, quấy hơn, ăn ít, biếng bú, bỏ bú, ngủ ít hơn… A plain state or log ("con
+ * đang ngủ", "bé ngủ 2 tiếng", "bé vừa bú") has none of them and is never an observation.
+ */
+export function observationCueIn(text: string): boolean {
+  const f = foldVi(text);
+  return (
+    W(
+      'kho|hay thuc|thuc giac|thuc dem|giat minh|quay|khoc|it hon|nhieu hon|hon moi khi|hon hom qua|it qua|ngu it|an it|bu it|bieng|bo bu|bo an|khong chiu|chang chiu|khong muon|bat thuong|la thuong|khac thuong|khac moi ngay|tre hon|som hon|muon hon|lau hon|ngan hon|khong ngon|tinh giac|tran troc|van minh',
+    ).test(f) ||
+    /\b(?:fussy|fussier|trouble|hard to|less than|more than|refus\w*|won'?t|waking|unusual|restless|worse|better than|harder|cranky)\b/u.test(
+      f,
+    )
+  );
+}
+
+/** The same message again (case, diacritics kept, spaces and punctuation ignored). */
+export function sameMessage(a: string | null | undefined, b: string | null | undefined): boolean {
+  const n = (s: string) =>
+    s
+      .normalize('NFC')
+      .toLocaleLowerCase('vi')
+      .replace(/[^\p{L}\p{N}]+/gu, ' ')
+      .trim();
+  return typeof a === 'string' && typeof b === 'string' && n(a) !== '' && n(a) === n(b);
+}
+
+/** A repeated message within this many minutes reuses the draft still waiting above it. */
+export const assistantRepeatWindowMin = 10;

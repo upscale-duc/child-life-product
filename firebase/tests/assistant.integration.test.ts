@@ -120,6 +120,11 @@ const extraction = (
 const hhmm = (iso: string) => localClock(ZONE, new Date(iso));
 
 const TEXT = '8 giờ sáng con bú bình 120 ml, 9 giờ ngủ tới 10 giờ.';
+/**
+ * Lumi 2026-10-16: the same words again while their draft still waits are answered at once
+ * (SAME_AS_PENDING, 0 credits); tests that need a second, separate task send other words.
+ */
+const AGAIN = 'Ghi thêm: 8 giờ sáng con bú bình 120 ml, 9 giờ ngủ tới 10 giờ.';
 const batch = outputs.text_batch!.items as {
   kind: string;
   ml?: number;
@@ -687,7 +692,7 @@ describe('U: credits — quote, reserve, commit, release, upgrade', () => {
     await setFreeLimit(1);
     await prepared();
     const requestId = randomUUID();
-    const blocked = await start(TEXT, { requestId });
+    const blocked = await start(AGAIN, { requestId });
     expect(blocked).toMatchObject({ status: 'blocked', reasonCode: 'USAGE_EXHAUSTED' });
     expect(blocked.data.task).toMatchObject({ state: 'blocked', usage: 'none' });
     expect(await opsDocs()).toHaveLength(1);
@@ -711,7 +716,7 @@ describe('U: credits — quote, reserve, commit, release, upgrade', () => {
     const q = await quote();
     expect(q.usage).toMatchObject({ plan: 'premium', limit: 200, used: 0 });
     const gw = fakeModelGateway({ extract: [textBatch()] });
-    const resumed = await start(TEXT, { requestId, quoteId: q.quoteId, gw });
+    const resumed = await start(AGAIN, { requestId, quoteId: q.quoteId, gw });
     expect(resumed.taskId).toBe(blocked.taskId);
     expect(resumed.data.task).toMatchObject({
       state: 'queued',
@@ -1088,7 +1093,7 @@ describe('M: integration matrix', () => {
         },
       ],
     });
-    const r2 = await start(TEXT, { gw: cancelling });
+    const r2 = await start(AGAIN, { gw: cancelling });
     taskId = r2.taskId!;
     const late = await work(taskId, cancelling);
     expect(late).toMatchObject({ ran: true, fenced: true });
@@ -1217,7 +1222,7 @@ describe('M: integration matrix', () => {
     await work(r.taskId!, gw, after);
     expect(await win('assistant_cal_2026-10')).toMatchObject({ used: 1, reserved: 0 });
     expect((await db.doc(`families/${F}/quota/assistant_cal_2026-11`).get()).exists).toBe(false);
-    const r2 = await start(TEXT, { gw, at: after });
+    const r2 = await start(AGAIN, { gw, at: after });
     await work(r2.taskId!, gw, after);
     expect(await win('assistant_cal_2026-11')).toMatchObject({ used: 1, reserved: 0 });
     expect(await win('assistant_cal_2026-10')).toMatchObject({ used: 1, reserved: 0 });
@@ -1386,7 +1391,7 @@ describe('writers: check-ins, nursing, budgets, consent', () => {
     expect((await db.collection(`babies/${B}/checkins`).get()).size).toBe(1);
   });
 
-  it('nursing is minutes and a side, never ml; a missing side needs review first', async () => {
+  it('nursing is minutes and a side, never ml; a side not said takes the form default (never blocks)', async () => {
     const br = (side: string | null) =>
       extraction([
         intent('breast', { time: '07:30', dayOffset: 0, durationMin: 20, side }, [
@@ -1400,10 +1405,10 @@ describe('writers: check-ins, nursing, budgets, consent', () => {
     const rec = (await assistantRecords())[0]!;
     expect(rec.get('type')).toBe('breast');
     expect(rec.get('data')).toEqual({ side: 'left', durationMin: 20 });
+    // Lumi 2026-10-16: like the form ("bên còn lại"): the last feed was on the left → right.
     const b = await prepared([br(null)], 'Bú mẹ 20 phút lúc 7 giờ 30 sáng');
-    expect(drafts(b.snap)[0]).toMatchObject({ state: 'needs_review', missingFields: ['side'] });
-    const r2 = await confirm(b.taskId, [{ draftId: drafts(b.snap)[0]!.id, revision: 1 }]);
-    expect(r2.data.items[0]!.errorCode).toBe('REVIEW_REQUIRED');
+    expect(drafts(b.snap)[0]).toMatchObject({ state: 'draft', missingFields: [] });
+    expect(drafts(b.snap)[0]!.payload).toMatchObject({ side: 'right' });
   });
 
   it('a caregiver saves care drafts; a relative never does', async () => {
@@ -1590,7 +1595,7 @@ describe('feedback, history, deletion, sweeper', () => {
   it('delete conversation: chat, tasks and drafts go; saved records stay; open work released', async () => {
     const { taskId, snap } = await prepared();
     await confirm(taskId, [{ draftId: drafts(snap)[0]!.id, revision: 1 }]);
-    const open = await start(TEXT, { conversationId: snap.task.conversationId, uid: DAD });
+    const open = await start(AGAIN, { conversationId: snap.task.conversationId, uid: DAD });
     expect(await win()).toMatchObject({ used: 1, reserved: 1 });
     // D-075 #2: the shared thread is deleted by a Cùng nuôi only, for everyone.
     expect(
@@ -1636,7 +1641,7 @@ describe('feedback, history, deletion, sweeper', () => {
     await work(r.taskId!, gw, later);
     expect((await snapshot(r.taskId!)).task.state).toBe('ready');
 
-    const c = await prepared([clarifyAsk()]);
+    const c = await prepared([clarifyAsk()], AGAIN);
     expect(c.snap.task.state).toBe('awaiting_clarification');
     const late = new Date(now.getTime() + 31 * 60_000);
     expect((await sweepAssistantTasks(db, late)).expired).toBe(1);

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
+import 'package:child_life/features/care/timer_models.dart';
 import 'package:child_life/features/memories/memory_repository.dart';
 import 'package:child_life/features/premium/premium_models.dart';
 import 'package:child_life/features/reminders/reminder_models.dart';
@@ -658,6 +659,9 @@ List<Override> rhythmOverrides({
   List<CareRecord> growth = const [],
   List<Reminder> reminders = const [],
   DateTime? now,
+
+  /// Running care timers (Lumi 2026-10-16: the chat's timer cards read them).
+  Map<TimerType, CareTimer> timers = const {},
 }) => [
   ...familyOverrides(
     me: me ?? mai,
@@ -666,6 +670,7 @@ List<Override> rhythmOverrides({
     records: records,
     growth: growth,
     reminders: reminders,
+    timers: timers,
   ),
   rhythmRepositoryProvider.overrideWithValue(repo),
   rhythmSleepRecordsProvider.overrideWith(

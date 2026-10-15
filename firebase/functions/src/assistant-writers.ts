@@ -38,6 +38,8 @@ import {
 // Slice A3 (photos): expense / reminder writers, the kept receipt, module problems.
 import type { AttachmentStore } from './assistant-attachments.js';
 import { allDraftProblems } from './assistant-image-rules.js';
+// Lumi timers 2026-10-16: start / end the app's running timers.
+import { planTimerWrite } from './assistant-timers.js';
 import {
   afterImageConfirm,
   imageRecordLink,
@@ -152,14 +154,14 @@ export function careRecordFromDraft(
         (!Number.isInteger(d) || d < careLimits.durationMin.min || d > careLimits.durationMin.max)
       )
         problems.push('INVALID_AMOUNT');
-      if (p.side === null) problems.push('INVALID_AMOUNT');
       if (problems.length) return { ok: false, problems };
       return {
         ok: true,
         type: 'breast',
         occurredAt: new Date(p.occurredAt!),
         endedAt: null,
-        data: { side: p.side, durationMin: d },
+        // Lumi 2026-10-16: a side not given is "both", as the app's record (`side ?? both`).
+        data: { side: p.side ?? 'both', durationMin: d },
       };
     }
     case 'sleep': {
@@ -234,6 +236,9 @@ export function buildRecFeedback<S>(
     createdAt: serverTime,
   };
 }
+
+const timerRefOf = (db: Firestore, babyId: string, type: 'sleep' | 'breast') =>
+  db.doc(`babies/${babyId}/timers/${type}`);
 
 /** The app routes that open a saved item (built here, never by the model; A4 registers them). */
 export const recordLinkFor = (babyId: string, kind: DraftPayload['kind'], id: string) =>
@@ -367,6 +372,10 @@ export async function confirmDraftItem(
     let target: FirebaseFirestore.DocumentReference;
     let doc: Record<string, unknown>;
     let conflict: AssistantError | null = null;
+    /** Lumi timers: the ended timer, deleted with its record. */
+    let remove: FirebaseFirestore.DocumentReference | null = null;
+    let linkOverride: string | null = null;
+    let recordOverride: string | null = null;
     const warnings = new Set(draft.warnings);
     // ---- Slice A3: Chi tiêu expense / one-off reminder (assistant-writers-images.ts) ----
     if (p.kind === 'expense' || p.kind === 'reminder') {
@@ -411,6 +420,42 @@ export async function confirmDraftItem(
       conflict = plan.conflict;
       for (const w of plan.warnings) warnings.add(w);
       // ---- end slice A3 (the observation and care branches below are A2's) ----
+    } else if (p.kind === 'timer') {
+      // ---- Lumi timers 2026-10-16 (assistant-timers.ts) ----
+      const plan = await planTimerWrite(
+        tx,
+        db,
+        { draftId: x.draftId, babyId: x.babyId, uid: x.uid, now: x.now, member },
+        p,
+      );
+      if (plan.kind === 'fail') {
+        return result(x, 'failed', { errorCode: plan.errorCode, problems: plan.problems });
+      }
+      if (plan.kind === 'adopt') {
+        tx.update(dRef, {
+          state: 'saved',
+          recordId: plan.recordId,
+          recordLink: plan.link,
+          errorCode: null,
+          updatedAt: Timestamp.fromDate(x.now),
+        });
+        return result(x, 'saved', {
+          revision: draft.revision,
+          recordId: plan.recordId,
+          recordLink: plan.link,
+        });
+      }
+      if (plan.kind === 'conflict') {
+        conflict = plan.errorCode;
+        target = timerRefOf(db, x.babyId, p.timer);
+        doc = {};
+      } else {
+        target = plan.target;
+        doc = plan.doc;
+        remove = plan.remove;
+        linkOverride = plan.link;
+        recordOverride = plan.recordId;
+      }
     } else if (p.kind === 'observation') {
       const id = checkInIdFor(x.babyId, x.uid, p.date, p.observation);
       target = db.doc(`babies/${x.babyId}/checkins/${id}`);
@@ -492,8 +537,10 @@ export async function confirmDraftItem(
     const seq = ((task.get('eventSeq') as number | undefined) ?? 0) + 1;
     const exec = db.doc(`assistantExecutions/${x.draftId}_${draft.revision}`);
     const payloadHash = sha(canonical(p));
-    const recordId = target.id;
-    const link = recordLinkFor(target.parent.parent?.id ?? x.babyId, p.kind, recordId);
+    // A timer start's "record" is the one its end will write (`r_<sessionId>`).
+    const recordId = recordOverride ?? target.id;
+    const link =
+      linkOverride ?? recordLinkFor(target.parent.parent?.id ?? x.babyId, p.kind, recordId);
     const event = (type: 'item_saved' | 'item_failed', payload: Record<string, unknown>) =>
       tx.set(tRef.collection('events').doc(seqId(seq)), {
         taskId: x.taskId,
@@ -527,6 +574,7 @@ export async function confirmDraftItem(
       return result(x, 'conflict', { revision: draft.revision, errorCode: conflict });
     }
     tx.create(target, doc);
+    if (remove) tx.delete(remove);
     tx.update(dRef, {
       state: 'saved',
       recordId,

@@ -16808,4 +16808,272 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get asSpendingMoved =>
       'Only you: a message about spending stays in your private chat.';
+
+  @override
+  String get asSaveBottle => 'Save bottle feed';
+
+  @override
+  String get asSaveBreast => 'Save feed';
+
+  @override
+  String get asSaveSleep => 'Save sleep';
+
+  @override
+  String get asSaveReminder => 'Save reminder';
+
+  @override
+  String get asSaveItem => 'Save';
+
+  @override
+  String asSaveItems(int count) {
+    return 'Save $count items';
+  }
+
+  @override
+  String asStillToFill(int count) {
+    return '$count item(s) above still need a detail';
+  }
+
+  @override
+  String get asKindTimer => 'Timer';
+
+  @override
+  String get asTimerTitleStartSleep => 'Sleep timer';
+
+  @override
+  String get asTimerTitleStartBreast => 'Breastfeeding timer';
+
+  @override
+  String get asTimerTitleStopSleep => 'End the sleep';
+
+  @override
+  String get asTimerTitleStopBreast => 'End the feed';
+
+  @override
+  String asTimerStartSleep(String time) {
+    return 'Start sleep timer · $time';
+  }
+
+  @override
+  String asTimerStartBreast(String side, String time) {
+    return 'Start feed timer · $side · $time';
+  }
+
+  @override
+  String asTimerStopSleep(String time) {
+    return 'End sleep · $time';
+  }
+
+  @override
+  String asTimerStopBreast(String time) {
+    return 'End feed · $time';
+  }
+
+  @override
+  String get asTimerKeep => 'Keep running';
+
+  @override
+  String asTimerFrom(String time) {
+    return 'From $time';
+  }
+
+  @override
+  String asTimerSideFirst(String side) {
+    return '$side side first';
+  }
+
+  @override
+  String asTimerSleeping(String elapsed) {
+    return 'Asleep · $elapsed';
+  }
+
+  @override
+  String asTimerFeeding(String elapsed) {
+    return 'Feeding · $elapsed';
+  }
+
+  @override
+  String get asTimerOpen => 'Open timer';
+
+  @override
+  String get asTimerEnded => 'The timer has ended';
+
+  @override
+  String asTimerRunningSince(String time) {
+    return 'Running since $time';
+  }
+
+  @override
+  String get asErrTimerRunning =>
+      'This timer was already started on another phone.';
+
+  @override
+  String get asErrTimerChanged =>
+      'The timer ended or changed on another phone.';
+
+  @override
+  String get asGapFeedTime => 'No feed time yet';
+
+  @override
+  String get asGapSleepStart => 'No time the sleep started';
+
+  @override
+  String get asGapSleepEnd => 'No wake-up time yet';
+
+  @override
+  String asGapTimeUnsure(String time) {
+    return 'Is $time right?';
+  }
+
+  @override
+  String asGapTimeFuture(String time) {
+    return '$time hasn’t happened yet. Pick the time again.';
+  }
+
+  @override
+  String get asGapSleepOrder => 'The wake-up must be after the sleep started';
+
+  @override
+  String get asGapAmount => 'No amount yet (ml)';
+
+  @override
+  String asGapAmountUnsure(String ml) {
+    return 'Is $ml ml right?';
+  }
+
+  @override
+  String get asGapAmountRange => 'The amount must be 1–500 ml';
+
+  @override
+  String get asGapMilk => 'Breast milk or formula?';
+
+  @override
+  String get asGapSide => 'Which side?';
+
+  @override
+  String asGapDurationUnsure(String duration) {
+    return 'Is $duration right?';
+  }
+
+  @override
+  String get asGapDurationRange => 'A feed can’t be longer than 180 minutes';
+
+  @override
+  String get asGapWhen => 'Day or night sleep? (optional)';
+
+  @override
+  String asGapDateUnsure(String date) {
+    return 'Is $date right?';
+  }
+
+  @override
+  String get asGapReminderDate => 'No reminder date yet';
+
+  @override
+  String get asGapReminderPast => 'That time has passed. Pick another day.';
+
+  @override
+  String get asGapTitle => 'The title is too long (80 characters max)';
+
+  @override
+  String get asGapAssignee => 'The assignee is no longer in the family';
+
+  @override
+  String get asGapTimerOld =>
+      'A timer can’t start that long ago. Pick a later time.';
+
+  @override
+  String asGapTimerEnd(String time) {
+    return 'The end must be after $time';
+  }
+
+  @override
+  String get asGapExpenseAmount => 'No amount yet';
+
+  @override
+  String get asGapExpenseAmountUnsure => 'Is the amount right?';
+
+  @override
+  String get asGapExpenseCurrency => 'Which currency?';
+
+  @override
+  String get asGapExpenseCategory => 'Is the category right?';
+
+  @override
+  String get asGapExpenseMerchant => 'Is the shop right?';
+
+  @override
+  String get asFixRight => 'That’s right';
+
+  @override
+  String asFixJustNow(String time) {
+    return 'Just now ($time)';
+  }
+
+  @override
+  String asFixAgo30(String time) {
+    return '30 min ago ($time)';
+  }
+
+  @override
+  String asFixAgo60(String time) {
+    return '1 hour ago ($time)';
+  }
+
+  @override
+  String asFixWokeNow(String time) {
+    return 'Just woke ($time)';
+  }
+
+  @override
+  String asFixSlept(int hours, String time) {
+    return '$hours h (from $time)';
+  }
+
+  @override
+  String get asFixPickTime => 'Pick a time';
+
+  @override
+  String get asFixPickDate => 'Pick a date';
+
+  @override
+  String get asFixToday => 'Today';
+
+  @override
+  String get asFixYesterday => 'Yesterday';
+
+  @override
+  String get asFixTomorrow => 'Tomorrow';
+
+  @override
+  String asFixMl(String ml) {
+    return '$ml ml';
+  }
+
+  @override
+  String get asFixDayTime => 'Daytime';
+
+  @override
+  String get asFixNightTime => 'Night';
+
+  @override
+  String get asFixNoAssignee => 'Nobody';
+
+  @override
+  String get asFixed => 'All set, ready to save';
+
+  @override
+  String get asPickAboveToSave => 'Pick above and it’s ready to save.';
+
+  @override
+  String get asGapWhenAsk => 'Day or night sleep?';
+
+  @override
+  String get asGapNote => 'Is the note right?';
+
+  @override
+  String get asFixDropNote => 'Remove the note';
+
+  @override
+  String get asGapObservation => 'Is the kind of note right?';
 }

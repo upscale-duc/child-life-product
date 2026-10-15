@@ -184,6 +184,114 @@ for small talk (like health). `taskVisibilityFor` (contracts) takes an optional 
 
 **Not changed**: `confirmDrafts`, `discardDraft`, events, history paging, the photo flow.
 
+## Timers and review fields (Lumi 2026-10-16)
+
+Owner report on a device (dev, 2026-10-16 01:05 and 01:09): "Con đang ngủ" became an
+OBSERVATION draft in `needs_review` with `missingFields: ['date']` although `date` was set, and the
+card showed "Cần kiểm tra · Kiểm tra lại mục này rồi lưu" with a disabled "Lưu ghi nhận" — a dead
+end; sending it again set the first draft aside. A breastfeed answered with "Vừa xong (01:08)" kept
+`missingFields: ['occurredAt', 'side']` although the time was filled and the care form never
+requires a side. Root causes and what changed:
+
+| Cause | Fix |
+|---|---|
+| The model's `missingFields` were trusted and mapped by name (`time` → observation `date`), and never re-checked after the server filled the field | Contracts `draftReviewFields(payload, problems, uncertain)`: **missing = the kind's `requiredDraftFields` that are empty**; the model's list is advice only; an unsure field is kept only if it is a real, filled field of the kind; every `DraftProblem` maps through the total table `draftProblemFields[kind][problem]` (contracts test: every kind × every problem names a field of that kind). Used by the text planner, the A2 helper, photos, `patchDraft`. |
+| `side` was a blocking field on nursing drafts | Optional, as in the form: not said → the form's default (other side of the last feed, else `both`); the writer saves `side ?? 'both'` like the app. A value the server defaulted (side, bottle milk) is never "unsure" because the model doubted it. |
+| Plain states were read as observations | Prompt `assistant-extract-v4`: an observation is only "something different noticed" (khó ngủ, quấy hơn, ăn ít…); `phase` on sleep / breast items. Server guard `checkIntents` (contracts `careStatesIn`, `observationCueIn`): a sleep / feeding observation without a difference cue next to a state, a log or a sleep length is dropped; a state the model missed gets its item. |
+| A repeated message was taken as a correction | Same words (`sameMessage`) are never a correction; and see "Repeated messages" below. |
+
+Optional per kind (never `missingFields`): observation `when` / `note`, breast `durationMin` /
+`side`, sleep `durationMin`, reminder `time` / `assigneeUid`, expense `merchant` / `categoryId` /
+`note`. Required: bottle `amountMl`, `occurredAt`, `milk`; breast `occurredAt`; sleep `startedAt`,
+`endedAt`; expense `totalMinor`, `date`, `currency`; reminder `title`, `date`; observation
+`observation`, `date`; timer `at`.
+
+### Ongoing states drive the app's timers
+
+Design: **one source of truth** — the app's own running timer document `babies/{b}/timers/{sleep |
+breast}` (S5, P-011; every member's app, the Home tile and the widgets listen to it). The chat
+never keeps its own timer state. A new draft kind `timer` (additive; older apps show it as an
+unknown item):
+
+```ts
+{ kind: 'timer', timer: 'sleep' | 'breast', action: 'start' | 'stop',
+  at: iso | null,            // start: when it began ("lúc 21h", else the send time); stop: when it ended
+  side: 'left' | 'right' | null,   // breast start: the side that runs first (one at a time)
+  sessionId: 32hex | null,   // stop: the running session it ends (record r_<sessionId>)
+  startedAt: iso | null }    // stop: the running timer's start
+```
+
+| Message | Running timer of that kind | Result |
+|---|---|---|
+| "con đang ngủ", "bé vừa ngủ", "bé ngủ rồi", "She fell asleep" | none | `timer` start at the send time — card "Bắt đầu tính giờ ngủ · 01:05" (one tap) |
+| "bắt đầu ngủ lúc 21h" (at 21:30) | none | start at 21:00 (said time; not in the future, ≤ 24 h / 240 min ago) |
+| "đang cho bú (trái)", "bé đang ti mẹ bên phải" | none | breast start, that side (not said: the other side of the last feed, else left) |
+| any start | running | text `TIMER_RUNNING` ("Bé đang ngủ, đồng hồ đã tính giờ từ 00:25. Kết thúc … hay để đồng hồ tiếp tục?", `link` = `/care/timer/sleep?babyId=`) + a `timer` stop draft at the send time: "Kết thúc giấc ngủ · 01:05" or "Để tiếp tục" (= discard) |
+| "con dậy rồi", "bé vừa dậy", "dậy lúc 6h", "bú xong rồi", "he just woke up" | running | `timer` stop at the said time (else now) |
+| "dậy rồi" / "dậy lúc 6h" | none | a finished `sleep` ending then; the server asks `time.start` "Bé dậy lúc 01:05. Bé bắt đầu ngủ lúc mấy giờ?" with chips "Khoảng 1 / 2 / 3 tiếng (từ 00:05…)" (`at_<date>_<HH:mm>`), a typed time or a typed length ("2 tiếng") |
+| "bú xong rồi" | none | the usual finished breastfeed (time asked with `time.missing`) |
+| a length or both times ("ngủ 2 tiếng", "ngủ từ 9h đến 11h", "bú 15 phút") | — | a finished log, never a timer |
+
+The reading: the model's `phase` (v4) or the deterministic `careStatesIn` (vi with / without
+diacritics, en; "dậy" only with its diacritics when the text has any — "dạy", "đầy" are other words;
+concerns such as "khó ngủ", "chưa ngủ", bottles and lengths excluded). The planner reads the running
+timers (`runningTimersOf`) and the next breast side (`nextBreastSideOf`); no question is asked for a
+start or a stop. Credits: like any draft (commit 1).
+
+**Confirm** (`confirmDraftItem` → `assistant-timers.ts` `planTimerWrite`, same transaction, role
+`rhythm.checkin` = Rules `canLog`, membership, baby, `draftProblems` against the confirm time):
+
+- start → creates `babies/{b}/timers/{type}` with exactly the `validNewTimer` key set: `type, babyId,
+  sessionId (= sha('timer|'+draftId)[0:32]), startedAt = at, startedBy = the confirmer, author =
+  the confirmer's membership, sides (sleep null; breast { left / right: { accumulatedMs: 0,
+  runningSince: at on the chosen side } }), paused false, pausedSides [], updatedAt, updatedBy`.
+  A timer already there → `conflict` / `TIMER_RUNNING` (the app shows the running one); this draft's
+  own session there, or its record already written → adopted as `saved`. `recordId` =
+  `r_<sessionId>` (the record its end will write), `recordLink` = `/care/timer/{type}?babyId=`.
+- stop → the running session must still be `sessionId`: writes `babies/{b}/records/r_<sessionId>`
+  (contracts `timerRecordAt` = the app's `CareTimer.toRecord`: sleep start … min(end, start + 24 h);
+  breast total of the sides in whole minutes 1…240, `leftMin`, `rightMin`, `side`, `endSide`) with
+  `source: 'assistant'` and the confirmer as author, and **deletes the timer** — the same result as
+  the app's "Kết thúc". The record already exists (ended on a phone, a replay) → `saved` with it;
+  another session runs / none and no record → `conflict` / `TIMER_CHANGED`. `onRecordWritten` then
+  recomputes the day and opens sleep-overlap conflicts as for app writes.
+- `patchDraft` on a timer may change `at` (and a start's `side`) only; `timer`, `action`,
+  `sessionId`, `startedAt` changed → `VALIDATION_FAILED`.
+- Problems: `MISSING_TIME` (no `at`), `FUTURE_TIME`, `INVALID_TIME` (start older than 24 h sleep /
+  240 min feed; stop not after `startedAt`).
+
+New `assistantErrors`: `TIMER_RUNNING`, `TIMER_CHANGED` (confirm conflicts). New notice codes:
+`TIMER_RUNNING` (with `link`), `SAME_AS_PENDING`.
+
+### Repeated messages
+
+`startTask`: the same words (`sameMessage`: case, spaces and punctuation ignored) as the thread's
+last task, within `assistantRepeatWindowMin` (10 min), by the same person (or a shared task in the
+shared thread), while one of its drafts still waits (`draft` / `needs_review`, not expired) → answered
+at once: task `ready`, 0 credits, no quote use, no model, one text part `SAME_AS_PENDING` ("Mình đã
+chuẩn bị mục này ngay ở trên…"); the waiting draft is untouched and the thread's `lastTaskId` stays
+on it (`repeatOf` on the task). A real correction ("à không, 150ml") still replaces the previous
+unsaved draft; the same words never do.
+
+### App (Lumi chat card)
+
+- `timer` drafts: "Tính giờ ngủ · Từ 01:05" → primary "Bắt đầu tính giờ ngủ · 01:05" (breast: "Bắt
+  đầu tính giờ bú · trái · 01:05"), "Không cần"; a stop: "00:25 – 01:05 · 40 phút", the live running
+  timer ("Đang ngủ · 00:40:00", from the same timer document, per second), "Kết thúc giấc ngủ ·
+  01:05" / "Để tiếp tục". Saved start: the live timer inline and "Mở đồng hồ" (`pushSafe`
+  `/care/timer/{type}`; Back returns to the chat). The `TIMER_RUNNING` notice links the timer too.
+- A `needs_review` draft opens its fix **inside the card by itself**: each missing / unsure field in
+  plain words ("Chưa rõ bé bú bên nào", "Chưa có giờ bé dậy", "Lượng 120 ml có đúng không?",
+  "Giờ 01:30 chưa tới…") with chips first (Trái / Phải / Cả hai; Vừa xong / 30 phút / 1 tiếng
+  trước; 60–180 ml; Ngủ 1 / 2 / 3 tiếng; Hôm nay / Ngày mai; "Đúng rồi" for an unsure value) and a
+  picker or "Khác…" only when no chip fits; optional rows (a sleep note's "Ban ngày / Ban đêm / Cả
+  hai") are muted and never block. A chip patches the draft with that field confirmed; as soon as
+  nothing blocks, the card turns valid and is ticked by itself.
+- One draft in a task saves from its own card with a concrete label ("Lưu cữ bú", "Lưu giấc ngủ",
+  "Lưu ghi nhận"); no tick box and no "Chọn mục muốn lưu" bar. Several drafts: complete ones are
+  pre-ticked; the bar reads "Lưu 2 mục", or "Còn N mục cần bổ sung ở trên" while none can be saved.
+  A disabled save always has its reason next to it.
+
 ## Commands
 
 | Callable | Request (beyond the envelope) | `data` | Notes |

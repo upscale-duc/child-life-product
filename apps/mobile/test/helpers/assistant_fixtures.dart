@@ -10,6 +10,7 @@ import 'package:child_life/features/assistant/assistant_voice.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/care/care_repository.dart';
+import 'package:child_life/features/care/timer_models.dart';
 import 'package:child_life/features/premium/billing_models.dart';
 import 'package:child_life/features/premium/billing_repository.dart';
 import 'package:flutter/widgets.dart' show BuildContext;
@@ -742,6 +743,10 @@ List<Override> assistantOverrides({
 
   /// Lumi voice input (a scripted recognizer; ready by default).
   FakeDictation? dictation,
+
+  /// Lumi 2026-10-16: the baby's running timers (none by default; the timer clock is
+  /// [assistantNow]).
+  Map<TimerType, CareTimer> timers = const {},
 }) {
   var n = 0;
   return [
@@ -752,6 +757,7 @@ List<Override> assistantOverrides({
       online: online,
       dialled: dialled,
       now: assistantNow,
+      timers: timers,
     ),
     assistantRepositoryProvider.overrideWithValue(repo),
     assistantClockProvider.overrideWithValue(() => assistantNow),
@@ -1343,4 +1349,116 @@ class FakeDictation implements AssistantDictation {
     final c = _events;
     if (c != null && !c.isClosed) unawaited(c.close());
   }
+}
+
+// ---------- Lumi 2026-10-16: timers and inline review fixes ----------
+
+/// A `timer` draft ("Con đang ngủ" → start; "dậy rồi" → stop of [sessionId]).
+Map<String, Object?> timerDraftJson({
+  String taskId = taskA,
+  int index = 0,
+  String timer = 'sleep',
+  String action = 'start',
+  String at = '2026-10-15T07:20:00.000Z',
+  String? side,
+  String? sessionId,
+  String? startedAt,
+  String state = 'draft',
+  int revision = 1,
+  String? recordId,
+  String? recordLink,
+  String? errorCode,
+}) => {
+  'id': draftOf(taskId, index),
+  'taskId': taskId,
+  'itemIndex': index,
+  'scope': {'type': 'child', 'babyId': teddyId},
+  'payload': {
+    'kind': 'timer',
+    'timer': timer,
+    'action': action,
+    'at': at,
+    'side': side,
+    'sessionId': sessionId,
+    'startedAt': startedAt,
+  },
+  'missingFields': const <String>[],
+  'uncertainFields': const <String>[],
+  'revision': revision,
+  'state': state,
+  'expiresAt': '2026-10-16T07:20:00.000Z',
+  'sourceRefs': const <String>[],
+  'recordId': recordId,
+  'recordLink': recordLink,
+  'errorCode': errorCode,
+  'warnings': const <String>[],
+  'problems': const <String>[],
+};
+
+/// Any draft JSON with its review lists and state replaced.
+Map<String, Object?> reviewed(
+  Map<String, Object?> draft, {
+  List<String> missing = const [],
+  List<String> uncertain = const [],
+  Map<String, Object?> payload = const {},
+  int? revision,
+}) => {
+  ...draft,
+  'payload': {...(draft['payload']! as Map<String, Object?>), ...payload},
+  'missingFields': missing,
+  'uncertainFields': uncertain,
+  'state': missing.isEmpty && uncertain.isEmpty ? 'draft' : 'needs_review',
+  'revision': ?revision ?? draft['revision'],
+};
+
+/// A breastfeed draft (the second dev report: 00:48 · 20 phút, no side).
+Map<String, Object?> breastDraftJson({
+  String taskId = taskA,
+  int index = 0,
+  String? at = '2026-10-15T06:48:00.000Z',
+  int? minutes = 20,
+  String? side,
+  String state = 'draft',
+  int revision = 1,
+}) => {
+  'id': draftOf(taskId, index),
+  'taskId': taskId,
+  'itemIndex': index,
+  'scope': {'type': 'child', 'babyId': teddyId},
+  'payload': {
+    'kind': 'breast',
+    'occurredAt': at,
+    'durationMin': minutes,
+    'side': side,
+  },
+  'missingFields': const <String>[],
+  'uncertainFields': const <String>[],
+  'revision': revision,
+  'state': state,
+  'expiresAt': '2026-10-16T07:20:00.000Z',
+  'sourceRefs': const <String>[],
+  'recordId': null,
+  'recordLink': null,
+  'errorCode': null,
+  'warnings': const <String>[],
+  'problems': const <String>[],
+};
+
+/// The app's running timer document as `CareTimer` (Mai started it).
+CareTimer runningTimer({
+  TimerType type = TimerType.sleep,
+  String sessionId = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+  DateTime? startedAt,
+}) {
+  final at = startedAt ?? assistantNow.subtract(const Duration(minutes: 40));
+  return CareTimer(
+    babyId: teddyId,
+    type: type,
+    sessionId: sessionId,
+    startedAt: at,
+    startedBy: mai.uid,
+    author: CareAuthor.of(mai),
+    left: type == TimerType.sleep ? null : TimerSide(runningSince: at),
+    right: type == TimerType.sleep ? null : const TimerSide(),
+  );
 }

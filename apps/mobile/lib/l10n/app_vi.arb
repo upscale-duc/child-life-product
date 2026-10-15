@@ -23352,5 +23352,418 @@
   "asSpendingMoved": "Chỉ bạn thấy: tin nhắn có chi tiêu được giữ trong cuộc trò chuyện riêng của bạn.",
   "@asSpendingMoved": {
     "description": "Footnote on a task moved out of the shared thread because it mentions money (task.routing spending). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asSaveBottle": "Lưu cữ bú bình",
+  "@asSaveBottle": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asSaveBreast": "Lưu cữ bú",
+  "@asSaveBreast": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asSaveSleep": "Lưu giấc ngủ",
+  "@asSaveSleep": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asSaveReminder": "Lưu nhắc việc",
+  "@asSaveReminder": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asSaveItem": "Lưu",
+  "@asSaveItem": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asSaveItems": "Lưu {count} mục",
+  "@asSaveItems": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "asStillToFill": "Còn {count} mục cần bổ sung ở trên",
+  "@asStillToFill": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "asKindTimer": "Đồng hồ",
+  "@asKindTimer": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asTimerTitleStartSleep": "Tính giờ ngủ",
+  "@asTimerTitleStartSleep": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asTimerTitleStartBreast": "Tính giờ bú mẹ",
+  "@asTimerTitleStartBreast": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asTimerTitleStopSleep": "Kết thúc giấc ngủ",
+  "@asTimerTitleStopSleep": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asTimerTitleStopBreast": "Kết thúc cữ bú",
+  "@asTimerTitleStopBreast": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asTimerStartSleep": "Bắt đầu tính giờ ngủ · {time}",
+  "@asTimerStartSleep": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asTimerStartBreast": "Bắt đầu tính giờ bú · {side} · {time}",
+  "@asTimerStartBreast": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "side": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asTimerStopSleep": "Kết thúc giấc ngủ · {time}",
+  "@asTimerStopSleep": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asTimerStopBreast": "Kết thúc cữ bú · {time}",
+  "@asTimerStopBreast": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asTimerKeep": "Để tiếp tục",
+  "@asTimerKeep": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asTimerFrom": "Từ {time}",
+  "@asTimerFrom": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asTimerSideFirst": "bên {side} trước",
+  "@asTimerSideFirst": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "side": {
+        "type": "String"
+      }
+    }
+  },
+  "asTimerSleeping": "Đang ngủ · {elapsed}",
+  "@asTimerSleeping": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      }
+    }
+  },
+  "asTimerFeeding": "Đang bú · {elapsed}",
+  "@asTimerFeeding": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      }
+    }
+  },
+  "asTimerOpen": "Mở đồng hồ",
+  "@asTimerOpen": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asTimerEnded": "Đồng hồ đã kết thúc",
+  "@asTimerEnded": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asTimerRunningSince": "Đang tính giờ từ {time}",
+  "@asTimerRunningSince": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asErrTimerRunning": "Đồng hồ này đã được bắt đầu trên máy khác.",
+  "@asErrTimerRunning": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asErrTimerChanged": "Đồng hồ đã kết thúc hoặc thay đổi trên máy khác.",
+  "@asErrTimerChanged": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapFeedTime": "Chưa có giờ bé bú",
+  "@asGapFeedTime": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapSleepStart": "Chưa có giờ bé bắt đầu ngủ",
+  "@asGapSleepStart": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapSleepEnd": "Chưa có giờ bé dậy",
+  "@asGapSleepEnd": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapTimeUnsure": "Giờ {time} có đúng không?",
+  "@asGapTimeUnsure": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asGapTimeFuture": "{time} chưa tới. Chọn lại giờ nhé.",
+  "@asGapTimeFuture": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asGapSleepOrder": "Giờ dậy phải sau giờ bắt đầu ngủ",
+  "@asGapSleepOrder": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapAmount": "Chưa có lượng sữa (ml)",
+  "@asGapAmount": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapAmountUnsure": "Lượng {ml} ml có đúng không?",
+  "@asGapAmountUnsure": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "asGapAmountRange": "Lượng sữa cần từ 1 đến 500 ml",
+  "@asGapAmountRange": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapMilk": "Chưa rõ sữa mẹ hay sữa công thức",
+  "@asGapMilk": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapSide": "Chưa rõ bé bú bên nào",
+  "@asGapSide": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapDurationUnsure": "Thời lượng {duration} có đúng không?",
+  "@asGapDurationUnsure": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "asGapDurationRange": "Cữ bú không dài quá 180 phút",
+  "@asGapDurationRange": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapWhen": "Giấc ban ngày hay ban đêm? (không bắt buộc)",
+  "@asGapWhen": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapDateUnsure": "Ngày {date} có đúng không?",
+  "@asGapDateUnsure": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "asGapReminderDate": "Chưa có ngày nhắc",
+  "@asGapReminderDate": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapReminderPast": "Thời điểm nhắc đã qua. Chọn ngày khác nhé.",
+  "@asGapReminderPast": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapTitle": "Tên việc dài quá (tối đa 80 ký tự)",
+  "@asGapTitle": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapAssignee": "Người được giao không còn trong nhà",
+  "@asGapAssignee": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapTimerOld": "Đồng hồ không tính từ lâu vậy được. Chọn giờ gần hơn.",
+  "@asGapTimerOld": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapTimerEnd": "Giờ kết thúc phải sau {time}",
+  "@asGapTimerEnd": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asGapExpenseAmount": "Chưa có số tiền",
+  "@asGapExpenseAmount": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapExpenseAmountUnsure": "Số tiền có đúng không?",
+  "@asGapExpenseAmountUnsure": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapExpenseCurrency": "Chưa rõ đơn vị tiền",
+  "@asGapExpenseCurrency": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapExpenseCategory": "Danh mục có đúng không?",
+  "@asGapExpenseCategory": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapExpenseMerchant": "Tên cửa hàng có đúng không?",
+  "@asGapExpenseMerchant": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixRight": "Đúng rồi",
+  "@asFixRight": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixJustNow": "Vừa xong ({time})",
+  "@asFixJustNow": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asFixAgo30": "30 phút trước ({time})",
+  "@asFixAgo30": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asFixAgo60": "1 tiếng trước ({time})",
+  "@asFixAgo60": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asFixWokeNow": "Vừa dậy ({time})",
+  "@asFixWokeNow": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asFixSlept": "Ngủ {hours} tiếng (từ {time})",
+  "@asFixSlept": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asFixPickTime": "Chọn giờ",
+  "@asFixPickTime": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixPickDate": "Chọn ngày",
+  "@asFixPickDate": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixToday": "Hôm nay",
+  "@asFixToday": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixYesterday": "Hôm qua",
+  "@asFixYesterday": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixTomorrow": "Ngày mai",
+  "@asFixTomorrow": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixMl": "{ml} ml",
+  "@asFixMl": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "asFixDayTime": "Ban ngày",
+  "@asFixDayTime": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixNightTime": "Ban đêm",
+  "@asFixNightTime": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixNoAssignee": "Không giao",
+  "@asFixNoAssignee": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixed": "Đã bổ sung, sẵn sàng lưu",
+  "@asFixed": {
+    "description": "Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asPickAboveToSave": "Chọn ở trên là lưu được ngay.",
+  "@asPickAboveToSave": {
+    "description": "Lumi 2026-10-16: under a review card's disabled save, why. EN is an engineering draft for owner review."
+  },
+  "asGapWhenAsk": "Giấc ban ngày hay ban đêm?",
+  "@asGapWhenAsk": {
+    "description": "Lumi 2026-10-16 (inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapNote": "Ghi chú có đúng không?",
+  "@asGapNote": {
+    "description": "Lumi 2026-10-16 (inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asFixDropNote": "Bỏ ghi chú",
+  "@asFixDropNote": {
+    "description": "Lumi 2026-10-16 (inline review fixes). EN is an engineering draft for owner review."
+  },
+  "asGapObservation": "Loại ghi nhận có đúng không?",
+  "@asGapObservation": {
+    "description": "Lumi 2026-10-16 (inline review fixes). EN is an engineering draft for owner review."
   }
 }

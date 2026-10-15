@@ -77,10 +77,148 @@ List<DraftProblem> draftProblems(DraftPayload p, DateTime anchor) {
       break;
     case MealPayload():
       if (after(p.occurredAt)) out.add(DraftProblem.futureTime);
+    case TimerPayload():
+      final at = p.at;
+      if (at == null) {
+        out.add(DraftProblem.missingTime);
+        break;
+      }
+      if (after(at)) out.add(DraftProblem.futureTime);
+      if (p.isStart) {
+        if (anchor.difference(at) > timerMaxRun(p.timer)) {
+          out.add(DraftProblem.invalidTime);
+        }
+      } else if (p.startedAt == null || !at.isAfter(p.startedAt!)) {
+        out.add(DraftProblem.invalidTime);
+      }
     case UnknownPayload():
       break;
   }
   return out;
+}
+
+/// Contracts `timerMaxRunMs`: how long a timer may already have run when started from chat.
+Duration timerMaxRun(String timer) =>
+    timer == 'sleep' ? const Duration(hours: 24) : const Duration(minutes: 240);
+
+/// Contracts `requiredDraftFields` (Lumi 2026-10-16): empty → missing, blocking; everything
+/// else is optional (an observation without `when`, a feed without a length or side).
+const requiredDraftFields = <DraftKind, List<String>>{
+  DraftKind.bottle: ['amountMl', 'occurredAt', 'milk'],
+  DraftKind.breast: ['occurredAt'],
+  DraftKind.sleep: ['startedAt', 'endedAt'],
+  DraftKind.expense: ['totalMinor', 'date', 'currency'],
+  DraftKind.reminder: ['title', 'date'],
+  DraftKind.observation: ['observation', 'date'],
+  DraftKind.meal: ['title'],
+  DraftKind.timer: ['at'],
+};
+
+/// Contracts `draftProblemFields`: the field a form problem points at, for [p]'s kind.
+String? problemField(DraftPayload p, DraftProblem pr) => switch (p) {
+  BottlePayload() => switch (pr) {
+    DraftProblem.missingAmount || DraftProblem.invalidAmount => 'amountMl',
+    DraftProblem.missingTime ||
+    DraftProblem.futureTime ||
+    DraftProblem.invalidTime => 'occurredAt',
+    _ => null,
+  },
+  BreastPayload() => switch (pr) {
+    DraftProblem.invalidAmount => 'durationMin',
+    DraftProblem.missingTime ||
+    DraftProblem.futureTime ||
+    DraftProblem.invalidTime => 'occurredAt',
+    _ => null,
+  },
+  SleepPayload() => switch (pr) {
+    DraftProblem.missingTime => p.startedAt == null ? 'startedAt' : 'endedAt',
+    DraftProblem.futureTime || DraftProblem.invalidTime => 'endedAt',
+    _ => null,
+  },
+  ExpensePayload() => switch (pr) {
+    DraftProblem.missingAmount || DraftProblem.invalidAmount => 'totalMinor',
+    DraftProblem.missingDate ||
+    DraftProblem.futureTime ||
+    DraftProblem.invalidTime ||
+    DraftProblem.pastTime => 'date',
+    DraftProblem.currencyUnsupported => 'currency',
+    _ => null,
+  },
+  ReminderPayload() => switch (pr) {
+    DraftProblem.missingTime => 'time',
+    DraftProblem.missingDate ||
+    DraftProblem.invalidTime ||
+    DraftProblem.pastTime => 'date',
+    DraftProblem.missingTitle || DraftProblem.invalidTitle => 'title',
+    DraftProblem.invalidAssignee => 'assigneeUid',
+    _ => null,
+  },
+  ObservationPayload() => switch (pr) {
+    DraftProblem.missingDate ||
+    DraftProblem.futureTime ||
+    DraftProblem.invalidTime => 'date',
+    _ => null,
+  },
+  MealPayload() => switch (pr) {
+    DraftProblem.missingTitle || DraftProblem.invalidTitle => 'title',
+    DraftProblem.missingTime ||
+    DraftProblem.futureTime ||
+    DraftProblem.invalidTime => 'occurredAt',
+    _ => null,
+  },
+  TimerPayload() => switch (pr) {
+    DraftProblem.missingTime ||
+    DraftProblem.futureTime ||
+    DraftProblem.invalidTime => 'at',
+    _ => null,
+  },
+  UnknownPayload() => null,
+};
+
+/// One thing the person must fill or check on a draft, with the problem behind it (if any).
+typedef ReviewGap = ({String field, bool missing, DraftProblem? problem});
+
+/// Lumi 2026-10-16: what a "Cần kiểm tra" card asks for, in order — the server's missing
+/// fields, then its unsure ones, then the form's own problems against [now] (a time that is
+/// now in the future, a sleep ending before it starts). Never a field the kind does not have; a
+/// "missing" field that does hold a value (older drafts) is shown as one to confirm.
+List<ReviewGap> reviewGaps(AssistantDraft d, DateTime now) {
+  final p = d.payload;
+  final json = p.toJson();
+  bool empty(String f) => switch (json[f]) {
+    null => true,
+    final String s => s.trim().isEmpty,
+    _ => false,
+  };
+  final problems = {...draftProblems(p, now), ...d.problems};
+  final out = <String, ReviewGap>{};
+  void add(String f, {required bool missing, DraftProblem? problem}) {
+    if (!json.containsKey(f) || f == 'kind') return;
+    final cur = out[f];
+    out[f] = (
+      field: f,
+      missing: (cur?.missing ?? false) || (missing && empty(f)),
+      problem: cur?.problem ?? problem,
+    );
+  }
+
+  for (final f in d.missingFields) {
+    add(f, missing: true);
+  }
+  for (final f in d.uncertainFields) {
+    add(f, missing: false);
+  }
+  for (final pr in problems) {
+    final f = problemField(p, pr);
+    if (f == null) continue;
+    final isMissing =
+        pr == DraftProblem.missingAmount ||
+        pr == DraftProblem.missingTime ||
+        pr == DraftProblem.missingDate ||
+        pr == DraftProblem.missingTitle;
+    add(f, missing: isMissing, problem: isMissing ? null : pr);
+  }
+  return out.values.toList();
 }
 
 /// Confirm preconditions shared by server and app (D04, D05, review).
@@ -562,6 +700,8 @@ bool retryable(AssistantDraft d) {
     AssistantReason.draftExpired ||
     AssistantReason.moduleUnavailable ||
     AssistantReason.scopeChanged ||
+    AssistantReason.timerRunning ||
+    AssistantReason.timerChanged ||
     AssistantReason.reviewRequired => false,
     _ => true,
   };

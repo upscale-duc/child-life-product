@@ -145,3 +145,46 @@ export function noticePart(
     ...(n.link ? { link: n.link } : {}),
   };
 }
+
+// ---------- Lumi timers 2026-10-16 ----------
+
+/**
+ * "Con đang ngủ" while the sleep timer already runs (or "đang cho bú" while the feed timer
+ * runs): say so with its start, and offer to end it (the `timer` stop draft that follows) or to
+ * keep it running ("Để tiếp tục" discards that draft). [since] is the local "HH:mm" (with "hôm
+ * qua" when it started yesterday).
+ */
+export function timerRunningPart(
+  timer: 'sleep' | 'breast',
+  since: { clock: string; yesterday: boolean },
+  locale: Locale,
+  link: string,
+): AssistantPart {
+  const at = since.yesterday
+    ? L(`${since.clock} hôm qua`, `${since.clock} yesterday`)
+    : L(since.clock, since.clock);
+  const text =
+    timer === 'sleep'
+      ? L(
+          `Bé đang ngủ, đồng hồ đã tính giờ từ ${at.vi}. Kết thúc giấc ngủ bây giờ, hay để đồng hồ tiếp tục?`,
+          `The sleep timer is already running since ${at.en}. End the sleep now, or keep it running?`,
+        )
+      : L(
+          `Cữ bú đang được tính giờ từ ${at.vi}. Kết thúc cữ bú bây giờ, hay để đồng hồ tiếp tục?`,
+          `The feed timer is already running since ${at.en}. End the feed now, or keep it running?`,
+        );
+  return { type: 'text', schemaVersion: 1, text: text[locale], code: 'TIMER_RUNNING', link };
+}
+
+/** The same message again while its draft still waits above: nothing new, 0 credits. */
+export function sameAsPendingPart(locale: Locale): AssistantPart {
+  return {
+    type: 'text',
+    schemaVersion: 1,
+    text: L(
+      'Mình đã chuẩn bị mục này ngay ở trên và nó đang chờ bạn lưu. Bạn kiểm tra rồi bấm Lưu ở đó nhé. Không tính lượt.',
+      'This is already prepared just above and waiting for you to save it. Check it and tap Save there. No credit was used.',
+    )[locale],
+    code: 'SAME_AS_PENDING',
+  };
+}

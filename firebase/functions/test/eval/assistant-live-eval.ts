@@ -68,6 +68,15 @@ interface ExpectDraft {
   review?: string[];
   tolMin?: number;
   tolMl?: number;
+  // ---- Lumi 2026-10-16: timers and review fields ----
+  timer?: 'sleep' | 'breast';
+  action?: 'start' | 'stop';
+  /** The timer draft's `at` ("D0 01:05"). */
+  tAt?: string;
+  /** Exactly these fields missing (review-field correctness). */
+  missing?: string[];
+  /** Nothing missing or unsure: one tap saves it. */
+  noReview?: boolean;
 }
 interface EvalCase {
   id: string;
@@ -77,7 +86,7 @@ interface EvalCase {
   as?: 'MOM' | 'DAD' | 'NANNY';
   text: string;
   before?: string[];
-  seed?: 'day' | 'bottle0800';
+  seed?: 'day' | 'bottle0800' | 'sleepTimer' | 'breastTimer';
   answers?: Record<string, { choice?: number | string; member?: string; text?: string }>;
   expect: {
     outcome: string;
@@ -88,6 +97,8 @@ interface EvalCase {
     replaced?: number;
     calls?: number;
     readDay?: number;
+    /** Notice codes the answer must carry (TIMER_RUNNING, SAME_AS_PENDING). */
+    codes?: string[];
   };
 }
 
@@ -356,6 +367,29 @@ async function seedCase(c: EvalCase) {
     await seedRecord(b, `r_${'4'.repeat(32)}`, 'sleep', 'D0 12:00', {}, 'D0 13:30');
     await seedRecord(b, `r_${'5'.repeat(32)}`, 'sleep', 'D-1 13:00', {}, 'D-1 14:30');
     await seedRecord(b, `r_${'6'.repeat(32)}`, 'sleep', 'D-1 21:00', {}, 'D0 05:30');
+  } else if (c.seed === 'sleepTimer' || c.seed === 'breastTimer') {
+    // Lumi 2026-10-16: a timer the app started 40 / 15 minutes before the anchor (Ba).
+    const type = c.seed === 'sleepTimer' ? 'sleep' : 'breast';
+    const at = new Date(localAt(c.anchor).getTime() - (type === 'sleep' ? 40 : 15) * 60_000);
+    await db.doc(`babies/${b}/timers/${type}`).set({
+      type,
+      babyId: b,
+      sessionId: (type === 'sleep' ? 'e' : 'f').repeat(32),
+      startedAt: Timestamp.fromDate(at),
+      startedBy: MEMBERS.DAD,
+      author: { name: 'Huy', relation: 'father', relationCustom: null },
+      sides:
+        type === 'sleep'
+          ? null
+          : {
+              left: { accumulatedMs: 0, runningSince: Timestamp.fromDate(at) },
+              right: { accumulatedMs: 0, runningSince: null },
+            },
+      paused: false,
+      pausedSides: [],
+      updatedAt: Timestamp.fromDate(at),
+      updatedBy: MEMBERS.DAD,
+    });
   } else if (c.seed === 'bottle0800') {
     await seedRecord(b, `r_${'7'.repeat(32)}`, 'bottle', 'D0 08:00', {
       amountMl: 120,
@@ -457,6 +491,7 @@ function outcomeOf(s: AssistantTaskSnapshot): string {
   const codes = parts.flatMap((p) => (p.type === 'text' && p.code ? [p.code as string] : []));
   if (parts.some((p) => p.type === 'health_support')) return 'health';
   if (codes.includes('SMALL_TALK')) return 'small_talk';
+  if (codes.includes('SAME_AS_PENDING')) return 'same';
   if (codes.includes('HELP')) return 'help';
   if (s.task.state === 'awaiting_clarification') return 'awaiting';
   if (s.drafts.length > 0) return 'drafts';
@@ -571,6 +606,26 @@ function scoreDraft(e: ExpectDraft, d: AssistantTaskSnapshot['drafts'][number]) 
     );
   if (e.warning !== undefined)
     check('warning', d.warnings.includes(e.warning as 'overlap'), e.warning, d.warnings, '-');
+  // Lumi 2026-10-16: timer drafts and review lists.
+  if (e.timer !== undefined) check('timer', p.timer === e.timer, e.timer, p.timer, '-');
+  if (e.action !== undefined) check('action', p.action === e.action, e.action, p.action, '-');
+  if (e.tAt !== undefined)
+    check('tAt', near(e.tAt, p.at, tol), e.tAt, describeLocal(p.at as string), 'at');
+  if (e.missing !== undefined) {
+    const got = [...d.missingFields].sort().join(',');
+    out.missing = {
+      status: got === [...e.missing].sort().join(',') ? 'correct' : 'wrong',
+      expected: e.missing,
+      actual: d.missingFields,
+    };
+  }
+  if (e.noReview) {
+    out.noReview = {
+      status: flagged.size === 0 && d.state === 'draft' ? 'correct' : 'wrong',
+      expected: 'complete',
+      actual: [...flagged],
+    };
+  }
   if (e.review !== undefined) {
     for (const f of e.review) {
       out[`review:${f}`] = {
@@ -694,8 +749,15 @@ async function runCase(c: EvalCase): Promise<CaseResult> {
     ).data;
     replacedOk = prev.drafts.filter((d) => d.state === 'discarded').length === ex.replaced;
   }
+  const answerCodes = s.messages
+    .filter((m) => m.role === 'assistant')
+    .flatMap((m) => m.parts)
+    .flatMap((p) => (p.type === 'text' && p.code ? [p.code as string] : []));
+  const mainCalls = stats.calls - callsBefore - before.length; // ≈ the main message's calls
   const outcomeOk =
-    outcome === ex.outcome && (ex.calls === undefined || stats.calls - callsBefore === ex.calls);
+    outcome === ex.outcome &&
+    (ex.calls === undefined || Math.max(0, mainCalls) === ex.calls) &&
+    (ex.codes ?? []).every((code) => answerCodes.includes(code));
   return {
     ...base,
     outcome,

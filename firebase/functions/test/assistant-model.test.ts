@@ -172,7 +172,7 @@ describe('OpenAI extraction request', () => {
     ]) {
       expect(prompt).toContain(words);
     }
-    expect(assistantPromptVersion).toBe('assistant-extract-v3');
+    expect(assistantPromptVersion).toBe('assistant-extract-v4');
     const body = buildExtractRequest(
       {
         ...input,

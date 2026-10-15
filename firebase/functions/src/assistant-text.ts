@@ -5,6 +5,7 @@ import {
   bottleMlIn,
   breastSideIn,
   builtInCategories,
+  careStatesIn,
   categoryHintIn,
   clockTimeIn,
   completeSpan,
@@ -17,9 +18,11 @@ import {
   localDateIn,
   mentionsMedicine,
   moneyAmountsIn,
+  observationCueIn,
   otherCategoryId,
   parseMoney,
   relativeDateIn,
+  sameMessage,
   toMinorUnits,
   type Clarification,
   type DraftKind,
@@ -91,7 +94,21 @@ export interface TextContext {
   /** The household's spending categories (ids the model may pick). */
   categories: { id: string; name: string }[];
   previous: PreviousTurn | null;
+  /**
+   * Lumi 2026-10-16: the baby's running timers (`babies/{b}/timers/{sleep|breast}`), read at
+   * plan time; absent = none running.
+   */
+  timers?: RunningTimers;
+  /** The side the next breastfeed starts on by default (the form: other side of the last one). */
+  nextBreastSide?: 'left' | 'right' | 'both';
 }
+
+/** A running app timer as the planner needs it. */
+export interface RunningTimer {
+  sessionId: string;
+  startedAt: Date;
+}
+export type RunningTimers = Partial<Record<'sleep' | 'breast', RunningTimer | null>>;
 
 export type TextNoticeCode =
   | 'MODULE_UNAVAILABLE'
@@ -100,12 +117,15 @@ export type TextNoticeCode =
   | 'MEDICINE_NOT_SCHEDULED'
   | 'DUPLICATE_SUSPECTED'
   | 'PREVIOUS_SAVED'
-  | 'CORRECTION_APPLIED';
+  | 'CORRECTION_APPLIED'
+  | 'TIMER_RUNNING';
 
 export interface TextNotice {
   kind: DraftKind;
   code: TextNoticeCode;
   link?: string;
+  /** TIMER_RUNNING: which timer and since when. */
+  timer?: { type: 'sleep' | 'breast'; since: Date };
 }
 
 export type TextPlan =
@@ -124,11 +144,11 @@ const MAX_SLEEP_MS = 18 * 3_600_000;
 const draftField: Record<string, Partial<Record<DraftKind, string>>> = {
   amountMl: { bottle: 'amountMl' },
   milk: { bottle: 'milk' },
+  // Lumi 2026-10-16: an observation has no time; its `date` comes from dayOffset.
   time: {
     bottle: 'occurredAt',
     breast: 'occurredAt',
     sleep: 'startedAt',
-    observation: 'date',
     reminder: 'time',
   },
   dayOffset: {
@@ -172,9 +192,16 @@ interface Resolved {
   ambiguous: boolean;
 }
 
-export async function planTextIntents(ctx: TextContext, intents: ModelIntent[]): Promise<TextPlan> {
+export async function planTextIntents(
+  ctx: TextContext,
+  modelIntents: ModelIntent[],
+): Promise<TextPlan> {
   const { s, anchor } = ctx;
   const zone = s.zone;
+  // Lumi 2026-10-16: ongoing states ("con đang ngủ", "bé dậy rồi", "đang cho bú trái") from
+  // the words, and the model's items checked against them (`checkIntents`).
+  const states = careStatesIn(ctx.text);
+  const intents = checkIntents(ctx, modelIntents, states);
   const today = localDateIn(zone, anchor);
   const all = [ctx.text, ...ctx.answerTexts].join(' \n ');
   const haystack = foldVi([all, ctx.previous?.text ?? ''].join(' \n '));
@@ -350,12 +377,17 @@ export async function planTextIntents(ctx: TextContext, intents: ModelIntent[]):
       .sort((a, b) => b.getTime() - a.getTime());
     return cands[0] ?? null;
   };
-  /** `time.start` answered: a chip (`at_<date>_<HH:mm>`) or a typed time. */
-  const startAt = (latest: Date): Date | null => {
+  /** `time.start` answered: a chip (`at_<date>_<HH:mm>`), a typed time or (with [end]) a length. */
+  const startAt = (latest: Date, end: Date | null = null): Date | null => {
     if (!startAnswer) return null;
     const id = startAnswer.choiceId;
     const chip = id ? /^at_(\d{4}-\d{2}-\d{2})_(\d{2}):(\d{2})$/.exec(id) : null;
     if (chip) return inst(chip[1]!, Number(chip[2]), Number(chip[3]));
+    // "2 tiếng" typed for "Bé bắt đầu ngủ lúc mấy giờ?" after "dậy rồi": it slept that long.
+    const typedLength = startAnswer.text ? durationsIn(startAnswer.text) : [];
+    if (end && typedLength.length === 1 && !clockTimeIn(startAnswer.text!)) {
+      return new Date(end.getTime() - typedLength[0]!.minutes * 60_000);
+    }
     if (startAnswer.text) {
       const c = clockTimeIn(startAnswer.text);
       if (!c) return null;
@@ -370,6 +402,85 @@ export async function planTextIntents(ctx: TextContext, intents: ModelIntent[]):
 
   let reminderIndex = 0;
   let assignable: ScopeMember[] | null = null;
+
+  /**
+   * Lumi 2026-10-16: an ongoing sleep / feed drives the app's timer. `start` ("con đang ngủ",
+   * "bắt đầu ngủ lúc 21h", "đang cho bú trái") → a `timer` start at the said time, else now — or,
+   * when that timer already runs, a TIMER_RUNNING notice and a stop draft (end it / keep it).
+   * `stop` ("dậy rồi", "dậy lúc 6h", "bú xong rồi") → a stop draft for the running timer; with no
+   * timer, `finishedEnd` (a finished sleep that ended then; its start is asked). A length, both
+   * times, or a correction make it a finished log instead.
+   */
+  const timerPlan = (
+    i: ModelIntent,
+    kind: 'sleep' | 'breast',
+    durMin: number | null,
+    base: DraftPayload | null,
+  ): { payload: DraftPayload } | { finishedEnd: Date } | null => {
+    const st = states.find((x) => x.timer === kind) ?? null;
+    const phase = st?.action ?? i.fields.phase ?? null;
+    if (!phase || durMin !== null || base) return null;
+    let startC = clockOf(i, 'time');
+    let endC = clockOf(i, 'endTime');
+    if (phase === 'stop' && startC && !endC) {
+      // "dậy lúc 6h" read into `time`: it is when the sleep ended.
+      const ev = foldVi(evidenceOf(i, 'time') ?? ctx.text);
+      if (/(?<![\p{L}])(?:day|thuc|tinh|woke|awake|xong)(?![\p{L}])/u.test(ev)) {
+        endC = startC;
+        startC = null;
+      }
+    }
+    if (startC && endC) return null;
+    const running = ctx.timers?.[kind] ?? null;
+    const when = (c: Clock | null): Date => {
+      if (c) {
+        const r = resolveLog(c);
+        needsAmpm.push(r.ambiguous);
+        return r.at ?? anchor;
+      }
+      if (ago && !ago.justNow) return new Date(anchor.getTime() - ago.minutes * 60_000);
+      return anchor;
+    };
+    const stopOf = (r: RunningTimer, at: Date): DraftPayload => ({
+      kind: 'timer',
+      timer: kind,
+      action: 'stop',
+      at: at.toISOString(),
+      side: null,
+      sessionId: r.sessionId,
+      startedAt: r.startedAt.toISOString(),
+    });
+    if (phase === 'start') {
+      if (endC) return null;
+      if (running) {
+        notices.push({
+          kind: 'timer',
+          code: 'TIMER_RUNNING',
+          timer: { type: kind, since: running.startedAt },
+        });
+        return { payload: stopOf(running, anchor) };
+      }
+      const saidSide =
+        st?.side ?? (i.fields.side === 'left' || i.fields.side === 'right' ? i.fields.side : null);
+      return {
+        payload: {
+          kind: 'timer',
+          timer: kind,
+          action: 'start',
+          at: when(startC).toISOString(),
+          side:
+            kind === 'breast'
+              ? (saidSide ?? (ctx.nextBreastSide === 'right' ? 'right' : 'left'))
+              : null,
+          sessionId: null,
+          startedAt: null,
+        },
+      };
+    }
+    if (startC) return null; // "ngủ từ 9h, vừa dậy": a finished sleep with both ends.
+    if (running) return { payload: stopOf(running, when(endC)) };
+    return kind === 'sleep' ? { finishedEnd: when(endC) } : null;
+  };
 
   for (const intent of intents) {
     const kind = intent.kind;
@@ -430,6 +541,9 @@ export async function planTextIntents(ctx: TextContext, intents: ModelIntent[]):
         if (amount !== null && !Number.isInteger(amount)) amount = Math.round(amount);
         const milk = f.milk === 'other' ? null : (f.milk ?? x(base, 'milk') ?? ctx.lastMilk);
         if (f.milk === 'other') uncertain.add('milk');
+        // Lumi 2026-10-16: milk not said takes the form's default (the last bottle's): the
+        // model's doubt about a value it was never given must not block the save.
+        else if (f.milk === null) uncertain.delete('milk');
         let at: Date | null;
         const c = clockOf(intent, 'time');
         const kept = fromBase(c, x(base, 'occurredAt'));
@@ -462,11 +576,23 @@ export async function planTextIntents(ctx: TextContext, intents: ModelIntent[]):
       case 'breast': {
         const dur = durationFor(intent);
         if (dur.uncertain) uncertain.add('durationMin');
+        const tp = timerPlan(intent, 'breast', dur.min, base);
+        if (tp && 'payload' in tp) {
+          payload = tp.payload;
+          break;
+        }
         const durMin = dur.min ?? (x(base, 'durationMin') as number | null) ?? null;
         const sideSaid =
           f.side ??
           (intents.filter((i) => i.kind === 'breast').length === 1 ? breastSideIn(ctx.text) : null);
-        const side = sideSaid ?? (x(base, 'side') as 'left' | 'right' | 'both' | null) ?? null;
+        // Lumi 2026-10-16: a side not said takes the form's default (the other side of the last
+        // feed, else both) — never a blocking gap.
+        const side =
+          sideSaid ??
+          (x(base, 'side') as 'left' | 'right' | 'both' | null) ??
+          ctx.nextBreastSide ??
+          'both';
+        if (sideSaid === null) uncertain.delete('side');
         let at: Date | null;
         const c = clockOf(intent, 'time');
         const endC = clockOf(intent, 'endTime');
@@ -515,12 +641,17 @@ export async function planTextIntents(ctx: TextContext, intents: ModelIntent[]):
           side,
           ...(link ? { linked: link } : {}),
         };
-        if (side === null) missing.add('side');
         break;
       }
       case 'sleep': {
         const dur = durationFor(intent);
         if (dur.uncertain) uncertain.add('durationMin');
+        const tp = timerPlan(intent, 'sleep', dur.min, base);
+        if (tp && 'payload' in tp) {
+          payload = tp.payload;
+          break;
+        }
+        const finishedEnd = tp && 'finishedEnd' in tp ? tp.finishedEnd : null;
         let durMin = dur.min;
         const startC = clockOf(intent, 'time');
         const endC = clockOf(intent, 'endTime');
@@ -530,6 +661,9 @@ export async function planTextIntents(ctx: TextContext, intents: ModelIntent[]):
         const keptStart = fromBase(startC, x(base, 'startedAt'));
         if (keptEnd) {
           end = keptEnd;
+        } else if (finishedEnd) {
+          // "dậy rồi" with no timer running: it ended then; the start is asked below.
+          end = finishedEnd;
         } else if (endC) {
           const r = resolveLog(endC);
           end = r.at;
@@ -555,6 +689,12 @@ export async function planTextIntents(ctx: TextContext, intents: ModelIntent[]):
           const latest = new Date(anchor.getTime() - durMin * 60_000);
           start = startAt(latest);
           if (!start && !ctx.asked.has('time.start')) askOnce(timeStartQuestion(ctx, latest));
+        }
+        if (!start && end && !durMin) {
+          // Lumi 2026-10-16: an end with no start ("dậy rồi", "dậy lúc 6h") asks when it began
+          // (chips by length, a typed time or a length) instead of leaving a dead end.
+          start = startAt(end, end);
+          if (!start && !ctx.asked.has('time.start')) askOnce(sleepStartQuestion(ctx, end));
         }
         const span = completeSpan({
           start: start?.getTime() ?? null,
@@ -718,17 +858,15 @@ export async function planTextIntents(ctx: TextContext, intents: ModelIntent[]):
       continue;
     }
     const problems = draftProblems(checked.data, anchor);
-    const review = reviewFields(checked.data, problems);
-    for (const m of review.missing) missing.add(m);
-    for (const u of review.uncertain) uncertain.add(u);
     if (checked.data.kind === 'observation' && checked.data.date > today) uncertain.add('date');
-    for (const m of missing) uncertain.delete(m);
-    // Only the draft's own fields are reviewed.
-    const keys = new Set(Object.keys(checked.data));
+    // Lumi 2026-10-16: what is missing comes from the payload (the kind's required fields that
+    // are empty), never from the model's list; only the draft's own, filled fields are unsure.
+    void missing;
+    const review = reviewFields(checked.data, problems, uncertain);
     drafts.push({
       payload: checked.data,
-      missingFields: [...missing].filter((k) => keys.has(k)).sort(),
-      uncertainFields: [...uncertain].filter((k) => keys.has(k)).sort(),
+      missingFields: review.missing,
+      uncertainFields: review.uncertain,
       problems,
       warnings: [],
       ...(replaces ? { replaces } : {}),
@@ -750,6 +888,85 @@ export async function planTextIntents(ctx: TextContext, intents: ModelIntent[]):
     }
   }
   return { kind: 'drafts', drafts, notices };
+}
+
+const blankFields = {
+  amountMl: null,
+  milk: null,
+  time: null,
+  dayOffset: null,
+  endTime: null,
+  endDayOffset: null,
+  durationMin: null,
+  side: null,
+  observation: null,
+  when: null,
+  note: null,
+  title: null,
+} satisfies ModelIntent['fields'];
+
+/**
+ * Lumi 2026-10-16: the model's items checked against the words before planning.
+ * - The same words as the previous turn are never a correction (they replaced a waiting draft).
+ * - A sleep / feeding "observation" without a difference cue (`observationCueIn`: khó ngủ, quấy
+ *   hơn, ăn ít…) next to a state, a log or a sleep length is a plain log, not an observation.
+ * - A state the model missed (or read as an observation) gets its sleep / breast item, with the
+ *   clock time of the words ("bắt đầu ngủ lúc 21h") as its start or end.
+ */
+export function checkIntents(
+  ctx: Pick<TextContext, 'text' | 'previous'>,
+  raw: ModelIntent[],
+  states: ReturnType<typeof careStatesIn>,
+): ModelIntent[] {
+  const repeat = ctx.previous !== null && sameMessage(ctx.text, ctx.previous.text);
+  let out = raw.map((i) => (repeat && i.correctsPrevious ? { ...i, correctsPrevious: false } : i));
+  const cue = observationCueIn(ctx.text);
+  const logs = out.some((i) => i.kind === 'sleep' || i.kind === 'breast' || i.kind === 'bottle');
+  const length = durationsIn(ctx.text).length > 0;
+  const plain = (i: ModelIntent) =>
+    i.kind === 'observation' &&
+    !cue &&
+    ((i.fields.observation === 'sleep' &&
+      (states.some((st) => st.timer === 'sleep') || logs || length)) ||
+      (i.fields.observation === 'feeding' &&
+        (states.some((st) => st.timer === 'breast') ||
+          out.some((o) => o.kind === 'breast' || o.kind === 'bottle'))));
+  const dropped = out.filter(plain);
+  out = out.filter((i) => !plain(i));
+  const clock = clockTimeIn(ctx.text);
+  for (const st of states) {
+    if (out.some((i) => i.kind === st.timer)) continue;
+    const at = clock?.hhmm ?? null;
+    out.push({
+      kind: st.timer,
+      fields: {
+        ...blankFields,
+        time: st.action === 'start' ? at : null,
+        endTime: st.action === 'stop' ? at : null,
+        side: st.side,
+        phase: st.action,
+      },
+      evidence: [{ field: 'phase', text: st.text }],
+      uncertainFields: [],
+      missingFields: [],
+      correctsPrevious: false,
+    });
+  }
+  // "bé ngủ 2 tiếng" read as an observation: it is the sleep log (its start is asked).
+  if (
+    dropped.some((d) => d.fields.observation === 'sleep') &&
+    !out.some((i) => i.kind === 'sleep')
+  ) {
+    out.push({
+      kind: 'sleep',
+      fields: { ...blankFields },
+      evidence: [],
+      uncertainFields: [],
+      missingFields: [],
+      correctsPrevious: false,
+    });
+  }
+  return out;
 }
 
 /** A value of the previous draft's payload (corrections keep what was not corrected). */
@@ -827,6 +1044,47 @@ export function timeStartQuestion(
     choices: chips.map((t) => ({
       id: `at_${localDateIn(zone, t)}_${localClock(zone, t)}`,
       label: label(t),
+    })),
+    allowText: true,
+  };
+}
+
+/**
+ * Lumi 2026-10-16: "Bé bắt đầu ngủ lúc mấy giờ?" for a sleep whose END is known but not its
+ * start ("dậy rồi" with no timer running, "dậy lúc 6h"): chips by length ending at [end] —
+ * "Khoảng 1 tiếng (từ 00:05)", 2, 3 tiếng — or a typed time / length. Same field and choice ids
+ * as `timeStartQuestion` (`at_<date>_<HH:mm>`), so the answer is read the same way.
+ */
+export function sleepStartQuestion(
+  ctx: Pick<TextContext, 's' | 'anchor'>,
+  end: Date,
+): Clarification {
+  const zone = ctx.s.zone;
+  const today = localDateIn(zone, ctx.anchor);
+  const chips = [60, 120, 180].map((m) => ({ m, t: new Date(end.getTime() - m * 60_000) }));
+  const from = (t: Date) => {
+    const clock = localClock(zone, t);
+    const date = localDateIn(zone, t);
+    if (date === today) return L(clock, clock);
+    if (date === addDaysIso(today, -1)) return L(`${clock} hôm qua`, `${clock} yesterday`);
+    return L(
+      `${clock} ${date.slice(8, 10)}/${date.slice(5, 7)}`,
+      `${clock} ${date.slice(8, 10)}/${date.slice(5, 7)}`,
+    );
+  };
+  return {
+    id: 'pending',
+    field: 'time.start',
+    question: L(
+      `Bé dậy lúc ${localClock(zone, end)}. Bé bắt đầu ngủ lúc mấy giờ?`,
+      `Woke at ${localClock(zone, end)}. When did the sleep start?`,
+    ),
+    choices: chips.map(({ m, t }) => ({
+      id: `at_${localDateIn(zone, t)}_${localClock(zone, t)}`,
+      label: L(
+        `Khoảng ${m / 60} tiếng (từ ${from(t).vi})`,
+        `About ${m / 60} h (from ${from(t).en})`,
+      ),
     })),
     allowText: true,
   };

@@ -734,7 +734,7 @@ void main() {
         findsOneWidget,
       );
       expect(find.textContaining('1 dòng về thuốc'), findsOneWidget);
-      expect(find.text('Lưu 2 mục đã chọn'), findsNothing);
+      expect(find.text('Lưu 2 mục'), findsNothing);
       await _tap(tester, _text('Lưu thành nhắc việc'));
       final c = repo.named('submitClarification').single.args;
       expect(c['choiceId'], 'reminders');
@@ -831,7 +831,7 @@ void main() {
         expect(_text('Nhắc: Thứ Ba 20/10 · 09:00'), findsOneWidget);
         expect(_text('Nhắc: Thứ Bảy 17/10 · chưa có giờ'), findsOneWidget);
         expect(_text('Teddy · Nhắc việc'), findsNWidgets(2));
-        expect(_text('Lưu 1 mục đã chọn'), findsOneWidget);
+        expect(_text('Lưu 1 mục'), findsOneWidget);
         expect(_text('Thêm giờ trước khi lưu.'), findsOneWidget);
         repo.patchAnswer = (_) => reminderDraftJson(
           index: 1,
@@ -850,7 +850,7 @@ void main() {
                 as Map<String, Object?>;
         expect(payload['time'], isNotNull);
         expect(payload['date'], '2026-10-17');
-        await _tap(tester, _text('Lưu 2 mục đã chọn'));
+        await _tap(tester, _text('Lưu 2 mục'));
         expect(
           (repo.named('confirmDrafts').single.args['selected']! as List).length,
           2,
@@ -1328,7 +1328,8 @@ void main() {
       expect(_text('8 giờ con bú bình 120 ml'), findsOneWidget);
       expect(_text('Chờ Cô Lan trả lời câu hỏi này.'), findsOneWidget);
       expect(_text('9:00 – 10:00'), findsNothing);
-      await _tap(tester, _text('Lưu 1 mục đã chọn'));
+      // Lumi 2026-10-16: a single draft saves from its own card (no batch bar).
+      await _tap(tester, _text('Lưu cữ bú bình'));
       expect(repo.named('confirmDrafts').single.args['taskId'], taskA);
     });
 

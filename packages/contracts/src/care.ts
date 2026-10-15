@@ -82,6 +82,72 @@ export const timerSideSchema = z.object({
 export const timerSessionIdSchema = z.string().regex(/^[a-f0-9]{32}$/);
 export const recordIdForTimer = (sessionId: string) => `r_${sessionId}`;
 
+/** A running timer as stored (`babies/{b}/timers/{type}`), times as epoch ms. */
+export interface TimerState {
+  type: TimerType;
+  sessionId: string;
+  startedAt: number;
+  left: { accumulatedMs: number; runningSince: number | null } | null;
+  right: { accumulatedMs: number; runningSince: number | null } | null;
+  pausedSides: readonly ('left' | 'right' | 'both')[];
+}
+
+const sideElapsedMs = (
+  s: { accumulatedMs: number; runningSince: number | null } | null,
+  end: number,
+) => (s ? s.accumulatedMs + (s.runningSince === null ? 0 : Math.max(0, end - s.runningSince)) : 0);
+
+/**
+ * The record "Kết thúc" writes for [t] ended at [end] — the same values as the app's
+ * `CareTimer.toRecord` (`timer_models.dart`), so ending from chat (Lumi) and from the timer
+ * screen give one identical record `r_<sessionId>`: sleep → `startedAt … min(end, start + 24 h)`;
+ * breast → total of the sides in whole minutes (1…240), per-side minutes, the side(s) used and
+ * the side that ran last.
+ */
+export function timerRecordAt(
+  t: TimerState,
+  end: number,
+): {
+  type: 'sleep' | 'breast' | 'pump';
+  occurredAt: number;
+  endedAt: number;
+  data: Record<string, unknown>;
+} {
+  if (t.type === 'sleep') {
+    return {
+      type: 'sleep',
+      occurredAt: t.startedAt,
+      endedAt: Math.min(end, t.startedAt + maxSleepHours * 3_600_000),
+      data: {},
+    };
+  }
+  const l = sideElapsedMs(t.left, end);
+  const r = sideElapsedMs(t.right, end);
+  const totalMs = t.type === 'breast' ? l + r : Math.max(l, r);
+  const minutes = Math.min(
+    careLimits.durationMin.max,
+    Math.max(careLimits.durationMin.min, Math.round(Math.floor(totalMs / 1000) / 60)),
+  );
+  const side = l > 0 && r > 0 ? 'both' : r > 0 ? 'right' : 'left';
+  const active =
+    t.left?.runningSince != null ? 'left' : t.right?.runningSince != null ? 'right' : null;
+  const endSide =
+    active ??
+    (t.pausedSides.length === 1 && t.pausedSides[0] !== 'both' ? t.pausedSides[0]! : null);
+  const data: Record<string, unknown> = { side, durationMin: minutes };
+  if (t.type === 'breast') {
+    data.leftMin = Math.round(Math.floor(l / 1000) / 60);
+    data.rightMin = Math.round(Math.floor(r / 1000) / 60);
+    if (endSide !== null) data.endSide = endSide;
+  }
+  return {
+    type: t.type,
+    occurredAt: t.startedAt,
+    endedAt: t.startedAt + minutes * 60_000,
+    data,
+  };
+}
+
 // ---------- Overlapping sleeps (27, R-075) ----------
 
 /** `babies/{b}/conflicts/{a}__{b}` with record ids sorted, so a pair is found once. */

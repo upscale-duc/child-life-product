@@ -1,6 +1,6 @@
 {
-  "version": "lumi-text-eval-2026-10-15",
-  "note": "Synthetic messages only (no real child, family, receipt or person). Anchor day 2026-10-15 (Thursday), zone Asia/Ho_Chi_Minh. Times are local: D0 = the anchor day, D-1 = the day before, D1 = the day after. Run by assistant-live-eval.ts against the Firestore emulator; docs/assistant/evaluation.md and eval-2026-10-15.md.",
+  "version": "lumi-text-eval-2026-10-15+2026-10-16",
+  "note": "Synthetic messages only (no real child, family, receipt or person). Anchor day 2026-10-15 (Thursday), zone Asia/Ho_Chi_Minh. Times are local: D0 = the anchor day, D-1 = the day before, D1 = the day after. Run by assistant-live-eval.ts against the Firestore emulator; docs/assistant/evaluation.md and eval-2026-10-15.md. 2026-10-16: +25 cases (timers / ongoing states, observation vs log, repeated messages, review-field correctness: exact missing lists and complete drafts).",
   "cases": [
     {
       "id": "exp-01",
@@ -1323,6 +1323,503 @@
         "outcome": "help",
         "credits": 0,
         "drafts": []
+      }
+    },
+    {
+      "id": "tmr-01",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "01:05",
+      "text": "Con đang ngủ",
+      "expect": {
+        "outcome": "drafts",
+        "visibility": "shared",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "sleep",
+            "action": "start",
+            "tAt": "D0 01:05",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-02",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "14:20",
+      "text": "bé vừa ngủ",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "sleep",
+            "action": "start",
+            "tAt": "D0 14:20",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-03",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "21:30",
+      "text": "bé ngủ rồi",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "sleep",
+            "action": "start",
+            "tAt": "D0 21:30",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-04",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "21:30",
+      "text": "bắt đầu ngủ lúc 21h",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "sleep",
+            "action": "start",
+            "tAt": "D0 21:00",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-05",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "14:20",
+      "seed": "sleepTimer",
+      "text": "con dậy rồi",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "sleep",
+            "action": "stop",
+            "tAt": "D0 14:20",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-06",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "14:20",
+      "text": "bé vừa dậy",
+      "answers": {
+        "time.start": {
+          "choice": 1
+        }
+      },
+      "expect": {
+        "outcome": "drafts",
+        "asks": ["time.start"],
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "sleep",
+            "start": "D0 12:20",
+            "end": "D0 14:20",
+            "min": 120,
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-07",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "14:20",
+      "text": "đang cho bú (trái)",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "breast",
+            "action": "start",
+            "tAt": "D0 14:20",
+            "side": "left",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-08",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "14:20",
+      "seed": "breastTimer",
+      "text": "bú xong rồi",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "breast",
+            "action": "stop",
+            "tAt": "D0 14:20",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-09",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "14:20",
+      "seed": "sleepTimer",
+      "text": "Con đang ngủ",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "codes": ["TIMER_RUNNING"],
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "sleep",
+            "action": "stop",
+            "tAt": "D0 14:20"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-10",
+      "group": "timer",
+      "locale": "en",
+      "anchor": "14:20",
+      "text": "She fell asleep",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "sleep",
+            "action": "start",
+            "tAt": "D0 14:20",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-11",
+      "group": "timer",
+      "locale": "en",
+      "anchor": "14:20",
+      "seed": "sleepTimer",
+      "text": "he just woke up",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "sleep",
+            "action": "stop",
+            "tAt": "D0 14:20",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-12",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "07:10",
+      "text": "bé dậy lúc 6h",
+      "answers": {
+        "time.start": {
+          "choice": 0
+        }
+      },
+      "expect": {
+        "outcome": "drafts",
+        "asks": ["time.start"],
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "sleep",
+            "start": "D0 05:00",
+            "end": "D0 06:00",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmr-13",
+      "group": "timer",
+      "locale": "vi",
+      "anchor": "14:20",
+      "text": "bé đang ti mẹ bên phải",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "timer",
+            "timer": "breast",
+            "action": "start",
+            "side": "right",
+            "tAt": "D0 14:20",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "obs-02",
+      "group": "obs_vs_log",
+      "locale": "vi",
+      "anchor": "14:20",
+      "text": "bé ngủ 2 tiếng",
+      "answers": {
+        "time.start": {
+          "choice": 1
+        }
+      },
+      "expect": {
+        "outcome": "drafts",
+        "asks": ["time.start"],
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "sleep",
+            "start": "D0 12:00",
+            "end": "D0 14:00",
+            "min": 120,
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "obs-03",
+      "group": "obs_vs_log",
+      "locale": "vi",
+      "anchor": "14:20",
+      "text": "hôm nay bé bú ít hơn mọi khi",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "observation",
+            "observation": "feeding",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "obs-04",
+      "group": "obs_vs_log",
+      "locale": "vi",
+      "anchor": "14:20",
+      "text": "bé vừa bú mẹ 15 phút bên trái",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "breast",
+            "at": "D0 14:05",
+            "min": 15,
+            "side": "left",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "obs-05",
+      "group": "obs_vs_log",
+      "locale": "vi",
+      "anchor": "16:30",
+      "text": "chiều nay con quấy hơn mọi khi",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "observation",
+            "observation": "soothing",
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "rep-01",
+      "group": "repeat",
+      "locale": "vi",
+      "anchor": "01:05",
+      "before": ["Con đang ngủ"],
+      "text": "Con đang ngủ",
+      "expect": {
+        "outcome": "same",
+        "credits": 0,
+        "calls": 0,
+        "replaced": 0,
+        "codes": ["SAME_AS_PENDING"]
+      }
+    },
+    {
+      "id": "rep-02",
+      "group": "repeat",
+      "locale": "vi",
+      "anchor": "14:20",
+      "before": ["bé bú bình 120ml lúc 8h sáng"],
+      "text": "bé bú bình 120ml lúc 8h sáng.",
+      "expect": {
+        "outcome": "same",
+        "credits": 0,
+        "calls": 0,
+        "replaced": 0,
+        "codes": ["SAME_AS_PENDING"]
+      }
+    },
+    {
+      "id": "rev-01",
+      "group": "review",
+      "locale": "vi",
+      "anchor": "01:09",
+      "text": "Con đã bú mẹ được 20p",
+      "answers": {
+        "time.missing": {
+          "choice": 0
+        }
+      },
+      "expect": {
+        "outcome": "drafts",
+        "asks": ["time.missing"],
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "breast",
+            "at": "D0 00:49",
+            "min": 20,
+            "noReview": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "rev-02",
+      "group": "review",
+      "locale": "vi",
+      "anchor": "14:20",
+      "text": "bé bú bình lúc 8h sáng",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "bottle",
+            "at": "D0 08:00",
+            "missing": ["amountMl"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "rev-03",
+      "group": "review",
+      "locale": "vi",
+      "anchor": "14:20",
+      "text": "nhắc mua bỉm",
+      "expect": {
+        "outcome": "drafts",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "reminder",
+            "title": ["bỉm"],
+            "review": ["date"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "rev-04",
+      "group": "review",
+      "locale": "vi",
+      "anchor": "14:20",
+      "text": "hôm qua mua bỉm ở Con Cưng",
+      "expect": {
+        "outcome": "drafts",
+        "visibility": "private",
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "expense",
+            "category": ["c_diaper"],
+            "date": "D-1",
+            "merchant": "Con Cưng",
+            "missing": ["totalMinor"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "rev-05",
+      "group": "review",
+      "locale": "en",
+      "anchor": "14:20",
+      "text": "fed 120 ml",
+      "answers": {
+        "time.missing": {
+          "choice": 0
+        }
+      },
+      "expect": {
+        "outcome": "drafts",
+        "asks": ["time.missing"],
+        "credits": 1,
+        "drafts": [
+          {
+            "kind": "bottle",
+            "ml": 120,
+            "at": "D0 14:20",
+            "noReview": true
+          }
+        ]
       }
     }
   ]

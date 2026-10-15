@@ -25,6 +25,7 @@ import '../baby/baby_repository.dart';
 import '../care/care_models.dart' show CareType;
 import '../care/care_repository.dart' show inBabyZone;
 import '../care/care_sheets.dart' show openCareLog, showQuickLog;
+import '../care/timer_models.dart' show TimerType;
 import '../family/family_repository.dart' show familyMembersProvider;
 import '../premium/billing_models.dart';
 import '../premium/billing_repository.dart' show videoQuotaProvider;
@@ -43,12 +44,14 @@ import 'assistant_cards.dart';
 import 'assistant_controller.dart';
 import 'assistant_editor.dart';
 import 'assistant_entry.dart';
+import 'assistant_fix.dart';
 import 'assistant_labels.dart';
 import 'assistant_models.dart';
 import 'assistant_photos.dart';
 import 'assistant_repository.dart';
 import 'assistant_rules.dart';
 import 'assistant_time.dart';
+import 'assistant_timer_card.dart';
 import 'assistant_voice.dart';
 import 'assistant_widgets.dart';
 
@@ -96,6 +99,7 @@ bool canSaveKind(Membership? me, DraftKind? kind) {
     DraftKind.breast ||
     DraftKind.sleep ||
     DraftKind.meal ||
+    DraftKind.timer ||
     DraftKind.observation => me.role != MemberRole.relative,
     DraftKind.expense => SpendingAccess.of(me).record,
     DraftKind.reminder => me.role == MemberRole.coParent,
@@ -1885,7 +1889,20 @@ class _ThreadView {
       NoticeCode.smallTalk ||
       NoticeCode.help ||
       NoticeCode.correctionApplied ||
+      NoticeCode.sameAsPending ||
       NoticeCode.duplicateSuspected => AsBubble(text: text),
+      // Lumi 2026-10-16: the timer already runs — its screen is one tap away (Back = chat).
+      NoticeCode.timerRunning => AsNoticeCard(
+        icon: ClIcons.clock,
+        text: text,
+        action: switch (timerRoute(link)) {
+          final route? => AsLink(
+            label: l10n.asTimerOpen,
+            onPressed: () => GoRouter.of(context).pushSafe(route),
+          ),
+          null => null,
+        },
+      ),
       // Rework 2026-10-15: money keeps the task in my private thread (D-075 #2).
       NoticeCode.spendingPrivate => AsNoticeCard(
         icon: ClIcons.lock,
@@ -2265,6 +2282,66 @@ class _ThreadView {
     ];
   }
 
+  /// The concrete save of a draft that saves on its own card ("Lưu cữ bú").
+  String _saveLabel(AppLocalizations l10n, AssistantDraft d) =>
+      switch (d.kind) {
+        DraftKind.bottle => l10n.asSaveBottle,
+        DraftKind.breast => l10n.asSaveBreast,
+        DraftKind.sleep => l10n.asSaveSleep,
+        DraftKind.observation => l10n.asSaveObservation,
+        DraftKind.reminder => l10n.asSaveReminder,
+        _ => l10n.asSaveItem,
+      };
+
+  /// Lumi 2026-10-16: the inline fix of a "Cần kiểm tra" draft (open by itself, chips first).
+  List<AsFixRow> _fixRows(
+    BuildContext context,
+    TaskThread t,
+    AssistantDraft d,
+    String taskZone,
+  ) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    Future<void> edit() => showDraftEditor(
+      context,
+      scopeKey: chat.scope.key,
+      draft: d,
+      babyName: babyName,
+      zone: taskZone,
+    );
+    return fixRowsFor(
+      l10n: l10n,
+      locale: locale,
+      d: d,
+      zone: taskZone,
+      now: now,
+      act: FixActions(
+        patch: (payload, confirmed) async {
+          final (outcome, _) = await ctl.patch(
+            d,
+            payload,
+            confirmed: confirmed,
+          );
+          if (outcome != ActionOutcome.ok) onToast(outcome);
+        },
+        edit: edit,
+        pickTime: (initial) => pickAssistantTime(
+          context,
+          initial: initial == null ? null : hm(initial, taskZone),
+        ),
+        pickDate: (initial) {
+          final today = DateTime(now.year, now.month, now.day);
+          return pickAssistantDate(
+            context,
+            initial: initial ?? today,
+            first: today.subtract(const Duration(days: 1)),
+            last: today.add(const Duration(days: 366)),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _draft(BuildContext context, TaskThread t, AssistantDraft d) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toLanguageTag();
@@ -2274,25 +2351,61 @@ class _ThreadView {
         d.state == DraftState.draft || d.state == DraftState.needsReview;
     final expired = pending && d.expiredAt(now);
     final taskZone = t.snapshot?.task.timezone ?? zone;
+    if (d.payload is TimerPayload) return _timerDraft(context, t, d);
     final problems = pending
         ? {...draftProblems(d.payload, now), ...d.problems}.toList()
         : const <DraftProblem>[];
-    final review =
-        d.state == DraftState.needsReview ||
-        d.uncertainFields.isNotEmpty ||
-        d.missingFields.isNotEmpty;
-    final blocked = confirmBlocker(d, d.revision, now) != null;
     if (d.payload is ExpensePayload && pending) {
       return _receipt(context, t, d, problems, expired: expired);
     }
+    final active = pending && canSave && !expired && !saving;
+    // Lumi 2026-10-16: what to fix, said and fixable in place (no "Sửa" tap first).
+    final blocker = confirmBlocker(d, d.revision, now);
+    final blocked = blocker != null || problems.isNotEmpty;
+    final fixes = [
+      if (active) ..._fixRows(context, t, d, taskZone),
+      // A review flag that names no field of this draft (an older draft): one tap confirms it,
+      // never a silent disabled save.
+      if (active &&
+          blocker == AssistantReason.reviewRequired &&
+          reviewGaps(d, now).isEmpty)
+        (
+          field: 'review',
+          reason: l10n.asNeedsReview,
+          chips: <AsFixChip>[
+            (
+              label: l10n.asFixRight,
+              opens: false,
+              onTap: () async {
+                final (outcome, _) = await ctl.patch(
+                  d,
+                  d.payload,
+                  confirmed: {
+                    ...d.uncertainFields,
+                    ...d.missingFields,
+                  }.toList(),
+                );
+                if (outcome != ActionOutcome.ok) onToast(outcome);
+              },
+            ),
+          ],
+          optional: false,
+        ),
+    ];
+    final gaps = fixes.where((r) => !r.optional).length;
+    // One draft in the task (or a note): its own concrete save, no tick, no batch bar.
+    final ownSave =
+        d.payload is ObservationPayload ||
+        (t.snapshot?.drafts.where((x) => x.kind != DraftKind.timer).length ??
+                1) <=
+            1;
     final notes = <String>[
       if (d.state == DraftState.failed) failureLabel(l10n, d),
       if (pending && chat.stale.contains(d.id)) l10n.asErrStale,
       if (expired) l10n.asErrExpired,
-      if (pending && !expired) ...[
-        if (review) l10n.asNeedsReview,
+      // The fix rows say what is missing; a problem without a row is still read out.
+      if (pending && !expired && gaps == 0 && blocked)
         for (final p in problems) problemLabel(l10n, p),
-      ],
       if (pending && !canSave) l10n.asViewerDraftNote,
       if (d.state == DraftState.saved)
         if (_other(context, d.confirmedBy) case final who?)
@@ -2304,21 +2417,12 @@ class _ThreadView {
         d.payload is SleepPayload ||
         d.payload is ReminderPayload ||
         d.payload is ExpensePayload;
-    final single = d.payload is ObservationPayload;
+    final note = d.payload is ObservationPayload;
     final actions = <AsCardAction>[
-      if (pending && canSave && !expired && !saving) ...[
-        if (single)
-          (
-            label: l10n.asSaveObservation,
-            onPressed: blocked
-                ? null
-                : () async => onToast(await ctl.saveOne(t.taskId, d)),
-          ),
+      if (active) ...[
         if (editable)
           (
-            label: d.payload is ReminderPayload && review
-                ? l10n.asCheckReminder
-                : l10n.asEdit,
+            label: l10n.asEdit,
             onPressed: () => showDraftEditor(
               context,
               scopeKey: chat.scope.key,
@@ -2328,7 +2432,7 @@ class _ThreadView {
             ),
           ),
         (
-          label: single ? l10n.asNoThanks : l10n.asRemove,
+          label: note ? l10n.asNoThanks : l10n.asRemove,
           onPressed: () async => onToast(await ctl.discard(d)),
         ),
       ],
@@ -2415,14 +2519,11 @@ class _ThreadView {
         d.payload,
         taskZone,
         now,
-        side: (s) => switch (s) {
-          'left' => l10n.sideLeft,
-          'right' => l10n.sideRight,
-          _ => l10n.sideBoth,
-        },
+        side: (s) => sideWord(l10n, s),
       ),
     };
-    final canEdit = editable && pending && canSave && !expired && !saving;
+    final canEdit = editable && active;
+    final review = gaps > 0;
     return AsDraftCard(
       onTap: canEdit
           ? () => showDraftEditor(
@@ -2434,9 +2535,13 @@ class _ThreadView {
             )
           : null,
       privateHint: d.kind == DraftKind.expense ? l10n.asOnlyYou : null,
-      state: saving ? DraftState.saving : d.state,
+      state: saving
+          ? DraftState.saving
+          : (pending && !review && d.state == DraftState.needsReview
+                ? DraftState.draft
+                : d.state),
       kind: d.kind,
-      title: single && d.state == DraftState.saved
+      title: note && d.state == DraftState.saved
           ? kindLabel(l10n, d.kind)
           : draftTitle(l10n, d),
       line: line,
@@ -2445,13 +2550,153 @@ class _ThreadView {
         DraftKind.expense => l10n.asModuleSpending,
         _ => moduleLabel(l10n, d.kind, babyName),
       },
-      selected: pending && canSave && !expired && !saving && !single
+      selected: active && !ownSave
           ? (blocked ? false : ctl.isSelected(d))
           : null,
       onSelected: blocked ? null : (v) => ctl.toggle(d.id, v),
       notes: notes,
       noteIsError: d.state == DraftState.failed || expired,
+      body: fixes.isEmpty
+          ? null
+          : AsFixPanel(key: ValueKey('as.fix:${d.id}'), rows: fixes),
+      primary: (active || (saving && ownSave)) && ownSave
+          ? (
+              label: _saveLabel(l10n, d),
+              onPressed: blocked || saving
+                  ? null
+                  : () async => onToast(await ctl.saveOne(t.taskId, d)),
+            )
+          : null,
+      primaryLoading: saving,
+      primaryNote: review ? l10n.asPickAboveToSave : null,
       actions: actions,
+      stateLabelOverride: expired ? l10n.asStateExpired : null,
+    );
+  }
+
+  /// Lumi 2026-10-16: a timer from chat ("Con đang ngủ" → "Bắt đầu tính giờ ngủ · 01:05",
+  /// "dậy rồi" → "Kết thúc giấc ngủ · 01:45"). One tap saves it through the server into the
+  /// app's own timer; the card then shows the live timer and opens its screen (Back = chat).
+  Widget _timerDraft(BuildContext context, TaskThread t, AssistantDraft d) {
+    final l10n = AppLocalizations.of(context);
+    final p = d.payload as TimerPayload;
+    final canSave = canSaveKind(me, d.kind);
+    final saving = chat.saving.contains(d.id);
+    final pending =
+        d.state == DraftState.draft || d.state == DraftState.needsReview;
+    final expired = pending && d.expiredAt(now);
+    final taskZone = t.snapshot?.task.timezone ?? zone;
+    final active = pending && canSave && !expired && !saving;
+    final type = p.isSleep ? TimerType.sleep : TimerType.breast;
+    final fixes = active
+        ? _fixRows(context, t, d, taskZone)
+        : const <AsFixRow>[];
+    final problems = pending ? draftProblems(p, now) : const <DraftProblem>[];
+    final blocked =
+        confirmBlocker(d, d.revision, now) != null || problems.isNotEmpty;
+    final at = p.at == null ? '' : hm(p.at!, taskZone);
+    final route = '${Routes.timer}/${p.timer}';
+    final started = d.state == DraftState.saved && p.isStart;
+    // The running timer, live: a stop names the session it ends; a saved start its own.
+    final live = (pending && !p.isStart) || started
+        ? AsTimerLine(
+            babyId: chat.scope.babyId,
+            type: type,
+            zone: taskZone,
+            sessionId:
+                p.sessionId ??
+                (d.recordId?.startsWith('r_') == true
+                    ? d.recordId!.substring(2)
+                    : null),
+          )
+        : null;
+    final notes = <String>[
+      if (d.state == DraftState.failed) failureLabel(l10n, d),
+      if (expired) l10n.asErrExpired,
+      if (pending && !canSave) l10n.asViewerDraftNote,
+      if (d.state == DraftState.saved)
+        if (_other(context, d.confirmedBy) case final who?)
+          l10n.asConfirmedBy(who),
+    ];
+    return AsDraftCard(
+      state: saving ? DraftState.saving : d.state,
+      kind: d.kind,
+      tile: switch (type) {
+        TimerType.breast => (
+          ClIcons.drop,
+          context.cl.care.breast.soft,
+          context.cl.care.breast.ink,
+        ),
+        _ => (
+          ClIcons.sleep,
+          context.cl.care.sleep.soft,
+          context.cl.care.sleep.ink,
+        ),
+      },
+      title: timerTitle(l10n, p),
+      line: draftLine(
+        l10n,
+        Localizations.localeOf(context).toLanguageTag(),
+        p,
+        taskZone,
+        now,
+        side: (s) => sideWord(l10n, s).toLowerCase(),
+      ),
+      module: moduleLabel(l10n, d.kind, babyName),
+      notes: notes,
+      noteIsError: d.state == DraftState.failed || expired,
+      body: switch ((live, fixes.isEmpty)) {
+        (null, true) => null,
+        (final l, _) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ?l,
+            if (l != null && fixes.isNotEmpty)
+              const SizedBox(height: ClSpace.s3),
+            if (fixes.isNotEmpty)
+              AsFixPanel(key: ValueKey('as.fix:${d.id}'), rows: fixes),
+          ],
+        ),
+      },
+      primary: active || saving
+          ? (
+              label: switch ((p.isSleep, p.isStart)) {
+                (true, true) => l10n.asTimerStartSleep(at),
+                (false, true) => l10n.asTimerStartBreast(
+                  sideWord(l10n, p.side ?? 'left').toLowerCase(),
+                  at,
+                ),
+                (true, false) => l10n.asTimerStopSleep(at),
+                (false, false) => l10n.asTimerStopBreast(at),
+              },
+              onPressed: blocked || saving
+                  ? null
+                  : () async => onToast(await ctl.saveOne(t.taskId, d)),
+            )
+          : null,
+      primaryLoading: saving,
+      primaryNote: fixes.isNotEmpty ? l10n.asPickAboveToSave : null,
+      actions: [
+        if (active)
+          (
+            label: p.isStart ? l10n.asNoThanks : l10n.asTimerKeep,
+            onPressed: () async => onToast(await ctl.discard(d)),
+          ),
+        if (started ||
+            (d.state == DraftState.failed &&
+                d.error == AssistantReason.timerRunning))
+          (
+            label: l10n.asTimerOpen,
+            onPressed: () => GoRouter.of(context).pushSafe(route),
+          ),
+        if (d.state == DraftState.saved && !p.isStart)
+          if (recordLocation(d) case final record?)
+            (
+              label: l10n.asOpenLog,
+              onPressed: () => GoRouter.of(context).pushSafe(record),
+            ),
+      ],
       stateLabelOverride: expired ? l10n.asStateExpired : null,
     );
   }
@@ -2636,11 +2881,28 @@ class _ThreadView {
   ) {
     final writer = drafts.any((d) => canSaveKind(me, d.kind));
     if (!writer) return const [];
-    // A receipt and the CH16 observation save from their own card ("Lưu chi tiêu", "Lưu ghi
-    // nhận"); only several drafts (CH04, CH13) get the batch bar.
-    final ownSave = drafts.every(
-      (d) => d.kind == DraftKind.expense || d.kind == DraftKind.observation,
-    );
+    // A receipt, the CH16 observation and a timer save from their own card ("Lưu chi tiêu",
+    // "Lưu ghi nhận", "Bắt đầu tính giờ ngủ"); a single draft too (Lumi 2026-10-16: one tap,
+    // no "Chọn mục muốn lưu"); only several drafts (CH04, CH13) get the batch bar.
+    final batchable = [
+      for (final d in drafts)
+        if (d.kind != DraftKind.timer) d,
+    ];
+    final ownSave =
+        batchable.length <= 1 ||
+        batchable.every(
+          (d) => d.kind == DraftKind.expense || d.kind == DraftKind.observation,
+        );
+    final toFill = batchable
+        .where(
+          (d) =>
+              (d.state == DraftState.draft ||
+                  d.state == DraftState.needsReview) &&
+              !d.expiredAt(now) &&
+              !chat.saving.contains(d.id) &&
+              reviewGaps(d, now).isNotEmpty,
+        )
+        .length;
     final saved = drafts.where((d) => d.state == DraftState.saved).length;
     final failed = drafts.where((d) => d.state == DraftState.failed).length;
     final pending = drafts
@@ -2664,6 +2926,7 @@ class _ThreadView {
         ),
       if (pending > 0 && !ownSave)
         AsBatchBar(
+          toFill: toFill,
           count: ctl.selectedDrafts(t.taskId).length,
           saving: busy,
           onSave: () async => onToast(await ctl.confirm(t.taskId)),
@@ -3952,3 +4215,19 @@ GoRoute _page(
     child: builder(context, state),
   ),
 );
+
+/// "Trái" / "Phải" / "Cả hai" for a draft's side.
+String sideWord(AppLocalizations l10n, String side) => switch (side) {
+  'left' => l10n.sideLeft,
+  'right' => l10n.sideRight,
+  _ => l10n.sideBoth,
+};
+
+/// The app route of a timer notice's link (`/care/timer/{sleep|breast}`, query dropped); null
+/// for anything else.
+String? timerRoute(String? link) {
+  final uri = link == null ? null : Uri.tryParse(link);
+  if (uri == null || uri.hasScheme || uri.hasAuthority) return null;
+  final m = RegExp(r'^/care/timer/(sleep|breast)$').firstMatch(uri.path);
+  return m == null ? null : '${Routes.timer}/${m.group(1)}';
+}

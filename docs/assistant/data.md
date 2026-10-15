@@ -74,6 +74,8 @@ Domain documents written for confirmed drafts (Rules shapes, `source: 'assistant
 |---|---|---|
 | bottle / breast / sleep | `babies/{b}/records/{r}` (exact `validNewRecord` key set, author from the member doc, `createdAt/updatedAt` server time, `clientCreatedAt` = confirm time, deleted fields, `data` per type) | `r_<hash(draftId)>` |
 | observation | `babies/{b}/checkins/{ci}` (revision 1, `since: null, tried: [], healthSigns: []`) | the app's id `ci_<sha(babyId\|uid\|date\|observation)>` |
+| timer start (2026-10-16) | `babies/{b}/timers/{sleep\|breast}` (exact `validNewTimer` key set; the confirmer as `startedBy` / author) | the type; session `sha('timer\|'+draftId)[0:32]` |
+| timer stop (2026-10-16) | `babies/{b}/records/r_<sessionId>` (the app's "Kết thúc" record, `source: 'assistant'`) + the timer deleted | `r_<sessionId>` |
 | feedback | `babies/{b}/recFeedback/{fb}` | `fb_<hash(uid, taskId, contentId, version)>` |
 
 The existing `onRecordWritten` trigger then recomputes day summaries and opens sleep-overlap

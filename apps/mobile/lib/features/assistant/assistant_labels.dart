@@ -34,6 +34,7 @@ String kindLabel(AppLocalizations l10n, DraftKind? k) => switch (k) {
   DraftKind.reminder => l10n.asKindReminder,
   DraftKind.observation => l10n.asKindObservation,
   DraftKind.meal => l10n.asKindMeal,
+  DraftKind.timer => l10n.asKindTimer,
   null => l10n.asKindUnknown,
 };
 
@@ -42,7 +43,8 @@ String moduleLabel(AppLocalizations l10n, DraftKind? k, String babyName) =>
     switch (k) {
       DraftKind.bottle ||
       DraftKind.breast ||
-      DraftKind.sleep => l10n.asModuleCare(babyName),
+      DraftKind.sleep ||
+      DraftKind.timer => l10n.asModuleCare(babyName),
       DraftKind.expense => l10n.asModuleSpending,
       DraftKind.reminder => l10n.asModuleReminders,
       DraftKind.observation => l10n.asModuleRhythm(babyName),
@@ -95,6 +97,8 @@ String failureLabel(AppLocalizations l10n, AssistantDraft d) =>
       AssistantReason.draftStale => l10n.asErrStale,
       AssistantReason.scopeChanged => l10n.asErrScope,
       AssistantReason.moduleUnavailable => l10n.asErrModule,
+      AssistantReason.timerRunning => l10n.asErrTimerRunning,
+      AssistantReason.timerChanged => l10n.asErrTimerChanged,
       AssistantReason.validationFailed || AssistantReason.reviewRequired =>
         d.problems.isEmpty
             ? l10n.asNeedsReview
@@ -189,9 +193,31 @@ String draftLine(
       p.title,
       if (p.occurredAt != null) when(p.occurredAt),
     ].join(' · '),
+    // Lumi 2026-10-16: "Từ 01:05 · bên trái trước" / "00:25 – 01:05 · 40 phút".
+    TimerPayload(isStart: true) => [
+      p.at == null ? l10n.asNoTime : l10n.asTimerFrom(hm(p.at!, zone)),
+      if (p.side != null && side != null) l10n.asTimerSideFirst(side(p.side!)),
+    ].join(' · '),
+    TimerPayload() => [
+      if (p.startedAt != null && p.at != null) ...[
+        '${hm(p.startedAt!, zone)} – ${hm(p.at!, zone)}',
+        if (p.at!.isAfter(p.startedAt!))
+          durationLabel(l10n, p.at!.difference(p.startedAt!).inMinutes),
+      ] else
+        l10n.asNoTime,
+    ].join(' · '),
     UnknownPayload() => l10n.asKindUnknown,
   };
 }
+
+/// Lumi 2026-10-16: the title of a timer draft ("Tính giờ ngủ", "Kết thúc cữ bú").
+String timerTitle(AppLocalizations l10n, TimerPayload p) =>
+    switch ((p.isSleep, p.isStart)) {
+      (true, true) => l10n.asTimerTitleStartSleep,
+      (false, true) => l10n.asTimerTitleStartBreast,
+      (true, false) => l10n.asTimerTitleStopSleep,
+      (false, false) => l10n.asTimerTitleStopBreast,
+    };
 
 /// An amount in minor units with Chi tiêu's own formatting ("486.000 ₫", "$4,860.00"); a code
 /// Chi tiêu does not know stays plain ("12.50 XYZ"). Never a float in the data.
@@ -248,6 +274,7 @@ String draftTitle(AppLocalizations l10n, AssistantDraft d) =>
         ?(note ?? merchant),
       ].join(' · ').ifEmpty(l10n.asKindExpense),
       ObservationPayload() => l10n.asObservationTitle,
+      final TimerPayload p => timerTitle(l10n, p),
       _ => kindLabel(l10n, d.kind),
     };
 
@@ -296,6 +323,10 @@ String? recordLocation(AssistantDraft d) {
         ? '${Routes.record}/${adapter.group(2)}'
         : Routes.rhythm;
   }
+  // Lumi 2026-10-16: a started timer opens its timer screen (`/care/timer/{sleep|breast}`).
+  if (d.payload case TimerPayload(isStart: true, :final timer)) {
+    return '${Routes.timer}/$timer';
+  }
   if (link != null) {
     final uri = Uri.tryParse(link);
     const allowed = [
@@ -330,7 +361,10 @@ String? recordLocation(AssistantDraft d) {
 
 /// The module list a saved record lives in ("Mở nhật ký" / "Mở Chi tiêu").
 String? moduleLocation(DraftKind? k) => switch (k) {
-  DraftKind.bottle || DraftKind.breast || DraftKind.sleep => Routes.history,
+  DraftKind.bottle ||
+  DraftKind.breast ||
+  DraftKind.sleep ||
+  DraftKind.timer => Routes.history,
   DraftKind.expense => Routes.spending,
   DraftKind.reminder => Routes.reminders,
   DraftKind.observation => Routes.rhythm,

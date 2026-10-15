@@ -266,7 +266,7 @@ void main() {
       // Labels come from the state enum.
       expect(_text('Nháp'), findsNWidgets(2));
       expect(_text('Hôm nay 15/10 · 08:00 · 120 ml'), findsOneWidget);
-      expect(_text('Lưu 2 mục đã chọn'), findsOneWidget);
+      expect(_text('Lưu 2 mục'), findsOneWidget);
       // Nothing was written: no confirm before the person taps save.
       expect(repo.named('confirmDrafts'), isEmpty);
     });
@@ -297,7 +297,7 @@ void main() {
       tester,
     ) async {
       final repo = await drafts(tester);
-      await tester.tap(_text('Lưu 2 mục đã chọn'));
+      await tester.tap(_text('Lưu 2 mục'));
       await tester.pumpAndSettle();
       final sel = repo.named('confirmDrafts').single.args['selected']! as List;
       expect(sel.map((s) => (s as Map)['draftId']), [
@@ -306,7 +306,7 @@ void main() {
       ]);
       expect((sel.first as Map)['revision'], 1);
       expect(_text('Đã lưu'), findsNWidgets(2));
-      expect(_text('Lưu 2 mục đã chọn'), findsNothing);
+      expect(_text('Lưu 2 mục'), findsNothing);
       expect(_text('Mở nhật ký'), findsNWidgets(2));
       expect(_text('Hoàn tác'), findsNWidgets(2));
     });
@@ -320,7 +320,7 @@ void main() {
         repo: repo,
         prefs: _thread([taskA]),
       );
-      await tester.tap(_text('Lưu 2 mục đã chọn'));
+      await tester.tap(_text('Lưu 2 mục'));
       await tester.pumpAndSettle();
       await tester.tap(_text('Hoàn tác').first);
       await tester.pumpAndSettle();
@@ -352,7 +352,7 @@ void main() {
           'partial': true,
         },
       );
-      await tester.tap(_text('Lưu 2 mục đã chọn'));
+      await tester.tap(_text('Lưu 2 mục'));
       await tester.pumpAndSettle();
       expect(_text('1/2 mục đã lưu · 1 mục chưa lưu'), findsOneWidget);
       expect(_text('Chưa lưu'), findsOneWidget);
@@ -394,7 +394,7 @@ void main() {
           'partial': true,
         },
       );
-      await tester.tap(_text('Lưu 2 mục đã chọn'));
+      await tester.tap(_text('Lưu 2 mục'));
       await tester.pumpAndSettle();
       expect(_text('Thử lại mục lỗi'), findsOneWidget);
       expect(_text('Thử lại không trừ lượt.'), findsOneWidget);
@@ -408,7 +408,7 @@ void main() {
 
     testWidgets('offline: nothing is marked saved', (tester) async {
       final repo = await drafts(tester, online: false);
-      await tester.tap(_text('Lưu 2 mục đã chọn'));
+      await tester.tap(_text('Lưu 2 mục'));
       await tester.pumpAndSettle();
       expect(repo.named('confirmDrafts'), isEmpty);
       expect(_text('Đã lưu'), findsNothing);
@@ -432,7 +432,7 @@ void main() {
       await _pump(tester, repo: repo, prefs: _thread([taskA]));
       // Someone edited the bottle meanwhile (revision 2, 150 ml).
       repo.tasks[taskA] = batchSnapshot(bottleMl: 150, bottleRevision: 2);
-      await tester.tap(_text('Lưu 2 mục đã chọn'));
+      await tester.tap(_text('Lưu 2 mục'));
       await tester.pumpAndSettle();
       expect(_text('Bản nháp vừa thay đổi. Xem lại rồi lưu.'), findsWidgets);
       expect(_text('Hôm nay 15/10 · 08:00 · 150 ml'), findsOneWidget);
@@ -452,14 +452,14 @@ void main() {
         draftOf(taskA, 0),
       );
       expect(_text('Đã bỏ'), findsOneWidget);
-      expect(_text('Lưu 1 mục đã chọn'), findsOneWidget);
+      expect(_text('Lưu 1 mục'), findsOneWidget);
     });
 
     testWidgets('a viewer gets no checks and no save actions (CH27)', (
       tester,
     ) async {
       final repo = await drafts(tester, me: hoa);
-      expect(_text('Lưu 2 mục đã chọn'), findsNothing);
+      expect(_text('Lưu 2 mục'), findsNothing);
       expect(_text('Sửa'), findsNothing);
       expect(_text('Chỉ xem · không lưu qua chat'), findsNWidgets(2));
       expect(_text('Hỏi về nhật ký của bé…'), findsOneWidget);
@@ -525,7 +525,7 @@ void main() {
       expect(c['choiceId'], 'a');
       expect(repo.named('quoteTask'), isEmpty);
       expect(repo.named('startTask'), isEmpty);
-      expect(_text('Lưu 2 mục đã chọn'), findsOneWidget);
+      expect(_text('Lưu 2 mục'), findsOneWidget);
     });
 
     testWidgets('"Tự nhập": the typed answer goes to the same task', (
@@ -750,7 +750,7 @@ void main() {
         _text('Bản nháp đã sẵn sàng vẫn lưu được, không cần lượt.'),
         findsOneWidget,
       );
-      await tester.tap(_text('Lưu 2 mục đã chọn'));
+      await tester.tap(_text('Lưu 2 mục'));
       await tester.pumpAndSettle();
       expect(repo.named('confirmDrafts'), hasLength(1));
       await tester.tap(_text('Mở Hướng dẫn sức khoẻ'));
@@ -1225,7 +1225,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.named('getAssistantTask'), hasLength(1));
       expect(_text('Lumi đang soạn…'), findsNothing);
-      expect(_text('Lưu 2 mục đã chọn'), findsOneWidget);
+      expect(_text('Lưu 2 mục'), findsOneWidget);
       // A new event asks for the authoritative snapshot once; its duplicate does not.
       final saved = AssistantEvent(
         taskId: taskA,
@@ -1272,7 +1272,7 @@ void main() {
       online.add(true);
       await tester.pumpAndSettle();
       expect(repo.named('getAssistantTask'), hasLength(2));
-      expect(_text('Lưu 2 mục đã chọn'), findsOneWidget);
+      expect(_text('Lưu 2 mục'), findsOneWidget);
     });
 
     testWidgets('"Huỷ" while preparing cancels the task', (tester) async {
@@ -1380,7 +1380,7 @@ void main() {
       expect(_text('Hội thoại'), findsNothing);
       // (Opening the chat also read the baby's shared thread, D-075 #2.)
       expect(repo.named('getAssistantTask').last.args['taskId'], taskA);
-      expect(_text('Lưu 2 mục đã chọn'), findsOneWidget);
+      expect(_text('Lưu 2 mục'), findsOneWidget);
     });
 
     testWidgets('the composer stays above the keyboard', (tester) async {

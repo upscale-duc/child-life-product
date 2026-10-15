@@ -40,6 +40,11 @@ export const assistantErrors = [
   'VALIDATION_FAILED',
   'IDEMPOTENCY_CONFLICT',
   'INVALID_STATE',
+  // ---- Lumi timers 2026-10-16 (confirm conflicts of a `timer` draft) ----
+  /** "Bắt đầu tính giờ": someone already started that timer (it is shown instead). */
+  'TIMER_RUNNING',
+  /** "Kết thúc": the running timer changed hands or ended elsewhere without this session's record. */
+  'TIMER_CHANGED',
 ] as const;
 export type AssistantError = (typeof assistantErrors)[number];
 
@@ -218,6 +223,17 @@ export const assistantNoticeCodes = [
   'MEDICINE_NOT_SCHEDULED',
   /** Something very similar was just logged: check before saving. */
   'DUPLICATE_SUSPECTED',
+  // ---- Lumi timers 2026-10-16 ----
+  /**
+   * The sleep / breastfeeding timer the message would start is already running (since the
+   * time in the text): a `timer` stop draft follows ("Kết thúc" / "Để tiếp tục").
+   */
+  'TIMER_RUNNING',
+  /**
+   * The same message was sent again while its draft is still waiting above: nothing new was
+   * drafted (0 credits); the person saves or fixes the one above.
+   */
+  'SAME_AS_PENDING',
 ] as const;
 export type AssistantNoticeCode = (typeof assistantNoticeCodes)[number];
 
@@ -369,6 +385,8 @@ export const draftKinds = [
   'reminder',
   'observation',
   'meal',
+  // Lumi timers 2026-10-16: start / stop the app's sleep or breastfeeding timer.
+  'timer',
 ] as const;
 export type DraftKind = (typeof draftKinds)[number];
 
@@ -474,6 +492,32 @@ export const mealDraftSchema = z.object({
   occurredAt: iso.nullable(),
 });
 
+/**
+ * Lumi timers 2026-10-16 (`docs/assistant/api.md` "Timers"): "con đang ngủ", "đang cho bú bên
+ * trái", "bé dậy rồi", "bú xong rồi" drive the app's own running timers
+ * (`babies/{b}/timers/{sleep|breast}`, contracts `care.ts`), the one source of truth every family
+ * member's app listens to. Confirming a `start` creates that timer exactly as the app's "Bắt
+ * đầu" would (the confirmer as `startedBy`); confirming a `stop` ends the running session exactly
+ * as the app's "Kết thúc" would: the record `r_<sessionId>` (contracts `timerRecordAt`) and the
+ * timer's deletion in one transaction.
+ */
+export const timerDraftSchema = z.object({
+  kind: z.literal('timer'),
+  timer: z.enum(['sleep', 'breast']),
+  action: z.enum(['start', 'stop']),
+  /** start: when it began ("lúc 21h", else the send time); stop: when it ended. */
+  at: iso.nullable(),
+  /** breast start: the side that runs first (one side at a time, like the timer); else null. */
+  side: z.enum(['left', 'right']).nullable(),
+  /** stop: the running session this ends (the record is `r_<sessionId>`); start: null. */
+  sessionId: z
+    .string()
+    .regex(/^[a-f0-9]{32}$/)
+    .nullable(),
+  /** stop: when the running timer started (shown; the record's start); start: null. */
+  startedAt: iso.nullable(),
+});
+
 export const draftPayloadSchema = z.discriminatedUnion('kind', [
   bottleDraftSchema,
   breastDraftSchema,
@@ -482,6 +526,7 @@ export const draftPayloadSchema = z.discriminatedUnion('kind', [
   reminderDraftSchema,
   observationDraftSchema,
   mealDraftSchema,
+  timerDraftSchema,
 ]);
 export type DraftPayload = z.infer<typeof draftPayloadSchema>;
 
@@ -577,8 +622,222 @@ export function draftProblems(p: DraftPayload, anchor: Date): DraftProblem[] {
     case 'meal':
       if (p.occurredAt !== null && after(p.occurredAt)) out.push('FUTURE_TIME');
       break;
+    case 'timer': {
+      if (p.at === null) {
+        out.push('MISSING_TIME');
+        break;
+      }
+      const at = Date.parse(p.at);
+      if (after(p.at)) out.push('FUTURE_TIME');
+      if (p.action === 'start') {
+        // A timer that would already have run past what its record can hold (24 h sleep,
+        // 240 min feed) is no longer "running": log it as a finished sleep / feed instead.
+        if (anchor.getTime() - at > timerMaxRunMs[p.timer]) out.push('INVALID_TIME');
+      } else if (p.startedAt === null || at <= Date.parse(p.startedAt)) {
+        out.push('INVALID_TIME');
+      }
+      break;
+    }
   }
   return out;
+}
+
+/** How long a timer may already have run when it is started from chat (`timerRecordAt` caps). */
+export const timerMaxRunMs = { sleep: 24 * 3_600_000, breast: 240 * 60_000 } as const;
+
+// ---------- Review fields (Lumi 2026-10-16: every flagged field names a real field) ----------
+
+/** The payload keys of each draft kind (from the schemas), for review lists and tests. */
+export const draftFieldKeys: Record<DraftKind, readonly string[]> = {
+  bottle: Object.keys(bottleDraftSchema.shape),
+  breast: Object.keys(breastDraftSchema.shape),
+  sleep: Object.keys(sleepDraftSchema.shape),
+  expense: Object.keys(expenseDraftSchema.shape),
+  reminder: Object.keys(reminderDraftSchema.shape),
+  observation: Object.keys(observationDraftSchema.shape),
+  meal: Object.keys(mealDraftSchema.shape),
+  timer: Object.keys(timerDraftSchema.shape),
+};
+
+/**
+ * Fields a draft cannot be saved without (null → `missingFields`, blocking). Everything else is
+ * optional: an observation saves without `when` / `note`, a feed without a length, a breastfeed
+ * whose side was not said takes the form's default (other side of the last feed, else both), a
+ * reminder without a time is all day.
+ */
+export const requiredDraftFields: Record<DraftKind, readonly string[]> = {
+  // Milk is preset to the baby's last bottle milk (the form's memory); null only for "other".
+  bottle: ['amountMl', 'occurredAt', 'milk'],
+  breast: ['occurredAt'],
+  sleep: ['startedAt', 'endedAt'],
+  expense: ['totalMinor', 'date', 'currency'],
+  reminder: ['title', 'date'],
+  observation: ['observation', 'date'],
+  meal: ['title'],
+  timer: ['at'],
+};
+
+/**
+ * The field each form / module problem points at, per kind (`null` = that problem never applies
+ * to the kind). Total on purpose: adding a kind or a problem fails to compile until it is mapped,
+ * and contracts tests check every field exists on its kind. `MISSING_TIME` on a sleep names
+ * whichever end is null (see `draftReviewFields`).
+ */
+export const draftProblemFields: Record<DraftKind, Record<DraftProblem, string | null>> = {
+  bottle: {
+    MISSING_AMOUNT: 'amountMl',
+    INVALID_AMOUNT: 'amountMl',
+    MISSING_TIME: 'occurredAt',
+    FUTURE_TIME: 'occurredAt',
+    INVALID_TIME: 'occurredAt',
+    MISSING_DATE: null,
+    CURRENCY_UNSUPPORTED: null,
+    MISSING_TITLE: null,
+    INVALID_TITLE: null,
+    PAST_TIME: null,
+    INVALID_ASSIGNEE: null,
+  },
+  breast: {
+    MISSING_AMOUNT: null,
+    INVALID_AMOUNT: 'durationMin',
+    MISSING_TIME: 'occurredAt',
+    FUTURE_TIME: 'occurredAt',
+    INVALID_TIME: 'occurredAt',
+    MISSING_DATE: null,
+    CURRENCY_UNSUPPORTED: null,
+    MISSING_TITLE: null,
+    INVALID_TITLE: null,
+    PAST_TIME: null,
+    INVALID_ASSIGNEE: null,
+  },
+  sleep: {
+    MISSING_AMOUNT: null,
+    INVALID_AMOUNT: null,
+    MISSING_TIME: 'startedAt',
+    FUTURE_TIME: 'endedAt',
+    INVALID_TIME: 'endedAt',
+    MISSING_DATE: null,
+    CURRENCY_UNSUPPORTED: null,
+    MISSING_TITLE: null,
+    INVALID_TITLE: null,
+    PAST_TIME: null,
+    INVALID_ASSIGNEE: null,
+  },
+  expense: {
+    MISSING_AMOUNT: 'totalMinor',
+    INVALID_AMOUNT: 'totalMinor',
+    MISSING_TIME: null,
+    FUTURE_TIME: 'date',
+    INVALID_TIME: 'date',
+    MISSING_DATE: 'date',
+    CURRENCY_UNSUPPORTED: 'currency',
+    MISSING_TITLE: null,
+    INVALID_TITLE: null,
+    PAST_TIME: 'date',
+    INVALID_ASSIGNEE: null,
+  },
+  reminder: {
+    MISSING_AMOUNT: null,
+    INVALID_AMOUNT: null,
+    MISSING_TIME: 'time',
+    FUTURE_TIME: null,
+    INVALID_TIME: 'date',
+    MISSING_DATE: 'date',
+    CURRENCY_UNSUPPORTED: null,
+    MISSING_TITLE: 'title',
+    INVALID_TITLE: 'title',
+    PAST_TIME: 'date',
+    INVALID_ASSIGNEE: 'assigneeUid',
+  },
+  observation: {
+    MISSING_AMOUNT: null,
+    INVALID_AMOUNT: null,
+    MISSING_TIME: null,
+    FUTURE_TIME: 'date',
+    INVALID_TIME: 'date',
+    MISSING_DATE: 'date',
+    CURRENCY_UNSUPPORTED: null,
+    MISSING_TITLE: null,
+    INVALID_TITLE: null,
+    PAST_TIME: null,
+    INVALID_ASSIGNEE: null,
+  },
+  meal: {
+    MISSING_AMOUNT: null,
+    INVALID_AMOUNT: null,
+    MISSING_TIME: 'occurredAt',
+    FUTURE_TIME: 'occurredAt',
+    INVALID_TIME: 'occurredAt',
+    MISSING_DATE: null,
+    CURRENCY_UNSUPPORTED: null,
+    MISSING_TITLE: 'title',
+    INVALID_TITLE: 'title',
+    PAST_TIME: null,
+    INVALID_ASSIGNEE: null,
+  },
+  timer: {
+    MISSING_AMOUNT: null,
+    INVALID_AMOUNT: null,
+    MISSING_TIME: 'at',
+    FUTURE_TIME: 'at',
+    INVALID_TIME: 'at',
+    MISSING_DATE: null,
+    CURRENCY_UNSUPPORTED: null,
+    MISSING_TITLE: null,
+    INVALID_TITLE: null,
+    PAST_TIME: null,
+    INVALID_ASSIGNEE: null,
+  },
+};
+
+const isMissingProblem = (pr: DraftProblem) =>
+  pr === 'MISSING_AMOUNT' ||
+  pr === 'MISSING_TIME' ||
+  pr === 'MISSING_DATE' ||
+  pr === 'MISSING_TITLE';
+
+/**
+ * The review lists of a draft, from its payload and the form + module problems: `missing` = the
+ * required fields that are empty (plus a missing-problem's field), `uncertain` = fields whose
+ * value a problem questions, plus [uncertain] candidates (the model's doubts, grounding) that are
+ * real fields of the kind and hold a value. Never a field the kind does not have, never a filled
+ * field as "missing" (Lumi 2026-10-16: an observation said `date` was missing while it was set;
+ * a breastfeed kept `occurredAt` "missing" after "Vừa xong" filled it).
+ */
+export function draftReviewFields(
+  p: DraftPayload,
+  problems: readonly DraftProblem[],
+  uncertainCandidates: Iterable<string> = [],
+): { missing: string[]; uncertain: string[] } {
+  const keys = new Set(draftFieldKeys[p.kind]);
+  const value = (k: string) => (p as Record<string, unknown>)[k];
+  const empty = (k: string) => {
+    const v = value(k);
+    return v === null || v === undefined || (typeof v === 'string' && v.trim() === '');
+  };
+  const missing = new Set<string>();
+  const uncertain = new Set<string>();
+  for (const f of requiredDraftFields[p.kind]) if (empty(f)) missing.add(f);
+  for (const pr of new Set([...problems, ...assistantModuleProblems(p)])) {
+    if (p.kind === 'sleep' && pr === 'MISSING_TIME') {
+      if (p.startedAt === null) missing.add('startedAt');
+      if (p.endedAt === null) missing.add('endedAt');
+      continue;
+    }
+    if (p.kind === 'expense' && pr === 'CURRENCY_UNSUPPORTED' && p.currency === null) {
+      missing.add('currency');
+      continue;
+    }
+    const f = draftProblemFields[p.kind][pr];
+    if (f === null) continue;
+    if (isMissingProblem(pr) && empty(f)) missing.add(f);
+    else uncertain.add(f);
+  }
+  for (const f of uncertainCandidates) if (keys.has(f) && !empty(f)) uncertain.add(f);
+  return {
+    missing: [...missing].filter((f) => keys.has(f)).sort(),
+    uncertain: [...uncertain].filter((f) => keys.has(f) && !missing.has(f)).sort(),
+  };
 }
 
 /** Confirm preconditions shared by server and app (D04, D05, review). */

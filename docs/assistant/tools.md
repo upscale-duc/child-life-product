@@ -137,6 +137,8 @@ without diacritics next to a time), `bottleMlIn` (ml, oz → ml), `breastSideIn`
 | Missing time | no time, no "trước / vừa": `time.missing` (chips) when no other log of the message has a time; else the field stays missing (review). Sleep length without an end point → `time.start` chips (latest = send − length). |
 | Corrections | `correctsPrevious` + the previous turn's unsaved draft of that kind → the new draft carries `replaces`; settle discards the old one (`REPLACED`); fields the model copied keep the old instants. A saved one → `PREVIOUS_SAVED` with its link, nothing drafted. |
 | Duplicates | bottle / breast within 10 min (bottle ±10 % ml) of a live record → `duplicate_suspected` (warning, re-checked at confirm, `acknowledge` to save); expenses → `expenseDuplicateSuspected`. |
+| Timers (2026-10-16) | ongoing states (model `phase` or contracts `careStatesIn`) → a `timer` start / stop of the app's running timer, or `TIMER_RUNNING` + a stop offer when it already runs; "dậy rồi" with no timer → `time.start` ("Bé dậy lúc …", chips by length). `checkIntents`: same words as the previous turn are never a correction; a sleep / feeding observation without a difference cue (`observationCueIn`) next to a state, a log or a sleep length is a log. See api.md "Timers and review fields". |
+| Review lists (2026-10-16) | contracts `draftReviewFields`: missing = required fields that are empty (`requiredDraftFields`), problems through `draftProblemFields`; the model's `missingFields` are advice only; a field the server defaulted (breast side, bottle milk) is never "unsure" from the model's doubt. |
 | Reuse | while a server question is open the reading is cached (`assistantTasks/{t}/textReading/current`, never client-readable) and reused for `time.*`, `intent` and `reminder.assignee.*` answers: no second model call. |
 
 Worker order (text): scope → flag → health keywords → consent → live model → reading (model or
@@ -151,6 +153,7 @@ reads → notices → drafts. `spending` (any expense intent) on a shared task m
 |---|---|---|
 | bottle, breast, sleep | care records | `rhythm.checkin` (Cùng nuôi, Người chăm sóc; relatives never) |
 | observation | check-ins | `rhythm.checkin` |
+| timer (2026-10-16) | the app's running timers `babies/{b}/timers/{sleep\|breast}`; a stop writes the record `r_<sessionId>` | `rhythm.checkin` (Rules `canLog`) |
 | feedback (not a draft) | `recFeedback` | `rhythm.feedback` |
 | expense (A3 photos; text since the 2026-10-15 rework) | Chi tiêu `babies/{b}/expenses` (D-075 #4 currencies) | `can: canRecordSpending` (Cùng nuôi or 8l "Ghi khoản đã chi") |
 | reminder (A3 photos; text since the 2026-10-15 rework) | one-off reminders `babies/{b}/reminders` (all day, assignee) | `can: canCreateReminders` (Cùng nuôi only) |

@@ -111,6 +111,9 @@ describe('care outcome, plan, age', () => {
       'PREVIOUS_SAVED',
       'MEDICINE_NOT_SCHEDULED',
       'DUPLICATE_SUSPECTED',
+      // Lumi timers 2026-10-16.
+      'TIMER_RUNNING',
+      'SAME_AS_PENDING',
     ]);
   });
 });

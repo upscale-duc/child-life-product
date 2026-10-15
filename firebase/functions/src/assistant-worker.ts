@@ -6,6 +6,7 @@ import {
   draftKinds,
   familyCan,
   asksWhatToEat,
+  careStatesIn,
   localDateIn,
   smallTalkIn,
   taskStateForOutcome,
@@ -56,7 +57,10 @@ import {
   privateConversationId,
   smallTalkPart,
   spendingPrivatePart,
+  timerRunningPart,
 } from './assistant-talk.js';
+// Lumi 2026-10-16: the baby's running timers and the next breastfeed side.
+import { nextBreastSideOf, runningTimersOf, timerLinkFor } from './assistant-timers.js';
 import { appendEvents, appendMessages, storedTask, type StoredTask } from './assistant-store.js';
 import {
   anchorOf,
@@ -64,6 +68,7 @@ import {
   clarificationFor,
   healthSignalsIn,
   lastMilkOf,
+  localClock,
   overlappingSleeps,
   sleepFactsTool,
   usageSnapshotTool,
@@ -428,7 +433,11 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   if (intentAnswer === 'read' && reads.length === 0 && canRead) {
     reads.push({ tool: 'care_summary', dayOffset: 0 });
   }
-  const nothing = ext.intents.length === 0 && reads.length === 0 && !careActive;
+  // Lumi 2026-10-16: an ongoing state in the words ("con đang ngủ", "bú xong rồi") is something
+  // to do even when the model returned nothing (the planner adds its timer item).
+  const states = careStatesIn(text);
+  const nothing =
+    ext.intents.length === 0 && reads.length === 0 && !careActive && states.length === 0;
   // Slice A5: a care question goes first; the care facts (`sleep.*`) are asked by `planCare`.
   let ask: ClarificationField | null = care.kind === 'ask' ? care.field : null;
   if (
@@ -492,6 +501,9 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
       currency,
       categories,
       previous,
+      // Lumi 2026-10-16: "con đang ngủ" / "dậy rồi" / "đang cho bú" drive the app's timers.
+      timers: await runningTimersOf(db, s.babyId),
+      nextBreastSide: await nextBreastSideOf(db, s.babyId, anchor),
     },
     ext.intents,
   );
@@ -569,10 +581,26 @@ async function process(deps: WorkerDeps, t: StoredTask): Promise<WorkResult> {
   parts.push(...readDenied);
   const said = new Set<string>();
   for (const n of notices) {
-    const key = `${n.code}:${n.code === 'WRITE_DENIED' ? n.kind : ''}`;
+    const key = `${n.code}:${n.code === 'WRITE_DENIED' ? n.kind : ''}:${n.timer?.type ?? ''}`;
     if (said.has(key)) continue;
     said.add(key);
-    parts.push(noticePart(n, t.locale));
+    if (n.code === 'TIMER_RUNNING' && n.timer) {
+      const since = n.timer.since;
+      parts.push(
+        timerRunningPart(
+          n.timer.type,
+          {
+            clock: localClock(s.zone, since),
+            yesterday: localDateIn(s.zone, since) < localDateIn(s.zone, anchor),
+          },
+          t.locale,
+          timerLinkFor(s.babyId, n.timer.type),
+        ),
+      );
+      continue;
+    }
+    if (n.code === 'TIMER_RUNNING') continue;
+    parts.push(noticePart({ ...n, code: n.code }, t.locale));
   }
 
   // ---- Slice A5 (care): guidance / recipes from published content, never from the model ----

@@ -26417,6 +26417,444 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chỉ bạn thấy: tin nhắn có chi tiêu được giữ trong cuộc trò chuyện riêng của bạn.'**
   String get asSpendingMoved;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu cữ bú bình'**
+  String get asSaveBottle;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu cữ bú'**
+  String get asSaveBreast;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu giấc ngủ'**
+  String get asSaveSleep;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu nhắc việc'**
+  String get asSaveReminder;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu'**
+  String get asSaveItem;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu {count} mục'**
+  String asSaveItems(int count);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn {count} mục cần bổ sung ở trên'**
+  String asStillToFill(int count);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng hồ'**
+  String get asKindTimer;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính giờ ngủ'**
+  String get asTimerTitleStartSleep;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính giờ bú mẹ'**
+  String get asTimerTitleStartBreast;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc giấc ngủ'**
+  String get asTimerTitleStopSleep;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc cữ bú'**
+  String get asTimerTitleStopBreast;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu tính giờ ngủ · {time}'**
+  String asTimerStartSleep(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu tính giờ bú · {side} · {time}'**
+  String asTimerStartBreast(String side, String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc giấc ngủ · {time}'**
+  String asTimerStopSleep(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc cữ bú · {time}'**
+  String asTimerStopBreast(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để tiếp tục'**
+  String get asTimerKeep;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ {time}'**
+  String asTimerFrom(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'bên {side} trước'**
+  String asTimerSideFirst(String side);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ngủ · {elapsed}'**
+  String asTimerSleeping(String elapsed);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bú · {elapsed}'**
+  String asTimerFeeding(String elapsed);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở đồng hồ'**
+  String get asTimerOpen;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng hồ đã kết thúc'**
+  String get asTimerEnded;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tính giờ từ {time}'**
+  String asTimerRunningSince(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng hồ này đã được bắt đầu trên máy khác.'**
+  String get asErrTimerRunning;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng hồ đã kết thúc hoặc thay đổi trên máy khác.'**
+  String get asErrTimerChanged;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có giờ bé bú'**
+  String get asGapFeedTime;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có giờ bé bắt đầu ngủ'**
+  String get asGapSleepStart;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có giờ bé dậy'**
+  String get asGapSleepEnd;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ {time} có đúng không?'**
+  String asGapTimeUnsure(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} chưa tới. Chọn lại giờ nhé.'**
+  String asGapTimeFuture(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ dậy phải sau giờ bắt đầu ngủ'**
+  String get asGapSleepOrder;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có lượng sữa (ml)'**
+  String get asGapAmount;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng {ml} ml có đúng không?'**
+  String asGapAmountUnsure(String ml);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lượng sữa cần từ 1 đến 500 ml'**
+  String get asGapAmountRange;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa rõ sữa mẹ hay sữa công thức'**
+  String get asGapMilk;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa rõ bé bú bên nào'**
+  String get asGapSide;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời lượng {duration} có đúng không?'**
+  String asGapDurationUnsure(String duration);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cữ bú không dài quá 180 phút'**
+  String get asGapDurationRange;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ban ngày hay ban đêm? (không bắt buộc)'**
+  String get asGapWhen;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày {date} có đúng không?'**
+  String asGapDateUnsure(String date);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ngày nhắc'**
+  String get asGapReminderDate;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời điểm nhắc đã qua. Chọn ngày khác nhé.'**
+  String get asGapReminderPast;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên việc dài quá (tối đa 80 ký tự)'**
+  String get asGapTitle;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người được giao không còn trong nhà'**
+  String get asGapAssignee;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng hồ không tính từ lâu vậy được. Chọn giờ gần hơn.'**
+  String get asGapTimerOld;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ kết thúc phải sau {time}'**
+  String asGapTimerEnd(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có số tiền'**
+  String get asGapExpenseAmount;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số tiền có đúng không?'**
+  String get asGapExpenseAmountUnsure;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa rõ đơn vị tiền'**
+  String get asGapExpenseCurrency;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh mục có đúng không?'**
+  String get asGapExpenseCategory;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên cửa hàng có đúng không?'**
+  String get asGapExpenseMerchant;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đúng rồi'**
+  String get asFixRight;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa xong ({time})'**
+  String asFixJustNow(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'30 phút trước ({time})'**
+  String asFixAgo30(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 tiếng trước ({time})'**
+  String asFixAgo60(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa dậy ({time})'**
+  String asFixWokeNow(String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ {hours} tiếng (từ {time})'**
+  String asFixSlept(int hours, String time);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn giờ'**
+  String get asFixPickTime;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày'**
+  String get asFixPickDate;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay'**
+  String get asFixToday;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm qua'**
+  String get asFixYesterday;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày mai'**
+  String get asFixTomorrow;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{ml} ml'**
+  String asFixMl(String ml);
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ban ngày'**
+  String get asFixDayTime;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ban đêm'**
+  String get asFixNightTime;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không giao'**
+  String get asFixNoAssignee;
+
+  /// Lumi 2026-10-16 (timers, inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bổ sung, sẵn sàng lưu'**
+  String get asFixed;
+
+  /// Lumi 2026-10-16: under a review card's disabled save, why. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ở trên là lưu được ngay.'**
+  String get asPickAboveToSave;
+
+  /// Lumi 2026-10-16 (inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ban ngày hay ban đêm?'**
+  String get asGapWhenAsk;
+
+  /// Lumi 2026-10-16 (inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú có đúng không?'**
+  String get asGapNote;
+
+  /// Lumi 2026-10-16 (inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ ghi chú'**
+  String get asFixDropNote;
+
+  /// Lumi 2026-10-16 (inline review fixes). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Loại ghi nhận có đúng không?'**
+  String get asGapObservation;
 }
 
 class _AppLocalizationsDelegate

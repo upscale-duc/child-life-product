@@ -5,6 +5,7 @@ import {
   dayBoundsIn,
   draftPayloadSchema,
   draftProblems,
+  draftReviewFields,
   familyCan,
   hasDayPeriod,
   localDateIn,
@@ -20,11 +21,7 @@ import {
 } from '@child-life/contracts';
 import type { TrustedScope } from './assistant-common.js';
 // Slice A3 (photos): Chi tiêu / reminder role checks and review fields (leaf module).
-import {
-  canCreateReminders,
-  canRecordSpending,
-  imageReviewFields,
-} from './assistant-image-rules.js';
+import { canCreateReminders, canRecordSpending } from './assistant-image-rules.js';
 import type { ClarificationField, ModelIntent, ReadToolName } from './assistant-model.js';
 import { assistantUsage } from './assistant-usage.js';
 import { readRhythmRules, sleepFacts } from './rhythm.js';
@@ -70,6 +67,8 @@ export const moduleRegistry: Record<DraftKind, ModuleEntry> = {
   // ---- end slice A3 ----
   // P-157: there is no meal log module at all.
   meal: { available: false, action: null },
+  // Lumi timers 2026-10-16: the app's running timers (Rules `canLog`, like care records).
+  timer: { available: true, action: 'rhythm.checkin' },
 };
 
 /** Slice A3: whether [member] may save a draft of [kind] (family action or module check). */
@@ -505,7 +504,8 @@ export interface PrepareInput {
 const draftField: Record<string, Partial<Record<DraftKind, string>>> = {
   amountMl: { bottle: 'amountMl' },
   milk: { bottle: 'milk' },
-  time: { bottle: 'occurredAt', breast: 'occurredAt', sleep: 'startedAt', observation: 'date' },
+  // Lumi 2026-10-16: an observation has no time (its `date` comes from dayOffset only).
+  time: { bottle: 'occurredAt', breast: 'occurredAt', sleep: 'startedAt' },
   dayOffset: {
     bottle: 'occurredAt',
     breast: 'occurredAt',
@@ -519,12 +519,6 @@ const draftField: Record<string, Partial<Record<DraftKind, string>>> = {
   observation: { observation: 'observation' },
   when: { observation: 'when' },
   note: { observation: 'note' },
-};
-
-const problemField: Partial<Record<DraftProblem, Partial<Record<DraftKind, string>>>> = {
-  INVALID_AMOUNT: { bottle: 'amountMl', breast: 'durationMin' },
-  FUTURE_TIME: { bottle: 'occurredAt', breast: 'occurredAt', sleep: 'endedAt' },
-  INVALID_TIME: { sleep: 'endedAt' },
 };
 
 /**
@@ -597,7 +591,6 @@ export function prepareDrafts(
           side: f.side,
         };
         if (d !== null && (!Number.isInteger(d) || d <= 0)) uncertain.add('durationMin');
-        if (f.side === null) missing.add('side');
         break;
       }
       case 'sleep':
@@ -630,15 +623,15 @@ export function prepareDrafts(
       continue;
     }
     const problems = draftProblems(checked.data, x.anchor);
-    const review = reviewFields(checked.data, problems);
-    for (const m of review.missing) missing.add(m);
-    for (const u of review.uncertain) uncertain.add(u);
     if (payload.kind === 'observation' && payload.date > today) uncertain.add('date');
-    for (const m of missing) uncertain.delete(m);
+    // Lumi 2026-10-16: the model's "missing" list is advice only; what is missing is decided
+    // from the payload (`draftReviewFields`), so a filled field is never flagged.
+    void missing;
+    const review = reviewFields(checked.data, problems, uncertain);
     drafts.push({
       payload: checked.data,
-      missingFields: [...missing].sort(),
-      uncertainFields: [...uncertain].sort(),
+      missingFields: review.missing,
+      uncertainFields: review.uncertain,
       problems,
       warnings: [],
     });
@@ -648,34 +641,17 @@ export function prepareDrafts(
 
 /**
  * Fields the person must fill (`missing`) or look at (`uncertain`) given the form's problems for
- * [p] (contracts `draftProblems`); both block confirm until a patch clears them.
+ * [p]; both block confirm until a patch clears them. Lumi 2026-10-16: contracts
+ * `draftReviewFields` (one mapping for every kind, tested against each kind's fields): only the
+ * kind's REQUIRED fields that are empty are missing; [uncertain] candidates are kept only when
+ * they are real, filled fields of the kind.
  */
 export function reviewFields(
   p: DraftPayload,
   problems: readonly DraftProblem[],
+  uncertain: Iterable<string> = [],
 ): { missing: string[]; uncertain: string[] } {
-  // Slice A3: expense / reminder fields and module problems (VND only, a time for reminders).
-  if (p.kind === 'expense' || p.kind === 'reminder') return imageReviewFields(p, problems);
-  const missing = new Set<string>();
-  const uncertain = new Set<string>();
-  if (p.kind === 'bottle' && p.milk === null) uncertain.add('milk');
-  if (p.kind === 'breast' && p.side === null) missing.add('side');
-  for (const pr of problems) {
-    if (pr === 'MISSING_AMOUNT') missing.add('amountMl');
-    else if (pr === 'MISSING_TIME') {
-      if (p.kind === 'sleep') {
-        if (p.startedAt === null) missing.add('startedAt');
-        if (p.endedAt === null) missing.add('endedAt');
-      } else missing.add('occurredAt');
-    } else {
-      const fld = problemField[pr]?.[p.kind];
-      if (fld) uncertain.add(fld);
-    }
-  }
-  return {
-    missing: [...missing].sort(),
-    uncertain: [...uncertain].filter((u) => !missing.has(u)).sort(),
-  };
+  return draftReviewFields(p, problems, uncertain);
 }
 
 /** Live sleeps of the baby overlapping [span] (contracts `spansOverlap`; touching ends do not). */

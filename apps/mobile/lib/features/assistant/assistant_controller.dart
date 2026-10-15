@@ -1417,6 +1417,8 @@ class AssistantChat extends Notifier<ChatState> {
     return [
       for (final d in state.thread(taskId)?.snapshot?.drafts ?? const [])
         if (isSelected(d) &&
+            // Lumi 2026-10-16: a timer saves from its own card ("Bắt đầu tính giờ ngủ").
+            d.kind != DraftKind.timer &&
             !state.saving.contains(d.id) &&
             (d.state == DraftState.draft) &&
             confirmBlocker(d, d.revision, now) == null &&

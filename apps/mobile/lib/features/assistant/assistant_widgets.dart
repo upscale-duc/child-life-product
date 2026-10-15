@@ -1133,6 +1133,7 @@ class AsLink extends StatelessWidget {
       cl.colors.mintText,
     ),
     DraftKind.meal => (ClIcons.spark, cl.colors.sunshineSoft, cl.colors.ink),
+    DraftKind.timer => (ClIcons.clock, cl.care.sleep.soft, cl.care.sleep.ink),
     null => (ClIcons.alert, cl.colors.surface2, cl.colors.inkMuted),
   };
 }
@@ -1157,8 +1158,24 @@ class AsDraftCard extends StatelessWidget {
     this.tile,
     this.onTap,
     this.privateHint,
+    this.body,
+    this.primary,
+    this.primaryLoading = false,
+    this.primaryNote,
     super.key,
   });
+
+  /// Lumi 2026-10-16: what goes under the facts — the live timer line, and for a "Cần kiểm
+  /// tra" draft the inline fix ([AsFixPanel]), open by itself (no sheet, no extra tap).
+  final Widget? body;
+
+  /// Lumi 2026-10-16: the card's own concrete save ("Lưu cữ bú", "Bắt đầu tính giờ ngủ ·
+  /// 01:05") for a draft that saves alone; disabled only while [body] says what is missing.
+  final AsCardAction? primary;
+  final bool primaryLoading;
+
+  /// Why [primary] is disabled, read next to it (never a silent disabled button).
+  final String? primaryNote;
 
   final DraftState state;
   final DraftKind? kind;
@@ -1330,6 +1347,29 @@ class AsDraftCard extends StatelessWidget {
               ),
             ),
           ],
+          if (body != null) ...[const SizedBox(height: ClSpace.s2), body!],
+          if (primary != null) ...[
+            const SizedBox(height: ClSpace.s3),
+            AsButton(
+              key: const ValueKey('as.card.primary'),
+              label: primary!.label,
+              icon: primary!.onPressed == null ? null : ClIcons.check,
+              expand: true,
+              loading: primaryLoading,
+              onPressed: primary!.onPressed,
+            ),
+            if (primaryNote != null && primary!.onPressed == null) ...[
+              const SizedBox(height: 4),
+              Text(
+                primaryNote!,
+                textAlign: TextAlign.center,
+                style: cl.text.caption.copyWith(
+                  fontSize: 12.5,
+                  color: c.inkMuted,
+                ),
+              ),
+            ],
+          ],
           const SizedBox(height: 6),
           Row(
             children: [
@@ -1442,12 +1482,16 @@ class AsBatchBar extends StatelessWidget {
     required this.onSave,
     required this.onDiscardAll,
     this.saving = false,
+    this.toFill = 0,
     super.key,
   });
   final int count;
   final VoidCallback? onSave;
   final VoidCallback? onDiscardAll;
   final bool saving;
+
+  /// Lumi 2026-10-16: drafts above still missing a detail (said instead of a mute button).
+  final int toFill;
 
   @override
   Widget build(BuildContext context) {
@@ -1462,8 +1506,10 @@ class AsBatchBar extends StatelessWidget {
         children: [
           AsButton(
             label: count == 0
-                ? l10n.asChooseToSave
-                : l10n.asSaveSelected(count),
+                ? (toFill > 0
+                      ? l10n.asStillToFill(toFill)
+                      : l10n.asChooseToSave)
+                : l10n.asSaveItems(count),
             icon: count == 0 ? null : ClIcons.check,
             loading: saving,
             onPressed: count == 0 ? null : onSave,
@@ -2223,6 +2269,111 @@ class AsSparkTile extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: ClIcon(ClIcons.spark, size: size * 0.55, color: c.mintText),
+    );
+  }
+}
+
+// ---------- Lumi 2026-10-16: inline review fixes ----------
+
+/// One chip of an inline fix ("Trái", "Vừa xong (01:08)", "Đúng rồi").
+typedef AsFixChip = ({
+  String label,
+  Future<void> Function() onTap,
+
+  /// Opens a picker or the editor (no spinner on the chip while it is open).
+  bool opens,
+});
+
+/// One thing to fix: what is missing or unsure in plain words, and the ways to fix it.
+typedef AsFixRow = ({
+  String field,
+  String reason,
+  List<AsFixChip> chips,
+  bool optional,
+});
+
+/// The fix inside a "Cần kiểm tra" card, open by itself: each row says exactly what is missing
+/// or unsure and offers the fix in place (chips first; "Chọn giờ" / "Khác…" open a picker). A tap
+/// patches the draft; the card turns valid and its save enables as soon as nothing blocks.
+class AsFixPanel extends StatefulWidget {
+  const AsFixPanel({required this.rows, super.key});
+  final List<AsFixRow> rows;
+
+  @override
+  State<AsFixPanel> createState() => _AsFixPanelState();
+}
+
+class _AsFixPanelState extends State<AsFixPanel> {
+  String? _busy;
+
+  Future<void> _run(String key, Future<void> Function() f) async {
+    if (_busy != null) return;
+    setState(() => _busy = key);
+    try {
+      await f();
+    } finally {
+      if (mounted) setState(() => _busy = null);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final c = cl.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final (i, row) in widget.rows.indexed) ...[
+          if (i > 0) const SizedBox(height: ClSpace.s3),
+          Semantics(
+            liveRegion: i == 0,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: ClIcon(
+                    row.optional ? ClIcons.edit : ClIcons.alert,
+                    size: 14,
+                    color: row.optional ? c.inkMuted : c.ink,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    row.reason,
+                    key: ValueKey('as.fix.${row.field}'),
+                    style: _semi(
+                      context,
+                      13.5,
+                      row.optional ? c.inkMuted : c.ink,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: ClSpace.s2),
+          Wrap(
+            spacing: ClSpace.s2,
+            runSpacing: ClSpace.s2,
+            children: [
+              for (final (j, chip) in row.chips.indexed)
+                AsChip(
+                  key: ValueKey('as.fix.${row.field}.$j'),
+                  label: chip.label,
+                  busy: _busy == '${row.field}/$j',
+                  onPressed: _busy != null
+                      ? null
+                      : chip.opens
+                      ? chip.onTap
+                      : () => _run('${row.field}/$j', chip.onTap),
+                ),
+            ],
+          ),
+        ],
+      ],
     );
   }
 }

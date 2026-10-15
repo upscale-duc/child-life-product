@@ -48,7 +48,13 @@ enum AssistantReason with WireEnum {
   aiUnavailable('AI_UNAVAILABLE'),
   validationFailed('VALIDATION_FAILED'),
   idempotencyConflict('IDEMPOTENCY_CONFLICT'),
-  invalidState('INVALID_STATE');
+  invalidState('INVALID_STATE'),
+
+  /// Lumi 2026-10-16: "Bắt đầu tính giờ" while someone already started that timer.
+  timerRunning('TIMER_RUNNING'),
+
+  /// Lumi 2026-10-16: "Kết thúc" after the running timer changed or ended elsewhere.
+  timerChanged('TIMER_CHANGED');
 
   const AssistantReason(this.wire);
   @override
@@ -182,7 +188,10 @@ enum DraftKind with WireEnum {
   expense('expense'),
   reminder('reminder'),
   observation('observation'),
-  meal('meal');
+  meal('meal'),
+
+  /// Lumi 2026-10-16: start / stop the app's sleep or breastfeeding timer ([TimerPayload]).
+  timer('timer');
 
   const DraftKind(this.wire);
   @override
@@ -301,7 +310,14 @@ enum NoticeCode with WireEnum {
   /// A correction of something already saved: edit it in its module (`link`).
   previousSaved('PREVIOUS_SAVED'),
   medicineNotScheduled('MEDICINE_NOT_SCHEDULED'),
-  duplicateSuspected('DUPLICATE_SUSPECTED');
+  duplicateSuspected('DUPLICATE_SUSPECTED'),
+  // ---- Lumi 2026-10-16 ----
+
+  /// The timer the message would start already runs (`link` = its timer screen).
+  timerRunning('TIMER_RUNNING'),
+
+  /// The same message again while its draft still waits above: nothing new, 0 credits.
+  sameAsPending('SAME_AS_PENDING');
 
   const NoticeCode(this.wire);
   @override
@@ -972,6 +988,27 @@ sealed class DraftPayload {
         title: m['title'] is String ? m['title']! as String : '',
         occurredAt: _instant(m['occurredAt']),
       ),
+      DraftKind.timer => switch ((m['timer'], m['action'])) {
+        (final String t, final String a)
+            when (t == 'sleep' || t == 'breast') &&
+                (a == 'start' || a == 'stop') =>
+          TimerPayload(
+            timer: t,
+            action: a,
+            at: _instant(m['at']),
+            side: switch (m['side']) {
+              'left' => 'left',
+              'right' => 'right',
+              _ => null,
+            },
+            sessionId: switch (m['sessionId']) {
+              final String id when RegExp(r'^[a-f0-9]{32}$').hasMatch(id) => id,
+              _ => null,
+            },
+            startedAt: _instant(m['startedAt']),
+          ),
+        _ => UnknownPayload('${m['kind']}', m),
+      },
       null => UnknownPayload('${m['kind']}', m),
     };
   }
@@ -1187,6 +1224,64 @@ class MealPayload extends DraftPayload {
     'recipeId': recipeId,
     'title': title,
     'occurredAt': _iso(occurredAt),
+  };
+}
+
+/// Lumi 2026-10-16: start or stop the app's own running timer (`babies/{b}/timers/{type}`, the
+/// one every family member sees). Confirming a start creates that timer as "Bắt đầu" would;
+/// confirming a stop ends the running session [sessionId] as "Kết thúc" would.
+class TimerPayload extends DraftPayload {
+  const TimerPayload({
+    required this.timer,
+    required this.action,
+    this.at,
+    this.side,
+    this.sessionId,
+    this.startedAt,
+  });
+
+  /// `sleep` / `breast`.
+  final String timer;
+
+  /// `start` / `stop`.
+  final String action;
+
+  /// start: when it began; stop: when it ended.
+  final DateTime? at;
+
+  /// breast start: `left` / `right` (one side at a time).
+  final String? side;
+
+  /// stop: the running session it ends.
+  final String? sessionId;
+
+  /// stop: when the running timer started.
+  final DateTime? startedAt;
+
+  bool get isStart => action == 'start';
+  bool get isSleep => timer == 'sleep';
+
+  @override
+  DraftKind get kind => DraftKind.timer;
+
+  TimerPayload copyWith({DateTime? at, String? side}) => TimerPayload(
+    timer: timer,
+    action: action,
+    at: at ?? this.at,
+    side: side ?? this.side,
+    sessionId: sessionId,
+    startedAt: startedAt,
+  );
+
+  @override
+  Map<String, Object?> toJson() => {
+    'kind': 'timer',
+    'timer': timer,
+    'action': action,
+    'at': _iso(at),
+    'side': side,
+    'sessionId': sessionId,
+    'startedAt': _iso(startedAt),
   };
 }
 

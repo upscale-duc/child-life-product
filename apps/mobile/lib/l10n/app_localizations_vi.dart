@@ -15766,4 +15766,271 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get asSpendingMoved =>
       'Chỉ bạn thấy: tin nhắn có chi tiêu được giữ trong cuộc trò chuyện riêng của bạn.';
+
+  @override
+  String get asSaveBottle => 'Lưu cữ bú bình';
+
+  @override
+  String get asSaveBreast => 'Lưu cữ bú';
+
+  @override
+  String get asSaveSleep => 'Lưu giấc ngủ';
+
+  @override
+  String get asSaveReminder => 'Lưu nhắc việc';
+
+  @override
+  String get asSaveItem => 'Lưu';
+
+  @override
+  String asSaveItems(int count) {
+    return 'Lưu $count mục';
+  }
+
+  @override
+  String asStillToFill(int count) {
+    return 'Còn $count mục cần bổ sung ở trên';
+  }
+
+  @override
+  String get asKindTimer => 'Đồng hồ';
+
+  @override
+  String get asTimerTitleStartSleep => 'Tính giờ ngủ';
+
+  @override
+  String get asTimerTitleStartBreast => 'Tính giờ bú mẹ';
+
+  @override
+  String get asTimerTitleStopSleep => 'Kết thúc giấc ngủ';
+
+  @override
+  String get asTimerTitleStopBreast => 'Kết thúc cữ bú';
+
+  @override
+  String asTimerStartSleep(String time) {
+    return 'Bắt đầu tính giờ ngủ · $time';
+  }
+
+  @override
+  String asTimerStartBreast(String side, String time) {
+    return 'Bắt đầu tính giờ bú · $side · $time';
+  }
+
+  @override
+  String asTimerStopSleep(String time) {
+    return 'Kết thúc giấc ngủ · $time';
+  }
+
+  @override
+  String asTimerStopBreast(String time) {
+    return 'Kết thúc cữ bú · $time';
+  }
+
+  @override
+  String get asTimerKeep => 'Để tiếp tục';
+
+  @override
+  String asTimerFrom(String time) {
+    return 'Từ $time';
+  }
+
+  @override
+  String asTimerSideFirst(String side) {
+    return 'bên $side trước';
+  }
+
+  @override
+  String asTimerSleeping(String elapsed) {
+    return 'Đang ngủ · $elapsed';
+  }
+
+  @override
+  String asTimerFeeding(String elapsed) {
+    return 'Đang bú · $elapsed';
+  }
+
+  @override
+  String get asTimerOpen => 'Mở đồng hồ';
+
+  @override
+  String get asTimerEnded => 'Đồng hồ đã kết thúc';
+
+  @override
+  String asTimerRunningSince(String time) {
+    return 'Đang tính giờ từ $time';
+  }
+
+  @override
+  String get asErrTimerRunning => 'Đồng hồ này đã được bắt đầu trên máy khác.';
+
+  @override
+  String get asErrTimerChanged =>
+      'Đồng hồ đã kết thúc hoặc thay đổi trên máy khác.';
+
+  @override
+  String get asGapFeedTime => 'Chưa có giờ bé bú';
+
+  @override
+  String get asGapSleepStart => 'Chưa có giờ bé bắt đầu ngủ';
+
+  @override
+  String get asGapSleepEnd => 'Chưa có giờ bé dậy';
+
+  @override
+  String asGapTimeUnsure(String time) {
+    return 'Giờ $time có đúng không?';
+  }
+
+  @override
+  String asGapTimeFuture(String time) {
+    return '$time chưa tới. Chọn lại giờ nhé.';
+  }
+
+  @override
+  String get asGapSleepOrder => 'Giờ dậy phải sau giờ bắt đầu ngủ';
+
+  @override
+  String get asGapAmount => 'Chưa có lượng sữa (ml)';
+
+  @override
+  String asGapAmountUnsure(String ml) {
+    return 'Lượng $ml ml có đúng không?';
+  }
+
+  @override
+  String get asGapAmountRange => 'Lượng sữa cần từ 1 đến 500 ml';
+
+  @override
+  String get asGapMilk => 'Chưa rõ sữa mẹ hay sữa công thức';
+
+  @override
+  String get asGapSide => 'Chưa rõ bé bú bên nào';
+
+  @override
+  String asGapDurationUnsure(String duration) {
+    return 'Thời lượng $duration có đúng không?';
+  }
+
+  @override
+  String get asGapDurationRange => 'Cữ bú không dài quá 180 phút';
+
+  @override
+  String get asGapWhen => 'Giấc ban ngày hay ban đêm? (không bắt buộc)';
+
+  @override
+  String asGapDateUnsure(String date) {
+    return 'Ngày $date có đúng không?';
+  }
+
+  @override
+  String get asGapReminderDate => 'Chưa có ngày nhắc';
+
+  @override
+  String get asGapReminderPast => 'Thời điểm nhắc đã qua. Chọn ngày khác nhé.';
+
+  @override
+  String get asGapTitle => 'Tên việc dài quá (tối đa 80 ký tự)';
+
+  @override
+  String get asGapAssignee => 'Người được giao không còn trong nhà';
+
+  @override
+  String get asGapTimerOld =>
+      'Đồng hồ không tính từ lâu vậy được. Chọn giờ gần hơn.';
+
+  @override
+  String asGapTimerEnd(String time) {
+    return 'Giờ kết thúc phải sau $time';
+  }
+
+  @override
+  String get asGapExpenseAmount => 'Chưa có số tiền';
+
+  @override
+  String get asGapExpenseAmountUnsure => 'Số tiền có đúng không?';
+
+  @override
+  String get asGapExpenseCurrency => 'Chưa rõ đơn vị tiền';
+
+  @override
+  String get asGapExpenseCategory => 'Danh mục có đúng không?';
+
+  @override
+  String get asGapExpenseMerchant => 'Tên cửa hàng có đúng không?';
+
+  @override
+  String get asFixRight => 'Đúng rồi';
+
+  @override
+  String asFixJustNow(String time) {
+    return 'Vừa xong ($time)';
+  }
+
+  @override
+  String asFixAgo30(String time) {
+    return '30 phút trước ($time)';
+  }
+
+  @override
+  String asFixAgo60(String time) {
+    return '1 tiếng trước ($time)';
+  }
+
+  @override
+  String asFixWokeNow(String time) {
+    return 'Vừa dậy ($time)';
+  }
+
+  @override
+  String asFixSlept(int hours, String time) {
+    return 'Ngủ $hours tiếng (từ $time)';
+  }
+
+  @override
+  String get asFixPickTime => 'Chọn giờ';
+
+  @override
+  String get asFixPickDate => 'Chọn ngày';
+
+  @override
+  String get asFixToday => 'Hôm nay';
+
+  @override
+  String get asFixYesterday => 'Hôm qua';
+
+  @override
+  String get asFixTomorrow => 'Ngày mai';
+
+  @override
+  String asFixMl(String ml) {
+    return '$ml ml';
+  }
+
+  @override
+  String get asFixDayTime => 'Ban ngày';
+
+  @override
+  String get asFixNightTime => 'Ban đêm';
+
+  @override
+  String get asFixNoAssignee => 'Không giao';
+
+  @override
+  String get asFixed => 'Đã bổ sung, sẵn sàng lưu';
+
+  @override
+  String get asPickAboveToSave => 'Chọn ở trên là lưu được ngay.';
+
+  @override
+  String get asGapWhenAsk => 'Giấc ban ngày hay ban đêm?';
+
+  @override
+  String get asGapNote => 'Ghi chú có đúng không?';
+
+  @override
+  String get asFixDropNote => 'Bỏ ghi chú';
+
+  @override
+  String get asGapObservation => 'Loại ghi nhận có đúng không?';
 }

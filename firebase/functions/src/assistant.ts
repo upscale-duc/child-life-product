@@ -19,6 +19,8 @@ import {
   quoteTaskRequestSchema,
   setAssistantConsentRequestSchema,
   smallTalkIn,
+  sameMessage,
+  assistantRepeatWindowMin,
   startTaskRequestSchema,
   submitClarificationRequestSchema,
   taskInputKey,
@@ -81,7 +83,7 @@ import {
 } from './assistant-store.js';
 import { healthSignalsIn, moduleAllows, reviewFields } from './assistant-tools.js';
 // Lumi rework 2026-10-15: small talk answered at once; money kept out of the shared thread.
-import { privateConversationId, smallTalkPart } from './assistant-talk.js';
+import { privateConversationId, sameAsPendingPart, smallTalkPart } from './assistant-talk.js';
 // Slice A5 (care): health support with the approved number; CH17 feedback rules.
 import {
   careFeedbackFields,
@@ -498,6 +500,62 @@ export async function startTask(
       }
     };
 
+    // Lumi 2026-10-16: the same words again while their draft still waits just above (the
+    // thread's last task, ≤ 10 min) — answered at once, nothing new drafted, nothing replaced,
+    // free (the dev report: a second "Con đang ngủ" set the first draft aside).
+    const repeatOf =
+      !resume && text && !talk && signs.length === 0 && modality === 'text'
+        ? await pendingRepeatOf(tx, db, conv.get('lastTaskId') as string | undefined, {
+            uid,
+            text,
+            now,
+            visibility,
+          })
+        : null;
+    if (repeatOf) {
+      lastMsg = appendMessages(
+        tx,
+        db,
+        convId,
+        lastMsg,
+        [
+          { role: 'user', parts: userParts(text!), taskId, author },
+          { role: 'assistant', parts: [sameAsPendingPart(req.locale)], taskId },
+        ],
+        now,
+      );
+      lastEvent = appendEvents(
+        tx,
+        db,
+        taskId,
+        lastEvent,
+        [
+          { type: 'accepted', payload: { state: 'queued', credits: 0 } },
+          { type: 'answer_ready', payload: { state: 'ready' } },
+        ],
+        now,
+      );
+      // The thread's last task stays the one with the draft (corrections still find it).
+      convWrite(repeatOf);
+      tx.set(ref, {
+        ...base,
+        quoteId: null,
+        credits: 0,
+        plan: pool.plan,
+        windowId: null,
+        reservationId: null,
+        usage: 'none',
+        state: 'ready',
+        version,
+        errorCode: null,
+        health: null,
+        repeatOf,
+        eventSeq: lastEvent,
+        readyAt: at,
+      });
+      return { replay: false };
+    }
+
     // Rework 2026-10-15: small talk is answered at once (free, no quote, no model).
     if (talk && !resume) {
       lastMsg = appendMessages(
@@ -904,13 +962,29 @@ export async function patchDraft(
       const changed = new Set(
         Object.keys(after).filter((k) => canonical(after[k]) !== canonical(before[k])),
       );
+      // Lumi timers 2026-10-16: only the time (and a start's side) of a timer draft change;
+      // which timer, start / stop and the running session it ends are the server's.
+      if (payload.kind === 'timer' && cur.payload.kind === 'timer') {
+        const c = cur.payload;
+        if (
+          payload.timer !== c.timer ||
+          payload.action !== c.action ||
+          payload.sessionId !== c.sessionId ||
+          payload.startedAt !== c.startedAt ||
+          (payload.action === 'stop' && payload.side !== c.side)
+        ) {
+          throw fail('VALIDATION_FAILED', { field: 'timer' });
+        }
+      }
       const problems = draftProblems(payload, now);
-      const review = reviewFields(payload, problems);
-      const uncertain = new Set(
+      // Lumi 2026-10-16: still-unsure fields the person neither changed nor confirmed, plus the
+      // problems' fields; missing = the kind's required fields that are empty (contracts).
+      const review = reviewFields(
+        payload,
+        problems,
         cur.uncertainFields.filter((f) => !changed.has(f) && !req.confirmedFields.includes(f)),
       );
-      for (const u of review.uncertain) uncertain.add(u);
-      for (const m of review.missing) uncertain.delete(m);
+      const uncertain = new Set(review.uncertain);
       const needsReview = uncertain.size > 0 || review.missing.length > 0;
       tx.update(ref, {
         payload,
@@ -1417,4 +1491,35 @@ export async function deleteAssistantConversation(
     deletedTasks: tasks.size,
     domainRecordsKept: true,
   });
+}
+
+/**
+ * Lumi 2026-10-16: the thread's last task when it was the same words ([x.text], contracts
+ * `sameMessage`) within `assistantRepeatWindowMin`, by this person (or a shared task in the
+ * shared thread), and one of its drafts still waits to be saved — else null. Read inside the
+ * start transaction.
+ */
+async function pendingRepeatOf(
+  tx: FirebaseFirestore.Transaction,
+  db: FirebaseFirestore.Firestore,
+  lastTaskId: string | undefined,
+  x: { uid: string; text: string; now: Date; visibility: string },
+): Promise<string | null> {
+  if (!lastTaskId) return null;
+  const prev = await tx.get(taskRef(db, lastTaskId));
+  if (!prev.exists || prev.get('state') !== 'ready') return null;
+  const shared = prev.get('visibility') === 'shared' && x.visibility === 'shared';
+  if (!shared && prev.get('ownerUid') !== x.uid) return null;
+  const sentAt = toDate(prev.get('anchorInstant'));
+  if (!sentAt || x.now.getTime() - sentAt.getTime() > assistantRepeatWindowMin * 60_000) {
+    return null;
+  }
+  if (!sameMessage(prev.get('input.text') as string | null | undefined, x.text)) return null;
+  const drafts = await tx.get(prev.ref.collection('drafts'));
+  const waiting = drafts.docs.some(
+    (d) =>
+      (d.get('state') === 'draft' || d.get('state') === 'needs_review') &&
+      (toDate(d.get('expiresAt'))?.getTime() ?? 0) > x.now.getTime(),
+  );
+  return waiting ? lastTaskId : null;
 }

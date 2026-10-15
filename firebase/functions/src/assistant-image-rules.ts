@@ -1,5 +1,6 @@
 import {
   assistantModuleProblems,
+  draftReviewFields,
   type DraftPayload,
   type DraftProblem,
   type MemberGrant,
@@ -44,33 +45,8 @@ export function imageReviewFields(
   p: DraftPayload,
   problems: readonly DraftProblem[],
 ): { missing: string[]; uncertain: string[] } {
-  const missing = new Set<string>();
-  const uncertain = new Set<string>();
-  const all = new Set([...problems, ...assistantModuleProblems(p)]);
-  if (p.kind === 'expense') {
-    for (const pr of all) {
-      if (pr === 'MISSING_AMOUNT') missing.add('totalMinor');
-      else if (pr === 'INVALID_AMOUNT') uncertain.add('totalMinor');
-      else if (pr === 'MISSING_DATE') missing.add('date');
-      else if (pr === 'FUTURE_TIME') uncertain.add('date');
-      else if (pr === 'CURRENCY_UNSUPPORTED') {
-        if (p.currency === null) missing.add('currency');
-        else uncertain.add('currency');
-      }
-    }
-  } else if (p.kind === 'reminder') {
-    for (const pr of all) {
-      if (pr === 'MISSING_TITLE') missing.add('title');
-      else if (pr === 'INVALID_TITLE') uncertain.add('title');
-      else if (pr === 'MISSING_DATE') missing.add('date');
-      else if (pr === 'MISSING_TIME') missing.add('time');
-      else if (pr === 'PAST_TIME' || pr === 'INVALID_TIME') uncertain.add('date');
-    }
-  }
-  return {
-    missing: [...missing].sort(),
-    uncertain: [...uncertain].filter((u) => !missing.has(u)).sort(),
-  };
+  // Lumi 2026-10-16: one mapping for every kind (contracts `draftReviewFields`).
+  return draftReviewFields(p, problems);
 }
 
 /** Every problem the app should show for a draft: the form's and the module's, once each. */
