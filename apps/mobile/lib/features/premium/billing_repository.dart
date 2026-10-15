@@ -90,10 +90,7 @@ class FirebaseBillingApi implements BillingApi {
         'productKey': period.name,
         'provider': provider.name,
         'entryPoint': entry.name,
-        // The chat's resume stays on this phone (not in the server's resume schema).
-        'resume': resume?.kind == ResumeKind.assistant
-            ? null
-            : resume?.toJson(),
+        'resume': resume?.toJson(),
       }),
     );
     if (intent == null) throw const PremiumException('bad-answer');

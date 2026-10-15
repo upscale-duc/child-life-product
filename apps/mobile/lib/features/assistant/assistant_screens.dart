@@ -21,7 +21,8 @@ import '../care/care_sheets.dart' show openCareLog, showQuickLog;
 import '../premium/billing_models.dart';
 import '../premium/billing_repository.dart' show videoQuotaProvider;
 import '../premium/paywall_screen.dart' show openPaywall;
-import '../premium/premium_repository.dart' show capabilitiesProvider;
+import '../premium/premium_repository.dart'
+    show capabilitiesProvider, selectedCapabilitiesProvider;
 import '../rhythm/rhythm_actions.dart' show healthLocation;
 import '../rhythm/rhythm_models.dart' show HealthSign, wireList;
 import '../rhythm/rhythm_repository.dart'
@@ -327,6 +328,10 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
     final usage = chat.usageView;
     final online = ref.watch(assistantOnlineProvider).value ?? true;
     final premium = usage?.premium ?? false;
+    // P-161 `assistant_upsell`: off = running out only shows the reset date, no purchase prompt.
+    final upsell =
+        ref.watch(selectedCapabilitiesProvider)?.features.assistantUpsell ??
+        false;
     final out =
         usage?.level == UsageLevel.out ||
         chat.block?.kind == ChatBlockKind.exhausted;
@@ -354,6 +359,7 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
       now: now,
       babyName: babyName,
       premium: premium,
+      upsell: upsell,
       online: online,
       onToast: _toast,
       onUpgrade: ({bool photo = false}) => _upgrade(key, photo: photo),
@@ -477,6 +483,7 @@ class _ThreadView {
     required this.now,
     required this.babyName,
     required this.premium,
+    required this.upsell,
     required this.online,
     required this.onToast,
     required this.onUpgrade,
@@ -494,6 +501,7 @@ class _ThreadView {
   final DateTime now;
   final String babyName;
   final bool premium;
+  final bool upsell;
   final bool online;
   final void Function(ActionOutcome) onToast;
   final Future<void> Function({bool photo}) onUpgrade;
@@ -718,7 +726,7 @@ class _ThreadView {
               spacing: ClSpace.s2,
               runSpacing: ClSpace.s2,
               children: [
-                if (!planPremium)
+                if (!planPremium && upsell)
                   AsButton(
                     label: l10n.asSeePremium,
                     onPressed: () => onUpgrade(photo: true),
@@ -825,13 +833,14 @@ class _ThreadView {
               ),
               const SizedBox(height: ClSpace.s2),
             ],
-            AsButton(
-              label: l10n.asUpgradeContinue,
-              expand: true,
-              onPressed: chat.kept == null || chat.kept!.resumeUsed
-                  ? null
-                  : () => onUpgrade(),
-            ),
+            if (upsell)
+              AsButton(
+                label: l10n.asUpgradeContinue,
+                expand: true,
+                onPressed: chat.kept == null || chat.kept!.resumeUsed
+                    ? null
+                    : () => onUpgrade(),
+              ),
           ],
         ),
       if (chat.hasReadyDrafts) AsFootnote(text: l10n.asReadyStillSave),
@@ -2152,7 +2161,11 @@ class AssistantUsageScreen extends ConsumerWidget {
               const SizedBox(height: ClSpace.s4),
               if (v.premium)
                 AsFootnote(text: l10n.asPremiumHousehold)
-              else
+              else if (ref
+                      .watch(selectedCapabilitiesProvider)
+                      ?.features
+                      .assistantUpsell ??
+                  false)
                 Container(
                   padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
                   decoration: BoxDecoration(

@@ -750,6 +750,30 @@ void main() {
       expect(visits.last.location, '/rhythm/health');
     });
 
+    testWidgets(
+      'CH21 with assistant_upsell off: no purchase prompt, the rest unchanged',
+      (tester) async {
+        await _pump(
+          tester,
+          repo: FakeAssistantRepository(
+            usage: usageJson(used: 20),
+            tasks: {taskA: batchSnapshot()},
+          ),
+          caps: assistantCaps(upsell: false),
+          prefs: {
+            ..._thread([taskA]),
+            ..._kept('Hôm nay con bú thế nào?', KeptReason.blocked),
+          },
+        );
+        expect(
+          _text('Bạn đã dùng hết lượt hỗ trợ AI tháng này.'),
+          findsOneWidget,
+        );
+        expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsNothing);
+        expect(_text('Mở Hướng dẫn sức khoẻ'), findsOneWidget);
+      },
+    );
+
     testWidgets('CH24: Premium exhausted sells nothing more', (tester) async {
       await _pump(
         tester,

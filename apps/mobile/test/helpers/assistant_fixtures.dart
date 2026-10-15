@@ -605,6 +605,7 @@ Map<String, Object?> assistantCaps({
   String plan = 'free',
   String? country = 'VN',
   bool billing = false,
+  bool upsell = true,
 }) {
   final caps = rhythmCaps(plan: plan, country: country);
   return {
@@ -621,6 +622,8 @@ Map<String, Object?> assistantCaps({
       ...(caps['features']! as Map<String, Object?>),
       'assistant': assistant,
       'assistantImages': images,
+      'assistantCare': true,
+      'assistantUpsell': upsell,
       'billing': billing,
     },
   };

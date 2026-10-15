@@ -130,6 +130,8 @@ class Capabilities {
         billing: f['billing'] == true,
         assistant: f['assistant'] == true,
         assistantImages: f['assistantImages'] == true,
+        assistantCare: f['assistantCare'] == true,
+        assistantUpsell: f['assistantUpsell'] == true,
       ),
       billingProvider: json['provider'] is String
           ? json['provider'] as String
@@ -162,6 +164,8 @@ class Capabilities {
       'billing': features.billing,
       'assistant': features.assistant,
       'assistantImages': features.assistantImages,
+      'assistantCare': features.assistantCare,
+      'assistantUpsell': features.assistantUpsell,
     },
     'provider': billingProvider,
   };
@@ -177,6 +181,8 @@ class PremiumFeatures {
     this.billing = false,
     this.assistant = false,
     this.assistantImages = false,
+    this.assistantCare = false,
+    this.assistantUpsell = false,
   });
   final bool rhythm;
   final bool personalization;
@@ -188,6 +194,8 @@ class PremiumFeatures {
 
   /// Photo reading in the chat (`assistant_images`).
   final bool assistantImages;
+  final bool assistantCare;
+  final bool assistantUpsell;
 
   bool get any => rhythm || personalization || aiAssist || billing || assistant;
 }

@@ -281,6 +281,10 @@ export async function getCapabilities(
       personalization: flagOn(ctx, 'personalization'),
       aiAssist: flagOn(ctx, 'ai_assist'),
       billing: flagOn(ctx, 'premium_billing'),
+      assistant: flagOn(ctx, 'assistant'),
+      assistantImages: flagOn(ctx, 'assistant_images'),
+      assistantCare: flagOn(ctx, 'assistant_care'),
+      assistantUpsell: flagOn(ctx, 'assistant_upsell'),
     },
   };
 }

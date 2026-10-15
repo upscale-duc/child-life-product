@@ -42,7 +42,8 @@ export const purchaseEntryPoints = ['rhythm', 'templates', 'plan'] as const;
 /** Where to come back after a purchase (MO03 "tiếp tục đúng mẫu & ảnh"). */
 export const purchaseResumeSchema = z
   .object({
-    kind: z.enum(['card', 'video', 'rhythm']),
+    /** `assistant`: a chat task blocked for credits resumes once after a verified purchase. */
+    kind: z.enum(['card', 'video', 'rhythm', 'assistant']),
     templateId: z.string().max(80).nullable(),
     /** Opaque draft key kept on the phone (selected photos never leave it). */
     draftRef: z.string().max(80).nullable(),

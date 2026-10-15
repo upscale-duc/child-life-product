@@ -121,7 +121,16 @@ describe('M01 · free family', () => {
       country: 'VN',
       canManageBilling: true,
       isBillingOwner: false,
-      features: { rhythm: true, personalization: true, aiAssist: true, billing: false },
+      features: {
+        rhythm: true,
+        personalization: true,
+        aiAssist: true,
+        billing: false,
+        assistant: false,
+        assistantImages: false,
+        assistantCare: false,
+        assistantUpsell: false,
+      },
     });
     expect(a.capabilities['rhythm.checkin']).toEqual({ allowed: true, reason: null, via: 'free' });
     expect(a.capabilities['rhythm.advanced']).toEqual({

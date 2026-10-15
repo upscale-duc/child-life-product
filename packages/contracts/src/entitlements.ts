@@ -369,7 +369,17 @@ export interface CapabilitiesAnswer {
   capabilities: Record<Capability, CapabilityState>;
   /** Rollout flags on for this family: the app shows Nhịp lớn lên, suggestions, AI and the plan
    * screens only while they are (everything ships dark). */
-  features: { rhythm: boolean; personalization: boolean; aiAssist: boolean; billing: boolean };
+  features: {
+    rhythm: boolean;
+    personalization: boolean;
+    aiAssist: boolean;
+    billing: boolean;
+    /** Assistant chat (P-161); the app shows its entry points only while on. */
+    assistant: boolean;
+    assistantImages: boolean;
+    assistantCare: boolean;
+    assistantUpsell: boolean;
+  };
 }
 
 /**
