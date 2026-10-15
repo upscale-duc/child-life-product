@@ -6354,7 +6354,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get careWonderWeekSub => 'Expected developmental phases';
 
   @override
-  String get careAgeCards => 'By your baby’s age';
+  String get careAgeCards => 'Your baby’s stages';
 
   @override
   String get careAgeCardsSub => 'Ideas week by week, month by month';
@@ -6369,7 +6369,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get careLibrary => 'Baby-care library';
 
   @override
-  String get careLibrarySub => 'Expert-reviewed articles';
+  String get careLibrarySub => 'Baby-care articles by age';
 
   @override
   String get careSolids => 'Solids';
@@ -10740,9 +10740,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ksFormatStory => 'Story 9:16';
 
   @override
-  String get ksFree => 'Free';
-
-  @override
   String get ksPremium => 'Premium';
 
   @override
@@ -11603,7 +11600,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pmBadgeBeta => 'Beta';
 
   @override
-  String get pmBadgeFree => 'Free';
+  String get pmBadgeFree => 'Basic';
 
   @override
   String get pmBadgePending => 'Verifying';
@@ -11615,7 +11612,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pmPlanTitle => 'Household plan';
 
   @override
-  String get pmPlanFree => 'Using Free';
+  String get pmPlanFree => 'On the Basic plan';
 
   @override
   String get pmPlanFreeBody =>
@@ -11674,7 +11671,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Only the family owner buys and manages the plan. Ask them if the family needs Premium.';
 
   @override
-  String get pmPlanAlwaysFree => 'Always free';
+  String get pmPlanAlwaysFree => 'In every plan';
 
   @override
   String get pmPlanAlwaysFreeBody =>
@@ -11739,7 +11736,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pmUnlockPremium => 'Unlock with Premium';
 
   @override
-  String get pmUseFreeTemplate => 'Use a free template';
+  String get pmUseFreeTemplate => 'Use a basic template';
 
   @override
   String get pmCardNoQuota => 'Premium cards don’t use video export quota';
@@ -11775,7 +11772,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmGateDisabledBody =>
-      'Logging, free content and health guidance keep working.';
+      'Logging, basic content and health guidance keep working.';
 
   @override
   String get pmGateQuotaTitle => 'No exports left this period';
@@ -11951,7 +11948,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get rhAgeFree => 'Age-based content · always free';
+  String get rhAgeFree => 'Age-based content';
 
   @override
   String get rhCalendarPill => 'REFERENCE CALENDAR';
@@ -12173,7 +12170,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhSaveNote => 'Save note';
 
   @override
-  String get rhAlwaysFree => 'Logging is always free · shared with family';
+  String get rhAlwaysFree => 'Shared with your family';
 
   @override
   String get rhHealthQHeading => 'Today’s note';
@@ -12261,7 +12258,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Child Life doesn’t diagnose and never concludes “safe”.';
 
   @override
-  String get rhHlAlwaysFree => 'Always free · no paywall, no upsell';
+  String get rhHlAlwaysFree => 'No paywall, no upsell';
 
   @override
   String get rhHlDialFailed => 'Couldn’t open the Phone app.';
@@ -12323,7 +12320,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhMoreForAge => 'More for this age';
 
   @override
-  String get rhFreeAgePill => 'Free · age-based';
+  String get rhFreeAgePill => 'Age-based';
 
   @override
   String rhReadMinutes(int n) {
@@ -12621,7 +12618,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rhSleepGatePremium =>
-      'Comparing with your baby’s usual is part of personalised support. Notes, the reference calendar and health guidance stay free.';
+      'Comparing with your baby’s usual is part of personalised support. Notes, the reference calendar and health guidance keep working.';
 
   @override
   String get rhSleepGateOther =>
@@ -12654,7 +12651,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rhRegionWaiting =>
-      'Waiting for the family owner to choose a region. Notes, the reference calendar and free content still work.';
+      'Waiting for the family owner to choose a region. Notes, the reference calendar and basic content still work.';
 
   @override
   String get rhSetupIntro =>
@@ -13305,24 +13302,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String aiStateQuotaDay(int used, int limit, String when) {
-    return 'Used $used of $limit AI summaries today for this baby. More from $when. The template is always free.';
+    return 'Used $used of $limit AI summaries today for this baby. More from $when. You can still use the template version.';
   }
 
   @override
   String aiStateQuotaMonth(int used, int limit, String when) {
-    return 'Your household used $used of $limit AI credits this period (shared by summaries and the assistant). More from $when. The template is always free.';
+    return 'Your household used $used of $limit AI credits this period (shared by summaries and the assistant). More from $when. You can still use the template version.';
   }
 
   @override
   String get aiStateQuotaPlain =>
-      'Your household has used this period’s AI credits. The template is always free.';
+      'Your household has used this period’s AI credits. You can still use the template version.';
 
   @override
   String get aiStateTemplateEyebrow => 'TEMPLATE VERSION';
 
   @override
   String get aiStatePremiumBody =>
-      'AI summaries are part of Child Life Premium. The template version is always free.';
+      'AI summaries are part of Child Life Premium. You can still use the template version.';
 
   @override
   String get aiStateOtherBody =>
@@ -13672,7 +13669,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmBuyClosedBody =>
-      'Child Life Premium isn’t sold in the app yet. Everything free keeps working; we’ll let you know when it opens.';
+      'Child Life Premium isn’t sold in the app yet. Everything else keeps working; we’ll let you know when it opens.';
 
   @override
   String get pmAskOwnerTitle => 'Ask the family owner to upgrade';
@@ -13731,7 +13728,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmErrorBody =>
-      'You aren’t charged unless the store confirms. Try again or use a free template.';
+      'You aren’t charged unless the store confirms. Try again or use a basic template.';
 
   @override
   String get pmErrorBodyPlain =>
@@ -13871,7 +13868,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhWeekRecordedTitle => 'Logged this week';
 
   @override
-  String get rhWeekRecordedSub => 'From the family’s log · always free';
+  String get rhWeekRecordedSub => 'From the family’s log';
 
   @override
   String get rhWeekFeeds => 'Feeds';
@@ -14093,7 +14090,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rhWeekGatePremium =>
-      'The look-back (sleep against your baby’s usual level, notes and what you tried) is part of Support that fits your baby. The figures above are always free.';
+      'The look-back (sleep against your baby’s usual level, notes and what you tried) is part of Support that fits your baby.';
 
   @override
   String get rhWeekGateOther =>
@@ -14176,7 +14173,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asChipReceipt => 'Scan a receipt';
 
   @override
-  String get asFabLabel => 'Open the assistant';
+  String get asFabLabel => 'Open Lumi';
 
   @override
   String get asModuleExpenseTitle => 'Snap a receipt or type to log';
@@ -14200,30 +14197,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asNewChat => 'New chat';
 
   @override
-  String get asDetails => 'Details';
-
-  @override
-  String asUsageLeft(int remaining, int limit) {
-    return '$remaining/$limit AI help left';
-  }
-
-  @override
-  String asUsageNear(int remaining, int limit, String date) {
-    return '$remaining/$limit left · resets $date';
-  }
-
-  @override
-  String asUsageOut(int limit, String date) {
-    return 'All $limit used · resets $date';
-  }
-
-  @override
   String asUsageA11y(int remaining, int limit, String date) {
     return 'Household AI help: $remaining of $limit left, resets $date';
   }
 
   @override
-  String get asBadgeFree => 'Free';
+  String get asBadgeFree => 'Basic';
 
   @override
   String get asBadgePremium => 'Premium';
@@ -14678,7 +14657,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asCostNotCharged => 'Not charged';
 
   @override
-  String get asCostFree => 'Free';
+  String get asCostFree => 'No credits used';
 
   @override
   String get asRecentTitle => 'Recent';
@@ -14743,7 +14722,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asOutBodyFree =>
-      'Your question is kept. You can still log directly and view logs for free.';
+      'Your question is kept. You can still log directly and view logs as usual.';
 
   @override
   String get asOpenTodayLog => 'Open today’s log';
@@ -14902,7 +14881,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asHealthCallDoctor => 'Call your baby’s doctor';
 
   @override
-  String get asHealthFree => 'Free · no AI help used';
+  String get asHealthFree => 'No AI help used';
 
   @override
   String get asDialFailed => 'Couldn’t open the phone app.';
@@ -15196,7 +15175,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asSleepSafety =>
-      'If baby has a fever, trouble breathing, is very drowsy or refuses feeds — open Health guidance (free).';
+      'If baby has a fever, trouble breathing, is very drowsy or refuses feeds — open Health guidance.';
 
   @override
   String get asSleepFalling => 'hard to fall asleep';
@@ -15409,7 +15388,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asRecentReleased => '0 · given back';
 
   @override
-  String get asRecentFree => '0 · free';
+  String get asRecentFree => '0 · not counted';
 
   @override
   String get asRecentEmpty => 'No AI help used this period yet.';
@@ -15451,4 +15430,1102 @@ class AppLocalizationsEn extends AppLocalizations {
   String asSummaryFeedMinutes(String time, int minutes) {
     return '$time $minutes min';
   }
+
+  @override
+  String get lbTitle => 'Baby-care library';
+
+  @override
+  String get lbSaved => 'Saved';
+
+  @override
+  String get lbSearchHint => 'Search: naps, hiccups, nappy rash…';
+
+  @override
+  String get lbTopicFeeding => 'Feeding & milk';
+
+  @override
+  String get lbTopicSleep => 'Sleep';
+
+  @override
+  String get lbTopicTeething => 'Teething';
+
+  @override
+  String get lbTopicIllness => 'Fever & minor illness';
+
+  @override
+  String get lbTopicDailyCare => 'Daily care';
+
+  @override
+  String get lbTopicDevelopment => 'Development';
+
+  @override
+  String lbForBaby(String name, String age) {
+    return 'For $name · $age';
+  }
+
+  @override
+  String get lbSeeMore => 'See more';
+
+  @override
+  String get lbRecent => 'Recently updated';
+
+  @override
+  String lbMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count min read',
+      one: '1 min read',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String lbMinutesShort(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count min',
+      one: '1 min',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String lbRangeWeeks(int from, int to) {
+    return '$from–$to weeks';
+  }
+
+  @override
+  String lbRangeMonths(int from, int to) {
+    return '$from–$to months';
+  }
+
+  @override
+  String lbRangeYears(int from, int to) {
+    return '$from–$to years';
+  }
+
+  @override
+  String lbStageWeek(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Week $count',
+      one: 'Week 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String lbStageMonth(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count months',
+      one: '1 month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String lbReviewedBy(String reviewer, String credential, String month) {
+    return 'Reviewed by $reviewer · $credential, $month';
+  }
+
+  @override
+  String get lbIllustrative => 'Illustrative content · awaiting expert review';
+
+  @override
+  String get lbIllustrativeShort => 'Illustrative · not reviewed yet';
+
+  @override
+  String get lbOfflineLibrary =>
+      'No connection. The library is showing the copy saved on this phone.';
+
+  @override
+  String get lbOfflineStages =>
+      'No connection. Your baby’s stages are showing the copy saved on this phone.';
+
+  @override
+  String get lbEmptyTitle => 'The library is on its way';
+
+  @override
+  String get lbEmptyBody =>
+      'Articles will appear here as soon as they are published.';
+
+  @override
+  String get lbEmptyOfflineTitle => 'Nothing saved on this phone yet';
+
+  @override
+  String get lbEmptyOfflineBody =>
+      'Connect once to download the content; after that it reads offline too.';
+
+  @override
+  String lbResults(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articles',
+      one: '1 article',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get lbFilters => 'Filters';
+
+  @override
+  String lbFiltersCount(int count) {
+    return 'Filters · $count';
+  }
+
+  @override
+  String lbRemoveFilter(String label) {
+    return 'Remove filter $label';
+  }
+
+  @override
+  String get lbClearSearch => 'Clear search';
+
+  @override
+  String get lbSortTitle => 'Sort by';
+
+  @override
+  String get lbSortRelevant => 'Most relevant';
+
+  @override
+  String get lbSortNewest => 'Recently updated';
+
+  @override
+  String get lbSortShortest => 'Quickest read';
+
+  @override
+  String get lbNoResults => 'No matching articles';
+
+  @override
+  String get lbNoResultsHint => 'Try other words or fewer filters.';
+
+  @override
+  String get lbFilterTopic => 'Topic';
+
+  @override
+  String get lbFilterAge => 'Age';
+
+  @override
+  String get lbFilterTime => 'Reading time';
+
+  @override
+  String get lbTimeShort => 'Under 3 min';
+
+  @override
+  String get lbTimeMedium => '3–6 min';
+
+  @override
+  String get lbTimeLong => 'Over 6 min';
+
+  @override
+  String get lbReset => 'Reset';
+
+  @override
+  String lbShowN(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'See $count articles',
+      one: 'See 1 article',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get lbSave => 'Save';
+
+  @override
+  String get lbUnsave => 'Remove from saved';
+
+  @override
+  String get lbSavedToast => 'Saved · find it in Library › Saved';
+
+  @override
+  String get lbView => 'View';
+
+  @override
+  String get lbUnsavedToast => 'Removed from saved';
+
+  @override
+  String get lbUndo => 'Undo';
+
+  @override
+  String get lbSaveFailed => 'Couldn’t save. Please try again.';
+
+  @override
+  String get lbTextSize => 'Text size';
+
+  @override
+  String get lbRelated => 'Related articles';
+
+  @override
+  String get lbSources => 'Sources';
+
+  @override
+  String get lbOpenFirstAid => 'Danger signs? Open child first aid';
+
+  @override
+  String get lbArticleFootnote =>
+      'For reference only; it does not replace a doctor’s diagnosis. Every baby grows at their own pace.';
+
+  @override
+  String get lbArticleMissing => 'This article is no longer in the library';
+
+  @override
+  String get lbArticleMissingBody =>
+      'It may have been taken down for an update. Open the library again.';
+
+  @override
+  String lbSavedToday(String topic) {
+    return '$topic · saved today';
+  }
+
+  @override
+  String lbSavedOn(String topic, String date) {
+    return '$topic · saved $date';
+  }
+
+  @override
+  String get lbSavedEmptyTitle => 'Nothing saved yet';
+
+  @override
+  String get lbSavedEmptyBody =>
+      'Tap Save while reading an article to keep it here.';
+
+  @override
+  String lbUpdated(String title) {
+    return '“$title” has been updated. Open it to see the new version.';
+  }
+
+  @override
+  String get lbStagesTitle => 'Your baby’s stages';
+
+  @override
+  String get lbStagesIntro =>
+      'Short ideas for each stage. Every baby grows at their own pace.';
+
+  @override
+  String get lbHere => 'Baby is here';
+
+  @override
+  String get lbDoing => 'How your baby is doing';
+
+  @override
+  String get lbTry => 'Things to try together';
+
+  @override
+  String get lbMilestones => 'Common milestones';
+
+  @override
+  String get lbWeekCardSub => 'This week’s ideas in Growing rhythm';
+
+  @override
+  String get lbStageFootnote => 'Every baby develops at their own pace.';
+
+  @override
+  String get lbStageMissing => 'This stage is no longer available';
+
+  @override
+  String get lbStageMissingBody =>
+      'Open Your baby’s stages again to see what is available.';
+
+  @override
+  String get lbStagesEmptyTitle => 'Stage content is on its way';
+
+  @override
+  String get lbStagesEmptyBody =>
+      'Ideas for each stage will appear here as soon as they are published.';
+
+  @override
+  String get lbNoDobTitle => 'Add your baby’s date of birth';
+
+  @override
+  String get lbNoDobBody =>
+      'So Child Life can suggest what fits their age and remind you of Wonder Weeks and milestones.';
+
+  @override
+  String get lbNoDobAction => 'Add date of birth';
+
+  @override
+  String get lbNoDobViewerTitle => 'Your baby’s stage isn’t known here';
+
+  @override
+  String lbNoDobViewer(String name) {
+    return 'You can’t see $name’s date of birth, so the current stage isn’t marked. You can still read every stage.';
+  }
+
+  @override
+  String get asLumiIntroEyebrow => 'New';
+
+  @override
+  String get asLumiIntroTitle => 'Meet Lumi, your family’s helper';
+
+  @override
+  String get asLumiIntroBody =>
+      'Tap to log a feed in one line, ask about your baby’s records or send a receipt photo. Lumi drafts, you review and save.';
+
+  @override
+  String get asLumiIntroBodyText =>
+      'Tap to log a feed in one line or ask about your baby’s records. Lumi drafts, you review and save.';
+
+  @override
+  String get asLumiIntroBodyViewer =>
+      'Tap to ask Lumi about your baby’s records.';
+
+  @override
+  String get asLumiIntroLater => 'Later';
+
+  @override
+  String get asLumiIntroTry => 'Try it';
+
+  @override
+  String get asUsageButton => 'Usage';
+
+  @override
+  String get rhPlannedTonight => 'Planned · tonight';
+
+  @override
+  String get rhPlannedToday => 'Planned · today';
+
+  @override
+  String rhPlannedOn(String date) {
+    return 'Planned · $date';
+  }
+
+  @override
+  String rhEveningDate(String date) {
+    return '$date evening';
+  }
+
+  @override
+  String rhPlannedBy(String who, String when) {
+    return '$who planned it · $when';
+  }
+
+  @override
+  String get rhPlanAskMorning => 'You can tell how it went tomorrow morning.';
+
+  @override
+  String get rhPlanAskEvening => 'You can tell how it went from 6 pm today.';
+
+  @override
+  String get rhKickerFollowUp => 'DID YOU GET A CHANCE TO TRY IT?';
+
+  @override
+  String get rhCancelPlan => 'Cancel plan';
+
+  @override
+  String get rhPlanCanceled => 'Plan cancelled';
+
+  @override
+  String get rhDidNotTry => 'Didn’t try';
+
+  @override
+  String get rhDidNotTryToast => 'No problem, you can try another time.';
+
+  @override
+  String get rhTriedHistoryTitle => 'What we’ve tried';
+
+  @override
+  String rhTriedHistoryBody(int days) {
+    return 'Suggestions the family planned or answered in the last $days days, who did and how it went.';
+  }
+
+  @override
+  String get rhTriedHistoryEmpty => 'Nothing planned or tried yet.';
+
+  @override
+  String get rhSeeAllTried => 'See all';
+
+  @override
+  String rhWeekMakeVideo(int n) {
+    return 'Make a week $n video';
+  }
+
+  @override
+  String get rhWeekMakeVideoPlain => 'Make a video of the week';
+
+  @override
+  String rhWeekVideoPhotos(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos from the week are picked',
+      one: '1 photo from the week is picked',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hnStepOf(int step, int count) {
+    return 'Step $step of $count';
+  }
+
+  @override
+  String hnContinueCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'items',
+      one: 'item',
+    );
+    return 'Continue · $count $_temp0';
+  }
+
+  @override
+  String get hnNotifTitle => 'Let Child Life remind you at the right time';
+
+  @override
+  String get hnNotifBody =>
+      'Only what you just picked and the reminders you set. No ads.';
+
+  @override
+  String get hnNotifExamples => 'You may get these';
+
+  @override
+  String get hnNotifExampleTag => 'Example';
+
+  @override
+  String get hnNotifVaccine => 'Vaccine reminders';
+
+  @override
+  String get hnNotifVaccineWhen => 'Before the visit';
+
+  @override
+  String get hnNotifVaccineSample => '“6-in-1 vaccine tomorrow at 08:30.”';
+
+  @override
+  String get hnNotifRhythm => 'Growing rhythm';
+
+  @override
+  String get hnNotifRhythmWhen => '3 days before';
+
+  @override
+  String get hnNotifRhythmSample =>
+      '“By the reference calendar, stage 1 is coming up.”';
+
+  @override
+  String get hnNotifWeek => 'Weekly summary';
+
+  @override
+  String get hnNotifWeekWhen => 'Sunday 20:30';
+
+  @override
+  String get hnNotifWeekSample =>
+      '“Your little one’s week is ready to look back on.”';
+
+  @override
+  String get hnNotifAllow => 'Turn on notifications';
+
+  @override
+  String get hnNotifSettingsHint => 'Turn off or adjust in Me › Notifications';
+
+  @override
+  String get hnNotifDenied =>
+      'Notifications are still off. You can turn them on in your phone\'s Settings.';
+
+  @override
+  String get hnInviteTitle => 'Today, your family\'s way';
+
+  @override
+  String get hnInviteBody => 'Pick what matters to you · 30 seconds';
+
+  @override
+  String get hnInviteStart => 'Start';
+
+  @override
+  String get hnInviteClose => 'Hide the personalisation invite';
+
+  @override
+  String get hnInviteHidden =>
+      'Hidden. You can still adjust this in Me › Personalisation.';
+
+  @override
+  String get hnForBabyBecause => 'Based on what you care about';
+
+  @override
+  String get hnForBabyNoInterests => 'No interests picked yet';
+
+  @override
+  String get hnForBabyChange => 'Change';
+
+  @override
+  String get hnForBabyPick => 'Pick';
+
+  @override
+  String get hnRhythmPill => 'Growing rhythm · Beta';
+
+  @override
+  String hnRhythmExpected(String range) {
+    return 'By the reference calendar, expected $range.';
+  }
+
+  @override
+  String hnRhythmSoothing(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: 'day',
+    );
+    return 'The family noted more soothing over the past $_temp0.';
+  }
+
+  @override
+  String hnCardPage(int page, int count) {
+    return 'Card $page of $count';
+  }
+
+  @override
+  String get hnCardOptions => 'Options for this card';
+
+  @override
+  String get mtTitle => 'Milestones';
+
+  @override
+  String mtSummary(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count milestones',
+      one: '1 milestone',
+    );
+    return '$name has $_temp0';
+  }
+
+  @override
+  String mtSummaryNone(String name) {
+    return 'No milestones for $name yet';
+  }
+
+  @override
+  String get mtLead =>
+      'Record it when you see your baby do it. Every baby has their own pace.';
+
+  @override
+  String get mtLeadViewer =>
+      'Reference milestones by age. Every baby has their own pace.';
+
+  @override
+  String get mtFilterAll => 'All';
+
+  @override
+  String get mtGroupMotor => 'Movement';
+
+  @override
+  String get mtGroupCommunication => 'Communication';
+
+  @override
+  String get mtGroupCognitive => 'Thinking & learning';
+
+  @override
+  String get mtGroupSocial => 'Social & emotional';
+
+  @override
+  String get mtOwn => 'Our own';
+
+  @override
+  String get mtSeen => 'Observed';
+
+  @override
+  String get mtFollowingSection => 'Following';
+
+  @override
+  String get mtAround => 'Around your baby’s age';
+
+  @override
+  String get mtReferenceSection => 'Reference milestones';
+
+  @override
+  String get mtOthers => 'Other milestones';
+
+  @override
+  String mtShowAll(int count) {
+    return 'See all milestones ($count)';
+  }
+
+  @override
+  String get mtShowLess => 'Show less';
+
+  @override
+  String mtRangeMonths(int from, int to) {
+    return 'typically $from–$to months';
+  }
+
+  @override
+  String mtRangeWeeks(int from, int to) {
+    return 'typically $from–$to weeks';
+  }
+
+  @override
+  String mtRangeChipMonths(int from, int to) {
+    return 'Typically $from–$to months';
+  }
+
+  @override
+  String mtRangeChipWeeks(int from, int to) {
+    return 'Typically $from–$to weeks';
+  }
+
+  @override
+  String get mtUpcoming => 'Coming up';
+
+  @override
+  String get mtNotRecorded => 'Not recorded';
+
+  @override
+  String get mtFollowingTag => 'Following';
+
+  @override
+  String get mtCreateOwn => 'Create your own milestone';
+
+  @override
+  String get mtIllustrative => 'Illustrative content · pending expert review';
+
+  @override
+  String mtReviewed(String reviewer) {
+    return 'Reviewed by $reviewer';
+  }
+
+  @override
+  String get mtEmptyTitle => 'No reference milestones yet';
+
+  @override
+  String get mtEmptyBody =>
+      'The guide is being prepared. You can still create your own milestones.';
+
+  @override
+  String get mtEmptyBodyViewer => 'The guide is being prepared.';
+
+  @override
+  String get mtNoDob =>
+      'Add your baby’s date of birth to see suggestions for their age.';
+
+  @override
+  String get mtEntrySub => 'Record what your baby can do';
+
+  @override
+  String mtEntryCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count milestones recorded',
+      one: '1 milestone recorded',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mtHowTo => 'How to recognise it';
+
+  @override
+  String get mtReassure =>
+      'Age ranges are for reference only. Every baby has their own pace — if you are unsure, ask your baby’s doctor.';
+
+  @override
+  String get mtTalkToDoctor => 'When to ask the doctor';
+
+  @override
+  String get mtHealthLink => 'See health guidance';
+
+  @override
+  String get mtMarkSeen => 'Mark as observed';
+
+  @override
+  String get mtFollow => 'Save to follow';
+
+  @override
+  String get mtUnfollow => 'Stop following';
+
+  @override
+  String get mtFollowed => 'Saved to follow';
+
+  @override
+  String get mtUnfollowed => 'No longer following';
+
+  @override
+  String get mtSources => 'Sources';
+
+  @override
+  String get mtParentsRecord => 'Baby’s parents record milestones here.';
+
+  @override
+  String get mtNotFound => 'This milestone wasn’t found.';
+
+  @override
+  String get mtDateDid => 'The day your baby did it';
+
+  @override
+  String get mtNote => 'Note';
+
+  @override
+  String get mtNoteHint => 'When, where, with whom…';
+
+  @override
+  String get mtPhotosOptional => 'Photos (optional)';
+
+  @override
+  String get mtAddPhotos => 'Add photos';
+
+  @override
+  String get mtRemovePhoto => 'Remove this photo';
+
+  @override
+  String get mtSave => 'Save milestone';
+
+  @override
+  String get mtPickDate => 'Choose a day';
+
+  @override
+  String get mtSaved => 'Milestone saved';
+
+  @override
+  String get mtSaveFailed => 'Couldn’t save. Please try again.';
+
+  @override
+  String mtMeta(String date, String name, String age, String who) {
+    return '$date · $name was $age · recorded by $who';
+  }
+
+  @override
+  String mtMetaNoAge(String date, String who) {
+    return '$date · recorded by $who';
+  }
+
+  @override
+  String get mtKeepTitle => 'Keep this moment in Memories?';
+
+  @override
+  String mtKeepBody(String name) {
+    return 'Create a memory with these photos and this note, tagged “$name”.';
+  }
+
+  @override
+  String mtKeepBodyNote(String name) {
+    return 'Create a memory tagged “$name” — add photos if you like.';
+  }
+
+  @override
+  String get mtCreateMemory => 'Create memory';
+
+  @override
+  String get mtCreateCard => 'Make a milestone card';
+
+  @override
+  String get mtInMemories => 'Saved in Memories';
+
+  @override
+  String mtSeenByFamily(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos',
+      one: '1 photo',
+    );
+    return 'The whole family can see it · $_temp0';
+  }
+
+  @override
+  String mtSeenByParents(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos',
+      one: '1 photo',
+    );
+    return 'Parents only · $_temp0';
+  }
+
+  @override
+  String get mtSeenByFamilyNote => 'The whole family can see it · note';
+
+  @override
+  String get mtSeenByParentsNote => 'Parents only · note';
+
+  @override
+  String get mtUploading => 'Uploading to Memories…';
+
+  @override
+  String get mtMore => 'More actions';
+
+  @override
+  String get mtEdit => 'Edit';
+
+  @override
+  String get mtDelete => 'Remove this record';
+
+  @override
+  String get mtDeleteTitle => 'Remove this milestone record?';
+
+  @override
+  String get mtDeleteBody =>
+      'The day and the note are removed. Memories you made stay in Memories.';
+
+  @override
+  String get mtDeleted => 'Record removed';
+
+  @override
+  String get mtNewMemory => 'New memory';
+
+  @override
+  String get mtCaption => 'Caption';
+
+  @override
+  String get mtCaptionHint => 'A few words about this moment';
+
+  @override
+  String mtTag(String name) {
+    return 'Milestone · $name';
+  }
+
+  @override
+  String get mtWhoSees => 'Who can see';
+
+  @override
+  String get mtSaveMemory => 'Save memory';
+
+  @override
+  String get mtMemoryCreated => 'Memory created';
+
+  @override
+  String get mtCaptionRequired =>
+      'Add a caption or a photo to save the memory.';
+
+  @override
+  String get mtOwnLead => 'Firsts only your family has — record them your way.';
+
+  @override
+  String get mtName => 'Milestone name';
+
+  @override
+  String get mtNameHint => 'e.g. First trip to see the grandparents';
+
+  @override
+  String mtCount(int count, int max) {
+    return '$count/$max characters';
+  }
+
+  @override
+  String get mtDate => 'Day';
+
+  @override
+  String get mtAlsoMemory => 'Also create a memory';
+
+  @override
+  String get mtAlsoMemorySub => 'Save the photos and note to Memories';
+
+  @override
+  String get mtEditTitle => 'Edit milestone';
+
+  @override
+  String lbTodayStageKicker(String range) {
+    return 'Your baby’s stage · $range';
+  }
+
+  @override
+  String get lbTodayStageAction => 'See this stage';
+
+  @override
+  String get lbTodayRead => 'Read';
+
+  @override
+  String get ntBell => 'Notifications';
+
+  @override
+  String ntBellUnread(int count) {
+    return 'Notifications, $count unread';
+  }
+
+  @override
+  String get ntInboxTitle => 'Notifications';
+
+  @override
+  String get ntMarkAllRead => 'Mark all read';
+
+  @override
+  String get ntOpenSettings => 'Notification settings';
+
+  @override
+  String get ntFilterAll => 'All';
+
+  @override
+  String get ntFilterReminders => 'Reminders';
+
+  @override
+  String get ntFilterBaby => 'For baby';
+
+  @override
+  String get ntFilterFamily => 'Family';
+
+  @override
+  String get ntSectionToday => 'TODAY';
+
+  @override
+  String get ntSectionWeek => 'THIS WEEK';
+
+  @override
+  String get ntSectionEarlier => 'EARLIER';
+
+  @override
+  String get ntUnread => 'Unread';
+
+  @override
+  String get ntEmptyTitle => 'No notifications yet';
+
+  @override
+  String get ntEmptyBody =>
+      'Reminders, vaccinations and family news will show up here.';
+
+  @override
+  String get ntEmptyFiltered => 'Nothing in this category yet.';
+
+  @override
+  String get ntLoadFailed => 'Couldn’t load notifications. Try again later.';
+
+  @override
+  String get ntKept =>
+      'Notifications are kept for 90 days. Swipe left to hide one.';
+
+  @override
+  String get ntHide => 'Hide';
+
+  @override
+  String get ntGone => 'This can’t be opened any more.';
+
+  @override
+  String get ntMaster => 'Child Life notifications';
+
+  @override
+  String get ntMasterOn => 'On in system settings';
+
+  @override
+  String get ntMasterOff => 'Off in system settings';
+
+  @override
+  String get ntGroupReminders => 'REMINDERS YOU SET';
+
+  @override
+  String get ntGroupRemindersHint => 'Always on time, even in quiet hours';
+
+  @override
+  String get ntCare => 'Feeding, sleep, diapers';
+
+  @override
+  String get ntCareHint => 'Rule and one-off reminders';
+
+  @override
+  String get ntVaccines => 'Vaccinations';
+
+  @override
+  String get ntVaccinesHint => '3 days before and the evening before at 19:00';
+
+  @override
+  String get ntSpending => 'Spending';
+
+  @override
+  String get ntSpendingHint => 'Recurring items, 80% of budget, import results';
+
+  @override
+  String get ntGroupBaby => 'SUGGESTIONS FOR BABY';
+
+  @override
+  String get ntGroupBabyHint => 'Bundled, at most 2 a day';
+
+  @override
+  String get ntRhythm => 'Growth rhythm';
+
+  @override
+  String get ntRhythmHint =>
+      '3 days before each phase · check-in at most once a day';
+
+  @override
+  String get ntStages => 'Baby’s stages';
+
+  @override
+  String get ntStagesHint => 'When baby starts a new week / month';
+
+  @override
+  String get ntMilestones => 'Milestones';
+
+  @override
+  String get ntMilestonesHint => 'When the usual age comes';
+
+  @override
+  String get ntArticles => 'Suggested articles';
+
+  @override
+  String get ntArticlesHint => 'At most 1 a week';
+
+  @override
+  String get ntWeekly => 'Weekly summary';
+
+  @override
+  String get ntWeeklyHint => 'Sunday 20:30';
+
+  @override
+  String get ntGroupFamily => 'MEMORIES & FAMILY';
+
+  @override
+  String get ntPhotos => 'New photos that may include baby';
+
+  @override
+  String get ntPhotosHint => 'Auto-save · at most once a day';
+
+  @override
+  String get ntKeepsakes => 'Video and card ideas';
+
+  @override
+  String get ntKeepsakesHint => 'On month birthdays and at 100 days';
+
+  @override
+  String get ntFamilyActivity => 'Family activity';
+
+  @override
+  String get ntFamilyActivityHint => 'Likes, memory views';
+
+  @override
+  String get ntGroupTiming => 'TIMING';
+
+  @override
+  String get ntDigest => 'Suggestion time';
+
+  @override
+  String ntDigestDaily(String time) {
+    return '$time daily';
+  }
+
+  @override
+  String get ntQuiet => 'Quiet hours';
+
+  @override
+  String ntQuietRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String get ntSaveFailed => 'Couldn’t save. Please try again.';
+
+  @override
+  String get rhPlannedPill => 'Planned';
+
+  @override
+  String mtTodayKicker(String range) {
+    return 'A milestone you may see · $range';
+  }
+
+  @override
+  String get mtTodayAction => 'Record it when you see it';
+
+  @override
+  String get mtTodayActionViewer => 'How to recognise it';
+
+  @override
+  String get mtEntrySubViewer => 'Reference milestones for your baby’s age';
 }

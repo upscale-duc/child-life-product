@@ -7,6 +7,7 @@ import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
 import 'package:child_life/core/design/tokens.g.dart';
 import 'package:child_life/features/premium/premium_repository.dart';
+import 'package:child_life/features/rhythm/activity_history_screen.dart';
 import 'package:child_life/features/rhythm/activity_screens.dart';
 import 'package:child_life/features/rhythm/checkin_screens.dart';
 import 'package:child_life/features/rhythm/health_screen.dart';
@@ -64,7 +65,35 @@ const _heights = {
   'nl01b_sparse': 1200.0,
   'nl04_stage': 1200.0,
   'en01_interests': 1000.0,
+  'tried_history': 1000.0,
 };
+
+/// D-076 #10: a plan (`started`) by [by] on [date], made at [at].
+RecFeedback _plan(
+  String by,
+  String date,
+  DateTime at, {
+  String contentId = 'act_wind_down',
+}) => RecFeedback(
+  id: 'fb_${by.hashCode.toRadixString(16).padLeft(8, '0')}${'c' * 24}',
+  babyId: teddyId,
+  authorUid: by,
+  contentId: contentId,
+  contentVersion: contentId == 'act_skin_to_skin' ? 2 : 1,
+  kind: FeedbackKind.started,
+  date: date,
+  createdAt: at,
+);
+
+HomeComposition _startedHome() => HomeComposition.fromJson({
+  'state': 'suggestion',
+  'recommendation': recommendationJson(state: 'started'),
+  'secondary': <Object>[],
+  'ageCardId': 'age_week_3',
+  'gate': null,
+  'sleep': null,
+  'lastFeedback': null,
+});
 
 /// NL07's own-rhythm card alone.
 Widget _ownCard() => Consumer(
@@ -214,6 +243,7 @@ final _cases = <String, _Case>{
             contentVersion: 1,
             kind: FeedbackKind.started,
             date: '2026-10-07',
+            createdAt: DateTime.utc(2026, 10, 7, 13),
           ),
         ],
       ),
@@ -230,6 +260,77 @@ final _cases = <String, _Case>{
       FocusManager.instance.primaryFocus?.unfocus();
       await t.pumpAndSettle();
     },
+  ),
+  // D-076 #10: after "Thử tối nay" H02 waits — "Đã lên kế hoạch · tối nay", "Bỏ kế hoạch".
+  'h02_planned': (
+    build: _home,
+    overrides: () => rhythmOverrides(
+      me: minh,
+      caps: rhythmCaps(plan: 'beta', groupA: true),
+      repo: FakeRhythmRepository(
+        home: _startedHome(),
+        checkIns: [sleepCheckIn()],
+        feedback: [_plan('u_minh', rhythmToday, DateTime.utc(2026, 10, 8, 2))],
+      ),
+    ),
+    act: null,
+  ),
+  // …and once the chance has passed (Mẹ planned it last evening): the result, "Chưa thử".
+  'h02_follow_up': (
+    build: _home,
+    overrides: () => rhythmOverrides(
+      me: minh,
+      caps: rhythmCaps(plan: 'beta', groupA: true),
+      repo: FakeRhythmRepository(
+        home: _startedHome(),
+        checkIns: [sleepCheckIn()],
+        feedback: [_plan('u_mai', '2026-10-07', DateTime.utc(2026, 10, 7, 13))],
+      ),
+    ),
+    act: null,
+  ),
+  // AC01 with Ba's plan for tonight: the status and "Bỏ kế hoạch", no "Kể lại kết quả" yet.
+  'ac01_planned': (
+    build: () => ActivityScreen(
+      contentId: 'act_wind_down',
+      checkInId: sleepCheckIn().id,
+    ),
+    overrides: () => rhythmOverrides(
+      me: minh,
+      caps: rhythmCaps(plan: 'beta', groupA: true),
+      repo: FakeRhythmRepository(
+        checkIns: [sleepCheckIn()],
+        feedback: [_plan('u_minh', rhythmToday, DateTime.utc(2026, 10, 8, 2))],
+      ),
+    ),
+    act: null,
+  ),
+  // "Các cách đã thử": an answered plan, an open one past its chance, one waiting.
+  'tried_history': (
+    build: () => const ActivityHistoryScreen(),
+    overrides: () => rhythmOverrides(
+      me: minh,
+      caps: rhythmCaps(plan: 'beta', groupA: true),
+      repo: FakeRhythmRepository(
+        feedback: [
+          _plan('u_mai', '2026-10-05', DateTime.utc(2026, 10, 5, 12)),
+          helpfulFeedback(),
+          _plan(
+            'u_mai',
+            '2026-10-07',
+            DateTime.utc(2026, 10, 7, 2),
+            contentId: 'act_skin_to_skin',
+          ),
+          _plan(
+            'u_minh',
+            rhythmToday,
+            DateTime.utc(2026, 10, 8, 2),
+            contentId: 'act_evening_repeat',
+          ),
+        ],
+      ),
+    ),
+    act: null,
   ),
   // HL01 594:7066: fever under 3 months, household in VN (115 from the approved pack).
   'hl01_health': (

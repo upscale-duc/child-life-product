@@ -325,7 +325,8 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen> {
         ClSectionHeader(
           title: l10n.growthPrevious,
           linkLabel: l10n.growthSeeAll,
-          onLink: () => context.push('${Routes.history}?filter=growth'),
+          // D-076 nav: 28 is above the tabs; Lịch sử is a Chăm sóc page.
+          onLink: () => context.pushSafe('${Routes.history}?filter=growth'),
         ),
         const SizedBox(height: ClSpace.s2),
         if (previous.isEmpty)

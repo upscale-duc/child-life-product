@@ -58,7 +58,7 @@ s('rhReasonFallback', 'Vì nhà mình vừa ghi nhận điều con cần.', 'Bec
 
 # Home (H01 589:6281, H02 589:6368, PS02 591:6495).
 s('rhAgeHeading', 'Tuần này của {baby}', '{baby}’s week', 'Section heading of the free age card (Q-067).', baby='String')
-s('rhAgeFree', 'Nội dung theo tuổi · luôn miễn phí', 'Age-based content · always free', 'H01 age card footer.')
+s('rhAgeFree', 'Nội dung theo tuổi', 'Age-based content', 'H01 age card footer.')
 s('rhCalendarPill', 'LỊCH THAM KHẢO', 'REFERENCE CALENDAR', 'H01 reference-calendar pill (D-072 #7).')
 s('rhStageName', 'Giai đoạn {n} (Wonder Weeks)', 'Wonder Weeks stage {n}', 'A reference stage label (D-072 #7).', n='int')
 s('rhStageExpected', '{stage} dự kiến {range}', '{stage} expected {range}', 'H01: the next stage window.', stage='String', range='String')
@@ -124,7 +124,7 @@ s('rhNewSkillLabel', 'Con làm được gì mới?', 'What’s new?', 'C02 new s
 s('rhNewSkillHint', 'Ví dụ: lần đầu lẫy', 'e.g. rolled over for the first time', 'C02 new skill: placeholder.')
 s('rhSaveToMilestones', 'Lưu vào Mốc', 'Save to Milestones', 'C02 new skill: link to milestones (MS01, next step).')
 s('rhSaveNote', 'Lưu ghi nhận', 'Save note', 'C02 primary.')
-s('rhAlwaysFree', 'Ghi nhận luôn miễn phí · cả nhà cùng thấy', 'Logging is always free · shared with family', 'C02 helper below the button.')
+s('rhAlwaysFree', 'Cả nhà cùng thấy ghi nhận này', 'Shared with your family', 'C02 helper below the button.')
 
 # NL05b health questions (572:1161).
 s('rhHealthQHeading', 'Ghi nhận hôm nay', 'Today’s note', 'NL05b heading.')
@@ -154,7 +154,7 @@ s('rhHlHelper', 'Số khẩn cấp lấy theo quốc gia cư trú của hộ. Kh
 s('rhHlNoRegion', 'Chưa có số khẩn cấp được duyệt cho khu vực của hộ. Nếu con có dấu hiệu nguy hiểm, hãy gọi cấp cứu nơi bạn sống.', 'There’s no approved emergency number for your household’s region yet. If your baby shows danger signs, call your local emergency services.', 'HL01 when the household region has no approved number (never a default hotline).')
 s('rhHlWhileWaiting', 'Trong lúc chờ', 'While you wait', 'HL01 while-waiting steps.')
 s('rhHlDisclaimer', 'Child Life không chẩn đoán và không kết luận “an toàn”.', 'Child Life doesn’t diagnose and never concludes “safe”.', 'HL01 disclaimer when the health pack has none.')
-s('rhHlAlwaysFree', 'Luôn miễn phí · không paywall, không upsell', 'Always free · no paywall, no upsell', 'HL01 footer.')
+s('rhHlAlwaysFree', 'Không paywall, không mời nâng cấp', 'No paywall, no upsell', 'HL01 footer.')
 s('rhHlDialFailed', 'Không mở được ứng dụng Điện thoại.', 'Couldn’t open the Phone app.', 'HL01: the dialler did not open.')
 
 # PS01 (590:6445), PS01F (590:6481), no suggestion, offline (ST01 594:6967).
@@ -172,7 +172,7 @@ s('rhWhyData', 'Từ nhật ký: tổng ngủ được ghi gần đây khoảng 
 s('rhLater', 'Để sau', 'Later', 'PS01 secondary (feedback not_today).')
 s('rhSeeRhythm', 'Xem nhịp của con', 'See {baby}’s rhythm', 'PS01 link → Nhịp lớn lên.', baby='String')
 s('rhMoreForAge', 'Đọc thêm theo tuổi', 'More for this age', 'PS01F section title.')
-s('rhFreeAgePill', 'Miễn phí · theo tuổi', 'Free · age-based', 'PS01F article pill.')
+s('rhFreeAgePill', 'Theo tuổi', 'Age-based', 'PS01F article pill.')
 s('rhReadMinutes', 'Đọc {n} phút', '{n}-min read', 'PS01F article meta.', n='int')
 s('rhUpsellTitle', 'Muốn một gợi ý theo đúng tình huống?', 'Want a suggestion for this exact situation?', 'PS01F optional card (only with PREMIUM_REQUIRED).')
 s('rhUpsellBody', 'Hỗ trợ phù hợp với con chọn một việc từ ghi nhận của nhà mình và nhớ cách đã có ích.', 'Support that fits your baby picks one step from your family’s notes and remembers what helped.', 'PS01F optional card body.')
@@ -262,7 +262,7 @@ s('rhSleepBasis', 'Căn cứ: {recent} ngày gần nhất ({range}) so với {ba
 s('rhSleepUsual', 'mức thường {value}', 'usual {value}', 'NL07 chart legend: the baseline median.', value='String')
 s('rhSleepMissingLegend', 'ngày ghi thiếu, không tính', 'incomplete day, not counted', 'NL07 chart legend: an invalid day.')
 s('rhSleepGateTitle', 'So sánh giấc ngủ từ nhật ký', 'Sleep comparison from your log', 'NL01 own rhythm without rhythm.advanced.')
-s('rhSleepGatePremium', 'So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn miễn phí.', 'Comparing with your baby’s usual is part of personalised support. Notes, the reference calendar and health guidance stay free.', 'NL01 gate (PREMIUM_REQUIRED): no blurred fake insight.')
+s('rhSleepGatePremium', 'So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn dùng bình thường.', 'Comparing with your baby’s usual is part of personalised support. Notes, the reference calendar and health guidance keep working.', 'NL01 gate (PREMIUM_REQUIRED): no blurred fake insight.')
 s('rhSleepGateOther', 'Phần so sánh giấc ngủ chưa mở cho bạn. Ghi nhận và lịch tham khảo vẫn dùng được.', 'The sleep comparison isn’t open to you. Notes and the reference calendar still work.', 'NL01 gate (any other reason).')
 s('rhWhy', 'Vì sao?', 'Why?', 'Link that explains a gate reason.')
 s('rhTriedHeading', 'Cách nhà mình đã thử', 'What your family has tried', 'NL01 section from feedback.')
@@ -271,7 +271,7 @@ s('rhOutOfAge', 'Nhịp lớn lên đang hỗ trợ bé 0–12 tháng. Với bé
 s('rhOfflineNote', 'Ngoại tuyến: đang hiện dữ liệu đã lưu trên máy · ghi nhận sẽ được gửi khi có mạng.', 'Offline: showing what’s saved on this phone · notes will sync when you’re back online.', 'NL01b offline state.')
 s('rhRegionOwnerBody', 'Chọn khu vực để Child Life dùng đúng nội dung và số khẩn cấp. Lịch tham khảo và ghi nhận vẫn dùng được.', 'Choose your region so Child Life uses the right content and emergency number. The reference calendar and notes still work.', 'NL01 for the owner while the country is unset (D-072 #3).')
 s('rhRegionPick', 'Chọn khu vực', 'Choose region', 'NL01 owner → region sheet.')
-s('rhRegionWaiting', 'Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung miễn phí vẫn dùng được.', 'Waiting for the family owner to choose a region. Notes, the reference calendar and free content still work.', 'NL01 for other members while the country is unset (D-072 #3).')
+s('rhRegionWaiting', 'Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung cơ bản vẫn dùng được.', 'Waiting for the family owner to choose a region. Notes, the reference calendar and basic content still work.', 'NL01 for other members while the country is unset (D-072 #3).')
 
 # NL02a / NL02b / NL02c setup.
 s('rhSetupIntro', 'Tham khảo điều có thể đến, hiểu điều con đang trải qua.', 'Look ahead to what may come, understand what your baby is going through.', 'NL02a intro.')
@@ -419,7 +419,7 @@ s('rhWeekOf', 'Tuần {n} của {baby}', '{baby}’s week {n}', 'EN09 title: the
 s('rhWeekInProgress', 'Tuần đang diễn ra · số liệu đến lúc này', 'Week in progress · figures so far', 'EN09 note on a Sunday: the week ends tonight, today’s sleep is not counted yet.')
 s('rhWeekShare', 'Gửi cho…', 'Send to…', 'EN09 top pill: shares the logged figures as plain text.')
 s('rhWeekRecordedTitle', 'Đã ghi trong tuần', 'Logged this week', 'EN09 free section heading.')
-s('rhWeekRecordedSub', 'Từ nhật ký của cả nhà · luôn miễn phí', 'From the family’s log · always free', 'EN09 free section subtitle.')
+s('rhWeekRecordedSub', 'Từ nhật ký của cả nhà', 'From the family’s log', 'EN09 free section subtitle.')
 s('rhWeekFeeds', 'Bú', 'Feeds', 'EN09 tile label.')
 s('rhWeekFeedCount', '{count} cữ', '{count, plural, =1{1 feed} other{{count} feeds}}', 'EN09 feeds tile value.', count='int')
 s('rhWeekBottle', 'Bú bình {ml} ml', 'Bottle {ml} ml', 'EN09 feeds tile: bottle millilitres (never converted from minutes).', ml='String')
@@ -460,7 +460,7 @@ s('rhWeekNoNotes', 'Tuần này chưa có ghi nhận nào.', 'No notes this week
 s('rhWeekTriedTitle', 'Đã thử trong tuần', 'Tried this week', 'EN09 group A: activities tried and how they went.')
 s('rhWeekNoTried', 'Tuần này nhà mình chưa đánh dấu cách nào đã thử.', 'Nothing was marked as tried this week.', 'EN09 group A without feedback.')
 s('rhWeekNextIdea', 'Một ý tưởng cho tuần tới', 'One idea for next week', 'EN09 group A: the current suggestion (PS02).')
-s('rhWeekGatePremium', 'Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp. Số liệu đã ghi ở trên luôn miễn phí.', 'The look-back (sleep against your baby’s usual level, notes and what you tried) is part of Support that fits your baby. The figures above are always free.', 'EN09 gate, PREMIUM_REQUIRED.')
+s('rhWeekGatePremium', 'Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp.', 'The look-back (sleep against your baby’s usual level, notes and what you tried) is part of Support that fits your baby.', 'EN09 gate, PREMIUM_REQUIRED.')
 s('rhWeekGateOther', 'Phần nhìn lại chưa mở cho bạn. Số liệu đã ghi ở trên vẫn dùng được.', 'The look-back isn’t open to you yet. The figures above still work.', 'EN09 gate, any other reason.')
 s('rhWeekNoAccess', 'Tóm tắt tuần chỉ hiện với người được xem chăm sóc hằng ngày.', 'The weekly summary is only shown to people who can see daily care.', 'EN09 for a relative without “Chăm sóc hằng ngày” (history.read).')
 s('rhWeekShareFrom', 'Đã ghi trong tuần (nhật ký Child Life):', 'Logged this week (Child Life log):', 'Shared text: heading of the figures.')
@@ -469,6 +469,34 @@ s('rhWeekShareSleep', 'trung bình {time} mỗi ngày ghi đủ', 'average {time
 s('rhWeekOpen', 'Xem lại tuần', 'Look back at the week', 'NL01 / Home entry action.')
 s('rhWeekRemindSub', 'Chủ nhật 20:30 · trước giờ yên lặng', 'Sunday 20:30 · before quiet hours', 'NL02c switch subtitle (EN07 “Chủ nhật 20:30”).')
 s('rhWeekNotifBody', 'Xem lại những gì cả nhà đã ghi trong tuần.', 'See what the family logged this week.', 'Sunday notification body: no baby name, no figures (R-120).')
+
+# D-076 #10: a plan ("Thử tối nay" / "Thử hôm nay" / "Mình sẽ thử", feedback kind `started`) waits
+# until there was a chance to try (the CH17 rule of the server's `feedbackOpensAt`: an evening or
+# any-time item the next morning at 05:00, a daytime item at 18:00 the same day), then asks for the
+# result with "Chưa thử" always next to it. "Các cách đã thử": every plan and answer of the family
+# (C01 589:6451, AC02 590:6558), each with its author, answerable later. EN09 "Tạo video tuần N"
+# (D-076 #3) opens Video kỷ niệm with the week's photos. No frame draws these states.
+PLAN = ' VI and EN are engineering drafts (no frame draws this state) for owner review.'
+s('rhPlannedTonight', 'Đã lên kế hoạch · tối nay', 'Planned · tonight', 'Plan waiting state of an evening (or any-time) item, with a check, instead of "Kể lại kết quả" right away (D-076 #10).' + PLAN)
+s('rhPlannedToday', 'Đã lên kế hoạch · hôm nay', 'Planned · today', 'Plan waiting state of a daytime item (D-076 #10).' + PLAN)
+s('rhPlannedOn', 'Đã lên kế hoạch · {date}', 'Planned · {date}', 'Status pill of a plan from an earlier day ("tối 08/10").' + PLAN, date='String')
+s('rhEveningDate', 'tối {date}', '{date} evening', 'An evening of a day ("tối 08/10"), as AC02 590:6558 "Đã thử · tối 08/10".', date='String')
+s('rhPlannedBy', '{who} lên kế hoạch · {when}', '{who} planned it · {when}', 'Who planned and for when ("Ba lên kế hoạch · tối 08/10").' + PLAN, who='String', when='String')
+s('rhPlanAskMorning', 'Sáng mai có thể kể lại kết quả.', 'You can tell how it went tomorrow morning.', 'Plan waiting note: the result is asked from 05:00 the next morning (CH17 rule).' + PLAN)
+s('rhPlanAskEvening', 'Từ 18:00 hôm nay có thể kể lại kết quả.', 'You can tell how it went from 6 pm today.', 'Plan waiting note for a daytime item: the result is asked from 18:00 (CH17 rule).' + PLAN)
+s('rhKickerFollowUp', 'CẢ NHÀ ĐÃ CÓ DỊP THỬ CHƯA?', 'DID YOU GET A CHANCE TO TRY IT?', 'H02 kicker once the chance to try has passed (never "đã thử": the family only said they would).' + PLAN)
+s('rhPlannedPill', 'Đã lên kế hoạch', 'Planned', 'Pill of a plan still waiting for its chance (NL01, EN09, activity history).' + PLAN)
+s('rhCancelPlan', 'Bỏ kế hoạch', 'Cancel plan', 'Secondary action of the plan waiting state: takes back my own plan (deletes my `started` row).' + PLAN)
+s('rhPlanCanceled', 'Đã bỏ kế hoạch', 'Plan cancelled', 'Toast after "Bỏ kế hoạch".' + PLAN)
+s('rhDidNotTry', 'Chưa thử', 'Didn’t try', 'Answer next to "Kể lại kết quả" once the chance has passed, always available (CH17 "Chưa thử").' + PLAN)
+s('rhDidNotTryToast', 'Không sao, lúc khác thử cũng được.', 'No problem, you can try another time.', 'Toast after "Chưa thử".' + PLAN)
+s('rhTriedHistoryTitle', 'Các cách đã thử', 'What we’ve tried', 'Activity history title: plans and answers of the family (C01 / AC02).' + PLAN)
+s('rhTriedHistoryBody', 'Gợi ý cả nhà đã lên kế hoạch hoặc trả lời trong {days} ngày qua, ai làm và thấy thế nào.', 'Suggestions the family planned or answered in the last {days} days, who did and how it went.', 'Activity history intro.' + PLAN, days='int')
+s('rhTriedHistoryEmpty', 'Chưa có cách nào được lên kế hoạch hay thử.', 'Nothing planned or tried yet.', 'Activity history without rows.' + PLAN)
+s('rhSeeAllTried', 'Xem tất cả', 'See all', 'NL01 / EN09 link to the activity history.' + PLAN)
+s('rhWeekMakeVideo', 'Tạo video tuần {n}', 'Make a week {n} video', 'EN09 primary button (561:3102 "Tạo video tuần 4"): N is the week of life the title shows.', n='int')
+s('rhWeekMakeVideoPlain', 'Tạo video của tuần', 'Make a video of the week', 'EN09 primary button when the week of life is unknown.' + PLAN)
+s('rhWeekVideoPhotos', '{count} ảnh trong tuần được chọn sẵn', '{count, plural, =1{1 photo from the week is picked} other{{count} photos from the week are picked}}', 'EN09 caption under "Tạo video tuần N".' + PLAN, count='int')
 
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'
 for locale, idx in (('vi', 0), ('en', 1)):

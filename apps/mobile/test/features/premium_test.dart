@@ -161,7 +161,7 @@ void main() {
       await pick(tester, caps: answer(plan: 'beta'));
       expect(find.text('Hồng phấn'), findsOneWidget);
       expect(find.text('Mở với Premium'), findsOneWidget);
-      expect(find.text('Dùng mẫu miễn phí'), findsOneWidget);
+      expect(find.text('Dùng mẫu cơ bản'), findsOneWidget);
       expect(
         find.textContaining('Gói beta hiện tại của nhà mình chưa gồm mẫu Premium'),
         findsOneWidget,
@@ -170,7 +170,7 @@ void main() {
         find.text('Thẻ Premium không trừ lượt xuất video'),
         findsOneWidget,
       );
-      await tester.tap(find.text('Dùng mẫu miễn phí'));
+      await tester.tap(find.text('Dùng mẫu cơ bản'));
       await tester.pumpAndSettle();
       expect(find.text('Mở với Premium'), findsNothing);
     });
@@ -210,8 +210,8 @@ void main() {
       tester,
     ) async {
       await pumpPlan(tester, answer());
-      expect(find.text('Đang dùng miễn phí'), findsOneWidget);
-      expect(find.text('Luôn miễn phí'), findsWidgets);
+      expect(find.text('Đang dùng gói cơ bản'), findsOneWidget);
+      expect(find.text('Gói nào cũng có'), findsWidgets);
       expect(find.text('Việt Nam'), findsOneWidget);
       // Slice 4: the owner opens PR01; restore waits for the store (D-074).
       expect(find.text('Xem Premium'), findsOneWidget);

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/route_guard.dart';
 import '../ai/ai_consent_screen.dart';
 import '../ai/handover_screen.dart';
+import 'activity_history_screen.dart';
 import 'activity_screens.dart';
 import 'age_screens.dart';
 import 'checkin_screens.dart';
@@ -47,6 +48,7 @@ List<RouteBase> rhythmRoutes() => [
   _page(Routes.rhythmInterests, (_, _) => const InterestsScreen()),
   _page(Routes.rhythmDigest, (_, _) => const DigestScreen()),
   _page(Routes.rhythmFeedbackHistory, (_, _) => const FeedbackHistoryScreen()),
+  _page(Routes.rhythmTried, (_, _) => const ActivityHistoryScreen()),
   _page(Routes.rhythmCheckIn, modal: true, (_, _) => const CheckInScreen()),
   _page(
     Routes.rhythmCheckInMore,

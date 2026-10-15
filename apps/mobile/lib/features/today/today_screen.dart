@@ -17,7 +17,6 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
-import '../assistant/assistant_entry.dart' show AssistantTodayCard;
 import '../auto_save/auto_save_today.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
@@ -31,12 +30,14 @@ import '../care/timer_screens.dart';
 import '../family/family_labels.dart';
 import '../home/home_shell.dart';
 import '../reminders/reminder_screens.dart' show ReminderPeek;
-import '../rhythm/rhythm_home.dart' show ForYouSection;
 import '../app_update/app_update_screens.dart' show WhatsNewBanner;
 import '../home/today_tour.dart';
+import '../notifications/notification_bell.dart'; // D-076 #2
 import '../spending/spending_models.dart' show SpendingAccess;
 import 'today_cards.dart';
+import 'today_for_baby.dart';
 import 'today_layout.dart';
+import 'today_personalize.dart';
 
 /// 19 Hôm nay (46:2266) and its first-run state 18 (29:904): one tile per tracker — tap logs
 /// that type, the lines show the last entry (how long ago · detail · who) — then "Đã ghi hôm
@@ -103,7 +104,15 @@ class TodayScreen extends ConsumerWidget {
 
     // The baby header stays pinned while the day scrolls under it.
     return ClPinnedHeaderScaffold(
-      header: const BabyHeader(),
+      // ---- D-076 #2 notification centre: the bell (559:57622) before Night care ----
+      header: const BabyHeader(
+        actions: [
+          NotificationBell(),
+          SizedBox(width: ClSpace.s2),
+          NightCareToggle(),
+        ],
+      ),
+      // ---- end D-076 #2 ----
       body: ListView(
         padding: const EdgeInsets.fromLTRB(ClSpace.s4, 0, ClSpace.s4, 140),
         children: [
@@ -148,13 +157,16 @@ class TodayScreen extends ConsumerWidget {
           const WhatsNewBanner(),
           // AR02: new library photos that may show the baby (Tự lưu, D-066).
           const AutoSaveTodayBanner(),
-          // CH01 "Trợ lý Child Life": draws nothing unless the `assistant` flag is on.
-          const AssistantTodayCard(),
+          // D-076 #13: no assistant card here; the Lumi button (home_shell.dart) opens the chat.
+          // D-076 #1: "Hôm nay theo cách của nhà bạn" (559:57870) for who has not personalised,
+          // and EN01 right after this phone created the baby.
+          const PersonalizeInviteCard(),
+          const PersonalizeAfterSetupGate(),
           for (final section in layout.order)
             if (layout.shows(section))
               ...switch (section) {
-                // Nhịp lớn lên (H01 / H02): draws nothing unless the `rhythm` flag is on.
-                TodaySection.forYou => [const ForYouSection()],
+                // "Dành cho bé hôm nay" (D-076 #4, 559:57583): nothing unless the `rhythm` flag is on.
+                TodaySection.forYou => [const TodayForBabySection()],
                 TodaySection.tiles => [
                   const SizedBox(height: ClSpace.s4),
                   GridView.count(

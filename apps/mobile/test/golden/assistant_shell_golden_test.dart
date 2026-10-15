@@ -23,9 +23,10 @@ import '../helpers/care_fixtures.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/memory_fixtures.dart';
 
-/// Hôm nay in the real tab shell (stub tab content): Chat/Nút trợ lý 12 above the "+", and 12
-/// above the upload pill when uploads are waiting, never over it. Light / Night care × vi / en,
-/// with a home indicator inset. Synthetic data only.
+/// Hôm nay in the real tab shell (stub tab content): Chat/Nút trợ lý as Lumi (627:62667, its
+/// still ring: goldens run with animations off) 12 above the "+", and 12 above the upload pill
+/// when uploads are waiting, never over it; and Lumi's first-run tooltip (669:64442, D-076 #11).
+/// Light / Night care × vi / en, with a home indicator inset. Synthetic data only.
 /// Regenerate on macOS: flutter test --tags golden --update-goldens test/golden/assistant_shell_golden_test.dart
 
 QueueBatch _waitingBatch() => QueueBatch(
@@ -76,16 +77,20 @@ GoRouter _router() => GoRouter(
 );
 
 void main() {
-  for (final (name, uploads) in const [
-    ('today_fab', false),
-    ('today_fab_pill', true),
+  for (final (name, uploads, intro) in const [
+    ('today_fab', false, false),
+    ('today_fab_pill', true, false),
+    ('today_lumi_intro', false, true),
   ]) {
     for (final palette in ClPalette.values) {
       for (final locale in const [Locale('vi'), Locale('en')]) {
         testWidgets('$name ${palette.name} ${locale.languageCode}', (
           tester,
         ) async {
-          SharedPreferences.setMockInitialValues(const {});
+          SharedPreferences.setMockInitialValues({
+            // The tooltip shows once per person; only its own golden shows it.
+            if (!intro) LumiIntroSeenNotifier.keyFor(mai.uid): true,
+          });
           final prefs = await SharedPreferences.getInstance();
           tester.view.physicalSize = const Size(375, 812);
           tester.view.devicePixelRatio = 1;
@@ -135,6 +140,10 @@ void main() {
             ),
           );
           await tester.pumpAndSettle();
+          if (intro) {
+            await tester.pump(AssistantFloatingEntry.introDelay);
+            await tester.pumpAndSettle();
+          }
           debugDisableShadows = false;
           try {
             await tester.pump();

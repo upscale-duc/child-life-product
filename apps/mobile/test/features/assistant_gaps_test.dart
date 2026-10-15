@@ -239,7 +239,7 @@ void main() {
       expect(find.text('Ba · 15/10 · 1 lượt'), findsOneWidget);
       expect(find.text('Ba · 14/10 · 0 lượt · đã hoàn lại'), findsOneWidget);
       // No member label: the line skips it.
-      expect(find.text('13/10 · 0 lượt · miễn phí'), findsOneWidget);
+      expect(find.text('13/10 · 0 lượt · không tính'), findsOneWidget);
     });
 
     testWidgets('an empty list says so; no list shows no section', (

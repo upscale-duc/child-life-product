@@ -276,7 +276,8 @@ void main() {
           ]) {
             expect(find.text(name), findsOneWidget);
           }
-          expect(find.text('Miễn phí'), findsNWidgets(2));
+          // D-076 #9: basic templates carry no "Miễn phí" badge.
+          expect(find.text('Miễn phí'), findsNothing);
           expect(find.text('Cao cấp'), findsNWidgets(2));
           // Teddy (17.9) turns one month on 17.10: the cards say so.
           expect(find.text('17.10.2026'), findsWidgets);

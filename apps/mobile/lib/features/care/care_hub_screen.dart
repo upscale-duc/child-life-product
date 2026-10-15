@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/navigation.dart' show SafePushContext;
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
@@ -14,6 +15,8 @@ import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
 import '../home/home_shell.dart';
+import '../library/content_repository.dart';
+import '../library/library_routes.dart';
 import '../me/me_widgets.dart';
 import '../premium/premium_repository.dart';
 import '../reminders/reminder_repository.dart';
@@ -25,7 +28,7 @@ import 'history_screen.dart' show HistoryFilter;
 
 /// Chăm sóc tab (v1.0 improvement 450:6424; caregiver 370:2174), grouped as the owner asked
 /// (2026-10-14, D-069): "Chăm hằng ngày" (Nhắc nhở · Tiêm chủng · Thống kê · Lịch sử · Tăng
-/// trưởng), "Hiểu con & phát triển" (Wonder Weeks · Theo tuổi của bé · Mốc phát triển · Ăn dặm)
+/// trưởng), "Hiểu con & phát triển" (Wonder Weeks · Giai đoạn của bé · Mốc phát triển · Ăn dặm)
 /// and "Kiến thức chăm bé" (Thư viện chăm bé), the last two still coming soon. Sơ cứu and Chi
 /// tiêu are in Tiện ích. Caregivers see no Tăng trưởng tile. No "Cài đặt" section (owner, 2026-10-11): Tuỳ chỉnh lives on Hôm nay, Thông báo in Tôi.
 class CareHubScreen extends ConsumerStatefulWidget {
@@ -161,6 +164,12 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
     // flag is on; until then it stays a teaser.
     final rhythm =
         ref.watch(selectedCapabilitiesProvider)?.features.rhythm ?? false;
+    // Giai đoạn của bé and Thư viện chăm bé (D-076 #5, #7) open once something is published for
+    // this member; until then they stay teasers.
+    final stagesLive = (ref.watch(lbStagesProvider).value?.items ?? const [])
+        .any((s) => s.audience.contains(me.role));
+    final libraryLive = (ref.watch(lbArticlesProvider).value?.items ?? const [])
+        .isNotEmpty;
     final develop = [
       if (rhythm && _matches(l10n.careWonderWeek, l10n.careWonderWeekSub))
         _Tile(
@@ -170,6 +179,26 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
           subtitle: l10n.careWonderWeekSub,
           onTap: () => context.push(Routes.rhythm),
         ),
+      if (stagesLive && _matches(l10n.careAgeCards, l10n.careAgeCardsSub))
+        _Tile(
+          key: const Key('careStages'),
+          icon: ClIcons.cake,
+          tint: cl.colors.sunshineSoft,
+          title: l10n.careAgeCards,
+          subtitle: l10n.careAgeCardsSub,
+          onTap: () => context.push(LbRoutes.stages),
+        ),
+      // D-076 nav: Mốc phát triển (D-076 #6) is always live: the family's own milestones work
+      // without any published guide. It is a Tiện ích page, opened with `pushSafe`.
+      if (_matches(l10n.careMilestones, l10n.careMilestonesSub))
+        _Tile(
+          key: const Key('careMilestones'),
+          icon: ClIcons.star,
+          tint: cl.colors.peachSoft,
+          title: l10n.careMilestones,
+          subtitle: l10n.careMilestonesSub,
+          onTap: () => context.pushSafe(Routes.milestones),
+        ),
       ...teasers([
         if (!rhythm)
           (
@@ -178,18 +207,13 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
             l10n.careWonderWeek,
             l10n.careWonderWeekSub,
           ),
-        (
-          ClIcons.cake,
-          cl.colors.sunshineSoft,
-          l10n.careAgeCards,
-          l10n.careAgeCardsSub,
-        ),
-        (
-          ClIcons.star,
-          cl.colors.peachSoft,
-          l10n.careMilestones,
-          l10n.careMilestonesSub,
-        ),
+        if (!stagesLive)
+          (
+            ClIcons.cake,
+            cl.colors.sunshineSoft,
+            l10n.careAgeCards,
+            l10n.careAgeCardsSub,
+          ),
         (
           ClIcons.feed,
           cl.care.bottle.soft,
@@ -198,14 +222,26 @@ class _CareHubScreenState extends ConsumerState<CareHubScreen> {
         ),
       ]),
     ];
-    final knowledge = teasers([
-      (
-        ClIcons.bookmark,
-        cl.colors.mintSoft,
-        l10n.careLibrary,
-        l10n.careLibrarySub,
-      ),
-    ]);
+    final knowledge = [
+      if (libraryLive && _matches(l10n.careLibrary, l10n.careLibrarySub))
+        _Tile(
+          key: const Key('careLibrary'),
+          icon: ClIcons.bookmark,
+          tint: cl.colors.mintSoft,
+          title: l10n.careLibrary,
+          subtitle: l10n.careLibrarySub,
+          onTap: () => context.push(LbRoutes.library),
+        ),
+      ...teasers([
+        if (!libraryLive)
+          (
+            ClIcons.bookmark,
+            cl.colors.mintSoft,
+            l10n.careLibrary,
+            l10n.careLibrarySub,
+          ),
+      ]),
+    ];
 
     final nothing = daily.isEmpty && develop.isEmpty && knowledge.isEmpty;
     // Like Hôm nay: the baby header stays, with no collapsed title over it (it overlapped).
@@ -361,6 +397,7 @@ class _Tile extends StatelessWidget {
     required this.subtitle,
     required this.onTap,
     this.soon = false,
+    super.key,
   });
 
   final ClIcons icon;

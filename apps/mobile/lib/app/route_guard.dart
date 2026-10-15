@@ -47,6 +47,11 @@ abstract final class Routes {
   static const firstAidSaved = '/utilities/first-aid/saved';
   static const firstAidSituation = '/utilities/first-aid/s';
 
+  /// Mốc phát triển (v1.1 3a–3g, D-076 #6): the list, a milestone (`/<referenceId>` or a custom
+  /// record's `/ms_…`) and "Tạo mốc riêng".
+  static const milestones = '/utilities/milestones';
+  static const milestoneOwn = '/utilities/milestones/own';
+
   static const spending = '/utilities/spending';
   static const spendingHistory = '/utilities/spending/history';
   static const spendingExpense = '/utilities/spending/expense';
@@ -101,6 +106,10 @@ abstract final class Routes {
   static const rhythmInterests = '/rhythm/interests';
   static const rhythmDigest = '/rhythm/digest';
   static const rhythmFeedbackHistory = '/rhythm/feedback-history';
+
+  /// "Các cách đã thử" (D-076 #10): the family's plans and answers, answerable later.
+  static const rhythmTried = '/rhythm/tried';
+
   static const rhythmCheckIn = '/rhythm/checkin';
   static const rhythmCheckInMore = '/rhythm/checkin/more';
   static const rhythmCheckInHealth = '/rhythm/checkin/health';
@@ -167,6 +176,9 @@ abstract final class Routes {
   static const meProfile = '/me/profile';
   static const meAccount = '/me/account';
   static const meNotifications = '/me/notifications';
+
+  /// EN06 Hộp thông báo (D-076 #2), from the Hôm nay bell; pushed, without the dock.
+  static const notifications = '/notifications';
 
   /// PR03 · Gói của hộ and the household region (Premium & Cá nhân hoá, D-072).
   static const mePlan = '/me/plan';

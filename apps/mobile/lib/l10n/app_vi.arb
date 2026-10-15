@@ -9028,13 +9028,13 @@
   "@careWonderWeekSub": {
     "description": "Coming-soon tile."
   },
-  "careAgeCards": "Theo tuổi của bé",
+  "careAgeCards": "Giai đoạn của bé",
   "@careAgeCards": {
-    "description": "Coming-soon tile."
+    "description": "Chăm sóc tile → Giai đoạn của bé (D-076 #5; formerly \"Thẻ theo tuổi\")."
   },
   "careAgeCardsSub": "Gợi ý cho từng tuần, từng tháng",
   "@careAgeCardsSub": {
-    "description": "Coming-soon tile."
+    "description": "Chăm sóc tile subtitle."
   },
   "careMilestones": "Mốc phát triển",
   "@careMilestones": {
@@ -9046,11 +9046,11 @@
   },
   "careLibrary": "Thư viện chăm bé",
   "@careLibrary": {
-    "description": "Coming-soon tile."
+    "description": "Chăm sóc tile → Thư viện chăm bé."
   },
-  "careLibrarySub": "Bài viết được chuyên môn rà soát",
+  "careLibrarySub": "Bài viết chăm bé theo tuổi",
   "@careLibrarySub": {
-    "description": "Coming-soon tile."
+    "description": "Chăm sóc tile subtitle (no review claim until reviewed, P-141)."
   },
   "careSolids": "Ăn dặm",
   "@careSolids": {
@@ -15011,10 +15011,6 @@
   "@ksFormatStory": {
     "description": "MM10 format."
   },
-  "ksFree": "Miễn phí",
-  "@ksFree": {
-    "description": "Template badge (MM10)."
-  },
   "ksPremium": "Cao cấp",
   "@ksPremium": {
     "description": "Template badge (MM10); free during the beta (D-068 #3)."
@@ -16193,7 +16189,7 @@
   "@pmBadgeBeta": {
     "description": "Plan badge: personalisation beta (588:6290)."
   },
-  "pmBadgeFree": "Miễn phí",
+  "pmBadgeFree": "Cơ bản",
   "@pmBadgeFree": {
     "description": "Plan badge: free (588:6290)."
   },
@@ -16209,7 +16205,7 @@
   "@pmPlanTitle": {
     "description": "PR03 title; also the Tôi row."
   },
-  "pmPlanFree": "Đang dùng miễn phí",
+  "pmPlanFree": "Đang dùng gói cơ bản",
   "@pmPlanFree": {
     "description": "PR03 free state title."
   },
@@ -16289,7 +16285,7 @@
   "@pmPlanOwnerOnly": {
     "description": "PR03 for non-owners (D-072 #1)."
   },
-  "pmPlanAlwaysFree": "Luôn miễn phí",
+  "pmPlanAlwaysFree": "Gói nào cũng có",
   "@pmPlanAlwaysFree": {
     "description": "PR03 section: what never needs a plan."
   },
@@ -16373,7 +16369,7 @@
   "@pmUnlockPremium": {
     "description": "MO02 primary button."
   },
-  "pmUseFreeTemplate": "Dùng mẫu miễn phí",
+  "pmUseFreeTemplate": "Dùng mẫu cơ bản",
   "@pmUseFreeTemplate": {
     "description": "MO02 secondary button."
   },
@@ -16413,7 +16409,7 @@
   "@pmGateDisabledTitle": {
     "description": "FEATURE_DISABLED."
   },
-  "pmGateDisabledBody": "Ghi chép, nội dung miễn phí và hướng dẫn sức khoẻ vẫn dùng bình thường.",
+  "pmGateDisabledBody": "Ghi chép, nội dung cơ bản và hướng dẫn sức khoẻ vẫn dùng bình thường.",
   "@pmGateDisabledBody": {
     "description": "FEATURE_DISABLED body."
   },
@@ -16696,7 +16692,7 @@
       }
     }
   },
-  "rhAgeFree": "Nội dung theo tuổi · luôn miễn phí",
+  "rhAgeFree": "Nội dung theo tuổi",
   "@rhAgeFree": {
     "description": "H01 age card footer."
   },
@@ -17014,7 +17010,7 @@
   "@rhSaveNote": {
     "description": "C02 primary."
   },
-  "rhAlwaysFree": "Ghi nhận luôn miễn phí · cả nhà cùng thấy",
+  "rhAlwaysFree": "Cả nhà cùng thấy ghi nhận này",
   "@rhAlwaysFree": {
     "description": "C02 helper below the button."
   },
@@ -17128,7 +17124,7 @@
   "@rhHlDisclaimer": {
     "description": "HL01 disclaimer when the health pack has none."
   },
-  "rhHlAlwaysFree": "Luôn miễn phí · không paywall, không upsell",
+  "rhHlAlwaysFree": "Không paywall, không mời nâng cấp",
   "@rhHlAlwaysFree": {
     "description": "HL01 footer."
   },
@@ -17236,7 +17232,7 @@
   "@rhMoreForAge": {
     "description": "PS01F section title."
   },
-  "rhFreeAgePill": "Miễn phí · theo tuổi",
+  "rhFreeAgePill": "Theo tuổi",
   "@rhFreeAgePill": {
     "description": "PS01F article pill."
   },
@@ -17682,7 +17678,7 @@
   "@rhSleepGateTitle": {
     "description": "NL01 own rhythm without rhythm.advanced."
   },
-  "rhSleepGatePremium": "So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn miễn phí.",
+  "rhSleepGatePremium": "So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn dùng bình thường.",
   "@rhSleepGatePremium": {
     "description": "NL01 gate (PREMIUM_REQUIRED): no blurred fake insight."
   },
@@ -17718,7 +17714,7 @@
   "@rhRegionPick": {
     "description": "NL01 owner → region sheet."
   },
-  "rhRegionWaiting": "Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung miễn phí vẫn dùng được.",
+  "rhRegionWaiting": "Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung cơ bản vẫn dùng được.",
   "@rhRegionWaiting": {
     "description": "NL01 for other members while the country is unset (D-072 #3)."
   },
@@ -18637,7 +18633,7 @@
   "@aiStateQuotaEyebrow": {
     "description": "QUOTA_EXCEEDED eyebrow. EN is an engineering draft for owner review."
   },
-  "aiStateQuotaDay": "Đã dùng {used}/{limit} lượt AI hôm nay cho bé. Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.",
+  "aiStateQuotaDay": "Đã dùng {used}/{limit} lượt AI hôm nay cho bé. Lượt mới từ {when}. Bạn vẫn xem được bản theo mẫu.",
   "@aiStateQuotaDay": {
     "description": "QUOTA_EXCEEDED, daily window. EN is an engineering draft for owner review.",
     "placeholders": {
@@ -18652,7 +18648,7 @@
       }
     }
   },
-  "aiStateQuotaMonth": "Nhà mình đã dùng {used}/{limit} lượt AI kỳ này (chung cho tóm tắt và trợ lý). Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.",
+  "aiStateQuotaMonth": "Nhà mình đã dùng {used}/{limit} lượt AI kỳ này (chung cho tóm tắt và trợ lý). Lượt mới từ {when}. Bạn vẫn xem được bản theo mẫu.",
   "@aiStateQuotaMonth": {
     "description": "QUOTA_EXCEEDED, monthly window. EN is an engineering draft for owner review.",
     "placeholders": {
@@ -18667,7 +18663,7 @@
       }
     }
   },
-  "aiStateQuotaPlain": "Nhà mình đã dùng hết lượt AI trong kỳ này. Bản theo mẫu luôn miễn phí.",
+  "aiStateQuotaPlain": "Nhà mình đã dùng hết lượt AI trong kỳ này. Bạn vẫn xem được bản theo mẫu.",
   "@aiStateQuotaPlain": {
     "description": "QUOTA_EXCEEDED without numbers. EN is an engineering draft for owner review."
   },
@@ -18675,7 +18671,7 @@
   "@aiStateTemplateEyebrow": {
     "description": "PREMIUM_REQUIRED / other reasons eyebrow. EN is an engineering draft for owner review."
   },
-  "aiStatePremiumBody": "Tóm tắt bằng AI nằm trong Child Life Premium. Bản theo mẫu luôn miễn phí.",
+  "aiStatePremiumBody": "Tóm tắt bằng AI nằm trong Child Life Premium. Bạn vẫn xem được bản theo mẫu.",
   "@aiStatePremiumBody": {
     "description": "PREMIUM_REQUIRED body (the only state with a plan link). EN is an engineering draft for owner review."
   },
@@ -19133,7 +19129,7 @@
   "@pmBuyClosedTitle": {
     "description": "PR01 owner: purchase not open yet (D-074, premium_billing off or no products)."
   },
-  "pmBuyClosedBody": "Child Life Premium chưa bán trong app. Mọi thứ miễn phí vẫn dùng bình thường; Child Life sẽ báo khi mở.",
+  "pmBuyClosedBody": "Child Life Premium chưa bán trong app. Mọi thứ khác vẫn dùng bình thường; Child Life sẽ báo khi mở.",
   "@pmBuyClosedBody": {
     "description": "PR01 owner: purchase not open yet."
   },
@@ -19206,7 +19202,7 @@
   "@pmErrorTitle": {
     "description": "PR02 Error title."
   },
-  "pmErrorBody": "Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu miễn phí.",
+  "pmErrorBody": "Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu cơ bản.",
   "@pmErrorBody": {
     "description": "PR02 Error body from a template."
   },
@@ -19399,7 +19395,7 @@
   "@rhWeekRecordedTitle": {
     "description": "EN09 free section heading."
   },
-  "rhWeekRecordedSub": "Từ nhật ký của cả nhà · luôn miễn phí",
+  "rhWeekRecordedSub": "Từ nhật ký của cả nhà",
   "@rhWeekRecordedSub": {
     "description": "EN09 free section subtitle."
   },
@@ -19668,7 +19664,7 @@
   "@rhWeekNextIdea": {
     "description": "EN09 group A: the current suggestion (PS02)."
   },
-  "rhWeekGatePremium": "Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp. Số liệu đã ghi ở trên luôn miễn phí.",
+  "rhWeekGatePremium": "Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp.",
   "@rhWeekGatePremium": {
     "description": "EN09 gate, PREMIUM_REQUIRED."
   },
@@ -19790,7 +19786,7 @@
   "@asChipReceipt": {
     "description": "CH01 chip (photo reading on only)."
   },
-  "asFabLabel": "Mở trợ lý",
+  "asFabLabel": "Mở Lumi",
   "@asFabLabel": {
     "description": "Floating assistant button a11y label. EN is an engineering draft for owner review."
   },
@@ -19822,49 +19818,6 @@
   "@asNewChat": {
     "description": "Chat header new button (a11y) and CH03 \"Hội thoại mới\"."
   },
-  "asDetails": "Chi tiết",
-  "@asDetails": {
-    "description": "Usage row link to CH19."
-  },
-  "asUsageLeft": "Còn {remaining}/{limit} lượt hỗ trợ AI",
-  "@asUsageLeft": {
-    "description": "Chat/Mức dùng, Còn.",
-    "placeholders": {
-      "remaining": {
-        "type": "int"
-      },
-      "limit": {
-        "type": "int"
-      }
-    }
-  },
-  "asUsageNear": "Còn {remaining}/{limit} lượt · làm mới {date}",
-  "@asUsageNear": {
-    "description": "Chat/Mức dùng, Gần hết (CH20).",
-    "placeholders": {
-      "remaining": {
-        "type": "int"
-      },
-      "limit": {
-        "type": "int"
-      },
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "asUsageOut": "Đã dùng hết {limit}/{limit} lượt · làm mới {date}",
-  "@asUsageOut": {
-    "description": "Chat/Mức dùng, Hết (CH21 / CH24: same numbers for Free and Premium).",
-    "placeholders": {
-      "limit": {
-        "type": "int"
-      },
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "asUsageA11y": "Lượt hỗ trợ AI của hộ: còn {remaining} trên {limit}, làm mới {date}",
   "@asUsageA11y": {
     "description": "Usage pill screen-reader label. VI and EN are engineering drafts (no frame draws this state) for owner review.",
@@ -19880,7 +19833,7 @@
       }
     }
   },
-  "asBadgeFree": "Free",
+  "asBadgeFree": "Cơ bản",
   "@asBadgeFree": {
     "description": "Plan badge (CH19)."
   },
@@ -20501,7 +20454,7 @@
   "@asCostNotCharged": {
     "description": "CH19 cost value."
   },
-  "asCostFree": "Miễn phí",
+  "asCostFree": "Không trừ lượt",
   "@asCostFree": {
     "description": "CH19 cost value (health). EN is an engineering draft for owner review."
   },
@@ -20599,7 +20552,7 @@
   "@asOutTitleFree": {
     "description": "CH21 title."
   },
-  "asOutBodyFree": "Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký miễn phí.",
+  "asOutBodyFree": "Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký như thường.",
   "@asOutBodyFree": {
     "description": "CH21 body."
   },
@@ -20789,7 +20742,7 @@
   "@asHealthCallDoctor": {
     "description": "CH28 when the health pack has no number for the household country (never a default hotline)."
   },
-  "asHealthFree": "Miễn phí · không trừ lượt",
+  "asHealthFree": "Không trừ lượt",
   "@asHealthFree": {
     "description": "CH28 footnote (without the internal \"nội dung y tế chờ duyệt theo vùng\"). Deviates from the frame on purpose (business rule wins; see the A4 report)."
   },
@@ -21178,7 +21131,7 @@
   "@asUnreadableFree": {
     "description": "CH14 note (0 credits)."
   },
-  "asSleepSafety": "Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ (miễn phí).",
+  "asSleepSafety": "Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ.",
   "@asSleepSafety": {
     "description": "CH15 safety box (now with a link)."
   },
@@ -21454,7 +21407,7 @@
   "@asRecentReleased": {
     "description": "CH19 recent value: a reservation released (error, unreadable photo, cancel, template answer). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
-  "asRecentFree": "0 lượt · miễn phí",
+  "asRecentFree": "0 lượt · không tính",
   "@asRecentFree": {
     "description": "CH19 recent value: work that never costs credits (health support). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
@@ -21511,5 +21464,1506 @@
         "type": "int"
       }
     }
+  },
+  "lbTitle": "Thư viện chăm bé",
+  "@lbTitle": {
+    "description": "4a title; Chăm sóc tile."
+  },
+  "lbSaved": "Đã lưu",
+  "@lbSaved": {
+    "description": "4a pill, 4f title, 4e save pill when saved."
+  },
+  "lbSearchHint": "Tìm: ngủ ngày, nấc, hăm tã…",
+  "@lbSearchHint": {
+    "description": "4a / 4b search placeholder."
+  },
+  "lbTopicFeeding": "Bú & sữa",
+  "@lbTopicFeeding": {
+    "description": "4a topic tile."
+  },
+  "lbTopicSleep": "Giấc ngủ",
+  "@lbTopicSleep": {
+    "description": "4a topic tile."
+  },
+  "lbTopicTeething": "Mọc răng",
+  "@lbTopicTeething": {
+    "description": "4a topic tile."
+  },
+  "lbTopicIllness": "Sốt & ốm vặt",
+  "@lbTopicIllness": {
+    "description": "4a topic tile."
+  },
+  "lbTopicDailyCare": "Chăm hằng ngày",
+  "@lbTopicDailyCare": {
+    "description": "4a topic tile."
+  },
+  "lbTopicDevelopment": "Phát triển",
+  "@lbTopicDevelopment": {
+    "description": "4a topic tile."
+  },
+  "lbForBaby": "Hợp với {name} · {age}",
+  "@lbForBaby": {
+    "description": "4a section: articles for the baby's age.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "lbSeeMore": "Xem thêm",
+  "@lbSeeMore": {
+    "description": "4a section link → 4b with the age band."
+  },
+  "lbRecent": "Mới cập nhật",
+  "@lbRecent": {
+    "description": "4a section."
+  },
+  "lbMinutes": "{count} phút đọc",
+  "@lbMinutes": {
+    "description": "Reading time.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lbMinutesShort": "{count} phút",
+  "@lbMinutesShort": {
+    "description": "Reading time on cards.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lbRangeWeeks": "{from}–{to} tuần",
+  "@lbRangeWeeks": {
+    "description": "Age range in weeks.",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "lbRangeMonths": "{from}–{to} tháng",
+  "@lbRangeMonths": {
+    "description": "Age range in months.",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "lbRangeYears": "{from}–{to} tuổi",
+  "@lbRangeYears": {
+    "description": "Age range in years.",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "lbStageWeek": "{count} tuần",
+  "@lbStageWeek": {
+    "description": "2a stage covering one week.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lbStageMonth": "{count} tháng",
+  "@lbStageMonth": {
+    "description": "2a stage covering one month.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lbReviewedBy": "Được {reviewer} · {credential} rà soát {month}",
+  "@lbReviewedBy": {
+    "description": "4d byline / 2b footnote once an expert signed it (no claim before, P-141).",
+    "placeholders": {
+      "reviewer": {
+        "type": "String"
+      },
+      "credential": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "lbIllustrative": "Nội dung minh hoạ · chờ chuyên môn duyệt",
+  "@lbIllustrative": {
+    "description": "Badge until an expert approves (D-073 #2)."
+  },
+  "lbIllustrativeShort": "Minh hoạ · chờ duyệt",
+  "@lbIllustrativeShort": {
+    "description": "Compact badge on rows and cards."
+  },
+  "lbOfflineLibrary": "Không có kết nối. Thư viện đang hiện bản đã lưu trên máy.",
+  "@lbOfflineLibrary": {
+    "description": "Offline banner (2c pattern)."
+  },
+  "lbOfflineStages": "Không có kết nối. Giai đoạn của bé đang hiện bản đã lưu trên máy.",
+  "@lbOfflineStages": {
+    "description": "2c offline banner (renamed from \"Thẻ theo tuổi\", D-076 #5)."
+  },
+  "lbEmptyTitle": "Thư viện đang được chuẩn bị",
+  "@lbEmptyTitle": {
+    "description": "Nothing published yet."
+  },
+  "lbEmptyBody": "Bài viết sẽ hiện ở đây ngay khi được xuất bản.",
+  "@lbEmptyBody": {
+    "description": "Nothing published yet."
+  },
+  "lbEmptyOfflineTitle": "Chưa có bản lưu trên máy",
+  "@lbEmptyOfflineTitle": {
+    "description": "Offline before the first load."
+  },
+  "lbEmptyOfflineBody": "Kết nối mạng một lần để tải nội dung, sau đó đọc được cả khi không có mạng.",
+  "@lbEmptyOfflineBody": {
+    "description": "Offline before the first load."
+  },
+  "lbResults": "{count} bài viết",
+  "@lbResults": {
+    "description": "4b result count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lbFilters": "Bộ lọc",
+  "@lbFilters": {
+    "description": "4b pill, 4c title."
+  },
+  "lbFiltersCount": "Bộ lọc · {count}",
+  "@lbFiltersCount": {
+    "description": "4b pill with filters on.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lbRemoveFilter": "Bỏ lọc {label}",
+  "@lbRemoveFilter": {
+    "description": "4b removable chip (a11y).",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "lbClearSearch": "Xoá tìm kiếm",
+  "@lbClearSearch": {
+    "description": "4b clear button (a11y)."
+  },
+  "lbSortTitle": "Sắp xếp",
+  "@lbSortTitle": {
+    "description": "4b sort sheet."
+  },
+  "lbSortRelevant": "Liên quan nhất",
+  "@lbSortRelevant": {
+    "description": "4b sort."
+  },
+  "lbSortNewest": "Mới cập nhật",
+  "@lbSortNewest": {
+    "description": "4b sort."
+  },
+  "lbSortShortest": "Đọc nhanh nhất",
+  "@lbSortShortest": {
+    "description": "4b sort."
+  },
+  "lbNoResults": "Không tìm thấy bài phù hợp",
+  "@lbNoResults": {
+    "description": "4b no results."
+  },
+  "lbNoResultsHint": "Thử từ khoá khác hoặc bỏ bớt bộ lọc.",
+  "@lbNoResultsHint": {
+    "description": "4b no results."
+  },
+  "lbFilterTopic": "Chủ đề",
+  "@lbFilterTopic": {
+    "description": "4c group."
+  },
+  "lbFilterAge": "Độ tuổi",
+  "@lbFilterAge": {
+    "description": "4c group."
+  },
+  "lbFilterTime": "Thời gian đọc",
+  "@lbFilterTime": {
+    "description": "4c group."
+  },
+  "lbTimeShort": "Dưới 3 phút",
+  "@lbTimeShort": {
+    "description": "4c chip."
+  },
+  "lbTimeMedium": "3–6 phút",
+  "@lbTimeMedium": {
+    "description": "4c chip."
+  },
+  "lbTimeLong": "Trên 6 phút",
+  "@lbTimeLong": {
+    "description": "4c chip."
+  },
+  "lbReset": "Đặt lại",
+  "@lbReset": {
+    "description": "4c secondary."
+  },
+  "lbShowN": "Xem {count} bài",
+  "@lbShowN": {
+    "description": "4c primary (live count).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lbSave": "Lưu",
+  "@lbSave": {
+    "description": "4d bar; row bookmark (a11y)."
+  },
+  "lbUnsave": "Bỏ lưu",
+  "@lbUnsave": {
+    "description": "Bookmark when saved (a11y)."
+  },
+  "lbSavedToast": "Đã lưu · xem trong Thư viện › Đã lưu",
+  "@lbSavedToast": {
+    "description": "4e toast."
+  },
+  "lbView": "Xem",
+  "@lbView": {
+    "description": "4e toast action → 4f."
+  },
+  "lbUnsavedToast": "Đã bỏ lưu",
+  "@lbUnsavedToast": {
+    "description": "Toast after unsaving."
+  },
+  "lbUndo": "Hoàn tác",
+  "@lbUndo": {
+    "description": "Unsave toast action."
+  },
+  "lbSaveFailed": "Chưa lưu được. Thử lại nhé.",
+  "@lbSaveFailed": {
+    "description": "Save error toast."
+  },
+  "lbTextSize": "Cỡ chữ",
+  "@lbTextSize": {
+    "description": "4d \"Aa\" (a11y)."
+  },
+  "lbRelated": "Bài viết liên quan",
+  "@lbRelated": {
+    "description": "4d / 2b section."
+  },
+  "lbSources": "Nguồn tham khảo",
+  "@lbSources": {
+    "description": "4d section, 2b footnote."
+  },
+  "lbOpenFirstAid": "Dấu hiệu nguy hiểm? Mở Sơ cứu trẻ em",
+  "@lbOpenFirstAid": {
+    "description": "4d \"Khi nào nên hỏi bác sĩ\" callout link (the guide works offline)."
+  },
+  "lbArticleFootnote": "Nội dung tham khảo, không thay thế chẩn đoán của bác sĩ. Mỗi bé phát triển theo nhịp riêng.",
+  "@lbArticleFootnote": {
+    "description": "4d footnote."
+  },
+  "lbArticleMissing": "Bài viết này không còn trong thư viện",
+  "@lbArticleMissing": {
+    "description": "Unknown or withdrawn article."
+  },
+  "lbArticleMissingBody": "Bài có thể đã được gỡ để cập nhật. Mở lại Thư viện chăm bé.",
+  "@lbArticleMissingBody": {
+    "description": "Unknown or withdrawn article."
+  },
+  "lbSavedToday": "{topic} · lưu hôm nay",
+  "@lbSavedToday": {
+    "description": "4f row meta.",
+    "placeholders": {
+      "topic": {
+        "type": "String"
+      }
+    }
+  },
+  "lbSavedOn": "{topic} · lưu {date}",
+  "@lbSavedOn": {
+    "description": "4f row meta.",
+    "placeholders": {
+      "topic": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lbSavedEmptyTitle": "Chưa lưu bài nào",
+  "@lbSavedEmptyTitle": {
+    "description": "4f empty."
+  },
+  "lbSavedEmptyBody": "Bấm Lưu khi đọc một bài để giữ lại đây.",
+  "@lbSavedEmptyBody": {
+    "description": "4f empty."
+  },
+  "lbUpdated": "Bài “{title}” vừa được cập nhật. Mở để xem bản mới.",
+  "@lbUpdated": {
+    "description": "4f banner (no expert claim: it may still be illustrative).",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "lbStagesTitle": "Giai đoạn của bé",
+  "@lbStagesTitle": {
+    "description": "2a title; Chăm sóc tile (D-076 #5, never \"thẻ\")."
+  },
+  "lbStagesIntro": "Gợi ý ngắn cho từng giai đoạn. Mỗi bé phát triển theo nhịp riêng.",
+  "@lbStagesIntro": {
+    "description": "2a intro (no review claim)."
+  },
+  "lbHere": "Bé đang ở đây",
+  "@lbHere": {
+    "description": "2a current stage pill."
+  },
+  "lbDoing": "Bé đang thế nào",
+  "@lbDoing": {
+    "description": "2b card."
+  },
+  "lbTry": "Ba mẹ có thể thử",
+  "@lbTry": {
+    "description": "2b card."
+  },
+  "lbMilestones": "Mốc thường gặp",
+  "@lbMilestones": {
+    "description": "2b section (when Mốc phát triển is available)."
+  },
+  "lbWeekCardSub": "Gợi ý cho tuần này trong Nhịp lớn lên",
+  "@lbWeekCardSub": {
+    "description": "2b link to \"Tuần này của {bé}\" (D-072 #5)."
+  },
+  "lbStageFootnote": "Mỗi bé phát triển theo nhịp riêng.",
+  "@lbStageFootnote": {
+    "description": "2b footnote."
+  },
+  "lbStageMissing": "Giai đoạn này không còn trong ứng dụng",
+  "@lbStageMissing": {
+    "description": "Unknown or withdrawn stage."
+  },
+  "lbStageMissingBody": "Mở lại Giai đoạn của bé để xem các giai đoạn hiện có.",
+  "@lbStageMissingBody": {
+    "description": "Unknown or withdrawn stage."
+  },
+  "lbStagesEmptyTitle": "Nội dung theo giai đoạn đang được chuẩn bị",
+  "@lbStagesEmptyTitle": {
+    "description": "2a nothing published yet."
+  },
+  "lbStagesEmptyBody": "Gợi ý cho từng giai đoạn sẽ hiện ở đây ngay khi được xuất bản.",
+  "@lbStagesEmptyBody": {
+    "description": "2a nothing published yet."
+  },
+  "lbNoDobTitle": "Thêm ngày sinh của bé",
+  "@lbNoDobTitle": {
+    "description": "2c card."
+  },
+  "lbNoDobBody": "Để Child Life gợi ý đúng theo tuổi, nhắc Wonder Week và mốc phát triển.",
+  "@lbNoDobBody": {
+    "description": "2c card."
+  },
+  "lbNoDobAction": "Thêm ngày sinh",
+  "@lbNoDobAction": {
+    "description": "2c tinted button → Sửa hồ sơ bé."
+  },
+  "lbNoDobViewerTitle": "Chưa biết bé đang ở giai đoạn nào",
+  "@lbNoDobViewerTitle": {
+    "description": "2c for a member who may not see the date of birth."
+  },
+  "lbNoDobViewer": "Bạn chưa được xem ngày sinh của {name}, nên app chưa đánh dấu giai đoạn hiện tại. Bạn vẫn đọc được mọi giai đoạn.",
+  "@lbNoDobViewer": {
+    "description": "2c for caregivers / relatives without \"Thông tin bé\".",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "asLumiIntroEyebrow": "Mới",
+  "@asLumiIntroEyebrow": {
+    "description": "Lumi first-run tooltip eyebrow (669:64442)."
+  },
+  "asLumiIntroTitle": "Gặp Lumi, trợ lý của nhà bạn",
+  "@asLumiIntroTitle": {
+    "description": "Lumi first-run tooltip title (669:64442)."
+  },
+  "asLumiIntroBody": "Chạm để ghi cữ bú bằng một dòng, hỏi về ghi nhận của bé hoặc gửi ảnh hoá đơn. Lumi soạn nháp, bạn xem lại rồi lưu.",
+  "@asLumiIntroBody": {
+    "description": "Lumi first-run tooltip body (669:64442) with photo reading and Chi tiêu. VI drafted from the EN frame for owner review."
+  },
+  "asLumiIntroBodyText": "Chạm để ghi cữ bú bằng một dòng hoặc hỏi về ghi nhận của bé. Lumi soạn nháp, bạn xem lại rồi lưu.",
+  "@asLumiIntroBodyText": {
+    "description": "Lumi first-run tooltip body without photo reading or Chi tiêu (never promises a receipt photo). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asLumiIntroBodyViewer": "Chạm để hỏi Lumi về ghi nhận của bé.",
+  "@asLumiIntroBodyViewer": {
+    "description": "Lumi first-run tooltip body for a member who may only read (never promises logging). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "asLumiIntroLater": "Để sau",
+  "@asLumiIntroLater": {
+    "description": "Lumi first-run tooltip: dismiss for good (669:64442)."
+  },
+  "asLumiIntroTry": "Thử ngay",
+  "@asLumiIntroTry": {
+    "description": "Lumi first-run tooltip: open the chat (669:64442)."
+  },
+  "asUsageButton": "Mức dùng",
+  "@asUsageButton": {
+    "description": "Chat top-bar icon button (tooltip and screen-reader label) that opens CH19; replaces the \"Chi tiết\" link (612:7741). EN is an engineering draft for owner review."
+  },
+  "rhPlannedTonight": "Đã lên kế hoạch · tối nay",
+  "@rhPlannedTonight": {
+    "description": "Plan waiting state of an evening (or any-time) item, with a check, instead of \"Kể lại kết quả\" right away (D-076 #10). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhPlannedToday": "Đã lên kế hoạch · hôm nay",
+  "@rhPlannedToday": {
+    "description": "Plan waiting state of a daytime item (D-076 #10). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhPlannedOn": "Đã lên kế hoạch · {date}",
+  "@rhPlannedOn": {
+    "description": "Status pill of a plan from an earlier day (\"tối 08/10\"). VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhEveningDate": "tối {date}",
+  "@rhEveningDate": {
+    "description": "An evening of a day (\"tối 08/10\"), as AC02 590:6558 \"Đã thử · tối 08/10\".",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rhPlannedBy": "{who} lên kế hoạch · {when}",
+  "@rhPlannedBy": {
+    "description": "Who planned and for when (\"Ba lên kế hoạch · tối 08/10\"). VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "rhPlanAskMorning": "Sáng mai có thể kể lại kết quả.",
+  "@rhPlanAskMorning": {
+    "description": "Plan waiting note: the result is asked from 05:00 the next morning (CH17 rule). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhPlanAskEvening": "Từ 18:00 hôm nay có thể kể lại kết quả.",
+  "@rhPlanAskEvening": {
+    "description": "Plan waiting note for a daytime item: the result is asked from 18:00 (CH17 rule). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhKickerFollowUp": "CẢ NHÀ ĐÃ CÓ DỊP THỬ CHƯA?",
+  "@rhKickerFollowUp": {
+    "description": "H02 kicker once the chance to try has passed (never \"đã thử\": the family only said they would). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhCancelPlan": "Bỏ kế hoạch",
+  "@rhCancelPlan": {
+    "description": "Secondary action of the plan waiting state: takes back my own plan (deletes my `started` row). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhPlanCanceled": "Đã bỏ kế hoạch",
+  "@rhPlanCanceled": {
+    "description": "Toast after \"Bỏ kế hoạch\". VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhDidNotTry": "Chưa thử",
+  "@rhDidNotTry": {
+    "description": "Answer next to \"Kể lại kết quả\" once the chance has passed, always available (CH17 \"Chưa thử\"). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhDidNotTryToast": "Không sao, lúc khác thử cũng được.",
+  "@rhDidNotTryToast": {
+    "description": "Toast after \"Chưa thử\". VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhTriedHistoryTitle": "Các cách đã thử",
+  "@rhTriedHistoryTitle": {
+    "description": "Activity history title: plans and answers of the family (C01 / AC02). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhTriedHistoryBody": "Gợi ý cả nhà đã lên kế hoạch hoặc trả lời trong {days} ngày qua, ai làm và thấy thế nào.",
+  "@rhTriedHistoryBody": {
+    "description": "Activity history intro. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "rhTriedHistoryEmpty": "Chưa có cách nào được lên kế hoạch hay thử.",
+  "@rhTriedHistoryEmpty": {
+    "description": "Activity history without rows. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhSeeAllTried": "Xem tất cả",
+  "@rhSeeAllTried": {
+    "description": "NL01 / EN09 link to the activity history. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhWeekMakeVideo": "Tạo video tuần {n}",
+  "@rhWeekMakeVideo": {
+    "description": "EN09 primary button (561:3102 \"Tạo video tuần 4\"): N is the week of life the title shows.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rhWeekMakeVideoPlain": "Tạo video của tuần",
+  "@rhWeekMakeVideoPlain": {
+    "description": "EN09 primary button when the week of life is unknown. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "rhWeekVideoPhotos": "{count} ảnh trong tuần được chọn sẵn",
+  "@rhWeekVideoPhotos": {
+    "description": "EN09 caption under \"Tạo video tuần N\". VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hnStepOf": "Bước {step} trên {count}",
+  "@hnStepOf": {
+    "description": "EN01–EN03 step bars, for screen readers.",
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hnContinueCount": "Tiếp tục · {count} mục",
+  "@hnContinueCount": {
+    "description": "EN01 button with the number of interests picked (559:2288).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hnNotifTitle": "Để Child Life nhắc bạn đúng lúc",
+  "@hnNotifTitle": {
+    "description": "EN03 title (559:2458)."
+  },
+  "hnNotifBody": "Chỉ những gì bạn vừa chọn và nhắc việc bạn tự đặt. Không quảng cáo.",
+  "@hnNotifBody": {
+    "description": "EN03 subtitle; the Figma \"tối đa 2 gợi ý mỗi ngày\" is not promised until a cap exists."
+  },
+  "hnNotifExamples": "Bạn có thể nhận những loại sau",
+  "@hnNotifExamples": {
+    "description": "EN03 example card header."
+  },
+  "hnNotifExampleTag": "Ví dụ",
+  "@hnNotifExampleTag": {
+    "description": "EN03 example card tag."
+  },
+  "hnNotifVaccine": "Nhắc lịch tiêm",
+  "@hnNotifVaccine": {
+    "description": "EN03 example row title."
+  },
+  "hnNotifVaccineWhen": "Trước lịch tiêm",
+  "@hnNotifVaccineWhen": {
+    "description": "EN03 example row timing."
+  },
+  "hnNotifVaccineSample": "“Mai có lịch tiêm 6 trong 1 lúc 08:30.”",
+  "@hnNotifVaccineSample": {
+    "description": "EN03 example notification; no baby name (R-120)."
+  },
+  "hnNotifRhythm": "Nhịp lớn lên",
+  "@hnNotifRhythm": {
+    "description": "EN03 example row title."
+  },
+  "hnNotifRhythmWhen": "Trước 3 ngày",
+  "@hnNotifRhythmWhen": {
+    "description": "EN03 example row timing (NL02c stage reminder)."
+  },
+  "hnNotifRhythmSample": "“Theo lịch tham khảo, con sắp đến giai đoạn 1.”",
+  "@hnNotifRhythmSample": {
+    "description": "EN03 example notification; no baby name (R-120)."
+  },
+  "hnNotifWeek": "Tóm tắt tuần",
+  "@hnNotifWeek": {
+    "description": "EN03 example row title (EN09)."
+  },
+  "hnNotifWeekWhen": "Chủ nhật 20:30",
+  "@hnNotifWeekWhen": {
+    "description": "EN03 example row timing."
+  },
+  "hnNotifWeekSample": "“Một tuần của con đã sẵn sàng để xem lại.”",
+  "@hnNotifWeekSample": {
+    "description": "EN03 example notification; no baby name (R-120)."
+  },
+  "hnNotifAllow": "Bật thông báo",
+  "@hnNotifAllow": {
+    "description": "EN03 primary button; only this asks the system."
+  },
+  "hnNotifSettingsHint": "Tắt hoặc chỉnh lại trong Tôi › Thông báo",
+  "@hnNotifSettingsHint": {
+    "description": "EN03 caption under the buttons."
+  },
+  "hnNotifDenied": "Thông báo chưa bật. Bạn có thể bật trong Cài đặt của máy.",
+  "@hnNotifDenied": {
+    "description": "Toast when the system prompt was refused."
+  },
+  "hnInviteTitle": "Hôm nay theo cách của nhà bạn",
+  "@hnInviteTitle": {
+    "description": "Home invite card title (559:57870)."
+  },
+  "hnInviteBody": "Chọn điều bạn quan tâm · 30 giây",
+  "@hnInviteBody": {
+    "description": "Home invite card subtitle."
+  },
+  "hnInviteStart": "Bắt đầu",
+  "@hnInviteStart": {
+    "description": "Home invite card button; opens EN01."
+  },
+  "hnInviteClose": "Ẩn lời mời cá nhân hoá",
+  "@hnInviteClose": {
+    "description": "Home invite close button, for screen readers."
+  },
+  "hnInviteHidden": "Đã ẩn. Bạn vẫn chỉnh được trong Tôi › Cá nhân hoá.",
+  "@hnInviteHidden": {
+    "description": "Toast after closing the Home invite."
+  },
+  "hnForBabyBecause": "Theo điều bạn quan tâm",
+  "@hnForBabyBecause": {
+    "description": "Line under \"Dành cho bé hôm nay\" when the person picked interests."
+  },
+  "hnForBabyNoInterests": "Chưa chọn điều bạn quan tâm",
+  "@hnForBabyNoInterests": {
+    "description": "Line under \"Dành cho bé hôm nay\" without interests."
+  },
+  "hnForBabyChange": "Đổi",
+  "@hnForBabyChange": {
+    "description": "Link that opens EN01 (interests)."
+  },
+  "hnForBabyPick": "Chọn",
+  "@hnForBabyPick": {
+    "description": "Link that opens EN01 when nothing is picked yet."
+  },
+  "hnRhythmPill": "Nhịp lớn lên · Beta",
+  "@hnRhythmPill": {
+    "description": "Pill on the Home Nhịp lớn lên card."
+  },
+  "hnRhythmExpected": "Theo lịch tham khảo, dự kiến {range}.",
+  "@hnRhythmExpected": {
+    "description": "Home Nhịp lớn lên card body.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "hnRhythmSoothing": "Cả nhà ghi nhận con cần được dỗ nhiều hơn {days} ngày qua.",
+  "@hnRhythmSoothing": {
+    "description": "Home Nhịp lớn lên card: days with a 'needs more soothing' check-in lately.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hnCardPage": "Thẻ {page} trên {count}",
+  "@hnCardPage": {
+    "description": "Suggestion carousel dots, for screen readers.",
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hnCardOptions": "Tuỳ chọn cho thẻ này",
+  "@hnCardOptions": {
+    "description": "Suggestion card × button, for screen readers."
+  },
+  "mtTitle": "Mốc phát triển",
+  "@mtTitle": {
+    "description": "3a title; Tiện ích row; Home card kicker."
+  },
+  "mtSummary": "{name} đã có {count} mốc",
+  "@mtSummary": {
+    "description": "3a summary card.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mtSummaryNone": "{name} chưa có mốc nào",
+  "@mtSummaryNone": {
+    "description": "3a summary card with no record.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mtLead": "Ghi lại khi bạn thấy bé làm được. Mỗi bé có nhịp riêng.",
+  "@mtLead": {
+    "description": "3a summary card body."
+  },
+  "mtLeadViewer": "Các mốc tham khảo theo tuổi. Mỗi bé có nhịp riêng.",
+  "@mtLeadViewer": {
+    "description": "3a summary for caregivers and relatives (they never see the records)."
+  },
+  "mtFilterAll": "Tất cả",
+  "@mtFilterAll": {
+    "description": "3a filter chip."
+  },
+  "mtGroupMotor": "Vận động",
+  "@mtGroupMotor": {
+    "description": "Milestone group (B07)."
+  },
+  "mtGroupCommunication": "Giao tiếp",
+  "@mtGroupCommunication": {
+    "description": "Milestone group (B07)."
+  },
+  "mtGroupCognitive": "Nhận thức",
+  "@mtGroupCognitive": {
+    "description": "Milestone group (B07)."
+  },
+  "mtGroupSocial": "Cảm xúc – xã hội",
+  "@mtGroupSocial": {
+    "description": "Milestone group (B07)."
+  },
+  "mtOwn": "Mốc riêng",
+  "@mtOwn": {
+    "description": "Own milestones: 3a chip and row subline, 3g title."
+  },
+  "mtSeen": "Đã quan sát",
+  "@mtSeen": {
+    "description": "3a section; 3c sheet title; 3d chip."
+  },
+  "mtFollowingSection": "Đang theo dõi",
+  "@mtFollowingSection": {
+    "description": "3a section of milestones saved to follow."
+  },
+  "mtAround": "Gợi ý quanh tuổi của bé",
+  "@mtAround": {
+    "description": "3a section."
+  },
+  "mtReferenceSection": "Mốc tham khảo",
+  "@mtReferenceSection": {
+    "description": "3a section when the baby’s age is not known to this member."
+  },
+  "mtOthers": "Các mốc khác",
+  "@mtOthers": {
+    "description": "3a section shown with \"Xem tất cả\"."
+  },
+  "mtShowAll": "Xem tất cả mốc ({count})",
+  "@mtShowAll": {
+    "description": "3a toggle.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mtShowLess": "Thu gọn",
+  "@mtShowLess": {
+    "description": "3a toggle."
+  },
+  "mtRangeMonths": "tham khảo {from}–{to} tháng",
+  "@mtRangeMonths": {
+    "description": "Row subline age range.",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "mtRangeWeeks": "tham khảo {from}–{to} tuần",
+  "@mtRangeWeeks": {
+    "description": "Row subline age range.",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "mtRangeChipMonths": "Tham khảo {from}–{to} tháng",
+  "@mtRangeChipMonths": {
+    "description": "3b age chip.",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "mtRangeChipWeeks": "Tham khảo {from}–{to} tuần",
+  "@mtRangeChipWeeks": {
+    "description": "3b age chip.",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "mtUpcoming": "Sắp tới",
+  "@mtUpcoming": {
+    "description": "3a tag: the age window starts soon."
+  },
+  "mtNotRecorded": "Chưa ghi",
+  "@mtNotRecorded": {
+    "description": "3a tag: not recorded (never \"late\")."
+  },
+  "mtFollowingTag": "Đang theo dõi",
+  "@mtFollowingTag": {
+    "description": "3a tag on a followed milestone."
+  },
+  "mtCreateOwn": "Tạo mốc riêng",
+  "@mtCreateOwn": {
+    "description": "3a dashed button."
+  },
+  "mtIllustrative": "Nội dung minh hoạ · chờ chuyên môn duyệt",
+  "@mtIllustrative": {
+    "description": "Footer while the reference content has no qualified review (D-073 #2)."
+  },
+  "mtReviewed": "Nội dung được {reviewer} rà soát",
+  "@mtReviewed": {
+    "description": "Footer once reviewed.",
+    "placeholders": {
+      "reviewer": {
+        "type": "String"
+      }
+    }
+  },
+  "mtEmptyTitle": "Chưa có mốc tham khảo",
+  "@mtEmptyTitle": {
+    "description": "3a when nothing is published."
+  },
+  "mtEmptyBody": "Nội dung đang được chuẩn bị. Bạn vẫn có thể tạo mốc riêng của bé.",
+  "@mtEmptyBody": {
+    "description": "3a when nothing is published (parents)."
+  },
+  "mtEmptyBodyViewer": "Nội dung đang được chuẩn bị.",
+  "@mtEmptyBodyViewer": {
+    "description": "3a when nothing is published (others)."
+  },
+  "mtNoDob": "Thêm ngày sinh của bé để xem gợi ý theo tuổi.",
+  "@mtNoDob": {
+    "description": "3a for a parent when the date of birth is missing."
+  },
+  "mtEntrySub": "Ghi lại những điều bé làm được",
+  "@mtEntrySub": {
+    "description": "Tiện ích row subline."
+  },
+  "mtEntryCount": "{count} mốc đã ghi",
+  "@mtEntryCount": {
+    "description": "Tiện ích row subline with records.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mtHowTo": "Cách nhận biết",
+  "@mtHowTo": {
+    "description": "3b card title."
+  },
+  "mtReassure": "Khoảng tuổi chỉ để tham khảo. Mỗi bé có nhịp riêng — nếu bạn băn khoăn, hãy hỏi bác sĩ của bé.",
+  "@mtReassure": {
+    "description": "3b reassurance banner."
+  },
+  "mtTalkToDoctor": "Khi nào nên hỏi bác sĩ",
+  "@mtTalkToDoctor": {
+    "description": "3b callout title (from the portal text)."
+  },
+  "mtHealthLink": "Xem hướng dẫn sức khoẻ",
+  "@mtHealthLink": {
+    "description": "3b link to the health guidance (HL01)."
+  },
+  "mtMarkSeen": "Đánh dấu đã quan sát",
+  "@mtMarkSeen": {
+    "description": "3b primary button."
+  },
+  "mtFollow": "Lưu để theo dõi",
+  "@mtFollow": {
+    "description": "3b plain button."
+  },
+  "mtUnfollow": "Bỏ theo dõi",
+  "@mtUnfollow": {
+    "description": "3b plain button on a followed milestone."
+  },
+  "mtFollowed": "Đã lưu để theo dõi",
+  "@mtFollowed": {
+    "description": "Toast."
+  },
+  "mtUnfollowed": "Đã bỏ theo dõi",
+  "@mtUnfollowed": {
+    "description": "Toast."
+  },
+  "mtSources": "Nguồn tham khảo",
+  "@mtSources": {
+    "description": "3b sources heading."
+  },
+  "mtParentsRecord": "Ba mẹ của bé ghi lại các mốc trong mục này.",
+  "@mtParentsRecord": {
+    "description": "3b / 3a note for caregivers and relatives."
+  },
+  "mtNotFound": "Không tìm thấy mốc này.",
+  "@mtNotFound": {
+    "description": "Unknown id."
+  },
+  "mtDateDid": "Ngày bé làm được",
+  "@mtDateDid": {
+    "description": "3c date field."
+  },
+  "mtNote": "Ghi chú",
+  "@mtNote": {
+    "description": "3c / 3g note field."
+  },
+  "mtNoteHint": "Bé làm được lúc nào, ở đâu, với ai…",
+  "@mtNoteHint": {
+    "description": "Note placeholder."
+  },
+  "mtPhotosOptional": "Ảnh (không bắt buộc)",
+  "@mtPhotosOptional": {
+    "description": "3c label."
+  },
+  "mtAddPhotos": "Thêm ảnh",
+  "@mtAddPhotos": {
+    "description": "Camera slot a11y."
+  },
+  "mtRemovePhoto": "Bỏ ảnh này",
+  "@mtRemovePhoto": {
+    "description": "Thumbnail a11y."
+  },
+  "mtSave": "Lưu mốc",
+  "@mtSave": {
+    "description": "3c / 3g primary button."
+  },
+  "mtPickDate": "Chọn ngày",
+  "@mtPickDate": {
+    "description": "Date sheet title."
+  },
+  "mtSaved": "Đã lưu mốc",
+  "@mtSaved": {
+    "description": "Toast after saving."
+  },
+  "mtSaveFailed": "Chưa lưu được. Thử lại nhé.",
+  "@mtSaveFailed": {
+    "description": "Toast."
+  },
+  "mtMeta": "{date} · lúc {name} {age} · {who} ghi",
+  "@mtMeta": {
+    "description": "3d meta line.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "mtMetaNoAge": "{date} · {who} ghi",
+  "@mtMetaNoAge": {
+    "description": "3d meta line without the age.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "mtKeepTitle": "Giữ khoảnh khắc này trong Kỷ niệm?",
+  "@mtKeepTitle": {
+    "description": "3d card."
+  },
+  "mtKeepBody": "Tạo kỷ niệm với ảnh và ghi chú này, gắn mốc “{name}”.",
+  "@mtKeepBody": {
+    "description": "3d card body.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mtKeepBodyNote": "Tạo kỷ niệm gắn mốc “{name}” — thêm ảnh nếu bạn muốn.",
+  "@mtKeepBodyNote": {
+    "description": "3d card body without photos.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mtCreateMemory": "Tạo kỷ niệm",
+  "@mtCreateMemory": {
+    "description": "3d button."
+  },
+  "mtCreateCard": "Tạo thẻ mốc",
+  "@mtCreateCard": {
+    "description": "3d / 3f link to Thiệp cột mốc."
+  },
+  "mtInMemories": "Đã lưu trong Kỷ niệm",
+  "@mtInMemories": {
+    "description": "3f row title."
+  },
+  "mtSeenByFamily": "Cả gia đình xem được · {count} ảnh",
+  "@mtSeenByFamily": {
+    "description": "3f row subline.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mtSeenByParents": "Chỉ ba mẹ xem được · {count} ảnh",
+  "@mtSeenByParents": {
+    "description": "3f row subline.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mtSeenByFamilyNote": "Cả gia đình xem được · ghi chú",
+  "@mtSeenByFamilyNote": {
+    "description": "3f row subline (no photo)."
+  },
+  "mtSeenByParentsNote": "Chỉ ba mẹ xem được · ghi chú",
+  "@mtSeenByParentsNote": {
+    "description": "3f row subline (no photo)."
+  },
+  "mtUploading": "Đang tải lên Kỷ niệm…",
+  "@mtUploading": {
+    "description": "3f row while the memory is on its way."
+  },
+  "mtMore": "Thêm thao tác",
+  "@mtMore": {
+    "description": "3d overflow a11y."
+  },
+  "mtEdit": "Sửa ghi nhận",
+  "@mtEdit": {
+    "description": "3d action."
+  },
+  "mtDelete": "Xoá ghi nhận",
+  "@mtDelete": {
+    "description": "3d action."
+  },
+  "mtDeleteTitle": "Xoá ghi nhận mốc này?",
+  "@mtDeleteTitle": {
+    "description": "Confirm sheet."
+  },
+  "mtDeleteBody": "Ngày và ghi chú sẽ bị xoá. Kỷ niệm đã tạo vẫn ở trong Kỷ niệm.",
+  "@mtDeleteBody": {
+    "description": "Confirm sheet body."
+  },
+  "mtDeleted": "Đã xoá ghi nhận",
+  "@mtDeleted": {
+    "description": "Toast."
+  },
+  "mtNewMemory": "Kỷ niệm mới",
+  "@mtNewMemory": {
+    "description": "3e sheet title."
+  },
+  "mtCaption": "Chú thích",
+  "@mtCaption": {
+    "description": "3e field."
+  },
+  "mtCaptionHint": "Vài dòng về khoảnh khắc này",
+  "@mtCaptionHint": {
+    "description": "3e placeholder."
+  },
+  "mtTag": "Mốc · {name}",
+  "@mtTag": {
+    "description": "3e milestone chip.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mtWhoSees": "Ai được xem",
+  "@mtWhoSees": {
+    "description": "3e label."
+  },
+  "mtSaveMemory": "Lưu kỷ niệm",
+  "@mtSaveMemory": {
+    "description": "3e button."
+  },
+  "mtMemoryCreated": "Đã tạo kỷ niệm",
+  "@mtMemoryCreated": {
+    "description": "3f toast."
+  },
+  "mtCaptionRequired": "Thêm chú thích hoặc ảnh để lưu kỷ niệm.",
+  "@mtCaptionRequired": {
+    "description": "3e validation."
+  },
+  "mtOwnLead": "Những lần đầu tiên chỉ nhà mình có — ghi lại theo cách của bạn.",
+  "@mtOwnLead": {
+    "description": "3g lead."
+  },
+  "mtName": "Tên mốc",
+  "@mtName": {
+    "description": "3g field."
+  },
+  "mtNameHint": "Ví dụ: Lần đầu về quê",
+  "@mtNameHint": {
+    "description": "3g placeholder."
+  },
+  "mtCount": "{count}/{max} ký tự",
+  "@mtCount": {
+    "description": "3g counter.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "mtDate": "Ngày",
+  "@mtDate": {
+    "description": "3g date field."
+  },
+  "mtAlsoMemory": "Tạo kỷ niệm cùng lúc",
+  "@mtAlsoMemory": {
+    "description": "3g toggle."
+  },
+  "mtAlsoMemorySub": "Lưu ảnh và ghi chú vào Kỷ niệm",
+  "@mtAlsoMemorySub": {
+    "description": "3g toggle subline."
+  },
+  "mtEditTitle": "Sửa mốc",
+  "@mtEditTitle": {
+    "description": "3g in edit mode."
+  },
+  "lbTodayStageKicker": "Giai đoạn của bé · {range}",
+  "@lbTodayStageKicker": {
+    "description": "Today card kicker for the current stage.",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "lbTodayStageAction": "Xem giai đoạn",
+  "@lbTodayStageAction": {
+    "description": "Today card action → 2b."
+  },
+  "lbTodayRead": "Đọc bài",
+  "@lbTodayRead": {
+    "description": "Today article card action → 4d."
+  },
+  "ntBell": "Thông báo",
+  "@ntBell": {
+    "description": "Bell button in the Hôm nay header (a11y label, 559:57622)."
+  },
+  "ntBellUnread": "Thông báo, {count} chưa đọc",
+  "@ntBellUnread": {
+    "description": "Bell a11y label with unread notifications.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ntInboxTitle": "Thông báo",
+  "@ntInboxTitle": {
+    "description": "EN06 large title."
+  },
+  "ntMarkAllRead": "Đánh dấu đã đọc",
+  "@ntMarkAllRead": {
+    "description": "EN06 top-right link."
+  },
+  "ntOpenSettings": "Cài đặt thông báo",
+  "@ntOpenSettings": {
+    "description": "EN06 top bar: opens EN07 (a11y label of the sliders button)."
+  },
+  "ntFilterAll": "Tất cả",
+  "@ntFilterAll": {
+    "description": "EN06 chip."
+  },
+  "ntFilterReminders": "Nhắc việc",
+  "@ntFilterReminders": {
+    "description": "EN06 chip."
+  },
+  "ntFilterBaby": "Cho bé",
+  "@ntFilterBaby": {
+    "description": "EN06 chip."
+  },
+  "ntFilterFamily": "Gia đình",
+  "@ntFilterFamily": {
+    "description": "EN06 chip."
+  },
+  "ntSectionToday": "HÔM NAY",
+  "@ntSectionToday": {
+    "description": "EN06 section header."
+  },
+  "ntSectionWeek": "TUẦN NÀY",
+  "@ntSectionWeek": {
+    "description": "EN06 section header: the last 7 days."
+  },
+  "ntSectionEarlier": "TRƯỚC ĐÓ",
+  "@ntSectionEarlier": {
+    "description": "EN06 section header: older than 7 days (not drawn)."
+  },
+  "ntUnread": "Chưa đọc",
+  "@ntUnread": {
+    "description": "EN06 unread dot (a11y)."
+  },
+  "ntEmptyTitle": "Chưa có thông báo nào",
+  "@ntEmptyTitle": {
+    "description": "EN06 empty state title (not drawn)."
+  },
+  "ntEmptyBody": "Nhắc việc, lịch tiêm và tin của gia đình sẽ hiện ở đây.",
+  "@ntEmptyBody": {
+    "description": "EN06 empty state body."
+  },
+  "ntEmptyFiltered": "Chưa có thông báo nào trong mục này.",
+  "@ntEmptyFiltered": {
+    "description": "EN06 empty state for a chip."
+  },
+  "ntLoadFailed": "Chưa tải được thông báo. Thử lại sau nhé.",
+  "@ntLoadFailed": {
+    "description": "EN06 load error."
+  },
+  "ntKept": "Thông báo được giữ 90 ngày. Vuốt sang trái để ẩn.",
+  "@ntKept": {
+    "description": "EN06 footnote."
+  },
+  "ntHide": "Ẩn",
+  "@ntHide": {
+    "description": "EN06 swipe action: archive one row."
+  },
+  "ntGone": "Mục này không còn mở được.",
+  "@ntGone": {
+    "description": "Toast: the notification points to a baby you no longer follow."
+  },
+  "ntMaster": "Thông báo của Child Life",
+  "@ntMaster": {
+    "description": "EN07 master card title."
+  },
+  "ntMasterOn": "Đang bật trong cài đặt hệ thống",
+  "@ntMasterOn": {
+    "description": "EN07 master card: OS permission granted."
+  },
+  "ntMasterOff": "Đang tắt trong cài đặt hệ thống",
+  "@ntMasterOff": {
+    "description": "EN07 master card: OS permission not granted."
+  },
+  "ntGroupReminders": "NHẮC VIỆC BẠN ĐẶT",
+  "@ntGroupReminders": {
+    "description": "EN07 group header."
+  },
+  "ntGroupRemindersHint": "Luôn đến đúng giờ, kể cả trong giờ yên lặng",
+  "@ntGroupRemindersHint": {
+    "description": "EN07 group helper (reminders ring in quiet hours)."
+  },
+  "ntCare": "Bú, ngủ, thay tã",
+  "@ntCare": {
+    "description": "EN07 row: rule and one-off reminders."
+  },
+  "ntCareHint": "Nhắc theo quy tắc và nhắc một lần",
+  "@ntCareHint": {
+    "description": "EN07 row helper."
+  },
+  "ntVaccines": "Tiêm chủng",
+  "@ntVaccines": {
+    "description": "EN07 row."
+  },
+  "ntVaccinesHint": "Trước 3 ngày và tối hôm trước lúc 19:00",
+  "@ntVaccinesHint": {
+    "description": "EN07 row helper: when vaccine reminders ring (P-133)."
+  },
+  "ntSpending": "Chi tiêu",
+  "@ntSpending": {
+    "description": "EN07 row (engineering addition: Chi tiêu pushes)."
+  },
+  "ntSpendingHint": "Khoản định kỳ, 80% ngân sách, kết quả nhập",
+  "@ntSpendingHint": {
+    "description": "EN07 row helper."
+  },
+  "ntGroupBaby": "GỢI Ý CHO BÉ",
+  "@ntGroupBaby": {
+    "description": "EN07 group header."
+  },
+  "ntGroupBabyHint": "Gom lại, tối đa 2 thông báo mỗi ngày",
+  "@ntGroupBabyHint": {
+    "description": "EN07 group helper."
+  },
+  "ntRhythm": "Nhịp lớn lên",
+  "@ntRhythm": {
+    "description": "EN07 row."
+  },
+  "ntRhythmHint": "Trước mỗi giai đoạn 3 ngày · check-in tối đa 1/ngày",
+  "@ntRhythmHint": {
+    "description": "EN07 row helper."
+  },
+  "ntStages": "Giai đoạn của bé",
+  "@ntStages": {
+    "description": "EN07 row (\"Thẻ theo tuổi\", renamed by D-076 #5)."
+  },
+  "ntStagesHint": "Khi bé sang tuần / tháng mới",
+  "@ntStagesHint": {
+    "description": "EN07 row helper."
+  },
+  "ntMilestones": "Mốc phát triển",
+  "@ntMilestones": {
+    "description": "EN07 row."
+  },
+  "ntMilestonesHint": "Khi đến khoảng tuổi thường gặp",
+  "@ntMilestonesHint": {
+    "description": "EN07 row helper."
+  },
+  "ntArticles": "Bài viết gợi ý",
+  "@ntArticles": {
+    "description": "EN07 row."
+  },
+  "ntArticlesHint": "Tối đa 1 bài mỗi tuần",
+  "@ntArticlesHint": {
+    "description": "EN07 row helper."
+  },
+  "ntWeekly": "Tóm tắt tuần",
+  "@ntWeekly": {
+    "description": "EN07 row."
+  },
+  "ntWeeklyHint": "Chủ nhật 20:30",
+  "@ntWeeklyHint": {
+    "description": "EN07 row helper."
+  },
+  "ntGroupFamily": "KỶ NIỆM & GIA ĐÌNH",
+  "@ntGroupFamily": {
+    "description": "EN07 group header."
+  },
+  "ntPhotos": "Ảnh mới có thể có bé",
+  "@ntPhotos": {
+    "description": "EN07 row."
+  },
+  "ntPhotosHint": "Tự lưu kỷ niệm · tối đa 1 lần/ngày",
+  "@ntPhotosHint": {
+    "description": "EN07 row helper."
+  },
+  "ntKeepsakes": "Gợi ý tạo video, thiệp",
+  "@ntKeepsakes": {
+    "description": "EN07 row."
+  },
+  "ntKeepsakesHint": "Vào ngày tròn tháng, 100 ngày",
+  "@ntKeepsakesHint": {
+    "description": "EN07 row helper."
+  },
+  "ntFamilyActivity": "Hoạt động của gia đình",
+  "@ntFamilyActivity": {
+    "description": "EN07 row."
+  },
+  "ntFamilyActivityHint": "Thích, xem kỷ niệm",
+  "@ntFamilyActivityHint": {
+    "description": "EN07 row helper."
+  },
+  "ntGroupTiming": "THỜI GIAN",
+  "@ntGroupTiming": {
+    "description": "EN07 group header."
+  },
+  "ntDigest": "Giờ nhận gợi ý",
+  "@ntDigest": {
+    "description": "EN07 row: opens EN02."
+  },
+  "ntDigestDaily": "{time} mỗi ngày",
+  "@ntDigestDaily": {
+    "description": "EN07 row value.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ntQuiet": "Giờ yên lặng",
+  "@ntQuiet": {
+    "description": "EN07 row: opens EN02."
+  },
+  "ntQuietRange": "{from} – {to}",
+  "@ntQuietRange": {
+    "description": "EN07 quiet hours value.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "ntSaveFailed": "Chưa lưu được. Thử lại nhé.",
+  "@ntSaveFailed": {
+    "description": "EN07 toast when a switch fails to save."
+  },
+  "rhPlannedPill": "Đã lên kế hoạch",
+  "@rhPlannedPill": {
+    "description": "Pill of a plan still waiting for its chance (NL01, EN09, activity history). VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
+  "mtTodayKicker": "Mốc có thể thấy · {range}",
+  "@mtTodayKicker": {
+    "description": "Home small card kicker ({range} = \"tham khảo 1–3 tháng\").",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mtTodayAction": "Ghi nhận khi bé làm được",
+  "@mtTodayAction": {
+    "description": "Home small card action (Cùng nuôi)."
+  },
+  "mtTodayActionViewer": "Xem cách nhận biết",
+  "@mtTodayActionViewer": {
+    "description": "Home small card action (others)."
+  },
+  "mtEntrySubViewer": "Mốc tham khảo theo tuổi của bé",
+  "@mtEntrySubViewer": {
+    "description": "Tiện ích row subline for caregivers and relatives (they read the guide only)."
   }
 }

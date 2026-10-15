@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
+import '../../app/navigation.dart' show SafePushContext;
 import '../../app/route_guard.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
@@ -376,7 +377,8 @@ class BabyProfileViewScreen extends ConsumerWidget {
                     subtitle: l10n.bpGrowthHint,
                     onTap: () {
                       ref.read(selectedBabyIdProvider.notifier).select(babyId);
-                      context.push('${Routes.history}?filter=growth');
+                      // D-076 nav: 13l is above the tabs; Lịch sử is a Chăm sóc page.
+                      context.pushSafe('${Routes.history}?filter=growth');
                     },
                   ),
                 if (parent && storage != null)

@@ -5,6 +5,8 @@ import 'package:child_life/app/environment.dart';
 import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/design/cl_theme.dart';
+import 'package:child_life/features/keepsakes/keepsake_access.dart';
+import 'package:child_life/features/memories/memory_repository.dart';
 import 'package:child_life/features/rhythm/rhythm_episodes.dart'
     show episodeIdFor;
 import 'package:child_life/features/rhythm/rhythm_models.dart';
@@ -18,13 +20,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/family_fixtures.dart';
+import '../helpers/memory_fixtures.dart' show mediaItem;
 import '../helpers/reminder_fixtures.dart';
 import '../helpers/rhythm_fixtures.dart';
 import '../helpers/rhythm_week_fixtures.dart';
 
 /// EN09 "Tóm tắt tuần" (561:3102) in Light / Night care × vi / en: the free week (a completed
 /// week seen on Thursday 8/10, 5/7 valid days, the gate) and the group A week (Sunday 11/10, the
-/// week still running, the look-back). Synthetic data; the mock's figures are not copied.
+/// week still running, the look-back), and "Tạo video tuần N" (D-076 #3). Synthetic data; the
+/// mock's figures are not copied.
 /// Regenerate on macOS:
 /// flutter test --tags golden --update-goldens test/golden/rhythm_week_golden_test.dart
 
@@ -35,6 +39,26 @@ final _cases = <String, _Case>{
     height: 1280,
     overrides: () =>
         weekOverrides(repo: FakeRhythmRepository(), reminders: mockReminders()),
+  ),
+  // D-076 #3: "Tạo video tuần N" with the week's photos (Video kỷ niệm on for the family).
+  'week_video': (
+    height: 1400,
+    overrides: () => [
+      ...weekOverrides(
+        repo: FakeRhythmRepository(),
+        reminders: mockReminders(),
+      ),
+      keepsakeAccessProvider.overrideWith(
+        (ref, id) async => (cards: true, videos: true),
+      ),
+      mediaProvider.overrideWith(
+        (ref, key) => Stream.value([
+          for (final (i, day) in const [28, 30].indexed)
+            mediaItem('mem_w$i', DateTime.utc(2026, 9, day, 3)),
+          mediaItem('mem_w2', DateTime.utc(2026, 10, 3, 3)),
+        ]),
+      ),
+    ],
   ),
   'week_advanced': (
     height: 1960,

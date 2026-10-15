@@ -192,7 +192,8 @@ void main() {
     );
     expect(find.byType(KeepsakeCardView), findsOneWidget);
     expect(find.text('Tròn trịa'), findsOneWidget);
-    expect(find.text('Miễn phí'), findsOneWidget);
+    // D-076 #9: no "Miễn phí" badge on a basic template.
+    expect(find.text('Miễn phí'), findsNothing);
     expect(find.text('Ảnh cần'), findsOneWidget);
     expect(find.text('Dọc 4:5 · Vuông · Story 9:16'), findsOneWidget);
     await tester.tap(find.text('Dùng mẫu này'));

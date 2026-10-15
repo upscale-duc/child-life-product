@@ -7,7 +7,6 @@ import 'package:child_life/features/me/baby_profile_screens.dart';
 import 'package:child_life/features/me/help_screen.dart';
 import 'package:child_life/features/me/me_models.dart';
 import 'package:child_life/features/me/me_screen.dart';
-import 'package:child_life/features/me/notifications_screen.dart';
 import 'package:child_life/features/me/storage_screens.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/family/family_models.dart';
@@ -262,18 +261,7 @@ void main() {
       expect(find.text('Cần chuyển chủ hồ sơ của Teddy trước'), findsOneWidget);
     });
 
-    testWidgets('a notification kind turns off', (tester) async {
-      final repo = FakeMeRepository();
-      await pumpRouted(
-        tester,
-        const NotificationsScreen(),
-        overrides: _overrides(repo: repo),
-      );
-      await tester.tap(find.byType(ClToggle).first);
-      await tester.pumpAndSettle();
-      expect(repo.calls.single.$1, 'savePrefs');
-      expect(repo.calls.single.$2['memories'], isFalse);
-    });
+    // "Thông báo" is EN07 now (D-076 #2): test/features/notifications_test.dart.
 
     testWidgets('Hồ sơ các bé lists an invite mailed to me, with a red dot', (
       tester,

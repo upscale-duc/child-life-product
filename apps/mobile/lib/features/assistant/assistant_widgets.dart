@@ -14,6 +14,9 @@ import 'assistant_labels.dart';
 import 'assistant_models.dart';
 import 'assistant_rules.dart';
 
+export 'lumi_button.dart'
+    show AsFloatingButton, AsFloatingButtonState, LumiMascot;
+
 /// The chat components of Figma page 568:18 (Chat/Thẻ nháp 611:7695, Chat/Mức dùng 611:7726,
 /// Chat/Ô nhập 611:7763, Chat/Tin nhắn, Chat/Gợi ý nhanh, Chat/Duyệt hàng loạt, Chat/Đầu trang,
 /// Chat/Nút trợ lý). Every colour is a token, so Light and Night care both work (the design has
@@ -33,113 +36,49 @@ TextStyle _semi(BuildContext context, double size, Color color) =>
       color: color,
     );
 
-// ---------- Chat/Mức dùng ----------
+// ---------- Chat/Mức dùng (top-bar icon) ----------
 
-/// The ring of the usage pill: the part left, drawn from the server's numbers.
-class _Ring extends StatelessWidget {
-  const _Ring({required this.fraction, required this.color});
-  final double fraction;
+/// The usage glyph of the chat top bar (D-076 #12: the credits pill 612:7737 is gone, "Chi tiết"
+/// 612:7741 becomes this icon): a meter in the line-icon style, no numbers.
+class _GaugeGlyph extends StatelessWidget {
+  const _GaugeGlyph({required this.color});
   final Color color;
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: 16,
-    height: 16,
-    child: CustomPaint(
-      painter: _RingPainter(
-        fraction.clamp(0, 1),
-        color,
-        context.cl.colors.separator,
-      ),
-    ),
+    width: 20,
+    height: 20,
+    child: CustomPaint(painter: _GaugePainter(color)),
   );
 }
 
-class _RingPainter extends CustomPainter {
-  _RingPainter(this.fraction, this.color, this.track);
-  final double fraction;
+class _GaugePainter extends CustomPainter {
+  _GaugePainter(this.color);
   final Color color;
-  final Color track;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = Offset.zero & size;
+    final s = size.width / 24;
     final stroke = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.2
-      ..strokeCap = StrokeCap.round;
+      ..strokeWidth = 1.8 * s
+      ..strokeCap = StrokeCap.round
+      ..color = color;
+    final c = Offset(12 * s, 14 * s);
+    // A 240° dial open at the bottom, and a needle to the upper right.
     canvas.drawArc(
-      rect.deflate(1.5),
-      0,
-      math.pi * 2,
+      Rect.fromCircle(center: c, radius: 8.5 * s),
+      math.pi * 5 / 6,
+      math.pi * 4 / 3,
       false,
-      stroke..color = track,
+      stroke,
     );
-    if (fraction > 0) {
-      canvas.drawArc(
-        rect.deflate(1.5),
-        -math.pi / 2,
-        math.pi * 2 * fraction,
-        false,
-        stroke..color = color,
-      );
-    }
+    canvas.drawLine(c, c + Offset(4.2 * s, -4.2 * s), stroke);
+    canvas.drawCircle(c, 1.4 * s, Paint()..color = color);
   }
 
   @override
-  bool shouldRepaint(_RingPainter old) =>
-      old.fraction != fraction || old.color != color || old.track != track;
-}
-
-/// Chat/Mức dùng: `Gói` × `Mức` from the snapshot; text from the numbers, never the default.
-class AsUsagePill extends StatelessWidget {
-  const AsUsagePill({required this.view, required this.zone, super.key});
-  final UsageView view;
-  final String zone;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final c = context.cl.colors;
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    final (fill, ink) = switch (view.level) {
-      UsageLevel.ok when view.premium => (c.mintSoft, c.mintText),
-      UsageLevel.ok => (c.surface2, c.ink),
-      UsageLevel.near => (c.sunshineSoft, c.ink),
-      UsageLevel.out => (c.errorSoft, c.error),
-    };
-    return Semantics(
-      label: l10n.asUsageA11y(
-        view.remaining,
-        view.limit,
-        resetDate(locale, view.usage, zone),
-      ),
-      child: ExcludeSemantics(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(10, 6, 12, 6),
-          decoration: BoxDecoration(
-            color: fill,
-            borderRadius: BorderRadius.circular(ClRadius.pill),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _Ring(fraction: view.fraction, color: ink),
-              const SizedBox(width: ClSpace.s2),
-              Flexible(
-                child: Text(
-                  usagePillText(l10n, locale, view, zone),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: _semi(context, 12, ink),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  bool shouldRepaint(_GaugePainter old) => old.color != color;
 }
 
 // ---------- Chat/Đầu trang ----------
@@ -149,16 +88,24 @@ class AsRoundButton extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onPressed,
+    this.glyph,
+    this.tooltip = false,
     super.key,
   });
   final ClIcons icon;
   final String label;
   final VoidCallback? onPressed;
 
+  /// Drawn instead of [icon] (the usage meter has no SVG of its own).
+  final Widget? glyph;
+
+  /// Long-press shows [label] too (a glyph not every person reads at once).
+  final bool tooltip;
+
   @override
   Widget build(BuildContext context) {
     final c = context.cl.colors;
-    return ClPressable(
+    final button = ClPressable(
       onPressed: onPressed,
       semanticLabel: label,
       child: Container(
@@ -166,13 +113,18 @@ class AsRoundButton extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(color: c.surface, shape: BoxShape.circle),
         alignment: Alignment.center,
-        child: ClIcon(icon, size: 20, color: c.ink),
+        child: glyph ?? ClIcon(icon, size: 20, color: c.ink),
       ),
     );
+    return tooltip
+        ? Tooltip(message: label, excludeFromSemantics: true, child: button)
+        : button;
   }
 }
 
-/// Chat/Đầu trang: back · scope chip ("Teddy · 3 tuần" / "Gia đình") · Lịch sử · Mới.
+/// Chat/Đầu trang (612:7715): back · scope chip ("Teddy · 3 tuần" / "Gia đình") · Mức dùng ·
+/// Lịch sử · Mới. Mức dùng replaces the credits pill and its "Chi tiết" link (D-076 #12): the
+/// numbers stay in CH19 and in the quote before a task.
 class AsChatHeader extends StatelessWidget {
   const AsChatHeader({
     required this.scopeLabel,
@@ -181,6 +133,7 @@ class AsChatHeader extends StatelessWidget {
     required this.onScope,
     required this.onHistory,
     required this.onNew,
+    this.onUsage,
     super.key,
   });
 
@@ -190,6 +143,9 @@ class AsChatHeader extends StatelessWidget {
   final VoidCallback? onScope;
   final VoidCallback onHistory;
   final VoidCallback onNew;
+
+  /// Opens CH19; no button without it.
+  final VoidCallback? onUsage;
 
   @override
   Widget build(BuildContext context) {
@@ -257,6 +213,17 @@ class AsChatHeader extends StatelessWidget {
             ),
           ),
         ),
+        if (onUsage != null) ...[
+          const SizedBox(width: ClSpace.s2),
+          AsRoundButton(
+            key: const ValueKey('as.usage'),
+            icon: ClIcons.sliders,
+            glyph: _GaugeGlyph(color: cl.colors.ink),
+            label: l10n.asUsageButton,
+            tooltip: true,
+            onPressed: onUsage,
+          ),
+        ],
         const SizedBox(width: ClSpace.s2),
         AsRoundButton(
           icon: ClIcons.clock,
@@ -1549,50 +1516,7 @@ class _Circle extends StatelessWidget {
   );
 }
 
-// ---------- Chat/Nút trợ lý ----------
-
-/// The floating assistant button (628:9074), from tokens (the Figma gradient has no Night twin).
-class AsFloatingButton extends StatelessWidget {
-  const AsFloatingButton({required this.onPressed, super.key});
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
-    return ClPressable(
-      onPressed: onPressed,
-      semanticLabel: l10n.asFabLabel,
-      child: Container(
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [cl.colors.mint, cl.colors.mintDeep],
-          ),
-          border: Border.all(
-            color: cl.colors.surface.withValues(alpha: 0.45),
-            width: 1.5,
-          ),
-          boxShadow: cl.isNightCare
-              ? null
-              : [
-                  BoxShadow(
-                    color: cl.colors.mintDeep.withValues(alpha: 0.35),
-                    blurRadius: 16,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-        ),
-        alignment: Alignment.center,
-        child: ClIcon(ClIcons.spark, size: 26, color: cl.colors.onMintDeep),
-      ),
-    );
-  }
-}
+// ---------- Chat/Nút trợ lý: Lumi (lumi_button.dart) ----------
 
 /// The spark tile of the assistant (CH01 card, CH02 greeting).
 class AsSparkTile extends StatelessWidget {

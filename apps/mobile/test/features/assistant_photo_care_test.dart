@@ -969,8 +969,7 @@ void main() {
         expect(_text('Khó vào giấc'), findsOneWidget);
         expect(
           _text(
-            'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ '
-            '(miễn phí).',
+            'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ.',
           ),
           findsOneWidget,
         );
@@ -1270,7 +1269,7 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(_text('Gọi 115'), findsOneWidget);
-        expect(_text('Miễn phí · không trừ lượt'), findsOneWidget);
+        expect(_text('Không trừ lượt'), findsOneWidget);
         await _tap(tester, _text('Gọi 115'));
         expect(dialled, ['115']);
         expect(repo.named('quoteTask'), isEmpty);

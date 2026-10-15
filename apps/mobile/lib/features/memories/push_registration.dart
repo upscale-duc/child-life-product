@@ -20,6 +20,8 @@ import '../../l10n/app_localizations.dart';
 import '../auth/auth_repository.dart';
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_live.dart';
+import '../notifications/notification_links.dart'
+    show markPushRead, pushOpensInbox;
 import '../reminders/device_identity.dart';
 import '../reminders/rule_notifications.dart';
 import '../vaccines/vaccine_notifications.dart';
@@ -123,6 +125,8 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
 
   Future<void> _open(RemoteMessage message) async {
     if (!mounted) return;
+    // D-076 #2: the push's row in Hộp thông báo is read once the push is opened.
+    markPushRead(ref, message.data);
     // v1.0 1f / 1g: rule reminders open their sheet (or the log, from "Ghi …").
     final push = rulePushOf(message.data);
     if (push != null) {
@@ -160,6 +164,11 @@ class _PushRegistrationState extends ConsumerState<PushRegistration> {
     final job = keepsakeJobPushOf(message.data);
     if (job != null) {
       _openJob(job);
+      return;
+    }
+    // D-076 #2: a push with nothing else to open (the delivery check) opens Hộp thông báo.
+    if (pushOpensInbox(message.data)) {
+      ref.read(routerProvider).push(Routes.notifications);
       return;
     }
     ref.read(routerProvider).go(Routes.memories);

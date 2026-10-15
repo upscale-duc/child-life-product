@@ -33,7 +33,7 @@ s('asChipLogFeed', 'Ghi cữ bú', 'Log a feed', 'CH01 chip and CH21 direct-log 
 s('asPrefillFeed', 'Con bú bình lúc ', 'Bottle feed at ', 'CH01 "Ghi cữ bú" only prefills the composer; never sends.' + VI_DRAFT)
 s('asChipFeedsToday', 'Hôm nay con bú thế nào?', 'How did feeds go today?', 'CH01 chip / CH02 example (prefills this question).')
 s('asChipReceipt', 'Chụp hoá đơn', 'Scan a receipt', 'CH01 chip (photo reading on only).')
-s('asFabLabel', 'Mở trợ lý', 'Open the assistant', 'Floating assistant button a11y label.' + DRAFT)
+s('asFabLabel', 'Mở Lumi', 'Open Lumi', 'Floating assistant button a11y label.' + DRAFT)
 
 # CH01b module entry (612:7657 / 612:7913).
 s('asModuleExpenseTitle', 'Chụp hoá đơn hoặc nhắn để ghi', 'Snap a receipt or type to log', 'CH01b entry in Chi tiêu.')
@@ -45,12 +45,8 @@ s('asScopeHousehold', 'Gia đình', 'Family', 'Chat header scope chip for the ho
 s('asScopeTitle', 'Trò chuyện với', 'Chat about', 'Scope picker sheet title.' + VI_DRAFT)
 s('asHistory', 'Lịch sử', 'History', 'Chat header history button (a11y).')
 s('asNewChat', 'Hội thoại mới', 'New chat', 'Chat header new button (a11y) and CH03 "Hội thoại mới".')
-s('asDetails', 'Chi tiết', 'Details', 'Usage row link to CH19.')
-s('asUsageLeft', 'Còn {remaining}/{limit} lượt hỗ trợ AI', '{remaining}/{limit} AI help left', 'Chat/Mức dùng, Còn.', remaining='int', limit='int')
-s('asUsageNear', 'Còn {remaining}/{limit} lượt · làm mới {date}', '{remaining}/{limit} left · resets {date}', 'Chat/Mức dùng, Gần hết (CH20).', remaining='int', limit='int', date='String')
-s('asUsageOut', 'Đã dùng hết {limit}/{limit} lượt · làm mới {date}', 'All {limit} used · resets {date}', 'Chat/Mức dùng, Hết (CH21 / CH24: same numbers for Free and Premium).', limit='int', date='String')
 s('asUsageA11y', 'Lượt hỗ trợ AI của hộ: còn {remaining} trên {limit}, làm mới {date}', 'Household AI help: {remaining} of {limit} left, resets {date}', 'Usage pill screen-reader label.' + VI_DRAFT, remaining='int', limit='int', date='String')
-s('asBadgeFree', 'Free', 'Free', 'Plan badge (CH19).')
+s('asBadgeFree', 'Cơ bản', 'Basic', 'Plan badge (CH19).')
 s('asBadgePremium', 'Premium', 'Premium', 'Plan badge (CH19).')
 
 # CH02 empty chat (612:7711 / 612:7967).
@@ -195,7 +191,7 @@ s('asCostHealth', 'Hướng dẫn sức khoẻ thiết yếu', 'Essential health
 s('asCostCredits', '{count} lượt', '{count}', 'CH19 cost value (from the server policy).', count='int')
 s('asCostNoExtra', 'Không thêm', 'No extra', 'CH19 cost value (G04: never wraps mid-word).')
 s('asCostNotCharged', 'Không trừ', 'Not charged', 'CH19 cost value.')
-s('asCostFree', 'Miễn phí', 'Free', 'CH19 cost value (health).' + DRAFT)
+s('asCostFree', 'Không trừ lượt', 'No credits used', 'CH19 cost value (health).' + DRAFT)
 s('asRecentTitle', 'Gần đây', 'Recent', 'CH19 recent tasks section.')
 s('asRecentText', 'Câu hỏi hoặc ghi nhanh', 'Question or quick log', 'CH19 recent row (text task).' + VI_DRAFT)
 s('asRecentPhoto', 'Đọc ảnh', 'Read photo', 'CH19 recent row (photo task).' + VI_DRAFT)
@@ -217,7 +213,7 @@ s('asRemovePhoto', 'Bỏ ảnh', 'Remove photo', 'Removes the pending photo (nev
 
 # CH21 Free exhausted (616:9773 / 616:10125) and CH24 Premium exhausted (616:9936 / 616:10288).
 s('asOutTitleFree', 'Bạn đã dùng hết lượt hỗ trợ AI tháng này.', 'You’ve used all AI help this month.', 'CH21 title.')
-s('asOutBodyFree', 'Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký miễn phí.', 'Your question is kept. You can still log directly and view logs for free.', 'CH21 body.')
+s('asOutBodyFree', 'Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký như thường.', 'Your question is kept. You can still log directly and view logs as usual.', 'CH21 body.')
 s('asOpenTodayLog', 'Mở nhật ký hôm nay', 'Open today’s log', 'CH21 direct action.')
 s('asUpgradeContinue', 'Nâng cấp & tiếp tục câu hỏi', 'Upgrade & continue', 'CH21 primary (paywall; resumes the kept question once after a verified purchase).')
 s('asHealthStillOpen', 'Hướng dẫn sức khoẻ thiết yếu vẫn mở, không cần lượt.', 'Essential health guidance stays open, no AI help needed.', 'CH21 / CH24 note, now with a link.' + RULE)
@@ -272,7 +268,7 @@ s('asHealthTitle', 'Hãy liên hệ hỗ trợ y tế ngay', 'Contact medical he
 s('asHealthBody', 'Trợ lý không phải dịch vụ cấp cứu và không đánh giá được tình trạng của bé.', 'The assistant isn’t an emergency service and can’t assess your baby.', 'CH28 body.')
 s('asHealthCall', 'Gọi {number}', 'Call {number}', 'CH28 emergency button with the number from the health pack for the household country.' + RULE, number='String')
 s('asHealthCallDoctor', 'Gọi bác sĩ của bé', 'Call your baby’s doctor', 'CH28 when the health pack has no number for the household country (never a default hotline).')
-s('asHealthFree', 'Miễn phí · không trừ lượt', 'Free · no AI help used', 'CH28 footnote (without the internal "nội dung y tế chờ duyệt theo vùng").' + RULE)
+s('asHealthFree', 'Không trừ lượt', 'No AI help used', 'CH28 footnote (without the internal "nội dung y tế chờ duyệt theo vùng").' + RULE)
 s('asDialFailed', 'Chưa mở được ứng dụng gọi điện.', 'Couldn’t open the phone app.', 'Dialer failed.' + VI_DRAFT)
 
 # CH03 history (612:7784 / 612:8040).
@@ -371,7 +367,7 @@ s('asOtherPhoto', 'Chọn ảnh khác', 'Pick another photo', 'Chip after a refu
 s('asUnreadableFree', 'Lần đọc này không trừ lượt.', 'This attempt used no AI help.', 'CH14 note (0 credits).')
 
 # CH15 sleep (615:9171 / 615:9517), CH16 guidance (615:9243 / 615:9589).
-s('asSleepSafety', 'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ (miễn phí).', 'If baby has a fever, trouble breathing, is very drowsy or refuses feeds — open Health guidance (free).', 'CH15 safety box (now with a link).')
+s('asSleepSafety', 'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ.', 'If baby has a fever, trouble breathing, is very drowsy or refuses feeds — open Health guidance.', 'CH15 safety box (now with a link).')
 s('asSleepFalling', 'khó vào giấc', 'hard to fall asleep', 'Sleep concern kind.')
 s('asSleepWaking', 'hay thức giấc', 'waking often', 'Sleep concern kind.')
 s('asSleepBoth', 'khó vào giấc và hay thức giấc', 'hard to fall asleep and waking often', 'Sleep concern kind both.' + VI_DRAFT)
@@ -437,7 +433,7 @@ s('asRecentMoment', 'Tóm tắt khoảnh khắc bằng AI', 'AI moment summary',
 s('asRecentSummary', 'Tóm tắt bằng AI', 'AI summary', 'CH19 recent row: an AI summary of another kind.' + VI_DRAFT)
 s('asRecentHeld', 'đang giữ {credits} lượt', '{credits} held', 'CH19 recent value: credits reserved by work still running (not counted yet).' + VI_DRAFT, credits='int')
 s('asRecentReleased', '0 lượt · đã hoàn lại', '0 · given back', 'CH19 recent value: a reservation released (error, unreadable photo, cancel, template answer).' + VI_DRAFT)
-s('asRecentFree', '0 lượt · miễn phí', '0 · free', 'CH19 recent value: work that never costs credits (health support).' + VI_DRAFT)
+s('asRecentFree', '0 lượt · không tính', '0 · not counted', 'CH19 recent value: work that never costs credits (health support).' + VI_DRAFT)
 s('asRecentEmpty', 'Chưa dùng lượt nào trong kỳ này.', 'No AI help used this period yet.', 'CH19 recent section when the server sends an empty list.' + VI_DRAFT)
 s('asHistorySaved', '{count} mục đã lưu', '{count, plural, =1{1 item saved} other{{count} items saved}}', 'CH03 row status from the last task: drafts saved ("2 mục đã lưu · 09:12").', count='int')
 s('asHistoryNeedsAnswer', 'Có câu hỏi đang chờ trả lời', 'A question is waiting for an answer', 'CH03 row status: the last task asks a clarification still open.' + VI_DRAFT)
@@ -446,8 +442,21 @@ s('asHistoryDrafts', '{count} nháp', '{count, plural, =1{1 draft} other{{count}
 s('asSummaryFeedMl', '{time} {ml} ml', '{time} {ml} ml', 'CH08 one bottle feed in the per-feed line ("08:00 150 ml").', time='String', ml='String')
 s('asSummaryFeedMinutes', '{time} {minutes} phút', '{time} {minutes} min', 'CH08 one nursing session in the per-feed line (minutes, never ml).' + DRAFT, time='String', minutes='int')
 
+# D-076 #11 / #12: the Lumi button (627:62667) and its first-run tooltip (669:64442), shown once
+# per person; the chat's credits pill (612:7737) is gone and "Chi tiết" (612:7741) is a top-bar
+# icon (612:7715). The VI body is drafted from the EN frame (the VI frame has none).
+s('asLumiIntroEyebrow', 'Mới', 'New', 'Lumi first-run tooltip eyebrow (669:64442).')
+s('asLumiIntroTitle', 'Gặp Lumi, trợ lý của nhà bạn', 'Meet Lumi, your family’s helper', 'Lumi first-run tooltip title (669:64442).')
+s('asLumiIntroBody', 'Chạm để ghi cữ bú bằng một dòng, hỏi về ghi nhận của bé hoặc gửi ảnh hoá đơn. Lumi soạn nháp, bạn xem lại rồi lưu.', 'Tap to log a feed in one line, ask about your baby’s records or send a receipt photo. Lumi drafts, you review and save.', 'Lumi first-run tooltip body (669:64442) with photo reading and Chi tiêu. VI drafted from the EN frame for owner review.')
+s('asLumiIntroBodyText', 'Chạm để ghi cữ bú bằng một dòng hoặc hỏi về ghi nhận của bé. Lumi soạn nháp, bạn xem lại rồi lưu.', 'Tap to log a feed in one line or ask about your baby’s records. Lumi drafts, you review and save.', 'Lumi first-run tooltip body without photo reading or Chi tiêu (never promises a receipt photo).' + VI_DRAFT)
+s('asLumiIntroBodyViewer', 'Chạm để hỏi Lumi về ghi nhận của bé.', 'Tap to ask Lumi about your baby’s records.', 'Lumi first-run tooltip body for a member who may only read (never promises logging).' + VI_DRAFT)
+s('asLumiIntroLater', 'Để sau', 'Later', 'Lumi first-run tooltip: dismiss for good (669:64442).')
+s('asLumiIntroTry', 'Thử ngay', 'Try it', 'Lumi first-run tooltip: open the chat (669:64442).')
+s('asUsageButton', 'Mức dùng', 'Usage', 'Chat top-bar icon button (tooltip and screen-reader label) that opens CH19; replaces the "Chi tiết" link (612:7741).' + DRAFT)
+
 # Removed with A5 (the photo is uploaded now); asRecentMeta after the composed recent line.
-REMOVED = ['asPhotoSoon', 'asRecentMeta']
+# D-076 #12: the chat's credits pill and its "Chi tiết" link are gone (usage stays in CH19).
+REMOVED = ['asPhotoSoon', 'asRecentMeta', 'asDetails', 'asUsageLeft', 'asUsageNear', 'asUsageOut']
 
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'
 for locale, idx in (('vi', 0), ('en', 1)):

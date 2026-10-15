@@ -200,7 +200,18 @@ class HomeShell extends ConsumerWidget {
               // Chat/Nút trợ lý (628:9074) 12 pt above the "+", on Hôm nay itself; nothing
               // unless the `assistant` flag is on. It rides above the upload pill, never under it.
               fab: active == ClTab.today && path == Routes.today && !showTour
-                  ? const AssistantFloatingEntry()
+                  ? AssistantFloatingEntry(
+                      // Lumi's first-run tooltip waits while Hôm nay has a sheet open on
+                      // its own navigator (D-076 #11: never over another modal).
+                      canShowIntro: () =>
+                          shell
+                              .route
+                              .branches[shell.currentIndex]
+                              .navigatorKey
+                              .currentState
+                              ?.canPop() !=
+                          true,
+                    )
                   : null,
               dock: ClTabDock(
                 role: clRoleOf(membership.role),

@@ -10,13 +10,13 @@ def s(key, vi, en, desc, **ph):
 # Badges (Quyền/Badge 588:6290).
 s('pmBadgePremium', 'Premium', 'Premium', 'Plan badge: paid Premium (588:6290).')
 s('pmBadgeBeta', 'Beta', 'Beta', 'Plan badge: personalisation beta (588:6290).')
-s('pmBadgeFree', 'Miễn phí', 'Free', 'Plan badge: free (588:6290).')
+s('pmBadgeFree', 'Cơ bản', 'Basic', 'Plan badge: free (588:6290).')
 s('pmBadgePending', 'Đang xác minh', 'Verifying', 'Plan badge: purchase being verified (588:6290).')
 s('pmBadgeExpired', 'Hết hạn', 'Expired', 'Plan badge: Premium ended (588:6290).')
 
 # PR03 Gói của hộ (593:6931 / 593:7179).
 s('pmPlanTitle', 'Gói của hộ', 'Household plan', 'PR03 title; also the Tôi row.')
-s('pmPlanFree', 'Đang dùng miễn phí', 'Using Free', 'PR03 free state title.')
+s('pmPlanFree', 'Đang dùng gói cơ bản', 'On the Basic plan', 'PR03 free state title.')
 s('pmPlanFreeBody', 'Ghi chép, lịch tham khảo, mẫu cơ bản, hướng dẫn sức khoẻ.', 'Logging, reference calendar, basic templates, health guidance.', 'PR03 free state body.')
 s('pmPlanBeta', 'Beta cá nhân hoá đang mở', 'Personalisation beta active', 'PR03 beta state title.')
 s('pmPlanBetaBody', 'Gợi ý theo nhu cầu, nhịp riêng của con và tóm tắt AI miễn phí đến {date}. Không gồm mẫu Premium. Không tự trừ tiền khi beta kết thúc.', "Need-based suggestions, your baby's own rhythm and AI summaries are free until {date}. Premium templates aren't included. No automatic charge when the beta ends.", 'PR03 beta state body; group A named in plain words (extract 30 Q19).', date='String')
@@ -31,7 +31,7 @@ s('pmPlanExpired', 'Premium đã hết hạn {date}', 'Premium ended {date}', 'P
 s('pmPlanExpiredBody', 'Vẫn xem dữ liệu, tóm tắt đã lưu, kỷ niệm và file đã xuất. Tạo mới nội dung Premium cần gia hạn.', 'You keep data, saved summaries, moments and exports. Creating new Premium content needs renewal.', 'PR03 expired state body (PR04).')
 s('pmPlanBuySoon', 'Mua và quản lý gói ngay trong app sẽ có ở bản sau.', 'Buying and managing the plan in the app comes in a later version.', 'PR03 owner note while in-app purchase is not built (engineering state, Slice 4).')
 s('pmPlanOwnerOnly', 'Chỉ chủ hộ mua và quản lý gói. Nhờ chủ hộ nếu cả nhà cần Premium.', 'Only the family owner buys and manages the plan. Ask them if the family needs Premium.', 'PR03 for non-owners (D-072 #1).')
-s('pmPlanAlwaysFree', 'Luôn miễn phí', 'Always free', 'PR03 section: what never needs a plan.')
+s('pmPlanAlwaysFree', 'Gói nào cũng có', 'In every plan', 'PR03 section: what never needs a plan.')
 s('pmPlanAlwaysFreeBody', 'Ghi chép, lịch sử, nhắc việc, lịch tham khảo, hướng dẫn sức khoẻ và mọi thứ đã lưu.', 'Logging, history, reminders, reference calendar, health guidance and everything saved.', 'PR03 always-free list (PR01 592:6826).')
 
 # Household region (D-072 #3, ST02 "Đổi khu vực trong hồ sơ hộ").
@@ -51,7 +51,7 @@ for code, vi, en in [
 
 # MO02 Mẫu Premium · cần quyền (592:6782 / 592:6906).
 s('pmUnlockPremium', 'Mở với Premium', 'Unlock with Premium', 'MO02 primary button.')
-s('pmUseFreeTemplate', 'Dùng mẫu miễn phí', 'Use a free template', 'MO02 secondary button.')
+s('pmUseFreeTemplate', 'Dùng mẫu cơ bản', 'Use a basic template', 'MO02 secondary button.')
 s('pmCardNoQuota', 'Thẻ Premium không trừ lượt xuất video', 'Premium cards don’t use video export quota', 'MO02 footnote for cards.')
 s('pmTemplatePremiumBody', 'Mẫu này dành cho gia đình có Child Life Premium.', 'This template is for families with Child Life Premium.', 'MO02 sheet body.')
 s('pmTemplateBetaNote', 'Gói beta hiện tại của nhà mình chưa gồm mẫu Premium.', 'Your current beta doesn’t include Premium templates.', 'MO02 note for beta families (brief p.3, extract 30 Q2).')
@@ -63,7 +63,7 @@ s('pmGateRegionTitle', 'Hỗ trợ phù hợp chưa mở ở khu vực này', 'P
 s('pmGateRegionBody', 'Chưa có nội dung sức khoẻ được duyệt cho khu vực của hộ. Ghi chép, lịch tham khảo, Kỷ niệm và mẫu cơ bản vẫn dùng bình thường.', 'Health content for your region isn’t approved yet. Logging, reference calendar, Moments and basic templates work as usual.', 'REGION_UNAVAILABLE body (ST02).')
 s('pmGateRegionAction', 'Đổi khu vực trong hồ sơ hộ', 'Change region in household profile', 'REGION_UNAVAILABLE action (ST02).')
 s('pmGateDisabledTitle', 'Tính năng đang tạm tắt', 'This feature is paused', 'FEATURE_DISABLED.')
-s('pmGateDisabledBody', 'Ghi chép, nội dung miễn phí và hướng dẫn sức khoẻ vẫn dùng bình thường.', 'Logging, free content and health guidance keep working.', 'FEATURE_DISABLED body.')
+s('pmGateDisabledBody', 'Ghi chép, nội dung cơ bản và hướng dẫn sức khoẻ vẫn dùng bình thường.', 'Logging, basic content and health guidance keep working.', 'FEATURE_DISABLED body.')
 s('pmGateQuotaTitle', 'Đã hết lượt trong kỳ này', 'No exports left this period', 'QUOTA_EXCEEDED (MO04 "Khi hết lượt").')
 s('pmGateQuotaBody', 'Bạn vẫn xem mẫu và tạo thẻ ảnh.', 'You can still browse templates and make photo cards.', 'QUOTA_EXCEEDED body (MO04).')
 s('pmGateConsentTitle', 'Cần bạn đồng ý dùng AI', 'AI needs your consent', 'CONSENT_REQUIRED.')
@@ -99,7 +99,7 @@ s('pmTerms', 'Điều khoản sử dụng', 'Terms of Use', 'PR01 link to the te
 s('pmPrivacy', 'Quyền riêng tư', 'Privacy Policy', 'PR01 link to the privacy policy (store guidelines).')
 s('pmRestore', 'Khôi phục', 'Restore', 'PR01 / PR03 restore purchases.')
 s('pmBuyClosedTitle', 'Mua trong app sắp có', 'In-app purchase is coming soon', 'PR01 owner: purchase not open yet (D-074, premium_billing off or no products).')
-s('pmBuyClosedBody', 'Child Life Premium chưa bán trong app. Mọi thứ miễn phí vẫn dùng bình thường; Child Life sẽ báo khi mở.', 'Child Life Premium isn’t sold in the app yet. Everything free keeps working; we’ll let you know when it opens.', 'PR01 owner: purchase not open yet.')
+s('pmBuyClosedBody', 'Child Life Premium chưa bán trong app. Mọi thứ khác vẫn dùng bình thường; Child Life sẽ báo khi mở.', 'Child Life Premium isn’t sold in the app yet. Everything else keeps working; we’ll let you know when it opens.', 'PR01 owner: purchase not open yet.')
 s('pmAskOwnerTitle', 'Nhờ chủ hộ nâng cấp', 'Ask the family owner to upgrade', 'PR01 for members who are not the owner (D-072 #1).')
 s('pmAskOwnerBody', 'Chỉ chủ hộ mua và quản lý gói. Khi hộ có Premium, cả nhà cùng dùng.', 'Only the family owner buys and manages the plan. Once the household has Premium, everyone uses it.', 'PR01 for members who are not the owner.')
 s('pmHouseholdHasBody', 'Premium đang mở cho cả nhà. Chỉ chủ hộ quản lý gói.', 'Premium is on for the whole family. Only the family owner manages it.', 'PR01 when the household already has Premium.')
@@ -118,7 +118,7 @@ s('pmContinueVideo', 'Tiếp tục tạo video', 'Continue your video', 'PR02 Su
 s('pmBackToRhythm', 'Về Nhịp lớn lên', 'Back to Growing rhythm', 'PR02 Success primary from entry A (extract open question: return to Nhịp lớn lên).')
 s('pmDone', 'Xong', 'Done', 'PR02 Success primary from the plan.')
 s('pmErrorTitle', 'Chưa mua được', 'Purchase didn’t complete', 'PR02 Error title.')
-s('pmErrorBody', 'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu miễn phí.', 'You aren’t charged unless the store confirms. Try again or use a free template.', 'PR02 Error body from a template.')
+s('pmErrorBody', 'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu cơ bản.', 'You aren’t charged unless the store confirms. Try again or use a basic template.', 'PR02 Error body from a template.')
 s('pmErrorBodyPlain', 'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại sau nhé.', 'You aren’t charged unless the store confirms. Please try again.', 'PR02 Error body outside a template.')
 s('pmErrorVerifyBody', 'Child Life chưa xác minh được giao dịch với cửa hàng. Premium chưa được mở. Nếu cửa hàng đã trừ tiền, bấm Thử lại hoặc Khôi phục.', 'We couldn’t confirm the purchase with the store yet. Premium isn’t active. If you were charged, tap Try again or Restore.', 'PR02 Error: the server could not verify.')
 s('pmErrorNetworkBody', 'Chưa kết nối được Child Life. Giao dịch của cửa hàng vẫn được giữ để kiểm tra lại.', 'Couldn’t reach Child Life. The store’s transaction is kept so it can be checked again.', 'PR02 Error: network while verifying.')

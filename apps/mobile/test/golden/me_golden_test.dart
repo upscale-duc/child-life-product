@@ -16,7 +16,6 @@ import 'package:child_life/features/me/baby_profile_screens.dart';
 import 'package:child_life/features/me/help_screen.dart';
 import 'package:child_life/features/me/me_models.dart';
 import 'package:child_life/features/me/me_screen.dart';
-import 'package:child_life/features/me/notifications_screen.dart';
 import 'package:child_life/features/me/profile_screen.dart';
 import 'package:child_life/features/me/storage_screens.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
@@ -163,11 +162,7 @@ final _cases = <String, _Case>{
     overrides: () => _base(me: minh),
     act: null,
   ),
-  'notifications': (
-    build: () => const NotificationsScreen(),
-    overrides: () => _base(prefs: const NotificationPrefs(messages: false)),
-    act: null,
-  ),
+  // "Thông báo" is EN07 now (D-076 #2): goldens/nt/ in notifications_golden_test.dart.
   'help': (
     build: () => const HelpScreen(),
     overrides: () => [

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
@@ -21,7 +20,9 @@ import '../home/home_shell.dart';
 import '../keepsakes/keepsake_access.dart';
 import '../keepsakes/keepsake_occasions.dart';
 import '../keepsakes/milestone_card_screens.dart' show TierBadge;
+import '../memories/memory_models.dart' show MilestoneRef;
 import '../memories/memory_repository.dart';
+import '../milestones/milestone_card_link.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
 import 'rhythm_access.dart';
@@ -58,6 +59,15 @@ Occasion? occasionFor(String text) {
 /// the new thing as a family milestone (the existing Kỷ niệm milestones, linked by id; no photo
 /// is copied), then "Giữ khoảnh khắc này?" offers the Thiệp cột mốc flow, with the occasion when
 /// one fits. Premium templates are gated there (`ensureTemplateAllowed`), never here.
+///
+/// D-076 #14 (owner: "chọn khoảnh khắc thẻ mốc cơ bản hoặc premium thì bị lỗi không đi tiếp
+/// được"). Root cause: MS01 is a full-screen route above the tab shell (rhythm routes are top
+/// level) and pushed `/memories/card`, a page inside the Kỷ niệm tab branch, on top of itself;
+/// go_router then built a second tab shell on the root navigator with the same page keys and the
+/// Navigator asserted (`!keyReservation.contains(key)`), so neither tile went anywhere. Now the
+/// flow leaves MS01 first (`closeFlow`, back to the shell) and opens the card from there; each
+/// tile opens the editor (MM11) with a template of its tier and the saved milestone preselected
+/// (`openMilestoneCard`), and "Tạo thẻ mốc" opens the template library with it.
 class RhythmMilestoneScreen extends ConsumerStatefulWidget {
   const RhythmMilestoneScreen({this.note, super.key});
 
@@ -216,17 +226,43 @@ class _RhythmMilestoneScreenState extends ConsumerState<RhythmMilestoneScreen> {
             aiAvailable(ref.watch(selectedCapabilitiesProvider), me)
         ? AiMomentNudge(babyId: me.babyId, milestoneId: savedId)
         : null;
-    final occasion = occasionFor(saved.name);
     final growth = cl.care.growth;
-    void createCard() => context.push(
-      occasion == null
-          ? Routes.milestoneCard
-          : '${Routes.milestoneCard}?occasion=${occasion.wire}',
-    );
+    // D-076 #14: the saved milestone travels with the card (by id; nothing is copied). Offline,
+    // before the write lands, its id is unknown: the card then goes by the occasion alone.
+    final milestone = savedId == null
+        ? null
+        : MilestoneRef(id: savedId, name: saved.name, date: saved.date);
+    // Never push a Kỷ niệm tab page over this flow: leave it, then open the card (D-076 #14).
+    void navigate(String location, Object? extra) =>
+        closeFlow(context, then: location, extra: extra);
+    void createCard({bool? premium}) {
+      if (milestone == null) {
+        final occasion = occasionFor(saved.name);
+        navigate(
+          occasion == null
+              ? Routes.milestoneCard
+              : '${Routes.milestoneCard}?occasion=${occasion.wire}',
+          null,
+        );
+        return;
+      }
+      unawaited(
+        openMilestoneCard(
+          context,
+          ref,
+          milestone: milestone,
+          premium: premium,
+          navigate: navigate,
+        ),
+      );
+    }
+
+    // Both tiles as drawn; when the portal hides Cao cấp templates, that tile opens the
+    // template library instead (`openMilestoneCard` finds no Cao cấp template).
 
     Widget tile(bool premium) => Expanded(
       child: ClPressable(
-        onPressed: createCard,
+        onPressed: () => createCard(premium: premium),
         semanticLabel: premium ? l10n.rhMsPremium : l10n.rhMsBasic,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

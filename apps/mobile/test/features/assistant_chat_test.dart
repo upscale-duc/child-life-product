@@ -156,7 +156,7 @@ void main() {
       );
       expect(_text('Trợ lý Child Life'), findsNothing);
       expect(_text('Nhắn để ghi khoản chi'), findsNothing);
-      expect(find.bySemanticsLabel('Mở trợ lý'), findsNothing);
+      expect(find.bySemanticsLabel('Mở Lumi'), findsNothing);
     });
 
     testWidgets('a viewer sees the entry to ask, never "Ghi cữ bú"', (
@@ -640,7 +640,9 @@ void main() {
         findsOneWidget,
       );
       expect(_text('Không thêm'), findsOneWidget);
-      expect(_text('Miễn phí'), findsOneWidget);
+      // D-076 #9: a factual cost, never a "Miễn phí" label.
+      expect(_text('Không trừ lượt'), findsOneWidget);
+      expect(_text('Miễn phí'), findsNothing);
       expect(
         _text('Quota riêng, không dùng lượt hỗ trợ AI · còn 4/5'),
         findsOneWidget,
@@ -738,7 +740,8 @@ void main() {
         _text('Bạn đã dùng hết lượt hỗ trợ AI tháng này.'),
         findsOneWidget,
       );
-      expect(_text('Đã dùng hết 20/20 lượt · làm mới 01/11'), findsOneWidget);
+      // D-076 #12: no credits pill in the chat; the numbers are in CH19.
+      expect(_text('Đã dùng hết 20/20 lượt · làm mới 01/11'), findsNothing);
       expect(_text('Đã hết lượt AI tháng này'), findsOneWidget);
       expect(tester.widget<TextField>(find.byType(TextField)).readOnly, isTrue);
       expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsOneWidget);
@@ -865,7 +868,7 @@ void main() {
       expect(start['text'], 'Hôm nay con bú thế nào?');
       // The same request id with a fresh quote: the server runs the blocked task once.
       expect(start['requestId'], 'req-blocked');
-      expect(_text('Còn 200/200 lượt hỗ trợ AI'), findsOneWidget);
+      expect(_text('Còn 200/200 lượt hỗ trợ AI'), findsNothing);
       await tester.drag(find.byType(ListView), const Offset(0, 800));
       await tester.pumpAndSettle();
       expect(
@@ -1139,7 +1142,7 @@ void main() {
         prefs: _thread([taskA]),
       );
       expect(_text('Hãy liên hệ hỗ trợ y tế ngay'), findsOneWidget);
-      expect(_text('Miễn phí · không trừ lượt'), findsOneWidget);
+      expect(_text('Không trừ lượt'), findsOneWidget);
       expect(_text('Nâng cấp & tiếp tục câu hỏi'), findsNothing);
       await tester.tap(_text('Gọi 115'));
       await tester.pumpAndSettle();

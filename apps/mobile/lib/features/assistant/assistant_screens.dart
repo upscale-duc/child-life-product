@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/navigation.dart' show SafePush, SafePushContext;
 import '../../app/route_guard.dart';
 import '../../app/session.dart';
 import '../../core/design/cl_theme.dart';
@@ -252,8 +253,11 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
     }
   }
 
-  void _logDirectly(AssistantScope scope) =>
-      scope.household ? context.push(Routes.spending) : showQuickLog(context);
+  // D-076 nav: the chat is above the tabs; Chi tiêu, Lịch sử and reminders are tab pages, so
+  // every link from here to them goes through `pushSafe` (the chat closes first).
+  void _logDirectly(AssistantScope scope) => scope.household
+      ? context.pushSafe(Routes.spending)
+      : showQuickLog(context);
 
   Future<void> _dial(String? number) async {
     final l10n = AppLocalizations.of(context);
@@ -470,34 +474,16 @@ class _ChatState extends ConsumerState<AssistantChatScreen> {
                 onScope: () => _pickScope(scope),
                 onHistory: () => _history(scope),
                 onNew: ctl.newConversation,
+                // D-076 #12: no credits pill here; the numbers are in CH19 and in the quote
+                // shown before a task that costs any.
+                onUsage: () => context.push(
+                  Uri(
+                    path: Routes.assistantUsage,
+                    queryParameters: {'baby': scope.babyId},
+                  ).toString(),
+                ),
               ),
             ),
-            if (usage != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  ClSpace.s4,
-                  ClSpace.s3,
-                  ClSpace.s4,
-                  0,
-                ),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: AsUsagePill(view: usage, zone: zone),
-                    ),
-                    const SizedBox(width: ClSpace.s2),
-                    AsLink(
-                      label: l10n.asDetails,
-                      onPressed: () => context.push(
-                        Uri(
-                          path: Routes.assistantUsage,
-                          queryParameters: {'baby': scope.babyId},
-                        ).toString(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             Expanded(
               child: ListView.separated(
                 controller: _scroll,
@@ -949,7 +935,7 @@ class _ThreadView {
                 label: l10n.asOpenTodayLog,
                 style: AsButtonStyle.secondary,
                 expand: true,
-                onPressed: () => GoRouter.of(context).push(Routes.history),
+                onPressed: () => GoRouter.of(context).pushSafe(Routes.history),
               ),
               const SizedBox(height: ClSpace.s2),
             ],
@@ -1111,7 +1097,8 @@ class _ThreadView {
                 babyId: task.scope?.babyId ?? chat.scope.babyId,
                 zone: task.timezone ?? zone,
                 now: now,
-                onOpenSource: () => GoRouter.of(context).push(Routes.history),
+                onOpenSource: () =>
+                    GoRouter.of(context).pushSafe(Routes.history),
               ),
             );
           case HealthSupportPart(:final signs, :final emergency):
@@ -1703,7 +1690,7 @@ class _ThreadView {
           if (recordLocation(d) case final record?)
             (
               label: l10n.asOpenSpending,
-              onPressed: () => GoRouter.of(context).push(record),
+              onPressed: () => GoRouter.of(context).pushSafe(record),
             ),
         ] else if (d.kind == DraftKind.observation) ...[
           (
@@ -1714,12 +1701,12 @@ class _ThreadView {
           if (moduleLocation(d.kind) case final module?)
             (
               label: openModuleLabel(l10n, d.kind),
-              onPressed: () => GoRouter.of(context).push(module),
+              onPressed: () => GoRouter.of(context).pushSafe(module),
             ),
           if (recordLocation(d) case final record?)
             (
               label: l10n.asUndo,
-              onPressed: () => GoRouter.of(context).push(record),
+              onPressed: () => GoRouter.of(context).pushSafe(record),
             ),
         ],
       ],
@@ -1727,7 +1714,7 @@ class _ThreadView {
         if (moduleLocation(d.kind) case final module?)
           (
             label: l10n.asSeeLogged,
-            onPressed: () => GoRouter.of(context).push(module),
+            onPressed: () => GoRouter.of(context).pushSafe(module),
           ),
         (
           label: l10n.asSaveAnyway,
@@ -1955,7 +1942,8 @@ class _ThreadView {
       duplicate: duplicate
           ? (
               acknowledged: acknowledged,
-              onOpen: () => GoRouter.of(context).push(Routes.spendingHistory),
+              onOpen: () =>
+                  GoRouter.of(context).pushSafe(Routes.spendingHistory),
               onAcknowledge: editable ? () => ctl.acknowledge(d.id) : null,
             )
           : null,

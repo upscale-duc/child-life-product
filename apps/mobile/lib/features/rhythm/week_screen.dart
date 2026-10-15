@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../app/navigation.dart' show SafePushContext;
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
@@ -18,6 +20,9 @@ import '../care/care_format.dart';
 import '../care/care_repository.dart';
 import '../family/family_labels.dart' show relationLabel;
 import '../family/family_repository.dart';
+import '../keepsakes/keepsake_access.dart' show selectedKeepsakeAccessProvider;
+import '../memories/memory_models.dart' show MediaItem;
+import '../memories/memory_repository.dart' show mediaProvider;
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
 import '../premium/billing_models.dart' show PaywallEntry;
@@ -28,6 +33,7 @@ import '../premium/premium_repository.dart';
 import '../reminders/reminder_models.dart';
 import '../reminders/reminder_repository.dart';
 import '../vaccines/vaccine_format.dart';
+import 'activity_history_screen.dart' show TriedHistoryLink;
 import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_calc.dart';
@@ -162,6 +168,7 @@ class WeekSummaryScreen extends ConsumerWidget {
         ),
         const SizedBox(height: ClSpace.s3),
         _LookBack(me: me, caps: caps, week: week, zone: zone, today: today),
+        WeekVideoButton(me: me, week: week, zone: zone, weekOfLife: n),
         const SizedBox(height: ClSpace.s6),
         RhNote(l10n.rhWeekNoScore, icon: ClIcons.heart),
       ],
@@ -882,7 +889,7 @@ class _LookBack extends ConsumerWidget {
           heading(l10n.rhWeekTriedTitle),
           if (tried.isEmpty)
             muted(l10n.rhWeekNoTried)
-          else
+          else ...[
             for (final f in tried)
               _TriedLine(
                 feedback: f,
@@ -898,6 +905,9 @@ class _LookBack extends ConsumerWidget {
                   ),
                 ),
               ),
+            // D-076 #10: every plan and answer, answerable later.
+            const TriedHistoryLink(),
+          ],
           if (idea != null) ...[
             divider,
             heading(l10n.rhWeekNextIdea),
@@ -934,8 +944,9 @@ class _TriedLine extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final locale = Localizations.localeOf(context);
+    // A plan is not "đã thử" (D-076 #10).
     final kind = feedback.kind == FeedbackKind.started
-        ? l10n.rhStartedLabel
+        ? l10n.rhPlannedPill
         : feedbackKindLabel(l10n, feedback.kind);
     return MergeSemantics(
       child: Padding(
@@ -964,6 +975,86 @@ class _TriedLine extends StatelessWidget {
             RhPill(label: kind, mint: feedback.kind == FeedbackKind.helpful),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ---------- "Tạo video tuần N" (D-076 #3) ----------
+
+/// The baby's own photos taken in [week] (baby-local days), oldest first: what a week video is
+/// made from (never a card or a video Child Life made).
+List<MediaItem> weekPhotos(
+  List<MediaItem> media,
+  SummaryWeek week,
+  String zone,
+) {
+  final photos = [
+    for (final m in media)
+      if (m.isReady && !m.deleted && !m.isVideo && m.generatedKind == null)
+        if (isoOf(inBabyZone(zone, m.captureAt)) case final day
+            when day.compareTo(week.start) >= 0 && day.compareTo(week.end) <= 0)
+          m,
+  ];
+  return photos..sort((a, b) => a.captureAt.compareTo(b.captureAt));
+}
+
+/// EN09 "Tạo video tuần N" (561:3102): Video kỷ niệm (MM04 → MM06) with the week's photos
+/// already in the scenes; the flow keeps its own rules (the `memory_story` flag, Cùng nuôi only,
+/// the export quota, Premium templates and the purchase resume, which keeps the photos). Hidden
+/// without the flag or without a photo from the week. N is the week of life the title shows.
+class WeekVideoButton extends ConsumerWidget {
+  const WeekVideoButton({
+    required this.me,
+    required this.week,
+    required this.zone,
+    required this.weekOfLife,
+    super.key,
+  });
+
+  final Membership me;
+  final SummaryWeek week;
+  final String zone;
+  final int? weekOfLife;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!ref.watch(selectedKeepsakeAccessProvider).videos) {
+      return const SizedBox.shrink();
+    }
+    final media =
+        ref.watch(mediaProvider((me.babyId, true))).value ??
+        const <MediaItem>[];
+    final photos = weekPhotos(media, week, zone);
+    if (photos.isEmpty) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    final n = weekOfLife;
+    return Padding(
+      padding: const EdgeInsets.only(top: ClSpace.s6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClButton(
+            key: const ValueKey('rh.weekVideo'),
+            label: n == null
+                ? l10n.rhWeekMakeVideoPlain
+                : l10n.rhWeekMakeVideo(n),
+            icon: ClIcons.video,
+            expand: true,
+            // D-076 nav: EN09 is above the tabs; Video kỷ niệm is a Kỷ niệm page.
+            onPressed: () => context.pushSafe(
+              Routes.memoryStory,
+              extra: [for (final m in photos) m.id],
+            ),
+          ),
+          const SizedBox(height: ClSpace.s2),
+          Text(
+            l10n.rhWeekVideoPhotos(photos.length),
+            textAlign: TextAlign.center,
+            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+          ),
+        ],
       ),
     );
   }

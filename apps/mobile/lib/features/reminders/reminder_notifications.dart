@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../app/navigation.dart' show SafePush;
 import '../../app/route_guard.dart';
 import '../../app/router.dart';
 import '../../app/session.dart';
@@ -391,10 +392,11 @@ class _ReminderNotificationSyncState
       }
       ref.read(selectedBabyIdProvider.notifier).select(babyId);
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        // D-076 nav: a tap lands wherever the app was, maybe above the tabs.
         if (mounted) {
           ref
               .read(routerProvider)
-              .push('${Routes.milestoneCard}?occasion=${occasion.wire}');
+              .pushSafe('${Routes.milestoneCard}?occasion=${occasion.wire}');
         }
       });
       return;
@@ -408,8 +410,9 @@ class _ReminderNotificationSyncState
     }
     ref.read(selectedBabyIdProvider.notifier).select(babyId);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // D-076 nav: a tap lands wherever the app was, maybe above the tabs.
       if (mounted) {
-        ref.read(routerProvider).push('${Routes.reminders}/$reminderId');
+        ref.read(routerProvider).pushSafe('${Routes.reminders}/$reminderId');
       }
     });
   }

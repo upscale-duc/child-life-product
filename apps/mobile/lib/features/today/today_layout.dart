@@ -25,8 +25,8 @@ import '../spending/spending_models.dart' show SpendingAccess;
 
 /// The parts of Hôm nay that "Tuỳ chỉnh Hôm nay" arranges (v1.0 improvement 370:1525). The first
 /// three are the design's; the others are opt-in (owner, 2026-10-12) and start hidden.
-/// [forYou] is "Dành cho bé hôm nay" (Nhịp lớn lên, H01 / H02): first by default, as the
-/// suggestion is drawn under the title; it shows only when the family's `rhythm` flag is on.
+/// [forYou] is "Dành cho bé hôm nay" (559:57583, `today_for_baby.dart`): right after the quick-track
+/// tiles by default (D-076 #8); it shows only when the family's `rhythm` flag is on.
 enum TodaySection {
   forYou,
   tiles,
@@ -56,8 +56,8 @@ class TodayLayout {
 
   /// As drawn (370:1525): tiles, reminders, the day's rhythm; the opt-in parts in between.
   static const defaultOrder = [
-    TodaySection.forYou,
     TodaySection.tiles,
+    TodaySection.forYou,
     TodaySection.reminders,
     TodaySection.quickActions,
     TodaySection.vaccine,
@@ -105,7 +105,12 @@ class TodayLayout {
     hiddenActions: hiddenActions ?? this.hiddenActions,
   );
 
+  /// Saved layouts before it put "Dành cho bé hôm nay" first; from this version on, its place
+  /// is the person's (D-076 #8).
+  static const version = 2;
+
   Map<String, Object?> toJson() => {
+    'v': version,
     'order': [for (final s in order) s.name],
     'hidden': [for (final s in hidden) s.name],
     'tileOrder': [for (final t in tileOrder) t.name],
@@ -120,6 +125,11 @@ class TodayLayout {
         if (values.asNameMap()[n] case final T x) x,
     ];
     final order = names(j['order'], TodaySection.values);
+    // D-076 #8: a layout saved before version 2 had "Dành cho bé hôm nay" where the app put it
+    // (first); it moves to its new default place, right after the tiles. Hidden stays hidden.
+    if ((j['v'] is int ? j['v']! as int : 1) < version) {
+      order.remove(TodaySection.forYou);
+    }
     // Sections missing from a saved order (added later) go in their default place, with their
     // default visibility.
     final added = [

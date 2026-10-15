@@ -578,7 +578,7 @@ class FeedbackHistoryScreen extends ConsumerWidget {
                       content?.activity(f.contentId)?.title.of(locale) ??
                       l10n.rhUnknownActivity,
                   subtitle: [
-                    '${shortDay(locale, f.date)} · ${f.kind == FeedbackKind.started ? l10n.rhStartedLabel : feedbackKindLabel(l10n, f.kind)}',
+                    '${shortDay(locale, f.date)} · ${f.kind == FeedbackKind.started ? l10n.rhPlannedPill : feedbackKindLabel(l10n, f.kind)}',
                     if (f.note case final n?) l10n.rhQuoted(n),
                   ].join('\n'),
                   trailing: MeRowAction(

@@ -25,6 +25,7 @@ import 'rhythm_actions.dart';
 import 'rhythm_calc.dart';
 import 'rhythm_labels.dart';
 import 'rhythm_models.dart';
+import 'rhythm_plans.dart';
 import 'rhythm_repository.dart';
 import 'rhythm_widgets.dart';
 import 'rhythm_week.dart';
@@ -37,7 +38,24 @@ import 'week_screen.dart' show WeekSummaryEntry;
 /// 589:6281: only when group A is missing for want of a plan). Health hides the suggestion and
 /// the calendar ("Child Life dừng gợi ý theo lịch").
 class ForYouSection extends ConsumerWidget {
-  const ForYouSection({super.key});
+  const ForYouSection({
+    this.header,
+    this.calendar,
+    this.more = const [],
+    super.key,
+  });
+
+  // ---- D-076 #4 (Hôm nay "Dành cho bé hôm nay", lib/features/today/today_for_baby.dart) ----
+  /// Drawn above the cards, only when there is at least one.
+  final Widget? header;
+
+  /// Replaces the reference-calendar card at its place (never first); [compact] = a suggestion
+  /// is shown above it.
+  final Widget Function(bool compact)? calendar;
+
+  /// Cards other modules add at the end (Home's small-card carousel).
+  final List<Widget> more;
+  // ---- end D-076 #4 ----
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -149,6 +167,8 @@ class ForYouSection extends ConsumerWidget {
               rec.state == RecState.started ||
               (afterRec && last.kind == FeedbackKind.started),
           today: today,
+          zone: zone,
+          now: now,
           babyName: name,
           secondary: secondaryActivities(content, home!),
         ),
@@ -166,10 +186,12 @@ class ForYouSection extends ConsumerWidget {
         ),
       ],
       if (stageLine != null)
-        _CalendarCard(line: stageLine, compact: showPrimary),
+        calendar?.call(showPrimary) ?? // D-076 #4
+            _CalendarCard(line: stageLine, compact: showPrimary),
       // EN09 once a whole week of the baby's life has passed (who reads care).
       if (canRead && weekHasPassed(dob, summaryWeekFor(today)))
         WeekSummaryEntry(me: me),
+      ...more, // D-076 #4 (before the quiet upsell, which stays last)
       if (showSupport) const _SupportCard(),
     ];
     if (children.isEmpty) return const SizedBox.shrink();
@@ -178,6 +200,7 @@ class ForYouSection extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (header case final h?) ...[h, const SizedBox(height: ClSpace.s3)],
           for (final (i, c) in children.indexed) ...[
             if (i > 0 && c is! SizedBox && children[i - 1] is! SizedBox)
               const SizedBox(height: ClSpace.s3),
@@ -246,6 +269,8 @@ class _PrimaryCard extends ConsumerWidget {
     required this.feedback,
     required this.started,
     required this.today,
+    required this.zone,
+    required this.now,
     required this.babyName,
     this.secondary = const [],
   });
@@ -256,8 +281,12 @@ class _PrimaryCard extends ConsumerWidget {
   final FeedbackRef? lastFeedback;
   final List<CheckIn> checkIns;
   final List<RecFeedback> feedback;
+
+  /// The family planned it since this suggestion came (D-076 #10: a plan, not "đã thử").
   final bool started;
   final String today;
+  final String zone;
+  final DateTime now;
   final String babyName;
 
   /// ≤2 other activities from `composeHome` (drawn small under the primary).
@@ -341,6 +370,19 @@ class _PrimaryCard extends ConsumerWidget {
       usedText = note == null ? '$base.' : '$base — ${l10n.rhQuoted(note)}.';
     }
 
+    // D-076 #10: after "Thử tối nay" the card waits ("Đã lên kế hoạch · tối nay"); the result
+    // is asked only once there was a chance to try (CH17 timing), "Chưa thử" always next to it.
+    final plan = started
+        ? openPlan(
+            feedback,
+            activity.id,
+            zone: zone,
+            timeOfDay: activity.timeOfDay,
+            now: now,
+            setAside: ref.watch(plansSetAsideProvider(setAsideKey(me))),
+          )
+        : null;
+
     final again = rec.changes.contains(RecChange.prefersHelpful);
     final tryLabel = again
         ? (evening ? l10n.rhTryAgainTonight : l10n.rhTryAgainToday)
@@ -360,8 +402,8 @@ class _PrimaryCard extends ConsumerWidget {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  started
-                      ? l10n.rhStartedLabel.toUpperCase()
+                  plan?.due ?? false
+                      ? l10n.rhKickerFollowUp
                       : (evening ? l10n.rhKickerTonight : l10n.rhKickerToday),
                   style: cl.text.caption.copyWith(
                     color: cl.colors.mintText,
@@ -426,32 +468,63 @@ class _PrimaryCard extends ConsumerWidget {
             RhInfoBox(text: reasons.join(' ')),
           const SizedBox(height: ClSpace.s2),
           RhReviewNote(activity.review),
-          if (canAct) ...[
+          if (plan != null) ...[
+            const SizedBox(height: ClSpace.s3),
+            PlanStatus(
+              me: me,
+              plan: plan,
+              timeOfDay: activity.timeOfDay,
+              today: today,
+              zone: zone,
+            ),
+          ],
+          if (canAct && plan != null) ...[
             const SizedBox(height: ClSpace.s3),
             Wrap(
               spacing: ClSpace.s2,
               runSpacing: ClSpace.s2,
               children: [
-                if (started)
+                if (plan.due) ...[
                   RhPillButton(
                     label: l10n.rhTellHow,
                     onTap: () =>
                         context.push(activityFeedbackLocation(activity.id)),
-                  )
-                else
-                  RhPillButton(
-                    label: tryLabel,
-                    onTap: () {
-                      giveFeedbackOn(
-                        context,
-                        ref,
-                        me,
-                        kind: FeedbackKind.started,
-                        activity: activity,
-                      );
-                      open();
-                    },
                   ),
+                  RhPillButton(
+                    label: l10n.rhDidNotTry,
+                    primary: false,
+                    onTap: () =>
+                        withdrawPlan(context, ref, me, plan, notTried: true),
+                  ),
+                ] else if (plan.mine(me.uid))
+                  RhPillButton(
+                    label: l10n.rhCancelPlan,
+                    primary: false,
+                    onTap: () =>
+                        withdrawPlan(context, ref, me, plan, notTried: false),
+                  ),
+                RhPillButton(label: l10n.rhHow, primary: false, onTap: open),
+              ],
+            ),
+          ] else if (canAct) ...[
+            const SizedBox(height: ClSpace.s3),
+            Wrap(
+              spacing: ClSpace.s2,
+              runSpacing: ClSpace.s2,
+              children: [
+                RhPillButton(
+                  label: tryLabel,
+                  onTap: () {
+                    giveFeedbackOn(
+                      context,
+                      ref,
+                      me,
+                      kind: FeedbackKind.started,
+                      activity: activity,
+                    );
+                    open();
+                  },
+                ),
                 RhPillButton(
                   label: ps02 ? l10n.rhSomethingElse : l10n.rhNotToday,
                   primary: false,

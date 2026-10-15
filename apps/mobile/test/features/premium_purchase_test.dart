@@ -155,7 +155,7 @@ void main() {
         final b = tester.getTopLeft(find.text(answerGroupB)).dy;
         expect(a, lessThan(b));
         expect(find.text('Bạn đang xem'), findsOneWidget);
-        expect(find.text('Luôn miễn phí'), findsOneWidget);
+        expect(find.text('Gói nào cũng có'), findsOneWidget);
         expect(find.text('Mua trong app sắp có'), findsOneWidget);
         expect(find.text('Tiếp tục với Premium'), findsNothing);
         expect(find.text('Khôi phục'), findsNothing);
@@ -347,7 +347,7 @@ void main() {
         find.textContaining('chưa xác minh được giao dịch'),
         findsOneWidget,
       );
-      // Opened without a template: "Đóng", not "Dùng mẫu miễn phí".
+      // Opened without a template: "Đóng", not "Dùng mẫu cơ bản".
       expect(find.text('Đóng'), findsOneWidget);
       expect(env.fake.completed, isEmpty);
       await tester.tap(find.text('Thử lại'));
@@ -786,7 +786,7 @@ void main() {
       await plan(tester, answer());
       await tester.tap(find.text('Xem Premium'));
       await _settle(tester);
-      expect(find.text('Luôn miễn phí'), findsWidgets);
+      expect(find.text('Gói nào cũng có'), findsWidgets);
       expect(find.text('Mua trong app sắp có'), findsOneWidget);
     });
   });

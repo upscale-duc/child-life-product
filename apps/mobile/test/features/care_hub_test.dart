@@ -122,6 +122,24 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 5));
     });
 
+    // D-076 nav: Mốc phát triển is live, with or without a published guide (own milestones).
+    testWidgets('"Mốc phát triển" opens 3a, never "Sớm ra mắt"', (
+      tester,
+    ) async {
+      final (visits, _) = await pumpRouted(
+        tester,
+        const Scaffold(body: CareHubScreen()),
+        overrides: careOverrides(),
+      );
+      final tile = find.byKey(const Key('careMilestones'));
+      await tester.ensureVisible(tile);
+      await tester.pumpAndSettle();
+      await tester.tap(tile);
+      await tester.pumpAndSettle();
+      expect(find.text('Phần này sẽ có trong bản cập nhật tới.'), findsNothing);
+      expect(visits.last.location, Routes.milestones);
+    });
+
     testWidgets('grouped as the owner asked (D-069)', (tester) async {
       await pumpRouted(
         tester,
@@ -147,7 +165,8 @@ void main() {
       );
       expect(y('Ăn dặm'), lessThan(y('Kiến thức chăm bé')));
       expect(y('Kiến thức chăm bé'), lessThan(y('Thư viện chăm bé')));
-      expect(find.text('Theo tuổi của bé'), findsOneWidget);
+      // D-076 #5: "Thẻ theo tuổi" is "Giai đoạn của bé" in the app.
+      expect(find.text('Giai đoạn của bé'), findsOneWidget);
       expect(find.text('Dinh dưỡng'), findsNothing);
     });
 
@@ -258,9 +277,10 @@ void main() {
       });
       // Missing parts go in their default place; the opt-in ones stay hidden.
       expect(layout.order, [
-        TodaySection.forYou,
         TodaySection.rhythm,
         TodaySection.tiles,
+        // D-076 #8: right after the tiles.
+        TodaySection.forYou,
         TodaySection.reminders,
         TodaySection.quickActions,
         TodaySection.vaccine,
@@ -282,8 +302,9 @@ void main() {
         ],
         // "Dành cho bé hôm nay" draws only with the family's rhythm flag.
         [
-          TodaySection.forYou,
           TodaySection.tiles,
+          // D-076 #8: "Dành cho bé hôm nay" right after the tiles.
+          TodaySection.forYou,
           TodaySection.reminders,
           TodaySection.rhythm,
         ],

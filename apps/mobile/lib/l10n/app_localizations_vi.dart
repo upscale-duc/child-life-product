@@ -5965,7 +5965,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get careWonderWeekSub => 'Giai đoạn phát triển dự kiến';
 
   @override
-  String get careAgeCards => 'Theo tuổi của bé';
+  String get careAgeCards => 'Giai đoạn của bé';
 
   @override
   String get careAgeCardsSub => 'Gợi ý cho từng tuần, từng tháng';
@@ -5980,7 +5980,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get careLibrary => 'Thư viện chăm bé';
 
   @override
-  String get careLibrarySub => 'Bài viết được chuyên môn rà soát';
+  String get careLibrarySub => 'Bài viết chăm bé theo tuổi';
 
   @override
   String get careSolids => 'Ăn dặm';
@@ -10053,9 +10053,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ksFormatStory => 'Story 9:16';
 
   @override
-  String get ksFree => 'Miễn phí';
-
-  @override
   String get ksPremium => 'Cao cấp';
 
   @override
@@ -10820,7 +10817,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pmBadgeBeta => 'Beta';
 
   @override
-  String get pmBadgeFree => 'Miễn phí';
+  String get pmBadgeFree => 'Cơ bản';
 
   @override
   String get pmBadgePending => 'Đang xác minh';
@@ -10832,7 +10829,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pmPlanTitle => 'Gói của hộ';
 
   @override
-  String get pmPlanFree => 'Đang dùng miễn phí';
+  String get pmPlanFree => 'Đang dùng gói cơ bản';
 
   @override
   String get pmPlanFreeBody =>
@@ -10891,7 +10888,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Chỉ chủ hộ mua và quản lý gói. Nhờ chủ hộ nếu cả nhà cần Premium.';
 
   @override
-  String get pmPlanAlwaysFree => 'Luôn miễn phí';
+  String get pmPlanAlwaysFree => 'Gói nào cũng có';
 
   @override
   String get pmPlanAlwaysFreeBody =>
@@ -10956,7 +10953,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pmUnlockPremium => 'Mở với Premium';
 
   @override
-  String get pmUseFreeTemplate => 'Dùng mẫu miễn phí';
+  String get pmUseFreeTemplate => 'Dùng mẫu cơ bản';
 
   @override
   String get pmCardNoQuota => 'Thẻ Premium không trừ lượt xuất video';
@@ -10991,7 +10988,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pmGateDisabledBody =>
-      'Ghi chép, nội dung miễn phí và hướng dẫn sức khoẻ vẫn dùng bình thường.';
+      'Ghi chép, nội dung cơ bản và hướng dẫn sức khoẻ vẫn dùng bình thường.';
 
   @override
   String get pmGateQuotaTitle => 'Đã hết lượt trong kỳ này';
@@ -11165,7 +11162,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get rhAgeFree => 'Nội dung theo tuổi · luôn miễn phí';
+  String get rhAgeFree => 'Nội dung theo tuổi';
 
   @override
   String get rhCalendarPill => 'LỊCH THAM KHẢO';
@@ -11382,7 +11379,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhSaveNote => 'Lưu ghi nhận';
 
   @override
-  String get rhAlwaysFree => 'Ghi nhận luôn miễn phí · cả nhà cùng thấy';
+  String get rhAlwaysFree => 'Cả nhà cùng thấy ghi nhận này';
 
   @override
   String get rhHealthQHeading => 'Ghi nhận hôm nay';
@@ -11469,7 +11466,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Child Life không chẩn đoán và không kết luận “an toàn”.';
 
   @override
-  String get rhHlAlwaysFree => 'Luôn miễn phí · không paywall, không upsell';
+  String get rhHlAlwaysFree => 'Không paywall, không mời nâng cấp';
 
   @override
   String get rhHlDialFailed => 'Không mở được ứng dụng Điện thoại.';
@@ -11531,7 +11528,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhMoreForAge => 'Đọc thêm theo tuổi';
 
   @override
-  String get rhFreeAgePill => 'Miễn phí · theo tuổi';
+  String get rhFreeAgePill => 'Theo tuổi';
 
   @override
   String rhReadMinutes(int n) {
@@ -11824,7 +11821,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rhSleepGatePremium =>
-      'So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn miễn phí.';
+      'So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn dùng bình thường.';
 
   @override
   String get rhSleepGateOther =>
@@ -11857,7 +11854,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rhRegionWaiting =>
-      'Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung miễn phí vẫn dùng được.';
+      'Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung cơ bản vẫn dùng được.';
 
   @override
   String get rhSetupIntro =>
@@ -12478,24 +12475,24 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String aiStateQuotaDay(int used, int limit, String when) {
-    return 'Đã dùng $used/$limit lượt AI hôm nay cho bé. Lượt mới từ $when. Bản theo mẫu luôn miễn phí.';
+    return 'Đã dùng $used/$limit lượt AI hôm nay cho bé. Lượt mới từ $when. Bạn vẫn xem được bản theo mẫu.';
   }
 
   @override
   String aiStateQuotaMonth(int used, int limit, String when) {
-    return 'Nhà mình đã dùng $used/$limit lượt AI kỳ này (chung cho tóm tắt và trợ lý). Lượt mới từ $when. Bản theo mẫu luôn miễn phí.';
+    return 'Nhà mình đã dùng $used/$limit lượt AI kỳ này (chung cho tóm tắt và trợ lý). Lượt mới từ $when. Bạn vẫn xem được bản theo mẫu.';
   }
 
   @override
   String get aiStateQuotaPlain =>
-      'Nhà mình đã dùng hết lượt AI trong kỳ này. Bản theo mẫu luôn miễn phí.';
+      'Nhà mình đã dùng hết lượt AI trong kỳ này. Bạn vẫn xem được bản theo mẫu.';
 
   @override
   String get aiStateTemplateEyebrow => 'BẢN THEO MẪU';
 
   @override
   String get aiStatePremiumBody =>
-      'Tóm tắt bằng AI nằm trong Child Life Premium. Bản theo mẫu luôn miễn phí.';
+      'Tóm tắt bằng AI nằm trong Child Life Premium. Bạn vẫn xem được bản theo mẫu.';
 
   @override
   String get aiStateOtherBody =>
@@ -12838,7 +12835,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pmBuyClosedBody =>
-      'Child Life Premium chưa bán trong app. Mọi thứ miễn phí vẫn dùng bình thường; Child Life sẽ báo khi mở.';
+      'Child Life Premium chưa bán trong app. Mọi thứ khác vẫn dùng bình thường; Child Life sẽ báo khi mở.';
 
   @override
   String get pmAskOwnerTitle => 'Nhờ chủ hộ nâng cấp';
@@ -12897,7 +12894,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pmErrorBody =>
-      'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu miễn phí.';
+      'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu cơ bản.';
 
   @override
   String get pmErrorBodyPlain =>
@@ -13035,7 +13032,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhWeekRecordedTitle => 'Đã ghi trong tuần';
 
   @override
-  String get rhWeekRecordedSub => 'Từ nhật ký của cả nhà · luôn miễn phí';
+  String get rhWeekRecordedSub => 'Từ nhật ký của cả nhà';
 
   @override
   String get rhWeekFeeds => 'Bú';
@@ -13199,7 +13196,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rhWeekGatePremium =>
-      'Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp. Số liệu đã ghi ở trên luôn miễn phí.';
+      'Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp.';
 
   @override
   String get rhWeekGateOther =>
@@ -13281,7 +13278,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asChipReceipt => 'Chụp hoá đơn';
 
   @override
-  String get asFabLabel => 'Mở trợ lý';
+  String get asFabLabel => 'Mở Lumi';
 
   @override
   String get asModuleExpenseTitle => 'Chụp hoá đơn hoặc nhắn để ghi';
@@ -13306,30 +13303,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asNewChat => 'Hội thoại mới';
 
   @override
-  String get asDetails => 'Chi tiết';
-
-  @override
-  String asUsageLeft(int remaining, int limit) {
-    return 'Còn $remaining/$limit lượt hỗ trợ AI';
-  }
-
-  @override
-  String asUsageNear(int remaining, int limit, String date) {
-    return 'Còn $remaining/$limit lượt · làm mới $date';
-  }
-
-  @override
-  String asUsageOut(int limit, String date) {
-    return 'Đã dùng hết $limit/$limit lượt · làm mới $date';
-  }
-
-  @override
   String asUsageA11y(int remaining, int limit, String date) {
     return 'Lượt hỗ trợ AI của hộ: còn $remaining trên $limit, làm mới $date';
   }
 
   @override
-  String get asBadgeFree => 'Free';
+  String get asBadgeFree => 'Cơ bản';
 
   @override
   String get asBadgePremium => 'Premium';
@@ -13758,7 +13737,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asCostNotCharged => 'Không trừ';
 
   @override
-  String get asCostFree => 'Miễn phí';
+  String get asCostFree => 'Không trừ lượt';
 
   @override
   String get asRecentTitle => 'Gần đây';
@@ -13823,7 +13802,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asOutBodyFree =>
-      'Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký miễn phí.';
+      'Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký như thường.';
 
   @override
   String get asOpenTodayLog => 'Mở nhật ký hôm nay';
@@ -13980,7 +13959,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asHealthCallDoctor => 'Gọi bác sĩ của bé';
 
   @override
-  String get asHealthFree => 'Miễn phí · không trừ lượt';
+  String get asHealthFree => 'Không trừ lượt';
 
   @override
   String get asDialFailed => 'Chưa mở được ứng dụng gọi điện.';
@@ -14271,7 +14250,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asSleepSafety =>
-      'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ (miễn phí).';
+      'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ.';
 
   @override
   String get asSleepFalling => 'khó vào giấc';
@@ -14473,7 +14452,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asRecentReleased => '0 lượt · đã hoàn lại';
 
   @override
-  String get asRecentFree => '0 lượt · miễn phí';
+  String get asRecentFree => '0 lượt · không tính';
 
   @override
   String get asRecentEmpty => 'Chưa dùng lượt nào trong kỳ này.';
@@ -14503,4 +14482,1020 @@ class AppLocalizationsVi extends AppLocalizations {
   String asSummaryFeedMinutes(String time, int minutes) {
     return '$time $minutes phút';
   }
+
+  @override
+  String get lbTitle => 'Thư viện chăm bé';
+
+  @override
+  String get lbSaved => 'Đã lưu';
+
+  @override
+  String get lbSearchHint => 'Tìm: ngủ ngày, nấc, hăm tã…';
+
+  @override
+  String get lbTopicFeeding => 'Bú & sữa';
+
+  @override
+  String get lbTopicSleep => 'Giấc ngủ';
+
+  @override
+  String get lbTopicTeething => 'Mọc răng';
+
+  @override
+  String get lbTopicIllness => 'Sốt & ốm vặt';
+
+  @override
+  String get lbTopicDailyCare => 'Chăm hằng ngày';
+
+  @override
+  String get lbTopicDevelopment => 'Phát triển';
+
+  @override
+  String lbForBaby(String name, String age) {
+    return 'Hợp với $name · $age';
+  }
+
+  @override
+  String get lbSeeMore => 'Xem thêm';
+
+  @override
+  String get lbRecent => 'Mới cập nhật';
+
+  @override
+  String lbMinutes(int count) {
+    return '$count phút đọc';
+  }
+
+  @override
+  String lbMinutesShort(int count) {
+    return '$count phút';
+  }
+
+  @override
+  String lbRangeWeeks(int from, int to) {
+    return '$from–$to tuần';
+  }
+
+  @override
+  String lbRangeMonths(int from, int to) {
+    return '$from–$to tháng';
+  }
+
+  @override
+  String lbRangeYears(int from, int to) {
+    return '$from–$to tuổi';
+  }
+
+  @override
+  String lbStageWeek(int count) {
+    return '$count tuần';
+  }
+
+  @override
+  String lbStageMonth(int count) {
+    return '$count tháng';
+  }
+
+  @override
+  String lbReviewedBy(String reviewer, String credential, String month) {
+    return 'Được $reviewer · $credential rà soát $month';
+  }
+
+  @override
+  String get lbIllustrative => 'Nội dung minh hoạ · chờ chuyên môn duyệt';
+
+  @override
+  String get lbIllustrativeShort => 'Minh hoạ · chờ duyệt';
+
+  @override
+  String get lbOfflineLibrary =>
+      'Không có kết nối. Thư viện đang hiện bản đã lưu trên máy.';
+
+  @override
+  String get lbOfflineStages =>
+      'Không có kết nối. Giai đoạn của bé đang hiện bản đã lưu trên máy.';
+
+  @override
+  String get lbEmptyTitle => 'Thư viện đang được chuẩn bị';
+
+  @override
+  String get lbEmptyBody => 'Bài viết sẽ hiện ở đây ngay khi được xuất bản.';
+
+  @override
+  String get lbEmptyOfflineTitle => 'Chưa có bản lưu trên máy';
+
+  @override
+  String get lbEmptyOfflineBody =>
+      'Kết nối mạng một lần để tải nội dung, sau đó đọc được cả khi không có mạng.';
+
+  @override
+  String lbResults(int count) {
+    return '$count bài viết';
+  }
+
+  @override
+  String get lbFilters => 'Bộ lọc';
+
+  @override
+  String lbFiltersCount(int count) {
+    return 'Bộ lọc · $count';
+  }
+
+  @override
+  String lbRemoveFilter(String label) {
+    return 'Bỏ lọc $label';
+  }
+
+  @override
+  String get lbClearSearch => 'Xoá tìm kiếm';
+
+  @override
+  String get lbSortTitle => 'Sắp xếp';
+
+  @override
+  String get lbSortRelevant => 'Liên quan nhất';
+
+  @override
+  String get lbSortNewest => 'Mới cập nhật';
+
+  @override
+  String get lbSortShortest => 'Đọc nhanh nhất';
+
+  @override
+  String get lbNoResults => 'Không tìm thấy bài phù hợp';
+
+  @override
+  String get lbNoResultsHint => 'Thử từ khoá khác hoặc bỏ bớt bộ lọc.';
+
+  @override
+  String get lbFilterTopic => 'Chủ đề';
+
+  @override
+  String get lbFilterAge => 'Độ tuổi';
+
+  @override
+  String get lbFilterTime => 'Thời gian đọc';
+
+  @override
+  String get lbTimeShort => 'Dưới 3 phút';
+
+  @override
+  String get lbTimeMedium => '3–6 phút';
+
+  @override
+  String get lbTimeLong => 'Trên 6 phút';
+
+  @override
+  String get lbReset => 'Đặt lại';
+
+  @override
+  String lbShowN(int count) {
+    return 'Xem $count bài';
+  }
+
+  @override
+  String get lbSave => 'Lưu';
+
+  @override
+  String get lbUnsave => 'Bỏ lưu';
+
+  @override
+  String get lbSavedToast => 'Đã lưu · xem trong Thư viện › Đã lưu';
+
+  @override
+  String get lbView => 'Xem';
+
+  @override
+  String get lbUnsavedToast => 'Đã bỏ lưu';
+
+  @override
+  String get lbUndo => 'Hoàn tác';
+
+  @override
+  String get lbSaveFailed => 'Chưa lưu được. Thử lại nhé.';
+
+  @override
+  String get lbTextSize => 'Cỡ chữ';
+
+  @override
+  String get lbRelated => 'Bài viết liên quan';
+
+  @override
+  String get lbSources => 'Nguồn tham khảo';
+
+  @override
+  String get lbOpenFirstAid => 'Dấu hiệu nguy hiểm? Mở Sơ cứu trẻ em';
+
+  @override
+  String get lbArticleFootnote =>
+      'Nội dung tham khảo, không thay thế chẩn đoán của bác sĩ. Mỗi bé phát triển theo nhịp riêng.';
+
+  @override
+  String get lbArticleMissing => 'Bài viết này không còn trong thư viện';
+
+  @override
+  String get lbArticleMissingBody =>
+      'Bài có thể đã được gỡ để cập nhật. Mở lại Thư viện chăm bé.';
+
+  @override
+  String lbSavedToday(String topic) {
+    return '$topic · lưu hôm nay';
+  }
+
+  @override
+  String lbSavedOn(String topic, String date) {
+    return '$topic · lưu $date';
+  }
+
+  @override
+  String get lbSavedEmptyTitle => 'Chưa lưu bài nào';
+
+  @override
+  String get lbSavedEmptyBody => 'Bấm Lưu khi đọc một bài để giữ lại đây.';
+
+  @override
+  String lbUpdated(String title) {
+    return 'Bài “$title” vừa được cập nhật. Mở để xem bản mới.';
+  }
+
+  @override
+  String get lbStagesTitle => 'Giai đoạn của bé';
+
+  @override
+  String get lbStagesIntro =>
+      'Gợi ý ngắn cho từng giai đoạn. Mỗi bé phát triển theo nhịp riêng.';
+
+  @override
+  String get lbHere => 'Bé đang ở đây';
+
+  @override
+  String get lbDoing => 'Bé đang thế nào';
+
+  @override
+  String get lbTry => 'Ba mẹ có thể thử';
+
+  @override
+  String get lbMilestones => 'Mốc thường gặp';
+
+  @override
+  String get lbWeekCardSub => 'Gợi ý cho tuần này trong Nhịp lớn lên';
+
+  @override
+  String get lbStageFootnote => 'Mỗi bé phát triển theo nhịp riêng.';
+
+  @override
+  String get lbStageMissing => 'Giai đoạn này không còn trong ứng dụng';
+
+  @override
+  String get lbStageMissingBody =>
+      'Mở lại Giai đoạn của bé để xem các giai đoạn hiện có.';
+
+  @override
+  String get lbStagesEmptyTitle => 'Nội dung theo giai đoạn đang được chuẩn bị';
+
+  @override
+  String get lbStagesEmptyBody =>
+      'Gợi ý cho từng giai đoạn sẽ hiện ở đây ngay khi được xuất bản.';
+
+  @override
+  String get lbNoDobTitle => 'Thêm ngày sinh của bé';
+
+  @override
+  String get lbNoDobBody =>
+      'Để Child Life gợi ý đúng theo tuổi, nhắc Wonder Week và mốc phát triển.';
+
+  @override
+  String get lbNoDobAction => 'Thêm ngày sinh';
+
+  @override
+  String get lbNoDobViewerTitle => 'Chưa biết bé đang ở giai đoạn nào';
+
+  @override
+  String lbNoDobViewer(String name) {
+    return 'Bạn chưa được xem ngày sinh của $name, nên app chưa đánh dấu giai đoạn hiện tại. Bạn vẫn đọc được mọi giai đoạn.';
+  }
+
+  @override
+  String get asLumiIntroEyebrow => 'Mới';
+
+  @override
+  String get asLumiIntroTitle => 'Gặp Lumi, trợ lý của nhà bạn';
+
+  @override
+  String get asLumiIntroBody =>
+      'Chạm để ghi cữ bú bằng một dòng, hỏi về ghi nhận của bé hoặc gửi ảnh hoá đơn. Lumi soạn nháp, bạn xem lại rồi lưu.';
+
+  @override
+  String get asLumiIntroBodyText =>
+      'Chạm để ghi cữ bú bằng một dòng hoặc hỏi về ghi nhận của bé. Lumi soạn nháp, bạn xem lại rồi lưu.';
+
+  @override
+  String get asLumiIntroBodyViewer => 'Chạm để hỏi Lumi về ghi nhận của bé.';
+
+  @override
+  String get asLumiIntroLater => 'Để sau';
+
+  @override
+  String get asLumiIntroTry => 'Thử ngay';
+
+  @override
+  String get asUsageButton => 'Mức dùng';
+
+  @override
+  String get rhPlannedTonight => 'Đã lên kế hoạch · tối nay';
+
+  @override
+  String get rhPlannedToday => 'Đã lên kế hoạch · hôm nay';
+
+  @override
+  String rhPlannedOn(String date) {
+    return 'Đã lên kế hoạch · $date';
+  }
+
+  @override
+  String rhEveningDate(String date) {
+    return 'tối $date';
+  }
+
+  @override
+  String rhPlannedBy(String who, String when) {
+    return '$who lên kế hoạch · $when';
+  }
+
+  @override
+  String get rhPlanAskMorning => 'Sáng mai có thể kể lại kết quả.';
+
+  @override
+  String get rhPlanAskEvening => 'Từ 18:00 hôm nay có thể kể lại kết quả.';
+
+  @override
+  String get rhKickerFollowUp => 'CẢ NHÀ ĐÃ CÓ DỊP THỬ CHƯA?';
+
+  @override
+  String get rhCancelPlan => 'Bỏ kế hoạch';
+
+  @override
+  String get rhPlanCanceled => 'Đã bỏ kế hoạch';
+
+  @override
+  String get rhDidNotTry => 'Chưa thử';
+
+  @override
+  String get rhDidNotTryToast => 'Không sao, lúc khác thử cũng được.';
+
+  @override
+  String get rhTriedHistoryTitle => 'Các cách đã thử';
+
+  @override
+  String rhTriedHistoryBody(int days) {
+    return 'Gợi ý cả nhà đã lên kế hoạch hoặc trả lời trong $days ngày qua, ai làm và thấy thế nào.';
+  }
+
+  @override
+  String get rhTriedHistoryEmpty =>
+      'Chưa có cách nào được lên kế hoạch hay thử.';
+
+  @override
+  String get rhSeeAllTried => 'Xem tất cả';
+
+  @override
+  String rhWeekMakeVideo(int n) {
+    return 'Tạo video tuần $n';
+  }
+
+  @override
+  String get rhWeekMakeVideoPlain => 'Tạo video của tuần';
+
+  @override
+  String rhWeekVideoPhotos(int count) {
+    return '$count ảnh trong tuần được chọn sẵn';
+  }
+
+  @override
+  String hnStepOf(int step, int count) {
+    return 'Bước $step trên $count';
+  }
+
+  @override
+  String hnContinueCount(int count) {
+    return 'Tiếp tục · $count mục';
+  }
+
+  @override
+  String get hnNotifTitle => 'Để Child Life nhắc bạn đúng lúc';
+
+  @override
+  String get hnNotifBody =>
+      'Chỉ những gì bạn vừa chọn và nhắc việc bạn tự đặt. Không quảng cáo.';
+
+  @override
+  String get hnNotifExamples => 'Bạn có thể nhận những loại sau';
+
+  @override
+  String get hnNotifExampleTag => 'Ví dụ';
+
+  @override
+  String get hnNotifVaccine => 'Nhắc lịch tiêm';
+
+  @override
+  String get hnNotifVaccineWhen => 'Trước lịch tiêm';
+
+  @override
+  String get hnNotifVaccineSample => '“Mai có lịch tiêm 6 trong 1 lúc 08:30.”';
+
+  @override
+  String get hnNotifRhythm => 'Nhịp lớn lên';
+
+  @override
+  String get hnNotifRhythmWhen => 'Trước 3 ngày';
+
+  @override
+  String get hnNotifRhythmSample =>
+      '“Theo lịch tham khảo, con sắp đến giai đoạn 1.”';
+
+  @override
+  String get hnNotifWeek => 'Tóm tắt tuần';
+
+  @override
+  String get hnNotifWeekWhen => 'Chủ nhật 20:30';
+
+  @override
+  String get hnNotifWeekSample => '“Một tuần của con đã sẵn sàng để xem lại.”';
+
+  @override
+  String get hnNotifAllow => 'Bật thông báo';
+
+  @override
+  String get hnNotifSettingsHint => 'Tắt hoặc chỉnh lại trong Tôi › Thông báo';
+
+  @override
+  String get hnNotifDenied =>
+      'Thông báo chưa bật. Bạn có thể bật trong Cài đặt của máy.';
+
+  @override
+  String get hnInviteTitle => 'Hôm nay theo cách của nhà bạn';
+
+  @override
+  String get hnInviteBody => 'Chọn điều bạn quan tâm · 30 giây';
+
+  @override
+  String get hnInviteStart => 'Bắt đầu';
+
+  @override
+  String get hnInviteClose => 'Ẩn lời mời cá nhân hoá';
+
+  @override
+  String get hnInviteHidden =>
+      'Đã ẩn. Bạn vẫn chỉnh được trong Tôi › Cá nhân hoá.';
+
+  @override
+  String get hnForBabyBecause => 'Theo điều bạn quan tâm';
+
+  @override
+  String get hnForBabyNoInterests => 'Chưa chọn điều bạn quan tâm';
+
+  @override
+  String get hnForBabyChange => 'Đổi';
+
+  @override
+  String get hnForBabyPick => 'Chọn';
+
+  @override
+  String get hnRhythmPill => 'Nhịp lớn lên · Beta';
+
+  @override
+  String hnRhythmExpected(String range) {
+    return 'Theo lịch tham khảo, dự kiến $range.';
+  }
+
+  @override
+  String hnRhythmSoothing(int days) {
+    return 'Cả nhà ghi nhận con cần được dỗ nhiều hơn $days ngày qua.';
+  }
+
+  @override
+  String hnCardPage(int page, int count) {
+    return 'Thẻ $page trên $count';
+  }
+
+  @override
+  String get hnCardOptions => 'Tuỳ chọn cho thẻ này';
+
+  @override
+  String get mtTitle => 'Mốc phát triển';
+
+  @override
+  String mtSummary(String name, int count) {
+    return '$name đã có $count mốc';
+  }
+
+  @override
+  String mtSummaryNone(String name) {
+    return '$name chưa có mốc nào';
+  }
+
+  @override
+  String get mtLead =>
+      'Ghi lại khi bạn thấy bé làm được. Mỗi bé có nhịp riêng.';
+
+  @override
+  String get mtLeadViewer =>
+      'Các mốc tham khảo theo tuổi. Mỗi bé có nhịp riêng.';
+
+  @override
+  String get mtFilterAll => 'Tất cả';
+
+  @override
+  String get mtGroupMotor => 'Vận động';
+
+  @override
+  String get mtGroupCommunication => 'Giao tiếp';
+
+  @override
+  String get mtGroupCognitive => 'Nhận thức';
+
+  @override
+  String get mtGroupSocial => 'Cảm xúc – xã hội';
+
+  @override
+  String get mtOwn => 'Mốc riêng';
+
+  @override
+  String get mtSeen => 'Đã quan sát';
+
+  @override
+  String get mtFollowingSection => 'Đang theo dõi';
+
+  @override
+  String get mtAround => 'Gợi ý quanh tuổi của bé';
+
+  @override
+  String get mtReferenceSection => 'Mốc tham khảo';
+
+  @override
+  String get mtOthers => 'Các mốc khác';
+
+  @override
+  String mtShowAll(int count) {
+    return 'Xem tất cả mốc ($count)';
+  }
+
+  @override
+  String get mtShowLess => 'Thu gọn';
+
+  @override
+  String mtRangeMonths(int from, int to) {
+    return 'tham khảo $from–$to tháng';
+  }
+
+  @override
+  String mtRangeWeeks(int from, int to) {
+    return 'tham khảo $from–$to tuần';
+  }
+
+  @override
+  String mtRangeChipMonths(int from, int to) {
+    return 'Tham khảo $from–$to tháng';
+  }
+
+  @override
+  String mtRangeChipWeeks(int from, int to) {
+    return 'Tham khảo $from–$to tuần';
+  }
+
+  @override
+  String get mtUpcoming => 'Sắp tới';
+
+  @override
+  String get mtNotRecorded => 'Chưa ghi';
+
+  @override
+  String get mtFollowingTag => 'Đang theo dõi';
+
+  @override
+  String get mtCreateOwn => 'Tạo mốc riêng';
+
+  @override
+  String get mtIllustrative => 'Nội dung minh hoạ · chờ chuyên môn duyệt';
+
+  @override
+  String mtReviewed(String reviewer) {
+    return 'Nội dung được $reviewer rà soát';
+  }
+
+  @override
+  String get mtEmptyTitle => 'Chưa có mốc tham khảo';
+
+  @override
+  String get mtEmptyBody =>
+      'Nội dung đang được chuẩn bị. Bạn vẫn có thể tạo mốc riêng của bé.';
+
+  @override
+  String get mtEmptyBodyViewer => 'Nội dung đang được chuẩn bị.';
+
+  @override
+  String get mtNoDob => 'Thêm ngày sinh của bé để xem gợi ý theo tuổi.';
+
+  @override
+  String get mtEntrySub => 'Ghi lại những điều bé làm được';
+
+  @override
+  String mtEntryCount(int count) {
+    return '$count mốc đã ghi';
+  }
+
+  @override
+  String get mtHowTo => 'Cách nhận biết';
+
+  @override
+  String get mtReassure =>
+      'Khoảng tuổi chỉ để tham khảo. Mỗi bé có nhịp riêng — nếu bạn băn khoăn, hãy hỏi bác sĩ của bé.';
+
+  @override
+  String get mtTalkToDoctor => 'Khi nào nên hỏi bác sĩ';
+
+  @override
+  String get mtHealthLink => 'Xem hướng dẫn sức khoẻ';
+
+  @override
+  String get mtMarkSeen => 'Đánh dấu đã quan sát';
+
+  @override
+  String get mtFollow => 'Lưu để theo dõi';
+
+  @override
+  String get mtUnfollow => 'Bỏ theo dõi';
+
+  @override
+  String get mtFollowed => 'Đã lưu để theo dõi';
+
+  @override
+  String get mtUnfollowed => 'Đã bỏ theo dõi';
+
+  @override
+  String get mtSources => 'Nguồn tham khảo';
+
+  @override
+  String get mtParentsRecord => 'Ba mẹ của bé ghi lại các mốc trong mục này.';
+
+  @override
+  String get mtNotFound => 'Không tìm thấy mốc này.';
+
+  @override
+  String get mtDateDid => 'Ngày bé làm được';
+
+  @override
+  String get mtNote => 'Ghi chú';
+
+  @override
+  String get mtNoteHint => 'Bé làm được lúc nào, ở đâu, với ai…';
+
+  @override
+  String get mtPhotosOptional => 'Ảnh (không bắt buộc)';
+
+  @override
+  String get mtAddPhotos => 'Thêm ảnh';
+
+  @override
+  String get mtRemovePhoto => 'Bỏ ảnh này';
+
+  @override
+  String get mtSave => 'Lưu mốc';
+
+  @override
+  String get mtPickDate => 'Chọn ngày';
+
+  @override
+  String get mtSaved => 'Đã lưu mốc';
+
+  @override
+  String get mtSaveFailed => 'Chưa lưu được. Thử lại nhé.';
+
+  @override
+  String mtMeta(String date, String name, String age, String who) {
+    return '$date · lúc $name $age · $who ghi';
+  }
+
+  @override
+  String mtMetaNoAge(String date, String who) {
+    return '$date · $who ghi';
+  }
+
+  @override
+  String get mtKeepTitle => 'Giữ khoảnh khắc này trong Kỷ niệm?';
+
+  @override
+  String mtKeepBody(String name) {
+    return 'Tạo kỷ niệm với ảnh và ghi chú này, gắn mốc “$name”.';
+  }
+
+  @override
+  String mtKeepBodyNote(String name) {
+    return 'Tạo kỷ niệm gắn mốc “$name” — thêm ảnh nếu bạn muốn.';
+  }
+
+  @override
+  String get mtCreateMemory => 'Tạo kỷ niệm';
+
+  @override
+  String get mtCreateCard => 'Tạo thẻ mốc';
+
+  @override
+  String get mtInMemories => 'Đã lưu trong Kỷ niệm';
+
+  @override
+  String mtSeenByFamily(int count) {
+    return 'Cả gia đình xem được · $count ảnh';
+  }
+
+  @override
+  String mtSeenByParents(int count) {
+    return 'Chỉ ba mẹ xem được · $count ảnh';
+  }
+
+  @override
+  String get mtSeenByFamilyNote => 'Cả gia đình xem được · ghi chú';
+
+  @override
+  String get mtSeenByParentsNote => 'Chỉ ba mẹ xem được · ghi chú';
+
+  @override
+  String get mtUploading => 'Đang tải lên Kỷ niệm…';
+
+  @override
+  String get mtMore => 'Thêm thao tác';
+
+  @override
+  String get mtEdit => 'Sửa ghi nhận';
+
+  @override
+  String get mtDelete => 'Xoá ghi nhận';
+
+  @override
+  String get mtDeleteTitle => 'Xoá ghi nhận mốc này?';
+
+  @override
+  String get mtDeleteBody =>
+      'Ngày và ghi chú sẽ bị xoá. Kỷ niệm đã tạo vẫn ở trong Kỷ niệm.';
+
+  @override
+  String get mtDeleted => 'Đã xoá ghi nhận';
+
+  @override
+  String get mtNewMemory => 'Kỷ niệm mới';
+
+  @override
+  String get mtCaption => 'Chú thích';
+
+  @override
+  String get mtCaptionHint => 'Vài dòng về khoảnh khắc này';
+
+  @override
+  String mtTag(String name) {
+    return 'Mốc · $name';
+  }
+
+  @override
+  String get mtWhoSees => 'Ai được xem';
+
+  @override
+  String get mtSaveMemory => 'Lưu kỷ niệm';
+
+  @override
+  String get mtMemoryCreated => 'Đã tạo kỷ niệm';
+
+  @override
+  String get mtCaptionRequired => 'Thêm chú thích hoặc ảnh để lưu kỷ niệm.';
+
+  @override
+  String get mtOwnLead =>
+      'Những lần đầu tiên chỉ nhà mình có — ghi lại theo cách của bạn.';
+
+  @override
+  String get mtName => 'Tên mốc';
+
+  @override
+  String get mtNameHint => 'Ví dụ: Lần đầu về quê';
+
+  @override
+  String mtCount(int count, int max) {
+    return '$count/$max ký tự';
+  }
+
+  @override
+  String get mtDate => 'Ngày';
+
+  @override
+  String get mtAlsoMemory => 'Tạo kỷ niệm cùng lúc';
+
+  @override
+  String get mtAlsoMemorySub => 'Lưu ảnh và ghi chú vào Kỷ niệm';
+
+  @override
+  String get mtEditTitle => 'Sửa mốc';
+
+  @override
+  String lbTodayStageKicker(String range) {
+    return 'Giai đoạn của bé · $range';
+  }
+
+  @override
+  String get lbTodayStageAction => 'Xem giai đoạn';
+
+  @override
+  String get lbTodayRead => 'Đọc bài';
+
+  @override
+  String get ntBell => 'Thông báo';
+
+  @override
+  String ntBellUnread(int count) {
+    return 'Thông báo, $count chưa đọc';
+  }
+
+  @override
+  String get ntInboxTitle => 'Thông báo';
+
+  @override
+  String get ntMarkAllRead => 'Đánh dấu đã đọc';
+
+  @override
+  String get ntOpenSettings => 'Cài đặt thông báo';
+
+  @override
+  String get ntFilterAll => 'Tất cả';
+
+  @override
+  String get ntFilterReminders => 'Nhắc việc';
+
+  @override
+  String get ntFilterBaby => 'Cho bé';
+
+  @override
+  String get ntFilterFamily => 'Gia đình';
+
+  @override
+  String get ntSectionToday => 'HÔM NAY';
+
+  @override
+  String get ntSectionWeek => 'TUẦN NÀY';
+
+  @override
+  String get ntSectionEarlier => 'TRƯỚC ĐÓ';
+
+  @override
+  String get ntUnread => 'Chưa đọc';
+
+  @override
+  String get ntEmptyTitle => 'Chưa có thông báo nào';
+
+  @override
+  String get ntEmptyBody =>
+      'Nhắc việc, lịch tiêm và tin của gia đình sẽ hiện ở đây.';
+
+  @override
+  String get ntEmptyFiltered => 'Chưa có thông báo nào trong mục này.';
+
+  @override
+  String get ntLoadFailed => 'Chưa tải được thông báo. Thử lại sau nhé.';
+
+  @override
+  String get ntKept => 'Thông báo được giữ 90 ngày. Vuốt sang trái để ẩn.';
+
+  @override
+  String get ntHide => 'Ẩn';
+
+  @override
+  String get ntGone => 'Mục này không còn mở được.';
+
+  @override
+  String get ntMaster => 'Thông báo của Child Life';
+
+  @override
+  String get ntMasterOn => 'Đang bật trong cài đặt hệ thống';
+
+  @override
+  String get ntMasterOff => 'Đang tắt trong cài đặt hệ thống';
+
+  @override
+  String get ntGroupReminders => 'NHẮC VIỆC BẠN ĐẶT';
+
+  @override
+  String get ntGroupRemindersHint =>
+      'Luôn đến đúng giờ, kể cả trong giờ yên lặng';
+
+  @override
+  String get ntCare => 'Bú, ngủ, thay tã';
+
+  @override
+  String get ntCareHint => 'Nhắc theo quy tắc và nhắc một lần';
+
+  @override
+  String get ntVaccines => 'Tiêm chủng';
+
+  @override
+  String get ntVaccinesHint => 'Trước 3 ngày và tối hôm trước lúc 19:00';
+
+  @override
+  String get ntSpending => 'Chi tiêu';
+
+  @override
+  String get ntSpendingHint => 'Khoản định kỳ, 80% ngân sách, kết quả nhập';
+
+  @override
+  String get ntGroupBaby => 'GỢI Ý CHO BÉ';
+
+  @override
+  String get ntGroupBabyHint => 'Gom lại, tối đa 2 thông báo mỗi ngày';
+
+  @override
+  String get ntRhythm => 'Nhịp lớn lên';
+
+  @override
+  String get ntRhythmHint =>
+      'Trước mỗi giai đoạn 3 ngày · check-in tối đa 1/ngày';
+
+  @override
+  String get ntStages => 'Giai đoạn của bé';
+
+  @override
+  String get ntStagesHint => 'Khi bé sang tuần / tháng mới';
+
+  @override
+  String get ntMilestones => 'Mốc phát triển';
+
+  @override
+  String get ntMilestonesHint => 'Khi đến khoảng tuổi thường gặp';
+
+  @override
+  String get ntArticles => 'Bài viết gợi ý';
+
+  @override
+  String get ntArticlesHint => 'Tối đa 1 bài mỗi tuần';
+
+  @override
+  String get ntWeekly => 'Tóm tắt tuần';
+
+  @override
+  String get ntWeeklyHint => 'Chủ nhật 20:30';
+
+  @override
+  String get ntGroupFamily => 'KỶ NIỆM & GIA ĐÌNH';
+
+  @override
+  String get ntPhotos => 'Ảnh mới có thể có bé';
+
+  @override
+  String get ntPhotosHint => 'Tự lưu kỷ niệm · tối đa 1 lần/ngày';
+
+  @override
+  String get ntKeepsakes => 'Gợi ý tạo video, thiệp';
+
+  @override
+  String get ntKeepsakesHint => 'Vào ngày tròn tháng, 100 ngày';
+
+  @override
+  String get ntFamilyActivity => 'Hoạt động của gia đình';
+
+  @override
+  String get ntFamilyActivityHint => 'Thích, xem kỷ niệm';
+
+  @override
+  String get ntGroupTiming => 'THỜI GIAN';
+
+  @override
+  String get ntDigest => 'Giờ nhận gợi ý';
+
+  @override
+  String ntDigestDaily(String time) {
+    return '$time mỗi ngày';
+  }
+
+  @override
+  String get ntQuiet => 'Giờ yên lặng';
+
+  @override
+  String ntQuietRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String get ntSaveFailed => 'Chưa lưu được. Thử lại nhé.';
+
+  @override
+  String get rhPlannedPill => 'Đã lên kế hoạch';
+
+  @override
+  String mtTodayKicker(String range) {
+    return 'Mốc có thể thấy · $range';
+  }
+
+  @override
+  String get mtTodayAction => 'Ghi nhận khi bé làm được';
+
+  @override
+  String get mtTodayActionViewer => 'Xem cách nhận biết';
+
+  @override
+  String get mtEntrySubViewer => 'Mốc tham khảo theo tuổi của bé';
 }

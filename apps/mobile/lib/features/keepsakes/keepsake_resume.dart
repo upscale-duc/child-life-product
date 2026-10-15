@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/navigation.dart' show SafePush;
 import '../../app/route_guard.dart';
 import '../assistant/assistant_models.dart' show AssistantScope;
 import '../assistant/assistant_screens.dart' show assistantLocation;
@@ -97,6 +98,9 @@ Map<String, Object?> cardDraftToJson(CardDraft d) => {
   'quote': d.quote,
   'photos': [for (final p in d.photos) _photo(p)],
   'slot': d.slot,
+  // D-076 #14: the family milestone the card is for.
+  'milestone': d.milestone?.toJson(),
+  'ownTitle': d.ownTitle,
 };
 
 /// The card draft again, with its template from [catalog]; null when the template is gone.
@@ -124,6 +128,8 @@ CardDraft? cardDraftFromJson(Map<String, Object?> j, KeepsakeCatalog catalog) {
     quote: j['quote'] as String? ?? '',
     photos: [for (final p in (j['photos'] as List? ?? const [])) _photoOf(p)],
     slot: (j['slot'] as num?)?.toInt() ?? 0,
+    milestone: MilestoneRef.fromJson(j['milestone']),
+    ownTitle: j['ownTitle'] == true,
   );
 }
 
@@ -243,16 +249,18 @@ Future<void> resumeAfterPurchase(
   if (resume.draftRef case final key?) {
     container.read(resumeDraftsProvider).drop(key);
   }
+  // D-076 nav: the paywall has just closed onto whatever opened it, possibly a page above the
+  // tabs (MS01, a Nhịp lớn lên screen); these are Kỷ niệm pages, so never pushed over it.
   switch (draft) {
     case CardDraft():
       container.read(justResumedProvider.notifier).set(draft.template.id);
-      unawaited(router.push(Routes.milestoneCardEdit, extra: draft));
+      unawaited(router.pushSafe(Routes.milestoneCardEdit, extra: draft));
     case VideoDraft():
       container.read(justResumedProvider.notifier).set(draft.template.id);
-      unawaited(router.push(Routes.memoryStoryPhotos, extra: draft));
+      unawaited(router.pushSafe(Routes.memoryStoryPhotos, extra: draft));
     default:
       unawaited(
-        router.push(
+        router.pushSafe(
           resume.kind == ResumeKind.video
               ? Routes.memoryStory
               : Routes.milestoneCard,

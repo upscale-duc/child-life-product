@@ -626,13 +626,12 @@ void main() {
       await tester.tap(find.text(l10n.rhIllTry));
       await tester.pumpAndSettle();
       expect(repo.savedFeedback.single.kind, FeedbackKind.started);
-      expect(find.text(l10n.rhTriedOn('08/10')), findsOneWidget);
-      await tester.tap(find.text(l10n.rhTellHow));
-      await tester.pumpAndSettle();
-      expect(
-        visits.last.location,
-        '${Routes.rhythmActivity}/act_wind_down/feedback',
-      );
+      // D-076 #10: a plan waits for its chance; no "Kể lại kết quả" yet.
+      expect(find.text(l10n.rhPlannedTonight), findsWidgets);
+      expect(find.text(l10n.rhTriedOn('08/10')), findsNothing);
+      expect(find.text(l10n.rhTellHow), findsNothing);
+      expect(find.text(l10n.rhCancelPlan), findsOneWidget);
+      expect(visits, isEmpty);
     });
 
     testWidgets('AC01: "Không phù hợp với con" rules it out', (tester) async {
@@ -704,12 +703,13 @@ void main() {
 
   group('Tuỳ chỉnh Hôm nay', () {
     test(
-      '"Dành cho bé hôm nay" joins saved layouts first, only with the flag',
+      '"Dành cho bé hôm nay" joins saved layouts after the tiles, only with the flag',
       () {
         final layout = TodayLayout.fromJson({
           'order': ['tiles', 'reminders', 'rhythm'],
         });
-        expect(layout.order.first, TodaySection.forYou);
+        // D-076 #8: right after the quick-track tiles.
+        expect(layout.order.take(2), [TodaySection.tiles, TodaySection.forYou]);
         expect(layout.shows(TodaySection.forYou), isTrue);
         expect(
           allowedSections(mai, hasTiles: true),

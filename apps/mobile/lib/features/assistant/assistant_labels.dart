@@ -338,22 +338,6 @@ String openModuleLabel(AppLocalizations l10n, DraftKind? k) => switch (k) {
   _ => l10n.asOpenLog,
 };
 
-/// The pill text of Chat/Mức dùng for [v] (never the component's default "18/20"). The reset
-/// date is read in the household's (here: the baby's) zone.
-String usagePillText(
-  AppLocalizations l10n,
-  String locale,
-  UsageView v,
-  String zone,
-) {
-  final reset = resetDate(locale, v.usage, zone);
-  return switch (v.level) {
-    UsageLevel.ok => l10n.asUsageLeft(v.remaining, v.limit),
-    UsageLevel.near => l10n.asUsageNear(v.remaining, v.limit, reset),
-    UsageLevel.out => l10n.asUsageOut(v.limit, reset),
-  };
-}
-
 /// "01/11" / "1 Nov": the first day of the next window (`resetsAt` is its exclusive end).
 String resetDate(String locale, AssistantUsage u, String zone) {
   final at = u.resetsAt;

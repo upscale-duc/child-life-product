@@ -26,6 +26,8 @@ import '../memories/album_models.dart';
 import '../memories/memory_repository.dart';
 import '../memories/push_registration.dart';
 import '../memories/upload_queue.dart';
+import '../notifications/notification_models.dart';
+import '../notifications/notification_repository.dart';
 import '../onboarding/setup_screens.dart';
 import '../premium/premium_models.dart';
 import '../premium/premium_repository.dart';
@@ -77,9 +79,10 @@ class MeScreen extends ConsumerWidget {
       MemberRole.caregiver => l10n.meRoleCaregiver(relation, names),
       MemberRole.relative => l10n.meRoleRelative(relation, names),
     };
+    // EN07 (D-076 #2): "Bật" while the switches drawn on are on, "Tắt" when all are off.
     final prefs =
-        ref.watch(notificationPrefsProvider(me.uid)).value ??
-        const NotificationPrefs();
+        ref.watch(notificationSettingsProvider(me.uid)).value ??
+        NotificationSettings.defaults;
     final theme = ref.watch(appearanceSettingsProvider).theme;
     final account = ref.watch(accountDocProvider(me.uid)).value;
     final staffTransfer = openStaffTransfer(ref, account?.staffTransfer);
@@ -132,9 +135,9 @@ class MeScreen extends ConsumerWidget {
             MeRow(
               icon: ClIcons.bell,
               title: l10n.meNotifications,
-              value: prefs.allOn
+              value: prefs.allOf(NotificationSettings.onByDefault)
                   ? l10n.meOn
-                  : prefs.allOff
+                  : prefs.noneOf(NotificationSettings.keys)
                   ? l10n.meOff
                   : l10n.meSome,
               onTap: () => context.push(Routes.meNotifications),

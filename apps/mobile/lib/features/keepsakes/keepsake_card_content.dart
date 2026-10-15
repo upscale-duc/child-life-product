@@ -137,18 +137,30 @@ CardContent keepsakeCardContent({
   required String note,
   required List<CardPhoto?> photos,
   Iterable<CareRecord> growth = const [],
+
+  /// D-076 #14: a family milestone's own name in place of the occasion's (its age is then
+  /// counted from the date of birth).
+  String? occasionTitle,
 }) {
-  final age = keepsakeAge(l10n, occasion, dob, date);
+  final age = keepsakeAge(
+    l10n,
+    occasionTitle == null ? occasion : null,
+    dob,
+    date,
+  );
+  final title = occasionTitle ?? occasion.title(l10n);
   String own(String key) => fillKeepsakeText(
     template.text(key)?.defaultText.of(locale) ?? '',
     name: name,
     age: age.age,
-    occasion: occasion.title(l10n),
-    achievement: occasion.achievement(l10n),
+    occasion: title,
+    achievement: occasionTitle == null
+        ? occasion.achievement(l10n)
+        : l10n.ksAchieveAny,
   );
   final slots = template.photoSlots(KeepsakeFormat.portrait);
   return CardContent(
-    occasion: occasion.title(l10n),
+    occasion: title,
     name: name,
     date: _cardDate.format(date),
     // The parent's note ("Lời nhắn"): quoted for `quote` layers, plain for `message` ones.

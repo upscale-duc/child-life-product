@@ -63,10 +63,21 @@ class CardDraft {
     required this.quote,
     this.photos = const [],
     this.slot = 0,
+    this.milestone,
+    this.ownTitle = false,
   });
 
   final String babyId;
   final Occasion occasion;
+
+  /// D-076 #14: the family's milestone the card is for (a Mốc phát triển record, MS01's "Lưu
+  /// vào Mốc" or a Kỷ niệm milestone), preselected; the saved card is tagged with it. Null: the
+  /// occasion's own preset milestone.
+  final MilestoneRef? milestone;
+
+  /// No occasion fits [milestone] (a custom one): the card says the milestone's name, and the
+  /// saved card carries no occasion.
+  final bool ownTitle;
 
   /// The occasion's day: the card shows it, the memory is dated on it (today if still ahead).
   final DateTime date;
@@ -107,6 +118,8 @@ class CardDraft {
     quote: quote ?? this.quote,
     photos: photos ?? this.photos,
     slot: slot ?? this.slot,
+    milestone: milestone,
+    ownTitle: ownTitle,
   );
 
   /// [photo] in [slotIndex] (the active slot by default); the other slots stay as they are.
@@ -149,6 +162,8 @@ CardContent cardContent(
   note: d.quote,
   photos: d.photos,
   growth: growth,
+  // D-076 #14: a custom milestone's card says its name.
+  occasionTitle: d.ownTitle && d.milestone != null ? d.milestone!.name : null,
 );
 
 /// The best photos for a card, best first (the baby's own photos, never a card or video Child Life
@@ -159,6 +174,9 @@ List<MediaItem> defaultPhotos(
   Occasion o,
   DateTime date, {
   int count = 1,
+
+  /// D-076 #14: photos tagged with this family milestone come first.
+  String? milestoneId,
 }) {
   final photos = [
     for (final m in media)
@@ -169,7 +187,11 @@ List<MediaItem> defaultPhotos(
           m.displayPath != null)
         m,
   ];
-  int tagged(MediaItem m) => m.milestone?.id == o.milestoneId ? 0 : 1;
+  int tagged(MediaItem m) => m.milestone?.id == (milestoneId ?? o.milestoneId)
+      ? 0
+      : m.milestone?.id == o.milestoneId
+      ? 1
+      : 2;
   photos.sort((a, b) {
     final t = tagged(a) - tagged(b);
     if (t != 0) return t;
@@ -199,8 +221,13 @@ class MilestoneCardScreen extends ConsumerStatefulWidget {
     this.occasion,
     this.photoIds,
     this.embedded = false,
+    this.milestone,
     super.key,
   });
+
+  /// D-076 #14: the family milestone the card is for: its day, its tagged photos first, and the
+  /// saved card tagged with it.
+  final MilestoneRef? milestone;
 
   /// A page of [KeepsakeKindsScreen]: no back button or title of its own.
   final bool embedded;
@@ -254,11 +281,32 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
     final suggested = suggestedOccasion(dob, newest ?? c.now);
     final occasion = _occasion ?? widget.occasion ?? suggested;
     final milestones = [for (final m in media) ?m.milestone];
-    final date = occasion.dateFor(dob, milestones) ?? c.now;
+    // D-076 #14: a card for a family milestone keeps it while its own occasion is chosen.
+    final milestone =
+        widget.milestone != null &&
+            (widget.milestone!.id == occasion.milestoneId ||
+                _occasion == null ||
+                _occasion == widget.occasion)
+        ? widget.milestone
+        : null;
+    final date = milestone?.date ?? occasion.dateFor(dob, milestones) ?? c.now;
+    // No occasion fits the milestone (a custom one): its own name, and a general quote.
+    final ownTitle =
+        milestone != null &&
+        widget.occasion == null &&
+        _occasion == null &&
+        milestone.id != occasion.milestoneId;
+    final quote = ownTitle ? l10n.ksAchieveAny : occasion.quote(l10n);
     // Enough for the template with the most slots; each template uses as many as it has.
     final best = chosen.isNotEmpty
         ? chosen
-        : defaultPhotos(media, occasion, date, count: 4);
+        : defaultPhotos(
+            media,
+            occasion,
+            date,
+            count: 4,
+            milestoneId: milestone?.id,
+          );
     final catalog = ref.watch(keepsakeCatalogProvider);
     final cards = [
       for (final t in catalog.value?.cards ?? const <KeepsakeTemplate>[])
@@ -333,9 +381,10 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
                         name: c.nickname,
                         dob: dob,
                         date: date,
-                        note: occasion.quote(l10n),
+                        note: quote,
                         photos: previews,
                         growth: growth,
+                        occasionTitle: ownTitle ? milestone.name : null,
                       );
                       return _TemplateTile(
                         template: t,
@@ -355,11 +404,13 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
                               format: _format,
                               template: t,
                               palette: t.palette,
-                              quote: occasion.quote(l10n),
+                              quote: quote,
                               photos: [
                                 for (final m in best.take(t.photosMax))
                                   photoOf(m),
                               ],
+                              milestone: milestone,
+                              ownTitle: ownTitle,
                             ),
                             content: content,
                             badge: catalog.value!.badges,
@@ -557,14 +608,16 @@ class OccasionChip extends StatelessWidget {
   }
 }
 
-/// "Miễn phí" / "★ Cao cấp" (MM10). Whether Cao cấp is open, hidden or (later) paid, and whether
-/// the badge shows, is set in the portal (D-068 #8); during the beta both are free (D-068 #3).
+/// "★ Cao cấp" (MM10). Whether Cao cấp is open, hidden or (later) paid, and whether the badge
+/// shows, is set in the portal (D-068 #8); during the beta both are free (D-068 #3). A basic
+/// template has no badge: no "Miễn phí" label on Premium-feature screens (D-076 #9).
 class TierBadge extends StatelessWidget {
   const TierBadge({required this.premium, super.key});
   final bool premium;
 
   @override
   Widget build(BuildContext context) {
+    if (!premium) return const SizedBox.shrink();
     final l10n = AppLocalizations.of(context);
     // Fixed colours, as drawn: the badge sits on the card's own artwork in both themes.
     const ink = Color(0xFF1A1F26);
@@ -582,7 +635,7 @@ class TierBadge extends StatelessWidget {
             const SizedBox(width: 3),
           ],
           Text(
-            premium ? l10n.ksPremium : l10n.ksFree,
+            l10n.ksPremium,
             style: const TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w700,
@@ -1312,17 +1365,21 @@ Map<String, Object?> cardMemoryRequest({
     'notifyFamily': false,
     'dateMode': 'single',
     'date': isoDateOf(day),
-    'milestone': MilestoneRef(
-      id: draft.occasion.milestoneId,
-      name: milestoneName,
-      date: day,
-    ).toJson(),
+    // D-076 #14: tagged with the family's milestone when the card was made for one.
+    'milestone':
+        (draft.milestone ??
+                MilestoneRef(
+                  id: draft.occasion.milestoneId,
+                  name: milestoneName,
+                  date: day,
+                ))
+            .toJson(),
     'albumIds': const <String>[],
     'generated': {
       'kind': 'card',
       'templateId': draft.template.id,
       'templateVersion': draft.template.version,
-      'occasion': draft.occasion.wire,
+      'occasion': draft.ownTitle ? null : draft.occasion.wire,
       'format': draft.format.name,
     },
   };
@@ -2053,6 +2110,7 @@ class KeepsakeKindsScreen extends ConsumerStatefulWidget {
     required this.video,
     this.occasion,
     this.photoIds,
+    this.milestone,
     super.key,
   });
 
@@ -2060,6 +2118,9 @@ class KeepsakeKindsScreen extends ConsumerStatefulWidget {
   final bool video;
   final Occasion? occasion;
   final List<String>? photoIds;
+
+  /// D-076 #14: the family milestone a card is for (Thiệp only).
+  final MilestoneRef? milestone;
 
   @override
   ConsumerState<KeepsakeKindsScreen> createState() => _KindsState();
@@ -2093,6 +2154,7 @@ class _KindsState extends ConsumerState<KeepsakeKindsScreen> {
           : MilestoneCardScreen(
               occasion: widget.occasion,
               photoIds: widget.photoIds,
+              milestone: widget.milestone,
             );
     }
     final cl = context.cl;
@@ -2127,6 +2189,7 @@ class _KindsState extends ConsumerState<KeepsakeKindsScreen> {
                     child: MilestoneCardScreen(
                       occasion: widget.occasion,
                       photoIds: widget.photoIds,
+                      milestone: widget.milestone,
                       embedded: true,
                     ),
                   ),

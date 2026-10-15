@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
+import '../../core/appearance/appearance_providers.dart';
 import '../../core/widgets/cl_icon.dart';
+import '../../core/widgets/cl_misc.dart' show ClTourTip;
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
@@ -293,19 +297,215 @@ class AssistantModuleEntry extends ConsumerWidget {
   }
 }
 
-/// Chat/Nút trợ lý on Hôm nay (the tab root only): opens the chat (the open conversation), also
-/// when the pool is used up (history and direct logging still work there).
-class AssistantFloatingEntry extends ConsumerWidget {
-  const AssistantFloatingEntry({super.key});
+/// The Lumi first-run tooltip (669:64442) was answered by this person ("Thử ngay" or "Để sau"),
+/// keyed by uid: once per person on this phone, never again after either answer.
+final lumiIntroSeenProvider =
+    NotifierProvider.family<LumiIntroSeenNotifier, bool, String>(
+      LumiIntroSeenNotifier.new,
+    );
+
+class LumiIntroSeenNotifier extends Notifier<bool> {
+  LumiIntroSeenNotifier(this.uid);
+  final String uid;
+
+  static String keyFor(String uid) => 'assistant.lumiIntro.$uid';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  bool build() {
+    try {
+      return ref.read(sharedPreferencesProvider).getBool(keyFor(uid)) ?? false;
+    } on Object {
+      return false;
+    }
+  }
+
+  void markSeen() {
+    if (state) return;
+    state = true;
+    try {
+      ref.read(sharedPreferencesProvider).setBool(keyFor(uid), true).ignore();
+    } on Object {
+      // No preferences (tests): seen for this run.
+    }
+  }
+}
+
+/// Chat/Nút trợ lý on Hôm nay (the tab root only): Lumi (627:62667), which opens the chat (the
+/// open conversation), also when the pool is used up (history and direct logging still work
+/// there). The first time the assistant is there for this person, a tooltip introduces Lumi
+/// (669:64442) over a dimmed Hôm nay, the button ringed: "Thử ngay" opens the chat, "Để sau"
+/// closes it; either answer is kept. It waits while anything else is on top ([canShowIntro],
+/// another route, a sheet) and never shows over a modal.
+class AssistantFloatingEntry extends ConsumerStatefulWidget {
+  const AssistantFloatingEntry({this.canShowIntro, super.key});
+
+  /// False while the tab has something open over it (a sheet on the tab's own navigator).
+  final bool Function()? canShowIntro;
+
+  /// How long Hôm nay settles before the tooltip, and how often it looks again while blocked.
+  static const introDelay = Duration(milliseconds: 800);
+  static const introRetry = Duration(seconds: 2);
+
+  @override
+  ConsumerState<AssistantFloatingEntry> createState() =>
+      _AssistantFloatingEntryState();
+}
+
+class _AssistantFloatingEntryState
+    extends ConsumerState<AssistantFloatingEntry> {
+  final _tip = OverlayPortalController();
+  final _link = LayerLink();
+  Timer? _wait;
+
+  @override
+  void dispose() {
+    _wait?.cancel();
+    super.dispose();
+  }
+
+  bool _allowed(String uid) {
+    if (!mounted || ref.read(lumiIntroSeenProvider(uid))) return false;
+    final route = ModalRoute.of(context);
+    return (route == null || route.isCurrent) &&
+        TickerMode.valuesOf(context).enabled &&
+        (widget.canShowIntro?.call() ?? true);
+  }
+
+  /// Shows the tooltip once Hôm nay has settled and nothing is on top; looks again later.
+  void _schedule(String uid, Duration after) {
+    if (_wait != null || _tip.isShowing) return;
+    _wait = Timer(after, () {
+      _wait = null;
+      if (!mounted || ref.read(lumiIntroSeenProvider(uid))) return;
+      if (_allowed(uid)) {
+        setState(_tip.show);
+      } else {
+        _schedule(uid, AssistantFloatingEntry.introRetry);
+      }
+    });
+  }
+
+  void _answer(String uid, {required bool open, required String babyId}) {
+    ref.read(lumiIntroSeenProvider(uid).notifier).markSeen();
+    setState(_tip.hide);
+    if (open) openAssistant(context, AssistantScope.child(babyId));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final me = ref.watch(selectedMembershipProvider);
-    if (me == null || ref.watch(assistantAccessProvider(me.babyId)) == null) {
+    final access = me == null
+        ? null
+        : ref.watch(assistantAccessProvider(me.babyId));
+    if (me == null || access == null) {
+      _wait?.cancel();
+      _wait = null;
       return const SizedBox.shrink();
     }
-    return AsFloatingButton(
-      onPressed: () => openAssistant(context, AssistantScope.child(me.babyId)),
+    final seen = ref.watch(lumiIntroSeenProvider(me.uid));
+    if (!seen) {
+      // Something came on top while it showed: hide (still unseen) and wait for it to go.
+      if (_tip.isShowing && !_allowed(me.uid)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _tip.isShowing) setState(_tip.hide);
+        });
+      }
+      _schedule(me.uid, AssistantFloatingEntry.introDelay);
+    }
+    void open() => openAssistant(context, AssistantScope.child(me.babyId));
+    final l10n = AppLocalizations.of(context);
+    final writer = me.role != MemberRole.relative;
+    final body = !writer
+        ? l10n.asLumiIntroBodyViewer
+        : access.images && SpendingAccess.of(me).record
+        ? l10n.asLumiIntroBody
+        : l10n.asLumiIntroBodyText;
+    return OverlayPortal(
+      controller: _tip,
+      overlayChildBuilder: (_) => _LumiIntro(
+        link: _link,
+        body: body,
+        onLater: () => _answer(me.uid, open: false, babyId: me.babyId),
+        onTry: () => _answer(me.uid, open: true, babyId: me.babyId),
+      ),
+      child: CompositedTransformTarget(
+        link: _link,
+        child: AsFloatingButton(onPressed: open),
+      ),
+    );
+  }
+}
+
+/// 669:64442: Hôm nay dimmed, Lumi ringed above the scrim, the tooltip above Lumi with its
+/// pointer on it ("Mới", the title, what Lumi does, "Để sau" · "Thử ngay").
+class _LumiIntro extends StatelessWidget {
+  const _LumiIntro({
+    required this.link,
+    required this.body,
+    required this.onLater,
+    required this.onTry,
+  });
+
+  final LayerLink link;
+  final String body;
+  final VoidCallback onLater;
+  final VoidCallback onTry;
+
+  static const _tipWidth = 300.0;
+  static const _button = 56.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    return Stack(
+      key: const ValueKey('lumi.intro'),
+      children: [
+        // Taps on the dimmed page do nothing: one of the two answers closes it.
+        Positioned.fill(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {},
+            child: ColoredBox(color: cl.colors.scrim),
+          ),
+        ),
+        Positioned(
+          left: 0,
+          top: 0,
+          child: CompositedTransformFollower(
+            link: link,
+            showWhenUnlinked: false,
+            child: AsFloatingButton(
+              onPressed: onTry,
+              highlight: true,
+              attention: false,
+            ),
+          ),
+        ),
+        Positioned(
+          left: 0,
+          top: 0,
+          child: CompositedTransformFollower(
+            link: link,
+            showWhenUnlinked: false,
+            targetAnchor: Alignment.topRight,
+            followerAnchor: Alignment.bottomRight,
+            offset: const Offset(0, -ClSpace.s3),
+            child: ClTourTip(
+              step: l10n.asLumiIntroEyebrow,
+              title: l10n.asLumiIntroTitle,
+              body: body,
+              skipLabel: l10n.asLumiIntroLater,
+              nextLabel: l10n.asLumiIntroTry,
+              onSkip: onLater,
+              onNext: onTry,
+              pointerUp: false,
+              // The pointer's tip on Lumi's centre (the card's right edge is Lumi's).
+              pointerX: _tipWidth - _button / 2 - 10,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

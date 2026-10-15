@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:child_life/app/session.dart';
 import 'package:child_life/features/keepsakes/keepsake_nudges.dart';
+import 'package:child_life/features/milestones/milestone_repository.dart';
 import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/baby/baby_repository.dart';
 import 'package:child_life/features/care/care_models.dart';
@@ -16,6 +17,7 @@ import 'package:child_life/features/reminders/reminder_notifications.dart';
 import 'package:child_life/features/reminders/reminder_repository.dart';
 import 'package:child_life/features/me/me_models.dart';
 import 'package:child_life/features/me/me_repository.dart';
+import 'package:child_life/features/notifications/notification_repository.dart';
 import 'package:child_life/features/reminders/rule_models.dart';
 import 'package:child_life/features/reminders/rule_repository.dart';
 import 'package:child_life/features/spending/spending_models.dart';
@@ -32,6 +34,8 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'first_aid_fixtures.dart';
+import 'milestone_fixtures.dart';
+import 'notification_fixtures.dart';
 import 'reminder_fixtures.dart';
 import 'spending_fixtures.dart';
 
@@ -233,12 +237,24 @@ List<Override> familyOverrides({
   /// Kỷ niệm 2.0 milestone nudges (D-068 #9) among this device's notifications; off unless a
   /// test is about them.
   bool nudges = false,
+
+  /// Mốc phát triển (D-076 #6): the seed and no records unless a test gives its own.
+  MilestoneRepository? milestones,
+
+  /// Hộp thông báo / EN07 (D-076 #2): empty, defaults, unless a test gives its own.
+  NotificationRepository? notificationRepo,
 }) {
   final self = me ?? mai;
   return [
+    milestoneRepositoryProvider.overrideWithValue(
+      milestones ?? FakeMilestoneRepository(),
+    ),
     if (!nudges) nudgeBabiesProvider.overrideWith((ref) => const []),
     // S11 account documents (no Firebase in widget tests).
     notificationPrefsProvider.overrideWith((ref, uid) => Stream.value(prefs)),
+    notificationRepositoryProvider.overrideWithValue(
+      notificationRepo ?? FakeNotificationRepository(),
+    ),
     accountDocProvider.overrideWith((ref, uid) => Stream.value(account)),
     sessionProvider.overrideWithValue(
       SessionSignedIn(

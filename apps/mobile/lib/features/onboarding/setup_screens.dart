@@ -30,6 +30,7 @@ import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../baby/time_zones.dart';
 import '../home/home_shell.dart';
+import '../today/today_personalize.dart' show personalizeAfterSetupProvider;
 import 'setup_draft.dart';
 import 'setup_sheets.dart';
 import 'widgets/onboarding_layout.dart';
@@ -279,6 +280,8 @@ class _TrackersScreenState extends ConsumerState<TrackersScreen> {
     setState(() => _busy = true);
     try {
       final babyId = await repo.createBaby(draft.toInput());
+      // D-076 #1: Hôm nay opens EN01–EN03 for this baby (lib/features/today/today_personalize.dart).
+      container.read(personalizeAfterSetupProvider.notifier).request(babyId);
       final photo = draft.avatarPhoto;
       if (photo != null) {
         try {

@@ -15,6 +15,7 @@ import '../care/care_repository.dart';
 import '../family/family_repository.dart';
 import '../first_aid/first_aid_repository.dart';
 import '../home/home_shell.dart';
+import '../milestones/milestone_repository.dart';
 import '../spending/spending_calc.dart';
 import '../spending/spending_currency.dart' show legacyCurrency;
 import '../spending/spending_format.dart';
@@ -78,6 +79,16 @@ class UtilitiesScreen extends ConsumerWidget {
       );
     }
 
+    String milestonesLine() {
+      final seen = parent
+          ? (ref.watch(milestoneRecordsProvider(me.babyId)).value ?? const [])
+                .where((r) => r.observed)
+                .length
+          : 0;
+      if (!parent) return l10n.mtEntrySubViewer;
+      return seen == 0 ? l10n.mtEntrySub : l10n.mtEntryCount(seen);
+    }
+
     final String membersLine;
     if (parent) {
       final members =
@@ -122,6 +133,18 @@ class UtilitiesScreen extends ConsumerWidget {
                   onTap: () => context.push(Routes.firstAid),
                 ),
               ?spendingRow,
+              // Mốc phát triển (D-076 #6): parents record; others browse the guide once one is
+              // published.
+              if (parent ||
+                  (ref.watch(referenceMilestonesProvider).value?.isNotEmpty ??
+                      false))
+                _Row(
+                  key: const Key('utMilestones'),
+                  icon: ClIcons.star,
+                  title: l10n.mtTitle,
+                  subtitle: milestonesLine(),
+                  onTap: () => context.push(Routes.milestones),
+                ),
             ],
           ),
           _Section(l10n.tabFamily),

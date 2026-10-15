@@ -31,6 +31,8 @@ import '../features/home/home_shell.dart';
 import '../features/memories/album_screens.dart';
 import '../features/memories/memories_screen.dart';
 import '../features/memories/messages_screen.dart';
+import '../features/milestones/milestone_routes.dart';
+import '../features/memories/memory_models.dart' show MilestoneRef;
 import '../features/stories/share_screens.dart';
 import '../features/stories/story_editor.dart';
 import '../features/stories/story_models.dart';
@@ -39,10 +41,13 @@ import '../features/me/account_screen.dart';
 import '../features/me/baby_profile_screens.dart';
 import '../features/me/help_screen.dart';
 import '../features/me/me_screen.dart';
-import '../features/me/notifications_screen.dart';
+// D-076 #2 notification centre: EN06 inbox, EN07 settings.
+import '../features/notifications/inbox_screen.dart';
+import '../features/notifications/notification_settings_screen.dart';
 import '../features/premium/paywall_screen.dart';
 import '../features/premium/plan_screen.dart';
 import '../features/rhythm/rhythm_routes.dart';
+import '../features/library/library_routes.dart';
 import '../features/me/profile_screen.dart';
 import '../features/me/storage_screens.dart';
 import '../features/reminders/reminder_screens.dart';
@@ -60,6 +65,7 @@ import '../features/spending/spending_categories.dart';
 import '../features/spending/spending_plan_screens.dart';
 import '../features/spending/spending_screens.dart';
 import '../features/spending/spending_stats.dart';
+import '../features/today/today_personalize.dart' show todayRoutes;
 import '../features/today/today_screen.dart';
 import 'route_guard.dart';
 import 'providers.dart';
@@ -294,6 +300,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                       photoIds: s.extra is List<String>
                           ? s.extra! as List<String>
                           : null,
+                      // D-076 #14: the family milestone the card is for (MS01, Mốc phát triển).
+                      milestone: argsOf<MilestoneRef>(s),
                     ),
                     routes: [
                       _route(
@@ -566,6 +574,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                       ),
                     ],
                   ),
+                  // Mốc phát triển (v1.1 3a–3g; D-076 #6).
+                  milestonesRoute(),
                   // Sơ cứu trẻ em (v1.1 7b–7i, TH01–TH24; D-058).
                   _route(
                     path: 'first-aid',
@@ -593,6 +603,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      // EN06 Hộp thông báo (D-076 #2), from the Hôm nay bell or a push: pushed, without the dock.
+      _route(
+        path: Routes.notifications,
+        builder: (_, _) => const InboxScreen(),
       ),
       // S11 "Tôi" (13a–13n), opened from the header avatar: pushed, without the dock (370:1898).
       _route(
@@ -622,9 +637,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           _route(path: 'profile', builder: (_, _) => const ProfileScreen()),
           _route(path: 'account', builder: (_, _) => const AccountScreen()),
+          // EN07 Cài đặt thông báo (D-076 #2; was G-056's four switches).
           _route(
             path: 'notifications',
-            builder: (_, _) => const NotificationsScreen(),
+            builder: (_, _) => const NotificationSettingsScreen(),
           ),
           _route(path: 'plan', builder: (_, _) => const HouseholdPlanScreen()),
           _route(path: 'help', builder: (_, _) => const HelpScreen()),
@@ -701,6 +717,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             OverlapScreen(conflictId: s.pathParameters['id'] ?? ''),
       ),
       ...rhythmRoutes(),
+      // Thư viện chăm bé (4a–4f) and Giai đoạn của bé (2a–2c), above the tabs (D-076 #5, #7).
+      ...libraryRoutes(),
+      // D-076 #1: EN01–EN03 personalisation (lib/features/today/today_personalize.dart).
+      ...todayRoutes(),
       ...premiumRoutes(),
       ...assistantRoutes(),
       _route(

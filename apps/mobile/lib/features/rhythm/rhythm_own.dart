@@ -10,7 +10,6 @@ import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
-import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
@@ -22,11 +21,12 @@ import '../premium/premium_gate.dart';
 import '../premium/premium_widgets.dart' show PremiumExpiredStrip;
 import '../premium/premium_models.dart';
 import 'rhythm_access.dart';
-import 'rhythm_actions.dart';
 import 'rhythm_calc.dart';
 import 'rhythm_episodes.dart';
 import 'rhythm_labels.dart';
+import 'activity_history_screen.dart';
 import 'rhythm_models.dart';
+import 'rhythm_plans.dart' show triedEntries;
 import 'rhythm_repository.dart';
 import 'rhythm_widgets.dart';
 
@@ -482,7 +482,8 @@ class _SleepGate extends StatelessWidget {
   }
 }
 
-/// "Cách nhà mình đã thử": the latest answer per activity (put-offs left out), newest first.
+/// NL01 "Cách nhà mình đã thử": the newest tries (a plan and its answers, D-076 #10), each with
+/// who and what is open, and "Xem tất cả" → "Các cách đã thử".
 class TriedSection extends ConsumerWidget {
   const TriedSection({required this.me, super.key});
   final Membership me;
@@ -493,20 +494,10 @@ class TriedSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
-    final locale = Localizations.localeOf(context);
-    final feedback =
-        ref.watch(recFeedbackProvider(me.babyId)).value ??
-        const <RecFeedback>[];
-    final content = ref.watch(rhythmContentProvider).value;
-    final members =
-        ref.watch(familyMembersProvider(me.babyId)).value ??
-        const <Membership>[];
-    final seen = <String>{};
-    final rows = <RecFeedback>[
-      for (final f in feedback)
-        if (f.kind != FeedbackKind.notToday && seen.add(f.contentId)) f,
-    ].take(maxRows).toList();
-    if (rows.isEmpty) return const SizedBox.shrink();
+    final entries = triedEntries(
+      ref.watch(recFeedbackProvider(me.babyId)).value ?? const <RecFeedback>[],
+    );
+    if (entries.isEmpty) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -519,89 +510,23 @@ class TriedSection extends ConsumerWidget {
           ),
           child: Column(
             children: [
-              for (final (i, f) in rows.indexed) ...[
+              for (final (i, e) in entries.take(maxRows).indexed) ...[
                 if (i > 0) Container(height: 1, color: cl.colors.separator),
-                _TriedRow(
-                  feedback: f,
-                  title:
-                      content?.activity(f.contentId)?.title.of(locale) ??
-                      l10n.rhUnknownActivity,
-                  who: capitalized(
-                    memberLabel(
-                      l10n,
-                      members.where((m) => m.uid == f.authorUid).firstOrNull,
-                      myUid: me.uid,
-                      uid: f.authorUid,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: ClSpace.s3),
+                  child: TriedEntryCard(
+                    me: me,
+                    entry: e,
+                    entries: entries,
+                    compact: true,
                   ),
-                  onTap: content?.activity(f.contentId) == null
-                      ? null
-                      : () => context.push(activityLocation(f.contentId)),
                 ),
               ],
             ],
           ),
         ),
+        const TriedHistoryLink(),
       ],
     );
-  }
-}
-
-class _TriedRow extends StatelessWidget {
-  const _TriedRow({
-    required this.feedback,
-    required this.title,
-    required this.who,
-    this.onTap,
-  });
-
-  final RecFeedback feedback;
-  final String title;
-  final String who;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
-    final locale = Localizations.localeOf(context);
-    final kind = feedback.kind == FeedbackKind.started
-        ? l10n.rhStartedLabel
-        : feedbackKindLabel(l10n, feedback.kind);
-    final row = Padding(
-      padding: const EdgeInsets.symmetric(vertical: ClSpace.s3),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: cl.text.label.copyWith(
-                    color: cl.colors.ink,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  l10n.rhWhoDay(who, shortDay(locale, feedback.date)),
-                  style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: ClSpace.s2),
-          RhPill(label: kind, mint: feedback.kind == FeedbackKind.helpful),
-        ],
-      ),
-    );
-    return onTap == null
-        ? MergeSemantics(child: row)
-        : ClPressable(
-            onPressed: onTap,
-            pressedOpacity: ClPressable.surfaceOpacity,
-            semanticLabel: '$title, $who, $kind',
-            child: row,
-          );
   }
 }

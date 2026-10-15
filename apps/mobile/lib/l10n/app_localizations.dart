@@ -9937,13 +9937,13 @@ abstract class AppLocalizations {
   /// **'Giai đoạn phát triển dự kiến'**
   String get careWonderWeekSub;
 
-  /// Coming-soon tile.
+  /// Chăm sóc tile → Giai đoạn của bé (D-076 #5; formerly "Thẻ theo tuổi").
   ///
   /// In vi, this message translates to:
-  /// **'Theo tuổi của bé'**
+  /// **'Giai đoạn của bé'**
   String get careAgeCards;
 
-  /// Coming-soon tile.
+  /// Chăm sóc tile subtitle.
   ///
   /// In vi, this message translates to:
   /// **'Gợi ý cho từng tuần, từng tháng'**
@@ -9961,16 +9961,16 @@ abstract class AppLocalizations {
   /// **'Ghi lại lần đầu của con'**
   String get careMilestonesSub;
 
-  /// Coming-soon tile.
+  /// Chăm sóc tile → Thư viện chăm bé.
   ///
   /// In vi, this message translates to:
   /// **'Thư viện chăm bé'**
   String get careLibrary;
 
-  /// Coming-soon tile.
+  /// Chăm sóc tile subtitle (no review claim until reviewed, P-141).
   ///
   /// In vi, this message translates to:
-  /// **'Bài viết được chuyên môn rà soát'**
+  /// **'Bài viết chăm bé theo tuổi'**
   String get careLibrarySub;
 
   /// Coming-soon tile.
@@ -16687,12 +16687,6 @@ abstract class AppLocalizations {
   /// **'Story 9:16'**
   String get ksFormatStory;
 
-  /// Template badge (MM10).
-  ///
-  /// In vi, this message translates to:
-  /// **'Miễn phí'**
-  String get ksFree;
-
   /// Template badge (MM10); free during the beta (D-068 #3).
   ///
   /// In vi, this message translates to:
@@ -17962,7 +17956,7 @@ abstract class AppLocalizations {
   /// Plan badge: free (588:6290).
   ///
   /// In vi, this message translates to:
-  /// **'Miễn phí'**
+  /// **'Cơ bản'**
   String get pmBadgeFree;
 
   /// Plan badge: purchase being verified (588:6290).
@@ -17986,7 +17980,7 @@ abstract class AppLocalizations {
   /// PR03 free state title.
   ///
   /// In vi, this message translates to:
-  /// **'Đang dùng miễn phí'**
+  /// **'Đang dùng gói cơ bản'**
   String get pmPlanFree;
 
   /// PR03 free state body.
@@ -18076,7 +18070,7 @@ abstract class AppLocalizations {
   /// PR03 section: what never needs a plan.
   ///
   /// In vi, this message translates to:
-  /// **'Luôn miễn phí'**
+  /// **'Gói nào cũng có'**
   String get pmPlanAlwaysFree;
 
   /// PR03 always-free list (PR01 592:6826).
@@ -18202,7 +18196,7 @@ abstract class AppLocalizations {
   /// MO02 secondary button.
   ///
   /// In vi, this message translates to:
-  /// **'Dùng mẫu miễn phí'**
+  /// **'Dùng mẫu cơ bản'**
   String get pmUseFreeTemplate;
 
   /// MO02 footnote for cards.
@@ -18262,7 +18256,7 @@ abstract class AppLocalizations {
   /// FEATURE_DISABLED body.
   ///
   /// In vi, this message translates to:
-  /// **'Ghi chép, nội dung miễn phí và hướng dẫn sức khoẻ vẫn dùng bình thường.'**
+  /// **'Ghi chép, nội dung cơ bản và hướng dẫn sức khoẻ vẫn dùng bình thường.'**
   String get pmGateDisabledBody;
 
   /// QUOTA_EXCEEDED (MO04 "Khi hết lượt").
@@ -18544,7 +18538,7 @@ abstract class AppLocalizations {
   /// H01 age card footer.
   ///
   /// In vi, this message translates to:
-  /// **'Nội dung theo tuổi · luôn miễn phí'**
+  /// **'Nội dung theo tuổi'**
   String get rhAgeFree;
 
   /// H01 reference-calendar pill (D-072 #7).
@@ -18933,7 +18927,7 @@ abstract class AppLocalizations {
   /// C02 helper below the button.
   ///
   /// In vi, this message translates to:
-  /// **'Ghi nhận luôn miễn phí · cả nhà cùng thấy'**
+  /// **'Cả nhà cùng thấy ghi nhận này'**
   String get rhAlwaysFree;
 
   /// NL05b heading.
@@ -19089,7 +19083,7 @@ abstract class AppLocalizations {
   /// HL01 footer.
   ///
   /// In vi, this message translates to:
-  /// **'Luôn miễn phí · không paywall, không upsell'**
+  /// **'Không paywall, không mời nâng cấp'**
   String get rhHlAlwaysFree;
 
   /// HL01: the dialler did not open.
@@ -19185,7 +19179,7 @@ abstract class AppLocalizations {
   /// PS01F article pill.
   ///
   /// In vi, this message translates to:
-  /// **'Miễn phí · theo tuổi'**
+  /// **'Theo tuổi'**
   String get rhFreeAgePill;
 
   /// PS01F article meta.
@@ -19659,7 +19653,7 @@ abstract class AppLocalizations {
   /// NL01 gate (PREMIUM_REQUIRED): no blurred fake insight.
   ///
   /// In vi, this message translates to:
-  /// **'So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn miễn phí.'**
+  /// **'So sánh với mức thường của con thuộc Hỗ trợ phù hợp. Ghi nhận, lịch tham khảo và hướng dẫn sức khoẻ vẫn dùng bình thường.'**
   String get rhSleepGatePremium;
 
   /// NL01 gate (any other reason).
@@ -19713,7 +19707,7 @@ abstract class AppLocalizations {
   /// NL01 for other members while the country is unset (D-072 #3).
   ///
   /// In vi, this message translates to:
-  /// **'Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung miễn phí vẫn dùng được.'**
+  /// **'Đang chờ chủ hộ chọn khu vực. Ghi nhận, lịch tham khảo và nội dung cơ bản vẫn dùng được.'**
   String get rhRegionWaiting;
 
   /// NL02a intro.
@@ -20757,19 +20751,19 @@ abstract class AppLocalizations {
   /// QUOTA_EXCEEDED, daily window. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đã dùng {used}/{limit} lượt AI hôm nay cho bé. Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.'**
+  /// **'Đã dùng {used}/{limit} lượt AI hôm nay cho bé. Lượt mới từ {when}. Bạn vẫn xem được bản theo mẫu.'**
   String aiStateQuotaDay(int used, int limit, String when);
 
   /// QUOTA_EXCEEDED, monthly window. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Nhà mình đã dùng {used}/{limit} lượt AI kỳ này (chung cho tóm tắt và trợ lý). Lượt mới từ {when}. Bản theo mẫu luôn miễn phí.'**
+  /// **'Nhà mình đã dùng {used}/{limit} lượt AI kỳ này (chung cho tóm tắt và trợ lý). Lượt mới từ {when}. Bạn vẫn xem được bản theo mẫu.'**
   String aiStateQuotaMonth(int used, int limit, String when);
 
   /// QUOTA_EXCEEDED without numbers. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Nhà mình đã dùng hết lượt AI trong kỳ này. Bản theo mẫu luôn miễn phí.'**
+  /// **'Nhà mình đã dùng hết lượt AI trong kỳ này. Bạn vẫn xem được bản theo mẫu.'**
   String get aiStateQuotaPlain;
 
   /// PREMIUM_REQUIRED / other reasons eyebrow. EN is an engineering draft for owner review.
@@ -20781,7 +20775,7 @@ abstract class AppLocalizations {
   /// PREMIUM_REQUIRED body (the only state with a plan link). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Tóm tắt bằng AI nằm trong Child Life Premium. Bản theo mẫu luôn miễn phí.'**
+  /// **'Tóm tắt bằng AI nằm trong Child Life Premium. Bạn vẫn xem được bản theo mẫu.'**
   String get aiStatePremiumBody;
 
   /// ROLE_DENIED / REGION_UNAVAILABLE body. EN is an engineering draft for owner review.
@@ -21375,7 +21369,7 @@ abstract class AppLocalizations {
   /// PR01 owner: purchase not open yet.
   ///
   /// In vi, this message translates to:
-  /// **'Child Life Premium chưa bán trong app. Mọi thứ miễn phí vẫn dùng bình thường; Child Life sẽ báo khi mở.'**
+  /// **'Child Life Premium chưa bán trong app. Mọi thứ khác vẫn dùng bình thường; Child Life sẽ báo khi mở.'**
   String get pmBuyClosedBody;
 
   /// PR01 for members who are not the owner (D-072 #1).
@@ -21477,7 +21471,7 @@ abstract class AppLocalizations {
   /// PR02 Error body from a template.
   ///
   /// In vi, this message translates to:
-  /// **'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu miễn phí.'**
+  /// **'Bạn chưa bị trừ tiền nếu cửa hàng không xác nhận. Thử lại hoặc dùng mẫu cơ bản.'**
   String get pmErrorBody;
 
   /// PR02 Error body outside a template.
@@ -21711,7 +21705,7 @@ abstract class AppLocalizations {
   /// EN09 free section subtitle.
   ///
   /// In vi, this message translates to:
-  /// **'Từ nhật ký của cả nhà · luôn miễn phí'**
+  /// **'Từ nhật ký của cả nhà'**
   String get rhWeekRecordedSub;
 
   /// EN09 tile label.
@@ -21957,7 +21951,7 @@ abstract class AppLocalizations {
   /// EN09 gate, PREMIUM_REQUIRED.
   ///
   /// In vi, this message translates to:
-  /// **'Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp. Số liệu đã ghi ở trên luôn miễn phí.'**
+  /// **'Phần nhìn lại (giấc ngủ so với mức thường của con, ghi nhận và cách đã thử) thuộc Hỗ trợ phù hợp.'**
   String get rhWeekGatePremium;
 
   /// EN09 gate, any other reason.
@@ -22101,7 +22095,7 @@ abstract class AppLocalizations {
   /// Floating assistant button a11y label. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Mở trợ lý'**
+  /// **'Mở Lumi'**
   String get asFabLabel;
 
   /// CH01b entry in Chi tiêu.
@@ -22146,30 +22140,6 @@ abstract class AppLocalizations {
   /// **'Hội thoại mới'**
   String get asNewChat;
 
-  /// Usage row link to CH19.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chi tiết'**
-  String get asDetails;
-
-  /// Chat/Mức dùng, Còn.
-  ///
-  /// In vi, this message translates to:
-  /// **'Còn {remaining}/{limit} lượt hỗ trợ AI'**
-  String asUsageLeft(int remaining, int limit);
-
-  /// Chat/Mức dùng, Gần hết (CH20).
-  ///
-  /// In vi, this message translates to:
-  /// **'Còn {remaining}/{limit} lượt · làm mới {date}'**
-  String asUsageNear(int remaining, int limit, String date);
-
-  /// Chat/Mức dùng, Hết (CH21 / CH24: same numbers for Free and Premium).
-  ///
-  /// In vi, this message translates to:
-  /// **'Đã dùng hết {limit}/{limit} lượt · làm mới {date}'**
-  String asUsageOut(int limit, String date);
-
   /// Usage pill screen-reader label. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
@@ -22179,7 +22149,7 @@ abstract class AppLocalizations {
   /// Plan badge (CH19).
   ///
   /// In vi, this message translates to:
-  /// **'Free'**
+  /// **'Cơ bản'**
   String get asBadgeFree;
 
   /// Plan badge (CH19).
@@ -22941,7 +22911,7 @@ abstract class AppLocalizations {
   /// CH19 cost value (health). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Miễn phí'**
+  /// **'Không trừ lượt'**
   String get asCostFree;
 
   /// CH19 recent tasks section.
@@ -23049,7 +23019,7 @@ abstract class AppLocalizations {
   /// CH21 body.
   ///
   /// In vi, this message translates to:
-  /// **'Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký miễn phí.'**
+  /// **'Câu hỏi của bạn được giữ lại. Bạn vẫn ghi trực tiếp và xem nhật ký như thường.'**
   String get asOutBodyFree;
 
   /// CH21 direct action.
@@ -23319,7 +23289,7 @@ abstract class AppLocalizations {
   /// CH28 footnote (without the internal "nội dung y tế chờ duyệt theo vùng"). Deviates from the frame on purpose (business rule wins; see the A4 report).
   ///
   /// In vi, this message translates to:
-  /// **'Miễn phí · không trừ lượt'**
+  /// **'Không trừ lượt'**
   String get asHealthFree;
 
   /// Dialer failed. VI and EN are engineering drafts (no frame draws this state) for owner review.
@@ -23823,7 +23793,7 @@ abstract class AppLocalizations {
   /// CH15 safety box (now with a link).
   ///
   /// In vi, this message translates to:
-  /// **'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ (miễn phí).'**
+  /// **'Nếu con sốt, khó thở, li bì hoặc bỏ bú — mở Hướng dẫn sức khoẻ.'**
   String get asSleepSafety;
 
   /// Sleep concern kind.
@@ -24165,7 +24135,7 @@ abstract class AppLocalizations {
   /// CH19 recent value: work that never costs credits (health support). VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'0 lượt · miễn phí'**
+  /// **'0 lượt · không tính'**
   String get asRecentFree;
 
   /// CH19 recent section when the server sends an empty list. VI and EN are engineering drafts (no frame draws this state) for owner review.
@@ -24209,6 +24179,1788 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'{time} {minutes} phút'**
   String asSummaryFeedMinutes(String time, int minutes);
+
+  /// 4a title; Chăm sóc tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thư viện chăm bé'**
+  String get lbTitle;
+
+  /// 4a pill, 4f title, 4e save pill when saved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu'**
+  String get lbSaved;
+
+  /// 4a / 4b search placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm: ngủ ngày, nấc, hăm tã…'**
+  String get lbSearchHint;
+
+  /// 4a topic tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú & sữa'**
+  String get lbTopicFeeding;
+
+  /// 4a topic tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ'**
+  String get lbTopicSleep;
+
+  /// 4a topic tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọc răng'**
+  String get lbTopicTeething;
+
+  /// 4a topic tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sốt & ốm vặt'**
+  String get lbTopicIllness;
+
+  /// 4a topic tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chăm hằng ngày'**
+  String get lbTopicDailyCare;
+
+  /// 4a topic tile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phát triển'**
+  String get lbTopicDevelopment;
+
+  /// 4a section: articles for the baby's age.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hợp với {name} · {age}'**
+  String lbForBaby(String name, String age);
+
+  /// 4a section link → 4b with the age band.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm'**
+  String get lbSeeMore;
+
+  /// 4a section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới cập nhật'**
+  String get lbRecent;
+
+  /// Reading time.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} phút đọc'**
+  String lbMinutes(int count);
+
+  /// Reading time on cards.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} phút'**
+  String lbMinutesShort(int count);
+
+  /// Age range in weeks.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from}–{to} tuần'**
+  String lbRangeWeeks(int from, int to);
+
+  /// Age range in months.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from}–{to} tháng'**
+  String lbRangeMonths(int from, int to);
+
+  /// Age range in years.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from}–{to} tuổi'**
+  String lbRangeYears(int from, int to);
+
+  /// 2a stage covering one week.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} tuần'**
+  String lbStageWeek(int count);
+
+  /// 2a stage covering one month.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} tháng'**
+  String lbStageMonth(int count);
+
+  /// 4d byline / 2b footnote once an expert signed it (no claim before, P-141).
+  ///
+  /// In vi, this message translates to:
+  /// **'Được {reviewer} · {credential} rà soát {month}'**
+  String lbReviewedBy(String reviewer, String credential, String month);
+
+  /// Badge until an expert approves (D-073 #2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung minh hoạ · chờ chuyên môn duyệt'**
+  String get lbIllustrative;
+
+  /// Compact badge on rows and cards.
+  ///
+  /// In vi, this message translates to:
+  /// **'Minh hoạ · chờ duyệt'**
+  String get lbIllustrativeShort;
+
+  /// Offline banner (2c pattern).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có kết nối. Thư viện đang hiện bản đã lưu trên máy.'**
+  String get lbOfflineLibrary;
+
+  /// 2c offline banner (renamed from "Thẻ theo tuổi", D-076 #5).
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có kết nối. Giai đoạn của bé đang hiện bản đã lưu trên máy.'**
+  String get lbOfflineStages;
+
+  /// Nothing published yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thư viện đang được chuẩn bị'**
+  String get lbEmptyTitle;
+
+  /// Nothing published yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài viết sẽ hiện ở đây ngay khi được xuất bản.'**
+  String get lbEmptyBody;
+
+  /// Offline before the first load.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bản lưu trên máy'**
+  String get lbEmptyOfflineTitle;
+
+  /// Offline before the first load.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết nối mạng một lần để tải nội dung, sau đó đọc được cả khi không có mạng.'**
+  String get lbEmptyOfflineBody;
+
+  /// 4b result count.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} bài viết'**
+  String lbResults(int count);
+
+  /// 4b pill, 4c title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bộ lọc'**
+  String get lbFilters;
+
+  /// 4b pill with filters on.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bộ lọc · {count}'**
+  String lbFiltersCount(int count);
+
+  /// 4b removable chip (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ lọc {label}'**
+  String lbRemoveFilter(String label);
+
+  /// 4b clear button (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá tìm kiếm'**
+  String get lbClearSearch;
+
+  /// 4b sort sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp xếp'**
+  String get lbSortTitle;
+
+  /// 4b sort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên quan nhất'**
+  String get lbSortRelevant;
+
+  /// 4b sort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới cập nhật'**
+  String get lbSortNewest;
+
+  /// 4b sort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc nhanh nhất'**
+  String get lbSortShortest;
+
+  /// 4b no results.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy bài phù hợp'**
+  String get lbNoResults;
+
+  /// 4b no results.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử từ khoá khác hoặc bỏ bớt bộ lọc.'**
+  String get lbNoResultsHint;
+
+  /// 4c group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ đề'**
+  String get lbFilterTopic;
+
+  /// 4c group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ tuổi'**
+  String get lbFilterAge;
+
+  /// 4c group.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian đọc'**
+  String get lbFilterTime;
+
+  /// 4c chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dưới 3 phút'**
+  String get lbTimeShort;
+
+  /// 4c chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'3–6 phút'**
+  String get lbTimeMedium;
+
+  /// 4c chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trên 6 phút'**
+  String get lbTimeLong;
+
+  /// 4c secondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt lại'**
+  String get lbReset;
+
+  /// 4c primary (live count).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem {count} bài'**
+  String lbShowN(int count);
+
+  /// 4d bar; row bookmark (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu'**
+  String get lbSave;
+
+  /// Bookmark when saved (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ lưu'**
+  String get lbUnsave;
+
+  /// 4e toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu · xem trong Thư viện › Đã lưu'**
+  String get lbSavedToast;
+
+  /// 4e toast action → 4f.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem'**
+  String get lbView;
+
+  /// Toast after unsaving.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ lưu'**
+  String get lbUnsavedToast;
+
+  /// Unsave toast action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác'**
+  String get lbUndo;
+
+  /// Save error toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Thử lại nhé.'**
+  String get lbSaveFailed;
+
+  /// 4d "Aa" (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cỡ chữ'**
+  String get lbTextSize;
+
+  /// 4d / 2b section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài viết liên quan'**
+  String get lbRelated;
+
+  /// 4d section, 2b footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nguồn tham khảo'**
+  String get lbSources;
+
+  /// 4d "Khi nào nên hỏi bác sĩ" callout link (the guide works offline).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dấu hiệu nguy hiểm? Mở Sơ cứu trẻ em'**
+  String get lbOpenFirstAid;
+
+  /// 4d footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung tham khảo, không thay thế chẩn đoán của bác sĩ. Mỗi bé phát triển theo nhịp riêng.'**
+  String get lbArticleFootnote;
+
+  /// Unknown or withdrawn article.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài viết này không còn trong thư viện'**
+  String get lbArticleMissing;
+
+  /// Unknown or withdrawn article.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài có thể đã được gỡ để cập nhật. Mở lại Thư viện chăm bé.'**
+  String get lbArticleMissingBody;
+
+  /// 4f row meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{topic} · lưu hôm nay'**
+  String lbSavedToday(String topic);
+
+  /// 4f row meta.
+  ///
+  /// In vi, this message translates to:
+  /// **'{topic} · lưu {date}'**
+  String lbSavedOn(String topic, String date);
+
+  /// 4f empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu bài nào'**
+  String get lbSavedEmptyTitle;
+
+  /// 4f empty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bấm Lưu khi đọc một bài để giữ lại đây.'**
+  String get lbSavedEmptyBody;
+
+  /// 4f banner (no expert claim: it may still be illustrative).
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài “{title}” vừa được cập nhật. Mở để xem bản mới.'**
+  String lbUpdated(String title);
+
+  /// 2a title; Chăm sóc tile (D-076 #5, never "thẻ").
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn của bé'**
+  String get lbStagesTitle;
+
+  /// 2a intro (no review claim).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý ngắn cho từng giai đoạn. Mỗi bé phát triển theo nhịp riêng.'**
+  String get lbStagesIntro;
+
+  /// 2a current stage pill.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé đang ở đây'**
+  String get lbHere;
+
+  /// 2b card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé đang thế nào'**
+  String get lbDoing;
+
+  /// 2b card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba mẹ có thể thử'**
+  String get lbTry;
+
+  /// 2b section (when Mốc phát triển is available).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc thường gặp'**
+  String get lbMilestones;
+
+  /// 2b link to "Tuần này của {bé}" (D-072 #5).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho tuần này trong Nhịp lớn lên'**
+  String get lbWeekCardSub;
+
+  /// 2b footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mỗi bé phát triển theo nhịp riêng.'**
+  String get lbStageFootnote;
+
+  /// Unknown or withdrawn stage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn này không còn trong ứng dụng'**
+  String get lbStageMissing;
+
+  /// Unknown or withdrawn stage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở lại Giai đoạn của bé để xem các giai đoạn hiện có.'**
+  String get lbStageMissingBody;
+
+  /// 2a nothing published yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung theo giai đoạn đang được chuẩn bị'**
+  String get lbStagesEmptyTitle;
+
+  /// 2a nothing published yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cho từng giai đoạn sẽ hiện ở đây ngay khi được xuất bản.'**
+  String get lbStagesEmptyBody;
+
+  /// 2c card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ngày sinh của bé'**
+  String get lbNoDobTitle;
+
+  /// 2c card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để Child Life gợi ý đúng theo tuổi, nhắc Wonder Week và mốc phát triển.'**
+  String get lbNoDobBody;
+
+  /// 2c tinted button → Sửa hồ sơ bé.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ngày sinh'**
+  String get lbNoDobAction;
+
+  /// 2c for a member who may not see the date of birth.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa biết bé đang ở giai đoạn nào'**
+  String get lbNoDobViewerTitle;
+
+  /// 2c for caregivers / relatives without "Thông tin bé".
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chưa được xem ngày sinh của {name}, nên app chưa đánh dấu giai đoạn hiện tại. Bạn vẫn đọc được mọi giai đoạn.'**
+  String lbNoDobViewer(String name);
+
+  /// Lumi first-run tooltip eyebrow (669:64442).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới'**
+  String get asLumiIntroEyebrow;
+
+  /// Lumi first-run tooltip title (669:64442).
+  ///
+  /// In vi, this message translates to:
+  /// **'Gặp Lumi, trợ lý của nhà bạn'**
+  String get asLumiIntroTitle;
+
+  /// Lumi first-run tooltip body (669:64442) with photo reading and Chi tiêu. VI drafted from the EN frame for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để ghi cữ bú bằng một dòng, hỏi về ghi nhận của bé hoặc gửi ảnh hoá đơn. Lumi soạn nháp, bạn xem lại rồi lưu.'**
+  String get asLumiIntroBody;
+
+  /// Lumi first-run tooltip body without photo reading or Chi tiêu (never promises a receipt photo). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để ghi cữ bú bằng một dòng hoặc hỏi về ghi nhận của bé. Lumi soạn nháp, bạn xem lại rồi lưu.'**
+  String get asLumiIntroBodyText;
+
+  /// Lumi first-run tooltip body for a member who may only read (never promises logging). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để hỏi Lumi về ghi nhận của bé.'**
+  String get asLumiIntroBodyViewer;
+
+  /// Lumi first-run tooltip: dismiss for good (669:64442).
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau'**
+  String get asLumiIntroLater;
+
+  /// Lumi first-run tooltip: open the chat (669:64442).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử ngay'**
+  String get asLumiIntroTry;
+
+  /// Chat top-bar icon button (tooltip and screen-reader label) that opens CH19; replaces the "Chi tiết" link (612:7741). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mức dùng'**
+  String get asUsageButton;
+
+  /// Plan waiting state of an evening (or any-time) item, with a check, instead of "Kể lại kết quả" right away (D-076 #10). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lên kế hoạch · tối nay'**
+  String get rhPlannedTonight;
+
+  /// Plan waiting state of a daytime item (D-076 #10). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lên kế hoạch · hôm nay'**
+  String get rhPlannedToday;
+
+  /// Status pill of a plan from an earlier day ("tối 08/10"). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lên kế hoạch · {date}'**
+  String rhPlannedOn(String date);
+
+  /// An evening of a day ("tối 08/10"), as AC02 590:6558 "Đã thử · tối 08/10".
+  ///
+  /// In vi, this message translates to:
+  /// **'tối {date}'**
+  String rhEveningDate(String date);
+
+  /// Who planned and for when ("Ba lên kế hoạch · tối 08/10"). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} lên kế hoạch · {when}'**
+  String rhPlannedBy(String who, String when);
+
+  /// Plan waiting note: the result is asked from 05:00 the next morning (CH17 rule). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sáng mai có thể kể lại kết quả.'**
+  String get rhPlanAskMorning;
+
+  /// Plan waiting note for a daytime item: the result is asked from 18:00 (CH17 rule). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ 18:00 hôm nay có thể kể lại kết quả.'**
+  String get rhPlanAskEvening;
+
+  /// H02 kicker once the chance to try has passed (never "đã thử": the family only said they would). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'CẢ NHÀ ĐÃ CÓ DỊP THỬ CHƯA?'**
+  String get rhKickerFollowUp;
+
+  /// Secondary action of the plan waiting state: takes back my own plan (deletes my `started` row). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ kế hoạch'**
+  String get rhCancelPlan;
+
+  /// Toast after "Bỏ kế hoạch". VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ kế hoạch'**
+  String get rhPlanCanceled;
+
+  /// Answer next to "Kể lại kết quả" once the chance has passed, always available (CH17 "Chưa thử"). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa thử'**
+  String get rhDidNotTry;
+
+  /// Toast after "Chưa thử". VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không sao, lúc khác thử cũng được.'**
+  String get rhDidNotTryToast;
+
+  /// Activity history title: plans and answers of the family (C01 / AC02). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các cách đã thử'**
+  String get rhTriedHistoryTitle;
+
+  /// Activity history intro. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý cả nhà đã lên kế hoạch hoặc trả lời trong {days} ngày qua, ai làm và thấy thế nào.'**
+  String rhTriedHistoryBody(int days);
+
+  /// Activity history without rows. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có cách nào được lên kế hoạch hay thử.'**
+  String get rhTriedHistoryEmpty;
+
+  /// NL01 / EN09 link to the activity history. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả'**
+  String get rhSeeAllTried;
+
+  /// EN09 primary button (561:3102 "Tạo video tuần 4"): N is the week of life the title shows.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo video tuần {n}'**
+  String rhWeekMakeVideo(int n);
+
+  /// EN09 primary button when the week of life is unknown. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo video của tuần'**
+  String get rhWeekMakeVideoPlain;
+
+  /// EN09 caption under "Tạo video tuần N". VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ảnh trong tuần được chọn sẵn'**
+  String rhWeekVideoPhotos(int count);
+
+  /// EN01–EN03 step bars, for screen readers.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước {step} trên {count}'**
+  String hnStepOf(int step, int count);
+
+  /// EN01 button with the number of interests picked (559:2288).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục · {count} mục'**
+  String hnContinueCount(int count);
+
+  /// EN03 title (559:2458).
+  ///
+  /// In vi, this message translates to:
+  /// **'Để Child Life nhắc bạn đúng lúc'**
+  String get hnNotifTitle;
+
+  /// EN03 subtitle; the Figma "tối đa 2 gợi ý mỗi ngày" is not promised until a cap exists.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ những gì bạn vừa chọn và nhắc việc bạn tự đặt. Không quảng cáo.'**
+  String get hnNotifBody;
+
+  /// EN03 example card header.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể nhận những loại sau'**
+  String get hnNotifExamples;
+
+  /// EN03 example card tag.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ'**
+  String get hnNotifExampleTag;
+
+  /// EN03 example row title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc lịch tiêm'**
+  String get hnNotifVaccine;
+
+  /// EN03 example row timing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước lịch tiêm'**
+  String get hnNotifVaccineWhen;
+
+  /// EN03 example notification; no baby name (R-120).
+  ///
+  /// In vi, this message translates to:
+  /// **'“Mai có lịch tiêm 6 trong 1 lúc 08:30.”'**
+  String get hnNotifVaccineSample;
+
+  /// EN03 example row title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp lớn lên'**
+  String get hnNotifRhythm;
+
+  /// EN03 example row timing (NL02c stage reminder).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước 3 ngày'**
+  String get hnNotifRhythmWhen;
+
+  /// EN03 example notification; no baby name (R-120).
+  ///
+  /// In vi, this message translates to:
+  /// **'“Theo lịch tham khảo, con sắp đến giai đoạn 1.”'**
+  String get hnNotifRhythmSample;
+
+  /// EN03 example row title (EN09).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt tuần'**
+  String get hnNotifWeek;
+
+  /// EN03 example row timing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ nhật 20:30'**
+  String get hnNotifWeekWhen;
+
+  /// EN03 example notification; no baby name (R-120).
+  ///
+  /// In vi, this message translates to:
+  /// **'“Một tuần của con đã sẵn sàng để xem lại.”'**
+  String get hnNotifWeekSample;
+
+  /// EN03 primary button; only this asks the system.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật thông báo'**
+  String get hnNotifAllow;
+
+  /// EN03 caption under the buttons.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tắt hoặc chỉnh lại trong Tôi › Thông báo'**
+  String get hnNotifSettingsHint;
+
+  /// Toast when the system prompt was refused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo chưa bật. Bạn có thể bật trong Cài đặt của máy.'**
+  String get hnNotifDenied;
+
+  /// Home invite card title (559:57870).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay theo cách của nhà bạn'**
+  String get hnInviteTitle;
+
+  /// Home invite card subtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn điều bạn quan tâm · 30 giây'**
+  String get hnInviteBody;
+
+  /// Home invite card button; opens EN01.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu'**
+  String get hnInviteStart;
+
+  /// Home invite close button, for screen readers.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn lời mời cá nhân hoá'**
+  String get hnInviteClose;
+
+  /// Toast after closing the Home invite.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ẩn. Bạn vẫn chỉnh được trong Tôi › Cá nhân hoá.'**
+  String get hnInviteHidden;
+
+  /// Line under "Dành cho bé hôm nay" when the person picked interests.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo điều bạn quan tâm'**
+  String get hnForBabyBecause;
+
+  /// Line under "Dành cho bé hôm nay" without interests.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa chọn điều bạn quan tâm'**
+  String get hnForBabyNoInterests;
+
+  /// Link that opens EN01 (interests).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi'**
+  String get hnForBabyChange;
+
+  /// Link that opens EN01 when nothing is picked yet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn'**
+  String get hnForBabyPick;
+
+  /// Pill on the Home Nhịp lớn lên card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp lớn lên · Beta'**
+  String get hnRhythmPill;
+
+  /// Home Nhịp lớn lên card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo lịch tham khảo, dự kiến {range}.'**
+  String hnRhythmExpected(String range);
+
+  /// Home Nhịp lớn lên card: days with a 'needs more soothing' check-in lately.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả nhà ghi nhận con cần được dỗ nhiều hơn {days} ngày qua.'**
+  String hnRhythmSoothing(int days);
+
+  /// Suggestion carousel dots, for screen readers.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thẻ {page} trên {count}'**
+  String hnCardPage(int page, int count);
+
+  /// Suggestion card × button, for screen readers.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chọn cho thẻ này'**
+  String get hnCardOptions;
+
+  /// 3a title; Tiện ích row; Home card kicker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc phát triển'**
+  String get mtTitle;
+
+  /// 3a summary card.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} đã có {count} mốc'**
+  String mtSummary(String name, int count);
+
+  /// 3a summary card with no record.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} chưa có mốc nào'**
+  String mtSummaryNone(String name);
+
+  /// 3a summary card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lại khi bạn thấy bé làm được. Mỗi bé có nhịp riêng.'**
+  String get mtLead;
+
+  /// 3a summary for caregivers and relatives (they never see the records).
+  ///
+  /// In vi, this message translates to:
+  /// **'Các mốc tham khảo theo tuổi. Mỗi bé có nhịp riêng.'**
+  String get mtLeadViewer;
+
+  /// 3a filter chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get mtFilterAll;
+
+  /// Milestone group (B07).
+  ///
+  /// In vi, this message translates to:
+  /// **'Vận động'**
+  String get mtGroupMotor;
+
+  /// Milestone group (B07).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao tiếp'**
+  String get mtGroupCommunication;
+
+  /// Milestone group (B07).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận thức'**
+  String get mtGroupCognitive;
+
+  /// Milestone group (B07).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm xúc – xã hội'**
+  String get mtGroupSocial;
+
+  /// Own milestones: 3a chip and row subline, 3g title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc riêng'**
+  String get mtOwn;
+
+  /// 3a section; 3c sheet title; 3d chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã quan sát'**
+  String get mtSeen;
+
+  /// 3a section of milestones saved to follow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang theo dõi'**
+  String get mtFollowingSection;
+
+  /// 3a section.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý quanh tuổi của bé'**
+  String get mtAround;
+
+  /// 3a section when the baby’s age is not known to this member.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc tham khảo'**
+  String get mtReferenceSection;
+
+  /// 3a section shown with "Xem tất cả".
+  ///
+  /// In vi, this message translates to:
+  /// **'Các mốc khác'**
+  String get mtOthers;
+
+  /// 3a toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả mốc ({count})'**
+  String mtShowAll(int count);
+
+  /// 3a toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu gọn'**
+  String get mtShowLess;
+
+  /// Row subline age range.
+  ///
+  /// In vi, this message translates to:
+  /// **'tham khảo {from}–{to} tháng'**
+  String mtRangeMonths(int from, int to);
+
+  /// Row subline age range.
+  ///
+  /// In vi, this message translates to:
+  /// **'tham khảo {from}–{to} tuần'**
+  String mtRangeWeeks(int from, int to);
+
+  /// 3b age chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tham khảo {from}–{to} tháng'**
+  String mtRangeChipMonths(int from, int to);
+
+  /// 3b age chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tham khảo {from}–{to} tuần'**
+  String mtRangeChipWeeks(int from, int to);
+
+  /// 3a tag: the age window starts soon.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp tới'**
+  String get mtUpcoming;
+
+  /// 3a tag: not recorded (never "late").
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi'**
+  String get mtNotRecorded;
+
+  /// 3a tag on a followed milestone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang theo dõi'**
+  String get mtFollowingTag;
+
+  /// 3a dashed button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo mốc riêng'**
+  String get mtCreateOwn;
+
+  /// Footer while the reference content has no qualified review (D-073 #2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung minh hoạ · chờ chuyên môn duyệt'**
+  String get mtIllustrative;
+
+  /// Footer once reviewed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung được {reviewer} rà soát'**
+  String mtReviewed(String reviewer);
+
+  /// 3a when nothing is published.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có mốc tham khảo'**
+  String get mtEmptyTitle;
+
+  /// 3a when nothing is published (parents).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung đang được chuẩn bị. Bạn vẫn có thể tạo mốc riêng của bé.'**
+  String get mtEmptyBody;
+
+  /// 3a when nothing is published (others).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung đang được chuẩn bị.'**
+  String get mtEmptyBodyViewer;
+
+  /// 3a for a parent when the date of birth is missing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ngày sinh của bé để xem gợi ý theo tuổi.'**
+  String get mtNoDob;
+
+  /// Tiện ích row subline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lại những điều bé làm được'**
+  String get mtEntrySub;
+
+  /// Tiện ích row subline with records.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} mốc đã ghi'**
+  String mtEntryCount(int count);
+
+  /// 3b card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách nhận biết'**
+  String get mtHowTo;
+
+  /// 3b reassurance banner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng tuổi chỉ để tham khảo. Mỗi bé có nhịp riêng — nếu bạn băn khoăn, hãy hỏi bác sĩ của bé.'**
+  String get mtReassure;
+
+  /// 3b callout title (from the portal text).
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi nào nên hỏi bác sĩ'**
+  String get mtTalkToDoctor;
+
+  /// 3b link to the health guidance (HL01).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem hướng dẫn sức khoẻ'**
+  String get mtHealthLink;
+
+  /// 3b primary button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu đã quan sát'**
+  String get mtMarkSeen;
+
+  /// 3b plain button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu để theo dõi'**
+  String get mtFollow;
+
+  /// 3b plain button on a followed milestone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ theo dõi'**
+  String get mtUnfollow;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu để theo dõi'**
+  String get mtFollowed;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ theo dõi'**
+  String get mtUnfollowed;
+
+  /// 3b sources heading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nguồn tham khảo'**
+  String get mtSources;
+
+  /// 3b / 3a note for caregivers and relatives.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba mẹ của bé ghi lại các mốc trong mục này.'**
+  String get mtParentsRecord;
+
+  /// Unknown id.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy mốc này.'**
+  String get mtNotFound;
+
+  /// 3c date field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày bé làm được'**
+  String get mtDateDid;
+
+  /// 3c / 3g note field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú'**
+  String get mtNote;
+
+  /// Note placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bé làm được lúc nào, ở đâu, với ai…'**
+  String get mtNoteHint;
+
+  /// 3c label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh (không bắt buộc)'**
+  String get mtPhotosOptional;
+
+  /// Camera slot a11y.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ảnh'**
+  String get mtAddPhotos;
+
+  /// Thumbnail a11y.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ ảnh này'**
+  String get mtRemovePhoto;
+
+  /// 3c / 3g primary button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu mốc'**
+  String get mtSave;
+
+  /// Date sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày'**
+  String get mtPickDate;
+
+  /// Toast after saving.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu mốc'**
+  String get mtSaved;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Thử lại nhé.'**
+  String get mtSaveFailed;
+
+  /// 3d meta line.
+  ///
+  /// In vi, this message translates to:
+  /// **'{date} · lúc {name} {age} · {who} ghi'**
+  String mtMeta(String date, String name, String age, String who);
+
+  /// 3d meta line without the age.
+  ///
+  /// In vi, this message translates to:
+  /// **'{date} · {who} ghi'**
+  String mtMetaNoAge(String date, String who);
+
+  /// 3d card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ khoảnh khắc này trong Kỷ niệm?'**
+  String get mtKeepTitle;
+
+  /// 3d card body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo kỷ niệm với ảnh và ghi chú này, gắn mốc “{name}”.'**
+  String mtKeepBody(String name);
+
+  /// 3d card body without photos.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo kỷ niệm gắn mốc “{name}” — thêm ảnh nếu bạn muốn.'**
+  String mtKeepBodyNote(String name);
+
+  /// 3d button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo kỷ niệm'**
+  String get mtCreateMemory;
+
+  /// 3d / 3f link to Thiệp cột mốc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo thẻ mốc'**
+  String get mtCreateCard;
+
+  /// 3f row title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu trong Kỷ niệm'**
+  String get mtInMemories;
+
+  /// 3f row subline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả gia đình xem được · {count} ảnh'**
+  String mtSeenByFamily(int count);
+
+  /// 3f row subline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ xem được · {count} ảnh'**
+  String mtSeenByParents(int count);
+
+  /// 3f row subline (no photo).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cả gia đình xem được · ghi chú'**
+  String get mtSeenByFamilyNote;
+
+  /// 3f row subline (no photo).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ ba mẹ xem được · ghi chú'**
+  String get mtSeenByParentsNote;
+
+  /// 3f row while the memory is on its way.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải lên Kỷ niệm…'**
+  String get mtUploading;
+
+  /// 3d overflow a11y.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm thao tác'**
+  String get mtMore;
+
+  /// 3d action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa ghi nhận'**
+  String get mtEdit;
+
+  /// 3d action.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá ghi nhận'**
+  String get mtDelete;
+
+  /// Confirm sheet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá ghi nhận mốc này?'**
+  String get mtDeleteTitle;
+
+  /// Confirm sheet body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày và ghi chú sẽ bị xoá. Kỷ niệm đã tạo vẫn ở trong Kỷ niệm.'**
+  String get mtDeleteBody;
+
+  /// Toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá ghi nhận'**
+  String get mtDeleted;
+
+  /// 3e sheet title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kỷ niệm mới'**
+  String get mtNewMemory;
+
+  /// 3e field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chú thích'**
+  String get mtCaption;
+
+  /// 3e placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vài dòng về khoảnh khắc này'**
+  String get mtCaptionHint;
+
+  /// 3e milestone chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc · {name}'**
+  String mtTag(String name);
+
+  /// 3e label.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ai được xem'**
+  String get mtWhoSees;
+
+  /// 3e button.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu kỷ niệm'**
+  String get mtSaveMemory;
+
+  /// 3f toast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tạo kỷ niệm'**
+  String get mtMemoryCreated;
+
+  /// 3e validation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm chú thích hoặc ảnh để lưu kỷ niệm.'**
+  String get mtCaptionRequired;
+
+  /// 3g lead.
+  ///
+  /// In vi, this message translates to:
+  /// **'Những lần đầu tiên chỉ nhà mình có — ghi lại theo cách của bạn.'**
+  String get mtOwnLead;
+
+  /// 3g field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên mốc'**
+  String get mtName;
+
+  /// 3g placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: Lần đầu về quê'**
+  String get mtNameHint;
+
+  /// 3g counter.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count}/{max} ký tự'**
+  String mtCount(int count, int max);
+
+  /// 3g date field.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày'**
+  String get mtDate;
+
+  /// 3g toggle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo kỷ niệm cùng lúc'**
+  String get mtAlsoMemory;
+
+  /// 3g toggle subline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu ảnh và ghi chú vào Kỷ niệm'**
+  String get mtAlsoMemorySub;
+
+  /// 3g in edit mode.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa mốc'**
+  String get mtEditTitle;
+
+  /// Today card kicker for the current stage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn của bé · {range}'**
+  String lbTodayStageKicker(String range);
+
+  /// Today card action → 2b.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem giai đoạn'**
+  String get lbTodayStageAction;
+
+  /// Today article card action → 4d.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc bài'**
+  String get lbTodayRead;
+
+  /// Bell button in the Hôm nay header (a11y label, 559:57622).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo'**
+  String get ntBell;
+
+  /// Bell a11y label with unread notifications.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo, {count} chưa đọc'**
+  String ntBellUnread(int count);
+
+  /// EN06 large title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo'**
+  String get ntInboxTitle;
+
+  /// EN06 top-right link.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu đã đọc'**
+  String get ntMarkAllRead;
+
+  /// EN06 top bar: opens EN07 (a11y label of the sliders button).
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt thông báo'**
+  String get ntOpenSettings;
+
+  /// EN06 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get ntFilterAll;
+
+  /// EN06 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc'**
+  String get ntFilterReminders;
+
+  /// EN06 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho bé'**
+  String get ntFilterBaby;
+
+  /// EN06 chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia đình'**
+  String get ntFilterFamily;
+
+  /// EN06 section header.
+  ///
+  /// In vi, this message translates to:
+  /// **'HÔM NAY'**
+  String get ntSectionToday;
+
+  /// EN06 section header: the last 7 days.
+  ///
+  /// In vi, this message translates to:
+  /// **'TUẦN NÀY'**
+  String get ntSectionWeek;
+
+  /// EN06 section header: older than 7 days (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'TRƯỚC ĐÓ'**
+  String get ntSectionEarlier;
+
+  /// EN06 unread dot (a11y).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đọc'**
+  String get ntUnread;
+
+  /// EN06 empty state title (not drawn).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có thông báo nào'**
+  String get ntEmptyTitle;
+
+  /// EN06 empty state body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc việc, lịch tiêm và tin của gia đình sẽ hiện ở đây.'**
+  String get ntEmptyBody;
+
+  /// EN06 empty state for a chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có thông báo nào trong mục này.'**
+  String get ntEmptyFiltered;
+
+  /// EN06 load error.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được thông báo. Thử lại sau nhé.'**
+  String get ntLoadFailed;
+
+  /// EN06 footnote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo được giữ 90 ngày. Vuốt sang trái để ẩn.'**
+  String get ntKept;
+
+  /// EN06 swipe action: archive one row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn'**
+  String get ntHide;
+
+  /// Toast: the notification points to a baby you no longer follow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục này không còn mở được.'**
+  String get ntGone;
+
+  /// EN07 master card title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo của Child Life'**
+  String get ntMaster;
+
+  /// EN07 master card: OS permission granted.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bật trong cài đặt hệ thống'**
+  String get ntMasterOn;
+
+  /// EN07 master card: OS permission not granted.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tắt trong cài đặt hệ thống'**
+  String get ntMasterOff;
+
+  /// EN07 group header.
+  ///
+  /// In vi, this message translates to:
+  /// **'NHẮC VIỆC BẠN ĐẶT'**
+  String get ntGroupReminders;
+
+  /// EN07 group helper (reminders ring in quiet hours).
+  ///
+  /// In vi, this message translates to:
+  /// **'Luôn đến đúng giờ, kể cả trong giờ yên lặng'**
+  String get ntGroupRemindersHint;
+
+  /// EN07 row: rule and one-off reminders.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú, ngủ, thay tã'**
+  String get ntCare;
+
+  /// EN07 row helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc theo quy tắc và nhắc một lần'**
+  String get ntCareHint;
+
+  /// EN07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm chủng'**
+  String get ntVaccines;
+
+  /// EN07 row helper: when vaccine reminders ring (P-133).
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước 3 ngày và tối hôm trước lúc 19:00'**
+  String get ntVaccinesHint;
+
+  /// EN07 row (engineering addition: Chi tiêu pushes).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiêu'**
+  String get ntSpending;
+
+  /// EN07 row helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoản định kỳ, 80% ngân sách, kết quả nhập'**
+  String get ntSpendingHint;
+
+  /// EN07 group header.
+  ///
+  /// In vi, this message translates to:
+  /// **'GỢI Ý CHO BÉ'**
+  String get ntGroupBaby;
+
+  /// EN07 group helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gom lại, tối đa 2 thông báo mỗi ngày'**
+  String get ntGroupBabyHint;
+
+  /// EN07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhịp lớn lên'**
+  String get ntRhythm;
+
+  /// EN07 row helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước mỗi giai đoạn 3 ngày · check-in tối đa 1/ngày'**
+  String get ntRhythmHint;
+
+  /// EN07 row ("Thẻ theo tuổi", renamed by D-076 #5).
+  ///
+  /// In vi, this message translates to:
+  /// **'Giai đoạn của bé'**
+  String get ntStages;
+
+  /// EN07 row helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi bé sang tuần / tháng mới'**
+  String get ntStagesHint;
+
+  /// EN07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc phát triển'**
+  String get ntMilestones;
+
+  /// EN07 row helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi đến khoảng tuổi thường gặp'**
+  String get ntMilestonesHint;
+
+  /// EN07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài viết gợi ý'**
+  String get ntArticles;
+
+  /// EN07 row helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối đa 1 bài mỗi tuần'**
+  String get ntArticlesHint;
+
+  /// EN07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt tuần'**
+  String get ntWeekly;
+
+  /// EN07 row helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ nhật 20:30'**
+  String get ntWeeklyHint;
+
+  /// EN07 group header.
+  ///
+  /// In vi, this message translates to:
+  /// **'KỶ NIỆM & GIA ĐÌNH'**
+  String get ntGroupFamily;
+
+  /// EN07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh mới có thể có bé'**
+  String get ntPhotos;
+
+  /// EN07 row helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự lưu kỷ niệm · tối đa 1 lần/ngày'**
+  String get ntPhotosHint;
+
+  /// EN07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý tạo video, thiệp'**
+  String get ntKeepsakes;
+
+  /// EN07 row helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vào ngày tròn tháng, 100 ngày'**
+  String get ntKeepsakesHint;
+
+  /// EN07 row.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoạt động của gia đình'**
+  String get ntFamilyActivity;
+
+  /// EN07 row helper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thích, xem kỷ niệm'**
+  String get ntFamilyActivityHint;
+
+  /// EN07 group header.
+  ///
+  /// In vi, this message translates to:
+  /// **'THỜI GIAN'**
+  String get ntGroupTiming;
+
+  /// EN07 row: opens EN02.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ nhận gợi ý'**
+  String get ntDigest;
+
+  /// EN07 row value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{time} mỗi ngày'**
+  String ntDigestDaily(String time);
+
+  /// EN07 row: opens EN02.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giờ yên lặng'**
+  String get ntQuiet;
+
+  /// EN07 quiet hours value.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from} – {to}'**
+  String ntQuietRange(String from, String to);
+
+  /// EN07 toast when a switch fails to save.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được. Thử lại nhé.'**
+  String get ntSaveFailed;
+
+  /// Pill of a plan still waiting for its chance (NL01, EN09, activity history). VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lên kế hoạch'**
+  String get rhPlannedPill;
+
+  /// Home small card kicker ({range} = "tham khảo 1–3 tháng").
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc có thể thấy · {range}'**
+  String mtTodayKicker(String range);
+
+  /// Home small card action (Cùng nuôi).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận khi bé làm được'**
+  String get mtTodayAction;
+
+  /// Home small card action (others).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem cách nhận biết'**
+  String get mtTodayActionViewer;
+
+  /// Tiện ích row subline for caregivers and relatives (they read the guide only).
+  ///
+  /// In vi, this message translates to:
+  /// **'Mốc tham khảo theo tuổi của bé'**
+  String get mtEntrySubViewer;
 }
 
 class _AppLocalizationsDelegate

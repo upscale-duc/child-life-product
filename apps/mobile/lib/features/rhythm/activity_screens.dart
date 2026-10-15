@@ -10,6 +10,7 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_inputs.dart';
 import '../../l10n/app_localizations.dart';
 import '../ai/ai_widgets.dart';
+import '../baby/baby_repository.dart' show babyProvider;
 import '../care/care_format.dart' show durationLabel;
 import '../family/family_repository.dart';
 import '../home/home_shell.dart';
@@ -20,13 +21,16 @@ import 'rhythm_access.dart';
 import 'rhythm_actions.dart';
 import 'rhythm_labels.dart';
 import 'rhythm_models.dart';
+import 'rhythm_plans.dart';
 import 'rhythm_repository.dart';
 import 'rhythm_widgets.dart';
 
 /// AC01 (590:6515): an activity not tried yet — steps, why it may help, safety, the review label,
 /// "Mình sẽ thử" (started), "Không phù hợp với con" (not_suitable: never suggested again for
-/// this baby) and "Gợi ý khác" (not_today: a cooldown). Once started it offers AC02. Members
-/// who may only read (relatives with "Chăm sóc hằng ngày") see it without the actions.
+/// this baby) and "Gợi ý khác" (not_today: a cooldown). "Mình sẽ thử" is a plan (D-076 #10): it
+/// waits ("Đã lên kế hoạch · tối nay", "Bỏ kế hoạch" for its author) and offers AC02 only once
+/// there was a chance to try, with "Chưa thử" next to it. Members who may only read (relatives
+/// with "Chăm sóc hằng ngày") see it without the actions.
 class ActivityScreen extends ConsumerWidget {
   const ActivityScreen({required this.contentId, this.checkInId, super.key});
   final String contentId;
@@ -50,7 +54,26 @@ class ActivityScreen extends ConsumerWidget {
               const <RecFeedback>[]
         : const <RecFeedback>[];
     final last = latestFeedback(feedback, contentId);
-    final started = last?.kind == FeedbackKind.started;
+    final zone =
+        (me == null ? null : ref.watch(babyProvider(me.babyId)).value)
+            ?.timeZone
+            .zone ??
+        'Asia/Ho_Chi_Minh';
+    final now = rhythmNow(ref);
+    final today = babyTodayIso(zone, now);
+    final plan = me == null || activity == null
+        ? null
+        : openPlan(
+            feedback,
+            contentId,
+            zone: zone,
+            timeOfDay: activity.timeOfDay,
+            now: now,
+            setAside: ref.watch(plansSetAsideProvider(setAsideKey(me))),
+          );
+    final answered =
+        last != null &&
+        (last.kind == FeedbackKind.helpful || last.kind == FeedbackKind.unsure);
     final checkIn = canRead && checkInId != null
         ? ref
               .watch(checkInsProvider(me.babyId))
@@ -71,13 +94,26 @@ class ActivityScreen extends ConsumerWidget {
         ),
         const Spacer(),
         if (activity != null)
-          started
-              ? RhPill(
-                  label: l10n.rhTriedOn(shortDay(locale, last!.date)),
-                  icon: ClIcons.check,
-                  mint: true,
-                )
-              : RhPill(label: l10n.rhNotTried, icon: ClIcons.clock),
+          if (plan != null)
+            RhPill(
+              label: planStatusLabel(
+                l10n,
+                locale,
+                plan,
+                activity.timeOfDay,
+                today: today,
+              ),
+              icon: ClIcons.check,
+              mint: true,
+            )
+          else if (answered)
+            RhPill(
+              label: l10n.rhTriedOn(shortDay(locale, last.date)),
+              icon: ClIcons.check,
+              mint: true,
+            )
+          else
+            RhPill(label: l10n.rhNotTried, icon: ClIcons.clock),
       ],
     );
     if (activity == null) {
@@ -171,6 +207,18 @@ class ActivityScreen extends ConsumerWidget {
             ],
           ),
         ),
+        if (plan != null) ...[
+          const SizedBox(height: ClSpace.s3),
+          RhCard(
+            child: PlanStatus(
+              me: me!,
+              plan: plan,
+              timeOfDay: activity.timeOfDay,
+              today: today,
+              zone: zone,
+            ),
+          ),
+        ],
         const SizedBox(height: ClSpace.s3),
         if (steps.isNotEmpty) ...[
           RhCard(
@@ -254,30 +302,48 @@ class ActivityScreen extends ConsumerWidget {
             ),
           ),
       ],
-      bottom: canAct
+      bottom: canAct && plan != null
           ? [
-              if (started)
+              if (plan.due) ...[
                 ClButton(
                   label: l10n.rhTellHow,
                   expand: true,
                   onPressed: () =>
                       context.push(activityFeedbackLocation(contentId)),
-                )
-              else
-                ClButton(
-                  label: l10n.rhIllTry,
-                  expand: true,
-                  onPressed: () {
-                    giveFeedbackOn(
-                      context,
-                      ref,
-                      me,
-                      kind: FeedbackKind.started,
-                      activity: activity,
-                    );
-                    showClToast(context, message: l10n.rhStartedToast);
-                  },
                 ),
+                const SizedBox(height: ClSpace.s2),
+                ClButton(
+                  label: l10n.rhDidNotTry,
+                  style: ClButtonStyle.secondary,
+                  expand: true,
+                  onPressed: () =>
+                      withdrawPlan(context, ref, me, plan, notTried: true),
+                ),
+              ] else if (plan.mine(me.uid))
+                ClButton(
+                  label: l10n.rhCancelPlan,
+                  style: ClButtonStyle.secondary,
+                  expand: true,
+                  onPressed: () =>
+                      withdrawPlan(context, ref, me, plan, notTried: false),
+                ),
+            ]
+          : canAct
+          ? [
+              ClButton(
+                label: l10n.rhIllTry,
+                expand: true,
+                onPressed: () {
+                  giveFeedbackOn(
+                    context,
+                    ref,
+                    me,
+                    kind: FeedbackKind.started,
+                    activity: activity,
+                  );
+                  showClToast(context, message: l10n.rhStartedToast);
+                },
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -314,6 +380,8 @@ class ActivityScreen extends ConsumerWidget {
 
 /// AC02 (590:6558): after trying — "Có ích / Chưa rõ / Không phù hợp" and an optional note.
 /// The answer only shapes the next suggestion; "Có ích" never claims the activity caused it.
+/// A plan still waiting for its chance (D-076 #10) shows when it will be asked instead, and a due
+/// plan offers "Chưa thử" too.
 class ActivityFeedbackScreen extends ConsumerStatefulWidget {
   const ActivityFeedbackScreen({required this.contentId, super.key});
   final String contentId;
@@ -357,6 +425,22 @@ class _ActivityFeedbackScreenState
         ?.date;
     if (me != null) watchRhythmClock(ref, me.babyId);
     final today = me == null ? null : rhythmToday(ref, me.babyId);
+    final zone =
+        (me == null ? null : ref.watch(babyProvider(me.babyId)).value)
+            ?.timeZone
+            .zone ??
+        'Asia/Ho_Chi_Minh';
+    final plan = me == null || activity == null
+        ? null
+        : openPlan(
+            feedback,
+            widget.contentId,
+            zone: zone,
+            timeOfDay: activity.timeOfDay,
+            now: rhythmNow(ref),
+            setAside: ref.watch(plansSetAsideProvider(setAsideKey(me))),
+          );
+    final waiting = plan != null && !plan.due;
     final lastNight =
         activity?.timeOfDay == ActivityTime.evening &&
         startedOn != null &&
@@ -389,7 +473,19 @@ class _ActivityFeedbackScreenState
             onPressed: () => leaveRhythm(context),
           ),
           const Spacer(),
-          if (startedOn != null)
+          if (plan != null && activity != null)
+            RhPill(
+              label: planStatusLabel(
+                l10n,
+                locale,
+                plan,
+                activity.timeOfDay,
+                today: today ?? plan.started.date,
+              ),
+              icon: ClIcons.check,
+              mint: true,
+            )
+          else if (startedOn != null)
             RhPill(
               label: l10n.rhTriedOn(shortDay(locale, startedOn)),
               icon: ClIcons.check,
@@ -412,60 +508,96 @@ class _ActivityFeedbackScreenState
             ),
           ),
           const SizedBox(height: ClSpace.s4),
-          RhCard(
-            outline: true,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  lastNight ? l10n.rhHowLastNight : l10n.rhHowDidItGo,
-                  style: cl.text.bodyStrong,
-                ),
-                const SizedBox(height: ClSpace.s3),
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (final (i, k) in const [
-                        FeedbackKind.helpful,
-                        FeedbackKind.unsure,
-                        FeedbackKind.notSuitable,
-                      ].indexed) ...[
-                        if (i > 0) const SizedBox(width: ClSpace.s2),
-                        Expanded(
-                          child: RhChip(
-                            expand: true,
-                            label: feedbackKindLabel(l10n, k),
-                            selected: _kind == k,
-                            onTap: () => setState(() => _kind = k),
-                          ),
-                        ),
-                      ],
-                    ],
+          if (waiting)
+            RhCard(
+              child: PlanStatus(
+                me: me!,
+                plan: plan,
+                timeOfDay: activity.timeOfDay,
+                today: today ?? plan.started.date,
+                zone: zone,
+              ),
+            )
+          else
+            RhCard(
+              outline: true,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lastNight ? l10n.rhHowLastNight : l10n.rhHowDidItGo,
+                    style: cl.text.bodyStrong,
                   ),
-                ),
-                const SizedBox(height: ClSpace.s3),
-                ClTextField(
-                  placeholder: l10n.rhNoteHint,
-                  controller: _note,
-                  maxLines: 3,
-                  maxLength: RecFeedback.noteMaxLength,
-                  textCapitalization: TextCapitalization.sentences,
-                ),
-                const SizedBox(height: ClSpace.s3),
-                RhInfoBox(icon: ClIcons.sliders, text: l10n.rhFeedbackInfo),
-              ],
+                  const SizedBox(height: ClSpace.s3),
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (final (i, k) in const [
+                          FeedbackKind.helpful,
+                          FeedbackKind.unsure,
+                          FeedbackKind.notSuitable,
+                        ].indexed) ...[
+                          if (i > 0) const SizedBox(width: ClSpace.s2),
+                          Expanded(
+                            child: RhChip(
+                              expand: true,
+                              label: feedbackKindLabel(l10n, k),
+                              selected: _kind == k,
+                              onTap: () => setState(() => _kind = k),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: ClSpace.s3),
+                  ClTextField(
+                    placeholder: l10n.rhNoteHint,
+                    controller: _note,
+                    maxLines: 3,
+                    maxLength: RecFeedback.noteMaxLength,
+                    textCapitalization: TextCapitalization.sentences,
+                  ),
+                  const SizedBox(height: ClSpace.s3),
+                  RhInfoBox(icon: ClIcons.sliders, text: l10n.rhFeedbackInfo),
+                ],
+              ),
             ),
-          ),
         ],
       ],
       bottom: canAct && activity != null
           ? [
-              ClButton(
-                label: l10n.rhSaveFeedback,
-                expand: true,
-                onPressed: _kind == null ? null : save,
-              ),
+              if (waiting) ...[
+                if (plan.mine(me.uid))
+                  ClButton(
+                    label: l10n.rhCancelPlan,
+                    style: ClButtonStyle.secondary,
+                    expand: true,
+                    onPressed: () {
+                      withdrawPlan(context, ref, me, plan, notTried: false);
+                      leaveRhythm(context);
+                    },
+                  ),
+              ] else ...[
+                ClButton(
+                  label: l10n.rhSaveFeedback,
+                  expand: true,
+                  onPressed: _kind == null ? null : save,
+                ),
+                if (plan != null) ...[
+                  const SizedBox(height: ClSpace.s2),
+                  ClButton(
+                    label: l10n.rhDidNotTry,
+                    style: ClButtonStyle.secondary,
+                    expand: true,
+                    onPressed: () {
+                      withdrawPlan(context, ref, me, plan, notTried: true);
+                      leaveRhythm(context);
+                    },
+                  ),
+                ],
+              ],
             ]
           : null,
     );
