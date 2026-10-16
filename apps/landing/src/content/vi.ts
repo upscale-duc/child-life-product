@@ -20,7 +20,7 @@ export const vi: Content = {
     links: {
       journey: 'Hành trình',
       firstYear: 'Năm đầu đời',
-      watch: 'Apple Watch',
+      lumi: 'Lumi',
       stages: 'Các chặng',
       memories: 'Kỷ niệm',
       faq: 'Hỏi đáp',
@@ -143,6 +143,448 @@ export const vi: Content = {
     ],
   },
   // v3 home + stage pages (Figma 358:2901 / 362:3398, 370:50752, 361:3457 / 3575 / 3693).
+  // Lumi page (Figma 650:4798). Q-039: the plans (Free · Plus · Pro, prices) are not the app's
+  // single Premium plan (33-landing-lumi-page §16); FAQ answers 2–6 are PROPOSED.
+  lumiPage: {
+    meta: {
+      title: 'Lumi — trợ lý của cả nhà trong Child Life',
+      description:
+        'Kể một câu, Lumi soạn sẵn bản ghi bú, ngủ, thay tã; chụp hoá đơn thành khoản chi; hỏi gì cũng trả lời từ nhật ký của con. Bạn xem lại rồi mới lưu.',
+    },
+    hero: {
+      eyebrow: 'Lumi · Trợ lý đồng hành trong Child Life',
+      title: ['Kể một câu.', 'Lumi ghi giúp, nhớ giúp.'],
+      lead: 'Lumi là trợ lý của cả nhà trong Child Life. Gõ như đang nhắn tin, chụp một tấm ảnh hay hỏi một câu — Lumi soạn sẵn bản ghi, trả lời từ chính nhật ký của con và gợi ý một việc nhỏ cho hôm nay.',
+      tryNow: 'Dùng thử Lumi',
+      plans: 'Nâng cấp gói',
+      promises: [
+        'Bạn xác nhận trước khi lưu',
+        'Trả lời từ nhật ký của con',
+        'Cả nhà dùng theo quyền',
+      ],
+      mock: {
+        name: 'Lumi',
+        family: 'Trợ lý của nhà Teddy',
+        ask: 'Con bú 120 ml lúc 9h, ngủ từ 9h30, thay tã lúc 10h',
+        reply: 'Mình soạn 3 bản nháp, bạn xem lại rồi lưu nhé:',
+        drafts: [
+          { title: 'Bú bình · 120 ml', sub: '9:00' },
+          { title: 'Giấc ngủ', sub: 'từ 9:30' },
+          { title: 'Thay tã', sub: '10:00' },
+        ],
+        draft: 'Nháp',
+        saveAll: 'Lưu cả 3',
+        ask2: 'Mấy hôm nay con hay khó ngủ buổi tối',
+        reply2:
+          '3 tối gần đây có 2 lần bạn ghi “khó vào giấc”, đều sau 21h. Muốn xem lại các giấc quanh đó không?',
+        composer: 'Kể, hỏi hoặc gửi ảnh cho Lumi…',
+        saved: 'Đã lưu 3 bản ghi vào Nhật ký',
+        expense: { title: 'Bỉm · 289.000 ₫', sub: 'Từ ảnh hoá đơn → Chi tiêu' },
+        sample: 'Ví dụ minh hoạ',
+      },
+    },
+    benefits: {
+      eyebrow: 'Lumi giúp gì cho nhà bạn',
+      title: 'Bớt việc phải nhớ, thêm thời gian bên con.',
+      cards: [
+        {
+          title: 'Nhanh khi tay đang bận',
+          body: 'Một câu thay cho nhiều lần chạm. Lumi tách thành từng bản ghi đúng mục.',
+        },
+        {
+          title: 'Hiểu con từ chính nhật ký',
+          body: 'Hỏi gì Lumi cũng trả lời từ dữ liệu nhà bạn đã ghi, kèm nguồn để mở lại.',
+        },
+        {
+          title: 'Một việc nhỏ cho hôm nay',
+          body: 'Gợi ý vừa sức theo tuổi và những gì bạn đã ghi — bạn chọn điều phù hợp.',
+        },
+        {
+          title: 'Giữ lại từng khoảnh khắc',
+          body: 'Từ ảnh trong máy thành thiệp, đoạn phim nhỏ cho những cột mốc đầu đời.',
+        },
+      ],
+    },
+    day: {
+      eyebrow: 'Một ngày cùng Lumi',
+      title: 'Từ cữ bú sáng sớm đến video cuối tháng.',
+      lead: 'Sáu khoảnh khắc quen thuộc, mỗi lúc chỉ cần một câu hoặc một tấm ảnh.',
+      cards: [
+        {
+          time: '06:30',
+          title: 'Đang bế con, vẫn ghi kịp',
+          body: 'Kể một câu, Lumi soạn sẵn bản ghi.',
+        },
+        {
+          time: '10:15',
+          title: 'Hoá đơn thành khoản chi',
+          body: 'Chụp hoá đơn, Lumi điền sẵn số tiền.',
+        },
+        {
+          time: '13:00',
+          title: 'Hỏi nhanh, biết ngay',
+          body: 'Trả lời từ nhật ký, kèm nguồn để mở lại.',
+        },
+        {
+          time: '17:30',
+          title: 'Hôm nay con ăn gì?',
+          body: 'Món hợp tuổi, tránh món con từng phản ứng.',
+        },
+        {
+          time: '21:30',
+          title: 'Mấy hôm nay con khó ngủ',
+          body: 'Đặt các ghi nhận gần đây cạnh nhau.',
+        },
+        {
+          time: 'Cuối tháng',
+          title: 'Tròn tháng, thành phim nhỏ',
+          body: 'Chọn ảnh và mẫu, có ngay video đầy tháng.',
+        },
+      ],
+    },
+    more: {
+      eyebrow: 'Và còn nhiều việc khác',
+      title: 'Lumi lớn lên cùng nhà bạn.',
+      lead: 'Càng ghi nhiều, Lumi càng hiểu nếp nhà bạn để nhắc đúng lúc và gợi ý sát hơn.',
+      cards: [
+        {
+          title: 'Ảnh giấy dặn → nhắc việc',
+          body: 'Chụp tờ giấy dặn hay bảng ghi chú, Lumi tách thành từng nhắc việc để bạn chọn lưu.',
+        },
+        {
+          title: 'Tóm tắt tuần cho cả nhà',
+          body: 'Mỗi tuần một bản ngắn: con ăn ngủ ra sao, mốc mới, việc sắp tới — gửi ông bà theo quyền.',
+        },
+        {
+          title: 'Nhịp lớn lên của riêng con',
+          body: 'Đặt những thay đổi bạn đã ghi cạnh lịch giai đoạn tham khảo — Giai đoạn N (Wonder Weeks) chỉ để đối chiếu.',
+        },
+        {
+          title: 'Hỏi đáp chăm bé',
+          body: 'Hỏi về giấc ngủ, ăn dặm, vệ sinh — Lumi trả lời từ thư viện nội dung và chỉ đường đến hướng dẫn an toàn khi cần.',
+        },
+      ],
+      mock: {
+        reminders: ['Mua bỉm size M · thứ Bảy', 'Hẹn khám 2 tháng · 9h T5'],
+        note: ['Mua bỉm size M', 'Khám 2 tháng 9h T5'],
+        week: {
+          title: 'Tuần này của Teddy',
+          body: 'Ngủ đêm dài hơn 2 tối · thêm mốc “cười thành tiếng” · lịch tiêm tuần sau.',
+        },
+        rhythm: {
+          title: 'Giai đoạn 2 (Wonder Weeks) · tham khảo',
+          body: 'Bạn đã ghi: bám mẹ hơn 3 ngày, bú đêm thêm 1 cữ.',
+        },
+        ask: 'Bé 4 tháng ngủ ngày mấy giấc?',
+        reply: 'Theo thư viện: thường 3–4 giấc… (nội dung minh hoạ · chờ duyệt)',
+      },
+    },
+    how: {
+      eyebrow: 'Lumi làm việc thế nào',
+      title: 'Lumi soạn sẵn. Bạn là người quyết định.',
+      steps: [
+        { title: 'Kể, hỏi hoặc chụp', body: 'Gõ như nhắn tin, hoặc gửi ảnh hoá đơn, giấy dặn.' },
+        { title: 'Lumi soạn nháp', body: 'Tách đúng mục, hỏi lại chỗ thiếu hoặc chưa rõ.' },
+        { title: 'Bạn xem và lưu', body: 'Sửa, bỏ hoặc lưu từng bản. Lumi không tự lưu.' },
+      ],
+      trust: [
+        'Chỉ người trong nhà, theo quyền bạn cấp',
+        'Ảnh gửi cho Lumi chỉ để đọc nội dung, bạn chọn có giữ ảnh gốc hay không',
+        'Lumi không thay bác sĩ. Khi lo lắng về sức khoẻ, Lumi chỉ đường đến hướng dẫn an toàn và số khẩn cấp',
+      ],
+    },
+    plans: {
+      eyebrow: 'Nâng cấp gói',
+      title: 'Mọi việc Lumi làm, nhà nào cũng dùng được.',
+      lead: 'Ba gói chỉ khác nhau ở số lượt hỗ trợ mỗi tháng. Chọn mức hợp với nhịp nhà bạn — đổi gói bất cứ lúc nào.',
+      monthly: 'Theo tháng',
+      yearly: 'Theo năm',
+      perMonth: '/ tháng',
+      perYear: '/ năm',
+      credits: 'lượt hỗ trợ / tháng',
+      tiers: [
+        {
+          name: 'Free',
+          tagline: 'Để bắt đầu',
+          credits: '30',
+          photos: '≈ 10 ảnh hoá đơn, giấy dặn',
+          videos: '1 video kỷ niệm / tháng',
+          price: '0đ',
+          yearPrice: '0đ',
+          sub: 'Không cần thẻ thanh toán',
+          yearSub: 'Không cần thẻ thanh toán',
+          button: 'Bắt đầu miễn phí',
+        },
+        {
+          name: 'Plus',
+          tagline: 'Cho ngày nhiều việc',
+          credits: '300',
+          photos: '≈ 100 ảnh hoá đơn, giấy dặn',
+          videos: '5 video kỷ niệm / tháng',
+          price: '79.000đ',
+          yearPrice: '790.000đ',
+          sub: 'hoặc 790.000đ/năm · tiết kiệm 2 tháng',
+          yearSub: '≈ 65.800đ/tháng · tiết kiệm 2 tháng',
+          button: 'Nâng cấp lên Plus',
+        },
+        {
+          name: 'Pro',
+          tagline: 'Cho cả nhà dùng nhiều',
+          credits: '1.000',
+          photos: '≈ 330 ảnh hoá đơn, giấy dặn',
+          videos: '15 video kỷ niệm / tháng',
+          price: '179.000đ',
+          yearPrice: '1.790.000đ',
+          sub: 'hoặc 1.790.000đ/năm · tiết kiệm 2 tháng',
+          yearSub: '≈ 149.200đ/tháng · tiết kiệm 2 tháng',
+          button: 'Nâng cấp lên Pro',
+        },
+      ],
+      features: {
+        all: 'Tất cả việc Lumi làm được',
+        templates: 'Mọi mẫu thiệp & video',
+        drafts: 'Sửa, xác nhận nháp không tính thêm lượt',
+      },
+      note: 'Giá đã gồm VAT, thanh toán qua App Store / Google Play. Gói năm tiết kiệm 2 tháng. Huỷ gia hạn bất cứ lúc nào trong cài đặt cửa hàng.',
+      table: {
+        caption: 'So sánh các gói',
+        feature: 'Tính năng',
+        price: 'Giá mỗi tháng',
+        credits: 'Lượt hỗ trợ mỗi tháng',
+        rows: [
+          'Ghi nhật ký bằng một câu',
+          'Hỏi đáp từ nhật ký của con',
+          'Đọc ảnh hoá đơn, giấy dặn (≈3 lượt/ảnh)',
+          'Nhìn lại mấy ngày & gợi ý cho hôm nay',
+          'Tóm tắt tuần cho cả nhà',
+          'Nhịp lớn lên của riêng con',
+          'Mọi mẫu thiệp & video',
+        ],
+        videos: 'Xuất video kỷ niệm mỗi tháng',
+        fallback: 'Ghi trực tiếp & hướng dẫn an toàn khi hết lượt',
+        yes: 'Có',
+      },
+      creditsInfo: {
+        title: 'Lượt hỗ trợ là gì?',
+        body: 'Mỗi lần Lumi làm việc cho bạn là một lượt. Lượt làm mới đầu mỗi kỳ.',
+        rules: [
+          ['Một câu ghi nhật ký hoặc một câu hỏi', '1 lượt'],
+          ['Đọc một ảnh hoá đơn, giấy dặn', '≈ 3 lượt'],
+          ['Hỏi lại, sửa hay xác nhận nháp trong cùng việc', 'Không tính'],
+          ['Lỗi hệ thống, thử lại', 'Không tính'],
+          ['Hết lượt', 'Vẫn ghi trực tiếp, xem nhật ký bình thường'],
+        ],
+      },
+    },
+    faq: {
+      eyebrow: 'Hỏi đáp',
+      title: 'Những điều ba mẹ hay hỏi về Lumi.',
+      items: [
+        {
+          q: 'Lumi có tự ghi vào nhật ký không?',
+          a: 'Không. Lumi soạn nháp, bạn xem lại và bấm lưu. Bạn có thể sửa hoặc bỏ từng bản.',
+          open: true,
+        },
+        {
+          q: 'Hết lượt hỗ trợ thì sao?',
+          a: 'Bạn vẫn ghi trực tiếp và xem nhật ký như bình thường; hướng dẫn sức khoẻ thiết yếu vẫn mở. Lượt được làm mới đầu kỳ tiếp theo.',
+          open: false,
+        },
+        {
+          q: 'Gói Free có bị thiếu tính năng không?',
+          a: 'Không. Mọi việc Lumi làm đều có trong gói Free; các gói chỉ khác nhau ở số lượt mỗi tháng.',
+          open: false,
+        },
+        {
+          q: 'Có thể đổi gói giữa chừng không?',
+          a: 'Có. Bạn đổi gói trong ứng dụng; gia hạn và huỷ do App Store / Google Play quản lý.',
+          open: false,
+        },
+        {
+          q: 'Ai trong nhà dùng chung lượt?',
+          a: 'Cả nhà dùng chung một quỹ lượt của hộ. Chỉ chủ hộ mua và quản lý gói.',
+          open: false,
+        },
+        {
+          q: 'Thông tin của con được dùng thế nào?',
+          a: 'Lumi chỉ đọc những gì bạn gửi và phần nhật ký bạn được quyền xem, để trả lời và soạn nháp. Bạn đồng ý trước khi dùng và tắt được bất cứ lúc nào.',
+          open: false,
+        },
+      ],
+    },
+    cta: {
+      title: 'Để Lumi lo phần ghi chép. Bạn dành thời gian cho con.',
+      plans: 'Xem các gói',
+    },
+  },
+  // v6 (Figma 678:5614). Q-039: stages 2–4 are a roadmap ("Định hướng").
+  lumiJourney: {
+    eyebrow: 'Lumi theo con suốt hành trình',
+    title: 'Con lớn lên, Lumi cũng lớn theo con.',
+    lead: 'Hôm nay Lumi đồng hành cùng ba mẹ trong năm đầu đời. Ở mỗi chặng sau, Lumi sẽ có thêm cách giúp mới — vừa với tuổi của con và nhịp của gia đình.',
+    current: 'Đang có',
+    planned: 'Định hướng',
+    stages: [
+      {
+        sub: 'Nhẹ nhàng hơn cho cả nhà.',
+        items: [
+          { title: 'Kể một lần, ghi đúng chỗ.' },
+          { title: 'Hỏi về nhật ký của con.' },
+          { title: 'Gợi ý món ăn dặm hôm nay.' },
+        ],
+      },
+      {
+        sub: 'Bớt nghĩ chơi gì, thêm những điều cùng con thử.',
+        items: [
+          {
+            title: 'Hôm nay chơi gì cùng con?',
+            body: 'Gợi ý hoạt động ngắn theo tuổi, sở thích đã ghi và những vật dụng có sẵn.',
+          },
+          {
+            title: 'Từng lời đầu tiên, không bị quên.',
+            body: 'Gom những câu nói ngộ nghĩnh, tiếng cười và bước tiến nhỏ thành nhật ký của con.',
+          },
+          {
+            title: 'Cùng xây những thói quen nhỏ.',
+            body: 'Chuẩn bị những bước đơn giản cho giờ ngủ, đánh răng hay thu dọn đồ chơi, theo cách gia đình lựa chọn.',
+          },
+        ],
+      },
+      {
+        sub: 'Thêm ý tưởng cho những câu hỏi không ngừng.',
+        items: [
+          {
+            title: '“Vì sao?” cũng thành giờ chơi.',
+            body: 'Biến điều con tò mò thành câu chuyện, trò chơi hoặc hoạt động để cùng khám phá.',
+          },
+          {
+            title: 'Một ngày của con, dễ kể lại hơn.',
+            body: 'Từ vài ghi chú của ba mẹ, gợi ý câu hỏi để cùng con trò chuyện về ngày ở lớp.',
+          },
+          {
+            title: 'Bức vẽ nhỏ, câu chuyện lớn.',
+            body: 'Giữ tác phẩm cùng lời con kể, rồi gom thành bộ sưu tập qua từng năm.',
+          },
+        ],
+      },
+      {
+        sub: 'Đồng hành gần hơn, dành chỗ cho con tự lớn.',
+        items: [
+          {
+            title: 'Ý tưởng của con có nơi bắt đầu.',
+            body: 'Cùng chia một dự án nhỏ thành những bước vừa sức — trồng cây, làm mô hình hay viết truyện.',
+          },
+          {
+            title: 'Kế hoạch do con cùng lựa chọn.',
+            body: 'Chuẩn bị lịch học, việc nhà và thời gian cho sở thích; ba mẹ và con cùng điều chỉnh.',
+          },
+          {
+            title: 'Một năm nhìn bằng mắt con.',
+            body: 'Gom thành quả, câu chuyện và điều con tự hào thành cuốn kỷ niệm có tiếng nói của chính con.',
+          },
+        ],
+      },
+    ],
+    outroTitle: 'Bắt đầu từ hôm nay. Cùng chờ những chặng tiếp theo.',
+    outroBody:
+      'Các trải nghiệm trên là định hướng đang được phát triển. Phạm vi và thời điểm ra mắt sẽ được cập nhật theo từng chặng.',
+    explore: 'Khám phá Lumi hôm nay',
+    tryNow: 'Dùng thử Lumi hôm nay',
+  },
+  // "Dành cho con" (Figma 699:5798, home) and "Một ngày dành riêng cho con" (700:5832, Lumi page).
+  // Q-039: meal ideas come from library content still awaiting expert review (the design says so).
+  forBaby: {
+    eyebrow: 'Dành cho con, từ những điều ba mẹ ghi',
+    title: ['Mỗi bé một nhịp.', 'Mỗi ngày một gợi ý phù hợp.'],
+    lead: 'Từ cữ bú, giấc ngủ, món đã thử đến những mốc mới, Child Life giúp ba mẹ nhìn lại điều đang thay đổi và chọn một việc nhỏ cho hôm nay.',
+    values: [
+      {
+        title: 'Nhìn rõ những ngày gần đây',
+        body: 'Những ghi nhận liên quan được đặt cạnh nhau, giúp ba mẹ dễ xem lại khi nhịp ăn ngủ của con thay đổi.',
+      },
+      {
+        title: 'Bớt tìm kiếm, thêm điều phù hợp',
+        body: 'Gợi ý món ăn, hoạt động và bài đọc từ tuổi, thông tin đã ghi và điều gia đình đang quan tâm.',
+      },
+      {
+        title: 'Không để một cột mốc trôi qua',
+        body: 'Từ mốc ba mẹ vừa ghi, gợi ý cách lưu thành câu chuyện, thiệp hoặc video để cả nhà cùng giữ lại.',
+      },
+    ],
+    cta: 'Xem một ngày dành riêng cho con',
+    control: 'Bạn chọn điều phù hợp, sửa thông tin và cho biết gợi ý nào hữu ích.',
+    mock: {
+      initial: 'T',
+      name: 'Hôm nay của Teddy',
+      date: 'Thứ Năm · 3 điều đáng chú ý',
+      sample: 'Ví dụ minh hoạ',
+      why: 'Vì sao bạn thấy thẻ này',
+      cards: [
+        {
+          title: 'Nhìn lại giấc ngủ',
+          body: '2 tối gần đây con khó vào giấc, đều sau 21h.',
+          why: 'Bạn đã ghi nhận “khó vào giấc” trong 2 ngày gần đây.',
+          action: 'Xem các ghi nhận liên quan',
+        },
+        {
+          title: 'Ý tưởng cho bữa tiếp theo',
+          body: 'Cháo bí đỏ yến mạch · Khoai lang nghiền',
+          why: 'Dựa trên tuổi, món đã thử và phản ứng bạn ghi.',
+          action: 'Xem món và nguyên liệu',
+        },
+        {
+          title: 'Giữ lại nụ cười đầu tiên',
+          body: '3 ảnh bạn chọn hôm qua đã sẵn sàng.',
+          why: 'Bạn vừa đánh dấu mốc “mỉm cười đáp lại”.',
+          action: 'Tạo thiệp từ ảnh đã chọn',
+        },
+      ],
+      footnote: 'Bạn chọn chủ đề hiện ở đây, ẩn hoặc sửa bất cứ lúc nào.',
+    },
+    detail: {
+      eyebrow: 'Một ngày dành riêng cho con',
+      title: ['Không cần nghĩ ra câu hỏi.', 'Điều đáng chú ý đã chờ sẵn.'],
+      lead: 'Mỗi khi mở app, “Hôm nay của bé” đặt lên trước những thông tin và gợi ý đáng chú ý cho chính con — kèm lý do vì sao chúng xuất hiện.',
+      modes: [
+        {
+          name: 'Lumi',
+          sub: 'Bạn kể hoặc hỏi — Lumi xử lý giúp.',
+          example: '“Con bú 120 ml lúc 9h” → Lumi soạn sẵn bản ghi để bạn lưu.',
+        },
+        {
+          name: 'Hôm nay của bé',
+          sub: 'Bạn mở app — điều đáng chú ý đã có sẵn.',
+          example:
+            'Không cần hỏi: thẻ “Nhìn lại giấc ngủ” xuất hiện vì bạn đã ghi khó vào giấc 2 tối.',
+        },
+      ],
+      modesNote:
+        'Hai trải nghiệm dùng chung những gì gia đình đã ghi, nhưng phục vụ hai lúc khác nhau.',
+      steps: ['Ba mẹ đã ghi', 'Hôm nay ba mẹ thấy', 'Bạn quyết định'],
+      scenarios: [
+        {
+          logged: ['Khó vào giấc · T3', 'Khó vào giấc · T4', '6 giấc ngủ'],
+          decide: ['Xem các ghi nhận liên quan', 'Ẩn chủ đề giấc ngủ tuần này'],
+        },
+        {
+          logged: ['7 tháng', 'Đã thử: bí đỏ, khoai lang', 'Đã ghi phản ứng: trứng'],
+          decide: ['Xem món và nguyên liệu', 'Lưu món để thử', 'Không phù hợp'],
+        },
+        {
+          logged: ['Mốc: mỉm cười đáp lại', '3 ảnh đã chọn'],
+          decide: ['Tạo thiệp từ ảnh đã chọn', 'Để sau'],
+        },
+      ],
+      controlTitle: 'Bạn luôn kiểm soát:',
+      controls: [
+        'Chọn chủ đề quan tâm',
+        'Ẩn gợi ý không hợp',
+        'Sửa thông tin đã ghi',
+        'Cho biết điều hữu ích',
+      ],
+      note: 'Ví dụ minh hoạ. Gợi ý món ăn, hoạt động lấy từ thư viện nội dung đang chờ chuyên môn duyệt; chỉ giới thiệu như tính năng có sẵn khi đã triển khai.',
+    },
+  },
   // Q-039: stages 2–4 describe features beyond the V1 scope.
   journey: {
     label: 'Hành trình',
@@ -278,6 +720,78 @@ export const vi: Content = {
       current: 'đang có',
       soon: 'Sắp ra mắt',
       preview: 'Xem trước chặng {n}',
+      lumiLabel: 'Lumi ở chặng này',
+      lumiTeasers: [
+        'Hôm nay chơi gì cùng con?',
+        '“Vì sao?” cũng thành giờ chơi',
+        'Ý tưởng của con có nơi bắt đầu',
+      ],
+    },
+    lumi: {
+      eyebrow: 'Mới · Lumi · trợ lý đồng hành',
+      title: 'Gặp Lumi — trợ lý nhỏ cho năm đầu đời của con.',
+      lead: 'Đang bế con mà vẫn ghi kịp cữ bú. Hỏi một câu là biết hôm nay con ăn ngủ ra sao. Lumi lo phần ghi chép và tổng hợp, ba mẹ chỉ cần xem lại và bấm lưu.',
+      cta: 'Khám phá Lumi',
+      name: 'Lumi',
+      suggestions: [
+        '“Con vừa bú 120 ml lúc 9h”',
+        '“Hôm nay con ngủ bao lâu?”',
+        'Gợi ý ăn dặm',
+        'Làm video đầy tháng',
+        'Chụp hoá đơn bỉm',
+        '“Mấy hôm nay con khó ngủ”',
+      ],
+      features: [
+        {
+          title: 'Kể một lần, ghi đúng chỗ',
+          body: 'Gõ một câu như đang nhắn cho người nhà — Lumi tách thành từng bản ghi bú, ngủ, tã để bạn xem lại.',
+        },
+        {
+          title: 'Hỏi bằng lời của bạn',
+          body: '“Hôm nay con bú thế nào?” — Lumi trả lời từ chính nhật ký của con, kèm nguồn để mở lại.',
+        },
+        {
+          title: 'Nhìn lại mấy ngày qua',
+          body: 'Khi con khó ngủ hay bú ít, Lumi đặt các ghi nhận gần đây cạnh nhau để bạn thấy rõ hơn.',
+        },
+        {
+          title: 'Hôm nay con ăn gì?',
+          body: 'Gợi ý món theo tuổi từ thư viện, tránh những món nhà bạn đã ghi là con từng phản ứng.',
+        },
+        {
+          title: 'Chụp hoá đơn, xong chi tiêu',
+          body: 'Chụp hoá đơn bỉm, sữa — Lumi soạn khoản chi, hỏi lại chỗ chưa rõ trước khi lưu.',
+        },
+        {
+          title: 'Biến ảnh thành kỷ niệm',
+          body: 'Chọn ảnh và mẫu, Lumi giúp ghép thành thiệp hay đoạn phim nhỏ cho những cột mốc đầu đời.',
+        },
+      ],
+      mock: {
+        logAsk: 'Con bú 120 ml lúc 9h, ngủ từ 9h30',
+        drafts: [
+          { title: 'Bú bình · 120 ml', sub: '9:00' },
+          { title: 'Giấc ngủ', sub: 'từ 9:30' },
+        ],
+        draft: 'Nháp',
+        dataAsk: 'Hôm nay con bú thế nào?',
+        dataAnswer: '5 cữ bú bình · tổng 580 ml. Cữ gần nhất lúc 14:20.',
+        dataSource: 'Mở nhật ký nguồn',
+        sleepAsk: 'Mấy hôm nay con khó vào giấc',
+        sleepAnswer:
+          '3 tối gần đây có 2 ghi nhận khó vào giấc, đều sau 21h. Xem lại các giấc quanh đó nhé?',
+        sleepSources: ['6 giấc ngủ', '2 ghi chú'],
+        mealAsk: 'Hôm nay cho Teddy ăn gì?',
+        mealAnswer: 'Gợi ý cho bé 7 tháng, đã bỏ trứng vì từng ghi nổi mẩn:',
+        meals: ['Cháo bí đỏ', 'Khoai lang nghiền'],
+        receipt: {
+          title: 'Bỉm · 289.000 ₫',
+          sub: 'Chi tiêu · hôm nay',
+          note: 'Ngày trên hoá đơn mờ — Lumi hỏi lại trước khi lưu.',
+          amount: '289.000 ₫',
+        },
+        video: 'Một tháng đầu của Teddy · 0:45',
+      },
     },
     keepsakes: {
       eyebrow: 'Kỷ niệm của con',

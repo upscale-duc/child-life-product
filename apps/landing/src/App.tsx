@@ -16,6 +16,7 @@ import {
 import { startReveal } from './motion';
 import { Home } from './pages/Home';
 import { Legal } from './pages/Legal';
+import { LumiPage } from './pages/LumiPage';
 import { StagePage } from './pages/StagePage';
 import { alternateOf, isStage, pathOf, type Route } from './routes';
 
@@ -71,6 +72,8 @@ export function App({ route, environment }: { route: Route; environment: Environ
           <Home />
         ) : isStage(route.page) ? (
           <StagePage stage={route.page} />
+        ) : route.page === 'lumi' ? (
+          <LumiPage />
         ) : (
           <Legal page={route.page} />
         )}

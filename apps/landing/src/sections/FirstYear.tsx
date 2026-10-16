@@ -3,6 +3,8 @@ import { Eyebrow, Icon } from '../components/primitives';
 import { useSite } from '../context';
 import { pathOf } from '../routes';
 import { BentoGrid } from './Everything';
+import { ForBabyBlock } from './ForBaby';
+import { LumiBlock } from './Lumi';
 import { Utilities } from './Utilities';
 import { WatchSection } from './Watch';
 import { YourWay } from './YourWay';
@@ -38,7 +40,7 @@ function FirstYearDetail() {
 }
 
 /** Chặng 1 · Năm đầu đời (28-landing-v5b-home §3): one mint frame around the bento, the parent
- *  tools, "Theo cách của bạn", the Apple Watch card and the link to the Chặng 1 page. */
+ *  tools, "Theo cách của bạn", Lumi, the Apple Watch card and the link to the Chặng 1 page. */
 export function FirstYear() {
   const { c } = useSite();
   const f = c.home.firstYear;
@@ -61,6 +63,12 @@ export function FirstYear() {
           <BentoGrid />
           <Utilities />
           <YourWay />
+        </div>
+        <div className="stage-frame__pad">
+          <LumiBlock />
+        </div>
+        <div className="stage-frame__pad">
+          <ForBabyBlock />
         </div>
         <div className="stage-frame__pad">
           <WatchSection />

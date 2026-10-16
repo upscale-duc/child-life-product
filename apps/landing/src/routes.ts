@@ -4,7 +4,7 @@ import type { SupportedLocale } from '@child-life/web-config';
 export const stageIds = ['stage1', 'stage2', 'stage3', 'stage4'] as const;
 export type StageId = (typeof stageIds)[number];
 
-export type PageId = 'home' | StageId | 'privacy' | 'terms';
+export type PageId = 'home' | StageId | 'lumi' | 'privacy' | 'terms';
 
 export interface Route {
   path: string;
@@ -25,6 +25,8 @@ export const routes: Route[] = [
   { path: '/en/journey/curious/', locale: 'en', page: 'stage3' },
   { path: '/hanh-trinh/the-gioi-rieng-cua-con/', locale: 'vi', page: 'stage4' },
   { path: '/en/journey/own-world/', locale: 'en', page: 'stage4' },
+  { path: '/lumi/', locale: 'vi', page: 'lumi' },
+  { path: '/en/lumi/', locale: 'en', page: 'lumi' },
   { path: '/quyen-rieng-tu/', locale: 'vi', page: 'privacy' },
   { path: '/en/privacy/', locale: 'en', page: 'privacy' },
   { path: '/dieu-khoan/', locale: 'vi', page: 'terms' },

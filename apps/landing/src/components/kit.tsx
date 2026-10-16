@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useSite } from '../context';
+import lumiMascot from '../assets/figma/lumi-mascot-full.svg';
 import { Art, Icon, art, type IconName } from './primitives';
 
 /** Soft background + matching ink pairs used by the v3 chips, icon boxes and tiles
@@ -19,7 +20,7 @@ export type Tint =
   | 'glass';
 
 /** Text colour override (e.g. a white chip with mint text). */
-export type Ink = 'mint' | 'bottle' | 'sleep' | 'ink';
+export type Ink = 'mint' | 'bottle' | 'sleep' | 'growth' | 'ink';
 
 export function Chip({
   tint = 'white',
@@ -128,6 +129,37 @@ export function Initials({ letters, inline }: { letters: string[]; inline?: bool
           {letter}
         </span>
       ))}
+    </span>
+  );
+}
+
+/** Lumi, the in-app assistant (Figma "Chat/Nút trợ lý" 628:9074). `size` is the 52-px bubble box;
+ *  the halo and sparkles overflow it, as in the app's `LumiMascot`. Decorative. */
+export function LumiMascot({
+  size,
+  className,
+  style,
+}: {
+  size: number;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const k = size / 52;
+  return (
+    <span
+      className={className ? `lumi-mascot ${className}` : 'lumi-mascot'}
+      style={{ width: size, height: size, ...style }}
+      aria-hidden="true"
+    >
+      <img
+        src={lumiMascot}
+        alt=""
+        width={70 * k}
+        height={72.5 * k}
+        style={{ left: -8.9375 * k, top: -4.875 * k }}
+        loading="lazy"
+        decoding="async"
+      />
     </span>
   );
 }

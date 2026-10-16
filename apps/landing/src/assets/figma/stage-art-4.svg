@@ -1,0 +1,51 @@
+<svg width="400" height="260" viewBox="0 0 400 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Các chặng tiếp theo card "Chặng 4 · 6–12 tuổi" illustration, Figma 684:600 (Landing v6), 400 × 260 incl. its own #EBEBFF background. -->
+<g id="Minh ho&#225;&#186;&#161; vector" clip-path="url(#clip0_sa4)">
+<rect width="400" height="260" fill="#EBEBFF"/>
+<ellipse id="Ellipse" cx="200" cy="265" rx="240" ry="65" fill="#D9D9FA"/>
+<rect id="Rectangle" x="30" y="196" width="340" height="10" rx="5" fill="#9E99D9"/>
+<rect id="Rectangle_2" x="96" y="170" width="74" height="14" rx="4" fill="#FA9E59"/>
+<rect id="Rectangle_3" x="102" y="156" width="64" height="14" rx="4" fill="#2BBFB3"/>
+<rect id="Rectangle_4" x="94" y="142" width="70" height="14" rx="4" fill="#739EF2"/>
+<path id="Vector" d="M300 156H344L338 196H306L300 156Z" fill="#FA8073"/>
+<path id="Vector_2" d="M322 156V106" stroke="#339966" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse id="Ellipse_2" cx="308.99" cy="117.428" rx="15" ry="8" transform="rotate(-30 308.99 117.428)" fill="#4DB880"/>
+<ellipse id="Ellipse_3" cx="326.99" cy="118.428" rx="15" ry="8" transform="rotate(30 326.99 118.428)" fill="#4DB880"/>
+<ellipse id="Ellipse_4" cx="312.976" cy="92.9112" rx="15" ry="8" transform="rotate(-25 312.976 92.9112)" fill="#4DB880"/>
+<path id="Vector_3" d="M123.26 64C138.26 79 138.26 109 134.26 124H112.26C108.26 109 108.26 79 123.26 64Z" fill="white"/>
+<circle id="Ellipse_5" cx="125" cy="92" r="8" fill="#739EF2"/>
+<path id="Vector_4" d="M114 114L102 130L114 126V114Z" fill="#FA8073"/>
+<path id="Vector_5" d="M136 114L148 130L136 126V114Z" fill="#FA8073"/>
+<path id="Vector_6" d="M118 124L125 142L132 124H118Z" fill="#FFD166"/>
+<rect id="Rectangle_5" x="175.6" y="120.92" width="48" height="69.6" rx="21.6" fill="#739EF2"/>
+<rect id="Rectangle_6" x="178" y="180.92" width="43.2" height="31.2" rx="12" fill="#4A598C"/>
+<circle id="Ellipse_6" cx="199.6" cy="101.6" r="27.6" fill="#FAD1B3"/>
+<ellipse id="Ellipse_7" cx="199.6" cy="84.38" rx="30" ry="15.18" fill="#4A362B"/>
+<rect id="Rectangle_7" x="202.36" y="66.8" width="22.08" height="14.4" rx="7.2" fill="#4A362B"/>
+<ellipse id="Ellipse_8" cx="190.96" cy="104.6" rx="2.4" ry="3" fill="#173D45"/>
+<ellipse id="Ellipse_9" cx="208.624" cy="104.6" rx="2.4" ry="3" fill="#173D45"/>
+<ellipse id="Ellipse_10" opacity="0.8" cx="186.136" cy="111.728" rx="4.2" ry="2.4" fill="#FF9E99"/>
+<ellipse id="Ellipse_11" opacity="0.8" cx="214.84" cy="111.728" rx="4.2" ry="2.4" fill="#FF9E99"/>
+<g id="Ellipse_12">
+<mask id="path-25-inside-1_sa4" fill="white">
+<path d="M205.48 113.978C205.206 115.062 204.47 116.038 203.4 116.739C202.329 117.44 200.988 117.823 199.605 117.824C198.221 117.825 196.88 117.443 195.808 116.744C194.736 116.044 193.999 115.07 193.722 113.985L199.6 113.024L205.48 113.978Z"/>
+</mask>
+<path d="M205.48 113.978C205.206 115.062 204.47 116.038 203.4 116.739C202.329 117.44 200.988 117.823 199.605 117.824C198.221 117.825 196.88 117.443 195.808 116.744C194.736 116.044 193.999 115.07 193.722 113.985L199.6 113.024L205.48 113.978Z" stroke="#173D45" stroke-width="4.8" mask="url(#path-25-inside-1_sa4)"/>
+</g>
+<rect id="Rectangle_8" x="196" y="128" width="48" height="36" rx="6" transform="rotate(8 196 128)" fill="white"/>
+<path id="Vector_7" d="M204 138H234M204 147H226" stroke="#173D45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle id="Ellipse_13" cx="267" cy="51" r="17" fill="#FFD966"/>
+<rect id="Rectangle_9" x="259" y="64" width="16" height="10" rx="3" fill="#9E99D9"/>
+<rect id="Rectangle_10" x="266" y="18" width="3" height="10" rx="1.5" fill="#FFBF4D"/>
+<rect id="Rectangle_11" x="292" y="30" width="3" height="10" rx="1.5" transform="rotate(60 292 30)" fill="#FFBF4D"/>
+<rect id="Rectangle_12" x="240" y="32" width="3" height="10" rx="1.5" transform="rotate(-60 240 32)" fill="#FFBF4D"/>
+<path id="Vector_8" d="M139 40C140.08 45.76 142.24 47.92 148 49C142.24 50.08 140.08 52.24 139 58C137.92 52.24 135.76 50.08 130 49C135.76 47.92 137.92 45.76 139 40Z" fill="#FFD166"/>
+<path id="Vector_9" d="M356 60C356.72 63.84 358.16 65.28 362 66C358.16 66.72 356.72 68.16 356 72C355.28 68.16 353.84 66.72 350 66C353.84 65.28 355.28 63.84 356 60Z" fill="#2BBFB3"/>
+<path id="Vector_10" d="M83 70C83.6 73.2 84.8 74.4 88 75C84.8 75.6 83.6 76.8 83 80C82.4 76.8 81.2 75.6 78 75C81.2 74.4 82.4 73.2 83 70Z" fill="#FA8073"/>
+</g>
+<defs>
+<clipPath id="clip0_sa4">
+<rect width="400" height="260" fill="white"/>
+</clipPath>
+</defs>
+</svg>

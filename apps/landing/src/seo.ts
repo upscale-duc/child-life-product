@@ -16,7 +16,8 @@ export function buildHead(route: Route, content: Content, environment: Environme
   const en = alternateOf(route, 'en');
   // Each stage page has its own preview image (scripts/render-brand-assets.mjs).
   // `v` changes with the artwork so link previews and the CDN (24 h) refetch it.
-  const ogImage = `${origin}/og/${route.locale}${isStage(route.page) ? `-${route.page}` : ''}.png?v=4`;
+  const own = isStage(route.page) || route.page === 'lumi';
+  const ogImage = `${origin}/og/${route.locale}${own ? `-${route.page}` : ''}.png?v=4`;
 
   const tags = [
     `<title>${escape(page.title)}</title>`,
@@ -35,7 +36,7 @@ export function buildHead(route: Route, content: Content, environment: Environme
     `<meta property="og:image" content="${ogImage}">`,
     `<meta property="og:image:width" content="1200">`,
     `<meta property="og:image:height" content="630">`,
-    `<meta property="og:image:alt" content="${escape(isStage(route.page) ? page.title : content.meta.ogAlt)}">`,
+    `<meta property="og:image:alt" content="${escape(route.page === 'home' ? content.meta.ogAlt : page.title)}">`,
     `<meta name="twitter:card" content="summary_large_image">`,
     // The landing is designed in Light only (Website 210:759).
     `<meta name="theme-color" content="#F6FCFB">`,
@@ -48,7 +49,9 @@ export function buildHead(route: Route, content: Content, environment: Environme
       ? content.home.faq.items
       : route.page === 'stage1'
         ? content.faq.items
-        : null;
+        : route.page === 'lumi'
+          ? content.lumiPage.faq.items
+          : null;
   const graph: object[] = [];
   if (route.page === 'home') {
     graph.push(
@@ -109,5 +112,6 @@ export function metaOf(route: Route, content: Content): PageMeta {
     const stage = content.journey.stages[stageIds.indexOf(route.page)]!;
     return { title: `${stage.name} (${stage.ages}) — Child Life`, description: stage.lead };
   }
+  if (route.page === 'lumi') return content.lumiPage.meta;
   return content.legal[route.page].meta;
 }

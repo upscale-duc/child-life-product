@@ -2533,3 +2533,37 @@
   font: 600 11px/1.3 var(--font-family);
   color: var(--ink);
 }
+
+/* ---------- v6 home (32-landing-v6-home, Figma 649:6251) ---------- */
+/* Hành trình (§3): a vector illustration per stage over the tinted band. */
+.chapter__illustration {
+  display: none;
+}
+@media (min-width: 1120px) {
+  .chapter__illustration {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    object-position: left top;
+  }
+  .chapter__number {
+    left: 14px;
+    opacity: 1;
+  }
+  .chapter:nth-child(1) .chapter__number {
+    color: rgba(43, 153, 143, 0.28);
+  }
+  .chapter:nth-child(2) .chapter__number {
+    color: rgba(250, 158, 89, 0.28);
+  }
+  .chapter:nth-child(3) .chapter__number {
+    color: rgba(115, 115, 217, 0.28);
+  }
+  .chapter:nth-child(4) .chapter__number {
+    color: rgba(242, 128, 115, 0.28);
+  }
+}

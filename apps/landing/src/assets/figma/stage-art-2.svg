@@ -1,0 +1,46 @@
+<svg width="400" height="260" viewBox="0 0 400 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Các chặng tiếp theo card "Chặng 2 · 1–3 tuổi" illustration, Figma 684:537 (Landing v6), 400 × 260 incl. its own #FFF2D6 background. -->
+<g id="Minh ho&#225;&#186;&#161; vector" clip-path="url(#clip0_sa2)">
+<rect width="400" height="260" fill="#FFF2D6"/>
+<ellipse id="Ellipse" cx="200" cy="260" rx="260" ry="80" fill="#FFE3B3"/>
+<circle id="Ellipse_2" opacity="0.6" cx="300" cy="100" r="60" fill="#FFDB8C"/>
+<ellipse id="Ellipse_3" opacity="0.7" cx="210" cy="221" rx="140" ry="23" fill="#FACC9E"/>
+<rect id="Rectangle" x="268" y="150" width="52" height="52" rx="10" fill="#739EF2"/>
+<rect id="Rectangle_2" x="274" y="104" width="44" height="44" rx="10" transform="rotate(-4 274 104)" fill="#FA9E59"/>
+<rect id="Rectangle_3" x="282" y="66" width="36" height="36" rx="8" transform="rotate(6 282 66)" fill="#2BBFB3"/>
+<circle id="Ellipse_4" opacity="0.5" cx="295" cy="175" r="10" fill="white"/>
+<circle id="Ellipse_5" opacity="0.5" cx="295" cy="124" r="8" fill="white"/>
+<circle id="Ellipse_6" cx="104" cy="192" r="24" fill="#FFD166"/>
+<path id="Vector" d="M80 178.5C94 164.5 114 164.5 128 178.5" stroke="#FA9E59" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M87.5 168C77.5 184 77.5 200 87.5 216" stroke="#FA9E59" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<rect id="Rectangle_4" x="171.15" y="133.055" width="42" height="60.9" rx="18.9" fill="#2BBFB3"/>
+<rect id="Rectangle_5" x="173.25" y="185.555" width="37.8" height="27.3" rx="10.5" fill="#739EF2"/>
+<circle id="Ellipse_7" cx="192.15" cy="116.15" r="24.15" fill="#FAD1B3"/>
+<ellipse id="Ellipse_8" cx="192.15" cy="100.043" rx="15.456" ry="10.143" fill="#4A362B"/>
+<path id="Vector_3" d="M186.354 87.4948C190.354 77.4948 198.354 77.4948 200.354 83.4948" stroke="#4A362B" stroke-width="3.15" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse id="Ellipse_9" cx="184.59" cy="118.775" rx="2.1" ry="2.625" fill="#173D45"/>
+<ellipse id="Ellipse_10" cx="200.046" cy="118.775" rx="2.1" ry="2.625" fill="#173D45"/>
+<ellipse id="Ellipse_11" opacity="0.8" cx="180.369" cy="125.012" rx="3.675" ry="2.1" fill="#FF9E99"/>
+<ellipse id="Ellipse_12" opacity="0.8" cx="205.485" cy="125.012" rx="3.675" ry="2.1" fill="#FF9E99"/>
+<g id="Ellipse_13">
+<mask id="path-21-inside-1_sa2" fill="white">
+<path d="M197.295 126.98C197.055 127.93 196.412 128.783 195.475 129.396C194.538 130.01 193.365 130.345 192.154 130.346C190.944 130.347 189.77 130.013 188.832 129.401C187.894 128.789 187.249 127.936 187.006 126.987L192.15 126.146L197.295 126.98Z"/>
+</mask>
+<path d="M197.295 126.98C197.055 127.93 196.412 128.783 195.475 129.396C194.538 130.01 193.365 130.345 192.154 130.346C190.944 130.347 189.77 130.013 188.832 129.401C187.894 128.789 187.249 127.936 187.006 126.987L192.15 126.146L197.295 126.98Z" stroke="#173D45" stroke-width="4.2" mask="url(#path-21-inside-1_sa2)"/>
+</g>
+<rect id="Rectangle_6" x="212" y="120" width="12" height="40" rx="6" transform="rotate(35 212 120)" fill="#FAD1B3"/>
+<rect id="Rectangle_7" x="226" y="104" width="22" height="22" rx="6" transform="rotate(-10 226 104)" fill="#FFD166"/>
+<ellipse id="Ellipse_14" opacity="0.7" cx="44.5" cy="238.5" rx="4.5" ry="6.5" fill="#FAB380"/>
+<ellipse id="Ellipse_15" opacity="0.7" cx="62.5" cy="226.5" rx="4.5" ry="6.5" fill="#FAB380"/>
+<ellipse id="Ellipse_16" opacity="0.7" cx="344.5" cy="234.5" rx="4.5" ry="6.5" fill="#FAB380"/>
+<ellipse id="Ellipse_17" opacity="0.7" cx="360.5" cy="222.5" rx="4.5" ry="6.5" fill="#FAB380"/>
+<path id="Vector_4" d="M149 46C150.08 51.76 152.24 53.92 158 55C152.24 56.08 150.08 58.24 149 64C147.92 58.24 145.76 56.08 140 55C145.76 53.92 147.92 51.76 149 46Z" fill="#FA9E59"/>
+<path id="Vector_5" d="M358 46C358.72 49.84 360.16 51.28 364 52C360.16 52.72 358.72 54.16 358 58C357.28 54.16 355.84 52.72 352 52C355.84 51.28 357.28 49.84 358 46Z" fill="#2BBFB3"/>
+<path id="Vector_6" d="M115 110C115.6 113.2 116.8 114.4 120 115C116.8 115.6 115.6 116.8 115 120C114.4 116.8 113.2 115.6 110 115C113.2 114.4 114.4 113.2 115 110Z" fill="#739EF2"/>
+</g>
+<defs>
+<clipPath id="clip0_sa2">
+<rect width="400" height="260" fill="white"/>
+</clipPath>
+</defs>
+</svg>

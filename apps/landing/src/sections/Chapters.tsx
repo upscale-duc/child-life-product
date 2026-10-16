@@ -1,3 +1,7 @@
+import art1 from '../assets/figma/journey-art-stage1.svg';
+import art2 from '../assets/figma/journey-art-stage2.svg';
+import art3 from '../assets/figma/journey-art-stage3.svg';
+import art4 from '../assets/figma/journey-art-stage4.svg';
 import { Chip, type Tint } from '../components/kit';
 import { Eyebrow, Icon, Photo, type IconName } from '../components/primitives';
 import { useSite } from '../context';
@@ -12,7 +16,11 @@ export const stageLooks: { tint: Tint; icon: IconName }[] = [
   { tint: 'peach', icon: 'globe' },
 ];
 
-/** Hành trình (14-landing-v3-home §3): the four stage cards, each linking to its page. */
+/** Illustrations of the four stages (Figma 688:18 … 688:88, 32-landing-v6-home §3). */
+const journeyArt = [art1, art2, art3, art4];
+
+/** Hành trình (14-landing-v3-home §3, art since v6): the four stage cards, each linking to its
+ *  page. */
 export function Chapters() {
   const { c, route } = useSite();
   const h = c.home.chapters;
@@ -43,13 +51,15 @@ export function Chapters() {
                 <span className="chapter__circle chapter__circle--a" />
                 <span className="chapter__circle chapter__circle--b" />
                 <span className="chapter__number">{i + 1}</span>
-                {i === 0 ? (
-                  <Photo tone="peach" className="chapter__photo" />
-                ) : (
-                  <span className="chapter__disc">
-                    <Icon name={look.icon} size={40} />
-                  </span>
-                )}
+                <img
+                  className="chapter__illustration"
+                  src={journeyArt[i]}
+                  alt=""
+                  width={295}
+                  height={170}
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
               <span className={`chapter__thumb tint--${look.tint}`} aria-hidden="true">
                 {i === 0 ? <Photo tone="peach" /> : <Icon name={look.icon} size={26} />}

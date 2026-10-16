@@ -1,0 +1,40 @@
+<svg width="295" height="170" viewBox="0 0 295 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Hành trình card "Chặng 4 · 6–12 tuổi" art, Figma 688:88 (Landing v6), 295 × 170, transparent background (band peach-soft drawn by the page). -->
+<g id="Minh ho&#225;&#186;&#161; vector" clip-path="url(#clip0_ja4)">
+<ellipse id="Ellipse" cx="181.5" cy="164.75" rx="142.5" ry="33.25" fill="#FFDBD1"/>
+<rect id="Rectangle" x="86.5" y="139.1" width="209" height="6.65" rx="3.325" fill="#D98C80"/>
+<rect id="Rectangle_2" x="97.9" y="120.1" width="51.3" height="10.45" rx="2.85" fill="#FA9E59"/>
+<rect id="Rectangle_3" x="101.7" y="109.65" width="43.7" height="10.45" rx="2.85" fill="#2BBFB3"/>
+<path id="Vector" d="M122.32 65C132.77 75.45 132.77 96.35 129.92 106.8H114.72C111.87 96.35 111.87 75.45 122.32 65Z" fill="white"/>
+<circle id="Ellipse_2" cx="123.55" cy="83.05" r="4.75" fill="#739EF2"/>
+<rect id="Rectangle_4" x="170.908" y="86.9877" width="36.1" height="52.345" rx="16.245" fill="#739EF2"/>
+<rect id="Rectangle_5" x="172.712" y="132.113" width="32.49" height="23.465" rx="9.025" fill="#4A598C"/>
+<circle id="Ellipse_3" cx="188.957" cy="72.4575" r="20.7575" fill="#FAD1B3"/>
+<ellipse id="Ellipse_4" cx="188.958" cy="59.3166" rx="22.6575" ry="11.4166" fill="#4A362B"/>
+<rect id="Rectangle_6" x="191.033" y="46" width="16.606" height="11.4" rx="5.7" fill="#4A362B"/>
+<ellipse id="Ellipse_5" cx="182.554" cy="74.8325" rx="1.9" ry="2.375" fill="#173D45"/>
+<ellipse id="Ellipse_6" cx="195.839" cy="74.8325" rx="1.9" ry="2.375" fill="#173D45"/>
+<ellipse id="Ellipse_7" opacity="0.8" cx="178.167" cy="80.1696" rx="3.325" ry="1.9" fill="#FF9E99"/>
+<ellipse id="Ellipse_8" opacity="0.8" cx="200.585" cy="80.1696" rx="3.325" ry="1.9" fill="#FF9E99"/>
+<g id="Ellipse_9">
+<mask id="path-16-inside-1_ja4" fill="white">
+<path d="M193.613 81.9942C193.395 82.853 192.813 83.6253 191.966 84.1802C191.118 84.7351 190.057 85.0386 188.961 85.0393C187.866 85.04 186.804 84.7378 185.955 84.184C185.106 83.6302 184.523 82.8587 184.304 82.0002L188.958 81.2393L193.613 81.9942Z"/>
+</mask>
+<path d="M193.613 81.9942C193.395 82.853 192.813 83.6253 191.966 84.1802C191.118 84.7351 190.057 85.0386 188.961 85.0393C187.866 85.04 186.804 84.7378 185.955 84.184C185.106 83.6302 184.523 82.8587 184.304 82.0002L188.958 81.2393L193.613 81.9942Z" stroke="#173D45" stroke-width="3.8" mask="url(#path-16-inside-1_ja4)"/>
+</g>
+<rect id="Rectangle_7" x="183.4" y="93.5" width="36.1" height="26.6" rx="4.75" transform="rotate(8 183.4 93.5)" fill="white"/>
+<path id="Vector_2" d="M189.1 101.1H210M189.1 107.75H204.3" stroke="#173D45" stroke-width="1.805" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_3" d="M244.2 112.5H272.7L268.9 139.1H248L244.2 112.5Z" fill="#FA8073"/>
+<path id="Vector_4" d="M258.45 114.2V80.2" stroke="#339966" stroke-width="2.85" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse id="Ellipse_10" cx="256.1" cy="93.2113" rx="10.45" ry="5.7" transform="rotate(-30 256.1 93.2113)" fill="#4DB880"/>
+<ellipse id="Ellipse_11" cx="267.5" cy="94.1613" rx="10.45" ry="5.7" transform="rotate(30 267.5 94.1613)" fill="#4DB880"/>
+<circle id="Ellipse_12" cx="234.7" cy="32.7" r="11.4" fill="#FFD966"/>
+<rect id="Rectangle_8" x="229" y="42.2" width="11.4" height="6.65" rx="1.9" fill="#9E99D9"/>
+<path id="Vector_5" d="M281.25 36.5C281.82 39.54 282.96 40.68 286 41.25C282.96 41.82 281.82 42.96 281.25 46C280.68 42.96 279.54 41.82 276.5 41.25C279.54 40.68 280.68 39.54 281.25 36.5Z" fill="#2BBFB3" stroke="black"/>
+</g>
+<defs>
+<clipPath id="clip0_ja4">
+<rect width="295" height="170" fill="white"/>
+</clipPath>
+</defs>
+</svg>

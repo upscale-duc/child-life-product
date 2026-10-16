@@ -1,0 +1,84 @@
+<svg width="70" height="72.5" viewBox="0 0 70 72.5" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Padded copy of lumi-mascot.svg: the viewBox covers the halo and sparkles (the 52 px bubble box sits at 8.9375, 4.875), so it renders as an <img> without clipping. Lumi, Figma component "Chat/Nút trợ lý" 628:9074 (export of instance 650:4825 at 52 px, page backgrounds removed). Halo blur and sparkles reach past the 52 box: inline it (?raw) so overflow stays visible. -->
+<g filter="url(#lumi-halo)">
+<circle cx="34.9375" cy="32.5" r="24.375" fill="url(#lumi-halo-fill)"/>
+</g>
+<g filter="url(#lumi-bubble-fx)">
+<g clip-path="url(#lumi-bubble-clip)">
+<path d="M13 30.875C13 18.7593 22.8218 8.9375 34.9375 8.9375C47.0532 8.9375 56.875 18.7593 56.875 30.875V46.3125C56.875 49.9024 53.9649 52.8125 50.375 52.8125H34.9375C22.8218 52.8125 13 42.9907 13 30.875Z" fill="url(#lumi-bubble-fill)"/>
+<ellipse cx="32.5" cy="13" rx="16.25" ry="8.9375" fill="url(#lumi-sheen)"/>
+<mask id="lumi-mark-mask" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="25" y="21" width="20" height="21">
+<rect x="25.1875" y="21.9375" width="19.5" height="19.5" rx="6.825" fill="black"/>
+</mask>
+<g mask="url(#lumi-mark-mask)">
+<path d="M38.7156 30.7133C39.9945 30.7133 41.0313 29.6765 41.0313 28.3977C41.0313 27.1188 39.9945 26.082 38.7156 26.082C37.4368 26.082 36.4 27.1188 36.4 28.3977C36.4 29.6765 37.4368 30.7133 38.7156 30.7133Z" fill="#FFD980" fill-opacity="0.95"/>
+<path d="M25.1875 33.8797C30.3063 32.4172 35.6687 36.0734 44.6875 33.1484V41.4359H25.1875V33.8797Z" fill="white" fill-opacity="0.55"/>
+<path d="M25.1875 37.4162C31.525 36.1975 37.8625 37.66 44.6875 36.9287V41.4381H25.1875V37.4162Z" fill="white" fill-opacity="0.22"/>
+</g>
+</g>
+<path d="M34.9375 9.54688C46.7167 9.54688 56.2656 19.0958 56.2656 30.875V46.3125C56.2656 49.5658 53.6283 52.2031 50.375 52.2031H34.9375C23.1583 52.2031 13.6094 42.6542 13.6094 30.875C13.6094 19.0958 23.1583 9.54688 34.9375 9.54688Z" stroke="white" stroke-opacity="0.45" stroke-width="1.21875"/>
+</g>
+<g filter="url(#lumi-star-gold)">
+<path d="M51.1875 4.875C51.9675 9.035 53.5275 10.595 57.6875 11.375C53.5275 12.155 51.9675 13.715 51.1875 17.875C50.4075 13.715 48.8475 12.155 44.6875 11.375C48.8475 10.595 50.4075 9.035 51.1875 4.875Z" fill="#FFD166"/>
+</g>
+<g filter="url(#lumi-star-white)">
+<path d="M58.0938 17.875C58.5325 20.215 59.41 21.0925 61.75 21.5312C59.41 21.97 58.5325 22.8475 58.0938 25.1875C57.655 22.8475 56.7775 21.97 54.4375 21.5312C56.7775 21.0925 57.655 20.215 58.0938 17.875Z" fill="white"/>
+</g>
+<defs>
+<filter id="lumi-halo" x="2.4375" y="0" width="65" height="65" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="4.0625" result="effect1_foregroundBlur"/>
+</filter>
+<filter id="lumi-bubble-fx" x="0" y="2.4375" width="69.875" height="69.875" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="1.625" operator="erode" in="SourceAlpha" result="effect1_dropShadow"/>
+<feOffset dy="6.5"/>
+<feGaussianBlur stdDeviation="7.3125"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.12 0 0 0 0 0.3 0 0 0 0 0.6 0 0 0 0.35 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1.625"/>
+<feGaussianBlur stdDeviation="1.625"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.35 0"/>
+<feBlend mode="normal" in2="shape" result="effect2_innerShadow"/>
+</filter>
+<filter id="lumi-star-gold" x="39.8125" y="0" width="22.75" height="22.75" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="2.4375"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.7 0 0 0 0 0.2 0 0 0 0.6 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+</filter>
+<filter id="lumi-star-white" x="52" y="15.4375" width="12.1875" height="12.1875" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="1.21875"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.33 0 0 0 0 0.36 0 0 0 0 0.86 0 0 0 0.5 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+</filter>
+<linearGradient id="lumi-halo-fill" x1="17.5268" y1="15.0893" x2="52.3482" y2="49.9107" gradientUnits="userSpaceOnUse">
+<stop stop-color="#2BC4B5" stop-opacity="0.55"/>
+<stop offset="1" stop-color="#545CDB" stop-opacity="0.55"/>
+</linearGradient>
+<linearGradient id="lumi-bubble-fill" x1="19.2679" y1="15.2054" x2="50.6071" y2="46.5446" gradientUnits="userSpaceOnUse">
+<stop stop-color="#2BC4B5"/>
+<stop offset="0.55" stop-color="#086B73"/>
+<stop offset="1" stop-color="#545CDB"/>
+</linearGradient>
+<linearGradient id="lumi-sheen" x1="32.5" y1="4.0625" x2="32.5" y2="21.9375" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.32"/>
+<stop offset="1" stop-color="white" stop-opacity="0"/>
+</linearGradient>
+<clipPath id="lumi-bubble-clip">
+<path d="M13 30.875C13 18.7593 22.8218 8.9375 34.9375 8.9375C47.0532 8.9375 56.875 18.7593 56.875 30.875V46.3125C56.875 49.9024 53.9649 52.8125 50.375 52.8125H34.9375C22.8218 52.8125 13 42.9907 13 30.875Z" fill="white"/>
+</clipPath>
+</defs>
+</svg>

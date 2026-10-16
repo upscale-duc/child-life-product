@@ -21,6 +21,7 @@ import globe from '../../../mobile/assets/icons/globe.svg?raw';
 import grid from '../../../mobile/assets/icons/grid.svg?raw';
 import heart from '../../../mobile/assets/icons/heart.svg?raw';
 import journal from '../../../mobile/assets/icons/journal.svg?raw';
+import link from '../../../mobile/assets/icons/link.svg?raw';
 import lock from '../../../mobile/assets/icons/lock.svg?raw';
 import mail from '../../../mobile/assets/icons/mail.svg?raw';
 import memories from '../../../mobile/assets/icons/memories.svg?raw';
@@ -78,6 +79,7 @@ const icons = {
   grid,
   heart,
   journal,
+  link,
   lock,
   mail,
   memories,

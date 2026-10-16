@@ -51,7 +51,7 @@ shoot('apple', iconHtml(180, 0), 180, 180, pub('icons/apple-touch-icon.png'));
 shoot('i192', iconHtml(192, 0), 192, 192, pub('icons/icon-192.png'));
 shoot('i512', iconHtml(512, 0), 512, 512, pub('icons/icon-512.png'));
 
-// Open Graph 1200 × 630: the v3 home hero and one image per stage page. Copy mirrors
+// Open Graph 1200 × 630: the v3 home hero, one image per stage page and the Lumi page. Copy mirrors
 // src/content/{vi,en}.ts (home.hero, journey.stages) — re-run when it changes.
 const stageLook = [
   { soft: '#E6F7F5', ink: '#06716D', icon: null },
@@ -64,6 +64,7 @@ const og = {
     eyebrow: 'Child Life · Hành trình lớn lên',
     title: ['Cùng con lớn lên,', 'đồng hành từng bước.'],
     caption: 'Miễn phí trên iPhone và Android',
+    lumi: ['Lumi · Trợ lý đồng hành trong Child Life', 'Kể một câu.', 'Lumi ghi giúp, nhớ giúp.'],
     stage: 'Chặng',
     stages: [
       [
@@ -92,6 +93,7 @@ const og = {
     eyebrow: 'Child Life · Growing up together',
     title: ['Grow up together,', 'one step at a time.'],
     caption: 'Free on iPhone and Android',
+    lumi: ['Lumi · The helper inside Child Life', 'Say it once.', 'Lumi logs it and remembers it.'],
     stage: 'Stage',
     stages: [
       [
@@ -196,4 +198,22 @@ for (const [locale, t] of Object.entries(og)) {
       pub('og', `${locale}-stage${i + 1}.png`),
     );
   });
+
+  // Lumi page: the mascot on the Lumi gradient next to the hero title (33-landing-lumi-page §2).
+  const [eyebrow, ...title] = t.lumi;
+  shoot(
+    `og-${locale}-lumi`,
+    page(
+      locale,
+      `<div class="panel"><span class="c a"></span><span class="c b"></span><img class="mascot" src="${asset('lumi-mascot-full.svg')}"></div>
+<div class="copy">${lockup}<span class="pill" style="background:#EDEEFC;color:#4447A8">${eyebrow}</span>
+<h1 style="font-size:${locale === 'vi' ? 56 : 54}px">${title.map((l) => `<span>${l}</span>`).join('')}</h1><span class="cap">${t.caption}</span></div>`,
+      `.panel{position:absolute;right:60px;top:85px;width:460px;height:460px;border-radius:44px;background:linear-gradient(120deg,#E0F7F2 14%,#E8E8FF 86%);overflow:hidden}
+.c{position:absolute;border-radius:50%;background:#fff}.a{left:80px;top:80px;width:300px;height:300px;opacity:.55}.b{left:-50px;top:-50px;width:190px;height:190px;opacity:.35}
+.mascot{position:absolute;left:50%;top:50%;width:270px;height:280px;transform:translate(-50%,-50%)}`,
+    ),
+    1200,
+    630,
+    pub('og', `${locale}-lumi.png`),
+  );
 }

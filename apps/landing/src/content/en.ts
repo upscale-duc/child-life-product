@@ -19,7 +19,7 @@ export const en: Content = {
     links: {
       journey: 'Journey',
       firstYear: 'First year',
-      watch: 'Apple Watch',
+      lumi: 'Lumi',
       stages: 'Stages',
       memories: 'Memories',
       faq: 'FAQ',
@@ -135,6 +135,452 @@ export const en: Content = {
       { title: 'Saved for you', sub: 'Tapped by mistake? Fix it right away' },
       { title: 'Everyone sees it', sub: 'Nobody has to ask “has the baby eaten?”' },
     ],
+  },
+  // Lumi page (Figma 650:4798): engineering drafts for owner review (D-012). Q-039: the plans are
+  // not the app's single Premium plan (33-landing-lumi-page §16); FAQ answers 2–6 are PROPOSED.
+  lumiPage: {
+    meta: {
+      title: "Lumi — your family's assistant in Child Life",
+      description:
+        "Say it in one sentence and Lumi drafts the feed, sleep and nappy logs; snap a receipt and it becomes an expense; ask anything and it answers from your child's own logs. You review before anything is saved.",
+    },
+    hero: {
+      eyebrow: 'Lumi · The helper inside Child Life',
+      title: ['Say it once.', 'Lumi logs it and remembers it.'],
+      lead: "Lumi is the whole family's assistant in Child Life. Type as if you were texting, snap a photo or ask a question — Lumi drafts the logs, answers from your child's own records and suggests one small thing for today.",
+      tryNow: 'Try Lumi',
+      plans: 'See plans',
+      promises: [
+        "You confirm before it's saved",
+        "Answers from your child's logs",
+        'The family uses it by role',
+      ],
+      mock: {
+        name: 'Lumi',
+        family: "Teddy's family assistant",
+        ask: 'Fed 120 ml at 9, asleep from 9:30, nappy at 10',
+        reply: 'I drafted 3 logs — check them, then save:',
+        drafts: [
+          { title: 'Bottle · 120 ml', sub: '9:00' },
+          { title: 'Sleep', sub: 'from 9:30' },
+          { title: 'Nappy', sub: '10:00' },
+        ],
+        draft: 'Draft',
+        saveAll: 'Save all 3',
+        ask2: 'Bedtime has been hard these past few days',
+        reply2:
+          'On 2 of the last 3 evenings you noted “hard to settle”, both after 9 pm. Want to look at the sleeps around then?',
+        composer: 'Tell, ask or send Lumi a photo…',
+        saved: '3 logs saved',
+        expense: { title: 'Nappies · 289,000 ₫', sub: 'From a receipt photo → Spending' },
+        sample: 'Sample conversation',
+      },
+    },
+    benefits: {
+      eyebrow: 'What Lumi does for your family',
+      title: 'Less to remember, more time with your child.',
+      cards: [
+        {
+          title: 'Quick when your hands are full',
+          body: 'One sentence instead of many taps. Lumi splits it into the right logs.',
+        },
+        {
+          title: 'Understand your child from your own logs',
+          body: 'Lumi answers from what your family has logged, with the source to open.',
+        },
+        {
+          title: 'One small thing for today',
+          body: "Ideas that fit your child's age and what you've logged — you pick what suits you.",
+        },
+        {
+          title: 'Keep every moment',
+          body: 'Turn photos on your phone into cards and short films for the first milestones.',
+        },
+      ],
+    },
+    day: {
+      eyebrow: 'A day with Lumi',
+      title: 'From the first morning feed to the end-of-month video.',
+      lead: 'Six familiar moments, each needing just a sentence or a photo.',
+      cards: [
+        {
+          time: '06:30',
+          title: 'Holding the baby, still logging',
+          body: 'Say one sentence, Lumi drafts the log.',
+        },
+        {
+          time: '10:15',
+          title: 'Receipts become expenses',
+          body: 'Snap the receipt, Lumi fills in the amount.',
+        },
+        {
+          time: '13:00',
+          title: 'Ask and know',
+          body: 'Answers from your logs, with the source to open.',
+        },
+        {
+          time: '17:30',
+          title: 'What should they eat today?',
+          body: 'Age-appropriate dishes that avoid what your child reacted to.',
+        },
+        {
+          time: '21:30',
+          title: 'Bedtime has been hard lately',
+          body: 'Lays recent notes side by side.',
+        },
+        {
+          time: 'End of month',
+          title: 'A month old, a little film',
+          body: 'Pick photos and a template for a one-month video.',
+        },
+      ],
+    },
+    more: {
+      eyebrow: 'And much more',
+      title: 'Lumi grows with your family.',
+      lead: "The more you log, the better Lumi knows your family's rhythm — to remind you at the right time and suggest things that fit.",
+      cards: [
+        {
+          title: 'Note photo → reminders',
+          body: 'Snap a handwritten note or a notice board, and Lumi splits it into reminders for you to pick and save.',
+        },
+        {
+          title: 'Weekly summary for the family',
+          body: 'A short note each week: how your child ate and slept, new milestones, what is coming — shared with grandparents by role.',
+        },
+        {
+          title: "Your child's own rhythm",
+          body: 'Puts the changes you logged next to a reference stage calendar — Stage N (Wonder Weeks) is only for comparison.',
+        },
+        {
+          title: 'Childcare Q&A',
+          body: 'Ask about sleep, solids or hygiene — Lumi answers from the content library and points to safety guidance when needed.',
+        },
+      ],
+      mock: {
+        reminders: ['Buy size M nappies · Saturday', '2-month check-up · 9 am Thu'],
+        note: ['Buy size M nappies', '2-month check-up 9 am Thu'],
+        week: {
+          title: "Teddy's week",
+          body: 'Slept longer on 2 nights · new milestone “laughs out loud” · vaccination next week.',
+        },
+        rhythm: {
+          title: 'Stage 2 (Wonder Weeks) · reference',
+          body: 'You logged: clingier for 3 days, one extra night feed.',
+        },
+        ask: 'How many naps does a 4-month-old take?',
+        reply: 'From the library: usually 3–4 naps… (sample content · awaiting review)',
+      },
+    },
+    how: {
+      eyebrow: 'How Lumi works',
+      title: 'Lumi drafts. You decide.',
+      steps: [
+        { title: 'Tell, ask or snap', body: 'Type like a message, or send a receipt or a note.' },
+        {
+          title: 'Lumi drafts',
+          body: 'Puts each thing in the right place and asks about anything missing or unclear.',
+        },
+        {
+          title: 'You review and save',
+          body: 'Edit, drop or save each one. Lumi never saves on its own.',
+        },
+      ],
+      trust: [
+        'Only your family, with the access you give',
+        'Photos sent to Lumi are only read for their content; you choose whether to keep the original',
+        "Lumi is not a doctor. When you're worried about health, Lumi points you to safety guidance and the emergency number",
+      ],
+    },
+    plans: {
+      eyebrow: 'Plans',
+      title: 'Everything Lumi does, for every family.',
+      lead: "The three plans differ only in monthly help. Pick what fits your family's pace — switch any time.",
+      monthly: 'Monthly',
+      yearly: 'Yearly',
+      perMonth: '/ month',
+      perYear: '/ year',
+      credits: 'help credits / month',
+      tiers: [
+        {
+          name: 'Free',
+          tagline: 'To get started',
+          credits: '30',
+          photos: '≈ 10 receipt or note photos',
+          videos: '1 memory video / month',
+          price: '0 ₫',
+          yearPrice: '0 ₫',
+          sub: 'No card needed',
+          yearSub: 'No card needed',
+          button: 'Start free',
+        },
+        {
+          name: 'Plus',
+          tagline: 'For busy days',
+          credits: '300',
+          photos: '≈ 100 receipt or note photos',
+          videos: '5 memory videos / month',
+          price: '79,000 ₫',
+          yearPrice: '790,000 ₫',
+          sub: 'or 790,000 ₫/year · 2 months free',
+          yearSub: '≈ 65,800 ₫/month · 2 months free',
+          button: 'Upgrade to Plus',
+        },
+        {
+          name: 'Pro',
+          tagline: 'For the whole family',
+          credits: '1,000',
+          photos: '≈ 330 receipt or note photos',
+          videos: '15 memory videos / month',
+          price: '179,000 ₫',
+          yearPrice: '1,790,000 ₫',
+          sub: 'or 1,790,000 ₫/year · 2 months free',
+          yearSub: '≈ 149,200 ₫/month · 2 months free',
+          button: 'Upgrade to Pro',
+        },
+      ],
+      features: {
+        all: 'Everything Lumi can do',
+        templates: 'All card & video templates',
+        drafts: 'Editing and confirming drafts costs nothing extra',
+      },
+      note: 'Prices include VAT, paid through the App Store / Google Play. The yearly plan saves 2 months. Cancel renewal any time in your store settings.',
+      table: {
+        caption: 'Compare plans',
+        feature: 'Feature',
+        price: 'Price per month',
+        credits: 'Help credits per month',
+        rows: [
+          'Log with one sentence',
+          "Q&A from your child's logs",
+          'Read receipt and note photos (≈3 credits/photo)',
+          "Look back over recent days & today's suggestion",
+          'Weekly family summary',
+          "Your child's own rhythm",
+          'All card & video templates',
+        ],
+        videos: 'Memory video exports per month',
+        fallback: 'Direct logging & safety guidance when credits run out',
+        yes: 'Included',
+      },
+      creditsInfo: {
+        title: 'What is a help credit?',
+        body: 'Each time Lumi does something for you uses one credit. Credits refresh at the start of each period.',
+        rules: [
+          ['One log sentence or one question', '1 credit'],
+          ['Reading one receipt or note photo', '≈ 3 credits'],
+          ['Follow-ups, edits or confirming drafts in the same task', 'Free'],
+          ['System error, retry', 'Free'],
+          ['Out of credits', 'Keep logging directly and viewing logs as usual'],
+        ],
+      },
+    },
+    faq: {
+      eyebrow: 'FAQ',
+      title: 'What parents often ask about Lumi.',
+      items: [
+        {
+          q: 'Does Lumi write to the log by itself?',
+          a: 'No. Lumi drafts, you review and tap save. You can edit or drop each one.',
+          open: true,
+        },
+        {
+          q: 'What happens when I run out of credits?',
+          a: 'You can still log directly and view your logs as usual; essential health guidance stays open. Credits refresh at the start of the next period.',
+          open: false,
+        },
+        {
+          q: 'Is anything missing from the Free plan?',
+          a: 'No. Everything Lumi does is in the Free plan; the plans differ only in monthly credits.',
+          open: false,
+        },
+        {
+          q: 'Can I switch plans mid-way?',
+          a: 'Yes. You switch plans in the app; renewals and cancellations are handled by the App Store / Google Play.',
+          open: false,
+        },
+        {
+          q: 'Who in the family shares the credits?',
+          a: "The whole family shares the household's credits. Only the family owner buys and manages the plan.",
+          open: false,
+        },
+        {
+          q: "How is my child's information used?",
+          a: 'Lumi only reads what you send and the logs you are allowed to see, to answer and draft. You agree before using it and can turn it off at any time.',
+          open: false,
+        },
+      ],
+    },
+    cta: {
+      title: 'Let Lumi handle the note-taking. You spend the time with your child.',
+      plans: 'See plans',
+    },
+  },
+  lumiJourney: {
+    eyebrow: 'Lumi grows with your child',
+    title: 'As your child grows, Lumi grows too.',
+    lead: "Today Lumi helps you through the first year. At each later stage Lumi will gain new ways to help — right for your child's age and your family's rhythm.",
+    current: 'Available',
+    planned: 'In the works',
+    stages: [
+      {
+        sub: 'Gentler for the whole family.',
+        items: [
+          { title: 'Say it once, logged in the right place.' },
+          { title: "Ask about your baby's log." },
+          { title: "Today's weaning ideas." },
+        ],
+      },
+      {
+        sub: 'Less wondering what to play, more things to try together.',
+        items: [
+          {
+            title: 'What shall we play today?',
+            body: "Short activity ideas for their age, the interests you've noted and what you have at home.",
+          },
+          {
+            title: 'Every first word, never forgotten.',
+            body: 'Gather the funny sayings, the laughter and the small steps into their journal.',
+          },
+          {
+            title: 'Small habits, built together.',
+            body: 'Simple steps for bedtime, brushing teeth or tidying toys, the way your family chooses.',
+          },
+        ],
+      },
+      {
+        sub: 'More ideas for endless questions.',
+        items: [
+          {
+            title: '“Why?” becomes playtime.',
+            body: 'Turn what they wonder about into a story, a game or an activity to explore together.',
+          },
+          {
+            title: 'Their day, easier to talk about.',
+            body: 'From a few of your notes, questions to chat with them about their day at school.',
+          },
+          {
+            title: 'Little drawings, big stories.',
+            body: 'Keep their artwork with their own words, then gather it into a collection year by year.',
+          },
+        ],
+      },
+      {
+        sub: 'Closer by their side, with room to grow on their own.',
+        items: [
+          {
+            title: 'Their ideas get a place to start.',
+            body: 'Break a small project into doable steps — planting, model making or writing a story.',
+          },
+          {
+            title: 'Plans they help choose.',
+            body: 'Plan school, chores and time for hobbies; you adjust them together.',
+          },
+          {
+            title: 'A year through their eyes.',
+            body: 'Gather their achievements, stories and proud moments into a keepsake in their own voice.',
+          },
+        ],
+      },
+    ],
+    outroTitle: 'Start today. The next stages are on their way.',
+    outroBody:
+      'Everything above is a direction in development. Scope and timing will be updated stage by stage.',
+    explore: 'Explore Lumi today',
+    tryNow: 'Try Lumi today',
+  },
+  // "Made for your child" (Figma 699:5798, home) and "A day made for your child" (700:5832, Lumi
+  // page): engineering drafts for owner review (D-012). Q-039: meal ideas await expert review.
+  forBaby: {
+    eyebrow: 'Made for your child, from what you log',
+    title: ['Every baby has their own rhythm.', 'Every day, one idea that fits.'],
+    lead: 'From feeds, sleep and foods tried to new milestones, Child Life helps you look back at what is changing and pick one small thing for today.',
+    values: [
+      {
+        title: 'See recent days clearly',
+        body: 'Related logs sit side by side, so it is easy to look back when eating or sleeping patterns change.',
+      },
+      {
+        title: 'Less searching, more that fits',
+        body: "Meal, activity and reading ideas based on your child's age, what you've logged and what your family cares about.",
+      },
+      {
+        title: 'Never let a milestone slip by',
+        body: 'From a milestone you just logged, ideas to keep it as a story, card or video for the whole family.',
+      },
+    ],
+    cta: 'See a day made for your child',
+    control: 'You choose what fits, edit what you logged and tell us which ideas help.',
+    mock: {
+      initial: 'T',
+      name: "Teddy's today",
+      date: 'Thursday · 3 things worth a look',
+      sample: 'Sample',
+      why: 'Why you see this card',
+      cards: [
+        {
+          title: 'Look back at sleep',
+          body: 'On the last 2 evenings your child was hard to settle, both after 9 pm.',
+          why: 'You logged “hard to settle” on the last 2 days.',
+          action: 'See related logs',
+        },
+        {
+          title: 'Ideas for the next meal',
+          body: 'Pumpkin oat congee · Mashed sweet potato',
+          why: "Based on age, foods tried and the reactions you've logged.",
+          action: 'See dishes and ingredients',
+        },
+        {
+          title: 'Keep the first smile',
+          body: 'The 3 photos you picked yesterday are ready.',
+          why: 'You just marked the “smiles back” milestone.',
+          action: 'Make a card from the photos',
+        },
+      ],
+      footnote: 'You choose which topics show here, and hide or edit them any time.',
+    },
+    detail: {
+      eyebrow: 'A day made for your child',
+      title: ['No need to think of a question.', 'What matters is already waiting.'],
+      lead: 'Each time you open the app, “Today for your baby” puts the information and ideas that matter for your child first — with the reason each one appears.',
+      modes: [
+        {
+          name: 'Lumi',
+          sub: 'You tell or ask — Lumi handles it.',
+          example: '“Fed 120 ml at 9” → Lumi drafts the log for you to save.',
+        },
+        {
+          name: 'Today for your baby',
+          sub: 'You open the app — what matters is already there.',
+          example:
+            'No need to ask: “Look back at sleep” appears because you logged 2 hard evenings.',
+        },
+      ],
+      modesNote: 'Both use what your family has logged, but serve two different moments.',
+      steps: ['What you logged', 'What you see today', 'You decide'],
+      scenarios: [
+        {
+          logged: ['Hard to settle · Tue', 'Hard to settle · Wed', '6 sleeps'],
+          decide: ['See related logs', 'Hide sleep this week'],
+        },
+        {
+          logged: ['7 months', 'Tried: pumpkin, sweet potato', 'Reaction logged: egg'],
+          decide: ['See dishes and ingredients', 'Save to try', 'Not a fit'],
+        },
+        {
+          logged: ['Milestone: smiles back', '3 photos picked'],
+          decide: ['Make a card from the photos', 'Later'],
+        },
+      ],
+      controlTitle: "You're always in control:",
+      controls: [
+        'Pick the topics you care about',
+        "Hide ideas that don't fit",
+        'Edit what you logged',
+        'Say what helped',
+      ],
+      note: 'Sample content. Meal and activity ideas come from a content library awaiting expert review; they will only be presented as available once live.',
+    },
   },
   journey: {
     label: 'Journey',
@@ -269,6 +715,78 @@ export const en: Content = {
       current: 'available',
       soon: 'Coming soon',
       preview: 'Preview stage {n}',
+      lumiLabel: 'Lumi at this stage',
+      lumiTeasers: [
+        'What shall we play today?',
+        '“Why?” becomes playtime',
+        'Their ideas get a place to start',
+      ],
+    },
+    lumi: {
+      eyebrow: 'New · Lumi · your companion assistant',
+      title: "Meet Lumi — a little assistant for your baby's first year.",
+      lead: 'Holding the baby and still logging the feed on time. Ask one question and see how your baby ate and slept today. Lumi handles the notes and the summing up; you just review and tap save.',
+      cta: 'Explore Lumi',
+      name: 'Lumi',
+      suggestions: [
+        '“Baby just had 120 ml at 9”',
+        '“How long did baby sleep today?”',
+        'Weaning ideas',
+        'Make a one-month video',
+        'Snap a diaper receipt',
+        '“Baby has been sleeping badly lately”',
+      ],
+      features: [
+        {
+          title: 'Say it once, logged in the right place',
+          body: 'Type one line as if texting family — Lumi splits it into feed, sleep and diaper entries for you to review.',
+        },
+        {
+          title: 'Ask in your own words',
+          body: "“How did baby feed today?” — Lumi answers from your baby's own log, with the source to open.",
+        },
+        {
+          title: 'Look back at the last few days',
+          body: 'When sleep or feeds get harder, Lumi lines up recent entries so you can see more clearly.',
+        },
+        {
+          title: 'What can baby eat today?',
+          body: "Age-based ideas from the library, avoiding foods you've noted a reaction to.",
+        },
+        {
+          title: 'Snap the receipt, expense done',
+          body: 'Snap a diaper or milk receipt — Lumi drafts the expense and checks anything unclear before saving.',
+        },
+        {
+          title: 'Turn photos into memories',
+          body: 'Pick photos and a template; Lumi helps turn them into a card or a short film for the first milestones.',
+        },
+      ],
+      mock: {
+        logAsk: 'Baby had 120 ml at 9, asleep from 9:30',
+        drafts: [
+          { title: 'Bottle · 120 ml', sub: '9:00' },
+          { title: 'Sleep', sub: 'from 9:30' },
+        ],
+        draft: 'Draft',
+        dataAsk: 'How did baby feed today?',
+        dataAnswer: '5 bottle feeds · 580 ml in total. Last one at 14:20.',
+        dataSource: 'Open the source log',
+        sleepAsk: 'Baby has trouble falling asleep lately',
+        sleepAnswer:
+          '2 of the last 3 evenings had a hard time settling, both after 21:00. Look at the sleeps around them?',
+        sleepSources: ['6 sleeps', '2 notes'],
+        mealAsk: 'What can Teddy eat today?',
+        mealAnswer: 'Ideas for 7 months, without egg since you noted a rash:',
+        meals: ['Pumpkin porridge', 'Mashed sweet potato'],
+        receipt: {
+          title: 'Diapers · 289,000 ₫',
+          sub: 'Expense · today',
+          note: 'The date on the receipt is blurry — Lumi asks before saving.',
+          amount: '289,000 ₫',
+        },
+        video: "Teddy's first month · 0:45",
+      },
     },
     keepsakes: {
       eyebrow: "Your child's memories",

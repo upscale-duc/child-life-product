@@ -8,6 +8,7 @@ interface NavLink {
   /** Section id on this page, highlighted while in view. */
   spy?: string;
   current?: boolean;
+  accent?: boolean;
 }
 
 /** Nav (28-landing-v5b-home §9, 15-landing-v3-stages §1). Sticky with a frosted background once
@@ -26,16 +27,28 @@ export function Nav() {
     onHome
       ? { label: l.firstYear, ...local('nam-dau-doi') }
       : { label: l.firstYear, href: firstYear, current: onStage1 },
-    { label: l.watch, ...(onHome ? local('apple-watch') : { href: `${homePath}#apple-watch` }) },
+    // Lumi has its own page (32-landing-v6-home §8); the link keeps a mint accent.
+    {
+      label: l.lumi,
+      href: pathOf('lumi', route.locale),
+      current: route.page === 'lumi',
+      accent: true,
+    },
     { label: l.stages, ...(onHome ? local('cac-chang') : { href: `${homePath}#cac-chang` }) },
     // Chặng 1 has its own "Tuổi thơ" section with the same id.
     {
       label: l.memories,
       ...(onHome || onStage1 ? local('ky-niem') : { href: `${homePath}#ky-niem` }),
     },
-    { label: l.faq, ...(onHome || onStage1 ? local('hoi-dap') : { href: `${homePath}#hoi-dap` }) },
+    // Chặng 1 and Lumi have their own FAQ (33-landing-lumi-page §13).
+    {
+      label: l.faq,
+      ...(onHome || onStage1 || route.page === 'lumi'
+        ? local('hoi-dap')
+        : { href: `${homePath}#hoi-dap` }),
+    },
   ];
-  const hasCta = onHome || isStage(route.page);
+  const hasCta = onHome || isStage(route.page) || route.page === 'lumi';
   return (
     <header className="nav" data-nav="">
       <div className="nav__inner container">
@@ -49,6 +62,7 @@ export function Nav() {
               href={link.href}
               data-spy={link.spy}
               aria-current={link.current ? 'page' : undefined}
+              className={link.accent ? 'nav__accent' : undefined}
             >
               {link.label}
             </a>

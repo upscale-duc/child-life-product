@@ -48,6 +48,37 @@ export interface WatchTile {
   caption: string;
 }
 
+export interface DraftText {
+  title: string;
+  sub: string;
+}
+
+export interface DayCard {
+  time: string;
+  title: string;
+  body: string;
+}
+
+export interface PlanTier {
+  name: string;
+  tagline: string;
+  credits: string;
+  photos: string;
+  videos: string;
+  /** Monthly and yearly price (the yearly one is shown when the toggle says "Theo năm"). */
+  price: string;
+  yearPrice: string;
+  /** Sub-line under the monthly price, and under the yearly price. */
+  sub: string;
+  yearSub: string;
+  button: string;
+}
+
+export interface LumiStage {
+  sub: string;
+  items: { title: string; body?: string }[];
+}
+
 export interface KeepsakeText {
   format: string;
   title: string;
@@ -57,6 +88,26 @@ export interface KeepsakeText {
 export interface YearText {
   year: string;
   caption: string;
+}
+
+export interface ModeText {
+  name: string;
+  sub: string;
+  example: string;
+}
+
+/** One worked example: what the family logged, then what they can do with the card. */
+export interface ScenarioText {
+  logged: string[];
+  decide: string[];
+}
+
+/** A "Hôm nay của bé" card in the landing mocks (Figma 699:5798 / 700:5832). */
+export interface TodayCardText {
+  title: string;
+  body: string;
+  why: string;
+  action: string;
 }
 
 export interface TitledText {
@@ -115,7 +166,7 @@ export interface Content {
     links: {
       journey: string;
       firstYear: string;
-      watch: string;
+      lumi: string;
       stages: string;
       memories: string;
       faq: string;
@@ -196,6 +247,150 @@ export interface Content {
     note: string;
     steps: [Bullet, Bullet, Bullet];
   };
+  /** "Lumi · suốt hành trình" (Figma 678:5614 / 691:5838): shared by the home and the Lumi page. */
+  lumiJourney: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    current: string;
+    planned: string;
+    stages: [LumiStage, LumiStage, LumiStage, LumiStage];
+    outroTitle: string;
+    outroBody: string;
+    /** Outro button on the home ("Khám phá…", to the Lumi page) and on the Lumi page ("Dùng thử…"). */
+    explore: string;
+    tryNow: string;
+  };
+  /** The Lumi page (Figma 650:4798, 33-landing-lumi-page). Mock strings are illustrative chat UI. */
+  lumiPage: {
+    meta: PageMeta;
+    hero: {
+      eyebrow: string;
+      title: [string, string];
+      lead: string;
+      tryNow: string;
+      plans: string;
+      promises: [string, string, string];
+      mock: {
+        name: string;
+        family: string;
+        ask: string;
+        reply: string;
+        drafts: [DraftText, DraftText, DraftText];
+        draft: string;
+        saveAll: string;
+        ask2: string;
+        reply2: string;
+        composer: string;
+        saved: string;
+        expense: DraftText;
+        sample: string;
+      };
+    };
+    benefits: {
+      eyebrow: string;
+      title: string;
+      cards: [TitledText, TitledText, TitledText, TitledText];
+    };
+    day: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      cards: [DayCard, DayCard, DayCard, DayCard, DayCard, DayCard];
+    };
+    more: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      cards: [TitledText, TitledText, TitledText, TitledText];
+      mock: {
+        reminders: [string, string];
+        note: [string, string];
+        week: TitledText;
+        rhythm: TitledText;
+        ask: string;
+        reply: string;
+      };
+    };
+    how: {
+      eyebrow: string;
+      title: string;
+      steps: [TitledText, TitledText, TitledText];
+      trust: [string, string, string];
+    };
+    plans: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      monthly: string;
+      yearly: string;
+      perMonth: string;
+      perYear: string;
+      credits: string;
+      tiers: [PlanTier, PlanTier, PlanTier];
+      features: { all: string; templates: string; drafts: string };
+      note: string;
+      table: {
+        caption: string;
+        feature: string;
+        price: string;
+        credits: string;
+        rows: [string, string, string, string, string, string, string];
+        videos: string;
+        fallback: string;
+        yes: string;
+      };
+      creditsInfo: {
+        title: string;
+        body: string;
+        rules: [
+          [string, string],
+          [string, string],
+          [string, string],
+          [string, string],
+          [string, string],
+        ];
+      };
+    };
+    faq: {
+      eyebrow: string;
+      title: string;
+      items: [FaqItem, FaqItem, FaqItem, FaqItem, FaqItem, FaqItem];
+    };
+    /** Kết: the download target (#tai-app); store badges stand in for "Dùng thử Lumi". */
+    cta: { title: string; plans: string };
+  };
+  /** "Dành cho con" (home, Figma 699:5798) and "Một ngày dành riêng cho con" (Lumi page,
+   *  700:5832): personalised "Hôm nay của bé" cards with the reason each appears. */
+  forBaby: {
+    eyebrow: string;
+    title: [string, string];
+    lead: string;
+    values: [TitledText, TitledText, TitledText];
+    cta: string;
+    control: string;
+    mock: {
+      initial: string;
+      name: string;
+      date: string;
+      sample: string;
+      why: string;
+      cards: [TodayCardText, TodayCardText, TodayCardText];
+      footnote: string;
+    };
+    detail: {
+      eyebrow: string;
+      title: [string, string];
+      lead: string;
+      modes: [ModeText, ModeText];
+      modesNote: string;
+      steps: [string, string, string];
+      scenarios: [ScenarioText, ScenarioText, ScenarioText];
+      controlTitle: string;
+      controls: [string, string, string, string];
+      note: string;
+    };
+  };
   /** v3 journey: shared by the home page and the four stage pages (14 / 15-landing-v3). */
   journey: {
     /** "Hành trình": switcher label and breadcrumb. */
@@ -252,6 +447,36 @@ export interface Content {
       soon: string;
       /** "{n}" is the stage number. */
       preview: string;
+      lumiLabel: string;
+      /** One teaser per coming stage (Chặng 2–4), linking to the Lumi journey. */
+      lumiTeasers: [string, string, string];
+    };
+    /** Lumi block in the Chặng 1 frame (Figma 649:7270, 32-landing-v6-home §4). Mock strings are
+     *  illustrative chat UI. */
+    lumi: {
+      eyebrow: string;
+      title: string;
+      lead: string;
+      cta: string;
+      name: string;
+      suggestions: [string, string, string, string, string, string];
+      features: [TitledText, TitledText, TitledText, TitledText, TitledText, TitledText];
+      mock: {
+        logAsk: string;
+        drafts: [{ title: string; sub: string }, { title: string; sub: string }];
+        draft: string;
+        dataAsk: string;
+        dataAnswer: string;
+        dataSource: string;
+        sleepAsk: string;
+        sleepAnswer: string;
+        sleepSources: [string, string];
+        mealAsk: string;
+        mealAnswer: string;
+        meals: [string, string];
+        receipt: { title: string; sub: string; note: string; amount: string };
+        video: string;
+      };
     };
     /** "Kỷ niệm của con" (Figma 517:56217, §5.2). Mock strings are illustrative. */
     keepsakes: {

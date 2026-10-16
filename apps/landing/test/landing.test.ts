@@ -137,6 +137,46 @@ describe('prerender', () => {
     }
   });
 
+  it('no page repeats an element id', () => {
+    for (const route of routes) {
+      const ids = [...render(route.path, 'dev').html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+      expect(
+        ids.filter((id, i) => ids.indexOf(id) !== i),
+        route.path,
+      ).toEqual([]);
+    }
+  });
+
+  it('the Lumi page has its sections, plans and FAQ, and the home links to it', () => {
+    const lumi = pathOf('lumi', 'vi');
+    const page = render(lumi, 'prod');
+    for (const id of [
+      'gioi-thieu',
+      'loi-ich',
+      'mot-ngay',
+      'mot-ngay-cho-con',
+      'viec-khac',
+      'suot-hanh-trinh',
+      'cach-lam-viec',
+      'goi',
+      'hoi-dap',
+      'tai-app',
+    ])
+      expect(page.html, id).toContain(`id="${id}"`);
+    expect(page.html).toContain('<table');
+    expect(page.head).toContain('og:image" content="https://childlife.app/og/vi-lumi.png?v=4"');
+    expect(page.head).toContain(`<title>${viContent.lumiPage.meta.title}</title>`);
+    const json = JSON.parse(
+      /<script type="application\/ld\+json">(.*)<\/script>/.exec(page.head)![1]!,
+    );
+    const faq = json['@graph'].find((node: { '@type': string }) => node['@type'] === 'FAQPage');
+    expect(faq.mainEntity).toHaveLength(viContent.lumiPage.faq.items.length);
+    expect(render('/', 'dev').html).toContain(`href="${lumi}#mot-ngay-cho-con"`);
+    expect(
+      render('/', 'dev').html.match(new RegExp(`href="${lumi}"`, 'g'))!.length,
+    ).toBeGreaterThan(2);
+  });
+
   it('puts the FAQ answers in the HTML for search engines', () => {
     const page = render('/en/', 'prod');
     for (const item of en.home.faq.items)
