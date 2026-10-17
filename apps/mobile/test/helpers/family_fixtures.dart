@@ -308,7 +308,7 @@ List<Override> familyOverrides({
     firstAidStoreProvider.overrideWithValue(
       firstAidStore ?? FakeFirstAidStore(),
     ),
-    firstAidPackProvider.overrideWith((ref) => Stream.value(firstAid)),
+    firstAidSourceProvider.overrideWith((ref) => Stream.value(firstAid)),
     firstAidSavedProvider.overrideWith((ref) => Stream.value(firstAidSaved)),
     firstAidImageProvider.overrideWithValue(fakeFirstAidImage),
     firstAidDeviceProvider.overrideWithValue(

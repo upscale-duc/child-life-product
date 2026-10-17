@@ -342,6 +342,7 @@ class NewBabyInput {
     required this.displayName,
     required this.relation,
     this.relationCustom,
+    this.country,
   });
 
   final String requestId;
@@ -355,12 +356,16 @@ class NewBabyInput {
   final Relation relation;
   final String? relationCustom;
 
+  /// Where the family lives (D-078); set on the family when this baby creates it.
+  final String? country;
+
   Map<String, Object> toJson() => {
     'requestId': requestId,
     'nickname': nickname.trim(),
     'dateOfBirth': isoDate(dateOfBirth),
     'gender': gender.name,
     'timeZone': timeZone.toJson(),
+    'country': ?country,
     'avatarPreset': avatarPreset,
     // Keep Figma order so Today tiles are stable.
     'trackers': [

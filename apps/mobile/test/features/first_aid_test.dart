@@ -304,6 +304,32 @@ void main() {
     },
   );
 
+  test('the guide calls the family\'s country number (D-078)', () {
+    final pack = seedFirstAidPack();
+    String banner(FirstAidPack p) =>
+        p.situations.first.variants.first.banner!.en;
+    expect(pack.emergencyNumber, '115');
+    expect(banner(pack), contains('115'));
+    expect(banner(pack), isNot(contains('{emergency}')));
+
+    final us = pack.forCountry('US');
+    expect(us.emergencyNumber, '911');
+    expect(us.localCountry, 'US');
+    expect(banner(us), contains('911'));
+    expect(banner(us), isNot(contains('115')));
+
+    final vn = us.forCountry('VN');
+    expect(
+      [vn.emergencyNumber, vn.country, vn.localCountry],
+      ['115', 'VN', null],
+    );
+    // A country without a known number, or none: the pack's own number.
+    for (final other in [pack.forCountry('BR'), us.forCountry(null)]) {
+      expect([other.emergencyNumber, other.country], ['115', null]);
+    }
+    expect(identical(pack.forCountry(null), pack), isTrue);
+  });
+
   test('a malformed pack is refused whole', () {
     expect(FirstAidPack.fromDoc(null), isNull);
     expect(

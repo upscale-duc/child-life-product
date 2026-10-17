@@ -39,7 +39,7 @@ final _cases = <String, _Case>{
     build: () => const AppUpdateGate(child: SizedBox()),
     // With the offline Sơ cứu guide on the phone: its link shows (P-143).
     overrides: [
-      firstAidPackProvider.overrideWith(
+      firstAidSourceProvider.overrideWith(
         (ref) => Stream.value(seedFirstAidPack()),
       ),
       ...appUpdateOverrides(config: sampleConfig(minimum: '1.1.0')),

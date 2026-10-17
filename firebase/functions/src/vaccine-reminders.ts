@@ -188,6 +188,15 @@ export async function ringVaccineReminders(
   let rang = 0;
   let sent = 0;
   const schedule = plans.empty ? vaccineSchedule : await publishedSchedule(db);
+  const countries = new Map<string, string | null>();
+  const countryOf = async (familyId: string | undefined) => {
+    if (!familyId) return null;
+    if (!countries.has(familyId)) {
+      const family = await db.doc(`families/${familyId}`).get();
+      countries.set(familyId, (family.get('country') as string | undefined) ?? null);
+    }
+    return countries.get(familyId)!;
+  };
   for (const plan of plans.docs) {
     if (plan.id !== 'main') continue;
     const babyRef = plan.ref.parent.parent!;
@@ -211,9 +220,18 @@ export async function ringVaccineReminders(
       .where('kind', '==', 'snooze')
       .get();
     const snoozes = snoozeDocs.docs.map((d) => d.get('date') as string);
+    const doses = openDoses(
+      dob,
+      (plan.get('dtp') as '6in1' | '5in1' | null) ?? null,
+      records,
+      schedule,
+    );
+    // D-078: the schedule is Việt Nam's. A family living elsewhere is reminded only of the doses
+    // whose date it set itself.
+    const country = await countryOf(baby.get('familyId') as string | undefined);
     const due = dueReminders(
       zone,
-      openDoses(dob, (plan.get('dtp') as '6in1' | '5in1' | null) ?? null, records, schedule),
+      country && country !== 'VN' ? doses.filter((d) => d.rescheduled) : doses,
       snoozes,
       now,
     );

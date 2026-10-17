@@ -199,20 +199,3 @@ class PremiumFeatures {
 
   bool get any => rhythm || personalization || aiAssist || billing || assistant;
 }
-
-/// Countries offered in the region picker (D-072 #3): the beta markets under discussion (Q-069).
-/// Region availability itself comes from the server (`config/entitlements`).
-const pickerCountries = [
-  'VN',
-  'US',
-  'GB',
-  'AU',
-  'CA',
-  'SG',
-  'NZ',
-  'DE',
-  'FR',
-  'JP',
-  'KR',
-  'TW',
-];

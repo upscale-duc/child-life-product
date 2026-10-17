@@ -77,6 +77,42 @@ describe('ringing (VX 8)', () => {
     expect((await ringVaccineReminders(db, sender, vn('2026-11-16', 19, 5))).rang).toBe(0);
   });
 
+  it('a family abroad hears only of the doses it dated itself (D-078)', async () => {
+    await db.doc('families/f_vx_abroad').set({ ownerUid: 'mom', country: 'US' });
+    await db.doc(`babies/${babyId}`).set({ familyId: 'f_vx_abroad' }, { merge: true });
+    try {
+      expect((await ringVaccineReminders(db, sender, vn('2026-11-16', 19, 0))).rang).toBe(0);
+      await db
+        .doc(`babies/${babyId}/vaccines/dtp_1`)
+        .set({ status: 'planned', plannedOn: '2026-11-20' });
+      const { rang } = await ringVaccineReminders(db, sender, vn('2026-11-19', 19, 0));
+      expect(rang).toBe(1);
+      expect(sent[0]!.data).toMatchObject({ date: '2026-11-20' });
+    } finally {
+      await db.doc('families/f_vx_abroad').delete();
+    }
+  });
+
+  it('follows the schedule approved on the portal (P-138)', async () => {
+    const { vaccineSchedule } = await import('@child-life/contracts');
+    const rows = vaccineSchedule.map((v) =>
+      v.id === 'pcv' || v.id === 'rota' ? { ...v, months: v.months.map((m) => m + 1) } : v,
+    );
+    await db.doc('publicConfig/reference_vaccines').set({
+      dataset: 'vaccines.schedule',
+      version: 'v2026.10',
+      publishedAt: '2026-10-17T00:00:00.000Z',
+      rows,
+    });
+    try {
+      await ringVaccineReminders(db, sender, vn('2026-11-16', 19, 0));
+      const vi = sent.find((m) => m.tokens[0] === 't-mom')!;
+      expect(vi.body).toMatch(/^6in1 \(mũi 1\) · Mốc 2 tháng tuổi/);
+    } finally {
+      await db.doc('publicConfig/reference_vaccines').delete();
+    }
+  });
+
   it('off, or nobody chosen → everyone eligible; relatives never', async () => {
     await db.doc(`babies/${babyId}/vaccinePlan/main`).update({ recipients: [] });
     await ringVaccineReminders(db, sender, vn('2026-11-14', 19, 0));

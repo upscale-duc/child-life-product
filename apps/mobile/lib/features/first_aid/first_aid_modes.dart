@@ -15,6 +15,8 @@ import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
+import '../family/emergency_numbers.dart';
+import '../premium/premium_repository.dart';
 import 'first_aid_models.dart';
 import 'first_aid_repository.dart';
 import 'first_aid_widgets.dart';
@@ -107,7 +109,10 @@ class FirstAidCallStarted extends Notifier<DateTime?> {
 /// Dials the emergency number at once (7h revision 2: no sheet before the call).
 Future<void> callEmergency(BuildContext context, WidgetRef ref) async {
   final l10n = AppLocalizations.of(context);
-  final number = ref.read(firstAidPackProvider).value?.emergencyNumber ?? '115';
+  final number =
+      ref.read(firstAidPackProvider).value?.emergencyNumber ??
+      emergencyNumbers[ref.read(selectedFamilyCountryProvider)] ??
+      '115';
   final messenger = ScaffoldMessenger.maybeOf(context);
   final ok = await ref.read(firstAidDeviceProvider).dial(number);
   if (ok) {

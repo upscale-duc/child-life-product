@@ -418,6 +418,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get babyTimeZone => 'Múi giờ';
 
   @override
+  String get babyCountry => 'Quốc gia';
+
+  @override
+  String get babyCountryUnset => 'Chọn';
+
+  @override
+  String get babyCountryRequired =>
+      'Chọn nơi gia đình đang sống để Sơ cứu gọi đúng số cấp cứu.';
+
+  @override
   String get babyGender => 'Giới tính';
 
   @override
@@ -8117,6 +8127,16 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String faCallLocal(String number, String country) {
+    return 'Gọi $number · $country';
+  }
+
+  @override
+  String vxAbroadNotice(String country) {
+    return 'Lịch này theo chương trình tiêm chủng của Việt Nam. Ở $country, hãy theo lịch của bác sĩ hoặc cơ sở y tế nơi bạn sống; nhắc lịch chỉ báo những mũi bạn đã đặt ngày.';
+  }
+
+  @override
   String get faStartCpr => 'Bắt đầu hồi sức tim phổi (CPR)';
 
   @override
@@ -10905,13 +10925,16 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pmRegionBody =>
-      'Dùng để chọn nội dung sức khoẻ và hỗ trợ đã duyệt cho khu vực. Child Life không đoán từ ngôn ngữ hay vị trí.';
+      'Dùng để chọn số cấp cứu, lịch tiêm và nội dung sức khoẻ phù hợp với nơi bạn sống. Child Life không đoán từ ngôn ngữ hay vị trí.';
 
   @override
   String get pmRegionOwnerOnly => 'Chủ hộ chọn khu vực của hộ.';
 
   @override
   String get pmRegionSaved => 'Đã lưu khu vực';
+
+  @override
+  String get meRegionRow => 'Nơi gia đình sống';
 
   @override
   String get pmCountryVN => 'Việt Nam';
@@ -10948,6 +10971,60 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pmCountryTW => 'Đài Loan';
+
+  @override
+  String get pmCountryMY => 'Malaysia';
+
+  @override
+  String get pmCountryTH => 'Thái Lan';
+
+  @override
+  String get pmCountryHK => 'Hồng Kông';
+
+  @override
+  String get pmCountryCN => 'Trung Quốc';
+
+  @override
+  String get pmCountryIE => 'Ireland';
+
+  @override
+  String get pmCountryNL => 'Hà Lan';
+
+  @override
+  String get pmCountryBE => 'Bỉ';
+
+  @override
+  String get pmCountryES => 'Tây Ban Nha';
+
+  @override
+  String get pmCountryCH => 'Thuỵ Sĩ';
+
+  @override
+  String get pmCountryAT => 'Áo';
+
+  @override
+  String get pmCountryCZ => 'Séc';
+
+  @override
+  String get pmCountryPL => 'Ba Lan';
+
+  @override
+  String get pmCountrySE => 'Thuỵ Điển';
+
+  @override
+  String get pmCountryNO => 'Na Uy';
+
+  @override
+  String get pmCountryDK => 'Đan Mạch';
+
+  @override
+  String get pmCountryFI => 'Phần Lan';
+
+  @override
+  String get pmCountryAE => 'Các Tiểu vương quốc Ả Rập Thống nhất';
+
+  @override
+  String get pmCountryQA => 'Qatar';
 
   @override
   String get pmUnlockPremium => 'Mở với Premium';

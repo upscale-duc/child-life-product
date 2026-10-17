@@ -82,9 +82,12 @@ export async function createBaby(
     if (owned >= maxOwnedBabies) throw new BabyError('failed-precondition', 'baby-limit');
 
     let familyId = user.get('ownedFamilyId') as string | undefined;
+    // D-078: the country asked on 11 fills a family that has none; it never overwrites one.
+    const family = familyId ? await tx.get(db.doc(`families/${familyId}`)) : null;
     if (familyId) {
       tx.update(db.doc(`families/${familyId}`), {
         babyIds: FieldValue.arrayUnion(babyId),
+        ...(request.country && !family?.get('country') ? { country: request.country } : {}),
         updatedAt: now,
       });
     } else {
@@ -95,6 +98,7 @@ export async function createBaby(
         usedBytes: 0,
         reservedBytes: 0,
         babyIds: [babyId],
+        ...(request.country ? { country: request.country } : {}),
         createdAt: now,
         updatedAt: now,
         schemaVersion: 1,

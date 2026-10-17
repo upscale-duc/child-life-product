@@ -104,8 +104,8 @@
           },
           "hero": null,
           "banner": {
-            "vi": "Gọi 115 ngay. Có người khác: nhờ gọi giúp.",
-            "en": "Call 115 now. If someone else is there, ask them to call."
+            "vi": "Gọi {emergency} ngay. Có người khác: nhờ gọi giúp.",
+            "en": "Call {emergency} now. If someone else is there, ask them to call."
           },
           "steps": [
             {
@@ -206,8 +206,8 @@
               },
               "items": [
                 {
-                  "vi": "Luôn gọi 115, kể cả khi bé đã thở lại",
-                  "en": "Always call 115, even if baby is breathing again"
+                  "vi": "Luôn gọi {emergency}, kể cả khi bé đã thở lại",
+                  "en": "Always call {emergency}, even if baby is breathing again"
                 }
               ]
             }
@@ -226,8 +226,8 @@
           },
           "hero": "ep-tim-tre-lon",
           "banner": {
-            "vi": "Gọi 115 ngay. Có người khác: nhờ gọi giúp.",
-            "en": "Call 115 now. If someone else is there, ask them to call."
+            "vi": "Gọi {emergency} ngay. Có người khác: nhờ gọi giúp.",
+            "en": "Call {emergency} now. If someone else is there, ask them to call."
           },
           "steps": [
             {
@@ -328,8 +328,8 @@
               },
               "items": [
                 {
-                  "vi": "Luôn gọi 115, kể cả khi bé đã thở lại",
-                  "en": "Always call 115, even if baby is breathing again"
+                  "vi": "Luôn gọi {emergency}, kể cả khi bé đã thở lại",
+                  "en": "Always call {emergency}, even if baby is breathing again"
                 }
               ]
             }
@@ -442,8 +442,8 @@
                 "en": "Repeat until the object comes out"
               },
               "body": {
-                "vi": "Xen kẽ 5 lần vỗ lưng và 5 lần ấn ngực. Bé lả đi, không thở: gọi 115 ngay.",
-                "en": "Alternate 5 back blows and 5 chest thrusts. If baby goes limp or stops breathing: call 115 now."
+                "vi": "Xen kẽ 5 lần vỗ lưng và 5 lần ấn ngực. Bé lả đi, không thở: gọi {emergency} ngay.",
+                "en": "Alternate 5 back blows and 5 chest thrusts. If baby goes limp or stops breathing: call {emergency} now."
               },
               "image": null,
               "chips": [],
@@ -477,8 +477,8 @@
               },
               "items": [
                 {
-                  "vi": "Bé tím tái, lả đi, ngừng thở: gọi 115",
-                  "en": "Baby turns blue, goes limp or stops breathing: call 115"
+                  "vi": "Bé tím tái, lả đi, ngừng thở: gọi {emergency}",
+                  "en": "Baby turns blue, goes limp or stops breathing: call {emergency}"
                 },
                 {
                   "vi": "Đã lấy được dị vật nhưng bé vẫn ho, khó thở",
@@ -574,8 +574,8 @@
               },
               "items": [
                 {
-                  "vi": "Bé tím tái, lả đi, ngừng thở: gọi 115",
-                  "en": "Baby turns blue, goes limp or stops breathing: call 115"
+                  "vi": "Bé tím tái, lả đi, ngừng thở: gọi {emergency}",
+                  "en": "Baby turns blue, goes limp or stops breathing: call {emergency}"
                 },
                 {
                   "vi": "Đã lấy được dị vật nhưng bé vẫn ho, khó thở",
@@ -720,8 +720,8 @@
               },
               "items": [
                 {
-                  "vi": "Bé tím tái, không khóc, thở yếu: gọi 115",
-                  "en": "Baby is blue, not crying, breathing weakly: call 115"
+                  "vi": "Bé tím tái, không khóc, thở yếu: gọi {emergency}",
+                  "en": "Baby is blue, not crying, breathing weakly: call {emergency}"
                 },
                 {
                   "vi": "Sau đó bé thở khò khè, sốt, bú kém",
@@ -842,8 +842,8 @@
               },
               "items": [
                 {
-                  "vi": "Bé không thở lại, không phản ứng: gọi 115, làm hồi sức tim phổi (CPR)",
-                  "en": "Baby doesn’t start breathing or respond: call 115 and start CPR"
+                  "vi": "Bé không thở lại, không phản ứng: gọi {emergency}, làm hồi sức tim phổi (CPR)",
+                  "en": "Baby doesn’t start breathing or respond: call {emergency} and start CPR"
                 }
               ]
             }
@@ -1010,8 +1010,8 @@
               },
               "items": [
                 {
-                  "vi": "Cơn giật kéo dài trên 5 phút hoặc nhiều cơn liên tiếp: gọi 115",
-                  "en": "The seizure lasts over 5 minutes, or several come in a row: call 115"
+                  "vi": "Cơn giật kéo dài trên 5 phút hoặc nhiều cơn liên tiếp: gọi {emergency}",
+                  "en": "The seizure lasts over 5 minutes, or several come in a row: call {emergency}"
                 },
                 {
                   "vi": "Bé khó thở, tím tái, không tỉnh lại sau cơn",
@@ -1080,8 +1080,8 @@
           "ageMonths": null,
           "hero": null,
           "banner": {
-            "vi": "Gọi 115 ngay khi nghi ngờ sốc phản vệ.",
-            "en": "Call 115 as soon as you suspect anaphylaxis."
+            "vi": "Gọi {emergency} ngay khi nghi ngờ sốc phản vệ.",
+            "en": "Call {emergency} as soon as you suspect anaphylaxis."
           },
           "steps": [
             {
@@ -1149,8 +1149,8 @@
               },
               "items": [
                 {
-                  "vi": "Khó thở, khò khè, tím tái, lả đi: gọi 115",
-                  "en": "Trouble breathing, wheezing, turning blue, going limp: call 115"
+                  "vi": "Khó thở, khò khè, tím tái, lả đi: gọi {emergency}",
+                  "en": "Trouble breathing, wheezing, turning blue, going limp: call {emergency}"
                 }
               ]
             }
@@ -1214,8 +1214,8 @@
           "steps": [
             {
               "title": {
-                "vi": "Gọi 115 ngay",
-                "en": "Call 115 now"
+                "vi": "Gọi {emergency} ngay",
+                "en": "Call {emergency} now"
               },
               "body": {
                 "vi": "Giữ bình tĩnh, làm theo hướng dẫn của tổng đài.",
@@ -1360,8 +1360,8 @@
           "steps": [
             {
               "title": {
-                "vi": "Đảm bảo an toàn, gọi 115",
-                "en": "Make the scene safe, call 115"
+                "vi": "Đảm bảo an toàn, gọi {emergency}",
+                "en": "Make the scene safe, call {emergency}"
               },
               "body": {
                 "vi": "Chỉ đưa bé ra khỏi vùng nguy hiểm nếu thật cần thiết.",
@@ -1804,8 +1804,8 @@
                   "en": "Something is stuck in the wound: always go to hospital"
                 },
                 {
-                  "vi": "Máu chảy nhiều, không cầm được: gọi 115",
-                  "en": "Heavy bleeding that won’t stop: call 115"
+                  "vi": "Máu chảy nhiều, không cầm được: gọi {emergency}",
+                  "en": "Heavy bleeding that won’t stop: call {emergency}"
                 }
               ]
             }
@@ -2347,8 +2347,8 @@
                   "en": "Suspected broken bone: always go to hospital"
                 },
                 {
-                  "vi": "Nghi chấn thương đầu, cổ, lưng: gọi 115",
-                  "en": "Suspected head, neck or back injury: call 115"
+                  "vi": "Nghi chấn thương đầu, cổ, lưng: gọi {emergency}",
+                  "en": "Suspected head, neck or back injury: call {emergency}"
                 }
               ]
             }
@@ -2828,8 +2828,8 @@
               },
               "items": [
                 {
-                  "vi": "Phát ban, khó thở, sưng lớn, nôn: dấu hiệu sốc phản vệ, gọi 115",
-                  "en": "Rash, trouble breathing, large swelling, vomiting: signs of anaphylaxis, call 115"
+                  "vi": "Phát ban, khó thở, sưng lớn, nôn: dấu hiệu sốc phản vệ, gọi {emergency}",
+                  "en": "Rash, trouble breathing, large swelling, vomiting: signs of anaphylaxis, call {emergency}"
                 }
               ]
             }
@@ -3250,8 +3250,8 @@
                 "en": "Move to somewhere cool"
               },
               "body": {
-                "vi": "Nơi thoáng gió. Tình trạng không khá lên: gọi 115.",
-                "en": "Somewhere airy. If it doesn’t get better: call 115."
+                "vi": "Nơi thoáng gió. Tình trạng không khá lên: gọi {emergency}.",
+                "en": "Somewhere airy. If it doesn’t get better: call {emergency}."
               },
               "image": null,
               "chips": [],
@@ -3323,8 +3323,8 @@
               },
               "items": [
                 {
-                  "vi": "Bé lơ mơ, hôn mê: gọi 115, làm hồi sức tim phổi nếu bé ngừng thở",
-                  "en": "Drowsy or unconscious: call 115, and start CPR if breathing stops"
+                  "vi": "Bé lơ mơ, hôn mê: gọi {emergency}, làm hồi sức tim phổi nếu bé ngừng thở",
+                  "en": "Drowsy or unconscious: call {emergency}, and start CPR if breathing stops"
                 },
                 {
                   "vi": "Sốt cao, nôn, co giật",
@@ -3463,8 +3463,8 @@
               },
               "items": [
                 {
-                  "vi": "Sốt kèm co giật, khó thở, li bì: gọi 115",
-                  "en": "Fever with seizures, trouble breathing or very drowsy: call 115"
+                  "vi": "Sốt kèm co giật, khó thở, li bì: gọi {emergency}",
+                  "en": "Fever with seizures, trouble breathing or very drowsy: call {emergency}"
                 }
               ]
             }

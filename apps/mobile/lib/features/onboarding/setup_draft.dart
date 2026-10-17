@@ -16,6 +16,7 @@ class SetupDraft {
     DateTime? dateOfBirth,
     this.gender = Gender.unspecified,
     this.timeZone,
+    this.country,
     this.avatarPreset = 1,
     this.avatarPhoto,
     this.trackers = defaultTrackers,
@@ -42,6 +43,9 @@ class SetupDraft {
 
   /// null until the device zone has been read.
   final TimeZoneSetting? timeZone;
+
+  /// Where the family lives (D-078), null until picked or preselected from the zone.
+  final String? country;
   final int avatarPreset;
 
   /// JPEG chosen on 11c; uploaded right after the baby exists.
@@ -68,6 +72,7 @@ class SetupDraft {
     DateTime? dateOfBirth,
     Gender? gender,
     TimeZoneSetting? timeZone,
+    String? country,
     int? avatarPreset,
     Uint8List? avatarPhoto,
     bool clearPhoto = false,
@@ -80,6 +85,7 @@ class SetupDraft {
     dateOfBirth: dateOfBirth ?? this.dateOfBirth,
     gender: gender ?? this.gender,
     timeZone: timeZone ?? this.timeZone,
+    country: country ?? this.country,
     avatarPreset: avatarPreset ?? this.avatarPreset,
     avatarPhoto: clearPhoto ? null : avatarPhoto ?? this.avatarPhoto,
     trackers: trackers ?? this.trackers,
@@ -93,6 +99,7 @@ class SetupDraft {
     gender: gender,
     timeZone:
         timeZone ?? const TimeZoneSetting(zone: 'Asia/Ho_Chi_Minh', auto: true),
+    country: country,
     avatarPreset: avatarPreset,
     trackers: trackers,
     displayName: displayName,

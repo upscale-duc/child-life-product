@@ -55,7 +55,7 @@ Map<String, dynamic> _vaccineDoc({
   ...VaccineScheduleTable.bundled.toJson(),
   'version': version,
   'publishedAt': '2026-10-17T08:00:00.000Z',
-  if (rows != null) 'rows': rows,
+  'rows': ?rows,
 };
 
 class _FakeReference extends ReferenceRepository {

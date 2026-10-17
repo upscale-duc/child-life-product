@@ -23,6 +23,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_segmented.dart';
 import '../../l10n/app_localizations.dart';
+import '../family/countries.dart';
 import '../family/my_invites.dart';
 import '../auth/auth_repository.dart';
 import '../baby/baby_avatar_view.dart';
@@ -220,7 +221,10 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
       ref
           .read(setupDraftProvider.notifier)
           .update(
-            draft.copyWith(timeZone: TimeZoneSetting(zone: zone, auto: true)),
+            draft.copyWith(
+              timeZone: TimeZoneSetting(zone: zone, auto: true),
+              country: draft.country ?? countryForZone(zone),
+            ),
           );
     }
   }
@@ -241,6 +245,13 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
       );
       return;
     }
+    if (ref.read(setupDraftProvider).country == null) {
+      showClToast(
+        context,
+        message: AppLocalizations.of(context).babyCountryRequired,
+      );
+      return;
+    }
     context.push(Routes.trackers);
   }
 
@@ -254,6 +265,7 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
         ref,
         nickname: _nickname,
         focus: _nicknameFocus,
+        askCountry: true,
       ),
       bottom: [
         ClButton(label: l10n.actionNext, expand: true, onPressed: _next),
@@ -491,6 +503,7 @@ List<Widget> babyFormFields(
   WidgetRef ref, {
   required TextEditingController nickname,
   required FocusNode focus,
+  bool askCountry = false,
 }) {
   final l10n = AppLocalizations.of(context);
   final cl = context.cl;
@@ -605,6 +618,26 @@ List<Widget> babyFormFields(
           value: zone == null ? '…' : gmtOffsetLabel(zone.zone, DateTime.now()),
           onTap: () => showTimeZoneSheet(context),
         ),
+        // D-078: where the family lives, so Sơ cứu calls the right number. Only when this baby
+        // may create the family (onboarding), not when editing a baby.
+        if (askCountry)
+          ClDetailRow(
+            icon: ClIcons.family,
+            label: l10n.babyCountry,
+            value: draft.country == null
+                ? l10n.babyCountryUnset
+                : countryName(l10n, draft.country!),
+            onTap: () async {
+              final code = await showCountrySheet(
+                context,
+                current: draft.country,
+              );
+              if (code == null) return;
+              ref
+                  .read(setupDraftProvider.notifier)
+                  .update(ref.read(setupDraftProvider).copyWith(country: code));
+            },
+          ),
       ],
     ),
     const SizedBox(height: ClSpace.s6),

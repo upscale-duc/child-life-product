@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../app/providers.dart';
 import '../../app/session.dart';
+import '../premium/premium_repository.dart';
 import 'first_aid_models.dart';
 
 /// Sơ cứu works without a network (D-058): the last published pack is kept as a file and every
@@ -151,9 +152,22 @@ final firstAidStoreProvider = Provider<FirstAidStore>(
   ),
 );
 
-final firstAidPackProvider = StreamProvider<FirstAidPack?>(
+/// The pack as published (cached on the device), before the family's number is filled in.
+final firstAidSourceProvider = StreamProvider<FirstAidPack?>(
   (ref) => ref.watch(firstAidStoreProvider).watch(),
 );
+
+/// The guide for the selected family: its country's emergency number in the text and the call
+/// buttons (D-078).
+final firstAidPackProvider = Provider<AsyncValue<FirstAidPack?>>((ref) {
+  final source = ref.watch(firstAidSourceProvider);
+  final pack = source.value;
+  // No guide yet: nothing to fill, and no need to look at the family.
+  if (pack == null) return source;
+  return AsyncValue.data(
+    pack.forCountry(ref.watch(selectedFamilyCountryProvider)),
+  );
+});
 
 /// How a picture is shown: from disk once downloaded, else from the network. Tests replace it.
 final firstAidImageProvider = Provider<ImageProvider Function(String id)>((

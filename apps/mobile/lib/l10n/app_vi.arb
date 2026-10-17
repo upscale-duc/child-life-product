@@ -552,6 +552,18 @@
   "@babyTimeZone": {
     "description": "Detail row / sheet title."
   },
+  "babyCountry": "Quốc gia",
+  "@babyCountry": {
+    "description": "11 Thông tin bé: detail row for the country the family lives in (D-078)."
+  },
+  "babyCountryUnset": "Chọn",
+  "@babyCountryUnset": {
+    "description": "Value of the country row before one is picked."
+  },
+  "babyCountryRequired": "Chọn nơi gia đình đang sống để Sơ cứu gọi đúng số cấp cứu.",
+  "@babyCountryRequired": {
+    "description": "Toast when Tiếp is tapped without a country."
+  },
   "babyGender": "Giới tính",
   "@babyGender": {
     "description": "Gender label."
@@ -12253,6 +12265,27 @@
       }
     }
   },
+  "faCallLocal": "Gọi {number} · {country}",
+  "@faCallLocal": {
+    "description": "Sơ cứu call bar when the family lives outside Việt Nam: the number and the country.",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "vxAbroadNotice": "Lịch này theo chương trình tiêm chủng của Việt Nam. Ở {country}, hãy theo lịch của bác sĩ hoặc cơ sở y tế nơi bạn sống; nhắc lịch chỉ báo những mũi bạn đã đặt ngày.",
+  "@vxAbroadNotice": {
+    "description": "Sổ tiêm chủng notice for a family living outside Việt Nam (D-078).",
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
   "faStartCpr": "Bắt đầu hồi sức tim phổi (CPR)",
   "@faStartCpr": {
     "description": "7b emergency card."
@@ -16305,7 +16338,7 @@
   "@pmRegionTitle": {
     "description": "Region sheet title (D-072 #3)."
   },
-  "pmRegionBody": "Dùng để chọn nội dung sức khoẻ và hỗ trợ đã duyệt cho khu vực. Child Life không đoán từ ngôn ngữ hay vị trí.",
+  "pmRegionBody": "Dùng để chọn số cấp cứu, lịch tiêm và nội dung sức khoẻ phù hợp với nơi bạn sống. Child Life không đoán từ ngôn ngữ hay vị trí.",
   "@pmRegionBody": {
     "description": "Region sheet body."
   },
@@ -16316,6 +16349,10 @@
   "pmRegionSaved": "Đã lưu khu vực",
   "@pmRegionSaved": {
     "description": "Toast after saving the region."
+  },
+  "meRegionRow": "Nơi gia đình sống",
+  "@meRegionRow": {
+    "description": "Tôi: row opening the household country sheet (D-078)."
   },
   "pmCountryVN": "Việt Nam",
   "@pmCountryVN": {
@@ -16364,6 +16401,78 @@
   "pmCountryTW": "Đài Loan",
   "@pmCountryTW": {
     "description": "Country name for TW in the region picker."
+  },
+  "pmCountryMY": "Malaysia",
+  "@pmCountryMY": {
+    "description": "Country name for MY in the region picker."
+  },
+  "pmCountryTH": "Thái Lan",
+  "@pmCountryTH": {
+    "description": "Country name for TH in the region picker."
+  },
+  "pmCountryHK": "Hồng Kông",
+  "@pmCountryHK": {
+    "description": "Country name for HK in the region picker."
+  },
+  "pmCountryCN": "Trung Quốc",
+  "@pmCountryCN": {
+    "description": "Country name for CN in the region picker."
+  },
+  "pmCountryIE": "Ireland",
+  "@pmCountryIE": {
+    "description": "Country name for IE in the region picker."
+  },
+  "pmCountryNL": "Hà Lan",
+  "@pmCountryNL": {
+    "description": "Country name for NL in the region picker."
+  },
+  "pmCountryBE": "Bỉ",
+  "@pmCountryBE": {
+    "description": "Country name for BE in the region picker."
+  },
+  "pmCountryES": "Tây Ban Nha",
+  "@pmCountryES": {
+    "description": "Country name for ES in the region picker."
+  },
+  "pmCountryCH": "Thuỵ Sĩ",
+  "@pmCountryCH": {
+    "description": "Country name for CH in the region picker."
+  },
+  "pmCountryAT": "Áo",
+  "@pmCountryAT": {
+    "description": "Country name for AT in the region picker."
+  },
+  "pmCountryCZ": "Séc",
+  "@pmCountryCZ": {
+    "description": "Country name for CZ in the region picker."
+  },
+  "pmCountryPL": "Ba Lan",
+  "@pmCountryPL": {
+    "description": "Country name for PL in the region picker."
+  },
+  "pmCountrySE": "Thuỵ Điển",
+  "@pmCountrySE": {
+    "description": "Country name for SE in the region picker."
+  },
+  "pmCountryNO": "Na Uy",
+  "@pmCountryNO": {
+    "description": "Country name for NO in the region picker."
+  },
+  "pmCountryDK": "Đan Mạch",
+  "@pmCountryDK": {
+    "description": "Country name for DK in the region picker."
+  },
+  "pmCountryFI": "Phần Lan",
+  "@pmCountryFI": {
+    "description": "Country name for FI in the region picker."
+  },
+  "pmCountryAE": "Các Tiểu vương quốc Ả Rập Thống nhất",
+  "@pmCountryAE": {
+    "description": "Country name for AE in the region picker."
+  },
+  "pmCountryQA": "Qatar",
+  "@pmCountryQA": {
+    "description": "Country name for QA in the region picker."
   },
   "pmUnlockPremium": "Mở với Premium",
   "@pmUnlockPremium": {

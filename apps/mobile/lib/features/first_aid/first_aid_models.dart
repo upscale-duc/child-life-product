@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../family/emergency_numbers.dart';
+
 /// Sơ cứu trẻ em (Figma v1.1 7a–7i, TH01–TH24; D-058). The guide is editorial content from the
 /// portal: `publicConfig/content_firstAid` holds one pack (shape in
 /// `packages/contracts/src/first-aid.ts`). Parsing is strict per item: anything malformed makes the
@@ -275,10 +277,24 @@ class FirstAidPack {
     required this.cpr,
     required this.quickSearch,
     this.review,
+    this.country,
+    this.doc,
   });
 
   final String version;
+
+  /// The number the guide calls and names: the family's country's ambulance number (D-078), else
+  /// the pack's own (115).
   final String emergencyNumber;
+
+  /// The family's country when [emergencyNumber] is its number; null for the pack's default.
+  final String? country;
+
+  /// `publicConfig/content_firstAid` as read, to fill the guide again for another country.
+  final Map<String, Object?>? doc;
+
+  /// The country to name next to the number: only outside Việt Nam, where 115 is the default.
+  String? get localCountry => country == 'VN' ? null : country;
   final List<FaCategory> categories;
   final List<FaSituation> situations;
   final List<FaCpr> cpr;
@@ -357,16 +373,28 @@ class FirstAidPack {
         _ => j,
       };
 
+  /// The guide for a family in [country]: its ambulance number in every `{emergency}`, or the
+  /// pack's own number for a country without one (or none set).
+  FirstAidPack forCountry(String? country) {
+    final target = emergencyNumbers.containsKey(country) ? country : null;
+    if (target == this.country || doc == null) return this;
+    return fromDoc(doc, country: target) ?? this;
+  }
+
   /// `publicConfig/content_firstAid` → the pack, or null when absent or malformed.
-  static FirstAidPack? fromDoc(Map<String, Object?>? doc) {
+  static FirstAidPack? fromDoc(Map<String, Object?>? doc, {String? country}) {
     if (doc == null) return null;
     try {
       final raw = doc['pack']! as Map;
-      final p = fillTokens(raw, raw['emergencyNumber']! as String) as Map;
+      final local = emergencyNumbers[country];
+      final number = local ?? raw['emergencyNumber']! as String;
+      final p = fillTokens(raw, number) as Map;
       final review = p['review'] as Map?;
       final pack = FirstAidPack(
         version: doc['version']! as String,
-        emergencyNumber: p['emergencyNumber']! as String,
+        emergencyNumber: number,
+        country: local == null ? null : country,
+        doc: doc,
         categories: [
           for (final c in p['categories']! as List) FaCategory.parse(c as Map),
         ],

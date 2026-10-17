@@ -11,6 +11,7 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import '../care/care_models.dart';
+import '../family/countries.dart';
 import '../home/home_shell.dart';
 import 'first_aid_models.dart';
 import 'first_aid_repository.dart';
@@ -170,6 +171,7 @@ class FaCallButton extends StatelessWidget {
     required this.onPressed,
     this.small = false,
     this.expand = false,
+    this.country,
     super.key,
   });
 
@@ -178,11 +180,16 @@ class FaCallButton extends StatelessWidget {
   final bool small;
   final bool expand;
 
+  /// The family's country outside Việt Nam, named on the large button ("Gọi 911 · Hoa Kỳ").
+  final String? country;
+
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
     final l10n = AppLocalizations.of(context);
-    final label = l10n.faCall(number);
+    final label = country != null && !small
+        ? l10n.faCallLocal(number, countryName(l10n, country!))
+        : l10n.faCall(number);
     final row = Row(
       mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,

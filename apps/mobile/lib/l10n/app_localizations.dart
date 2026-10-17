@@ -872,6 +872,24 @@ abstract class AppLocalizations {
   /// **'Múi giờ'**
   String get babyTimeZone;
 
+  /// 11 Thông tin bé: detail row for the country the family lives in (D-078).
+  ///
+  /// In vi, this message translates to:
+  /// **'Quốc gia'**
+  String get babyCountry;
+
+  /// Value of the country row before one is picked.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn'**
+  String get babyCountryUnset;
+
+  /// Toast when Tiếp is tapped without a country.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn nơi gia đình đang sống để Sơ cứu gọi đúng số cấp cứu.'**
+  String get babyCountryRequired;
+
   /// Gender label.
   ///
   /// In vi, this message translates to:
@@ -13627,6 +13645,18 @@ abstract class AppLocalizations {
   /// **'Gọi {number}'**
   String faCall(String number);
 
+  /// Sơ cứu call bar when the family lives outside Việt Nam: the number and the country.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gọi {number} · {country}'**
+  String faCallLocal(String number, String country);
+
+  /// Sổ tiêm chủng notice for a family living outside Việt Nam (D-078).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch này theo chương trình tiêm chủng của Việt Nam. Ở {country}, hãy theo lịch của bác sĩ hoặc cơ sở y tế nơi bạn sống; nhắc lịch chỉ báo những mũi bạn đã đặt ngày.'**
+  String vxAbroadNotice(String country);
+
   /// 7b emergency card.
   ///
   /// In vi, this message translates to:
@@ -18100,7 +18130,7 @@ abstract class AppLocalizations {
   /// Region sheet body.
   ///
   /// In vi, this message translates to:
-  /// **'Dùng để chọn nội dung sức khoẻ và hỗ trợ đã duyệt cho khu vực. Child Life không đoán từ ngôn ngữ hay vị trí.'**
+  /// **'Dùng để chọn số cấp cứu, lịch tiêm và nội dung sức khoẻ phù hợp với nơi bạn sống. Child Life không đoán từ ngôn ngữ hay vị trí.'**
   String get pmRegionBody;
 
   /// Region row note for non-owners.
@@ -18114,6 +18144,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã lưu khu vực'**
   String get pmRegionSaved;
+
+  /// Tôi: row opening the household country sheet (D-078).
+  ///
+  /// In vi, this message translates to:
+  /// **'Nơi gia đình sống'**
+  String get meRegionRow;
 
   /// Country name for VN in the region picker.
   ///
@@ -18186,6 +18222,114 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đài Loan'**
   String get pmCountryTW;
+
+  /// Country name for MY in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Malaysia'**
+  String get pmCountryMY;
+
+  /// Country name for TH in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thái Lan'**
+  String get pmCountryTH;
+
+  /// Country name for HK in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hồng Kông'**
+  String get pmCountryHK;
+
+  /// Country name for CN in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung Quốc'**
+  String get pmCountryCN;
+
+  /// Country name for IE in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ireland'**
+  String get pmCountryIE;
+
+  /// Country name for NL in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hà Lan'**
+  String get pmCountryNL;
+
+  /// Country name for BE in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỉ'**
+  String get pmCountryBE;
+
+  /// Country name for ES in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tây Ban Nha'**
+  String get pmCountryES;
+
+  /// Country name for CH in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thuỵ Sĩ'**
+  String get pmCountryCH;
+
+  /// Country name for AT in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Áo'**
+  String get pmCountryAT;
+
+  /// Country name for CZ in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Séc'**
+  String get pmCountryCZ;
+
+  /// Country name for PL in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ba Lan'**
+  String get pmCountryPL;
+
+  /// Country name for SE in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thuỵ Điển'**
+  String get pmCountrySE;
+
+  /// Country name for NO in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Na Uy'**
+  String get pmCountryNO;
+
+  /// Country name for DK in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đan Mạch'**
+  String get pmCountryDK;
+
+  /// Country name for FI in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phần Lan'**
+  String get pmCountryFI;
+
+  /// Country name for AE in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các Tiểu vương quốc Ả Rập Thống nhất'**
+  String get pmCountryAE;
+
+  /// Country name for QA in the region picker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Qatar'**
+  String get pmCountryQA;
 
   /// MO02 primary button.
   ///

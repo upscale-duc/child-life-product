@@ -18,8 +18,10 @@ import '../../l10n/app_localizations.dart';
 import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
+import '../family/countries.dart';
 import '../family/family_repository.dart';
 import '../home/home_shell.dart';
+import '../premium/premium_repository.dart';
 import '../reminders/reminder_screens.dart' show reminderWho;
 import 'vaccine_format.dart';
 import 'vaccine_models.dart';
@@ -240,10 +242,40 @@ class _VaccineBookScreenState extends ConsumerState<VaccineBookScreen> {
       _maintain(me, book, dob);
       final next = book.nextGroup;
       final overdue = book.overdue;
+      final abroad = switch (ref.watch(selectedFamilyCountryProvider)) {
+        final code? when code != 'VN' => code,
+        _ => null,
+      };
       return _VxPage(
         children: [
           _Title(l10n.vxTitle),
           const SizedBox(height: ClSpace.s3),
+          // D-078: the schedule is Việt Nam's; a family elsewhere follows its own clinic.
+          if (abroad != null) ...[
+            Container(
+              key: const Key('vxAbroad'),
+              padding: const EdgeInsets.all(ClSpace.s3),
+              decoration: BoxDecoration(
+                color: cl.colors.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: cl.colors.separator),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClIcon(ClIcons.globe, size: 18, color: cl.colors.inkMuted),
+                  const SizedBox(width: ClSpace.s2),
+                  Expanded(
+                    child: Text(
+                      l10n.vxAbroadNotice(countryName(l10n, abroad)),
+                      style: cl.text.label,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: ClSpace.s3),
+          ],
           if (view == VaccineView.byVaccine && next != null) ...[
             _NextCard(group: next, book: book),
             const SizedBox(height: ClSpace.s3),

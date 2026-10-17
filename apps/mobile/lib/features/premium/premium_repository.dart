@@ -126,3 +126,19 @@ final selectedCapabilitiesProvider = Provider<Capabilities?>((ref) {
   if (me == null) return null;
   return ref.watch(capabilitiesProvider(me.babyId)).value;
 });
+
+/// Where the selected baby's family lives (D-078): the latest answer, else the one kept on this
+/// phone, so Sơ cứu has it at once and offline. Null when never set.
+final selectedFamilyCountryProvider = Provider<String?>((ref) {
+  // Never an error: Sơ cứu reads this, and without a country it simply calls the pack's number.
+  try {
+    final me = ref.watch(selectedMembershipProvider);
+    if (me == null) return null;
+    final fresh = ref.watch(capabilitiesProvider(me.babyId));
+    if (fresh.hasValue) return fresh.value?.country;
+    if (Firebase.apps.isEmpty) return null;
+    return ref.watch(premiumRepositoryProvider).cached(me.babyId)?.country;
+  } on Object {
+    return null;
+  }
+});

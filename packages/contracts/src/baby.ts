@@ -93,6 +93,11 @@ export const createBabyRequestSchema = z.object({
   dateOfBirth: z.iso.date(),
   gender: z.enum(genders),
   timeZone: timeZoneSettingSchema,
+  /** Where the family lives (D-078), asked on 11; set on the family when it has none yet. */
+  country: z
+    .string()
+    .regex(/^[A-Z]{2}$/)
+    .optional(),
   avatarPreset: z.literal(avatarPresets),
   trackers: z
     .array(z.enum(trackerKinds))

@@ -420,6 +420,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get babyTimeZone => 'Time zone';
 
   @override
+  String get babyCountry => 'Country';
+
+  @override
+  String get babyCountryUnset => 'Choose';
+
+  @override
+  String get babyCountryRequired =>
+      'Choose where your family lives so First aid calls the right emergency number.';
+
+  @override
   String get babyGender => 'Gender';
 
   @override
@@ -8641,6 +8651,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String faCallLocal(String number, String country) {
+    return 'Call $number · $country';
+  }
+
+  @override
+  String vxAbroadNotice(String country) {
+    return 'This schedule follows Việt Nam\'s programme. In $country, follow the schedule from your doctor or local clinic; reminders only cover doses you\'ve set a date for.';
+  }
+
+  @override
   String get faStartCpr => 'Start CPR';
 
   @override
@@ -11688,13 +11708,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmRegionBody =>
-      'Used to pick health content and support approved for your region. Child Life never guesses it from language or location.';
+      'Used to pick the emergency number, vaccination schedule and health content for where you live. Child Life never guesses it from language or location.';
 
   @override
   String get pmRegionOwnerOnly => 'The family owner sets the household region.';
 
   @override
   String get pmRegionSaved => 'Region saved';
+
+  @override
+  String get meRegionRow => 'Where your family lives';
 
   @override
   String get pmCountryVN => 'Vietnam';
@@ -11731,6 +11754,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pmCountryTW => 'Taiwan';
+
+  @override
+  String get pmCountryMY => 'Malaysia';
+
+  @override
+  String get pmCountryTH => 'Thailand';
+
+  @override
+  String get pmCountryHK => 'Hong Kong';
+
+  @override
+  String get pmCountryCN => 'China';
+
+  @override
+  String get pmCountryIE => 'Ireland';
+
+  @override
+  String get pmCountryNL => 'Netherlands';
+
+  @override
+  String get pmCountryBE => 'Belgium';
+
+  @override
+  String get pmCountryES => 'Spain';
+
+  @override
+  String get pmCountryCH => 'Switzerland';
+
+  @override
+  String get pmCountryAT => 'Austria';
+
+  @override
+  String get pmCountryCZ => 'Czechia';
+
+  @override
+  String get pmCountryPL => 'Poland';
+
+  @override
+  String get pmCountrySE => 'Sweden';
+
+  @override
+  String get pmCountryNO => 'Norway';
+
+  @override
+  String get pmCountryDK => 'Denmark';
+
+  @override
+  String get pmCountryFI => 'Finland';
+
+  @override
+  String get pmCountryAE => 'United Arab Emirates';
+
+  @override
+  String get pmCountryQA => 'Qatar';
 
   @override
   String get pmUnlockPremium => 'Unlock with Premium';

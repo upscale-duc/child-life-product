@@ -19,6 +19,7 @@ import '../../l10n/app_localizations.dart';
 import '../app_update/app_update_screens.dart' show AppVersionRow;
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
+import '../family/countries.dart';
 import '../family/save_account.dart';
 import '../feedback/rate_app.dart';
 import '../home/home_shell.dart';
@@ -29,6 +30,7 @@ import '../memories/upload_queue.dart';
 import '../notifications/notification_models.dart';
 import '../notifications/notification_repository.dart';
 import '../onboarding/setup_screens.dart';
+import '../premium/plan_screen.dart' show showRegionSheet;
 import '../premium/premium_models.dart';
 import '../premium/premium_repository.dart';
 import '../care/care_repository.dart';
@@ -146,6 +148,24 @@ class MeScreen extends ConsumerWidget {
             if (ref.watch(selectedCapabilitiesProvider) case final caps?
                 when caps.features.any || caps.plan != HouseholdPlan.free)
               _PlanRow(caps: caps),
+            // D-078: where the family lives (Sơ cứu number, vaccine schedule); Cùng nuôi see it,
+            // the owner changes it.
+            if (parent)
+              MeRow(
+                icon: ClIcons.family,
+                title: l10n.meRegionRow,
+                value: switch (ref.watch(selectedFamilyCountryProvider)) {
+                  final code? => countryName(l10n, code),
+                  null => l10n.pmRegionUnset,
+                },
+                onTap: () => me.isOwner
+                    ? showRegionSheet(
+                        context,
+                        babyId: me.babyId,
+                        current: ref.read(selectedFamilyCountryProvider),
+                      )
+                    : showClToast(context, message: l10n.pmRegionOwnerOnly),
+              ),
             // Nhịp lớn lên EN01 / EN02 / feedback history: per person, free.
             if (ref.watch(selectedCapabilitiesProvider)?.features.rhythm ??
                 false)

@@ -124,6 +124,18 @@ describe('createBaby', () => {
     ]);
   });
 
+  it('keeps the country asked on 11 on the family, never overwriting it (D-078)', async () => {
+    const first = await createBaby(db, 'mom', request({ country: 'US' }), now, quota);
+    expect((await db.doc(`families/${first.familyId}`).get()).get('country')).toBe('US');
+    await createBaby(db, 'mom', request({ country: 'VN' }), now, quota);
+    expect((await db.doc(`families/${first.familyId}`).get()).get('country')).toBe('US');
+
+    const noCountry = await createBaby(db, 'dad', request(), now, quota);
+    expect((await db.doc(`families/${noCountry.familyId}`).get()).get('country')).toBeUndefined();
+    await createBaby(db, 'dad', request({ country: 'AU' }), now, quota);
+    expect((await db.doc(`families/${noCountry.familyId}`).get()).get('country')).toBe('AU');
+  });
+
   it('allows at most 3 own babies (R-043)', async () => {
     for (let i = 0; i < 3; i += 1) await createBaby(db, 'mom', request(), now, quota);
     expect(await reasonOf(createBaby(db, 'mom', request(), now, quota))).toBe('baby-limit');
@@ -174,6 +186,8 @@ describe('createBaby', () => {
       request({ self: { displayName: 'Mai', relation: 'other' } }),
       request({ avatarPreset: 5 }),
       request({ dateOfBirth: '1990-01-01' }),
+      request({ country: 'vn' }),
+      request({ country: 'VNM' }),
     ]) {
       expect(['malformed', 'dob-too-old']).toContain(
         await reasonOf(createBaby(db, 'mom', bad, now, quota)),

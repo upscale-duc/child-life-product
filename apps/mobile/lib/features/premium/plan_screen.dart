@@ -11,9 +11,9 @@ import '../../core/widgets/cl_button.dart';
 import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_rows.dart';
-import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../home/home_shell.dart';
+import '../family/countries.dart';
 import '../me/me_widgets.dart';
 import 'billing_models.dart';
 import 'paywall_screen.dart';
@@ -271,76 +271,23 @@ class _PlanCard extends StatelessWidget {
   }
 }
 
-String countryName(AppLocalizations l10n, String code) => switch (code) {
-  'VN' => l10n.pmCountryVN,
-  'US' => l10n.pmCountryUS,
-  'GB' => l10n.pmCountryGB,
-  'AU' => l10n.pmCountryAU,
-  'CA' => l10n.pmCountryCA,
-  'SG' => l10n.pmCountrySG,
-  'NZ' => l10n.pmCountryNZ,
-  'DE' => l10n.pmCountryDE,
-  'FR' => l10n.pmCountryFR,
-  'JP' => l10n.pmCountryJP,
-  'KR' => l10n.pmCountryKR,
-  'TW' => l10n.pmCountryTW,
-  _ => code,
-};
-
-/// "Gia đình đang sống ở đâu?" (D-072 #3): the owner picks; never inferred from locale or IP.
+/// "Gia đình đang sống ở đâu?" (D-072 #3, D-078): the owner picks; never inferred from locale or IP.
 Future<void> showRegionSheet(
   BuildContext context, {
   required String babyId,
   required String? current,
-}) => showClSheet<void>(
-  context: context,
-  builder: (sheet) => Consumer(
-    builder: (inner, ref, _) {
-      final l10n = AppLocalizations.of(inner);
-      final cl = inner.cl;
-      Future<void> pick(String code) async {
-        Navigator.of(sheet).pop();
-        try {
-          await ref.read(premiumRepositoryProvider).setCountry(babyId, code);
-          ref.invalidate(capabilitiesProvider(babyId));
-          // The sheet is gone: toast on the plan screen underneath.
-          if (context.mounted) {
-            showClToast(context, message: l10n.pmRegionSaved);
-          }
-        } on Object {
-          if (context.mounted) {
-            showClToast(context, message: l10n.toastActionFailed, error: true);
-          }
-        }
-      }
-
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClSheetHeader(title: l10n.pmRegionTitle),
-          Text(
-            l10n.pmRegionBody,
-            style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-          ),
-          const SizedBox(height: ClSpace.s3),
-          Flexible(
-            child: SingleChildScrollView(
-              child: ClCardGroup(
-                children: [
-                  for (final code in pickerCountries)
-                    ClOptionRow(
-                      title: countryName(l10n, code),
-                      selected: current == code,
-                      onTap: () => pick(code),
-                    ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: ClSpace.s4),
-        ],
-      );
-    },
-  ),
-);
+}) async {
+  final code = await showCountrySheet(context, current: current);
+  if (code == null || !context.mounted) return;
+  final l10n = AppLocalizations.of(context);
+  final container = ProviderScope.containerOf(context, listen: false);
+  try {
+    await container.read(premiumRepositoryProvider).setCountry(babyId, code);
+    container.invalidate(capabilitiesProvider(babyId));
+    if (context.mounted) showClToast(context, message: l10n.pmRegionSaved);
+  } on Object {
+    if (context.mounted) {
+      showClToast(context, message: l10n.toastActionFailed, error: true);
+    }
+  }
+}

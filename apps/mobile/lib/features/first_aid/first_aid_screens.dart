@@ -189,6 +189,7 @@ class _FirstAidHomeScreenState extends ConsumerState<FirstAidHomeScreen> {
               const SizedBox(height: 10),
               FaCallButton(
                 number: pack.emergencyNumber,
+                country: pack.localCountry,
                 expand: true,
                 onPressed: () => unawaited(callEmergency(context, ref)),
               ),

@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/appearance/appearance_providers.dart';
 
-/// Languages shipped in V1 (D-012). Vietnamese is the source language and the fallback.
+/// Languages shipped in V1 (D-012). Vietnamese is the source language and the fallback when the
+/// device says nothing; a device in any other language opens in English (D-078).
 const supportedLocales = [Locale('vi'), Locale('en')];
 const fallbackLocale = Locale('vi');
+const otherLanguageLocale = Locale('en');
 
 const _kLocale = 'app.locale';
 
@@ -43,12 +45,15 @@ class LocaleOverride extends Notifier<Locale?> {
   }
 }
 
-/// Picks the first device language we support, otherwise Vietnamese.
+/// Picks the first device language we support; a device in other languages only gets English
+/// (a French or Japanese phone is far likelier to read English than Vietnamese), and no device
+/// languages at all gets Vietnamese.
 Locale resolveLocale(List<Locale>? deviceLocales) {
-  for (final device in deviceLocales ?? const <Locale>[]) {
+  final device = deviceLocales ?? const <Locale>[];
+  for (final d in device) {
     for (final supported in supportedLocales) {
-      if (supported.languageCode == device.languageCode) return supported;
+      if (supported.languageCode == d.languageCode) return supported;
     }
   }
-  return fallbackLocale;
+  return device.isEmpty ? fallbackLocale : otherLanguageLocale;
 }
