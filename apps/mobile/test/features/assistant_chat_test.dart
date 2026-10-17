@@ -445,7 +445,8 @@ void main() {
       tester,
     ) async {
       final repo = await drafts(tester);
-      await tester.tap(_text('Bỏ mục này').first);
+      // The thread is reversed (newest first in the tree): `.last` is the top one.
+      await tester.tap(_text('Bỏ mục này').last);
       await tester.pumpAndSettle();
       expect(
         repo.named('discardDraft').single.args['draftId'],
@@ -562,7 +563,8 @@ void main() {
         patchAnswer: (args) => bottleDraftJson(ml: 150, revision: 2),
       );
       await _pump(tester, repo: repo, prefs: _thread([taskA]));
-      await tester.tap(_text('Sửa').first);
+      // The thread is reversed (newest first in the tree): `.last` is the top one.
+      await tester.tap(_text('Sửa').last);
       await tester.pumpAndSettle();
       expect(_text('Sửa cữ bú bình'), findsOneWidget);
       final amount = find.descendant(
@@ -869,13 +871,12 @@ void main() {
       // The same request id with a fresh quote: the server runs the blocked task once.
       expect(start['requestId'], 'req-blocked');
       expect(_text('Còn 200/200 lượt hỗ trợ AI'), findsNothing);
-      await tester.drag(
-        find.byKey(const ValueKey('as.thread')),
-        const Offset(0, 800),
-      );
-      await tester.pumpAndSettle();
+      // Above the resumed task (just off the top while the thread sticks to the newest).
       expect(
-        _text('Hộ đã có Premium · tiếp tục câu hỏi đang chờ'),
+        find.text(
+          'Hộ đã có Premium · tiếp tục câu hỏi đang chờ',
+          skipOffstage: false,
+        ),
         findsOneWidget,
       );
     });

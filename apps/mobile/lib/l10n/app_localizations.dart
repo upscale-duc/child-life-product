@@ -26214,6 +26214,18 @@ abstract class AppLocalizations {
   /// **'{time} {day}'**
   String asTimeOnDay(String time, String day);
 
+  /// Chat: the line above a task when the thread starts, a day changes or after a pause ("Hôm nay · 14:20"). Chat UI rework 2026-10-17. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{day} · {time}'**
+  String asThreadWhen(String day, String time);
+
+  /// Chat: scrolling up could not load the earlier messages (with "Thử lại"). Chat UI rework 2026-10-17. VI and EN are engineering drafts (no frame draws this state) for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được tin nhắn cũ hơn.'**
+  String get asOlderFailed;
+
   /// A sleep with linked times ("21:00 – 06:00 · 9 giờ", the en dash of the draft cards). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.
   ///
   /// In vi, this message translates to:

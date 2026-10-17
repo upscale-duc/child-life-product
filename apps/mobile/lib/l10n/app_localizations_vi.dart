@@ -15651,6 +15651,14 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String asThreadWhen(String day, String time) {
+    return '$day · $time';
+  }
+
+  @override
+  String get asOlderFailed => 'Chưa tải được tin nhắn cũ hơn.';
+
+  @override
   String asSpanLine(String start, String end, String duration) {
     return '$start – $end · $duration';
   }

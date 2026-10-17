@@ -365,6 +365,10 @@ class FakeAssistantRepository implements AssistantRepository {
   Object? Function(Map<String, Object?> args)? patchAnswer;
   Object? Function()? conversationsAnswer;
   Object? Function()? messagesAnswer;
+
+  /// Paged history: `{'items': [...], 'nextCursor': '12'}` for the call's cursor (wins over
+  /// [messagesAnswer]).
+  Map<String, Object?> Function(String? cursor)? messagesPage;
   Object? Function(Map<String, Object?> args)? uploadAnswer;
   Object? Function(Map<String, Object?> args)? planAnswer;
 
@@ -637,12 +641,14 @@ class FakeAssistantRepository implements AssistantRepository {
     _record(AssistantCallables.history, {
       'babyId': babyId,
       'conversationId': conversationId,
+      'cursor': cursor,
     });
-    final raw = messagesAnswer?.call();
+    final paged = messagesPage?.call(cursor);
+    final raw = paged == null ? messagesAnswer?.call() : paged['items'];
     return HistoryPage([
       for (final x in (raw is List ? raw : const []))
         ?AssistantMessage.fromJson(x),
-    ], null);
+    ], paged?['nextCursor'] as String?);
   }
 
   @override

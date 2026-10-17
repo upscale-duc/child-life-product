@@ -247,10 +247,19 @@ Future<List<_Violation>> _check(
     }
   }
   // ---- Drafts ↔ cards ----
+  // The thread is a reversed list (newest first in the widget tree): read the cards top-down.
   final cardFinder = find.byType(AsDraftCard);
   final receiptFinder = find.byType(AsReceiptCard);
-  final cards = tester.widgetList<AsDraftCard>(cardFinder).toList();
-  final receipts = tester.widgetList<AsReceiptCard>(receiptFinder).toList();
+  final cards = tester
+      .widgetList<AsDraftCard>(cardFinder)
+      .toList()
+      .reversed
+      .toList();
+  final receipts = tester
+      .widgetList<AsReceiptCard>(receiptFinder)
+      .toList()
+      .reversed
+      .toList();
   final used = <int>{};
   var receiptAt = 0;
   final bars = tester.widgetList<AsBatchBar>(find.byType(AsBatchBar)).toList();
@@ -279,7 +288,7 @@ Future<List<_Violation>> _check(
     if (kind == 'expense' && receiptAt < receipts.length) {
       final i = receiptAt++;
       final r = receipts[i];
-      cardOf = receiptFinder.at(i);
+      cardOf = receiptFinder.at(receipts.length - 1 - i);
       texts = _texts(tester, cardOf);
       for (final f in r.fields) {
         if (f.flagged && f.onTap != null) fixControl = true;
@@ -326,7 +335,7 @@ Future<List<_Violation>> _check(
       }
       used.add(i);
       final c = cards[i];
-      cardOf = cardFinder.at(i);
+      cardOf = cardFinder.at(cards.length - 1 - i);
       texts = _texts(tester, cardOf);
       fixControl =
           c.onTap != null ||

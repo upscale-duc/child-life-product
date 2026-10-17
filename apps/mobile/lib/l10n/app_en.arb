@@ -4351,6 +4351,8 @@
   "asWhenYesterday": "Yesterday",
   "asWhenTomorrow": "Tomorrow",
   "asTimeOnDay": "{time} {day}",
+  "asThreadWhen": "{day} · {time}",
+  "asOlderFailed": "Couldn't load earlier messages.",
   "asSpanLine": "{start} – {end} · {duration}",
   "asSpanInvalid": "ends before it starts",
   "asSpanKnown": "From the length you said: {duration}",

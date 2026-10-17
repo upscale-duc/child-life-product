@@ -162,13 +162,17 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
   IntentHint? _hint;
   String? _openedFor;
 
-  // Scrolling: stick to the newest only while the person is at the bottom; else "↓ Tin mới".
+  // Scrolling: the thread is a reversed list, so offset 0 is the newest message. It opens
+  // there without scrolling, holds there while Lumi answers and while the keyboard opens, and
+  // an older page added above never moves what is on screen. Reading further up, a new
+  // message of Lumi's shows "↓ Tin mới".
   var _atBottom = true;
   var _dragging = false;
   var _unseen = false;
   var _forceBottom = false;
-  var _scrolling = false;
-  var _scrollAgain = false;
+
+  /// Closer than this to the oldest loaded entry, the page before it is loaded.
+  static const _olderReach = 600.0;
 
   // Entrances: an entry animates the first time it is built after the thread was primed.
   final _seen = <String>{};
@@ -212,50 +216,46 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
   void _onScroll() {
     if (!_scroll.hasClients) return;
     final p = _scroll.position;
-    final at = p.maxScrollExtent - p.pixels < 72;
+    if (p.maxScrollExtent - p.pixels < _olderReach) _loadOlder();
+    final at = p.pixels < 72;
     if (at == _atBottom) return;
     _atBottom = at;
     if (at && _unseen) setState(() => _unseen = false);
   }
 
+  void _loadOlder() {
+    final key = _openedFor;
+    if (key == null) return;
+    final chat = ref.read(assistantChatProvider(key));
+    // After a failure only "Thử lại" asks again (no loop of failing calls).
+    if (!chat.hasOlder || chat.loadingOlder || chat.olderFailed) return;
+    unawaited(_ctl(key).loadOlder());
+  }
+
   void _jumpToBottom() {
     if (!mounted || !_scroll.hasClients) return;
     final p = _scroll.position;
-    if (p.maxScrollExtent - p.pixels > 0.5) p.jumpTo(p.maxScrollExtent);
+    if (p.pixels > 0.5) p.jumpTo(0);
   }
 
-  /// Glides to the newest entry (a lazy list learns its true end as it gets there).
+  /// Glides to the newest entry (jumps from far up, or with Reduce Motion).
   Future<void> _toBottom() async {
-    if (_scrolling) {
-      _scrollAgain = true;
-      return;
-    }
-    _scrolling = true;
-    try {
-      for (var i = 0; i < 5; i++) {
-        _scrollAgain = false;
-        if (!mounted || !_scroll.hasClients) return;
-        final p = _scroll.position;
-        final target = p.maxScrollExtent;
-        final gap = target - p.pixels;
-        if (gap.abs() < 0.5 && !_scrollAgain) return;
-        if (context.reduceMotion || gap > 1600 || gap < 0) {
-          p.jumpTo(target);
-          // A lazy list learns its true end once the last entries are laid out.
-          await WidgetsBinding.instance.endOfFrame;
-        } else {
-          await p.animateTo(
-            target,
-            duration: ClMotion.standard,
-            curve: ClCurves.quick,
-          );
-        }
+    if (!mounted || !_scroll.hasClients) return;
+    final p = _scroll.position;
+    if (p.pixels.abs() >= 0.5) {
+      if (context.reduceMotion || p.pixels > 1600 || p.pixels < 0) {
+        p.jumpTo(0);
+      } else {
+        await p.animateTo(
+          0,
+          duration: ClMotion.standard,
+          curve: ClCurves.quick,
+        );
       }
-    } finally {
-      _scrolling = false;
-      if (mounted) _atBottom = true;
-      if (mounted && _unseen) setState(() => _unseen = false);
     }
+    if (!mounted) return;
+    _atBottom = true;
+    if (_unseen) setState(() => _unseen = false);
   }
 
   void _afterBuild({required bool freshLumi}) {
@@ -266,6 +266,12 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
         unawaited(_toBottom());
       } else if (freshLumi && !_unseen) {
         setState(() => _unseen = true);
+      }
+      // A thread shorter than the screen (or scrolled near its top) reads the page before it.
+      final p = _scroll.position;
+      if (p.hasContentDimensions &&
+          p.maxScrollExtent - p.pixels < _olderReach) {
+        _loadOlder();
       }
     });
   }
@@ -694,6 +700,8 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
             onPhoto: onPhoto,
           ),
         ),
+      if (chat.loadingOlder || chat.olderFailed)
+        _Entry('older', _Side.note, _OlderRow(chat: chat, ctl: ctl)),
       ...view.entries(context),
     ];
     // Entrances: nothing animates while a thread is being restored or right after it opened
@@ -702,6 +710,11 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
       _primed = !chat.restoring;
       _seen.addAll(entries.map((e) => e.key));
     }
+    // An older page lands above what was there: history too, so it appears at once.
+    final firstSeen = entries.indexWhere(
+      (e) => e.key != 'older' && _seen.contains(e.key),
+    );
+    if (firstSeen > 0) _seen.addAll(entries.take(firstSeen).map((e) => e.key));
     final fresh = {
       for (final e in entries)
         if (!_seen.contains(e.key)) e.key,
@@ -712,7 +725,8 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
         (e) => fresh.contains(e.key) && e.side != _Side.me,
       ),
     );
-    final items = _layout(entries, fresh);
+    // Newest first for the reversed list.
+    final items = _layout(entries, fresh).reversed.toList();
     final index = {for (final (i, e) in items.indexed) e.key: i};
     final voiceOk = mode == ComposerMode.open && chat.answering == null;
     return Scaffold(
@@ -788,22 +802,29 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
                       // A tap on the thread (outside a control) puts the keyboard away.
                       behavior: HitTestBehavior.translucent,
                       onTap: () => FocusScope.of(context).unfocus(),
-                      child: ListView.builder(
-                        key: const ValueKey('as.thread'),
-                        controller: _scroll,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        keyboardDismissBehavior:
-                            ScrollViewKeyboardDismissBehavior.onDrag,
-                        padding: const EdgeInsets.fromLTRB(
-                          ClSpace.s4,
-                          ClSpace.s2,
-                          ClSpace.s4,
-                          ClSpace.s4,
+                      // Reversed (the newest at offset 0) and shrink-wrapped to the top, so a
+                      // short thread still reads from the top of the screen.
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: ListView.builder(
+                          key: const ValueKey('as.thread'),
+                          controller: _scroll,
+                          reverse: true,
+                          shrinkWrap: true,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          padding: const EdgeInsets.fromLTRB(
+                            ClSpace.s4,
+                            ClSpace.s2,
+                            ClSpace.s4,
+                            ClSpace.s4,
+                          ),
+                          itemCount: items.length,
+                          findChildIndexCallback: (k) =>
+                              k is ValueKey<String> ? index[k.value] : null,
+                          itemBuilder: (_, i) => items[i].widget,
                         ),
-                        itemCount: items.length,
-                        findChildIndexCallback: (k) =>
-                            k is ValueKey<String> ? index[k.value] : null,
-                        itemBuilder: (_, i) => items[i].widget,
                       ),
                     ),
                   ),
@@ -1010,9 +1031,58 @@ class _ThreadView {
 
   String? _time(DateTime? at) => at == null ? null : hm(at, zone);
 
+  /// A pause this long (or a new day) since the task before puts the time above the next one.
+  static const _pause = Duration(minutes: 10);
+
+  /// When the last task so far ended (its last message).
+  DateTime? _lastAt;
+
+  /// "Hôm nay · 14:20" above what was said at [at]: the first of the thread, after a pause, or
+  /// on another day than the task before. Keyed after the task's first entry, so the line my
+  /// unsent words had stays put when they become the task.
+  _Entry? _when(BuildContext context, String firstKey, DateTime? at) {
+    if (at == null) return null;
+    final before = _lastAt;
+    if (before != null && at.difference(before) < _pause) {
+      final a = inBabyZone(zone, before);
+      final b = inBabyZone(zone, at);
+      if (a.year == b.year && a.month == b.month && a.day == b.day) return null;
+    }
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    return _Entry(
+      '$firstKey:when',
+      _Side.note,
+      Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 2),
+        child: AsDayDivider(
+          label: l10n.asThreadWhen(
+            relativeDay(l10n, locale, at, zone, now),
+            hm(at, zone),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static DateTime? _startOf(TaskThread t) =>
+      t.snapshot?.task.createdAt ??
+      t.snapshot?.messages.map((m) => m.createdAt).nonNulls.firstOrNull;
+
+  static DateTime? _endOf(TaskThread t) {
+    DateTime? last;
+    for (final m in t.snapshot?.messages ?? const <AssistantMessage>[]) {
+      if (m.createdAt case final at? when last == null || at.isAfter(last)) {
+        last = at;
+      }
+    }
+    return last ?? _startOf(t);
+  }
+
   List<_Entry> entries(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     _typingKeyUsed = false;
+    _lastAt = null;
     final out = <_Entry>[];
     if (chat.loadFailed) {
       out.add(
@@ -1036,7 +1106,12 @@ class _ThreadView {
       if (chat.resumed && i == chat.threads.length - 1) {
         out.add(_Entry('resumed', _Side.note, _resumedBanner(context)));
       }
+      final first = t.requestId == null
+          ? 't:${t.taskId}:u0'
+          : 'u:${t.requestId}';
+      if (_when(context, first, _startOf(t)) case final line?) out.add(line);
       out.addAll(_threadEntries(context, t));
+      _lastAt = _endOf(t) ?? _lastAt;
     }
     if (chat.resumed && chat.threads.isNotEmpty) {
       out.add(
@@ -1051,6 +1126,9 @@ class _ThreadView {
       final failed =
           block == ChatBlockKind.failure || block == ChatBlockKind.generic;
       final offline = block == ChatBlockKind.offline;
+      if (_when(context, 'u:${kept.requestId}', kept.at) case final line?) {
+        out.add(line);
+      }
       out.add(
         _Entry(
           'u:${kept.requestId}',
@@ -1082,7 +1160,7 @@ class _ThreadView {
           ),
         ),
       );
-      if (chat.sending) out.add(_typing(context, 'send', l10n.asThinking));
+      // "Lumi đang soạn…" only once the words have gone: the task's own state then shows it.
     }
     if (chat.photo case final photo?) {
       out.addAll(
@@ -1338,7 +1416,6 @@ class _ThreadView {
         _many('t:$id:fu', _Side.lumi, _followUp(context, t, task.care!)),
       );
     }
-    final answering = chat.choosing?.startsWith('${task.id}/') ?? false;
     switch (task.state) {
       case TaskState.received ||
           TaskState.uploading ||
@@ -1398,7 +1475,8 @@ class _ThreadView {
           ),
         );
       case TaskState.awaitingClarification || TaskState.ready:
-        if (answering) out.add(_typing(context, id, l10n.asThinking));
+        // An answer on its way shows as my bubble "Đang gửi…"; Lumi types once it arrived.
+        break;
     }
     if (t.photo && !task.state.working) {
       final forExpense =
@@ -3064,6 +3142,58 @@ class _SourceSummary extends ConsumerWidget {
       onOpenSource: onOpenSource,
       bottleFeeds: feeds?.bottle,
       breastFeeds: feeds?.breast,
+    );
+  }
+}
+
+/// Above the thread: a small spinner while the page before it loads, or why it did not with
+/// "Thử lại" (nothing asks again by itself after a failure).
+class _OlderRow extends StatelessWidget {
+  const _OlderRow({required this.chat, required this.ctl});
+  final ChatState chat;
+  final AssistantChat ctl;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    if (!chat.olderFailed) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: ClSpace.s2),
+        child: Center(
+          child: SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+          ),
+        ),
+      );
+    }
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 4,
+      children: [
+        Text(
+          l10n.asOlderFailed,
+          style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+        ),
+        ClPressable(
+          onPressed: () => unawaited(ctl.loadOlder()),
+          semanticLabel: l10n.asRetry,
+          minSize: const Size(0, 32),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+            child: Text(
+              l10n.asRetry,
+              style: cl.text.caption.copyWith(
+                color: cl.colors.mintText,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

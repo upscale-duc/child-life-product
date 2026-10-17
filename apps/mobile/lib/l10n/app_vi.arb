@@ -23196,6 +23196,22 @@
       }
     }
   },
+  "asThreadWhen": "{day} · {time}",
+  "@asThreadWhen": {
+    "description": "Chat: the line above a task when the thread starts, a day changes or after a pause (\"Hôm nay · 14:20\"). Chat UI rework 2026-10-17. VI and EN are engineering drafts (no frame draws this state) for owner review.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "asOlderFailed": "Chưa tải được tin nhắn cũ hơn.",
+  "@asOlderFailed": {
+    "description": "Chat: scrolling up could not load the earlier messages (with \"Thử lại\"). Chat UI rework 2026-10-17. VI and EN are engineering drafts (no frame draws this state) for owner review."
+  },
   "asSpanLine": "{start} – {end} · {duration}",
   "@asSpanLine": {
     "description": "A sleep with linked times (\"21:00 – 06:00 · 9 giờ\", the en dash of the draft cards). Chat rework 2026-10-15. VI and EN are engineering drafts (no frame draws this state) for owner review.",

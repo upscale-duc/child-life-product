@@ -145,7 +145,7 @@ AssistantEvent _event(String taskId, int seq, String type) => AssistantEvent(
 
 void main() {
   group('conversation feel', () {
-    testWidgets('optimistic send: my bubble and "Lumi đang soạn…" at once', (
+    testWidgets('optimistic send: my bubble at once, Lumi types once it went', (
       tester,
     ) async {
       final repo = FakeAssistantRepository()..startGate = Completer<void>();
@@ -154,10 +154,11 @@ void main() {
       await _type(tester, said);
       await tester.tap(find.bySemanticsLabel('Gửi').last);
       await tester.pump();
-      // Before any answer: the words are mine on screen, the field is clear, Lumi is typing.
+      // Before it went: the words are mine on screen, the field is clear, "Đang gửi…" only
+      // (owner feedback 2026-10-17: Lumi does not type before the message is sent).
       expect(_text(said), findsOneWidget);
       expect(_text('Đang gửi…'), findsOneWidget);
-      expect(_text('Lumi đang soạn…'), findsOneWidget);
+      expect(_text('Lumi đang soạn…'), findsNothing);
       expect(_field(tester).controller!.text, isEmpty);
       // A second tap cannot send twice.
       expect(repo.named('startTask'), hasLength(1));
@@ -170,6 +171,32 @@ void main() {
       expect(_text('Cữ bú bình'), findsOneWidget);
       // Lumi's run starts with her name.
       expect(find.byType(AsLumiHeader), findsOneWidget);
+    });
+
+    testWidgets('"Lumi đang soạn…" shows once the task is queued', (
+      tester,
+    ) async {
+      const said = 'Hôm nay con bú thế nào?';
+      final repo = FakeAssistantRepository()
+        ..startGate = Completer<void>()
+        ..startAnswer = (_) => envelope(
+          snapshotWith(
+            task: taskJson(state: 'queued'),
+            messages: [userMessage(said)],
+          ),
+        );
+      await _pump(tester, repo: repo);
+      await _type(tester, said);
+      await tester.tap(find.bySemanticsLabel('Gửi').last);
+      await tester.pump();
+      expect(_text('Đang gửi…'), findsOneWidget);
+      expect(_text('Lumi đang soạn…'), findsNothing);
+      repo.startGate!.complete();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(_text('Đang gửi…'), findsNothing);
+      expect(_text('Lumi đang soạn…'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
     });
 
     testWidgets('a long press copies, a tap shows the time', (tester) async {
@@ -220,9 +247,10 @@ void main() {
         tasks: {for (final id in ids) id: _chatty(id)},
       );
       await _pump(tester, repo: repo, prefs: _thread(ids));
+      // The thread is reversed: offset 0 is the newest message, where it opens.
       var p = _position(tester);
       expect(p.maxScrollExtent, greaterThan(300));
-      expect(p.pixels, closeTo(p.maxScrollExtent, 1));
+      expect(p.pixels, closeTo(0, 1));
       // Reading further up: a new answer does not move the thread; the pill appears.
       await tester.drag(
         find.byKey(const ValueKey('as.thread')),
@@ -230,7 +258,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       final reading = _position(tester).pixels;
-      expect(reading, lessThan(p.maxScrollExtent - 100));
+      expect(reading, greaterThan(100));
       repo.tasks[ids.last] = _chatty(ids.last, more: true);
       repo.push(
         ids.last,
@@ -243,11 +271,10 @@ void main() {
       await tester.tap(_text('Tin mới'));
       await tester.pumpAndSettle();
       p = _position(tester);
-      expect(p.pixels, closeTo(p.maxScrollExtent, 1));
+      expect(p.pixels, closeTo(0, 1));
       expect(_text('Tin mới'), findsNothing);
       expect(_text('Thêm một tin nhắn mới của Lumi.'), findsOneWidget);
-      // At the bottom, new content scrolls into view by itself.
-      final before = p.maxScrollExtent;
+      // At the bottom, new content is in view by itself.
       repo.tasks[ids.first] = _chatty(ids.first, more: true);
       repo.tasks[ids.last] = snapshotWith(
         task: taskJson(id: ids.last),
@@ -267,8 +294,8 @@ void main() {
       );
       await tester.pumpAndSettle();
       p = _position(tester);
-      expect(p.maxScrollExtent, greaterThan(before));
-      expect(p.pixels, closeTo(p.maxScrollExtent, 1));
+      expect(p.pixels, closeTo(0, 1));
+      expect(_text('Và một tin nữa ở cuối.'), findsOneWidget);
       expect(_text('Tin mới'), findsNothing);
     });
 
@@ -369,7 +396,8 @@ void main() {
       expect(repo.named('quoteTask'), isEmpty);
       expect(_text('21:30'), findsOneWidget);
       expect(_text('Khác…'), findsNothing);
-      expect(_text('Lumi đang soạn…'), findsOneWidget);
+      // Lumi types once the answer went (not while it is on its way).
+      expect(_text('Lumi đang soạn…'), findsNothing);
       // The server's message takes the same place (one bubble), the task goes on.
       repo.tasks[taskA] = snapshotWith(
         task: taskJson(state: 'queued', version: 4),
@@ -411,7 +439,8 @@ void main() {
       FakeAssistantRepository repo,
     ) async {
       await _pump(tester, repo: repo, prefs: _thread([taskA]));
-      await tester.tap(_text('Sửa').last);
+      // The thread is reversed (newest first in the tree): `.first` is the bottom one.
+      await tester.tap(_text('Sửa').first);
       await tester.pumpAndSettle();
       expect(_text('Sửa giấc ngủ'), findsOneWidget);
     }
@@ -501,7 +530,8 @@ void main() {
         patchAnswer: (args) => bottleDraftJson(ml: 150, revision: 2),
       );
       await _pump(tester, repo: repo, prefs: _thread([taskA]));
-      await tester.tap(_text('Sửa').first);
+      // The thread is reversed (newest first in the tree): `.last` is the top one.
+      await tester.tap(_text('Sửa').last);
       await tester.pumpAndSettle();
       await tester.tap(find.bySemanticsLabel('Thêm 10 ml'));
       await tester.pump();
@@ -513,6 +543,100 @@ void main() {
           repo.named('patchDraft').single.args['payload']!
               as Map<String, Object?>;
       expect(payload['amountMl'], 150);
+    });
+  });
+
+  group('time and older pages', () {
+    /// [n] tasks, each a question and an answer with conversation-wide sequences.
+    List<Map<String, Object?>> history(List<String> ids) => [
+      for (final (i, id) in ids.indexed) ...[
+        {
+          ...userMessage('Câu hỏi $id', taskId: id),
+          'id': 'mu$i',
+          'sequence': 2 * i + 1,
+        },
+        {
+          ...assistantMessage([textPart('Trả lời $id')], taskId: id),
+          'id': 'ma$i',
+          'sequence': 2 * i + 2,
+        },
+      ],
+    ].reversed.toList();
+
+    Future<void> toTop(WidgetTester tester) async {
+      for (var i = 0; i < 6; i++) {
+        await tester.drag(
+          find.byKey(const ValueKey('as.thread')),
+          const Offset(0, 2000),
+        );
+        await tester.pumpAndSettle();
+      }
+    }
+
+    testWidgets('the time of a task sits above it', (tester) async {
+      final repo = FakeAssistantRepository(tasks: {taskA: batchSnapshot()});
+      await _pump(tester, repo: repo, prefs: _thread([taskA]));
+      expect(_text('Hôm nay · 14:20'), findsOneWidget);
+    });
+
+    testWidgets('scrolling up loads the tasks before the thread', (
+      tester,
+    ) async {
+      final older = [for (var i = 1; i <= 3; i++) _task(i)];
+      final shown = [
+        for (var i = 4; i <= 13; i++) 'tk_${'x$i' * 18}'.substring(0, 35),
+      ];
+      final all = [...older, ...shown];
+      final repo = FakeAssistantRepository(
+        tasks: {for (final id in all) id: _chatty(id)},
+      )..messagesPage = (cursor) => {'items': history(all), 'nextCursor': null};
+      // The phone keeps the last page of ten: there may be more before it.
+      await _pump(tester, repo: repo, prefs: _thread(shown));
+      await toTop(tester);
+      expect(repo.named(AssistantCallables.history), hasLength(1));
+      expect(
+        _text(
+          'Câu hỏi số ${older.first} về giấc ngủ, cữ bú và mọi thứ của bé hôm nay nhé.',
+        ),
+        findsOneWidget,
+      );
+      // Nothing more before it: no second history call however far up.
+      await toTop(tester);
+      expect(repo.named(AssistantCallables.history), hasLength(1));
+    });
+
+    testWidgets('an older page that fails says so; "Thử lại" loads it', (
+      tester,
+    ) async {
+      final older = [_task(1)];
+      final shown = [
+        for (var i = 4; i <= 13; i++) 'tk_${'x$i' * 18}'.substring(0, 35),
+      ];
+      final all = [...older, ...shown];
+      final repo = FakeAssistantRepository(
+        tasks: {for (final id in all) id: _chatty(id)},
+      )..messagesPage = (cursor) => {'items': history(all), 'nextCursor': null};
+      repo.error = {
+        AssistantCallables.history: const AssistantException('unavailable'),
+      };
+      await _pump(tester, repo: repo, prefs: _thread(shown));
+      await toTop(tester);
+      expect(_text('Chưa tải được tin nhắn cũ hơn.'), findsOneWidget);
+      // It does not ask again by itself.
+      final calls = repo.named(AssistantCallables.history).length;
+      await toTop(tester);
+      expect(repo.named(AssistantCallables.history), hasLength(calls));
+      repo.error = null;
+      await tester.tap(_text('Thử lại'));
+      await tester.pumpAndSettle();
+      await toTop(tester);
+      expect(_text('Chưa tải được tin nhắn cũ hơn.'), findsNothing);
+      expect(
+        _text(
+          'Câu hỏi số ${older.first} về giấc ngủ, cữ bú và mọi thứ của bé hôm nay nhé.',
+        ),
+        findsOneWidget,
+      );
     });
   });
 
@@ -545,6 +669,8 @@ void main() {
           ),
         );
         expect(moving, reduce ? findsNothing : findsOneWidget);
+        // The time line above it enters first: the bubble starts a stagger later.
+        await tester.pump(const Duration(milliseconds: 100));
         await tester.pump(const Duration(milliseconds: 600));
         expect(fade.opacity.value, 1);
         repo.startGate!.complete();
@@ -747,9 +873,10 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
-    await tester.ensureVisible(_text('Sửa').last);
+    // The thread is reversed (newest first in the tree): `.first` is the bottom one.
+    await tester.ensureVisible(_text('Sửa').first);
     await tester.pumpAndSettle();
-    await tester.tap(_text('Sửa').last);
+    await tester.tap(_text('Sửa').first);
     await tester.pumpAndSettle();
     expect(_text('Sửa giấc ngủ'), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('as.edit.start')));

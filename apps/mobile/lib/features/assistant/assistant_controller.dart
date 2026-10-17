@@ -210,6 +210,9 @@ enum PhotoPick { ok, canceled, denied, failed, busy }
 /// A clarification answer on its way (shown as my bubble until the server's message arrives).
 typedef PendingAnswer = ({String taskId, String text, int after});
 
+/// A task's snapshot as the thread asked for it (`gone`: I may no longer read it).
+typedef _Fetched = ({TaskSnapshot? snapshot, bool gone, bool failed});
+
 /// What a person's action came to, for the toast the screen shows.
 enum ActionOutcome { ok, partial, offline, stale, failed, nothing }
 
@@ -235,6 +238,9 @@ class ChatState {
     this.acknowledged = const {},
     this.busy = const {},
     this.pendingAnswer,
+    this.hasOlder = false,
+    this.loadingOlder = false,
+    this.olderFailed = false,
   });
 
   final AssistantScope scope;
@@ -276,6 +282,13 @@ class ChatState {
 
   /// The answer just chosen or typed for a question, until the task's own message shows it.
   final PendingAnswer? pendingAnswer;
+
+  /// Earlier tasks of the conversation are not in [threads] yet (scrolling up loads them).
+  final bool hasOlder;
+  final bool loadingOlder;
+
+  /// The last scroll up could not load them ("Thử lại" instead of asking again by itself).
+  final bool olderFailed;
 
   bool get empty =>
       threads.isEmpty &&
@@ -323,6 +336,9 @@ class ChatState {
     Set<String>? busy,
     PendingAnswer? pendingAnswer,
     bool clearPendingAnswer = false,
+    bool? hasOlder,
+    bool? loadingOlder,
+    bool? olderFailed,
   }) => ChatState(
     scope: scope,
     conversationId: clearConversation
@@ -347,6 +363,9 @@ class ChatState {
     pendingAnswer: clearPendingAnswer
         ? null
         : (pendingAnswer ?? this.pendingAnswer),
+    hasOlder: hasOlder ?? this.hasOlder,
+    loadingOlder: loadingOlder ?? this.loadingOlder,
+    olderFailed: olderFailed ?? this.olderFailed,
   );
 }
 
@@ -381,6 +400,16 @@ class AssistantChat extends Notifier<ChatState> {
   final _refreshing = <String>{};
   String _locale = 'vi';
   var _opened = false;
+
+  /// Tasks a page of the thread shows (opening, then each scroll up); the phone keeps as many.
+  static const _page = 10;
+
+  /// Earlier tasks of the conversation, oldest first: known from the server's history and not
+  /// in the thread yet; [_olderCursor] reads further back, [_olderAsked] once the first page
+  /// was read (a thread restored from this phone has not asked yet).
+  final _older = <String>[];
+  String? _olderCursor;
+  var _olderAsked = false;
 
   // Read once in build: a call that outlives the chat (closed mid-request) still finishes
   // without touching a disposed ref, and its state is dropped.
@@ -453,12 +482,15 @@ class AssistantChat extends Notifier<ChatState> {
         (role == MemberRole.coParent || role == MemberRole.caregiver);
     final kept = _store.kept(_local);
     final taskIds = _store.taskIds(_local);
+    final conversationId = _store.conversation(_local);
     return ChatState(
       scope: scope,
-      conversationId: _store.conversation(_local),
+      conversationId: conversationId,
       threads: [for (final id in taskIds) TaskThread(taskId: id)],
       kept: kept,
       restoring: taskIds.isNotEmpty,
+      // The phone keeps the last page only: a full one may have more before it.
+      hasOlder: conversationId != null && taskIds.length >= _page,
       block: switch (kept?.reason) {
         null => null,
         KeptReason.offline => const ChatBlock(ChatBlockKind.offline),
@@ -501,28 +533,128 @@ class AssistantChat extends Notifier<ChatState> {
     [for (final t in state.threads) t.taskId],
   );
 
+  /// One task's snapshot: `gone` when I may no longer read it (left the family, deleted).
+  Future<_Fetched> _fetch(String taskId) async {
+    try {
+      final s = await _repo.task(taskId, locale: _locale);
+      return (snapshot: s, gone: false, failed: false);
+    } on AssistantException catch (e) {
+      final gone =
+          e.reason == AssistantReason.notMember ||
+          e.code == 'not-found' ||
+          e.code == 'permission-denied';
+      return (snapshot: null, gone: gone, failed: !gone);
+    } on Object {
+      return (snapshot: null, gone: false, failed: true);
+    }
+  }
+
   Future<void> _restore() async {
     state = state.copyWith(restoring: true, loadFailed: false);
+    // Asked together and shown together: the thread opens in one piece, it does not grow (and
+    // scroll) task by task.
+    final ids = [for (final t in state.threads) t.taskId];
+    final got = await Future.wait(ids.map(_fetch));
     var failed = false;
-    for (final t in [...state.threads]) {
-      try {
-        final s = await _repo.task(t.taskId, locale: _locale);
-        if (s != null) _putSnapshot(s);
-        _watch(t.taskId);
-      } on AssistantException catch (e) {
-        // A task I may no longer read (left the family, deleted) leaves the thread.
-        if (e.reason == AssistantReason.notMember ||
-            e.code == 'not-found' ||
-            e.code == 'permission-denied') {
-          _dropThread(t.taskId);
-        } else {
-          failed = true;
-        }
-      } on Object {
-        failed = true;
+    for (final (i, id) in ids.indexed) {
+      final f = got[i];
+      if (f.gone) {
+        // A task I may no longer read leaves the thread.
+        _dropThread(id);
+      } else if (state.thread(id) != null) {
+        if (f.snapshot case final s?) _putSnapshot(s);
+        if (f.failed) failed = true;
+        _watch(id);
       }
     }
     state = state.copyWith(restoring: false, loadFailed: failed);
+  }
+
+  /// Forgets what is known before the thread ([asked]: nothing is, e.g. a new conversation).
+  void _resetOlder({required bool asked}) {
+    _olderGen++;
+    _older.clear();
+    _olderCursor = null;
+    _olderAsked = asked;
+  }
+
+  var _olderGen = 0;
+
+  /// Scrolling up: the page of tasks before the first one in the thread, from the server's
+  /// history (newest first, read back as far as a page needs). Reading history costs nothing.
+  Future<void> loadOlder() async {
+    final conversationId = state.conversationId;
+    if (!state.hasOlder ||
+        state.loadingOlder ||
+        state.restoring ||
+        conversationId == null) {
+      return;
+    }
+    final gen = _olderGen;
+    state = state.copyWith(loadingOlder: true, olderFailed: false);
+    try {
+      // A task's messages may span history pages: a few pages at most per scroll.
+      for (
+        var i = 0;
+        i < 4 &&
+            _older.length < _page &&
+            (!_olderAsked || _olderCursor != null);
+        i++
+      ) {
+        final page = await _repo.messages(
+          state.scope.babyId,
+          conversationId,
+          locale: _locale,
+          cursor: _olderCursor,
+        );
+        if (gen != _olderGen) return;
+        _olderAsked = true;
+        _olderCursor = page.nextCursor;
+        final known = {for (final t in state.threads) t.taskId, ..._older};
+        final newest = [...page.items]
+          ..sort((a, b) => b.sequence.compareTo(a.sequence));
+        final earlier = <String>[];
+        for (final m in newest) {
+          if (m.taskId case final id?
+              when !known.contains(id) && !earlier.contains(id)) {
+            earlier.add(id);
+          }
+        }
+        _older.insertAll(0, earlier.reversed);
+      }
+      final batch = _older.length > _page
+          ? _older.sublist(_older.length - _page)
+          : [..._older];
+      _older.removeRange(_older.length - batch.length, _older.length);
+      final got = await Future.wait(batch.map(_fetch));
+      if (gen != _olderGen) return;
+      if (got.any((f) => f.failed)) {
+        _older.addAll(batch);
+        state = state.copyWith(loadingOlder: false, olderFailed: true);
+        return;
+      }
+      final known = {for (final t in state.threads) t.taskId};
+      final earlier = [
+        for (final (i, id) in batch.indexed)
+          if (!got[i].gone && !known.contains(id))
+            TaskThread(taskId: id, snapshot: got[i].snapshot),
+      ];
+      state = state.copyWith(
+        threads: [...earlier, ...state.threads],
+        loadingOlder: false,
+        hasOlder: _older.isNotEmpty || _olderCursor != null,
+      );
+      for (final t in earlier) {
+        if (t.snapshot case final s?) {
+          _cursors.putIfAbsent(t.taskId, EventCursor.new).accept(s.events);
+        }
+        _watch(t.taskId);
+      }
+    } on Object {
+      if (gen == _olderGen) {
+        state = state.copyWith(loadingOlder: false, olderFailed: true);
+      }
+    }
   }
 
   /// "Thử lại" on a thread that could not be loaded.
@@ -537,6 +669,7 @@ class AssistantChat extends Notifier<ChatState> {
         ? [for (final t in state.threads) t.taskId]
         : const <String>[];
     if (!keepLocal) _closeAll();
+    _resetOlder(asked: false);
     state = state.copyWith(
       conversationId: quiet && state.conversationId == null
           ? null
@@ -545,6 +678,8 @@ class AssistantChat extends Notifier<ChatState> {
       restoring: !quiet || local.isNotEmpty,
       loadFailed: false,
       clearBlock: !keepLocal,
+      loadingOlder: false,
+      olderFailed: false,
     );
     try {
       final page = await _repo.messages(
@@ -558,12 +693,16 @@ class AssistantChat extends Notifier<ChatState> {
       for (final m in ordered) {
         if (m.taskId case final id? when !ids.contains(id)) ids.add(id);
       }
-      final last = ids.length > 10 ? ids.sublist(ids.length - 10) : ids;
+      final last = ids.length > _page ? ids.sublist(ids.length - _page) : ids;
       final known = {for (final t in state.threads) t.taskId: t};
       if (ordered.isNotEmpty) {
         state = state.copyWith(conversationId: conversationId);
       }
+      _older.addAll(ids.take(ids.length - last.length));
+      _olderCursor = page.nextCursor;
+      _olderAsked = true;
       state = state.copyWith(
+        hasOlder: _older.isNotEmpty || _olderCursor != null,
         threads: [
           for (final id in last) known[id] ?? TaskThread(taskId: id),
           for (final id in local)
@@ -581,7 +720,11 @@ class AssistantChat extends Notifier<ChatState> {
         state = state.copyWith(restoring: false);
         if (local.isNotEmpty) await _restore();
       } else {
-        state = state.copyWith(restoring: false, loadFailed: true);
+        state = state.copyWith(
+          restoring: false,
+          loadFailed: true,
+          hasOlder: false,
+        );
       }
     }
   }
@@ -589,7 +732,11 @@ class AssistantChat extends Notifier<ChatState> {
   /// "Mới": a new conversation in the same scope; the kept input stays.
   void newConversation() {
     _closeAll();
+    _resetOlder(asked: true);
     state = state.copyWith(
+      hasOlder: false,
+      loadingOlder: false,
+      olderFailed: false,
       clearConversation: true,
       threads: const [],
       clearBlock: true,
