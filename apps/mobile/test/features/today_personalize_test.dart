@@ -257,6 +257,104 @@ void main() {
     }
   });
 
+  group('Notifications after onboarding (D-077 #1)', () {
+    testWidgets('12 "Xong" asks for them too', (tester) async {
+      final (_, container) = await pumpRouted(
+        tester,
+        const TrackersScreen(),
+        overrides: [
+          babyRepositoryProvider.overrideWithValue(_FakeBabyRepository()),
+        ],
+      );
+      await tester.tap(find.text('Xong · 4 mục'));
+      await tester.pumpAndSettle();
+      expect(container.read(notificationsAfterOnboardingProvider), 'b_new');
+    });
+
+    for (final (name, rhythm, prefs) in [
+      ('joined by invite', true, personalized()),
+      ('created without the rollout', false, UserPreferences.defaults),
+    ]) {
+      testWidgets('$name: Hôm nay opens EN03 on its own', (tester) async {
+        final (visits, container) = await pumpRouted(
+          tester,
+          _today,
+          overrides: hnOverrides(
+            repo: StampingRhythmRepository(preferences: prefs),
+            rhythm: rhythm,
+            notifications: FakeReminderNotifications(on: false),
+          ),
+        );
+        if (!rhythm) {
+          container
+              .read(personalizeAfterSetupProvider.notifier)
+              .request(teddyId);
+        }
+        container
+            .read(notificationsAfterOnboardingProvider.notifier)
+            .request(teddyId);
+        await tester.pumpAndSettle();
+        expect(visits.map((v) => v.location), [TodayRoutes.notifications]);
+        expect(container.read(notificationsAfterOnboardingProvider), isNull);
+      });
+    }
+
+    for (final (name, on, asked) in [
+      ('already on', true, false),
+      ('asked before on this phone', false, true),
+    ]) {
+      testWidgets('not when $name', (tester) async {
+        final (visits, container) = await pumpRouted(
+          tester,
+          _today,
+          overrides: hnOverrides(
+            repo: StampingRhythmRepository(preferences: personalized()),
+            notifications: FakeReminderNotifications(on: on),
+          ),
+        );
+        if (asked) {
+          await container.read(notificationsAskedProvider.notifier).mark();
+        }
+        container
+            .read(notificationsAfterOnboardingProvider.notifier)
+            .request(teddyId);
+        await tester.pumpAndSettle();
+        expect(visits, isEmpty);
+      });
+    }
+
+    testWidgets('EN03 on its own: what every family gets, then the system', (
+      tester,
+    ) async {
+      final notifications = FakeReminderNotifications(on: false);
+      final (visits, container) = await pumpRouted(
+        tester,
+        const PersonalizeFlowScreen(notificationsOnly: true),
+        overrides: hnOverrides(
+          repo: StampingRhythmRepository(),
+          rhythm: false,
+          notifications: notifications,
+        ),
+      );
+      expect(find.text('Để Child Life nhắc bạn đúng lúc'), findsOneWidget);
+      expect(
+        find.text(
+          'Lịch tiêm, nhắc việc bạn tự đặt và những ngày đáng nhớ của con. '
+          'Không quảng cáo.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('“Hôm nay Teddy tròn 1 tháng.”'), findsOneWidget);
+      expect(find.text('Nhịp lớn lên'), findsNothing);
+      expect(find.text('Bỏ qua'), findsNothing);
+      await tester.tap(find.text('Bật thông báo'));
+      await tester.pumpAndSettle();
+      expect(notifications.requests, 1);
+      expect(container.read(notificationsAskedProvider), isTrue);
+      expect(visits.last.location, Routes.today);
+    });
+  });
+
   group('EN01 → EN02 → EN03', () {
     testWidgets('each step saves; only "Bật thông báo" asks the system', (
       tester,

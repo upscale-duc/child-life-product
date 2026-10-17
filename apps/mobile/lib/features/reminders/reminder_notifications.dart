@@ -26,6 +26,7 @@ import '../rhythm/rhythm_local.dart'
         rhythmEveningNotification,
         rhythmEveningPlanProvider,
         rhythmOfPayload,
+        rhythmPlansReadyProvider,
         rhythmStageNotification,
         rhythmStageReminderPlanProvider,
         rhythmWeekOfPayload,
@@ -290,6 +291,38 @@ final deviceRemindersProvider = Provider<List<Reminder>>((ref) {
   ];
 });
 
+/// Whether a stream or future the sync reads has answered (a value, even from the cache, or an
+/// error). Still loading means "not known yet", never "nothing".
+bool loadSettled(AsyncValue<Object?> v) => v.hasValue || v.hasError;
+
+/// Whether everything [deviceRemindersProvider] reads has answered. The sync cancels whatever
+/// it is not given, so it waits for this: a cold start that is suspended before Firestore
+/// answers (an iOS background launch draws one frame) must not cancel tomorrow's reminders.
+final deviceRemindersReadyProvider = Provider<bool>((ref) {
+  final session = ref.watch(sessionProvider);
+  if (session is SessionLoading) return false;
+  if (session is! SessionSignedIn) return true;
+  if (!loadSettled(ref.watch(deviceIdentityProvider))) return false;
+  final prefs = ref.watch(notificationPrefsProvider(session.user.uid));
+  if (!loadSettled(prefs)) return false;
+  if (prefs.value?.reminders == false) return true;
+  for (final m in session.active) {
+    if (m.role == MemberRole.relative) continue;
+    if (!loadSettled(ref.watch(remindersProvider(m.babyId)))) return false;
+    if (!loadSettled(ref.watch(babyProvider(m.babyId)))) return false;
+  }
+  return true;
+});
+
+/// Whether every source of this device's notifications has answered (reminders, milestone
+/// nudges, Nhịp lớn lên), so a sync may cancel what is no longer wanted.
+final notificationSourcesReadyProvider = Provider.autoDispose<bool>(
+  (ref) =>
+      ref.watch(deviceRemindersReadyProvider) &&
+      ref.watch(nudgePlanReadyProvider) &&
+      ref.watch(rhythmPlansReadyProvider),
+);
+
 /// Keeps this device's reminder notifications in step with Firestore — on start, on every
 /// change (create, edit, done, move, delete), when permission is granted and on sign-out (all
 /// cancelled) — and opens a reminder when its notification is tapped. Wraps the whole app.
@@ -484,6 +517,9 @@ class _ReminderNotificationSyncState
       do {
         _again = false;
         if (!mounted) return;
+        // Partial inputs would cancel what is still wanted (a 05:57 launch once cancelled a
+        // 09:00 "tròn 1 tháng", D-077 #2); the build runs this again once they answer.
+        if (!ref.read(notificationSourcesReadyProvider)) return;
         final l10n = AppLocalizations.of(context);
         final locale = Localizations.localeOf(context).toLanguageTag();
         final desired = _desired(l10n, locale);
@@ -512,7 +548,8 @@ class _ReminderNotificationSyncState
     ref.watch(rhythmStageReminderPlanProvider);
     ref.watch(rhythmEveningPlanProvider);
     ref.watch(rhythmWeeklyPlanProvider);
-    if (enabled == true) {
+    final ready = ref.watch(notificationSourcesReadyProvider);
+    if (enabled == true && ready) {
       WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_sync()));
     } else {
       _lastSignature = null;

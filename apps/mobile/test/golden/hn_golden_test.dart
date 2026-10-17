@@ -113,6 +113,17 @@ final _cases = <String, _Case>{
     },
     height: 812,
   ),
+  // EN03 on its own right after onboarding (D-077 #1): without the Nhịp lớn lên rollout.
+  'en03_after_onboarding': (
+    build: () => const PersonalizeFlowScreen(notificationsOnly: true),
+    overrides: () => hnOverrides(
+      repo: StampingRhythmRepository(),
+      rhythm: false,
+      notifications: FakeReminderNotifications(on: false),
+    ),
+    act: null,
+    height: 812,
+  ),
   // 559:57870 for someone who has not personalised (joined by invite, or skipped).
   'home_invite': (
     build: () => const Scaffold(body: TodayScreen()),

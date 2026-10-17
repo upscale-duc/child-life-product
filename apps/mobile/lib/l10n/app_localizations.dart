@@ -24948,6 +24948,30 @@ abstract class AppLocalizations {
   /// **'Thông báo chưa bật. Bạn có thể bật trong Cài đặt của máy.'**
   String get hnNotifDenied;
 
+  /// EN03 subtitle when it is shown on its own right after onboarding (nothing was picked in EN01). Engineering copy (D-077 #1).
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch tiêm, nhắc việc bạn tự đặt và những ngày đáng nhớ của con. Không quảng cáo.'**
+  String get hnNotifBodyAlone;
+
+  /// EN03 example row on its own after onboarding: the milestone nudges (D-068 #9).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày đáng nhớ'**
+  String get hnNotifMilestone;
+
+  /// When the milestone nudge comes (D-068 #9).
+  ///
+  /// In vi, this message translates to:
+  /// **'09:00 đúng ngày'**
+  String get hnNotifMilestoneWhen;
+
+  /// Sample milestone nudge with the baby's nickname.
+  ///
+  /// In vi, this message translates to:
+  /// **'“Hôm nay {name} tròn 1 tháng.”'**
+  String hnNotifMilestoneSample(String name);
+
   /// Home invite card title (559:57870).
   ///
   /// In vi, this message translates to:

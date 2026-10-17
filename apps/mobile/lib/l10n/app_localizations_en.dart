@@ -15932,6 +15932,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Notifications are still off. You can turn them on in your phone\'s Settings.';
 
   @override
+  String get hnNotifBodyAlone =>
+      'Vaccine dates, the reminders you set and your little one\'s special days. No ads.';
+
+  @override
+  String get hnNotifMilestone => 'Special days';
+
+  @override
+  String get hnNotifMilestoneWhen => '09:00 on the day';
+
+  @override
+  String hnNotifMilestoneSample(String name) {
+    return '“$name is 1 month old today.”';
+  }
+
+  @override
   String get hnInviteTitle => 'Today, your family\'s way';
 
   @override

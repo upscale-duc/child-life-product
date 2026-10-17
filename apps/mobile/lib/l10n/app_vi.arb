@@ -22129,6 +22129,27 @@
   "@hnNotifDenied": {
     "description": "Toast when the system prompt was refused."
   },
+  "hnNotifBodyAlone": "Lịch tiêm, nhắc việc bạn tự đặt và những ngày đáng nhớ của con. Không quảng cáo.",
+  "@hnNotifBodyAlone": {
+    "description": "EN03 subtitle when it is shown on its own right after onboarding (nothing was picked in EN01). Engineering copy (D-077 #1)."
+  },
+  "hnNotifMilestone": "Ngày đáng nhớ",
+  "@hnNotifMilestone": {
+    "description": "EN03 example row on its own after onboarding: the milestone nudges (D-068 #9)."
+  },
+  "hnNotifMilestoneWhen": "09:00 đúng ngày",
+  "@hnNotifMilestoneWhen": {
+    "description": "When the milestone nudge comes (D-068 #9)."
+  },
+  "hnNotifMilestoneSample": "“Hôm nay {name} tròn 1 tháng.”",
+  "@hnNotifMilestoneSample": {
+    "description": "Sample milestone nudge with the baby's nickname.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "hnInviteTitle": "Hôm nay theo cách của nhà bạn",
   "@hnInviteTitle": {
     "description": "Home invite card title (559:57870)."

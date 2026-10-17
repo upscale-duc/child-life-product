@@ -9,7 +9,8 @@ import '../baby/baby_repository.dart';
 import '../care/care_repository.dart' show timerClockProvider;
 import '../home/home_shell.dart';
 import '../premium/premium_repository.dart';
-import '../reminders/reminder_notifications.dart' show LocalReminder;
+import '../reminders/reminder_notifications.dart'
+    show LocalReminder, loadSettled;
 import 'rhythm_access.dart';
 import 'rhythm_repository.dart';
 import 'rhythm_calc.dart';
@@ -165,6 +166,35 @@ List<({ReferenceStage stage, DateTime fireAt})> stageReminderPlan({
         ),
   ];
 }
+
+/// Whether everything the Nhịp lớn lên plans below read has answered (the selected baby only),
+/// so the reminder sync does not take "still loading" for "nothing to schedule".
+final rhythmPlansReadyProvider = Provider.autoDispose<bool>((ref) {
+  try {
+    final me = ref.watch(selectedMembershipProvider);
+    if (me == null) return true;
+    final caps = ref.watch(capabilitiesProvider(me.babyId));
+    if (!loadSettled(caps)) return false;
+    if (!(caps.value?.features.rhythm ?? false)) return true;
+    final reminders = ref.watch(rhythmRemindersProvider(me.uid));
+    final reads = <AsyncValue<Object?>>[
+      if (me.canViewBabyInfo && (reminders.stage || reminders.weekly))
+        ref.watch(rhythmProfileProvider(me.babyId)),
+      if (me.canViewBabyInfo && reminders.stage)
+        ref.watch(rhythmReferenceProvider),
+      if (reminders.evening || reminders.weekly)
+        ref.watch(userPreferencesProvider(me.uid)),
+      if (reminders.evening) ...[
+        ref.watch(checkInsProvider(me.babyId)),
+        ref.watch(babyProvider(me.babyId)),
+      ],
+    ];
+    return reads.every(loadSettled);
+  } on Object {
+    // Best effort, like the plans: a problem here never holds the other reminders back.
+    return true;
+  }
+});
 
 /// NL02c "Trước giai đoạn tham khảo · 3 ngày trước": the selected baby's stage reminders this
 /// phone should schedule, for the reminder sync (it cancels anything it is not given). Only for a

@@ -26,6 +26,8 @@ import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
+import '../today/today_personalize.dart'
+    show notificationsAfterOnboardingProvider;
 import 'family_heroes.dart';
 import 'family_labels.dart';
 import 'family_models.dart';
@@ -628,6 +630,10 @@ class _ConfirmJoinScreenState extends ConsumerState<ConfirmJoinScreen> {
           );
       await waitForMembership(container, babyId);
       container.read(selectedBabyIdProvider.notifier).select(babyId);
+      // Hôm nay then asks for notifications (EN03, lib/features/today/today_personalize.dart).
+      container
+          .read(notificationsAfterOnboardingProvider.notifier)
+          .request(babyId);
       if (mounted) context.go(Routes.today);
     } on FamilyException catch (e) {
       if (!mounted) return;

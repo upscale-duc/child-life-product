@@ -12,7 +12,8 @@ import '../baby/baby_repository.dart';
 import '../care/care_repository.dart' show timerClockProvider;
 import '../memories/memory_models.dart';
 import '../memories/memory_repository.dart';
-import '../reminders/reminder_notifications.dart' show LocalReminder;
+import '../reminders/reminder_notifications.dart'
+    show LocalReminder, loadSettled;
 import 'keepsake_access.dart';
 import 'keepsake_occasions.dart';
 
@@ -299,6 +300,33 @@ final nudgeBabiesProvider = Provider.autoDispose<List<NudgeBaby>>((ref) {
             media: ref.watch(mediaProvider((m.babyId, true))).value ?? const [],
           ),
   ];
+});
+
+/// Whether everything [nudgeBabiesProvider] reads has answered, so the reminder sync does not
+/// take "still loading" for "no nudges" and cancel the ones already scheduled.
+final nudgePlanReadyProvider = Provider.autoDispose<bool>((ref) {
+  try {
+    final session = ref.watch(sessionProvider);
+    if (session is SessionLoading) return false;
+    if (session is! SessionSignedIn) return true;
+    for (final m in session.active) {
+      if (m.role != MemberRole.coParent) continue;
+      final access = ref.watch(keepsakeAccessProvider(m.babyId));
+      if (!loadSettled(access)) return false;
+      if (!(access.value?.cards ?? false)) continue;
+      final profile = ref.watch(babyPrivateProfileProvider(m.babyId));
+      if (!loadSettled(profile)) return false;
+      if (profile.value?.dateOfBirth == null) continue;
+      if (!loadSettled(ref.watch(babyProvider(m.babyId))) ||
+          !loadSettled(ref.watch(mediaProvider((m.babyId, true))))) {
+        return false;
+      }
+    }
+    return true;
+  } on Object {
+    // Best effort: a nudge problem must never stop reminders from being scheduled.
+    return true;
+  }
 });
 
 /// The plan for this phone right now, for the reminder sync to schedule.

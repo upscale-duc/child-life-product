@@ -249,7 +249,10 @@ List<Override> familyOverrides({
     milestoneRepositoryProvider.overrideWithValue(
       milestones ?? FakeMilestoneRepository(),
     ),
-    if (!nudges) nudgeBabiesProvider.overrideWith((ref) => const []),
+    if (!nudges) ...[
+      nudgeBabiesProvider.overrideWith((ref) => const []),
+      nudgePlanReadyProvider.overrideWith((ref) => true),
+    ],
     // S11 account documents (no Firebase in widget tests).
     notificationPrefsProvider.overrideWith((ref, uid) => Stream.value(prefs)),
     notificationRepositoryProvider.overrideWithValue(

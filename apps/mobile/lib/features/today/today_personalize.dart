@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -33,10 +35,17 @@ import '../rhythm/rhythm_widgets.dart';
 /// `userPreferencesSchema`, `preferences.own`: every role), written through the Nhịp lớn lên
 /// repository. Offered only with the family's `rhythm` rollout: that is what reads the choices
 /// (the same gate as "Cá nhân hoá" in Tôi).
+///
+/// After onboarding on this phone (a baby created, or an invite accepted) the person is always
+/// asked for notifications (D-077 #1): EN03 inside the flow above, else EN03 on its own
+/// when this phone does not show them yet and has not asked before.
 
 abstract final class TodayRoutes {
   /// EN01–EN03, full screen above the tabs.
   static const personalize = '/personalize';
+
+  /// EN03 on its own, after onboarding.
+  static const notifications = '/personalize?only=notifications';
 }
 
 List<RouteBase> todayRoutes() => [
@@ -47,7 +56,9 @@ List<RouteBase> todayRoutes() => [
       fullscreenDialog: true,
       name: state.name ?? state.path,
       restorationId: state.pageKey.value,
-      child: const PersonalizeFlowScreen(),
+      child: PersonalizeFlowScreen(
+        notificationsOnly: state.uri.queryParameters['only'] == 'notifications',
+      ),
     ),
   ),
 ];
@@ -71,6 +82,37 @@ class PersonalizeAfterSetup extends Notifier<String?> {
 
   void request(String babyId) => state = babyId;
   void clear() => state = null;
+}
+
+/// The baby whose onboarding just ended on this phone (12 "Xong" or 15 "Tham gia"), until Hôm
+/// nay has asked for notifications. In memory only, like [personalizeAfterSetupProvider].
+final notificationsAfterOnboardingProvider =
+    NotifierProvider<NotificationsAfterOnboarding, String?>(
+      NotificationsAfterOnboarding.new,
+    );
+
+class NotificationsAfterOnboarding extends Notifier<String?> {
+  @override
+  String? build() => null;
+
+  void request(String babyId) => state = babyId;
+  void clear() => state = null;
+}
+
+/// EN03 on its own once onboarding is over, unless the flow just showed it, this phone already
+/// shows notifications, or it asked before (the system asks only once; 8d then links to
+/// Settings).
+Future<void> askNotificationsAfterOnboarding(
+  ProviderContainer container,
+  GoRouter router, {
+  bool sawPrompt = false,
+}) async {
+  if (sawPrompt) return;
+  final enabled = container.read(notificationsEnabledProvider.notifier);
+  await enabled.refresh();
+  if (container.read(notificationsEnabledProvider) ?? false) return;
+  if (container.read(notificationsAskedProvider)) return;
+  await router.push<bool>(TodayRoutes.notifications);
 }
 
 /// × on the Home invite: hidden for this person on this phone (keyed by uid, so another
@@ -107,15 +149,33 @@ class PersonalizeInviteHidden extends Notifier<bool> {
 
 /// Opens EN01 once Hôm nay shows the baby created on this phone, when the rollout offers it and
 /// the person has not made their choices yet (a second baby does not ask again: the choices
-/// are per person). Draws nothing.
+/// are per person); then, or instead, EN03 on its own after onboarding
+/// ([askNotificationsAfterOnboarding]). Draws nothing.
 class PersonalizeAfterSetupGate extends ConsumerWidget {
   const PersonalizeAfterSetupGate({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pending = ref.watch(personalizeAfterSetupProvider);
+    final notify = ref.watch(notificationsAfterOnboardingProvider);
     final me = ref.watch(selectedMembershipProvider);
-    if (pending == null || me == null || me.babyId != pending) {
+    if (me == null) return const SizedBox.shrink();
+    if (pending != me.babyId) {
+      // Joined by invite (or EN01 not due): only the notifications.
+      if (notify == me.babyId) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (ref.read(notificationsAfterOnboardingProvider) != notify) return;
+          ref.read(notificationsAfterOnboardingProvider.notifier).clear();
+          if (context.mounted) {
+            unawaited(
+              askNotificationsAfterOnboarding(
+                ProviderScope.containerOf(context, listen: false),
+                GoRouter.of(context),
+              ),
+            );
+          }
+        });
+      }
       return const SizedBox.shrink();
     }
     final caps = ref.watch(capabilitiesProvider(me.babyId));
@@ -127,11 +187,26 @@ class PersonalizeAfterSetupGate extends ConsumerWidget {
     }
     final open =
         offered && !hasPersonalized(prefs?.value ?? UserPreferences.defaults);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final notifier = ref.read(personalizeAfterSetupProvider.notifier);
       if (ref.read(personalizeAfterSetupProvider) != pending) return;
       notifier.clear();
-      if (open && context.mounted) context.push(TodayRoutes.personalize);
+      final ask = ref.read(notificationsAfterOnboardingProvider) == pending;
+      if (ask) ref.read(notificationsAfterOnboardingProvider.notifier).clear();
+      if (!context.mounted) return;
+      final container = ProviderScope.containerOf(context, listen: false);
+      final router = GoRouter.of(context);
+      // The flow answers whether it showed EN03.
+      final sawPrompt = open
+          ? await router.push<bool>(TodayRoutes.personalize) ?? false
+          : false;
+      if (ask) {
+        await askNotificationsAfterOnboarding(
+          container,
+          router,
+          sawPrompt: sawPrompt,
+        );
+      }
     });
     return const SizedBox.shrink();
   }
@@ -248,7 +323,10 @@ class PersonalizeInviteCard extends ConsumerWidget {
 /// "Bỏ qua" ends the flow keeping what was saved. EN03 is skipped when this phone already shows
 /// notifications; only "Bật thông báo" asks the system (the pre-permission pattern).
 class PersonalizeFlowScreen extends ConsumerStatefulWidget {
-  const PersonalizeFlowScreen({super.key});
+  const PersonalizeFlowScreen({this.notificationsOnly = false, super.key});
+
+  /// EN03 on its own, after onboarding ([askNotificationsAfterOnboarding]).
+  final bool notificationsOnly;
 
   @override
   ConsumerState<PersonalizeFlowScreen> createState() =>
@@ -257,7 +335,7 @@ class PersonalizeFlowScreen extends ConsumerStatefulWidget {
 
 class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
   static const _steps = 3;
-  int _step = 0;
+  late int _step = widget.notificationsOnly ? 2 : 0;
   Set<Interest>? _interests;
   UserPreferences? _draft;
   bool _busy = false;
@@ -288,7 +366,8 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
     final toaster = ClToaster.of(context);
     final router = GoRouter.of(context);
     if (router.canPop()) {
-      router.pop();
+      // Whether EN03 was shown, for [askNotificationsAfterOnboarding].
+      router.pop(_step == 2);
     } else {
       router.go(Routes.today);
     }
@@ -339,13 +418,15 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
           digestTime: () => stored?.digestTime ?? '20:30',
         );
 
-    final topBar = Row(
-      children: [
-        _StepBars(step: _step, count: _steps),
-        const Spacer(),
-        RhLink(label: l10n.rhSkip, muted: true, onTap: _leave),
-      ],
-    );
+    final topBar = widget.notificationsOnly
+        ? null
+        : Row(
+            children: [
+              _StepBars(step: _step, count: _steps),
+              const Spacer(),
+              RhLink(label: l10n.rhSkip, muted: true, onTap: _leave),
+            ],
+          );
 
     final (content, bottom) = switch (_step) {
       0 => (
@@ -397,7 +478,7 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
         ],
       ),
       _ => (
-        _notificationsStep(context),
+        _notificationsStep(context, name),
         [
           ClButton(
             label: l10n.hnNotifAllow,
@@ -424,8 +505,8 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
     };
 
     return PopScope(
-      // Back goes to the previous step; from EN01 it leaves.
-      canPop: _step == 0,
+      // Back goes to the previous step; from EN01 (or EN03 on its own) it leaves.
+      canPop: _step == 0 || widget.notificationsOnly,
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop && _step > 0) setState(() => _step--);
       },
@@ -528,9 +609,15 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
     ];
   }
 
-  List<Widget> _notificationsStep(BuildContext context) {
+  List<Widget> _notificationsStep(BuildContext context, String name) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
+    final alone = widget.notificationsOnly;
+    // On its own nothing was picked: the examples are what every family gets, plus Nhịp lớn lên
+    // with its rollout.
+    final rhythm =
+        !alone ||
+        personalizationOffered(ref.watch(selectedCapabilitiesProvider));
     Widget row(
       ClIcons icon,
       Color tint,
@@ -595,7 +682,7 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
       ),
       const SizedBox(height: ClSpace.s2),
       Text(
-        l10n.hnNotifBody,
+        alone ? l10n.hnNotifBodyAlone : l10n.hnNotifBody,
         style: cl.text.body.copyWith(color: cl.colors.inkMuted),
       ),
       const SizedBox(height: ClSpace.s4),
@@ -653,22 +740,34 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
               l10n.hnNotifVaccineWhen,
               l10n.hnNotifVaccineSample,
             ),
-            divider,
-            row(
-              ClIcons.clock,
-              cl.care.sleep.soft,
-              l10n.hnNotifRhythm,
-              l10n.hnNotifRhythmWhen,
-              l10n.hnNotifRhythmSample,
-            ),
-            divider,
-            row(
-              ClIcons.journal,
-              cl.colors.peachSoft,
-              l10n.hnNotifWeek,
-              l10n.hnNotifWeekWhen,
-              l10n.hnNotifWeekSample,
-            ),
+            if (alone) ...[
+              divider,
+              row(
+                ClIcons.cake,
+                cl.colors.sunshineSoft,
+                l10n.hnNotifMilestone,
+                l10n.hnNotifMilestoneWhen,
+                l10n.hnNotifMilestoneSample(name),
+              ),
+            ],
+            if (rhythm) ...[
+              divider,
+              row(
+                ClIcons.clock,
+                cl.care.sleep.soft,
+                l10n.hnNotifRhythm,
+                l10n.hnNotifRhythmWhen,
+                l10n.hnNotifRhythmSample,
+              ),
+              divider,
+              row(
+                ClIcons.journal,
+                cl.colors.peachSoft,
+                l10n.hnNotifWeek,
+                l10n.hnNotifWeekWhen,
+                l10n.hnNotifWeekSample,
+              ),
+            ],
           ],
         ),
       ),

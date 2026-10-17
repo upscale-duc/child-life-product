@@ -14933,6 +14933,21 @@ class AppLocalizationsVi extends AppLocalizations {
       'Thông báo chưa bật. Bạn có thể bật trong Cài đặt của máy.';
 
   @override
+  String get hnNotifBodyAlone =>
+      'Lịch tiêm, nhắc việc bạn tự đặt và những ngày đáng nhớ của con. Không quảng cáo.';
+
+  @override
+  String get hnNotifMilestone => 'Ngày đáng nhớ';
+
+  @override
+  String get hnNotifMilestoneWhen => '09:00 đúng ngày';
+
+  @override
+  String hnNotifMilestoneSample(String name) {
+    return '“Hôm nay $name tròn 1 tháng.”';
+  }
+
+  @override
   String get hnInviteTitle => 'Hôm nay theo cách của nhà bạn';
 
   @override

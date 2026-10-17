@@ -1,3 +1,11 @@
+import 'dart:async';
+
+import 'package:child_life/app/session.dart';
+import 'package:child_life/features/baby/baby_repository.dart';
+import 'package:child_life/features/me/me_repository.dart';
+import 'package:child_life/features/me/me_models.dart';
+import 'package:child_life/features/reminders/device_identity.dart';
+import 'package:child_life/features/reminders/reminder_repository.dart';
 import 'package:child_life/app/route_guard.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
 import 'package:child_life/core/widgets/cl_inputs.dart';
@@ -7,6 +15,7 @@ import 'package:child_life/features/reminders/reminder_notifications.dart';
 import 'package:child_life/features/reminders/reminder_screens.dart';
 import 'package:child_life/features/today/today_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/care_fixtures.dart';
@@ -393,6 +402,90 @@ void main() {
     });
   });
 
+  // ---------- A start before the sources answer (D-068 #9) ----------
+
+  group('notification sync waits for its sources', () {
+    test('reminders count as known only once Firestore answers', () async {
+      final pending = StreamController<List<Reminder>>();
+      addTearDown(pending.close);
+      final container = ProviderContainer(
+        overrides: [
+          sessionProvider.overrideWithValue(
+            SessionSignedIn(
+              user: FakeUser(uid: mai.uid),
+              memberships: [mai],
+            ),
+          ),
+          deviceIdentityProvider.overrideWith(
+            (ref) async => DeviceIdentity(id: testDeviceId, label: 'iPhone'),
+          ),
+          notificationPrefsProvider.overrideWith(
+            (ref, uid) => Stream.value(const NotificationPrefs()),
+          ),
+          babyProvider.overrideWith((ref, id) => Stream.value(teddy)),
+          remindersProvider.overrideWith((ref, id) => pending.stream),
+        ],
+      );
+      addTearDown(container.dispose);
+      container.listen(deviceRemindersReadyProvider, (_, _) {});
+      await pumpEventQueue();
+      expect(container.read(deviceRemindersReadyProvider), isFalse);
+      pending.add(const []);
+      await pumpEventQueue();
+      expect(container.read(deviceRemindersReadyProvider), isTrue);
+    });
+
+    test('signed out is known: everything is cancelled', () {
+      final container = ProviderContainer(
+        overrides: [
+          sessionProvider.overrideWithValue(const SessionSignedOut()),
+        ],
+      );
+      addTearDown(container.dispose);
+      expect(container.read(deviceRemindersReadyProvider), isTrue);
+    });
+
+    testWidgets(
+      'a cold start cancels nothing until the sources answer, then syncs',
+      (tester) async {
+        final notifications = FakeReminderNotifications();
+        // What an earlier run scheduled, e.g. 09:00 "Hôm nay Teddy tròn 1 tháng".
+        final earlier = [
+          LocalReminder(
+            id: 1,
+            fireAt: DateTime(2026, 10, 17, 9),
+            title: 'Hôm nay Teddy tròn 1 tháng 🎂',
+            body: '',
+            payload: '{}',
+          ),
+        ];
+        notifications.scheduled = earlier;
+        final (_, container) = await pumpRouted(
+          tester,
+          const ReminderNotificationSync(child: SizedBox()),
+          overrides: [
+            ...familyOverrides(
+              reminders: mockReminders(),
+              notifications: notifications,
+              now: careNow,
+            ),
+            notificationSourcesReadyProvider.overrideWith(
+              (ref) => ref.watch(_sourcesReady),
+            ),
+          ],
+        );
+        await tester.pumpAndSettle();
+        expect(notifications.scheduled, same(earlier));
+        container.read(_sourcesReady.notifier).set(true);
+        await tester.pumpAndSettle();
+        expect(notifications.scheduled.map((s) => s.title), [
+          'Tiêm 6 trong 1',
+          'Tái khám rốn',
+        ]);
+      },
+    );
+  });
+
   // ---------- D-075 #5: date-only (all day) and an assignee ----------
 
   group('all day and assignee: model (D-075 #5)', () {
@@ -722,4 +815,14 @@ void main() {
       },
     );
   });
+}
+
+/// Stands in for [notificationSourcesReadyProvider] so a test decides when the sources answer.
+final _sourcesReady = NotifierProvider<_SourcesReady, bool>(_SourcesReady.new);
+
+class _SourcesReady extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set(bool v) => state = v;
 }
