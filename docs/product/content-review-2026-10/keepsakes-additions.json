@@ -1,0 +1,905 @@
+{
+  "_about": {
+    "what": "Keepsake (Kỷ niệm) additions and text fixes proposed by the localisation review, 2026-10-16. Texts only: no layouts, no geometry. Field names follow packages/contracts/src/keepsakes.ts (KeepsakeTemplate) where they exist; keys starting with x_ are proposals the contract does not have yet.",
+    "status": "Engineering draft for owner review (D-012: Vietnamese is the source; English drafted by engineering). Nothing here is in the repo.",
+    "englishPolicy": "en = US spelling and words (Mom, diaper, color, favorite) as the base; en_GB is an overlay used for GB, AU, NZ, SG, IE, MY and is given only where it differs. See review §1.3.",
+    "limits": "name <= 40, description <= 120, scene hint <= 40, text default <= its max (keepsakeTextFieldSchema). {name} is the baby's nickname; it is counted at render time, so titles that carry {name} keep max 40-48.",
+    "x_fields": {
+      "x_occasionsNew": "occasion ids not yet in `occasions` (keepsakes.ts:43-71); see proposedOccasions",
+      "x_regions": "ISO countries where the template is suggested; [] = everywhere. Not in the contract yet (review §3.5 item 4)",
+      "x_culture": "UI language(s) whose families the template is culturally aimed at, regardless of country (Tết for Vietnamese families in the US). Not in the contract yet",
+      "x_artwork": "pictures staff must commission and upload (content/keepsakes/{name}_{hash}.webp)",
+      "x_nudge": "whether D-068 #9 style reminders should fire for it (owner decision)",
+      "x_newPreset": "a milestone preset that does not exist yet and must be added for a 'first' occasion"
+    }
+  },
+
+  "proposedOccasions": [
+    {
+      "id": "m18",
+      "kind": "age",
+      "months": 18,
+      "milestoneId": "p_month_18",
+      "x_newPreset": true,
+      "label": { "vi": "18 tháng", "en": "18 months" },
+      "title": { "vi": "1 tuổi rưỡi", "en": "18 months" }
+    },
+    {
+      "id": "y2",
+      "kind": "age",
+      "months": 24,
+      "milestoneId": "p_second_birthday",
+      "x_newPreset": true,
+      "label": { "vi": "Sinh nhật 2 tuổi", "en": "Second birthday" },
+      "title": { "vi": "2 tuổi", "en": "TWO" },
+      "x_nudge": true
+    },
+    {
+      "id": "y3",
+      "kind": "age",
+      "months": 36,
+      "milestoneId": "p_third_birthday",
+      "x_newPreset": true,
+      "label": { "vi": "Sinh nhật 3 tuổi", "en": "Third birthday" },
+      "title": { "vi": "3 tuổi", "en": "THREE" }
+    },
+    {
+      "id": "first_bath",
+      "kind": "first",
+      "milestoneId": "p_first_bath",
+      "label": { "vi": "Lần đầu tắm", "en": "First bath" },
+      "_note": "preset already exists in the app (msFirstBath)"
+    },
+    {
+      "id": "first_outing",
+      "kind": "first",
+      "milestoneId": "p_first_outing",
+      "label": { "vi": "Lần đầu đi dạo", "en": "First outing" },
+      "_note": "preset already exists (msFirstOuting)"
+    },
+    {
+      "id": "meets_grandparents",
+      "kind": "first",
+      "milestoneId": "p_meets_grandparents",
+      "label": { "vi": "Gặp ông bà", "en": "Meeting the grandparents" },
+      "_note": "preset already exists; high value for families abroad (grandparents visiting from Việt Nam)"
+    },
+    {
+      "id": "first_trip",
+      "kind": "first",
+      "milestoneId": "p_first_trip",
+      "x_newPreset": true,
+      "label": { "vi": "Chuyến đi đầu tiên", "en": "First trip" }
+    },
+    {
+      "id": "first_haircut",
+      "kind": "first",
+      "milestoneId": "p_first_haircut",
+      "x_newPreset": true,
+      "label": { "vi": "Lần đầu cắt tóc", "en": "First haircut" }
+    },
+    {
+      "id": "first_daycare",
+      "kind": "first",
+      "milestoneId": "p_first_daycare",
+      "x_newPreset": true,
+      "label": {
+        "vi": "Ngày đầu đi nhà trẻ",
+        "en": "First day at daycare",
+        "en_GB": "First day at nursery"
+      }
+    },
+    {
+      "id": "first_tet",
+      "kind": "first",
+      "milestoneId": "p_first_tet",
+      "x_newPreset": true,
+      "label": {
+        "vi": "Tết đầu tiên",
+        "en": "First Lunar New Year",
+        "en_SG_MY": "First Chinese New Year"
+      },
+      "x_culture": ["vi"],
+      "x_regions": ["VN", "SG", "MY", "TW", "KR", "HK"],
+      "_note": "kind 'first' (date = the tagged memory), so no lunar-calendar maths is needed in V1"
+    },
+    {
+      "id": "first_mid_autumn",
+      "kind": "first",
+      "milestoneId": "p_first_mid_autumn",
+      "x_newPreset": true,
+      "label": { "vi": "Trung thu đầu tiên", "en": "First Mid-Autumn Festival" },
+      "x_culture": ["vi"],
+      "x_regions": ["VN", "SG", "MY", "TW", "HK"],
+      "_note": "In Việt Nam Trung thu is the children's festival (đèn ông sao, rước đèn): a strong fit"
+    },
+    {
+      "id": "first_holidays",
+      "kind": "first",
+      "milestoneId": "p_first_holidays",
+      "x_newPreset": true,
+      "label": { "vi": "Mùa lễ đầu tiên", "en": "First holiday season" },
+      "x_regions": [],
+      "_note": "Neutral on purpose: parents retitle it (Giáng sinh đầu tiên, First Christmas, First Eid, First Diwali). No religious default."
+    }
+  ],
+
+  "occasionLabelChanges": {
+    "_why": "Review §1.4. Chip labels must work as nouns inside the nudges (ksNudgeFirst = '{occasion} của {name}!' / '{name}’s {occasion}!'); today 'Biết bò của Bơ!', 'Mia’s Sits up!' and 'Mia is First birthday today' can be produced. Age occasions get a separate nudge phrase.",
+    "needsOwner": "m1 'Đầy tháng' and y1 'Thôi nôi' differ from Figma MM10 (`1 tháng`, `Sinh nhật 1 tuổi`, extract 29-remember-2.md:120) but match the milestone presets (msOneMonth 'Đầy tháng', msFirstBirthday 'Thôi nôi'). Owner decision needed.",
+    "labels": [
+      { "occasion": "birth", "vi": "Chào đời", "en": "Newborn", "was_en": "Birth" },
+      { "occasion": "d7", "vi": "7 ngày", "en": "One week", "was_en": "7 days" },
+      {
+        "occasion": "m1",
+        "vi": "Đầy tháng",
+        "was_vi": "1 tháng",
+        "en": "One month",
+        "was_en": "1 month",
+        "en_SG_MY": "Full month",
+        "_avoid": "Full moon (reads as an astronomical event in US/UK/AU)"
+      },
+      { "occasion": "d100", "vi": "100 ngày", "en": "100 days" },
+      {
+        "occasion": "m6",
+        "vi": "6 tháng",
+        "en": "6 months",
+        "x_alias": { "vi": "Nửa năm", "en": "Half birthday", "en_GB": "Six months" }
+      },
+      { "occasion": "y1", "vi": "Thôi nôi", "was_vi": "Sinh nhật 1 tuổi", "en": "First birthday" },
+      {
+        "occasion": "rolls_over",
+        "vi": "Lần đầu biết lẫy",
+        "en": "Rolling over",
+        "was_en": "First roll"
+      },
+      {
+        "occasion": "sits_up",
+        "vi": "Lần đầu tự ngồi",
+        "was_vi": "Biết ngồi",
+        "en": "Sitting up",
+        "was_en": "Sits up"
+      },
+      { "occasion": "crawls", "vi": "Lần đầu biết bò", "was_vi": "Biết bò", "en": "Crawling" },
+      {
+        "occasion": "stands",
+        "vi": "Lần đầu tự đứng",
+        "was_vi": "Đứng vững",
+        "en": "Standing",
+        "was_en": "Stands up"
+      },
+      {
+        "occasion": "first_solids",
+        "vi": "Lần đầu ăn dặm",
+        "was_vi": "Bữa ăn dặm đầu tiên",
+        "en": "First foods",
+        "was_en": "First meal",
+        "_note": "vi matches msFirstSolids; card big title may keep 'Bữa ăn dặm đầu tiên'"
+      },
+      {
+        "occasion": "first_word",
+        "vi": "Tiếng nói đầu tiên",
+        "was_vi": "Tiếng gọi đầu tiên",
+        "en": "First word",
+        "_note": "matches msFirstWord"
+      },
+      { "occasion": "laughs", "vi": "Tiếng cười đầu tiên", "en": "First laugh" },
+      { "occasion": "first_smile", "vi": "Lần đầu cười", "en": "First smile" },
+      { "occasion": "first_tooth", "vi": "Chiếc răng đầu tiên", "en": "First tooth" },
+      { "occasion": "first_steps", "vi": "Bước đi đầu tiên", "en": "First steps" }
+    ],
+    "ageNudgePhrase": {
+      "_why": "One phrase per age occasion so a sentence never wraps a chip label. vi: '{name} sắp {phrase}!', 'Hôm nay {name} {phrase}!', '{name} vừa {phrase}!'. en: '{name} will be {phrase} soon!', '{name} is {phrase} today!', '{name} just turned {phrase}!' — y1/y2 have their own sentences.",
+      "d7": { "vi": "tròn 7 ngày", "en": "one week old" },
+      "m1": { "vi": "đầy tháng", "en": "one month old" },
+      "d100": { "vi": "tròn 100 ngày", "en": "100 days old" },
+      "mN": { "vi": "tròn {n} tháng", "en": "{n, plural, =1{1 month} other{{n} months}} old" },
+      "y1": {
+        "vi_soon": "Sắp đến thôi nôi của {name}! Cùng tạo một kỷ niệm thật đẹp nhé.",
+        "vi_today": "Hôm nay {name} thôi nôi! Cùng tạo một kỷ niệm thật đẹp nhé.",
+        "vi_just": "{name} vừa tròn 1 tuổi! Lưu lại bằng một tấm thiệp nhé.",
+        "en_soon": "{name}’s first birthday is coming up! Let’s make something lovely.",
+        "en_today": "Happy first birthday, {name}! Let’s make something lovely.",
+        "en_just": "{name} just turned one! Keep it with a card."
+      }
+    },
+    "firstNudge": {
+      "_why": "Replace '{occasion} của {name}!' with the baby-voice achievement already in the ARB (ksAchieve*) or a neutral frame.",
+      "vi": "Một lần đầu của {name}: {occasion}! Làm một tấm thiệp kỷ niệm nhé.",
+      "en": "A first for {name}: {occasion}! Make a card to remember it."
+    },
+    "cardTitleY1": {
+      "vi": "1 tuổi",
+      "en": "ONE",
+      "was_en": "1 year",
+      "_note": "ksTitleY1 is also used inside nudges; split into a card title key and the nudge sentences above"
+    }
+  },
+
+  "existingTextFixes": [
+    {
+      "where": "packages/contracts/src/keepsakes-chapter1-videos.ts:483 (video_letter_to_baby, closing)",
+      "vi_now": "Thương con thật nhiều, Ba & Mẹ",
+      "en_now": "With all our love, Mom & Dad",
+      "vi": "Thương con thật nhiều, {parents}",
+      "en": "With all our love, {parents}",
+      "_why": "Northern families write Bố; UK/AU write Mum; single parents, grandparents raising the baby. {parents} = new token from the family's relation chips (R-008), fallback vi 'Ba mẹ' / en 'Mom and Dad' (en_GB 'Mum and Dad')."
+    },
+    {
+      "where": "apps/renderer/src/compositions/chapter1.tsx:284 (EndCard signature, hard-coded)",
+      "now": "p.locale === 'en' ? 'Mom & Dad' : 'Ba mẹ'",
+      "proposal": "pass {parents} as a prop; never hard-code the signer"
+    },
+    {
+      "where": "packages/contracts/src/keepsakes-chapter1-videos.ts:165,187 (video_little_love_story)",
+      "vi_now": "Chuyện tình nhỏ / Chuyện tình nhỏ bắt đầu…",
+      "vi": "Chuyện thương nhỏ / Chuyện thương nhỏ bắt đầu…",
+      "_why": "'chuyện tình' reads as romance between a couple in Vietnamese; 'thương' is the parent–child register. Alternative: 'Câu chuyện yêu thương'."
+    },
+    {
+      "where": "scripts/src/keepsakes-chapter1.ts:1231 (card_then_now title)",
+      "en_now": "Look how you've grown!",
+      "en": "Look how you’ve grown!",
+      "_why": "curly apostrophe like the rest of the catalog (videos.ts:268, 515); printed cards show straight quotes badly in Playfair/Lora"
+    },
+    {
+      "where": "packages/contracts/src/keepsakes-seed.ts:306, 330, 360, 380 and chapter-1 titles",
+      "en_now": "{name}'s …",
+      "en": "{name}’s …",
+      "_why": "same typographic apostrophe; no logic change"
+    },
+    {
+      "where": "favourite (keepsakes-seed.ts:304, 378; keepsakes-chapter1-videos.ts:105, 229, 233, 392, 469), colours/Watercolour (keepsakes-chapter1.ts:640, 868)",
+      "en": "favorite / colors / Watercolor",
+      "en_GB": "favourite / colours / Watercolour",
+      "_why": "the same catalog mixes US 'Mom' with UK 'favourite'; pick one base (US) and overlay en_GB"
+    },
+    {
+      "where": "scene hints 'In Dad’s arms', 'With Mom', 'Smiling at Dad', 'Smiling at Mom' (keepsakes-chapter1-videos.ts:141-142, 296-297)",
+      "en_GB": "In Dad’s arms / With Mum / Smiling at Dad / Smiling at Mum"
+    },
+    {
+      "where": "apps/mobile/lib/l10n/app_en.arb:2959 ksBirthStats (and ksBirthWeight / ksBirthLength)",
+      "en_now": "{weight} kg · {length} cm",
+      "proposal": "unit-aware: US '7 lb 6 oz · 19.5 in'; GB/CA weight may be lb-oz with cm (review §2.5); stored values stay kg/cm"
+    },
+    {
+      "where": "apps/mobile/lib/features/keepsakes/keepsake_card_content.dart:14 and memory_story_screens.dart:63 (DateFormat('dd.MM.yyyy') for every locale)",
+      "proposal": "vi 'dd.MM.yyyy'; en spelled month so it is never ambiguous on a shared picture: en_US 'April 3, 2026', en_GB '3 April 2026' (spec §1.4 already says en = 'MMM d, yyyy')"
+    },
+    {
+      "where": "keepsake_entries.dart:493 nudge date DateFormat('d/M')",
+      "proposal": "DateFormat.Md(fullLocaleTag): 3/4 is 3 April in VN/UK/AU but March 4 in the US"
+    }
+  ],
+
+  "templates": [
+    {
+      "id": "card_hundred_days_simple",
+      "kind": "card",
+      "name": { "vi": "Tròn 100 ngày", "en": "100 days" },
+      "description": {
+        "vi": "Số 100 thật lớn trên nền kem, tối giản và tươi sáng",
+        "en": "A big 100 on cream, simple and bright"
+      },
+      "suggestedTier": "free",
+      "occasions": ["d100"],
+      "ageDays": { "min": 90, "max": 130 },
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        { "key": "headline", "default": { "vi": "100", "en": "100" }, "max": 6 },
+        {
+          "key": "title",
+          "default": { "vi": "ngày đầu đời của {name}", "en": "days of {name}" },
+          "max": 40
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Một trăm ngày, một trăm lần thương con thêm.",
+            "en": "A hundred days, and a hundred more reasons to love you."
+          },
+          "max": 60
+        }
+      ],
+      "x_regions": [],
+      "x_nudge": true,
+      "x_artwork": ["c13-confetti-dots (palette-independent, transparent)"],
+      "x_why": "d100 is one of the four nudged occasions (D-068 #9) but once the seed cards are archived (remember-2-templates.md §6.3 step 5) every card that fits d100 is premium (C04 little_teddy, C05, C06, C10, C11). Under premium.access 'subscribers' the nudge would end on a paywall."
+    },
+    {
+      "id": "card_full_month",
+      "kind": "card",
+      "name": { "vi": "Đầy tháng", "en": "One month" },
+      "description": {
+        "vi": "Trăng tròn dần quanh ảnh, màu kem và hồng đào",
+        "en": "A moon growing round the photo, in cream and peach"
+      },
+      "suggestedTier": "free",
+      "occasions": ["m1"],
+      "ageDays": { "min": 25, "max": 45 },
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        { "key": "headline", "default": { "vi": "Đầy tháng", "en": "One month" }, "max": 16 },
+        {
+          "key": "title",
+          "default": { "vi": "{name} tròn một tháng", "en": "{name} is one month old" },
+          "max": 40
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Một tháng đầu đời, cả nhà thương con thật nhiều.",
+            "en": "One whole month of you, and we love you more every day."
+          },
+          "max": 60
+        }
+      ],
+      "x_regions": [],
+      "x_culture": ["vi"],
+      "x_artwork": ["c14-moon-phases (thin line art, crescent to full)", "c14-peach-sprig"],
+      "x_notes": "Secular only: no altar, offering tray or 'Mười hai bà Mụ' imagery (cúng đầy tháng is a folk-religious rite). For SG/MY English the headline can read 'Full month'."
+    },
+    {
+      "id": "card_half_birthday",
+      "kind": "card",
+      "name": { "vi": "Tròn nửa năm", "en": "Half birthday", "en_GB": "Six months" },
+      "description": {
+        "vi": "Nửa chiếc bánh, nửa vòng bóng bay: con được nửa năm rồi",
+        "en": "Half a cake and half a balloon arch for six months"
+      },
+      "suggestedTier": "free",
+      "occasions": ["m6"],
+      "ageDays": { "min": 175, "max": 215 },
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        { "key": "headline", "default": { "vi": "6 tháng", "en": "½" }, "max": 10 },
+        {
+          "key": "title",
+          "default": {
+            "vi": "{name} tròn nửa năm",
+            "en": "Happy half birthday, {name}!",
+            "en_GB": "{name} is six months old!"
+          },
+          "max": 40
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Nửa năm bên con, ngày nào cũng là ngày vui.",
+            "en": "Six months with you, and every day a joy."
+          },
+          "max": 60
+        }
+      ],
+      "x_artwork": ["c15-half-cake", "c15-half-balloon-arch"],
+      "x_notes": "Check that '½' renders in Baloo 2 / Be Vietnam Pro (U+00BD); else use '6 months'."
+    },
+    {
+      "id": "card_thoi_noi_pick",
+      "kind": "card",
+      "name": { "vi": "Thôi nôi · Con chọn gì?", "en": "First birthday pick" },
+      "description": {
+        "vi": "Mừng thôi nôi với trò bốc đồ vật đoán nghề tương lai",
+        "en": "The first-birthday pick game: what will baby choose?"
+      },
+      "suggestedTier": "premium",
+      "occasions": ["y1"],
+      "ageDays": { "min": 350, "max": 400 },
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        { "key": "headline", "default": { "vi": "Thôi nôi", "en": "ONE" }, "max": 12 },
+        {
+          "key": "title",
+          "default": { "vi": "{name} đã chọn…", "en": "{name} picked…" },
+          "max": 40
+        },
+        {
+          "key": "message",
+          "default": {
+            "vi": "Con chọn gì cũng được, ba mẹ chỉ mong con luôn khoẻ mạnh và vui vẻ.",
+            "en": "Whatever you pick, we just wish you a healthy, happy life."
+          },
+          "max": 140
+        }
+      ],
+      "x_regions": [],
+      "x_culture": ["vi"],
+      "x_artwork": [
+        "c16-pick-tray: illustrated tray with book, pen, stethoscope, ball, paintbrush, calculator, microphone, toy car"
+      ],
+      "x_notes": "Same custom as Korean doljabi and Chinese zhuazhou, so it also fits KR/TW/SG/MY. Artwork: no banknotes or gold (reads as money worship), no religious objects, no gendered split of items. The title is meant to be edited ('Bơ đã chọn cây bút'); the editor should open on it."
+    },
+    {
+      "id": "card_second_birthday",
+      "kind": "card",
+      "name": { "vi": "Sinh nhật 2 tuổi", "en": "Second birthday" },
+      "description": {
+        "vi": "Bóng bay số 2, bánh kem, pháo giấy",
+        "en": "A number-2 balloon, cake and confetti"
+      },
+      "suggestedTier": "free",
+      "occasions": ["y2"],
+      "ageDays": { "min": 715, "max": 760 },
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        { "key": "headline", "default": { "vi": "2 tuổi", "en": "TWO" }, "max": 10 },
+        {
+          "key": "title",
+          "default": { "vi": "Mừng sinh nhật {name}!", "en": "Happy birthday, {name}!" },
+          "max": 40
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Hai tuổi rồi, con vẫn là món quà lớn nhất của nhà mình.",
+            "en": "Two years old, and still our greatest gift."
+          },
+          "max": 60
+        }
+      ],
+      "x_artwork": [
+        "c17-balloon-two",
+        "reuse c12 confetti / bunting / cake (with two candles: c17-cake-two)"
+      ],
+      "x_why": "The app tracks to 5 years (WHO tables, milestones to 24-36 months) but every keepsake occasion ends at y1: a family stops getting reasons to come back to Kỷ niệm after the first birthday."
+    },
+    {
+      "id": "card_first_tooth",
+      "kind": "card",
+      "name": { "vi": "Răng xinh đầu tiên", "en": "First tooth" },
+      "description": {
+        "vi": "Chiếc răng sữa hoạt hình, chấm bi, màu pastel",
+        "en": "A cartoon baby tooth, polka dots and pastels"
+      },
+      "suggestedTier": "free",
+      "occasions": ["first_tooth"],
+      "ageDays": { "min": 120, "max": 540 },
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        {
+          "key": "title",
+          "default": { "vi": "Chiếc răng đầu tiên!", "en": "My first tooth!" },
+          "max": 30
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Một chiếc răng bé xíu, một nụ cười thật to.",
+            "en": "One tiny tooth, one big smile."
+          },
+          "max": 60
+        }
+      ],
+      "x_artwork": ["c18-tooth-character", "c18-sparkles"],
+      "x_why": "first_tooth / first_solids / first_word are occasions today but only the premium C09 'Tiny firsts' offers them."
+    },
+    {
+      "id": "card_first_foods",
+      "kind": "card",
+      "name": { "vi": "Bữa ăn dặm đầu tiên", "en": "First foods" },
+      "description": {
+        "vi": "Thìa, bát nhỏ và một khuôn mặt lấm lem",
+        "en": "A spoon, a little bowl and a messy face"
+      },
+      "suggestedTier": "free",
+      "occasions": ["first_solids"],
+      "ageDays": { "min": 150, "max": 300 },
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        {
+          "key": "title",
+          "default": { "vi": "Măm măm lần đầu!", "en": "First bites!" },
+          "max": 30
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Con nếm thử thế giới, từng thìa một.",
+            "en": "Tasting the world, one spoonful at a time."
+          },
+          "max": 60
+        }
+      ],
+      "x_artwork": [
+        "c19-spoon-bowl",
+        "c19-food-doodles: carrot, pumpkin, banana, avocado, rice porridge bowl"
+      ],
+      "x_notes": "Safety review of the art: never draw honey (botulism risk under 12 months), whole nuts, whole grapes, popcorn or hard round pieces; no bottle of juice; no adult cutlery near the baby."
+    },
+    {
+      "id": "card_first_word",
+      "kind": "card",
+      "name": { "vi": "Tiếng nói đầu tiên", "en": "First word" },
+      "description": {
+        "vi": "Bong bóng lời thoại, chữ tay vui",
+        "en": "Speech bubbles and playful handwriting"
+      },
+      "suggestedTier": "free",
+      "occasions": ["first_word"],
+      "ageDays": { "min": 240, "max": 720 },
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        {
+          "key": "title",
+          "default": { "vi": "Tiếng nói đầu tiên của {name}", "en": "{name}’s first word" },
+          "max": 40
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Ngày con cất tiếng nói đầu tiên, cả nhà vỡ oà.",
+            "en": "The day you said your first word, we all cheered."
+          },
+          "max": 60
+        }
+      ],
+      "x_artwork": ["c20-speech-bubble (empty, so the parent's word can sit in the title)"],
+      "x_notes": "Do not default to 'Ba/Mẹ' or 'Mama/Dada': the first word is often neither, and the assumption hurts some families."
+    },
+    {
+      "id": "card_first_bath",
+      "kind": "card",
+      "name": { "vi": "Lần đầu tắm", "en": "First bath" },
+      "description": {
+        "vi": "Bong bóng xà phòng, vịt cao su, khăn bông",
+        "en": "Bubbles, a rubber duck and a fluffy towel"
+      },
+      "suggestedTier": "free",
+      "occasions": ["first_bath"],
+      "ageDays": { "min": 0, "max": 60 },
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        {
+          "key": "title",
+          "default": { "vi": "Lần đầu tắm của {name}", "en": "{name}’s first bath" },
+          "max": 40
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Thơm tho, sạch sẽ, xinh nhất nhà.",
+            "en": "Squeaky clean and sweet as can be."
+          },
+          "max": 60
+        }
+      ],
+      "x_artwork": ["c21-bubbles-foreground (covers the lower third of the photo)", "c21-duck"],
+      "x_notes": "Bath photos are the most common accidental-nudity share. Frame on the face, bubbles over the lower third, and show a one-line tip before 'Chia sẻ' (e.g. 'Ảnh tắm chỉ nên gửi người thân'). Never in a public album default."
+    },
+    {
+      "id": "card_meets_grandparents",
+      "kind": "card",
+      "name": { "vi": "Gặp ông bà", "en": "Meeting the grandparents" },
+      "description": {
+        "vi": "Hai ảnh: con và ông bà, khung ấm áp",
+        "en": "Two photos: baby and the grandparents, in a warm frame"
+      },
+      "suggestedTier": "free",
+      "occasions": ["meets_grandparents"],
+      "ageDays": null,
+      "photos": { "min": 1, "max": 2 },
+      "texts": [
+        {
+          "key": "title",
+          "default": { "vi": "{name} gặp ông bà", "en": "{name} meets the grandparents" },
+          "max": 40
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Ông bà đã chờ con lâu lắm rồi.",
+            "en": "They’ve waited so long to meet you."
+          },
+          "max": 60
+        }
+      ],
+      "x_artwork": ["c22-heart-thread joining two photo frames"],
+      "x_notes": "vi editor chips: 'ông bà nội' / 'ông bà ngoại' / 'ông bà' (Vietnamese names paternal and maternal grandparents differently). Families abroad: allow a video-call screenshot as photo 2."
+    },
+    {
+      "id": "card_first_trip",
+      "kind": "card",
+      "name": { "vi": "Chuyến đi đầu tiên", "en": "First trip" },
+      "description": {
+        "vi": "Vali, vé, tem du lịch",
+        "en": "A suitcase, tickets and travel stamps"
+      },
+      "suggestedTier": "free",
+      "occasions": ["first_trip"],
+      "ageDays": null,
+      "photos": { "min": 1, "max": 2 },
+      "texts": [
+        { "key": "headline", "default": { "vi": "Lên đường!", "en": "Off we go!" }, "max": 16 },
+        {
+          "key": "title",
+          "default": { "vi": "Chuyến đi đầu tiên của {name}", "en": "{name}’s first trip" },
+          "max": 40
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Thế giới rộng lắm, ba mẹ sẽ cùng con khám phá.",
+            "en": "The world is big, and we’ll explore it together."
+          },
+          "max": 60
+        }
+      ],
+      "x_artwork": ["c23-suitcase", "c23-stamps (generic, no real airline or city logos)"],
+      "x_notes": "No place filled from GPS or EXIF; the exported image carries no location metadata. A place is whatever the parent types."
+    },
+    {
+      "id": "card_first_haircut",
+      "kind": "card",
+      "name": { "vi": "Lần đầu cắt tóc", "en": "First haircut" },
+      "description": {
+        "vi": "Trước và sau, kèm một lọn tóc",
+        "en": "Before and after, with a little curl"
+      },
+      "suggestedTier": "premium",
+      "occasions": ["first_haircut"],
+      "ageDays": null,
+      "photos": { "min": 1, "max": 2 },
+      "texts": [
+        {
+          "key": "title",
+          "default": { "vi": "Lần đầu cắt tóc của {name}", "en": "{name}’s first haircut" },
+          "max": 40
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Lọn tóc đầu tiên, ba mẹ giữ lại làm kỷ niệm.",
+            "en": "Your first curl, kept forever."
+          },
+          "max": 60
+        }
+      ],
+      "x_artwork": ["c24-scissors-comb", "c24-curl"],
+      "x_notes": "Vietnamese families often cut 'tóc máu' around đầy tháng or 100 ngày; Western families around 1 year. Head-shaving rites (mundan, aqiqah) are religious: no default text names them."
+    },
+    {
+      "id": "card_first_daycare",
+      "kind": "card",
+      "name": {
+        "vi": "Ngày đầu đi nhà trẻ",
+        "en": "First day at daycare",
+        "en_GB": "First day at nursery"
+      },
+      "description": {
+        "vi": "Ba lô nhỏ, bảng tên, cầu vồng",
+        "en": "A tiny backpack, a name tag and a rainbow"
+      },
+      "suggestedTier": "free",
+      "occasions": ["first_daycare"],
+      "ageDays": { "min": 120, "max": 1460 },
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        {
+          "key": "title",
+          "default": {
+            "vi": "Ngày đầu đi nhà trẻ",
+            "en": "First day at daycare",
+            "en_GB": "First day at nursery"
+          },
+          "max": 30
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Con giỏi lắm! Chiều nay ba mẹ đón con nhé.",
+            "en": "So brave! We’ll pick you up this afternoon."
+          },
+          "max": 60
+        }
+      ],
+      "x_artwork": [
+        "c25-backpack",
+        "c25-name-tag (blank; never auto-fill the baby's full name or the school)"
+      ]
+    },
+    {
+      "id": "card_first_tet",
+      "kind": "card",
+      "name": { "vi": "Tết đầu tiên", "en": "First Lunar New Year" },
+      "description": {
+        "vi": "Hoa mai hoặc hoa đào, bao lì xì, nền đỏ kem",
+        "en": "Apricot or peach blossoms and a red envelope on cream"
+      },
+      "suggestedTier": "free",
+      "occasions": ["first_tet"],
+      "ageDays": null,
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        {
+          "key": "title",
+          "default": { "vi": "Tết đầu tiên của {name}", "en": "{name}’s first Lunar New Year" },
+          "max": 44
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Chúc con năm mới hay ăn chóng lớn, khoẻ mạnh bình an.",
+            "en": "Wishing you a happy, healthy new year, little one."
+          },
+          "max": 60
+        }
+      ],
+      "palettesNote": "Two art variants: 'Mai vàng' (yellow apricot, the South) and 'Đào hồng' (pink peach, the North).",
+      "x_regions": ["VN", "SG", "MY", "TW", "KR", "HK"],
+      "x_culture": ["vi"],
+      "x_nudge": false,
+      "x_artwork": [
+        "c26-mai-branch",
+        "c26-dao-branch",
+        "c26-li-xi (no Chinese characters, no zodiac animal by default)",
+        "optional yearly sticker c26-zodiac-{year} — the Vietnamese zodiac has the Cat where the Chinese has the Rabbit (2023, 2035)"
+      ],
+      "x_notes": "en 'Lunar New Year' is inclusive of Tết and Seollal; SG/MY English uses 'Chinese New Year' officially (en_SG_MY variant). Avoid firecrackers (banned in VN since 1995 except licensed displays)."
+    },
+    {
+      "id": "card_first_mid_autumn",
+      "kind": "card",
+      "name": { "vi": "Trung thu đầu tiên", "en": "First Mid-Autumn Festival" },
+      "description": {
+        "vi": "Đèn ông sao, trăng rằm, bánh nướng",
+        "en": "Star lantern, full moon and mooncakes"
+      },
+      "suggestedTier": "free",
+      "occasions": ["first_mid_autumn"],
+      "ageDays": null,
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        {
+          "key": "title",
+          "default": {
+            "vi": "Trung thu đầu tiên của {name}",
+            "en": "{name}’s first Mid-Autumn Festival"
+          },
+          "max": 48
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Đèn ông sao lung linh, con là vầng trăng nhỏ của ba mẹ.",
+            "en": "Lanterns aglow, and you are our little moon."
+          },
+          "max": 60
+        }
+      ],
+      "x_regions": ["VN", "SG", "MY", "TW", "HK"],
+      "x_culture": ["vi"],
+      "x_artwork": ["c27-star-lantern (đèn ông sao, five points)", "c27-full-moon", "c27-mooncake"],
+      "x_notes": "No candle-in-lantern next to the baby in the art (fire safety); no Chang'e / Chú Cuội figures needed."
+    },
+    {
+      "id": "card_first_holidays",
+      "kind": "card",
+      "name": { "vi": "Mùa lễ đầu tiên", "en": "First holiday season" },
+      "description": {
+        "vi": "Dây đèn, vòng nguyệt quế, không biểu tượng tôn giáo",
+        "en": "String lights and a wreath, with no religious symbols"
+      },
+      "suggestedTier": "free",
+      "occasions": ["first_holidays"],
+      "ageDays": null,
+      "photos": { "min": 1, "max": 1 },
+      "texts": [
+        {
+          "key": "title",
+          "default": { "vi": "Mùa lễ đầu tiên của {name}", "en": "{name}’s first holiday season" },
+          "max": 44
+        },
+        {
+          "key": "quote",
+          "default": {
+            "vi": "Năm nay mùa lễ ấm áp hơn, vì đã có con.",
+            "en": "The holidays are warmer this year, because you’re here."
+          },
+          "max": 60
+        }
+      ],
+      "x_regions": [],
+      "x_artwork": [
+        "c28-string-lights",
+        "c28-wreath",
+        "c28-summer-variant (no snow: Australia, NZ, Singapore and southern Việt Nam celebrate in heat)"
+      ],
+      "x_notes": "The title is the place for 'Giáng sinh đầu tiên' / 'First Christmas' / 'First Eid' / 'First Diwali' / 'First Hanukkah': offer them as quick chips in the editor rather than as separate religious templates."
+    },
+    {
+      "id": "video_year_two",
+      "kind": "video",
+      "composition": "x_YearTwo (new Remotion composition, or FirstBirthday with a 12-24 month range parameter)",
+      "name": { "vi": "Năm thứ hai của con", "en": "Your second year" },
+      "description": {
+        "vi": "Từ thôi nôi đến 2 tuổi, từng quý một",
+        "en": "From the first to the second birthday, season by season"
+      },
+      "suggestedTier": "premium",
+      "occasions": ["y2"],
+      "ageDays": { "min": 700, "max": 780 },
+      "photos": { "min": 8, "max": 10 },
+      "durationSec": 45,
+      "scenes": [
+        {
+          "hint": { "vi": "Sinh nhật 1 tuổi", "en": "The first birthday" },
+          "optional": false,
+          "ageDays": { "min": 350, "max": 400 },
+          "occasion": "y1"
+        },
+        {
+          "hint": { "vi": "Tháng 13–15", "en": "Months 13–15" },
+          "optional": false,
+          "ageDays": { "min": 366, "max": 456 }
+        },
+        {
+          "hint": { "vi": "Tháng 16–18", "en": "Months 16–18" },
+          "optional": false,
+          "ageDays": { "min": 457, "max": 547 }
+        },
+        {
+          "hint": { "vi": "Tháng 19–21", "en": "Months 19–21" },
+          "optional": false,
+          "ageDays": { "min": 548, "max": 639 }
+        },
+        {
+          "hint": { "vi": "Tháng 22–24", "en": "Months 22–24" },
+          "optional": false,
+          "ageDays": { "min": 640, "max": 730 }
+        },
+        {
+          "hint": { "vi": "Con chạy khắp nhà", "en": "On the move" },
+          "optional": false,
+          "ageDays": { "min": 366, "max": 730 }
+        },
+        {
+          "hint": { "vi": "Con nói rồi!", "en": "First words" },
+          "optional": false,
+          "ageDays": { "min": 366, "max": 730 },
+          "occasion": "first_word"
+        },
+        {
+          "hint": { "vi": "Sinh nhật 2 tuổi", "en": "The second birthday" },
+          "optional": false,
+          "ageDays": { "min": 715, "max": 780 },
+          "occasion": "y2"
+        },
+        { "hint": { "vi": "Chơi cùng cả nhà", "en": "Playing together" }, "optional": true },
+        {
+          "hint": {
+            "vi": "Khoảnh khắc yêu thích",
+            "en": "A favorite moment",
+            "en_GB": "A favourite moment"
+          },
+          "optional": true
+        }
+      ],
+      "texts": [
+        {
+          "key": "title",
+          "default": { "vi": "Năm thứ hai của {name}", "en": "{name}’s second year" },
+          "max": 40
+        },
+        {
+          "key": "message",
+          "default": {
+            "vi": "Thêm một năm đầy tiếng cười, những bước chạy và những tiếng nói đầu tiên.",
+            "en": "Another year of giggles, running feet and first words."
+          },
+          "max": 140
+        }
+      ],
+      "x_music": "festive or happy mood from Thư viện nhạc (music_tiec_vui until licensed tracks exist)"
+    }
+  ],
+
+  "monthlyExtension": {
+    "_proposal": "Cheapest way past y1: add m13-m23 occasions (milestone presets p_month_13…p_month_23) and extend card_monthly_milestone.occasions (keepsakes-chapter1.ts:429) and its ageDays to {min: 25, max: 740}. Labels reuse ksOccMonth ('{n} tháng' / '{n} months'); after 12 the oversized number still reads well ('18 tháng').",
+    "x_nudge": false
+  },
+
+  "musicLicensing": {
+    "_proposal": "Before buying the tracks in remember-2-templates.md §6.1: add `territories` (ISO list or 'WW') and `userDistribution` (end users may post the export to Facebook, Instagram, TikTok, YouTube, Zalo) to keepsakeMusicSchema.licence (keepsakes.ts:167-176), and buy only tracks not registered with YouTube Content ID / Meta Rights Manager — otherwise parents' videos get muted or claimed abroad."
+  }
+}

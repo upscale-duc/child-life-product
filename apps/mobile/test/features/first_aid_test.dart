@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:child_life/features/utilities/utilities_screen.dart';
 import 'package:child_life/features/first_aid/first_aid_models.dart';
 import 'package:child_life/features/first_aid/first_aid_screens.dart';
@@ -258,6 +261,46 @@ void main() {
       // Leaving the page stops it.
       await pumpRouted(tester, const SizedBox(), overrides: careOverrides());
       expect(device.awake.last, isFalse);
+    },
+  );
+
+  test(
+    'the text names no country: {emergency} and {poison} come from the pack',
+    () {
+      expect(
+        FirstAidPack.fillTokens({
+          'a': ['Gọi {emergency} ngay', 'Call {poison} now'],
+          'n': 3,
+        }, '911'),
+        {
+          'a': ['Gọi 911 ngay', 'Call 911 now'],
+          'n': 3,
+        },
+      );
+      expect(
+        FirstAidPack.fillTokens(
+          'Call {poison}',
+          '911',
+          poison: '1-800-222-1222',
+        ),
+        'Call 1-800-222-1222',
+      );
+      final file = File('../../content/first-aid/pack.seed.json');
+      final raw = jsonDecode(file.readAsStringSync()) as Map<String, Object?>;
+      final step =
+          (((raw['situations']! as List).first as Map)['variants']! as List)
+                  .first
+              as Map;
+      ((step['steps']! as List).first as Map)['body'] = {
+        'vi': 'Gọi {emergency} ngay.',
+        'en': 'Call {emergency} now.',
+      };
+      final pack = FirstAidPack.fromDoc({
+        'version': 'fa_20261016_01',
+        'pack': raw,
+      })!;
+      final body = pack.situations.first.variants.first.steps.first.body;
+      expect([body.vi, body.en], ['Gọi 115 ngay.', 'Call 115 now.']);
     },
   );
 

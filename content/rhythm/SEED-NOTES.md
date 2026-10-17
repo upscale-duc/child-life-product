@@ -216,3 +216,28 @@ A country that is not listed gets "Gọi bác sĩ của bé", never a default ho
     - NHS links use the post-2025 paths (`nhs.uk/baby/…`).
     - The de Weerth & van Geert summary in the source label should be checked against the paper.
 18. **"Wonder Weeks".** The label is a reference only, pending the rights check (D-072 #7). If the check fails, change `label`; stage names and content do not depend on it.
+
+## 7. Review pass 2026-10-16 (`rc_20261016_01`, `ref_20261016_01`)
+
+Engineering review in specialist roles (paediatrician, IBCLC, child development), still a draft:
+every item stays `review: null`. Full findings, sources and answers to §6:
+`docs/product/content-review-2026-10/rhythm.md`; the change set: `rhythm-additions.json` there.
+
+- **No P0.** 72 text changes (13 P1, 43 P2, 16 P3): `act_first_foods` ranks from day 183 (not 165);
+  Vietnamese hazards named (võng, auto swings, wedge / "flat-head" pillows, charcoal braziers in
+  closed rooms, mulberry-bead and silver anklets, honey on gums, nước mắm / hạt nêm in solids,
+  longan, lychee, rambutan, konjac jelly cups, sticky rice); vaccine and check-up wording made
+  schedule-neutral ("theo lịch tiêm ở nơi bạn sống"); fever cards name the thermometer method,
+  low temperature, no alcohol rubs, no aspirin; milestone "watch for" ages moved off the window start.
+- **16 new activities** (`act_bed_sharing_safer`, `act_hot_weather_comfort`, `act_common_allergens`,
+  `act_choking_safe_foods`, `act_add_a_word`, `act_pretend_play`, `act_brush_first_teeth`,
+  `act_family_meal_self_feed`, `act_potty_readiness`, `act_water_safety_home`,
+  `act_partner_care_time`, `act_parent_check_in`, `act_sun_and_mosquitoes`,
+  `act_car_seat_every_trip`, `act_active_play_every_day`, `act_vitamin_d_drops` for US / CA / GB
+  only). Stages 8–10 link the new 12–24 month ones.
+- **Health regions**: 18 numbers added where the reviewer was confident (MY, TH, HK, CN, IE, NL, BE,
+  ES, CH, AT, CZ, PL, SE, NO, DK, FI, AE, QA). Left out until checked on an official page: PH 911,
+  ID 112 / 119, KH 119, IT 112, RU 112, SA 997, IN 112, BN 991, LA 1195. A country not listed keeps
+  "Gọi bác sĩ của bé" (never a guessed number).
+- **Needs a clinician's decision:** `act_bed_sharing_safer` is NHS-style harm reduction (AAP says
+  never bed-share); swaddling cap; `lost_skill` routing (see a doctor within days, not emergency).

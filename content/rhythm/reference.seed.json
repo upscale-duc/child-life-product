@@ -1,5 +1,5 @@
 {
-  "version": "ref_20261015_01",
+  "version": "ref_20261016_01",
   "label": "Wonder Weeks",
   "stages": [
     {
@@ -385,7 +385,9 @@
         "act_put_in_take_out",
         "act_read_together",
         "act_big_feelings",
-        "act_narrate_day"
+        "act_narrate_day",
+        "act_add_a_word",
+        "act_family_meal_self_feed"
       ],
       "notice": {
         "title": {
@@ -437,7 +439,8 @@
         "act_two_choices",
         "act_big_feelings",
         "act_name_and_point",
-        "act_outdoor_walk"
+        "act_outdoor_walk",
+        "act_active_play_every_day"
       ],
       "notice": {
         "title": {
@@ -491,7 +494,8 @@
         "act_big_feelings",
         "act_read_together",
         "act_two_choices",
-        "act_outdoor_walk"
+        "act_outdoor_walk",
+        "act_pretend_play"
       ],
       "notice": {
         "title": {

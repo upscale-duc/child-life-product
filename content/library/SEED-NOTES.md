@@ -96,3 +96,27 @@ lasts > 2 weeks, > 3 weeks if premature). Still to align there (not safety confl
 (NICE: armpit electronic < 4 weeks; forehead strips unreliable), the 3–6 months ≥ 39 °C rule, and "uống
 nhiều nước" / "nôn > 12 giờ" in Ngộ độc thực phẩm vs WHO / NICE ORS and NHS 2-day guidance. The dev
 first-aid content already published needs the same edit through the portal.
+
+## 6. Review pass 2026-10-16
+
+Still an engineering draft in specialist roles; nothing here is a clinical review. Findings, sources
+and answers: `docs/product/content-review-2026-10/library.md`.
+
+- **No P0.** P1 fixes applied: engorgement and mastitis follow ABM Protocol #36 (2022: cold, no heat
+  or deep massage, no over-expressing); the safe-sleep English no longer reads as "no sleep sacks"
+  and adds "extremely tired" to the never-bed-share list; G6PD advice names naphthalene mothballs
+  (băng phiến); milk-diet myth in jaundice corrected.
+- **Multi-country (P2):** Vietnam-only facts are now framed "Ở Việt Nam: …" / "In Việt Nam: …"
+  (vaccine schedule, 30-minute wait, zinc for diarrhoea), the fever article states both NICE and BV
+  Nhi TW, and the MenB paracetamol line matches NHS. "115" stays in the text for now (the seed test
+  requires it in vi doctor callouts); the long-term plan is the `{emergency}` token already used by
+  Sơ cứu (`content/first-aid/proposed/README.md`).
+- **10 new articles:** `art_bronchiolitis_rsv`, `art_hfmd`, `art_growth_charts`,
+  `art_preterm_corrected_age`, `art_picky_eating_toddler`, `art_toddler_milk`,
+  `art_toddler_tantrums`, `art_newborn_skin_rashes`, `art_heat_cold_safety`, `art_medicine_safety`
+  (44 in all).
+- **Stages:** three P3 wording fixes. 24–36 month milestones and stages are drafted for V1.1 in
+  `docs/product/content-review-2026-10/library-24-36-months.json`, not imported.
+- **For the clinician:** button batteries (NHS nothing by mouth vs US honey for children over 1),
+  iron for breastfed babies (AAP 2026 vs NHS), the Vietnamese HFMD exclusion period, the children's
+  motorbike-helmet rule, and every help-line number.

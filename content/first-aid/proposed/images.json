@@ -1,0 +1,185 @@
+{
+  "newImagesNeeded": [
+    {
+      "slug": "ep-tim-so-sinh-hai-ngon-cai",
+      "usedBy": "cpr hero; cpr[id=infant].image",
+      "priority": "P0",
+      "brief": "Infant CPR, two-thumb encircling: both hands wrap the chest, thumbs side by side on the lower half of the breastbone just below the nipple line; down-arrow; replaces two-finger ep-tim-so-sinh."
+    },
+    {
+      "slug": "an-nguc-hai-ngon-cai",
+      "usedBy": "choking under-1 step 2",
+      "priority": "P0",
+      "brief": "Infant face-up along forearm, head lower than chest, rescuer gives chest thrust with heel of one hand on lower breastbone (no two fingers)."
+    },
+    {
+      "slug": "vo-lung-tre-lon",
+      "usedBy": "choking from-1 step 1",
+      "priority": "P0",
+      "brief": "Toddler/preschooler leaning forward, adult behind and to the side supporting the chest, heel-of-hand back blow between shoulder blades."
+    },
+    {
+      "slug": "mo-duong-tho-so-sinh",
+      "usedBy": "cpr under-1 step 2",
+      "priority": "P1",
+      "brief": "Infant supine on firm surface, head in neutral (level) position, one hand on forehead, one fingertip lifting the chin; no hyperextension."
+    },
+    {
+      "slug": "tiem-adrenaline-dui",
+      "usedBy": "anaphylaxis step 1",
+      "priority": "P0",
+      "brief": "Adult presses a generic (unbranded) adrenaline auto-injector into the outer mid-thigh of a seated child, through trousers."
+    },
+    {
+      "slug": "keo-len-bo",
+      "usedBy": "drowning hero",
+      "priority": "P1",
+      "brief": "Adult on the bank reaching a pole/float to a child in a pond, staying out of the water."
+    },
+    {
+      "slug": "be-nghieng-so-sinh",
+      "usedBy": "unconscious under-1 step 2",
+      "priority": "P1",
+      "brief": "Infant recovery position: baby cradled on side in adult's arms, head tilted slightly down."
+    },
+    {
+      "slug": "chuom-lanh-dau",
+      "usedBy": "head-injury hero",
+      "priority": "P2",
+      "brief": "Parent holding a cloth-wrapped ice pack on a toddler's forehead lump, child sitting alert."
+    },
+    {
+      "slug": "pin-cuc-ao-mat-ong",
+      "usedBy": "swallowed-object hero; battery step 2",
+      "priority": "P1",
+      "brief": "Coin-shaped button battery next to a jar of honey and a 5 ml spoon; small '1+ tuổi' age cue as a shape, no baked-in text."
+    },
+    {
+      "slug": "ngat-cau-dao",
+      "usedBy": "electric-shock hero",
+      "priority": "P2",
+      "brief": "Adult switching off a wall breaker/main switch while a child lies near a socket; no contact with the child."
+    },
+    {
+      "slug": "me-day-tay",
+      "usedBy": "allergic-reaction hero",
+      "priority": "P2",
+      "brief": "Child's forearm with raised pale-pink hives; parent photographing it with a phone. Use a range of skin tones."
+    },
+    {
+      "slug": "ngam-rang-sua",
+      "usedBy": "dental-injury hero",
+      "priority": "P2",
+      "brief": "A knocked-out tooth held by the crown being placed into a small cup of milk."
+    },
+    {
+      "slug": "xit-hen-buong-dem",
+      "usedBy": "asthma-attack hero and step 2",
+      "priority": "P2",
+      "brief": "Child sitting upright using a blue reliever inhaler through a spacer (no mask) with a parent beside them."
+    },
+    {
+      "slug": "icon-duoi-nuoc",
+      "usedBy": "drowning icon",
+      "priority": "P1",
+      "brief": "Pictogram: wave with a small head and raised hand, error-soft circle, same style as icon-*."
+    },
+    {
+      "slug": "icon-bat-tinh",
+      "usedBy": "unconscious icon",
+      "priority": "P1",
+      "brief": "Pictogram: figure lying on side (recovery position)."
+    },
+    {
+      "slug": "icon-nga-dap-dau",
+      "usedBy": "head-injury icon",
+      "priority": "P2",
+      "brief": "Pictogram: child head with a bump and small stars."
+    },
+    {
+      "slug": "icon-nuot-di-vat",
+      "usedBy": "swallowed-object icon",
+      "priority": "P1",
+      "brief": "Pictogram: button battery and magnet."
+    },
+    {
+      "slug": "icon-dien-giat",
+      "usedBy": "electric-shock icon",
+      "priority": "P1",
+      "brief": "Pictogram: plug/socket with lightning bolt."
+    },
+    {
+      "slug": "icon-bong-hoa-chat",
+      "usedBy": "chemical-burn icon",
+      "priority": "P2",
+      "brief": "Pictogram: bottle with droplet on a hand."
+    },
+    {
+      "slug": "icon-di-ung",
+      "usedBy": "allergic-reaction icon",
+      "priority": "P2",
+      "brief": "Pictogram: hand with raised dots (hives)."
+    },
+    {
+      "slug": "icon-nin-tho",
+      "usedBy": "breath-holding icon",
+      "priority": "P2",
+      "brief": "Pictogram: crying toddler face with blue lips."
+    },
+    {
+      "slug": "icon-gay-rang",
+      "usedBy": "dental-injury icon",
+      "priority": "P2",
+      "brief": "Pictogram: tooth with a chip."
+    },
+    {
+      "slug": "icon-con-hen",
+      "usedBy": "asthma-attack icon",
+      "priority": "P2",
+      "brief": "Pictogram: inhaler and lungs."
+    }
+  ],
+  "imageReviewNotes": [
+    {
+      "slug": "ep-tim-so-sinh",
+      "issue": "Shows two-finger compression low on the chest (technique removed by AHA 2025 and ERC 2025). Retire; replace with ep-tim-so-sinh-hai-ngon-cai.",
+      "severity": "P0"
+    },
+    {
+      "slug": "an-nguc",
+      "issue": "Infant chest thrust with two fingers. Retire; replace with an-nguc-hai-ngon-cai.",
+      "severity": "P0"
+    },
+    {
+      "slug": "mo-duong-tho",
+      "issue": "Shows an older child with full head tilt; must not illustrate the infant variant. Moved to cpr from-1.",
+      "severity": "P1"
+    },
+    {
+      "slug": "ran-can-bang-nhe",
+      "issue": "Shows a short loose bandage at the bite only — neither VN/WHO splinting nor pressure-immobilisation. Redraw: whole-limb splint (and optionally a full-length elastic bandage for the elapid case).",
+      "severity": "P1"
+    },
+    {
+      "slug": "so-sanh-vang-da",
+      "issue": "Two realistic newborn faces; needs clinician review of skin tones and a darker-skin example (sclera/gums).",
+      "severity": "P2"
+    },
+    {
+      "slug": "vo-lung",
+      "issue": "Infant back blows: OK. Do not reuse for children ≥1 (design flag).",
+      "severity": "P3"
+    }
+  ],
+  "meta": {
+    "status": "DRAFT for licensed clinician review — not certified. Generated 2026-10-16.",
+    "conventions": {
+      "{emergency}": "Replaced by the app with the ambulance number for the family's country (see review/first-aid.md §4). Until the renderer ships, the seed script must substitute pack.emergencyNumber.",
+      "{poison}": "Replaced with '<poison-centre label> <number>' for the country, or with the {emergency} number where the country has no public poison line.",
+      "replacements": "Text edits at a path in the CURRENT seed (apply before structuralChanges).",
+      "structuralChanges": "op=set replaces the value at path (whole steps/callouts arrays where items are added/reordered); op=append adds to an array. Apply in listed order.",
+      "image fields": "Slugs, as in pack.seed.json."
+    },
+    "validatedAgainst": "firstAidPackSchema (packages/contracts/dist/first-aid.js) after applying every change to a copy of pack.seed.json, with {emergency} kept literal and {poison} expanded to 30 characters."
+  }
+}

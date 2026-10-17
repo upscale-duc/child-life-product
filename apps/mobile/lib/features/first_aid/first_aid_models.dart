@@ -341,11 +341,28 @@ class FirstAidPack {
     ];
   }
 
+  /// The guide's text names no country's number: `{emergency}` (ambulance) and `{poison}` (poison
+  /// line) are filled from the pack. With no poison line known, `{poison}` is the emergency number.
+  static Object? fillTokens(Object? j, String emergency, {String? poison}) =>
+      switch (j) {
+        String s =>
+          s
+              .replaceAll('{emergency}', emergency)
+              .replaceAll('{poison}', poison ?? emergency),
+        Map m => {
+          for (final e in m.entries)
+            e.key: fillTokens(e.value, emergency, poison: poison),
+        },
+        List l => [for (final x in l) fillTokens(x, emergency, poison: poison)],
+        _ => j,
+      };
+
   /// `publicConfig/content_firstAid` → the pack, or null when absent or malformed.
   static FirstAidPack? fromDoc(Map<String, Object?>? doc) {
     if (doc == null) return null;
     try {
-      final p = doc['pack']! as Map;
+      final raw = doc['pack']! as Map;
+      final p = fillTokens(raw, raw['emergencyNumber']! as String) as Map;
       final review = p['review'] as Map?;
       final pack = FirstAidPack(
         version: doc['version']! as String,

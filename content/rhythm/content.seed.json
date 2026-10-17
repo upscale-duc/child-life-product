@@ -1,5 +1,5 @@
 {
-  "version": "rc_20261015_01",
+  "version": "rc_20261016_01",
   "activities": [
     {
       "id": "act_skin_to_skin",
@@ -130,13 +130,13 @@
       "steps": {
         "vi": [
           "Chọn âm thanh đều, không có nhạc hay lời nói",
-          "Đặt máy xa cũi (khoảng 2 m), không đặt trong hay sát cũi",
+          "Đặt máy càng xa cũi càng tốt, ít nhất khoảng 2 m; không đặt trong hay trên thành cũi",
           "Để âm lượng nhỏ, nhỏ hơn tiếng nói chuyện bình thường",
           "Hẹn giờ tắt hoặc giảm dần sau khi bé ngủ"
         ],
         "en": [
           "Pick a steady sound with no music or voices",
-          "Place the device well away from the cot (about 2 m), never in or on it",
+          "Place the device as far from the cot as you can, at least about 2 m away, never in or on it",
           "Keep the volume low, quieter than normal conversation",
           "Set a timer or turn it down once baby is asleep"
         ]
@@ -172,7 +172,7 @@
       "version": 1,
       "status": "published",
       "title": {
-        "vi": "Quấn chũn cho bé chưa biết lật",
+        "vi": "Quấn khăn cho bé chưa biết lật",
         "en": "Swaddling before baby starts to roll"
       },
       "summary": {
@@ -185,19 +185,19 @@
           "Quấn vừa ở ngực (luồn được 2–3 ngón tay), phần hông và chân lỏng để bé co chân tự nhiên",
           "Không trùm đầu, không quấn quá cổ",
           "Luôn đặt bé nằm ngửa trong cũi",
-          "Ngừng quấn khi bé bắt đầu tập lật, thường quanh 2 tháng tuổi"
+          "Ngừng quấn khi bé bắt đầu tập lật; có bé tập lật từ khoảng 2 tháng, nên để ý từ sớm"
         ],
         "en": [
           "Use a thin, breathable cloth; don’t swaddle in hot weather or when baby has a fever",
           "Snug at the chest (2–3 fingers fit), loose at the hips so the legs can bend up and out",
           "Keep the head uncovered and the cloth below the neck",
           "Always lay baby on their back in the cot",
-          "Stop swaddling once baby starts trying to roll, often around 2 months"
+          "Stop swaddling once baby starts trying to roll; some try from about 2 months, so watch early"
         ]
       },
       "safety": {
-        "vi": "Không bao giờ đặt bé đang quấn nằm sấp hay nằm nghiêng. Ngừng quấn ngay khi bé có dấu hiệu lật. Quấn chặt phần chân có thể ảnh hưởng khớp háng.",
-        "en": "Never put a swaddled baby on their tummy or side. Stop as soon as baby shows signs of rolling. Tight wrapping around the legs can harm the hips."
+        "vi": "Không bao giờ đặt bé đang quấn nằm sấp hay nằm nghiêng. Ngừng quấn ngay khi bé có dấu hiệu lật. Không quấn bó chân cho “thẳng chân”: chân bé cần co và dạng tự nhiên để khớp háng phát triển. Không dùng khăn hay túi ngủ có tạ, và không quấn khi ngủ chung giường.",
+        "en": "Never put a swaddled baby on their tummy or side. Stop as soon as baby shows signs of rolling. Don’t bind the legs straight: they need to bend up and out for healthy hips. No weighted swaddles or sleep sacks, and don’t swaddle if you share a bed."
       },
       "durationMin": 5,
       "ageDays": {
@@ -242,20 +242,20 @@
           "Đặt bé nằm ngửa ở mọi giấc, cả giấc ngày",
           "Nệm phẳng, chắc, chỉ có ga bọc vừa khít",
           "Trong cũi không có gối, chăn dày, quây đệm hay thú bông",
-          "Cho bé ngủ trong cũi riêng, đặt trong phòng ba mẹ ít nhất 6 tháng đầu",
-          "Không để bé quá nóng, không trùm đầu, không hút thuốc gần bé"
+          "Cho bé ngủ trong cũi hoặc nôi riêng, đặt sát giường trong phòng ba mẹ, ít nhất 6 tháng đầu",
+          "Không để bé quá nóng hay ủ kín, không trùm đầu; không hút thuốc gần bé, không đốt than hay bếp sưởi trong phòng kín"
         ],
         "en": [
           "Back to sleep for every sleep, naps too",
           "Firm, flat mattress with only a fitted sheet",
           "No pillows, thick blankets, bumpers or soft toys in the cot",
-          "Baby sleeps in their own cot in your room for at least the first 6 months",
-          "Don’t let baby get too hot, keep the head uncovered, keep smoke away"
+          "Baby sleeps in their own cot or bassinet in your room, next to your bed, for at least the first 6 months",
+          "Don’t let baby get too hot or bundled up, keep the head uncovered; keep smoke away, and never burn charcoal or fuel heaters in a closed room"
         ]
       },
       "safety": {
-        "vi": "Không cho bé ngủ trên sofa, ghế bành, gối cho bú hay ghế rung. Nếu bé ngủ quên trong ghế ô tô hay địu, chuyển con ra mặt phẳng khi có thể.",
-        "en": "Never let baby sleep on a sofa, armchair, nursing pillow or bouncer. If baby falls asleep in a car seat or sling, move them to a flat surface when you can."
+        "vi": "Không cho bé ngủ trên sofa, ghế bành, gối cho bú, ghế rung, võng hay nôi đưa tự động; không dùng gối chặn, gối chống bẹp đầu hay đệm nghiêng. Nếu bé ngủ quên trong ghế ô tô, địu hay võng, chuyển con ra mặt phẳng, nằm ngửa ngay khi có thể.",
+        "en": "Never let baby sleep on a sofa, armchair, nursing pillow, bouncer, hammock or automatic swing, and don’t use wedges, positioners or ‘flat head’ pillows. If baby falls asleep in a car seat, sling or hammock, move them onto their back on a flat surface as soon as you can."
       },
       "durationMin": 2,
       "ageDays": {
@@ -337,7 +337,7 @@
         "en": "Calm night feeds"
       },
       "summary": {
-        "vi": "Giữ cữ bú đêm nhẹ nhàng, tối và ít kích thích giúp con dễ ngủ lại hơn.",
+        "vi": "Giữ cữ bú đêm nhẹ nhàng, tối và ít kích thích có thể giúp con dễ ngủ lại hơn.",
         "en": "Keeping night feeds dim, quiet and low-key can help baby settle back to sleep."
       },
       "steps": {
@@ -355,8 +355,8 @@
         ]
       },
       "safety": {
-        "vi": "Nếu cho bú trên giường hoặc ghế, để ý đừng ngủ quên khi bế con; buồn ngủ thì đặt con vào cũi trước.",
-        "en": "If you feed in bed or a chair, take care not to fall asleep holding baby; if you feel sleepy, put baby in the cot first."
+        "vi": "Nếu cho bú trên giường, dọn gối, chăn ra xa con phòng khi mình ngủ quên; tỉnh dậy thì đặt con nằm ngửa vào cũi. Không cho bú trên sofa hay ghế bành khi đang buồn ngủ: đó là chỗ nguy hiểm nhất nếu ngủ quên.",
+        "en": "If you feed in bed, move pillows and covers away from baby in case you doze off, and when you wake, put baby on their back in the cot. Don’t feed on a sofa or armchair when you’re sleepy: that is the most dangerous place to fall asleep with a baby."
       },
       "durationMin": 20,
       "ageDays": {
@@ -444,13 +444,13 @@
       "steps": {
         "vi": [
           "Tắm hoặc lau người, thay đồ ngủ",
-          "Đánh răng hoặc lau nướu nếu con đã có răng",
+          "Đánh răng nếu con đã có răng (chưa có răng thì lau nướu)",
           "Đọc một cuốn sách ngắn hoặc hát một bài quen",
           "Tắt đèn và chúc ngủ ngon vào giờ gần giống nhau mỗi tối"
         ],
         "en": [
           "Bath or wash, then pyjamas",
-          "Brush teeth or wipe gums once teeth arrive",
+          "Brush teeth once they’ve come through (wipe the gums before that)",
           "One short book or a familiar song",
           "Lights out and goodnight at about the same time each night"
         ]
@@ -505,8 +505,8 @@
         ]
       },
       "safety": {
-        "vi": "Không bao giờ để bé một mình trong chậu tắm, dù chỉ một giây. Nước chỉ cần nông. Với bé sơ sinh, tắm 2–3 lần mỗi tuần là đủ.",
-        "en": "Never leave baby alone in the bath, even for a moment. Keep the water shallow. For newborns, 2–3 baths a week is plenty."
+        "vi": "Không bao giờ để bé một mình trong chậu tắm, dù chỉ một giây. Nước chỉ cần nông. Bé sơ sinh không cần tắm hằng ngày; trời nóng có thể tắm nhanh hoặc lau người. Tháng đầu chỉ cần nước sạch, không cần cho thêm lá, tinh dầu hay sữa tắm.",
+        "en": "Never leave baby alone in the bath, even for a moment. Keep the water shallow. Newborns don’t need a bath every day; in hot weather a quick bath or wipe-down is fine. In the first month plain water is enough, with no added leaves, oils or bath products."
       },
       "durationMin": 15,
       "ageDays": {
@@ -603,7 +603,7 @@
           "Mẹ ngồi hoặc nằm tựa thoải mái, có gối đỡ tay",
           "Bế bé áp bụng vào mẹ, đầu và thân thẳng hàng, mũi ngang núm vú",
           "Chờ bé há miệng to rồi đưa bé vào vú, cằm chạm vú trước",
-          "Để bé bú hết một bên rồi mới mời bên kia"
+          "Để bé bú hết một bên rồi mới cho bú tiếp bên kia"
         ],
         "en": [
           "Sit or lie back comfortably, with a pillow under your arm",
@@ -671,8 +671,8 @@
         ]
       },
       "safety": {
-        "vi": "Không kê bình để con bú một mình và không cho con ngậm bình khi ngủ. Pha sữa đúng hướng dẫn trên hộp.",
-        "en": "Never prop the bottle or leave baby alone with it, and don’t put baby to sleep with a bottle. Make up formula exactly as the pack says."
+        "vi": "Không kê bình để con bú một mình và không cho con ngậm bình khi ngủ. Pha sữa đúng tỉ lệ trên hộp, không loãng hơn hay đặc hơn; dùng nước đã đun sôi để không quá 30 phút (vẫn trên 70°C), làm nguội rồi mới cho bú; bỏ sữa thừa sau cữ bú.",
+        "en": "Never prop the bottle or leave baby alone with it, and don’t put baby to sleep with a bottle. Make up formula exactly as the pack says, never weaker or stronger; use water boiled no more than 30 minutes earlier (still at least 70°C), cool it before feeding, and throw away leftovers."
       },
       "durationMin": 20,
       "ageDays": {
@@ -714,13 +714,13 @@
       },
       "steps": {
         "vi": [
-          "Bế con tựa lên vai, hoặc cho ngồi trên đùi, tay đỡ cằm (không đỡ cổ)",
+          "Bế con tựa lên vai, hoặc cho ngồi trên đùi, một tay đỡ ngực và cằm (tránh đè vào cổ họng)",
           "Vỗ hoặc xoa lưng nhẹ, chậm",
           "Thử vài phút; không ợ cũng không sao",
           "Có lót khăn vì con có thể trớ chút sữa"
         ],
         "en": [
-          "Hold baby against your shoulder, or sit them on your lap supporting the chin (not the throat)",
+          "Hold baby against your shoulder, or sit them on your lap with one hand supporting the chest and chin (not the throat)",
           "Pat or rub the back gently and slowly",
           "Try for a few minutes; no burp is fine too",
           "Keep a cloth handy, as a little milk may come up"
@@ -768,25 +768,25 @@
         "vi": [
           "Dấu hiệu sẵn sàng: ngồi vững khi có đỡ, giữ đầu chắc, đưa đồ vào miệng và nuốt được",
           "Chọn lúc con tỉnh táo, không quá đói, ngồi thẳng ghế ăn",
-          "Cho vài thìa thức ăn nghiền mịn, mềm (rau, cháo, thịt, cá nghiền)",
+          "Cho vài thìa thức ăn mềm, nghiền hoặc dằm, đặc vừa phải: cháo đặc, rau, và món giàu sắt như thịt, cá, trứng nghiền; không chỉ cho nước cháo hay nước hầm xương",
           "Để con dẫn dắt: con quay đi là đủ",
           "Vẫn cho bú mẹ hoặc sữa công thức như thường"
         ],
         "en": [
           "Readiness signs: sits with support, holds head steady, brings things to mouth and swallows",
           "Pick a time when baby is alert and not too hungry, sitting upright in a high chair",
-          "Offer a few spoons of smooth, soft food (vegetables, porridge, mashed meat or fish)",
+          "Offer a few spoons of soft mashed food, thick rather than runny: thick porridge, vegetables, and iron-rich foods like mashed meat, fish or egg; not just rice water or broth",
           "Let baby lead: turning away means enough",
           "Keep breastfeeding or formula as usual"
         ]
       },
       "safety": {
-        "vi": "Luôn ngồi cạnh khi con ăn, con phải ngồi thẳng. Không cho mật ong trước 12 tháng, không nêm muối hay đường, không cho hạt nguyên. Không bắt đầu ăn dặm trước 4 tháng tuổi.",
-        "en": "Always stay with baby while they eat, sitting upright. No honey before 12 months, no added salt or sugar, no whole nuts. Don’t start solids before 4 months."
+        "vi": "Luôn ngồi cạnh khi con ăn, con phải ngồi thẳng. Không cho mật ong trước 12 tháng; không nêm muối, đường, nước mắm, hạt nêm hay bột ngọt; không cho hạt nguyên. Khuyến nghị chung là bắt đầu khi con khoảng 6 tháng; nếu định cho ăn sớm hơn, hãy hỏi bác sĩ trước, và không bao giờ trước 4 tháng tuổi.",
+        "en": "Always stay with baby while they eat, sitting upright. No honey before 12 months; no added salt, sugar, fish sauce, stock cubes or MSG; no whole nuts. The general advice is to start at around 6 months; if you’re thinking of starting earlier, ask a doctor first, and never before 4 months."
       },
       "durationMin": 15,
       "ageDays": {
-        "from": 165,
+        "from": 183,
         "to": 365
       },
       "needs": ["feeding"],
@@ -819,8 +819,8 @@
         "en": "Soft finger foods"
       },
       "summary": {
-        "vi": "Cho con tự cầm miếng thức ăn mềm giúp con tập nhai và dùng tay khéo hơn.",
-        "en": "Letting baby pick up soft pieces of food helps them practise chewing and using their hands."
+        "vi": "Cho con tự cầm miếng thức ăn mềm là dịp để con tập nhai và dùng tay.",
+        "en": "Letting baby pick up soft pieces of food gives them a chance to practise chewing and using their hands."
       },
       "steps": {
         "vi": [
@@ -837,8 +837,8 @@
         ]
       },
       "safety": {
-        "vi": "Luôn có người lớn ngồi cạnh, con ngồi thẳng. Cắt dọc nho, cà chua bi thành 4; không cho hạt nguyên, bỏng ngô, kẹo cứng.",
-        "en": "Always sit with baby, who should be upright. Quarter grapes and cherry tomatoes lengthways; no whole nuts, popcorn or hard sweets."
+        "vi": "Luôn có người lớn ngồi cạnh, con ngồi thẳng. Cắt dọc nho, cà chua bi thành 4; nhãn, vải, chôm chôm bóc vỏ, bỏ hạt, cắt nhỏ. Không cho hạt nguyên, bỏng ngô, kẹo cứng, kẹo dẻo hay thạch dạng cốc nhỏ.",
+        "en": "Always sit with baby, who should be upright. Quarter grapes and cherry tomatoes lengthways; peel, stone and chop longan, lychee and rambutan. No whole nuts, popcorn, hard sweets, gummies or mini jelly cups."
       },
       "durationMin": 15,
       "ageDays": {
@@ -875,8 +875,8 @@
         "en": "Learning to drink from a cup"
       },
       "summary": {
-        "vi": "Từ khoảng 6 tháng, cho con nhấp nước đun sôi để nguội bằng cốc trong bữa ăn.",
-        "en": "From around 6 months, offer sips of water from a cup with meals."
+        "vi": "Từ khoảng 6 tháng, cho con nhấp nước sạch đun sôi để nguội bằng cốc trong bữa ăn.",
+        "en": "From around 6 months, offer sips of safe drinking water from a cup with meals (boiled and cooled if your tap water isn’t safe to drink)."
       },
       "steps": {
         "vi": [
@@ -893,8 +893,8 @@
         ]
       },
       "safety": {
-        "vi": "Dưới 6 tháng, bé bú mẹ hoàn toàn thường không cần thêm nước. Không cho nước ngọt, nước trái cây đóng hộp.",
-        "en": "Under 6 months, a fully breastfed baby usually needs no extra water. Avoid sugary drinks and juice."
+        "vi": "Dưới 6 tháng, bé bú mẹ hoàn toàn không cần thêm nước, kể cả khi trời nóng: hãy cho bú thường hơn. Bé uống sữa công thức mà trời nóng: hỏi bác sĩ về việc cho thêm nước, không bao giờ pha loãng sữa. Không cho nước ngọt, nước trái cây, trà, cà phê hay sữa đặc có đường.",
+        "en": "Under 6 months, a fully breastfed baby doesn’t need extra water, even in hot weather: offer the breast more often. If a formula-fed baby is in hot weather, ask a doctor about extra water, and never dilute the formula. No sugary drinks, juice, tea, coffee or sweetened condensed milk."
       },
       "durationMin": 5,
       "ageDays": {
@@ -947,8 +947,8 @@
         ]
       },
       "safety": {
-        "vi": "Không bao giờ lắc bé, kể cả khi đang rất mệt hay bực. Nếu thấy mình sắp mất bình tĩnh, hãy đặt con nằm ngửa trong cũi an toàn và ra ngoài vài phút.",
-        "en": "Never shake a baby, however tired or frustrated you feel. If you feel you might lose control, lay your baby on their back in a safe cot and step away for a few minutes."
+        "vi": "Không bao giờ lắc, tung hay xóc mạnh bé, kể cả khi đang rất mệt hay bực, và hãy dặn cả ông bà, người giúp việc. Nếu thấy mình sắp mất bình tĩnh, hãy đặt con nằm ngửa trong cũi an toàn và ra ngoài vài phút.",
+        "en": "Never shake, throw or roughly bounce a baby, however tired or frustrated you feel, and make sure grandparents and helpers know this too. If you feel you might lose control, lay your baby on their back in a safe cot and step away for a few minutes."
       },
       "durationMin": 5,
       "ageDays": {
@@ -999,8 +999,8 @@
         ]
       },
       "safety": {
-        "vi": "Không bao giờ lắc bé, kể cả khi đang rất mệt hay bực. Nếu thấy mình sắp mất bình tĩnh, hãy đặt con nằm ngửa trong cũi an toàn và ra ngoài vài phút.",
-        "en": "Never shake a baby, however tired or frustrated you feel. If you feel you might lose control, lay your baby on their back in a safe cot and step away for a few minutes."
+        "vi": "Không bao giờ lắc, tung hay xóc mạnh bé, kể cả khi đang rất mệt hay bực, và hãy dặn cả ông bà, người giúp việc. Nếu thấy mình sắp mất bình tĩnh, hãy đặt con nằm ngửa trong cũi an toàn và ra ngoài vài phút.",
+        "en": "Never shake, throw or roughly bounce a baby, however tired or frustrated you feel, and make sure grandparents and helpers know this too. If you feel you might lose control, lay your baby on their back in a safe cot and step away for a few minutes."
       },
       "durationMin": 10,
       "ageDays": {
@@ -1055,8 +1055,8 @@
         ]
       },
       "safety": {
-        "vi": "Không bao giờ lắc bé, kể cả khi đang rất mệt hay bực. Nếu thấy mình sắp mất bình tĩnh, hãy đặt con nằm ngửa trong cũi an toàn và ra ngoài vài phút.",
-        "en": "Never shake a baby, however tired or frustrated you feel. If you feel you might lose control, lay your baby on their back in a safe cot and step away for a few minutes."
+        "vi": "Không bao giờ lắc, tung hay xóc mạnh bé, kể cả khi đang rất mệt hay bực, và hãy dặn cả ông bà, người giúp việc. Nếu thấy mình sắp mất bình tĩnh, hãy đặt con nằm ngửa trong cũi an toàn và ra ngoài vài phút.",
+        "en": "Never shake, throw or roughly bounce a baby, however tired or frustrated you feel, and make sure grandparents and helpers know this too. If you feel you might lose control, lay your baby on their back in a safe cot and step away for a few minutes."
       },
       "durationMin": 10,
       "ageDays": {
@@ -1111,8 +1111,8 @@
         ]
       },
       "safety": {
-        "vi": "Không dùng vòng hổ phách hay vòng đeo cổ, không bôi gel tê hay thuốc không có chỉ định. Mọc răng không gây sốt cao: nếu con sốt, hãy hỏi bác sĩ.",
-        "en": "No amber or teething necklaces, and no numbing gels or remedies that weren’t prescribed. Teething doesn’t cause a high fever: if baby has a fever, ask a doctor."
+        "vi": "Không đeo vòng hổ phách, vòng dâu tằm hay bất kỳ vòng cổ, vòng tay, vòng chân nào để “chữa” mọc răng; không bôi gel tê, không rơ nướu bằng mật ong, không dùng thuốc không được kê. Mọc răng không gây sốt cao hay tiêu chảy nhiều: nếu con sốt, hãy hỏi bác sĩ.",
+        "en": "No amber, wooden-bead or other teething necklaces, bracelets or anklets; no numbing gels, no rubbing gums with honey, and no remedies that weren’t prescribed. Teething doesn’t cause a high fever or bad diarrhoea: if baby has a fever, ask a doctor."
       },
       "durationMin": 10,
       "ageDays": {
@@ -1246,8 +1246,8 @@
         "en": "Supervised tummy time"
       },
       "summary": {
-        "vi": "Vài phút nằm sấp khi con thức giúp con luyện cổ, vai và tay.",
-        "en": "A few minutes on the tummy while awake helps baby build neck, shoulder and arm strength."
+        "vi": "Vài phút nằm sấp khi con thức có thể giúp con luyện cổ, vai và tay.",
+        "en": "A few minutes on the tummy while awake may help baby build neck, shoulder and arm strength."
       },
       "steps": {
         "vi": [
@@ -1499,8 +1499,8 @@
         "en": "Talk baby through your day"
       },
       "summary": {
-        "vi": "Nói chuyện thường xuyên với con, kể cả khi con chưa hiểu, giúp con làm quen với ngôn ngữ.",
-        "en": "Talking with baby often, even before they understand, helps them tune into language."
+        "vi": "Nói chuyện thường xuyên với con, kể cả khi con chưa hiểu, có thể giúp con làm quen với ngôn ngữ.",
+        "en": "Talking with baby often, even before they understand, may help them tune into language."
       },
       "steps": {
         "vi": [
@@ -1698,8 +1698,8 @@
         "en": "Peekaboo"
       },
       "summary": {
-        "vi": "Trò ú òa vui và giúp con dần hiểu rằng người và vật vẫn còn đó dù tạm khuất.",
-        "en": "Peekaboo is fun and helps baby learn that people and things still exist when hidden."
+        "vi": "Trò ú òa vui, và có thể giúp con dần hiểu rằng người và vật vẫn còn đó dù tạm khuất.",
+        "en": "Peekaboo is fun, and may help baby learn that people and things are still there when hidden."
       },
       "steps": {
         "vi": [
@@ -1765,8 +1765,8 @@
         ]
       },
       "safety": {
-        "vi": "Luôn có người lớn trông. Dọn vật nhỏ có thể nuốt, che ổ điện, chặn cầu thang, cố định đồ đạc dễ đổ.",
-        "en": "Always supervised. Clear small objects that could be swallowed, cover sockets, gate stairs and secure furniture that could tip."
+        "vi": "Luôn có người lớn trông. Dọn vật nhỏ có thể nuốt, che ổ điện, chặn cầu thang, khoá cửa sổ và ban công, cố định đồ đạc dễ đổ. Không dùng xe tập đi có bánh xe.",
+        "en": "Always supervised. Clear small objects that could be swallowed, cover sockets, gate stairs, lock windows and block balconies, and secure furniture that could tip. Don’t use a baby walker on wheels."
       },
       "durationMin": 15,
       "ageDays": {
@@ -1799,8 +1799,8 @@
         "en": "Put in, take out"
       },
       "summary": {
-        "vi": "Trò bỏ đồ vào hộp rồi đổ ra giúp con luyện tay và hiểu “trong, ngoài”.",
-        "en": "Dropping things into a box and tipping them out builds hand skills and ideas like “in” and “out”."
+        "vi": "Trò bỏ đồ vào hộp rồi đổ ra là dịp để con luyện tay và làm quen với “trong, ngoài”.",
+        "en": "Dropping things into a box and tipping them out is a chance to practise hand skills and ideas like “in” and “out”."
       },
       "steps": {
         "vi": [
@@ -1855,8 +1855,8 @@
         "en": "Point and name"
       },
       "summary": {
-        "vi": "Chỉ vào đồ vật và gọi tên giúp con nối từ ngữ với thế giới xung quanh.",
-        "en": "Pointing at things and naming them helps baby link words to the world around them."
+        "vi": "Chỉ vào đồ vật và gọi tên có thể giúp con nối từ ngữ với thế giới xung quanh.",
+        "en": "Pointing at things and naming them may help baby link words to the world around them."
       },
       "steps": {
         "vi": [
@@ -1922,8 +1922,8 @@
         ]
       },
       "safety": {
-        "vi": "Bé dưới 6 tháng nên tránh nắng trực tiếp. Không trùm kín xe đẩy bằng khăn vì có thể làm bé quá nóng.",
-        "en": "Keep babies under 6 months out of direct sun. Don’t drape a cloth over the buggy, as baby can overheat."
+        "vi": "Bé dưới 6 tháng nên tránh nắng trực tiếp. Không trùm kín xe đẩy bằng khăn vì có thể làm bé quá nóng; dùng màn chống muỗi thoáng thay cho khăn. Những ngày không khí ô nhiễm nặng, cho con chơi trong nhà.",
+        "en": "Keep babies under 6 months out of direct sun. Don’t drape a cloth over the buggy, as baby can overheat; use a breathable insect net instead. On days with very poor air quality, play indoors."
       },
       "durationMin": 20,
       "ageDays": {
@@ -1946,6 +1946,883 @@
         }
       ],
       "review": null
+    },
+    {
+      "id": "act_bed_sharing_safer",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Nếu gia đình cho con ngủ chung giường",
+        "en": "If your family shares a bed with baby"
+      },
+      "summary": {
+        "vi": "Chỗ ngủ an toàn nhất cho bé là cũi hoặc nôi riêng đặt sát giường ba mẹ. Nếu nhà mình vẫn ngủ chung, vài việc dưới đây có thể giúp giảm bớt nguy cơ.",
+        "en": "The safest place for baby to sleep is their own cot or bassinet right next to your bed. If your family shares a bed anyway, the steps below may help lower the risks."
+      },
+      "steps": {
+        "vi": [
+          "Cân nhắc kê cũi hoặc nôi sát cạnh giường: con vẫn ở gần, cho bú đêm vẫn dễ",
+          "Nếu ngủ chung: nệm phẳng, chắc; đặt con nằm ngửa, xa gối và chăn của người lớn, không để chăn trùm lên con",
+          "Con nằm cạnh mẹ, không nằm giữa hai người lớn, không nằm cạnh anh chị nhỏ hay vật nuôi",
+          "Không có khe hở giữa nệm và tường hay thành giường để con không bị kẹt",
+          "Không quấn con khi ngủ chung; mặc đồ mỏng vừa đủ để con không quá nóng"
+        ],
+        "en": [
+          "Think about a cot or bassinet right beside the bed: baby stays close and night feeds stay easy",
+          "If you share: a firm, flat mattress; baby on their back, away from adult pillows and covers, with nothing over them",
+          "Baby sleeps next to the mother, not between two adults, and not next to other children or pets",
+          "Make sure there are no gaps between the mattress and the wall or bed frame where baby could get stuck",
+          "Don’t swaddle when bed-sharing, and dress baby lightly so they don’t overheat"
+        ]
+      },
+      "safety": {
+        "vi": "Không ngủ chung giường nếu ba hoặc mẹ hút thuốc, đã uống rượu bia, dùng chất kích thích hay thuốc gây buồn ngủ, hoặc đang quá mệt; không ngủ chung với bé sinh non hay nhẹ cân. Không bao giờ ngủ cùng con trên sofa hay ghế bành: đây là chỗ nguy hiểm nhất.",
+        "en": "Don’t share a bed if either of you smokes, has drunk alcohol, has taken drugs or medicine that makes you drowsy, or is extremely tired, or if baby was born early or small. Never fall asleep with baby on a sofa or armchair: that is the most dangerous place."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 0,
+        "to": 365
+      },
+      "needs": ["sleep"],
+      "interests": ["sleep"],
+      "timeOfDay": "evening",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Sudden infant death syndrome (SIDS), reducing the risk",
+          "url": "https://www.nhs.uk/baby/caring-for-a-newborn/sudden-infant-death-syndrome-sids/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: A parent’s guide to safe sleep",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_hot_weather_comfort",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Giữ con mát khi trời nóng",
+        "en": "Keeping baby cool in hot weather"
+      },
+      "summary": {
+        "vi": "Trẻ nhỏ dễ bị quá nóng. Mặc nhẹ, phòng thoáng và cho bú thường hơn có thể giúp con dễ chịu trong những ngày nóng.",
+        "en": "Little ones overheat easily. Light clothes, a well-aired room and more frequent feeds may help baby stay comfortable on hot days."
+      },
+      "steps": {
+        "vi": [
+          "Mặc cho con một lớp đồ mỏng, thoáng; không ủ chăn, không đội mũ trong nhà",
+          "Giữ phòng thoáng: dùng quạt hoặc điều hoà, không để gió thổi thẳng vào con",
+          "Sờ gáy hoặc ngực con: nóng, ướt mồ hôi là con đang quá nóng, hãy bớt một lớp đồ",
+          "Bé bú mẹ: cho bú thường hơn, dưới 6 tháng không cần thêm nước. Bé bú sữa công thức: hỏi bác sĩ về việc cho thêm nước, không pha loãng sữa",
+          "Từ 6 tháng, mời con uống thêm nước sạch trong ngày"
+        ],
+        "en": [
+          "Dress baby in one thin, breathable layer; no heavy covers and no hat indoors",
+          "Keep the room airy with a fan or air conditioning, not blowing straight at baby",
+          "Feel the back of the neck or the chest: hot and sweaty means too warm, so take off a layer",
+          "Breastfed: offer the breast more often; under 6 months no extra water is needed. Formula-fed: ask a doctor about extra water, and never dilute the formula",
+          "From 6 months, offer extra sips of safe water through the day"
+        ]
+      },
+      "safety": {
+        "vi": "Không bao giờ để con một mình trong xe, kể cả vài phút. Trời nóng mà con lừ đừ, rất ít tã ướt, nóng ran hay sốt: đưa con đi khám ngay.",
+        "en": "Never leave a child alone in a car, even for a few minutes. In the heat, if baby is drowsy, has very few wet diapers, feels very hot or has a fever, get them seen straight away."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 0,
+        "to": 730
+      },
+      "needs": ["sleep", "feeding"],
+      "interests": ["sleep", "feeding"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Drinks and cups for babies and young children",
+          "url": "https://www.nhs.uk/baby/weaning-and-feeding/drinks-and-cups-for-babies-and-young-children/"
+        },
+        {
+          "label": "NHS: Heatwave, how to cope in hot weather",
+          "url": "https://www.nhs.uk/live-well/seasonal-health/heatwave-how-to-cope-in-hot-weather/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: A parent’s guide to safe sleep",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_common_allergens",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Làm quen với trứng, lạc và các món dễ dị ứng",
+        "en": "Introducing egg, peanut and other common allergens"
+      },
+      "summary": {
+        "vi": "Khi con đã bắt đầu ăn dặm, cho làm quen từng món dễ dị ứng ở dạng an toàn và tiếp tục cho ăn đều có thể giúp giảm nguy cơ dị ứng ở một số trẻ.",
+        "en": "Once solids have started, offering common allergens one at a time in a safe form, and keeping them in the diet, may help lower the chance of allergy in some children."
+      },
+      "steps": {
+        "vi": [
+          "Chọn hôm con khoẻ, ở nhà, cho ăn vào buổi sáng hoặc trưa để dễ theo dõi",
+          "Mỗi lần chỉ thêm một món mới, bắt đầu một lượng nhỏ: trứng nấu chín kỹ, hoặc bơ lạc (đậu phộng) mịn pha loãng với cháo",
+          "Dần dần cho làm quen thêm: cá, tôm, sữa bò nấu trong món ăn, đậu nành, vừng (mè), lúa mì",
+          "Nếu con ăn được, tiếp tục cho món đó đều đặn, khoảng 2 lần mỗi tuần"
+        ],
+        "en": [
+          "Pick a day when baby is well and at home, earlier in the day so you can keep an eye on them",
+          "Add one new food at a time, starting small: well-cooked egg, or smooth peanut butter thinned into porridge",
+          "Bring others in gradually: fish, prawns, cow’s milk in cooking, soya, sesame, wheat",
+          "If it goes well, keep offering it regularly, about twice a week"
+        ]
+      },
+      "safety": {
+        "vi": "Không cho lạc hay hạt nguyên, hạt rang, bơ lạc đặc quánh. Con bị chàm (eczema) nặng hoặc đã từng dị ứng thức ăn: hỏi bác sĩ trước khi bắt đầu. Sưng môi, nổi mề đay hay nôn sau khi ăn: ngừng món đó và hỏi bác sĩ. Khó thở, khò khè, lừ đừ hay tái nhợt: gọi cấp cứu ngay.",
+        "en": "No whole or roasted nuts and no thick blobs of peanut butter. If baby has severe eczema or a known food allergy, ask a doctor before starting. Swollen lips, hives or vomiting after a food: stop it and ask a doctor. Trouble breathing, wheezing, floppiness or turning pale: call emergency services now."
+      },
+      "durationMin": 10,
+      "ageDays": {
+        "from": 183,
+        "to": 365
+      },
+      "needs": ["feeding"],
+      "interests": ["nutrition", "feeding"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "ASCIA: How to introduce solid foods to babies for allergy prevention",
+          "url": "https://www.allergy.org.au/patients/allergy-prevention/ascia-how-to-introduce-solid-foods-to-babies"
+        },
+        {
+          "label": "NHS: Food allergies in babies and young children",
+          "url": "https://www.nhs.uk/baby/weaning-and-feeding/food-allergies-in-babies-and-young-children/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Starting solid foods",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/Starting-Solid-Foods.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_choking_safe_foods",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Chuẩn bị đồ ăn ít nguy cơ hóc",
+        "en": "Preparing food to lower the choking risk"
+      },
+      "summary": {
+        "vi": "Trẻ nhỏ rất dễ bị hóc. Cắt, nấu và cho con ăn đúng cách có thể giúp giảm nguy cơ, kể cả với các loại quả quen thuộc trong nhà.",
+        "en": "Young children choke easily. How you cut, cook and serve food may help lower the risk, including with everyday fruits."
+      },
+      "steps": {
+        "vi": [
+          "Nho, cà chua bi: cắt dọc làm 4. Nhãn, vải, chôm chôm: bóc vỏ, bỏ hạt, cắt nhỏ",
+          "Xúc xích: cắt dọc rồi thái nhỏ; gỡ kỹ xương cá; thịt nấu mềm, xé nhỏ",
+          "Không cho: lạc, hạt nguyên, bỏng ngô, kẹo cứng, kẹo dẻo, thạch dạng cốc nhỏ hút một hơi. Xôi, bánh dày, bánh trôi dễ dính họng: chỉ cho miếng rất nhỏ hoặc chờ con lớn hơn",
+          "Con ăn khi ngồi thẳng, có người lớn ngồi cạnh; không cho ăn khi con đang chạy, khóc, nằm hay ngồi trên xe",
+          "Đọc trước cách xử trí khi trẻ bị hóc trong mục Sơ cứu"
+        ],
+        "en": [
+          "Grapes and cherry tomatoes: quarter lengthways. Longan, lychee and rambutan: peel, remove the seed and cut small",
+          "Sausages: cut lengthways, then into small pieces; check fish carefully for bones; cook meat soft and shred it",
+          "Avoid whole nuts, popcorn, hard sweets, gummies and mini jelly cups. Sticky rice and glutinous rice cakes can stick in the throat: only tiny pieces, or wait until your child is older",
+          "Your child eats sitting upright with an adult beside them, not while running, crying, lying down or riding in a vehicle",
+          "Read ahead what to do if a child chokes, in First aid"
+        ]
+      },
+      "safety": {
+        "vi": "Con ho mạnh là đang tự đẩy dị vật ra: ở cạnh và để con ho. Con không ho, không khóc, không thở được: làm theo mục Sơ cứu và gọi cấp cứu ngay. Không móc tay vào họng con khi không nhìn thấy dị vật.",
+        "en": "A strong cough means your child is clearing it: stay close and let them cough. If they can’t cough, cry or breathe, follow First aid and call emergency services now. Don’t sweep a finger into the mouth unless you can see the object."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 183,
+        "to": 730
+      },
+      "needs": ["feeding"],
+      "interests": ["nutrition", "feeding"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Foods to avoid giving babies and young children",
+          "url": "https://www.nhs.uk/baby/weaning-and-feeding/foods-to-avoid-giving-babies-and-young-children/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Choking prevention",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx"
+        },
+        {
+          "label": "NHS: How to stop a child from choking",
+          "url": "https://www.nhs.uk/baby/first-aid-and-safety/first-aid/how-to-stop-a-child-from-choking/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_add_a_word",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Nói thêm một từ vào lời con",
+        "en": "Add a word to what your child says"
+      },
+      "summary": {
+        "vi": "Đáp lại và nói thêm một chút vào điều con vừa nói có thể giúp con nghe thêm từ mới mà không bị ép.",
+        "en": "Answering and adding a little to what your child says may help them hear new words without any pressure."
+      },
+      "steps": {
+        "vi": [
+          "Ngồi ngang tầm mắt con, để ý thứ con đang nhìn hay chỉ",
+          "Nhắc lại lời con và thêm một từ: con nói “bóng”, ba mẹ nói “bóng đỏ” hay “ném bóng”",
+          "Chờ vài giây để con có lượt đáp lại, bằng lời, âm thanh hay cử chỉ",
+          "Con nói chưa đúng thì ba mẹ nói lại cho đúng một cách tự nhiên, không bắt con nhắc lại",
+          "Nhà nói hai thứ tiếng: mỗi người cứ dùng ngôn ngữ mình thấy tự nhiên nhất"
+        ],
+        "en": [
+          "Get down to your child’s level and notice what they’re looking at or pointing to",
+          "Repeat their word and add one: they say “ball”, you say “red ball” or “throw the ball”",
+          "Wait a few seconds so your child gets a turn, with words, sounds or gestures",
+          "If a word comes out wrong, just say it back correctly; no need to make them repeat it",
+          "In a bilingual home, each adult can use the language that feels most natural to them"
+        ]
+      },
+      "safety": null,
+      "durationMin": 5,
+      "ageDays": {
+        "from": 365,
+        "to": 730
+      },
+      "needs": ["milestone", "play"],
+      "interests": ["milestones"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Help your baby learn to talk",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Language delays in toddlers",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Delay.aspx"
+        },
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_pretend_play",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Chơi giả vờ với đồ trong nhà",
+        "en": "Pretend play with everyday things"
+      },
+      "summary": {
+        "vi": "Giả vờ nấu ăn, gọi điện hay ru gấu bông ngủ là cách vui để con dùng lời nói và trí tưởng tượng, và có thể giúp con tập chờ lượt.",
+        "en": "Pretending to cook, make a phone call or put teddy to bed is a fun way to use words and imagination, and may help with taking turns."
+      },
+      "steps": {
+        "vi": [
+          "Chọn vài đồ an toàn: nồi nhựa, thìa gỗ, khăn, gấu bông, hộp giấy",
+          "Làm mẫu một việc quen: “Nấu canh nào, khuấy khuấy…”",
+          "Mời con cùng chơi: “Gấu đói rồi, con cho gấu ăn nhé?”",
+          "Đi theo ý con, kể cả khi con đổi trò, và gọi tên việc con đang làm"
+        ],
+        "en": [
+          "Gather a few safe things: plastic pots, a wooden spoon, a cloth, a soft toy, a cardboard box",
+          "Show a familiar action: “Let’s make soup, stir, stir…”",
+          "Invite them in: “Teddy’s hungry. Can you feed teddy?”",
+          "Follow your child’s lead, even when the game changes, and name what they’re doing"
+        ]
+      },
+      "safety": {
+        "vi": "Không dùng túi ni lông, dây dài, pin cúc áo, nam châm nhỏ hay đồ vật nhỏ lọt vừa miệng con.",
+        "en": "No plastic bags, long cords, button batteries, small magnets or anything small enough to fit in your child’s mouth."
+      },
+      "durationMin": 10,
+      "ageDays": {
+        "from": 456,
+        "to": 730
+      },
+      "needs": ["play", "bonding"],
+      "interests": ["milestones", "moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Baby and toddler play ideas",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/baby-and-toddler-play-ideas/"
+        },
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        },
+        {
+          "label": "UNICEF Parenting: Child development",
+          "url": "https://www.unicef.org/parenting/child-development"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_brush_first_teeth",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Đánh răng cho con từ chiếc răng đầu tiên",
+        "en": "Brushing from the very first tooth"
+      },
+      "summary": {
+        "vi": "Chải răng hai lần mỗi ngày với một chút kem đánh răng có fluor có thể giúp bảo vệ răng sữa của con.",
+        "en": "Brushing twice a day with a tiny smear of fluoride toothpaste may help protect your child’s baby teeth."
+      },
+      "steps": {
+        "vi": [
+          "Dùng bàn chải nhỏ, lông mềm dành cho trẻ",
+          "Lấy kem đánh răng có fluor, lượng chỉ bằng hạt gạo",
+          "Chải nhẹ mọi mặt răng, hai lần mỗi ngày; lần buổi tối sau cữ bú hoặc bữa ăn cuối",
+          "Không cần súc miệng bằng nước, chỉ cần lau bớt bọt",
+          "Hỏi nha sĩ hoặc bác sĩ về lần khám răng đầu tiên của con"
+        ],
+        "en": [
+          "Use a small, soft children’s toothbrush",
+          "Use fluoride toothpaste, just a rice-grain-sized smear",
+          "Brush gently on every side, twice a day; the evening brush comes after the last feed or meal",
+          "No need to rinse with water; just wipe away the extra",
+          "Ask a dentist or doctor about your child’s first dental check"
+        ]
+      },
+      "safety": {
+        "vi": "Không cho con ngậm bình sữa hay nước ngọt khi ngủ. Cất kem đánh răng xa tầm với của con.",
+        "en": "Don’t put your child to bed with a bottle of milk or a sweet drink. Keep toothpaste out of reach."
+      },
+      "durationMin": 3,
+      "ageDays": {
+        "from": 183,
+        "to": 730
+      },
+      "needs": ["sleep"],
+      "interests": ["sleep", "nutrition"],
+      "timeOfDay": "evening",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Taking care of children’s teeth",
+          "url": "https://www.nhs.uk/live-well/healthy-teeth-and-gums/taking-care-of-childrens-teeth/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Brushing up on oral health",
+          "url": "https://www.healthychildren.org/English/healthy-living/oral-health/Pages/Brushing-Up-on-Oral-Health-Never-Too-Early-to-Start.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_family_meal_self_feed",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Ăn cùng cả nhà, để con tự ăn",
+        "en": "Family meals, with your child feeding themselves"
+      },
+      "summary": {
+        "vi": "Cho con ngồi ăn cùng cả nhà và để con tự quyết ăn bao nhiêu có thể giúp bữa ăn bớt căng thẳng cho cả hai bên.",
+        "en": "Sitting your child at the family table and letting them decide how much to eat may help meals feel calmer for everyone."
+      },
+      "steps": {
+        "vi": [
+          "Cho con ngồi ghế ăn cùng bàn, tắt TV và cất điện thoại trong bữa",
+          "Để con bốc hoặc xúc bằng thìa riêng; ba mẹ có thể giúp thêm khi con cần",
+          "Mỗi bữa có một món con quen và một món mới; món mới có thể cần thử nhiều lần",
+          "Con quay đi, ngậm lâu hay đẩy thìa ra là đã đủ: không ép, không dỗ ăn bằng đồ chơi hay màn hình"
+        ],
+        "en": [
+          "Sit your child at the table with everyone, TV off and phones away",
+          "Let them use their fingers or their own spoon; you can help with a spoon when they need it",
+          "Offer something familiar alongside something new; new foods may need many tries",
+          "Turning away, holding food in the mouth or pushing the spoon away means enough: no forcing, and no distracting with toys or screens"
+        ]
+      },
+      "safety": {
+        "vi": "Không đuổi theo con để đút, không cho ăn khi con đang chạy chơi. Con chậm tăng cân, ăn rất ít nhiều ngày liền hay nôn thường xuyên: hỏi bác sĩ.",
+        "en": "Don’t chase your child with food or feed them while they run about. Slow weight gain, eating very little for days, or frequent vomiting: ask a doctor."
+      },
+      "durationMin": 20,
+      "ageDays": {
+        "from": 365,
+        "to": 730
+      },
+      "needs": ["feeding", "milestone"],
+      "interests": ["nutrition", "feeding"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "WHO: Guideline for complementary feeding of infants and young children 6–23 months (2023)",
+          "url": "https://www.who.int/publications/i/item/9789240081864"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Toddler nutrition",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/nutrition/Pages/default.aspx"
+        },
+        {
+          "label": "NHS: Foods to avoid giving babies and young children",
+          "url": "https://www.nhs.uk/baby/weaning-and-feeding/foods-to-avoid-giving-babies-and-young-children/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_potty_readiness",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Dấu hiệu con sẵn sàng tập ngồi bô",
+        "en": "Signs your child is ready for the potty"
+      },
+      "summary": {
+        "vi": "Phần lớn trẻ sẵn sàng tập đi vệ sinh trong khoảng 18 tháng đến 3 tuổi. Chờ con có dấu hiệu sẵn sàng thường giúp việc tập nhẹ nhàng hơn.",
+        "en": "Most children are ready to start using a potty somewhere between 18 months and 3 years. Waiting for the signs often makes it gentler."
+      },
+      "steps": {
+        "vi": [
+          "Để ý dấu hiệu: con biết khi tã ướt hay bẩn, tã khô được khoảng 1–2 giờ, hoặc con ra hiệu khi buồn đi",
+          "Đặt bô ở chỗ quen, cho con ngồi thử khi vẫn mặc quần áo để làm quen",
+          "Đọc sách tranh về đi vệ sinh, gọi tên “tè”, “ị” một cách tự nhiên",
+          "Khen khi con thử, không mắng khi con tè dầm; con chưa sẵn sàng thì tạm dừng vài tuần rồi thử lại"
+        ],
+        "en": [
+          "Look for signs: your child notices a wet or dirty diaper, stays dry for an hour or two, or shows you when they need to go",
+          "Put a potty somewhere familiar and let your child sit on it fully dressed to get used to it",
+          "Read a potty picture book and use simple, relaxed words for wee and poo",
+          "Praise trying and don’t scold accidents; if your child isn’t ready, pause for a few weeks and try again"
+        ]
+      },
+      "safety": {
+        "vi": "Không ép con ngồi bô lâu và không phạt khi con tè dầm. Con đau khi đi tiểu, táo bón kéo dài hay phân có máu: hỏi bác sĩ.",
+        "en": "Don’t make your child sit on the potty for long, and don’t punish accidents. Pain when weeing, ongoing constipation or blood in the poo: ask a doctor."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 548,
+        "to": 730
+      },
+      "needs": ["milestone"],
+      "interests": ["milestones"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: How to potty train",
+          "url": "https://www.nhs.uk/baby/babys-development/potty-training-and-bedwetting/how-to-potty-train/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: The right age to toilet train",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/toilet-training/Pages/The-Right-Age-to-Toilet-Train.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_water_safety_home",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Kiểm tra nước quanh nhà để phòng đuối nước",
+        "en": "A home water check to prevent drowning"
+      },
+      "summary": {
+        "vi": "Trẻ nhỏ có thể đuối nước rất nhanh, ở chỗ nước rất nông và thường không gây tiếng động. Vài thay đổi trong nhà có thể giúp giảm nguy cơ.",
+        "en": "Young children can drown very quickly, in very shallow water and often silently. A few changes at home may help lower the risk."
+      },
+      "steps": {
+        "vi": [
+          "Đổ hết nước trong xô, chậu, thau ngay sau khi dùng và úp ngược lại",
+          "Đậy kín chum, vại, lu, bể chứa nước; đóng nắp bồn cầu và cửa nhà tắm",
+          "Rào hoặc chặn lối ra ao, hồ, kênh mương, bể bơi gần nhà",
+          "Khi con ở gần nước, luôn có một người lớn trong tầm với tay, tập trung trông con, không xem điện thoại"
+        ],
+        "en": [
+          "Empty buckets, basins and tubs straight after use and turn them upside down",
+          "Cover water jars, tanks and cisterns securely; keep the toilet lid and bathroom door closed",
+          "Fence off or block the way to ponds, canals, ditches and pools near your home",
+          "Whenever your child is near water, an adult stays within arm’s reach and watches, not on the phone"
+        ]
+      },
+      "safety": {
+        "vi": "Không bao giờ để con một mình, hay để anh chị nhỏ trông con, trong nhà tắm, chậu tắm hoặc gần nước, dù chỉ một phút. Phao tay hay ghế tắm không thay được người lớn trông.",
+        "en": "Never leave your child alone, or with an older child in charge, in the bathroom, the bath or near water, even for a minute. Armbands and bath seats don’t replace an adult watching."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 183,
+        "to": 730
+      },
+      "needs": ["play"],
+      "interests": ["moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "WHO: Drowning (fact sheet)",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/drowning"
+        },
+        {
+          "label": "WHO Viet Nam: Drowning rates not reducing fast enough (MOH, WHO, 2025)",
+          "url": "https://www.who.int/vietnam/news/detail/25-07-2025-drowning-rates-not-reducing-fast-enough--says-the-moh--who-and-partners-on-world-drowning-prevention-day"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Water safety and young children",
+          "url": "https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Water-Safety-And-Young-Children.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_partner_care_time",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Người cùng chăm nhận một việc riêng mỗi ngày",
+        "en": "A daily care job for your partner or co-carer"
+      },
+      "summary": {
+        "vi": "Khi ba hoặc người cùng chăm tự làm một việc chăm con mỗi ngày, con có thể quen thêm một người thân và người chăm chính có lúc nghỉ ngơi.",
+        "en": "When a partner or co-carer takes on one care job each day, baby may get to know another familiar person and the main carer gets a break."
+      },
+      "steps": {
+        "vi": [
+          "Chọn một việc cố định: tắm tối, thay tã, vỗ ợ hơi, áp da hoặc đi dạo",
+          "Để người đó làm theo cách của mình, không cần giống hệt người khác",
+          "Người còn lại dùng khoảng thời gian đó để nghỉ, ngủ bù hoặc ra ngoài một chút",
+          "Cuối ngày, dành vài phút nói với nhau về con và về chính mình"
+        ],
+        "en": [
+          "Pick one regular job: the evening bath, a diaper change, burping, skin-to-skin or a walk",
+          "Let them do it their own way; it doesn’t have to match how anyone else does it",
+          "The other carer uses that time to rest, nap or step outside",
+          "At the end of the day, take a few minutes to talk about baby, and about how you are both doing"
+        ]
+      },
+      "safety": {
+        "vi": "Chỉ áp da hay bế con khi người lớn tỉnh táo; thấy buồn ngủ thì đặt con nằm ngửa vào cũi.",
+        "en": "Only hold baby or do skin-to-skin while wide awake; if you feel sleepy, put baby on their back in the cot."
+      },
+      "durationMin": 15,
+      "ageDays": {
+        "from": 0,
+        "to": 365
+      },
+      "needs": ["bonding"],
+      "interests": ["moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "WHO: Nurturing care for early childhood development (2018)",
+          "url": "https://www.who.int/publications/i/item/9789241514064"
+        },
+        {
+          "label": "UNICEF Parenting: Child development",
+          "url": "https://www.unicef.org/parenting/child-development"
+        },
+        {
+          "label": "NHS: Postnatal depression",
+          "url": "https://www.nhs.uk/mental-health/conditions/postnatal-depression/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_parent_check_in",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Ba mẹ tự hỏi: mình đang thế nào?",
+        "en": "Checking in on yourself"
+      },
+      "summary": {
+        "vi": "Chăm con nhỏ rất vất vả. Vài câu hỏi ngắn có thể giúp ba mẹ nhận ra lúc mình cần thêm hỗ trợ.",
+        "en": "Caring for a little one is hard work. A few short questions may help you notice when you need more support."
+      },
+      "steps": {
+        "vi": [
+          "Hai tuần qua, mình có thường thấy buồn, trống rỗng hay không còn hứng thú với điều gì không?",
+          "Mình có hay lo âu, hoảng sợ, cáu gắt, hoặc không ngủ được kể cả khi con đang ngủ không?",
+          "Nếu có, hãy nói với một người mình tin và với bác sĩ: trầm cảm sau sinh hay gặp ở cả mẹ và ba, và có thể điều trị",
+          "Nhờ người thân trông con để mình ngủ một giấc dài, ăn uống đủ và ra ngoài một chút mỗi ngày"
+        ],
+        "en": [
+          "Over the past two weeks, have I often felt low, empty, or lost interest in things?",
+          "Have I felt anxious, panicky or irritable, or unable to sleep even when baby is asleep?",
+          "If so, tell someone you trust and a doctor: postnatal depression is common in mothers and fathers, and it can be treated",
+          "Ask family to look after baby so you can get a longer sleep, eat properly and get outside a little each day"
+        ]
+      },
+      "safety": {
+        "vi": "Nếu ba mẹ có ý nghĩ làm hại bản thân hoặc con, hãy gọi cấp cứu hoặc đến bệnh viện ngay, và nhờ một người thân ở cạnh mình.",
+        "en": "If you have thoughts of harming yourself or your baby, call emergency services or go to a hospital now, and ask someone close to stay with you."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 0,
+        "to": 730
+      },
+      "needs": ["soothing"],
+      "interests": ["moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Postnatal depression",
+          "url": "https://www.nhs.uk/mental-health/conditions/postnatal-depression/"
+        },
+        {
+          "label": "WHO: Maternal mental health",
+          "url": "https://www.who.int/teams/mental-health-and-substance-use/promotion-prevention/maternal-mental-health"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_sun_and_mosquitoes",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Che nắng và chống muỗi cho con",
+        "en": "Sun and mosquito protection"
+      },
+      "summary": {
+        "vi": "Da trẻ nhỏ dễ bỏng nắng, và muỗi có thể truyền bệnh như sốt xuất huyết. Che chắn đúng cách có thể giúp con an toàn hơn khi ra ngoài.",
+        "en": "Young skin burns easily, and mosquitoes can spread illnesses such as dengue. The right protection may help keep your child safer outdoors."
+      },
+      "steps": {
+        "vi": [
+          "Bé dưới 6 tháng: để trong bóng râm, mặc áo dài tay mỏng, đội mũ rộng vành",
+          "Từ 6 tháng: thoa thêm kem chống nắng phổ rộng SPF 30 trở lên lên vùng da hở, thoa lại sau khoảng 2 giờ hoặc khi bị ướt",
+          "Dùng màn (mùng) cho cũi và xe đẩy; mặc đồ dài tay khi nhiều muỗi, nhất là sáng sớm và chiều tối",
+          "Từ 2 tháng, có thể dùng kem chống muỗi chứa DEET (10–30%) hoặc picaridin: người lớn thoa ra tay mình rồi xoa cho con, tránh mắt, miệng và bàn tay con",
+          "Mỗi tuần đổ nước đọng quanh nhà: lọ hoa, chậu, lốp xe cũ"
+        ],
+        "en": [
+          "Under 6 months: keep in the shade, in light long sleeves and a wide-brimmed hat",
+          "From 6 months: add broad-spectrum SPF 30+ sunscreen to uncovered skin, and reapply about every 2 hours or after getting wet",
+          "Use nets over the cot and buggy, and long sleeves when mosquitoes are about, especially early morning and late afternoon",
+          "From 2 months, a repellent with DEET (10–30%) or picaridin can be used: put it on your own hands first, then on your child, avoiding eyes, mouth and hands",
+          "Each week, empty standing water around the home: vases, pots, old tyres"
+        ]
+      },
+      "safety": {
+        "vi": "Không dùng kem chống muỗi cho bé dưới 2 tháng, không dùng sản phẩm có dầu khuynh diệp chanh (OLE, PMD) cho trẻ dưới 3 tuổi. Con sốt ở nơi có sốt xuất huyết: không tự cho uống aspirin hay ibuprofen, hãy đưa con đi khám.",
+        "en": "No insect repellent under 2 months, and no oil of lemon eucalyptus (OLE, PMD) under 3 years. If your child has a fever where dengue is common, don’t give aspirin or ibuprofen yourself; get them checked."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 30,
+        "to": 730
+      },
+      "needs": ["play", "bonding"],
+      "interests": ["moments"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Sun safety",
+          "url": "https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Sun-Safety.aspx"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Choosing an insect repellent for your child",
+          "url": "https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Insect-Repellents.aspx"
+        },
+        {
+          "label": "WHO: Dengue and severe dengue (fact sheet)",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/dengue-and-severe-dengue"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_car_seat_every_trip",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Ghế ô tô đúng cách cho mỗi chuyến đi",
+        "en": "The right car seat, every trip"
+      },
+      "summary": {
+        "vi": "Một chiếc ghế ô tô dành cho trẻ, lắp đúng cách, có thể giúp bảo vệ con trên mọi chuyến đi bằng ô tô.",
+        "en": "A child car seat that is fitted properly may help protect your child on every car journey."
+      },
+      "steps": {
+        "vi": [
+          "Cho con ngồi ghế quay mặt về phía sau càng lâu càng tốt, đến khi vượt giới hạn cân nặng hoặc chiều cao của ghế",
+          "Lắp ghế ở hàng ghế sau; không bao giờ đặt ghế quay sau trước túi khí đang bật",
+          "Thắt dây đai ôm sát: ở vai không véo gập được phần dây thừa; không mặc áo khoác dày bên trong dây",
+          "Không bế con trên đùi khi xe chạy, kể cả quãng ngắn",
+          "Đi đường dài thì dừng nghỉ, cho con ra khỏi ghế; đến nơi thì chuyển con đang ngủ ra mặt phẳng"
+        ],
+        "en": [
+          "Keep your child rear-facing for as long as possible, until they reach the seat’s weight or height limit",
+          "Fit the seat in the back; never put a rear-facing seat in front of an active airbag",
+          "Make the harness snug: you shouldn’t be able to pinch any slack at the shoulder; no bulky coats under the straps",
+          "Never hold your child on your lap in a moving car, even for a short trip",
+          "On long trips, stop for breaks and take your child out of the seat; when you arrive, move a sleeping baby to a flat surface"
+        ]
+      },
+      "safety": {
+        "vi": "Không bao giờ để con một mình trong xe, kể cả vài phút: xe nóng lên rất nhanh. Dùng ghế đạt chuẩn nơi gia đình sống; không dùng ghế cũ đã qua va chạm.",
+        "en": "Never leave your child alone in a car, even for a few minutes: cars heat up fast. Use a seat that meets your local standard, and not one that has been in a crash."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 0,
+        "to": 730
+      },
+      "needs": ["bonding"],
+      "interests": ["moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Car seats, information for families",
+          "url": "https://www.healthychildren.org/English/safety-prevention/on-the-go/Pages/Car-Safety-Seats-Information-for-Families.aspx"
+        },
+        {
+          "label": "NHS: Baby and toddler safety",
+          "url": "https://www.nhs.uk/baby/first-aid-and-safety/safety/baby-and-toddler-safety/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_active_play_every_day",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Chơi vận động mỗi ngày",
+        "en": "Active play every day"
+      },
+      "summary": {
+        "vi": "WHO khuyến nghị trẻ 1–2 tuổi vận động nhiều kiểu, cộng lại ít nhất 3 giờ rải rác trong ngày; chơi cùng ba mẹ là cách dễ bắt đầu.",
+        "en": "WHO suggests 1–2-year-olds get at least 3 hours of varied activity spread through the day; playing together is an easy way to start."
+      },
+      "steps": {
+        "vi": [
+          "Ra sân, công viên hoặc dọn một khoảng rộng trong nhà",
+          "Đi bộ cùng con, leo bậc thấp, chui qua gầm ghế, đá bóng, nhảy theo nhạc",
+          "Để con tự thử, ba mẹ đứng gần để đỡ khi cần; đổi trò khi con chán",
+          "Không để con ngồi yên trong xe đẩy, ghế hay trước màn hình quá 1 giờ liền"
+        ],
+        "en": [
+          "Head to a yard or park, or clear a space indoors",
+          "Walk together, climb low steps, crawl under chairs, kick a ball, dance to music",
+          "Let your child try things with you close by to help, and switch games when interest fades",
+          "Avoid keeping your child strapped in a buggy or seat, or in front of a screen, for more than an hour at a time"
+        ]
+      },
+      "safety": {
+        "vi": "Luôn có người lớn trông. Tránh nắng gắt buổi trưa, lối xe chạy và ao hồ; chặn cầu thang, cửa sổ và ban công.",
+        "en": "Always supervised. Avoid strong midday sun, roads and open water, and block off stairs, windows and balconies."
+      },
+      "durationMin": 20,
+      "ageDays": {
+        "from": 365,
+        "to": 730
+      },
+      "needs": ["play", "milestone"],
+      "interests": ["milestones"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "WHO: Guidelines on physical activity, sedentary behaviour and sleep for children under 5 years (2019)",
+          "url": "https://www.who.int/publications/i/item/9789241550536"
+        },
+        {
+          "label": "NHS: Baby and toddler play ideas",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/baby-and-toddler-play-ideas/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_vitamin_d_drops",
+      "version": 1,
+      "status": "published",
+      "title": {
+        "vi": "Vitamin D dạng giọt cho bé bú mẹ",
+        "en": "Vitamin D drops for breastfed babies"
+      },
+      "summary": {
+        "vi": "Ở một số nước, bé bú mẹ được khuyên uống vitamin D dạng giọt mỗi ngày từ những ngày đầu; hỏi bác sĩ hoặc dược sĩ nơi gia đình sống.",
+        "en": "In some countries, breastfed babies are advised to have vitamin D drops every day from the first days; check with your local doctor or pharmacist."
+      },
+      "steps": {
+        "vi": [
+          "Hỏi bác sĩ hoặc dược sĩ loại vitamin D giọt dành cho trẻ sơ sinh và liều mỗi ngày",
+          "Cho con uống vào cùng một lúc mỗi ngày, ví dụ trước cữ bú buổi sáng",
+          "Bé uống chủ yếu sữa công thức có thể không cần thêm: hỏi bác sĩ"
+        ],
+        "en": [
+          "Ask a doctor or pharmacist which infant vitamin D drops to use and the daily dose",
+          "Give them at the same time each day, for example before the morning feed",
+          "A baby who mostly has formula may not need extra: ask your doctor"
+        ]
+      },
+      "safety": {
+        "vi": "Chỉ dùng sản phẩm dành cho trẻ sơ sinh, đúng liều; không dùng cùng lúc nhiều sản phẩm có vitamin D.",
+        "en": "Only use a product made for babies, at the stated dose, and don’t combine several products that contain vitamin D."
+      },
+      "durationMin": 2,
+      "ageDays": {
+        "from": 0,
+        "to": 365
+      },
+      "needs": ["feeding"],
+      "interests": ["feeding", "nutrition"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": ["US", "CA", "GB"],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Vitamin D and iron supplements for babies",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/Vitamin-Iron-Supplements.aspx"
+        },
+        {
+          "label": "NHS: Vitamins for children",
+          "url": "https://www.nhs.uk/baby/weaning-and-feeding/vitamins-for-children/"
+        }
+      ],
+      "review": null
     }
   ],
   "ageCards": [
@@ -1962,7 +2839,7 @@
         "en": "Week 1"
       },
       "body": {
-        "vi": "Tuần đầu đời, con thường ngủ nhiều (hay 16 giờ trở lên mỗi ngày, chia thành nhiều giấc ngắn) và bú thường xuyên, khoảng 8–12 lần mỗi ngày đêm. Sụt một ít cân trong vài ngày đầu là điều thường gặp. Mỗi bé mỗi khác, ba mẹ cứ theo nhịp của con.",
+        "vi": "Tuần đầu đời, con thường ngủ nhiều (thường từ 16 giờ trở lên mỗi ngày, chia thành nhiều giấc ngắn) và bú thường xuyên, khoảng 8–12 lần mỗi ngày đêm. Sụt một ít cân trong vài ngày đầu là điều thường gặp. Mỗi bé mỗi khác, ba mẹ cứ theo nhịp của con.",
         "en": "In the first week babies usually sleep a lot (often 16 hours or more a day, in short stretches) and feed often, around 8–12 times in 24 hours. Losing a little weight in the first few days is common. Every baby is different; follow your baby’s lead."
       },
       "tips": {
@@ -1981,13 +2858,13 @@
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Da hoặc mắt vàng trong 24 giờ đầu, hoặc vàng lan nhanh kèm con lừ đừ, bú kém",
           "Con bú ít hẳn, khó đánh thức để bú, hoặc ít tã ướt hơn mọi khi",
           "Rốn đỏ, sưng, có mùi hôi hoặc chảy dịch"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Yellow skin or eyes in the first 24 hours, or yellowing that spreads quickly with a sleepy baby who feeds poorly",
           "Your baby feeds much less, is hard to wake for feeds, or has fewer wet diapers than usual",
           "The cord stump is red, swollen, smelly or oozing"
@@ -2034,22 +2911,24 @@
         "vi": [
           "Cho con nằm sấp trên ngực vài phút khi ba mẹ tỉnh táo",
           "Ban ngày sáng và có tiếng động thường ngày, ban đêm tối và yên",
-          "Nhận sự giúp đỡ của người thân, ngủ bù khi con ngủ nếu được"
+          "Nhận sự giúp đỡ của người thân, ngủ bù khi con ngủ nếu được",
+          "Nếu da hay mắt con vàng, đừng tự phơi nắng hay tắm lá để chữa: hãy cho bác sĩ xem"
         ],
         "en": [
           "A few minutes of tummy time on your chest while you’re wide awake",
           "Bright, normal-sounding days; dark, quiet nights",
-          "Accept help from family and rest when baby sleeps if you can"
+          "Accept help from family and rest when baby sleeps if you can",
+          "If baby’s skin or eyes look yellow, don’t use sunbathing or herbal baths to treat it: get a doctor to check"
         ]
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Vàng da kéo dài quá 2 tuần (quá 3 tuần ở bé sinh non), hoặc phân bạc màu, nước tiểu sẫm",
           "Con bú ít hẳn, khó đánh thức để bú, hoặc ít tã ướt hơn mọi khi"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Jaundice lasting beyond 2 weeks (3 weeks if born early), or pale stools or dark urine",
           "Your baby feeds much less, is hard to wake for feeds, or has fewer wet diapers than usual"
         ]
@@ -2101,12 +2980,12 @@
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Tiếng khóc khác hẳn mọi khi (the thé, rên rỉ), hoặc khóc kèm bỏ bú",
           "Nôn vọt mạnh sau nhiều cữ bú, hoặc nôn ra dịch xanh"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "A cry very different from usual (high-pitched or moaning), or crying with refusing feeds",
           "Forceful vomiting after many feeds, or green vomit"
         ]
@@ -2158,12 +3037,12 @@
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Con không giật mình hay không phản ứng với tiếng động lớn",
           "Con bú ít hẳn, khó đánh thức để bú, hoặc ít tã ướt hơn mọi khi"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Your baby doesn’t startle or react to loud sounds",
           "Your baby feeds much less, is hard to wake for feeds, or has fewer wet diapers than usual"
         ]
@@ -2215,12 +3094,12 @@
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Con khóc liên tục nhiều giờ kèm bỏ bú, nôn, hoặc tiếng khóc khác thường",
           "Ba hoặc mẹ thấy buồn, lo âu hay kiệt sức kéo dài hơn 2 tuần: hãy nói với bác sĩ, ba mẹ cũng cần được chăm sóc"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Hours of crying with refusing feeds, vomiting, or an unusual cry",
           "You feel low, anxious or exhausted for more than 2 weeks: tell a doctor; you deserve care too"
         ]
@@ -2266,23 +3145,23 @@
         "vi": [
           "Cười đáp lại và chờ con “trả lời”",
           "Đưa con và mẹ đi khám sức khoẻ sau sinh theo hẹn",
-          "Hỏi bác sĩ về lịch tiêm chủng lúc 2 tháng tuổi"
+          "Hỏi bác sĩ về các mũi tiêm đầu tiên theo lịch tiêm chủng nơi gia đình sống"
         ],
         "en": [
           "Smile back and wait for baby to “reply”",
           "Go to the postnatal check-ups for baby and mum as booked",
-          "Ask the doctor about the 2-month vaccinations"
+          "Ask the doctor about the first vaccinations on your local schedule"
         ]
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Con không nhìn theo người hoặc đồ vật di chuyển",
           "Con không giật mình hay không phản ứng với tiếng động lớn",
           "Ba hoặc mẹ thấy buồn, lo âu hay kiệt sức kéo dài hơn 2 tuần: hãy nói với bác sĩ, ba mẹ cũng cần được chăm sóc"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Your baby doesn’t watch people or things as they move",
           "Your baby doesn’t startle or react to loud sounds",
           "You feel low, anxious or exhausted for more than 2 weeks: tell a doctor; you deserve care too"
@@ -2335,14 +3214,14 @@
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Người con rất cứng hoặc rất mềm, hoặc chỉ cử động một bên tay chân nhiều hơn hẳn bên kia",
-          "Con chưa cười đáp lại khi người thân trò chuyện"
+          "Con bú ít hẳn, khó đánh thức để bú, hoặc ít tã ướt hơn mọi khi"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Your baby seems very stiff or very floppy, or moves one side much more than the other",
-          "Your baby doesn’t smile back when you talk to them"
+          "Your baby feeds much less, is hard to wake for feeds, or has fewer wet diapers than usual"
         ]
       },
       "interests": ["milestones"],
@@ -2381,28 +3260,28 @@
       "tips": {
         "vi": [
           "Đáp lại tiếng ê a của con như đang trò chuyện",
-          "Đưa con đi khám và tiêm chủng theo lịch 2 tháng",
+          "Đưa con đi khám và tiêm chủng theo lịch nơi gia đình sống",
           "Nếu đang quấn chũn, ngừng ngay khi con có dấu hiệu tập lật"
         ],
         "en": [
           "Answer baby’s coos as if you’re having a conversation",
-          "Keep the 2-month check-up and vaccinations",
+          "Keep your baby’s check-ups and vaccinations on your local schedule",
           "If you swaddle, stop as soon as baby shows signs of rolling"
         ]
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Con không giật mình hay không phản ứng với tiếng động lớn",
           "Con không nhìn theo người hoặc đồ vật di chuyển",
-          "Con chưa cười đáp lại khi người thân trò chuyện",
+          "Đến khoảng 8 tuần, con vẫn chưa cười đáp lại khi người thân trò chuyện",
           "Con mất đi một kỹ năng từng làm được"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Your baby doesn’t startle or react to loud sounds",
           "Your baby doesn’t watch people or things as they move",
-          "Your baby doesn’t smile back when you talk to them",
+          "By about 8 weeks, your baby still doesn’t smile back when you talk to them",
           "Your baby loses a skill they used to have"
         ]
       },
@@ -2453,12 +3332,12 @@
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Con bú ít hẳn, khó đánh thức để bú, hoặc ít tã ướt hơn mọi khi",
           "Con chưa cười đáp lại khi người thân trò chuyện"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Your baby feeds much less, is hard to wake for feeds, or has fewer wet diapers than usual",
           "Your baby doesn’t smile back when you talk to them"
         ]
@@ -2510,12 +3389,12 @@
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Con không nhìn theo người hoặc đồ vật di chuyển",
           "Con không giật mình hay không phản ứng với tiếng động lớn"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Your baby doesn’t watch people or things as they move",
           "Your baby doesn’t startle or react to loud sounds"
         ]
@@ -2563,12 +3442,12 @@
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Người con rất cứng hoặc rất mềm, hoặc chỉ cử động một bên tay chân nhiều hơn hẳn bên kia",
           "Con chưa cười đáp lại khi người thân trò chuyện"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Your baby seems very stiff or very floppy, or moves one side much more than the other",
           "Your baby doesn’t smile back when you talk to them"
         ]
@@ -2620,12 +3499,12 @@
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
           "Con vẫn khóc dai dẳng nhiều giờ mỗi ngày",
           "Con chưa cười đáp lại khi người thân trò chuyện"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
           "Your baby still cries for hours most days",
           "Your baby doesn’t smile back when you talk to them"
         ]
@@ -2677,13 +3556,13 @@
       },
       "watchFor": {
         "vi": [
-          "Sốt từ 38°C trở lên: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
-          "Con chưa giữ được đầu khi được bế thẳng",
+          "Sốt từ 38°C trở lên (đo bằng nhiệt kế điện tử, thường ở nách), hoặc người lạnh dưới 35,5°C: đưa con đi khám ngay, kể cả khi con trông vẫn ổn",
+          "Con chưa ngẩng đầu lên được chút nào khi nằm sấp",
           "Con mất đi một kỹ năng từng làm được"
         ],
         "en": [
-          "A temperature of 38°C or higher: get your baby seen straight away, even if they seem well",
-          "Your baby can’t hold their head up when held upright",
+          "A temperature of 38°C or higher (digital thermometer, usually under the arm), or a cold baby below 35.5°C: get your baby seen straight away, even if they seem well",
+          "Your baby can’t lift their head at all during tummy time",
           "Your baby loses a skill they used to have"
         ]
       },
@@ -2732,13 +3611,13 @@
         "vi": [
           "Sốt từ 39°C trở lên ở bé 3–6 tháng: liên hệ bác sĩ ngay trong ngày",
           "Con không nhìn theo người hoặc đồ vật di chuyển",
-          "Con chưa giữ được đầu khi được bế thẳng",
+          "Đầu con vẫn ngả hẳn, gần như không giữ được khi được bế thẳng",
           "Con mất đi một kỹ năng từng làm được"
         ],
         "en": [
           "A temperature of 39°C or higher at 3–6 months: contact a doctor the same day",
           "Your baby doesn’t watch people or things as they move",
-          "Your baby can’t hold their head up when held upright",
+          "Your baby’s head still flops with almost no control when held upright",
           "Your baby loses a skill they used to have"
         ]
       },
@@ -2791,13 +3670,13 @@
         "vi": [
           "Sốt từ 39°C trở lên ở bé 3–6 tháng: liên hệ bác sĩ ngay trong ngày",
           "Con chưa giữ được đầu khi được bế thẳng",
-          "Con không với lấy hay không đưa đồ vật lên miệng",
+          "Con không đưa tay lên miệng hoặc không nhìn theo đồ chơi",
           "Con không giật mình hay không phản ứng với tiếng động lớn"
         ],
         "en": [
           "A temperature of 39°C or higher at 3–6 months: contact a doctor the same day",
           "Your baby can’t hold their head up when held upright",
-          "Your baby doesn’t reach for things or bring them to their mouth",
+          "Your baby doesn’t bring their hands to their mouth or follow a toy with their eyes",
           "Your baby doesn’t startle or react to loud sounds"
         ]
       },
@@ -2895,15 +3774,15 @@
       },
       "tips": {
         "vi": [
-          "Bắt đầu ăn dặm từng thìa nhỏ, để con dẫn dắt",
+          "Bắt đầu ăn dặm từng thìa nhỏ, ưu tiên món giàu sắt như thịt, cá, trứng, và để con dẫn dắt",
           "Cho con nhấp nước bằng cốc trong bữa ăn",
-          "Chải răng nhẹ khi chiếc răng đầu tiên nhú, theo hướng dẫn của nha sĩ hoặc bác sĩ",
+          "Khi chiếc răng đầu tiên nhú, chải răng hai lần mỗi ngày với lượng kem có fluor bằng hạt gạo",
           "Dọn vật nhỏ, che ổ điện, chặn cầu thang, cố định đồ đạc dễ đổ"
         ],
         "en": [
-          "Start solids with small tastes and let baby lead",
+          "Start solids with small tastes, including iron-rich foods like meat, fish and egg, and let baby lead",
           "Offer sips of water from a cup with meals",
-          "Brush gently once the first tooth appears, as your dentist or doctor advises",
+          "Once the first tooth appears, brush twice a day with a rice-grain smear of fluoride toothpaste",
           "Clear small objects, cover sockets, gate stairs and secure furniture that could tip"
         ]
       },
@@ -3080,29 +3959,31 @@
         "vi": [
           "Chỉ tay và gọi tên những thứ con đang nhìn",
           "Chơi bỏ đồ vào hộp rồi đổ ra",
-          "Hỏi bác sĩ về khám sàng lọc phát triển ở lần khám quanh 9 tháng"
+          "Ở mỗi lần khám định kỳ, hỏi bác sĩ về sự phát triển của con; nếu chưa có lịch khám, ba mẹ có thể chủ động hẹn",
+          "Hỏi bác sĩ về mũi tiêm tiếp theo theo lịch tiêm chủng nơi gia đình sống"
         ],
         "en": [
           "Point to and name what your child is looking at",
           "Play putting things in a box and tipping them out",
-          "Ask the doctor about a developmental check at the 9-month visit"
+          "At routine check-ups, ask the doctor about your baby’s development; if none is planned, you can book one",
+          "Ask the doctor which vaccinations are next on your local schedule"
         ]
       },
       "watchFor": {
         "vi": [
           "Con không quay lại khi được gọi tên",
           "Con rất ít phát ra âm thanh, hoặc dường như không nghe thấy khi được gọi",
-          "Con chưa ngồi được dù có đỡ",
+          "Con chưa tự ngồi được khi không có người đỡ",
           "Con mất đi một kỹ năng từng làm được"
         ],
         "en": [
           "Your baby doesn’t look when you say their name",
           "Your baby makes very few sounds, or doesn’t seem to hear when called",
-          "Your baby can’t sit even with support",
+          "Your baby can’t sit without support",
           "Your baby loses a skill they used to have"
         ]
       },
-      "interests": ["milestones"],
+      "interests": ["milestones", "vaccines"],
       "sources": [
         {
           "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
@@ -3250,13 +4131,15 @@
       "tips": {
         "vi": [
           "Cho con ăn cùng bữa với gia đình, thức ăn mềm, cắt nhỏ, không nêm mặn hay ngọt",
-          "Hỏi bác sĩ về loại sữa phù hợp sau 1 tuổi và lịch tiêm chủng 12 tháng",
-          "Trước 18 tháng nên tránh cho con xem màn hình, trừ gọi video với người thân"
+          "Sau 1 tuổi, tiếp tục cho bú mẹ nếu mẹ và con muốn; nếu không bú mẹ, sữa tươi tiệt trùng nguyên kem không đường thường là đủ, không cần sữa công thức “tăng trưởng”",
+          "Trước 18 tháng nên tránh cho con xem màn hình, trừ gọi video với người thân; không cho xem điện thoại hay TV trong bữa ăn",
+          "Hỏi bác sĩ về mũi tiêm tiếp theo theo lịch tiêm chủng nơi gia đình sống"
         ],
         "en": [
           "Let your child eat with the family: soft, chopped food with no added salt or sugar",
-          "Ask the doctor which milk suits after age 1 and about the 12-month vaccinations",
-          "Before 18 months, avoid screens except video calls with family"
+          "After age 1, keep breastfeeding if you both want to; if not, plain pasteurised full-fat milk is usually enough, and ‘growing-up’ formulas aren’t needed",
+          "Before 18 months, avoid screens except video calls with family, and no phones or TV at mealtimes",
+          "Ask the doctor which vaccinations are next on your local schedule"
         ]
       },
       "watchFor": {
@@ -3330,7 +4213,7 @@
         ],
         "en": [
           "Your child doesn’t understand simple requests with gestures",
-          "Your baby makes very few sounds, or doesn’t seem to hear when called",
+          "Your child makes very few sounds, or doesn’t seem to hear when called",
           "Your child loses a skill they used to have"
         ]
       },
@@ -3387,7 +4270,7 @@
         ],
         "en": [
           "Your child doesn’t point to ask for things or to show you something",
-          "Your baby doesn’t look when you say their name",
+          "Your child doesn’t look when you say their name",
           "Your child loses a skill they used to have"
         ]
       },
@@ -3597,12 +4480,12 @@
       },
       "tips": {
         "vi": [
-          "Hỏi bác sĩ về khám sàng lọc phát triển ở lần khám 18 tháng",
+          "Hỏi bác sĩ về đánh giá phát triển, gồm cả sàng lọc tự kỷ, ở lần khám quanh 18 tháng hoặc bất cứ khi nào ba mẹ băn khoăn",
           "Cùng xem sách tranh vài phút mỗi ngày",
           "Nếu cho con xem màn hình, chọn nội dung chất lượng, ngắn và xem cùng con"
         ],
         "en": [
-          "Ask the doctor about developmental screening at the 18-month visit",
+          "Ask the doctor about a development review, including autism screening, around 18 months or whenever you have concerns",
           "Share a picture book for a few minutes each day",
           "If you use screens, choose good-quality content, keep it short and watch together"
         ]
@@ -3927,12 +4810,12 @@
       },
       "tips": {
         "vi": [
-          "Hỏi bác sĩ về khám sàng lọc phát triển ở lần khám 24 tháng",
+          "Hỏi bác sĩ về đánh giá phát triển ở lần khám quanh 2 tuổi, hoặc bất cứ khi nào ba mẹ băn khoăn",
           "Ít màn hình nhất có thể; nếu có, không quá 1 giờ mỗi ngày và xem cùng con",
           "Cùng xem sách tranh vài phút mỗi ngày"
         ],
         "en": [
-          "Ask the doctor about developmental screening at the 24-month visit",
+          "Ask the doctor about a development review around age 2, or whenever you have concerns",
           "Keep screen time as low as possible; no more than 1 hour a day, watched together",
           "Share a picture book for a few minutes each day"
         ]
@@ -3975,8 +4858,8 @@
         "id": "fever_young",
         "maxAgeDays": 90,
         "label": {
-          "vi": "Sốt từ 38°C trở lên ở bé dưới 3 tháng tuổi",
-          "en": "A temperature of 38°C or higher in a baby under 3 months"
+          "vi": "Sốt từ 38°C trở lên ở bé dưới 3 tháng tuổi (đo bằng nhiệt kế điện tử)",
+          "en": "A temperature of 38°C or higher in a baby under 3 months (measured with a digital thermometer)"
         }
       },
       {
@@ -3991,7 +4874,7 @@
         "id": "lethargic",
         "maxAgeDays": null,
         "label": {
-          "vi": "Lừ đừ, mềm người, khó đánh thức hoặc không tỉnh táo",
+          "vi": "Lừ đừ, li bì, mềm người, khó đánh thức hoặc không tỉnh táo",
           "en": "Unusually drowsy, floppy, hard to wake or not alert"
         }
       },
@@ -4039,21 +4922,21 @@
     "whileWaiting": {
       "vi": [
         "Giữ bình tĩnh, ở cạnh con và để ý nhịp thở của con",
-        "Nếu con co giật: đặt con nằm nghiêng trên mặt phẳng an toàn, không cho gì vào miệng, không ghì giữ tay chân, để ý thời gian cơn giật",
+        "Nếu con co giật: đặt con nằm nghiêng trên mặt phẳng an toàn, dọn vật cứng xung quanh, không cho gì vào miệng, không ghì giữ tay chân, để ý thời gian; gọi cấp cứu nếu là lần đầu, cơn kéo dài quá 5 phút hoặc con khó thở sau cơn",
         "Nếu con ngừng thở hoặc không đáp ứng: gọi cấp cứu ngay, làm theo hướng dẫn của tổng đài và mục Sơ cứu (CPR)",
-        "Mặc cho con vừa đủ ấm, không ủ kín, không chườm nước lạnh; không tự cho bé dưới 3 tháng dùng thuốc hạ sốt khi chưa hỏi bác sĩ",
+        "Mặc cho con đồ mỏng vừa đủ, không ủ kín, không chườm nước lạnh hay lau rượu, cồn; cho con bú thường hơn; không tự cho bé dưới 3 tháng dùng thuốc hạ sốt khi chưa hỏi bác sĩ, và không dùng aspirin cho trẻ",
         "Ghi lại giờ bắt đầu các dấu hiệu, mang theo sổ tiêm chủng và thuốc con đang dùng"
       ],
       "en": [
         "Stay calm, stay with your baby and watch their breathing",
-        "If your baby has a seizure: lay them on their side on a safe flat surface, put nothing in their mouth, don’t hold their limbs down, and note how long it lasts",
+        "If your baby has a seizure: lay them on their side on a safe flat surface, move hard objects away, put nothing in their mouth, don’t hold their limbs down, and time it; call emergency services if it’s the first one, lasts over 5 minutes, or breathing is difficult afterwards",
         "If your baby stops breathing or doesn’t respond: call emergency services now and follow the operator and the First aid (CPR) guide",
-        "Dress your baby in light layers, don’t bundle them up or sponge with cold water; don’t give fever medicine to a baby under 3 months without asking a doctor",
+        "Dress your baby in light layers; don’t bundle them up, sponge with cold water or rub with alcohol; offer feeds more often; don’t give fever medicine to a baby under 3 months without asking a doctor, and never give aspirin",
         "Note when the signs started, and bring the vaccination record and any medicines"
       ]
     },
     "disclaimer": {
-      "vi": "Child Life không chẩn đoán và không kết luận con “an toàn”. Nếu ba mẹ lo lắng, hãy gọi số cấp cứu hoặc bác sĩ của bé ngay; ba mẹ là người hiểu con nhất.",
+      "vi": "Child Life không chẩn đoán và không bao giờ kết luận con “không sao”. Nếu ba mẹ lo lắng, hãy gọi số cấp cứu hoặc bác sĩ của bé ngay; ba mẹ là người hiểu con nhất.",
       "en": "Child Life does not diagnose and never concludes that your baby is “fine”. If you are worried, call emergency services or your baby’s doctor straight away; you know your baby best."
     },
     "regions": [
@@ -4104,6 +4987,78 @@
       {
         "country": "TW",
         "emergencyNumber": "119"
+      },
+      {
+        "country": "MY",
+        "emergencyNumber": "999"
+      },
+      {
+        "country": "TH",
+        "emergencyNumber": "1669"
+      },
+      {
+        "country": "HK",
+        "emergencyNumber": "999"
+      },
+      {
+        "country": "CN",
+        "emergencyNumber": "120"
+      },
+      {
+        "country": "IE",
+        "emergencyNumber": "112"
+      },
+      {
+        "country": "NL",
+        "emergencyNumber": "112"
+      },
+      {
+        "country": "BE",
+        "emergencyNumber": "112"
+      },
+      {
+        "country": "ES",
+        "emergencyNumber": "112"
+      },
+      {
+        "country": "CH",
+        "emergencyNumber": "144"
+      },
+      {
+        "country": "AT",
+        "emergencyNumber": "144"
+      },
+      {
+        "country": "CZ",
+        "emergencyNumber": "155"
+      },
+      {
+        "country": "PL",
+        "emergencyNumber": "112"
+      },
+      {
+        "country": "SE",
+        "emergencyNumber": "112"
+      },
+      {
+        "country": "NO",
+        "emergencyNumber": "113"
+      },
+      {
+        "country": "DK",
+        "emergencyNumber": "112"
+      },
+      {
+        "country": "FI",
+        "emergencyNumber": "112"
+      },
+      {
+        "country": "AE",
+        "emergencyNumber": "998"
+      },
+      {
+        "country": "QA",
+        "emergencyNumber": "999"
       }
     ],
     "sources": [

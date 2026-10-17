@@ -12,6 +12,7 @@ import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import {
   contentAct,
+  contentImport,
   contentItem,
   contentList,
   contentSave,
@@ -363,6 +364,46 @@ describe('seed, lists and coverage', () => {
     };
     expect(articles.rows).toHaveLength(seedArticles.length);
     expect(articles.rows[0]).toHaveProperty('topic');
+  });
+
+  it('a content bundle lands as drafts under its own ids, never published', async () => {
+    const items = seedArticles.slice(0, 3).map((a) => ({
+      kind: 'article' as const,
+      id: a.id,
+      reviewerLabel: a.reviewerLabel,
+      // Their linked articles and milestones are not in this test.
+      data: { ...a.data, relatedArticleIds: [], milestoneIds: [] } as Record<string, unknown>,
+    }));
+    const opts = { notes: 'Nhập từ gói nội dung child-life-dev', dryRun: true };
+    const plan = await contentImport(db, deps(), ops, items, now, opts);
+    expect(plan.map((r) => r.outcome)).toEqual(['added', 'added', 'added']);
+    expect((await db.collection('contentDrafts').get()).size).toBe(0);
+
+    await contentImport(db, deps(), ops, items, now, { ...opts, dryRun: false });
+    const first = await db.doc(`contentDrafts/${items[0]!.id}`).get();
+    expect(first.get('status')).toBe('draft');
+    expect(first.get('lastEditorUid')).toBe(ops.uid);
+    expect((await db.collection('contentArticles').get()).size).toBe(0);
+    // The importer cannot approve what they imported.
+    await act(ops, items[0]!.id, 'submit');
+    expect(
+      await reason(act({ ...expert, uid: ops.uid }, items[0]!.id, 'approve', { checks })),
+    ).toBe('same-person');
+
+    // Again with one change: unchanged items stay, the one in review is left alone.
+    const changed = items.map((i, n) =>
+      n === 2 ? { ...i, data: { ...i.data, readingMinutes: 9 } } : i,
+    );
+    const busy = { ...changed[0]!, data: { ...changed[0]!.data, readingMinutes: 9 } };
+    const again = await contentImport(db, deps(), ops2, [busy, changed[1]!, changed[2]!], now, {
+      ...opts,
+      dryRun: false,
+    });
+    expect(again.map((r) => r.outcome)).toEqual(['busy', 'same', 'updated']);
+    const third = await db.doc(`contentDrafts/${items[2]!.id}`).get();
+    expect(third.get('data.readingMinutes')).toBe(9);
+    expect(third.get('lastEditorUid')).toBe(ops2.uid);
+    expect(await reason(contentImport(db, deps(), support, items, now, opts))).toBe('role');
   });
 
   it('a stage gap shows until a range has content', async () => {

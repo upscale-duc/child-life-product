@@ -67,3 +67,10 @@
   - Aligning with the Bộ Y tế "Sổ theo dõi sức khỏe bà mẹ và trẻ em".
   - Regional word choice ("lẫy", "bai bai", "măm", "ầu ơ", "ú òa").
   - Locked `follows_faces` 0–2 sits in the cognitive group (CDC: "Watches you as you move", cognitive). Its title "Nhìn theo mặt người" mixes that with "Looks at your face" (CDC social-emotional). Acceptable, but worth a look.
+
+## 6. Review pass 2026-10-16
+
+`says_three_words` and `checks_back`: the doctor note now says "khoảng 18 tháng" (CDC 18-month
+checklist) instead of 20. Full review: `docs/product/content-review-2026-10/library.md`. Corrected
+age for babies born before 37 weeks (until 24 months) is recommended there; the app does not apply
+it yet.

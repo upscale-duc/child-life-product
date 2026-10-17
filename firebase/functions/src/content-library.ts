@@ -733,6 +733,96 @@ export async function contentSeed(db: Firestore, staff: Staff | null, data: unkn
   return { added, skipped };
 }
 
+export interface ContentImportItem {
+  kind: ContentKind;
+  id: string;
+  reviewerLabel: string | null;
+  data: Data;
+}
+export type ContentImportOutcome = 'added' | 'updated' | 'same' | 'busy';
+
+const stable = (v: unknown): string =>
+  Array.isArray(v)
+    ? `[${v.map(stable).join(',')}]`
+    : v && typeof v === 'object'
+      ? `{${Object.keys(v)
+          .sort()
+          .map((k) => `${JSON.stringify(k)}:${stable((v as Data)[k])}`)
+          .join(',')}}`
+      : JSON.stringify(v);
+
+/**
+ * Content bundle import (`scripts/content-release.ts`): items from another project keep their ids
+ * (links between articles, stages and milestones stay valid) and land as Nháp, never published.
+ * A new id is created; changed text becomes the item's draft (the published revision stays on the
+ * app); an item waiting for review or approved is left alone ("busy"). The importer is the last
+ * editor, so someone else approves (D-058) and prod still needs the qualified review.
+ */
+export async function contentImport(
+  db: Firestore,
+  deps: ContentLibraryDeps,
+  staff: Staff | null,
+  items: ContentImportItem[],
+  now: Date,
+  opts: { notes: string; dryRun: boolean },
+) {
+  const s = requireStaff(staff, 'content.edit');
+  for (const item of items) {
+    const adapter = adapterOf(item.kind);
+    if (!adapter.isId(item.id) || !adapter.draft.safeParse(item.data).success) {
+      throw new StaffError('invalid-argument', `invalid-content:${item.kind}:${item.id}`);
+    }
+    if (!opts.dryRun) await checkImages(deps, item.kind, item.data);
+  }
+  const out: Array<{ kind: ContentKind; id: string; outcome: ContentImportOutcome }> = [];
+  for (const item of items) {
+    const ref = drafts(db).doc(item.id);
+    const outcome = await db.runTransaction(async (tx): Promise<ContentImportOutcome> => {
+      const snap = await tx.get(ref);
+      if (snap.exists && snap.get('kind') !== item.kind) {
+        throw new StaffError('failed-precondition', `kind-mismatch:${item.id}`);
+      }
+      if (snap.exists && stable(snap.get('data')) === stable(item.data)) return 'same';
+      const status = (snap.get('status') as EditorialStatus | undefined) ?? null;
+      if (status === 'in_review' || status === 'approved') return 'busy';
+      if (opts.dryRun) return snap.exists ? 'updated' : 'added';
+      const editor = {
+        data: item.data,
+        reviewerLabel: item.reviewerLabel,
+        notes: opts.notes,
+        status: 'draft',
+        approverUid: null,
+        approverName: null,
+        approvedAt: null,
+        pendingReview: null,
+        checks: [],
+        lastEditorUid: s.uid,
+        lastEditorName: s.name,
+        updatedAt: now,
+      };
+      if (snap.exists) {
+        tx.update(ref, editor);
+      } else {
+        tx.create(ref, {
+          ...editor,
+          kind: item.kind,
+          createdAt: now,
+          createdByUid: s.uid,
+          createdByName: s.name,
+          submittedAt: null,
+          submittedByName: null,
+          rejection: null,
+          live: null,
+        });
+      }
+      audit(tx, db, s, item.kind, item.id, 'import', now, null, { from: status });
+      return snap.exists ? 'updated' : 'added';
+    });
+    out.push({ kind: item.kind, id: item.id, outcome });
+  }
+  return out;
+}
+
 /** A picture for articles and stages (stored once; the same bytes give the same id). */
 export async function contentUploadImage(
   db: Firestore,

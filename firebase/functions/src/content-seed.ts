@@ -1182,7 +1182,7 @@ export const seedArticles: SeedArticle[] = [
             'Chung phòng, riêng giường: đặt nôi của bé cạnh giường ba mẹ, ít nhất trong 6 tháng đầu. Cách này có thể giảm nguy cơ đột tử tới 50%.',
             'Không ngủ cùng bé trên sofa hay ghế bành: nguy cơ ở đây cao hơn giường rất nhiều.',
             'Không quá nóng: mặc cho bé nhiều hơn người lớn tối đa một lớp; không đội mũ khi ngủ trong nhà; phòng thoáng. Bé ra mồ hôi, nóng ngực, da đỏ là đang quá nóng.',
-            'Không dùng chăn, túi ngủ, đồ quấn có gắn vật nặng, và không chèn túi gạo hay vật nặng lên người bé.',
+            'Không dùng chăn, túi ngủ hay đồ quấn có gắn vật nặng, và không chèn túi gạo hay vật nặng lên người bé.',
             'Bú mẹ nếu có thể: sữa mẹ giúp giảm nguy cơ đột tử, bú càng lâu càng được bảo vệ.',
             'Ti giả: có thể cho bé ngậm khi đặt ngủ, không cần nhét lại khi ti rơi ra; với bé bú mẹ, đợi đến khi việc bú mẹ đã ổn định. Không đeo ti giả vào cổ hay ghim vào áo bé.',
             'Không khói thuốc: không hút thuốc lá, thuốc lá điện tử khi mang thai, trong nhà, trên xe hay gần bé.',
@@ -1197,7 +1197,7 @@ export const seedArticles: SeedArticle[] = [
             'Dùng nệm phẳng, chắc; đặt bé nằm ngửa, tránh xa gối và chăn; không quấn bé.',
             'Không để trẻ khác hay vật nuôi ngủ cùng; không bao giờ để bé một mình trên giường người lớn.',
             'Bảo đảm bé không thể rơi xuống hay kẹt giữa nệm và tường.',
-            'Không ngủ chung nếu bé sinh non (trước 37 tuần) hoặc nặng dưới 2,5 kg lúc sinh; nếu ba hoặc mẹ hút thuốc, đã uống rượu bia, dùng chất kích thích hay thuốc gây buồn ngủ.',
+            'Không ngủ chung nếu bé sinh non (trước 37 tuần) hoặc nặng dưới 2,5 kg lúc sinh; nếu ba hoặc mẹ hút thuốc, đã uống rượu bia, dùng chất kích thích hay thuốc gây buồn ngủ, hoặc đang quá mệt.',
           ),
           h('Theo dõi'),
           ul(
@@ -1242,7 +1242,7 @@ export const seedArticles: SeedArticle[] = [
             "Same room, separate bed: put your baby's crib next to your bed for at least the first 6 months. This can lower the risk of SIDS by up to 50%.",
             'Never sleep with your baby on a sofa or armchair: the risk there is far higher than in a bed.',
             'Not too warm: dress your baby in at most one layer more than an adult; no hat for sleep indoors; keep the room airy. Sweating, a hot chest or flushed skin mean your baby is too hot.',
-            'Do not use weighted blankets, sleep sacks or swaddles, and never place rice bags or other weights on your baby.',
+            'Do not use weighted blankets, weighted sleep sacks or weighted swaddles, and never place rice bags or other weights on your baby.',
             'Breastfeed if you can: breast milk lowers the risk of SIDS, and the longer it is given the more it protects.',
             "Pacifier: you can offer one when you lay your baby down, and there's no need to put it back if it falls out; for breastfed babies, wait until breastfeeding is well established. Never hang a pacifier around the neck or clip it to clothing.",
             'No smoke: no cigarettes or e-cigarettes during pregnancy, at home, in the car or near your baby.',
@@ -1257,7 +1257,7 @@ export const seedArticles: SeedArticle[] = [
             'Use a firm, flat mattress; lay your baby on their back, away from pillows and covers; do not swaddle.',
             'No other children or pets in the bed; never leave your baby alone in an adult bed.',
             'Make sure your baby cannot fall out or get trapped between the mattress and the wall.',
-            'Do not bed-share if your baby was born early (before 37 weeks) or weighed under 2.5 kg at birth, or if either parent smokes, has drunk alcohol, or has taken drugs or medicine that causes drowsiness.',
+            'Do not bed-share if your baby was born early (before 37 weeks) or weighed under 2.5 kg at birth, or if either parent smokes, has drunk alcohol, has taken drugs or medicine that causes drowsiness, or is extremely tired.',
           ),
           h('What to watch'),
           ul(
@@ -2004,7 +2004,7 @@ export const seedArticles: SeedArticle[] = [
       topic: 'feeding',
       format: 'article',
       ageWeeks: { from: 0, to: 13 },
-      readingMinutes: 6,
+      readingMinutes: 7,
       cover: null,
       title: t(
         'Những tuần đầu bú mẹ: khớp ngậm, cữ bú và dấu hiệu bé đủ sữa',
@@ -2047,8 +2047,8 @@ export const seedArticles: SeedArticle[] = [
           h('Khi ngực đau hoặc căng'),
           ul(
             'Đau, nứt, chảy máu đầu vú thường do khớp ngậm chưa tốt. Nhờ nữ hộ sinh hoặc tư vấn viên sữa mẹ xem một cữ bú để chỉnh sớm.',
-            'Căng sữa: cho bú thường xuyên hơn; nếu quá căng, vắt tay một ít cho mềm vú rồi cho bé ngậm, chỉ vắt đủ cho dễ chịu. Chườm ấm trước khi bú, chườm mát giữa các cữ.',
-            'Cục cứng, đau trong vú (tắc tia sữa) hoặc viêm vú: vẫn tiếp tục cho bú bên đó, xoa nhẹ từ cục về phía núm vú. Xử trí sớm để tránh nặng lên.',
+            'Căng sữa: cho bú theo nhu cầu; nếu quá căng, vắt tay một ít cho mềm quầng vú rồi cho bé ngậm, chỉ vắt đủ cho dễ chịu, không cố vắt kiệt. Chườm mát hoặc túi lạnh bọc khăn giữa các cữ để đỡ sưng đau; tránh chườm nóng lâu.',
+            'Cục cứng, đau trong vú (tắc tia sữa) hoặc viêm vú: tiếp tục cho bú bên đó như thường lệ, không bóp nặn hay xoa bóp mạnh vào cục cứng. Chỉ vuốt rất nhẹ trên da từ vùng đau về phía nách, chườm mát, và hỏi bác sĩ về thuốc giảm đau, chống viêm dùng được khi cho con bú. Xử trí sớm để tránh nặng lên.',
             'Bé khó ngậm, bú rất lâu mà vẫn đói, bú có tiếng “tặc tặc”, hoặc mẹ vẫn đau dù đã chỉnh tư thế: hỏi bác sĩ về dính phanh lưỡi.',
             'Mẹ cần uống thuốc: hỏi bác sĩ hoặc dược sĩ và nói rõ đang cho con bú. Rất ít thuốc thông thường buộc mẹ phải ngừng cho bú.',
           ),
@@ -2075,7 +2075,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           doctor(
             'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé khó thở, tím tái hoặc có lúc ngừng thở; bé li bì, rất khó đánh thức, không chịu bú; bé có dấu hiệu mất nước rõ như rất ít hoặc không có tã ướt, môi khô, thóp lõm. Mẹ thấy rất mệt, lả đi hoặc lơ mơ, nhất là khi đang sốt.',
+            'Bé khó thở, tím tái hoặc có lúc ngừng thở; bé li bì, rất khó đánh thức, không chịu bú; bé có dấu hiệu mất nước rõ như rất ít hoặc không có tã ướt, môi khô, thóp lõm. Cũng gọi 115 nếu mẹ thấy rất mệt, lả đi hoặc lơ mơ, nhất là khi đang sốt.',
           ),
           doctor(
             'Đưa bé đi khám sớm (trong ngày) khi',
@@ -2114,8 +2114,8 @@ export const seedArticles: SeedArticle[] = [
           h('When your breasts are sore or full'),
           ul(
             'Sore, cracked or bleeding nipples are usually caused by a shallow latch. Ask a midwife or breastfeeding counsellor to watch a feed and help early.',
-            'Engorgement: feed more often; if very full, hand express a little to soften the breast before your baby latches, only enough to feel comfortable. Use warmth before feeds and cold compresses between feeds.',
-            'A hard, painful lump (blocked duct) or mastitis: keep feeding from that breast and gently stroke from the lump towards the nipple. Act early so it does not get worse.',
+            'Engorgement: feed responsively; if very full, hand express a little to soften the areola before your baby latches, only enough to feel comfortable, not to empty the breast. Use cool packs wrapped in cloth between feeds to ease swelling and pain; avoid prolonged heat.',
+            'A hard, painful lump (blocked duct) or mastitis: keep feeding from that breast as usual and do not squeeze or massage the lump hard. Use only very light strokes over the skin from the sore area towards the armpit, cool packs, and ask a doctor about pain and anti-inflammatory medicines that are safe while breastfeeding. Act early so it does not get worse.',
             'If your baby struggles to latch, feeds for a very long time and is still hungry, makes clicking sounds, or you still have pain after fixing the position: ask a doctor about tongue-tie.',
             'If you need medicine: ask a doctor or pharmacist and tell them you are breastfeeding. Very few common medicines mean you have to stop breastfeeding.',
           ),
@@ -2144,7 +2144,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           doctor(
             'Call 115 or go to the emergency department now if',
-            'Your baby has trouble breathing, turns blue or has pauses in breathing; is very drowsy, very hard to wake or will not feed; or shows clear signs of dehydration such as very few or no wet diapers, a dry mouth or a sunken soft spot. Call 115 (Vietnam emergency) too if you, the mother, feel very unwell, faint or confused, especially with a fever.',
+            'Your baby has trouble breathing, turns blue or has pauses in breathing; is very drowsy, very hard to wake or will not feed; or shows clear signs of dehydration such as very few or no wet diapers, a dry mouth or a sunken soft spot. Call too if you, the mother, feel very unwell, faint or confused, especially with a fever.',
           ),
           doctor(
             'See a doctor the same day if',
@@ -2190,7 +2190,11 @@ export const seedArticles: SeedArticle[] = [
         S.nhsBfFirstDays,
         S.nhsBfPositioning,
         S.nhsBfEnoughMilk,
-        S.nhsBfBreastPain,
+        {
+          label:
+            'Academy of Breastfeeding Medicine — Clinical Protocol #36: The mastitis spectrum (revised 2022)',
+          url: 'https://www.bfmed.org/protocols',
+        },
         S.hcBfEnoughMilk,
         S.hcFirstMonthGrowth,
         S.cdcFluBreastfeeding,
@@ -2770,7 +2774,7 @@ export const seedArticles: SeedArticle[] = [
             'Vitamin D giúp cơ thể hấp thu canxi để xương chắc khỏe; thiếu kéo dài có thể gây còi xương. Sữa mẹ chứa ít vitamin D, còn sữa công thức đã được bổ sung sẵn.',
           ),
           p(
-            'AAP khuyên bé bú mẹ hoàn toàn hoặc một phần uống 400 IU (10 microgam) vitamin D mỗi ngày, bắt đầu từ những ngày đầu sau sinh. NHS khuyên 8,5–10 microgam mỗi ngày cho bé bú mẹ, từ lúc sinh đến 1 tuổi. Với bé bú sữa công thức, các tổ chức dùng mốc khác nhau: NHS cho rằng không cần bổ sung nếu bé uống trên 500 ml sữa công thức mỗi ngày, còn AAP dùng mốc cao hơn, khoảng 800 ml đến 1 lít mỗi ngày. Vì vậy bé bú kết hợp nên hỏi bác sĩ để quyết định.',
+            'AAP khuyên bé bú mẹ hoàn toàn hoặc một phần uống 400 IU (10 microgam) vitamin D mỗi ngày, bắt đầu từ những ngày đầu sau sinh. NHS khuyên 8,5–10 microgam mỗi ngày cho bé bú mẹ, từ lúc sinh đến 1 tuổi. Với bé bú sữa công thức, các tổ chức dùng mốc khác nhau: NHS cho rằng không cần bổ sung nếu bé uống trên 500 ml sữa công thức mỗi ngày, còn AAP dùng mốc cao hơn: dưới khoảng 1 lít (32 oz) sữa công thức mỗi ngày thì cần bổ sung. Vì vậy bé bú kết hợp nên hỏi bác sĩ để quyết định.',
           ),
           p(
             'Ánh nắng giúp da tạo vitamin D, nhưng không phải nguồn đáng tin và an toàn cho bé nhỏ: AAP khuyên giữ bé dưới 6 tháng tránh nắng trực tiếp, và NHS lưu ý trẻ nhỏ vẫn cần uống vitamin D dù có thời gian ở ngoài trời.',
@@ -2792,7 +2796,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Sắt'),
           ul(
-            'Bé đủ tháng bú mẹ hoàn toàn: AAP khuyên bổ sung sắt từ khoảng 4 tháng, hoặc chậm nhất khi bắt đầu ăn dặm lúc 6 tháng. Liều tính theo cân nặng, vì vậy hỏi bác sĩ, không tự mua.',
+            'Bé đủ tháng bú mẹ hoàn toàn: các hướng dẫn khác nhau. AAP (báo cáo năm 2026) khuyên bổ sung sắt từ khoảng 4 tháng, hoặc chậm nhất khi bắt đầu ăn dặm giàu sắt quanh 6 tháng; NHS (Anh) không khuyên bổ sung thường quy cho bé đủ tháng khoẻ mạnh mà chú trọng món giàu sắt khi ăn dặm. Liều tính theo cân nặng, vì vậy hỏi bác sĩ, không tự mua.',
             'Bé sinh non, nhẹ cân: thường cần bổ sung sắt từ vài tuần tuổi; làm đúng theo chỉ định của bác sĩ.',
             'Từ khoảng 6 tháng: mỗi ngày có món giàu sắt trong bữa ăn dặm như thịt bò, thịt gà phần đùi, cá, lòng đỏ trứng, đậu lăng, đậu phụ, bột ngũ cốc ăn dặm có bổ sung sắt.',
             'Sắt từ thịt, cá được hấp thu tốt hơn sắt từ rau, đậu. Ăn kèm rau quả giàu vitamin C như cam, ổi, cà chua, súp lơ xanh giúp hấp thu sắt từ thực vật tốt hơn.',
@@ -2838,7 +2842,7 @@ export const seedArticles: SeedArticle[] = [
             'Vitamin D helps the body absorb calcium for strong bones; a long-term shortage can cause rickets. Breast milk contains little vitamin D, while infant formula already has it added.',
           ),
           p(
-            'The AAP recommends 400 IU (10 micrograms) of vitamin D a day for fully or partly breastfed babies, starting in the first few days after birth. The NHS recommends 8.5–10 micrograms a day for breastfed babies from birth to 1 year. For formula-fed babies, guidelines use different thresholds: the NHS says no supplement is needed if your baby drinks more than 500 ml of formula a day, while the AAP uses a higher threshold of about 800 ml to 1 litre a day. So if your baby is combination-fed, ask your doctor.',
+            'The AAP recommends 400 IU (10 micrograms) of vitamin D a day for fully or partly breastfed babies, starting in the first few days after birth. The NHS recommends 8.5–10 micrograms a day for breastfed babies from birth to 1 year. For formula-fed babies, guidelines use different thresholds: the NHS says no supplement is needed if your baby drinks more than 500 ml of formula a day, while the AAP uses a higher threshold: supplement if your baby drinks less than about 1 litre (32 oz) of formula a day. So if your baby is combination-fed, ask your doctor.',
           ),
           p(
             'Sunlight helps skin make vitamin D, but it is not a reliable or safe source for young babies: the AAP advises keeping babies under 6 months out of direct sunlight, and the NHS notes that young children still need vitamin drops even if they spend time outdoors.',
@@ -2860,7 +2864,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Iron'),
           ul(
-            'Exclusively breastfed full-term babies: the AAP recommends an iron supplement from about 4 months, or at the latest when solids start at 6 months. The dose depends on weight, so ask your doctor rather than buying one yourself.',
+            'Exclusively breastfed full-term babies: guidance differs. The AAP (2026 report) recommends iron from about 4 months, or at the latest when iron-rich solids start around 6 months; the NHS (UK) does not routinely supplement healthy term babies and focuses on iron-rich solids. The dose depends on weight, so ask your doctor rather than buying one yourself.',
             "Babies born early or small: often need iron from a few weeks of age; follow your doctor's advice exactly.",
             'From about 6 months: include an iron-rich food in solids every day, such as beef, dark chicken meat, fish, egg yolk, lentils, tofu or iron-fortified baby cereal.',
             'Iron from meat and fish is absorbed better than iron from vegetables and beans. Serving fruit and vegetables rich in vitamin C, such as orange, guava, tomato or broccoli, helps the body absorb iron from plants.',
@@ -3138,7 +3142,7 @@ export const seedArticles: SeedArticle[] = [
       topic: 'feeding',
       format: 'article',
       ageWeeks: { from: 22, to: 104 },
-      readingMinutes: 5,
+      readingMinutes: 6,
       cover: null,
       title: t(
         'Ăn dặm an toàn: phân biệt oẹ với hóc và cách phòng hóc nghẹn',
@@ -3202,7 +3206,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           doctor(
             'Gọi 115 hoặc đến cấp cứu ngay khi',
-            'Bé ho không ra tiếng, không khóc, không thở được, tím tái hoặc lả đi; bé bất tỉnh sau khi hóc; nghi bé nuốt pin cúc áo hoặc nam châm, kể cả khi bé chưa có triệu chứng gì. Gọi 115 ngay; trong lúc chờ, không cho bé ăn uống và không gây nôn.',
+            'Bé ho không ra tiếng, không khóc, không thở được, tím tái hoặc lả đi; bé bất tỉnh sau khi hóc; nghi bé nuốt pin cúc áo hoặc nam châm, kể cả khi bé chưa có triệu chứng gì. Gọi 115 hoặc đến viện ngay; không gây nôn, và không cho bé ăn uống gì trừ khi nhân viên y tế hay trung tâm chống độc hướng dẫn. Ở Mỹ, trung tâm chống độc có thể hướng dẫn cho trẻ trên 1 tuổi uống mật ong trên đường đến viện khi nuốt pin cúc áo.',
           ),
           doctor(
             'Đưa bé đi khám trong ngày khi',
@@ -3262,7 +3266,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           doctor(
             'Call 115 or go to the emergency department now if',
-            'Your child cannot cough out loud, cannot cry or breathe, turns blue or goes limp; becomes unconscious after choking; or you think they swallowed a button battery or magnet, even with no symptoms yet. Call 115 straight away; meanwhile give nothing to eat or drink and do not make them vomit.',
+            'Your child cannot cough out loud, cannot cry or breathe, turns blue or goes limp; becomes unconscious after choking; or you think they swallowed a button battery or magnet, even with no symptoms yet. Call emergency services (115 in Việt Nam) or go to hospital now; do not make them vomit, and give nothing to eat or drink unless a health worker or poison centre tells you to. In the US, poison centres may advise honey for children over 1 on the way to hospital after a button battery.',
           ),
           doctor(
             'See a doctor the same day if',
@@ -3312,7 +3316,11 @@ export const seedArticles: SeedArticle[] = [
         S.cNhsChoking,
         S.cNhsFoodsToAvoid,
         S.cHcChokingPrevention,
-        S.cCdcChokingHazards,
+        {
+          label:
+            'National Capital Poison Center (US) — Button battery ingestion triage and treatment guideline',
+          url: 'https://www.poison.org/battery/guideline',
+        },
         S.cFdaKonjacJellyCups,
         S.cHcToothDecayBaby,
         S.cGoshButtonBatteries,
@@ -3888,7 +3896,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Thuốc hạ sốt: dùng khi bé khó chịu'),
           p(
-            'Paracetamol hoặc ibuprofen giúp bé dễ chịu hơn; NICE (Anh) khuyên chỉ dùng khi bé có vẻ mệt, quấy, khó chịu, và dừng khi bé đã thoải mái. Nhiều hướng dẫn ở Việt Nam lấy mốc từ 38,5 °C để cho thuốc. Dù theo cách nào, mục tiêu vẫn là giúp bé dễ chịu, không phải làm nhiệt độ về bình thường.',
+            'Paracetamol hoặc ibuprofen giúp bé dễ chịu hơn; NICE (Anh) khuyên chỉ dùng khi bé có vẻ mệt, quấy, khó chịu, và dừng khi bé đã thoải mái. Ở Việt Nam: nhiều hướng dẫn lấy mốc từ 38,5 °C để cho thuốc. Dù theo cách nào, mục tiêu vẫn là giúp bé dễ chịu, không phải làm nhiệt độ về bình thường.',
           ),
           ul(
             'Bé dưới 3 tháng có sốt: đưa đi khám trước, chỉ dùng thuốc khi bác sĩ hướng dẫn.',
@@ -3951,7 +3959,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Fever medicine: for when your baby is uncomfortable'),
           p(
-            'Paracetamol or ibuprofen can make your baby more comfortable; NICE (UK) advises using them only when your baby seems distressed and stopping once they are comfortable. Many guidelines in Vietnam use 38.5 °C as the point to give medicine. Either way, the aim is comfort, not a normal temperature.',
+            'Paracetamol or ibuprofen can make your baby more comfortable; NICE (UK) advises using them only when your baby seems distressed and stopping once they are comfortable. In Việt Nam: many guidelines use 38.5 °C as the point to give medicine. Either way, the aim is comfort, not a normal temperature.',
           ),
           ul(
             'Under 3 months with a fever: see a doctor first, and only give medicine if the doctor advises it.',
@@ -4215,7 +4223,7 @@ export const seedArticles: SeedArticle[] = [
       topic: 'illness',
       format: 'article',
       ageWeeks: { from: 0, to: 104 },
-      readingMinutes: 4,
+      readingMinutes: 5,
       cover: null,
       title: t(
         'Tiêu chảy, nôn và mất nước: bù nước đúng cách cho bé',
@@ -4244,7 +4252,7 @@ export const seedArticles: SeedArticle[] = [
             'Cho uống ORS (oresol) để bù nước: pha đúng thể tích nước sạch ghi trên gói, không chia nhỏ gói, không tự thêm đường hay muối. Pha sai tỉ lệ có thể gây hại cho bé.',
             'Cách cho uống: bé dưới 2 tuổi, đút từng thìa cà phê (khoảng 5 ml) mỗi 1–2 phút, không dùng bình bú; bé lớn hơn uống từng ngụm bằng cốc. Nếu bé nôn, chờ 10 phút rồi cho tiếp, chậm hơn (WHO).',
             'Lượng ORS sau mỗi lần đi ngoài và tổng lượng trong ngày tuỳ cân nặng và mức mất nước: hỏi nhân viên y tế hoặc dược sĩ. Dung dịch đã pha chỉ dùng trong thời gian ghi trên gói; quá thời gian thì đổ đi và pha mới.',
-            'Kẽm: WHO khuyến cáo trẻ tiêu chảy dùng kẽm trong 10–14 ngày để mau khỏi; dùng theo hướng dẫn của nhân viên y tế.',
+            'Kẽm: WHO khuyến cáo trẻ tiêu chảy dùng kẽm trong 10–14 ngày để mau khỏi, nhất là ở các nước thu nhập thấp và trung bình như Việt Nam; ở Anh, Mỹ, Úc, kẽm không được dùng thường quy. Dùng theo hướng dẫn của nhân viên y tế.',
             'Bé đã ăn dặm: tiếp tục cho ăn món quen, dễ tiêu, chia nhiều bữa nhỏ.',
             'Tránh nước ngọt có ga và nước ép trái cây vì có thể làm tiêu chảy nặng hơn.',
             'Không tự dùng thuốc cầm tiêu chảy hay thuốc chống nôn cho bé; NHS khuyên không dùng thuốc cầm tiêu chảy cho trẻ dưới 12 tuổi. Xem thêm mục Sơ cứu trẻ em › Ngộ độc thực phẩm trong Child Life.',
@@ -4293,7 +4301,7 @@ export const seedArticles: SeedArticle[] = [
             "Give ORS (oral rehydration salts) to replace fluids: mix it with exactly the volume of clean water on the packet, don't split sachets, and don't add sugar or salt. Getting the mix wrong can harm your baby.",
             'How to give it: under 2 years, a teaspoon (about 5 ml) every 1–2 minutes, not from a bottle; older children take sips from a cup. If your baby vomits, wait 10 minutes, then carry on more slowly (WHO).',
             'How much ORS to give after each loose poo and over the day depends on weight and how dehydrated your baby is: ask a health worker or pharmacist. Only use made-up solution within the time on the packet; after that, throw it away and make fresh.',
-            'Zinc: WHO recommends zinc for 10–14 days for children with diarrhoea to help them recover faster; give it as a health worker advises.',
+            'Zinc: WHO recommends zinc for 10–14 days for children with diarrhoea to help them recover faster, especially in low- and middle-income countries such as Việt Nam; in the UK, US and Australia zinc is not given routinely. Give it as a health worker advises.',
             'Babies on solids: keep offering familiar, easy foods in small, frequent meals.',
             'Avoid fizzy drinks and fruit juice, which can make diarrhoea worse.',
             "Don't give medicine to stop diarrhoea or vomiting unless a doctor prescribes it; the NHS advises no anti-diarrhoea medicine for children under 12. See also Sơ cứu trẻ em (First aid) › Food poisoning in Child Life.",
@@ -4420,13 +4428,13 @@ export const seedArticles: SeedArticle[] = [
             'Bé có tỉnh táo, bú khỏe không; bé quá buồn ngủ, khó đánh thức, quấy hoặc khóc thét bất thường là dấu hiệu nặng.',
           ),
           p(
-            'Vàng da kéo dài bao lâu thì cần khám? NICE (Anh) khuyên kiểm tra mọi bé đủ tháng còn vàng da sau 14 ngày và bé sinh non sau 21 ngày; AAP (Mỹ) cho rằng vàng da ở bé bú mẹ có thể kéo dài đến khoảng 1 tháng. Child Life khuyên theo mốc thận trọng hơn: đưa bé đi khám nếu còn vàng da sau 14 ngày (sinh non: 21 ngày).',
+            'Vàng da kéo dài bao lâu thì cần khám? NICE (Anh) khuyên kiểm tra mọi bé đủ tháng còn vàng da sau 14 ngày và bé sinh non sau 21 ngày; AAP (Mỹ) cho rằng vàng da ở bé bú mẹ có thể kéo dài đến khoảng 1 tháng. Bài này theo mốc thận trọng hơn: đưa bé đi khám nếu còn vàng da sau 14 ngày (sinh non: 21 ngày).',
           ),
           h('Hiểu lầm thường gặp'),
           ul(
             '“Phơi nắng sáng cho bé hết vàng da.” Ông bà hay làm vậy vì thương cháu, nhưng NICE và AAP đều cho rằng ánh nắng không phải cách điều trị vàng da an toàn: hiệu quả không đủ, bé lại dễ bị cháy nắng, nhiễm lạnh hoặc quá nóng. Ánh sáng ban ngày chỉ giúp nhìn rõ màu da; nếu cần điều trị, bé sẽ được chiếu đèn.',
             '“Cho uống nước lá, nước nhân trần, nước đường cho mát gan.” Bé dưới 6 tháng chỉ cần sữa mẹ hoặc sữa công thức. AAP khuyến cáo không cho uống nước hay nước đường để phòng hoặc giảm vàng da; nước lá còn có nguy cơ không sạch và làm bé bú ít đi.',
-            '“Mẹ phải kiêng ăn để sữa không làm con vàng.” Kiêng khem chung chung chỉ làm mẹ mệt, ít sữa. Mẹ nên ăn uống đầy đủ, đa dạng. Nếu bé được chẩn đoán thiếu men G6PD, hãy hỏi bác sĩ về thực phẩm và thuốc mẹ, bé cần tránh.',
+            '“Mẹ phải kiêng ăn để sữa không làm con vàng.” Kiêng khem chung chung chỉ làm mẹ mệt, ít sữa. Mẹ nên ăn uống đầy đủ, đa dạng. Nếu bé được chẩn đoán thiếu men G6PD, hãy hỏi bác sĩ về thực phẩm và thuốc mẹ, bé cần tránh, như đậu tằm, và không dùng băng phiến để cất quần áo, chăn màn của bé.',
             '“Vàng da do sữa mẹ thì phải ngừng cho bú.” NICE nhấn mạnh rằng thường vẫn tiếp tục cho bú được; bú nhiều còn giúp bé thải bilirubin. Chỉ thay đổi cách cho bú khi bác sĩ đã khám và hướng dẫn.',
           ),
           doctor(
@@ -4474,13 +4482,13 @@ export const seedArticles: SeedArticle[] = [
             'Whether your baby is alert and feeding strongly; a baby who is very sleepy, hard to wake, fussy or has an unusual high-pitched cry is showing serious signs.',
           ),
           p(
-            'How long is too long? NICE (UK) advises checking every term baby still jaundiced after 14 days and every preterm baby after 21 days; the AAP (US) says jaundice in breastfed babies can last up to about 1 month. Child Life recommends the more cautious timing: see a doctor if your baby is still jaundiced after 14 days (preterm: 21 days).',
+            'How long is too long? NICE (UK) advises checking every term baby still jaundiced after 14 days and every preterm baby after 21 days; the AAP (US) says jaundice in breastfed babies can last up to about 1 month. This article follows the more cautious timing: see a doctor if your baby is still jaundiced after 14 days (preterm: 21 days).',
           ),
           h('Common misconceptions'),
           ul(
             '"Morning sun will clear the jaundice." Grandparents often do this out of love, but NICE and the AAP both say sunlight is not a safe treatment for jaundice: it is not effective enough, and babies can get sunburnt, chilled or overheated. Daylight only helps you see the colour; if treatment is needed, your baby will have phototherapy.',
             '"Give herbal water, artemisia tea or sugar water to cool the liver." Babies under 6 months only need breast milk or formula. The AAP advises against water or sugar water to prevent or lower jaundice; herbal drinks may also be unclean and make babies feed less.',
-            '"Mum must avoid certain foods so her milk doesn\'t make the baby yellow." General food restrictions only leave mums tired and with less milk. Eat a full, varied diet. If your baby is diagnosed with G6PD deficiency, ask the doctor which foods and medicines you and your baby should avoid.',
+            '"Mum must avoid certain foods so her milk doesn\'t make the baby yellow." General food restrictions only leave mums tired and with less milk. Eat a full, varied diet. If your baby is diagnosed with G6PD deficiency, ask the doctor which foods and medicines you and your baby should avoid, such as fava beans, and do not use naphthalene mothballs with your baby’s clothes or bedding.',
             '"Breast milk jaundice means you must stop breastfeeding." NICE stresses that breastfeeding can usually continue; feeding often even helps clear bilirubin. Only change how you feed after a doctor has examined your baby and advised you.',
           ),
           doctor(
@@ -4534,7 +4542,7 @@ export const seedArticles: SeedArticle[] = [
       topic: 'illness',
       format: 'step_guide',
       ageWeeks: { from: 0, to: 104 },
-      readingMinutes: 4,
+      readingMinutes: 5,
       cover: null,
       title: t(
         'Chăm sóc bé sau tiêm chủng: từng bước',
@@ -4555,7 +4563,7 @@ export const seedArticles: SeedArticle[] = [
             'Vắc xin giúp hệ miễn dịch làm quen với mầm bệnh, nên một vài phản ứng nhẹ là bình thường: sưng, đau chỗ tiêm; sốt; mệt, ngủ nhiều; bú kém; nôn hoặc đi ngoài lỏng nhẹ; quấy. Phản ứng nặng như sốc phản vệ rất hiếm (khoảng 1,3 ca trên một triệu liều) và phần lớn xảy ra trong 30 phút đầu, đôi khi muộn hơn vài giờ.',
           ),
           p(
-            'Theo lịch tiêm chủng mở rộng, bé được tiêm viêm gan B trong 24 giờ đầu sau sinh, BCG (phòng lao) trong tháng đầu, và vắc xin 5 trong 1 lúc 2, 3, 4 tháng tuổi. Lịch có thể được cập nhật, nên hãy theo sổ tiêm chủng và hướng dẫn của trạm y tế.',
+            'Ở Việt Nam: theo lịch tiêm chủng mở rộng, bé được tiêm viêm gan B trong 24 giờ đầu sau sinh, BCG (phòng lao) trong tháng đầu, và vắc xin 5 trong 1 lúc 2, 3, 4 tháng tuổi. Lịch có thể được cập nhật, nên hãy theo sổ tiêm chủng và hướng dẫn của trạm y tế. Ở nước khác, lịch và loại vắc xin khác nhau; hãy theo lịch của nơi bạn sống.',
           ),
           p(
             'Vắc xin BCG có diễn biến riêng: ngay sau tiêm nổi một nốt phồng nhỏ; khoảng 2–6 tuần sau xuất hiện nốt đỏ, có thể mưng mủ hoặc thành vết loét nông, rồi lành sau vài tháng, để lại sẹo nhỏ. Đây là diễn biến mong đợi.',
@@ -4568,7 +4576,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Bước 2 · Ở lại điểm tiêm ít nhất 30 phút'),
           ul(
-            'Ở lại ít nhất 30 phút theo quy định của Bộ Y tế, kể cả khi bé đã ngủ ngon.',
+            'Ở lại ít nhất 30 phút, kể cả khi bé đã ngủ ngon. Ở Việt Nam đây là quy định của Bộ Y tế; nhiều nước khác khuyên khoảng 15 phút.',
             'Nhìn mặt, môi, nhịp thở và da bé. Nổi mẩn lan nhanh, sưng môi hoặc mặt, thở khò khè, khó thở, tím tái, lả đi: báo nhân viên y tế ngay. Nếu xảy ra khi đã về nhà, gọi 115 và mở mục Sơ cứu trẻ em › Sốc phản vệ trong Child Life.',
           ),
           h('Bước 3 · Chăm bé ở nhà 24–48 giờ đầu'),
@@ -4577,7 +4585,7 @@ export const seedArticles: SeedArticle[] = [
             'Cho bú mẹ hoặc bú sữa thường xuyên hơn; một số bé bú ít hơn trong khoảng 24 giờ sau tiêm.',
             'Chỗ tiêm sưng, đỏ, đau: đắp khăn sạch, mát, ẩm. Không xoa bóp, day ấn chỗ tiêm.',
             'Bé vẫn được tắm, lau người như bình thường; lau khô nhẹ nhàng chỗ tiêm.',
-            'Nếu bé sốt hoặc quấy vì đau: chăm theo bài “Khi bé sốt”. Thuốc hạ sốt chỉ dùng khi bé khó chịu; hỏi bác sĩ hoặc dược sĩ liều theo cân nặng. Không dùng aspirin.',
+            'Nếu bé sốt hoặc quấy vì đau: chăm theo bài “Khi bé sốt”. Thuốc hạ sốt chỉ dùng khi bé khó chịu; hỏi bác sĩ hoặc dược sĩ liều theo cân nặng. Không dùng aspirin. Ở Anh: sau mũi vắc xin não mô cầu B (MenB) lúc 8 và 12 tuần, NHS khuyên cho bé uống paracetamol ngay sau tiêm để phòng sốt; nếu bạn sống ở Anh, hãy làm theo tờ hướng dẫn đó.',
           ),
           h('Bước 4 · Chăm vết tiêm BCG'),
           ul(
@@ -4617,7 +4625,7 @@ export const seedArticles: SeedArticle[] = [
             'Vaccines help the immune system get to know a germ, so a few mild reactions are normal: a sore or swollen injection site; fever; tiredness or extra sleep; feeding less; some vomiting or loose poo; fussiness. Serious reactions such as anaphylaxis are very rare (about 1.3 per million doses) and mostly happen within the first 30 minutes, occasionally a few hours later.',
           ),
           p(
-            "Under Vietnam's expanded immunisation programme, babies get hepatitis B in the first 24 hours after birth, BCG (against tuberculosis) in the first month, and the 5-in-1 vaccine at 2, 3 and 4 months. The schedule can be updated, so follow your baby's vaccination record and your local health station.",
+            'In Việt Nam: under the expanded immunisation programme, babies get hepatitis B in the first 24 hours after birth, BCG (against tuberculosis) in the first month, and the 5-in-1 vaccine at 2, 3 and 4 months. The schedule can change, so follow your baby’s vaccination record and your local health station. Other countries use different schedules and vaccines; follow the schedule where you live.',
           ),
           p(
             'BCG has its own course: a small raised blister right after the injection; about 2–6 weeks later a red spot appears, which may fill with pus or become a shallow sore, then heals over a few months, leaving a small scar. This is the expected course.',
@@ -4630,7 +4638,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           h('Step 2 · Stay at the clinic for at least 30 minutes'),
           ul(
-            "Stay at least 30 minutes, as Vietnam's Ministry of Health requires, even if your baby has fallen asleep.",
+            'Stay at least 30 minutes, even if your baby has fallen asleep. In Việt Nam this is a Ministry of Health rule; many other countries advise about 15 minutes.',
             "Watch your baby's face, lips, breathing and skin. A fast-spreading rash, swollen lips or face, wheezing, trouble breathing, turning blue or going limp: tell the health worker immediately. If it happens after you get home, call 115 and open Sơ cứu trẻ em (First aid) › Anaphylaxis in Child Life.",
           ),
           h('Step 3 · Care at home in the first 24–48 hours'),
@@ -4639,7 +4647,7 @@ export const seedArticles: SeedArticle[] = [
             'Offer breast or formula feeds more often; some babies feed less for about 24 hours after vaccines.',
             "For a swollen, red or sore injection site: hold a clean, cool, damp cloth on it. Don't rub or press on the site.",
             'Your baby can be bathed or washed as usual; pat the injection site dry gently.',
-            'If your baby has a fever or is fussy with pain: follow the "When your baby has a fever" article. Only use fever medicine if your baby is uncomfortable; ask a doctor or pharmacist for the dose for their weight. Never give aspirin.',
+            'If your baby has a fever or is fussy with pain: follow the "When your baby has a fever" article. Only use fever medicine if your baby is uncomfortable; ask a doctor or pharmacist for the dose for their weight. Never give aspirin. In the UK: the NHS advises infant paracetamol right after the MenB jab (8 and 12 weeks); follow its leaflet.',
           ),
           h('Step 4 · Caring for the BCG site'),
           ul(
@@ -4698,7 +4706,10 @@ export const seedArticles: SeedArticle[] = [
         S.byt13TiemChung2026,
         S.vinmecEpiUnder1,
         S.nhsSixInOneSideEffects,
-        S.cdcAfterVaccinesInfant,
+        {
+          label: 'UKHSA (GOV.UK) — MenB vaccine and paracetamol',
+          url: 'https://www.gov.uk/government/publications/menb-vaccine-and-paracetamol',
+        },
         S.cdcDtapVis,
         S.whoPainAtVaccination,
         S.nswBcgVietnamese,
@@ -6390,7 +6401,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           doctor(
             'Khi nào nên hỏi bác sĩ',
-            'Bé quá hoảng sợ mỗi lần xa ba mẹ, khóc rất lâu sau khi ba mẹ đi, hoặc tình trạng kéo dài nhiều tuần không đỡ; lo âu nặng ảnh hưởng đến ăn, ngủ, sinh hoạt, nhất là sau 3 tuổi; bé ít nhìn mắt, không cười đáp, không quay lại khi được gọi tên, chưa chỉ tay hay vẫy tay khoảng 12–15 tháng; bé mất kỹ năng đã có. Nếu bé đột ngột sợ hãi một người hay một nơi cụ thể, hoặc có vết thương không rõ lý do, hãy cho bé đi khám; ba mẹ có thể gọi Tổng đài quốc gia bảo vệ trẻ em 111 (miễn phí).',
+            'Bé quá hoảng sợ mỗi lần xa ba mẹ, khóc rất lâu sau khi ba mẹ đi, hoặc tình trạng kéo dài nhiều tuần không đỡ; lo âu nặng ảnh hưởng đến ăn, ngủ, sinh hoạt, nhất là sau 3 tuổi; bé ít nhìn mắt, không cười đáp, không quay lại khi được gọi tên, chưa chỉ tay hay vẫy tay khoảng 12–15 tháng; bé mất kỹ năng đã có. Nếu bé đột ngột sợ hãi một người hay một nơi cụ thể, hoặc có vết thương không rõ lý do, hãy cho bé đi khám; ở Việt Nam, ba mẹ có thể gọi Tổng đài quốc gia bảo vệ trẻ em 111 (miễn phí).',
           ),
         ],
         en: [
@@ -6437,7 +6448,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           doctor(
             'When to ask a doctor',
-            'Your child is extremely distressed at every separation, stays upset for a long time after you leave, or it goes on for weeks without improving; anxiety is severe and affects eating, sleeping or daily life, especially after age 3; your child makes little eye contact, doesn’t smile back, doesn’t turn when called, or isn’t pointing or waving by about 12–15 months; or loses skills they had. If your child suddenly fears a particular person or place, or has unexplained injuries, have them checked; you can also call the national child protection hotline 111 (free).',
+            'Your child is extremely distressed at every separation, stays upset for a long time after you leave, or it goes on for weeks without improving; anxiety is severe and affects eating, sleeping or daily life, especially after age 3; your child makes little eye contact, doesn’t smile back, doesn’t turn when called, or isn’t pointing or waving by about 12–15 months; or loses skills they had. If your child suddenly fears a particular person or place, or has unexplained injuries, have them checked; in Việt Nam you can also call the national child protection hotline 111 (free).',
           ),
         ],
       },
@@ -6872,7 +6883,7 @@ export const seedArticles: SeedArticle[] = [
       topic: 'daily_care',
       format: 'article',
       ageWeeks: { from: 0, to: 104 },
-      readingMinutes: 6,
+      readingMinutes: 7,
       cover: null,
       title: t(
         'Ba mẹ cũng cần được chăm: mệt mỏi, buồn sau sinh và trầm cảm sau sinh',
@@ -6939,7 +6950,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           doctor(
             'Tìm hỗ trợ sớm khi',
-            'Buồn, lo âu, mất hứng thú kéo dài hơn 2 tuần hoặc nặng dần; khó gắn bó với bé; không ngủ được dù có thời gian. Nơi có thể tìm đến: bác sĩ sản, nữ hộ sinh hay bác sĩ nhi của bé ở lần khám gần nhất; khoa tâm thần, phòng khám tâm lý của bệnh viện lớn (ví dụ Viện Sức khỏe Tâm thần, Bệnh viện Bạch Mai); Đường dây nóng Ngày Mai 096 306 1414 (hỗ trợ người trầm cảm, không trực 24/7, xem giờ trực trên website). Lo cho an toàn của trẻ: Tổng đài quốc gia bảo vệ trẻ em 111.',
+            'Buồn, lo âu, mất hứng thú kéo dài hơn 2 tuần hoặc nặng dần; khó gắn bó với bé; không ngủ được dù có thời gian. Nơi có thể tìm đến: bác sĩ sản, nữ hộ sinh hay bác sĩ nhi của bé ở lần khám gần nhất; khoa tâm thần, phòng khám tâm lý của bệnh viện lớn. Ở Việt Nam: ví dụ Viện Sức khỏe Tâm thần, Bệnh viện Bạch Mai; Đường dây nóng Ngày Mai 096 306 1414 (hỗ trợ người trầm cảm, không trực 24/7, xem giờ trực trên website). Lo cho an toàn của trẻ: Tổng đài quốc gia bảo vệ trẻ em 111. Ở nước khác: hỏi bác sĩ về đường dây hỗ trợ nơi bạn sống.',
           ),
         ],
         en: [
@@ -6998,7 +7009,7 @@ export const seedArticles: SeedArticle[] = [
           ),
           doctor(
             'Get support early if',
-            'Low mood, anxiety or loss of interest last more than 2 weeks or get worse; you find it hard to bond with your baby; you cannot sleep even when you have the chance. Where to turn: your obstetrician, midwife or your baby’s doctor at the next visit; the psychiatry department or psychology clinic of a major hospital (for example, the Institute of Mental Health at Bach Mai Hospital); the Ngày Mai hotline 096 306 1414 (support for people with depression, not 24/7, see the hours on its website). Concerned about a child’s safety: the national child protection hotline 111.',
+            'Low mood, anxiety or loss of interest last more than 2 weeks or get worse; you find it hard to bond with your baby; you cannot sleep even when you have the chance. Where to turn: your obstetrician, midwife or your baby’s doctor at the next visit; the psychiatry department or psychology clinic of a major hospital. In Việt Nam: for example the Institute of Mental Health at Bạch Mai Hospital; the Ngày Mai hotline 096 306 1414 (not 24/7; check its hours). Concerned about a child’s safety: the national child protection hotline 111. Elsewhere: ask your doctor for your national helpline.',
           ),
         ],
       },
@@ -7046,6 +7057,2054 @@ export const seedArticles: SeedArticle[] = [
       ],
     },
   },
+  // ----- Review 2026-10-16: added topics -----
+  {
+    id: 'art_bronchiolitis_rsv',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'illness',
+      format: 'article',
+      ageWeeks: { from: 0, to: 104 },
+      readingMinutes: 5,
+      cover: null,
+      title: {
+        vi: 'Viêm tiểu phế quản và virus RSV: chăm bé tại nhà, khi nào cần đi viện',
+        en: 'Bronchiolitis and RSV: caring for your baby at home and when to get help',
+      },
+      summary: {
+        vi: 'Viêm tiểu phế quản hay gặp ở bé dưới 2 tuổi, nhất là dưới 6 tháng, thường do virus RSV. Phần lớn bé khỏi tại nhà; điều quan trọng là giữ bé bú đủ và nhận ra sớm lúc bé thở khó.',
+        en: 'Bronchiolitis is common under age 2, especially under 6 months, and is usually caused by RSV. Most babies get better at home; what matters is keeping feeds going and spotting breathing trouble early.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Viêm tiểu phế quản bắt đầu như cảm lạnh rồi bé ho nhiều, thở nhanh, có thể khò khè. Bệnh thường nặng nhất vào ngày 3–5 và đỡ dần trong 2–3 tuần. Không có thuốc diệt virus: kháng sinh, thuốc ho, khí dung tại nhà không giúp. Cho bé bú cữ nhỏ, thường xuyên, và đi khám ngay khi bé thở nhanh, rút lõm ngực hay bú dưới một nửa so với bình thường.',
+          },
+          { type: 'heading', text: 'Hiểu đúng về viêm tiểu phế quản' },
+          {
+            type: 'paragraph',
+            text: 'Viêm tiểu phế quản là nhiễm virus ở những ống dẫn khí nhỏ nhất trong phổi. Các ống này sưng lên và tiết nhiều đờm nên bé thở khó hơn. Virus hợp bào hô hấp (RSV) là nguyên nhân hay gặp nhất, ngoài ra còn nhiều virus khác. Theo NHS, bệnh hay gặp ở trẻ dưới 2 tuổi, nhất là dưới 6 tháng, và lây qua giọt bắn khi ho, hắt hơi, qua tay và đồ vật.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Bệnh thường bắt đầu như cảm lạnh: sổ mũi, nghẹt mũi, ho nhẹ, có thể sốt nhẹ. Sau 2–3 ngày, bé ho nhiều hơn, thở nhanh, có tiếng khò khè hoặc rít, và bú kém đi vì vừa bú vừa thở rất mệt. Triệu chứng thường nặng nhất vào ngày thứ 3–5 rồi đỡ dần; riêng ho có thể kéo dài 2–3 tuần mà vẫn là diễn biến hay gặp.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Phần lớn bé khỏi tại nhà. Theo NICE, bé dễ bị nặng hơn nếu dưới 3 tháng tuổi, sinh non, có bệnh tim, bệnh phổi mạn tính, bệnh thần kinh cơ hoặc suy giảm miễn dịch. Với những bé này, ba mẹ nên cho đi khám sớm ngay khi mới có dấu hiệu.',
+          },
+          { type: 'heading', text: 'Ba mẹ có thể làm gì' },
+          {
+            type: 'bullets',
+            items: [
+              'Cho bú cữ nhỏ, thường xuyên hơn, cho bé nghỉ giữa cữ để thở. Bé bú mẹ thì tiếp tục bú mẹ. Bé từ 6 tháng có thể uống thêm từng ngụm nước.',
+              'Nếu nghẹt mũi làm bé khó bú, nhỏ vài giọt nước muối sinh lý vào mũi trước cữ bú và trước khi ngủ, rồi hút nhẹ ở lỗ mũi, không đưa dụng cụ sâu vào trong.',
+              'Đếm nhịp thở của bé trong đủ 1 phút khi bé nằm yên, vài lần mỗi ngày, và ghi lại cùng lượng bú, số tã ướt (có thể ghi trong Child Life).',
+              'Bé vẫn ngủ nằm ngửa trên mặt phẳng, chắc; không kê gối hay nâng đầu nệm.',
+              'Nếu bé sốt và khó chịu, chăm theo bài “Khi bé sốt”; hỏi bác sĩ hoặc dược sĩ liều thuốc theo cân nặng.',
+              'Giữ nhà không khói thuốc; người lớn rửa tay trước khi bế bé; người đang ho, sổ mũi hạn chế hôn và bế bé nhỏ.',
+              'Cho bé nghỉ ở nhà, chưa đi nhà trẻ đến khi khoẻ lại, để bé hồi phục và đỡ lây cho trẻ khác.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Những thuốc không giúp',
+            text: 'Kháng sinh không có tác dụng với virus. NICE khuyên không dùng thường quy thuốc giãn phế quản, corticoid, khí dung nước muối ưu trương hay vỗ rung lồng ngực cho viêm tiểu phế quản. Không tự mua thuốc ho, thuốc long đờm cho bé dưới 2 tuổi. Nếu bé cần thở oxy hay bù dịch, việc đó được làm ở bệnh viện.',
+          },
+          { type: 'heading', text: 'Phòng bệnh' },
+          {
+            type: 'paragraph',
+            text: 'Bú mẹ, nhà không khói thuốc, rửa tay và tránh cho bé nhỏ tiếp xúc người đang ốm giúp giảm nguy cơ. Ở một số nước như Anh, Úc, Mỹ, Canada đã có vắc xin RSV tiêm cho mẹ khi mang thai và thuốc kháng thể tiêm cho bé trước hoặc trong mùa RSV; đối tượng được dùng khác nhau theo từng nước. Ở Việt Nam: hãy hỏi bác sĩ sản hoặc bác sĩ nhi xem các biện pháp này có sẵn không và bé có thuộc nhóm nên dùng không.',
+          },
+          { type: 'heading', text: 'Theo dõi' },
+          {
+            type: 'bullets',
+            items: [
+              'Nhịp thở khi bé nằm yên: theo WHO, thở nhanh là từ 60 lần mỗi phút ở bé dưới 2 tháng, từ 50 lần ở bé 2–12 tháng, từ 40 lần ở trẻ 1–5 tuổi.',
+              'Ngực và mũi: phần dưới lồng ngực lõm vào khi hít vào, cánh mũi phập phồng, đầu gật gù theo nhịp thở, thở rên.',
+              'Lượng bú so với bình thường và số tã ướt trong 24 giờ.',
+              'Màu môi, lưỡi, và những lúc bé ngừng thở, nhất là ở bé nhỏ.',
+              'Diễn biến: đỡ dần sau ngày thứ 5, hay nặng lên, sốt lại sau khi đã đỡ.',
+            ],
+          },
+          { type: 'heading', text: 'Hiểu lầm thường gặp' },
+          {
+            type: 'bullets',
+            items: [
+              '“Khò khè là phải dùng kháng sinh cho nhanh khỏi”: nhiều nhà lo bé “viêm phổi” nên tự mua kháng sinh. Viêm tiểu phế quản do virus; kháng sinh không giúp mà còn có thể gây tiêu chảy, dị ứng. Nên: chỉ dùng kháng sinh khi bác sĩ khám và kê đơn.',
+              '“Xông lá, xông tinh dầu, hơ nóng cho thông phổi”: nồi nước nóng dễ gây bỏng, tinh dầu kích ứng đường thở của bé nhỏ. Nên: nhỏ nước muối, hút mũi nhẹ, cho bú cữ nhỏ.',
+              '“Mua máy khí dung về nhà xông cho bé”: thuốc và nước muối khí dung không được khuyên dùng thường quy cho viêm tiểu phế quản, dùng sai còn làm bé mệt hơn. Nên: chỉ khí dung khi bác sĩ chỉ định.',
+              '“Bé ho thì kiêng tắm, ủ thật kín”: ủ kín dễ làm bé nóng và thở nhanh hơn. Nên: mặc vừa đủ, phòng thoáng, tắm nhanh bằng nước ấm và lau khô.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Bé có lúc ngừng thở, môi hoặc lưỡi tím tái; thở rất khó, rút lõm ngực nhiều, thở rên; thở từ 70 lần mỗi phút trở lên; li bì, khó đánh thức hoặc lả mềm; không bú, không uống được. Đừng chờ, gọi 115 ngay.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Đưa bé đi khám trong ngày khi',
+            text: 'Bé dưới 3 tháng có dấu hiệu ốm, nhất là sốt từ 38 °C; thở nhanh theo ngưỡng ở trên; bú dưới khoảng một nửa so với bình thường; ít tã ướt hơn hẳn hoặc không có tã ướt trong 12 giờ; bé sinh non hay có bệnh tim, phổi; sốt cao kéo dài hoặc nặng hơn sau ngày thứ 5; hoặc ba mẹ thấy lo. Nếu bé nặng lên nhanh, gọi 115.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Bronchiolitis starts like a cold, then your baby coughs more, breathes fast and may wheeze. It is usually worst on days 3–5 and settles over 2–3 weeks. There is no medicine that kills the virus: antibiotics, cough medicines and home nebulisers do not help. Offer smaller, more frequent feeds, and get your baby seen straight away if they breathe fast, the chest pulls in or they take less than half their usual feeds.',
+          },
+          { type: 'heading', text: 'Understanding bronchiolitis' },
+          {
+            type: 'paragraph',
+            text: 'Bronchiolitis is a viral infection of the smallest airways in the lungs. They swell and fill with mucus, so breathing becomes harder work. Respiratory syncytial virus (RSV) is the most common cause, but other viruses can cause it too. According to the NHS, it mostly affects children under 2, especially under 6 months, and spreads through droplets from coughs and sneezes, hands and objects.',
+          },
+          {
+            type: 'paragraph',
+            text: 'It usually begins like a cold: a runny or blocked nose, a mild cough, perhaps a mild temperature. After 2–3 days your baby coughs more, breathes fast, may wheeze or whistle, and feeds less because feeding and breathing at once is tiring. Symptoms are usually worst on days 3–5 and then ease; the cough can last 2–3 weeks and still be part of the usual course.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Most babies recover at home. According to NICE, babies are more likely to become seriously unwell if they are under 3 months, were born early, or have heart disease, chronic lung disease, a neuromuscular condition or a weakened immune system. Get these babies checked early, as soon as symptoms start.',
+          },
+          { type: 'heading', text: 'What you can do' },
+          {
+            type: 'bullets',
+            items: [
+              'Offer smaller, more frequent feeds and let your baby pause to breathe. Keep breastfeeding if you breastfeed. From 6 months, your baby can also have sips of water.',
+              'If a blocked nose makes feeding hard, put a few drops of saline in each nostril before feeds and sleep, then suction gently just inside the nostril, never deep into the nose.',
+              'Count your baby’s breaths for a full minute while they lie still, a few times a day, and note it with feeds and wet diapers (you can log these in Child Life).',
+              'Your baby still sleeps on their back on a firm, flat surface; no pillows and no raising the head of the mattress.',
+              'If your baby has a fever and is uncomfortable, follow the “When your baby has a fever” article; ask a doctor or pharmacist for the dose for their weight.',
+              'Keep the home smoke-free; adults wash their hands before holding your baby; anyone with a cough or cold avoids kissing or holding a young baby.',
+              'Keep your baby home from childcare until they are well again, to recover and to avoid passing it on.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Medicines that do not help',
+            text: 'Antibiotics do not work on viruses. NICE advises against routine bronchodilators, steroids, hypertonic saline nebulisers or chest physiotherapy for bronchiolitis. Do not buy cough or mucus medicines for a baby under 2. If your baby needs oxygen or extra fluids, that is done in hospital.',
+          },
+          { type: 'heading', text: 'Prevention' },
+          {
+            type: 'paragraph',
+            text: 'Breastfeeding, a smoke-free home, handwashing and keeping young babies away from people who are ill all lower the risk. Some countries, such as the UK, Australia, the US and Canada, now offer an RSV vaccine in pregnancy and an antibody injection for babies before or during the RSV season; who is eligible differs by country. In Việt Nam: ask your obstetrician or your baby’s doctor whether these are available and whether your baby should have one.',
+          },
+          { type: 'heading', text: 'What to watch' },
+          {
+            type: 'bullets',
+            items: [
+              'Breathing rate at rest: according to WHO, fast breathing is 60 or more a minute under 2 months, 50 or more at 2–12 months and 40 or more at 1–5 years.',
+              'Chest and nose: the lower chest sucking in with each breath, flaring nostrils, head bobbing with breaths, grunting.',
+              'How much your baby feeds compared with usual, and wet diapers in 24 hours.',
+              'The colour of lips and tongue, and any pauses in breathing, especially in young babies.',
+              'The overall course: easing after day 5, or getting worse, or a fever returning after improving.',
+            ],
+          },
+          { type: 'heading', text: 'Common misconceptions' },
+          {
+            type: 'bullets',
+            items: [
+              '“Wheezing needs antibiotics to clear it fast”: many families fear pneumonia and buy antibiotics themselves. Bronchiolitis is viral; antibiotics do not help and can cause diarrhoea or allergy. Instead: use antibiotics only when a doctor has examined your baby and prescribed them.',
+              '“Steam with leaves or essential oils to open the lungs”: bowls of hot water cause scalds and oils irritate a young baby’s airways. Instead: saline drops, gentle suction and small, frequent feeds.',
+              '“Buy a nebuliser and use it at home”: nebulised medicines and saline are not recommended routinely for bronchiolitis, and the wrong use can tire your baby more. Instead: use a nebuliser only when a doctor prescribes it.',
+              '“A coughing baby should not be bathed and must be bundled up”: bundling makes your baby hot and breathe faster. Instead: dress them just right, keep the room airy, give a quick warm bath and dry them well.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or local emergency services now if',
+            text: 'Your baby has pauses in breathing or blue lips or tongue; struggles to breathe, with marked chest pulling in or grunting; breathes 70 or more times a minute; is floppy, very drowsy or hard to wake; or cannot feed or drink. Do not wait.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'See a doctor the same day if',
+            text: 'Your baby is under 3 months with any sign of illness, especially 38 °C or more; breathes fast by the counts above; takes less than about half their usual feeds; has far fewer wet diapers or none in 12 hours; was born early or has a heart or lung condition; has a high fever that lasts or is worse after day 5; or you are worried. If your baby gets worse quickly, call emergency services.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'viêm tiểu phế quản',
+          'RSV',
+          'khò khè',
+          'thở nhanh',
+          'rút lõm lồng ngực',
+          'ho kéo dài',
+        ],
+        en: [
+          'bronchiolitis',
+          'RSV',
+          'wheezing',
+          'fast breathing',
+          'chest indrawing',
+          'lingering cough',
+        ],
+      },
+      relatedArticleIds: [
+        'art_cold_cough',
+        'art_fever_when_to_call',
+        'art_safe_sleep',
+        'art_breastfeeding_start',
+      ],
+      milestoneIds: [],
+      sources: [
+        { label: 'NHS — Bronchiolitis', url: 'https://www.nhs.uk/conditions/bronchiolitis/' },
+        {
+          label: 'NICE NG9 — Bronchiolitis in children: diagnosis and management (recommendations)',
+          url: 'https://www.nice.org.uk/guidance/ng9/chapter/Recommendations',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Bronchiolitis',
+          url: 'https://www.healthychildren.org/English/health-issues/conditions/chest-lungs/Pages/Bronchiolitis.aspx',
+        },
+        {
+          label: "HealthyChildren.org (AAP) — RSV: when it's more than just a cold",
+          url: 'https://www.healthychildren.org/English/health-issues/conditions/chest-lungs/Pages/RSV-When-its-More-Than-Just-a-Cold.aspx',
+        },
+        {
+          label: 'WHO — Integrated Management of Childhood Illness (IMCI) chart booklet, 2014',
+          url: 'https://cdn.who.int/media/docs/default-source/mca-documents/child/imci-integrated-management-of-childhood-illness/imci-in-service-training/imci-chart-booklet.pdf?sfvrsn=f63af425_1',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_hfmd',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'illness',
+      format: 'article',
+      ageWeeks: { from: 13, to: 156 },
+      readingMinutes: 4,
+      cover: null,
+      title: {
+        vi: 'Tay chân miệng ở trẻ nhỏ: chăm tại nhà và dấu hiệu phải đi viện ngay',
+        en: 'Hand, foot and mouth disease: home care and the signs that need hospital now',
+      },
+      summary: {
+        vi: 'Tay chân miệng hay gặp ở trẻ dưới 5 tuổi, phần lớn nhẹ và tự khỏi sau 7–10 ngày. Ở châu Á, một số chủng virus có thể gây biến chứng thần kinh, nên ba mẹ cần biết các dấu hiệu nặng như giật mình, sốt cao khó hạ.',
+        en: 'Hand, foot and mouth disease is common under age 5 and is usually mild, clearing in 7–10 days. In Asia some strains can affect the nervous system, so know the serious signs, such as sudden jerks or a high fever that will not come down.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Bé sốt, loét miệng, nổi nốt đỏ hoặc phỏng nước ở lòng bàn tay, bàn chân, mông. Chăm tại nhà: cho uống đủ, ăn đồ mềm, mát, hạ sốt khi bé khó chịu, rửa tay thật kỹ. Đưa bé đến viện ngay nếu bé giật mình, sốt từ 39 °C hoặc sốt kéo dài từ 48 giờ, nôn nhiều, lừ đừ, đi loạng choạng hay thở nhanh.',
+          },
+          { type: 'heading', text: 'Hiểu đúng về tay chân miệng' },
+          {
+            type: 'paragraph',
+            text: 'Tay chân miệng do một nhóm virus đường ruột (enterovirus) gây ra, hay gặp nhất là Coxsackie A16 và Enterovirus A71 (EV71). Bệnh lây qua nước bọt, dịch nốt phỏng, phân, qua tay và đồ chơi; virus còn theo phân ra ngoài nhiều tuần sau khi bé đã khỏi. Trẻ dưới 5 tuổi hay mắc nhất, nhất là khi đi nhà trẻ.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Thường bé sốt nhẹ hoặc vừa, đau họng, chảy dãi, ăn kém vì loét miệng, rồi nổi nốt đỏ hoặc phỏng nước ở lòng bàn tay, lòng bàn chân, đầu gối, mông. Phần lớn bé đỡ sau 7–10 ngày. Theo WHO, EV71 có thể gây biến chứng như viêm màng não, viêm não, liệt; các đợt dịch nặng chủ yếu gặp ở châu Á – Thái Bình Dương, nên ở Việt Nam và các nước trong vùng, ba mẹ cần theo dõi bé sát hơn trong những ngày đầu.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở Việt Nam: tay chân miệng hay tăng vào mùa tựu trường. Hướng dẫn trong nước nhấn mạnh việc theo dõi giật mình và sốt cao, và trẻ thường được cho nghỉ ở nhà, không đến nhà trẻ khoảng 7–14 ngày đầu của bệnh; hãy làm theo hướng dẫn của trạm y tế và nhà trường. Ở Anh, NHS cho rằng trẻ có thể đi học lại khi đã khoẻ.',
+          },
+          { type: 'heading', text: 'Ba mẹ có thể làm gì' },
+          {
+            type: 'bullets',
+            items: [
+              'Cho bé uống đủ: bú mẹ, bú sữa thường xuyên hơn; bé lớn uống nước mát, sữa từng ngụm nhỏ. Thức ăn mềm, nguội hoặc mát, ít chua, ít mặn để đỡ rát miệng.',
+              'Hạ sốt khi bé khó chịu bằng thuốc hạ sốt cho trẻ, đúng liều theo cân nặng; hỏi bác sĩ hoặc dược sĩ. Không dùng aspirin. Mặc thoáng, không ủ ấm.',
+              'Không chọc vỡ nốt phỏng; giữ da sạch, khô; cắt ngắn móng tay bé.',
+              'Không tự bôi thuốc, xanh methylen hay đắp lá lên nốt phỏng, vết loét miệng khi bác sĩ chưa dặn.',
+              'Rửa tay bằng xà phòng sau khi thay tã, lau mũi, dọn phân và trước khi chuẩn bị đồ ăn; lau rửa đồ chơi, tay nắm cửa, sàn nhà bằng chất tẩy rửa thông thường.',
+              'Cho bé nghỉ ở nhà, tách khỏi trẻ nhỏ khác, không dùng chung thìa, cốc, khăn.',
+              'Ghi lại nhiệt độ, giờ đo, số lần giật mình nếu có và lượng ăn uống (có thể ghi trong Child Life) để kể với bác sĩ.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Giật mình là thế nào?',
+            text: 'Đó là những cái giật nảy người đột ngột, hay xảy ra lúc bé sắp ngủ hoặc vừa ngủ, như bị ai làm cho hoảng. Nếu trước đây bé không hay như vậy mà nay bé giật mình, dù chỉ một lần, hãy đưa bé đi khám ngay và kể rõ bé giật bao nhiêu lần.',
+          },
+          { type: 'heading', text: 'Theo dõi' },
+          {
+            type: 'bullets',
+            items: [
+              'Nhiệt độ: sốt từ 39 °C, sốt khó hạ hoặc kéo dài từ 48 giờ.',
+              'Giật mình, run tay chân, đi đứng loạng choạng, nhìn ngơ ngác hay mắt nhìn lệch.',
+              'Lượng ăn uống và số tã ướt: loét miệng khiến bé dễ bỏ ăn uống, mất nước.',
+              'Nhịp thở, màu da, tay chân có lạnh, da có nổi vân tím không.',
+              'Giấc ngủ: quấy khóc, bứt rứt, khó ngủ khác hẳn mọi khi.',
+            ],
+          },
+          { type: 'heading', text: 'Hiểu lầm thường gặp' },
+          {
+            type: 'bullets',
+            items: [
+              '“Hết sốt, nốt khô là khỏi, đi học được ngay”: virus còn theo phân ra ngoài nhiều tuần. Nên: theo hướng dẫn nghỉ học của trạm y tế, nhà trường, và tiếp tục rửa tay kỹ.',
+              '“Kiêng tắm, kiêng nước để nốt không lan”: nước không làm bệnh lan. Nên: tắm nhanh bằng nước ấm, thấm khô nhẹ, không chà xát nốt phỏng.',
+              '“Bị một lần rồi thì không bị lại”: nhiều chủng virus gây tay chân miệng nên bé có thể mắc lại. Nên: duy trì rửa tay, vệ sinh đồ chơi.',
+              '“Giật mình là do sợ, do vía”: ở trẻ bị tay chân miệng, giật mình có thể là dấu hiệu virus ảnh hưởng thần kinh. Nên: đưa bé đi khám ngay.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến viện ngay khi',
+            text: 'Bé giật mình, run chi, đi loạng choạng, yếu tay chân; co giật; li bì, khó đánh thức; thở nhanh, thở khó; vã mồ hôi, tay chân lạnh, da nổi vân tím; nôn nhiều; sốt từ 39 °C hoặc sốt kéo dài từ 48 giờ. Đừng chờ, gọi 115 hoặc đến bệnh viện ngay.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Đưa bé đi khám trong ngày khi',
+            text: 'Bé dưới 6 tháng bị tay chân miệng; bé bỏ ăn uống, ít tã ướt hoặc có dấu hiệu mất nước; quấy khóc, bứt rứt, khó ngủ; nốt phỏng sưng đỏ, có mủ; bé có bệnh mạn tính; hoặc ba mẹ thấy lo. Nếu bé nặng lên nhanh, gọi 115.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Fever, mouth ulcers and red spots or blisters on the palms, soles and bottom. At home: keep up drinks, offer soft, cool food, treat fever when your baby is uncomfortable and wash hands carefully. Go to hospital straight away if your child has sudden jerks, a fever of 39 °C or more or lasting 48 hours, vomits a lot, is listless, walks unsteadily or breathes fast.',
+          },
+          { type: 'heading', text: 'Understanding hand, foot and mouth disease' },
+          {
+            type: 'paragraph',
+            text: 'Hand, foot and mouth disease is caused by a group of gut viruses (enteroviruses), most often Coxsackie A16 and Enterovirus A71 (EV71). It spreads through saliva, fluid from blisters, stools, hands and toys, and the virus can stay in the stools for weeks after your child is well. Children under 5 are most often affected, especially at childcare.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Usually there is a mild or moderate fever, a sore throat, drooling and poor eating because of mouth ulcers, then red spots or blisters on the palms, soles, knees and bottom. Most children improve within 7–10 days. According to WHO, EV71 can cause complications such as meningitis, encephalitis and paralysis; severe outbreaks have mainly occurred in the Asia-Pacific region, so in Việt Nam and neighbouring countries watch your child more closely in the first days.',
+          },
+          {
+            type: 'paragraph',
+            text: 'In Việt Nam: cases often rise when school starts. Local guidance stresses watching for sudden jerks and high fever, and children are usually kept home from childcare for about the first 7–14 days of the illness; follow your health station and childcare provider. In the UK, the NHS says children can go back once they feel well.',
+          },
+          { type: 'heading', text: 'What you can do' },
+          {
+            type: 'bullets',
+            items: [
+              'Keep up fluids: breastfeed or bottle-feed more often; older children can sip cool water or milk. Offer soft, cool food that is not acidic or salty, so it stings less.',
+              'Treat fever when your child is uncomfortable with a children’s fever medicine at the right dose for their weight; ask a doctor or pharmacist. Never give aspirin. Dress them lightly; do not bundle them up.',
+              'Do not pop the blisters; keep the skin clean and dry; keep nails short.',
+              'Do not put creams, dyes or leaves on the blisters or mouth ulcers unless a doctor advises it.',
+              'Wash hands with soap after diaper changes, wiping noses and cleaning up stools, and before preparing food; clean toys, door handles and floors with ordinary household cleaner.',
+              'Keep your child at home, away from other young children, with their own spoon, cup and towel.',
+              'Note temperatures and times, any jerks and how much your child eats and drinks (you can log these in Child Life) to tell the doctor.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'What do the “jerks” look like?',
+            text: 'They are sudden startle-like jerks of the whole body, often as your child falls asleep or soon after, as if something frightened them. If your child did not usually do this and now does, even once, take them to be seen straight away and say how many times it happened.',
+          },
+          { type: 'heading', text: 'What to watch' },
+          {
+            type: 'bullets',
+            items: [
+              'Temperature: 39 °C or more, a fever that will not come down, or one lasting 48 hours or more.',
+              'Sudden jerks, trembling arms or legs, unsteady walking, a vacant stare or eyes not looking the same way.',
+              'How much your child eats and drinks and how many wet diapers: mouth ulcers make children refuse food and drink and become dehydrated.',
+              'Breathing rate, skin colour, cold hands and feet, blotchy purple skin.',
+              'Sleep: crying, restlessness or trouble sleeping that is unlike your child.',
+            ],
+          },
+          { type: 'heading', text: 'Common misconceptions' },
+          {
+            type: 'bullets',
+            items: [
+              '“Once the fever is gone and spots are dry, they can go straight back”: the virus stays in stools for weeks. Instead: follow your health station’s and childcare’s advice, and keep up careful handwashing.',
+              '“No baths, or the spots will spread”: water does not spread the illness. Instead: a quick warm bath, pat dry and do not rub the blisters.',
+              '“Once is enough, they cannot get it again”: several viruses cause it, so children can catch it more than once. Instead: keep up handwashing and cleaning toys.',
+              '“The jerks are just fright, or spirits”: in hand, foot and mouth disease, jerks can be a sign the virus is affecting the nervous system. Instead: get your child seen straight away.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or go to hospital now if',
+            text: 'Your child has sudden jerks, trembling limbs, unsteady walking or weak arms or legs; has a fit; is very drowsy or hard to wake; breathes fast or with difficulty; is sweating with cold hands and feet or blotchy purple skin; vomits a lot; or has a fever of 39 °C or more or lasting 48 hours. Do not wait; call your local emergency number or go to hospital.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'See a doctor the same day if',
+            text: 'Your baby is under 6 months; your child refuses food and drink, has fewer wet diapers or signs of dehydration; is crying, restless or cannot sleep; has red, swollen or pus-filled blisters; has a long-term condition; or you are worried. If your child gets worse quickly, call emergency services.',
+          },
+        ],
+      },
+      keywords: {
+        vi: ['tay chân miệng', 'EV71', 'giật mình', 'loét miệng', 'nốt phỏng', 'nghỉ học'],
+        en: [
+          'hand foot and mouth',
+          'EV71',
+          'sudden jerks',
+          'mouth ulcers',
+          'blisters',
+          'staying home from childcare',
+        ],
+      },
+      relatedArticleIds: [
+        'art_fever_when_to_call',
+        'art_diarrhoea_dehydration',
+        'art_medicine_safety',
+        'art_cold_cough',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'Bệnh viện Nhi Trung ương — Hướng dẫn chẩn đoán bệnh tay chân miệng',
+          url: 'https://benhviennhitrunguong.gov.vn/huong-dan-chan-doan-benh-tay-chan-mieng.html',
+        },
+        {
+          label: 'NHS — Hand, foot and mouth disease',
+          url: 'https://www.nhs.uk/conditions/hand-foot-mouth-disease/',
+        },
+        {
+          label: 'WHO — Enterovirus 71 (vaccine standardization page)',
+          url: 'https://www.who.int/teams/health-product-policy-and-standards/standards-and-specifications/norms-and-standards/vaccine-standardization/enterovirus-71',
+        },
+        {
+          label: 'WHO Western Pacific — Hand, foot and mouth disease (surveillance archive)',
+          url: 'https://www.who.int/westernpacific/emergencies/surveillance/archives/hand-foot-and-mouth-disease',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_growth_charts',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'development',
+      format: 'article',
+      ageWeeks: { from: 0, to: 104 },
+      readingMinutes: 4,
+      cover: null,
+      title: {
+        vi: 'Cân nặng, chiều dài, vòng đầu: đọc biểu đồ tăng trưởng mà không lo lắng',
+        en: 'Weight, length and head size: reading growth charts without worry',
+      },
+      summary: {
+        vi: 'Biểu đồ tăng trưởng của WHO cho thấy bé đang lớn theo đường của riêng mình. Điều quan trọng là xu hướng qua nhiều lần đo, không phải một con số hay so với bé nhà khác.',
+        en: 'WHO growth charts show your baby growing along their own curve. What matters is the trend across several measurements, not a single number or a comparison with other babies.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Bách phân vị cho biết bé so với trẻ khoẻ cùng tuổi, cùng giới: bách phân vị 25 nghĩa là khoảng 25 trên 100 bé nhẹ hơn. Bé ở bách phân vị thấp hay cao đều có thể khoẻ mạnh. Hãy để ý khi đường của bé đi ngang, tụt hoặc vọt qua nhiều vạch, và cân đo ở cơ sở y tế với cân, thước chuẩn.',
+          },
+          { type: 'heading', text: 'Hiểu đúng về biểu đồ tăng trưởng' },
+          {
+            type: 'paragraph',
+            text: 'Chuẩn tăng trưởng trẻ em của WHO (2006) được xây dựng từ trẻ bú mẹ, khoẻ mạnh, được chăm sóc tốt ở sáu nước, nên mô tả cách trẻ nên lớn khi được nuôi dưỡng tốt. Nhiều nước dùng chuẩn này cho trẻ dưới 2 tuổi, trong đó có Việt Nam, Anh (biểu đồ UK-WHO) và Mỹ. Có biểu đồ riêng cho bé trai, bé gái; bé sinh non được chấm theo tuổi hiệu chỉnh.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Ba chỉ số chính trong 2 năm đầu là cân nặng, chiều dài (đo nằm) và vòng đầu. Mỗi đường cong trên biểu đồ là một bách phân vị. Không có bách phân vị “đúng”: bé ở đường thứ 9 và bé ở đường thứ 91 đều có thể khoẻ. Điều bác sĩ xem là bé có lớn đều theo một đường hay không, và cân nặng có tương xứng với chiều dài không.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Những ngày đầu bé sụt cân là thường gặp; phần lớn bé lấy lại cân nặng lúc sinh vào khoảng 2 tuần tuổi. Trong vài tháng đầu, đường của bé có thể dịch lên xuống một chút trước khi ổn định. Sau 1 tuổi, bé lớn chậm hơn hẳn và thường ăn ít đi so với cân nặng.',
+          },
+          { type: 'heading', text: 'Ba mẹ có thể làm gì' },
+          {
+            type: 'bullets',
+            items: [
+              'Cân, đo ở trạm y tế hoặc phòng khám, mỗi lần dùng cùng loại cân, bé cởi bớt quần áo và tháo tã. Cân ở nhà dễ lệch vài trăm gam.',
+              'Dưới 2 tuổi, chiều dài được đo khi bé nằm thẳng trên thước đo, có hai người cùng giữ bé.',
+              'Ghi lại các lần đo trong Child Life hoặc sổ theo dõi sức khoẻ của bé để nhìn được xu hướng qua nhiều tháng.',
+              'Bé sinh non: chấm theo tuổi hiệu chỉnh đến khoảng 2 tuổi, theo hướng dẫn của bác sĩ (xem bài Bé sinh non và tuổi hiệu chỉnh).',
+              'Không cần cân bé hằng ngày: cân nặng dao động theo cữ bú, cữ đi ngoài. Với bé khoẻ, cân theo lịch khám là đủ.',
+              'Cho bé ăn theo tín hiệu đói no; không ép ăn hay pha sữa đặc hơn hướng dẫn để bé “lên ký”.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'So bé với chính bé',
+            text: 'Ba mẹ cao thì con thường cao hơn, ba mẹ nhỏ người thì con thường nhỏ hơn. So với con nhà hàng xóm hay với một “cân nặng chuẩn” trên mạng dễ làm ba mẹ lo không cần thiết. Hãy nhìn đường cong của chính bé qua nhiều tháng.',
+          },
+          { type: 'heading', text: 'Theo dõi' },
+          {
+            type: 'bullets',
+            items: [
+              'Đường cân nặng, chiều dài, vòng đầu qua các lần đo: lên đều, đi ngang hay tụt.',
+              'Cân nặng cắt xuống qua hai vạch bách phân vị chính trở lên, hoặc đi ngang nhiều tháng.',
+              'Vòng đầu tăng rất nhanh, vượt nhiều vạch, hoặc gần như không tăng.',
+              'Ăn uống, đi ngoài, tâm trạng và mức hoạt động của bé, quan trọng không kém con số.',
+            ],
+          },
+          { type: 'heading', text: 'Hiểu lầm thường gặp' },
+          {
+            type: 'bullets',
+            items: [
+              '“Bé phải nằm trên đường giữa mới là khoẻ”: đường giữa chỉ là bách phân vị 50; một nửa số trẻ khoẻ nằm dưới đường này. Nên: xem bé có lớn đều theo đường của mình không.',
+              '“Bé mũm mĩm mới là khoẻ, gầy là suy dinh dưỡng”: bé tăng cân vượt nhiều vạch cũng cần bác sĩ xem, còn bé thon gọn mà lớn đều thường khoẻ. Nên: hỏi bác sĩ khi lo, đừng tự ép ăn.',
+              '“Chậm lên cân thì mua thuốc bổ, men, siro cho ăn ngon”: các sản phẩm này không thay được bữa ăn đủ chất và có loại có tác dụng phụ. Nên: đưa bé khám để tìm nguyên nhân.',
+              '“Sau 1 tuổi ăn ít đi là biếng ăn”: tốc độ lớn chậm lại nên bé cần ăn ít hơn so với cân nặng. Nên: theo dõi đường cong; bé vẫn lớn đều thì không cần lo.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên hỏi bác sĩ',
+            text: 'Cân nặng tụt qua hai vạch bách phân vị chính, đi ngang nhiều tháng, hoặc bé sụt cân; bé chưa lấy lại cân nặng lúc sinh sau 2 tuần; vòng đầu tăng rất nhanh hoặc không tăng; chiều dài gần như không tăng; bé bú, ăn kém kéo dài, nôn nhiều, tiêu chảy kéo dài; hoặc ba mẹ thấy lo. Đưa bé đi khám ngay nếu thóp phồng căng kèm nôn, li bì, hoặc bé mệt lả.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'A percentile compares your baby with healthy babies of the same age and sex: the 25th percentile means about 25 in 100 babies weigh less. Babies on low or high percentiles can both be healthy. Watch for a curve that flattens, drops or climbs across several lines, and have your baby weighed and measured at a clinic with proper equipment.',
+          },
+          { type: 'heading', text: 'Understanding growth charts' },
+          {
+            type: 'paragraph',
+            text: 'The WHO Child Growth Standards (2006) were built from healthy, breastfed, well-cared-for children in six countries, so they describe how children should grow when well nourished. Many countries use them for children under 2, including Việt Nam, the UK (UK-WHO charts) and the US. There are separate charts for boys and girls; babies born early are plotted by corrected age.',
+          },
+          {
+            type: 'paragraph',
+            text: 'The three main measures in the first two years are weight, length (measured lying down) and head circumference. Each curve on the chart is a percentile. There is no “right” percentile: a baby on the 9th line and one on the 91st can both be healthy. What the doctor looks at is whether your baby grows steadily along a line, and whether weight is in proportion to length.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Losing some weight in the first days is common; most babies are back to birth weight by about 2 weeks. In the first months your baby’s curve may shift a little before it settles. After the first birthday, growth slows a lot and toddlers often eat less for their size.',
+          },
+          { type: 'heading', text: 'What you can do' },
+          {
+            type: 'bullets',
+            items: [
+              'Have your baby weighed and measured at a clinic, on the same kind of scale each time, undressed and without a diaper. Home scales can be off by a few hundred grams.',
+              'Under 2, length is measured with your baby lying straight on a measuring board, held by two people.',
+              'Record each measurement in Child Life or your baby’s health record so you can see the trend over months.',
+              'Babies born early: plot by corrected age until about age 2, as your doctor advises (see Babies born early and corrected age).',
+              'There is no need to weigh your baby every day: weight goes up and down with feeds and stools. For a healthy baby, weighing at scheduled check-ups is enough.',
+              'Feed to your baby’s hunger and fullness cues; never force-feed or make formula stronger to “add weight”.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Compare your baby with themselves',
+            text: 'Tall parents tend to have taller children and smaller parents smaller ones. Comparing with the neighbours’ baby or a “standard weight” online can cause needless worry. Look at your own baby’s curve over several months.',
+          },
+          { type: 'heading', text: 'What to watch' },
+          {
+            type: 'bullets',
+            items: [
+              'The weight, length and head curves across visits: rising steadily, flattening or dropping.',
+              'Weight falling across two or more major percentile lines, or staying flat for several months.',
+              'Head size growing very fast across several lines, or hardly growing.',
+              'How your baby eats, poos, plays and how lively they are, which matters as much as the numbers.',
+            ],
+          },
+          { type: 'heading', text: 'Common misconceptions' },
+          {
+            type: 'bullets',
+            items: [
+              '“A healthy baby must be on the middle line”: the middle line is just the 50th percentile; half of healthy babies are below it. Instead: check that your baby grows steadily along their own line.',
+              '“Chubby means healthy, slim means malnourished”: a baby climbing across many lines also needs a check, and a slim baby growing steadily is usually healthy. Instead: ask the doctor if you are worried; do not force-feed.',
+              '“Slow weight gain needs tonics, probiotics or appetite syrups”: these do not replace good meals and some have side effects. Instead: take your baby to the doctor to find the cause.',
+              '“Eating less after age 1 means a feeding problem”: growth slows, so toddlers need less food for their size. Instead: follow the curve; if it is steady, there is no need to worry.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to ask a doctor',
+            text: 'Weight drops across two major percentile lines, stays flat for months, or your baby loses weight; your baby is not back to birth weight after 2 weeks; head size grows very fast or not at all; length hardly increases; long-lasting poor feeding, frequent vomiting or diarrhoea; or you are worried. Get your baby seen at once if the soft spot bulges with vomiting or drowsiness, or your baby seems very unwell.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'biểu đồ tăng trưởng',
+          'bách phân vị',
+          'cân nặng',
+          'chiều dài',
+          'vòng đầu',
+          'chậm tăng cân',
+        ],
+        en: [
+          'growth chart',
+          'percentile',
+          'weight',
+          'length',
+          'head circumference',
+          'slow weight gain',
+        ],
+      },
+      relatedArticleIds: [
+        'art_preterm_corrected_age',
+        'art_breastfeeding_start',
+        'art_picky_eating_toddler',
+        'art_solids_textures_by_month',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'WHO — Child growth standards',
+          url: 'https://www.who.int/tools/child-growth-standards',
+        },
+        {
+          label: 'RCPCH — UK-WHO growth charts, 0–4 years',
+          url: 'https://www.rcpch.ac.uk/resources/uk-who-growth-charts-0-4-years',
+        },
+        {
+          label:
+            "HealthyChildren.org (AAP) — Your baby's first month: growth and physical appearance",
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/Pages/First-Month-Physical-Appearance-and-Growth.aspx',
+        },
+        {
+          label: 'WHO — Infant and young child feeding (fact sheet)',
+          url: 'https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_preterm_corrected_age',
+    reviewerLabel: 'Nhóm chuyên môn · Phát triển trẻ em',
+    data: {
+      library: 'care',
+      topic: 'development',
+      format: 'article',
+      ageWeeks: { from: 0, to: 104 },
+      readingMinutes: 4,
+      cover: null,
+      title: {
+        vi: 'Bé sinh non: tuổi hiệu chỉnh, mốc phát triển và những điều ba mẹ nên biết',
+        en: 'Babies born early: corrected age, milestones and what to know',
+      },
+      summary: {
+        vi: 'Với bé sinh trước 37 tuần, ba mẹ dùng tuổi hiệu chỉnh khi đối chiếu mốc phát triển và tăng trưởng, thường đến khoảng 2 tuổi. Lịch tiêm chủng vẫn theo ngày sinh.',
+        en: 'For babies born before 37 weeks, use corrected age when comparing milestones and growth, usually until about age 2. Vaccinations still follow the date of birth.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Tuổi hiệu chỉnh là tuổi tính từ ngày sinh trừ đi số tuần bé sinh sớm so với 40 tuần. Bé 4 tháng tuổi sinh lúc 32 tuần, tức sớm 8 tuần, có tuổi hiệu chỉnh khoảng 2 tháng. Dùng tuổi hiệu chỉnh cho mốc phát triển và biểu đồ tăng trưởng đến khoảng 2 tuổi; tiêm chủng theo tuổi thật, trừ khi bác sĩ dặn khác.',
+          },
+          { type: 'heading', text: 'Hiểu đúng về tuổi hiệu chỉnh' },
+          {
+            type: 'paragraph',
+            text: 'Thai kỳ đủ tháng khoảng 40 tuần. Bé sinh non đã có ít tuần phát triển trong bụng mẹ hơn, nên khi so với các mốc dành cho bé đủ tháng, ba mẹ trừ đi số tuần sinh sớm. AAP khuyên dùng tuổi hiệu chỉnh khi đánh giá sự phát triển của bé sinh non; phần lớn bé dần bắt kịp bạn cùng tuổi vào khoảng 2 tuổi, bé sinh rất non có thể cần lâu hơn.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Cách tính: lấy 40 trừ số tuần thai lúc sinh, ra số tuần sinh sớm; rồi lấy tuổi thật trừ số tuần đó. Ví dụ bé sinh lúc 34 tuần là sớm 6 tuần; khi bé được 3 tháng, khoảng 13 tuần, theo ngày sinh, tuổi hiệu chỉnh là khoảng 7 tuần.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Trong Child Life, các khoảng tham khảo của mốc phát triển hiện được tính theo ngày sinh. Nếu bé sinh non, hãy cộng thêm số tuần sinh sớm khi đọc các khoảng này, và đừng lo nếu bé đạt mốc muộn hơn so với tuổi thật.',
+          },
+          { type: 'heading', text: 'Ba mẹ có thể làm gì' },
+          {
+            type: 'bullets',
+            items: [
+              'Ghi rõ tuần thai lúc sinh và ngày dự sinh trong hồ sơ của bé, và nói với mọi bác sĩ khám cho bé rằng bé sinh non.',
+              'Đối chiếu mốc phát triển như lẫy, ngồi, cười, bập bẹ theo tuổi hiệu chỉnh đến khoảng 2 tuổi.',
+              'Tiêm chủng theo tuổi thật tính từ ngày sinh, đúng lịch; bé sinh non dễ bị bệnh nặng hơn nên càng cần tiêm đúng hẹn. Hỏi bác sĩ nếu bé còn nằm viện hoặc có bệnh lý riêng.',
+              'Ăn dặm: hỏi bác sĩ thời điểm phù hợp; với bé sinh non, bác sĩ thường dựa trên cả tuổi thật, tuổi hiệu chỉnh và các dấu hiệu sẵn sàng của bé.',
+              'Vitamin D và sắt: bé sinh non thường cần bổ sung sớm hơn, liều khác; làm đúng theo chỉ định của bác sĩ.',
+              'Ngủ an toàn như mọi bé: nằm ngửa, nôi riêng, mặt phẳng, chắc; không ngủ chung giường với bé sinh non.',
+              'Đi tái khám đúng hẹn: mắt, thính lực, tăng trưởng và phát triển, theo chỉ định của bác sĩ.',
+              'Hạn chế người ốm đến thăm, rửa tay trước khi bế bé, nhất là trong mùa cúm và RSV.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Ba mẹ cũng cần được nghỉ',
+            text: 'Thời gian nằm viện, ở phòng sơ sinh và những tháng đầu ở nhà có thể rất căng thẳng. Hãy nhận giúp đỡ, nói ra cảm xúc, và tìm hỗ trợ nếu thấy buồn, lo kéo dài (xem bài Ba mẹ cũng cần được chăm).',
+          },
+          { type: 'heading', text: 'Theo dõi' },
+          {
+            type: 'bullets',
+            items: [
+              'Mốc phát triển theo tuổi hiệu chỉnh: bé có tiến bộ dần theo tháng không.',
+              'Tăng trưởng trên biểu đồ theo tuổi hiệu chỉnh hoặc biểu đồ dành cho bé sinh non.',
+              'Bú, ăn, nhịp thở khi ngủ, những lúc ngừng thở hay tím tái.',
+              'Trương lực cơ: người quá mềm, quá cứng, hay dùng một bên người nhiều hơn.',
+            ],
+          },
+          { type: 'heading', text: 'Hiểu lầm thường gặp' },
+          {
+            type: 'bullets',
+            items: [
+              '“Sinh non thì cho ăn dặm sớm, uống thêm thuốc bổ cho mau bắt kịp”: ăn khi chưa sẵn sàng dễ sặc và không giúp bé lớn nhanh hơn. Nên: theo hướng dẫn dinh dưỡng của bác sĩ.',
+              '“Sinh non thì hoãn tiêm chủng cho cứng cáp”: bé sinh non dễ mắc bệnh nặng hơn và vắc xin vẫn hiệu quả. Nên: tiêm theo tuổi thật, trừ khi bác sĩ dặn khác.',
+              '“Bé chậm hơn bạn cùng tháng là có vấn đề”: so với tuổi thật thì đạt mốc muộn hơn là điều được dự đoán. Nên: so theo tuổi hiệu chỉnh và hỏi bác sĩ khi lo.',
+              '“Ủ thật ấm, đóng kín phòng cho bé non khỏi lạnh”: bé cần ấm vừa đủ, còn quá nóng làm tăng nguy cơ đột tử. Nên: mặc vừa đủ, sờ gáy hoặc ngực để kiểm tra.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Bé ngừng thở, tím tái, thở rên hay rút lõm ngực; li bì, khó đánh thức, lả mềm; co giật; bé dưới 3 tháng tuổi thật có nhiệt độ từ 38 °C trở lên, hoặc thân nhiệt thấp dưới 36 °C.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên hỏi bác sĩ',
+            text: 'Bé chưa đạt mốc so với tuổi hiệu chỉnh, mất kỹ năng đã có, quá mềm hoặc quá cứng; bú kém, chậm tăng cân; ba mẹ lo về mắt hay khả năng nghe của bé; hoặc ba mẹ chưa chắc cách tính tuổi hiệu chỉnh cho bé.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Corrected age is the age from the date of birth minus the number of weeks your baby was born before 40 weeks. A 4-month-old born at 32 weeks, 8 weeks early, has a corrected age of about 2 months. Use corrected age for milestones and growth charts until about age 2; vaccinations follow actual age unless the doctor says otherwise.',
+          },
+          { type: 'heading', text: 'Understanding corrected age' },
+          {
+            type: 'paragraph',
+            text: 'A full-term pregnancy is about 40 weeks. A baby born early had fewer weeks of growth in the womb, so when comparing with milestones for term babies, take off the weeks they were early. The AAP advises using corrected age to assess a preterm baby’s development; most catch up with children their age by about 2 years, and babies born very early may take longer.',
+          },
+          {
+            type: 'paragraph',
+            text: 'How to work it out: 40 minus the weeks of pregnancy at birth gives the weeks early; then subtract that from actual age. For example, a baby born at 34 weeks is 6 weeks early; at 3 months, about 13 weeks, from birth, the corrected age is about 7 weeks.',
+          },
+          {
+            type: 'paragraph',
+            text: 'In Child Life, the reference windows for milestones are currently counted from the date of birth. If your baby was born early, add the weeks they were early when you read these windows, and do not worry if milestones come later than their actual age suggests.',
+          },
+          { type: 'heading', text: 'What you can do' },
+          {
+            type: 'bullets',
+            items: [
+              'Record the weeks of pregnancy at birth and the due date in your baby’s profile, and tell every doctor who sees your baby that they were born early.',
+              'Compare milestones such as rolling, sitting, smiling and babbling with corrected age until about age 2.',
+              'Vaccinate by actual age from birth, on time; babies born early are more likely to get seriously ill, so on-time vaccines matter even more. Ask the doctor if your baby is still in hospital or has a specific condition.',
+              'Solids: ask your doctor when to start; for babies born early, doctors usually weigh up actual age, corrected age and your baby’s signs of readiness.',
+              'Vitamin D and iron: babies born early often need supplements sooner and at different doses; follow your doctor exactly.',
+              'Safe sleep as for every baby: on the back, in their own crib, on a firm flat surface; do not bed-share with a baby born early.',
+              'Keep follow-up appointments for eyes, hearing, growth and development, as your doctor advises.',
+              'Limit visits from anyone who is ill and wash hands before holding your baby, especially in flu and RSV season.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'You need rest too',
+            text: 'Time in hospital, in the neonatal unit and the first months at home can be very stressful. Accept help, talk about how you feel, and get support if low mood or worry lasts (see Parents need care too).',
+          },
+          { type: 'heading', text: 'What to watch' },
+          {
+            type: 'bullets',
+            items: [
+              'Milestones by corrected age: whether your baby makes steady progress month by month.',
+              'Growth plotted by corrected age or on a chart for babies born early.',
+              'Feeding, breathing during sleep, any pauses in breathing or turning blue.',
+              'Muscle tone: very floppy or very stiff, or using one side of the body more.',
+            ],
+          },
+          { type: 'heading', text: 'Common misconceptions' },
+          {
+            type: 'bullets',
+            items: [
+              '“Babies born early should start solids sooner and take tonics to catch up”: eating before they are ready raises choking risk and does not speed up growth. Instead: follow your doctor’s feeding plan.',
+              '“Delay vaccines until a preterm baby is stronger”: babies born early are more at risk of serious illness, and vaccines still work. Instead: vaccinate by actual age unless the doctor says otherwise.',
+              '“Being behind babies born the same month means a problem”: compared with actual age, later milestones are expected. Instead: compare with corrected age and ask the doctor if you are worried.',
+              '“Bundle up a preterm baby and seal the room”: babies need to be warm enough, but overheating raises the risk of sudden infant death. Instead: dress them sensibly and feel the back of the neck or chest.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or local emergency services now if',
+            text: 'Your baby stops breathing, turns blue, grunts or the chest pulls in; is floppy, very drowsy or hard to wake; has a fit; or is under 3 months of actual age with a temperature of 38 °C or more, or a low temperature under 36 °C.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to ask a doctor',
+            text: 'Your baby has not reached milestones for their corrected age, loses a skill, or seems very floppy or very stiff; feeds poorly or gains weight slowly; you have concerns about their eyes or hearing; or you are unsure how to work out their corrected age.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'sinh non',
+          'tuổi hiệu chỉnh',
+          'ngày dự sinh',
+          'mốc phát triển',
+          'tiêm chủng',
+          'phòng sơ sinh',
+        ],
+        en: [
+          'premature',
+          'corrected age',
+          'due date',
+          'milestones',
+          'vaccinations',
+          'neonatal unit',
+        ],
+      },
+      relatedArticleIds: [
+        'art_growth_charts',
+        'art_safe_sleep',
+        'art_vitamin_d_iron',
+        'art_parent_wellbeing',
+      ],
+      milestoneIds: ['rolls_over', 'sits_up', 'first_smile'],
+      sources: [
+        {
+          label: 'HealthyChildren.org (AAP) — Corrected age for preemies',
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/preemie/Pages/Corrected-Age-For-Preemies.aspx',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Preemie',
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/preemie/Pages/default.aspx',
+        },
+        {
+          label: 'NICE NG72 — Developmental follow-up of children and young people born preterm',
+          url: 'https://www.nice.org.uk/guidance/ng72',
+        },
+        {
+          label: 'WHO — Preterm birth (fact sheet)',
+          url: 'https://www.who.int/news-room/fact-sheets/detail/preterm-birth',
+        },
+        {
+          label: "HealthyChildren.org (AAP) — A parent's guide to safe sleep",
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_picky_eating_toddler',
+    reviewerLabel: 'Nhóm chuyên môn · Dinh dưỡng nhi',
+    data: {
+      library: 'solids',
+      topic: 'feeding',
+      format: 'article',
+      ageWeeks: { from: 52, to: 104 },
+      readingMinutes: 4,
+      cover: null,
+      title: {
+        vi: 'Bé 1–2 tuổi biếng ăn, kén ăn: hiểu đúng và cho ăn không ép',
+        en: 'Fussy eating at 1–2 years: understanding it and feeding without pressure',
+      },
+      summary: {
+        vi: 'Sau 1 tuổi, bé lớn chậm lại nên thường ăn ít đi và kén hơn. Ép ăn làm bữa ăn căng thẳng và bé càng sợ ăn. Chia rõ việc của người lớn và của bé, cùng sự kiên nhẫn, giúp bé ăn đa dạng dần.',
+        en: 'After age 1 growth slows, so toddlers often eat less and become choosier. Pressure makes meals tense and children more wary of food. Clear roles for you and your child, and patience, help them eat a wider range over time.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Ba mẹ quyết định cho ăn gì, khi nào, ở đâu; bé quyết định ăn bao nhiêu. Mời món mới nhiều lần, có khi 10–15 lần bé mới chịu. Không ép, không dỗ bằng màn hình, không thưởng bằng đồ ngọt. Nếu bé vẫn lớn đều, chơi tốt, kén ăn thường chỉ là một giai đoạn.',
+          },
+          { type: 'heading', text: 'Hiểu đúng về biếng ăn, kén ăn' },
+          {
+            type: 'paragraph',
+            text: 'Trong năm đầu, bé lớn rất nhanh; sang năm thứ hai, tốc độ lớn chậm hẳn nên nhu cầu ăn so với cân nặng cũng giảm. Theo AAP, trẻ tuổi tập đi ăn lúc nhiều lúc ít, có ngày ăn rất ít, có ngày ăn nhiều, và lượng ăn cộng lại cả tuần thường vẫn đủ.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Ngại món mới là một giai đoạn hay gặp từ khoảng 18 tháng đến vài tuổi. Bé cần thấy, ngửi, chạm và nếm một món nhiều lần mới quen; NHS lưu ý có khi phải mời 10–15 lần. Ép ăn, đút khi bé đã quay đi hay doạ nạt làm bé gắn bữa ăn với căng thẳng và càng kén hơn.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Ở nhiều gia đình, “biếng ăn” là nỗi lo rất lớn, và bữa ăn hay kéo dài cả tiếng với điện thoại, bế đi rong hay đuổi theo bé. Ý định là thương con, nhưng cách này khiến bé không nhận ra cảm giác đói, no của chính mình.',
+          },
+          { type: 'heading', text: 'Ba mẹ có thể làm gì' },
+          {
+            type: 'bullets',
+            items: [
+              'Chia ngày thành 3 bữa chính và 2 bữa phụ vào giờ tương đối cố định; giữa các bữa chỉ uống nước, không ăn vặt, uống sữa liên tục.',
+              'Ngồi ăn cùng cả nhà, ở bàn hoặc ghế ăn, tắt tivi, cất điện thoại. Mỗi bữa khoảng 20–30 phút; bé thôi ăn thì dọn đi, không kéo dài.',
+              'Mỗi bữa có ít nhất một món bé đã quen và thích, bên cạnh một lượng nhỏ món mới. Cho bé tự xúc, tự bốc, chấp nhận bày bừa.',
+              'Mời món mới nhiều lần, nhiều cách: hấp, xào, cắt sợi, trộn cháo. Người lớn ăn cùng món đó và tỏ ra ngon miệng.',
+              'Khen khi bé thử, không khen chê theo lượng ăn. Không dùng đồ ngọt làm phần thưởng hay hình phạt.',
+              'Giữ sữa vừa phải: sau 1 tuổi, khoảng 2 cốc sữa, tức khoảng 480 ml mỗi ngày, là đủ; uống quá nhiều sữa hay nước ép làm bé no và ăn ít bữa chính.',
+              'Phần ăn vừa với bé: khoảng ¾ đến 1 chén nhỏ mỗi bữa (UNICEF); bé đòi thêm thì cho thêm.',
+              'Cho bé vận động, chơi ngoài trời, ngủ đủ: bé mệt hay buồn ngủ thường ăn kém.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Việc của ba mẹ, việc của bé',
+            text: 'Ba mẹ chọn món, giờ ăn và chỗ ngồi; bé chọn ăn hay không và ăn bao nhiêu trong những món đã bày. Khi người lớn thôi giành phần quyết định lượng ăn, bữa ăn thường dễ chịu hơn và bé dần ăn tốt hơn.',
+          },
+          { type: 'heading', text: 'Theo dõi' },
+          {
+            type: 'bullets',
+            items: [
+              'Đường cân nặng, chiều cao trên biểu đồ qua các lần khám.',
+              'Số nhóm thực phẩm bé ăn trong ngày và trong tuần, không chỉ một bữa.',
+              'Những món bé chịu ăn: còn bao nhiêu món, có đang ít dần không.',
+              'Bé có hay nôn, sặc, oẹ, đau khi nhai nuốt, táo bón kéo dài không.',
+            ],
+          },
+          { type: 'heading', text: 'Hiểu lầm thường gặp' },
+          {
+            type: 'bullets',
+            items: [
+              '“Bé phải ăn hết bát mới đủ chất”: bé biết khi nào mình no; ép ăn làm bé sợ bữa ăn và dễ sặc. Nên: mời, để bé tự quyết lượng, dọn đi khi bé no.',
+              '“Cho xem điện thoại thì bé mới chịu há miệng”: bé nuốt mà không để ý mình đang ăn gì, no hay chưa. Nên: tắt màn hình, trò chuyện về món ăn.',
+              '“Biếng ăn thì mua siro, men, thuốc cho ăn ngon”: các sản phẩm này không giải quyết nguyên nhân, có loại gây buồn ngủ hay tác dụng phụ khác. Nên: đưa bé khám nếu bé chậm lớn, đừng tự mua thuốc.',
+              '“Bé chê rau thì thôi, đừng cho nữa”: bé cần nhiều lần làm quen. Nên: tiếp tục bày một ít rau mỗi bữa, không ép.',
+              '“Cho uống thêm sữa bù bữa ăn”: sữa nhiều quá làm bé no và ít ăn món giàu sắt. Nên: giữ sữa khoảng 480 ml mỗi ngày, ưu tiên bữa chính.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên hỏi bác sĩ',
+            text: 'Bé sụt cân, đường cân nặng tụt qua hai vạch bách phân vị hoặc đi ngang nhiều tháng; bé chỉ ăn rất ít món và ngày càng ít đi; hay nôn, sặc, oẹ khi ăn, khó nhai nuốt; táo bón hay tiêu chảy kéo dài; bé xanh xao, mệt; bé chậm nói hay ít giao tiếp kèm theo; hoặc bữa ăn trở thành cuộc chiến khiến cả nhà căng thẳng. Gọi 115 nếu bé hóc, khó thở hoặc tím tái khi ăn.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'You decide what, when and where your toddler eats; your toddler decides how much. Offer new foods many times; it can take 10–15 tries. No forcing, no screens to coax, no sweets as rewards. If your child is growing steadily and playing well, fussy eating is usually a phase.',
+          },
+          { type: 'heading', text: 'Understanding fussy eating' },
+          {
+            type: 'paragraph',
+            text: 'Babies grow very fast in the first year; in the second year growth slows a lot, so toddlers need less food for their size. According to the AAP, toddlers’ appetites go up and down, with very small days and big days, and intake over a whole week is usually enough.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Wariness of new foods is a common phase from around 18 months to the early school years. Children need to see, smell, touch and taste a food many times before accepting it; the NHS notes it can take 10–15 tries. Forcing, spoon-feeding after they turn away or threats link meals with stress and make fussiness worse.',
+          },
+          {
+            type: 'paragraph',
+            text: 'In many families, “not eating” is a huge worry, and meals can stretch to an hour with phones, walking around or chasing the child. The intention is loving, but it stops children noticing their own hunger and fullness.',
+          },
+          { type: 'heading', text: 'What you can do' },
+          {
+            type: 'bullets',
+            items: [
+              'Plan 3 meals and 2 snacks at fairly regular times; between them offer only water, with no grazing on snacks or milk.',
+              'Eat together at the table or in a high chair, TV off, phones away. Keep meals to about 20–30 minutes; when your child stops, clear the food without dragging it out.',
+              'Include at least one familiar food your child likes at each meal, alongside a small amount of something new. Let them self-feed and accept the mess.',
+              'Offer new foods many times and in different ways: steamed, stir-fried, cut in strips, mixed into porridge. Eat the same food yourself and enjoy it.',
+              'Praise trying, not the amount eaten. Never use sweets as a reward or punishment.',
+              'Keep milk moderate: after age 1, about 2 cups, around 480 ml a day, is enough; too much milk or juice fills children up so they eat less at meals.',
+              'Child-sized portions: about ¾ to 1 small bowl per meal (UNICEF); give more if they ask.',
+              'Make sure your child is active, plays outdoors and sleeps enough: tired children often eat poorly.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Your job, your child’s job',
+            text: 'You choose the food, the time and the place; your child chooses whether and how much to eat from what is offered. When adults stop deciding the amount, meals usually become calmer and children gradually eat better.',
+          },
+          { type: 'heading', text: 'What to watch' },
+          {
+            type: 'bullets',
+            items: [
+              'Weight and height on the growth chart at check-ups.',
+              'How many food groups your child eats over a day and a week, not just one meal.',
+              'The foods your child accepts: how many, and whether the list is shrinking.',
+              'Frequent vomiting, choking, gagging, pain when chewing or swallowing, or ongoing constipation.',
+            ],
+          },
+          { type: 'heading', text: 'Common misconceptions' },
+          {
+            type: 'bullets',
+            items: [
+              '“They must finish the bowl to get enough”: children know when they are full; forcing makes them fear meals and raises choking risk. Instead: offer, let them decide how much, and clear away when they are done.',
+              '“They only open their mouth while watching a phone”: children then swallow without noticing what they eat or whether they are full. Instead: screens off, and talk about the food.',
+              '“Buy syrups, probiotics or appetite medicine”: these do not fix the cause and some cause drowsiness or other side effects. Instead: see a doctor if your child is not growing well; do not buy medicines yourself.',
+              '“They refused vegetables, so stop offering them”: children need many tries. Instead: keep putting a little on the plate at each meal, without pressure.',
+              '“Top up with extra milk instead of meals”: too much milk fills children up and crowds out iron-rich foods. Instead: keep milk to about 480 ml a day and put meals first.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to ask a doctor',
+            text: 'Your child loses weight, or the weight curve drops across two percentile lines or stays flat for months; eats very few foods and the list keeps shrinking; often vomits, chokes or gags, or struggles to chew and swallow; has ongoing constipation or diarrhoea; looks pale or tired; also has language or social concerns; or mealtimes have become a battle that stresses the whole family. Call emergency services (115 in Việt Nam) if your child chokes, struggles to breathe or turns blue while eating.',
+          },
+        ],
+      },
+      keywords: {
+        vi: ['biếng ăn', 'kén ăn', 'ép ăn', 'món mới', 'bữa phụ', 'xem điện thoại khi ăn'],
+        en: [
+          'poor appetite',
+          'fussy eating',
+          'force-feeding',
+          'new foods',
+          'snacks',
+          'screens at meals',
+        ],
+      },
+      relatedArticleIds: [
+        'art_solids_textures_by_month',
+        'art_toddler_milk',
+        'art_growth_charts',
+        'art_screens_language',
+      ],
+      milestoneIds: ['uses_objects_right', 'two_hands_task'],
+      sources: [
+        {
+          label: 'HealthyChildren.org (AAP) — Picky eaters',
+          url: 'https://www.healthychildren.org/English/ages-stages/toddler/nutrition/Pages/Picky-Eaters.aspx',
+        },
+        {
+          label: 'NHS — Fussy eaters',
+          url: 'https://www.nhs.uk/baby/weaning-and-feeding/fussy-eaters/',
+        },
+        {
+          label: 'UNICEF — Feeding your baby: 1–2 years',
+          url: 'https://www.unicef.org/parenting/food-nutrition/feeding-your-baby-1-2-years',
+        },
+        {
+          label: 'WHO — Infant and young child feeding (fact sheet)',
+          url: 'https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Recommended drinks for young children ages 0–5',
+          url: 'https://www.healthychildren.org/English/healthy-living/nutrition/Pages/Recommended-Drinks-for-Young-Children-Ages-0-5.aspx',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_toddler_milk',
+    reviewerLabel: 'Nhóm chuyên môn · Dinh dưỡng nhi',
+    data: {
+      library: 'solids',
+      topic: 'feeding',
+      format: 'quick_qa',
+      ageWeeks: { from: 48, to: 104 },
+      readingMinutes: 2,
+      cover: null,
+      title: {
+        vi: 'Hỏi nhanh: Bé từ 1 tuổi uống sữa gì, bao nhiêu là đủ?',
+        en: 'Quick Q&A: Milk from age 1 — which kind, and how much?',
+      },
+      summary: {
+        vi: 'Từ 12 tháng, bé có thể uống sữa bò tươi nguyên kem tiệt trùng và tiếp tục bú mẹ. Sữa công thức “tăng trưởng” cho trẻ trên 1 tuổi không cần thiết với phần lớn bé khoẻ.',
+        en: 'From 12 months, toddlers can drink pasteurised whole cow’s milk and keep breastfeeding. “Growing-up” formula for children over 1 is not needed for most healthy toddlers.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Sau 1 tuổi: tiếp tục bú mẹ nếu mẹ và bé muốn; nếu không bú mẹ, khoảng 2 cốc sữa bò tươi nguyên kem tiệt trùng mỗi ngày là đủ. Sữa công thức cho trẻ tập đi không có lợi hơn sữa bò ở bé khoẻ (AAP 2023).',
+          },
+          { type: 'heading', text: 'Có cần sữa công thức tăng trưởng không?' },
+          {
+            type: 'paragraph',
+            text: 'Phần lớn bé không cần. Báo cáo năm 2023 của AAP cho biết các loại sữa công thức cho trẻ tập đi không có lợi hơn sữa bò ở trẻ khoẻ trên 12 tháng, thường có thêm đường và đắt hơn. NHS cũng cho rằng sữa tăng trưởng không cần thiết. Bé có bệnh lý, dị ứng hay chậm tăng cân sẽ được bác sĩ hướng dẫn loại sữa riêng.',
+          },
+          { type: 'heading', text: 'Uống bao nhiêu sữa là đủ?' },
+          {
+            type: 'paragraph',
+            text: 'AAP gợi ý trẻ 12–24 tháng uống khoảng 2–3 cốc, tức 480–720 ml sữa nguyên kem mỗi ngày, và nên giữ dưới khoảng 700 ml để bé còn ăn được bữa chính giàu sắt. Uống bằng cốc, tập bỏ bình, không ngậm bình sữa đi ngủ.',
+          },
+          { type: 'heading', text: 'Sữa hạt, sữa đậu nành có thay được không?' },
+          {
+            type: 'paragraph',
+            text: 'Nhiều loại sữa hạt ít đạm và năng lượng hơn sữa bò. NHS cho biết sữa đậu nành không đường, có bổ sung canxi có thể dùng từ 1 tuổi khi cần, và không cho trẻ dưới 5 tuổi uống sữa gạo. Bé dị ứng sữa bò hay nhà ăn chay thì hỏi bác sĩ.',
+          },
+          { type: 'heading', text: 'Hiểu lầm: sữa càng đắt bé càng cao, càng thông minh?' },
+          {
+            type: 'paragraph',
+            text: 'Chiều cao và trí não phụ thuộc vào di truyền, bữa ăn đa dạng, giấc ngủ, vận động và sự gắn bó với người chăm. Uống quá nhiều sữa còn làm bé biếng ăn và dễ thiếu sắt.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên hỏi bác sĩ',
+            text: 'Bé dị ứng hoặc không dung nạp sữa bò; gia đình ăn chay; bé chậm tăng cân, xanh xao, uống rất nhiều sữa mà ăn ít; hoặc bé có bệnh lý cần chọn sữa riêng.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'After age 1: keep breastfeeding if you both want to; if not, about 2 cups of pasteurised whole cow’s milk a day is enough. Toddler formula offers no advantage over cow’s milk for healthy toddlers (AAP 2023).',
+          },
+          { type: 'heading', text: 'Is growing-up formula needed?' },
+          {
+            type: 'paragraph',
+            text: 'Most toddlers do not. The AAP’s 2023 report says toddler formulas offer no benefit over cow’s milk for healthy children over 12 months, often contain added sugar and cost more. The NHS also says growing-up milks are not needed. A child with a medical condition, allergy or slow weight gain will get specific advice from their doctor.',
+          },
+          { type: 'heading', text: 'How much milk is enough?' },
+          {
+            type: 'paragraph',
+            text: 'The AAP suggests about 2–3 cups, 480–720 ml, of whole milk a day at 12–24 months, staying under about 700 ml so there is room for iron-rich meals. Use a cup, move away from the bottle and no bottle at bedtime.',
+          },
+          { type: 'heading', text: 'Can plant milks replace it?' },
+          {
+            type: 'paragraph',
+            text: 'Many plant milks have less protein and energy than cow’s milk. The NHS says unsweetened, calcium-fortified soya drinks can be used from age 1 if needed, and rice drinks should not be given under 5. If your child has a cow’s milk allergy or the family is vegan, ask the doctor.',
+          },
+          { type: 'heading', text: 'Myth: pricier milk makes children taller and smarter?' },
+          {
+            type: 'paragraph',
+            text: 'Height and brain development depend on genes, varied meals, sleep, activity and close relationships. Too much milk can even blunt appetite and lead to low iron.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to ask a doctor',
+            text: 'Your child has a cow’s milk allergy or intolerance; the family is vegetarian or vegan; your child gains weight slowly, looks pale, or drinks lots of milk but eats little; or has a condition that needs a specific milk.',
+          },
+        ],
+      },
+      keywords: {
+        vi: ['sữa tăng trưởng', 'sữa tươi', 'sữa công thức', 'sữa hạt', 'bỏ bình'],
+        en: ['growing-up milk', 'cow’s milk', 'formula', 'plant milk', 'stopping the bottle'],
+      },
+      relatedArticleIds: [
+        'art_water_juice',
+        'art_vitamin_d_iron',
+        'art_picky_eating_toddler',
+        'art_teething',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label:
+            "HealthyChildren.org (AAP) — Why most toddlers don't need toddler formula (2023 clinical report)",
+          url: 'https://www.healthychildren.org/English/news/Pages/why-most-toddlers-dont-need-toddler-formula.aspx',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Recommended drinks for young children ages 0–5',
+          url: 'https://www.healthychildren.org/English/healthy-living/nutrition/Pages/Recommended-Drinks-for-Young-Children-Ages-0-5.aspx',
+        },
+        {
+          label: 'NHS — Drinks and cups for babies and young children',
+          url: 'https://www.nhs.uk/baby/weaning-and-feeding/drinks-and-cups-for-babies-and-young-children/',
+        },
+        {
+          label: 'NHS — What to feed young children',
+          url: 'https://www.nhs.uk/baby/weaning-and-feeding/what-to-feed-young-children/',
+        },
+        {
+          label: 'WHO — Infant and young child feeding (fact sheet)',
+          url: 'https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_toddler_tantrums',
+    reviewerLabel: 'Nhóm chuyên môn · Phát triển trẻ em',
+    data: {
+      library: 'care',
+      topic: 'development',
+      format: 'article',
+      ageWeeks: { from: 52, to: 156 },
+      readingMinutes: 4,
+      cover: null,
+      title: {
+        vi: 'Bé ăn vạ, nổi cáu: hiểu và giúp bé bình tĩnh mà không đánh mắng',
+        en: 'Tantrums: understanding them and helping your toddler calm down without smacking',
+      },
+      summary: {
+        vi: 'Ăn vạ rất hay gặp từ khoảng 1 đến 3 tuổi, khi bé có nhiều mong muốn nhưng chưa nói được và chưa biết tự kiềm chế. Giữ bình tĩnh, giữ an toàn và nhất quán giúp cơn ăn vạ qua nhanh hơn.',
+        en: 'Tantrums are very common from about 1 to 3 years, when toddlers want a lot but cannot yet say it or hold themselves back. Staying calm, keeping everyone safe and being consistent help tantrums pass faster.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Ăn vạ là một phần của sự phát triển, không phải bé hư hay ba mẹ dạy sai. Lúc bé đang ăn vạ, giữ bé an toàn, ở gần, nói ít và bình tĩnh; không nhượng bộ điều đã nói không, và không đánh. Phòng trước bằng giờ giấc đều, báo trước khi chuyển việc và cho bé chọn giữa hai điều.',
+          },
+          { type: 'heading', text: 'Hiểu đúng về ăn vạ' },
+          {
+            type: 'paragraph',
+            text: 'Từ khoảng 1 tuổi, bé muốn tự làm và có nhiều mong muốn, nhưng chưa đủ lời để nói ra, còn phần não giúp kiềm chế cảm xúc vẫn đang phát triển. Khi bất lực, mệt, đói hay bị từ chối, bé có thể khóc thét, nằm lăn ra sàn, đá, đánh hay nín thở. NHS cho biết ăn vạ hay gặp ở trẻ 18 tháng đến 3 tuổi và thường giảm dần khi bé nói giỏi hơn.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Cơn ăn vạ thường ngắn, vài phút. Bé không cố tình làm khó ba mẹ; đó là cách bé xả một cảm xúc quá lớn. Điều bé cần là người lớn giữ bình tĩnh, giữ ranh giới và giúp bé dịu lại.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Đánh đòn hay doạ nạt có thể làm bé nín ngay lúc đó, nhưng WHO và AAP cho biết trừng phạt thân thể làm tăng hành vi hung hăng và lo âu về lâu dài, và không dạy bé cách tự kiềm chế. Nhiều nước đã cấm đánh trẻ, kể cả trong gia đình.',
+          },
+          { type: 'heading', text: 'Ba mẹ có thể làm gì' },
+          { type: 'heading', text: 'Phòng trước' },
+          {
+            type: 'bullets',
+            items: [
+              'Giữ giờ ăn, giờ ngủ đều; mang theo đồ ăn nhẹ khi ra ngoài; tránh đi chợ, đi chơi lúc bé quá mệt.',
+              'Báo trước khi chuyển việc: “Chơi thêm một lần cầu trượt rồi mình về nhé.”',
+              'Cho bé chọn giữa hai điều ba mẹ đều đồng ý: “Con mặc áo đỏ hay áo xanh?”',
+              'Khen cụ thể khi bé làm tốt: “Con đợi đến lượt giỏi quá.”',
+            ],
+          },
+          { type: 'heading', text: 'Khi bé đang ăn vạ' },
+          {
+            type: 'bullets',
+            items: [
+              'Giữ an toàn: dời đồ cứng, đồ vỡ; nếu bé đánh, đá, nhẹ nhàng giữ tay hoặc bế bé ra chỗ khác.',
+              'Ở gần, nói ít, giọng bình tĩnh; gọi tên cảm xúc: “Con giận vì phải về.” Không tranh luận, giảng giải khi bé đang khóc.',
+              'Không nhượng bộ điều đã nói không chỉ vì bé khóc to; nếu nhượng bộ, bé học được rằng ăn vạ là cách có được điều mình muốn.',
+              'Khi bé dịu lại, ôm bé, nói ngắn gọn điều vừa xảy ra rồi chuyển sang việc khác. Không cần phạt thêm.',
+              'Khi ba mẹ thấy mình sắp nổi nóng: hít thở sâu, nhờ người khác trông bé vài phút. Không bao giờ lắc hay đánh bé.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Cả nhà cùng một cách',
+            text: 'Bé dễ rối khi mẹ nói không còn bà lại cho. Ông bà, ba mẹ và người trông bé nên thống nhất vài nguyên tắc chính: không đánh, không nhượng bộ khi bé ăn vạ, và cùng một cách dỗ bé.',
+          },
+          { type: 'heading', text: 'Theo dõi' },
+          {
+            type: 'bullets',
+            items: [
+              'Cơn ăn vạ hay xảy ra lúc nào: đói, buồn ngủ, khi chuyển việc, khi có người lạ.',
+              'Mỗi cơn kéo dài bao lâu và có thưa dần theo tháng không.',
+              'Bé có tự làm đau mình như đập đầu, cắn mình, hay làm đau người khác không.',
+              'Lời nói và cách giao tiếp: bé có chỉ tay, nói được từ, hiểu lời ba mẹ không.',
+            ],
+          },
+          { type: 'heading', text: 'Hiểu lầm thường gặp' },
+          {
+            type: 'bullets',
+            items: [
+              '“Bé ăn vạ là do chiều quá, phải đánh cho chừa”: ăn vạ là một giai đoạn phát triển; đánh làm bé sợ chứ không dạy bé tự kiềm chế. Nên: giữ bình tĩnh, giữ ranh giới, khen khi bé làm tốt.',
+              '“Bé khóc thì đưa ngay điện thoại, kẹo cho êm”: cách này làm bé ăn vạ nhiều hơn để có thứ mình muốn. Nên: chờ bé dịu lại rồi chuyển sang việc khác.',
+              '“Doạ ông kẹ, công an, doạ bỏ bé lại cho nín”: thêm nỗi sợ khiến bé bất an hơn. Nên: ở gần và gọi tên cảm xúc của bé.',
+              '“Bé nín thở đến tím tái là do giận dai, cứ mặc kệ”: cơn nín thở thường không nguy hiểm, nhưng lần đầu nên cho bác sĩ xem, và bác sĩ có thể kiểm tra thiếu sắt. Nên: đặt bé nằm nghiêng ở chỗ an toàn, ở cạnh bé đến khi bé thở lại.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Bé ngất, tím tái kéo dài, co giật hoặc không tỉnh lại nhanh sau cơn nín thở; hoặc bé bị thương nặng trong lúc ăn vạ.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Khi nào nên hỏi bác sĩ',
+            text: 'Bé có cơn nín thở lần đầu; ăn vạ rất thường xuyên, nhiều lần mỗi ngày hoặc thường kéo dài trên 15 phút; bé hay tự làm đau mình hay làm đau người khác; ăn vạ ngày càng nặng hoặc vẫn nhiều sau 4 tuổi; bé chậm nói, ít giao tiếp hoặc mất kỹ năng đã có; hoặc ba mẹ thấy kiệt sức, khó kiềm chế.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Tantrums are part of development, not a sign of a naughty child or bad parenting. During a tantrum, keep your child safe, stay close, say little and stay calm; do not give in on a “no”, and never hit. Prevent them with regular routines, warnings before changes and a choice between two options.',
+          },
+          { type: 'heading', text: 'Understanding tantrums' },
+          {
+            type: 'paragraph',
+            text: 'From about age 1, toddlers want to do things themselves and want many things, but lack the words to say so, and the parts of the brain that manage feelings are still developing. When frustrated, tired, hungry or told no, they may scream, throw themselves on the floor, kick, hit or hold their breath. The NHS says tantrums are common from 18 months to 3 years and usually ease as talking improves.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Most tantrums last a few minutes. Your toddler is not trying to make life hard for you; it is how they let out a feeling that is too big. What they need is an adult who stays calm, keeps the limit and helps them settle.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Smacking or threats may stop crying in the moment, but WHO and the AAP say physical punishment increases aggression and anxiety over time and does not teach self-control. Many countries have banned physical punishment of children, including at home.',
+          },
+          { type: 'heading', text: 'What you can do' },
+          { type: 'heading', text: 'Preventing tantrums' },
+          {
+            type: 'bullets',
+            items: [
+              'Keep regular meal and sleep times; take a snack when you go out; avoid shopping or outings when your child is overtired.',
+              'Warn before a change: “One more go on the slide, then we go home.”',
+              'Offer a choice between two options you are happy with: “Red top or blue top?”',
+              'Praise specific good moments: “You waited for your turn so well.”',
+            ],
+          },
+          { type: 'heading', text: 'During a tantrum' },
+          {
+            type: 'bullets',
+            items: [
+              'Keep everyone safe: move hard or breakable things; if your child hits or kicks, gently hold their hands or carry them somewhere else.',
+              'Stay close, say little, speak calmly, and name the feeling: “You’re cross because we have to go.” Do not argue or explain while they are crying.',
+              'Do not give in on a “no” because the crying is loud; if you do, your child learns that tantrums work.',
+              'When your child calms down, hug them, say briefly what happened and move on. No extra punishment is needed.',
+              'If you feel close to losing your temper: breathe deeply and ask someone else to watch your child for a few minutes. Never shake or hit a child.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'One approach for the whole family',
+            text: 'Toddlers get confused when a parent says no and a grandparent says yes. Parents, grandparents and carers can agree on a few key rules: no hitting, no giving in to tantrums, and the same way of comforting your child.',
+          },
+          { type: 'heading', text: 'What to watch' },
+          {
+            type: 'bullets',
+            items: [
+              'When tantrums tend to happen: hungry, sleepy, at changes of activity, around new people.',
+              'How long each one lasts and whether they become less frequent over the months.',
+              'Whether your child hurts themselves, such as head-banging or biting, or hurts others.',
+              'Talking and communicating: whether your child points, uses words and understands you.',
+            ],
+          },
+          { type: 'heading', text: 'Common misconceptions' },
+          {
+            type: 'bullets',
+            items: [
+              '“Tantrums mean a spoilt child who needs a smack”: tantrums are a stage of development; hitting makes children afraid but does not teach self-control. Instead: stay calm, keep the limit and praise good moments.',
+              '“Hand over the phone or sweets to stop the crying”: this teaches more tantrums to get things. Instead: wait for your child to calm down, then move on.',
+              '“Threaten the bogeyman, the police or leaving them behind”: adding fear makes children less secure. Instead: stay close and name their feelings.',
+              '“Breath-holding until blue is just stubbornness, ignore it”: breath-holding spells are usually harmless, but have the first one checked by a doctor, who may test for low iron. Instead: lay your child on their side somewhere safe and stay with them until they breathe again.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or local emergency services now if',
+            text: 'Your child faints and stays blue, has a fit or does not come round quickly after breath-holding; or is badly hurt during a tantrum.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'When to ask a doctor',
+            text: 'Your child has a first breath-holding spell; tantrums happen many times a day or often last more than 15 minutes; your child often hurts themselves or others; tantrums get worse or are still frequent after age 4; there are concerns about talking or social skills, or lost skills; or you feel exhausted and struggle to stay in control.',
+          },
+        ],
+      },
+      keywords: {
+        vi: ['ăn vạ', 'nổi cáu', 'nín thở', 'đánh đòn', 'kỷ luật tích cực', 'cảm xúc'],
+        en: [
+          'tantrums',
+          'meltdowns',
+          'breath-holding',
+          'smacking',
+          'positive discipline',
+          'feelings',
+        ],
+      },
+      relatedArticleIds: [
+        'art_separation_anxiety',
+        'art_screens_language',
+        'art_sleep_by_age',
+        'art_parent_wellbeing',
+      ],
+      milestoneIds: ['checks_back', 'notices_upset', 'two_word_phrases'],
+      sources: [
+        {
+          label: 'NHS — Temper tantrums',
+          url: 'https://www.nhs.uk/baby/babys-development/behaviour/temper-tantrums/',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Temper tantrums',
+          url: 'https://www.healthychildren.org/English/family-life/family-dynamics/communication-discipline/Pages/Temper-Tantrums.aspx',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Where we stand: spanking',
+          url: 'https://www.healthychildren.org/English/family-life/family-dynamics/communication-discipline/Pages/Where-We-Stand-Spanking.aspx',
+        },
+        {
+          label: 'WHO — Corporal punishment and health (fact sheet)',
+          url: 'https://www.who.int/news-room/fact-sheets/detail/corporal-punishment-and-health',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_newborn_skin_rashes',
+    reviewerLabel: 'Nhóm chuyên môn · Điều dưỡng nhi',
+    data: {
+      library: 'care',
+      topic: 'daily_care',
+      format: 'article',
+      ageWeeks: { from: 0, to: 52 },
+      readingMinutes: 4,
+      cover: null,
+      title: {
+        vi: 'Da bé sơ sinh: mụn sữa, ban đỏ, rôm sảy, vết bớt và khi nào cần lo',
+        en: 'Newborn skin: milk spots, newborn rash, heat rash, birthmarks and when to worry',
+      },
+      summary: {
+        vi: 'Da bé mới sinh hay nổi những nốt, mảng vô hại và tự hết. Biết phân biệt chúng với ban cần cấp cứu, và giữ bé mát vừa đủ, giúp ba mẹ bớt lo.',
+        en: 'Newborn skin often shows harmless spots and patches that clear on their own. Knowing them from a rash that needs emergency care, and keeping your baby comfortably cool, takes away a lot of worry.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Mụn trắng li ti, ban đỏ sơ sinh, mụn sơ sinh, cứt trâu và rôm sảy đều rất hay gặp và thường tự hết. Không nặn, không bôi thuốc hay đắp lá. Ban không mất màu khi ấn cốc, nốt mủ hay phỏng nước kèm sốt, hoặc bé dưới 3 tháng sốt từ 38 °C cần khám ngay.',
+          },
+          { type: 'heading', text: 'Hiểu đúng về da bé sơ sinh' },
+          {
+            type: 'paragraph',
+            text: 'Trong vài tuần đầu, da bé đang thích nghi với môi trường bên ngoài, nên hay nổi nốt và đổi màu. Những biểu hiện thường gặp và vô hại gồm:',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Mụn trắng li ti (mụn sữa): nốt trắng nhỏ ở mũi, má, cằm, tự hết sau vài tuần.',
+              'Ban đỏ sơ sinh: mảng đỏ có chấm trắng hoặc vàng ở giữa, xuất hiện vài ngày đầu, lúc có lúc mất, bé vẫn bú tốt, không sốt; tự hết sau vài ngày đến 2 tuần.',
+              'Mụn sơ sinh: mụn đỏ nhỏ ở má, trán, hay gặp khoảng 2–4 tuần tuổi, thường tự hết sau vài tuần đến vài tháng.',
+              'Cứt trâu: mảng vảy vàng, nhờn trên da đầu, không ngứa, không gây hại.',
+              'Rôm sảy: chấm đỏ hoặc mụn nước li ti ở cổ, ngực, lưng, nếp gấp khi bé bị nóng, ra nhiều mồ hôi.',
+              'Vết bớt xanh: mảng xanh xám ở lưng, mông, rất hay gặp ở bé châu Á; không phải vết bầm, thường mờ dần trong vài năm.',
+              'Vết đỏ nhạt ở gáy, mí mắt, giữa trán: thường nhạt dần.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'Bướu máu là nốt đỏ tươi nổi gồ, thường xuất hiện vài tuần sau sinh, lớn nhanh trong vài tháng rồi nhỏ dần. Phần lớn không cần điều trị, nhưng nên cho bác sĩ xem sớm nếu bướu ở gần mắt, môi, mũi, vùng tã, lớn rất nhanh hoặc bị loét.',
+          },
+          { type: 'heading', text: 'Ba mẹ có thể làm gì' },
+          {
+            type: 'bullets',
+            items: [
+              'Tắm nhanh bằng nước ấm, thấm khô; không cần nhiều xà phòng, không chà xát.',
+              'Không nặn mụn, không cạy vảy da đầu bằng móng tay. Với cứt trâu, NHS gợi ý gội đầu thường xuyên bằng dầu gội dịu nhẹ, làm mềm vảy bằng kem dưỡng không mùi rồi chải nhẹ bằng lược mềm.',
+              'Rôm sảy: cho bé mặc đồ cotton mỏng, rộng; giữ phòng mát, thoáng; tránh kem đặc và phấn rôm. Rôm thường đỡ sau vài ngày khi bé bớt nóng.',
+              'Chụp ảnh vết bớt, bướu máu mỗi vài tuần để bác sĩ so sánh.',
+              'Ghi vết bớt xanh vào hồ sơ của bé để người chăm khác và nhân viên y tế không nhầm với vết bầm.',
+              'Giặt quần áo của bé bằng bột giặt dịu nhẹ, không mùi, xả kỹ.',
+            ],
+          },
+          { type: 'heading', text: 'Theo dõi' },
+          {
+            type: 'bullets',
+            items: [
+              'Ban có mất màu khi ấn nhẹ một cốc thuỷ tinh lên không.',
+              'Bé có sốt, bú kém, li bì hay quấy khác thường không.',
+              'Nốt có mủ, phỏng nước lan rộng, vảy vàng, rỉ dịch không.',
+              'Màu da vàng: xem bài Vàng da sơ sinh.',
+            ],
+          },
+          { type: 'heading', text: 'Hiểu lầm thường gặp' },
+          {
+            type: 'bullets',
+            items: [
+              '“Tắm nước lá chè xanh, lá khế cho hết rôm”: nước lá không sạch, khó biết đậm nhạt và có thể làm da kích ứng. Nên: tắm nước ấm sạch, mặc thoáng.',
+              '“Bôi phấn rôm cho khô”: bé có thể hít bột vào phổi. Nên: giữ bé mát và khô, không dùng phấn.',
+              '“Ủ thật ấm cho rôm mọc ra hết”: ủ nóng làm rôm nặng hơn và tăng nguy cơ đột tử khi ngủ. Nên: mặc nhiều hơn người lớn tối đa một lớp mỏng.',
+              '“Nặn mụn sữa cho sạch”: nặn dễ gây nhiễm trùng. Nên: để mụn tự hết.',
+              '“Vết xanh ở mông là do bị đánh, bị ngã”: bớt xanh có từ lúc sinh và rất hay gặp ở bé châu Á. Nên: chụp ảnh, ghi vào hồ sơ; còn vết bầm mới xuất hiện ở bé chưa biết lẫy thì cần bác sĩ xem.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Bé có ban hoặc chấm đỏ, tím không mất màu khi ấn cốc, nhất là kèm sốt hay bé mệt; bé li bì, khó đánh thức hoặc khó thở; phỏng nước lan nhanh kèm sốt, hoặc da đỏ, bong tróc trên diện rộng.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Đưa bé đi khám trong ngày khi',
+            text: 'Bé dưới 3 tháng có nhiệt độ từ 38 °C trở lên; nốt có mủ, phỏng nước, vảy vàng hoặc rỉ dịch; ban kèm bú kém; bướu máu ở gần mắt, môi, mũi, vùng tã, lớn nhanh hoặc loét; có vết bầm ở bé chưa biết lẫy; hoặc ba mẹ thấy lo.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Milk spots, newborn rash, baby acne, cradle cap and heat rash are all very common and usually clear by themselves. Do not squeeze them or apply creams or leaves. A rash that does not fade under a glass, pus spots or blisters with fever, or a baby under 3 months with 38 °C or more needs to be seen straight away.',
+          },
+          { type: 'heading', text: 'Understanding newborn skin' },
+          {
+            type: 'paragraph',
+            text: 'In the first weeks, your baby’s skin is adjusting to life outside the womb, so spots and colour changes are common. Usual, harmless ones include:',
+          },
+          {
+            type: 'bullets',
+            items: [
+              'Milk spots (milia): tiny white spots on the nose, cheeks and chin that go within a few weeks.',
+              'Newborn rash (erythema toxicum): red blotches with a white or yellow dot in the middle in the first days, coming and going in a baby who feeds well with no fever; it clears within days to 2 weeks.',
+              'Baby acne: small red spots on the cheeks and forehead, often at 2–4 weeks, which usually clear within weeks to a few months.',
+              'Cradle cap: yellow, greasy scales on the scalp that are not itchy or harmful.',
+              'Heat rash: tiny red spots or blisters on the neck, chest, back and skin folds when your baby is hot and sweaty.',
+              'Slate-grey patches (Mongolian spots): blue-grey patches on the back and bottom, very common in Asian babies; they are not bruises and usually fade over a few years.',
+              'Pale pink marks on the back of the neck, eyelids or forehead (stork marks): these usually fade.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'A strawberry mark (infantile haemangioma) is a raised bright red lump that usually appears a few weeks after birth, grows quickly for some months, then shrinks. Most need no treatment, but have it checked early if it is near the eye, lips, nose or diaper area, grows very fast or breaks down into a sore.',
+          },
+          { type: 'heading', text: 'What you can do' },
+          {
+            type: 'bullets',
+            items: [
+              'Give quick warm baths and pat dry; little or no soap, no scrubbing.',
+              'Do not squeeze spots or pick at scalp scales. For cradle cap, the NHS suggests regular washing with a mild baby shampoo, softening the scales with an unperfumed moisturiser, then brushing gently with a soft brush.',
+              'Heat rash: dress your baby in thin, loose cotton, keep the room cool and airy, and avoid thick creams and talc. It usually settles within days once your baby is cooler.',
+              'Photograph birthmarks or strawberry marks every few weeks so the doctor can compare.',
+              'Note slate-grey patches in your baby’s health record so other carers and health workers do not mistake them for bruises.',
+              'Wash your baby’s clothes in a mild, fragrance-free detergent and rinse well.',
+            ],
+          },
+          { type: 'heading', text: 'What to watch' },
+          {
+            type: 'bullets',
+            items: [
+              'Whether a rash fades when you press a glass on it.',
+              'Fever, poor feeding, unusual sleepiness or fussing.',
+              'Pus spots, spreading blisters, yellow crusts or weeping skin.',
+              'Yellow skin: see Newborn jaundice.',
+            ],
+          },
+          { type: 'heading', text: 'Common misconceptions' },
+          {
+            type: 'bullets',
+            items: [
+              '“Bathe in green tea or star fruit leaf water to clear heat rash”: leaf water is not clean, its strength is unknown and it can irritate skin. Instead: clean warm water and light clothing.',
+              '“Use talc to dry the skin”: babies can breathe the powder into their lungs. Instead: keep your baby cool and dry, without powder.',
+              '“Wrap them up warm to bring the rash out”: heat makes it worse and raises the risk of sudden infant death in sleep. Instead: at most one light layer more than an adult.',
+              '“Squeeze milk spots to clean them”: this can cause infection. Instead: leave them to clear on their own.',
+              '“Blue marks on the bottom mean the baby was hit or fell”: slate-grey patches are present from birth and very common in Asian babies. Instead: photograph and record them; any new bruise on a baby who is not yet rolling needs a doctor’s check.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or local emergency services now if',
+            text: 'Your baby has red or purple spots that do not fade under a glass, especially with fever or if they seem unwell; is very drowsy, hard to wake or struggling to breathe; or has blisters spreading fast with fever, or widespread red, peeling skin.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'See a doctor the same day if',
+            text: 'Your baby is under 3 months with a temperature of 38 °C or more; has pus spots, blisters, yellow crusts or weeping skin; has a rash with poor feeding; has a strawberry mark near the eye, lips, nose or diaper area, or one that grows fast or forms a sore; has a bruise but is not yet rolling; or you are worried.',
+          },
+        ],
+      },
+      keywords: {
+        vi: ['rôm sảy', 'mụn sữa', 'ban đỏ sơ sinh', 'cứt trâu', 'bớt xanh', 'bướu máu'],
+        en: [
+          'heat rash',
+          'milk spots',
+          'newborn rash',
+          'cradle cap',
+          'Mongolian spots',
+          'strawberry mark',
+        ],
+      },
+      relatedArticleIds: [
+        'art_bathing_at_home',
+        'art_eczema_dry_skin',
+        'art_newborn_jaundice',
+        'art_heat_cold_safety',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'NHS — Rashes in babies and children',
+          url: 'https://www.nhs.uk/conditions/rashes-babies-and-children/',
+        },
+        {
+          label: 'NHS — Heat rash (prickly heat)',
+          url: 'https://www.nhs.uk/conditions/heat-rash-prickly-heat/',
+        },
+        { label: 'NHS — Birthmarks', url: 'https://www.nhs.uk/conditions/birthmarks/' },
+        { label: 'NHS — Cradle cap', url: 'https://www.nhs.uk/conditions/cradle-cap/' },
+        {
+          label:
+            "HealthyChildren.org (AAP) — Make baby's room safe: parent checklist (baby and talcum powder)",
+          url: 'https://www.healthychildren.org/English/safety-prevention/at-home/Pages/Make-Babys-Room-Safe.aspx',
+        },
+        { label: 'NHS — Fever in children', url: 'https://www.nhs.uk/symptoms/fever-in-children/' },
+      ],
+    },
+  },
+  {
+    id: 'art_heat_cold_safety',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'daily_care',
+      format: 'article',
+      ageWeeks: { from: 0, to: 104 },
+      readingMinutes: 4,
+      cover: null,
+      title: {
+        vi: 'Giữ bé vừa ấm, vừa mát: trời nóng, điều hoà, trời lạnh và sưởi an toàn',
+        en: 'Keeping your baby comfortable in heat and cold: air conditioning, fans and safe heating',
+      },
+      summary: {
+        vi: 'Bé nhỏ dễ bị nóng quá hoặc lạnh quá. Cách mặc, dùng điều hoà, quạt, che nắng cho bé, và vì sao không bao giờ đốt than sưởi trong phòng kín.',
+        en: 'Young babies overheat and get cold easily. How to dress them, use air conditioning and fans, protect them from the sun, and why never to burn charcoal for heat in a closed room.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Mặc cho bé nhiều hơn người lớn tối đa một lớp mỏng; sờ ngực hoặc gáy để biết bé có nóng không. Trời nóng: cho bú nhiều hơn, phòng thoáng, tránh nắng gắt, không trùm kín xe đẩy. Trời lạnh: mặc nhiều lớp mỏng, không đội mũ khi ngủ trong nhà. Không bao giờ đốt than, củi để sưởi trong phòng kín.',
+          },
+          { type: 'heading', text: 'Hiểu đúng: vì sao bé dễ nóng, dễ lạnh' },
+          {
+            type: 'paragraph',
+            text: 'Bé nhỏ có diện tích da lớn so với cân nặng và chưa tự điều chỉnh thân nhiệt tốt như người lớn. Quá nóng khi ngủ làm tăng nguy cơ đột tử; nóng kéo dài khi trời oi bức dễ làm bé mất nước, kiệt sức vì nóng. Bé sơ sinh nhẹ cân, sinh non lại dễ bị lạnh.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Than củi, lò than, bếp gas hay máy phát điện cháy trong phòng kín sinh ra khí CO (carbon monoxide), không màu, không mùi. Khí này có thể gây ngộ độc và tử vong cho cả mẹ và bé trong một đêm. Ở Việt Nam: thói quen sưởi than, hơ than cho mẹ và bé khi ở cữ vẫn còn ở nhiều nơi; đây là nguy cơ ngộ độc khí CO cần tránh hẳn.',
+          },
+          { type: 'heading', text: 'Ba mẹ có thể làm gì' },
+          { type: 'heading', text: 'Khi trời nóng' },
+          {
+            type: 'bullets',
+            items: [
+              'Cho bú mẹ, bú bình thường xuyên hơn; bé dưới 6 tháng bú mẹ hoàn toàn không cần uống thêm nước. Bé đã ăn dặm có thể uống thêm từng ngụm nước.',
+              'Mặc đồ cotton mỏng, sáng màu; ở trong nhà, bé có thể chỉ mặc áo mỏng và tã.',
+              'Dùng điều hoà hoặc quạt để phòng mát dễ chịu với người lớn mặc đồ mỏng; không để gió thổi thẳng vào bé, vệ sinh máy định kỳ, đặt quạt chắc chắn, có lồng chắn, xa tầm tay bé.',
+              'Bé dưới 6 tháng: tránh nắng trực tiếp, cho bé ở chỗ râm, mặc đồ dài tay mỏng, đội mũ rộng vành khi ra ngoài. Từ 6 tháng: thêm kem chống nắng SPF từ 30 trên vùng da hở; AAP cho phép bôi một lượng nhỏ cho bé nhỏ hơn ở chỗ không che được.',
+              'Không trùm khăn, chăn lên xe đẩy để che nắng: bên trong có thể nóng lên rất nhanh. Dùng mái che của xe và đi vào chỗ râm.',
+              'Không bao giờ để bé một mình trong ô tô, dù chỉ một phút.',
+            ],
+          },
+          { type: 'heading', text: 'Khi trời lạnh' },
+          {
+            type: 'bullets',
+            items: [
+              'Mặc nhiều lớp mỏng thay vì một áo thật dày; cởi bớt khi vào nhà hoặc lên xe.',
+              'Khi ra ngoài, đội mũ, đi tất cho bé; khi ngủ trong nhà, không đội mũ, không đắp chăn dày, dùng túi ngủ hoặc mặc thêm một lớp.',
+              'Máy sưởi điện, đèn sưởi: đặt xa giường, nôi, rèm và đồ vải; có lồng chắn; không để chạy suốt đêm sát bé; không để túi chườm nóng trong nôi.',
+              'Không đốt than, củi, lò than để sưởi hay hơ trong phòng ngủ. Nếu nhà nấu bằng bếp gas hay lò than, mở cửa thông gió và không đặt bếp trong phòng ngủ.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'Kiểm tra nhanh',
+            text: 'Sờ ngực, lưng hoặc gáy bé, đừng dựa vào tay chân vì tay chân bé thường mát hơn. Gáy ướt mồ hôi, đỏ, nóng là bé đang nóng; ngực mát, môi tím, run là bé đang lạnh.',
+          },
+          { type: 'heading', text: 'Theo dõi' },
+          {
+            type: 'bullets',
+            items: [
+              'Số tã ướt, màu nước tiểu, môi miệng có khô không khi trời nóng.',
+              'Bé có ra nhiều mồ hôi, đỏ bừng, thở nhanh, li bì không.',
+              'Nhiệt độ phòng ngủ và khe thông gió khi đóng kín cửa để bật điều hoà hay sưởi.',
+              'Cả nhà cùng đau đầu, buồn nôn, chóng mặt, mệt lả trong phòng có sưởi than hay lửa: dấu hiệu nghi ngộ độc khí CO.',
+            ],
+          },
+          { type: 'heading', text: 'Hiểu lầm thường gặp' },
+          {
+            type: 'bullets',
+            items: [
+              '“Ở cữ phải ủ thật kín, sưởi than cho ấm”: khí than trong phòng kín có thể gây ngộ độc chết người, còn ủ quá nóng làm tăng nguy cơ đột tử. Nên: phòng thoáng, ấm vừa, mặc vừa đủ.',
+              '“Bật điều hoà là bé bị cảm”: cảm lạnh do virus, không phải do điều hoà. Nên: để nhiệt độ dễ chịu, không thổi thẳng vào bé, giữ máy sạch.',
+              '“Tay chân bé lạnh là bé lạnh, phải mặc thêm”: tay chân bé thường mát. Nên: sờ ngực hoặc gáy để kiểm tra.',
+              '“Tắm nắng giữa trưa cho có vitamin D”: nắng gắt dễ làm bé cháy nắng, kiệt sức vì nóng. Nên: cho bé uống vitamin D theo hướng dẫn, ra ngoài lúc mát, ở chỗ râm.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Bé li bì, khó đánh thức, co giật, thở nhanh hoặc khó thở sau khi bị nóng; da nóng đỏ, khô, bé lả đi; cả nhà nghi ngộ độc khí than: đưa mọi người ra chỗ thoáng ngay, tắt nguồn đốt nếu an toàn, rồi gọi 115; bé tím tái, người lạnh, mềm nhũn.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Đưa bé đi khám trong ngày khi',
+            text: 'Bé dưới 3 tháng có nhiệt độ từ 38 °C trở lên hoặc dưới 36 °C; bé ít tã ướt, môi khô, bú kém khi trời nóng; bé bị cháy nắng phỏng rộp; rôm sảy có mủ hoặc kèm sốt; hoặc ba mẹ thấy lo.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Dress your baby in at most one light layer more than an adult, and feel the chest or back of the neck to check. In heat: feed more often, keep rooms airy, avoid strong sun and never cover a pram or stroller. In cold: use several thin layers, and no hat for sleep indoors. Never burn charcoal or wood for heat in a closed room.',
+          },
+          { type: 'heading', text: 'Understanding why babies overheat and get cold' },
+          {
+            type: 'paragraph',
+            text: 'Young babies have a lot of skin for their weight and cannot control their temperature as well as adults. Overheating during sleep raises the risk of sudden infant death; long spells of heat can lead to dehydration and heat exhaustion. Small and premature newborns also get cold easily.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Charcoal, coal stoves, gas burners or generators burning in a closed room produce carbon monoxide (CO), which has no colour or smell. It can poison and kill both mother and baby in a single night. In Việt Nam: warming a new mother and baby with a charcoal burner during the confinement month is still practised in many places; it is a carbon monoxide risk to avoid completely.',
+          },
+          { type: 'heading', text: 'What you can do' },
+          { type: 'heading', text: 'In hot weather' },
+          {
+            type: 'bullets',
+            items: [
+              'Breastfeed or bottle-feed more often; exclusively breastfed babies under 6 months do not need extra water. Babies on solids can have sips of water.',
+              'Dress your baby in thin, light-coloured cotton; indoors, a light top and a diaper may be enough.',
+              'Use air conditioning or a fan so the room feels comfortable to an adult in light clothes; do not aim the airflow at your baby, clean the unit regularly, and keep fans stable, guarded and out of reach.',
+              'Under 6 months: keep out of direct sun, in the shade, in thin long sleeves and a wide-brimmed hat outdoors. From 6 months: add SPF 30 or higher sunscreen on exposed skin; the AAP allows a small amount on younger babies where skin cannot be covered.',
+              'Do not cover a pram or stroller with a cloth or blanket for shade: it can heat up very fast inside. Use the hood and stay in the shade.',
+              'Never leave your baby alone in a car, even for a minute.',
+            ],
+          },
+          { type: 'heading', text: 'In cold weather' },
+          {
+            type: 'bullets',
+            items: [
+              'Use several thin layers rather than one thick one; take layers off indoors or in the car.',
+              'Outdoors, add a hat and socks; for sleep indoors, no hat and no thick quilts; use a sleep sack or one extra layer.',
+              'Electric heaters and heat lamps: keep them away from beds, cribs, curtains and fabric, with a guard; do not run them all night close to your baby; no hot-water bottles in the crib.',
+              'Never burn charcoal, wood or coal for heating or warming in a bedroom. If you cook with gas or a charcoal stove, keep the area ventilated and never put it in a bedroom.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'tip',
+            title: 'A quick check',
+            text: 'Feel your baby’s chest, back or the back of the neck, not the hands and feet, which are usually cooler. A sweaty, red, hot neck means too hot; a cool chest, bluish lips or shivering means too cold.',
+          },
+          { type: 'heading', text: 'What to watch' },
+          {
+            type: 'bullets',
+            items: [
+              'In hot weather: wet diapers, urine colour and whether the lips and mouth are dry.',
+              'Heavy sweating, flushed skin, fast breathing or drowsiness.',
+              'Bedroom temperature, and ventilation when doors are shut for air conditioning or heating.',
+              'Several people with headache, nausea, dizziness or weakness in a room with a charcoal burner or flame: a warning sign of carbon monoxide poisoning.',
+            ],
+          },
+          { type: 'heading', text: 'Common misconceptions' },
+          {
+            type: 'bullets',
+            items: [
+              '“During confinement, seal the room and use a charcoal burner”: charcoal fumes in a closed room can kill, and overheating raises the risk of sudden infant death. Instead: an airy, comfortably warm room and sensible clothing.',
+              '“Air conditioning gives babies colds”: colds are caused by viruses, not air conditioning. Instead: keep it comfortable, not aimed at your baby, and clean.',
+              '“Cold hands mean a cold baby who needs more clothes”: babies’ hands and feet are often cool. Instead: check the chest or the back of the neck.',
+              '“Midday sunbathing for vitamin D”: strong sun can burn and overheat babies. Instead: give vitamin D as advised and go out in cooler hours, in the shade.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or local emergency services now if',
+            text: 'Your baby is very drowsy, hard to wake, has a fit, or breathes fast or with difficulty after getting hot; has hot, red, dry skin and is floppy; you suspect carbon monoxide poisoning: get everyone into fresh air at once, turn off the source if it is safe, then call; or your baby is blue, cold and floppy.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'See a doctor the same day if',
+            text: 'Your baby is under 3 months with a temperature of 38 °C or more, or under 36 °C; has fewer wet diapers, dry lips or poor feeding in hot weather; has sunburn with blisters; has heat rash with pus spots or fever; or you are worried.',
+          },
+        ],
+      },
+      keywords: {
+        vi: ['trời nóng', 'điều hoà', 'say nóng', 'sưởi than', 'khí CO', 'chống nắng'],
+        en: [
+          'hot weather',
+          'air conditioning',
+          'heat exhaustion',
+          'charcoal heating',
+          'carbon monoxide',
+          'sun protection',
+        ],
+      },
+      relatedArticleIds: [
+        'art_safe_sleep',
+        'art_newborn_skin_rashes',
+        'art_vitamin_d_iron',
+        'art_parent_wellbeing',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'NHS — Heatwave: how to cope in hot weather',
+          url: 'https://www.nhs.uk/live-well/seasonal-health/heatwave-how-to-cope-in-hot-weather/',
+        },
+        {
+          label: 'NHS — Heat exhaustion and heatstroke',
+          url: 'https://www.nhs.uk/conditions/heat-exhaustion-heatstroke/',
+        },
+        {
+          label: 'NHS — Carbon monoxide poisoning',
+          url: 'https://www.nhs.uk/conditions/carbon-monoxide-poisoning/',
+        },
+        {
+          label: 'HealthyChildren.org (AAP) — Sun safety',
+          url: 'https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Sun-Safety.aspx',
+        },
+        {
+          label: 'NHS — Sudden infant death syndrome (SIDS)',
+          url: 'https://www.nhs.uk/baby/caring-for-a-newborn/sudden-infant-death-syndrome-sids/',
+        },
+        {
+          label: "HealthyChildren.org (AAP) — A parent's guide to safe sleep",
+          url: 'https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx',
+        },
+      ],
+    },
+  },
+  {
+    id: 'art_medicine_safety',
+    reviewerLabel: 'Nhóm chuyên môn · Nhi khoa',
+    data: {
+      library: 'care',
+      topic: 'illness',
+      format: 'step_guide',
+      ageWeeks: { from: 0, to: 104 },
+      readingMinutes: 4,
+      cover: null,
+      title: {
+        vi: 'Cho bé dùng thuốc an toàn: đúng thuốc, đúng liều, đúng cách',
+        en: 'Giving your baby medicine safely: the right medicine, dose and method',
+      },
+      summary: {
+        vi: 'Phần lớn sai sót thuốc ở trẻ nhỏ có thể phòng được: liều theo cân nặng, đong bằng xi lanh có vạch, không dùng thuốc người lớn và chỉ dùng kháng sinh khi bác sĩ kê.',
+        en: 'Most medicine mistakes in young children can be prevented: dose by weight, measure with a marked syringe, never use adult medicines, and use antibiotics only when a doctor prescribes them.',
+      },
+      body: {
+        vi: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'Tóm tắt nhanh',
+            text: 'Trước khi cho bé uống bất kỳ thuốc nào, hãy biết tên hoạt chất, liều theo cân nặng của bé, khoảng cách giữa các liều và liều tối đa trong ngày. Đong bằng xi lanh hoặc cốc có vạch đi kèm, không dùng thìa ăn. Không tự dùng kháng sinh, aspirin, thuốc của người lớn, hay thuốc ho cảm cho bé dưới 2 tuổi.',
+          },
+          { type: 'heading', text: 'Hiểu đúng: vì sao trẻ nhỏ dễ gặp sai sót thuốc' },
+          {
+            type: 'paragraph',
+            text: 'Liều thuốc của trẻ tính theo cân nặng, và cùng một tên thuốc có nhiều nồng độ, ví dụ paracetamol dạng giọt và dạng siro. Đong bằng thìa ăn có thể sai gấp đôi. AAP khuyên dùng dụng cụ có vạch ml đi kèm thuốc, không dùng thìa trong bếp.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Một số thuốc người lớn hay dùng lại nguy hiểm với trẻ nhỏ: aspirin không dùng cho trẻ dưới 16 tuổi; FDA và cơ quan quản lý thuốc châu Âu không cho dùng codein ở trẻ dưới 12 tuổi, FDA cũng không cho dùng tramadol ở tuổi này; FDA không khuyên dùng thuốc ho cảm không kê đơn cho trẻ dưới 2 tuổi.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Kháng sinh chỉ diệt vi khuẩn, không chữa cảm lạnh, cúm hay phần lớn các ca sốt do virus. Dùng kháng sinh không cần thiết gây tiêu chảy, dị ứng và làm vi khuẩn kháng thuốc, điều WHO coi là một mối đe doạ lớn cho sức khoẻ toàn cầu. Ở Việt Nam: kháng sinh là thuốc kê đơn; chỉ dùng khi bác sĩ đã khám và kê.',
+          },
+          { type: 'heading', text: 'Bước 1 · Trước khi dùng thuốc' },
+          {
+            type: 'bullets',
+            items: [
+              'Hỏi bác sĩ hoặc dược sĩ: thuốc này để làm gì, liều bao nhiêu theo cân nặng hiện tại của bé, mấy lần một ngày, dùng trong bao lâu.',
+              'Đọc nhãn: tên hoạt chất, nồng độ (ví dụ mg trong mỗi ml), hạn dùng. Kiểm tra các thuốc khác bé đang dùng có trùng hoạt chất không, nhất là paracetamol trong thuốc cảm.',
+              'Nói với bác sĩ nếu bé sinh non, có bệnh gan, thận, tim, thiếu men G6PD hay từng dị ứng thuốc.',
+            ],
+          },
+          { type: 'heading', text: 'Bước 2 · Đong và cho uống' },
+          {
+            type: 'bullets',
+            items: [
+              'Dùng xi lanh uống thuốc hoặc cốc có vạch ml đi kèm; không dùng thìa ăn, không ước lượng.',
+              'Bé nhỏ: bế nửa ngồi, bơm từ từ vào phía trong má, không bơm thẳng vào họng.',
+              'Không trộn thuốc vào cả bình sữa hay bát cháo: bé không ăn hết sẽ không đủ liều.',
+              'Bé nôn ngay sau khi uống: hỏi dược sĩ có nên cho lại không, đừng tự cho thêm.',
+            ],
+          },
+          { type: 'heading', text: 'Bước 3 · Ghi lại và theo dõi' },
+          {
+            type: 'bullets',
+            items: [
+              'Ghi giờ, tên thuốc và liều mỗi lần cho uống (có thể ghi trong Child Life), nhất là khi nhiều người cùng chăm bé, để tránh cho trùng liều.',
+              'Dùng kháng sinh đủ số ngày bác sĩ dặn, kể cả khi bé đã đỡ; không để dành kháng sinh thừa cho lần sau hay cho trẻ khác.',
+              'Để ý phản ứng: nổi mẩn, sưng môi, khó thở, nôn nhiều, li bì.',
+            ],
+          },
+          { type: 'heading', text: 'Bước 4 · Cất giữ an toàn' },
+          {
+            type: 'bullets',
+            items: [
+              'Cất mọi thuốc, kể cả vitamin, sắt và thuốc của ông bà, trên cao, trong tủ có khoá, nắp chống trẻ em đóng chặt.',
+              'Không gọi thuốc là “kẹo”; tránh uống thuốc trước mặt bé để bé không bắt chước.',
+              'Bỏ thuốc hết hạn và siro đã mở quá thời gian ghi trên nhãn.',
+            ],
+          },
+          { type: 'heading', text: 'Hiểu lầm thường gặp' },
+          {
+            type: 'bullets',
+            items: [
+              '“Ra hiệu thuốc mua kháng sinh cho nhanh khỏi”: phần lớn sốt, ho ở trẻ nhỏ do virus. Nên: chỉ dùng kháng sinh khi bác sĩ khám và kê đơn.',
+              '“Thuốc người lớn, bẻ nửa viên cho bé là được”: liều và thành phần có thể không phù hợp, có thuốc nguy hiểm với trẻ. Nên: chỉ dùng thuốc dành cho trẻ, đúng liều theo cân nặng.',
+              '“Thuốc nam, thuốc gia truyền thì lành, không hại”: một số sản phẩm không rõ thành phần, từng bị phát hiện lẫn corticoid mạnh. Nên: hỏi bác sĩ, dược sĩ trước khi dùng bất cứ thứ gì.',
+              '“Sốt cao thì cho uống hai loại hạ sốt cùng lúc cho nhanh”: dễ quá liều. Nên: dùng một loại đúng liều; chỉ xen kẽ khi bác sĩ dặn.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Gọi 115 hoặc đến cấp cứu ngay khi',
+            text: 'Bé uống nhầm thuốc, uống quá liều hay uống thuốc của người lớn, kể cả khi chưa có biểu hiện gì: mang theo vỏ thuốc và xem mục Sơ cứu trẻ em › Uống nhầm thuốc, hoá chất trong Child Life; bé khó thở, sưng môi, lưỡi, mặt hoặc nổi mẩn lan nhanh sau khi dùng thuốc; bé li bì hoặc co giật.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Hỏi bác sĩ hoặc dược sĩ khi',
+            text: 'Ba mẹ chưa chắc liều theo cân nặng; bé nổi mẩn nhẹ, nôn hay tiêu chảy khi đang dùng thuốc; bé không đỡ sau thời gian bác sĩ dặn; hoặc bé đang dùng nhiều thuốc cùng lúc. Nếu bé nặng lên nhanh, gọi 115.',
+          },
+        ],
+        en: [
+          {
+            type: 'callout',
+            tone: 'note',
+            title: 'In short',
+            text: 'Before giving any medicine, know the active ingredient, the dose for your baby’s weight, the time between doses and the most allowed in a day. Measure with the syringe or marked cup that comes with it, never a kitchen spoon. Do not give antibiotics on your own, aspirin, adult medicines, or cough and cold medicines under age 2.',
+          },
+          { type: 'heading', text: 'Understanding why young children are at risk' },
+          {
+            type: 'paragraph',
+            text: 'Children’s doses depend on weight, and the same medicine comes in different strengths, such as paracetamol drops and syrup. A kitchen spoon can give double the dose. The AAP advises using the ml-marked device that comes with the medicine, not kitchen spoons.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Some common adult medicines are dangerous for young children: no aspirin under 16; the FDA and the European Medicines Agency say no codeine under 12, and the FDA also says no tramadol at that age; the FDA advises against over-the-counter cough and cold medicines under age 2.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Antibiotics only kill bacteria; they do not treat colds, flu or most viral fevers. Unnecessary antibiotics cause diarrhoea and allergy and drive resistant bacteria, which WHO calls a major threat to global health. In Việt Nam: antibiotics are prescription medicines; use them only when a doctor has examined your child and prescribed them.',
+          },
+          { type: 'heading', text: 'Step 1 · Before you give it' },
+          {
+            type: 'bullets',
+            items: [
+              'Ask the doctor or pharmacist: what it is for, the dose for your child’s current weight, how many times a day and for how long.',
+              'Read the label: active ingredient, strength (for example mg per ml) and expiry date. Check other medicines your child takes for the same ingredient, especially paracetamol in cold remedies.',
+              'Tell the doctor if your child was born early, has liver, kidney or heart disease, G6PD deficiency or any medicine allergy.',
+            ],
+          },
+          { type: 'heading', text: 'Step 2 · Measure and give' },
+          {
+            type: 'bullets',
+            items: [
+              'Use an oral syringe or the ml-marked cup supplied; no kitchen spoons, no guessing.',
+              'For a baby: hold them semi-upright and squirt slowly into the inside of the cheek, not straight down the throat.',
+              'Do not mix medicine into a whole bottle or bowl: if your child does not finish it, they miss part of the dose.',
+              'If your child vomits straight after a dose, ask the pharmacist whether to repeat it rather than giving more yourself.',
+            ],
+          },
+          { type: 'heading', text: 'Step 3 · Record and watch' },
+          {
+            type: 'bullets',
+            items: [
+              'Write down the time, medicine and dose each time (you can log it in Child Life), especially when several people care for your child, to avoid double doses.',
+              'Finish the antibiotic course the doctor prescribed, even if your child is better; never keep leftovers for next time or for another child.',
+              'Watch for reactions: rash, swollen lips, breathing trouble, a lot of vomiting or drowsiness.',
+            ],
+          },
+          { type: 'heading', text: 'Step 4 · Store safely' },
+          {
+            type: 'bullets',
+            items: [
+              'Keep all medicines, including vitamins, iron and grandparents’ medicines, up high in a locked cupboard with child-resistant caps closed.',
+              'Never call medicine “sweets”; avoid taking your own medicine in front of your child so they do not copy you.',
+              'Throw away expired medicines and opened syrups past the time on the label.',
+            ],
+          },
+          { type: 'heading', text: 'Common misconceptions' },
+          {
+            type: 'bullets',
+            items: [
+              '“Buy antibiotics at the pharmacy to get better faster”: most fevers and coughs in young children are viral. Instead: antibiotics only when a doctor examines your child and prescribes them.',
+              '“Half an adult tablet will do”: the dose and ingredients may be wrong and some are dangerous for children. Instead: use only children’s medicines, dosed by weight.',
+              '“Herbal and family remedies are gentle and harmless”: some have unknown contents and have been found to contain strong steroids. Instead: ask a doctor or pharmacist before using anything.',
+              '“For a high fever, give two fever medicines together”: this risks overdose. Instead: use one at the right dose; alternate only if a doctor tells you to.',
+            ],
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Call 115 (Việt Nam) or local emergency services now if',
+            text: 'Your child swallows the wrong medicine, too much, or an adult’s medicine, even with no symptoms yet: take the packaging and see Sơ cứu trẻ em (First aid) › Swallowed medicine or chemicals in Child Life; your child has trouble breathing, swollen lips, tongue or face, or a fast-spreading rash after a medicine; or is very drowsy or has a fit.',
+          },
+          {
+            type: 'callout',
+            tone: 'doctor',
+            title: 'Ask a doctor or pharmacist if',
+            text: 'You are unsure of the dose for your child’s weight; your child gets a mild rash, vomiting or diarrhoea while on a medicine; is not better after the time the doctor gave; or is taking several medicines at once. If your child gets worse quickly, call emergency services.',
+          },
+        ],
+      },
+      keywords: {
+        vi: [
+          'liều thuốc',
+          'kháng sinh',
+          'xi lanh uống thuốc',
+          'quá liều',
+          'thuốc người lớn',
+          'cất thuốc',
+        ],
+        en: [
+          'medicine dose',
+          'antibiotics',
+          'oral syringe',
+          'overdose',
+          'adult medicines',
+          'medicine storage',
+        ],
+      },
+      relatedArticleIds: [
+        'art_fever_when_to_call',
+        'art_cold_cough',
+        'art_vitamin_d_iron',
+        'art_home_safety_falls',
+      ],
+      milestoneIds: [],
+      sources: [
+        {
+          label: 'HealthyChildren.org (AAP) — Using liquid medicines',
+          url: 'https://www.healthychildren.org/English/safety-prevention/at-home/medication-safety/Pages/Using-Liquid-Medicines.aspx',
+        },
+        {
+          label:
+            'U.S. FDA — Drug safety communication: FDA restricts use of codeine and tramadol in children (2017)',
+          url: 'https://www.fda.gov/Drugs/DrugSafety/ucm549679.htm',
+        },
+        {
+          label:
+            'European Medicines Agency — Codeine-containing medicines for cough and cold in children',
+          url: 'https://www.ema.europa.eu/en/medicines/human/referrals/codeine-containing-medicinal-products-treatment-cough-cold-paediatric-patients',
+        },
+        {
+          label: 'WHO — Antimicrobial resistance (fact sheet)',
+          url: 'https://www.who.int/news-room/fact-sheets/detail/antimicrobial-resistance',
+        },
+        {
+          label: 'U.S. FDA — Should you give kids medicine for coughs and colds?',
+          url: 'https://www.fda.gov/consumers/consumer-updates/should-you-give-kids-medicine-coughs-and-colds',
+        },
+        {
+          label: 'NHS — Paracetamol for children',
+          url: 'https://www.nhs.uk/medicines/paracetamol-for-children/',
+        },
+        {
+          label:
+            "MHRA (UK) — Natural doesn't mean safe: herbal medicines found to contain steroids",
+          url: 'https://www.gov.uk/government/news/natural-doesnt-mean-safe-herbal-medicines-found-to-contain-steroids',
+        },
+      ],
+    },
+  },
 ];
 
 // ---------- Stage content: Giai đoạn của bé (the 16 fixed buckets) ----------
@@ -7070,12 +9129,12 @@ export const seedStages: SeedStage[] = [
       doing: t(
         [
           'Bé ngủ phần lớn thời gian và thức dậy bú khoảng 8–12 lần mỗi ngày đêm; có lúc các cữ bú dồn sát nhau.',
-          'Bé nhìn rõ nhất ở khoảng 20–30 cm, gần bằng khoảng cách tới mặt ba mẹ khi bế, và thích ngắm khuôn mặt người.',
+          'Bé nhìn rõ nhất những gì ở gần, cỡ khoảng cách tới mặt ba mẹ khi bế, và thích ngắm khuôn mặt người.',
           'Giật mình, mút, nắm chặt ngón tay và quay đầu tìm vú là những phản xạ bình thường của trẻ sơ sinh.',
         ],
         [
           'Your baby sleeps most of the time and wakes to feed about 8–12 times a day and night; feeds sometimes bunch up.',
-          'Your baby sees best at 20–30 cm, about the distance to your face when you hold them, and loves looking at faces.',
+          'Your baby sees close things best, about the distance to your face when you hold them, and loves looking at faces.',
           'Startling, sucking, gripping your finger and turning to root for the breast are normal newborn reflexes.',
         ],
       ),
@@ -7456,7 +9515,7 @@ export const seedStages: SeedStage[] = [
         [
           'Say a short, cheerful goodbye instead of sneaking away, and say hello when back: your baby learns you return.',
           'Let your baby feed themselves soft food in small pieces and take sips of water from an open cup.',
-          'Name your baby’s feelings with words, face and voice: “You’re sad Mom is going to work. I understand.”',
+          'Name your baby’s feelings with words, face and voice: “You’re sad Mum is going to work. I understand.”',
         ],
       ),
       articleIds: ['art_separation_anxiety', 'art_solids_textures_by_month'],
@@ -7537,12 +9596,12 @@ export const seedStages: SeedStage[] = [
       ),
       tryThis: t(
         [
-          'Cho bé đẩy thùng giấy hay ghế nhỏ để tập đi trên sàn an toàn; không dùng xe tập đi.',
+          'Cho bé đẩy thùng giấy hay đồ chơi đẩy chắc chắn để tập đi trên sàn an toàn; không dùng xe tập đi có bánh.',
           'Khi bé chỉ hoặc nói, đáp lại và nói thêm: bé nói “bóng”, ba mẹ nói “Quả bóng đỏ đây rồi!”',
           'Khóa tủ thuốc, hóa chất; để phích nước, nồi canh nóng xa mép bàn vì bé với cao hơn mỗi ngày.',
         ],
         [
-          'Let your baby push an empty box or small chair to practice walking on a safe floor; avoid baby walkers.',
+          'Let your baby push an empty box or a sturdy push toy to practise walking on a safe floor; avoid wheeled baby walkers.',
           'When your baby points or says a word, answer and add more: “Ball!” becomes “Yes, the red ball!”',
           'Lock away medicines and chemicals; keep flasks and hot pots away from table edges as your baby reaches higher.',
         ],
